@@ -1,0 +1,41 @@
+This gets rid of rpath in the build system.
+
+--- petsc-3.0.0.orig/config/BuildSystem/config/setCompilers.py	2007-05-23 23:33:12.000000000 +0000
++++ petsc-3.0.0/config/BuildSystem/config/setCompilers.py	2007-07-12 22:41:44.000000000 +0000
+@@ -1104,11 +1104,7 @@
+     return
+ 
+   def checkSharedLinkerPaths(self):
+-    '''Determine the shared linker path options
+-       - IRIX: -rpath
+-       - Linux, OSF: -Wl,-rpath,
+-       - Solaris: -R
+-       - FreeBSD: -Wl,-R,'''
++    '''Linker rpath setting turned off for Debian PETSc package.'''
+     languages = ['C']
+     if hasattr(self, 'CXX'):
+       languages.append('Cxx')
+@@ -1116,23 +1112,6 @@
+       languages.append('FC')
+     for language in languages:
+       flag = '-L'
+-      self.pushLanguage(language)
+-      # test '-R' before '-rpath' as sun compilers [c,fortran] don't give proper errors with wrong options.
+-      if not Configure.isDarwin():      
+-        testFlags = ['-Wl,-rpath,', '-R','-rpath ' , '-Wl,-R,']
+-      else:
+-        testFlags = []
+-      # test '-R' before '-Wl,-rpath' for SUN compilers [as cc on linux accepts -Wl,-rpath, but  f90 & CC do not.
+-      if self.isSun(self.framework.getCompiler()):
+-        testFlags.insert(0,'-R')
+-      for testFlag in testFlags:
+-        self.framework.logPrint('Trying '+language+' linker flag '+testFlag)
+-        if self.checkLinkerFlag(testFlag+os.path.abspath(os.getcwd())):
+-          flag = testFlag
+-          break
+-        else:
+-          self.framework.logPrint('Rejected '+language+' linker flag '+testFlag)
+-      self.popLanguage()
+       setattr(self, language+'SharedLinkerFlag', flag)
+     return
+ 

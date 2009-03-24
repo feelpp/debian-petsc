@@ -1,0 +1,17 @@
+.TH mpirun_lam 1 "PETSc's lam mpirun wrapper" "DEBIAN" \" -*- nroff -*-
+.SH NAME
+mpirun_lam \- PETSc's lam mpirun wrapper
+.SH SYNOPSIS
+\fBmpirun_lam\fP
+.SH DESCRIPTION
+This is a real short wrapper around lam's mpirun.lam such that mpich's mpirun
+syntax can be used.  It also adds a few options, though I don't know lam well
+enough to know what they do.  This is used by the makefiles in the examples'
+source code, it is substituted for $(MPIRUN) if PETSc was built with lam
+(mpich used to be the default).
+.PP
+This was adapted only slightly from PETSc upstream's script named mpirun.lam.
+.SH BUGS
+None that I know of.
+.SH AUTHOR
+Adam Powell <hazelsct@mit.edu>

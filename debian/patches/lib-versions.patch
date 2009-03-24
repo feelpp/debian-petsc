@@ -1,0 +1,25 @@
+This changes the shared library name to a versioned one, with a symlink.
+
+--- petsc-3.0.0/conf/rules~	2008-12-19 23:48:45.000000000 -0500
++++ petsc-3.0.0/conf/rules	2009-03-20 10:53:42.000000000 -0400
+@@ -451,8 +451,8 @@
+ deleteshared:
+ 	@for LIBNAME in ${SHLIBS}; \
+ 	do \
+-           echo ${RM} ${INSTALL_LIB_DIR}/$${LIBNAME}.${SL_LINKER_SUFFIX}; \
+-           ${RM} ${INSTALL_LIB_DIR}/$${LIBNAME}.${SL_LINKER_SUFFIX}; \
++           echo ${RM} ${INSTALL_LIB_DIR}/$${LIBNAME}.${SL_LINKER_SUFFIX}*; \
++           ${RM} ${INSTALL_LIB_DIR}/$${LIBNAME}.${SL_LINKER_SUFFIX}*; \
+ 	done
+ 	${RM} ${INSTALL_LIB_DIR}/so_locations
+ 
+@@ -872,7 +872,8 @@
+ 
+ shared_linux:
+ 	-@cd ${SHARED_LIBRARY_TMPDIR}; \
+-	${CLINKER} -shared -Wl,-soname,${LIBNAME}.${SL_LINKER_SUFFIX} -o ${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX} *.o ${PETSC_EXTERNAL_LIB_BASIC} ${OTHERSHAREDLIBS}
++	${CLINKER} -shared -Wl,-soname,${LIBNAME}.${SL_LINKER_SUFFIX_VERSIONED} -o ${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX_VERSIONED} *.o ${PETSC_EXTERNAL_LIB_BASIC} ${OTHERSHAREDLIBS}; \
++	ln -s $$LIBNAME.${SL_LINKER_SUFFIX_VERSIONED} ${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX}
+ 
+ shared_solaris_gnu:
+ 	-@cd ${SHARED_LIBRARY_TMPDIR}; \

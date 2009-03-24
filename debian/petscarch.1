@@ -1,0 +1,15 @@
+.TH petscarch 1 "PETSc architecture indicator" "DEBIAN" \" -*- nroff -*-
+.SH NAME
+petscarch \- PETSc architecture indicator
+.SH SYNOPSIS
+\fBpetscarch\fP
+.SH DESCRIPTION
+This one-line script tells the value of the PETSC_ARCH variable under which the
+PETSc Debian package was built.  It is a symbolic link through
+/etc/alternatives to the currently selected version of PETSc, slaved to the
+petsc link.  (If you don't understand this, please visit the manpage for
+update-alternatives.)
+.SH BUGS
+None.
+.SH AUTHOR
+Adam Powell <hazelsct@mit.edu>

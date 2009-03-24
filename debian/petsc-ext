@@ -1,0 +1,14 @@
+#/bin/sh -e
+# This little script determines the extensions on the PETSC_NAME, the shared
+# library sonames, etc. based on nonstandard compiler and MPI implementations.
+
+if [ "$1" = "linux_alpha_dec" ]; then
+	echo -n "-dec";
+fi
+if [ "$2" != "openmpi" ]; then
+	echo -n "-$2";
+fi
+if [ "$3" != "main" ]; then
+	echo -n "-$3";
+fi
+echo "$4" | sed "s/_/-/"

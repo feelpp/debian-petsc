@@ -1,0 +1,164 @@
+A few minor Debian customizations of the HTML PETSc documentation.
+
+--- petsc-3.0.0.orig/docs/bugreporting.html	2006-03-20 17:12:01.000000000 -0500
++++ petsc-3.0.0/docs/bugreporting.html	2006-04-04 12:47:23.000000000 -0400
+@@ -21,7 +21,10 @@
+         </tbody>
+       </table>
+ 
+-    
++    <b>Debian users:</b> If you find a bug, please file a bug report in the
++    usual Debian way at http://bugs.debian.org , and I'll forward it
++    upstream, as discussed in the
++    <a href="../README.Debian.gz">README.Debian</a> file.<p>
+ 
+     The PETSc maintenance e-mail,&nbsp; <a href="mailto:petsc-maint@mcs.anl.gov">petsc-maint@mcs.anl.gov</a>,&nbsp; is intended for
+     users to 
+@@ -79,7 +82,7 @@
+ 
+       <li>OS Version: (run <em>uname -a</em> to get the version number) </li>
+ 
+-      <li>PETSc Version: (run PETSc program with -v, or look in <a href="petscversion.h">include/petscversion.h</a>)
++      <li>PETSc Version: (run PETSc program with -v, or look in <a href="/usr/lib/petscdir/3.0.0/include/petscversion.h">include/petscversion.h</a>)
+       </li>
+ 
+       <li>MPI implementation: (e.g., MPICH, LAM, IBM, SGI) </li>
+--- petsc-3.0.0.orig/docs/index.html	2006-03-20 17:12:01.000000000 -0500
++++ petsc-3.0.0/docs/index.html	2006-04-04 12:57:31.000000000 -0400
+@@ -166,5 +166,8 @@
+ about PETSc</li>
+ 
+         <li><a href="copyright.html">Copyright</a> - statement of the
+-PETSc copyright</body>
++PETSc copyright</li>
++        <li><a href="../README.Debian.gz">README.Debian</a> - a description of
++this Debian package, see also the
++<a href="http://lyre.mit.edu/~powell/petsc.html">package homepage</a></body>
+ </html>
+--- petsc-3.0.0/docs/faq.html~	2009-03-20 10:28:46.000000000 -0400
++++ petsc-3.0.0/docs/faq.html	2009-03-20 10:34:10.000000000 -0400
+@@ -2667,9 +2667,7 @@
+       
+       
+       
+-      <p>a) The directory ${PETSC_DIR}/docs contains a set of
+-HTML manual pages in for use with a browser. You can delete these pages
+-to save about .8 Mbyte of space. </p>
++      <p>a) Don't install the -doc package.</p>
+ 
+ 
+ 
+@@ -2701,112 +2699,7 @@
+       
+       
+       
+-      <p>b) The PETSc users manual is provided in PDF in
+-${PETSC_DIR}/docs/manual.pdf. You can delete this.&nbsp; </p>
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      <p>c) The PETSc test suite contains sample output for many
+-of the examples. These are contained in the PETSc directories
+-${PETSC_DIR}/src/*/examples/tutorials/output and
+-${PETSC_DIR}/src/*/examples/tests/output. Once you have run the test
+-examples, you may remove all of these directories to save about 300
+-Kbytes of disk space. </p>
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      <p>d) The debugging versions of the libraries are larger
+-than the optimized versions&nbsp;. In a pinch you can work with the
+-optimized version although we do not recommend it generally because
+-finding bugs is much easier with the debug version. </p>
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      
+-      <p>e) <strong><font color="#ff0000"><a name="petsc-uni">I want to use PETSc only for uniprocessor
++      <p>b) <strong><font color="#ff0000"><a name="petsc-uni">I want to use PETSc only for uniprocessor
+ programs. Must I still install and use a version of MPI</a>?</font>
+       </strong></p>
+ 

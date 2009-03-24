@@ -1,0 +1,6 @@
+build-debug-nowarn.patch
+build-no-rpath.patch
+docs.patch
+example-src-dir.patch
+install-dir.patch
+lib-versions.patch

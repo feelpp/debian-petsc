@@ -1,0 +1,3 @@
+version=3
+opts=uversionmangle=s/-(p\d+)$/.$1/ \
+ ftp://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-([\d\.]+-p\d+).tar.gz

@@ -1,0 +1,18 @@
+Document: petsc3.0.0-doc
+Title: PETSc 3.0.0 Documentation
+Author:	Satish Balay, William D. Gropp, Lois Curfman McInnes, Barry F. Smith
+Abstract: PETSc is a suite of data structures and routines for the scalable
+ (parallel) solution of scientific applications modeled by partial differential
+ equations. It employs the MPI standard for all message-passing communication.
+ Several sample scientific applications, as well as various papers and talks,
+ demonstrate the features of the PETSc libraries.
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/petsc3.0.0-doc/docs/index.html
+Files: /usr/share/doc/petsc3.0.0-doc/docs/*.html
+ /usr/share/doc/petsc3.0.0-doc/docs/*/*.html
+ /usr/share/doc/petsc3.0.0-doc/docs/*/*/*.html
+
+Format: pdf
+Files: /usr/share/doc/petsc3.0.0-doc/docs/manual.pdf

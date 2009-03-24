@@ -1,0 +1,693 @@
+petsc (3.0.0-1) unstable; urgency=low
+
+  * New upstream release (closes: #509692).
+  * Build-depends on mpi-default-dev and mpi-default-bin, though still uses
+    PETSC_MPI to allow users to build with non-default MPI implementations
+    (closes: #509785).
+  * Removed debian/control.in from source package (closes: #496946).
+  * Managing patches using quilt.
+  * Building against hypre 2.4.0 (closes: #511117, #512723).
+  * Temporarily desabled broken babel interface.
+  * Made pkg-scicomp-devel maintainer and self first/only uploader.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon, 23 Mar 2009 15:07:04 -0400
+
+petsc (2.3.3-15) unstable; urgency=low
+
+  * Fixed bashism in debian/petsc-ext (closes: #488714).
+  * Added src/mat/impls/aij/mpi/mpiaij.h to include directory in
+    libpetsc2.3.3-dev (closes: #496679).
+  * Moved debian/petsc2.3.2-doc* files to correct version (closes: #496680).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 28 Aug 2008 12:49:26 -0400
+
+petsc (2.3.3-14) unstable; urgency=low
+
+  * Change to babel dependency generation and substvars.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon, 30 Jun 2008 10:26:50 -0400
+
+petsc (2.3.3-13) unstable; urgency=low
+
+  * Only use babel support where available (closes: #486825).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 19 Jun 2008 11:37:00 -0400
+
+petsc (2.3.3-12) unstable; urgency=low
+
+  * Added hypre preconditioner library support (closes: #451737).
+  * Added babel support (closes: #476423).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 21 May 2008 14:41:37 -0400
+
+petsc (2.3.3-11) unstable; urgency=low
+
+  * Removed control file overwrite which caused control-files mismatches.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Sun, 06 Apr 2008 09:22:28 -0400
+
+petsc (2.3.3-10) unstable; urgency=low
+
+  * Removed -Wno-long-double from compiler options (closes: #474461).
+  * Changed from "ls -l | sed" to "readlink | sed" MPI test based on work
+    by Domenico Andreoli (closes: #474249).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Sat, 05 Apr 2008 22:48:44 -0400
+
+petsc (2.3.3-9) unstable; urgency=low
+
+  * Changed lam4-runtime to lam-runtime in Build-Depends (D'oh!).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon, 24 Mar 2008 08:35:20 -0400
+
+petsc (2.3.3-8) unstable; urgency=low
+
+  * Explicitly declare arches for openmpi vs. lam building.
+  * Added libspooles-dev to libpetsc2.3.3-dev dependencies.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 20 Mar 2008 09:15:37 -0400
+
+petsc (2.3.3-7) unstable; urgency=low
+
+  * Added lam4-dev as a build option (closes: #469664), with auto-detection
+    at build time of which MPI variant is installed.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 19 Mar 2008 13:05:32 -0400
+
+petsc (2.3.3-6) unstable; urgency=low
+
+  * Rebuild for unstable.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 22 Feb 2008 09:27:30 -0500
+
+petsc (2.3.3-5) experimental; urgency=low
+
+  * Rebuild against, and depend on, new suitesparse with proper shared
+    library versioning.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon, 11 Feb 2008 18:38:25 -0500
+
+petsc (2.3.3-4) experimental; urgency=low
+
+  * Build-depends on gfortran-transitioned BLAS, LAPACK and suitesparse
+    (closes: #463825).
+  * Adds spooles support (closes: #464723).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Sun, 10 Feb 2008 03:21:25 -0500
+
+petsc (2.3.3-3) unstable; urgency=low
+
+  * New watch file from Daniel Leidert (closes: #440933).
+  * Specifies only gfortran in build-deps and petsc-compilers substvar in
+    debian/rules (closes: #448158).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 08 Nov 2007 09:46:39 -0500
+
+petsc (2.3.3-2) unstable; urgency=low
+
+  * Changed build-dep from g77 to gfortran (closes: #434666).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 24 Aug 2007 18:12:50 -0400
+
+petsc (2.3.3-1) unstable; urgency=low
+
+  * New upstream release, .orig is patch level 3 (closes: #425998).
+  * New shared library soname and -dev package name for long double
+    (closes: #430292).
+  * Changed default MPI to openmpi.
+  * Fixed mpich and lam MPI build options (closes: #432898).
+  * Old math-blaslapack.m4 macro seems to work with ATLAS libs
+    (closes: #429502).
+  * Separated math-blaslapack.m4 alternatives symlink from other petsc links so
+    other packages can provide it.
+  * Added links to umfpack (libsuitesparse-dev) and superlu (libsuperlu3-dev)
+    (closes: #428007).
+  * Added mpirun_lam based on old upstream mpirun.lam which was removed.
+  * Added removal of .pyc files to rules clean target (closes: #424343).
+  * Package changes: moved compat into file, changed source version substvar.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 17 Jul 2007 18:12:50 -0400
+
+petsc (2.3.2-3) unstable; urgency=low
+
+  * Configuring with --useThreads=0 to try to work around bug 345139 on HPPA --
+    and ARM.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 18 Jan 2007 10:05:17 -0500
+
+petsc (2.3.2-2) unstable; urgency=low
+
+  * Upgrade to upstream patch level 8 to try to fix HPPA build by working
+    around bug 354139.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 17 Jan 2007 14:50:59 -0500
+
+petsc (2.3.2-1) unstable; urgency=low
+
+  * New upstream release, .orig is patch level 6.
+  * Removed overlap between the -dev and -dbg packages (closes: #363122).
+  * Changed == in rules tests to = (closes: #379540).
+  * Removed postscript files from doc-base list (closes #367312).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon, 20 Nov 2006 04:13:08 -0500
+
+petsc (2.3.1-1) unstable; urgency=low
+
+  * New upstream release, .orig is patch level 11 (closes: #351576).
+  * Upstream changes should support GNU/kFreeBSD (closes: #340710).
+  * Upstream also fixed troubleshooting.html error (closes: #350157).
+  * Change to rules in 2.3.0-3 should fix stranded dirs (closes: #350752).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu,  6 Apr 2006 19:57:52 -0400
+
+petsc (2.3.0-3) unstable; urgency=low
+
+  * mipsel arch is now linux-gnu as it should be (closes: #160253).
+  * This is PETSC 2.3 (closes: #316159).
+  * Changed 2.2 to 2.3 in petsc2.3.0-doc.doc-base (closes: #345166).
+  * Removed top_builddir and $HOME refs from bmake dir (closes: #349756).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 25 Jan 2006 14:39:51 -0500
+
+petsc (2.3.0-2) unstable; urgency=low
+
+  * Removed petsc-dbg package as it's not very helpful and almost never used.
+  * Retained versioned -dev packages and petsc-dev per thread at
+    http://lists.debian.org/debian-release/2005/11/msg00107.html continued at
+    http://lists.debian.org/debian-devel/2005/11/msg00986.html
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 16 Dec 2005 16:27:35 -0500
+
+petsc (2.3.0-1) unstable; urgency=low
+
+  * New upstream release (closes: #316159).
+  * New configure debian/rules target using python-based BuildSystem.
+  * New configure process should address endianness separate from instruction
+    set (closes: #160253).
+  * Modifications to BuildSystem: disabled rpath, disabled no debug warning.
+  * Abandoning separate static libs build without -fPIC as it would require too
+    much work to modify BuildSystem to do this.
+  * No python bindings for now.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue,  1 Nov 2005 19:35:35 -0500
+
+petsc (2.2.0-5) unstable; urgency=low
+
+  * Rebuild of unofficial sarge backport testbed for unstable with mpich 1.2.7.
+  * More documentation in petsc.m4 (closes: #315472).
+  * Thanks to new lintian, noticed and re-added trailer to 2.1.3-3 entry.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 16 Aug 2005 21:46:59 -0400
+
+petsc (2.2.0-4sarge1) unstable; urgency=low
+
+  * Rebuilt to link with libmpich1.0-noslog, and removed -lslog from
+    patch-bmake-packages and petsc.m4.
+  * Added versioned dependencies on mpich (>> 1.2.7).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 12 Aug 2005 18:24:23 -0400
+
+petsc (2.2.0-4) unstable; urgency=low
+
+  * Update for new mpich >> 1.2.5.3-2.
+  * Fixed src/inline/axpy.h for complex and UNROLL (closes: #284023, #293011).
+  * Added -fno-strict-aliasing to compile flags (closes: #274009).
+  * Switched SLES stuff to KSP in petsc.m4 (closes: 267796).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 24 Mar 2005 09:46:23 +0900
+
+petsc (2.2.0-3) unstable; urgency=low
+
+  * Changed libpetscsles alternative symlinks to libpetscksp, and removed
+    alternatives symlinks to libpetsccontrib (closes: #255076).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 11 Aug 2004 19:50:12 -0400
+
+petsc (2.2.0-2) unstable; urgency=low
+
+  * Upstream patch level 2.
+  * New PETSC_BOPT_EXTRA option for different BOPT and lib names, with _c++
+    symlinks only for plain and single (closes: #249617).
+  * New DEBIAN_DIST=contrib option to link with hypre, parmetis (closes:
+    #249619).
+  * Combined petsc-c and petsc-fortran substvars into petsc-compilers.
+  * Extra quote in -dev prerm eliminates "too many arguments" problem.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon,  7 Jun 2004 13:41:43 -0400
+
+petsc (2.2.0-1) unstable; urgency=low
+
+  * New upstream.
+  * Changed X devel dependency from xlibs-dev to libx11-dev since that should
+    be the only one needed.
+  * Changed blas/lapack devel dependencies to libblas-3.so/liblapack-3.so, and
+    math-blaslapack.m4 accordingly.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 15 Apr 2004 21:36:58 -0400
+
+petsc (2.1.6-2) unstable; urgency=low
+
+  * Fixed bug in bmake/linux*/variables removing erroneous "-lfrtbegin".
+  * Added new LG-SP draw mechanism (see patch-draw-lgsp).
+  * Fixed rules so clean does unpatch if necessary.
+  * Upstream patch level 10.
+  * Updated the Standards-Version.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 17 Oct 2003 16:02:48 -0400
+
+petsc (2.1.6-1) unstable; urgency=low
+
+  * New upstream (closes: #204392).
+  * Upstream patch level 4.
+  * Name changes: shlib is now libpetsc2.1.6, -dev and -dbg add those suffixes.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu,  4 Sep 2003 11:45:12 -0400
+
+petsc (2.1.5-4) unstable; urgency=low
+
+  * Upstream patch level 8.
+  * Removed rpath from bmake/*/packages (patch) and petsc.m4, since that's been
+    removed from mpich (as of 1.2.5-4, hence the versioned dep in control and
+    rules).
+  * Changed petscconf.h to PETSC_USE_BLAS_KERNELS instead of FORTRAN.
+  * Fixed src/inline/axpy.h to work with PETSC_USE_BLAS_KERNELS.
+  * Moved -dev packages to section libdevel.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 20 May 2003 18:11:42 -0400
+
+petsc (2.1.5-3) unstable; urgency=low
+
+  * Added bmake/*/rules files with libf: target for linux_ppc and hurd
+    (closes: 187669).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue,  8 Apr 2003 19:23:35 -0400
+
+petsc (2.1.5-2) unstable; urgency=low
+
+  * Added -Wl,-rpath -Wl,/usr/lib/mpich/lib/shared/ to MPE_LIB in
+    bmake/*/packages and PETSC_MPI_LIBS in petsc.m4 (closes: #170573).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 18 Mar 2003 10:36:43 -0500
+
+petsc (2.1.5-1) unstable; urgency=low
+
+  * New upstream, patch level 4.
+  * Moved shlib building stuff from bmake/$(PETSC_ARCH)/rules to
+    bmake/common/rules to simplify patch-bmake-rules, put "touch" into
+    debian/rules to make sure ppc and hurd get those files.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 18 Feb 2003 20:21:52 -0500
+
+petsc (2.1.3-8) unstable; urgency=low
+
+  * Upstream patch level 9.
+  * Removed . from end of descriptions (Lintian warning).
+  * Switched from gcc-3.2 and friends to gcc, since it's now gcc-3.2; this will
+    make building dependencies like illuminator easier (closes: #176237).
+  * The -dev package now suggests illuminator-dev (as it should have long since
+    done...).
+  * Updated the Standards-Version.
+  * Changed manpages' sections from 1L to 1 (oops!).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed,  8 Jan 2003 21:25:00 -0500
+
+petsc (2.1.3-7) unstable; urgency=low
+
+  * Updated patch-bmake-packages and petsc.m4 to include -lslog with -lmpe for
+    compatibility with new mpich 1.2.4-10 package.
+  * Put mpich version in Build-Depends and rules' mpi substvar setting.
+  * Made shlibs explicitly indicate this version or newer.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 20 Dec 2002 13:09:16 -0500
+
+petsc (2.1.3-6) unstable; urgency=low
+
+  * New petsc.m4 with libraries, broken for lam though (see PETSC_MPI_LIBS).
+  * The new petsc.m4 depends on math-blaslapack.m4, which is also included.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon, 21 Oct 2002 21:53:39 -0400
+
+petsc (2.1.3-5) unstable; urgency=low
+
+  * Commented "make clean" in clean: rule (closes: #160240).
+  * Removed lapack99-dev from build-depends since it doesn't exist on ARM;
+    maybe this will actually work with gcc-3.0-built lapack on alpha?
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 10 Sep 2002 00:06:01 +0000
+
+petsc (2.1.3-4) unstable; urgency=low
+
+  * Added directory handling for /usr/share/aclocal in case that dir isn't
+    provided by any other package.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Sun, 08 Sep 2002 08:12:01 +0000
+
+petsc (2.1.3-3) unstable; urgency=low
+
+  * Upstream patch level 6.
+  * Uses gcc-3.2 and g77-3.2 for shared libg2c.
+  * Okay, in this one the shared mpich libs should actually work (except
+    libmpe, which breaks IA-64 and HPPA when I add $(PETSC_EXTERNAL_LIB) to the
+    shlib linking command in bmake/rules).
+  * Removed ${linear-algebra} and xlibs from petsc2.1.3 deps because they
+    should be auto-detected by dh_shlibdeps (as should libg2c0).
+  * New patch system should simplify future upgrades.
+  * Put lapack99-dev as preferred lapack-dev in -dev package's dependencies.
+  * Added petsc.m4 to -dev package (closes: #160042).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Sun, 08 Sep 2002 07:16:28 +0000
+
+petsc (2.1.3-2) unstable; urgency=low
+
+  * New version built against shared mpich in unstable, no other changes yet.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 20 Jun 2002 21:45:14 +0000
+
+petsc (2.1.3-1.woody.1) testing; urgency=low
+
+  * Special release for Woody, built against its libs, etc.
+  * Several significant updates vs. 2.1.1.30-1, previous woody version, as
+    mentioned below.
+  * Put lapack99-dev as preferred lapack-dev in Build-Depends because it
+    actually works on Alpha, unlike all other lapack2-dev Providers -- see bug
+    149834.
+  * Commented shlib building in linux_alpha_dec subarch because I still can't
+    make it work, one other small fix to that arch's petscconf.h.  (Note: this
+    does not affect any uploaded Debian binary packages, just the option to
+    build source with PETSC_ARCH=linux_alpha_dec which uses the non-free HPaq
+    compilers for Alpha.)
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 18 Jun 2002 19:09:33 -0400
+
+petsc (2.1.3-1) unstable; urgency=low
+
+  * New upstream major release.
+  * Moved to Priority: extra because dependency mpich is there.
+  * In includes, using EXTERN_C_BEGIN and _END from petsc.h instead of the
+    whole #ifdef business; I think this will work better and be easier to port
+    forward.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue,  4 Jun 2002 13:29:40 -0400
+
+petsc (2.1.2-2) unstable; urgency=low
+
+  * Upstream patch level 8.
+  * Removed ${PETSC_EXTERNAL_LIB_BASIC} from shlib linking, to get rid of
+    non-PIC stuff in shlibs (closes: #142647).  This cuts the size of the shlib
+    package in half, and some individual libs by a factor of ten!
+  * Reinstated MPE on alpha and IA-64 since this wasn't the cause of the
+    problem.
+  * Because first thing broke auto linear-algebra shlib deps, put them in rules
+    by hand.  (Incidentally, fixes a lintian problem with lapack deps...)
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Sun, 12 May 2002 12:23:00 -0400
+
+petsc (2.1.2-1) unstable; urgency=low
+
+  * New upstream major release.  Package name no longer includes patch level,
+    to avoid repeated upload of 99.99% identical .orig.tar.gz.
+  * Upstream patch level 6.
+  * Removed MPE support for linux_alpha and derivatives to fix IA-64
+    PIC/non-PIC mix in shlibs (workaround for #142647).
+  * Added #ifdef __cplusplus extern "C" { } etc. to headers so C++ building
+    works, removed note from README.Debian. (closes: #137978)
+  * Other minor updates to README.Debian.
+  * Changed library linking to -lblas2 -llapack2 to support /etc/alternatives
+    symlinks in packages providing blas2-dev.
+  * Removed -assume no2underscores from linux_alpha_dec/variables so fortran
+    might *really* work on this subarch this time (though not shlibs)...
+  * Removed empty file deleter for examples src.tar.gz.
+  * Added package homepage link to readme.html
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon,  6 May 2002 21:32:41 -0400
+
+petsc (2.1.1.30-1) unstable; urgency=low
+
+  * New upstream patch release(s).
+  * Changed xlib6g-dev to xlibs-dev in -dev Depends (overlooked last time).
+  * Changed atlas2-base-dev | blas-dev and atlas2-base-dev | lapack-dev (in
+    rules) to blas2-dev and lapack2-dev in -dev Depends, and also Build-Depends
+    now that they exist.
+  * In bmake/linux_alpha_dec/variables, added SYMLINK, changed cc to ccc,
+    disabled shared libs because they don't work), removed fortran junk from
+    C_SYS_LIB, removed rpath, added PETSC_HAVE_FORTRAN_UNDERSCORE_UNDERSCORE to
+    bmake/linux_alpha_dec/petscconf.h, so that "subarch" works again.
+  * Added debian/packagename directory removal to clean target for -dec and
+    -lam alternative support.
+  * Removed potato mpich dir names from bmake/*/packages.
+  * Added a note on C++ "libraries" to README.Debian.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 15 Mar 2002 00:04:49 -0500
+
+petsc (2.1.1.21-1) unstable; urgency=low
+
+  * New upstream patch release(s).
+  * Changed xlib6g-dev to xlibs-dev in Build-Depends (breaking build on potato,
+    though that hasn't worked for some time) (closes: #130521).
+  * Removed atlas so it might get into testing
+  * Added symlinks in -doc package so .h.html links work (closes: #130522).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Sat,  9 Feb 2002 19:34:55 -0500
+
+petsc (2.1.1.16-1) unstable; urgency=low
+
+  * New upstream patch release(s!) (closes: #130407).
+  * Fixed double semicolon in line 67 of src/sys/src/viewer/impls/draw/drawv.c.
+  * Switched atlas2-base-dev and blas-dev, lapack-dev dependency order for
+    ${linear-algebra-dev} where set in rules line 267 (closes: #129427).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 22 Jan 2002 18:44:27 -0500
+
+petsc (2.1.1.8-1) unstable; urgency=low
+
+  * New upstream 2.1.1 package (closes: #126092)
+  * Build-Depends on "atlas2-base-dev | blas-dev, atlas2-base-dev lapack-dev"
+    instead of atlas2-base-dev so it will build on all architectures.
+  * Changed default linear-algebra-dev substvar to "atlas2-base-dev | blas-dev,
+    atlas2-base-dev | lapack-dev" so -dev will install on all arches.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 11 Jan 2002 13:10:26 -0500
+
+petsc (2.1.0-4) unstable; urgency=low
+
+  * Build-depends on atlas2-base-dev since that works for PPC now.
+  * Also added "gcc |", "g77 |" and "| lam3-dev" to Build-Depends.
+  * Added petsc-c and petsc-fortran substvars so petsc2.1.0-dev depends on the
+    appropriate compilers (closes: #111446).
+  * Changed DH_COMPAT to 3 and removed petsc2.1.0.postinst.in since that
+    postinst is auto-generated now.
+  * Fixed bmake/linux_alpha_dec files so that "platform" works!
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 13 Nov 2001 20:55:35 -0500
+
+petsc (2.1.0-3) unstable; urgency=low
+
+  * Removed unneeded stuff from Build-Depends.
+  * Corrected bmake/*/base.site BLASLAPACK_LIB (closes: #105873).
+  * Added man pages for petscarch and mpirun.lam (closes: #86677).
+  * Removed "linear-algebra" substvar since the proper shlib dep should be
+    dragged in by the using package (but left mpi because mpich and lam-runtime
+    are not dragged in).
+  * Removed -dev's c-shell dependency since petscarch is a dummy sh script.
+  * Because lam changed mpirun_lam to mpirun.lam, I changed mpirun.lam to
+    mpirun_lam.
+  * Harmonized descriptions of petsc-dev and petsc-dbg (closes: #109572).
+  * Removed references to the obsolete -examples package from docs/faq.html.
+  * Updated standards version.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 29 Aug 2001 20:08:57 -0400
+
+petsc (2.1.0-2) unstable; urgency=low
+
+  * Removed obsolete "Local Variables:" from the bottom of this file.
+  * Changed #define to typedef for Scalar in petscmath.h (closes: #97633).
+  * Changed pdf link to pdf.gz because the pdf is compressed, and moved
+    /usr/include/petsc/(*/)*.h.html from -dev to -doc (closes: #98729).
+  * Changed -examples' Depends: -dev to Recommends:.
+  * Put all examples minus their documentation into a src.tar.gz file,
+    shrinking petsc2.1.0-examples' installed-size from 7835K to 455K!  Updated
+    README.Debian accordingly.
+  * At that size, there's really no longer a reason for separate
+    petsc2.1.0-examples, so I'm merging it into -doc.
+  * Changed atlas2-dev dependencies to atlas-dev, removed lapack from deps
+    (except on PPC).
+  * Removed libc6-dev from Build-Depends.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 10 Jul 2001 14:37:58 -0400
+
+petsc (2.1.0-1) unstable; urgency=low
+
+  * New upstream release!
+  * No more C++ ifdefs in headers (lots of work, will replace them with better
+    C++ headers in the future).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Sun, 15 Apr 2001 22:12:36 -0400
+
+petsc (2.0.29-6) unstable; urgency=low
+
+  * Versioned depends for petsc-dev and petsc-dbg.
+  * Got rid of Replaces and Conflicts since they were only in unstable.
+  * Made alternative petsc2.0.29-dbg packages provide petsc2.0.29-dbg.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 23 Mar 2001 00:13:46 -0500
+
+petsc (2.0.29-5) unstable; urgency=low
+
+  * D'oh!  The control file had "Adam Powell" vs. "Adam C. Powell, IV".  So the
+    last upload was marked as NMU, though all previous upload had this problem.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 20 Mar 2001 08:31:14 -0500
+
+petsc (2.0.29-4) unstable; urgency=low
+
+  * Added a fake manpage symlink for mpirun.lam.
+  * Changed the double-colon clean target in bmake/common to
+    single-colon. (Closes: #85770)
+  * Removed PPC-only status of lapack-dev build-dep. (Closes: #85771)
+  * Made PLogFlops macro in include/petsclog.h always give zero. (Closes:
+    #85821)
+  * Made timestepping work matrix-free in src/ts/impls/implicit/beuler/beuler.c
+    and cn/cn.c. (Closes: #86073)
+  * Added mvs to debian/rules clean target to preserve src/fortran/custom/TAGS.
+  * Added link from readme.html to README.Debian.
+  * Corrected MPE_LIB typo in bmake/*/base.site.
+  * Made petsc2.0.29-dbg suggest petsc-dbg.
+  * Hundreds of new documentation corrections, particularly in
+    docs/manual/manual.html, also bmake/base_variables.defs.
+  * Updated variable names at the bottom of this changelog for new dpkg-dev-el.
+  * Updated -dev Depends adding "csh |" to c-shell.
+  * Removed those diffs in examples makefiles which involve comparisons with
+    empty files (empty files are removed because of policy), replaced with
+    "if [ -s ...]",
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 13 Mar 2001 00:25:10 -0500
+
+petsc (2.0.29-3) unstable; urgency=low
+
+  * Removed hyphen from package names between petsc and version.
+  * Made these hyphen-less packages replace and conflict with old packages
+    (for the benefit of testing/unstable users, will remove before release).
+  * Added petsc-dev and petsc-dbg virtual packages which depend on the latest
+    version of devel and debug packages.
+  * Changed /usr/lib subdirectory names from e.g. petsc-2.0.29 to
+    petscdir/2.0.29 so all installed versions are within a single dir.
+    (Closes: #81096)
+  * Added m68k, mips, hppa and sparc "support" by making petscarch return
+    linux_ppc for those arches; also ia64 returns linux_alpha, and arm and
+    mipsel should work with the linux default.  Problem: ATLAS BLAS support is
+    not used for any 32-bit BE arch, since it is not currently available on PPC
+    (gcc bug, -funroll-all-loops is broken).
+  * Using PETSC_ARCH=linux_alpha_dec adds -dec to package names, subdir names,
+    alternatives symlinks, and shared library sonames; and modifies substvars
+    for linear algebra dependencies.
+  * Added lam MPI alternative using PETSC_MPI buildtime variable, which (if
+    used) adds -lam to the same things as -dec is added to above; and modifies
+    substvars for mpi and mpi-dev dependencies. (Closes: #82040)
+  * Added alternatives symlink to mpirun.lam scripts to pull in the right
+    options. (Closes: #82041)
+  * Revised README.Debian for new package names, new lam build alternatives,
+    and a note on /etc/alternatives symlinks.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri,  2 Feb 2001 16:18:09 -0500
+
+petsc (2.0.29-2) unstable; urgency=low
+
+  * Made Depends: arch-specific since PPC depends on lapack(-dev), others on
+    atlas(-dev).
+  * Made all internal dependencies require the same source version.
+  * Added another lib path to MPI_LIBS in bmake/*/base.site so it builds on
+    mpich 1.2.0 as well as 1.1.2 (i.e. woody as well as potato).
+  * It should now successfully build with PETSC_ARCH=linux_alpha_dec.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 28 Nov 2000 22:10:01 -0500
+
+petsc (2.0.29-1) unstable; urgency=low
+
+  * New upstream release.
+  * Added material to README.Debian.
+  * Removed lapack and lapack-dev dependencies since they are part of the atlas
+    packages.
+  * Made petscarch manpage symlink via /etc/alternatives.
+  * Changed `pwd` to $(CURDIR) in rules.
+  * Eliminated empty files in -examples package.
+  * New maintainer email address.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon,  6 Nov 2000 21:01:56 -0500
+
+petsc (2.0.28.2-7) unstable; urgency=low
+
+  * Fixed MPI_INCLUDES in bmake/*/base.site so petsc works with lam2-dev
+    installed.
+  * Added MPE support, since we're depending on mpich.
+  * Fixed a bug which eliminated the petscarch manpage, now it's there again.
+  * Greatly simplified .files for -examples and -dbg.
+
+ -- Adam C. Powell, IV (24) <hazelsct@mit.edu>  Wed, 27 Sep 2000 22:58:10 -0400
+
+petsc (2.0.28.2-6) unstable; urgency=low
+
+  * First upload (Closes: #72073)
+  * Changed description in control file so first line fits in one line.
+  * Added language to README.Debian to make it clearer people should file bug
+    reports which I'll forward upstream.
+  * Added debhelper to Build-Depends.
+  * Changed /usr/share/doc/petsc-2.0.28-examples/src to examples with a symlink
+    from src to get rid of lintian errors.
+
+ -- Adam C. Powell, IV (24) <hazelsct@mit.edu>  Thu, 21 Sep 2000 16:21:25 -0400
+
+petsc (2.0.28.2-5) unstable; urgency=low
+
+  * Added a hyphen to the binary package names for consistency with e.g. the
+    /usr/lib/petsc alternatives symlink.
+  * Symlinked bmake/$(PETSC_ARCH)/*.h to include/ so one can use
+    #include <petsc/petscdefs.h> or <petsc/petscfix.h>
+  * Removed extraneous directories from debian/tmp so they don't show up in the
+    -dev package.
+
+ -- Adam C. Powell, IV (24) <hazelsct@mit.edu>  Sun, 17 Sep 2000 23:50:40 -0400
+
+petsc (2.0.28.2-4) unstable; urgency=low
+
+  * Added linux_ppc to petscarch script and bmake directory.
+  * Symlinked libO_c++ to libO and libg_c++ to libg so C++ should work.
+  * Added -m parameter to dh_makeshlibs so it gets the library version right.
+  * Removed bmake/$(PETSC_ARCH)/buildtest for good!
+  * Added README.Debian file for the -dev package.
+  * Added undocumented.7.gz symlink for petscarch fake manpage.
+
+ -- Adam C. Powell, IV (24) <hazelsct@mit.edu>  Wed,  6 Sep 2000 17:05:48 -0400
+
+petsc (2.0.28.2-3) unstable; urgency=low
+
+  * Made three files in debian/ auto-generate because they're architecture-
+    dependent.
+
+ -- Adam C. Powell, IV (24) <hazelsct@mit.edu>  Wed, 30 Aug 2000 07:07:37 -0400
+
+petsc (2.0.28.2-2) unstable; urgency=low
+
+  * Incorporated new linux_alpha and linux_alpha_dec bmake subdirs from
+    upstream (not yet public).
+  * Renamed binary packages to include version number.
+  * Changed main petsc directory to /usr/lib/petsc-2.0.28.
+  * Moved most files (includes, non-shared libs, petscarch) into that
+    directory, with the exception of -doc and -examples files in /usr/share.
+  * /etc/alternatives master link created to link /usr/lib/petsc to
+    petsc-2.0.28, and lots of slaves for /usr/include/petsc and
+    /usr/lib/libpetscX.so and same .a's.
+  * Changed library version numbers from 1 to 2.0.28.
+  * Explicitly depends on mpich now (not mpi) because I can't get lam to work.
+
+ -- Adam C. Powell, IV (24) <hazelsct@mit.edu>  Tue, 29 Aug 2000 18:18:20 -0400
+
+petsc (2.0.28.2-1) unstable; urgency=low
+
+  * Initial Release.
+  * Currently depends on mpi, but I don't know whether lam will work, or
+    whether it depends on which mpi petsc is built with.
+  * Currently depends on atlas, will change to blas/lapack if anyone complains.
+  * Assumes little endian for now (after all, everyone knows Linux is just
+    for Intel :-), I'll have to fix that.
+
+ -- Adam C. Powell, IV (24) <hazelsct@mit.edu>  Sun,  6 Aug 2000 01:25:48 -0600

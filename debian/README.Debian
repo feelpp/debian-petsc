@@ -1,0 +1,122 @@
+
+                      PETSc Debian Package Description
+                      --------------------------------
+
+For up-to-date information about the package, its issues, and future plans,
+please see: http://lyre.mit.edu/~powell/petsc.html .  You can also look there
+for old versions of the package, in case you need to build something against a
+2.0.28 or 2.1.0 release (I keep the last package for each upstream version).
+
+This is upstream version 3.0.0.  I'm no longer including the upstream patch
+level in the Debian version number to minimize wasteful redistribution of
+99.99% identical .orig.tar.gz files for each release.
+
+INTRODUCTION
+
+This source package is distributed in five binary packages: the shared
+libraries are in libpetsc3.0.0; header files, static libraries, the petscarch
+and mpirun_lam scripts and important files for building examples are in
+libpetsc3.0.0-dev, this also sets up various alternatives links; debugging
+static libraries are in libpetsc3.0.0-dbg; extensive documentation and source
+code from "tests" and "tutorials" directories are in petsc3.0.0-doc.
+
+With libpetsc3.0.0-dev installed, you can build programs against it two ways:
+
+     1. Standard build convention: use -I/usr/include/petsc for headers and
+	link to optimized libraries in /usr/lib, so your resulting binaries
+	will only depend on libpetsc3.0.0.  To link against the static
+	debugging libs in libpetsc3.0.0-dbg, just set LD_LIBRARY_PATH to
+	/usr/lib/petsc/lib/libg/`petscarch`.
+     2. PETSc build convention: adapt a makefile from one of their tests or
+	tutorial directories and build with make PETSC_DIR=/usr/lib/petsc
+	PETSC_ARCH=`petscarch` PETSC_LIB_DIR=$PETSC_DIR/$PETSC_ARCH/lib .
+
+Of these, the latter is probably the easier one, as it automatically sets up
+all of the include paths and library linkages for PETSc and its various
+dependencies.
+
+EXAMPLES
+
+For your testing convenience, petsc3.0.0-doc comes with the source code of
+the full PETSc test and tutorial suite.  Just do:
+
+	tar xzf /usr/share/doc/petsc3.0.0-doc/src.tar.gz
+
+then cd src, and use the PETSc build convention make command above with target
+testexamples or testfortran (add _uni to the target name for single-processor
+operation).  This will build and run the entire suite.  Then choose an
+appropriate example to modify for your own purposes, and you're off.
+
+NOTE: not all of the examples work!  If one fails for you, please try to patch
+it to make it work; you can often use a similar example in the same directory
+to do this.  You may be able to get some help from the upstream maintainers for
+this, see the homepage for details, but the examples do not seem to be
+consistently maintained.  If you file a bug report because of a failed example,
+I will forward it upstream and leave it open until it's fixed, but can't
+promise I'll try to fix it.
+
+REPORTING BUGS and BUILDING FROM SOURCE
+
+Also, upstream does not maintain old versions of PETSc.  If you have trouble
+with the version in stable, you should file a bug report (see
+http://bugs.debian.org/ for directions), then try building the version in
+unstable, by adding an unstable source code line to /etc/apt/sources.list, then
+typing (as a normal user):
+
+	fakeroot apt-get --compile source petsc
+
+This will download and build everything for you.
+
+If the unstable version does not solve your problem, or the customizations
+below don't meet your needs, file a bug report, and if your problem is not
+specific to the Debian package then I'll forward it upstream.
+
+CUSTOMIZING THE DEBIAN PETSC PACKAGE
+
+There are several ways to customize this package:
+
+1) To use a different PETSC_ARCH variable (e.g. linux_alpha_dec to use the
+   Compaq compilers on an Alpha), do:
+
+	apt-get source petsc
+	cd petsc-3.0.0
+	fakeroot debian/rules PETSC_ARCH=linux_alpha_dec binary
+
+   Note that this will only build architecture-dependent packages, and with
+   different package names, different directory names (still linked from
+   /usr/lib/petsc), and different shared library sonames.
+
+2) You can also build the libraries to use the lam or mpich MPI implementation
+   instead of the default openmpi by setting PETSC_MPI=lam (or mpich) and
+   PETSC_MPI_DIR=/usr/lib/lam (or mpich, or mpich-mpd or mpich-shmem) and build
+   as with the Compaq compilers above.  This will also result in only
+   architecture-dependent packages with different package names, directory
+   names, and shared library sonames.
+
+NOTE ON SYMBOLIC LINKS THROUGH /etc/alternatives
+
+Because it is possible and often desirable to have multiple versions of PETSc
+installed at the same time, this package facilitates the process by setting up
+multiple symbolic links through /etc/alternatives.  To switch the default
+symbolic links from one installed version to another, you should use the
+update-alternatives Debian script (in /usr/sbin).  For example:
+
+	update-alternatives --display petsc
+
+will show you the current symlink from /usr/lib/petsc, and all of its
+accompanying "slave" links, as well as all of the other possible values of
+links if you have multiple versions of PETSc installed.  The command:
+
+	update-alternatives --config petsc
+
+(as root) will present you with a list of possible values to choose from, if
+there is more than one.
+
+To maintain the consistency of the master and slave symlinks, it is very
+important that you use the Debian update-alternatives command, and do NOT
+hand-edit the symbolic links yourself.
+
+Note that individual users can build against non-default installed versions of
+PETSc simply by setting the PETSC_DIR environment variable to the target
+directory instead of /usr/lib/petsc, for example to build against the lam
+version a user might set PETSC_DIR=/usr/lib/petscdir/3.0.0-lam .

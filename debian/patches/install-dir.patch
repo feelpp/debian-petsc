@@ -1,0 +1,25 @@
+Add PETSC_INSTALL_DIR variable to differentiate local package installation
+directory $(CURDIR)/debian/tmp from installed location.
+
+--- petsc-3.0.0/src/sys/utils/makefile~	2009-03-20 10:36:47.000000000 -0400
++++ petsc-3.0.0/src/sys/utils/makefile	2009-03-20 10:37:49.000000000 -0400
+@@ -1,7 +1,7 @@
+ 
+ ALL: lib 
+ 
+-CFLAGS    = -DPETSC_LIB_DIR='"${INSTALL_DIR}/lib"' -DPETSC_ARCH='"${PETSC_ARCH}"' -DPETSC_DIR='"${PETSC_DIR}"' 
++CFLAGS    = -DPETSC_LIB_DIR='"${PETSC_INSTALL_DIR}/lib"' -DPETSC_ARCH='"${PETSC_ARCH}"' -DPETSC_DIR='"${PETSC_DIR}"' 
+ FFLAGS    =
+ SOURCEC	  = arch.c fhost.c fuser.c memc.c mpiu.c psleep.c sortd.c sorti.c \
+             str.c sortip.c pbarrier.c pdisplay.c ctable.c psplit.c \
+--- petsc-3.0.0/src/sys/objects/makefile~	2009-03-20 10:36:47.000000000 -0400
++++ petsc-3.0.0/src/sys/objects/makefile	2009-03-20 10:38:05.000000000 -0400
+@@ -3,7 +3,7 @@
+ 
+ CFLAGS    =
+ FFLAGS    =
+-CPPFLAGS  = -DPETSC_LIB_DIR='"${INSTALL_DIR}/lib"'
++CPPFLAGS  = -DPETSC_LIB_DIR='"${PETSC_INSTALL_DIR}/lib"'
+ SOURCEC	  = gcomm.c   gtype.c   olist.c    pname.c  tagm.c \
+             destroy.c gcookie.c inherit.c options.c pgname.c prefix.c init.c \
+ 	    pinit.c ptype.c state.c aoptions.c mpinit.c subcomm.c zope.c
