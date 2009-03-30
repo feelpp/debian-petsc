@@ -1,3 +1,9 @@
+petsc (3.0.0.dfsg-1) unstable; urgency=low
+
+  * New tarball without non-free bin/win32fe.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 27 Mar 2009 16:15:33 -0400
+
 petsc (3.0.0-1) unstable; urgency=low
 
   * New upstream release (closes: #509692).
