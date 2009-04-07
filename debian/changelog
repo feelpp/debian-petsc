@@ -1,3 +1,9 @@
+petsc (3.0.0.dfsg-2) unstable; urgency=low
+
+  * debian/rules: use --prefix=/usr in configure
+
+ -- Christophe Prud'homme <prudhomm@debian.org>  Tue, 07 Apr 2009 13:35:36 +0200
+
 petsc (3.0.0.dfsg-1) unstable; urgency=low
 
   * New tarball without non-free bin/win32fe.
