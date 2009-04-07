@@ -59,7 +59,7 @@ clean:
 # These are needed for -lam, -dec and -contrib builds
 	rm -rf debian/lib$(PETSC_NAME) debian/lib$(PETSC_NAME)-dev \
 	  debian/lib$(PETSC_NAME)-dbg
-	mv thetags TAGS
+	-mv thetags TAGS
 	rm -f build* install* debian/*.substvars $(ARCH_GENERATED_FILES)
 # This is commented because it really doesn't do anything useful for us
 # (removes example executables, so what?)
