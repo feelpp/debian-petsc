@@ -101,7 +101,7 @@ build-arch: patch
 	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
-	  --with-hypre=1 --with-hypre-dir=/usr 
+	  --with-hypre=1 --with-hypre-dir=/usr
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-debug PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION)
@@ -115,7 +115,7 @@ build-arch: patch
 	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
-	  --with-hypre=1 --with-hypre-dir=/usr 
+	  --with-hypre=1 --with-hypre-dir=/usr
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-opt PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) \
@@ -401,3 +401,7 @@ binary-arch: install-arch
 binary:		binary-indep binary-arch
 
 .PHONY: binary binary-arch binary-indep clean checkroot
+
+
+get-orig-source:
+	uscan --force-download  --verbose
