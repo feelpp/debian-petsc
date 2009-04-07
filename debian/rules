@@ -92,6 +92,7 @@ build-indep: patch
 # Build optimized libs second so files are consistent with optimized.
 build-arch: patch
 	PETSC_DIR=$(CURDIR) ./config/configure.py \
+          --prefix=/usr \
 	  --with-debugging=1 \
 	  --useThreads 0 --with-mpi-dir=$(PETSC_MPI_DIR) \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
@@ -106,6 +107,7 @@ build-arch: patch
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-debug PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION)
 	PETSC_DIR=$(CURDIR) ./config/configure.py --with-shared --with-dynamic\
+          --prefix=/usr \
 	  --with-debugging=0 \
 	  --useThreads 0 --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
