@@ -51,10 +51,10 @@ ARCH_GENERATED_FILES=debian/lib$(PETSC_NAME)-dev.docs \
 
 clean:
 	dh_testdir
-	if [ -e patch ]; then \
+	-if [ -e patch ]; then \
 	  debian/rules unpatch; \
 	fi
-	mv TAGS thetags
+	-mv TAGS thetags
 	dh_clean
 # These are needed for -lam, -dec and -contrib builds
 	rm -rf debian/lib$(PETSC_NAME) debian/lib$(PETSC_NAME)-dev \
