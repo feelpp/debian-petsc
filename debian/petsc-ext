@@ -5,9 +5,9 @@
 if [ "$1" = "linux_alpha_dec" ]; then
 	echo -n "-dec";
 fi
-if [ "$2" != "openmpi" ]; then
-	echo -n "-$2";
-fi
+#if [ "$2" != "openmpi" ]; then
+#	echo -n "-$2";
+#fi
 if [ "$3" != "main" ]; then
 	echo -n "-$3";
 fi

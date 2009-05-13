@@ -28,23 +28,23 @@ AC_DEFUN([MATH_BLASLAPACK_CHECKS],[
 	dnl AC_CHECK_LIB(blas_mp, dgemm_, BLAS_LIBS="-mp -lblas_mp", [
 	dnl   AC_CHECK_LIB(f77blas, dgemm_, BLAS_LIBS="-lf77blas -latlas", [
 	dnl     LIBS="$aLIBS $MATH_LIBS $FLIBS"])])
-	dnl For now, I don't see a need for mixed blas/lapack-3 or
-	dnl blas-3/lapack, only blas-3/lapack-3 and blas/lapack are checked.
+	dnl For now, I don't see a need for mixed blas/lapackgf-3 or
+	dnl blas-3gf/lapack, only blas-3gf/lapackgf-3 and blas/lapack are checked.
 	AC_F77_LIBRARY_LDFLAGS
 	aLIBS="$LIBS"
 	LIBS="$aLIBS $FLIBS"
-	AC_CHECK_LIB(blas-3, dgemm_, [
-		HAVE_BLAS="yes" LIBS="-lblas-3 $aLIBS $MATH_LIBS $FLIBS"
-		AC_CHECK_LIB(lapack-3, dgetrf_,
+	AC_CHECK_LIB(blas-3gf, dgemm_, [
+		HAVE_BLAS="yes" LIBS="-lblas-3gf $aLIBS $MATH_LIBS $FLIBS"
+		AC_CHECK_LIB(lapackgf-3, dgetrf_,
 			HAVE_LAPACK="yes"
-			BLASLAPACK_LIBS="-lblas-3 -llapack-3 $FLIBS",
+			BLASLAPACK_LIBS="-lblas-3gf -llapackgf-3 $FLIBS",
 			dnl This second check is for Debian woody on Alpha
-			LIBS="$aLIBS -lblas-3 /lib/libgcc_s.so.1 $MATH_LIBS $FLIBS"
-			AC_CHECK_LIB(lapack-3, dgetri_,
+			LIBS="$aLIBS -lblas-3gf /lib/libgcc_s.so.1 $MATH_LIBS $FLIBS"
+			AC_CHECK_LIB(lapackgf-3, dgetri_,
 				HAVE_LAPACK="yes"
-				BLASLAPACK_LIBS="-lblas-3 -llapack-3 /lib/libgcc_s.so.1 $MATH_LIBS $FLIBS",
+				BLASLAPACK_LIBS="-lblas-3gf -llapackgf-3 /lib/libgcc_s.so.1 $MATH_LIBS $FLIBS",
 				HAVE_LAPACK="no"
-				BLASLAPACK_LIBS="-lblas-3 $MATH_LIBS $FLIBS"))], [
+				BLASLAPACK_LIBS="-lblas-3gf $MATH_LIBS $FLIBS"))], [
 		AC_CHECK_LIB(blas, dgemv_, [
 			HAVE_BLAS="yes" LIBS="$aLIBS -lblas $MATH_LIBS $FLIBS"
 			AC_CHECK_LIB(lapack, dgetrf_,

@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 3.0), quilt, python (>= 2.2), gfortran, \
  libx11-dev, mpi-default-dev, mpi-default-bin, \
  libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so, \
  libsuitesparse-dev (>= 3.1.0-2), libsuperlu3-dev (>= 3.0+20070106), \
- libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), \
+ libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libscotch-dev, \
  babel-1.2.0 | babel [!arm !alpha !s390 !hppa], \
  libsidl-dev (>= 1.2.0.dfsg-5) [!arm !alpha !s390 !hppa]
 Homepage: http://www.mcs.anl.gov/petsc
@@ -17,7 +17,7 @@ Homepage: http://www.mcs.anl.gov/petsc
 Package: libpetsc3.0.0-dev
 Architecture: any
 Section: libdevel
-Depends: libpetsc3.0.0 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), ${babel-dev}
+Depends: libpetsc3.0.0 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libscotch-dev, ${babel-dev}
 Suggests: petsc-dev (= ${binary:Version}), libpetsc3.0.0-dbg (= ${binary:Version}), petsc3.0.0-doc (= ${binary:Version}), libluminate-dev
 Provides: petsc3.0.0-dev
 Description: Static libraries, shared links, header files for PETSc
@@ -51,7 +51,7 @@ Description: Shared libraries for version 3.0.0 of PETSc
 
 Package: libpetsc3.0.0-dbg
 Architecture: any
-Section: libdevel
+Section: debug
 Depends: libpetsc3.0.0-dev (= ${binary:Version})
 Suggests: petsc-dbg (= ${binary:Version})
 Provides: petsc3.0.0-dbg

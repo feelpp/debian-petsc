@@ -1,6 +1,8 @@
+upstream-p5.patch
 build-debug-nowarn.patch
 build-no-rpath.patch
 docs.patch
 example-src-dir.patch
 install-dir.patch
 lib-versions.patch
+scotch-shlib.patch

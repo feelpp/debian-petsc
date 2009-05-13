@@ -102,11 +102,13 @@ build-arch: patch
 	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
-	  --with-hypre=1 --with-hypre-dir=/usr
+	  --with-hypre=1 --with-hypre-dir=/usr \
+	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
+	  --with-scotch-lib=/usr/lib/libscotch.so
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-debug PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION)
-	PETSC_DIR=$(CURDIR) ./config/configure.py --with-shared --with-dynamic\
+	PETSC_DIR=$(CURDIR) ./config/configure.py --with-shared \
           --prefix=/usr \
 	  --with-debugging=0 \
 	  --useThreads 0 --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
@@ -117,7 +119,9 @@ build-arch: patch
 	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
-	  --with-hypre=1 --with-hypre-dir=/usr
+	  --with-hypre=1 --with-hypre-dir=/usr \
+	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
+	  --with-scotch-lib=/usr/lib/libscotch.so
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-opt PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) \

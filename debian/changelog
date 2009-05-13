@@ -1,8 +1,19 @@
-petsc (3.0.0.dfsg-2) unstable; urgency=low
+petsc (3.0.0.dfsg-3) unstable; urgency=low
 
   * debian/rules: use --prefix=/usr in configure
 
  -- Christophe Prud'homme <prudhomm@debian.org>  Tue, 07 Apr 2009 13:35:36 +0200
+
+petsc (3.0.0.dfsg-2) unstable; urgency=low
+
+  * Removed different package name by MPI implementation (closes: #522764).
+  * Upstream patch level 5.
+  * Updated petsc.m4 to 3.0.0 conventions (closes: #528408).
+  * Updated math-blaslapack.m4 adding gf to library names.
+  * Added Scotch linkage.
+  * Stopped trying to build "dynamic" libraries (closes: #522287).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 13 May 2009 09:32:01 -0400
 
 petsc (3.0.0.dfsg-1) unstable; urgency=low
 

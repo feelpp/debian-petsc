@@ -1,0 +1,13 @@
+--- petsc-3.0.0.dfsg/config/PETSc/packages/Scotch.py~	2008-12-19 15:17:05.000000000 -0500
++++ petsc-3.0.0.dfsg/config/PETSc/packages/Scotch.py	2009-05-12 16:28:11.000000000 -0400
+@@ -10,8 +10,8 @@
+     PETSc.package.Package.__init__(self, framework)
+     self.download     = ['http://gforge.inria.fr/frs/download.php/10715/scotch_5.1.2.tar.gz']
+     self.downloadname = self.name.lower()
+-    self.liblist      = [['libscotch.a','libscotcherr.a'],
+-                         ['libscotch.a','libscotcherr.a','librt.a']]
++    self.liblist      = [['libscotch.so','libscotcherr.so'],
++                         ['libscotch.so','libscotcherr.so','librt.so']]
+     self.functions    = ['SCOTCH_archBuild']
+     self.includes     = ['scotch.h']
+     self.complex      = 0
