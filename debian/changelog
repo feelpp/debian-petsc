@@ -1,8 +1,26 @@
+petsc (3.0.0.dfsg-4) unstable; urgency=low
+
+  * Removed --prefix=/usr because it interfered with building shared libs
+    (closes: #529303).
+  * Fixed buggy petsc.m4 (closes: #528788).
+  * Disabled sprng linkage because the functions PETSc needs aren't in the
+    Debian sprng package, pending closure of bug 529295.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Mon, 18 May 2009 15:15:30 -0400
+
 petsc (3.0.0.dfsg-3) unstable; urgency=low
 
+  [Christophe Prud'homme]
   * debian/rules: use --prefix=/usr in configure
 
- -- Christophe Prud'homme <prudhomm@debian.org>  Tue, 07 Apr 2009 13:35:36 +0200
+  [Adam C. Powell, IV]
+  * Removed superfluous scotch shlib patch (closes: #528556).
+  * Added fftw and sprng linkages (closes: #515165), but actually doing fftw
+    will require it to use MPI (bug 528680).
+  * Changed PETSC_ARCH to DEB_BUILD_GNU_SYSTEM, and included it in configure
+    command (closes: #528619).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 14 May 2009 13:54:25 -0400
 
 petsc (3.0.0.dfsg-2) unstable; urgency=low
 

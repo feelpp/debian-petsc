@@ -18,7 +18,7 @@
 # to build PETSc libs with the Compaq compilers, though that requires at least:
 # libots, cpml-ev(5|6), cxml-ev(5|6), cfal and ccc.
 # Note that only arch-dependent .debs are generated when you do this.
-PETSC_ARCH=linux-gnu
+PETSC_ARCH=$(DEB_BUILD_GNU_SYSTEM)
 
 # This defines the MPI implementation to use.  The easiest way to override this
 # default is to specify while building, e.g. debian/rules PETSC_MPI=lam binary.
@@ -60,13 +60,13 @@ clean:
 	rm -rf debian/lib$(PETSC_NAME) debian/lib$(PETSC_NAME)-dev \
 	  debian/lib$(PETSC_NAME)-dbg
 	if [ -f thetags ]; then mv thetags TAGS; fi
-	rm -f build* install* debian/*.substvars $(ARCH_GENERATED_FILES)
+	rm -f build* install* debian/*.substvars debian/extemp $(ARCH_GENERATED_FILES)
 # This is commented because it really doesn't do anything useful for us
 # (removes example executables, so what?)
 # make PETSC_ARCH=$(PETSC_ARCH) PETSC_DIR=$(CURDIR) clean
 # These probably should be removed by `make clean' but aren't
 	rm -f `find . -name \*.o -print` `find . -name \*.pyc -print`
-	rm -rf lib debian/extemp
+	rm -rf lib $(PETSC_ARCH)-c-debug $(PETSC_ARCH)-c-opt configure.log
 
 patch:
 	if [ ! -e $@ ]; then \
@@ -77,7 +77,7 @@ patch:
 unpatch:
 	if [ -e patch ]; then \
 	  QUILT_PATCHES=debian/patches quilt pop -a -R || test $$? = 2; \
-	  rm -f patch
+	  rm -rf patch .pc; \
 	fi
 
 # PETSc uses the "doctext" program to convert html docs to man pages, which
@@ -91,9 +91,8 @@ build-indep: patch
 # With debugging=1, only static libraries are generated.
 # Build optimized libs second so files are consistent with optimized.
 build-arch: patch
-	PETSC_DIR=$(CURDIR) ./config/configure.py \
-          --prefix=/usr \
-	  --with-debugging=1 \
+	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-debug \
+	  ./config/configure.py --with-debugging=1 \
 	  --useThreads 0 --with-mpi-dir=$(PETSC_MPI_DIR) \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
@@ -105,12 +104,14 @@ build-arch: patch
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
 	  --with-scotch-lib=/usr/lib/libscotch.so
+#	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
+#	  --with-sprng-lib=/usr/lib/libsprng.so
+#	  --with-fftw=1 --with-fftw-dir=/usr
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-debug PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION)
-	PETSC_DIR=$(CURDIR) ./config/configure.py --with-shared \
-          --prefix=/usr \
-	  --with-debugging=0 \
+	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-opt \
+	  ./config/configure.py --with-shared --with-debugging=0 \
 	  --useThreads 0 --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
@@ -122,6 +123,9 @@ build-arch: patch
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
 	  --with-scotch-lib=/usr/lib/libscotch.so
+#	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
+#	  --with-sprng-lib=/usr/lib/libsprng.so
+#	  --with-fftw=1 --with-fftw-dir=/usr
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-opt PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) \

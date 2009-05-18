@@ -14,7 +14,7 @@ A few minor Debian customizations of the HTML PETSc documentation.
  
      The PETSc maintenance e-mail,&nbsp; <a href="mailto:petsc-maint@mcs.anl.gov">petsc-maint@mcs.anl.gov</a>,&nbsp; is intended for
      users to 
-@@ -79,7 +82,7 @@
+@@ -84,7 +87,7 @@
  
        <li>OS Version: (run <em>uname -a</em> to get the version number) </li>
  

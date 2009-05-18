@@ -43,7 +43,7 @@ AC_DEFUN([PETSC_CHECKS],[
 
 	dnl Basic check
 	aLIBS="$LIBS"
-	LIBS="$aLIBS $PETSC_LIBDIR $PETSC_EXTERNAL_LIBS"
+	LIBS="$aLIBS -L$PETSC_LIBDIR $PETSC_EXTERNAL_LIBS"
 	AC_CHECK_LIB(petsc, PetscPrintf, ,
 		AC_MSG_ERROR("PETSc libraries not found"))
 	LIBS="$aLIBS"
