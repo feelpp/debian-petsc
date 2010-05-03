@@ -1,3 +1,10 @@
+petsc (3.0.0.dfsg-5) unstable; urgency=medium
+
+  * Removed babel-1.2.0 and libsidl-dev from Build-Depends (closes: #529485).
+  * Patched conf/rules to remove double-colon clean target (closes: #533342).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 16 Jun 2009 14:49:31 -0400
+
 petsc (3.0.0.dfsg-4) unstable; urgency=low
 
   * Removed --prefix=/usr because it interfered with building shared libs
