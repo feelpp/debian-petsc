@@ -91,10 +91,13 @@ build-indep: patch
 # With debugging=1, only static libraries are generated.
 # Build optimized libs second so files are consistent with optimized.
 build-arch: patch
+	cp -fp /usr/share/automake-1.11/config.* config/configarch/
+	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-debug \
 	  ./config/configure.py --with-debugging=1 \
-	  --useThreads 0 --with-mpi-dir=$(PETSC_MPI_DIR) \
-	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
+	  --useThreads 0 --with-fortran-interfaces=1 \
+	  --with-mpi-dir=$(PETSC_MPI_DIR) \
+	  --with-blas-lib=-lblas-3gf --with-lapack-lib=-llapackgf-3 \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
 	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
@@ -112,8 +115,9 @@ build-arch: patch
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION)
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-opt \
 	  ./config/configure.py --with-shared --with-debugging=0 \
-	  --useThreads 0 --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
-	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
+	  --useThreads 0 --with-fortran-interfaces=1 \
+	  --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
+	  --with-blas-lib=-lblas-3gf --with-lapack-lib=-llapackgf-3 \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
 	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
@@ -184,6 +188,8 @@ install-arch: build-arch
 	cp -p include/*.h include/*.hh \
 	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include
 	cp -p include/finclude/*.h include/finclude/*.h90 \
+	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/finclude
+	cp -a include/finclude/ftn-auto include/finclude/ftn-custom \
 	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/finclude
 	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/adic
 	cp -p include/adic/*.h \

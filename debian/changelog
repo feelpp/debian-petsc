@@ -1,3 +1,26 @@
+petsc (3.0.0.dfsg-6) unstable; urgency=low
+
+  * Updated to patch level 10.
+  * Added ftn-auto and ftn-custom finclude subdirectories (closes: #534211).
+  * Added --with-fortran-interfaces=1 to configure calls (closes: #529970).
+  * Removed Fortran libs from BLASLAPACK_LIBS in the case of Debian's special
+    blas/lapack libraries in math-blaslapack.m4 (closes: #559119).
+  * Changed BLAS/LAPACK links to Debian's special 3gf libs.
+  * Added Build-Depends on automake, and copy its config.guess and config.sub
+    to replace PETSc's versions of those.
+  * Versioned dependency on debhelper.
+  * Bumped Standards-Version.
+  * Added README.source.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 11 Dec 2009 19:35:42 -0500
+
+petsc (3.0.0.dfsg-5.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * fix Build-Depends for new dpkg-dev (closes: #535276) 
+
+ -- Rene Engelhard <rene@debian.org>  Fri, 03 Jul 2009 10:31:34 +0200
+
 petsc (3.0.0.dfsg-5) unstable; urgency=medium
 
   * Removed babel-1.2.0 and libsidl-dev from Build-Depends (closes: #529485).

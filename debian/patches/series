@@ -1,4 +1,5 @@
 upstream-p5.patch
+upstream-p10.patch
 build-debug-nowarn.patch
 build-no-rpath.patch
 docs.patch

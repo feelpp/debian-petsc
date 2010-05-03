@@ -42,9 +42,9 @@ AC_DEFUN([MATH_BLASLAPACK_CHECKS],[
 			LIBS="$aLIBS -lblas-3gf /lib/libgcc_s.so.1 $MATH_LIBS $FLIBS"
 			AC_CHECK_LIB(lapackgf-3, dgetri_,
 				HAVE_LAPACK="yes"
-				BLASLAPACK_LIBS="-lblas-3gf -llapackgf-3 /lib/libgcc_s.so.1 $MATH_LIBS $FLIBS",
+				BLASLAPACK_LIBS="-lblas-3gf -llapackgf-3 /lib/libgcc_s.so.1 $MATH_LIBS",
 				HAVE_LAPACK="no"
-				BLASLAPACK_LIBS="-lblas-3gf $MATH_LIBS $FLIBS"))], [
+				BLASLAPACK_LIBS="-lblas-3gf $MATH_LIBS"))], [
 		AC_CHECK_LIB(blas, dgemv_, [
 			HAVE_BLAS="yes" LIBS="$aLIBS -lblas $MATH_LIBS $FLIBS"
 			AC_CHECK_LIB(lapack, dgetrf_,
