@@ -1,0 +1,26 @@
+#if !defined(__PETSCVERSION_H)
+#define __PETSCVERSION_H
+
+#define PETSC_VERSION_RELEASE    1
+#define PETSC_VERSION_MAJOR      3
+#define PETSC_VERSION_MINOR      1
+#define PETSC_VERSION_SUBMINOR   0
+#define PETSC_VERSION_PATCH      1
+#define PETSC_VERSION_DATE       "Mar, 25, 2010"
+#define PETSC_VERSION_PATCH_DATE "Thu Apr  8 14:16:50 CDT 2010"
+
+#if !defined (PETSC_VERSION_HG)
+#define PETSC_VERSION_HG         "a72848c873413904e3af55111ad18683dbdc9296"
+#endif
+
+#if !defined(PETSC_VERSION_DATE_HG)
+#define PETSC_VERSION_DATE_HG         "Thu Apr 08 14:03:53 2010 -0500"
+#endif
+
+#define PETSC_VERSION_(MAJOR,MINOR,SUBMINOR) \
+  ((PETSC_VERSION_MAJOR == (MAJOR)) &&       \
+   (PETSC_VERSION_MINOR == (MINOR)) &&       \
+   (PETSC_VERSION_SUBMINOR == (SUBMINOR)) && \
+   (PETSC_VERSION_RELEASE  == 1))
+
+#endif

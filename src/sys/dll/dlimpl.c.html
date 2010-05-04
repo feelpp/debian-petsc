@@ -1,0 +1,247 @@
+<center><a href="dlimpl.c">Actual source code: dlimpl.c</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2010-04-08T19:21:04+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<a name="line2">  2: </a><font color="#B22222">/*</font>
+<a name="line3">  3: </a><font color="#B22222">   Low-level routines for managing dynamic link libraries (DLLs).</font>
+<a name="line4">  4: </a><font color="#B22222">*/</font>
+
+<a name="line6"> 6: </a> #include <A href="../../../include/../src/sys/dll/dlimpl.h.html">../src/sys/dll/dlimpl.h</A>
+
+<a name="line8">  8: </a><font color="#B22222">/* XXX Should be done better !!!*/</font>
+<a name="line9">  9: </a><font color="#A020F0">#if !defined(PETSC_HAVE_DYNAMIC_LIBRARIES)</font>
+<a name="line10"> 10: </a><strong><font color="#228B22">#undef PETSC_HAVE_WINDOWS_H</font></strong>
+<a name="line11"> 11: </a><strong><font color="#228B22">#undef PETSC_HAVE_DLFCN_H</font></strong>
+<a name="line12"> 12: </a><font color="#A020F0">#endif</font>
+
+<a name="line14"> 14: </a><font color="#A020F0">#if defined(PETSC_HAVE_WINDOWS_H)</font>
+<a name="line15"> 15: </a><font color="#A020F0">#include &lt;windows.h&gt;</font>
+<a name="line16"> 16: </a><font color="#A020F0">#elif defined(PETSC_HAVE_DLFCN_H)</font>
+<a name="line17"> 17: </a><font color="#A020F0">#include &lt;dlfcn.h&gt;</font>
+<a name="line18"> 18: </a><font color="#A020F0">#endif</font>
+
+<a name="line20"> 20: </a><font color="#A020F0">#if defined(PETSC_HAVE_WINDOWS_H)</font>
+<a name="line21"> 21: </a><font color="#4169E1">typedef HMODULE dlhandle_t;</font>
+<a name="line22"> 22: </a><font color="#4169E1">typedef FARPROC dlsymbol_t;</font>
+<a name="line23"> 23: </a><font color="#A020F0">#elif defined(PETSC_HAVE_DLFCN_H)</font>
+<a name="line24"> 24: </a><font color="#4169E1">typedef void* dlhandle_t;</font>
+<a name="line25"> 25: </a><font color="#4169E1">typedef void* dlsymbol_t;</font>
+<a name="line26"> 26: </a><font color="#A020F0">#else</font>
+<a name="line27"> 27: </a><font color="#4169E1">typedef void* dlhandle_t;</font>
+<a name="line28"> 28: </a><font color="#4169E1">typedef void* dlsymbol_t;</font>
+<a name="line29"> 29: </a><font color="#A020F0">#endif</font>
+
+<a name="line33"> 33: </a><font color="#B22222">/*@C</font>
+<a name="line34"> 34: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscDLOpen.html#PetscDLOpen">PetscDLOpen</A> - </font>
+<a name="line35"> 35: </a><font color="#B22222">@*/</font>
+<a name="line36"> 36: </a><strong><font color="#4169E1"><a name="PetscDLOpen"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscDLOpen.html#PetscDLOpen">PetscDLOpen</A>(const char name[],int flags,PetscDLHandle *handle)</font></strong>
+<a name="line37"> 37: </a>{
+<a name="line38"> 38: </a>  int        dlflags1,dlflags2;
+<a name="line39"> 39: </a>  dlhandle_t dlhandle;
+
+
+<a name="line45"> 45: </a>  dlflags1 = 0;
+<a name="line46"> 46: </a>  dlflags2 = 0;
+<a name="line47"> 47: </a>  dlhandle = (dlhandle_t) 0;
+<a name="line48"> 48: </a>  *handle  = (PetscDLHandle) 0;
+
+<a name="line50"> 50: </a>  <font color="#B22222">/* </font>
+<a name="line51"> 51: </a><font color="#B22222">     --- LoadLibrary ---</font>
+<a name="line52"> 52: </a><font color="#B22222">  */</font>
+<a name="line53"> 53: </a><font color="#A020F0">#if defined(PETSC_HAVE_WINDOWS_H) &amp;&amp; defined(PETSC_HAVE_LOADLIBRARY)</font>
+<a name="line54"> 54: </a>  dlhandle = LoadLibrary(name);
+<a name="line55"> 55: </a>  <font color="#4169E1">if</font> (!dlhandle) {
+<a name="line56"> 56: </a><font color="#A020F0">#if defined(PETSC_HAVE_GETLASTERROR)</font>
+<a name="line58"> 58: </a>    DWORD erc;
+<a name="line59"> 59: </a>    char  *buff = NULL;
+<a name="line60"> 60: </a>    erc = GetLastError();
+<a name="line61"> 61: </a>    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
+<a name="line62"> 62: </a>                  NULL,erc,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),(LPSTR)&amp;buff,0,NULL);
+<a name="line63"> 63: </a>    <A href="../../../docs/manualpages/Sys/PetscError.html#PetscError">PetscError</A>(__LINE__,__FUNCT__,__FILE__,__SDIR__,PETSC_ERR_FILE_OPEN,1,
+<a name="line64"> 64: </a>                      <font color="#666666">"Unable to open dynamic library:\n  %s\n  Error message from LoadLibrary() %s\n"</font>,name,buff);
+<a name="line65"> 65: </a>    LocalFree(buff);
+<a name="line66"> 66: </a>    <A href="../../../docs/manualpages/Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(ierr);
+<a name="line67"> 67: </a><font color="#A020F0">#else</font>
+<a name="line68"> 68: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_FILE_OPEN,<font color="#666666">"Unable to open dynamic library:\n  %s\n  Error message from LoadLibrary() %s\n"</font>,name,<font color="#666666">"unavailable"</font>);
+<a name="line69"> 69: </a><font color="#A020F0">#endif</font>
+<a name="line70"> 70: </a>  }
+
+<a name="line72"> 72: </a>  <font color="#B22222">/* </font>
+<a name="line73"> 73: </a><font color="#B22222">     --- dlopen ---</font>
+<a name="line74"> 74: </a><font color="#B22222">  */</font>
+<a name="line75"> 75: </a><font color="#A020F0">#elif defined(PETSC_HAVE_DLFCN_H) &amp;&amp; defined(PETSC_HAVE_DLOPEN)</font>
+<a name="line76"> 76: </a>  <font color="#B22222">/*</font>
+<a name="line77"> 77: </a><font color="#B22222">      Mode indicates symbols required by symbol loaded with dlsym() </font>
+<a name="line78"> 78: </a><font color="#B22222">     are only loaded when required (not all together) also indicates</font>
+<a name="line79"> 79: </a><font color="#B22222">     symbols required can be contained in other libraries also opened</font>
+<a name="line80"> 80: </a><font color="#B22222">     with dlopen()</font>
+<a name="line81"> 81: </a><font color="#B22222">  */</font>
+<a name="line82"> 82: </a><font color="#A020F0">#if defined(PETSC_HAVE_RTLD_LAZY)</font>
+<a name="line83"> 83: </a>  dlflags1 = RTLD_LAZY;
+<a name="line84"> 84: </a><font color="#A020F0">#endif</font>
+<a name="line85"> 85: </a><font color="#A020F0">#if defined(PETSC_HAVE_RTLD_NOW)</font>
+<a name="line86"> 86: </a>  <font color="#4169E1">if</font> (flags &amp; PETSC_DL_NOW)
+<a name="line87"> 87: </a>    dlflags1 = RTLD_NOW;
+<a name="line88"> 88: </a><font color="#A020F0">#endif</font>
+<a name="line89"> 89: </a><font color="#A020F0">#if defined(PETSC_HAVE_RTLD_GLOBAL)</font>
+<a name="line90"> 90: </a>  dlflags2 = RTLD_GLOBAL;
+<a name="line91"> 91: </a><font color="#A020F0">#endif</font>
+<a name="line92"> 92: </a><font color="#A020F0">#if defined(PETSC_HAVE_RTLD_LOCAL)</font>
+<a name="line93"> 93: </a>  <font color="#4169E1">if</font> (flags &amp; PETSC_DL_LOCAL)
+<a name="line94"> 94: </a>    dlflags2 = RTLD_LOCAL;
+<a name="line95"> 95: </a><font color="#A020F0">#endif</font>
+<a name="line96"> 96: </a><font color="#A020F0">#if defined(PETSC_HAVE_DLERROR)</font>
+<a name="line97"> 97: </a>  dlerror(); <font color="#B22222">/* clear any previous error */</font>
+<a name="line98"> 98: </a><font color="#A020F0">#endif</font>
+<a name="line99"> 99: </a>  dlhandle = dlopen(name,dlflags1|dlflags2);
+<a name="line100">100: </a>  <font color="#4169E1">if</font> (!dlhandle) {
+<a name="line101">101: </a><font color="#A020F0">#if defined(PETSC_HAVE_DLERROR)</font>
+<a name="line102">102: </a>    const char *errmsg = dlerror();
+<a name="line103">103: </a><font color="#A020F0">#else</font>
+<a name="line104">104: </a>    const char *errmsg = <font color="#666666">"unavailable"</font>;
+<a name="line105">105: </a><font color="#A020F0">#endif</font>
+<a name="line106">106: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_FILE_OPEN,<font color="#666666">"Unable to open dynamic library:\n  %s\n  Error message from dlopen() %s\n"</font>,name,errmsg)
+<a name="line107">107: </a>  }
+
+<a name="line109">109: </a>  <font color="#B22222">/* </font>
+<a name="line110">110: </a><font color="#B22222">     --- unimplemented ---</font>
+<a name="line111">111: </a><font color="#B22222">  */</font>
+<a name="line112">112: </a><font color="#A020F0">#else</font>
+<a name="line113">113: </a>  <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP_SYS, <font color="#666666">"Cannot use dynamic libraries on this platform"</font>);
+<a name="line114">114: </a><font color="#A020F0">#endif</font>
+
+<a name="line116">116: </a>  *handle = (PetscDLHandle) dlhandle;
+
+<a name="line118">118: </a>  <font color="#4169E1">return</font>(0);
+<a name="line119">119: </a>}
+
+
+<a name="line124">124: </a><font color="#B22222">/*@C</font>
+<a name="line125">125: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscDLClose.html#PetscDLClose">PetscDLClose</A> - </font>
+<a name="line126">126: </a><font color="#B22222">@*/</font>
+<a name="line127">127: </a><strong><font color="#4169E1"><a name="PetscDLClose"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscDLClose.html#PetscDLClose">PetscDLClose</A>(PetscDLHandle *handle)</font></strong>
+<a name="line128">128: </a>{
+<a name="line129">129: </a>  dlhandle_t dlhandle;
+
+
+<a name="line134">134: </a>  dlhandle = (dlhandle_t) *handle;
+
+<a name="line136">136: </a>  <font color="#B22222">/* </font>
+<a name="line137">137: </a><font color="#B22222">     --- FreeLibrary ---</font>
+<a name="line138">138: </a><font color="#B22222">  */</font>
+<a name="line139">139: </a><font color="#A020F0">#if defined(PETSC_HAVE_WINDOWS_H)</font>
+<a name="line140">140: </a><font color="#A020F0">#if defined(PETSC_HAVE_FREELIBRARY)</font>
+<a name="line141">141: </a>  <font color="#4169E1">if</font> (FreeLibrary(dlhandle) == 0) {
+<a name="line142">142: </a><font color="#A020F0">#if defined(PETSC_HAVE_GETLASTERROR)</font>
+<a name="line143">143: </a>    char  *buff = NULL;
+<a name="line144">144: </a>    DWORD erc   = GetLastError();
+<a name="line145">145: </a>    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
+<a name="line146">146: </a>                  NULL,erc,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),(LPSTR)&amp;buff,0,NULL);
+<a name="line147">147: </a>    <A href="../../../docs/manualpages/Sys/PetscErrorPrintf.html#PetscErrorPrintf">PetscErrorPrintf</A>(<font color="#666666">"Error closing dynamic library:\n  Error message from FreeLibrary() %s\n"</font>,buff);
+<a name="line148">148: </a>    LocalFree(buff);
+<a name="line149">149: </a><font color="#A020F0">#else</font>
+<a name="line150">150: </a>    <A href="../../../docs/manualpages/Sys/PetscErrorPrintf.html#PetscErrorPrintf">PetscErrorPrintf</A>(<font color="#666666">"Error closing dynamic library:\n  Error message from FreeLibrary() %s\n"</font>,<font color="#666666">"unavailable"</font>);
+<a name="line151">151: </a><font color="#A020F0">#endif</font>
+<a name="line152">152: </a>  }
+<a name="line153">153: </a><font color="#A020F0">#endif </font><font color="#B22222">/* !PETSC_HAVE_FREELIBRARY */</font><font color="#A020F0"></font>
+
+<a name="line155">155: </a>  <font color="#B22222">/* </font>
+<a name="line156">156: </a><font color="#B22222">     --- dclose --- </font>
+<a name="line157">157: </a><font color="#B22222">  */</font>
+<a name="line158">158: </a><font color="#A020F0">#elif defined(PETSC_HAVE_DLFCN_H)</font>
+<a name="line159">159: </a><font color="#A020F0">#if defined(PETSC_HAVE_DLCLOSE)</font>
+<a name="line160">160: </a><font color="#A020F0">#if defined(PETSC_HAVE_DLERROR)</font>
+<a name="line161">161: </a>  dlerror(); <font color="#B22222">/* clear any previous error */</font>
+<a name="line162">162: </a><font color="#A020F0">#endif</font>
+<a name="line163">163: </a>  <font color="#4169E1">if</font> (dlclose(dlhandle) &lt; 0) {
+<a name="line164">164: </a><font color="#A020F0">#if defined(PETSC_HAVE_DLERROR)</font>
+<a name="line165">165: </a>    const char *errmsg = dlerror();
+<a name="line166">166: </a><font color="#A020F0">#else</font>
+<a name="line167">167: </a>    const char *errmsg = <font color="#666666">"unavailable"</font>;
+<a name="line168">168: </a><font color="#A020F0">#endif</font>
+<a name="line169">169: </a>    <A href="../../../docs/manualpages/Sys/PetscErrorPrintf.html#PetscErrorPrintf">PetscErrorPrintf</A>(<font color="#666666">"Error closing dynamic library:\n  Error message from dlclose() %s\n"</font>, errmsg);
+<a name="line170">170: </a>  }
+<a name="line171">171: </a><font color="#A020F0">#endif </font><font color="#B22222">/* !PETSC_HAVE_DLCLOSE */</font><font color="#A020F0"></font>
+
+<a name="line173">173: </a>  <font color="#B22222">/* </font>
+<a name="line174">174: </a><font color="#B22222">     --- unimplemented --- </font>
+<a name="line175">175: </a><font color="#B22222">  */</font>
+<a name="line176">176: </a><font color="#A020F0">#else</font>
+<a name="line177">177: </a>  <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP_SYS, <font color="#666666">"Cannot use dynamic libraries on this platform"</font>);
+<a name="line178">178: </a><font color="#A020F0">#endif</font>
+
+<a name="line180">180: </a>  *handle = <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+
+<a name="line182">182: </a>  <font color="#4169E1">return</font>(0);
+<a name="line183">183: </a>}
+
+
+<a name="line188">188: </a><font color="#B22222">/*@C</font>
+<a name="line189">189: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscDLSym.html#PetscDLSym">PetscDLSym</A> - </font>
+<a name="line190">190: </a><font color="#B22222">@*/</font>
+<a name="line191">191: </a><strong><font color="#4169E1"><a name="PetscDLSym"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscDLSym.html#PetscDLSym">PetscDLSym</A>(PetscDLHandle handle,const char symbol[],void **value)</font></strong>
+<a name="line192">192: </a>{
+<a name="line193">193: </a>  dlhandle_t dlhandle;
+<a name="line194">194: </a>  dlsymbol_t dlsymbol;
+
+
+<a name="line200">200: </a>  dlhandle = (dlhandle_t) 0;
+<a name="line201">201: </a>  dlsymbol = (dlsymbol_t) 0;
+
+<a name="line203">203: </a>  *value   = (void *) 0;
+
+<a name="line205">205: </a>  <font color="#B22222">/* </font>
+<a name="line206">206: </a><font color="#B22222">     --- GetProcAddress ---</font>
+<a name="line207">207: </a><font color="#B22222">  */</font>
+<a name="line208">208: </a><font color="#A020F0">#if defined(PETSC_HAVE_WINDOWS_H) </font>
+<a name="line209">209: </a><font color="#A020F0">#if defined(PETSC_HAVE_GETPROCADDRESS)</font>
+<a name="line210">210: </a>  <font color="#4169E1">if</font> (handle != <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<a name="line211">211: </a>    dlhandle = (dlhandle_t) handle;
+<a name="line212">212: </a>  <font color="#4169E1">else</font>
+<a name="line213">213: </a>    dlhandle = (dlhandle_t) GetCurrentProcess();
+<a name="line214">214: </a>  dlsymbol = (dlsymbol_t) GetProcAddress(dlhandle,symbol);
+<a name="line215">215: </a><font color="#A020F0">#if defined(PETSC_HAVE_SETLASTERROR)</font>
+<a name="line216">216: </a>  SetLastError((DWORD)0); <font color="#B22222">/* clear any previous error */</font>
+<a name="line217">217: </a><font color="#A020F0">#endif</font>
+<a name="line218">218: </a><font color="#A020F0">#endif </font><font color="#B22222">/* !PETSC_HAVE_GETPROCADDRESS */</font><font color="#A020F0"></font>
+
+<a name="line220">220: </a>  <font color="#B22222">/* </font>
+<a name="line221">221: </a><font color="#B22222">     --- dlsym ---</font>
+<a name="line222">222: </a><font color="#B22222">  */</font>
+<a name="line223">223: </a><font color="#A020F0">#elif defined(PETSC_HAVE_DLFCN_H)</font>
+<a name="line224">224: </a><font color="#A020F0">#if defined(PETSC_HAVE_DLSYM)</font>
+<a name="line225">225: </a>  <font color="#4169E1">if</font> (handle != <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<a name="line226">226: </a>    dlhandle = (dlhandle_t) handle;
+<a name="line227">227: </a>  <font color="#4169E1">else</font>
+<a name="line228">228: </a>    dlhandle = (dlhandle_t) 0;
+<a name="line229">229: </a><font color="#A020F0">#if defined(PETSC_HAVE_DLERROR)</font>
+<a name="line230">230: </a>  dlerror(); <font color="#B22222">/* clear any previous error */</font>
+<a name="line231">231: </a><font color="#A020F0">#endif</font>
+<a name="line232">232: </a>  dlsymbol = (dlsymbol_t) dlsym(dlhandle,symbol);
+<a name="line233">233: </a><font color="#A020F0">#if defined(PETSC_HAVE_DLERROR)</font>
+<a name="line234">234: </a>  dlerror(); <font color="#B22222">/* clear any previous error */</font>
+<a name="line235">235: </a><font color="#A020F0">#endif</font>
+<a name="line236">236: </a><font color="#A020F0">#endif </font><font color="#B22222">/* !PETSC_HAVE_DLSYM */</font><font color="#A020F0"></font>
+
+<a name="line238">238: </a>  <font color="#B22222">/* </font>
+<a name="line239">239: </a><font color="#B22222">     --- unimplemented --- </font>
+<a name="line240">240: </a><font color="#B22222">  */</font>
+<a name="line241">241: </a><font color="#A020F0">#else</font>
+<a name="line242">242: </a>  <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP_SYS, <font color="#666666">"Cannot use dynamic libraries on this platform"</font>);
+<a name="line243">243: </a><font color="#A020F0">#endif</font>
+
+<a name="line245">245: </a>  *value = *((void**)&amp;dlsymbol);
+
+<a name="line247">247: </a>  <font color="#4169E1">return</font>(0);
+<a name="line248">248: </a>}
+</pre>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<center><a href="petscdmmod.F">Actual source code: petscdmmod.F</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2010-04-08T19:52:27+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_USE_FORTRAN_MODULES</font></strong>
+
+<a name="line3">  3: </a>        module petscao
+<a name="line4">  4: </a>        use petscmat
+<a name="line5">  5: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscao.h"</font><font color="#A020F0"></font>
+<a name="line6">  6: </a>        end module
+
+<a name="line8">  8: </a>        module petscdadef
+<a name="line9">  9: </a>        use petscmatdef
+<a name="line10"> 10: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscda.h"</font><font color="#A020F0"></font>
+<a name="line11"> 11: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/ftn-custom/petscdadef.h90"</font><font color="#A020F0"></font>
+<a name="line12"> 12: </a>        end module
+
+<a name="line14"> 14: </a>        module petscda
+<a name="line15"> 15: </a>        use petscdadef
+<a name="line16"> 16: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscda.h90"</font><font color="#A020F0"></font>
+<a name="line17"> 17: </a>        end module
+
+<a name="line19"> 19: </a>        module petscmeshdef
+<a name="line20"> 20: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscmesh.h"</font><font color="#A020F0"></font>
+<a name="line21"> 21: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/ftn-custom/petscmeshdef.h90"</font><font color="#A020F0"></font>
+<a name="line22"> 22: </a>        end module
+
+<a name="line24"> 24: </a>        module petscmesh
+<a name="line25"> 25: </a>        use petscmeshdef
+<a name="line26"> 26: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscmesh.h90"</font><font color="#A020F0"></font>
+<a name="line27"> 27: </a>        end module
+</pre>
+</body>
+
+</html>
