@@ -39,7 +39,7 @@ PETSC_EXT=$(shell chmod +x debian/petsc-ext && debian/petsc-ext $(PETSC_ARCH) $(
 
 # PETSC_VERSION is used for the package names, library sonames, and
 # /usr/lib/petscdir subdirectory names.
-PETSC_VERSION=3.0.0$(PETSC_EXT)
+PETSC_VERSION=3.1$(PETSC_EXT)
 
 # PETSC_NAME is the install dir under /usr/lib and the base for package names
 PETSC_NAME=petsc$(PETSC_VERSION)
@@ -51,9 +51,6 @@ ARCH_GENERATED_FILES=debian/lib$(PETSC_NAME)-dev.docs \
 
 clean:
 	dh_testdir
-	-if [ -e patch ]; then \
-	  debian/rules unpatch; \
-	fi
 	if [ -f TAGS ]; then mv TAGS thetags; fi
 	dh_clean
 # These are needed for -lam, -dec and -contrib builds
@@ -68,45 +65,39 @@ clean:
 	rm -f `find . -name \*.o -print` `find . -name \*.pyc -print`
 	rm -rf lib $(PETSC_ARCH)-c-debug $(PETSC_ARCH)-c-opt configure.log
 
-patch:
-	if [ ! -e $@ ]; then \
-	  QUILT_PATCHES=debian/patches quilt push -a || test $$? = 2; \
-	fi
-	touch $@
-
-unpatch:
-	if [ -e patch ]; then \
+	if [ -d .pc ]; then \
 	  QUILT_PATCHES=debian/patches quilt pop -a -R || test $$? = 2; \
-	  rm -rf patch .pc; \
+	  rm -rf .pc; \
 	fi
 
 # PETSc uses the "doctext" program to convert html docs to man pages, which
 # apparently is open-source and available from
 # http://www.mcs.anl.gov/~gropp/sowing .  When it is Debianized, I'll use it.
-build-indep: patch
+build-indep:
 #	$(MAKE) -C docs PETSC_ARCH=$(PETSC_ARCH) \
 #	 	PETSC_DIR=$(CURDIR)/lib$(PETSC_NAME) manualpages
 	touch $@
 
 # With debugging=1, only static libraries are generated.
 # Build optimized libs second so files are consistent with optimized.
-build-arch: patch
+build-arch:
 	cp -fp /usr/share/automake-1.11/config.* config/configarch/
 	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-debug \
 	  ./config/configure.py --with-debugging=1 \
-	  --useThreads 0 --with-fortran-interfaces=1 \
+	  --useThreads 0 --with-clanguage=C++ --with-fortran-interfaces=1 \
 	  --with-mpi-dir=$(PETSC_MPI_DIR) \
-	  --with-blas-lib=-lblas-3gf --with-lapack-lib=-llapackgf-3 \
+	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
-	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
-	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
-	  --with-scotch-lib=/usr/lib/libscotch.so
+	  --with-scotch-lib=/usr/lib/libscotch.so \
+	  --with-hdf5=1 --with-hdf5-dir=/usr
+#	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
+#	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
 #	  --with-sprng-lib=/usr/lib/libsprng.so
 #	  --with-fftw=1 --with-fftw-dir=/usr
@@ -115,18 +106,19 @@ build-arch: patch
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION)
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-opt \
 	  ./config/configure.py --with-shared --with-debugging=0 \
-	  --useThreads 0 --with-fortran-interfaces=1 \
+	  --useThreads 0 --with-clanguage=C++ --with-fortran-interfaces=1 \
 	  --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
-	  --with-blas-lib=-lblas-3gf --with-lapack-lib=-llapackgf-3 \
+	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
-	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
-	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
-	  --with-scotch-lib=/usr/lib/libscotch.so
+	  --with-scotch-lib=/usr/lib/libscotch.so \
+	  --with-hdf5=1 --with-hdf5-dir=/usr
+#	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
+#	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
 #	  --with-sprng-lib=/usr/lib/libsprng.so
 #	  --with-fftw=1 --with-fftw-dir=/usr
@@ -243,7 +235,7 @@ install-arch: build-arch
 
 # Depends on install-arch because it creates PETSC_DIR
 install-indep: build-indep install-arch
-ifeq ($(PETSC_VERSION),3.0.0)
+ifeq ($(PETSC_VERSION),3.1)
 # Install header documentation in -doc/include
 	install -d debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/finclude
 	cp -p include/*.html \
@@ -277,10 +269,9 @@ ifeq ($(PETSC_VERSION),3.0.0)
 	  done ; \
 	done
 # I don't know of a way to do this "recursively"
-	rmdir `find debian/petsc3.0.0-doc -empty -type d -print`
-	rmdir `find debian/petsc3.0.0-doc -empty -type d -print`
-	rmdir `find debian/petsc3.0.0-doc -empty -type d -print`
-	rmdir `find debian/petsc3.0.0-doc -empty -type d -print`
+	rmdir `find debian/petsc3.1-doc -empty -type d -print`
+	rmdir `find debian/petsc3.1-doc -empty -type d -print`
+	rmdir `find debian/petsc3.1-doc -empty -type d -print`
 # Install examples & makefiles into temporary directory debian/extemp
 	for TESTDIR in `find src -name tests -print | sed "s/src\///"` \
 	  `find src -name tutorials -print | sed "s/src\///"` benchmarks; \
@@ -302,6 +293,9 @@ ifeq ($(PETSC_VERSION),3.0.0)
 	sed "s/inline//" < src/makefile | grep -v include \
 	  > debian/extemp/src/makefile
 	grep -v \$$Id makefile | grep -v DIRS >> debian/extemp/src/makefile
+	install -d debian/extemp/src/$(PETSC_ARCH)/conf
+	cp -p debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/conf/petscvariables \
+	  debian/extemp/src/$(PETSC_ARCH)/conf/petscvariables
 # Pack debian/extemp/src into src.tar.gz and install
 	cd debian/extemp && tar czf src.tar.gz src
 	mv debian/extemp/src.tar.gz \
@@ -324,7 +318,7 @@ install: install-arch install-indep
 	touch install
 
 binary-indep: install-indep
-ifeq ($(PETSC_VERSION),3.0.0)
+ifeq ($(PETSC_VERSION),3.1)
 	dh_testdir -i
 	dh_testroot -i
 	dh_installdirs -i
@@ -347,10 +341,10 @@ binary-arch: install-arch
 	dh_testroot -a
 # Customize control etc. using package names (maybe with -lam or -dec)
 	mv -f debian/control debian/control.in
-	sed "s/3.0.0/$(PETSC_VERSION)/" < debian/control.in | \
-	  sed "s/$(PETSC_VERSION)-doc/3.0.0-doc/" | \
-	  sed "s/Provides: $(PETSC_NAME)-dev/Provides: petsc3.0.0-dev/" | \
-	  sed "s/Provides: $(PETSC_NAME)-dbg/Provides: petsc3.0.0-dbg/" \
+	sed "s/3.1/$(PETSC_VERSION)/" < debian/control.in | \
+	  sed "s/$(PETSC_VERSION)-doc/3.1-doc/" | \
+	  sed "s/Provides: $(PETSC_NAME)-dev/Provides: petsc3.1-dev/" | \
+	  sed "s/Provides: $(PETSC_NAME)-dbg/Provides: petsc3.1-dbg/" \
 	  > debian/control
 	if [ "$(DEBIAN_DIST)" = "contrib" ]; then \
 	  sed "s/Section: lib/Section: contrib\/lib/" < debian/control > \
@@ -360,7 +354,7 @@ binary-arch: install-arch
 	for ARCHGEN in $(ARCH_GENERATED_FILES); do \
 	  rm -f $$ARCHGEN ; \
 	  sed "s/petsc_arch/$(PETSC_ARCH)-c-opt/" < \
-	    `echo "$$ARCHGEN.in" | sed "s/$(PETSC_NAME)/petsc3.0.0/"` | \
+	    `echo "$$ARCHGEN.in" | sed "s/$(PETSC_NAME)/petsc3.1/"` | \
 	    sed "s/petsc_ver/$(PETSC_VERSION)/" > $$ARCHGEN; \
 	done
 # Generate substvars for MPI, linear algebra implementations and dist

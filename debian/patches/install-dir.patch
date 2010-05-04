@@ -1,6 +1,9 @@
 Add PETSC_INSTALL_DIR variable to differentiate local package installation
 directory $(CURDIR)/debian/tmp from installed location.
 
+Seems to be obsolete in PETSc 3.1, these two makefiles don't have PETSC_LIB_DIR
+defines.
+
 --- petsc-3.0.0/src/sys/utils/makefile~	2009-03-20 10:36:47.000000000 -0400
 +++ petsc-3.0.0/src/sys/utils/makefile	2009-03-20 10:37:49.000000000 -0400
 @@ -1,7 +1,7 @@

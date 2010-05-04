@@ -1,3 +1,19 @@
+petsc (3.1.dfsg-1) unstable; urgency=low
+
+  * New upstream release, patch level 1 (closes: #576023).
+  * Removed bin/win32fe/win32fe.exe and win32feutils.dll, docs/manual.pdf and
+    src/tops/twopager.pdf from upstream due to lack of source.
+  * Changed BLAS and LAPACK links to -lblas and -llapack (closes: #577875).
+  * PETSc brings this into -dev package config files (closes: #579578).
+  * Added --with-clanguage=C++ to configure commands (closes: #576799).
+  * Added HDF5 support (closes: #566920).
+  * Changed to source format 3.0 (quilt).
+  * Bumped Standards-Version.
+  * Added ${misc:Depends} to all package Depends fields.
+  * Disabled SuperLU because this PETSc version doesn't seem compatible.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Fri, 30 Apr 2010 19:08:52 -0400
+
 petsc (3.0.0.dfsg-6) unstable; urgency=low
 
   * Updated to patch level 10.

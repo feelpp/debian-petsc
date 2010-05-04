@@ -4,20 +4,21 @@ Priority: extra
 Maintainer: Debian Scientific Computing Team <pkg-scicomp-devel@lists.alioth.debian.org>
 Uploaders: "Adam C. Powell, IV" <hazelsct@debian.org>
 XS-DM-Upload-Allowed: yes
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Build-Depends: debhelper (>= 5.0), quilt, python (>= 2.2), gfortran, automake,
  libx11-dev, mpi-default-dev, mpi-default-bin,
  libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so,
- libsuitesparse-dev (>= 3.1.0-2), libsuperlu3-dev (>= 3.0+20070106),
- libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libscotch-dev
+ libsuitesparse-dev (>= 3.1.0-2),
+ libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libscotch-dev,
+ libhdf5-mpi-dev
 Homepage: http://www.mcs.anl.gov/petsc
 
-Package: libpetsc3.0.0-dev
+Package: libpetsc3.1-dev
 Architecture: any
 Section: libdevel
-Depends: libpetsc3.0.0 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libscotch-dev, ${babel-dev}
-Suggests: petsc-dev (= ${binary:Version}), libpetsc3.0.0-dbg (= ${binary:Version}), petsc3.0.0-doc (= ${binary:Version}), libluminate-dev
-Provides: petsc3.0.0-dev
+Depends: libpetsc3.1 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libscotch-dev, ${babel-dev}, ${misc:Depends}
+Suggests: petsc-dev (= ${binary:Version}), libpetsc3.1-dbg (= ${binary:Version}), petsc3.1-doc (= ${binary:Version}), libluminate-dev
+Provides: petsc3.1-dev
 Description: Static libraries, shared links, header files for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of
@@ -29,17 +30,17 @@ Description: Static libraries, shared links, header files for PETSc
 Package: petsc-dev
 Architecture: all
 Section: libdevel
-Depends: libpetsc3.0.0-dev
+Depends: libpetsc3.1-dev, ${misc:Depends}
 Suggests: petsc-dbg
-Description: Empty package depending on latest PETSc development package
+Description: Meta-package depending on latest PETSc development package
  This package will always depend on the most recent version of petscX-dev
  (X=version), so if you install it then you will get upgrades automatically.
 
-Package: libpetsc3.0.0
+Package: libpetsc3.1
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, ${mpi}
-Description: Shared libraries for version 3.0.0 of PETSc
+Depends: ${shlibs:Depends}, ${mpi}, ${misc:Depends}
+Description: Shared libraries for version 3.1 of PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of
  scientific applications modeled by partial differential equations.  It employs
@@ -47,12 +48,12 @@ Description: Shared libraries for version 3.0.0 of PETSc
  scientific applications, as well as various papers and talks, demonstrate the
  features of the PETSc libraries.
 
-Package: libpetsc3.0.0-dbg
+Package: libpetsc3.1-dbg
 Architecture: any
 Section: debug
-Depends: libpetsc3.0.0-dev (= ${binary:Version})
+Depends: libpetsc3.1-dev (= ${binary:Version}), ${misc:Depends}
 Suggests: petsc-dbg (= ${binary:Version})
-Provides: petsc3.0.0-dbg
+Provides: petsc3.1-dbg
 Description: Static debugging libraries for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of
@@ -61,10 +62,11 @@ Description: Static debugging libraries for PETSc
  scientific applications, as well as various papers and talks, demonstrate the
  features of the PETSc libraries.
 
-Package: petsc3.0.0-doc
+Package: petsc3.1-doc
 Architecture: all
 Section: doc
-Suggests: libpetsc3.0.0-dev (= ${binary:Version}), illuminator-doc
+Depends: ${misc:Depends}
+Suggests: libpetsc3.1-dev (= ${binary:Version}), illuminator-doc
 Description: Documentation and examples for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of

@@ -1,7 +1,7 @@
 This gets rid of silly warnings about compiling without debugging symbols.
 
---- petsc-3.0.0.orig/config/PETSc/utilities/debugging.py	2006-03-20 16:51:11.000000000 -0500
-+++ petsc-3.0.0/config/PETSc/utilities/debugging.py	2006-04-04 19:27:25.000000000 -0400
+--- petsc-3.1.orig/config/PETSc/utilities/debugging.py	2006-03-20 16:51:11.000000000 -0500
++++ petsc-3.1/config/PETSc/utilities/debugging.py	2006-04-04 19:27:25.000000000 -0400
 @@ -26,17 +26,7 @@
      # should do error checking
      if self.framework.argDB['with-errorchecking']:

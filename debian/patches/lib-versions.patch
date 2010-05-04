@@ -1,8 +1,8 @@
 This changes the shared library name to a versioned one, with a symlink.
 
---- petsc-3.0.0/conf/rules~	2008-12-19 23:48:45.000000000 -0500
-+++ petsc-3.0.0/conf/rules	2009-03-20 10:53:42.000000000 -0400
-@@ -462,8 +462,8 @@
+--- petsc-3.1/conf/rules~	2008-12-19 23:48:45.000000000 -0500
++++ petsc-3.1/conf/rules	2009-03-20 10:53:42.000000000 -0400
+@@ -480,8 +480,8 @@
  deleteshared:
  	@for LIBNAME in ${SHLIBS}; \
  	do \
@@ -13,7 +13,7 @@ This changes the shared library name to a versioned one, with a symlink.
  	done
  	${RM} ${INSTALL_LIB_DIR}/so_locations
  
-@@ -883,7 +883,8 @@
+@@ -890,7 +890,8 @@
  
  shared_linux:
  	-@cd ${SHARED_LIBRARY_TMPDIR}; \

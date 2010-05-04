@@ -1,10 +1,8 @@
-upstream-p5.patch
-upstream-p10.patch
 build-debug-nowarn.patch
 build-no-rpath.patch
 docs.patch
 example-src-dir.patch
-install-dir.patch
+#install-dir.patch
 lib-versions.patch
 sprng-2.patch
 clean-no-double-colon.patch
