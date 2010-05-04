@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>MAT_SOLVER_SUPERLU</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<A NAME="MAT_SOLVER_SUPERLU"><H1>MAT_SOLVER_SUPERLU</H1></A>
+"superlu" - A solver package roviding direct solvers (LU) for sequential matrices  via the external package SuperLU. Use config/configure.py --download-superlu to have PETSc installed with SuperLU
+<P>
+<H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_superlu_ordering &lt;0,1,2,3&gt; </B></TD><TD>- 0: natural ordering, 
+1: MMD applied to A'*A, 
+2: MMD applied to A'+A, 
+3: COLAMD, approximate minimum degree column ordering
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_superlu_iterrefine </B></TD><TD>- have SuperLU do iterative refinement after the triangular solve
+choices: NOREFINE, SINGLE, DOUBLE, EXTRA; default is NOREFINE
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_superlu_printstat </B></TD><TD>- print SuperLU statistics about the factorization
+</TD></TR></TABLE>
+<P>
+Notes: Do not confuse this with <A HREF="../Mat/MAT_SOLVER_SUPERLU_DIST.html#MAT_SOLVER_SUPERLU_DIST">MAT_SOLVER_SUPERLU_DIST</A> which is for parallel sparse solves
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../PC/PCLU.html#PCLU">PCLU</A>, <A HREF="../Mat/MAT_SOLVER_SUPERLU_DIST.html#MAT_SOLVER_SUPERLU_DIST">MAT_SOLVER_SUPERLU_DIST</A>, <A HREF="../Mat/MAT_SOLVER_MUMPS.html#MAT_SOLVER_MUMPS">MAT_SOLVER_MUMPS</A>, <A HREF="../Mat/MAT_SOLVER_SPOOLES.html#MAT_SOLVER_SPOOLES">MAT_SOLVER_SPOOLES</A>, <A HREF="../PC/PCFactorSetMatSolverPackage.html#PCFactorSetMatSolverPackage">PCFactorSetMatSolverPackage</A>(), <A HREF="../Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A>
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/aij/seq/superlu/superlu.c.html#MAT_SOLVER_SUPERLU">src/mat/impls/aij/seq/superlu/superlu.c</A>
+<BR><A HREF="./index.html">Index of all Mat routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>
