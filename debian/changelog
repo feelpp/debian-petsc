@@ -3,8 +3,9 @@ petsc (3.1.dfsg-2) UNRELEASED; urgency=low
   * Patched to have the effect of regenerating config.[guess|sub] so clean is
     cleaner.
   * Added a few more files to the debian/rules clean target.
+  * Added -c-opt to petscvariables directory in examples tarball.
 
- -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 04 May 2010 21:06:30 -0400
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 04 May 2010 21:10:47 -0400
 
 petsc (3.1.dfsg-1) unstable; urgency=low
 

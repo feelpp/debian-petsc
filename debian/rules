@@ -294,9 +294,9 @@ ifeq ($(PETSC_VERSION),3.1)
 	sed "s/inline//" < src/makefile | grep -v include \
 	  > debian/extemp/src/makefile
 	grep -v \$$Id makefile | grep -v DIRS >> debian/extemp/src/makefile
-	install -d debian/extemp/src/$(PETSC_ARCH)/conf
+	install -d debian/extemp/src/$(PETSC_ARCH)-c-opt/conf
 	cp -p debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/conf/petscvariables \
-	  debian/extemp/src/$(PETSC_ARCH)/conf/petscvariables
+	  debian/extemp/src/$(PETSC_ARCH)-c-opt/conf/petscvariables
 # Pack debian/extemp/src into src.tar.gz and install
 	cd debian/extemp && tar czf src.tar.gz src
 	mv debian/extemp/src.tar.gz \
