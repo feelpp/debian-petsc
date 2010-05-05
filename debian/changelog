@@ -1,3 +1,10 @@
+petsc (3.1.dfsg-2) unstable; urgency=low
+
+  * Patched to have the effect of regenerating config.[guess|sub] so clean is
+    cleaner.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 04 May 2010 21:03:27 -0400
+
 petsc (3.1.dfsg-1) unstable; urgency=low
 
   * New upstream release, patch level 1 (closes: #576023).

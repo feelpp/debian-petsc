@@ -1,3 +1,4 @@
+restore-upstream.patch
 build-debug-nowarn.patch
 build-no-rpath.patch
 docs.patch
