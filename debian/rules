@@ -86,7 +86,8 @@ build-arch:
 	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-debug \
 	  ./config/configure.py --with-debugging=1 \
-	  --useThreads 0 --with-clanguage=C++ --with-fortran-interfaces=1 \
+	  --useThreads 0 --with-clanguage=C++ --with-c-support \
+	  --with-fortran-interfaces=1 \
 	  --with-mpi-dir=$(PETSC_MPI_DIR) \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
@@ -107,7 +108,8 @@ build-arch:
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION)
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-opt \
 	  ./config/configure.py --with-shared --with-debugging=0 \
-	  --useThreads 0 --with-clanguage=C++ --with-fortran-interfaces=1 \
+	  --useThreads 0 --with-clanguage=C++ --with-c-support \
+	  --with-fortran-interfaces=1 \
 	  --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
