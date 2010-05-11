@@ -1,9 +1,9 @@
 Source: petsc
 Section: devel
 Priority: extra
-Maintainer: Debian Scientific Computing Team <pkg-scicomp-devel@lists.alioth.debian.org>
+Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: "Adam C. Powell, IV" <hazelsct@debian.org>
-XS-DM-Upload-Allowed: yes
+DM-Upload-Allowed: yes
 Standards-Version: 3.8.4
 Build-Depends: debhelper (>= 5.0), quilt, python (>= 2.2), gfortran, automake,
  libx11-dev, mpi-default-dev, mpi-default-bin,
@@ -11,6 +11,8 @@ Build-Depends: debhelper (>= 5.0), quilt, python (>= 2.2), gfortran, automake,
  libsuitesparse-dev (>= 3.1.0-2),
  libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libscotch-dev,
  libhdf5-mpi-dev
+Vcs-Git: git://git.debian.org/git/debian-science/packages/spooles.git
+Vcs-Browser: http://git.debian.org/?p=debian-science/packages/spooles.git
 Homepage: http://www.mcs.anl.gov/petsc
 
 Package: libpetsc3.1-dev
