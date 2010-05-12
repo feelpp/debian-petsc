@@ -7,7 +7,7 @@ petsc (3.1.dfsg-2) UNRELEASED; urgency=low
   * Added --with-c-support to configure options (closes: #580546).
   * Changed control file to conform to Debian Science Policy Manual.
 
- -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 11 May 2010 14:17:33 -0400
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 11 May 2010 21:04:01 -0400
 
 petsc (3.1.dfsg-1) unstable; urgency=low
 
