@@ -88,7 +88,7 @@ build-indep:
 # With debugging=1, only static libraries are generated.
 # Build optimized libs second so files are consistent with optimized.
 build-arch:
-	echo Using MPI implementation: $(PETSC_MPI) in directory $PETSC_MPI_DIR
+	echo Using MPI implementation $(PETSC_MPI) in directory $(PETSC_MPI_DIR)
 	cp -fp /usr/share/automake-1.11/config.* config/configarch/
 	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-debug \
