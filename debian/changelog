@@ -1,5 +1,6 @@
 petsc (3.1.dfsg-2) unstable; urgency=low
 
+  * Upstream patch level 2.
   * Patched to have the effect of regenerating config.[guess|sub] so clean is
     cleaner.
   * Added a few more files to the debian/rules clean target.
@@ -10,7 +11,7 @@ petsc (3.1.dfsg-2) unstable; urgency=low
   * Disabled HDF5 support with LAM because libhdf5-lam-dev is missing at least
     one needed library libhdf5_fortran.so (closes: #582290).
 
- -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 19 May 2010 16:22:08 -0400
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 19 May 2010 18:58:39 -0400
 
 petsc (3.1.dfsg-1) unstable; urgency=low
 

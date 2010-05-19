@@ -1,3 +1,4 @@
+upstream-p2.patch
 restore-upstream.patch
 build-debug-nowarn.patch
 build-no-rpath.patch
