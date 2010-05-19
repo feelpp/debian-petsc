@@ -7,8 +7,10 @@ petsc (3.1.dfsg-2) UNRELEASED; urgency=low
   * Added --with-c-support to configure options (closes: #580546).
   * Changed control file to conform to Debian Science Policy Manual.
   * Added diagnostic to indicate MPI implementation and directory.
+  * Disabled HDF5 support with LAM because libhdf5-lam-dev is missing at least
+    one needed library libhdf5_fortran.so (closes: #999999).
 
- -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 19 May 2010 14:43:43 -0400
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 19 May 2010 15:10:10 -0400
 
 petsc (3.1.dfsg-1) unstable; urgency=low
 

@@ -29,6 +29,12 @@ PETSC_ARCH=$(DEB_BUILD_GNU_SYSTEM)
 PETSC_MPI=$(shell readlink /etc/alternatives/mpi | sed s/usr//g | sed s/include//g | sed s/lib//g | sed s/\\///g)
 PETSC_MPI_DIR=/usr/lib/$(PETSC_MPI)
 
+ifeq ($(PETSC_MPI),lam)
+PETSC_HDF5_FLAGS=
+else
+PETSC_HDF5_FLAGS=--with-hdf5=1 --with-hdf5-dir=/usr
+endif
+
 # Overriding this with "contrib" attempts to link with parmetis (unimplemented).
 DEBIAN_DIST=main
 
@@ -97,8 +103,7 @@ build-arch:
 	  --with-spooles-lib=/usr/lib/libspooles.so \
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
-	  --with-scotch-lib=/usr/lib/libscotch.so \
-	  --with-hdf5=1 --with-hdf5-dir=/usr
+	  --with-scotch-lib=/usr/lib/libscotch.so $(PETSC_HDF5_FLAGS)
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
@@ -119,8 +124,7 @@ build-arch:
 	  --with-spooles-lib=/usr/lib/libspooles.so \
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
-	  --with-scotch-lib=/usr/lib/libscotch.so \
-	  --with-hdf5=1 --with-hdf5-dir=/usr
+	  --with-scotch-lib=/usr/lib/libscotch.so $(PETSC_HDF5_FLAGS)
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
