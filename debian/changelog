@@ -1,3 +1,9 @@
+petsc (3.1.dfsg-3) unstable; urgency=low
+
+  * Symlink $PETSC_DIR/conf/base -> variables for 3.0.x compatibility.
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 27 May 2010 08:45:04 -0400
+
 petsc (3.1.dfsg-2) unstable; urgency=low
 
   * Upstream patch level 2.
