@@ -1,6 +1,7 @@
 petsc (3.1.dfsg-4) UNRELEASED; urgency=low
 
   * Fix to clean target.
+  * libpetsc3.1-dev depends on libhdf5-mpi-dev.
 
  --
 
