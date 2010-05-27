@@ -57,6 +57,7 @@ ARCH_GENERATED_FILES=debian/lib$(PETSC_NAME)-dev.docs \
 
 clean:
 	dh_testdir
+	if [ -f TAGS.backup ]; then mv -f TAGS.backup TAGS; fi
 	if [ -f TAGS ]; then mv TAGS thetags; fi
 	dh_clean
 # These are needed for -lam, -dec and -contrib builds
@@ -91,6 +92,7 @@ build-arch:
 	echo Using MPI implementation $(PETSC_MPI) in directory $(PETSC_MPI_DIR)
 	cp -fp /usr/share/automake-1.11/config.* config/configarch/
 	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/
+	if [ ! -f TAGS.backup ]; then cp -a TAGS TAGS.backup; fi
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-debug \
 	  ./config/configure.py --with-debugging=1 \
 	  --useThreads 0 --with-clanguage=C++ --with-c-support \

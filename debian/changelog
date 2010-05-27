@@ -1,3 +1,9 @@
+petsc (3.1.dfsg-4) UNRELEASED; urgency=low
+
+  * Fix to clean target.
+
+ --
+
 petsc (3.1.dfsg-3) unstable; urgency=low
 
   * Symlink $PETSC_DIR/conf/base -> variables for 3.0.x compatibility.
