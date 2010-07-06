@@ -1,5 +1,6 @@
 petsc (3.1.dfsg-4) UNRELEASED; urgency=low
 
+  * Upstream patch level 3.
   * Fix to clean target.
   * libpetsc3.1-dev depends on libhdf5-mpi-dev.
   * Build-conflict with atlas libs since they mess up other packages' builds.
@@ -7,7 +8,7 @@ petsc (3.1.dfsg-4) UNRELEASED; urgency=low
   * Added source lintian overrides about Adam Powell's name.
   * Bumped Standards-Version.
 
- -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 06 Jul 2010 17:39:57 -0400
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 06 Jul 2010 18:46:56 -0400
 
 petsc (3.1.dfsg-3) unstable; urgency=low
 
