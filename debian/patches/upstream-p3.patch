@@ -58,23 +58,6 @@ diff -urN petsc-3.1-p2.dfsg/config/PETSc/packages/blopex.py petsc-3.1-p3.dfsg/co
      return
  
    def setupDependencies(self, framework):
-diff -urN petsc-3.1-p2.dfsg/configure petsc-3.1-p3.dfsg/configure
---- petsc-3.1-p2.dfsg/configure	2010-03-25 10:13:13.000000000 -0400
-+++ petsc-3.1-p3.dfsg/configure	2010-05-28 14:46:19.000000000 -0400
-@@ -21,6 +21,13 @@
-   print '*******************************************************************************'
-   sys.exit(4)
- 
-+if sys.platform == 'win32':
-+  print '**** Windows python detected. ****'
-+  print sys.version,'on',sys.platform
-+  print ''
-+  print '** You must use cygwin python, but not windows python with PETSc configure. ***'
-+  sys.exit(4)
-+
- def check_for_option_mistakes(opts):
-   for opt in opts[1:]:
-     name = opt.split('=')[0]
 diff -urN petsc-3.1-p2.dfsg/docs/changes/31.html petsc-3.1-p3.dfsg/docs/changes/31.html
 --- petsc-3.1-p2.dfsg/docs/changes/31.html	2010-04-08 15:58:03.000000000 -0400
 +++ petsc-3.1-p3.dfsg/docs/changes/31.html	2010-06-04 17:06:42.000000000 -0400
