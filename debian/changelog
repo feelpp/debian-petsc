@@ -1,4 +1,4 @@
-petsc (3.1.dfsg-4) UNRELEASED; urgency=low
+petsc (3.1.dfsg-4) unstable; urgency=low
 
   * Upstream patch level 3.
   * Fix to clean target.
@@ -10,7 +10,7 @@ petsc (3.1.dfsg-4) UNRELEASED; urgency=low
   * Added source lintian overrides about Adam Powell's name.
   * Bumped Standards-Version.
 
- -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 06 Jul 2010 22:56:35 -0400
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 06 Jul 2010 23:00:50 -0400
 
 petsc (3.1.dfsg-3) unstable; urgency=low
 
