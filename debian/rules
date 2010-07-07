@@ -146,9 +146,9 @@ install-arch: build-arch
 # If someone builds with non-standard PETSC_ARCH we want that to be
 # reflected in the installed script (also removes c-shell dependence).
 	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/bin
-#	cp -p debian/mpirun_lam \
-#	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/bin/mpirun_lam
-#	chmod +x debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/bin/mpirun_lam
+	cp -p debian/mpirun_lam \
+	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/bin/mpirun_lam
+	chmod +x debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/bin/mpirun_lam
 	echo "#!/bin/sh -e" > \
 	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/bin/petscarch
 	echo "echo $(PETSC_ARCH)-c-opt" >> \
