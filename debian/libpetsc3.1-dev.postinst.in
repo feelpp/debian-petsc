@@ -10,22 +10,21 @@ update-alternatives --install /usr/lib/petsc petsc /usr/lib/petscdir/petsc_ver 3
   --slave /usr/share/man/man1/mpirun_lam.1.gz mpirun_lam.1.gz /usr/lib/petscdir/petsc_ver/bin/mpirun_lam.1.gz \
   --slave /usr/include/petsc petscinclude /usr/lib/petscdir/petsc_ver/include \
   --slave /usr/share/aclocal/petsc.m4 petsc.m4 /usr/lib/petscdir/petsc_ver/aclocal/petsc.m4 \
-  --slave /usr/lib/libmpiuni.a libmpiuni.a /usr/lib/petscdir/petsc_ver/lib/libO/libmpiuni.a \
   --slave /usr/lib/libpetsc.a libpetsc.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetsc.a \
   --slave /usr/lib/libpetsc.so libpetsc.so /usr/lib/libpetsc.so.petsc_ver \
-  --slave /usr/lib/libpetscdm.a libpetscdm.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetscdm.a \
-  --slave /usr/lib/libpetscdm.so libpetscdm.so /usr/lib/libpetscdm.so.petsc_ver \
-  --slave /usr/lib/libpetscfortran.a libpetscfortran.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetscfortran.a \
-  --slave /usr/lib/libpetscmat.a libpetscmat.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetscmat.a \
-  --slave /usr/lib/libpetscmat.so libpetscmat.so /usr/lib/libpetscmat.so.petsc_ver \
-  --slave /usr/lib/libpetscksp.a libpetscksp.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetscksp.a \
-  --slave /usr/lib/libpetscksp.so libpetscksp.so /usr/lib/libpetscksp.so.petsc_ver \
-  --slave /usr/lib/libpetscsnes.a libpetscsnes.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetscsnes.a \
-  --slave /usr/lib/libpetscsnes.so libpetscsnes.so /usr/lib/libpetscsnes.so.petsc_ver \
-  --slave /usr/lib/libpetscts.a libpetscts.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetscts.a \
-  --slave /usr/lib/libpetscts.so libpetscts.so /usr/lib/libpetscts.so.petsc_ver \
-  --slave /usr/lib/libpetscvec.a libpetscvec.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetscvec.a \
-  --slave /usr/lib/libpetscvec.so libpetscvec.so /usr/lib/libpetscvec.so.petsc_ver
+  --slave /usr/lib/libpetscdm.a libpetscdm.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetsc.a \
+  --slave /usr/lib/libpetscdm.so libpetscdm.so /usr/lib/libpetsc.so.petsc_ver \
+  --slave /usr/lib/libpetscfortran.a libpetscfortran.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetsc.a \
+  --slave /usr/lib/libpetscmat.a libpetscmat.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetsc.a \
+  --slave /usr/lib/libpetscmat.so libpetscmat.so /usr/lib/libpetsc.so.petsc_ver \
+  --slave /usr/lib/libpetscksp.a libpetscksp.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetsc.a \
+  --slave /usr/lib/libpetscksp.so libpetscksp.so /usr/lib/libpetsc.so.petsc_ver \
+  --slave /usr/lib/libpetscsnes.a libpetscsnes.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetsc.a \
+  --slave /usr/lib/libpetscsnes.so libpetscsnes.so /usr/lib/libpetsc.so.petsc_ver \
+  --slave /usr/lib/libpetscts.a libpetscts.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetsc.a \
+  --slave /usr/lib/libpetscts.so libpetscts.so /usr/lib/libpetsc.so.petsc_ver \
+  --slave /usr/lib/libpetscvec.a libpetscvec.a /usr/lib/petscdir/petsc_ver/lib/libO/libpetsc.a \
+  --slave /usr/lib/libpetscvec.so libpetscvec.so /usr/lib/libpetsc.so.petsc_ver
 
 update-alternatives --install /usr/share/aclocal/math-blaslapack.m4 math-blaslapack.m4 /usr/lib/petscdir/petsc_ver/aclocal/math-blaslapack.m4 1
 

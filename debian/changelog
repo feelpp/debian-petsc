@@ -6,10 +6,11 @@ petsc (3.1.dfsg-4) UNRELEASED; urgency=low
   * Build-conflict with atlas libs since they mess up other packages' builds.
   * Change target architectures eliminating hppa (closes: #529485).
   * Reinstated mpirun_lam script since LAM arches will need it.
+  * Point all obsolete libraries' alternative symlinks at petsc library.
   * Added source lintian overrides about Adam Powell's name.
   * Bumped Standards-Version.
 
- -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 06 Jul 2010 22:50:03 -0400
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Tue, 06 Jul 2010 22:56:35 -0400
 
 petsc (3.1.dfsg-3) unstable; urgency=low
 
