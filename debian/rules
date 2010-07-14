@@ -78,17 +78,22 @@ clean:
 	  rm -rf .pc; \
 	fi
 
+patch:
+	if [ ! -d .pc ]; then \
+	  QUILT_PATCHES=debian/patches quilt push -a; \
+	fi
+
 # PETSc uses the "doctext" program to convert html docs to man pages, which
 # apparently is open-source and available from
 # http://www.mcs.anl.gov/~gropp/sowing .  When it is Debianized, I'll use it.
-build-indep:
+build-indep: patch
 #	$(MAKE) -C docs PETSC_ARCH=$(PETSC_ARCH) \
 #	 	PETSC_DIR=$(CURDIR)/lib$(PETSC_NAME) manualpages
 	touch $@
 
 # With debugging=1, only static libraries are generated.
 # Build optimized libs second so files are consistent with optimized.
-build-arch:
+build-arch: patch
 	echo Using MPI implementation $(PETSC_MPI) in directory $(PETSC_MPI_DIR)
 	cp -fp /usr/share/automake-1.11/config.* config/configarch/
 	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/
