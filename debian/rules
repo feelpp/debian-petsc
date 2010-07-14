@@ -69,7 +69,8 @@ clean:
 # (removes example executables, so what?)
 # make PETSC_ARCH=$(PETSC_ARCH) PETSC_DIR=$(CURDIR) clean
 # These probably should be removed by `make clean' but aren't
-	rm -f RDict.log configure.log.bkp debian/control.in make.log
+	rm -f RDict.log configure.log.bkp debian/control.in make.log \
+	  confdefs.h conffix.h conftest.c
 	rm -f `find . -name \*.o -print` `find . -name \*.pyc -print`
 	rm -rf lib $(PETSC_ARCH)-c-debug $(PETSC_ARCH)-c-opt configure.log
 
