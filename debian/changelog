@@ -1,9 +1,9 @@
 petsc (3.1.dfsg-5) unstable; urgency=low
 
   * Added patch target so dpkg-buildpackage -B actually runs the build-arch
-    target with patches applied (closes: #584551, #586220).
+    target with patches applied (closes: #584551, #586220, #588334).
 
- -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 14 Jul 2010 10:10:33 -0400
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 14 Jul 2010 10:22:35 -0400
 
 petsc (3.1.dfsg-4) unstable; urgency=low
 
