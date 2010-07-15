@@ -1,3 +1,10 @@
+petsc (3.1.dfsg-6) unstable; urgency=low
+
+  * Fixed clean target so it doesn't remove TAGS files from the .pc directory,
+    causing quilt to forget to revert it (closes: #589063, #589064).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Thu, 15 Jul 2010 14:46:58 -0400
+
 petsc (3.1.dfsg-5) unstable; urgency=low
 
   * Added patch target so dpkg-buildpackage -B actually runs the build-arch
