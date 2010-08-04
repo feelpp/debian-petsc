@@ -1,0 +1,14 @@
+Add Debian GNU/KFreeBSD version 8 support
+
+Index: petsc/conf/rules
+===================================================================
+--- petsc.orig/conf/rules	2010-08-04 14:31:36.000000000 -0400
++++ petsc/conf/rules	2010-08-04 14:32:09.000000000 -0400
+@@ -865,6 +865,7 @@
+ shared_kfreebsd6: shared_kfreebsd
+ 
+ shared_kfreebsd: shared_linux
++shared_kfreebsd8: shared_linux
+ 
+ shared_aix3:
+ shared_aix4:

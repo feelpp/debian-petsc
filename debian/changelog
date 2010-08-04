@@ -1,3 +1,9 @@
+petsc (3.1.dfsg-7) unstable; urgency=low
+
+  * Added shared_freebsd8 target to conf/rules (closes: #591262).
+
+ -- Adam C. Powell, IV <hazelsct@debian.org>  Wed, 04 Aug 2010 14:35:10 -0400
+
 petsc (3.1.dfsg-6) unstable; urgency=low
 
   * Fixed clean target so it doesn't remove TAGS files from the .pc directory,
