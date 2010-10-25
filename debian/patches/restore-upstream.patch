@@ -1,13 +1,3 @@
-Index: petsc/conf/petscvariables
-===================================================================
---- petsc.orig/conf/petscvariables	2010-05-04 20:59:24.000000000 -0400
-+++ petsc/conf/petscvariables	2010-05-04 20:59:57.000000000 -0400
-@@ -1,3 +1,3 @@
--PETSC_ARCH=arch-build
--PETSC_DIR=/home/balay/hg-repo/petsc-release-3.1
-+PETSC_ARCH=linux-gnu-c-opt
-+PETSC_DIR=/home/hazelsct/repositories/petsc
- include ${PETSC_DIR}/${PETSC_ARCH}/conf/petscvariables
 Index: petsc/config/BuildSystem/config/packages/config.guess
 ===================================================================
 --- petsc.orig/config/BuildSystem/config/packages/config.guess	2010-05-04 21:00:22.000000000 -0400

@@ -1,5 +1,6 @@
 upstream-p2.patch
 upstream-p3.patch
+upstream-p5.patch
 restore-upstream.patch
 build-debug-nowarn.patch
 build-no-rpath.patch

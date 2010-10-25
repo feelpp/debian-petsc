@@ -1,3 +1,9 @@
+petsc (3.1.dfsg-8) unstable; urgency=low
+
+  * Upstream patch level 5.
+
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Mon, 25 Oct 2010 19:16:58 -0400
+
 petsc (3.1.dfsg-7) unstable; urgency=low
 
   * Added shared_freebsd8 target to conf/rules (closes: #591262).
