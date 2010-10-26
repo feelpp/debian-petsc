@@ -1,8 +1,9 @@
 petsc (3.1.dfsg-8) unstable; urgency=low
 
   * Upstream patch level 5.
+  * Build with HDF5 regardless of MPI implementation.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Mon, 25 Oct 2010 19:16:58 -0400
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Tue, 26 Oct 2010 07:28:26 -0400
 
 petsc (3.1.dfsg-7) unstable; urgency=low
 
