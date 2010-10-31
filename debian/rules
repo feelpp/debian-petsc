@@ -181,6 +181,7 @@ install-arch: build-arch
 # Install PETSC_ARCH/conf and PETSC_ARCH/include files in PETSC_DIR/PETSC_ARCH/;
 # replace this dir with install dir, and remove top_builddir
 	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-c-opt/conf
+	ln -s $(PETSC_ARCH)-c-opt debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-cxx-opt
 	for cfile in `ls $(PETSC_ARCH)-c-opt/conf`; do \
 	  grep -v top_builddir $(PETSC_ARCH)-c-opt/conf/$$cfile | \
 	    sed "s/`echo $(CURDIR) | sed s/\\\\//\\\\\\\\\\\\//g`/\/usr\/lib\/petscdir\/$(PETSC_VERSION)/g" > \
@@ -190,6 +191,7 @@ install-arch: build-arch
 	cp -a $(PETSC_ARCH)-c-opt/include debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-c-opt/
 # Now conf and include for the -dbg package
 	install -d debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-c-debug/conf
+	ln -s $(PETSC_ARCH)-c-debug debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-cxx-debug
 	for cfile in `ls $(PETSC_ARCH)-c-debug/conf`; do \
 	  grep -v top_builddir $(PETSC_ARCH)-c-debug/conf/$$cfile | \
 	    sed "s/`echo $(CURDIR) | sed s/\\\\//\\\\\\\\\\\\//g`/\/usr\/lib\/petscdir\/$(PETSC_VERSION)/g" > \

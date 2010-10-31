@@ -2,13 +2,15 @@ petsc (3.1.dfsg-8) unstable; urgency=low
 
   [ Adam C. Powell, IV ]
   * Build with HDF5 regardless of MPI implementation.
+  * Symlinked $(PETSC_ARCH)-cxx-[opt|debug] to -c-[opt|debug] to indicate C++
+    support (closes: #594046).
 
   [ Christophe Trophime ]
   * Upstream patch level 5.
   * Added MUMPS support (closes: #600265).
   * Bumped Standards-Version.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Sun, 31 Oct 2010 13:30:24 -0400
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Sun, 31 Oct 2010 14:54:44 -0400
 
 petsc (3.1.dfsg-7) unstable; urgency=low
 
