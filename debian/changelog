@@ -1,10 +1,10 @@
 petsc (3.1.dfsg-8) unstable; urgency=low
 
   [ Adam C. Powell, IV ]
-  * Upstream patch level 5.
   * Build with HDF5 regardless of MPI implementation.
 
   [ Christophe Trophime ]
+  * Upstream patch level 5.
   * Added MUMPS support (closes: #600265).
   * Bumped Standards-Version.
 
