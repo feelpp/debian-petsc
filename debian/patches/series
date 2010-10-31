@@ -11,3 +11,4 @@ lib-versions.patch
 sprng-2.patch
 clean-no-double-colon.patch
 configure-kfreebsd8.patch
+mumps.patch

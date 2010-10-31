@@ -97,6 +97,12 @@ build-arch: patch
 	  --with-fortran-interfaces=1 \
 	  --with-mpi-dir=$(PETSC_MPI_DIR) \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
+	  --with-blacs=1 --with-blacs-include=/usr/include \
+	  --with-blacs-lib=[/usr/lib/libblacs-$(PETSC_MPI).so,/usr/lib/libblacsCinit-$(PETSC_MPI).so] \
+	  --with-scalapack=1 --with-scalapack-include=/usr/include \
+	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
+	  --with-mumps=1 --with-mumps-include=/usr/include \
+	  --with-mumps-lib=[/usr/lib/libdmumps_scotch.so,/usr/lib/libzmumps_scotch.so,/usr/lib/libsmumps_scotch.so,/usr/lib/libcmumps_scotch.so,/usr/lib/libmumps_common_scotch.so,/usr/lib/libpord.so] \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
@@ -119,6 +125,12 @@ build-arch: patch
 	  --with-fortran-interfaces=1 \
 	  --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
+	  --with-blacs=1 --with-blacs-include=/usr/include \
+	  --with-blacs-lib=[/usr/lib/libblacs-$(PETSC_MPI).so,/usr/lib/libblacsCinit-$(PETSC_MPI).so] \
+	  --with-scalapack=1 --with-scalapack-include=/usr/include \
+	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
+	  --with-mumps=1 --with-mumps-include=/usr/include \
+	  --with-mumps-lib=[/usr/lib/libdmumps_scotch.so,/usr/lib/libzmumps_scotch.so,/usr/lib/libsmumps_scotch.so,/usr/lib/libcmumps_scotch.so,/usr/lib/libmumps_common_scotch.so,/usr/lib/libpord.so] \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
