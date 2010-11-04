@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 5.0), quilt, python (>= 2.2), gfortran, automake,
  libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so,
  libsuitesparse-dev (>= 3.1.0-2),
  libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libscotch-dev,
- libhdf5-mpi-dev, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-scotch-dev
+ libhdf5-mpi-dev, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
 Build-Conflicts: libatlas3gf-base, libatlas-base-dev
 Vcs-Git: git://git.debian.org/git/debian-science/packages/petsc.git
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/petsc.git
