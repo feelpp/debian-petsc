@@ -19,7 +19,7 @@ Homepage: http://www.mcs.anl.gov/petsc
 Package: libpetsc3.1-dev
 Architecture: alpha amd64 arm armel i386 ia64 mips mipsel powerpc ppc64 s390 sparc kfreebsd-i386 kfreebsd-amd64 hurd-i386
 Section: libdevel
-Depends: libpetsc3.1 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libscotch-dev, ${babel-dev}, ${misc:Depends}, libhdf5-mpi-dev
+Depends: libpetsc3.1 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libscotch-dev, ${babel-dev}, ${misc:Depends}, libhdf5-mpi-dev, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
 Suggests: petsc-dev (= ${binary:Version}), libpetsc3.1-dbg (= ${binary:Version}), petsc3.1-doc (= ${binary:Version}), libluminate-dev
 Provides: petsc3.1-dev
 Description: Static libraries, shared links, header files for PETSc
