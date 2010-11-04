@@ -54,17 +54,17 @@ clean:
 	if [ -f TAGS.backup ]; then mv -f TAGS.backup TAGS; fi
 	dh_clean -XTAGS
 # These are needed for -lam, -dec and -contrib builds
-	rm -rf debian/lib$(PETSC_NAME) debian/lib$(PETSC_NAME)-dev \
+	-rm -rf debian/lib$(PETSC_NAME) debian/lib$(PETSC_NAME)-dev \
 	  debian/lib$(PETSC_NAME)-dbg
-	rm -f build* install* debian/*.substvars debian/extemp $(ARCH_GENERATED_FILES)
+	-rm -f build* install* debian/*.substvars debian/extemp $(ARCH_GENERATED_FILES)
 # This is commented because it really doesn't do anything useful for us
 # (removes example executables, so what?)
 # make PETSC_ARCH=$(PETSC_ARCH) PETSC_DIR=$(CURDIR) clean
 # These probably should be removed by `make clean' but aren't
-	rm -f RDict.log configure.log.bkp debian/control.in make.log \
+	-rm -f RDict.log configure.log.bkp debian/control.in make.log \
 	  confdefs.h conffix.h conftest.c
-	rm -f `find . -name \*.o -print` `find . -name \*.pyc -print`
-	rm -rf lib $(PETSC_ARCH)-c-debug $(PETSC_ARCH)-c-opt configure.log
+	-rm -f `find . -name \*.o -print` `find . -name \*.pyc -print`
+	-rm -rf lib $(PETSC_ARCH)-c-debug $(PETSC_ARCH)-c-opt configure.log
 
 	if [ -d .pc ]; then \
 	  QUILT_PATCHES=debian/patches quilt pop -a -R || test $$? = 2; \
