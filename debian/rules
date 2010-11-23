@@ -26,7 +26,7 @@ PETSC_ARCH=$(DEB_BUILD_GNU_SYSTEM)
 # Note that as of PETSc 2.3.0 this only specifies the name of the PETSc
 # packages, the implementation is chosen by BuildSystem according to what's
 # available at build time.
-PETSC_MPI=$(shell dpkg -s mpi-default-dev | grep Depends | sed "s/Depends: lib//" | sed "s/-dev//" | sed "s/lam4/lam/")
+PETSC_MPI=$(shell dpkg -s mpi-default-dev | grep Depends | sed "s/Depends: lib//" | sed "s/Depends: //" | sed "s/-dev//" | sed "s/lam4/lam/")
 PETSC_MPI_DIR=/usr/lib/$(PETSC_MPI)
 
 # Overriding this with "contrib" attempts to link with parmetis (unimplemented).

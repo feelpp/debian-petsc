@@ -1,3 +1,9 @@
+petsc (3.1.dfsg-10) unstable; urgency=low
+
+  * Fixed mpi-default-dev implementation selection (closes: #604549).
+
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Tue, 23 Nov 2010 15:08:38 -0500
+
 petsc (3.1.dfsg-9) unstable; urgency=low
 
   * Choose MPI implementation based on mpi-default-dev (closes: #604549).
