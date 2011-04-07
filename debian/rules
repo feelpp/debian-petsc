@@ -37,6 +37,8 @@ DEBIAN_DIST=main
 # complex) or non-standard distribution (e.g. contrib) is being used.
 PETSC_EXT=$(shell chmod +x debian/petsc-ext && debian/petsc-ext $(PETSC_ARCH) $(PETSC_MPI) $(DEBIAN_DIST) && chmod -x debian/petsc-ext)
 
+PETSC_HDF5_FLAGS=$(shell if [ -e /usr/lib/libhdf5.so ]; then echo "--with-hdf5=1 --with-hdf5-dir=/usr"; fi)
+
 # PETSC_VERSION is used for the package names, library sonames, and
 # /usr/lib/petscdir subdirectory names.
 PETSC_VERSION=3.1$(PETSC_EXT)
@@ -110,7 +112,7 @@ build-arch: patch
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
 	  --with-scotch-lib=/usr/lib/libscotch.so \
-	  --with-hdf5=1 --with-hdf5-dir=/usr
+	  $(PETSC_HDF5_FLAGS)
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
@@ -138,7 +140,7 @@ build-arch: patch
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-scotch=1 --with-scotch-include=/usr/include/scotch \
 	  --with-scotch-lib=/usr/lib/libscotch.so \
-	  --with-hdf5=1 --with-hdf5-dir=/usr
+	  $(PETSC_HDF5_FLAGS)
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
@@ -397,6 +399,11 @@ binary-arch: install-arch
 	else \
 	  echo "Unknown MPI implementation, stopping"; \
 	  exit 1; \
+	fi
+	if [ -e /usr/lib/libhdf5.so ]; then \
+	  echo "hdf5-dev=libhdf5-mpi-dev" >> debian/lib$(PETSC_NAME)-dev.substvars; \
+	else \
+	  echo "hdf5-dev=" >> debian/lib$(PETSC_NAME)-dev.substvars; \
 	fi
 	if [ -e /usr/lib/libsidl.so ]; then \
 	  echo "babel-dev=libsidl-dev" >> debian/lib$(PETSC_NAME)-dev.substvars; \

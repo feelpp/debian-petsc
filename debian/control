@@ -10,7 +10,8 @@ Build-Depends: debhelper (>= 5.0), quilt, python (>= 2.2), gfortran, automake,
  libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so,
  libsuitesparse-dev (>= 3.1.0-2),
  libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libscotch-dev,
- libhdf5-mpi-dev, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
+ libhdf5-mpi-dev [i386 amd64 lpia ia64 powerpc kfreebsd-i386 kfreebsd-amd64],
+ libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
 Build-Conflicts: libatlas3gf-base, libatlas-base-dev
 Vcs-Git: git://git.debian.org/git/debian-science/packages/petsc.git
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/petsc.git
@@ -19,7 +20,7 @@ Homepage: http://www.mcs.anl.gov/petsc
 Package: libpetsc3.1-dev
 Architecture: alpha amd64 arm armel i386 ia64 mips mipsel powerpc ppc64 s390 sparc kfreebsd-i386 kfreebsd-amd64 hurd-i386
 Section: libdevel
-Depends: libpetsc3.1 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libscotch-dev, ${babel-dev}, ${misc:Depends}, libhdf5-mpi-dev, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
+Depends: libpetsc3.1 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libscotch-dev, ${babel-dev}, ${misc:Depends}, ${hdf5-dev}, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
 Suggests: petsc-dev (= ${binary:Version}), libpetsc3.1-dbg (= ${binary:Version}), petsc3.1-doc (= ${binary:Version}), libluminate-dev
 Provides: petsc3.1-dev
 Description: Static libraries, shared links, header files for PETSc

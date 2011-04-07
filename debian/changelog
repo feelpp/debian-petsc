@@ -1,3 +1,9 @@
+petsc (3.1.dfsg-11) unstable; urgency=low
+
+  * Use HDF5 only on openmpi architectures (closes: #602660, #605294).
+
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 07 Apr 2011 10:12:10 -0400
+
 petsc (3.1.dfsg-10) unstable; urgency=low
 
   * Fixed mpi-default-dev implementation selection (closes: #604549).
