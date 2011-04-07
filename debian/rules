@@ -18,6 +18,7 @@
 # to build PETSc libs with the Compaq compilers, though that requires at least:
 # libots, cpml-ev(5|6), cxml-ev(5|6), cfal and ccc.
 # Note that only arch-dependent .debs are generated when you do this.
+DEB_BUILD_GNU_SYSTEM ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_SYSTEM)
 PETSC_ARCH=$(DEB_BUILD_GNU_SYSTEM)
 
 # This defines the MPI implementation to use.  The easiest way to override this

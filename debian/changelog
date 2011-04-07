@@ -6,8 +6,9 @@ petsc (3.1.dfsg-11) unstable; urgency=low
   [ Matthias Klose ]
   * Patch PETSc build system to link properly to hypre libs, and change BLACS
     lib order in rules, to make binutils-gold work (closes: #608902).
+  * Explicitly set PETSC_BUILD_GNU_SYSTEM in rules.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 07 Apr 2011 10:30:05 -0400
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 07 Apr 2011 10:52:28 -0400
 
 petsc (3.1.dfsg-10) unstable; urgency=low
 
