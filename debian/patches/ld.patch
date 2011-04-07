@@ -1,0 +1,30 @@
+Fix build system to set hypre libraries properly.
+
+Index: petsc-3.1.dfsg/config/BuildSystem/config/framework.py
+===================================================================
+--- petsc-3.1.dfsg.orig/config/BuildSystem/config/framework.py	2011-01-03 21:04:04.000000000 +0000
++++ petsc-3.1.dfsg/config/BuildSystem/config/framework.py	2011-01-03 21:04:04.000000000 +0000
+@@ -223,7 +223,7 @@
+     help.addArgument('Framework', '-ignoreCompileOutput', nargs.ArgBool(None, 1, 'Ignore compiler output'))
+     help.addArgument('Framework', '-ignoreLinkOutput',    nargs.ArgBool(None, 1, 'Ignore linker output'))
+     help.addArgument('Framework', '-ignoreWarnings',      nargs.ArgBool(None, 0, 'Ignore compiler and linker warnings'))
+-    help.addArgument('Framework', '-doCleanup',           nargs.ArgBool(None, 1, 'Delete any configure generated files (turn off for debugging)'))
++    help.addArgument('Framework', '-doCleanup',           nargs.ArgBool(None, 0, 'Delete any configure generated files (turn off for debugging)'))
+     help.addArgument('Framework', '-with-alternatives',   nargs.ArgBool(None, 0, 'Provide a choice among alternative package installations'))
+     help.addArgument('Framework', '-search-dirs',         nargs.Arg(None, searchdirs, 'A list of directories used to search for executables'))
+     help.addArgument('Framework', '-package-dirs',        nargs.Arg(None, packagedirs, 'A list of directories used to search for packages'))
+Index: petsc-3.1.dfsg/config/PETSc/packages/hypre.py
+===================================================================
+--- petsc-3.1.dfsg.orig/config/PETSc/packages/hypre.py	2010-03-25 14:13:13.000000000 +0000
++++ petsc-3.1.dfsg/config/PETSc/packages/hypre.py	2011-01-03 21:06:20.188227271 +0000
+@@ -6,7 +6,9 @@
+     self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.6.0b.tar.gz']
+     self.functions = ['HYPRE_IJMatrixCreate']
+     self.includes  = ['HYPRE.h']
+-    self.liblist   = [['libHYPRE.a']]
++    self.liblist   = [['libHYPRE.a', 'libHYPRE_IJ_mv.a']]
++    self.liblist   = [['libHYPRE.a', 'libHYPRE_utilities.a', 'libHYPRE_multivector.a', 'libHYPRE_krylov.a', 'libHYPRE_struct_mv.a', 'libHYPRE_struct_ls.a', 'libHYPRE_sstruct_mv.a', 'libHYPRE_sstruct_ls.a', 'libHYPRE_seq_mv.a', 'libHYPRE_parcsr_mv.a', 'libHYPRE_parcsr_block_mv.a', 'libHYPRE_DistributedMatrix.a', 'libHYPRE_MatrixMatrix.a', 'libHYPRE_IJ_mv.a', 'libHYPRE_Euclid.a', 'libHYPRE_ParaSails.a', 'libHYPRE_DistributedMatrixPilutSolver.a', 'libHYPRE_parcsr_ls.a', 'libHYPRE_FEI_fgmres.a', 'libHYPRE_mli.a', 'libHYPRE_FEI.a']]
++
+     self.license   = 'https://computation.llnl.gov/casc/linear_solvers/sls_hypre.html'
+     return
+ 

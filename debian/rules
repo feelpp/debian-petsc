@@ -100,7 +100,7 @@ build-arch: patch
 	  --with-mpi-dir=$(PETSC_MPI_DIR) \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-blacs=1 --with-blacs-include=/usr/include \
-	  --with-blacs-lib=[/usr/lib/libblacs-$(PETSC_MPI).so,/usr/lib/libblacsCinit-$(PETSC_MPI).so] \
+	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI).so,/usr/lib/libblacs-$(PETSC_MPI).so] \
 	  --with-scalapack=1 --with-scalapack-include=/usr/include \
 	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
 	  --with-mumps=1 --with-mumps-include=/usr/include \
@@ -128,7 +128,7 @@ build-arch: patch
 	  --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-blacs=1 --with-blacs-include=/usr/include \
-	  --with-blacs-lib=[/usr/lib/libblacs-$(PETSC_MPI).so,/usr/lib/libblacsCinit-$(PETSC_MPI).so] \
+	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI).so,/usr/lib/libblacs-$(PETSC_MPI).so] \
 	  --with-scalapack=1 --with-scalapack-include=/usr/include \
 	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
 	  --with-mumps=1 --with-mumps-include=/usr/include \
