@@ -15,7 +15,7 @@ Index: petsc/conf/rules
  	done
  	@if [ -f ${INSTALL_LIB_DIR}/so_locations ]; then \
            echo ${RM} ${INSTALL_LIB_DIR}/so_locations; \
-@@ -897,7 +897,8 @@
+@@ -901,7 +901,8 @@
  
  shared_linux:
  	-@cd ${SHARED_LIBRARY_TMPDIR}; \
