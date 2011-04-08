@@ -4,14 +4,15 @@ petsc (3.1.dfsg-11) unstable; urgency=low
   * Use HDF5 only on openmpi architectures (closes: #602660, #605294).
   * Bump Standards-Version, no changes needed.
   * Update to upstream patch level 8 (closes: #621609).
-  * Clean target update
+  * Clean target update.
+  * Fix stamps to prevent double-building.
 
   [ Matthias Klose ]
   * Patch PETSc build system to link properly to hypre libs, and change BLACS
     lib order in rules, to make binutils-gold work (closes: #608902).
   * Explicitly set PETSC_BUILD_GNU_SYSTEM in rules.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 07 Apr 2011 20:34:48 -0400
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 07 Apr 2011 21:20:50 -0400
 
 petsc (3.1.dfsg-10) unstable; urgency=low
 

@@ -59,7 +59,7 @@ clean:
 # These are needed for -lam, -dec and -contrib builds
 	-rm -rf debian/lib$(PETSC_NAME) debian/lib$(PETSC_NAME)-dev \
 	  debian/lib$(PETSC_NAME)-dbg
-	-rm -f build* install* debian/*.substvars debian/extemp $(ARCH_GENERATED_FILES)
+	-rm -f patch build* install* debian/*.substvars debian/extemp $(ARCH_GENERATED_FILES)
 # This is commented because it really doesn't do anything useful for us
 # (removes example executables, so what?)
 # make PETSC_ARCH=$(PETSC_ARCH) PETSC_DIR=$(CURDIR) clean
@@ -78,6 +78,7 @@ patch:
 	if [ ! -d .pc ]; then \
 	  QUILT_PATCHES=debian/patches quilt push -a; \
 	fi
+	touch $@
 
 # PETSc uses the "doctext" program to convert html docs to man pages, which
 # apparently is open-source and available from
