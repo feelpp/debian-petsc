@@ -11,7 +11,7 @@ petsc (3.1.dfsg-11) unstable; urgency=low
     lib order in rules, to make binutils-gold work (closes: #608902).
   * Explicitly set PETSC_BUILD_GNU_SYSTEM in rules.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 07 Apr 2011 20:31:34 -0400
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 07 Apr 2011 20:34:48 -0400
 
 petsc (3.1.dfsg-10) unstable; urgency=low
 

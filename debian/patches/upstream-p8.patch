@@ -179,28 +179,6 @@ Index: petsc/config/PETSc/utilities/sharedLibraries.py
        else:
          self.addMakeRule('shared_arch','shared_'+self.arch.hostOsBase)
        self.addMakeMacro('BUILDSHAREDLIB','yes')
-Index: petsc/configure
-===================================================================
---- petsc.orig/configure
-+++ petsc/configure
-@@ -323,7 +323,7 @@
-       try:
-         framework.log.write(msg+se)
-         traceback.print_tb(sys.exc_info()[2], file = framework.log)
--        close(framework.log)
-+        if hasattr(framework,'log'): close(framework.log)
-         move_configure_log(framework)
-       except:
-         pass
-@@ -332,7 +332,7 @@
-     print se
-     import traceback
-     traceback.print_tb(sys.exc_info()[2])
--  close(framework.log)
-+  if hasattr(framework,'log'): close(framework.log)
-   move_configure_log(framework)
- 
- if __name__ == '__main__':
 Index: petsc/include/finclude/petsckspdef.h
 ===================================================================
 --- petsc.orig/include/finclude/petsckspdef.h
