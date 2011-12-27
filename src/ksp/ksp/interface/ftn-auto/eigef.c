@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* eige.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspcomputeexplicitoperator_(KSP ksp,Mat *mat, int *__ierr ){
+void PETSC_STDCALL  kspcomputeexplicitoperator_(KSP ksp,Mat *mat, int *__ierr ){
 *__ierr = KSPComputeExplicitOperator(
 	(KSP)PetscToPointer((ksp) ),mat);
 }
-void PETSC_STDCALL   kspcomputeeigenvaluesexplicitly_(KSP ksp,PetscInt *nmax,PetscReal *r,PetscReal *c, int *__ierr ){
+void PETSC_STDCALL  kspcomputeeigenvaluesexplicitly_(KSP ksp,PetscInt *nmax,PetscReal *r,PetscReal *c, int *__ierr ){
 *__ierr = KSPComputeEigenvaluesExplicitly(
 	(KSP)PetscToPointer((ksp) ),*nmax,r,c);
 }

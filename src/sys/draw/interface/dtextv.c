@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawStringVertical" 
@@ -24,13 +24,13 @@
 .seealso: PetscDrawString()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawStringVertical(PetscDraw draw,PetscReal xl,PetscReal yl,int cl,const char text[])
+PetscErrorCode  PetscDrawStringVertical(PetscDraw draw,PetscReal xl,PetscReal yl,int cl,const char text[])
 {
   PetscErrorCode ierr;
-  PetscTruth isnull;
+  PetscBool  isnull;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidCharPointer(text,5);
   ierr = PetscTypeCompare((PetscObject)draw,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
   if (isnull) PetscFunctionReturn(0);

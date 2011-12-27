@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawSynchronizedFlush" 
@@ -23,11 +23,11 @@
 .seealso: PetscDrawFlush()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSynchronizedFlush(PetscDraw draw)
+PetscErrorCode  PetscDrawSynchronizedFlush(PetscDraw draw)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   if (draw->ops->synchronizedflush) {
     ierr = (*draw->ops->synchronizedflush)(draw);CHKERRQ(ierr);
   }

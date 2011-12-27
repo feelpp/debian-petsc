@@ -10,7 +10,7 @@ Creates a single large PETSc matrix by concatinating sequential matrices from ea
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatMerge(MPI_Comm comm,Mat inmat,PetscInt n,MatReuse scall,Mat *outmat)
+PetscErrorCode  MatMerge(MPI_Comm comm,Mat inmat,PetscInt n,MatReuse scall,Mat *outmat)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>

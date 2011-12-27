@@ -1,6 +1,5 @@
-#define PETSCMAT_DLL
 
-#include "private/matimpl.h"          /*I "petscmat.h" I*/
+#include <private/matimpl.h>          /*I "petscmat.h" I*/
 
 typedef struct {
   Mat         A;  
@@ -156,7 +155,7 @@ PetscErrorCode MatMultTransposeAdd_Normal(Mat N,Vec v1,Vec v2,Vec v3)
   PetscFunctionReturn(0); 
 } 
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "MatDestroy_Normal"
 PetscErrorCode MatDestroy_Normal(Mat N)
 {
@@ -164,16 +163,16 @@ PetscErrorCode MatDestroy_Normal(Mat N)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (Na->A) { ierr = MatDestroy(Na->A);CHKERRQ(ierr); }
-  if (Na->w) { ierr = VecDestroy(Na->w);CHKERRQ(ierr); }
-  if (Na->left) { ierr = VecDestroy(Na->left);CHKERRQ(ierr); }
-  if (Na->right) { ierr = VecDestroy(Na->right);CHKERRQ(ierr); }
-  if (Na->leftwork) { ierr = VecDestroy(Na->leftwork);CHKERRQ(ierr); }
-  if (Na->rightwork) { ierr = VecDestroy(Na->rightwork);CHKERRQ(ierr); }
-  ierr = PetscFree(Na);CHKERRQ(ierr);
+  ierr = MatDestroy(&Na->A);CHKERRQ(ierr);
+  ierr = VecDestroy(&Na->w);CHKERRQ(ierr);
+  ierr = VecDestroy(&Na->left);CHKERRQ(ierr);
+  ierr = VecDestroy(&Na->right);CHKERRQ(ierr);
+  ierr = VecDestroy(&Na->leftwork);CHKERRQ(ierr);
+  ierr = VecDestroy(&Na->rightwork);CHKERRQ(ierr);
+  ierr = PetscFree(N->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
-  
+
 /*
       Slow, nonscalable version
 */
@@ -230,7 +229,7 @@ PetscErrorCode MatGetDiagonal_Normal(Mat N,Vec v)
           object performs the matrix-vector product by first multiplying by
           A and then A'
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreateNormal(Mat A,Mat *N)
+PetscErrorCode  MatCreateNormal(Mat A,Mat *N)
 {
   PetscErrorCode ierr;
   PetscInt       m,n;

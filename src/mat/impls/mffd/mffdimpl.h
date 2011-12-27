@@ -12,14 +12,14 @@
 #if !defined(__MFFD_H__)
 #define __MFFD_H__
 
-#include "petscmat.h"         /*I  "petscmat.h"   I*/
+#include <petscmat.h>         /*I  "petscmat.h"   I*/
 
 /*
     Table of functions that manage the computation and understanding
     of the parameter for finite difference based matrix-free computations
 */
 struct _MFOps {
-  PetscErrorCode (*compute)(MatMFFD,Vec,Vec,PetscScalar *,PetscTruth* zeroa);
+  PetscErrorCode (*compute)(MatMFFD,Vec,Vec,PetscScalar *,PetscBool * zeroa);
   PetscErrorCode (*view)(MatMFFD,PetscViewer);
   PetscErrorCode (*destroy)(MatMFFD);
   PetscErrorCode (*setfromoptions)(MatMFFD);
@@ -43,16 +43,17 @@ struct _p_MatMFFD {    /* context for default matrix-free SNES */
   PetscErrorCode   (*func)(void*,Vec,Vec);  /* function used for matrix free */
   void             *funcctx;                     /* the context for the function */
   Vec              current_f;                    /* location of F(u); used with F(u+h) */
-  PetscTruth       current_f_allocated;
+  PetscBool        current_f_allocated;
   Vec              current_u;                    /* location of u; used with F(u+h) */
 
   PetscErrorCode   (*funci)(void*,PetscInt,Vec,PetscScalar*);  /* Evaluates func_[i]() */
   PetscErrorCode   (*funcisetbase)(void*,Vec);            /* Sets base for future evaluations of func_[i]() */
 
-  PetscScalar      vscale,vshift;
+  PetscScalar      vscale,vshift;              /* diagonal scale and shift by scalars */
+  Vec              dlscale,drscale,dshift;              /* diagonal scale and shift by vectors */
 };
 
-EXTERN PetscFList MatMFFDList;
-EXTERN PetscTruth MatMFFDRegisterAllCalled;
+extern PetscFList MatMFFDList;
+extern PetscBool  MatMFFDRegisterAllCalled;
 
 #endif

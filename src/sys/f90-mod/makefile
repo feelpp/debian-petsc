@@ -1,4 +1,4 @@
-#requirespackage   'PETSC_USING_F90'
+#requiresdefine   'PETSC_USING_F90'
 #
 #   Makes Fortran module functions from *.h90 files in include/finclude
 #
@@ -12,10 +12,10 @@ SPECIALFASTLIB = yes
 CFLAGS	   = 
 FFLAGS	   = 
 SOURCEC	   = 
-SOURCEF	   = petscmod.F
+SOURCEF	   = petscsysmod.F
 SOURCEH	   = 
 OBJSC	   = 
-OBJSF	   = petscmod.o
+OBJSF	   = petscsysmod.o
 LIBBASE	   = libpetscsys
 MANSEC	   = Sys
 LOCDIR	   = src/sys/f90-mod/

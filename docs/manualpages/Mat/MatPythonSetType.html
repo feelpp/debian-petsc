@@ -10,7 +10,7 @@ Initalize a <A HREF="../Mat/Mat.html#Mat">Mat</A> object implemented in Python.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatPythonSetType(Mat mat,const char pyname[])
+PetscErrorCode  MatPythonSetType(Mat mat,const char pyname[])
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -31,7 +31,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- MATPYTHON, MatCreatePython(), PetscPythonInitialize()
+ <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../Mat/MatSetType.html#MatSetType">MatSetType</A>(), MATPYTHON, PetscPythonInitialize()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/python/pythonmat.c.html#MatPythonSetType">src/mat/impls/python/pythonmat.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

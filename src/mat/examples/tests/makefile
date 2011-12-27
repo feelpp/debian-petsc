@@ -4,20 +4,25 @@ FFLAGS		 =
 CPPFLAGS         =
 FPPFLAGS         =
 LOCDIR		 = src/mat/examples/tests/
-EXAMPLESC	 = ex1.c ex2.c ex3.c ex4.c ex5.c ex6.c ex7.c ex8.c ex9.c\
-		   ex10.c ex11.c ex12.c ex13.c ex14.c ex15.c ex16.c ex17.c \
-		   ex19.c ex20.c ex21.c ex22.c ex24.c ex25.c \
-		   ex27.c ex28.c ex30.c ex31.c ex32.c ex33.c \
-		   ex34.c ex35.c ex37.c ex38.c ex40.c ex41.c ex42.c ex43.c\
-		   ex44.c ex45.c ex47.c ex48.c ex49.c ex50.c ex51.c ex52.c \
-		   ex53.c ex54.c ex55.c ex56.c ex57.c ex58.c ex59.c ex60.c ex61.c \
-		   ex62.c ex64.c ex65.c ex66.c ex68.c ex70.c ex71.c ex72.c ex73.c ex74.c \
-                   ex75.c ex76.c ex80.c ex81.c ex77.c ex78.c ex86.c ex87.c \
-                   ex91.c ex92.c ex93.c ex94.c ex95.c ex96.c ex98.c ex99.c ex100.c \
-                   ex101.c ex102.c ex103.c ex104.c ex106.c ex107.c ex108.c ex109.c ex110.c\
-                   ex111.c ex112.c ex113.c ex114.c ex115.c ex116.c ex117.c ex118.c ex119.c ex120.c ex121.c ex122.c ex123.c \
-                   ex124.c ex129.c
-EXAMPLESF	 = ex36f.F ex16f90.F ex58f.F ex63f.F ex67f.F ex79f.F ex85f.F ex105f.F ex126f.F
+EXAMPLESC	 = ex1.c ex2.c ex3.c ex4.c ex5.c ex6.c ex7.c ex8.c ex9.c \
+                ex10.c ex11.c ex12.c ex13.c ex14.c ex15.c ex16.c ex17.c \
+                ex19.c ex20.c ex21.c ex22.c ex24.c ex25.c ex27.c ex28.c \
+                ex30.c ex31.c ex32.c ex33.c ex34.c ex35.c ex37.c ex38.c \
+                ex40.c ex41.c ex42.c ex43.c ex44.c ex45.c ex47.c ex48.c \
+                ex49.c ex50.c ex51.c ex52.c ex53.c ex54.c ex55.c ex56.c \
+                ex57.c ex58.c ex59.c ex60.c ex61.c ex62.c ex64.c ex65.c \
+                ex66.c ex68.c ex70.c ex71.c ex72.c ex73.c ex74.c ex75.c \
+                ex76.c ex77.c ex78.c ex80.c ex81.c ex86.c ex87.c ex88.c \
+                ex91.c ex92.c ex93.c ex94.c ex95.c ex96.c ex97.c ex98.c \
+                ex99.c ex100.c ex101.c ex102.c ex103.c ex104.c ex106.c \
+                ex107.c ex108.c ex109.c ex110.c ex111.c ex112.c ex113.c \
+                ex114.c ex115.c ex116.c ex117.c ex118.c ex119.c ex120.c \
+                ex121.c ex122.c ex123.c ex124.c ex125.c ex127.c ex128.c \
+                ex129.c ex130.c ex131.c ex132.c ex133.c ex134.c ex135.c \
+                ex136.c ex137.c ex138.c ex139.c ex140.c ex141.c ex142.c \
+                ex143.c ex144.c ex145.c ex146.c ex147.c ex148.c ex149.c \
+                ex150.c ex153.c ex154.c ex155.c ex157.c ex158.c ex159.c
+EXAMPLESF	 = ex16f90.F ex36f.F ex58f.F ex63f.F ex67f.F ex79f.F ex85f.F ex105f.F ex120f.F ex126f.F
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules
@@ -336,6 +341,10 @@ ex87: ex87.o chkopts
 	-${CLINKER} -o ex87 ex87.o ${PETSC_MAT_LIB}
 	${RM} ex87.o
 
+ex88: ex88.o chkopts
+	-${CLINKER} -o ex88 ex88.o ${PETSC_MAT_LIB}
+	${RM} ex88.o
+
 ex91: ex91.o chkopts
 	-${CLINKER} -o ex91 ex91.o ${PETSC_MAT_LIB}
 	${RM} ex91.o
@@ -359,6 +368,10 @@ ex95: ex95.o chkopts
 ex96: ex96.o chkopts
 	-${CLINKER} -o ex96 ex96.o ${PETSC_KSP_LIB}
 	${RM} ex96.o
+
+ex97: ex97.o chkopts
+	-${CLINKER} -o ex97 ex97.o ${PETSC_KSP_LIB}
+	${RM} ex97.o
 
 ex98: ex98.o chkopts
 	-${CLINKER} -o ex98 ex98.o ${PETSC_KSP_LIB}
@@ -452,6 +465,10 @@ ex120: ex120.o chkopts
 	-${CLINKER} -o ex120 ex120.o ${PETSC_MAT_LIB}
 	${RM} ex120.o
 
+ex120f: ex120f.o chkopts
+	-${FLINKER} -o ex120f ex120f.o ${PETSC_MAT_LIB}
+	${RM} ex120f.o
+
 ex121: ex121.o chkopts
 	-${CLINKER} -o ex121 ex121.o ${PETSC_MAT_LIB}
 	${RM} ex121.o
@@ -488,6 +505,125 @@ ex129: ex129.o chkopts
 	-${CLINKER} -o ex129 ex129.o ${PETSC_DM_LIB}
 	${RM} ex129.o
 
+ex130: ex130.o chkopts
+	-${CLINKER} -o ex130 ex130.o ${PETSC_MAT_LIB}
+	${RM} ex130.o
+
+ex131: ex131.o chkopts
+	-${CLINKER} -o ex131 ex131.o ${PETSC_MAT_LIB}
+	${RM} ex131.o
+
+ex132: ex132.o chkopts
+	-${CLINKER} -o ex132 ex132.o ${PETSC_MAT_LIB}
+	${RM} ex132.o
+
+ex133: ex133.o chkopts
+	-${CLINKER} -o ex133 ex133.o ${PETSC_MAT_LIB}
+	${RM} ex133.o
+
+ex134: ex134.o chkopts
+	-${CLINKER} -o ex134 ex134.o ${PETSC_MAT_LIB}
+	${RM} ex134.o
+
+ex135: ex135.o chkopts
+	-${CLINKER} -o ex135 ex135.o ${PETSC_MAT_LIB}
+	${RM} ex135.o
+
+ex136: ex136.o chkopts
+	-${CLINKER} -o ex136 ex136.o ${PETSC_MAT_LIB}
+	${RM} ex136.o
+
+ex137: ex137.o chkopts
+	-${CLINKER} -o ex137 ex137.o ${PETSC_MAT_LIB}
+	${RM} ex137.o
+
+ex138: ex138.o chkopts
+	-${CLINKER} -o ex138 ex138.o ${PETSC_MAT_LIB}
+	${RM} ex138.o
+
+ex139: ex139.o chkopts
+	-${CLINKER} -o ex139 ex139.o ${PETSC_MAT_LIB}
+	${RM} ex139.o
+
+ex140: ex140.o chkopts
+	-${CLINKER} -o ex140 ex140.o ${PETSC_MAT_LIB}
+	${RM} ex140.o
+
+ex141: ex141.o chkopts
+	-${CLINKER} -o ex141 ex141.o ${PETSC_MAT_LIB}
+	${RM} ex141.o
+
+ex142: ex142.o chkopts
+	-${CLINKER} -o ex142 ex142.o ${PETSC_MAT_LIB}
+	${RM} ex142.o
+
+ex143: ex143.o chkopts
+	-${CLINKER} -o ex143 ex143.o ${PETSC_MAT_LIB}
+	${RM} ex143.o
+
+ex144: ex144.o chkopts
+	-${CLINKER} -o ex144 ex144.o ${PETSC_MAT_LIB}
+	${RM} ex144.o
+
+ex145: ex145.o chkopts
+	-${CLINKER} -o ex145 ex145.o ${PETSC_MAT_LIB}
+	${RM} ex145.o
+
+ex146: ex146.o chkopts
+	-${CLINKER} -o ex146 ex146.o ${PETSC_MAT_LIB}
+	${RM} ex146.o
+
+ex147: ex147.o chkopts
+	-${CLINKER} -o ex147 ex147.o ${PETSC_MAT_LIB}
+	${RM} ex147.o
+
+ex148: ex148.o chkopts
+	-${CLINKER} -o ex148 ex148.o ${PETSC_MAT_LIB}
+	${RM} ex148.o
+
+ex149: ex149.o chkopts
+	-${CLINKER} -o ex149 ex149.o ${PETSC_MAT_LIB}
+	${RM} ex149.o
+
+ex150: ex150.o chkopts
+	-${CLINKER} -o ex150 ex150.o ${PETSC_MAT_LIB}
+	${RM} ex150.o
+
+ex151: ex151.o chkopts
+	-${CLINKER} -o ex151 ex151.o ${PETSC_MAT_LIB}
+	${RM} ex151.o
+
+ex152: ex152.o chkopts
+	-${CLINKER} -o ex152 ex152.o ${PETSC_MAT_LIB}
+	${RM} ex152.o
+
+ex153: ex153.o chkopts
+	-${CLINKER} -o ex153 ex153.o ${PETSC_MAT_LIB}
+	${RM} ex153.o
+
+ex154: ex154.o chkopts
+	-${CLINKER} -o ex154 ex154.o ${PETSC_MAT_LIB}
+	${RM} ex154.o
+
+ex155: ex155.o chkopts
+	-${CLINKER} -o ex155 ex155.o ${PETSC_MAT_LIB}
+	${RM} ex155.o
+
+ex156: ex156.o chkopts
+	-${CLINKER} -o ex156 ex156.o ${PETSC_MAT_LIB}
+	${RM} ex156.o
+
+ex157: ex157.o chkopts
+	-${CLINKER} -o ex157 ex157.o ${PETSC_MAT_LIB}
+	${RM} ex157.o
+
+ex158: ex158.o chkopts
+	-${CLINKER} -o ex158 ex158.o ${PETSC_MAT_LIB}
+	${RM} ex158.o
+
+ex159: ex159.o chkopts
+	-${CLINKER} -o ex159 ex159.o ${PETSC_MAT_LIB}
+	${RM} ex159.o
 #-----------------------------------------------------------------------------
 NPROCS    = 1 3
 MATSHAPES = A B
@@ -496,82 +632,149 @@ runex1:
 	   if (${DIFF} output/ex1_1.out ex1_1.tmp) then true; \
 	   else echo "Possible problem with ex1_1, diffs above"; fi; \
 	   ${RM} -f ex1_1.tmp
+
 runex2:
-	-@for mattype in seqaij seqdense; do \
-	  for shape in ${MATSHAPES}; do \
-	    ${MPIEXEC} -n 1 ./ex2 -mat_type $$mattype -rect$$shape > ex2_1.tmp 2>&1; \
-	      if (${DIFF} output/ex2_1_$$shape.out ex2_1.tmp) then true; \
-	      else echo "Possible problem with ex2_1_"$$shape" for" $$mattype", diffs above"; fi; \
-	      ${RM} -f ex2_1.tmp; \
-	  done; \
-	done;
+	-@${MPIEXEC} -n 1 ./ex2 -mat_type seqaij -rectA | grep -v "Matrix Object" > ex2_1.tmp 2>&1; \
+	if (${DIFF} output/ex2_11_A.out ex2_1.tmp) then true; \
+	else echo "Possible problem with ex2_11_A for seqaij, diffs above"; fi; \
+	${RM} -f ex2_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex2 -mat_type seqdense -rectA | grep -v "Matrix Object" > ex2_1.tmp 2>&1; \
+	if (${DIFF} output/ex2_12_A.out ex2_1.tmp) then true; \
+	else echo "Possible problem with ex2_12_A for seqdense, diffs above"; fi; \
+	${RM} -f ex2_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex2 -mat_type seqaij -rectB | grep -v "Matrix Object" > ex2_1.tmp 2>&1; \
+	if (${DIFF} output/ex2_11_B.out ex2_1.tmp) then true; \
+	else echo "Possible problem with ex2_11_B for seqaij, diffs above"; fi; \
+	${RM} -f ex2_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex2 -mat_type seqdense -rectB | grep -v "Matrix Object" > ex2_1.tmp 2>&1; \
+	if (${DIFF} output/ex2_12_B.out ex2_1.tmp) then true; \
+	else echo "Possible problem with ex2_12_B for seqdense, diffs above"; fi; \
+	${RM} -f ex2_1.tmp;
+
 runex2_2:
-	@-for np in ${NPROCS}; do \
-	  for mattype in mpiaij mpidense; do \
-	    ${MPIEXEC} -n $$np ./ex2 -mat_type $$mattype > ex2_2.tmp 2>&1; \
-	      if (${DIFF} output/ex2_2.out ex2_2.tmp) then true; \
-	      else echo "Possible problem with ex2_2 for" $$mattype", -np="$$np", diffs above"; fi; \
-	      ${RM} -f ex2_2.tmp; \
-	  done; \
-	done;
+	-@${MPIEXEC} -n 1 ./ex2 -mat_type mpiaij > ex2_1.tmp 2>&1; \
+	if (${DIFF} output/ex2_21.out ex2_1.tmp) then true; \
+	else echo "Possible problem with ex2_21 for mpiaij,np = 1,diffs above"; fi; \
+	${RM} -f ex2_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex2 -mat_type mpidense > ex2_1.tmp 2>&1; \
+	if (${DIFF} output/ex2_22.out ex2_1.tmp) then true; \
+	else echo "Possible problem with ex2_22 for mpidense,np = 1,diffs above"; fi; \
+	${RM} -f ex2_1.tmp;
+
+	-@${MPIEXEC} -n 3 ./ex2 -mat_type mpiaij > ex2_1.tmp 2>&1; \
+	if (${DIFF} output/ex2_23.out ex2_1.tmp) then true; \
+	else echo "Possible problem with ex2_23 for mpiaij,np = 3,diffs above"; fi; \
+	${RM} -f ex2_1.tmp;
+
+	-@${MPIEXEC} -n 3 ./ex2 -mat_type mpidense > ex2_1.tmp 2>&1; \
+	if (${DIFF} output/ex2_24.out ex2_1.tmp) then true; \
+	else echo "Possible problem with ex2_24 for mpidense,np = 3,diffs above"; fi; \
+	${RM} -f ex2_1.tmp;
+
 runex2_3:
 	-@${MPIEXEC} -n 2 ./ex2 -mat_type mpiaij -rectA > ex2_3.tmp 2>&1;   \
 	   if (${DIFF} output/ex2_3.out ex2_3.tmp) then true; \
 	   else echo "Possible problem with ex2_3, diffs above"; fi; \
 	   ${RM} -f ex2_3.tmp
 runex2_4:
-	-@${MPIEXEC} -n 2 ./ex2 -mat_type mpidense -rectA > ex2_3.tmp 2>&1;   \
-	   if (${DIFF} output/ex2_3.out ex2_3.tmp) then true; \
+	-@${MPIEXEC} -n 2 ./ex2 -mat_type mpidense -rectA > ex2_4.tmp 2>&1;   \
+	   if (${DIFF} output/ex2_4.out ex2_4.tmp) then true; \
 	   else echo "Possible problem with ex2_4, diffs above"; fi; \
-	   ${RM} -f ex2_3.tmp
+	   ${RM} -f ex2_4.tmp
 
 runex3:
 	-@${MPIEXEC} -n 1 ./ex3 > ex3_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex3_1.out ex3_1.tmp) then true; \
 	   else echo "Possible problem with ex3_1, diffs above"; fi; \
 	   ${RM} -f ex3_1.tmp
+
 runex4:
-	@-for mattype in seqaij seqdense; do \
-	  ${MPIEXEC} -n 1 ./ex4 -mat_type $$mattype > ex4_1.tmp 2>&1; \
-	    if (${DIFF} output/ex4_1.out ex4_1.tmp) then true; \
-	    else echo "Possible problem with ex4_1 for" $$mattype", diffs above"; fi; \
-	    ${RM} -f ex4_1.tmp; \
-	done;
-runex4_2:
-	@-for mattype in mpiaij mpidense; do \
-	  ${MPIEXEC} -n 3 ./ex4 -mat_type $$mattype > ex4_2.tmp 2>&1; \
-	    if (${DIFF} output/ex4_2.out ex4_2.tmp) then true; \
-	    else echo "Possible problem with ex4_2 for" $$mattype", diffs above"; fi; \
-	    ${RM} -f ex4_2.tmp; \
-	done;
+	-@${MPIEXEC} -n 1 ./ex4 -mat_type mpiaij > ex4_1.tmp 2>&1; \
+	if (${DIFF} output/ex4_1.out ex4_1.tmp) then true; \
+	else echo "Possible problem with ex4_1 for mpiaij,np = 1,diffs above"; fi; \
+	${RM} -f ex4_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex4 -mat_type mpidense > ex4_1.tmp 2>&1; \
+	if (${DIFF} output/ex4_2.out ex4_1.tmp) then true; \
+	else echo "Possible problem with ex4_2 for mpidense,np = 1,diffs above"; fi; \
+	${RM} -f ex4_1.tmp;
+
+	-@${MPIEXEC} -n 3 ./ex4 -mat_type mpiaij > ex4_1.tmp 2>&1; \
+	if (${DIFF} output/ex4_3.out ex4_1.tmp) then true; \
+	else echo "Possible problem with ex4_3 for mpiaij,np = 3,diffs above"; fi; \
+	${RM} -f ex4_1.tmp;
+
+	-@${MPIEXEC} -n 3 ./ex4 -mat_type mpidense > ex4_1.tmp 2>&1; \
+	if (${DIFF} output/ex4_4.out ex4_1.tmp) then true; \
+	else echo "Possible problem with ex4_4 for mpidense,np = 3,diffs above"; fi; \
+	${RM} -f ex4_1.tmp;
+
 runex5:
-	-@for mattype in seqaij seqdense; do \
-	  for shape in ${MATSHAPES}; do \
-	    ${MPIEXEC} -n 1 ./ex5 -mat_type $$mattype -rect$$shape > ex5_1.tmp 2>&1; \
-	      if (${DIFF} output/ex5_1_$$shape.out ex5_1.tmp) then true; \
-	      else echo "Possible problem with ex5_1_"$$shape" for" $$mattype", diffs above"; fi; \
-	      ${RM} -f ex5_1.tmp; \
-	  done; \
-	done;
+	-@${MPIEXEC} -n 1 ./ex5 -mat_type seqaij -rectA > ex5_1.tmp 2>&1; \
+	if (${DIFF} output/ex5_11_A.out ex5_1.tmp) then true; \
+	else echo "Possible problem with ex5_11_A for seqaij, diffs above"; fi; \
+	${RM} -f ex5_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex5 -mat_type seqdense -rectA > ex5_1.tmp 2>&1; \
+	if (${DIFF} output/ex5_12_A.out ex5_1.tmp) then true; \
+	else echo "Possible problem with ex5_12_A for seqdense, diffs above"; fi; \
+	${RM} -f ex5_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex5 -mat_type seqaij -rectB > ex5_1.tmp 2>&1; \
+	if (${DIFF} output/ex5_11_B.out ex5_1.tmp) then true; \
+	else echo "Possible problem with ex5_11_B for seqaij, diffs above"; fi; \
+	${RM} -f ex5_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex5 -mat_type seqdense -rectB > ex5_1.tmp 2>&1; \
+	if (${DIFF} output/ex5_12_B.out ex5_1.tmp) then true; \
+	else echo "Possible problem with ex5_12_B for seqdense, diffs above"; fi; \
+	${RM} -f ex5_1.tmp;
+
 runex5_2:
-	@-for np in ${NPROCS}; do \
-	  for mattype in mpiaij mpidense; do \
-	    ${MPIEXEC} -n $$np ./ex5 -mat_type $$mattype > ex5_2.tmp 2>&1; \
-	      if (${DIFF} output/ex5_2.out ex5_2.tmp) then true; \
-	      else echo "Possible problem with ex5_2 for" $$mattype", -np="$$np", diffs above"; fi; \
-	      ${RM} -f ex5_2.tmp; \
-	  done; \
-	done;
+	-@${MPIEXEC} -n 1 ./ex5 -mat_type mpiaij > ex5_1.tmp 2>&1; \
+	if (${DIFF} output/ex5_21.out ex5_1.tmp) then true; \
+	else echo "Possible problem with ex5_21 for mpiaij,np = 1,diffs above"; fi; \
+	${RM} -f ex5_1.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex5 -mat_type mpidense > ex5_1.tmp 2>&1; \
+	if (${DIFF} output/ex5_22.out ex5_1.tmp) then true; \
+	else echo "Possible problem with ex5_22 for mpidense,np = 1,diffs above"; fi; \
+	${RM} -f ex5_1.tmp;
+
+	-@${MPIEXEC} -n 3 ./ex5 -mat_type mpiaij > ex5_1.tmp 2>&1; \
+	if (${DIFF} output/ex5_23.out ex5_1.tmp) then true; \
+	else echo "Possible problem with ex5_23 for mpiaij,np = 3,diffs above"; fi; \
+	${RM} -f ex5_1.tmp;
+
+	-@${MPIEXEC} -n 3 ./ex5 -mat_type mpidense > ex5_1.tmp 2>&1; \
+	if (${DIFF} output/ex5_24.out ex5_1.tmp) then true; \
+	else echo "Possible problem with ex5_24 for mpidense,np = 3,diffs above"; fi; \
+	${RM} -f ex5_1.tmp;
+
 runex5_3:	
-	@-for np in ${NPROCS}; do \
-	  for mattype in mpiaij mpibaij; do \
-	    ${MPIEXEC} -n $$np ./ex5 -mat_type $$mattype -test_diagonalscale > ex5_3.tmp 2>&1; \
-	    if (${DIFF} output/ex5_3.out ex5_3.tmp) then true; \
-	    else echo "Possible problem with ex5_3 for" $$mattype", -np="$$np", diffs above"; fi; \
-	    ${RM} -f ex5_3.tmp; \
-	  done; \
-	done;
-runex5_4:
+	-@${MPIEXEC} -n 1 ./ex5 -mat_type mpiaij -test_diagonalscale > ex5_3.tmp 2>&1; \
+	if (${DIFF} output/ex5_31.out ex5_3.tmp) then true; \
+	else echo "Possible problem with ex5_31 for mpiaij,np = 1,diffs above"; fi; \
+	${RM} -f ex5_3.tmp;
+
+	-@${MPIEXEC} -n 1 ./ex5 -mat_type mpibaij -test_diagonalscale > ex5_3.tmp 2>&1; \
+	if (${DIFF} output/ex5_32.out ex5_3.tmp) then true; \
+	else echo "Possible problem with ex5_32 for mpibaij,np = 1,diffs above"; fi; \
+	${RM} -f ex5_3.tmp;
+
+	-@${MPIEXEC} -n 3 ./ex5 -mat_type mpiaij -test_diagonalscale > ex5_3.tmp 2>&1; \
+	if (${DIFF} output/ex5_33.out ex5_3.tmp) then true; \
+	else echo "Possible problem with ex5_33 for mpiaij,np = 3,diffs above"; fi; \
+	${RM} -f ex5_3.tmp;
+
+	-@${MPIEXEC} -n 3 ./ex5 -mat_type mpibaij -test_diagonalscale > ex5_3.tmp 2>&1; \
+	if (${DIFF} output/ex5_34.out ex5_3.tmp) then true; \
+	else echo "Possible problem with ex5_34 for mpibaij,np = 3,diffs above"; fi; \
+	${RM} -f ex5_3.tmp;
 
 runex6:
 	-@${MPIEXEC} -n 1  ./ex6 > ex6_1.tmp 2>&1;   \
@@ -579,7 +782,7 @@ runex6:
 	   else echo "Possible problem with ex6_1, diffs above"; fi; \
 	   ${RM} -f ex6_1.tmp
 runex7:
-	-@${MPIEXEC} -n 1  ./ex7 > ex7_1.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1  ./ex7 | grep -v "MPI processes" > ex7_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex7_1.out ex7_1.tmp) then true; \
 	   else echo "Possible problem with ex7_1, diffs above"; fi; \
 	   ${RM} -f ex7_1.tmp
@@ -620,27 +823,27 @@ runex11_4:
 	   ${RM} -f ex11_4.tmp
 
 runex12:
-	-@${MPIEXEC}  -n 2 ./ex12 > ex12_1.tmp 2>&1;   \
+	-@${MPIEXEC}  -n 2 ./ex12 | grep -v "MPI processes" > ex12_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex12_1.out ex12_1.tmp) then true; \
 	   else echo "Possible problem with ex12_1, diffs above"; fi; \
 	   ${RM} -f ex12_1.tmp
 runex12_2:
-	-@${MPIEXEC}  -n 3 ./ex12 -mat_type mpibaij -mat_block_size 3 > ex12_2.tmp 2>&1;   \
+	-@${MPIEXEC}  -n 3 ./ex12 -mat_type mpibaij -mat_block_size 3 | grep -v "MPI processes" > ex12_2.tmp 2>&1;   \
 	   if (${DIFF} output/ex12_2.out ex12_2.tmp) then true; \
 	   else echo "Possible problem with ex12_2, diffs above"; fi; \
 	   ${RM} -f ex12_2.tmp
 runex12_3:
-	-@${MPIEXEC}  -n 3 ./ex12 -mat_type mpiaij -keep_nonzero_pattern > ex12_3.tmp 2>&1;   \
+	-@${MPIEXEC}  -n 3 ./ex12 -mat_type mpiaij -keep_nonzero_pattern | grep -v "MPI processes"> ex12_3.tmp 2>&1;   \
 	   if (${DIFF} output/ex12_3.out ex12_3.tmp) then true; \
 	   else echo "Possible problem with ex12_3, diffs above"; fi; \
 	   ${RM} -f ex12_3.tmp
 runex12_4:
-	-@${MPIEXEC} -n 3 ./ex12 -keep_nonzero_pattern -mat_type mpibaij -mat_block_size 3 > ex12_4.tmp 2>&1; \
+	-@${MPIEXEC} -n 3 ./ex12 -keep_nonzero_pattern -mat_type mpibaij -mat_block_size 3 | grep -v "MPI processes"> ex12_4.tmp 2>&1; \
 	   if (${DIFF} output/ex12_4.out ex12_4.tmp) then true; \
 	   else echo "Possible problem with ex12_4, diffs above"; fi; \
 	   ${RM} -f ex12_4.tmp
 runex13:
-	-@${MPIEXEC} -n 1  ./ex13 > ex13_1.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1  ./ex13 | grep -v "MPI processes" > ex13_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex13_1.out ex13_1.tmp) then true; \
 	   else echo "Possible problem with ex13_1, diffs above"; fi; \
 	   ${RM} -f ex13_1.tmp
@@ -690,46 +893,41 @@ runex22:
 	   else echo "Possible problem with ex22_1, diffs above"; fi; \
 	   ${RM} -f ex22_1.tmp
 runex30:
-	-@${MPIEXEC} -n 1 ./ex30 -display_matrices -nox > ex30_1.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex30 -mat_ordering -display_matrices -nox | grep -v "MPI processes" > ex30_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex30_1.out ex30_1.tmp) then true; \
 	   else echo "Possible problem with ex30_1, diffs above"; fi; \
 	   ${RM} -f ex30_1.tmp
 runex30_2:
-	-@${MPIEXEC} -n 1 ./ex30 -display_matrices -nox -lu > ex30_2.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex30 -mat_ordering -display_matrices -nox -lu > ex30_2.tmp 2>&1;   \
 	   if (${DIFF} output/ex30_2.out ex30_2.tmp) then true; \
 	   else echo "Possible problem with ex30_2, diffs above"; fi; \
 	   ${RM} -f ex30_2.tmp
 runex30_3:
-	-@${MPIEXEC} -n 1 ./ex30 -lu -triangular_solve > ex30_3.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex30 -mat_ordering -lu -triangular_solve > ex30_3.tmp 2>&1;   \
 	   if (${DIFF} output/ex30_3.out ex30_3.tmp) then true; \
 	   else echo "Possible problem with ex30_3, diffs above"; fi; \
 	   ${RM} -f ex30_3.tmp
 runex30_4:
-	-@${MPIEXEC} -n 1 ./ex30 -no_rowperm -no_colperm > ex30_4.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex30 > ex30_4.tmp 2>&1;   \
 	   if (${DIFF} output/ex30_4.out ex30_4.tmp) then true; \
 	   else echo "Possible problem with ex30_4, diffs above"; fi; \
 	   ${RM} -f ex30_4.tmp
 runex30_5:
-	-@${MPIEXEC} -n 1 ./ex30 -lu -no_rowperm -no_colperm > ex30_5.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex30 -lu > ex30_5.tmp 2>&1;   \
 	   if (${DIFF} output/ex30_5.out ex30_5.tmp) then true; \
 	   else echo "Possible problem with ex30_5, diffs above"; fi; \
 	   ${RM} -f ex30_5.tmp
 runex30_6:
-	-@${MPIEXEC} -n 1 ./ex30 -lu -no_rowperm -no_colperm -triangular_solve > ex30_3.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex30 -lu -triangular_solve > ex30_3.tmp 2>&1;   \
 	   if (${DIFF} output/ex30_3.out ex30_3.tmp) then true; \
 	   else echo "Possible problem with ex30_6, diffs above"; fi; \
 	   ${RM} -f ex30_3.tmp
 
 runex31:
-	-@${MPIEXEC} -n 1  ./ex31 > ex31_1.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1  ./ex31 | grep -v "MPI processes" > ex31_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex31_1.out ex31_1.tmp) then true; \
 	   else echo "Possible problem with ex31_1, diffs above"; fi; \
 	   ${RM} -f ex31_1.tmp
-runex31_2:
-	-@${MPIEXEC} -n 1  ./ex31 > ex31_2.tmp 2>&1;   \
-	   if (${DIFF} output/ex31_2.out ex31_2.tmp) then true; \
-	   else echo "Possible problem with ex31_2, diffs above"; fi; \
-	   ${RM} -f ex31_2.tmp
 runex35:
 	-@${MPIEXEC} -n 1  ./ex35 > ex35_1.tmp	2>&1;	\
 	   if (${DIFF} output/ex35_1.out ex35_1.tmp) then true; \
@@ -738,24 +936,37 @@ runex35:
 runex36f:
 	-@${MPIEXEC} -n 1  ./ex36f > ex36_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex36_1.out ex36_1.tmp) then true; \
-	   else echo "Possible problem with ex36_1, diffs above"; fi; \
+	   else echo "Possible problem with ex36f_1, diffs above"; fi; \
 	   ${RM} -f ex36_1.tmp
 runex37:
-	-@${MPIEXEC} -n 1  ./ex37 > ex37_1.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex37 | grep -v "MPI processes"> ex37_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex37_1.out ex37_1.tmp) then true; \
-	   else echo "Possible problem with part I of ex37_1, diffs above"; fi; \
+	   else echo "Possible problem with ex37_1, diffs above"; fi; \
 	   ${RM} -f ex37_1.tmp
-	-@${MPIEXEC} -n 3  ./ex37 > ex37_1.tmp 2>&1;   \
-	   if (${DIFF} output/ex37_1.out ex37_1.tmp) then true; \
-	   else echo "Possible problem with part II of ex37_1, diffs above"; fi; \
+runex37_2:
+	-@${MPIEXEC} -n 3 ./ex37  | grep -v "MPI processes"> ex37_1.tmp 2>&1;   \
+	   if (${DIFF} output/ex37_2.out ex37_1.tmp) then true; \
+	   else echo "Possible problem with ex37_2, diffs above"; fi; \
 	   ${RM} -f ex37_1.tmp
-	-@${MPIEXEC} -n 1  ./ex37 -mat_type seqbaij > ex37_1.tmp 2>&1;   \
-	   if (${DIFF} output/ex37_1.out ex37_1.tmp) then true; \
-	   else echo "Possible problem with part III of ex37_1, diffs above"; fi; \
+runex37_3:
+	-@${MPIEXEC} -n 1 ./ex37 -mat_type baij -mat_block_size 1 | grep -v "MPI processes" > ex37_1.tmp 2>&1;   \
+	   if (${DIFF} output/ex37_3.out ex37_1.tmp) then true; \
+	   else echo "Possible problem with ex37_3, diffs above"; fi; \
 	   ${RM} -f ex37_1.tmp
-	-@${MPIEXEC} -n 3  ./ex37 -mat_type mpibaij > ex37_1.tmp 2>&1;   \
-	   if (${DIFF} output/ex37_1.out ex37_1.tmp) then true; \
-	   else echo "Possible problem with part IV of ex37_1, diffs above"; fi; \
+runex37_4:
+	-@${MPIEXEC} -n 1 ./ex37 -mat_type baij -mat_block_size 2  | grep -v "MPI processes"> ex37_1.tmp 2>&1;   \
+	   if (${DIFF} output/ex37_4.out ex37_1.tmp) then true; \
+	   else echo "Possible problem with ex37_4, diffs above"; fi; \
+	   ${RM} -f ex37_1.tmp
+runex37_5:
+	-@${MPIEXEC} -n 2 ./ex37 -mat_type baij -mat_block_size 1  | grep -v "MPI processes"> ex37_1.tmp 2>&1;   \
+	   if (${DIFF} output/ex37_5.out ex37_1.tmp) then true; \
+	   else echo "Possible problem with ex37_5, diffs above"; fi; \
+	   ${RM} -f ex37_1.tmp
+runex37_6:
+	-@${MPIEXEC} -n 2 ./ex37 -mat_type baij -mat_block_size 2  | grep -v "MPI processes"> ex37_1.tmp 2>&1;   \
+	   if (${DIFF} output/ex37_6.out ex37_1.tmp) then true; \
+	   else echo "Possible problem with ex37_6, diffs above"; fi; \
 	   ${RM} -f ex37_1.tmp
 # See http://www.mcs.anl.gov/petsc/petsc-as/documentation/faq.html#datafiles for how to obtain the datafiles used below
 runex40:
@@ -779,7 +990,7 @@ runex42:
 	   ${RM} -f ex42_1.tmp ex42_12.tmp
 runex42_2:
 	-@${MPIEXEC} -n 1  ./ex42 -f ${DATAFILESPATH}/matrices/arco1 \
-	   -nd 5 -ov 2  -n > ex42_2.tmp 2>&1; \
+	   -nd 5 -ov 2 > ex42_2.tmp 2>&1; \
 	   if (${DIFF} output/ex42_2.out ex42_2.tmp) then true; \
 	   else echo "Possible problem with ex42_2, diffs above"; fi; \
 	   ${RM} -f ex42_2.tmp
@@ -886,19 +1097,19 @@ runex55_2:
 	   ${RM} -f ex55_2.tmp
 
 runex56:
-	-@${MPIEXEC} -n 1  ./ex56  > ex56_1.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex56 | grep -v "MPI processes" > ex56_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex56_1.out ex56_1.tmp) then true; \
 	   else echo "Possible problem with ex56_1, diffs above"; fi; \
 	   ${RM} -f ex56_1.tmp
 
 runex56_4:
-	-@${MPIEXEC} -n 3  ./ex56 -ass_extern > ex56_4.tmp 2>&1;   \
+	-@${MPIEXEC} -n 3 ./ex56 -ass_extern | grep -v "MPI processes"> ex56_4.tmp 2>&1;   \
 	   if (${DIFF} output/ex56_4.out ex56_4.tmp) then true; \
 	   else echo "Possible problem with ex56_4, diffs above"; fi; \
 	   ${RM} -f ex56_4.tmp
 
 runex56_5:
-	-@${MPIEXEC} -n 3  ./ex56 -ass_extern -zero_rows > ex56_5.tmp 2>&1;   \
+	-@${MPIEXEC} -n 3 ./ex56 -ass_extern -zero_rows| grep -v "MPI processes" > ex56_5.tmp 2>&1;   \
 	   if (${DIFF} output/ex56_5.out ex56_5.tmp) then true; \
 	   else echo "Possible problem with ex56_5, diffs above"; fi; \
 	   ${RM} -f ex56_5.tmp
@@ -935,13 +1146,13 @@ runex61:
 
 runex61_2:
 	-@${MPIEXEC} -n 1  ./ex61 -baij  > ex61_2.tmp 2>&1;   \
-	   if (${DIFF} output/ex61_1.out ex61_2.tmp) then true; \
+	   if (${DIFF} output/ex61_2.out ex61_2.tmp) then true; \
 	   else echo "Possible problem with ex61_2, diffs above"; fi; \
 	   ${RM} -f ex61_2.tmp
 runex63f:
 	-@${MPIEXEC} -n 2  ./ex63f  > ex63_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex63_1.out ex63_1.tmp) then true; \
-	   else echo "Possible problem with ex63_1, diffs above"; fi; \
+	   else echo "Possible problem with ex63f_1, diffs above"; fi; \
 	   ${RM} -f ex63_1.tmp dense.mat
 runex67f:
 	-@${MPIEXEC} -n 1  ./ex67f -options_left no  > ex67f_1.tmp 2>&1;   \
@@ -1022,27 +1233,43 @@ runex85f:
 	   if (${DIFF} output/ex85f_1.out ex85f_1.tmp) then true; \
 	   else echo "Possible problem with ex85f_1, diffs above"; fi; \
 	   ${RM} -f ex85f_1.tmp
+runex88:
+	-@${MPIEXEC} -n 1  ./ex88 > ex88_1.tmp 2>&1;   \
+	   ${DIFF} output/ex88_1.out ex88_1.tmp || echo "Possible problem with ex88_1, diffs above"; \
+	   ${RM} -f ex88_1.tmp
 runex91:
 	-@${MPIEXEC} -n 1  ./ex91 -ov 2 > ex91_1.tmp 2>&1;   \
 	   if (${DIFF} output/ex91_1.out ex91_1.tmp) then true; \
 	   else echo "Possible problem with ex91_1, diffs above"; fi; \
 	   ${RM} -f ex91_1.tmp
 
-NPROCS    = 1 3 4
 OVERLAP   = 1 3
 BS        = 2 8 
 runex92:
 	-@touch ex92_1.tmp;\
+	  for ov in ${OVERLAP}; do \
+            for bs in ${BS}; do \
+	      ${MPIEXEC} -n 1  ./ex92 -ov $$ov -mat_block_size $$bs >> ex92_1.tmp 2>&1; \
+	    done; \
+	  done; \
+	if (${DIFF} output/ex92_1.out ex92_1.tmp) then true; \
+	else echo "Possible problem with ex92_1: ./ex92 -ov  $$ov -mat_block_size $$bs, diffs above"; fi; \
+	${RM} -f ex92_1.tmp
+
+NPROCS    = 3 4
+runex92_2:
+	-@touch ex92_1.tmp;\
 	for np in ${NPROCS}; do \
 	  for ov in ${OVERLAP}; do \
             for bs in ${BS}; do \
-	      ${MPIEXEC} -n $$np  ./ex92 -ov  $$ov -mat_block_size $$bs >> ex92_1.tmp 2>&1; \
+	      ${MPIEXEC} -n $$np  ./ex92 -ov $$ov -mat_block_size $$bs >> ex92_1.tmp 2>&1; \
 	    done; \
 	  done; \
 	done; \
 	if (${DIFF} output/ex92_1.out ex92_1.tmp) then true; \
-	else echo "Possible problem with ex92_1, diffs above"; fi; \
+	else echo "Possible problem with ex92_2, -n $$np ./ex92 -ov  $$ov -mat_block_size $$bs, diffs above"; fi; \
 	${RM} -f ex92_1.tmp
+
 runex93:
 	-@${MPIEXEC} -n 1 ./ex93 > ex93_1.tmp 2>&1; \
 	   if (${DIFF} output/ex93_1.out ex93_1.tmp) then true; \
@@ -1062,7 +1289,7 @@ runex94_2:
 	   ${RM} -f ex94_2.tmp
 
 runex95:
-	-@${MPIEXEC} -n 3 ./ex95 > ex95_1.tmp 2>&1; \
+	-@${MPIEXEC} -n 3 ./ex95 | grep -v "MPI processes" > ex95_1.tmp 2>&1; \
 	   if (${DIFF} output/ex95_1.out ex95_1.tmp) then true; \
 	   else echo "Possible problem with ex95_1, diffs above"; fi; \
 	   ${RM} -f ex95_1.tmp
@@ -1072,6 +1299,11 @@ runex96:
 	   if (${DIFF} output/ex96.out ex96.tmp) then true; \
 	   else echo "Possible problem with ex96, diffs above"; fi; \
 	   ${RM} -f ex96.tmp
+
+runex97:
+	-@${MPIEXEC} -n 3 ./ex97 > ex97.tmp 2>&1; \
+	   ${DIFF} output/ex97_1.out ex97.tmp || echo "Possible problem with ex97, diffs above"; \
+	   ${RM} -f ex97.tmp
 
 runex98:
 	-@${MPIEXEC} -n 4 ./ex98  > ex98.tmp 2>&1; \
@@ -1116,6 +1348,12 @@ runex103_2:
 	   if (${DIFF} output/ex103.out ex103.tmp) then true; \
 	   else echo "Possible problem with ex103_2, diffs above"; fi; \
 	   ${RM} -f ex103.tmp
+
+runex104:
+	-@${MPIEXEC} -n 1 ./ex104 > ex104.tmp 2>&1; \
+	   if (${DIFF} output/ex104.out ex104.tmp) then true; \
+	   else echo "Possible problem with ex104, diffs above"; fi; \
+	   ${RM} -f ex104.tmp
 
 runex107:
 	-@${MPIEXEC} -n 4 ./ex107 -M 50 -mat_plapack_nprows 2 -mat_plapack_npcols 2 -mat_plapack_nb 1 > ex107.tmp 2>&1; \
@@ -1216,7 +1454,7 @@ runex122:
 	   ${RM} -f ex122.tmp
 
 runex125:
-	-@${MPIEXEC} -n 1 ./ex125 -f ${DATAFILESPATH}/matrices/small -mat_solver_package 0 > ex125.tmp 2>&1; \
+	-@${MPIEXEC} -n 1 ./ex125 -f ${DATAFILESPATH}/matrices/small -mat_solver_package 10 > ex125.tmp 2>&1; \
 	   if (${DIFF} output/ex125.out ex125.tmp) then true; \
 	   else echo "Possible problem with ex125, diffs above"; fi; \
 	   ${RM} -f ex125.tmp
@@ -1254,27 +1492,161 @@ runex129:
 	   if (${DIFF} output/ex129.out ex129.tmp) then true; \
 	   else echo "Possible problem with ex129, diffs above"; fi; \
 	   ${RM} -f ex129.tmp
+runex129_2:
+	-@${MPIEXEC} -n 1 ./ex129 -mat_type aij -dof 1 -inplacelu > ex129.tmp 2>&1; \
+	   if (${DIFF} output/ex129.out ex129.tmp) then true; \
+	   else echo "Possible problem with ex129_2, diffs above"; fi; \
+	   ${RM} -f ex129.tmp
 
+runex134:
+	-@${MPIEXEC} -n 2 ./ex134 -mat_ignore_lower_triangular | ${SED} 's,mem [0-9]\{4\},mem SKIP,' > ex134_1.tmp 2>&1; \
+	   ${DIFF} output/ex134_1.out ex134_1.tmp || echo "Possible problem with ex134, diffs above"; \
+	   ${RM} -f ex134_1.tmp
 
-TESTEXAMPLES_C		       = ex1.PETSc runex1 ex1.rm ex3.PETSc runex3 ex3.rm ex5.PETSc runex5 runex5_2 ex5.rm \
+runex135:
+	-@${MPIEXEC} -n 4 ./ex135 -n 1000 -mat_view_info_detailed | ${SED} 's,mem [0-9]\{5\},mem SKIP,' > ex135_1.tmp 2>&1; \
+	   ${DIFF} output/ex135_1.out ex135_1.tmp || echo "Possible problem with ex135, diffs above"; \
+	   ${RM} -f ex135_1.tmp
+
+runex136:
+	-@${MPIEXEC} -n 3 ./ex136 -f  ${DATAFILESPATH}/matrices/cfd.2.100 -mat_view_info -aij > ex136_1.tmp 2>&1; \
+	   ${DIFF} output/ex136_1.out ex136_1.tmp || echo "Possible problem with ex136, diffs above"; \
+	   ${RM} -f ex136_1.tmp
+runex136_2:
+	-@${MPIEXEC} -n 5 ./ex136 -f  ${DATAFILESPATH}/matrices/cfd.2.100 -mat_view_info -aij > ex136_2.tmp 2>&1; \
+	   ${DIFF} output/ex136_2.out ex136_2.tmp || echo "Possible problem with ex136, diffs above"; \
+	   ${RM} -f ex136_2.tmp
+runex136_3:
+	-@${MPIEXEC} -n 7 ./ex136 -f  ${DATAFILESPATH}/matrices/cfd.2.100 -mat_view_info -aij > ex136_3.tmp 2>&1; \
+	   ${DIFF} output/ex136_3.out ex136_3.tmp || echo "Possible problem with ex136, diffs above"; \
+	   ${RM} -f ex136_3.tmp
+runex136_4:
+	-@${MPIEXEC} -n 3 ./ex136 -f  ${DATAFILESPATH}/matrices/cfd.2.100 -mat_view_info  > ex136_4.tmp 2>&1; \
+	   ${DIFF} output/ex136_4.out ex136_4.tmp || echo "Possible problem with ex136, diffs above"; \
+	   ${RM} -f ex136_4.tmp
+runex136_5:
+	-@${MPIEXEC} -n 5 ./ex136 -f  ${DATAFILESPATH}/matrices/cfd.2.100 -mat_view_info > ex136_5.tmp 2>&1; \
+	   ${DIFF} output/ex136_5.out ex136_5.tmp || echo "Possible problem with ex136, diffs above"; \
+	   ${RM} -f ex136_5.tmp
+runex136_6:
+	-@${MPIEXEC} -n 7 ./ex136 -f  ${DATAFILESPATH}/matrices/cfd.2.100 -mat_view_info > ex136_6.tmp 2>&1; \
+	   ${DIFF} output/ex136_6.out ex136_6.tmp || echo "Possible problem with ex136, diffs above"; \
+	   ${RM} -f ex136_6.tmp
+runex137:
+	-@${MPIEXEC} -n 2 ./ex137  > ex137_1.tmp 2>&1; \
+	   ${DIFF} output/ex137_1.out ex137_1.tmp || echo "Possible problem with ex137, diffs above"; \
+	   ${RM} -f ex137_1.tmp
+
+runex139:
+	-@for blocked in 0 1; do \
+	    for mtype in aij baij; do \
+	      ${MPIEXEC} -n 2 ./ex139 -blocked $$blocked -mat_type $$mtype | ${SED} 's,baij,aij,' > ex139_1.tmp 2>&1; \
+	      ${DIFF} output/ex139_1.out ex139_1.tmp || echo "Possible problem with ex139 blocked=$${blocked} $${mtype}, diffs above"; \
+	      ${RM} -f ex139_1.tmp; \
+	    done; \
+	  done
+
+runex140:
+	-@${MPIEXEC} -n 1 ./ex140 -f ${DATAFILESPATH}/matrices/small -aij
+	-@${MATLAB_COMMAND} -nodesktop -nojvm -nodisplay -r "ex140; exit"  > ex140_1.tmp 2>&1; \
+	   ${DIFF} output/ex140_1.out ex140_1.tmp || echo "Possible problem with ex140, diffs above"; \
+	   ${RM} -f ex140_1.tmp binaryoutput binaryoutput.info
+
+runex140_2:
+	-@${MPIEXEC} -n 1 ./ex140  -f ${DATAFILESPATH}/matrices/small -matload_block_size 2
+	-@${MATLAB_COMMAND} -nodesktop -nojvm -nodisplay -r "ex140; exit"  > ex140_2.tmp 2>&1; \
+	   ${DIFF} output/ex140_1.out ex140_2.tmp || echo "Possible problem with ex140_2, diffs above"; \
+	   ${RM} -f ex140_2.tmp binaryoutput binaryoutput.info
+
+runex140_3:
+	-@${MPIEXEC} -n 1 ./ex140  -f ${DATAFILESPATH}/matrices/small -matload_block_size 4 -sbaij
+	-@${MATLAB_COMMAND} -nodesktop -nojvm -nodisplay -r "ex140; exit"  > ex140_3.tmp 2>&1; \
+	   ${DIFF} output/ex140_1.out ex140_3.tmp || echo "Possible problem with ex140_3, diffs above"; \
+	   ${RM} -f ex140_3.tmp binaryoutput binaryoutput.info
+
+runex140_4:
+	-@${MPIEXEC} -n 3 ./ex140  -f ${DATAFILESPATH}/matrices/small  -aij
+	-@${MATLAB_COMMAND} -nodesktop -nojvm -nodisplay -r "ex140; exit"  > ex140_4.tmp 2>&1; \
+	   ${DIFF} output/ex140_1.out ex140_4.tmp || echo "Possible problem with ex140_4, diffs above"; \
+	   ${RM} -f ex140_4.tmp binaryoutput binaryoutput.info
+
+runex141:
+	-@${MPIEXEC} -n 1 ./ex141  > ex141.tmp 2>&1; \
+	   ${DIFF} output/ex141.out ex141.tmp || echo "Possible problem with ex141, diffs above"; \
+	   ${RM} -f ex141.tmp
+
+runex143:
+	-@${MPIEXEC} -n 1 ./ex143  > ex143.tmp 2>&1; \
+	   ${DIFF} output/ex143.out ex143.tmp || echo "Possible problem with ex143, diffs above"; \
+	   ${RM} -f ex143.tmp
+runex143_2:
+	-@${MPIEXEC} -n 3 ./ex143  > ex143.tmp 2>&1; \
+	   ${DIFF} output/ex143.out ex143.tmp || echo "Possible problem with ex143_2, diffs above"; \
+	   ${RM} -f ex143.tmp
+
+runex144:
+	-@${MPIEXEC} -n 1 ./ex144  > ex144.tmp 2>&1; \
+	   ${DIFF} output/ex144.out ex144.tmp || echo "Possible problem with ex144, diffs above"; \
+	   ${RM} -f ex144.tmp
+runex144_2:
+	-@${MPIEXEC} -n 3 ./ex144  > ex144.tmp 2>&1; \
+	   ${DIFF} output/ex144.out ex144.tmp || echo "Possible problem with ex144_2, diffs above"; \
+	   ${RM} -f ex144.tmp
+
+runex148:
+	-@${MPIEXEC} -n 1 ./ex148  > ex148.tmp 2>&1; \
+	   ${DIFF} output/ex148.out ex148.tmp || echo "Possible problem with ex148, diffs above"; \
+	   ${RM} -f ex148.tmp
+runex148_2:
+	-@${MPIEXEC} -n 3 ./ex148  > ex148.tmp 2>&1; \
+	   ${DIFF} output/ex148.out ex148.tmp || echo "Possible problem with ex148_2, diffs above"; \
+	   ${RM} -f ex148.tmp
+
+runex158:
+	-@${MPIEXEC} -n 1 ./ex158  > ex158.tmp 2>&1; \
+	   ${DIFF} output/ex158.out ex158.tmp || echo "Possible problem with ex158, diffs above"; \
+	   ${RM} -f ex158.tmp
+runex158_2:
+	-@${MPIEXEC} -n 2 ./ex158  > ex158_2.tmp 2>&1; \
+	   ${DIFF} output/ex158_2.out ex158_2.tmp || echo "Possible problem with ex158_2, diffs above"; \
+	   ${RM} -f ex158_2.tmp
+runex158_3:
+	-@${MPIEXEC} -n 3 ./ex158  > ex158_3.tmp 2>&1; \
+	   ${DIFF} output/ex158_3.out ex158_3.tmp || echo "Possible problem with ex158_3, diffs above"; \
+	   ${RM} -f ex158_3.tmp
+runex159:
+	-@${MPIEXEC} -n 3 ./ex159 > ex159_1.tmp 2>&1; \
+	   ${DIFF} output/ex159_1.out ex159_1.tmp || echo "Possible problem with ex159_1, diffs above"; \
+	   ${RM} -f ex159_1.tmp
+runex159_nest:
+	-@${MPIEXEC} -n 3 ./ex159 -nest > ex159_nest.tmp 2>&1; \
+	   ${DIFF} output/ex159_nest.out ex159_nest.tmp || echo "Possible problem with ex159_nest, diffs above"; \
+	   ${RM} -f ex159_nest.tmp
+
+TESTEXAMPLES_C		       = ex1.PETSc runex1 ex1.rm ex3.PETSc runex3 ex3.rm ex4.PETSc ex4.rm  ex5.PETSc runex5 runex5_2 ex5.rm \
                                  ex6.PETSc runex6 ex6.rm ex8.PETSc runex8 ex8.rm ex9.PETSc runex9 ex9.rm ex10.PETSc \
                                  runex10 ex10.rm ex11.PETSc runex11 runex11_2 runex11_3 runex11_4 ex11.rm ex14.PETSc \
                                  runex14 ex14.rm ex15.PETSc runex15 ex15.rm ex19.PETSc ex19.rm ex20.PETSc runex20 \
                                  ex20.rm ex21.PETSc runex21 ex21.rm ex22.PETSc runex22 ex22.rm ex16.PETSc runex16 \
-                                 ex16.rm ex55.PETSc runex55 runex55_2 ex55.rm ex59.PETSc runex59 runex59_2 runex59_3 \
+                                 ex16.rm ex45.PETSc ex45.rm ex55.PETSc runex55 runex55_2 ex55.rm ex59.PETSc runex59 runex59_2 runex59_3 \
                                  ex59.rm ex60.PETSc runex60 ex60.rm ex61.PETSc runex61 runex61_2 ex61.rm ex65.PETSc \
                                  ex65.rm ex66.PETSc ex66.rm ex98.PETSc runex98 ex98.rm ex102.PETSc runex102 ex102.rm\
                                  ex52.PETSc runex52_1 runex52_2 runex52_3 runex52_4 ex52.rm \
+                                 ex88.PETSc runex88 ex88.rm ex92.PETSc runex92 ex92.rm \
+                                 ex97.PETSc runex97 ex97.rm ex104.PETSc runex104 ex104.rm \
                                  ex109.PETSc runex109 runex109_2 ex109.rm ex110.PETSc runex110 ex110.rm ex122.PETSc runex122 ex122.rm \
                                  ex114.PETSc runex114 runex114_2 runex114_3 ex114.rm ex117.PETSc ex117.rm ex118.PETSc ex118.rm ex119.PETSc ex119.rm \
-                                 ex128.PETSc runex128 runex128_2 ex128.rm ex129.PETSc runex129 ex129.rm
-TESTEXAMPLES_C_X11	       = ex2.PETSc runex2 ex2.rm ex4.PETSc runex4 runex4_2 ex4.rm ex7.PETSc runex7 ex7.rm \
+                                 ex128.PETSc runex128 runex128_2 ex128.rm ex129.PETSc runex129 runex129_2 ex129.rm ex131.PETSc ex131.rm ex132.PETSc ex132.rm \
+                                 ex133.PETSc ex133.rm ex134.PETSc runex134 ex134.rm ex135.PETSc runex135 ex135.rm ex136.PETSc ex136.rm ex137.PETSc runex137 ex137.rm \
+                                 ex138.PETSc ex138.rm ex139.PETSc runex139 ex139.rm ex141.PETSc runex141 ex141.rm ex159.PETSc runex159 runex159_nest ex159.rm
+TESTEXAMPLES_C_X11	       = ex2.PETSc runex2 ex2.rm ex7.PETSc runex7 ex7.rm \
                                  ex12.PETSc runex12 runex12_2 runex12_3 runex12_4 ex12.rm ex13.PETSc runex13 ex13.rm \
                                  ex17.PETSc runex17 ex17.rm ex19.PETSc runex19 ex19.rm ex24.PETSc ex24.rm ex25.PETSc \
                                  ex25.rm ex27.PETSc ex27.rm ex28.PETSc ex28.rm \
                                  ex30.PETSc runex30 runex30_2 runex30_3 runex30_4 runex30_5 runex30_6 ex30.rm ex31.PETSc \
-                                 runex31 runex31_2 ex31.rm ex33.PETSc ex33.rm ex34.PETSc ex34.rm ex35.PETSc runex35 \
-                                 ex35.rm ex37.PETSc runex37 ex37.rm ex38.PETSc ex38.rm ex43.PETSc ex43.rm ex48.PETSc \
+                                 runex31 ex31.rm ex33.PETSc ex33.rm ex34.PETSc ex34.rm ex35.PETSc runex35 \
+                                 ex35.rm ex37.PETSc runex37 runex37_2 runex37_3 runex37_4 runex37_5 runex37_6 ex37.rm \
+                                 ex38.PETSc ex38.rm ex43.PETSc ex43.rm ex48.PETSc \
                                  runex48 ex48.rm ex49.PETSc ex49.rm ex51.PETSc runex51 ex51.rm ex52.PETSc ex52.rm \
                                  ex54.PETSc runex54 ex54.rm ex56.PETSc runex56 runex56_4 runex56_5 \
                                  ex56.rm ex74.PETSc runex74 ex74.rm ex75.PETSc runex75 ex75.rm ex76.PETSc runex76 \
@@ -1283,14 +1655,15 @@ TESTEXAMPLES_C_X11	       = ex2.PETSc runex2 ex2.rm ex4.PETSc runex4 runex4_2 ex
 TESTEXAMPLES_FORTRAN	       = ex36f.PETSc runex36f ex36f.rm ex63f.PETSc runex63f ex63f.rm ex67f.PETSc ex67f.rm \
                                  ex85f.PETSc runex85f ex85f.rm ex105f.PETSc ex105f.rm ex126f.PETSc runex126f ex126f.rm
 TESTEXAMPLES_FORTRAN_MPIUNI    = ex36f.PETSc runex36f ex36f.rm
-TESTEXAMPLES_C_X11_MPIUNI      = ex1.PETSc runex1 ex1.rm ex2.PETSc runex2 ex2.rm ex4.PETSc runex4 ex4.rm ex5.PETSc runex5 \
+TESTEXAMPLES_C_X11_MPIUNI      = ex1.PETSc runex1 ex1.rm ex2.PETSc runex2 ex2.rm ex4.PETSc ex4.rm ex5.PETSc runex5 \
                                  ex5.rm ex6.PETSc runex6 ex6.rm ex10.PETSc runex10 ex10.rm ex14.PETSc runex14 ex14.rm \
                                  ex15.PETSc runex15 ex15.rm ex20.PETSc runex20 ex20.rm ex21.PETSc runex21 ex21.rm ex35.PETSc \
                                  runex35 ex35.rm  ex48.PETSc runex48 ex48.rm ex71.PETSc ex71.rm ex93.PETSc runex93 ex93.rm \
                                  ex95.PETSc  ex95.rm ex101.PETSc runex101 ex101.rm
 TESTEXAMPLES_C_NOCOMPLEX       = ex32.PETSc ex32.rm ex41.PETSc runex41 ex41.rm  ex50.PETSc ex50.rm
 TESTEXAMPLES_DATAFILESPATH     = ex40.PETSc runex40 ex40.rm ex42.PETSc runex42 \
-                                 ex42.rm  ex41.PETSc ex41.rm ex47.PETSc ex47.rm ex53.PETSc runex53 ex53.rm ex94.PETSc runex94 runex94_2 ex94.rm \
+                                 ex42.rm  ex41.PETSc ex41.rm ex47.PETSc ex47.rm ex53.PETSc runex53 ex53.rm ex94.PETSc runex94 runex94_2 ex94.rm ex136.PETSc runex136 runex136_2 runex136_3 \
+                                 runex136_4 runex136_5 runex136_6 ex136.rm  ex140.PETSc runex140 runex140_2 runex140_3 runex140_4 ex140.rm \
                                  ex100.PETSc runex100 ex100.rm ex125.PETSc runex125 ex125.rm 
 TESTEXAMPLES_FORTRAN_NOCOMPLEX = ex67f.PETSc runex67f ex67f.rm ex79f.PETSc runex79f ex79f.rm 
 TESTEXAMPLES_F90	       = ex16f90.PETSc runex16f90 ex16f90.rm 
@@ -1298,7 +1671,10 @@ TESTEXAMPLES_13		       = ex58f.PETSc ex58f.rm ex70.PETSc ex70.rm ex72.PETSc ex7
 TESTEXAMPLES_PARMETIS	       = ex73.PETSc ex73.rm
 TESTEXAMPLES_PLAPACK 	       = ex103.PETSc runex103_2 ex103.rm ex107.PETSc runex107 runex107_2 ex107.rm \
                                  ex115.PETSc ex115.rm ex123.PETSc ex123.rm
-TESTEXAMPLES_FFTW	       = ex112.PETSc runex112 runex112_2 runex112_3 runex112_4 ex112.rm ex121.PETSc runex121 ex121.rm
+TESTEXAMPLES_FFTW_REAL         = ex142.PETSc ex142.rm ex144.PETSc runex144 runex144_2 ex144.rm \
+                                 ex158.PETsc runex158 runex158_2 runex158_3 ex158.rm
+TESTEXAMPLES_FFTW_COMPLEX       = ex112.PETSc runex112 runex112_2 runex112_3 runex112_4 ex112.rm ex121.PETSc ex121.rm \
+                                 ex143.PETSc runex143 runex143_2 ex143.rm ex145.PETSc ex145.rm \
 TESTEXAMPLES_C_COMPLEX	       = ex127.PETSc runex127 runex127_2 ex127.rm 
 
 include ${PETSC_DIR}/conf/test

@@ -45,6 +45,18 @@ namespace PETSc {
       PetscErrorCode ierr = PetscLogEventBarrierEnd(this->id, o1, o2, o3, o4, comm); CHKERRXX(ierr);
     };
     PetscLogEvent getId() {return this->id;};
+    PetscLogDouble time() {
+      PetscInt       stage = 0;
+      PetscStageLog       stageLog;
+      PetscEventPerfLog   eventLog;
+      PetscErrorCode ierr;
+
+      ierr = PetscLogGetStageLog(&stageLog);CHKERRXX(ierr);
+      ierr = PetscStageLogGetEventPerfLog(stageLog, stage, &eventLog);CHKERRXX(ierr);
+      PetscEventPerfInfo eventInfo = eventLog->eventInfo[this->id];
+
+      return eventInfo.time;
+    };
   };
 
   class Log {
@@ -52,13 +64,13 @@ namespace PETSc {
     static std::map<std::string,LogEvent> event_registry;
     static std::map<std::string,LogStage> stage_registry;
 
-    static LogEvent& Event(const std::string& name, PetscCookie cookie = PETSC_OBJECT_COOKIE) {
+    static LogEvent& Event(const std::string& name, PetscClassId classid = PETSC_OBJECT_CLASSID) {
       if (event_registry.find(name) == event_registry.end()) {
         PetscLogEvent  id;
         PetscErrorCode ierr;
 
         /* Should check for already registered events */
-        ierr = PetscLogEventRegister(name.c_str(), cookie, &id);CHKERRXX(ierr);
+        ierr = PetscLogEventRegister(name.c_str(), classid, &id);CHKERRXX(ierr);
         event_registry[name] = LogEvent(name, id);
       }
       return event_registry[name];
@@ -78,5 +90,9 @@ namespace PETSc {
   };
 }
 #endif /* PETSC_CLANGUAGE_CXX */
+
+/* Reset __FUNCT__ in case the user does not define it themselves */
+#undef __FUNCT__
+#define __FUNCT__ "User provided function"
 
 #endif /* __PETSCLOG_HH */

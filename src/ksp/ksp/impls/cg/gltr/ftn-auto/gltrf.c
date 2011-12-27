@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* gltr.c */
 /* Fortran interface file */
 
@@ -58,23 +59,23 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspgltrsetradius_(KSP ksp,PetscReal *radius, int *__ierr ){
+void PETSC_STDCALL  kspgltrsetradius_(KSP ksp,PetscReal *radius, int *__ierr ){
 *__ierr = KSPGLTRSetRadius(
 	(KSP)PetscToPointer((ksp) ),*radius);
 }
-void PETSC_STDCALL   kspgltrgetnormd_(KSP ksp,PetscReal *norm_d, int *__ierr ){
+void PETSC_STDCALL  kspgltrgetnormd_(KSP ksp,PetscReal *norm_d, int *__ierr ){
 *__ierr = KSPGLTRGetNormD(
 	(KSP)PetscToPointer((ksp) ),norm_d);
 }
-void PETSC_STDCALL   kspgltrgetobjfcn_(KSP ksp,PetscReal *o_fcn, int *__ierr ){
+void PETSC_STDCALL  kspgltrgetobjfcn_(KSP ksp,PetscReal *o_fcn, int *__ierr ){
 *__ierr = KSPGLTRGetObjFcn(
 	(KSP)PetscToPointer((ksp) ),o_fcn);
 }
-void PETSC_STDCALL   kspgltrgetmineig_(KSP ksp,PetscReal *e_min, int *__ierr ){
+void PETSC_STDCALL  kspgltrgetmineig_(KSP ksp,PetscReal *e_min, int *__ierr ){
 *__ierr = KSPGLTRGetMinEig(
 	(KSP)PetscToPointer((ksp) ),e_min);
 }
-void PETSC_STDCALL   kspgltrgetlambda_(KSP ksp,PetscReal *lambda, int *__ierr ){
+void PETSC_STDCALL  kspgltrgetlambda_(KSP ksp,PetscReal *lambda, int *__ierr ){
 *__ierr = KSPGLTRGetLambda(
 	(KSP)PetscToPointer((ksp) ),lambda);
 }

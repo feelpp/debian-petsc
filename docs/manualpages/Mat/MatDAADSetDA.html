@@ -6,26 +6,26 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="MatDAADSetDA"><H1>MatDAADSetDA</H1></A>
-Tells the matrix what <A HREF="../DA/DA.html#DA">DA</A> it is using for layout and Jacobian. 
+Tells the matrix what DMDA it is using for layout and Jacobian. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"    
+#include "petscdmda.h"    
 #include "petscsnes.h"  
-PetscErrorCode PETSCMAT_DLLEXPORT MatDAADSetDA(Mat A,DA da)
+PetscErrorCode  MatDAADSetDA(Mat A,DM da)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF="../DA/DA.html#DA">DA</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and DMDA
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the <A HREF="../DA/DA.html#DA">DA</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the DMDA
 </TD></TR></TABLE>
 <P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../DA/DASetLocalAdicMFFunction.html#DASetLocalAdicMFFunction">DASetLocalAdicMFFunction</A>(), <A HREF="../Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>()
+ <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A HREF="../Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate

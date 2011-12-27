@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:39:00+00:00">
+<meta name="date" content="2011-10-29T19:11:00+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,7 +12,7 @@
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> on a tridiagonal matrix.  Note that most\n\</font>
 <a name="line3">  3: </a><font color="#666666">users should employ the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> interface instead of using <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> directly.\n\n"</font>;
 
-<a name="line5"> 5: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 <a name="line6">  6: </a><font color="#A020F0">#include &lt;stdio.h&gt;</font>
 
 <a name="line10"> 10: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
@@ -79,12 +79,12 @@
 <a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"2 norm of error %A Number of iterations %D\n"</font>,norm,its);
 
 <a name="line74"> 74: </a>  <font color="#B22222">/* Free data structures */</font>
-<a name="line75"> 75: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
-<a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(ustar);
-<a name="line78"> 78: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line79"> 79: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(mat);
-<a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>(pc);
+<a name="line75"> 75: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;ustar);
+<a name="line78"> 78: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line79"> 79: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;mat);
+<a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>(&amp;pc);
 
 <a name="line82"> 82: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line83"> 83: </a>  <font color="#4169E1">return</font> 0;

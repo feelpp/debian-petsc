@@ -20,7 +20,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -35,7 +35,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscInt       i,j,m = 3,n = 2,its;
   PetscMPIInt    size,rank;
-  PetscTruth     mat_nonsymmetric = PETSC_FALSE;
+  PetscBool      mat_nonsymmetric = PETSC_FALSE;
 #if defined (PETSC_USE_LOG)
   PetscLogStage  stages[2];
 #endif
@@ -49,7 +49,7 @@ int main(int argc,char **args)
   /*
      Set flag if we are doing a nonsymmetric problem; the default is symmetric.
   */
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-mat_nonsym",&mat_nonsymmetric,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-mat_nonsym",&mat_nonsymmetric,PETSC_NULL);CHKERRQ(ierr);
 
   /*
      Register two stages for separate profiling of the two linear solves.
@@ -291,18 +291,18 @@ int main(int argc,char **args)
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
   */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
 
   /*
      Indicate to PETSc profiling that we're concluding the second stage 
   */
   ierr = PetscLogStagePop();CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

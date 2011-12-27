@@ -11,7 +11,7 @@ Creates a mapping between a local (0 to n) ordering and a global parallel orderi
 <PRE>
 #include "petscvec.h" 
 #include "petscis.h"  
-PetscErrorCode  ISLocalToGlobalMappingCreate(MPI_Comm cm,PetscInt n,const PetscInt indices[],ISLocalToGlobalMapping *mapping)
+PetscErrorCode  ISLocalToGlobalMappingCreate(MPI_Comm cm,PetscInt n,const PetscInt indices[],PetscCopyMode mode,ISLocalToGlobalMapping *mapping)
 </PRE>
 Not Collective, but communicator may have more than one process
 <P>
@@ -22,6 +22,8 @@ Not Collective, but communicator may have more than one process
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of local elements
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>indices </B></TD><TD>- the global index for each local element
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mode </B></TD><TD>- see <A HREF="../Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -32,7 +34,7 @@ Not Collective, but communicator may have more than one process
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../IS/ISLocalToGlobalMappingDestroy.html#ISLocalToGlobalMappingDestroy">ISLocalToGlobalMappingDestroy</A>(), <A HREF="../IS/ISLocalToGlobalMappingCreateIS.html#ISLocalToGlobalMappingCreateIS">ISLocalToGlobalMappingCreateIS</A>(), <A HREF="../IS/ISLocalToGlobalMappingCreateNC.html#ISLocalToGlobalMappingCreateNC">ISLocalToGlobalMappingCreateNC</A>()
+ <A HREF="../IS/ISLocalToGlobalMappingDestroy.html#ISLocalToGlobalMappingDestroy">ISLocalToGlobalMappingDestroy</A>(), <A HREF="../IS/ISLocalToGlobalMappingCreateIS.html#ISLocalToGlobalMappingCreateIS">ISLocalToGlobalMappingCreateIS</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/utils/isltog.c.html#ISLocalToGlobalMappingCreate">src/vec/is/utils/isltog.c</A>
 <BR><A HREF="./index.html">Index of all IS routines</A>

@@ -6,16 +6,19 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="DMMGCreate"><H1>DMMGCreate</H1></A>
-Creates a <A HREF="../DA/DA.html#DA">DA</A> based multigrid solver object. This allows one to  easily implement MG methods on regular grids. 
+Creates a DM based multigrid solver object. This allows one to  easily implement MG methods on regular grids. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"   
+#include "petscdm.h"   
 #include "petscksp.h"  
-#include "petscmg.h"   
+#include "petscpcmg.h"   
 #include "petscdmmg.h" 
 #include "petscpc.h"   
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGCreate(MPI_Comm comm,PetscInt nlevels,void *user,DMMG **dmmg)
+PetscErrorCode  DMMGCreate(MPI_Comm comm,PetscInt nlevels,void *user,DMMG **dmmg)
 </PRE>
+This is being deprecated. Use <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>() for linear problems and <A HREF="../SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>() for nonlinear problems.
+See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c
+<P>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
@@ -53,16 +56,14 @@ this routine
 <BR><A HREF="./index.html">Index of all DMMG routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex22.c.html">src/ksp/ksp/examples/tutorials/ex22.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex25.c.html">src/ksp/ksp/examples/tutorials/ex25.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex28.c.html">src/ksp/ksp/examples/tutorials/ex28.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex29.c.html">src/ksp/ksp/examples/tutorials/ex29.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html">src/ksp/ksp/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html">src/ksp/ksp/examples/tutorials/ex32.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex33.c.html">src/ksp/ksp/examples/tutorials/ex33.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex34.c.html">src/ksp/ksp/examples/tutorials/ex34.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex35.c.html">src/ksp/ksp/examples/tutorials/ex35.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex37.c.html">src/ksp/ksp/examples/tutorials/ex37.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex22f.F.html">src/ksp/ksp/examples/tutorials/ex22f.F.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex18.c.html">src/snes/examples/tutorials/ex18.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex47.c.html">src/ksp/ksp/examples/tutorials/ex47.c.html</A><BR>
 </BODY></HTML>

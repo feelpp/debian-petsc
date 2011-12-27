@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:57:38+00:00">
+<meta name="date" content="2011-10-29T19:25:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,11 +12,11 @@
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_INumbering_hh</font></strong>
 
 <a name="line4">  4: </a><font color="#A020F0">#ifndef  included_ALE_IField_hh</font>
-<a name="line5">  5: </a><font color="#A020F0">#include &lt;IField.hh&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;sieve/IField.hh&gt;</font>
 <a name="line6">  6: </a><font color="#A020F0">#endif</font>
 
 <a name="line8">  8: </a><font color="#A020F0">#ifndef  included_ALE_Completion_hh</font>
-<a name="line9">  9: </a><font color="#A020F0">#include &lt;Completion.hh&gt;</font>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;sieve/Completion.hh&gt;</font>
 <a name="line10"> 10: </a><font color="#A020F0">#endif</font>
 
 <a name="line12"> 12: </a>namespace ALE {
@@ -191,7 +191,7 @@
 <a name="line181">181: </a>      }
 <a name="line182">182: </a>      <font color="#4169E1">if</font> (debug) {std::cout &lt;&lt; <font color="#666666">"["</font>&lt;&lt;numbering-&gt;commRank()&lt;&lt;<font color="#666666">"]   local points"</font> &lt;&lt; std::endl;}
 <a name="line183">183: </a>      numbering-&gt;setLocalSize(localSize);
-<a name="line184">184: </a>    };
+<a name="line184">184: </a>    }
 <a name="line185">185: </a>    // Order all local points
 <a name="line186">186: </a>    //   points in the overlap are only ordered by the owner with the lowest rank
 <a name="line187">187: </a>    template&lt;typename Sequence_, typename Section_&gt;
@@ -234,7 +234,7 @@
 <a name="line224">224: </a>      }
 <a name="line225">225: </a>      ///std::cout &lt;&lt; <font color="#666666">"["</font>&lt;&lt;order-&gt;commRank()&lt;&lt;<font color="#666666">"]   local size"</font> &lt;&lt; std::endl;
 <a name="line226">226: </a>      order-&gt;setLocalSize(localSize);
-<a name="line227">227: </a>    };
+<a name="line227">227: </a>    }
 <a name="line228">228: </a><strong><font color="#FF0000">  protected:</font></strong> // Global offsets
 <a name="line229">229: </a>    // Calculate process offsets
 <a name="line230">230: </a>    template&lt;typename Numbering&gt;
@@ -249,7 +249,7 @@
 <a name="line239">239: </a>      }
 <a name="line240">240: </a>      numbering-&gt;setGlobalOffsets(offsets);
 <a name="line241">241: </a>      delete [] offsets;
-<a name="line242">242: </a>    };
+<a name="line242">242: </a>    }
 <a name="line243">243: </a>    // Update local offsets based upon process offsets
 <a name="line244">244: </a>    template&lt;typename Numbering, typename Sequence&gt;
 <a name="line245">245: </a>    void updateOrder(const Obj&lt;Numbering&gt;&amp; numbering, Sequence&amp; points) {
@@ -260,7 +260,7 @@
 <a name="line250">250: </a>          numbering-&gt;updateAddPoint(*l_iter, &amp;val);
 <a name="line251">251: </a>        }
 <a name="line252">252: </a>      }
-<a name="line253">253: </a>    };
+<a name="line253">253: </a>    }
 <a name="line254">254: </a>    template&lt;typename OverlapSection, typename RecvOverlap&gt;
 <a name="line255">255: </a>    static void fuseNumbering(const Obj&lt;OverlapSection&gt;&amp; overlapSection, const Obj&lt;RecvOverlap&gt;&amp; recvOverlap, const Obj&lt;numbering_type&gt;&amp; numbering) {
 <a name="line256">256: </a>      <font color="#4169E1">typedef</font> typename OverlapSection::point_type overlap_point_type;
@@ -299,7 +299,7 @@
 <a name="line289">289: </a>          }
 <a name="line290">290: </a>        }
 <a name="line291">291: </a>      }
-<a name="line292">292: </a>    };
+<a name="line292">292: </a>    }
 <a name="line293">293: </a>    template&lt;typename OverlapSection, typename RecvOverlap&gt;
 <a name="line294">294: </a>    static void fuse(const Obj&lt;OverlapSection&gt;&amp; overlapSection, const Obj&lt;RecvOverlap&gt;&amp; recvOverlap, const Obj&lt;order_type&gt;&amp; order) {
 <a name="line295">295: </a>      <font color="#4169E1">typedef</font> typename OverlapSection::point_type overlap_point_type;
@@ -337,7 +337,7 @@
 <a name="line327">327: </a>          }
 <a name="line328">328: </a>        }
 <a name="line329">329: </a>      }
-<a name="line330">330: </a>    };
+<a name="line330">330: </a>    }
 <a name="line331">331: </a><strong><font color="#FF0000">  public:</font></strong> // Completion
 <a name="line332">332: </a>    void completeNumbering(const Obj&lt;numbering_type&gt;&amp; numbering, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, bool allowDuplicates = false) {
 <a name="line333">333: </a><font color="#A020F0">#if 0</font>
@@ -352,7 +352,7 @@
 <a name="line342">342: </a>      fuseNumbering(overlapSection, recvOverlap, numbering);
 <a name="line343">343: </a>      <font color="#4169E1">if</font> (numbering-&gt;debug()) {numbering-&gt;view(<font color="#666666">"Global Numbering"</font>);}
 <a name="line344">344: </a><font color="#A020F0">#endif</font>
-<a name="line345">345: </a>    };
+<a name="line345">345: </a>    }
 <a name="line346">346: </a>    void completeOrder(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, bool allowDuplicates = false) {
 <a name="line347">347: </a><font color="#A020F0">#if 0</font>
 <a name="line348">348: </a><strong><font color="#FF0000">      ALE:</font></strong>:Completion::completeSection(sendOverlap, recvOverlap, order, order);
@@ -366,7 +366,7 @@
 <a name="line356">356: </a>      fuse(overlapSection, recvOverlap, order);
 <a name="line357">357: </a>      <font color="#4169E1">if</font> (order-&gt;debug()) {order-&gt;view(<font color="#666666">"Global Order"</font>);}
 <a name="line358">358: </a><font color="#A020F0">#endif</font>
-<a name="line359">359: </a>    };
+<a name="line359">359: </a>    }
 <a name="line360">360: </a><strong><font color="#FF0000">  public:</font></strong> // Construct a full global numberings
 <a name="line361">361: </a>    template&lt;typename Sequence&gt;
 <a name="line362">362: </a>    void constructNumbering(const Obj&lt;numbering_type&gt;&amp; numbering, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const Obj&lt;Sequence&gt;&amp; points) {
@@ -374,21 +374,21 @@
 <a name="line364">364: </a>      this-&gt;calculateOffsets(numbering);
 <a name="line365">365: </a>      this-&gt;updateOrder(numbering, *points.ptr());
 <a name="line366">366: </a>      this-&gt;completeNumbering(numbering, sendOverlap, recvOverlap);
-<a name="line367">367: </a>    };
+<a name="line367">367: </a>    }
 <a name="line368">368: </a>    template&lt;typename Sequence, typename Section&gt;
 <a name="line369">369: </a>    void constructOrder(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const Sequence&amp; points, const Obj&lt;Section&gt;&amp; section) {
 <a name="line370">370: </a>      this-&gt;constructLocalOrder(order, sendOverlap, points, section);
 <a name="line371">371: </a>      this-&gt;calculateOffsets(order);
 <a name="line372">372: </a>      this-&gt;updateOrder(order, points);
 <a name="line373">373: </a>      this-&gt;completeOrder(order, sendOverlap, recvOverlap);
-<a name="line374">374: </a>    };
+<a name="line374">374: </a>    }
 <a name="line375">375: </a>    template&lt;typename Sequence, typename Section&gt;
 <a name="line376">376: </a>    void constructOrder(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const Obj&lt;Sequence&gt;&amp; points, const Obj&lt;Section&gt;&amp; section) {
 <a name="line377">377: </a>      this-&gt;constructLocalOrder(order, sendOverlap, *points.ptr(), section);
 <a name="line378">378: </a>      this-&gt;calculateOffsets(order);
 <a name="line379">379: </a>      this-&gt;updateOrder(order, *points.ptr());
 <a name="line380">380: </a>      this-&gt;completeOrder(order, sendOverlap, recvOverlap);
-<a name="line381">381: </a>    };
+<a name="line381">381: </a>    }
 <a name="line382">382: </a><strong><font color="#FF0000">  public:</font></strong> // Real interface
 <a name="line383">383: </a>    template&lt;typename ABundle_&gt;
 <a name="line384">384: </a>    const Obj&lt;numbering_type&gt;&amp; getLocalNumbering(const Obj&lt;ABundle_&gt;&amp; bundle, const int depth) {
@@ -405,7 +405,7 @@
 <a name="line395">395: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {std::cout &lt;&lt; <font color="#666666">"Using old local numbering: ptr "</font> &lt;&lt; bundle.ptr() &lt;&lt; <font color="#666666">" depth "</font> &lt;&lt; depth &lt;&lt; std::endl;}
 <a name="line396">396: </a>      }
 <a name="line397">397: </a>      <font color="#4169E1">return</font> this-&gt;_localNumberings[bundle.ptr()][<font color="#666666">"depth"</font>][depth];
-<a name="line398">398: </a>    };
+<a name="line398">398: </a>    }
 <a name="line399">399: </a>    template&lt;typename ABundle_&gt;
 <a name="line400">400: </a>    const Obj&lt;numbering_type&gt;&amp; getNumbering(const Obj&lt;ABundle_&gt;&amp; bundle, const int depth) {
 <a name="line401">401: </a>      <font color="#4169E1">if</font> ((this-&gt;_numberings.find(bundle.ptr()) == this-&gt;_numberings.end()) ||
@@ -423,7 +423,7 @@
 <a name="line413">413: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {std::cout &lt;&lt; <font color="#666666">"["</font>&lt;&lt;bundle-&gt;commRank()&lt;&lt;<font color="#666666">"]Using old numbering: depth "</font> &lt;&lt; depth &lt;&lt; std::endl;}
 <a name="line414">414: </a>      }
 <a name="line415">415: </a>      <font color="#4169E1">return</font> this-&gt;_numberings[bundle.ptr()][<font color="#666666">"depth"</font>][depth];
-<a name="line416">416: </a>    };
+<a name="line416">416: </a>    }
 <a name="line417">417: </a>    template&lt;typename ABundle_&gt;
 <a name="line418">418: </a>    const Obj&lt;numbering_type&gt;&amp; getNumbering(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; labelname, const int value) {
 <a name="line419">419: </a>      <font color="#4169E1">if</font> ((this-&gt;_numberings.find(bundle.ptr()) == this-&gt;_numberings.end()) ||
@@ -442,7 +442,7 @@
 <a name="line432">432: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {std::cout &lt;&lt; <font color="#666666">"["</font>&lt;&lt;bundle-&gt;commRank()&lt;&lt;<font color="#666666">"]Using old numbering: "</font> &lt;&lt; labelname &lt;&lt; <font color="#666666">" value "</font> &lt;&lt; value &lt;&lt; std::endl;}
 <a name="line433">433: </a>      }
 <a name="line434">434: </a>      <font color="#4169E1">return</font> this-&gt;_numberings[bundle.ptr()][labelname][value];
-<a name="line435">435: </a>    };
+<a name="line435">435: </a>    }
 <a name="line436">436: </a>    template&lt;typename ABundle_, typename Section_&gt;
 <a name="line437">437: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;Section_&gt;&amp; section) {
 <a name="line438">438: </a>      <font color="#4169E1">if</font> ((this-&gt;_orders.find(bundle.ptr()) == this-&gt;_orders.end()) ||
@@ -460,14 +460,34 @@
 <a name="line450">450: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {std::cout &lt;&lt; <font color="#666666">"["</font>&lt;&lt;bundle-&gt;commRank()&lt;&lt;<font color="#666666">"]Using old global order: "</font> &lt;&lt; name &lt;&lt; std::endl;}
 <a name="line451">451: </a>      }
 <a name="line452">452: </a>      <font color="#4169E1">return</font> this-&gt;_orders[bundle.ptr()][name];
-<a name="line453">453: </a>    };
-<a name="line454">454: </a>    template&lt;typename ABundle_&gt;
-<a name="line455">455: </a>    void setGlobalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;order_type&gt;&amp; order) {
-<a name="line456">456: </a>      this-&gt;_orders[bundle.ptr()][name] = order;
-<a name="line457">457: </a>    };
-<a name="line458">458: </a>  };
-<a name="line459">459: </a>}
-<a name="line460">460: </a><font color="#A020F0">#endif</font>
+<a name="line453">453: </a>    }
+<a name="line454">454: </a><font color="#A020F0">#if 0</font>
+<a name="line455">455: </a>    template&lt;typename ABundle_, typename Section_&gt;
+<a name="line456">456: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrderWithBC(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;Section_&gt;&amp; section) {
+<a name="line457">457: </a>      <font color="#4169E1">if</font> ((this-&gt;_orders.find(bundle.ptr()) == this-&gt;_orders.end()) ||
+<a name="line458">458: </a>          (this-&gt;_orders[bundle.ptr()].find(name) == this-&gt;_orders[bundle.ptr()].end())) {
+<a name="line459">459: </a>        bundle-&gt;constructOverlap();
+<a name="line460">460: </a>        Obj&lt;order_type&gt;        order       = new order_type(bundle-&gt;comm(), bundle-&gt;debug());
+<a name="line461">461: </a>        Obj&lt;send_overlap_type&gt; sendOverlap = bundle-&gt;getSendOverlap();
+<a name="line462">462: </a>        Obj&lt;recv_overlap_type&gt; recvOverlap = bundle-&gt;getRecvOverlap();
+
+<a name="line464">464: </a>        order-&gt;setDefault(&amp;_unknownOrder);
+<a name="line465">465: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {std::cout &lt;&lt; <font color="#666666">"["</font>&lt;&lt;bundle-&gt;commRank()&lt;&lt;<font color="#666666">"]Creating new global order: "</font> &lt;&lt; name &lt;&lt; std::endl;}
+<a name="line466">466: </a>        this-&gt;constructOrderWithBC(order, sendOverlap, recvOverlap, section-&gt;getChart(), section);
+<a name="line467">467: </a>        this-&gt;_orders[bundle.ptr()][name] = order;
+<a name="line468">468: </a>      } <font color="#4169E1">else</font> {
+<a name="line469">469: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {std::cout &lt;&lt; <font color="#666666">"["</font>&lt;&lt;bundle-&gt;commRank()&lt;&lt;<font color="#666666">"]Using old global order: "</font> &lt;&lt; name &lt;&lt; std::endl;}
+<a name="line470">470: </a>      }
+<a name="line471">471: </a>      <font color="#4169E1">return</font> this-&gt;_orders[bundle.ptr()][name];
+<a name="line472">472: </a>    }
+<a name="line473">473: </a><font color="#A020F0">#endif</font>
+<a name="line474">474: </a>    template&lt;typename ABundle_&gt;
+<a name="line475">475: </a>    void setGlobalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;order_type&gt;&amp; order) {
+<a name="line476">476: </a>      this-&gt;_orders[bundle.ptr()][name] = order;
+<a name="line477">477: </a>    }
+<a name="line478">478: </a>  };
+<a name="line479">479: </a>}
+<a name="line480">480: </a><font color="#A020F0">#endif</font>
 </pre>
 </body>
 

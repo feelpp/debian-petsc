@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:41+00:00">
+<meta name="date" content="2011-10-29T18:56:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Writes an array to a file, then reads an array from a file, then forms a vector.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -24,7 +24,7 @@
 
 <a name="line18"> 18: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 <a name="line19"> 19: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
-<a name="line20"> 20: </a>  <font color="#4169E1">if</font> (size != 1) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"This is a uniprocessor example only!"</font>);
+<a name="line20"> 20: </a>  <font color="#4169E1">if</font> (size != 1) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"This is a uniprocessor example only!"</font>);
 <a name="line21"> 21: </a>
 <a name="line22"> 22: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-m"</font>,&amp;m,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
@@ -47,7 +47,7 @@
 <a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>(fd,array,m,PETSC_SCALAR,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
 
 <a name="line42"> 42: </a>  <font color="#B22222">/* Destroy the output viewer and work array */</font>
-<a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(view_out);
+<a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_out);
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(array);
 
 <a name="line46"> 46: </a>  <font color="#B22222">/* ---------------------------------------------------------------------- */</font>
@@ -66,7 +66,7 @@
 
 <a name="line60"> 60: </a>  <font color="#B22222">/* Read data into vector */</font>
 <a name="line61"> 61: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A>(fd,&amp;sz,1,PETSC_INT);
-<a name="line62"> 62: </a>  <font color="#4169E1">if</font> (sz &lt;=0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Error: Must have array length &gt; 0"</font>);
+<a name="line62"> 62: </a>  <font color="#4169E1">if</font> (sz &lt;=0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"Error: Must have array length &gt; 0"</font>);
 
 <a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"reading data in binary from input.dat, sz =%D ...\n"</font>,sz);
 <a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A>(fd,avec,sz,PETSC_SCALAR);
@@ -76,8 +76,8 @@
 <a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(vec,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
 
 <a name="line71"> 71: </a>  <font color="#B22222">/* Free data structures */</font>
-<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(vec);
-<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(view_in);
+<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;vec);
+<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_in);
 <a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line75"> 75: </a>  <font color="#4169E1">return</font> 0;
 <a name="line76"> 76: </a>}

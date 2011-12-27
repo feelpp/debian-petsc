@@ -1,31 +1,31 @@
-#define PETSCMAT_DLL
 
 /* 
    Provides an interface to the Spooles serial sparse solver
 */
 
-#include "../src/mat/impls/aij/seq/spooles/spooles.h"
+#include <../src/mat/impls/aij/seq/spooles/spooles.h>
 
 extern PetscErrorCode MatDestroy_SeqSBAIJ(Mat);
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "MatDestroy_SeqSBAIJSpooles"
 PetscErrorCode MatDestroy_SeqSBAIJSpooles(Mat A)
 {
-  Mat_Spooles    *lu = (Mat_Spooles*)A->spptr; 
+  Mat_Spooles    *lu = (Mat_Spooles*)A->spptr;
   PetscErrorCode ierr;
-  
+
   PetscFunctionBegin;
-  if (lu->CleanUpSpooles) {
-    FrontMtx_free(lu->frontmtx);        
-    IV_free(lu->newToOldIV);            
-    IV_free(lu->oldToNewIV);            
-    InpMtx_free(lu->mtxA);             
-    ETree_free(lu->frontETree);          
-    IVL_free(lu->symbfacIVL);         
-    SubMtxManager_free(lu->mtxmanager); 
+  if (lu && lu->CleanUpSpooles) {
+    FrontMtx_free(lu->frontmtx);
+    IV_free(lu->newToOldIV);
+    IV_free(lu->oldToNewIV);
+    InpMtx_free(lu->mtxA);
+    ETree_free(lu->frontETree);
+    IVL_free(lu->symbfacIVL);
+    SubMtxManager_free(lu->mtxmanager);
     Graph_free(lu->graph);
   }
+  ierr = PetscFree(A->spptr);CHKERRQ(ierr);
   ierr = MatDestroy_SeqSBAIJ(A);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -74,7 +74,7 @@ EXTERN_C_BEGIN
 PetscErrorCode MatFactorGetSolverPackage_seqsbaij_spooles(Mat A,const MatSolverPackage *type)
 {
   PetscFunctionBegin;
-  *type = MAT_SOLVER_SPOOLES;
+  *type = MATSOLVERSPOOLES;
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
@@ -89,7 +89,7 @@ PetscErrorCode MatGetFactor_seqsbaij_spooles(Mat A,MatFactorType ftype,Mat *F)
   Mat_Spooles    *lu;   
 
   PetscFunctionBegin;
-  if (ftype != MAT_FACTOR_CHOLESKY) SETERRQ(PETSC_ERR_SUP,"Only Cholesky factorization is support for Spooles from SBAIJ matrix");
+  if (ftype != MAT_FACTOR_CHOLESKY) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Only Cholesky factorization is support for Spooles from SBAIJ matrix");
   ierr = MatCreate(((PetscObject)A)->comm,&B);
   ierr = MatSetSizes(B,A->rmap->n,A->cmap->n,A->rmap->n,A->cmap->n);
   ierr = MatSetType(B,((PetscObject)A)->type_name);CHKERRQ(ierr);
@@ -104,7 +104,7 @@ PetscErrorCode MatGetFactor_seqsbaij_spooles(Mat A,MatFactorType ftype,Mat *F)
   B->ops->choleskyfactorsymbolic = MatCholeskyFactorSymbolic_SeqSBAIJSpooles;
   B->ops->destroy                = MatDestroy_SeqSBAIJSpooles;  
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)B,"MatFactorGetSolverPackage_C","MatFactorGetSolverPackage_seqsbaij_spooles",MatFactorGetSolverPackage_seqsbaij_spooles);CHKERRQ(ierr);
-  B->factor                      = ftype;
+  B->factortype                  = ftype;
   *F = B;
   PetscFunctionReturn(0);
 }

@@ -1,13 +1,13 @@
-#define PETSC_DLL
+
 /*
        Contains the data structure for drawing scatter plots
     graphs in a window with an axis. This is intended for scatter
     plots that change dynamically.
 */
 
-#include "petscsys.h"         /*I "petscsys.h" I*/
+#include <petscsys.h>         /*I "petscsys.h" I*/
 
-PetscCookie DRAWSP_COOKIE = 0;
+PetscClassId DRAWSP_CLASSID = 0;
 
 struct _p_DrawSP {
   PETSCHEADER(int);
@@ -42,22 +42,22 @@ struct _p_DrawSP {
 
 .seealso:  PetscDrawSPDestroy()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPCreate(PetscDraw draw,int dim,PetscDrawSP *drawsp)
+PetscErrorCode  PetscDrawSPCreate(PetscDraw draw,int dim,PetscDrawSP *drawsp)
 {
   PetscErrorCode ierr;
-  PetscTruth     isnull;
+  PetscBool      isnull;
   PetscObject    obj = (PetscObject)draw;
   PetscDrawSP    sp;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidPointer(drawsp,3);
   ierr = PetscTypeCompare(obj,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
   if (isnull) {
     ierr = PetscDrawOpenNull(((PetscObject)obj)->comm,(PetscDraw*)drawsp);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
-  ierr = PetscHeaderCreate(sp,_p_DrawSP,int,DRAWSP_COOKIE,0,"PetscDrawSP",((PetscObject)obj)->comm,PetscDrawSPDestroy,0);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(sp,_p_DrawSP,int,DRAWSP_CLASSID,0,"PetscDrawSP","Scatter plot","Draw",((PetscObject)obj)->comm,PetscDrawSPDestroy,0);CHKERRQ(ierr);
   sp->view    = 0;
   sp->destroy = 0;
   sp->nopts   = 0;
@@ -93,13 +93,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPCreate(PetscDraw draw,int dim,PetscDra
    Concepts: scatter plot^setting number of data types
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPSetDimension(PetscDrawSP sp,int dim)
+PetscErrorCode  PetscDrawSPSetDimension(PetscDrawSP sp,int dim)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (sp && ((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE) PetscFunctionReturn(0);
-  PetscValidHeaderSpecific(sp,DRAWSP_COOKIE,1);
+  if (sp && ((PetscObject)sp)->classid == PETSC_DRAW_CLASSID) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific(sp,DRAWSP_CLASSID,1);
   if (sp->dim == dim) PetscFunctionReturn(0);
 
   ierr = PetscFree2(sp->x,sp->y);CHKERRQ(ierr);
@@ -125,11 +125,11 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPSetDimension(PetscDrawSP sp,int dim)
   Concepts: scatter plot^resetting
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPReset(PetscDrawSP sp)
+PetscErrorCode  PetscDrawSPReset(PetscDrawSP sp)
 {
   PetscFunctionBegin;
-  if (sp && ((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE) PetscFunctionReturn(0);
-  PetscValidHeaderSpecific(sp,DRAWSP_COOKIE,1);
+  if (sp && ((PetscObject)sp)->classid == PETSC_DRAW_CLASSID) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific(sp,DRAWSP_CLASSID,1);
   sp->xmin  = 1.e20;
   sp->ymin  = 1.e20;
   sp->xmax  = -1.e20;
@@ -153,20 +153,21 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPReset(PetscDrawSP sp)
 
 .seealso:  PetscDrawSPCreate()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPDestroy(PetscDrawSP sp)
+PetscErrorCode  PetscDrawSPDestroy(PetscDrawSP *sp)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeader(sp,1);
+  if (!*sp) PetscFunctionReturn(0);
+  PetscValidHeader(*sp,1);
 
-  if (--((PetscObject)sp)->refct > 0) PetscFunctionReturn(0);
-  if (((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE){
-    ierr = PetscDrawDestroy((PetscDraw) sp);CHKERRQ(ierr);
+  if (--((PetscObject)(*sp))->refct > 0) PetscFunctionReturn(0);
+  if (((PetscObject)(*sp))->classid == PETSC_DRAW_CLASSID){
+    ierr = PetscDrawDestroy((PetscDraw*) sp);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
-  ierr = PetscDrawAxisDestroy(sp->axis);CHKERRQ(ierr);
-  ierr = PetscFree2(sp->x,sp->y);CHKERRQ(ierr);
+  ierr = PetscDrawAxisDestroy(&(*sp)->axis);CHKERRQ(ierr);
+  ierr = PetscFree2((*sp)->x,(*sp)->y);CHKERRQ(ierr);
   ierr = PetscHeaderDestroy(sp);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -189,15 +190,15 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPDestroy(PetscDrawSP sp)
 
 .seealso: PetscDrawSPAddPoints()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPAddPoint(PetscDrawSP sp,PetscReal *x,PetscReal *y)
+PetscErrorCode  PetscDrawSPAddPoint(PetscDrawSP sp,PetscReal *x,PetscReal *y)
 {
   PetscErrorCode ierr;
   PetscInt       i;
 
   PetscFunctionBegin;
-  if (sp && ((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE) PetscFunctionReturn(0);
+  if (sp && ((PetscObject)sp)->classid == PETSC_DRAW_CLASSID) PetscFunctionReturn(0);
 
-  PetscValidHeaderSpecific(sp,DRAWSP_COOKIE,1);
+  PetscValidHeaderSpecific(sp,DRAWSP_CLASSID,1);
   if (sp->loc+sp->dim >= sp->len) { /* allocate more space */
     PetscReal *tmpx,*tmpy;
     ierr = PetscMalloc2(sp->len+sp->dim*CHUNCKSIZE,PetscReal,&tmpx,sp->len+sp->dim*CHUNCKSIZE,PetscReal,&tmpy);CHKERRQ(ierr);
@@ -242,15 +243,15 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPAddPoint(PetscDrawSP sp,PetscReal *x,P
 
 .seealso: PetscDrawSPAddPoint()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPAddPoints(PetscDrawSP sp,int n,PetscReal **xx,PetscReal **yy)
+PetscErrorCode  PetscDrawSPAddPoints(PetscDrawSP sp,int n,PetscReal **xx,PetscReal **yy)
 {
   PetscErrorCode ierr;
   PetscInt       i,j,k;
   PetscReal      *x,*y;
 
   PetscFunctionBegin;
-  if (sp && ((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE) PetscFunctionReturn(0);
-  PetscValidHeaderSpecific(sp,DRAWSP_COOKIE,1);
+  if (sp && ((PetscObject)sp)->classid == PETSC_DRAW_CLASSID) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific(sp,DRAWSP_CLASSID,1);
 
   if (sp->loc+n*sp->dim >= sp->len) { /* allocate more space */
     PetscReal *tmpx,*tmpy;
@@ -299,7 +300,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPAddPoints(PetscDrawSP sp,int n,PetscRe
 .seealso: PetscDrawLGDraw(), PetscDrawLGSPDraw()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPDraw(PetscDrawSP sp)
+PetscErrorCode  PetscDrawSPDraw(PetscDrawSP sp)
 {
   PetscReal      xmin=sp->xmin,xmax=sp->xmax,ymin=sp->ymin,ymax=sp->ymax;
   PetscErrorCode ierr;
@@ -308,8 +309,8 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPDraw(PetscDrawSP sp)
   PetscDraw      draw = sp->win;
 
   PetscFunctionBegin;
-  if (sp && ((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE) PetscFunctionReturn(0);
-  PetscValidHeaderSpecific(sp,DRAWSP_COOKIE,1);
+  if (sp && ((PetscObject)sp)->classid == PETSC_DRAW_CLASSID) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific(sp,DRAWSP_CLASSID,1);
 
   if (nopts < 1) PetscFunctionReturn(0);
   if (xmin > xmax || ymin > ymax) PetscFunctionReturn(0);
@@ -348,11 +349,11 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPDraw(PetscDrawSP sp)
    Concepts: scatter plot^setting axis
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPSetLimits(PetscDrawSP sp,PetscReal x_min,PetscReal x_max,PetscReal y_min,PetscReal y_max) 
+PetscErrorCode  PetscDrawSPSetLimits(PetscDrawSP sp,PetscReal x_min,PetscReal x_max,PetscReal y_min,PetscReal y_max)
 {
   PetscFunctionBegin;
-  if (sp && ((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE) PetscFunctionReturn(0);
-  PetscValidHeaderSpecific(sp,DRAWSP_COOKIE,1);
+  if (sp && ((PetscObject)sp)->classid == PETSC_DRAW_CLASSID) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific(sp,DRAWSP_CLASSID,1);
   sp->xmin = x_min; 
   sp->xmax = x_max; 
   sp->ymin = y_min; 
@@ -379,14 +380,14 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPSetLimits(PetscDrawSP sp,PetscReal x_m
    Level: intermediate
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPGetAxis(PetscDrawSP sp,PetscDrawAxis *axis)
+PetscErrorCode  PetscDrawSPGetAxis(PetscDrawSP sp,PetscDrawAxis *axis)
 {
   PetscFunctionBegin;
-  if (sp && ((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE) {
+  if (sp && ((PetscObject)sp)->classid == PETSC_DRAW_CLASSID) {
     *axis = 0;
     PetscFunctionReturn(0);
   }
-  PetscValidHeaderSpecific(sp,DRAWSP_COOKIE,1);
+  PetscValidHeaderSpecific(sp,DRAWSP_CLASSID,1);
   *axis = sp->axis;
   PetscFunctionReturn(0);
 }
@@ -407,12 +408,12 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSPGetAxis(PetscDrawSP sp,PetscDrawAxis *
    Level: intermediate
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSPGetDraw(PetscDrawSP sp,PetscDraw *draw)
+PetscErrorCode  PetscDrawSPGetDraw(PetscDrawSP sp,PetscDraw *draw)
 {
   PetscFunctionBegin;
   PetscValidHeader(sp,1);
   PetscValidPointer(draw,2);
-  if (sp && ((PetscObject)sp)->cookie == PETSC_DRAW_COOKIE) {
+  if (sp && ((PetscObject)sp)->classid == PETSC_DRAW_CLASSID) {
     *draw = (PetscDraw)sp;
   } else {
     *draw = sp->win;

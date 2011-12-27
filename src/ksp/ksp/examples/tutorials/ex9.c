@@ -19,7 +19,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 /* 
    Declare user-defined routines
@@ -40,7 +40,7 @@ int main(int argc,char **args)
   PetscInt       ldim,low,high,iglobal,Istart,Iend,Istart2,Iend2;
   PetscInt       Ii,J,i,j,m = 3,n = 2,its,t;
   PetscErrorCode ierr;
-  PetscTruth     flg = PETSC_FALSE;
+  PetscBool      flg = PETSC_FALSE;
   PetscScalar    v;
   PetscMPIInt    rank,size;
 #if defined (PETSC_USE_LOG)
@@ -65,7 +65,7 @@ int main(int argc,char **args)
      Register a user-defined event for profiling (error checking).
   */
   CHECK_ERROR = 0;
-  ierr = PetscLogEventRegister("Check Error",KSP_COOKIE,&CHECK_ERROR);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("Check Error",KSP_CLASSID,&CHECK_ERROR);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - Stage 0: - - - - - - - - - - - - - -
                         Preliminary Setup
@@ -107,7 +107,7 @@ int main(int argc,char **args)
   /* 
      Set user-defined monitoring routine for first linear system.
   */
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-my_ksp_monitor",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-my_ksp_monitor",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {ierr = KSPMonitorSet(ksp1,MyKSPMonitor,PETSC_NULL,0);CHKERRQ(ierr);}
 
   /*
@@ -355,13 +355,13 @@ int main(int argc,char **args)
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
   */
-  ierr = KSPDestroy(ksp1);CHKERRQ(ierr); ierr = KSPDestroy(ksp2);CHKERRQ(ierr);
-  ierr = VecDestroy(x1);CHKERRQ(ierr);   ierr = VecDestroy(x2);CHKERRQ(ierr);
-  ierr = VecDestroy(b1);CHKERRQ(ierr);   ierr = VecDestroy(b2);CHKERRQ(ierr);
-  ierr = MatDestroy(C1);CHKERRQ(ierr);   ierr = MatDestroy(C2);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp1);CHKERRQ(ierr); ierr = KSPDestroy(&ksp2);CHKERRQ(ierr);
+  ierr = VecDestroy(&x1);CHKERRQ(ierr);   ierr = VecDestroy(&x2);CHKERRQ(ierr);
+  ierr = VecDestroy(&b1);CHKERRQ(ierr);   ierr = VecDestroy(&b2);CHKERRQ(ierr);
+  ierr = MatDestroy(&C1);CHKERRQ(ierr);   ierr = MatDestroy(&C2);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 #undef __FUNCT__

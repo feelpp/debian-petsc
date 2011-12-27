@@ -12,7 +12,7 @@ Computes z = alpha x + beta y + gamma z
 #include "petscvec.h" 
 PetscErrorCode  VecAXPBYPCZ(Vec z,PetscScalar alpha,PetscScalar beta,PetscScalar gamma,Vec x,Vec y)
 </PRE>
-Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -29,7 +29,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 Notes: x, y and z must be different vectors
 <P>
-alpha = 1 or gamma = 1 are handled as special cases
+Developer Note:   alpha = 1 or gamma = 1 or gamma = 0.0 are handled as special cases
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

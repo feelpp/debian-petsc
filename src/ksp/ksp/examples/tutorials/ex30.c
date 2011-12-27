@@ -4,8 +4,8 @@
  * This example tests the functionality of MatSolve.
  */
 #include <stdlib.h>
-#include "petscmat.h"
-#include "petscksp.h"
+#include <petscmat.h>
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -89,13 +89,13 @@ int main(int argc,char **argv)
   ierr = PetscFree(x);CHKERRQ(ierr);
   ierr = PetscFree(y);CHKERRQ(ierr);
   ierr = PetscFree(z);CHKERRQ(ierr);
-  ierr = VecDestroy(X);CHKERRQ(ierr);
-  ierr = VecDestroy(Y);CHKERRQ(ierr);
-  ierr = VecDestroy(Z);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(B);CHKERRQ(ierr);
-  ierr = KSPDestroy(solver);CHKERRQ(ierr);
+  ierr = VecDestroy(&X);CHKERRQ(ierr);
+  ierr = VecDestroy(&Y);CHKERRQ(ierr);
+  ierr = VecDestroy(&Z);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
+  ierr = KSPDestroy(&solver);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

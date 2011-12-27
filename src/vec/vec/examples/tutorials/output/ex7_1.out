@@ -24,6 +24,5 @@ Process [1]
 Process [1]
 Process [2]
 Process [2]
-[0] Calling VecView from Fortran
-[1] Calling VecView from Fortran
-[2] Calling VecView from Fortran
+  type: mpi
+  type: mpi

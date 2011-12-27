@@ -1,0 +1,32 @@
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:08:03+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80">
+CFLAGS                = 
+FFLAGS                = 
+CPPFLAGS        =
+FPPFLAGS        =
+LOCDIR          = src/dm/adda/examples/tests/
+EXAMPLESC       = ex1.c
+EXAMPLESF       = 
+MANSEC          = DM
+SUBMANSEC       = DMADDA
+
+include ${PETSC_DIR}/conf/variables
+include ${PETSC_DIR}/conf/rules
+
+<strong><font color="#FF0000">ex1:</font></strong> ex1.o   chkopts
+        -${CLINKER} -o ex1 ex1.o  ${PETSC_DM_LIB}
+        ${RM} -f ex1.o
+
+include ${PETSC_DIR}/conf/test
+</pre>
+</body>
+
+</html>

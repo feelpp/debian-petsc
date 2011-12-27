@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* matnull.c */
 /* Fortran interface file */
 
@@ -48,15 +49,14 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matnullspacecreate_(MPI_Fint * comm,PetscTruth *has_cnst,PetscInt *n, Vec vecs[],MatNullSpace *SP, int *__ierr ){
+void PETSC_STDCALL  matnullspacecreate_(MPI_Fint * comm,PetscBool  *has_cnst,PetscInt *n, Vec vecs[],MatNullSpace *SP, int *__ierr ){
 *__ierr = MatNullSpaceCreate(
 	MPI_Comm_f2c( *(comm) ),*has_cnst,*n,vecs,SP);
 }
-void PETSC_STDCALL   matnullspacedestroy_(MatNullSpace sp, int *__ierr ){
-*__ierr = MatNullSpaceDestroy(
-	(MatNullSpace)PetscToPointer((sp) ));
+void PETSC_STDCALL  matnullspacedestroy_(MatNullSpace *sp, int *__ierr ){
+*__ierr = MatNullSpaceDestroy(sp);
 }
-void PETSC_STDCALL   matnullspacetest_(MatNullSpace sp,Mat mat,PetscTruth *isNull, int *__ierr ){
+void PETSC_STDCALL  matnullspacetest_(MatNullSpace sp,Mat mat,PetscBool  *isNull, int *__ierr ){
 *__ierr = MatNullSpaceTest(
 	(MatNullSpace)PetscToPointer((sp) ),
 	(Mat)PetscToPointer((mat) ),isNull);

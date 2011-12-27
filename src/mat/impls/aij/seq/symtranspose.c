@@ -1,4 +1,3 @@
-#define PETSCMAT_DLL
 
 /*
   Defines symbolic transpose routines for SeqAIJ matrices.
@@ -13,11 +12,11 @@
 
 */
 
-#include "../src/mat/impls/aij/seq/aij.h"
+#include <../src/mat/impls/aij/seq/aij.h>
 
 
 #undef __FUNCT__
-#define __FUNCT__ "MatGetSymbolicTranspose_SeqIJ"
+#define __FUNCT__ "MatGetSymbolicTranspose_SeqAIJ"
 PetscErrorCode MatGetSymbolicTranspose_SeqAIJ(Mat A,PetscInt *Ati[],PetscInt *Atj[]) 
 {
   PetscErrorCode ierr;
@@ -74,7 +73,7 @@ PetscErrorCode MatGetSymbolicTranspose_SeqAIJ(Mat A,PetscInt *Ati[],PetscInt *At
      modified from MatGetSymbolicTranspose_SeqAIJ()
 */
 #undef __FUNCT__
-#define __FUNCT__ "MatGetSymbolicTransposeReduced_SeqIJ"
+#define __FUNCT__ "MatGetSymbolicTransposeReduced_SeqAIJ"
 PetscErrorCode MatGetSymbolicTransposeReduced_SeqAIJ(Mat A,PetscInt rstart,PetscInt rend,PetscInt *Ati[],PetscInt *Atj[]) 
 {
   PetscErrorCode ierr;
@@ -127,7 +126,7 @@ PetscErrorCode MatGetSymbolicTransposeReduced_SeqAIJ(Mat A,PetscInt rstart,Petsc
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "MatTranspose_SeqIJ_FAST"
+#define __FUNCT__ "MatTranspose_SeqAIJ_FAST"
 PetscErrorCode MatTranspose_SeqAIJ_FAST(Mat A,MatReuse reuse,Mat *B) 
 {
   PetscErrorCode ierr;
@@ -192,7 +191,7 @@ PetscErrorCode MatTranspose_SeqAIJ_FAST(Mat A,MatReuse reuse,Mat *B)
   if (reuse == MAT_INITIAL_MATRIX || *B != A) {
     *B = At;
   } else {
-    ierr = MatHeaderCopy(A,At);
+    ierr = MatHeaderMerge(A,At);
   }
   ierr = PetscLogEventEnd(MAT_Transpose_SeqAIJ,A,0,0,0);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -207,9 +206,7 @@ PetscErrorCode MatRestoreSymbolicTranspose_SeqAIJ(Mat A,PetscInt *ati[],PetscInt
   PetscFunctionBegin;
   ierr = PetscInfo(A,"Restoring Symbolic Transpose.\n");CHKERRQ(ierr);
   ierr = PetscFree(*ati);CHKERRQ(ierr);
-  ati  = PETSC_NULL;
   ierr = PetscFree(*atj);CHKERRQ(ierr);
-  atj  = PETSC_NULL;
   PetscFunctionReturn(0);
 }
 

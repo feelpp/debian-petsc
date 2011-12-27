@@ -6,7 +6,7 @@ static char help[] = "Test MatGetInertia().\n\n";
   ./ex33 -sigma <shift> -fA <matrix_file>
 */
 
-#include "petscksp.h"
+#include <petscksp.h>
 #undef __FUNCT__
 #define __FUNCT__ "main"
 int main(int argc,char **args)
@@ -18,30 +18,31 @@ int main(int argc,char **args)
   PetscInt    	 N, n=10, m, Istart, Iend, II, J, i,j;
   PetscInt       nneg, nzero, npos;
   PetscScalar 	 v,sigma;
-  PetscTruth  	 flag,loadA=PETSC_FALSE,loadB=PETSC_FALSE;
+  PetscBool   	 flag,loadA=PETSC_FALSE,loadB=PETSC_FALSE;
   char           file[2][PETSC_MAX_PATH_LEN]; 
   PetscViewer    viewer;
   PetscMPIInt    rank;
 
   PetscInitialize(&argc,&args,(char *)0,help);
-#if defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"This example does not work with complex numbers");
-#else
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
      Compute the matrices that define the eigensystem, Ax=kBx
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-fA",file[0],PETSC_MAX_PATH_LEN-1,&loadA);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(PETSC_NULL,"-fA",file[0],PETSC_MAX_PATH_LEN,&loadA);CHKERRQ(ierr);
   if (loadA) {
     ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file[0],FILE_MODE_READ,&viewer);CHKERRQ(ierr);
-    ierr = MatLoad(viewer,MATSBAIJ,&A);CHKERRQ(ierr);
-    ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);  
+    ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+    ierr = MatSetType(A,MATSBAIJ);CHKERRQ(ierr);
+    ierr = MatLoad(A,viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);  
 
-    ierr = PetscOptionsGetString(PETSC_NULL,"-fB",file[1],PETSC_MAX_PATH_LEN-1,&loadB);CHKERRQ(ierr);
+    ierr = PetscOptionsGetString(PETSC_NULL,"-fB",file[1],PETSC_MAX_PATH_LEN,&loadB);CHKERRQ(ierr);
     if (loadB){
       /* load B to get A = A + sigma*B */
       ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file[1],FILE_MODE_READ,&viewer);CHKERRQ(ierr);
-      ierr  = MatLoad(viewer,MATSBAIJ,&B);CHKERRQ(ierr);
-      ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);  
+      ierr = MatCreate(PETSC_COMM_WORLD,&B);CHKERRQ(ierr);
+      ierr = MatSetType(B,MATSBAIJ);CHKERRQ(ierr);
+      ierr  = MatLoad(B,viewer);CHKERRQ(ierr);
+      ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);  
     }
   } 
 
@@ -114,10 +115,9 @@ int main(int argc,char **args)
   }
 
   /* Destroy */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(B);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
-#endif
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

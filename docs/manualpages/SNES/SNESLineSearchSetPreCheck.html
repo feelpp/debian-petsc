@@ -9,7 +9,7 @@
 Sets a routine to check the validity of a new direction given by the linear solve before the line search is called. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetPreCheck(SNES snes,PetscErrorCode (*func)(SNES,Vec,Vec,void*,PetscTruth*),void *checkctx)
+PetscErrorCode  SNESLineSearchSetPreCheck(SNES snes,PetscErrorCode (*func)(SNES,Vec,Vec,void*,PetscBool *),void *checkctx)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -20,11 +20,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetPreCheck(SNES snes,PetscErro
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>checkctx </B></TD><TD>- optional user-defined context for use by step checking routine 
 </TD></TR></TABLE>
 <P>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of func</FONT></H3>
 <PRE>
-   int func (<A HREF="../SNES/SNES.html#SNES">SNES</A> snes, <A HREF="../Vec/Vec.html#Vec">Vec</A> x,<A HREF="../Vec/Vec.html#Vec">Vec</A> y,void *checkctx, <A HREF="../Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *changed_y)
+   int func (<A HREF="../SNES/SNES.html#SNES">SNES</A> snes, <A HREF="../Vec/Vec.html#Vec">Vec</A> x,<A HREF="../Vec/Vec.html#Vec">Vec</A> y,void *checkctx, <A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A>  *changed_y)
 </PRE>
 
 where func returns an error code of 0 on success and a nonzero

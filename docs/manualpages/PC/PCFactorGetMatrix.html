@@ -10,7 +10,7 @@ Gets the factored matrix from the preconditioner context.  This routine is valid
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCFactorGetMatrix(PC pc,Mat *mat)
+PetscErrorCode  PCFactorGetMatrix(PC pc,Mat *mat)
 </PRE>
 Not Collective on <A HREF="../PC/PC.html#PC">PC</A> though <A HREF="../Mat/Mat.html#Mat">Mat</A> is parallel if <A HREF="../PC/PC.html#PC">PC</A> is parallel
 <P>
@@ -36,5 +36,5 @@ Notes: Does not increase the reference count for the matrix so DO NOT destroy it
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
 </BODY></HTML>

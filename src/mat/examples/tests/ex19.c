@@ -5,7 +5,7 @@ the matrix across processors differently from the way it is assembled.\n\
 This example uses bilinear elements on the unit square.  Input arguments are:\n\
   -m <size> : problem size\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "FormElementStiffness"
@@ -29,7 +29,7 @@ int main(int argc,char **args)
   PetscMPIInt    size,rank;
   PetscInt       i,m = 5,N,start,end,M,idx[4];
   PetscInt       j,nrsub,ncsub,*rsub,*csub,mystart,myend;
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscScalar    one = 1.0,Ke[16],*vals;
   PetscReal      h,norm;
 
@@ -124,10 +124,10 @@ int main(int argc,char **args)
   }
 
   /* Free data structures */
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

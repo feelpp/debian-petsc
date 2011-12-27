@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mgfunc.c */
 /* Fortran interface file */
 
@@ -27,7 +28,7 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscksp.h"
-#include "petscmg.h"
+#include "petscpcmg.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcmggetcoarsesolve_ PCMGGETCOARSESOLVE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -42,6 +43,11 @@ extern void PetscRmPointer(void*);
 #define pcmgsetrestriction_ PCMGSETRESTRICTION
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcmgsetrestriction_ pcmgsetrestriction
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcmgsetrscale_ PCMGSETRSCALE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcmgsetrscale_ pcmgsetrscale
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcmggetsmoother_ PCMGGETSMOOTHER
@@ -84,47 +90,52 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcmggetcoarsesolve_(PC pc,KSP *ksp, int *__ierr ){
+void PETSC_STDCALL  pcmggetcoarsesolve_(PC pc,KSP *ksp, int *__ierr ){
 *__ierr = PCMGGetCoarseSolve(
 	(PC)PetscToPointer((pc) ),ksp);
 }
-void PETSC_STDCALL   pcmgsetinterpolation_(PC pc,PetscInt *l,Mat mat, int *__ierr ){
+void PETSC_STDCALL  pcmgsetinterpolation_(PC pc,PetscInt *l,Mat mat, int *__ierr ){
 *__ierr = PCMGSetInterpolation(
 	(PC)PetscToPointer((pc) ),*l,
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   pcmgsetrestriction_(PC pc,PetscInt *l,Mat mat, int *__ierr ){
+void PETSC_STDCALL  pcmgsetrestriction_(PC pc,PetscInt *l,Mat mat, int *__ierr ){
 *__ierr = PCMGSetRestriction(
 	(PC)PetscToPointer((pc) ),*l,
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   pcmggetsmoother_(PC pc,PetscInt *l,KSP *ksp, int *__ierr ){
+void PETSC_STDCALL  pcmgsetrscale_(PC pc,PetscInt *l,Vec rscale, int *__ierr ){
+*__ierr = PCMGSetRScale(
+	(PC)PetscToPointer((pc) ),*l,
+	(Vec)PetscToPointer((rscale) ));
+}
+void PETSC_STDCALL  pcmggetsmoother_(PC pc,PetscInt *l,KSP *ksp, int *__ierr ){
 *__ierr = PCMGGetSmoother(
 	(PC)PetscToPointer((pc) ),*l,ksp);
 }
-void PETSC_STDCALL   pcmggetsmootherup_(PC pc,PetscInt *l,KSP *ksp, int *__ierr ){
+void PETSC_STDCALL  pcmggetsmootherup_(PC pc,PetscInt *l,KSP *ksp, int *__ierr ){
 *__ierr = PCMGGetSmootherUp(
 	(PC)PetscToPointer((pc) ),*l,ksp);
 }
-void PETSC_STDCALL   pcmggetsmootherdown_(PC pc,PetscInt *l,KSP *ksp, int *__ierr ){
+void PETSC_STDCALL  pcmggetsmootherdown_(PC pc,PetscInt *l,KSP *ksp, int *__ierr ){
 *__ierr = PCMGGetSmootherDown(
 	(PC)PetscToPointer((pc) ),*l,ksp);
 }
-void PETSC_STDCALL   pcmgsetcyclesonlevel_(PC pc,PetscInt *l,PetscInt *c, int *__ierr ){
+void PETSC_STDCALL  pcmgsetcyclesonlevel_(PC pc,PetscInt *l,PetscInt *c, int *__ierr ){
 *__ierr = PCMGSetCyclesOnLevel(
 	(PC)PetscToPointer((pc) ),*l,*c);
 }
-void PETSC_STDCALL   pcmgsetrhs_(PC pc,PetscInt *l,Vec c, int *__ierr ){
+void PETSC_STDCALL  pcmgsetrhs_(PC pc,PetscInt *l,Vec c, int *__ierr ){
 *__ierr = PCMGSetRhs(
 	(PC)PetscToPointer((pc) ),*l,
 	(Vec)PetscToPointer((c) ));
 }
-void PETSC_STDCALL   pcmgsetx_(PC pc,PetscInt *l,Vec c, int *__ierr ){
+void PETSC_STDCALL  pcmgsetx_(PC pc,PetscInt *l,Vec c, int *__ierr ){
 *__ierr = PCMGSetX(
 	(PC)PetscToPointer((pc) ),*l,
 	(Vec)PetscToPointer((c) ));
 }
-void PETSC_STDCALL   pcmgsetr_(PC pc,PetscInt *l,Vec c, int *__ierr ){
+void PETSC_STDCALL  pcmgsetr_(PC pc,PetscInt *l,Vec c, int *__ierr ){
 *__ierr = PCMGSetR(
 	(PC)PetscToPointer((pc) ),*l,
 	(Vec)PetscToPointer((c) ));

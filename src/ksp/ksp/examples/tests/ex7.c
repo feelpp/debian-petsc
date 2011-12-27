@@ -17,7 +17,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -30,7 +30,7 @@ int main(int argc,char **args)
   char           file[2][PETSC_MAX_PATH_LEN];     /* input file name */
   PetscErrorCode ierr;
   PetscInt       its;
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscReal      norm;
 
   PetscInitialize(&argc,&args,(char *)0,help);
@@ -39,8 +39,8 @@ int main(int argc,char **args)
      Determine files from which we read the two linear systems
      (matrix and right-hand-side vector).
   */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f0",file[0],PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Must indicate binary file with the -f0 option");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f0",file[0],PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Must indicate binary file with the -f0 option");
 
 
   /* 
@@ -52,10 +52,13 @@ int main(int argc,char **args)
   /*
        Load the matrix and vector; then destroy the viewer.
   */
-  ierr = MatLoad(fd,MATSEQBAIJ,&A);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATSEQBAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
   ierr = MatConvert(A,MATSAME,MAT_INITIAL_MATRIX,&B);CHKERRQ(ierr);
-  ierr = VecLoad(fd,PETSC_NULL,&b);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&b);CHKERRQ(ierr);
+  ierr = VecLoad(b,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
   /* 
        If the loaded matrix is larger than the vector (due to being padded 
@@ -79,7 +82,7 @@ int main(int argc,char **args)
         ierr  = VecSetValues(tmp,1,&idx,bold+j,INSERT_VALUES);CHKERRQ(ierr);
       }
       ierr = VecRestoreArray(b,&bold);CHKERRQ(ierr);
-      ierr = VecDestroy(b);CHKERRQ(ierr);
+      ierr = VecDestroy(&b);CHKERRQ(ierr);
       ierr = VecAssemblyBegin(tmp);CHKERRQ(ierr);
       ierr = VecAssemblyEnd(tmp);CHKERRQ(ierr);
       b = tmp;
@@ -124,14 +127,14 @@ int main(int argc,char **args)
        Free work space.  All PETSc objects should be destroyed when they
        are no longer needed.
   */
-  ierr = MatDestroy(A);CHKERRQ(ierr); 
-  ierr = MatDestroy(B);CHKERRQ(ierr); 
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr); ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr); 
+  ierr = MatDestroy(&A);CHKERRQ(ierr); 
+  ierr = MatDestroy(&B);CHKERRQ(ierr); 
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr); ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr); 
 
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

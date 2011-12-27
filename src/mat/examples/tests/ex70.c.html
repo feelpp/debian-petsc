@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:36+00:00">
+<meta name="date" content="2011-10-29T19:05:12+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>/<A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() with negative row and column indices.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
-<a name="line5"> 5: </a> #include <A href="../../../../include/petscpc.h.html">petscpc.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscpc.h&gt;</font>
 
 <a name="line9">  9: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line10"> 10: </a>{
@@ -39,8 +39,8 @@
 <a name="line32"> 32: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(C,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line33"> 33: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 
-<a name="line35"> 35: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line35"> 35: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 
 <a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line39"> 39: </a>  <font color="#4169E1">return</font> 0;

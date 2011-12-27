@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /********************************bit_mask.c************************************
 
@@ -14,7 +13,7 @@ Providence, RI 02912
 Last Modification: 
 11.21.97
 *********************************bit_mask.c***********************************/
-#include "../src/ksp/pc/impls/tfs/tfs.h"
+#include <../src/ksp/pc/impls/tfs/tfs.h>
 
 
 /*********************************bit_mask.c***********************************/
@@ -80,8 +79,7 @@ div_ceil( PetscInt numer,  PetscInt denom)
 {
    PetscInt rt_val;
 
-  if ((numer<0)||(denom<=0))
-    {SETERRQ2(PETSC_ERR_PLIB,"div_ceil() :: numer=%D ! >=0, denom=%D ! >0",numer,denom);}
+  if ((numer<0)||(denom<=0)) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"div_ceil() :: numer=%D ! >=0, denom=%D ! >0",numer,denom);
 
   /* if integer division remainder then increment */
   rt_val = numer/denom;
@@ -97,8 +95,7 @@ len_bit_mask( PetscInt num_items)
 {
    PetscInt rt_val, tmp;
 
-  if (num_items<0)
-    {SETERRQ(PETSC_ERR_PLIB,"Value Sent To len_bit_mask() Must be >= 0!");}
+  if (num_items<0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Value Sent To len_bit_mask() Must be >= 0!");
 
   /* mod BYTE ceiling function */
   rt_val = num_items/BYTE;
@@ -117,11 +114,9 @@ PetscErrorCode set_bit_mask( PetscInt *bm, PetscInt len, PetscInt val)
 {
    PetscInt i, offset;
    char mask = 1;
-  char *cptr;
+   char *cptr;
 
-
-  if (len_bit_mask(val)>len)
-    {SETERRQ(PETSC_ERR_PLIB,"The Bit Mask Isn't That Large!");}
+  if (len_bit_mask(val)>len) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"The Bit Mask Isn't That Large!");
 
   cptr = (char *) bm;
 

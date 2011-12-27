@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:48:16+00:00">
+<meta name="date" content="2011-10-29T19:06:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests application ordering.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscsys.h.html">petscsys.h</A>
-<a name="line5"> 5: </a> #include <A href="../../../../../include/petscao.h.html">petscao.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscao.h&gt;</font>
 
 <a name="line9">  9: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line10"> 10: </a>{
@@ -51,7 +51,7 @@
 <a name="line44"> 44: </a>  }
 <a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(ispetsc,isapp);
 
-<a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/AO/AODestroy.html#AODestroy">AODestroy</A>(ao);
+<a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/AO/AODestroy.html#AODestroy">AODestroy</A>(&amp;ao);
 <a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line49"> 49: </a>  <font color="#4169E1">return</font> 0;
 <a name="line50"> 50: </a>}

@@ -10,9 +10,9 @@ Sets an array to collect a history of the differencing values (h) computed for t
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"   
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDSetHHistory(Mat J,PetscScalar history[],PetscInt nhistory)
+PetscErrorCode  MatMFFDSetHHistory(Mat J,PetscScalar history[],PetscInt nhistory)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -36,8 +36,7 @@ a new batch of differencing parameters, h.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Mat/MatMFFDGetH.html#MatMFFDGetH">MatMFFDGetH</A>(), <A HREF="../SNES/MatCreateSNESMF.html#MatCreateSNESMF">MatCreateSNESMF</A>(),
-<BR><A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>(),
-MatMFFDKSPMonitor(), <A HREF="../Mat/MatMFFDSetFunctionError.html#MatMFFDSetFunctionError">MatMFFDSetFunctionError</A>()
+<BR><A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>(), <A HREF="../Mat/MatMFFDSetFunctionError.html#MatMFFDSetFunctionError">MatMFFDSetFunctionError</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/mffd/mffd.c.html#MatMFFDSetHHistory">src/mat/impls/mffd/mffd.c</A>

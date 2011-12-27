@@ -10,7 +10,7 @@ Applies the mathematical function to an array of values.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpf.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT PFApply(PF pf,PetscInt n,PetscScalar* x,PetscScalar* y)
+PetscErrorCode  PFApply(PF pf,PetscInt n,const PetscScalar* x,PetscScalar* y)
 </PRE>
 Collective on <A HREF="../PF/PF.html#PF">PF</A>
 <P>

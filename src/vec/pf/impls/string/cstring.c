@@ -1,6 +1,5 @@
-#define PETSCVEC_DLL
 
-#include "../src/vec/pf/pfimpl.h"            /*I "petscpf.h" I*/
+#include <../src/vec/pf/pfimpl.h>            /*I "petscpf.h" I*/
 
 /*
         Ths PF generates a function on the fly and loads it into the running 
@@ -12,10 +11,10 @@
 PetscErrorCode PFView_String(void *value,PetscViewer viewer)
 {
   PetscErrorCode ierr;
-  PetscTruth iascii;
+  PetscBool  iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"String = %s\n",(char*)value);CHKERRQ(ierr);
   }
@@ -29,7 +28,7 @@ PetscErrorCode PFDestroy_String(void *value)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscStrfree(value);CHKERRQ(ierr);
+  ierr = PetscFree(value);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -50,19 +49,19 @@ PetscErrorCode PFDestroy_String(void *value)
 .seealso: PFSetFromOptions()
 
 */
-PetscErrorCode PETSCVEC_DLLEXPORT PFStringCreateFunction(PF pf,char *string,void **f)
+PetscErrorCode  PFStringCreateFunction(PF pf,char *string,void **f)
 {
-#if defined(PETSC_USE_DYNAMIC_LIBRARIES)
+#if defined(PETSC_HAVE_DYNAMIC_LIBRARIES)
   PetscErrorCode ierr;
   char       task[1024],tmp[256],lib[PETSC_MAX_PATH_LEN],username[64];
   FILE       *fd;
-  PetscTruth tmpshared,wdshared,keeptmpfiles = PETSC_FALSE;
+  PetscBool  tmpshared,wdshared,keeptmpfiles = PETSC_FALSE;
   MPI_Comm   comm;
 #endif
 
   PetscFunctionBegin;
-#if defined(PETSC_USE_DYNAMIC_LIBRARIES)
-  ierr = PetscStrfree(pf->data);CHKERRQ(ierr);
+#if defined(PETSC_HAVE_DYNAMIC_LIBRARIES)
+  ierr = PetscFree(pf->data);CHKERRQ(ierr);
   ierr = PetscStrallocpy(string,(char**)&pf->data);CHKERRQ(ierr);
 
   /* create the new C function and compile it */
@@ -78,7 +77,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFStringCreateFunction(PF pf,char *string,void
     ierr = PetscStrcpy(tmp,".");CHKERRQ(ierr);
     comm = ((PetscObject)pf)->comm;
   } 
-  ierr = PetscOptionsGetTruth(((PetscObject)pf)->prefix,"-pf_string_keep_files",&keeptmpfiles,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(((PetscObject)pf)->prefix,"-pf_string_keep_files",&keeptmpfiles,PETSC_NULL);CHKERRQ(ierr);
   if (keeptmpfiles) {
     sprintf(task,"cd %s ; mkdir ${USERNAME} ; cd ${USERNAME} ; \\cp -f ${PETSC_DIR}/src/pf/impls/string/makefile ./makefile ; ke  MIN=%d NOUT=%d petscdlib STRINGFUNCTION=\"%s\" ; sync\n",tmp,(int)pf->dimin,(int)pf->dimout,string);
   } else {
@@ -88,7 +87,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFStringCreateFunction(PF pf,char *string,void
   ierr = PetscPOpen(comm,PETSC_NULL,task,"r",&fd);CHKERRQ(ierr);
   ierr = PetscPClose(comm,fd);CHKERRQ(ierr);
 #else
-  SETERRQ(PETSC_ERR_SUP_SYS,"Cannot run external programs on this machine");
+  SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP_SYS,"Cannot run external programs on this machine");
 #endif
 
   ierr = MPI_Barrier(comm);CHKERRQ(ierr);
@@ -97,6 +96,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFStringCreateFunction(PF pf,char *string,void
   ierr = PetscGetUserName(username,64);CHKERRQ(ierr);
   sprintf(lib,"%s/%s/libpetscdlib",tmp,username);
   ierr = PetscDLLibrarySym(comm,PETSC_NULL,lib,"PFApply_String",f);CHKERRQ(ierr);
+  if (!f) SETERRQ1(((PetscObject)pf)->comm,PETSC_ERR_ARG_WRONGSTATE,"Cannot find function %s",lib);
 #endif
   PetscFunctionReturn(0);    
 }
@@ -106,9 +106,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFStringCreateFunction(PF pf,char *string,void
 PetscErrorCode PFSetFromOptions_String(PF pf)
 {
   PetscErrorCode ierr;
-  PetscTruth flag;
+  PetscBool  flag;
   char       value[PETSC_MAX_PATH_LEN];
-  PetscErrorCode (*f)(void*,PetscInt,PetscScalar*,PetscScalar*) = 0;
+  PetscErrorCode (*f)(void*,PetscInt,const PetscScalar*,PetscScalar*) = 0;
 
   PetscFunctionBegin;
   ierr = PetscOptionsHead("String function options");CHKERRQ(ierr);
@@ -121,11 +121,11 @@ PetscErrorCode PFSetFromOptions_String(PF pf)
   PetscFunctionReturn(0);    
 }
 
-typedef PetscErrorCode (*FCN)(void*,PetscInt,PetscScalar*,PetscScalar*); /* force argument to next function to not be extern C*/
+typedef PetscErrorCode (*FCN)(void*,PetscInt,const PetscScalar*,PetscScalar*); /* force argument to next function to not be extern C*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PFCreate_String"
-PetscErrorCode PETSCVEC_DLLEXPORT PFCreate_String(PF pf,void *value)
+PetscErrorCode  PFCreate_String(PF pf,void *value)
 {
   PetscErrorCode ierr;
   FCN        f = 0;

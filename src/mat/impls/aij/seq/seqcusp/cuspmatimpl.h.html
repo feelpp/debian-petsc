@@ -1,0 +1,30 @@
+<center><a href="cuspmatimpl.h">Actual source code: cuspmatimpl.h</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:00:04+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef __CUSPMATIMPL </font>
+
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;../src/vec/vec/impls/seq/seqcusp/cuspvecimpl.h&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;cusp/csr_matrix.h&gt;</font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;cusp/multiply.h&gt;</font>
+
+
+<a name="line9">  9: </a><strong><font color="#228B22">#define CUSPMATRIX cusp::csr_matrix&lt;<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,cusp::device_memory&gt;</font></strong>
+
+<a name="line11"> 11: </a><font color="#4169E1"><a name="Mat_SeqAIJCUSP"></a>struct Mat_SeqAIJCUSP </font>{
+<a name="line12"> 12: </a>  CUSPMATRIX*       mat; <font color="#B22222">/* pointer to the matrix on the GPU */</font>
+<a name="line13"> 13: </a>  CUSPINTARRAYGPU*  indices; <font color="#B22222">/*pointer to an array containing the nonzero row indices, should usecprow be true*/</font>
+<a name="line14"> 14: </a>  CUSPARRAY*        tempvec; <font color="#B22222">/*pointer to a workvector to which we can copy the relevant indices of a vector we want to multiply */</font>
+<a name="line15"> 15: </a>};
+
+<a name="line19"> 19: </a><font color="#A020F0">#endif</font>
+</pre>
+</body>
+
+</html>

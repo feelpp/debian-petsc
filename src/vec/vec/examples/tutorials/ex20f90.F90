@@ -18,16 +18,16 @@
 !   see the manual page UsingFortran
 !
 #define PETSC_USE_FORTRAN_MODULES
-#include "finclude/petscsysdef.h"
-#include "finclude/petscvecdef.h"
+#include <finclude/petscsysdef.h>
+#include <finclude/petscvecdef.h>
 #if defined(PETSC_USE_FORTRAN_MODULES)
       use petscvec
 #endif
       implicit none
 #if !defined(PETSC_USE_FORTRAN_MODULES)
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscvec.h90"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscvec.h90>
 
 #endif
 !
@@ -210,24 +210,13 @@
  220  format ("VecMAXPY ",3(1pe8.2))
 
 
-!  Test whether vector has been corrupted (just to demonstrate this
-!  routine) not needed in most application codes.
-
-      call VecValid(x,flg,ierr)
-      if (.not. flg) then
-         if (rank .eq. 0) then
-            write(6,*) 'Corrupted vector!'
-         endif
-         stop
-      endif
-
 !  Free work space.  All PETSc objects should be destroyed when they
 !  are no longer needed.
 
       call VecDestroy(x,ierr)
       call VecDestroy(y,ierr)
       call VecDestroy(w,ierr)
-      call VecDestroyVecsF90(z,ithree,ierr)
+      call VecDestroyVecsF90(ithree,z,ierr)
       call PetscFinalize(ierr)
 
       end

@@ -1,8 +1,7 @@
-#define PETSCMAT_DLL
 
 /* rcm.f -- translated by f2c (version 19931217).*/
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 /*****************************************************************/
 /*********     RCM ..... REVERSE CUTHILL-MCKEE ORDERING   *******/
@@ -48,7 +47,7 @@ PetscErrorCode SPARSEPACKrcm(PetscInt *root, PetscInt *xadj, PetscInt *adjncy,
 
     /* Local variables */
     PetscInt node, fnbr, lnbr, i, j, k, l, lperm, jstop, jstrt;
-    EXTERN PetscErrorCode SPARSEPACKdegree(PetscInt*, PetscInt *, PetscInt *, 
+    extern PetscErrorCode SPARSEPACKdegree(PetscInt*, PetscInt *, PetscInt *, 
 	    PetscInt *, PetscInt *, PetscInt *, PetscInt *);
     PetscInt lbegin, lvlend, nbr;
 

@@ -5,7 +5,7 @@ static char help[] = "Tests the parallel case for MatIncreaseOverlap(). Input ar
   -nd <size>      : > 0  number of domains per processor \n\
   -ov <overlap>   : >=0  amount of overlap between domains\n\n";
 
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -14,7 +14,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscInt       nd = 2,ov=1,i,start,m,n,end,lsize;
   PetscMPIInt    rank;
-  PetscTruth     flg;
+  PetscBool      flg;
   Mat            A,B;
   char           file[PETSC_MAX_PATH_LEN]; 
   PetscViewer    fd;
@@ -24,24 +24,28 @@ int main(int argc,char **args)
 
   PetscInitialize(&argc,&args,(char *)0,help);
 #if defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"This example does not work with complex numbers");
+  SETERRQ(PETSC_COMM_WORLD,1,"This example does not work with complex numbers");
 #else
   
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Must use -f filename to indicate a file containing a PETSc binary matrix");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Must use -f filename to indicate a file containing a PETSc binary matrix");
   ierr = PetscOptionsGetInt(PETSC_NULL,"-nd",&nd,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-ov",&ov,PETSC_NULL);CHKERRQ(ierr);
 
   /* Read matrix and RHS */
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file,FILE_MODE_READ,&fd);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATMPIAIJ,&A);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATMPIAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
   /* Read the matrix again as a sequential matrix */
   ierr = PetscViewerBinaryOpen(PETSC_COMM_SELF,file,FILE_MODE_READ,&fd);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATSEQAIJ,&B);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_SELF,&B);CHKERRQ(ierr);
+  ierr = MatSetType(B,MATSEQAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(B,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
   
   /* Create the IS corresponding to subdomains */
   ierr = PetscMalloc(nd*sizeof(IS **),&is1);CHKERRQ(ierr);
@@ -74,16 +78,16 @@ int main(int argc,char **args)
 
   /* Free allocated memory */
   for (i=0; i<nd; ++i) { 
-    ierr = ISDestroy(is1[i]);CHKERRQ(ierr);
-    ierr = ISDestroy(is2[i]);CHKERRQ(ierr);
+    ierr = ISDestroy(&is1[i]);CHKERRQ(ierr);
+    ierr = ISDestroy(&is2[i]);CHKERRQ(ierr);
   }
   ierr = PetscFree(is1);CHKERRQ(ierr);
   ierr = PetscFree(is2);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(r);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(B);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&r);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 #endif
   return 0;
 }

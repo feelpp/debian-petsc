@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:42:07+00:00">
+<meta name="date" content="2011-10-29T19:14:14+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -56,11 +56,11 @@
 <a name="line46"> 46: </a>!     petscviewer.h - viewers
 <a name="line47"> 47: </a>!     petscis.h     - index sets
 <a name="line48"> 48: </a>!
-<a name="line49"> 49: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line50"> 50: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line51"> 51: </a> #include <A href="../../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line52"> 52: </a> #include <A href="../../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line53"> 53: </a> #include <A href="../../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
+<a name="line49"> 49: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line50"> 50: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line51"> 51: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line52"> 52: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line53"> 53: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
 <a name="line54"> 54: </a>!
 <a name="line55"> 55: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 <a name="line56"> 56: </a>!                   Variable declarations
@@ -88,7 +88,7 @@
 <a name="line78"> 78: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  Istart,Iend,ione
 <a name="line79"> 79: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line80"> 80: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>     rank,size
-<a name="line81"> 81: </a>      <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>  flg
+<a name="line81"> 81: </a>      <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   flg
 <a name="line82"> 82: </a>      <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> v,one,neg_one
 <a name="line83"> 83: </a>      <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>         x,b,u
 <a name="line84"> 84: </a>      <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>         A
@@ -296,116 +296,115 @@
 <a name="line286">286: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 <a name="line288">288: </a>!  Check the error
+<a name="line289">289: </a>      call <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(x,neg_one,u,ierr)
+<a name="line290">290: </a>      call <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,norm,ierr)
+<a name="line291">291: </a>      call <A href="../../../../../docs/manualpages/KSP/KSPGetIterationNumber.html#KSPGetIterationNumber">KSPGetIterationNumber</A>(ksp,its,ierr)
+<a name="line292">292: </a>      <font color="#4169E1">if</font> (rank .eq. 0) then
+<a name="line293">293: </a>        <font color="#4169E1">if</font> (norm .gt. 1.e-12) then
+<a name="line294">294: </a>           write(6,100) norm,its
+<a name="line295">295: </a>        <font color="#4169E1">else</font>
+<a name="line296">296: </a>           write(6,110) its
+<a name="line297">297: </a>        endif
+<a name="line298">298: </a>      endif
+<a name="line299">299: </a>  100 format('Norm of error ',e11.4,' iterations ',i5)
+<a name="line300">300: </a>  110 format('Norm of error < 1.e-12,iterations ',i5)
 
-<a name="line290">290: </a>      call <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(x,neg_one,u,ierr)
-<a name="line291">291: </a>      call <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,norm,ierr)
-<a name="line292">292: </a>      call <A href="../../../../../docs/manualpages/KSP/KSPGetIterationNumber.html#KSPGetIterationNumber">KSPGetIterationNumber</A>(ksp,its,ierr)
-<a name="line293">293: </a>      <font color="#4169E1">if</font> (rank .eq. 0) then
-<a name="line294">294: </a>        <font color="#4169E1">if</font> (norm .gt. 1.e-12) then
-<a name="line295">295: </a>           write(6,100) norm,its
-<a name="line296">296: </a>        <font color="#4169E1">else</font>
-<a name="line297">297: </a>           write(6,110) its
-<a name="line298">298: </a>        endif
-<a name="line299">299: </a>      endif
-<a name="line300">300: </a>  100 format('Norm of error ',e10.4,' iterations ',i5)
-<a name="line301">301: </a>  110 format('Norm of error < 1.e-12,iterations ',i5)
+<a name="line302">302: </a>!  Free work space.  All PETSc objects should be destroyed when they
+<a name="line303">303: </a>!  are no longer needed.
 
-<a name="line303">303: </a>!  Free work space.  All PETSc objects should be destroyed when they
-<a name="line304">304: </a>!  are no longer needed.
+<a name="line305">305: </a>      call <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp,ierr)
+<a name="line306">306: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u,ierr)
+<a name="line307">307: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x,ierr)
+<a name="line308">308: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b,ierr)
+<a name="line309">309: </a>      call <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A,ierr)
 
-<a name="line306">306: </a>      call <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp,ierr)
-<a name="line307">307: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u,ierr)
-<a name="line308">308: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x,ierr)
-<a name="line309">309: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b,ierr)
-<a name="line310">310: </a>      call <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A,ierr)
+<a name="line311">311: </a>!  Always call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>() before exiting a program.  This routine
+<a name="line312">312: </a>!    - finalizes the PETSc libraries as well as MPI
+<a name="line313">313: </a>!    - provides summary and diagnostic information <font color="#4169E1">if</font> certain runtime
+<a name="line314">314: </a>!      options are chosen (e.g., -log_summary).  See <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>()
+<a name="line315">315: </a>!      manpage <font color="#4169E1">for</font> more information.
 
-<a name="line312">312: </a>!  Always call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>() before exiting a program.  This routine
-<a name="line313">313: </a>!    - finalizes the PETSc libraries as well as MPI
-<a name="line314">314: </a>!    - provides summary and diagnostic information <font color="#4169E1">if</font> certain runtime
-<a name="line315">315: </a>!      options are chosen (e.g., -log_summary).  See <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>()
-<a name="line316">316: </a>!      manpage <font color="#4169E1">for</font> more information.
+<a name="line317">317: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line318">318: </a>      end
 
-<a name="line318">318: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line319">319: </a>      end
+<a name="line320">320: </a>! --------------------------------------------------------------
+<a name="line321">321: </a>!
+<a name="line322">322: </a>!  MyKSPMonitor - This is a user-defined routine <font color="#4169E1">for</font> monitoring
+<a name="line323">323: </a>!  the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> iterative solvers.
+<a name="line324">324: </a>!
+<a name="line325">325: </a>!  Input Parameters:
+<a name="line326">326: </a>!    ksp   - iterative context
+<a name="line327">327: </a>!    n     - iteration number
+<a name="line328">328: </a>!    rnorm - 2-norm (preconditioned) residual value (may be estimated)
+<a name="line329">329: </a>!    dummy - optional user-defined monitor context (unused here)
+<a name="line330">330: </a>!
+<a name="line331">331: </a>      subroutine MyKSPMonitor(ksp,n,rnorm,dummy,ierr)
 
-<a name="line321">321: </a>! --------------------------------------------------------------
-<a name="line322">322: </a>!
-<a name="line323">323: </a>!  MyKSPMonitor - This is a user-defined routine <font color="#4169E1">for</font> monitoring
-<a name="line324">324: </a>!  the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> iterative solvers.
-<a name="line325">325: </a>!
-<a name="line326">326: </a>!  Input Parameters:
-<a name="line327">327: </a>!    ksp   - iterative context
-<a name="line328">328: </a>!    n     - iteration number
-<a name="line329">329: </a>!    rnorm - 2-norm (preconditioned) residual value (may be estimated)
-<a name="line330">330: </a>!    dummy - optional user-defined monitor context (unused here)
-<a name="line331">331: </a>!
-<a name="line332">332: </a>      subroutine MyKSPMonitor(ksp,n,rnorm,dummy,ierr)
+<a name="line333">333: </a>      implicit none
 
-<a name="line334">334: </a>      implicit none
+<a name="line335">335: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line336">336: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line337">337: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
 
-<a name="line336">336: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line337">337: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line338">338: </a> #include <A href="../../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
+<a name="line339">339: </a>      <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>              ksp
+<a name="line340">340: </a>      <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>              x
+<a name="line341">341: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
+<a name="line342">342: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,dummy
+<a name="line343">343: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank
+<a name="line344">344: </a>      double precision rnorm
 
-<a name="line340">340: </a>      <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>              ksp
-<a name="line341">341: </a>      <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>              x
-<a name="line342">342: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
-<a name="line343">343: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,dummy
-<a name="line344">344: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank
-<a name="line345">345: </a>      double precision rnorm
+<a name="line346">346: </a>!  Build the solution vector
 
-<a name="line347">347: </a>!  Build the solution vector
+<a name="line348">348: </a>      call <A href="../../../../../docs/manualpages/KSP/KSPBuildSolution.html#KSPBuildSolution">KSPBuildSolution</A>(ksp,PETSC_NULL_OBJECT,x,ierr)
 
-<a name="line349">349: </a>      call <A href="../../../../../docs/manualpages/KSP/KSPBuildSolution.html#KSPBuildSolution">KSPBuildSolution</A>(ksp,PETSC_NULL_OBJECT,x,ierr)
+<a name="line350">350: </a>!  Write the solution vector and residual norm to stdout
+<a name="line351">351: </a>!   - Note that the parallel viewer <A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>
+<a name="line352">352: </a>!     handles data from multiple processors so that the
+<a name="line353">353: </a>!     output is not jumbled.
 
-<a name="line351">351: </a>!  Write the solution vector and residual norm to stdout
-<a name="line352">352: </a>!   - Note that the parallel viewer <A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>
-<a name="line353">353: </a>!     handles data from multiple processors so that the
-<a name="line354">354: </a>!     output is not jumbled.
+<a name="line355">355: </a>      call <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,rank,ierr)
+<a name="line356">356: </a>      <font color="#4169E1">if</font> (rank .eq. 0) write(6,100) n
+<a name="line357">357: </a>      call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,ierr)
+<a name="line358">358: </a>      <font color="#4169E1">if</font> (rank .eq. 0) write(6,200) n,rnorm
 
-<a name="line356">356: </a>      call <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,rank,ierr)
-<a name="line357">357: </a>      <font color="#4169E1">if</font> (rank .eq. 0) write(6,100) n
-<a name="line358">358: </a>      call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,ierr)
-<a name="line359">359: </a>      <font color="#4169E1">if</font> (rank .eq. 0) write(6,200) n,rnorm
+<a name="line360">360: </a> 100  format('iteration ',i5,' solution vector:')
+<a name="line361">361: </a> 200  format('iteration ',i5,' residual norm ',e11.4)
+<a name="line362">362: </a>      0
+<a name="line363">363: </a>      end
 
-<a name="line361">361: </a> 100  format('iteration ',i5,' solution vector:')
-<a name="line362">362: </a> 200  format('iteration ',i5,' residual norm ',e10.4)
-<a name="line363">363: </a>      0
-<a name="line364">364: </a>      end
+<a name="line365">365: </a>! --------------------------------------------------------------
+<a name="line366">366: </a>!
+<a name="line367">367: </a>!  MyKSPConverged - This is a user-defined routine <font color="#4169E1">for</font> testing
+<a name="line368">368: </a>!  convergence of the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> iterative solvers.
+<a name="line369">369: </a>!
+<a name="line370">370: </a>!  Input Parameters:
+<a name="line371">371: </a>!    ksp   - iterative context
+<a name="line372">372: </a>!    n     - iteration number
+<a name="line373">373: </a>!    rnorm - 2-norm (preconditioned) residual value (may be estimated)
+<a name="line374">374: </a>!    dummy - optional user-defined monitor context (unused here)
+<a name="line375">375: </a>!
+<a name="line376">376: </a>      subroutine MyKSPConverged(ksp,n,rnorm,flag,dummy,ierr)
 
-<a name="line366">366: </a>! --------------------------------------------------------------
-<a name="line367">367: </a>!
-<a name="line368">368: </a>!  MyKSPConverged - This is a user-defined routine <font color="#4169E1">for</font> testing
-<a name="line369">369: </a>!  convergence of the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> iterative solvers.
-<a name="line370">370: </a>!
-<a name="line371">371: </a>!  Input Parameters:
-<a name="line372">372: </a>!    ksp   - iterative context
-<a name="line373">373: </a>!    n     - iteration number
-<a name="line374">374: </a>!    rnorm - 2-norm (preconditioned) residual value (may be estimated)
-<a name="line375">375: </a>!    dummy - optional user-defined monitor context (unused here)
-<a name="line376">376: </a>!
-<a name="line377">377: </a>      subroutine MyKSPConverged(ksp,n,rnorm,flag,dummy,ierr)
+<a name="line378">378: </a>      implicit none
 
-<a name="line379">379: </a>      implicit none
+<a name="line380">380: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line381">381: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line382">382: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
 
-<a name="line381">381: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line382">382: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line383">383: </a> #include <A href="../../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
+<a name="line384">384: </a>      <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>              ksp
+<a name="line385">385: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
+<a name="line386">386: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,dummy
+<a name="line387">387: </a>      <A href="../../../../../docs/manualpages/KSP/KSPConvergedReason.html#KSPConvergedReason">KSPConvergedReason</A> flag
+<a name="line388">388: </a>      double precision rnorm
 
-<a name="line385">385: </a>      <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>              ksp
-<a name="line386">386: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
-<a name="line387">387: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,dummy
-<a name="line388">388: </a>      <A href="../../../../../docs/manualpages/KSP/KSPConvergedReason.html#KSPConvergedReason">KSPConvergedReason</A> flag
-<a name="line389">389: </a>      double precision rnorm
+<a name="line390">390: </a>      <font color="#4169E1">if</font> (rnorm .le. .05) then
+<a name="line391">391: </a>        flag = 1
+<a name="line392">392: </a>      <font color="#4169E1">else</font>
+<a name="line393">393: </a>        flag = 0
+<a name="line394">394: </a>      endif
+<a name="line395">395: </a>      0
 
-<a name="line391">391: </a>      <font color="#4169E1">if</font> (rnorm .le. .05) then
-<a name="line392">392: </a>        flag = 1
-<a name="line393">393: </a>      <font color="#4169E1">else</font>
-<a name="line394">394: </a>        flag = 0
-<a name="line395">395: </a>      endif
-<a name="line396">396: </a>      0
-
-<a name="line398">398: </a>      end
+<a name="line397">397: </a>      end
 
 
 

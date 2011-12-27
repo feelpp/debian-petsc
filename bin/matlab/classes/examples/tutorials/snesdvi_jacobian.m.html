@@ -1,0 +1,362 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>snesdvi_jacobian</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="snesdvi_jacobian.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> [flg,err] = snesdvi_jacobian(snes,xsol,A,B,user)
+<span class="comment">%</span>
+<span class="comment">%  Jacobain for minimal surface are problem as written in</span>
+<span class="comment">%  snes/src/examples/tests/ex8.c</span>
+<span class="comment">%</span>
+err = 0;
+flg = PetscMat.SAME_NONZERO_PATTERN;
+
+mx = user.mx; my = user.my;
+hx = 1/(mx+1); hy = 1/(my+1);
+hydhx = hy/hx; hxdhy = hx/hy;
+
+x = user.dm.VecGetArray(xsol);
+
+<span class="keyword">for</span> (i = 1:mx)
+  <span class="keyword">for</span> (j = 1:my)
+    xc = x(i,j);
+    xlt = xc; xr = xc;
+    xrb = xc; xb = xc;
+    xl = xc; xt  = xc;
+
+    <span class="keyword">if</span> (i == 1) <span class="comment">% left side</span>
+      xl = user.left(j+1);
+      xlt = user.left(j+2);
+    <span class="keyword">else</span>
+      xl = x(i-1,j);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (j == 1) <span class="comment">% bottom side</span>
+      xb = user.bottom(i+1);
+      xrb = user.bottom(i+2);
+    <span class="keyword">else</span>
+      xb = x(i,j-1);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (i == mx) <span class="comment">%right side</span>
+      xr  = user.right(j+1);
+      xrb = user.right(j);
+    <span class="keyword">else</span>
+      xr = x(i+1,j);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (j == my) <span class="comment">% top side</span>
+      xt  = user.top(i+1);
+      xlt = user.top(i);
+    <span class="keyword">else</span>
+      xt = x(i,j+1);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (i &gt; 1 &amp; j&lt;my)
+      xlt = x(i-1,j+1);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (j &gt; 1 &amp; i&lt;mx)
+      xrb = x(i+1,j-1);
+    <span class="keyword">end</span>
+
+    d1 = (xc-xl)/hx;
+    d2 = (xc-xr)/hx;
+    d3 = (xc-xt)/hy;
+    d4 = (xc-xb)/hy;
+    d5 = (xrb-xr)/hy;
+    d6 = (xrb-xb)/hx;
+    d7 = (xlt-xl)/hy;
+    d8 = (xlt-xt)/hx;
+
+    f1 = sqrt( 1.0 + d1*d1 + d7*d7);
+    f2 = sqrt( 1.0 + d1*d1 + d4*d4);
+    f3 = sqrt( 1.0 + d3*d3 + d8*d8);
+    f4 = sqrt( 1.0 + d3*d3 + d2*d2);
+    f5 = sqrt( 1.0 + d2*d2 + d5*d5);
+    f6 = sqrt( 1.0 + d4*d4 + d6*d6);
+
+    hl = (-hydhx*(1.0+d7*d7)+d1*d7)/(f1*f1*f1)+ <span class="keyword">...</span>
+         (-hydhx*(1.0+d4*d4)+d1*d4)/(f2*f2*f2);
+    hr = (-hydhx*(1.0+d5*d5)+d2*d5)/(f5*f5*f5)+ <span class="keyword">...</span>
+         (-hydhx*(1.0+d3*d3)+d2*d3)/(f4*f4*f4);
+    ht = (-hxdhy*(1.0+d8*d8)+d3*d8)/(f3*f3*f3)+ <span class="keyword">...</span>
+         (-hxdhy*(1.0+d2*d2)+d2*d3)/(f4*f4*f4);
+    hb = (-hxdhy*(1.0+d6*d6)+d4*d6)/(f6*f6*f6)+ <span class="keyword">...</span>
+         (-hxdhy*(1.0+d1*d1)+d1*d4)/(f2*f2*f2);
+
+    hbr = -d2*d5/(f5*f5*f5) - d4*d6/(f6*f6*f6);
+    htl = -d1*d7/(f1*f1*f1) - d3*d8/(f3*f3*f3);
+
+    hc = hydhx*(1.0+d7*d7)/(f1*f1*f1) + hxdhy*(1.0+d8*d8)/(f3*f3*f3) + <span class="keyword">...</span>
+         hydhx*(1.0+d5*d5)/(f5*f5*f5) + hxdhy*(1.0+d6*d6)/(f6*f6*f6) + <span class="keyword">...</span>
+         (hxdhy*(1.0+d1*d1)+hydhx*(1.0+d4*d4)-2*d1*d4)/(f2*f2*f2) + <span class="keyword">...</span>
+         (hxdhy*(1.0+d2*d2)+hydhx*(1.0+d3*d3)-2*d2*d3)/(f4*f4*f4);
+
+    hl = hl/2.0; hr  = hr/2.0;  ht  = ht/2.0;
+    hb = hb/2.0; hbr = hbr/2.0; htl = htl/2.0;  hc = hc/2.0;
+
+
+    k = 1;
+    v = []; col = [];
+    row.i = i; row.j = j;
+    <span class="keyword">if</span> (j&gt;1)
+      v(k) = hb;
+      col(k).i = i; col(k).j = j-1;
+      k=k+1;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (j&gt;1 &amp; i &lt; mx)
+      v(k)=hbr;
+      col(k).i = i+1; col(k).j = j-1;
+      k=k+1;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (i&gt;1)
+      v(k)= hl;
+      col(k).i = i-1; col(k).j = j;
+      k = k + 1;
+    <span class="keyword">end</span>
+
+    v(k)= hc;
+    col(k).i = i; col(k).j = j;
+    k = k + 1;
+
+    <span class="keyword">if</span> (i &lt; mx )
+      v(k)= hr;
+      col(k).i = i+1;
+      col(k).j = j;
+      k = k + 1;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (i&gt;1 &amp; j &lt; my )
+      v(k)= htl;
+      col(k).i = i-1; col(k).j = j+1;
+      k = k + 1;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (j &lt; my )
+      v(k)= ht;
+      col(k).i = i; col(k).j = j+1;
+      k = k + 1;
+    <span class="keyword">end</span>
+
+    A.SetValuesStencil(row,col,v);
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+err = B.AssemblyBegin(PetscMat.FINAL_ASSEMBLY);
+err = B.AssemblyEnd(PetscMat.FINAL_ASSEMBLY);
+err = A.AssemblyBegin(PetscMat.FINAL_ASSEMBLY);
+err = A.AssemblyEnd(PetscMat.FINAL_ASSEMBLY);
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+function [flg,err] = snesdvi_jacobian(snes,xsol,A,B,user)
+%
+%  Jacobain for minimal surface are problem as written in
+%  snes/src/examples/tests/ex8.c
+%
+err = 0;
+flg = PetscMat.SAME_NONZERO_PATTERN;
+
+mx = user.mx; my = user.my;
+hx = 1/(mx+1); hy = 1/(my+1);
+hydhx = hy/hx; hxdhy = hx/hy;
+
+x = user.dm.VecGetArray(xsol);
+
+for (i = 1:mx)
+  for (j = 1:my)        
+    xc = x(i,j);
+    xlt = xc; xr = xc;
+    xrb = xc; xb = xc;
+    xl = xc; xt  = xc;
+        
+    if (i == 1) % left side
+      xl = user.left(j+1);
+      xlt = user.left(j+2);
+    else
+      xl = x(i-1,j);
+    end
+        
+    if (j == 1) % bottom side
+      xb = user.bottom(i+1);
+      xrb = user.bottom(i+2);
+    else
+      xb = x(i,j-1);
+    end
+      
+    if (i == mx) %right side
+      xr  = user.right(j+1);
+      xrb = user.right(j);
+    else
+      xr = x(i+1,j);
+    end
+        
+    if (j == my) % top side
+      xt  = user.top(i+1);
+      xlt = user.top(i);
+    else
+      xt = x(i,j+1);
+    end
+        
+    if (i > 1 & j<my)
+      xlt = x(i-1,j+1);
+    end
+        
+    if (j > 1 & i<mx)
+      xrb = x(i+1,j-1);
+    end
+        
+    d1 = (xc-xl)/hx;
+    d2 = (xc-xr)/hx;
+    d3 = (xc-xt)/hy;
+    d4 = (xc-xb)/hy;
+    d5 = (xrb-xr)/hy;
+    d6 = (xrb-xb)/hx;
+    d7 = (xlt-xl)/hy;
+    d8 = (xlt-xt)/hx;
+
+    f1 = sqrt( 1.0 + d1*d1 + d7*d7);
+    f2 = sqrt( 1.0 + d1*d1 + d4*d4);
+    f3 = sqrt( 1.0 + d3*d3 + d8*d8);
+    f4 = sqrt( 1.0 + d3*d3 + d2*d2);
+    f5 = sqrt( 1.0 + d2*d2 + d5*d5);
+    f6 = sqrt( 1.0 + d4*d4 + d6*d6);
+        
+    hl = (-hydhx*(1.0+d7*d7)+d1*d7)/(f1*f1*f1)+ ...
+         (-hydhx*(1.0+d4*d4)+d1*d4)/(f2*f2*f2);
+    hr = (-hydhx*(1.0+d5*d5)+d2*d5)/(f5*f5*f5)+ ...
+         (-hydhx*(1.0+d3*d3)+d2*d3)/(f4*f4*f4);
+    ht = (-hxdhy*(1.0+d8*d8)+d3*d8)/(f3*f3*f3)+ ...
+         (-hxdhy*(1.0+d2*d2)+d2*d3)/(f4*f4*f4);
+    hb = (-hxdhy*(1.0+d6*d6)+d4*d6)/(f6*f6*f6)+ ...
+         (-hxdhy*(1.0+d1*d1)+d1*d4)/(f2*f2*f2);
+
+    hbr = -d2*d5/(f5*f5*f5) - d4*d6/(f6*f6*f6);
+    htl = -d1*d7/(f1*f1*f1) - d3*d8/(f3*f3*f3);
+
+    hc = hydhx*(1.0+d7*d7)/(f1*f1*f1) + hxdhy*(1.0+d8*d8)/(f3*f3*f3) + ...
+         hydhx*(1.0+d5*d5)/(f5*f5*f5) + hxdhy*(1.0+d6*d6)/(f6*f6*f6) + ...
+         (hxdhy*(1.0+d1*d1)+hydhx*(1.0+d4*d4)-2*d1*d4)/(f2*f2*f2) + ...
+         (hxdhy*(1.0+d2*d2)+hydhx*(1.0+d3*d3)-2*d2*d3)/(f4*f4*f4);
+        
+    hl = hl/2.0; hr  = hr/2.0;  ht  = ht/2.0; 
+    hb = hb/2.0; hbr = hbr/2.0; htl = htl/2.0;  hc = hc/2.0;
+         
+         
+    k = 1;
+    v = []; col = [];
+    row.i = i; row.j = j;
+    if (j>1)
+      v(k) = hb; 
+      col(k).i = i; col(k).j = j-1;
+      k=k+1;
+    end
+
+    if (j>1 & i < mx)
+      v(k)=hbr;
+      col(k).i = i+1; col(k).j = j-1;
+      k=k+1;
+    end
+
+    if (i>1)
+      v(k)= hl; 
+      col(k).i = i-1; col(k).j = j;
+      k = k + 1;
+    end
+
+    v(k)= hc; 
+    col(k).i = i; col(k).j = j;
+    k = k + 1;
+
+    if (i < mx )
+      v(k)= hr; 
+      col(k).i = i+1;
+      col(k).j = j;
+      k = k + 1;
+    end
+
+    if (i>1 & j < my )
+      v(k)= htl; 
+      col(k).i = i-1; col(k).j = j+1;
+      k = k + 1;
+    end
+
+    if (j < my )
+      v(k)= ht; 
+      col(k).i = i; col(k).j = j+1;
+      k = k + 1;
+    end
+         
+    A.SetValuesStencil(row,col,v);
+  end
+end
+
+err = B.AssemblyBegin(PetscMat.FINAL_ASSEMBLY);
+err = B.AssemblyEnd(PetscMat.FINAL_ASSEMBLY);
+err = A.AssemblyBegin(PetscMat.FINAL_ASSEMBLY);
+err = A.AssemblyEnd(PetscMat.FINAL_ASSEMBLY);
+
+##### SOURCE END #####
+--></body></html>

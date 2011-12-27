@@ -1,6 +1,5 @@
-#define PETSCMAT_DLL
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "MatPtAP_Basic"

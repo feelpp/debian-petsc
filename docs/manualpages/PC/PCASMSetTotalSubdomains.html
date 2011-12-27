@@ -10,7 +10,7 @@ Sets the subdomains for all processor for the  additive Schwarz preconditioner. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCASMSetTotalSubdomains(PC pc,PetscInt N,IS is[],IS is_local[])
+PetscErrorCode  PCASMSetTotalSubdomains(PC pc,PetscInt N,IS is[],IS is_local[])
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
@@ -42,6 +42,8 @@ These index sets cannot be destroyed until after completion of the
 linear solves for which the ASM preconditioner is being used.
 <P>
 Use <A HREF="../PC/PCASMSetLocalSubdomains.html#PCASMSetLocalSubdomains">PCASMSetLocalSubdomains</A>() to set local subdomains.
+<P>
+The <A HREF="../IS/IS.html#IS">IS</A> numbering is in the parallel, global numbering of the vector for both is and is_local
 <P>
 
 <P>

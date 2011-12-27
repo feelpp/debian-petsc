@@ -20,6 +20,7 @@ class Configure(PETSc.package.NewPackage):
 
     self.framework.pushLanguage('C')
     args = ['--prefix='+self.installDir]
+    args.append('--libdir='+os.path.join(self.installDir,self.libdir))
     args.append('CC="'+self.framework.getCompiler()+'"')
     args.append('CFLAGS="'+self.framework.getCompilerFlags()+'"')
     self.framework.popLanguage()
@@ -44,7 +45,7 @@ class Configure(PETSc.package.NewPackage):
         raise RuntimeError('Error running configure on OSKI: '+str(e))
       try:
         self.logPrintBox('Compiling oski; this may take several minutes')
-        output2,err2,ret2  = PETSc.package.NewPackage.executeShellCommand('make ; make benchmarks; make install', timeout=2500, log = self.framework.log)
+        output2,err2,ret2  = PETSc.package.NewPackage.executeShellCommand('make && make benchmarks && make install', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running make on OSKI: '+str(e))
       try:

@@ -21,6 +21,7 @@ String with the name of a PETSc preconditioner method or the creation function w
 #define PCILU             "ilu"
 #define PCICC             "icc"
 #define PCASM             "asm"
+#define PCGASM            "gasm"
 #define PCKSP             "ksp"
 #define PCCOMPOSITE       "composite"
 #define PCREDUNDANT       "redundant"
@@ -30,13 +31,14 @@ String with the name of a PETSc preconditioner method or the creation function w
 #define PCPBJACOBI        "pbjacobi"
 #define PCMAT             "mat"
 #define PCHYPRE           "hypre"
+#define PCPARMS           "parms"
 #define PCFIELDSPLIT      "fieldsplit"
 #define PCTFS             "tfs"
 #define PCML              "ml"
 #define PCPROMETHEUS      "prometheus"
 #define PCGALERKIN        "galerkin"
 #define PCEXOTIC          "exotic"
-#define PCOPENMP          "openmp"
+#define PCHMPI            "hmpi"
 #define PCSUPPORTGRAPH    "supportgraph"
 #define PCASA             "asa"
 #define PCCP              "cp"
@@ -46,9 +48,13 @@ String with the name of a PETSc preconditioner method or the creation function w
 #define PCPFMG            "pfmg"
 #define PCSYSPFMG         "syspfmg"
 #define PCREDISTRIBUTE    "redistribute"
+#define PCSACUSP          "sacusp"
+#define PCSACUSPPOLY      "sacusppoly"
+#define PCBICGSTABCUSP    "bicgstabcusp"
+#define PCSVD             "svd"
+#define PCAINVCUSP        "ainvcusp"
+#define PCGAMG            "gamg"
 
-/* Logging support */
-extern PetscCookie PETSCKSP_DLLEXPORT PC_COOKIE;
 </PRE>
 
 <P>

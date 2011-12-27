@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* vinv.c */
 /* Fortran interface file */
 
@@ -27,6 +28,11 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscvec.h"
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecstrideset_ VECSTRIDESET
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecstrideset_ vecstrideset
+#endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecstridescale_ VECSTRIDESCALE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -98,9 +104,9 @@ extern void PetscRmPointer(void*);
 #define veclog_ veclog
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define vecsqrt_ VECSQRT
+#define vecsqrtabs_ VECSQRTABS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define vecsqrt_ vecsqrt
+#define vecsqrtabs_ vecsqrtabs
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecdotnorm2_ VECDOTNORM2
@@ -138,91 +144,95 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   vecstridescale_(Vec v,PetscInt *start,PetscScalar *scale, int *__ierr ){
+void PETSC_STDCALL  vecstrideset_(Vec v,PetscInt *start,PetscScalar *s, int *__ierr ){
+*__ierr = VecStrideSet(
+	(Vec)PetscToPointer((v) ),*start,*s);
+}
+void PETSC_STDCALL  vecstridescale_(Vec v,PetscInt *start,PetscScalar *scale, int *__ierr ){
 *__ierr = VecStrideScale(
 	(Vec)PetscToPointer((v) ),*start,*scale);
 }
-void PETSC_STDCALL   vecstridenorm_(Vec v,PetscInt *start,NormType *ntype,PetscReal *nrm, int *__ierr ){
+void PETSC_STDCALL  vecstridenorm_(Vec v,PetscInt *start,NormType *ntype,PetscReal *nrm, int *__ierr ){
 *__ierr = VecStrideNorm(
 	(Vec)PetscToPointer((v) ),*start,*ntype,nrm);
 }
-void PETSC_STDCALL   vecstridemax_(Vec v,PetscInt *start,PetscInt *idex,PetscReal *nrm, int *__ierr ){
+void PETSC_STDCALL  vecstridemax_(Vec v,PetscInt *start,PetscInt *idex,PetscReal *nrm, int *__ierr ){
 *__ierr = VecStrideMax(
 	(Vec)PetscToPointer((v) ),*start,idex,nrm);
 }
-void PETSC_STDCALL   vecstridemin_(Vec v,PetscInt *start,PetscInt *idex,PetscReal *nrm, int *__ierr ){
+void PETSC_STDCALL  vecstridemin_(Vec v,PetscInt *start,PetscInt *idex,PetscReal *nrm, int *__ierr ){
 *__ierr = VecStrideMin(
 	(Vec)PetscToPointer((v) ),*start,idex,nrm);
 }
-void PETSC_STDCALL   vecstridescaleall_(Vec v,PetscScalar *scales, int *__ierr ){
+void PETSC_STDCALL  vecstridescaleall_(Vec v, PetscScalar *scales, int *__ierr ){
 *__ierr = VecStrideScaleAll(
 	(Vec)PetscToPointer((v) ),scales);
 }
-void PETSC_STDCALL   vecstridenormall_(Vec v,NormType *ntype,PetscReal nrm[], int *__ierr ){
+void PETSC_STDCALL  vecstridenormall_(Vec v,NormType *ntype,PetscReal nrm[], int *__ierr ){
 *__ierr = VecStrideNormAll(
 	(Vec)PetscToPointer((v) ),*ntype,nrm);
 }
-void PETSC_STDCALL   vecstridemaxall_(Vec v,PetscInt idex[],PetscReal nrm[], int *__ierr ){
+void PETSC_STDCALL  vecstridemaxall_(Vec v,PetscInt idex[],PetscReal nrm[], int *__ierr ){
 *__ierr = VecStrideMaxAll(
 	(Vec)PetscToPointer((v) ),idex,nrm);
 }
-void PETSC_STDCALL   vecstrideminall_(Vec v,PetscInt idex[],PetscReal nrm[], int *__ierr ){
+void PETSC_STDCALL  vecstrideminall_(Vec v,PetscInt idex[],PetscReal nrm[], int *__ierr ){
 *__ierr = VecStrideMinAll(
 	(Vec)PetscToPointer((v) ),idex,nrm);
 }
-void PETSC_STDCALL   vecstridegatherall_(Vec v,Vec s[],InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  vecstridegatherall_(Vec v,Vec s[],InsertMode *addv, int *__ierr ){
 *__ierr = VecStrideGatherAll(
 	(Vec)PetscToPointer((v) ),s,*addv);
 }
-void PETSC_STDCALL   vecstridescatterall_(Vec s[],Vec v,InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  vecstridescatterall_(Vec s[],Vec v,InsertMode *addv, int *__ierr ){
 *__ierr = VecStrideScatterAll(s,
 	(Vec)PetscToPointer((v) ),*addv);
 }
-void PETSC_STDCALL   vecstridegather_(Vec v,PetscInt *start,Vec s,InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  vecstridegather_(Vec v,PetscInt *start,Vec s,InsertMode *addv, int *__ierr ){
 *__ierr = VecStrideGather(
 	(Vec)PetscToPointer((v) ),*start,
 	(Vec)PetscToPointer((s) ),*addv);
 }
-void PETSC_STDCALL   vecstridescatter_(Vec s,PetscInt *start,Vec v,InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  vecstridescatter_(Vec s,PetscInt *start,Vec v,InsertMode *addv, int *__ierr ){
 *__ierr = VecStrideScatter(
 	(Vec)PetscToPointer((s) ),*start,
 	(Vec)PetscToPointer((v) ),*addv);
 }
-void PETSC_STDCALL   vecexp_(Vec v, int *__ierr ){
+void PETSC_STDCALL  vecexp_(Vec v, int *__ierr ){
 *__ierr = VecExp(
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL   veclog_(Vec v, int *__ierr ){
+void PETSC_STDCALL  veclog_(Vec v, int *__ierr ){
 *__ierr = VecLog(
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL   vecsqrt_(Vec v, int *__ierr ){
-*__ierr = VecSqrt(
+void PETSC_STDCALL  vecsqrtabs_(Vec v, int *__ierr ){
+*__ierr = VecSqrtAbs(
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL   vecdotnorm2_(Vec s,Vec t,PetscScalar *dp,PetscScalar *nm, int *__ierr ){
+void PETSC_STDCALL  vecdotnorm2_(Vec s,Vec t,PetscScalar *dp,PetscScalar *nm, int *__ierr ){
 *__ierr = VecDotNorm2(
 	(Vec)PetscToPointer((s) ),
 	(Vec)PetscToPointer((t) ),dp,nm);
 }
-void PETSC_STDCALL   vecsum_(Vec v,PetscScalar *sum, int *__ierr ){
+void PETSC_STDCALL  vecsum_(Vec v,PetscScalar *sum, int *__ierr ){
 *__ierr = VecSum(
 	(Vec)PetscToPointer((v) ),sum);
 }
-void PETSC_STDCALL   vecshift_(Vec v,PetscScalar *shift, int *__ierr ){
+void PETSC_STDCALL  vecshift_(Vec v,PetscScalar *shift, int *__ierr ){
 *__ierr = VecShift(
 	(Vec)PetscToPointer((v) ),*shift);
 }
-void PETSC_STDCALL   vecabs_(Vec v, int *__ierr ){
+void PETSC_STDCALL  vecabs_(Vec v, int *__ierr ){
 *__ierr = VecAbs(
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL   vecpermute_(Vec x,IS row,PetscTruth *inv, int *__ierr ){
+void PETSC_STDCALL  vecpermute_(Vec x,IS row,PetscBool  *inv, int *__ierr ){
 *__ierr = VecPermute(
 	(Vec)PetscToPointer((x) ),
 	(IS)PetscToPointer((row) ),*inv);
 }
-void PETSC_STDCALL   vecequal_(Vec vec1,Vec vec2,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  vecequal_(Vec vec1,Vec vec2,PetscBool  *flg, int *__ierr ){
 *__ierr = VecEqual(
 	(Vec)PetscToPointer((vec1) ),
 	(Vec)PetscToPointer((vec2) ),flg);

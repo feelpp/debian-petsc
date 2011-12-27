@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dclear.c */
 /* Fortran interface file */
 
@@ -48,15 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawclear_(PetscDraw draw, int *__ierr ){
+void PETSC_STDCALL  petscdrawclear_(PetscDraw draw, int *__ierr ){
 *__ierr = PetscDrawClear(
 	(PetscDraw)PetscToPointer((draw) ));
 }
-void PETSC_STDCALL   petscdrawbop_(PetscDraw draw, int *__ierr ){
+void PETSC_STDCALL  petscdrawbop_(PetscDraw draw, int *__ierr ){
 *__ierr = PetscDrawBOP(
 	(PetscDraw)PetscToPointer((draw) ));
 }
-void PETSC_STDCALL   petscdraweop_(PetscDraw draw, int *__ierr ){
+void PETSC_STDCALL  petscdraweop_(PetscDraw draw, int *__ierr ){
 *__ierr = PetscDrawEOP(
 	(PetscDraw)PetscToPointer((draw) ));
 }

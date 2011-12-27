@@ -34,6 +34,10 @@ of vectors to which we scatter
 <P>
 Options Database Keys: (uses regular MPI_Sends by default)
 <TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_view         </B></TD><TD>- Prints detail of communications
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_view_info    </B></TD><TD>- Print less details about communication
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_ssend        </B></TD><TD>- Uses MPI_Ssend_init() instead of MPI_Send_init() 
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_rsend           </B></TD><TD>- use ready receiver mode for MPI sends 
@@ -47,6 +51,8 @@ eliminates the chance for overlap of computation and communication
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_alltoall     </B></TD><TD>- Uses MPI all to all communication for scatter
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_window       </B></TD><TD>- Use MPI 2 window operations to move data
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_nopack       </B></TD><TD>- Avoid packing to work vector when possible (if used with -vecscatter_alltoall then will use MPI_Alltoallw()
 </TD></TR></TABLE>
 <P>
@@ -56,9 +62,13 @@ eliminates the chance for overlap of computation and communication
                                                                                    --When packing is used--
 </pre>
 <pre>
-                              MPI Datatypes (no packing)  sendfirst   merge        packtogether  persistent*    -vecscatter_
+                              MPI Datatypes (no packing)  sendfirst   merge        packtogether  persistent*    
 </pre>
 <pre>
+                               _nopack                   _sendfirst    _merge      _packtogether                -vecscatter_
+</pre>
+<pre>
+----------------------------------------------------------------------------------------------------------------------------
 </pre>
 <pre>
    Message passing    Send       p                           X            X           X         always
@@ -74,11 +84,6 @@ eliminates the chance for overlap of computation and communication
 </pre>
 <pre>
    MPI_Win                       p                        nonsense        p           p         nonsense        _window
-</pre>
-<pre>
-</pre>
-<pre>
-              -vecscatter_     _nopack                   _sendfirst    _merge      _packtogether  
 </pre>
 <pre>
                               $   Since persistent sends and receives require a constant memory address they can only be used when data is packed into the work vector
@@ -131,9 +136,9 @@ and unpack upon receeving instead of using MPI datatypes to avoid the packing/un
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex1.c.html">src/snes/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex33f.F.html">src/snes/examples/tutorials/ex33f.F.html</A><BR>
 <A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/dm/da/examples/tutorials/ex6.c.html">src/dm/da/examples/tutorials/ex6.c.html</A><BR>
-<A HREF="../../../src/dm/da/examples/tutorials/ex6f90.F.html">src/dm/da/examples/tutorials/ex6f90.F.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex1.c.html">src/snes/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

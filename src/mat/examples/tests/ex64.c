@@ -1,7 +1,7 @@
 
 static char help[] = "Saves 4by4 block matrix.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -17,7 +17,7 @@ int main(int argc,char **args)
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size > 1) SETERRQ(1,"Can only run on one processor");
+  if (size > 1) SETERRQ(PETSC_COMM_WORLD,1,"Can only run on one processor");
 
   /* 
      Open binary file.  Note that we use FILE_MODE_WRITE to indicate
@@ -49,14 +49,14 @@ int main(int argc,char **args)
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatView(A,fd);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
   ierr = VecCreateSeq(PETSC_COMM_WORLD,12,&x);CHKERRQ(ierr);
   ierr = VecSet(x,one);CHKERRQ(ierr);
   ierr = VecView(x,fd);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
 
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

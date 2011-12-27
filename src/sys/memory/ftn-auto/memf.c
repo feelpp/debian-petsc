@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mem.c */
 /* Fortran interface file */
 
@@ -43,10 +44,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscmemorygetcurrentusage_(PetscLogDouble *mem, int *__ierr ){
+void PETSC_STDCALL  petscmemorygetcurrentusage_(PetscLogDouble *mem, int *__ierr ){
 *__ierr = PetscMemoryGetCurrentUsage(mem);
 }
-void PETSC_STDCALL   petscmemorygetmaximumusage_(PetscLogDouble *mem, int *__ierr ){
+void PETSC_STDCALL  petscmemorygetmaximumusage_(PetscLogDouble *mem, int *__ierr ){
 *__ierr = PetscMemoryGetMaximumUsage(mem);
 }
 #if defined(__cplusplus)

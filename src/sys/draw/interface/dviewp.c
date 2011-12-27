@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawSetViewPort" 
@@ -24,13 +24,13 @@
    Concepts: graphics^in subset of window
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSetViewPort(PetscDraw draw,PetscReal xl,PetscReal yl,PetscReal xr,PetscReal yr)
+PetscErrorCode  PetscDrawSetViewPort(PetscDraw draw,PetscReal xl,PetscReal yl,PetscReal xr,PetscReal yr)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   if (xl < 0.0 || xr > 1.0 || yl < 0.0 || yr > 1.0 || xr <= xl || yr <= yl) {
-    SETERRQ4(PETSC_ERR_ARG_OUTOFRANGE,"ViewPort values must be >= 0 and <= 1: Instead %G %G %G %G",xl,yl,xr,yr); 
+    SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"ViewPort values must be >= 0 and <= 1: Instead %G %G %G %G",xl,yl,xr,yr); 
   }
   draw->port_xl = xl; draw->port_yl = yl;
   draw->port_xr = xr; draw->port_yr = yr;
@@ -58,16 +58,16 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSetViewPort(PetscDraw draw,PetscReal xl,
 .seealso: PetscDrawDivideViewPort(), PetscDrawSetViewPort()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSplitViewPort(PetscDraw draw)
+PetscErrorCode  PetscDrawSplitViewPort(PetscDraw draw)
 {
   PetscErrorCode ierr;
   PetscMPIInt    rank,size;
   int            n;
-  PetscTruth     isnull;
+  PetscBool      isnull;
   PetscReal      xl,xr,yl,yr,h;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   ierr = PetscTypeCompare((PetscObject)draw,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
   if (isnull) PetscFunctionReturn(0);
 
@@ -122,15 +122,15 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSplitViewPort(PetscDraw draw)
 .seealso: PetscDrawSplitViewPort(), PetscDrawSetViewPort(), PetscDrawViewPortsSet(), PetscDrawViewPortsDestroy()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsCreate(PetscDraw draw,PetscInt nports,PetscDrawViewPorts **ports)
+PetscErrorCode  PetscDrawViewPortsCreate(PetscDraw draw,PetscInt nports,PetscDrawViewPorts **ports)
 {
   int        i,n;
   PetscErrorCode ierr;
-  PetscTruth isnull;
+  PetscBool  isnull;
   PetscReal  *xl,*xr,*yl,*yr,h;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidPointer(ports,3);
   ierr = PetscTypeCompare((PetscObject)draw,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
   if (isnull) {
@@ -199,17 +199,17 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsCreate(PetscDraw draw,PetscInt 
 .seealso: PetscDrawSplitViewPort(), PetscDrawSetViewPort(), PetscDrawViewPortsSet(), PetscDrawViewPortsDestroy()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsCreateRect(PetscDraw draw,PetscInt nx,PetscInt ny,PetscDrawViewPorts **ports)
+PetscErrorCode  PetscDrawViewPortsCreateRect(PetscDraw draw,PetscInt nx,PetscInt ny,PetscDrawViewPorts **ports)
 {
   PetscReal     *xl, *xr, *yl, *yr, hx, hy;
-  PetscTruth     isnull;
+  PetscBool      isnull;
   PetscInt       i, j, n;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   if ((nx < 1) || (ny < 1)) {
-    SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE, "Number of divisions must be positive: %d x %d", nx, ny);
+    SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE, "Number of divisions must be positive: %d x %d", nx, ny);
   }
   ierr = PetscTypeCompare((PetscObject) draw, PETSC_DRAW_NULL, &isnull);CHKERRQ(ierr);
   if (isnull) {
@@ -241,10 +241,10 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsCreateRect(PetscDraw draw,Petsc
       ierr = PetscDrawLine(draw,xr[k],yr[k],xr[k],yl[k],PETSC_DRAW_BLACK);CHKERRQ(ierr);
       ierr = PetscDrawLine(draw,xr[k],yl[k],xl[k],yl[k],PETSC_DRAW_BLACK);CHKERRQ(ierr);
 
-      xl[k] += .1*hx;
-      xr[k] -= .1*hx;
-      yl[k] += .1*hy;
-      yr[k] -= .1*hy;
+      xl[k] += .01*hx;
+      xr[k] -= .01*hx;
+      yl[k] += .01*hy;
+      yr[k] -= .01*hy;
     }
   }
   ierr = PetscDrawSynchronizedFlush(draw);CHKERRQ(ierr);
@@ -266,20 +266,18 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsCreateRect(PetscDraw draw,Petsc
 .seealso: PetscDrawSplitViewPort(), PetscDrawSetViewPort(), PetscDrawViewPortsSet(), PetscDrawViewPortsCreate()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsDestroy(PetscDrawViewPorts *ports)
+PetscErrorCode  PetscDrawViewPortsDestroy(PetscDrawViewPorts *ports)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-
   if (!ports) PetscFunctionReturn(0);  
-  if (ports->draw) {ierr = PetscDrawDestroy(ports->draw);CHKERRQ(ierr);}
+  ierr = PetscDrawDestroy(&ports->draw);CHKERRQ(ierr);
   ierr = PetscFree(ports->xl);CHKERRQ(ierr);
   ierr = PetscFree(ports->xr);CHKERRQ(ierr);
   ierr = PetscFree(ports->yl);CHKERRQ(ierr);
   ierr = PetscFree(ports->yr);CHKERRQ(ierr);
   ierr = PetscFree(ports);CHKERRQ(ierr);
-
   PetscFunctionReturn(0);
 }
 
@@ -288,7 +286,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsDestroy(PetscDrawViewPorts *por
 /*@C
    PetscDrawViewPortsSet - sets a draw object to use a particular subport
 
-   Collective on PetscDraw inside PetscDrawViewPorts
+   Logically Collective on PetscDraw inside PetscDrawViewPorts
 
    Input Parameter:
 +  ports - the PetscDrawViewPorts object
@@ -301,14 +299,14 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsDestroy(PetscDrawViewPorts *por
 .seealso: PetscDrawSplitViewPort(), PetscDrawSetViewPort(), PetscDrawViewPortsDestroy(), PetscDrawViewPortsCreate()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawViewPortsSet(PetscDrawViewPorts *ports,int port)
+PetscErrorCode  PetscDrawViewPortsSet(PetscDrawViewPorts *ports,PetscInt port)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   if (ports) { 
     if (port < 0 || port > ports->nports-1) {
-      SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE,"Port is out of range requested %d from 0 to %d\n",port,ports->nports);
+      SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Port is out of range requested %d from 0 to %d\n",port,ports->nports);
     }
     ierr = PetscDrawSetViewPort(ports->draw,ports->xl[port],ports->yl[port],ports->xr[port],ports->yr[port]);CHKERRQ(ierr);
   }

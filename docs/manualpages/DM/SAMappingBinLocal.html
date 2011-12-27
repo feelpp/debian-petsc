@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SAMappingBinLocal</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<A NAME="SAMappingBinLocal"><H1>SAMappingBinLocal</H1></A>
+order local indices from the rank's support into n consecutive groups or "bins" (some possibly empty) according to which of the n image indices they are mapped to on this rank. The groups are concatenated and returned as a single array. See <A HREF="../DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>() if separate bin output is desired.  Since SAMapping is potentially multivalued, the same index can appear in multiple bins. The binning is done on the indices of the selected type(I or J); the other indices and weights, if any,  are moved to the appropriate bin together with the selected indices. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsa.h"  
+PetscErrorCode SAMappingBinLocal(SAMapping map, SA array, SAIndex index, SA bins)
+</PRE>
+<P>
+Not collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>map    </B></TD><TD>- mapping of indices
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>array  </B></TD><TD>- SA with indices to bin
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>index  </B></TD><TD>- selection of the index to bin on (SA_I or SA_J; <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)
+</TD></TR></TABLE>
+<P>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
+<DT><B>bins    </B> -SA containing concatenated binned indices; the number of bins is the same as the result of ISGetImageSizeLocal().
+<br>
+<P>
+
+<P>
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),
+<BR><A HREF="../DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>(),        <A HREF="../DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(), <A HREF="../DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(),            <A HREF="../DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>()
+<P>
+<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/sa/interface/sa.c.html#SAMappingBinLocal">src/dm/sa/interface/sa.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

@@ -1,3 +1,24 @@
+        subroutine SNESVISetVariableBounds(snes, xl, xu ,ierr)
+       SNES snes ! SNES
+       Vec xl ! Vec
+       Vec xu ! Vec
+       integer ierr
+       end subroutine
+        subroutine SNESDefaultGetWork(snes, nw ,ierr)
+       SNES snes ! SNES
+       PetscInt nw ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESSetErrorIfNotConverged(snes, flg ,ierr)
+       SNES snes ! SNES
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine SNESGetErrorIfNotConverged(snes, flag ,ierr)
+       SNES snes ! SNES
+       PetscBool flag ! PetscBool
+       integer ierr
+       end subroutine
         subroutine SNESSetFunctionDomainError(snes ,ierr)
        SNES snes ! SNES
        integer ierr
@@ -6,7 +27,19 @@
        SNES snes ! SNES
        integer ierr
        end subroutine
+        subroutine SNESSetComputeApplicationContext(snes, compute,      &
+     &destroy ,ierr)
+       SNES snes ! SNES
+       external compute ! void function pointer
+       external destroy ! void function pointer
+       integer ierr
+       end subroutine
         subroutine SNESSetApplicationContext(snes, usrP ,ierr)
+       SNES snes ! SNES
+       PetscVoid usrP ! void
+       integer ierr
+       end subroutine
+        subroutine SNESGetApplicationContext(snes, usrP ,ierr)
        SNES snes ! SNES
        PetscVoid usrP ! void
        integer ierr
@@ -26,14 +59,12 @@
        PetscInt nfails ! PetscInt
        integer ierr
        end subroutine
-        subroutine SNESSetMaxNonlinearStepFailures(snes, maxFails ,ierr)&
-     &
+        subroutine SNESSetMaxNonlinearStepFailures(snes, maxFails ,ierr)
        SNES snes ! SNES
        PetscInt maxFails ! PetscInt
        integer ierr
        end subroutine
-        subroutine SNESGetMaxNonlinearStepFailures(snes, maxFails ,ierr)&
-     &
+        subroutine SNESGetMaxNonlinearStepFailures(snes, maxFails ,ierr)
        SNES snes ! SNES
        PetscInt maxFails ! PetscInt
        integer ierr
@@ -96,6 +127,10 @@
        SNES snes ! SNES
        integer ierr
        end subroutine
+        subroutine SNESReset(snes ,ierr)
+       SNES snes ! SNES
+       integer ierr
+       end subroutine
         subroutine SNESDestroy(snes ,ierr)
        SNES snes ! SNES
        integer ierr
@@ -103,6 +138,11 @@
         subroutine SNESSetLagPreconditioner(snes, lag ,ierr)
        SNES snes ! SNES
        PetscInt lag ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESSetGridSequence(snes, steps ,ierr)
+       SNES snes ! SNES
+       PetscInt steps ! PetscInt
        integer ierr
        end subroutine
         subroutine SNESGetLagPreconditioner(snes, lag ,ierr)
@@ -145,6 +185,12 @@
        PetscReal tol ! PetscReal
        integer ierr
        end subroutine
+        subroutine SNESMonitor(snes, iter, rnorm ,ierr)
+       SNES snes ! SNES
+       PetscInt iter ! PetscInt
+       PetscReal rnorm ! PetscReal
+       integer ierr
+       end subroutine
         subroutine SNESGetConvergedReason(snes, reason ,ierr)
        SNES snes ! SNES
        SNESConvergedReason reason ! SNESConvergedReason
@@ -156,7 +202,7 @@
        PetscReal a (*) ! PetscReal
        PetscInt its (*) ! PetscInt
        PetscInt na ! PetscInt
-       PetscTruth reset ! PetscTruth
+       PetscBool reset ! PetscBool
        integer ierr
        end subroutine
         subroutine SNESDefaultUpdate(snes, step ,ierr)
@@ -179,12 +225,12 @@
        end subroutine
         subroutine SNESKSPSetUseEW(snes, flag ,ierr)
        SNES snes ! SNES
-       PetscTruth flag ! PetscTruth
+       PetscBool flag ! PetscBool
        integer ierr
        end subroutine
         subroutine SNESKSPGetUseEW(snes, flag ,ierr)
        SNES snes ! SNES
-       PetscTruth flag ! PetscTruth
+       PetscBool flag ! PetscBool
        integer ierr
        end subroutine
         subroutine SNESKSPSetParametersEW(snes, version, rtol_0,        &
@@ -211,10 +257,60 @@
        PetscReal threshold ! PetscReal
        integer ierr
        end subroutine
-        subroutine SNESLineSearchSetParams(snes, alpha, maxstep ,ierr)
+        subroutine SNESSetDM(snes, dm ,ierr)
+       SNES snes ! SNES
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine SNESGetDM(snes, dm ,ierr)
+       SNES snes ! SNES
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine SNESSetPC(snes, pc ,ierr)
+       SNES snes ! SNES
+       SNES pc ! SNES
+       integer ierr
+       end subroutine
+        subroutine SNESGetPC(snes, pc ,ierr)
+       SNES snes ! SNES
+       SNES pc ! SNES
+       integer ierr
+       end subroutine
+        subroutine SNESMultiblockSetFields(snes, name, n, fields ,ierr)
+       SNES snes ! SNES
+       character name (*) ! char
+       PetscInt n ! PetscInt
+       PetscInt fields ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESMultiblockSetIS(snes, name, is ,ierr)
+       SNES snes ! SNES
+       character name (*) ! char
+       IS is ! IS
+       integer ierr
+       end subroutine
+        subroutine SNESMultiblockSetType(snes, type ,ierr)
+       SNES snes ! SNES
+       PCCompositeType type ! PCCompositeType
+       integer ierr
+       end subroutine
+        subroutine SNESMultiblockSetBlockSize(snes, bs ,ierr)
+       SNES snes ! SNES
+       PetscInt bs ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetParams(snes, alpha, maxstep,        &
+     &minlambda ,ierr)
        SNES snes ! SNES
        PetscReal alpha ! PetscReal
        PetscReal maxstep ! PetscReal
+       PetscReal minlambda ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatCreateSNESMF(snes, J ,ierr)
+       SNES snes ! SNES
+       Mat J ! Mat
        integer ierr
        end subroutine
         subroutine SNESDAComputeJacobianWithAdic(snes, X, J, B, flag,   &
@@ -225,10 +321,5 @@
        Mat B ! Mat
        MatStructure flag ! MatStructure
        PetscVoid ptr ! void
-       integer ierr
-       end subroutine
-        subroutine MatCreateSNESMF(snes, J ,ierr)
-       SNES snes ! SNES
-       Mat J ! Mat
        integer ierr
        end subroutine

@@ -15,7 +15,7 @@ T*/
   includes petscsys.h.
 */
 
-#include "petscis.h"
+#include <petscis.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -55,9 +55,9 @@ int main(int argc,char **argv)
       Determine information on stride
   */
   ierr = ISStrideGetInfo(set,&first,&step);CHKERRQ(ierr);
-  if (first != 3 || step != 2) SETERRQ(1,"Stride info not correct!\n");
-  ierr = ISDestroy(set);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  if (first != 3 || step != 2) SETERRQ(PETSC_COMM_SELF,1,"Stride info not correct!\n");
+  ierr = ISDestroy(&set);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

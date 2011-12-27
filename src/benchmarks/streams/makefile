@@ -1,12 +1,12 @@
 
 ALL: 
 
-CFLAGS	      =
-FFLAGS	      =	 
+CFLAGS	      = -fopenmp
+FFLAGS	      =
 CPPFLAGS      =
 FPPFLAGS      =
 LOCDIR        = src/benchmarks/streams/
-EXAMPLESC     = BasicVersion.c OpenMPVersion.c
+EXAMPLESC     = BasicVersion.c OpenMPVersion.c SSEVersion.c
 EXAMPLESF     = 
 TESTS         = BasicVersion OpenMPVersion
 MANSEC        = Sys
@@ -23,9 +23,14 @@ OpenMPVersion: OpenMPVersion.o  chkopts
 	-${CLINKER} -o OpenMPVersion OpenMPVersion.o ${PETSC_LIB}
 	${RM} -f OpenMPVersion.o
 
+SSEVersion: SSEVersion.o chkopts
+	-${CLINKER} -o $@ $< ${PETSC_LIB}
+	${RM} -f $<
+
 test:  BasicVersion OpenMPVersion
 	-@echo "Time Taken by STREAMS as follows"
 	-@echo "------------------------------------------------"
 	-@${MPIEXEC} -n 1 ./BasicVersion
-	-@read -p "Enter number of OpenMP threads to use: " cnt ; OMP_NUM_THREADS=${cnt}; export OMP_NUM_THREADS; ${MPIEXEC} -n 1 ./OpenMPVersion
+	-@read -p "Enter number of MPI processes to use: " cnt ; ${MPIEXEC} -n $${cnt} ./BasicVersion
+	-@read -p "Enter number of OpenMP threads to use: " cnt ; OMP_NUM_THREADS=$${cnt}; export OMP_NUM_THREADS; ${MPIEXEC} -n 1 ./OpenMPVersion
 	-@echo "------------------------------------------------"

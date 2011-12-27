@@ -1,10 +1,10 @@
 
-#requirespackage   'PETSC_HAVE_FORTRAN'
+#requiresdefine   'PETSC_HAVE_FORTRAN'
 ALL: lib
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = zveciof.c  zvscatf.c
-OBJSC    = zveciof.o  zvscatf.o
+SOURCEC  = zvscatf.c
+OBJSC    = zvscatf.o
 SOURCEF  =
 SOURCEH  =
 DIRS     =

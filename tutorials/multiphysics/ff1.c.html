@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:58:01+00:00">
+<meta name="date" content="2011-10-29T19:25:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@
 <a name="line3">  3: </a><font color="#B22222">/*</font>
 <a name="line4">  4: </a><font color="#B22222">         Defines the u, v, omega physics for a given tempature</font>
 <a name="line5">  5: </a><font color="#B22222">*/</font>
-<a name="line8">  8: </a><strong><font color="#4169E1"><a name="FormInitialGuessLocal1"></a><A href="tutorials/../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormInitialGuessLocal1(<A href="tutorials/../../docs/manualpages/DA/DALocalInfo.html#DALocalInfo">DALocalInfo</A> *info,Field1 **x)</font></strong>
+<a name="line8">  8: </a><strong><font color="#4169E1"><a name="FormInitialGuessLocal1"></a><A href="tutorials/../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormInitialGuessLocal1(<A href="tutorials/../../docs/manualpages/DM/DMDALocalInfo.html#DMDALocalInfo">DMDALocalInfo</A> *info,Field1 **x)</font></strong>
 <a name="line9">  9: </a>{
 <a name="line10"> 10: </a>  <A href="tutorials/../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j;
 <a name="line11"> 11: </a>
@@ -27,22 +27,22 @@
 <a name="line19"> 19: </a>  <font color="#4169E1">return</font> 0;
 <a name="line20"> 20: </a>}
 
-<a name="line22"> 22: </a><A href="tutorials/../../docs/manualpages/Sys/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> EVENT_FORMFUNCTIONLOCAL1;
+<a name="line22"> 22: </a><A href="tutorials/../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> EVENT_FORMFUNCTIONLOCAL1;
 
 <a name="line26"> 26: </a><font color="#B22222">/* </font>
 <a name="line27"> 27: </a><font color="#B22222">      x2 contains given tempature field</font>
 <a name="line28"> 28: </a><font color="#B22222">*/</font>
-<a name="line29"> 29: </a><strong><font color="#4169E1"><a name="FormFunctionLocal1"></a><A href="tutorials/../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunctionLocal1(<A href="tutorials/../../docs/manualpages/DA/DALocalInfo.html#DALocalInfo">DALocalInfo</A> *info,Field1 **x,Field2 **x2,Field1 **f,void *ptr)</font></strong>
+<a name="line29"> 29: </a><strong><font color="#4169E1"><a name="FormFunctionLocal1"></a><A href="tutorials/../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunctionLocal1(<A href="tutorials/../../docs/manualpages/DM/DMDALocalInfo.html#DMDALocalInfo">DMDALocalInfo</A> *info,Field1 **x,Field2 **x2,Field1 **f,void *ptr)</font></strong>
 <a name="line30"> 30: </a> {
 <a name="line31"> 31: </a>  AppCtx         *user = (AppCtx*)ptr;
 <a name="line32"> 32: </a>  <A href="tutorials/../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       xints,xinte,yints,yinte,i,j;
 <a name="line33"> 33: </a>  <A href="tutorials/../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      hx,hy,dhx,dhy,hxdhy,hydhx;
-<a name="line34"> 34: </a>  <A href="tutorials/../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      grashof,prandtl,lid;
+<a name="line34"> 34: </a>  <A href="tutorials/../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      grashof,lid; <font color="#B22222">/* ,prandtl */</font>
 <a name="line35"> 35: </a>  <A href="tutorials/../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    u,uxx,uyy,vx,vy,avx,avy,vxp,vxm,vyp,vym;
 
 <a name="line39"> 39: </a>  <A href="tutorials/../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(EVENT_FORMFUNCTIONLOCAL1,0,0,0,0);
 <a name="line40"> 40: </a>  grashof = user-&gt;grashof;
-<a name="line41"> 41: </a>  prandtl = user-&gt;prandtl;
+<a name="line41"> 41: </a>  <font color="#B22222">/* prandtl = user-&gt;prandtl; */</font>
 <a name="line42"> 42: </a>  lid     = user-&gt;lidvelocity;
 
 <a name="line44"> 44: </a>  dhx = (<A href="tutorials/../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(info-&gt;mx-1);  dhy = (<A href="tutorials/../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(info-&gt;my-1);

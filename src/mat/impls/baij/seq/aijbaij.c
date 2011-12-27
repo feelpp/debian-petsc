@@ -1,11 +1,10 @@
-#define PETSCMAT_DLL
 
-#include "../src/mat/impls/baij/seq/baij.h"
+#include <../src/mat/impls/baij/seq/baij.h>
 
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "MatConvert_SeqBAIJ_SeqAIJ"
-PetscErrorCode PETSCMAT_DLLEXPORT MatConvert_SeqBAIJ_SeqAIJ(Mat A, MatType newtype,MatReuse reuse,Mat *newmat) 
+PetscErrorCode  MatConvert_SeqBAIJ_SeqAIJ(Mat A, MatType newtype,MatReuse reuse,Mat *newmat) 
 {
   Mat            B;
   Mat_SeqBAIJ    *a = (Mat_SeqBAIJ*)A->data; 
@@ -24,7 +23,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatConvert_SeqBAIJ_SeqAIJ(Mat A, MatType newty
   }
   ierr = MatCreate(((PetscObject)A)->comm,&B);CHKERRQ(ierr);
   ierr = MatSetSizes(B,A->rmap->n,A->cmap->n,A->rmap->N,A->cmap->N);CHKERRQ(ierr);
-  ierr = MatSetType(B,newtype);CHKERRQ(ierr);
+  ierr = MatSetType(B,MATSEQAIJ);CHKERRQ(ierr);
   ierr = MatSeqAIJSetPreallocation(B,0,rowlengths);CHKERRQ(ierr);
   ierr = MatSetOption(B,MAT_ROW_ORIENTED,PETSC_FALSE);CHKERRQ(ierr);
   ierr = PetscFree(rowlengths);CHKERRQ(ierr);
@@ -61,12 +60,12 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatConvert_SeqBAIJ_SeqAIJ(Mat A, MatType newty
 }
 EXTERN_C_END
 
-#include "../src/mat/impls/aij/seq/aij.h"
+#include <../src/mat/impls/aij/seq/aij.h>
 
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "MatConvert_SeqAIJ_SeqBAIJ"
-PetscErrorCode PETSCMAT_DLLEXPORT MatConvert_SeqAIJ_SeqBAIJ(Mat A,const MatType newtype,MatReuse reuse,Mat *newmat) 
+PetscErrorCode  MatConvert_SeqAIJ_SeqBAIJ(Mat A,const MatType newtype,MatReuse reuse,Mat *newmat) 
 {
   Mat            B;
   Mat_SeqAIJ     *a = (Mat_SeqAIJ*)A->data; 
@@ -75,7 +74,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatConvert_SeqAIJ_SeqBAIJ(Mat A,const MatType 
   PetscInt       *ai=a->i,m=A->rmap->N,n=A->cmap->N,i,*rowlengths;
 
   PetscFunctionBegin;
-  if (n != m) SETERRQ(PETSC_ERR_ARG_WRONG,"Matrix must be square");
+  if (n != m) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Matrix must be square");
 
   ierr = PetscMalloc(m*sizeof(PetscInt),&rowlengths);CHKERRQ(ierr);
   for (i=0; i<m; i++) {
@@ -83,7 +82,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatConvert_SeqAIJ_SeqBAIJ(Mat A,const MatType 
   }
   ierr = MatCreate(((PetscObject)A)->comm,&B);CHKERRQ(ierr);
   ierr = MatSetSizes(B,m,n,m,n);CHKERRQ(ierr);
-  ierr = MatSetType(B,newtype);CHKERRQ(ierr);
+  ierr = MatSetType(B,MATSEQBAIJ);CHKERRQ(ierr);
   ierr = MatSeqBAIJSetPreallocation_SeqBAIJ(B,1,0,rowlengths);CHKERRQ(ierr);
   ierr = PetscFree(rowlengths);CHKERRQ(ierr);
 

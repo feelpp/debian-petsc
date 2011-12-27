@@ -10,21 +10,20 @@ Frees a block of vectors obtained with <A HREF="../Vec/VecDuplicateVecs.html#Vec
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT VecDestroyVecs(Vec vv[],PetscInt m)
+PetscErrorCode  VecDestroyVecs(PetscInt m,Vec *vv[])
 </PRE>
 Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>vv </B></TD><TD>- pointer to array of vector pointers
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>vv </B></TD><TD>- pointer to pointer to array of vector pointers
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m </B></TD><TD>- the number of vectors previously obtained
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Fortran Note</FONT></H3>
 The Fortran interface is slightly different from that given below.
-See the Fortran chapter of the users manual and
-petsc/src/vec/examples for details.
+See the Fortran chapter of the users manual
 <P>
 
 <P>

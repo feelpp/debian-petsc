@@ -9,20 +9,23 @@
 Called after <A HREF="../DMMG/DMMGSetSNES.html#DMMGSetSNES">DMMGSetSNES</A>() and (optionally) <A HREF="../DMMG/DMMGSetFromOptions.html#DMMGSetFromOptions">DMMGSetFromOptions</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"    
-#include "petscmg.h"    
+#include "petscdmda.h"    
+#include "petscdmmesh.h"  
+#include "petscpcmg.h"    
 #include "petscdmmg.h"  
 #include "petscmat.h" 
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetUp(DMMG *dmmg)
+PetscErrorCode  DMMGSetUp(DMMG *dmmg)
 </PRE>
+This is being deprecated. Use <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>() for linear problems and <A HREF="../SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>() for nonlinear problems.
+See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c
+<P>
 Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>dmmg </B> -the context
 <br>
 <P>
-Notes: Currently this must be called by the user (if they want to). It checks to see if fieldsplit preconditioner
-is being used and manages it.
+Notes: Currently this must be called by the user (if they want to).
 <P>
 
 <P>
@@ -35,6 +38,5 @@ is being used and manages it.
 <BR><A HREF="./index.html">Index of all DMMG routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex22.c.html">src/ksp/ksp/examples/tutorials/ex22.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex47.c.html">src/ksp/ksp/examples/tutorials/ex47.c.html</A><BR>
 </BODY></HTML>

@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscsys.h"        /*I  "petscsys.h"  I*/
+#include <petscsys.h>        /*I  "petscsys.h"  I*/
 /*
     Note that tag of 0 is ok because comm is a private communicator
   generated below just for these routines.
@@ -94,7 +93,7 @@ static int Petsc_Seq_keyval = MPI_KEYVAL_INVALID;
    Concepts: sequential stage
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSequentialPhaseBegin(MPI_Comm comm,int ng)
+PetscErrorCode  PetscSequentialPhaseBegin(MPI_Comm comm,int ng)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
@@ -139,7 +138,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscSequentialPhaseBegin(MPI_Comm comm,int ng)
    Concepts: sequential stage
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSequentialPhaseEnd(MPI_Comm comm,int ng)
+PetscErrorCode  PetscSequentialPhaseEnd(MPI_Comm comm,int ng)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size,flag;
@@ -150,9 +149,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscSequentialPhaseEnd(MPI_Comm comm,int ng)
   if (size == 1) PetscFunctionReturn(0);
 
   ierr = MPI_Attr_get(comm,Petsc_Seq_keyval,(void **)&addr_local_comm,&flag);CHKERRQ(ierr);
-  if (!flag) {
-    SETERRQ(PETSC_ERR_ARG_INCOMP,"Wrong MPI communicator; must pass in one used with PetscSequentialPhaseBegin()");
-  }
+  if (!flag) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Wrong MPI communicator; must pass in one used with PetscSequentialPhaseBegin()");
   local_comm = *addr_local_comm;
 
   ierr = PetscSequentialPhaseEnd_Private(local_comm,ng);CHKERRQ(ierr);

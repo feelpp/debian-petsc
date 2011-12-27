@@ -1,4 +1,3 @@
-#define PETSCMAT_DLL
 
 /*
      Inverts 3 by 3 matrix using partial pivoting.
@@ -11,11 +10,11 @@
     dgefa() and dgedi() specialized for a size of 3.
 
 */
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "Kernel_A_gets_inverse_A_3"
-PetscErrorCode Kernel_A_gets_inverse_A_3(MatScalar *a,PetscReal Shift)
+PetscErrorCode Kernel_A_gets_inverse_A_3(MatScalar *a,PetscReal shift)
 {
     PetscInt   i__2,i__3,kp1,j,k,l,ll,i,ipvt[3],kb,k3;
     PetscInt   k4,j3;
@@ -25,6 +24,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_3(MatScalar *a,PetscReal Shift)
 /*     gaussian elimination with partial pivoting */
 
     PetscFunctionBegin;
+    shift = .333*shift*(1.e-12 + PetscAbsScalar(a[0]) + PetscAbsScalar(a[4]) + PetscAbsScalar(a[8]));
     /* Parameter adjustments */
     a       -= 4;
 
@@ -45,10 +45,14 @@ PetscErrorCode Kernel_A_gets_inverse_A_3(MatScalar *a,PetscReal Shift)
         l       += k - 1;
 	ipvt[k-1] = l;
 
-	if (a[l + k3] == 0.0) {
-	  SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
+	if (a[l + k3] == 0.0) { 
+	  if (shift == 0.0) {
+	    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
+	  } else {
+	    /* Shift is applied to single diagonal entry */
+	    a[l + k3] = shift;
+	  }
 	}
-
 /*           interchange if necessary */
 
 	if (l != k) {
@@ -85,9 +89,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_3(MatScalar *a,PetscReal Shift)
 	}
     }
     ipvt[2] = 3;
-    if (a[12] == 0.0) {
-      SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",2);
-    }
+    if (a[12] == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",2);
 
     /*
          Now form the inverse 

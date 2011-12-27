@@ -9,7 +9,7 @@
 Adds a new <A HREF="../Sys/PetscRandom.html#PetscRandom">PetscRandom</A> component implementation 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PetscRandomRegisterDynamic(char *name, char *path, char *func_name, PetscErrorCode (*create_func)(PetscRandom))
+PetscErrorCode PetscRandomRegisterDynamic(const char *name, const char *path, const char *func_name, PetscErrorCode (*create_func)(PetscRandom))
 </PRE>
 Not Collective
 <P>

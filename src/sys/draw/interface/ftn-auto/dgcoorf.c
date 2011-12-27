@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dgcoor.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawgetcoordinates_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr, int *__ierr ){
+void PETSC_STDCALL  petscdrawgetcoordinates_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr, int *__ierr ){
 *__ierr = PetscDrawGetCoordinates(
 	(PetscDraw)PetscToPointer((draw) ),xl,yl,xr,yr);
 }

@@ -1,3 +1,25 @@
+        subroutine MatPartitioningParmetisSetCoarseSequential(part ,ierr&
+     &)
+       MatPartitioning part ! MatPartitioning
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningParmetisGetEdgeCut(part, cut ,ierr)
+       MatPartitioning part ! MatPartitioning
+       PetscInt cut ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatMeshToVertexGraph(mesh, ncommonnodes, dual ,ierr)
+       Mat mesh ! Mat
+       PetscInt ncommonnodes ! PetscInt
+       Mat dual ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatMeshToCellGraph(mesh, ncommonnodes, dual ,ierr)
+       Mat mesh ! Mat
+       PetscInt ncommonnodes ! PetscInt
+       Mat dual ! Mat
+       integer ierr
+       end subroutine
         subroutine MatPartitioningApply(matp, partitioning ,ierr)
        MatPartitioning matp ! MatPartitioning
        IS partitioning ! IS
@@ -21,80 +43,15 @@
        MatPartitioning part ! MatPartitioning
        integer ierr
        end subroutine
-        subroutine MatPartitioningJostleSetCoarseLevel(part, level ,ierr&
-     &)
-       MatPartitioning part ! MatPartitioning
-       PetscReal level ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningJostleSetCoarseSequential(part ,ierr)
-       MatPartitioning part ! MatPartitioning
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningParmetisSetCoarseSequential(part ,ierr&
-     &)
-       MatPartitioning part ! MatPartitioning
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningParmetisGetEdgeCut(part, cut ,ierr)
-       MatPartitioning part ! MatPartitioning
-       PetscInt cut ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatMeshToVertexGraph(mesh, ncommonnodes, dual ,ierr)
-       Mat mesh ! Mat
-       PetscInt ncommonnodes ! PetscInt
-       Mat dual ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatMeshToCellGraph(mesh, ncommonnodes, dual ,ierr)
-       Mat mesh ! Mat
-       PetscInt ncommonnodes ! PetscInt
-       Mat dual ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningScotchSetGlobal(part, global ,ierr)
-       MatPartitioning part ! MatPartitioning
-       MPScotchGlobalType global ! MPScotchGlobalType
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningScotchSetCoarseLevel(part, level ,ierr&
-     &)
-       MatPartitioning part ! MatPartitioning
-       PetscReal level ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningScotchSetLocal(part, local ,ierr)
-       MatPartitioning part ! MatPartitioning
-       MPScotchLocalType local ! MPScotchLocalType
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningScotchSetMultilevel(part ,ierr)
-       MatPartitioning part ! MatPartitioning
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningScotchSetMapping(part ,ierr)
-       MatPartitioning part ! MatPartitioning
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningPartySetCoarseLevel(part, level ,ierr)&
-     &
-       MatPartitioning part ! MatPartitioning
-       PetscReal level ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningPartySetMatchOptimization(part, opt , &
-     &ierr)
-       MatPartitioning part ! MatPartitioning
-       PetscTruth opt ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine MatPartitioningPartySetBipart(part, bp ,ierr)
-       MatPartitioning part ! MatPartitioning
-       PetscTruth bp ! PetscTruth
+        subroutine MatOrderingRegisterDestroy(ierr)
        integer ierr
        end subroutine
         subroutine MatPartitioningChacoSetGlobal(part, method ,ierr)
+       MatPartitioning part ! MatPartitioning
+       MPChacoGlobalType method ! MPChacoGlobalType
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningChacoGetGlobal(part, method ,ierr)
        MatPartitioning part ! MatPartitioning
        MPChacoGlobalType method ! MPChacoGlobalType
        integer ierr
@@ -104,8 +61,12 @@
        MPChacoLocalType method ! MPChacoLocalType
        integer ierr
        end subroutine
-        subroutine MatPartitioningChacoSetCoarseLevel(part, level ,ierr)&
-     &
+        subroutine MatPartitioningChacoGetLocal(part, method ,ierr)
+       MatPartitioning part ! MatPartitioning
+       MPChacoLocalType method ! MPChacoLocalType
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningChacoSetCoarseLevel(part, level ,ierr)
        MatPartitioning part ! MatPartitioning
        PetscReal level ! PetscReal
        integer ierr
@@ -116,16 +77,67 @@
        MPChacoEigenType method ! MPChacoEigenType
        integer ierr
        end subroutine
+        subroutine MatPartitioningChacoGetEigenSolver(part, method ,ierr&
+     &)
+       MatPartitioning part ! MatPartitioning
+       MPChacoEigenType method ! MPChacoEigenType
+       integer ierr
+       end subroutine
         subroutine MatPartitioningChacoSetEigenTol(part, tol ,ierr)
+       MatPartitioning part ! MatPartitioning
+       PetscReal tol ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningChacoGetEigenTol(part, tol ,ierr)
        MatPartitioning part ! MatPartitioning
        PetscReal tol ! PetscReal
        integer ierr
        end subroutine
         subroutine MatPartitioningChacoSetEigenNumber(part, num ,ierr)
        MatPartitioning part ! MatPartitioning
-       integer num ! int
+       PetscInt num ! PetscInt
        integer ierr
        end subroutine
-        subroutine MatOrderingRegisterDestroy(ierr)
+        subroutine MatPartitioningChacoGetEigenNumber(part, num ,ierr)
+       MatPartitioning part ! MatPartitioning
+       PetscInt num ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningPTScotchSetImbalance(part, imb ,ierr)
+       MatPartitioning part ! MatPartitioning
+       PetscReal imb ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningPTScotchGetImbalance(part, imb ,ierr)
+       MatPartitioning part ! MatPartitioning
+       PetscReal imb ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningPTScotchSetStrategy(part, strategy ,  &
+     &ierr)
+       MatPartitioning part ! MatPartitioning
+       MPPTScotchStrategyType strategy ! MPPTScotchStrategyType
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningPTScotchGetStrategy(part, strategy ,  &
+     &ierr)
+       MatPartitioning part ! MatPartitioning
+       MPPTScotchStrategyType strategy ! MPPTScotchStrategyType
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningPartySetCoarseLevel(part, level ,ierr)
+       MatPartitioning part ! MatPartitioning
+       PetscReal level ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningPartySetMatchOptimization(part, opt , &
+     &ierr)
+       MatPartitioning part ! MatPartitioning
+       PetscBool opt ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine MatPartitioningPartySetBipart(part, bp ,ierr)
+       MatPartitioning part ! MatPartitioning
+       PetscBool bp ! PetscBool
        integer ierr
        end subroutine

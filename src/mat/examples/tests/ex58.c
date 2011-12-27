@@ -1,7 +1,7 @@
 
 static char help[] = "Tests MatTranspose() and MatEqual() for MPIAIJ matrices.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 
 #undef __FUNCT__
@@ -12,7 +12,7 @@ int main(int argc,char **argv)
   PetscInt       m = 7,n,i,rstart,rend,cols[3];
   PetscErrorCode ierr;
   PetscScalar    v[3];
-  PetscTruth     equal;
+  PetscBool      equal;
   const char     *eq[2];
 
   ierr = PetscInitialize(&argc,&argv,(char*)0,help);CHKERRQ(ierr); 
@@ -20,7 +20,7 @@ int main(int argc,char **argv)
   ierr = PetscOptionsGetInt(PETSC_NULL,"-m",&m,PETSC_NULL);CHKERRQ(ierr);
   n = m;
 
-  /* ------- Assemble matrix, test MatValid() --------- */
+  /* ------- Assemble matrix, --------- */
 
   ierr = MatCreateMPIAIJ(PETSC_COMM_WORLD,PETSC_DECIDE,PETSC_DECIDE,m,n,0,0,0,0,&A);CHKERRQ(ierr);
   ierr = MatGetOwnershipRange(A,&rstart,&rend);CHKERRQ(ierr);
@@ -57,11 +57,11 @@ int main(int argc,char **argv)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Matrices are %s\n",eq[equal]);CHKERRQ(ierr);
 
   /* Free data structures */  
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(B);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
 
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

@@ -6,10 +6,10 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="DMInitializePackage"><H1>DMInitializePackage</H1></A>
-This function initializes everything in the <A HREF="../DA/DM.html#DM">DM</A> package. It is called from PetscDLLibraryRegister() when using dynamic libraries, and on the first call to AOCreate() or <A HREF="../DA/DACreate.html#DACreate">DACreate</A>() when using static libraries. 
+This function initializes everything in the DM package. It is called from PetscDLLibraryRegister() when using dynamic libraries, and on the first call to <A HREF="../AO/AOCreate.html#AOCreate">AOCreate</A>() or <A HREF="../DM/DMDACreate.html#DMDACreate">DMDACreate</A>() when using static libraries. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCDM_DLLEXPORT DMInitializePackage(const char path[]) 
+PetscErrorCode  DMInitializePackage(const char path[]) 
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 path - The dynamic library path, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
@@ -17,7 +17,7 @@ path - The dynamic library path, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
- <A HREF="../AO/AO.html#AO">AO</A>, <A HREF="../DA/DA.html#DA">DA</A>, initialize, package
+ <A HREF="../AO/AO.html#AO">AO</A>, initialize, package
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>()

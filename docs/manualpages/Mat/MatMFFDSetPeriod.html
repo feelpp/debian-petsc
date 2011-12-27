@@ -10,9 +10,9 @@ Sets how often h is recomputed, by default it is everytime
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"   
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDSetPeriod(Mat mat,PetscInt period)
+PetscErrorCode  MatMFFDSetPeriod(Mat mat,PetscInt period)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -34,8 +34,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../SNES/MatCreateSNESMF.html#MatCreateSNESMF">MatCreateSNESMF</A>(),<A HREF="../Mat/MatMFFDGetH.html#MatMFFDGetH">MatMFFDGetH</A>(),
-<BR><A HREF="../Mat/MatMFFDSetHHistory.html#MatMFFDSetHHistory">MatMFFDSetHHistory</A>(), <A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>(),
-MatMFFDKSPMonitor()
+<BR><A HREF="../Mat/MatMFFDSetHHistory.html#MatMFFDSetHHistory">MatMFFDSetHHistory</A>(), <A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/mffd/mffd.c.html#MatMFFDSetPeriod">src/mat/impls/mffd/mffd.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

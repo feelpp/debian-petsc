@@ -1,7 +1,7 @@
 
 static char help[] = "Tests copying and ordering uniprocessor row-based sparse matrices.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -33,15 +33,15 @@ int main(int argc,char **args)
 
   ierr = MatConvert(C,MATSAME,MAT_INITIAL_MATRIX,&A);CHKERRQ(ierr);
 
-  ierr = MatGetOrdering(A,MATORDERING_ND,&perm,&iperm);CHKERRQ(ierr);
+  ierr = MatGetOrdering(A,MATORDERINGND,&perm,&iperm);CHKERRQ(ierr);
   ierr = ISView(perm,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
   ierr = ISView(iperm,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
   ierr = MatView(A,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
 
-  ierr = ISDestroy(perm);CHKERRQ(ierr);
-  ierr = ISDestroy(iperm);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISDestroy(&perm);CHKERRQ(ierr);
+  ierr = ISDestroy(&iperm);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

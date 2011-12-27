@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscdraw.h"     /*I "petscdraw.h"  I*/
+#include <petscdraw.h>     /*I "petscdraw.h"  I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawZoom" 
@@ -22,12 +21,12 @@
 
 .seealso:  
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawZoom(PetscDraw draw,PetscErrorCode (*func)(PetscDraw,void *),void *ctx)
+PetscErrorCode  PetscDrawZoom(PetscDraw draw,PetscErrorCode (*func)(PetscDraw,void *),void *ctx)
 {
   PetscErrorCode  ierr;
   PetscDrawButton button;
   PetscReal       dpause,xc,yc,scale = 1.0,w,h,xr,xl,yr,yl,xmin,xmax,ymin,ymax;
-  PetscTruth      isnull;
+  PetscBool       isnull;
 
   PetscFunctionBegin;
   ierr = PetscDrawIsNull(draw,&isnull);CHKERRQ(ierr);

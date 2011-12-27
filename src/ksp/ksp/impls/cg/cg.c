@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /*
     This file implements the conjugate gradient method in PETSc as part of
@@ -42,9 +41,9 @@
     related to the type of matrix (e.g. complex symmetric) being solved and
     data used during the optional Lanczo process used to compute eigenvalues
 */
-#include "../src/ksp/ksp/impls/cg/cgimpl.h"       /*I "petscksp.h" I*/
-EXTERN PetscErrorCode KSPComputeExtremeSingularValues_CG(KSP,PetscReal *,PetscReal *);
-EXTERN PetscErrorCode KSPComputeEigenvalues_CG(KSP,PetscInt,PetscReal *,PetscReal *,PetscInt *);
+#include <../src/ksp/ksp/impls/cg/cgimpl.h>       /*I "petscksp.h" I*/
+extern PetscErrorCode KSPComputeExtremeSingularValues_CG(KSP,PetscReal *,PetscReal *);
+extern PetscErrorCode KSPComputeEigenvalues_CG(KSP,PetscInt,PetscReal *,PetscReal *,PetscInt *);
 
 /*
      KSPSetUp_CG - Sets up the workspace needed by the CG method. 
@@ -61,16 +60,6 @@ PetscErrorCode KSPSetUp_CG(KSP ksp)
   PetscInt        maxit = ksp->max_it,nwork = 3;
 
   PetscFunctionBegin;
-  /* 
-       This implementation of CG only handles left preconditioning
-     so generate an error otherwise.
-  */
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP,"No right preconditioning for KSPCG");
-  } else if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"No symmetric preconditioning for KSPCG");
-  }
-
   /* get work vectors needed by CG */
   if (cgP->singlereduction) nwork += 2;
   ierr = KSPDefaultGetWork(ksp,nwork);CHKERRQ(ierr);
@@ -110,11 +99,11 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
   KSP_CG         *cg;
   Mat            Amat,Pmat;
   MatStructure   pflag;
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
-  ierr    = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
+  ierr    = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
 
   cg            = (KSP_CG*)ksp->data;
   eigs          = ksp->calc_sings;
@@ -132,11 +121,7 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
     W           = Z;
   } 
 
-#if !defined(PETSC_USE_COMPLEX)
-#define VecXDot(x,y,a) VecDot(x,y,a)
-#else
 #define VecXDot(x,y,a) (((cg->type) == (KSP_CG_HERMITIAN)) ? VecDot(x,y,a) : VecTDot(x,y,a))
-#endif
 
   if (eigs) {e = cg->e; d = cg->d; e[0] = 0.0; }
   ierr = PCGetOperators(ksp->pc,&Amat,&Pmat,&pflag);CHKERRQ(ierr);
@@ -149,23 +134,31 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
     ierr = VecCopy(B,R);CHKERRQ(ierr);                         /*     r <- b (x is 0) */
   }
 
-  if (ksp->normtype == KSP_NORM_PRECONDITIONED) {
+  switch (ksp->normtype) {
+  case KSP_NORM_PRECONDITIONED:
     ierr = KSP_PCApply(ksp,R,Z);CHKERRQ(ierr);                   /*     z <- Br         */
     ierr = VecNorm(Z,NORM_2,&dp);CHKERRQ(ierr);                /*    dp <- z'*z = e'*A'*B'*B*A'*e'     */
-  } else if (ksp->normtype == KSP_NORM_UNPRECONDITIONED) {
+    break;
+  case KSP_NORM_UNPRECONDITIONED:
     ierr = VecNorm(R,NORM_2,&dp);CHKERRQ(ierr);                /*    dp <- r'*r = e'*A'*A*e            */
-  } else if (ksp->normtype == KSP_NORM_NATURAL) {
+    break;
+  case KSP_NORM_NATURAL:
     ierr = KSP_PCApply(ksp,R,Z);CHKERRQ(ierr);                   /*     z <- Br         */
     if (cg->singlereduction) {
       ierr = KSP_MatMult(ksp,Amat,Z,S);CHKERRQ(ierr);  
       ierr = VecXDot(Z,S,&delta);CHKERRQ(ierr);
     }
     ierr = VecXDot(Z,R,&beta);CHKERRQ(ierr);                     /*  beta <- z'*r       */
-    if PetscIsInfOrNanScalar(beta) SETERRQ(PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
-    dp = sqrt(PetscAbsScalar(beta));                           /*    dp <- r'*z = r'*B*r = e'*A'*B*A*e */
-  } else dp = 0.0;
+    if (PetscIsInfOrNanScalar(beta)) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
+    dp = PetscSqrtReal(PetscAbsScalar(beta));                           /*    dp <- r'*z = r'*B*r = e'*A'*B*A*e */
+    break;
+  case KSP_NORM_NONE:
+    dp = 0.0;
+    break;
+  default: SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"%s",KSPNormTypes[ksp->normtype]);
+  }
   KSPLogResidualHistory(ksp,dp);
-  KSPMonitor(ksp,0,dp);                              /* call any registered monitor routines */
+  ierr = KSPMonitor(ksp,0,dp);CHKERRQ(ierr);
   ksp->rnorm = dp;
 
   ierr = (*ksp->converged)(ksp,0,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);      /* test for convergence */
@@ -180,7 +173,7 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
       ierr = VecXDot(Z,S,&delta);CHKERRQ(ierr);
     }
     ierr = VecXDot(Z,R,&beta);CHKERRQ(ierr);         /*  beta <- z'*r       */
-    if PetscIsInfOrNanScalar(beta) SETERRQ(PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
+    if (PetscIsInfOrNanScalar(beta)) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
   }
   
   i = 0;
@@ -191,7 +184,7 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
        ierr = PetscInfo(ksp,"converged due to beta = 0\n");CHKERRQ(ierr);
        break;
 #if !defined(PETSC_USE_COMPLEX)
-     } else if (beta < 0.0) {
+     } else if ((i > 0) && (beta*betaold < 0.0)) {
        ksp->reason = KSP_DIVERGED_INDEFINITE_PC;
        ierr = PetscInfo(ksp,"diverging due to indefinite preconditioner\n");CHKERRQ(ierr);
        break;
@@ -203,32 +196,30 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
      } else {
        b = beta/betaold;
        if (eigs) {
-         if (ksp->max_it != stored_max_it) {
-           SETERRQ(PETSC_ERR_SUP,"Can not change maxit AND calculate eigenvalues");
-         }
-         e[i] = sqrt(PetscAbsScalar(b))/a;  
+         if (ksp->max_it != stored_max_it) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Can not change maxit AND calculate eigenvalues");
+         e[i] = PetscSqrtReal(PetscAbsScalar(b))/a;  
        }
        ierr = VecAYPX(P,b,Z);CHKERRQ(ierr);    /*     p <- z + b* p   */
      }
      dpiold = dpi;
      if (!cg->singlereduction || !i) {
-       ierr = KSP_MatMult(ksp,Amat,P,W);CHKERRQ(ierr);          /*     w <- Kp         */
+       ierr = KSP_MatMult(ksp,Amat,P,W);CHKERRQ(ierr);          /*     w <- Ap         */
        ierr = VecXDot(P,W,&dpi);CHKERRQ(ierr);                  /*     dpi <- p'w     */
      } else { 
-	ierr = VecAYPX(W,beta/betaold,S);CHKERRQ(ierr);                  /*     w <- Kp         */
+	ierr = VecAYPX(W,beta/betaold,S);CHKERRQ(ierr);                  /*     w <- Ap         */
         dpi = delta - beta*beta*dpiold/(betaold*betaold);              /*     dpi <- p'w     */
      }
      betaold = beta;
-     if PetscIsInfOrNanScalar(dpi) SETERRQ(PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
+     if (PetscIsInfOrNanScalar(dpi)) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
 
-     if (PetscRealPart(dpi) <= 0.0) {
+     if ((dpi == 0.0) || ((i > 0) && (PetscRealPart(dpi*dpiold) <= 0.0))) {
        ksp->reason = KSP_DIVERGED_INDEFINITE_MAT;
        ierr = PetscInfo(ksp,"diverging due to indefinite or negative definite matrix\n");CHKERRQ(ierr);
        break;
      }
      a = beta/dpi;                                 /*     a = beta/p'w   */
      if (eigs) {
-       d[i] = sqrt(PetscAbsScalar(b))*e[i] + 1.0/a;
+       d[i] = PetscSqrtReal(PetscAbsScalar(b))*e[i] + 1.0/a;
      }
      ierr = VecAXPY(X,a,P);CHKERRQ(ierr);          /*     x <- x + ap     */
      ierr = VecAXPY(R,-a,W);CHKERRQ(ierr);                      /*     r <- r - aw    */
@@ -254,14 +245,14 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
        } else {
          ierr = VecXDot(Z,R,&beta);CHKERRQ(ierr);     /*  beta <- r'*z       */
        }
-       if PetscIsInfOrNanScalar(beta) SETERRQ(PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
-       dp = sqrt(PetscAbsScalar(beta));
+       if (PetscIsInfOrNanScalar(beta)) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
+       dp = PetscSqrtReal(PetscAbsScalar(beta));
      } else {
        dp = 0.0;
      }
      ksp->rnorm = dp;
      KSPLogResidualHistory(ksp,dp);
-     KSPMonitor(ksp,i+1,dp);
+     ierr = KSPMonitor(ksp,i+1,dp);CHKERRQ(ierr);
      ierr = (*ksp->converged)(ksp,i+1,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
      if (ksp->reason) break;
 
@@ -283,7 +274,7 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
        } else {
 	 ierr = VecXDot(Z,R,&beta);CHKERRQ(ierr);        /*  beta <- z'*r       */
        }
-       if PetscIsInfOrNanScalar(beta) SETERRQ(PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
+       if (PetscIsInfOrNanScalar(beta)) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
      }
 
      i++;
@@ -293,10 +284,7 @@ PetscErrorCode  KSPSolve_CG(KSP ksp)
   }
   PetscFunctionReturn(0);
 }
-/*
-       KSPDestroy_CG - Frees all memory space used by the Krylov method
 
-*/
 #undef __FUNCT__  
 #define __FUNCT__ "KSPDestroy_CG" 
 PetscErrorCode KSPDestroy_CG(KSP ksp)
@@ -307,7 +295,7 @@ PetscErrorCode KSPDestroy_CG(KSP ksp)
   PetscFunctionBegin;
   /* free space used for singular value calculations */
   if (ksp->calc_sings) {
-    ierr = PetscFree4(cg->e,cg->dd,cg->ee,cg->dd);CHKERRQ(ierr);
+    ierr = PetscFree4(cg->e,cg->d,cg->ee,cg->dd);CHKERRQ(ierr);
   }
   ierr = KSPDefaultDestroy(ksp);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPCGSetType_C","",PETSC_NULL);CHKERRQ(ierr);
@@ -330,14 +318,14 @@ PetscErrorCode KSPView_CG(KSP ksp,PetscViewer viewer)
 #if defined(PETSC_USE_COMPLEX)
   KSP_CG         *cg = (KSP_CG *)ksp->data; 
   PetscErrorCode ierr;
-  PetscTruth     iascii;
+  PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  CG or CGNE: variant %s\n",KSPCGTypes[cg->type]);CHKERRQ(ierr);
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for KSP cg",((PetscObject)viewer)->type_name);
+    SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Viewer type %s not supported for KSP cg",((PetscObject)viewer)->type_name);
   }
 #endif
   PetscFunctionReturn(0);
@@ -360,7 +348,7 @@ PetscErrorCode KSPSetFromOptions_CG(KSP ksp)
   ierr = PetscOptionsEnum("-ksp_cg_type","Matrix is Hermitian or complex symmetric","KSPCGSetType",KSPCGTypes,(PetscEnum)cg->type,
                           (PetscEnum*)&cg->type,PETSC_NULL);CHKERRQ(ierr);
 #endif
-  ierr = PetscOptionsTruth("-ksp_cg_single_reduction","Merge inner products into single MPI_Allreduce()",
+  ierr = PetscOptionsBool("-ksp_cg_single_reduction","Merge inner products into single MPI_Allreduce()",
                            "KSPCGUseSingleReduction",cg->singlereduction,&cg->singlereduction,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsTail();CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -376,7 +364,7 @@ PetscErrorCode KSPSetFromOptions_CG(KSP ksp)
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCGSetType_CG" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCGSetType_CG(KSP ksp,KSPCGType type)
+PetscErrorCode  KSPCGSetType_CG(KSP ksp,KSPCGType type)
 {
   KSP_CG *cg = (KSP_CG *)ksp->data;
 
@@ -389,7 +377,7 @@ EXTERN_C_END
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCGUseSingleReduction_CG" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCGUseSingleReduction_CG(KSP ksp,PetscTruth flg)
+PetscErrorCode  KSPCGUseSingleReduction_CG(KSP ksp,PetscBool  flg)
 {
   KSP_CG *cg  = (KSP_CG *)ksp->data;
 
@@ -409,14 +397,20 @@ EXTERN_C_END
      KSPCG - The preconditioned conjugate gradient (PCG) iterative method
 
    Options Database Keys:
-+   -ksp_cg_type Hermitian - (for complex matrices only) indicates the matrix is Hermitian
++   -ksp_cg_type Hermitian - (for complex matrices only) indicates the matrix is Hermitian, see KSPCGSetType()
 .   -ksp_cg_type symmetric - (for complex matrices only) indicates the matrix is symmetric
 -   -ksp_cg_single_reduction - performs both inner products needed in the algorithm with a single MPI_Allreduce() call, see KSPCGUseSingleReduction()
 
    Level: beginner
 
-   Notes: The PCG method requires both the matrix and preconditioner to 
-          be symmetric positive (semi) definite
+   Notes: The PCG method requires both the matrix and preconditioner to be symmetric positive (or negative) (semi) definite
+          Only left preconditioning is supported.
+
+   For complex numbers there are two different CG methods. One for Hermitian symmetric matrices and one for non-Hermitian symmetric matrices. Use 
+   KSPCGSetType() to indicate which type you are using. 
+
+   Developer Notes: KSPSolve_CG() should actually query the matrix to determine if it is Hermitian symmetric or not and NOT require the user to 
+   indicate it to the KSP object.
 
    References:
    Methods of Conjugate Gradients for Solving Linear Systems, Magnus R. Hestenes and Eduard Stiefel,
@@ -430,7 +424,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_CG"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CG(KSP ksp)
+PetscErrorCode  KSPCreate_CG(KSP ksp)
 {
   PetscErrorCode ierr;
   KSP_CG         *cg;
@@ -443,7 +437,11 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CG(KSP ksp)
   cg->type                       = KSP_CG_HERMITIAN;
 #endif
   ksp->data                      = (void*)cg;
-  ksp->pc_side                   = PC_LEFT;
+
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_LEFT,1);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_NATURAL,PC_LEFT,1);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_NONE,PC_LEFT,1);CHKERRQ(ierr);
 
   /*
        Sets the functions that are associated with this data structure 

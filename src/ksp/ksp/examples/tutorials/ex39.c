@@ -5,8 +5,9 @@ static char help[] = "Lattice Gauge 2D model.\n"
 "-beta b          controls the randomness of the gauge field\n"
 "-rho r           the quark mass (?)";
 
-#include "petscksp.h"
-#include "petscasa.h"
+#include <petscksp.h>
+#include <petscpcasa.h>
+#include <petscdmda.h>
 
 PetscErrorCode computeMaxEigVal(Mat A, PetscInt its, PetscScalar *eig);
 
@@ -14,12 +15,12 @@ PetscErrorCode computeMaxEigVal(Mat A, PetscInt its, PetscScalar *eig);
 #define __FUNCT__ "main"
 int main(int Argc,char **Args)
 {
-  PetscTruth      flg;
+  PetscBool       flg;
   PetscInt        n = -6;
   PetscScalar     rho = 1.0;
   PetscReal       h;
   PetscReal       beta = 1.0;
-  DA              da;
+  DM              da;
   PetscRandom     rctx;
   PetscMPIInt     comm_size;
   Mat             H,HtH;
@@ -45,7 +46,7 @@ int main(int Argc,char **Args)
   rho *= 1./(2.*h);
   
   /* Geometry info */
-  ierr = DACreate2d(PETSC_COMM_WORLD, DA_XYPERIODIC, DA_STENCIL_STAR, n, n,
+  ierr = DMDACreate2d(PETSC_COMM_WORLD, DMDA_BOUNDARY_PERIODIC,DMDA_BOUNDARY_PERIODIC, DMDA_STENCIL_STAR, n, n,
 		    PETSC_DECIDE, PETSC_DECIDE, 2 /* this is the # of dof's */,
 		    1, PETSC_NULL, PETSC_NULL, &da);CHKERRQ(ierr);
   
@@ -58,13 +59,13 @@ int main(int Argc,char **Args)
 
   /* construct matrix */
   if( comm_size == 1 ) {
-    ierr = DAGetMatrix(da, MATSEQAIJ, &H);CHKERRQ(ierr);
+    ierr = DMGetMatrix(da, MATSEQAIJ, &H);CHKERRQ(ierr);
   } else {
-    ierr = DAGetMatrix(da, MATMPIAIJ, &H);CHKERRQ(ierr);
+    ierr = DMGetMatrix(da, MATMPIAIJ, &H);CHKERRQ(ierr);
   }
 
   /* get local corners for this processor */
-  ierr = DAGetCorners(da,&xs,&ys,0,&xm,&ym,0);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,&ys,0,&xm,&ym,0);CHKERRQ(ierr);
 
   /* Assemble the matrix */
   for( x=xs; x<xs+xm; x++ ) {
@@ -144,7 +145,7 @@ int main(int Argc,char **Args)
 
   /* permutation matrix to check whether H and HtH are identical to the ones in the paper */
 /*   Mat perm; */
-/*   ierr = DAGetMatrix(da, MATSEQAIJ, &perm);CHKERRQ(ierr); */
+/*   ierr = DMGetMatrix(da, MATSEQAIJ, &perm);CHKERRQ(ierr); */
 /*   PetscInt row, col; */
 /*   PetscScalar one = 1.0; */
 /*   for(PetscInt i=0; i<n; i++) { */
@@ -169,7 +170,7 @@ int main(int Argc,char **Args)
 /*   ierr = MatView(HtHperm, PETSC_VIEWER_STDOUT_(PETSC_COMM_WORLD));CHKERRQ(ierr); */
 
   /* right hand side */
-  ierr = DACreateGlobalVector(da, &b);CHKERRQ(ierr);
+  ierr = DMCreateGlobalVector(da, &b);CHKERRQ(ierr);
   ierr = VecSet(b,0.0);CHKERRQ(ierr);
   ierr = VecSetValues(b, 1, ix, vals, INSERT_VALUES);CHKERRQ(ierr);
   ierr = VecAssemblyBegin(b);CHKERRQ(ierr);
@@ -190,7 +191,7 @@ int main(int Argc,char **Args)
 
   ierr = KSPSetOperators(kspmg, HtH, HtH, DIFFERENT_NONZERO_PATTERN);CHKERRQ(ierr);
 
-  ierr = DASetRefinementFactor(da, 3, 3, 3);CHKERRQ(ierr);
+  ierr = DMDASetRefinementFactor(da, 3, 3, 3);CHKERRQ(ierr);
   ierr = PCASASetDM(pcmg, (DM) da);CHKERRQ(ierr);
 
   ierr = PCASASetTolerances(pcmg, 1.e-6, 1.e-10,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
@@ -206,18 +207,18 @@ int main(int Argc,char **Args)
 
 /*   ierr = VecView(xvec, PETSC_VIEWER_STDOUT_(PETSC_COMM_WORLD));CHKERRQ(ierr); */
 
-  ierr = KSPDestroy(kspmg);CHKERRQ(ierr);
-  ierr = VecDestroy(xvec);CHKERRQ(ierr);
+  ierr = KSPDestroy(&kspmg);CHKERRQ(ierr);
+  ierr = VecDestroy(&xvec);CHKERRQ(ierr);
 
   /*   seems to be destroyed by KSPDestroy */
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(Htb);CHKERRQ(ierr);
-  ierr = MatDestroy(HtH);CHKERRQ(ierr);
-  ierr = MatDestroy(H);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&Htb);CHKERRQ(ierr);
+  ierr = MatDestroy(&HtH);CHKERRQ(ierr);
+  ierr = MatDestroy(&H);CHKERRQ(ierr);
 
-  ierr = DADestroy(da);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(rctx);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = DMDestroy(&da);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rctx);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -249,9 +250,9 @@ PetscErrorCode computeMaxEigVal(Mat A, PetscInt its, PetscScalar *eig) {
 
   *eig = lambda_its_1/lambda_its;
 
-  ierr = VecDestroy(x0);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(x_1);CHKERRQ(ierr);
+  ierr = VecDestroy(&x0);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&x_1);CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
 }

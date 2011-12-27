@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* verboseinfo.c */
 /* Fortran interface file */
 
@@ -43,10 +44,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscinfodeactivateclass_(int *objclass, int *__ierr ){
+void PETSC_STDCALL  petscinfodeactivateclass_(int *objclass, int *__ierr ){
 *__ierr = PetscInfoDeactivateClass(*objclass);
 }
-void PETSC_STDCALL   petscinfoactivateclass_(int *objclass, int *__ierr ){
+void PETSC_STDCALL  petscinfoactivateclass_(int *objclass, int *__ierr ){
 *__ierr = PetscInfoActivateClass(*objclass);
 }
 #if defined(__cplusplus)

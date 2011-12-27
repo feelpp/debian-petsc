@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:57:51+00:00">
+<meta name="date" content="2011-10-29T19:25:08+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -200,19 +200,19 @@
 
 <a name="line191">191: </a>  class boundary_condition {
 <a name="line192">192: </a><strong><font color="#FF0000">  public:</font></strong>
-<a name="line193">193: </a>    <A href="../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> (*_func)(PETSC_MESH_TYPE::point_type, const double *);
+<a name="line193">193: </a>    <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  (*_func)(PETSC_MESH_TYPE::point_type, const double *);
 <a name="line194">194: </a>    int marker;
 <a name="line195">195: </a>    int cellmarker;
 
 <a name="line197">197: </a>    boundary_condition(){};
-<a name="line198">198: </a>    boundary_condition (<A href="../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> (*func)(PETSC_MESH_TYPE::point_type, const double *), int mark = 1, int cellmark = 2) {
+<a name="line198">198: </a>    boundary_condition (<A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  (*func)(PETSC_MESH_TYPE::point_type, const double *), int mark = 1, int cellmark = 2) {
 <a name="line199">199: </a>
 <a name="line200">200: </a>    }
 <a name="line201">201: </a>    void applyBC(Obj&lt;PETSC_MESH_TYPE&gt; m) {
 <a name="line202">202: </a>    }
 <a name="line203">203: </a>  };
 <a name="line204">204: </a>
-<a name="line205">205: </a>  <A href="../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> Scalar_Dirichlet_Pred(PETSC_MESH_TYPE::point_type p, const double * coords) {
+<a name="line205">205: </a>  <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  Scalar_Dirichlet_Pred(PETSC_MESH_TYPE::point_type p, const double * coords) {
 <a name="line206">206: </a>    //set up the marker
 <a name="line207">207: </a>    //<font color="#4169E1">if</font> anything in the star of the thing has support size 1 but not height 0 then the thing's on the boundary! mark it!
 <a name="line208">208: </a>    Obj&lt;PETSC_MESH_TYPE::sieve_type::supportArray&gt; star =
@@ -302,7 +302,7 @@
 <a name="line292">292: </a>    void setupFields(Obj&lt;PETSC_MESH_TYPE&gt; m, Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; s, ufc::form form, ufc::function function){
 <a name="line293">293: </a>      setCell
 <a name="line294">294: </a>    };
-<a name="line295">295: </a>    void <A href="../../docs/manualpages/Mesh/assembleMatrix.html#assembleMatrix">assembleMatrix</A>() {
+<a name="line295">295: </a>    void assembleMatrix() {
 <a name="line296">296: </a>      //use the bform to create the matrix
 <a name="line297">297: </a>
 <a name="line298">298: </a>      //partial assembly?
@@ -392,10 +392,10 @@
 <a name="line388">388: </a>  //get, from the mesh, the assorted structures we need to <font color="#4169E1">do</font> this. (numberings)
 
 <a name="line391">391: </a>  Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; s;
-<a name="line392">392: </a>  <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line392">392: </a>  <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 
 <a name="line394">394: </a>  Obj&lt;PETSC_MESH_TYPE&gt; m;
-<a name="line395">395: </a>  <A href="../../docs/manualpages/Mesh/MeshGetMesh.html#MeshGetMesh">MeshGetMesh</A>(mesh, m);
+<a name="line395">395: </a>  MeshGetMesh(mesh, m);
 
 <a name="line397">397: </a>  <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(m-&gt;comm(), <font color="#666666">"Beginning Matrix assembly.\n"</font>);
 
@@ -463,7 +463,7 @@
 <a name="line460">460: </a><A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Assemble_RHS_UFC(Mesh mesh, ufc::form * bform, ufc::form * lform, SectionReal X, SectionReal section, <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> (*exactFunc)(const double *)) {
 <a name="line461">461: </a>  Obj&lt;PETSC_MESH_TYPE&gt; m;
 
-<a name="line465">465: </a>  <A href="../../docs/manualpages/Mesh/MeshGetMesh.html#MeshGetMesh">MeshGetMesh</A>(mesh, m);
+<a name="line465">465: </a>  MeshGetMesh(mesh, m);
 
 <a name="line467">467: </a>  //const Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;&amp; coordinates   = m-&gt;getRealSection(<font color="#666666">"coordinates"</font>);
 <a name="line468">468: </a>  const Obj&lt;PETSC_MESH_TYPE::label_sequence&gt;&amp;    cells         = m-&gt;heightStratum(0);
@@ -496,7 +496,7 @@
 <a name="line495">495: </a>  //double      *t_der, *b_der, *coords, *v0, *J, *invJ, detJ;
 <a name="line496">496: </a>  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *elemVec, *elemMat;
 
-<a name="line498">498: </a>  <A href="../../docs/manualpages/Mesh/SectionRealZero.html#SectionRealZero">SectionRealZero</A>(section);
+<a name="line498">498: </a>  <A href="../../docs/manualpages/DM/SectionRealZero.html#SectionRealZero">SectionRealZero</A>(section);
 <a name="line499">499: </a>  <A href="../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(numBasisFuncs,<A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;elemVec,numBasisFuncs*numBasisFuncs,<A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;elemMat);
 <a name="line500">500: </a>  //  <A href="../../docs/manualpages/Sys/PetscMalloc6.html#PetscMalloc6">PetscMalloc6</A>(dim,double,&amp;t_der,dim,double,&amp;b_der,dim,double,&amp;coords,dim,double,&amp;v0,dim*dim,double,&amp;J,dim*dim,double,&amp;invJ);
 <a name="line501">501: </a>  // Loop over cells
@@ -524,7 +524,7 @@
 
 <a name="line524">524: </a>    <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x;
 
-<a name="line526">526: </a>    <A href="../../docs/manualpages/Mesh/SectionRealRestrict.html#SectionRealRestrict">SectionRealRestrict</A>(X, *c_iter, &amp;x);
+<a name="line526">526: </a>    <A href="../../docs/manualpages/DM/SectionRealRestrict.html#SectionRealRestrict">SectionRealRestrict</A>(X, *c_iter, &amp;x);
 
 <a name="line528">528: </a>    <font color="#4169E1">for</font> (int f = 0; f &lt; numBasisFuncs; f++) {
 <a name="line529">529: </a>       elemVec[f] = 0. - finite_element-&gt;evaluate_dof(f, sf, cell);
@@ -553,13 +553,13 @@
 <a name="line552">552: </a>  <A href="../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(elemVec,elemMat);
 <a name="line553">553: </a>  //<A href="../../docs/manualpages/Sys/PetscFree6.html#PetscFree6">PetscFree6</A>(t_der,b_der,coords,v0,J,invJ);
 <a name="line554">554: </a>  // Exchange neighbors
-<a name="line555">555: </a>  <A href="../../docs/manualpages/Mesh/SectionRealComplete.html#SectionRealComplete">SectionRealComplete</A>(section);
+<a name="line555">555: </a>  <A href="../../docs/manualpages/DM/SectionRealComplete.html#SectionRealComplete">SectionRealComplete</A>(section);
 <a name="line556">556: </a>  // Subtract the constant
 <a name="line557">557: </a>  <font color="#4169E1">if</font> (m-&gt;hasRealSection(<font color="#666666">"constant"</font>)) {
 <a name="line558">558: </a>    const Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;&amp; constant = m-&gt;getRealSection(<font color="#666666">"constant"</font>);
 <a name="line559">559: </a>    Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;        s;
 <a name="line560">560: </a>
-<a name="line561">561: </a>    <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line561">561: </a>    <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line562">562: </a>    s-&gt;axpy(-1.0, constant);
 <a name="line563">563: </a>  }
 <a name="line564">564: </a>  <font color="#4169E1">return</font>(0);
@@ -572,7 +572,7 @@
 
 <a name="line572">572: </a>  Obj&lt;PETSC_MESH_TYPE&gt; m;
 
-<a name="line576">576: </a>  <A href="../../docs/manualpages/Mesh/MeshGetMesh.html#MeshGetMesh">MeshGetMesh</A>(mesh, m);
+<a name="line576">576: </a>  MeshGetMesh(mesh, m);
 <a name="line577">577: </a>  const Obj&lt;ALE::Discretization&gt;&amp;          disc          = m-&gt;getDiscretization(<font color="#666666">"u"</font>);
 <a name="line578">578: </a>  const Obj&lt;PETSC_MESH_TYPE::label_sequence&gt;&amp;    cells         = m-&gt;heightStratum(0);
 <a name="line579">579: </a>  const int                                dim           = m-&gt;getDimension();
@@ -606,7 +606,7 @@
 <a name="line607">607: </a>  const int numBasisFuncs = finite_element-&gt;space_dimension();
 
 
-<a name="line610">610: </a>  <A href="../../docs/manualpages/Mesh/SectionRealZero.html#SectionRealZero">SectionRealZero</A>(section);
+<a name="line610">610: </a>  <A href="../../docs/manualpages/DM/SectionRealZero.html#SectionRealZero">SectionRealZero</A>(section);
 <a name="line611">611: </a>  <A href="../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(numBasisFuncs,<A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;elemVec,numBasisFuncs*numBasisFuncs,<A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;elemMat);
 <a name="line612">612: </a>  //<A href="../../docs/manualpages/Sys/PetscMalloc6.html#PetscMalloc6">PetscMalloc6</A>(dim,double,&amp;t_der,dim,double,&amp;b_der,dim,double,&amp;coords,dim,double,&amp;v0,dim*dim,double,&amp;J,dim*dim,double,&amp;invJ);
 <a name="line613">613: </a>  // Loop over cells
@@ -615,11 +615,11 @@
 <a name="line616">616: </a>    <A href="../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(elemMat, numBasisFuncs*numBasisFuncs * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
 <a name="line617">617: </a>    //m-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, invJ, detJ);
 <a name="line618">618: </a>    Map_SieveCell_UFCCell(m, *c_iter, bform, &amp;cell);
-<a name="line619">619: </a>    //<font color="#4169E1">if</font> (detJ &lt;= 0.0) <A href="../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Invalid determinant %g for element %d"</font>, detJ, *c_iter);
+<a name="line619">619: </a>    //<font color="#4169E1">if</font> (detJ &lt;= 0.0) <A href="../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Invalid determinant %g for element %d"</font>, detJ, *c_iter);
 
 <a name="line621">621: </a>    <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x;
 
-<a name="line623">623: </a>    <A href="../../docs/manualpages/Mesh/SectionRealRestrict.html#SectionRealRestrict">SectionRealRestrict</A>(X, *c_iter, &amp;x);
+<a name="line623">623: </a>    <A href="../../docs/manualpages/DM/SectionRealRestrict.html#SectionRealRestrict">SectionRealRestrict</A>(X, *c_iter, &amp;x);
 
 <a name="line625">625: </a>    <font color="#4169E1">for</font> (int f = 0; f &lt; numBasisFuncs; f++) {
 <a name="line626">626: </a>       elemVec[f] = 0. - finite_element-&gt;evaluate_dof(f, sf, cell);
@@ -648,13 +648,13 @@
 <a name="line649">649: </a>  <A href="../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(elemVec,elemMat);
 <a name="line650">650: </a>  //<A href="../../docs/manualpages/Sys/PetscFree6.html#PetscFree6">PetscFree6</A>(t_der,b_der,coords,v0,J,invJ);
 <a name="line651">651: </a>  // Exchange neighbors
-<a name="line652">652: </a>  <A href="../../docs/manualpages/Mesh/SectionRealComplete.html#SectionRealComplete">SectionRealComplete</A>(section);
+<a name="line652">652: </a>  <A href="../../docs/manualpages/DM/SectionRealComplete.html#SectionRealComplete">SectionRealComplete</A>(section);
 <a name="line653">653: </a>  // Subtract the constant
 <a name="line654">654: </a>  <font color="#4169E1">if</font> (m-&gt;hasRealSection(<font color="#666666">"constant"</font>)) {
 <a name="line655">655: </a>    const Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;&amp; constant = m-&gt;getRealSection(<font color="#666666">"constant"</font>);
 <a name="line656">656: </a>    Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;        s;
 
-<a name="line658">658: </a>    <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line658">658: </a>    <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line659">659: </a>    s-&gt;axpy(-1.0, constant);
 <a name="line660">660: </a>  }
 <a name="line661">661: </a>  <font color="#4169E1">return</font>(0);
@@ -674,14 +674,14 @@
 
 <a name="line678">678: </a>//CreateProblem_UFC
 <a name="line679">679: </a>//Takes a UFC form and generates the entire problem from it.  This involves building a discretization object within the mesh corresponding to what is sent to UFC.  Unfortunately UFC handles all the element/vectorish stuff on its own, but
-<a name="line680">680: </a><A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CreateProblem_UFC(<A href="../../docs/manualpages/DA/DM.html#DM">DM</A> dm, const char * name, ufc::form * form,  const int numBC, const int *markers, double (**bcFuncs)(const double * coords), double(*exactFunc)(const double * coords)) {
+<a name="line680">680: </a><A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CreateProblem_UFC(DM dm, const char * name, ufc::form * form,  const int numBC, const int *markers, double (**bcFuncs)(const double * coords), double(*exactFunc)(const double * coords)) {
 <a name="line681">681: </a>  Mesh mesh = (Mesh) dm;
 <a name="line682">682: </a><strong><font color="#FF0000">  ALE:</font></strong>:Obj&lt;PETSC_MESH_TYPE&gt; m;
 <a name="line683">683: </a>  <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> 0;
 <a name="line684">684: </a>  //you need some finite element information from the form.
 <a name="line685">685: </a><strong><font color="#FF0000">  ufc:</font></strong>:finite_element * finite_element = form-&gt;create_finite_element(0);
 <a name="line686">686: </a>  //needed information from the form.
-<a name="line688">688: </a>  <A href="../../docs/manualpages/Mesh/MeshGetMesh.html#MeshGetMesh">MeshGetMesh</A>(mesh, m);
+<a name="line688">688: </a>  MeshGetMesh(mesh, m);
 <a name="line689">689: </a>  //int dim = m-&gt;getDimension();
 <a name="line690">690: </a>  const ALE::Obj&lt;ALE::Discretization&gt;&amp; d = new ALE::Discretization(m-&gt;comm(), m-&gt;debug()); //create the UFC
 <a name="line691">691: </a>  //<font color="#4169E1">for</font> now handle only vertex unknowns; complain about the fact that Dofs per dimension isn't in the release version of UFC.
@@ -1073,7 +1073,7 @@
 <a name="line1083">1083: </a> <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CreateExactSolution_UFC(Obj&lt;PETSC_MESH_TYPE&gt; m, Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; s, ufc::form * form, <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> (*exactSolution)(const double *))
 <a name="line1084">1084: </a> {
 <a name="line1085">1085: </a>   const int      dim = m-&gt;getDimension();
-<a name="line1086">1086: </a>   //<A href="../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flag;
+<a name="line1086">1086: </a>   //<A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flag;
 <a name="line1088">1088: </a>
 <a name="line1090">1090: </a>   SetupField_UFC(m, s, form);
 <a name="line1091">1091: </a><strong><font color="#FF0000">   ufc:</font></strong>:finite_element * finite_element = form-&gt;create_finite_element(0);

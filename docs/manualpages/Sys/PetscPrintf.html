@@ -26,8 +26,9 @@ Not Collective
 The call sequence is <A HREF="../Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, character(*), <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr) from Fortran.
 That is, you can only pass a single character string from Fortran.
 <P>
-Notes: %A is replace with %g unless the value is &lt; 1.e-12 when it is
-replaced with &lt; 1.e-12
+Notes: The %A format specifier is special.  It assumes an argument of type <A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A>
+and is replaced with %G unless the absolute value is &lt; 1.e-12 when it is replaced
+with "&lt; 1.e-12" (1.e-6 for single precision).
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
@@ -38,15 +39,15 @@ replaced with &lt; 1.e-12
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/sys/random/examples/tutorials/ex1.c.html">src/sys/random/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/sys/random/examples/tutorials/ex2.c.html">src/sys/random/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex1.c.html">src/sys/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex2.c.html">src/sys/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/sys/examples/tutorials/ex4.c.html">src/sys/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex5.c.html">src/sys/examples/tutorials/ex5.c.html</A><BR>
+<A HREF="../../../src/sys/examples/tutorials/ex7.c.html">src/sys/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1.c.html">src/vec/vec/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1e.c.html">src/vec/vec/examples/tutorials/ex1e.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex5.c.html">src/vec/vec/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex6.c.html">src/vec/vec/examples/tutorials/ex6.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex11.c.html">src/vec/vec/examples/tutorials/ex11.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex18.c.html">src/vec/vec/examples/tutorials/ex18.c.html</A><BR>
-<A HREF="../../../src/vec/is/examples/tutorials/ex1.c.html">src/vec/is/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/vec/is/examples/tutorials/ex2.c.html">src/vec/is/examples/tutorials/ex2.c.html</A><BR>
 </BODY></HTML>

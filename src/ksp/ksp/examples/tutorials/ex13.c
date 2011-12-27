@@ -16,7 +16,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 /*
     User-defined context that contains all the data structures used
@@ -132,7 +132,7 @@ int main(int argc,char **args)
   ierr = PetscFree(userx);CHKERRQ(ierr);
   ierr = PetscFree(userb);CHKERRQ(ierr);
   ierr = UserFinalizeLinearSolver(&userctx);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }
@@ -308,9 +308,9 @@ PetscErrorCode UserFinalizeLinearSolver(UserCtx *userctx)
      we free the work space.  All PETSc objects should be destroyed when
      they are no longer needed.
   */
-  ierr = KSPDestroy(userctx->ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(userctx->x);CHKERRQ(ierr);
-  ierr = VecDestroy(userctx->b);CHKERRQ(ierr);  
-  ierr = MatDestroy(userctx->A);CHKERRQ(ierr);
+  ierr = KSPDestroy(&userctx->ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&userctx->x);CHKERRQ(ierr);
+  ierr = VecDestroy(&userctx->b);CHKERRQ(ierr);  
+  ierr = MatDestroy(&userctx->A);CHKERRQ(ierr);
   return 0;
 }

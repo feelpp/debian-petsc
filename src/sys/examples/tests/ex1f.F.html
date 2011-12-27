@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:23:38+00:00">
+<meta name="date" content="2011-10-29T18:54:12+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,17 +12,17 @@
 <a name="line2">  2: </a>!  Simple PETSc Program to test setting error handlers from Fortran
 <a name="line3">  3: </a>!
 <a name="line4">  4: </a>      subroutine GenerateErr(line,ierr)
-<a name="line5"> 5: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
 <a name="line6">  6: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr
 <a name="line7">  7: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> line
 
-<a name="line9">  9: </a>      call <A href="../../../../docs/manualpages/Sys/PetscError.html#PetscError">PetscError</A>(1,line,1,'Error message',ierr)
+<a name="line9">  9: </a>      call <A href="../../../../docs/manualpages/Sys/PetscError.html#PetscError">PetscError</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,line,1,'Error message',ierr)
 
 <a name="line11"> 11: </a>      <font color="#4169E1">return</font>
 <a name="line12"> 12: </a>      end
 
 <a name="line14"> 14: </a>      subroutine MyErrHandler(line,fun,file,dir,n,p,mess,ctx,ierr)
-<a name="line15"> 15: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
+<a name="line15"> 15: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
 <a name="line16"> 16: </a>      integer line,n,p
 <a name="line17"> 17: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ctx
 <a name="line18"> 18: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
@@ -33,7 +33,7 @@
 <a name="line23"> 23: </a>      end
 
 <a name="line25"> 25: </a>      program main
-<a name="line26"> 26: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
+<a name="line26"> 26: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
 <a name="line27"> 27: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line28"> 28: </a>      external       MyErrHandler
 

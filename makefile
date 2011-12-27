@@ -19,11 +19,19 @@ include ${PETSC_DIR}/conf/test
 #
 # Basic targets to build PETSc libraries.
 # all: builds the c, fortran, and f90 libraries
-all: 
+all:
 	@${OMAKE}  PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} chkpetsc_dir
-	-@${OMAKE} all_build PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} 2>&1  | tee ${PETSC_ARCH}/conf/make.log
-	-@if [ -L make.log ]; then ${RM} make.log; fi; ln -s ${PETSC_ARCH}/conf/make.log make.log
-	-@egrep -i "( error | error:)" ${PETSC_ARCH}/conf/make.log > /dev/null; if [ "$$?" = "0" ]; then \
+	@if [ "${PETSC_BUILD_USING_CMAKE}" != "" ]; then \
+	   echo "=========================================="; \
+           echo "Building PETSc using CMake with ${MAKE_NP} build threads"; \
+	   echo "Using PETSC_DIR=${PETSC_DIR} and PETSC_ARCH=${PETSC_ARCH}"; \
+	   echo "=========================================="; \
+	   ${OMAKE} PETSC_ARCH=${PETSC_ARCH} PETSC_DIR=${PETSC_DIR} all-cmake; \
+	 else \
+	   ${OMAKE} PETSC_ARCH=${PETSC_ARCH} PETSC_DIR=${PETSC_DIR} all-legacy; \
+	 fi
+	-@ln -sf ${PETSC_ARCH}/conf/make.log make.log
+	-@egrep -i "( error | error: |no such file or directory)" ${PETSC_ARCH}/conf/make.log > /dev/null; if [ "$$?" = "0" ]; then \
            echo "********************************************************************" 2>&1 | tee -a ${PETSC_ARCH}/conf/make.log; \
            echo "  Error during compile, check ${PETSC_ARCH}/conf/make.log" 2>&1 | tee -a ${PETSC_ARCH}/conf/make.log; \
            echo "  Send it and ${PETSC_ARCH}/conf/configure.log to petsc-maint@mcs.anl.gov" 2>&1 | tee -a ${PETSC_ARCH}/conf/make.log;\
@@ -33,11 +41,14 @@ all:
 	  ${OMAKE} shared_install PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} 2>&1 | tee -a ${PETSC_ARCH}/conf/make.log ;\
 	 fi
 
-#
-#  Notes: the shared_nomesg and petsc4py should NOT be built if --prefix was used
-#  the rules for shared_nomesg_noinstall petsc4py_noinstall are generated automatically 
-#  by config/PETSc/Configure.py and config/PETSc/packages/petsc4py.py based on the existance 
-all_build: chk_petsc_dir chklib_dir info info_h deletelibs deletemods build shared_nomesg_noinstall mpi4py_noinstall petsc4py_noinstall
+all-cmake:
+	@${OMAKE} -j ${MAKE_NP} -C ${PETSC_DIR}/${PETSC_ARCH} VERBOSE=1 2>&1 | tee ${PETSC_ARCH}/conf/make.log \
+	          | egrep -v '( --check-build-system |cmake -E | -o CMakeFiles/petsc[[:lower:]]*.dir/| -o lib/libpetsc|CMakeFiles/petsc[[:lower:]]*\.dir/(build|depend|requires)|-f CMakeFiles/Makefile2|Dependee .* is newer than depender |provides\.build. is up to date)'
+
+all-legacy:
+	-@${OMAKE} all_build PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} 2>&1  | tee ${PETSC_ARCH}/conf/make.log
+
+all_build: chk_petsc_dir chklib_dir info deletelibs deletemods build shared_nomesg mpi4py petsc4py
 #
 # Prints information about the system and version of PETSc being compiled
 #
@@ -69,13 +80,11 @@ info:
 	-@echo "Using configuration flags:"
 	-@grep "\#define " ${PETSC_DIR}/${PETSC_ARCH}/include/petscconf.h
 	-@echo "-----------------------------------------"
-	-@echo "Using include paths: ${PETSC_INCLUDE}"
-	-@echo "------------------------------------------"
+	-@echo "Using C/C++ include paths: ${PETSC_CC_INCLUDES}"
 	-@echo "Using C/C++ compiler: ${PCC} ${PCC_FLAGS} ${COPTFLAGS} ${CFLAGS}"
-	-@echo "C/C++ Compiler version: " `${CCV}`
 	-@if [ "${FC}" != "" ]; then \
+	   echo "Using Fortran include/module paths: ${PETSC_FC_INCLUDES}";\
 	   echo "Using Fortran compiler: ${FC} ${FC_FLAGS} ${FFLAGS} ${FPP_FLAGS}";\
-	   echo "Fortran Compiler version: " `${FCV}`;\
          fi
 	-@echo "-----------------------------------------"
 	-@echo "Using C/C++ linker: ${PCC_LINKER}"
@@ -89,37 +98,6 @@ info:
 	-@echo "------------------------------------------"
 	-@echo "Using mpiexec: ${MPIEXEC}"
 	-@echo "=========================================="
-#
-#
-MINFO = ${PETSC_DIR}/${PETSC_ARCH}/include/petscmachineinfo.h
-info_h:
-	-@$(RM) -f ${MINFO} MINFO
-	-@echo  "static const char *petscmachineinfo = \"\__n__\"" >> MINFO
-	-@echo  "\"-----------------------------------------\__n__\"" >> MINFO
-	-@if [ -f /usr/bin/cygcheck.exe ]; then \
-	  echo  "\"Libraries compiled on `date` on `hostname|/usr/bin/dos2unix` \__n__\"" >> MINFO; \
-          else \
-	  echo  "\"Libraries compiled on `date` on `hostname` \__n__\"" >> MINFO; \
-          fi
-	-@echo  "\"Machine characteristics: `uname -a` \__n__\"" >> MINFO
-	-@echo  "\"Using PETSc directory: ${PETSC_DIR}\__n__\"" >> MINFO
-	-@echo  "\"Using PETSc arch: ${PETSC_ARCH}\__n__\"" >> MINFO
-	-@echo  "\"-----------------------------------------\"; " >> MINFO
-	-@echo  "static const char *petsccompilerinfo = \"\__n__\"" >> MINFO
-	-@echo  "\"Using C compiler: ${PCC} ${PCC_FLAGS} ${COPTFLAGS} ${CFLAGS}\__n__\"" >> MINFO
-	-@echo  "\"Using Fortran compiler: ${FC} ${FC_FLAGS} ${FFLAGS} ${FPP_FLAGS}\__n__\"" >> MINFO
-	-@echo  "\"-----------------------------------------\"; " >> MINFO
-	-@echo  "static const char *petsccompilerflagsinfo = \"\__n__\"" >> MINFO
-	-@echo  "\"Using include paths: ${PETSC_INCLUDE}\__n__\"" >> MINFO
-	-@echo  "\"------------------------------------------\"; " >> MINFO
-	-@echo  "static const char *petsclinkerinfo = \"\__n__\"" >> MINFO
-	-@echo  "\"Using C linker: ${CLINKER}\__n__\"" >> MINFO
-	-@echo  "\"Using Fortran linker: ${FLINKER}\__n__\"" >> MINFO
-	-@echo  "\"Using libraries: ${PETSC_LIB} \__n__\"" >> MINFO
-	-@echo  "\"------------------------------------------\"; " >> MINFO
-	-@cat MINFO | ${SED} -e 's/\\ /\\\\ /g' | ${SED} -e 's/__n__/n/g' > ${MINFO}
-	-@ if [ -f /usr/bin/cygcheck.exe ]; then /usr/bin/dos2unix ${MINFO} 2> /dev/null; fi
-	-@$(RM) -f MINFO
 
 #
 # Builds the PETSc libraries
@@ -143,6 +121,7 @@ testx11:
 	-@${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} testx11_build 2>&1 | tee ./${PETSC_ARCH}/conf/testx11.log
 test_build:
 	-@echo "Running test examples to verify correct installation"
+	-@echo "Using PETSC_DIR=${PETSC_DIR} and PETSC_ARCH=${PETSC_ARCH}"
 	@cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} clean
 	@cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} testex19
 	@if [ "${FC}" != "" ]; then cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} testex5f; fi;
@@ -150,6 +129,7 @@ test_build:
 	-@echo "Completed test examples"
 testx11_build:
 	-@echo "Running graphics test example to verify correct X11 installation"
+	-@echo "Using PETSC_DIR=${PETSC_DIR} and PETSC_ARCH=${PETSC_ARCH}"
 	@cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} clean
 	@cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} testx11ex19
 	@cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} clean
@@ -205,7 +185,7 @@ ranlib:
 
 # Deletes PETSc libraries
 deletelibs:
-	-${RM} -f ${PETSC_LIB_DIR}/libpetsc*.*
+	-${RM} -rf ${PETSC_LIB_DIR}/libpetsc*.*
 deletemods:
 	-${RM} -f ${PETSC_DIR}/${PETSC_ARCH}/include/petsc*.mod
 
@@ -226,36 +206,35 @@ chk_petsc_dir:
 #
 #
 install:
-	-@./config/install.py
+	@${PYTHON} ./config/install.py -destDir=${DESTDIR}
 
 newall:
-	-@cd src/sys; ${PETSC_DIR}/config/builder.py
-	-@cd src/vec; ${PETSC_DIR}/config/builder.py
-	-@cd src/mat; ${PETSC_DIR}/config/builder.py
-	-@cd src/dm; ${PETSC_DIR}/config/builder.py
-	-@cd src/ksp; ${PETSC_DIR}/config/builder.py
-	-@cd src/snes; ${PETSC_DIR}/config/builder.py
-	-@cd src/ts; ${PETSC_DIR}/config/builder.py
+	-@cd src/sys;  @${PYTHON} ${PETSC_DIR}/config/builder.py
+	-@cd src/vec;  @${PYTHON} ${PETSC_DIR}/config/builder.py
+	-@cd src/mat;  @${PYTHON} ${PETSC_DIR}/config/builder.py
+	-@cd src/dm;   @${PYTHON} ${PETSC_DIR}/config/builder.py
+	-@cd src/ksp;  @${PYTHON} ${PETSC_DIR}/config/builder.py
+	-@cd src/snes; @${PYTHON} ${PETSC_DIR}/config/builder.py
+	-@cd src/ts;   @${PYTHON} ${PETSC_DIR}/config/builder.py
+
+streams:
+	cd src/benchmarks/streams; ${OMAKE} test
 # ------------------------------------------------------------------
 #
 # All remaining actions are intended for PETSc developers only.
 # PETSc users should not generally need to use these commands.
 #
-
-# To access the tags in EMACS, type M-x visit-tags-table and specify
-# the file petsc/TAGS.	
-# 1) To move to where a PETSc function is defined, enter M-. and the
-#     function name.
-# 2) To search for a string and move to the first occurrence,
-#     use M-x tags-search and the string.
-#     To locate later occurrences, use M-,
-# Builds all etags files
+#  See the users manual for how the tags files may be used from Emacs and Vi/Vim
+#
 alletags:
-	-@bin/maint/generateetags.py
+	-@${PYTHON} bin/maint/generateetags.py
 	-@find config -type f -name "*.py" |grep -v SCCS | xargs etags -o TAGS_PYTHON
 
 allfortranstubs:
-	-@bin/maint/generatefortranstubs.py ${BFORT}
+	-@${RM} -rf include/finclude/ftn-auto/*-tmpdir
+	-@${PYTHON} bin/maint/generatefortranstubs.py ${BFORT}  ${VERBOSE}
+	-@${PYTHON} bin/maint/generatefortranstubs.py -merge  ${VERBOSE}
+	-@${RM} -rf include/finclude/ftn-auto/*-tmpdir
 deletefortranstubs:
 	-@find . -type d -name ftn-auto | xargs rm -rf 
 #
@@ -273,7 +252,7 @@ SCRIPTS    = bin/maint/builddist  bin/maint/wwwman bin/maint/xclude bin/maint/bu
 
 
 # Builds all the documentation - should be done every night
-alldoc: alldoc1 alldoc2
+alldoc: alldoc1 alldoc2 alldoc3
 
 # Build everything that goes into 'doc' dir except html sources
 alldoc1: chk_loc deletemanualpages chk_concepts_dir
@@ -281,22 +260,32 @@ alldoc1: chk_loc deletemanualpages chk_concepts_dir
 	-@sed -e s%man+../%man+manualpages/% ${LOC}/docs/manualpages/manualpages.cit > ${LOC}/docs/manualpages/htmlmap
 	-@cat ${PETSC_DIR}/src/docs/mpi.www.index >> ${LOC}/docs/manualpages/htmlmap
 	-cd src/docs/tex/manual; ${OMAKE} manual.pdf LOC=${LOC}
+	-cd src/docs/tex/manual; ${OMAKE} developers.pdf LOC=${LOC}
 	-${OMAKE} ACTION=manualpages tree_basic LOC=${LOC}
-	-bin/maint/wwwindex.py ${PETSC_DIR} ${LOC}
+	-${PYTHON} bin/maint/wwwindex.py ${PETSC_DIR} ${LOC}
 	-${OMAKE} ACTION=manexamples tree_basic LOC=${LOC}
 	-${OMAKE} manconcepts LOC=${LOC}
 	-${OMAKE} ACTION=getexlist tree_basic LOC=${LOC}
 	-${OMAKE} ACTION=exampleconcepts tree_basic LOC=${LOC}
-	-bin/maint/helpindex.py ${PETSC_DIR} ${LOC}
+	-${PYTHON} bin/maint/helpindex.py ${PETSC_DIR} ${LOC}
 	-grep -h Polymorphic include/*.h | grep -v '#define ' | sed "s?PetscPolymorphic[a-zA-Z]*(??g" | cut -f1 -d"{" > tmppoly
-	-bin/maint/processpoly.py ${PETSC_DIR} ${LOC}
+	-${PYTHON} bin/maint/processpoly.py ${PETSC_DIR} ${LOC}
 	-${RM} tmppoly
 
 # Builds .html versions of the source
 # html overwrites some stuff created by update-docs - hence this is done later.
 alldoc2: chk_loc
 	-${OMAKE} ACTION=html PETSC_DIR=${PETSC_DIR} alltree LOC=${LOC}
-	-bin/maint/update-docs.py ${PETSC_DIR} ${LOC}
+	-${PYTHON} bin/maint/update-docs.py ${PETSC_DIR} ${LOC}
+#
+# Builds HTML versions of Matlab scripts
+alldoc3: chk_loc
+	if  [ "${MATLAB_COMMAND}" != "" ]; then\
+          export MATLABPATH=${MATLABPATH}:${PETSC_DIR}/bin/matlab; \
+          cd ${PETSC_DIR}/bin/matlab; ${MATLAB_COMMAND} -nodisplay -nodesktop -r "generatehtml;exit" ; \
+          cd classes; ${MATLAB_COMMAND} -nodisplay -nodesktop -r "generatehtml;exit" ; \
+          cd examples/tutorials; ${MATLAB_COMMAND} -nodisplay -nodesktop -r "generatehtml;exit" ; \
+        fi
 
 alldocclean: deletemanualpages allcleanhtml
 
@@ -307,7 +296,7 @@ deletemanualpages: chk_loc
           ${RM} ${LOC}/docs/exampleconcepts ;\
           ${RM} ${LOC}/docs/manconcepts ;\
           ${RM} ${LOC}/docs/manualpages/manualpages.cit ;\
-          bin/maint/update-docs.py ${PETSC_DIR} ${LOC} clean;\
+          ${PYTHON} bin/maint/update-docs.py ${PETSC_DIR} ${LOC} clean;\
         fi
 
 allcleanhtml: 
@@ -326,7 +315,7 @@ chk_concepts_dir: chk_loc
 dist:
 	${PETSC_DIR}/bin/maint/builddist ${PETSC_DIR}
 
-# This target works only if you can do 'ssh petsc@harley.mcs.anl.gov'
+# This target works only if you can do 'ssh petsc@login.mcs.anl.gov'
 # also copy the file over to ftp site.
 web-snapshot:
 	@if [ ! -f "${HOME}/petsc-dev.tar.gz" ]; then \
@@ -336,7 +325,7 @@ web-snapshot:
 	    tmpdir=`mktemp -d -t petsc-doc.XXXXXXXX`; \
 	    cd $${tmpdir}; tar -xzf ${HOME}/petsc-dev.tar.gz; \
 	    /usr/bin/rsync  -e ssh -az --delete $${tmpdir}/petsc-dev/ \
-              petsc@harley.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as/snapshots/petsc-dev ;\
+              petsc@login.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as/snapshots/petsc-dev ;\
 	    /bin/cp -f /home/petsc/petsc-dev.tar.gz /mcs/ftp/pub/petsc/petsc-dev.tar.gz;\
 	    ${RM} -rf $${tmpdir} ;\
 	  fi
@@ -347,10 +336,9 @@ update-web-snapshot: dist web-snapshot
 # This target updates website main pages
 update-web:
 	@cd ${PETSC_DIR}/src/docs; make PETSC_DIR=${PETSC_DIR} PETSC_ARCH=${PETSC_ARCH} bib2html; \
-	/usr/bin/rsync -az -C --exclude=BitKeeper --exclude=documentation/installation.html \
-	  ${PETSC_DIR}/src/docs/website/ petsc@harley.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as
-	@cd ${PETSC_DIR}/src/docs/tex/manual; make developers.pdf PETSC_DIR=${PETSC_DIR} PETSC_ARCH=${PETSC_ARCH} LOC=${PETSC_DIR}; \
-	/usr/bin/rsync -az developers.pdf petsc@harley.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as/developers/
+	/usr/bin/rsync -az -C --exclude=documentation/index.html --exclude=documentation/installation.html \
+	  ${PETSC_DIR}/src/docs/website/ petsc@login.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as
+	@cd ${PETSC_DIR}/docs; /usr/bin/rsync -az developers.pdf petsc@login.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as/developers/
 
 #
 #  builds a single list of files for each PETSc library so they may all be built in parallel
@@ -396,7 +384,7 @@ alladiclib:
 	-@echo "Using configuration flags:"
 	-@grep "define " ${PETSC_ARCH}/include/petscconf.h
 	-@echo "-----------------------------------------"
-	-@echo "Using include paths: ${PETSC_INCLUDE}"
+	-@echo "Using include paths: ${CC_PETSC_INCLUDE}"
 	-@echo "-----------------------------------------"
 	-@echo "Using PETSc directory: ${PETSC_DIR}"
 	-@echo "Using PETSc arch: ${PETSC_ARCH}"
@@ -486,36 +474,8 @@ exercises:
         allhtml allcleanhtml  allci allco allrcslabel alladicignore alladic alladiclib countfortranfunctions \
         start_configure configure_petsc configure_clean
 
-getsigs:
-	-@if [ ! -d src/sigs ]; then mkdir -p sigs; fi
-	-@echo ${PETSC_INCLUDE} > sigs/petsc_include
-	-@echo "#include \"petscvec.h\"" > sigs/vec.sigs.h
-	-@grep -h "enum " include/petscsys.h include/petscvec.h >> sigs/vec.sigs.h
-	-@grep " Vec[a-zA-Z][a-zA-Z]*(Vec," include/petscvec.h | grep EXTERN | grep -v "(\*)" | grep -v IS |grep -v VecType | sed "s/EXTERN PetscErrorCode PETSCVEC_DLLEXPORT//g" >> sigs/vec.sigs.h
-	-@echo "#include \"petscmat.h\"" > sigs/mat.sigs.h
-	-@grep "enum " include/petscmat.h | grep } >> sigs/mat.sigs.h
-	-@grep " Mat[a-zA-Z][a-zA-Z]*(Mat," include/petscmat.h | grep EXTERN | grep -v "(\*)" | grep -v IS |grep -v MatType | sed "s/EXTERN PetscErrorCode PETSCMAT_DLLEXPORT//g" >> sigs/mat.sigs.h
-	-@echo "#include \"petscpc.h\"" > sigs/pc.sigs.h
-	-@grep "enum " include/petscpc.h | grep } >> sigs/pc.sigs.h
-	-@grep " PC[a-zA-Z][a-zA-Z]*(PC," include/petscpc.h | grep EXTERN | grep -v "(\*)" | grep -v "(\*\*)" | grep -v IS |grep -v PCType | sed "s/EXTERN PetscErrorCode PETSCKSP_DLLEXPORT//g" >> sigs/pc.sigs.h
-	-@echo "#include \"petscksp.h\"" > sigs/ksp.sigs.h
-	-@grep "enum " include/petscksp.h | grep } >> sigs/ksp.sigs.h
-	-@grep " KSP[a-zA-Z][a-zA-Z]*(KSP," include/petscksp.h | grep EXTERN | grep -v "(\*)" | grep -v "(\*\*)" | grep -v IS |grep -v KSPType | sed "s/EXTERN PetscErrorCode PETSCKSP_DLLEXPORT//g" >> sigs/ksp.sigs.h
-	-@echo "#include \"petscsnes.h\"" > sigs/snes.sigs.h
-	-@grep " SNES[a-zA-Z][a-zA-Z]*(SNES," include/petscsnes.h | grep EXTERN | grep -v "(\*)" | grep -v "(\*\*)" | grep -v IS |grep -v SNESType | sed "s/EXTERN PetscErrorCode PETSCSNES_DLLEXPORT//g" >> sigs/snes.sigs.h
-
-
-
-
-
-
-
-
-
-
-
 petscao : petscmat petscao.f90.h
-petscda : petscksp petscda.f90.h
+petscdm : petscksp petscdm.f90.h
 petscdraw : petsc petscdraw.f90.h
 petscis : petsc petscis.f90.h
 petscksp : petscpc  petscksp.f90.h
@@ -530,4 +490,4 @@ petsc : petsc.f90.h
 petscvec : petscis petscvec.f90.h
 petscviewer : petsc petscviewer.f90.h
 petscmesh : petsc petscmesh.f90.h
-modules : petscao petscda petscdraw petscis petscksp petsclog petscmat petscmg petscpc petscsnes petscsys petscts petsc petscvec petscviewer petscmesh
+modules : petscao petscdm petscdraw petscis petscksp petsclog petscmat petscmg petscpc petscsnes petscsys petscts petsc petscvec petscviewer petscmesh

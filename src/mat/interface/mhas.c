@@ -1,6 +1,5 @@
-#define PETSCMAT_DLL
 
-#include "private/matimpl.h"        /*I "petscmat.h" I*/
+#include <private/matimpl.h>        /*I "petscmat.h" I*/
        
 #undef __FUNCT__  
 #define __FUNCT__ "MatHasOperation"
@@ -8,7 +7,7 @@
     MatHasOperation - Determines whether the given matrix supports the particular
     operation.
 
-   Collective on Mat
+   Not Collective
 
    Input Parameters:
 +  mat - the matrix
@@ -29,10 +28,10 @@
 
 .seealso: MatCreateShell()
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatHasOperation(Mat mat,MatOperation op,PetscTruth *has)
+PetscErrorCode  MatHasOperation(Mat mat,MatOperation op,PetscBool  *has)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(mat,MAT_COOKIE,1);
+  PetscValidHeaderSpecific(mat,MAT_CLASSID,1);
   PetscValidType(mat,1);
   PetscValidPointer(has,3);
   if (((void **)mat->ops)[op]) {*has =  PETSC_TRUE;}

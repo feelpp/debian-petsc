@@ -12,36 +12,19 @@ class CompilerOptions(config.base.Configure):
         compiler = output.split(' ')[0]
       except:
         pass
-      
+
     flags = []
     # GNU gcc
-    if config.setCompilers.Configure.isGNU(compiler):
+    if config.setCompilers.Configure.isGNU(compiler) or config.setCompilers.Configure.isClang(compiler):
       if bopt == '':
-        flags.extend(['-Wall', '-Wwrite-strings', '-Wno-strict-aliasing'])
+        flags.extend(['-Wall', '-Wwrite-strings', '-Wno-strict-aliasing','-Wno-unknown-pragmas'])
       elif bopt == 'g':
         if self.framework.argDB['with-gcov']:
           flags.extend(['-fprofile-arcs', '-ftest-coverage'])
         flags.append('-g3')
       elif bopt == 'O':
         flags.append('-O')
-    # Alpha
-    elif re.match(r'alphaev[5-9]', self.framework.host_cpu):
-      # Compaq C
-      if compiler == 'cc':
-        if bopt == 'O':
-          flags.extend(['-O2', '-Olimit 2000'])
-    # MIPS
-    elif re.match(r'mips', self.framework.host_cpu):
-      # MIPS Pro C
-      if compiler == 'cc':
-        if bopt == '':
-          flags.extend(['-woff 1164', '-woff 1552', '-woff 1174'])
-        elif bopt == 'g':
-          flags.append('-g')
-        elif bopt == 'O':
-          flags.extend(['-O2', '-OPT:Olimit=6500'])
-    # Intel
-    elif re.match(r'i[3-9]86', self.framework.host_cpu):
+    else:
       # Linux Intel
       if config.setCompilers.Configure.isIntel(compiler) and not compiler.find('win32fe') >=0:
         if bopt == '':
@@ -66,7 +49,7 @@ class CompilerOptions(config.base.Configure):
         elif bopt == 'g':
           flags.extend(['-Z7'])
         elif bopt == 'O':
-          flags.extend(['-O3', '-QxW'])
+          flags.extend(['-O2', '-QxW'])
       # Windows Borland
       elif compiler.find('win32fe bcc32') >= 0:
         if bopt == '':
@@ -91,9 +74,9 @@ class CompilerOptions(config.base.Configure):
     
     flags = []
     # GNU g++
-    if config.setCompilers.Configure.isGNU(compiler):
+    if config.setCompilers.Configure.isGNU(compiler) or config.setCompilers.Configure.isClang(compiler):
       if bopt == '':
-        flags.extend(['-Wall', '-Wwrite-strings', '-Wno-strict-aliasing'])
+        flags.extend(['-Wall', '-Wwrite-strings', '-Wno-strict-aliasing','-Wno-unknown-pragmas'])
       elif bopt in ['g']:
         if self.framework.argDB['with-gcov']:
           flags.extend(['-fprofile-arcs', '-ftest-coverage'])
@@ -102,24 +85,15 @@ class CompilerOptions(config.base.Configure):
       elif bopt in ['O']:
         if os.environ.has_key('USER'):
           flags.append('-O')
-    # Alpha
-    elif re.match(r'alphaev[0-9]', self.framework.host_cpu):
-      # Compaq C++
-      if compiler == 'cxx':
-        if bopt in ['O']:
-          flags.append('-O2')
-    # MIPS
-    elif re.match(r'mips', self.framework.host_cpu):
-      # MIPS Pro C++
-      if compiler == 'cc':
-        if bopt == '':
-          flags.extend(['-woff 1164', '-woff 1552', '-woff 1174'])
-        elif bopt in ['g']:
-          flags.append('-g')
-        elif bopt in ['O']:
-          flags.extend(['-O2', '-OPT:Olimit=6500'])
-    # Intel
-    elif re.match(r'i[3-9]86', self.framework.host_cpu):
+    # IBM
+    elif compiler.find('mpCC') >= 0 or compiler.find('xlC') >= 0:
+      if bopt == '':
+        flags.append('-qrtti=dyna')  # support dynamic casts in C++
+      elif bopt in ['g']:
+        flags.append('-g')
+      elif bopt in ['O']:
+        flags.append('-O')
+    else:
       # Linux Intel
       if config.setCompilers.Configure.isIntel(compiler) and not compiler.find('win32fe') >=0:
         if bopt == '':
@@ -148,15 +122,6 @@ class CompilerOptions(config.base.Configure):
       elif compiler.find('win32fe bcc32') >= 0:
         if bopt == '':
           flags.append('-RT -w-8019 -w-8060 -w-8057 -w-8004 -w-8066')
-    # IBM
-    elif compiler.find('mpCC') >= 0 or compiler.find('xlC') >= 0:
-      if bopt == '':
-        flags.append('-qrtti=dyna')  # support dynamic casts in C++
-      elif bopt in ['g']:
-        flags.append('-g')
-      elif bopt in ['O']:
-        flags.append('-O')
-      
     # Generic
     if not len(flags):
       if bopt in ['g']:
@@ -178,6 +143,10 @@ class CompilerOptions(config.base.Configure):
     if config.setCompilers.Configure.isGNU(compiler):
       if bopt == '':
         flags.extend(['-Wall', '-Wno-unused-variable'])
+        if config.setCompilers.Configure.isGfortran46plus(compiler):
+          flags.extend(['-Wno-unused-dummy-argument']) # Silence warning because dummy parameters are sometimes necessary
+        if config.setCompilers.Configure.isGfortran45x(compiler):
+          flags.extend(['-Wno-line-truncation']) # Work around bug in this series, fixed in 4.6: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42852
       elif bopt == 'g':
         if self.framework.argDB['with-gcov']:
           flags.extend(['-fprofile-arcs', '-ftest-coverage'])
@@ -185,14 +154,7 @@ class CompilerOptions(config.base.Configure):
         flags.append('-g')
       elif bopt == 'O':
         flags.extend(['-O'])
-    # Alpha
-    elif re.match(r'alphaev[0-9]', self.framework.host_cpu):
-      # Compaq Fortran
-      if compiler == 'fort':
-        if bopt == 'O':
-          flags.append('-O2')
-    # Intel
-    elif re.match(r'i[3-9]86', self.framework.host_cpu):
+    else:
       # Portland Group Fortran 90
       if compiler == 'pgf90':
         if bopt == '':
@@ -221,24 +183,6 @@ class CompilerOptions(config.base.Configure):
           flags.extend(['-debug:full'])
         elif bopt == 'O':
           flags.extend(['-optimize:5', '-fast'])
-    # MIPS
-    elif re.match(r'mips', self.framework.host_cpu):
-      # MIPS Pro Fortran
-      if compiler == 'f90':
-        if bopt == '':
-          flags.append('-cpp')
-        elif bopt == 'g':
-          flags.extend(['-g', '-trapuv'])
-        elif bopt == 'O':
-          flags.extend(['-O2', '-IPA:cprop=OFF', '-OPT:IEEE_arithmetic=1'])
-    # MacOSX on Apple Power PC
-    elif config.setCompilers.Configure.isDarwin():
-      # IBM
-      if bopt == '' and (compiler.find('f90') or re.match(r'\w*xl[fF]\w*', compiler)):
-        import commands
-        output  = commands.getoutput(compiler+' -v')
-        if output.find('IBM') >= 0:
-          flags.append('-qextname')
     # Generic
     if not len(flags):
       if bopt == 'g':
@@ -249,7 +193,7 @@ class CompilerOptions(config.base.Configure):
 
   def getCompilerFlags(self, language, compiler, bopt):
     flags = ''
-    if language == 'C':
+    if language == 'C' or language == 'CUDA':
       flags = self.getCFlags(compiler, bopt)
     elif language == 'Cxx':
       flags = self.getCxxFlags(compiler, bopt)
@@ -262,35 +206,19 @@ class CompilerOptions(config.base.Configure):
       raise RuntimeError('Invalid compiler for version determination')
     version = 'Unknown'
     try:
-      if language == 'C':
+      if language == 'C' or language == 'CUDA':
         if compiler.endswith('xlc') or compiler.endswith('mpcc'):
           flags = "lslpp -L vac.C | grep vac.C | awk '{print $2}'"
-        elif re.match(r'alphaev[0-9]', self.framework.host_cpu) and compiler.endswith('cc'):
-          flags = compiler+' -V'
-        elif re.match(r'mips', self.framework.host_cpu) and compiler.endswith('cc'):
-          flags = compiler+' -version'
         else:
           flags = compiler+' --version'
       elif language == 'Cxx':
         if compiler.endswith('xlC') or compiler.endswith('mpCC'):
           flags = "lslpp -L vacpp.cmp.core  | grep vacpp.cmp.core  | awk '{print $2}'"
-        elif re.match(r'alphaev[0-9]', self.framework.host_cpu) and compiler.endswith('cxx'):
-          flags = compiler+' -V'
-        elif re.match(r'mips', self.framework.host_cpu) and compiler.endswith('cc'):
-          flags = compiler+' -version'
         else:
           flags = compiler+' --version'
       elif language in ['Fortran', 'FC']:
         if compiler.endswith('xlf') or compiler.endswith('xlf90'):
           flags = "lslpp -L xlfcmp | grep xlfcmp | awk '{print $2}'"
-        elif re.match(r'alphaev[0-9]', self.framework.host_cpu) and compiler.endswith('fort'):
-          flags = compiler+' -version'
-        elif re.match(r'i[3-9]86', self.framework.host_cpu) and compiler.endswith('pgf90'):
-          flags = compiler+' -V'
-        elif re.match(r'i[3-9]86', self.framework.host_cpu) and compiler.endswith('f90'):
-          flags = compiler+' -V'
-        elif re.match(r'mips', self.framework.host_cpu) and compiler.endswith('f90'):
-          flags = compiler+' -version'
         else:
           flags = compiler+' --version'
       (output, error, status) = config.base.Configure.executeShellCommand(flags, log = self.framework.log)

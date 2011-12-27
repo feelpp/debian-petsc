@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* cgtype.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspcgsettype_(KSP ksp,KSPCGType *type, int *__ierr ){
+void PETSC_STDCALL  kspcgsettype_(KSP ksp,KSPCGType *type, int *__ierr ){
 *__ierr = KSPCGSetType(
 	(KSP)PetscToPointer((ksp) ),*type);
 }
-void PETSC_STDCALL   kspcgusesinglereduction_(KSP ksp,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  kspcgusesinglereduction_(KSP ksp,PetscBool  *flg, int *__ierr ){
 *__ierr = KSPCGUseSingleReduction(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }

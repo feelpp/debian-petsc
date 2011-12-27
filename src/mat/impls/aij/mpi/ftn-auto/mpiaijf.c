@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mpiaij.c */
 /* Fortran interface file */
 
@@ -43,9 +44,9 @@ extern void PetscRmPointer(void*);
 #define matmerge_ matmerge
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matgetlocalmat_ MATGETLOCALMAT
+#define matmpiaijgetlocalmat_ MATMPIAIJGETLOCALMAT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matgetlocalmat_ matgetlocalmat
+#define matmpiaijgetlocalmat_ matmpiaijgetlocalmat
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matcreatempiaijwithsplitarrays_ MATCREATEMPIAIJWITHSPLITARRAYS
@@ -58,24 +59,24 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matmpiaijsetpreallocationcsr_(Mat B, PetscInt i[], PetscInt j[], PetscScalar v[], int *__ierr ){
+void PETSC_STDCALL  matmpiaijsetpreallocationcsr_(Mat B, PetscInt i[], PetscInt j[], PetscScalar v[], int *__ierr ){
 *__ierr = MatMPIAIJSetPreallocationCSR(
 	(Mat)PetscToPointer((B) ),i,j,v);
 }
-void PETSC_STDCALL   matcreatempiaijwitharrays_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N, PetscInt i[], PetscInt j[], PetscScalar a[],Mat *mat, int *__ierr ){
+void PETSC_STDCALL  matcreatempiaijwitharrays_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N, PetscInt i[], PetscInt j[], PetscScalar a[],Mat *mat, int *__ierr ){
 *__ierr = MatCreateMPIAIJWithArrays(
 	MPI_Comm_f2c( *(comm) ),*m,*n,*M,*N,i,j,a,mat);
 }
-void PETSC_STDCALL   matmerge_(MPI_Fint * comm,Mat inmat,PetscInt *n,MatReuse *scall,Mat *outmat, int *__ierr ){
+void PETSC_STDCALL  matmerge_(MPI_Fint * comm,Mat inmat,PetscInt *n,MatReuse *scall,Mat *outmat, int *__ierr ){
 *__ierr = MatMerge(
 	MPI_Comm_f2c( *(comm) ),
 	(Mat)PetscToPointer((inmat) ),*n,*scall,outmat);
 }
-void PETSC_STDCALL   matgetlocalmat_(Mat A,MatReuse *scall,Mat *A_loc, int *__ierr ){
-*__ierr = MatGetLocalMat(
+void PETSC_STDCALL  matmpiaijgetlocalmat_(Mat A,MatReuse *scall,Mat *A_loc, int *__ierr ){
+*__ierr = MatMPIAIJGetLocalMat(
 	(Mat)PetscToPointer((A) ),*scall,A_loc);
 }
-void PETSC_STDCALL   matcreatempiaijwithsplitarrays_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,PetscInt i[],PetscInt j[],PetscScalar a[],
+void PETSC_STDCALL  matcreatempiaijwithsplitarrays_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,PetscInt i[],PetscInt j[],PetscScalar a[],
         PetscInt oi[],PetscInt oj[],PetscScalar oa[],Mat *mat, int *__ierr ){
 *__ierr = MatCreateMPIAIJWithSplitArrays(
 	MPI_Comm_f2c( *(comm) ),*m,*n,*M,*N,i,j,a,oi,oj,oa,mat);

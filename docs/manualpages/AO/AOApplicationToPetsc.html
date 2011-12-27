@@ -10,7 +10,7 @@ Maps a set of integers in the application-defined ordering to the PETSc ordering
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscao.h" 
-PetscErrorCode PETSCDM_DLLEXPORT AOApplicationToPetsc(AO ao,PetscInt n,PetscInt ia[])
+PetscErrorCode  AOApplicationToPetsc(AO ao,PetscInt n,PetscInt ia[])
 </PRE>
 Collective on <A HREF="../AO/AO.html#AO">AO</A>
 <P>
@@ -22,6 +22,10 @@ Collective on <A HREF="../AO/AO.html#AO">AO</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ia </B></TD><TD>- the integers; these are replaced with their mapped value
 </TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
+<DT><B>ia </B> -the mapped interges
+<br>
 <P>
 
 <P>
@@ -44,6 +48,6 @@ entries to indicate nonexistent neighbors due to boundary conditions, etc.
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/dm/da/examples/tutorials/ex6.c.html">src/dm/da/examples/tutorials/ex6.c.html</A><BR>
-<A HREF="../../../src/dm/da/examples/tutorials/ex6f90.F.html">src/dm/da/examples/tutorials/ex6f90.F.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
 </BODY></HTML>

@@ -11,7 +11,7 @@ Destroys a mapping between a local (0 to n) ordering and a global parallel order
 <PRE>
 #include "petscvec.h" 
 #include "petscis.h"  
-PetscErrorCode PETSCVEC_DLLEXPORT ISLocalToGlobalMappingDestroy(ISLocalToGlobalMapping mapping)
+PetscErrorCode  ISLocalToGlobalMappingDestroy(ISLocalToGlobalMapping *mapping)
 </PRE>
 Note Collective
 <P>

@@ -10,7 +10,7 @@ Returns the compressed row storage i and j indices for sequential matrices.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatGetRowIJ(Mat mat,PetscInt shift,PetscTruth symmetric,PetscTruth inodecompressed,PetscInt *n,PetscInt *ia[],PetscInt* ja[],PetscTruth *done)
+PetscErrorCode  MatGetRowIJ(Mat mat,PetscInt shift,PetscBool  symmetric,PetscBool  inodecompressed,PetscInt *n,PetscInt *ia[],PetscInt* ja[],PetscBool  *done)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -20,8 +20,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>shift </B></TD><TD>- 0 or 1 indicating we want the indices starting at 0 or 1
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>symmetric </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> or <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> indicating the matrix data structure should be
-symmetrized
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>symmetric </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> or <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> indicating the matrix data structure should be   symmetrized
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>inodecompressed </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> or <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>  indicating if the nonzero structure of the
 inodes or the nonzero elements is wanted. For BAIJ matrices the compressed version is 

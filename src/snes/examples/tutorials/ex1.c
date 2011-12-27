@@ -14,7 +14,7 @@ T*/
      petscviewer.h - viewers               petscpc.h  - preconditioners
      petscksp.h   - linear solvers
 */
-#include "petscsnes.h"
+#include <petscsnes.h>
 
 typedef struct {
   Vec         xloc,rloc;    /* local solution, residual vectors */
@@ -42,7 +42,7 @@ int main(int argc,char **argv)
   PetscInt       its;
   PetscMPIInt    size,rank;
   PetscScalar    pfive = .5,*xx;
-  PetscTruth     flg;
+  PetscBool      flg;
   AppCtx         user;         /* user-defined work context */
   IS             isglobal,islocal;
 
@@ -74,8 +74,8 @@ int main(int argc,char **argv)
     ierr = ISCreateStride(MPI_COMM_SELF,2,0,1,&islocal);CHKERRQ(ierr);
     ierr = ISCreateStride(MPI_COMM_SELF,2,0,1,&isglobal);CHKERRQ(ierr);
     ierr = VecScatterCreate(x,isglobal,user.xloc,islocal,&user.scatter);CHKERRQ(ierr);
-    ierr = ISDestroy(isglobal);CHKERRQ(ierr);
-    ierr = ISDestroy(islocal);CHKERRQ(ierr);
+    ierr = ISDestroy(&isglobal);CHKERRQ(ierr);
+    ierr = ISDestroy(&islocal);CHKERRQ(ierr);
   }
 
   /*
@@ -97,7 +97,7 @@ int main(int argc,char **argv)
     */
     ierr = SNESSetJacobian(snes,J,J,FormJacobian1,PETSC_NULL);CHKERRQ(ierr);
   } else {
-    if (size != 1) SETERRQ(1,"This case is a uniprocessor example only!");
+    if (size != 1) SETERRQ(PETSC_COMM_SELF,1,"This case is a uniprocessor example only!");
     ierr = SNESSetFunction(snes,r,FormFunction2,PETSC_NULL);CHKERRQ(ierr);
     ierr = SNESSetJacobian(snes,J,J,FormJacobian2,PETSC_NULL);CHKERRQ(ierr);
   }
@@ -157,14 +157,14 @@ int main(int argc,char **argv)
      are no longer needed.
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  ierr = VecDestroy(x);CHKERRQ(ierr); ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = MatDestroy(J);CHKERRQ(ierr); ierr = SNESDestroy(snes);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr); ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = MatDestroy(&J);CHKERRQ(ierr); ierr = SNESDestroy(&snes);CHKERRQ(ierr);
   if (size > 1){
-    ierr = VecDestroy(user.xloc);CHKERRQ(ierr); 
-    ierr = VecDestroy(user.rloc);CHKERRQ(ierr);
-    ierr = VecScatterDestroy(user.scatter);CHKERRQ(ierr);
+    ierr = VecDestroy(&user.xloc);CHKERRQ(ierr); 
+    ierr = VecDestroy(&user.rloc);CHKERRQ(ierr);
+    ierr = VecScatterDestroy(&user.scatter);CHKERRQ(ierr);
   }
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 /* ------------------------------------------------------------------- */

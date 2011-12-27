@@ -1,16 +1,17 @@
-#define PETSCTS_DLL
 
-#include "private/tsimpl.h"     /*I  "petscts.h"  I*/
+#include <private/tsimpl.h>     /*I  "petscts.h"  I*/
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_Euler(TS);
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_BEuler(TS);
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_Pseudo(TS);
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_Sundials(TS);
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_CN(TS);
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_Theta(TS);
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_GL(TS);
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_SSP(TS);
-EXTERN PetscErrorCode PETSCTS_DLLEXPORT TSCreate_Rk(TS);
+extern PetscErrorCode  TSCreate_Euler(TS);
+extern PetscErrorCode  TSCreate_BEuler(TS);
+extern PetscErrorCode  TSCreate_Pseudo(TS);
+extern PetscErrorCode  TSCreate_Sundials(TS);
+extern PetscErrorCode  TSCreate_CN(TS);
+extern PetscErrorCode  TSCreate_Theta(TS);
+extern PetscErrorCode  TSCreate_Alpha(TS);
+extern PetscErrorCode  TSCreate_GL(TS);
+extern PetscErrorCode  TSCreate_SSP(TS);
+extern PetscErrorCode  TSCreate_RK(TS);
+extern PetscErrorCode  TSCreate_ARKIMEX(TS);
 EXTERN_C_END
 
 #undef __FUNCT__  
@@ -28,7 +29,7 @@ EXTERN_C_END
 .keywords: TS, timestepper, register, all
 .seealso: TSCreate(), TSRegister(), TSRegisterDestroy(), TSRegisterDynamic()
 @*/
-PetscErrorCode PETSCTS_DLLEXPORT TSRegisterAll(const char path[])
+PetscErrorCode  TSRegisterAll(const char path[])
 {
   PetscErrorCode ierr;
 
@@ -37,15 +38,17 @@ PetscErrorCode PETSCTS_DLLEXPORT TSRegisterAll(const char path[])
 
   ierr = TSRegisterDynamic(TSEULER,           path, "TSCreate_Euler",    TSCreate_Euler);CHKERRQ(ierr);
   ierr = TSRegisterDynamic(TSBEULER,          path, "TSCreate_BEuler",   TSCreate_BEuler);CHKERRQ(ierr);
-  ierr = TSRegisterDynamic(TSCRANK_NICHOLSON, path, "TSCreate_CN",       TSCreate_CN);CHKERRQ(ierr);
+  ierr = TSRegisterDynamic(TSCN,              path, "TSCreate_CN",       TSCreate_CN);CHKERRQ(ierr);
   ierr = TSRegisterDynamic(TSPSEUDO,          path, "TSCreate_Pseudo",   TSCreate_Pseudo);CHKERRQ(ierr);
   ierr = TSRegisterDynamic(TSGL,              path, "TSCreate_GL",       TSCreate_GL);CHKERRQ(ierr);
   ierr = TSRegisterDynamic(TSSSP,             path, "TSCreate_SSP",      TSCreate_SSP);CHKERRQ(ierr);
   ierr = TSRegisterDynamic(TSTHETA,           path, "TSCreate_Theta",    TSCreate_Theta);CHKERRQ(ierr);
+  ierr = TSRegisterDynamic(TSALPHA,           path, "TSCreate_Alpha",    TSCreate_Alpha);CHKERRQ(ierr);
 #if defined(PETSC_HAVE_SUNDIALS)
   ierr = TSRegisterDynamic(TSSUNDIALS,        path, "TSCreate_Sundials", TSCreate_Sundials);CHKERRQ(ierr);
 #endif
-  ierr = TSRegisterDynamic(TSRUNGE_KUTTA,     path, "TSCreate_Rk",       TSCreate_Rk);CHKERRQ(ierr);
+  ierr = TSRegisterDynamic(TSRK,              path, "TSCreate_RK",       TSCreate_RK);CHKERRQ(ierr);
+  ierr = TSRegisterDynamic(TSARKIMEX,         path, "TSCreate_ARKIMEX",  TSCreate_ARKIMEX);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

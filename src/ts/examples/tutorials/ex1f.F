@@ -28,11 +28,11 @@
 !23456789012345678901234567890123456789012345678901234567890123456789012
       program main
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscts.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscts.h>
 !
 !  Create an application context to contain data needed by the 
 !  application-provided call-back routines, FormJacobian() and
@@ -53,7 +53,7 @@
       Vec               x,r
       Mat               J
       PetscInt           its,N,i1000
-      PetscTruth flg
+      PetscBool  flg
       PetscErrorCode      ierr
       double precision  param_max,param_min,dt,tmax,zero
       double precision  ftime
@@ -124,7 +124,7 @@
 !    is the application context used by the call-back functions.
 !
 
-      call TSSetRHSFunction(ts,FormFunction,user,ierr) 
+      call TSSetRHSFunction(ts,PETSC_NULL_OBJECT,FormFunction,user,ierr)
 
 !
 !     Set the Jacobian matrix and the function used to compute 
@@ -175,9 +175,9 @@
 !
 !      Perform the solve. This is where the timestepping takes place.
 !
- 
-      call TSStep(ts,its,ftime,ierr) 
-   
+      call TSSolve(ts,x,ftime,ierr)
+      call TSGetTimeStepNumber(ts,its,ierr)
+
       write(6,100) its,ftime
  100  format('Number of pseudo time-steps ',i5,' final time ',1pe8.2)
 
@@ -197,11 +197,11 @@
 !
       subroutine FormInitialGuess(X,user,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscts.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscts.h>
       Vec              X
       double precision user(3)
       PetscInt  i,j,row,mx,my
@@ -245,11 +245,11 @@
 !
       subroutine FormFunction(ts,t,X,F,user,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscts.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscts.h>
       TS       ts
       double precision  t
       Vec               X,F
@@ -308,11 +308,11 @@
 !
       subroutine FormJacobian(ts,ctime,X,JJ,B,flag,user,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscts.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscts.h>
       TS               ts
       Vec              X
       Mat              JJ,B

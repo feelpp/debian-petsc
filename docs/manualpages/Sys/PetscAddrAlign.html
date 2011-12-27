@@ -6,15 +6,17 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscAddrAlign"><H1>PetscAddrAlign</H1></A>
-Returns an address with PETSC_MEMALIGN alignment 
-<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
-<DT><B>addr </B> -address to align (any pointer type)
-<br>
-<P>
+Rounds up an address to PETSC_MEMALIGN alignment 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 void *PetscAddrAlign(void *addr)
 </PRE>
+Not Collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<DT><B>addr </B> -address to align (any pointer type)
+<br>
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

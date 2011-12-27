@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* stcg.c */
 /* Fortran interface file */
 
@@ -48,15 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspstcgsetradius_(KSP ksp,PetscReal *radius, int *__ierr ){
+void PETSC_STDCALL  kspstcgsetradius_(KSP ksp,PetscReal *radius, int *__ierr ){
 *__ierr = KSPSTCGSetRadius(
 	(KSP)PetscToPointer((ksp) ),*radius);
 }
-void PETSC_STDCALL   kspstcggetnormd_(KSP ksp,PetscReal *norm_d, int *__ierr ){
+void PETSC_STDCALL  kspstcggetnormd_(KSP ksp,PetscReal *norm_d, int *__ierr ){
 *__ierr = KSPSTCGGetNormD(
 	(KSP)PetscToPointer((ksp) ),norm_d);
 }
-void PETSC_STDCALL   kspstcggetobjfcn_(KSP ksp,PetscReal *o_fcn, int *__ierr ){
+void PETSC_STDCALL  kspstcggetobjfcn_(KSP ksp,PetscReal *o_fcn, int *__ierr ){
 *__ierr = KSPSTCGGetObjFcn(
 	(KSP)PetscToPointer((ksp) ),o_fcn);
 }

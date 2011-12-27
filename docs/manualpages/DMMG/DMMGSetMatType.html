@@ -9,14 +9,17 @@
 Sets the type of matrices that <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A> will create for its solvers. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"   
+#include "petscdm.h"   
 #include "petscksp.h"  
-#include "petscmg.h"   
+#include "petscpcmg.h"   
 #include "petscdmmg.h" 
 #include "petscpc.h"   
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetMatType(DMMG *dmmg,const MatType mtype)
+PetscErrorCode  DMMGSetMatType(DMMG *dmmg,const MatType mtype)
 </PRE>
-Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
+This is being deprecated. Use <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>() for linear problems and <A HREF="../SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>() for nonlinear problems.
+See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c
+<P>
+Logically Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -36,6 +39,6 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <BR><A HREF="./index.html">Index of all DMMG routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
 </BODY></HTML>

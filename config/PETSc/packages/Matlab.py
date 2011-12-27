@@ -25,10 +25,11 @@ class Configure(PETSc.package.NewPackage):
       # follow any symbolic link of this path
       self.matlab = os.path.realpath(self.matlab)
       yield os.path.dirname(os.path.dirname(self.matlab))
-    for dir in os.listdir('/Applications'):
-      if dir.startswith('MATLAB'):
-        if os.path.isfile(os.path.join('/Applications',dir,'bin','matlab')):
-          yield os.path.join('/Applications',dir)
+    if os.path.isdir('/Applications'):
+      for dir in os.listdir('/Applications'):
+        if dir.startswith('MATLAB'):
+          if os.path.isfile(os.path.join('/Applications',dir,'bin','matlab')):
+            yield os.path.join('/Applications',dir)
     return
 
   def alternateConfigureLibrary(self):
@@ -43,9 +44,12 @@ class Configure(PETSc.package.NewPackage):
     for matlab in self.generateGuesses():
       self.framework.log.write('Testing Matlab at '+matlab+'\n')
       interpreter = os.path.join(matlab,'bin','matlab')
+      if 'with-matlab-arch' in self.framework.argDB:
+        interpreter = interpreter+' -'+self.framework.argDB['with-matlab-arch']
+        
       output      = ''
       try:
-        output,err,ret = PETSc.package.NewPackage.executeShellCommand(interpreter+' -nojvm -nodisplay -r "[\'Version \' version]; exit"', log = self.framework.log)
+        output,err,ret = PETSc.package.NewPackage.executeShellCommand(interpreter+' -nojvm -nodisplay -r "display([\'Version \' version]); exit"', log = self.framework.log)
       except:
         self.framework.log.write('WARNING: Found Matlab at '+matlab+' but unable to run\n')
         continue
@@ -64,34 +68,23 @@ class Configure(PETSc.package.NewPackage):
         ls = os.listdir(os.path.join(matlab,'extern','lib'))
         if ls:
           if 'with-matlab-arch' in self.framework.argDB:
-            matlab_arch = self.framework.argDB['with-matlab-arch']
-            if not matlab_arch in ls:
-              self.framework.log.write('WARNING: You indicated --with-matlab-arch='+matlab_arch+' but that arch does not exist;\n possibilities are '+str(ls))
+            self.matlab_arch = self.framework.argDB['with-matlab-arch']
+            if not self.matlab_arch in ls:
+              self.framework.log.write('WARNING: You indicated --with-matlab-arch='+self.matlab_arch+' but that arch does not exist;\n possibilities are '+str(ls))
               continue
           else:
-            matlab_arch = ls[0]
-          self.framework.log.write('Configuring PETSc to use the Matlab at '+matlab+' Matlab arch '+matlab_arch+'\n')
+            self.matlab_arch = ls[0]
+          self.framework.log.write('Configuring PETSc to use the Matlab at '+matlab+' Matlab arch '+self.matlab_arch+'\n')
           self.mex = os.path.join(matlab,'bin','mex')
-          self.cc = '${CC}'
-          self.command = os.path.join(matlab,'bin','matlab')
-          self.include = [os.path.join(matlab,'extern','include')]
-          if self.framework.argDB['with-matlab-engine']:          
-            if matlab_arch == 'mac':
-              matlab_dl = [' -L'+os.path.join(matlab,'sys','os','mac'),' -ldl']
-            else:
-              matlab_dl = ['']
-            # Matlab libraries require libstdc++-libc6.1-2.so.3 which they provide in the sys/os directory
-            if matlab_arch == 'glnx86':
-              matlab_sys = ':'+os.path.join(matlab,'sys','os',matlab_arch)
-            else:
-              matlab_sys = ''
-            matlab_sys += ':'+os.path.join(matlab,'bin',matlab_arch)+':'+os.path.join(matlab,'extern','lib',matlab_arch)
-            self.lib = [self.setCompilers.CSharedLinkerFlag+matlab_sys,'-L'+os.path.join(matlab,'bin',matlab_arch),'-L'+os.path.join(matlab,'extern','lib',matlab_arch),'-leng','-lmx','-lmat','-lut','-licudata','-licui18n','-licuuc','-lustdio'] + matlab_dl
+          if 'with-matlab-arch' in self.framework.argDB:
+            self.mex = self.mex+' -'+self.framework.argDB['with-matlab-arch']
 
-            self.addDefine('HAVE_MATLAB_ENGINE', 1)
+          self.command = os.path.join(matlab,'bin','matlab -'+self.matlab_arch)
+          self.include = [os.path.join(matlab,'extern','include')]
           self.framework.packages.append(self)
           self.addMakeMacro('MATLAB_MEX',self.mex)
           self.addMakeMacro('MATLAB_COMMAND',self.command)        
+          self.addDefine('MATLAB_COMMAND','"'+self.command+'"')        
           self.found = 1
           return
         else:

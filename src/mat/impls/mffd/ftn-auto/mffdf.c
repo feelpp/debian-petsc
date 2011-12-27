@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mffd.c */
 /* Fortran interface file */
 
@@ -27,11 +28,6 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscmat.h"
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matmffdsetfromoptions_ MATMFFDSETFROMOPTIONS
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matmffdsetfromoptions_ matmffdsetfromoptions
-#endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matcreatemffd_ MATCREATEMFFD
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -83,46 +79,42 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matmffdsetfromoptions_(Mat mat, int *__ierr ){
-*__ierr = MatMFFDSetFromOptions(
-	(Mat)PetscToPointer((mat) ));
-}
-void PETSC_STDCALL   matcreatemffd_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,Mat *J, int *__ierr ){
+void PETSC_STDCALL  matcreatemffd_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,Mat *J, int *__ierr ){
 *__ierr = MatCreateMFFD(
 	MPI_Comm_f2c( *(comm) ),*m,*n,*M,*N,J);
 }
-void PETSC_STDCALL   matmffdgeth_(Mat mat,PetscScalar *h, int *__ierr ){
+void PETSC_STDCALL  matmffdgeth_(Mat mat,PetscScalar *h, int *__ierr ){
 *__ierr = MatMFFDGetH(
 	(Mat)PetscToPointer((mat) ),h);
 }
-void PETSC_STDCALL   matmffdsetperiod_(Mat mat,PetscInt *period, int *__ierr ){
+void PETSC_STDCALL  matmffdsetperiod_(Mat mat,PetscInt *period, int *__ierr ){
 *__ierr = MatMFFDSetPeriod(
 	(Mat)PetscToPointer((mat) ),*period);
 }
-void PETSC_STDCALL   matmffdsetfunctionerror_(Mat mat,PetscReal *error, int *__ierr ){
+void PETSC_STDCALL  matmffdsetfunctionerror_(Mat mat,PetscReal *error, int *__ierr ){
 *__ierr = MatMFFDSetFunctionError(
 	(Mat)PetscToPointer((mat) ),*error);
 }
-void PETSC_STDCALL   matmffdaddnullspace_(Mat J,MatNullSpace nullsp, int *__ierr ){
+void PETSC_STDCALL  matmffdaddnullspace_(Mat J,MatNullSpace nullsp, int *__ierr ){
 *__ierr = MatMFFDAddNullSpace(
 	(Mat)PetscToPointer((J) ),
 	(MatNullSpace)PetscToPointer((nullsp) ));
 }
-void PETSC_STDCALL   matmffdsethhistory_(Mat J,PetscScalar history[],PetscInt *nhistory, int *__ierr ){
+void PETSC_STDCALL  matmffdsethhistory_(Mat J,PetscScalar history[],PetscInt *nhistory, int *__ierr ){
 *__ierr = MatMFFDSetHHistory(
 	(Mat)PetscToPointer((J) ),history,*nhistory);
 }
-void PETSC_STDCALL   matmffdresethhistory_(Mat J, int *__ierr ){
+void PETSC_STDCALL  matmffdresethhistory_(Mat J, int *__ierr ){
 *__ierr = MatMFFDResetHHistory(
 	(Mat)PetscToPointer((J) ));
 }
-void PETSC_STDCALL   matmffdsetbase_(Mat J,Vec U,Vec F, int *__ierr ){
+void PETSC_STDCALL  matmffdsetbase_(Mat J,Vec U,Vec F, int *__ierr ){
 *__ierr = MatMFFDSetBase(
 	(Mat)PetscToPointer((J) ),
 	(Vec)PetscToPointer((U) ),
 	(Vec)PetscToPointer((F) ));
 }
-void PETSC_STDCALL   matmffdcheckpositivity_(void* dummy,Vec U,Vec a,PetscScalar *h, int *__ierr ){
+void PETSC_STDCALL  matmffdcheckpositivity_(void* dummy,Vec U,Vec a,PetscScalar *h, int *__ierr ){
 *__ierr = MatMFFDCheckPositivity(dummy,
 	(Vec)PetscToPointer((U) ),
 	(Vec)PetscToPointer((a) ),h);

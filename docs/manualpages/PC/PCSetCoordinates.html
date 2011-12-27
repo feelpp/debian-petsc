@@ -9,8 +9,8 @@
 sets the coordinates of all the nodes on the local process 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCSetCoordinates(PC pc,PetscInt dim,PetscReal *coords)
+#include "petscksp.h" 
+PetscErrorCode  PCSetCoordinates(PC pc,PetscInt dim,PetscReal *coords)
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
@@ -36,8 +36,12 @@ should be ordered for nodes 0 to N-1 like so: [ 0.x, 0.y, 0.z, 1.x,
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PC/PCPROMETHEUS.html#PCPROMETHEUS">PCPROMETHEUS</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/impls/prometheus/petscprom.c.html#PCSetCoordinates">src/ksp/pc/impls/prometheus/petscprom.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/interface/precon.c.html#PCSetCoordinates">src/ksp/pc/interface/precon.c</A>
 <BR><A HREF="./index.html">Index of all PC routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex54.c.html">src/ksp/ksp/examples/tutorials/ex54.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex55.c.html">src/ksp/ksp/examples/tutorials/ex55.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
 </BODY></HTML>

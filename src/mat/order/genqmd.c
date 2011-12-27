@@ -1,8 +1,7 @@
-#define PETSCMAT_DLL
 
 /* genqmd.f -- translated by f2c (version 19931217).*/
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 /******************************************************************/
 /***********    GENQMD ..... QUOT MIN DEGREE ORDERING    **********/
@@ -53,9 +52,9 @@ PetscErrorCode SPARSEPACKgenqmd(PetscInt *neqns, PetscInt *xadj, PetscInt *adjnc
 
     /* Local variables */
     PetscInt ndeg, irch, node, nump1, j, inode;
-    EXTERN PetscErrorCode SPARSEPACKqmdqt(PetscInt*, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *);
+    extern PetscErrorCode SPARSEPACKqmdqt(PetscInt*, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *);
     PetscInt ip, np, mindeg, search;
-    EXTERN PetscErrorCode SPARSEPACKqmdrch(PetscInt*, PetscInt *, PetscInt *, 
+    extern PetscErrorCode SPARSEPACKqmdrch(PetscInt*, PetscInt *, PetscInt *, 
 	      PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *),
 	   SPARSEPACKqmdupd(PetscInt*, PetscInt *, PetscInt *, PetscInt *, PetscInt *, 
 	      PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *);

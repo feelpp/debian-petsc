@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* modpcf.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspfgmresmodifypcnochange_(KSP ksp,PetscInt *total_its,PetscInt *loc_its,PetscReal *res_norm,void* dummy, int *__ierr ){
+void PETSC_STDCALL  kspfgmresmodifypcnochange_(KSP ksp,PetscInt *total_its,PetscInt *loc_its,PetscReal *res_norm,void* dummy, int *__ierr ){
 *__ierr = KSPFGMRESModifyPCNoChange(
 	(KSP)PetscToPointer((ksp) ),*total_its,*loc_its,*res_norm,dummy);
 }
-void PETSC_STDCALL   kspfgmresmodifypcksp_(KSP ksp,PetscInt *total_its,PetscInt *loc_its,PetscReal *res_norm,void*dummy, int *__ierr ){
+void PETSC_STDCALL  kspfgmresmodifypcksp_(KSP ksp,PetscInt *total_its,PetscInt *loc_its,PetscReal *res_norm,void*dummy, int *__ierr ){
 *__ierr = KSPFGMRESModifyPCKSP(
 	(KSP)PetscToPointer((ksp) ),*total_its,*loc_its,*res_norm,dummy);
 }

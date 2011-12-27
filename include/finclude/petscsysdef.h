@@ -24,11 +24,11 @@
 #if defined(PETSC_USE_FORTRANKIND)
 #define integer8 integer(kind=selected_int_kind(10))
 #define integer4 integer(kind=selected_int_kind(5))
-#define PetscTruth logical(kind=4)
+#define PetscBool  logical(kind=4)
 #else
 #define integer8 integer*8
 #define integer4 integer*4
-#define PetscTruth logical*4
+#define PetscBool  logical*4
 #endif
 
 #if (PETSC_SIZEOF_VOID_P == 8)
@@ -59,23 +59,27 @@
 !
 #if defined(PETSC_HAVE_MPIUNI)
 #define MPI_Comm PetscFortranInt
+#define MPI_Group PetscFortranInt
 #define PetscMPIInt PetscFortranInt
 #else
 #define MPI_Comm integer
+#define MPI_Group integer
 #define PetscMPIInt integer
 #endif
 !
 #define PetscEnum PetscFortranInt
 #define PetscErrorCode PetscFortranInt
-#define PetscCookie PetscFortranInt
+#define PetscClassId PetscFortranInt
 #define PetscLogEvent PetscFortranInt
 #define PetscLogStage PetscFortranInt
 #define PetscVoid PetscFortranAddr
 !
 #if defined(PETSC_FORTRAN_PETSCTRUTH_INT)
-#undef PetscTruth
-#define PetscTruth PetscEnum
+#undef PetscBool 
+#define PetscBool  PetscEnum
 #endif
+!
+#define PetscCopyMode PetscEnum
 !
 #define PetscDataType PetscEnum
 #define PetscFPTrap PetscEnum
@@ -83,8 +87,8 @@
 #if defined (PETSC_USE_FORTRANKIND)
 #define PetscFortranFloat real(kind=selected_real_kind(5))
 #define PetscFortranDouble real(kind=selected_real_kind(10))
-#define PetscFortranLongDouble real(kind=selected_real_kind(16))
-#if defined(PETSC_USE_SCALAR_SINGLE)
+#define PetscFortranLongDouble real(kind=selected_real_kind(19))
+#if defined(PETSC_USE_REAL_SINGLE)
 #define PetscFortranComplex complex(kind=selected_real_kind(5))
 #else
 #define PetscFortranComplex complex(kind=selected_real_kind(10))
@@ -94,7 +98,7 @@
 #define PetscFortranFloat real*4
 #define PetscFortranDouble real*8
 #define PetscFortranLongDouble real*16
-#if defined(PETSC_USE_SCALAR_SINGLE)
+#if defined(PETSC_USE_REAL_SINGLE)
 #define PetscFortranComplex complex*8
 #else
 #define PetscFortranComplex complex*16
@@ -105,13 +109,20 @@
 #if defined(PETSC_USE_COMPLEX)
 #define PETSC_SCALAR PETSC_COMPLEX
 #else
-#if defined(PETSC_USE_SCALAR_SINGLE)
+#if defined(PETSC_USE_REAL_SINGLE)
 #define PETSC_SCALAR PETSC_FLOAT
-#elif defined(PETSC_USE_SCALAR_LONG_DOUBLE)
+#elif defined(PETSC_USE_REAL_LONG_DOUBLE) || defined(PETSC_USE_REAL___FLOAT128)
 #define PETSC_SCALAR PETSC_LONG_DOUBLE
-#else
+#elif defined(PETSC_USE_REAL_DOUBLE)
 #define PETSC_SCALAR PETSC_DOUBLE
-#endif     
+#endif
+#endif
+#if defined(PETSC_USE_REAL_SINGLE)
+#define  PETSC_REAL  PETSC_FLOAT
+#elif defined(PETSC_USE_REAL_LONG_DOUBLE)
+#define  PETSC_REAL  PETSC_LONG_DOUBLE
+#else
+#define  PETSC_REAL  PETSC_DOUBLE
 #endif
 !
 !     Macro for templating between real and complex
@@ -131,11 +142,11 @@
 #define PetscImaginaryPart(a) daimg(a)
 #endif
 #else
-#if defined (PETSC_USE_SCALAR_SINGLE)
+#if defined (PETSC_USE_REAL_SINGLE)
 #define PetscScalar PetscFortranFloat
-#elif defined(PETSC_USE_SCALAR_LONG_DOUBLE)
+#elif defined(PETSC_USE_REAL_LONG_DOUBLE) || defined(PETSC_USE_REAL___FLOAT128)
 #define PetscScalar PetscFortranLongDouble
-#else
+#elif defined(PETSC_USE_REAL_DOUBLE)
 #define PetscScalar PetscFortranDouble
 #endif
 #define PetscRealPart(a) a
@@ -143,11 +154,11 @@
 #define PetscImaginaryPart(a) a
 #endif
 
-#if defined (PETSC_USE_SCALAR_SINGLE)
+#if defined (PETSC_USE_REAL_SINGLE)
 #define PetscReal PetscFortranFloat
-#elif defined(PETSC_USE_SCALAR_LONG_DOUBLE)
+#elif defined(PETSC_USE_REAL_LONG_DOUBLE) || defined(PETSC_USE_REAL___FLOAT128)
 #define PetscReal PetscFortranLongDouble
-#else
+#elif defined(PETSC_USE_REAL_DOUBLE)
 #define PetscReal PetscFortranDouble
 #endif
 
@@ -155,13 +166,7 @@
 !    Allows the matrix Fortran Kernels to work with single precision
 !    matrix data structures
 !
-#if defined(PETSC_USE_COMPLEX)
 #define MatScalar PetscScalar 
-#elif defined(PETSC_USE_SCALAR_MAT_SINGLE)
-#define MatScalar real*4
-#else
-#define MatScalar PetscScalar
-#endif
 !
 !     PetscLogDouble variables are used to contain double precision numbers
 !     that are not used in the numerical computations, but rather in logging,
@@ -173,11 +178,11 @@
 !     Macros for error checking
 !
 #if defined(PETSC_USE_ERRORCHECKING)
-#define SETERRQ(n,s,ierr) call MPI_Abort(PETSC_COMM_WORLD,n,ierr)
+#define SETERRQ(c,n,s,ierr) call MPI_Abort(PETSC_COMM_WORLD,n,ierr)
 #define CHKERRQ(n) if (n .ne. 0) call MPI_Abort(PETSC_COMM_WORLD,n,n)
 #define CHKMEMQ call chkmemfortran(__LINE__,__FILE__,ierr)
 #else
-#define SETERRQ(n,s,ierr)
+#define SETERRQ(c,n,s,ierr)
 #define CHKERRQ(n)
 #define CHKMEMQ
 #endif

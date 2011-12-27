@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:50+00:00">
+<meta name="date" content="2011-10-29T18:56:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -28,16 +28,16 @@
 <a name="line18"> 18: </a>!   see the manual page <A href="../../../../../docs/manualpages/Sys/UsingFortran.html#UsingFortran">UsingFortran</A>
 <a name="line19"> 19: </a>!
 <a name="line20"> 20: </a><strong><font color="#228B22">#define PETSC_USE_FORTRAN_MODULES</font></strong>
-<a name="line21"> 21: </a> #include <A href="../../../../../include/finclude/petscsysdef.h.html">finclude/petscsysdef.h</A>
-<a name="line22"> 22: </a> #include <A href="../../../../../include/finclude/petscvecdef.h.html">finclude/petscvecdef.h</A>
+<a name="line21"> 21: </a><font color="#A020F0">#include &lt;finclude/petscsysdef.h&gt;</font>
+<a name="line22"> 22: </a><font color="#A020F0">#include &lt;finclude/petscvecdef.h&gt;</font>
 <a name="line23"> 23: </a><font color="#A020F0">#if defined(PETSC_USE_FORTRAN_MODULES)</font>
 <a name="line24"> 24: </a>      use petscvec
 <a name="line25"> 25: </a><font color="#A020F0">#endif</font>
 <a name="line26"> 26: </a>      implicit none
 <a name="line27"> 27: </a><font color="#A020F0">#if !defined(PETSC_USE_FORTRAN_MODULES)</font>
-<a name="line28"> 28: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line29"> 29: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line30"> 30: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscvec.h90"</font><font color="#A020F0"></font>
+<a name="line28"> 28: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line29"> 29: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line30"> 30: </a><font color="#A020F0">#include &lt;finclude/petscvec.h90&gt;</font>
 
 <a name="line32"> 32: </a><font color="#A020F0">#endif</font>
 <a name="line33"> 33: </a>!
@@ -220,28 +220,17 @@
 <a name="line210">210: </a> 220  format (<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecMAXPY.html#VecMAXPY">VecMAXPY</A> "</font>,3(1pe8.2))
 
 
-<a name="line213">213: </a>!  Test whether vector has been corrupted (just to demonstrate this
-<a name="line214">214: </a>!  routine) not needed in most application codes.
+<a name="line213">213: </a>!  Free work space.  All PETSc objects should be destroyed when they
+<a name="line214">214: </a>!  are no longer needed.
 
-<a name="line216">216: </a>      call <A href="../../../../../docs/manualpages/Vec/VecValid.html#VecValid">VecValid</A>(x,flg,ierr)
-<a name="line217">217: </a>      <font color="#4169E1">if</font> (.not. flg) then
-<a name="line218">218: </a>         <font color="#4169E1">if</font> (rank .eq. 0) then
-<a name="line219">219: </a>            write(6,*) 'Corrupted vector!'
-<a name="line220">220: </a>         endif
-<a name="line221">221: </a>         stop
-<a name="line222">222: </a>      endif
+<a name="line216">216: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x,ierr)
+<a name="line217">217: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y,ierr)
+<a name="line218">218: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(w,ierr)
+<a name="line219">219: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroyVecsF90.html#VecDestroyVecsF90">VecDestroyVecsF90</A>(ithree,z,ierr)
+<a name="line220">220: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
 
-<a name="line224">224: </a>!  Free work space.  All PETSc objects should be destroyed when they
-<a name="line225">225: </a>!  are no longer needed.
-
-<a name="line227">227: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x,ierr)
-<a name="line228">228: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y,ierr)
-<a name="line229">229: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(w,ierr)
-<a name="line230">230: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroyVecsF90.html#VecDestroyVecsF90">VecDestroyVecsF90</A>(z,ithree,ierr)
-<a name="line231">231: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-
-<a name="line233">233: </a>      end
-<a name="line234">234: </a>
+<a name="line222">222: </a>      end
+<a name="line223">223: </a>
 </pre>
 </body>
 

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* iterativ.c */
 /* Fortran interface file */
 
@@ -52,31 +53,77 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspgetconvergedreason_ kspgetconvergedreason
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspsetdm_ KSPSETDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspsetdm_ kspsetdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspsetdmactive_ KSPSETDMACTIVE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspsetdmactive_ kspsetdmactive
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspgetdm_ KSPGETDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspgetdm_ kspgetdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspsetapplicationcontext_ KSPSETAPPLICATIONCONTEXT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspsetapplicationcontext_ kspsetapplicationcontext
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspgetapplicationcontext_ KSPGETAPPLICATIONCONTEXT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspgetapplicationcontext_ kspgetapplicationcontext
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspgetresidualnorm_(KSP ksp,PetscReal *rnorm, int *__ierr ){
+void PETSC_STDCALL  kspgetresidualnorm_(KSP ksp,PetscReal *rnorm, int *__ierr ){
 *__ierr = KSPGetResidualNorm(
 	(KSP)PetscToPointer((ksp) ),rnorm);
 }
-void PETSC_STDCALL   kspgetiterationnumber_(KSP ksp,PetscInt *its, int *__ierr ){
+void PETSC_STDCALL  kspgetiterationnumber_(KSP ksp,PetscInt *its, int *__ierr ){
 *__ierr = KSPGetIterationNumber(
 	(KSP)PetscToPointer((ksp) ),its);
 }
-void PETSC_STDCALL   kspdefaultconvergedsetuirnorm_(KSP ksp, int *__ierr ){
+void PETSC_STDCALL  kspdefaultconvergedsetuirnorm_(KSP ksp, int *__ierr ){
 *__ierr = KSPDefaultConvergedSetUIRNorm(
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL   kspdefaultconvergedsetumirnorm_(KSP ksp, int *__ierr ){
+void PETSC_STDCALL  kspdefaultconvergedsetumirnorm_(KSP ksp, int *__ierr ){
 *__ierr = KSPDefaultConvergedSetUMIRNorm(
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL   kspgetconvergedreason_(KSP ksp,KSPConvergedReason *reason, int *__ierr ){
+void PETSC_STDCALL  kspgetconvergedreason_(KSP ksp,KSPConvergedReason *reason, int *__ierr ){
 *__ierr = KSPGetConvergedReason(
 	(KSP)PetscToPointer((ksp) ),reason);
+}
+void PETSC_STDCALL  kspsetdm_(KSP ksp,DM dm, int *__ierr ){
+*__ierr = KSPSetDM(
+	(KSP)PetscToPointer((ksp) ),
+	(DM)PetscToPointer((dm) ));
+}
+void PETSC_STDCALL  kspsetdmactive_(KSP ksp,PetscBool  *flg, int *__ierr ){
+*__ierr = KSPSetDMActive(
+	(KSP)PetscToPointer((ksp) ),*flg);
+}
+void PETSC_STDCALL  kspgetdm_(KSP ksp,DM *dm, int *__ierr ){
+*__ierr = KSPGetDM(
+	(KSP)PetscToPointer((ksp) ),dm);
+}
+void PETSC_STDCALL  kspsetapplicationcontext_(KSP ksp,void*usrP, int *__ierr ){
+*__ierr = KSPSetApplicationContext(
+	(KSP)PetscToPointer((ksp) ),usrP);
+}
+void PETSC_STDCALL  kspgetapplicationcontext_(KSP ksp,void*usrP, int *__ierr ){
+*__ierr = KSPGetApplicationContext(
+	(KSP)PetscToPointer((ksp) ),usrP);
 }
 #if defined(__cplusplus)
 }

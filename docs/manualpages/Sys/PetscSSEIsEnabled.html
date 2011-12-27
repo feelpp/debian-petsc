@@ -10,11 +10,11 @@ Determines if Intel Streaming SIMD Extensions (SSE) to the x86 instruction  set 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-static PetscTruth petsc_sse_local_is_untested  = PETSC_TRUE;
-static PetscTruth petsc_sse_enabled_local      = PETSC_FALSE;
-static PetscTruth petsc_sse_global_is_untested = PETSC_TRUE;
-static PetscTruth petsc_sse_enabled_global     = PETSC_FALSE;
-PetscErrorCode PETSC_DLLEXPORT PetscSSEIsEnabled(MPI_Comm comm,PetscTruth *lflag,PetscTruth *gflag)</PRE>
+static PetscBool  petsc_sse_local_is_untested  = PETSC_TRUE;
+static PetscBool  petsc_sse_enabled_local      = PETSC_FALSE;
+static PetscBool  petsc_sse_global_is_untested = PETSC_TRUE;
+static PetscBool  petsc_sse_enabled_global     = PETSC_FALSE;
+PetscErrorCode  PetscSSEIsEnabled(MPI_Comm comm,PetscBool  *lflag,PetscBool  *gflag)</PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>

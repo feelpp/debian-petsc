@@ -10,9 +10,9 @@ Tells the iterative solver that the  initial guess is nonzero; otherwise <A HREF
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetInitialGuessNonzero(KSP ksp,PetscTruth flg)
+PetscErrorCode  KSPSetInitialGuessNonzero(KSP ksp,PetscBool  flg)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -43,9 +43,10 @@ If this is not called the X vector is zeroed in the call to <A HREF="../KSP/KSPS
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex51.c.html">src/ksp/ksp/examples/tutorials/ex51.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex6f.F.html">src/ksp/ksp/examples/tutorials/ex6f.F.html</A><BR>
 </BODY></HTML>

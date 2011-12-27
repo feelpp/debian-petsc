@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* pf.c */
 /* Fortran interface file */
 
@@ -53,22 +54,22 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pfapplyvec_(PF pf,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  pfapplyvec_(PF pf,Vec x,Vec y, int *__ierr ){
 *__ierr = PFApplyVec(
 	(PF)PetscToPointer((pf) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   pfapply_(PF pf,PetscInt *n,PetscScalar* x,PetscScalar* y, int *__ierr ){
+void PETSC_STDCALL  pfapply_(PF pf,PetscInt *n, PetscScalar* x,PetscScalar* y, int *__ierr ){
 *__ierr = PFApply(
 	(PF)PetscToPointer((pf) ),*n,x,y);
 }
-void PETSC_STDCALL   pfview_(PF pf,PetscViewer viewer, int *__ierr ){
+void PETSC_STDCALL  pfview_(PF pf,PetscViewer viewer, int *__ierr ){
 *__ierr = PFView(
 	(PF)PetscToPointer((pf) ),
 	(PetscViewer)PetscToPointer((viewer) ));
 }
-void PETSC_STDCALL   pfsetfromoptions_(PF pf, int *__ierr ){
+void PETSC_STDCALL  pfsetfromoptions_(PF pf, int *__ierr ){
 *__ierr = PFSetFromOptions(
 	(PF)PetscToPointer((pf) ));
 }

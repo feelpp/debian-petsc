@@ -10,7 +10,7 @@ Gets the value of the quadratic function, evaluated at the new iterate:
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGGetQuadratic(KSP ksp,PetscReal *quadratic)
+PetscErrorCode  KSPQCGGetQuadratic(KSP ksp,PetscReal *quadratic)
 </PRE>
 q(s) = g^T * s + 0.5 * s^T * H * s
 <P>

@@ -1,11 +1,11 @@
 
-#requirespackage   'PETSC_HAVE_FORTRAN'
+#requiresdefine   'PETSC_HAVE_FORTRAN'
 ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = randomf.c
-OBJSC    = randomf.o
+SOURCEC  = randomcf.c randomf.c
+OBJSC    = randomcf.o randomf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

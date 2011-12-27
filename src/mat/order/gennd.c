@@ -1,8 +1,7 @@
-#define PETSCMAT_DLL
 
 /* gennd.f -- translated by f2c (version 19931217).*/
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "SPARSEPACKrevrse" 
@@ -64,7 +63,7 @@ PetscErrorCode SPARSEPACKgennd(PetscInt *neqns,PetscInt *xadj,PetscInt *adjncy,P
 
     /* Local variables */
     PetscInt nsep,root,i;
-    EXTERN PetscErrorCode SPARSEPACKfndsep(PetscInt*,PetscInt *,PetscInt *,PetscInt *,PetscInt *,PetscInt *,PetscInt *,PetscInt *);
+    extern PetscErrorCode SPARSEPACKfndsep(PetscInt*,PetscInt *,PetscInt *,PetscInt *,PetscInt *,PetscInt *,PetscInt *,PetscInt *);
     PetscInt num;
 
     PetscFunctionBegin;

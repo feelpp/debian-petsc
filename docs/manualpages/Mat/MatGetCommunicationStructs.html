@@ -11,9 +11,9 @@ Provides access to the communication structures used in matrix-vector multiplica
 <PRE>
 #include "petscmat.h" 
 #if defined (PETSC_USE_CTABLE)
-PetscErrorCode PETSCMAT_DLLEXPORT MatGetCommunicationStructs(Mat A, Vec *lvec, PetscTable *colmap, VecScatter *multScatter)
+PetscErrorCode  MatGetCommunicationStructs(Mat A, Vec *lvec, PetscTable *colmap, VecScatter *multScatter)
 #else
-PetscErrorCode PETSCMAT_DLLEXPORT MatGetCommunicationStructs(Mat A, Vec *lvec, PetscInt *colmap[], VecScatter *multScatter)
+PetscErrorCode  MatGetCommunicationStructs(Mat A, Vec *lvec, PetscInt *colmap[], VecScatter *multScatter)
 #endif
 </PRE>
 Not Collective

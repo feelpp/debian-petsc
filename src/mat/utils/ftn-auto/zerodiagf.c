@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* zerodiag.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matreorderfornonzerodiagonal_(Mat mat,PetscReal *abstol,IS ris,IS cis, int *__ierr ){
+void PETSC_STDCALL  matreorderfornonzerodiagonal_(Mat mat,PetscReal *abstol,IS ris,IS cis, int *__ierr ){
 *__ierr = MatReorderForNonzeroDiagonal(
 	(Mat)PetscToPointer((mat) ),*abstol,
 	(IS)PetscToPointer((ris) ),

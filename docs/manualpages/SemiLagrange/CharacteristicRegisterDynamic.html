@@ -9,7 +9,7 @@
 Adds a solver to the method of characteristics package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode CharacteristicRegisterDynamic(char *name_solver,char *path,char *name_create,PetscErrorCode (*routine_create)(Characteristic))
+PetscErrorCode CharacteristicRegisterDynamic(const char *name_solver,const char *path,const char *name_create,PetscErrorCode (*routine_create)(Characteristic))
 </PRE>
 Not Collective
 <P>
@@ -62,7 +62,7 @@ If your function is not being put into a shared library then use <A HREF="../Sem
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/semiLagrange/../../include/characteristic.h.html#CharacteristicRegisterDynamic">src/semiLagrange/../../include/characteristic.h</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/characteristic/../../../include/petsccharacteristic.h.html#CharacteristicRegisterDynamic">src/ts/characteristic/../../../include/petsccharacteristic.h</A>
 <BR><A HREF="./index.html">Index of all SemiLagrange routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

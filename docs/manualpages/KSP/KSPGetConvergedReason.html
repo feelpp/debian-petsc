@@ -10,7 +10,7 @@ Gets the reason the <A HREF="../KSP/KSP.html#KSP">KSP</A> iteration was stopped.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetConvergedReason(KSP ksp,KSPConvergedReason *reason)
+PetscErrorCode  KSPGetConvergedReason(KSP ksp,KSPConvergedReason *reason)
 </PRE>
 Not Collective
 <P>
@@ -60,6 +60,5 @@ Notes: Can only be called after the call the <A HREF="../KSP/KSPSolve.html#KSPSo
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 </BODY></HTML>

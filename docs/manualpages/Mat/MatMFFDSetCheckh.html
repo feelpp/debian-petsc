@@ -10,13 +10,13 @@ Sets a function that checks the computed h and adjusts it to satisfy some criter
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"   
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDSetCheckh(Mat J,PetscErrorCode (*fun)(void*,Vec,Vec,PetscScalar*),void* ctx)
+PetscErrorCode  MatMFFDSetCheckh(Mat J,PetscErrorCode (*fun)(void*,Vec,Vec,PetscScalar*),void* ctx)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>J </B></TD><TD>- the MatMFFD matrix
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>J </B></TD><TD>- the <A HREF="../Mat/MatMFFD.html#MatMFFD">MatMFFD</A> matrix
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fun </B></TD><TD>- the function that checks h
 </TD></TR>

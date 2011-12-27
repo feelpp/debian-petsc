@@ -10,7 +10,7 @@ Loads a bag of values from a binary file
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscbag.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscBagLoad(PetscViewer view,PetscBag *bag)
+PetscErrorCode  PetscBagLoad(PetscViewer view,PetscBag *bag)
 </PRE>
 Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 <P>
@@ -25,8 +25,8 @@ Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- PetscBag, <A HREF="../Sys/PetscBagSetName.html#PetscBagSetName">PetscBagSetName</A>(), <A HREF="../Sys/PetscBagDestroy.html#PetscBagDestroy">PetscBagDestroy</A>(), <A HREF="../Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(), <A HREF="../Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>()
-<BR><A HREF="../Sys/PetscBagRegisterReal.html#PetscBagRegisterReal">PetscBagRegisterReal</A>(), <A HREF="../Sys/PetscBagRegisterInt.html#PetscBagRegisterInt">PetscBagRegisterInt</A>(), <A HREF="../Sys/PetscBagRegisterTruth.html#PetscBagRegisterTruth">PetscBagRegisterTruth</A>(), <A HREF="../Sys/PetscBagRegisterScalar.html#PetscBagRegisterScalar">PetscBagRegisterScalar</A>()
+ <A HREF="../Sys/PetscBag.html#PetscBag">PetscBag</A>, <A HREF="../Sys/PetscBagSetName.html#PetscBagSetName">PetscBagSetName</A>(), <A HREF="../Sys/PetscBagDestroy.html#PetscBagDestroy">PetscBagDestroy</A>(), <A HREF="../Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(), <A HREF="../Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>()
+<BR><A HREF="../Sys/PetscBagRegisterReal.html#PetscBagRegisterReal">PetscBagRegisterReal</A>(), <A HREF="../Sys/PetscBagRegisterInt.html#PetscBagRegisterInt">PetscBagRegisterInt</A>(), <A HREF="../Sys/PetscBagRegisterBool.html#PetscBagRegisterBool">PetscBagRegisterBool</A>(), <A HREF="../Sys/PetscBagRegisterScalar.html#PetscBagRegisterScalar">PetscBagRegisterScalar</A>()
 <A HREF="../Sys/PetscBagSetFromOptions.html#PetscBagSetFromOptions">PetscBagSetFromOptions</A>(), <A HREF="../Sys/PetscBagCreate.html#PetscBagCreate">PetscBagCreate</A>(), <A HREF="../Sys/PetscBagGetName.html#PetscBagGetName">PetscBagGetName</A>(), <A HREF="../Sys/PetscBagRegisterEnum.html#PetscBagRegisterEnum">PetscBagRegisterEnum</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner

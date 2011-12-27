@@ -1,12 +1,11 @@
-#define PETSCKSP_DLL
 
 /*
     The PC (preconditioner) interface routines, callable by users.
 */
-#include "private/pcimpl.h"            /*I "petscksp.h" I*/
+#include <private/pcimpl.h>            /*I "petscksp.h" I*/
 
 /* Logging support */
-PetscCookie    PC_COOKIE;
+PetscClassId   PC_CLASSID;
 PetscLogEvent  PC_SetUp, PC_SetUpOnBlocks, PC_Apply, PC_ApplyCoarse, PC_ApplyMultiple, PC_ApplySymmetricLeft;
 PetscLogEvent  PC_ApplySymmetricRight, PC_ModifySubMatrices, PC_ApplyOnBlocks, PC_ApplyTransposeOnBlocks;
 
@@ -16,12 +15,12 @@ PetscErrorCode PCGetDefaultType_Private(PC pc,const char* type[])
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
-  PetscTruth     flg1,flg2,set,flg3;
+  PetscBool      flg1,flg2,set,flg3;
 
   PetscFunctionBegin;
   ierr = MPI_Comm_size(((PetscObject)pc)->comm,&size);CHKERRQ(ierr);
   if (pc->pmat) {
-    PetscErrorCode (*f)(Mat,PetscTruth*,MatReuse,Mat*);
+    PetscErrorCode (*f)(Mat,MatReuse,Mat*);
     ierr = PetscObjectQueryFunction((PetscObject)pc->pmat,"MatGetDiagonalBlock_C",(void (**)(void))&f);CHKERRQ(ierr);
     if (size == 1) {
       ierr = MatGetFactorAvailable(pc->pmat,"petsc",MAT_FACTOR_ICC,&flg1);CHKERRQ(ierr);
@@ -33,7 +32,7 @@ PetscErrorCode PCGetDefaultType_Private(PC pc,const char* type[])
 	*type = PCILU;
       } else if (f) { /* likely is a parallel matrix run on one processor */
 	*type = PCBJACOBI;
-      } else {  
+      } else {
 	*type = PCNONE;
       }
     } else {
@@ -54,6 +53,41 @@ PetscErrorCode PCGetDefaultType_Private(PC pc,const char* type[])
 }
 
 #undef __FUNCT__  
+#define __FUNCT__ "PCReset"
+/*@
+   PCReset - Resets a PC context to the pcsetupcalled = 0 state and removes any allocated Vecs and Mats
+
+   Collective on PC
+
+   Input Parameter:
+.  pc - the preconditioner context
+
+   Level: developer
+
+   Notes: This allows a PC to be reused for a different sized linear system but using the same options that have been previously set in the PC
+
+.keywords: PC, destroy
+
+.seealso: PCCreate(), PCSetUp()
+@*/
+PetscErrorCode  PCReset(PC pc)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (pc->ops->reset) {
+    ierr = (*pc->ops->reset)(pc);
+  }
+  ierr = VecDestroy(&pc->diagonalscaleright);CHKERRQ(ierr);
+  ierr = VecDestroy(&pc->diagonalscaleleft);CHKERRQ(ierr);
+  ierr = MatDestroy(&pc->pmat);CHKERRQ(ierr);
+  ierr = MatDestroy(&pc->mat);CHKERRQ(ierr);
+  pc->setupcalled = 0;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
 #define __FUNCT__ "PCDestroy"
 /*@
    PCDestroy - Destroys PC context that was created with PCCreate().
@@ -69,35 +103,32 @@ PetscErrorCode PCGetDefaultType_Private(PC pc,const char* type[])
 
 .seealso: PCCreate(), PCSetUp()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCDestroy(PC pc)
+PetscErrorCode  PCDestroy(PC *pc)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  if (--((PetscObject)pc)->refct > 0) PetscFunctionReturn(0);
+  if (!*pc) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific((*pc),PC_CLASSID,1);
+  if (--((PetscObject)(*pc))->refct > 0) {*pc = 0; PetscFunctionReturn(0);}
+
+  ierr = PCReset(*pc);CHKERRQ(ierr);
 
   /* if memory was published with AMS then destroy it */
-  ierr = PetscObjectDepublish(pc);CHKERRQ(ierr);
-
-  if (pc->ops->destroy)       {ierr =  (*pc->ops->destroy)(pc);CHKERRQ(ierr);}
-  if (pc->diagonalscaleright) {ierr = VecDestroy(pc->diagonalscaleright);CHKERRQ(ierr);}
-  if (pc->diagonalscaleleft)  {ierr = VecDestroy(pc->diagonalscaleleft);CHKERRQ(ierr);}
-
-  if (pc->pmat) {ierr = MatDestroy(pc->pmat);CHKERRQ(ierr);}
-  if (pc->mat) {ierr = MatDestroy(pc->mat);CHKERRQ(ierr);}
-
+  ierr = PetscObjectDepublish((*pc));CHKERRQ(ierr);
+  if ((*pc)->ops->destroy) {ierr = (*(*pc)->ops->destroy)((*pc));CHKERRQ(ierr);}
+  ierr = DMDestroy(&(*pc)->dm);CHKERRQ(ierr);
   ierr = PetscHeaderDestroy(pc);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "PCDiagonalScale"
+#define __FUNCT__ "PCGetDiagonalScale"
 /*@C
-   PCDiagonalScale - Indicates if the preconditioner applies an additional left and right
+   PCGetDiagonalScale - Indicates if the preconditioner applies an additional left and right
       scaling as needed by certain time-stepping codes.
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameter:
 .  pc - the preconditioner context
@@ -113,24 +144,24 @@ $           D A M D^{-1} z = D b for right preconditioning
 
 .keywords: PC
 
-.seealso: PCCreate(), PCSetUp(), PCDiagonalScaleLeft(), PCDiagonalScaleRight(), PCDiagonalScaleSet()
+.seealso: PCCreate(), PCSetUp(), PCDiagonalScaleLeft(), PCDiagonalScaleRight(), PCSetDiagonalScale()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScale(PC pc,PetscTruth *flag)
+PetscErrorCode  PCGetDiagonalScale(PC pc,PetscBool  *flag)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   PetscValidPointer(flag,2);
   *flag = pc->diagonalscale;
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "PCDiagonalScaleSet"
+#define __FUNCT__ "PCSetDiagonalScale"
 /*@
-   PCDiagonalScaleSet - Indicates the left scaling to use to apply an additional left and right
+   PCSetDiagonalScale - Indicates the left scaling to use to apply an additional left and right
       scaling as needed by certain time-stepping codes.
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 +  pc - the preconditioner context
@@ -146,24 +177,20 @@ $           D A M D^{-1} z = D b for right preconditioning
 
 .keywords: PC
 
-.seealso: PCCreate(), PCSetUp(), PCDiagonalScaleLeft(), PCDiagonalScaleRight(), PCDiagonalScale()
+.seealso: PCCreate(), PCSetUp(), PCDiagonalScaleLeft(), PCDiagonalScaleRight(), PCGetDiagonalScale()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleSet(PC pc,Vec s)
+PetscErrorCode  PCSetDiagonalScale(PC pc,Vec s)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(s,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(s,VEC_CLASSID,2);
   pc->diagonalscale     = PETSC_TRUE;
   ierr = PetscObjectReference((PetscObject)s);CHKERRQ(ierr);
-  if (pc->diagonalscaleleft) {
-    ierr = VecDestroy(pc->diagonalscaleleft);CHKERRQ(ierr);
-  }
+  ierr = VecDestroy(&pc->diagonalscaleleft);CHKERRQ(ierr);
   pc->diagonalscaleleft = s;
-  if (!pc->diagonalscaleright) {
-    ierr = VecDuplicate(s,&pc->diagonalscaleright);CHKERRQ(ierr);
-  }
+  ierr = VecDuplicate(s,&pc->diagonalscaleright);CHKERRQ(ierr);
   ierr = VecCopy(s,pc->diagonalscaleright);CHKERRQ(ierr);
   ierr = VecReciprocal(pc->diagonalscaleright);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -172,10 +199,9 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleSet(PC pc,Vec s)
 #undef __FUNCT__  
 #define __FUNCT__ "PCDiagonalScaleLeft"
 /*@
-   PCDiagonalScaleLeft - Indicates the left scaling to use to apply an additional left and right
-      scaling as needed by certain time-stepping codes.
+   PCDiagonalScaleLeft - Scales a vector by the left scaling as needed by certain time-stepping codes.
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 +  pc - the preconditioner context
@@ -196,14 +222,14 @@ $           D A M D^{-1} z = D b for right preconditioning
 
 .seealso: PCCreate(), PCSetUp(), PCDiagonalScaleSet(), PCDiagonalScaleRight(), PCDiagonalScale()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleLeft(PC pc,Vec in,Vec out)
+PetscErrorCode  PCDiagonalScaleLeft(PC pc,Vec in,Vec out)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(in,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(out,VEC_COOKIE,3);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(in,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(out,VEC_CLASSID,3);
   if (pc->diagonalscale) {
     ierr = VecPointwiseMult(out,pc->diagonalscaleleft,in);CHKERRQ(ierr);
   } else if (in != out) {
@@ -217,7 +243,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleLeft(PC pc,Vec in,Vec out)
 /*@
    PCDiagonalScaleRight - Scales a vector by the right scaling as needed by certain time-stepping codes.
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 +  pc - the preconditioner context
@@ -238,14 +264,14 @@ $           D A M D^{-1} z = D b for right preconditioning
 
 .seealso: PCCreate(), PCSetUp(), PCDiagonalScaleLeft(), PCDiagonalScaleSet(), PCDiagonalScale()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleRight(PC pc,Vec in,Vec out)
+PetscErrorCode  PCDiagonalScaleRight(PC pc,Vec in,Vec out)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(in,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(out,VEC_COOKIE,3);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(in,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(out,VEC_CLASSID,3);
   if (pc->diagonalscale) {
     ierr = VecPointwiseMult(out,pc->diagonalscaleright,in);CHKERRQ(ierr);
   } else if (in != out) {
@@ -287,19 +313,19 @@ static PetscErrorCode PCPublish_Petsc(PetscObject obj)
 
 .seealso: PCSetUp(), PCApply(), PCDestroy()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCCreate(MPI_Comm comm,PC *newpc)
+PetscErrorCode  PCCreate(MPI_Comm comm,PC *newpc)
 {
   PC             pc;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidPointer(newpc,1)
+  PetscValidPointer(newpc,1);
   *newpc = 0;
 #ifndef PETSC_USE_DYNAMIC_LIBRARIES
   ierr = PCInitializePackage(PETSC_NULL);CHKERRQ(ierr);
 #endif
 
-  ierr = PetscHeaderCreate(pc,_p_PC,struct _PCOps,PC_COOKIE,-1,"PC",comm,PCDestroy,PCView);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(pc,_p_PC,struct _PCOps,PC_CLASSID,-1,"PC","Preconditioner","PC",comm,PCDestroy,PCView);CHKERRQ(ierr);
 
   pc->mat                  = 0;
   pc->pmat                 = 0;
@@ -309,10 +335,10 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCCreate(MPI_Comm comm,PC *newpc)
   pc->diagonalscale        = PETSC_FALSE;
   pc->diagonalscaleleft    = 0;
   pc->diagonalscaleright   = 0;
+  pc->reuse                = 0;
 
   pc->modifysubmatrices   = 0;
   pc->modifysubmatricesP  = 0;
-  ierr = PetscPublishAll(pc);CHKERRQ(ierr);
   *newpc = pc;
   PetscFunctionReturn(0);
 
@@ -340,19 +366,19 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCCreate(MPI_Comm comm,PC *newpc)
 
 .seealso: PCApplyTranspose(), PCApplyBAorAB()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApply(PC pc,Vec x,Vec y)
+PetscErrorCode  PCApply(PC pc,Vec x,Vec y)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,3);
-  if (x == y) SETERRQ(PETSC_ERR_ARG_IDN,"x and y must be different vectors");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,3);
+  if (x == y) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_IDN,"x and y must be different vectors");
   if (pc->setupcalled < 2) {
     ierr = PCSetUp(pc);CHKERRQ(ierr);
   }
-  if (!pc->ops->apply) SETERRQ(PETSC_ERR_SUP,"PC does not have apply");
+  if (!pc->ops->apply) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"PC does not have apply");
   ierr = PetscLogEventBegin(PC_Apply,pc,x,y,0);CHKERRQ(ierr);
   ierr = (*pc->ops->apply)(pc,x,y);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(PC_Apply,pc,x,y,0);CHKERRQ(ierr);
@@ -382,19 +408,19 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApply(PC pc,Vec x,Vec y)
 
 .seealso: PCApply(), PCApplySymmetricRight()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplySymmetricLeft(PC pc,Vec x,Vec y)
+PetscErrorCode  PCApplySymmetricLeft(PC pc,Vec x,Vec y)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,3);
-  if (x == y) SETERRQ(PETSC_ERR_ARG_IDN,"x and y must be different vectors");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,3);
+  if (x == y) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_IDN,"x and y must be different vectors");
   if (pc->setupcalled < 2) {
     ierr = PCSetUp(pc);CHKERRQ(ierr);
   }
-  if (!pc->ops->applysymmetricleft) SETERRQ(PETSC_ERR_SUP,"PC does not have left symmetric apply");
+  if (!pc->ops->applysymmetricleft) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"PC does not have left symmetric apply");
   ierr = PetscLogEventBegin(PC_ApplySymmetricLeft,pc,x,y,0);CHKERRQ(ierr);
   ierr = (*pc->ops->applysymmetricleft)(pc,x,y);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(PC_ApplySymmetricLeft,pc,x,y,0);CHKERRQ(ierr);
@@ -424,19 +450,19 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplySymmetricLeft(PC pc,Vec x,Vec y)
 
 .seealso: PCApply(), PCApplySymmetricLeft()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplySymmetricRight(PC pc,Vec x,Vec y)
+PetscErrorCode  PCApplySymmetricRight(PC pc,Vec x,Vec y)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,3);
-  if (x == y) SETERRQ(PETSC_ERR_ARG_IDN,"x and y must be different vectors");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,3);
+  if (x == y) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_IDN,"x and y must be different vectors");
   if (pc->setupcalled < 2) {
     ierr = PCSetUp(pc);CHKERRQ(ierr);
   }
-  if (!pc->ops->applysymmetricright) SETERRQ(PETSC_ERR_SUP,"PC does not have left symmetric apply");
+  if (!pc->ops->applysymmetricright) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"PC does not have left symmetric apply");
   ierr = PetscLogEventBegin(PC_ApplySymmetricRight,pc,x,y,0);CHKERRQ(ierr);
   ierr = (*pc->ops->applysymmetricright)(pc,x,y);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(PC_ApplySymmetricRight,pc,x,y,0);CHKERRQ(ierr);
@@ -457,25 +483,29 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplySymmetricRight(PC pc,Vec x,Vec y)
    Output Parameter:
 .  y - output vector
 
+   Notes: For complex numbers this applies the non-Hermitian transpose.
+
+   Developer Notes: We need to implement a PCApplyHermitianTranspose()
+
    Level: developer
 
 .keywords: PC, apply, transpose
 
 .seealso: PCApply(), PCApplyBAorAB(), PCApplyBAorABTranspose(), PCApplyTransposeExists()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyTranspose(PC pc,Vec x,Vec y)
+PetscErrorCode  PCApplyTranspose(PC pc,Vec x,Vec y)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,3);
-  if (x == y) SETERRQ(PETSC_ERR_ARG_IDN,"x and y must be different vectors");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,3);
+  if (x == y) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_IDN,"x and y must be different vectors");
   if (pc->setupcalled < 2) {
     ierr = PCSetUp(pc);CHKERRQ(ierr);
   }
-  if (!pc->ops->applytranspose) SETERRQ(PETSC_ERR_SUP,"PC does not have apply transpose");
+  if (!pc->ops->applytranspose) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"PC does not have apply transpose");
   ierr = PetscLogEventBegin(PC_Apply,pc,x,y,0);CHKERRQ(ierr);
   ierr = (*pc->ops->applytranspose)(pc,x,y);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(PC_Apply,pc,x,y,0);CHKERRQ(ierr);
@@ -501,10 +531,10 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplyTranspose(PC pc,Vec x,Vec y)
 
 .seealso: PCApplyTranspose()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyTransposeExists(PC pc,PetscTruth *flg)
+PetscErrorCode  PCApplyTransposeExists(PC pc,PetscBool  *flg)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   PetscValidPointer(flg,2);
   if (pc->ops->applytranspose) *flg = PETSC_TRUE;
   else                         *flg = PETSC_FALSE;
@@ -529,26 +559,25 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplyTransposeExists(PC pc,PetscTruth *flg)
 
    Level: developer
 
+   Notes: If the PC has had PCSetDiagonalScale() set then D M A D^{-1} for left preconditioning or  D A M D^{-1} is actually applied. Note that the 
+   specific KSPSolve() method must also be written to handle the post-solve "correction" for the diagonal scaling.
+
 .keywords: PC, apply, operator
 
 .seealso: PCApply(), PCApplyTranspose(), PCApplyBAorABTranspose()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorAB(PC pc,PCSide side,Vec x,Vec y,Vec work)
+PetscErrorCode  PCApplyBAorAB(PC pc,PCSide side,Vec x,Vec y,Vec work)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,3);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,4);
-  PetscValidHeaderSpecific(work,VEC_COOKIE,5);
-  if (x == y) SETERRQ(PETSC_ERR_ARG_IDN,"x and y must be different vectors");
-  if (side != PC_LEFT && side != PC_SYMMETRIC && side != PC_RIGHT) {
-    SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Side must be right, left, or symmetric");
-  }
-  if (pc->diagonalscale && side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"Cannot include diagonal scaling with symmetric preconditioner application");
-  }
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,3);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,4);
+  PetscValidHeaderSpecific(work,VEC_CLASSID,5);
+  if (x == y) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_IDN,"x and y must be different vectors");
+  if (side != PC_LEFT && side != PC_SYMMETRIC && side != PC_RIGHT) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Side must be right, left, or symmetric");
+  if (pc->diagonalscale && side == PC_SYMMETRIC) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Cannot include diagonal scaling with symmetric preconditioner application");
 
   if (pc->setupcalled < 2) {
     ierr = PCSetUp(pc);CHKERRQ(ierr);
@@ -561,7 +590,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorAB(PC pc,PCSide side,Vec x,Vec y,Ve
       ierr = PCDiagonalScaleRight(pc,x,work2);CHKERRQ(ierr);
       ierr = (*pc->ops->applyBA)(pc,side,work2,y,work);CHKERRQ(ierr);
       ierr = PCDiagonalScaleLeft(pc,y,y);CHKERRQ(ierr);
-      ierr = VecDestroy(work2);CHKERRQ(ierr);
+      ierr = VecDestroy(&work2);CHKERRQ(ierr);
     } else if (side == PC_RIGHT) {
       ierr = PCDiagonalScaleRight(pc,x,y);CHKERRQ(ierr);
       ierr = PCApply(pc,y,work);CHKERRQ(ierr);
@@ -572,9 +601,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorAB(PC pc,PCSide side,Vec x,Vec y,Ve
       ierr = MatMult(pc->mat,y,work);CHKERRQ(ierr);
       ierr = PCApply(pc,work,y);CHKERRQ(ierr);
       ierr = PCDiagonalScaleLeft(pc,y,y);CHKERRQ(ierr);
-    } else if (side == PC_SYMMETRIC) {
-      SETERRQ(PETSC_ERR_SUP,"Cannot provide diagonal scaling with symmetric application of preconditioner");
-    }
+    } else if (side == PC_SYMMETRIC) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Cannot provide diagonal scaling with symmetric application of preconditioner");
   } else {
     if (pc->ops->applyBA) {
       ierr = (*pc->ops->applyBA)(pc,side,x,y,work);CHKERRQ(ierr);
@@ -623,23 +650,21 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorAB(PC pc,PCSide side,Vec x,Vec y,Ve
 
 .seealso: PCApply(), PCApplyTranspose(), PCApplyBAorAB()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorABTranspose(PC pc,PCSide side,Vec x,Vec y,Vec work)
+PetscErrorCode  PCApplyBAorABTranspose(PC pc,PCSide side,Vec x,Vec y,Vec work)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,3);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,4);
-  PetscValidHeaderSpecific(work,VEC_COOKIE,5);
-  if (x == y) SETERRQ(PETSC_ERR_ARG_IDN,"x and y must be different vectors");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,3);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,4);
+  PetscValidHeaderSpecific(work,VEC_CLASSID,5);
+  if (x == y) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_IDN,"x and y must be different vectors");
   if (pc->ops->applyBAtranspose) {
     ierr = (*pc->ops->applyBAtranspose)(pc,side,x,y,work);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
-  if (side != PC_LEFT && side != PC_RIGHT) {
-    SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Side must be right or left");
-  }
+  if (side != PC_LEFT && side != PC_RIGHT) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Side must be right or left");
 
   if (pc->setupcalled < 2) {
     ierr = PCSetUp(pc);CHKERRQ(ierr);
@@ -678,10 +703,10 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorABTranspose(PC pc,PCSide side,Vec x
 
 .seealso: PCApplyRichardson()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyRichardsonExists(PC pc,PetscTruth *exists)
+PetscErrorCode  PCApplyRichardsonExists(PC pc,PetscBool  *exists)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   PetscValidIntPointer(exists,2);
   if (pc->ops->applyrichardson) *exists = PETSC_TRUE; 
   else                          *exists = PETSC_FALSE;
@@ -725,20 +750,20 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplyRichardsonExists(PC pc,PetscTruth *exis
 
 .seealso: PCApplyRichardsonExists()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyRichardson(PC pc,Vec b,Vec y,Vec w,PetscReal rtol,PetscReal abstol, PetscReal dtol,PetscInt its,PetscTruth guesszero,PetscInt *outits,PCRichardsonConvergedReason *reason)
+PetscErrorCode  PCApplyRichardson(PC pc,Vec b,Vec y,Vec w,PetscReal rtol,PetscReal abstol, PetscReal dtol,PetscInt its,PetscBool  guesszero,PetscInt *outits,PCRichardsonConvergedReason *reason)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(b,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,3);
-  PetscValidHeaderSpecific(w,VEC_COOKIE,4);
-  if (b == y) SETERRQ(PETSC_ERR_ARG_IDN,"b and y must be different vectors");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(b,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,3);
+  PetscValidHeaderSpecific(w,VEC_CLASSID,4);
+  if (b == y) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_IDN,"b and y must be different vectors");
   if (pc->setupcalled < 2) {
     ierr = PCSetUp(pc);CHKERRQ(ierr);
   }
-  if (!pc->ops->applyrichardson) SETERRQ(PETSC_ERR_SUP,"PC does not have apply richardson");
+  if (!pc->ops->applyrichardson) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"PC does not have apply richardson");
   ierr = (*pc->ops->applyrichardson)(pc,b,y,w,rtol,abstol,dtol,its,guesszero,outits,reason);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -764,15 +789,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCApplyRichardson(PC pc,Vec b,Vec y,Vec w,Pets
 
 .seealso: PCCreate(), PCApply(), PCDestroy()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCSetUp(PC pc)
+PetscErrorCode  PCSetUp(PC pc)
 {
   PetscErrorCode ierr;
   const char     *def;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-
-  if (!pc->mat) {SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Matrix must be set first");}
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!pc->mat) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Matrix must be set first");
 
   if (pc->setupcalled > 1) {
     ierr = PetscInfo(pc,"Setting PC with identical preconditioner\n");CHKERRQ(ierr);
@@ -817,12 +841,12 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCSetUp(PC pc)
 
 .seealso: PCCreate(), PCApply(), PCDestroy(), PCSetUp()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCSetUpOnBlocks(PC pc)
+PetscErrorCode  PCSetUpOnBlocks(PC pc)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   if (!pc->ops->setuponblocks) PetscFunctionReturn(0);
   ierr = PetscLogEventBegin(PC_SetUpOnBlocks,pc,0,0,0);CHKERRQ(ierr);
   ierr = (*pc->ops->setuponblocks)(pc);CHKERRQ(ierr);
@@ -839,7 +863,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCSetUpOnBlocks(PC pc)
    usual; the user can then alter these (for example, to set different boundary
    conditions for each submatrix) before they are used for the local solves.
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 +  pc - the preconditioner context
@@ -869,12 +893,12 @@ $     func (PC pc,PetscInt nsub,IS *row,IS *col,Mat *submat,void *ctx);
 
 .keywords: PC, set, modify, submatrices
 
-.seealso: PCModifySubMatrices()
+.seealso: PCModifySubMatrices(), PCASMGetSubMatrices()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCSetModifySubMatrices(PC pc,PetscErrorCode (*func)(PC,PetscInt,const IS[],const IS[],Mat[],void*),void *ctx)
+PetscErrorCode  PCSetModifySubMatrices(PC pc,PetscErrorCode (*func)(PC,PetscInt,const IS[],const IS[],Mat[],void*),void *ctx)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   pc->modifysubmatrices  = func;
   pc->modifysubmatricesP = ctx;
   PetscFunctionReturn(0);
@@ -919,12 +943,12 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCSetModifySubMatrices(PC pc,PetscErrorCode (*
 
 .seealso: PCSetModifySubMatrices()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCModifySubMatrices(PC pc,PetscInt nsub,const IS row[],const IS col[],Mat submat[],void *ctx)
+PetscErrorCode  PCModifySubMatrices(PC pc,PetscInt nsub,const IS row[],const IS col[],Mat submat[],void *ctx)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   if (!pc->modifysubmatrices) PetscFunctionReturn(0);
   ierr = PetscLogEventBegin(PC_ModifySubMatrices,pc,0,0,0);CHKERRQ(ierr);
   ierr = (*pc->modifysubmatrices)(pc,nsub,row,col,submat,ctx);CHKERRQ(ierr);
@@ -938,7 +962,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCModifySubMatrices(PC pc,PetscInt nsub,const 
    PCSetOperators - Sets the matrix associated with the linear system and 
    a (possibly) different one associated with the preconditioner.
 
-   Collective on PC and Mat
+   Logically Collective on PC and Mat
 
    Input Parameters:
 +  pc - the preconditioner context
@@ -995,22 +1019,31 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCModifySubMatrices(PC pc,PetscInt nsub,const 
 
 .seealso: PCGetOperators(), MatZeroEntries()
  @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCSetOperators(PC pc,Mat Amat,Mat Pmat,MatStructure flag)
+PetscErrorCode  PCSetOperators(PC pc,Mat Amat,Mat Pmat,MatStructure flag)
 {
   PetscErrorCode ierr;
+  PetscInt       m1,n1,m2,n2;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  if (Amat) PetscValidHeaderSpecific(Amat,MAT_COOKIE,2);
-  if (Pmat) PetscValidHeaderSpecific(Pmat,MAT_COOKIE,3);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (Amat) PetscValidHeaderSpecific(Amat,MAT_CLASSID,2);
+  if (Pmat) PetscValidHeaderSpecific(Pmat,MAT_CLASSID,3);
   if (Amat) PetscCheckSameComm(pc,1,Amat,2);
   if (Pmat) PetscCheckSameComm(pc,1,Pmat,3);
+  if (pc->setupcalled && Amat && Pmat) {
+    ierr = MatGetLocalSize(Amat,&m1,&n1);CHKERRQ(ierr);
+    ierr = MatGetLocalSize(pc->mat,&m2,&n2);CHKERRQ(ierr);
+    if (m1 != m2 || n1 != n2) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Cannot change local size of Amat after use old sizes %D %D new sizes %D %D",m2,n2,m1,n1);
+    ierr = MatGetLocalSize(Pmat,&m1,&n1);CHKERRQ(ierr);
+    ierr = MatGetLocalSize(pc->pmat,&m2,&n2);CHKERRQ(ierr);
+    if (m1 != m2 || n1 != n2) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Cannot change local size of Pmat after use old sizes %D %D new sizes %D %D",m2,n2,m1,n1);
+  }
 
   /* reference first in case the matrices are the same */
   if (Amat) {ierr = PetscObjectReference((PetscObject)Amat);CHKERRQ(ierr);}
-  if (pc->mat) {ierr = MatDestroy(pc->mat);CHKERRQ(ierr);}
+  ierr = MatDestroy(&pc->mat);CHKERRQ(ierr);
   if (Pmat) {ierr = PetscObjectReference((PetscObject)Pmat);CHKERRQ(ierr);}
-  if (pc->pmat) {ierr = MatDestroy(pc->pmat);CHKERRQ(ierr);}
+  ierr = MatDestroy(&pc->pmat);CHKERRQ(ierr);
   pc->mat  = Amat;
   pc->pmat = Pmat;
 
@@ -1040,6 +1073,8 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCSetOperators(PC pc,Mat Amat,Mat Pmat,MatStru
           matrix structure.  See PCSetOperators() for details.
 
    Level: intermediate
+
+   Notes: Does not increase the reference count of the matrices, so you should not destroy them
 
    Alternative usage: If the operators have NOT been set with KSP/PCSetOperators() then the operators
       are created in PC and returned to the user. In this case, if both operators
@@ -1083,29 +1118,39 @@ $           set size, type, etc of mat and pmat
 
 .seealso: PCSetOperators(), KSPGetOperators(), KSPSetOperators(), PCGetOperatorsSet()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCGetOperators(PC pc,Mat *mat,Mat *pmat,MatStructure *flag)
+PetscErrorCode  PCGetOperators(PC pc,Mat *mat,Mat *pmat,MatStructure *flag)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   if (mat) {
     if (!pc->mat) {
-      ierr = MatCreate(((PetscObject)pc)->comm,&pc->mat);CHKERRQ(ierr);
-      if (!pc->pmat && !pmat) { /* user did NOT request pmat, so make same as mat */
-        pc->pmat = pc->mat;
-        ierr     = PetscObjectReference((PetscObject)pc->pmat);CHKERRQ(ierr); 
-      } 
+      if (pc->pmat && !pmat) {  /* pmat has been set, but user did not request it, so use for mat */
+        pc->mat = pc->pmat;
+        ierr = PetscObjectReference((PetscObject)pc->mat);CHKERRQ(ierr);
+      } else {                  /* both mat and pmat are empty */
+        ierr = MatCreate(((PetscObject)pc)->comm,&pc->mat);CHKERRQ(ierr);
+        if (!pmat) { /* user did NOT request pmat, so make same as mat */
+          pc->pmat = pc->mat;
+          ierr     = PetscObjectReference((PetscObject)pc->pmat);CHKERRQ(ierr);
+        }
+      }
     }
     *mat  = pc->mat;
   }  
   if (pmat) {
     if (!pc->pmat) {
-      ierr = MatCreate(((PetscObject)pc)->comm,&pc->mat);CHKERRQ(ierr);
-      if (!pc->mat && !mat) { /* user did NOT request mat, so make same as pmat */
-        pc->mat = pc->pmat;
-        ierr    = PetscObjectReference((PetscObject)pc->mat);CHKERRQ(ierr); 
-      } 
+      if (pc->mat && !mat) {    /* mat has been set but was not requested, so use for pmat */
+        pc->pmat = pc->mat;
+        ierr    = PetscObjectReference((PetscObject)pc->pmat);CHKERRQ(ierr);
+      } else {
+        ierr = MatCreate(((PetscObject)pc)->comm,&pc->pmat);CHKERRQ(ierr);
+        if (!mat) { /* user did NOT request mat, so make same as pmat */
+          pc->mat = pc->pmat;
+          ierr    = PetscObjectReference((PetscObject)pc->mat);CHKERRQ(ierr);
+        }
+      }
     }
     *pmat = pc->pmat;
   }
@@ -1134,10 +1179,10 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCGetOperators(PC pc,Mat *mat,Mat *pmat,MatStr
 
 .seealso: PCSetOperators(), KSPGetOperators(), KSPSetOperators(), PCGetOperators()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCGetOperatorsSet(PC pc,PetscTruth *mat,PetscTruth *pmat)
+PetscErrorCode  PCGetOperatorsSet(PC pc,PetscBool  *mat,PetscBool  *pmat)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   if (mat)  *mat  = (pc->mat)  ? PETSC_TRUE : PETSC_FALSE;
   if (pmat) *pmat = (pc->pmat) ? PETSC_TRUE : PETSC_FALSE;
   PetscFunctionReturn(0);
@@ -1164,15 +1209,17 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCGetOperatorsSet(PC pc,PetscTruth *mat,PetscT
 
 .keywords: PC, get, factored, matrix
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCFactorGetMatrix(PC pc,Mat *mat)
+PetscErrorCode  PCFactorGetMatrix(PC pc,Mat *mat)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   PetscValidPointer(mat,2);
   if (pc->ops->getfactoredmatrix) {
     ierr = (*pc->ops->getfactoredmatrix)(pc,mat);CHKERRQ(ierr);
+  } else {
+    SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"PC type does not support getting factor matrix");
   }
   PetscFunctionReturn(0);
 }
@@ -1183,7 +1230,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCFactorGetMatrix(PC pc,Mat *mat)
    PCSetOptionsPrefix - Sets the prefix used for searching for all 
    PC options in the database.
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 +  pc - the preconditioner context
@@ -1200,12 +1247,12 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCFactorGetMatrix(PC pc,Mat *mat)
 
 .seealso: PCAppendOptionsPrefix(), PCGetOptionsPrefix()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCSetOptionsPrefix(PC pc,const char prefix[])
+PetscErrorCode  PCSetOptionsPrefix(PC pc,const char prefix[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   ierr = PetscObjectSetOptionsPrefix((PetscObject)pc,prefix);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -1216,7 +1263,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCSetOptionsPrefix(PC pc,const char prefix[])
    PCAppendOptionsPrefix - Appends to the prefix used for searching for all 
    PC options in the database.
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 +  pc - the preconditioner context
@@ -1233,12 +1280,12 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCSetOptionsPrefix(PC pc,const char prefix[])
 
 .seealso: PCSetOptionsPrefix(), PCGetOptionsPrefix()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCAppendOptionsPrefix(PC pc,const char prefix[])
+PetscErrorCode  PCAppendOptionsPrefix(PC pc,const char prefix[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   ierr = PetscObjectAppendOptionsPrefix((PetscObject)pc,prefix);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -1266,12 +1313,12 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCAppendOptionsPrefix(PC pc,const char prefix[
 
 .seealso: PCSetOptionsPrefix(), PCAppendOptionsPrefix()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCGetOptionsPrefix(PC pc,const char *prefix[])
+PetscErrorCode  PCGetOptionsPrefix(PC pc,const char *prefix[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   PetscValidPointer(prefix,2);
   ierr = PetscObjectGetOptionsPrefix((PetscObject)pc,prefix);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -1308,15 +1355,15 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCGetOptionsPrefix(PC pc,const char *prefix[])
 
 .seealso: PCPostSolve()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCPreSolve(PC pc,KSP ksp)
+PetscErrorCode  PCPreSolve(PC pc,KSP ksp)
 {
   PetscErrorCode ierr;
   Vec            x,rhs;
   Mat            A,B;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,2);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,2);
   ierr = KSPGetSolution(ksp,&x);CHKERRQ(ierr);
   ierr = KSPGetRhs(ksp,&rhs);CHKERRQ(ierr);
   /*
@@ -1365,15 +1412,15 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCPreSolve(PC pc,KSP ksp)
 
 .seealso: PCPreSolve(), KSPSolve()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCPostSolve(PC pc,KSP ksp)
+PetscErrorCode  PCPostSolve(PC pc,KSP ksp)
 {
   PetscErrorCode ierr;
   Vec            x,rhs;
   Mat            A,B;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,2);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,2);
   ierr = KSPGetSolution(ksp,&x);CHKERRQ(ierr);
   ierr = KSPGetRhs(ksp,&rhs);CHKERRQ(ierr);
   if (pc->ops->postsolve) {
@@ -1420,43 +1467,32 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCPostSolve(PC pc,KSP ksp)
 
 .seealso: KSPView(), PetscViewerASCIIOpen()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCView(PC pc,PetscViewer viewer)
+PetscErrorCode  PCView(PC pc,PetscViewer viewer)
 {
   const PCType      cstr;
   PetscErrorCode    ierr;
-  PetscTruth        mat_exists,iascii,isstring;
+  PetscBool         iascii,isstring;
   PetscViewerFormat format;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   if (!viewer) {
     ierr = PetscViewerASCIIGetStdout(((PetscObject)pc)->comm,&viewer);CHKERRQ(ierr);
   }
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,2); 
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,2); 
   PetscCheckSameComm(pc,1,viewer,2);
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_STRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerGetFormat(viewer,&format);CHKERRQ(ierr);
-    if (((PetscObject)pc)->prefix) {
-      ierr = PetscViewerASCIIPrintf(viewer,"PC Object:(%s)\n",((PetscObject)pc)->prefix);CHKERRQ(ierr);
-    } else {
-      ierr = PetscViewerASCIIPrintf(viewer,"PC Object:\n");CHKERRQ(ierr);
-    }
-    ierr = PCGetType(pc,&cstr);CHKERRQ(ierr);
-    if (cstr) {
-      ierr = PetscViewerASCIIPrintf(viewer,"  type: %s\n",cstr);CHKERRQ(ierr);
-    } else {
-      ierr = PetscViewerASCIIPrintf(viewer,"  type: not yet set\n");CHKERRQ(ierr);
-    }
+    ierr = PetscObjectPrintClassNamePrefixType((PetscObject)pc,viewer,"PC Object");CHKERRQ(ierr);
     if (pc->ops->view) {
       ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
       ierr = (*pc->ops->view)(pc,viewer);CHKERRQ(ierr);
       ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
     }
-    ierr = PetscObjectExists((PetscObject)pc->mat,&mat_exists);CHKERRQ(ierr);
-    if (mat_exists) {
+    if (pc->mat) {
       ierr = PetscViewerPushFormat(viewer,PETSC_VIEWER_ASCII_INFO);CHKERRQ(ierr);
       if (pc->pmat == pc->mat) {
         ierr = PetscViewerASCIIPrintf(viewer,"  linear system matrix = precond matrix:\n");CHKERRQ(ierr);
@@ -1464,15 +1500,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCView(PC pc,PetscViewer viewer)
         ierr = MatView(pc->mat,viewer);CHKERRQ(ierr);
         ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
       } else {
-        ierr = PetscObjectExists((PetscObject)pc->pmat,&mat_exists);CHKERRQ(ierr);
-        if (mat_exists) {
+        if (pc->pmat) {
           ierr = PetscViewerASCIIPrintf(viewer,"  linear system matrix followed by preconditioner matrix:\n");CHKERRQ(ierr);
         } else {
           ierr = PetscViewerASCIIPrintf(viewer,"  linear system matrix:\n");CHKERRQ(ierr);
         }
         ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
         ierr = MatView(pc->mat,viewer);CHKERRQ(ierr);
-        if (mat_exists) {ierr = MatView(pc->pmat,viewer);CHKERRQ(ierr);}
+        if (pc->pmat) {ierr = MatView(pc->pmat,viewer);CHKERRQ(ierr);}
         ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
       }
       ierr = PetscViewerPopFormat(viewer);CHKERRQ(ierr);
@@ -1482,7 +1517,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCView(PC pc,PetscViewer viewer)
     ierr = PetscViewerStringSPrintf(viewer," %-7.7s",cstr);CHKERRQ(ierr);
     if (pc->ops->view) {ierr = (*pc->ops->view)(pc,viewer);CHKERRQ(ierr);}
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported by PC",((PetscObject)viewer)->type_name);
+    SETERRQ1(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Viewer type %s not supported by PC",((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
@@ -1495,7 +1530,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCView(PC pc,PetscViewer viewer)
    initial guess is nonzero; otherwise PC assumes the initial guess
    is to be zero (and thus zeros it out before solving).
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 +  pc - iterative context obtained from PCCreate()
@@ -1506,7 +1541,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCView(PC pc,PetscViewer viewer)
    Notes:
     This is a weird function. Since PC's are linear operators on the right hand side they
     CANNOT use an initial guess. This function is for the "pass-through" preconditioners
-    PCKSP, PCREDUNDANT and PCOPENMP and causes the inner KSP object to use the nonzero
+    PCKSP, PCREDUNDANT and PCHMPI and causes the inner KSP object to use the nonzero
     initial guess. Not currently working for PCREDUNDANT, that has to be rewritten to use KSP.
 
 
@@ -1514,9 +1549,10 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCView(PC pc,PetscViewer viewer)
 
 .seealso: PCGetInitialGuessNonzero(), PCSetInitialGuessKnoll(), PCGetInitialGuessKnoll()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCSetInitialGuessNonzero(PC pc,PetscTruth flg)
+PetscErrorCode  PCSetInitialGuessNonzero(PC pc,PetscBool  flg)
 {
   PetscFunctionBegin;
+  PetscValidLogicalCollectiveBool(pc,flg,2);
   pc->nonzero_guess   = flg;
   PetscFunctionReturn(0);
 }
@@ -1528,7 +1564,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCSetInitialGuessNonzero(PC pc,PetscTruth flg)
 
   Level: advanced
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(PC))
+PetscErrorCode  PCRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(PC))
 {
   PetscErrorCode ierr;
   char           fullname[PETSC_MAX_PATH_LEN];
@@ -1568,7 +1604,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCRegister(const char sname[],const char path[
 .seealso: KSPComputeExplicitOperator()
 
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCComputeExplicitOperator(PC pc,Mat *mat)
+PetscErrorCode  PCComputeExplicitOperator(PC pc,Mat *mat)
 {
   Vec            in,out;
   PetscErrorCode ierr;
@@ -1578,13 +1614,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCComputeExplicitOperator(PC pc,Mat *mat)
   PetscScalar    *array,one = 1.0;
   
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   PetscValidPointer(mat,2);
 
   comm = ((PetscObject)pc)->comm;
   ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr);
 
-  if (!pc->pmat) SETERRQ(PETSC_ERR_ORDER,"You must call KSPSetOperators() or PCSetOperators() before this call");
+  if (!pc->pmat) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ORDER,"You must call KSPSetOperators() or PCSetOperators() before this call");
   ierr = MatGetVecs(pc->pmat,&in,0);CHKERRQ(ierr);
   ierr = VecDuplicate(in,&out);CHKERRQ(ierr);
   ierr = VecGetOwnershipRange(in,&start,&end);CHKERRQ(ierr);
@@ -1619,9 +1655,41 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCComputeExplicitOperator(PC pc,Mat *mat)
 
   }
   ierr = PetscFree(rows);CHKERRQ(ierr);
-  ierr = VecDestroy(out);CHKERRQ(ierr);
+  ierr = VecDestroy(&out);CHKERRQ(ierr);
   ierr = MatAssemblyBegin(*mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(*mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
+#undef __FUNCT__
+#define __FUNCT__ "PCSetCoordinates"
+/*@
+   PCSetCoordinates - sets the coordinates of all the nodes on the local process
+
+   Collective on PC
+
+   Input Parameters:
++  pc - the solver context
+.  dim - the dimension of the coordinates 1, 2, or 3
+-  coords - the coordinates
+
+   Level: intermediate
+
+   Notes: coords is an array of the 3D coordinates for the nodes on
+   the local processor.  So if there are 108 equation on a processor
+   for a displacement finite element discretization of elasticity (so
+   that there are 36 = 108/3 nodes) then the array must have 108
+   double precision values (ie, 3 * 36).  These x y z coordinates
+   should be ordered for nodes 0 to N-1 like so: [ 0.x, 0.y, 0.z, 1.x,
+   ... , N-1.z ].
+
+.seealso: PCPROMETHEUS
+@*/
+PetscErrorCode  PCSetCoordinates(PC pc,PetscInt dim,PetscReal *coords)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = PetscTryMethod(pc,"PCSetCoordinates_C",(PC,PetscInt,PetscReal*),(pc,dim,coords));CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}

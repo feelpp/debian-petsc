@@ -4,7 +4,7 @@
 #include <iostream>
 
 #ifndef  included_ALE_hh
-#include <ALE.hh>
+#include <sieve/ALE.hh>
 #endif
 
 namespace ALE {
@@ -248,7 +248,7 @@ namespace ALE {
             os << " (" << *i << ")";
           }
           os << " ]" << std::endl;
-        };
+        }
       };// class ArrowSequence    
     };// class ArrowContainerTraits
   
@@ -406,13 +406,13 @@ namespace ALE {
     int         _commRank;
     int         _commSize;
     void __init(MPI_Comm comm) {
-      static PetscCookie sifterType = -1;
+      static PetscClassId sifterType = -1;
       //const char        *id_name = ALE::getClassName<T>();
       const char        *id_name = "LabelSifter";
       PetscErrorCode     ierr;
 
       if (sifterType < 0) {
-        ierr = PetscCookieRegister(id_name,&sifterType);CHKERROR(ierr, "Error in MPI_Comm_rank"); 
+        ierr = PetscClassIdRegister(id_name,&sifterType);CHKERROR(ierr, "Error in MPI_Comm_rank"); 
       }
       this->_comm = comm;
       ierr = MPI_Comm_rank(this->_comm, &this->_commRank);CHKERROR(ierr, "Error in MPI_Comm_rank");
@@ -478,7 +478,7 @@ namespace ALE {
         cone->insert(pCone->begin(), pCone->end());
       }
       return cone;
-    };
+    }
     int getConeSize(const typename traits::target_type& p) {
       return this->cone(p)->size();
     };
@@ -490,7 +490,7 @@ namespace ALE {
         if (checker(*c_iter, p)) return true;
       }
       return false;
-    };
+    }
     template<typename PointProcess>
     void coneApply(const typename traits::target_type& p, PointProcess& processor) {
       typename traits::coneSequence cone(*this, ::boost::multi_index::get<typename traits::coneInd>(this->_arrows.set), p);
@@ -498,7 +498,7 @@ namespace ALE {
       for(typename traits::coneSequence::iterator c_iter = cone.begin(); c_iter != cone.end(); ++c_iter) {
         processor(*c_iter, p);
       }
-    };
+    }
 #ifdef SLOW
     Obj<typename traits::supportSequence> 
     support(const typename traits::source_type& p) {
@@ -521,7 +521,7 @@ namespace ALE {
         supp->insert(pSupport->begin(), pSupport->end());
       }
       return supp;
-    };
+    }
     template<typename PointCheck>
     bool supportContains(const typename traits::source_type& p, const PointCheck& checker) {
       typename traits::supportSequence support(*this, ::boost::multi_index::get<typename traits::supportInd>(this->_arrows.set), p);
@@ -530,7 +530,7 @@ namespace ALE {
         if (checker(*s_iter, p)) return true;
       }
       return false;
-    };
+    }
     template<typename PointProcess>
     void supportApply(const typename traits::source_type& p, PointProcess& processor) {
       typename traits::supportSequence support(*this, ::boost::multi_index::get<typename traits::supportInd>(this->_arrows.set), p);
@@ -538,7 +538,7 @@ namespace ALE {
       for(typename traits::supportSequence::iterator s_iter = support.begin(); s_iter != support.end(); ++s_iter) {
         processor(*s_iter, p);
       }
-    };
+    }
 
     template<typename ostream_type>
     void view(ostream_type& os, const char* label = NULL, bool rawData = false){
@@ -554,8 +554,10 @@ namespace ALE {
       for(typename traits::arrow_container_type::set_type::iterator ai = _arrows.set.begin(); ai != _arrows.set.end(); ai++) {
         os << *ai << std::endl;
       }
-    };
+    }
     // A parallel viewer
+    #undef __FUNCT__
+    #define __FUNCT__ "view"
     PetscErrorCode view(const char* label = NULL, bool raw = false){
       PetscErrorCode ierr;
       ostringstream txt;
@@ -595,17 +597,17 @@ namespace ALE {
         ierr = PetscSynchronizedPrintf(this->comm(), txt.str().c_str());CHKERROR(ierr, "Error in PetscSynchronizedFlush");
         ierr = PetscSynchronizedFlush(this->comm()); CHKERROR(ierr, "Error in PetscSynchronizedFlush");
       }// if(raw)
-      
+
       PetscFunctionReturn(0);
-    };
+    }
   public:
     //
     // Lattice queries
     //
-    template<class targetInputSequence> 
+    template<class targetInputSequence>
     Obj<typename traits::coneSequence> meet(const Obj<targetInputSequence>& targets);
     // unimplemented
-    template<class sourceInputSequence> 
+    template<class sourceInputSequence>
     Obj<typename traits::coneSequence> join(const Obj<sourceInputSequence>& sources);
   public:
     //
@@ -660,7 +662,7 @@ namespace ALE {
         if (this->_debug > 1) {std::cout << "Adding arrow from " << *iter << " to " << target << std::endl;}
         this->addArrow(*iter, target);
       }
-    };
+    }
     void clearCone(const typename traits::target_type& t) {
       // Use the cone sequence types to clear the cone
       typename traits::coneSequence::traits::index_type& coneIndex = 
@@ -679,7 +681,7 @@ namespace ALE {
       i = coneIndex.lower_bound(::boost::make_tuple(t));
       ii = coneIndex.upper_bound(::boost::make_tuple(t));
       coneIndex.erase(i,ii);
-    };// clearCone()
+    }// clearCone()
 
     void clearSupport(const typename traits::source_type& s) {
       // Use the cone sequence types to clear the cone
@@ -689,14 +691,14 @@ namespace ALE {
       i = suppIndex.lower_bound(::boost::make_tuple(s));
       ii = suppIndex.upper_bound(::boost::make_tuple(s));
       suppIndex.erase(i,ii);
-    };
+    }
     void setCone(const typename traits::source_type& source, const typename traits::target_type& target){
       this->clearCone(target); this->addCone(source, target);
-    };
+    }
     template<class sourceInputSequence> 
     void setCone(const Obj<sourceInputSequence>& sources, const typename traits::target_type& target) {
       this->clearCone(target); this->addCone(sources, target);
-    };
+    }
     template<class targetInputSequence> 
     void addSupport(const typename traits::source_type& source, const Obj<targetInputSequence >& targets) {
       if (this->_debug > 1) {std::cout << "Adding a support " << std::endl;}
@@ -704,7 +706,7 @@ namespace ALE {
         if (this->_debug > 1) {std::cout << "Adding arrow from " << source << " to " << *iter << std::endl;}
         this->addArrow(source, *iter);
       }
-    };
+    }
     template<typename Sifter_, typename AnotherSifter_>
     void add(const Obj<Sifter_>& cbg, const Obj<AnotherSifter_>& baseRestriction = NULL) {
       typename ::boost::multi_index::index<typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd>::type& aInd = ::boost::multi_index::get<typename Sifter_::traits::arrowInd>(cbg->_arrows.set);
@@ -716,7 +718,7 @@ namespace ALE {
         }
         this->addArrow(*a_iter);
       }
-    };
+    }
     template<typename Sifter_, typename AnotherSifter_, typename Renumbering_>
     void add(const Obj<Sifter_>& cbg, const Obj<AnotherSifter_>& baseRestriction, Renumbering_& renumbering) {
       typename ::boost::multi_index::index<typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd>::type& aInd = ::boost::multi_index::get<typename Sifter_::traits::arrowInd>(cbg->_arrows.set);
@@ -728,7 +730,18 @@ namespace ALE {
         if (!baseRestriction->getSupportSize(target) && !baseRestriction->getConeSize(target)) continue;
         this->addArrow(a_iter->source, target);
       }
-    };
+    }
+    template<typename Labeling, typename AnotherSifter>
+    void relabel(Labeling& relabeling, AnotherSifter& newLabel) {
+      typename ::boost::multi_index::index<typename traits::arrow_container_type::set_type, typename traits::arrowInd>::type& aInd = ::boost::multi_index::get<typename traits::arrowInd>(this->_arrows.set);
+
+      for(typename ::boost::multi_index::index<typename traits::arrow_container_type::set_type, typename traits::arrowInd>::type::iterator a_iter = aInd.begin(); a_iter != aInd.end(); ++a_iter) {
+	const typename traits::target_type newTarget = relabeling.restrictPoint(a_iter->target)[0];
+
+        newLabel.addArrow(a_iter->source, newTarget);
+      }
+    }
+
     int size() const {return _arrows.set.size();};
     int getCapSize() const {
       std::set<source_type> cap;
@@ -753,13 +766,13 @@ namespace ALE {
     };
   public: // Compatibility with fixed storage variants
     typedef Interval<target_type> chart_type;
-    chart_type& getChart() {static chart_type chart(0, 0); return chart;};
+    chart_type& getChart() {static chart_type chart(0, 0); return chart;}
     template<typename chart_type>
-    void setChart(const chart_type& chart) {};
-    void setConeSize(target_type p, int s) {};
-    void setSupportSize(source_type p, int s) {};
-    void allocate() {};
-    void recalculateLabel() {};
+    void setChart(const chart_type& chart) {}
+    void setConeSize(target_type p, int s) {}
+    void setSupportSize(source_type p, int s) {}
+    void allocate() {}
+    void recalculateLabel() {}
   }; // class LabelSifter
 
   class LabelSifterSerializer {
@@ -805,7 +818,7 @@ namespace ALE {
         ierr = MPI_Send(arrows, size*2, MPIU_INT, 0, 1, label.comm());CHKERRXX(ierr);
         ierr = PetscFree(arrows);CHKERRXX(ierr);
       }
-    };
+    }
     template<typename LabelSifter>
     static void loadLabel(std::ifstream& fs, LabelSifter& label) {
       if (label.commRank() == 0) {
@@ -852,7 +865,7 @@ namespace ALE {
         }
         ierr = PetscFree(arrows);CHKERRXX(ierr);
       }
-    };
+    }
   };
 } // namespace ALE
 

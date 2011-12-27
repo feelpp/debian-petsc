@@ -10,7 +10,7 @@ Creates a basic application ordering using two index sets.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscao.h"   
-PetscErrorCode PETSCDM_DLLEXPORT AOCreateBasicIS(IS isapp,IS ispetsc,AO *aoout)
+PetscErrorCode AOCreateBasicIS(IS isapp,IS ispetsc,AO *aoout)
 </PRE>
 Collective on <A HREF="../IS/IS.html#IS">IS</A>
 <P>
@@ -25,11 +25,6 @@ natural ordering)
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>aoout </B> -the new application ordering
 <br>
-<P>
-<H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-<DT><B>-ao_view </B> -call <A HREF="../AO/AOView.html#AOView">AOView</A>() at the conclusion of <A HREF="../AO/AOCreateBasicIS.html#AOCreateBasicIS">AOCreateBasicIS</A>()
-<br>
-</TABLE>
 <P>
 
 <P>

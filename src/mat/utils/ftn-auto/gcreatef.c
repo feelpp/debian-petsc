@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* gcreate.c */
 /* Fortran interface file */
 
@@ -53,19 +54,19 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matcreate_(MPI_Fint * comm,Mat *A, int *__ierr ){
+void PETSC_STDCALL  matcreate_(MPI_Fint * comm,Mat *A, int *__ierr ){
 *__ierr = MatCreate(
 	MPI_Comm_f2c( *(comm) ),A);
 }
-void PETSC_STDCALL   matsetsizes_(Mat A,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N, int *__ierr ){
+void PETSC_STDCALL  matsetsizes_(Mat A,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N, int *__ierr ){
 *__ierr = MatSetSizes(
 	(Mat)PetscToPointer((A) ),*m,*n,*M,*N);
 }
-void PETSC_STDCALL   matsetfromoptions_(Mat B, int *__ierr ){
+void PETSC_STDCALL  matsetfromoptions_(Mat B, int *__ierr ){
 *__ierr = MatSetFromOptions(
 	(Mat)PetscToPointer((B) ));
 }
-void PETSC_STDCALL   matsetuppreallocation_(Mat B, int *__ierr ){
+void PETSC_STDCALL  matsetuppreallocation_(Mat B, int *__ierr ){
 *__ierr = MatSetUpPreallocation(
 	(Mat)PetscToPointer((B) ));
 }

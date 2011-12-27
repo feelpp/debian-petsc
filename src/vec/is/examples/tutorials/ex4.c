@@ -9,7 +9,7 @@ static char help[] = "Demonstrates using ISLocalToGlobalMappings.\n\n";
     and then destroys it.
 T*/
 
-#include "petscis.h"
+#include <petscis.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -26,7 +26,7 @@ int main(int argc,char **argv)
       Create a local to global mapping. Each processor independently
      creates a mapping  
   */
-  ierr = ISLocalToGlobalMappingCreate(PETSC_COMM_WORLD,n,indices,&mapping);CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingCreate(PETSC_COMM_WORLD,n,indices,PETSC_COPY_VALUES,&mapping);CHKERRQ(ierr);
 
   /*
      Map a set of local indices to their global values 
@@ -52,10 +52,10 @@ int main(int argc,char **argv)
   /*
      Free the space used by the local to global mapping
   */
-  ierr = ISLocalToGlobalMappingDestroy(mapping);CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingDestroy(&mapping);CHKERRQ(ierr);
 
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

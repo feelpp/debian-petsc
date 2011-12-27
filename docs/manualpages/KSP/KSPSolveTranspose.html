@@ -6,11 +6,11 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="KSPSolveTranspose"><H1>KSPSolveTranspose</H1></A>
-Solves the transpose of a linear system. Usually accessed through <A HREF="../KSP/KSPSolveTranspose.html#KSPSolveTranspose">KSPSolveTranspose</A>(). 
+Solves the transpose of a linear system.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSolveTranspose(KSP ksp,Vec b,Vec x)
+PetscErrorCode  KSPSolveTranspose(KSP ksp,Vec b,Vec x)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -23,9 +23,9 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- solution vector
 </TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Note</FONT></H3>
-Currently only supported by <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> of <A HREF="../KSP/KSPPREONLY.html#KSPPREONLY">KSPPREONLY</A>. This routine is usally
-only used internally by the BiCG solver on the subblocks in BJacobi and ASM.
+Notes: For complex numbers this solve the non-Hermitian transpose system.
+<P>
+Developer Notes: We need to implement a KSPSolveHermitianTranspose()
 <P>
 
 <P>
@@ -43,5 +43,6 @@ only used internally by the BiCG solver on the subblocks in BJacobi and ASM.
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex53.c.html">src/ksp/ksp/examples/tutorials/ex53.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
 </BODY></HTML>

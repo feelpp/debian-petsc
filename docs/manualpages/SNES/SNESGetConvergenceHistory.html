@@ -10,9 +10,9 @@ Gets the array used to hold the convergence history.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetConvergenceHistory(SNES snes,PetscReal *a[],PetscInt *its[],PetscInt *na)
+PetscErrorCode  SNESGetConvergenceHistory(SNES snes,PetscReal *a[],PetscInt *its[],PetscInt *na)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>snes </B> -iterative context obtained from <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>()

@@ -1,8 +1,8 @@
 static char help[] = "Test LAPACK routine ZHEEV, ZHEEVX, ZHEGV and ZHEGVX. \n\
 ZHEEV computes all eigenvalues and, optionally, eigenvectors of a complex Hermitian matrix A. \n\n";
 
-#include "petscmat.h"
-#include "petscblaslapack.h"
+#include <petscmat.h>
+#include <petscblaslapack.h>
 
 extern PetscErrorCode CkEigenSolutions(PetscInt,Mat,PetscInt,PetscInt,PetscReal*,Vec*,PetscReal*);
 
@@ -12,9 +12,9 @@ PetscInt main(PetscInt argc,char **args)
 {
   Mat            A,A_dense,B;    
   Vec            *evecs;
-  PetscTruth     flg,TestZHEEV=PETSC_TRUE,TestZHEEVX=PETSC_FALSE,TestZHEGV=PETSC_FALSE,TestZHEGVX=PETSC_FALSE; 
+  PetscBool      flg,TestZHEEV=PETSC_TRUE,TestZHEEVX=PETSC_FALSE,TestZHEGV=PETSC_FALSE,TestZHEGVX=PETSC_FALSE; 
   PetscErrorCode ierr;
-  PetscTruth     isSymmetric;
+  PetscBool      isSymmetric;
   PetscScalar    sigma,*arrayA,*arrayB,*evecs_array=PETSC_NULL,*work;
   PetscReal      *evals,*rwork;
   PetscMPIInt    size;
@@ -31,10 +31,10 @@ PetscInt main(PetscInt argc,char **args)
   
   PetscInitialize(&argc,&args,(char *)0,help);
 #if !defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"This example requires complex numbers");
+  SETERRQ(PETSC_COMM_WORLD,1,"This example requires complex numbers");
 #endif
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(PETSC_ERR_SUP,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP,"This is a uniprocessor example only!");
 
   ierr = PetscOptionsHasName(PETSC_NULL, "-test_zheevx", &flg);CHKERRQ(ierr);
   if (flg){
@@ -92,7 +92,7 @@ PetscInt main(PetscInt argc,char **args)
   ierr = MatSetValues(A,1,&Ii,1,&J,&v,ADD_VALUES);CHKERRQ(ierr);
   v = -sigma2*h2;
   ierr = MatSetValues(A,1,&J,1,&Ii,&v,ADD_VALUES);CHKERRQ(ierr);
-  if (use_random) {ierr = PetscRandomDestroy(rctx);CHKERRQ(ierr);}
+  if (use_random) {ierr = PetscRandomDestroy(&rctx);CHKERRQ(ierr);}
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   m = n = dim;
@@ -103,8 +103,8 @@ PetscInt main(PetscInt argc,char **args)
     Mat Trans;
     ierr = MatTranspose(A,MAT_INITIAL_MATRIX, &Trans);
     ierr = MatEqual(A, Trans, &isSymmetric);
-    if (!isSymmetric) SETERRQ(PETSC_ERR_USER,"A must be symmetric");
-    ierr = MatDestroy(Trans);CHKERRQ(ierr);
+    if (!isSymmetric) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_USER,"A must be symmetric");
+    ierr = MatDestroy(&Trans);CHKERRQ(ierr);
   }
 
   /* Convert aij matrix to MatSeqDense for LAPACK */
@@ -182,7 +182,7 @@ PetscInt main(PetscInt argc,char **args)
     ierr = PetscFree(rwork);CHKERRQ(ierr);
   }
   ierr = MatRestoreArray(A_dense,&arrayA);CHKERRQ(ierr);
-  if (nevs <= 0 ) SETERRQ1(PETSC_ERR_CONV_FAILED, "nev=%d, no eigensolution has found", nevs);
+  if (nevs <= 0 ) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_CONV_FAILED, "nev=%d, no eigensolution has found", nevs);
 
   /* View evals */
   ierr = PetscOptionsHasName(PETSC_NULL, "-eig_view", &flg);CHKERRQ(ierr);
@@ -202,7 +202,7 @@ PetscInt main(PetscInt argc,char **args)
   
   tols[0] = 1.e-8;  tols[1] = 1.e-8;
   ierr = CkEigenSolutions(cklvl,A,il-1,iu-1,evals,evecs,tols);CHKERRQ(ierr);
-  for (i=0; i<nevs; i++){ ierr = VecDestroy(evecs[i]);CHKERRQ(ierr);}
+  for (i=0; i<nevs; i++){ ierr = VecDestroy(&evecs[i]);CHKERRQ(ierr);}
   ierr = PetscFree(evecs);CHKERRQ(ierr);
     
   /* Free work space. */
@@ -211,10 +211,10 @@ PetscInt main(PetscInt argc,char **args)
   }  
   ierr = PetscFree(evals);CHKERRQ(ierr);
   ierr = PetscFree(work);CHKERRQ(ierr);
-  ierr = MatDestroy(A_dense);CHKERRQ(ierr); 
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(B);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&A_dense);CHKERRQ(ierr); 
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 /*------------------------------------------------
@@ -295,7 +295,7 @@ PetscErrorCode CkEigenSolutions(PetscInt cklvl,Mat A,PetscInt il,PetscInt iu,Pet
   default:
     ierr = PetscPrintf(PETSC_COMM_SELF,"Error: cklvl=%d is not supported \n",cklvl);
   }
-  ierr = VecDestroy(vt2); 
-  ierr = VecDestroy(vt1);
+  ierr = VecDestroy(&vt2); 
+  ierr = VecDestroy(&vt1);
   PetscFunctionReturn(0);
 }

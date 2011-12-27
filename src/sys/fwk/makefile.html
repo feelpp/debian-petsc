@@ -3,18 +3,16 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:23:44+00:00">
+<meta name="date" content="2011-10-29T18:54:18+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><font color="#A020F0">#requirespackage  'PETSC_HAVE_BOOST'</font>
-<font color="#A020F0">#requireslanguage CXXONLY</font>
-<strong><font color="#FF0000">ALL:</font></strong> lib
+<pre width="80"><strong><font color="#FF0000">ALL:</font></strong> lib
 
 SOURCEH  = ../../../include/petscfwk.h 
-DIRS     = interface examples
+DIRS     = interface #examples
 LOCDIR   = src/sys/fwk/
-MANSEC   = fwk
+MANSEC   = Sys
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

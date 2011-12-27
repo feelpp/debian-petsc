@@ -10,30 +10,20 @@ String with the name of a PETSc matrix solver type.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #define MatSolverPackage char*
-#define MAT_SOLVER_SPOOLES      "spooles"
-#define MAT_SOLVER_SUPERLU      "superlu"
-#define MAT_SOLVER_SUPERLU_DIST "superlu_dist"
-#define MAT_SOLVER_UMFPACK      "umfpack"
-#define MAT_SOLVER_ESSL         "essl"
-#define MAT_SOLVER_LUSOL        "lusol"
-#define MAT_SOLVER_MUMPS        "mumps"
-#define MAT_SOLVER_PASTIX       "pastix"
-#define MAT_SOLVER_DSCPACK      "dscpack"
-#define MAT_SOLVER_MATLAB       "matlab"
-#define MAT_SOLVER_PETSC        "petsc"
-#define MAT_SOLVER_PLAPACK      "plapack"
-#define MAT_SOLVER_BAS          "bas"
+#define MATSOLVERSPOOLES      "spooles"
+#define MATSOLVERSUPERLU      "superlu"
+#define MATSOLVERSUPERLU_DIST "superlu_dist"
+#define MATSOLVERUMFPACK      "umfpack"
+#define MATSOLVERCHOLMOD      "cholmod"
+#define MATSOLVERESSL         "essl"
+#define MATSOLVERLUSOL        "lusol"
+#define MATSOLVERMUMPS        "mumps"
+#define MATSOLVERPASTIX       "pastix"
+#define MATSOLVERMATLAB       "matlab"
+#define MATSOLVERPETSC        "petsc"
+#define MATSOLVERPLAPACK      "plapack"
+#define MATSOLVERBAS          "bas"
 
-/*E
-    MatFactorType - indicates what type of factorization is requested
-
-    
-
-   Any additions/changes here MUST also be made in include/finclude/petscmat.h
-
-.seealso: MatSolverPackage, MatGetFactor()
-E*/
-typedef enum {MAT_FACTOR_NONE, MAT_FACTOR_LU, MAT_FACTOR_CHOLESKY, MAT_FACTOR_ILU, MAT_FACTOR_ICC,MAT_FACTOR_ILUDT} MatFactorType;
 </PRE>
 For example: "petsc" indicates what PETSc provides, "superlu" indicates either
 SuperLU or SuperLU_Dist etc.

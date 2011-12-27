@@ -12,7 +12,7 @@ Computes y = x + alpha y.
 #include "petscvec.h" 
 PetscErrorCode  VecAYPX(Vec y,PetscScalar alpha,Vec x)
 </PRE>
-Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -27,7 +27,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 
 <P>
-Notes: x and y must be different vectors
+Notes: x and y MUST be different vectors
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

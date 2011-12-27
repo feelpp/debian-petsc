@@ -10,7 +10,7 @@ Sets the array used to hold the residual history. If set, this array will contai
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetResidualHistory(KSP ksp,PetscReal a[],PetscInt na,PetscTruth reset)
+PetscErrorCode  KSPSetResidualHistory(KSP ksp,PetscReal a[],PetscInt na,PetscBool  reset)
 </PRE>
 Not Collective
 <P>
@@ -31,7 +31,7 @@ for each new linear solve
 Notes: The array is NOT freed by PETSc so the user needs to keep track of
 it and destroy once the <A HREF="../KSP/KSP.html#KSP">KSP</A> object is destroyed.
 <P>
-If 'na' is <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> or <A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>, or 'a' is <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, then a
+If 'a' is <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> then space is allocated for the history. If 'na' <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> or <A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> then a
 default array of length 10000 is allocated.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>

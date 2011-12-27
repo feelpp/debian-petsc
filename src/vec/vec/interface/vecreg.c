@@ -1,9 +1,8 @@
-#define PETSCVEC_DLL
 
-#include "private/vecimpl.h"    /*I "petscvec.h"  I*/
+#include <private/vecimpl.h>    /*I "petscvec.h"  I*/
 
 PetscFList VecList                       = PETSC_NULL;
-PetscTruth VecRegisterAllCalled          = PETSC_FALSE;
+PetscBool  VecRegisterAllCalled          = PETSC_FALSE;
 
 #undef __FUNCT__  
 #define __FUNCT__ "VecSetType"
@@ -30,26 +29,26 @@ PetscTruth VecRegisterAllCalled          = PETSC_FALSE;
 .keywords: vector, set, type
 .seealso: VecGetType(), VecCreate()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecSetType(Vec vec, const VecType method)
+PetscErrorCode  VecSetType(Vec vec, const VecType method)
 {
   PetscErrorCode (*r)(Vec);
-  PetscTruth     match;
+  PetscBool      match;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(vec, VEC_COOKIE,1);
+  PetscValidHeaderSpecific(vec, VEC_CLASSID,1);
   ierr = PetscTypeCompare((PetscObject) vec, method, &match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
   if (!VecRegisterAllCalled) {ierr = VecRegisterAll(PETSC_NULL);CHKERRQ(ierr);}
-  ierr = PetscFListFind(VecList, ((PetscObject)vec)->comm, method,(void (**)(void)) &r);CHKERRQ(ierr);
-  if (!r) SETERRQ1(PETSC_ERR_ARG_UNKNOWN_TYPE, "Unknown vector type: %s", method);
-
+  ierr = PetscFListFind(VecList, ((PetscObject)vec)->comm, method,PETSC_TRUE,(void (**)(void)) &r);CHKERRQ(ierr);
+  if (!r) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_UNKNOWN_TYPE, "Unknown vector type: %s", method);
   if (vec->ops->destroy) {
     ierr = (*vec->ops->destroy)(vec);CHKERRQ(ierr);
   }
   if (vec->map->n < 0 && vec->map->N < 0) { 
     vec->ops->create = r;
+    vec->ops->load   = VecLoad_Default;
   } else {
     ierr = (*r)(vec);CHKERRQ(ierr);
   }
@@ -74,12 +73,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecSetType(Vec vec, const VecType method)
 .keywords: vector, get, type, name
 .seealso: VecSetType(), VecCreate()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecGetType(Vec vec, const VecType *type)
+PetscErrorCode  VecGetType(Vec vec, const VecType *type)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(vec, VEC_COOKIE,1);
+  PetscValidHeaderSpecific(vec, VEC_CLASSID,1);
   PetscValidCharPointer(type,2);
   if (!VecRegisterAllCalled) {
     ierr = VecRegisterAll(PETSC_NULL);CHKERRQ(ierr);
@@ -98,7 +97,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecGetType(Vec vec, const VecType *type)
 
   Level: advanced
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecRegister(const char sname[], const char path[], const char name[], PetscErrorCode (*function)(Vec))
+PetscErrorCode  VecRegister(const char sname[], const char path[], const char name[], PetscErrorCode (*function)(Vec))
 {
   char fullname[PETSC_MAX_PATH_LEN];
   PetscErrorCode ierr;
@@ -125,7 +124,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecRegister(const char sname[], const char pat
 .keywords: Vec, register, destroy
 .seealso: VecRegister(), VecRegisterAll(), VecRegisterDynamic()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecRegisterDestroy(void)
+PetscErrorCode  VecRegisterDestroy(void)
 {
   PetscErrorCode ierr;
 

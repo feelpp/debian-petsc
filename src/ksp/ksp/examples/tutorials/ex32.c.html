@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:34+00:00">
+<meta name="date" content="2011-10-29T19:13:19+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -42,10 +42,10 @@
 
 <a name="line33"> 33: </a>static char help[] = <font color="#666666">"Solves 2D inhomogeneous Laplacian using multigrid.\n\n"</font>;
 
-<a name="line35"> 35: </a> #include <A href="../../../../../include/petscda.h.html">petscda.h</A>
-<a name="line36"> 36: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
-<a name="line37"> 37: </a> #include <A href="../../../../../include/petscmg.h.html">petscmg.h</A>
-<a name="line38"> 38: </a> #include <A href="../../../../../include/petscdmmg.h.html">petscdmmg.h</A>
+<a name="line35"> 35: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
+<a name="line36"> 36: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
+<a name="line37"> 37: </a><font color="#A020F0">#include &lt;petscpcmg.h&gt;</font>
+<a name="line38"> 38: </a><font color="#A020F0">#include &lt;petscdmmg.h&gt;</font>
 
 
 <a name="line43"> 43: </a><font color="#4169E1">typedef</font> <font color="#4169E1">enum</font> {DIRICHLET, NEUMANN} BCType;
@@ -58,7 +58,7 @@
 <a name="line52"> 52: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line53"> 53: </a>{
 <a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A>           *dmmg;
-<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da;
+<a name="line55"> 55: </a>  DM             da;
 <a name="line56"> 56: </a>  UserContext    user;
 <a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;
 <a name="line58"> 58: </a>  const char     *bcTypes[2] = {<font color="#666666">"dirichlet"</font>,<font color="#666666">"neumann"</font>};
@@ -67,11 +67,11 @@
 <a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
 <a name="line63"> 63: </a>
 <a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/DMMG/DMMGCreate.html#DMMGCreate">DMMGCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,3,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;dmmg);
-<a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/DA/DACreate2d.html#DACreate2d">DACreate2d</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DA_NONPERIODIC,<A href="../../../../../docs/manualpages/DA/DA_STENCIL_STAR.html#DA_STENCIL_STAR">DA_STENCIL_STAR</A>,3,3,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,1,0,0,&amp;da);
-<a name="line66"> 66: </a>  <A href="../../../../../docs/manualpages/DA/DASetInterpolationType.html#DASetInterpolationType">DASetInterpolationType</A>(da, DA_Q0);
+<a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,<A href="../../../../../docs/manualpages/DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>,3,3,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,1,0,0,&amp;da);
+<a name="line66"> 66: </a>  <A href="../../../../../docs/manualpages/DM/DMDASetInterpolationType.html#DMDASetInterpolationType">DMDASetInterpolationType</A>(da, DMDA_Q0);
 <a name="line67"> 67: </a>
-<a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/DMMG/DMMGSetDM.html#DMMGSetDM">DMMGSetDM</A>(dmmg,(<A href="../../../../../docs/manualpages/DA/DM.html#DM">DM</A>)da);
-<a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/DA/DADestroy.html#DADestroy">DADestroy</A>(da);
+<a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/DMMG/DMMGSetDM.html#DMMGSetDM">DMMGSetDM</A>(dmmg,(DM)da);
+<a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;da);
 <a name="line70"> 70: </a>  <font color="#4169E1">for</font> (l = 0; l &lt; <A href="../../../../../docs/manualpages/DMMG/DMMGGetLevels.html#DMMGGetLevels">DMMGGetLevels</A>(dmmg); l++) {
 <a name="line71"> 71: </a>    <A href="../../../../../docs/manualpages/DMMG/DMMGSetUser.html#DMMGSetUser">DMMGSetUser</A>(dmmg,l,&amp;user);
 <a name="line72"> 72: </a>  }
@@ -103,23 +103,23 @@
 
 <a name="line101">101: </a><strong><font color="#4169E1"><a name="ComputeRHS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ComputeRHS(<A href="../../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A> dmmg, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b)</font></strong>
 <a name="line102">102: </a>{
-<a name="line103">103: </a>  <A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da = (<A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>)dmmg-&gt;dm;
+<a name="line103">103: </a>  DM             da = dmmg-&gt;dm;
 <a name="line104">104: </a>  UserContext    *user = (UserContext *) dmmg-&gt;user;
 <a name="line106">106: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,mx,my,xm,ym,xs,ys;
 <a name="line107">107: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    Hx,Hy;
 <a name="line108">108: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    **array;
 
-<a name="line111">111: </a>  <A href="../../../../../docs/manualpages/DA/DAGetInfo.html#DAGetInfo">DAGetInfo</A>(da, 0, &amp;mx, &amp;my, 0,0,0,0,0,0,0,0);
+<a name="line111">111: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da, 0, &amp;mx, &amp;my, 0,0,0,0,0,0,0,0,0,0);
 <a name="line112">112: </a>  Hx   = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(mx);
 <a name="line113">113: </a>  Hy   = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(my);
-<a name="line114">114: </a>  <A href="../../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(da,&amp;xs,&amp;ys,0,&amp;xm,&amp;ym,0);
-<a name="line115">115: </a>  <A href="../../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(da, b, &amp;array);
+<a name="line114">114: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,0,&amp;xm,&amp;ym,0);
+<a name="line115">115: </a>  <A href="../../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da, b, &amp;array);
 <a name="line116">116: </a>  <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++){
 <a name="line117">117: </a>    <font color="#4169E1">for</font>(i=xs; i&lt;xs+xm; i++){
 <a name="line118">118: </a>      array[j][i] = PetscExpScalar(-(((<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)i+0.5)*Hx)*(((<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)i+0.5)*Hx)/user-&gt;nu)*PetscExpScalar(-(((<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)j+0.5)*Hy)*(((<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)j+0.5)*Hy)/user-&gt;nu)*Hx*Hy;
 <a name="line119">119: </a>    }
 <a name="line120">120: </a>  }
-<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(da, b, &amp;array);
+<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da, b, &amp;array);
 <a name="line122">122: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(b);
 <a name="line123">123: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(b);
 
@@ -138,18 +138,18 @@
 <a name="line137">137: </a>
 <a name="line140">140: </a><strong><font color="#4169E1"><a name="ComputeMatrix"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ComputeMatrix(<A href="../../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A> dmmg, <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> J,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> jac)</font></strong>
 <a name="line141">141: </a>{
-<a name="line142">142: </a>  <A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da = (<A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>) dmmg-&gt;dm;
+<a name="line142">142: </a>  DM             da =  dmmg-&gt;dm;
 <a name="line143">143: </a>  UserContext    *user = (UserContext *) dmmg-&gt;user;
 <a name="line145">145: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,mx,my,xm,ym,xs,ys,num, numi, numj;
 <a name="line146">146: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v[5],Hx,Hy,HydHx,HxdHy;
 <a name="line147">147: </a>  <A href="../../../../../docs/manualpages/Mat/MatStencil.html#MatStencil">MatStencil</A>     row, col[5];
 
-<a name="line150">150: </a>  <A href="../../../../../docs/manualpages/DA/DAGetInfo.html#DAGetInfo">DAGetInfo</A>(da,0,&amp;mx,&amp;my,0,0,0,0,0,0,0,0);
+<a name="line150">150: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,0,&amp;mx,&amp;my,0,0,0,0,0,0,0,0,0,0);
 <a name="line151">151: </a>  Hx    = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(mx);
 <a name="line152">152: </a>  Hy    = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(my);
 <a name="line153">153: </a>  HxdHy = Hx/Hy;
 <a name="line154">154: </a>  HydHx = Hy/Hx;
-<a name="line155">155: </a>  <A href="../../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(da,&amp;xs,&amp;ys,0,&amp;xm,&amp;ym,0);
+<a name="line155">155: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,0,&amp;xm,&amp;ym,0);
 <a name="line156">156: </a>  <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++)  {
 <a name="line157">157: </a>    <font color="#4169E1">for</font>(i=xs; i&lt;xs+xm; i++) {
 <a name="line158">158: </a>      row.i = i; row.j = j;
@@ -157,7 +157,7 @@
 <a name="line160">160: </a>        <font color="#4169E1">if</font> (user-&gt;bcType == DIRICHLET) {
 <a name="line161">161: </a>          v[0] = 2.0*(HxdHy + HydHx);
 <a name="line162">162: </a>          <A href="../../../../../docs/manualpages/Mat/MatSetValuesStencil.html#MatSetValuesStencil">MatSetValuesStencil</A>(jac,1,&amp;row,1,&amp;row,v,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line163">163: </a>          <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP,<font color="#666666">"Dirichlet boundary conditions not supported !\n"</font>);
+<a name="line163">163: </a>          <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP,<font color="#666666">"Dirichlet boundary conditions not supported !\n"</font>);
 <a name="line164">164: </a>        } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (user-&gt;bcType == NEUMANN) {
 <a name="line165">165: </a>          num = 0; numi=0; numj=0;
 <a name="line166">166: </a>          <font color="#4169E1">if</font> (j!=0)  {

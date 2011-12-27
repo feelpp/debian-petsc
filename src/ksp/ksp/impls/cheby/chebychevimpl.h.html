@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:40:32+00:00">
+<meta name="date" content="2011-10-29T19:12:02+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -15,9 +15,13 @@
 
 <a name="line8">  8: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line9">  9: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> emin,emax;   <font color="#B22222">/* store user provided estimates of extreme eigenvalues */</font>
-<a name="line10"> 10: </a>} KSP_Chebychev;
+<a name="line10"> 10: </a>  <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> kspest;            <font color="#B22222">/* <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> used to estimate eigenvalues */</font>
+<a name="line11"> 11: </a>  <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>  pcnone;            <font color="#B22222">/* Dummy <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> to drop in so <A href="../../../../../docs/manualpages/PC/PCSetFromOptions.html#PCSetFromOptions">PCSetFromOptions</A> doesn't get called extra times */</font>
+<a name="line12"> 12: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> tform[4];    <font color="#B22222">/* transform from Krylov estimates to Chebychev bounds */</font>
+<a name="line13"> 13: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> estimate_current;
+<a name="line14"> 14: </a>} KSP_Chebychev;
 
-<a name="line12"> 12: </a><font color="#A020F0">#endif</font>
+<a name="line16"> 16: </a><font color="#A020F0">#endif</font>
 </pre>
 </body>
 

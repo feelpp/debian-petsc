@@ -1,7 +1,7 @@
 
 static char help[] = "Saves a rectangular sparse matrix to disk.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -35,11 +35,11 @@ int main(int argc,char **args)
 
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"rect",FILE_MODE_WRITE,&view);CHKERRQ(ierr);
   ierr = MatView(A,view);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(view);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&view);CHKERRQ(ierr);
 
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

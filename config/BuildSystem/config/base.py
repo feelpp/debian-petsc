@@ -66,7 +66,7 @@ class ConfigureSetupError(Exception):
   pass
 
 class Configure(script.Script):
-  def __init__(self, framework):
+  def __init__(self, framework, tmpDir = None):
     script.Script.__init__(self, framework.clArgs, framework.argDB)
     self.framework       = framework
     self.defines         = {}
@@ -77,10 +77,28 @@ class Configure(script.Script):
     self.subst           = {}
     self.argSubst        = {}
     self.language        = []
-    self.compilerDefines = 'confdefs.h'
-    self.compilerFixes   = 'conffix.h'
+    if not tmpDir is None:
+      self.tmpDir        = tmpDir
     self.pushLanguage('C')
     return
+
+  def getTmpDir(self):
+    if not hasattr(self, '_tmpDir'):
+      self._tmpDir = os.path.join(self.framework.tmpDir, self.__module__)
+      if not os.path.isdir(self._tmpDir): os.mkdir(self._tmpDir)
+      self.logPrint('All intermediate test results are stored in '+self._tmpDir)
+    return self._tmpDir
+  def setTmpDir(self, temp):
+    if hasattr(self, '_tmpDir'):
+      if os.path.isdir(self._tmpDir):
+        import shutil
+        shutil.rmtree(self._tmpDir)
+      if temp is None:
+        delattr(self, '_tmpDir')
+    if not temp is None:
+      self._tmpDir = temp
+    return
+  tmpDir = property(getTmpDir, setTmpDir, doc = 'Temporary directory for test byproducts')
 
   def __str__(self):
     return ''
@@ -164,8 +182,8 @@ class Configure(script.Script):
   # Program Checks
   def checkExecutable(self, dir, name):
     prog  = os.path.join(dir, name)
-    # also strip any \ before spaces so that we can specify paths the way we want them in makefiles.
-    prog  = prog.replace('\ ',' ') 
+    # also strip any \ before spaces, braces, so that we can specify paths the way we want them in makefiles.
+    prog  = prog.replace('\ ',' ').replace('\(','(').replace('\)',')') 
     found = 0
     self.framework.log.write('Checking for program '+prog+'...')
     if os.path.isfile(prog) and os.access(prog, os.X_OK):
@@ -263,46 +281,56 @@ class Configure(script.Script):
     self.language.pop()
     return self.language[-1]
 
+  def getHeaders(self):
+    self.compilerDefines = os.path.join(self.tmpDir, 'confdefs.h')
+    self.compilerFixes   = os.path.join(self.tmpDir, 'conffix.h')
+    return
+
   def getPreprocessor(self):
+    self.getHeaders()
     preprocessor       = self.framework.getPreprocessorObject(self.language[-1])
     preprocessor.checkSetup()
     return preprocessor.getProcessor()
 
   def getCompiler(self):
+    self.getHeaders()
     compiler            = self.framework.getCompilerObject(self.language[-1])
     compiler.checkSetup()
-    self.compilerSource = 'conftest'+compiler.sourceExtension
-    self.compilerObj    = compiler.getTarget(self.compilerSource)
+    self.compilerSource = os.path.join(self.tmpDir, 'conftest'+compiler.sourceExtension)
+    self.compilerObj    = os.path.join(self.tmpDir, compiler.getTarget(self.compilerSource))
     return compiler.getProcessor()
 
   def getCompilerFlags(self):
     return self.framework.getCompilerObject(self.language[-1]).getFlags()
 
   def getLinker(self):
+    self.getHeaders()
     linker            = self.framework.getLinkerObject(self.language[-1])
     linker.checkSetup()
-    self.linkerSource = 'conftest'+linker.sourceExtension
-    self.linkerObj    = linker.getTarget(self.linkerSource,0)
+    self.linkerSource = os.path.join(self.tmpDir, 'conftest'+linker.sourceExtension)
+    self.linkerObj    = linker.getTarget(self.linkerSource, 0)
     return linker.getProcessor()
 
   def getLinkerFlags(self):
     return self.framework.getLinkerObject(self.language[-1]).getFlags()
 
   def getSharedLinker(self):
+    self.getHeaders()
     linker            = self.framework.getSharedLinkerObject(self.language[-1])
     linker.checkSetup()
-    self.linkerSource = 'conftest'+linker.sourceExtension
-    self.linkerObj    = linker.getTarget(self.linkerSource,1)
+    self.linkerSource = os.path.join(self.tmpDir, 'conftest'+linker.sourceExtension)
+    self.linkerObj    = linker.getTarget(self.linkerSource, 1)
     return linker.getProcessor()
 
   def getSharedLinkerFlags(self):
     return self.framework.getSharedLinkerObject(self.language[-1]).getFlags()
 
   def getDynamicLinker(self):
+    self.getHeaders()
     linker            = self.framework.getDynamicLinkerObject(self.language[-1])
     linker.checkSetup()
-    self.linkerSource = 'conftest'+linker.sourceExtension
-    self.linkerObj    = linker.getTarget(self.linkerSource,1)
+    self.linkerSource = os.path.join(self.tmpDir, 'conftest'+linker.sourceExtension)
+    self.linkerObj    = linker.getTarget(self.linkerSource, 1)
     return linker.getProcessor()
 
   def getDynamicLinkerFlags(self):
@@ -312,12 +340,14 @@ class Configure(script.Script):
     self.getCompiler()
     preprocessor = self.framework.getPreprocessorObject(self.language[-1])
     preprocessor.checkSetup()
+    preprocessor.includeDirectories.add(self.tmpDir)
     return preprocessor.getCommand(self.compilerSource)
 
   def getCompilerCmd(self):
     self.getCompiler()
     compiler = self.framework.getCompilerObject(self.language[-1])
     compiler.checkSetup()
+    compiler.includeDirectories.add(self.tmpDir)
     return compiler.getCommand(self.compilerSource, self.compilerObj)
 
   def getLinkerCmd(self):
@@ -325,6 +355,12 @@ class Configure(script.Script):
     linker = self.framework.getLinkerObject(self.language[-1])
     linker.checkSetup()
     return linker.getCommand(self.linkerSource, self.linkerObj)
+
+  def getFullLinkerCmd(self, objects, executable):
+    self.getLinker()
+    linker = self.framework.getLinkerObject(self.language[-1])
+    linker.checkSetup()
+    return linker.getCommand(objects, executable)
 
   def getSharedLinkerCmd(self):
     self.getSharedLinker()
@@ -342,9 +378,9 @@ class Configure(script.Script):
     language = self.language[-1]
     if includes and not includes[-1] == '\n':
       includes += '\n'
-    if language in ['C','Cxx']:
+    if language in ['C', 'CUDA', 'Cxx']:
       codeStr = ''
-      if self.compilerDefines: codeStr = '#include "'+self.compilerDefines+'"\n'
+      if self.compilerDefines: codeStr = '#include "'+os.path.basename(self.compilerDefines)+'"\n'
       codeStr += '#include "conffix.h"\n'+includes
       if not body is None:
         if codeBegin is None:
@@ -364,7 +400,7 @@ class Configure(script.Script):
           codeEnd   = '\n      end\n'
         codeStr += codeBegin+body+codeEnd
     else:
-      raise RuntimeError('Invalid language: '+language)
+      raise RuntimeError('Cannot determine code body for language: '+language)
     return codeStr
 
   def preprocess(self, codeStr, timeout = 600.0):
@@ -382,10 +418,10 @@ class Configure(script.Script):
     f = file(self.compilerSource, 'w')
     f.write(self.getCode(codeStr))
     f.close()
-    (out, err, ret) = Configure.executeShellCommand(command, checkCommand = report, timeout = timeout, log = self.framework.log)
-    if os.path.isfile(self.compilerDefines): os.remove(self.compilerDefines)
-    if os.path.isfile(self.compilerFixes): os.remove(self.compilerFixes)
-    if os.path.isfile(self.compilerSource): os.remove(self.compilerSource)
+    (out, err, ret) = Configure.executeShellCommand(command, checkCommand = report, timeout = timeout, log = self.framework.log, lineLimit = 1000)
+    if self.cleanup:
+      for filename in [self.compilerDefines, self.compilerFixes, self.compilerSource]:
+        if os.path.isfile(filename): os.remove(filename)
     return (out, err, ret)
 
   def outputPreprocess(self, codeStr):
@@ -401,6 +437,20 @@ class Configure(script.Script):
     err = self.framework.filterPreprocessOutput(err)
     return not ret and not len(err)
 
+  # Should be static
+  def getPreprocessorFlagsName(self, language):
+    if language in ['C', 'Cxx', 'FC']:
+      flagsArg = 'CPPFLAGS'
+    elif language == 'CUDA':
+      flagsArg = 'CUDAPPFLAGS'
+    else:
+      raise RuntimeError('Unknown language: '+language)
+    return flagsArg
+
+  def getPreprocessorFlagsArg(self):
+    '''Return the name of the argument which holds the preprocessor flags for the current language'''
+    return self.getPreprocessorFlagsName(self.language[-1])
+
   def filterCompileOutput(self, output):
     return self.framework.filterCompileOutput(output)
 
@@ -411,6 +461,9 @@ class Configure(script.Script):
         self.framework.log.write('Possible ERROR while running compiler: '+output)
         if status: self.framework.log.write('ret = '+str(status)+'\n')
         if error: self.framework.log.write('error message = {'+error+'}\n')
+        self.framework.log.write('Source:\n'+self.getCode(includes, body, codeBegin, codeEnd))
+      else:
+        self.framework.log.write('Successful compile:\n')
         self.framework.log.write('Source:\n'+self.getCode(includes, body, codeBegin, codeEnd))
       return
 
@@ -424,10 +477,9 @@ class Configure(script.Script):
     (out, err, ret) = Configure.executeShellCommand(command, checkCommand = report, log = self.framework.log)
     if not os.path.isfile(self.compilerObj):
       err += '\nPETSc Error: No output file produced'
-    if os.path.isfile(self.compilerDefines): os.remove(self.compilerDefines)
-    if os.path.isfile(self.compilerFixes): os.remove(self.compilerFixes)
-    if os.path.isfile(self.compilerSource): os.remove(self.compilerSource)
-    if cleanup and os.path.isfile(self.compilerObj): os.remove(self.compilerObj)
+    if cleanup:
+      for filename in [self.compilerDefines, self.compilerFixes, self.compilerSource, self.compilerObj]:
+        if os.path.isfile(filename): os.remove(filename)
     return (out, err, ret)
 
   def checkCompile(self, includes = '', body = '', cleanup = 1, codeBegin = None, codeEnd = None):
@@ -440,6 +492,8 @@ class Configure(script.Script):
   def getCompilerFlagsName(self, language, compilerOnly = 0):
     if language == 'C':
       flagsArg = 'CFLAGS'
+    elif language == 'CUDA':
+      flagsArg = 'CUDAFLAGS'
     elif language == 'Cxx':
       if compilerOnly:
         flagsArg = 'CXX_CXXFLAGS'
@@ -501,11 +555,7 @@ class Configure(script.Script):
 
   # Should be static
   def getLinkerFlagsName(self, language):
-    if language == 'C':
-      flagsArg = 'LDFLAGS'
-    elif language == 'Cxx':
-      flagsArg = 'LDFLAGS'
-    elif language == 'FC':
+    if language in ['C', 'CUDA', 'Cxx', 'FC']:
       flagsArg = 'LDFLAGS'
     else:
       raise RuntimeError('Unknown language: '+language)
@@ -530,9 +580,9 @@ class Configure(script.Script):
         raise ConfigureSetupError('Running executables on this system is not supported')
     cleanup = cleanup and self.framework.doCleanup
     if executor:
-      command = executor+' ./'+self.linkerObj
+      command = executor+' '+self.linkerObj
     else:
-      command = './'+self.linkerObj
+      command = self.linkerObj
     output  = ''
     error   = ''
     status  = 1

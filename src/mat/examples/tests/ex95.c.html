@@ -4,13 +4,13 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:51+00:00">
+<meta name="date" content="2011-10-29T19:05:29+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Testing <A href="../../../../docs/manualpages/Mat/MatMerge_SeqsToMPI.html#MatMerge_SeqsToMPI">MatMerge_SeqsToMPI</A>().\n\n"</font>;
 
-<a name="line3"> 3: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line7">  7: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line8">  8: </a>{
@@ -53,8 +53,8 @@
 <a name="line46"> 46: </a>    <A href="../../../../docs/manualpages/Mat/MatMerge_SeqsToMPI.html#MatMerge_SeqsToMPI">MatMerge_SeqsToMPI</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,A,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,MAT_REUSE_MATRIX,&amp;B);
 <a name="line47"> 47: </a>  }
 <a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B, <A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
-<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B);
-<a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
+<a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 <a name="line51"> 51: </a>
 <a name="line52"> 52: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line53"> 53: </a>  <font color="#4169E1">return</font>(0);

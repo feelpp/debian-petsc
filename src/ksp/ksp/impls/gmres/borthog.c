@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /*
     Routines used for the orthogonalization of the Hessenberg matrix.
@@ -7,7 +6,7 @@
     VecMDot() arguments within the code MUST remain in the order
     given for correct computation of inner products.
 */
-#include "../src/ksp/ksp/impls/gmres/gmresimpl.h"
+#include <../src/ksp/ksp/impls/gmres/gmresimpl.h>
 
 /*@C
      KSPGMRESModifiedGramSchmidtOrthogonalization -  This is the basic orthogonalization routine 
@@ -24,12 +23,12 @@
 
    Level: intermediate
 
-.seealso:  KSPGMRESSetOrthogonalization(), KSPGMRESClassicalGramSchmidtOrthogonalization()
+.seealso:  KSPGMRESSetOrthogonalization(), KSPGMRESClassicalGramSchmidtOrthogonalization(), KSPGMRESGetOrthogonalization()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "KSPGMRESModifiedGramSchmidtOrthogonalization"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESModifiedGramSchmidtOrthogonalization(KSP ksp,PetscInt it)
+PetscErrorCode  KSPGMRESModifiedGramSchmidtOrthogonalization(KSP ksp,PetscInt it)
 {
   KSP_GMRES      *gmres = (KSP_GMRES *)(ksp->data);
   PetscErrorCode ierr;

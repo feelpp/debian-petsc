@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawGetCoordinates" 
@@ -27,10 +27,10 @@
 .seealso: PetscDrawSetCoordinates()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawGetCoordinates(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr)
+PetscErrorCode  PetscDrawGetCoordinates(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidDoublePointer(xl,2);
   PetscValidDoublePointer(yl,3);
   PetscValidDoublePointer(xr,4);

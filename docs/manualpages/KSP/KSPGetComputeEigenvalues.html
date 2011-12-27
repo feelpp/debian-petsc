@@ -10,9 +10,9 @@ Gets the flag indicating that the extreme eigenvalues values will be calculated 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetComputeEigenvalues(KSP ksp,PetscTruth *flg)
+PetscErrorCode  KSPGetComputeEigenvalues(KSP ksp,PetscBool  *flg)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>ksp </B> -iterative context obtained from <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>()

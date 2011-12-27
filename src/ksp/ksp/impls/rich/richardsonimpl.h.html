@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:40:34+00:00">
+<meta name="date" content="2011-10-29T19:12:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -14,10 +14,11 @@
 
 
 <a name="line8">  8: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
-<a name="line9">  9: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> scale;               <font color="#B22222">/* scaling on preconditioner */</font>
-<a name="line10"> 10: </a>} KSP_Richardson;
+<a name="line9">  9: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>  scale;               <font color="#B22222">/* scaling on preconditioner */</font>
+<a name="line10"> 10: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  selfscale;           <font color="#B22222">/* determine optimimal scaling each iteration to minimize 2-norm of resulting residual */</font>
+<a name="line11"> 11: </a>} KSP_Richardson;
 
-<a name="line12"> 12: </a><font color="#A020F0">#endif</font>
+<a name="line13"> 13: </a><font color="#A020F0">#endif</font>
 </pre>
 </body>
 

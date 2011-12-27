@@ -1,5 +1,5 @@
-#include "private/fortranimpl.h"
-#include "petscksp.h"
+#include <private/fortranimpl.h>
+#include <petscksp.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define kspgetoptionsprefix_       KSPGETOPTIONSPREFIX
@@ -29,17 +29,22 @@
 EXTERN_C_BEGIN
 void PETSC_STDCALL kspbuildsolution_(KSP *ksp,Vec *v,Vec *V, int *ierr )
 {
+  Vec vp = 0;
   CHKFORTRANNULLOBJECT(v);
   CHKFORTRANNULLOBJECT(V);
-  *ierr = KSPBuildSolution(*ksp,*v,V);
+  if (v) vp = *v;
+  *ierr = KSPBuildSolution(*ksp,vp,V);
 }
 
 void PETSC_STDCALL   kspbuildresidual_(KSP *ksp,Vec *t,Vec *v,Vec *V, int *ierr )
 {
+  Vec tp = 0,vp = 0;
   CHKFORTRANNULLOBJECT(t);
   CHKFORTRANNULLOBJECT(v);
   CHKFORTRANNULLOBJECT(V);
-  *ierr = KSPBuildResidual(*ksp,*t,*v,V);
+  if (t) tp = *t;
+  if (v) vp = *v;
+  *ierr = KSPBuildResidual(*ksp,tp,vp,V);
 }
 
 void PETSC_STDCALL kspgetoptionsprefix_(KSP *ksp,CHAR prefix PETSC_MIXED_LEN(len),PetscErrorCode *ierr PETSC_END_LEN(len))
@@ -89,7 +94,7 @@ void PETSC_STDCALL kspfischerguesscreate_(KSP *ksp,PetscInt *model,PetscInt *siz
 
 void PETSC_STDCALL kspfischerguessdestroy_(KSPFischerGuess *guess,PetscErrorCode *ierr)
 {
-  *ierr = KSPFischerGuessDestroy(*guess);
+  *ierr = KSPFischerGuessDestroy(guess);
 }
 
 EXTERN_C_END

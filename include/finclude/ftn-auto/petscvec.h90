@@ -1,3 +1,11 @@
+        subroutine VecCreateNest(comm, nb, is, x, Y ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt nb ! PetscInt
+       IS is (*) ! IS
+       Vec x (*) ! Vec
+       Vec Y ! Vec
+       integer ierr
+       end subroutine
         subroutine VecStashGetInfo(vec, nstash, reallocs, bnstash,      &
      &breallocs ,ierr)
        Vec vec ! Vec
@@ -14,6 +22,16 @@
        end subroutine
         subroutine VecSetLocalToGlobalMappingBlock(x, mapping ,ierr)
        Vec x ! Vec
+       ISLocalToGlobalMapping mapping ! ISLocalToGlobalMapping
+       integer ierr
+       end subroutine
+        subroutine VecGetLocalToGlobalMapping(X, mapping ,ierr)
+       Vec X ! Vec
+       ISLocalToGlobalMapping mapping ! ISLocalToGlobalMapping
+       integer ierr
+       end subroutine
+        subroutine VecGetLocalToGlobalMappingBlock(X, mapping ,ierr)
+       Vec X ! Vec
        ISLocalToGlobalMapping mapping ! ISLocalToGlobalMapping
        integer ierr
        end subroutine
@@ -76,7 +94,7 @@
         subroutine VecSetOption(x, op, flag ,ierr)
        Vec x ! Vec
        VecOption op ! VecOption
-       PetscTruth flag ! PetscTruth
+       PetscBool flag ! PetscBool
        integer ierr
        end subroutine
         subroutine VecResetArray(vec ,ierr)
@@ -132,11 +150,6 @@
        PetscInt bs ! PetscInt
        integer ierr
        end subroutine
-        subroutine VecValid(v, flg ,ierr)
-       Vec v ! Vec
-       PetscTruth flg ! PetscTruth
-       integer ierr
-       end subroutine
         subroutine VecSetUp(v ,ierr)
        Vec v ! Vec
        integer ierr
@@ -182,7 +195,7 @@
         subroutine VecNormAvailable(x, type, available, val ,ierr)
        Vec x ! Vec
        NormType type ! NormType
-       PetscTruth available ! PetscTruth
+       PetscBool available ! PetscBool
        PetscReal val ! PetscReal
        integer ierr
        end subroutine
@@ -308,6 +321,18 @@
        Vec x (*) ! Vec
        integer ierr
        end subroutine
+        subroutine VecGetSubVector(X, is, Y ,ierr)
+       Vec X ! Vec
+       IS is ! IS
+       Vec Y ! Vec
+       integer ierr
+       end subroutine
+        subroutine VecRestoreSubVector(X, is, Y ,ierr)
+       Vec X ! Vec
+       IS is ! IS
+       Vec Y ! Vec
+       integer ierr
+       end subroutine
         subroutine VecPlaceArray(vec, array ,ierr)
        Vec vec ! Vec
        PetscScalar array (*) ! PetscScalar
@@ -320,57 +345,6 @@
        integer ierr
        end subroutine
         subroutine VecCreateShared(comm, n, nupper, v ,ierr)
-       integer comm ! MPI_Comm
-       PetscInt n ! PetscInt
-       PetscInt nupper ! PetscInt
-       Vec v ! Vec
-       integer ierr
-       end subroutine
-        subroutine VecGhostGetLocalForm(g, l ,ierr)
-       Vec g ! Vec
-       Vec l ! Vec
-       integer ierr
-       end subroutine
-        subroutine VecGhostRestoreLocalForm(g, l ,ierr)
-       Vec g ! Vec
-       Vec l ! Vec
-       integer ierr
-       end subroutine
-        subroutine VecGhostUpdateBegin(g, insertmode, scattermode ,ierr)&
-     &
-       Vec g ! Vec
-       InsertMode insertmode ! InsertMode
-       ScatterMode scattermode ! ScatterMode
-       integer ierr
-       end subroutine
-        subroutine VecGhostUpdateEnd(g, insertmode, scattermode ,ierr)
-       Vec g ! Vec
-       InsertMode insertmode ! InsertMode
-       ScatterMode scattermode ! ScatterMode
-       integer ierr
-       end subroutine
-        subroutine VecCreateGhost(comm, n, nupper, nghost, ghosts, vv , &
-     &ierr)
-       integer comm ! MPI_Comm
-       PetscInt n ! PetscInt
-       PetscInt nupper ! PetscInt
-       PetscInt nghost ! PetscInt
-       PetscInt ghosts (*) ! PetscInt
-       Vec vv ! Vec
-       integer ierr
-       end subroutine
-        subroutine VecCreateGhostBlock(comm, bs, n, nupper, nghost,     &
-     &ghosts, vv ,ierr)
-       integer comm ! MPI_Comm
-       PetscInt bs ! PetscInt
-       PetscInt n ! PetscInt
-       PetscInt nupper ! PetscInt
-       PetscInt nghost ! PetscInt
-       PetscInt ghosts (*) ! PetscInt
-       Vec vv ! Vec
-       integer ierr
-       end subroutine
-        subroutine VecCreateMPI(comm, n, nupper, v ,ierr)
        integer comm ! MPI_Comm
        PetscInt n ! PetscInt
        PetscInt nupper ! PetscInt
@@ -464,7 +438,7 @@
        end subroutine
         subroutine VecScatterGetMerged(ctx, flg ,ierr)
        VecScatter ctx ! VecScatter
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine VecScatterBegin(inctx, x, y, addv, mode ,ierr)
@@ -483,10 +457,6 @@
        ScatterMode mode ! ScatterMode
        integer ierr
        end subroutine
-        subroutine VecScatterDestroy(ctx ,ierr)
-       VecScatter ctx ! VecScatter
-       integer ierr
-       end subroutine
         subroutine VecScatterCopy(sctx, ctx ,ierr)
        VecScatter sctx ! VecScatter
        VecScatter ctx ! VecScatter
@@ -495,6 +465,12 @@
         subroutine VecScatterView(ctx, viewer ,ierr)
        VecScatter ctx ! VecScatter
        PetscViewer viewer ! PetscViewer
+       integer ierr
+       end subroutine
+        subroutine VecStrideSet(v, start, s ,ierr)
+       Vec v ! Vec
+       PetscInt start ! PetscInt
+       PetscScalar s ! PetscScalar
        integer ierr
        end subroutine
         subroutine VecStrideScale(v, start, scale ,ierr)
@@ -581,7 +557,7 @@
        Vec v ! Vec
        integer ierr
        end subroutine
-        subroutine VecSqrt(v ,ierr)
+        subroutine VecSqrtAbs(v ,ierr)
        Vec v ! Vec
        integer ierr
        end subroutine
@@ -609,13 +585,13 @@
         subroutine VecPermute(x, row, inv ,ierr)
        Vec x ! Vec
        IS row ! IS
-       PetscTruth inv ! PetscTruth
+       PetscBool inv ! PetscBool
        integer ierr
        end subroutine
         subroutine VecEqual(vec1, vec2, flg ,ierr)
        Vec vec1 ! Vec
        Vec vec2 ! Vec
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine VecScatterCreateToAll(vin, ctx, vout ,ierr)
@@ -628,5 +604,55 @@
        Vec vin ! Vec
        VecScatter ctx ! VecScatter
        Vec vout ! Vec
+       integer ierr
+       end subroutine
+        subroutine VecGhostGetLocalForm(g, l ,ierr)
+       Vec g ! Vec
+       Vec l ! Vec
+       integer ierr
+       end subroutine
+        subroutine VecGhostRestoreLocalForm(g, l ,ierr)
+       Vec g ! Vec
+       Vec l ! Vec
+       integer ierr
+       end subroutine
+        subroutine VecGhostUpdateBegin(g, insertmode, scattermode ,ierr)
+       Vec g ! Vec
+       InsertMode insertmode ! InsertMode
+       ScatterMode scattermode ! ScatterMode
+       integer ierr
+       end subroutine
+        subroutine VecGhostUpdateEnd(g, insertmode, scattermode ,ierr)
+       Vec g ! Vec
+       InsertMode insertmode ! InsertMode
+       ScatterMode scattermode ! ScatterMode
+       integer ierr
+       end subroutine
+        subroutine VecCreateGhost(comm, n, nupper, nghost, ghosts, vv , &
+     &ierr)
+       integer comm ! MPI_Comm
+       PetscInt n ! PetscInt
+       PetscInt nupper ! PetscInt
+       PetscInt nghost ! PetscInt
+       PetscInt ghosts (*) ! PetscInt
+       Vec vv ! Vec
+       integer ierr
+       end subroutine
+        subroutine VecCreateGhostBlock(comm, bs, n, nupper, nghost,     &
+     &ghosts, vv ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt bs ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt nupper ! PetscInt
+       PetscInt nghost ! PetscInt
+       PetscInt ghosts (*) ! PetscInt
+       Vec vv ! Vec
+       integer ierr
+       end subroutine
+        subroutine VecCreateMPI(comm, n, nupper, v ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt n ! PetscInt
+       PetscInt nupper ! PetscInt
+       Vec v ! Vec
        integer ierr
        end subroutine

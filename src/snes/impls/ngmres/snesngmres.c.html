@@ -1,0 +1,415 @@
+<center><a href="snesngmres.c">Actual source code: snesngmres.c</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:15:27+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><a name="line1">  1: </a><font color="#B22222">/* Defines the basic <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> object */</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/snes/impls/ngmres/snesngmres.h&gt;</font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscblaslapack.h&gt;</font>
+
+
+<a name="line6">  6: </a><font color="#B22222">/*MC</font>
+<a name="line7">  7: </a><font color="#B22222">  <A href="../../../../docs/manualpages/SNES/SNESNGMRES.html#SNESNGMRES">SNESNGMRES</A> - The Nonlinear Generalized Minimum Residual (NGMRES) method of Oosterlee and Washio.</font>
+
+<a name="line9">  9: </a><font color="#B22222">   Level: beginner</font>
+
+<a name="line11"> 11: </a><font color="#B22222">   "Krylov Subspace Acceleration of Nonlinear Multigrid with Application to Recirculating Flows", C. W. Oosterlee and T. Washio,</font>
+<a name="line12"> 12: </a><font color="#B22222">   SIAM Journal on Scientific Computing, 21(5), 2000.</font>
+
+<a name="line14"> 14: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(), <A href="../../../../docs/manualpages/SNES/SNESType.html#SNESType">SNESType</A> (for list of available types)</font>
+<a name="line15"> 15: </a><font color="#B22222">M*/</font>
+
+<a name="line19"> 19: </a><strong><font color="#4169E1"><a name="SNESReset_NGMRES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESReset_NGMRES(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line20"> 20: </a>{
+<a name="line21"> 21: </a>  SNES_NGMRES   *ngmres = (SNES_NGMRES*) snes-&gt;data;
+
+<a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroyVecs.html#VecDestroyVecs">VecDestroyVecs</A>(ngmres-&gt;msize, &amp;ngmres-&gt;rdot);
+<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroyVecs.html#VecDestroyVecs">VecDestroyVecs</A>(ngmres-&gt;msize, &amp;ngmres-&gt;xdot);
+<a name="line27"> 27: </a>  <font color="#4169E1">return</font>(0);
+<a name="line28"> 28: </a>}
+
+<a name="line32"> 32: </a><strong><font color="#4169E1"><a name="SNESDestroy_NGMRES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESDestroy_NGMRES(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line33"> 33: </a>{
+
+<a name="line37"> 37: </a>  SNESReset_NGMRES(snes);
+<a name="line38"> 38: </a>  <font color="#4169E1">if</font> (snes-&gt;work) {<A href="../../../../docs/manualpages/Vec/VecDestroyVecs.html#VecDestroyVecs">VecDestroyVecs</A>(snes-&gt;nwork, &amp;snes-&gt;work);}
+<a name="line39"> 39: </a>  <font color="#4169E1">if</font> (snes-&gt;data) {
+<a name="line40"> 40: </a>    SNES_NGMRES * ngmres = (SNES_NGMRES *)snes-&gt;data;
+<a name="line41"> 41: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree5.html#PetscFree5">PetscFree5</A>(ngmres-&gt;h, ngmres-&gt;beta, ngmres-&gt;xi, ngmres-&gt;r_norms, ngmres-&gt;q);
+<a name="line42"> 42: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ngmres-&gt;s);
+<a name="line43"> 43: </a><font color="#A020F0">#if PETSC_USE_COMPLEX</font>
+<a name="line44"> 44: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ngmres-&gt;rwork);
+<a name="line45"> 45: </a><font color="#A020F0">#endif</font>
+<a name="line46"> 46: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ngmres-&gt;work);
+<a name="line47"> 47: </a>  }
+<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(snes-&gt;data);
+<a name="line49"> 49: </a>  <font color="#4169E1">return</font>(0);
+<a name="line50"> 50: </a>}
+
+<a name="line54"> 54: </a><strong><font color="#4169E1"><a name="SNESSetUp_NGMRES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESSetUp_NGMRES(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line55"> 55: </a>{
+<a name="line56"> 56: </a>  SNES_NGMRES   *ngmres = (SNES_NGMRES *) snes-&gt;data;
+<a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> msize,hsize;
+
+<a name="line61"> 61: </a>  msize         = ngmres-&gt;msize;  <font color="#B22222">/* restart size */</font>
+<a name="line62"> 62: </a>  hsize         = msize * msize;
+
+
+<a name="line65"> 65: </a>  <font color="#B22222">/* explicit least squares minimization solve */</font>
+<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc5.html#PetscMalloc5">PetscMalloc5</A>(hsize,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;ngmres-&gt;h,
+<a name="line67"> 67: </a>                      msize,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;ngmres-&gt;beta,
+<a name="line68"> 68: </a>                      msize,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;ngmres-&gt;xi,
+<a name="line69"> 69: </a>                      msize,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;ngmres-&gt;r_norms,
+<a name="line70"> 70: </a>                      hsize,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;ngmres-&gt;q);
+<a name="line71"> 71: </a>  ngmres-&gt;nrhs = 1;
+<a name="line72"> 72: </a>  ngmres-&gt;lda = msize;
+<a name="line73"> 73: </a>  ngmres-&gt;ldb = msize;
+<a name="line74"> 74: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(msize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),&amp;ngmres-&gt;s);
+<a name="line75"> 75: </a>
+<a name="line76"> 76: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ngmres-&gt;h,hsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+<a name="line77"> 77: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ngmres-&gt;q,hsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+<a name="line78"> 78: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ngmres-&gt;xi,msize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+<a name="line79"> 79: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ngmres-&gt;beta,msize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+<a name="line80"> 80: </a>
+<a name="line81"> 81: </a>  ngmres-&gt;lwork = 12*msize;
+<a name="line82"> 82: </a><font color="#A020F0">#if PETSC_USE_COMPLEX</font>
+<a name="line83"> 83: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)*ngmres-&gt;lwork,&amp;ngmres-&gt;rwork);
+<a name="line84"> 84: </a><font color="#A020F0">#endif</font>
+<a name="line85"> 85: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*ngmres-&gt;lwork,&amp;ngmres-&gt;work);
+
+<a name="line87"> 87: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>(snes-&gt;vec_sol, ngmres-&gt;msize, &amp;ngmres-&gt;xdot);
+<a name="line88"> 88: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>(snes-&gt;vec_sol, ngmres-&gt;msize, &amp;ngmres-&gt;rdot);
+<a name="line89"> 89: </a>  <A href="../../../../docs/manualpages/SNES/SNESDefaultGetWork.html#SNESDefaultGetWork">SNESDefaultGetWork</A>(snes, 2);
+<a name="line90"> 90: </a>  <font color="#4169E1">return</font>(0);
+<a name="line91"> 91: </a>}
+
+<a name="line95"> 95: </a><strong><font color="#4169E1"><a name="SNESSetFromOptions_NGMRES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESSetFromOptions_NGMRES(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line96"> 96: </a>{
+<a name="line97"> 97: </a>  SNES_NGMRES   *ngmres = (SNES_NGMRES *) snes-&gt;data;
+<a name="line99"> 99: </a>
+<a name="line101">101: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(<font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> NGMRES options"</font>);
+<a name="line102">102: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>(<font color="#666666">"-snes_ngmres_m"</font>, <font color="#666666">"Number of directions"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>"</font>, ngmres-&gt;msize, &amp;ngmres-&gt;msize, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line103">103: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>(<font color="#666666">"-snes_ngmres_restart"</font>, <font color="#666666">"Maximum iterations before restart."</font>, <font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>"</font>, ngmres-&gt;k_rmax, &amp;ngmres-&gt;k_rmax, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line104">104: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(<font color="#666666">"-snes_ngmres_debug"</font>, <font color="#666666">"Debugging output for NGMRES"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>"</font>, ngmres-&gt;debug, &amp;ngmres-&gt;debug, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line105">105: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsReal.html#PetscOptionsReal">PetscOptionsReal</A>(<font color="#666666">"-snes_ngmres_gammaA"</font>, <font color="#666666">"Residual selection constant"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>"</font>, ngmres-&gt;gammaA, &amp;ngmres-&gt;gammaA, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line106">106: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsReal.html#PetscOptionsReal">PetscOptionsReal</A>(<font color="#666666">"-snes_ngmres_gammaC"</font>, <font color="#666666">"Residual restart constant"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>"</font>, ngmres-&gt;gammaC, &amp;ngmres-&gt;gammaC, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line107">107: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsReal.html#PetscOptionsReal">PetscOptionsReal</A>(<font color="#666666">"-snes_ngmres_epsilonB"</font>, <font color="#666666">"Difference selection constant"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>"</font>, ngmres-&gt;epsilonB, &amp;ngmres-&gt;epsilonB, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsReal.html#PetscOptionsReal">PetscOptionsReal</A>(<font color="#666666">"-snes_ngmres_deltaB"</font>, <font color="#666666">"Difference residual selection constant"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>"</font>, ngmres-&gt;deltaB, &amp;ngmres-&gt;deltaB, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsTail.html#PetscOptionsTail">PetscOptionsTail</A>();
+<a name="line110">110: </a>  <font color="#4169E1">if</font> ((ngmres-&gt;gammaA &gt; ngmres-&gt;gammaC) &amp;&amp; (ngmres-&gt;gammaC &gt; 2.)) ngmres-&gt;gammaC = ngmres-&gt;gammaA;
+<a name="line111">111: </a>  <font color="#4169E1">return</font>(0);
+<a name="line112">112: </a>}
+
+<a name="line116">116: </a><strong><font color="#4169E1"><a name="SNESView_NGMRES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESView_NGMRES(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
+<a name="line117">117: </a>{
+<a name="line118">118: </a>  SNES_NGMRES   *ngmres = (SNES_NGMRES *) snes-&gt;data;
+<a name="line119">119: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
+
+<a name="line123">123: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERASCII, &amp;iascii);
+<a name="line124">124: </a>  <font color="#4169E1">if</font> (iascii) {
+<a name="line125">125: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"  Size of space %d\n"</font>, ngmres-&gt;msize);
+<a name="line126">126: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"  Maximum iterations before restart %d\n"</font>, ngmres-&gt;k_rmax);
+<a name="line127">127: </a>  }
+<a name="line128">128: </a>  <font color="#4169E1">return</font>(0);
+<a name="line129">129: </a>}
+
+
+
+<a name="line135">135: </a><strong><font color="#4169E1"><a name="SNESSolve_NGMRES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESSolve_NGMRES(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line136">136: </a>{
+<a name="line137">137: </a>  <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>           pc;
+<a name="line138">138: </a>  SNES_NGMRES   *ngmres = (SNES_NGMRES *) snes-&gt;data;
+
+<a name="line140">140: </a>
+<a name="line141">141: </a>
+<a name="line142">142: </a>  <font color="#B22222">/* present solution, residual, and preconditioned residual */</font>
+<a name="line143">143: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x, r, b, d;
+<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x_A, r_A;
+
+<a name="line146">146: </a>  <font color="#B22222">/* previous iterations to construct the subspace */</font>
+<a name="line147">147: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            *rdot = ngmres-&gt;rdot;
+<a name="line148">148: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            *xdot = ngmres-&gt;xdot;
+
+<a name="line150">150: </a>  <font color="#B22222">/* coefficients and RHS to the minimization problem */</font>
+<a name="line151">151: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *beta = ngmres-&gt;beta;
+<a name="line152">152: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xi = ngmres-&gt;xi;
+<a name="line153">153: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      r_norm, r_A_norm;
+<a name="line154">154: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      nu;
+<a name="line155">155: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    alph_total = 0.;
+<a name="line156">156: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    qentry;
+<a name="line157">157: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i, j, k, k_restart, l, ivec;
+
+<a name="line159">159: </a>  <font color="#B22222">/* solution selection data */</font>
+<a name="line160">160: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> selectA, selectRestart;
+<a name="line161">161: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> d_norm, d_min_norm, d_cur_norm;
+<a name="line162">162: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> r_min_norm;
+
+
+<a name="line167">167: </a>  <font color="#B22222">/* variable initialization */</font>
+<a name="line168">168: </a>  snes-&gt;reason  = SNES_CONVERGED_ITERATING;
+<a name="line169">169: </a>  x             = snes-&gt;vec_sol;
+<a name="line170">170: </a>  r             = snes-&gt;vec_func;
+<a name="line171">171: </a>  b             = snes-&gt;vec_rhs;
+<a name="line172">172: </a>  x_A           = snes-&gt;vec_sol_update;
+<a name="line173">173: </a>  r_A           = snes-&gt;work[0];
+<a name="line174">174: </a>  d             = snes-&gt;work[1];
+<a name="line175">175: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,&amp;r);
+
+<a name="line177">177: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetPC.html#SNESGetPC">SNESGetPC</A>(snes, &amp;pc);
+<a name="line178">178: </a>  PetscObjectTakeAccess(snes);
+<a name="line179">179: </a>  snes-&gt;iter = 0;
+<a name="line180">180: </a>  snes-&gt;norm = 0.;
+<a name="line181">181: </a>  PetscObjectGrantAccess(snes);
+
+<a name="line183">183: </a>  <font color="#B22222">/* initialization */</font>
+
+<a name="line185">185: </a>  <font color="#B22222">/* r = F(x) */</font>
+<a name="line186">186: </a>  <A href="../../../../docs/manualpages/SNES/SNESComputeFunction.html#SNESComputeFunction">SNESComputeFunction</A>(snes, x, r);
+<a name="line187">187: </a>  <font color="#4169E1">if</font> (snes-&gt;domainerror) {
+<a name="line188">188: </a>    snes-&gt;reason = SNES_DIVERGED_FUNCTION_DOMAIN;
+<a name="line189">189: </a>    <font color="#4169E1">return</font>(0);
+<a name="line190">190: </a>  }
+
+<a name="line192">192: </a>  <font color="#B22222">/* nu = (r, r) */</font>
+<a name="line193">193: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(r, <A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>, &amp;r_norm);
+<a name="line194">194: </a>  r_min_norm = r_norm;
+<a name="line195">195: </a>  nu = r_norm*r_norm;
+<a name="line196">196: </a>  <font color="#4169E1">if</font> (PetscIsInfOrNanReal(r_norm)) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_FP, <font color="#666666">"Infinite or not-a-number generated in norm"</font>);
+
+<a name="line198">198: </a>  <font color="#B22222">/* q_{00} = nu  */</font>
+<a name="line199">199: </a>  Q(0,0) = nu;
+<a name="line200">200: </a>  ngmres-&gt;r_norms[0] = r_norm;
+<a name="line201">201: </a>  <font color="#B22222">/* rdot[0] = r */</font>
+<a name="line202">202: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x, xdot[0]);
+<a name="line203">203: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(r, rdot[0]);
+
+<a name="line205">205: </a>  PetscObjectTakeAccess(snes);
+<a name="line206">206: </a>  snes-&gt;norm = r_norm;
+<a name="line207">207: </a>  PetscObjectGrantAccess(snes);
+<a name="line208">208: </a>  SNESLogConvHistory(snes, r_norm, 0);
+<a name="line209">209: </a>  <A href="../../../../docs/manualpages/SNES/SNESMonitor.html#SNESMonitor">SNESMonitor</A>(snes, 0, r_norm);
+<a name="line210">210: </a>  (*snes-&gt;ops-&gt;converged)(snes,0,0.0,0.0,r_norm,&amp;snes-&gt;reason,snes-&gt;cnvP);
+<a name="line211">211: </a>  <font color="#4169E1">if</font> (snes-&gt;reason) <font color="#4169E1">return</font>(0);
+
+<a name="line213">213: </a>  k_restart = 1;
+<a name="line214">214: </a>  l = 1;
+<a name="line215">215: </a>  <font color="#4169E1">for</font> (k=1; k&lt;snes-&gt;max_its; k++) {
+
+<a name="line217">217: </a>    <font color="#B22222">/* select which vector of the stored subspace will be updated */</font>
+<a name="line218">218: </a>    ivec = k_restart % ngmres-&gt;msize; <font color="#B22222">/* replace the last used part of the subspace */</font>
+
+
+<a name="line221">221: </a>    <font color="#B22222">/* Computation of x^M */</font>
+<a name="line222">222: </a>    <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(pc, b, x);
+<a name="line223">223: </a>    <font color="#B22222">/* r = F(x) */</font>
+<a name="line224">224: </a>    <A href="../../../../docs/manualpages/SNES/SNESComputeFunction.html#SNESComputeFunction">SNESComputeFunction</A>(snes, x, r);
+<a name="line225">225: </a>    <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(r, <A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>, &amp;r_norm);
+<a name="line226">226: </a>    <font color="#B22222">/* nu = (r, r) */</font>
+<a name="line227">227: </a>    ngmres-&gt;r_norms[ivec] = r_norm;
+<a name="line228">228: </a>    nu = r_norm*r_norm;
+<a name="line229">229: </a>    <font color="#4169E1">if</font> (r_min_norm &gt; r_norm) r_min_norm = r_norm;  <font color="#B22222">/* the minimum norm is now of r^M */</font>
+
+<a name="line231">231: </a>    <font color="#B22222">/* construct the right hand side and xi factors */</font>
+<a name="line232">232: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; l; i++) {
+<a name="line233">233: </a>      <A href="../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(rdot[i], r, &amp;xi[i]);
+<a name="line234">234: </a>      beta[i] = nu - xi[i];
+<a name="line235">235: </a>    }
+
+<a name="line237">237: </a>    <font color="#B22222">/* construct h */</font>
+<a name="line238">238: </a>    <font color="#4169E1">for</font> (j = 0; j &lt; l; j++) {
+<a name="line239">239: </a>      <font color="#4169E1">for</font> (i = 0; i &lt; l; i++) {
+<a name="line240">240: </a>        H(i, j) = Q(i, j) - xi[i] - xi[j] + nu;
+<a name="line241">241: </a>      }
+<a name="line242">242: </a>    }
+<a name="line243">243: </a><font color="#A020F0">#ifdef PETSC_MISSING_LAPACK_GELSS</font>
+<a name="line244">244: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP, <font color="#666666">"NGMRES with LS requires the LAPACK GELSS routine."</font>);
+<a name="line245">245: </a><font color="#A020F0">#else</font>
+<a name="line246">246: </a>    ngmres-&gt;m = PetscBLASIntCast(l);
+<a name="line247">247: </a>    ngmres-&gt;n = PetscBLASIntCast(l);
+<a name="line248">248: </a>    ngmres-&gt;info = PetscBLASIntCast(0);
+<a name="line249">249: </a>    ngmres-&gt;rcond = -1.;
+<a name="line250">250: </a>    ngmres-&gt;nrhs = 1;
+<a name="line251">251: </a><font color="#A020F0">#ifdef PETSC_USE_COMPLEX</font>
+<a name="line252">252: </a>    LAPACKgelss_(&amp;ngmres-&gt;m,
+<a name="line253">253: </a>                 &amp;ngmres-&gt;n,
+<a name="line254">254: </a>                 &amp;ngmres-&gt;nrhs,
+<a name="line255">255: </a>                 ngmres-&gt;h,
+<a name="line256">256: </a>                 &amp;ngmres-&gt;lda,
+<a name="line257">257: </a>                 ngmres-&gt;beta,
+<a name="line258">258: </a>                 &amp;ngmres-&gt;ldb,
+<a name="line259">259: </a>                 ngmres-&gt;s,
+<a name="line260">260: </a>                 &amp;ngmres-&gt;rcond,
+<a name="line261">261: </a>                 &amp;ngmres-&gt;rank,
+<a name="line262">262: </a>                 ngmres-&gt;work,
+<a name="line263">263: </a>                 &amp;ngmres-&gt;lwork,
+<a name="line264">264: </a>                 ngmres-&gt;rwork,
+<a name="line265">265: </a>                 &amp;ngmres-&gt;info);
+<a name="line266">266: </a><font color="#A020F0">#else</font>
+<a name="line267">267: </a>    LAPACKgelss_(&amp;ngmres-&gt;m,
+<a name="line268">268: </a>                 &amp;ngmres-&gt;n,
+<a name="line269">269: </a>                 &amp;ngmres-&gt;nrhs,
+<a name="line270">270: </a>                 ngmres-&gt;h,
+<a name="line271">271: </a>                 &amp;ngmres-&gt;lda,
+<a name="line272">272: </a>                 ngmres-&gt;beta,
+<a name="line273">273: </a>                 &amp;ngmres-&gt;ldb,
+<a name="line274">274: </a>                 ngmres-&gt;s,
+<a name="line275">275: </a>                 &amp;ngmres-&gt;rcond,
+<a name="line276">276: </a>                 &amp;ngmres-&gt;rank,
+<a name="line277">277: </a>                 ngmres-&gt;work,
+<a name="line278">278: </a>                 &amp;ngmres-&gt;lwork,
+<a name="line279">279: </a>                 &amp;ngmres-&gt;info);
+<a name="line280">280: </a><font color="#A020F0">#endif</font>
+<a name="line281">281: </a>    <font color="#4169E1">if</font> (ngmres-&gt;info &lt; 0) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Bad argument to GELSS"</font>);
+<a name="line282">282: </a>    <font color="#4169E1">if</font> (ngmres-&gt;info &gt; 0) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"SVD failed to converge"</font>);
+<a name="line283">283: </a><font color="#A020F0">#endif</font>
+
+<a name="line285">285: </a>    alph_total = 0.;
+<a name="line286">286: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; l; i++) {
+<a name="line287">287: </a>      alph_total += beta[i];
+<a name="line288">288: </a>    }
+<a name="line289">289: </a>    <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x, x_A);
+<a name="line290">290: </a>    <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(x_A, 1. - alph_total);
+
+<a name="line292">292: </a>    <font color="#4169E1">for</font>(i=0;i&lt;l;i++){
+<a name="line293">293: </a>      ierr= <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(x_A, beta[i], xdot[i]);
+<a name="line294">294: </a>    }
+<a name="line295">295: </a>    <A href="../../../../docs/manualpages/SNES/SNESComputeFunction.html#SNESComputeFunction">SNESComputeFunction</A>(snes, x_A, r_A);
+<a name="line296">296: </a>    <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(r_A, <A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>, &amp;r_A_norm);
+
+<a name="line298">298: </a>    selectA = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line299">299: </a>    <font color="#B22222">/* Conditions for choosing the accelerated answer */</font>
+
+<a name="line301">301: </a>    <font color="#B22222">/* Criterion A -- the norm of the function isn't increased above the minimum by too much */</font>
+<a name="line302">302: </a>    <font color="#4169E1">if</font> (r_A_norm &gt;= ngmres-&gt;gammaA*r_min_norm) {
+<a name="line303">303: </a>      selectA = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line304">304: </a>    }
+<a name="line305">305: </a>
+<a name="line306">306: </a>    <font color="#B22222">/* Criterion B -- the choice of x^A isn't too close to some other choice */</font>
+<a name="line307">307: </a>    ierr=<A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x_A,d);
+<a name="line308">308: </a>    ierr=<A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(d,-1,x);
+<a name="line309">309: </a>    ierr=<A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(d,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;d_norm);
+<a name="line310">310: </a>    d_min_norm = -1.0;
+<a name="line311">311: </a>    <font color="#4169E1">for</font>(i=0;i&lt;l;i++) {
+<a name="line312">312: </a>      ierr=<A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x_A,d);
+<a name="line313">313: </a>      ierr=<A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(d,-1,xdot[i]);
+<a name="line314">314: </a>      ierr=<A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(d,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;d_cur_norm);
+<a name="line315">315: </a>      <font color="#4169E1">if</font>((d_cur_norm &lt; d_min_norm) || (d_min_norm &lt; 0.0)) d_min_norm = d_cur_norm;
+<a name="line316">316: </a>    }
+<a name="line317">317: </a>    <font color="#4169E1">if</font> (ngmres-&gt;epsilonB*d_norm&lt;d_min_norm || sqrt(r_norm)&lt;ngmres-&gt;deltaB*sqrt(r_min_norm)) {
+<a name="line318">318: </a>    } <font color="#4169E1">else</font> {
+<a name="line319">319: </a>      selectA=<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line320">320: </a>    }
+
+
+<a name="line323">323: </a>    <font color="#4169E1">if</font> (selectA) {
+<a name="line324">324: </a>      <font color="#4169E1">if</font> (ngmres-&gt;debug)
+<a name="line325">325: </a>        <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, <font color="#666666">"picked r_A, ||r_A||_2 = %e, ||r_M||_2 = %e\n"</font>, r_A_norm, r_norm);
+<a name="line326">326: </a>      <font color="#B22222">/* copy it over */</font>
+<a name="line327">327: </a>      r_norm = r_A_norm;
+<a name="line328">328: </a>      nu = r_norm*r_norm;
+<a name="line329">329: </a>      <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(r_A, r);
+<a name="line330">330: </a>      <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x_A, x);
+<a name="line331">331: </a>    } <font color="#4169E1">else</font> {
+<a name="line332">332: </a>      <font color="#4169E1">if</font>(ngmres-&gt;debug)
+<a name="line333">333: </a>        <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, <font color="#666666">"picked r_M, ||r_A||_2 = %e, ||r_M||_2 = %e\n"</font>, r_A_norm, r_norm);
+<a name="line334">334: </a>    }
+
+<a name="line336">336: </a>    selectRestart = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line337">337: </a>
+<a name="line338">338: </a>    <font color="#B22222">/* maximum iteration criterion */</font>
+<a name="line339">339: </a>    <font color="#4169E1">if</font> (k_restart &gt; ngmres-&gt;k_rmax) {
+<a name="line340">340: </a>      selectRestart = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line341">341: </a>    }
+
+<a name="line343">343: </a>    <font color="#B22222">/* difference stagnation restart */</font>
+<a name="line344">344: </a>    <font color="#4169E1">if</font>         ((ngmres-&gt;epsilonB*d_norm &gt; d_min_norm) &amp;&amp;
+<a name="line345">345: </a>         (sqrt(r_A_norm) &gt; ngmres-&gt;deltaB*sqrt(r_min_norm))) {
+<a name="line346">346: </a>      <font color="#4169E1">if</font> (ngmres-&gt;debug)
+<a name="line347">347: </a>        <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, <font color="#666666">"difference restart: %e &gt; %e\n"</font>, ngmres-&gt;epsilonB*d_norm, d_min_norm);
+<a name="line348">348: </a>      selectRestart = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line349">349: </a>    }
+<a name="line350">350: </a>
+<a name="line351">351: </a>    <font color="#B22222">/* residual stagnation restart */</font>
+<a name="line352">352: </a>    <font color="#4169E1">if</font> (sqrt(r_A_norm) &gt; ngmres-&gt;gammaC*sqrt(r_min_norm)) {
+<a name="line353">353: </a>      <font color="#4169E1">if</font> (ngmres-&gt;debug)
+<a name="line354">354: </a>        <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, <font color="#666666">"residual restart: %e &gt; %e\n"</font>, sqrt(r_A_norm), ngmres-&gt;gammaC*sqrt(r_min_norm));
+<a name="line355">355: </a>      selectRestart = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line356">356: </a>    }
+
+<a name="line358">358: </a>    <font color="#4169E1">if</font> (selectRestart) {
+<a name="line359">359: </a>      <font color="#4169E1">if</font> (ngmres-&gt;debug)
+<a name="line360">360: </a>        <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, <font color="#666666">"Restarted at iteration %d\n"</font>, k_restart);
+<a name="line361">361: </a>      k_restart = 1;
+<a name="line362">362: </a>      l = 1;
+<a name="line363">363: </a>      <font color="#B22222">/* q_{00} = nu */</font>
+<a name="line364">364: </a>      ngmres-&gt;r_norms[0] = r_norm;
+<a name="line365">365: </a>      nu = r_norm*r_norm;
+<a name="line366">366: </a>      Q(0,0) = nu;
+<a name="line367">367: </a>      <font color="#B22222">/* rdot[0] = r */</font>
+<a name="line368">368: </a>      <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x, xdot[0]);
+<a name="line369">369: </a>      <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(r, rdot[0]);
+<a name="line370">370: </a>    } <font color="#4169E1">else</font> {
+<a name="line371">371: </a>      <font color="#B22222">/* select the current size of the subspace */</font>
+<a name="line372">372: </a>      <font color="#4169E1">if</font> (l &lt; ngmres-&gt;msize) {
+<a name="line373">373: </a>        l++;
+<a name="line374">374: </a>      }
+<a name="line375">375: </a>      k_restart++;
+<a name="line376">376: </a>      <font color="#B22222">/* place the current entry in the list of previous entries */</font>
+<a name="line377">377: </a>      <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(r, rdot[ivec]);
+<a name="line378">378: </a>      <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x, xdot[ivec]);
+<a name="line379">379: </a>      ngmres-&gt;r_norms[ivec] = r_norm;
+<a name="line380">380: </a>      <font color="#4169E1">if</font> (r_min_norm &gt; r_norm) r_min_norm = r_norm;  <font color="#B22222">/* the minimum norm is now of r^A */</font>
+<a name="line381">381: </a>      <font color="#4169E1">for</font> (i = 0; i &lt; l; i++) {
+<a name="line382">382: </a>        <A href="../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(r, rdot[i], &amp;qentry);
+<a name="line383">383: </a>        Q(i, ivec) = qentry;
+<a name="line384">384: </a>        Q(ivec, i) = qentry;
+<a name="line385">385: </a>      }
+<a name="line386">386: </a>    }
+<a name="line387">387: </a>
+<a name="line388">388: </a>    SNESLogConvHistory(snes, r_norm, k);
+<a name="line389">389: </a>    <A href="../../../../docs/manualpages/SNES/SNESMonitor.html#SNESMonitor">SNESMonitor</A>(snes, k, r_norm);
+
+<a name="line391">391: </a>    snes-&gt;iter =k;
+<a name="line392">392: </a>    (*snes-&gt;ops-&gt;converged)(snes,snes-&gt;iter,0.0,0.0,r_norm,&amp;snes-&gt;reason,snes-&gt;cnvP);
+<a name="line393">393: </a>    <font color="#4169E1">if</font> (snes-&gt;reason) <font color="#4169E1">return</font>(0);
+<a name="line394">394: </a>  }
+<a name="line395">395: </a>  snes-&gt;reason = <A href="../../../../docs/manualpages/SNES/SNES_DIVERGED_MAX_IT.html#SNES_DIVERGED_MAX_IT">SNES_DIVERGED_MAX_IT</A>;
+<a name="line396">396: </a>  <font color="#4169E1">return</font>(0);
+<a name="line397">397: </a>}
+
+
+
+<a name="line404">404: </a><strong><font color="#4169E1"><a name="SNESCreate_NGMRES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESCreate_NGMRES(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line405">405: </a>{
+<a name="line406">406: </a>  SNES_NGMRES   *ngmres;
+
+<a name="line410">410: </a>  snes-&gt;ops-&gt;destroy        = SNESDestroy_NGMRES;
+<a name="line411">411: </a>  snes-&gt;ops-&gt;setup          = SNESSetUp_NGMRES;
+<a name="line412">412: </a>  snes-&gt;ops-&gt;setfromoptions = SNESSetFromOptions_NGMRES;
+<a name="line413">413: </a>  snes-&gt;ops-&gt;view           = SNESView_NGMRES;
+<a name="line414">414: </a>  snes-&gt;ops-&gt;solve          = SNESSolve_NGMRES;
+<a name="line415">415: </a>  snes-&gt;ops-&gt;reset          = SNESReset_NGMRES;
+
+<a name="line417">417: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(snes, SNES_NGMRES, &amp;ngmres);
+<a name="line418">418: </a>  snes-&gt;data = (void*) ngmres;
+<a name="line419">419: </a>  ngmres-&gt;msize = 10;
+<a name="line420">420: </a>  ngmres-&gt;debug = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+
+<a name="line422">422: </a>  ngmres-&gt;gammaA = 2.;
+<a name="line423">423: </a>  ngmres-&gt;gammaC = 2.;
+<a name="line424">424: </a>  ngmres-&gt;deltaB = 0.9;
+<a name="line425">425: </a>  ngmres-&gt;epsilonB = 0.1;
+<a name="line426">426: </a>  ngmres-&gt;k_rmax = 200;
+
+<a name="line428">428: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetPC.html#SNESGetPC">SNESGetPC</A>(snes, &amp;snes-&gt;pc);
+<a name="line429">429: </a>  <font color="#4169E1">return</font>(0);
+<a name="line430">430: </a>}
+</pre>
+</body>
+
+</html>

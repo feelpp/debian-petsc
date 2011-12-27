@@ -10,7 +10,7 @@ writes to a binary file, only from the first process
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscViewerBinaryWrite(PetscViewer viewer,void *data,PetscInt count,PetscDataType dtype,PetscTruth istemp)
+PetscErrorCode  PetscViewerBinaryWrite(PetscViewer viewer,void *data,PetscInt count,PetscDataType dtype,PetscBool  istemp)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -41,4 +41,6 @@ Notes: because byte-swapping may be done on the values in data it cannot be decl
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex61gen.c.html">src/snes/examples/tutorials/ex61gen.c.html</A><BR>
 </BODY></HTML>

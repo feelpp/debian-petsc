@@ -6,7 +6,7 @@
 #if !defined(__LGMRES)
 #define __LGMRES
 
-#include "private/kspimpl.h" /*includes petscksp.h */
+#include <private/kspimpl.h> /*includes petscksp.h */
 
   typedef struct {
     /* Hessenberg matrix and orthogonalization information. */ 
@@ -76,6 +76,7 @@
     PetscInt    aug_vecs_allocated;    /* aug_vecs_allocated is the total number of augmentation vecs 
                                           available - used to simplify the dynamic
                                        allocation of vectors */
+    PetscScalar *hwork;              /* work array to hold Hessenberg product */
 
     PetscInt    augwork_alloc;       /*size of chunk allocated for augmentation vectors */ 
 

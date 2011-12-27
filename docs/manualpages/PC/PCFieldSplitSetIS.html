@@ -10,19 +10,26 @@ Sets the exact elements for field
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitSetIS(PC pc,IS is)
+#include "petscdmcomposite.h" 
+PetscErrorCode  PCFieldSplitSetIS(PC pc,const char splitname[],IS is)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc  </B></TD><TD>- the preconditioner context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is </B></TD><TD>- the index set that defines the vector elements in this field
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>splitname </B></TD><TD>- name of this split, if <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> the number of the split is used
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is </B></TD><TD>- the index set that defines the vector elements in this field
+</TD></TR></TABLE>
 <P>
 <P>
-Notes: Use <A HREF="../PC/PCFieldSplitSetFields.html#PCFieldSplitSetFields">PCFieldSplitSetFields</A>(), for fields defined by strided types.
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+Use <A HREF="../PC/PCFieldSplitSetFields.html#PCFieldSplitSetFields">PCFieldSplitSetFields</A>(), for fields defined by strided types.
+<P>
+This function is called once per split (it creates a new split each time).  Solve options
+for this split will be available under the prefix -fieldsplit_SPLITNAME_.
 <P>
 
 <P>
@@ -35,4 +42,7 @@ Notes: Use <A HREF="../PC/PCFieldSplitSetFields.html#PCFieldSplitSetFields">PCFi
 <BR><A HREF="./index.html">Index of all PC routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 </BODY></HTML>

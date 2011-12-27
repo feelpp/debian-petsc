@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:02+00:00">
+<meta name="date" content="2011-10-29T19:12:32+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,7 +12,7 @@
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Solves a linear system with <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>.  This problem is\n\</font>
 <a name="line3">  3: </a><font color="#666666">intended to test the complex numbers version of various solvers.\n\n"</font>;
 
-<a name="line5"> 5: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line7">  7: </a><font color="#4169E1">typedef</font> <font color="#4169E1">enum</font> {TEST_1,TEST_2,TEST_3,HELMHOLTZ_1,HELMHOLTZ_2} TestType;
 
@@ -26,7 +26,7 @@
 <a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;
 <a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A>    rctx;
 <a name="line22"> 22: </a>  TestType       type;
-<a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
 <a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 <a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-n"</font>,&amp;n,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
@@ -49,7 +49,7 @@
 
 <a name="line44"> 44: </a>  use_random = 1;
 <a name="line45"> 45: </a>  flg        = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-norandom"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-norandom"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line47"> 47: </a>  <font color="#4169E1">if</font> (flg) {
 <a name="line48"> 48: </a>    use_random = 0;
 <a name="line49"> 49: </a>    <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(u,pfive);
@@ -66,7 +66,7 @@
 <a name="line60"> 60: </a>  FormTestMatrix(A,n,type);
 <a name="line61"> 61: </a>  <A href="../../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(A,u,b);
 <a name="line62"> 62: </a>  flg  = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-printout"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-printout"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line64"> 64: </a>  <font color="#4169E1">if</font> (flg) {
 <a name="line65"> 65: </a>    <A href="../../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(A,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line66"> 66: </a>    <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(u,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
@@ -87,10 +87,10 @@
 <a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %A,Iterations %D\n"</font>,norm,its);
 
 <a name="line83"> 83: </a>  <font color="#B22222">/* Free work space */</font>
-<a name="line84"> 84: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line85"> 85: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b); <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line86"> 86: </a>  <font color="#4169E1">if</font> (use_random) {<A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rctx);}
-<a name="line87"> 87: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
+<a name="line84"> 84: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line85"> 85: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b); <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line86"> 86: </a>  <font color="#4169E1">if</font> (use_random) {<A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rctx);}
+<a name="line87"> 87: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
 <a name="line88"> 88: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line89"> 89: </a>  <font color="#4169E1">return</font> 0;
 <a name="line90"> 90: </a>}
@@ -98,7 +98,7 @@
 <a name="line94"> 94: </a><strong><font color="#4169E1"><a name="FormTestMatrix"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormTestMatrix(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,TestType type)</font></strong>
 <a name="line95"> 95: </a>{
 <a name="line96"> 96: </a><font color="#A020F0">#if !defined(PETSC_USE_COMPLEX)</font>
-<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"FormTestMatrix: These problems require complex numbers."</font>);
+<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,1,<font color="#666666">"FormTestMatrix: These problems require complex numbers."</font>);
 <a name="line98"> 98: </a><font color="#A020F0">#else</font>
 
 <a name="line100">100: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    val[5];
@@ -174,7 +174,7 @@
 <a name="line171">171: </a>      *val = 4.0 - sigma1*h2 + sigma2*h2;
 <a name="line172">172: </a>      <A href="../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,1,&amp;Ii,1,&amp;Ii,val,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line173">173: </a>    }
-<a name="line174">174: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rctx);
+<a name="line174">174: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rctx);
 <a name="line175">175: </a>  }
 <a name="line176">176: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == HELMHOLTZ_2) {
 <a name="line177">177: </a>    <font color="#B22222">/* Problem domain: unit square: (0,1) x (0,1)</font>
@@ -204,7 +204,7 @@
 <a name="line201">201: </a>      <A href="../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,1,&amp;Ii,1,&amp;Ii,val,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line202">202: </a>    }
 <a name="line203">203: </a>  }
-<a name="line204">204: </a>  <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"FormTestMatrix: unknown test matrix type"</font>);
+<a name="line204">204: </a>  <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,1,<font color="#666666">"FormTestMatrix: unknown test matrix type"</font>);
 
 <a name="line206">206: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A,MAT_FINAL_ASSEMBLY);
 <a name="line207">207: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A,MAT_FINAL_ASSEMBLY);

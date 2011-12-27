@@ -10,7 +10,7 @@ Returns the Jacobian matrix and optionally the user  provided context for evalua
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetJacobian(SNES snes,Mat *A,Mat *B,PetscErrorCode (**func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void **ctx)
+PetscErrorCode  SNESGetJacobian(SNES snes,Mat *A,Mat *B,PetscErrorCode (**func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void **ctx)
 </PRE>
 Not Collective, but <A HREF="../Mat/Mat.html#Mat">Mat</A> object will be parallel if <A HREF="../SNES/SNES.html#SNES">SNES</A> object is
 <P>

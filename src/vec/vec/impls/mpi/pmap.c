@@ -1,9 +1,11 @@
-#define PETSCVEC_DLL
+
 /*
    This file contains routines for basic map object implementation.
 */
 
-#include "private/vecimpl.h"   /*I  "petscvec.h"   I*/
+#include <private/vecimpl.h>   /*I  "petscvec.h"   I*/
+#undef __FUNCT__  
+#define __FUNCT__ "PetscLayoutCreate"
 /*@C
      PetscLayoutCreate - Allocates PetscLayout space and sets the map contents to the default.
 
@@ -20,11 +22,8 @@
        PetscLayoutSetBlockSize(PetscLayout,1);
        PetscLayoutSetSize(PetscLayout,n) or PetscLayoutSetLocalSize(PetscLayout,N);
        PetscLayoutSetUp(PetscLayout);
-       PetscLayoutGetSize(PetscLayout,PetscInt *);
+       PetscLayoutGetSize(PetscLayout,PetscInt *); or PetscLayoutGetLocalSize(PetscLayout,PetscInt *;)
        PetscLayoutDestroy(PetscLayout);
-
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
 
       The PetscLayout object and methods are intended to be used in the PETSc Vec and Mat implementions; it is 
       recommended they not be used in user codes unless you really gain something in their use.
@@ -36,14 +35,12 @@
           PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetBlockSize(), PetscLayoutSetUp()
 
 @*/
-#undef __FUNCT__  
-#define __FUNCT__ "PetscLayoutInitialize"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutCreate(MPI_Comm comm,PetscLayout *map)
+PetscErrorCode  PetscLayoutCreate(MPI_Comm comm,PetscLayout *map)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscNew(struct _p_PetscLayout,map);CHKERRQ(ierr);
+  ierr = PetscNew(struct _n_PetscLayout,map);CHKERRQ(ierr);
   (*map)->comm   = comm;
   (*map)->bs     = -1;
   (*map)->n      = -1;
@@ -64,30 +61,31 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutCreate(MPI_Comm comm,PetscLayout *m
 
    Level: developer
 
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
-
       The PetscLayout object and methods are intended to be used in the PETSc Vec and Mat implementions; it is 
       recommended they not be used in user codes unless you really gain something in their use.
 
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutSetLocalSize(), PetscLayoutSetSize(), PetscLayoutGetSize(), PetscLayoutGetLocalSize(), PetscLayout, PetscLayoutInitialize(),
+.seealso: PetscLayoutSetLocalSize(), PetscLayoutSetSize(), PetscLayoutGetSize(), PetscLayoutGetLocalSize(), PetscLayout, PetscLayoutCreate(),
           PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetBlockSize(), PetscLayoutSetUp()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutDestroy"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutDestroy(PetscLayout map)
+PetscErrorCode  PetscLayoutDestroy(PetscLayout *map)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!map->refcnt--) {
-    if (map->range) {ierr = PetscFree(map->range);CHKERRQ(ierr);}
-    ierr = PetscFree(map);CHKERRQ(ierr);
+  if (!*map) PetscFunctionReturn(0);
+  if (!(*map)->refcnt--) {
+    ierr = PetscFree((*map)->range);CHKERRQ(ierr);
+    ierr = ISLocalToGlobalMappingDestroy(&(*map)->mapping);CHKERRQ(ierr);
+    ierr = ISLocalToGlobalMappingDestroy(&(*map)->bmapping);CHKERRQ(ierr);
+    ierr = PetscFree((*map));CHKERRQ(ierr);
   }
+  *map = PETSC_NULL;
   PetscFunctionReturn(0);
 }
 
@@ -103,14 +101,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutDestroy(PetscLayout map)
    Level: developer
 
     Notes: Typical calling sequence
-       PetscLayoutInitialize(MPI_Comm,PetscLayout *);
+       PetscLayoutCreate(MPI_Comm,PetscLayout *);
        PetscLayoutSetBlockSize(PetscLayout,1);
        PetscLayoutSetSize(PetscLayout,n) or PetscLayoutSetLocalSize(PetscLayout,N); or both
        PetscLayoutSetUp(PetscLayout);
        PetscLayoutGetSize(PetscLayout,PetscInt *);
 
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
 
        If the local size, global size are already set and range exists then this does nothing.
 
@@ -118,19 +114,19 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutDestroy(PetscLayout map)
       Not available from Fortran
 
 .seealso: PetscLayoutSetLocalSize(), PetscLayoutSetSize(), PetscLayoutGetSize(), PetscLayoutGetLocalSize(), PetscLayout, PetscLayoutDestroy(),
-          PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetBlockSize(), PetscLayoutInitialize()
+          PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetBlockSize(), PetscLayoutCreate()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutSetUp"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutSetUp(PetscLayout map)
+PetscErrorCode  PetscLayoutSetUp(PetscLayout map)
 {
   PetscMPIInt    rank,size;
   PetscInt       p;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (map->bs <=0) {SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"BlockSize not yet set");}
+  if (map->bs <=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"BlockSize not yet set");
   if ((map->n >= 0) && (map->N >= 0) && (map->range)) PetscFunctionReturn(0);
 
   ierr = MPI_Comm_size(map->comm, &size);CHKERRQ(ierr);
@@ -173,23 +169,126 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutSetUp(PetscLayout map)
 
     Notes: PetscLayoutSetUp() does not need to be called on the resulting PetscLayout
 
-.seealso: PetscLayoutCreate(), PetscLayoutDestroy(), PetscLayoutSetUp()
+    Developer Note: Unlike all other copy routines this destroys any input object and makes a new one. This routine should be fixed to have a PetscLayoutDuplicate() 
+      that ONLY creates a new one and a PetscLayoutCopy() that truely copies the data and does not delete the old object.
+
+.seealso: PetscLayoutCreate(), PetscLayoutDestroy(), PetscLayoutSetUp(), PetscLayoutReference()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutCopy(PetscLayout in,PetscLayout *out)
+PetscErrorCode  PetscLayoutCopy(PetscLayout in,PetscLayout *out)
 {
   PetscMPIInt    size;
   PetscErrorCode ierr;
   MPI_Comm       comm = in->comm;
 
   PetscFunctionBegin;
-  if (*out) {ierr = PetscLayoutDestroy(*out);CHKERRQ(ierr);}
+  ierr = PetscLayoutDestroy(out);CHKERRQ(ierr);
   ierr = PetscLayoutCreate(comm,out);CHKERRQ(ierr);
   ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr);
-  ierr = PetscMemcpy(*out,in,sizeof(struct _p_PetscLayout));CHKERRQ(ierr);
+  ierr = PetscMemcpy(*out,in,sizeof(struct _n_PetscLayout));CHKERRQ(ierr);
   ierr = PetscMalloc((size+1)*sizeof(PetscInt),&(*out)->range);CHKERRQ(ierr);
   ierr = PetscMemcpy((*out)->range,in->range,(size+1)*sizeof(PetscInt));CHKERRQ(ierr);
   (*out)->refcnt = 0;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscLayoutReference"
+/*@C
+
+    PetscLayoutReference - Causes a PETSc Vec or Mat to share a PetscLayout with one that already exists. Used by Vec/MatDuplicate_XXX() 
+
+     Collective on PetscLayout
+
+    Input Parameter:
+.     in - input PetscLayout to be copied
+
+    Output Parameter:
+.     out - the reference location
+
+   Level: developer
+
+    Notes: PetscLayoutSetUp() does not need to be called on the resulting PetscLayout
+
+    If the out location already contains a PetscLayout it is destroyed
+
+.seealso: PetscLayoutCreate(), PetscLayoutDestroy(), PetscLayoutSetUp(), PetscLayoutCopy()
+
+@*/
+PetscErrorCode  PetscLayoutReference(PetscLayout in,PetscLayout *out)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  in->refcnt++;
+  ierr = PetscLayoutDestroy(out);CHKERRQ(ierr);
+  *out = in;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscLayoutSetISLocalToGlobalMapping"
+/*@C
+
+    PetscLayoutSetISLocalToGlobalMapping - sets a ISLocalGlobalMapping into a PetscLayout
+
+     Collective on PetscLayout
+
+    Input Parameter:
++     in - input PetscLayout
+-     ltog - the local to global mapping
+
+
+   Level: developer
+
+    Notes: PetscLayoutSetUp() does not need to be called on the resulting PetscLayout
+
+    If the ltog location already contains a PetscLayout it is destroyed
+
+.seealso: PetscLayoutCreate(), PetscLayoutDestroy(), PetscLayoutSetUp(), PetscLayoutCopy(), PetscLayoutSetLocalToGlobalMappingBlock()
+
+@*/
+PetscErrorCode  PetscLayoutSetISLocalToGlobalMapping(PetscLayout in,ISLocalToGlobalMapping ltog)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = PetscObjectReference((PetscObject)ltog);CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingDestroy(&in->mapping);CHKERRQ(ierr);
+  in->mapping = ltog;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscLayoutSetISLocalToGlobalMappingBlock"
+/*@C
+
+    PetscLayoutSetISLocalToGlobalMappingBlock - sets a ISLocalGlobalMapping into a PetscLayout
+
+     Collective on PetscLayout
+
+    Input Parameter:
++     in - input PetscLayout
+-     ltog - the local to global block mapping
+
+
+   Level: developer
+
+    Notes: PetscLayoutSetUp() does not need to be called on the resulting PetscLayout
+
+    If the ltog location already contains a PetscLayout it is destroyed
+
+.seealso: PetscLayoutCreate(), PetscLayoutDestroy(), PetscLayoutSetUp(), PetscLayoutCopy(), PetscLayoutSetLocalToGlobalMappingBlock()
+
+@*/
+PetscErrorCode  PetscLayoutSetISLocalToGlobalMappingBlock(PetscLayout in,ISLocalToGlobalMapping ltog)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = PetscObjectReference((PetscObject)ltog);CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingDestroy(&in->bmapping);CHKERRQ(ierr);
+  in->bmapping = ltog;
   PetscFunctionReturn(0);
 }
 
@@ -205,21 +304,18 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutCopy(PetscLayout in,PetscLayout *ou
    Level: developer
 
     Notes:
-       Call this after the call to PetscLayoutInitialize()
-
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
+       Call this after the call to PetscLayoutCreate()
 
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutInitialize(), PetscLayoutSetSize(), PetscLayoutGetSize(), PetscLayoutGetLocalSize(), PetscLayoutSetUp()
+.seealso: PetscLayoutCreate(), PetscLayoutSetSize(), PetscLayoutGetSize(), PetscLayoutGetLocalSize(), PetscLayoutSetUp()
           PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetBlockSize()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutSetLocalSize"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutSetLocalSize(PetscLayout map,PetscInt n)
+PetscErrorCode  PetscLayoutSetLocalSize(PetscLayout map,PetscInt n)
 {
   PetscFunctionBegin;
   map->n = n;
@@ -242,19 +338,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutSetLocalSize(PetscLayout map,PetscI
     Notes:
        Call this after the call to PetscLayoutSetUp()
 
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
-
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutInitialize(), PetscLayoutSetSize(), PetscLayoutGetSize(), PetscLayoutGetLocalSize(), PetscLayoutSetUp()
+.seealso: PetscLayoutCreate(), PetscLayoutSetSize(), PetscLayoutGetSize(), PetscLayoutGetLocalSize(), PetscLayoutSetUp()
           PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetBlockSize()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutGetLocalSize"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetLocalSize(PetscLayout map,PetscInt *n)
+PetscErrorCode  PetscLayoutGetLocalSize(PetscLayout map,PetscInt *n)
 {
   PetscFunctionBegin;
   *n = map->n;
@@ -264,7 +357,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetLocalSize(PetscLayout map,PetscI
 /*@C
      PetscLayoutSetSize - Sets the global size for a PetscLayout object.
 
-    Collective on PetscLayout
+    Logically Collective on PetscLayout
 
    Input Parameters:
 +    map - pointer to the map
@@ -273,21 +366,18 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetLocalSize(PetscLayout map,PetscI
    Level: developer
 
     Notes:
-       Call this after the call to PetscLayoutInitialize()
-
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
+       Call this after the call to PetscLayoutCreate()
 
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutInitialize(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutGetSize(), PetscLayoutSetUp()
+.seealso: PetscLayoutCreate(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutGetSize(), PetscLayoutSetUp()
           PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetBlockSize()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutSetSize"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutSetSize(PetscLayout map,PetscInt n)
+PetscErrorCode  PetscLayoutSetSize(PetscLayout map,PetscInt n)
 {
   PetscFunctionBegin;
   map->N = n;
@@ -310,19 +400,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutSetSize(PetscLayout map,PetscInt n)
     Notes:
        Call this after the call to PetscLayoutSetUp()
 
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
-
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutInitialize(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutSetSize(), PetscLayoutSetUp()
+.seealso: PetscLayoutCreate(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutSetSize(), PetscLayoutSetUp()
           PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetBlockSize()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutGetSize"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetSize(PetscLayout map,PetscInt *n)
+PetscErrorCode  PetscLayoutGetSize(PetscLayout map,PetscInt *n)
 {
   PetscFunctionBegin;
   *n = map->N;
@@ -332,7 +419,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetSize(PetscLayout map,PetscInt *n
 /*@C
      PetscLayoutSetBlockSize - Sets the block size for a PetscLayout object.
 
-    Collective on PetscLayout
+    Logically Collective on PetscLayout
 
    Input Parameters:
 +    map - pointer to the map
@@ -341,21 +428,18 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetSize(PetscLayout map,PetscInt *n
    Level: developer
 
     Notes:
-       Call this after the call to PetscLayoutInitialize()
-
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
+       Call this after the call to PetscLayoutCreate()
 
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutInitialize(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutGetBlockSize(),
+.seealso: PetscLayoutCreate(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutGetBlockSize(),
           PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetSize(), PetscLayoutGetSize(), PetscLayoutSetUp()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutSetBlockSize"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutSetBlockSize(PetscLayout map,PetscInt bs)
+PetscErrorCode  PetscLayoutSetBlockSize(PetscLayout map,PetscInt bs)
 {
   PetscFunctionBegin;
   map->bs = bs;
@@ -378,19 +462,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutSetBlockSize(PetscLayout map,PetscI
     Notes:
        Call this after the call to PetscLayoutSetUp()
 
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
-
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutInitialize(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutSetSize(), PetscLayoutSetUp()
+.seealso: PetscLayoutCreate(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutSetSize(), PetscLayoutSetUp()
           PetscLayoutGetRange(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetSize()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutGetBlockSize"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetBlockSize(PetscLayout map,PetscInt *bs)
+PetscErrorCode  PetscLayoutGetBlockSize(PetscLayout map,PetscInt *bs)
 {
   PetscFunctionBegin;
   *bs = map->bs;
@@ -415,19 +496,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetBlockSize(PetscLayout map,PetscI
     Notes:
        Call this after the call to PetscLayoutSetUp()
 
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
-
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutInitialize(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutSetSize(),
+.seealso: PetscLayoutCreate(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutSetSize(),
           PetscLayoutGetSize(), PetscLayoutGetRanges(), PetscLayoutSetBlockSize(), PetscLayoutGetSize(), PetscLayoutSetUp()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutGetRange"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetRange(PetscLayout map,PetscInt *rstart,PetscInt *rend)
+PetscErrorCode  PetscLayoutGetRange(PetscLayout map,PetscInt *rstart,PetscInt *rend)
 {
   PetscFunctionBegin;
   if (rstart) *rstart = map->rstart;
@@ -452,19 +530,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetRange(PetscLayout map,PetscInt *
     Notes:
        Call this after the call to PetscLayoutSetUp()
 
-       Unlike regular PETSc objects you work with a pointer to the object instead of 
-     the object directly.
-
     Fortran Notes: 
       Not available from Fortran
 
-.seealso: PetscLayoutInitialize(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutSetSize(),
+.seealso: PetscLayoutCreate(), PetscLayoutSetLocalSize(), PetscLayoutGetLocalSize(), PetscLayoutSetSize(),
           PetscLayoutGetSize(), PetscLayoutGetRange(), PetscLayoutSetBlockSize(), PetscLayoutGetSize(), PetscLayoutSetUp()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLayoutGetRanges"
-PetscErrorCode PETSCVEC_DLLEXPORT PetscLayoutGetRanges(PetscLayout map,const PetscInt *range[])
+PetscErrorCode  PetscLayoutGetRanges(PetscLayout map,const PetscInt *range[])
 {
   PetscFunctionBegin;
   *range = map->range;

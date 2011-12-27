@@ -2,7 +2,7 @@
 static char help[] = "Tests vector scatter-gather operations.  Input arguments are\n\
   -n <length> : vector length\n\n";
 
-#include "petscvec.h"
+#include <petscvec.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -23,8 +23,8 @@ int main(int argc,char **argv)
   ierr = VecDuplicate(x,&y);CHKERRQ(ierr);
 
   /* create two index sets */
-  ierr = ISCreateGeneral(PETSC_COMM_SELF,2,idx1,&is1);CHKERRQ(ierr);
-  ierr = ISCreateGeneral(PETSC_COMM_SELF,2,idx2,&is2);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(PETSC_COMM_SELF,2,idx1,PETSC_COPY_VALUES,&is1);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(PETSC_COMM_SELF,2,idx2,PETSC_COPY_VALUES,&is2);CHKERRQ(ierr);
 
   ierr = VecSet(x,one);CHKERRQ(ierr);
   ierr = VecSet(y,two);CHKERRQ(ierr);
@@ -36,18 +36,18 @@ int main(int argc,char **argv)
 
   ierr = VecScatterBegin(ctx,y,x,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
   ierr = VecScatterEnd(ctx,y,x,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
-  ierr = VecScatterDestroy(ctx);CHKERRQ(ierr);
+  ierr = VecScatterDestroy(&ctx);CHKERRQ(ierr);
 
   ierr = PetscPrintf(PETSC_COMM_SELF,"-------\n");CHKERRQ(ierr);
   ierr = VecView(x,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
 
-  ierr = ISDestroy(is1);CHKERRQ(ierr);
-  ierr = ISDestroy(is2);CHKERRQ(ierr);
+  ierr = ISDestroy(&is1);CHKERRQ(ierr);
+  ierr = ISDestroy(&is2);CHKERRQ(ierr);
 
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

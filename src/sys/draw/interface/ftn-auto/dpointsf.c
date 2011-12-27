@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dpoints.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawpointsetsize_(PetscDraw draw,PetscReal *width, int *__ierr ){
+void PETSC_STDCALL  petscdrawpointsetsize_(PetscDraw draw,PetscReal *width, int *__ierr ){
 *__ierr = PetscDrawPointSetSize(
 	(PetscDraw)PetscToPointer((draw) ),*width);
 }

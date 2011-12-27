@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* psplit.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscsplitownershipblock_(MPI_Fint * comm,PetscInt *bs,PetscInt *n,PetscInt *N, int *__ierr ){
+void PETSC_STDCALL  petscsplitownershipblock_(MPI_Fint * comm,PetscInt *bs,PetscInt *n,PetscInt *N, int *__ierr ){
 *__ierr = PetscSplitOwnershipBlock(
 	MPI_Comm_f2c( *(comm) ),*bs,n,N);
 }
-void PETSC_STDCALL   petscsplitownership_(MPI_Fint * comm,PetscInt *n,PetscInt *N, int *__ierr ){
+void PETSC_STDCALL  petscsplitownership_(MPI_Fint * comm,PetscInt *n,PetscInt *N, int *__ierr ){
 *__ierr = PetscSplitOwnership(
 	MPI_Comm_f2c( *(comm) ),n,N);
 }

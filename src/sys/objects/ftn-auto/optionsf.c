@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* options.c */
 /* Fortran interface file */
 
@@ -33,6 +34,16 @@ extern void PetscRmPointer(void*);
 #define petscoptionsvalidkey_ petscoptionsvalidkey
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscoptionsprefixpush_ PETSCOPTIONSPREFIXPUSH
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscoptionsprefixpush_ petscoptionsprefixpush
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscoptionsprefixpop_ PETSCOPTIONSPREFIXPOP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscoptionsprefixpop_ petscoptionsprefixpop
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscoptionsleft_ PETSCOPTIONSLEFT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscoptionsleft_ petscoptionsleft
@@ -53,16 +64,22 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscoptionsvalidkey_( char in_str[],PetscTruth *key, int *__ierr ){
+void PETSC_STDCALL  petscoptionsvalidkey_( char in_str[],PetscBool  *key, int *__ierr ){
 *__ierr = PetscOptionsValidKey(in_str,key);
 }
-void PETSC_STDCALL   petscoptionsleft_(int *__ierr ){
+void PETSC_STDCALL  petscoptionsprefixpush_( char prefix[], int *__ierr ){
+*__ierr = PetscOptionsPrefixPush(prefix);
+}
+void PETSC_STDCALL  petscoptionsprefixpop_(int *__ierr ){
+*__ierr = PetscOptionsPrefixPop();
+}
+void PETSC_STDCALL  petscoptionsleft_(int *__ierr ){
 *__ierr = PetscOptionsLeft();
 }
-void PETSC_STDCALL   petscoptionssetfromoptions_(int *__ierr ){
+void PETSC_STDCALL  petscoptionssetfromoptions_(int *__ierr ){
 *__ierr = PetscOptionsSetFromOptions();
 }
-void PETSC_STDCALL   petscoptionsmonitorcancel_(int *__ierr ){
+void PETSC_STDCALL  petscoptionsmonitorcancel_(int *__ierr ){
 *__ierr = PetscOptionsMonitorCancel();
 }
 #if defined(__cplusplus)

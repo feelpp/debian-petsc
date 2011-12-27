@@ -10,7 +10,7 @@ computes the inner product of two vectors and the 2-norm squared of the second v
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT VecDotNorm2(Vec s,Vec t,PetscScalar *dp, PetscScalar *nm)
+PetscErrorCode  VecDotNorm2(Vec s,Vec t,PetscScalar *dp, PetscScalar *nm)
 </PRE>
 Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -29,6 +29,8 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 </TD></TR></TABLE>
 <P>
 
+<P>
+Developer Notes: Even though the second return argument is a norm and hence could be a <A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> value it is returned as <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
    <A HREF="../Vec/VecDot.html#VecDot">VecDot</A>(), <A HREF="../Vec/VecNorm.html#VecNorm">VecNorm</A>(), <A HREF="../Vec/VecDotBegin.html#VecDotBegin">VecDotBegin</A>(), <A HREF="../Vec/VecNormBegin.html#VecNormBegin">VecNormBegin</A>(), <A HREF="../Vec/VecDotEnd.html#VecDotEnd">VecDotEnd</A>(), <A HREF="../Vec/VecNormEnd.html#VecNormEnd">VecNormEnd</A>()

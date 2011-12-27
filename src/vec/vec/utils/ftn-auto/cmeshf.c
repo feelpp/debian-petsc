@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* cmesh.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   veccontourscale_(Vec v,PetscReal *vmin,PetscReal *vmax, int *__ierr ){
+void PETSC_STDCALL  veccontourscale_(Vec v,PetscReal *vmin,PetscReal *vmax, int *__ierr ){
 *__ierr = VecContourScale(
 	(Vec)PetscToPointer((v) ),*vmin,*vmax);
 }

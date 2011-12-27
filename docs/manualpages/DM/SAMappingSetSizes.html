@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SAMappingSetSizes</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<A NAME="SAMappingSetSizes"><H1>SAMappingSetSizes</H1></A>
+Sets the local and global sizes for the domain and range, and checks to determine compatibility 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsa.h"  
+PetscErrorCode  SAMappingSetSizes(SAMapping map, PetscInt m, PetscInt n, PetscInt M, PetscInt N)
+</PRE>
+Collective on SAMapping
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>map     </B></TD><TD>- the mapping
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m       </B></TD><TD>- number of local  domain indices (or <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n       </B></TD><TD>- number of local  range columns  (or <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>M       </B></TD><TD>- number of global domain indices (or <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> or <A HREF="../Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N       </B></TD><TD>- number of global range  indices (or <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> or <A HREF="../Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>)
+</TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+The sizes specify (i) what the domain and range for the graph underlying SAMapping is,
+and (b) what the parallel layout of the domain and range are.  The local and global sizes
+m and M (and n and N) are not independent.  Two situations are possible the domain
+<H3><FONT COLOR="#CC3333">(and,analogously, for the range)</FONT></H3>
+<P>
+(P) Parallel layout for the domain demands that the local values of m on all ranks of
+the communicator add up to M (see more at <A HREF="../Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>, for example).  Thus, m and M must
+be specified in this compatible way.  One way to ensure this is to specify m and leave
+M as <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> -- then M is computed by summing the local m across the ranks.
+The other option is to specify M (the same on all ranks, which will be checked) and
+leave m as <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>.  In this case the local m is determined by dividing M as
+equally as possible among the ranks (m might end up being 0).  If both m and M are specified,
+their compatibility is verified by summing the m across the ranks.  If m or M are <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>
+on one rank, they must be <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> on all of the ranks, or the program might hang.
+Finally, both m and M cannot be <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> at once.
+<P>
+In any case, domain indices can have any value 0 &lt;= i &lt; M on every rank (with the same M).
+However, domain indices are split up among the ranks: each rank will "own" m indices with
+the indices owned by rank 0 numbered [0,m), followed by the indices on rank 1, and so on.
+<P>
+(S) Sequential layout for the domain makes it essentially into a disjoint union of local
+domains of local size m.  This is signalled by specifying M as <A HREF="../Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>.
+<P>
+In this case, domain indices can have any value 0 &lt;= i &lt; m on every rank (with its own m).
+<P>
+<H3><FONT COLOR="#CC3333">Assembly/Mapping</FONT></H3>
+Whether the domain is laid out in parallel (P) or not (S), determines the behavior of SAMapping
+during assembly.  In case (P), the edges of the underlying graph are migrated to the rank that
+owns the corresponding domain indices.  SAMapping can map indices lying in its local range,
+which is a subset of its local domain.  This means that due to parallel assembly edges inserted
+by different ranks might be used during the mapping.  This is completely analogous to matrix
+assembly.
+<P>
+When the domain is not laid out in parallel, no migration takes place and the mapping of indices
+is done purely locally.
+<P>
+<P>
+<P>
+<H3><FONT COLOR="#CC3333">Support/Image</FONT></H3>
+Observe that the support and image of the graph may be strictly smaller than its domain and range,
+if no edges from some domain points (or to some range points) are added to SAMapping.
+<P>
+<H3><FONT COLOR="#CC3333">Operator</FONT></H3>
+Observe also that the linear operator defined by SAMapping will behave essentially as a <A HREF="../Vec/VecScatter.html#VecScatter">VecScatter</A>
+(i)   between MPI vectors with sizes (m,M) and (n,N), if both the domain and the range are (P),
+(ii)  between an MPI <A HREF="../Vec/Vec.html#Vec">Vec</A> with size (m,M) and a collection of SEQ <A HREF="../Vec/Vecs.html#Vecs">Vecs</A> (one per rank) of local size (n),
+if the domain is (P) and the range is (S),
+(iii) between a collection of SEQ <A HREF="../Vec/Vecs.html#Vecs">Vecs</A> (one per rank) of local size (m) and an MPI <A HREF="../Vec/Vec.html#Vec">Vec</A> of size (n,N),
+if the domain is (S) and the range is (P),
+(iv)  between collections of SEQ <A HREF="../Vec/Vecs.html#Vecs">Vecs</A> (one per rank) or local sizes (m) and (n), if both the domain
+and the range are (S).
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ SAMappingGetSizes(), SAMappingGetSupportSize(), SAMappingGetImageSize(), SAMappingMapIndicesLocal()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/sa/interface/sa.c.html#SAMappingSetSizes">src/dm/sa/interface/sa.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

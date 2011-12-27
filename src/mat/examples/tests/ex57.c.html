@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:34+00:00">
+<meta name="date" content="2011-10-29T19:05:09+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -16,8 +16,8 @@
 <a name="line6">  6: </a><font color="#666666">  -start &lt;row&gt; : the row from where the submat should be extracted\n\</font>
 <a name="line7">  7: </a><font color="#666666">  -size  &lt;sx&gt;  : the size of the submatrix\n"</font>;
 
-<a name="line9"> 9: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
-<a name="line10"> 10: </a> #include <A href="../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
+<a name="line10"> 10: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line14"> 14: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line15"> 15: </a>{
@@ -29,47 +29,49 @@
 <a name="line22"> 22: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       start=0;
 <a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
 <a name="line24"> 24: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>             isrow,iscol;
-<a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
 <a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 
 
-<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fin"</font>,fin,PETSC_MAX_PATH_LEN-1,&amp;flg);
-<a name="line31"> 31: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Must indicate binary file with the -fin option"</font>);
+<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fin"</font>,fin,PETSC_MAX_PATH_LEN,&amp;flg);
+<a name="line31"> 31: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"Must indicate binary file with the -fin option"</font>);
 <a name="line32"> 32: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,fin,FILE_MODE_READ,&amp;fdin);
 
-<a name="line34"> 34: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fout"</font>,fout,PETSC_MAX_PATH_LEN-1,&amp;flg);
+<a name="line34"> 34: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fout"</font>,fout,PETSC_MAX_PATH_LEN,&amp;flg);
 <a name="line35"> 35: </a>  <font color="#4169E1">if</font> (!flg) {<A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Writing submatrix to file : %s\n"</font>,fout);}
 <a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,fout,FILE_MODE_WRITE,&amp;fdout);
 
-<a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(fdin,mtype,&amp;A);
-<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(fdin);
-<a name="line40"> 40: </a>
-<a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Mat/MatGetSize.html#MatGetSize">MatGetSize</A>(A,&amp;size,&amp;size);
-<a name="line42"> 42: </a>  size /= 2;
-<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-start"</font>,&amp;start,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-size"</font>,&amp;size,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line45"> 45: </a>
-<a name="line46"> 46: </a>  <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,size,start,1,&amp;isrow);
-<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,size,start,1,&amp;iscol);
-<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatGetSubMatrices.html#MatGetSubMatrices">MatGetSubMatrices</A>(A,1,&amp;isrow,&amp;iscol,MAT_INITIAL_MATRIX,&amp;B);
-<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B[0],fdout);
+<a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;A);
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A,mtype);
+<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(A,fdin);
+<a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;fdin);
+<a name="line42"> 42: </a>
+<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Mat/MatGetSize.html#MatGetSize">MatGetSize</A>(A,&amp;size,&amp;size);
+<a name="line44"> 44: </a>  size /= 2;
+<a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-start"</font>,&amp;start,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line46"> 46: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-size"</font>,&amp;size,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line47"> 47: </a>
+<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,size,start,1,&amp;isrow);
+<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,size,start,1,&amp;iscol);
+<a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/Mat/MatGetSubMatrices.html#MatGetSubMatrices">MatGetSubMatrices</A>(A,1,&amp;isrow,&amp;iscol,MAT_INITIAL_MATRIX,&amp;B);
+<a name="line51"> 51: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B[0],fdout);
 
-<a name="line51"> 51: </a>  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;b);
-<a name="line52"> 52: </a>  <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(b,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,size);
-<a name="line53"> 53: </a>  <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(b);
-<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B[0],fdout);
-<a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(fdout);
+<a name="line53"> 53: </a>  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;b);
+<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(b,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,size);
+<a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(b);
+<a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B[0],fdout);
+<a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;fdout);
 
-<a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B[0]);
-<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(B);
-<a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(iscol);
-<a name="line62"> 62: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(isrow);
-<a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line64"> 64: </a>  <font color="#4169E1">return</font> 0;
-<a name="line65"> 65: </a>}
+<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B[0]);
+<a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line62"> 62: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(B);
+<a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;iscol);
+<a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;isrow);
+<a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line66"> 66: </a>  <font color="#4169E1">return</font> 0;
+<a name="line67"> 67: </a>}
 
 </pre>
 </body>

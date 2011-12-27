@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <typeinfo>
 #include <petscsys.h>
-#include <ALE_log.hh>
+#include <sieve/ALE_log.hh>
 
 #ifdef ALE_HAVE_CXX_ABI
 #include <cxxabi.h>
@@ -25,9 +25,9 @@ namespace ALE {
   class MemoryLogger {
   public:
     struct Log {
-      int num;
-      int total;
-      std::map<std::string, int> items;
+      long long num;
+      long long total;
+      std::map<std::string, long long> items;
 
       Log(): num(0), total(0) {};
     };
@@ -61,7 +61,7 @@ namespace ALE {
   public:
     void stagePush(const std::string& name) {
       for(names::const_iterator s_iter = stageNames.begin(); s_iter != stageNames.end(); ++s_iter) {
-        if (*s_iter == name) throw ALE::Exception("Cannot push duplicate stage name");
+        if (*s_iter == name) throw ALE::Exception(std::string("Cannot push duplicate stage name '")+name+std::string("'."));
       }
       stageNames.push_front(name);
       if (_debug) {
@@ -105,20 +105,26 @@ namespace ALE {
       stages[stage].second.items[className] += bytes;
     };
   public:
-    int getNumAllocations() {return getNumAllocations(stageNames.front());};
-    int getNumAllocations(const std::string& stage) {return stages[stage].first.num;};
-    int getNumDeallocations() {return getNumDeallocations(stageNames.front());};
-    int getNumDeallocations(const std::string& stage) {return stages[stage].second.num;};
-    int getAllocationTotal() {return getAllocationTotal(stageNames.front());};
-    int getAllocationTotal(const std::string& stage) {return stages[stage].first.total;};
-    int getDeallocationTotal() {return getDeallocationTotal(stageNames.front());};
-    int getDeallocationTotal(const std::string& stage) {return stages[stage].second.total;};
+    long long getNumAllocations() {return getNumAllocations(stageNames.front());};
+    long long getNumAllocations(const std::string& stage) {return stages[stage].first.num;};
+    long long getNumDeallocations() {return getNumDeallocations(stageNames.front());};
+    long long getNumDeallocations(const std::string& stage) {return stages[stage].second.num;};
+    long long getAllocationTotal() {return getAllocationTotal(stageNames.front());};
+    long long getAllocationTotal(const std::string& stage) {return stages[stage].first.total;};
+    long long getDeallocationTotal() {return getDeallocationTotal(stageNames.front());};
+    long long getDeallocationTotal(const std::string& stage) {return stages[stage].second.total;};
   public:
     void show() {
       std::cout << "["<<rank<<"]Memory Stages:" << std::endl;
       for(stageLog::const_iterator s_iter = stages.begin(); s_iter != stages.end(); ++s_iter) {
         std::cout << "["<<rank<<"]  " << s_iter->first << ": " << s_iter->second.first.num  << " acalls  " << s_iter->second.first.total  << " bytes" << std::endl;
+        for(std::map<std::string, long long>::const_iterator i_iter = s_iter->second.first.items.begin(); i_iter != s_iter->second.first.items.end(); ++i_iter) {
+          std::cout << "["<<rank<<"]    " << i_iter->first << ": " << i_iter->second << " bytes" << std::endl;
+        }
         std::cout << "["<<rank<<"]  " << s_iter->first << ": " << s_iter->second.second.num << " dcalls  " << s_iter->second.second.total << " bytes" << std::endl;
+        for(std::map<std::string, long long>::const_iterator i_iter = s_iter->second.second.items.begin(); i_iter != s_iter->second.second.items.end(); ++i_iter) {
+          std::cout << "["<<rank<<"]    " << i_iter->first << ": " << i_iter->second << " bytes" << std::endl;
+        }
       }
     };
   public:
@@ -442,7 +448,7 @@ namespace ALE {
   void logged_allocator<T, O>::__log_initialize() {
     if(!logged_allocator::_log_initialized) {
       // First of all we make sure PETSc is initialized
-      PetscTruth     flag;
+      PetscBool      flag;
       PetscErrorCode ierr = PetscInitialized(&flag);CHKERROR(ierr, "Error in PetscInitialized");
       if(!flag) {
         // I guess it would be nice to initialize PETSc here, but we'd need argv/argc here

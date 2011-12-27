@@ -46,16 +46,20 @@
       PetscEnum MAT_USE_INODES
       PetscEnum MAT_HERMITIAN
       PetscEnum MAT_SYMMETRY_ETERNAL
-      PetscEnum MAT_USE_COMPRESSEDROW
+      PetscEnum MAT_CHECK_COMPRESSED_ROW
       PetscEnum MAT_IGNORE_LOWER_TRIANGULAR
       PetscEnum MAT_ERROR_LOWER_TRIANGULAR
       PetscEnum MAT_GETROW_UPPERTRIANGULAR
       PetscEnum MAT_UNUSED_NONZERO_LOCATION_ERR
+      PetscEnum MAT_SPD
+      PetscEnum MAT_NO_OFF_PROC_ENTRIES
+      PetscEnum MAT_NO_OFF_PROC_ZERO_ROWS
       PetscEnum NUM_MAT_OPTIONS
 
       parameter (MAT_ROW_ORIENTED=0)
       parameter (MAT_NEW_NONZERO_LOCATIONS=1)
-      parameter (MAT_SYMMETRIC=2,MAT_STRUCTURALLY_SYMMETRIC=3)
+      parameter (MAT_SYMMETRIC=2)
+      parameter (MAT_STRUCTURALLY_SYMMETRIC=3)
       parameter (MAT_NEW_DIAGONALS=4)
       parameter (MAT_IGNORE_OFF_PROC_ENTRIES=5)
       parameter (MAT_NEW_NONZERO_LOCATION_ERR=6)
@@ -66,13 +70,27 @@
       parameter (MAT_USE_INODES=11)
       parameter (MAT_HERMITIAN=12)
       parameter (MAT_SYMMETRY_ETERNAL=13)
-      parameter (MAT_USE_COMPRESSEDROW=14)
+      parameter (MAT_CHECK_COMPRESSED_ROW=14)
       parameter (MAT_IGNORE_LOWER_TRIANGULAR=15)
       parameter (MAT_ERROR_LOWER_TRIANGULAR=16)
       parameter (MAT_GETROW_UPPERTRIANGULAR=17)
       parameter (MAT_UNUSED_NONZERO_LOCATION_ERR=18)
-      parameter (NUM_MAT_OPTIONS=19)
- 
+      parameter (MAT_SPD=19)
+      parameter (MAT_NO_OFF_PROC_ENTRIES=20)
+      parameter (MAT_NO_OFF_PROC_ZERO_ROWS=21)
+      parameter (NUM_MAT_OPTIONS=22)
+!
+!  MatFactorShiftType
+!
+      PetscEnum MAT_SHIFT_NONE
+      PetscEnum MAT_SHIFT_NONZERO
+      PetscEnum MAT_SHIFT_POSITIVE_DEFINITE
+      PetscEnum MAT_SHIFT_INBLOCKS
+      parameter (MAT_SHIFT_NONE=0)
+      parameter (MAT_SHIFT_NONZERO=1)
+      parameter (MAT_SHIFT_POSITIVE_DEFINITE=2)
+      parameter (MAT_SHIFT_INBLOCKS=3)
+
 !
 !  MatDuplicateOption
 !
@@ -307,10 +325,16 @@
       PetscEnum MATOP_MATGETSEQNONZEROSTRUCTURE
       PetscEnum MATOP_CREATE
       PetscEnum MATOP_GET_GHOSTS
+      PetscEnum MATOP_GET_LOCALSUBMATRIX
+      PetscEnum MATOP_RESTORE_LOCALSUBMATRIX
       PetscEnum MATOP_MULT_DIAGONAL_BLOCK
       PetscEnum MATOP_HERMITIANTRANSPOSE
       PetscEnum MATOP_MULTHERMITIANTRANSPOSE
       PetscEnum MATOP_MULTHERMITIANTRANSPOSEADD
+      PetscEnum MATOP_GETMULTIPROCBLOCK
+      PetscEnum MATOP_GETCOLUMNNORMS
+      PetscEnum MATOP_GET_SUBMATRICES_PARALLEL
+      PetscEnum MATOP_SET_VALUES_BATCH
 
       parameter(MATOP_SET_VALUES=0)
       parameter(MATOP_GET_ROW=1)
@@ -429,12 +453,18 @@
       parameter(MATOP_MATGETSEQNONZEROSTRUCTURE=114)
       parameter(MATOP_CREATE=115)
       parameter(MATOP_GET_GHOSTS=116)
+      parameter(MATOP_GET_LOCALSUBMATRIX=117)
+      parameter(MATOP_RESTORE_LOCALSUBMATRIX=118)
       parameter(MATOP_MULT_DIAGONAL_BLOCK=119)
       parameter(MATOP_HERMITIANTRANSPOSE=120)
       parameter(MATOP_MULTHERMITIANTRANSPOSE=121)
       parameter(MATOP_MULTHERMITIANTRANSPOSEADD=122)
+      parameter(MATOP_GETMULTIPROCBLOCK=123)
+      parameter(MATOP_GETCOLUMNNORMS=125)
+      parameter(MATOP_GET_SUBMATRICES_PARALLEL=128)
+      parameter(MATOP_SET_VALUES_BATCH=129)
 !
-!  
+!
 !
       PetscEnum MATRIX_BINARY_FORMAT_DENSE
       parameter (MATRIX_BINARY_FORMAT_DENSE=-1)
@@ -459,16 +489,17 @@
       PetscEnum MP_CHACO_RQI_SYMMLQ
       parameter (MP_CHACO_LANCZOS=0, MP_CHACO_RQI_SYMMLQ=1)
 !
-! MPScotchGlobalType
-      PetscEnum MP_SCOTCH_GREEDY
-      PetscEnum MP_SCOTCH_GPS
-      PetscEnum MP_SCOTCH_GR_GPS
-      parameter (MP_SCOTCH_GREEDY=0,MP_SCOTCH_GPS=1,MP_SCOTCH_GR_GPS=2)
-
-! MPScotchLocalType
-      PetscEnum MP_SCOTCH_KERNIGHAN_LIN
-      PetscEnum MP_SCOTCH_NONE
-      parameter (MP_SCOTCH_KERNIGHAN_LIN=0, MP_SCOTCH_NONE=1)
+! MPPTScotchStrategyType
+      PetscEnum MP_PTSCOTCH_QUALITY
+      PetscEnum MP_PTSCOTCH_SPEED
+      PetscEnum MP_PTSCOTCH_BALANCE
+      PetscEnum MP_PTSCOTCH_SAFETY
+      PetscEnum MP_PTSCOTCH_SCALABILITY
+      parameter (MP_PTSCOTCH_QUALITY = 0)
+      parameter (MP_PTSCOTCH_SPEED = 1)
+      parameter (MP_PTSCOTCH_BALANCE = 2)
+      parameter (MP_PTSCOTCH_SAFETY = 3)
+      parameter (MP_PTSCOTCH_SCALABILITY = 4)
 
 ! PetscScalarPrecision
       PetscEnum PETSC_SCALAR_DOUBLE

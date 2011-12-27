@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* party.c */
 /* Fortran interface file */
 
@@ -48,16 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matpartitioningpartysetcoarselevel_(MatPartitioning part,PetscReal *level, int *__ierr ){
+void PETSC_STDCALL  matpartitioningpartysetcoarselevel_(MatPartitioning part,PetscReal *level, int *__ierr ){
 *__ierr = MatPartitioningPartySetCoarseLevel(
 	(MatPartitioning)PetscToPointer((part) ),*level);
 }
-void PETSC_STDCALL   matpartitioningpartysetmatchoptimization_(MatPartitioning part,
-    PetscTruth *opt, int *__ierr ){
+void PETSC_STDCALL  matpartitioningpartysetmatchoptimization_(MatPartitioning part,PetscBool *opt, int *__ierr ){
 *__ierr = MatPartitioningPartySetMatchOptimization(
 	(MatPartitioning)PetscToPointer((part) ),*opt);
 }
-void PETSC_STDCALL   matpartitioningpartysetbipart_(MatPartitioning part,PetscTruth *bp, int *__ierr ){
+void PETSC_STDCALL  matpartitioningpartysetbipart_(MatPartitioning part,PetscBool *bp, int *__ierr ){
 *__ierr = MatPartitioningPartySetBipart(
 	(MatPartitioning)PetscToPointer((part) ),*bp);
 }

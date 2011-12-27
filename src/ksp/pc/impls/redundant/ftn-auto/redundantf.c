@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* redundant.c */
 /* Fortran interface file */
 
@@ -27,7 +28,7 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscpc.h"
-#include "petscmat.h"
+#include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcredundantsetnumber_ PCREDUNDANTSETNUMBER
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -39,9 +40,9 @@ extern void PetscRmPointer(void*);
 #define pcredundantsetscatter_ pcredundantsetscatter
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define pcredundantgetpc_ PCREDUNDANTGETPC
+#define pcredundantgetksp_ PCREDUNDANTGETKSP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define pcredundantgetpc_ pcredundantgetpc
+#define pcredundantgetksp_ pcredundantgetksp
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcredundantgetoperators_ PCREDUNDANTGETOPERATORS
@@ -54,21 +55,21 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcredundantsetnumber_(PC pc,PetscInt *nredundant, int *__ierr ){
+void PETSC_STDCALL  pcredundantsetnumber_(PC pc,PetscInt *nredundant, int *__ierr ){
 *__ierr = PCRedundantSetNumber(
 	(PC)PetscToPointer((pc) ),*nredundant);
 }
-void PETSC_STDCALL   pcredundantsetscatter_(PC pc,VecScatter in,VecScatter out, int *__ierr ){
+void PETSC_STDCALL  pcredundantsetscatter_(PC pc,VecScatter in,VecScatter out, int *__ierr ){
 *__ierr = PCRedundantSetScatter(
 	(PC)PetscToPointer((pc) ),
 	(VecScatter)PetscToPointer((in) ),
 	(VecScatter)PetscToPointer((out) ));
 }
-void PETSC_STDCALL   pcredundantgetpc_(PC pc,PC *innerpc, int *__ierr ){
-*__ierr = PCRedundantGetPC(
-	(PC)PetscToPointer((pc) ),innerpc);
+void PETSC_STDCALL  pcredundantgetksp_(PC pc,KSP *innerksp, int *__ierr ){
+*__ierr = PCRedundantGetKSP(
+	(PC)PetscToPointer((pc) ),innerksp);
 }
-void PETSC_STDCALL   pcredundantgetoperators_(PC pc,Mat *mat,Mat *pmat, int *__ierr ){
+void PETSC_STDCALL  pcredundantgetoperators_(PC pc,Mat *mat,Mat *pmat, int *__ierr ){
 *__ierr = PCRedundantGetOperators(
 	(PC)PetscToPointer((pc) ),mat,pmat);
 }

@@ -1,7 +1,6 @@
-#define PETSCMAT_DLL
 
-#include "../src/mat/impls/sbaij/seq/sbaij.h"
-#include "../src/mat/blockinvert.h"
+#include <../src/mat/impls/sbaij/seq/sbaij.h>
+#include <../src/mat/blockinvert.h>
 
 /*
       Version for when blocks are 4 by 4 Using natural ordering
@@ -16,7 +15,7 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_4_NaturalOrdering(Mat C,Mat A,c
   PetscInt       *ai,*aj,k,k1,jmin,jmax,*jl,*il,vj,nexti,ili;
   MatScalar      *ba = b->a,*aa,*ap,*dk,*uik;
   MatScalar      *u,*diag,*rtmp,*rtmp_ptr;
-  PetscTruth     pivotinblocks = b->pivotinblocks;
+  PetscBool      pivotinblocks = b->pivotinblocks;
   PetscReal      shift = info->shiftamount;
 
   PetscFunctionBegin;

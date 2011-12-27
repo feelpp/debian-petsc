@@ -1,47 +1,12 @@
-#define PETSCKSP_DLL
 
 /*
     Code for setting KSP options from the options database.
 */
 
-#include "private/kspimpl.h"  /*I "petscksp.h" I*/
+#include <private/kspimpl.h>  /*I "petscksp.h" I*/
 
-/*
-       We retain a list of functions that also take KSP command 
-    line options. These are called at the end KSPSetFromOptions()
-*/
-#define MAXSETFROMOPTIONS 5
-PetscInt numberofsetfromoptions = 0;
-PetscErrorCode (*othersetfromoptions[MAXSETFROMOPTIONS])(KSP) = {0};
+extern PetscBool  KSPRegisterAllCalled;
 
-extern PetscTruth KSPRegisterAllCalled;
-
-#undef __FUNCT__  
-#define __FUNCT__ "KSPAddOptionsChecker"
-/*@C
-    KSPAddOptionsChecker - Adds an additional function to check for KSP options.
-
-    Not Collective
-
-    Input Parameter:
-.   kspcheck - function that checks for options
-
-    Level: developer
-
-.keywords: KSP, add, options, checker
-
-.seealso: KSPSetFromOptions()
-@*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPAddOptionsChecker(PetscErrorCode (*kspcheck)(KSP))
-{
-  PetscFunctionBegin;
-  if (numberofsetfromoptions >= MAXSETFROMOPTIONS) {
-    SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Too many options checkers, only 5 allowed");
-  }
-
-  othersetfromoptions[numberofsetfromoptions++] = kspcheck;
-  PetscFunctionReturn(0);
-}
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetOptionsPrefix"
@@ -49,7 +14,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPAddOptionsChecker(PetscErrorCode (*kspcheck
    KSPSetOptionsPrefix - Sets the prefix used for searching for all 
    KSP options in the database.
 
-   Collective on KSP
+   Logically Collective on KSP
 
    Input Parameters:
 +  ksp - the Krylov context
@@ -79,11 +44,11 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPAddOptionsChecker(PetscErrorCode (*kspcheck
 
 .seealso: KSPAppendOptionsPrefix(), KSPGetOptionsPrefix()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetOptionsPrefix(KSP ksp,const char prefix[])
+PetscErrorCode  KSPSetOptionsPrefix(KSP ksp,const char prefix[])
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
   ierr = PCSetOptionsPrefix(ksp->pc,prefix);CHKERRQ(ierr);
   ierr = PetscObjectSetOptionsPrefix((PetscObject)ksp,prefix);CHKERRQ(ierr);
@@ -96,7 +61,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetOptionsPrefix(KSP ksp,const char prefix[
    KSPAppendOptionsPrefix - Appends to the prefix used for searching for all 
    KSP options in the database.
 
-   Collective on KSP
+   Logically Collective on KSP
 
    Input Parameters:
 +  ksp - the Krylov context
@@ -112,11 +77,11 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetOptionsPrefix(KSP ksp,const char prefix[
 
 .seealso: KSPSetOptionsPrefix(), KSPGetOptionsPrefix()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPAppendOptionsPrefix(KSP ksp,const char prefix[])
+PetscErrorCode  KSPAppendOptionsPrefix(KSP ksp,const char prefix[])
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
   ierr = PCAppendOptionsPrefix(ksp->pc,prefix);CHKERRQ(ierr);
   ierr = PetscObjectAppendOptionsPrefix((PetscObject)ksp,prefix);CHKERRQ(ierr);
@@ -128,7 +93,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPAppendOptionsPrefix(KSP ksp,const char pref
 /*@C
    KSPSetUseFischerGuess - Use the Paul Fischer algorithm, see KSPFischerGuessCreate()
 
-   Collective on KSP
+   Logically Collective on KSP
 
    Input Parameters:
 +  ksp - the Krylov context
@@ -144,21 +109,18 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPAppendOptionsPrefix(KSP ksp,const char pref
 
 .seealso: KSPSetOptionsPrefix(), KSPAppendOptionsPrefix(), KSPSetUseFischerGuess(), KSPSetFischerGuess(), KSPGetFischerInitialGuess()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetUseFischerGuess(KSP ksp,PetscInt model,PetscInt size)
+PetscErrorCode  KSPSetUseFischerGuess(KSP ksp,PetscInt model,PetscInt size)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  if (ksp->guess) {
-    ierr = KSPFischerGuessDestroy(ksp->guess);CHKERRQ(ierr);
-    ksp->guess = PETSC_NULL;
-  }
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  PetscValidLogicalCollectiveInt(ksp,model,2);
+  PetscValidLogicalCollectiveInt(ksp,model,3);
+  ierr = KSPFischerGuessDestroy(&ksp->guess);CHKERRQ(ierr);
   if (model == 1 || model == 2) {
     ierr = KSPFischerGuessCreate(ksp,model,size,&ksp->guess);CHKERRQ(ierr);
     ierr = KSPFischerGuessSetFromOptions(ksp->guess);CHKERRQ(ierr);
-  } else if (model != 0) {
-    SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Model must be 1 or 2 (or 0 to turn off guess generation)");
-  }
+  } else if (model != 0) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Model must be 1 or 2 (or 0 to turn off guess generation)");
   PetscFunctionReturn(0);
 }
 
@@ -167,7 +129,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetUseFischerGuess(KSP ksp,PetscInt model,P
 /*@C
    KSPSetFischerGuess - Use the Paul Fischer algorithm created by KSPFischerGuessCreate()
 
-   Collective on KSP
+   Logically Collective on KSP
 
    Input Parameters:
 +  ksp - the Krylov context
@@ -185,14 +147,12 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetUseFischerGuess(KSP ksp,PetscInt model,P
 
 .seealso: KSPSetOptionsPrefix(), KSPAppendOptionsPrefix(), KSPSetUseFischerGuess(), KSPSetFischerGuess(), KSPGetFischerGuess()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFischerGuess(KSP ksp,KSPFischerGuess guess)
+PetscErrorCode  KSPSetFischerGuess(KSP ksp,KSPFischerGuess guess)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  if (ksp->guess) {
-    ierr = KSPFischerGuessDestroy(ksp->guess);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ierr = KSPFischerGuessDestroy(&ksp->guess);CHKERRQ(ierr);
   ksp->guess = guess;
   if (guess) guess->refcnt++;
   PetscFunctionReturn(0);
@@ -203,7 +163,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFischerGuess(KSP ksp,KSPFischerGuess gue
 /*@C
    KSPGetFischerGuess - Gets the initial guess generator set with either KSPSetFischerGuess() or KSPCreateFischerGuess()/KSPSetFischerGuess()
 
-   Collective on KSP
+   Not Collective
 
    Input Parameters:
 .  ksp - the Krylov context
@@ -217,7 +177,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFischerGuess(KSP ksp,KSPFischerGuess gue
 
 .seealso: KSPSetOptionsPrefix(), KSPAppendOptionsPrefix(), KSPSetUseFischerGuess(), KSPSetFischerGuess()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetFischerGuess(KSP ksp,KSPFischerGuess *guess)
+PetscErrorCode  KSPGetFischerGuess(KSP ksp,KSPFischerGuess *guess)
 {
   PetscFunctionBegin;
   *guess = ksp->guess;
@@ -247,11 +207,11 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPGetFischerGuess(KSP ksp,KSPFischerGuess *gu
 
 .seealso: KSPSetOptionsPrefix(), KSPAppendOptionsPrefix()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetOptionsPrefix(KSP ksp,const char *prefix[])
+PetscErrorCode  KSPGetOptionsPrefix(KSP ksp,const char *prefix[])
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   ierr = PetscObjectGetOptionsPrefix((PetscObject)ksp,prefix);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -285,6 +245,9 @@ $                    unpreconditioned - see KSPSetNormType()
 $                    natural - see KSPSetNormType()
 .   -ksp_check_norm_iteration it - do not compute residual norm until iteration number it (does compute at 0th iteration)
 $       works only for PCBCGS, PCIBCGS and and PCCG
+    -ksp_lag_norm - compute the norm of the residual for the ith iteration on the i+1 iteration; this means that one can use
+$       the norm of the residual for convergence test WITHOUT an extra MPI_Allreduce() limiting global synchronizations.
+$       This will require 1 more iteration of the solver than usual.
 .   -ksp_fischer_guess <model,size> - uses the Fischer initial guess generator for repeated linear solves
 .   -ksp_constant_null_space - assume the operator (matrix) has the constant vector in its null space
 .   -ksp_test_null_space - tests the null space set with KSPSetNullSpace() to see if it truly is a null space
@@ -297,7 +260,7 @@ $       works only for PCBCGS, PCIBCGS and and PCCG
 
    Notes:  
    To see all options, run your program with the -help option
-   or consult the users manual.
+   or consult <A href="../../docs/manual.pdf#nameddest=ch_ksp">KSP chapter of the users manual</A>.
 
    Level: beginner
 
@@ -306,24 +269,24 @@ $       works only for PCBCGS, PCIBCGS and and PCCG
 .seealso: KSPSetUseFischerInitialGuess()
 
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
+PetscErrorCode  KSPSetFromOptions(KSP ksp)
 {
   PetscErrorCode          ierr;
   PetscInt                indx;
   const char             *convtests[] = {"default","skip"};
   char                    type[256], monfilename[PETSC_MAX_PATH_LEN];
-  PetscViewerASCIIMonitor monviewer;
-  PetscTruth              flg,flag;
-  PetscInt                i,model[2],nmax = 2;
+  PetscViewer             monviewer;
+  PetscBool               flg,flag;
+  PetscInt                model[2],nmax;
   void                    *ctx;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
   ierr = PCSetFromOptions(ksp->pc);CHKERRQ(ierr);
 
   if (!KSPRegisterAllCalled) {ierr = KSPRegisterAll(PETSC_NULL);CHKERRQ(ierr);}
-  ierr = PetscOptionsBegin(((PetscObject)ksp)->comm,((PetscObject)ksp)->prefix,"Krylov Method (KSP) Options","KSP");CHKERRQ(ierr);
+  ierr = PetscObjectOptionsBegin((PetscObject)ksp);CHKERRQ(ierr);
     ierr = PetscOptionsList("-ksp_type","Krylov method","KSPSetType",KSPList,(char*)(((PetscObject)ksp)->type_name?((PetscObject)ksp)->type_name:KSPGMRES),type,256,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPSetType(ksp,type);CHKERRQ(ierr);
@@ -341,21 +304,23 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
     ierr = PetscOptionsReal("-ksp_divtol","Residual norm increase cause divergence","KSPSetTolerances",ksp->divtol,&ksp->divtol,PETSC_NULL);CHKERRQ(ierr);
 
     flag = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_converged_use_initial_residual_norm","Use initial residual residual norm for computing relative convergence","KSPDefaultConvergedSetUIRNorm",flag,&flag,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_converged_use_initial_residual_norm","Use initial residual residual norm for computing relative convergence","KSPDefaultConvergedSetUIRNorm",flag,&flag,PETSC_NULL);CHKERRQ(ierr);
     if (flag) {ierr = KSPDefaultConvergedSetUIRNorm(ksp);CHKERRQ(ierr);}
     flag = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_converged_use_min_initial_residual_norm","Use minimum of initial residual norm and b for computing relative convergence","KSPDefaultConvergedSetUMIRNorm",flag,&flag,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_converged_use_min_initial_residual_norm","Use minimum of initial residual norm and b for computing relative convergence","KSPDefaultConvergedSetUMIRNorm",flag,&flag,PETSC_NULL);CHKERRQ(ierr);
     if (flag) {ierr = KSPDefaultConvergedSetUMIRNorm(ksp);CHKERRQ(ierr);}
     ierr = KSPGetInitialGuessNonzero(ksp,&flag);CHKERRQ(ierr);
-    ierr = PetscOptionsTruth("-ksp_initial_guess_nonzero","Use the contents of the solution vector for initial guess","KSPSetInitialNonzero",flag,&flag,&flg);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_initial_guess_nonzero","Use the contents of the solution vector for initial guess","KSPSetInitialNonzero",flag,&flag,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPSetInitialGuessNonzero(ksp,flag);CHKERRQ(ierr);
     }
 
-    ierr = PetscOptionsTruth("-ksp_knoll","Use preconditioner applied to b for initial guess","KSPSetInitialGuessKnoll",ksp->guess_knoll,&ksp->guess_knoll,PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsIntArray("-ksp_fischer_guess","Use Paul Fischer's algorihtm for initial guess","KSPSetUseFischerGuess",model,&nmax,&flag);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_knoll","Use preconditioner applied to b for initial guess","KSPSetInitialGuessKnoll",ksp->guess_knoll,&ksp->guess_knoll,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_error_if_not_converged","Generate error if solver does not converge","KSPSetErrorIfNotConverged",ksp->errorifnotconverged,&ksp->errorifnotconverged,PETSC_NULL);CHKERRQ(ierr);
+    nmax = 2;
+    ierr = PetscOptionsIntArray("-ksp_fischer_guess","Use Paul Fischer's algorithm for initial guess","KSPSetUseFischerGuess",model,&nmax,&flag);CHKERRQ(ierr);
     if (flag) {
-      if (nmax != 2) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Must pass in model,size as arguments");
+      if (nmax != 2) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Must pass in model,size as arguments");
       ierr = KSPSetUseFischerGuess(ksp,model[0],model[1]);CHKERRQ(ierr);
     }
 
@@ -376,30 +341,30 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
     ierr = PetscOptionsInt("-ksp_check_norm_iteration","First iteration to compute residual norm","KSPSetCheckNormIteration",ksp->chknorm,&ksp->chknorm,PETSC_NULL);CHKERRQ(ierr);
 
     flag  = ksp->lagnorm;
-    ierr = PetscOptionsTruth("-ksp_lag_norm","Lag the calculation of the residual norm","KSPSetLagNorm",flag,&flag,&flg);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_lag_norm","Lag the calculation of the residual norm","KSPSetLagNorm",flag,&flag,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPSetLagNorm(ksp,flag);CHKERRQ(ierr);
     }
 
     ierr = KSPGetDiagonalScale(ksp,&flag);CHKERRQ(ierr);
-    ierr = PetscOptionsTruth("-ksp_diagonal_scale","Diagonal scale matrix before building preconditioner","KSPSetDiagonalScale",flag,&flag,&flg);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_diagonal_scale","Diagonal scale matrix before building preconditioner","KSPSetDiagonalScale",flag,&flag,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPSetDiagonalScale(ksp,flag);CHKERRQ(ierr);
     }
     ierr = KSPGetDiagonalScaleFix(ksp,&flag);CHKERRQ(ierr);
-    ierr = PetscOptionsTruth("-ksp_diagonal_scale_fix","Fix diagonally scaled matrix after solve","KSPSetDiagonalScaleFix",flag,&flag,&flg);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_diagonal_scale_fix","Fix diagonally scaled matrix after solve","KSPSetDiagonalScaleFix",flag,&flag,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPSetDiagonalScaleFix(ksp,flag);CHKERRQ(ierr);
     }
 
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_constant_null_space","Add constant null space to Krylov solver","KSPSetNullSpace",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_constant_null_space","Add constant null space to Krylov solver","KSPSetNullSpace",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       MatNullSpace nsp;
 
       ierr = MatNullSpaceCreate(((PetscObject)ksp)->comm,PETSC_TRUE,0,0,&nsp);CHKERRQ(ierr);
       ierr = KSPSetNullSpace(ksp,nsp);CHKERRQ(ierr);
-      ierr = MatNullSpaceDestroy(nsp);CHKERRQ(ierr);
+      ierr = MatNullSpaceDestroy(&nsp);CHKERRQ(ierr);
     }
 
     /* option is actually checked in KSPSetUp(), just here so goes into help message */
@@ -411,13 +376,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
       Prints reason for convergence or divergence of each linear solve
     */
     flg = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_converged_reason","Print reason for converged or diverged","KSPSolve",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_converged_reason","Print reason for converged or diverged","KSPSolve",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       ksp->printreason = PETSC_TRUE;
     }
 
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_monitor_cancel","Remove any hardwired monitor routines","KSPMonitorCancel",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_monitor_cancel","Remove any hardwired monitor routines","KSPMonitorCancel",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     /* -----------------------------------------------------------------------*/
     /*
       Cancels all monitors hardwired into code before call to KSPSetFromOptions()
@@ -430,22 +395,22 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
     */
     ierr = PetscOptionsString("-ksp_monitor","Monitor preconditioned residual norm","KSPMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
     if (flg) {
-      ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,monfilename,((PetscObject)ksp)->tablevel,&monviewer);CHKERRQ(ierr);
-      ierr = KSPMonitorSet(ksp,KSPMonitorDefault,monviewer,(PetscErrorCode (*)(void*))PetscViewerASCIIMonitorDestroy);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIOpen(((PetscObject)ksp)->comm,monfilename,&monviewer);CHKERRQ(ierr);
+      ierr = KSPMonitorSet(ksp,KSPMonitorDefault,monviewer,(PetscErrorCode (*)(void**))PetscViewerDestroy);CHKERRQ(ierr);
     }
     /*
       Prints preconditioned residual norm at each iteration
     */
     ierr = PetscOptionsString("-ksp_monitor_range","Monitor percent of residual entries more than 10 percent of max","KSPMonitorRange","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
     if (flg) {
-      ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,monfilename,((PetscObject)ksp)->tablevel,&monviewer);CHKERRQ(ierr);
-      ierr = KSPMonitorSet(ksp,KSPMonitorRange,monviewer,(PetscErrorCode (*)(void*))PetscViewerASCIIMonitorDestroy);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIOpen(((PetscObject)ksp)->comm,monfilename,&monviewer);CHKERRQ(ierr);
+      ierr = KSPMonitorSet(ksp,KSPMonitorRange,monviewer,(PetscErrorCode (*)(void**))PetscViewerDestroy);CHKERRQ(ierr);
     }
     /*
       Plots the vector solution 
     */
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_monitor_solution","Monitor solution graphically","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_monitor_solution","Monitor solution graphically","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPMonitorSet(ksp,KSPMonitorSolution,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
     }
@@ -454,8 +419,8 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
     */
     ierr = PetscOptionsString("-ksp_monitor_true_residual","Monitor true residual norm","KSPMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
     if (flg) {
-      ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,monfilename,((PetscObject)ksp)->tablevel,&monviewer);CHKERRQ(ierr);
-      ierr = KSPMonitorSet(ksp,KSPMonitorTrueResidualNorm,monviewer,(PetscErrorCode (*)(void*))PetscViewerASCIIMonitorDestroy);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIOpen(((PetscObject)ksp)->comm,monfilename,&monviewer);CHKERRQ(ierr);
+      ierr = KSPMonitorSet(ksp,KSPMonitorTrueResidualNorm,monviewer,(PetscErrorCode (*)(void**))PetscViewerDestroy);CHKERRQ(ierr);
     }
     /*
       Prints extreme eigenvalue estimates at each iteration
@@ -463,22 +428,27 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
     ierr = PetscOptionsString("-ksp_monitor_singular_value","Monitor singular values","KSPMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPSetComputeSingularValues(ksp,PETSC_TRUE);CHKERRQ(ierr);
-      ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,monfilename,((PetscObject)ksp)->tablevel,&monviewer);CHKERRQ(ierr);
-      ierr = KSPMonitorSet(ksp,KSPMonitorSingularValue,monviewer,(PetscErrorCode (*)(void*))PetscViewerASCIIMonitorDestroy);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIOpen(((PetscObject)ksp)->comm,monfilename,&monviewer);CHKERRQ(ierr);
+      ierr = KSPMonitorSet(ksp,KSPMonitorSingularValue,monviewer,(PetscErrorCode (*)(void**))PetscViewerDestroy);CHKERRQ(ierr);
     }
     /*
       Prints preconditioned residual norm with fewer digits
     */
     ierr = PetscOptionsString("-ksp_monitor_short","Monitor preconditioned residual norm with fewer digits","KSPMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
     if (flg) {
-      ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,monfilename,((PetscObject)ksp)->tablevel,&monviewer);CHKERRQ(ierr);
-      ierr = KSPMonitorSet(ksp,KSPMonitorDefaultShort,monviewer,(PetscErrorCode (*)(void*))PetscViewerASCIIMonitorDestroy);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIOpen(((PetscObject)ksp)->comm,monfilename,&monviewer);CHKERRQ(ierr);
+      ierr = KSPMonitorSet(ksp,KSPMonitorDefaultShort,monviewer,(PetscErrorCode (*)(void**))PetscViewerDestroy);CHKERRQ(ierr);
     }
+    /*
+     Calls Python function
+    */
+    ierr = PetscOptionsString("-ksp_monitor_python","Use Python function","KSPMonitorSet",0,monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+    if (flg) {ierr = PetscPythonMonitorSet((PetscObject)ksp,monfilename);CHKERRQ(ierr);}
     /*
       Graphically plots preconditioned residual norm
     */
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_monitor_draw","Monitor graphically preconditioned residual norm","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_monitor_draw","Monitor graphically preconditioned residual norm","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPMonitorSet(ksp,KSPMonitorLG,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
     }
@@ -486,7 +456,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
       Graphically plots preconditioned and true residual norm
     */
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_monitor_draw_true_residual","Monitor graphically true residual norm","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_monitor_draw_true_residual","Monitor graphically true residual norm","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg){
       ierr = KSPMonitorSet(ksp,KSPMonitorLGTrueResidualNorm,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
     }
@@ -494,39 +464,34 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
       Graphically plots preconditioned residual norm and range of residual element values
     */
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_monitor_range_draw","Monitor graphically preconditioned residual norm","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_monitor_range_draw","Monitor graphically range of preconditioned residual norm","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       ierr = KSPMonitorSet(ksp,KSPMonitorLGRange,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
     }
 
     /* -----------------------------------------------------------------------*/
-
-    ierr = PetscOptionsTruthGroupBegin("-ksp_left_pc","Use left preconditioning","KSPSetPreconditionerSide",&flg);CHKERRQ(ierr);
-    if (flg) { ierr = KSPSetPreconditionerSide(ksp,PC_LEFT);CHKERRQ(ierr); }
-    ierr = PetscOptionsTruthGroup("-ksp_right_pc","Use right preconditioning","KSPSetPreconditionerSide",&flg);CHKERRQ(ierr);
-    if (flg) { ierr = KSPSetPreconditionerSide(ksp,PC_RIGHT);CHKERRQ(ierr);}
-    ierr = PetscOptionsTruthGroupEnd("-ksp_symmetric_pc","Use symmetric (factorized) preconditioning","KSPSetPreconditionerSide",&flg);CHKERRQ(ierr);
-    if (flg) { ierr = KSPSetPreconditionerSide(ksp,PC_SYMMETRIC);CHKERRQ(ierr);}
+   ierr = PetscOptionsEList("-ksp_pc_side","KSP preconditioner side","KSPSetPCSide",PCSides,3,PCSides[ksp->pc_side],&indx,&flg);CHKERRQ(ierr);
+   if (flg) {ierr = KSPSetPCSide(ksp,(PCSide)indx);CHKERRQ(ierr);}
 
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_compute_singularvalues","Compute singular values of preconditioned operator","KSPSetComputeSingularValues",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_compute_singularvalues","Compute singular values of preconditioned operator","KSPSetComputeSingularValues",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) { ierr = KSPSetComputeSingularValues(ksp,PETSC_TRUE);CHKERRQ(ierr); }
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_compute_eigenvalues","Compute eigenvalues of preconditioned operator","KSPSetComputeSingularValues",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_compute_eigenvalues","Compute eigenvalues of preconditioned operator","KSPSetComputeSingularValues",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) { ierr = KSPSetComputeSingularValues(ksp,PETSC_TRUE);CHKERRQ(ierr); }
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_plot_eigenvalues","Scatter plot extreme eigenvalues","KSPSetComputeSingularValues",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_plot_eigenvalues","Scatter plot extreme eigenvalues","KSPSetComputeSingularValues",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) { ierr = KSPSetComputeSingularValues(ksp,PETSC_TRUE);CHKERRQ(ierr); }
 
-    for(i = 0; i < numberofsetfromoptions; i++) {
-      ierr = (*othersetfromoptions[i])(ksp);CHKERRQ(ierr);
-    }
 
     if (ksp->ops->setfromoptions) {
       ierr = (*ksp->ops->setfromoptions)(ksp);CHKERRQ(ierr);
     }
     /* actually check in setup this is just here so goes into help message */
     ierr = PetscOptionsName("-ksp_view","View linear solver parameters","KSPView",&flg);CHKERRQ(ierr);
+
+    /* process any options handlers added with PetscObjectAddOptionsHandler() */
+    ierr = PetscObjectProcessOptionsHandlers((PetscObject)ksp);CHKERRQ(ierr);
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

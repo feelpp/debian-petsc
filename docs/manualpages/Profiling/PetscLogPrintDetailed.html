@@ -10,7 +10,7 @@ Each process prints the times for its own events
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscLogPrintDetailed(MPI_Comm comm, const char filename[]) 
+PetscErrorCode  PetscLogPrintDetailed(MPI_Comm comm, const char filename[])
 </PRE>
 Collective over <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -44,7 +44,7 @@ By default the summary is printed to stdout.
  log, dump, print
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A>(), <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(), <A HREF="../Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>()
+ <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A>(), <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(), PetscLogView()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogPrintDetailed">src/sys/plog/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>

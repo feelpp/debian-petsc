@@ -10,9 +10,9 @@ Computes Y =  Y + a I, where a is a <A HREF="../Sys/PetscScalar.html#PetscScalar
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"  
-PetscErrorCode PETSCMAT_DLLEXPORT MatShift(Mat Y,PetscScalar a)
+PetscErrorCode  MatShift(Mat Y,PetscScalar a)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

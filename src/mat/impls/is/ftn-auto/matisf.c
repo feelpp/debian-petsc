@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* matis.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matisgetlocalmat_(Mat mat,Mat *local, int *__ierr ){
+void PETSC_STDCALL  matisgetlocalmat_(Mat mat,Mat *local, int *__ierr ){
 *__ierr = MatISGetLocalMat(
 	(Mat)PetscToPointer((mat) ),local);
 }
-void PETSC_STDCALL   matcreateis_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,ISLocalToGlobalMapping map,Mat *A, int *__ierr ){
+void PETSC_STDCALL  matcreateis_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,ISLocalToGlobalMapping map,Mat *A, int *__ierr ){
 *__ierr = MatCreateIS(
 	MPI_Comm_f2c( *(comm) ),*m,*n,*M,*N,
 	(ISLocalToGlobalMapping)PetscToPointer((map) ),A);

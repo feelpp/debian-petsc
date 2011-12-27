@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:15+00:00">
+<meta name="date" content="2011-10-29T19:04:46+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests relaxation for dense matrices.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -58,11 +58,11 @@
 <a name="line51"> 51: </a>    <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(e,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
 <a name="line52"> 52: </a>    <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"2-norm of error %G\n"</font>,norm);
 <a name="line53"> 53: </a>  }
-<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
-<a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(e);
+<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
+<a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;e);
 <a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line60"> 60: </a>  <font color="#4169E1">return</font> 0;
 <a name="line61"> 61: </a>}

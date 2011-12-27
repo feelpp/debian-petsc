@@ -10,7 +10,7 @@ For good matrix assembly performance the user should preallocate the matrix stor
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatSeqAIJSetPreallocation(Mat B,PetscInt nz,const PetscInt nnz[])
+PetscErrorCode  MatSeqAIJSetPreallocation(Mat B,PetscInt nz,const PetscInt nnz[])
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -77,7 +77,11 @@ the user still MUST index entries starting at 0!
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/mat/examples/tutorials/ex15.c.html">src/mat/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15f.F.html">src/ksp/ksp/examples/tutorials/ex15f.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>

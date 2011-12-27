@@ -9,16 +9,16 @@
 Creates a PETSc object 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define PetscHeaderCreate(h,tp,pops,cook,t,class_name,com,des,vie)      \
+#define PetscHeaderCreate(h,tp,pops,cook,t,class_name,descr,mansec,com,des,vie) \
   (PetscNew(struct tp,&(h)) ||                                     \
    PetscNew(PetscOps,&(((PetscObject)(h))->bops)) ||                  \
    PetscNew(pops,&((h)->ops)) ||                                    \
-   PetscHeaderCreate_Private((PetscObject)h,cook,t,class_name,com,(PetscObjectFunction)des,(PetscObjectViewerFunction)vie) || \
+   PetscHeaderCreate_Private((PetscObject)h,cook,t,class_name,descr,mansec,com,(PetscObjectFunction)des,(PetscObjectViewerFunction)vie) || \
    PetscLogObjectCreate(h) ||                                      \
    PetscLogObjectMemory(h, sizeof(struct tp) + sizeof(PetscOps) + sizeof(pops)))
 
-EXTERN PetscErrorCode PetscComposedQuantitiesDestroy(PetscObject obj);
-EXTERN PetscErrorCode PETSC_DLLEXPORT PetscHeaderCreate_Private(PetscObject,PetscCookie,PetscInt,const char[],MPI_Comm,PetscErrorCode (*)(PetscObject),PetscErrorCode (*)(PetscObject,PetscViewer));
+extern PetscErrorCode PetscComposedQuantitiesDestroy(PetscObject obj);
+extern PetscErrorCode PetscHeaderCreate_Private(PetscObject,PetscClassId,PetscInt,const char[],const char[],const char[],MPI_Comm,PetscErrorCode (*)(PetscObject*),PetscErrorCode (*)(PetscObject,PetscViewer));
 
 /*@C
     PetscHeaderDestroy - Final step in destroying a PetscObject
@@ -31,40 +31,27 @@ EXTERN PetscErrorCode PETSC_DLLEXPORT PetscHeaderCreate_Private(PetscObject,Pets
 .seealso: PetscHeaderCreate()
 @*/ 
 #define PetscHeaderDestroy(h)                    \
-  (PetscLogObjectDestroy((PetscObject)(h)) ||      \
-   PetscComposedQuantitiesDestroy((PetscObject)h) || \
-   PetscHeaderDestroy_Private((PetscObject)(h)) || \
-   PetscFree((h)->ops) ||                        \
-   PetscFree(h))
+  (PetscLogObjectDestroy((PetscObject)(*h)) ||     \
+   PetscComposedQuantitiesDestroy((PetscObject)*h) || \
+   PetscHeaderDestroy_Private((PetscObject)(*h)) || \
+   PetscFree((*h)->ops) ||                       \
+   PetscFree(*h))
 
-EXTERN PetscErrorCode PETSC_DLLEXPORT PetscHeaderDestroy_Private(PetscObject);
+extern PetscErrorCode  PetscHeaderDestroy_Private(PetscObject);
+extern PetscErrorCode PetscObjectCopyFortranFunctionPointers(PetscObject,PetscObject);
 
 /* ---------------------------------------------------------------------------------------*/
 
 #if !defined(PETSC_USE_DEBUG)
 
-#define PetscValidHeaderSpecific(h,ck,arg)
-#define PetscValidHeader(h,arg)
-#define PetscValidPointer(h,arg)
-#define PetscValidCharPointer(h,arg)
-#define PetscValidIntPointer(h,arg)
-#define PetscValidScalarPointer(h,arg)
-
-#elif !defined(PETSC_HAVE_UNALIGNED_POINTERS)
-/* 
-    Macros to test if a PETSc object is valid and if pointers are
-valid
-
-*/
-#define PetscValidHeaderSpecific(h,ck,arg)                                            \
-</PRE>
+#define PetscValidHeaderSpecific(h,ck,arg) do</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>tp </B></TD><TD>- the data structure type of the object
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pops </B></TD><TD>- the data structure type of the objects operations (for example VecOps)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cook </B></TD><TD>- the cookie associated with this object
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cook </B></TD><TD>- the classid associated with this object
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>t </B></TD><TD>- type (no longer should be used)
 </TD></TR>
@@ -84,7 +71,7 @@ valid
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscHeaderDestroy.html#PetscHeaderDestroy">PetscHeaderDestroy</A>(), <A HREF="../Profiling/PetscCookieRegister.html#PetscCookieRegister">PetscCookieRegister</A>()
+ <A HREF="../Sys/PetscHeaderDestroy.html#PetscHeaderDestroy">PetscHeaderDestroy</A>(), <A HREF="../Profiling/PetscClassIdRegister.html#PetscClassIdRegister">PetscClassIdRegister</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
@@ -94,4 +81,5 @@ valid
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
 </BODY></HTML>

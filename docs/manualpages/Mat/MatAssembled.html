@@ -10,9 +10,9 @@ Indicates if a matrix has been assembled and is ready for use; for example, in m
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatAssembled(Mat mat,PetscTruth *assembled)
+PetscErrorCode  MatAssembled(Mat mat,PetscBool  *assembled)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>mat </B> -the matrix 
@@ -34,5 +34,6 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex58.c.html">src/snes/examples/tutorials/ex58.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/util2.c.html">src/ts/examples/tutorials/util2.c.html</A><BR>
 </BODY></HTML>

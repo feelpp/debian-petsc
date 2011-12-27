@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* posindep.c */
 /* Fortran interface file */
 
@@ -53,20 +54,20 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   tspseudocomputetimestep_(TS ts,PetscReal *dt, int *__ierr ){
+void PETSC_STDCALL  tspseudocomputetimestep_(TS ts,PetscReal *dt, int *__ierr ){
 *__ierr = TSPseudoComputeTimeStep(
 	(TS)PetscToPointer((ts) ),dt);
 }
-void PETSC_STDCALL   tspseudoverifytimestep_(TS ts,Vec update,PetscReal *dt,PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  tspseudoverifytimestep_(TS ts,Vec update,PetscReal *dt,PetscBool  *flag, int *__ierr ){
 *__ierr = TSPseudoVerifyTimeStep(
 	(TS)PetscToPointer((ts) ),
 	(Vec)PetscToPointer((update) ),dt,flag);
 }
-void PETSC_STDCALL   tspseudosettimestepincrement_(TS ts,PetscReal *inc, int *__ierr ){
+void PETSC_STDCALL  tspseudosettimestepincrement_(TS ts,PetscReal *inc, int *__ierr ){
 *__ierr = TSPseudoSetTimeStepIncrement(
 	(TS)PetscToPointer((ts) ),*inc);
 }
-void PETSC_STDCALL   tspseudoincrementdtfrominitialdt_(TS ts, int *__ierr ){
+void PETSC_STDCALL  tspseudoincrementdtfrominitialdt_(TS ts, int *__ierr ){
 *__ierr = TSPseudoIncrementDtFromInitialDt(
 	(TS)PetscToPointer((ts) ));
 }

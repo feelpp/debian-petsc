@@ -9,7 +9,7 @@
 Gets a coloring for a matrix, from its sparsity structure, to reduce the number of function evaluations needed to compute a sparse Jacobian via differencing. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCMAT_DLLEXPORT MatGetColoring(Mat mat,const MatColoringType type,ISColoring *iscoloring)
+PetscErrorCode  MatGetColoring(Mat mat,const MatColoringType type,ISColoring *iscoloring)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -19,16 +19,16 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <DT><B>type </B> -type of coloring, one of the following:
 <br>
 <pre>
-     MATCOLORING_NATURAL - natural (one color for each column, very slow)
+     MATCOLORINGNATURAL - natural (one color for each column, very slow)
 </pre>
 <pre>
-     MATCOLORING_SL - smallest-last
+     MATCOLORINGSL - smallest-last
 </pre>
 <pre>
-     MATCOLORING_LF - largest-first
+     MATCOLORINGLF - largest-first
 </pre>
 <pre>
-     MATCOLORING_ID - incidence-degree
+     MATCOLORINGID - incidence-degree
 </pre>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>

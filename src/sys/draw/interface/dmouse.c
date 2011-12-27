@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawGetMouseButton" 
@@ -27,13 +27,13 @@
 
 .seealso: PetscDrawSynchronizedGetMouseButton()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawGetMouseButton(PetscDraw draw,PetscDrawButton *button,PetscReal* x_user,PetscReal *y_user,PetscReal *x_phys,PetscReal *y_phys)
+PetscErrorCode  PetscDrawGetMouseButton(PetscDraw draw,PetscDrawButton *button,PetscReal* x_user,PetscReal *y_user,PetscReal *x_phys,PetscReal *y_phys)
 {
   PetscErrorCode ierr;
-  PetscTruth isnull;
+  PetscBool  isnull;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   *button = BUTTON_NONE;
   ierr = PetscTypeCompare((PetscObject)draw,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
   if (isnull) PetscFunctionReturn(0);
@@ -62,14 +62,14 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawGetMouseButton(PetscDraw draw,PetscDrawB
 
 .seealso: PetscDrawGetMouseButton()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSynchronizedGetMouseButton(PetscDraw draw,PetscDrawButton *button,PetscReal* x_user,PetscReal *y_user,PetscReal *x_phys,PetscReal *y_phys)
+PetscErrorCode  PetscDrawSynchronizedGetMouseButton(PetscDraw draw,PetscDrawButton *button,PetscReal* x_user,PetscReal *y_user,PetscReal *x_phys,PetscReal *y_phys)
 {
   PetscReal      bcast[4];
   PetscErrorCode ierr;
   PetscMPIInt    rank;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   ierr = MPI_Comm_rank(((PetscObject)draw)->comm,&rank);CHKERRQ(ierr);
   if (!rank) {
     ierr = PetscDrawGetMouseButton(draw,button,x_user,y_user,x_phys,y_phys);CHKERRQ(ierr);

@@ -4,12 +4,12 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:54:02+00:00">
+<meta name="date" content="2011-10-29T19:22:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
-<a name="line2"> 2: </a> #include <A href="../../include/petscsys.h.html">petscsys.h</A>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 
 <a name="line7">  7: </a>
 <a name="line10"> 10: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
@@ -112,7 +112,7 @@
 <a name="line110">110: </a>  <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(zi);
 <a name="line111">111: </a>  <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(x);
 <a name="line112">112: </a>  <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(y);
-<a name="line113">113: </a>  <A href="../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(r);
+<a name="line113">113: </a>  <A href="../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;r);
 <a name="line114">114: </a>  <font color="#4169E1">return</font>(0);
 <a name="line115">115: </a>}
 
@@ -184,7 +184,7 @@
 <a name="line184">184: </a>  fprintf(stdout,<font color="#666666">"%-27s : %e sec\n"</font>,<font color="#666666">"x[z[i]] = y[zi[i]]"</font>,(t2-t1)/2000.0);
 
 
-<a name="line187">187: </a>  <A href="../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(r);
+<a name="line187">187: </a>  <A href="../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;r);
 <a name="line188">188: </a>  <font color="#4169E1">return</font>(0);
 <a name="line189">189: </a>}
 

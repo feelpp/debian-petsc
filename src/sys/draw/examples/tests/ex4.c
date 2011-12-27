@@ -1,7 +1,7 @@
 
 static char help[] = "Demonstrates use of PetscDrawZoom()\n";
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "zoomfunction"
@@ -30,8 +30,8 @@ int main(int argc,char **argv)
   ierr = PetscDrawCreate(PETSC_COMM_SELF,0,"Title",x,y,width,height,&draw);CHKERRQ(ierr);
   ierr = PetscDrawSetFromOptions(draw);CHKERRQ(ierr);
   ierr = PetscDrawZoom(draw,zoomfunction,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscDrawDestroy(draw);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscDrawDestroy(&draw);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

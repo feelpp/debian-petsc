@@ -1,12 +1,11 @@
-#define PETSCSNES_DLL
 
-#include "private/snesimpl.h"
+#include <private/snesimpl.h>
 
-static PetscTruth SNESPackageInitialized = PETSC_FALSE;
+static PetscBool  SNESPackageInitialized = PETSC_FALSE;
 #undef __FUNCT__  
 #define __FUNCT__ "SNESFinalizePackage"
 /*@C
-  SNESFinalizePackage - This function destroys everything in the Petsc interface to the charactoristics package. It is
+  SNESFinalizePackage - This function destroys everything in the Petsc interface to the SNES package. It is
   called from PetscFinalize().
 
   Level: developer
@@ -14,7 +13,7 @@ static PetscTruth SNESPackageInitialized = PETSC_FALSE;
 .keywords: Petsc, destroy, package, mathematica
 .seealso: PetscFinalize()
 @*/
-PetscErrorCode PETSC_DLLEXPORT SNESFinalizePackage(void) 
+PetscErrorCode  SNESFinalizePackage(void)
 {
   PetscFunctionBegin;
   SNESPackageInitialized = PETSC_FALSE;
@@ -38,31 +37,31 @@ PetscErrorCode PETSC_DLLEXPORT SNESFinalizePackage(void)
 .keywords: SNES, initialize, package
 .seealso: PetscInitialize()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESInitializePackage(const char path[]) 
+PetscErrorCode  SNESInitializePackage(const char path[]) 
 {
   char              logList[256];
   char              *className;
-  PetscTruth        opt;
+  PetscBool         opt;
   PetscErrorCode    ierr;
 
   PetscFunctionBegin;
   if (SNESPackageInitialized) PetscFunctionReturn(0);
   SNESPackageInitialized = PETSC_TRUE;
   /* Register Classes */
-  ierr = PetscCookieRegister("SNES",&SNES_COOKIE);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("SNES",&SNES_CLASSID);CHKERRQ(ierr);
   /* Register Constructors */
   ierr = SNESRegisterAll(path);CHKERRQ(ierr);
   /* Register Events */
-  ierr = PetscLogEventRegister("SNESSolve",        SNES_COOKIE,&SNES_Solve);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("SNESLineSearch",   SNES_COOKIE,&SNES_LineSearch);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("SNESFunctionEval", SNES_COOKIE,&SNES_FunctionEval);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("SNESJacobianEval", SNES_COOKIE,&SNES_JacobianEval);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("SNESSolve",        SNES_CLASSID,&SNES_Solve);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("SNESLineSearch",   SNES_CLASSID,&SNES_LineSearch);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("SNESFunctionEval", SNES_CLASSID,&SNES_FunctionEval);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("SNESJacobianEval", SNES_CLASSID,&SNES_JacobianEval);CHKERRQ(ierr);
   /* Process info exclusions */
   ierr = PetscOptionsGetString(PETSC_NULL, "-info_exclude", logList, 256, &opt);CHKERRQ(ierr);
   if (opt) {
     ierr = PetscStrstr(logList, "snes", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscInfoDeactivateClass(SNES_COOKIE);CHKERRQ(ierr);
+      ierr = PetscInfoDeactivateClass(SNES_CLASSID);CHKERRQ(ierr);
     }
   }
   /* Process summary exclusions */
@@ -70,7 +69,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESInitializePackage(const char path[])
   if (opt) {
     ierr = PetscStrstr(logList, "snes", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscLogEventDeactivateClass(SNES_COOKIE);CHKERRQ(ierr);
+      ierr = PetscLogEventDeactivateClass(SNES_CLASSID);CHKERRQ(ierr);
     }
   }
   ierr = PetscRegisterFinalize(SNESFinalizePackage);CHKERRQ(ierr);
@@ -90,15 +89,11 @@ EXTERN_C_BEGIN
   path - library path
 
  */
-PetscErrorCode PETSCSNES_DLLEXPORT PetscDLLibraryRegister_petscsnes(const char path[])
+PetscErrorCode  PetscDLLibraryRegister_petscsnes(const char path[])
 {
   PetscErrorCode ierr;
 
-  ierr = PetscInitializeNoArguments(); if (ierr) return 1;
   PetscFunctionBegin;
-  /*
-      If we got here then PETSc was properly loaded
-  */
   ierr = SNESInitializePackage(path);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

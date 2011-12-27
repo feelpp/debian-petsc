@@ -1,7 +1,7 @@
 
 static char help[] = "Tests the use of MatZeroRows() for uniprocessor matrices.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -12,7 +12,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscScalar    v,five = 5.0;
   IS             isrow;
-  PetscTruth     keepnonzeropattern;
+  PetscBool      keepnonzeropattern;
 
   PetscInitialize(&argc,&args,(char *)0,help);
 
@@ -40,13 +40,13 @@ int main(int argc,char **args)
     ierr = MatSetOption(C,MAT_KEEP_NONZERO_PATTERN,PETSC_TRUE);CHKERRQ(ierr);
   }
 
-  ierr = MatZeroRowsIS(C,isrow,five);CHKERRQ(ierr);
+  ierr = MatZeroRowsIS(C,isrow,five,0,0);CHKERRQ(ierr);
 
   ierr = MatView(C,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
 
-  ierr = ISDestroy(isrow);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISDestroy(&isrow);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

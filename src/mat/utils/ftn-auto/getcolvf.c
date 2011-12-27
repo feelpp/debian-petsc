@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* getcolv.c */
 /* Fortran interface file */
 
@@ -43,7 +44,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matgetcolumnvector_(Mat A,Vec yy,PetscInt *col, int *__ierr ){
+void PETSC_STDCALL  matgetcolumnvector_(Mat A,Vec yy,PetscInt *col, int *__ierr ){
 *__ierr = MatGetColumnVector(
 	(Mat)PetscToPointer((A) ),
 	(Vec)PetscToPointer((yy) ),*col);

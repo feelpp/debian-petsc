@@ -9,7 +9,7 @@
 Adds a method to the Krylov subspace solver package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode KSPRegisterDynamic(char *name_solver,char *path,char *name_create,PetscErrorCode (*routine_create)(KSP))
+PetscErrorCode KSPRegisterDynamic(const char *name_solver,const char *path,const char *name_create,PetscErrorCode (*routine_create)(KSP))
 </PRE>
 Not Collective
 <P>

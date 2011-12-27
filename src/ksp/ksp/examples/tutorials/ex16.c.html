@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:28+00:00">
+<meta name="date" content="2011-10-29T19:13:08+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -33,7 +33,7 @@
 <a name="line23"> 23: </a><font color="#B22222">     petscis.h     - index sets            petscksp.h - Krylov subspace methods</font>
 <a name="line24"> 24: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
 <a name="line25"> 25: </a><font color="#B22222">*/</font>
-<a name="line26"> 26: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line26"> 26: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line30"> 30: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line31"> 31: </a>{
@@ -43,7 +43,7 @@
 <a name="line35"> 35: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;     <font color="#B22222">/* norm of solution error */</font>
 <a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       ntimes,i,j,k,Ii,J,Istart,Iend;
 <a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m = 8,n = 7,its;
-<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v,one = 1.0,neg_one = -1.0,rhs;
 
 <a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
@@ -163,7 +163,7 @@
 <a name="line156">156: </a>    <font color="#B22222">/*</font>
 <a name="line157">157: </a><font color="#B22222">       View the exact solution vector if desired</font>
 <a name="line158">158: </a><font color="#B22222">    */</font>
-<a name="line159">159: </a>    <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-view_exact_sol"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line159">159: </a>    <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-view_exact_sol"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line160">160: </a>    <font color="#4169E1">if</font> (flg) {<A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(u,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);}
 
 <a name="line162">162: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>(ksp,b,x);
@@ -188,9 +188,9 @@
 <a name="line181">181: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
 <a name="line182">182: </a><font color="#B22222">     are no longer needed.</font>
 <a name="line183">183: </a><font color="#B22222">  */</font>
-<a name="line184">184: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
-<a name="line185">185: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line186">186: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line184">184: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line185">185: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line186">186: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 
 <a name="line188">188: </a>  <font color="#B22222">/*</font>
 <a name="line189">189: </a><font color="#B22222">     Always call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>() before exiting a program.  This routine</font>

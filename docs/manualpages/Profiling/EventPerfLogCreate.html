@@ -6,16 +6,16 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="EventPerfLogCreate"><H1>EventPerfLogCreate</H1></A>
-This creates a EventPerfLog object. 
+This creates a PetscEventPerfLog object. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode EventPerfLogCreate(EventPerfLog *eventLog) 
+PetscErrorCode EventPerfLogCreate(PetscEventPerfLog *eventLog) 
 </PRE>
 Not collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>eventLog </B> -The EventPerfLog
+<DT><B>eventLog </B> -The PetscEventPerfLog
 <br>
 <P>
 
@@ -24,8 +24,8 @@ Not collective
  log, event, create
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Profiling/EventPerfLogDestroy.html#EventPerfLogDestroy">EventPerfLogDestroy</A>(), <A HREF="../Profiling/StageLogCreate.html#StageLogCreate">StageLogCreate</A>()
-<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
+ <A HREF="../Profiling/EventPerfLogDestroy.html#EventPerfLogDestroy">EventPerfLogDestroy</A>(), <A HREF="../Profiling/PetscStageLogCreate.html#PetscStageLogCreate">PetscStageLogCreate</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/utils/eventLog.c.html#EventPerfLogCreate">src/sys/plog/utils/eventLog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>

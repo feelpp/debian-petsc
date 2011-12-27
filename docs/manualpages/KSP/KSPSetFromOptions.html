@@ -10,7 +10,7 @@ Sets <A HREF="../KSP/KSP.html#KSP">KSP</A> options from the options database. Th
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetFromOptions(KSP ksp)
+PetscErrorCode  KSPSetFromOptions(KSP ksp)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -56,6 +56,13 @@ norm is less than this then convergence is declared
 <pre>
       works only for PCBCGS, PCIBCGS and and PCCG
 </pre>
+-ksp_lag_norm - compute the norm of the residual for the ith iteration on the i+1 iteration; this means that one can use
+<pre>
+      the norm of the residual for convergence test WITHOUT an extra MPI_Allreduce() limiting global synchronizations.
+</pre>
+<pre>
+      This will require 1 more iteration of the solver than usual.
+</pre>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_fischer_guess &lt;model,size&gt; </B></TD><TD>- uses the Fischer initial guess generator for repeated linear solves
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_constant_null_space </B></TD><TD>- assume the operator (matrix) has the constant vector in its null space
@@ -77,7 +84,7 @@ norm is less than this then convergence is declared
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 To see all options, run your program with the -help option
-or consult the users manual.
+or consult &lt;A href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.4">Chapter 4 KSP: Linear Equations Solvers</A>"&gt;<A HREF="../KSP/KSP.html#KSP">KSP</A> chapter of the users manual&lt;/A&gt;.
 <P>
 
 <P>
@@ -97,13 +104,13 @@ or consult the users manual.
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex8.c.html">src/ksp/ksp/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex8g.c.html">src/ksp/ksp/examples/tutorials/ex8g.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 </BODY></HTML>

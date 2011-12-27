@@ -53,7 +53,7 @@ format of ASCII printed objects (when using <A HREF="../Viewer/PETSC_VIEWER_STDO
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_DEFAULT </B></TD><TD>- default, prints vector contents
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_MATLAB </B></TD><TD>- prints vector contents in Matlab format
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_MATLAB </B></TD><TD>- prints vector contents in MATLAB format
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_INDEX </B></TD><TD>- prints vector contents, including indices of vector elements
 </TD></TR>
@@ -64,7 +64,7 @@ format common among all vector types
 Notes for HDF5 Viewer: the name of the <A HREF="../Vec/Vec.html#Vec">Vec</A> (given with <A HREF="../Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>() is the name that is used
 for the object in the HDF5 file. If you wish to store the same vector to the HDF5 viewer (with different values,
 obviously) several times, you must change its name each time before calling the <A HREF="../Vec/VecView.html#VecView">VecView</A>(). The name you use
-here should equal the name that you use in the <A HREF="../Vec/Vec.html#Vec">Vec</A> object that you use with <A HREF="../Vec/VecLoadIntoVector.html#VecLoadIntoVector">VecLoadIntoVector</A>().
+here should equal the name that you use in the <A HREF="../Vec/Vec.html#Vec">Vec</A> object that you use with <A HREF="../Vec/VecLoad.html#VecLoad">VecLoad</A>().
 <P>
 See the manual page for <A HREF="../Vec/VecLoad.html#VecLoad">VecLoad</A>() on the exact format the binary viewer stores
 the values in the file.
@@ -88,9 +88,9 @@ the values in the file.
 <A HREF="../../../src/vec/vec/examples/tutorials/ex6.c.html">src/vec/vec/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex7.c.html">src/vec/vec/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex8.c.html">src/vec/vec/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/vec/vec/examples/tutorials/ex10.c.html">src/vec/vec/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex12.c.html">src/vec/vec/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/vec/vec/examples/tutorials/ex15.c.html">src/vec/vec/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex16.c.html">src/vec/vec/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex17.c.html">src/vec/vec/examples/tutorials/ex17.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex42.c.html">src/vec/vec/examples/tutorials/ex42.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex42a.c.html">src/vec/vec/examples/tutorials/ex42a.c.html</A><BR>
 </BODY></HTML>

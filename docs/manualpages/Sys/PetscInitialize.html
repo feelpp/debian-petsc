@@ -69,10 +69,12 @@ IBM RS6000 this slows code by at least a factor of 10.)
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-get_total_flops </B></TD><TD>- returns total flops done by all processors
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-memory_info </B></TD><TD>- Print memory usage at end of run
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-server &lt;port&gt; </B></TD><TD>- start PETSc webserver (default port is 8080)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys for Profiling</FONT></H3>
-See the Profiling chapter of the users manual for details.
+See the &lt;a href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.11">Chapter 11 Profiling</A>"&gt;profiling chapter of the users manual&lt;/a&gt; for details.
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_trace [filename] </B></TD><TD>- Print traces of all PETSc calls
 to the screen (useful to determine where a program
@@ -122,12 +124,14 @@ code specific file. Use -skip_petscrc in the code specific file to skip the .pet
 <H3><FONT COLOR="#CC3333">Important Fortran Note</FONT></H3>
 In Fortran, you MUST use PETSC_NULL_CHARACTER to indicate a
 null character string; you CANNOT just use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> as
-in the C version.  See the users manual for details.
+in the C version. See the &lt;a href="../../docs/manual.pdf"&gt;users manual&lt;/a&gt; for details.
 <P>
+If your main program is C but you call Fortran code that also uses PETSc you need to call PetscInitializeFortran() soon after
+calling <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>().
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), PetscInitializeFortran(), <A HREF="../Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>()
+ <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), PetscInitializeFortran(), <A HREF="../Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A HREF="../Sys/PetscInitializeNoArguments.html#PetscInitializeNoArguments">PetscInitializeNoArguments</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
@@ -136,15 +140,15 @@ in the C version.  See the users manual for details.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/sys/viewer/examples/tutorials/ex1.c.html">src/sys/viewer/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/sys/viewer/examples/tutorials/ex1f90.F90.html">src/sys/viewer/examples/tutorials/ex1f90.F90.html</A><BR>
+<A HREF="../../../src/sys/random/examples/tutorials/ex1.c.html">src/sys/random/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/sys/random/examples/tutorials/ex2.c.html">src/sys/random/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex1.c.html">src/sys/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex2.c.html">src/sys/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex3.c.html">src/sys/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/sys/examples/tutorials/ex4.c.html">src/sys/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex5.c.html">src/sys/examples/tutorials/ex5.c.html</A><BR>
-<A HREF="../../../src/sys/examples/tutorials/ex3f.F.html">src/sys/examples/tutorials/ex3f.F.html</A><BR>
-<A HREF="../../../src/sys/examples/tutorials/ex4f90.F90.html">src/sys/examples/tutorials/ex4f90.F90.html</A><BR>
-<A HREF="../../../src/sys/examples/tutorials/ex5f90.F90.html">src/sys/examples/tutorials/ex5f90.F90.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex1.c.html">src/vec/vec/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex1e.c.html">src/vec/vec/examples/tutorials/ex1e.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex2.c.html">src/vec/vec/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/sys/examples/tutorials/ex6.c.html">src/sys/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/sys/examples/tutorials/ex7.c.html">src/sys/examples/tutorials/ex7.c.html</A><BR>
 </BODY></HTML>

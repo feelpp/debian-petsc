@@ -7,17 +7,20 @@
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscLogFlops"><H1>PetscLogFlops</H1></A>
 Adds floating point operations to the global counter. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode PetscLogFlops(PetscLogDouble f)
+</PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>f </B> -flop counter
 <br>
 <P>
-<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
-<PRE>
-void PetscLogFlops(PetscLogDouble f)
-</PRE>
+<P>
 <H3><FONT COLOR="#CC3333">Usage</FONT></H3>
 <PRE>
-     int USER_EVENT;
+     <A HREF="../Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> USER_EVENT;
      <A HREF="../Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>("User event",0,&amp;USER_EVENT);
      <A HREF="../Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(USER_EVENT,0,0,0,0);
         [code segment to monitor]
@@ -54,12 +57,12 @@ information.
 <A HREF="../../../src/sys/examples/tutorials/ex3.c.html">src/sys/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex3f.F.html">src/sys/examples/tutorials/ex3f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex4tu.c.html">src/snes/examples/tutorials/ex4tu.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex18.c.html">src/snes/examples/tutorials/ex18.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex19.c.html">src/snes/examples/tutorials/ex19.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex20.c.html">src/snes/examples/tutorials/ex20.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex22.c.html">src/snes/examples/tutorials/ex22.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex23.c.html">src/snes/examples/tutorials/ex23.c.html</A><BR>
 </BODY></HTML>

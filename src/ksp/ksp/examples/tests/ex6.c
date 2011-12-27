@@ -4,8 +4,8 @@ Input arguments are:\n\
   -f <input_file> : file to load.  For a 5X5 example of the 5-pt. stencil,\n\
                     use the file petsc/src/mat/examples/matbinary.ex\n\n";
 
-#include "petscksp.h"
-#include "petsclog.h"
+#include <petscksp.h>
+#include <petsclog.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -21,26 +21,27 @@ int main(int argc,char **args)
   Mat            A;
   char           file[PETSC_MAX_PATH_LEN];
   PetscViewer    fd;
-  PetscTruth     table = PETSC_FALSE,flg;
+  PetscBool      table = PETSC_FALSE,flg;
   KSP            ksp;
 #endif
 
   PetscInitialize(&argc,&args,(char *)0,help);
 
 #if defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"This example does not work with complex numbers");
+  SETERRQ(PETSC_COMM_WORLD,1,"This example does not work with complex numbers");
 #else
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-table",&table,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-table",&table,PETSC_NULL);CHKERRQ(ierr);
 
 
   /* Read matrix and RHS */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Must indicate binary file with the -f option");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Must indicate binary file with the -f option");
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file,FILE_MODE_READ,&fd);CHKERRQ(ierr);
-
-  ierr = MatLoad(fd,MATSEQAIJ,&A);CHKERRQ(ierr);
-  ierr = VecLoad(fd,PETSC_NULL,&b);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&b);CHKERRQ(ierr);
+  ierr = VecLoad(b,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
   /* 
    If the load matrix is larger then the vector, due to being padded 
@@ -63,7 +64,7 @@ int main(int argc,char **args)
       ierr  = VecSetValues(tmp,1,&indx,bold+j,INSERT_VALUES);CHKERRQ(ierr);
     }
     ierr = VecRestoreArray(b,&bold);CHKERRQ(ierr);
-    ierr = VecDestroy(b);CHKERRQ(ierr);
+    ierr = VecDestroy(&b);CHKERRQ(ierr);
     ierr = VecAssemblyBegin(tmp);CHKERRQ(ierr);
     ierr = VecAssemblyEnd(tmp);CHKERRQ(ierr);
     b = tmp;
@@ -109,20 +110,20 @@ int main(int argc,char **args)
     ierr = PetscStrrchr(file,'/',&matrixname);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"%-8.8s %3D %2.0e %2.1e %2.1e %2.1e %s \n",
                        matrixname,its,norm,tsetup+tsolve,tsetup,tsolve,kspinfo);CHKERRQ(ierr);
-    ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
   } else {
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Number of iterations = %3D\n",its);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Residual norm = %A\n",norm);CHKERRQ(ierr);
   }
 
   /* Cleanup */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 #endif
   return 0;
 }

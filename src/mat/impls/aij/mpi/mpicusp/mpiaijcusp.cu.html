@@ -1,0 +1,131 @@
+<center><a href="mpiaijcusp.cu">Actual source code: mpiaijcusp.cu</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:01:06+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80">
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/mpi/mpiaij.h&gt;   </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
+
+<a name="line7">  7: </a><strong><font color="#4169E1"><a name="MatMPIAIJSetPreallocation_MPIAIJCUSP"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatMPIAIJSetPreallocation_MPIAIJCUSP(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> d_nz,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> d_nnz[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> o_nz,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> o_nnz[])</font></strong>
+<a name="line8">  8: </a>{
+<a name="line9">  9: </a>  Mat_MPIAIJ     *b;
+<a name="line11"> 11: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i;
+
+<a name="line14"> 14: </a>  <font color="#4169E1">if</font> (d_nz == <A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> || d_nz == <A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>) d_nz = 5;
+<a name="line15"> 15: </a>  <font color="#4169E1">if</font> (o_nz == <A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> || o_nz == <A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>) o_nz = 2;
+<a name="line16"> 16: </a>  <font color="#4169E1">if</font> (d_nz &lt; 0) <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"d_nz cannot be less than 0: value %D"</font>,d_nz);
+<a name="line17"> 17: </a>  <font color="#4169E1">if</font> (o_nz &lt; 0) <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"o_nz cannot be less than 0: value %D"</font>,o_nz);
+
+<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>(B-&gt;rmap,1);
+<a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>(B-&gt;cmap,1);
+<a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(B-&gt;rmap);
+<a name="line22"> 22: </a>  <A href="../../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(B-&gt;cmap);
+<a name="line23"> 23: </a>  <font color="#4169E1">if</font> (d_nnz) {
+<a name="line24"> 24: </a>    <font color="#4169E1">for</font> (i=0; i&lt;B-&gt;rmap-&gt;n; i++) {
+<a name="line25"> 25: </a>      <font color="#4169E1">if</font> (d_nnz[i] &lt; 0) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"d_nnz cannot be less than 0: local row %D value %D"</font>,i,d_nnz[i]);
+<a name="line26"> 26: </a>    }
+<a name="line27"> 27: </a>  }
+<a name="line28"> 28: </a>  <font color="#4169E1">if</font> (o_nnz) {
+<a name="line29"> 29: </a>    <font color="#4169E1">for</font> (i=0; i&lt;B-&gt;rmap-&gt;n; i++) {
+<a name="line30"> 30: </a>      <font color="#4169E1">if</font> (o_nnz[i] &lt; 0) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"o_nnz cannot be less than 0: local row %D value %D"</font>,i,o_nnz[i]);
+<a name="line31"> 31: </a>    }
+<a name="line32"> 32: </a>  }
+<a name="line33"> 33: </a>  b = (Mat_MPIAIJ*)B-&gt;data;
+
+<a name="line35"> 35: </a>  <font color="#4169E1">if</font> (!B-&gt;preallocated) {
+<a name="line36"> 36: </a>    <font color="#B22222">/* Explicitly create 2 <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A> matrices. */</font>
+<a name="line37"> 37: </a>    <A href="../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;b-&gt;A);
+<a name="line38"> 38: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(b-&gt;A,B-&gt;rmap-&gt;n,B-&gt;cmap-&gt;n,B-&gt;rmap-&gt;n,B-&gt;cmap-&gt;n);
+<a name="line39"> 39: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(b-&gt;A,MATSEQAIJCUSP);
+<a name="line40"> 40: </a>    PetscLogObjectParent(B,b-&gt;A);
+<a name="line41"> 41: </a>    <A href="../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;b-&gt;B);
+<a name="line42"> 42: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(b-&gt;B,B-&gt;rmap-&gt;n,B-&gt;cmap-&gt;N,B-&gt;rmap-&gt;n,B-&gt;cmap-&gt;N);
+<a name="line43"> 43: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(b-&gt;B,MATSEQAIJCUSP);
+<a name="line44"> 44: </a>    PetscLogObjectParent(B,b-&gt;B);
+<a name="line45"> 45: </a>  }
+
+<a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(b-&gt;A,d_nz,d_nnz);
+<a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(b-&gt;B,o_nz,o_nnz);
+<a name="line49"> 49: </a>  B-&gt;preallocated = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line50"> 50: </a>  <font color="#4169E1">return</font>(0);
+<a name="line51"> 51: </a>}
+<a name="line55"> 55: </a><strong><font color="#4169E1"><a name="MatGetVecs_MPIAIJCUSP"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetVecs_MPIAIJCUSP(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *right,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *left)</font></strong>
+<a name="line56"> 56: </a>{
+
+<a name="line60"> 60: </a>  <font color="#4169E1">if</font> (right) {
+<a name="line61"> 61: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,right);
+<a name="line62"> 62: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(*right,mat-&gt;cmap-&gt;n,<A href="../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line63"> 63: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>(*right,mat-&gt;rmap-&gt;bs);
+<a name="line64"> 64: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(*right,VECCUSP);
+<a name="line65"> 65: </a>    <A href="../../../../../docs/manualpages/Vec/PetscLayoutReference.html#PetscLayoutReference">PetscLayoutReference</A>(mat-&gt;cmap,&amp;(*right)-&gt;map);
+<a name="line66"> 66: </a>  }
+<a name="line67"> 67: </a>  <font color="#4169E1">if</font> (left) {
+<a name="line68"> 68: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,left);
+<a name="line69"> 69: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(*left,mat-&gt;rmap-&gt;n,<A href="../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line70"> 70: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>(*left,mat-&gt;rmap-&gt;bs);
+<a name="line71"> 71: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(*left,VECCUSP);
+<a name="line72"> 72: </a>    <A href="../../../../../docs/manualpages/Vec/PetscLayoutReference.html#PetscLayoutReference">PetscLayoutReference</A>(mat-&gt;rmap,&amp;(*left)-&gt;map);
+<a name="line73"> 73: </a>  }
+<a name="line74"> 74: </a>  <font color="#4169E1">return</font>(0);
+<a name="line75"> 75: </a>}
+
+<a name="line78"> 78: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreate_MPIAIJ(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
+<a name="line80"> 80: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSetValuesBatch_MPIAIJCUSP(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> J, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> Ne, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> Nl, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *elemRows, const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *elemMats)</font></strong>;
+
+<a name="line85"> 85: </a><strong><font color="#4169E1"><a name="MatCreate_MPIAIJCUSP"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreate_MPIAIJCUSP(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B)</font></strong>
+<a name="line86"> 86: </a>{
+
+<a name="line90"> 90: </a>  MatCreate_MPIAIJ(B);
+<a name="line91"> 91: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatMPIAIJSetPreallocation_C"</font>,
+<a name="line92"> 92: </a>                                     <font color="#666666">"MatMPIAIJSetPreallocation_MPIAIJCUSP"</font>,
+<a name="line93"> 93: </a>                                      MatMPIAIJSetPreallocation_MPIAIJCUSP);
+<a name="line94"> 94: </a>  B-&gt;ops-&gt;getvecs        = MatGetVecs_MPIAIJCUSP;
+<a name="line95"> 95: </a>  B-&gt;ops-&gt;setvaluesbatch = MatSetValuesBatch_MPIAIJCUSP;
+<a name="line96"> 96: </a>  PetscObjectChangeTypeName((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,MATMPIAIJCUSP);
+<a name="line97"> 97: </a>  <font color="#4169E1">return</font>(0);
+<a name="line98"> 98: </a>}
+
+
+<a name="line104">104: </a><strong><font color="#4169E1"><a name="MatCreateMPIAIJCUSP"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreateMPIAIJCUSP(<A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> M,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> N,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> d_nz,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> d_nnz[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> o_nz,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> o_nnz[],<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *A)</font></strong>
+<a name="line105">105: </a>{
+<a name="line107">107: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
+
+<a name="line110">110: </a>  <A href="../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,A);
+<a name="line111">111: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*A,m,n,M,N);
+<a name="line112">112: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
+<a name="line113">113: </a>  <font color="#4169E1">if</font> (size &gt; 1) {
+<a name="line114">114: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*A,MATMPIAIJCUSP);
+<a name="line115">115: </a>    <A href="../../../../../docs/manualpages/Mat/MatMPIAIJSetPreallocation.html#MatMPIAIJSetPreallocation">MatMPIAIJSetPreallocation</A>(*A,d_nz,d_nnz,o_nz,o_nnz);
+<a name="line116">116: </a>  } <font color="#4169E1">else</font> {
+<a name="line117">117: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*A,MATSEQAIJCUSP);
+<a name="line118">118: </a>    <A href="../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(*A,d_nz,d_nnz);
+<a name="line119">119: </a>  }
+<a name="line120">120: </a>  <font color="#4169E1">return</font>(0);
+<a name="line121">121: </a>}
+
+<a name="line123">123: </a><font color="#B22222">/*MC</font>
+<a name="line124">124: </a><font color="#B22222">   MATAIJCUSP - MATAIJCUSP = "aijcusp" - A matrix type to be used for sparse matrices.</font>
+
+<a name="line126">126: </a><font color="#B22222">   This matrix type is identical to MATSEQAIJCUSP when constructed with a single process communicator,</font>
+<a name="line127">127: </a><font color="#B22222">   and MATMPIAIJCUSP otherwise.  As a result, for single process communicators, </font>
+<a name="line128">128: </a><font color="#B22222">  <A href="../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A> is supported, and similarly <A href="../../../../../docs/manualpages/Mat/MatMPIAIJSetPreallocation.html#MatMPIAIJSetPreallocation">MatMPIAIJSetPreallocation</A> is supported </font>
+<a name="line129">129: </a><font color="#B22222">  for communicators controlling multiple processes.  It is recommended that you call both of</font>
+<a name="line130">130: </a><font color="#B22222">  the above preallocation routines for simplicity.</font>
+
+<a name="line132">132: </a><font color="#B22222">   Options Database Keys:</font>
+<a name="line133">133: </a><font color="#B22222">. -mat_type aij - sets the matrix type to "aij" during a call to <A href="../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>()</font>
+
+<a name="line135">135: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line137">137: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>,<A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,<A href="../../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>, MATMPIAIJCUSP, MATSEQAIJCUSP</font>
+<a name="line138">138: </a><font color="#B22222">M*/</font>
+
+</pre>
+</body>
+
+</html>

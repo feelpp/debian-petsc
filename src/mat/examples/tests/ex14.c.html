@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:18+00:00">
+<meta name="date" content="2011-10-29T19:04:50+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests sequential and parallel <A href="../../../../docs/manualpages/Mat/MatGetRow.html#MatGetRow">MatGetRow</A>() and <A href="../../../../docs/manualpages/Mat/MatRestoreRow.html#MatRestoreRow">MatRestoreRow</A>().\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -61,7 +61,7 @@
 <a name="line53"> 53: </a>    <A href="../../../../docs/manualpages/Mat/MatRestoreRow.html#MatRestoreRow">MatRestoreRow</A>(C,i,&amp;nz,&amp;idx,&amp;values);
 <a name="line54"> 54: </a>  }
 
-<a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 <a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line58"> 58: </a>  <font color="#4169E1">return</font> 0;
 <a name="line59"> 59: </a>}

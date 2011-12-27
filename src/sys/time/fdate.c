@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscsys.h"
+#include <petscsys.h>
 #if defined(PETSC_HAVE_SYS_TIME_H)
 #include <sys/types.h>
 #include <sys/time.h>
@@ -8,7 +7,7 @@
 #include <time.h>
 #if defined(PETSC_NEEDS_GETTIMEOFDAY_PROTO)
 EXTERN_C_BEGIN
-EXTERN int gettimeofday(struct timeval *,struct timezone *);
+extern int gettimeofday(struct timeval *,struct timezone *);
 EXTERN_C_END
 #endif
    
@@ -38,7 +37,7 @@ EXTERN_C_END
     from an error handler. 
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscGetDate(char date[],size_t len)
+PetscErrorCode  PetscGetDate(char date[],size_t len)
 {
   char           *str=PETSC_NULL;
 #if defined(PETSC_HAVE_TIME)

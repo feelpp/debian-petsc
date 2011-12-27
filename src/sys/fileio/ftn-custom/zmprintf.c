@@ -1,4 +1,4 @@
-#include "private/fortranimpl.h"
+#include <private/fortranimpl.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define petscfprintf_              PETSCFPRINTF
@@ -14,6 +14,8 @@
 
 EXTERN_C_BEGIN
 
+#undef __FUNCT__  
+#define __FUNCT__ "PetscFixSlashN"
 static PetscErrorCode PetscFixSlashN(const char *in, char **out)
 {
   PetscErrorCode ierr;
@@ -36,7 +38,7 @@ void PETSC_STDCALL petscfprintf_(MPI_Comm *comm,FILE **file,CHAR fname PETSC_MIX
   FIXCHAR(fname,len1,c1);
   *ierr = PetscFixSlashN(c1,&tmp);if (*ierr) return;
   *ierr = PetscFPrintf(MPI_Comm_f2c(*(MPI_Fint *)&*comm),*file,tmp);if (*ierr) return;
-  *ierr = PetscStrfree(tmp);if (*ierr) return;
+  *ierr = PetscFree(tmp);if (*ierr) return;
   FREECHAR(fname,c1);
 }
 
@@ -47,7 +49,7 @@ void PETSC_STDCALL petscprintf_(MPI_Comm *comm,CHAR fname PETSC_MIXED_LEN(len1),
   FIXCHAR(fname,len1,c1);
   *ierr = PetscFixSlashN(c1,&tmp);if (*ierr) return;
   *ierr = PetscPrintf(MPI_Comm_f2c(*(MPI_Fint *)&*comm),tmp);if (*ierr) return;
-  *ierr = PetscStrfree(tmp);if (*ierr) return;
+  *ierr = PetscFree(tmp);if (*ierr) return;
   FREECHAR(fname,c1);
 }
 
@@ -58,7 +60,7 @@ void PETSC_STDCALL petscsynchronizedfprintf_(MPI_Comm *comm,FILE **file,CHAR fna
   FIXCHAR(fname,len1,c1);
   *ierr = PetscFixSlashN(c1,&tmp);if (*ierr) return;
   *ierr = PetscSynchronizedFPrintf(MPI_Comm_f2c(*(MPI_Fint *)&*comm),*file,tmp);if (*ierr) return;
-  *ierr = PetscStrfree(tmp);if (*ierr) return;
+  *ierr = PetscFree(tmp);if (*ierr) return;
   FREECHAR(fname,c1);
 }
 
@@ -69,7 +71,7 @@ void PETSC_STDCALL petscsynchronizedprintf_(MPI_Comm *comm,CHAR fname PETSC_MIXE
   FIXCHAR(fname,len1,c1);
   *ierr = PetscFixSlashN(c1,&tmp);if (*ierr) return;
   *ierr = PetscSynchronizedPrintf(MPI_Comm_f2c(*(MPI_Fint *)&*comm),tmp);if (*ierr) return;
-  *ierr = PetscStrfree(tmp);if (*ierr) return;
+  *ierr = PetscFree(tmp);if (*ierr) return;
   FREECHAR(fname,c1);
 }
 

@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:28:56+00:00">
+<meta name="date" content="2011-10-29T18:59:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include </font><font color="#666666">"../src/mat/impls/aij/seq/aij.h"</font><font color="#A020F0"></font>
-<a name="line2"> 2: </a> #include <A href="../../../../../../include/../src/mat/impls/aij/seq/bas/spbas.h.html">../src/mat/impls/aij/seq/bas/spbas.h</A>
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/bas/spbas.h&gt;</font>
 
 <a name="line4">  4: </a><font color="#B22222">/*MC</font>
-<a name="line5">  5: </a><font color="#B22222">  <A href="../../../../../../docs/manualpages/Mat/MAT_SOLVER_BAS.html#MAT_SOLVER_BAS">MAT_SOLVER_BAS</A> -  Provides ICC(k) with drop tolerance</font>
+<a name="line5">  5: </a><font color="#B22222">  <A href="../../../../../../docs/manualpages/Mat/MATSOLVERBAS.html#MATSOLVERBAS">MATSOLVERBAS</A> -  Provides ICC(k) with drop tolerance</font>
 
 <a name="line7">  7: </a><font color="#B22222">  Works with <A href="../../../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>  matrices</font>
 
@@ -36,7 +36,7 @@
 <a name="line28"> 28: </a>{
 <a name="line29"> 29: </a>   long int memreq = 6 * <font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)         + <font color="#B22222">/* nrows, ncols, nnz, n_alloc_icol,</font>
 <a name="line30"> 30: </a><font color="#B22222">                                                       n_alloc_val, col_idx_type */</font>
-<a name="line31"> 31: </a>     <font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>)                 + <font color="#B22222">/* block_data */</font>
+<a name="line31"> 31: </a>     <font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>)                 + <font color="#B22222">/* block_data */</font>
 <a name="line32"> 32: </a>     <font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>**)        + <font color="#B22222">/* values */</font>
 <a name="line33"> 33: </a>     <font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)         + <font color="#B22222">/* alloc_val */</font>
 <a name="line34"> 34: </a>     2 * <font color="#4169E1">sizeof</font>(int**)            + <font color="#B22222">/* icols, icols0 */</font>
@@ -64,7 +64,7 @@
 <a name="line56"> 56: </a><font color="#B22222">  spbas_allocate_pattern:</font>
 <a name="line57"> 57: </a><font color="#B22222">    allocate the pattern arrays row_nnz, icols and optionally values</font>
 <a name="line58"> 58: </a><font color="#B22222">*/</font>
-<a name="line61"> 61: </a><strong><font color="#4169E1"><a name="spbas_allocate_pattern"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> spbas_allocate_pattern( spbas_matrix * result, <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> do_values)</font></strong>
+<a name="line61"> 61: </a><strong><font color="#4169E1"><a name="spbas_allocate_pattern"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> spbas_allocate_pattern( spbas_matrix * result, <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  do_values)</font></strong>
 <a name="line62"> 62: </a>{
 <a name="line64"> 64: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nrows = result-&gt;nrows;
 <a name="line65"> 65: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       col_idx_type = result-&gt;col_idx_type;
@@ -103,8 +103,8 @@
 <a name="line101">101: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nnz   = result-&gt;nnz;
 <a name="line102">102: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nrows = result-&gt;nrows;
 <a name="line103">103: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       r_nnz;
-<a name="line105">105: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     do_values = (result-&gt;values != <A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) ? <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line106">106: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     block_data = result-&gt;block_data;
+<a name="line105">105: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      do_values = (result-&gt;values != <A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) ? <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line106">106: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      block_data = result-&gt;block_data;
 
 <a name="line109">109: </a>   <font color="#4169E1">if</font> (block_data) {
 <a name="line110">110: </a>     <font color="#B22222">/* Allocate the column number array and point to it */</font>
@@ -259,10 +259,10 @@
 <a name="line267">267: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         *icols;
 <a name="line268">268: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         row_nnz;
 <a name="line269">269: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         *ipoint;
-<a name="line270">270: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>       *used;
+<a name="line270">270: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>        *used;
 <a name="line271">271: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         ptr;
 <a name="line272">272: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         i,j;
-<a name="line273">273: </a>   const <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> no_values = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line273">273: </a>   const <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  no_values = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
 <a name="line276">276: </a>   <font color="#B22222">/* Allocate the structure of the new matrix */</font>
 <a name="line277">277: </a>   B-&gt;nrows = nrows;
@@ -280,10 +280,10 @@
 <a name="line289">289: </a>   <font color="#B22222">/* Allocate the ordering for the rows */</font>
 <a name="line290">290: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;isort);
 <a name="line291">291: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;ipoint);
-<a name="line292">292: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>),&amp;used);
+<a name="line292">292: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>),&amp;used);
 
 <a name="line294">294: </a>   <font color="#B22222">/*  Initialize the sorting */</font>
-<a name="line295">295: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>((void*) used, nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>));
+<a name="line295">295: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>((void*) used, nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>));
 <a name="line296">296: </a>   <font color="#4169E1">for</font> (i = 0; i&lt;nrows; i++)  {
 <a name="line297">297: </a>      B-&gt;row_nnz[i] = irow_in[i+1]-irow_in[i];
 <a name="line298">298: </a>      isort[i] = i;
@@ -355,7 +355,7 @@
 <a name="line364">364: </a><font color="#B22222">   spbas_incomplete_cholesky </font>
 <a name="line365">365: </a><font color="#B22222">       Incomplete Cholesky decomposition</font>
 <a name="line366">366: </a><font color="#B22222">*/</font>
-<a name="line367">367: </a><font color="#A020F0">#include </font><font color="#666666">"../src/mat/impls/aij/seq/bas/spbas_cholesky.h"</font><font color="#A020F0"></font>
+<a name="line367">367: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/bas/spbas_cholesky.h&gt;</font>
 
 <a name="line369">369: </a><font color="#B22222">/*</font>
 <a name="line370">370: </a><font color="#B22222">  spbas_delete : de-allocate the arrays owned by this matrix</font>
@@ -365,7 +365,7 @@
 <a name="line376">376: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i;
 
 <a name="line380">380: </a>   <font color="#4169E1">if</font> (matrix.block_data) {
-<a name="line381">381: </a>      ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.alloc_icol);<A href="../../../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr)
+<a name="line381">381: </a>      ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.alloc_icol);
 <a name="line382">382: </a>      <font color="#4169E1">if</font> (matrix.values){ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.alloc_val);}
 <a name="line383">383: </a>   } <font color="#4169E1">else</font>  {
 <a name="line384">384: </a>     <font color="#4169E1">for</font> (i=0; i&lt;matrix.nrows; i++) { ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.icols[i]);}
@@ -378,7 +378,7 @@
 <a name="line391">391: </a>   ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.row_nnz);
 <a name="line392">392: </a>   ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.icols);
 <a name="line393">393: </a>   <font color="#4169E1">if</font> (matrix.col_idx_type == SPBAS_OFFSET_ARRAY) {ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.icol0);}
-<a name="line394">394: </a>   <font color="#4169E1">if</font> (matrix.values)  {ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.values);}
+<a name="line394">394: </a>   ierr=<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(matrix.values);
 <a name="line395">395: </a>   <font color="#4169E1">return</font>(0);
 <a name="line396">396: </a>}
 
@@ -397,7 +397,7 @@
 <a name="line412">412: </a>   MatScalar      *val;
 <a name="line413">413: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *val_A;
 <a name="line414">414: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       col_idx_type = matrix_A.col_idx_type;
-<a name="line415">415: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     do_values = matrix_A.values ? <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line415">415: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      do_values = matrix_A.values ? <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
 <a name="line419">419: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>( <font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) * (nrows+1), &amp;irow);
 <a name="line420">420: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>( <font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) * nnz, &amp;icol);
@@ -636,10 +636,10 @@
 <a name="line662">662: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nrows=matrix_A-&gt;nrows;
 <a name="line663">663: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       * row_nnz;
 <a name="line664">664: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       **icols;
-<a name="line665">665: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     do_values = matrix_A-&gt;values ? <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line665">665: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      do_values = matrix_A-&gt;values ? <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line666">666: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    **vals=<A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
 
-<a name="line670">670: </a>   <font color="#4169E1">if</font> (matrix_A-&gt;col_idx_type != SPBAS_DIAGONAL_OFFSETS) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_SUP_SYS,<font color="#666666">"must have diagonal offsets in pattern\n"</font>);
+<a name="line670">670: </a>   <font color="#4169E1">if</font> (matrix_A-&gt;col_idx_type != SPBAS_DIAGONAL_OFFSETS) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP_SYS,<font color="#666666">"must have diagonal offsets in pattern\n"</font>);
 
 <a name="line672">672: </a>   <font color="#4169E1">if</font> (do_values)  {
 <a name="line673">673: </a>     <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>( <font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)*nrows, &amp;vals);
@@ -677,10 +677,10 @@
 <a name="line707">707: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    nrows=matrix_A-&gt;nrows;
 <a name="line708">708: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    row_nnz;
 <a name="line709">709: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *icols;
-<a name="line710">710: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>  do_values = matrix_A-&gt;values ? <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line710">710: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   do_values = matrix_A-&gt;values ? <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line711">711: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *vals=<A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
 
-<a name="line715">715: </a>   <font color="#4169E1">if</font> (matrix_A-&gt;col_idx_type != SPBAS_DIAGONAL_OFFSETS) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_SUP_SYS, <font color="#666666">"must have diagonal offsets in pattern\n"</font>);
+<a name="line715">715: </a>   <font color="#4169E1">if</font> (matrix_A-&gt;col_idx_type != SPBAS_DIAGONAL_OFFSETS) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP_SYS, <font color="#666666">"must have diagonal offsets in pattern\n"</font>);
 
 <a name="line717">717: </a>   <font color="#4169E1">for</font> (i=0; i&lt;nrows;i++) {
 <a name="line718">718: </a>      icols   = matrix_A-&gt;icols[i];
@@ -793,10 +793,10 @@
 <a name="line839">839: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       marker;
 <a name="line840">840: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       maxmrk=0;
 
-<a name="line844">844: </a>   <font color="#4169E1">if</font> (in_matrix.col_idx_type != SPBAS_DIAGONAL_OFFSETS) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_SUP_SYS,<font color="#666666">"must have diagonal offsets in pattern\n"</font>);
-<a name="line845">845: </a>   <font color="#4169E1">if</font> (ncols != nrows) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_ARG_INCOMP, <font color="#666666">"Dimension error\n"</font>);
-<a name="line846">846: </a>   <font color="#4169E1">if</font> (in_matrix.values) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_ARG_INCOMP, <font color="#666666">"Input array must be sparseness pattern (no values)"</font>);
-<a name="line847">847: </a>   <font color="#4169E1">if</font> (power&lt;=0) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_SUP_SYS, <font color="#666666">"Power must be 1 or up"</font>);
+<a name="line844">844: </a>   <font color="#4169E1">if</font> (in_matrix.col_idx_type != SPBAS_DIAGONAL_OFFSETS) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP_SYS,<font color="#666666">"must have diagonal offsets in pattern\n"</font>);
+<a name="line845">845: </a>   <font color="#4169E1">if</font> (ncols != nrows) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_INCOMP, <font color="#666666">"Dimension error\n"</font>);
+<a name="line846">846: </a>   <font color="#4169E1">if</font> (in_matrix.values) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_INCOMP, <font color="#666666">"Input array must be sparseness pattern (no values)"</font>);
+<a name="line847">847: </a>   <font color="#4169E1">if</font> (power&lt;=0) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP_SYS, <font color="#666666">"Power must be 1 or up"</font>);
 
 <a name="line849">849: </a>   <font color="#B22222">/* Copy input values*/</font>
 <a name="line850">850: </a>   retval.nrows = ncols;
@@ -860,7 +860,7 @@
 <a name="line910">910: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, j;
 <a name="line911">911: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> jstart;
 
-<a name="line914">914: </a>   <font color="#4169E1">if</font> (inout_matrix-&gt;block_data) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_SUP_SYS, <font color="#666666">"Not yet for block data matrices\n"</font>);
+<a name="line914">914: </a>   <font color="#4169E1">if</font> (inout_matrix-&gt;block_data) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP_SYS, <font color="#666666">"Not yet for block data matrices\n"</font>);
 <a name="line915">915: </a>   <font color="#4169E1">for</font> (i=0; i&lt;inout_matrix-&gt;nrows; i++)  {
 <a name="line916">916: </a>       <font color="#4169E1">for</font> (jstart=0; (jstart&lt;inout_matrix-&gt;row_nnz[i]) &amp;&amp; (inout_matrix-&gt;icols[i][jstart]&lt;0); jstart++){}
 <a name="line917">917: </a>       <font color="#4169E1">if</font> (jstart&gt;0) {

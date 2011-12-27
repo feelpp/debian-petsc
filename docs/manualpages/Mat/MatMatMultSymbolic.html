@@ -10,9 +10,9 @@ Performs construction, preallocation, and computes the ij structure of the matri
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatMatMultSymbolic(Mat A,Mat B,PetscReal fill,Mat *C) 
+PetscErrorCode  MatMatMultSymbolic(Mat A,Mat B,PetscReal fill,Mat *C) 
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -39,6 +39,9 @@ This routine is currently implemented for
 - pairs of Dense (A) and AIJ (B) matrix, C will be of type Dense.
 <P>
 
+<P>
+Developers Note: There are ways to estimate the number of nonzeros in the resulting product, see for example, http://arxiv.org/abs/1006.4173
+We should incorporate them into PETSc.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Mat/MatMatMult.html#MatMatMult">MatMatMult</A>(), <A HREF="../Mat/MatMatMultNumeric.html#MatMatMultNumeric">MatMatMultNumeric</A>()

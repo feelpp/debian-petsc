@@ -1,7 +1,7 @@
 
 static char help[] = "Demonstrates us of color map\n";
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -21,8 +21,8 @@ int main(int argc,char **argv)
   }
   ierr = PetscDrawFlush(draw);CHKERRQ(ierr);
   ierr = PetscSleep(2);CHKERRQ(ierr);
-  ierr = PetscDrawDestroy(draw);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscDrawDestroy(&draw);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

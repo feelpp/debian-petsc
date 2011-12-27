@@ -1,8 +1,8 @@
 
 static char help[] = "Tests MatGetArray() and MatView_SeqDense_Binary(), MatView_MPIDense_Binary().\n\n";
 
-#include "petscmat.h"
-#include "petscviewer.h"
+#include <petscmat.h>
+#include <petscviewer.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -56,20 +56,22 @@ int main(int argc,char **args)
       Store the binary matrix to a file
   */
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD, "matrix.dat", FILE_MODE_WRITE, &view);CHKERRQ(ierr);
-  ierr = PetscViewerSetFormat(view, PETSC_VIEWER_NATIVE);CHKERRQ(ierr);
+  ierr = PetscViewerSetFormat(view,PETSC_VIEWER_NATIVE);CHKERRQ(ierr);
   ierr = MatView(A,view);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(view);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&view);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
   /* 
      Now reload the matrix and view it
   */
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"matrix.dat",FILE_MODE_READ,&view);CHKERRQ(ierr);
-  ierr = MatLoad(view,MATMPIDENSE,&A);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(view);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATMPIDENSE);CHKERRQ(ierr);
+  ierr = MatLoad(A,view);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&view);CHKERRQ(ierr);
   ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

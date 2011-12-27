@@ -50,8 +50,8 @@ T*/
      petscviewer.h - viewers               petscpc.h  - preconditioners
      petscksp.h   - linear solvers
 */
-#include "petscao.h"
-#include "petscsnes.h"
+#include <petscao.h>
+#include <petscsnes.h>
 
 
 #define MAX_ELEM      500  /* Maximum number of elements */
@@ -102,7 +102,7 @@ int main(int argc,char **argv)
   PetscInt               *pordering;           /* PETSc ordering */
   PetscInt               *vertices;            /* list of all vertices (incl. ghost ones) 
                                                 on a processor */ 
-  PetscInt               *verticesmask,*svertices;
+  PetscInt               *verticesmask;
   PetscInt               *tmp;
   PetscInt               i,j,jstart,inode,nb,nbrs,Nvneighborstotal = 0;
   PetscErrorCode         ierr;
@@ -119,7 +119,7 @@ int main(int argc,char **argv)
   PetscInt               *tmp1,*tmp2;
 #endif
   MatFDColoring          matfdcoloring = 0;
-  PetscTruth             fd_jacobian_coloring = PETSC_FALSE;
+  PetscBool              fd_jacobian_coloring = PETSC_FALSE;
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Initialize program
@@ -130,7 +130,7 @@ int main(int argc,char **argv)
   ierr = MPI_Comm_size(MPI_COMM_WORLD,&size);CHKERRQ(ierr);
 
   /* The current input file options.inf is for 2 proc run only */
-  if (size != 2) SETERRQ(1,"This Example currently runs on 2 procs only.");
+  if (size != 2) SETERRQ(PETSC_COMM_SELF,1,"This Example currently runs on 2 procs only.");
 
   /*
      Initialize problem parameters
@@ -166,9 +166,7 @@ int main(int argc,char **argv)
      a  ready interface to ParMeTiS). 
    */
   fptr = fopen("adj.in","r"); 
-  if (!fptr) {
-      SETERRQ(0,"Could not open adj.in")
-  }
+  if (!fptr) SETERRQ(PETSC_COMM_SELF,0,"Could not open adj.in");
   
   /*
      Each processor writes to the file output.<rank> where rank is the
@@ -176,13 +174,11 @@ int main(int argc,char **argv)
   */
   sprintf(part_name,"output.%d",rank);
   fptr1 = fopen(part_name,"w"); 
-  if (!fptr1) {
-      SETERRQ(0,"Could no open output file");
-  }
+  if (!fptr1) SETERRQ(PETSC_COMM_SELF,0,"Could no open output file");
   ierr = PetscMalloc(user.Nvglobal*sizeof(PetscInt),&user.gloInd);
   ierr = PetscFPrintf(PETSC_COMM_SELF,fptr1,"Rank is %D\n",rank);CHKERRQ(ierr);
   for (inode = 0; inode < user.Nvglobal; inode++) {
-    fgets(str,256,fptr);
+    if (!fgets(str,256,fptr)) SETERRQ(PETSC_COMM_SELF,1,"fgets read failed");
     sscanf(str,"%d",&dtmp);user.v2p[inode] = dtmp;
     if (user.v2p[inode] == rank) {
        ierr = PetscFPrintf(PETSC_COMM_SELF,fptr1,"Node %D belongs to processor %D\n",inode,user.v2p[inode]);CHKERRQ(ierr);
@@ -262,7 +258,7 @@ int main(int argc,char **argv)
   */
   ierr = AOApplicationToPetsc(ao,user.Nvlocal,user.locInd);CHKERRQ(ierr);
   ierr = AOApplicationToPetsc(ao,Nvneighborstotal,tmp);CHKERRQ(ierr);
-  ierr = AODestroy(ao);CHKERRQ(ierr);
+  ierr = AODestroy(&ao);CHKERRQ(ierr);
 
   ierr = PetscFPrintf(PETSC_COMM_SELF,fptr1,"After AOApplicationToPetsc, local indices are : \n");CHKERRQ(ierr);
   for (i=0; i < user.Nvlocal; i++) {
@@ -370,13 +366,10 @@ int main(int argc,char **argv)
     local representation
   */
   ierr = ISCreateStride(MPI_COMM_SELF,bs*nvertices,0,1,&islocal);CHKERRQ(ierr);
-  ierr = PetscMalloc(nvertices*sizeof(PetscInt),&svertices);CHKERRQ(ierr);
-  for (i=0; i<nvertices; i++) svertices[i] = bs*vertices[i];
-  ierr = ISCreateBlock(MPI_COMM_SELF,bs,nvertices,svertices,&isglobal);CHKERRQ(ierr);
-  ierr = PetscFree(svertices);CHKERRQ(ierr);
+  ierr = ISCreateBlock(MPI_COMM_SELF,bs,nvertices,vertices,PETSC_COPY_VALUES,&isglobal);CHKERRQ(ierr);
   ierr = VecScatterCreate(x,isglobal,user.localX,islocal,&user.scatter);CHKERRQ(ierr);  
-  ierr = ISDestroy(isglobal);CHKERRQ(ierr); 
-  ierr = ISDestroy(islocal);CHKERRQ(ierr); 
+  ierr = ISDestroy(&isglobal);CHKERRQ(ierr); 
+  ierr = ISDestroy(&islocal);CHKERRQ(ierr); 
 
   /* 
      Create matrix data structure; Just to keep the example simple, we have not done any 
@@ -390,8 +383,8 @@ int main(int argc,char **argv)
   /* 
     The following routine allows us to set the matrix values in local ordering 
   */
-  ierr = ISLocalToGlobalMappingCreate(MPI_COMM_SELF,bs*nvertices,vertices,&isl2g);CHKERRQ(ierr);
-  ierr = MatSetLocalToGlobalMapping(Jac,isl2g);CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingCreate(MPI_COMM_SELF,bs*nvertices,vertices,PETSC_COPY_VALUES,&isl2g);CHKERRQ(ierr);
+  ierr = MatSetLocalToGlobalMapping(Jac,isl2g,isl2g);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Create nonlinear solver context
@@ -405,7 +398,7 @@ int main(int argc,char **argv)
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ierr = SNESSetFunction(snes,r,FormFunction,(void*)&user);CHKERRQ(ierr);
 
-   ierr = PetscOptionsGetTruth(PETSC_NULL,"-fd_jacobian_coloring",&fd_jacobian_coloring,0);CHKERRQ(ierr);
+   ierr = PetscOptionsGetBool(PETSC_NULL,"-fd_jacobian_coloring",&fd_jacobian_coloring,0);CHKERRQ(ierr);
    if (!fd_jacobian_coloring){
      ierr = SNESSetJacobian(snes,Jac,Jac,FormJacobian,(void*)&user);CHKERRQ(ierr);
    } else { /* Use matfdcoloring */
@@ -414,13 +407,13 @@ int main(int argc,char **argv)
      /* Get the data structure of Jac */
      ierr = FormJacobian(snes,x,&Jac,&Jac,&flag,&user);CHKERRQ(ierr);
      /* Create coloring context */
-     ierr = MatGetColoring(Jac,MATCOLORING_SL,&iscoloring);CHKERRQ(ierr);
+     ierr = MatGetColoring(Jac,MATCOLORINGSL,&iscoloring);CHKERRQ(ierr);
      ierr = MatFDColoringCreate(Jac,iscoloring,&matfdcoloring);CHKERRQ(ierr);
      ierr = MatFDColoringSetFunction(matfdcoloring,(PetscErrorCode (*)(void))FormFunction,&user);CHKERRQ(ierr);
      ierr = MatFDColoringSetFromOptions(matfdcoloring);CHKERRQ(ierr);
      /* ierr = MatFDColoringView(matfdcoloring,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); */
      ierr = SNESSetJacobian(snes,Jac,Jac,SNESDefaultComputeJacobianColor,matfdcoloring);CHKERRQ(ierr); 
-     ierr = ISColoringDestroy(iscoloring);CHKERRQ(ierr);
+     ierr = ISColoringDestroy(&iscoloring);CHKERRQ(ierr);
    }
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -481,18 +474,18 @@ int main(int argc,char **argv)
   ierr = PetscFree(vertices);CHKERRQ(ierr);
   ierr = PetscFree(verticesmask);CHKERRQ(ierr);
   ierr = PetscFree(tmp);CHKERRQ(ierr);
-  ierr = VecScatterDestroy(user.scatter);CHKERRQ(ierr);
-  ierr = ISLocalToGlobalMappingDestroy(isl2g);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);  
-  ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = VecDestroy(user.localX);CHKERRQ(ierr);  
-  ierr = VecDestroy(user.localF);CHKERRQ(ierr);
-  ierr = MatDestroy(Jac);CHKERRQ(ierr);  ierr = SNESDestroy(snes);CHKERRQ(ierr);
+  ierr = VecScatterDestroy(&user.scatter);CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingDestroy(&isl2g);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);  
+  ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = VecDestroy(&user.localX);CHKERRQ(ierr);  
+  ierr = VecDestroy(&user.localF);CHKERRQ(ierr);
+  ierr = MatDestroy(&Jac);CHKERRQ(ierr);  ierr = SNESDestroy(&snes);CHKERRQ(ierr);
   /*ierr = PetscDrawDestroy(draw);CHKERRQ(ierr);*/
   if (fd_jacobian_coloring){
-    ierr = MatFDColoringDestroy(matfdcoloring);CHKERRQ(ierr);
+    ierr = MatFDColoringDestroy(&matfdcoloring);CHKERRQ(ierr);
   }
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }

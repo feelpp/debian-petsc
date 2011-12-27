@@ -4,7 +4,7 @@ them using the PETSc sparse format. Input parameters are:\n\
   -fin <filename> : input file\n\
   -fout <filename> : output file\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -19,14 +19,14 @@ int main(int argc,char **args)
   PetscScalar    *val,*bval;
   FILE*          file;
   PetscViewer    view;
-  PetscTruth     opt;
+  PetscBool      opt;
 
   PetscInitialize(&argc,&args,(char *)0,help);
 
   /* Read in matrix and RHS */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-fin",filein,PETSC_MAX_PATH_LEN-1,&opt);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(PETSC_NULL,"-fin",filein,PETSC_MAX_PATH_LEN,&opt);CHKERRQ(ierr);
   if (!opt) {
-    SETERRQ(PETSC_ERR_ARG_WRONG, "No filename was specified for this test");
+    SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_WRONG, "No filename was specified for this test");
   }
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
@@ -87,16 +87,16 @@ int main(int argc,char **args)
   ierr = PetscFree(brow);CHKERRQ(ierr);
 
   ierr = PetscPrintf(PETSC_COMM_SELF,"Reading matrix completes.\n");CHKERRQ(ierr);
-  ierr = PetscOptionsGetString(PETSC_NULL,"-fout",fileout,PETSC_MAX_PATH_LEN-1,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(PETSC_NULL,"-fout",fileout,PETSC_MAX_PATH_LEN,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,fileout,FILE_MODE_WRITE,&view);CHKERRQ(ierr);
   ierr = MatView(A,view);CHKERRQ(ierr);
   ierr = VecView(b,view);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(view);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&view);CHKERRQ(ierr);
 
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

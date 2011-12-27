@@ -10,12 +10,12 @@ Gets the type of file to be open
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscViewerFileGetMode(PetscViewer viewer,PetscFileMode *type)
+PetscErrorCode  PetscViewerFileGetMode(PetscViewer viewer,PetscFileMode *type)
 </PRE>
-Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>viewer </B> -the <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>; must be a binary, Matlab, hdf, or netcdf <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
+<DT><B>viewer </B> -the <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>; must be a binary, MATLAB, hdf, or netcdf <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>

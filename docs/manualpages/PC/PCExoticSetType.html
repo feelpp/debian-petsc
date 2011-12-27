@@ -9,12 +9,11 @@
 Sets the type of coarse grid interpolation to use 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscpc.h" 
-#include "petscmg.h" 
-#include "petscda.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCExoticSetType(PC pc,PCExoticType type)
+#include "petscpcmg.h" 
+#include "petscdmda.h" 
+PetscErrorCode  PCExoticSetType(PC pc,PCExoticType type)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

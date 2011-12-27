@@ -4,19 +4,19 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:19:32+00:00">
+<meta name="date" content="2011-10-29T18:50:02+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;stdio.h&gt;</font>
-<a name="line3">  3: </a><font color="#A020F0">#include </font><font color="#666666">"petscsys.h"</font><font color="#A020F0"></font>
-<a name="line4">  4: </a><font color="#A020F0">#include </font><font color="#666666">"../src/sys/viewer/impls/socket/socket.h"</font><font color="#A020F0"></font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;../src/sys/viewer/impls/socket/socket.h&gt;</font>
 
 
 <a name="line7">  7: </a><font color="#B22222">/*</font>
 <a name="line8">  8: </a><font color="#B22222">   TAKEN from src/sys/fileio/sysio.c The swap byte routines are </font>
-<a name="line9">  9: </a><font color="#B22222">  included here because the Matlab programs that use this do NOT</font>
+<a name="line9">  9: </a><font color="#B22222">  included here because the MATLAB programs that use this do NOT</font>
 <a name="line10"> 10: </a><font color="#B22222">  link to the PETSc libraries.</font>
 <a name="line11"> 11: </a><font color="#B22222">*/</font>
 <a name="line12"> 12: </a><font color="#A020F0">#include &lt;errno.h&gt;</font>
@@ -34,7 +34,7 @@
 <a name="line26"> 26: </a>  char *ptr1,*ptr2 = (char*)&amp;tmp;
 <a name="line27"> 27: </a>  <font color="#4169E1">for</font> (j=0; j&lt;n; j++) {
 <a name="line28"> 28: </a>    ptr1 = (char*)(buff + j);
-<a name="line29"> 29: </a>    <font color="#4169E1">for</font> (i=0; i&lt;<font color="#4169E1">sizeof</font>(int); i++) {
+<a name="line29"> 29: </a>    <font color="#4169E1">for</font> (i=0; i&lt;(int)<font color="#4169E1">sizeof</font>(int); i++) {
 <a name="line30"> 30: </a>      ptr2[i] = ptr1[<font color="#4169E1">sizeof</font>(int)-1-i];
 <a name="line31"> 31: </a>    }
 <a name="line32"> 32: </a>    buff[j] = tmp;
@@ -50,7 +50,7 @@
 <a name="line44"> 44: </a>  char  *ptr1,*ptr2 = (char*)&amp;tmp;
 <a name="line45"> 45: </a>  <font color="#4169E1">for</font> (j=0; j&lt;n; j++) {
 <a name="line46"> 46: </a>    ptr1 = (char*)(buff + j);
-<a name="line47"> 47: </a>    <font color="#4169E1">for</font> (i=0; i&lt;<font color="#4169E1">sizeof</font>(short); i++) {
+<a name="line47"> 47: </a>    <font color="#4169E1">for</font> (i=0; i&lt;(int)<font color="#4169E1">sizeof</font>(short); i++) {
 <a name="line48"> 48: </a>      ptr2[i] = ptr1[<font color="#4169E1">sizeof</font>(int)-1-i];
 <a name="line49"> 49: </a>    }
 <a name="line50"> 50: </a>    buff[j] = tmp;
@@ -70,7 +70,7 @@
 <a name="line66"> 66: </a><font color="#A020F0">#endif</font>
 <a name="line67"> 67: </a>  <font color="#4169E1">for</font> (j=0; j&lt;n; j++) {
 <a name="line68"> 68: </a>    ptr1 = (char*)(buff1 + j);
-<a name="line69"> 69: </a>    <font color="#4169E1">for</font> (i=0; i&lt;<font color="#4169E1">sizeof</font>(double); i++) {
+<a name="line69"> 69: </a>    <font color="#4169E1">for</font> (i=0; i&lt;(int)<font color="#4169E1">sizeof</font>(double); i++) {
 <a name="line70"> 70: </a>      ptr2[i] = ptr1[<font color="#4169E1">sizeof</font>(double)-1-i];
 <a name="line71"> 71: </a>    }
 <a name="line72"> 72: </a>    buff1[j] = tmp;
@@ -81,7 +81,7 @@
 <a name="line77"> 77: </a><strong><font color="#228B22">#define PETSC_MEX_ERROR(a) {fprintf(stdout,</font><font color="#666666">"sread: %s \n"</font><font color="#228B22">,a); return PETSC_ERR_SYS;}</font></strong>
 
 <a name="line81"> 81: </a><font color="#B22222">/*</font>
-<a name="line82"> 82: </a><font color="#B22222">    <A href="0/docs/manualpages/Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A> - Reads from a socket, called from Matlab</font>
+<a name="line82"> 82: </a><font color="#B22222">    <A href="0/docs/manualpages/Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A> - Reads from a socket, called from MATLAB</font>
 
 <a name="line84"> 84: </a><font color="#B22222">  Input Parameters:</font>
 <a name="line85"> 85: </a><font color="#B22222">.   fd - the file</font>
@@ -133,7 +133,7 @@
 <a name="line131">131: </a>}
 
 <a name="line135">135: </a><font color="#B22222">/*</font>
-<a name="line136">136: </a><font color="#B22222">    <A href="0/docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A> - Writes to a socket, called from Matlab</font>
+<a name="line136">136: </a><font color="#B22222">    <A href="0/docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A> - Writes to a socket, called from MATLAB</font>
 
 <a name="line138">138: </a><font color="#B22222">  Input Parameters:</font>
 <a name="line139">139: </a><font color="#B22222">.   fd - the file</font>
@@ -144,7 +144,7 @@
 
 <a name="line145">145: </a><font color="#B22222">  Notes: does byte swapping to work on all machines.</font>
 <a name="line146">146: </a><font color="#B22222">*/</font>
-<a name="line147">147: </a><strong><font color="#4169E1"><a name="PetscBinaryWrite"></a><A href="0/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="0/docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>(int fd,void *p,int n,<A href="0/docs/manualpages/Sys/PetscDataType.html#PetscDataType">PetscDataType</A> type,<A href="0/docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> dummy)</font></strong>
+<a name="line147">147: </a><strong><font color="#4169E1"><a name="PetscBinaryWrite"></a><A href="0/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="0/docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>(int fd,void *p,int n,<A href="0/docs/manualpages/Sys/PetscDataType.html#PetscDataType">PetscDataType</A> type,<A href="0/docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  dummy)</font></strong>
 <a name="line148">148: </a>{
 
 <a name="line150">150: </a>  int  maxblock,wsize,err;

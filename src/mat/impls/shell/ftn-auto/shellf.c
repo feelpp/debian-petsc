@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* shell.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matshellsetcontext_(Mat mat,void*ctx, int *__ierr ){
+void PETSC_STDCALL  matshellsetcontext_(Mat mat,void*ctx, int *__ierr ){
 *__ierr = MatShellSetContext(
 	(Mat)PetscToPointer((mat) ),ctx);
 }

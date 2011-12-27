@@ -1,7 +1,6 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"             /*I "petscksp.h" I*/
-#include "../src/ksp/ksp/impls/cg/nash/nashimpl.h"
+#include <private/kspimpl.h>             /*I "petscksp.h" I*/
+#include <../src/ksp/ksp/impls/cg/nash/nashimpl.h>
 
 #define NASH_PRECONDITIONED_DIRECTION   0
 #define NASH_UNPRECONDITIONED_DIRECTION 1
@@ -14,7 +13,7 @@ static const char *DType_Table[64] = {  "preconditioned", "unpreconditioned"};
 /*@
     KSPNASHSetRadius - Sets the radius of the trust region.
 
-    Collective on KSP
+    Logically Collective on KSP
 
     Input Parameters:
 +   ksp    - the iterative context
@@ -27,17 +26,15 @@ static const char *DType_Table[64] = {  "preconditioned", "unpreconditioned"};
 
 .keywords: KSP, NASH, set, trust region radius
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHSetRadius(KSP ksp, PetscReal radius)
+PetscErrorCode  KSPNASHSetRadius(KSP ksp, PetscReal radius)
 {
-  PetscErrorCode ierr, (*f)(KSP, PetscReal);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp, KSP_COOKIE, 1);
-  if (radius < 0.0) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE, "Radius negative");
-  ierr = PetscObjectQueryFunction((PetscObject)ksp, "KSPNASHSetRadius_C", (void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp, radius);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp, KSP_CLASSID, 1);
+  if (radius < 0.0) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE, "Radius negative");
+  PetscValidLogicalCollectiveReal(ksp,radius,2);
+  ierr = PetscTryMethod(ksp,"KSPNASHSetRadius_C",(KSP,PetscReal),(ksp,radius));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -56,16 +53,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHSetRadius(KSP ksp, PetscReal radius)
 
 .keywords: KSP, NASH, get, norm direction
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHGetNormD(KSP ksp, PetscReal *norm_d)
+PetscErrorCode  KSPNASHGetNormD(KSP ksp, PetscReal *norm_d)
 {
-  PetscErrorCode ierr, (*f)(KSP, PetscReal *);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp, KSP_COOKIE, 1);
-  ierr = PetscObjectQueryFunction((PetscObject)ksp, "KSPNASHGetNormD_C", (void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp, norm_d);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp, KSP_CLASSID, 1);
+  ierr = PetscUseMethod(ksp,"KSPNASHGetNormD_C",(KSP,PetscReal*),(ksp,norm_d));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -84,16 +78,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHGetNormD(KSP ksp, PetscReal *norm_d)
 
 .keywords: KSP, NASH, get, objective function
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHGetObjFcn(KSP ksp, PetscReal *o_fcn)
+PetscErrorCode  KSPNASHGetObjFcn(KSP ksp, PetscReal *o_fcn)
 {
-  PetscErrorCode ierr, (*f)(KSP, PetscReal *);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp, KSP_COOKIE, 1);
-  ierr = PetscObjectQueryFunction((PetscObject)ksp, "KSPNASHGetObjFcn_C", (void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp, o_fcn);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp, KSP_CLASSID, 1);
+  ierr = PetscUseMethod(ksp,"KSPNASHGetObjFcn_C",(KSP,PetscReal*),(ksp,o_fcn));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -103,7 +94,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHGetObjFcn(KSP ksp, PetscReal *o_fcn)
 PetscErrorCode KSPSolve_NASH(KSP ksp)
 {
 #ifdef PETSC_USE_COMPLEX
-  SETERRQ(PETSC_ERR_SUP, "NASH is not available for complex systems");
+  SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP, "NASH is not available for complex systems");
 #else
   KSP_NASH       *cg = (KSP_NASH *)ksp->data;
   PetscErrorCode ierr;
@@ -118,21 +109,16 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
 
   PetscInt       max_cg_its;
 
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
   /***************************************************************************/
   /* Check the arguments and parameters.                                     */
   /***************************************************************************/
 
-  ierr = PCDiagonalScale(ksp->pc, &diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) {
-    SETERRQ1(PETSC_ERR_SUP, "Krylov method %s does not support diagonal scaling", ((PetscObject)ksp)->type_name);
-  }
-
-  if (cg->radius < 0.0) {
-    SETERRQ(PETSC_ERR_ARG_OUTOFRANGE, "Input error: radius < 0");
-  }
+  ierr = PCGetDiagonalScale(ksp->pc, &diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP, "Krylov method %s does not support diagonal scaling", ((PetscObject)ksp)->type_name);
+  if (cg->radius < 0.0) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE, "Input error: radius < 0");
 
   /***************************************************************************/
   /* Get the workspace vectors and initialize variables                      */
@@ -199,10 +185,10 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
     if (cg->radius) {
       if (r2 >= rr) {
         alpha = 1.0;
-        cg->norm_d = sqrt(rr);
+        cg->norm_d = PetscSqrtReal(rr);
       }
       else {
-        alpha = sqrt(r2 / rr);
+        alpha = PetscSqrtReal(r2 / rr);
         cg->norm_d = cg->radius;
       }
 
@@ -212,7 +198,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
       /* Compute objective function.                                         */
       /***********************************************************************/
 
-      ierr = KSP_MatMult(ksp, Qmat, d, z);CHKERRQ(ierr)
+      ierr = KSP_MatMult(ksp, Qmat, d, z);CHKERRQ(ierr);
       ierr = VecAYPX(z, -0.5, ksp->vec_rhs);CHKERRQ(ierr);
       ierr = VecDot(d, z, &cg->o_fcn);CHKERRQ(ierr);
       cg->o_fcn = -cg->o_fcn;
@@ -235,10 +221,10 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
     if (cg->radius) {
       if (r2 >= rr) {
         alpha = 1.0;
-        cg->norm_d = sqrt(rr);
+        cg->norm_d = PetscSqrtReal(rr);
       }
       else {
-        alpha = sqrt(r2 / rr);
+        alpha = PetscSqrtReal(r2 / rr);
         cg->norm_d = cg->radius;
       }
 
@@ -248,7 +234,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
       /* Compute objective function.                                         */
       /***********************************************************************/
 
-      ierr = KSP_MatMult(ksp, Qmat, d, z);CHKERRQ(ierr)
+      ierr = KSP_MatMult(ksp, Qmat, d, z);CHKERRQ(ierr);
       ierr = VecAYPX(z, -0.5, ksp->vec_rhs);CHKERRQ(ierr);
       ierr = VecDot(d, z, &cg->o_fcn);CHKERRQ(ierr);
       cg->o_fcn = -cg->o_fcn;
@@ -270,11 +256,11 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
     break;
 
   case KSP_NORM_UNPRECONDITIONED:
-    norm_r = sqrt(rr);					/* norm_r = |r|      */
+    norm_r = PetscSqrtReal(rr);					/* norm_r = |r|      */
     break;
 
   case KSP_NORM_NATURAL:
-    norm_r = sqrt(rz);					/* norm_r = |r|_M    */
+    norm_r = PetscSqrtReal(rz);					/* norm_r = |r|_M    */
     break;
 
   default:
@@ -283,7 +269,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
   }
 
   KSPLogResidualHistory(ksp, norm_r);
-  KSPMonitor(ksp, ksp->its, norm_r);
+  ierr = KSPMonitor(ksp, ksp->its, norm_r);CHKERRQ(ierr);
   ksp->rnorm = norm_r;
 
   ierr = (*ksp->converged)(ksp, ksp->its, norm_r, &ksp->reason, ksp->cnvP);CHKERRQ(ierr);
@@ -314,10 +300,10 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
     if (cg->radius) {
       if (r2 >= rr) {
         alpha = 1.0;
-        cg->norm_d = sqrt(rr);
+        cg->norm_d = PetscSqrtReal(rr);
       }
       else {
-        alpha = sqrt(r2 / rr);
+        alpha = PetscSqrtReal(r2 / rr);
         cg->norm_d = cg->radius;
       }
 
@@ -327,7 +313,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
       /* Compute objective function.                                         */
       /***********************************************************************/
 
-      ierr = KSP_MatMult(ksp, Qmat, d, z);CHKERRQ(ierr)
+      ierr = KSP_MatMult(ksp, Qmat, d, z);CHKERRQ(ierr);
       ierr = VecAYPX(z, -0.5, ksp->vec_rhs);CHKERRQ(ierr);
       ierr = VecDot(d, z, &cg->o_fcn);CHKERRQ(ierr);
       cg->o_fcn = -cg->o_fcn;
@@ -372,7 +358,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
       /* trust region.                                                       */
       /***********************************************************************/
 
-      step = sqrt(r2 / norm_p);
+      step = PetscSqrtReal(r2 / norm_p);
       cg->norm_d = cg->radius;
 
       ierr = VecAXPY(d, step, p);CHKERRQ(ierr);	/* d = d + step p    */
@@ -391,10 +377,10 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
 
       if (r2 >= rr) {
         alpha = 1.0;
-        cg->norm_d = sqrt(rr);
+        cg->norm_d = PetscSqrtReal(rr);
       }
       else {
-        alpha = sqrt(r2 / rr);
+        alpha = PetscSqrtReal(r2 / rr);
         cg->norm_d = cg->radius;
       }
 
@@ -404,7 +390,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
       /* Compute objective function.                                         */
       /***********************************************************************/
 
-      ierr = KSP_MatMult(ksp, Qmat, d, z);CHKERRQ(ierr)
+      ierr = KSP_MatMult(ksp, Qmat, d, z);CHKERRQ(ierr);
       ierr = VecAYPX(z, -0.5, ksp->vec_rhs);CHKERRQ(ierr);
       ierr = VecDot(d, z, &cg->o_fcn);CHKERRQ(ierr);
       cg->o_fcn = -cg->o_fcn;
@@ -447,7 +433,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
 	/* Follow the direction to the boundary of the trust region.         */
 	/*********************************************************************/
 
-        step = (sqrt(dMp*dMp+norm_p*(r2-norm_d))-dMp)/norm_p;
+        step = (PetscSqrtReal(dMp*dMp+norm_p*(r2-norm_d))-dMp)/norm_p;
         cg->norm_d = cg->radius;
 
         ierr = VecAXPY(d, step, p);CHKERRQ(ierr);	/* d = d + step p    */
@@ -483,7 +469,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
       ierr = VecDot(d, d, &norm_d);CHKERRQ(ierr);
       break;
     }
-    cg->norm_d = sqrt(norm_d);
+    cg->norm_d = PetscSqrtReal(norm_d);
 
     /*************************************************************************/
     /* Update objective function.                                            */
@@ -522,7 +508,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
       break;
 
     case KSP_NORM_NATURAL:
-      norm_r = sqrt(rz);				/* norm_r = |r|_M    */
+      norm_r = PetscSqrtReal(rz);				/* norm_r = |r|_M    */
       break;
 
     default:
@@ -531,7 +517,7 @@ PetscErrorCode KSPSolve_NASH(KSP ksp)
     }
 
     KSPLogResidualHistory(ksp, norm_r);
-    KSPMonitor(ksp, ksp->its, norm_r);
+    ierr = KSPMonitor(ksp, ksp->its, norm_r);CHKERRQ(ierr);
     ksp->rnorm = norm_r;
   
     ierr = (*ksp->converged)(ksp, ksp->its, norm_r, &ksp->reason, ksp->cnvP);CHKERRQ(ierr);
@@ -623,17 +609,6 @@ PetscErrorCode KSPSetUp_NASH(KSP ksp)
 
   PetscFunctionBegin;
   /***************************************************************************/
-  /* This implementation of CG only handles left preconditioning so generate */
-  /* an error otherwise.                                                     */
-  /***************************************************************************/
-
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP, "No right preconditioning for KSPNASH");
-  } else if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP, "No symmetric preconditioning for KSPNASH");
-  }
-
-  /***************************************************************************/
   /* Set work vectors needed by conjugate gradient method and allocate       */
   /***************************************************************************/
 
@@ -667,7 +642,7 @@ PetscErrorCode KSPDestroy_NASH(KSP ksp)
 EXTERN_C_BEGIN
 #undef __FUNCT__
 #define __FUNCT__ "KSPNASHSetRadius_NASH"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHSetRadius_NASH(KSP ksp, PetscReal radius)
+PetscErrorCode  KSPNASHSetRadius_NASH(KSP ksp, PetscReal radius)
 {
   KSP_NASH *cg = (KSP_NASH *)ksp->data;
 
@@ -678,7 +653,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHSetRadius_NASH(KSP ksp, PetscReal radiu
 
 #undef __FUNCT__
 #define __FUNCT__ "KSPNASHGetNormD_NASH"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHGetNormD_NASH(KSP ksp, PetscReal *norm_d)
+PetscErrorCode  KSPNASHGetNormD_NASH(KSP ksp, PetscReal *norm_d)
 {
   KSP_NASH *cg = (KSP_NASH *)ksp->data;
 
@@ -689,7 +664,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHGetNormD_NASH(KSP ksp, PetscReal *norm_
 
 #undef __FUNCT__
 #define __FUNCT__ "KSPNASHGetObjFcn_NASH"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPNASHGetObjFcn_NASH(KSP ksp, PetscReal *o_fcn){
+PetscErrorCode  KSPNASHGetObjFcn_NASH(KSP ksp, PetscReal *o_fcn){
   KSP_NASH *cg = (KSP_NASH *)ksp->data;
 
   PetscFunctionBegin;
@@ -758,7 +733,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__
 #define __FUNCT__ "KSPCreate_NASH"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_NASH(KSP ksp)
+PetscErrorCode  KSPCreate_NASH(KSP ksp)
 {
   PetscErrorCode ierr;
   KSP_NASH       *cg;
@@ -769,8 +744,9 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_NASH(KSP ksp)
   cg->dtype = NASH_UNPRECONDITIONED_DIRECTION;
 
   ksp->data = (void *) cg;
-  ksp->pc_side = PC_LEFT;
-  ksp->normtype = KSP_NORM_UNPRECONDITIONED;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,1);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_NATURAL,PC_LEFT,1);CHKERRQ(ierr);
 
   /***************************************************************************/
   /* Sets the functions that are associated with this data structure         */

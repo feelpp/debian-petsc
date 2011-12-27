@@ -1,13 +1,11 @@
-#define PETSCKSP_DLL
 
-#include "../src/ksp/ksp/impls/broyden/broydenimpl.h"       /*I "petscksp.h" I*/
+#include <../src/ksp/ksp/impls/broyden/broydenimpl.h>       /*I "petscksp.h" I*/
 
 
 /*
      KSPSetUp_Broyden - Sets up the workspace needed by the Broyden method. 
 
-      This is called once, usually automatically by KSPSolve() or KSPSetUp()
-     but can be called directly by KSPSetUp()
+      This is called once, usually automatically by KSPSolve() or KSPSetUp().
 */
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetUp_Broyden"
@@ -21,11 +19,8 @@ PetscErrorCode KSPSetUp_Broyden(KSP ksp)
        This implementation of Broyden only handles left preconditioning
      so generate an error otherwise.
   */
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP,"No right preconditioning for KSPBroyden");
-  } else if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"No symmetric preconditioning for KSPBroyden");
-  }
+  if (ksp->pc_side == PC_RIGHT) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"No right preconditioning for KSPBroyden");
+  else if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"No symmetric preconditioning for KSPBroyden");
   ierr = KSPGetVecs(ksp,cgP->msize,&cgP->v,cgP->msize,&cgP->w);CHKERRQ(ierr);
   ierr = KSPDefaultGetWork(ksp,3);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -48,7 +43,7 @@ PetscErrorCode  KSPSolve_Broyden(KSP ksp)
   KSP_Broyden    *cg = (KSP_Broyden*)ksp->data;
   Mat            Amat;
   Vec            X,B,R,Pold,P,*V = cg->v,*W = cg->w;
-  PetscScalar    gdot;
+  PetscScalar    gdot,A0;
   PetscReal      gnorm;
 
   PetscFunctionBegin;
@@ -70,12 +65,26 @@ PetscErrorCode  KSPSolve_Broyden(KSP ksp)
     ierr = VecNorm(R,NORM_2,&gnorm);CHKERRQ(ierr);          
   } else if (ksp->normtype == KSP_NORM_PRECONDITIONED) {
     ierr = VecNorm(Pold,NORM_2,&gnorm);CHKERRQ(ierr);          
-  } else SETERRQ(PETSC_ERR_SUP,"NormType not supported");
+  } else SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"NormType not supported");
   KSPLogResidualHistory(ksp,gnorm);
-  KSPMonitor(ksp,0,gnorm);
+  ierr = KSPMonitor(ksp,0,gnorm);CHKERRQ(ierr);
   ierr = (*ksp->converged)(ksp,0,gnorm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr); 
 
-  ierr = VecAXPY(X,1.0,Pold);CHKERRQ(ierr);                    /*     x = x + p */
+  if (1) {
+    PetscScalar rdot,abr;
+    Vec         y,w;
+    ierr = VecDuplicate(P,&y);CHKERRQ(ierr);
+    ierr = VecDuplicate(P,&w);CHKERRQ(ierr);
+    ierr = MatMult(Amat,Pold,y);CHKERRQ(ierr);
+    ierr = KSP_PCApplyBAorAB(ksp,Pold,y,w);CHKERRQ(ierr);      /* y = BAp */
+    ierr  = VecDotNorm2(Pold,y,&rdot,&abr);CHKERRQ(ierr);   /*   rdot = (p)^T(BAp); abr = (BAp)^T (BAp) */
+    ierr = VecDestroy(&y);CHKERRQ(ierr);
+    ierr = VecDestroy(&w);CHKERRQ(ierr);
+    A0 = rdot/abr;
+    ierr = VecAXPY(X,A0,Pold);CHKERRQ(ierr);             /*   x  <- x + scale p */
+  } else {
+    ierr = VecAXPY(X,1.0,Pold);CHKERRQ(ierr);                    /*     x = x + p */
+  }
 
   for (k=0; k<ksp->max_it; k += cg->msize) {
     for (i=0; i<cg->msize && k+i<ksp->max_it; i++) {
@@ -87,28 +96,45 @@ PetscErrorCode  KSPSolve_Broyden(KSP ksp)
         ierr = VecNorm(R,NORM_2,&gnorm);CHKERRQ(ierr);          
       } else if (ksp->normtype == KSP_NORM_PRECONDITIONED) {
         ierr = VecNorm(P,NORM_2,&gnorm);CHKERRQ(ierr);          
-      } else SETERRQ(PETSC_ERR_SUP,"NormType not supported");
+      } else SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"NormType not supported");
       KSPLogResidualHistory(ksp,gnorm);
-      KSPMonitor(ksp,(1+k+i),gnorm);
+      ierr = KSPMonitor(ksp,(1+k+i),gnorm);CHKERRQ(ierr);
       ierr = (*ksp->converged)(ksp,1+k+i,gnorm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr); 
       if (ksp->reason) PetscFunctionReturn(0);
 
-      for (j=0; j<i; j++) {                                     /* r = product_i [I+v(i)w(i)^T]* */
+      if (1) {
+        ierr = VecScale(P,A0);CHKERRQ(ierr);
+      }
+
+      for (j=0; j<i; j++) {                                     /* p = product_{j<i} [I+v(j)w(j)^T]*p */
         ierr = VecDot(W[j],P,&gdot);CHKERRQ(ierr);
         ierr = VecAXPY(P,gdot,V[j]);CHKERRQ(ierr);
       }
-      ierr = VecCopy(Pold,W[i]);CHKERRQ(ierr);                   /* W[i] = Pold */
+      ierr = VecCopy(Pold,W[i]);CHKERRQ(ierr);                   /* w[i] = Pold */
 
-      ierr = VecAXPY(Pold,-1.0,P);CHKERRQ(ierr);                 /* V[i] =       P           */
+      ierr = VecAXPY(Pold,-1.0,P);CHKERRQ(ierr);                 /* v[i] =       p           */
       ierr = VecDot(W[i],Pold,&gdot);CHKERRQ(ierr);             /*        ----------------- */
-      ierr = VecCopy(P,V[i]);CHKERRQ(ierr);                      /*         W[i]'*(Pold - P)    */
+      ierr = VecCopy(P,V[i]);CHKERRQ(ierr);                      /*         w[i]'*(Pold - p)    */
       ierr = VecScale(V[i],1.0/gdot);CHKERRQ(ierr);
 
-      ierr = VecDot(W[i],P,&gdot);CHKERRQ(ierr);                /* P = (I + V[i]*W[i]')*P  */
+      ierr = VecDot(W[i],P,&gdot);CHKERRQ(ierr);                /* p = (I + v[i]*w[i]')*p  */
       ierr = VecAXPY(P,gdot,V[i]);CHKERRQ(ierr);
       ierr = VecCopy(P,Pold);CHKERRQ(ierr);
 
-      ierr = VecAXPY(X,1.0,P);CHKERRQ(ierr);                    /* X = X + P */
+      if (1) {
+        PetscScalar rdot,abr;
+        Vec         y,w;
+        ierr = VecDuplicate(P,&y);CHKERRQ(ierr);
+        ierr = VecDuplicate(P,&w);CHKERRQ(ierr);
+        ierr = MatMult(Amat,P,y);CHKERRQ(ierr);
+    ierr = KSP_PCApplyBAorAB(ksp,P,y,w);CHKERRQ(ierr);      /* y = BAp */
+	ierr  = VecDotNorm2(P,y,&rdot,&abr);CHKERRQ(ierr);   /*   rdot = (p)^T(BAp); abr = (BAp)^T (BAp) */
+        ierr = VecDestroy(&y);CHKERRQ(ierr);
+        ierr = VecDestroy(&w);CHKERRQ(ierr);
+	ierr = VecAXPY(X,rdot/abr,P);CHKERRQ(ierr);             /*   x  <- x + scale p */
+      } else {
+        ierr = VecAXPY(X,1.0,P);CHKERRQ(ierr);                    /* x = x + p */
+      }
     }
   }
   ksp->reason = KSP_DIVERGED_ITS;
@@ -119,25 +145,32 @@ PetscErrorCode  KSPSolve_Broyden(KSP ksp)
 
 */
 #undef __FUNCT__  
-#define __FUNCT__ "KSPDestroy_Broyden" 
-PetscErrorCode KSPDestroy_Broyden(KSP ksp)
+#define __FUNCT__ "KSPReset_Broyden" 
+PetscErrorCode KSPReset_Broyden(KSP ksp)
 {
   KSP_Broyden    *cg = (KSP_Broyden*)ksp->data;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = VecDestroyVecs(cg->v,cg->msize);CHKERRQ(ierr);
-  ierr = VecDestroyVecs(cg->w,cg->msize);CHKERRQ(ierr);
+  if (cg->v) {ierr = VecDestroyVecs(cg->msize,&cg->v);CHKERRQ(ierr);}
+  if (cg->w) {ierr = VecDestroyVecs(cg->msize,&cg->w);CHKERRQ(ierr);}
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "KSPDestroy_Broyden" 
+PetscErrorCode KSPDestroy_Broyden(KSP ksp)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = KSPReset_Broyden(ksp);CHKERRQ(ierr);
   ierr = KSPDefaultDestroy(ksp);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 /*
      KSPView_Broyden - Prints information about the current Krylov method being used
-
-      Currently this only prints information to a file (or stdout) about the 
-      symmetry of the problem. If your Krylov method has special options or 
-      flags that information should be printed here.
 
 */
 #undef __FUNCT__  
@@ -146,14 +179,14 @@ PetscErrorCode KSPView_Broyden(KSP ksp,PetscViewer viewer)
 {
   KSP_Broyden    *cg = (KSP_Broyden *)ksp->data; 
   PetscErrorCode ierr;
-  PetscTruth     iascii;
+  PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  Size of space %d\n",cg->msize);CHKERRQ(ierr);
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for KSP cg",((PetscObject)viewer)->type_name);
+    SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Viewer type %s not supported for KSP cg",((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
@@ -182,9 +215,13 @@ PetscErrorCode KSPSetFromOptions_Broyden(KSP ksp)
     It must be wrapped in EXTERN_C_BEGIN to be dynamically linkable in C++
 */
 /*MC
-     KSPBROYDEN - The preconditioned conjugate gradient (Broyden) iterative method
+     KSPBROYDEN - Limited memory "bad" Broyden method implemented for linear problems.
 
    Level: beginner
+
+   Notes: Supports only left preconditioning
+
+          Implemented for experimentation reasons, not intended to replace any of the Krylov methods
 
 .seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP
 
@@ -192,18 +229,19 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_Broyden"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_Broyden(KSP ksp)
+PetscErrorCode  KSPCreate_Broyden(KSP ksp)
 {
   PetscErrorCode ierr;
   KSP_Broyden    *cg;
 
   PetscFunctionBegin;
-  ierr = PetscNewLog(ksp,KSP_Broyden,&cg);CHKERRQ(ierr);
-  cg->msize                      = 30;
-  cg->csize                      = 0;
+  ierr      = PetscNewLog(ksp,KSP_Broyden,&cg);CHKERRQ(ierr);
+  ksp->data = (void*)cg;
+  cg->msize = 30;
+  cg->csize = 0;
 
-  ksp->data                      = (void*)cg;
-  ksp->pc_side                   = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_LEFT,1);CHKERRQ(ierr);
 
   /*
        Sets the functions that are associated with this data structure 
@@ -211,6 +249,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_Broyden(KSP ksp)
   */
   ksp->ops->setup                = KSPSetUp_Broyden;
   ksp->ops->solve                = KSPSolve_Broyden;
+  ksp->ops->reset                = KSPReset_Broyden;
   ksp->ops->destroy              = KSPDestroy_Broyden;
   ksp->ops->view                 = KSPView_Broyden;
   ksp->ops->setfromoptions       = KSPSetFromOptions_Broyden;

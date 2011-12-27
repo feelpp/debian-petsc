@@ -10,9 +10,9 @@ Gets the local submatrices (for this processor only) for the additive Schwarz pr
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCASMGetLocalSubmatrices(PC pc,PetscInt *n,Mat *mat[])
+PetscErrorCode  PCASMGetLocalSubmatrices(PC pc,PetscInt *n,Mat *mat[])
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>pc </B> -the preconditioner context
@@ -27,13 +27,17 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 
 <P>
+Notes: Call after <A HREF="../PC/PCSetUp.html#PCSetUp">PCSetUp</A>() (or <A HREF="../KSP/KSPSetUp.html#KSPSetUp">KSPSetUp</A>()) but before <A HREF="../PC/PCApply.html#PCApply">PCApply</A>() (or KSPApply()) and before <A HREF="../PC/PCSetUpOnBlocks.html#PCSetUpOnBlocks">PCSetUpOnBlocks</A>())
+<P>
+Usually one would use PCSetModifySubmatrices() to change the submatrices in building the preconditioner.
+<P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../PC/PC.html#PC">PC</A>, ASM, set, local, subdomains, additive Schwarz, block Jacobi
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PC/PCASMSetTotalSubdomains.html#PCASMSetTotalSubdomains">PCASMSetTotalSubdomains</A>(), <A HREF="../PC/PCASMSetOverlap.html#PCASMSetOverlap">PCASMSetOverlap</A>(), <A HREF="../PC/PCASMGetSubKSP.html#PCASMGetSubKSP">PCASMGetSubKSP</A>(),
-<BR><A HREF="../PC/PCASMCreateSubdomains2D.html#PCASMCreateSubdomains2D">PCASMCreateSubdomains2D</A>(), <A HREF="../PC/PCASMSetLocalSubdomains.html#PCASMSetLocalSubdomains">PCASMSetLocalSubdomains</A>(), <A HREF="../PC/PCASMGetLocalSubdomains.html#PCASMGetLocalSubdomains">PCASMGetLocalSubdomains</A>()
+<BR><A HREF="../PC/PCASMCreateSubdomains2D.html#PCASMCreateSubdomains2D">PCASMCreateSubdomains2D</A>(), <A HREF="../PC/PCASMSetLocalSubdomains.html#PCASMSetLocalSubdomains">PCASMSetLocalSubdomains</A>(), <A HREF="../PC/PCASMGetLocalSubdomains.html#PCASMGetLocalSubdomains">PCASMGetLocalSubdomains</A>(), PCSetModifySubmatrices()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/impls/asm/asm.c.html#PCASMGetLocalSubmatrices">src/ksp/pc/impls/asm/asm.c</A>
 <BR><A HREF="./index.html">Index of all PC routines</A>

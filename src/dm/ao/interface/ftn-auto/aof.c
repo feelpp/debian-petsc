@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* ao.c */
 /* Fortran interface file */
 
@@ -27,11 +28,6 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscao.h"
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define aodestroy_ AODESTROY
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define aodestroy_ aodestroy
-#endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define aopetsctoapplicationis_ AOPETSCTOAPPLICATIONIS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -78,41 +74,37 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   aodestroy_(AO ao, int *__ierr ){
-*__ierr = AODestroy(
-	(AO)PetscToPointer((ao) ));
-}
-void PETSC_STDCALL   aopetsctoapplicationis_(AO ao,IS is, int *__ierr ){
+void PETSC_STDCALL  aopetsctoapplicationis_(AO ao,IS is, int *__ierr ){
 *__ierr = AOPetscToApplicationIS(
 	(AO)PetscToPointer((ao) ),
 	(IS)PetscToPointer((is) ));
 }
-void PETSC_STDCALL   aoapplicationtopetscis_(AO ao,IS is, int *__ierr ){
+void PETSC_STDCALL  aoapplicationtopetscis_(AO ao,IS is, int *__ierr ){
 *__ierr = AOApplicationToPetscIS(
 	(AO)PetscToPointer((ao) ),
 	(IS)PetscToPointer((is) ));
 }
-void PETSC_STDCALL   aopetsctoapplication_(AO ao,PetscInt *n,PetscInt ia[], int *__ierr ){
+void PETSC_STDCALL  aopetsctoapplication_(AO ao,PetscInt *n,PetscInt ia[], int *__ierr ){
 *__ierr = AOPetscToApplication(
 	(AO)PetscToPointer((ao) ),*n,ia);
 }
-void PETSC_STDCALL   aoapplicationtopetsc_(AO ao,PetscInt *n,PetscInt ia[], int *__ierr ){
+void PETSC_STDCALL  aoapplicationtopetsc_(AO ao,PetscInt *n,PetscInt ia[], int *__ierr ){
 *__ierr = AOApplicationToPetsc(
 	(AO)PetscToPointer((ao) ),*n,ia);
 }
-void PETSC_STDCALL   aopetsctoapplicationpermuteint_(AO ao,PetscInt *block,PetscInt array[], int *__ierr ){
+void PETSC_STDCALL  aopetsctoapplicationpermuteint_(AO ao,PetscInt *block,PetscInt array[], int *__ierr ){
 *__ierr = AOPetscToApplicationPermuteInt(
 	(AO)PetscToPointer((ao) ),*block,array);
 }
-void PETSC_STDCALL   aoapplicationtopetscpermuteint_(AO ao,PetscInt *block,PetscInt array[], int *__ierr ){
+void PETSC_STDCALL  aoapplicationtopetscpermuteint_(AO ao,PetscInt *block,PetscInt array[], int *__ierr ){
 *__ierr = AOApplicationToPetscPermuteInt(
 	(AO)PetscToPointer((ao) ),*block,array);
 }
-void PETSC_STDCALL   aopetsctoapplicationpermutereal_(AO ao,PetscInt *block,PetscReal array[], int *__ierr ){
+void PETSC_STDCALL  aopetsctoapplicationpermutereal_(AO ao,PetscInt *block,PetscReal array[], int *__ierr ){
 *__ierr = AOPetscToApplicationPermuteReal(
 	(AO)PetscToPointer((ao) ),*block,array);
 }
-void PETSC_STDCALL   aoapplicationtopetscpermutereal_(AO ao,PetscInt *block,PetscReal array[], int *__ierr ){
+void PETSC_STDCALL  aoapplicationtopetscpermutereal_(AO ao,PetscInt *block,PetscReal array[], int *__ierr ){
 *__ierr = AOApplicationToPetscPermuteReal(
 	(AO)PetscToPointer((ao) ),*block,array);
 }

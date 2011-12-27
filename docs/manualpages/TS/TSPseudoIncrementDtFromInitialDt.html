@@ -6,13 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="TSPseudoIncrementDtFromInitialDt"><H1>TSPseudoIncrementDtFromInitialDt</H1></A>
-Indicates that a new timestep is computed via the formula $         dt = initial_dt*initial_fnorm/current_fnorm  rather than the default update, $         dt = current_dt*previous_fnorm/current_fnorm. 
+Indicates that a new timestep is computed via the formula $         dt = initial_dt*initial_fnorm/current_fnorm rather than the default update, $         dt = current_dt*previous_fnorm/current_fnorm. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode PETSCTS_DLLEXPORT TSPseudoIncrementDtFromInitialDt(TS ts)
+PetscErrorCode  TSPseudoIncrementDtFromInitialDt(TS ts)
 </PRE>
-Collective on <A HREF="../TS/TS.html#TS">TS</A>
+Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>ts </B> -the timestep context

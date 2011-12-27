@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:21:17+00:00">
+<meta name="date" content="2011-10-29T18:51:45+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">      Code for opening and closing files.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
-<a name="line5"> 5: </a> #include <A href="../../../include/petscsys.h.html">petscsys.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 <a name="line6">  6: </a><font color="#A020F0">#if defined(PETSC_HAVE_PWD_H)</font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;pwd.h&gt;</font>
 <a name="line8">  8: </a><font color="#A020F0">#endif</font>
@@ -56,7 +56,7 @@
 <a name="line48"> 48: </a>{
 <a name="line49"> 49: </a>  <font color="#4169E1">struct passwd</font> *pwde;
 <a name="line51"> 51: </a>  size_t        ln;
-<a name="line52"> 52: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>    flg;
+<a name="line52"> 52: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>     flg;
 
 <a name="line55"> 55: </a>  <font color="#4169E1">if</font> (path[0] == '/') {
 <a name="line56"> 56: </a>    <A href="../../../docs/manualpages/Sys/PetscStrncmp.html#PetscStrncmp">PetscStrncmp</A>(<font color="#666666">"/tmp_mnt/"</font>,path,9,&amp;flg);

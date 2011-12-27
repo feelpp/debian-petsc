@@ -10,7 +10,7 @@ Gets the last value that was used as the differencing  parameter.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"   
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDGetH(Mat mat,PetscScalar *h)
+PetscErrorCode  MatMFFDGetH(Mat mat,PetscScalar *h)
 </PRE>
 Not Collective
 <P>
@@ -29,9 +29,8 @@ Not Collective
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/MatCreateSNESMF.html#MatCreateSNESMF">MatCreateSNESMF</A>(),<A HREF="../Mat/MatMFFDSetHHistory.html#MatMFFDSetHHistory">MatMFFDSetHHistory</A>(), <A HREF="../Mat/MatCreateMFFD.html#MatCreateMFFD">MatCreateMFFD</A>(), <A HREF="../Mat/MATMFFD.html#MATMFFD">MATMFFD</A>
-<BR><A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>(),MatMFFDKSPMonitor()
-<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
+ <A HREF="../SNES/MatCreateSNESMF.html#MatCreateSNESMF">MatCreateSNESMF</A>(),<A HREF="../Mat/MatMFFDSetHHistory.html#MatMFFDSetHHistory">MatMFFDSetHHistory</A>(), <A HREF="../Mat/MatCreateMFFD.html#MatCreateMFFD">MatCreateMFFD</A>(), <A HREF="../Mat/MATMFFD.html#MATMFFD">MATMFFD</A>, <A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/mffd/mffd.c.html#MatMFFDGetH">src/mat/impls/mffd/mffd.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>

@@ -1,5 +1,5 @@
-#include "private/fortranimpl.h"
-#include "petscis.h"
+#include <private/fortranimpl.h>
+#include <petscis.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define islocaltoglobalmappingview_       ISLOCALTOGLOBALMAPPINGVIEW
@@ -15,9 +15,9 @@
 
 EXTERN_C_BEGIN
 
-void PETSC_STDCALL iscompressindicesgeneral_(PetscInt *n,PetscInt *bs,PetscInt *imax,IS *is_in,IS *is_out,PetscErrorCode *ierr)
+void PETSC_STDCALL iscompressindicesgeneral_(PetscInt *n,PetscInt *nkeys,PetscInt *bs,PetscInt *imax,IS *is_in,IS *is_out,PetscErrorCode *ierr)
 {
-  *ierr = ISCompressIndicesGeneral(*n,*bs,*imax,is_in,is_out);
+  *ierr = ISCompressIndicesGeneral(*n,*nkeys,*bs,*imax,is_in,is_out);
 }
 
 void PETSC_STDCALL islocaltoglobalmappingview_(ISLocalToGlobalMapping *mapping,PetscViewer *viewer,PetscErrorCode *ierr)
@@ -28,7 +28,7 @@ void PETSC_STDCALL islocaltoglobalmappingview_(ISLocalToGlobalMapping *mapping,P
 }
 
 static PetscInt   *sprocs, *snumprocs, **sindices;
-static PetscTruth called;
+static PetscBool  called;
 void PETSC_STDCALL islocaltoglobalmpnggetinfosize_(ISLocalToGlobalMapping *mapping,PetscInt *nprocs,PetscInt *maxnumprocs,PetscErrorCode *ierr)
 {
   PetscInt i;

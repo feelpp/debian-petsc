@@ -10,9 +10,9 @@ Sets routine to use as preconditioner.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetApply(PC pc,PetscErrorCode (*apply)(PC,Vec,Vec))
+PetscErrorCode  PCShellSetApply(PC pc,PetscErrorCode (*apply)(PC,Vec,Vec))
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -37,6 +37,8 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 Notes: the function MUST return an error code of 0 on success and nonzero on failure.
 <P>
+Developer Notes: There should also be a PCShellSetApplySymmetricRight() and PCShellSetApplySymmetricLeft().
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
@@ -59,5 +61,4 @@ Notes: the function MUST return an error code of 0 on success and nonzero on fai
 <A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex38.c.html">src/snes/examples/tutorials/ex38.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex44.c.html">src/snes/examples/tutorials/ex44.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex33f.F.html">src/snes/examples/tutorials/ex33f.F.html</A><BR>
 </BODY></HTML>

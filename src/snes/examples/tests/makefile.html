@@ -3,7 +3,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:43:35+00:00">
+<meta name="date" content="2011-10-29T19:16:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -13,8 +13,8 @@ FFLAGS                =
 CPPFLAGS        =
 FPPFLAGS        =         
 LOCDIR          = src/snes/examples/tests/
-EXAMPLESC       = ex1.c ex4.c ex5.c ex7.c ex9.c ex11.c ex13.c
-EXAMPLESF       = ex1f.F ex12f.F
+EXAMPLESC       = ex1.c ex4.c ex5.c ex7.c ex8.c ex9.c ex10.c ex11.c ex13.c ex15.c ex16.c ex17.c
+EXAMPLESF       = ex1f.F ex12f.F ex14f.F
 DIRS                = 
 MANSEC          = <A href="ROOT/docs/manualpages/SNES/SNES.html#SNES">SNES</A>
 
@@ -80,6 +80,19 @@ include ${PETSC_DIR}/conf/rules
 <strong><font color="#FF0000">ex14f:</font></strong> ex14f.o  chkopts
         -${FLINKER} -o ex14f ex14f.o ${PETSC_SNES_LIB}
         ${RM} ex14f.o
+
+<strong><font color="#FF0000">ex15:</font></strong> ex15.o  chkopts
+        -${CLINKER} -o ex15 ex15.o ${PETSC_SNES_LIB}
+        ${RM} ex15.o
+
+<strong><font color="#FF0000">ex16:</font></strong> ex16.o  chkopts
+        -${CLINKER} -o ex16 ex16.o ${PETSC_SNES_LIB}
+        ${RM} ex16.o
+
+<strong><font color="#FF0000">ex17:</font></strong> ex17.o chkopts
+        -${CLINKER} -o ex17 ex17.o ${PETSC_SNES_LIB}
+        ${RM} ex17.o
+
 <font color="#A020F0">#--------------------------------------------------------------------------</font>
 <strong><font color="#FF0000">runex1:</font></strong>
         -@${MPIEXEC} -n 1 ./ex1 -ksp_gmres_cgs_refinement_type refine_always &gt; ex1_1.tmp 2&gt;&amp;1;         \
@@ -224,11 +237,6 @@ include ${PETSC_DIR}/conf/rules
            <font color="#4169E1">if</font> (${DIFF} output/ex9_1.out ex9_3.tmp) then true; \
            <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex9_1, diffs above"</font>; fi; \
            ${RM} -f ex9_3.tmp
-<strong><font color="#FF0000">runex10:</font></strong>
-        -@${MPIEXEC} -n 2 ./ex10 -ksp_gmres_cgs_refinement_type refine_always -n 10 -snes_monitor_short  &gt; ex10_1.tmp 2&gt;&amp;1;          \
-           <font color="#4169E1">if</font> (${DIFF} output/ex10_1.out ex10_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex10_1, diffs above"</font>; fi; \
-           ${RM} -f ex10_1.tmp
 <strong><font color="#FF0000">runex12f:</font></strong>
         -@${MPIEXEC} -n 2 ./ex12f -ksp_gmres_cgs_refinement_type refine_always -n 10 -snes_monitor_short  &gt; ex12_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex12_1.out ex12_1.tmp) then true; \
@@ -240,11 +248,16 @@ include ${PETSC_DIR}/conf/rules
            <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex14f_1, diffs above"</font>; fi; \
            ${RM} -f ex14_1.tmp
 
+<strong><font color="#FF0000">runex17:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex17 -snes_monitor_short &gt; ex17_1.tmp 2&gt;&amp;1; \
+           ${DIFF} output/ex17_1.out ex17_1.tmp || echo <font color="#666666">"Possible problem with ex17, diffs above"</font>; \
+           ${RM} -f ex17_1.tmp
+
 <font color="#A020F0">#</font>
 <font color="#A020F0">#  runex9_2 and runex9_3 are not included in RUNEXAMPLES_2 because </font>
 <font color="#A020F0"># they require too many processors</font>
 <font color="#A020F0">#</font>
-TESTEXAMPLES_C                       = ex1.PETSc runex1 runex1_2 runex1_3 ex1.rm ex11.PETSc ex11.rm
+TESTEXAMPLES_C                       = ex1.PETSc runex1 runex1_2 runex1_3 ex1.rm ex11.PETSc ex11.rm ex17.PETSc runex17 ex17.rm
 TESTEXAMPLES_C_X11               = ex7.PETSc runex7 runex7_2 ex7.rm ex9.PETSc runex9 ex9.rm ex13.PETSc ex13.rm
 TESTEXAMPLES_FORTRAN               = ex12f.PETSc runex12f ex12f.rm  ex1f.PETSc runex1f_2 runex1f_3 ex1f.rm
 TESTEXAMPLES_C_X11_MPIUNI      = ex7.PETSc ex7.rm ex9.PETSc ex9.rm ex1.PETSc runex1 runex1_2 runex1_3 ex1.rm 

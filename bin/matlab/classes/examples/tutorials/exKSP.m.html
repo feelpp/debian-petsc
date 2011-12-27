@@ -1,0 +1,150 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>exKSP</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="exKSP.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre>Solves a linear system where the user manages the mesh--solver interactions
+   User creates directly a PETSc Mat</pre><pre> Set the Matlab path and initialize PETSc</pre><pre class="codeinput">path(path,<span class="string">'../../'</span>)
+PetscInitialize({<span class="string">'-ksp_monitor'</span>,<span class="string">'-malloc'</span>,<span class="string">'-malloc_debug'</span>,<span class="string">'-malloc_dump'</span>});
+</pre><pre> Create a vector and put values in it</pre><pre class="codeinput">b = PetscVec();
+b.SetType(<span class="string">'seq'</span>);
+b.SetSizes(10,10);
+b.SetValues(1:10);
+b.SetValues([1,2],[11.5,12.5],Petsc.ADD_VALUES);
+b.AssemblyBegin();
+b.AssemblyEnd();
+b.View;
+x = b.Duplicate();
+</pre><pre>Create a matrix and put some values in it</pre><pre class="codeinput">mat = PetscMat();
+mat.SetType(<span class="string">'seqaij'</span>);
+mat.SetSizes(10,10,10,10);
+<span class="keyword">for</span> i=1:10
+  mat.SetValues(i,i,10.0);
+<span class="keyword">end</span>
+mat.AssemblyBegin(PetscMat.FINAL_ASSEMBLY);
+mat.AssemblyEnd(PetscMat.FINAL_ASSEMBLY);
+mat.View;
+</pre><pre> Create the linear solver, tell it the matrix to use and solve the system</pre><pre class="codeinput">ksp = PetscKSP();
+ksp.SetType(<span class="string">'gmres'</span>);
+ksp.SetOperators(mat,mat,PetscMat.SAME_NONZERO_PATTERN);
+ksp.SetFromOptions();
+ksp.Solve(b,x);
+x.View;
+ksp.View;
+</pre><pre> Free PETSc objects and shutdown PETSc</pre><pre class="codeinput">x.Destroy();
+b.Destroy();
+mat.Destroy();
+ksp.Destroy();
+PetscFinalize();
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+%
+%  Solves a linear system where the user manages the meshREPLACE_WITH_DASH_DASHsolver interactions
+%     User creates directly a PETSc Mat
+%
+%   Set the Matlab path and initialize PETSc
+path(path,'../../')
+PetscInitialize({'-ksp_monitor','-malloc','-malloc_debug','-malloc_dump'});
+%%
+%   Create a vector and put values in it
+b = PetscVec();
+b.SetType('seq');
+b.SetSizes(10,10);
+b.SetValues(1:10);
+b.SetValues([1,2],[11.5,12.5],Petsc.ADD_VALUES);
+b.AssemblyBegin();
+b.AssemblyEnd();
+b.View;
+x = b.Duplicate();
+%%
+%  Create a matrix and put some values in it
+mat = PetscMat();
+mat.SetType('seqaij');
+mat.SetSizes(10,10,10,10);
+for i=1:10
+  mat.SetValues(i,i,10.0);
+end
+mat.AssemblyBegin(PetscMat.FINAL_ASSEMBLY);
+mat.AssemblyEnd(PetscMat.FINAL_ASSEMBLY);
+mat.View;
+%%
+%   Create the linear solver, tell it the matrix to use and solve the system
+ksp = PetscKSP();
+ksp.SetType('gmres');
+ksp.SetOperators(mat,mat,PetscMat.SAME_NONZERO_PATTERN);
+ksp.SetFromOptions();
+ksp.Solve(b,x);
+x.View;
+ksp.View;
+%%
+%   Free PETSc objects and shutdown PETSc
+%
+x.Destroy();
+b.Destroy();
+mat.Destroy();
+ksp.Destroy();
+PetscFinalize();
+
+##### SOURCE END #####
+--></body></html>

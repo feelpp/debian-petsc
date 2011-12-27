@@ -16,25 +16,28 @@ the above preallocation routines for simplicity.
 <DT><B>-mat_type aij </B> -sets the matrix type to "aij" during a call to <A HREF="../Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>()
 <br>
 <P>
+Developer Notes: Subclasses include MATAIJCUSP, <A HREF="../Mat/MATAIJPERM.html#MATAIJPERM">MATAIJPERM</A>, <A HREF="../Mat/MATAIJCRL.html#MATAIJCRL">MATAIJCRL</A>, and also automatically switches over to use inodes when
+enough exist.
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>,<A HREF="../Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,<A HREF="../Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>
+ <A HREF="../Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(), <A HREF="../Mat/MatCreateSeqAIJ.html#MatCreateSeqAIJ">MatCreateSeqAIJ</A>(), <A HREF="../Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,<A HREF="../Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/aij/aij/aijtype.c.html#MATAIJ">src/mat/impls/aij/aij/aijtype.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/aij/mpi/mpiaij.c.html#MATAIJ">src/mat/impls/aij/mpi/mpiaij.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex8.c.html">src/mat/examples/tutorials/ex8.c.html</A><BR>
-<A HREF="../../../src/mat/examples/tutorials/ex9.c.html">src/mat/examples/tutorials/ex9.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex41.c.html">src/ksp/ksp/examples/tutorials/ex41.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html">src/ksp/ksp/examples/tutorials/ex31.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex46.c.html">src/ksp/ksp/examples/tutorials/ex46.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15f.F.html">src/ksp/ksp/examples/tutorials/ex15f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex44f.F90.html">src/ksp/ksp/examples/tutorials/ex44f.F90.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex47.c.html">src/snes/examples/tutorials/ex47.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 </BODY></HTML>

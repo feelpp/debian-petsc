@@ -3,7 +3,7 @@ static char help[] = "Creates a matrix using 9 pt stensil, and uses it to test M
   -m <size>       : problem size\n\
   -x1, -x2 <size> : no of subdomains in x and y directions\n\n";
 
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "FormElementStiffness"
@@ -33,7 +33,7 @@ int main(int argc,char **args)
   PetscScalar    Ke[16];
   PetscReal      x,y,h;
   IS             *is1,*is2;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-m",&m,PETSC_NULL);CHKERRQ(ierr);
@@ -76,15 +76,15 @@ int main(int argc,char **args)
       ierr = PetscPrintf(PETSC_COMM_SELF,"i =  %D,flg = %d \n",i,(int)flg);CHKERRQ(ierr);
       
     }
-    for (i=0; i<Nsub1; ++i) {ierr = ISDestroy(is1[i]);CHKERRQ(ierr);}
-    for (i=0; i<Nsub2; ++i) {ierr = ISDestroy(is2[i]);CHKERRQ(ierr);}
+    for (i=0; i<Nsub1; ++i) {ierr = ISDestroy(&&is1[i]);CHKERRQ(ierr);}
+    for (i=0; i<Nsub2; ++i) {ierr = ISDestroy(&&is2[i]);CHKERRQ(ierr);}
   
 
     ierr = PetscFree(is1);CHKERRQ(ierr);
     ierr = PetscFree(is2);CHKERRQ(ierr);
   }
-  ierr = MatDestroy(C);CHKERRQ(ierr);  
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);  
+  ierr = PetscFinalize();
   return 0;
 }
 

@@ -48,7 +48,7 @@ Input parameters include:\n\
   ------------------------------------------------------------------------- */
 
 /* 
-   Include "petscda.h" so that we can use distributed arrays (DAs) to manage
+   Include "petscdmda.h" so that we can use distributed arrays (DMDAs) to manage
    the parallel grid.  Include "petscts.h" so that we can use TS solvers.  
    Note that this file automatically includes:
      petscsys.h       - base PETSc routines   petscvec.h  - vectors
@@ -58,8 +58,8 @@ Input parameters include:\n\
      petscksp.h   - linear solvers        petscsnes.h - nonlinear solvers
 */
 
-#include "petscda.h"
-#include "petscts.h"
+#include <petscdmda.h>
+#include <petscts.h>
 
 /* 
    User-defined application context - contains data needed by the 
@@ -67,13 +67,13 @@ Input parameters include:\n\
 */
 typedef struct {
   MPI_Comm    comm;              /* communicator */
-  DA          da;                /* distributed array data structure */
+  DM          da;                /* distributed array data structure */
   Vec         localwork;         /* local ghosted work vector */
   Vec         u_local;           /* local ghosted approximate solution vector */
   Vec         solution;          /* global exact solution vector */
   PetscInt    m;                 /* total number of grid points */
   PetscReal   h;                 /* mesh width h = 1/(m-1) */
-  PetscTruth  debug;             /* flag (1 indicates activation of debugging printouts) */
+  PetscBool   debug;             /* flag (1 indicates activation of debugging printouts) */
   PetscViewer viewer1,viewer2;  /* viewers for the solution and error */
   PetscReal   norm_2,norm_max;  /* error norms */
 } AppCtx;
@@ -82,7 +82,7 @@ typedef struct {
    User-defined routines
 */
 extern PetscErrorCode InitialConditions(Vec,AppCtx*);
-extern PetscErrorCode RHSMatrixHeat(TS,PetscReal,Mat*,Mat*,MatStructure*,void*);
+extern PetscErrorCode RHSMatrixHeat(TS,PetscReal,Vec,Mat*,Mat*,MatStructure*,void*);
 extern PetscErrorCode RHSFunctionHeat(TS,PetscReal,Vec,Vec,void*);
 extern PetscErrorCode Monitor(TS,PetscInt,PetscReal,Vec,void*);
 extern PetscErrorCode ExactSolution(PetscReal,Vec,AppCtx*);
@@ -95,14 +95,14 @@ int main(int argc,char **argv)
   TS             ts;                     /* timestepping context */
   Mat            A;                      /* matrix data structure */
   Vec            u;                      /* approximate solution vector */
-  PetscReal      time_total_max = 100.0; /* default max total time */
+  PetscReal      time_total_max = 1.0;   /* default max total time */
   PetscInt       time_steps_max = 100;   /* default max timesteps */
   PetscDraw      draw;                   /* drawing context */
   PetscErrorCode ierr;
   PetscInt       steps,m;
   PetscMPIInt    size;
   PetscReal      dt,ftime;
-  PetscTruth     flg;
+  PetscBool      flg;
   TSProblemType  tsproblem = TS_LINEAR;
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,20 +126,20 @@ int main(int argc,char **argv)
      Create vector data structures
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   /*
-     Create distributed array (DA) to manage parallel grid and vectors
+     Create distributed array (DMDA) to manage parallel grid and vectors
      and to set up the ghost point communication pattern.  There are M 
      total grid values spread equally among all the processors.
   */ 
 
-  ierr = DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,m,1,1,PETSC_NULL,&appctx.da);CHKERRQ(ierr);
+  ierr = DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,m,1,1,PETSC_NULL,&appctx.da);CHKERRQ(ierr);
 
   /*
-     Extract global and local vectors from DA; we use these to store the
+     Extract global and local vectors from DMDA; we use these to store the
      approximate solution.  Then duplicate these for remaining vectors that
      have the same types.
   */ 
-  ierr = DACreateGlobalVector(appctx.da,&u);CHKERRQ(ierr);
-  ierr = DACreateLocalVector(appctx.da,&appctx.u_local);CHKERRQ(ierr);
+  ierr = DMCreateGlobalVector(appctx.da,&u);CHKERRQ(ierr);
+  ierr = DMCreateLocalVector(appctx.da,&appctx.u_local);CHKERRQ(ierr);
 
   /* 
      Create local work vector for use in evaluating right-hand-side function;
@@ -165,17 +165,13 @@ int main(int argc,char **argv)
 
   ierr = TSCreate(PETSC_COMM_WORLD,&ts);CHKERRQ(ierr);
 
-  ierr = PetscOptionsHasName(PETSC_NULL,"-nonlinear",&flg);CHKERRQ(ierr);
-  if (flg) tsproblem = TS_NONLINEAR;
-#if defined(PETSC_HAVE_SUNDIALS)
-  tsproblem = TS_NONLINEAR;
-#endif
-  ierr = TSSetProblemType(ts,tsproblem);CHKERRQ(ierr);
+  flg = PETSC_FALSE;
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-nonlinear",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = TSSetProblemType(ts,flg ? TS_NONLINEAR : TS_LINEAR);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Set optional user-defined monitoring routine
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
   ierr = TSMonitorSet(ts,Monitor,&appctx,PETSC_NULL);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,14 +183,16 @@ int main(int argc,char **argv)
   ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,m,m);CHKERRQ(ierr);
   ierr = MatSetFromOptions(A);CHKERRQ(ierr);
 
-  ierr = PetscOptionsHasName(PETSC_NULL,"-time_dependent_rhs",&flg);CHKERRQ(ierr);
+  flg = PETSC_FALSE;
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-time_dependent_rhs",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     /*
        For linear problems with a time-dependent f(u,t) in the equation 
        u_t = f(u,t), the user provides the discretized right-hand-side
        as a time-dependent matrix.
     */
-    ierr = TSSetMatrices(ts,A,RHSMatrixHeat,PETSC_NULL,PETSC_NULL,DIFFERENT_NONZERO_PATTERN,&appctx);CHKERRQ(ierr);
+    ierr = TSSetRHSFunction(ts,PETSC_NULL,TSComputeRHSFunctionLinear,&appctx);CHKERRQ(ierr);
+    ierr = TSSetRHSJacobian(ts,A,A,RHSMatrixHeat,&appctx);CHKERRQ(ierr);
   } else {
     /*
        For linear problems with a time-independent f(u) in the equation 
@@ -203,13 +201,16 @@ int main(int argc,char **argv)
        routine.
     */
     MatStructure A_structure;
-    ierr = RHSMatrixHeat(ts,0.0,&A,&A,&A_structure,&appctx);CHKERRQ(ierr);
-    ierr = TSSetMatrices(ts,A,PETSC_NULL,PETSC_NULL,PETSC_NULL,DIFFERENT_NONZERO_PATTERN,&appctx);CHKERRQ(ierr);
+    ierr = RHSMatrixHeat(ts,0.0,u,&A,&A,&A_structure,&appctx);CHKERRQ(ierr);
+    ierr = TSSetRHSFunction(ts,PETSC_NULL,TSComputeRHSFunctionLinear,&appctx);CHKERRQ(ierr);
+    ierr = TSSetRHSJacobian(ts,A,A,TSComputeRHSJacobianConstant,&appctx);CHKERRQ(ierr);
   }
  
-  if ( tsproblem == TS_NONLINEAR){
-    ierr = TSSetRHSFunction(ts,RHSFunctionHeat,&appctx);CHKERRQ(ierr);
-    ierr = TSSetRHSJacobian(ts,A,A,TSDefaultComputeJacobian,&appctx);CHKERRQ(ierr); 
+  if (tsproblem == TS_NONLINEAR) {
+    SNES snes;
+    ierr = TSSetRHSFunction(ts,PETSC_NULL,RHSFunctionHeat,&appctx);CHKERRQ(ierr);
+    ierr = TSGetSNES(ts,&snes);CHKERRQ(ierr);
+    ierr = SNESSetJacobian(snes,PETSC_NULL,PETSC_NULL,SNESDefaultComputeJacobian,PETSC_NULL);CHKERRQ(ierr);
   }
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,30 +246,30 @@ int main(int argc,char **argv)
   /*
      Run the timestepping solver
   */
-  ierr = TSStep(ts,&steps,&ftime);CHKERRQ(ierr);
+  ierr = TSSolve(ts,u,&ftime);CHKERRQ(ierr);
+  ierr = TSGetTimeStepNumber(ts,&steps);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      View timestepping solver info
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"avg. error (2 norm) = %G, avg. error (max norm) = %G\n",
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"Total timesteps %D, Final time %G\n",steps,ftime);CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"Avg. error (2 norm) = %G, Avg. error (max norm) = %G\n",
               appctx.norm_2/steps,appctx.norm_max/steps);CHKERRQ(ierr);
-  ierr = TSView(ts,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  ierr = TSDestroy(ts);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(appctx.viewer1);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(appctx.viewer2);CHKERRQ(ierr);
-  ierr = VecDestroy(appctx.localwork);CHKERRQ(ierr);
-  ierr = VecDestroy(appctx.solution);CHKERRQ(ierr);
-  ierr = VecDestroy(appctx.u_local);CHKERRQ(ierr);
-  ierr = DADestroy(appctx.da);CHKERRQ(ierr);
+  ierr = TSDestroy(&ts);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&appctx.viewer1);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&appctx.viewer2);CHKERRQ(ierr);
+  ierr = VecDestroy(&appctx.localwork);CHKERRQ(ierr);
+  ierr = VecDestroy(&appctx.solution);CHKERRQ(ierr);
+  ierr = VecDestroy(&appctx.u_local);CHKERRQ(ierr);
+  ierr = DMDestroy(&appctx.da);CHKERRQ(ierr);
 
   /*
      Always call PetscFinalize() before exiting a program.  This routine
@@ -276,7 +277,7 @@ int main(int argc,char **argv)
        - provides summary and diagnostic information if certain runtime
          options are chosen (e.g., -log_summary). 
   */
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 /* --------------------------------------------------------------------- */
@@ -495,7 +496,7 @@ PetscErrorCode Monitor(TS ts,PetscInt step,PetscReal time,Vec u,void *ctx)
    - Note that MatSetValues() uses 0-based row and column numbers
      in Fortran as well as in C.
 */
-PetscErrorCode RHSMatrixHeat(TS ts,PetscReal t,Mat *AA,Mat *BB,MatStructure *str,void *ctx)
+PetscErrorCode RHSMatrixHeat(TS ts,PetscReal t,Vec X,Mat *AA,Mat *BB,MatStructure *str,void *ctx)
 {
   Mat            A = *AA;                      /* Jacobian matrix */
   AppCtx         *appctx = (AppCtx*)ctx;     /* user-defined application context */
@@ -584,8 +585,8 @@ PetscErrorCode RHSFunctionHeat(TS ts,PetscReal t,Vec globalin,Vec globalout,void
   MatStructure   A_structure;
 
   PetscFunctionBegin;
-  ierr = TSGetMatrices(ts,&A,PETSC_NULL,&ctx);CHKERRQ(ierr);
-  ierr = RHSMatrixHeat(ts,t,&A,PETSC_NULL,&A_structure,ctx);CHKERRQ(ierr);
+  ierr = TSGetRHSJacobian(ts,&A,PETSC_NULL,PETSC_NULL,&ctx);CHKERRQ(ierr);
+  ierr = RHSMatrixHeat(ts,t,globalin,&A,PETSC_NULL,&A_structure,ctx);CHKERRQ(ierr);
   /* ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); */
   ierr = MatMult(A,globalin,globalout);CHKERRQ(ierr);
   PetscFunctionReturn(0);

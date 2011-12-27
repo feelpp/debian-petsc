@@ -5,8 +5,8 @@ static char help[] = "Demonstrates using the PetscBag Object\n\n";
    Concepts: bags;
    Processors: n
 T*/
-#include "petscsys.h"
-#include "petscbag.h"
+#include <petscsys.h>
+#include <petscbag.h>
 
 /*
   Enum variables can be stored in a bag but require a string array
@@ -31,13 +31,13 @@ typedef struct {
   Define a C struct that will contain my program's parameters.
 */
 typedef struct {
-  char          filename[PETSC_MAX_PATH_LEN];
-  PetscReal     rho;
   PetscScalar   W;
-  PetscInt      Ii;
-  PetscTruth    T;
+  PetscReal     rho;
   TwoVec        pos; 
+  PetscInt      Ii;
+  PetscBool     T;
   PetscDataType dt;
+  char          filename[PETSC_MAX_PATH_LEN];
   YourChoice    which;
 } Parameter;
  
@@ -68,11 +68,12 @@ int main(int argc,char **argv)
 
   /* register variables, defaults, names, help strings */
   ierr = PetscBagSetName(bag,"ParameterBag","contains parameters for simulations of top-secret, dangerous physics");CHKERRQ(ierr);
+  ierr = PetscBagSetOptionsPrefix(bag, "pbag_");CHKERRQ(ierr);
   ierr = PetscBagRegisterString(bag,&params->filename,PETSC_MAX_PATH_LEN,"myfile","filename","Name of secret file");CHKERRQ(ierr);
   ierr = PetscBagRegisterReal  (bag,&params->rho,3.0,"rho","Density, kg/m^3");CHKERRQ(ierr);
   ierr = PetscBagRegisterScalar(bag,&params->W,  5.0,"W","Vertical velocity, m/sec");CHKERRQ(ierr);
   ierr = PetscBagRegisterInt   (bag,&params->Ii, 2,"modes_x","Number of modes in x-direction");CHKERRQ(ierr);
-  ierr = PetscBagRegisterTruth (bag,&params->T,  PETSC_FALSE,"do_output","Write output file (yes/no)");CHKERRQ(ierr);
+  ierr = PetscBagRegisterBool (bag,&params->T,  PETSC_FALSE,"do_output","Write output file (yes/no)");CHKERRQ(ierr);
   ierr = PetscBagRegisterEnum  (bag,&params->dt, PetscDataTypes,(PetscEnum)PETSC_INT,"dt","meaningless datatype");CHKERRQ(ierr);
   ierr = PetscBagRegisterReal  (bag,&params->pos.x1,1.0,"x1","x position");CHKERRQ(ierr);
   ierr = PetscBagRegisterReal  (bag,&params->pos.x2,1.9,"x2","y position");CHKERRQ(ierr);
@@ -82,22 +83,22 @@ int main(int argc,char **argv)
   ierr = PetscBagView(bag,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"binaryoutput",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
   ierr = PetscBagView(bag,viewer);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
-  ierr = PetscBagDestroy(bag);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+  ierr = PetscBagDestroy(&bag);CHKERRQ(ierr);
 
   /* load bag from file & write to stdio */
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"binaryoutput",FILE_MODE_READ,&viewer);CHKERRQ(ierr);
   ierr = PetscBagLoad(viewer,&bag);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
   ierr = PetscBagView(bag,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
   /* reuse the parameter struct */
   ierr   = PetscBagGetData(bag,(void**)&params);CHKERRQ(ierr);
-  PetscPrintf(PETSC_COMM_WORLD,"The value of rho after loading is: %f\n",params->rho);
+  PetscPrintf(PETSC_COMM_WORLD,"The value of rho after loading is: %f\n",(double)params->rho);
 
 #if defined(PETSC_USE_SOCKET_VIEWER)
   {
-    PetscTruth flg;
+    PetscBool  flg;
     ierr = PetscOptionsName("-bag_view_socket","Sends bag to socket (can be read from matlab)","PetscBagView",&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = PetscBagView(bag,PETSC_VIEWER_SOCKET_(PETSC_COMM_WORLD));CHKERRQ(ierr);
@@ -107,7 +108,7 @@ int main(int argc,char **argv)
 #endif
 
   /* clean up and exit */
-  ierr = PetscBagDestroy(bag);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscBagDestroy(&bag);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

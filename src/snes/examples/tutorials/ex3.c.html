@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:43:39+00:00">
+<meta name="date" content="2011-10-29T19:16:08+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -25,7 +25,7 @@
 <a name="line15"> 15: </a><font color="#B22222">T*/</font>
 
 <a name="line17"> 17: </a><font color="#B22222">/* </font>
-<a name="line18"> 18: </a><font color="#B22222">   Include "petscdraw.h" so that we can use distributed arrays (DAs).</font>
+<a name="line18"> 18: </a><font color="#B22222">   Include "petscdraw.h" so that we can use distributed arrays (DMDAs).</font>
 <a name="line19"> 19: </a><font color="#B22222">   Include "petscdraw.h" so that we can use PETSc drawing routines.</font>
 <a name="line20"> 20: </a><font color="#B22222">   Include "petscsnes.h" so that we can use <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> solvers.  Note that this</font>
 <a name="line21"> 21: </a><font color="#B22222">   file automatically includes:</font>
@@ -36,8 +36,8 @@
 <a name="line26"> 26: </a><font color="#B22222">     petscksp.h   - linear solvers</font>
 <a name="line27"> 27: </a><font color="#B22222">*/</font>
 
-<a name="line29"> 29: </a> #include <A href="../../../../include/petscda.h.html">petscda.h</A>
-<a name="line30"> 30: </a> #include <A href="../../../../include/petscsnes.h.html">petscsnes.h</A>
+<a name="line29"> 29: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
+<a name="line30"> 30: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 
 <a name="line32"> 32: </a><font color="#B22222">/* </font>
 <a name="line33"> 33: </a><font color="#B22222">   User-defined routines.  Note that immediately before each routine below,</font>
@@ -53,14 +53,14 @@
 <a name="line43"> 43: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
 <a name="line44"> 44: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormInitialGuess(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
 <a name="line45"> 45: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Monitor(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,void *)</font></strong>;
-<a name="line46"> 46: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PreCheck(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*,<A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *)</font></strong>;
-<a name="line47"> 47: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PostCheck(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*,<A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *,<A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *)</font></strong>;
+<a name="line46"> 46: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PreCheck(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *)</font></strong>;
+<a name="line47"> 47: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PostCheck(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *)</font></strong>;
 
 <a name="line49"> 49: </a><font color="#B22222">/* </font>
 <a name="line50"> 50: </a><font color="#B22222">   User-defined application context</font>
 <a name="line51"> 51: </a><font color="#B22222">*/</font>
 <a name="line52"> 52: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
-<a name="line53"> 53: </a>   <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>          da;     <font color="#B22222">/* distributed array */</font>
+<a name="line53"> 53: </a>   DM          da;     <font color="#B22222">/* distributed array */</font>
 <a name="line54"> 54: </a>   <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>         F;      <font color="#B22222">/* right-hand-side of PDE */</font>
 <a name="line55"> 55: </a>   <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank;   <font color="#B22222">/* rank of processor */</font>
 <a name="line56"> 56: </a>   <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> size;   <font color="#B22222">/* size of communicator */</font>
@@ -92,7 +92,7 @@
 <a name="line84"> 84: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x,r,U,F;              <font color="#B22222">/* vectors */</font>
 <a name="line85"> 85: </a>  MonitorCtx     monP;                 <font color="#B22222">/* monitoring context */</font>
 <a name="line86"> 86: </a>  StepCheckCtx   checkP;               <font color="#B22222">/* step-checking context */</font>
-<a name="line87"> 87: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     pre_check,post_check; <font color="#B22222">/* flag indicating whether we're checking</font>
+<a name="line87"> 87: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      pre_check,post_check; <font color="#B22222">/* flag indicating whether we're checking</font>
 <a name="line88"> 88: </a><font color="#B22222">                                          candidate iterates */</font>
 <a name="line89"> 89: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    xp,*FF,*UU,none = -1.0;
 <a name="line91"> 91: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       its,N = 5,i,maxit,maxf,xs,xm;
@@ -115,15 +115,15 @@
 <a name="line108">108: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 
 <a name="line110">110: </a>  <font color="#B22222">/*</font>
-<a name="line111">111: </a><font color="#B22222">     Create distributed array (<A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>) to manage parallel grid and vectors</font>
+<a name="line111">111: </a><font color="#B22222">     Create distributed array (DMDA) to manage parallel grid and vectors</font>
 <a name="line112">112: </a><font color="#B22222">  */</font>
-<a name="line113">113: </a>  <A href="../../../../docs/manualpages/DA/DACreate1d.html#DACreate1d">DACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DA_NONPERIODIC,N,1,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;ctx.da);
+<a name="line113">113: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,N,1,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;ctx.da);
 
 <a name="line115">115: </a>  <font color="#B22222">/*</font>
-<a name="line116">116: </a><font color="#B22222">     Extract global and local vectors from <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>; then duplicate for remaining</font>
+<a name="line116">116: </a><font color="#B22222">     Extract global and local vectors from DMDA; then duplicate for remaining</font>
 <a name="line117">117: </a><font color="#B22222">     vectors that are the same types</font>
 <a name="line118">118: </a><font color="#B22222">  */</font>
-<a name="line119">119: </a>  <A href="../../../../docs/manualpages/DA/DACreateGlobalVector.html#DACreateGlobalVector">DACreateGlobalVector</A>(ctx.da,&amp;x);
+<a name="line119">119: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(ctx.da,&amp;x);
 <a name="line120">120: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,&amp;r);
 <a name="line121">121: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,&amp;F); ctx.F = F;
 <a name="line122">122: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,&amp;U);
@@ -212,16 +212,16 @@
 <a name="line205">205: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 
 <a name="line207">207: </a>  <font color="#B22222">/*</font>
-<a name="line208">208: </a><font color="#B22222">     Get local grid boundaries (for 1-dimensional <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>):</font>
+<a name="line208">208: </a><font color="#B22222">     Get local grid boundaries (for 1-dimensional DMDA):</font>
 <a name="line209">209: </a><font color="#B22222">       xs, xm - starting grid index, width of local grid (no ghost points)</font>
 <a name="line210">210: </a><font color="#B22222">  */</font>
-<a name="line211">211: </a>  <A href="../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(ctx.da,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line211">211: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(ctx.da,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
 <a name="line213">213: </a>  <font color="#B22222">/*</font>
 <a name="line214">214: </a><font color="#B22222">     Get pointers to vector data</font>
 <a name="line215">215: </a><font color="#B22222">  */</font>
-<a name="line216">216: </a>  <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(ctx.da,F,&amp;FF);
-<a name="line217">217: </a>  <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(ctx.da,U,&amp;UU);
+<a name="line216">216: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(ctx.da,F,&amp;FF);
+<a name="line217">217: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(ctx.da,U,&amp;UU);
 
 <a name="line219">219: </a>  <font color="#B22222">/*</font>
 <a name="line220">220: </a><font color="#B22222">     Compute local vector entries</font>
@@ -236,8 +236,8 @@
 <a name="line229">229: </a>  <font color="#B22222">/*</font>
 <a name="line230">230: </a><font color="#B22222">     Restore vectors</font>
 <a name="line231">231: </a><font color="#B22222">  */</font>
-<a name="line232">232: </a>  <A href="../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(ctx.da,F,&amp;FF);
-<a name="line233">233: </a>  <A href="../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(ctx.da,U,&amp;UU);
+<a name="line232">232: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(ctx.da,F,&amp;FF);
+<a name="line233">233: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(ctx.da,U,&amp;UU);
 
 <a name="line235">235: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
 <a name="line236">236: </a><font color="#B22222">     Evaluate initial guess; then solve nonlinear system</font>
@@ -269,15 +269,15 @@
 <a name="line262">262: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
 <a name="line263">263: </a><font color="#B22222">     are no longer needed.</font>
 <a name="line264">264: </a><font color="#B22222">  */</font>
-<a name="line265">265: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(monP.viewer);
-<a name="line266">266: </a>  <font color="#4169E1">if</font> (post_check) {<A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(checkP.last_step);}
-<a name="line267">267: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line268">268: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(r);
-<a name="line269">269: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(U);
-<a name="line270">270: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(F);
-<a name="line271">271: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(J);
-<a name="line272">272: </a>  <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(snes);
-<a name="line273">273: </a>  <A href="../../../../docs/manualpages/DA/DADestroy.html#DADestroy">DADestroy</A>(ctx.da);
+<a name="line265">265: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;monP.viewer);
+<a name="line266">266: </a>  <font color="#4169E1">if</font> (post_check) {<A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;checkP.last_step);}
+<a name="line267">267: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line268">268: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;r);
+<a name="line269">269: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;U);
+<a name="line270">270: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;F);
+<a name="line271">271: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;J);
+<a name="line272">272: </a>  <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(&amp;snes);
+<a name="line273">273: </a>  <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;ctx.da);
 <a name="line274">274: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 
 <a name="line276">276: </a>  <font color="#4169E1">return</font>(0);
@@ -315,38 +315,38 @@
 <a name="line314">314: </a><strong><font color="#4169E1"><a name="FormFunction"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> f,void *ctx)</font></strong>
 <a name="line315">315: </a>{
 <a name="line316">316: </a>  ApplicationCtx *user = (ApplicationCtx*) ctx;
-<a name="line317">317: </a>  <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da = user-&gt;da;
+<a name="line317">317: </a>  DM             da = user-&gt;da;
 <a name="line318">318: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xx,*ff,*FF,d;
 <a name="line320">320: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,M,xs,xm;
 <a name="line321">321: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            xlocal;
 
-<a name="line324">324: </a>  <A href="../../../../docs/manualpages/DA/DAGetLocalVector.html#DAGetLocalVector">DAGetLocalVector</A>(da,&amp;xlocal);
+<a name="line324">324: </a>  <A href="../../../../docs/manualpages/DM/DMGetLocalVector.html#DMGetLocalVector">DMGetLocalVector</A>(da,&amp;xlocal);
 <a name="line325">325: </a>  <font color="#B22222">/*</font>
 <a name="line326">326: </a><font color="#B22222">     Scatter ghost points to local vector, using the 2-step process</font>
-<a name="line327">327: </a><font color="#B22222">        <A href="../../../../docs/manualpages/DA/DAGlobalToLocalBegin.html#DAGlobalToLocalBegin">DAGlobalToLocalBegin</A>(), <A href="../../../../docs/manualpages/DA/DAGlobalToLocalEnd.html#DAGlobalToLocalEnd">DAGlobalToLocalEnd</A>().</font>
+<a name="line327">327: </a><font color="#B22222">        <A href="../../../../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(), <A href="../../../../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>().</font>
 <a name="line328">328: </a><font color="#B22222">     By placing code between these two statements, computations can</font>
 <a name="line329">329: </a><font color="#B22222">     be done while messages are in transition.</font>
 <a name="line330">330: </a><font color="#B22222">  */</font>
-<a name="line331">331: </a>  <A href="../../../../docs/manualpages/DA/DAGlobalToLocalBegin.html#DAGlobalToLocalBegin">DAGlobalToLocalBegin</A>(da,x,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,xlocal);
-<a name="line332">332: </a>  <A href="../../../../docs/manualpages/DA/DAGlobalToLocalEnd.html#DAGlobalToLocalEnd">DAGlobalToLocalEnd</A>(da,x,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,xlocal);
+<a name="line331">331: </a>  <A href="../../../../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(da,x,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,xlocal);
+<a name="line332">332: </a>  <A href="../../../../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(da,x,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,xlocal);
 
 <a name="line334">334: </a>  <font color="#B22222">/*</font>
 <a name="line335">335: </a><font color="#B22222">     Get pointers to vector data.</font>
 <a name="line336">336: </a><font color="#B22222">       - The vector xlocal includes ghost point; the vectors x and f do</font>
 <a name="line337">337: </a><font color="#B22222">         NOT include ghost points.</font>
-<a name="line338">338: </a><font color="#B22222">       - Using <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>() allows accessing the values using global ordering</font>
+<a name="line338">338: </a><font color="#B22222">       - Using <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>() allows accessing the values using global ordering</font>
 <a name="line339">339: </a><font color="#B22222">  */</font>
-<a name="line340">340: </a>  <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(da,xlocal,&amp;xx);
-<a name="line341">341: </a>  <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(da,f,&amp;ff);
-<a name="line342">342: </a>  <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(da,user-&gt;F,&amp;FF);
+<a name="line340">340: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,xlocal,&amp;xx);
+<a name="line341">341: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,f,&amp;ff);
+<a name="line342">342: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,user-&gt;F,&amp;FF);
 
 <a name="line344">344: </a>  <font color="#B22222">/*</font>
-<a name="line345">345: </a><font color="#B22222">     Get local grid boundaries (for 1-dimensional <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>):</font>
+<a name="line345">345: </a><font color="#B22222">     Get local grid boundaries (for 1-dimensional DMDA):</font>
 <a name="line346">346: </a><font color="#B22222">       xs, xm  - starting grid index, width of local grid (no ghost points)</font>
 <a name="line347">347: </a><font color="#B22222">  */</font>
-<a name="line348">348: </a>  <A href="../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(da,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line349">349: </a>  <A href="../../../../docs/manualpages/DA/DAGetInfo.html#DAGetInfo">DAGetInfo</A>(da,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;M,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,
-<a name="line350">350: </a>                   <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line348">348: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line349">349: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;M,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,
+<a name="line350">350: </a>                   <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
 <a name="line352">352: </a>  <font color="#B22222">/*</font>
 <a name="line353">353: </a><font color="#B22222">     Set function values for boundary points; define local interior grid point range:</font>
@@ -373,10 +373,10 @@
 <a name="line374">374: </a>  <font color="#B22222">/*</font>
 <a name="line375">375: </a><font color="#B22222">     Restore vectors</font>
 <a name="line376">376: </a><font color="#B22222">  */</font>
-<a name="line377">377: </a>  <A href="../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(da,xlocal,&amp;xx);
-<a name="line378">378: </a>  <A href="../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(da,f,&amp;ff);
-<a name="line379">379: </a>  <A href="../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(da,user-&gt;F,&amp;FF);
-<a name="line380">380: </a>  <A href="../../../../docs/manualpages/DA/DARestoreLocalVector.html#DARestoreLocalVector">DARestoreLocalVector</A>(da,&amp;xlocal);
+<a name="line377">377: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,xlocal,&amp;xx);
+<a name="line378">378: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,f,&amp;ff);
+<a name="line379">379: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,user-&gt;F,&amp;FF);
+<a name="line380">380: </a>  <A href="../../../../docs/manualpages/DM/DMRestoreLocalVector.html#DMRestoreLocalVector">DMRestoreLocalVector</A>(da,&amp;xlocal);
 <a name="line381">381: </a>  <font color="#4169E1">return</font>(0);
 <a name="line382">382: </a>}
 <a name="line383">383: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
@@ -398,19 +398,19 @@
 <a name="line401">401: </a>  ApplicationCtx *user = (ApplicationCtx*) ctx;
 <a name="line402">402: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xx,d,A[3];
 <a name="line404">404: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j[3],M,xs,xm;
-<a name="line405">405: </a>  <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da = user-&gt;da;
+<a name="line405">405: </a>  DM             da = user-&gt;da;
 
 <a name="line408">408: </a>  <font color="#B22222">/*</font>
 <a name="line409">409: </a><font color="#B22222">     Get pointer to vector data</font>
 <a name="line410">410: </a><font color="#B22222">  */</font>
-<a name="line411">411: </a>  <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(da,x,&amp;xx);
-<a name="line412">412: </a>  <A href="../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(da,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line411">411: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,x,&amp;xx);
+<a name="line412">412: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
 <a name="line414">414: </a>  <font color="#B22222">/*</font>
 <a name="line415">415: </a><font color="#B22222">    Get range of locally owned matrix</font>
 <a name="line416">416: </a><font color="#B22222">  */</font>
-<a name="line417">417: </a>  <A href="../../../../docs/manualpages/DA/DAGetInfo.html#DAGetInfo">DAGetInfo</A>(da,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;M,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,
-<a name="line418">418: </a>                   <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line417">417: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;M,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,
+<a name="line418">418: </a>                   <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
 <a name="line420">420: </a>  <font color="#B22222">/*</font>
 <a name="line421">421: </a><font color="#B22222">     Determine starting and ending local indices for interior grid points.</font>
@@ -450,7 +450,7 @@
 <a name="line455">455: </a><font color="#B22222">  */</font>
 
 <a name="line457">457: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(*jac,MAT_FINAL_ASSEMBLY);
-<a name="line458">458: </a>  <A href="../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(da,x,&amp;xx);
+<a name="line458">458: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,x,&amp;xx);
 <a name="line459">459: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(*jac,MAT_FINAL_ASSEMBLY);
 
 <a name="line461">461: </a>  *flag = SAME_NONZERO_PATTERN;
@@ -499,7 +499,7 @@
 <a name="line510">510: </a><font color="#B22222">   y    - proposed step (search direction and length) (possibly changed)</font>
 <a name="line511">511: </a><font color="#B22222">   </font>
 <a name="line512">512: </a><font color="#B22222"> */</font>
-<a name="line513">513: </a><strong><font color="#4169E1"><a name="PreCheck"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PreCheck(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xcurrent,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y,void *ctx,<A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *changed_y)</font></strong>
+<a name="line513">513: </a><strong><font color="#4169E1"><a name="PreCheck"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PreCheck(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xcurrent,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y,void *ctx,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *changed_y)</font></strong>
 <a name="line514">514: </a>{
 <a name="line516">516: </a>  *changed_y = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line517">517: </a>  <font color="#4169E1">return</font>(0);
@@ -523,14 +523,14 @@
 <a name="line537">537: </a><font color="#B22222">   x    - current iterate (possibly modified)</font>
 <a name="line538">538: </a><font color="#B22222">   </font>
 <a name="line539">539: </a><font color="#B22222"> */</font>
-<a name="line540">540: </a><strong><font color="#4169E1"><a name="PostCheck"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PostCheck(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xcurrent,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,void *ctx,<A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *changed_y,<A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *changed_x)</font></strong>
+<a name="line540">540: </a><strong><font color="#4169E1"><a name="PostCheck"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PostCheck(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xcurrent,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,void *ctx,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *changed_y,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *changed_x)</font></strong>
 <a name="line541">541: </a>{
 <a name="line543">543: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,iter,xs,xm;
 <a name="line544">544: </a>  StepCheckCtx   *check = (StepCheckCtx*) ctx;
 <a name="line545">545: </a>  ApplicationCtx *user = check-&gt;user;
 <a name="line546">546: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xa,*xa_last,tmp;
 <a name="line547">547: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      rdiff;
-<a name="line548">548: </a>  <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da;
+<a name="line548">548: </a>  DM             da;
 
 <a name="line551">551: </a>  *changed_x = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line552">552: </a>  *changed_y = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
@@ -542,9 +542,9 @@
 <a name="line558">558: </a>    <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Checking candidate step at iteration %D with tolerance %G\n"</font>,iter,check-&gt;tolerance);
 
 <a name="line560">560: </a>    <font color="#B22222">/* Access local array data */</font>
-<a name="line561">561: </a>    <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(da,check-&gt;last_step,&amp;xa_last);
-<a name="line562">562: </a>    <A href="../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(da,x,&amp;xa);
-<a name="line563">563: </a>    <A href="../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(da,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line561">561: </a>    <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,check-&gt;last_step,&amp;xa_last);
+<a name="line562">562: </a>    <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,x,&amp;xa);
+<a name="line563">563: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
 <a name="line565">565: </a>    <font color="#B22222">/* </font>
 <a name="line566">566: </a><font color="#B22222">       If we fail the user-defined check for validity of the candidate iterate,</font>
@@ -562,8 +562,8 @@
 <a name="line578">578: </a>                                i,PetscAbsScalar(tmp),PetscAbsScalar(xa_last[i]),rdiff,PetscAbsScalar(xa[i]));
 <a name="line579">579: </a>      }
 <a name="line580">580: </a>    }
-<a name="line581">581: </a>    <A href="../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(da,check-&gt;last_step,&amp;xa_last);
-<a name="line582">582: </a>    <A href="../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(da,x,&amp;xa);
+<a name="line581">581: </a>    <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,check-&gt;last_step,&amp;xa_last);
+<a name="line582">582: </a>    <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,x,&amp;xa);
 <a name="line583">583: </a>  }
 <a name="line584">584: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x,check-&gt;last_step);
 <a name="line585">585: </a>  <font color="#4169E1">return</font>(0);

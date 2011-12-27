@@ -9,7 +9,7 @@
 Build a preconditioner by composing together several preconditioners  
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_composite_type &lt;type: one of multiplicative, additive, special&gt; </B></TD><TD>- Sets composite preconditioner type
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_composite_type &lt;type: one of multiplicative, additive, symmetric_multiplicative, special&gt; </B></TD><TD>- Sets composite preconditioner type
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_composite_true </B></TD><TD>- Activates <A HREF="../PC/PCCompositeSetUseTrue.html#PCCompositeSetUseTrue">PCCompositeSetUseTrue</A>()
 </TD></TR>
@@ -22,7 +22,7 @@ Build a preconditioner by composing together several preconditioners
 Notes: To use a Krylov method inside the composite preconditioner, set the <A HREF="../PC/PCType.html#PCType">PCType</A> of one or more
 inner PCs to be <A HREF="../PC/PCKSP.html#PCKSP">PCKSP</A>.
 Using a Krylov method inside another Krylov method can be dangerous (you get divergence or
-the incorrect answer) unless you use <A HREF="../KSP/KSPFGMRES.html#KSPFGMRES">KSPFGMRES</A> as the outter Krylov method
+the incorrect answer) unless you use <A HREF="../KSP/KSPFGMRES.html#KSPFGMRES">KSPFGMRES</A> as the outer Krylov method
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

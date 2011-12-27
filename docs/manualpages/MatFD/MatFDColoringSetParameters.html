@@ -10,9 +10,9 @@ Sets the parameters for the sparse approximation of a Jacobian matrix using fini
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatFDColoringSetParameters(MatFDColoring matfd,PetscReal error,PetscReal umin)
+PetscErrorCode  MatFDColoringSetParameters(MatFDColoring matfd,PetscReal error,PetscReal umin)
 </PRE>
-Collective on <A HREF="../Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A>
+Logically Collective on <A HREF="../Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A>
 <P>
 The Jacobian is estimated with the differencing approximation
 <PRE>

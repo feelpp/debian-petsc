@@ -1,6 +1,5 @@
-#define PETSCMAT_DLL
 
-#include "private/matimpl.h"
+#include <private/matimpl.h>
 
 #define DEFAULT_STASH_SIZE   10000
 
@@ -24,7 +23,7 @@ PetscErrorCode MatStashCreate_Private(MPI_Comm comm,PetscInt bs,MatStash *stash)
 {
   PetscErrorCode ierr;
   PetscInt       max,*opt,nopt,i;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscFunctionBegin;
   /* Require 2 tags,get the second using PetscCommGetNewTag() */
@@ -69,6 +68,9 @@ PetscErrorCode MatStashCreate_Private(MPI_Comm comm,PetscInt bs,MatStash *stash)
   stash->rvalues     = 0;
   stash->rindices    = 0;
   stash->nprocessed  = 0;
+
+  stash->reproduce   = PETSC_FALSE;
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-matstash_reproduce",&stash->reproduce,PETSC_NULL);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -82,19 +84,16 @@ PetscErrorCode MatStashDestroy_Private(MatStash *stash)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (stash->space_head){
-    ierr = PetscMatStashSpaceDestroy(stash->space_head);CHKERRQ(ierr);
-    stash->space_head = 0;
-    stash->space      = 0;
-  }
+  ierr = PetscMatStashSpaceDestroy(&stash->space_head);CHKERRQ(ierr);
+  stash->space = 0;
   ierr = PetscFree(stash->flg_v);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 /* 
-   MatStashScatterEnd_Private - This is called as the fial stage of
-   scatter. The final stages of messagepassing is done here, and
-   all the memory used for messagepassing is cleanedu up. This
+   MatStashScatterEnd_Private - This is called as the final stage of
+   scatter. The final stages of message passing is done here, and
+   all the memory used for message passing is cleaned up. This
    routine also resets the stash, and deallocates the memory used
    for the stash. It also keeps track of the current memory usage
    so that the same value can be used the next time through.
@@ -129,23 +128,15 @@ PetscErrorCode MatStashScatterEnd_Private(MatStash *stash)
   stash->n          = 0;
   stash->reallocs   = -1;
   stash->nprocessed = 0;
-  if (stash->space_head){
-    ierr = PetscMatStashSpaceDestroy(stash->space_head);CHKERRQ(ierr);
-    stash->space_head = 0;
-    stash->space      = 0;
-  }
+  ierr = PetscMatStashSpaceDestroy(&stash->space_head);CHKERRQ(ierr);
+  stash->space      = 0;
   ierr = PetscFree(stash->send_waits);CHKERRQ(ierr);
-  stash->send_waits = 0;
   ierr = PetscFree(stash->recv_waits);CHKERRQ(ierr);
-  stash->recv_waits = 0;
   ierr = PetscFree2(stash->svalues,stash->sindices);CHKERRQ(ierr);
-  stash->svalues = 0;
   ierr = PetscFree(stash->rvalues[0]);CHKERRQ(ierr);
   ierr = PetscFree(stash->rvalues);CHKERRQ(ierr);
-  stash->rvalues = 0;
   ierr = PetscFree(stash->rindices[0]);CHKERRQ(ierr);
   ierr = PetscFree(stash->rindices);CHKERRQ(ierr);
-  stash->rindices = 0;
   PetscFunctionReturn(0);
 }
 
@@ -243,7 +234,7 @@ static PetscErrorCode MatStashExpand_Private(MatStash *stash,PetscInt incr)
 */
 #undef __FUNCT__
 #define __FUNCT__ "MatStashValuesRow_Private"
-PetscErrorCode MatStashValuesRow_Private(MatStash *stash,PetscInt row,PetscInt n,const PetscInt idxn[],const PetscScalar values[],PetscTruth ignorezeroentries)
+PetscErrorCode MatStashValuesRow_Private(MatStash *stash,PetscInt row,PetscInt n,const PetscInt idxn[],const PetscScalar values[],PetscBool  ignorezeroentries)
 {
   PetscErrorCode     ierr;
   PetscInt           i,k,cnt = 0;
@@ -286,7 +277,7 @@ PetscErrorCode MatStashValuesRow_Private(MatStash *stash,PetscInt row,PetscInt n
 */
 #undef __FUNCT__  
 #define __FUNCT__ "MatStashValuesCol_Private"
-PetscErrorCode MatStashValuesCol_Private(MatStash *stash,PetscInt row,PetscInt n,const PetscInt idxn[],const PetscScalar values[],PetscInt stepval,PetscTruth ignorezeroentries)
+PetscErrorCode MatStashValuesCol_Private(MatStash *stash,PetscInt row,PetscInt n,const PetscInt idxn[],const PetscScalar values[],PetscInt stepval,PetscBool  ignorezeroentries)
 {
   PetscErrorCode     ierr;
   PetscInt           i,k,cnt = 0; 
@@ -583,6 +574,7 @@ PetscErrorCode MatStashScatterBegin_Private(Mat mat,MatStash *stash,PetscInt *ow
   stash->send_waits  = send_waits;
   stash->nsends      = nsends;  
   stash->nrecvs      = nreceives;
+  stash->reproduce_count = 0;
   PetscFunctionReturn(0);
 } 
 
@@ -612,7 +604,7 @@ PetscErrorCode MatStashScatterGetMesg_Private(MatStash *stash,PetscMPIInt *nvals
   PetscMPIInt    i,*flg_v = stash->flg_v,i1,i2;
   PetscInt       bs2;
   MPI_Status     recv_status;
-  PetscTruth     match_found = PETSC_FALSE;
+  PetscBool      match_found = PETSC_FALSE;
 
   PetscFunctionBegin;
 
@@ -621,15 +613,20 @@ PetscErrorCode MatStashScatterGetMesg_Private(MatStash *stash,PetscMPIInt *nvals
   if (stash->nprocessed == stash->nrecvs) { PetscFunctionReturn(0); } 
 
   bs2   = stash->bs*stash->bs;
-  /* If a matching pair of receieves are found, process them, and return the data to
+  /* If a matching pair of receives are found, process them, and return the data to
      the calling function. Until then keep receiving messages */
   while (!match_found) {
     CHKMEMQ;
-    ierr = MPI_Waitany(2*stash->nrecvs,stash->recv_waits,&i,&recv_status);CHKERRQ(ierr);
+    if (stash->reproduce) {
+      i = stash->reproduce_count++;
+      ierr = MPI_Wait(stash->recv_waits+i,&recv_status);CHKERRQ(ierr);
+    } else {
+      ierr = MPI_Waitany(2*stash->nrecvs,stash->recv_waits,&i,&recv_status);CHKERRQ(ierr);
+    }
     CHKMEMQ;
-    if (recv_status.MPI_SOURCE < 0) SETERRQ(PETSC_ERR_PLIB,"Negative MPI source!");
+    if (recv_status.MPI_SOURCE < 0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Negative MPI source!");
 
-    /* Now pack the received message into a structure which is useable by others */
+    /* Now pack the received message into a structure which is usable by others */
     if (i % 2) { 
       ierr = MPI_Get_count(&recv_status,MPIU_SCALAR,nvals);CHKERRQ(ierr);
       flg_v[2*recv_status.MPI_SOURCE] = i/2; 

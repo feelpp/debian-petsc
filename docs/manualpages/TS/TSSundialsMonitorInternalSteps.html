@@ -10,7 +10,7 @@ Monitor Sundials internal steps (Defaults to false).
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h" 
-PetscErrorCode PETSCTS_DLLEXPORT TSSundialsMonitorInternalSteps(TS ts,PetscTruth ft)
+PetscErrorCode  TSSundialsMonitorInternalSteps(TS ts,PetscBool  ft)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -22,9 +22,9 @@ PetscErrorCode PETSCTS_DLLEXPORT TSSundialsMonitorInternalSteps(TS ts,PetscTruth
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-<A HREF="../TS/TSSundialsGetIterations.html#TSSundialsGetIterations">TSSundialsGetIterations</A>(), <A HREF="../TS/TSSundialsSetType.html#TSSundialsSetType">TSSundialsSetType</A>(), <A HREF="../TS/TSSundialsSetGMRESRestart.html#TSSundialsSetGMRESRestart">TSSundialsSetGMRESRestart</A>(),
+<A HREF="../TS/TSSundialsGetIterations.html#TSSundialsGetIterations">TSSundialsGetIterations</A>(), <A HREF="../TS/TSSundialsSetType.html#TSSundialsSetType">TSSundialsSetType</A>(), <A HREF="../TS/TSSundialsSetMaxl.html#TSSundialsSetMaxl">TSSundialsSetMaxl</A>(),
 <BR><A HREF="../TS/TSSundialsSetLinearTolerance.html#TSSundialsSetLinearTolerance">TSSundialsSetLinearTolerance</A>(), <A HREF="../TS/TSSundialsSetGramSchmidtType.html#TSSundialsSetGramSchmidtType">TSSundialsSetGramSchmidtType</A>(), <A HREF="../TS/TSSundialsSetTolerance.html#TSSundialsSetTolerance">TSSundialsSetTolerance</A>(),
-<A HREF="../TS/TSSundialsGetIterations.html#TSSundialsGetIterations">TSSundialsGetIterations</A>(), <A HREF="../TS/TSSundialsSetType.html#TSSundialsSetType">TSSundialsSetType</A>(), <A HREF="../TS/TSSundialsSetGMRESRestart.html#TSSundialsSetGMRESRestart">TSSundialsSetGMRESRestart</A>(),
+<A HREF="../TS/TSSundialsGetIterations.html#TSSundialsGetIterations">TSSundialsGetIterations</A>(), <A HREF="../TS/TSSundialsSetType.html#TSSundialsSetType">TSSundialsSetType</A>(),
 <A HREF="../TS/TSSundialsSetLinearTolerance.html#TSSundialsSetLinearTolerance">TSSundialsSetLinearTolerance</A>(), <A HREF="../TS/TSSundialsSetTolerance.html#TSSundialsSetTolerance">TSSundialsSetTolerance</A>(), <A HREF="../TS/TSSundialsGetPC.html#TSSundialsGetPC">TSSundialsGetPC</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/impls/implicit/sundials/sundials.c.html#TSSundialsMonitorInternalSteps">src/ts/impls/implicit/sundials/sundials.c</A>

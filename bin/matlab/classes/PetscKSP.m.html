@@ -1,0 +1,216 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>PetscKSP</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="PetscKSP.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">classdef</span> PetscKSP &lt; PetscObject
+<span class="comment">%</span>
+<span class="comment">%   PetscKSP - a PETSc linear solver object</span>
+<span class="comment">%</span>
+<span class="comment">%   Creation:</span>
+<span class="comment">%     ksp = PetscKSP;</span>
+<span class="comment">%       ksp.SetType('gmres');</span>
+<span class="comment">%       ksp.SetOperators(A,A,PetscMat.SAME_NONZERO_PATTERN);</span>
+<span class="comment">%       ksp.SetFromOptions;</span>
+<span class="comment">%</span>
+  <span class="keyword">methods</span>
+    <span class="keyword">function</span> obj = PetscKSP(pid,flag)
+      <span class="keyword">if</span> (nargin &gt; 1)
+        <span class="comment">%  PetscKSP(pid,'pobj') uses an already existing PETSc KSP object</span>
+        obj.pobj = pid;
+        <span class="keyword">return</span>
+      <span class="keyword">end</span>
+      comm =  PETSC_COMM_SELF();
+      [err,obj.pobj] = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPCreate'</span>, comm,0);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetType(obj,name)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPSetType'</span>, obj.pobj,name);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetDM(obj,da)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPSetDM'</span>, obj.pobj,da.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetFromOptions(obj)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPSetFromOptions'</span>, obj.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetUp(obj)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPSetUp'</span>, obj.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = Solve(obj,b,x)
+      <span class="keyword">if</span> (nargin == 1)
+        b = 0;
+        x = 0;
+      <span class="keyword">end</span>
+      <span class="keyword">if</span> (b ~= 0)
+        b = b.pobj;
+      <span class="keyword">end</span>
+      <span class="keyword">if</span> (x ~= 0)
+        x = x.pobj;
+      <span class="keyword">end</span>
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPSolve'</span>, obj.pobj,b,x);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetOperators(obj,A,B,pattern)
+      <span class="keyword">if</span> (nargin == 2)
+        B = A;
+        pattern = PetscMat.SAME_NONZERO_PATTERN;
+      <span class="keyword">end</span>
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPSetOperators'</span>, obj.pobj,A.pobj,B.pobj,pattern);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> [x,err] = GetSolution(obj)
+      [err,pid] = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPGetSolution'</span>, obj.pobj,0);PetscCHKERRQ(err);
+      x = PetscVec(pid,<span class="string">'pobj'</span>);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = View(obj,viewer)
+      <span class="keyword">if</span> (nargin == 1)
+        err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPView'</span>, obj.pobj,0);PetscCHKERRQ(err);
+      <span class="keyword">else</span>
+        err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPView'</span>, obj.pobj,viewer.pobj);PetscCHKERRQ(err);
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> [pc,err] = GetPC(obj)
+      [err,pid] = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPGetPC'</span>, obj.pobj,0);PetscCHKERRQ(err);
+      pc = PetscPC(pid,<span class="string">'pobj'</span>);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = Destroy(obj)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'KSPDestroy'</span>, obj.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+classdef PetscKSP < PetscObject
+%
+%   PetscKSP - a PETSc linear solver object
+%
+%   Creation:
+%     ksp = PetscKSP;
+%       ksp.SetType('gmres');
+%       ksp.SetOperators(A,A,PetscMat.SAME_NONZERO_PATTERN);
+%       ksp.SetFromOptions;
+%
+  methods
+    function obj = PetscKSP(pid,flag)
+      if (nargin > 1) 
+        %  PetscKSP(pid,'pobj') uses an already existing PETSc KSP object
+        obj.pobj = pid;
+        return
+      end
+      comm =  PETSC_COMM_SELF();
+      [err,obj.pobj] = calllib('libpetsc', 'KSPCreate', comm,0);PetscCHKERRQ(err);
+    end
+    function err = SetType(obj,name)
+      err = calllib('libpetsc', 'KSPSetType', obj.pobj,name);PetscCHKERRQ(err);
+    end
+    function err = SetDM(obj,da)
+      err = calllib('libpetsc', 'KSPSetDM', obj.pobj,da.pobj);PetscCHKERRQ(err);
+    end
+    function err = SetFromOptions(obj)
+      err = calllib('libpetsc', 'KSPSetFromOptions', obj.pobj);PetscCHKERRQ(err);
+    end
+    function err = SetUp(obj)
+      err = calllib('libpetsc', 'KSPSetUp', obj.pobj);PetscCHKERRQ(err);
+    end
+    function err = Solve(obj,b,x)
+      if (nargin == 1) 
+        b = 0;
+        x = 0;
+      end
+      if (b ~= 0) 
+        b = b.pobj;
+      end
+      if (x ~= 0)
+        x = x.pobj;
+      end
+      err = calllib('libpetsc', 'KSPSolve', obj.pobj,b,x);PetscCHKERRQ(err);
+    end
+    function err = SetOperators(obj,A,B,pattern)
+      if (nargin == 2) 
+        B = A;
+        pattern = PetscMat.SAME_NONZERO_PATTERN;
+      end
+      err = calllib('libpetsc', 'KSPSetOperators', obj.pobj,A.pobj,B.pobj,pattern);PetscCHKERRQ(err);
+    end
+    function [x,err] = GetSolution(obj)
+      [err,pid] = calllib('libpetsc', 'KSPGetSolution', obj.pobj,0);PetscCHKERRQ(err);
+      x = PetscVec(pid,'pobj');
+    end
+    function err = View(obj,viewer)
+      if (nargin == 1)
+        err = calllib('libpetsc', 'KSPView', obj.pobj,0);PetscCHKERRQ(err);
+      else
+        err = calllib('libpetsc', 'KSPView', obj.pobj,viewer.pobj);PetscCHKERRQ(err);
+      end
+    end
+    function [pc,err] = GetPC(obj)
+      [err,pid] = calllib('libpetsc', 'KSPGetPC', obj.pobj,0);PetscCHKERRQ(err);
+      pc = PetscPC(pid,'pobj');
+    end
+    function err = Destroy(obj)
+      err = calllib('libpetsc', 'KSPDestroy', obj.pobj);PetscCHKERRQ(err);
+    end
+  end
+end
+
+ 
+
+##### SOURCE END #####
+--></body></html>

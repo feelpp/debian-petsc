@@ -1,0 +1,280 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>PetscBagRead</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="PetscBagRead.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> bag = PetscBagRead(fd)
+<span class="comment">%</span>
+<span class="comment">%  Reads in PETSc binary file bag object</span>
+<span class="comment">%  emits as Matlab struct.  Called from</span>
+<span class="comment">%  PetscBinaryRead.m.</span>
+<span class="comment">%</span>
+
+[name_len help_len] = ParsePetscBagDotH;
+
+bagsizecount = read(fd,2,<span class="string">'int32'</span>);
+count        = bagsizecount(2);
+
+bag.bag_name      = deblank(char(read(fd,name_len,<span class="string">'uchar'</span>)'));
+bag.help.bag_help = deblank(char(read(fd,help_len,<span class="string">'uchar'</span>)'));
+
+<span class="keyword">for</span> lcv = 1:count
+  offsetdtype = read(fd,2,<span class="string">'int32'</span>);
+  dtype = offsetdtype(2);
+  name  = strclean(deblank(char(read(fd,name_len,<span class="string">'uchar'</span>)')));
+  help  = deblank(char(read(fd,help_len,<span class="string">'uchar'</span>)'));
+  msize = read(fd,1,<span class="string">'int32'</span>);
+
+  <span class="keyword">if</span> dtype == 0     <span class="comment">% integer</span>
+    val = read(fd,1,<span class="string">'int32'</span>);
+  <span class="keyword">elseif</span> dtype == 1 <span class="comment">% double</span>
+    val = read(fd,1,<span class="string">'double'</span>);
+  <span class="keyword">elseif</span> dtype == 6 <span class="comment">% char</span>
+    val = deblank(char(read(fd,msize,<span class="string">'uchar'</span>)'));
+  <span class="keyword">elseif</span> dtype == 9 <span class="comment">% truth</span>
+    val = read(fd,1,<span class="string">'int32'</span>);
+<span class="comment">% PETSC_LOGICAL is a bit boolean and not currently handled</span>
+<span class="comment">%  elseif dtype == 7 % boolean</span>
+<span class="comment">%    val = read(fd,1,'bit1');</span>
+  <span class="keyword">elseif</span> dtype == 8 <span class="comment">% Enum</span>
+    val   = read(fd,1,<span class="string">'int32'</span>);
+    n     = read(fd,1,<span class="string">'int32'</span>);
+    sizes = read(fd,n,<span class="string">'int32'</span>);
+    enumnames = {<span class="string">'  '</span>};
+    <span class="keyword">for</span> i=1:n-2,
+      enumnames{i} = deblank(char(read(fd,sizes(i),<span class="string">'uchar'</span>)));
+    <span class="keyword">end</span>
+    val  = char(enumnames{val+1})';
+    enumname   = deblank(char(read(fd,sizes(n-1),<span class="string">'uchar'</span>)));
+    enumprefix = deblank(char(read(fd,sizes(n),<span class="string">'uchar'</span>)));
+  <span class="keyword">else</span>
+    val = [];
+    warning(<span class="string">'Bag entry %s could not be read'</span>,name);
+  <span class="keyword">end</span>
+  bag      = setfield(bag     ,name,val);
+  bag.help = setfield(bag.help,name,help);
+<span class="keyword">end</span>
+<span class="keyword">return</span>
+
+<span class="comment">% ---------------------------------------------------- %</span>
+
+<span class="keyword">function</span> [n, h] = ParsePetscBagDotH
+
+   petscbagh = [GetPetscDir,<span class="string">'/src/sys/bag/bagimpl.h'</span>];
+   fid = fopen(petscbagh,<span class="string">'rt'</span>);
+   <span class="keyword">if</span> (fid&lt;0)
+      errstr = sprintf(<span class="string">'Could not open %s.'</span>,petscbagh);
+      error(errstr);
+   <span class="keyword">end</span>
+
+   nametag = <span class="string">'#define PETSC_BAG_NAME_LENGTH'</span>;
+   helptag = <span class="string">'#define PETSC_BAG_HELP_LENGTH'</span>;
+   n = 0; h = 0;
+   <span class="keyword">while</span> ~feof(fid)
+      lin = fgetl(fid);
+      ni = strfind(lin,nametag);
+      nh = strfind(lin,helptag);
+      <span class="keyword">if</span> ni
+	 n = str2num(lin(ni+length(nametag):end));
+      <span class="keyword">elseif</span> nh
+	 h = str2num(lin(nh+length(helptag):end));
+      <span class="keyword">end</span>
+      <span class="keyword">if</span> (n&gt;0 &amp; h&gt;0) <span class="keyword">break</span>; <span class="keyword">end</span>;
+   <span class="keyword">end</span>
+   <span class="keyword">if</span> (n==0 | h==0)
+      errstr = sprintf(<span class="string">'Could not parse %s.'</span>,petscbagh);
+      error(errstr);
+   <span class="keyword">end</span>
+   fclose(fid);
+   <span class="keyword">return</span>
+
+<span class="comment">% ---------------------------------------------------- %</span>
+
+<span class="keyword">function</span> str = strclean(str)
+
+   badchars = <span class="string">' ()[]&lt;&gt;{}.-'</span>;
+   <span class="keyword">for</span> i=1:length(badchars);
+      str(strfind(str,badchars(i))) = <span class="string">'_'</span>;
+   <span class="keyword">end</span>
+   <span class="keyword">return</span>
+
+<span class="comment">% ---------------------------------------------------- %</span>
+
+<span class="keyword">function</span> dir = GetPetscDir
+
+   dir = getenv(<span class="string">'PETSC_DIR'</span>);
+   <span class="keyword">if</span> length(dir)==0
+      error([<span class="string">'Please set environment variable PETSC_DIR'</span> <span class="keyword">...</span>
+	     <span class="string">' and try again.'</span>])
+   <span class="keyword">end</span>
+   <span class="keyword">return</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+function bag = PetscBagRead(fd)
+%
+%  Reads in PETSc binary file bag object
+%  emits as Matlab struct.  Called from
+%  PetscBinaryRead.m.
+%
+
+[name_len help_len] = ParsePetscBagDotH;
+
+bagsizecount = read(fd,2,'int32');
+count        = bagsizecount(2);
+
+bag.bag_name      = deblank(char(read(fd,name_len,'uchar')'));
+bag.help.bag_help = deblank(char(read(fd,help_len,'uchar')'));
+
+for lcv = 1:count
+  offsetdtype = read(fd,2,'int32');
+  dtype = offsetdtype(2);
+  name  = strclean(deblank(char(read(fd,name_len,'uchar')')));
+  help  = deblank(char(read(fd,help_len,'uchar')'));
+  msize = read(fd,1,'int32');
+
+  if dtype == 0     % integer
+    val = read(fd,1,'int32');
+  elseif dtype == 1 % double
+    val = read(fd,1,'double');
+  elseif dtype == 6 % char
+    val = deblank(char(read(fd,msize,'uchar')'));
+  elseif dtype == 9 % truth
+    val = read(fd,1,'int32');
+% PETSC_LOGICAL is a bit boolean and not currently handled
+%  elseif dtype == 7 % boolean
+%    val = read(fd,1,'bit1');
+  elseif dtype == 8 % Enum
+    val   = read(fd,1,'int32');
+    n     = read(fd,1,'int32');
+    sizes = read(fd,n,'int32');
+    enumnames = {'  '};
+    for i=1:n-2,
+      enumnames{i} = deblank(char(read(fd,sizes(i),'uchar')));
+    end
+    val  = char(enumnames{val+1})';
+    enumname   = deblank(char(read(fd,sizes(n-1),'uchar')));
+    enumprefix = deblank(char(read(fd,sizes(n),'uchar')));
+  else 
+    val = [];
+    warning('Bag entry %s could not be read',name);
+  end 
+  bag      = setfield(bag     ,name,val);
+  bag.help = setfield(bag.help,name,help);
+end
+return
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+   
+function [n, h] = ParsePetscBagDotH
+   
+   petscbagh = [GetPetscDir,'/src/sys/bag/bagimpl.h'];
+   fid = fopen(petscbagh,'rt');
+   if (fid<0)
+      errstr = sprintf('Could not open %s.',petscbagh);
+      error(errstr);
+   end
+   
+   nametag = '#define PETSC_BAG_NAME_LENGTH';
+   helptag = '#define PETSC_BAG_HELP_LENGTH';
+   n = 0; h = 0;
+   while ~feof(fid)
+      lin = fgetl(fid);
+      ni = strfind(lin,nametag);
+      nh = strfind(lin,helptag);
+      if ni
+	 n = str2num(lin(ni+length(nametag):end));
+      elseif nh
+	 h = str2num(lin(nh+length(helptag):end));
+      end   
+      if (n>0 & h>0) break; end;
+   end
+   if (n==0 | h==0)
+      errstr = sprintf('Could not parse %s.',petscbagh);
+      error(errstr);
+   end
+   fclose(fid);
+   return
+   
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+   
+function str = strclean(str)
+   
+   badchars = ' ()[]<>{}.-';
+   for i=1:length(badchars);
+      str(strfind(str,badchars(i))) = '_';
+   end
+   return
+   
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+   
+function dir = GetPetscDir
+   
+   dir = getenv('PETSC_DIR');
+   if length(dir)==0
+      error(['Please set environment variable PETSC_DIR' ...
+	     ' and try again.'])
+   end
+   return
+
+##### SOURCE END #####
+--></body></html>

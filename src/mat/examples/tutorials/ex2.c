@@ -5,7 +5,7 @@
  * and MatMultTranspose.
  */
 #include <stdlib.h>
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -107,10 +107,10 @@ int main(int argc,char **argv)
   ierr = VecAXPY(Z,-1.0,Y);CHKERRQ(ierr);
   ierr = VecNorm(Z,NORM_2,&nrm);
   printf("Test1; error norm=%e\n",nrm);
-  /*
+  
   printf("MatMult the usual way:\n"); VecView(Y,0);
   printf("MatMult by subblock:\n"); VecView(Z,0);
-  */
+  
 
   /*
    * Next test: change both matrices
@@ -156,24 +156,21 @@ int main(int argc,char **argv)
   ierr = PetscFree(x);CHKERRQ(ierr);
   ierr = PetscFree(y);CHKERRQ(ierr);
   ierr = PetscFree(z);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(A11);CHKERRQ(ierr);
-  ierr = MatDestroy(A12);CHKERRQ(ierr);
-  ierr = MatDestroy(A21);CHKERRQ(ierr);
-  ierr = MatDestroy(A22);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&A11);CHKERRQ(ierr);
+  ierr = MatDestroy(&A12);CHKERRQ(ierr);
+  ierr = MatDestroy(&A21);CHKERRQ(ierr);
+  ierr = MatDestroy(&A22);CHKERRQ(ierr);
 
-  ierr = VecDestroy(X);CHKERRQ(ierr);
-  ierr = VecDestroy(Y);CHKERRQ(ierr);
-  ierr = VecDestroy(Z);CHKERRQ(ierr);
+  ierr = VecDestroy(&X);CHKERRQ(ierr);
+  ierr = VecDestroy(&Y);CHKERRQ(ierr);
+  ierr = VecDestroy(&Z);CHKERRQ(ierr);
 
-  ierr = VecDestroy(X1);CHKERRQ(ierr);
-  ierr = VecDestroy(X2);CHKERRQ(ierr);
-  ierr = VecDestroy(Z1);CHKERRQ(ierr);
-  ierr = VecDestroy(Z2);CHKERRQ(ierr);
+  ierr = VecDestroy(&X1);CHKERRQ(ierr);
+  ierr = VecDestroy(&X2);CHKERRQ(ierr);
+  ierr = VecDestroy(&Z1);CHKERRQ(ierr);
+  ierr = VecDestroy(&Z2);CHKERRQ(ierr);
 
-
-  /*ierr = PetscLogPrintSummary(MPI_COMM_SELF,"ex2.log");CHKERRQ(ierr);*/
-  
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

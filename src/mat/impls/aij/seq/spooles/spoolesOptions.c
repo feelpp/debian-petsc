@@ -1,10 +1,9 @@
-#define PETSCMAT_DLL
 
 /* 
    Default and runtime options used by seq and MPI Spooles' interface for both aij and sbaij mat objects
 */
 
-#include "../src/mat/impls/aij/seq/spooles/spooles.h"
+#include <../src/mat/impls/aij/seq/spooles/spooles.h>
 
 /* Set Spooles' default and runtime options */
 #undef __FUNCT__  
@@ -14,7 +13,7 @@ PetscErrorCode SetSpoolesOptions(Mat A, Spooles_options *options)
   PetscErrorCode ierr;
   int          indx;
   const char   *ordertype[]={"BestOfNDandMS","MMD","MS","ND"};
-  PetscTruth   flg;
+  PetscBool    flg;
 
   PetscFunctionBegin;	
   /* set default input parameters */ 
@@ -68,7 +67,7 @@ PetscErrorCode SetSpoolesOptions(Mat A, Spooles_options *options)
                            options->maxzeros,&options->maxzeros,PETSC_NULL);CHKERRQ(ierr);
     ierr = PetscOptionsInt("-mat_spooles_maxsize","maxsize","None",\
                            options->maxsize,&options->maxsize,PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsTruth("-mat_spooles_FrontMtxInfo","FrontMtxInfo","None",PETSC_FALSE,&flg,0);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-mat_spooles_FrontMtxInfo","FrontMtxInfo","None",PETSC_FALSE,&flg,0);CHKERRQ(ierr);
     if (flg) options->FrontMtxInfo = PETSC_TRUE; 
 
     if ( options->symflag == SPOOLES_SYMMETRIC ) {

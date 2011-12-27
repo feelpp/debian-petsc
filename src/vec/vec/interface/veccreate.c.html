@@ -4,12 +4,12 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:24:43+00:00">
+<meta name="date" content="2011-10-29T18:55:16+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCVEC_DLL</font></strong>
-<a name="line2"> 2: </a> #include <A href="../../../../include/private/vecimpl.h.html">private/vecimpl.h</A>
+<pre width="80">
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/vecimpl.h&gt;      </font><font color="#B22222">/*I "petscvec.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line6">  6: </a><font color="#B22222">/*@</font>
 <a name="line7">  7: </a><font color="#B22222">  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A> - Creates an empty vector object. The type can then be set with <A href="../../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(),</font>
@@ -41,18 +41,16 @@
 <a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Vec/VecInitializePackage.html#VecInitializePackage">VecInitializePackage</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line37"> 37: </a><font color="#A020F0">#endif</font>
 
-<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(v, _p_Vec, <font color="#4169E1">struct _VecOps</font>, VEC_COOKIE, -1, <font color="#666666">"<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>"</font>, comm, <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>, <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>);
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(v, _p_Vec, <font color="#4169E1">struct _VecOps</font>, VEC_CLASSID, -1, <font color="#666666">"<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>"</font>, <font color="#666666">"Vector"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>"</font>, comm, <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>, <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>);
 <a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(v-&gt;ops, <font color="#4169E1">sizeof</font>(<font color="#4169E1">struct _VecOps</font>));
 
 <a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutCreate.html#PetscLayoutCreate">PetscLayoutCreate</A>(comm,&amp;v-&gt;map);
-<a name="line43"> 43: </a>  v-&gt;mapping      = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line44"> 44: </a>  v-&gt;bmapping     = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line45"> 45: </a>  v-&gt;array_gotten = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line46"> 46: </a>  v-&gt;petscnative  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line43"> 43: </a>  v-&gt;array_gotten = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line44"> 44: </a>  v-&gt;petscnative  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
-<a name="line48"> 48: </a>  *vec = v;
-<a name="line49"> 49: </a>  <font color="#4169E1">return</font>(0);
-<a name="line50"> 50: </a>}
+<a name="line46"> 46: </a>  *vec = v;
+<a name="line47"> 47: </a>  <font color="#4169E1">return</font>(0);
+<a name="line48"> 48: </a>}
 
 </pre>
 </body>

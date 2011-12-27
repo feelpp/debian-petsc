@@ -10,9 +10,9 @@ Sets number of iterations at which GMRES, FGMRES and LGMRES restarts.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h"  
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetRestart(KSP ksp, PetscInt restart) 
+PetscErrorCode  KSPGMRESSetRestart(KSP ksp, PetscInt restart) 
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -33,7 +33,7 @@ Note: The default value is 30.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>(), <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESSetPreAllocateVectors.html#KSPGMRESSetPreAllocateVectors">KSPGMRESSetPreAllocateVectors</A>()
+ <A HREF="../KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>(), <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESSetPreAllocateVectors.html#KSPGMRESSetPreAllocateVectors">KSPGMRESSetPreAllocateVectors</A>(), <A HREF="../KSP/KSPGMRESGetRestart.html#KSPGMRESGetRestart">KSPGMRESGetRestart</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/impls/gmres/gmres.c.html#KSPGMRESSetRestart">src/ksp/ksp/impls/gmres/gmres.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

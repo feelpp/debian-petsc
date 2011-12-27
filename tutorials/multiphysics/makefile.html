@@ -3,7 +3,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:58:02+00:00">
+<meta name="date" content="2011-10-29T19:25:14+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -74,19 +74,19 @@ include ${PETSC_DIR}/conf/rules
            ${RM} -f mp_4.tmp
 
 <strong><font color="#FF0000">runmp_5:</font></strong>
-        -@${MPIEXEC} -n 1 ./mp -grashof 1.0 -couple -snes_monitor_short  -ksp_view -pc_type fieldsplit &gt; mp_5.tmp 2&gt;&amp;1;   \
+        -@${MPIEXEC} -n 1 ./mp -grashof 1.0 -couple -snes_monitor_short -pc_type fieldsplit &gt; mp_5.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/mp_5.out mp_5.tmp) then true; \
            <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with mp_5, diffs above"</font>; fi; \
            ${RM} -f mp_5.tmp
 
 <strong><font color="#FF0000">runmp_6:</font></strong>
-        -@${MPIEXEC} -n 1 ./mp -grashof 1.0 -couple -snes_monitor_short  -ksp_view -pc_type fieldsplit -snes_mf_operator &gt; mp_6.tmp 2&gt;&amp;1;   \
+        -@${MPIEXEC} -n 1 ./mp -grashof 1.0 -couple -pc_type fieldsplit -snes_mf_operator &gt; mp_6.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/mp_6.out mp_6.tmp) then true; \
            <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with mp_6, diffs above"</font>; fi; \
            ${RM} -f mp_6.tmp
 
 <strong><font color="#FF0000">runmp_7:</font></strong>
-        -@${MPIEXEC} -n 3 ./mp -grashof 1.0 -couple -ksp_monitor_short  -pc_type fieldsplit &gt; mp_7.tmp 2&gt;&amp;1;   \
+        -@${MPIEXEC} -n 3 ./mp -grashof 1.0 -couple -pc_type fieldsplit &gt; mp_7.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/mp_7.out mp_7.tmp) then true; \
            <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with mp_7, diffs above"</font>; fi; \
            ${RM} -f mp_7.tmp
@@ -98,13 +98,13 @@ include ${PETSC_DIR}/conf/rules
            ${RM} -f mp_8.tmp
 
 <strong><font color="#FF0000">runmp_9:</font></strong>
-        -@${MPIEXEC} -n 1 ./mp -couple -snes_monitor_short -pc_type fieldsplit -ksp_monitor_short -pc_fieldsplit_type schur -fieldsplit_1_ksp_monitor_short -fieldsplit_1_ksp_type fgmres -fieldsplit_0_ksp_type gmres -fieldsplit_0_ksp_monitor_short -pc_fieldsplit_schur_precondition diag -snes_view &gt; mp_9.tmp 2&gt;&amp;1;   \
+        -@${MPIEXEC} -n 1 ./mp -couple -snes_monitor_short -pc_type fieldsplit -ksp_monitor_short -pc_fieldsplit_type schur -fieldsplit_1_ksp_type fgmres -fieldsplit_0_ksp_type gmres -pc_fieldsplit_schur_precondition diag &gt; mp_9.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/mp_9.out mp_9.tmp) then true; \
            <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with mp_9, diffs above"</font>; fi; \
            ${RM} -f mp_9.tmp
 
 <strong><font color="#FF0000">runmp_10:</font></strong>
-        -@${MPIEXEC} -n 1 ./mp -couple -snes_monitor_short -pc_type fieldsplit -ksp_monitor_short -pc_fieldsplit_type schur -fieldsplit_ksp_monitor_short -fieldsplit_1_ksp_type fgmres -fieldsplit_0_ksp_type gmres -fieldsplit_0_ksp_monitor_short -pc_fieldsplit_schur_precondition self -snes_view &gt; mp_10.tmp 2&gt;&amp;1;   \
+        -@${MPIEXEC} -n 1 ./mp -couple -pc_type fieldsplit -pc_fieldsplit_type schur -fieldsplit_1_ksp_type fgmres -fieldsplit_0_ksp_type gmres -pc_fieldsplit_schur_precondition self &gt; mp_10.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/mp_10.out mp_10.tmp) then true; \
            <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with mp_10, diffs above"</font>; fi; \
            ${RM} -f mp_10.tmp

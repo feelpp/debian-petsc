@@ -10,7 +10,7 @@
 #define PETSCMAP1(a)      PETSCMAP1_b(a,BS)
 
 #undef __FUNCT__  
-#define __FUNCT__ "VecScatterBegin_"
+#define __FUNCT__ "VecScatterBegin_" PetscStringize(BS)
 PetscErrorCode PETSCMAP1(VecScatterBegin)(VecScatter ctx,Vec xin,Vec yin,InsertMode addv,ScatterMode mode)
 {
   VecScatter_MPI_General *to,*from;
@@ -20,8 +20,6 @@ PetscErrorCode PETSCMAP1(VecScatterBegin)(VecScatter ctx,Vec xin,Vec yin,InsertM
   PetscInt               i,*indices,*sstarts,nrecvs,nsends,bs;
 
   PetscFunctionBegin;
-  ierr = VecGetArray(xin,&xv);CHKERRQ(ierr);
-  if (xin != yin) {ierr = VecGetArray(yin,&yv);CHKERRQ(ierr);} else {yv = xv;}
   if (mode & SCATTER_REVERSE) {
     to   = (VecScatter_MPI_General*)ctx->fromdata;
     from = (VecScatter_MPI_General*)ctx->todata;
@@ -39,6 +37,32 @@ PetscErrorCode PETSCMAP1(VecScatterBegin)(VecScatter ctx,Vec xin,Vec yin,InsertM
   nsends   = to->n;
   indices  = to->indices;
   sstarts  = to->starts;
+#if defined(PETSC_HAVE_CUSP)
+  if ((xin->map->n > 10000) && (sstarts[nsends]*bs < 0.05*xin->map->n) && (xin->valid_GPU_array == PETSC_CUSP_GPU) && !(to->local.n)) {
+    if (!ctx->spptr) {
+      PetscInt k,*tindices,n = sstarts[nsends],*sindices;
+      ierr = PetscMalloc(n*sizeof(PetscInt),&tindices);CHKERRQ(ierr);
+      ierr = PetscMemcpy(tindices,to->indices,n*sizeof(PetscInt));CHKERRQ(ierr);
+      ierr = PetscSortRemoveDupsInt(&n,tindices);CHKERRQ(ierr);
+      ierr = PetscMalloc(bs*n*sizeof(PetscInt),&sindices);CHKERRQ(ierr);
+      for (i=0; i<n; i++) {
+        for (k=0; k<bs; k++) {
+          sindices[i*bs+k] = tindices[i]+k;
+        }
+      }
+      ierr = PetscFree(tindices);CHKERRQ(ierr);
+      ierr = PetscCUSPIndicesCreate(n*bs,sindices,(PetscCUSPIndices*)&ctx->spptr);CHKERRQ(ierr);
+      ierr = PetscFree(sindices);CHKERRQ(ierr);
+    }
+    ierr = VecCUSPCopyFromGPUSome_Public(xin,(PetscCUSPIndices)ctx->spptr);CHKERRQ(ierr);
+    xv   = *(PetscScalar**)xin->data;
+    } else {
+    ierr = VecGetArrayRead(xin,(const PetscScalar**)&xv);CHKERRQ(ierr);
+  }
+#else
+  ierr = VecGetArrayRead(xin,(const PetscScalar**)&xv);CHKERRQ(ierr);
+#endif
+  if (xin != yin) {ierr = VecGetArray(yin,&yv);CHKERRQ(ierr);} else {yv = xv;}
 
   if (!(mode & SCATTER_LOCAL)) {
 
@@ -92,7 +116,15 @@ PetscErrorCode PETSCMAP1(VecScatterBegin)(VecScatter ctx,Vec xin,Vec yin,InsertM
       PETSCMAP1(Scatter)(to->local.n,to->local.vslots,xv,from->local.vslots,yv,addv);
     }
   }
-  ierr = VecRestoreArray(xin,&xv);CHKERRQ(ierr);
+#if defined(PETSC_HAVE_CUSP)
+  if (xin->valid_GPU_array != PETSC_CUSP_GPU) {
+    ierr = VecRestoreArrayRead(xin,(const PetscScalar**)&xv);CHKERRQ(ierr);
+  } else {
+    ierr = VecRestoreArrayRead(xin,(const PetscScalar**)&xv);CHKERRQ(ierr);
+  }
+#else
+  ierr = VecRestoreArrayRead(xin,(const PetscScalar**)&xv);CHKERRQ(ierr);
+#endif
   if (xin != yin) {ierr = VecRestoreArray(yin,&yv);CHKERRQ(ierr);}
   PetscFunctionReturn(0);
 }
@@ -100,7 +132,7 @@ PetscErrorCode PETSCMAP1(VecScatterBegin)(VecScatter ctx,Vec xin,Vec yin,InsertM
 /* --------------------------------------------------------------------------------------*/
 
 #undef __FUNCT__  
-#define __FUNCT__ "VecScatterEnd_"
+#define __FUNCT__ "VecScatterEnd_" PetscStringize(BS)
 PetscErrorCode PETSCMAP1(VecScatterEnd)(VecScatter ctx,Vec xin,Vec yin,InsertMode addv,ScatterMode mode)
 {
   VecScatter_MPI_General *to,*from;

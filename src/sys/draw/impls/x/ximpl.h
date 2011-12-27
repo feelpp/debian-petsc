@@ -1,11 +1,10 @@
-#define PETSC_DLL
 
 /*
       Defines the internal data structures for the X-windows 
    implementation of the graphics functionality in PETSc.
 */
 
-#include "../src/sys/draw/drawimpl.h"
+#include <../src/sys/draw/drawimpl.h>
 
 #if !defined(_XIMPL_H)
 #define _XIMPL_H
@@ -48,7 +47,7 @@ typedef struct {
 #define XiDrawable(w) ((w)->drw ? (w)->drw : (w)->win)
 
 #define XiSetColor(Win,icolor)\
-  {if (icolor >= 256 || icolor < 0) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Color value out of range");\
+  {if (icolor >= 256 || icolor < 0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Color value out of range");\
    if ((Win)->gc.cur_pix != (Win)->cmapping[icolor]) { \
      XSetForeground((Win)->disp,(Win)->gc.set,(Win)->cmapping[icolor]); \
      (Win)->gc.cur_pix   = (Win)->cmapping[icolor];\

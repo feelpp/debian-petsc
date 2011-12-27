@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>PetscFwkSetURL</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<A NAME="PetscFwkSetURL"><H1>PetscFwkSetURL</H1></A>
+set a backend implementing PetscFwk functionality from the URL string. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode  PetscFwkSetURL(PetscFwk fwk, const char url[])</PRE>
+Logically collective on PetscFwk.
+<P>
+<H3><FONT COLOR="#CC3333">Input paramters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fwk </B></TD><TD>- - a PetscFwk object
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>url </B></TD><TD>- - URL string
+</TD></TR></TABLE>
+<P>
+Notes: URL can point to a backendn -- a .so file or a .py file.
+The .so file must contain symbols for function 'void call(const char[])' or symbols 'void &lt;msg&gt;(void)'
+for any message &lt;msg&gt; that PetscFwk is expected to understand.  When <A HREF="../Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>() is invoked
+with &lt;msg&gt;, a symbol for 'void &lt;msg&gt;(void)' is sought and called, if found.  If not, a symbol for
+'void call(const char[])' is sought and called with &lt;msg&gt; as the argument. If neither symbol is found,
+an error occurs.
+The .py file must define a class that implements 'call(str)' or '&lt;msg&gt;()' methods, as above.
+If no URL has been set, fwk attempts to reponsd to the message using function '&lt;msg&gt;' (failing that,
+'call') retrieved from fwk using <A HREF="../Sys/PetscObjectQueryFunction.html#PetscObjectQueryFunction">PetscObjectQueryFunction</A>().  If neither '&lt;msg&gt;' nor 'call' have been
+previusly composed with fwk (see PetscObjectComposeFunction()), an error occurs.
+<P>
+.
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../Sys/PetscFwkGetURL.html#PetscFwkGetURL">PetscFwkGetURL</A>(), <A HREF="../Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>(), <A HREF="../Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>(), PetscObjectComposeFunction()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/fwk/interface/fwk.c.html#PetscFwkSetURL">src/sys/fwk/interface/fwk.c</A>
+<BR><A HREF="./index.html">Index of all Sys routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

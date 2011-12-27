@@ -10,9 +10,9 @@ Sets routine to use to "setup" the preconditioner whenever the  matrix operator 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetSetUp(PC pc,PetscErrorCode (*setup)(PC))
+PetscErrorCode  PCShellSetSetUp(PC pc,PetscErrorCode (*setup)(PC))
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -49,5 +49,4 @@ Notes: the function MUST return an error code of 0 on success and nonzero on fai
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15f.F.html">src/ksp/ksp/examples/tutorials/ex15f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex21f.F.html">src/ksp/ksp/examples/tutorials/ex21f.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex33f.F.html">src/snes/examples/tutorials/ex33f.F.html</A><BR>
 </BODY></HTML>

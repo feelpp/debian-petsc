@@ -12,7 +12,7 @@ Computes y = y + sum alpha[j] x[j]
 #include "petscvec.h" 
 PetscErrorCode  VecMAXPY(Vec y,PetscInt nv,const PetscScalar alpha[],Vec x[])
 </PRE>
-Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -26,6 +26,8 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 </TD></TR></TABLE>
 <P>
 
+<P>
+Notes: y cannot be any of the x vectors
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

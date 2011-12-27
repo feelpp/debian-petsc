@@ -1,10 +1,10 @@
 
 #if !defined(__MPISBAIJ_H)
 #define __MPISBAIJ_H
-#include "../src/mat/impls/baij/seq/baij.h"
-#include "../src/sys/ctable.h"
-#include "../src/mat/impls/sbaij/seq/sbaij.h"
-#include "../src/mat/impls/baij/mpi/mpibaij.h"
+#include <../src/mat/impls/baij/seq/baij.h>
+#include <../src/sys/ctable.h>
+#include <../src/mat/impls/sbaij/seq/sbaij.h>
+#include <../src/mat/impls/baij/mpi/mpibaij.h>
 
 typedef struct {
   MPIBAIJHEADER;
@@ -19,6 +19,6 @@ typedef struct {
   MatScalar     *v_loc;
 } Mat_MPISBAIJ;
 
-EXTERN PetscErrorCode MatLoad_MPISBAIJ(PetscViewer, const MatType,Mat*);
-EXTERN PetscErrorCode MatMult_MPISBAIJ_Hermitian(Mat,Vec,Vec);
+extern PetscErrorCode MatLoad_MPISBAIJ(Mat,PetscViewer);
+extern PetscErrorCode MatMult_MPISBAIJ_Hermitian(Mat,Vec,Vec);
 #endif

@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:47+00:00">
+<meta name="date" content="2011-10-29T18:56:32+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -36,9 +36,9 @@
 <a name="line26"> 26: </a>!     petscviewer.h - viewers
 <a name="line27"> 27: </a>!     petscis.h     - index sets
 <a name="line28"> 28: </a>!
-<a name="line29"> 29: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line30"> 30: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line31"> 31: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscvec.h90"</font><font color="#A020F0"></font>
+<a name="line29"> 29: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line30"> 30: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line31"> 31: </a><font color="#A020F0">#include &lt;finclude/petscvec.h90&gt;</font>
 <a name="line32"> 32: </a>!
 <a name="line33"> 33: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 <a name="line34"> 34: </a>!                   Variable declarations
@@ -54,7 +54,7 @@
 <a name="line44"> 44: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         n,ithree
 <a name="line45"> 45: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>   ierr
 <a name="line46"> 46: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>      rank
-<a name="line47"> 47: </a>      <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>       flg
+<a name="line47"> 47: </a>      <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>        flg
 <a name="line48"> 48: </a>      <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      one,two,three
 <a name="line49"> 49: </a>      <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      dots(3),dot
 
@@ -213,29 +213,17 @@
 <a name="line203">203: </a>      <font color="#4169E1">if</font> (rank .eq. 0) write(6,220) v,v1,v2
 <a name="line204">204: </a> 220  format (<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecMAXPY.html#VecMAXPY">VecMAXPY</A> "</font>,3(1pe8.2))
 
+<a name="line206">206: </a>!  Free work space.  All PETSc objects should be destroyed when they
+<a name="line207">207: </a>!  are no longer needed.
 
-<a name="line207">207: </a>!  Test whether vector has been corrupted (just to demonstrate this
-<a name="line208">208: </a>!  routine) not needed in most application codes.
+<a name="line209">209: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x,ierr)
+<a name="line210">210: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y,ierr)
+<a name="line211">211: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(w,ierr)
+<a name="line212">212: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroyVecsF90.html#VecDestroyVecsF90">VecDestroyVecsF90</A>(ithree,z,ierr)
+<a name="line213">213: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
 
-<a name="line210">210: </a>      call <A href="../../../../../docs/manualpages/Vec/VecValid.html#VecValid">VecValid</A>(x,flg,ierr)
-<a name="line211">211: </a>      <font color="#4169E1">if</font> (.not. flg) then
-<a name="line212">212: </a>         <font color="#4169E1">if</font> (rank .eq. 0) then
-<a name="line213">213: </a>            write(6,*) 'Corrupted vector!'
-<a name="line214">214: </a>         endif
-<a name="line215">215: </a>         <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,' ',ierr)
-<a name="line216">216: </a>      endif
-
-<a name="line218">218: </a>!  Free work space.  All PETSc objects should be destroyed when they
-<a name="line219">219: </a>!  are no longer needed.
-
-<a name="line221">221: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x,ierr)
-<a name="line222">222: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y,ierr)
-<a name="line223">223: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(w,ierr)
-<a name="line224">224: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroyVecsF90.html#VecDestroyVecsF90">VecDestroyVecsF90</A>(z,ithree,ierr)
-<a name="line225">225: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-
-<a name="line227">227: </a>      end
-<a name="line228">228: </a>
+<a name="line215">215: </a>      end
+<a name="line216">216: </a>
 </pre>
 </body>
 

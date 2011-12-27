@@ -10,9 +10,9 @@ Gets the initial guess generator set with either <A HREF="../KSP/KSPSetFischerGu
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetFischerGuess(KSP ksp,KSPFischerGuess *guess)
+PetscErrorCode  KSPGetFischerGuess(KSP ksp,KSPFischerGuess *guess)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>ksp </B> -the Krylov context

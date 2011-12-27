@@ -1,7 +1,7 @@
 
 static char help[] = "Tests MatGetColumnVector().";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -46,8 +46,8 @@ int main(int argc,char **args)
 
   ierr = VecView(yy,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-  ierr = VecDestroy(yy);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&yy);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

@@ -2,7 +2,7 @@
       This provides a few of the MPI-uni functions that cannot be implemented
     with C macros
 */
-#include "mpiuni/mpi.h"
+#include <mpiuni/mpi.h>
 #if !defined(__MPIUNI_H)
 #error "Wrong mpi.h included! require mpi.h from MPIUNI"
 #endif
@@ -85,10 +85,11 @@ int MPI_Attr_put(MPI_Comm comm,int keyval,void *attribute_val)
 int MPI_Attr_delete(MPI_Comm comm,int keyval)
 {
   if (attr[keyval].active && attr[keyval].del) {
-    (*(attr[keyval].del))(comm,keyval,attr[keyval].attribute_val,attr[keyval].extra_state);
+    void* save_attribute_val   = attr[keyval].attribute_val;
+    attr[keyval].active        = 0;
+    attr[keyval].attribute_val = 0;
+    (*(attr[keyval].del))(comm,keyval,save_attribute_val,attr[keyval].extra_state);
   }
-  attr[keyval].active        = 0;
-  attr[keyval].attribute_val = 0;
   return MPI_SUCCESS;
 }
 
@@ -128,7 +129,19 @@ int MPI_Comm_free(MPI_Comm *comm)
   return MPI_SUCCESS;
 }
 
-int MPI_Abort(MPI_Comm comm,int errorcode) 
+int MPI_Comm_size(MPI_Comm comm, int*size)
+{
+  *size=1;
+  return MPI_SUCCESS;
+}
+
+int MPI_Comm_rank(MPI_Comm comm, int*rank)
+{
+  *rank=0;
+  return MPI_SUCCESS;
+}
+
+int MPI_Abort(MPI_Comm comm,int errorcode)
 {
   abort();
   return MPI_SUCCESS;

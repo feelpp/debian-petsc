@@ -1,6 +1,5 @@
-#define PETSCVEC_DLL
 
-#include "private/vecimpl.h"
+#include <private/vecimpl.h>
 
 #define DEFAULT_STASH_SIZE   100
 
@@ -24,7 +23,7 @@ PetscErrorCode VecStashCreate_Private(MPI_Comm comm,PetscInt bs,VecStash *stash)
 {
   PetscErrorCode ierr;
   PetscInt       max,*opt,nopt;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscFunctionBegin;
   /* Require 2 tags, get the second using PetscCommGetNewTag() */
@@ -84,7 +83,6 @@ PetscErrorCode VecStashDestroy_Private(VecStash *stash)
 
   PetscFunctionBegin;
   ierr = PetscFree2(stash->array,stash->idx);CHKERRQ(ierr);
-  stash->array = 0;
   ierr = PetscFree(stash->bowners);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -131,15 +129,10 @@ PetscErrorCode VecStashScatterEnd_Private(VecStash *stash)
   stash->array = 0;
   stash->idx   = 0;
   ierr = PetscFree(stash->send_waits);CHKERRQ(ierr);
-  stash->send_waits = 0;
   ierr = PetscFree(stash->recv_waits);CHKERRQ(ierr);
-  stash->recv_waits = 0;
   ierr = PetscFree2(stash->svalues,stash->sindices);CHKERRQ(ierr);
-  stash->svalues = 0;
   ierr = PetscFree2(stash->rvalues,stash->rindices);CHKERRQ(ierr);
-  stash->rvalues = 0;
   ierr = PetscFree(stash->nprocs);CHKERRQ(ierr);
-  stash->nprocs = 0;
   PetscFunctionReturn(0);
 }
 
@@ -360,11 +353,11 @@ PetscErrorCode VecStashScatterBegin_Private(VecStash *stash,PetscInt *owners)
 PetscErrorCode VecStashScatterGetMesg_Private(VecStash *stash,PetscMPIInt *nvals,PetscInt **rows,PetscScalar **vals,PetscInt *flg)
 {
   PetscErrorCode ierr;
-  PetscMPIInt    i;
+  PetscMPIInt    i = 0; /* dummy value so MPI-Uni doesn't think it is not set */
   PetscInt       *flg_v;
   PetscInt       i1,i2,bs=stash->bs;
   MPI_Status     recv_status;
-  PetscTruth     match_found = PETSC_FALSE;
+  PetscBool      match_found = PETSC_FALSE;
 
   PetscFunctionBegin;
 

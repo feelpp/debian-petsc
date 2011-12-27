@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /*
     Routines used for the orthogonalization of the Hessenberg matrix.
@@ -7,7 +6,7 @@
     VecMDot() arguments within the code MUST remain in the order
     given for correct computation of inner products.
 */
-#include "../src/ksp/ksp/impls/gmres/gmresimpl.h"
+#include <../src/ksp/ksp/impls/gmres/gmresimpl.h>
 
 /*@C
      KSPGMRESClassicalGramSchmidtOrthogonalization -  This is the basic orthogonalization routine 
@@ -28,19 +27,20 @@
 
    Level: intermediate
 
-.seelaso:  KSPGMRESSetOrthogonalization(), KSPGMRESClassicalGramSchmidtOrthogonalization(), KSPGMRESSetCGSRefinementType()
+.seelaso:  KSPGMRESSetOrthogonalization(), KSPGMRESClassicalGramSchmidtOrthogonalization(), KSPGMRESSetCGSRefinementType(), 
+           KSPGMRESGetCGSRefinementType(), KSPGMRESGetOrthogonalization()
 
 @*/
 #undef __FUNCT__  
 #define __FUNCT__ "KSPGMRESClassicalGramSchmidtOrthogonalization"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESClassicalGramSchmidtOrthogonalization(KSP  ksp,PetscInt it)
+PetscErrorCode  KSPGMRESClassicalGramSchmidtOrthogonalization(KSP  ksp,PetscInt it)
 {
   KSP_GMRES      *gmres = (KSP_GMRES *)(ksp->data);
   PetscErrorCode ierr;
   PetscInt       j;
   PetscScalar    *hh,*hes,*lhh;
   PetscReal      hnrm, wnrm;
-  PetscTruth     refine = (PetscTruth)(gmres->cgstype == KSP_GMRES_CGS_REFINE_ALWAYS);
+  PetscBool      refine = (PetscBool)(gmres->cgstype == KSP_GMRES_CGS_REFINE_ALWAYS);
 
   PetscFunctionBegin;
   ierr = PetscLogEventBegin(KSP_GMRESOrthogonalization,ksp,0,0,0);CHKERRQ(ierr);
@@ -88,7 +88,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESClassicalGramSchmidtOrthogonalization(
     for (j=0; j<=it; j++) {
       hnrm  +=  PetscRealPart(lhh[j] * PetscConj(lhh[j]));
     }
-    hnrm = sqrt(hnrm);
+    hnrm = PetscSqrtReal(hnrm);
     ierr = VecNorm(VEC_VV(it+1),NORM_2, &wnrm);CHKERRQ(ierr);
     if (wnrm < 1.0286 * hnrm) {
       refine = PETSC_TRUE;

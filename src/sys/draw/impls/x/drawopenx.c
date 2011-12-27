@@ -1,9 +1,9 @@
-#define PETSC_DLL
+
 /*
     Defines the operations for the X PetscDraw implementation.
 */
 
-#include "../src/sys/draw/impls/x/ximpl.h"         /*I  "petscsys.h" I*/
+#include <../src/sys/draw/impls/x/ximpl.h>         /*I  "petscsys.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawOpenX" 
@@ -57,7 +57,7 @@
 
 .seealso: PetscDrawSynchronizedFlush(), PetscDrawDestroy()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawOpenX(MPI_Comm comm,const char display[],const char title[],int x,int y,int w,int h,PetscDraw* draw)
+PetscErrorCode  PetscDrawOpenX(MPI_Comm comm,const char display[],const char title[],int x,int y,int w,int h,PetscDraw* draw)
 {
   PetscErrorCode ierr;
 

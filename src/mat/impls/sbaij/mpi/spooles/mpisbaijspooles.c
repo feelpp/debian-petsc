@@ -1,11 +1,10 @@
-#define PETSCMAT_DLL
 
 /* 
    Provides an interface to the Spooles parallel sparse solver (MPI SPOOLES)
 */
 
-#include "../src/mat/impls/aij/seq/spooles/spooles.h"
-#include "../src/mat/impls/sbaij/mpi/mpisbaij.h"
+#include <../src/mat/impls/aij/seq/spooles/spooles.h>
+#include <../src/mat/impls/sbaij/mpi/mpisbaij.h>
 
 #if !defined(PETSC_USE_COMPLEX)
 /* 
@@ -43,33 +42,32 @@ PetscErrorCode MatCholeskyFactorSymbolic_MPISBAIJSpooles(Mat B,Mat A,IS r,const 
 }
 
 extern PetscErrorCode MatDestroy_MPISBAIJ(Mat);
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "MatDestroy_MPISBAIJSpooles"
 PetscErrorCode MatDestroy_MPISBAIJSpooles(Mat A)
 {
-  Mat_Spooles   *lu = (Mat_Spooles*)A->spptr; 
+  Mat_Spooles   *lu = (Mat_Spooles*)A->spptr;
   PetscErrorCode ierr;
-  
+
   PetscFunctionBegin;
-  if (lu->CleanUpSpooles) {
-    FrontMtx_free(lu->frontmtx);        
-    IV_free(lu->newToOldIV);            
-    IV_free(lu->oldToNewIV); 
+  if (lu && lu->CleanUpSpooles) {
+    FrontMtx_free(lu->frontmtx);
+    IV_free(lu->newToOldIV);
+    IV_free(lu->oldToNewIV);
     IV_free(lu->vtxmapIV);
-    InpMtx_free(lu->mtxA);             
-    ETree_free(lu->frontETree);          
-    IVL_free(lu->symbfacIVL);         
-    SubMtxManager_free(lu->mtxmanager);    
+    InpMtx_free(lu->mtxA);
+    ETree_free(lu->frontETree);
+    IVL_free(lu->symbfacIVL);
+    SubMtxManager_free(lu->mtxmanager);
     DenseMtx_free(lu->mtxX);
     DenseMtx_free(lu->mtxY);
     ierr = MPI_Comm_free(&(lu->comm_spooles));CHKERRQ(ierr);
-    if ( lu->scat ){
-      ierr = VecDestroy(lu->vec_spooles);CHKERRQ(ierr); 
-      ierr = ISDestroy(lu->iden);CHKERRQ(ierr); 
-      ierr = ISDestroy(lu->is_petsc);CHKERRQ(ierr);
-      ierr = VecScatterDestroy(lu->scat);CHKERRQ(ierr);
-    }
+    ierr = VecDestroy(&lu->vec_spooles);CHKERRQ(ierr);
+    ierr = ISDestroy(&lu->iden);CHKERRQ(ierr);
+    ierr = ISDestroy(&lu->is_petsc);CHKERRQ(ierr);
+    ierr = VecScatterDestroy(&lu->scat);CHKERRQ(ierr);
   }
+  ierr = PetscFree(A->spptr);CHKERRQ(ierr);
   ierr = MatDestroy_MPISBAIJ(A);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -80,7 +78,7 @@ EXTERN_C_BEGIN
 PetscErrorCode MatFactorGetSolverPackage_mpisbaij_spooles(Mat A,const MatSolverPackage *type)
 {
   PetscFunctionBegin;
-  *type = MAT_SOLVER_SPOOLES;
+  *type = MATSOLVERSPOOLES;
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
@@ -114,9 +112,9 @@ PetscErrorCode MatGetFactor_mpisbaij_spooles(Mat A,MatFactorType ftype,Mat *F)
 
     lu->options.symflag      = SPOOLES_SYMMETRIC;
     lu->options.pivotingflag = SPOOLES_NO_PIVOTING; 
-  } else SETERRQ(PETSC_ERR_SUP,"Only Cholesky for SBAIJ matrices, use AIJ for LU");
+  } else SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Only Cholesky for SBAIJ matrices, use AIJ for LU");
 
-  B->factor = ftype;
+  B->factortype = ftype;
   ierr = MPI_Comm_dup(((PetscObject)A)->comm,&(lu->comm_spooles));CHKERRQ(ierr);
   *F = B;
   PetscFunctionReturn(0); 
@@ -124,10 +122,10 @@ PetscErrorCode MatGetFactor_mpisbaij_spooles(Mat A,MatFactorType ftype,Mat *F)
 EXTERN_C_END
 
 /*MC
-  MAT_SOLVER_SPOOLES - "spooles" - a matrix type providing direct solvers (LU and Cholesky) for distributed symmetric
+  MATSOLVERSPOOLES - "spooles" - a matrix type providing direct solvers (LU and Cholesky) for distributed symmetric
   and non-symmetric  matrices via the external package Spooles.
 
-  If Spooles is installed (run config/configure.py with the option --download-spooles)
+  If Spooles is installed (run ./configure with the option --download-spooles)
 
   Options Database Keys:
 + -mat_spooles_tau <tau> - upper bound on the magnitude of the largest element in L or U
@@ -147,6 +145,6 @@ EXTERN_C_END
 
    Level: beginner
 
-.seealso: MAT_SOLVER_SUPERLU, MAT_SOLVER_MUMPS, MAT_SOLVER_SUPERLU_DIST, PCFactorSetMatSolverPackage(), MatSolverPackage 
+.seealso: MATSOLVERSUPERLU, MATSOLVERMUMPS, MATSOLVERSUPERLU_DIST, PCFactorSetMatSolverPackage(), MatSolverPackage 
 M*/
 

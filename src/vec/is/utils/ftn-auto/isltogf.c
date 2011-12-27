@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* isltog.c */
 /* Fortran interface file */
 
@@ -44,6 +45,11 @@ extern void PetscRmPointer(void*);
 #define islocaltoglobalmappingblock_ islocaltoglobalmappingblock
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define islocaltoglobalmappingunblock_ ISLOCALTOGLOBALMAPPINGUNBLOCK
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define islocaltoglobalmappingunblock_ islocaltoglobalmappingunblock
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define islocaltoglobalmappingdestroy_ ISLOCALTOGLOBALMAPPINGDESTROY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define islocaltoglobalmappingdestroy_ islocaltoglobalmappingdestroy
@@ -64,28 +70,31 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   islocaltoglobalmappingcreateis_(IS is,ISLocalToGlobalMapping *mapping, int *__ierr ){
+void PETSC_STDCALL  islocaltoglobalmappingcreateis_(IS is,ISLocalToGlobalMapping *mapping, int *__ierr ){
 *__ierr = ISLocalToGlobalMappingCreateIS(
 	(IS)PetscToPointer((is) ),mapping);
 }
-void PETSC_STDCALL   islocaltoglobalmappingcreate_(MPI_Fint * cm,PetscInt *n, PetscInt indices[],ISLocalToGlobalMapping *mapping, int *__ierr ){
+void PETSC_STDCALL  islocaltoglobalmappingcreate_(MPI_Fint * cm,PetscInt *n, PetscInt indices[],PetscCopyMode *mode,ISLocalToGlobalMapping *mapping, int *__ierr ){
 *__ierr = ISLocalToGlobalMappingCreate(
-	MPI_Comm_f2c( *(cm) ),*n,indices,mapping);
+	MPI_Comm_f2c( *(cm) ),*n,indices,*mode,mapping);
 }
-void PETSC_STDCALL   islocaltoglobalmappingblock_(ISLocalToGlobalMapping inmap,PetscInt *bs,ISLocalToGlobalMapping *outmap, int *__ierr ){
+void PETSC_STDCALL  islocaltoglobalmappingblock_(ISLocalToGlobalMapping inmap,PetscInt *bs,ISLocalToGlobalMapping *outmap, int *__ierr ){
 *__ierr = ISLocalToGlobalMappingBlock(
 	(ISLocalToGlobalMapping)PetscToPointer((inmap) ),*bs,outmap);
 }
-void PETSC_STDCALL   islocaltoglobalmappingdestroy_(ISLocalToGlobalMapping mapping, int *__ierr ){
-*__ierr = ISLocalToGlobalMappingDestroy(
-	(ISLocalToGlobalMapping)PetscToPointer((mapping) ));
+void PETSC_STDCALL  islocaltoglobalmappingunblock_(ISLocalToGlobalMapping inmap,PetscInt *bs,ISLocalToGlobalMapping *outmap, int *__ierr ){
+*__ierr = ISLocalToGlobalMappingUnBlock(
+	(ISLocalToGlobalMapping)PetscToPointer((inmap) ),*bs,outmap);
 }
-void PETSC_STDCALL   islocaltoglobalmappingapplyis_(ISLocalToGlobalMapping mapping,IS is,IS *newis, int *__ierr ){
+void PETSC_STDCALL  islocaltoglobalmappingdestroy_(ISLocalToGlobalMapping *mapping, int *__ierr ){
+*__ierr = ISLocalToGlobalMappingDestroy(mapping);
+}
+void PETSC_STDCALL  islocaltoglobalmappingapplyis_(ISLocalToGlobalMapping mapping,IS is,IS *newis, int *__ierr ){
 *__ierr = ISLocalToGlobalMappingApplyIS(
 	(ISLocalToGlobalMapping)PetscToPointer((mapping) ),
 	(IS)PetscToPointer((is) ),newis);
 }
-void PETSC_STDCALL   isglobaltolocalmappingapply_(ISLocalToGlobalMapping mapping,ISGlobalToLocalMappingType *type,
+void PETSC_STDCALL  isglobaltolocalmappingapply_(ISLocalToGlobalMapping mapping,ISGlobalToLocalMappingType *type,
                                   PetscInt *n, PetscInt idx[],PetscInt *nout,PetscInt idxout[], int *__ierr ){
 *__ierr = ISGlobalToLocalMappingApply(
 	(ISLocalToGlobalMapping)PetscToPointer((mapping) ),*type,*n,idx,nout,idxout);

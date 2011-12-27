@@ -1,13 +1,12 @@
-#define PETSCKSP_DLL
 
 /*
        cgimpl.h defines the simple data structured used to store information
     related to the type of matrix (e.g. complex symmetric) being solved and
     data used during the optional Lanczo process used to compute eigenvalues
 */
-#include "../src/ksp/ksp/impls/cg/cgimpl.h"       /*I "petscksp.h" I*/
-EXTERN PetscErrorCode KSPComputeExtremeSingularValues_CG(KSP,PetscReal *,PetscReal *);
-EXTERN PetscErrorCode KSPComputeEigenvalues_CG(KSP,PetscInt,PetscReal *,PetscReal *,PetscInt *);
+#include <../src/ksp/ksp/impls/cg/cgimpl.h>       /*I "petscksp.h" I*/
+extern PetscErrorCode KSPComputeExtremeSingularValues_CG(KSP,PetscReal *,PetscReal *);
+extern PetscErrorCode KSPComputeEigenvalues_CG(KSP,PetscInt,PetscReal *,PetscReal *,PetscInt *);
 
 
 /*
@@ -24,16 +23,6 @@ PetscErrorCode KSPSetUp_CGNE(KSP ksp)
   PetscInt       maxit = ksp->max_it;
 
   PetscFunctionBegin;
-  /* 
-       This implementation of CGNE only handles left preconditioning
-     so generate an error otherwise.
-  */
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP,"No right preconditioning for KSPCGNE");
-  } else if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"No symmetric preconditioning for KSPCGNE");
-  }
-
   /* get work vectors needed by CGNE */
   ierr = KSPDefaultGetWork(ksp,4);CHKERRQ(ierr);
 
@@ -73,11 +62,11 @@ PetscErrorCode  KSPSolve_CGNE(KSP ksp)
   KSP_CG         *cg;
   Mat            Amat,Pmat;
   MatStructure   pflag;
-  PetscTruth     diagonalscale,transpose_pc;
+  PetscBool      diagonalscale,transpose_pc;
 
   PetscFunctionBegin;
-  ierr    = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
+  ierr    = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
   ierr = PCApplyTransposeExists(ksp->pc,&transpose_pc);CHKERRQ(ierr);
 
   cg            = (KSP_CG*)ksp->data;
@@ -121,10 +110,10 @@ PetscErrorCode  KSPSolve_CGNE(KSP ksp)
     ierr = VecNorm(R,NORM_2,&dp);CHKERRQ(ierr); /*    dp <- r'*r       */
   } else if (ksp->normtype == KSP_NORM_NATURAL) {
     ierr = VecXDot(Z,R,&beta);CHKERRQ(ierr);
-    dp = sqrt(PetscAbsScalar(beta));
+    dp = PetscSqrtReal(PetscAbsScalar(beta));
   } else dp = 0.0;
   KSPLogResidualHistory(ksp,dp);
-  KSPMonitor(ksp,0,dp);                              /* call any registered monitor routines */
+  ierr = KSPMonitor(ksp,0,dp);CHKERRQ(ierr);
   ksp->rnorm = dp;
   ierr = (*ksp->converged)(ksp,0,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);      /* test for convergence */
   if (ksp->reason) PetscFunctionReturn(0);
@@ -151,9 +140,9 @@ PetscErrorCode  KSPSolve_CGNE(KSP ksp)
        b = beta/betaold;
        if (eigs) {
 	 if (ksp->max_it != stored_max_it) {
-	   SETERRQ(PETSC_ERR_SUP,"Can not change maxit AND calculate eigenvalues");
+	   SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Can not change maxit AND calculate eigenvalues");
 	 }
-	 e[i] = sqrt(PetscAbsScalar(b))/a;  
+	 e[i] = PetscSqrtReal(PetscAbsScalar(b))/a;  
        }
        ierr = VecAYPX(P,b,Z);CHKERRQ(ierr);    /*     p <- z + b* p   */
      }
@@ -163,7 +152,7 @@ PetscErrorCode  KSPSolve_CGNE(KSP ksp)
      ierr = VecXDot(P,Z,&dpi);CHKERRQ(ierr);      /*     dpi <- z'p      */
      a = beta/dpi;                                 /*     a = beta/p'z    */
      if (eigs) {
-       d[i] = sqrt(PetscAbsScalar(b))*e[i] + 1.0/a;
+       d[i] = PetscSqrtReal(PetscAbsScalar(b))*e[i] + 1.0/a;
      }
      ierr = VecAXPY(X,a,P);CHKERRQ(ierr);          /*     x <- x + ap     */
      ierr = VecAXPY(R,-a,Z);CHKERRQ(ierr);                      /*     r <- r - az     */
@@ -178,13 +167,13 @@ PetscErrorCode  KSPSolve_CGNE(KSP ksp)
      } else if (ksp->normtype == KSP_NORM_UNPRECONDITIONED) {
        ierr = VecNorm(R,NORM_2,&dp);CHKERRQ(ierr);
      } else if (ksp->normtype == KSP_NORM_NATURAL) {
-       dp = sqrt(PetscAbsScalar(beta));
+       dp = PetscSqrtReal(PetscAbsScalar(beta));
      } else {
        dp = 0.0;
      }
      ksp->rnorm = dp;
      KSPLogResidualHistory(ksp,dp);
-     KSPMonitor(ksp,i+1,dp);
+     ierr = KSPMonitor(ksp,i+1,dp);CHKERRQ(ierr);
      ierr = (*ksp->converged)(ksp,i+1,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
      if (ksp->reason) break;
      if (ksp->normtype != KSP_NORM_PRECONDITIONED) {
@@ -229,6 +218,8 @@ PetscErrorCode  KSPSolve_CGNE(KSP ksp)
    as well as the operator and preconditioner. If the transpose of the preconditioner is not available then
    the preconditioner is used in its place so one ends up preconditioning A'A with B B. Seems odd?
 
+   This only supports left preconditioning.
+
    Developer Notes: How is this related to the preconditioned LSQR implementation?
 
    This object is subclassed off of KSPCG
@@ -239,16 +230,17 @@ PetscErrorCode  KSPSolve_CGNE(KSP ksp)
 M*/
 
 extern PetscErrorCode KSPDestroy_CG(KSP);
+extern PetscErrorCode KSPReset_CG(KSP);
 extern PetscErrorCode KSPView_CG(KSP,PetscViewer);
 extern PetscErrorCode KSPSetFromOptions_CG(KSP);
 EXTERN_C_BEGIN
-extern PetscErrorCode PETSCKSP_DLLEXPORT KSPCGSetType_CG(KSP,KSPCGType);
+extern PetscErrorCode  KSPCGSetType_CG(KSP,KSPCGType);
 EXTERN_C_END
 
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_CGNE"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CGNE(KSP ksp)
+PetscErrorCode  KSPCreate_CGNE(KSP ksp)
 {
   PetscErrorCode ierr;
   KSP_CG         *cg;
@@ -261,7 +253,9 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CGNE(KSP ksp)
   cg->type                       = KSP_CG_HERMITIAN;
 #endif
   ksp->data                      = (void*)cg;
-  ksp->pc_side                   = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_LEFT,1);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_NATURAL,PC_LEFT,1);CHKERRQ(ierr);
 
   /*
        Sets the functions that are associated with this data structure 

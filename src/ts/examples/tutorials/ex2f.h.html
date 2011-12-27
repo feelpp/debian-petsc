@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:48:06+00:00">
+<meta name="date" content="2011-10-29T19:21:26+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -24,21 +24,21 @@
 <a name="line14"> 14: </a>!     petscviewer.h - viewers
 <a name="line15"> 15: </a>!     petscdraw.h   - drawing
 <a name="line16"> 16: </a>!  In addition, we need the following <font color="#4169E1">for</font> use of distributed arrays
-<a name="line17"> 17: </a>!     petscda.h     - distributed arrays (DAs)
+<a name="line17"> 17: </a>!     petscdmda.h     - distributed arrays (DMDAs)
 <a name="line18"> 18: </a>!  Other include statements may be needed <font color="#4169E1">if</font> using additional PETSc
 <a name="line19"> 19: </a>!  routines in a Fortran program, e.g.,
 <a name="line20"> 20: </a>!     petscis.h     - index sets
 
-<a name="line22"> 22: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line23"> 23: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line24"> 24: </a> #include <A href="../../../../include/finclude/petscda.h.html">finclude/petscda.h</A>
-<a name="line25"> 25: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line26"> 26: </a> #include <A href="../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
-<a name="line27"> 27: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line28"> 28: </a> #include <A href="../../../../include/finclude/petscsnes.h.html">finclude/petscsnes.h</A>
-<a name="line29"> 29: </a> #include <A href="../../../../include/finclude/petscts.h.html">finclude/petscts.h</A>
-<a name="line30"> 30: </a> #include <A href="../../../../include/finclude/petscviewer.h.html">finclude/petscviewer.h</A>
-<a name="line31"> 31: </a> #include <A href="../../../../include/finclude/petscdraw.h.html">finclude/petscdraw.h</A>
+<a name="line22"> 22: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line23"> 23: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line24"> 24: </a><font color="#A020F0">#include &lt;finclude/petscdmda.h&gt;</font>
+<a name="line25"> 25: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line26"> 26: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
+<a name="line27"> 27: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line28"> 28: </a><font color="#A020F0">#include &lt;finclude/petscsnes.h&gt;</font>
+<a name="line29"> 29: </a><font color="#A020F0">#include &lt;finclude/petscts.h&gt;</font>
+<a name="line30"> 30: </a><font color="#A020F0">#include &lt;finclude/petscviewer.h&gt;</font>
+<a name="line31"> 31: </a><font color="#A020F0">#include &lt;finclude/petscdraw.h&gt;</font>
 
 <a name="line33"> 33: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 <a name="line34"> 34: </a>!
@@ -61,11 +61,11 @@
 <a name="line51"> 51: </a>!
 <a name="line52"> 52: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 <a name="line53"> 53: </a>!  Common block data:
-<a name="line54"> 54: </a>      <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>    da
+<a name="line54"> 54: </a>      DM    da
 <a name="line55"> 55: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>   localwork,solution
 <a name="line56"> 56: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>   u_local
 <a name="line57"> 57: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   M
-<a name="line58"> 58: </a>      <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> debug
+<a name="line58"> 58: </a>      <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  debug
 <a name="line59"> 59: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> size,rank
 <a name="line60"> 60: </a>      <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>  zero_d0,one_d0
 <a name="line61"> 61: </a>      <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>  two_d0,four_d0

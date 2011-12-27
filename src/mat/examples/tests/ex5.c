@@ -2,7 +2,7 @@
 static char help[] = "Tests MatMult(), MatMultAdd(), MatMultTranspose().\n\
 Also MatMultTransposeAdd(), MatScale(), MatGetDiagonal(), and MatDiagonalScale().\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -14,7 +14,7 @@ int main(int argc,char **args)
   PetscInt       i,j,m = 8,n,rstart,rend,vstart,vend;
   PetscScalar    one = 1.0,negone = -1.0,v,alpha=0.1;
   PetscReal      norm;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = PetscViewerSetFormat(PETSC_VIEWER_STDOUT_WORLD,PETSC_VIEWER_ASCII_COMMON);CHKERRQ(ierr);
@@ -139,11 +139,11 @@ int main(int argc,char **args)
     ierr = MatView(C,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); 
   }
   /* Free data structures */
-  ierr = VecDestroy(u);CHKERRQ(ierr); ierr = VecDestroy(s);CHKERRQ(ierr); 
-  ierr = VecDestroy(w);CHKERRQ(ierr); ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr); ierr = VecDestroy(z);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr); ierr = VecDestroy(&s);CHKERRQ(ierr); 
+  ierr = VecDestroy(&w);CHKERRQ(ierr); ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr); ierr = VecDestroy(&z);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

@@ -1,0 +1,104 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>snesdvi_monitor</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="snesdvi_monitor.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Monitor function for exSNES_DVI</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> err = snesdvi_monitor(snes,it,fnorm,x,user)
+</pre><h2>Monitor function for exSNES_DVI<a name="2"></a></h2><pre class="codeinput">err = 0;
+<span class="comment">% Plot function norm</span>
+figure(1),plot(it,fnorm,<span class="string">'x'</span>,<span class="string">'linewidth'</span>,2);
+hold <span class="string">on</span>
+h = gca;
+set(h,<span class="string">'FontSize'</span>,12,<span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+xlabel(<span class="string">'SNES Iteration number'</span>);
+ylabel(<span class="string">'|| f ||_2'</span>);
+
+<span class="comment">% Create surface area plot of solution</span>
+figure(2),
+x_sol = reshape(x(:),user.mx,user.my);
+surf(user.ledge+user.hx:user.hx:user.redge-user.hx,user.bedge+user.hy:user.hy:user.tedge-user.hy,x_sol');
+
+pause(.1);
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+function err = snesdvi_monitor(snes,it,fnorm,x,user)
+%% Monitor function for exSNES_DVI
+%
+err = 0;
+% Plot function norm
+figure(1),plot(it,fnorm,'x','linewidth',2);
+hold on
+h = gca;
+set(h,'FontSize',12,'FontWeight','bold');
+xlabel('SNES Iteration number');
+ylabel('|| f ||_2');
+
+% Create surface area plot of solution
+figure(2),
+x_sol = reshape(x(:),user.mx,user.my);
+surf(user.ledge+user.hx:user.hx:user.redge-user.hx,user.bedge+user.hy:user.hy:user.tedge-user.hy,x_sol');
+
+pause(.1);
+
+##### SOURCE END #####
+--></body></html>

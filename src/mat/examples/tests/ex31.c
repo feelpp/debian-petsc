@@ -1,7 +1,7 @@
 
 static char help[] = "Tests binary I/O of matrices and illustrates user-defined event logging.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 /* Note:  Most applications would not read and write the same matrix within
   the same program.  This example is intended only to demonstrate
@@ -53,8 +53,8 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"writing matrix in binary to matrix.dat ...\n");CHKERRQ(ierr);
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"matrix.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
   ierr = MatView(C,viewer);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(MATRIX_GENERATE,0,0,0,0);CHKERRQ(ierr);
 
   /* PART 2:  Read in matrix in binary format */
@@ -66,15 +66,16 @@ int main(int argc,char **args)
   ierr = PetscLogEventBegin(MATRIX_READ,0,0,0,0);CHKERRQ(ierr);
   ierr = PetscPrintf(PETSC_COMM_WORLD,"reading matrix in binary from matrix.dat ...\n");CHKERRQ(ierr);
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"matrix.dat",FILE_MODE_READ,&viewer);CHKERRQ(ierr);
-  ierr = MatLoad(viewer,MATAIJ,&C);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&C);CHKERRQ(ierr);
+  ierr = MatLoad(C,viewer);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(MATRIX_READ,0,0,0,0);CHKERRQ(ierr);
   ierr = MatView(C,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
   /* Free data structures */
-  ierr = MatDestroy(C);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

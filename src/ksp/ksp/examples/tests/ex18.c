@@ -6,8 +6,8 @@ Input arguments are:\n\
   -f <input_file> : file to load.  For a 5X5 example of the 5-pt. stencil,\n\
                     use the file petsc/src/mat/examples/matbinary.ex\n\n";
 
-#include "petscmat.h"
-#include "petscksp.h"
+#include <petscmat.h>
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -27,11 +27,14 @@ int main(int argc,char **args)
   PetscInitialize(&argc,&args,(char *)0,help);
 
   /* Read matrix and RHS */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file,FILE_MODE_READ,&fd);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATSEQAIJ,&A);CHKERRQ(ierr);
-  ierr = VecLoad(fd,PETSC_NULL,&b);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATSEQAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&b);CHKERRQ(ierr);
+  ierr = VecLoad(b,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
   /* 
      If the load matrix is larger then the vector, due to being padded 
@@ -49,7 +52,7 @@ int main(int argc,char **args)
     ierr = VecGetArray(tmp,&bnew);CHKERRQ(ierr);
     ierr = VecGetArray(b,&bold);CHKERRQ(ierr);
     ierr = PetscMemcpy(bnew,bold,mvec*sizeof(PetscScalar));CHKERRQ(ierr);
-    ierr = VecDestroy(b);CHKERRQ(ierr);
+    ierr = VecDestroy(&b);CHKERRQ(ierr);
     b = tmp;
   }
 
@@ -80,13 +83,13 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Time for solve = %5.2f seconds\n",time);CHKERRQ(ierr);
 
   /* Cleanup */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

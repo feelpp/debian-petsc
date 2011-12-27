@@ -6,13 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="TSPseudoSetTimeStepIncrement"><H1>TSPseudoSetTimeStepIncrement</H1></A>
-Sets the scaling increment applied to  dt when using the <A HREF="../TS/TSPseudoDefaultTimeStep.html#TSPseudoDefaultTimeStep">TSPseudoDefaultTimeStep</A>() routine. 
+Sets the scaling increment applied to dt when using the <A HREF="../TS/TSPseudoDefaultTimeStep.html#TSPseudoDefaultTimeStep">TSPseudoDefaultTimeStep</A>() routine. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode PETSCTS_DLLEXPORT TSPseudoSetTimeStepIncrement(TS ts,PetscReal inc)
+PetscErrorCode  TSPseudoSetTimeStepIncrement(TS ts,PetscReal inc)
 </PRE>
-Collective on <A HREF="../TS/TS.html#TS">TS</A>
+Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

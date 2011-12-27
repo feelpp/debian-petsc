@@ -1,7 +1,7 @@
 
 static char help[] = "Tests sequential and parallel MatGetRow() and MatRestoreRow().\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -53,7 +53,7 @@ int main(int argc,char **args)
     ierr = MatRestoreRow(C,i,&nz,&idx,&values);CHKERRQ(ierr);
   }
 
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

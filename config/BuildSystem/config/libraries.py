@@ -43,13 +43,13 @@ class Configure(config.base.Configure):
     if library.lstrip()[0] == '-':
       return [library]
     if len(library) > 3 and library[-4:] == '.lib':
-      return [library.replace('\\ ',' ').replace(' ', '\\ ')]
+      return [library.replace('\\ ',' ').replace(' ', '\\ ').replace('\\(','(').replace('(', '\\(').replace('\\)',')').replace(')', '\\)')]
     if os.path.basename(library).startswith('lib'):
       name = self.getLibName(library)
       if ((len(library) > 2 and library[1] == ':') or os.path.isabs(library)):
         flagName  = self.language[-1]+'SharedLinkerFlag'
         flagSubst = self.language[-1].upper()+'_LINKER_SLFLAG'
-        dirname   = os.path.dirname(library).replace('\\ ',' ').replace(' ', '\\ ')
+        dirname   = os.path.dirname(library).replace('\\ ',' ').replace(' ', '\\ ').replace('\\(','(').replace('(', '\\(').replace('\\)',')').replace(')', '\\)')
         if hasattr(self.setCompilers, flagName) and not getattr(self.setCompilers, flagName) is None:
           return [getattr(self.setCompilers, flagName)+dirname,'-L'+dirname,'-l'+name]
         if flagSubst in self.framework.argDB:
@@ -106,7 +106,7 @@ class Configure(config.base.Configure):
     removedashl = 0
     for j in libs:
       # do not remove duplicate -l, because there is a tiny chance that order may matter
-      if j in newlibs and not j.startswith('-l'): continue
+      if j in newlibs and not ( j.startswith('-l') or j == '-framework') : continue
       # handle special case of -framework frameworkname
       if j == '-framework': removedashl = 1
       elif removedashl:
@@ -136,11 +136,11 @@ class Configure(config.base.Configure):
        - libName may be a list of library names'''
     if not isinstance(funcs,list): funcs = [funcs]
     if not isinstance(libName, list): libName = [libName]
-    self.framework.logPrint('Checking for functions '+str(funcs)+' in library '+str(libName)+' '+str(otherLibs))
     for f, funcName in enumerate(funcs):
       # Handle Fortran mangling
       if fortranMangle:
         funcName = self.compilers.mangleFortranFunction(funcName)
+      self.framework.logPrint('Checking for function '+str(funcName)+' in library '+str(libName)+' '+str(otherLibs))
       if self.language[-1] == 'FC':
         includes = ''
       else:
@@ -210,7 +210,7 @@ extern "C" {
     self.math = None
     funcs = ['sin', 'floor', 'log10', 'pow']
     prototypes = ['double sin(double);', 'double floor(double);', 'double log10(double);', 'double pow(double, double);']
-    calls = ['double x = 0; sin(x);\n', 'double x = 0; floor(x);\n', 'double x = 0; log10(x);\n', 'double x = 0,y ; y = pow(x, x);\n']
+    calls = ['double x = 0,y; y = sin(x);\n', 'double x = 0,y; y = floor(x);\n', 'double x = 0,y; y = log10(x);\n', 'double x = 0,y ; y = pow(x, x);\n']
     if self.check('', funcs, prototype = prototypes, call = calls):
       self.logPrint('Math functions are linked in by default')
       self.math = []
@@ -223,16 +223,32 @@ extern "C" {
 
   def checkMathErf(self):
     '''Check for erf() in libm, the math library'''
-    if not self.math is None and self.check(self.math, ['erf'], prototype = ['double erf(double);'], call = ['double x; erf(x);\n']):
+    if not self.math is None and self.check(self.math, ['erf'], prototype = ['double erf(double);'], call = ['double x = 0,y; y = erf(x);\n']):
       self.logPrint('erf() found')
       self.addDefine('HAVE_ERF', 1)
     else:
       self.logPrint('Warning: erf() not found')
     return
 
+  def checkRealtime(self):
+    '''Check for presence of clock_gettime() in realtime library (POSIX Realtime extensions)'''
+    self.rt = None
+    funcs = ['clock_gettime']
+    prototypes = ['#include <time.h>']
+    calls = ['struct timespec tp; clock_gettime(CLOCK_REALTIME,&tp);']
+    if self.check('', funcs, prototype=prototypes, call=calls):
+      self.logPrint('realtime functions are linked in by default')
+      self.rt = []
+    elif self.check('rt', funcs, prototype=prototypes, call=calls):
+      self.logPrint('Using librt for the realtime library')
+      self.rt = ['librt.a']
+    else:
+      self.logPrint('Warning: No realtime library found')
+    return
+
   def checkDynamic(self):
     '''Check for the header and libraries necessary for dynamic library manipulation'''
-    if 'with-dynamic' in self.framework.argDB and not self.framework.argDB['with-dynamic']: return
+    if 'with-dynamic-loading' in self.framework.argDB and not self.framework.argDB['with-dynamic-loading']: return
     self.check(['dl'], 'dlopen')
     self.headers.check('dlfcn.h')
     return
@@ -258,6 +274,7 @@ extern "C" {
     self.setCompilers.LIBS = ' '+self.toString(libraries)+' '+self.setCompilers.LIBS
 
     # Make a library which calls initFunction(), and returns checkFunction()
+    lib1Name = os.path.join(self.tmpDir, 'lib1.'+self.setCompilers.sharedLibraryExt)
     if noCheckArg:
       checkCode = 'isInitialized = '+checkFunction+'();'
     else:
@@ -281,9 +298,10 @@ int init(int argc,  char *argv[]) {
       self.setCompilers.LIBS = oldFlags
       raise RuntimeError('Could not complete shared library check')
     if os.path.isfile(configObj.compilerObj): os.remove(configObj.compilerObj)
-    os.rename(configObj.linkerObj, 'lib1.so')
+    os.rename(configObj.linkerObj, lib1Name)
 
     # Make a library which calls checkFunction()
+    lib2Name = os.path.join(self.tmpDir, 'lib2.'+self.setCompilers.sharedLibraryExt)
     codeBegin = '''
 #ifdef __cplusplus
 extern "C"
@@ -305,7 +323,7 @@ int checkInit(void) {
       raise RuntimeError('Could not complete shared library check')
       return 0
     if os.path.isfile(configObj.compilerObj): os.remove(configObj.compilerObj)
-    os.rename(configObj.linkerObj, 'lib2.so')
+    os.rename(configObj.linkerObj, lib2Name)
 
     self.setCompilers.LIBS = oldFlags
 
@@ -328,7 +346,7 @@ int checkInit(void) {
   int (*init)(int, char **);
   int (*checkInit)(void);
 
-  lib = dlopen("./lib1.so", RTLD_LAZY);
+  lib = dlopen("'''+lib1Name+'''", RTLD_LAZY);
   if (!lib) {
     fprintf(stderr, "Could not open lib1.so: %s\\n", dlerror());
     exit(1);
@@ -342,7 +360,7 @@ int checkInit(void) {
     fprintf(stderr, "Could not initialize library\\n");
     exit(1);
   }
-  lib = dlopen("./lib2.so", RTLD_LAZY);
+  lib = dlopen("'''+lib2Name+'''", RTLD_LAZY);
   if (!lib) {
     fprintf(stderr, "Could not open lib2.so: %s\\n", dlerror());
     exit(1);
@@ -363,8 +381,8 @@ int checkInit(void) {
     if self.checkRun(defaultIncludes, body, defaultArg = defaultArg, executor = executor):
       isShared = 1
     self.setCompilers.LIBS = oldLibs
-    if os.path.isfile('lib1.so') and self.framework.doCleanup: os.remove('lib1.so')
-    if os.path.isfile('lib2.so') and self.framework.doCleanup: os.remove('lib2.so')
+    if os.path.isfile(lib1Name) and self.framework.doCleanup: os.remove(lib1Name)
+    if os.path.isfile(lib2Name) and self.framework.doCleanup: os.remove(lib2Name)
     if isShared:
       self.framework.logPrint('Library was shared')
     else:
@@ -375,5 +393,6 @@ int checkInit(void) {
     map(lambda args: self.executeTest(self.check, list(args)), self.libraries)
     self.executeTest(self.checkMath)
     self.executeTest(self.checkMathErf)
+    self.executeTest(self.checkRealtime)
     self.executeTest(self.checkDynamic)
     return

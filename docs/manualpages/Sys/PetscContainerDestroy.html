@@ -10,7 +10,7 @@ Destroys a PETSc container object.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"    
-PetscErrorCode PETSC_DLLEXPORT PetscContainerDestroy(PetscContainer obj)
+PetscErrorCode  PetscContainerDestroy(PetscContainer *obj)
 </PRE>
 Collective on <A HREF="../Sys/PetscContainer.html#PetscContainer">PetscContainer</A>
 <P>
@@ -21,7 +21,7 @@ Collective on <A HREF="../Sys/PetscContainer.html#PetscContainer">PetscContainer
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscContainerCreate.html#PetscContainerCreate">PetscContainerCreate</A>()
+ <A HREF="../Sys/PetscContainerCreate.html#PetscContainerCreate">PetscContainerCreate</A>(), <A HREF="../Sys/PetscContainerSetUserDestroy.html#PetscContainerSetUserDestroy">PetscContainerSetUserDestroy</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/objects/inherit.c.html#PetscContainerDestroy">src/sys/objects/inherit.c</A>
 <BR><A HREF="./index.html">Index of all Sys routines</A>

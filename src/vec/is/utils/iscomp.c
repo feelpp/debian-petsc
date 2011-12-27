@@ -1,6 +1,5 @@
-#define PETSCVEC_DLL
 
-#include "petscis.h"    /*I "petscis.h"  I*/
+#include <petscis.h>    /*I "petscis.h"  I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISEqual"
@@ -34,18 +33,18 @@ $    is2 = {2, 3} {0, 1}
     Concepts: IS^equal
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISEqual(IS is1,IS is2,PetscTruth *flg)
+PetscErrorCode  ISEqual(IS is1,IS is2,PetscBool  *flg)
 {
   PetscInt       sz1,sz2,*a1,*a2;
   const PetscInt *ptr1,*ptr2;
-  PetscTruth     flag;
+  PetscBool      flag;
   MPI_Comm       comm;
   PetscErrorCode ierr;
   PetscMPIInt    mflg;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is1,IS_COOKIE,1);
-  PetscValidHeaderSpecific(is2,IS_COOKIE,2);
+  PetscValidHeaderSpecific(is1,IS_CLASSID,1);
+  PetscValidHeaderSpecific(is2,IS_CLASSID,2);
   PetscValidIntPointer(flg,3);
 
   if (is1 == is2) {

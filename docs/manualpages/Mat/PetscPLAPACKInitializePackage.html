@@ -10,7 +10,7 @@ This function initializes everything in the Petsc interface to PLAPACK. It is ca
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"  
-PetscErrorCode PETSC_DLLEXPORT PetscPLAPACKInitializePackage(MPI_Comm comm) 
+PetscErrorCode  PetscPLAPACKInitializePackage(MPI_Comm comm)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>comm </B> -the communicator the matrix lives on
@@ -27,7 +27,7 @@ cannot overlap.
  Petsc, initialize, package, PLAPACK
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Viewer/PetscInitializePackage.html#PetscInitializePackage">PetscInitializePackage</A>(), <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>()
+ <A HREF="../Viewer/PetscSysInitializePackage.html#PetscSysInitializePackage">PetscSysInitializePackage</A>(), <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/dense/mpi/mpidense.c.html#PetscPLAPACKInitializePackage">src/mat/impls/dense/mpi/mpidense.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

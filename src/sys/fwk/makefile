@@ -1,11 +1,9 @@
-#requirespackage  'PETSC_HAVE_BOOST'
-#requireslanguage CXXONLY
 ALL: lib
 
 SOURCEH  = ../../../include/petscfwk.h 
-DIRS     = interface examples
+DIRS     = interface #examples
 LOCDIR   = src/sys/fwk/
-MANSEC   = fwk
+MANSEC   = Sys
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

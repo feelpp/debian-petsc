@@ -10,7 +10,7 @@ Computes the Jacobian using finite differences.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultComputeJacobian(SNES snes,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
+PetscErrorCode  SNESDefaultComputeJacobian(SNES snes,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -65,4 +65,8 @@ An alternative routine that uses coloring to exploit matrix sparsity is
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex45.c.html">src/snes/examples/tutorials/ex45.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex4.c.html">src/ts/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
 </BODY></HTML>

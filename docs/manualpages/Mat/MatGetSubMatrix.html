@@ -49,7 +49,7 @@ If iscol is <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> then all 
 <P>
 <H3><FONT COLOR="#CC3333">Example usage</FONT></H3>
 Consider the following 8x8 matrix with 34 non-zero values, that is
-assembled across 3 processors. Lets assume that proc0 owns 3 rows,
+assembled across 3 processors. Let's assume that proc0 owns 3 rows,
 proc1 owns 3 rows, proc2 owns 2 rows. This division can be shown
 <H3><FONT COLOR="#CC3333">as follows</FONT></H3>
 <P>
@@ -67,7 +67,7 @@ proc1 owns 3 rows, proc2 owns 2 rows. This division can be shown
 </PRE>
 
 <P>
-Suppose isrow = [0 1 | 4 | 5 6] and iscol = [1 2 | 3 4 5 | 6].  The resulting submatrix is
+Suppose isrow = [0 1 | 4 | 6 7] and iscol = [1 2 | 3 4 5 | 6].  The resulting submatrix is
 <P>
 <PRE>
             2  0  |  0  3  0  |  0
@@ -89,4 +89,8 @@ Suppose isrow = [0 1 | 4 | 5 6] and iscol = [1 2 | 3 4 5 | 6].  The resulting su
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex54.c.html">src/snes/examples/tutorials/ex54.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex23.c.html">src/ts/examples/tutorials/ex23.c.html</A><BR>
 </BODY></HTML>

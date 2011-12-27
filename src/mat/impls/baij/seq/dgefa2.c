@@ -1,4 +1,3 @@
-#define PETSCMAT_DLL
 
 /*
      Inverts 2 by 2 matrix using partial pivoting.
@@ -11,7 +10,7 @@
     dgefa() and dgedi() specialized for a size of 2.
 
 */
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "Kernel_A_gets_inverse_A_2"
@@ -25,6 +24,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_2(MatScalar *a,PetscReal shift)
 /*     gaussian elimination with partial pivoting */
 
     PetscFunctionBegin;
+    shift = .25*shift*(1.e-12 + PetscAbsScalar(a[0]) + PetscAbsScalar(a[3]));
     /* Parameter adjustments */
     a       -= 3;
 
@@ -46,8 +46,12 @@ PetscErrorCode Kernel_A_gets_inverse_A_2(MatScalar *a,PetscReal shift)
         l       += k - 1;
 	ipvt[k-1] = l;
 
-	if (a[l + k3] == 0.0) {
-	  SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
+	if (a[l + k3] == 0.0) { 
+	  if (shift == 0.0) {
+	    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
+	  } else {
+	    a[l + k3] = shift;
+	  }
 	}
 
 /*           interchange if necessary */
@@ -86,9 +90,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_2(MatScalar *a,PetscReal shift)
 	}
     /*}*/
     ipvt[1] = 2;
-    if (a[6] == 0.0) {
-      SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",1);
-    }
+    if (a[6] == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",1);
 
     /*
          Now form the inverse 
@@ -180,9 +182,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_9(MatScalar *a,PetscReal shift)
         l       += k - 1;
 	ipvt[k-1] = l;
 
-	if (a[l + k3] == 0.0) {
-	  SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
-	}
+	if (a[l + k3] == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
 
 /*           interchange if necessary */
 
@@ -220,9 +220,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_9(MatScalar *a,PetscReal shift)
 	}
     }
     ipvt[8] = 9;
-    if (a[90] == 0.0) {
-      SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",6);
-    }
+    if (a[90] == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",6);
 
     /*
          Now form the inverse 
@@ -305,7 +303,6 @@ PetscErrorCode Kernel_A_gets_inverse_A_9(MatScalar *a,PetscReal shift)
     dgefa() and dgedi() specialized for a size of 15.
 
 */
-#include "petsc.h"
 
 #undef __FUNCT__  
 #define __FUNCT__ "Kernel_A_gets_inverse_A_15"
@@ -339,9 +336,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_15(MatScalar *a,PetscInt *ipvt,MatScalar 
         l       += k - 1;
 	ipvt[k-1] = l;
 
-	if (a[l + k3] == 0.0) {
-	  SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
-	}
+	if (a[l + k3] == 0.0)  SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
 
 /*           interchange if necessary */
 
@@ -379,9 +374,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_15(MatScalar *a,PetscInt *ipvt,MatScalar 
 	}
     }
     ipvt[14] = 15;
-    if (a[240] == 0.0) {
-      SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",6);
-    }
+    if (a[240] == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",6);
 
     /*
          Now form the inverse 

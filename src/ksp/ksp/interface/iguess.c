@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"
+#include <private/kspimpl.h>
 
 /* ---------------------------------------Method 1------------------------------------------------------------*/
 typedef struct {
@@ -8,7 +7,7 @@ typedef struct {
                 curl,     /* Current number of basis vectors */
                 maxl,     /* Maximum number of basis vectors */
                 refcnt;
-    PetscTruth  monitor;
+    PetscBool   monitor;
     Mat         mat;
     KSP         ksp;
     PetscScalar *alpha;   /* */
@@ -20,13 +19,13 @@ typedef struct {
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessCreate_Method1" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessCreate_Method1(KSP ksp,int  maxl,KSPFischerGuess_Method1 **ITG)
+PetscErrorCode  KSPFischerGuessCreate_Method1(KSP ksp,int  maxl,KSPFischerGuess_Method1 **ITG)
 {
   KSPFischerGuess_Method1 *itg;
   PetscErrorCode          ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   ierr = PetscMalloc(sizeof(KSPFischerGuess_Method1),&itg);CHKERRQ(ierr);
   ierr = PetscMalloc(maxl * sizeof(PetscScalar),&itg->alpha);CHKERRQ(ierr);
   ierr = PetscLogObjectMemory(ksp,sizeof(KSPFischerGuess_Method1) + maxl*sizeof(PetscScalar));CHKERRQ(ierr);
@@ -43,15 +42,15 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessCreate_Method1(KSP ksp,int  max
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessDestroy_Method1" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessDestroy_Method1(KSPFischerGuess_Method1 *itg)
+PetscErrorCode  KSPFischerGuessDestroy_Method1(KSPFischerGuess_Method1 *itg)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   ierr = PetscFree(itg->alpha);CHKERRQ(ierr);
-  ierr = VecDestroyVecs(itg->btilde,itg->maxl);CHKERRQ(ierr);
-  ierr = VecDestroyVecs(itg->xtilde,itg->maxl);CHKERRQ(ierr);
-  ierr = VecDestroy(itg->guess);CHKERRQ(ierr);
+  ierr = VecDestroyVecs(itg->maxl,&itg->btilde);CHKERRQ(ierr);
+  ierr = VecDestroyVecs(itg->maxl,&itg->xtilde);CHKERRQ(ierr);
+  ierr = VecDestroy(&itg->guess);CHKERRQ(ierr);
   ierr = PetscFree(itg);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -63,14 +62,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessDestroy_Method1(KSPFischerGuess
 */
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessFormGuess_Method1"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessFormGuess_Method1(KSPFischerGuess_Method1 *itg,Vec b,Vec x)
+PetscErrorCode  KSPFischerGuessFormGuess_Method1(KSPFischerGuess_Method1 *itg,Vec b,Vec x)
 {
   PetscErrorCode ierr;
   PetscInt       i;
 
   PetscFunctionBegin;
   PetscValidPointer(itg,2);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,3);  
+  PetscValidHeaderSpecific(x,VEC_CLASSID,3);  
   ierr = VecSet(x,0.0);CHKERRQ(ierr);
   ierr = VecMDot(b,itg->curl,itg->btilde,itg->alpha);CHKERRQ(ierr);
   if (itg->monitor) {
@@ -88,14 +87,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessFormGuess_Method1(KSPFischerGue
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessUpdate_Method1"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessUpdate_Method1(KSPFischerGuess_Method1 *itg,Vec x)
+PetscErrorCode  KSPFischerGuessUpdate_Method1(KSPFischerGuess_Method1 *itg,Vec x)
 {
   PetscReal      norm;
   PetscErrorCode ierr;
   int            curl = itg->curl,i;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
   PetscValidPointer(itg,3);
   if (curl == itg->maxl) {
     ierr = KSP_MatMult(itg->ksp,itg->mat,x,itg->btilde[0]);CHKERRQ(ierr);
@@ -133,7 +132,7 @@ typedef struct {
                 curl,     /* Current number of basis vectors */
                 maxl,     /* Maximum number of basis vectors */
                 refcnt;
-    PetscTruth  monitor;
+    PetscBool   monitor;
     Mat         mat;
     KSP         ksp;
     PetscScalar *alpha;   /* */
@@ -143,13 +142,13 @@ typedef struct {
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessCreate_Method2" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessCreate_Method2(KSP ksp,int  maxl,KSPFischerGuess_Method2 **ITG)
+PetscErrorCode  KSPFischerGuessCreate_Method2(KSP ksp,int  maxl,KSPFischerGuess_Method2 **ITG)
 {
   KSPFischerGuess_Method2 *itg;
   PetscErrorCode          ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   ierr = PetscMalloc(sizeof(KSPFischerGuess_Method2),&itg);CHKERRQ(ierr);
   ierr = PetscMalloc(maxl * sizeof(PetscScalar),&itg->alpha);CHKERRQ(ierr);
   ierr = PetscLogObjectMemory(ksp,sizeof(KSPFischerGuess_Method2) + maxl*sizeof(PetscScalar));CHKERRQ(ierr);
@@ -166,15 +165,15 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessCreate_Method2(KSP ksp,int  max
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessDestroy_Method2" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessDestroy_Method2(KSPFischerGuess_Method2 *itg)
+PetscErrorCode  KSPFischerGuessDestroy_Method2(KSPFischerGuess_Method2 *itg)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   ierr = PetscFree(itg->alpha);CHKERRQ(ierr);
-  ierr = VecDestroyVecs(itg->xtilde,itg->maxl);CHKERRQ(ierr);
-  ierr = VecDestroy(itg->Ax);CHKERRQ(ierr);
-  ierr = VecDestroy(itg->guess);CHKERRQ(ierr);
+  ierr = VecDestroyVecs(itg->maxl,&itg->xtilde);CHKERRQ(ierr);
+  ierr = VecDestroy(&itg->Ax);CHKERRQ(ierr);
+  ierr = VecDestroy(&itg->guess);CHKERRQ(ierr);
   ierr = PetscFree(itg);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -186,14 +185,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessDestroy_Method2(KSPFischerGuess
 */
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessFormGuess_Method2"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessFormGuess_Method2(KSPFischerGuess_Method2 *itg,Vec b,Vec x)
+PetscErrorCode  KSPFischerGuessFormGuess_Method2(KSPFischerGuess_Method2 *itg,Vec b,Vec x)
 {
   PetscErrorCode ierr;
   PetscInt       i;
 
   PetscFunctionBegin;
   PetscValidPointer(itg,2);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,3);  
+  PetscValidHeaderSpecific(x,VEC_CLASSID,3);  
   ierr = VecSet(x,0.0);CHKERRQ(ierr);
   ierr = VecMDot(b,itg->curl,itg->xtilde,itg->alpha);CHKERRQ(ierr);
   if (itg->monitor) {
@@ -211,14 +210,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessFormGuess_Method2(KSPFischerGue
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessUpdate_Method2"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessUpdate_Method2(KSPFischerGuess_Method2 *itg,Vec x)
+PetscErrorCode  KSPFischerGuessUpdate_Method2(KSPFischerGuess_Method2 *itg,Vec x)
 {
   PetscScalar    norm;
   PetscErrorCode ierr;
   int            curl = itg->curl,i;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
   PetscValidPointer(itg,3);
   if (curl == itg->maxl) {
     ierr = KSP_MatMult(itg->ksp,itg->mat,x,itg->Ax);CHKERRQ(ierr); /* norm = sqrt(x'Ax) */
@@ -276,7 +275,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessUpdate_Method2(KSPFischerGuess_
     Level: advanced
 
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessCreate(KSP ksp,PetscInt method,PetscInt maxl,KSPFischerGuess *itg)
+PetscErrorCode  KSPFischerGuessCreate(KSP ksp,PetscInt method,PetscInt maxl,KSPFischerGuess *itg)
 {
   PetscErrorCode  ierr;
 
@@ -285,7 +284,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessCreate(KSP ksp,PetscInt method,
     ierr = KSPFischerGuessCreate_Method1(ksp,maxl,(KSPFischerGuess_Method1 **)itg);CHKERRQ(ierr);
   } else if (method == 2) {
     ierr = KSPFischerGuessCreate_Method2(ksp,maxl,(KSPFischerGuess_Method2 **)itg);CHKERRQ(ierr);
-  } else SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Method can only be 1 or 2");
+  } else SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Method can only be 1 or 2");
   (*itg)->method  = method;
   (*itg)->curl    = 0;
   (*itg)->maxl    = maxl;
@@ -297,35 +296,37 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessCreate(KSP ksp,PetscInt method,
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessSetFromOptions"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessSetFromOptions(KSPFischerGuess ITG)
+PetscErrorCode  KSPFischerGuessSetFromOptions(KSPFischerGuess ITG)
 {
   PetscErrorCode  ierr;
 
   PetscFunctionBegin;
-  ierr = PetscOptionsGetTruth(((PetscObject)ITG->ksp)->prefix,"-ksp_fischer_guess_monitor",&ITG->monitor,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(((PetscObject)ITG->ksp)->prefix,"-ksp_fischer_guess_monitor",&ITG->monitor,PETSC_NULL);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessDestroy" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessDestroy(KSPFischerGuess ITG)
+PetscErrorCode  KSPFischerGuessDestroy(KSPFischerGuess *ITG)
 {
   PetscErrorCode  ierr;
 
   PetscFunctionBegin;
-  if (--ITG->refcnt) PetscFunctionReturn(0);
+  if (!*ITG) PetscFunctionReturn(0);
+  if (--(*ITG)->refcnt) {*ITG = 0; PetscFunctionReturn(0);}
 
-  if (ITG->method == 1) {
-    ierr = KSPFischerGuessDestroy_Method1((KSPFischerGuess_Method1 *)ITG);CHKERRQ(ierr);
-  } else if (ITG->method == 2) {
-    ierr = KSPFischerGuessDestroy_Method2((KSPFischerGuess_Method2 *)ITG);CHKERRQ(ierr);
-  } else SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Method can only be 1 or 2");
+  if ((*ITG)->method == 1) {
+    ierr = KSPFischerGuessDestroy_Method1((KSPFischerGuess_Method1 *)*ITG);CHKERRQ(ierr);
+  } else if ((*ITG)->method == 2) {
+    ierr = KSPFischerGuessDestroy_Method2((KSPFischerGuess_Method2 *)*ITG);CHKERRQ(ierr);
+  } else SETERRQ(((PetscObject)(*ITG)->ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Method can only be 1 or 2");
+  *ITG = PETSC_NULL;
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessUpdate"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessUpdate(KSPFischerGuess itg,Vec x)
+PetscErrorCode  KSPFischerGuessUpdate(KSPFischerGuess itg,Vec x)
 {
   PetscErrorCode  ierr;
 
@@ -334,13 +335,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessUpdate(KSPFischerGuess itg,Vec 
     ierr = KSPFischerGuessUpdate_Method1((KSPFischerGuess_Method1 *)itg,x);CHKERRQ(ierr);
   } else if (itg->method == 2) {
     ierr = KSPFischerGuessUpdate_Method2((KSPFischerGuess_Method2 *)itg,x);CHKERRQ(ierr);
-  } else SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Method can only be 1 or 2");
+  } else SETERRQ(((PetscObject)itg->ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Method can only be 1 or 2");
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFischerGuessFormGuess"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessFormGuess(KSPFischerGuess itg,Vec b,Vec x)
+PetscErrorCode  KSPFischerGuessFormGuess(KSPFischerGuess itg,Vec b,Vec x)
 {
   PetscErrorCode  ierr;
 
@@ -349,7 +350,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessFormGuess(KSPFischerGuess itg,V
     ierr = KSPFischerGuessFormGuess_Method1((KSPFischerGuess_Method1 *)itg,b,x);CHKERRQ(ierr);
   } else if (itg->method == 2) {
     ierr = KSPFischerGuessFormGuess_Method2((KSPFischerGuess_Method2 *)itg,b,x);CHKERRQ(ierr);
-  } else SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Method can only be 1 or 2");
+  } else SETERRQ(((PetscObject)itg->ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Method can only be 1 or 2");
   PetscFunctionReturn(0);
 }
 
@@ -360,7 +361,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessFormGuess(KSPFischerGuess itg,V
       initial guess object that the matrix is changed and so the initial guess object
       must restart from scratch building the subspace where the guess is computed from.
 */
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFischerGuessReset(KSPFischerGuess itg)
+PetscErrorCode  KSPFischerGuessReset(KSPFischerGuess itg)
 {
   PetscErrorCode ierr;
 

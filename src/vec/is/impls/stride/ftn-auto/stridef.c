@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* stride.c */
 /* Fortran interface file */
 
@@ -33,9 +34,9 @@ extern void PetscRmPointer(void*);
 #define isstridegetinfo_ isstridegetinfo
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define isstride_ ISSTRIDE
+#define isstridesetstride_ ISSTRIDESETSTRIDE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define isstride_ isstride
+#define isstridesetstride_ isstridesetstride
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define iscreatestride_ ISCREATESTRIDE
@@ -48,15 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   isstridegetinfo_(IS is,PetscInt *first,PetscInt *step, int *__ierr ){
+void PETSC_STDCALL  isstridegetinfo_(IS is,PetscInt *first,PetscInt *step, int *__ierr ){
 *__ierr = ISStrideGetInfo(
 	(IS)PetscToPointer((is) ),first,step);
 }
-void PETSC_STDCALL   isstride_(IS is,PetscTruth *flag, int *__ierr ){
-*__ierr = ISStride(
-	(IS)PetscToPointer((is) ),flag);
+void PETSC_STDCALL  isstridesetstride_(IS is,PetscInt *n,PetscInt *first,PetscInt *step, int *__ierr ){
+*__ierr = ISStrideSetStride(
+	(IS)PetscToPointer((is) ),*n,*first,*step);
 }
-void PETSC_STDCALL   iscreatestride_(MPI_Fint * comm,PetscInt *n,PetscInt *first,PetscInt *step,IS *is, int *__ierr ){
+void PETSC_STDCALL  iscreatestride_(MPI_Fint * comm,PetscInt *n,PetscInt *first,PetscInt *step,IS *is, int *__ierr ){
 *__ierr = ISCreateStride(
 	MPI_Comm_f2c( *(comm) ),*n,*first,*step,is);
 }

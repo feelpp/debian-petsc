@@ -1,7 +1,7 @@
 
-static char help[] = "Passes a sparse matrix to Matlab.\n\n";
+static char help[] = "Passes a sparse matrix to MATLAB.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -44,9 +44,9 @@ int main(int argc,char **args)
   
   ierr = PetscSleep(30);CHKERRQ(ierr);
 
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
     

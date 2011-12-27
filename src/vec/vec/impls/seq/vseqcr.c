@@ -1,10 +1,10 @@
-#define PETSCVEC_DLL
+
 /*
    Implements the sequential vectors.
 */
 
-#include "private/vecimpl.h"          /*I  "petscvec.h"   I*/
-#include "../src/vec/vec/impls/dvecimpl.h" 
+#include <private/vecimpl.h>          /*I  "petscvec.h"   I*/
+#include <../src/vec/vec/impls/dvecimpl.h> 
 
 #undef __FUNCT__  
 #define __FUNCT__ "VecCreateSeq"
@@ -30,7 +30,7 @@
 
 .seealso: VecCreateMPI(), VecCreate(), VecDuplicate(), VecDuplicateVecs(), VecCreateGhost()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecCreateSeq(MPI_Comm comm,PetscInt n,Vec *v)
+PetscErrorCode  VecCreateSeq(MPI_Comm comm,PetscInt n,Vec *v)
 {
   PetscErrorCode ierr;
 

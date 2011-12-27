@@ -6,13 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PCFactorSetColumnPivot"><H1>PCFactorSetColumnPivot</H1></A>
-Determines when column pivoting is done during matrix factorization.  For PETSc dense matrices column pivoting is always done, for PETSc sparse matrices it is never done. For the Matlab and SuperLU factorization this is used. 
+Determines when column pivoting is done during matrix factorization.  For PETSc dense matrices column pivoting is always done, for PETSc sparse matrices it is never done. For the MATLAB and SuperLU factorization this is used. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetColumnPivot(PC pc,PetscReal dtcol)
+PetscErrorCode  PCFactorSetColumnPivot(PC pc,PetscReal dtcol)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

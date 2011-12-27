@@ -1,10 +1,10 @@
 
 CFLAGS 	        = 
 FFLAGS	        = 
-CPPFLAGS        =
+CPPFLAGS        = 
 FPPFLAGS        =
 LOCDIR          = src/mat/examples/tutorials/
-EXAMPLESC       = ex1.c ex2.c ex4.c ex5.c ex6.c ex8.c ex9.c ex10.c ex11.c ex12.c ex13.c
+EXAMPLESC       = ex1.c ex2.c ex4.c ex5.c ex6.c ex8.c ex9.c ex10.c ex11.c ex12.c ex13.c ex14.c ex15.c
 EXAMPLESF       =
 MANSEC          = Mat
 
@@ -18,6 +18,10 @@ ex1: ex1.o  chkopts
 ex2: ex2.o  chkopts
 	-${CLINKER}  -o ex2 ex2.o ${PETSC_MAT_LIB}
 	${RM} ex2.o
+
+ex2_kds: ex2_kds.o  chkopts
+	-${CLINKER}  -o ex2_kds ex2_kds.o ${PETSC_MAT_LIB}
+	${RM} ex2_kds.o
 
 ex4: ex4.o  chkopts
 	-${CLINKER}  -o ex4 ex4.o ${PETSC_MAT_LIB}
@@ -49,6 +53,14 @@ ex12: ex12.o  chkopts
 ex13: ex13.o  chkopts
 	-${CLINKER}  -o ex13 ex13.o ${PETSC_MAT_LIB}
 	${RM} ex13.o
+
+ex14: ex14.o  chkopts
+	-${CLINKER}  -o ex14 ex14.o ${PETSC_MAT_LIB}
+	${RM} ex14.o
+
+ex15: ex15.o  chkopts
+	-${CLINKER}  -o ex15 ex15.o ${PETSC_MAT_LIB}
+	${RM} ex15.o
 # See http://www.mcs.anl.gov/petsc/petsc-as/documentation/faq.html#datafiles for how to obtain the datafiles used below
 runex1: 
 	-@${MPIEXEC} -n 1 ./ex1 -f0 ${DATAFILESPATH}/matrices/medium -viewer_binary_skip_info
@@ -60,25 +72,25 @@ runex9:
 	-@${MPIEXEC} -n 2 ./ex9 -f ${DATAFILESPATH}/matrices/medium -viewer_binary_skip_info
 
 runex10_seqaij: 
-	-@${MPIEXEC} -n 1 ./ex10 -f ${DATAFILESPATH}/matrices/small -matload_type seqaij  > ex10_seqaij.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex10 -f ${DATAFILESPATH}/matrices/small -a_mat_type seqaij  > ex10_seqaij.tmp 2>&1;   \
 	   if (${DIFF} output/ex10_seqaij.out ex10_seqaij.tmp) then true; \
 	   else echo "Possible problem with ex10_seqaij, diffs above"; fi; \
 	   ${RM} -f ex10_seqaij.tmp
 
 runex10_seqdense: 
-	-@${MPIEXEC} -n 1 ./ex10 -f ${DATAFILESPATH}/matrices/small -matload_type seqdense > ex10_seqdense.tmp 2>&1;   \
+	-@${MPIEXEC} -n 1 ./ex10 -f ${DATAFILESPATH}/matrices/small -a_mat_type seqdense > ex10_seqdense.tmp 2>&1;   \
 	   if (${DIFF} output/ex10_seqdense.out ex10_seqdense.tmp) then true; \
 	   else echo "Possible problem with ex10_seqdense, diffs above"; fi; \
 	   ${RM} -f ex10_seqdense.tmp
 
 runex10_mpiaij: 
-	-@${MPIEXEC} -n 2 ./ex10 -f ${DATAFILESPATH}/matrices/small -matload_type mpiaij > ex10_mpiaij.tmp 2>&1;   \
+	-@${MPIEXEC} -n 2 ./ex10 -f ${DATAFILESPATH}/matrices/small -a_mat_type mpiaij > ex10_mpiaij.tmp 2>&1;   \
 	   if (${DIFF} output/ex10_mpiaij.out ex10_mpiaij.tmp) then true; \
 	   else echo "Possible problem with ex10_mpiaij, diffs above"; fi; \
 	   ${RM} -f ex10_mpiaij.tmp
 
 runex10_mpidense: 
-	-@${MPIEXEC} -n 2 ./ex10 -f ${DATAFILESPATH}/matrices/small -matload_type mpidense > ex10_mpidense.tmp 2>&1;   \
+	-@${MPIEXEC} -n 2 ./ex10 -f ${DATAFILESPATH}/matrices/small -a_mat_type mpidense > ex10_mpidense.tmp 2>&1;   \
 	   if (${DIFF} output/ex10_mpidense.out ex10_mpidense.tmp) then true; \
 	   else echo "Possible problem with ex10_mpidense, diffs above"; fi; \
 	   ${RM} -f ex10_mpidense.tmp
@@ -92,6 +104,22 @@ runex11:
 runex13: 
 	-@${MPIEXEC}  ./ex13 
 
+N=1
+runex14: 
+	-@${MPIEXEC}  -n $N ./ex14 ${ARGS}
+
+runex15: 
+	-@${MPIEXEC} -n 3 ./ex15 -mat_partitioning_type parmetis > ex15_1.tmp 2>&1;   \
+	   if (${DIFF} output/ex15_1.out ex15_1.tmp) then true; \
+	   else echo "Possible problem with ex15, diffs above"; fi; \
+	   ${RM} -f ex15_1.tmp
+
+runex15_2: 
+	-@${MPIEXEC} -n 3 ./ex15 -mat_partitioning_type ptscotch > ex15_2.tmp 2>&1;   \
+	   if (${DIFF} output/ex15_2.out ex15_2.tmp) then true; \
+	   else echo "Possible problem with ex15_2, diffs above"; fi; \
+	   ${RM} -f ex15_2.tmp
+
 #-------------------------------------------------------------
 TESTEXAMPLES_C		    = ex4.PETSc ex4.rm ex5.PETSc ex5.rm ex10.PETSc ex10.rm ex12.PETSc ex12.rm
 TESTEXAMPLES_C_X11	    = ex2.PETSc ex2.rm 
@@ -100,7 +128,8 @@ TESTEXAMPLES_C_X11_MPIUNI   =
 TESTEXAMPLES_DATAFILESPATH  = ex1.PETSc runex1 ex1.rm ex5.PETSc runex5 ex5.rm ex9.PETSc runex9 ex9.rm ex10.PETSc runex10_seqaij runex10_seqdense runex10_mpiaij runex10_mpidense ex10.rm  ex13.PETSc runex13 ex13.rm
 TESTEXAMPLES_FORTRAN_MPIUNI = 
 TESTEXAMPLES_13		    = ex1.PETSc ex1.rm
-TESTEXAMPLES_PARAMETIS      = ex11.PETSc runex11 ex11.rm
+TESTEXAMPLES_PARAMETIS      = ex11.PETSc runex11 ex11.rm ex15.PETSc runex15 ex15.rm
+TESTEXAMPLES_PTSCOTCH       = ex15.PETSc runex15_2 ex15.rm
 
 
 include ${PETSC_DIR}/conf/test

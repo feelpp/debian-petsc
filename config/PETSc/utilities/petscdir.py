@@ -17,7 +17,7 @@ class Configure(config.base.Configure):
 
   def setupHelp(self, help):
     import nargs
-    help.addArgument('PETSc', '-PETSC_DIR',                        nargs.Arg(None, None, 'The root directory of the PETSc installation'))
+    help.addArgument('PETSc', '-PETSC_DIR=<root-dir>',                        nargs.Arg(None, None, 'The root directory of the PETSc installation'))
     return
 
   def setupDependencies(self, framework):
@@ -70,31 +70,6 @@ The environmental variable PETSC_DIR is set incorrectly. Please use the followin
     self.addDefine('DIR', '"'+self.dir+'"')
     self.framework.argDB['search-dirs'].append(os.path.join(self.dir, 'bin', 'win32fe'))
 
-    import sys
-
-    auxDir      = os.path.join(self.dir,'config','configarch')
-    configSub   = os.path.join(auxDir, 'config.sub')
-    configGuess = os.path.join(auxDir, 'config.guess')
-    
-    try:
-      host   = config.base.Configure.executeShellCommand(self.programs.SHELL+' '+configGuess, log = self.framework.log)[0]
-      output = config.base.Configure.executeShellCommand(self.programs.SHELL+' '+configSub+' '+host, log = self.framework.log)[0]
-    except RuntimeError, e:
-      fd = open(configGuess)
-      data = fd.read()
-      fd.close()
-      if data.find('\r\n') >= 0:
-        raise RuntimeError('''It appears petsc.tar.gz is uncompressed on Windows (perhaps with Winzip)
-          and files copied over to Unix/Linux. Windows introduces LF characters which are
-          inappropriate on other systems. Please use gunzip/tar on the install machine.\n''')
-      raise RuntimeError('Unable to determine host type using '+configSub+': '+str(e))
-    m = re.match(r'^(?P<cpu>[^-]*)-(?P<vendor>[^-]*)-(?P<os>.*)$', output)
-    if not m:
-      raise RuntimeError('Unable to parse output of '+configSub+': '+output)
-    self.framework.host_cpu    = m.group('cpu')
-    self.framework.host_vendor = m.group('vendor')
-    self.framework.host_os     = m.group('os')
-
     return
 
   def configureExternalPackagesDir(self):
@@ -105,7 +80,7 @@ The environmental variable PETSC_DIR is set incorrectly. Please use the followin
     return
 
   def configureInstallationMethod(self):
-    if os.path.exists(os.path.join(self.dir,'bin/maint')):
+    if os.path.exists(os.path.join(self.dir,'bin','maint')):
       self.logPrint('This is a Mercurial clone')
       self.isClone = 1
       if os.path.exists(os.path.join(self.dir, '.hg')):

@@ -10,8 +10,8 @@ Default routine to calculate the residual.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-#include "petscmg.h"   
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGDefaultResidual(Mat mat,Vec b,Vec x,Vec r)
+#include "petscpcmg.h"   
+PetscErrorCode  PCMGDefaultResidual(Mat mat,Vec b,Vec x,Vec r)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>

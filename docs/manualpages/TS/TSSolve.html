@@ -10,7 +10,7 @@ Steps the requested number of timesteps.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSSolve(TS ts, Vec x)
+PetscErrorCode TSSolve(TS ts,Vec x,PetscReal *ftime)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -18,10 +18,19 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts </B></TD><TD>- the <A HREF="../TS/TS.html#TS">TS</A> context obtained from <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>()
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- the solution vector, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if it was set with <A HREF="../TS/TSSetSolution.html#TSSetSolution">TSSetSolution</A>()
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- the solution vector
 </TD></TR></TABLE>
 <P>
+<H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
+<DT><B>ftime </B> -time of the state vector x upon completion
+<br>
+<P>
 
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+The final time returned by this function may be different from the time of the internally
+held state accessible by <A HREF="../TS/TSGetSolution.html#TSGetSolution">TSGetSolution</A>() and <A HREF="../TS/TSGetTime.html#TSGetTime">TSGetTime</A>() because the method may have
+stepped over the final time.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../TS/TS.html#TS">TS</A>, timestep, solve
@@ -34,4 +43,16 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ts/examples/tutorials/ex1.c.html">src/ts/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex2.c.html">src/ts/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex3.c.html">src/ts/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex4.c.html">src/ts/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex5.c.html">src/ts/examples/tutorials/ex5.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex6.c.html">src/ts/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex8.c.html">src/ts/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
 </BODY></HTML>

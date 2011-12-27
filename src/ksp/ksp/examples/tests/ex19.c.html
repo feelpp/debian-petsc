@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:04+00:00">
+<meta name="date" content="2011-10-29T19:12:33+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -30,16 +30,16 @@
 <a name="line20"> 20: </a><font color="#B22222">    system of equations.</font>
 <a name="line21"> 21: </a><font color="#B22222">*/</font>
 
-<a name="line23"> 23: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
-<a name="line24"> 24: </a> #include <A href="../../../../../include/petscda.h.html">petscda.h</A>
-<a name="line25"> 25: </a> #include <A href="../../../../../include/petscmg.h.html">petscmg.h</A>
+<a name="line23"> 23: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
+<a name="line24"> 24: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
+<a name="line25"> 25: </a><font color="#A020F0">#include &lt;petscpcmg.h&gt;</font>
 
 <a name="line27"> 27: </a><font color="#B22222">/* User-defined application contexts */</font>
 
 <a name="line29"> 29: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line30"> 30: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   mx,my;            <font color="#B22222">/* number grid points in x and y direction */</font>
 <a name="line31"> 31: </a>   <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>        localX,localF;    <font color="#B22222">/* local vectors with ghost region */</font>
-<a name="line32"> 32: </a>   <A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>         da;
+<a name="line32"> 32: </a>   DM         da;
 <a name="line33"> 33: </a>   <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>        x,b,r;            <font color="#B22222">/* global vectors */</font>
 <a name="line34"> 34: </a>   <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>        J;                <font color="#B22222">/* Jacobian on grid */</font>
 <a name="line35"> 35: </a>} GridCtx;
@@ -87,23 +87,23 @@
 <a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-Ny"</font>,&amp;Ny,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
 <a name="line83"> 83: </a>  <font color="#B22222">/* Set up distributed array for fine grid */</font>
-<a name="line84"> 84: </a>  <A href="../../../../../docs/manualpages/DA/DACreate2d.html#DACreate2d">DACreate2d</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DA_NONPERIODIC,<A href="../../../../../docs/manualpages/DA/DA_STENCIL_STAR.html#DA_STENCIL_STAR">DA_STENCIL_STAR</A>,user.fine.mx,
+<a name="line84"> 84: </a>  <A href="../../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,<A href="../../../../../docs/manualpages/DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>,user.fine.mx,
 <a name="line85"> 85: </a>                    user.fine.my,Nx,Ny,1,1,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.fine.da);
-<a name="line86"> 86: </a>  <A href="../../../../../docs/manualpages/DA/DACreateGlobalVector.html#DACreateGlobalVector">DACreateGlobalVector</A>(user.fine.da,&amp;user.fine.x);
+<a name="line86"> 86: </a>  <A href="../../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(user.fine.da,&amp;user.fine.x);
 <a name="line87"> 87: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(user.fine.x,&amp;user.fine.r);
 <a name="line88"> 88: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(user.fine.x,&amp;user.fine.b);
 <a name="line89"> 89: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user.fine.x,&amp;nlocal);
-<a name="line90"> 90: </a>  <A href="../../../../../docs/manualpages/DA/DACreateLocalVector.html#DACreateLocalVector">DACreateLocalVector</A>(user.fine.da,&amp;user.fine.localX);
+<a name="line90"> 90: </a>  <A href="../../../../../docs/manualpages/DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>(user.fine.da,&amp;user.fine.localX);
 <a name="line91"> 91: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(user.fine.localX,&amp;user.fine.localF);
 <a name="line92"> 92: </a>  <A href="../../../../../docs/manualpages/Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,nlocal,nlocal,n,n,5,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,3,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.fine.J);
 
 <a name="line94"> 94: </a>  <font color="#B22222">/* Set up distributed array for coarse grid */</font>
-<a name="line95"> 95: </a>  <A href="../../../../../docs/manualpages/DA/DACreate2d.html#DACreate2d">DACreate2d</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DA_NONPERIODIC,<A href="../../../../../docs/manualpages/DA/DA_STENCIL_STAR.html#DA_STENCIL_STAR">DA_STENCIL_STAR</A>,user.coarse.mx,
+<a name="line95"> 95: </a>  <A href="../../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,<A href="../../../../../docs/manualpages/DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>,user.coarse.mx,
 <a name="line96"> 96: </a>                    user.coarse.my,Nx,Ny,1,1,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.coarse.da);
-<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/DA/DACreateGlobalVector.html#DACreateGlobalVector">DACreateGlobalVector</A>(user.coarse.da,&amp;user.coarse.x);
+<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(user.coarse.da,&amp;user.coarse.x);
 <a name="line98"> 98: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(user.coarse.x,&amp;user.coarse.b);
 <a name="line99"> 99: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user.coarse.x,&amp;Nlocal);
-<a name="line100">100: </a>  <A href="../../../../../docs/manualpages/DA/DACreateLocalVector.html#DACreateLocalVector">DACreateLocalVector</A>(user.coarse.da,&amp;user.coarse.localX);
+<a name="line100">100: </a>  <A href="../../../../../docs/manualpages/DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>(user.coarse.da,&amp;user.coarse.localX);
 <a name="line101">101: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(user.coarse.localX,&amp;user.coarse.localF);
 <a name="line102">102: </a>  <A href="../../../../../docs/manualpages/Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,Nlocal,Nlocal,N,N,5,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,3,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.coarse.J);
 
@@ -136,7 +136,7 @@
 <a name="line130">130: </a>  <A href="../../../../../docs/manualpages/PC/PCMGSetResidual.html#PCMGSetResidual">PCMGSetResidual</A>(pc,FINE_LEVEL,<A href="../../../../../docs/manualpages/PC/PCMGDefaultResidual.html#PCMGDefaultResidual">PCMGDefaultResidual</A>,user.fine.J);
 
 <a name="line132">132: </a>  <font color="#B22222">/* Create interpolation between the levels */</font>
-<a name="line133">133: </a>  <A href="../../../../../docs/manualpages/DA/DAGetInterpolation.html#DAGetInterpolation">DAGetInterpolation</A>(user.coarse.da,user.fine.da,&amp;user.Ii,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line133">133: </a>  <A href="../../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(user.coarse.da,user.fine.da,&amp;user.Ii,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line134">134: </a>  <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>(pc,FINE_LEVEL,user.Ii);
 <a name="line135">135: </a>  <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>(pc,FINE_LEVEL,user.Ii);
 
@@ -148,7 +148,7 @@
 <a name="line142">142: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomCreate.html#PetscRandomCreate">PetscRandomCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rdm);
 <a name="line143">143: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomSetFromOptions.html#PetscRandomSetFromOptions">PetscRandomSetFromOptions</A>(rdm);
 <a name="line144">144: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetRandom.html#VecSetRandom">VecSetRandom</A>(user.fine.b,rdm);
-<a name="line145">145: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rdm);
+<a name="line145">145: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rdm);
 <a name="line146">146: </a>  }
 
 <a name="line148">148: </a>  <font color="#B22222">/* Set options, then solve nonlinear system */</font>
@@ -159,23 +159,23 @@
 <a name="line153">153: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Number of iterations = %D\n"</font>,its);
 
 <a name="line155">155: </a>  <font color="#B22222">/* Free data structures */</font>
-<a name="line156">156: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(user.fine.J);
-<a name="line157">157: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.fine.x);
-<a name="line158">158: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.fine.r);
-<a name="line159">159: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.fine.b);
-<a name="line160">160: </a>  <A href="../../../../../docs/manualpages/DA/DADestroy.html#DADestroy">DADestroy</A>(user.fine.da);
-<a name="line161">161: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.fine.localX);
-<a name="line162">162: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.fine.localF);
+<a name="line156">156: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;user.fine.J);
+<a name="line157">157: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.fine.x);
+<a name="line158">158: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.fine.r);
+<a name="line159">159: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.fine.b);
+<a name="line160">160: </a>  <A href="../../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;user.fine.da);
+<a name="line161">161: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.fine.localX);
+<a name="line162">162: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.fine.localF);
 
-<a name="line164">164: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(user.coarse.J);
-<a name="line165">165: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.coarse.x);
-<a name="line166">166: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.coarse.b);
-<a name="line167">167: </a>  <A href="../../../../../docs/manualpages/DA/DADestroy.html#DADestroy">DADestroy</A>(user.coarse.da);
-<a name="line168">168: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.coarse.localX);
-<a name="line169">169: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.coarse.localF);
+<a name="line164">164: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;user.coarse.J);
+<a name="line165">165: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.coarse.x);
+<a name="line166">166: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.coarse.b);
+<a name="line167">167: </a>  <A href="../../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;user.coarse.da);
+<a name="line168">168: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.coarse.localX);
+<a name="line169">169: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.coarse.localF);
 
-<a name="line171">171: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
-<a name="line172">172: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(user.Ii);
+<a name="line171">171: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line172">172: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;user.Ii);
 <a name="line173">173: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 
 <a name="line175">175: </a>  <font color="#4169E1">return</font> 0;
@@ -193,9 +193,9 @@
 <a name="line190">190: </a>  hxdhy = hx/hy;            hydhx = hy/hx;
 
 <a name="line192">192: </a>  <font color="#B22222">/* Get ghost points */</font>
-<a name="line193">193: </a>  <A href="../../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(grid-&gt;da,&amp;xs,&amp;ys,0,&amp;xm,&amp;ym,0);
-<a name="line194">194: </a>  <A href="../../../../../docs/manualpages/DA/DAGetGhostCorners.html#DAGetGhostCorners">DAGetGhostCorners</A>(grid-&gt;da,&amp;Xs,&amp;Ys,0,&amp;Xm,&amp;Ym,0);
-<a name="line195">195: </a>  <A href="../../../../../docs/manualpages/DA/DAGetGlobalIndices.html#DAGetGlobalIndices">DAGetGlobalIndices</A>(grid-&gt;da,&amp;nloc,&amp;ltog);
+<a name="line193">193: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(grid-&gt;da,&amp;xs,&amp;ys,0,&amp;xm,&amp;ym,0);
+<a name="line194">194: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetGhostCorners.html#DMDAGetGhostCorners">DMDAGetGhostCorners</A>(grid-&gt;da,&amp;Xs,&amp;Ys,0,&amp;Xm,&amp;Ym,0);
+<a name="line195">195: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetGlobalIndices.html#DMDAGetGlobalIndices">DMDAGetGlobalIndices</A>(grid-&gt;da,&amp;nloc,&amp;ltog);
 
 <a name="line197">197: </a>  <font color="#B22222">/* Evaluate Jacobian of function */</font>
 <a name="line198">198: </a>  <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++) {

@@ -10,7 +10,7 @@ Replaces substrings in string with other substrings
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscStrreplace(MPI_Comm comm,const char aa[],char b[],size_t len)
+PetscErrorCode  PetscStrreplace(MPI_Comm comm,const char aa[],char b[],size_t len)
 </PRE>
 Not Collective
 <P>
@@ -27,11 +27,13 @@ Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Replaces   ${PETSC_ARCH},${PETSC_DIR},${PETSC_LIB_DIR},${DISPLAY},
-${HOMEDIRECTORY},${WORKINGDIRECTORY},${USERNAME} with appropriate values
+${HOMEDIRECTORY},${WORKINGDIRECTORY},${USERNAME}, ${HOSTNAME} with appropriate values
 as well as any environmental variables.
 <P>
-Note: PETSC_LIB_DIR uses the environmental variable if it exists. PETSC_ARCH and PETSC_DIR use what
+PETSC_LIB_DIR uses the environmental variable if it exists. PETSC_ARCH and PETSC_DIR use what
 PETSc was built with and do not use environmental variables.
+<P>
+Not for use in Fortran
 <P>
 
 <P>

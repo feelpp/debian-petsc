@@ -1,10 +1,10 @@
-#define PETSCMAT_DLL
-#include "../src/mat/impls/aij/seq/aij.h"
 
-EXTERN PetscErrorCode Mat_CheckInode(Mat,PetscTruth);
+#include <../src/mat/impls/aij/seq/aij.h>
+
+extern PetscErrorCode Mat_CheckInode(Mat,PetscBool );
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PETSCMAT_DLLEXPORT MatInodeAdjustForInodes_SeqAIJ_Inode(Mat,IS*,IS*);
-EXTERN PetscErrorCode PETSCMAT_DLLEXPORT MatInodeGetInodeSizes_SeqAIJ_Inode(Mat,PetscInt*,PetscInt*[],PetscInt*);
+extern PetscErrorCode  MatInodeAdjustForInodes_SeqAIJ_Inode(Mat,IS*,IS*);
+extern PetscErrorCode  MatInodeGetInodeSizes_SeqAIJ_Inode(Mat,PetscInt*,PetscInt*[],PetscInt*);
 EXTERN_C_END
 
 #undef __FUNCT__
@@ -13,11 +13,11 @@ PetscErrorCode MatView_SeqAIJ_Inode(Mat A,PetscViewer viewer)
 {
   Mat_SeqAIJ         *a=(Mat_SeqAIJ*)A->data;
   PetscErrorCode    ierr;
-  PetscTruth        iascii;
+  PetscBool         iascii;
   PetscViewerFormat format;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerGetFormat(viewer,&format);CHKERRQ(ierr);
     if (format == PETSC_VIEWER_ASCII_INFO_DETAIL || format == PETSC_VIEWER_ASCII_INFO) {
@@ -38,11 +38,11 @@ PetscErrorCode MatAssemblyEnd_SeqAIJ_Inode(Mat A, MatAssemblyType mode)
 {
   Mat_SeqAIJ     *a = (Mat_SeqAIJ*)A->data;
   PetscErrorCode ierr;
-  PetscTruth     samestructure;
+  PetscBool      samestructure;
 
   PetscFunctionBegin;
   /* info.nz_unneeded of zero denotes no structural change was made to the matrix during Assembly */
-  samestructure = (PetscTruth)(!A->info.nz_unneeded);
+  samestructure = (PetscBool)(!A->info.nz_unneeded);
   /* check for identical nodes. If found, use inode functions */
   ierr = Mat_CheckInode(A,samestructure);CHKERRQ(ierr);
   a->inode.ibdiagvalid = PETSC_FALSE;
@@ -75,7 +75,7 @@ PetscErrorCode MatCreate_SeqAIJ_Inode(Mat B)
 {
   Mat_SeqAIJ     *b=(Mat_SeqAIJ*)B->data;
   PetscErrorCode ierr;
-  PetscTruth     no_inode,no_unroll;
+  PetscBool      no_inode,no_unroll;
 
   PetscFunctionBegin;
   no_inode             = PETSC_FALSE;
@@ -89,13 +89,13 @@ PetscErrorCode MatCreate_SeqAIJ_Inode(Mat B)
   b->inode.bdiag       = 0;
 
   ierr = PetscOptionsBegin(((PetscObject)B)->comm,((PetscObject)B)->prefix,"Options for SEQAIJ matrix","Mat");CHKERRQ(ierr);
-    ierr = PetscOptionsTruth("-mat_no_unroll","Do not optimize for inodes (slower)",PETSC_NULL,no_unroll,&no_unroll,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-mat_no_unroll","Do not optimize for inodes (slower)",PETSC_NULL,no_unroll,&no_unroll,PETSC_NULL);CHKERRQ(ierr);
     if (no_unroll) {ierr = PetscInfo(B,"Not using Inode routines due to -mat_no_unroll\n");CHKERRQ(ierr);}
-    ierr = PetscOptionsTruth("-mat_no_inode","Do not optimize for inodes (slower)",PETSC_NULL,no_inode,&no_inode,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-mat_no_inode","Do not optimize for inodes -slower-",PETSC_NULL,no_inode,&no_inode,PETSC_NULL);CHKERRQ(ierr);
     if (no_inode) {ierr = PetscInfo(B,"Not using Inode routines due to -mat_no_inode\n");CHKERRQ(ierr);}
     ierr = PetscOptionsInt("-mat_inode_limit","Do not use inodes larger then this value",PETSC_NULL,b->inode.limit,&b->inode.limit,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
-  b->inode.use = (PetscTruth)(!(no_unroll || no_inode));
+  b->inode.use = (PetscBool)(!(no_unroll || no_inode));
   if (b->inode.limit > b->inode.max_limit) b->inode.limit = b->inode.max_limit;
 
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)B,"MatInodeAdjustForInodes_C",
@@ -109,7 +109,7 @@ PetscErrorCode MatCreate_SeqAIJ_Inode(Mat B)
 
 #undef __FUNCT__
 #define __FUNCT__ "MatSetOption_SeqAIJ_Inode"
-PetscErrorCode MatSetOption_SeqAIJ_Inode(Mat A,MatOption op,PetscTruth flg)
+PetscErrorCode MatSetOption_SeqAIJ_Inode(Mat A,MatOption op,PetscBool  flg)
 {
   Mat_SeqAIJ     *a=(Mat_SeqAIJ*)A->data;
 

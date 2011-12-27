@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:44+00:00">
+<meta name="date" content="2011-10-29T18:56:30+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Reads a PETSc vector from a socket connection, then sends it back within a loop. Works with ex42.m or ex42a.c\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -23,13 +23,14 @@
 <a name="line16"> 16: </a>  fd = <A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_SOCKET_WORLD.html#PETSC_VIEWER_SOCKET_WORLD">PETSC_VIEWER_SOCKET_WORLD</A>;
 
 <a name="line18"> 18: </a>  <font color="#4169E1">for</font> (i=0;i&lt;1000;i++){
-<a name="line19"> 19: </a>    <A href="../../../../../docs/manualpages/Vec/VecLoad.html#VecLoad">VecLoad</A>(fd,<A href="../../../../../docs/manualpages/Vec/VECMPI.html#VECMPI">VECMPI</A>,&amp;b);
-<a name="line20"> 20: </a>    <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(b,fd);
-<a name="line21"> 21: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line22"> 22: </a>  }
-<a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line24"> 24: </a>  <font color="#4169E1">return</font> 0;
-<a name="line25"> 25: </a>}
+<a name="line19"> 19: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;b);
+<a name="line20"> 20: </a>    <A href="../../../../../docs/manualpages/Vec/VecLoad.html#VecLoad">VecLoad</A>(b,fd);
+<a name="line21"> 21: </a>    <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(b,fd);
+<a name="line22"> 22: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line23"> 23: </a>  }
+<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line25"> 25: </a>  <font color="#4169E1">return</font> 0;
+<a name="line26"> 26: </a>}
 
 </pre>
 </body>

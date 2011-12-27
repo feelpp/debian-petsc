@@ -3,7 +3,7 @@ static char help[] = "Tests matrix factorization.  Note that most users should\n
 employ the KSP  interface to the linear solvers instead of using the factorization\n\
 routines directly.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -37,7 +37,7 @@ int main(int argc,char **args)
   }
   ierr = MatAssemblyBegin(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-  ierr = MatGetOrdering(C,MATORDERING_RCM,&perm,&iperm);CHKERRQ(ierr);
+  ierr = MatGetOrdering(C,MATORDERINGRCM,&perm,&iperm);CHKERRQ(ierr);
   ierr = MatView(C,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
   ierr = ISView(perm,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
 
@@ -46,7 +46,7 @@ int main(int argc,char **args)
   luinfo.dtcol = 0.0; 
   luinfo.zeropivot = 1.e-14; 
   luinfo.pivotinblocks = 1.0; 
-  ierr = MatGetFactor(C,MAT_SOLVER_PETSC,MAT_FACTOR_LU,&LU);CHKERRQ(ierr);
+  ierr = MatGetFactor(C,MATSOLVERPETSC,MAT_FACTOR_LU,&LU);CHKERRQ(ierr);
   ierr = MatLUFactorSymbolic(LU,C,perm,iperm,&luinfo);CHKERRQ(ierr);
   ierr = MatLUFactorNumeric(LU,C,&luinfo);CHKERRQ(ierr);
   ierr = MatView(LU,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
@@ -71,14 +71,14 @@ int main(int argc,char **args)
   ierr = MatGetInfo(LU,MAT_LOCAL,&info);CHKERRQ(ierr);
   ierr = PetscPrintf(PETSC_COMM_SELF,"factored matrix nonzeros = %D\n",(PetscInt)info.nz_used);CHKERRQ(ierr);
 
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = ISDestroy(perm);CHKERRQ(ierr);
-  ierr = ISDestroy(iperm);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = MatDestroy(LU);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = ISDestroy(&perm);CHKERRQ(ierr);
+  ierr = ISDestroy(&iperm);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = MatDestroy(&LU);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

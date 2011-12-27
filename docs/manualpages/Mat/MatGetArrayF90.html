@@ -9,7 +9,7 @@
 Accesses a matrix array from Fortran90. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-MatGetArrayF90(Mat x,{Scalar, pointer :: xx_v(:)},integer ierr)
+MatGetArrayF90(Mat x,{Scalar, pointer :: xx_v(:,:)},integer ierr)
 </PRE>
 Not collective
 <P>
@@ -26,7 +26,7 @@ Not collective
 <P>
 <H3><FONT COLOR="#CC3333">Example of Usage</FONT></H3>
 <PRE>
-      <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A>, pointer xx_v(:)
+      <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A>, pointer xx_v(:,:)
       ....
       call <A HREF="../Mat/MatGetArrayF90.html#MatGetArrayF90">MatGetArrayF90</A>(x,xx_v,ierr)
       a = xx_v(3)

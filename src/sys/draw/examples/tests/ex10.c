@@ -1,7 +1,7 @@
 
 static char help[] = "Tests repeatedly setting a window type.\n";
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -34,8 +34,8 @@ int main(int argc,char **argv)
   ierr = PetscDrawLine(draw,0.0,1.0,1.0,0.0,PETSC_DRAW_BLUE);
   ierr = PetscDrawFlush(draw);CHKERRQ(ierr);
   ierr = PetscSleep(2);CHKERRQ(ierr);
-  ierr = PetscDrawDestroy(draw);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscDrawDestroy(&draw);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

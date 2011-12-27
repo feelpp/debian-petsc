@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>DMDASetLocalFunction</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<A NAME="DMDASetLocalFunction"><H1>DMDASetLocalFunction</H1></A>
+Caches in a DM a local function.  
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscdmda.h"   
+PetscErrorCode  DMDASetLocalFunction(DM da,DMDALocalFunction1 lf)
+</PRE>
+Logically Collective on DMDA
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- initial distributed array
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>lf </B></TD><TD>- the local function
+</TD></TR></TABLE>
+<P>
+
+<P>
+Notes: The routine <A HREF="../DMMG/SNESDAFormFunction.html#SNESDAFormFunction">SNESDAFormFunction</A>() uses this the cached function to evaluate the user provided function.
+<P>
+<H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
+  distributed array, refine
+<BR>
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(), <A HREF="../DM/DMDACreate3d.html#DMDACreate3d">DMDACreate3d</A>(), <A HREF="../DM/DMDestroy.html#DMDestroy">DMDestroy</A>(), <A HREF="../DM/DMDAGetLocalFunction.html#DMDAGetLocalFunction">DMDAGetLocalFunction</A>(), <A HREF="../DM/DMDASetLocalFunctioni.html#DMDASetLocalFunctioni">DMDASetLocalFunctioni</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/da/da2.c.html#DMDASetLocalFunction">src/dm/impls/da/da2.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex50.c.html">src/snes/examples/tutorials/ex50.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex5f.F.html">src/snes/examples/tutorials/ex5f.F.html</A><BR>
+</BODY></HTML>

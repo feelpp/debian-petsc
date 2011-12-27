@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dscatter.c */
 /* Fortran interface file */
 
@@ -58,23 +59,23 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawspsetdimension_(PetscDrawSP sp,int *dim, int *__ierr ){
+void PETSC_STDCALL  petscdrawspsetdimension_(PetscDrawSP sp,int *dim, int *__ierr ){
 *__ierr = PetscDrawSPSetDimension(
 	(PetscDrawSP)PetscToPointer((sp) ),*dim);
 }
-void PETSC_STDCALL   petscdrawspreset_(PetscDrawSP sp, int *__ierr ){
+void PETSC_STDCALL  petscdrawspreset_(PetscDrawSP sp, int *__ierr ){
 *__ierr = PetscDrawSPReset(
 	(PetscDrawSP)PetscToPointer((sp) ));
 }
-void PETSC_STDCALL   petscdrawspaddpoint_(PetscDrawSP sp,PetscReal *x,PetscReal *y, int *__ierr ){
+void PETSC_STDCALL  petscdrawspaddpoint_(PetscDrawSP sp,PetscReal *x,PetscReal *y, int *__ierr ){
 *__ierr = PetscDrawSPAddPoint(
 	(PetscDrawSP)PetscToPointer((sp) ),x,y);
 }
-void PETSC_STDCALL   petscdrawspdraw_(PetscDrawSP sp, int *__ierr ){
+void PETSC_STDCALL  petscdrawspdraw_(PetscDrawSP sp, int *__ierr ){
 *__ierr = PetscDrawSPDraw(
 	(PetscDrawSP)PetscToPointer((sp) ));
 }
-void PETSC_STDCALL   petscdrawspsetlimits_(PetscDrawSP sp,PetscReal *x_min,PetscReal *x_max,PetscReal *y_min,PetscReal *y_max, int *__ierr ){
+void PETSC_STDCALL  petscdrawspsetlimits_(PetscDrawSP sp,PetscReal *x_min,PetscReal *x_max,PetscReal *y_min,PetscReal *y_max, int *__ierr ){
 *__ierr = PetscDrawSPSetLimits(
 	(PetscDrawSP)PetscToPointer((sp) ),*x_min,*x_max,*y_min,*y_max);
 }

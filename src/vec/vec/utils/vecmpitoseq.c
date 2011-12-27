@@ -1,6 +1,5 @@
-#define PETSCVEC_DLL
 
-#include "private/vecimpl.h"    /*I "petscvec.h" I*/
+#include <private/vecimpl.h>    /*I "petscvec.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "VecScatterCreateToAll"
@@ -8,7 +7,7 @@
       VecScatterCreateToAll - Creates a vector and a scatter context that copies all 
           vector values to each processor
 
-  Collective
+  Collective on Vec
 
   Input Parameter: 
 .  vin  - input MPIVEC
@@ -25,7 +24,7 @@
    Usage:
 $        VecScatterCreateToAll(vin,&ctx,&vout);
 $
-$        // scatter as many times as you need 
+$        // scatter as many times as you need
 $        VecScatterBegin(ctx,vin,vout,INSERT_VALUES,SCATTER_FORWARD);
 $        VecScatterEnd(ctx,vin,vout,INSERT_VALUES,SCATTER_FORWARD);
 $
@@ -39,7 +38,7 @@ $        VecDestroy(vout);
 .seealso VecScatterCreate(), VecScatterCreateToZero(), VecScatterBegin(), VecScatterEnd()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToAll(Vec vin,VecScatter *ctx,Vec *vout)
+PetscErrorCode  VecScatterCreateToAll(Vec vin,VecScatter *ctx,Vec *vout)
 {
 
   PetscErrorCode ierr;
@@ -47,10 +46,10 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToAll(Vec vin,VecScatter *ctx,
   IS             is;
   Vec            tmp;
   Vec           *tmpv;
-  PetscTruth     tmpvout = PETSC_FALSE;
+  PetscBool      tmpvout = PETSC_FALSE;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(vin,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(vin,VEC_CLASSID,1);
   PetscValidType(vin,1);
   PetscValidPointer(ctx,2);
   if (vout) {
@@ -67,8 +66,8 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToAll(Vec vin,VecScatter *ctx,
   /* Create the VecScatter ctx with the communication info */
   ierr = ISCreateStride(PETSC_COMM_SELF,N,0,1,&is);CHKERRQ(ierr);
   ierr = VecScatterCreate(vin,is,*tmpv,is,ctx);CHKERRQ(ierr);
-  ierr = ISDestroy(is);CHKERRQ(ierr);
-  if (tmpvout) {ierr = VecDestroy(*tmpv);CHKERRQ(ierr);}
+  ierr = ISDestroy(&is);CHKERRQ(ierr);
+  if (tmpvout) {ierr = VecDestroy(tmpv);CHKERRQ(ierr);}
   PetscFunctionReturn(0);
 }
 
@@ -79,7 +78,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToAll(Vec vin,VecScatter *ctx,
       VecScatterCreateToZero - Creates an output vector and a scatter context used to 
               copy all vector values into the output vector on the zeroth processor
 
-  Collective
+  Collective on Vec
 
   Input Parameter: 
 .  vin  - input MPIVEC
@@ -97,7 +96,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToAll(Vec vin,VecScatter *ctx,
    Usage:
 $        VecScatterCreateToZero(vin,&ctx,&vout);
 $
-$        // scatter as many times as you need 
+$        // scatter as many times as you need
 $        VecScatterBegin(ctx,vin,vout,INSERT_VALUES,SCATTER_FORWARD);
 $        VecScatterEnd(ctx,vin,vout,INSERT_VALUES,SCATTER_FORWARD);
 $
@@ -111,7 +110,7 @@ $        VecDestroy(vout);
   automatically (unless you pass PETSC_NULL in for that argument if you do not need it).
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToZero(Vec vin,VecScatter *ctx,Vec *vout)
+PetscErrorCode  VecScatterCreateToZero(Vec vin,VecScatter *ctx,Vec *vout)
 {
 
   PetscErrorCode ierr;
@@ -120,10 +119,10 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToZero(Vec vin,VecScatter *ctx
   IS             is;
   Vec            tmp;
   Vec           *tmpv;
-  PetscTruth     tmpvout = PETSC_FALSE;
+  PetscBool      tmpvout = PETSC_FALSE;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(vin,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(vin,VEC_CLASSID,1);
   PetscValidType(vin,1);
   PetscValidPointer(ctx,2);
   if (vout) {
@@ -142,8 +141,8 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToZero(Vec vin,VecScatter *ctx
   /* Create the VecScatter ctx with the communication info */
   ierr = ISCreateStride(PETSC_COMM_SELF,N,0,1,&is);CHKERRQ(ierr);
   ierr = VecScatterCreate(vin,is,*tmpv,is,ctx);CHKERRQ(ierr);
-  ierr = ISDestroy(is);CHKERRQ(ierr);
-  if (tmpvout) {ierr = VecDestroy(*tmpv);CHKERRQ(ierr);}
+  ierr = ISDestroy(&is);CHKERRQ(ierr);
+  if (tmpvout) {ierr = VecDestroy(tmpv);CHKERRQ(ierr);}
   PetscFunctionReturn(0);
 }
 

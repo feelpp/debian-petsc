@@ -6,10 +6,10 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="MatMFFDRegisterDynamic"><H1>MatMFFDRegisterDynamic</H1></A>
-Adds a method to the MatMFFD registry. 
+Adds a method to the <A HREF="../Mat/MatMFFD.html#MatMFFD">MatMFFD</A> registry. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode MatMFFDRegisterDynamic(char *name_solver,char *path,char *name_create,PetscErrorCode (*routine_create)(MatMFFD))
+PetscErrorCode MatMFFDRegisterDynamic(const char *name_solver,const char *path,const char *name_create,PetscErrorCode (*routine_create)(MatMFFD))
 </PRE>
 Not Collective
 <P>
@@ -49,7 +49,7 @@ or at runtime via the option
 </pre>
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
- MatMFFD, register
+ <A HREF="../Mat/MatMFFD.html#MatMFFD">MatMFFD</A>, register
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

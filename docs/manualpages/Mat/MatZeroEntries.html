@@ -12,13 +12,16 @@ Zeros all entries of a matrix.  For sparse matrices this routine retains the old
 #include "petscmat.h" 
 PetscErrorCode  MatZeroEntries(Mat mat)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
-<DT><B>mat </B> -the matrix 
-<br>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix 
+</TD></TR>
 <P>
 
+<P>
+Notes: If the matrix was not preallocated then a default, likely poor preallocation will be set in the matrix, so this should be called after the preallocation phase.
+See the Performance chapter of the users manual for information on preallocating matrices.
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
@@ -29,10 +32,15 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex43.c.html">src/snes/examples/tutorials/ex43.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/util2.c.html">src/ts/examples/tutorials/util2.c.html</A><BR>
 </BODY></HTML>

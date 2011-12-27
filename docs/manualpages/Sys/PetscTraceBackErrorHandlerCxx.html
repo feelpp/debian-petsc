@@ -6,16 +6,18 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscTraceBackErrorHandlerCxx"><H1>PetscTraceBackErrorHandlerCxx</H1></A>
-Default error handler routine that generates a traceback on error detection. 
+Error handler routine that generate a traceback in a C++ stream. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-void  PetscTraceBackErrorHandlerCxx(int line,const char *fun,const char* file,const char *dir,PetscErrorCode n,int p, std::ostringstream& msg)
+PetscErrorCode  PetscTraceBackErrorHandlerCxx(MPI_Comm comm,int line,const char *fun,const char* file,const char *dir,PetscErrorCode n,PetscErrorType p, const char *mess,void *ctx)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- communicator over which error occurred
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>line </B></TD><TD>- the line number of the error (indicated by __LINE__)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- the function where error is detected (indicated by __FUNCT__)
@@ -26,10 +28,11 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the generic error number
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- specific error number
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- PETSC_ERROR_INITIAL or PETSC_ERROR_REPEAT
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>msg </B></TD><TD>- The message stream
-</TD></TR></TABLE>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mess </B></TD><TD>- the error message
++  ctx - error handling context, in this case the C++ stream.
+</TD></TR>
 <P>
 
 <P>
@@ -38,7 +41,7 @@ Most users need not directly employ this routine and the other error
 handlers, but can instead use the simplified interface SETERROR, which has
 the calling sequence
 <pre>
-    SETERROR(number,p,mess)
+    SETERROR(number,n,mess)
 </pre>
 <P>
 <P>

@@ -1,4 +1,4 @@
-#include "private/fortranimpl.h" 
+#include <private/fortranimpl.h> 
 
 void *PETSCNULLPOINTERADDRESS = PETSC_NULL;
 
@@ -191,7 +191,7 @@ PetscErrorCode PetscScalarAddressFromFortran(PetscObject obj,PetscScalar *base,s
     ierr  = PetscMemcpy(*lx,tlx,N*sizeof(PetscScalar));CHKERRQ(ierr);
     tlx   = (PetscScalar*)(((char *)tlx) - shift);
     ierr = PetscFree(tlx);CHKERRQ(ierr);
-    ierr = PetscContainerDestroy(container);CHKERRQ(ierr);
+    ierr = PetscContainerDestroy(&container);CHKERRQ(ierr);
     ierr = PetscObjectCompose(obj,"GetArrayPtr",0);CHKERRQ(ierr);
   } else {
     *lx = base + addr;
@@ -208,14 +208,14 @@ PetscErrorCode PetscScalarAddressFromFortran(PetscObject obj,PetscScalar *base,s
 #endif
 
 EXTERN_C_BEGIN
-PetscTruth PETSC_STDCALL petscisinfornanscalar_(PetscScalar *v)
+PetscBool  PETSC_STDCALL petscisinfornanscalar_(PetscScalar *v)
 {
-  return (PetscTruth) PetscIsInfOrNanScalar(*v);
+  return (PetscBool) PetscIsInfOrNanScalar(*v);
 }
 
-PetscTruth PETSC_STDCALL petscisinfornanreal_(PetscReal *v)
+PetscBool  PETSC_STDCALL petscisinfornanreal_(PetscReal *v)
 {
-  return (PetscTruth) PetscIsInfOrNanReal(*v);
+  return (PetscBool) PetscIsInfOrNanReal(*v);
 }
 EXTERN_C_END
 

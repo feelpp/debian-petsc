@@ -1,14 +1,16 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PetscDrawCreate_X(PetscDraw);
-EXTERN PetscErrorCode PetscDrawCreate_Null(PetscDraw);
+#if defined(PETSC_HAVE_X11)
+extern PetscErrorCode PetscDrawCreate_X(PetscDraw);
+#endif
+extern PetscErrorCode PetscDrawCreate_Null(PetscDraw);
 #if defined(PETSC_USE_WINDOWS_GRAPHICS)
-EXTERN PetscErrorCode PetscDrawCreate_Win32(PetscDraw);
+extern PetscErrorCode PetscDrawCreate_Win32(PetscDraw);
 #endif
 EXTERN_C_END
   
@@ -23,7 +25,7 @@ EXTERN_C_END
 
 .seealso:  PetscDrawRegisterDestroy()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawRegisterAll(const char *path)
+PetscErrorCode  PetscDrawRegisterAll(const char *path)
 {
   PetscErrorCode ierr;
 

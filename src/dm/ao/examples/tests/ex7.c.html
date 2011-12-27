@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:48:16+00:00">
+<meta name="date" content="2011-10-29T19:06:58+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Demonstrates constructing an application ordering.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscao.h.html">petscao.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscao.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line9">  9: </a>{
@@ -42,10 +42,10 @@
 <a name="line35"> 35: </a>  <A href="../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(ispetsc,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 
 
-<a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(ispetsc);
-<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(isapp);
+<a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;ispetsc);
+<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;isapp);
 
-<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/AO/AODestroy.html#AODestroy">AODestroy</A>(ao);
+<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/AO/AODestroy.html#AODestroy">AODestroy</A>(&amp;ao);
 <a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line43"> 43: </a>  <font color="#4169E1">return</font> 0;
 <a name="line44"> 44: </a>}

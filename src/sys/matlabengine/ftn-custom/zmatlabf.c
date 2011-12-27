@@ -1,5 +1,5 @@
-#include "private/fortranimpl.h"
-#include "petscmatlab.h"
+#include <private/fortranimpl.h>
+#include <petscmatlab.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define petscmatlabenginecreate_      PETSCMATLABENGINECREATE
@@ -57,8 +57,8 @@ void PETSC_STDCALL petscmatlabenginegetarray_(PetscMatlabEngine *e,PetscInt *m,P
 }
 
 /*
-EXTERN int PetscMatlabEngineGetOutput(PetscMatlabEngine,char **);
-EXTERN int PetscMatlabEnginePrintOutput(PetscMatlabEngine,FILE*);
+extern int PetscMatlabEngineGetOutput(PetscMatlabEngine,char **);
+extern int PetscMatlabEnginePrintOutput(PetscMatlabEngine,FILE*);
 */
 
 EXTERN_C_END

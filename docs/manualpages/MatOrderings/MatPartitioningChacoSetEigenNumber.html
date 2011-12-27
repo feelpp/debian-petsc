@@ -6,20 +6,33 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="MatPartitioningChacoSetEigenNumber"><H1>MatPartitioningChacoSetEigenNumber</H1></A>
-Set number of eigenvectors for partitioning. 
+Sets the number of eigenvectors to compute during partitioning. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatPartitioningChacoSetEigenNumber(MatPartitioning part, int num)
+PetscErrorCode MatPartitioningChacoSetEigenNumber(MatPartitioning part,PetscInt num)
 </PRE>
-<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>num </B> -This argument should have a value of 1, 2 or 3 indicating  
-partitioning by bisection, quadrisection, or octosection.
+Collective on <A HREF="../Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A>
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>part </B></TD><TD>- the partitioning context
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>num  </B></TD><TD>- the number of eigenvectors
+</TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
+<DT><B>-mat_partitioning_chaco_eigen_number &lt;n&gt;: Number of eigenvectors</B> -
+Note:
+Accepted values are 1, 2 or 3, indicating partitioning by bisection,
+quadrisection, or octosection.
 <br>
 <P>
 
 <P>
-<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../MatOrderings/MatPartitioningChacoSetEigenSolver.html#MatPartitioningChacoSetEigenSolver">MatPartitioningChacoSetEigenSolver</A>(), <A HREF="../MatOrderings/MatPartitioningChacoGetEigenTol.html#MatPartitioningChacoGetEigenTol">MatPartitioningChacoGetEigenTol</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/partition/impls/chaco/chaco.c.html#MatPartitioningChacoSetEigenNumber">src/mat/partition/impls/chaco/chaco.c</A>
 <BR><A HREF="./index.html">Index of all MatOrderings routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>

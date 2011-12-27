@@ -12,17 +12,17 @@
 */
 #if !defined(__ILU_H)
 #define __ILU_H
-#include "petscblaslapack.h"
+#include <petscblaslapack.h>
 
 /*
       These are C kernels,they are contained in 
    src/mat/impls/baij/seq
 */
 
-EXTERN PetscErrorCode  LINPACKdgefa(MatScalar*,PetscInt,PetscInt*);
-EXTERN PetscErrorCode  LINPACKdgedi(MatScalar*,PetscInt,PetscInt*,MatScalar*);
-EXTERN PetscErrorCode  Kernel_A_gets_inverse_A_2(MatScalar*,PetscReal);
-EXTERN PetscErrorCode  Kernel_A_gets_inverse_A_3(MatScalar*,PetscReal);
+extern PetscErrorCode  LINPACKdgefa(MatScalar*,PetscInt,PetscInt*);
+extern PetscErrorCode  LINPACKdgedi(MatScalar*,PetscInt,PetscInt*,MatScalar*);
+extern PetscErrorCode  Kernel_A_gets_inverse_A_2(MatScalar*,PetscReal);
+extern PetscErrorCode  Kernel_A_gets_inverse_A_3(MatScalar*,PetscReal);
 
 #define Kernel_A_gets_inverse_A_4_nopivot(mat) 0;\
 {\
@@ -98,15 +98,15 @@ EXTERN PetscErrorCode  Kernel_A_gets_inverse_A_3(MatScalar*,PetscReal);
   mat[10] += mat[11] * mat[14] * di;\
 }
 
-EXTERN PetscErrorCode Kernel_A_gets_inverse_A_4(MatScalar *,PetscReal);
+extern PetscErrorCode Kernel_A_gets_inverse_A_4(MatScalar *,PetscReal);
 # if defined(PETSC_HAVE_SSE)
-EXTERN PetscErrorCode Kernel_A_gets_inverse_A_4_SSE(MatScalar *);
+extern PetscErrorCode Kernel_A_gets_inverse_A_4_SSE(MatScalar *);
 # endif
-EXTERN PetscErrorCode Kernel_A_gets_inverse_A_5(MatScalar *,PetscInt*,MatScalar*,PetscReal);
-EXTERN PetscErrorCode Kernel_A_gets_inverse_A_6(MatScalar *,PetscReal);
-EXTERN PetscErrorCode Kernel_A_gets_inverse_A_7(MatScalar *,PetscReal);
-EXTERN PetscErrorCode Kernel_A_gets_inverse_A_9(MatScalar *,PetscReal);
-EXTERN PetscErrorCode Kernel_A_gets_inverse_A_15(MatScalar *,PetscInt*,MatScalar*,PetscReal);
+extern PetscErrorCode Kernel_A_gets_inverse_A_5(MatScalar *,PetscInt*,MatScalar*,PetscReal);
+extern PetscErrorCode Kernel_A_gets_inverse_A_6(MatScalar *,PetscReal);
+extern PetscErrorCode Kernel_A_gets_inverse_A_7(MatScalar *,PetscReal);
+extern PetscErrorCode Kernel_A_gets_inverse_A_9(MatScalar *,PetscReal);
+extern PetscErrorCode Kernel_A_gets_inverse_A_15(MatScalar *,PetscInt*,MatScalar*,PetscReal);
 
 /*
     A = inv(A)    A_gets_inverse_A
@@ -119,7 +119,7 @@ EXTERN PetscErrorCode Kernel_A_gets_inverse_A_15(MatScalar *,PetscInt*,MatScalar
 
 /* -----------------------------------------------------------------------*/
 
-#if !defined(PETSC_USE_SCALAR_MAT_SINGLE)
+#if !defined(PETSC_USE_REAL_MAT_SINGLE)
 /*
         Version that calls the BLAS directly
 */
@@ -238,6 +238,21 @@ EXTERN PetscErrorCode Kernel_A_gets_inverse_A_15(MatScalar *,PetscInt*,MatScalar
 }
 
 /*
+    v = v - A w  v_gets_v_minus_Ar_times_w
+
+   v - array of length ncol
+   A(bs,ncols)
+   w - array of length bs
+*/
+#define  Kernel_w_gets_w_minus_Ar_times_v(bs,ncols,w,A,v) \
+{  \
+  PetscScalar  _one = 1.0,_mone = -1.0;	       \
+  PetscBLASInt _ione = 1,_bbs,_bncols; \
+  _bbs = PetscBLASIntCast(bs); _bncols = PetscBLASIntCast(ncols); \
+  BLASgemv_("N",&(_bbs),&(_bncols),&_mone,A,&(_bbs),v,&_ione,&_one,w,&_ione); \
+}
+
+/*
     w = A v   w_gets_A_times_v
 
    v - array of length bs
@@ -301,7 +316,7 @@ EXTERN PetscErrorCode Kernel_A_gets_inverse_A_15(MatScalar *,PetscInt*,MatScalar
    code is used.
 */
 
-#include "../src/mat/ftn-kernels/sgemv.h"
+#include <../src/mat/ftn-kernels/sgemv.h>
 
 /*
       A = A * B   A_gets_A_times_B

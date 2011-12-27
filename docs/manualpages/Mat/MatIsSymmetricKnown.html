@@ -10,9 +10,9 @@ Checks the flag on the matrix to see if it is symmetric.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatIsSymmetricKnown(Mat A,PetscTruth *set,PetscTruth *flg)
+PetscErrorCode  MatIsSymmetricKnown(Mat A,PetscBool  *set,PetscBool  *flg)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>A </B> -the matrix to check

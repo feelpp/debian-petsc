@@ -4,134 +4,176 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:27:17+00:00">
+<meta name="date" content="2011-10-29T18:58:20+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCMAT_DLL</font></strong>
+<pre width="80">
+<a name="line2">  2: </a><font color="#B22222">/*</font>
+<a name="line3">  3: </a><font color="#B22222">     Mechanism for register PETSc matrix types</font>
+<a name="line4">  4: </a><font color="#B22222">*/</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;      </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
 
-<a name="line3">  3: </a><font color="#B22222">/*</font>
-<a name="line4">  4: </a><font color="#B22222">     Mechanism for register PETSc matrix types</font>
-<a name="line5">  5: </a><font color="#B22222">*/</font>
-<a name="line6"> 6: </a> #include <A href="../../../include/private/matimpl.h.html">private/matimpl.h</A>
+<a name="line7">  7: </a><A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  MatRegisterAllCalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
-<a name="line8">  8: </a><A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> MatRegisterAllCalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line9">  9: </a><font color="#B22222">/*</font>
+<a name="line10"> 10: </a><font color="#B22222">   Contains the list of registered <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> routines</font>
+<a name="line11"> 11: </a><font color="#B22222">*/</font>
+<a name="line12"> 12: </a><A href="../../../docs/manualpages/Sys/PetscFList.html#PetscFList">PetscFList</A> MatList = 0;
 
-<a name="line10"> 10: </a><font color="#B22222">/*</font>
-<a name="line11"> 11: </a><font color="#B22222">   Contains the list of registered <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> routines</font>
-<a name="line12"> 12: </a><font color="#B22222">*/</font>
-<a name="line13"> 13: </a><A href="../../../docs/manualpages/Sys/PetscFList.html#PetscFList">PetscFList</A> MatList = 0;
+<a name="line16"> 16: </a><font color="#B22222">/*@C</font>
+<a name="line17"> 17: </a><font color="#B22222">   <A href="../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A> - Builds matrix object for a particular matrix type</font>
 
-<a name="line17"> 17: </a><font color="#B22222">/*@C</font>
-<a name="line18"> 18: </a><font color="#B22222">   <A href="../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A> - Builds matrix object for a particular matrix type</font>
+<a name="line19"> 19: </a><font color="#B22222">   Collective on <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
 
-<a name="line20"> 20: </a><font color="#B22222">   Collective on <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
+<a name="line21"> 21: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line22"> 22: </a><font color="#B22222">+  mat      - the matrix object</font>
+<a name="line23"> 23: </a><font color="#B22222">-  matype   - matrix type</font>
 
-<a name="line22"> 22: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line23"> 23: </a><font color="#B22222">+  mat      - the matrix object</font>
-<a name="line24"> 24: </a><font color="#B22222">-  matype   - matrix type</font>
+<a name="line25"> 25: </a><font color="#B22222">   Options Database Key:</font>
+<a name="line26"> 26: </a><font color="#B22222">.  -mat_type  &lt;method&gt; - Sets the type; use -help for a list </font>
+<a name="line27"> 27: </a><font color="#B22222">    of available methods (for instance, seqaij)</font>
 
-<a name="line26"> 26: </a><font color="#B22222">   Options Database Key:</font>
-<a name="line27"> 27: </a><font color="#B22222">.  -mat_type  &lt;method&gt; - Sets the type; use -help for a list </font>
-<a name="line28"> 28: </a><font color="#B22222">    of available methods (for instance, seqaij)</font>
+<a name="line29"> 29: </a><font color="#B22222">   Notes:  </font>
+<a name="line30"> 30: </a><font color="#B22222">   See "${PETSC_DIR}/include/petscmat.h" for available methods</font>
 
-<a name="line30"> 30: </a><font color="#B22222">   Notes:  </font>
-<a name="line31"> 31: </a><font color="#B22222">   See "${PETSC_DIR}/include/petscmat.h" for available methods</font>
+<a name="line32"> 32: </a><font color="#B22222">  Level: intermediate</font>
 
-<a name="line33"> 33: </a><font color="#B22222">  Level: intermediate</font>
+<a name="line34"> 34: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>, set, method</font>
 
-<a name="line35"> 35: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>, set, method</font>
-
-<a name="line37"> 37: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(), <A href="../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>, <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
-<a name="line38"> 38: </a><font color="#B22222">@*/</font>
-<a name="line39"> 39: </a><strong><font color="#4169E1"><a name="MatSetType"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat, const <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> matype)</font></strong>
-<a name="line40"> 40: </a>{
-<a name="line41"> 41: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr,(*r)(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>);
-<a name="line42"> 42: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     sametype;
-
-
-<a name="line47"> 47: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,matype,&amp;sametype);
-<a name="line48"> 48: </a>  <font color="#4169E1">if</font> (sametype) <font color="#4169E1">return</font>(0);
-
-<a name="line50"> 50: </a>   <A href="../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(MatList,((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,matype,(void(**)(void))&amp;r);
-<a name="line51"> 51: </a>  <font color="#4169E1">if</font> (!r) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_UNKNOWN_TYPE,<font color="#666666">"Unknown <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> type given: %s"</font>,matype);
-<a name="line52"> 52: </a>
-<a name="line53"> 53: </a>  <font color="#B22222">/* free the old data structure if it existed */</font>
-<a name="line54"> 54: </a>  <font color="#4169E1">if</font> (mat-&gt;ops-&gt;destroy) {
-<a name="line55"> 55: </a>    MatPreallocated(mat);
-<a name="line56"> 56: </a>    (*mat-&gt;ops-&gt;destroy)(mat);
-<a name="line57"> 57: </a>    mat-&gt;ops-&gt;destroy = <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line58"> 58: </a>    mat-&gt;preallocated = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line59"> 59: </a>  }
-
-<a name="line61"> 61: </a>  <font color="#B22222">/* create the new data structure */</font>
-<a name="line62"> 62: </a>  <font color="#4169E1">if</font> (mat-&gt;rmap-&gt;n &lt; 0 &amp;&amp; mat-&gt;rmap-&gt;N &lt; 0 &amp;&amp; mat-&gt;cmap-&gt;n &lt; 0 &amp;&amp; mat-&gt;cmap-&gt;N &lt; 0) {
-<a name="line63"> 63: </a>    mat-&gt;ops-&gt;create = r;
-<a name="line64"> 64: </a>  } <font color="#4169E1">else</font> {
-<a name="line65"> 65: </a>    (*r)(mat);
-<a name="line66"> 66: </a>  }
-<a name="line67"> 67: </a>  PetscPublishAll(mat);
-<a name="line68"> 68: </a>  <font color="#4169E1">return</font>(0);
-<a name="line69"> 69: </a>}
+<a name="line36"> 36: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(), <A href="../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>, <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
+<a name="line37"> 37: </a><font color="#B22222">@*/</font>
+<a name="line38"> 38: </a><strong><font color="#4169E1"><a name="MatSetType"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat, const <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> matype)</font></strong>
+<a name="line39"> 39: </a>{
+<a name="line40"> 40: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr,(*r)(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>);
+<a name="line41"> 41: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      sametype,found;
+<a name="line42"> 42: </a>  MatBaseName    names = MatBaseNameList;
 
 
-<a name="line74"> 74: </a><font color="#B22222">/*@C</font>
-<a name="line75"> 75: </a><font color="#B22222">   <A href="../../../docs/manualpages/Mat/MatRegisterDestroy.html#MatRegisterDestroy">MatRegisterDestroy</A> - Frees the list of matrix types that were</font>
-<a name="line76"> 76: </a><font color="#B22222">   registered by <A href="../../../docs/manualpages/Mat/MatRegister.html#MatRegister">MatRegister</A>()/<A href="../../../docs/manualpages/Mat/MatRegisterDynamic.html#MatRegisterDynamic">MatRegisterDynamic</A>().</font>
+<a name="line47"> 47: </a>  <font color="#4169E1">while</font> (names) {
+<a name="line48"> 48: </a>    <A href="../../../docs/manualpages/Sys/PetscStrcmp.html#PetscStrcmp">PetscStrcmp</A>(matype,names-&gt;bname,&amp;found);
+<a name="line49"> 49: </a>    <font color="#4169E1">if</font> (found) {
+<a name="line50"> 50: </a>      <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> size;
+<a name="line51"> 51: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,&amp;size);
+<a name="line52"> 52: </a>      <font color="#4169E1">if</font> (size == 1) matype = names-&gt;sname;
+<a name="line53"> 53: </a>      <font color="#4169E1">else</font> matype = names-&gt;mname;
+<a name="line54"> 54: </a>      <font color="#4169E1">break</font>;
+<a name="line55"> 55: </a>    }
+<a name="line56"> 56: </a>    names = names-&gt;next;
+<a name="line57"> 57: </a>  }
 
-<a name="line78"> 78: </a><font color="#B22222">   Not Collective</font>
+<a name="line59"> 59: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,matype,&amp;sametype);
+<a name="line60"> 60: </a>  <font color="#4169E1">if</font> (sametype) <font color="#4169E1">return</font>(0);
 
-<a name="line80"> 80: </a><font color="#B22222">   Level: advanced</font>
+<a name="line62"> 62: </a>   <A href="../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(MatList,((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,matype,<A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,(void(**)(void))&amp;r);
+<a name="line63"> 63: </a>  <font color="#4169E1">if</font> (!r) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_UNKNOWN_TYPE,<font color="#666666">"Unknown <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> type given: %s"</font>,matype);
+<a name="line64"> 64: </a>
+<a name="line65"> 65: </a>  <font color="#B22222">/* free the old data structure if it existed */</font>
+<a name="line66"> 66: </a>  <font color="#4169E1">if</font> (mat-&gt;ops-&gt;destroy) {
+<a name="line67"> 67: </a>    (*mat-&gt;ops-&gt;destroy)(mat);
+<a name="line68"> 68: </a>    mat-&gt;ops-&gt;destroy = <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line69"> 69: </a>  }
+<a name="line70"> 70: </a>  mat-&gt;preallocated = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
-<a name="line82"> 82: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, register, destroy</font>
-
-<a name="line84"> 84: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Mat/MatRegister.html#MatRegister">MatRegister</A>(), <A href="../../../docs/manualpages/Mat/MatRegisterAll.html#MatRegisterAll">MatRegisterAll</A>(), <A href="../../../docs/manualpages/Mat/MatRegisterDynamic.html#MatRegisterDynamic">MatRegisterDynamic</A>()</font>
-<a name="line85"> 85: </a><font color="#B22222">@*/</font>
-<a name="line86"> 86: </a><strong><font color="#4169E1"><a name="MatRegisterDestroy"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatRegisterDestroy.html#MatRegisterDestroy">MatRegisterDestroy</A>(void)</font></strong>
-<a name="line87"> 87: </a>{
-
-<a name="line91"> 91: </a>  <A href="../../../docs/manualpages/Sys/PetscFListDestroy.html#PetscFListDestroy">PetscFListDestroy</A>(&amp;MatList);
-<a name="line92"> 92: </a>  MatRegisterAllCalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line93"> 93: </a>  <font color="#4169E1">return</font>(0);
-<a name="line94"> 94: </a>}
-
-<a name="line98"> 98: </a><font color="#B22222">/*@C</font>
-<a name="line99"> 99: </a><font color="#B22222">   <A href="../../../docs/manualpages/Mat/MatGetType.html#MatGetType">MatGetType</A> - Gets the matrix type as a string from the matrix object.</font>
-
-<a name="line101">101: </a><font color="#B22222">   Not Collective</font>
-
-<a name="line103">103: </a><font color="#B22222">   Input Parameter:</font>
-<a name="line104">104: </a><font color="#B22222">.  mat - the matrix</font>
-
-<a name="line106">106: </a><font color="#B22222">   Output Parameter:</font>
-<a name="line107">107: </a><font color="#B22222">.  name - name of matrix type</font>
-
-<a name="line109">109: </a><font color="#B22222">   Level: intermediate</font>
-
-<a name="line111">111: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>, get, method, name</font>
-
-<a name="line113">113: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>()</font>
-<a name="line114">114: </a><font color="#B22222">@*/</font>
-<a name="line115">115: </a><strong><font color="#4169E1"><a name="MatGetType"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatGetType.html#MatGetType">MatGetType</A>(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,const <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> *type)</font></strong>
-<a name="line116">116: </a>{
-<a name="line120">120: </a>  *type = ((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;type_name;
-<a name="line121">121: </a>  <font color="#4169E1">return</font>(0);
-<a name="line122">122: </a>}
+<a name="line72"> 72: </a>  <font color="#B22222">/* create the new data structure */</font>
+<a name="line73"> 73: </a>  (*r)(mat);
+<a name="line74"> 74: </a><font color="#A020F0">#if defined(PETSC_HAVE_AMS)</font>
+<a name="line75"> 75: </a>  <font color="#4169E1">if</font> (PetscAMSPublishAll) {
+<a name="line76"> 76: </a>    <font color="#B22222">/*    <A href="../../../docs/manualpages/Sys/PetscObjectAMSPublish.html#PetscObjectAMSPublish">PetscObjectAMSPublish</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat); */</font>
+<a name="line77"> 77: </a>  }
+<a name="line78"> 78: </a><font color="#A020F0">#endif</font>
+<a name="line79"> 79: </a>  <font color="#4169E1">return</font>(0);
+<a name="line80"> 80: </a>}
 
 
-<a name="line127">127: </a><font color="#B22222">/*@C</font>
-<a name="line128">128: </a><font color="#B22222">  <A href="../../../docs/manualpages/Mat/MatRegister.html#MatRegister">MatRegister</A> - See <A href="../../../docs/manualpages/Mat/MatRegisterDynamic.html#MatRegisterDynamic">MatRegisterDynamic</A>()</font>
+<a name="line85"> 85: </a><font color="#B22222">/*@C</font>
+<a name="line86"> 86: </a><font color="#B22222">   <A href="../../../docs/manualpages/Mat/MatRegisterDestroy.html#MatRegisterDestroy">MatRegisterDestroy</A> - Frees the list of matrix types that were</font>
+<a name="line87"> 87: </a><font color="#B22222">   registered by <A href="../../../docs/manualpages/Mat/MatRegister.html#MatRegister">MatRegister</A>()/<A href="../../../docs/manualpages/Mat/MatRegisterDynamic.html#MatRegisterDynamic">MatRegisterDynamic</A>().</font>
 
-<a name="line130">130: </a><font color="#B22222">  Level: advanced</font>
-<a name="line131">131: </a><font color="#B22222">@*/</font>
-<a name="line132">132: </a><strong><font color="#4169E1"><a name="MatRegister"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatRegister.html#MatRegister">MatRegister</A>(const char sname[],const char path[],const char name[],<A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*function)(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>))</font></strong>
-<a name="line133">133: </a>{
-<a name="line135">135: </a>  char           fullname[PETSC_MAX_PATH_LEN];
+<a name="line89"> 89: </a><font color="#B22222">   Not Collective</font>
 
-<a name="line138">138: </a>  PetscFListConcat(path,name,fullname);
-<a name="line139">139: </a>  PetscFListAdd(&amp;MatList,sname,fullname,(void (*)(void))function);
-<a name="line140">140: </a>  <font color="#4169E1">return</font>(0);
-<a name="line141">141: </a>}
+<a name="line91"> 91: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line93"> 93: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, register, destroy</font>
+
+<a name="line95"> 95: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Mat/MatRegister.html#MatRegister">MatRegister</A>(), <A href="../../../docs/manualpages/Mat/MatRegisterAll.html#MatRegisterAll">MatRegisterAll</A>(), <A href="../../../docs/manualpages/Mat/MatRegisterDynamic.html#MatRegisterDynamic">MatRegisterDynamic</A>()</font>
+<a name="line96"> 96: </a><font color="#B22222">@*/</font>
+<a name="line97"> 97: </a><strong><font color="#4169E1"><a name="MatRegisterDestroy"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatRegisterDestroy.html#MatRegisterDestroy">MatRegisterDestroy</A>(void)</font></strong>
+<a name="line98"> 98: </a>{
+
+<a name="line102">102: </a>  <A href="../../../docs/manualpages/Sys/PetscFListDestroy.html#PetscFListDestroy">PetscFListDestroy</A>(&amp;MatList);
+<a name="line103">103: </a>  MatRegisterAllCalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line104">104: </a>  <font color="#4169E1">return</font>(0);
+<a name="line105">105: </a>}
+
+<a name="line109">109: </a><font color="#B22222">/*@C</font>
+<a name="line110">110: </a><font color="#B22222">   <A href="../../../docs/manualpages/Mat/MatGetType.html#MatGetType">MatGetType</A> - Gets the matrix type as a string from the matrix object.</font>
+
+<a name="line112">112: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line114">114: </a><font color="#B22222">   Input Parameter:</font>
+<a name="line115">115: </a><font color="#B22222">.  mat - the matrix</font>
+
+<a name="line117">117: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line118">118: </a><font color="#B22222">.  name - name of matrix type</font>
+
+<a name="line120">120: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line122">122: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>, get, method, name</font>
+
+<a name="line124">124: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>()</font>
+<a name="line125">125: </a><font color="#B22222">@*/</font>
+<a name="line126">126: </a><strong><font color="#4169E1"><a name="MatGetType"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatGetType.html#MatGetType">MatGetType</A>(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,const <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> *type)</font></strong>
+<a name="line127">127: </a>{
+<a name="line131">131: </a>  *type = ((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;type_name;
+<a name="line132">132: </a>  <font color="#4169E1">return</font>(0);
+<a name="line133">133: </a>}
+
+
+<a name="line138">138: </a><font color="#B22222">/*@C</font>
+<a name="line139">139: </a><font color="#B22222">  <A href="../../../docs/manualpages/Mat/MatRegister.html#MatRegister">MatRegister</A> - See <A href="../../../docs/manualpages/Mat/MatRegisterDynamic.html#MatRegisterDynamic">MatRegisterDynamic</A>()</font>
+
+<a name="line141">141: </a><font color="#B22222">  Level: advanced</font>
+<a name="line142">142: </a><font color="#B22222">@*/</font>
+<a name="line143">143: </a><strong><font color="#4169E1"><a name="MatRegister"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatRegister.html#MatRegister">MatRegister</A>(const char sname[],const char path[],const char name[],<A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*function)(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>))</font></strong>
+<a name="line144">144: </a>{
+<a name="line146">146: </a>  char           fullname[PETSC_MAX_PATH_LEN];
+
+<a name="line149">149: </a>  PetscFListConcat(path,name,fullname);
+<a name="line150">150: </a>  PetscFListAdd(&amp;MatList,sname,fullname,(void (*)(void))function);
+<a name="line151">151: </a>  <font color="#4169E1">return</font>(0);
+<a name="line152">152: </a>}
+
+<a name="line154">154: </a>MatBaseName MatBaseNameList = 0;
+
+<a name="line158">158: </a><font color="#B22222">/*@C</font>
+<a name="line159">159: </a><font color="#B22222">      <A href="../../../docs/manualpages/Mat/MatRegisterBaseName.html#MatRegisterBaseName">MatRegisterBaseName</A> - Registers a name that can be used for either a sequential or its corresponding parallel matrix type.</font>
+
+<a name="line161">161: </a><font color="#B22222">  Input Parameters:</font>
+<a name="line162">162: </a><font color="#B22222">+     bname - the basename, for example, <A href="../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A></font>
+<a name="line163">163: </a><font color="#B22222">.     sname - the name of the sequential matrix type, for example, <A href="../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A></font>
+<a name="line164">164: </a><font color="#B22222">-     mname - the name of the parallel matrix type, for example, <A href="../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A></font>
+
+
+<a name="line167">167: </a><font color="#B22222">  Level: advanced</font>
+<a name="line168">168: </a><font color="#B22222">@*/</font>
+<a name="line169">169: </a><strong><font color="#4169E1"><a name="MatRegisterBaseName"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatRegisterBaseName.html#MatRegisterBaseName">MatRegisterBaseName</A>(const char bname[],const char sname[],const char mname[])</font></strong>
+<a name="line170">170: </a>{
+<a name="line172">172: </a>  MatBaseName    names;
+
+<a name="line175">175: </a>  <A href="../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(<font color="#4169E1">struct _p_MatBaseName</font>,&amp;names);
+<a name="line176">176: </a>  <A href="../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(bname,&amp;names-&gt;bname);
+<a name="line177">177: </a>  <A href="../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(sname,&amp;names-&gt;sname);
+<a name="line178">178: </a>  <A href="../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(mname,&amp;names-&gt;mname);
+<a name="line179">179: </a>  <font color="#4169E1">if</font> (!MatBaseNameList) {
+<a name="line180">180: </a>    MatBaseNameList = names;
+<a name="line181">181: </a>  } <font color="#4169E1">else</font> {
+<a name="line182">182: </a>    MatBaseName next = MatBaseNameList;
+<a name="line183">183: </a>    <font color="#4169E1">while</font> (next-&gt;next) next = next-&gt;next;
+<a name="line184">184: </a>    next-&gt;next = names;
+<a name="line185">185: </a>  }
+<a name="line186">186: </a>  <font color="#4169E1">return</font>(0);
+<a name="line187">187: </a>}
 
 
 

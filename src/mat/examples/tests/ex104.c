@@ -1,22 +1,22 @@
 static char help[] = "Test MatMatMult(), MatMatMultTranspose() for SeqDense matrices.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
 int main(int argc,char **argv) {
   Mat            A,B,C,D;
   PetscInt       i,j,k,M=10,N=5;
-  PetscScalar    *array;;
+  PetscScalar    *array;
   PetscErrorCode ierr;
   PetscRandom    r;
-  PetscTruth     equal;
+  PetscBool      equal;
   PetscReal      fill = 1.0;
   PetscMPIInt    size;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(PETSC_ERR_SUP,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP,"This is a uniprocessor example only!");
   ierr = PetscOptionsGetInt(PETSC_NULL,"-M",&M,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-N",&N,PETSC_NULL);CHKERRQ(ierr);
   ierr = MatCreate(PETSC_COMM_SELF,&A);CHKERRQ(ierr);
@@ -33,7 +33,7 @@ int main(int argc,char **argv) {
     }
   }
   ierr = MatRestoreArray(A,&array);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(r);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&r);CHKERRQ(ierr);
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
@@ -47,17 +47,17 @@ int main(int argc,char **argv) {
     ierr = MatMatMultNumeric(B,A,D);CHKERRQ(ierr);
   }
   ierr = MatEqual(C,D,&equal);CHKERRQ(ierr);
-  if (!equal) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"C != D");
-  ierr = MatDestroy(D);CHKERRQ(ierr);
+  if (!equal) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"C != D");
+  ierr = MatDestroy(&D);CHKERRQ(ierr);
 
   /* Test MatMatMultTranspose() */
   ierr = MatMatMultTranspose(A,A,MAT_INITIAL_MATRIX,fill,&D);CHKERRQ(ierr); /* D = A^T*A */
-  if (!equal) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"C != D");
-  ierr = MatDestroy(D);CHKERRQ(ierr);
+  if (!equal) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"C != D");
+  ierr = MatDestroy(&D);CHKERRQ(ierr);
 
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = MatDestroy(B);
-  ierr = MatDestroy(A);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);
+  ierr = MatDestroy(&A);
   
   PetscFinalize();
   return(0);

@@ -6,13 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="SNESSetUpdate"><H1>SNESSetUpdate</H1></A>
-Sets the general-purpose update function called at the beginning o every iteration of the nonlinear solve. Specifically it is called just before the Jacobian is "evaluated". 
+Sets the general-purpose update function called at the beginning of every iteration of the nonlinear solve. Specifically it is called just before the Jacobian is "evaluated". 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetUpdate(SNES snes, PetscErrorCode (*func)(SNES, PetscInt))
+PetscErrorCode  SNESSetUpdate(SNES snes, PetscErrorCode (*func)(SNES, PetscInt))
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>snes </B> -The nonlinear solver context

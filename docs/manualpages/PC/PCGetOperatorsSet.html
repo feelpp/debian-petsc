@@ -10,7 +10,7 @@ Determines if the matrix associated with the linear system and possibly a differ
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCGetOperatorsSet(PC pc,PetscTruth *mat,PetscTruth *pmat)
+PetscErrorCode  PCGetOperatorsSet(PC pc,PetscBool  *mat,PetscBool  *pmat)
 </PRE>
 Not collective, though the results on all processes should be the same
 <P>

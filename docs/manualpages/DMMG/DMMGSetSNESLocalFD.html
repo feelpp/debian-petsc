@@ -9,13 +9,17 @@
 Sets the local user function that is used to approximately compute the Jacobian via finite differences. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"    
-#include "petscmg.h"    
+#include "petscdmda.h"    
+#include "petscdmmesh.h"  
+#include "petscpcmg.h"    
 #include "petscdmmg.h"  
 #include "petscmat.h" 
-PetscErrorCode DMMGSetSNESLocalFD(DMMG *dmmg,DALocalFunction1 function)
+PetscErrorCode DMMGSetSNESLocalFD(DMMG *dmmg,DMDALocalFunction1 function)
 </PRE>
-Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A>
+This is being deprecated. Use <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>() for linear problems and <A HREF="../SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>() for nonlinear problems.
+See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c
+<P>
+Logically Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

@@ -10,15 +10,20 @@ Sets the weights for each partition.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatPartitioningSetPartitionWeights(MatPartitioning part,const PetscReal weights[])
+PetscErrorCode  MatPartitioningSetPartitionWeights(MatPartitioning part,const PetscReal weights[])
 </PRE>
-Collective on Partitioning
+Logically Collective on Partitioning
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>part </B></TD><TD>- the partitioning context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>weights </B></TD><TD>- the weights
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>weights </B></TD><TD>- An array of size nparts that is used to specify the fraction of
+vertex weight that should be distributed to each sub-domain for
+the balance constraint. If all of the sub-domains are to be of
+the same size, then each of the nparts elements should be set
+to a value of 1/nparts. Note that the sum of all of the weights
+should be one.
 </TD></TR></TABLE>
 <P>
 
@@ -38,4 +43,6 @@ the array must be obtained with a call to <A HREF="../Sys/PetscMalloc.html#Petsc
 <BR><A HREF="./index.html">Index of all MatOrderings routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/mat/examples/tutorials/ex15.c.html">src/mat/examples/tutorials/ex15.c.html</A><BR>
 </BODY></HTML>

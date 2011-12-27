@@ -16,8 +16,8 @@ T*/
      petscmat.h    - matrices
      petscis.h     - index sets            petscviewer.h - viewers               
 */
-#include "petscmat.h"
-#include "../src/mat/impls/aij/seq/aij.h"
+#include <petscmat.h>
+#include <../src/mat/impls/aij/seq/aij.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "PadMatrix"
@@ -70,7 +70,7 @@ int main(int argc,char **args)
   PetscViewer           fd;               /* viewer */
   char                  file[PETSC_MAX_PATH_LEN];     /* input file name */
   PetscErrorCode        ierr;
-  PetscTruth            flg;
+  PetscBool             flg;
   Vec                   v;
 
   PetscInitialize(&argc,&args,(char *)0,help);
@@ -80,20 +80,23 @@ int main(int argc,char **args)
      Determine files from which we read the two linear systems
      (matrix and right-hand-side vector).
   */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f0",file,PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Must indicate binary file with the -f0 option");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f0",file,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Must indicate binary file with the -f0 option");
 
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file,FILE_MODE_READ,&fd);CHKERRQ(ierr);
 
-  ierr = MatLoad(fd,MATSEQAIJ,&A);CHKERRQ(ierr);
-  ierr = VecLoad(fd,VECSEQ,&v);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATSEQAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&v);CHKERRQ(ierr);
+  ierr = VecLoad(v,fd);CHKERRQ(ierr);
   ierr = MatView(A,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
   ierr = PadMatrix(A,v,3.0,&B);CHKERRQ(ierr);
   ierr = MatView(B,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
-  ierr = MatDestroy(B);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:21:26+00:00">
+<meta name="date" content="2011-10-29T18:51:54+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">      Code for opening and closing files.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
-<a name="line5"> 5: </a> #include <A href="../../../include/petscsys.h.html">petscsys.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 <a name="line6">  6: </a><font color="#A020F0">#if defined(PETSC_HAVE_PWD_H)</font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;pwd.h&gt;</font>
 <a name="line8">  8: </a><font color="#A020F0">#endif</font>
@@ -80,7 +80,7 @@
 <a name="line79"> 79: </a><font color="#B22222">@*/</font>
 <a name="line80"> 80: </a><strong><font color="#4169E1"><a name="PetscGetTmp"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscGetTmp.html#PetscGetTmp">PetscGetTmp</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,char dir[],size_t len)</font></strong>
 <a name="line81"> 81: </a>{
-<a name="line83"> 83: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line83"> 83: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
 <a name="line86"> 86: </a>  <A href="../../../docs/manualpages/Sys/PetscOptionsGetenv.html#PetscOptionsGetenv">PetscOptionsGetenv</A>(comm,<font color="#666666">"PETSC_TMP"</font>,dir,len,&amp;flg);
 <a name="line87"> 87: </a>  <font color="#4169E1">if</font> (!flg) {
@@ -130,11 +130,11 @@
 <a name="line133">133: </a><font color="#B22222">  as the "/tmp" directory.</font>
 
 <a name="line135">135: </a><font color="#B22222">@*/</font>
-<a name="line136">136: </a><strong><font color="#4169E1"><a name="PetscSharedTmp"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSharedTmp.html#PetscSharedTmp">PetscSharedTmp</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *shared)</font></strong>
+<a name="line136">136: </a><strong><font color="#4169E1"><a name="PetscSharedTmp"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSharedTmp.html#PetscSharedTmp">PetscSharedTmp</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *shared)</font></strong>
 <a name="line137">137: </a>{
 <a name="line138">138: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
 <a name="line139">139: </a>  <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>        size,rank,*tagvalp,sum,cnt,i;
-<a name="line140">140: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>         flg,iflg;
+<a name="line140">140: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          flg,iflg;
 <a name="line141">141: </a>  FILE               *fd;
 <a name="line142">142: </a>  static <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> Petsc_Tmp_keyval = MPI_KEYVAL_INVALID;
 <a name="line143">143: </a>  int                err;
@@ -186,10 +186,10 @@
 <a name="line190">190: </a>      <font color="#4169E1">if</font> (rank == i) {
 <a name="line191">191: </a>        fd = fopen(filename,<font color="#666666">"w"</font>);
 <a name="line192">192: </a>        <font color="#4169E1">if</font> (!fd) {
-<a name="line193">193: </a>          <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_FILE_OPEN,<font color="#666666">"Unable to open test file %s"</font>,filename);
+<a name="line193">193: </a>          <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_FILE_OPEN,<font color="#666666">"Unable to open test file %s"</font>,filename);
 <a name="line194">194: </a>        }
 <a name="line195">195: </a>        err = fclose(fd);
-<a name="line196">196: </a>        <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
+<a name="line196">196: </a>        <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
 <a name="line197">197: </a>      }
 <a name="line198">198: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Barrier.html#MPI_Barrier">MPI_Barrier</A>(comm);
 <a name="line199">199: </a>      <font color="#4169E1">if</font> (rank &gt;= i) {
@@ -197,7 +197,7 @@
 <a name="line201">201: </a>        <font color="#4169E1">if</font> (fd) cnt = 1; <font color="#4169E1">else</font> cnt = 0;
 <a name="line202">202: </a>        <font color="#4169E1">if</font> (fd) {
 <a name="line203">203: </a>          err = fclose(fd);
-<a name="line204">204: </a>          <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
+<a name="line204">204: </a>          <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
 <a name="line205">205: </a>        }
 <a name="line206">206: </a>      } <font color="#4169E1">else</font> {
 <a name="line207">207: </a>        cnt = 0;
@@ -211,13 +211,13 @@
 <a name="line215">215: </a>        *shared = <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line216">216: </a>        <font color="#4169E1">break</font>;
 <a name="line217">217: </a>      } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (sum != 1) {
-<a name="line218">218: </a>        <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP_SYS,<font color="#666666">"Subset of processes share /tmp "</font>);
+<a name="line218">218: </a>        <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP_SYS,<font color="#666666">"Subset of processes share /tmp "</font>);
 <a name="line219">219: </a>      }
 <a name="line220">220: </a>    }
 <a name="line221">221: </a>    *tagvalp = (int)*shared;
 <a name="line222">222: </a>    PetscInfo2(0,<font color="#666666">"processors %s %s\n"</font>,(*shared) ? <font color="#666666">"share"</font>:<font color="#666666">"do NOT share"</font>,(iflg ? tmpname:<font color="#666666">"/tmp"</font>));
 <a name="line223">223: </a>  } <font color="#4169E1">else</font> {
-<a name="line224">224: </a>    *shared = (<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>) *tagvalp;
+<a name="line224">224: </a>    *shared = (<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>) *tagvalp;
 <a name="line225">225: </a>  }
 <a name="line226">226: </a>  <font color="#4169E1">return</font>(0);
 <a name="line227">227: </a>}
@@ -258,11 +258,11 @@
 <a name="line264">264: </a><font color="#B22222">   it requires O(p*p) file opens.</font>
 
 <a name="line266">266: </a><font color="#B22222">@*/</font>
-<a name="line267">267: </a><strong><font color="#4169E1"><a name="PetscSharedWorkingDirectory"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSharedWorkingDirectory.html#PetscSharedWorkingDirectory">PetscSharedWorkingDirectory</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *shared)</font></strong>
+<a name="line267">267: </a><strong><font color="#4169E1"><a name="PetscSharedWorkingDirectory"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSharedWorkingDirectory.html#PetscSharedWorkingDirectory">PetscSharedWorkingDirectory</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *shared)</font></strong>
 <a name="line268">268: </a>{
 <a name="line269">269: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
 <a name="line270">270: </a>  <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>        size,rank,*tagvalp,sum,cnt,i;
-<a name="line271">271: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>         flg,iflg;
+<a name="line271">271: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          flg,iflg;
 <a name="line272">272: </a>  FILE               *fd;
 <a name="line273">273: </a>  static <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> Petsc_WD_keyval = MPI_KEYVAL_INVALID;
 <a name="line274">274: </a>  int                err;
@@ -307,9 +307,9 @@
 <a name="line314">314: </a>    <font color="#4169E1">for</font> (i=0; i&lt;size-1; i++) {
 <a name="line315">315: </a>      <font color="#4169E1">if</font> (rank == i) {
 <a name="line316">316: </a>        fd = fopen(filename,<font color="#666666">"w"</font>);
-<a name="line317">317: </a>        <font color="#4169E1">if</font> (!fd) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_FILE_OPEN,<font color="#666666">"Unable to open test file %s"</font>,filename);
+<a name="line317">317: </a>        <font color="#4169E1">if</font> (!fd) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_FILE_OPEN,<font color="#666666">"Unable to open test file %s"</font>,filename);
 <a name="line318">318: </a>        err = fclose(fd);
-<a name="line319">319: </a>        <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
+<a name="line319">319: </a>        <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
 <a name="line320">320: </a>      }
 <a name="line321">321: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Barrier.html#MPI_Barrier">MPI_Barrier</A>(comm);
 <a name="line322">322: </a>      <font color="#4169E1">if</font> (rank &gt;= i) {
@@ -317,7 +317,7 @@
 <a name="line324">324: </a>        <font color="#4169E1">if</font> (fd) cnt = 1; <font color="#4169E1">else</font> cnt = 0;
 <a name="line325">325: </a>        <font color="#4169E1">if</font> (fd) {
 <a name="line326">326: </a>          err = fclose(fd);
-<a name="line327">327: </a>          <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
+<a name="line327">327: </a>          <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
 <a name="line328">328: </a>        }
 <a name="line329">329: </a>      } <font color="#4169E1">else</font> {
 <a name="line330">330: </a>        cnt = 0;
@@ -331,12 +331,12 @@
 <a name="line338">338: </a>        *shared = <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line339">339: </a>        <font color="#4169E1">break</font>;
 <a name="line340">340: </a>      } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (sum != 1) {
-<a name="line341">341: </a>        <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP_SYS,<font color="#666666">"Subset of processes share working directory"</font>);
+<a name="line341">341: </a>        <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP_SYS,<font color="#666666">"Subset of processes share working directory"</font>);
 <a name="line342">342: </a>      }
 <a name="line343">343: </a>    }
 <a name="line344">344: </a>    *tagvalp = (int)*shared;
 <a name="line345">345: </a>  } <font color="#4169E1">else</font> {
-<a name="line346">346: </a>    *shared = (<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>) *tagvalp;
+<a name="line346">346: </a>    *shared = (<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>) *tagvalp;
 <a name="line347">347: </a>  }
 <a name="line348">348: </a>  PetscInfo1(0,<font color="#666666">"processors %s working directory\n"</font>,(*shared) ? <font color="#666666">"shared"</font> : <font color="#666666">"do NOT share"</font>);
 <a name="line349">349: </a>  <font color="#4169E1">return</font>(0);
@@ -361,7 +361,7 @@
 <a name="line370">370: </a><font color="#B22222">    Level: developer</font>
 
 <a name="line372">372: </a><font color="#B22222">@*/</font>
-<a name="line373">373: </a><strong><font color="#4169E1"><a name="PetscFileRetrieve"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscFileRetrieve.html#PetscFileRetrieve">PetscFileRetrieve</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,const char libname[],char llibname[],size_t llen,<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *found)</font></strong>
+<a name="line373">373: </a><strong><font color="#4169E1"><a name="PetscFileRetrieve"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscFileRetrieve.html#PetscFileRetrieve">PetscFileRetrieve</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,const char libname[],char llibname[],size_t llen,<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *found)</font></strong>
 <a name="line374">374: </a>{
 <a name="line375">375: </a>  char              buf[1024],tmpdir[PETSC_MAX_PATH_LEN],urlget[PETSC_MAX_PATH_LEN],*par;
 <a name="line376">376: </a>  const char        *pdir;
@@ -370,7 +370,7 @@
 <a name="line379">379: </a>  int               i;
 <a name="line380">380: </a>  <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>       rank;
 <a name="line381">381: </a>  size_t            len = 0;
-<a name="line382">382: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>        flg1,flg2,flg3,sharedtmp,exists;
+<a name="line382">382: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>         flg1,flg2,flg3,sharedtmp,exists;
 
 <a name="line385">385: </a>  *found = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
@@ -407,7 +407,7 @@
 <a name="line417">417: </a>    <font color="#4169E1">if</font> (!exists) {
 <a name="line418">418: </a>      PetscTestFile(<font color="#666666">"urlget"</font>,'r',&amp;exists);
 <a name="line419">419: </a>      <font color="#4169E1">if</font> (!exists) {
-<a name="line420">420: </a>        <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_PLIB,<font color="#666666">"Cannot locate PETSc script urlget in %s or current directory"</font>,urlget);
+<a name="line420">420: </a>        <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Cannot locate PETSc script urlget in %s or current directory"</font>,urlget);
 <a name="line421">421: </a>      }
 <a name="line422">422: </a>      <A href="../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(urlget,<font color="#666666">"urlget"</font>);
 <a name="line423">423: </a>    }
@@ -426,10 +426,10 @@
 <a name="line436">436: </a><font color="#A020F0">#if defined(PETSC_HAVE_POPEN)</font>
 <a name="line437">437: </a>    <A href="../../../docs/manualpages/Sys/PetscPOpen.html#PetscPOpen">PetscPOpen</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,urlget,<font color="#666666">"r"</font>,&amp;fp);
 <a name="line438">438: </a><font color="#A020F0">#else</font>
-<a name="line439">439: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP_SYS,<font color="#666666">"Cannot run external programs on this machine"</font>);
+<a name="line439">439: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP_SYS,<font color="#666666">"Cannot run external programs on this machine"</font>);
 <a name="line440">440: </a><font color="#A020F0">#endif</font>
 <a name="line441">441: </a>    <font color="#4169E1">if</font> (!fgets(buf,1024,fp)) {
-<a name="line442">442: </a>      <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_PLIB,<font color="#666666">"No output from ${PETSC_DIR}/bin/urlget in getting file %s"</font>,libname);
+<a name="line442">442: </a>      <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"No output from ${PETSC_DIR}/bin/urlget in getting file %s"</font>,libname);
 <a name="line443">443: </a>    }
 <a name="line444">444: </a>    PetscInfo1(0,<font color="#666666">"Message back from urlget: %s\n"</font>,buf);
 

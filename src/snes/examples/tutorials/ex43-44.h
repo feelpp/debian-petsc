@@ -6,7 +6,7 @@
   Counts residual entries as small if they are less then .2 times the maximum
   Decides to solve a reduced problem if the number of large entries is less than 20 percent of all entries (and this has been true for criteria_reduce iterations)
 */
-#include "petscsnes.h"
+#include <petscsnes.h>
 
 extern PetscErrorCode FormFunctionSub(SNES,Vec,Vec,void*);
 extern PetscErrorCode FormJacobianSub(SNES,Vec,Mat*,Mat*,MatStructure*,void*);
@@ -36,7 +36,7 @@ PetscErrorCode FormFunctionSub(SNES snes,Vec x,Vec f,void *ictx)
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "FormJaocbianSub"
+#define __FUNCT__ "FormJacobianSub"
 PetscErrorCode FormJacobianSub(SNES snes,Vec x,Mat *A, Mat *B, MatStructure *str,void *ictx)
 {
   PetscErrorCode ierr;
@@ -98,7 +98,7 @@ PetscErrorCode SolveSubproblem(SNES snes)
 
   printf("number in subproblem %d\n",cnt);CHKERRQ(ierr);
   ierr = VecRestoreArray(residual,&r);CHKERRQ(ierr);
-  ierr = ISCreateGeneral(PETSC_COMM_WORLD,cnt,indices,&ctx.is);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(PETSC_COMM_WORLD,cnt,indices,PETSC_COPY_VALUES,&ctx.is);CHKERRQ(ierr);
   ierr = PetscFree(indices);CHKERRQ(ierr);
 
   ierr = SNESGetJacobian(snes,0,&mat,0,0);CHKERRQ(ierr);
@@ -126,23 +126,23 @@ PetscErrorCode SolveSubproblem(SNES snes)
   ierr = VecScatterBegin(ctx.scatter,x,solution,INSERT_VALUES,SCATTER_REVERSE);CHKERRQ(ierr);
   ierr = VecScatterEnd(ctx.scatter,x,solution,INSERT_VALUES,SCATTER_REVERSE);CHKERRQ(ierr);
 
-  ierr = ISDestroy(ctx.is);CHKERRQ(ierr);
-  ierr = VecDestroy(ctx.xwork);CHKERRQ(ierr);
-  ierr = VecDestroy(ctx.fwork);CHKERRQ(ierr);
-  ierr = VecScatterDestroy(ctx.scatter);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(f);CHKERRQ(ierr);
-  ierr = SNESDestroy(snessub);CHKERRQ(ierr);
+  ierr = ISDestroy(&ctx.is);CHKERRQ(ierr);
+  ierr = VecDestroy(&ctx.xwork);CHKERRQ(ierr);
+  ierr = VecDestroy(&ctx.fwork);CHKERRQ(ierr);
+  ierr = VecScatterDestroy(&ctx.scatter);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&f);CHKERRQ(ierr);
+  ierr = SNESDestroy(&snessub);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 
-extern PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorRange_Private(SNES,PetscInt,PetscReal*);
+extern PetscErrorCode  SNESMonitorRange_Private(SNES,PetscInt,PetscReal*);
 static PetscInt CountGood = 0;
 
 #undef __FUNCT__  
 #define __FUNCT__ "MonitorRange"
-PetscErrorCode PETSCSNES_DLLEXPORT MonitorRange(SNES snes,PetscInt it,PetscReal rnorm,void *dummy)
+PetscErrorCode  MonitorRange(SNES snes,PetscInt it,PetscReal rnorm,void *dummy)
 {
   PetscErrorCode          ierr;
   PetscReal               perc;

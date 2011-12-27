@@ -2,9 +2,9 @@
 
 static char help[] = "Solves 1D wave equation using multigrid.\n\n";
 
-#include "petscda.h"
-#include "petscksp.h"
-#include "petscdmmg.h"
+#include <petscdmda.h>
+#include <petscksp.h>
+#include <petscdmmg.h>
 
 extern PetscErrorCode ComputeMatrix(DMMG,Mat,Mat);
 extern PetscErrorCode ComputeRHS(DMMG,Vec);
@@ -18,14 +18,14 @@ int main(int argc,char **argv)
   PetscInt       i;
   DMMG           *dmmg;
   PetscReal      norm;
-  DA             da;
+  DM             da;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
 
   ierr = DMMGCreate(PETSC_COMM_WORLD,3,PETSC_NULL,&dmmg);CHKERRQ(ierr);
-  ierr = DACreate1d(PETSC_COMM_WORLD,DA_XPERIODIC,-3,2,1,0,&da);CHKERRQ(ierr);  
+  ierr = DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_PERIODIC,-3,2,1,0,&da);CHKERRQ(ierr);  
   ierr = DMMGSetDM(dmmg,(DM)da);CHKERRQ(ierr);
-  ierr = DADestroy(da);CHKERRQ(ierr);
+  ierr = DMDestroy(&da);CHKERRQ(ierr);
 
   ierr = DMMGSetKSP(dmmg,ComputeRHS,ComputeMatrix);CHKERRQ(ierr);
 
@@ -42,7 +42,7 @@ int main(int argc,char **argv)
   /* ierr = PetscPrintf(PETSC_COMM_WORLD,"Residual norm %G\n",norm);CHKERRQ(ierr); */
 
   ierr = DMMGDestroy(dmmg);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }
@@ -57,9 +57,9 @@ PetscErrorCode ComputeInitialSolution(DMMG *dmmg)
   Vec            x = DMMGGetx(dmmg);
 
   PetscFunctionBegin;
-  ierr = DAGetInfo(DMMGGetDA(dmmg),0,&mx,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(DMMGGetDM(dmmg),0,&mx,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   Hx = 2.0*PETSC_PI / (PetscReal)(mx);
-  ierr = DAGetCorners(DMMGGetDA(dmmg),&xs,0,0,&xm,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(DMMGGetDM(dmmg),&xs,0,0,&xm,0,0);CHKERRQ(ierr);
   
   for(i=xs; i<xs+xm; i++){
     col[0] = 2*i; col[1] = 2*i + 1;
@@ -80,7 +80,7 @@ PetscErrorCode ComputeRHS(DMMG dmmg,Vec b)
   PetscScalar    h;
 
   PetscFunctionBegin;
-  ierr = DAGetInfo((DA)dmmg->dm,0,&mx,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(dmmg->dm,0,&mx,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   h    = 2.0*PETSC_PI/((mx));
   ierr = VecCopy(dmmg->x,b);CHKERRQ(ierr);
   ierr = VecScale(b,h);CHKERRQ(ierr);
@@ -91,7 +91,7 @@ PetscErrorCode ComputeRHS(DMMG dmmg,Vec b)
 #define __FUNCT__ "ComputeMatrix"
 PetscErrorCode ComputeMatrix(DMMG dmmg,Mat J,Mat jac)
 {
-  DA             da = (DA)dmmg->dm;
+  DM             da = dmmg->dm;
   PetscErrorCode ierr;
   PetscInt       i,mx,xm,xs;
   PetscScalar    v[7],Hx;
@@ -99,9 +99,9 @@ PetscErrorCode ComputeMatrix(DMMG dmmg,Mat J,Mat jac)
   PetscScalar    lambda;
 
   ierr = PetscMemzero(col,7*sizeof(MatStencil));CHKERRQ(ierr);
-  ierr = DAGetInfo(da,0,&mx,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);  
+  ierr = DMDAGetInfo(da,0,&mx,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);  
   Hx = 2.0*PETSC_PI / (PetscReal)(mx);
-  ierr = DAGetCorners(da,&xs,0,0,&xm,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,0,0,&xm,0,0);CHKERRQ(ierr);
   lambda = 2.0*Hx;
   for(i=xs; i<xs+xm; i++){
     row.i = i; row.j = 0; row.k = 0; row.c = 0;

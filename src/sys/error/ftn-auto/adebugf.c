@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* adebug.c */
 /* Fortran interface file */
 
@@ -43,10 +44,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscsetdefaultdebugger_(int *__ierr ){
+void PETSC_STDCALL  petscsetdefaultdebugger_(int *__ierr ){
 *__ierr = PetscSetDefaultDebugger();
 }
-void PETSC_STDCALL   petscattachdebugger_(int *__ierr ){
+void PETSC_STDCALL  petscattachdebugger_(int *__ierr ){
 *__ierr = PetscAttachDebugger();
 }
 #if defined(__cplusplus)

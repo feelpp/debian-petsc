@@ -1,8 +1,8 @@
 
 ALL: lib 
 SOURCEH   = ctable.h
-DIRS      = viewer draw error dll fileio memory objects time utils plog mpiuni matlabengine \
-            random adic bag examples verbose fsrc fwk f90-src f90-mod python
+DIRS      = comm viewer draw error dll fileio memory objects time utils plog mpiuni matlabengine \
+            random adic bag examples verbose fsrc fwk f90-src f90-mod python ams totalview yaml
 LOCDIR    = src/sys/
 MANSEC    = Sys
 

@@ -30,7 +30,7 @@ static char help[] ="Solves the time dependent Bratu problem using pseudo-timest
     this file automatically includes "petscsys.h" and other lower-level
     PETSc include files.
 */
-#include "petscts.h"
+#include <petscts.h>
 
 /*
   Create an application context to contain data needed by the 
@@ -62,8 +62,12 @@ int main(int argc,char **argv)
   PetscErrorCode ierr; 
   PetscReal      param_max = 6.81,param_min = 0.,dt;
   PetscReal      ftime;
+  PetscMPIInt    size;
 
   PetscInitialize(&argc,&argv,PETSC_NULL,help);
+  ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);
+  if (size != 1) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP,"This is a uniprocessor example only");
+
   user.mx        = 4;
   user.my        = 4;
   user.param     = 6.0;
@@ -74,9 +78,7 @@ int main(int argc,char **argv)
   PetscOptionsGetInt(PETSC_NULL,"-mx",&user.mx,PETSC_NULL);
   PetscOptionsGetInt(PETSC_NULL,"-my",&user.my,PETSC_NULL);
   PetscOptionsGetReal(PETSC_NULL,"-param",&user.param,PETSC_NULL);
-  if (user.param >= param_max || user.param <= param_min) {
-    SETERRQ(1,"Parameter is out of range");
-  }
+  if (user.param >= param_max || user.param <= param_min) SETERRQ(PETSC_COMM_SELF,1,"Parameter is out of range");
   dt = .5/PetscMax(user.mx,user.my);
   ierr = PetscOptionsGetReal(PETSC_NULL,"-dt",&dt,PETSC_NULL);CHKERRQ(ierr);
   N          = user.mx*user.my;
@@ -112,7 +114,7 @@ int main(int argc,char **argv)
      function they will call this routine. Note the final argument
      is the application context used by the call-back functions.
   */
-  ierr = TSSetRHSFunction(ts,FormFunction,&user);CHKERRQ(ierr);
+  ierr = TSSetRHSFunction(ts,PETSC_NULL,FormFunction,&user);CHKERRQ(ierr);
 
   /*
      Set the Jacobian matrix and the function used to compute 
@@ -160,18 +162,23 @@ int main(int argc,char **argv)
   /*
       Perform the solve. This is where the timestepping takes place.
   */
-  ierr = TSStep(ts,&its,&ftime);CHKERRQ(ierr);
-  
+  ierr = TSSolve(ts,x,&ftime);CHKERRQ(ierr);
+
+  /*
+      Get the number of steps
+  */
+  ierr = TSGetTimeStepNumber(ts,&its);CHKERRQ(ierr);
+
   printf("Number of pseudo timesteps = %d final time %4.2e\n",(int)its,ftime);
 
   /* 
      Free the data structures constructed above
   */
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = MatDestroy(J);CHKERRQ(ierr);
-  ierr = TSDestroy(ts);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = MatDestroy(&J);CHKERRQ(ierr);
+  ierr = TSDestroy(&ts);CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }

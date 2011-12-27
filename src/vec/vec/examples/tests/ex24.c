@@ -2,7 +2,7 @@
 static char help[] = "Scatters from a parallel vector to a sequential vector.\n\
 Tests where the local part of the scatter is a copy.\n\n";
 
-#include "petscvec.h"
+#include <petscvec.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -37,11 +37,11 @@ int main(int argc,char **argv)
     m = n;
   }
   ierr = PetscMalloc((m)*sizeof(PetscInt),&blks);CHKERRQ(ierr);
-  blks[0] = n*rank*bs;
+  blks[0] = n*rank;
   for (i=1; i<m; i++) {
-    blks[i] = blks[i-1] + bs;   
+    blks[i] = blks[i-1] + 1;   
   }
-  ierr = ISCreateBlock(PETSC_COMM_SELF,bs,m,blks,&is1);CHKERRQ(ierr);
+  ierr = ISCreateBlock(PETSC_COMM_SELF,bs,m,blks,PETSC_COPY_VALUES,&is1);CHKERRQ(ierr);
   ierr = PetscFree(blks);CHKERRQ(ierr);
 
   ierr = VecCreateSeq(PETSC_COMM_SELF,bs*m,&y);CHKERRQ(ierr);
@@ -67,14 +67,14 @@ int main(int argc,char **argv)
   ierr = PetscViewerRestoreSingleton(PETSC_VIEWER_STDOUT_WORLD,&sviewer);CHKERRQ(ierr);
   ierr = PetscSynchronizedFlush(PETSC_COMM_WORLD);CHKERRQ(ierr);
 
-  ierr = VecScatterDestroy(ctx);CHKERRQ(ierr);
+  ierr = VecScatterDestroy(&ctx);CHKERRQ(ierr);
 
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = ISDestroy(is1);CHKERRQ(ierr);
-  ierr = ISDestroy(is2);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = ISDestroy(&is1);CHKERRQ(ierr);
+  ierr = ISDestroy(&is2);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

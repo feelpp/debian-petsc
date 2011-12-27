@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* qcg.c */
 /* Fortran interface file */
 
@@ -48,15 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspqcgsettrustregionradius_(KSP ksp,PetscReal *delta, int *__ierr ){
+void PETSC_STDCALL  kspqcgsettrustregionradius_(KSP ksp,PetscReal *delta, int *__ierr ){
 *__ierr = KSPQCGSetTrustRegionRadius(
 	(KSP)PetscToPointer((ksp) ),*delta);
 }
-void PETSC_STDCALL   kspqcggettrialstepnorm_(KSP ksp,PetscReal *tsnorm, int *__ierr ){
+void PETSC_STDCALL  kspqcggettrialstepnorm_(KSP ksp,PetscReal *tsnorm, int *__ierr ){
 *__ierr = KSPQCGGetTrialStepNorm(
 	(KSP)PetscToPointer((ksp) ),tsnorm);
 }
-void PETSC_STDCALL   kspqcggetquadratic_(KSP ksp,PetscReal *quadratic, int *__ierr ){
+void PETSC_STDCALL  kspqcggetquadratic_(KSP ksp,PetscReal *quadratic, int *__ierr ){
 *__ierr = KSPQCGGetQuadratic(
 	(KSP)PetscToPointer((ksp) ),quadratic);
 }

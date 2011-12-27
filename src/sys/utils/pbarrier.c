@@ -1,9 +1,8 @@
-#define PETSC_DLL
 
-#include "petscsys.h"              /*I "petscsys.h" I*/
+#include <petscsys.h>              /*I "petscsys.h" I*/
 
 /* Logging support */
-PetscLogEvent PETSC_Barrier;
+PetscLogEvent PETSC_Barrier=0;
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscBarrier"
@@ -25,7 +24,7 @@ PetscLogEvent PETSC_Barrier;
    Concepts: barrier
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscBarrier(PetscObject obj)
+PetscErrorCode  PetscBarrier(PetscObject obj)
 {
   PetscErrorCode ierr;
   MPI_Comm       comm;

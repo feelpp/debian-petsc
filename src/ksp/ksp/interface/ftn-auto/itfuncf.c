@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* itfunc.c */
 /* Fortran interface file */
 
@@ -58,19 +59,24 @@ extern void PetscRmPointer(void*);
 #define kspsolvetranspose_ kspsolvetranspose
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspreset_ KSPRESET
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspreset_ kspreset
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspdestroy_ KSPDESTROY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspdestroy_ kspdestroy
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define kspsetpreconditionerside_ KSPSETPRECONDITIONERSIDE
+#define kspsetpcside_ KSPSETPCSIDE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define kspsetpreconditionerside_ kspsetpreconditionerside
+#define kspsetpcside_ kspsetpcside
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define kspgetpreconditionerside_ KSPGETPRECONDITIONERSIDE
+#define kspgetpcside_ KSPGETPCSIDE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define kspgetpreconditionerside_ kspgetpreconditionerside
+#define kspgetpcside_ kspgetpcside
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspgettolerances_ KSPGETTOLERANCES
@@ -91,6 +97,16 @@ extern void PetscRmPointer(void*);
 #define kspgetinitialguessnonzero_ KSPGETINITIALGUESSNONZERO
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspgetinitialguessnonzero_ kspgetinitialguessnonzero
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspseterrorifnotconverged_ KSPSETERRORIFNOTCONVERGED
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspseterrorifnotconverged_ kspseterrorifnotconverged
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspgeterrorifnotconverged_ KSPGETERRORIFNOTCONVERGED
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspgeterrorifnotconverged_ kspgeterrorifnotconverged
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspsetinitialguessknoll_ KSPSETINITIALGUESSKNOLL
@@ -143,6 +159,11 @@ extern void PetscRmPointer(void*);
 #define kspgetpc_ kspgetpc
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspmonitor_ KSPMONITOR
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspmonitor_ kspmonitor
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspmonitorcancel_ KSPMONITORCANCEL
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspmonitorcancel_ kspmonitorcancel
@@ -178,125 +199,141 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspcomputeextremesingularvalues_(KSP ksp,PetscReal *emax,PetscReal *emin, int *__ierr ){
+void PETSC_STDCALL  kspcomputeextremesingularvalues_(KSP ksp,PetscReal *emax,PetscReal *emin, int *__ierr ){
 *__ierr = KSPComputeExtremeSingularValues(
 	(KSP)PetscToPointer((ksp) ),emax,emin);
 }
-void PETSC_STDCALL   kspcomputeeigenvalues_(KSP ksp,PetscInt *n,PetscReal *r,PetscReal *c,PetscInt *neig, int *__ierr ){
+void PETSC_STDCALL  kspcomputeeigenvalues_(KSP ksp,PetscInt *n,PetscReal *r,PetscReal *c,PetscInt *neig, int *__ierr ){
 *__ierr = KSPComputeEigenvalues(
 	(KSP)PetscToPointer((ksp) ),*n,r,c,neig);
 }
-void PETSC_STDCALL   kspsetuponblocks_(KSP ksp, int *__ierr ){
+void PETSC_STDCALL  kspsetuponblocks_(KSP ksp, int *__ierr ){
 *__ierr = KSPSetUpOnBlocks(
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL   kspsetup_(KSP ksp, int *__ierr ){
+void PETSC_STDCALL  kspsetup_(KSP ksp, int *__ierr ){
 *__ierr = KSPSetUp(
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL   kspsolve_(KSP ksp,Vec b,Vec x, int *__ierr ){
+void PETSC_STDCALL  kspsolve_(KSP ksp,Vec b,Vec x, int *__ierr ){
 *__ierr = KSPSolve(
 	(KSP)PetscToPointer((ksp) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   kspsolvetranspose_(KSP ksp,Vec b,Vec x, int *__ierr ){
+
+void PETSC_STDCALL  kspsolvetranspose_(KSP ksp,Vec b,Vec x, int *__ierr ){
 *__ierr = KSPSolveTranspose(
 	(KSP)PetscToPointer((ksp) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   kspdestroy_(KSP ksp, int *__ierr ){
-*__ierr = KSPDestroy(
+void PETSC_STDCALL  kspreset_(KSP ksp, int *__ierr ){
+*__ierr = KSPReset(
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL   kspsetpreconditionerside_(KSP ksp,PCSide *side, int *__ierr ){
-*__ierr = KSPSetPreconditionerSide(
+void PETSC_STDCALL  kspdestroy_(KSP *ksp, int *__ierr ){
+*__ierr = KSPDestroy(ksp);
+}
+void PETSC_STDCALL  kspsetpcside_(KSP ksp,PCSide *side, int *__ierr ){
+*__ierr = KSPSetPCSide(
 	(KSP)PetscToPointer((ksp) ),*side);
 }
-void PETSC_STDCALL   kspgetpreconditionerside_(KSP ksp,PCSide *side, int *__ierr ){
-*__ierr = KSPGetPreconditionerSide(
+void PETSC_STDCALL  kspgetpcside_(KSP ksp,PCSide *side, int *__ierr ){
+*__ierr = KSPGetPCSide(
 	(KSP)PetscToPointer((ksp) ),
 	(PCSide* )PetscToPointer((side) ));
 }
-void PETSC_STDCALL   kspgettolerances_(KSP ksp,PetscReal *rtol,PetscReal *abstol,PetscReal *dtol,PetscInt *maxits, int *__ierr ){
+void PETSC_STDCALL  kspgettolerances_(KSP ksp,PetscReal *rtol,PetscReal *abstol,PetscReal *dtol,PetscInt *maxits, int *__ierr ){
 *__ierr = KSPGetTolerances(
 	(KSP)PetscToPointer((ksp) ),rtol,abstol,dtol,maxits);
 }
-void PETSC_STDCALL   kspsettolerances_(KSP ksp,PetscReal *rtol,PetscReal *abstol,PetscReal *dtol,PetscInt *maxits, int *__ierr ){
+void PETSC_STDCALL  kspsettolerances_(KSP ksp,PetscReal *rtol,PetscReal *abstol,PetscReal *dtol,PetscInt *maxits, int *__ierr ){
 *__ierr = KSPSetTolerances(
 	(KSP)PetscToPointer((ksp) ),*rtol,*abstol,*dtol,*maxits);
 }
-void PETSC_STDCALL   kspsetinitialguessnonzero_(KSP ksp,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  kspsetinitialguessnonzero_(KSP ksp,PetscBool  *flg, int *__ierr ){
 *__ierr = KSPSetInitialGuessNonzero(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }
-void PETSC_STDCALL   kspgetinitialguessnonzero_(KSP ksp,PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  kspgetinitialguessnonzero_(KSP ksp,PetscBool  *flag, int *__ierr ){
 *__ierr = KSPGetInitialGuessNonzero(
 	(KSP)PetscToPointer((ksp) ),flag);
 }
-void PETSC_STDCALL   kspsetinitialguessknoll_(KSP ksp,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  kspseterrorifnotconverged_(KSP ksp,PetscBool  *flg, int *__ierr ){
+*__ierr = KSPSetErrorIfNotConverged(
+	(KSP)PetscToPointer((ksp) ),*flg);
+}
+void PETSC_STDCALL  kspgeterrorifnotconverged_(KSP ksp,PetscBool  *flag, int *__ierr ){
+*__ierr = KSPGetErrorIfNotConverged(
+	(KSP)PetscToPointer((ksp) ),flag);
+}
+void PETSC_STDCALL  kspsetinitialguessknoll_(KSP ksp,PetscBool  *flg, int *__ierr ){
 *__ierr = KSPSetInitialGuessKnoll(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }
-void PETSC_STDCALL   kspgetinitialguessknoll_(KSP ksp,PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  kspgetinitialguessknoll_(KSP ksp,PetscBool  *flag, int *__ierr ){
 *__ierr = KSPGetInitialGuessKnoll(
 	(KSP)PetscToPointer((ksp) ),flag);
 }
-void PETSC_STDCALL   kspgetcomputesingularvalues_(KSP ksp,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  kspgetcomputesingularvalues_(KSP ksp,PetscBool  *flg, int *__ierr ){
 *__ierr = KSPGetComputeSingularValues(
 	(KSP)PetscToPointer((ksp) ),flg);
 }
-void PETSC_STDCALL   kspsetcomputesingularvalues_(KSP ksp,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  kspsetcomputesingularvalues_(KSP ksp,PetscBool  *flg, int *__ierr ){
 *__ierr = KSPSetComputeSingularValues(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }
-void PETSC_STDCALL   kspgetcomputeeigenvalues_(KSP ksp,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  kspgetcomputeeigenvalues_(KSP ksp,PetscBool  *flg, int *__ierr ){
 *__ierr = KSPGetComputeEigenvalues(
 	(KSP)PetscToPointer((ksp) ),flg);
 }
-void PETSC_STDCALL   kspsetcomputeeigenvalues_(KSP ksp,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  kspsetcomputeeigenvalues_(KSP ksp,PetscBool  *flg, int *__ierr ){
 *__ierr = KSPSetComputeEigenvalues(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }
-void PETSC_STDCALL   kspgetrhs_(KSP ksp,Vec *r, int *__ierr ){
+void PETSC_STDCALL  kspgetrhs_(KSP ksp,Vec *r, int *__ierr ){
 *__ierr = KSPGetRhs(
 	(KSP)PetscToPointer((ksp) ),r);
 }
-void PETSC_STDCALL   kspgetsolution_(KSP ksp,Vec *v, int *__ierr ){
+void PETSC_STDCALL  kspgetsolution_(KSP ksp,Vec *v, int *__ierr ){
 *__ierr = KSPGetSolution(
 	(KSP)PetscToPointer((ksp) ),v);
 }
-void PETSC_STDCALL   kspsetpc_(KSP ksp,PC pc, int *__ierr ){
+void PETSC_STDCALL  kspsetpc_(KSP ksp,PC pc, int *__ierr ){
 *__ierr = KSPSetPC(
 	(KSP)PetscToPointer((ksp) ),
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   kspgetpc_(KSP ksp,PC *pc, int *__ierr ){
+void PETSC_STDCALL  kspgetpc_(KSP ksp,PC *pc, int *__ierr ){
 *__ierr = KSPGetPC(
 	(KSP)PetscToPointer((ksp) ),pc);
 }
-void PETSC_STDCALL   kspmonitorcancel_(KSP ksp, int *__ierr ){
+void PETSC_STDCALL  kspmonitor_(KSP ksp,PetscInt *it,PetscReal *rnorm, int *__ierr ){
+*__ierr = KSPMonitor(
+	(KSP)PetscToPointer((ksp) ),*it,*rnorm);
+}
+void PETSC_STDCALL  kspmonitorcancel_(KSP ksp, int *__ierr ){
 *__ierr = KSPMonitorCancel(
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL   kspsetresidualhistory_(KSP ksp,PetscReal a[],PetscInt *na,PetscTruth *reset, int *__ierr ){
+void PETSC_STDCALL  kspsetresidualhistory_(KSP ksp,PetscReal a[],PetscInt *na,PetscBool  *reset, int *__ierr ){
 *__ierr = KSPSetResidualHistory(
 	(KSP)PetscToPointer((ksp) ),a,*na,*reset);
 }
-void PETSC_STDCALL   kspsetdiagonalscale_(KSP ksp,PetscTruth *scale, int *__ierr ){
+void PETSC_STDCALL  kspsetdiagonalscale_(KSP ksp,PetscBool  *scale, int *__ierr ){
 *__ierr = KSPSetDiagonalScale(
 	(KSP)PetscToPointer((ksp) ),*scale);
 }
-void PETSC_STDCALL   kspgetdiagonalscale_(KSP ksp,PetscTruth *scale, int *__ierr ){
+void PETSC_STDCALL  kspgetdiagonalscale_(KSP ksp,PetscBool  *scale, int *__ierr ){
 *__ierr = KSPGetDiagonalScale(
 	(KSP)PetscToPointer((ksp) ),scale);
 }
-void PETSC_STDCALL   kspsetdiagonalscalefix_(KSP ksp,PetscTruth *fix, int *__ierr ){
+void PETSC_STDCALL  kspsetdiagonalscalefix_(KSP ksp,PetscBool  *fix, int *__ierr ){
 *__ierr = KSPSetDiagonalScaleFix(
 	(KSP)PetscToPointer((ksp) ),*fix);
 }
-void PETSC_STDCALL   kspgetdiagonalscalefix_(KSP ksp,PetscTruth *fix, int *__ierr ){
+void PETSC_STDCALL  kspgetdiagonalscalefix_(KSP ksp,PetscBool  *fix, int *__ierr ){
 *__ierr = KSPGetDiagonalScaleFix(
 	(KSP)PetscToPointer((ksp) ),fix);
 }

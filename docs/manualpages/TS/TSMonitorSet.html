@@ -6,19 +6,19 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="TSMonitorSet"><H1>TSMonitorSet</H1></A>
-Sets an ADDITIONAL function that is to be used at every timestep to display the iteration's  progress.    
+Sets an ADDITIONAL function that is to be used at every timestep to display the iteration's  progress. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSMonitorSet(TS ts,PetscErrorCode (*monitor)(TS,PetscInt,PetscReal,Vec,void*),void *mctx,PetscErrorCode (*mdestroy)(void*))
+PetscErrorCode  TSMonitorSet(TS ts,PetscErrorCode (*monitor)(TS,PetscInt,PetscReal,Vec,void*),void *mctx,PetscErrorCode (*mdestroy)(void**))
 </PRE>
-Collective on <A HREF="../TS/TS.html#TS">TS</A>
+Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts </B></TD><TD>- the <A HREF="../TS/TS.html#TS">TS</A> context obtained from <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>()
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- monitoring routine
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>monitor </B></TD><TD>- monitoring routine
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mctx </B></TD><TD>- [optional] user-defined context for private data for the 
 monitor routine (use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if no context is desired)
@@ -27,9 +27,9 @@ monitor routine (use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> 
 (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
 </TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Calling sequence of func</FONT></H3>
+<H3><FONT COLOR="#CC3333">Calling sequence of monitor</FONT></H3>
 <pre>
-   int func(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> steps,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> time,<A HREF="../Vec/Vec.html#Vec">Vec</A> x,void *mctx)
+   int monitor(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> steps,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> time,<A HREF="../Vec/Vec.html#Vec">Vec</A> x,void *mctx)
 </pre>
 <P>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -71,5 +71,8 @@ Fortran notes: Only a single monitor function can be set for each <A HREF="../TS
 <A HREF="../../../src/ts/examples/tutorials/ex6.c.html">src/ts/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex8.c.html">src/ts/examples/tutorials/ex8.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex2f.F.html">src/ts/examples/tutorials/ex2f.F.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex13.c.html">src/ts/examples/tutorials/ex13.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
 </BODY></HTML>

@@ -6,13 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="TSGetDuration"><H1>TSGetDuration</H1></A>
-Gets the maximum number of timesteps to use and  maximum time for iteration. 
+Gets the maximum number of timesteps to use and maximum time for iteration. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSGetDuration(TS ts, PetscInt *maxsteps, PetscReal *maxtime)
+PetscErrorCode  TSGetDuration(TS ts, PetscInt *maxsteps, PetscReal *maxtime)
 </PRE>
-Collective on <A HREF="../TS/TS.html#TS">TS</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -32,4 +32,6 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ts/examples/tutorials/ex16.c.html">src/ts/examples/tutorials/ex16.c.html</A><BR>
 </BODY></HTML>

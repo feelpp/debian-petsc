@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:44:46+00:00">
+<meta name="date" content="2011-10-29T19:17:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -27,7 +27,7 @@
 <a name="line17"> 17: </a><font color="#B22222">  ./ex45 -n 10 -snes_jacobian_default -fd_jacobian_coloring -my_jacobian_struct -log_summary |grep SNESFunctionEval </font>
 <a name="line18"> 18: </a><font color="#B22222"> */</font>
 
-<a name="line20"> 20: </a> #include <A href="../../../../include/petscsnes.h.html">petscsnes.h</A>
+<a name="line20"> 20: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 
 <a name="line22"> 22: </a><font color="#B22222">/* </font>
 <a name="line23"> 23: </a><font color="#B22222">   User-defined routines</font>
@@ -45,13 +45,13 @@
 <a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
 <a name="line37"> 37: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      h,xp = 0.0;
 <a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v,pfive = .5;
-<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 <a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A>  matfdcoloring = 0;
-<a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     fd_jacobian_coloring;
+<a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      fd_jacobian_coloring;
 
 <a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
 <a name="line44"> 44: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
-<a name="line45"> 45: </a>  <font color="#4169E1">if</font> (size != 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"This is a uniprocessor example only!"</font>);
+<a name="line45"> 45: </a>  <font color="#4169E1">if</font> (size != 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"This is a uniprocessor example only!"</font>);
 <a name="line46"> 46: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-n"</font>,&amp;n,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line47"> 47: </a>  h = 1.0/(n-1);
 
@@ -97,7 +97,7 @@
 <a name="line88"> 88: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateSeqAIJ.html#MatCreateSeqAIJ">MatCreateSeqAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,n,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;JPrec);
 <a name="line89"> 89: </a>
 <a name="line90"> 90: </a>  flg = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line91"> 91: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-snes_jacobian_default"</font>,&amp;flg,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line91"> 91: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-snes_jacobian_default"</font>,&amp;flg,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line92"> 92: </a>  <font color="#4169E1">if</font> (flg){
 <a name="line93"> 93: </a>    <font color="#B22222">/* Jacobian using finite differences. Slow and expensive, not take advantage of sparsity */</font>
 <a name="line94"> 94: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,<A href="../../../../docs/manualpages/SNES/SNESDefaultComputeJacobian.html#SNESDefaultComputeJacobian">SNESDefaultComputeJacobian</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
@@ -107,7 +107,7 @@
 <a name="line98"> 98: </a>  }
 
 <a name="line100">100: </a>  fd_jacobian_coloring = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line101">101: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fd_jacobian_coloring"</font>,&amp;fd_jacobian_coloring,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line101">101: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fd_jacobian_coloring"</font>,&amp;fd_jacobian_coloring,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line102">102: </a>  <font color="#4169E1">if</font> (fd_jacobian_coloring){
 <a name="line103">103: </a>    <font color="#B22222">/* Jacobian using finite differences with matfdcoloring based on the sparse structure.</font>
 <a name="line104">104: </a><font color="#B22222">     In this case, only three calls to FormFunction() for each Jacobian evaluation - very fast! */</font>
@@ -115,7 +115,7 @@
 <a name="line106">106: </a>
 <a name="line107">107: </a>    <font color="#B22222">/* Get the data structure of J */</font>
 <a name="line108">108: </a>    flg = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line109">109: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-my_jacobian_struct"</font>,&amp;flg,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line109">109: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-my_jacobian_struct"</font>,&amp;flg,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line110">110: </a>    <font color="#4169E1">if</font> (flg){
 <a name="line111">111: </a>      <font color="#B22222">/* use user-provided jacobian data structure */</font>
 <a name="line112">112: </a>      MyApproxJacobianStructure(&amp;J,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
@@ -126,7 +126,7 @@
 <a name="line117">117: </a>    }
 
 <a name="line119">119: </a>    <font color="#B22222">/* Create coloring context */</font>
-<a name="line120">120: </a>    <A href="../../../../docs/manualpages/MatOrderings/MatGetColoring.html#MatGetColoring">MatGetColoring</A>(J,MATCOLORING_SL,&amp;iscoloring);
+<a name="line120">120: </a>    <A href="../../../../docs/manualpages/MatOrderings/MatGetColoring.html#MatGetColoring">MatGetColoring</A>(J,MATCOLORINGSL,&amp;iscoloring);
 <a name="line121">121: </a>    <A href="../../../../docs/manualpages/MatFD/MatFDColoringCreate.html#MatFDColoringCreate">MatFDColoringCreate</A>(J,iscoloring,&amp;matfdcoloring);
 <a name="line122">122: </a>    <A href="../../../../docs/manualpages/MatFD/MatFDColoringSetFunction.html#MatFDColoringSetFunction">MatFDColoringSetFunction</A>(matfdcoloring,(<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void))FormFunction,(void*)F);
 <a name="line123">123: </a>    <A href="../../../../docs/manualpages/MatFD/MatFDColoringSetFromOptions.html#MatFDColoringSetFromOptions">MatFDColoringSetFromOptions</A>(matfdcoloring);
@@ -134,7 +134,7 @@
 <a name="line125">125: </a>
 <a name="line126">126: </a>    <font color="#B22222">/* Use <A href="../../../../docs/manualpages/SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>() for Jacobian evaluation */</font>
 <a name="line127">127: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,<A href="../../../../docs/manualpages/SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>,matfdcoloring);
-<a name="line128">128: </a>    <A href="../../../../docs/manualpages/IS/ISColoringDestroy.html#ISColoringDestroy">ISColoringDestroy</A>(iscoloring);
+<a name="line128">128: </a>    <A href="../../../../docs/manualpages/IS/ISColoringDestroy.html#ISColoringDestroy">ISColoringDestroy</A>(&amp;iscoloring);
 <a name="line129">129: </a>  }
 
 <a name="line131">131: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>(snes);
@@ -150,11 +150,11 @@
 <a name="line141">141: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
 <a name="line142">142: </a><font color="#B22222">     are no longer needed.</font>
 <a name="line143">143: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
-<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);     <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(r);
-<a name="line145">145: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(F);     <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(J);
-<a name="line146">146: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(JPrec); <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(snes);
+<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);     <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;r);
+<a name="line145">145: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;F);     <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;J);
+<a name="line146">146: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;JPrec); <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(&amp;snes);
 <a name="line147">147: </a>  <font color="#4169E1">if</font> (fd_jacobian_coloring){
-<a name="line148">148: </a>    <A href="../../../../docs/manualpages/MatFD/MatFDColoringDestroy.html#MatFDColoringDestroy">MatFDColoringDestroy</A>(matfdcoloring);
+<a name="line148">148: </a>    <A href="../../../../docs/manualpages/MatFD/MatFDColoringDestroy.html#MatFDColoringDestroy">MatFDColoringDestroy</A>(&amp;matfdcoloring);
 <a name="line149">149: </a>  }
 <a name="line150">150: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line151">151: </a>  <font color="#4169E1">return</font> 0;

@@ -4,92 +4,114 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:23:42+00:00">
+<meta name="date" content="2011-10-29T18:54:16+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80">
-<a name="line2">  2: </a>      module MyModule
-<a name="line3"> 3: </a> #include <A href="../../../../include/finclude/petscsysdef.h.html">finclude/petscsysdef.h</A>
-<a name="line4"> 4: </a> #include <A href="../../../../include/finclude/petscbagdef.h.html">finclude/petscbagdef.h</A>
-<a name="line5"> 5: </a> #include <A href="../../../../include/finclude/petscviewerdef.h.html">finclude/petscviewerdef.h</A>
-<a name="line6">  6: </a>!   Data structure used to contain information about the problem
-<a name="line7">  7: </a>!   You can add physical values etc here
+<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_USE_FORTRAN_MODULES 1</font></strong>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;finclude/petscsysdef.h&gt;</font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;finclude/petscbagdef.h&gt;</font>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;finclude/petscviewerdef.h&gt;</font>
 
-<a name="line9">  9: </a>      type appctx
-<a name="line10"> 10: </a>        <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> :: x
-<a name="line11"> 11: </a>        <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> :: y
-<a name="line12"> 12: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> :: nxc
-<a name="line13"> 13: </a>        <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> :: t
-<a name="line14"> 14: </a>        character*(80) :: c
+<a name="line6">  6: </a>      module Bag_data_module
+<a name="line7">  7: </a>!     Data structure used to contain information about the problem
+<a name="line8">  8: </a>!     You can add physical values etc here
 
-<a name="line16"> 16: </a>      end type appctx
-<a name="line17"> 17: </a>      end module MyModule
+<a name="line10"> 10: </a>      type tuple
+<a name="line11"> 11: </a><strong><font color="#FF0000">         <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>:</font></strong>: x1,x2
+<a name="line12"> 12: </a>      end type tuple
 
-<a name="line19"> 19: </a>      module MyInterface
-<a name="line20"> 20: </a>      Interface <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>
-<a name="line21"> 21: </a>        Subroutine <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>(bag,ctx,ierr)
-<a name="line22"> 22: </a>          use MyModule
-<a name="line23"> 23: </a>          PetscBag bag
-<a name="line24"> 24: </a>          type(AppCtx), pointer :: ctx
-<a name="line25"> 25: </a>          <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
-<a name="line26"> 26: </a>        End Subroutine
-<a name="line27"> 27: </a>      End Interface <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>
-<a name="line28"> 28: </a>      End module MyInterface
+<a name="line14"> 14: </a>      type bag_data_type
+<a name="line15"> 15: </a>         <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> :: x
+<a name="line16"> 16: </a>         <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> :: y
+<a name="line17"> 17: </a>         <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> :: nxc
+<a name="line18"> 18: </a>         <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  :: t
+<a name="line19"> 19: </a>         character*(80) :: c
+<a name="line20"> 20: </a>         type(tuple) :: pos
+<a name="line21"> 21: </a>      end type bag_data_type
+<a name="line22"> 22: </a>      end module Bag_data_module
 
-<a name="line30"> 30: </a>      program ex5f90
-<a name="line31"> 31: </a>      use MyModule
-<a name="line32"> 32: </a>      use MyInterface
-<a name="line33"> 33: </a>      implicit none
-<a name="line34"> 34: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line35"> 35: </a> #include <A href="../../../../include/finclude/petscbag.h.html">finclude/petscbag.h</A>
-<a name="line36"> 36: </a> #include <A href="../../../../include/finclude/petscviewer.h.html">finclude/petscviewer.h</A>
+<a name="line24"> 24: </a>      module Bag_interface_module
+<a name="line25"> 25: </a>      use Bag_data_module
 
-<a name="line38"> 38: </a>      PetscBag bag
-<a name="line39"> 39: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
-<a name="line40"> 40: </a>      type(AppCtx), pointer :: ctx
-<a name="line41"> 41: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer
-<a name="line42"> 42: </a>      PetscSizeT sizeofctx,sizeofint
-<a name="line43"> 43: </a>      PetscSizeT sizeofscalar,sizeoftruth
-<a name="line44"> 44: </a>      PetscSizeT sizeofchar,sizeofreal
-<a name="line45"> 45: </a>
-<a name="line46"> 46: </a>      call <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(PETSC_NULL_CHARACTER,ierr)
+<a name="line27"> 27: </a>      interface <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>
+<a name="line28"> 28: </a>         subroutine <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>(bag,data,ierr)
+<a name="line29"> 29: </a>           use Bag_data_module
+<a name="line30"> 30: </a>           <A href="../../../../docs/manualpages/Sys/PetscBag.html#PetscBag">PetscBag</A> bag
+<a name="line31"> 31: </a>           type(bag_data_type),pointer :: data
+<a name="line32"> 32: </a>           <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
+<a name="line33"> 33: </a>         end subroutine <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>
+<a name="line34"> 34: </a>      end interface
+<a name="line35"> 35: </a>      end module Bag_interface_module
 
-<a name="line48"> 48: </a>!      compute size of ctx
-<a name="line49"> 49: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_INT,sizeofint,ierr)
-<a name="line50"> 50: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_SCALAR,sizeofscalar,ierr)
-<a name="line51"> 51: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_TRUTH,sizeoftruth,ierr)
-<a name="line52"> 52: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_CHAR,sizeofchar,ierr)
-<a name="line53"> 53: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_REAL,sizeofreal,ierr)
+<a name="line37"> 37: </a>      program ex5f90
+<a name="line38"> 38: </a>      use Bag_interface_module
+<a name="line39"> 39: </a>!     use Bag_module
+<a name="line40"> 40: </a>      use petsc
+<a name="line41"> 41: </a>      implicit none
 
-<a name="line55"> 55: </a>!     really need a <font color="#4169E1">sizeof</font>(ctx) operator here. There could be padding inside the
-<a name="line56"> 56: </a>!     structure due to alignment issues - so, this computed value cold be wrong.
-<a name="line57"> 57: </a>      sizeofctx = sizeofint + sizeofscalar+sizeoftruth+sizeofchar*80+sizeofreal
+<a name="line43"> 43: </a>      <A href="../../../../docs/manualpages/Sys/PetscBag.html#PetscBag">PetscBag</A> bag
+<a name="line44"> 44: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
+<a name="line45"> 45: </a>      type(bag_data_type), pointer :: data
+<a name="line46"> 46: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer
+<a name="line47"> 47: </a>      PetscSizeT sizeofbag,sizeofint
+<a name="line48"> 48: </a>      PetscSizeT sizeofscalar,sizeoftruth
+<a name="line49"> 49: </a>      PetscSizeT sizeofchar,sizeofreal
 
-<a name="line59"> 59: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagCreate.html#PetscBagCreate">PetscBagCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,sizeofctx,bag,ierr)
-<a name="line60"> 60: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>(bag,ctx,ierr)
-<a name="line61"> 61: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterInt.html#PetscBagRegisterInt">PetscBagRegisterInt</A>(bag,ctx%nxc ,56,'nxc','nxc_variable help message',ierr)
-<a name="line62"> 62: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterScalar.html#PetscBagRegisterScalar">PetscBagRegisterScalar</A>(bag,ctx%x ,103.2d0,'x','x variable help message',ierr)
-<a name="line63"> 63: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterTruth.html#PetscBagRegisterTruth">PetscBagRegisterTruth</A>(bag,ctx%t ,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,'t','t boolean help message',ierr)
-<a name="line64"> 64: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterString.html#PetscBagRegisterString">PetscBagRegisterString</A>(bag,ctx%c,'hello','c','string help message',ierr)
-<a name="line65"> 65: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterReal.html#PetscBagRegisterReal">PetscBagRegisterReal</A>(bag,ctx%y ,-11.0d0,'y','y variable help message',ierr)
-<a name="line66"> 66: </a>      ctx%nxc = 23
-<a name="line67"> 67: </a>      ctx%x   = 155.4
-<a name="line68"> 68: </a>      ctx%c   = 'a whole new string'
-<a name="line69"> 69: </a>      ctx%t   = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>
-<a name="line70"> 70: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(bag,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,ierr)
-<a name="line71"> 71: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(bag,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_BINARY_WORLD.html#PETSC_VIEWER_BINARY_WORLD">PETSC_VIEWER_BINARY_WORLD</A>,ierr)
-<a name="line72"> 72: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagDestroy.html#PetscBagDestroy">PetscBagDestroy</A>(bag,ierr)
+<a name="line51"> 51: </a>      call <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(PETSC_NULL_CHARACTER,ierr)
 
-<a name="line74"> 74: </a>      call <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,'binaryoutput',FILE_MODE_READ,viewer,ierr)
-<a name="line75"> 75: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagLoad.html#PetscBagLoad">PetscBagLoad</A>(viewer,bag,ierr)
-<a name="line76"> 76: </a>      call <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(viewer,ierr)
-<a name="line77"> 77: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(bag,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,ierr)
-<a name="line78"> 78: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>(bag,ctx,ierr)
-<a name="line79"> 79: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagDestroy.html#PetscBagDestroy">PetscBagDestroy</A>(bag,ierr)
+<a name="line53"> 53: </a>!   compute size of the data
+<a name="line54"> 54: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_INT,sizeofint,ierr)
+<a name="line55"> 55: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_SCALAR,sizeofscalar,ierr)
+<a name="line56"> 56: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_BOOL,sizeoftruth,ierr)
+<a name="line57"> 57: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_CHAR,sizeofchar,ierr)
+<a name="line58"> 58: </a>      call <A href="../../../../docs/manualpages/Sys/PetscDataTypeGetSize.html#PetscDataTypeGetSize">PetscDataTypeGetSize</A>(PETSC_REAL,sizeofreal,ierr)
 
-<a name="line81"> 81: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line82"> 82: </a>      end
+<a name="line60"> 60: </a>!     really need a <font color="#4169E1">sizeof</font>(data) operator here. There could be padding inside the
+<a name="line61"> 61: </a>!     structure due to alignment issues - so, this computed value cold be wrong.
+<a name="line62"> 62: </a>      sizeofbag = sizeofint + sizeofscalar + sizeoftruth + sizeofchar*80 &amp;
+<a name="line63"> 63: </a>     &amp;       + 3*sizeofreal
+
+<a name="line65"> 65: </a>! create the bag
+<a name="line66"> 66: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagCreate.html#PetscBagCreate">PetscBagCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,sizeofbag,bag,ierr)
+<a name="line67"> 67: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>(bag,data,ierr)
+<a name="line68"> 68: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagSetName.html#PetscBagSetName">PetscBagSetName</A>(bag,'demo parameters',                        &amp;
+<a name="line69"> 69: </a>     &amp;      'super secret demo parameters in a bag',ierr)
+<a name="line70"> 70: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagSetOptionsPrefix.html#PetscBagSetOptionsPrefix">PetscBagSetOptionsPrefix</A>(bag, 'pbag_', ierr)
+
+<a name="line72"> 72: </a>! register the data within the bag, grabbing values from the options database
+<a name="line73"> 73: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterInt.html#PetscBagRegisterInt">PetscBagRegisterInt</A>(bag,data%nxc ,56,'nxc',                   &amp;
+<a name="line74"> 74: </a>     &amp;      'nxc_variable help message',ierr)
+<a name="line75"> 75: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterScalar.html#PetscBagRegisterScalar">PetscBagRegisterScalar</A>(bag,data%x ,103.2d0,'x',               &amp;
+<a name="line76"> 76: </a>     &amp;      'x variable help message',ierr)
+<a name="line77"> 77: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterBool.html#PetscBagRegisterBool">PetscBagRegisterBool</A>(bag,data%t ,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,'t',              &amp;
+<a name="line78"> 78: </a>     &amp;      't boolean help message',ierr)
+<a name="line79"> 79: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterString.html#PetscBagRegisterString">PetscBagRegisterString</A>(bag,data%c,'hello','c',                &amp;
+<a name="line80"> 80: </a>     &amp;      'string help message',ierr)
+<a name="line81"> 81: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterReal.html#PetscBagRegisterReal">PetscBagRegisterReal</A>(bag,data%y ,-11.0d0,'y',                 &amp;
+<a name="line82"> 82: </a>     &amp;       'y variable help message',ierr)
+<a name="line83"> 83: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterReal.html#PetscBagRegisterReal">PetscBagRegisterReal</A>(bag,data%pos%x1 ,1.0d0,'pos_x1',         &amp;
+<a name="line84"> 84: </a>     &amp;      'tuple value 1 help message',ierr)
+<a name="line85"> 85: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagRegisterReal.html#PetscBagRegisterReal">PetscBagRegisterReal</A>(bag,data%pos%x2 ,2.0d0,'pos_x2',         &amp;
+<a name="line86"> 86: </a>     &amp;      'tuple value 2 help message',ierr)
+<a name="line87"> 87: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(bag,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,ierr)
+
+<a name="line89"> 89: </a>      data%nxc = 23
+<a name="line90"> 90: </a>      data%x   = 155.4
+<a name="line91"> 91: </a>      data%c   = 'a whole new string'
+<a name="line92"> 92: </a>      data%t   = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>
+<a name="line93"> 93: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(bag,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_BINARY_WORLD.html#PETSC_VIEWER_BINARY_WORLD">PETSC_VIEWER_BINARY_WORLD</A>,ierr)
+<a name="line94"> 94: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagDestroy.html#PetscBagDestroy">PetscBagDestroy</A>(bag,ierr)
+
+<a name="line96"> 96: </a>      call <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,'binaryoutput',        &amp;
+<a name="line97"> 97: </a>     &amp;      FILE_MODE_READ,viewer,ierr)
+<a name="line98"> 98: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagLoad.html#PetscBagLoad">PetscBagLoad</A>(viewer,bag,ierr)
+<a name="line99"> 99: </a>      call <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(viewer,ierr)
+<a name="line100">100: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(bag,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,ierr)
+<a name="line101">101: </a>      call <A href="../../../../docs/manualpages/Sys/PetscBagDestroy.html#PetscBagDestroy">PetscBagDestroy</A>(bag,ierr)
+
+<a name="line103">103: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line104">104: </a>      end program ex5f90
 </pre>
 </body>
 

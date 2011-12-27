@@ -1,7 +1,7 @@
-#include "../src/sys/f90-src/f90impl.h"
-#include "private/fortranimpl.h"
-#include "petscbag.h"
-#include "../src/sys/bag/bagimpl.h"
+#include <../src/sys/f90-src/f90impl.h>
+#include <private/fortranimpl.h>
+#include <petscbag.h>
+#include <../src/sys/bag/bagimpl.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define petscbagdestroy_ PETSCBAGDESTROY
@@ -12,7 +12,9 @@
 #define petscbagregisterscalar_ PETSCBAGREGISTERSCALAR
 #define petscbagregisterstring_ PETSCBAGREGISTERSTRING
 #define petscbagregisterreal_ PETSCBAGREGISTERREAL
-#define petscbagregistertruth_ PETSCBAGREGISTERTRUTH
+#define petscbagregisterbool_ PETSCBAGREGISTERBOOL
+#define petscbagsetname_ PETSCBAGSETNAME
+#define petscbagsetoptionsprefix_ PETSCBAGSETOPTIONSPREFIX
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE)
 #define petscbagdestroy_ petscbagdestroy
 #define petscbagview_ petscbagview
@@ -22,7 +24,9 @@
 #define petscbagregisterscalar_ petscbagregisterscalar
 #define petscbagregisterstring_ petscbagregisterstring
 #define petscbagregisterreal_ petscbagregisterreal
-#define petscbagregistertruth_ petscbagregistertruth
+#define petscbagregisterbool_ petscbagregisterbool
+#define petscbagsetname_ petscbagsetname
+#define petscbagsetoptionsprefix_ petscbagsetoptionsprefix
 #endif
 
 EXTERN_C_BEGIN
@@ -30,7 +34,7 @@ EXTERN_C_BEGIN
 
 void PETSC_STDCALL petscbagdestroy_(PetscBag *bag,PetscErrorCode *ierr)
 {
-  *ierr = PetscBagDestroy(*bag);
+  *ierr = PetscBagDestroy(bag);
 }
 
 void PETSC_STDCALL petscbagview_(PetscBag *bag,PetscViewer *viewer,PetscErrorCode *ierr)
@@ -80,17 +84,17 @@ void PETSC_STDCALL petscbagregisterreal_(PetscBag *bag,void *ptr,PetscReal *def,
   FREECHAR(s2,t2);
 }
 
-void PETSC_STDCALL petscbagregistertruth_(PetscBag *bag,void *ptr,PetscTruth *def,CHAR s1 PETSC_MIXED_LEN(l1),
+void PETSC_STDCALL petscbagregisterbool_(PetscBag *bag,void *ptr,PetscBool  *def,CHAR s1 PETSC_MIXED_LEN(l1),
 					CHAR s2 PETSC_MIXED_LEN(l2),PetscErrorCode *ierr PETSC_END_LEN(l1) PETSC_END_LEN(l2))
 {
   char       *t1,*t2;
-  PetscTruth flg = PETSC_FALSE;
+  PetscBool  flg = PETSC_FALSE;
 
   /* some Fortran compilers use -1 as boolean */
   if (*def) flg = PETSC_TRUE;
   FIXCHAR(s1,l1,t1);
   FIXCHAR(s2,l2,t2);
-  *ierr = PetscBagRegisterTruth(*bag,ptr,flg,t1,t2);
+  *ierr = PetscBagRegisterBool(*bag,ptr,flg,t1,t2);
   FREECHAR(s1,t1);
   FREECHAR(s2,t2);
 }
@@ -112,6 +116,24 @@ void PETSC_STDCALL petscbagregisterstring_(PetscBag *bag,CHAR p PETSC_MIXED_LEN(
 void PETSC_STDCALL petscbaggetdata_(PetscBag *bag,void **data,PetscErrorCode *ierr)
 {
   *ierr = PetscBagGetData(*bag,data);
+}
+
+void PETSC_STDCALL petscbagsetname_(PetscBag *bag,CHAR ns PETSC_MIXED_LEN(nl),CHAR hs PETSC_MIXED_LEN(hl), PetscErrorCode *ierr PETSC_END_LEN(nl) PETSC_END_LEN(hl))
+{
+  char *nt,*ht;
+  FIXCHAR(ns,nl,nt);
+  FIXCHAR(hs,hl,ht);
+  *ierr = PetscBagSetName(*bag,nt,ht);
+  FREECHAR(ns,nt);
+  FREECHAR(hs,ht);
+}
+
+void PETSC_STDCALL petscbagsetoptionsprefix_(PetscBag *bag,CHAR pre PETSC_MIXED_LEN(len), PetscErrorCode *ierr PETSC_END_LEN(len))
+{
+  char *t;
+  FIXCHAR(pre,len,t);
+  *ierr = PetscBagSetOptionsPrefix(*bag,t);
+  FREECHAR(pre,t);
 }
 
 EXTERN_C_END

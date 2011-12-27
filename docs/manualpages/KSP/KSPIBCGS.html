@@ -12,9 +12,8 @@ Implements the IBiCGStab (Improved Stabilized version of BiConjugate Gradient Sq
 
 <br>
 <P>
-Notes: Reference: The Improved BiCGStab Method for Large and Sparse Unsymmetric Linear Systems on Parallel Distributed Memory
-Architectures. L. T. Yand and R. Brent, Proceedings of the Fifth International Conference on Algorithms and
-Architectures for Parallel Processing, 2002, IEEE.
+Notes: Supports left and right preconditioning
+<P>
 See <A HREF="../KSP/KSPBCGSL.html#KSPBCGSL">KSPBCGSL</A> for additional stabilization
 <P>
 Unlike the Bi-CG-stab algorithm, this requires one multiplication be the transpose of the operator
@@ -26,6 +25,10 @@ For maximum reduction in the number of global reduction operations, this solver 
 <A HREF="../KSP/KSPSetLagNorm.html#KSPSetLagNorm">KSPSetLagNorm</A>().
 <P>
 This is not supported for complex numbers.
+<P>
+Reference: The Improved BiCGStab Method for Large and Sparse Unsymmetric Linear Systems on Parallel Distributed Memory
+Architectures. L. T. Yand and R. Brent, Proceedings of the Fifth International Conference on Algorithms and
+Architectures for Parallel Processing, 2002, IEEE.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A HREF="../KSP/KSP.html#KSP">KSP</A>, <A HREF="../KSP/KSPBICG.html#KSPBICG">KSPBICG</A>, <A HREF="../KSP/KSPBCGSL.html#KSPBCGSL">KSPBCGSL</A>, <A HREF="../KSP/KSPIBCGS.html#KSPIBCGS">KSPIBCGS</A>, <A HREF="../KSP/KSPSetLagNorm.html#KSPSetLagNorm">KSPSetLagNorm</A>()

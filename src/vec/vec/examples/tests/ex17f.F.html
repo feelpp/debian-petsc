@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:36+00:00">
+<meta name="date" content="2011-10-29T18:56:21+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -14,9 +14,9 @@
 <a name="line4">  4: </a><font color="#666666">!  this case each local vector is as long as the entire parallel vector.</font>
 <a name="line5">  5: </a><font color="#666666">!</font>
 <a name="line6">  6: </a><font color="#666666">      implicit none</font>
-<a name="line7">  7: </a><font color="#666666">#include "</font>finclude/petscsys.h<font color="#666666">"</font>
-<a name="line8">  8: </a><font color="#666666">#include "</font>finclude/petscis.h<font color="#666666">"</font>
-<a name="line9">  9: </a><font color="#666666">#include "</font>finclude/petscvec.h<font color="#666666">"</font>
+<a name="line7">  7: </a><font color="#666666">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line8">  8: </a><font color="#666666">#include &lt;finclude/petscis.h&gt;</font>
+<a name="line9">  9: </a><font color="#666666">#include &lt;finclude/petscvec.h&gt;</font>
 
 <a name="line11"> 11: </a><font color="#666666">      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr</font>
 <a name="line12"> 12: </a><font color="#666666">      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>  size,rank</font>
@@ -70,8 +70,8 @@
 <a name="line60"> 60: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,NN,first,stride,is1,ierr)</font>
 <a name="line61"> 61: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,NN,first,stride,is2,ierr)</font>
 <a name="line62"> 62: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(y,is2,x,is1,ctx,ierr)</font>
-<a name="line63"> 63: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(ctx,y,x,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,<A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)</font>
-<a name="line64"> 64: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(ctx,y,x,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,<A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)</font>
+<a name="line63"> 63: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(ctx,y,x,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)</font>
+<a name="line64"> 64: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(ctx,y,x,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)</font>
 <a name="line65"> 65: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(ctx,ierr)</font>
 <a name="line66"> 66: </a><font color="#666666">!</font>
 <a name="line67"> 67: </a><font color="#666666">!   View the sequential vector on the 0th processor</font>

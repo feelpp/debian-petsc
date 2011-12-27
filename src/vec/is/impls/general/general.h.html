@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:59+00:00">
+<meta name="date" content="2011-10-29T18:56:49+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -13,13 +13,13 @@
 <a name="line5">  5: </a><font color="#B22222">/*</font>
 <a name="line6">  6: </a><font color="#B22222">    Defines the data structure used for the general index set</font>
 <a name="line7">  7: </a><font color="#B22222">*/</font>
-<a name="line8"> 8: </a> #include <A href="../../../../../include/private/isimpl.h.html">private/isimpl.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;private/isimpl.h&gt;</font>
 
 <a name="line10"> 10: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line11"> 11: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   N;         <font color="#B22222">/* number of indices */</font>
 <a name="line12"> 12: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   n;         <font color="#B22222">/* local number of indices */</font>
-<a name="line13"> 13: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> sorted;    <font color="#B22222">/* indicates the indices are sorted */</font>
-<a name="line14"> 14: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> allocated; <font color="#B22222">/* did we allocate the index array ourselves? */</font>
+<a name="line13"> 13: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  sorted;    <font color="#B22222">/* indicates the indices are sorted */</font>
+<a name="line14"> 14: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  allocated; <font color="#B22222">/* did we allocate the index array ourselves? */</font>
 <a name="line15"> 15: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *idx;
 <a name="line16"> 16: </a>} IS_General;
 

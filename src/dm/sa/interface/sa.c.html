@@ -1,0 +1,1623 @@
+<center><a href="sa.c">Actual source code: sa.c</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:07:01+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCDM_DLL</font></strong>
+
+<a name="line3"> 3: </a> #include <A href="../../../../include/private/saimpl.h.html">private/saimpl.h</A>
+
+
+<a name="line6">  6: </a><A href="../../../../docs/manualpages/Sys/PetscClassId.html#PetscClassId">PetscClassId</A>  SA_MAPPING_CLASSID;
+<a name="line7">  7: </a><A href="../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> SA_MAPPING_Map, SA_MAPPING_MapLocal, SA_MAPPING_MapSplit, SA_MAPPING_MapSplitLocal;
+<a name="line8">  8: </a><A href="../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> SA_MAPPING_Bin, SA_MAPPING_BinLocal, SA_MAPPING_BinSplit, SA_MAPPING_BinSplitLocal;
+<a name="line9">  9: </a><A href="../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> SA_MAPPING_AssemblyBegin, SA_MAPPING_AssemblyEnd, SA_MAPPING_Invert, SA_MAPPING_Pushforward, SA_MAPPING_Pullback;
+
+<a name="line11"> 11: </a><A href="../../../../docs/manualpages/Sys/PetscFList.html#PetscFList">PetscFList</A> SAMappingList               = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line12"> 12: </a><A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  SAMappingRegisterAllCalled  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line13"> 13: </a><A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  SAMappingPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+
+
+
+
+
+<a name="line25"> 25: </a><font color="#B22222">/*@C</font>
+<a name="line26"> 26: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/SAMappingFinalizePackage.html#SAMappingFinalizePackage">SAMappingFinalizePackage</A> - This function destroys everything in the SAMapping package. It is</font>
+<a name="line27"> 27: </a><font color="#B22222">  called from <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>().</font>
+
+<a name="line29"> 29: </a><font color="#B22222">  Level: developer</font>
+
+<a name="line31"> 31: </a><font color="#B22222">.keywords: Petsc, destroy, package</font>
+<a name="line32"> 32: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>()</font>
+<a name="line33"> 33: </a><font color="#B22222">@*/</font>
+<a name="line34"> 34: </a><strong><font color="#4169E1"><a name="SAMappingFinalizePackage"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/DM/SAMappingFinalizePackage.html#SAMappingFinalizePackage">SAMappingFinalizePackage</A>(void)</font></strong>
+<a name="line35"> 35: </a>{
+<a name="line37"> 37: </a>  SAMappingPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line38"> 38: </a>  SAMappingRegisterAllCalled  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line39"> 39: </a>  SAMappingList               = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line40"> 40: </a>  <font color="#4169E1">return</font>(0);
+<a name="line41"> 41: </a>}
+
+<a name="line45"> 45: </a><font color="#B22222">/*@C</font>
+<a name="line46"> 46: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/SAMappingInitializePackage.html#SAMappingInitializePackage">SAMappingInitializePackage</A> - This function initializes everything in the SAMapping package. It is called</font>
+<a name="line47"> 47: </a><font color="#B22222">  from PetscDLLibraryRegister() when using dynamic libraries, and on the first call to SAMappingCreate()</font>
+<a name="line48"> 48: </a><font color="#B22222">  when using static libraries.</font>
+
+<a name="line50"> 50: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line51"> 51: </a><font color="#B22222">. path - The dynamic library path, or <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A></font>
+
+<a name="line53"> 53: </a><font color="#B22222">  Level: developer</font>
+
+<a name="line55"> 55: </a><font color="#B22222">.keywords: SAMapping, initialize, package</font>
+<a name="line56"> 56: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>()</font>
+<a name="line57"> 57: </a><font color="#B22222">@*/</font>
+<a name="line58"> 58: </a><strong><font color="#4169E1"><a name="SAMappingInitializePackage"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/DM/SAMappingInitializePackage.html#SAMappingInitializePackage">SAMappingInitializePackage</A>(const char path[])</font></strong>
+<a name="line59"> 59: </a>{
+<a name="line60"> 60: </a>  char              logList[256];
+<a name="line61"> 61: </a>  char              *className;
+<a name="line62"> 62: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>         opt;
+<a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+
+<a name="line66"> 66: </a>  <font color="#4169E1">if</font> (SAMappingPackageInitialized) <font color="#4169E1">return</font>(0);
+
+<a name="line68"> 68: </a>  SAMappingPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line69"> 69: </a>  <font color="#B22222">/* Register Classes */</font>
+<a name="line70"> 70: </a>  <A href="../../../../docs/manualpages/Profiling/PetscClassIdRegister.html#PetscClassIdRegister">PetscClassIdRegister</A>(<font color="#666666">"SAMapping"</font>,&amp;SA_MAPPING_CLASSID);
+<a name="line71"> 71: </a>  <font color="#B22222">/* Register Constructors */</font>
+<a name="line72"> 72: </a>  <A href="../../../../docs/manualpages/DM/SAMappingRegisterAll.html#SAMappingRegisterAll">SAMappingRegisterAll</A>(path);
+<a name="line73"> 73: </a>  <font color="#B22222">/* Register Events */</font>
+<a name="line74"> 74: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingMap.html#SAMappingMap">SAMappingMap</A>"</font>,           SA_MAPPING_CLASSID,&amp;SA_MAPPING_Map);
+<a name="line75"> 75: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>"</font>,      SA_MAPPING_CLASSID,&amp;SA_MAPPING_MapLocal);
+<a name="line76"> 76: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>"</font>,           SA_MAPPING_CLASSID,&amp;SA_MAPPING_Bin);
+<a name="line77"> 77: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>"</font>,      SA_MAPPING_CLASSID,&amp;SA_MAPPING_BinLocal);
+<a name="line78"> 78: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingMap.html#SAMappingMap">SAMappingMap</A>"</font>,           SA_MAPPING_CLASSID,&amp;SA_MAPPING_MapSplit);
+<a name="line79"> 79: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>"</font>,      SA_MAPPING_CLASSID,&amp;SA_MAPPING_MapSplitLocal);
+<a name="line80"> 80: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>"</font>,           SA_MAPPING_CLASSID,&amp;SA_MAPPING_BinSplit);
+<a name="line81"> 81: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>"</font>,      SA_MAPPING_CLASSID,&amp;SA_MAPPING_BinSplitLocal);
+<a name="line82"> 82: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"SAMappingAssemblyBegin"</font>, SA_MAPPING_CLASSID,&amp;SA_MAPPING_AssemblyBegin);
+<a name="line83"> 83: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"SAMappingAssemblyEnd"</font>,   SA_MAPPING_CLASSID,&amp;SA_MAPPING_AssemblyEnd);
+<a name="line84"> 84: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingPushforward.html#SAMappingPushforward">SAMappingPushforward</A>"</font>,   SA_MAPPING_CLASSID,&amp;SA_MAPPING_Pushforward);
+<a name="line85"> 85: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingPullback.html#SAMappingPullback">SAMappingPullback</A>"</font>,      SA_MAPPING_CLASSID,&amp;SA_MAPPING_Pullback);
+<a name="line86"> 86: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"SAMappingInvert"</font>,        SA_MAPPING_CLASSID,&amp;SA_MAPPING_Invert);
+
+<a name="line88"> 88: </a>  <font color="#B22222">/* Process info exclusions */</font>
+<a name="line89"> 89: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-info_exclude"</font>, logList, 256, &amp;opt);
+<a name="line90"> 90: </a>  <font color="#4169E1">if</font> (opt) {
+<a name="line91"> 91: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrstr.html#PetscStrstr">PetscStrstr</A>(logList, <font color="#666666">"is_mapping"</font>, &amp;className);
+<a name="line92"> 92: </a>    <font color="#4169E1">if</font> (className) {
+<a name="line93"> 93: </a>      <A href="../../../../docs/manualpages/Profiling/PetscInfoDeactivateClass.html#PetscInfoDeactivateClass">PetscInfoDeactivateClass</A>(SA_MAPPING_CLASSID);
+<a name="line94"> 94: </a>    }
+<a name="line95"> 95: </a>  }
+<a name="line96"> 96: </a>  <font color="#B22222">/* Process summary exclusions */</font>
+<a name="line97"> 97: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-log_summary_exclude"</font>, logList, 256, &amp;opt);
+<a name="line98"> 98: </a>  <font color="#4169E1">if</font> (opt) {
+<a name="line99"> 99: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrstr.html#PetscStrstr">PetscStrstr</A>(logList, <font color="#666666">"is_mapping"</font>, &amp;className);
+<a name="line100">100: </a>    <font color="#4169E1">if</font> (className) {
+<a name="line101">101: </a>      <A href="../../../../docs/manualpages/Profiling/PetscLogEventDeactivateClass.html#PetscLogEventDeactivateClass">PetscLogEventDeactivateClass</A>(SA_MAPPING_CLASSID);
+<a name="line102">102: </a>    }
+<a name="line103">103: </a>  }
+<a name="line104">104: </a>  <A href="../../../../docs/manualpages/Sys/PetscRegisterFinalize.html#PetscRegisterFinalize">PetscRegisterFinalize</A>(<A href="../../../../docs/manualpages/DM/SAMappingFinalizePackage.html#SAMappingFinalizePackage">SAMappingFinalizePackage</A>);
+<a name="line105">105: </a>  <font color="#4169E1">return</font>(0);
+<a name="line106">106: </a>}
+
+<a name="line110">110: </a><font color="#B22222">/*@C</font>
+<a name="line111">111: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/SAMappingRegister.html#SAMappingRegister">SAMappingRegister</A> - See SAMappingRegisterDynamic()</font>
+
+<a name="line113">113: </a><font color="#B22222">  Level: advanced</font>
+<a name="line114">114: </a><font color="#B22222">@*/</font>
+<a name="line115">115: </a><strong><font color="#4169E1"><a name="SAMappingRegister"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/DM/SAMappingRegister.html#SAMappingRegister">SAMappingRegister</A>(const char sname[],const char path[],const char name[],<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*function)(SAMapping))</font></strong>
+<a name="line116">116: </a>{
+<a name="line118">118: </a>  char           fullname[PETSC_MAX_PATH_LEN];
+
+<a name="line121">121: </a>  PetscFListConcat(path,name,fullname);
+<a name="line122">122: </a>  PetscFListAdd(&amp;SAMappingList,sname,fullname,(void (*)(void))function);
+<a name="line123">123: </a>  <font color="#4169E1">return</font>(0);
+<a name="line124">124: </a>}
+
+
+<a name="line129">129: </a><font color="#B22222">/*@C</font>
+<a name="line130">130: </a><font color="#B22222">   <A href="../../../../docs/manualpages/DM/SAMappingRegisterDestroy.html#SAMappingRegisterDestroy">SAMappingRegisterDestroy</A> - Frees the list of SAMapping methods that were</font>
+<a name="line131">131: </a><font color="#B22222">   registered by SAMappingRegisterDynamic).</font>
+
+<a name="line133">133: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line135">135: </a><font color="#B22222">   Level: developer</font>
+
+<a name="line137">137: </a><font color="#B22222">.keywords: SAMapping, register, destroy</font>
+
+<a name="line139">139: </a><font color="#B22222">.seealso: SAMappingRegisterDynamic), <A href="../../../../docs/manualpages/DM/SAMappingRegisterAll.html#SAMappingRegisterAll">SAMappingRegisterAll</A>()</font>
+<a name="line140">140: </a><font color="#B22222">@*/</font>
+<a name="line141">141: </a><strong><font color="#4169E1"><a name="SAMappingRegisterDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/DM/SAMappingRegisterDestroy.html#SAMappingRegisterDestroy">SAMappingRegisterDestroy</A>(void)</font></strong>
+<a name="line142">142: </a>{
+
+<a name="line146">146: </a>  <A href="../../../../docs/manualpages/Sys/PetscFListDestroy.html#PetscFListDestroy">PetscFListDestroy</A>(&amp;SAMappingList);
+<a name="line147">147: </a>  SAMappingRegisterAllCalled = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line148">148: </a>  <font color="#4169E1">return</font>(0);
+<a name="line149">149: </a>}
+
+
+<a name="line154">154: </a><font color="#B22222">/*@C</font>
+<a name="line155">155: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/SAMappingRegisterAll.html#SAMappingRegisterAll">SAMappingRegisterAll</A> - Registers all of the mapping constructors in the SAMapping package.</font>
+
+<a name="line157">157: </a><font color="#B22222">  Not Collective</font>
+
+<a name="line159">159: </a><font color="#B22222">  Level: developer</font>
+
+<a name="line161">161: </a><font color="#B22222">.keywords: SAMapping, register, all</font>
+
+<a name="line163">163: </a><font color="#B22222">.seealso:  <A href="../../../../docs/manualpages/DM/SAMappingRegisterDestroy.html#SAMappingRegisterDestroy">SAMappingRegisterDestroy</A>(), SAMappingRegisterDynamic), SAMappingCreate(), </font>
+<a name="line164">164: </a><font color="#B22222">           SAMappingSetType()</font>
+<a name="line165">165: </a><font color="#B22222">@*/</font>
+<a name="line166">166: </a><strong><font color="#4169E1"><a name="SAMappingRegisterAll"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/DM/SAMappingRegisterAll.html#SAMappingRegisterAll">SAMappingRegisterAll</A>(const char *path)</font></strong>
+<a name="line167">167: </a>{
+
+<a name="line171">171: </a>  SAMappingRegisterAllCalled = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line172">172: </a>  SAMappingRegisterDynamic(SA_MAPPING_GRAPH,path,<font color="#666666">"SAMappingCreate_Graph"</font>,SAMappingCreate_Graph);
+<a name="line173">173: </a>  <font color="#4169E1">return</font>(0);
+<a name="line174">174: </a>}
+
+<a name="line178">178: </a><font color="#B22222">/*@C</font>
+<a name="line179">179: </a><font color="#B22222">    <A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A> - maps an SA with local indices from the rank's support to global indices from the rank's range.</font>
+<a name="line180">180: </a><font color="#B22222">                        Since SAMapping is in general multivalued, some local indices are mapped to multiple global indices.</font>
+<a name="line181">181: </a><font color="#B22222">                        Only selected indices (I or J) are mapped; the other indices and weights, if any, are preserved on </font>
+<a name="line182">182: </a><font color="#B22222">                        the images.</font>
+
+
+<a name="line185">185: </a><font color="#B22222">    Not collective</font>
+
+<a name="line187">187: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line188">188: </a><font color="#B22222">+   map    - mapping of indices</font>
+<a name="line189">189: </a><font color="#B22222">.   inarr  - input SA</font>
+<a name="line190">190: </a><font color="#B22222">-   index   - selection of the index to map (SA_I or SA_J; <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)</font>
+
+
+<a name="line193">193: </a><font color="#B22222">    Output Parameters:</font>
+<a name="line194">194: </a><font color="#B22222">.   outarr - SA with the selected indices mapped</font>
+
+
+<a name="line197">197: </a><font color="#B22222">    Level: advanced</font>
+
+<a name="line199">199: </a><font color="#B22222">    Concepts: mapping^indices</font>
+
+<a name="line201">201: </a><font color="#B22222">.seealso: SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),</font>
+<a name="line202">202: </a><font color="#B22222">          <A href="../../../../docs/manualpages/DM/SAMappingMap.html#SAMappingMap">SAMappingMap</A>(),        <A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>(),      <A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>(),            <A href="../../../../docs/manualpages/DM/SAMappingMapSplitLocal.html#SAMappingMapSplitLocal">SAMappingMapSplitLocal</A>()</font>
+
+<a name="line204">204: </a><font color="#B22222">@*/</font>
+<a name="line205">205: </a><strong><font color="#4169E1"><a name="SAMappingMapLocal"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(SAMapping map, SA inarr, SAIndex index, SA outarr)</font></strong>
+<a name="line206">206: </a>{
+<a name="line211">211: </a>  <font color="#4169E1">if</font>(!index) index = SA_I;
+<a name="line212">212: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line213">213: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;maplocal,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>"</font>);
+<a name="line214">214: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_MapLocal,map,0,0,0);
+<a name="line215">215: </a>  (*map-&gt;ops-&gt;maplocal)(map,inarr,index,outarr);
+<a name="line216">216: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_MapLocal,map,0,0,0);
+<a name="line217">217: </a>  <font color="#4169E1">return</font>(0);
+<a name="line218">218: </a>}
+
+<a name="line222">222: </a><font color="#B22222">/*@C</font>
+<a name="line223">223: </a><font color="#B22222">    <A href="../../../../docs/manualpages/DM/SAMappingMap.html#SAMappingMap">SAMappingMap</A>      - maps an SA with global indices from the rank's support to global indices from the rank's range.</font>
+<a name="line224">224: </a><font color="#B22222">                        Since SAMapping is in general multivalued, some indices are mapped to multiple global indices.</font>
+<a name="line225">225: </a><font color="#B22222">                        Only indices of the selected type (I or J) are mapped; the other indices and weights, if any, are </font>
+<a name="line226">226: </a><font color="#B22222">                        preserved on the images.</font>
+
+<a name="line228">228: </a><font color="#B22222">    Not collective</font>
+
+<a name="line230">230: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line231">231: </a><font color="#B22222">+   map    - mapping of indices</font>
+<a name="line232">232: </a><font color="#B22222">.   inarr  - input SA of indices and weights to map</font>
+<a name="line233">233: </a><font color="#B22222">-   index  - selection of the index to map (SA_I or SA_J; <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)</font>
+
+
+<a name="line236">236: </a><font color="#B22222">    Output Parameters:</font>
+<a name="line237">237: </a><font color="#B22222">.   outarr - SA with the selected indices mapped</font>
+
+
+<a name="line240">240: </a><font color="#B22222">    Level: advanced</font>
+
+<a name="line242">242: </a><font color="#B22222">    Concepts: mapping^indices global</font>
+
+<a name="line244">244: </a><font color="#B22222">.seealso: SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),</font>
+<a name="line245">245: </a><font color="#B22222">          <A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(),   <A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>(),      <A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>(),            SAMappingMapSlit()</font>
+
+<a name="line247">247: </a><font color="#B22222">@*/</font>
+<a name="line248">248: </a><strong><font color="#4169E1"><a name="SAMappingMap"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingMap.html#SAMappingMap">SAMappingMap</A>(SAMapping map, SA inarr, SAIndex index, SA outarr)</font></strong>
+<a name="line249">249: </a>{
+<a name="line254">254: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line255">255: </a>  <font color="#4169E1">if</font>(!index) index = SA_I;
+<a name="line256">256: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;map,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingMap.html#SAMappingMap">SAMappingMap</A>"</font>);
+<a name="line257">257: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_Map,map,0,0,0);
+<a name="line258">258: </a>  (*map-&gt;ops-&gt;map)(map,inarr,index,outarr);
+<a name="line259">259: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_Map,map,0,0,0);
+<a name="line260">260: </a>  <font color="#4169E1">return</font>(0);
+<a name="line261">261: </a>}
+
+
+<a name="line266">266: </a><font color="#B22222">/*@C</font>
+<a name="line267">267: </a><font color="#B22222">    <A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>        - order local indices from the rank's support into n consecutive groups or "bins" (some possibly empty)</font>
+<a name="line268">268: </a><font color="#B22222">                               according to which of the n image indices they are mapped to on this rank. The groups are concatenated</font>
+<a name="line269">269: </a><font color="#B22222">                               and returned as a single array. See <A href="../../../../docs/manualpages/DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>() if separate bin output is desired. </font>
+<a name="line270">270: </a><font color="#B22222">                               Since SAMapping is potentially multivalued, the same index can appear in multiple bins.</font>
+<a name="line271">271: </a><font color="#B22222">                               The binning is done on the indices of the selected type(I or J); the other indices and weights, if any, </font>
+<a name="line272">272: </a><font color="#B22222">                               are moved to the appropriate bin together with the selected indices.</font>
+
+
+<a name="line275">275: </a><font color="#B22222">    Not collective</font>
+
+<a name="line277">277: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line278">278: </a><font color="#B22222">+   map    - mapping of indices</font>
+<a name="line279">279: </a><font color="#B22222">.   array  - SA with indices to bin</font>
+<a name="line280">280: </a><font color="#B22222">-   index  - selection of the index to bin on (SA_I or SA_J; <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)</font>
+
+
+<a name="line283">283: </a><font color="#B22222">    Output Parameters:</font>
+<a name="line284">284: </a><font color="#B22222">.   bins    - SA containing concatenated binned indices; the number of bins is the same as the result of ISGetImageSizeLocal().</font>
+
+<a name="line286">286: </a><font color="#B22222">    Level: advanced</font>
+
+<a name="line288">288: </a><font color="#B22222">    Concepts: binning^local indices</font>
+
+<a name="line290">290: </a><font color="#B22222">.seealso: SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),</font>
+<a name="line291">291: </a><font color="#B22222">          <A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>(),        <A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(), <A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(),            <A href="../../../../docs/manualpages/DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>()</font>
+
+<a name="line293">293: </a><font color="#B22222">@*/</font>
+<a name="line294">294: </a><strong><font color="#4169E1"><a name="SAMappingBinLocal"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>(SAMapping map, SA array, SAIndex index, SA bins)</font></strong>
+<a name="line295">295: </a>{
+<a name="line300">300: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>, 1);
+<a name="line301">301: </a>  <font color="#4169E1">if</font>(!index) index = SA_I;
+<a name="line302">302: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;binlocal,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>"</font>);
+<a name="line303">303: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_BinLocal,map,0,0,0);
+<a name="line304">304: </a>  (*map-&gt;ops-&gt;binlocal)(map,array,index,bins);
+<a name="line305">305: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_BinLocal,map,0,0,0);
+<a name="line306">306: </a>  <font color="#4169E1">return</font>(0);
+<a name="line307">307: </a>}
+
+
+<a name="line312">312: </a><font color="#B22222">/*@C</font>
+<a name="line313">313: </a><font color="#B22222">    <A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>             - group local indices from the rank's support into n groups or "bins" (some possibly empty)</font>
+<a name="line314">314: </a><font color="#B22222">                               according to which of the n image indices they are mapped to on this rank. The groups are </font>
+<a name="line315">315: </a><font color="#B22222">                               concatenated and returned as a single array. See <A href="../../../../docs/manualpages/DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>() if separate bin output </font>
+<a name="line316">316: </a><font color="#B22222">                               is desired.</font>
+<a name="line317">317: </a><font color="#B22222">                               Since SAMapping is potentially multivalued, the same index can appear in multiple bins.</font>
+<a name="line318">318: </a><font color="#B22222">                               The binning is done only on the indices of the selected type (I or J); the other indices and weights, </font>
+<a name="line319">319: </a><font color="#B22222">                               if any, are moved to the appropriate bin together with the selected indices.</font>
+
+
+<a name="line322">322: </a><font color="#B22222">    Not collective</font>
+
+<a name="line324">324: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line325">325: </a><font color="#B22222">+   map    - mapping of indices</font>
+<a name="line326">326: </a><font color="#B22222">.   array  - SA with indices to bin</font>
+<a name="line327">327: </a><font color="#B22222">-   index  - selection of the index to bin on (SA_I or SA_J; <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)</font>
+
+
+<a name="line330">330: </a><font color="#B22222">    Output Parameters:</font>
+<a name="line331">331: </a><font color="#B22222">.   bins    - SA containing the concatenated binned indices; the number of bins is the same as the result of ISGetImageSizeLocal().</font>
+
+<a name="line333">333: </a><font color="#B22222">    Level: advanced</font>
+
+<a name="line335">335: </a><font color="#B22222">    Concepts: binning^global indices</font>
+
+<a name="line337">337: </a><font color="#B22222">.seealso: SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),</font>
+<a name="line338">338: </a><font color="#B22222">          <A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>(),   <A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(), <A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(),            <A href="../../../../docs/manualpages/DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>()</font>
+
+<a name="line340">340: </a><font color="#B22222">@*/</font>
+<a name="line341">341: </a><strong><font color="#4169E1"><a name="SAMappingBin"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>(SAMapping map, SA array, SAIndex index, SA bins)</font></strong>
+<a name="line342">342: </a>{
+<a name="line347">347: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>, 1);
+<a name="line348">348: </a>  <font color="#4169E1">if</font>(!index) index = SA_I;
+<a name="line349">349: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;bin,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>"</font>);
+<a name="line350">350: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_Bin,map,0,0,0);
+<a name="line351">351: </a>  (*map-&gt;ops-&gt;bin)(map,array,index,bins);
+<a name="line352">352: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_Bin,map,0,0,0);
+<a name="line353">353: </a>  <font color="#4169E1">return</font>(0);
+<a name="line354">354: </a>}
+
+<a name="line358">358: </a><font color="#B22222">/*@C</font>
+<a name="line359">359: </a><font color="#B22222">    <A href="../../../../docs/manualpages/DM/SAMappingMapSplit.html#SAMappingMapSplit">SAMappingMapSplit</A>      - maps an SA with global indices from the rank's support to global indices from the rank's range.</font>
+<a name="line360">360: </a><font color="#B22222">                             The image of each index is a separate SA. See <A href="../../../../docs/manualpages/DM/SAMappingMap.html#SAMappingMap">SAMappingMap</A>, if concatenated output is desired. </font>
+<a name="line361">361: </a><font color="#B22222">                             Since SAMapping is in general multivalued, some global indices are mapped to multiple global indices.  </font>
+<a name="line362">362: </a><font color="#B22222">                             Only the indices of the selected type (I or J) are mapped; the other indices and weights, if any, </font>
+<a name="line363">363: </a><font color="#B22222">                             are preserved on the images.</font>
+
+
+<a name="line366">366: </a><font color="#B22222">    Not collective</font>
+
+<a name="line368">368: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line369">369: </a><font color="#B22222">+   map    - mapping of indices</font>
+<a name="line370">370: </a><font color="#B22222">.   inarr  - input SA</font>
+<a name="line371">371: </a><font color="#B22222">-   index  - selection of the index to map (SA_I or SA_J; <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)</font>
+
+
+<a name="line374">374: </a><font color="#B22222">    Output Parameters:</font>
+<a name="line375">375: </a><font color="#B22222">.   outarrs - SA list; the list length is the same as inarr's SA length.</font>
+
+
+<a name="line378">378: </a><font color="#B22222">    Level: advanced</font>
+
+<a name="line380">380: </a><font color="#B22222">    Concepts: mapping^indices global split</font>
+
+<a name="line382">382: </a><font color="#B22222">.seealso: SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),</font>
+<a name="line383">383: </a><font color="#B22222">          <A href="../../../../docs/manualpages/DM/SAMappingMap.html#SAMappingMap">SAMappingMap</A>(),        SAMappingMapLocalSplit(), <A href="../../../../docs/manualpages/DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>(),       <A href="../../../../docs/manualpages/DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>()</font>
+
+<a name="line385">385: </a><font color="#B22222">@*/</font>
+<a name="line386">386: </a><strong><font color="#4169E1"><a name="SAMappingMapSplit"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingMapSplit.html#SAMappingMapSplit">SAMappingMapSplit</A>(SAMapping map, SA inarr, SAIndex index, SA *outarr)</font></strong>
+<a name="line387">387: </a>{
+<a name="line392">392: </a>  <font color="#4169E1">if</font>(!index) index = SA_I;
+<a name="line393">393: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line394">394: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;mapsplit,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingMapSplit.html#SAMappingMapSplit">SAMappingMapSplit</A>"</font>);
+<a name="line395">395: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_MapSplit,map,0,0,0);
+<a name="line396">396: </a>  (*map-&gt;ops-&gt;mapsplit)(map,inarr,index,outarr);
+<a name="line397">397: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_MapSplit,map,0,0,0);
+<a name="line398">398: </a>  <font color="#4169E1">return</font>(0);
+<a name="line399">399: </a>}
+
+<a name="line403">403: </a><font color="#B22222">/*@C</font>
+<a name="line404">404: </a><font color="#B22222">    <A href="../../../../docs/manualpages/DM/SAMappingMapSplitLocal.html#SAMappingMapSplitLocal">SAMappingMapSplitLocal</A> - maps an SA with local indices from the rank's support to global indices from the rank's range.</font>
+<a name="line405">405: </a><font color="#B22222">                             The image of each index is a separate SA. Since SAMapping is in general multivalued, some local </font>
+<a name="line406">406: </a><font color="#B22222">                             indices are mapped to multiple global indices.  Only the indices of the selected type (I or J) are mapped; </font>
+<a name="line407">407: </a><font color="#B22222">                             the other indices and weights, if any, are preserved on the images.</font>
+
+
+<a name="line410">410: </a><font color="#B22222">    Not collective</font>
+
+<a name="line412">412: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line413">413: </a><font color="#B22222">+   map    - mapping of indices</font>
+<a name="line414">414: </a><font color="#B22222">.   inarr  - input SA</font>
+<a name="line415">415: </a><font color="#B22222">-   index   - selection of the index to map (SA_I or SA_J; <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)</font>
+
+
+<a name="line418">418: </a><font color="#B22222">    Output Parameters:</font>
+<a name="line419">419: </a><font color="#B22222">.   outarrs - SA list; the list length is the same as inarr's SA length.</font>
+
+
+<a name="line422">422: </a><font color="#B22222">    Level: advanced</font>
+
+<a name="line424">424: </a><font color="#B22222">    Concepts: mapping^indices local split</font>
+
+<a name="line426">426: </a><font color="#B22222">.seealso: SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),</font>
+<a name="line427">427: </a><font color="#B22222">          <A href="../../../../docs/manualpages/DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(),   <A href="../../../../docs/manualpages/DM/SAMappingMapSplit.html#SAMappingMapSplit">SAMappingMapSplit</A>(), <A href="../../../../docs/manualpages/DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>(),            <A href="../../../../docs/manualpages/DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>()</font>
+
+<a name="line429">429: </a><font color="#B22222">@*/</font>
+<a name="line430">430: </a><strong><font color="#4169E1"><a name="SAMappingMapSplitLocal"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingMapSplitLocal.html#SAMappingMapSplitLocal">SAMappingMapSplitLocal</A>(SAMapping map, SA inarr, SAIndex index, SA *outarr)</font></strong>
+<a name="line431">431: </a>{
+<a name="line436">436: </a>  <font color="#4169E1">if</font>(!index) index = SA_I;
+<a name="line437">437: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line438">438: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;mapsplitlocal,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingMapSplitLocal.html#SAMappingMapSplitLocal">SAMappingMapSplitLocal</A>"</font>);
+<a name="line439">439: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_MapSplitLocal,map,0,0,0);
+<a name="line440">440: </a>  (*map-&gt;ops-&gt;mapsplitlocal)(map,inarr,index,outarr);
+<a name="line441">441: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_MapSplitLocal,map,0,0,0);
+<a name="line442">442: </a>  <font color="#4169E1">return</font>(0);
+<a name="line443">443: </a>}
+
+<a name="line447">447: </a><font color="#B22222">/*@C</font>
+<a name="line448">448: </a><font color="#B22222">    <A href="../../../../docs/manualpages/DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>   - order local indices from the rank's support into n consecutive groups or "bins" (some possibly empty)</font>
+<a name="line449">449: </a><font color="#B22222">                               according to which of the n image indices they are mapped to on this rank. The bins are returned </font>
+<a name="line450">450: </a><font color="#B22222">                               as individual SAs. See <A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>() if concatenated bin output is desired.</font>
+<a name="line451">451: </a><font color="#B22222">                               Since SAMapping is potentially multivalued, the same index can appear in multiple bins.</font>
+<a name="line452">452: </a><font color="#B22222">                               The binning is done on the indices of the selected type (I or J); the other indices and weights, if any, </font>
+<a name="line453">453: </a><font color="#B22222">                               are moved to the appropriate bin together with the selected indices.</font>
+
+
+<a name="line456">456: </a><font color="#B22222">    Not collective</font>
+
+<a name="line458">458: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line459">459: </a><font color="#B22222">+   map    - mapping of indices</font>
+<a name="line460">460: </a><font color="#B22222">.   array  - SA with indices to bin</font>
+<a name="line461">461: </a><font color="#B22222">-   index  - selection of the index to bin on (SA_I or SA_J; <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)</font>
+
+
+<a name="line464">464: </a><font color="#B22222">    Output Parameters:</font>
+<a name="line465">465: </a><font color="#B22222">.   bins    - SA list of bins; the number of bins is the same as the result of ISGetImageSizeLocal().</font>
+
+<a name="line467">467: </a><font color="#B22222">    Level: advanced</font>
+
+<a name="line469">469: </a><font color="#B22222">    Concepts: binning^local indices split</font>
+
+<a name="line471">471: </a><font color="#B22222">.seealso: SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),</font>
+<a name="line472">472: </a><font color="#B22222">          <A href="../../../../docs/manualpages/DM/SAMappingBinLocal.html#SAMappingBinLocal">SAMappingBinLocal</A>(),   <A href="../../../../docs/manualpages/DM/SAMappingMapSplit.html#SAMappingMapSplit">SAMappingMapSplit</A>(), <A href="../../../../docs/manualpages/DM/SAMappingMapSplitLocal.html#SAMappingMapSplitLocal">SAMappingMapSplitLocal</A>(),       <A href="../../../../docs/manualpages/DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>()</font>
+
+<a name="line474">474: </a><font color="#B22222">@*/</font>
+<a name="line475">475: </a><strong><font color="#4169E1"><a name="SAMappingBinSplitLocal"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>(SAMapping map, SA array, SAIndex index, SA *bins)</font></strong>
+<a name="line476">476: </a>{
+<a name="line481">481: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>, 1);
+<a name="line482">482: </a>  <font color="#4169E1">if</font>(!index) index = SA_I;
+<a name="line483">483: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;binsplitlocal,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>"</font>);
+<a name="line484">484: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_BinSplitLocal,map,0,0,0);
+<a name="line485">485: </a>  (*map-&gt;ops-&gt;binsplitlocal)(map,array,index,bins);
+<a name="line486">486: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_BinSplitLocal,map,0,0,0);
+<a name="line487">487: </a>  <font color="#4169E1">return</font>(0);
+<a name="line488">488: </a>}
+
+
+<a name="line493">493: </a><font color="#B22222">/*@C</font>
+<a name="line494">494: </a><font color="#B22222">    <A href="../../../../docs/manualpages/DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>        - group global indices from the rank's support into n groups or "bins" (some possibly empty)</font>
+<a name="line495">495: </a><font color="#B22222">                               according to which of the n image indices they are mapped to on this rank. The bins and </font>
+<a name="line496">496: </a><font color="#B22222">                               returned as individual SAs. See <A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>() if concatenated bin output is desired.</font>
+<a name="line497">497: </a><font color="#B22222">                               Since SAMapping is potentially multivalued, the same index can appear in multiple bins.</font>
+<a name="line498">498: </a><font color="#B22222">                               The binning is done on the indices of selected type (I or J); the other indices and weights, </font>
+<a name="line499">499: </a><font color="#B22222">                               if any, are moved to the appropriate bin together with the selected indices.</font>
+
+
+<a name="line502">502: </a><font color="#B22222">    Not collective</font>
+
+<a name="line504">504: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line505">505: </a><font color="#B22222">+   map    - mapping of indices</font>
+<a name="line506">506: </a><font color="#B22222">.   array  - SA with indices to bin</font>
+<a name="line507">507: </a><font color="#B22222">-   index  - selection of the index to bin on (SA_I or SA_J; <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)</font>
+
+
+<a name="line510">510: </a><font color="#B22222">    Output Parameters:</font>
+<a name="line511">511: </a><font color="#B22222">.   bins    - SA list of bins; the number of bins is the same as the result of ISGetImageSizeLocal().</font>
+
+<a name="line513">513: </a><font color="#B22222">    Level: advanced</font>
+
+<a name="line515">515: </a><font color="#B22222">    Concepts: binning^global indices split</font>
+
+<a name="line517">517: </a><font color="#B22222">.seealso: SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),</font>
+<a name="line518">518: </a><font color="#B22222">          <A href="../../../../docs/manualpages/DM/SAMappingBin.html#SAMappingBin">SAMappingBin</A>(),        <A href="../../../../docs/manualpages/DM/SAMappingMapSplit.html#SAMappingMapSplit">SAMappingMapSplit</A>(), <A href="../../../../docs/manualpages/DM/SAMappingMapSplitLocal.html#SAMappingMapSplitLocal">SAMappingMapSplitLocal</A>(),       <A href="../../../../docs/manualpages/DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>()</font>
+
+<a name="line520">520: </a><font color="#B22222">@*/</font>
+<a name="line521">521: </a><strong><font color="#4169E1"><a name="SAMappingBinSplit"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>(SAMapping map, SA array, SAIndex index, SA *bins)</font></strong>
+<a name="line522">522: </a>{
+<a name="line527">527: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>, 1);
+<a name="line528">528: </a>  <font color="#4169E1">if</font>(!index) index = SA_I;
+<a name="line529">529: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;binsplit,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>"</font>);
+<a name="line530">530: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_BinSplit,map,0,0,0);
+<a name="line531">531: </a>  (*map-&gt;ops-&gt;binsplit)(map,array,index,bins);
+<a name="line532">532: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_BinSplit,map,0,0,0);
+<a name="line533">533: </a>  <font color="#4169E1">return</font>(0);
+<a name="line534">534: </a>}
+
+<a name="line538">538: </a><font color="#B22222">/*@C</font>
+<a name="line539">539: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/SAMappingSetSizes.html#SAMappingSetSizes">SAMappingSetSizes</A> - Sets the local and global sizes for the domain and range, and checks to determine compatibility</font>
+
+<a name="line541">541: </a><font color="#B22222">  Collective on SAMapping</font>
+
+<a name="line543">543: </a><font color="#B22222">  Input Parameters:</font>
+<a name="line544">544: </a><font color="#B22222">+  map     - the mapping</font>
+<a name="line545">545: </a><font color="#B22222">.  m       - number of local  domain indices (or <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>)</font>
+<a name="line546">546: </a><font color="#B22222">.  n       - number of local  range columns  (or <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>)</font>
+<a name="line547">547: </a><font color="#B22222">.  M       - number of global domain indices (or <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> or <A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>)</font>
+<a name="line548">548: </a><font color="#B22222">-  N       - number of global range  indices (or <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> or <A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>)</font>
+
+<a name="line550">550: </a><font color="#B22222">   Notes:</font>
+<a name="line551">551: </a><font color="#B22222">   The sizes specify (i) what the domain and range for the graph underlying SAMapping is, </font>
+<a name="line552">552: </a><font color="#B22222">   and (b) what the parallel layout of the domain and range are.  The local and global sizes</font>
+<a name="line553">553: </a><font color="#B22222">   m and M (and n and N) are not independent.  Two situations are possible the domain</font>
+<a name="line554">554: </a><font color="#B22222">   (and,analogously, for the range):</font>
+<a name="line555">555: </a><font color="#B22222">  </font>
+<a name="line556">556: </a><font color="#B22222">   (P) Parallel layout for the domain demands that the local values of m on all ranks of </font>
+<a name="line557">557: </a><font color="#B22222">   the communicator add up to M (see more at <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>, for example).  Thus, m and M must </font>
+<a name="line558">558: </a><font color="#B22222">   be specified in this compatible way.  One way to ensure this is to specify m and leave</font>
+<a name="line559">559: </a><font color="#B22222">   M as <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> -- then M is computed by summing the local m across the ranks. </font>
+<a name="line560">560: </a><font color="#B22222">   The other option is to specify M (the same on all ranks, which will be checked) and </font>
+<a name="line561">561: </a><font color="#B22222">   leave m as <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>.  In this case the local m is determined by dividing M as </font>
+<a name="line562">562: </a><font color="#B22222">   equally as possible among the ranks (m might end up being 0).  If both m and M are specified,</font>
+<a name="line563">563: </a><font color="#B22222">   their compatibility is verified by summing the m across the ranks.  If m or M are <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A></font>
+<a name="line564">564: </a><font color="#B22222">   on one rank, they must be <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> on all of the ranks, or the program might hang.</font>
+<a name="line565">565: </a><font color="#B22222">   Finally, both m and M cannot be <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> at once.  </font>
+
+<a name="line567">567: </a><font color="#B22222">   In any case, domain indices can have any value 0 &lt;= i &lt; M on every rank (with the same M).</font>
+<a name="line568">568: </a><font color="#B22222">   However, domain indices are split up among the ranks: each rank will "own" m indices with </font>
+<a name="line569">569: </a><font color="#B22222">   the indices owned by rank 0 numbered [0,m), followed by the indices on rank 1, and so on.</font>
+
+<a name="line571">571: </a><font color="#B22222">   (S) Sequential layout for the domain makes it essentially into a disjoint union of local </font>
+<a name="line572">572: </a><font color="#B22222">   domains of local size m.  This is signalled by specifying M as <A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>.  </font>
+
+<a name="line574">574: </a><font color="#B22222">   In this case, domain indices can have any value 0 &lt;= i &lt; m on every rank (with its own m).</font>
+
+<a name="line576">576: </a><font color="#B22222">   Assembly/Mapping:</font>
+<a name="line577">577: </a><font color="#B22222">   Whether the domain is laid out in parallel (P) or not (S), determines the behavior of SAMapping</font>
+<a name="line578">578: </a><font color="#B22222">   during assembly.  In case (P), the edges of the underlying graph are migrated to the rank that</font>
+<a name="line579">579: </a><font color="#B22222">   owns the corresponding domain indices.  SAMapping can map indices lying in its local range, </font>
+<a name="line580">580: </a><font color="#B22222">   which is a subset of its local domain.  This means that due to parallel assembly edges inserted</font>
+<a name="line581">581: </a><font color="#B22222">   by different ranks might be used during the mapping.  This is completely analogous to matrix </font>
+<a name="line582">582: </a><font color="#B22222">   assembly.</font>
+
+<a name="line584">584: </a><font color="#B22222">   When the domain is not laid out in parallel, no migration takes place and the mapping of indices</font>
+<a name="line585">585: </a><font color="#B22222">   is done purely locally.</font>
+<a name="line586">586: </a><font color="#B22222">   </font>
+<a name="line587">587: </a><font color="#B22222">   </font>
+
+<a name="line589">589: </a><font color="#B22222">   Support/Image:</font>
+<a name="line590">590: </a><font color="#B22222">   Observe that the support and image of the graph may be strictly smaller than its domain and range,</font>
+<a name="line591">591: </a><font color="#B22222">   if no edges from some domain points (or to some range points) are added to SAMapping.</font>
+<a name="line592">592: </a><font color="#B22222">   </font>
+<a name="line593">593: </a><font color="#B22222">   Operator:</font>
+<a name="line594">594: </a><font color="#B22222">   Observe also that the linear operator defined by SAMapping will behave essentially as a <A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A></font>
+<a name="line595">595: </a><font color="#B22222">   (i)   between MPI vectors with sizes (m,M) and (n,N), if both the domain and the range are (P),</font>
+<a name="line596">596: </a><font color="#B22222">   (ii)  between an MPI <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> with size (m,M) and a collection of SEQ <A href="../../../../docs/manualpages/Vec/Vecs.html#Vecs">Vecs</A> (one per rank) of local size (n), </font>
+<a name="line597">597: </a><font color="#B22222">         if the domain is (P) and the range is (S),</font>
+<a name="line598">598: </a><font color="#B22222">   (iii) between a collection of SEQ <A href="../../../../docs/manualpages/Vec/Vecs.html#Vecs">Vecs</A> (one per rank) of local size (m) and an MPI <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> of size (n,N),</font>
+<a name="line599">599: </a><font color="#B22222">         if the domain is (S) and the range is (P),</font>
+<a name="line600">600: </a><font color="#B22222">   (iv)  between collections of SEQ <A href="../../../../docs/manualpages/Vec/Vecs.html#Vecs">Vecs</A> (one per rank) or local sizes (m) and (n), if both the domain </font>
+<a name="line601">601: </a><font color="#B22222">         and the range are (S).</font>
+
+<a name="line603">603: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line605">605: </a><font color="#B22222">.seealso: SAMappingGetSizes(), SAMappingGetSupportSize(), SAMappingGetImageSize(), SAMappingMapIndicesLocal()</font>
+<a name="line606">606: </a><font color="#B22222">@*/</font>
+<a name="line607">607: </a><strong><font color="#4169E1"><a name="SAMappingSetSizes"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/DM/SAMappingSetSizes.html#SAMappingSetSizes">SAMappingSetSizes</A>(SAMapping map, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> M, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> N)</font></strong>
+<a name="line608">608: </a>{
+
+<a name="line613">613: </a>  <font color="#4169E1">if</font> (M &gt; 0 &amp;&amp; m &gt; M) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Local column size %D cannot be larger than global column size %D"</font>,m,M);
+<a name="line614">614: </a>  <font color="#4169E1">if</font> (N &gt; 0 &amp;&amp; n &gt; N) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Local row size %D cannot be larger than global row size %D"</font>,n,N);
+<a name="line615">615: </a>  <font color="#4169E1">if</font>(!map-&gt;xlayout) {
+<a name="line616">616: </a>    <font color="#4169E1">if</font>(M == <A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>) {
+<a name="line617">617: </a>      <A href="../../../../docs/manualpages/Vec/PetscLayoutCreate.html#PetscLayoutCreate">PetscLayoutCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, &amp;(map-&gt;xlayout));
+<a name="line618">618: </a>    }
+<a name="line619">619: </a>    <font color="#4169E1">else</font> {
+<a name="line620">620: </a>      <A href="../../../../docs/manualpages/Vec/PetscLayoutCreate.html#PetscLayoutCreate">PetscLayoutCreate</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)map)-&gt;comm, &amp;(map-&gt;xlayout));
+<a name="line621">621: </a>    }
+<a name="line622">622: </a>  }
+<a name="line623">623: </a>  <font color="#4169E1">if</font>(!map-&gt;ylayout) {
+<a name="line624">624: </a>    <font color="#4169E1">if</font>(N == <A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>) {
+<a name="line625">625: </a>      <A href="../../../../docs/manualpages/Vec/PetscLayoutCreate.html#PetscLayoutCreate">PetscLayoutCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, &amp;(map-&gt;ylayout));
+<a name="line626">626: </a>    }
+<a name="line627">627: </a>    <font color="#4169E1">else</font> {
+<a name="line628">628: </a>      <A href="../../../../docs/manualpages/Vec/PetscLayoutCreate.html#PetscLayoutCreate">PetscLayoutCreate</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)map)-&gt;comm, &amp;(map-&gt;ylayout));
+<a name="line629">629: </a>    }
+<a name="line630">630: </a>  }
+<a name="line631">631: </a>  <font color="#4169E1">if</font> ((map-&gt;xlayout-&gt;n &gt;= 0 || map-&gt;xlayout-&gt;N &gt;= 0) &amp;&amp; (map-&gt;xlayout-&gt;n != m || map-&gt;xlayout-&gt;N != M)) SETERRQ4(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Cannot change/reset domain sizes to %D local %D global after previously setting them to %D local %D global"</font>,m,M,map-&gt;xlayout-&gt;n,map-&gt;xlayout-&gt;N);
+<a name="line632">632: </a>  <font color="#4169E1">if</font> ((map-&gt;ylayout-&gt;n &gt;= 0 || map-&gt;ylayout-&gt;N &gt;= 0) &amp;&amp; (map-&gt;ylayout-&gt;n != n || map-&gt;ylayout-&gt;N != N)) SETERRQ4(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Cannot change/reset range sizes to %D local %D global after previously setting them to %D local %D global"</font>,n,N,map-&gt;ylayout-&gt;n,map-&gt;ylayout-&gt;N);
+<a name="line633">633: </a>
+<a name="line634">634: </a>  map-&gt;xlayout-&gt;n = m;
+<a name="line635">635: </a>  map-&gt;ylayout-&gt;n = n;
+<a name="line636">636: </a>  map-&gt;xlayout-&gt;N = M;
+<a name="line637">637: </a>  map-&gt;ylayout-&gt;N = N;
+
+<a name="line639">639: </a>  map-&gt;setup = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line640">640: </a>  map-&gt;assembled = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line641">641: </a>  <font color="#4169E1">return</font>(0);
+<a name="line642">642: </a>}
+
+<a name="line646">646: </a><strong><font color="#4169E1"><a name="SAMappingGetSizes"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  SAMappingGetSizes(SAMapping map, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *m, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *n, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *M, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *N)</font></strong>
+<a name="line647">647: </a>{
+
+<a name="line650">650: </a>  *m = map-&gt;xlayout-&gt;n;
+<a name="line651">651: </a>  *n = map-&gt;ylayout-&gt;n;
+<a name="line652">652: </a>  *M = map-&gt;xlayout-&gt;N;
+<a name="line653">653: </a>  *N = map-&gt;ylayout-&gt;N;
+<a name="line654">654: </a>  <font color="#4169E1">return</font>(0);
+<a name="line655">655: </a>}
+
+<a name="line659">659: </a><strong><font color="#4169E1"><a name="SAMappingSetUp_SAMapping"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingSetUp_SAMapping(SAMapping map)</font></strong>
+<a name="line660">660: </a>{
+<a name="line663">663: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>(map-&gt;xlayout,1);
+<a name="line664">664: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>(map-&gt;ylayout,1);
+<a name="line665">665: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(map-&gt;xlayout);
+<a name="line666">666: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(map-&gt;ylayout);
+<a name="line667">667: </a>  <font color="#4169E1">return</font>(0);
+<a name="line668">668: </a>}<font color="#B22222">/* SAMappingSetUp_SAMapping() */</font>
+
+<a name="line672">672: </a><font color="#B22222">/*@C</font>
+<a name="line673">673: </a><font color="#B22222">   <A href="../../../../docs/manualpages/DM/SAMappingSetUp.html#SAMappingSetUp">SAMappingSetUp</A> - Sets up the internal mapping data structures for the later use.</font>
+
+<a name="line675">675: </a><font color="#B22222">   Collective on SAMapping</font>
+
+<a name="line677">677: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line678">678: </a><font color="#B22222">.  map - the SAMapping context</font>
+
+<a name="line680">680: </a><font color="#B22222">   Notes:</font>
+<a name="line681">681: </a><font color="#B22222">   For basic use of the SAMapping classes the user need not explicitly call</font>
+<a name="line682">682: </a><font color="#B22222">   <A href="../../../../docs/manualpages/DM/SAMappingSetUp.html#SAMappingSetUp">SAMappingSetUp</A>(), since these actions will happen automatically.</font>
+
+<a name="line684">684: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line686">686: </a><font color="#B22222">.keywords: SAMapping, setup</font>
+
+<a name="line688">688: </a><font color="#B22222">.seealso: SAMappingCreate(), SAMappingDestroy(), <A href="../../../../docs/manualpages/DM/SAMappingSetSizes.html#SAMappingSetSizes">SAMappingSetSizes</A>()</font>
+<a name="line689">689: </a><font color="#B22222">@*/</font>
+<a name="line690">690: </a><strong><font color="#4169E1"><a name="SAMappingSetUp"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/SAMappingSetUp.html#SAMappingSetUp">SAMappingSetUp</A>(SAMapping map)</font></strong>
+<a name="line691">691: </a>{
+<a name="line695">695: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;setup,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingSetUp.html#SAMappingSetUp">SAMappingSetUp</A>"</font>);
+<a name="line696">696: </a>  (*(map-&gt;ops-&gt;setup))(map);
+<a name="line697">697: </a>  map-&gt;setup = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line698">698: </a>  <font color="#4169E1">return</font>(0);
+<a name="line699">699: </a>}<font color="#B22222">/* SAMappingGetSizes() */</font>
+
+<a name="line701">701: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line703">703: </a><strong><font color="#4169E1"><a name="SAMappingAssemblyBegin"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingAssemblyBegin(SAMapping map)</font></strong>
+<a name="line704">704: </a>{
+
+<a name="line709">709: </a>  <font color="#4169E1">if</font>(map-&gt;assembled) <font color="#4169E1">return</font>(0);
+<a name="line710">710: </a>  <A href="../../../../docs/manualpages/DM/SAMappingSetUp.html#SAMappingSetUp">SAMappingSetUp</A>(map);
+<a name="line711">711: </a>
+<a name="line712">712: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;assemblybegin, <font color="#666666">"SAMappingAsemblyBegin"</font>);
+<a name="line713">713: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_AssemblyBegin, map,0,0,0);
+<a name="line714">714: </a>  (*(map-&gt;ops-&gt;assemblybegin))(map);
+<a name="line715">715: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_AssemblyBegin, map,0,0,0);
+
+<a name="line717">717: </a>  <font color="#4169E1">return</font>(0);
+<a name="line718">718: </a>}<font color="#B22222">/* SAMappingAssemblyBegin() */</font>
+
+<a name="line722">722: </a><strong><font color="#4169E1"><a name="SAMappingAssemblyEnd"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingAssemblyEnd(SAMapping map)</font></strong>
+<a name="line723">723: </a>{
+<a name="line727">727: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;assemblyend, <font color="#666666">"SAMappingAsemblyEnd"</font>);
+<a name="line728">728: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_AssemblyEnd, map,0,0,0);
+<a name="line729">729: </a>  (*(map-&gt;ops-&gt;assemblyend))(map);
+<a name="line730">730: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_AssemblyBegin, map,0,0,0);
+<a name="line731">731: </a>  map-&gt;assembled = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line732">732: </a>  <font color="#4169E1">return</font>(0);
+<a name="line733">733: </a>}<font color="#B22222">/* SAMappingAssemblyEnd() */</font>
+
+
+<a name="line736">736: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line738">738: </a><strong><font color="#4169E1"><a name="SAMappingGetSupport"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingGetSupport(SAMapping map, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_len, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_supp[])</font></strong> {
+<a name="line741">741: </a>
+<a name="line743">743: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line744">744: </a>  <font color="#4169E1">if</font>(!_len &amp;&amp; !_supp) <font color="#4169E1">return</font>(0);
+<a name="line745">745: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;getsupport,<font color="#666666">"SAMappingGetSupport"</font>);
+<a name="line746">746: </a>  (*(map-&gt;ops-&gt;getsupport))(map,_len,_supp);
+<a name="line747">747: </a>  <font color="#4169E1">return</font>(0);
+<a name="line748">748: </a>}
+
+<a name="line750">750: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line752">752: </a><strong><font color="#4169E1"><a name="SAMappingGetSupportIS"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingGetSupportIS(SAMapping map, <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A> *supp)</font></strong> {
+<a name="line755">755: </a>
+<a name="line757">757: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line758">758: </a>  <font color="#4169E1">if</font>(!supp) <font color="#4169E1">return</font>(0);
+<a name="line759">759: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;getsupportis,<font color="#666666">"SAMappingGetSupportIS"</font>);
+<a name="line760">760: </a>  (*(map-&gt;ops-&gt;getsupportis))(map,supp);
+<a name="line761">761: </a>  <font color="#4169E1">return</font>(0);
+<a name="line762">762: </a>}
+
+
+<a name="line765">765: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line767">767: </a><strong><font color="#4169E1"><a name="SAMappingGetSupportSA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingGetSupportSA(SAMapping map, SA *supp)</font></strong> {
+<a name="line770">770: </a>
+<a name="line772">772: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line773">773: </a>  <font color="#4169E1">if</font>(!supp) <font color="#4169E1">return</font>(0);
+<a name="line774">774: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;getsupportsa,<font color="#666666">"SAMappingGetSupportSA"</font>);
+<a name="line775">775: </a>  (*(map-&gt;ops-&gt;getsupportsa))(map,supp);
+<a name="line776">776: </a>  <font color="#4169E1">return</font>(0);
+<a name="line777">777: </a>}
+
+<a name="line779">779: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line781">781: </a><strong><font color="#4169E1"><a name="SAMappingGetImage"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingGetImage(SAMapping map, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_len, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_image[])</font></strong> {
+<a name="line784">784: </a>
+<a name="line786">786: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line787">787: </a>  <font color="#4169E1">if</font>(!_len &amp;&amp; !_image) <font color="#4169E1">return</font>(0);
+<a name="line788">788: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;getimage,<font color="#666666">"SAMappingGetImage"</font>);
+<a name="line789">789: </a>  (*(map-&gt;ops-&gt;getimage))(map,_len,_image);
+<a name="line790">790: </a>  <font color="#4169E1">return</font>(0);
+<a name="line791">791: </a>}
+
+<a name="line793">793: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line795">795: </a><strong><font color="#4169E1"><a name="SAMappingGetImageIS"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingGetImageIS(SAMapping map, <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A> *image)</font></strong> {
+<a name="line798">798: </a>
+<a name="line800">800: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line801">801: </a>  <font color="#4169E1">if</font>(!image) <font color="#4169E1">return</font>(0);
+<a name="line802">802: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;getimageis,<font color="#666666">"SAMappingGetImageIS"</font>);
+<a name="line803">803: </a>  (*(map-&gt;ops-&gt;getimageis))(map,image);
+<a name="line804">804: </a>  <font color="#4169E1">return</font>(0);
+<a name="line805">805: </a>}
+
+<a name="line807">807: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line809">809: </a><strong><font color="#4169E1"><a name="SAMappingGetImageSA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingGetImageSA(SAMapping map, SA *image)</font></strong> {
+<a name="line812">812: </a>
+<a name="line814">814: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line815">815: </a>  <font color="#4169E1">if</font>(!image) <font color="#4169E1">return</font>(0);
+<a name="line816">816: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;getimagesa,<font color="#666666">"SAMappingGetImageSA"</font>);
+<a name="line817">817: </a>  (*(map-&gt;ops-&gt;getimagesa))(map,image);
+<a name="line818">818: </a>  <font color="#4169E1">return</font>(0);
+<a name="line819">819: </a>}
+
+<a name="line823">823: </a><strong><font color="#4169E1"><a name="SAMappingGetMaxImageSize"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingGetMaxImageSize(SAMapping map, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *maxsize)</font></strong>
+<a name="line824">824: </a>{
+<a name="line829">829: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line830">830: </a>  SAMappingCheckMethod(map, map-&gt;ops-&gt;getmaximagesize,<font color="#666666">"SAMappingGetMaxImageSize"</font>);
+<a name="line831">831: </a>  (*map-&gt;ops-&gt;getmaximagesize)(map,maxsize);
+<a name="line832">832: </a>  <font color="#4169E1">return</font>(0);
+<a name="line833">833: </a>}
+
+
+<a name="line838">838: </a><strong><font color="#4169E1"><a name="SAMappingGetOperator"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingGetOperator(SAMapping map, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *mat)</font></strong>
+<a name="line839">839: </a>{
+<a name="line844">844: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line845">845: </a>  SAMappingCheckMethod(map, map-&gt;ops-&gt;getoperator,<font color="#666666">"SAMappingGetOperator"</font>);
+<a name="line846">846: </a>  (*map-&gt;ops-&gt;getoperator)(map,mat);
+
+<a name="line848">848: </a>  <font color="#4169E1">return</font>(0);
+<a name="line849">849: </a>}
+
+<a name="line851">851: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line853">853: </a><strong><font color="#4169E1"><a name="SAMappingView"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingView(SAMapping map, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> v)</font></strong>
+<a name="line854">854: </a>{
+<a name="line858">858: </a>  SAMappingCheckAssembled(map,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,1);
+<a name="line859">859: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;view, <font color="#666666">"SAMappingView"</font>);
+<a name="line860">860: </a>  (*(map-&gt;ops-&gt;view))(map,v);
+<a name="line861">861: </a>  <font color="#4169E1">return</font>(0);
+<a name="line862">862: </a>}<font color="#B22222">/* SAMappingView() */</font>
+
+<a name="line864">864: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line866">866: </a><strong><font color="#4169E1"><a name="SAMappingInvert"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingInvert(SAMapping map, SAMapping *imap)</font></strong>
+<a name="line867">867: </a>{
+<a name="line872">872: </a>  SAMappingCheckMethod(map,map-&gt;ops-&gt;invert, <font color="#666666">"SAMappingInvert"</font>);
+<a name="line873">873: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_Invert, map, 0,0,0);
+<a name="line874">874: </a>  (*(map-&gt;ops-&gt;invert))(map,imap);
+<a name="line875">875: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_Invert, map, 0,0,0);
+<a name="line876">876: </a>  <font color="#4169E1">return</font>(0);
+<a name="line877">877: </a>}
+
+<a name="line881">881: </a><font color="#B22222">/*@C</font>
+<a name="line882">882: </a><font color="#B22222">   <A href="../../../../docs/manualpages/DM/SAMappingPullback.html#SAMappingPullback">SAMappingPullback</A> - compose mappings C = A*B</font>
+
+<a name="line884">884: </a><font color="#B22222">   Collective on SAMapping</font>
+
+<a name="line886">886: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line887">887: </a><font color="#B22222">+  A - the left  mapping</font>
+<a name="line888">888: </a><font color="#B22222">-  B - the right mapping</font>
+
+
+<a name="line891">891: </a><font color="#B22222">   Output Parameters:</font>
+<a name="line892">892: </a><font color="#B22222">.  C - the product mapping: domain as in A, range as in B</font>
+
+
+<a name="line895">895: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line897">897: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/DM/SAMappingPushforward.html#SAMappingPushforward">SAMappingPushforward</A>(), SAMappingInvert()</font>
+<a name="line898">898: </a><font color="#B22222">@*/</font>
+<a name="line899">899: </a><strong><font color="#4169E1"><a name="SAMappingPullback"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/DM/SAMappingPullback.html#SAMappingPullback">SAMappingPullback</A>(SAMapping A,SAMapping B, SAMapping *C)</font></strong>
+<a name="line900">900: </a>{
+<a name="line902">902: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*pullback)(SAMapping,SAMapping,SAMapping*);
+<a name="line903">903: </a>  char  pullbackname[256];
+
+<a name="line908">908: </a>  <font color="#4169E1">if</font> (!A-&gt;assembled) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Not for unassembled mapping"</font>);
+<a name="line911">911: </a>  <font color="#4169E1">if</font> (!B-&gt;assembled) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Not for unassembled mapping"</font>);
+
+<a name="line914">914: </a>  <font color="#B22222">/* dispatch based on the type of A and B */</font>
+<a name="line915">915: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(pullbackname,<font color="#666666">"SAMappingPullback_"</font>);
+<a name="line916">916: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(pullbackname,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;type_name);
+<a name="line917">917: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(pullbackname,<font color="#666666">"_"</font>);
+<a name="line918">918: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(pullbackname,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B)-&gt;type_name);
+<a name="line919">919: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(pullbackname,<font color="#666666">"_C"</font>);    <font color="#B22222">/* e.g., pullbackname = "ISPullback_ismappingis_ismappingis_C" */</font>
+<a name="line920">920: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQueryFunction.html#PetscObjectQueryFunction">PetscObjectQueryFunction</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,pullbackname,(void (**)(void))&amp;pullback);
+<a name="line921">921: </a>  <font color="#4169E1">if</font> (!pullback) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,PETSC_ERR_ARG_INCOMP,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingPullback.html#SAMappingPullback">SAMappingPullback</A> requires A, %s, to be compatible with B, %s"</font>,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;type_name,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B)-&gt;type_name);
+<a name="line922">922: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_Pullback, A,B,0,0);
+<a name="line923">923: </a>  (*pullback)(A,B,C);
+<a name="line924">924: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_Pullback, A,B,0,0);
+<a name="line925">925: </a>  <font color="#4169E1">return</font>(0);
+<a name="line926">926: </a>}
+
+<a name="line930">930: </a><font color="#B22222">/*@C</font>
+<a name="line931">931: </a><font color="#B22222">   <A href="../../../../docs/manualpages/DM/SAMappingPushforward.html#SAMappingPushforward">SAMappingPushforward</A> - mapping from the range of A to the range of B, pointwise on the common domain</font>
+
+<a name="line933">933: </a><font color="#B22222">   Collective on SAMapping</font>
+
+<a name="line935">935: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line936">936: </a><font color="#B22222">+  A - the left  mapping</font>
+<a name="line937">937: </a><font color="#B22222">-  B - the right mapping</font>
+
+
+<a name="line940">940: </a><font color="#B22222">   Output Parameters:</font>
+<a name="line941">941: </a><font color="#B22222">.  C - the product mapping: domain as the range of  A, range as the range of B</font>
+
+
+<a name="line944">944: </a><font color="#B22222">   Level: intermediate</font>
+<a name="line945">945: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/DM/SAMappingPullback.html#SAMappingPullback">SAMappingPullback</A>(), SAMappingInvert()</font>
+<a name="line946">946: </a><font color="#B22222">@*/</font>
+<a name="line947">947: </a><strong><font color="#4169E1"><a name="SAMappingPushforward"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/DM/SAMappingPushforward.html#SAMappingPushforward">SAMappingPushforward</A>(SAMapping A,SAMapping B, SAMapping *C)</font></strong>
+<a name="line948">948: </a>{
+<a name="line950">950: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*pushforward)(SAMapping,SAMapping,SAMapping*);
+<a name="line951">951: </a>  char  pushforwardname[256];
+
+<a name="line956">956: </a>  <font color="#4169E1">if</font> (!A-&gt;assembled) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Not for unassembled mapping"</font>);
+<a name="line959">959: </a>  <font color="#4169E1">if</font> (!B-&gt;assembled) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Not for unassembled mapping"</font>);
+
+<a name="line962">962: </a>  <font color="#B22222">/* dispatch based on the type of A and B */</font>
+<a name="line963">963: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(pushforwardname,<font color="#666666">"SAMappingPushforward_"</font>);
+<a name="line964">964: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(pushforwardname,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;type_name);
+<a name="line965">965: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(pushforwardname,<font color="#666666">"_"</font>);
+<a name="line966">966: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(pushforwardname,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B)-&gt;type_name);
+<a name="line967">967: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(pushforwardname,<font color="#666666">"_C"</font>);    <font color="#B22222">/* e.g., pushforwardname = "ISPushforward_ismappingis_ismappingis_C" */</font>
+<a name="line968">968: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQueryFunction.html#PetscObjectQueryFunction">PetscObjectQueryFunction</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,pushforwardname,(void (**)(void))&amp;pushforward);
+<a name="line969">969: </a>  <font color="#4169E1">if</font> (!pushforward) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,PETSC_ERR_ARG_INCOMP,<font color="#666666">"<A href="../../../../docs/manualpages/DM/SAMappingPushforward.html#SAMappingPushforward">SAMappingPushforward</A> requires A, %s, to be compatible with B, %s"</font>,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;type_name,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B)-&gt;type_name);
+<a name="line970">970: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(SA_MAPPING_Pushforward, A,B,0,0);
+<a name="line971">971: </a>  (*pushforward)(A,B,C);
+<a name="line972">972: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(SA_MAPPING_Pushforward, A,B,0,0);
+<a name="line973">973: </a>  <font color="#4169E1">return</font>(0);
+<a name="line974">974: </a>}
+
+<a name="line976">976: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line978">978: </a><strong><font color="#4169E1"><a name="SAMappingSetType"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingSetType(SAMapping map, const SAMappingType maptype)</font></strong> {
+<a name="line980">980: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*ctor)(SAMapping);
+<a name="line981">981: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> sametype;
+<a name="line984">984: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)map,maptype, &amp;sametype);
+<a name="line985">985: </a>  <font color="#4169E1">if</font>(sametype) <font color="#4169E1">return</font>(0);
+
+<a name="line987">987: </a>  <font color="#4169E1">if</font>(!SAMappingRegisterAllCalled) {
+<a name="line988">988: </a>    <A href="../../../../docs/manualpages/DM/SAMappingRegisterAll.html#SAMappingRegisterAll">SAMappingRegisterAll</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line989">989: </a>  }
+<a name="line990">990: </a>   <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(ISList,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)map)-&gt;comm,maptype,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,(void(**)(void))&amp;ctor);
+<a name="line991">991: </a>  <font color="#4169E1">if</font>(!ctor) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Unrecognized SAMapping type: %s"</font>, maptype);
+
+<a name="line993">993: </a>  <font color="#B22222">/* destroy the old implementation, if it existed */</font>
+<a name="line994">994: </a>  <font color="#4169E1">if</font>(map-&gt;ops-&gt;destroy) {
+<a name="line995">995: </a>    (*(map-&gt;ops-&gt;destroy))(map);
+<a name="line996">996: </a>    map-&gt;ops-&gt;destroy = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line997">997: </a>  }
+<a name="line998">998: </a>
+<a name="line999">999: </a>  <font color="#B22222">/* create the new implementation */</font>
+<a name="line1000">1000: </a>  (*ctor)(map);
+<a name="line1001">1001: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1002">1002: </a>}<font color="#B22222">/* SAMappingSetType() */</font>
+
+<a name="line1004">1004: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1006">1006: </a><strong><font color="#4169E1"><a name="SAMappingDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingDestroy(SAMapping *_map)</font></strong>
+<a name="line1007">1007: </a>{
+<a name="line1010">1010: </a>  <font color="#4169E1">if</font>(!*_map) <font color="#4169E1">return</font>(0);
+<a name="line1012">1012: </a>  <font color="#4169E1">if</font>(--((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)(*_map))-&gt;refct &gt; 0) <font color="#4169E1">return</font>(0);
+<a name="line1013">1013: </a>  <font color="#4169E1">if</font>((*_map)-&gt;ops-&gt;destroy) {
+<a name="line1014">1014: </a>    (*(*_map)-&gt;ops-&gt;destroy)(*_map);
+<a name="line1015">1015: </a>  }
+<a name="line1016">1016: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutDestroy.html#PetscLayoutDestroy">PetscLayoutDestroy</A>(&amp;(*_map)-&gt;xlayout);
+<a name="line1017">1017: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutDestroy.html#PetscLayoutDestroy">PetscLayoutDestroy</A>(&amp;(*_map)-&gt;ylayout);
+<a name="line1018">1018: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderDestroy.html#PetscHeaderDestroy">PetscHeaderDestroy</A>(_map);
+<a name="line1019">1019: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1020">1020: </a>}<font color="#B22222">/* SAMappingDestroy() */</font>
+
+<a name="line1022">1022: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1024">1024: </a><strong><font color="#4169E1"><a name="SAMappingCreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMappingCreate(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, SAMapping *_map)</font></strong>
+<a name="line1025">1025: </a>{
+<a name="line1026">1026: </a>  SAMapping map;
+<a name="line1030">1030: </a>  *_map = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1031">1031: </a><font color="#A020F0">#ifndef PETSC_USE_DYNAMIC_LIBRARIES</font>
+<a name="line1032">1032: </a>  <A href="../../../../docs/manualpages/DM/SAMappingInitializePackage.html#SAMappingInitializePackage">SAMappingInitializePackage</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line1033">1033: </a><font color="#A020F0">#endif</font>
+
+<a name="line1035">1035: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(map,_p_SAMapping,<font color="#4169E1">struct _SAMappingOps</font>,SA_MAPPING_CLASSID,0,<font color="#666666">"SAMapping"</font>,<font color="#666666">"SAMapping"</font>,<font color="#666666">"DM"</font>,comm,SAMappingDestroy,SAMappingView);
+<a name="line1036">1036: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutCreate.html#PetscLayoutCreate">PetscLayoutCreate</A>(comm,&amp;(map-&gt;xlayout));
+<a name="line1037">1037: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutCreate.html#PetscLayoutCreate">PetscLayoutCreate</A>(comm,&amp;(map-&gt;ylayout));
+<a name="line1038">1038: </a>  *_map = map;
+<a name="line1039">1039: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1040">1040: </a>}<font color="#B22222">/* SAMappingCreate() */</font>
+
+
+
+<a name="line1044">1044: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1046">1046: </a><strong><font color="#4169E1"><a name="SAHunkCreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAHunkCreate(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> maxlength, SAComponents mask, SAHunk *_hunk)</font></strong>
+<a name="line1047">1047: </a>{
+<a name="line1049">1049: </a>  SAHunk hunk;
+
+<a name="line1053">1053: </a>  <font color="#4169E1">if</font>(maxlength &lt;= 0)
+<a name="line1054">1054: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Nonpositive SAHunk maxlength: %D"</font>, maxlength);
+
+<a name="line1056">1056: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(<font color="#4169E1">struct _n_SAHunk</font>, &amp;hunk);
+<a name="line1057">1057: </a>  hunk-&gt;mask = mask;
+<a name="line1058">1058: </a>  hunk-&gt;maxlength = maxlength;
+<a name="line1059">1059: </a>  <font color="#4169E1">if</font>(mask &amp; SA_I) {
+<a name="line1060">1060: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ia;
+<a name="line1061">1061: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*maxlength, &amp;ia);
+<a name="line1062">1062: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ia, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*maxlength);
+<a name="line1063">1063: </a>    hunk-&gt;i = ia;
+<a name="line1064">1064: </a>  }
+<a name="line1065">1065: </a>  <font color="#4169E1">if</font>(mask &amp; SA_J) {
+<a name="line1066">1066: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ja;
+<a name="line1067">1067: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*maxlength, &amp;ja);
+<a name="line1068">1068: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ja, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*maxlength);
+<a name="line1069">1069: </a>    hunk-&gt;j = ja;
+<a name="line1070">1070: </a>  }
+<a name="line1071">1071: </a>  <font color="#4169E1">if</font>(mask &amp; SA_W) {
+<a name="line1072">1072: </a>    <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *wa;
+<a name="line1073">1073: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*maxlength, &amp;wa);
+<a name="line1074">1074: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(wa, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*maxlength);
+<a name="line1075">1075: </a>    hunk-&gt;w = wa;
+<a name="line1076">1076: </a>  }
+<a name="line1077">1077: </a>  hunk-&gt;mode = PETSC_OWN_POINTER;
+<a name="line1078">1078: </a>  hunk-&gt;length = 0;
+<a name="line1079">1079: </a>  hunk-&gt;refcnt = 1;
+<a name="line1080">1080: </a>  *_hunk = hunk;
+<a name="line1081">1081: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1082">1082: </a>}
+
+<a name="line1084">1084: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1086">1086: </a><strong><font color="#4169E1"><a name="SAHunkAddData"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAHunkAddData(SAHunk hunk, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> length, const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *i, const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *w, const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *j)</font></strong>
+<a name="line1087">1087: </a>{
+<a name="line1089">1089: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mask;
+<a name="line1092">1092: </a>  mask = (i != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) | ((j != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;1) | ((w != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;2);
+<a name="line1093">1093: </a>  <font color="#4169E1">if</font>(mask != hunk-&gt;mask) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Data components %D incompatible with the SAHunk mask"</font>, mask,hunk-&gt;mask);
+<a name="line1094">1094: </a>  <font color="#4169E1">if</font>(hunk-&gt;length + length &gt; hunk-&gt;maxlength) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Cannot add data of length %D, hunk only has %D space left"</font>, length, hunk-&gt;maxlength-hunk-&gt;length);
+<a name="line1095">1095: </a>  <font color="#4169E1">if</font>(mask &amp; SA_I) {
+<a name="line1096">1096: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(hunk-&gt;i+hunk-&gt;length, i, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*length);
+<a name="line1097">1097: </a>  }
+<a name="line1098">1098: </a>  <font color="#4169E1">if</font>(mask &amp; SA_J) {
+<a name="line1099">1099: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(hunk-&gt;j+hunk-&gt;length, j, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*length);
+<a name="line1100">1100: </a>  }
+<a name="line1101">1101: </a>  <font color="#4169E1">if</font>(mask &amp; SA_W) {
+<a name="line1102">1102: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(hunk-&gt;w+hunk-&gt;length, w, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*length);
+<a name="line1103">1103: </a>  }
+<a name="line1104">1104: </a>  hunk-&gt;length += length;
+<a name="line1105">1105: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1106">1106: </a>}
+
+
+<a name="line1109">1109: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1111">1111: </a><strong><font color="#4169E1"><a name="SAHunkGetSubHunk"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAHunkGetSubHunk(SAHunk hunk, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> start, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> maxlength, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> length, SAComponents mask, SAHunk *_subhunk)</font></strong>
+<a name="line1112">1112: </a>{
+<a name="line1114">1114: </a>  SAHunk subhunk;
+<a name="line1118">1118: </a>  *_subhunk = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1119">1119: </a>  <font color="#4169E1">if</font>(maxlength &lt;= 0)
+<a name="line1120">1120: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Nonpositive subhunk maxlength: %D"</font>, maxlength);
+<a name="line1121">1121: </a>  <font color="#4169E1">if</font>(length &lt;= 0)
+<a name="line1122">1122: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Nonpositive subhunk length: %D"</font>, length);
+<a name="line1123">1123: </a>  <font color="#4169E1">if</font>(length &gt; maxlength)
+<a name="line1124">1124: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"subhunk length %D exceeds maxlength %D"</font>, length, maxlength);
+<a name="line1125">1125: </a>  <font color="#4169E1">if</font>(start &lt; 0 || start &gt;= hunk-&gt;maxlength)
+<a name="line1126">1126: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"subhunk start %D out of bounds [0,%D)"</font>, start,hunk-&gt;maxlength);
+<a name="line1127">1127: </a>  <font color="#4169E1">if</font>(start+maxlength &gt; hunk-&gt;maxlength)
+<a name="line1128">1128: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"subhunk end %D beyond the end of hunk %D"</font>,start+maxlength,hunk-&gt;maxlength);
+<a name="line1129">1129: </a>
+<a name="line1130">1130: </a>  <font color="#4169E1">if</font>(mask &amp; (~(hunk-&gt;mask)))
+<a name="line1131">1131: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Subhunk mask %D is not a submask of the hunk mask %D"</font>, mask, hunk-&gt;mask);
+<a name="line1132">1132: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(<font color="#4169E1">struct _n_SAHunk</font>, &amp;subhunk);
+<a name="line1133">1133: </a>  subhunk-&gt;mask = mask;
+<a name="line1134">1134: </a>  subhunk-&gt;maxlength = maxlength;
+<a name="line1135">1135: </a>  subhunk-&gt;length    = length;
+<a name="line1136">1136: </a>  <font color="#4169E1">if</font>(mask &amp; SA_I) {
+<a name="line1137">1137: </a>    subhunk-&gt;i = hunk-&gt;i+start;
+<a name="line1138">1138: </a>  }
+<a name="line1139">1139: </a>  <font color="#4169E1">if</font>(mask &amp; SA_J) {
+<a name="line1140">1140: </a>    subhunk-&gt;j = hunk-&gt;j+start;
+<a name="line1141">1141: </a>  }
+<a name="line1142">1142: </a>  <font color="#4169E1">if</font>(mask &amp; SA_W) {
+<a name="line1143">1143: </a>    subhunk-&gt;w = hunk-&gt;w+start;
+<a name="line1144">1144: </a>  }
+<a name="line1145">1145: </a>  subhunk-&gt;mode = PETSC_USE_POINTER;
+<a name="line1146">1146: </a>  ++(hunk-&gt;refcnt);
+<a name="line1147">1147: </a>  *_subhunk = subhunk;
+<a name="line1148">1148: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1149">1149: </a>}
+
+
+<a name="line1152">1152: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1154">1154: </a><strong><font color="#4169E1"><a name="SAHunkDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAHunkDestroy(SAHunk *_hunk)</font></strong>
+<a name="line1155">1155: </a>{
+<a name="line1158">1158: </a>  <font color="#4169E1">if</font>(!*_hunk) <font color="#4169E1">return</font>(0);
+<a name="line1159">1159: </a>  <font color="#4169E1">if</font>(--((*_hunk)-&gt;refcnt) &gt; 0) {*_hunk = 0; <font color="#4169E1">return</font>(0);}
+<a name="line1160">1160: </a>  <font color="#4169E1">if</font>((*_hunk)-&gt;length &amp;&amp; (*_hunk)-&gt;mode != PETSC_USE_POINTER) {
+<a name="line1161">1161: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>((*_hunk)-&gt;i);
+<a name="line1162">1162: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>((*_hunk)-&gt;w);
+<a name="line1163">1163: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>((*_hunk)-&gt;j);
+<a name="line1164">1164: </a>  }
+<a name="line1165">1165: </a>  (*_hunk)-&gt;length = 0;
+<a name="line1166">1166: </a>  <font color="#4169E1">if</font>((*_hunk)-&gt;parent) {
+<a name="line1167">1167: </a>    SAHunkDestroy(&amp;((*_hunk)-&gt;parent));
+<a name="line1168">1168: </a>  }
+<a name="line1169">1169: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>((*_hunk));
+<a name="line1170">1170: </a>  *_hunk = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1171">1171: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1172">1172: </a>}
+
+
+<a name="line1175">1175: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1177">1177: </a><strong><font color="#4169E1"><a name="SACreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SACreate(SAComponents mask, SA *_arr)</font></strong>
+<a name="line1178">1178: </a>{
+<a name="line1182">1182: </a>  <font color="#4169E1">if</font>(!(mask &amp; SA_I) &amp;&amp; !(mask &amp; SA_J)) {
+<a name="line1183">1183: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"SAComponents %D must contain at least one of the indices: I or J"</font>, mask);
+<a name="line1184">1184: </a>  }
+<a name="line1185">1185: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(<font color="#4169E1">struct _n_SA</font>, _arr);
+<a name="line1186">1186: </a>  (*_arr)-&gt;mask = mask;
+<a name="line1187">1187: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1188">1188: </a>}
+
+<a name="line1190">1190: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1192">1192: </a><strong><font color="#4169E1"><a name="SADuplicate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SADuplicate(SA arr, SA *_darr)</font></strong>
+<a name="line1193">1193: </a>{
+<a name="line1195">1195: </a>  SA darr;
+<a name="line1196">1196: </a>  SALink link;
+<a name="line1200">1200: </a>  SACreate(arr-&gt;mask, &amp;darr);
+<a name="line1201">1201: </a>  link  = arr-&gt;first;
+<a name="line1202">1202: </a>  <font color="#4169E1">while</font>(link) {
+<a name="line1203">1203: </a>    SAAddHunk(darr,link-&gt;hunk);
+<a name="line1204">1204: </a>  }
+<a name="line1205">1205: </a>  *_darr = arr;
+<a name="line1206">1206: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1207">1207: </a>}
+
+<a name="line1209">1209: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1211">1211: </a><strong><font color="#4169E1"><a name="SACreateArrays"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SACreateArrays(SAComponents mask, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> count, SA **_arrays)</font></strong>
+<a name="line1212">1212: </a>{
+<a name="line1214">1214: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i;
+<a name="line1217">1217: </a>  <font color="#4169E1">if</font>(!(mask &amp; SA_I) &amp;&amp; !(mask &amp; SA_J)) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"SAComponents %D must contain at least one of the indices: I or J"</font>, mask);
+<a name="line1218">1218: </a>  <font color="#4169E1">if</font>(count &lt; 0) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Negative array count: %D"</font>, count);
+<a name="line1219">1219: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(SA), _arrays);
+<a name="line1220">1220: </a>  <font color="#4169E1">for</font>(i = 0; i &lt; count; ++i) {
+<a name="line1221">1221: </a>    SACreate(mask, *_arrays+i);
+<a name="line1222">1222: </a>  }
+<a name="line1223">1223: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1224">1224: </a>}
+
+<a name="line1226">1226: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1228">1228: </a><strong><font color="#4169E1"><a name="SAClear"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAClear(SA arr)</font></strong>
+<a name="line1229">1229: </a>{
+<a name="line1231">1231: </a>  SALink    link, next;
+<a name="line1234">1234: </a>  link = arr-&gt;first;
+<a name="line1235">1235: </a>  <font color="#4169E1">while</font>(link) {
+<a name="line1236">1236: </a>    SAHunkDestroy(&amp;(link-&gt;hunk));
+<a name="line1237">1237: </a>    next = link-&gt;next;
+<a name="line1238">1238: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(link);
+<a name="line1239">1239: </a>    link = next;
+<a name="line1240">1240: </a>  }
+<a name="line1241">1241: </a>  arr-&gt;first = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1242">1242: </a>  arr-&gt;last  = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1243">1243: </a>  arr-&gt;length = 0;
+<a name="line1244">1244: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1245">1245: </a>}
+
+
+<a name="line1248">1248: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1250">1250: </a><strong><font color="#4169E1"><a name="SADestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SADestroy(SA *_arr)</font></strong>
+<a name="line1251">1251: </a>{
+<a name="line1254">1254: </a>  <font color="#4169E1">if</font>(!*_arr) <font color="#4169E1">return</font>(0);
+<a name="line1255">1255: </a>  SAClear(*_arr);
+<a name="line1256">1256: </a>  (*_arr)-&gt;mask   = 0;
+<a name="line1257">1257: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(*_arr);
+<a name="line1258">1258: </a>  *_arr = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1259">1259: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1260">1260: </a>}
+
+
+<a name="line1263">1263: </a><font color="#B22222">/* </font>
+<a name="line1264">1264: </a><font color="#B22222"> Right now we merely allocate a new hunk.</font>
+<a name="line1265">1265: </a><font color="#B22222"> In the future, this can manage a pool of hunks, use a buffer to draw subhunks from, etc.</font>
+<a name="line1266">1266: </a><font color="#B22222"> */</font>
+<a name="line1267">1267: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1269">1269: </a><strong><font color="#4169E1"><a name="SAGetHunk"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAGetHunk(SA chain, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> length, SAHunk *_hunk)</font></strong>
+<a name="line1270">1270: </a>{
+<a name="line1273">1273: </a>  SAHunkCreate(length, chain-&gt;mask, _hunk);
+<a name="line1274">1274: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1275">1275: </a>}
+
+<a name="line1277">1277: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1279">1279: </a><strong><font color="#4169E1"><a name="SAAddHunk"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAAddHunk(SA chain, SAHunk hunk)</font></strong>
+<a name="line1280">1280: </a>{
+<a name="line1282">1282: </a>  SALink    link;
+<a name="line1284">1284: </a>  <font color="#4169E1">if</font>(chain-&gt;mask &amp; (~(hunk-&gt;mask))) {
+<a name="line1285">1285: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Hunk mask %D incompatible with the array mask %D"</font>, hunk-&gt;mask, chain-&gt;mask);
+<a name="line1286">1286: </a>  }
+<a name="line1287">1287: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<font color="#4169E1">struct _n_SALink</font>), &amp;link);
+<a name="line1288">1288: </a>  link-&gt;hunk = hunk;
+<a name="line1289">1289: </a>  ++(hunk-&gt;refcnt);
+<a name="line1290">1290: </a>  <font color="#4169E1">if</font>(chain-&gt;last) {
+<a name="line1291">1291: </a>    chain-&gt;last-&gt;next = link;
+<a name="line1292">1292: </a>    chain-&gt;last =       link;
+<a name="line1293">1293: </a>  }
+<a name="line1294">1294: </a>  <font color="#4169E1">else</font> {
+<a name="line1295">1295: </a>    chain-&gt;first = chain-&gt;last = link;
+<a name="line1296">1296: </a>  }
+<a name="line1297">1297: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1298">1298: </a>}
+
+
+<a name="line1301">1301: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1303">1303: </a><strong><font color="#4169E1"><a name="SAAddData"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAAddData(SA chain, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> length, const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *i, const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *w, const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *j)</font></strong>
+<a name="line1304">1304: </a>{
+<a name="line1306">1306: </a>  SAHunk hunk;
+<a name="line1307">1307: </a>  SAComponents mask;
+<a name="line1310">1310: </a>  mask = (i != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) | ((j != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;1) | ((w != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;2);
+<a name="line1311">1311: </a>  <font color="#4169E1">if</font>(mask != chain-&gt;mask) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Data components %D incompatible with the SAComponents"</font>, mask,chain-&gt;mask);
+<a name="line1312">1312: </a>  SAGetHunk(chain, length, &amp;hunk);
+<a name="line1313">1313: </a>  SAHunkAddData(hunk, length, i,w,j);
+<a name="line1314">1314: </a>  SAAddHunk(chain, hunk);
+<a name="line1315">1315: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1316">1316: </a>}
+
+
+<a name="line1319">1319: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1321">1321: </a><strong><font color="#4169E1"><a name="SAAddI"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAAddI(SA chain, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> length, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> wa[], const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ja[])</font></strong>
+<a name="line1322">1322: </a>{
+<a name="line1324">1324: </a>  SAHunk hunk;
+<a name="line1325">1325: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mask;
+<a name="line1326">1326: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> k;
+<a name="line1329">1329: </a>  mask = (SA_I | (ja != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;1 | (wa != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;2);
+<a name="line1330">1330: </a>  <font color="#4169E1">if</font>(mask &amp; (~(chain-&gt;mask))) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Array components provided %D incompatible with array mask %D"</font>, mask, chain-&gt;mask);
+<a name="line1331">1331: </a>  <font color="#4169E1">if</font>(!length) <font color="#4169E1">return</font>(0);
+<a name="line1332">1332: </a>  SAGetHunk(chain, length, &amp;hunk);
+<a name="line1333">1333: </a>  <font color="#4169E1">for</font>(k = 0; k &lt; length; ++k) hunk-&gt;i[k] = i;
+<a name="line1334">1334: </a>  <font color="#4169E1">if</font>(ja) {
+<a name="line1335">1335: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(hunk-&gt;j, ja, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*length);
+<a name="line1336">1336: </a>  }
+<a name="line1337">1337: </a>  <font color="#4169E1">if</font>(wa) {
+<a name="line1338">1338: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(hunk-&gt;w, wa, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*length);
+<a name="line1339">1339: </a>  }
+<a name="line1340">1340: </a>  SAAddHunk(chain, hunk);
+<a name="line1341">1341: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1342">1342: </a>}
+
+<a name="line1344">1344: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1346">1346: </a><strong><font color="#4169E1"><a name="SAAddJ"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAAddJ(SA chain, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> length, const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ia[], const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> wa[], <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> j)</font></strong>
+<a name="line1347">1347: </a>{
+<a name="line1349">1349: </a>  SAHunk hunk;
+<a name="line1350">1350: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mask;
+<a name="line1351">1351: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> k;
+<a name="line1354">1354: </a>  mask = ((<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)(ia != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) | (<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)SA_J | (<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)(wa != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;2);
+<a name="line1355">1355: </a>  <font color="#4169E1">if</font>(mask &amp; (~(chain-&gt;mask))) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Array components provided %D incompatible with array mask %D"</font>, mask, chain-&gt;mask);
+<a name="line1356">1356: </a>  <font color="#4169E1">if</font>(!length) <font color="#4169E1">return</font>(0);
+<a name="line1357">1357: </a>  SAGetHunk(chain, length, &amp;hunk);
+<a name="line1358">1358: </a>  <font color="#4169E1">for</font>(k = 0; k &lt; length; ++k) hunk-&gt;j[k] = j;
+<a name="line1359">1359: </a>  <font color="#4169E1">if</font>(ia) {
+<a name="line1360">1360: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(hunk-&gt;i, ia, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*length);
+<a name="line1361">1361: </a>  }
+<a name="line1362">1362: </a>  <font color="#4169E1">if</font>(wa) {
+<a name="line1363">1363: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(hunk-&gt;w, wa, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*length);
+<a name="line1364">1364: </a>  }
+<a name="line1365">1365: </a>  SAAddHunk(chain, hunk);
+<a name="line1366">1366: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1367">1367: </a>}
+
+<a name="line1369">1369: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1371">1371: </a><strong><font color="#4169E1"><a name="SAMerge"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAMerge(SA arr, SA *_marr)</font></strong>
+<a name="line1372">1372: </a>{
+<a name="line1374">1374: </a>  SALink link;
+<a name="line1375">1375: </a>  SAHunk merged;
+<a name="line1376">1376: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> count, offset;
+
+<a name="line1381">1381: </a>  <font color="#B22222">/* Determine the number of links in the chain and perform the mask consistency check. */</font>
+<a name="line1382">1382: </a>  link = arr-&gt;first;
+<a name="line1383">1383: </a>  count = 0;
+<a name="line1384">1384: </a>  <font color="#4169E1">while</font>(link) {
+<a name="line1385">1385: </a>    <font color="#B22222">/* Mask consistency check. */</font>
+<a name="line1386">1386: </a>    <font color="#4169E1">if</font>(arr-&gt;mask &amp; (~(link-&gt;hunk-&gt;mask))) {
+<a name="line1387">1387: </a>      <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Hunk components %D in link %D incompatible with the merge mask %D"</font>, link-&gt;hunk-&gt;mask, count, arr-&gt;mask);
+<a name="line1388">1388: </a>    }
+<a name="line1389">1389: </a>    link     = link-&gt;next;
+<a name="line1390">1390: </a>    ++count;
+<a name="line1391">1391: </a>  }
+<a name="line1392">1392: </a>  <font color="#4169E1">if</font>(count == 1) <font color="#4169E1">return</font>(0);
+
+<a name="line1394">1394: </a>  <font color="#4169E1">if</font>(arr-&gt;length) {
+<a name="line1395">1395: </a>    SAHunkCreate(arr-&gt;length, arr-&gt;mask, &amp;merged);
+<a name="line1396">1396: </a>    <font color="#B22222">/* Copy the indices and weights into the merged arrays. */</font>
+<a name="line1397">1397: </a>    offset = 0;
+<a name="line1398">1398: </a>    link = arr-&gt;first;
+<a name="line1399">1399: </a>    <font color="#4169E1">while</font>(link) {
+<a name="line1400">1400: </a>      SAHunk hunk = link-&gt;hunk;
+<a name="line1401">1401: </a>      <font color="#4169E1">if</font>(arr-&gt;mask &amp; SA_I) {
+<a name="line1402">1402: </a>        <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(merged-&gt;i+offset, hunk-&gt;i, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*hunk-&gt;length);
+<a name="line1403">1403: </a>      }
+<a name="line1404">1404: </a>      <font color="#4169E1">if</font>(arr-&gt;mask &amp; SA_J) {
+<a name="line1405">1405: </a>        <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(merged-&gt;j+offset, hunk-&gt;j, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*hunk-&gt;length);
+<a name="line1406">1406: </a>      }
+<a name="line1407">1407: </a>      <font color="#4169E1">if</font>(arr-&gt;mask &amp; SA_W) {
+<a name="line1408">1408: </a>        <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(merged-&gt;w+offset, hunk-&gt;w, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*hunk-&gt;length);
+<a name="line1409">1409: </a>      }
+<a name="line1410">1410: </a>      offset += hunk-&gt;length;
+<a name="line1411">1411: </a>    }
+<a name="line1412">1412: </a>  }<font color="#B22222">/* if(arr-&gt;length) */</font>
+<a name="line1413">1413: </a>  merged-&gt;length = offset;
+<a name="line1414">1414: </a>  SACreate(arr-&gt;mask, _marr);
+<a name="line1415">1415: </a>  SAAddHunk(*_marr, merged);
+<a name="line1416">1416: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1417">1417: </a>}
+
+<a name="line1419">1419: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1421">1421: </a><strong><font color="#4169E1"><a name="SAGetLength"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAGetLength(SA chain, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_length)</font></strong>
+<a name="line1422">1422: </a>{
+<a name="line1426">1426: </a>  *_length = chain-&gt;length;
+<a name="line1427">1427: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1428">1428: </a>}
+
+<a name="line1430">1430: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1432">1432: </a><strong><font color="#4169E1"><a name="SAGetData"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAGetData(SA chain, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ia, <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *wa, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ja)</font></strong>
+<a name="line1433">1433: </a>{
+<a name="line1435">1435: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mask, off;
+<a name="line1436">1436: </a>  SALink link;
+<a name="line1437">1437: </a>  SAHunk hunk;
+
+<a name="line1441">1441: </a>  mask = ((ia != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) &amp; (chain-&gt;mask&amp;SA_I)) | ((ja != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;1 &amp; (chain-&gt;mask&amp;SA_J)) | ((wa != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)&lt;&lt;2 &amp; (chain-&gt;mask&amp;SA_W));
+<a name="line1442">1442: </a>  off = 0;
+<a name="line1443">1443: </a>  link = chain-&gt;first;
+<a name="line1444">1444: </a>  <font color="#4169E1">while</font>(link) {
+<a name="line1445">1445: </a>    hunk = link-&gt;hunk;
+<a name="line1446">1446: </a>    <font color="#4169E1">if</font>(mask&amp;SA_I) {
+<a name="line1447">1447: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(ia+off, hunk-&gt;i, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*hunk-&gt;length);
+<a name="line1448">1448: </a>    }
+<a name="line1449">1449: </a>    <font color="#4169E1">if</font>(mask&amp;SA_J) {
+<a name="line1450">1450: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(ja+off, hunk-&gt;j, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*hunk-&gt;length);
+<a name="line1451">1451: </a>    }
+<a name="line1452">1452: </a>    <font color="#4169E1">if</font>(mask&amp;SA_W) {
+<a name="line1453">1453: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(wa+off, hunk-&gt;w, <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*hunk-&gt;length);
+<a name="line1454">1454: </a>    }
+<a name="line1455">1455: </a>    link = link-&gt;next;
+<a name="line1456">1456: </a>    off += hunk-&gt;length;
+<a name="line1457">1457: </a>  }
+<a name="line1458">1458: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1459">1459: </a>}
+
+<a name="line1461">1461: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1463">1463: </a><strong><font color="#4169E1"><a name="SAAddArray"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAAddArray(SA chain, SA chain2)</font></strong>
+<a name="line1464">1464: </a>{
+<a name="line1466">1466: </a>  SALink link;
+<a name="line1470">1470: </a>  <font color="#4169E1">if</font>(chain-&gt;mask &amp; (~(chain2-&gt;mask))) {
+<a name="line1471">1471: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"New mask %D ncompatible with original %D"</font>, chain2-&gt;mask, chain-&gt;mask);
+<a name="line1472">1472: </a>  }
+<a name="line1473">1473: </a>  link = chain2-&gt;first;
+<a name="line1474">1474: </a>  <font color="#4169E1">while</font>(link) {
+<a name="line1475">1475: </a>    SAAddHunk(chain, link-&gt;hunk);
+<a name="line1476">1476: </a>    link = link-&gt;next;
+<a name="line1477">1477: </a>  }
+<a name="line1478">1478: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1479">1479: </a>}
+
+<a name="line1481">1481: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line1483">1483: </a><strong><font color="#4169E1"><a name="SASplit"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SASplit(SA arr, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> count, const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *lengths, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mask, SA *arrs)</font></strong>
+<a name="line1484">1484: </a>{
+<a name="line1486">1486: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, lengthi, start, end, len;
+<a name="line1487">1487: </a>  SALink link;
+<a name="line1488">1488: </a>  SAHunk hunk, subhunk;
+
+<a name="line1492">1492: </a>  <font color="#4169E1">if</font>(count &lt; 0) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Negative array length %D"</font>, count);
+<a name="line1495">1495: </a>  <font color="#4169E1">if</font>(!count) <font color="#4169E1">return</font>(0);
+<a name="line1496">1496: </a>  link = arr-&gt;first;
+<a name="line1497">1497: </a>  i = 0;        <font color="#B22222">/* current subarray index */</font>
+<a name="line1498">1498: </a>  lengthi = 0;  <font color="#B22222">/* current length of the current subarray */</font>
+<a name="line1499">1499: </a>  <font color="#4169E1">while</font>(link) {
+<a name="line1500">1500: </a>    hunk = link-&gt;hunk;
+<a name="line1501">1501: </a>    start = 0;  <font color="#B22222">/* start of unassigned hunk space */</font>
+<a name="line1502">1502: </a>    <font color="#4169E1">while</font>(hunk-&gt;length-start) {
+<a name="line1503">1503: </a>      end = PetscMin(hunk-&gt;length, lengths[i]-lengthi);
+<a name="line1504">1504: </a>      len = start-end;
+<a name="line1505">1505: </a>      SAHunkGetSubHunk(hunk,start,len,len,hunk-&gt;mask, &amp;subhunk);
+<a name="line1506">1506: </a>      SAAddHunk(arrs[i], subhunk);
+<a name="line1507">1507: </a>      start   += len;
+<a name="line1508">1508: </a>      lengthi += len;
+<a name="line1509">1509: </a>      <font color="#4169E1">if</font>(lengthi == lengths[i]) {
+<a name="line1510">1510: </a>        lengthi = 0; ++i;
+<a name="line1511">1511: </a>        <font color="#4169E1">if</font>(i &gt;= count) <font color="#4169E1">return</font>(0);
+<a name="line1512">1512: </a>      }
+<a name="line1513">1513: </a>    }
+<a name="line1514">1514: </a>    link = link-&gt;next;
+<a name="line1515">1515: </a>  }
+<a name="line1516">1516: </a>
+<a name="line1517">1517: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1518">1518: </a>}
+
+
+
+<a name="line1522">1522: </a><font color="#B22222">/*</font>
+<a name="line1523">1523: </a><font color="#B22222">     Checks whether all indices are within [imin,imax) and generate an error, if they are not and </font>
+<a name="line1524">1524: </a><font color="#B22222">     if outOfBoundsError == <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>.  Return the result in flag.</font>
+<a name="line1525">1525: </a><font color="#B22222"> */</font>
+<a name="line1529">1529: </a>{
+<a name="line1530">1530: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i;
+<a name="line1531">1531: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> inBounds = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line1533">1533: </a>  <font color="#4169E1">for</font> (i=0; i&lt;len; ++i) {
+<a name="line1534">1534: </a>    <font color="#4169E1">if</font> (idx[i] &lt;  imin) {
+<a name="line1535">1535: </a>      <font color="#4169E1">if</font>(outOfBoundsError) {
+<a name="line1536">1536: </a>        <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Index %D at location %D is less than min %D"</font>,idx[i],i,imin);
+<a name="line1537">1537: </a>      }
+<a name="line1538">1538: </a>      inBounds = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1539">1539: </a>      <font color="#4169E1">break</font>;
+<a name="line1540">1540: </a>    }
+<a name="line1541">1541: </a>    <font color="#4169E1">if</font> (idx[i] &gt;= imax) {
+<a name="line1542">1542: </a>      <font color="#4169E1">if</font>(outOfBoundsError) {
+<a name="line1543">1543: </a>        <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Index %D at location %D is greater than max %D"</font>,idx[i],i,imax);
+<a name="line1544">1544: </a>      }
+<a name="line1545">1545: </a>      inBounds = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1546">1546: </a>      <font color="#4169E1">break</font>;
+<a name="line1547">1547: </a>    }
+<a name="line1548">1548: </a>  }
+<a name="line1549">1549: </a>  <font color="#4169E1">if</font>(flag) *flag = inBounds;
+<a name="line1550">1550: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1551">1551: </a>}
+
+<a name="line1553">1553: </a><font color="#B22222">/*</font>
+<a name="line1554">1554: </a><font color="#B22222">     Checks if any indices are within [imin,imax) and generate an error, if they are not and </font>
+<a name="line1555">1555: </a><font color="#B22222">     if outOfBoundsError == <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>.  Return the result in flag.</font>
+<a name="line1556">1556: </a><font color="#B22222"> */</font>
+<a name="line1560">1560: </a>{
+<a name="line1561">1561: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n;
+<a name="line1562">1562: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> inBounds = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>, isstride;
+<a name="line1565">1565: </a>
+<a name="line1566">1566: </a>  <A href="../../../../docs/manualpages/IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(is, &amp;n);
+<a name="line1567">1567: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is,ISSTRIDE,&amp;isstride);
+<a name="line1568">1568: </a>  <font color="#4169E1">if</font>(isstride) {
+<a name="line1569">1569: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> first, step, last;
+<a name="line1570">1570: </a>
+<a name="line1571">1571: </a>    <A href="../../../../docs/manualpages/IS/ISStrideGetInfo.html#ISStrideGetInfo">ISStrideGetInfo</A>(is, &amp;first, &amp;step);
+<a name="line1572">1572: </a>    last = first + step*n;
+<a name="line1573">1573: </a>    <font color="#4169E1">if</font> (first &lt; imin || last &lt; imin) {
+<a name="line1574">1574: </a>      <font color="#4169E1">if</font>(outOfBoundsError)
+<a name="line1575">1575: </a>        <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Index smaller than min %D"</font>, imin);
+<a name="line1576">1576: </a>      inBounds = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1577">1577: </a>      <font color="#4169E1">goto</font> functionend;
+<a name="line1578">1578: </a>    }
+<a name="line1579">1579: </a>    <font color="#4169E1">if</font> (first &gt;= imax || last &gt;= imax) {
+<a name="line1580">1580: </a>      <font color="#4169E1">if</font>(outOfBoundsError)
+<a name="line1581">1581: </a>        <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Index greater than max %D"</font>, imax);
+<a name="line1582">1582: </a>      inBounds = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1583">1583: </a>      <font color="#4169E1">goto</font> functionend;
+<a name="line1584">1584: </a>    }
+<a name="line1585">1585: </a>  } <font color="#4169E1">else</font> { <font color="#B22222">/* not stride */</font>
+<a name="line1586">1586: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *idx;
+<a name="line1587">1587: </a>    <A href="../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(is, &amp;idx);
+<a name="line1589">1589: </a>    <A href="../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(is, &amp;idx);
+<a name="line1590">1590: </a>  }
+<a name="line1591">1591: </a><strong><font color="#FF0000">  functionend:</font></strong>
+<a name="line1592">1592: </a>  <font color="#4169E1">if</font>(flag) *flag = inBounds;
+<a name="line1593">1593: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1594">1594: </a>}
+
+<a name="line1596">1596: </a><font color="#B22222">/* </font>
+<a name="line1597">1597: </a><font color="#B22222"> FIX: If we wanted to split this into AssemblyBegin/End, some data must be passed between the stages (e.g., tags,</font>
+<a name="line1598">1598: </a><font color="#B22222">      waits), this could be made into an SAMapping method.  However, then an SAMapping of some sort must be instantiated</font>
+<a name="line1599">1599: </a><font color="#B22222">      for SA assembly.  Maybe it always happens in the common use cases, anyhow. </font>
+<a name="line1600">1600: </a><font color="#B22222"> */</font>
+<a name="line1603">1603: </a><strong><font color="#4169E1"><a name="SAAssemble"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SAAssemble(SA chain, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mask, <A href="../../../../docs/manualpages/Vec/PetscLayout.html#PetscLayout">PetscLayout</A> layout, SA achain)</font></strong>
+<a name="line1604">1604: </a>{
+<a name="line1606">1606: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm = layout-&gt;comm;
+<a name="line1607">1607: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> size, rank, tag_i, tag_v;
+<a name="line1608">1608: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> chainmaskmpi, allchainmask;
+<a name="line1609">1609: </a>  const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ixidx, *iyidx;
+<a name="line1610">1610: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> idx, lastidx;
+<a name="line1611">1611: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, j, p;
+<a name="line1612">1612: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *owner = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1613">1613: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> nsends, nrecvs;
+<a name="line1614">1614: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> *plengths, *sstarts = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1615">1615: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> *rnodes, *rlengths, *rstarts = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, rlengthtotal;
+<a name="line1616">1616: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    **rindices = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, *sindices= <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1617">1617: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *svalues = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, **rvalues = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1618">1618: </a>  MPI_Request *recv_reqs_i, *recv_reqs_v, *send_reqs;
+<a name="line1619">1619: </a>  MPI_Status  recv_status, *send_statuses;
+<a name="line1620">1620: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line1621">1621: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> found;
+<a name="line1622">1622: </a><font color="#A020F0">#endif</font>
+<a name="line1623">1623: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ni, nv, count, alength;
+<a name="line1624">1624: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aixidx, *aiyidx = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1625">1625: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *aval = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line1626">1626: </a>  const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *val;
+<a name="line1627">1627: </a>  SALink link;
+<a name="line1628">1628: </a>  SAHunk hunk, ahunk;
+
+
+<a name="line1634">1634: </a>  <font color="#B22222">/* Make sure that at least one of the indices -- I or J -- is being assembled on, and that the index being assembled on is present in the SA. */</font>
+<a name="line1635">1635: </a>  <font color="#4169E1">if</font>((mask != SA_I &amp;&amp; mask != SA_J)|| !(mask &amp; chain-&gt;mask)) {
+<a name="line1636">1636: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Cannot assemble SA with components %D on component %D"</font>, chain-&gt;mask, mask);
+<a name="line1637">1637: </a>  }
+<a name="line1638">1638: </a>  <font color="#4169E1">if</font>(chain-&gt;mask != achain-&gt;mask) {
+<a name="line1639">1639: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Input and output array masks differ: %D and %D"</font>, chain-&gt;mask, achain-&gt;mask);
+<a name="line1640">1640: </a>  }
+
+<a name="line1642">1642: </a>  <font color="#B22222">/* Comm parameters */</font>
+<a name="line1643">1643: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
+<a name="line1644">1644: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm,&amp;rank);
+
+<a name="line1646">1646: </a>  <font color="#B22222">/* If layout isn't parallel, then this is a noop. */</font>
+<a name="line1647">1647: </a>  <font color="#4169E1">if</font>(size == 1) <font color="#4169E1">return</font>(0);
+
+<a name="line1649">1649: </a>  <font color="#B22222">/* Make sure that chain type is the same across the comm. */</font>
+<a name="line1650">1650: </a>  chainmaskmpi = PetscMPIIntCast(chain-&gt;mask);
+<a name="line1651">1651: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(&amp;(chainmaskmpi), &amp;allchainmask, 1, MPI_INT, MPI_BOR, comm);
+<a name="line1652">1652: </a>  <font color="#4169E1">if</font>(allchainmask^chainmaskmpi) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Chain mask must be the same across the communicator. Got %D globally and %D locally"</font>, allchainmask, chainmaskmpi);
+
+<a name="line1654">1654: </a>  <font color="#B22222">/* How many index arrays are being sent? One or two? */</font>
+<a name="line1655">1655: </a>  ni = 0;
+<a name="line1656">1656: </a>  ni += ((chain-&gt;mask &amp; SA_I) &gt; 0);
+<a name="line1657">1657: </a>  ni += ((chain-&gt;mask &amp; SA_J) &gt; 0);
+
+<a name="line1659">1659: </a>  <font color="#B22222">/* How many value arrays are being sent?  One or none? */</font>
+<a name="line1660">1660: </a>  nv =  ((chain-&gt;mask &amp; SA_W) &gt; 0);
+
+
+<a name="line1663">1663: </a>
+<a name="line1664">1664: </a>  <font color="#B22222">/*</font>
+<a name="line1665">1665: </a><font color="#B22222">   Each processor ships off its ixidx[j] and, possibly, the appropriate combination of iyidx[j] </font>
+<a name="line1666">1666: </a><font color="#B22222">   and val[j] to the appropriate processor.</font>
+<a name="line1667">1667: </a><font color="#B22222">   */</font>
+<a name="line1668">1668: </a>  <font color="#B22222">/*  first count number of contributors to each processor */</font>
+<a name="line1669">1669: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;plengths,chain-&gt;length,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;owner);
+<a name="line1670">1670: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(plengths,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
+<a name="line1671">1671: </a>  lastidx = -1;
+<a name="line1672">1672: </a>  count   = 0;
+<a name="line1673">1673: </a>  p       = 0;
+<a name="line1674">1674: </a>  link = chain-&gt;first;
+<a name="line1675">1675: </a>  <font color="#4169E1">while</font>(link) {
+<a name="line1676">1676: </a>    hunk = link-&gt;hunk;
+<a name="line1677">1677: </a>    <font color="#4169E1">for</font> (i=0; i&lt;hunk-&gt;length; ++i) {
+<a name="line1678">1678: </a>      <font color="#4169E1">if</font>(mask == SA_I) {
+<a name="line1679">1679: </a>        ixidx = hunk-&gt;i;
+<a name="line1680">1680: </a>        iyidx = hunk-&gt;j;
+<a name="line1681">1681: </a>      }
+<a name="line1682">1682: </a>      <font color="#4169E1">else</font> {
+<a name="line1683">1683: </a>        ixidx = hunk-&gt;j;
+<a name="line1684">1684: </a>        iyidx = hunk-&gt;i;
+<a name="line1685">1685: </a>      }
+<a name="line1686">1686: </a>      <font color="#B22222">/* if indices are NOT locally sorted, need to start search for the proc owning inidx[i] at the beginning */</font>
+<a name="line1687">1687: </a>      <font color="#4169E1">if</font> (lastidx &gt; (idx = ixidx[i])) p = 0;
+<a name="line1688">1688: </a>      lastidx = idx;
+<a name="line1689">1689: </a>      <font color="#4169E1">for</font> (; p&lt;size; ++p) {
+<a name="line1690">1690: </a>        <font color="#4169E1">if</font> (idx &gt;= layout-&gt;range[p] &amp;&amp; idx &lt; layout-&gt;range[p+1]) {
+<a name="line1691">1691: </a>          plengths[p]++;
+<a name="line1692">1692: </a>          owner[count] = p;
+<a name="line1693">1693: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line1694">1694: </a>          found = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line1695">1695: </a><font color="#A020F0">#endif</font>
+<a name="line1696">1696: </a>          <font color="#4169E1">break</font>;
+<a name="line1697">1697: </a>        }
+<a name="line1698">1698: </a>      }
+<a name="line1699">1699: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line1700">1700: </a>      <font color="#4169E1">if</font> (!found) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Index %D out of range"</font>,idx);
+<a name="line1701">1701: </a>      found = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1702">1702: </a><font color="#A020F0">#endif</font>
+<a name="line1703">1703: </a>      ++count;
+<a name="line1704">1704: </a>    }<font color="#B22222">/* for(i=0; i &lt; hunk-&gt;length; ++i) */</font>
+<a name="line1705">1705: </a>    link = link-&gt;next;
+<a name="line1706">1706: </a>  }
+<a name="line1707">1707: </a>  nsends = 0;  <font color="#4169E1">for</font> (p=0; p&lt;size; ++p) { nsends += (plengths[p] &gt; 0);}
+<a name="line1708">1708: </a>
+<a name="line1709">1709: </a>  <font color="#B22222">/* inform other processors of number of messages and max length*/</font>
+<a name="line1710">1710: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherNumberOfMessages.html#PetscGatherNumberOfMessages">PetscGatherNumberOfMessages</A>(comm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,plengths,&amp;nrecvs);
+<a name="line1711">1711: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherMessageLengths.html#PetscGatherMessageLengths">PetscGatherMessageLengths</A>(comm,nsends,nrecvs,plengths,&amp;rnodes,&amp;rlengths);
+<a name="line1712">1712: </a>  <font color="#B22222">/* no values are sent if nv == 0 */</font>
+<a name="line1713">1713: </a>  <font color="#4169E1">if</font>(nv) {
+<a name="line1714">1714: </a>    <font color="#B22222">/* values in message i are rlengths[i] in number */</font>
+<a name="line1715">1715: </a>    <A href="../../../../docs/manualpages/Sys/PetscCommGetNewTag.html#PetscCommGetNewTag">PetscCommGetNewTag</A>(layout-&gt;comm, &amp;tag_v);
+<a name="line1716">1716: </a>    PetscPostIrecvScalar(comm,tag_v,nrecvs,rnodes,rlengths,&amp;rvalues,&amp;recv_reqs_v);
+<a name="line1717">1717: </a>  }
+<a name="line1718">1718: </a>  <font color="#B22222">/* we are sending ni*rlengths[i] indices in each message (ni == 1 or 2, is the number of index arrays being sent) */</font>
+<a name="line1719">1719: </a>  <font color="#4169E1">if</font>(ni == 2) {
+<a name="line1720">1720: </a>    <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; ++i) rlengths[i] *=2;
+<a name="line1721">1721: </a>  }
+<a name="line1722">1722: </a>  <A href="../../../../docs/manualpages/Sys/PetscCommGetNewTag.html#PetscCommGetNewTag">PetscCommGetNewTag</A>(layout-&gt;comm, &amp;tag_i);
+<a name="line1723">1723: </a>  PetscPostIrecvInt(comm,tag_i,nrecvs,rnodes,rlengths,&amp;rindices,&amp;recv_reqs_i);
+<a name="line1724">1724: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rnodes);
+
+<a name="line1726">1726: </a>  <font color="#4169E1">if</font>(ni == 2) {
+<a name="line1727">1727: </a>    <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; ++i) rlengths[i] /=2;
+<a name="line1728">1728: </a>  }
+
+<a name="line1730">1730: </a>  <font color="#B22222">/* prepare send buffers and offsets.</font>
+<a name="line1731">1731: </a><font color="#B22222">      sindices is the index send buffer; svalues is the value send buffer, allocated only if nv &gt; 0.</font>
+<a name="line1732">1732: </a><font color="#B22222">      sstarts[p] gives the starting offset for values going to the pth processor, if any;</font>
+<a name="line1733">1733: </a><font color="#B22222">      because the indices (I &amp; J, if both are being sent) are sent from the same buffer, </font>
+<a name="line1734">1734: </a><font color="#B22222">      the index offset is ni*sstarts[p].</font>
+<a name="line1735">1735: </a><font color="#B22222">  */</font>
+<a name="line1736">1736: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((size+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>),&amp;sstarts);
+<a name="line1737">1737: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(ni*chain-&gt;length*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;sindices);
+<a name="line1738">1738: </a>  <font color="#4169E1">if</font>(nv) {
+<a name="line1739">1739: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(chain-&gt;length*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),&amp;svalues);
+<a name="line1740">1740: </a>  }
+
+<a name="line1742">1742: </a>  <font color="#B22222">/* Compute buffer offsets for the segments of data going to different processors,</font>
+<a name="line1743">1743: </a><font color="#B22222">     and zero out plengths: they will be used below as running counts when packing data</font>
+<a name="line1744">1744: </a><font color="#B22222">     into send buffers; as a result of that, plengths are recomputed by the end of the loop.</font>
+<a name="line1745">1745: </a><font color="#B22222">   */</font>
+<a name="line1746">1746: </a>  sstarts[0] = 0;
+<a name="line1747">1747: </a>  <font color="#4169E1">for</font> (p=0; p&lt;size; ++p) {
+<a name="line1748">1748: </a>    sstarts[p+1] = sstarts[p] + plengths[p];
+<a name="line1749">1749: </a>    plengths[p] = 0;
+<a name="line1750">1750: </a>  }
+
+<a name="line1752">1752: </a>  <font color="#B22222">/* Now pack the indices and, possibly, values into the appropriate buffer segments. */</font>
+<a name="line1753">1753: </a>  link = chain-&gt;first;
+<a name="line1754">1754: </a>  count = 0;
+<a name="line1755">1755: </a>  <font color="#4169E1">while</font>(link){
+<a name="line1756">1756: </a>    hunk = link-&gt;hunk;
+<a name="line1757">1757: </a>    <font color="#4169E1">if</font>(mask == SA_I) {
+<a name="line1758">1758: </a>      ixidx = hunk-&gt;i;
+<a name="line1759">1759: </a>      iyidx = hunk-&gt;j;
+<a name="line1760">1760: </a>    }
+<a name="line1761">1761: </a>    <font color="#4169E1">else</font> {
+<a name="line1762">1762: </a>      ixidx = hunk-&gt;j;
+<a name="line1763">1763: </a>      iyidx = hunk-&gt;i;
+<a name="line1764">1764: </a>    }
+<a name="line1765">1765: </a>    val = hunk-&gt;w;
+<a name="line1766">1766: </a>    <font color="#4169E1">for</font>(i = 0; i &lt; hunk-&gt;length; ++i) {
+<a name="line1767">1767: </a>      p = owner[count];
+<a name="line1768">1768: </a>      sindices[ni*sstarts[p]+plengths[p]]                             = ixidx[i];
+<a name="line1769">1769: </a>      <font color="#4169E1">if</font>(ni==2)
+<a name="line1770">1770: </a>        sindices[ni*sstarts[p]+(sstarts[p+1]-sstarts[p])+plengths[p]] = iyidx[i];
+<a name="line1771">1771: </a>      <font color="#4169E1">if</font>(nv)
+<a name="line1772">1772: </a>        svalues[sstarts[p]+plengths[p]]                               = val[i];
+<a name="line1773">1773: </a>      ++plengths[p];
+<a name="line1774">1774: </a>      ++count;
+<a name="line1775">1775: </a>    }
+<a name="line1776">1776: </a>    link = link-&gt;next;
+<a name="line1777">1777: </a>  }
+<a name="line1778">1778: </a>  <font color="#B22222">/* Allocate send requests: for the indices, and possibly one more for the scalar values, hence +nv */</font>
+<a name="line1779">1779: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((1+nv)*nsends*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;send_reqs);
+
+<a name="line1781">1781: </a>  <font color="#B22222">/* Post sends */</font>
+<a name="line1782">1782: </a>  <font color="#4169E1">for</font> (p=0,count=0; p&lt;size; ++p) {
+<a name="line1783">1783: </a>    <font color="#4169E1">if</font> (plengths[p]) {
+<a name="line1784">1784: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Isend.html#MPI_Isend">MPI_Isend</A>(sindices+ni*sstarts[p],ni*plengths[p],MPIU_INT,p,tag_i,comm,send_reqs+count++);
+<a name="line1785">1785: </a>      <font color="#4169E1">if</font>(nv) {
+<a name="line1786">1786: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Isend.html#MPI_Isend">MPI_Isend</A>(svalues+sstarts[p],plengths[p],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,p,tag_v,comm,send_reqs+count++);
+<a name="line1787">1787: </a>      }
+<a name="line1788">1788: </a>    }
+<a name="line1789">1789: </a>  }
+<a name="line1790">1790: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(plengths,owner);
+<a name="line1791">1791: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(sstarts);
+
+<a name="line1793">1793: </a>  <font color="#B22222">/* Prepare to receive indices and values. */</font>
+<a name="line1794">1794: </a>  <font color="#B22222">/* Compute the offsets of the individual received segments in the unified index/value arrays. */</font>
+<a name="line1795">1795: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>)*(nrecvs+1), &amp;rstarts);
+<a name="line1796">1796: </a>  rstarts[0] = 0;
+<a name="line1797">1797: </a>  <font color="#4169E1">for</font>(j = 0; j &lt; nrecvs; ++j) rstarts[j+1] = rstarts[j] + rlengths[j];
+
+<a name="line1799">1799: </a>  alength = rstarts[nrecvs];
+<a name="line1800">1800: </a>  <font color="#B22222">/* Clear the SA that will store the received data segments */</font>
+<a name="line1801">1801: </a>  SAClear(achain);
+<a name="line1802">1802: </a>  <font color="#B22222">/* Get a hunk to pack the data into. */</font>
+<a name="line1803">1803: </a>  SAGetHunk(achain, alength, &amp;ahunk);
+<a name="line1804">1804: </a>
+<a name="line1805">1805: </a>  <font color="#B22222">/* Use ahunk's data arrays as receive buffers. */</font>
+<a name="line1806">1806: </a>  <font color="#4169E1">if</font>(mask == SA_I) {
+<a name="line1807">1807: </a>    aixidx = ahunk-&gt;i;
+<a name="line1808">1808: </a>    aiyidx = ahunk-&gt;j;
+<a name="line1809">1809: </a>  }
+<a name="line1810">1810: </a>  <font color="#4169E1">else</font> {
+<a name="line1811">1811: </a>    aiyidx = ahunk-&gt;i;
+<a name="line1812">1812: </a>    aixidx = ahunk-&gt;j;
+<a name="line1813">1813: </a>  }
+<a name="line1814">1814: </a>  aval = ahunk-&gt;w;
+
+<a name="line1816">1816: </a>  <font color="#B22222">/* Receive indices and values, and pack them into unified arrays. */</font>
+<a name="line1817">1817: </a>  <font color="#4169E1">if</font>(nv) {
+<a name="line1818">1818: </a>    <font color="#B22222">/*  wait on scalar values receives and pack the received values into aval */</font>
+<a name="line1819">1819: </a>    count = nrecvs;
+<a name="line1820">1820: </a>    rlengthtotal = 0;
+<a name="line1821">1821: </a>    <font color="#4169E1">while</font> (count) {
+<a name="line1822">1822: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> n,k;
+<a name="line1823">1823: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitany.html#MPI_Waitany">MPI_Waitany</A>(nrecvs,recv_reqs_v,&amp;k,&amp;recv_status);
+<a name="line1824">1824: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Get_count.html#MPI_Get_count">MPI_Get_count</A>(&amp;recv_status,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,&amp;n);
+<a name="line1825">1825: </a>      rlengthtotal += n;
+<a name="line1826">1826: </a>      count--;
+<a name="line1827">1827: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(aval+rstarts[k],rvalues[k],<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*rlengths[k]);
+<a name="line1828">1828: </a>    }
+<a name="line1829">1829: </a>    <font color="#4169E1">if</font> (rstarts[nrecvs] != rlengthtotal) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Total message lengths %D not as expected %D"</font>,rlengthtotal,rstarts[nrecvs]);
+<a name="line1830">1830: </a>  }
+<a name="line1831">1831: </a>
+<a name="line1832">1832: </a>  <font color="#B22222">/*  wait on index receives and pack the received indices into aixidx and aiyidx, as necessary. */</font>
+<a name="line1833">1833: </a>  count = nrecvs;
+<a name="line1834">1834: </a>  rlengthtotal = 0;
+<a name="line1835">1835: </a>  <font color="#4169E1">while</font> (count) {
+<a name="line1836">1836: </a>    <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> n,k;
+<a name="line1837">1837: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitany.html#MPI_Waitany">MPI_Waitany</A>(nrecvs,recv_reqs_i,&amp;k,&amp;recv_status);
+<a name="line1838">1838: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Get_count.html#MPI_Get_count">MPI_Get_count</A>(&amp;recv_status,MPIU_INT,&amp;n);
+<a name="line1839">1839: </a>    rlengthtotal += n/ni;
+<a name="line1840">1840: </a>    count--;
+<a name="line1841">1841: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(aixidx+rstarts[k],rindices[k],<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*rlengths[k]);
+<a name="line1842">1842: </a>    <font color="#4169E1">if</font>(ni == 2) {
+<a name="line1843">1843: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(aiyidx+rstarts[k],rindices[k]+rlengths[k],<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*rlengths[k]);
+<a name="line1844">1844: </a>    }
+<a name="line1845">1845: </a>  }
+<a name="line1846">1846: </a>  <font color="#4169E1">if</font> (rstarts[nrecvs] != rlengthtotal) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Total message lengths %D not as expected %D"</font>,rlengthtotal,rstarts[nrecvs]);
+<a name="line1847">1847: </a>
+
+<a name="line1849">1849: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rlengths);
+<a name="line1850">1850: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rstarts);
+<a name="line1851">1851: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rindices[0]);
+<a name="line1852">1852: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rindices);
+<a name="line1853">1853: </a>  <font color="#4169E1">if</font>(nv) {
+<a name="line1854">1854: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rvalues[0]);
+<a name="line1855">1855: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rvalues);
+<a name="line1856">1856: </a>  }
+<a name="line1857">1857: </a>  <font color="#B22222">/* wait on sends */</font>
+<a name="line1858">1858: </a>  <font color="#4169E1">if</font> (nsends) {
+<a name="line1859">1859: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(MPI_Status)*nsends,&amp;send_statuses);
+<a name="line1860">1860: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(nsends,send_reqs,send_statuses);
+<a name="line1861">1861: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(send_statuses);
+<a name="line1862">1862: </a>  }
+
+<a name="line1864">1864: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(sindices);
+<a name="line1865">1865: </a>  <font color="#4169E1">if</font>(nv) {
+<a name="line1866">1866: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(svalues);
+<a name="line1867">1867: </a>  }
+<a name="line1868">1868: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1869">1869: </a>}<font color="#B22222">/* SAAssemble() */</font>
+
+
+
+
+
+</pre>
+</body>
+
+</html>

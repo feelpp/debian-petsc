@@ -10,9 +10,9 @@ Sets the size at which smaller pivots are declared to be zero
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetZeroPivot(PC pc,PetscReal zero)
+PetscErrorCode  PCFactorSetZeroPivot(PC pc,PetscReal zero)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -32,7 +32,7 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- PCFactorSetShiftNonzero(), <A HREF="../PC/PCFactorSetShiftType.html#PCFactorSetShiftType">PCFactorSetShiftType</A>(), <A HREF="../PC/PCFactorSetShiftAmount.html#PCFactorSetShiftAmount">PCFactorSetShiftAmount</A>()
+ <A HREF="../PC/PCFactorSetShiftType.html#PCFactorSetShiftType">PCFactorSetShiftType</A>(), <A HREF="../PC/PCFactorSetShiftAmount.html#PCFactorSetShiftAmount">PCFactorSetShiftAmount</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/impls/factor/factor.c.html#PCFactorSetZeroPivot">src/ksp/pc/impls/factor/factor.c</A>
 <BR><A HREF="./index.html">Index of all PC routines</A>

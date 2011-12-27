@@ -26,7 +26,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nghost </B></TD><TD>- number of local ghost blocks
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ghosts </B></TD><TD>- global indices of ghost blocks (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if not needed)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ghosts </B></TD><TD>- global indices of ghost blocks (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if not needed), counts are by block not by index
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>array </B></TD><TD>- the space to store the vector values (as long as n + nghost*bs)
 </TD></TR></TABLE>

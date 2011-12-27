@@ -18,7 +18,7 @@ other PETSc options\n\
 
 /*T
    Concepts: SNES^solving a system of nonlinear equations (parallel multicomponent example);
-   Concepts: DA^using distributed arrays;
+   Concepts: DMDA^using distributed arrays;
    Concepts: multicomponent
    Processors: n
 T*/
@@ -30,9 +30,9 @@ T*/
   ------------------------------------------------------------------------- */
 
 /* 
-   Include "petscda.h" so that we can use distributed arrays (DAs).
+   Include "petscdmda.h" so that we can use distributed arrays (DMDAs).
    Include "petscsnes.h" so that we can use SNES solvers.  
-   Include "petscmg.h" to control the multigrid solvers. 
+   Include "petscpcmg.h" to control the multigrid solvers. 
    Note that these automatically include:
      petscsys.h       - base PETSc routines   petscvec.h - vectors
      petscmat.h - matrices
@@ -40,13 +40,13 @@ T*/
      petscviewer.h - viewers               petscpc.h  - preconditioners
      petscksp.h   - linear solvers 
 */
-#include "petscsnes.h"
-#include "petscda.h"
-#include "petscmg.h"
-#include "petscdmmg.h"
+#include <petscsnes.h>
+#include <petscdmda.h>
+#include <petscpcmg.h>
+#include <petscdmmg.h>
 
 #ifdef HAVE_DA_HDF
-PetscInt DAVecHDFOutput(DA,Vec,char*);
+PetscInt DMDAVecHDFOutput(DM,Vec,char*);
 #endif
 
 #define D_x(x,m,i,j)  (p5 * (x[(j)][(i)+1].m - x[(j)][(i)-1].m) * dhx)
@@ -77,7 +77,7 @@ typedef struct {
   PetscReal      t;
   PetscReal      fnorm;
 
-  PetscTruth     ts_monitor;           /* print information about each time step */
+  PetscBool      ts_monitor;           /* print information about each time step */
   PetscReal      dump_time;            /* time to dump solution to a file */
   PetscViewer    socketviewer;         /* socket to dump solution at each timestep for visualization */
 } TstepCtx;
@@ -94,9 +94,9 @@ typedef struct {
   PetscInt     mglevels;
   PetscInt     cycles;           /* number of time steps for integration */ 
   PassiveReal  nu,eta,d_e,rho_s; /* physical parameters */
-  PetscTruth   draw_contours;    /* flag - 1 indicates drawing contours */
-  PetscTruth   second_order;
-  PetscTruth   PreLoading;
+  PetscBool    draw_contours;    /* flag - 1 indicates drawing contours */
+  PetscBool    second_order;
+  PetscBool    PetscPreLoading;
 } Parameters;
 
 typedef struct {
@@ -105,14 +105,14 @@ typedef struct {
   Parameters    *param;
 } AppCtx;
 
-extern PetscErrorCode FormFunctionLocal(DALocalInfo*,Field**,Field**,void*);
+extern PetscErrorCode FormFunctionLocal(DMDALocalInfo*,Field**,Field**,void*);
 extern PetscErrorCode Update(DMMG *);
 extern PetscErrorCode Initialize(DMMG *);
-extern PetscErrorCode AddTSTermLocal(DALocalInfo*,Field **,Field **,AppCtx *);
-extern PetscErrorCode AddTSTermLocal2(DALocalInfo*,Field **,Field **,AppCtx *);
-extern PetscErrorCode Gnuplot(DA, Vec, double);
-extern PetscErrorCode FormFunctionLocali(DALocalInfo*,MatStencil*,Field**,PetscScalar*,void*);
-extern PetscErrorCode FormFunctionLocali4(DALocalInfo*,MatStencil*,Field**,PetscScalar*,void*);
+extern PetscErrorCode AddTSTermLocal(DMDALocalInfo*,Field **,Field **,AppCtx *);
+extern PetscErrorCode AddTSTermLocal2(DMDALocalInfo*,Field **,Field **,AppCtx *);
+extern PetscErrorCode Gnuplot(DM, Vec, double);
+extern PetscErrorCode FormFunctionLocali(DMDALocalInfo*,MatStencil*,Field**,PetscScalar*,void*);
+extern PetscErrorCode FormFunctionLocali4(DMDALocalInfo*,MatStencil*,Field**,PetscScalar*,void*);
 extern PetscErrorCode CreateNullSpace(DMMG,Vec*);
 
 #undef __FUNCT__
@@ -125,7 +125,7 @@ int main(int argc,char **argv)
   TstepCtx       tsCtx;       /* time-step parameters (one total) */
   Parameters      param;       /* physical parameters (one total) */
   PetscInt       i,m,n,mx,my;
-  DA             da;
+  DM             da;
   PetscReal      dt_ratio;
   PetscInt       dfill[16] = {1,0,1,0,
                               0,1,0,1,
@@ -139,9 +139,9 @@ int main(int argc,char **argv)
   PetscInitialize(&argc,&argv,(char *)0,help);
 
 
-  PreLoadBegin(PETSC_TRUE,"SetUp");
+  PetscPreLoadBegin(PETSC_TRUE,"SetUp");
 
-  param.PreLoading = PreLoading;
+  param.PetscPreLoading = PetscPreLoading;
     ierr = DMMGCreate(PETSC_COMM_WORLD,1,&user,&dmmg);CHKERRQ(ierr);
     param.mglevels = DMMGGetLevels(dmmg);
 
@@ -150,15 +150,15 @@ int main(int argc,char **argv)
       parallel grid and vectors for principal unknowns (x) and
       governing residuals (f)
     */
-    ierr = DACreate2d(PETSC_COMM_WORLD, DA_XYPERIODIC, DA_STENCIL_STAR, -5, -5,
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DMDA_BOUNDARY_PERIODIC, DMDA_BOUNDARY_PERIODIC, DMDA_STENCIL_STAR, -5, -5,
                       PETSC_DECIDE, PETSC_DECIDE, 4, 1, 0, 0, &da);CHKERRQ(ierr);
 
     /* overwrite the default sparsity pattern toone specific for
        this code's nonzero structure */
-    ierr = DASetBlockFills(da,dfill,ofill);CHKERRQ(ierr);
+    ierr = DMDASetBlockFills(da,dfill,ofill);CHKERRQ(ierr);
 
     ierr = DMMGSetDM(dmmg,(DM)da);CHKERRQ(ierr);
-    ierr = DADestroy(da);CHKERRQ(ierr);
+    ierr = DMDestroy(&da);CHKERRQ(ierr);
 
     /* default physical parameters */
     param.nu    = 0;
@@ -179,19 +179,19 @@ int main(int argc,char **argv)
 
     ierr = PetscOptionsHasName(PETSC_NULL, "-second_order", &param.second_order);CHKERRQ(ierr);
 
-    ierr = DASetFieldName(DMMGGetDA(dmmg), 0, "phi");CHKERRQ(ierr);
+    ierr = DMDASetFieldName(DMMGGetDM(dmmg), 0, "phi");CHKERRQ(ierr);
 
-    ierr = DASetFieldName(DMMGGetDA(dmmg), 1, "psi");CHKERRQ(ierr);
+    ierr = DMDASetFieldName(DMMGGetDM(dmmg), 1, "psi");CHKERRQ(ierr);
 
-    ierr = DASetFieldName(DMMGGetDA(dmmg), 2, "U");CHKERRQ(ierr);
+    ierr = DMDASetFieldName(DMMGGetDM(dmmg), 2, "U");CHKERRQ(ierr);
 
-    ierr = DASetFieldName(DMMGGetDA(dmmg), 3, "F");CHKERRQ(ierr);
+    ierr = DMDASetFieldName(DMMGGetDM(dmmg), 3, "F");CHKERRQ(ierr);
 
     /*======================================================================*/
     /* Initialize stuff related to time stepping */
     /*======================================================================*/
 
-    ierr = DAGetInfo(DMMGGetDA(dmmg),0,&mx,&my,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+    ierr = DMDAGetInfo(DMMGGetDM(dmmg),0,&mx,&my,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
 
     tsCtx.fnorm_ini   = 0;  
     tsCtx.max_steps   = 1000000;   
@@ -220,9 +220,9 @@ int main(int argc,char **argv)
     tsCtx.socketviewer = 0;
 #if defined(PETSC_USE_SOCKET_VIEWER)
     {
-      PetscTruth flg;
+      PetscBool  flg;
       ierr = PetscOptionsHasName(PETSC_NULL, "-socket_viewer", &flg);CHKERRQ(ierr);
-      if (flg && !PreLoading) {
+      if (flg && !PetscPreLoading) {
         tsCtx.ts_monitor = PETSC_TRUE;
         ierr = PetscViewerSocketOpen(PETSC_COMM_WORLD,0,PETSC_DECIDE,&tsCtx.socketviewer);CHKERRQ(ierr);
       }
@@ -261,11 +261,11 @@ int main(int argc,char **argv)
     
     ierr = PetscPrintf(PETSC_COMM_WORLD, "finish setupNull!");
 
-    if (PreLoading) {
+    if (PetscPreLoading) {
       ierr = PetscPrintf(PETSC_COMM_WORLD, "# viscosity = %G, resistivity = %G, "
 			 "skin_depth # = %G, larmor_radius # = %G\n",
 			 param.nu, param.eta, param.d_e, param.rho_s);CHKERRQ(ierr);
-      ierr = DAGetInfo(DMMGGetDA(dmmg),0,&m,&n,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+      ierr = DMDAGetInfo(DMMGGetDM(dmmg),0,&m,&n,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
       ierr = PetscPrintf(PETSC_COMM_WORLD,"Problem size %D by %D\n",m,n);CHKERRQ(ierr);
       ierr = PetscPrintf(PETSC_COMM_WORLD,"dx %G dy %G dt %G ratio dt/min(dx,dy) %G\n",lx/mx,ly/my,tsCtx.dt,dt_ratio);CHKERRQ(ierr);
     }
@@ -276,7 +276,7 @@ int main(int argc,char **argv)
        Solve the nonlinear system
        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
-    PreLoadStage("Solve");
+    PetscPreLoadStage("Solve");
 
     if (param.draw_contours) {
       ierr = VecView(((AppCtx*)DMMGGetUser(dmmg,param.mglevels-1))->Xold,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
@@ -290,13 +290,13 @@ int main(int argc,char **argv)
        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     for (i=0; i<param.mglevels; i++) {
-      ierr = VecDestroy(user[i].Xoldold);CHKERRQ(ierr);
-      ierr = VecDestroy(user[i].Xold);CHKERRQ(ierr);
+      ierr = VecDestroy(&user[i].Xoldold);CHKERRQ(ierr);
+      ierr = VecDestroy(&user[i].Xold);CHKERRQ(ierr);
     }
     ierr = PetscFree(user);CHKERRQ(ierr);
     ierr = DMMGDestroy(dmmg);CHKERRQ(ierr);
 
-    PreLoadEnd();
+    PetscPreLoadEnd();
     
   PetscFinalize();
   return 0;
@@ -306,7 +306,7 @@ int main(int argc,char **argv)
 #undef __FUNCT__
 #define __FUNCT__ "Gnuplot"
 /* ------------------------------------------------------------------- */
-PetscErrorCode Gnuplot(DA da, Vec X, double mtime)
+PetscErrorCode Gnuplot(DM da, Vec X, double mtime)
 {
   PetscInt       i,j,xs,ys,xm,ym;
   PetscInt       xints,xinte,yints,yinte;
@@ -322,9 +322,9 @@ PetscErrorCode Gnuplot(DA da, Vec X, double mtime)
 
   f = fopen(fname, "w");
 
-  ierr = DAGetCorners(da,&xs,&ys,PETSC_NULL,&xm,&ym,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,&ys,PETSC_NULL,&xm,&ym,PETSC_NULL);CHKERRQ(ierr);
 
-  ierr = DAVecGetArray(da,X,&x);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(da,X,&x);CHKERRQ(ierr);
 
   xints = xs; xinte = xs+xm; yints = ys; yinte = ys+ym;
 
@@ -338,7 +338,7 @@ PetscErrorCode Gnuplot(DA da, Vec X, double mtime)
     }
     ierr = PetscFPrintf(PETSC_COMM_WORLD,f, "\n");CHKERRQ(ierr);
   }
-  ierr = DAVecRestoreArray(da,X,&x);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,X,&x);CHKERRQ(ierr);
   fclose(f);
   return 0;
 }
@@ -351,23 +351,23 @@ PetscErrorCode Initialize(DMMG *dmmg)
 {
   AppCtx         *appCtx = (AppCtx*)DMMGGetUser(dmmg,0);
   Parameters      *param = appCtx->param;
-  DA             da;
+  DM             da;
   PetscErrorCode ierr;
   PetscInt       i,j,mx,my,xs,ys,xm,ym;
   PetscReal      two = 2.0,one = 1.0;
-  PetscReal      hx,hy,dhx,dhy,hxdhy,hydhx,hxhy,dhxdhy;
+  PetscReal      hx,hy,dhx,dhy,hxdhy,hydhx,dhxdhy; /* hxhy */
   PetscReal      d_e,rho_s,de2,xx,yy;
   Field          **x, **localx;
   Vec            localX;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscFunctionBegin;
   ierr = PetscOptionsHasName(0,"-restart",&flg);CHKERRQ(ierr);
   if (flg) {
     PetscViewer viewer;
     ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"binaryoutput",FILE_MODE_READ,&viewer);CHKERRQ(ierr);
-    ierr = VecLoadIntoVector(viewer,dmmg[param->mglevels-1]->x);CHKERRQ(ierr);
-    ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+    ierr = VecLoad(dmmg[param->mglevels-1]->x,viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
 
@@ -375,22 +375,22 @@ PetscErrorCode Initialize(DMMG *dmmg)
   rho_s = param->rho_s;
   de2   = sqr(param->d_e);
 
-  da   = (DA)(dmmg[param->mglevels-1]->dm);
-  ierr = DAGetInfo(da,0,&mx,&my,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  da   = (dmmg[param->mglevels-1]->dm);
+  ierr = DMDAGetInfo(da,0,&mx,&my,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
 
   dhx   = mx/lx;              dhy = my/ly;
   hx    = one/dhx;             hy = one/dhy;
   hxdhy = hx*dhy;           hydhx = hy*dhx;
-  hxhy  = hx*hy;           dhxdhy = dhx*dhy;
+  /* hxhy  = hx*hy; */      dhxdhy = dhx*dhy;
 
   /*
-     Get local grid boundaries (for 2-dimensional DA):
+     Get local grid boundaries (for 2-dimensional DMDA):
        xs, ys   - starting grid indices (no ghost points)
        xm, ym   - widths of local grid (no ghost points)
   */
-  ierr = DAGetCorners(da,&xs,&ys,PETSC_NULL,&xm,&ym,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,&ys,PETSC_NULL,&xm,&ym,PETSC_NULL);CHKERRQ(ierr);
 
-  ierr = DAGetLocalVector(da,&localX);CHKERRQ(ierr);
+  ierr = DMGetLocalVector(da,&localX);CHKERRQ(ierr);
   /*
      Get a pointer to vector data.
        - For default PETSc vectors, VecGetArray() returns a pointer to
@@ -398,8 +398,8 @@ PetscErrorCode Initialize(DMMG *dmmg)
        - You MUST call VecRestoreArray() when you no longer need access to
          the array.
   */
-  ierr = DAVecGetArray(da,dmmg[param->mglevels-1]->x,&x);CHKERRQ(ierr);
-  ierr = DAVecGetArray(da,localX,&localx);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(da,dmmg[param->mglevels-1]->x,&x);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(da,localX,&localx);CHKERRQ(ierr);
 
   /*
      Compute initial solution over the locally owned part of the grid
@@ -444,22 +444,22 @@ PetscErrorCode Initialize(DMMG *dmmg)
     }
   }
 #else
-  SETERRQ(1,"erf() not available on this machine");
+  SETERRQ(PETSC_COMM_SELF,1,"erf() not available on this machine");
 #endif
 
   /*
      Restore vector
   */
-  ierr = DAVecRestoreArray(da,dmmg[param->mglevels-1]->x,&x);CHKERRQ(ierr);
-  ierr = DAVecRestoreArray(da,localX,&localx);CHKERRQ(ierr);
-  ierr = DARestoreLocalVector(da,&localX);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,dmmg[param->mglevels-1]->x,&x);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,localX,&localx);CHKERRQ(ierr);
+  ierr = DMRestoreLocalVector(da,&localX);CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
 } 
 
 #undef __FUNCT__
 #define __FUNCT__ "ComputeMaxima"
-PetscErrorCode ComputeMaxima(DA da, Vec X, PetscReal t)
+PetscErrorCode ComputeMaxima(DM da, Vec X, PetscReal t)
 {
   PetscErrorCode ierr;
   PetscInt       i,j,mx,my,xs,ys,xm,ym;
@@ -471,13 +471,13 @@ PetscErrorCode ComputeMaxima(DA da, Vec X, PetscReal t)
 
   PetscFunctionBegin;
 
-  ierr = DAGetInfo(da,0,&mx,&my,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(da,0,&mx,&my,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
 
-  ierr = DAGetCorners(da,&xs,&ys,PETSC_NULL,&xm,&ym,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,&ys,PETSC_NULL,&xm,&ym,PETSC_NULL);CHKERRQ(ierr);
 
   xints = xs; xinte = xs+xm; yints = ys; yinte = ys+ym;
 
-  ierr = DAVecGetArray(da, X, &x);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(da, X, &x);CHKERRQ(ierr);
 
   for (j=yints; j<yinte; j++) {
     for (i=xints; i<xinte; i++) {
@@ -488,7 +488,7 @@ PetscErrorCode ComputeMaxima(DA da, Vec X, PetscReal t)
     }
   }
 
-  ierr = DAVecRestoreArray(da,X,&x);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,X,&x);CHKERRQ(ierr);
 
   ierr = PetscObjectGetComm((PetscObject)da, &comm);CHKERRQ(ierr);
   ierr = MPI_Allreduce(norm, gnorm, 4, MPI_DOUBLE, MPI_MAX, comm);CHKERRQ(ierr);
@@ -500,7 +500,7 @@ PetscErrorCode ComputeMaxima(DA da, Vec X, PetscReal t)
 
 #undef __FUNCT__
 #define __FUNCT__ "FormFunctionLocal"
-PetscErrorCode FormFunctionLocal(DALocalInfo *info,Field **x,Field **f,void *ptr)
+PetscErrorCode FormFunctionLocal(DMDALocalInfo *info,Field **x,Field **f,void *ptr)
 {
   AppCtx         *user = (AppCtx*)ptr;
   TstepCtx       *tsCtx = user->tsCtx;
@@ -626,11 +626,11 @@ PetscErrorCode Update(DMMG *dmmg)
   PetscInt        max_steps;
   PetscInt        nfailsCum = 0,nfails = 0;
   static PetscInt ic_out;
-  PetscTruth      ts_monitor = (tsCtx->ts_monitor && !param->PreLoading) ? PETSC_TRUE : PETSC_FALSE;
+  PetscBool       ts_monitor = (tsCtx->ts_monitor && !param->PetscPreLoading) ? PETSC_TRUE : PETSC_FALSE;
 
   PetscFunctionBegin;
 
-  if (param->PreLoading) 
+  if (param->PetscPreLoading) 
     max_steps = 1;
   else
     max_steps = tsCtx->max_steps;
@@ -682,8 +682,8 @@ PetscErrorCode Update(DMMG *dmmg)
 
       ierr = MatView(mat, viewer);CHKERRQ(ierr);
 
-      ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
-      SETERRQ(1,"Done saving Jacobian");
+      ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+      SETERRQ(PETSC_COMM_SELF,1,"Done saving Jacobian");
     }
 
 
@@ -693,7 +693,7 @@ PetscErrorCode Update(DMMG *dmmg)
     if (tsCtx->dump_time > 0.0 && tsCtx->t >= tsCtx->dump_time) {
       Vec v = DMMGGetx(dmmg);
       ierr = VecView(v,PETSC_VIEWER_BINARY_WORLD);CHKERRQ(ierr);
-      SETERRQ1(1,"Saved solution at time %G",tsCtx->t);
+      SETERRQ1(PETSC_COMM_SELF,1,"Saved solution at time %G",tsCtx->t);
     }
 
     if (ts_monitor)
@@ -704,16 +704,15 @@ PetscErrorCode Update(DMMG *dmmg)
       ierr = SNESGetFunctionNorm(snes, &tsCtx->fnorm);CHKERRQ(ierr);
 
       nfailsCum += nfails;
-      if (nfailsCum >= 2)
-        SETERRQ(1, "unable to find a newton step");
+      if (nfailsCum >= 2) SETERRQ(PETSC_COMM_SELF,1, "unable to find a newton step");
 
       ierr = PetscPrintf(PETSC_COMM_WORLD,
                          "time step = %D, time = %G, number of nonlinear steps = %D, "
                          "number of linear steps = %D, norm of the function = %G\n",
 			 tsCtx->itstep + 1, tsCtx->t, its, lits, PetscAbsScalar(tsCtx->fnorm));CHKERRQ(ierr);
 
-      /* send solution over to Matlab, to be visualized (using ex29.m) */
-      if (!param->PreLoading && tsCtx->socketviewer)
+      /* send solution over to MATLAB, to be visualized (using ex29.m) */
+      if (!param->PetscPreLoading && tsCtx->socketviewer)
       {
         Vec v;
         ierr = SNESGetSolution(snes, &v);CHKERRQ(ierr);
@@ -723,24 +722,24 @@ PetscErrorCode Update(DMMG *dmmg)
       }
     }
 
-    if (!param->PreLoading) {
+    if (!param->PetscPreLoading) {
       if (param->draw_contours) {
 	ierr = VecView(DMMGGetx(dmmg),PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
       }
 
       if (1 && ts_monitor) {
 	/* compute maxima */
-	ComputeMaxima((DA) dmmg[param->mglevels-1]->dm,dmmg[param->mglevels-1]->x,tsCtx->t);
+	ComputeMaxima( dmmg[param->mglevels-1]->dm,dmmg[param->mglevels-1]->x,tsCtx->t);
 	/* output */
 	if (ic_out++ == (int)(tsCtx->dt_out / tsCtx->dt + .5)) {
 #ifdef HAVE_DA_HDF
           char fname[PETSC_MAX_PATH_LEN];
 
           sprintf(fname, "out-%G.hdf", tsCtx->t);
-          ierr = DAVecHDFOutput(DMMGGetDA(dmmg), DMMGGetx(dmmg), fname);CHKERRQ(ierr);
+          ierr = DMDAVecHDFOutput(DMMGGetDM(dmmg), DMMGGetx(dmmg), fname);CHKERRQ(ierr);
 #else
 /*
-          ierr = Gnuplot(DMMGGetDA(dmmg), DMMGGetx(dmmg), tsCtx->t);CHKERRQ(ierr);
+          ierr = Gnuplot(DMMGGetDM(dmmg), DMMGGetx(dmmg), tsCtx->t);CHKERRQ(ierr);
 */
 #endif
 	  ic_out = 1;
@@ -749,13 +748,13 @@ PetscErrorCode Update(DMMG *dmmg)
     }
   } /* End of time step loop */
  
-  if (!param->PreLoading){ 
+  if (!param->PetscPreLoading){ 
     ierr = SNESGetFunctionNorm(snes,&tsCtx->fnorm);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD, "timesteps %D fnorm = %G\n",
 		       tsCtx->itstep, PetscAbsScalar(tsCtx->fnorm));CHKERRQ(ierr);
   }
 
-  if (param->PreLoading) {
+  if (param->PetscPreLoading) {
     tsCtx->fnorm_ini = 0.0;
   }
  
@@ -765,11 +764,11 @@ PetscErrorCode Update(DMMG *dmmg)
 /*---------------------------------------------------------------------*/
 #undef __FUNCT__
 #define __FUNCT__ "AddTSTermLocal"
-PetscErrorCode AddTSTermLocal(DALocalInfo* info,Field **x,Field **f,AppCtx *user)
+PetscErrorCode AddTSTermLocal(DMDALocalInfo* info,Field **x,Field **f,AppCtx *user)
 /*---------------------------------------------------------------------*/
 {
   TstepCtx       *tsCtx = user->tsCtx;
-  DA             da = info->da;
+  DM             da = info->da;
   PetscErrorCode ierr;
   PetscInt       i,j;
   PetscInt       xints,xinte,yints,yinte;
@@ -789,14 +788,14 @@ PetscErrorCode AddTSTermLocal(DALocalInfo* info,Field **x,Field **f,AppCtx *user
 
   dtinv = hxhy/(tsCtx->dt);
 
-  ierr  = DAVecGetArray(da,user->Xold,&xold);CHKERRQ(ierr);
+  ierr  = DMDAVecGetArray(da,user->Xold,&xold);CHKERRQ(ierr);
   for (j=yints; j<yinte; j++) {
     for (i=xints; i<xinte; i++) {
       f[j][i].U += dtinv*(x[j][i].U-xold[j][i].U);
       f[j][i].F += dtinv*(x[j][i].F-xold[j][i].F);
     }
   }
-  ierr = DAVecRestoreArray(da,user->Xold,&xold);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,user->Xold,&xold);CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
 }
@@ -804,11 +803,11 @@ PetscErrorCode AddTSTermLocal(DALocalInfo* info,Field **x,Field **f,AppCtx *user
 /*---------------------------------------------------------------------*/
 #undef __FUNCT__
 #define __FUNCT__ "AddTSTermLocal2"
-PetscErrorCode AddTSTermLocal2(DALocalInfo* info,Field **x,Field **f,AppCtx *user)
+PetscErrorCode AddTSTermLocal2(DMDALocalInfo* info,Field **x,Field **f,AppCtx *user)
 /*---------------------------------------------------------------------*/
 {
   TstepCtx       *tsCtx = user->tsCtx;
-  DA             da = info->da;
+  DM             da = info->da;
   PetscErrorCode ierr;
   PetscInt       i,j,xints,xinte,yints,yinte;
   PassiveReal    hx,hy,dhx,dhy,hxhy;
@@ -827,8 +826,8 @@ PetscErrorCode AddTSTermLocal2(DALocalInfo* info,Field **x,Field **f,AppCtx *use
 
   dtinv = hxhy/(tsCtx->dt);
 
-  ierr  = DAVecGetArray(da,user->Xoldold,&xoldold);CHKERRQ(ierr);
-  ierr  = DAVecGetArray(da,user->Xold,&xold);CHKERRQ(ierr);
+  ierr  = DMDAVecGetArray(da,user->Xoldold,&xoldold);CHKERRQ(ierr);
+  ierr  = DMDAVecGetArray(da,user->Xold,&xold);CHKERRQ(ierr);
   for (j=yints; j<yinte; j++) {
     for (i=xints; i<xinte; i++) {
       f[j][i].U += dtinv * (onep5 * x[j][i].U - two * xold[j][i].U +
@@ -837,8 +836,8 @@ PetscErrorCode AddTSTermLocal2(DALocalInfo* info,Field **x,Field **f,AppCtx *use
                             p5 * xoldold[j][i].F);
     }
   }
-  ierr = DAVecRestoreArray(da,user->Xoldold,&xoldold);CHKERRQ(ierr);
-  ierr = DAVecRestoreArray(da,user->Xold,&xold);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,user->Xoldold,&xoldold);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,user->Xold,&xold);CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
 }
@@ -868,14 +867,14 @@ PetscErrorCode CreateNullSpace(DMMG dmmg,Vec *nulls)
 /*
     This is an experimental function and can be safely ignored.
 */
-PetscErrorCode FormFunctionLocali(DALocalInfo *info,MatStencil *st,Field **x,PetscScalar *f,void *ptr)
+PetscErrorCode FormFunctionLocali(DMDALocalInfo *info,MatStencil *st,Field **x,PetscScalar *f,void *ptr)
 {
   AppCtx         *user = (AppCtx*)ptr;
   TstepCtx       *tsCtx = user->tsCtx;
   Parameters      *param = user->param;
   PetscErrorCode ierr;
   PetscInt       i,j,c;
-  PetscInt       xints,xinte,yints,yinte;
+  /* PetscInt       xints,xinte,yints,yinte; */
   PassiveReal    hx,hy,dhx,dhy,hxdhy,hydhx,hxhy,dhxdhy;
   PassiveReal    de2,rhos2,nu,eta,dde2;
   PassiveReal    two = 2.0,one = 1.0,p5 = 0.5;
@@ -902,9 +901,10 @@ PetscErrorCode FormFunctionLocali(DALocalInfo *info,MatStencil *st,Field **x,Pet
   hxdhy = hx*dhy;           hydhx   = hy*dhx;
   hxhy  = hx*hy;             dhxdhy = dhx*dhy;
 
+  /*
   xints = info->xs; xinte = info->xs+info->xm;
   yints = info->ys; yinte = info->ys+info->ym;
-
+   */
 
   i = st->i; j = st->j; c = st->c;
 
@@ -939,7 +939,7 @@ PetscErrorCode FormFunctionLocali(DALocalInfo *info,MatStencil *st,Field **x,Pet
       Byp = Bym = p5*By;
 #endif
 
-      ierr  = DAVecGetArray(info->da,user->Xold,&xold);CHKERRQ(ierr);
+      ierr  = DMDAVecGetArray(info->da,user->Xold,&xold);CHKERRQ(ierr);
       dtinv = hxhy/(tsCtx->dt);
       switch(c) {
 
@@ -977,7 +977,7 @@ PetscErrorCode FormFunctionLocali(DALocalInfo *info,MatStencil *st,Field **x,Pet
           *f += dtinv*(x[j][i].F-xold[j][i].F);
           break;
       }
-      ierr = DAVecRestoreArray(info->da,user->Xold,&xold);CHKERRQ(ierr);
+      ierr = DMDAVecRestoreArray(info->da,user->Xold,&xold);CHKERRQ(ierr);
 
 
   /*
@@ -989,7 +989,7 @@ PetscErrorCode FormFunctionLocali(DALocalInfo *info,MatStencil *st,Field **x,Pet
 /*
     This is an experimental function and can be safely ignored.
 */
-PetscErrorCode FormFunctionLocali4(DALocalInfo *info,MatStencil *st,Field **x,PetscScalar *ff,void *ptr)
+PetscErrorCode FormFunctionLocali4(DMDALocalInfo *info,MatStencil *st,Field **x,PetscScalar *ff,void *ptr)
 {
   Field          *f  = (Field *)ff;
   AppCtx         *user = (AppCtx*)ptr;
@@ -997,7 +997,7 @@ PetscErrorCode FormFunctionLocali4(DALocalInfo *info,MatStencil *st,Field **x,Pe
   Parameters     *param = user->param;
   PetscErrorCode ierr;
   PetscInt       i,j;
-  PetscInt       xints,xinte,yints,yinte;
+  /* PetscInt       xints,xinte,yints,yinte; */
   PassiveReal    hx,hy,dhx,dhy,hxdhy,hydhx,hxhy,dhxdhy;
   PassiveReal    de2,rhos2,nu,eta,dde2;
   PassiveReal    two = 2.0,one = 1.0,p5 = 0.5;
@@ -1024,9 +1024,10 @@ PetscErrorCode FormFunctionLocali4(DALocalInfo *info,MatStencil *st,Field **x,Pe
   hxdhy = hx*dhy;           hydhx   = hy*dhx;
   hxhy  = hx*hy;             dhxdhy = dhx*dhy;
 
+  /*
   xints = info->xs; xinte = info->xs+info->xm;
   yints = info->ys; yinte = info->ys+info->ym;
-
+   */
 
   i = st->i; j = st->j; 
 
@@ -1061,7 +1062,7 @@ PetscErrorCode FormFunctionLocali4(DALocalInfo *info,MatStencil *st,Field **x,Pe
       Byp = Bym = p5*By;
 #endif
 
-      ierr  = DAVecGetArray(info->da,user->Xold,&xold);CHKERRQ(ierr);
+      ierr  = DMDAVecGetArray(info->da,user->Xold,&xold);CHKERRQ(ierr);
       dtinv = hxhy/(tsCtx->dt);
       
 
@@ -1099,7 +1100,7 @@ PetscErrorCode FormFunctionLocali4(DALocalInfo *info,MatStencil *st,Field **x,Pe
           f->F += dtinv*(x[j][i].F-xold[j][i].F);
          
       
-      ierr = DAVecRestoreArray(info->da,user->Xold,&xold);CHKERRQ(ierr);
+      ierr = DMDAVecRestoreArray(info->da,user->Xold,&xold);CHKERRQ(ierr);
 
 
   /*

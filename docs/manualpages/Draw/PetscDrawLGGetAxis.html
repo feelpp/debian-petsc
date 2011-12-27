@@ -9,8 +9,7 @@
 Gets the axis context associated with a line graph. This is useful if one wants to change some axis property, such as labels, color, etc. The axis context should not be destroyed by the application code. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscsys.h" 
-PetscErrorCode PETSC_DLLEXPORT PetscDrawLGGetAxis(PetscDrawLG lg,PetscDrawAxis *axis)
+PetscErrorCode  PetscDrawLGGetAxis(PetscDrawLG lg,PetscDrawAxis *axis)
 </PRE>
 Not Collective, if <A HREF="../Draw/PetscDrawLG.html#PetscDrawLG">PetscDrawLG</A> is parallel then <A HREF="../Draw/PetscDrawAxis.html#PetscDrawAxis">PetscDrawAxis</A> is parallel
 <P>
@@ -25,7 +24,7 @@ Not Collective, if <A HREF="../Draw/PetscDrawLG.html#PetscDrawLG">PetscDrawLG</A
 
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/lg.c.html#PetscDrawLGGetAxis">src/sys/draw/utils/lg.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/lgc.c.html#PetscDrawLGGetAxis">src/sys/draw/utils/lgc.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

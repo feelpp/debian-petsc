@@ -3,13 +3,13 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:22:26+00:00">
+<meta name="date" content="2011-10-29T18:53:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
-<font color="#A020F0">#requirespackage   'PETSC_USE_FORTRAN_KERNELS'</font>
+<font color="#A020F0">#requiresdefine   'PETSC_USE_FORTRAN_KERNELS'</font>
 
 CFLAGS   =
 FFLAGS   =
@@ -21,7 +21,7 @@ OBJSF    = fcopy.o
 LIBBASE  = libpetscsys
 MANSEC   = Sys
 LOCDIR   = src/sys/utils/ftn-kernels/
-DIRS     = bgl
+DIRS     =
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

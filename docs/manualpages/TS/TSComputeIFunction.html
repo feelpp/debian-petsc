@@ -10,7 +10,7 @@ Evaluates the DAE residual written in implicit form F(t,X,Xdot)=0
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode TSComputeIFunction(TS ts,PetscReal t,Vec X,Vec Xdot,Vec Y)
+PetscErrorCode TSComputeIFunction(TS ts,PetscReal t,Vec X,Vec Xdot,Vec Y,PetscBool imex)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -23,6 +23,8 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X </B></TD><TD>- state vector
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Xdot </B></TD><TD>- time derivative of state vector
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>imex </B></TD><TD>- flag indicates if the method is IMEX so that the RHSFunction should be kept separate
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>

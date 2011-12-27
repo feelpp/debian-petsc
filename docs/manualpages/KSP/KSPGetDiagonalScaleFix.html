@@ -10,9 +10,9 @@ Determines if <A HREF="../KSP/KSP.html#KSP">KSP</A> diagonally scales the system
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetDiagonalScaleFix(KSP ksp,PetscTruth *fix)
+PetscErrorCode  KSPGetDiagonalScaleFix(KSP ksp,PetscBool  *fix)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>ksp </B> -the <A HREF="../KSP/KSP.html#KSP">KSP</A> context

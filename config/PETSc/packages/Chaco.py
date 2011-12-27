@@ -9,7 +9,9 @@ class Configure(PETSc.package.NewPackage):
     self.needsMath    = 1
     self.complex      = 1
     self.liblist      = [['libchaco.a']]
-    self.license      = 'http://www.cs.sandia.gov/~web9200/9200_download.html'
+    self.license      = 'http://www.cs.sandia.gov/web1400/1400_download.html'
+    self.worksonWindows    = 1
+    self.downloadonWindows = 1
     return
 
   def Install(self):
@@ -28,7 +30,7 @@ class Configure(PETSc.package.NewPackage):
     if self.installNeeded(mkfile):
       try:
         self.logPrintBox('Compiling chaco; this may take several minutes')
-        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+';CHACO_INSTALL_DIR='+self.installDir+';export CHACO_INSTALL_DIR; cd code; make clean; make; cd '+self.installDir+'; '+self.setCompilers.AR+' '+self.setCompilers.AR_FLAGS+' '+self.libdir+'/libchaco.'+self.setCompilers.AR_LIB_SUFFIX+' `find '+self.packageDir+'/code -name "*.o"`; cd '+self.libdir+'; '+self.setCompilers.AR+' d libchaco.'+self.setCompilers.AR_LIB_SUFFIX+' main.o; '+self.setCompilers.RANLIB+' libchaco.'+self.setCompilers.AR_LIB_SUFFIX, timeout=2500, log = self.framework.log)
+        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && cd code && make clean && make && cd '+self.installDir+' && '+self.setCompilers.AR+' '+self.setCompilers.AR_FLAGS+' '+self.libdir+'/libchaco.'+self.setCompilers.AR_LIB_SUFFIX+' `find '+self.packageDir+'/code -name "*.o"` && cd '+self.libdir+' && '+self.setCompilers.AR+' d libchaco.'+self.setCompilers.AR_LIB_SUFFIX+' main.o && '+self.setCompilers.RANLIB+' libchaco.'+self.setCompilers.AR_LIB_SUFFIX, timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running make on CHACO: '+str(e))
       self.postInstall(output+err, mkfile)

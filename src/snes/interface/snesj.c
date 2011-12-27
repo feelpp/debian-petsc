@@ -1,6 +1,5 @@
-#define PETSCSNES_DLL
 
-#include "private/snesimpl.h"    /*I  "petscsnes.h"  I*/
+#include <private/snesimpl.h>    /*I  "petscsnes.h"  I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESDefaultComputeJacobian"
@@ -40,7 +39,7 @@
 
 .seealso: SNESSetJacobian(), SNESDefaultComputeJacobianColor(), MatCreateSNESMF()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultComputeJacobian(SNES snes,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
+PetscErrorCode  SNESDefaultComputeJacobian(SNES snes,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
 {
   Vec            j1a,j2a,x2;
   PetscErrorCode ierr;
@@ -50,7 +49,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultComputeJacobian(SNES snes,Vec x1,M
   PetscReal      dx_min = 1.e-16,dx_par = 1.e-1,unorm;
   MPI_Comm       comm;
   PetscErrorCode (*eval_fct)(SNES,Vec,Vec)=0;
-  PetscTruth     assembled,use_wp = PETSC_TRUE,flg;
+  PetscBool      assembled,use_wp = PETSC_TRUE,flg;
   const char     *list[2] = {"ds","wp"};
   PetscMPIInt    size;
   const PetscInt *ranges;
@@ -97,19 +96,15 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultComputeJacobian(SNES snes,Vec x1,M
         dx = xx[i-start];
       }
       ierr = VecRestoreArray(x1,&xx);CHKERRQ(ierr);
-#if !defined(PETSC_USE_COMPLEX)
-      if (dx < dx_min && dx >= 0.0) dx = dx_par;
-      else if (dx < 0.0 && dx > -dx_min) dx = -dx_par;
-#else
-      if (PetscAbsScalar(dx) < dx_min && PetscRealPart(dx) >= 0.0) dx = dx_par;
-      else if (PetscRealPart(dx) < 0.0 && PetscAbsScalar(dx) < dx_min) dx = -dx_par;
-#endif
+      if (PetscAbsScalar(dx) < dx_min) dx = (PetscRealPart(dx) < 0. ? -1. : 1.) * dx_par;
       dx *= epsilon;
       wscale = 1.0/dx;
       ierr = VecSetValues(x2,1,&i,&dx,ADD_VALUES);CHKERRQ(ierr);
     } else {
       wscale = 0.0;
     }
+    ierr = VecAssemblyBegin(x2);CHKERRQ(ierr);
+    ierr = VecAssemblyEnd(x2);CHKERRQ(ierr);
     ierr = (*eval_fct)(snes,x2,j2a);CHKERRQ(ierr);
     ierr = VecAXPY(j2a,-1.0,j1a);CHKERRQ(ierr);
     /* Communicate scale=1/dx_i to all processors */

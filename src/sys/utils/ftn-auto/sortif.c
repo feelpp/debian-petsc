@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* sorti.c */
 /* Fortran interface file */
 
@@ -33,6 +34,11 @@ extern void PetscRmPointer(void*);
 #define petscsortint_ petscsortint
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscsortremovedupsint_ PETSCSORTREMOVEDUPSINT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscsortremovedupsint_ petscsortremovedupsint
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscsortintwitharray_ PETSCSORTINTWITHARRAY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscsortintwitharray_ petscsortintwitharray
@@ -47,23 +53,34 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscsortintwithscalararray_ petscsortintwithscalararray
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscprocesstree_ PETSCPROCESSTREE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscprocesstree_ petscprocesstree
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscsortint_(PetscInt *n,PetscInt i[], int *__ierr ){
+void PETSC_STDCALL  petscsortint_(PetscInt *n,PetscInt i[], int *__ierr ){
 *__ierr = PetscSortInt(*n,i);
 }
-void PETSC_STDCALL   petscsortintwitharray_(PetscInt *n,PetscInt i[],PetscInt Ii[], int *__ierr ){
+void PETSC_STDCALL  petscsortremovedupsint_(PetscInt *n,PetscInt ii[], int *__ierr ){
+*__ierr = PetscSortRemoveDupsInt(n,ii);
+}
+void PETSC_STDCALL  petscsortintwitharray_(PetscInt *n,PetscInt i[],PetscInt Ii[], int *__ierr ){
 *__ierr = PetscSortIntWithArray(*n,i,Ii);
 }
-void PETSC_STDCALL   petscsortmpiintwitharray_(PetscMPIInt *n,PetscMPIInt i[],PetscMPIInt Ii[], int *__ierr ){
+void PETSC_STDCALL  petscsortmpiintwitharray_(PetscMPIInt *n,PetscMPIInt i[],PetscMPIInt Ii[], int *__ierr ){
 *__ierr = PetscSortMPIIntWithArray(*n,i,Ii);
 }
-void PETSC_STDCALL   petscsortintwithscalararray_(PetscInt *n,PetscInt i[],PetscScalar Ii[], int *__ierr ){
+void PETSC_STDCALL  petscsortintwithscalararray_(PetscInt *n,PetscInt i[],PetscScalar Ii[], int *__ierr ){
 *__ierr = PetscSortIntWithScalarArray(*n,i,Ii);
+}
+void PETSC_STDCALL  petscprocesstree_(PetscInt *n, PetscBool  mask[], PetscInt parentid[],PetscInt *Nlevels,PetscInt **Level,PetscInt **Levelcnt,PetscInt **Idbylevel,PetscInt **Column, int *__ierr ){
+*__ierr = PetscProcessTree(*n,mask,parentid,Nlevels,Level,Levelcnt,Idbylevel,Column);
 }
 #if defined(__cplusplus)
 }

@@ -10,7 +10,7 @@ Call after you are completed with the ia,ja indices obtained with <A HREF="../Ma
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatRestoreColumnIJ(Mat mat,PetscInt shift,PetscTruth symmetric,PetscTruth inodecompressed,PetscInt *n,PetscInt *ia[],PetscInt* ja[],PetscTruth *done)
+PetscErrorCode  MatRestoreColumnIJ(Mat mat,PetscInt shift,PetscBool  symmetric,PetscBool  inodecompressed,PetscInt *n,PetscInt *ia[],PetscInt* ja[],PetscBool  *done)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>

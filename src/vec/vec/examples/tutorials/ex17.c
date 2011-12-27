@@ -1,8 +1,8 @@
 /*
       Demonstrates the use of the "extra", polymorphic versions of many functions
 */
-#include "petscsys.h"
-#include "petscvec.h"
+#include <petscsys.h>
+#include <petscvec.h>
 
 
 
@@ -10,9 +10,9 @@ int main(int argc,char **args)
 {
   PetscErrorCode ierr;
   Vec            x;
-  PetscReal      norm;
+  PETSC_UNUSED PetscReal   norm;
 #if defined(__cplusplus) && !defined(PETSC_USE_EXTERN_CXX)
-  PetscScalar    dot;
+  PETSC_UNUSED PetscScalar dot;
 #endif
 
 #if defined(__cplusplus) && !defined(PETSC_USE_EXTERN_CXX)
@@ -44,7 +44,7 @@ int main(int argc,char **args)
 #else
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
 #endif
-  ierr = VecDestroy(x);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
 
   PetscFinalize();
   return 0;

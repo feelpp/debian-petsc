@@ -1,11 +1,11 @@
 
-#requirespackage   'PETSC_HAVE_FORTRAN'
+#requiresdefine   'PETSC_HAVE_FORTRAN'
 ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = indexf.c
-OBJSC    = indexf.o
+SOURCEC  = indexf.c isregf.c
+OBJSC    = indexf.o isregf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

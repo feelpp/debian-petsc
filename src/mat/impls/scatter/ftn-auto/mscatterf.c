@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mscatter.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matscattergetvecscatter_(Mat mat,VecScatter *scatter, int *__ierr ){
+void PETSC_STDCALL  matscattergetvecscatter_(Mat mat,VecScatter *scatter, int *__ierr ){
 *__ierr = MatScatterGetVecScatter(
 	(Mat)PetscToPointer((mat) ),scatter);
 }
-void PETSC_STDCALL   matscattersetvecscatter_(Mat mat,VecScatter scatter, int *__ierr ){
+void PETSC_STDCALL  matscattersetvecscatter_(Mat mat,VecScatter scatter, int *__ierr ){
 *__ierr = MatScatterSetVecScatter(
 	(Mat)PetscToPointer((mat) ),
 	(VecScatter)PetscToPointer((scatter) ));

@@ -6,13 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="SNESDAComputeJacobianWithAdic"><H1>SNESDAComputeJacobianWithAdic</H1></A>
-This is a universal Jacobian evaluation routine that may be used with <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>() as long as the user context has a <A HREF="../DA/DA.html#DA">DA</A> as its first record and <A HREF="../DA/DASetLocalAdicFunction.html#DASetLocalAdicFunction">DASetLocalAdicFunction</A>() has been called.   
+This is a universal Jacobian evaluation routine that may be used with <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>() as long as the user context has a DMDA as its first record and <A HREF="../DM/DMDASetLocalAdicFunction.html#DMDASetLocalAdicFunction">DMDASetLocalAdicFunction</A>() has been called.   
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"    
-#include "petscmg.h"    
+#include "petscdmda.h"    
+#include "petscpcmg.h"    
 #include "petscdmmg.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDAComputeJacobianWithAdic(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,void *ptr)
+PetscErrorCode  SNESDAComputeJacobianWithAdic(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,void *ptr)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -34,7 +34,7 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../DA/DASetLocalFunction.html#DASetLocalFunction">DASetLocalFunction</A>(), <A HREF="../DA/DASetLocalAdicFunction.html#DASetLocalAdicFunction">DASetLocalAdicFunction</A>(), <A HREF="../SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(), <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>()
+ <A HREF="../DM/DMDASetLocalFunction.html#DMDASetLocalFunction">DMDASetLocalFunction</A>(), <A HREF="../DM/DMDASetLocalAdicFunction.html#DMDASetLocalAdicFunction">DMDASetLocalAdicFunction</A>(), <A HREF="../SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(), <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
@@ -42,6 +42,4 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 </BODY></HTML>

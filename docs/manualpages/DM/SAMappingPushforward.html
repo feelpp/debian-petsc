@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SAMappingPushforward</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<A NAME="SAMappingPushforward"><H1>SAMappingPushforward</H1></A>
+mapping from the range of A to the range of B, pointwise on the common domain 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsa.h"  
+PetscErrorCode  SAMappingPushforward(SAMapping A,SAMapping B, SAMapping *C) 
+</PRE>
+Collective on SAMapping
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>A </B></TD><TD>- the left  mapping
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>B </B></TD><TD>- the right mapping
+</TD></TR></TABLE>
+<P>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
+<DT><B>C </B> -the product mapping: domain as the range of  A, range as the range of B
+<br>
+<P>
+<P>
+
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../DM/SAMappingPullback.html#SAMappingPullback">SAMappingPullback</A>(), SAMappingInvert()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/sa/interface/sa.c.html#SAMappingPushforward">src/dm/sa/interface/sa.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

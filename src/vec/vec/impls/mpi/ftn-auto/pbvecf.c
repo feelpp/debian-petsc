@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* pbvec.c */
 /* Fortran interface file */
 
@@ -28,26 +29,6 @@ extern void PetscRmPointer(void*);
 
 #include "petscvec.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define vecghostgetlocalform_ VECGHOSTGETLOCALFORM
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define vecghostgetlocalform_ vecghostgetlocalform
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define vecghostrestorelocalform_ VECGHOSTRESTORELOCALFORM
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define vecghostrestorelocalform_ vecghostrestorelocalform
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define vecghostupdatebegin_ VECGHOSTUPDATEBEGIN
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define vecghostupdatebegin_ vecghostupdatebegin
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define vecghostupdateend_ VECGHOSTUPDATEEND
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define vecghostupdateend_ vecghostupdateend
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define veccreateghost_ VECCREATEGHOST
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define veccreateghost_ veccreateghost
@@ -63,27 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   vecghostgetlocalform_(Vec g,Vec *l, int *__ierr ){
-*__ierr = VecGhostGetLocalForm(
-	(Vec)PetscToPointer((g) ),l);
-}
-void PETSC_STDCALL   vecghostrestorelocalform_(Vec g,Vec *l, int *__ierr ){
-*__ierr = VecGhostRestoreLocalForm(
-	(Vec)PetscToPointer((g) ),l);
-}
-void PETSC_STDCALL   vecghostupdatebegin_(Vec g,InsertMode *insertmode,ScatterMode *scattermode, int *__ierr ){
-*__ierr = VecGhostUpdateBegin(
-	(Vec)PetscToPointer((g) ),*insertmode,*scattermode);
-}
-void PETSC_STDCALL   vecghostupdateend_(Vec g,InsertMode *insertmode,ScatterMode *scattermode, int *__ierr ){
-*__ierr = VecGhostUpdateEnd(
-	(Vec)PetscToPointer((g) ),*insertmode,*scattermode);
-}
-void PETSC_STDCALL   veccreateghost_(MPI_Fint * comm,PetscInt *n,PetscInt *N,PetscInt *nghost, PetscInt ghosts[],Vec *vv, int *__ierr ){
+void PETSC_STDCALL  veccreateghost_(MPI_Fint * comm,PetscInt *n,PetscInt *N,PetscInt *nghost, PetscInt ghosts[],Vec *vv, int *__ierr ){
 *__ierr = VecCreateGhost(
 	MPI_Comm_f2c( *(comm) ),*n,*N,*nghost,ghosts,vv);
 }
-void PETSC_STDCALL   veccreateghostblock_(MPI_Fint * comm,PetscInt *bs,PetscInt *n,PetscInt *N,PetscInt *nghost, PetscInt ghosts[],Vec *vv, int *__ierr ){
+void PETSC_STDCALL  veccreateghostblock_(MPI_Fint * comm,PetscInt *bs,PetscInt *n,PetscInt *N,PetscInt *nghost, PetscInt ghosts[],Vec *vv, int *__ierr ){
 *__ierr = VecCreateGhostBlock(
 	MPI_Comm_f2c( *(comm) ),*bs,*n,*N,*nghost,ghosts,vv);
 }

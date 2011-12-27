@@ -1,5 +1,3 @@
-#define PETSCKSP_DLL
-
 /*
    This file contains some simple default routines.  
    These routines should be SHORT, since they will be included in every
@@ -7,27 +5,7 @@
    the registry system, we provide a way to load only the truely necessary
    files) 
  */
-#include "private/kspimpl.h"   /*I "petscksp.h" I*/
-
-#undef __FUNCT__  
-#define __FUNCT__ "KSPDefaultFreeWork"
-/*
-  KSPDefaultFreeWork - Free work vectors
-
-  Input Parameters:
-. ksp  - iterative context
- */
-PetscErrorCode KSPDefaultFreeWork(KSP ksp)
-{
-  PetscErrorCode ierr;
-  PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  if (ksp->work)  {
-    ierr = VecDestroyVecs(ksp->work,ksp->nwork);CHKERRQ(ierr);
-    ksp->work = PETSC_NULL;
-  }
-  PetscFunctionReturn(0);
-}
+#include <private/kspimpl.h>   /*I "petscksp.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPGetResidualNorm"
@@ -49,10 +27,10 @@ PetscErrorCode KSPDefaultFreeWork(KSP ksp)
 
 .seealso: KSPBuildResidual()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetResidualNorm(KSP ksp,PetscReal *rnorm)
+PetscErrorCode  KSPGetResidualNorm(KSP ksp,PetscReal *rnorm)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidDoublePointer(rnorm,2);
   *rnorm = ksp->rnorm;
   PetscFunctionReturn(0);
@@ -81,10 +59,10 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPGetResidualNorm(KSP ksp,PetscReal *rnorm)
 
 .seealso: KSPBuildResidual(), KSPGetResidualNorm()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetIterationNumber(KSP ksp,PetscInt *its)
+PetscErrorCode  KSPGetIterationNumber(KSP ksp,PetscInt *its)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidIntPointer(its,2);
   *its = ksp->its;
   PetscFunctionReturn(0);
@@ -97,7 +75,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPGetIterationNumber(KSP ksp,PetscInt *its)
     estimation of the extreme singular values of the preconditioned problem
     at each iteration.
  
-    Collective on KSP
+    Logically Collective on KSP
 
     Input Parameters:
 +   ksp - the iterative context
@@ -118,23 +96,23 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPGetIterationNumber(KSP ksp,PetscInt *its)
 
 .seealso: KSPComputeExtremeSingularValues()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorSingularValue(KSP ksp,PetscInt n,PetscReal rnorm,void *dummy)
+PetscErrorCode  KSPMonitorSingularValue(KSP ksp,PetscInt n,PetscReal rnorm,void *dummy)
 {
-  PetscReal               emin,emax,c;
-  PetscErrorCode          ierr;
-  PetscViewerASCIIMonitor viewer = (PetscViewerASCIIMonitor) dummy;
+  PetscReal       emin,emax,c;
+  PetscErrorCode  ierr;
+  PetscViewer     viewer = dummy ? (PetscViewer) dummy : PETSC_VIEWER_STDOUT_(((PetscObject)ksp)->comm);
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  if (!dummy) {ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,"stdout",0,&viewer);CHKERRQ(ierr);}
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ierr = PetscViewerASCIIAddTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
   if (!ksp->calc_sings) {
-    ierr = PetscViewerASCIIMonitorPrintf(viewer,"%3D KSP Residual norm %14.12e \n",n,rnorm);CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPrintf(viewer,"%3D KSP Residual norm %14.12e \n",n,(double)rnorm);CHKERRQ(ierr);
   } else {
     ierr = KSPComputeExtremeSingularValues(ksp,&emax,&emin);CHKERRQ(ierr);
     c = emax/emin;
-    ierr = PetscViewerASCIIMonitorPrintf(viewer,"%3D KSP Residual norm %14.12e %% max %G min %G max/min %G\n",n,rnorm,emax,emin,c);CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPrintf(viewer,"%3D KSP Residual norm %14.12e %% max %14.12e min %14.12e max/min %14.12e\n",n,(double)rnorm,(double)emax,(double)emin,(double)c);CHKERRQ(ierr);
   }
-  if (!dummy) {ierr = PetscViewerASCIIMonitorDestroy(viewer);CHKERRQ(ierr);}
+  ierr = PetscViewerASCIISubtractTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -162,7 +140,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorSingularValue(KSP ksp,PetscInt n,Pet
 
 .seealso: KSPMonitorSet(), KSPMonitorDefault(), VecView()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorSolution(KSP ksp,PetscInt its,PetscReal fgnorm,void *dummy)
+PetscErrorCode  KSPMonitorSolution(KSP ksp,PetscInt its,PetscReal fgnorm,void *dummy)
 {
   PetscErrorCode ierr;
   Vec            x;
@@ -200,18 +178,18 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorSolution(KSP ksp,PetscInt its,PetscR
 
 .seealso: KSPMonitorSet(), KSPMonitorTrueResidualNorm(), KSPMonitorLGCreate()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorDefault(KSP ksp,PetscInt n,PetscReal rnorm,void *dummy)
+PetscErrorCode  KSPMonitorDefault(KSP ksp,PetscInt n,PetscReal rnorm,void *dummy)
 {
-  PetscErrorCode          ierr;
-  PetscViewerASCIIMonitor viewer = (PetscViewerASCIIMonitor) dummy;
+  PetscErrorCode ierr;
+  PetscViewer    viewer = dummy ? (PetscViewer) dummy : PETSC_VIEWER_STDOUT_(((PetscObject)ksp)->comm);
 
   PetscFunctionBegin;
-  if (!dummy) {ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,"stdout",0,&viewer);CHKERRQ(ierr);}
+  ierr = PetscViewerASCIIAddTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
   if (n == 0 && ((PetscObject)ksp)->prefix) {
-    ierr = PetscViewerASCIIMonitorPrintf(viewer,"  Residual norms for %s solve.\n",((PetscObject)ksp)->prefix);CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPrintf(viewer,"  Residual norms for %s solve.\n",((PetscObject)ksp)->prefix);CHKERRQ(ierr);
   }
-  ierr = PetscViewerASCIIMonitorPrintf(viewer,"%3D KSP Residual norm %14.12e \n",n,rnorm);CHKERRQ(ierr);
-  if (!dummy) {ierr = PetscViewerASCIIMonitorDestroy(viewer);CHKERRQ(ierr);}
+  ierr = PetscViewerASCIIPrintf(viewer,"%3D KSP Residual norm %14.12e \n",n,(double)rnorm);CHKERRQ(ierr);
+  ierr = PetscViewerASCIISubtractTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -241,17 +219,21 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorDefault(KSP ksp,PetscInt n,PetscReal
 
 .seealso: KSPMonitorSet(), KSPMonitorDefault(), KSPMonitorLGCreate()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorTrueResidualNorm(KSP ksp,PetscInt n,PetscReal rnorm,void *dummy)
+PetscErrorCode  KSPMonitorTrueResidualNorm(KSP ksp,PetscInt n,PetscReal rnorm,void *dummy)
 {
-  PetscErrorCode          ierr;
-  Vec                     resid,work;
-  PetscReal               scnorm,bnorm;
-  PC                      pc;
-  Mat                     A,B;
-  PetscViewerASCIIMonitor viewer = (PetscViewerASCIIMonitor) dummy;
-  
+  PetscErrorCode  ierr;
+  Vec             resid,work;
+  PetscReal       scnorm,bnorm;
+  PC              pc;
+  Mat             A,B;
+  PetscViewer     viewer = dummy ? (PetscViewer) dummy : PETSC_VIEWER_STDOUT_(((PetscObject)ksp)->comm);
+  char            normtype[256];
+
   PetscFunctionBegin;
-  if (!dummy) {ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,"stdout",0,&viewer);CHKERRQ(ierr);}
+  ierr = PetscViewerASCIIAddTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
+  if (n == 0 && ((PetscObject)ksp)->prefix) {
+    ierr = PetscViewerASCIIPrintf(viewer,"  Residual norms for %s solve.\n",((PetscObject)ksp)->prefix);CHKERRQ(ierr);
+  }
   ierr = VecDuplicate(ksp->vec_rhs,&work);CHKERRQ(ierr);
   ierr = KSPBuildResidual(ksp,0,work,&resid);CHKERRQ(ierr);
 
@@ -266,16 +248,18 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorTrueResidualNorm(KSP ksp,PetscInt n,
     ierr = MatUnScaleSystem(A,work,PETSC_NULL);CHKERRQ(ierr);
   }
   ierr = VecNorm(work,NORM_2,&scnorm);CHKERRQ(ierr);
-  ierr = VecDestroy(work);CHKERRQ(ierr);
+  ierr = VecDestroy(&work);CHKERRQ(ierr);
   ierr = VecNorm(ksp->vec_rhs,NORM_2,&bnorm);CHKERRQ(ierr);
-  ierr = PetscViewerASCIIMonitorPrintf(viewer,"%3D KSP preconditioned resid norm %14.12e true resid norm %14.12e ||Ae||/||Ax|| %14.12e\n",n,rnorm,scnorm,scnorm/bnorm);CHKERRQ(ierr);
-  if (!dummy) {ierr = PetscViewerASCIIMonitorDestroy(viewer);CHKERRQ(ierr);}
+  ierr = PetscStrncpy(normtype,KSPNormTypes[ksp->normtype],sizeof normtype);CHKERRQ(ierr);
+  ierr = PetscStrtolower(normtype);CHKERRQ(ierr);
+  ierr = PetscViewerASCIIPrintf(viewer,"%3D KSP %s resid norm %14.12e true resid norm %14.12e ||r(i)||/||b|| %14.12e\n",n,normtype,(double)rnorm,(double)scnorm,(double)(scnorm/bnorm));CHKERRQ(ierr);
+  ierr = PetscViewerASCIISubtractTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPMonitorRange_Private"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorRange_Private(KSP ksp,PetscInt it,PetscReal *per)
+PetscErrorCode  KSPMonitorRange_Private(KSP ksp,PetscInt it,PetscReal *per)
 {
   PetscErrorCode          ierr;
   Vec                     resid,work;
@@ -309,7 +293,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorRange_Private(KSP ksp,PetscInt it,Pe
   }
   ierr = MPI_Allreduce(&pwork,per,1,MPIU_REAL,MPIU_SUM,((PetscObject)ksp)->comm);CHKERRQ(ierr);
   ierr = VecRestoreArray(work,&r);CHKERRQ(ierr);
-  ierr = VecDestroy(work);CHKERRQ(ierr);
+  ierr = VecDestroy(&work);CHKERRQ(ierr);
   *per  = *per/N;
   PetscFunctionReturn(0);
 }
@@ -336,23 +320,26 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorRange_Private(KSP ksp,PetscInt it,Pe
 
 .seealso: KSPMonitorSet(), KSPMonitorDefault(), KSPMonitorLGCreate()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorRange(KSP ksp,PetscInt it,PetscReal rnorm,void *dummy)
+PetscErrorCode  KSPMonitorRange(KSP ksp,PetscInt it,PetscReal rnorm,void *dummy)
 {
-  PetscErrorCode          ierr;
-  PetscReal               perc,rel;
-  PetscViewerASCIIMonitor viewer = (PetscViewerASCIIMonitor) dummy;
+  PetscErrorCode   ierr;
+  PetscReal        perc,rel;
+  PetscViewer      viewer = dummy ? (PetscViewer) dummy : PETSC_VIEWER_STDOUT_(((PetscObject)ksp)->comm);
   /* should be in a MonitorRangeContext */
-  static PetscReal        prev;
+  static PetscReal prev;
 
   PetscFunctionBegin;
+  ierr = PetscViewerASCIIAddTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
   if (!it) prev = rnorm;
-  if (!dummy) {ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,"stdout",0,&viewer);CHKERRQ(ierr);}
+  if (it == 0 && ((PetscObject)ksp)->prefix) {
+    ierr = PetscViewerASCIIPrintf(viewer,"  Residual norms for %s solve.\n",((PetscObject)ksp)->prefix);CHKERRQ(ierr);
+  }
   ierr = KSPMonitorRange_Private(ksp,it,&perc);CHKERRQ(ierr);
 
   rel  = (prev - rnorm)/prev;
   prev = rnorm;
-  ierr = PetscViewerASCIIMonitorPrintf(viewer,"%3D KSP preconditioned resid norm %14.12e Percent values above 20 percent of maximum %5.2f relative decrease %5.2e ratio %5.2e \n",it,rnorm,100.0*perc,rel,rel/perc);CHKERRQ(ierr);
-  if (!dummy) {ierr = PetscViewerASCIIMonitorDestroy(viewer);CHKERRQ(ierr);}
+  ierr = PetscViewerASCIIPrintf(viewer,"%3D KSP preconditioned resid norm %14.12e Percent values above 20 percent of maximum %5.2f relative decrease %5.2e ratio %5.2e \n",it,(double)rnorm,(double)100.0*perc,(double)rel,(double)rel/perc);CHKERRQ(ierr);
+  ierr = PetscViewerASCIISubtractTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -365,22 +352,25 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorRange(KSP ksp,PetscInt it,PetscReal 
   different on different machines; by using this routine different 
   machines will usually generate the same output.
 */
-PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorDefaultShort(KSP ksp,PetscInt its,PetscReal fnorm,void *dummy)
+PetscErrorCode  KSPMonitorDefaultShort(KSP ksp,PetscInt its,PetscReal fnorm,void *dummy)
 {
-  PetscErrorCode          ierr;
-  PetscViewerASCIIMonitor viewer = (PetscViewerASCIIMonitor) dummy;
+  PetscErrorCode ierr;
+  PetscViewer    viewer = dummy ? (PetscViewer) dummy : PETSC_VIEWER_STDOUT_(((PetscObject)ksp)->comm);
 
   PetscFunctionBegin;
-  if (!dummy) {ierr = PetscViewerASCIIMonitorCreate(((PetscObject)ksp)->comm,"stdout",0,&viewer);CHKERRQ(ierr);}
+  ierr = PetscViewerASCIIAddTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
+  if (its == 0 && ((PetscObject)ksp)->prefix) {
+    ierr = PetscViewerASCIIPrintf(viewer,"  Residual norms for %s solve.\n",((PetscObject)ksp)->prefix);CHKERRQ(ierr);
+  }
 
   if (fnorm > 1.e-9) {
-    ierr = PetscViewerASCIIMonitorPrintf(viewer,"%3D KSP Residual norm %G \n",its,fnorm);CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPrintf(viewer,"%3D KSP Residual norm %G \n",its,fnorm);CHKERRQ(ierr);
   } else if (fnorm > 1.e-11){
-    ierr = PetscViewerASCIIMonitorPrintf(viewer,"%3D KSP Residual norm %5.3e \n",its,fnorm);CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPrintf(viewer,"%3D KSP Residual norm %5.3e \n",its,(double)fnorm);CHKERRQ(ierr);
   } else {
-    ierr = PetscViewerASCIIMonitorPrintf(viewer,"%3D KSP Residual norm < 1.e-11\n",its);CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPrintf(viewer,"%3D KSP Residual norm < 1.e-11\n",its);CHKERRQ(ierr);
   }
-  if (!dummy) {ierr = PetscViewerASCIIMonitorDestroy(viewer);CHKERRQ(ierr);}
+  ierr = PetscViewerASCIISubtractTab(viewer,((PetscObject)ksp)->tablevel);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -403,7 +393,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorDefaultShort(KSP ksp,PetscInt its,Pe
 
    Notes: 
    This should be used as the convergence test with the option
-   KSPSetNormType(ksp,KSP_NORM_NO), since norms of the residual are
+   KSPSetNormType(ksp,KSP_NORM_NONE), since norms of the residual are
    not computed. Convergence is then declared after the maximum number
    of iterations have been reached. Useful when one is using CG or
    BiCGStab as a smoother.
@@ -414,21 +404,16 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPMonitorDefaultShort(KSP ksp,PetscInt its,Pe
 
 .seealso: KSPSetConvergenceTest(), KSPSetTolerances(), KSPSetNormType()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSkipConverged(KSP ksp,PetscInt n,PetscReal rnorm,KSPConvergedReason *reason,void *dummy)
+PetscErrorCode  KSPSkipConverged(KSP ksp,PetscInt n,PetscReal rnorm,KSPConvergedReason *reason,void *dummy)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidPointer(reason,4);
   *reason = KSP_CONVERGED_ITERATING;
   if (n >= ksp->max_it) *reason = KSP_CONVERGED_ITS;
   PetscFunctionReturn(0);
 }
 
-typedef struct {
-  PetscTruth initialrtol;    /* default relative residual decrease is computing from initial residual, not rhs */
-  PetscTruth mininitialrtol; /* default relative residual decrease is computing from min of initial residual and rhs */
-  Vec        work;
-} KSPDefaultConvergedCtx;
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPDefaultConvergedCreate"
@@ -447,7 +432,7 @@ typedef struct {
 .seealso: KSPDefaultConverged(), KSPDefaultConvergedDestroy(), KSPSetConvergenceTest(), KSPSetTolerances(),
           KSPSkipConverged(), KSPConvergedReason, KSPGetConvergedReason(), KSPDefaultConvergedSetUIRNorm(), KSPDefaultConvergedSetUMIRNorm()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConvergedCreate(void **ctx)
+PetscErrorCode  KSPDefaultConvergedCreate(void **ctx)
 {
   PetscErrorCode         ierr;
   KSPDefaultConvergedCtx *cctx;
@@ -485,14 +470,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConvergedCreate(void **ctx)
 
 .seealso: KSPSetConvergenceTest(), KSPSetTolerances(), KSPSkipConverged(), KSPConvergedReason, KSPGetConvergedReason(), KSPDefaultConvergedSetUMIRNorm()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConvergedSetUIRNorm(KSP ksp)
+PetscErrorCode  KSPDefaultConvergedSetUIRNorm(KSP ksp)
 {
   KSPDefaultConvergedCtx *ctx = (KSPDefaultConvergedCtx*) ksp->cnvP;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   if (ksp->converged != KSPDefaultConverged) PetscFunctionReturn(0);
-  if (ctx->mininitialrtol) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Cannot use KSPDefaultConvergedSetUIRNorm() and KSPDefaultConvergedSetUMIRNorm() together");
+  if (ctx->mininitialrtol) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_WRONGSTATE,"Cannot use KSPDefaultConvergedSetUIRNorm() and KSPDefaultConvergedSetUMIRNorm() together");
   ctx->initialrtol = PETSC_TRUE;
   PetscFunctionReturn(0);
 }
@@ -523,14 +508,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConvergedSetUIRNorm(KSP ksp)
 
 .seealso: KSPSetConvergenceTest(), KSPSetTolerances(), KSPSkipConverged(), KSPConvergedReason, KSPGetConvergedReason(), KSPDefaultConvergedSetUIRNorm()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConvergedSetUMIRNorm(KSP ksp)
+PetscErrorCode  KSPDefaultConvergedSetUMIRNorm(KSP ksp)
 {
   KSPDefaultConvergedCtx *ctx = (KSPDefaultConvergedCtx*) ksp->cnvP;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   if (ksp->converged != KSPDefaultConverged) PetscFunctionReturn(0);
-  if (ctx->initialrtol) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Cannot use KSPDefaultConvergedSetUIRNorm() and KSPDefaultConvergedSetUMIRNorm() together");
+  if (ctx->initialrtol) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_WRONGSTATE,"Cannot use KSPDefaultConvergedSetUIRNorm() and KSPDefaultConvergedSetUMIRNorm() together");
   ctx->mininitialrtol = PETSC_TRUE;
    PetscFunctionReturn(0);
 }
@@ -580,21 +565,21 @@ $      rnorm > dtol * rnorm_0,
 .seealso: KSPSetConvergenceTest(), KSPSetTolerances(), KSPSkipConverged(), KSPConvergedReason, KSPGetConvergedReason(),
           KSPDefaultConvergedSetUIRNorm(), KSPDefaultConvergedSetUMIRNorm(), KSPDefaultConvergedCreate(), KSPDefaultConvergedDestroy()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConverged(KSP ksp,PetscInt n,PetscReal rnorm,KSPConvergedReason *reason,void *ctx)
+PetscErrorCode  KSPDefaultConverged(KSP ksp,PetscInt n,PetscReal rnorm,KSPConvergedReason *reason,void *ctx)
 {
   PetscErrorCode         ierr;
   KSPDefaultConvergedCtx *cctx = (KSPDefaultConvergedCtx*) ctx;
   KSPNormType            normtype;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidPointer(reason,4);
   *reason = KSP_CONVERGED_ITERATING;
   
   ierr = KSPGetNormType(ksp,&normtype);CHKERRQ(ierr);
-  if (normtype == KSP_NORM_NO) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Use KSPSkipConverged() with KSPNormType of KSP_NORM_NO");
+  if (normtype == KSP_NORM_NONE) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_WRONGSTATE,"Use KSPSkipConverged() with KSPNormType of KSP_NORM_NONE");
 
-  if (!cctx) SETERRQ(PETSC_ERR_ARG_NULL,"Convergence context must have been created with KSPDefaultConvergedCreate()");
+  if (!cctx) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_NULL,"Convergence context must have been created with KSPDefaultConvergedCreate()");
   if (!n) {
     /* if user gives initial guess need to compute norm of b */
     if (!ksp->guess_zero && !cctx->initialrtol) {
@@ -604,10 +589,8 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConverged(KSP ksp,PetscInt n,PetscRe
         ierr = VecNorm(ksp->vec_rhs,NORM_2,&snorm);CHKERRQ(ierr);        /*     <- b'*b */
       } else {
         Vec z;
-        if (!cctx->work) {
-          ierr = VecDuplicate(ksp->vec_rhs,&cctx->work);CHKERRQ(ierr);
-        }
-        z = cctx->work;
+        /* Should avoid allocating the z vector each time but cannot stash it in cctx because if KSPReset() is called the vector size might change */
+        ierr = VecDuplicate(ksp->vec_rhs,&z);CHKERRQ(ierr);
         ierr = KSP_PCApply(ksp,ksp->vec_rhs,z);CHKERRQ(ierr);
         if (ksp->normtype == KSP_NORM_PRECONDITIONED) {
           ierr = PetscInfo(ksp,"user has provided nonzero initial guess, computing 2-norm of preconditioned RHS\n");CHKERRQ(ierr);
@@ -616,8 +599,9 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConverged(KSP ksp,PetscInt n,PetscRe
           PetscScalar norm;
            ierr = PetscInfo(ksp,"user has provided nonzero initial guess, computing natural norm of RHS\n");CHKERRQ(ierr);
           ierr  = VecDot(ksp->vec_rhs,z,&norm);
-          snorm = sqrt(PetscAbsScalar(norm));                            /*    dp <- b'*B*b */
+          snorm = PetscSqrtReal(PetscAbsScalar(norm));                            /*    dp <- b'*B*b */
         }
+        ierr = VecDestroy(&z);CHKERRQ(ierr);
       }
       /* handle special case of zero RHS and nonzero guess */
       if (!snorm) {
@@ -642,18 +626,18 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConverged(KSP ksp,PetscInt n,PetscRe
     *reason = KSP_DIVERGED_NAN;
   } else if (rnorm <= ksp->ttol) {
     if (rnorm < ksp->abstol) {
-      ierr = PetscInfo3(ksp,"Linear solver has converged. Residual norm %G is less than absolute tolerance %G at iteration %D\n",rnorm,ksp->abstol,n);CHKERRQ(ierr);
+      ierr = PetscInfo3(ksp,"Linear solver has converged. Residual norm %14.12e is less than absolute tolerance %14.12e at iteration %D\n",(double)rnorm,(double)ksp->abstol,n);CHKERRQ(ierr);
       *reason = KSP_CONVERGED_ATOL;
     } else {
       if (cctx->initialrtol) {
-        ierr = PetscInfo4(ksp,"Linear solver has converged. Residual norm %G is less than relative tolerance %G times initial residual norm %G at iteration %D\n",rnorm,ksp->rtol,ksp->rnorm0,n);CHKERRQ(ierr);
+        ierr = PetscInfo4(ksp,"Linear solver has converged. Residual norm %14.12e is less than relative tolerance %14.12e times initial residual norm %14.12e at iteration %D\n",(double)rnorm,(double)ksp->rtol,(double)ksp->rnorm0,n);CHKERRQ(ierr);
       } else {
-        ierr = PetscInfo4(ksp,"Linear solver has converged. Residual norm %G is less than relative tolerance %G times initial right hand side norm %G at iteration %D\n",rnorm,ksp->rtol,ksp->rnorm0,n);CHKERRQ(ierr);
+        ierr = PetscInfo4(ksp,"Linear solver has converged. Residual norm %14.12e is less than relative tolerance %14.12e times initial right hand side norm %14.12e at iteration %D\n",(double)rnorm,(double)ksp->rtol,(double)ksp->rnorm0,n);CHKERRQ(ierr);
       }
       *reason = KSP_CONVERGED_RTOL;
     }
   } else if (rnorm >= ksp->divtol*ksp->rnorm0) {
-    ierr = PetscInfo3(ksp,"Linear solver is diverging. Initial right hand size norm %G, current residual norm %G at iteration %D\n",ksp->rnorm0,rnorm,n);CHKERRQ(ierr);
+    ierr = PetscInfo3(ksp,"Linear solver is diverging. Initial right hand size norm %14.12e, current residual norm %14.12e at iteration %D\n",(double)ksp->rnorm0,(double)rnorm,n);CHKERRQ(ierr);
     *reason = KSP_DIVERGED_DTOL;
   }
   PetscFunctionReturn(0);
@@ -676,14 +660,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConverged(KSP ksp,PetscInt n,PetscRe
 .seealso: KSPDefaultConverged(), KSPDefaultConvergedCreate(), KSPSetConvergenceTest(), KSPSetTolerances(), KSPSkipConverged(),
           KSPConvergedReason, KSPGetConvergedReason(), KSPDefaultConvergedSetUIRNorm(), KSPDefaultConvergedSetUMIRNorm()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPDefaultConvergedDestroy(void *ctx)
+PetscErrorCode  KSPDefaultConvergedDestroy(void *ctx)
 {
   PetscErrorCode         ierr;
   KSPDefaultConvergedCtx *cctx = (KSPDefaultConvergedCtx*) ctx;
 
   PetscFunctionBegin;
-  if (cctx->work) {ierr = VecDestroy(cctx->work);CHKERRQ(ierr);}
-  ierr = PetscFree(cctx);CHKERRQ(ierr);
+  ierr = VecDestroy(&cctx->work);CHKERRQ(ierr);
+  ierr = PetscFree(ctx);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -712,16 +696,16 @@ PetscErrorCode KSPDefaultBuildSolution(KSP ksp,Vec v,Vec *V)
   if (ksp->pc_side == PC_RIGHT) {
     if (ksp->pc) {
       if (v) {ierr = KSP_PCApply(ksp,ksp->vec_sol,v);CHKERRQ(ierr); *V = v;}
-      else {SETERRQ(PETSC_ERR_SUP,"Not working with right preconditioner");}
+      else SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Not working with right preconditioner");
     } else {
       if (v) {ierr = VecCopy(ksp->vec_sol,v);CHKERRQ(ierr); *V = v;}
       else { *V = ksp->vec_sol;}
     }
   } else if (ksp->pc_side == PC_SYMMETRIC) {
     if (ksp->pc) {
-      if (ksp->transpose_solve) SETERRQ(PETSC_ERR_SUP,"Not working with symmetric preconditioner and transpose solve");
+      if (ksp->transpose_solve) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Not working with symmetric preconditioner and transpose solve");
       if (v) {ierr = PCApplySymmetricRight(ksp->pc,ksp->vec_sol,v);CHKERRQ(ierr); *V = v;}
-      else {SETERRQ(PETSC_ERR_SUP,"Not working with symmetric preconditioner");}
+      else SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Not working with symmetric preconditioner");
     } else  {
       if (v) {ierr = VecCopy(ksp->vec_sol,v);CHKERRQ(ierr); *V = v;}
       else { *V = ksp->vec_sol;}
@@ -797,31 +781,47 @@ PetscErrorCode KSPGetVecs(KSP ksp,PetscInt rightn, Vec **right,PetscInt leftn,Ve
 
   PetscFunctionBegin;
   if (rightn) {
-    if (!right) SETERRQ(PETSC_ERR_ARG_INCOMP,"You asked for right vectors but did not pass a pointer to hold them");
+    if (!right) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_INCOMP,"You asked for right vectors but did not pass a pointer to hold them");
     if (ksp->vec_sol) vecr = ksp->vec_sol;
     else {
-      Mat pmat;
-      if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
-      ierr = PCGetOperators(ksp->pc,PETSC_NULL,&pmat,PETSC_NULL);CHKERRQ(ierr);
-      ierr = MatGetVecs(pmat,&vecr,PETSC_NULL);CHKERRQ(ierr);
+      if (ksp->dm) {
+	ierr = DMGetGlobalVector(ksp->dm,&vecr);CHKERRQ(ierr);
+      } else {
+	Mat pmat;
+	if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
+	ierr = PCGetOperators(ksp->pc,PETSC_NULL,&pmat,PETSC_NULL);CHKERRQ(ierr);
+	ierr = MatGetVecs(pmat,&vecr,PETSC_NULL);CHKERRQ(ierr);
+      }
     }
     ierr = VecDuplicateVecs(vecr,rightn,right);CHKERRQ(ierr);
     if (!ksp->vec_sol) {
-      ierr = VecDestroy(vecr);CHKERRQ(ierr);
+      if (ksp->dm) {
+        ierr = DMRestoreGlobalVector(ksp->dm,&vecr);CHKERRQ(ierr);
+      } else {
+	ierr = VecDestroy(&vecr);CHKERRQ(ierr);
+      }
     }
   }
   if (leftn) {
-    if (!left) SETERRQ(PETSC_ERR_ARG_INCOMP,"You asked for left vectors but did not pass a pointer to hold them");
+    if (!left) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_INCOMP,"You asked for left vectors but did not pass a pointer to hold them");
     if (ksp->vec_rhs) vecl = ksp->vec_rhs;
     else {
-      Mat pmat;
-      if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
-      ierr = PCGetOperators(ksp->pc,PETSC_NULL,&pmat,PETSC_NULL);CHKERRQ(ierr);
-      ierr = MatGetVecs(pmat,PETSC_NULL,&vecl);CHKERRQ(ierr);
+      if (ksp->dm) {
+	ierr = DMGetGlobalVector(ksp->dm,&vecl);CHKERRQ(ierr);
+      } else {
+	Mat pmat;
+	if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
+	ierr = PCGetOperators(ksp->pc,PETSC_NULL,&pmat,PETSC_NULL);CHKERRQ(ierr);
+	ierr = MatGetVecs(pmat,PETSC_NULL,&vecl);CHKERRQ(ierr);
+      }
     }
     ierr = VecDuplicateVecs(vecl,leftn,left);CHKERRQ(ierr);
     if (!ksp->vec_rhs) {
-      ierr = VecDestroy(vecl);CHKERRQ(ierr);
+      if (ksp->dm) {
+        ierr = DMRestoreGlobalVector(ksp->dm,&vecl);CHKERRQ(ierr);
+      } else {
+	ierr = VecDestroy(&vecl);CHKERRQ(ierr);
+      }
     }
   }
   PetscFunctionReturn(0);
@@ -844,20 +844,20 @@ PetscErrorCode KSPDefaultGetWork(KSP ksp,PetscInt nw)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->work) {ierr = KSPDefaultFreeWork(ksp);CHKERRQ(ierr);}
+  ierr = VecDestroyVecs(ksp->nwork,&ksp->work);CHKERRQ(ierr);
   ksp->nwork = nw;
   ierr = KSPGetVecs(ksp,nw,&ksp->work,0,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscLogObjectParents(ksp,nw,ksp->work);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "KSPDefaultDestroy"
 /*
   KSPDefaultDestroy - Destroys a iterative context variable for methods with
   no separate context.  Preferred calling sequence KSPDestroy().
 
-  Input Parameter: 
+  Input Parameter:
 . ksp - the iterative context
 */
 PetscErrorCode KSPDefaultDestroy(KSP ksp)
@@ -865,10 +865,7 @@ PetscErrorCode KSPDefaultDestroy(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  /* free work vectors */
-  ierr = KSPDefaultFreeWork(ksp);CHKERRQ(ierr);
-  /* free private data structure */
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   ierr = PetscFree(ksp->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -913,11 +910,153 @@ PetscErrorCode KSPDefaultDestroy(KSP ksp)
 
 .seealso: KSPSetConvergenceTest(), KSPDefaultConverged(), KSPSetTolerances(), KSPConvergedReason
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetConvergedReason(KSP ksp,KSPConvergedReason *reason)
+PetscErrorCode  KSPGetConvergedReason(KSP ksp,KSPConvergedReason *reason)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidPointer(reason,2);
   *reason = ksp->reason;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "KSPSetDM"
+/*@
+   KSPSetDM - Sets the DM that may be used by some preconditioners
+
+   Logically Collective on KSP
+
+   Input Parameters:
++  ksp - the preconditioner context
+-  dm - the dm
+
+   Level: intermediate
+
+
+.seealso: KSPGetDM(), KSPSetDM(), KSPGetDM()
+@*/
+PetscErrorCode  KSPSetDM(KSP ksp,DM dm)
+{
+  PetscErrorCode ierr;
+  PC             pc;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  if (dm) {ierr = PetscObjectReference((PetscObject)dm);CHKERRQ(ierr);}
+  ierr = DMDestroy(&ksp->dm);CHKERRQ(ierr);
+  ksp->dm = dm;
+  ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
+  ierr = PCSetDM(pc,dm);CHKERRQ(ierr);
+  ksp->dmActive = PETSC_TRUE;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "KSPSetDMActive"
+/*@
+   KSPSetDMActive - Indicates the DM should be used to generate the linear system matrix and right hand side
+
+   Logically Collective on KSP
+
+   Input Parameters:
++  ksp - the preconditioner context
+-  flg - use the DM
+
+   Level: intermediate
+
+   Notes:
+   By default KSPSetDM() sets the DM as active, call KSPSetDMActive(dm,PETSC_FALSE); after KSPSetDM(dm) to not have the KSP object use the DM to generate the matrices
+
+.seealso: KSPGetDM(), KSPSetDM(), KSPGetDM()
+@*/
+PetscErrorCode  KSPSetDMActive(KSP ksp,PetscBool  flg)
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  PetscValidLogicalCollectiveBool(ksp,flg,2);
+  ksp->dmActive = flg;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "KSPGetDM"
+/*@
+   KSPGetDM - Gets the DM that may be used by some preconditioners
+
+   Not Collective
+
+   Input Parameter:
+. ksp - the preconditioner context
+
+   Output Parameter:
+.  dm - the dm
+
+   Level: intermediate
+
+
+.seealso: KSPSetDM(), KSPSetDM(), KSPGetDM()
+@*/
+PetscErrorCode  KSPGetDM(KSP ksp,DM *dm)
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  *dm = ksp->dm;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "KSPSetApplicationContext"
+/*@
+   KSPSetApplicationContext - Sets the optional user-defined context for the linear solver.
+
+   Logically Collective on KSP
+
+   Input Parameters:
++  ksp - the KSP context
+-  usrP - optional user context
+
+   Level: intermediate
+
+.keywords: KSP, set, application, context
+
+.seealso: KSPGetApplicationContext()
+@*/
+PetscErrorCode  KSPSetApplicationContext(KSP ksp,void *usrP)
+{
+  PetscErrorCode ierr;
+  PC             pc;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ksp->user = usrP;
+  ierr      = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
+  ierr      = PCSetApplicationContext(pc,usrP);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "KSPGetApplicationContext"
+/*@
+   KSPGetApplicationContext - Gets the user-defined context for the linear solver.
+
+   Not Collective
+
+   Input Parameter:
+.  ksp - KSP context
+
+   Output Parameter:
+.  usrP - user context
+
+   Level: intermediate
+
+.keywords: KSP, get, application, context
+
+.seealso: KSPSetApplicationContext()
+@*/
+PetscErrorCode  KSPGetApplicationContext(KSP ksp,void *usrP)
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  *(void**)usrP = ksp->user;
   PetscFunctionReturn(0);
 }

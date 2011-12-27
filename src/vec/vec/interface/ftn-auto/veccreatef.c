@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* veccreate.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   veccreate_(MPI_Fint * comm,Vec *vec, int *__ierr ){
+void PETSC_STDCALL  veccreate_(MPI_Fint * comm,Vec *vec, int *__ierr ){
 *__ierr = VecCreate(
 	MPI_Comm_f2c( *(comm) ),vec);
 }

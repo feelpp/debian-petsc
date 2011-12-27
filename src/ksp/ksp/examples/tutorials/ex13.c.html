@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:25+00:00">
+<meta name="date" content="2011-10-29T19:13:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -26,7 +26,7 @@
 <a name="line16"> 16: </a><font color="#B22222">     petscis.h     - index sets            petscksp.h - Krylov subspace methods</font>
 <a name="line17"> 17: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
 <a name="line18"> 18: </a><font color="#B22222">*/</font>
-<a name="line19"> 19: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line19"> 19: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line21"> 21: </a><font color="#B22222">/*</font>
 <a name="line22"> 22: </a><font color="#B22222">    User-defined context that contains all the data structures used</font>
@@ -303,10 +303,10 @@
 <a name="line308">308: </a><font color="#B22222">     we free the work space.  All PETSc objects should be destroyed when</font>
 <a name="line309">309: </a><font color="#B22222">     they are no longer needed.</font>
 <a name="line310">310: </a><font color="#B22222">  */</font>
-<a name="line311">311: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(userctx-&gt;ksp);
-<a name="line312">312: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(userctx-&gt;x);
-<a name="line313">313: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(userctx-&gt;b);
-<a name="line314">314: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(userctx-&gt;A);
+<a name="line311">311: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;userctx-&gt;ksp);
+<a name="line312">312: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;userctx-&gt;x);
+<a name="line313">313: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;userctx-&gt;b);
+<a name="line314">314: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;userctx-&gt;A);
 <a name="line315">315: </a>  <font color="#4169E1">return</font> 0;
 <a name="line316">316: </a>}
 </pre>

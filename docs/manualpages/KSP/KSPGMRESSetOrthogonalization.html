@@ -10,9 +10,9 @@ Sets the orthogonalization routine used by GMRES and FGMRES.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h"  
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetOrthogonalization(KSP ksp,PetscErrorCode (*fcn)(KSP,PetscInt))
+PetscErrorCode  KSPGMRESSetOrthogonalization(KSP ksp,PetscErrorCode (*fcn)(KSP,PetscInt))
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -56,8 +56,8 @@ iterative refinement is used to increase stability.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../KSP/KSPGMRESSetRestart.html#KSPGMRESSetRestart">KSPGMRESSetRestart</A>(), <A HREF="../KSP/KSPGMRESSetPreAllocateVectors.html#KSPGMRESSetPreAllocateVectors">KSPGMRESSetPreAllocateVectors</A>(), <A HREF="../KSP/KSPGMRESSetCGSRefinementType.html#KSPGMRESSetCGSRefinementType">KSPGMRESSetCGSRefinementType</A>(),
-<BR><A HREF="../KSP/KSPGMRESModifiedGramSchmidtOrthogonalization.html#KSPGMRESModifiedGramSchmidtOrthogonalization">KSPGMRESModifiedGramSchmidtOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESClassicalGramSchmidtOrthogonalization.html#KSPGMRESClassicalGramSchmidtOrthogonalization">KSPGMRESClassicalGramSchmidtOrthogonalization</A>()
+ <A HREF="../KSP/KSPGMRESSetRestart.html#KSPGMRESSetRestart">KSPGMRESSetRestart</A>(), <A HREF="../KSP/KSPGMRESSetPreAllocateVectors.html#KSPGMRESSetPreAllocateVectors">KSPGMRESSetPreAllocateVectors</A>(), <A HREF="../KSP/KSPGMRESSetCGSRefinementType.html#KSPGMRESSetCGSRefinementType">KSPGMRESSetCGSRefinementType</A>(), <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(),
+<BR><A HREF="../KSP/KSPGMRESModifiedGramSchmidtOrthogonalization.html#KSPGMRESModifiedGramSchmidtOrthogonalization">KSPGMRESModifiedGramSchmidtOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESClassicalGramSchmidtOrthogonalization.html#KSPGMRESClassicalGramSchmidtOrthogonalization">KSPGMRESClassicalGramSchmidtOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESGetCGSRefinementType.html#KSPGMRESGetCGSRefinementType">KSPGMRESGetCGSRefinementType</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/impls/gmres/gmres2.c.html#KSPGMRESSetOrthogonalization">src/ksp/ksp/impls/gmres/gmres2.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

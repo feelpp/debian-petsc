@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* bcgsl.c */
 /* Fortran interface file */
 
@@ -48,15 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspbcgslsetxres_(KSP ksp,PetscReal *delta, int *__ierr ){
+void PETSC_STDCALL  kspbcgslsetxres_(KSP ksp,PetscReal *delta, int *__ierr ){
 *__ierr = KSPBCGSLSetXRes(
 	(KSP)PetscToPointer((ksp) ),*delta);
 }
-void PETSC_STDCALL   kspbcgslsetpol_(KSP ksp,PetscTruth *uMROR, int *__ierr ){
+void PETSC_STDCALL  kspbcgslsetpol_(KSP ksp,PetscBool  *uMROR, int *__ierr ){
 *__ierr = KSPBCGSLSetPol(
 	(KSP)PetscToPointer((ksp) ),*uMROR);
 }
-void PETSC_STDCALL   kspbcgslsetell_(KSP ksp,int *ell, int *__ierr ){
+void PETSC_STDCALL  kspbcgslsetell_(KSP ksp,PetscInt *ell, int *__ierr ){
 *__ierr = KSPBCGSLSetEll(
 	(KSP)PetscToPointer((ksp) ),*ell);
 }

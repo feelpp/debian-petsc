@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 configure_options = [
-  '--with-gcov=1',
+  #'--with-gcov=1',
   '--download-mpich=1',
   '--download-f-blas-lapack=1',
   '--download-hypre=1',
   '--download-plapack=1',
   '--download-parmetis=1',
+  '--download-ptscotch=1',
   '--download-umfpack=1',
   '--download-triangle=1',
   '--download-spooles=1',

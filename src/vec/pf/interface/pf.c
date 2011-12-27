@@ -1,14 +1,13 @@
-#define PETSCVEC_DLL
 /*
     The PF mathematical functions interface routines, callable by users.
 */
-#include "../src/vec/pf/pfimpl.h"            /*I "petscpf.h" I*/
+#include <../src/vec/pf/pfimpl.h>            /*I "petscpf.h" I*/
 
 /* Logging support */
-PetscCookie PF_COOKIE = 0;
+PetscClassId PF_CLASSID = 0;
 
 PetscFList PFList         = PETSC_NULL; /* list of all registered PD functions */
-PetscTruth PFRegisterAllCalled = PETSC_FALSE;
+PetscBool  PFRegisterAllCalled = PETSC_FALSE;
 
 #undef __FUNCT__  
 #define __FUNCT__ "PFSet"
@@ -31,10 +30,10 @@ PetscTruth PFRegisterAllCalled = PETSC_FALSE;
 
 .seealso: PFCreate(), PFDestroy(), PFSetType(), PFApply(), PFApplyVec()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFSet(PF pf,PetscErrorCode (*apply)(void*,PetscInt,PetscScalar*,PetscScalar*),PetscErrorCode (*applyvec)(void*,Vec,Vec),PetscErrorCode (*view)(void*,PetscViewer),PetscErrorCode (*destroy)(void*),void*ctx)
+PetscErrorCode  PFSet(PF pf,PetscErrorCode (*apply)(void*,PetscInt,const PetscScalar*,PetscScalar*),PetscErrorCode (*applyvec)(void*,Vec,Vec),PetscErrorCode (*view)(void*,PetscViewer),PetscErrorCode (*destroy)(void*),void*ctx)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pf,PF_COOKIE,1);
+  PetscValidHeaderSpecific(pf,PF_CLASSID,1);
   pf->data             = ctx;
 
   pf->ops->destroy     = destroy;
@@ -61,26 +60,27 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFSet(PF pf,PetscErrorCode (*apply)(void*,Pets
 
 .seealso: PFCreate(), PFSet(), PFSetType()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFDestroy(PF pf)
+PetscErrorCode  PFDestroy(PF *pf)
 {
   PetscErrorCode ierr;
-  PetscTruth     flg = PETSC_FALSE;
+  PetscBool      flg = PETSC_FALSE;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pf,PF_COOKIE,1);
-  if (--((PetscObject)pf)->refct > 0) PetscFunctionReturn(0);
+  if (!*pf) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific((*pf),PF_CLASSID,1);
+  if (--((PetscObject)(*pf))->refct > 0) PetscFunctionReturn(0);
 
-  ierr = PetscOptionsGetTruth(((PetscObject)pf)->prefix,"-pf_view",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(((PetscObject)(*pf))->prefix,"-pf_view",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     PetscViewer viewer;
-    ierr = PetscViewerASCIIGetStdout(((PetscObject)pf)->comm,&viewer);CHKERRQ(ierr);
-    ierr = PFView(pf,viewer);CHKERRQ(ierr);
+    ierr = PetscViewerASCIIGetStdout(((PetscObject)(*pf))->comm,&viewer);CHKERRQ(ierr);
+    ierr = PFView((*pf),viewer);CHKERRQ(ierr);
   }
 
   /* if memory was published with AMS then destroy it */
-  ierr = PetscObjectDepublish(pf);CHKERRQ(ierr);
+  ierr = PetscObjectDepublish((*pf));CHKERRQ(ierr);
 
-  if (pf->ops->destroy) {ierr =  (*pf->ops->destroy)(pf->data);CHKERRQ(ierr);}
+  if ((*pf)->ops->destroy) {ierr =  (*(*pf)->ops->destroy)((*pf)->data);CHKERRQ(ierr);}
   ierr = PetscHeaderDestroy(pf);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -104,9 +104,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFDestroy(PF pf)
 
 .keywords: PF, create, context
 
-.seealso: PFSetUp(), PFApply(), PFDestroy(), PFApplyVec()
+.seealso: PFSet(), PFApply(), PFDestroy(), PFApplyVec()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFCreate(MPI_Comm comm,PetscInt dimin,PetscInt dimout,PF *pf)
+PetscErrorCode  PFCreate(MPI_Comm comm,PetscInt dimin,PetscInt dimout,PF *pf)
 {
   PF             newpf;
   PetscErrorCode ierr;
@@ -118,7 +118,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFCreate(MPI_Comm comm,PetscInt dimin,PetscInt
   ierr = PFInitializePackage(PETSC_NULL);CHKERRQ(ierr);   
 #endif
 
-  ierr = PetscHeaderCreate(newpf,_p_PF,struct _PFOps,PF_COOKIE,-1,"PF",comm,PFDestroy,PFView);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(newpf,_p_PF,struct _PFOps,PF_CLASSID,-1,"PF","Mathematical functions","Vec",comm,PFDestroy,PFView);CHKERRQ(ierr);
   newpf->data             = 0;
 
   newpf->ops->destroy     = 0;
@@ -129,7 +129,6 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFCreate(MPI_Comm comm,PetscInt dimin,PetscInt
   newpf->dimout           = dimout;
 
   *pf                     = newpf;
-  ierr = PetscPublishAll(pf);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 
 }
@@ -156,22 +155,25 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFCreate(MPI_Comm comm,PetscInt dimin,PetscInt
 
 .seealso: PFApply(), PFCreate(), PFDestroy(), PFSetType(), PFSet()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFApplyVec(PF pf,Vec x,Vec y)
+PetscErrorCode  PFApplyVec(PF pf,Vec x,Vec y)
 {
   PetscErrorCode ierr;
   PetscInt       i,rstart,rend,n,p;
-  PetscTruth     nox = PETSC_FALSE;
+  PetscBool      nox = PETSC_FALSE;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pf,PF_COOKIE,1);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,3);
+  PetscValidHeaderSpecific(pf,PF_CLASSID,1);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,3);
   if (x) {
-    PetscValidHeaderSpecific(x,VEC_COOKIE,2);
-    if (x == y) SETERRQ(PETSC_ERR_ARG_IDN,"x and y must be different vectors");
+    PetscValidHeaderSpecific(x,VEC_CLASSID,2);
+    if (x == y) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_IDN,"x and y must be different vectors");
   } else {
     PetscScalar *xx;
+    PetscInt    lsize;
 
-    ierr = VecDuplicate(y,&x);CHKERRQ(ierr);
+    ierr = VecGetLocalSize(y,&lsize);CHKERRQ(ierr);
+    lsize = pf->dimin*lsize/pf->dimout;
+    ierr = VecCreateMPI(((PetscObject)y)->comm,lsize,PETSC_DETERMINE,&x);CHKERRQ(ierr);
     nox  = PETSC_TRUE;
     ierr = VecGetOwnershipRange(x,&rstart,&rend);CHKERRQ(ierr);
     ierr = VecGetArray(x,&xx);CHKERRQ(ierr);
@@ -183,9 +185,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFApplyVec(PF pf,Vec x,Vec y)
 
   ierr = VecGetLocalSize(x,&n);CHKERRQ(ierr);
   ierr = VecGetLocalSize(y,&p);CHKERRQ(ierr);
-  if ((pf->dimin*(n/pf->dimin)) != n) SETERRQ2(PETSC_ERR_ARG_SIZ,"Local input vector length %D not divisible by dimin %D of function",n,pf->dimin);
-  if ((pf->dimout*(p/pf->dimout)) != p) SETERRQ2(PETSC_ERR_ARG_SIZ,"Local output vector length %D not divisible by dimout %D of function",p,pf->dimout);
-  if ((n/pf->dimin) != (p/pf->dimout)) SETERRQ4(PETSC_ERR_ARG_SIZ,"Local vector lengths %D %D are wrong for dimin and dimout %D %D of function",n,p,pf->dimin,pf->dimout);
+  if ((pf->dimin*(n/pf->dimin)) != n) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Local input vector length %D not divisible by dimin %D of function",n,pf->dimin);
+  if ((pf->dimout*(p/pf->dimout)) != p) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Local output vector length %D not divisible by dimout %D of function",p,pf->dimout);
+  if ((n/pf->dimin) != (p/pf->dimout)) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Local vector lengths %D %D are wrong for dimin and dimout %D %D of function",n,p,pf->dimin,pf->dimout);
 
   if (pf->ops->applyvec) {
     ierr = (*pf->ops->applyvec)(pf->data,x,y);CHKERRQ(ierr);
@@ -196,13 +198,13 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFApplyVec(PF pf,Vec x,Vec y)
     n    = n/pf->dimin;
     ierr = VecGetArray(x,&xx);CHKERRQ(ierr);
     ierr = VecGetArray(y,&yy);CHKERRQ(ierr);
-    if (!pf->ops->apply) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"No function has been provided for this PF");
+    if (!pf->ops->apply) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"No function has been provided for this PF");
     ierr = (*pf->ops->apply)(pf->data,n,xx,yy);CHKERRQ(ierr);
     ierr = VecRestoreArray(x,&xx);CHKERRQ(ierr);
     ierr = VecRestoreArray(y,&yy);CHKERRQ(ierr);
   }
   if (nox) {
-    ierr = VecDestroy(x);CHKERRQ(ierr);
+    ierr = VecDestroy(&x);CHKERRQ(ierr);
   } 
   PetscFunctionReturn(0);
 }
@@ -232,16 +234,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFApplyVec(PF pf,Vec x,Vec y)
 
 .seealso: PFApplyVec(), PFCreate(), PFDestroy(), PFSetType(), PFSet()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFApply(PF pf,PetscInt n,PetscScalar* x,PetscScalar* y)
+PetscErrorCode  PFApply(PF pf,PetscInt n,const PetscScalar* x,PetscScalar* y)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pf,PF_COOKIE,1);
+  PetscValidHeaderSpecific(pf,PF_CLASSID,1);
   PetscValidScalarPointer(x,2);
   PetscValidScalarPointer(y,3);
-  if (x == y) SETERRQ(PETSC_ERR_ARG_IDN,"x and y must be different arrays");
-  if (!pf->ops->apply) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"No function has been provided for this PF");
+  if (x == y) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_IDN,"x and y must be different arrays");
+  if (!pf->ops->apply) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"No function has been provided for this PF");
 
   ierr = (*pf->ops->apply)(pf->data,n,x,y);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -275,38 +277,31 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFApply(PF pf,PetscInt n,PetscScalar* x,PetscS
 
 .seealso: PetscViewerCreate(), PetscViewerASCIIOpen()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFView(PF pf,PetscViewer viewer)
+PetscErrorCode  PFView(PF pf,PetscViewer viewer)
 {
-  const PFType      cstr;
   PetscErrorCode    ierr;
-  PetscTruth        iascii;
+  PetscBool         iascii;
   PetscViewerFormat format;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pf,PF_COOKIE,1);
+  PetscValidHeaderSpecific(pf,PF_CLASSID,1);
   if (!viewer) {
     ierr = PetscViewerASCIIGetStdout(((PetscObject)pf)->comm,&viewer);CHKERRQ(ierr);
   }
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,2); 
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,2); 
   PetscCheckSameComm(pf,1,viewer,2);
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerGetFormat(viewer,&format);CHKERRQ(ierr);
-    ierr = PetscViewerASCIIPrintf(viewer,"PF Object:\n");CHKERRQ(ierr);
-    ierr = PFGetType(pf,&cstr);CHKERRQ(ierr);
-    if (cstr) {
-      ierr = PetscViewerASCIIPrintf(viewer,"  type: %s\n",cstr);CHKERRQ(ierr);
-    } else {
-      ierr = PetscViewerASCIIPrintf(viewer,"  type: not yet set\n");CHKERRQ(ierr);
-    }
+    ierr = PetscObjectPrintClassNamePrefixType((PetscObject)pf,viewer,"PF Object");CHKERRQ(ierr);
     if (pf->ops->view) {
       ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
       ierr = (*pf->ops->view)(pf->data,viewer);CHKERRQ(ierr);
       ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
     }
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported by PF",((PetscObject)viewer)->type_name);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported by PF",((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
@@ -354,7 +349,7 @@ M*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PFRegister"
-PetscErrorCode PETSCVEC_DLLEXPORT PFRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(PF,void*))
+PetscErrorCode  PFRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(PF,void*))
 {
   PetscErrorCode ierr;
   char           fullname[PETSC_MAX_PATH_LEN];
@@ -386,10 +381,10 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFRegister(const char sname[],const char path[
 .seealso: PFSetType()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFGetType(PF pf,const PFType *type)
+PetscErrorCode  PFGetType(PF pf,const PFType *type)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pf,PF_COOKIE,1);
+  PetscValidHeaderSpecific(pf,PF_CLASSID,1);
   PetscValidPointer(type,2);
   *type = ((PetscObject)pf)->type_name;
   PetscFunctionReturn(0);
@@ -420,16 +415,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFGetType(PF pf,const PFType *type)
 
 .keywords: PF, set, method, type
 
-.seealso: PFSet(), PFRegisterDynamic(), PFCreate(), DACreatePF()
+.seealso: PFSet(), PFRegisterDynamic(), PFCreate(), DMDACreatePF()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFSetType(PF pf,const PFType type,void *ctx)
+PetscErrorCode  PFSetType(PF pf,const PFType type,void *ctx)
 {
   PetscErrorCode ierr,(*r)(PF,void*);
-  PetscTruth     match;
+  PetscBool      match;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pf,PF_COOKIE,1);
+  PetscValidHeaderSpecific(pf,PF_CLASSID,1);
   PetscValidCharPointer(type,2);
 
   ierr = PetscTypeCompare((PetscObject)pf,type,&match);CHKERRQ(ierr);
@@ -439,8 +434,8 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFSetType(PF pf,const PFType type,void *ctx)
   pf->data        = 0;
 
   /* Determine the PFCreateXXX routine for a particular function */
-  ierr =  PetscFListFind(PFList,((PetscObject)pf)->comm,type,(void (**)(void)) &r);CHKERRQ(ierr);
-  if (!r) SETERRQ1(PETSC_ERR_ARG_UNKNOWN_TYPE,"Unable to find requested PF type %s",type);
+  ierr =  PetscFListFind(PFList,((PetscObject)pf)->comm,type,PETSC_TRUE,(void (**)(void)) &r);CHKERRQ(ierr);
+  if (!r) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_UNKNOWN_TYPE,"Unable to find requested PF type %s",type);
   pf->ops->destroy             = 0;
   pf->ops->view                = 0;
   pf->ops->apply               = 0;
@@ -475,16 +470,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFSetType(PF pf,const PFType type,void *ctx)
 
 .seealso:
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFSetFromOptions(PF pf)
+PetscErrorCode  PFSetFromOptions(PF pf)
 {
   PetscErrorCode ierr;
   char           type[256];
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pf,PF_COOKIE,1);
+  PetscValidHeaderSpecific(pf,PF_CLASSID,1);
 
-  ierr = PetscOptionsBegin(((PetscObject)pf)->comm,((PetscObject)pf)->prefix,"Mathematical functions options","Vec");CHKERRQ(ierr);
+  ierr = PetscObjectOptionsBegin((PetscObject)pf);CHKERRQ(ierr);
     ierr = PetscOptionsList("-pf_type","Type of function","PFSetType",PFList,0,type,256,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = PFSetType(pf,type,PETSC_NULL);CHKERRQ(ierr);
@@ -492,12 +487,15 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFSetFromOptions(PF pf)
     if (pf->ops->setfromoptions) {
       ierr = (*pf->ops->setfromoptions)(pf);CHKERRQ(ierr);
     }
+
+    /* process any options handlers added with PetscObjectAddOptionsHandler() */
+    ierr = PetscObjectProcessOptionsHandlers((PetscObject)pf);CHKERRQ(ierr);
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
 }
 
-static PetscTruth PFPackageInitialized = PETSC_FALSE;
+static PetscBool  PFPackageInitialized = PETSC_FALSE;
 #undef __FUNCT__  
 #define __FUNCT__ "PFFinalizePackage"
 /*@C
@@ -509,7 +507,7 @@ static PetscTruth PFPackageInitialized = PETSC_FALSE;
 .keywords: Petsc, destroy, package, mathematica
 .seealso: PetscFinalize()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PFFinalizePackage(void) 
+PetscErrorCode  PFFinalizePackage(void)
 {
   PetscFunctionBegin;
   PFPackageInitialized = PETSC_FALSE;
@@ -533,18 +531,18 @@ PetscErrorCode PETSC_DLLEXPORT PFFinalizePackage(void)
 .keywords: Vec, initialize, package
 .seealso: PetscInitialize()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT PFInitializePackage(const char path[]) 
+PetscErrorCode  PFInitializePackage(const char path[]) 
 {
   char              logList[256];
   char              *className;
-  PetscTruth        opt;
+  PetscBool         opt;
   PetscErrorCode    ierr;
 
   PetscFunctionBegin;
   if (PFPackageInitialized) PetscFunctionReturn(0);
   PFPackageInitialized = PETSC_TRUE;
   /* Register Classes */
-  ierr = PetscCookieRegister("PointFunction",&PF_COOKIE);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("PointFunction",&PF_CLASSID);CHKERRQ(ierr);
   /* Register Constructors */
   ierr = PFRegisterAll(path);CHKERRQ(ierr);
   /* Process info exclusions */
@@ -552,7 +550,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFInitializePackage(const char path[])
   if (opt) {
     ierr = PetscStrstr(logList, "pf", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscInfoDeactivateClass(PF_COOKIE);CHKERRQ(ierr);
+      ierr = PetscInfoDeactivateClass(PF_CLASSID);CHKERRQ(ierr);
     }
   }
   /* Process summary exclusions */
@@ -560,7 +558,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFInitializePackage(const char path[])
   if (opt) {
     ierr = PetscStrstr(logList, "pf", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscLogEventDeactivateClass(PF_COOKIE);CHKERRQ(ierr);
+      ierr = PetscLogEventDeactivateClass(PF_CLASSID);CHKERRQ(ierr);
     }
   }
   ierr = PetscRegisterFinalize(PFFinalizePackage);CHKERRQ(ierr);

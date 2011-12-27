@@ -1,0 +1,137 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>exSNES</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="exSNES.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><p>Solves a nonlinear system where the user manages the mesh--solver interactions</p><pre> Set the Matlab path and initialize PETSc</pre><pre class="codeinput">path(path,<span class="string">'../../'</span>)
+PetscInitialize({<span class="string">'-snes_monitor'</span>,<span class="string">'-ksp_monitor'</span>});
+</pre><pre> Create work vector for nonlinear solver and location for solution</pre><pre class="codeinput">b = PetscVec();
+b.SetType(<span class="string">'seq'</span>);
+b.SetSizes(10);
+x = b.Duplicate();
+</pre><pre>Create a matrix for the Jacobian for Newton method</pre><pre class="codeinput">mat = PetscMat();
+mat.SetType(<span class="string">'seqaij'</span>);
+mat.SetSizes(10,10);
+</pre><pre>Create the nonlinear solver</pre><pre class="codeinput">snes = PetscSNES();
+snes.SetType(<span class="string">'vi'</span>);
+</pre><pre>Provide a function</pre><pre class="codeinput">snes.SetFunction(b,<span class="string">'nlfunction'</span>,0);
+type <span class="string">nlfunction.m</span>
+</pre><pre>Provide a function that evaluates the Jacobian</pre><pre class="codeinput">snes.SetJacobian(mat,mat,<span class="string">'nljacobian'</span>,0);
+type <span class="string">nljacobian.m</span>
+</pre><pre>Solve the nonlinear system</pre><pre class="codeinput">snes.SetFromOptions();
+snes.Solve(x);
+x.View;
+snes.View;
+</pre><pre> Free PETSc objects and shutdown PETSc</pre><pre class="codeinput">b.Destroy();
+x.Destroy();
+mat.Destroy();
+snes.Destroy();
+PetscFinalize();
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% Solves a nonlinear system where the user manages the meshREPLACE_WITH_DASH_DASHsolver interactions
+%
+%   Set the Matlab path and initialize PETSc
+path(path,'../../')
+PetscInitialize({'-snes_monitor','-ksp_monitor'});
+%%
+%   Create work vector for nonlinear solver and location for solution
+b = PetscVec();
+b.SetType('seq');
+b.SetSizes(10);
+x = b.Duplicate();
+%%
+%  Create a matrix for the Jacobian for Newton method
+mat = PetscMat();
+mat.SetType('seqaij');
+mat.SetSizes(10,10);
+%%
+%  Create the nonlinear solver 
+snes = PetscSNES();
+snes.SetType('vi');
+%%
+%  Provide a function 
+snes.SetFunction(b,'nlfunction',0);
+type nlfunction.m
+%%
+%  Provide a function that evaluates the Jacobian
+snes.SetJacobian(mat,mat,'nljacobian',0);
+type nljacobian.m
+%%
+%  Solve the nonlinear system
+snes.SetFromOptions();
+snes.Solve(x);
+x.View;
+snes.View;
+%%
+%   Free PETSc objects and shutdown PETSc
+%
+b.Destroy();
+x.Destroy();
+mat.Destroy();
+snes.Destroy();
+PetscFinalize();
+
+##### SOURCE END #####
+--></body></html>

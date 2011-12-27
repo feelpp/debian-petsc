@@ -1,7 +1,7 @@
 
 static char help[] = "Tests reordering a matrix.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -33,14 +33,14 @@ int main(int argc,char **args)
   ierr = MatAssemblyBegin(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
-  ierr = MatGetOrdering(C,MATORDERING_ND,&perm,&iperm);CHKERRQ(ierr);
+  ierr = MatGetOrdering(C,MATORDERINGND,&perm,&iperm);CHKERRQ(ierr);
   ierr = ISView(perm,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
   ierr = ISView(iperm,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
   ierr = MatView(C,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
 
-  ierr = ISDestroy(perm);CHKERRQ(ierr);
-  ierr = ISDestroy(iperm);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISDestroy(&perm);CHKERRQ(ierr);
+  ierr = ISDestroy(&iperm);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

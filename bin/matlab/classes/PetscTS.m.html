@@ -1,0 +1,218 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>PetscTS</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="PetscTS.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">classdef</span> PetscTS &lt; PetscObject
+<span class="comment">%</span>
+<span class="comment">%  PetscTS - Manages time-integration</span>
+<span class="comment">%</span>
+<span class="comment">%  Creation:</span>
+<span class="comment">%    ts = PetscTS;</span>
+<span class="comment">%      ts.SetType('gl');</span>
+<span class="comment">%      ts.SetFunction(ts,funcname);</span>
+<span class="comment">%      ts.SetJacobian(ts,A,B,funcname);</span>
+<span class="comment">%      ts.SetFromOptions;</span>
+<span class="comment">%</span>
+  <span class="keyword">properties</span> (Constant)
+    LINEAR=0;
+    NONLINEAR=1;
+  <span class="keyword">end</span>
+  <span class="keyword">methods</span>
+    <span class="keyword">function</span> obj = PetscTS(pid,flg)
+      <span class="keyword">if</span> (nargin &gt; 1)
+        <span class="comment">%  PetscTS(pid,'pobj') uses an already existing PETSc TS object</span>
+        obj.pobj = pid;
+        <span class="keyword">return</span>
+      <span class="keyword">end</span>
+      comm = PETSC_COMM_SELF();
+      [err,obj.pobj] = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSCreate'</span>, comm,0);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetType(obj,name)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSSetType'</span>, obj.pobj,name);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetProblemType(obj,t)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSSetProblemType'</span>, obj.pobj,t);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetDM(obj,da)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSSetDM'</span>, obj.pobj,da.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetFromOptions(obj)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSSetFromOptions'</span>, obj.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetUp(obj)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSSetUp'</span>, obj.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> [err,ftime] = Solve(obj,x)
+      ftime=0.0;
+      [err,ftime] = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSSolve'</span>, obj.pobj,x.pobj,ftime);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetFunction(obj,func,arg)
+      <span class="keyword">if</span> (nargin &lt; 3)
+        arg = 0;
+      <span class="keyword">end</span>
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSSetFunctionMatlab'</span>, obj.pobj,func,arg);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetJacobian(obj,A,B,func,arg)
+      <span class="keyword">if</span> (nargin &lt; 5)
+        arg = 0;
+      <span class="keyword">end</span>
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSSetJacobianMatlab'</span>, obj.pobj,A.pobj,B.pobj,func,arg);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = MonitorSet(obj,func,arg)
+      <span class="keyword">if</span> (nargin &lt; 3)
+        arg = 0;
+      <span class="keyword">end</span>
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSMonitorSetMatlab'</span>, obj.pobj,func,arg);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = View(obj,viewer)
+      <span class="keyword">if</span> (nargin == 1)
+        err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSView'</span>, obj.pobj,0);PetscCHKERRQ(err);
+      <span class="keyword">else</span>
+        err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSView'</span>, obj.pobj,viewer.pobj);PetscCHKERRQ(err);
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = Destroy(obj)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'TSDestroy'</span>, obj.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+classdef PetscTS < PetscObject
+%
+%  PetscTS - Manages time-integration
+%
+%  Creation:
+%    ts = PetscTS;
+%      ts.SetType('gl');
+%      ts.SetFunction(ts,funcname);
+%      ts.SetJacobian(ts,A,B,funcname);
+%      ts.SetFromOptions;
+%
+  properties (Constant)
+    LINEAR=0;
+    NONLINEAR=1;
+  end
+  methods
+    function obj = PetscTS(pid,flg)
+      if (nargin > 1) 
+        %  PetscTS(pid,'pobj') uses an already existing PETSc TS object
+        obj.pobj = pid;
+        return
+      end
+      comm = PETSC_COMM_SELF();
+      [err,obj.pobj] = calllib('libpetsc', 'TSCreate', comm,0);PetscCHKERRQ(err);
+    end
+    function err = SetType(obj,name)
+      err = calllib('libpetsc', 'TSSetType', obj.pobj,name);PetscCHKERRQ(err);
+    end
+    function err = SetProblemType(obj,t)
+      err = calllib('libpetsc', 'TSSetProblemType', obj.pobj,t);PetscCHKERRQ(err);
+    end
+    function err = SetDM(obj,da)
+      err = calllib('libpetsc', 'TSSetDM', obj.pobj,da.pobj);PetscCHKERRQ(err);
+    end
+    function err = SetFromOptions(obj)
+      err = calllib('libpetsc', 'TSSetFromOptions', obj.pobj);PetscCHKERRQ(err);
+    end
+    function err = SetUp(obj)
+      err = calllib('libpetsc', 'TSSetUp', obj.pobj);PetscCHKERRQ(err);
+    end
+    function [err,ftime] = Solve(obj,x)
+      ftime=0.0;
+      [err,ftime] = calllib('libpetsc', 'TSSolve', obj.pobj,x.pobj,ftime);PetscCHKERRQ(err);
+    end
+    function err = SetFunction(obj,func,arg)
+      if (nargin < 3) 
+        arg = 0;
+      end
+      err = calllib('libpetsc', 'TSSetFunctionMatlab', obj.pobj,func,arg);PetscCHKERRQ(err);
+    end
+    function err = SetJacobian(obj,A,B,func,arg)
+      if (nargin < 5) 
+        arg = 0;
+      end
+      err = calllib('libpetsc', 'TSSetJacobianMatlab', obj.pobj,A.pobj,B.pobj,func,arg);PetscCHKERRQ(err);
+    end
+    function err = MonitorSet(obj,func,arg)
+      if (nargin < 3) 
+        arg = 0;
+      end
+      err = calllib('libpetsc', 'TSMonitorSetMatlab', obj.pobj,func,arg);PetscCHKERRQ(err);
+    end
+    function err = View(obj,viewer)
+      if (nargin == 1)
+        err = calllib('libpetsc', 'TSView', obj.pobj,0);PetscCHKERRQ(err);
+      else
+        err = calllib('libpetsc', 'TSView', obj.pobj,viewer.pobj);PetscCHKERRQ(err);
+      end
+    end
+    function err = Destroy(obj)
+      err = calllib('libpetsc', 'TSDestroy', obj.pobj);PetscCHKERRQ(err);
+    end
+  end
+end
+
+##### SOURCE END #####
+--></body></html>

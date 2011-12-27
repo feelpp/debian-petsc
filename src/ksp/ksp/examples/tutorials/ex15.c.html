@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:26+00:00">
+<meta name="date" content="2011-10-29T19:13:07+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -30,7 +30,7 @@
 <a name="line20"> 20: </a><font color="#B22222">     petscis.h     - index sets            petscksp.h - Krylov subspace methods</font>
 <a name="line21"> 21: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
 <a name="line22"> 22: </a><font color="#B22222">*/</font>
-<a name="line23"> 23: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line23"> 23: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line25"> 25: </a><font color="#B22222">/* Define context for user-provided preconditioner */</font>
 <a name="line26"> 26: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -60,7 +60,7 @@
 <a name="line56"> 56: </a>  SampleShellPC  *shell;    <font color="#B22222">/* user-defined preconditioner context */</font>
 <a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v,one = 1.0,none = -1.0;
 <a name="line58"> 58: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,Ii,J,Istart,Iend,m = 8,n = 7,its;
-<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     user_defined_pc = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      user_defined_pc = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
 <a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 <a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-m"</font>,&amp;m,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
@@ -159,7 +159,7 @@
 <a name="line156">156: </a>  <font color="#B22222">/*</font>
 <a name="line157">157: </a><font color="#B22222">     Set a user-defined "shell" preconditioner if desired</font>
 <a name="line158">158: </a><font color="#B22222">  */</font>
-<a name="line159">159: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-user_defined_pc"</font>,&amp;user_defined_pc,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line159">159: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-user_defined_pc"</font>,&amp;user_defined_pc,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line160">160: </a>  <font color="#4169E1">if</font> (user_defined_pc) {
 <a name="line161">161: </a>    <font color="#B22222">/* (Required) Indicate to PETSc that we're using a "shell" preconditioner */</font>
 <a name="line162">162: </a>    <A href="../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(pc,<A href="../../../../../docs/manualpages/PC/PCSHELL.html#PCSHELL">PCSHELL</A>);
@@ -217,9 +217,9 @@
 <a name="line214">214: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
 <a name="line215">215: </a><font color="#B22222">     are no longer needed.</font>
 <a name="line216">216: </a><font color="#B22222">  */</font>
-<a name="line217">217: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
-<a name="line218">218: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line219">219: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line217">217: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line218">218: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line219">219: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 
 <a name="line221">221: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line222">222: </a>  <font color="#4169E1">return</font> 0;
@@ -318,7 +318,7 @@
 <a name="line325">325: </a>  SampleShellPC *shell;
 
 <a name="line328">328: </a>  <A href="../../../../../docs/manualpages/PC/PCShellGetContext.html#PCShellGetContext">PCShellGetContext</A>(pc,(void**)&amp;shell);
-<a name="line329">329: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(shell-&gt;diag);
+<a name="line329">329: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;shell-&gt;diag);
 <a name="line330">330: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(shell);
 
 <a name="line332">332: </a>  <font color="#4169E1">return</font> 0;

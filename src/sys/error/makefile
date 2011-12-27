@@ -4,14 +4,14 @@ ALL: lib
 CFLAGS    =
 FFLAGS    =
 CPPFLAGS  = 
-SOURCEC	  = adebug.c err.c errtrace.c errabort.c errstop.c fp.c signal.c stack.c
+SOURCEC	  = adebug.c err.c errtrace.c errabort.c errstop.c fp.c signal.c pstack.c
 SOURCEF	  =
 SOURCEH	  = ../../../include/petscerror.h 
-OBJSC	  = adebug.o err.o errtrace.o errabort.o errstop.o fp.o signal.o stack.o
+OBJSC	  = ${SOURCEC:.c=.o}
 OBJSF	  =
 MANSEC	  = Sys
 LIBBASE	  = libpetscsys
-DIRS	  = 
+DIRS	  = examples
 LOCDIR	  = src/sys/error/
 
 include ${PETSC_DIR}/conf/variables

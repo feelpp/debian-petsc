@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* lrc.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matcreatelrc_(Mat A,Mat U,Mat V,Mat *N, int *__ierr ){
+void PETSC_STDCALL  matcreatelrc_(Mat A,Mat U,Mat V,Mat *N, int *__ierr ){
 *__ierr = MatCreateLRC(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((U) ),

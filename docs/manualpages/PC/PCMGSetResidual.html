@@ -10,10 +10,10 @@ Sets the function to be used to calculate the residual  on the lth level.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-#include "petscmg.h"   
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetResidual(PC pc,PetscInt l,PetscErrorCode (*residual)(Mat,Vec,Vec,Vec),Mat mat) 
+#include "petscpcmg.h"   
+PetscErrorCode  PCMGSetResidual(PC pc,PetscInt l,PetscErrorCode (*residual)(Mat,Vec,Vec,Vec),Mat mat) 
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -21,7 +21,8 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Mat/Mat.html#Mat
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>l        </B></TD><TD>- the level (0 is coarsest) to supply
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>residual </B></TD><TD>- function used to form residual (usually <A HREF="../PC/PCMGDefaultResidual.html#PCMGDefaultResidual">PCMGDefaultResidual</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>residual </B></TD><TD>- function used to form residual, if none is provided the previously provide one is used, if no 
+previous one were provided then <A HREF="../PC/PCMGDefaultResidual.html#PCMGDefaultResidual">PCMGDefaultResidual</A>() is used
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat      </B></TD><TD>- matrix associated with residual
 </TD></TR></TABLE>

@@ -10,9 +10,9 @@ Creates an output vector and a scatter context used to  copy all vector values i
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT VecScatterCreateToZero(Vec vin,VecScatter *ctx,Vec *vout)
+PetscErrorCode  VecScatterCreateToZero(Vec vin,VecScatter *ctx,Vec *vout)
 </PRE>
-Collective
+Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>vin  </B> -input MPIVEC
@@ -38,13 +38,13 @@ need to have it created
 <pre>
 </pre>
 <pre>
-       // scatter as many times as you need 
+       // scatter as many times as you need
 </pre>
 <pre>
-       <A HREF="../Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(ctx,vin,vout,<A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A HREF="../Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+       <A HREF="../Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(ctx,vin,vout,<A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A HREF="../Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 </pre>
 <pre>
-       <A HREF="../Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(ctx,vin,vout,<A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A HREF="../Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+       <A HREF="../Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(ctx,vin,vout,<A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A HREF="../Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 </pre>
 <pre>
 </pre>

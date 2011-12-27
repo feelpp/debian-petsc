@@ -1,12 +1,12 @@
-#define PETSCVEC_DLL
+
 /*
    This file contains routines for Parallel vector operations that use shared memory
  */
-#include "../src/vec/vec/impls/mpi/pvecimpl.h"   /*I  "petscvec.h"   I*/
+#include <../src/vec/vec/impls/mpi/pvecimpl.h>   /*I  "petscvec.h"   I*/
 
 #if defined(PETSC_USE_SHARED_MEMORY) 
 
-EXTERN PetscErrorCode PetscSharedMalloc(MPI_Comm,PetscInt,PetscInt,void**);
+extern PetscErrorCode PetscSharedMalloc(MPI_Comm,PetscInt,PetscInt,void**);
 
 #undef __FUNCT__  
 #define __FUNCT__ "VecDuplicate_Shared"
@@ -24,6 +24,7 @@ PetscErrorCode VecDuplicate_Shared(Vec win,Vec *v)
   ierr = VecCreate(((PetscObject)win)->comm,v);CHKERRQ(ierr);
   ierr = VecSetSizes(*v,win->map->n,win->map->N);CHKERRQ(ierr);
   ierr = VecCreate_MPI_Private(*v,PETSC_FALSE,w->nghost,array);CHKERRQ(ierr);
+  ierr = PetscLayoutReference(win->map,&(*v)->map);CHKERRQ(ierr);
 
   /* New vector should inherit stashing property of parent */
   (*v)->stash.donotstash   = win->stash.donotstash;
@@ -32,16 +33,7 @@ PetscErrorCode VecDuplicate_Shared(Vec win,Vec *v)
   ierr = PetscOListDuplicate(((PetscObject)win)->olist,&((PetscObject)*v)->olist);CHKERRQ(ierr);
   ierr = PetscFListDuplicate(((PetscObject)win)->qlist,&((PetscObject)*v)->qlist);CHKERRQ(ierr);
 
-  if (win->mapping) {
-    ierr = PetscObjectReference((PetscObject)win->mapping);CHKERRQ(ierr);
-    (*v)->mapping = win->mapping;
-  }
-  if (win->bmapping) {
-    ierr = PetscObjectReference((PetscObject)win->bmapping);CHKERRQ(ierr);
-    (*v)->bmapping = win->bmapping;
-  }
   (*v)->ops->duplicate = VecDuplicate_Shared;
-  (*v)->map->bs    = win->map->bs;
   (*v)->bstash.bs = win->bstash.bs;
   PetscFunctionReturn(0);
 }
@@ -50,7 +42,7 @@ PetscErrorCode VecDuplicate_Shared(Vec win,Vec *v)
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "VecCreate_Shared"
-PetscErrorCode PETSCVEC_DLLEXPORT VecCreate_Shared(Vec vv)
+PetscErrorCode  VecCreate_Shared(Vec vv)
 {
   PetscErrorCode ierr;
   PetscScalar    *array;
@@ -70,7 +62,7 @@ EXTERN_C_END
 /* ----------------------------------------------------------------------------------------
      Code to manage shared memory allocation using standard Unix shared memory
 */
-#include "petscsys.h"
+#include <petscsys.h>
 #if defined(PETSC_HAVE_PWD_H)
 #include <pwd.h>
 #endif
@@ -155,19 +147,19 @@ PetscErrorCode PetscSharedMalloc(MPI_Comm comm,PetscInt llen,PetscInt len,void *
     id = shmget(key,len, 0666 |IPC_CREAT);
     if (id == -1) {
       perror("Unable to malloc shared memory");
-      SETERRQ(PETSC_ERR_LIB,"Unable to malloc shared memory");
+      SETERRQ(PETSC_COMM_SELF,PETSC_ERR_LIB,"Unable to malloc shared memory");
     }
   } else {
     id = shmget(key,len, 0666);
     if (id == -1) {
       perror("Unable to malloc shared memory");
-      SETERRQ(PETSC_ERR_LIB,"Unable to malloc shared memory");
+      SETERRQ(PETSC_COMM_SELF,PETSC_ERR_LIB,"Unable to malloc shared memory");
     }
   }
   value = shmat(id,(void*)0,0);
   if (value == (char*)-1) {
     perror("Unable to access shared memory allocated");
-    SETERRQ(PETSC_ERR_LIB,"Unable to access shared memory allocated");
+    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_LIB,"Unable to access shared memory allocated");
   }
   *result = (void*) (value + shift);
 
@@ -177,22 +169,20 @@ PetscErrorCode PetscSharedMalloc(MPI_Comm comm,PetscInt llen,PetscInt len,void *
 #else
 
 EXTERN_C_BEGIN
-extern PetscErrorCode PETSCVEC_DLLEXPORT VecCreate_Seq(Vec);
+extern PetscErrorCode  VecCreate_Seq(Vec);
 EXTERN_C_END
 
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "VecCreate_Shared"
-PetscErrorCode PETSCVEC_DLLEXPORT VecCreate_Shared(Vec vv)
+PetscErrorCode  VecCreate_Shared(Vec vv)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
 
   PetscFunctionBegin;
   ierr = MPI_Comm_size(((PetscObject)vv)->comm,&size);CHKERRQ(ierr);
-  if (size > 1) {
-    SETERRQ(PETSC_ERR_SUP_SYS,"No supported for shared memory vector objects on this machine");
-  }
+  if (size > 1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP_SYS,"No supported for shared memory vector objects on this machine");
   ierr = VecCreate_Seq(vv);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -230,7 +220,7 @@ EXTERN_C_END
           VecCreateGhost(), VecCreateMPIWithArray(), VecCreateGhostWithArray()
 
 @*/ 
-PetscErrorCode PETSCVEC_DLLEXPORT VecCreateShared(MPI_Comm comm,PetscInt n,PetscInt N,Vec *v)
+PetscErrorCode  VecCreateShared(MPI_Comm comm,PetscInt n,PetscInt N,Vec *v)
 {
   PetscErrorCode ierr;
 

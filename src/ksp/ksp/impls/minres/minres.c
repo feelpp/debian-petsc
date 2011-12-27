@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"
+#include <private/kspimpl.h>
 
 typedef struct {
   PetscReal haptol;
@@ -13,11 +12,8 @@ PetscErrorCode KSPSetUp_MINRES(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP,"No right preconditioning for KSPMINRES");
-  } else if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"No symmetric preconditioning for KSPMINRES");
-  }
+  if (ksp->pc_side == PC_RIGHT) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"No right preconditioning for KSPMINRES");
+  else if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"No symmetric preconditioning for KSPMINRES");
   ierr = KSPDefaultGetWork(ksp,9);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -36,13 +32,11 @@ PetscErrorCode  KSPSolve_MINRES(KSP ksp)
   Mat            Amat,Pmat;
   MatStructure   pflag;
   KSP_MINRES     *minres = (KSP_MINRES*)ksp->data;
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
-  if (ksp->normtype != KSP_NORM_PRECONDITIONED) SETERRQ(PETSC_ERR_SUP,"Only supports preconditioned residual norm for KSPMINRES");
-
-  ierr    = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
+  ierr    = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
 
   X       = ksp->vec_sol;
   B       = ksp->vec_rhs;
@@ -103,7 +97,7 @@ PetscErrorCode  KSPSolve_MINRES(KSP ksp)
   ierr = VecNorm(Z,NORM_2,&np);CHKERRQ(ierr);      /*   np <- ||z||        */
 
   KSPLogResidualHistory(ksp,np);
-  KSPMonitor(ksp,0,np);            /* call any registered monitor routines */
+  ierr = KSPMonitor(ksp,0,np);CHKERRQ(ierr);
   ksp->rnorm = np;  
   ierr = (*ksp->converged)(ksp,0,np,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);  /* test for convergence */
   if (ksp->reason) PetscFunctionReturn(0);
@@ -183,7 +177,7 @@ PetscErrorCode  KSPSolve_MINRES(KSP ksp)
 
      ksp->rnorm = np;
      KSPLogResidualHistory(ksp,np);
-     KSPMonitor(ksp,i+1,np);
+     ierr = KSPMonitor(ksp,i+1,np);CHKERRQ(ierr);
      ierr = (*ksp->converged)(ksp,i+1,np,&ksp->reason,ksp->cnvP);CHKERRQ(ierr); /* test for convergence */
      if (ksp->reason) break;
      i++;
@@ -202,26 +196,26 @@ PetscErrorCode  KSPSolve_MINRES(KSP ksp)
 
    Level: beginner
 
-   Contributed by: Robert Scheichl: maprs@maths.bath.ac.uk
-
    Notes: The operator and the preconditioner must be symmetric and the preconditioner must
           be positive definite for this method.
+          Supports only left preconditioning.
 
    Reference: Paige & Saunders, 1975.
+
+   Contributed by: Robert Scheichl: maprs@maths.bath.ac.uk
 
 .seealso: KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPCG, KSPCR
 M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_MINRES"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_MINRES(KSP ksp)
+PetscErrorCode  KSPCreate_MINRES(KSP ksp)
 {
   KSP_MINRES     *minres;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-
-  ksp->pc_side   = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
   ierr           = PetscNewLog(ksp,KSP_MINRES,&minres);CHKERRQ(ierr);
   minres->haptol = 1.e-18;
   ksp->data      = (void*)minres;

@@ -6,13 +6,14 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="DMMGSetSNESLocal"><H1>DMMGSetSNESLocal</H1></A>
-Sets the local user function that defines the nonlinear set of equations that will use the grid hierarchy and (optionally) its derivative. Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A>
-<P>
+Sets the local user function that defines the nonlinear set of equations that will use the grid hierarchy and (optionally) its derivative. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode DMMGSetSNESLocal(DMMG *dmmg,DALocalFunction1 function, DALocalFunction1 jacobian,
-DALocalFunction1 ad_function, DALocalFunction1 admf_function);
+PetscErrorCode DMMGSetSNESLocal(DMMG *dmmg,DMDALocalFunction1 function, DMDALocalFunction1 jacobian,
+DMDALocalFunction1 ad_function, DMDALocalFunction1 admf_function);
 </PRE>
+Logically Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A>
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dmmg </B></TD><TD>- the context
@@ -52,10 +53,15 @@ uses finite differencing to approximate the Jacobian.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex4tu.c.html">src/snes/examples/tutorials/ex4tu.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex19.c.html">src/snes/examples/tutorials/ex19.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex19tu.c.html">src/snes/examples/tutorials/ex19tu.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex25.c.html">src/snes/examples/tutorials/ex25.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex27.c.html">src/snes/examples/tutorials/ex27.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex29.c.html">src/snes/examples/tutorials/ex29.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex30.c.html">src/snes/examples/tutorials/ex30.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex32.c.html">src/snes/examples/tutorials/ex32.c.html</A><BR>
 </BODY></HTML>

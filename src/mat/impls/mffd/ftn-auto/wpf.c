@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* wp.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matmffdwpsetcomputenormu_(Mat A,PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  matmffdwpsetcomputenormu_(Mat A,PetscBool  *flag, int *__ierr ){
 *__ierr = MatMFFDWPSetComputeNormU(
 	(Mat)PetscToPointer((A) ),*flag);
 }

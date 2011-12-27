@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"
+#include <private/kspimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetUp_TFQMR"
@@ -9,9 +8,7 @@ static PetscErrorCode KSPSetUp_TFQMR(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_SYMMETRIC){
-    SETERRQ(PETSC_ERR_SUP,"no symmetric preconditioning for KSPTFQMR");
-  }
+  if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"no symmetric preconditioning for KSPTFQMR");
   ierr = KSPDefaultGetWork(ksp,9);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -49,7 +46,7 @@ static PetscErrorCode  KSPSolve_TFQMR(KSP ksp)
   ksp->rnorm  = dp;
   ksp->its    = 0;
   ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
-  KSPMonitor(ksp,0,dp);
+  ierr = KSPMonitor(ksp,0,dp);CHKERRQ(ierr);
   ierr = (*ksp->converged)(ksp,0,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
   if (ksp->reason) PetscFunctionReturn(0);
 
@@ -82,12 +79,12 @@ static PetscErrorCode  KSPSolve_TFQMR(KSP ksp)
     ierr = VecNorm(R,NORM_2,&dp);CHKERRQ(ierr);
     for (m=0; m<2; m++) {
       if (!m) {
-        w = sqrt(dp*dpold);
+        w = PetscSqrtReal(dp*dpold);
       } else {
         w = dp;
       }
       psi = w / tau;
-      cm  = 1.0 / sqrt(1.0 + psi * psi);
+      cm  = 1.0 / PetscSqrtReal(1.0 + psi * psi);
       tau = tau * psi * cm;
       eta = cm * cm * a;
       cf  = psiold * psiold * etaold / a;
@@ -98,12 +95,12 @@ static PetscErrorCode  KSPSolve_TFQMR(KSP ksp)
       }
       ierr = VecAXPY(X,eta,D);CHKERRQ(ierr);
 
-      dpest = sqrt(m + 1.0) * tau;
+      dpest = PetscSqrtReal(m + 1.0) * tau;
       ierr = PetscObjectTakeAccess(ksp);CHKERRQ(ierr);
       ksp->rnorm                                    = dpest;
       ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
       KSPLogResidualHistory(ksp,dpest);
-      KSPMonitor(ksp,i+1,dpest);
+      ierr = KSPMonitor(ksp,i+1,dpest);CHKERRQ(ierr);
       ierr = (*ksp->converged)(ksp,i+1,dpest,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
       if (ksp->reason) break;
 
@@ -133,25 +130,34 @@ static PetscErrorCode  KSPSolve_TFQMR(KSP ksp)
 }
 
 /*MC
-     KSPRTFQMR - A transpose free QMR (quasi minimal residual), 
+     KSPTFQMR - A transpose free QMR (quasi minimal residual), 
 
    Options Database Keys:
 .   see KSPSolve()
 
    Level: beginner
 
-   Notes: Reference, Freund, 1993
+   Notes: Supports left and right preconditioning, but not symmetric
+
+          The "residual norm" computed in this algorithm is actually just an upper bound on the actual residual norm.
+          That is for left preconditioning it is a bound on the preconditioned residual and for right preconditioning 
+          it is a bound on the true residual.
+
+   References: Freund, 1993
 
 .seealso: KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPTCQMR
 M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_TFQMR"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_TFQMR(KSP ksp)
+PetscErrorCode  KSPCreate_TFQMR(KSP ksp)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_RIGHT,1);CHKERRQ(ierr);
   ksp->data                      = (void*)0;
-  ksp->pc_side                   = PC_LEFT;
   ksp->ops->setup                = KSPSetUp_TFQMR;
   ksp->ops->solve                = KSPSolve_TFQMR;
   ksp->ops->destroy              = KSPDefaultDestroy;

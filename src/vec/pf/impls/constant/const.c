@@ -1,10 +1,9 @@
-#define PETSCVEC_DLL
 
-#include "../src/vec/pf/pfimpl.h"            /*I "petscpf.h" I*/
+#include <../src/vec/pf/pfimpl.h>            /*I "petscpf.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PFApply_Constant"
-PetscErrorCode PFApply_Constant(void *value,PetscInt n,PetscScalar *x,PetscScalar *y)
+PetscErrorCode PFApply_Constant(void *value,PetscInt n,const PetscScalar *x,PetscScalar *y)
 {
   PetscInt    i;
   PetscScalar v = ((PetscScalar*)value)[0];
@@ -31,10 +30,10 @@ PetscErrorCode PFApplyVec_Constant(void *value,Vec x,Vec y)
 PetscErrorCode PFView_Constant(void *value,PetscViewer viewer)
 {
   PetscErrorCode ierr;
-  PetscTruth     iascii;
+  PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
 #if !defined(PETSC_USE_COMPLEX)
     ierr = PetscViewerASCIIPrintf(viewer,"Constant = %g\n",*(double*)value);CHKERRQ(ierr);
@@ -71,7 +70,7 @@ PetscErrorCode PFSetFromOptions_Constant(PF pf)
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PFCreate_Constant"
-PetscErrorCode PETSCVEC_DLLEXPORT PFCreate_Constant(PF pf,void *value)
+PetscErrorCode  PFCreate_Constant(PF pf,void *value)
 {
   PetscErrorCode ierr;
   PetscScalar    *loc;
@@ -88,11 +87,11 @@ PetscErrorCode PETSCVEC_DLLEXPORT PFCreate_Constant(PF pf,void *value)
 EXTERN_C_END
 
 
-typedef PetscErrorCode (*FCN)(void*,PetscInt,PetscScalar*,PetscScalar*); /* force argument to next function to not be extern C*/
+typedef PetscErrorCode (*FCN)(void*,PetscInt,const PetscScalar*,PetscScalar*); /* force argument to next function to not be extern C*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PFCreate_Quick"
-PetscErrorCode PETSCVEC_DLLEXPORT PFCreate_Quick(PF pf,void *function)
+PetscErrorCode  PFCreate_Quick(PF pf,void *function)
 {
   PetscErrorCode ierr;
 
@@ -105,7 +104,7 @@ EXTERN_C_END
 /* -------------------------------------------------------------------------------------------------------------------*/
 #undef __FUNCT__  
 #define __FUNCT__ "PFApply_Identity"
-PetscErrorCode PFApply_Identity(void *value,PetscInt n,PetscScalar *x,PetscScalar *y)
+PetscErrorCode PFApply_Identity(void *value,PetscInt n,const PetscScalar *x,PetscScalar *y)
 {
   PetscInt    i;
 
@@ -131,10 +130,10 @@ PetscErrorCode PFApplyVec_Identity(void *value,Vec x,Vec y)
 PetscErrorCode PFView_Identity(void *value,PetscViewer viewer)
 {
   PetscErrorCode ierr;
-  PetscTruth     iascii;
+  PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"Identity function\n");CHKERRQ(ierr);
   }
@@ -153,14 +152,14 @@ PetscErrorCode PFDestroy_Identity(void *value)
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PFCreate_Identity"
-PetscErrorCode PETSCVEC_DLLEXPORT PFCreate_Identity(PF pf,void *value)
+PetscErrorCode  PFCreate_Identity(PF pf,void *value)
 {
   PetscErrorCode ierr;
   PetscInt       *loc;
 
   PetscFunctionBegin;
   if (pf->dimout != pf->dimin) {
-    SETERRQ2(PETSC_ERR_ARG_SIZ,"Input dimension must match output dimension for Identity function, dimin = %D dimout = %D\n",pf->dimin,pf->dimout);
+    SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Input dimension must match output dimension for Identity function, dimin = %D dimout = %D\n",pf->dimin,pf->dimout);
   }
   ierr = PetscMalloc(sizeof(PetscInt),&loc);CHKERRQ(ierr);
   loc[0] = pf->dimout;

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* itres.c */
 /* Fortran interface file */
 
@@ -44,7 +45,7 @@ extern void PetscRmPointer(void*);
 extern "C" {
 #endif
 
-void PETSC_STDCALL   kspinitialresidual_(KSP ksp,Vec vsoln,Vec vt1,Vec vt2,Vec vres,Vec vb, int *__ierr ){
+void PETSC_STDCALL  kspinitialresidual_(KSP ksp,Vec vsoln,Vec vt1,Vec vt2,Vec vres,Vec vb, int *__ierr ){
 *__ierr = KSPInitialResidual(
 	(KSP)PetscToPointer((ksp) ),
 	(Vec)PetscToPointer((vsoln) ),
@@ -53,7 +54,7 @@ void PETSC_STDCALL   kspinitialresidual_(KSP ksp,Vec vsoln,Vec vt1,Vec vt2,Vec v
 	(Vec)PetscToPointer((vres) ),
 	(Vec)PetscToPointer((vb) ));
 }
-void PETSC_STDCALL   kspunwindpreconditioner_(KSP ksp,Vec vsoln,Vec vt1, int *__ierr ){
+void PETSC_STDCALL  kspunwindpreconditioner_(KSP ksp,Vec vsoln,Vec vt1, int *__ierr ){
 *__ierr = KSPUnwindPreconditioner(
 	(KSP)PetscToPointer((ksp) ),
 	(Vec)PetscToPointer((vsoln) ),

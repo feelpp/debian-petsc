@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* sortip.c */
 /* Fortran interface file */
 
@@ -43,10 +44,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscsortintwithpermutation_(PetscInt *n, PetscInt i[],PetscInt idx[], int *__ierr ){
+void PETSC_STDCALL  petscsortintwithpermutation_(PetscInt *n, PetscInt i[],PetscInt idx[], int *__ierr ){
 *__ierr = PetscSortIntWithPermutation(*n,i,idx);
 }
-void PETSC_STDCALL   petscsortrealwithpermutation_(PetscInt *n, PetscReal i[],PetscInt idx[], int *__ierr ){
+void PETSC_STDCALL  petscsortrealwithpermutation_(PetscInt *n, PetscReal i[],PetscInt idx[], int *__ierr ){
 *__ierr = PetscSortRealWithPermutation(*n,i,idx);
 }
 #if defined(__cplusplus)

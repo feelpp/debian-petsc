@@ -10,9 +10,9 @@ Causes GMRES and FGMRES to preallocate all its needed work vectors at initial se
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h"  
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetPreAllocateVectors(KSP ksp)
+PetscErrorCode  KSPGMRESSetPreAllocateVectors(KSP ksp)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>ksp   </B> -iterative context obtained from <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>
@@ -29,7 +29,7 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../KSP/KSPGMRESSetRestart.html#KSPGMRESSetRestart">KSPGMRESSetRestart</A>(), <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>()
+ <A HREF="../KSP/KSPGMRESSetRestart.html#KSPGMRESSetRestart">KSPGMRESSetRestart</A>(), <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESGetOrthogonalization.html#KSPGMRESGetOrthogonalization">KSPGMRESGetOrthogonalization</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/impls/gmres/gmpre.c.html#KSPGMRESSetPreAllocateVectors">src/ksp/ksp/impls/gmres/gmpre.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

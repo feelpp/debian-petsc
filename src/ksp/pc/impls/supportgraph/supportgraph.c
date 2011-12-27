@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /*  -------------------------------------------------------------------- 
 
@@ -50,14 +49,14 @@
      adjacency_list.hpp
 */
 
-#include "private/pcimpl.h"   /*I "petscpc.h" I*/
+#include <private/pcimpl.h>   /*I "petscpc.h" I*/
 
 /* 
    Private context (data structure) for the SupportGraph preconditioner.  
 */
 typedef struct {
   Mat        pre;      /* Cholesky factored preconditioner matrix */
-  PetscTruth augment;  /* whether to augment the spanning tree */
+  PetscBool  augment;  /* whether to augment the spanning tree */
   PetscReal  maxCong;  /* create subgraph with at most this much congestion (only used with augment) */
   PetscReal  tol;      /* throw out entries smaller than this */
 } PC_SupportGraph;
@@ -68,10 +67,10 @@ static PetscErrorCode PCView_SupportGraph(PC pc,PetscViewer viewer)
 {
   PC_SupportGraph *sg = (PC_SupportGraph*)pc->data;
   PetscErrorCode  ierr;
-  PetscTruth      iascii;
+  PetscBool       iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  SupportGraph: maxCong = %f\n",sg->maxCong);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  SupportGraph: tol = %f\n",sg->tol);CHKERRQ(ierr);
@@ -84,12 +83,12 @@ static PetscErrorCode PCView_SupportGraph(PC pc,PetscViewer viewer)
     ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
     ierr = PetscViewerPopFormat(viewer);CHKERRQ(ierr);  
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for PCSupportGraph",((PetscObject)viewer)->type_name);
+    SETERRQ1(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Viewer type %s not supported for PCSupportGraph",((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
 
-EXTERN PetscErrorCode AugmentedLowStretchSpanningTree(Mat mat,Mat *pre,PetscTruth augment,PetscReal tol,PetscReal& maxCong);
+extern PetscErrorCode AugmentedLowStretchSpanningTree(Mat mat,Mat *pre,PetscBool  augment,PetscReal tol,PetscReal& maxCong);
 
 /* -------------------------------------------------------------------------- */
 /*
@@ -115,13 +114,13 @@ static PetscErrorCode PCSetUp_SupportGraph(PC pc)
   Vec            diag;
   PetscInt       n,i;
   PetscScalar    *x;
-  PetscTruth     zeroflag = PETSC_FALSE;
+  PetscBool      zeroflag = PETSC_FALSE;
   */
 
   PetscFunctionBegin;
   if(!pc->setupcalled) {
-    if (!MatIsSymmetric(pc->pmat, 1.0e-9)) SETERRQ(PETSC_ERR_ARG_WRONG,"matrix must be symmetric");
-    // note that maxCong is being updated
+    if (!MatIsSymmetric(pc->pmat, 1.0e-9)) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONG,"matrix must be symmetric");
+    /* note that maxCong is being updated */
     ierr = AugmentedLowStretchSpanningTree(pc->pmat, &sg->pre, sg->augment, sg->tol, sg->maxCong);CHKERRQ(ierr);
   }
   PetscFunctionReturn(0);
@@ -166,16 +165,15 @@ static PetscErrorCode PCApply_SupportGraph(PC pc,Vec x,Vec y)
 #define __FUNCT__ "PCDestroy_SupportGraph"
 static PetscErrorCode PCDestroy_SupportGraph(PC pc)
 {
-  PC_SupportGraph      *sg = (PC_SupportGraph*)pc->data;
-  PetscErrorCode ierr;
+  PC_SupportGraph *sg = (PC_SupportGraph*)pc->data;
+  PetscErrorCode  ierr;
 
   PetscFunctionBegin;
-  if (sg->pre)     {ierr = MatDestroy(sg->pre);CHKERRQ(ierr);}
-
+  ierr = MatDestroy(&sg->pre);CHKERRQ(ierr);
   /*
       Free the private data structure that was hanging off the PC
   */
-  ierr = PetscFree(sg);CHKERRQ(ierr);
+  ierr = PetscFree(pc->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -188,7 +186,7 @@ static PetscErrorCode PCSetFromOptions_SupportGraph(PC pc)
 
   PetscFunctionBegin;
   ierr = PetscOptionsHead("SupportGraph options");CHKERRQ(ierr);
-    ierr = PetscOptionsTruth("-pc_sg_augment","Max congestion","",sg->augment,&sg->augment,0);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-pc_sg_augment","Max congestion","",sg->augment,&sg->augment,0);CHKERRQ(ierr);
     ierr = PetscOptionsReal("-pc_sg_cong","Max congestion","",sg->maxCong,&sg->maxCong,0);CHKERRQ(ierr);
     ierr = PetscOptionsReal("-pc_sg_tol","Smallest usable value","",sg->tol,&sg->tol,0);CHKERRQ(ierr);
   ierr = PetscOptionsTail();CHKERRQ(ierr);
@@ -225,7 +223,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCCreate_SupportGraph"
-PetscErrorCode PETSCKSP_DLLEXPORT PCCreate_SupportGraph(PC pc)
+PetscErrorCode  PCCreate_SupportGraph(PC pc)
 {
   PC_SupportGraph      *sg;
   PetscErrorCode ierr;

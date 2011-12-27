@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:16+00:00">
+<meta name="date" content="2011-10-29T19:04:46+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,7 +12,7 @@
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(), <A href="../../../../docs/manualpages/Mat/MatMultAdd.html#MatMultAdd">MatMultAdd</A>(), <A href="../../../../docs/manualpages/Mat/MatMultTranspose.html#MatMultTranspose">MatMultTranspose</A>().\n\</font>
 <a name="line3">  3: </a><font color="#666666">Also <A href="../../../../docs/manualpages/Mat/MatMultTransposeAdd.html#MatMultTransposeAdd">MatMultTransposeAdd</A>(), <A href="../../../../docs/manualpages/Mat/MatScale.html#MatScale">MatScale</A>(), <A href="../../../../docs/manualpages/Mat/MatGetDiagonal.html#MatGetDiagonal">MatGetDiagonal</A>(), and <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>().\n\n"</font>;
 
-<a name="line5"> 5: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line9">  9: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line10"> 10: </a>{
@@ -21,7 +21,7 @@
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,m = 8,n,rstart,rend,vstart,vend;
 <a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    one = 1.0,negone = -1.0,v,alpha=0.1;
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
 <a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,PETSC_VIEWER_ASCII_COMMON);
@@ -146,10 +146,10 @@
 <a name="line139">139: </a>    <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(C,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line140">140: </a>  }
 <a name="line141">141: </a>  <font color="#B22222">/* Free data structures */</font>
-<a name="line142">142: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u); <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(s);
-<a name="line143">143: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(w); <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y); <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(z);
-<a name="line145">145: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line142">142: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u); <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;s);
+<a name="line143">143: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;w); <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y); <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;z);
+<a name="line145">145: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 
 <a name="line147">147: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line148">148: </a>  <font color="#4169E1">return</font> 0;

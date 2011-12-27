@@ -10,9 +10,9 @@ Sets the function evaluation routine and function  vector for use by the <A HREF
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFunction(SNES snes,Vec r,PetscErrorCode (*func)(SNES,Vec,Vec,void*),void *ctx)
+PetscErrorCode  SNESSetFunction(SNES snes,Vec r,PetscErrorCode (*func)(SNES,Vec,Vec,void*),void *ctx)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -64,9 +64,9 @@ where f'(x) denotes the Jacobian matrix and f(x) is the function.
 <A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex6.c.html">src/snes/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex21.c.html">src/snes/examples/tutorials/ex21.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex38.c.html">src/snes/examples/tutorials/ex38.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex42.c.html">src/snes/examples/tutorials/ex42.c.html</A><BR>
 </BODY></HTML>

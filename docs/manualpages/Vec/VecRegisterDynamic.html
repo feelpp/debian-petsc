@@ -9,7 +9,7 @@
 Adds a new vector component implementation 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode VecRegisterDynamic(char *name, char *path, char *func_name, PetscErrorCode (*create_func)(Vec))
+PetscErrorCode VecRegisterDynamic(const char *name, const char *path, const char *func_name, PetscErrorCode (*create_func)(Vec))
 </PRE>
 Not Collective
 <P>

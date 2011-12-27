@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:42:03+00:00">
+<meta name="date" content="2011-10-29T19:13:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -15,57 +15,57 @@
 <a name="line5">  5: </a><font color="#666666">"-beta b          controls the randomness of the gauge field\n"</font>
 <a name="line6">  6: </a><font color="#666666">"-rho r           the quark mass (?)"</font>;
 
-<a name="line8"> 8: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
-<a name="line9"> 9: </a> #include <A href="../../../../../include/petscasa.h.html">petscasa.h</A>
-<a name="line10"> 10: </a> #include <A href="../../../../../include/petscda.h.html">petscda.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;petscpcasa.h&gt;</font>
+<a name="line10"> 10: </a><font color="#A020F0">#include &lt;petscdm.h&gt;</font>
+<a name="line11"> 11: </a><font color="#A020F0">#include &lt;petscdmadda.h&gt;</font>
 
-<a name="line12"> 12: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> computeMinEigVal(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *eig)</font></strong>;
+<a name="line13"> 13: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> computeMinEigVal(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *eig)</font></strong>;
 
-<a name="line16"> 16: </a><strong><font color="#4169E1"><a name="main"></a>int main(int Argc,char **Args)</font></strong>
-<a name="line17"> 17: </a>{
-<a name="line18"> 18: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      flg;
-<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        n = 6,i;
-<a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     rho = 1.0;
-<a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       h;
-<a name="line22"> 22: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       beta = 1.0;
-<a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/DA/ADDA.html#ADDA">ADDA</A>            adda;
-<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        nodes[2];
-<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      periodic[2];
-<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        refine[2];
-<a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A>     rctx;
-<a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>     comm_size;
-<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>             H;
-<a name="line30"> 30: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        *lcs, *lce;
-<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        x, y;
-<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       r1, r2;
-<a name="line33"> 33: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     uxy1, uxy2;
-<a name="line34"> 34: </a>  ADDAIdx         sxy, sxy_m;
-<a name="line35"> 35: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     val, valconj;
-<a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>             HtH;
-<a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>             b, Htb;
-<a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>             xvec;
-<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>             kspmg;
-<a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>              pcmg;
-<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line17"> 17: </a><strong><font color="#4169E1"><a name="main"></a>int main(int Argc,char **Args)</font></strong>
+<a name="line18"> 18: </a>{
+<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       flg;
+<a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        n = 6,i;
+<a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     rho = 1.0;
+<a name="line22"> 22: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       h;
+<a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       beta = 1.0;
+<a name="line24"> 24: </a>  DM              adda;
+<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        nodes[2];
+<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       periodic[2];
+<a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        refine[2];
+<a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A>     rctx;
+<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>     comm_size;
+<a name="line30"> 30: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>             H;
+<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        *lcs, *lce;
+<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        x, y;
+<a name="line33"> 33: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       r1, r2;
+<a name="line34"> 34: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     uxy1, uxy2;
+<a name="line35"> 35: </a>  ADDAIdx         sxy, sxy_m;
+<a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     val, valconj;
+<a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>             HtH;
+<a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>             b, Htb;
+<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>             xvec;
+<a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>             kspmg;
+<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>              pcmg;
+<a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
 
-<a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;Argc,&amp;Args,(char *)0,help);
-<a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-size"</font>,&amp;n,&amp;flg);
-<a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-beta"</font>,&amp;beta,&amp;flg);
-<a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetScalar.html#PetscOptionsGetScalar">PetscOptionsGetScalar</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-rho"</font>,&amp;rho,&amp;flg);
+<a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;Argc,&amp;Args,(char *)0,help);
+<a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-size"</font>,&amp;n,&amp;flg);
+<a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-beta"</font>,&amp;beta,&amp;flg);
+<a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetScalar.html#PetscOptionsGetScalar">PetscOptionsGetScalar</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-rho"</font>,&amp;rho,&amp;flg);
 
-<a name="line48"> 48: </a>  <font color="#B22222">/* Set the fudge parameters, we scale the whole thing by 1/(2*h) later */</font>
-<a name="line49"> 49: </a>  h = 1.;
-<a name="line50"> 50: </a>  rho *= 1./(2.*h);
-<a name="line51"> 51: </a>
-<a name="line52"> 52: </a>  <font color="#B22222">/* Geometry info */</font>
-<a name="line53"> 53: </a>  <font color="#4169E1">for</font>(i=0; i&lt;2; i++) {
-<a name="line54"> 54: </a>    nodes[i] = n;
-<a name="line55"> 55: </a>    periodic[i] = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line56"> 56: </a>    refine[i] = 3;
-<a name="line57"> 57: </a>  }
-<a name="line58"> 58: </a>  <A href="../../../../../docs/manualpages/DA/ADDACreate.html#ADDACreate">ADDACreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, 2, nodes, <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, 2 <font color="#B22222">/* this is the # of dof's */</font>,
-<a name="line59"> 59: </a>                    periodic, &amp;adda);
-<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/DA/ADDASetRefinement.html#ADDASetRefinement">ADDASetRefinement</A>(adda, refine, 2);
+<a name="line49"> 49: </a>  <font color="#B22222">/* Set the fudge parameters, we scale the whole thing by 1/(2*h) later */</font>
+<a name="line50"> 50: </a>  h = 1.;
+<a name="line51"> 51: </a>  rho *= 1./(2.*h);
+<a name="line52"> 52: </a>
+<a name="line53"> 53: </a>  <font color="#B22222">/* Geometry info */</font>
+<a name="line54"> 54: </a>  <font color="#4169E1">for</font>(i=0; i&lt;2; i++) {
+<a name="line55"> 55: </a>    nodes[i] = n;
+<a name="line56"> 56: </a>    periodic[i] = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line57"> 57: </a>    refine[i] = 3;
+<a name="line58"> 58: </a>  }
+<a name="line59"> 59: </a>  <A href="../../../../../docs/manualpages/DM/DMADDACreate.html#DMADDACreate">DMADDACreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, 2, nodes, <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, 2,periodic, &amp;adda);
+<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/DM/DMADDASetRefinement.html#DMADDASetRefinement">DMADDASetRefinement</A>(adda, refine, 2);
 <a name="line61"> 61: </a>
 <a name="line62"> 62: </a>  <font color="#B22222">/* Random numbers */</font>
 <a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomCreate.html#PetscRandomCreate">PetscRandomCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rctx);
@@ -76,13 +76,13 @@
 
 <a name="line69"> 69: </a>  <font color="#B22222">/* construct matrix */</font>
 <a name="line70"> 70: </a>  <font color="#4169E1">if</font>( comm_size == 1 ) {
-<a name="line71"> 71: </a>    <A href="../../../../../docs/manualpages/DA/ADDAGetMatrix.html#ADDAGetMatrix">ADDAGetMatrix</A>(adda, <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>, &amp;H);
+<a name="line71"> 71: </a>    <A href="../../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(adda, <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>, &amp;H);
 <a name="line72"> 72: </a>  } <font color="#4169E1">else</font> {
-<a name="line73"> 73: </a>    <A href="../../../../../docs/manualpages/DA/ADDAGetMatrix.html#ADDAGetMatrix">ADDAGetMatrix</A>(adda, <A href="../../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>, &amp;H);
+<a name="line73"> 73: </a>    <A href="../../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(adda, <A href="../../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>, &amp;H);
 <a name="line74"> 74: </a>  }
 
 <a name="line76"> 76: </a>  <font color="#B22222">/* get local corners for this processor, user is responsible for freeing lcs,lce */</font>
-<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/DA/ADDAGetCorners.html#ADDAGetCorners">ADDAGetCorners</A>(adda, &amp;lcs, &amp;lce);
+<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/DM/DMADDAGetCorners.html#DMADDAGetCorners">DMADDAGetCorners</A>(adda, &amp;lcs, &amp;lce);
 
 <a name="line79"> 79: </a>  <font color="#B22222">/* Allocate space for the indices that we use to construct the matrix */</font>
 <a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(2*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;(sxy.x));
@@ -111,46 +111,46 @@
 
 <a name="line104">104: </a>      <font color="#B22222">/* center action */</font>
 <a name="line105">105: </a>      sxy.d = 0; <font color="#B22222">/* spin 0, 0 */</font>
-<a name="line106">106: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy, &amp;rho, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line106">106: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy, &amp;rho, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line107">107: </a>      sxy.d = 1; <font color="#B22222">/* spin 1, 1 */</font>
 <a name="line108">108: </a>      val = -rho;
-<a name="line109">109: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line109">109: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line110">110: </a>
 <a name="line111">111: </a>      sxy_m.x[0] = x+1; sxy_m.x[1] = y; <font color="#B22222">/* right action */</font>
 <a name="line112">112: </a>      sxy.d = 0; sxy_m.d = 0; <font color="#B22222">/* spin 0, 0 */</font>
 <a name="line113">113: </a>      val = -uxy1; valconj = PetscConj(val);
-<a name="line114">114: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line115">115: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line114">114: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line115">115: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line116">116: </a>      sxy.d = 0; sxy_m.d = 1; <font color="#B22222">/* spin 0, 1 */</font>
 <a name="line117">117: </a>      val = -uxy1; valconj = PetscConj(val);
-<a name="line118">118: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line119">119: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line118">118: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line119">119: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line120">120: </a>      sxy.d = 1; sxy_m.d = 0; <font color="#B22222">/* spin 1, 0 */</font>
 <a name="line121">121: </a>      val = uxy1; valconj = PetscConj(val);
-<a name="line122">122: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line123">123: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line122">122: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line123">123: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line124">124: </a>      sxy.d = 1; sxy_m.d = 1; <font color="#B22222">/* spin 1, 1 */</font>
 <a name="line125">125: </a>      val = uxy1; valconj = PetscConj(val);
-<a name="line126">126: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line127">127: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line126">126: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line127">127: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 
 <a name="line129">129: </a>      sxy_m.x[0] = x; sxy_m.x[1] = y+1; <font color="#B22222">/* down action */</font>
 <a name="line130">130: </a>      sxy.d = 0; sxy_m.d = 0; <font color="#B22222">/* spin 0, 0 */</font>
 <a name="line131">131: </a>      val = -uxy2; valconj = PetscConj(val);
-<a name="line132">132: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line133">133: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line132">132: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line133">133: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line134">134: </a>      sxy.d = 0; sxy_m.d = 1; <font color="#B22222">/* spin 0, 1 */</font>
 <a name="line135">135: </a>      val = -PETSC_i*uxy2; valconj = PetscConj(val);
-<a name="line136">136: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line137">137: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line136">136: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line137">137: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line138">138: </a>      sxy.d = 1; sxy_m.d = 0; <font color="#B22222">/* spin 1, 0 */</font>
 <a name="line139">139: </a>      val = -PETSC_i*uxy2; valconj = PetscConj(val);
-<a name="line140">140: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line141">141: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line140">140: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line141">141: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line142">142: </a>      sxy.d = 1; sxy_m.d = 1; <font color="#B22222">/* spin 1, 1 */</font>
 <a name="line143">143: </a>      val = PetscConj(uxy2); valconj = PetscConj(val);
-<a name="line144">144: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line145">145: </a>      <A href="../../../../../docs/manualpages/DA/ADDAMatSetValues.html#ADDAMatSetValues">ADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line144">144: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy_m, adda, 1, &amp;sxy, &amp;val, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line145">145: </a>      <A href="../../../../../docs/manualpages/DM/DMADDAMatSetValues.html#DMADDAMatSetValues">DMADDAMatSetValues</A>(H, adda, 1, &amp;sxy, adda, 1, &amp;sxy_m, &amp;valconj, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line146">146: </a>    }
 <a name="line147">147: </a>  }
 <a name="line148">148: </a>
@@ -175,7 +175,7 @@
 
 <a name="line168">168: </a>  <font color="#B22222">/* permutation matrix to check whether H and HtH are identical to the ones in the paper */</font>
 <a name="line169">169: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> perm; */</font>
-<a name="line170">170: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/DA/ADDAGetMatrix.html#ADDAGetMatrix">ADDAGetMatrix</A>(adda, <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>, &amp;perm); */</font>
+<a name="line170">170: </a><font color="#B22222">/*   ADDAGetMatrix(adda, <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>, &amp;perm); */</font>
 <a name="line171">171: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> row, col; */</font>
 <a name="line172">172: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> one = 1.0; */</font>
 <a name="line173">173: </a><font color="#B22222">/*   for(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i=0; i&lt;n; i++) { */</font>
@@ -200,7 +200,7 @@
 <a name="line192">192: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(HtHperm, <A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_.html#PETSC_VIEWER_STDOUT_">PETSC_VIEWER_STDOUT_</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>)); */</font>
 
 <a name="line194">194: </a>  <font color="#B22222">/* right hand side */</font>
-<a name="line195">195: </a>  <A href="../../../../../docs/manualpages/DA/ADDACreateGlobalVector.html#ADDACreateGlobalVector">ADDACreateGlobalVector</A>(adda, &amp;b);
+<a name="line195">195: </a>  <A href="../../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(adda, &amp;b);
 <a name="line196">196: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(b,0.0);
 <a name="line197">197: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ix[1] = {0};
 <a name="line198">198: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> vals[1] = {1.0};
@@ -223,8 +223,8 @@
 
 <a name="line216">216: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(kspmg, HtH, HtH, DIFFERENT_NONZERO_PATTERN);
 
-<a name="line218">218: </a>  <A href="../../../../../docs/manualpages/PC/PCASASetDM.html#PCASASetDM">PCASASetDM</A>(pcmg, (<A href="../../../../../docs/manualpages/DA/DM.html#DM">DM</A>) adda);
-<a name="line219">219: </a>  <A href="../../../../../docs/manualpages/DA/ADDADestroy.html#ADDADestroy">ADDADestroy</A>(adda);
+<a name="line218">218: </a>  <A href="../../../../../docs/manualpages/PC/PCASASetDM.html#PCASASetDM">PCASASetDM</A>(pcmg, (DM) adda);
+<a name="line219">219: </a>  <A href="../../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;adda);
 
 <a name="line221">221: </a>  <A href="../../../../../docs/manualpages/PC/PCASASetTolerances.html#PCASASetTolerances">PCASASetTolerances</A>(pcmg, 1.e-6, 1.e-10,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>);
 
@@ -239,15 +239,15 @@
 
 <a name="line232">232: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(xvec, <A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_.html#PETSC_VIEWER_STDOUT_">PETSC_VIEWER_STDOUT_</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>)); */</font>
 
-<a name="line234">234: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(kspmg);
+<a name="line234">234: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;kspmg);
 
-<a name="line236">236: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(xvec);
-<a name="line237">237: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line238">238: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(Htb);
-<a name="line239">239: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(H);
-<a name="line240">240: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(HtH);
+<a name="line236">236: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xvec);
+<a name="line237">237: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line238">238: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Htb);
+<a name="line239">239: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;H);
+<a name="line240">240: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;HtH);
 
-<a name="line242">242: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rctx);
+<a name="line242">242: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rctx);
 <a name="line243">243: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line244">244: </a>  <font color="#4169E1">return</font> 0;
 <a name="line245">245: </a>}
@@ -286,11 +286,11 @@
 
 <a name="line282">282: </a>  *eig = norm*(1.-lambda_its_1/lambda_its);
 
-<a name="line284">284: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x0);
-<a name="line285">285: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line286">286: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x_1);
-<a name="line287">287: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rctx);
-<a name="line288">288: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(G);
+<a name="line284">284: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x0);
+<a name="line285">285: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line286">286: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x_1);
+<a name="line287">287: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rctx);
+<a name="line288">288: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;G);
 
 <a name="line290">290: </a>  <font color="#4169E1">return</font>(0);
 <a name="line291">291: </a>}

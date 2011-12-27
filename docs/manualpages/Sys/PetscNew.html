@@ -6,7 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscNew"><H1>PetscNew</H1></A>
-Allocates memory of a particular type, zeros the memory! 
+Allocates memory of a particular type, zeros the memory! Aligned to PETSC_MEMALIGN 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode PetscNew(struct type,((type *))result)
+</PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>type </B> -structure name of space to be allocated. Memory of size sizeof(type) is allocated
 <br>
@@ -15,14 +21,10 @@ Allocates memory of a particular type, zeros the memory!
 <DT><B>result </B> -memory allocated
 <br>
 <P>
-<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
-<PRE>
-PetscErrorCode PetscNew(struct type,((type *))result)
-</PRE>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscFree.html#PetscFree">PetscFree</A>(), <A HREF="../Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>()
+ <A HREF="../Sys/PetscFree.html#PetscFree">PetscFree</A>(), <A HREF="../Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(), <A HREF="../Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>()
 <BR>
 <P>
 <P>
@@ -32,11 +34,15 @@ PetscErrorCode PetscNew(struct type,((type *))result)
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex8.c.html">src/dm/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15.c.html">src/ksp/ksp/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex58.c.html">src/snes/examples/tutorials/ex58.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex8.c.html">src/ts/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>
-<A HREF="../../../src/dm/da/examples/tutorials/ex6.c.html">src/dm/da/examples/tutorials/ex6.c.html</A><BR>
-<A HREF="../../../src/dm/da/examples/tutorials/ex8.c.html">src/dm/da/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
 </BODY></HTML>

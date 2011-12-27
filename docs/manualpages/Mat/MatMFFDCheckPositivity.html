@@ -10,9 +10,9 @@ Checks that all entries in U + h*a are positive or zero, decreases h until this 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"   
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDCheckPositivity(void* dummy,Vec U,Vec a,PetscScalar *h)
+PetscErrorCode  MatMFFDCheckPositivity(void* dummy,Vec U,Vec a,PetscScalar *h)
 </PRE>
-Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

@@ -1284,7 +1284,7 @@ can also install additional packages that are used by the TOPS packages."""
              if f > 0: i = i[0:f]
              args.append('--download-'+i+'=1')
 
-        packages = ["Spooles (parallel sparse direct solvers)","  DSCPack","  MUMPS","Parmetis (parallel partitioning)","  Chaco","  Jostle","  Party","  Scotch","Prometheus (parallel preconditioner)","  ml","  SPAI","Matlab"]
+        packages = ["Spooles (parallel sparse direct solvers)","  MUMPS","Parmetis (parallel partitioning)","  Chaco","  Party","  PTScotch","Prometheus (parallel preconditioner)","  ml","  SPAI","Matlab"]
         reply = multchoicebox("Pick the other packages to install.\n\nAgain, only select the packages you truly need.",title, packages)
         for i in reply:
              i = i.lower().replace(' ','')
@@ -1322,7 +1322,7 @@ can also install additional packages that are used by the TOPS packages."""
         reply = indexbox('Which version of BLAS and LAPACK do you wish to use?',title,['Have installer locate it', 'Install it',"I'll indicate its location"])
         if reply == 1: 
              if '--with-fortran=1' in args: args.append('--download-f-blas-lapack')
-             else: args.append('--download-c-blas-lapack')
+             else: args.append('--download-f2cblaslapack')
         elif reply == 2:
            reply = diropenbox("Directory of BLAS and LAPACK libraries","Directory of BLAS and LAPACK libraries")
            if not reply: sys.exit()
@@ -1380,8 +1380,8 @@ can also install additional packages that are used by the TOPS packages."""
           os.unlink(os.path.join(reply, 'petsc.tar'))
 
 
-        args.append('--with-shared=1')
-        args.append('--with-dynamic=1')
+        args.append('--with-shared-libraries=1')
+        args.append('--with-dynamic-loading=1')
         args.append('--with-external-packages-dir='+reply)
         args = multenterbox("Configure options you have selected.", title, None, args)
         if not args: sys.exit()

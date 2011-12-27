@@ -1,16 +1,16 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
-PetscCookie PETSC_DRAW_COOKIE;
+PetscClassId PETSC_DRAW_CLASSID;
 
-static PetscTruth PetscDrawPackageInitialized = PETSC_FALSE;
+static PetscBool  PetscDrawPackageInitialized = PETSC_FALSE;
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawFinalizePackage"
 /*@C
-  PetscDrawFinalizePackage - This function destroys everything in the Petsc interface to the charactoristics package. It is
+  PetscDrawFinalizePackage - This function destroys everything in the Petsc interface to the Draw package. It is
   called from PetscFinalize().
 
   Level: developer
@@ -18,7 +18,7 @@ static PetscTruth PetscDrawPackageInitialized = PETSC_FALSE;
 .keywords: Petsc, destroy, package, mathematica
 .seealso: PetscFinalize()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawFinalizePackage(void) 
+PetscErrorCode  PetscDrawFinalizePackage(void)
 {
   PetscFunctionBegin;
   PetscDrawPackageInitialized = PETSC_FALSE;
@@ -41,22 +41,22 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawFinalizePackage(void)
 .keywords: Petsc, initialize, package
 .seealso: PetscInitialize()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawInitializePackage(const char path[])
+PetscErrorCode  PetscDrawInitializePackage(const char path[])
 {
   char              logList[256];
   char              *className;
-  PetscTruth        opt;
+  PetscBool         opt;
   PetscErrorCode    ierr;
 
   PetscFunctionBegin;
   if (PetscDrawPackageInitialized) PetscFunctionReturn(0);
   PetscDrawPackageInitialized = PETSC_TRUE;
   /* Register Classes */
-  ierr = PetscCookieRegister("Draw",&PETSC_DRAW_COOKIE);CHKERRQ(ierr);
-  ierr = PetscCookieRegister("Axis",&DRAWAXIS_COOKIE);CHKERRQ(ierr);
-  ierr = PetscCookieRegister("Line Graph",&DRAWLG_COOKIE);CHKERRQ(ierr);
-  ierr = PetscCookieRegister("Histogram",&DRAWHG_COOKIE);CHKERRQ(ierr);
-  ierr = PetscCookieRegister("Scatter Plot",&DRAWSP_COOKIE);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("Draw",&PETSC_DRAW_CLASSID);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("Axis",&DRAWAXIS_CLASSID);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("Line Graph",&DRAWLG_CLASSID);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("Histogram",&DRAWHG_CLASSID);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("Scatter Plot",&DRAWSP_CLASSID);CHKERRQ(ierr);
   /* Register Constructors */
   ierr = PetscDrawRegisterAll(path);CHKERRQ(ierr);
   /* Process info exclusions */
@@ -94,7 +94,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawInitializePackage(const char path[])
 
 .seealso: PetscDrawCheckResizedWindow()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawResizeWindow(PetscDraw draw,int w,int h)
+PetscErrorCode  PetscDrawResizeWindow(PetscDraw draw,int w,int h)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
@@ -119,7 +119,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawResizeWindow(PetscDraw draw,int w,int h)
 .seealso: PetscDrawResizeWindow()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawCheckResizedWindow(PetscDraw draw)
+PetscErrorCode  PetscDrawCheckResizedWindow(PetscDraw draw)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
@@ -146,10 +146,10 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawCheckResizedWindow(PetscDraw draw)
 
 .seealso: PetscDrawSetTitle()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawGetTitle(PetscDraw draw,char **title)
+PetscErrorCode  PetscDrawGetTitle(PetscDraw draw,char **title)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidPointer(title,2);
   *title = draw->title;
   PetscFunctionReturn(0);
@@ -174,13 +174,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawGetTitle(PetscDraw draw,char **title)
 
 .seealso: PetscDrawGetTitle(), PetscDrawAppendTitle()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSetTitle(PetscDraw draw,const char title[])
+PetscErrorCode  PetscDrawSetTitle(PetscDraw draw,const char title[])
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidCharPointer(title,2);
-  ierr = PetscStrfree(draw->title);CHKERRQ(ierr);
+  ierr = PetscFree(draw->title);CHKERRQ(ierr);
   ierr = PetscStrallocpy(title,&draw->title);CHKERRQ(ierr);
   if (draw->ops->settitle) {
     ierr = (*draw->ops->settitle)(draw,title);CHKERRQ(ierr);
@@ -207,14 +207,14 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSetTitle(PetscDraw draw,const char title
 
 .seealso: PetscDrawSetTitle(), PetscDrawGetTitle()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawAppendTitle(PetscDraw draw,const char title[])
+PetscErrorCode  PetscDrawAppendTitle(PetscDraw draw,const char title[])
 {
   PetscErrorCode ierr;
   size_t len1,len2,len;
   char   *newtitle;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   if (!title) PetscFunctionReturn(0);
 
   if (draw->title) {
@@ -250,21 +250,22 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawAppendTitle(PetscDraw draw,const char ti
 .seealso: PetscDrawCreate()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawDestroy(PetscDraw draw)
+PetscErrorCode  PetscDrawDestroy(PetscDraw *draw)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
-  if (--((PetscObject)draw)->refct > 0) PetscFunctionReturn(0);
+  if (!*draw) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific(*draw,PETSC_DRAW_CLASSID,1);
+  if (--((PetscObject)(*draw))->refct > 0) PetscFunctionReturn(0);
 
   /* if memory was published then destroy it */
-  ierr = PetscObjectDepublish(draw);CHKERRQ(ierr);
+  ierr = PetscObjectDepublish(*draw);CHKERRQ(ierr);
 
-  if (draw->ops->destroy) {
-    ierr = (*draw->ops->destroy)(draw);CHKERRQ(ierr);
+  if ((*draw)->ops->destroy) {
+    ierr = (*(*draw)->ops->destroy)(*draw);CHKERRQ(ierr);
   }
-  ierr = PetscStrfree(draw->title);CHKERRQ(ierr);
-  ierr = PetscStrfree(draw->display);CHKERRQ(ierr);
+  ierr = PetscFree((*draw)->title);CHKERRQ(ierr);
+  ierr = PetscFree((*draw)->display);CHKERRQ(ierr);
   ierr = PetscHeaderDestroy(draw);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -285,11 +286,11 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawDestroy(PetscDraw draw)
    Level: advanced
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawGetPopup(PetscDraw draw,PetscDraw *popup)
+PetscErrorCode  PetscDrawGetPopup(PetscDraw draw,PetscDraw *popup)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidPointer(popup,2);
 
   if (draw->popup) {
@@ -322,7 +323,7 @@ PetscErrorCode PetscDrawDestroy_Null(PetscDraw draw)
    Level: advanced
 
 */
-PetscErrorCode PETSC_DLLEXPORT PetscDrawOpenNull(MPI_Comm comm,PetscDraw *win)
+PetscErrorCode  PetscDrawOpenNull(MPI_Comm comm,PetscDraw *win)
 {
   PetscErrorCode ierr;
 
@@ -344,12 +345,12 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawOpenNull(MPI_Comm comm,PetscDraw *win)
   Level: advanced
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSetDisplay(PetscDraw draw,char *display)
+PetscErrorCode  PetscDrawSetDisplay(PetscDraw draw,char *display)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr          = PetscStrfree(draw->display);CHKERRQ(ierr); 
+  ierr          = PetscFree(draw->display);CHKERRQ(ierr); 
   ierr          = PetscStrallocpy(display,&draw->display);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -402,13 +403,13 @@ EXTERN_C_END
 .seealso: PetscDrawRestoreSingleton(), PetscViewerGetSingleton(), PetscViewerRestoreSingleton()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawGetSingleton(PetscDraw draw,PetscDraw *sdraw)
+PetscErrorCode  PetscDrawGetSingleton(PetscDraw draw,PetscDraw *sdraw)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidPointer(sdraw,2);
 
   ierr = MPI_Comm_size(((PetscObject)draw)->comm,&size);CHKERRQ(ierr);
@@ -417,9 +418,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawGetSingleton(PetscDraw draw,PetscDraw *s
   } else {
     if (draw->ops->getsingleton) {
       ierr = (*draw->ops->getsingleton)(draw,sdraw);CHKERRQ(ierr);
-    } else {
-      SETERRQ1(PETSC_ERR_SUP,"Cannot get singleton for this type %s of draw object",((PetscObject)draw)->type_name);
-    }
+    } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot get singleton for this type %s of draw object",((PetscObject)draw)->type_name);
   }
   PetscFunctionReturn(0);
 }
@@ -441,23 +440,21 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawGetSingleton(PetscDraw draw,PetscDraw *s
 .seealso: PetscDrawGetSingleton(), PetscViewerGetSingleton(), PetscViewerRestoreSingleton()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawRestoreSingleton(PetscDraw draw,PetscDraw *sdraw)
+PetscErrorCode  PetscDrawRestoreSingleton(PetscDraw draw,PetscDraw *sdraw)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidPointer(sdraw,2);
-  PetscValidHeaderSpecific(*sdraw,PETSC_DRAW_COOKIE,2);
+  PetscValidHeaderSpecific(*sdraw,PETSC_DRAW_CLASSID,2);
 
   ierr = MPI_Comm_size(((PetscObject)draw)->comm,&size);CHKERRQ(ierr);
   if (size != 1) {
     if (draw->ops->restoresingleton) {
       ierr = (*draw->ops->restoresingleton)(draw,sdraw);CHKERRQ(ierr);
-    } else {
-      SETERRQ1(PETSC_ERR_SUP,"Cannot restore singleton for this type %s of draw object",((PetscObject)draw)->type_name);
-    }
+    } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot restore singleton for this type %s of draw object",((PetscObject)draw)->type_name);
   }
   PetscFunctionReturn(0);
 }

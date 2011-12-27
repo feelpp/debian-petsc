@@ -2,16 +2,16 @@
   Usage: A = sopen(portnumber);  [ 5000 < portnumber < 5010 ]
  
         Written by Barry Smith, bsmith@mcs.anl.gov 4/14/92
-	 Updated by Ridhard Katz, katz@ldeo.columbia.edu 9/28/03
+	 Updated by Richard Katz, katz@ldeo.columbia.edu 9/28/03
 	 Updated by Barry Smith, bsmith@mcs.anl.gov 8/11/06
 
- Similar to Matlab's sopen() only does not take file name, instead optional
+ Similar to MATLAB's sopen() only does not take file name, instead optional
  port to listen at.
 
  Only compiles as C code.
 */
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #if defined(PETSC_NEEDS_UTYPE_TYPEDEFS)
 /* Some systems have inconsistent include files that use but don't
@@ -67,8 +67,8 @@ typedef unsigned long   u_long;
 #if defined(PETSC_HAVE_WS2TCPIP_H)
 #include <Ws2tcpip.h>
 #endif
-#include "../src/sys/viewer/impls/socket/socket.h"
-#include "mex.h"
+#include <../src/sys/viewer/impls/socket/socket.h>
+#include <mex.h>
 
 #define PETSC_MEX_ERROR(a) {mexErrMsgTxt(a); return ;}
 #define PETSC_MEX_ERRORQ(a) {mexErrMsgTxt(a); return -1;}

@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:48:07+00:00">
+<meta name="date" content="2011-10-29T19:06:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -16,54 +16,51 @@
 <a name="line8"> 8: </a> #include <A href="petscis.h.html">petscis.h</A>
 <a name="line9"> 9: </a> #include <A href="petscmat.h.html">petscmat.h</A>
 
-<a name="line12"> 12: </a><font color="#4169E1">typedef</font> <font color="#4169E1">enum</font> {AO_BASIC=0, AO_ADVANCED=1, AO_MAPPING=2} AOType;
+<a name="line12"> 12: </a><font color="#B22222">/*S</font>
+<a name="line13"> 13: </a><font color="#B22222">     <A href="../docs/manualpages/AO/AO.html#AO">AO</A> - Abstract PETSc object that manages mapping between different global numbering</font>
 
-<a name="line14"> 14: </a><font color="#B22222">/*S</font>
-<a name="line15"> 15: </a><font color="#B22222">     <A href="../docs/manualpages/AO/AO.html#AO">AO</A> - Abstract PETSc object that manages mapping between different global numbering</font>
+<a name="line15"> 15: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line17"> 17: </a><font color="#B22222">   Level: intermediate</font>
+<a name="line17"> 17: </a><font color="#B22222">  Concepts: global numbering</font>
 
-<a name="line19"> 19: </a><font color="#B22222">  Concepts: global numbering</font>
+<a name="line19"> 19: </a><font color="#B22222">.seealso:  <A href="../docs/manualpages/AO/AOCreateBasic.html#AOCreateBasic">AOCreateBasic</A>(), <A href="../docs/manualpages/AO/AOCreateBasicIS.html#AOCreateBasicIS">AOCreateBasicIS</A>(), <A href="../docs/manualpages/AO/AOPetscToApplication.html#AOPetscToApplication">AOPetscToApplication</A>(), <A href="../docs/manualpages/AO/AOView.html#AOView">AOView</A>(), <A href="../docs/manualpages/AO/AOApplicationToPetsc.html#AOApplicationToPetsc">AOApplicationToPetsc</A>()</font>
+<a name="line20"> 20: </a><font color="#B22222">S*/</font>
+<a name="line21"> 21: </a><font color="#4169E1">typedef struct _p_AO* <A href="../docs/manualpages/AO/AO.html#AO">AO</A>;</font>
 
-<a name="line21"> 21: </a><font color="#B22222">.seealso:  <A href="../docs/manualpages/AO/AOCreateBasic.html#AOCreateBasic">AOCreateBasic</A>(), <A href="../docs/manualpages/AO/AOCreateBasicIS.html#AOCreateBasicIS">AOCreateBasicIS</A>(), <A href="../docs/manualpages/AO/AOPetscToApplication.html#AOPetscToApplication">AOPetscToApplication</A>(), <A href="../docs/manualpages/AO/AOView.html#AOView">AOView</A>(), <A href="../docs/manualpages/AO/AOApplicationToPetsc.html#AOApplicationToPetsc">AOApplicationToPetsc</A>()</font>
-<a name="line22"> 22: </a><font color="#B22222">S*/</font>
-<a name="line23"> 23: </a><font color="#4169E1">typedef struct _p_AO* <A href="../docs/manualpages/AO/AO.html#AO">AO</A>;</font>
+<a name="line23"> 23: </a><font color="#B22222">/*J</font>
+<a name="line24"> 24: </a><font color="#B22222">    <A href="../docs/manualpages/AO/AOType.html#AOType">AOType</A> - String with the name of a PETSc application ordering or the creation function</font>
+<a name="line25"> 25: </a><font color="#B22222">       with an optional dynamic library name.</font>
 
-<a name="line25"> 25: </a><font color="#B22222">/* Logging support */</font>
+<a name="line27"> 27: </a><font color="#B22222">   Level: beginner</font>
 
-<a name="line28"> 28: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/DMInitializePackage.html#DMInitializePackage">DMInitializePackage</A>(const char[])</font></strong>;
+<a name="line29"> 29: </a><font color="#B22222">.seealso: <A href="../docs/manualpages/AO/AOSetType.html#AOSetType">AOSetType</A>(), <A href="../docs/manualpages/AO/AO.html#AO">AO</A></font>
+<a name="line30"> 30: </a><font color="#B22222">J*/</font>
+<a name="line31"> 31: </a><strong><font color="#228B22">#define <A href="../docs/manualpages/AO/AOType.html#AOType">AOType</A> char*</font></strong>
+<a name="line32"> 32: </a><strong><font color="#228B22">#define AOBASIC               </font><font color="#666666">"basic"</font><font color="#228B22"></font></strong>
+<a name="line33"> 33: </a><strong><font color="#228B22">#define AOADVANCED            </font><font color="#666666">"advanced"</font><font color="#228B22"></font></strong>
+<a name="line34"> 34: </a><strong><font color="#228B22">#define AOMAPPING             </font><font color="#666666">"mapping"</font><font color="#228B22"></font></strong>
+<a name="line35"> 35: </a><strong><font color="#228B22">#define AOMEMORYSCALABLE      </font><font color="#666666">"memoryscalable"</font><font color="#228B22"></font></strong>
 
-<a name="line30"> 30: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOCreateBasic.html#AOCreateBasic">AOCreateBasic</A>(<A href="../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>,<A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,const <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[],const <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[],<A href="../docs/manualpages/AO/AO.html#AO">AO</A>*)</font></strong>;
-<a name="line31"> 31: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOCreateBasicIS.html#AOCreateBasicIS">AOCreateBasicIS</A>(<A href="../docs/manualpages/IS/IS.html#IS">IS</A>,<A href="../docs/manualpages/IS/IS.html#IS">IS</A>,<A href="../docs/manualpages/AO/AO.html#AO">AO</A>*)</font></strong>;
+<a name="line37"> 37: </a><font color="#B22222">/* Logging support */</font>
 
-<a name="line33"> 33: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOCreateMapping.html#AOCreateMapping">AOCreateMapping</A>(<A href="../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>,<A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,const <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[],const <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[],<A href="../docs/manualpages/AO/AO.html#AO">AO</A>*)</font></strong>;
-<a name="line34"> 34: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOCreateMappingIS.html#AOCreateMappingIS">AOCreateMappingIS</A>(<A href="../docs/manualpages/IS/IS.html#IS">IS</A>,<A href="../docs/manualpages/IS/IS.html#IS">IS</A>,<A href="../docs/manualpages/AO/AO.html#AO">AO</A>*)</font></strong>;
 
-<a name="line36"> 36: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOView.html#AOView">AOView</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>,<A href="../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>)</font></strong>;
-<a name="line37"> 37: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AODestroy.html#AODestroy">AODestroy</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>)</font></strong>;
 
-<a name="line39"> 39: </a><strong><font color="#4169E1"><a name="AORegister"></a>EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  AORegister(const char [], const char [], const char [], <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>)</font></strong>);
-<a name="line40"> 40: </a><font color="#A020F0">#if defined(PETSC_USE_DYNAMIC_LIBRARIES)</font>
-<a name="line41"> 41: </a><strong><font color="#228B22">#define AORegisterDynamic(a,b,c,d) AORegister(a,b,c,0)</font></strong>
-<a name="line42"> 42: </a><font color="#A020F0">#else</font>
-<a name="line43"> 43: </a><strong><font color="#228B22">#define AORegisterDynamic(a,b,c,d) AORegister(a,b,c,d)</font></strong>
-<a name="line44"> 44: </a><font color="#A020F0">#endif</font>
 
-<a name="line46"> 46: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOPetscToApplication.html#AOPetscToApplication">AOPetscToApplication</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>,<A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[])</font></strong>;
-<a name="line47"> 47: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOApplicationToPetsc.html#AOApplicationToPetsc">AOApplicationToPetsc</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>,<A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[])</font></strong>;
-<a name="line48"> 48: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOPetscToApplicationIS.html#AOPetscToApplicationIS">AOPetscToApplicationIS</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>,<A href="../docs/manualpages/IS/IS.html#IS">IS</A>)</font></strong>;
-<a name="line49"> 49: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOApplicationToPetscIS.html#AOApplicationToPetscIS">AOApplicationToPetscIS</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>,<A href="../docs/manualpages/IS/IS.html#IS">IS</A>)</font></strong>;
 
-<a name="line51"> 51: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOPetscToApplicationPermuteInt.html#AOPetscToApplicationPermuteInt">AOPetscToApplicationPermuteInt</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>, <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[])</font></strong>;
-<a name="line52"> 52: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOApplicationToPetscPermuteInt.html#AOApplicationToPetscPermuteInt">AOApplicationToPetscPermuteInt</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>, <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[])</font></strong>;
-<a name="line53"> 53: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOPetscToApplicationPermuteReal.html#AOPetscToApplicationPermuteReal">AOPetscToApplicationPermuteReal</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>, <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, <A href="../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>[])</font></strong>;
-<a name="line54"> 54: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOApplicationToPetscPermuteReal.html#AOApplicationToPetscPermuteReal">AOApplicationToPetscPermuteReal</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>, <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, <A href="../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>[])</font></strong>;
+<a name="line56"> 56: </a><font color="#B22222">/* Dynamic creation and loading functions */</font>
 
-<a name="line56"> 56: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOMappingHasApplicationIndex.html#AOMappingHasApplicationIndex">AOMappingHasApplicationIndex</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>, <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, <A href="../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *)</font></strong>;
-<a name="line57"> 57: </a><strong><font color="#4169E1">EXTERN <A href="../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../docs/manualpages/AO/AOMappingHasPetscIndex.html#AOMappingHasPetscIndex">AOMappingHasPetscIndex</A>(<A href="../docs/manualpages/AO/AO.html#AO">AO</A>, <A href="../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, <A href="../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *)</font></strong>;
 
-<a name="line59"> 59: </a><font color="#B22222">/* ----------------------------------------------------*/</font>
-<a name="line61"> 61: </a><font color="#A020F0">#endif</font>
+<a name="line66"> 66: </a><font color="#A020F0">#if defined(PETSC_USE_DYNAMIC_LIBRARIES)</font>
+<a name="line67"> 67: </a><strong><font color="#228B22">#define AORegisterDynamic(a,b,c,d) <A href="../docs/manualpages/AO/AORegister.html#AORegister">AORegister</A>(a,b,c,0)</font></strong>
+<a name="line68"> 68: </a><font color="#A020F0">#else</font>
+<a name="line69"> 69: </a><strong><font color="#228B22">#define AORegisterDynamic(a,b,c,d) <A href="../docs/manualpages/AO/AORegister.html#AORegister">AORegister</A>(a,b,c,d)</font></strong>
+<a name="line70"> 70: </a><font color="#A020F0">#endif</font>
+
+
+
+
+<a name="line85"> 85: </a><font color="#B22222">/* ----------------------------------------------------*/</font>
+<a name="line87"> 87: </a><font color="#A020F0">#endif</font>
 </pre>
 </body>
 

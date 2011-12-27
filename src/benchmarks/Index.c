@@ -1,5 +1,5 @@
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 extern int BlastCache(void);
 extern int test1(void);
@@ -16,7 +16,7 @@ int main(int argc,char **argv)
   ierr = test1();CHKERRQ(ierr);
   ierr = test2();CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   PetscFunctionReturn(0);
 }
 
@@ -110,7 +110,7 @@ int test1(void)
   ierr = PetscFree(zi);CHKERRQ(ierr);
   ierr = PetscFree(x);CHKERRQ(ierr);
   ierr = PetscFree(y);CHKERRQ(ierr);
-  PetscRandomDestroy(r);
+  ierr = PetscRandomDestroy(&r);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -184,7 +184,7 @@ int test2(void)
   fprintf(stdout,"%-27s : %e sec\n","x[z[i]] = y[zi[i]]",(t2-t1)/2000.0);
 
 
-  PetscRandomDestroy(r);
+  ierr = PetscRandomDestroy(&r);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

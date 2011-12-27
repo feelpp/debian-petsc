@@ -10,7 +10,7 @@ Unwinds the preconditioning in the solution. That is, takes solution to the prec
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPUnwindPreconditioner(KSP ksp,Vec vsoln,Vec vt1)
+PetscErrorCode  KSPUnwindPreconditioner(KSP ksp,Vec vsoln,Vec vt1)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -39,7 +39,7 @@ the left, nothing is done.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../KSP/KSPSetPreconditionerSide.html#KSPSetPreconditionerSide">KSPSetPreconditionerSide</A>()
+ <A HREF="../KSP/KSPSetPCSide.html#KSPSetPCSide">KSPSetPCSide</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/interface/itres.c.html#KSPUnwindPreconditioner">src/ksp/ksp/interface/itres.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

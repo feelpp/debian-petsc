@@ -10,7 +10,7 @@ Sets the parameters for the approximation of matrix-vector products using finite
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"   
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultMatrixFreeSetParameters2(Mat mat,PetscReal error,PetscReal umin,PetscReal h)
+PetscErrorCode  SNESDefaultMatrixFreeSetParameters2(Mat mat,PetscReal error,PetscReal umin,PetscReal h)
 </PRE>
 <pre>
       J(u)*a = [J(u+h*a) - J(u)]/h where

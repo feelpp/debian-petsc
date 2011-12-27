@@ -10,9 +10,9 @@ Sets name of the user destroy function.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"    
-PetscErrorCode PETSC_DLLEXPORT PetscContainerSetUserDestroy(PetscContainer obj, PetscErrorCode (*des)(void*))
+PetscErrorCode  PetscContainerSetUserDestroy(PetscContainer obj, PetscErrorCode (*des)(void*))
 </PRE>
-Collective on <A HREF="../Sys/PetscContainer.html#PetscContainer">PetscContainer</A>
+Logically Collective on <A HREF="../Sys/PetscContainer.html#PetscContainer">PetscContainer</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

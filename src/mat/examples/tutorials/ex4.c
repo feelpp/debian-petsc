@@ -9,7 +9,7 @@ static char help[] = "Reads U and V matrices from a file and performs y = V*U'*x
      petscmat.h    - matrices
      petscis.h     - index sets            petscviewer.h - viewers               
 */
-#include "petscmat.h"
+#include <petscmat.h>
 extern PetscErrorCode LowRankUpdate(Mat,Mat,Vec,Vec,Vec,Vec,PetscInt);
 
 
@@ -21,7 +21,7 @@ int main(int argc,char **args)
   PetscViewer           fd;               /* viewer */
   char                  file[PETSC_MAX_PATH_LEN];     /* input file name */
   PetscErrorCode        ierr;
-  PetscTruth            flg;
+  PetscBool             flg;
   Vec                   x,y,work1,work2;
   PetscInt              i,N,n,M,m;
   PetscScalar           *xx;
@@ -32,8 +32,8 @@ int main(int argc,char **args)
      Determine file from which we read the matrix
 
   */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Must indicate binary file with the -f option");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Must indicate binary file with the -f option");
 
 
   /* 
@@ -46,14 +46,18 @@ int main(int argc,char **args)
     Load the matrix; then destroy the viewer.
     Note both U and V are stored as tall skinny matrices 
   */
-  ierr = MatLoad(fd,MATMPIDENSE,&U);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATMPIDENSE,&V);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&U);CHKERRQ(ierr);
+  ierr = MatSetType(U,MATMPIDENSE);CHKERRQ(ierr);
+  ierr = MatLoad(U,fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&V);CHKERRQ(ierr);
+  ierr = MatSetType(V,MATMPIDENSE);CHKERRQ(ierr);
+  ierr = MatLoad(V,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
   ierr = MatGetLocalSize(U,&N,&n);CHKERRQ(ierr);
   ierr = MatGetLocalSize(V,&M,&m);CHKERRQ(ierr);
-  if (N != M) SETERRQ2(1,"U and V matrices must have same number of local rows %D %D",N,M);
-  if (n != m) SETERRQ2(1,"U and V matrices must have same number of local columns %D %D",n,m);
+  if (N != M) SETERRQ2(PETSC_COMM_SELF,1,"U and V matrices must have same number of local rows %D %D",N,M);
+  if (n != m) SETERRQ2(PETSC_COMM_SELF,1,"U and V matrices must have same number of local columns %D %D",n,m);
 
   ierr = VecCreateMPI(PETSC_COMM_WORLD,N,PETSC_DETERMINE,&x);CHKERRQ(ierr);
   ierr = VecDuplicate(x,&y);CHKERRQ(ierr);
@@ -74,18 +78,18 @@ int main(int argc,char **args)
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
   */
-  ierr = MatDestroy(U);CHKERRQ(ierr);
-  ierr = MatDestroy(V);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = VecDestroy(work1);CHKERRQ(ierr);
-  ierr = VecDestroy(work2);CHKERRQ(ierr);
+  ierr = MatDestroy(&U);CHKERRQ(ierr);
+  ierr = MatDestroy(&V);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = VecDestroy(&work1);CHKERRQ(ierr);
+  ierr = VecDestroy(&work2);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
-#include "../src/mat/impls/dense/mpi/mpidense.h"
+#include <../src/mat/impls/dense/mpi/mpidense.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "LowRankUpdate"

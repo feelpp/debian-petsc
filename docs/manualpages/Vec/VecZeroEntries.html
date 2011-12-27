@@ -10,15 +10,20 @@ puts a 0.0 in each element of a vector
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT VecZeroEntries(Vec vec)
+PetscErrorCode  VecZeroEntries(Vec vec)
 </PRE>
-Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>vec </B> -The vector
 <br>
 <P>
 
+<P>
+Developer Note: This routine does not need to exist since the exact functionality is obtained with
+<A HREF="../Vec/VecSet.html#VecSet">VecSet</A>(vec,0);  I guess someone added it to mirror the functionality of <A HREF="../Mat/MatZeroEntries.html#MatZeroEntries">MatZeroEntries</A>() but <A HREF="../Mat/Mat.html#Mat">Mat</A> is nothing
+like a <A HREF="../Vec/Vec.html#Vec">Vec</A> (one is an operator and one is an element of a vector space, yeah yeah dual blah blah blah) so
+this routine should not exist.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../Vec/Vec.html#Vec">Vec</A>, set, options, database
@@ -31,5 +36,13 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex18.c.html">src/ts/examples/tutorials/ex18.c.html</A><BR>
 </BODY></HTML>

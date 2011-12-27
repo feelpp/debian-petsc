@@ -1,11 +1,10 @@
-#define PETSCMAT_DLL
 
 /*
     This file contains routines to reorder a matrix so that the diagonal
     elements are nonzero.
  */
 
-#include "private/matimpl.h"       /*I  "petscmat.h"  I*/
+#include <private/matimpl.h>       /*I  "petscmat.h"  I*/
 
 #define SWAP(a,b) {PetscInt _t; _t = a; a = b; b = _t; }
 
@@ -51,27 +50,24 @@
 
 
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatReorderForNonzeroDiagonal(Mat mat,PetscReal abstol,IS ris,IS cis)
+PetscErrorCode  MatReorderForNonzeroDiagonal(Mat mat,PetscReal abstol,IS ris,IS cis)
 {
-  PetscErrorCode ierr,(*f)(Mat,PetscReal,IS,IS);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscObjectQueryFunction((PetscObject)mat,"MatReorderForNonzeroDiagonal_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(mat,abstol,ris,cis);CHKERRQ(ierr);
-  }
+  ierr = PetscTryMethod(mat,"MatReorderForNonzeroDiagonal_C",(Mat,PetscReal,IS,IS),(mat,abstol,ris,cis));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-EXTERN PetscErrorCode MatGetRow_SeqAIJ(Mat,PetscInt,PetscInt*,PetscInt**,PetscScalar**);
-EXTERN PetscErrorCode MatRestoreRow_SeqAIJ(Mat,PetscInt,PetscInt*,PetscInt**,PetscScalar**);
+extern PetscErrorCode MatGetRow_SeqAIJ(Mat,PetscInt,PetscInt*,PetscInt**,PetscScalar**);
+extern PetscErrorCode MatRestoreRow_SeqAIJ(Mat,PetscInt,PetscInt*,PetscInt**,PetscScalar**);
 
-#include "../src/vec/is/impls/general/general.h"
+#include <../src/vec/is/impls/general/general.h>
 
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "MatReorderForNonzeroDiagonal_SeqAIJ"
-PetscErrorCode PETSCMAT_DLLEXPORT MatReorderForNonzeroDiagonal_SeqAIJ(Mat mat,PetscReal abstol,IS ris,IS cis)
+PetscErrorCode  MatReorderForNonzeroDiagonal_SeqAIJ(Mat mat,PetscReal abstol,IS ris,IS cis)
 {
   PetscErrorCode ierr;
   PetscInt       prow,k,nz,n,repl,*j,*col,*row,m,*icol,nnz,*jj,kk;
@@ -146,7 +142,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatReorderForNonzeroDiagonal_SeqAIJ(Mat mat,Pe
     }
     ierr = MatRestoreRow_SeqAIJ(mat,row[prow],&nz,&j,&v);CHKERRQ(ierr);
   }
-  ierr = ISDestroy(icis);CHKERRQ(ierr);
+  ierr = ISDestroy(&icis);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 EXTERN_C_END

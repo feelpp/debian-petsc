@@ -1,21 +1,21 @@
-#define PETSC_DLL
+
 /*
       Routines to handle signals the program will receive. 
     Usually this will call the error handlers.
 */
-#include "petscsys.h"             /*I   "petscsys.h"   I*/
+#include <petscsys.h>             /*I   "petscsys.h"   I*/
 #include <signal.h>
 
-static PetscCookie SIGNAL_COOKIE = 0;
+static PetscClassId SIGNAL_CLASSID = 0;
 
 struct SH {
-  PetscCookie    cookie;
+  PetscClassId   classid;
   PetscErrorCode (*handler)(int,void *);
   void           *ctx;
   struct SH*     previous;
 };
 static struct SH* sh        = 0;
-static PetscTruth SignalSet = PETSC_FALSE;
+static PetscBool  SignalSet = PETSC_FALSE;
 
 
 
@@ -49,7 +49,7 @@ static void PetscSignalHandler_Private(int sig)
   if (!sh || !sh->handler) {
     ierr = PetscDefaultSignalHandler(sig,(void*)0);
   } else{
-    if (sh->cookie != SIGNAL_COOKIE) SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_COR,"Signal object has been corrupted");
+    if (sh->classid != SIGNAL_CLASSID) SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_COR,"Signal object has been corrupted");
     ierr = (*sh->handler)(sig,sh->ctx);
   }
   if (ierr) MPI_Abort(PETSC_COMM_WORLD,0);
@@ -72,7 +72,7 @@ EXTERN_C_END
    Concepts: signal handler^default
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDefaultSignalHandler(int sig,void *ptr)
+PetscErrorCode  PetscDefaultSignalHandler(int sig,void *ptr)
 {
   PetscErrorCode ierr;
   const char     *SIGNAME[64];
@@ -148,9 +148,9 @@ PetscErrorCode PETSC_DLLEXPORT PetscDefaultSignalHandler(int sig,void *ptr)
     (*PetscErrorPrintf)("Caught signal\n");
   }
   (*PetscErrorPrintf)("Try option -start_in_debugger or -on_error_attach_debugger\n");
-  (*PetscErrorPrintf)("or see http://www.mcs.anl.gov/petsc/petsc-as/documentation/troubleshooting.html#Signal");
+  (*PetscErrorPrintf)("or see http://www.mcs.anl.gov/petsc/petsc-as/documentation/faq.html#valgrind");
   (*PetscErrorPrintf)("or try http://valgrind.org on GNU/linux and Apple Mac OS X to find memory corruption errors\n");
-#if defined(PETSC_USE_DEBUG)
+#if defined(PETSC_USE_DEBUG) && !defined(PETSC_USE_PTHREAD)
   if (!PetscStackActive) {
     (*PetscErrorPrintf)("  or try option -log_stack\n");
   } else {
@@ -165,7 +165,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDefaultSignalHandler(int sig,void *ptr)
   (*PetscErrorPrintf)("configure using --with-debugging=yes, recompile, link, and run \n");
   (*PetscErrorPrintf)("to get more information on the crash.\n");
 #endif
-  ierr =  PetscError(0,"User provided function"," unknown file","unknown directory",PETSC_ERR_SIG,1,PETSC_NULL);
+  ierr =  PetscError(PETSC_COMM_SELF,0,"User provided function"," unknown file","unknown directory",PETSC_ERR_SIG,PETSC_ERROR_INITIAL,PETSC_NULL);
   MPI_Abort(PETSC_COMM_WORLD,(int)ierr);
   PetscFunctionReturn(0);
 }
@@ -193,15 +193,15 @@ PetscErrorCode PETSC_DLLEXPORT PetscDefaultSignalHandler(int sig,void *ptr)
 .seealso: PetscPopSignalHandler(), PetscDefaultSignalHandler()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscPushSignalHandler(PetscErrorCode (*routine)(int,void*),void* ctx)
+PetscErrorCode  PetscPushSignalHandler(PetscErrorCode (*routine)(int,void*),void* ctx)
 {
   struct  SH     *newsh;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!SIGNAL_COOKIE) {
-    /* ierr = PetscCookieRegister("Signal",&SIGNAL_COOKIE);CHKERRQ(ierr); */
-    SIGNAL_COOKIE = 19;
+  if (!SIGNAL_CLASSID) {
+    /* ierr = PetscClassIdRegister("Signal",&SIGNAL_CLASSID);CHKERRQ(ierr); */
+    SIGNAL_CLASSID = 19;
   }
   if (!SignalSet && routine) {
     /* Do not catch ABRT, CHLD, KILL */
@@ -314,13 +314,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscPushSignalHandler(PetscErrorCode (*routine)(
   }
   ierr = PetscNew(struct SH,&newsh);CHKERRQ(ierr);
   if (sh) {
-    if (sh->cookie != SIGNAL_COOKIE) SETERRQ(PETSC_ERR_COR,"Signal object has been corrupted");
+    if (sh->classid != SIGNAL_CLASSID) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_COR,"Signal object has been corrupted");
     newsh->previous = sh;
   } 
   else {newsh->previous = 0;}
   newsh->handler = routine;
   newsh->ctx     = ctx;
-  newsh->cookie  = SIGNAL_COOKIE;
+  newsh->classid  = SIGNAL_CLASSID;
   sh             = newsh;
   PetscFunctionReturn(0);
 }
@@ -341,13 +341,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscPushSignalHandler(PetscErrorCode (*routine)(
 .seealso: PetscPushSignalHandler()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscPopSignalHandler(void)
+PetscErrorCode  PetscPopSignalHandler(void)
 {
   struct SH *tmp;
 
   PetscFunctionBegin;
   if (!sh) PetscFunctionReturn(0);
-  if (sh->cookie != SIGNAL_COOKIE) SETERRQ(PETSC_ERR_COR,"Signal object has been corrupted");
+  if (sh->classid != SIGNAL_CLASSID) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_COR,"Signal object has been corrupted");
 
   tmp = sh;
   sh  = sh->previous;

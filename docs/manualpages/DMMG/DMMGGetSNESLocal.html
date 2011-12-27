@@ -9,13 +9,17 @@
 Returns the local functions for residual and Jacobian evaluation. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"    
-#include "petscmg.h"    
+#include "petscdmda.h"    
+#include "petscdmmesh.h"  
+#include "petscpcmg.h"    
 #include "petscdmmg.h"  
 #include "petscmat.h" 
-PetscErrorCode DMMGGetSNESLocal(DMMG *dmmg,DALocalFunction1 *function, DALocalFunction1 *jacobian)
+PetscErrorCode DMMGGetSNESLocal(DMMG *dmmg,DMDALocalFunction1 *function, DMDALocalFunction1 *jacobian)
 </PRE>
-Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A>
+This is being deprecated. Use <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>() for linear problems and <A HREF="../SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>() for nonlinear problems.
+See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c
+<P>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>dmmg </B> -the context

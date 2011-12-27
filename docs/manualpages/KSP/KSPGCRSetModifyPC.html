@@ -9,9 +9,9 @@
 Sets the routine used by GCR to modify the preconditioner. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGCRSetModifyPC(KSP ksp,PetscErrorCode (*function)(KSP,PetscInt,PetscReal,void*),void *data,PetscErrorCode (*destroy)(void*))
+PetscErrorCode  KSPGCRSetModifyPC(KSP ksp,PetscErrorCode (*function)(KSP,PetscInt,PetscReal,void*),void *data,PetscErrorCode (*destroy)(void*))
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 +  ksp      - iterative context obtained from <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>()

@@ -10,7 +10,7 @@ creates a MPI AIJ matrix using arrays that contain the "diagonal" and "off-diago
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreateMPIAIJWithSplitArrays(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,PetscInt i[],PetscInt j[],PetscScalar a[],
+PetscErrorCode  MatCreateMPIAIJWithSplitArrays(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,PetscInt i[],PetscInt j[],PetscScalar a[],
                                                          PetscInt oi[], PetscInt oj[],PetscScalar oa[],Mat *mat)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
@@ -49,7 +49,8 @@ calculated if N is given) For square matrices n is almost always m.
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-The i, j, and a arrays ARE NOT copied by this routine into the internal format used by PETSc.
+The i, j, and a arrays ARE NOT copied by this routine into the internal format used by PETSc. The user
+must free the arrays once the matrix has been destroyed and not before.
 <P>
 The i and j indices are 0 based
 <P>

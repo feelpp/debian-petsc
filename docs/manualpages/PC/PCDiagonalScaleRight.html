@@ -10,9 +10,9 @@ Scales a vector by the right scaling as needed by certain time-stepping codes.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleRight(PC pc,Vec in,Vec out)
+PetscErrorCode  PCDiagonalScaleRight(PC pc,Vec in,Vec out)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -41,7 +41,7 @@ If diagonal scaling is turned off and in is not out then in is copied to out
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetUp.html#PCSetUp">PCSetUp</A>(), <A HREF="../PC/PCDiagonalScaleLeft.html#PCDiagonalScaleLeft">PCDiagonalScaleLeft</A>(), <A HREF="../PC/PCDiagonalScaleSet.html#PCDiagonalScaleSet">PCDiagonalScaleSet</A>(), <A HREF="../PC/PCDiagonalScale.html#PCDiagonalScale">PCDiagonalScale</A>()
+ <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetUp.html#PCSetUp">PCSetUp</A>(), <A HREF="../PC/PCDiagonalScaleLeft.html#PCDiagonalScaleLeft">PCDiagonalScaleLeft</A>(), PCDiagonalScaleSet(), PCDiagonalScale()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/interface/precon.c.html#PCDiagonalScaleRight">src/ksp/pc/interface/precon.c</A>
 <BR><A HREF="./index.html">Index of all PC routines</A>

@@ -10,7 +10,7 @@ Sets the matrix associated with the linear system and a (possibly) different one
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetOperators(KSP ksp,Mat Amat,Mat Pmat,MatStructure flag)
+PetscErrorCode  KSPSetOperators(KSP ksp,Mat Amat,Mat Pmat,MatStructure flag)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -69,6 +69,8 @@ available options are
 <pre>
      Pmat does not have the same nonzero structure.
 </pre>
+<P>
+All future calls to <A HREF="../KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>() must use the same size matrices!
 <P>
 Passing a <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for Amat or Pmat removes the matrix that is currently used.
 <P>
@@ -167,13 +169,13 @@ it can be created for you?
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex8.c.html">src/ksp/ksp/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex8g.c.html">src/ksp/ksp/examples/tutorials/ex8g.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 </BODY></HTML>

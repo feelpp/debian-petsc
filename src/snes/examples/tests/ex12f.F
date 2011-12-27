@@ -9,8 +9,8 @@
 !      ctx(1) = da    - distributed array
 !          2  = F     - global vector where the function is stored
 !          3  = xl    - local work vector
-!          4  = rank  - processor rank
-!          5  = size  - number of processors
+!          4  = comm  - MPI communictor
+!          5  = unused
 !          6  = N     - system size
 !
 !  Note: Any user-defined Fortran routines (such as FormJacobian)
@@ -25,18 +25,18 @@
       program main
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscsnes.h>
 
       PetscFortranAddr ctx(6)
       PetscMPIInt rank,size
       PetscErrorCode ierr
       PetscInt N,start,end,nn,i
       PetscInt ii,its,i1,i0,i3
-      PetscTruth flg
+      PetscBool  flg
       SNES             snes
       Mat              J
       Vec              x,r,u
@@ -52,18 +52,17 @@
       call PetscOptionsGetInt(PETSC_NULL_CHARACTER,'-n',N,flg,ierr)
       h = 1.d0/(N-1.d0)
       ctx(6) = N
+      ctx(4) = PETSC_COMM_WORLD
 
       call MPI_Comm_rank(PETSC_COMM_WORLD,rank,ierr)
       call MPI_Comm_size(PETSC_COMM_WORLD,size,ierr)
-      ctx(4) = rank
-      ctx(5) = size
 
 ! Set up data structures
-      call DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,N,i1,i1,            &
+      call DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,N,i1,i1,            &
      &     PETSC_NULL_INTEGER,ctx(1),ierr)
 
-      call DACreateGlobalVector(ctx(1),x,ierr)
-      call DACreateLocalVector(ctx(1),ctx(3),ierr)
+      call DMCreateGlobalVector(ctx(1),x,ierr)
+      call DMCreateLocalVector(ctx(1),ctx(3),ierr)
 
       call PetscObjectSetName(x,'Approximate Solution',ierr)
       call VecDuplicate(x,r,ierr)
@@ -122,7 +121,7 @@
       call VecDestroy(ctx(2),ierr)
       call MatDestroy(J,ierr)
       call SNESDestroy(snes,ierr)
-      call DADestroy(ctx(1),ierr)
+      call DMDestroy(ctx(1),ierr)
       call PetscFinalize(ierr)
       end
 
@@ -139,18 +138,18 @@
       PetscErrorCode ierr
       PetscOffset      ixx,iff,iF2
       PetscScalar      h,d,vf2(1),vxx(1),vff(1)
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscsnes.h>
 
 
-      rank  = ctx(4)
-      size  = ctx(5)
+      call MPI_Comm_rank(ctx(4),rank,ierr)
+      call MPI_Comm_size(ctx(4),size,ierr)
       h     = 1.d0/(ctx(6) - 1.d0)
-      call DAGlobalToLocalBegin(ctx(1),x,INSERT_VALUES,ctx(3),ierr)
-      call DAGlobalToLocalEnd(ctx(1),x,INSERT_VALUES,ctx(3),ierr)
+      call DMGlobalToLocalBegin(ctx(1),x,INSERT_VALUES,ctx(3),ierr)
+      call DMGlobalToLocalEnd(ctx(1),x,INSERT_VALUES,ctx(3),ierr)
 
       call VecGetLocalSize(ctx(3),n,ierr)
       if (n .gt. 1000) then 
@@ -211,9 +210,9 @@
 
       subroutine FormInitialGuess(snes,x,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscsnes.h>
       PetscErrorCode   ierr
       Vec              x
       SNES             snes
@@ -228,16 +227,16 @@
 
       subroutine FormJacobian(snes,x,jac,B,flag,ctx,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscsnes.h>
       SNES             snes
       Vec              x
       Mat              jac,B
       PetscFortranAddr ctx(*)
-      PetscTruth       flag
+      PetscBool        flag
       PetscInt  ii,istart,iend
       PetscInt  i,j,n,end,start,i1
       PetscErrorCode ierr
@@ -248,8 +247,8 @@
       i1 = 1
       h = 1.d0/(ctx(6) - 1.d0)
       d = h*h
-      rank = ctx(4)
-      size = ctx(5)
+      call MPI_Comm_rank(ctx(4),rank,ierr)
+      call MPI_Comm_size(ctx(4),size,ierr)
 
       call VecGetArray(x,vxx,ixx,ierr)
       call VecGetOwnershipRange(x,start,end,ierr)

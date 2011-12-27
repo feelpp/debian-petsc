@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:26:07+00:00">
+<meta name="date" content="2011-10-29T18:56:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -25,8 +25,8 @@
 <a name="line15"> 15: </a>      program main
 <a name="line16"> 16: </a>      implicit none
 
-<a name="line18"> 18: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line19"> 19: </a> #include <A href="../../../../../include/finclude/petscis.h.html">finclude/petscis.h</A>
+<a name="line18"> 18: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line19"> 19: </a><font color="#A020F0">#include &lt;finclude/petscis.h&gt;</font>
 
 <a name="line21"> 21: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line22"> 22: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> indices(5),n,index1,index5
@@ -48,45 +48,46 @@
 
 <a name="line39"> 39: </a>!     <font color="#4169E1">if</font> using 64bit integers cannot pass 5 into routine expecting an integer*8
 <a name="line40"> 40: </a>      n = 5
-<a name="line41"> 41: </a>      call <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,indices,is,ierr)
+<a name="line41"> 41: </a>      call <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,indices,PETSC_COPY_VALUES,       &amp;
+<a name="line42"> 42: </a>     &amp;                     is,ierr)
 
-<a name="line43"> 43: </a>!  Print the index set to stdout
+<a name="line44"> 44: </a>!  Print the index set to stdout
 
-<a name="line45"> 45: </a>      call <A href="../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(is,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line46"> 46: </a>      call <A href="../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(is,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
 
-<a name="line47"> 47: </a>!  Get the number of indices in the set
+<a name="line48"> 48: </a>!  Get the number of indices in the set
 
-<a name="line49"> 49: </a>      call <A href="../../../../../docs/manualpages/IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(is,n,ierr)
+<a name="line50"> 50: </a>      call <A href="../../../../../docs/manualpages/IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(is,n,ierr)
 
-<a name="line51"> 51: </a>!   Get the indices in the index set
+<a name="line52"> 52: </a>!   Get the indices in the index set
 
-<a name="line53"> 53: </a>      call <A href="../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(is,indices,ix,ierr)
+<a name="line54"> 54: </a>      call <A href="../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(is,indices,ix,ierr)
 
-<a name="line55"> 55: </a>!   Now any code that needs access to the list of integers
-<a name="line56"> 56: </a>!   has access to it here
+<a name="line56"> 56: </a>!   Now any code that needs access to the list of integers
+<a name="line57"> 57: </a>!   has access to it here
 
-<a name="line58"> 58: </a>!
-<a name="line59"> 59: </a>!      Bug in IRIX64-F90 libraries - write/format cannot handle integer(integer*8 + integer)
-<a name="line60"> 60: </a>!
+<a name="line59"> 59: </a>!
+<a name="line60"> 60: </a>!      Bug in IRIX64-F90 libraries - write/format cannot handle integer(integer*8 + integer)
+<a name="line61"> 61: </a>!
 
-<a name="line62"> 62: </a>      index1 = indices(ix+1)
-<a name="line63"> 63: </a>      index5 = indices(ix+5)
-<a name="line64"> 64: </a>      write(6,100) rank,index1,index5
-<a name="line65"> 65: </a> 100  format('[',i5,'] First index = ',i5,' fifth index = ',i5)
-<a name="line66"> 66: </a>
-<a name="line67"> 67: </a>!   Once we no longer need access to the indices they should
-<a name="line68"> 68: </a>!   returned to the system
+<a name="line63"> 63: </a>      index1 = indices(ix+1)
+<a name="line64"> 64: </a>      index5 = indices(ix+5)
+<a name="line65"> 65: </a>      write(6,100) rank,index1,index5
+<a name="line66"> 66: </a> 100  format('[',i5,'] First index = ',i5,' fifth index = ',i5)
+<a name="line67"> 67: </a>
+<a name="line68"> 68: </a>!   Once we no longer need access to the indices they should
+<a name="line69"> 69: </a>!   returned to the system
 
-<a name="line70"> 70: </a>      call <A href="../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(is,indices,ix,ierr)
-<a name="line71"> 71: </a>
-<a name="line72"> 72: </a>!   All PETSc objects should be destroyed once they are
-<a name="line73"> 73: </a>!   no longer needed
+<a name="line71"> 71: </a>      call <A href="../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(is,indices,ix,ierr)
+<a name="line72"> 72: </a>
+<a name="line73"> 73: </a>!   All PETSc objects should be destroyed once they are
+<a name="line74"> 74: </a>!   no longer needed
 
-<a name="line75"> 75: </a>      call <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is,ierr)
-<a name="line76"> 76: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line77"> 77: </a>      end
+<a name="line76"> 76: </a>      call <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is,ierr)
+<a name="line77"> 77: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line78"> 78: </a>      end
 
-<a name="line79"> 79: </a>
+<a name="line80"> 80: </a>
 
 
 

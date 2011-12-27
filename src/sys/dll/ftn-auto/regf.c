@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* reg.c */
 /* Fortran interface file */
 
@@ -53,19 +54,19 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscflistdestroy_(PetscFList *fl, int *__ierr ){
+void PETSC_STDCALL  petscflistdestroy_(PetscFList *fl, int *__ierr ){
 *__ierr = PetscFListDestroy(fl);
 }
-void PETSC_STDCALL   petscflistview_(PetscFList list,PetscViewer viewer, int *__ierr ){
+void PETSC_STDCALL  petscflistview_(PetscFList list,PetscViewer viewer, int *__ierr ){
 *__ierr = PetscFListView(
 	(PetscFList)PetscToPointer((list) ),
 	(PetscViewer)PetscToPointer((viewer) ));
 }
-void PETSC_STDCALL   petscflistget_(PetscFList list,char ***array,int *n, int *__ierr ){
+void PETSC_STDCALL  petscflistget_(PetscFList list,char ***array,int *n, int *__ierr ){
 *__ierr = PetscFListGet(
 	(PetscFList)PetscToPointer((list) ),array,n);
 }
-void PETSC_STDCALL   petscflistduplicate_(PetscFList fl,PetscFList *nl, int *__ierr ){
+void PETSC_STDCALL  petscflistduplicate_(PetscFList fl,PetscFList *nl, int *__ierr ){
 *__ierr = PetscFListDuplicate(
 	(PetscFList)PetscToPointer((fl) ),nl);
 }

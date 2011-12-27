@@ -23,7 +23,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -36,7 +36,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscInt       ntimes,i,j,k,Ii,J,Istart,Iend;
   PetscInt       m = 8,n = 7,its;
-  PetscTruth     flg = PETSC_FALSE;
+  PetscBool      flg = PETSC_FALSE;
   PetscScalar    v,one = 1.0,neg_one = -1.0,rhs;
 
   PetscInitialize(&argc,&args,(char *)0,help);
@@ -156,7 +156,7 @@ int main(int argc,char **args)
     /*
        View the exact solution vector if desired
     */
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-view_exact_sol",&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-view_exact_sol",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);}
 
     ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
@@ -181,9 +181,9 @@ int main(int argc,char **args)
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
   */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
   /*
      Always call PetscFinalize() before exiting a program.  This routine
@@ -191,6 +191,6 @@ int main(int argc,char **args)
        - provides summary and diagnostic information if certain runtime
          options are chosen (e.g., -log_summary). 
   */
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

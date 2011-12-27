@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscsys.h"
+#include <petscsys.h>
 #if defined(PETSC_HAVE_PWD_H)
 #include <pwd.h>
 #endif
@@ -40,7 +39,7 @@
 
 .seealso: PetscGetFullPath()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscGetRelativePath(const char fullpath[],char path[],size_t flen)
+PetscErrorCode  PetscGetRelativePath(const char fullpath[],char path[],size_t flen)
 {
   char           *p;
   PetscErrorCode ierr;

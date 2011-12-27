@@ -13,7 +13,7 @@ T*/
      petscmat.h    - matrices
      petscis.h     - index sets            petscviewer.h - viewers               
 */
-#include "petscmat.h"
+#include <petscmat.h>
 
 
 #undef __FUNCT__
@@ -26,7 +26,7 @@ int main(int argc,char **args)
   PetscErrorCode        ierr;
   PetscReal             *norms;
   PetscInt              n,cstart,cend;
-  PetscTruth            flg;
+  PetscBool             flg;
 
   PetscInitialize(&argc,&args,(char *)0,help);
 
@@ -35,8 +35,8 @@ int main(int argc,char **args)
      Determine files from which we read the two linear systems
      (matrix and right-hand-side vector).
   */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Must indicate binary file with the -f option");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Must indicate binary file with the -f option");
 
   /* 
      Open binary file.  Note that we use FILE_MODE_READ to indicate
@@ -47,8 +47,11 @@ int main(int argc,char **args)
   /*
     Load the matrix; then destroy the viewer.
   */
-  ierr = MatLoad(fd,MATSEQAIJ,&A);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetOptionsPrefix(A,"a_");CHKERRQ(ierr);
+  ierr = MatSetFromOptions(A);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
   ierr = MatGetSize(A,PETSC_NULL,&n);CHKERRQ(ierr);
   ierr = MatGetOwnershipRangeColumn(A,&cstart,&cend);CHKERRQ(ierr);
@@ -57,8 +60,8 @@ int main(int argc,char **args)
   ierr = PetscRealView(cend-cstart,norms+cstart,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
   ierr = PetscFree(norms);CHKERRQ(ierr);
 
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

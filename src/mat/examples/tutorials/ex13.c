@@ -1,5 +1,6 @@
 
-static char help[] = "Test MatSolveTranspose() for BAIJ matrix  -f <input_file> : file to load \n\n";
+static char help[] = "Test MatFwkAIJ: a block matrix with an AIJ-like datastructure keeping track of nonzero blocks.\n\
+Each block is a matrix of (generally) any type.\n\n";
 
 /* 
   Include "petscmat.h" so that we can use matrices.
@@ -8,8 +9,8 @@ static char help[] = "Test MatSolveTranspose() for BAIJ matrix  -f <input_file> 
      petscmat.h    - matrices
      petscis.h     - index sets            petscviewer.h - viewers               
 */
-#include "petscmat.h"
-#include "private/matimpl.h"
+#include <petscmat.h>
+#include <private/matimpl.h>
 extern PetscErrorCode MatSolveTranspose_SeqBAIJ_N(Mat,Vec,Vec);
 
 #undef __FUNCT__
@@ -20,7 +21,7 @@ int main(int argc,char **args)
   PetscViewer           fd;               /* viewer */
   char                  file[PETSC_MAX_PATH_LEN];     /* input file name */
   PetscErrorCode        ierr;
-  PetscTruth            flg;
+  PetscBool             flg;
   Vec                   x,y,w;
   MatFactorInfo         iluinfo;
   IS                    perm;
@@ -33,8 +34,8 @@ int main(int argc,char **args)
      Determine file from which we read the matrix
 
   */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Must indicate binary file with the -f option");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Must indicate binary file with the -f option");
 
 
   /* 
@@ -46,9 +47,12 @@ int main(int argc,char **args)
   /*
     Load the matrix; then destroy the viewer.
   */
-  ierr = MatLoad(fd,MATSEQBAIJ,&A);CHKERRQ(ierr);
-  ierr = VecLoad(fd,VECSEQ,&x);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATSEQBAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
+  ierr = VecLoad(x,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
   ierr = VecDuplicate(x,&y);CHKERRQ(ierr);
   ierr = VecDuplicate(x,&w);CHKERRQ(ierr);
 
@@ -68,13 +72,13 @@ int main(int argc,char **args)
   if (norm) {
     ierr = PetscPrintf(PETSC_COMM_SELF,"Norm of difference is nonzero %g\n",norm);CHKERRQ(ierr);
   }
-  ierr = ISDestroy(perm);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(F);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = VecDestroy(w);CHKERRQ(ierr);
+  ierr = ISDestroy(&perm);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&F);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = VecDestroy(&w);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

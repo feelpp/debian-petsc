@@ -1,9 +1,9 @@
 
 ALL: lib
 
-DIRS     = ao da mesh adda f90-mod
+DIRS     = ao sa impls f90-mod interface examples
 LOCDIR   = src/dm/
-MANSEC   = DA
+MANSEC   = DM
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

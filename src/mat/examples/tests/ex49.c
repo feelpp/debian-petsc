@@ -1,7 +1,7 @@
 
-static char help[] = "Tests MatTranspose(), MatNorm(), MatValid(), and MatAXPY().\n\n";
+static char help[] = "Tests MatTranspose(), MatNorm(), and MatAXPY().\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -12,7 +12,7 @@ int main(int argc,char **argv)
   PetscErrorCode ierr;
   PetscMPIInt    size,rank;
   PetscInt       rstart,rend,rect = 0;
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscScalar    v;
   PetscReal      normf,normi,norm1;
   MatInfo        info;
@@ -40,11 +40,6 @@ int main(int argc,char **argv)
   }
   ierr = MatAssemblyBegin(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-
-  /* Test whether matrix has been corrupted (just to demonstrate this
-     routine) not needed in most application codes. */
-  ierr = MatValid(mat,(PetscTruth*)&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Corrupted matrix.");
 
   /* Print info about original matrix */
   ierr = MatGetInfo(mat,MAT_GLOBAL_SUM,&info);CHKERRQ(ierr);
@@ -88,10 +83,10 @@ int main(int argc,char **argv)
   }
 
   /* Free data structures */  
-  ierr = MatDestroy(tmat);CHKERRQ(ierr);
-  if (mat) {ierr = MatDestroy(mat);CHKERRQ(ierr);}
+  ierr = MatDestroy(&tmat);CHKERRQ(ierr);
+  if (mat) {ierr = MatDestroy(&mat);CHKERRQ(ierr);}
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

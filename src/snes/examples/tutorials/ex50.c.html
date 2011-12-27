@@ -1,0 +1,396 @@
+<center><a href="ex50.c">Actual source code: ex50.c</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:17:47+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80">
+<a name="line2">  2: </a>static char help[] = <font color="#666666">"Nonlinear driven cavity with multigrid in 2d.\n\</font>
+<a name="line3">  3: </a><font color="#666666">  \n\</font>
+<a name="line4">  4: </a><font color="#666666">The 2D driven cavity problem is solved in a velocity-vorticity formulation.\n\</font>
+<a name="line5">  5: </a><font color="#666666">The flow can be driven with the lid or with bouyancy or both:\n\</font>
+<a name="line6">  6: </a><font color="#666666">  -lidvelocity &lt;lid&gt;, where &lt;lid&gt; = dimensionless velocity of lid\n\</font>
+<a name="line7">  7: </a><font color="#666666">  -grashof &lt;gr&gt;, where &lt;gr&gt; = dimensionless temperature gradent\n\</font>
+<a name="line8">  8: </a><font color="#666666">  -prandtl &lt;pr&gt;, where &lt;pr&gt; = dimensionless thermal/momentum diffusity ratio\n\</font>
+<a name="line9">  9: </a><font color="#666666">  -contours : draw contour plots of solution\n\n"</font>;
+<a name="line10"> 10: </a><font color="#B22222">/*</font>
+<a name="line11"> 11: </a><font color="#B22222">      The same as ex19.c except it does not use <A href="../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A>, it uses its replacement.</font>
+<a name="line12"> 12: </a><font color="#B22222">      See src/ksp/ksp/examples/tutorials/ex45.c</font>
+<a name="line13"> 13: </a><font color="#B22222">*/</font>
+
+<a name="line15"> 15: </a><font color="#B22222">/*T</font>
+<a name="line16"> 16: </a><font color="#B22222">   Concepts: <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>^solving a system of nonlinear equations (parallel multicomponent example);</font>
+<a name="line17"> 17: </a><font color="#B22222">   Concepts: DMDA^using distributed arrays;</font>
+<a name="line18"> 18: </a><font color="#B22222">   Concepts: multicomponent</font>
+<a name="line19"> 19: </a><font color="#B22222">   Processors: n</font>
+<a name="line20"> 20: </a><font color="#B22222">T*/</font>
+<a name="line21"> 21: </a><font color="#B22222">/* ------------------------------------------------------------------------</font>
+
+<a name="line23"> 23: </a><font color="#B22222">    We thank David E. Keyes for contributing the driven cavity discretization</font>
+<a name="line24"> 24: </a><font color="#B22222">    within this example code.</font>
+
+<a name="line26"> 26: </a><font color="#B22222">    This problem is modeled by the partial differential equation system</font>
+<a name="line27"> 27: </a><font color="#B22222">  </font>
+<a name="line28"> 28: </a><font color="#B22222">        - Lap(U) - Grad_y(Omega) = 0</font>
+<a name="line29"> 29: </a><font color="#B22222">        - Lap(V) + Grad_x(Omega) = 0</font>
+<a name="line30"> 30: </a><font color="#B22222">        - Lap(Omega) + Div([U*Omega,V*Omega]) - GR*Grad_x(T) = 0</font>
+<a name="line31"> 31: </a><font color="#B22222">        - Lap(T) + PR*Div([U*T,V*T]) = 0</font>
+
+<a name="line33"> 33: </a><font color="#B22222">    in the unit square, which is uniformly discretized in each of x and</font>
+<a name="line34"> 34: </a><font color="#B22222">    y in this simple encoding.</font>
+
+<a name="line36"> 36: </a><font color="#B22222">    No-slip, rigid-wall Dirichlet conditions are used for [U,V].</font>
+<a name="line37"> 37: </a><font color="#B22222">    Dirichlet conditions are used for Omega, based on the definition of</font>
+<a name="line38"> 38: </a><font color="#B22222">    vorticity: Omega = - Grad_y(U) + Grad_x(V), where along each</font>
+<a name="line39"> 39: </a><font color="#B22222">    constant coordinate boundary, the tangential derivative is zero.</font>
+<a name="line40"> 40: </a><font color="#B22222">    Dirichlet conditions are used for T on the left and right walls,</font>
+<a name="line41"> 41: </a><font color="#B22222">    and insulation homogeneous Neumann conditions are used for T on</font>
+<a name="line42"> 42: </a><font color="#B22222">    the top and bottom walls. </font>
+
+<a name="line44"> 44: </a><font color="#B22222">    A finite difference approximation with the usual 5-point stencil </font>
+<a name="line45"> 45: </a><font color="#B22222">    is used to discretize the boundary value problem to obtain a </font>
+<a name="line46"> 46: </a><font color="#B22222">    nonlinear system of equations.  Upwinding is used for the divergence</font>
+<a name="line47"> 47: </a><font color="#B22222">    (convective) terms and central for the gradient (source) terms.</font>
+<a name="line48"> 48: </a><font color="#B22222">    </font>
+<a name="line49"> 49: </a><font color="#B22222">    The Jacobian can be either</font>
+<a name="line50"> 50: </a><font color="#B22222">      * formed via finite differencing using coloring (the default), or</font>
+<a name="line51"> 51: </a><font color="#B22222">      * applied matrix-free via the option -snes_mf </font>
+<a name="line52"> 52: </a><font color="#B22222">        (for larger grid problems this variant may not converge </font>
+<a name="line53"> 53: </a><font color="#B22222">        without a preconditioner due to ill-conditioning).</font>
+
+<a name="line55"> 55: </a><font color="#B22222">  ------------------------------------------------------------------------- */</font>
+
+<a name="line57"> 57: </a><font color="#B22222">/* </font>
+<a name="line58"> 58: </a><font color="#B22222">   Include "petscdmda.h" so that we can use distributed arrays (DMDAs).</font>
+<a name="line59"> 59: </a><font color="#B22222">   Include "petscsnes.h" so that we can use <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> solvers.  Note that this</font>
+<a name="line60"> 60: </a><font color="#B22222">   file automatically includes:</font>
+<a name="line61"> 61: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscvec.h - vectors</font>
+<a name="line62"> 62: </a><font color="#B22222">     petscmat.h - matrices</font>
+<a name="line63"> 63: </a><font color="#B22222">     petscis.h     - index sets            petscksp.h - Krylov subspace methods</font>
+<a name="line64"> 64: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
+<a name="line65"> 65: </a><font color="#B22222">     petscksp.h   - linear solvers </font>
+<a name="line66"> 66: </a><font color="#B22222">*/</font>
+<a name="line67"> 67: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
+<a name="line68"> 68: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
+<a name="line69"> 69: </a><font color="#A020F0">#include &lt;petscdmmg.h&gt;</font>
+
+<a name="line71"> 71: </a><font color="#B22222">/* </font>
+<a name="line72"> 72: </a><font color="#B22222">   User-defined routines and data structures</font>
+<a name="line73"> 73: </a><font color="#B22222">*/</font>
+<a name="line74"> 74: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line75"> 75: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> u,v,omega,temp;
+<a name="line76"> 76: </a>} Field;
+
+<a name="line78"> 78: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunctionLocal(<A href="../../../../docs/manualpages/DM/DMDALocalInfo.html#DMDALocalInfo">DMDALocalInfo</A>*,Field**,Field**,void*)</font></strong>;
+<a name="line79"> 79: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
+
+<a name="line81"> 81: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line82"> 82: </a>   <A href="../../../../docs/manualpages/Sys/PassiveReal.html#PassiveReal">PassiveReal</A>  lidvelocity,prandtl,grashof;  <font color="#B22222">/* physical parameters */</font>
+<a name="line83"> 83: </a>   <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>    draw_contours;                <font color="#B22222">/* flag - 1 indicates drawing contours */</font>
+<a name="line84"> 84: </a>} AppCtx;
+
+<a name="line86"> 86: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormInitialGuess(AppCtx*,DM,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+
+<a name="line90"> 90: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
+<a name="line91"> 91: </a>{
+<a name="line92"> 92: </a>  AppCtx         user;                <font color="#B22222">/* user-defined work context */</font>
+<a name="line93"> 93: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       mx,my,its;
+<a name="line95"> 95: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm;
+<a name="line96"> 96: </a>  <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>           snes;
+<a name="line97"> 97: </a>  DM             da;
+<a name="line98"> 98: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x;
+
+<a name="line100">100: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);<font color="#4169E1">if</font> (ierr) <font color="#4169E1">return</font>(1);
+<a name="line101">101: </a>  comm = <A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>;
+
+<a name="line103">103: </a>  <A href="../../../../docs/manualpages/SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(comm,&amp;snes);
+<a name="line104">104: </a>
+<a name="line105">105: </a>  <font color="#B22222">/*</font>
+<a name="line106">106: </a><font color="#B22222">      Create distributed array multigrid object (<A href="../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A>) to manage parallel grid and vectors</font>
+<a name="line107">107: </a><font color="#B22222">      for principal unknowns (x) and governing residuals (f)</font>
+<a name="line108">108: </a><font color="#B22222">  */</font>
+<a name="line109">109: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,<A href="../../../../docs/manualpages/DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>,-4,-4,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,4,1,0,0,&amp;da);
+<a name="line110">110: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>(snes,(DM)da);
+<a name="line111">111: </a>
+<a name="line112">112: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,0,&amp;mx,&amp;my,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,
+<a name="line113">113: </a>                   <A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>);
+<a name="line114">114: </a>  <font color="#B22222">/* </font>
+<a name="line115">115: </a><font color="#B22222">     Problem parameters (velocity of lid, prandtl, and grashof numbers)</font>
+<a name="line116">116: </a><font color="#B22222">  */</font>
+<a name="line117">117: </a>  user.lidvelocity = 1.0/(mx*my);
+<a name="line118">118: </a>  user.prandtl     = 1.0;
+<a name="line119">119: </a>  user.grashof     = 1.0;
+<a name="line120">120: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-lidvelocity"</font>,&amp;user.lidvelocity,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line121">121: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-prandtl"</font>,&amp;user.prandtl,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line122">122: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-grashof"</font>,&amp;user.grashof,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line123">123: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-contours"</font>,&amp;user.draw_contours);
+
+<a name="line125">125: </a>  <A href="../../../../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(da,0,<font color="#666666">"x-velocity"</font>);
+<a name="line126">126: </a>  <A href="../../../../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(da,1,<font color="#666666">"y-velocity"</font>);
+<a name="line127">127: </a>  <A href="../../../../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(da,2,<font color="#666666">"Omega"</font>);
+<a name="line128">128: </a>  <A href="../../../../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(da,3,<font color="#666666">"temperature"</font>);
+<a name="line129">129: </a>
+<a name="line130">130: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line131">131: </a><font color="#B22222">     Create user context, set problem data, create vector data structures.</font>
+<a name="line132">132: </a><font color="#B22222">     Also, compute the initial guess.</font>
+<a name="line133">133: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line134">134: </a>
+<a name="line135">135: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line136">136: </a><font color="#B22222">     Create nonlinear solver context</font>
+<a name="line137">137: </a><font color="#B22222">     </font>
+<a name="line138">138: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line139">139: </a>  <A href="../../../../docs/manualpages/DM/DMSetApplicationContext.html#DMSetApplicationContext">DMSetApplicationContext</A>(da,&amp;user);
+<a name="line140">140: </a>  <A href="../../../../docs/manualpages/DM/DMDASetLocalFunction.html#DMDASetLocalFunction">DMDASetLocalFunction</A>(da,(DMDALocalFunction1)FormFunctionLocal);
+<a name="line141">141: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>(snes);
+<a name="line142">142: </a>
+<a name="line143">143: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(comm,<font color="#666666">"lid velocity = %G, prandtl # = %G, grashof # = %G\n"</font>,user.lidvelocity,user.prandtl,user.grashof);
+
+
+<a name="line146">146: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line147">147: </a><font color="#B22222">     Solve the nonlinear system</font>
+<a name="line148">148: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line149">149: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da,&amp;x);
+<a name="line150">150: </a>  FormInitialGuess(&amp;user,da,x);
+<a name="line151">151: </a>
+<a name="line152">152: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,x);
+<a name="line153">153: </a>
+<a name="line154">154: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);
+<a name="line155">155: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(comm,<font color="#666666">"Number of Newton iterations = %D\n"</font>, its);
+<a name="line156">156: </a>
+<a name="line157">157: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line158">158: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
+<a name="line159">159: </a><font color="#B22222">     are no longer needed.</font>
+<a name="line160">160: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line161">161: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line162">162: </a>  <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;da);
+<a name="line163">163: </a>  <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(&amp;snes);
+<a name="line164">164: </a>
+<a name="line165">165: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line166">166: </a>  <font color="#4169E1">return</font> 0;
+<a name="line167">167: </a>}
+
+<a name="line169">169: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
+
+
+<a name="line174">174: </a><font color="#B22222">/* </font>
+<a name="line175">175: </a><font color="#B22222">   FormInitialGuess - Forms initial approximation.</font>
+
+<a name="line177">177: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line178">178: </a><font color="#B22222">   user - user-defined application context</font>
+<a name="line179">179: </a><font color="#B22222">   X - vector</font>
+
+<a name="line181">181: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line182">182: </a><font color="#B22222">   X - vector</font>
+<a name="line183">183: </a><font color="#B22222"> */</font>
+<a name="line184">184: </a><strong><font color="#4169E1"><a name="FormInitialGuess"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormInitialGuess(AppCtx *user,DM da,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X)</font></strong>
+<a name="line185">185: </a>{
+<a name="line186">186: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,mx,xs,ys,xm,ym;
+<a name="line188">188: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      grashof,dx;
+<a name="line189">189: </a>  Field          **x;
+
+<a name="line191">191: </a>  grashof = user-&gt;grashof;
+
+<a name="line193">193: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,0,&amp;mx,0,0,0,0,0,0,0,0,0,0,0);
+<a name="line194">194: </a>  dx  = 1.0/(mx-1);
+
+<a name="line196">196: </a>  <font color="#B22222">/*</font>
+<a name="line197">197: </a><font color="#B22222">     Get local grid boundaries (for 2-dimensional DMDA):</font>
+<a name="line198">198: </a><font color="#B22222">       xs, ys   - starting grid indices (no ghost points)</font>
+<a name="line199">199: </a><font color="#B22222">       xm, ym   - widths of local grid (no ghost points)</font>
+<a name="line200">200: </a><font color="#B22222">  */</font>
+<a name="line201">201: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,&amp;ym,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+
+<a name="line203">203: </a>  <font color="#B22222">/*</font>
+<a name="line204">204: </a><font color="#B22222">     Get a pointer to vector data.</font>
+<a name="line205">205: </a><font color="#B22222">       - For default PETSc vectors, <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>() returns a pointer to</font>
+<a name="line206">206: </a><font color="#B22222">         the data array.  Otherwise, the routine is implementation dependent.</font>
+<a name="line207">207: </a><font color="#B22222">       - You MUST call <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>() when you no longer need access to</font>
+<a name="line208">208: </a><font color="#B22222">         the array.</font>
+<a name="line209">209: </a><font color="#B22222">  */</font>
+<a name="line210">210: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,X,&amp;x);
+
+<a name="line212">212: </a>  <font color="#B22222">/*</font>
+<a name="line213">213: </a><font color="#B22222">     Compute initial guess over the locally owned part of the grid</font>
+<a name="line214">214: </a><font color="#B22222">     Initial condition is motionless fluid and equilibrium temperature</font>
+<a name="line215">215: </a><font color="#B22222">  */</font>
+<a name="line216">216: </a>  <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++) {
+<a name="line217">217: </a>    <font color="#4169E1">for</font> (i=xs; i&lt;xs+xm; i++) {
+<a name="line218">218: </a>      x[j][i].u     = 0.0;
+<a name="line219">219: </a>      x[j][i].v     = 0.0;
+<a name="line220">220: </a>      x[j][i].omega = 0.0;
+<a name="line221">221: </a>      x[j][i].temp  = (grashof&gt;0)*i*dx;
+<a name="line222">222: </a>    }
+<a name="line223">223: </a>  }
+
+<a name="line225">225: </a>  <font color="#B22222">/*</font>
+<a name="line226">226: </a><font color="#B22222">     Restore vector</font>
+<a name="line227">227: </a><font color="#B22222">  */</font>
+<a name="line228">228: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,X,&amp;x);
+<a name="line229">229: </a>  <font color="#4169E1">return</font> 0;
+<a name="line230">230: </a>}
+<a name="line231">231: </a>
+<a name="line234">234: </a><strong><font color="#4169E1"><a name="FormFunctionLocal"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunctionLocal(<A href="../../../../docs/manualpages/DM/DMDALocalInfo.html#DMDALocalInfo">DMDALocalInfo</A> *info,Field **x,Field **f,void *ptr)</font></strong>
+<a name="line235">235: </a> {
+<a name="line236">236: </a>  AppCtx         *user = (AppCtx*)ptr;
+<a name="line238">238: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       xints,xinte,yints,yinte,i,j;
+<a name="line239">239: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      hx,hy,dhx,dhy,hxdhy,hydhx;
+<a name="line240">240: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      grashof,prandtl,lid;
+<a name="line241">241: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    u,uxx,uyy,vx,vy,avx,avy,vxp,vxm,vyp,vym;
+
+<a name="line244">244: </a>  grashof = user-&gt;grashof;
+<a name="line245">245: </a>  prandtl = user-&gt;prandtl;
+<a name="line246">246: </a>  lid     = user-&gt;lidvelocity;
+
+<a name="line248">248: </a>  <font color="#B22222">/* </font>
+<a name="line249">249: </a><font color="#B22222">     Define mesh intervals ratios for uniform grid.</font>
+
+<a name="line251">251: </a><font color="#B22222">     Note: FD formulae below are normalized by multiplying through by</font>
+<a name="line252">252: </a><font color="#B22222">     local volume element (i.e. hx*hy) to obtain coefficients O(1) in two dimensions.</font>
+
+<a name="line254">254: </a><font color="#B22222">     </font>
+<a name="line255">255: </a><font color="#B22222">  */</font>
+<a name="line256">256: </a>  dhx = (<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(info-&gt;mx-1);  dhy = (<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(info-&gt;my-1);
+<a name="line257">257: </a>  hx = 1.0/dhx;                   hy = 1.0/dhy;
+<a name="line258">258: </a>  hxdhy = hx*dhy;                 hydhx = hy*dhx;
+
+<a name="line260">260: </a>  xints = info-&gt;xs; xinte = info-&gt;xs+info-&gt;xm; yints = info-&gt;ys; yinte = info-&gt;ys+info-&gt;ym;
+
+<a name="line262">262: </a>  <font color="#B22222">/* Test whether we are on the bottom edge of the global array */</font>
+<a name="line263">263: </a>  <font color="#4169E1">if</font> (yints == 0) {
+<a name="line264">264: </a>    j = 0;
+<a name="line265">265: </a>    yints = yints + 1;
+<a name="line266">266: </a>    <font color="#B22222">/* bottom edge */</font>
+<a name="line267">267: </a>    <font color="#4169E1">for</font> (i=info-&gt;xs; i&lt;info-&gt;xs+info-&gt;xm; i++) {
+<a name="line268">268: </a>      f[j][i].u     = x[j][i].u;
+<a name="line269">269: </a>      f[j][i].v     = x[j][i].v;
+<a name="line270">270: </a>      f[j][i].omega = x[j][i].omega + (x[j+1][i].u - x[j][i].u)*dhy;
+<a name="line271">271: </a>      f[j][i].temp  = x[j][i].temp-x[j+1][i].temp;
+<a name="line272">272: </a>    }
+<a name="line273">273: </a>  }
+
+<a name="line275">275: </a>  <font color="#B22222">/* Test whether we are on the top edge of the global array */</font>
+<a name="line276">276: </a>  <font color="#4169E1">if</font> (yinte == info-&gt;my) {
+<a name="line277">277: </a>    j = info-&gt;my - 1;
+<a name="line278">278: </a>    yinte = yinte - 1;
+<a name="line279">279: </a>    <font color="#B22222">/* top edge */</font>
+<a name="line280">280: </a>    <font color="#4169E1">for</font> (i=info-&gt;xs; i&lt;info-&gt;xs+info-&gt;xm; i++) {
+<a name="line281">281: </a>        f[j][i].u     = x[j][i].u - lid;
+<a name="line282">282: </a>        f[j][i].v     = x[j][i].v;
+<a name="line283">283: </a>        f[j][i].omega = x[j][i].omega + (x[j][i].u - x[j-1][i].u)*dhy;
+<a name="line284">284: </a>        f[j][i].temp  = x[j][i].temp-x[j-1][i].temp;
+<a name="line285">285: </a>    }
+<a name="line286">286: </a>  }
+
+<a name="line288">288: </a>  <font color="#B22222">/* Test whether we are on the left edge of the global array */</font>
+<a name="line289">289: </a>  <font color="#4169E1">if</font> (xints == 0) {
+<a name="line290">290: </a>    i = 0;
+<a name="line291">291: </a>    xints = xints + 1;
+<a name="line292">292: </a>    <font color="#B22222">/* left edge */</font>
+<a name="line293">293: </a>    <font color="#4169E1">for</font> (j=info-&gt;ys; j&lt;info-&gt;ys+info-&gt;ym; j++) {
+<a name="line294">294: </a>      f[j][i].u     = x[j][i].u;
+<a name="line295">295: </a>      f[j][i].v     = x[j][i].v;
+<a name="line296">296: </a>      f[j][i].omega = x[j][i].omega - (x[j][i+1].v - x[j][i].v)*dhx;
+<a name="line297">297: </a>      f[j][i].temp  = x[j][i].temp;
+<a name="line298">298: </a>    }
+<a name="line299">299: </a>  }
+
+<a name="line301">301: </a>  <font color="#B22222">/* Test whether we are on the right edge of the global array */</font>
+<a name="line302">302: </a>  <font color="#4169E1">if</font> (xinte == info-&gt;mx) {
+<a name="line303">303: </a>    i = info-&gt;mx - 1;
+<a name="line304">304: </a>    xinte = xinte - 1;
+<a name="line305">305: </a>    <font color="#B22222">/* right edge */</font>
+<a name="line306">306: </a>    <font color="#4169E1">for</font> (j=info-&gt;ys; j&lt;info-&gt;ys+info-&gt;ym; j++) {
+<a name="line307">307: </a>      f[j][i].u     = x[j][i].u;
+<a name="line308">308: </a>      f[j][i].v     = x[j][i].v;
+<a name="line309">309: </a>      f[j][i].omega = x[j][i].omega - (x[j][i].v - x[j][i-1].v)*dhx;
+<a name="line310">310: </a>      f[j][i].temp  = x[j][i].temp - (<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(grashof&gt;0);
+<a name="line311">311: </a>    }
+<a name="line312">312: </a>  }
+
+<a name="line314">314: </a>  <font color="#B22222">/* Compute over the interior points */</font>
+<a name="line315">315: </a>  <font color="#4169E1">for</font> (j=yints; j&lt;yinte; j++) {
+<a name="line316">316: </a>    <font color="#4169E1">for</font> (i=xints; i&lt;xinte; i++) {
+
+<a name="line318">318: </a>        <font color="#B22222">/*</font>
+<a name="line319">319: </a><font color="#B22222">          convective coefficients for upwinding</font>
+<a name="line320">320: </a><font color="#B22222">        */</font>
+<a name="line321">321: </a>        vx = x[j][i].u; avx = PetscAbsScalar(vx);
+<a name="line322">322: </a>        vxp = .5*(vx+avx); vxm = .5*(vx-avx);
+<a name="line323">323: </a>        vy = x[j][i].v; avy = PetscAbsScalar(vy);
+<a name="line324">324: </a>        vyp = .5*(vy+avy); vym = .5*(vy-avy);
+
+<a name="line326">326: </a>        <font color="#B22222">/* U velocity */</font>
+<a name="line327">327: </a>        u          = x[j][i].u;
+<a name="line328">328: </a>        uxx        = (2.0*u - x[j][i-1].u - x[j][i+1].u)*hydhx;
+<a name="line329">329: </a>        uyy        = (2.0*u - x[j-1][i].u - x[j+1][i].u)*hxdhy;
+<a name="line330">330: </a>        f[j][i].u  = uxx + uyy - .5*(x[j+1][i].omega-x[j-1][i].omega)*hx;
+
+<a name="line332">332: </a>        <font color="#B22222">/* V velocity */</font>
+<a name="line333">333: </a>        u          = x[j][i].v;
+<a name="line334">334: </a>        uxx        = (2.0*u - x[j][i-1].v - x[j][i+1].v)*hydhx;
+<a name="line335">335: </a>        uyy        = (2.0*u - x[j-1][i].v - x[j+1][i].v)*hxdhy;
+<a name="line336">336: </a>        f[j][i].v  = uxx + uyy + .5*(x[j][i+1].omega-x[j][i-1].omega)*hy;
+
+<a name="line338">338: </a>        <font color="#B22222">/* Omega */</font>
+<a name="line339">339: </a>        u          = x[j][i].omega;
+<a name="line340">340: </a>        uxx        = (2.0*u - x[j][i-1].omega - x[j][i+1].omega)*hydhx;
+<a name="line341">341: </a>        uyy        = (2.0*u - x[j-1][i].omega - x[j+1][i].omega)*hxdhy;
+<a name="line342">342: </a>        f[j][i].omega = uxx + uyy +
+<a name="line343">343: </a>                        (vxp*(u - x[j][i-1].omega) +
+<a name="line344">344: </a>                          vxm*(x[j][i+1].omega - u)) * hy +
+<a name="line345">345: </a>                        (vyp*(u - x[j-1][i].omega) +
+<a name="line346">346: </a>                          vym*(x[j+1][i].omega - u)) * hx -
+<a name="line347">347: </a>                        .5 * grashof * (x[j][i+1].temp - x[j][i-1].temp) * hy;
+
+<a name="line349">349: </a>        <font color="#B22222">/* Temperature */</font>
+<a name="line350">350: </a>        u             = x[j][i].temp;
+<a name="line351">351: </a>        uxx           = (2.0*u - x[j][i-1].temp - x[j][i+1].temp)*hydhx;
+<a name="line352">352: </a>        uyy           = (2.0*u - x[j-1][i].temp - x[j+1][i].temp)*hxdhy;
+<a name="line353">353: </a>        f[j][i].temp =  uxx + uyy  + prandtl * (
+<a name="line354">354: </a>                        (vxp*(u - x[j][i-1].temp) +
+<a name="line355">355: </a>                          vxm*(x[j][i+1].temp - u)) * hy +
+<a name="line356">356: </a>                        (vyp*(u - x[j-1][i].temp) +
+<a name="line357">357: </a>                                 vym*(x[j+1][i].temp - u)) * hx);
+<a name="line358">358: </a>    }
+<a name="line359">359: </a>  }
+
+<a name="line361">361: </a>  <font color="#B22222">/*</font>
+<a name="line362">362: </a><font color="#B22222">     Flop count (multiply-adds are counted as 2 operations)</font>
+<a name="line363">363: </a><font color="#B22222">  */</font>
+<a name="line364">364: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(84.0*info-&gt;ym*info-&gt;xm);
+<a name="line365">365: </a>  <font color="#4169E1">return</font>(0);
+<a name="line366">366: </a>}
+
+<a name="line370">370: </a><strong><font color="#4169E1"><a name="FormFunction"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> F, void *user)</font></strong>
+<a name="line371">371: </a>{
+<a name="line372">372: </a>  <A href="../../../../docs/manualpages/DM/DMDALocalInfo.html#DMDALocalInfo">DMDALocalInfo</A>  info;
+<a name="line373">373: </a>  Field          **u,**fu;
+<a name="line375">375: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            localX;
+<a name="line376">376: </a>  DM             da;
+
+<a name="line379">379: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetDM.html#SNESGetDM">SNESGetDM</A>(snes,(DM*)&amp;da);
+<a name="line380">380: </a>  <A href="../../../../docs/manualpages/DM/DMGetLocalVector.html#DMGetLocalVector">DMGetLocalVector</A>(da,&amp;localX);
+<a name="line381">381: </a>  <font color="#B22222">/*</font>
+<a name="line382">382: </a><font color="#B22222">     Scatter ghost points to local vector, using the 2-step process</font>
+<a name="line383">383: </a><font color="#B22222">        <A href="../../../../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(), <A href="../../../../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>().</font>
+<a name="line384">384: </a><font color="#B22222">  */</font>
+<a name="line385">385: </a>  <A href="../../../../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(da,X,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,localX);
+<a name="line386">386: </a>  <A href="../../../../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(da,X,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,localX);
+<a name="line387">387: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetLocalInfo.html#DMDAGetLocalInfo">DMDAGetLocalInfo</A>(da,&amp;info);
+<a name="line388">388: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,localX,&amp;u);
+<a name="line389">389: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,F,&amp;fu);
+<a name="line390">390: </a>  FormFunctionLocal(&amp;info,u,fu,user);
+<a name="line391">391: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,localX,&amp;u);
+<a name="line392">392: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,F,&amp;fu);
+<a name="line393">393: </a>  <A href="../../../../docs/manualpages/DM/DMRestoreLocalVector.html#DMRestoreLocalVector">DMRestoreLocalVector</A>(da,&amp;localX);
+<a name="line394">394: </a>  <font color="#4169E1">return</font>(0);
+<a name="line395">395: </a>}
+
+</pre>
+</body>
+
+</html>

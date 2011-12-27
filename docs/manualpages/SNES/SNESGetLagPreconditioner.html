@@ -10,9 +10,9 @@ Indicates how often the preconditioner is rebuilt
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLagPreconditioner(SNES snes,PetscInt *lag)
+PetscErrorCode  SNESGetLagPreconditioner(SNES snes,PetscInt *lag)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>snes </B> -the <A HREF="../SNES/SNES.html#SNES">SNES</A> context

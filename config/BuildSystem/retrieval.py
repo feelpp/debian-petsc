@@ -45,50 +45,89 @@ class Retriever(logger.Logger):
     '''Fetch the gzipped tarfile indicated by url and expand it into root
        - All the logic for removing old versions, updating etc. must move'''
 
-    archive    = '_d_'+name+'.tar'
-    if url.find(".bz") > -1 or url.find(".tbz") > -1:
+    archive    = '_d_'+name
+    if url.endswith(".bz2") or url.endswith(".tbz"):
+      archive += '.tar'
       archiveZip = archive+'.bz2'
-    else:
+    elif url.endswith('.tgz') or url.endswith('.tar.gz'):
+      archive += '.tar'
       archiveZip = archive+'.gz'
+    elif url.endswith(".zip") or url.endswith('.ZIP'):
+      archiveZip = archive+'.zip'
+    else:
+      raise RuntimeError('Unknown compression type in URL: '+ url)
     localFile  = os.path.join(root, archiveZip)
 
     self.logPrint('Downloading '+url+' to '+localFile)
-    
+
     if os.path.exists(localFile):
       os.remove(localFile)
+    httpfail=-1
+    ftpfail=-1
     try:
       urllib.urlretrieve(url, localFile)
+      httpfail=0
     except Exception, e:
+      httpfail=1
+    if httpfail and (url.find('http://ftp.mcs.anl.gov') >=0):
+      furl = url.replace('http://','ftp://')
+      self.logPrintBox('Warning failed download: '+url+'\nReattempting with: '+furl)
+      try:
+        urllib.urlretrieve(furl, localFile)
+        ftpfail=0
+      except Exception, e:
+        self.logPrintBox('Failed download with alternate: '+furl)
+        ftpfail=1
+    if ((ftpfail == 1) or ((ftpfail == -1) and httpfail)):
       filename   = os.path.basename(urlparse.urlparse(url)[2])
-
       failureMessage = '''\
 Unable to download package %s from: %s
-* If your network is disconnected - please reconnect and rerun config/configure.py
+* If URL specified manually - perhaps there is a typo?
+* If your network is disconnected - please reconnect and rerun ./configure
 * Alternatively, you can download the above URL manually, to /yourselectedlocation/%s
   and use the configure option:
   --download-%s=/yourselectedlocation/%s
-''' % (name, url, filename, name, filename)
+''' % (name, url, filename, name.lower(), filename)
       raise RuntimeError(failureMessage)
     self.logPrint('Uncompressing '+localFile)
-    localFile  = os.path.join(root, archive)
-    # just in case old local file is still hanging around get rid of it
-    if os.path.exists(localFile):
-      os.remove(localFile)
+    if not archiveZip.endswith(".zip"):
+      localFile  = os.path.join(root, archive)
+      # just in case old local .tar file is still hanging around get rid of it
+      if os.path.exists(localFile):
+        os.remove(localFile)
     try:
-      if archiveZip.find("bz2") > -1:
+      if archiveZip.endswith(".bz2"):
         config.base.Configure.executeShellCommand('cd '+root+'; bunzip2 '+archiveZip, log = self.log)
+      elif archiveZip.endswith(".zip"):
+        config.base.Configure.executeShellCommand('cd '+root+'; unzip '+archiveZip, log = self.log)
       else:
         config.base.Configure.executeShellCommand('cd '+root+'; gunzip '+archiveZip, log = self.log)
     except RuntimeError, e:
-      raise RuntimeError('Error unzipping '+archiveZip+': '+str(e))
+      filename   = os.path.basename(urlparse.urlparse(url)[2])
+      if str(e).find("not in gzip format") > -1:
+        failureMessage = '''\
+Unable to unzip downloaded package %s from: %s
+* If you are behind a firewall - please fix your proxy and rerun ./configure
+*     For example at LANL you may need to set the environmental variable http_proxy (or HTTP_PROXY?) to  http://proxyout.lanl.gov 
+* Alternatively, you can download the above URL manually, to /yourselectedlocation/%s
+  and use the configure option:
+  --download-%s=/yourselectedlocation/%s
+''' % (name, url, filename, name.lower(), filename)
+        raise RuntimeError(failureMessage)
+      else:
+        raise RuntimeError('Error unzipping '+archiveZip+': '+str(e))
     self.logPrint('Expanding '+localFile)
     try:
-      config.base.Configure.executeShellCommand('cd '+root+'; tar -xf '+archive, log = self.log)
+      if not archiveZip.endswith(".zip"):
+        config.base.Configure.executeShellCommand('cd '+root+'; tar -xf '+archive, log = self.log)
     except RuntimeError, e:
       raise RuntimeError('Error doing tar -xf '+archive+': '+str(e))
     # now find the dirname - and do a chmod
     try:
-      output = config.base.Configure.executeShellCommand('cd '+root+'; tar -tf '+archive+' | head -n 1', log = self.log)
+      if archiveZip.endswith(".zip"):
+        output = config.base.Configure.executeShellCommand('cd '+root+'; zipinfo -1 '+archive+' | head -n 1', log = self.log)
+      else:
+        output = config.base.Configure.executeShellCommand('cd '+root+'; tar -tf '+archive+' | head -n 1', log = self.log)
       dirname = os.path.normpath(output[0].strip())
       # some tarfiles list packagename/ but some list packagename/filename in the first entry - so handle both cases
       apath,bpath=os.path.split(dirname)
@@ -149,10 +188,10 @@ Unable to download package %s from: %s
        - If self.stamp exists, clone only up to that revision'''
     failureMessage = '''\
 Unable to bk clone %s
-You may be off the network. Connect to the internet and run config/configure.py again
+You may be off the network. Connect to the internet and run ./configure again
 or from the directory %s try:
   bk clone %s
-and if that succeeds then rerun config/configure.py
+and if that succeeds then rerun ./configure
 ''' % (name, root, url, name)
     try:
       if not self.stamp is None and url in self.stamp:

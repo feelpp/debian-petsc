@@ -22,6 +22,8 @@ class Configure(config.base.Configure):
     if not include:
       return []
     include = include.replace('\\ ',' ').replace(' ', '\\ ')
+    include = include.replace('\\(','(').replace('(', '\\(')
+    include = include.replace('\\)',')').replace(')', '\\)')
     if include[0] == '-':
       return [include]
     return ['-I'+include]
@@ -34,6 +36,8 @@ class Configure(config.base.Configure):
     if not include:
       return []
     include = include.replace('\\ ',' ').replace(' ', '\\ ')
+    include = include.replace('\\(','(').replace('(', '\\(')
+    include = include.replace('\\)',')').replace(')', '\\)')
     if include[0] == '-':
       return [include]
     
@@ -50,23 +54,13 @@ class Configure(config.base.Configure):
     '''Converts a list of includes to a string suitable for a compiler'''
     return ' '.join([self.getIncludeArgument(include) for include in includes])
 
-  def toStringNoDupes(self,includes):
-    '''Converts a list of -Iincludes to a string suitable for a compiler, removes duplicates'''
+  def toStringNoDupes(self,includes,modincludes=[]):
+    '''Converts a list of -Iincludes and -fmodule flags to a string suitable for a compiler, removes duplicates'''
     newincludes = []
     for include in includes:
       newincludes += self.getIncludeArgumentList(include)
-    includes = newincludes
-    newincludes = []
-    for j in includes:
-      if j in newincludes: continue
-      newincludes.append(j)
-    return ' '.join(newincludes)
-
-  def toStringModulesNoDupes(self,includes):
-    '''Converts a list of -fmodule flags includes to a string suitable for a compiler, removes duplicates'''
-    newincludes = []
-    for include in includes:
-      newincludes += self.getIncludeModulesArgumentList(include)
+    for modinclude in modincludes:
+      newincludes += self.getIncludeModulesArgumentList(modinclude)
     includes = newincludes
     newincludes = []
     for j in includes:
@@ -93,11 +87,17 @@ class Configure(config.base.Configure):
     '''Checks if a particular include file can be found along particular include paths'''
     if not isinstance(hfiles, list):
       hfiles = [hfiles]
+    self.framework.log.write('Checking for header files ' +str(hfiles)+ ' in '+str(incl)+'\n')
     for hfile in hfiles:
-      oldFlags = self.compilers.CPPFLAGS
-      self.compilers.CPPFLAGS += ' '+' '.join([self.getIncludeArgument(inc) for inc in incl+otherIncludes])
+      flagsArg = self.getPreprocessorFlagsArg()
+      self.logPrint('Checking include with compiler flags var '+flagsArg)
+      #oldFlags = self.compilers.CPPFLAGS
+      oldFlags = getattr(self.compilers, flagsArg)
+      #self.compilers.CPPFLAGS += ' '+' '.join([self.getIncludeArgument(inc) for inc in incl+otherIncludes])
+      setattr(self.compilers, flagsArg, getattr(self.compilers, flagsArg)+' '+' '.join([self.getIncludeArgument(inc) for inc in incl+otherIncludes]))
       found = self.checkPreprocess('#include <' +hfile+ '>\n', timeout = timeout)
-      self.compilers.CPPFLAGS = oldFlags
+      #self.compilers.CPPFLAGS = oldFlags
+      setattr(self.compilers, flagsArg, oldFlags)
       if not found: return 0
     self.framework.log.write('Found header files ' +str(hfiles)+ ' in '+str(incl)+'\n')
     return 1

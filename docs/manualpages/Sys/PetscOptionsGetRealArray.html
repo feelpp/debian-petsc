@@ -10,7 +10,7 @@ Gets an array of double precision values for a  particular option in the databas
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscOptionsGetRealArray(const char pre[],const char name[],PetscReal dvalue[],PetscInt *nmax,PetscTruth *flg)
+PetscErrorCode  PetscOptionsGetRealArray(const char pre[],const char name[],PetscReal dvalue[],PetscInt *nmax,PetscBool  *set)
 </PRE>
 Not Collective
 <P>
@@ -29,26 +29,28 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nmax </B></TD><TD>- actual number of values retreived
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flg </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if found, else <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>set </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if found, else <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
 </TD></TR></TABLE>
 <P>
 
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp PetscOptionsGetRealArray(const char b[],PetscReal i[],PetscInt *ii,PetscTruth *f)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscOptionsGetRealArray(PETSC_NULL,b,i,ii,f)</TR></TD>
+<TR><TD WIDTH=40></TD><TD>&nbsp PetscOptionsGetRealArray(const char b[],PetscReal i[],PetscInt *ii,PetscBool  *f)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscOptionsGetRealArray(PETSC_NULL,b,i,ii,f)</TR></TD>
 
 </TABLE>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(), 
-<BR><A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsTruth.html#PetscOptionsTruth">PetscOptionsTruth</A>(),
+<BR><A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(),
 <A HREF="../Sys/PetscOptionsName.html#PetscOptionsName">PetscOptionsName</A>(), <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(), <A HREF="../Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>(), <A HREF="../Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(),
 <A HREF="../Sys/PetscOptionsStringArray.html#PetscOptionsStringArray">PetscOptionsStringArray</A>(),<A HREF="../Sys/PetscOptionsRealArray.html#PetscOptionsRealArray">PetscOptionsRealArray</A>(), <A HREF="../Sys/PetscOptionsScalar.html#PetscOptionsScalar">PetscOptionsScalar</A>(),
-<A HREF="../Sys/PetscOptionsTruthGroupBegin.html#PetscOptionsTruthGroupBegin">PetscOptionsTruthGroupBegin</A>(), <A HREF="../Sys/PetscOptionsTruthGroup.html#PetscOptionsTruthGroup">PetscOptionsTruthGroup</A>(), <A HREF="../Sys/PetscOptionsTruthGroupEnd.html#PetscOptionsTruthGroupEnd">PetscOptionsTruthGroupEnd</A>(),
+<A HREF="../Sys/PetscOptionsBoolGroupBegin.html#PetscOptionsBoolGroupBegin">PetscOptionsBoolGroupBegin</A>(), <A HREF="../Sys/PetscOptionsBoolGroup.html#PetscOptionsBoolGroup">PetscOptionsBoolGroup</A>(), <A HREF="../Sys/PetscOptionsBoolGroupEnd.html#PetscOptionsBoolGroupEnd">PetscOptionsBoolGroupEnd</A>(),
 <A HREF="../Sys/PetscOptionsList.html#PetscOptionsList">PetscOptionsList</A>(), <A HREF="../Sys/PetscOptionsEList.html#PetscOptionsEList">PetscOptionsEList</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/objects/options.c.html#PetscOptionsGetRealArray">src/sys/objects/options.c</A>
 <BR><A HREF="./index.html">Index of all Sys routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
 </BODY></HTML>

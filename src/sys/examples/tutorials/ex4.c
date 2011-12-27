@@ -7,7 +7,7 @@ static char help[] = "Introductory example that illustrates running PETSc on a s
    Concepts: process^subset set PETSC_COMM_WORLD
    Processors: 2
 T*/
- #include "petscsys.h"
+ #include <petscsys.h>
 
 int main(int argc, char *argv[])
 {
@@ -54,9 +54,9 @@ int main(int argc, char *argv[])
          options are chosen (e.g., -log_summary).  See PetscFinalize()
      manpage for more information.
   */
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   /* Since we initialized MPI, we must call MPI_Finalize() */
-  ierr = MPI_Finalize();CHKERRQ(ierr);
+  ierr = MPI_Finalize();
   return 0;
 }

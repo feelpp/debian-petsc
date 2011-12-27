@@ -1,5 +1,5 @@
-#define PETSCVEC_DLL
-#include "private/vecimpl.h"      /*I "petscvec.h" I*/
+
+#include <private/vecimpl.h>      /*I "petscvec.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "VecCreate"
@@ -24,7 +24,7 @@
 .seealso: VecSetType(), VecSetSizes(), VecCreateMPIWithArray(), VecCreateMPI(), VecDuplicate(),
           VecDuplicateVecs(), VecCreateGhost(), VecCreateSeq(), VecPlaceArray()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecCreate(MPI_Comm comm, Vec *vec)
+PetscErrorCode  VecCreate(MPI_Comm comm, Vec *vec)
 {
   Vec            v;
   PetscErrorCode ierr;
@@ -36,12 +36,10 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecCreate(MPI_Comm comm, Vec *vec)
   ierr = VecInitializePackage(PETSC_NULL);CHKERRQ(ierr);
 #endif
 
-  ierr = PetscHeaderCreate(v, _p_Vec, struct _VecOps, VEC_COOKIE, -1, "Vec", comm, VecDestroy, VecView);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(v, _p_Vec, struct _VecOps, VEC_CLASSID, -1, "Vec", "Vector", "Vec", comm, VecDestroy, VecView);CHKERRQ(ierr);
   ierr = PetscMemzero(v->ops, sizeof(struct _VecOps));CHKERRQ(ierr);
 
   ierr            = PetscLayoutCreate(comm,&v->map);CHKERRQ(ierr);
-  v->mapping      = PETSC_NULL;
-  v->bmapping     = PETSC_NULL;
   v->array_gotten = PETSC_FALSE;
   v->petscnative  = PETSC_FALSE;
 

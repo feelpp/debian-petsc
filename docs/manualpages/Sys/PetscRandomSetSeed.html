@@ -6,7 +6,7 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscRandomSetSeed"><H1>PetscRandomSetSeed</H1></A>
-Sets the random seed. 
+Sets the random seed. You MUST call <A HREF="../Sys/PetscRandomSeed.html#PetscRandomSeed">PetscRandomSeed</A>() after this call to have the new seed used. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
@@ -34,7 +34,7 @@ the seed. The random numbers generated will be the same as before.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscRandomCreate.html#PetscRandomCreate">PetscRandomCreate</A>(), <A HREF="../Sys/PetscRandomGetSeed.html#PetscRandomGetSeed">PetscRandomGetSeed</A>(), <A HREF="../Sys/PetscRandomSeed.html#PetscRandomSeed">PetscRandomSeed</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/random/interface/random.c.html#PetscRandomSetSeed">src/sys/random/interface/random.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/random/interface/randomc.c.html#PetscRandomSetSeed">src/sys/random/interface/randomc.c</A>
 <BR><A HREF="./index.html">Index of all Sys routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

@@ -15,8 +15,8 @@
       program main
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscis.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscis.h>
 
       PetscErrorCode ierr
       PetscInt indices(5),n,index1,index5
@@ -38,7 +38,8 @@
 
 !     if using 64bit integers cannot pass 5 into routine expecting an integer*8
       n = 5
-      call ISCreateGeneral(PETSC_COMM_SELF,n,indices,is,ierr)
+      call ISCreateGeneral(PETSC_COMM_SELF,n,indices,PETSC_COPY_VALUES,       &
+     &                     is,ierr)
 
 !  Print the index set to stdout
 

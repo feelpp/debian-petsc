@@ -1,22 +1,21 @@
-#define PETSCKSP_DLL
 
 /*
    Defines a block Jacobi preconditioner.
 */
-#include "private/matimpl.h"
-#include "private/pcimpl.h"              /*I "petscpc.h" I*/
-#include "../src/ksp/pc/impls/bjacobi/bjacobi.h"
+#include <private/pcimpl.h>              /*I "petscpc.h" I*/
+#include <../src/ksp/pc/impls/bjacobi/bjacobi.h>
 
 static PetscErrorCode PCSetUp_BJacobi_Singleblock(PC,Mat,Mat);
 static PetscErrorCode PCSetUp_BJacobi_Multiblock(PC,Mat,Mat);
+static PetscErrorCode PCSetUp_BJacobi_Multiproc(PC);
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PCSetUp_BJacobi"
 static PetscErrorCode PCSetUp_BJacobi(PC pc)
 {
   PC_BJacobi     *jac = (PC_BJacobi*)pc->data;
   Mat            mat = pc->mat,pmat = pc->pmat;
-  PetscErrorCode ierr,(*f)(Mat,PetscTruth*,MatReuse,Mat*);
+  PetscErrorCode ierr,(*f)(Mat,Mat*);
   PetscInt       N,M,start,i,sum,end;
   PetscInt       bs,i_start=-1,i_end=-1;
   PetscMPIInt    rank,size;
@@ -28,9 +27,14 @@ static PetscErrorCode PCSetUp_BJacobi(PC pc)
   ierr = MatGetLocalSize(pc->pmat,&M,&N);CHKERRQ(ierr);
   ierr = MatGetBlockSize(pc->pmat,&bs);CHKERRQ(ierr);
 
-  /* ----------
-      Determines the number of blocks assigned to each processor 
-  */
+  if (jac->n > 0 && jac->n < size){
+    ierr = PCSetUp_BJacobi_Multiproc(pc);CHKERRQ(ierr);
+    PetscFunctionReturn(0);
+  }
+
+  /* --------------------------------------------------------------------------
+      Determines the number of blocks assigned to each processor
+  -----------------------------------------------------------------------------*/
 
   /*   local block count  given */
   if (jac->n_local > 0 && jac->n < 0) {
@@ -38,12 +42,10 @@ static PetscErrorCode PCSetUp_BJacobi(PC pc)
     if (jac->l_lens) { /* check that user set these correctly */
       sum = 0;
       for (i=0; i<jac->n_local; i++) {
-        if (jac->l_lens[i]/bs*bs !=jac->l_lens[i]) {
-          SETERRQ(PETSC_ERR_ARG_SIZ,"Mat blocksize doesn't match block Jacobi layout");
-        }
+        if (jac->l_lens[i]/bs*bs !=jac->l_lens[i]) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Mat blocksize doesn't match block Jacobi layout");
         sum += jac->l_lens[i];
       }
-      if (sum != M) SETERRQ(PETSC_ERR_ARG_SIZ,"Local lens sent incorrectly");
+      if (sum != M) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Local lens set incorrectly");
     } else {
       ierr = PetscMalloc(jac->n_local*sizeof(PetscInt),&jac->l_lens);CHKERRQ(ierr);
       for (i=0; i<jac->n_local; i++) {
@@ -55,10 +57,8 @@ static PetscErrorCode PCSetUp_BJacobi(PC pc)
     if (jac->g_lens) {
       /* check if the g_lens is has valid entries */
       for (i=0; i<jac->n; i++) {
-        if (!jac->g_lens[i]) SETERRQ(PETSC_ERR_ARG_SIZ,"Zero block not allowed");
-        if (jac->g_lens[i]/bs*bs != jac->g_lens[i]) {
-          SETERRQ(PETSC_ERR_ARG_SIZ,"Mat blocksize doesn't match block Jacobi layout");
-        }
+        if (!jac->g_lens[i]) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Zero block not allowed");
+        if (jac->g_lens[i]/bs*bs != jac->g_lens[i]) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Mat blocksize doesn't match block Jacobi layout");
       }
       if (size == 1) {
         jac->n_local = jac->n;
@@ -67,7 +67,7 @@ static PetscErrorCode PCSetUp_BJacobi(PC pc)
         /* check that user set these correctly */
         sum = 0;
         for (i=0; i<jac->n_local; i++) sum += jac->l_lens[i];
-        if (sum != M) SETERRQ(PETSC_ERR_ARG_SIZ,"Global lens sent incorrectly");
+        if (sum != M) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Global lens set incorrectly");
       } else {
         ierr = MatGetOwnershipRange(pc->pmat,&start,&end);CHKERRQ(ierr);
         /* loop over blocks determing first one owned by me */
@@ -76,17 +76,13 @@ static PetscErrorCode PCSetUp_BJacobi(PC pc)
           if (sum == start) { i_start = i; goto start_1;}
           if (i < jac->n) sum += jac->g_lens[i];
         }
-        SETERRQ(PETSC_ERR_ARG_SIZ,"Block sizes\n\
-                   used in PCBJacobiSetTotalBlocks()\n\
-                   are not compatible with parallel matrix layout");
+        SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Block sizes used in PCBJacobiSetTotalBlocks()\nare not compatible with parallel matrix layout");
  start_1: 
         for (i=i_start; i<jac->n+1; i++) {
           if (sum == end) { i_end = i; goto end_1; }
           if (i < jac->n) sum += jac->g_lens[i];
         }          
-        SETERRQ(PETSC_ERR_ARG_SIZ,"Block sizes\n\
-                      used in PCBJacobiSetTotalBlocks()\n\
-                      are not compatible with parallel matrix layout");
+        SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Block sizes used in PCBJacobiSetTotalBlocks()\nare not compatible with parallel matrix layout");
  end_1: 
         jac->n_local = i_end - i_start;
         ierr         = PetscMalloc(jac->n_local*sizeof(PetscInt),&jac->l_lens);CHKERRQ(ierr); 
@@ -97,7 +93,7 @@ static PetscErrorCode PCSetUp_BJacobi(PC pc)
       ierr         = PetscMalloc(jac->n_local*sizeof(PetscInt),&jac->l_lens);CHKERRQ(ierr);
       for (i=0; i<jac->n_local; i++) {
         jac->l_lens[i] = ((M/bs)/jac->n_local + (((M/bs) % jac->n_local) > i))*bs;
-        if (!jac->l_lens[i]) SETERRQ(PETSC_ERR_ARG_SIZ,"Too many blocks given");
+        if (!jac->l_lens[i]) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Too many blocks given");
       }
     }
   } else if (jac->n < 0 && jac->n_local < 0) { /* no blocks given */
@@ -105,79 +101,45 @@ static PetscErrorCode PCSetUp_BJacobi(PC pc)
     jac->n_local   = 1;
     ierr           = PetscMalloc(sizeof(PetscInt),&jac->l_lens);CHKERRQ(ierr);
     jac->l_lens[0] = M;
+  } else { /* jac->n > 0 && jac->n_local > 0 */
+    if (!jac->l_lens) { 
+      ierr = PetscMalloc(jac->n_local*sizeof(PetscInt),&jac->l_lens);CHKERRQ(ierr);
+      for (i=0; i<jac->n_local; i++) {
+        jac->l_lens[i] = bs*((M/bs)/jac->n_local + (((M/bs) % jac->n_local) > i));
+      }
+    }
   }
-  if (jac->n_local < 1) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Number of blocks is less than number of processors");
+  if (jac->n_local < 1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Number of blocks is less than number of processors");
 
-  ierr = MPI_Comm_size(((PetscObject)pc)->comm,&size);CHKERRQ(ierr);
+  /* -------------------------
+      Determines mat and pmat 
+  ---------------------------*/
   ierr = PetscObjectQueryFunction((PetscObject)pc->mat,"MatGetDiagonalBlock_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (size == 1 && !f) {
+  if (!f && size == 1) {
     mat  = pc->mat;
     pmat = pc->pmat;
   } else {
-    PetscTruth iscopy;
-    MatReuse   scall;
-
     if (jac->use_true_local) {
-      scall = MAT_INITIAL_MATRIX;
-      if (pc->setupcalled) {
-        if (pc->flag == SAME_NONZERO_PATTERN) {
-          if (jac->tp_mat) {
-            scall = MAT_REUSE_MATRIX;
-            mat   = jac->tp_mat;
-          }
-        } else {
-          if (jac->tp_mat)  {
-            ierr = MatDestroy(jac->tp_mat);CHKERRQ(ierr);
-          }
-        }
-      }
-      if (!f) {
-        SETERRQ(PETSC_ERR_SUP,"This matrix does not support getting diagonal block");
-      }
-      ierr = (*f)(pc->mat,&iscopy,scall,&mat);CHKERRQ(ierr);
+      /* use block from true matrix, not preconditioner matrix for local MatMult() */
+      ierr = MatGetDiagonalBlock(pc->mat,&mat);CHKERRQ(ierr);
       /* make submatrix have same prefix as entire matrix */
       ierr = PetscObjectGetOptionsPrefix((PetscObject)pc->mat,&mprefix);CHKERRQ(ierr);
       ierr = PetscObjectSetOptionsPrefix((PetscObject)mat,mprefix);CHKERRQ(ierr);
-      if (iscopy) {
-        jac->tp_mat = mat;
-      }
     }
     if (pc->pmat != pc->mat || !jac->use_true_local) {
-      scall = MAT_INITIAL_MATRIX;
-      if (pc->setupcalled) {
-        if (pc->flag == SAME_NONZERO_PATTERN) {
-          if (jac->tp_pmat) {
-            scall = MAT_REUSE_MATRIX;
-            pmat   = jac->tp_pmat;
-          }
-        } else {
-          if (jac->tp_pmat)  {
-            ierr = MatDestroy(jac->tp_pmat);CHKERRQ(ierr);
-          }
-        }
-      }
-      ierr = PetscObjectQueryFunction((PetscObject)pc->pmat,"MatGetDiagonalBlock_C",(void (**)(void))&f);CHKERRQ(ierr);
-      if (!f) {
-        const char *type;
-        ierr = PetscObjectGetType((PetscObject) pc->pmat,&type);CHKERRQ(ierr);
-        SETERRQ1(PETSC_ERR_SUP,"This matrix type, %s, does not support getting diagonal block", type);
-      }
-      ierr = (*f)(pc->pmat,&iscopy,scall,&pmat);CHKERRQ(ierr);
+      ierr = MatGetDiagonalBlock(pc->pmat,&pmat);CHKERRQ(ierr);
       /* make submatrix have same prefix as entire matrix */
       ierr = PetscObjectGetOptionsPrefix((PetscObject)pc->pmat,&pprefix);CHKERRQ(ierr);
       ierr = PetscObjectSetOptionsPrefix((PetscObject)pmat,pprefix);CHKERRQ(ierr);
-      if (iscopy) {
-        jac->tp_pmat = pmat;
-      }
     } else {
       pmat = mat;
     }
   }
 
   /* ------
-     Setup code depends on the number of blocks 
+     Setup code depends on the number of blocks
   */
-  if (jac->n_local == 1) {
+  if (jac->n_local == 0) {
     ierr = PCSetUp_BJacobi_Singleblock(pc,mat,pmat);CHKERRQ(ierr);
   } else {
     ierr = PCSetUp_BJacobi_Multiblock(pc,mat,pmat);CHKERRQ(ierr);
@@ -196,7 +158,7 @@ static PetscErrorCode PCDestroy_BJacobi(PC pc)
   PetscFunctionBegin;
   ierr = PetscFree(jac->g_lens);CHKERRQ(ierr);
   ierr = PetscFree(jac->l_lens);CHKERRQ(ierr);
-  ierr = PetscFree(jac);CHKERRQ(ierr);
+  ierr = PetscFree(pc->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -208,7 +170,7 @@ static PetscErrorCode PCSetFromOptions_BJacobi(PC pc)
   PC_BJacobi     *jac = (PC_BJacobi*)pc->data;
   PetscErrorCode ierr;
   PetscInt       blocks;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscFunctionBegin;
   ierr = PetscOptionsHead("Block Jacobi options");CHKERRQ(ierr);
@@ -217,7 +179,7 @@ static PetscErrorCode PCSetFromOptions_BJacobi(PC pc)
       ierr = PCBJacobiSetTotalBlocks(pc,blocks,PETSC_NULL);CHKERRQ(ierr); 
     }
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-pc_bjacobi_truelocal","Use the true matrix, not preconditioner matrix to define matrix vector product in sub-problems","PCBJacobiSetUseTrueLocal",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-pc_bjacobi_truelocal","Use the true matrix, not preconditioner matrix to define matrix vector product in sub-problems","PCBJacobiSetUseTrueLocal",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       ierr = PCBJacobiSetUseTrueLocal(pc);CHKERRQ(ierr);
     }
@@ -229,16 +191,17 @@ static PetscErrorCode PCSetFromOptions_BJacobi(PC pc)
 #define __FUNCT__ "PCView_BJacobi"
 static PetscErrorCode PCView_BJacobi(PC pc,PetscViewer viewer)
 {
-  PC_BJacobi     *jac = (PC_BJacobi*)pc->data;
-  PetscErrorCode ierr;
-  PetscMPIInt    rank;
-  PetscInt       i;
-  PetscTruth     iascii,isstring;
-  PetscViewer    sviewer;
+  PC_BJacobi           *jac = (PC_BJacobi*)pc->data;
+  PC_BJacobi_Multiproc *mpjac = (PC_BJacobi_Multiproc*)jac->data;
+  PetscErrorCode       ierr;
+  PetscMPIInt          rank;
+  PetscInt             i;
+  PetscBool            iascii,isstring;
+  PetscViewer          sviewer;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_STRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (iascii) {
     if (jac->use_true_local) {
       ierr = PetscViewerASCIIPrintf(viewer,"  block Jacobi: using true local matrix, number of blocks = %D\n",jac->n);CHKERRQ(ierr);
@@ -247,16 +210,24 @@ static PetscErrorCode PCView_BJacobi(PC pc,PetscViewer viewer)
     ierr = MPI_Comm_rank(((PetscObject)pc)->comm,&rank);CHKERRQ(ierr);
     if (jac->same_local_solves) {
       ierr = PetscViewerASCIIPrintf(viewer,"  Local solve is same for all blocks, in the following KSP and PC objects:\n");CHKERRQ(ierr);
-      ierr = PetscViewerGetSingleton(viewer,&sviewer);CHKERRQ(ierr);
-      if (!rank && jac->ksp) {
+      if (jac->ksp) {
+        ierr = PetscViewerGetSingleton(viewer,&sviewer);CHKERRQ(ierr);
+        if (!rank){
+          ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
+          ierr = KSPView(jac->ksp[0],sviewer);CHKERRQ(ierr);
+          ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
+        }
+        ierr = PetscViewerRestoreSingleton(viewer,&sviewer);CHKERRQ(ierr);
+      } else if (jac->psubcomm && !jac->psubcomm->color){
+        ierr = PetscViewerASCIIGetStdout(mpjac->psubcomm->comm,&sviewer);CHKERRQ(ierr);
         ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
-        ierr = KSPView(jac->ksp[0],sviewer);CHKERRQ(ierr);
+        ierr = KSPView(mpjac->ksp,sviewer);CHKERRQ(ierr);
         ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
-      }   
-      ierr = PetscViewerRestoreSingleton(viewer,&sviewer);CHKERRQ(ierr);
+      }
     } else {
       PetscInt n_global; 
       ierr = MPI_Allreduce(&jac->n_local,&n_global,1,MPIU_INT,MPI_MAX,((PetscObject)pc)->comm);CHKERRQ(ierr);
+      ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_TRUE);CHKERRQ(ierr);
       ierr = PetscViewerASCIIPrintf(viewer,"  Local solve info for each block is in the following KSP and PC objects:\n");CHKERRQ(ierr);
       ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] number of local blocks = %D, first local block number = %D\n",
                    rank,jac->n_local,jac->first_local);CHKERRQ(ierr);
@@ -272,6 +243,7 @@ static PetscErrorCode PCView_BJacobi(PC pc,PetscViewer viewer)
       }
       ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
       ierr = PetscViewerFlush(viewer);CHKERRQ(ierr);
+      ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_FALSE);CHKERRQ(ierr);
     }
   } else if (isstring) {
     ierr = PetscViewerStringSPrintf(viewer," blks=%D",jac->n);CHKERRQ(ierr);
@@ -279,7 +251,7 @@ static PetscErrorCode PCView_BJacobi(PC pc,PetscViewer viewer)
     if (jac->ksp) {ierr = KSPView(jac->ksp[0],sviewer);CHKERRQ(ierr);}
     ierr = PetscViewerRestoreSingleton(viewer,&sviewer);CHKERRQ(ierr);
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for block Jacobi",((PetscObject)viewer)->type_name);
+    SETERRQ1(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Viewer type %s not supported for block Jacobi",((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
@@ -289,7 +261,7 @@ static PetscErrorCode PCView_BJacobi(PC pc,PetscViewer viewer)
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCBJacobiSetUseTrueLocal_BJacobi"
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetUseTrueLocal_BJacobi(PC pc)
+PetscErrorCode  PCBJacobiSetUseTrueLocal_BJacobi(PC pc)
 {
   PC_BJacobi   *jac;
 
@@ -303,12 +275,12 @@ EXTERN_C_END
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCBJacobiGetSubKSP_BJacobi"
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetSubKSP_BJacobi(PC pc,PetscInt *n_local,PetscInt *first_local,KSP **ksp)
+PetscErrorCode  PCBJacobiGetSubKSP_BJacobi(PC pc,PetscInt *n_local,PetscInt *first_local,KSP **ksp)
 {
   PC_BJacobi   *jac = (PC_BJacobi*)pc->data;;
 
   PetscFunctionBegin;
-  if (!pc->setupcalled) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must call KSPSetUp() or PCSetUp() first");
+  if (!pc->setupcalled) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must call KSPSetUp() or PCSetUp() first");
 
   if (n_local)     *n_local     = jac->n_local;
   if (first_local) *first_local = jac->first_local;
@@ -323,14 +295,14 @@ EXTERN_C_END
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCBJacobiSetTotalBlocks_BJacobi"
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetTotalBlocks_BJacobi(PC pc,PetscInt blocks,PetscInt *lens)
+PetscErrorCode  PCBJacobiSetTotalBlocks_BJacobi(PC pc,PetscInt blocks,PetscInt *lens)
 {
   PC_BJacobi     *jac = (PC_BJacobi*)pc->data; 
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
 
-  if (pc->setupcalled > 0 && jac->n!=blocks) SETERRQ(PETSC_ERR_ORDER,"Cannot alter number of blocks after PCSetUp()/KSPSetUp() has been called"); 
+  if (pc->setupcalled > 0 && jac->n!=blocks) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ORDER,"Cannot alter number of blocks after PCSetUp()/KSPSetUp() has been called"); 
   jac->n = blocks;
   if (!lens) {
     jac->g_lens = 0;
@@ -346,7 +318,7 @@ EXTERN_C_END
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCBJacobiGetTotalBlocks_BJacobi"
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetTotalBlocks_BJacobi(PC pc, PetscInt *blocks, const PetscInt *lens[])
+PetscErrorCode  PCBJacobiGetTotalBlocks_BJacobi(PC pc, PetscInt *blocks, const PetscInt *lens[])
 {
   PC_BJacobi *jac = (PC_BJacobi*) pc->data;
 
@@ -360,7 +332,7 @@ EXTERN_C_END
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCBJacobiSetLocalBlocks_BJacobi"
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetLocalBlocks_BJacobi(PC pc,PetscInt blocks,const PetscInt lens[])
+PetscErrorCode  PCBJacobiSetLocalBlocks_BJacobi(PC pc,PetscInt blocks,const PetscInt lens[])
 {
   PC_BJacobi     *jac;
   PetscErrorCode ierr;
@@ -383,7 +355,7 @@ EXTERN_C_END
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCBJacobiGetLocalBlocks_BJacobi"
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetLocalBlocks_BJacobi(PC pc, PetscInt *blocks, const PetscInt *lens[])
+PetscErrorCode  PCBJacobiGetLocalBlocks_BJacobi(PC pc, PetscInt *blocks, const PetscInt *lens[])
 {
   PC_BJacobi *jac = (PC_BJacobi*) pc->data;
 
@@ -406,7 +378,7 @@ EXTERN_C_END
    on the block from the matrix using the block from the preconditioner
    as the preconditioner for the local block.
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 .  pc - the preconditioner context
@@ -424,17 +396,13 @@ EXTERN_C_END
 
 .seealso: PCSetOperators(), PCBJacobiSetLocalBlocks()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetUseTrueLocal(PC pc)
+PetscErrorCode  PCBJacobiSetUseTrueLocal(PC pc)
 {
-  PetscErrorCode ierr,(*f)(PC);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  ierr = PetscObjectQueryFunction((PetscObject)pc,"PCBJacobiSetUseTrueLocal_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(pc);CHKERRQ(ierr);
-  } 
-
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  ierr = PetscTryMethod(pc,"PCBJacobiSetUseTrueLocal_C",(PC),(pc));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -468,18 +436,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetUseTrueLocal(PC pc)
 
 .seealso: PCBJacobiGetSubKSP()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetSubKSP(PC pc,PetscInt *n_local,PetscInt *first_local,KSP *ksp[])
+PetscErrorCode  PCBJacobiGetSubKSP(PC pc,PetscInt *n_local,PetscInt *first_local,KSP *ksp[])
 {
-  PetscErrorCode ierr,(*f)(PC,PetscInt *,PetscInt *,KSP **);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  ierr = PetscObjectQueryFunction((PetscObject)pc,"PCBJacobiGetSubKSP_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(pc,n_local,first_local,ksp);CHKERRQ(ierr);
-  } else {
-    SETERRQ(PETSC_ERR_ARG_WRONG,"Cannot get subsolvers for this preconditioner");
-  }
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  ierr = PetscUseMethod(pc,"PCBJacobiGetSubKSP_C",(PC,PetscInt *,PetscInt *,KSP **),(pc,n_local,first_local,ksp));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -509,17 +472,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetSubKSP(PC pc,PetscInt *n_local,Pet
 
 .seealso: PCBJacobiSetUseTrueLocal(), PCBJacobiSetLocalBlocks()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetTotalBlocks(PC pc,PetscInt blocks,const PetscInt lens[])
+PetscErrorCode  PCBJacobiSetTotalBlocks(PC pc,PetscInt blocks,const PetscInt lens[])
 {
-  PetscErrorCode ierr,(*f)(PC,PetscInt,const PetscInt[]);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  if (blocks <= 0) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Must have positive blocks");
-  ierr = PetscObjectQueryFunction((PetscObject)pc,"PCBJacobiSetTotalBlocks_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(pc,blocks,lens);CHKERRQ(ierr);
-  } 
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (blocks <= 0) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Must have positive blocks");
+  ierr = PetscTryMethod(pc,"PCBJacobiSetTotalBlocks_C",(PC,PetscInt,const PetscInt[]),(pc,blocks,lens));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -529,7 +489,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetTotalBlocks(PC pc,PetscInt blocks,
    PCBJacobiGetTotalBlocks - Gets the global number of blocks for the block
    Jacobi preconditioner.
 
-   Collective on PC
+   Not Collective
 
    Input Parameter:
 .  pc - the preconditioner context
@@ -544,17 +504,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetTotalBlocks(PC pc,PetscInt blocks,
 
 .seealso: PCBJacobiSetUseTrueLocal(), PCBJacobiGetLocalBlocks()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetTotalBlocks(PC pc, PetscInt *blocks, const PetscInt *lens[])
+PetscErrorCode  PCBJacobiGetTotalBlocks(PC pc, PetscInt *blocks, const PetscInt *lens[])
 {
-  PetscErrorCode ierr,(*f)(PC,PetscInt*, const PetscInt *[]);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc, PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc, PC_CLASSID,1);
   PetscValidIntPointer(blocks,2);
-  ierr = PetscObjectQueryFunction((PetscObject)pc,"PCBJacobiGetTotalBlocks_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(pc,blocks,lens);CHKERRQ(ierr);
-  } 
+  ierr = PetscUseMethod(pc,"PCBJacobiGetTotalBlocks_C",(PC,PetscInt*, const PetscInt *[]),(pc,blocks,lens));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
   
@@ -580,17 +537,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetTotalBlocks(PC pc, PetscInt *block
 
 .seealso: PCBJacobiSetUseTrueLocal(), PCBJacobiSetTotalBlocks()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetLocalBlocks(PC pc,PetscInt blocks,const PetscInt lens[])
+PetscErrorCode  PCBJacobiSetLocalBlocks(PC pc,PetscInt blocks,const PetscInt lens[])
 {
-  PetscErrorCode ierr,(*f)(PC,PetscInt,const PetscInt []);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
-  if (blocks < 0) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Must have nonegative blocks");
-  ierr = PetscObjectQueryFunction((PetscObject)pc,"PCBJacobiSetLocalBlocks_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(pc,blocks,lens);CHKERRQ(ierr);
-  } 
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (blocks < 0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Must have nonegative blocks");
+  ierr = PetscTryMethod(pc,"PCBJacobiSetLocalBlocks_C",(PC,PetscInt,const PetscInt []),(pc,blocks,lens));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
   
@@ -616,17 +570,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetLocalBlocks(PC pc,PetscInt blocks,
 
 .seealso: PCBJacobiSetUseTrueLocal(), PCBJacobiGetTotalBlocks()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetLocalBlocks(PC pc, PetscInt *blocks, const PetscInt *lens[])
+PetscErrorCode  PCBJacobiGetLocalBlocks(PC pc, PetscInt *blocks, const PetscInt *lens[])
 {
-  PetscErrorCode ierr,(*f)(PC,PetscInt*, const PetscInt *[]);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc, PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc, PC_CLASSID,1);
   PetscValidIntPointer(blocks,2);
-  ierr = PetscObjectQueryFunction((PetscObject)pc,"PCBJacobiGetLocalBlocks_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(pc,blocks,lens);CHKERRQ(ierr);
-  } 
+  ierr = PetscUseMethod(pc,"PCBJacobiGetLocalBlocks_C",(PC,PetscInt*, const PetscInt *[]),(pc,blocks,lens));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -661,7 +612,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCCreate_BJacobi"
-PetscErrorCode PETSCKSP_DLLEXPORT PCCreate_BJacobi(PC pc)
+PetscErrorCode  PCCreate_BJacobi(PC pc)
 {
   PetscErrorCode ierr;
   PetscMPIInt    rank;
@@ -682,13 +633,12 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCCreate_BJacobi(PC pc)
   jac->n                 = -1;
   jac->n_local           = -1;
   jac->first_local       = rank;
-  jac->ksp              = 0;
+  jac->ksp               = 0;
   jac->use_true_local    = PETSC_FALSE;
   jac->same_local_solves = PETSC_TRUE;
   jac->g_lens            = 0;
   jac->l_lens            = 0;
-  jac->tp_mat            = 0;
-  jac->tp_pmat           = 0;
+  jac->psubcomm          = 0;
 
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)pc,"PCBJacobiSetUseTrueLocal_C",
                     "PCBJacobiSetUseTrueLocal_BJacobi",
@@ -713,6 +663,21 @@ EXTERN_C_END
         These are for a single block per processor; works for AIJ, BAIJ; Seq and MPI
 */
 #undef __FUNCT__  
+#define __FUNCT__ "PCReset_BJacobi_Singleblock"
+PetscErrorCode PCReset_BJacobi_Singleblock(PC pc)
+{
+  PC_BJacobi             *jac = (PC_BJacobi*)pc->data;
+  PC_BJacobi_Singleblock *bjac = (PC_BJacobi_Singleblock*)jac->data;
+  PetscErrorCode         ierr;
+
+  PetscFunctionBegin;
+  ierr = KSPReset(jac->ksp[0]);CHKERRQ(ierr);
+  ierr = VecDestroy(&bjac->x);CHKERRQ(ierr);
+  ierr = VecDestroy(&bjac->y);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
 #define __FUNCT__ "PCDestroy_BJacobi_Singleblock"
 PetscErrorCode PCDestroy_BJacobi_Singleblock(PC pc)
 {
@@ -721,25 +686,13 @@ PetscErrorCode PCDestroy_BJacobi_Singleblock(PC pc)
   PetscErrorCode         ierr;
 
   PetscFunctionBegin;
-  /*
-        If the on processor block had to be generated via a MatGetDiagonalBlock()
-     that creates a copy, this frees the space
-  */
-  if (jac->tp_mat) {
-    ierr = MatDestroy(jac->tp_mat);CHKERRQ(ierr);
-  }
-  if (jac->tp_pmat) {
-    ierr = MatDestroy(jac->tp_pmat);CHKERRQ(ierr);
-  }
-
-  ierr = KSPDestroy(jac->ksp[0]);CHKERRQ(ierr);
+  ierr = PCReset_BJacobi_Singleblock(pc);CHKERRQ(ierr);
+  ierr = KSPDestroy(&jac->ksp[0]);CHKERRQ(ierr);
   ierr = PetscFree(jac->ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(bjac->x);CHKERRQ(ierr);
-  ierr = VecDestroy(bjac->y);CHKERRQ(ierr);
   ierr = PetscFree(jac->l_lens);CHKERRQ(ierr);
   ierr = PetscFree(jac->g_lens);CHKERRQ(ierr);
   ierr = PetscFree(bjac);CHKERRQ(ierr);
-  ierr = PetscFree(jac);CHKERRQ(ierr);
+  ierr = PetscFree(pc->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -887,23 +840,42 @@ static PetscErrorCode PCSetUp_BJacobi_Singleblock(PC pc,Mat mat,Mat pmat)
   PetscErrorCode         ierr;
   PetscInt               m;
   KSP                    ksp;
-  Vec                    x,y;
   PC_BJacobi_Singleblock *bjac;
-  PetscTruth             wasSetup;
+  PetscBool              wasSetup;
 
   PetscFunctionBegin;
 
-  /* set default direct solver with no Krylov method */
   if (!pc->setupcalled) {
     const char *prefix;
-    wasSetup = PETSC_FALSE;
-    ierr = KSPCreate(PETSC_COMM_SELF,&ksp);CHKERRQ(ierr);
-    ierr = PetscObjectIncrementTabLevel((PetscObject)ksp,(PetscObject)pc,1);CHKERRQ(ierr);
-    ierr = PetscLogObjectParent(pc,ksp);CHKERRQ(ierr);
-    ierr = KSPSetType(ksp,KSPPREONLY);CHKERRQ(ierr);
-    ierr = PCGetOptionsPrefix(pc,&prefix);CHKERRQ(ierr);
-    ierr = KSPSetOptionsPrefix(ksp,prefix);CHKERRQ(ierr);
-    ierr = KSPAppendOptionsPrefix(ksp,"sub_");CHKERRQ(ierr);
+
+    if (!jac->ksp) {
+      wasSetup = PETSC_FALSE;
+      ierr = KSPCreate(PETSC_COMM_SELF,&ksp);CHKERRQ(ierr);
+      ierr = PetscObjectIncrementTabLevel((PetscObject)ksp,(PetscObject)pc,1);CHKERRQ(ierr);
+      ierr = PetscLogObjectParent(pc,ksp);CHKERRQ(ierr);
+      ierr = KSPSetType(ksp,KSPPREONLY);CHKERRQ(ierr);
+      ierr = PCGetOptionsPrefix(pc,&prefix);CHKERRQ(ierr);
+      ierr = KSPSetOptionsPrefix(ksp,prefix);CHKERRQ(ierr);
+      ierr = KSPAppendOptionsPrefix(ksp,"sub_");CHKERRQ(ierr);
+
+      pc->ops->reset               = PCReset_BJacobi_Singleblock;
+      pc->ops->destroy             = PCDestroy_BJacobi_Singleblock;
+      pc->ops->apply               = PCApply_BJacobi_Singleblock;
+      pc->ops->applysymmetricleft  = PCApplySymmetricLeft_BJacobi_Singleblock;
+      pc->ops->applysymmetricright = PCApplySymmetricRight_BJacobi_Singleblock;
+      pc->ops->applytranspose      = PCApplyTranspose_BJacobi_Singleblock;
+      pc->ops->setuponblocks       = PCSetUpOnBlocks_BJacobi_Singleblock;
+
+      ierr = PetscMalloc(sizeof(KSP),&jac->ksp);CHKERRQ(ierr);
+      jac->ksp[0] = ksp;
+
+      ierr = PetscNewLog(pc,PC_BJacobi_Singleblock,&bjac);CHKERRQ(ierr);
+      jac->data    = (void*)bjac;
+    } else {
+      ksp  = jac->ksp[0];
+      bjac = (PC_BJacobi_Singleblock *)jac->data;
+    }
+
     /*
       The reason we need to generate these vectors is to serve 
       as the right-hand side and solution vector for the solve on the 
@@ -912,25 +884,10 @@ static PetscErrorCode PCSetUp_BJacobi_Singleblock(PC pc,Mat mat,Mat pmat)
       KSPSolve() on the block.
     */
     ierr = MatGetSize(pmat,&m,&m);CHKERRQ(ierr);
-    ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,m,PETSC_NULL,&x);CHKERRQ(ierr);
-    ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,m,PETSC_NULL,&y);CHKERRQ(ierr);
-    ierr = PetscLogObjectParent(pc,x);CHKERRQ(ierr);
-    ierr = PetscLogObjectParent(pc,y);CHKERRQ(ierr);
-
-    pc->ops->destroy             = PCDestroy_BJacobi_Singleblock;
-    pc->ops->apply               = PCApply_BJacobi_Singleblock;
-    pc->ops->applysymmetricleft  = PCApplySymmetricLeft_BJacobi_Singleblock;
-    pc->ops->applysymmetricright = PCApplySymmetricRight_BJacobi_Singleblock;
-    pc->ops->applytranspose      = PCApplyTranspose_BJacobi_Singleblock;
-    pc->ops->setuponblocks       = PCSetUpOnBlocks_BJacobi_Singleblock;
-
-    ierr = PetscNewLog(pc,PC_BJacobi_Singleblock,&bjac);CHKERRQ(ierr);
-    bjac->x      = x;
-    bjac->y      = y;
-
-    ierr = PetscMalloc(sizeof(KSP),&jac->ksp);CHKERRQ(ierr);
-    jac->ksp[0] = ksp;
-    jac->data    = (void*)bjac;
+    ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,m,PETSC_NULL,&bjac->x);CHKERRQ(ierr);
+    ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,m,PETSC_NULL,&bjac->y);CHKERRQ(ierr);
+    ierr = PetscLogObjectParent(pc,bjac->x);CHKERRQ(ierr);
+    ierr = PetscLogObjectParent(pc,bjac->y);CHKERRQ(ierr);
   } else {
     wasSetup = PETSC_TRUE;
     ksp = jac->ksp[0];
@@ -948,6 +905,35 @@ static PetscErrorCode PCSetUp_BJacobi_Singleblock(PC pc,Mat mat,Mat pmat)
 }
 
 /* ---------------------------------------------------------------------------------------------*/
+#undef __FUNCT__  
+#define __FUNCT__ "PCReset_BJacobi_Multiblock"
+PetscErrorCode PCReset_BJacobi_Multiblock(PC pc)
+{
+  PC_BJacobi            *jac = (PC_BJacobi*)pc->data;
+  PC_BJacobi_Multiblock *bjac = (PC_BJacobi_Multiblock*)jac->data;
+  PetscErrorCode        ierr;
+  PetscInt              i;
+
+  PetscFunctionBegin;
+  if (bjac && bjac->pmat) {
+    ierr = MatDestroyMatrices(jac->n_local,&bjac->pmat);CHKERRQ(ierr);
+    if (jac->use_true_local) {
+      ierr = MatDestroyMatrices(jac->n_local,&bjac->mat);CHKERRQ(ierr);
+    }
+  }
+
+  for (i=0; i<jac->n_local; i++) {
+    ierr = KSPReset(jac->ksp[i]);CHKERRQ(ierr);
+    if (bjac && bjac->x) {
+      ierr = VecDestroy(&bjac->x[i]);CHKERRQ(ierr);
+      ierr = VecDestroy(&bjac->y[i]);CHKERRQ(ierr);
+      ierr = ISDestroy(&bjac->is[i]);CHKERRQ(ierr);
+    }
+  }
+  ierr = PetscFree(jac->l_lens);CHKERRQ(ierr);
+  ierr = PetscFree(jac->g_lens);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
 
 #undef __FUNCT__  
 #define __FUNCT__ "PCDestroy_BJacobi_Multiblock"
@@ -959,36 +945,18 @@ PetscErrorCode PCDestroy_BJacobi_Multiblock(PC pc)
   PetscInt              i;
 
   PetscFunctionBegin;
-  ierr = MatDestroyMatrices(jac->n_local,&bjac->pmat);CHKERRQ(ierr);
-  if (jac->use_true_local) {
-    ierr = MatDestroyMatrices(jac->n_local,&bjac->mat);CHKERRQ(ierr);
+  ierr = PCReset_BJacobi_Multiblock(pc);CHKERRQ(ierr);
+  if (bjac) {
+    ierr = PetscFree2(bjac->x,bjac->y);CHKERRQ(ierr);
+    ierr = PetscFree(bjac->starts);CHKERRQ(ierr);
+    ierr = PetscFree(bjac->is);CHKERRQ(ierr);
   }
-
-  /*
-        If the on processor block had to be generated via a MatGetDiagonalBlock()
-     that creates a copy, this frees the space
-  */
-  if (jac->tp_mat) {
-    ierr = MatDestroy(jac->tp_mat);CHKERRQ(ierr);
-  }
-  if (jac->tp_pmat) {
-    ierr = MatDestroy(jac->tp_pmat);CHKERRQ(ierr);
-  }
-
+  ierr = PetscFree(jac->data);CHKERRQ(ierr);
   for (i=0; i<jac->n_local; i++) {
-    ierr = KSPDestroy(jac->ksp[i]);CHKERRQ(ierr);
-    ierr = VecDestroy(bjac->x[i]);CHKERRQ(ierr);
-    ierr = VecDestroy(bjac->y[i]);CHKERRQ(ierr);
-    ierr = ISDestroy(bjac->is[i]);CHKERRQ(ierr);
+    ierr = KSPDestroy(&jac->ksp[i]);CHKERRQ(ierr);
   }
   ierr = PetscFree(jac->ksp);CHKERRQ(ierr);
-  ierr = PetscFree2(bjac->x,bjac->y);CHKERRQ(ierr);
-  ierr = PetscFree(bjac->starts);CHKERRQ(ierr);
-  ierr = PetscFree(bjac->is);CHKERRQ(ierr);
-  ierr = PetscFree(bjac);CHKERRQ(ierr);
-  ierr = PetscFree(jac->l_lens);CHKERRQ(ierr);
-  ierr = PetscFree(jac->g_lens);CHKERRQ(ierr);
-  ierr = PetscFree(jac);CHKERRQ(ierr);
+  ierr = PetscFree(pc->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -1072,6 +1040,9 @@ PetscErrorCode PCApplyTranspose_BJacobi_Multiblock(PC pc,Vec x,Vec y)
     ierr = PetscLogEventBegin(PC_ApplyTransposeOnBlocks,jac->ksp[i],bjac->x[i],bjac->y[i],0);CHKERRQ(ierr);
     ierr = KSPSolveTranspose(jac->ksp[i],bjac->x[i],bjac->y[i]);CHKERRQ(ierr);
     ierr = PetscLogEventEnd(PC_ApplyTransposeOnBlocks,jac->ksp[i],bjac->x[i],bjac->y[i],0);CHKERRQ(ierr);
+
+    ierr = VecResetArray(bjac->x[i]);CHKERRQ(ierr);
+    ierr = VecResetArray(bjac->y[i]);CHKERRQ(ierr);
   }
   ierr = VecRestoreArray(x,&xin);CHKERRQ(ierr);
   ierr = VecRestoreArray(y,&yin);CHKERRQ(ierr);
@@ -1091,7 +1062,7 @@ static PetscErrorCode PCSetUp_BJacobi_Multiblock(PC pc,Mat mat,Mat pmat)
   PC_BJacobi_Multiblock  *bjac = (PC_BJacobi_Multiblock*)jac->data;
   PC                     subpc;
   IS                     is;
-  MatReuse               scall = MAT_REUSE_MATRIX;
+  MatReuse               scall;
 
   PetscFunctionBegin;
   ierr = MatGetLocalSize(pc->pmat,&M,&N);CHKERRQ(ierr);
@@ -1099,42 +1070,50 @@ static PetscErrorCode PCSetUp_BJacobi_Multiblock(PC pc,Mat mat,Mat pmat)
   n_local = jac->n_local;
 
   if (jac->use_true_local) {
-    PetscTruth same;
+    PetscBool  same;
     ierr = PetscTypeCompare((PetscObject)mat,((PetscObject)pmat)->type_name,&same);CHKERRQ(ierr);
-    if (!same) SETERRQ(PETSC_ERR_ARG_INCOMP,"Matrices not of same type");
+    if (!same) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_INCOMP,"Matrices not of same type");
   }
 
   if (!pc->setupcalled) {
     scall                  = MAT_INITIAL_MATRIX;
-    pc->ops->destroy       = PCDestroy_BJacobi_Multiblock;
-    pc->ops->apply         = PCApply_BJacobi_Multiblock;
-    pc->ops->applytranspose= PCApplyTranspose_BJacobi_Multiblock;
-    pc->ops->setuponblocks = PCSetUpOnBlocks_BJacobi_Multiblock;
 
-    ierr = PetscNewLog(pc,PC_BJacobi_Multiblock,&bjac);CHKERRQ(ierr);
-    ierr = PetscMalloc(n_local*sizeof(KSP),&jac->ksp);CHKERRQ(ierr);
-    ierr = PetscLogObjectMemory(pc,sizeof(n_local*sizeof(KSP)));CHKERRQ(ierr);
-    ierr = PetscMalloc2(n_local,Vec,&bjac->x,n_local,Vec,&bjac->y);CHKERRQ(ierr);
-    ierr = PetscMalloc(n_local*sizeof(PetscScalar),&bjac->starts);CHKERRQ(ierr);
-    ierr = PetscLogObjectMemory(pc,sizeof(n_local*sizeof(PetscScalar)));CHKERRQ(ierr);
+    if (!jac->ksp) {
+      pc->ops->reset         = PCReset_BJacobi_Multiblock;
+      pc->ops->destroy       = PCDestroy_BJacobi_Multiblock;
+      pc->ops->apply         = PCApply_BJacobi_Multiblock;
+      pc->ops->applytranspose= PCApplyTranspose_BJacobi_Multiblock;
+      pc->ops->setuponblocks = PCSetUpOnBlocks_BJacobi_Multiblock;
+
+      ierr = PetscNewLog(pc,PC_BJacobi_Multiblock,&bjac);CHKERRQ(ierr);
+      ierr = PetscMalloc(n_local*sizeof(KSP),&jac->ksp);CHKERRQ(ierr);
+      ierr = PetscLogObjectMemory(pc,sizeof(n_local*sizeof(KSP)));CHKERRQ(ierr);
+      ierr = PetscMalloc2(n_local,Vec,&bjac->x,n_local,Vec,&bjac->y);CHKERRQ(ierr);
+      ierr = PetscMalloc(n_local*sizeof(PetscScalar),&bjac->starts);CHKERRQ(ierr);
+      ierr = PetscLogObjectMemory(pc,sizeof(n_local*sizeof(PetscScalar)));CHKERRQ(ierr);
     
-    jac->data    = (void*)bjac;
-    ierr = PetscMalloc(n_local*sizeof(IS),&bjac->is);CHKERRQ(ierr);
-    ierr = PetscLogObjectMemory(pc,sizeof(n_local*sizeof(IS)));CHKERRQ(ierr);
+      jac->data    = (void*)bjac;
+      ierr = PetscMalloc(n_local*sizeof(IS),&bjac->is);CHKERRQ(ierr);
+      ierr = PetscLogObjectMemory(pc,sizeof(n_local*sizeof(IS)));CHKERRQ(ierr);
+
+      for (i=0; i<n_local; i++) {
+        ierr = KSPCreate(PETSC_COMM_SELF,&ksp);CHKERRQ(ierr);
+        ierr = PetscObjectIncrementTabLevel((PetscObject)ksp,(PetscObject)pc,1);CHKERRQ(ierr);
+        ierr = PetscLogObjectParent(pc,ksp);CHKERRQ(ierr);
+        ierr = KSPSetType(ksp,KSPPREONLY);CHKERRQ(ierr);
+        ierr = KSPGetPC(ksp,&subpc);CHKERRQ(ierr);
+        ierr = PCGetOptionsPrefix(pc,&prefix);CHKERRQ(ierr);
+        ierr = KSPSetOptionsPrefix(ksp,prefix);CHKERRQ(ierr);
+        ierr = KSPAppendOptionsPrefix(ksp,"sub_");CHKERRQ(ierr);
+        jac->ksp[i]    = ksp;
+      }
+    } else {
+      bjac = (PC_BJacobi_Multiblock*)jac->data;
+    }
 
     start = 0;
     for (i=0; i<n_local; i++) {
-      ierr = KSPCreate(PETSC_COMM_SELF,&ksp);CHKERRQ(ierr);
-      ierr = PetscObjectIncrementTabLevel((PetscObject)ksp,(PetscObject)pc,1);CHKERRQ(ierr);
-      ierr = PetscLogObjectParent(pc,ksp);CHKERRQ(ierr);
-      ierr = KSPSetType(ksp,KSPPREONLY);CHKERRQ(ierr);
-      ierr = KSPGetPC(ksp,&subpc);CHKERRQ(ierr);
-      ierr = PCGetOptionsPrefix(pc,&prefix);CHKERRQ(ierr);
-      ierr = KSPSetOptionsPrefix(ksp,prefix);CHKERRQ(ierr);
-      ierr = KSPAppendOptionsPrefix(ksp,"sub_");CHKERRQ(ierr);
-
       m = jac->l_lens[i];
-
       /*
       The reason we need to generate these vectors is to serve 
       as the right-hand side and solution vector for the solve on the 
@@ -1150,7 +1129,6 @@ static PetscErrorCode PCSetUp_BJacobi_Multiblock(PC pc,Mat mat,Mat pmat)
       bjac->x[i]      = x;
       bjac->y[i]      = y;
       bjac->starts[i] = start;
-      jac->ksp[i]    = ksp;
 
       ierr = ISCreateStride(PETSC_COMM_SELF,m,start,1,&is);CHKERRQ(ierr);
       bjac->is[i] = is;
@@ -1169,6 +1147,8 @@ static PetscErrorCode PCSetUp_BJacobi_Multiblock(PC pc,Mat mat,Mat pmat)
         ierr = MatDestroyMatrices(n_local,&bjac->mat);CHKERRQ(ierr);
       }
       scall = MAT_INITIAL_MATRIX;
+    } else {
+      scall = MAT_REUSE_MATRIX;
     }
   }
 
@@ -1195,6 +1175,153 @@ static PetscErrorCode PCSetUp_BJacobi_Multiblock(PC pc,Mat mat,Mat pmat)
     if(pc->setfromoptionscalled){
       ierr = KSPSetFromOptions(jac->ksp[i]);CHKERRQ(ierr);
     }
+  }
+  PetscFunctionReturn(0);
+}
+
+/* ---------------------------------------------------------------------------------------------*/
+/*
+      These are for a single block with multiple processes; 
+*/
+#undef __FUNCT__  
+#define __FUNCT__ "PCReset_BJacobi_Multiproc"
+static PetscErrorCode PCReset_BJacobi_Multiproc(PC pc)
+{
+  PC_BJacobi           *jac = (PC_BJacobi*)pc->data;
+  PC_BJacobi_Multiproc *mpjac = (PC_BJacobi_Multiproc*)jac->data;
+  PetscErrorCode       ierr;
+
+  PetscFunctionBegin;
+  ierr = VecDestroy(&mpjac->ysub);CHKERRQ(ierr);
+  ierr = VecDestroy(&mpjac->xsub);CHKERRQ(ierr);
+  ierr = MatDestroy(&mpjac->submats);CHKERRQ(ierr);
+  if (mpjac->ksp){ierr = KSPReset(mpjac->ksp);CHKERRQ(ierr);}
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PCDestroy_BJacobi_Multiproc"
+static PetscErrorCode PCDestroy_BJacobi_Multiproc(PC pc)
+{
+  PC_BJacobi           *jac = (PC_BJacobi*)pc->data;
+  PC_BJacobi_Multiproc *mpjac = (PC_BJacobi_Multiproc*)jac->data;
+  PetscErrorCode       ierr;
+
+  PetscFunctionBegin;
+  ierr = PCReset_BJacobi_Multiproc(pc);CHKERRQ(ierr);
+  ierr = KSPDestroy(&mpjac->ksp);CHKERRQ(ierr);
+  ierr = PetscSubcommDestroy(&mpjac->psubcomm);CHKERRQ(ierr);
+
+  ierr = PetscFree(mpjac);CHKERRQ(ierr);
+  ierr = PetscFree(pc->data);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PCApply_BJacobi_Multiproc"
+static PetscErrorCode PCApply_BJacobi_Multiproc(PC pc,Vec x,Vec y)
+{
+  PC_BJacobi           *jac = (PC_BJacobi*)pc->data;
+  PC_BJacobi_Multiproc *mpjac = (PC_BJacobi_Multiproc*)jac->data;
+  PetscErrorCode       ierr;
+  PetscScalar          *xarray,*yarray;
+
+  PetscFunctionBegin;
+  /* place x's and y's local arrays into xsub and ysub */
+  ierr = VecGetArray(x,&xarray);CHKERRQ(ierr);
+  ierr = VecGetArray(y,&yarray);CHKERRQ(ierr);
+  ierr = VecPlaceArray(mpjac->xsub,xarray);CHKERRQ(ierr);
+  ierr = VecPlaceArray(mpjac->ysub,yarray);CHKERRQ(ierr);
+
+  /* apply preconditioner on each matrix block */
+  ierr = KSPSolve(mpjac->ksp,mpjac->xsub,mpjac->ysub);CHKERRQ(ierr);
+
+  ierr = VecResetArray(mpjac->xsub);CHKERRQ(ierr);
+  ierr = VecResetArray(mpjac->ysub);CHKERRQ(ierr);
+  ierr = VecRestoreArray(x,&xarray);CHKERRQ(ierr);
+  ierr = VecRestoreArray(y,&yarray);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+extern PetscErrorCode MatGetMultiProcBlock_MPIAIJ(Mat,MPI_Comm,Mat*);
+#undef __FUNCT__  
+#define __FUNCT__ "PCSetUp_BJacobi_Multiproc"
+static PetscErrorCode PCSetUp_BJacobi_Multiproc(PC pc)
+{
+  PC_BJacobi           *jac = (PC_BJacobi*)pc->data;
+  PC_BJacobi_Multiproc *mpjac = (PC_BJacobi_Multiproc*)jac->data;
+  PetscErrorCode       ierr;
+  PetscInt             m,n; 
+  MPI_Comm             comm = ((PetscObject)pc)->comm,subcomm=0;
+  const char           *prefix;
+
+  PetscFunctionBegin;
+  if (jac->n_local > 1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Only a single block in a subcommunicator is supported");
+  jac->n_local = 1; /* currently only a single block is supported for a subcommunicator */
+  if (!pc->setupcalled) {
+    ierr = PetscNewLog(pc,PC_BJacobi_Multiproc,&mpjac);CHKERRQ(ierr);
+    jac->data = (void*)mpjac;
+
+    /* initialize datastructure mpjac */
+    if (!jac->psubcomm) {
+      /* Create default contiguous subcommunicatiors if user does not provide them */
+      ierr = PetscSubcommCreate(comm,&jac->psubcomm);CHKERRQ(ierr);
+      ierr = PetscSubcommSetNumber(jac->psubcomm,jac->n);CHKERRQ(ierr);
+      ierr = PetscSubcommSetType(jac->psubcomm,PETSC_SUBCOMM_CONTIGUOUS);CHKERRQ(ierr);
+      ierr = PetscLogObjectMemory(pc,sizeof(PetscSubcomm));CHKERRQ(ierr);
+    } 
+    mpjac->psubcomm = jac->psubcomm;
+    subcomm         = mpjac->psubcomm->comm;
+
+    /* Get matrix blocks of pmat */
+    ierr = MatGetMultiProcBlock_MPIAIJ(pc->pmat,subcomm,&mpjac->submats);CHKERRQ(ierr);
+
+    /* create a new PC that processors in each subcomm have copy of */
+    ierr = KSPCreate(subcomm,&mpjac->ksp);CHKERRQ(ierr);
+    ierr = PetscObjectIncrementTabLevel((PetscObject)mpjac->ksp,(PetscObject)pc,1);CHKERRQ(ierr);
+    ierr = PetscLogObjectParent(pc,mpjac->ksp);CHKERRQ(ierr);
+    ierr = KSPSetOperators(mpjac->ksp,mpjac->submats,mpjac->submats,pc->flag);CHKERRQ(ierr);
+    ierr = KSPGetPC(mpjac->ksp,&mpjac->pc);CHKERRQ(ierr);
+
+    ierr = PCGetOptionsPrefix(pc,&prefix);CHKERRQ(ierr);
+    ierr = KSPSetOptionsPrefix(mpjac->ksp,prefix);CHKERRQ(ierr); 
+    ierr = KSPAppendOptionsPrefix(mpjac->ksp,"sub_");CHKERRQ(ierr); 
+    /*
+      PetscMPIInt rank,subsize,subrank;
+      ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr);
+      ierr = MPI_Comm_size(subcomm,&subsize);CHKERRQ(ierr);
+      ierr = MPI_Comm_rank(subcomm,&subrank);CHKERRQ(ierr);
+
+      ierr = MatGetLocalSize(mpjac->submats,&m,PETSC_NULL);CHKERRQ(ierr);
+      ierr = MatGetSize(mpjac->submats,&n,PETSC_NULL);CHKERRQ(ierr);
+      ierr = PetscSynchronizedPrintf(comm,"[%d], sub-size %d,sub-rank %d\n",rank,subsize,subrank);
+      ierr = PetscSynchronizedFlush(comm);CHKERRQ(ierr);
+    */
+
+    /* create dummy vectors xsub and ysub */
+    ierr = MatGetLocalSize(mpjac->submats,&m,&n);CHKERRQ(ierr);
+    ierr = VecCreateMPIWithArray(subcomm,n,PETSC_DECIDE,PETSC_NULL,&mpjac->xsub);CHKERRQ(ierr);
+    ierr = VecCreateMPIWithArray(subcomm,m,PETSC_DECIDE,PETSC_NULL,&mpjac->ysub);CHKERRQ(ierr);
+    ierr = PetscLogObjectParent(pc,mpjac->xsub);CHKERRQ(ierr);
+    ierr = PetscLogObjectParent(pc,mpjac->ysub);CHKERRQ(ierr);
+
+    pc->ops->reset   = PCReset_BJacobi_Multiproc;
+    pc->ops->destroy = PCDestroy_BJacobi_Multiproc;
+    pc->ops->apply   = PCApply_BJacobi_Multiproc;
+  }
+
+  if (pc->setupcalled && pc->flag == DIFFERENT_NONZERO_PATTERN) {
+    /* destroy old matrix blocks, then get new matrix blocks */
+    if (mpjac->submats) {
+      ierr = MatDestroy(&mpjac->submats);CHKERRQ(ierr);
+      subcomm = mpjac->psubcomm->comm;
+      ierr = MatGetMultiProcBlock_MPIAIJ(pc->pmat,subcomm,&mpjac->submats);CHKERRQ(ierr);
+      ierr = KSPSetOperators(mpjac->ksp,mpjac->submats,mpjac->submats,DIFFERENT_NONZERO_PATTERN);CHKERRQ(ierr);
+    }
+  }     
+
+  if (pc->setfromoptionscalled){
+    ierr = KSPSetFromOptions(mpjac->ksp);CHKERRQ(ierr); 
   }
   PetscFunctionReturn(0);
 }

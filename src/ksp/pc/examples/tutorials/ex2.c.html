@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:39:06+00:00">
+<meta name="date" content="2011-10-29T19:11:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -23,7 +23,7 @@
 <a name="line13"> 13: </a><font color="#B22222"> */</font>
 
 <a name="line15"> 15: </a><font color="#A020F0">#include &lt;stdlib.h&gt;</font>
-<a name="line16"> 16: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line16"> 16: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line20"> 20: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line21"> 21: </a>{
@@ -127,11 +127,11 @@
 <a name="line120">120: </a>  }
 <a name="line121">121: </a>  printf(<font color="#666666">"\n"</font>);
 
-<a name="line123">123: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
-<a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line125">125: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(B);
-<a name="line126">126: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(X);
-<a name="line127">127: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(D);
+<a name="line123">123: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line125">125: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;B);
+<a name="line126">126: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;X);
+<a name="line127">127: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;D);
 <a name="line128">128: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line129">129: </a>  <font color="#4169E1">return</font>(0);
 <a name="line130">130: </a>}

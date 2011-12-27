@@ -12,7 +12,7 @@ Resets a factored matrix to be treated as unfactored.
 #include "petscmat.h" 
 PetscErrorCode  MatSetUnfactored(Mat mat)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>mat </B> -the factored matrix to be reset
@@ -36,7 +36,7 @@ or by using the options -pc_type ilu -pc_factor_in_place
 In-place factorization ILU(0) can also be used as a local
 solver for the blocks within the block Jacobi or additive Schwarz
 methods (runtime option: -sub_pc_factor_in_place).  See the discussion
-of these preconditioners in the users manual for details on setting
+of these preconditioners in the &lt;a href="../../docs/manual.pdf#ch_pc"&gt;<A HREF="../PC/PC.html#PC">PC</A> chapter of the users manual&lt;/a&gt; for details on setting
 local solver options.
 <P>
 Most users should employ the simplified <A HREF="../KSP/KSP.html#KSP">KSP</A> interface for linear solvers

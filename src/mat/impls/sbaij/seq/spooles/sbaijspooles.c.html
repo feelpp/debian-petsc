@@ -4,33 +4,33 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:33:26+00:00">
+<meta name="date" content="2011-10-29T19:03:43+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCMAT_DLL</font></strong>
+<pre width="80">
+<a name="line2">  2: </a><font color="#B22222">/* </font>
+<a name="line3">  3: </a><font color="#B22222">   Provides an interface to the Spooles serial sparse solver</font>
+<a name="line4">  4: </a><font color="#B22222">*/</font>
 
-<a name="line3">  3: </a><font color="#B22222">/* </font>
-<a name="line4">  4: </a><font color="#B22222">   Provides an interface to the Spooles serial sparse solver</font>
-<a name="line5">  5: </a><font color="#B22222">*/</font>
-
-<a name="line7"> 7: </a> #include <A href="../../../../../../include/../src/mat/impls/aij/seq/spooles/spooles.h.html">../src/mat/impls/aij/seq/spooles/spooles.h</A>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/spooles/spooles.h&gt;</font>
 
 
-<a name="line13"> 13: </a><strong><font color="#4169E1"><a name="MatDestroy_SeqSBAIJSpooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqSBAIJSpooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
-<a name="line14"> 14: </a>{
-<a name="line15"> 15: </a>  Mat_Spooles    *lu = (Mat_Spooles*)A-&gt;spptr;
-<a name="line17"> 17: </a>
-<a name="line19"> 19: </a>  <font color="#4169E1">if</font> (lu-&gt;CleanUpSpooles) {
-<a name="line20"> 20: </a>    FrontMtx_free(lu-&gt;frontmtx);
-<a name="line21"> 21: </a>    IV_free(lu-&gt;newToOldIV);
-<a name="line22"> 22: </a>    IV_free(lu-&gt;oldToNewIV);
-<a name="line23"> 23: </a>    InpMtx_free(lu-&gt;mtxA);
-<a name="line24"> 24: </a>    ETree_free(lu-&gt;frontETree);
-<a name="line25"> 25: </a>    IVL_free(lu-&gt;symbfacIVL);
-<a name="line26"> 26: </a>    SubMtxManager_free(lu-&gt;mtxmanager);
-<a name="line27"> 27: </a>    Graph_free(lu-&gt;graph);
-<a name="line28"> 28: </a>  }
+<a name="line12"> 12: </a><strong><font color="#4169E1"><a name="MatDestroy_SeqSBAIJSpooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqSBAIJSpooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line13"> 13: </a>{
+<a name="line14"> 14: </a>  Mat_Spooles    *lu = (Mat_Spooles*)A-&gt;spptr;
+
+<a name="line18"> 18: </a>  <font color="#4169E1">if</font> (lu &amp;&amp; lu-&gt;CleanUpSpooles) {
+<a name="line19"> 19: </a>    FrontMtx_free(lu-&gt;frontmtx);
+<a name="line20"> 20: </a>    IV_free(lu-&gt;newToOldIV);
+<a name="line21"> 21: </a>    IV_free(lu-&gt;oldToNewIV);
+<a name="line22"> 22: </a>    InpMtx_free(lu-&gt;mtxA);
+<a name="line23"> 23: </a>    ETree_free(lu-&gt;frontETree);
+<a name="line24"> 24: </a>    IVL_free(lu-&gt;symbfacIVL);
+<a name="line25"> 25: </a>    SubMtxManager_free(lu-&gt;mtxmanager);
+<a name="line26"> 26: </a>    Graph_free(lu-&gt;graph);
+<a name="line27"> 27: </a>  }
+<a name="line28"> 28: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(A-&gt;spptr);
 <a name="line29"> 29: </a>  MatDestroy_SeqSBAIJ(A);
 <a name="line30"> 30: </a>  <font color="#4169E1">return</font>(0);
 <a name="line31"> 31: </a>}
@@ -69,7 +69,7 @@
 
 <a name="line74"> 74: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqsbaij_spooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqsbaij_spooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
 <a name="line75"> 75: </a>{
-<a name="line77"> 77: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MAT_SOLVER_SPOOLES.html#MAT_SOLVER_SPOOLES">MAT_SOLVER_SPOOLES</A>;
+<a name="line77"> 77: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MATSOLVERSPOOLES.html#MATSOLVERSPOOLES">MATSOLVERSPOOLES</A>;
 <a name="line78"> 78: </a>  <font color="#4169E1">return</font>(0);
 <a name="line79"> 79: </a>}
 
@@ -78,12 +78,12 @@
 <a name="line87"> 87: </a>  <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B;
 <a name="line89"> 89: </a>  Mat_Spooles    *lu;
 
-<a name="line92"> 92: </a>  <font color="#4169E1">if</font> (ftype != MAT_FACTOR_CHOLESKY) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP,<font color="#666666">"Only Cholesky factorization is support for Spooles from SBAIJ matrix"</font>);
+<a name="line92"> 92: </a>  <font color="#4169E1">if</font> (ftype != MAT_FACTOR_CHOLESKY) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Only Cholesky factorization is support for Spooles from SBAIJ matrix"</font>);
 <a name="line93"> 93: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,&amp;B);
 <a name="line94"> 94: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(B,A-&gt;rmap-&gt;n,A-&gt;cmap-&gt;n,A-&gt;rmap-&gt;n,A-&gt;cmap-&gt;n);
 <a name="line95"> 95: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(B,((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;type_name);
 <a name="line96"> 96: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSeqSBAIJSetPreallocation.html#MatSeqSBAIJSetPreallocation">MatSeqSBAIJSetPreallocation</A>(B,1,<A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line97"> 97: </a>  PetscNewLog(B,Mat_Spooles,&amp;lu);
+<a name="line97"> 97: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(B,Mat_Spooles,&amp;lu);
 <a name="line98"> 98: </a>  B-&gt;spptr = lu;
 <a name="line99"> 99: </a>  lu-&gt;options.pivotingflag  = SPOOLES_NO_PIVOTING;
 <a name="line100">100: </a>  lu-&gt;options.symflag       = SPOOLES_SYMMETRIC;   <font color="#B22222">/* default */</font>
@@ -93,7 +93,7 @@
 <a name="line104">104: </a>  B-&gt;ops-&gt;choleskyfactorsymbolic = MatCholeskyFactorSymbolic_SeqSBAIJSpooles;
 <a name="line105">105: </a>  B-&gt;ops-&gt;destroy                = MatDestroy_SeqSBAIJSpooles;
 <a name="line106">106: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatFactorGetSolverPackage_C"</font>,<font color="#666666">"MatFactorGetSolverPackage_seqsbaij_spooles"</font>,MatFactorGetSolverPackage_seqsbaij_spooles);
-<a name="line107">107: </a>  B-&gt;factor                      = ftype;
+<a name="line107">107: </a>  B-&gt;factortype                  = ftype;
 <a name="line108">108: </a>  *F = B;
 <a name="line109">109: </a>  <font color="#4169E1">return</font>(0);
 <a name="line110">110: </a>}

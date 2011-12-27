@@ -4,21 +4,21 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:28:55+00:00">
+<meta name="date" content="2011-10-29T18:59:56+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
-<a name="line2"> 2: </a> #include <A href="../../../../../../include/../src/mat/impls/aij/seq/aij.h.html">../src/mat/impls/aij/seq/aij.h</A>
-<a name="line3"> 3: </a> #include <A href="../../../../../../include/../src/mat/impls/sbaij/seq/sbaij.h.html">../src/mat/impls/sbaij/seq/sbaij.h</A>
-<a name="line4"> 4: </a> #include <A href="../../../../../../include/../src/mat/impls/aij/seq/bas/spbas.h.html">../src/mat/impls/aij/seq/bas/spbas.h</A>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;../src/mat/impls/sbaij/seq/sbaij.h&gt;</font>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/bas/spbas.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="MatICCFactorSymbolic_SeqAIJ_Bas"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatICCFactorSymbolic_SeqAIJ_Bas(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> fact,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> perm,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
 <a name="line9">  9: </a>{
 <a name="line10"> 10: </a>  Mat_SeqAIJ         *a = (Mat_SeqAIJ*)A-&gt;data;
 <a name="line11"> 11: </a>  Mat_SeqSBAIJ       *b;
 <a name="line12"> 12: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
-<a name="line13"> 13: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>         perm_identity,missing;
+<a name="line13"> 13: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          perm_identity,missing;
 <a name="line14"> 14: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           reallocs=0,i,*ai=a-&gt;i,*aj=a-&gt;j,am=A-&gt;rmap-&gt;n,*ui;
 <a name="line15"> 15: </a>  const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>     *rip,*riip;
 <a name="line16"> 16: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           j;
@@ -28,9 +28,9 @@
 <a name="line20"> 20: </a>  <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>                 iperm;
 <a name="line21"> 21: </a>  spbas_matrix       Pattern_0, Pattern_P;
 
-<a name="line24"> 24: </a>  <font color="#4169E1">if</font> (A-&gt;rmap-&gt;n != A-&gt;cmap-&gt;n) <A href="../../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_ARG_WRONG,<font color="#666666">"Must be square matrix, rows %D columns %D"</font>,A-&gt;rmap-&gt;n,A-&gt;cmap-&gt;n);
+<a name="line24"> 24: </a>  <font color="#4169E1">if</font> (A-&gt;rmap-&gt;n != A-&gt;cmap-&gt;n) <A href="../../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,<font color="#666666">"Must be square matrix, rows %D columns %D"</font>,A-&gt;rmap-&gt;n,A-&gt;cmap-&gt;n);
 <a name="line25"> 25: </a>  <A href="../../../../../../docs/manualpages/Mat/MatMissingDiagonal.html#MatMissingDiagonal">MatMissingDiagonal</A>(A,&amp;missing,&amp;d);
-<a name="line26"> 26: </a>  <font color="#4169E1">if</font> (missing) <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Matrix is missing diagonal entry %D"</font>,d);
+<a name="line26"> 26: </a>  <font color="#4169E1">if</font> (missing) <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Matrix is missing diagonal entry %D"</font>,d);
 <a name="line27"> 27: </a>  <A href="../../../../../../docs/manualpages/IS/ISIdentity.html#ISIdentity">ISIdentity</A>(perm,&amp;perm_identity);
 <a name="line28"> 28: </a>  <A href="../../../../../../docs/manualpages/IS/ISInvertPermutation.html#ISInvertPermutation">ISInvertPermutation</A>(perm,<A href="../../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,&amp;iperm);
 
@@ -116,7 +116,7 @@
 <a name="line112">112: </a>  MatScalar      *ba=b-&gt;a;
 <a name="line113">113: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      shiftnz = info-&gt;shiftamount;
 <a name="line114">114: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      droptol = -1;
-<a name="line115">115: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     perm_identity;
+<a name="line115">115: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      perm_identity;
 <a name="line116">116: </a>  spbas_matrix   Pattern, matrix_L,matrix_LT;
 <a name="line117">117: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      mem_reduction;
 
@@ -192,8 +192,8 @@
 <a name="line193">193: </a>    <A href="../../../../../../docs/manualpages/Mat/MatSeqSBAIJSetPreallocation.html#MatSeqSBAIJSetPreallocation">MatSeqSBAIJSetPreallocation</A>(*B,1,MAT_SKIP_ALLOCATION,<A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line194">194: </a>    (*B)-&gt;ops-&gt;iccfactorsymbolic     = MatICCFactorSymbolic_SeqAIJ_Bas;
 <a name="line195">195: </a>    (*B)-&gt;ops-&gt;choleskyfactornumeric = MatCholeskyFactorNumeric_SeqAIJ_Bas;
-<a name="line196">196: </a>  } <font color="#4169E1">else</font> <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP,<font color="#666666">"Factor type not supported"</font>);
-<a name="line197">197: </a>  (*B)-&gt;factor = ftype;
+<a name="line196">196: </a>  } <font color="#4169E1">else</font> <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Factor type not supported"</font>);
+<a name="line197">197: </a>  (*B)-&gt;factortype = ftype;
 <a name="line198">198: </a>  <font color="#4169E1">return</font>(0);
 <a name="line199">199: </a>}
 </pre>

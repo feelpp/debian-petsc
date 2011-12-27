@@ -6,7 +6,7 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscViewerSocketOpen"><H1>PetscViewerSocketOpen</H1></A>
-Opens a connection to a Matlab or other socket based server. 
+Opens a connection to a MATLAB or other socket based server. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 PetscErrorCode  PetscViewerSocketOpen(MPI_Comm comm,const char machine[],int port,PetscViewer *lab)
@@ -31,7 +31,7 @@ a connection from elsewhere
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Most users should employ the following commands to access the
-Matlab <A HREF="../Viewer/PetscViewers.html#PetscViewers">PetscViewers</A>
+MATLAB <A HREF="../Viewer/PetscViewers.html#PetscViewers">PetscViewers</A>
 <pre>
 </pre>
 <pre>
@@ -70,7 +70,7 @@ For use with  <A HREF="../Viewer/PETSC_VIEWER_SOCKET_WORLD.html#PETSC_VIEWER_SOC
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_SOCKET_PORT portnumber</B></TD><TD>- -   PETSC_VIEWER_SOCKET_MACHINE machine name
 </TD></TR>
 <P>
-Currently the only socket client available is Matlab. See
+Currently the only socket client available is MATLAB. See
 src/dm/da/examples/tests/ex12.c and ex12.m for an example of usage.
 <P>
 Notes: The socket viewer is in some sense a subclass of the binary viewer, to read and write to the socket

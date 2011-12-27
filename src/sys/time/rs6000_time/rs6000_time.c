@@ -1,12 +1,11 @@
-#define PETSC_DLL
 
-#include "petscsys.h"
+#include <petscsys.h>
 #include <sys/time.h>
 #include <sys/systemcfg.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "rs6000_time"
-PetscLogDouble PETSC_DLLEXPORT rs6000_time(void) 
+PetscLogDouble  rs6000_time(void)
 {
    timebasestruct_t t;
    PetscLogDouble   time;

@@ -32,10 +32,10 @@ that vertex based multigrid needs.
 
 static char help[] = "Solves 2D inhomogeneous Laplacian using multigrid.\n\n";
 
-#include "petscda.h"
-#include "petscksp.h"
-#include "petscmg.h"
-#include "petscdmmg.h"
+#include <petscdmda.h>
+#include <petscksp.h>
+#include <petscpcmg.h>
+#include <petscdmmg.h>
 
 extern PetscErrorCode ComputeMatrix(DMMG,Mat,Mat);
 extern PetscErrorCode ComputeRHS(DMMG,Vec);
@@ -52,7 +52,7 @@ typedef struct {
 int main(int argc,char **argv)
 {
   DMMG           *dmmg;
-  DA             da;
+  DM             da;
   UserContext    user;
   PetscReal      norm;
   const char     *bcTypes[2] = {"dirichlet","neumann"};
@@ -62,11 +62,11 @@ int main(int argc,char **argv)
   PetscInitialize(&argc,&argv,(char *)0,help);
   
   ierr = DMMGCreate(PETSC_COMM_WORLD,3,PETSC_NULL,&dmmg);CHKERRQ(ierr);
-  ierr = DACreate2d(PETSC_COMM_WORLD,DA_NONPERIODIC,DA_STENCIL_STAR,3,3,PETSC_DECIDE,PETSC_DECIDE,1,1,0,0,&da);CHKERRQ(ierr);  
-  ierr = DASetInterpolationType(da, DA_Q0);CHKERRQ(ierr);  
+  ierr = DMDACreate2d(PETSC_COMM_WORLD, DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,DMDA_STENCIL_STAR,3,3,PETSC_DECIDE,PETSC_DECIDE,1,1,0,0,&da);CHKERRQ(ierr);  
+  ierr = DMDASetInterpolationType(da, DMDA_Q0);CHKERRQ(ierr);  
   
   ierr = DMMGSetDM(dmmg,(DM)da);CHKERRQ(ierr);
-  ierr = DADestroy(da);CHKERRQ(ierr);
+  ierr = DMDestroy(&da);CHKERRQ(ierr);
   for (l = 0; l < DMMGGetLevels(dmmg); l++) {
     ierr = DMMGSetUser(dmmg,l,&user);CHKERRQ(ierr);
   }
@@ -92,7 +92,7 @@ int main(int argc,char **argv)
   /* ierr = PetscPrintf(PETSC_COMM_WORLD,"Residual norm %g\n",norm);CHKERRQ(ierr); */
 
   ierr = DMMGDestroy(dmmg);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -100,7 +100,7 @@ int main(int argc,char **argv)
 #define __FUNCT__ "ComputeRHS"
 PetscErrorCode ComputeRHS(DMMG dmmg, Vec b)
 {
-  DA             da = (DA)dmmg->dm;
+  DM             da = dmmg->dm;
   UserContext    *user = (UserContext *) dmmg->user;
   PetscErrorCode ierr;
   PetscInt       i,j,mx,my,xm,ym,xs,ys;
@@ -108,17 +108,17 @@ PetscErrorCode ComputeRHS(DMMG dmmg, Vec b)
   PetscScalar    **array;
 
   PetscFunctionBegin;
-  ierr = DAGetInfo(da, 0, &mx, &my, 0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(da, 0, &mx, &my, 0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   Hx   = 1.0 / (PetscReal)(mx);
   Hy   = 1.0 / (PetscReal)(my);
-  ierr = DAGetCorners(da,&xs,&ys,0,&xm,&ym,0);CHKERRQ(ierr);
-  ierr = DAVecGetArray(da, b, &array);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,&ys,0,&xm,&ym,0);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(da, b, &array);CHKERRQ(ierr);
   for (j=ys; j<ys+ym; j++){
     for(i=xs; i<xs+xm; i++){
       array[j][i] = PetscExpScalar(-(((PetscReal)i+0.5)*Hx)*(((PetscReal)i+0.5)*Hx)/user->nu)*PetscExpScalar(-(((PetscReal)j+0.5)*Hy)*(((PetscReal)j+0.5)*Hy)/user->nu)*Hx*Hy;
     }
   }
-  ierr = DAVecRestoreArray(da, b, &array);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da, b, &array);CHKERRQ(ierr);
   ierr = VecAssemblyBegin(b);CHKERRQ(ierr);
   ierr = VecAssemblyEnd(b);CHKERRQ(ierr);
 
@@ -139,7 +139,7 @@ PetscErrorCode ComputeRHS(DMMG dmmg, Vec b)
 #define __FUNCT__ "ComputeMatrix"
 PetscErrorCode ComputeMatrix(DMMG dmmg, Mat J,Mat jac)
 {
-  DA             da = (DA) dmmg->dm;
+  DM             da =  dmmg->dm;
   UserContext    *user = (UserContext *) dmmg->user;
   PetscErrorCode ierr;
   PetscInt       i,j,mx,my,xm,ym,xs,ys,num, numi, numj;
@@ -147,12 +147,12 @@ PetscErrorCode ComputeMatrix(DMMG dmmg, Mat J,Mat jac)
   MatStencil     row, col[5];
 
   PetscFunctionBegin;
-  ierr = DAGetInfo(da,0,&mx,&my,0,0,0,0,0,0,0,0);CHKERRQ(ierr);  
+  ierr = DMDAGetInfo(da,0,&mx,&my,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);  
   Hx    = 1.0 / (PetscReal)(mx);
   Hy    = 1.0 / (PetscReal)(my);
   HxdHy = Hx/Hy;
   HydHx = Hy/Hx;
-  ierr = DAGetCorners(da,&xs,&ys,0,&xm,&ym,0);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,&ys,0,&xm,&ym,0);CHKERRQ(ierr);
   for (j=ys; j<ys+ym; j++)  {
     for(i=xs; i<xs+xm; i++) {
       row.i = i; row.j = j;
@@ -160,7 +160,7 @@ PetscErrorCode ComputeMatrix(DMMG dmmg, Mat J,Mat jac)
 	if (user->bcType == DIRICHLET) {
 	  v[0] = 2.0*(HxdHy + HydHx);
 	  ierr = MatSetValuesStencil(jac,1,&row,1,&row,v,INSERT_VALUES);CHKERRQ(ierr);
-	  SETERRQ(PETSC_ERR_SUP,"Dirichlet boundary conditions not supported !\n");
+	  SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP,"Dirichlet boundary conditions not supported !\n");
 	} else if (user->bcType == NEUMANN) {
 	  num = 0; numi=0; numj=0;
 	  if (j!=0)  {

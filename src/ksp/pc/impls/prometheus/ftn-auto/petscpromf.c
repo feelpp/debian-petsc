@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* petscprom.c */
 /* Fortran interface file */
 
@@ -28,11 +29,6 @@ extern void PetscRmPointer(void*);
 
 #include "petscpc.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define pcsetcoordinates_ PCSETCOORDINATES
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define pcsetcoordinates_ pcsetcoordinates
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcsasetvectors_ PCSASETVECTORS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcsasetvectors_ pcsasetvectors
@@ -43,11 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcsetcoordinates_(PC pc,PetscInt *dim,PetscReal *coords, int *__ierr ){
-*__ierr = PCSetCoordinates(
-	(PC)PetscToPointer((pc) ),*dim,coords);
-}
-void PETSC_STDCALL   pcsasetvectors_(PC pc,PetscInt *nvects,PetscReal *vects, int *__ierr ){
+void PETSC_STDCALL  pcsasetvectors_(PC pc,PetscInt *nvects,PetscReal *vects, int *__ierr ){
 *__ierr = PCSASetVectors(
 	(PC)PetscToPointer((pc) ),*nvects,vects);
 }

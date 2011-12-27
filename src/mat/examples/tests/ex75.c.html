@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:39+00:00">
+<meta name="date" content="2011-10-29T19:05:17+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@
 
 <a name="line4">  4: </a>static char help[] = <font color="#666666">"Tests the vatious routines in MatMPISBAIJ format.\n"</font>;
 
-<a name="line6"> 6: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line10"> 10: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line11"> 11: </a>{
@@ -25,7 +25,7 @@
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          n,col[3],n1,block,row,i,j,i2,j2,Ii,J,rstart,rend,bs=1,mbs=16,d_nz=3,o_nz=3,prob=2;
 <a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
 <a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>       size,rank;
-<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>        flg;
+<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>         flg;
 <a name="line21"> 21: </a>  const <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>     type;
 
 <a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
@@ -62,9 +62,9 @@
 <a name="line54"> 54: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(sA,1,&amp;i,3,col,value,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line55"> 55: </a>    }
 <a name="line56"> 56: </a>    <font color="#4169E1">else</font> <font color="#4169E1">if</font> (prob ==2){ <font color="#B22222">/* matrix for the five point stencil */</font>
-<a name="line57"> 57: </a>      n1 =  (int) sqrt((double)n);
+<a name="line57"> 57: </a>      n1 =  (int) PetscSqrtReal((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)n);
 <a name="line58"> 58: </a>      <font color="#4169E1">if</font> (n1*n1 != n){
-<a name="line59"> 59: </a>        <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_SIZ,<font color="#666666">"n must be a perfect square of n1"</font>);
+<a name="line59"> 59: </a>        <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_SIZ,<font color="#666666">"n must be a perfect square of n1"</font>);
 <a name="line60"> 60: </a>      }
 <a name="line61"> 61: </a>
 <a name="line62"> 62: </a>      <font color="#4169E1">for</font> (i=0; i&lt;n1; i++) {
@@ -131,7 +131,7 @@
 <a name="line123">123: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,1,&amp;i,3,col,value,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line124">124: </a>    }
 <a name="line125">125: </a>    <font color="#4169E1">else</font> <font color="#4169E1">if</font> (prob ==2){ <font color="#B22222">/* matrix for the five point stencil */</font>
-<a name="line126">126: </a>      n1 = (int) sqrt((double)n);
+<a name="line126">126: </a>      n1 = (int) PetscSqrtReal((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)n);
 <a name="line127">127: </a>      <font color="#4169E1">for</font> (i=0; i&lt;n1; i++) {
 <a name="line128">128: </a>        <font color="#4169E1">for</font> (j=0; j&lt;n1; j++) {
 <a name="line129">129: </a>          Ii = j + n1*i;
@@ -236,7 +236,7 @@
 <a name="line228">228: </a>  <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>(A,x,x);
 <a name="line229">229: </a>  <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>(sA,x,x);
 <a name="line230">230: </a>  <A href="../../../../docs/manualpages/Mat/MatMultEqual.html#MatMultEqual">MatMultEqual</A>(A,sA,10,&amp;flg);
-<a name="line231">231: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_NOTSAMETYPE,<font color="#666666">"Error in <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>"</font>);
+<a name="line231">231: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_NOTSAMETYPE,<font color="#666666">"Error in <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>"</font>);
 <a name="line232">232: </a>
 <a name="line233">233: </a>  <font color="#B22222">/* Test <A href="../../../../docs/manualpages/Mat/MatGetDiagonal.html#MatGetDiagonal">MatGetDiagonal</A>(), <A href="../../../../docs/manualpages/Mat/MatScale.html#MatScale">MatScale</A>() */</font>
 <a name="line234">234: </a>  <A href="../../../../docs/manualpages/Mat/MatGetDiagonal.html#MatGetDiagonal">MatGetDiagonal</A>(A,s1);
@@ -321,16 +321,16 @@
 <a name="line313">313: </a>    <A href="../../../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"[%d], Error: <A href="../../../../docs/manualpages/Mat/MatDuplicate.html#MatDuplicate">MatDuplicate</A>() or <A href="../../../../docs/manualpages/Mat/MatMultAdd.html#MatMultAdd">MatMultAdd</A>(()\n"</font>,rank);
 <a name="line314">314: </a>    <A href="../../../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>);
 <a name="line315">315: </a>  }
-<a name="line316">316: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(sB);
+<a name="line316">316: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;sB);
 <a name="line317">317: </a>
-<a name="line318">318: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line319">319: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line320">320: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y);
-<a name="line321">321: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(s1);
-<a name="line322">322: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(s2);
-<a name="line323">323: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(sA);
-<a name="line324">324: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line325">325: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rctx);
+<a name="line318">318: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line319">319: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line320">320: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y);
+<a name="line321">321: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;s1);
+<a name="line322">322: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;s2);
+<a name="line323">323: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;sA);
+<a name="line324">324: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line325">325: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rctx);
 <a name="line326">326: </a>
 <a name="line327">327: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line328">328: </a>  <font color="#4169E1">return</font> 0;

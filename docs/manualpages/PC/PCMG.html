@@ -24,16 +24,16 @@ Use multigrid preconditioning. This preconditioner requires you provide addition
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_galerkin </B></TD><TD>- use Galerkin process to compute coarser operators
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_dump_matlab </B></TD><TD>- dumps the matrices for each level and the restriction/interpolation matrices
-to the Socket viewer for reading from Matlab.
+to the Socket viewer for reading from MATLAB.
 </TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+Notes: By default this uses GMRES on the fine grid smoother so this should be used with <A HREF="../KSP/KSPFGMRES.html#KSPFGMRES">KSPFGMRES</A> or the smoother changed to not use GMRES
 <P>
 
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>, <A HREF="../PC/PCMGType.html#PCMGType">PCMGType</A>, 
+  <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>, <A HREF="../PC/PCMGType.html#PCMGType">PCMGType</A>, <A HREF="../PC/PCEXOTIC.html#PCEXOTIC">PCEXOTIC</A>
 <BR><A HREF="../PC/PCMGSetLevels.html#PCMGSetLevels">PCMGSetLevels</A>(), <A HREF="../PC/PCMGGetLevels.html#PCMGGetLevels">PCMGGetLevels</A>(), <A HREF="../PC/PCMGSetType.html#PCMGSetType">PCMGSetType</A>(), <A HREF="../PC/PCMGSetCycleType.html#PCMGSetCycleType">PCMGSetCycleType</A>(), <A HREF="../PC/PCMGSetNumberSmoothDown.html#PCMGSetNumberSmoothDown">PCMGSetNumberSmoothDown</A>(),
 <A HREF="../PC/PCMGSetNumberSmoothUp.html#PCMGSetNumberSmoothUp">PCMGSetNumberSmoothUp</A>(), <A HREF="../PC/PCMGGetCoarseSolve.html#PCMGGetCoarseSolve">PCMGGetCoarseSolve</A>(), <A HREF="../PC/PCMGSetResidual.html#PCMGSetResidual">PCMGSetResidual</A>(), <A HREF="../PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>(),
 <A HREF="../PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>(), <A HREF="../PC/PCMGGetSmoother.html#PCMGGetSmoother">PCMGGetSmoother</A>(), <A HREF="../PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(), <A HREF="../PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>(),
@@ -43,4 +43,6 @@ PCMGSetCycleTypeOnLevel(), <A HREF="../PC/PCMGSetRhs.html#PCMGSetRhs">PCMGSetRhs
 <BR><A HREF="./index.html">Index of all PC routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
 </BODY></HTML>

@@ -10,9 +10,9 @@ Gets the function to use for computing the Jacobian.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatFDColoringGetFunction(MatFDColoring matfd,PetscErrorCode (**f)(void),void **fctx)
+PetscErrorCode  MatFDColoringGetFunction(MatFDColoring matfd,PetscErrorCode (**f)(void),void **fctx)
 </PRE>
-Collective on <A HREF="../Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>coloring </B> -the coloring context
@@ -40,6 +40,4 @@ Collective on <A HREF="../Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A
 <BR><A HREF="./index.html">Index of all MatFD routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 </BODY></HTML>

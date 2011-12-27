@@ -4,21 +4,21 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:35:17+00:00">
+<meta name="date" content="2011-10-29T19:06:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a><strong><font color="#228B22">#define USE_FAST_MAT_SET_VALUES</font></strong>
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscsys.h.html">petscsys.h</A>
-<a name="line5"> 5: </a> #include <A href="../../../../include/petscviewer.h.html">petscviewer.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscviewer.h&gt;</font>
 
 <a name="line7">  7: </a><font color="#A020F0">#if defined(USE_FAST_MAT_SET_VALUES)</font>
-<a name="line8"> 8: </a> #include <A href="../../../../include/../src/mat/impls/aij/mpi/mpiaij.h.html">../src/mat/impls/aij/mpi/mpiaij.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/mpi/mpiaij.h&gt;</font>
 <a name="line9">  9: </a><strong><font color="#228B22">#define <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A> MatSetValues_MPIAIJ</font></strong>
 <a name="line10"> 10: </a><font color="#A020F0">#else </font>
-<a name="line11"> 11: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line11"> 11: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 <a name="line12"> 12: </a><font color="#A020F0">#endif</font>
 
 
@@ -56,9 +56,9 @@
 <a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A>(fd2,(char *)header,4,PETSC_INT);
 
 <a name="line52"> 52: </a>  <font color="#B22222">/* error checking on files */</font>
-<a name="line53"> 53: </a>  <font color="#4169E1">if</font> (header[0] != MAT_FILE_COOKIE) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_FILE_UNEXPECTED,<font color="#666666">"not matrix object"</font>);
+<a name="line53"> 53: </a>  <font color="#4169E1">if</font> (header[0] != MAT_FILE_CLASSID) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_FILE_UNEXPECTED,<font color="#666666">"not matrix object"</font>);
 <a name="line54"> 54: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(header+2,&amp;N,1,MPI_INT,MPI_SUM,comm);
-<a name="line55"> 55: </a>  <font color="#4169E1">if</font> (N != size*header[2]) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"All files must have matrices with the same number of total columns"</font>);
+<a name="line55"> 55: </a>  <font color="#4169E1">if</font> (N != size*header[2]) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"All files must have matrices with the same number of total columns"</font>);
 <a name="line56"> 56: </a>
 <a name="line57"> 57: </a>  <font color="#B22222">/* number of rows in matrix is sum of rows in all files */</font>
 <a name="line58"> 58: </a>  m = header[1]; N = header[2];
@@ -144,8 +144,8 @@
 <a name="line138">138: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A,MAT_FINAL_ASSEMBLY);
 <a name="line139">139: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A,MAT_FINAL_ASSEMBLY);
 <a name="line140">140: </a>  *newmat = A;
-<a name="line141">141: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(viewer1);
-<a name="line142">142: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(viewer2);
+<a name="line141">141: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer1);
+<a name="line142">142: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer2);
 <a name="line143">143: </a>  <font color="#4169E1">return</font>(0);
 <a name="line144">144: </a>}
 
@@ -153,13 +153,13 @@
 <a name="line147">147: </a>{
 <a name="line149">149: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            A;
 <a name="line150">150: </a>  char           name[1024];
-<a name="line151">151: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line151">151: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
 <a name="line153">153: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,0,0);
 <a name="line154">154: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-f"</font>,name,1024,&amp;flg);
-<a name="line155">155: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Must pass in filename with -f option"</font>);
+<a name="line155">155: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"Must pass in filename with -f option"</font>);
 <a name="line156">156: </a>  Mat_Parallel_Load(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,name,&amp;A);
-<a name="line157">157: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line157">157: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 <a name="line158">158: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line159">159: </a>  <font color="#4169E1">return</font> 0;
 <a name="line160">160: </a>}

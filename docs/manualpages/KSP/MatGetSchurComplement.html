@@ -44,11 +44,16 @@ Since the real Schur complement is usually dense, providing a good approximation
 application-specific information.  The default for assembled matrices is to use the diagonal of the (0,0) block
 which will rarely produce a scalable algorithm.
 <P>
+Sometimes users would like to provide problem-specific data in the Schur complement, usually only for special row
+and column index sets.  In that case, the user should call <A HREF="../Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>() to set
+"MatNestGetSubMat_C" to their function.  If their function needs to fall back to the default implementation, it
+should call MatGetSchurComplement_Basic().
+<P>
 
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatGetSubMatrix.html#MatGetSubMatrix">MatGetSubMatrix</A>(), <A HREF="../PC/PCFIELDSPLIT.html#PCFIELDSPLIT">PCFIELDSPLIT</A>
+ <A HREF="../Mat/MatGetSubMatrix.html#MatGetSubMatrix">MatGetSubMatrix</A>(), <A HREF="../PC/PCFIELDSPLIT.html#PCFIELDSPLIT">PCFIELDSPLIT</A>, <A HREF="../KSP/MatCreateSchurComplement.html#MatCreateSchurComplement">MatCreateSchurComplement</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/utils/schurm.c.html#MatGetSchurComplement">src/ksp/ksp/utils/schurm.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

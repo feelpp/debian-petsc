@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:54+00:00">
+<meta name="date" content="2011-10-29T19:13:27+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -69,10 +69,10 @@
 
 <a name="line60"> 60: </a>static char help[] = <font color="#666666">"Solves 2D inhomogeneous Laplacian using multigrid in an ion channel.\n\n"</font>;
 
-<a name="line62"> 62: </a> #include <A href="../../../../../include/petscmesh.h.html">petscmesh.h</A>
-<a name="line63"> 63: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
-<a name="line64"> 64: </a> #include <A href="../../../../../include/petscmg.h.html">petscmg.h</A>
-<a name="line65"> 65: </a> #include <A href="../../../../../include/petscdmmg.h.html">petscdmmg.h</A>
+<a name="line62"> 62: </a><font color="#A020F0">#include &lt;petscmesh.h&gt;</font>
+<a name="line63"> 63: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
+<a name="line64"> 64: </a><font color="#A020F0">#include &lt;petscpcmg.h&gt;</font>
+<a name="line65"> 65: </a><font color="#A020F0">#include &lt;petscdmmg.h&gt;</font>
 
 <a name="line67"> 67: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MeshView_Sieve_Newer(ALE::Obj&lt;ALE::Mesh&gt;, <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>);
 <a name="line68"> 68: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CreateMeshBoundary(ALE::Obj&lt;ALE::Mesh&gt;);
@@ -104,7 +104,7 @@
 <a name="line101">101: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    viewer;
 <a name="line102">102: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;
 <a name="line103">103: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       dim, l, meshDebug;
-<a name="line104">104: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     viewEnergy;
+<a name="line104">104: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      viewEnergy;
 
 <a name="line107">107: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
 <a name="line108">108: </a>  comm = <A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>;
@@ -122,7 +122,7 @@
 <a name="line120">120: </a>    user.voltage = 1.0;
 <a name="line121">121: </a>    <A href="../../../../../docs/manualpages/Sys/PetscOptionsScalar.html#PetscOptionsScalar">PetscOptionsScalar</A>(<font color="#666666">"-voltage"</font>, <font color="#666666">"The voltage of the clamp"</font>, <font color="#666666">"ex37.c"</font>, 1.0, &amp;user.voltage, <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line122">122: </a>    viewEnergy = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line123">123: </a>    <A href="../../../../../docs/manualpages/Sys/PetscOptionsTruth.html#PetscOptionsTruth">PetscOptionsTruth</A>(<font color="#666666">"-view_energy"</font>, <font color="#666666">"View the energy density as a field"</font>, <font color="#666666">"ex37.c"</font>, <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, &amp;viewEnergy, <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line123">123: </a>    <A href="../../../../../docs/manualpages/Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(<font color="#666666">"-view_energy"</font>, <font color="#666666">"View the energy density as a field"</font>, <font color="#666666">"ex37.c"</font>, <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, &amp;viewEnergy, <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>();
 
 <a name="line126">126: </a><strong><font color="#FF0000">  ALE:</font></strong>:Obj&lt;ALE::Mesh&gt; meshBoundary = ALE::Mesh(comm, dim-1, meshDebug);
@@ -148,7 +148,7 @@
 <a name="line146">146: </a>    mesh-&gt;getBoundary()-&gt;view(<font color="#666666">"Distributed Mesh Boundary"</font>);
 
 <a name="line148">148: </a>    <font color="#4169E1">if</font> (user.refinementLimit &gt; 0.0) {
-<a name="line149">149: </a>      stage = ALE::LogStageRegister(<font color="#666666">"<A href="../../../../../docs/manualpages/Mesh/MeshRefine.html#MeshRefine">MeshRefine</A>"</font>);
+<a name="line149">149: </a>      stage = ALE::LogStageRegister(<font color="#666666">"MeshRefine"</font>);
 <a name="line150">150: </a><strong><font color="#FF0000">      ALE:</font></strong>:LogStagePush(stage);
 <a name="line151">151: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(comm, <font color="#666666">"Refining mesh\n"</font>);
 <a name="line152">152: </a>      <font color="#4169E1">if</font> (user.refinementExp == 0.0) {
@@ -228,11 +228,11 @@
 <a name="line226">226: </a>    user.epsilon = mesh-&gt;getField(<font color="#666666">"epsilon"</font>);
 
 <a name="line228">228: </a>    Mesh petscMesh;
-<a name="line229">229: </a>    <A href="../../../../../docs/manualpages/Mesh/MeshCreate.html#MeshCreate">MeshCreate</A>(comm, &amp;petscMesh);
-<a name="line230">230: </a>    <A href="../../../../../docs/manualpages/Mesh/MeshSetMesh.html#MeshSetMesh">MeshSetMesh</A>(petscMesh, mesh);
+<a name="line229">229: </a>    MeshCreate(comm, &amp;petscMesh);
+<a name="line230">230: </a>    MeshSetMesh(petscMesh, mesh);
 <a name="line231">231: </a>    <A href="../../../../../docs/manualpages/DMMG/DMMGCreate.html#DMMGCreate">DMMGCreate</A>(comm,3,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;dmmg);
-<a name="line232">232: </a>    <A href="../../../../../docs/manualpages/DMMG/DMMGSetDM.html#DMMGSetDM">DMMGSetDM</A>(dmmg, (<A href="../../../../../docs/manualpages/DA/DM.html#DM">DM</A>) petscMesh);
-<a name="line233">233: </a>    <A href="../../../../../docs/manualpages/Mesh/MeshDestroy.html#MeshDestroy">MeshDestroy</A>(petscMesh);
+<a name="line232">232: </a>    <A href="../../../../../docs/manualpages/DMMG/DMMGSetDM.html#DMMGSetDM">DMMGSetDM</A>(dmmg, (DM) petscMesh);
+<a name="line233">233: </a>    MeshDestroy(&amp;petscMesh);
 <a name="line234">234: </a>    <font color="#4169E1">for</font> (l = 0; l &lt; <A href="../../../../../docs/manualpages/DMMG/DMMGGetLevels.html#DMMGGetLevels">DMMGGetLevels</A>(dmmg); l++) {
 <a name="line235">235: </a>      <A href="../../../../../docs/manualpages/DMMG/DMMGSetUser.html#DMMGSetUser">DMMGSetUser</A>(dmmg,l,&amp;user);
 <a name="line236">236: </a>    }
@@ -260,7 +260,7 @@
 <a name="line258">258: </a><strong><font color="#FF0000">    ALE:</font></strong>:LogStagePush(stage);
 <a name="line259">259: </a>    <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(comm, <font color="#666666">"Creating VTK mesh file\n"</font>);
 <a name="line260">260: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(comm, &amp;viewer);
-<a name="line261">261: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>(viewer, PETSC_VIEWER_ASCII);
+<a name="line261">261: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>(viewer, PETSCVIEWERASCII);
 <a name="line262">262: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(viewer, PETSC_VIEWER_ASCII_VTK);
 <a name="line263">263: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerFileSetName.html#PetscViewerFileSetName">PetscViewerFileSetName</A>(viewer, <font color="#666666">"channel.vtk"</font>);
 <a name="line264">264: </a>    MeshView_Sieve_Newer(mesh, viewer);
@@ -270,9 +270,9 @@
 <a name="line268">268: </a>      <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> energy, locU;
 
 <a name="line270">270: </a>      <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, u-&gt;getSize(patch), u-&gt;restrict(patch), &amp;locU);
-<a name="line271">271: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(user.injection, <A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), locU, <A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A href="../../../../../docs/manualpages/Sys/SCATTER_REVERSE.html#SCATTER_REVERSE">SCATTER_REVERSE</A>);
-<a name="line272">272: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(user.injection, <A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), locU, <A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A href="../../../../../docs/manualpages/Sys/SCATTER_REVERSE.html#SCATTER_REVERSE">SCATTER_REVERSE</A>);
-<a name="line273">273: </a>      <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(locU);
+<a name="line271">271: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(user.injection, <A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), locU, <A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A href="../../../../../docs/manualpages/Vec/SCATTER_REVERSE.html#SCATTER_REVERSE">SCATTER_REVERSE</A>);
+<a name="line272">272: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(user.injection, <A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), locU, <A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A href="../../../../../docs/manualpages/Vec/SCATTER_REVERSE.html#SCATTER_REVERSE">SCATTER_REVERSE</A>);
+<a name="line273">273: </a>      <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;locU);
 
 <a name="line275">275: </a>      <A href="../../../../../docs/manualpages/Viewer/PetscViewerPushFormat.html#PetscViewerPushFormat">PetscViewerPushFormat</A>(viewer, PETSC_VIEWER_ASCII_VTK_CELL);
 <a name="line276">276: </a>      CreateEnergyDensity(mesh, u, mesh-&gt;getField(<font color="#666666">"epsilon"</font>), &amp;energy);
@@ -281,7 +281,7 @@
 <a name="line279">279: </a>    } <font color="#4169E1">else</font> {
 <a name="line280">280: </a>      <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), viewer);
 <a name="line281">281: </a>    }
-<a name="line282">282: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(viewer);
+<a name="line282">282: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer);
 <a name="line283">283: </a><strong><font color="#FF0000">    ALE:</font></strong>:LogStagePop(stage);
 
 <a name="line285">285: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(user.charge,user.chargeLocation);
@@ -655,7 +655,7 @@
 <a name="line659">659: </a>    }
 <a name="line660">660: </a>    invDet = 1.0/det;
 <a name="line661">661: </a>    <font color="#4169E1">if</font> (detJ) {
-<a name="line662">662: </a>      <font color="#4169E1">if</font> (det &lt; 0) {<A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_WRONG, <font color="#666666">"Negative Matrix determinant"</font>);}
+<a name="line662">662: </a>      <font color="#4169E1">if</font> (det &lt; 0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG, <font color="#666666">"Negative Matrix determinant"</font>);
 <a name="line663">663: </a>      *detJ = det;
 <a name="line664">664: </a>    }
 <a name="line665">665: </a>    <font color="#4169E1">if</font> (invJ) {
@@ -705,7 +705,7 @@
 <a name="line709">709: </a>  <font color="#4169E1">return</font>(0);
 <a name="line710">710: </a>}
 
-<a name="line714">714: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ElementContains(ALE::Obj&lt;ALE::Mesh&gt; mesh, const ALE::Mesh::point_type&amp; e, double point[], <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *contains)
+<a name="line714">714: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ElementContains(ALE::Obj&lt;ALE::Mesh&gt; mesh, const ALE::Mesh::point_type&amp; e, double point[], <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *contains)
 <a name="line715">715: </a>{
 <a name="line716">716: </a>  const double  *coords = mesh-&gt;getCoordinates()-&gt;restrict(std::string(<font color="#666666">"element"</font>), e);
 <a name="line717">717: </a>  int            dim = mesh-&gt;getDimension();
@@ -744,7 +744,7 @@
 <a name="line757">757: </a>{
 <a name="line758">758: </a><strong><font color="#FF0000">  ALE:</font></strong>:Obj&lt;ALE::Mesh::sieve_type::traits::heightSequence&gt; elements = mesh-&gt;getTopology()-&gt;heightStratum(0);
 <a name="line759">759: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      elementVec[NUM_BASIS_FUNCTIONS];
-<a name="line760">760: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     contains;
+<a name="line760">760: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      contains;
 
 <a name="line764">764: </a>  <font color="#4169E1">for</font>(int q = 0; q &lt; user-&gt;numCharges; q++) {
 <a name="line765">765: </a>    double x = user-&gt;chargeLocation[q*2+0];
@@ -797,7 +797,7 @@
 <a name="line814">814: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>      ierr;
 
 <a name="line817">817: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) mesh, &amp;comm);
-<a name="line818">818: </a>  <A href="../../../../../docs/manualpages/Mesh/MeshGetMesh.html#MeshGetMesh">MeshGetMesh</A>(mesh, &amp;m);
+<a name="line818">818: </a>  MeshGetMesh(mesh, &amp;m);
 <a name="line819">819: </a>  dim  = m-&gt;getDimension();
 <a name="line820">820: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(dim * <font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;v0);
 <a name="line821">821: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(dim*dim * <font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;Jac);
@@ -829,9 +829,9 @@
 
 <a name="line848">848: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> locB;
 <a name="line849">849: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, field-&gt;getSize(patch), field-&gt;restrict(patch), &amp;locB);
-<a name="line850">850: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(user.injection, locB, b, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>, <A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line851">851: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(user.injection, locB, b, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>, <A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line852">852: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(locB);
+<a name="line850">850: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(user.injection, locB, b, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>, <A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line851">851: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(user.injection, locB, b, <A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>, <A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line852">852: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;locB);
 
 <a name="line854">854: </a>  {
 <a name="line855">855: </a>    <font color="#B22222">/* Zero out BC rows */</font>
@@ -906,7 +906,7 @@
 
 <a name="line928">928: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) mesh, &amp;comm);
 <a name="line929">929: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm, &amp;rank);
-<a name="line930">930: </a>  <A href="../../../../../docs/manualpages/Mesh/MeshGetMesh.html#MeshGetMesh">MeshGetMesh</A>(mesh, &amp;m);
+<a name="line930">930: </a>  MeshGetMesh(mesh, &amp;m);
 <a name="line931">931: </a>  dim  = m-&gt;getDimension();
 <a name="line932">932: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(dim * <font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;v0);
 <a name="line933">933: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(dim * <font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;t_der);
@@ -994,7 +994,7 @@
 <a name="line1015">1015: </a>      }
 <a name="line1016">1016: </a>    }
 <a name="line1017">1017: </a>    <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(comm);
-<a name="line1018">1018: </a>    <A href="../../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>(jac, numBoundaryIndices, boundaryIndices, 1.0);
+<a name="line1018">1018: </a>    <A href="../../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>(jac, numBoundaryIndices, boundaryIndices, 1.0,0,0);
 <a name="line1019">1019: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(boundaryIndices);
 <a name="line1020">1020: </a>  }
 <a name="line1021">1021: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(jac, MAT_FINAL_ASSEMBLY);
@@ -1236,14 +1236,14 @@
 <a name="line1268">1268: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(Jinv);
 
 <a name="line1270">1270: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> injection;
-<a name="line1271">1271: </a>  <A href="../../../../../docs/manualpages/Mesh/MeshCreateVector.html#MeshCreateVector">MeshCreateVector</A>(mesh, mesh-&gt;getBundle(mesh-&gt;getDimension()), energy);
+<a name="line1271">1271: </a>  MeshCreateVector(mesh, mesh-&gt;getBundle(mesh-&gt;getDimension()), energy);
 <a name="line1272">1272: </a>  MeshGetGlobalScatter(mesh, <font color="#666666">"energy"</font>, *energy, &amp;injection);
 
 <a name="line1274">1274: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> locEnergy;
 <a name="line1275">1275: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, e2-&gt;getSize(patch), e2-&gt;restrict(patch), &amp;locEnergy);
-<a name="line1276">1276: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(injection, locEnergy, *energy, <A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line1277">1277: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(injection, locEnergy, *energy, <A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line1278">1278: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(locEnergy);
+<a name="line1276">1276: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(injection, locEnergy, *energy, <A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line1277">1277: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(injection, locEnergy, *energy, <A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line1278">1278: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;locEnergy);
 <a name="line1279">1279: </a>  ALE_LOG_EVENT_END;
 <a name="line1280">1280: </a>  <font color="#4169E1">return</font>(0);
 <a name="line1281">1281: </a>}

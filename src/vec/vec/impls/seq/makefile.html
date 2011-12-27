@@ -3,7 +3,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:07+00:00">
+<meta name="date" content="2011-10-29T18:55:36+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,15 +12,15 @@
 
 CFLAGS   =  ${PNETCDF_INCLUDE} ${MATLAB_INCLUDE}
 FFLAGS   =
-SOURCEC  = bvec2.c bvec1.c dvec2.c vseqcr.c
+SOURCEC  = bvec2.c bvec1.c dvec2.c vseqcr.c bvec3.c vsection.c
 SOURCEF  =
-SOURCEH  = 
-OBJSC    = bvec2.o  bvec1.o dvec2.o vseqcr.o
+SOURCEH  =
+OBJSC    = bvec2.o bvec1.o dvec2.o vseqcr.o bvec3.o vsection.o
 OBJSF    =
 LIBBASE  = libpetscvec
 MANSEC   = <A href="ROOT/docs/manualpages/Vec/Vec.html#Vec">Vec</A>
 LOCDIR   = src/vec/vec/impls/seq/
-DIRS     = ftn-kernels
+DIRS     = ftn-kernels seqcusp seqpthread
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

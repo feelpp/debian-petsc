@@ -10,7 +10,7 @@ Compares two strings, up to a certain length
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscStrncmp(const char a[],const char b[],size_t n,PetscTruth *t)
+PetscErrorCode  PetscStrncmp(const char a[],const char b[],size_t n,PetscBool  *t)
 </PRE>
 Not Collective
 <P>
@@ -28,6 +28,8 @@ Not Collective
 <br>
 <P>
 
+<P>
+Notes:    Not for use in Fortran
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscStrgrt.html#PetscStrgrt">PetscStrgrt</A>(), <A HREF="../Sys/PetscStrcmp.html#PetscStrcmp">PetscStrcmp</A>(), <A HREF="../Sys/PetscStrcasecmp.html#PetscStrcasecmp">PetscStrcasecmp</A>()

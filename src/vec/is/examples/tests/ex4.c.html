@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:26:04+00:00">
+<meta name="date" content="2011-10-29T18:56:56+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
-<a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../../docs/manualpages/IS/ISStrideToGeneral.html#ISStrideToGeneral">ISStrideToGeneral</A>().\n\n"</font>;
+<a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../../docs/manualpages/IS/ISToGeneral.html#ISToGeneral">ISToGeneral</A>().\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscis.h.html">petscis.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscis.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line9">  9: </a>{
@@ -24,9 +24,9 @@
 <a name="line16"> 16: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-step"</font>,&amp;step,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line17"> 17: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,10,0,step,&amp;is);
 
-<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/IS/ISStrideToGeneral.html#ISStrideToGeneral">ISStrideToGeneral</A>(is);
+<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/IS/ISToGeneral.html#ISToGeneral">ISToGeneral</A>(is);
 
-<a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is);
+<a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is);
 
 <a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line24"> 24: </a>  <font color="#4169E1">return</font> 0;

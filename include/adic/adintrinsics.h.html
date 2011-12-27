@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:23:12+00:00">
+<meta name="date" content="2011-10-29T18:53:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -101,9 +101,9 @@
 <a name="line92"> 92: </a><font color="#A020F0">#endif </font><font color="#B22222">/* ndef ADINTRINSICS_H */</font><font color="#A020F0"></font>
 
 <a name="line94"> 94: </a><font color="#A020F0">#if ad_GRAD_MAX == 1</font>
-<a name="line97"> 97: </a><font color="#A020F0">#  define admf_PetscGlobalMax(a,b,c) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,PetscADMax_Op,c)</font>
-<a name="line98"> 98: </a><font color="#A020F0">#  define admf_PetscGlobalMin(a,b,c) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,PetscADMin_Op,c)</font>
-<a name="line99"> 99: </a><font color="#A020F0">#  define admf_PetscGlobalSum(a,b,c) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPIU_SUM,c)</font>
+<a name="line97"> 97: </a><font color="#A020F0">#  define admf_PetscGlobalMax(c,a,b) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>((void*)a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,PetscADMax_Op,c)</font>
+<a name="line98"> 98: </a><font color="#A020F0">#  define admf_PetscGlobalMin(c,a,b) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>((void*)a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,PetscADMin_Op,c)</font>
+<a name="line99"> 99: </a><font color="#A020F0">#  define admf_PetscGlobalSum(c,a,b) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>((void*)a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPIU_SUM,c)</font>
 <a name="line100">100: </a><font color="#A020F0">#else</font>
 <a name="line101">101: </a><font color="#A020F0">#  define ad_PetscGlobalMax(a,b,c) 1   </font><font color="#B22222">/* 1 generates error to indicate not implemented */</font><font color="#A020F0"></font>
 <a name="line102">102: </a><font color="#A020F0">#  define ad_PetscGlobalMin(a,b,c) 1</font>

@@ -9,7 +9,7 @@
 Sets the line search routine to be used by the method <A HREF="../SNES/SNESLS.html#SNESLS">SNESLS</A>. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSet(SNES snes,PetscErrorCode (*func)(SNES,void*,Vec,Vec,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal*,PetscReal*,PetscTruth*),void *lsctx)
+PetscErrorCode  SNESLineSearchSet(SNES snes,PetscErrorCode (*func)(SNES,void*,Vec,Vec,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal*,PetscReal*,PetscBool *),void *lsctx)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -20,7 +20,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSet(SNES snes,PetscErrorCode (*
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- pointer to int function
 </TD></TR></TABLE>
 <P>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Available Routines</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -46,7 +46,7 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of func</FONT></H3>
 <PRE>
-   func (<A HREF="../SNES/SNES.html#SNES">SNES</A> snes,void *lsctx,<A HREF="../Vec/Vec.html#Vec">Vec</A> x,<A HREF="../Vec/Vec.html#Vec">Vec</A> f,<A HREF="../Vec/Vec.html#Vec">Vec</A> g,<A HREF="../Vec/Vec.html#Vec">Vec</A> y,<A HREF="../Vec/Vec.html#Vec">Vec</A> w,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> fnorm,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> xnorm,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> *ynorm,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> *gnorm,<A HREF="../Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *flag)
+   func (<A HREF="../SNES/SNES.html#SNES">SNES</A> snes,void *lsctx,<A HREF="../Vec/Vec.html#Vec">Vec</A> x,<A HREF="../Vec/Vec.html#Vec">Vec</A> f,<A HREF="../Vec/Vec.html#Vec">Vec</A> g,<A HREF="../Vec/Vec.html#Vec">Vec</A> y,<A HREF="../Vec/Vec.html#Vec">Vec</A> w,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> fnorm,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> xnorm,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> *ynorm,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> *gnorm,<A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A>  *flag)
 </PRE>
 
 <P>

@@ -1,0 +1,30 @@
+<center><a href="ex29view.m">Actual source code: ex29view.m</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:18:47+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><a name="line1">  1: </a><strong><font color="#4169E1"><a name="ex29view"></a>function ex29view(v)</font></strong>
+<a name="line2">  2: </a>%
+<a name="line3">  3: </a>%   Matlab script that plots solution from ex29.c
+<a name="line4">  4: </a>%
+<a name="line5">  5: </a>[m,n] = size(v);
+<a name="line6">  6: </a>n     = sqrt(m/4);
+<a name="line7">  7: </a>w     = zeros(n,n);
+<a name="line8">  8: </a>cnt   = 1;
+
+<a name="line10"> 10: </a><font color="#4169E1">for</font> i=1:4
+<a name="line11"> 11: </a>  w(:) = v(i:4:m);
+<a name="line12"> 12: </a>  figure(i);
+<a name="line13"> 13: </a>  surf(w);
+<a name="line14"> 14: </a>end
+
+
+</pre>
+</body>
+
+</html>

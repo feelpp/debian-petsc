@@ -17,7 +17,7 @@ class Configure(config.base.Configure):
      
   def setupHelp(self, help):
     import nargs
-    help.addArgument('PETSc', '-with-proc-filesystem=<yes or no>', nargs.ArgBool(None, 1, 'Use the /proc filesystem for system statistics'))    
+    help.addArgument('PETSc', '-with-proc-filesystem=<bool>', nargs.ArgBool(None, 1, 'Use the /proc filesystem for system statistics'))    
     return
 
   def setupDependencies(self, framework):
@@ -38,7 +38,7 @@ class Configure(config.base.Configure):
       return
     
     # /proc is used on Linux systems
-    if self.argDB['with-proc-filesystem']:
+    if self.argDB['with-proc-filesystem'] and not self.framework.argDB['with-batch']:
       if os.path.isfile(os.path.join('/proc',str(os.getpid()),'statm')):
         self.addDefine('USE_PROC_FOR_SIZE', 1)
         try:

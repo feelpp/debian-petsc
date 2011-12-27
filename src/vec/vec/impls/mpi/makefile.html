@@ -3,7 +3,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:24+00:00">
+<meta name="date" content="2011-10-29T18:56:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,13 +12,14 @@
 
 CFLAGS   = ${PNETCDF_INCLUDE}
 FFLAGS   =
-SOURCEC  = pbvec.c pdvec.c pvec2.c pmap.c vmpicr.c
+SOURCEC  = pbvec.c pdvec.c pvec2.c pmap.c vmpicr.c commonmpvec.c
 SOURCEF  =
 SOURCEH  = pvecimpl.h 
-OBJSC    = pbvec.o pdvec.o pvec2.o pmap.o vmpicr.o
+OBJSC    = pbvec.o pdvec.o pvec2.o pmap.o vmpicr.o commonmpvec.o
 OBJSF    =
 LIBBASE  = libpetscvec
 MANSEC   = <A href="ROOT/docs/manualpages/Vec/Vec.html#Vec">Vec</A>
+DIRS     = mpicusp
 LOCDIR   = src/vec/vec/impls/mpi/
 
 include ${PETSC_DIR}/conf/variables

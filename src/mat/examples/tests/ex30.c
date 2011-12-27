@@ -8,7 +8,7 @@ Note that most users should employ the KSP interface to the\n\
 linear solvers instead of using the factorization routines\n\
 directly.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -17,7 +17,7 @@ int main(int argc,char **args)
   Mat            C,A;
   PetscInt       i,j,m = 5,n = 5,Ii,J,lf = 0;
   PetscErrorCode ierr;
-  PetscTruth     LU=PETSC_FALSE,CHOLESKY,TRIANGULAR=PETSC_FALSE,MATDSPL=PETSC_FALSE,flg;
+  PetscBool      LU=PETSC_FALSE,CHOLESKY,TRIANGULAR=PETSC_FALSE,MATDSPL=PETSC_FALSE,flg,matordering;
   PetscScalar    v;
   IS             row,col;
   PetscViewer    viewer1,viewer2;
@@ -25,12 +25,11 @@ int main(int argc,char **args)
   Vec            x,y,b,ytmp;
   PetscReal      norm2,norm2_inplace;
   PetscRandom    rdm;
-  PetscInt       *ii;
   PetscMPIInt    size;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(PETSC_ERR_SUP,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP,"This is a uniprocessor example only!");
   ierr = PetscOptionsGetInt(PETSC_NULL,"-m",&m,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-n",&n,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-lf",&lf,PETSC_NULL);CHKERRQ(ierr);
@@ -57,7 +56,7 @@ int main(int argc,char **args)
   ierr = MatAssemblyEnd(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
   ierr = MatIsSymmetric(C,0.0,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"C is non-symmetric");
+  if (!flg) SETERRQ(PETSC_COMM_SELF,1,"C is non-symmetric");
 
   /* Create vectors for error checking */
   ierr = MatGetVecs(C,&x,&b);CHKERRQ(ierr);
@@ -68,27 +67,11 @@ int main(int argc,char **args)
   ierr = VecSetRandom(x,rdm);CHKERRQ(ierr);
   ierr = MatMult(C,x,b);CHKERRQ(ierr);
 
-  ierr = MatGetOrdering(C,MATORDERING_RCM,&row,&col);CHKERRQ(ierr);
-  /* replace row or col with natural ordering for testing */
-  ierr = PetscOptionsHasName(PETSC_NULL,"-no_rowperm",&flg);CHKERRQ(ierr);
-  if (flg){
-    ierr = ISDestroy(row);CHKERRQ(ierr);
-    ierr = PetscMalloc(m*n*sizeof(PetscInt),&ii);CHKERRQ(ierr);
-    for (i=0; i<m*n; i++) ii[i] = i;
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,m*n,ii,&row);CHKERRQ(ierr);
-    ierr = PetscFree(ii);CHKERRQ(ierr);
-    ierr = ISSetIdentity(row);CHKERRQ(ierr);
-    ierr = ISSetPermutation(row);CHKERRQ(ierr);
-  }
-  ierr = PetscOptionsHasName(PETSC_NULL,"-no_colperm",&flg);CHKERRQ(ierr);
-  if (flg){
-    ierr = ISDestroy(col);CHKERRQ(ierr);
-    ierr = PetscMalloc(m*n*sizeof(PetscInt),&ii);CHKERRQ(ierr);
-    for (i=0; i<m*n; i++) ii[i] = i;
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,m*n,ii,&col);CHKERRQ(ierr);
-    ierr = PetscFree(ii);CHKERRQ(ierr);
-    ierr = ISSetIdentity(col);CHKERRQ(ierr);
-    ierr = ISSetPermutation(col);CHKERRQ(ierr);
+  ierr = PetscOptionsHasName(PETSC_NULL,"-mat_ordering",&matordering);CHKERRQ(ierr);
+  if (matordering){
+    ierr = MatGetOrdering(C,MATORDERINGRCM,&row,&col);CHKERRQ(ierr);
+  } else {
+    ierr = MatGetOrdering(C,MATORDERINGNATURAL,&row,&col);CHKERRQ(ierr);
   }
 
   ierr = PetscOptionsHasName(PETSC_NULL,"-display_matrices",&MATDSPL);CHKERRQ(ierr);
@@ -109,12 +92,12 @@ int main(int argc,char **args)
   ierr = PetscOptionsHasName(PETSC_NULL,"-lu",&LU);CHKERRQ(ierr);
   if (LU){ 
     printf("Test LU...\n");
-    ierr = MatGetFactor(C,MAT_SOLVER_PETSC,MAT_FACTOR_LU,&A);CHKERRQ(ierr);
+    ierr = MatGetFactor(C,MATSOLVERPETSC,MAT_FACTOR_LU,&A);CHKERRQ(ierr);
     ierr = MatLUFactorSymbolic(A,C,row,col,&info);CHKERRQ(ierr);
   } else {
     printf("Test ILU...\n");
     info.levels = lf;
-    ierr = MatGetFactor(C,MAT_SOLVER_PETSC,MAT_FACTOR_ILU,&A);CHKERRQ(ierr);
+    ierr = MatGetFactor(C,MATSOLVERPETSC,MAT_FACTOR_ILU,&A);CHKERRQ(ierr);
     ierr = MatILUFactorSymbolic(A,C,row,col,&info);CHKERRQ(ierr);
   }
   ierr = MatLUFactorNumeric(A,C,&info);CHKERRQ(ierr);
@@ -132,7 +115,7 @@ int main(int argc,char **args)
   ierr = MatSolve(A,b,y);CHKERRQ(ierr);
   ierr = VecAXPY(y,-1.0,x);CHKERRQ(ierr);
   ierr = VecNorm(y,NORM_2,&norm2);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
   /* Test in-place ILU(0) and compare it with the out-place ILU(0) */
   if (!LU && lf==0){
@@ -145,8 +128,8 @@ int main(int argc,char **args)
     ierr = MatSolve(A,b,y);CHKERRQ(ierr);
     ierr = VecAXPY(y,-1.0,x);CHKERRQ(ierr);
     ierr = VecNorm(y,NORM_2,&norm2_inplace);CHKERRQ(ierr);
-    if (PetscAbs(norm2 - norm2_inplace) > 1.e-16) SETERRQ2(1,"ILU(0) %G and in-place ILU(0) %G give different residuals",norm2,norm2_inplace);
-    ierr = MatDestroy(A);CHKERRQ(ierr);
+    if (PetscAbs(norm2 - norm2_inplace) > 1.e-14) SETERRQ2(PETSC_COMM_SELF,1,"ILU(0) %G and in-place ILU(0) %G give different residuals",norm2,norm2_inplace);
+    ierr = MatDestroy(&A);CHKERRQ(ierr);
   }
 
   /* Test Cholesky and ICC on seqaij matrix with matrix reordering on aij matrix C */
@@ -154,7 +137,7 @@ int main(int argc,char **args)
   if (CHOLESKY){ 
     printf("Test Cholesky...\n");
     lf = -1;
-    ierr = MatGetFactor(C,MAT_SOLVER_PETSC,MAT_FACTOR_CHOLESKY,&A);CHKERRQ(ierr);
+    ierr = MatGetFactor(C,MATSOLVERPETSC,MAT_FACTOR_CHOLESKY,&A);CHKERRQ(ierr);
     ierr = MatCholeskyFactorSymbolic(A,C,row,&info);CHKERRQ(ierr);
   } else {
     printf("Test ICC...\n");
@@ -162,7 +145,7 @@ int main(int argc,char **args)
     info.fill          = 1.0;
     info.diagonal_fill = 0;
     info.zeropivot     = 0.0;
-    ierr = MatGetFactor(C,MAT_SOLVER_PETSC,MAT_FACTOR_ICC,&A);CHKERRQ(ierr);
+    ierr = MatGetFactor(C,MATSOLVERPETSC,MAT_FACTOR_ICC,&A);CHKERRQ(ierr);
     ierr = MatICCFactorSymbolic(A,C,row,&info);CHKERRQ(ierr);
   }
   ierr = MatCholeskyFactorNumeric(A,C,&info);CHKERRQ(ierr);  
@@ -184,24 +167,39 @@ int main(int argc,char **args)
   } 
 
   ierr = MatSolve(A,b,y);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
   ierr = VecAXPY(y,-1.0,x);CHKERRQ(ierr);
   ierr = VecNorm(y,NORM_2,&norm2);CHKERRQ(ierr);
   if (lf == -1 && norm2 > 1.e-14){
     PetscPrintf(PETSC_COMM_SELF, " reordered SEQAIJ:   Cholesky/ICC levels %d, residual %g\n",lf,norm2);CHKERRQ(ierr);
   }
-  ierr = ISDestroy(row);CHKERRQ(ierr);
-  ierr = ISDestroy(col);CHKERRQ(ierr);
+
+  /* Test in-place ICC(0) and compare it with the out-place ICC(0) */
+  if (!CHOLESKY && lf==0 && !matordering){
+    ierr = MatConvert(C,MATSBAIJ,MAT_INITIAL_MATRIX,&A);CHKERRQ(ierr);
+    ierr = MatICCFactor(A,row,&info);CHKERRQ(ierr);
+    /*
+    printf("In-place factored matrix:\n");
+    ierr = MatView(A,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
+    */
+    ierr = MatSolve(A,b,y);CHKERRQ(ierr);
+    ierr = VecAXPY(y,-1.0,x);CHKERRQ(ierr);
+    ierr = VecNorm(y,NORM_2,&norm2_inplace);CHKERRQ(ierr);
+    if (PetscAbs(norm2 - norm2_inplace) > 1.e-14) SETERRQ2(PETSC_COMM_SELF,1,"ICC(0) %G and in-place ICC(0) %G give different residuals",norm2,norm2_inplace);
+    ierr = MatDestroy(&A);CHKERRQ(ierr);
+  }
 
   /* Free data structures */
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(viewer1);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(viewer2);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(rdm);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = VecDestroy(ytmp);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISDestroy(&row);CHKERRQ(ierr);
+  ierr = ISDestroy(&col);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&viewer1);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&viewer2);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rdm);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = VecDestroy(&ytmp);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

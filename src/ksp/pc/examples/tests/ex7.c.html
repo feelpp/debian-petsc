@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:39:04+00:00">
+<meta name="date" content="2011-10-29T19:11:02+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../../docs/manualpages/Mat/MatILUFactorSymbolic.html#MatILUFactorSymbolic">MatILUFactorSymbolic</A>() on matrix with missing diagonal.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscmat.h.html">petscmat.h</A>
-<a name="line5"> 5: </a> #include <A href="../../../../../include/petscpc.h.html">petscpc.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscpc.h&gt;</font>
 
 <a name="line9">  9: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line10"> 10: </a>{
@@ -50,9 +50,9 @@
 <a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/PC/PCFactorGetMatrix.html#PCFactorGetMatrix">PCFactorGetMatrix</A>(pc,&amp;A);
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(A,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 
-<a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>(pc);
-<a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(xtmp);
-<a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>(&amp;pc);
+<a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xtmp);
+<a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 
 <a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line51"> 51: </a>  <font color="#4169E1">return</font> 0;

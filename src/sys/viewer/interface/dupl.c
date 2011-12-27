@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "private/viewerimpl.h"  /*I "petscviewer.h" I*/
+#include <private/viewerimpl.h>  /*I "petscviewer.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerGetSingleton" 
@@ -28,13 +27,13 @@
 
 .seealso: PetscViewerSocketOpen(), PetscViewerASCIIOpen(), PetscViewerDrawOpen(), PetscViewerRestoreSingleton()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewerGetSingleton(PetscViewer viewer,PetscViewer *outviewer)
+PetscErrorCode  PetscViewerGetSingleton(PetscViewer viewer,PetscViewer *outviewer)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,1);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
   PetscValidPointer(outviewer,2);
   ierr = MPI_Comm_size(((PetscObject)viewer)->comm,&size);CHKERRQ(ierr);
   if (size == 1) {
@@ -42,9 +41,8 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewerGetSingleton(PetscViewer viewer,PetscV
     *outviewer = viewer;
   } else if (viewer->ops->getsingleton) {
     ierr = (*viewer->ops->getsingleton)(viewer,outviewer);CHKERRQ(ierr);
-  } else {
-    SETERRQ1(PETSC_ERR_SUP,"Cannot get singleton PetscViewer for type %s",((PetscObject)viewer)->type_name);
-  }
+  } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot get singleton PetscViewer for type %s",((PetscObject)viewer)->type_name);
+  ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_TRUE);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -65,13 +63,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewerGetSingleton(PetscViewer viewer,PetscV
 
 .seealso: PetscViewerSocketOpen(), PetscViewerASCIIOpen(), PetscViewerDrawOpen(), PetscViewerGetSingleton()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewerRestoreSingleton(PetscViewer viewer,PetscViewer *outviewer)
+PetscErrorCode  PetscViewerRestoreSingleton(PetscViewer viewer,PetscViewer *outviewer)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,1);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
 
   ierr = MPI_Comm_size(((PetscObject)viewer)->comm,&size);CHKERRQ(ierr);
   if (size == 1) {
@@ -80,6 +78,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewerRestoreSingleton(PetscViewer viewer,Pe
   } else if (viewer->ops->restoresingleton) {
     ierr = (*viewer->ops->restoresingleton)(viewer,outviewer);CHKERRQ(ierr);
   } 
+  ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_FALSE);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -110,13 +109,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewerRestoreSingleton(PetscViewer viewer,Pe
 
 .seealso: PetscViewerSocketOpen(), PetscViewerASCIIOpen(), PetscViewerDrawOpen(), PetscViewerRestoreSubcomm()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewerGetSubcomm(PetscViewer viewer,MPI_Comm subcomm,PetscViewer *outviewer)
+PetscErrorCode  PetscViewerGetSubcomm(PetscViewer viewer,MPI_Comm subcomm,PetscViewer *outviewer)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,1);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
   PetscValidPointer(outviewer,3);
   ierr = MPI_Comm_size(((PetscObject)viewer)->comm,&size);CHKERRQ(ierr);
   if (size == 1) {
@@ -124,9 +123,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewerGetSubcomm(PetscViewer viewer,MPI_Comm
     *outviewer = viewer;
   } else if (viewer->ops->getsubcomm) {
     ierr = (*viewer->ops->getsubcomm)(viewer,subcomm,outviewer);CHKERRQ(ierr);
-  } else {
-    SETERRQ1(PETSC_ERR_SUP,"Cannot get subcommunicator PetscViewer for type %s",((PetscObject)viewer)->type_name);
-  }
+  } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot get subcommunicator PetscViewer for type %s",((PetscObject)viewer)->type_name);
   PetscFunctionReturn(0);
 }
 
@@ -148,13 +145,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewerGetSubcomm(PetscViewer viewer,MPI_Comm
 
 .seealso: PetscViewerSocketOpen(), PetscViewerASCIIOpen(), PetscViewerDrawOpen(), PetscViewerGetSubcomm()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewerRestoreSubcomm(PetscViewer viewer,MPI_Comm subcomm,PetscViewer *outviewer)
+PetscErrorCode  PetscViewerRestoreSubcomm(PetscViewer viewer,MPI_Comm subcomm,PetscViewer *outviewer)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,1);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
 
   ierr = MPI_Comm_size(((PetscObject)viewer)->comm,&size);CHKERRQ(ierr);
   if (size == 1) {

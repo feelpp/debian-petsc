@@ -1,4 +1,4 @@
-#define PETSC_DLL
+
 /* 
    This file contains routines to open an X window display and window
    This consists of a number of routines that set the various
@@ -11,14 +11,13 @@
    call to XiCreateWindow .  Similarly for the Display.
 */
 
-#include "../src/sys/draw/impls/x/ximpl.h"
+#include <../src/sys/draw/impls/x/ximpl.h>
 
-EXTERN PetscErrorCode XiUniformHues(PetscDraw_X *,int);
-EXTERN PetscErrorCode Xi_wait_map(PetscDraw_X*);
-EXTERN PetscErrorCode XiInitColors(PetscDraw_X*,Colormap);
-EXTERN PetscErrorCode XiFontFixed(PetscDraw_X*,int,int,XiFont**);
-EXTERN PetscErrorCode XiInitCmap(PetscDraw_X*);
-EXTERN PetscErrorCode PetscDrawSetColormap_X(PetscDraw_X*,char *,Colormap);
+extern PetscErrorCode XiUniformHues(PetscDraw_X *,int);
+extern PetscErrorCode Xi_wait_map(PetscDraw_X*);
+extern PetscErrorCode XiFontFixed(PetscDraw_X*,int,int,XiFont**);
+extern PetscErrorCode XiInitCmap(PetscDraw_X*);
+extern PetscErrorCode PetscDrawSetColormap_X(PetscDraw_X*,char *,Colormap);
 
 /*
   XiOpenDisplay - Open a display
@@ -30,7 +29,7 @@ PetscErrorCode XiOpenDisplay(PetscDraw_X* XiWin,char *display_name)
   PetscFunctionBegin;
   XiWin->disp = XOpenDisplay(display_name);
   if (!XiWin->disp) {
-    SETERRQ1(PETSC_ERR_LIB,"Unable to open display on %s\n.  Make sure your COMPUTE NODES are authorized to connect \n\
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"Unable to open display on %s\n.  Make sure your COMPUTE NODES are authorized to connect \n\
     to this X server and either your DISPLAY variable\n\
     is set or you use the -display name option\n",display_name);
   }
@@ -261,12 +260,90 @@ PetscErrorCode XiSetToBackground(PetscDraw_X* XiWin)
     XiWin->gc.cur_pix   = XiWin->background;
   }
   PetscFunctionReturn(0);
+
 }
 
+#undef __FUNCT__  
+#define __FUNCT__ "PetscDrawSetSave_X" 
+PetscErrorCode  PetscDrawSetSave_X(PetscDraw draw,const char *filename)
+{
+  PetscErrorCode ierr;
+#if defined(PETSC_HAVE_POPEN)
+  PetscMPIInt    rank;
+  char           command[PETSC_MAX_PATH_LEN];
+  FILE           *fd;
+#endif
 
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
+#if defined(PETSC_HAVE_POPEN)
+  ierr = MPI_Comm_rank(((PetscObject)draw)->comm,&rank);CHKERRQ(ierr);
+  if (!rank) {
+    ierr = PetscSNPrintf(command,PETSC_MAX_PATH_LEN,"rm -f %s_[0-9]*.Gif %s.Mpeg",draw->savefilename,draw->savefilename);CHKERRQ(ierr);
+    ierr = PetscPOpen(((PetscObject)draw)->comm,PETSC_NULL,command,"r",&fd);CHKERRQ(ierr);
+    ierr = PetscPClose(((PetscObject)draw)->comm,fd);CHKERRQ(ierr);
+  }
+#endif
+  PetscFunctionReturn(0);
+}
 
+#if defined(PETSC_HAVE_AFTERIMAGE)
+#include <afterimage.h>
+#undef __FUNCT__  
+#define __FUNCT__ "PetscDrawSave_X" 
+PetscErrorCode PetscDrawSave_X(PetscDraw draw,PetscViewer viewer)
+{
+  PetscDraw_X              *drawx = (PetscDraw_X*)draw->data;
+  XImage                   *image;
+  ASImage                  *asimage;
+  static struct  ASVisual  *asv = 0;
+  char                     filename[PETSC_MAX_PATH_LEN];
+  PetscErrorCode           ierr;
+  PetscMPIInt              rank;
 
+  PetscFunctionBegin;
+  ierr = MPI_Comm_rank(((PetscObject)draw)->comm,&rank);CHKERRQ(ierr);
+  if (rank) PetscFunctionReturn(0);
+  if (!draw->savefilename) PetscFunctionReturn(0);
+  if (!asv) {
+      asv = create_asvisual(drawx->disp, 0, 0, 0);if (!asv) SETERRQ(((PetscObject)draw)->comm,PETSC_ERR_PLIB,"Cannot create AfterImage ASVisual");
+  }
+  image   = XGetImage(drawx->disp, drawx->win, 0, 0, drawx->w, drawx->h, AllPlanes, ZPixmap);if (!image) SETERRQ(((PetscObject)draw)->comm,PETSC_ERR_PLIB,"Cannot XGetImage()");
+  asimage = picture_ximage2asimage (asv,image,0,0);if (!asimage) SETERRQ(((PetscObject)draw)->comm,PETSC_ERR_PLIB,"Cannot create AfterImage ASImage");
+  ierr = PetscSNPrintf(filename,PETSC_MAX_PATH_LEN,"%s_%d.Gif",draw->savefilename,draw->savefilecount++);CHKERRQ(ierr);
+  ASImage2file( asimage, 0, filename,ASIT_Gif,0);
 
+  XDestroyImage(image);
+  PetscFunctionReturn(0);
+}
+/*
+   There are routines wanted by AfterImage for PNG files
+ */
+void crc32(void) {;}
+void inflateReset(void) {;}
+void deflateReset(void) {;}
+void deflateInit2(void) {;}
+void deflateInit2_(void) {;}
+void deflate(void) {;}
+void deflateEnd(void) {;}
+
+#elif defined(PETSC_HAVE_IMAGEMAGICK)
+#include <MagicCore/MagickCore.h>
+#undef __FUNCT__  
+#define __FUNCT__ "PetscDrawSave_X" 
+PetscErrorCode PetscDrawSave_X(PetscDraw draw,PetscViewer viewer)
+{
+  PetscDraw_X  *drawx = (PetscDraw_X*)draw->data;
+  Image        *image;
+
+  PetscFunctionBegin;
+  if (!IsMagickInstantiated()) {
+    MagickCoreGenesis(0,0);
+  }
+  image = XGetWindowImage(drawx->disp, drawx->win, 0, 0);if (!image) SETERRQ(((PetscObject)draw)->comm,PETSC_ERR_PLIB,"Cannot create ImageMagick");
+  PetscFunctionReturn(0);
+}
+#endif
 
 
 

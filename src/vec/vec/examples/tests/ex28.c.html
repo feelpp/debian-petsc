@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:33+00:00">
+<meta name="date" content="2011-10-29T18:56:16+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests repeated <A href="../../../../../docs/manualpages/Vec/VecDotBegin.html#VecDotBegin">VecDotBegin</A>()/<A href="../../../../../docs/manualpages/Vec/VecDotEnd.html#VecDotEnd">VecDotEnd</A>().\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line9">  9: </a>{
@@ -123,8 +123,8 @@
 <a name="line116">116: </a>    <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Error 1 and 2 norms: result[0] %G result[1] %G\n"</font>,result[0],result[1]);
 <a name="line117">117: </a>  }
 
-<a name="line119">119: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line120">120: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y);
+<a name="line119">119: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line120">120: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y);
 
 <a name="line122">122: </a>  <font color="#B22222">/*</font>
 <a name="line123">123: </a><font color="#B22222">       Tests computing a large number of operations that require </font>
@@ -147,7 +147,7 @@
 <a name="line140">140: </a>    }
 <a name="line141">141: </a>  }
 <a name="line142">142: </a>  <font color="#4169E1">for</font> (i=0; i&lt;40; i++) {
-<a name="line143">143: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(vecs[i]);
+<a name="line143">143: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;vecs[i]);
 <a name="line144">144: </a>  }
 
 <a name="line146">146: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();

@@ -1,7 +1,7 @@
 #if !defined(__PETSCGL_H)
 #define __PETSCGL_H
 
-#include "private/tsimpl.h"
+#include <private/tsimpl.h>
 
 typedef enum {TSGLERROR_FORWARD,TSGLERROR_BACKWARD} TSGLErrorDirection;
 
@@ -28,8 +28,8 @@ struct _TSGLScheme {
   PetscScalar *stage_error;
 
   /* Desirable properties which enable extra optimizations */
-  PetscTruth stiffly_accurate;  /* Last row of [A U] is equal t first row of [B V]? */
-  PetscTruth fsal;              /* First Same As Last: X[1] = h*Ydot[s-1] (and stiffly accurate) */
+  PetscBool  stiffly_accurate;  /* Last row of [A U] is equal t first row of [B V]? */
+  PetscBool  fsal;              /* First Same As Last: X[1] = h*Ydot[s-1] (and stiffly accurate) */
 };
 
 typedef struct TS_GL {
@@ -66,12 +66,12 @@ typedef struct TS_GL {
   /* Runtime options */
   PetscInt current_scheme;
   PetscInt max_order,min_order,start_order;
-  PetscTruth extrapolate;           /* use extrapolation to produce initial Newton iterate? */
+  PetscBool  extrapolate;           /* use extrapolation to produce initial Newton iterate? */
   TSGLErrorDirection error_direction; /* TSGLERROR_FORWARD or TSGLERROR_BACKWARD */
 
   PetscInt max_step_rejections;
 
-  PetscTruth setupcalled;
+  PetscBool  setupcalled;
   void *data;
 } TS_GL;
 

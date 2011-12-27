@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* bjacobi.c */
 /* Fortran interface file */
 
@@ -48,15 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcbjacobisetusetruelocal_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcbjacobisetusetruelocal_(PC pc, int *__ierr ){
 *__ierr = PCBJacobiSetUseTrueLocal(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pcbjacobisettotalblocks_(PC pc,PetscInt *blocks, PetscInt lens[], int *__ierr ){
+void PETSC_STDCALL  pcbjacobisettotalblocks_(PC pc,PetscInt *blocks, PetscInt lens[], int *__ierr ){
 *__ierr = PCBJacobiSetTotalBlocks(
 	(PC)PetscToPointer((pc) ),*blocks,lens);
 }
-void PETSC_STDCALL   pcbjacobisetlocalblocks_(PC pc,PetscInt *blocks, PetscInt lens[], int *__ierr ){
+void PETSC_STDCALL  pcbjacobisetlocalblocks_(PC pc,PetscInt *blocks, PetscInt lens[], int *__ierr ){
 *__ierr = PCBJacobiSetLocalBlocks(
 	(PC)PetscToPointer((pc) ),*blocks,lens);
 }

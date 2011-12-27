@@ -1,23 +1,22 @@
-#define PETSCMAT_DLL
 
-#include "petscmat.h"
-#include "../src/mat/order/order.h"
+#include <petscmat.h>
+#include <../src/mat/order/order.h>
 
 EXTERN_C_BEGIN
 /*
-    MatOrdering_ND - Find the nested dissection ordering of a given matrix.
+    MatGetOrdering_ND - Find the nested dissection ordering of a given matrix.
 */    
 #undef __FUNCT__  
-#define __FUNCT__ "MatOrdering_ND"
-PetscErrorCode PETSCMAT_DLLEXPORT MatOrdering_ND(Mat mat,const MatOrderingType type,IS *row,IS *col)
+#define __FUNCT__ "MatGetOrdering_ND"
+PetscErrorCode  MatGetOrdering_ND(Mat mat,const MatOrderingType type,IS *row,IS *col)
 {
   PetscErrorCode ierr;
   PetscInt       i, *mask,*xls,*ls,nrow,*ia,*ja,*perm;
-  PetscTruth     done;
+  PetscBool      done;
 
   PetscFunctionBegin;
   ierr = MatGetRowIJ(mat,1,PETSC_TRUE,PETSC_TRUE,&nrow,&ia,&ja,&done);CHKERRQ(ierr);
-  if (!done) SETERRQ1(PETSC_ERR_SUP,"Cannot get rows for matrix type %s",((PetscObject)mat)->type_name);
+  if (!done) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot get rows for matrix type %s",((PetscObject)mat)->type_name);
 
   ierr = PetscMalloc4(nrow,PetscInt,&mask,nrow,PetscInt,&perm,nrow+1,PetscInt,&xls,nrow,PetscInt,&ls);CHKERRQ(ierr);
   SPARSEPACKgennd(&nrow,ia,ja,mask,perm,xls,ls);
@@ -26,8 +25,8 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatOrdering_ND(Mat mat,const MatOrderingType t
   /* shift because Sparsepack indices start at one */
   for (i=0; i<nrow; i++) perm[i]--;
 
-  ierr = ISCreateGeneral(PETSC_COMM_SELF,nrow,perm,row);CHKERRQ(ierr);
-  ierr = ISCreateGeneral(PETSC_COMM_SELF,nrow,perm,col);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(PETSC_COMM_SELF,nrow,perm,PETSC_COPY_VALUES,row);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(PETSC_COMM_SELF,nrow,perm,PETSC_COPY_VALUES,col);CHKERRQ(ierr);
   ierr = PetscFree4(mask,perm,xls,ls);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

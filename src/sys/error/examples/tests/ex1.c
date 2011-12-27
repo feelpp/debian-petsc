@@ -2,7 +2,7 @@
 
 static char help[] = "Tests signal handling.\n\n";
 
-#include "petscsys.h"
+#include <petscsys.h>
 #include <signal.h>
 
 typedef struct _handlerCtx {
@@ -41,6 +41,6 @@ int main(int argc, char *args[])
     }
   }
   ierr = PetscPopSignalHandler();CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:47:47+00:00">
+<meta name="date" content="2011-10-29T19:20:24+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -15,9 +15,9 @@
 <a name="line5">  5: </a><font color="#B22222">   the <A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A> component will eventually be incorporated as part of</font>
 <a name="line6">  6: </a><font color="#B22222">   the base PETSc libraries.</font>
 <a name="line7">  7: </a><font color="#B22222">*/</font>
-<a name="line8"> 8: </a> #include <A href="../../../../include/private/tsimpl.h.html">private/tsimpl.h</A>
-<a name="line9"> 9: </a> #include <A href="../../../../include/private/snesimpl.h.html">private/snesimpl.h</A>
-<a name="line10"> 10: </a> #include <A href="../../../../include/private/fortranimpl.h.html">private/fortranimpl.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;private/tsimpl.h&gt;</font>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;private/snesimpl.h&gt;</font>
+<a name="line10"> 10: </a><font color="#A020F0">#include &lt;private/fortranimpl.h&gt;</font>
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> RHSFunction(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
 <a name="line13"> 13: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> RHSJacobianFD(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A> *,void*)</font></strong>;
@@ -68,7 +68,7 @@
 <a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      amax,epsilon = 1.e-8; <font color="#B22222">/* assumes <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> precision */</font>
 <a name="line62"> 62: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      dx_min = 1.e-16,dx_par = 1.e-1;
 <a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm;
-<a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     assembled;
+<a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      assembled;
 
 <a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(xx1,&amp;jj1);
 <a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(xx1,&amp;jj2);
@@ -127,9 +127,9 @@
 <a name="line120">120: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(*J,MAT_FINAL_ASSEMBLY);
 <a name="line121">121: </a>  *flag =  DIFFERENT_NONZERO_PATTERN;
 
-<a name="line123">123: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(jj1);
-<a name="line124">124: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(jj2);
-<a name="line125">125: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(xx2);
+<a name="line123">123: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;jj1);
+<a name="line124">124: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;jj2);
+<a name="line125">125: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xx2);
 
 <a name="line127">127: </a>  <font color="#4169E1">return</font> 0;
 <a name="line128">128: </a>}

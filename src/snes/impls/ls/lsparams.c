@@ -1,19 +1,19 @@
-#define PETSCSNES_DLL
 
-#include "../src/snes/impls/ls/ls.h"  /*I "petscsnes.h" I*/
+#include <../src/snes/impls/ls/lsimpl.h>  /*I "petscsnes.h" I*/
 
 #undef __FUNCT__  
-#define __FUNCT__ "SNESSetLineSearchParams"
+#define __FUNCT__ "SNESLineSearchSetParams"
 /*@
    SNESLineSearchSetParams - Sets the parameters associated with the line search
    routine in the Newton-based method SNESLS.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes    - The nonlinear context obtained from SNESCreate()
 .  alpha   - The scalar such that .5*f_{n+1} . f_{n+1} <= .5*f_n . f_n - alpha |p_n . J . f_n|
--  maxstep - The maximum norm of the update vector
+.  maxstep - The maximum norm of the update vector
+-  minlambda - lambda is not allowed to be smaller than minlambda/( max_i y[i]/x[i]) 
 
    Level: intermediate
 
@@ -28,21 +28,41 @@
 
 .seealso: SNESLineSearchGetParams(), SNESLineSearchSet()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetParams(SNES snes,PetscReal alpha,PetscReal maxstep)
+PetscErrorCode  SNESLineSearchSetParams(SNES snes,PetscReal alpha,PetscReal maxstep,PetscReal minlambda)
 {
-  SNES_LS *ls;
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidLogicalCollectiveReal(snes,alpha,2);
+  PetscValidLogicalCollectiveReal(snes,maxstep,3);
+  PetscValidLogicalCollectiveReal(snes,minlambda,4);
 
-  ls = (SNES_LS*)snes->data;
-  if (alpha   >= 0.0) ls->alpha   = alpha;
-  if (maxstep >= 0.0) ls->maxstep = maxstep;
+  ierr = PetscTryMethod(snes,"SNESLineSearchSetParams_C",(SNES,PetscReal,PetscReal,PetscReal),(snes,alpha,maxstep,minlambda));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
+EXTERN_C_BEGIN
 #undef __FUNCT__  
-#define __FUNCT__ "SNESGetLineSearchParams"
+#define __FUNCT__ "SNESLineSearchSetParams_LS"
+PetscErrorCode  SNESLineSearchSetParams_LS(SNES snes,PetscReal alpha,PetscReal maxstep,PetscReal minlambda)
+{
+  SNES_LS *ls = (SNES_LS*)snes->data;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidLogicalCollectiveReal(snes,alpha,2);
+  PetscValidLogicalCollectiveReal(snes,maxstep,3);
+  PetscValidLogicalCollectiveReal(snes,minlambda,4);
+
+  if (alpha   >= 0.0) ls->alpha       = alpha;
+  if (maxstep >= 0.0) ls->maxstep     = maxstep;
+  if (minlambda >= 0.0) ls->minlambda = minlambda;
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESLineSearchGetParams"
 /*@C
    SNESLineSearchGetParams - Gets the parameters associated with the line search
      routine in the Newton-based method SNESLS.
@@ -54,8 +74,8 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetParams(SNES snes,PetscReal a
 
    Output Parameters:
 +  alpha   - The scalar such that .5*f_{n+1} . f_{n+1} <= .5*f_n . f_n - alpha |p_n . J . f_n|
--  maxstep - The maximum norm of the update vector
-
+.  maxstep - The maximum norm of the update vector
+-  minlambda - lambda is not allowed to be smaller than minlambda/( max_i y[i]/x[i]) 
 
    Level: intermediate
 
@@ -69,14 +89,12 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetParams(SNES snes,PetscReal a
 
 .seealso: SNESLineSearchSetParams(), SNESLineSearchSet()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchGetParams(SNES snes,PetscReal *alpha,PetscReal *maxstep)
+PetscErrorCode  SNESLineSearchGetParams(SNES snes,PetscReal *alpha,PetscReal *maxstep,PetscReal *minlambda)
 {
-  SNES_LS *ls;
+  SNES_LS *ls = (SNES_LS*)snes->data;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-
-  ls = (SNES_LS*)snes->data;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (alpha) {
     PetscValidDoublePointer(alpha,2);
     *alpha   = ls->alpha;
@@ -84,6 +102,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchGetParams(SNES snes,PetscReal *
   if (maxstep) {
     PetscValidDoublePointer(maxstep,3);
     *maxstep = ls->maxstep;
+  }
+  if (minlambda) {
+    PetscValidDoublePointer(minlambda,3);
+    *minlambda = ls->minlambda;
   }
   PetscFunctionReturn(0);
 }

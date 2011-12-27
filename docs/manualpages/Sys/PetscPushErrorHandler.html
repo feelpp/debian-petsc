@@ -10,7 +10,7 @@ Sets a routine to be called on detection of errors.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-PetscErrorCode PETSC_DLLEXPORT PetscPushErrorHandler(PetscErrorCode (*handler)(int,const char *,const char*,const char*,PetscErrorCode,int,const char*,void*),void *ctx)
+PetscErrorCode  PetscPushErrorHandler(PetscErrorCode (*handler)(MPI_Comm comm,int,const char *,const char*,const char*,PetscErrorCode,PetscErrorType,const char*,void*),void *ctx)
 </PRE>
 Not Collective
 <P>
@@ -24,10 +24,12 @@ example file pointers for error messages etc.)
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of handler</FONT></H3>
 <pre>
-   int handler(int line,char *func,char *file,char *dir,<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> n,int p,char *mess,void *ctx);
+   int handler(<A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,int line,char *func,char *file,char *dir,<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> n,int p,char *mess,void *ctx);
 </pre>
 <P>
 <TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- communicator over which error occured
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- the function where the error occured (indicated by __FUNCT__)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>line </B></TD><TD>- the line number of the error (indicated by __LINE__)
@@ -38,7 +40,7 @@ example file pointers for error messages etc.)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the generic error number (see list defined in include/petscerror.h)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- the specific error number
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- PETSC_ERROR_INITIAL if error just detected, otherwise PETSC_ERROR_REPEAT
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mess </B></TD><TD>- an error text string, usually just printed to the screen
 </TD></TR>

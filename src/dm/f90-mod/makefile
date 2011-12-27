@@ -1,4 +1,4 @@
-#requirespackage   'PETSC_USING_F90'
+#requiresdefine   'PETSC_USING_F90'
 #
 #   Makes Fortran module functions from *.h90 files in include/finclude
 #
@@ -17,7 +17,7 @@ SOURCEH	   =
 OBJSC	   = 
 OBJSF	   = petscdmmod.o
 LIBBASE	   = libpetscdm
-MANSEC	   = DA
+MANSEC	   = DM
 LOCDIR	   = src/dm/f90-mod/
 CLEANFILES = *.mod
 

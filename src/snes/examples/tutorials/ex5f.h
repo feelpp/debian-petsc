@@ -27,16 +27,16 @@
 !     petscpc.h     - preconditioners
 !     petscsnes.h   - SNES interface
 !  In addition, we need the following for use of distributed arrays
-!     petscda.h     - distributed arrays (DAs)
+!     petscdmda.h     - distributed arrays (DMDAs)
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscis.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscis.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
 
 !  Common blocks:
 !  In this example we use common blocks to store data needed by the 
@@ -57,12 +57,12 @@
 !     gxs, gys - local starting grid indices (including ghost points)
 !     gxm, gym - widths of local grid (including ghost points)
 
-      DA      da
+      DM      da
       PetscInt xs,xe,xm,gxs,gxe,gxm
       PetscInt ys,ye,ym,gys,gye,gym
       PetscInt mx,my
       PetscMPIInt rank,size
-      double precision lambda
+      PetscReal lambda
 
       common /params/ lambda,mx,my
       common /pdata/  xs,xe,xm,gxs,gxe,gxm

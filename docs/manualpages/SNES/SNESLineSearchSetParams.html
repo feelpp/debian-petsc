@@ -10,9 +10,9 @@ Sets the parameters associated with the line search routine in the Newton-based 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetParams(SNES snes,PetscReal alpha,PetscReal maxstep)
+PetscErrorCode  SNESLineSearchSetParams(SNES snes,PetscReal alpha,PetscReal maxstep,PetscReal minlambda)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -21,6 +21,8 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>alpha   </B></TD><TD>- The scalar such that .5*f_{n+1} . f_{n+1} &lt;= .5*f_n . f_n - alpha |p_n . J . f_n|
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>maxstep </B></TD><TD>- The maximum norm of the update vector
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>minlambda </B></TD><TD>- lambda is not allowed to be smaller than minlambda/( max_i y[i]/x[i]) 
 </TD></TR></TABLE>
 <P>
 

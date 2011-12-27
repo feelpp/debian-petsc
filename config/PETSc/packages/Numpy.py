@@ -4,7 +4,6 @@ class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
     self.download         = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/numpy-1.0.4.tar.gz']
-    self.downloadname     = 'numpy'
     self.includes         = ['']
     self.includedir       = ''
     self.libdir           = ''
@@ -12,7 +11,7 @@ class Configure(PETSc.package.NewPackage):
     self.cxx              = 0   # 1 means requires C++
     self.fc               = 0   # 1 means requires fortran
     self.double           = 1   # 1 means requires double precision 
-    self.requires32bitint = 1;
+    self.requires32bitint = 1
     return
 
   def setupDependencies(self, framework):
@@ -25,7 +24,7 @@ class Configure(PETSc.package.NewPackage):
     numpyDir = self.getDir()
     try:
       self.logPrintBox('Installing numpy; this may take several minutes')
-      output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+numpyDir+'; python setup.py install --prefix='+self.installDir, timeout=2500, log = self.framework.log)
+      output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+numpyDir+' && python setup.py install --prefix='+self.installDir, timeout=2500, log = self.framework.log)
     except RuntimeError, e:
       raise RuntimeError('Error running setup.py on numpy: '+str(e))
     self.framework.actions.addArgument('numpy', 'Install', 'Installed numpy into '+self.installDir)

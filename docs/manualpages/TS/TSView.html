@@ -10,7 +10,7 @@ Prints the <A HREF="../TS/TS.html#TS">TS</A> data structure.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSView(TS ts,PetscViewer viewer)
+PetscErrorCode  TSView(TS ts,PetscViewer viewer)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -32,8 +32,8 @@ The available visualization contexts include
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A> </B></TD><TD>- synchronized standard
 output where only the first processor opens
-the file.  All other processors send their 
-data to the first processor to print. 
+the file.  All other processors send their
+data to the first processor to print.
 </TD></TR></TABLE>
 <P>
 The user can open an alternative visualization context with
@@ -54,7 +54,6 @@ The user can open an alternative visualization context with
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ts/examples/tutorials/ex3.c.html">src/ts/examples/tutorials/ex3.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex4.c.html">src/ts/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex5.c.html">src/ts/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex6.c.html">src/ts/examples/tutorials/ex6.c.html</A><BR>
 </BODY></HTML>

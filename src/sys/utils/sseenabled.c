@@ -1,5 +1,5 @@
-#define PETSC_DLL
-#include "petscsys.h" /*I "petscsys.h" I*/
+
+#include <petscsys.h> /*I "petscsys.h" I*/
 
 #ifdef PETSC_HAVE_SSE
 
@@ -10,7 +10,7 @@
 
 #undef __FUNCT__
 #define __FUNCT__ "PetscSSEHardwareTest"
-PetscErrorCode PETSC_DLLEXPORT PetscSSEHardwareTest(PetscTruth *flag) 
+PetscErrorCode  PetscSSEHardwareTest(PetscBool  *flag)
 {
   PetscErrorCode ierr;
   char *vendor;
@@ -54,7 +54,7 @@ static void PetscSSEDisabledHandler(int sig) {
 
 #undef __FUNCT__
 #define __FUNCT__ "PetscSSEOSEnabledTest_Linux"
-PetscErrorCode PETSC_DLLEXPORT PetscSSEOSEnabledTest_Linux(PetscTruth *flag) 
+PetscErrorCode  PetscSSEOSEnabledTest_Linux(PetscBool  *flag)
 {
   int status, pid = 0;
   PetscFunctionBegin;
@@ -86,7 +86,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscSSEOSEnabledTest_Linux(PetscTruth *flag)
 
 #undef __FUNCT__
 #define __FUNCT__ "PetscSSEOSEnabledTest_TRUE"
-PetscErrorCode PETSC_DLLEXPORT PetscSSEOSEnabledTest_TRUE(PetscTruth *flag) 
+PetscErrorCode  PetscSSEOSEnabledTest_TRUE(PetscBool  *flag)
 {
   PetscFunctionBegin;
   if (flag) {
@@ -102,7 +102,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscSSEOSEnabledTest_TRUE(PetscTruth *flag)
 
 #undef __FUNCT__
 #define __FUNCT__ "PetscSSEEnabledTest_FALSE"
-PetscErrorCode PETSC_DLLEXPORT PetscSSEEnabledTest_FALSE(PetscTruth *flag) 
+PetscErrorCode  PetscSSEEnabledTest_FALSE(PetscBool  *flag)
 {
   PetscFunctionBegin;
   if (flag) {
@@ -137,20 +137,20 @@ PetscErrorCode PETSC_DLLEXPORT PetscSSEEnabledTest_FALSE(PetscTruth *flag)
 
      Level: developer
 @*/
-static PetscTruth petsc_sse_local_is_untested  = PETSC_TRUE;
-static PetscTruth petsc_sse_enabled_local      = PETSC_FALSE;
-static PetscTruth petsc_sse_global_is_untested = PETSC_TRUE;
-static PetscTruth petsc_sse_enabled_global     = PETSC_FALSE;
-PetscErrorCode PETSC_DLLEXPORT PetscSSEIsEnabled(MPI_Comm comm,PetscTruth *lflag,PetscTruth *gflag) {
+static PetscBool  petsc_sse_local_is_untested  = PETSC_TRUE;
+static PetscBool  petsc_sse_enabled_local      = PETSC_FALSE;
+static PetscBool  petsc_sse_global_is_untested = PETSC_TRUE;
+static PetscBool  petsc_sse_enabled_global     = PETSC_FALSE;
+PetscErrorCode  PetscSSEIsEnabled(MPI_Comm comm,PetscBool  *lflag,PetscBool  *gflag) {
   PetscErrorCode ierr;
-  PetscTruth disabled_option;
+  PetscBool  disabled_option;
 
   PetscFunctionBegin;
 
   if (petsc_sse_local_is_untested && petsc_sse_global_is_untested) {
     disabled_option = PETSC_FALSE;
 
-    ierr = PetscOptionsTruth("-disable_sse",
+    ierr = PetscOptionsBool("-disable_sse",
                             "Disable use of hand tuned Intel SSE implementations <true,false>.",
                             "PetscSSEIsEnabled",disabled_option,&disabled_option,PETSC_NULL);CHKERRQ(ierr);
     if (disabled_option) {

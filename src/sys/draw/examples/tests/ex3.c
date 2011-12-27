@@ -1,7 +1,7 @@
 
 static char help[] = "Plots a simple line graph.\n";
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -11,7 +11,7 @@ int main(int argc,char **argv)
   PetscDrawLG        lg;
   PetscDrawAxis      axis;
   PetscInt           n = 20,i,x = 0,y = 0,width = 300,height = 300,nports = 1;
-  PetscTruth         flg;
+  PetscBool          flg;
   const char         *xlabel,*ylabel,*toplabel;
   PetscReal          xd,yd;
   PetscDrawViewPorts *ports;
@@ -49,9 +49,9 @@ int main(int argc,char **argv)
   ierr = PetscSleep(2);CHKERRQ(ierr);
 
   ierr = PetscDrawViewPortsDestroy(ports);CHKERRQ(ierr);
-  ierr = PetscDrawLGDestroy(lg);CHKERRQ(ierr);
-  ierr = PetscDrawDestroy(draw);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscDrawLGDestroy(&lg);CHKERRQ(ierr);
+  ierr = PetscDrawDestroy(&draw);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

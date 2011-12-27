@@ -10,17 +10,17 @@ Activates event logging for a PETSc object class.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode EventPerfLogActivateClass(EventPerfLog eventLog, EventRegLog eventRegLog, PetscCookie cookie) 
+PetscErrorCode EventPerfLogActivateClass(PetscEventPerfLog eventLog, PetscEventRegLog eventRegLog, PetscClassId classid) 
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>eventLog    </B></TD><TD>- The EventPerfLog
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>eventLog    </B></TD><TD>- The PetscEventPerfLog
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>eventRegLog </B></TD><TD>- The EventRegLog
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>eventRegLog </B></TD><TD>- The PetscEventRegLog
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cookie      </B></TD><TD>- The class id, for example MAT_COOKIE, SNES_COOKIE,
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>classid      </B></TD><TD>- The class id, for example MAT_CLASSID, SNES_CLASSID,
 </TD></TR></TABLE>
 <P>
 

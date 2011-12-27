@@ -2,7 +2,7 @@
    Tests PetscMemmove()
 */
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -45,7 +45,7 @@ int main(int argc,char **argv)
   PetscIntView(20,a,0);
   ierr = PetscFree(a);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

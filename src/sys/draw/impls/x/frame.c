@@ -1,4 +1,4 @@
-#define PETSC_DLL
+
 /*
    This file contains routines to draw a 3-d like frame about a given 
    box with a given width.  Note that we might like to use a high/low
@@ -7,9 +7,9 @@
    The region has 6 parameters.  These are the dimensions of the actual frame.
  */
 
-#include "../src/sys/draw/impls/x/ximpl.h"
+#include <../src/sys/draw/impls/x/ximpl.h>
 
-EXTERN PixVal XiGetColor(PetscDraw_X *,char *,int);
+extern PixVal XiGetColor(PetscDraw_X *,char *,int);
 
 /* 50% grey stipple pattern */
 static Pixmap grey50 = (Pixmap)0;         

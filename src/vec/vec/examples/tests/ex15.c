@@ -1,7 +1,7 @@
 
 static char help[] = "Tests VecSetValuesBlocked() on sequential vectors.\n\n";
 
-#include "petscvec.h"
+#include <petscvec.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -16,7 +16,7 @@ int main(int argc,char **argv)
   ierr = PetscInitialize(&argc,&argv,(char*)0,help);CHKERRQ(ierr); 
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
 
-  if (size != 1) SETERRQ(1,"Must be run with one processor");
+  if (size != 1) SETERRQ(PETSC_COMM_SELF,1,"Must be run with one processor");
 
   /* create vector */
   ierr = VecCreateSeq(PETSC_COMM_SELF,n,&x);CHKERRQ(ierr);
@@ -34,9 +34,9 @@ int main(int argc,char **argv)
   */
   ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-  ierr = VecDestroy(x);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

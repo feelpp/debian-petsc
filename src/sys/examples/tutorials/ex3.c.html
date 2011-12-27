@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:23:40+00:00">
+<meta name="date" content="2011-10-29T18:54:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -28,13 +28,13 @@
 <a name="line18"> 18: </a><font color="#B22222">/* </font>
 <a name="line19"> 19: </a><font color="#B22222">  Include "petscsys.h" so that we can use PETSc profiling routines.</font>
 <a name="line20"> 20: </a><font color="#B22222">*/</font>
-<a name="line21"> 21: </a> #include <A href="../../../../include/petscsys.h.html">petscsys.h</A>
+<a name="line21"> 21: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 
 <a name="line25"> 25: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line26"> 26: </a>{
 <a name="line28"> 28: </a>  int            i,imax=10000,icount;
 <a name="line29"> 29: </a><font color="#A020F0">#if defined (PETSC_USE_LOG)</font>
-<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A>  USER_EVENT;
+<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A>  USER_EVENT;
 <a name="line31"> 31: </a><font color="#A020F0">#endif</font>
 
 <a name="line33"> 33: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
@@ -47,7 +47,7 @@
 <a name="line40"> 40: </a><font color="#B22222">      - The user can also optionally log floating point operations</font>
 <a name="line41"> 41: </a><font color="#B22222">        with the routine <A href="../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>().</font>
 <a name="line42"> 42: </a><font color="#B22222">  */</font>
-<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"User event"</font>,PETSC_VIEWER_COOKIE,&amp;USER_EVENT);
+<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"User event"</font>,PETSC_VIEWER_CLASSID,&amp;USER_EVENT);
 <a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(USER_EVENT,0,0,0,0);
 <a name="line45"> 45: </a>  icount = 0;
 <a name="line46"> 46: </a>  <font color="#4169E1">for</font> (i=0; i&lt;imax; i++) icount++;

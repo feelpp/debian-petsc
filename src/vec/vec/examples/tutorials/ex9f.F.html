@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:49+00:00">
+<meta name="date" content="2011-10-29T18:56:35+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -34,13 +34,13 @@
 <a name="line24"> 24: </a>!     petscvec.h    - vectors
 <a name="line25"> 25: </a>!
 
-<a name="line27"> 27: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line28"> 28: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
+<a name="line27"> 27: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line28"> 28: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
 
 <a name="line30"> 30: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank,size
 <a name="line31"> 31: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nlocal,nghost,ifrom(2)
 <a name="line32"> 32: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ierr,i,rstart,rend,ione
-<a name="line33"> 33: </a>      <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>  flag
+<a name="line33"> 33: </a>      <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   flag
 <a name="line34"> 34: </a>      <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  value,tarray(20)
 <a name="line35"> 35: </a>      <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>          lx,gx,gxs
 
@@ -52,7 +52,7 @@
 <a name="line42"> 42: </a>      call <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,size,ierr)
 
 <a name="line44"> 44: </a>      <font color="#4169E1">if</font> (size .ne. 2) then
-<a name="line45"> 45: </a>       <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,'Must run with two processors',ierr)
+<a name="line45"> 45: </a>       <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,'Must run with two processors',ierr)
 <a name="line46"> 46: </a>      endif
 
 <a name="line48"> 48: </a>!
@@ -121,18 +121,24 @@
 <a name="line111">111: </a>       call <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(gx,ierr)
 <a name="line112">112: </a>       call <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(gx,ierr)
 
-<a name="line114">114: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGhostUpdateBegin.html#VecGhostUpdateBegin">VecGhostUpdateBegin</A>(gx,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)
-<a name="line115">115: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGhostUpdateEnd.html#VecGhostUpdateEnd">VecGhostUpdateEnd</A>(gx,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)
+<a name="line114">114: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGhostUpdateBegin.html#VecGhostUpdateBegin">VecGhostUpdateBegin</A>(gx,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)
+<a name="line115">115: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGhostUpdateEnd.html#VecGhostUpdateEnd">VecGhostUpdateEnd</A>(gx,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)
 
 <a name="line117">117: </a>!     Print out each vector, including the ghost padding region.
 
-<a name="line119">119: </a>       call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(lx,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line119">119: </a>       <font color="#4169E1">if</font> (rank .eq. 0) then
+<a name="line120">120: </a>          call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(lx,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line121">121: </a>       endif
+<a name="line122">122: </a>       call <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Barrier.html#MPI_Barrier">MPI_Barrier</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,ierr)
+<a name="line123">123: </a>       <font color="#4169E1">if</font> (rank .eq. 1) then
+<a name="line124">124: </a>          call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(lx,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line125">125: </a>       endif
 
-<a name="line121">121: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGhostRestoreLocalForm.html#VecGhostRestoreLocalForm">VecGhostRestoreLocalForm</A>(gx,lx,ierr)
-<a name="line122">122: </a>       call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(gx,ierr)
-<a name="line123">123: </a>       call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line124">124: </a>       end
-<a name="line125">125: </a>
+<a name="line127">127: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGhostRestoreLocalForm.html#VecGhostRestoreLocalForm">VecGhostRestoreLocalForm</A>(gx,lx,ierr)
+<a name="line128">128: </a>       call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(gx,ierr)
+<a name="line129">129: </a>       call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line130">130: </a>       end
+<a name="line131">131: </a>
 
 
 </pre>

@@ -10,7 +10,7 @@ Sets the local subdomains (for this processor only) for the additive Schwarz pre
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCASMSetLocalSubdomains(PC pc,PetscInt n,IS is[],IS is_local[])
+PetscErrorCode  PCASMSetLocalSubdomains(PC pc,PetscInt n,IS is[],IS is_local[])
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
@@ -20,7 +20,7 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of subdomains for this processor (default value = 1)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is </B></TD><TD>- the index sets that define the subdomains for this processor
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is </B></TD><TD>- the index set that defines the subdomains for this processor
 (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to determine subdomains)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_local </B></TD><TD>- the index sets that define the local part of the subdomains for this processor
@@ -28,7 +28,7 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-The <A HREF="../IS/IS.html#IS">IS</A> numbering is in the parallel, global numbering of the vector.
+The <A HREF="../IS/IS.html#IS">IS</A> numbering is in the parallel, global numbering of the vector for both is and is_local
 <P>
 By default the ASM preconditioner uses 1 block per processor.
 <P>

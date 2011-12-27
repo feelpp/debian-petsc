@@ -3,7 +3,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:19:23+00:00">
+<meta name="date" content="2011-10-29T18:49:46+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -28,11 +28,19 @@ include ${PETSC_DIR}/conf/test
 <font color="#A020F0">#</font>
 <font color="#A020F0"># Basic targets to build PETSc libraries.</font>
 <font color="#A020F0"># all: builds the c, fortran, and f90 libraries</font>
-<strong><font color="#FF0000">all:</font></strong> 
+<strong><font color="#FF0000">all:</font></strong>
         @${OMAKE}  PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} chkpetsc_dir
-        -@${OMAKE} all_build PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} 2&gt;&amp;1  | tee ${PETSC_ARCH}/conf/make.log
-        -@<font color="#4169E1">if</font> [ -L make.log ]; then ${RM} make.log; fi; ln -s ${PETSC_ARCH}/conf/make.log make.log
-        -@egrep -i <font color="#666666">"( error | error:)"</font> ${PETSC_ARCH}/conf/make.log &gt; /dev/null; <font color="#4169E1">if</font> [ <font color="#666666">"$$?"</font> = <font color="#666666">"0"</font> ]; then \
+        @<font color="#4169E1">if</font> [ <font color="#666666">"${PETSC_BUILD_USING_CMAKE}"</font> != <font color="#666666">""</font> ]; then \
+           echo <font color="#666666">"=========================================="</font>; \
+           echo <font color="#666666">"Building PETSc using CMake with ${MAKE_NP} build threads"</font>; \
+           echo <font color="#666666">"Using PETSC_DIR=${PETSC_DIR} and PETSC_ARCH=${PETSC_ARCH}"</font>; \
+           echo <font color="#666666">"=========================================="</font>; \
+           ${OMAKE} PETSC_ARCH=${PETSC_ARCH} PETSC_DIR=${PETSC_DIR} all-cmake; \
+         <font color="#4169E1">else</font> \
+           ${OMAKE} PETSC_ARCH=${PETSC_ARCH} PETSC_DIR=${PETSC_DIR} all-legacy; \
+         fi
+        -@ln -sf ${PETSC_ARCH}/conf/make.log make.log
+        -@egrep -i <font color="#666666">"( error | error: |no such file or directory)"</font> ${PETSC_ARCH}/conf/make.log &gt; /dev/null; <font color="#4169E1">if</font> [ <font color="#666666">"$$?"</font> = <font color="#666666">"0"</font> ]; then \
            echo <font color="#666666">"********************************************************************"</font> 2&gt;&amp;1 | tee -a ${PETSC_ARCH}/conf/make.log; \
            echo <font color="#666666">"  Error during compile, check ${PETSC_ARCH}/conf/make.log"</font> 2&gt;&amp;1 | tee -a ${PETSC_ARCH}/conf/make.log; \
            echo <font color="#666666">"  Send it and ${PETSC_ARCH}/conf/configure.log to petsc-maint@mcs.anl.gov"</font> 2&gt;&amp;1 | tee -a ${PETSC_ARCH}/conf/make.log;\
@@ -42,11 +50,14 @@ include ${PETSC_DIR}/conf/test
           ${OMAKE} shared_install PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} 2&gt;&amp;1 | tee -a ${PETSC_ARCH}/conf/make.log ;\
          fi
 
-<font color="#A020F0">#</font>
-<font color="#A020F0">#  Notes: the shared_nomesg and petsc4py should NOT be built if --prefix was used</font>
-<font color="#A020F0">#  the rules for shared_nomesg_noinstall petsc4py_noinstall are generated automatically </font>
-<font color="#A020F0">#  by config/PETSc/Configure.py and config/PETSc/packages/petsc4py.py based on the existance </font>
-<strong><font color="#FF0000">all_build:</font></strong> chk_petsc_dir chklib_dir info info_h deletelibs deletemods build shared_nomesg_noinstall mpi4py_noinstall petsc4py_noinstall
+all-cmake:
+        @${OMAKE} -j ${MAKE_NP} -C ${PETSC_DIR}/${PETSC_ARCH} VERBOSE=1 2&gt;&amp;1 | tee ${PETSC_ARCH}/conf/make.log \
+                  | egrep -v '( --check-build-system |cmake -E | -o CMakeFiles/petsc[[:lower:]]*.dir/| -o lib/libpetsc|CMakeFiles/petsc[[:lower:]]*\.dir/(build|depend|requires)|-f CMakeFiles/Makefile2|Dependee .* is newer than depender |provides\.build. is up to date)'
+
+all-legacy:
+        -@${OMAKE} all_build PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} 2&gt;&amp;1  | tee ${PETSC_ARCH}/conf/make.log
+
+<strong><font color="#FF0000">all_build:</font></strong> chk_petsc_dir chklib_dir info deletelibs deletemods build shared_nomesg mpi4py petsc4py
 <font color="#A020F0">#</font>
 <font color="#A020F0"># Prints information about the system and version of PETSc being compiled</font>
 <font color="#A020F0">#</font>
@@ -78,13 +89,11 @@ include ${PETSC_DIR}/conf/test
         -@echo <font color="#666666">"Using configuration flags:"</font>
         -@grep <font color="#666666">"\#define "</font> ${PETSC_DIR}/${PETSC_ARCH}/include/petscconf.h
         -@echo <font color="#666666">"-----------------------------------------"</font>
-        -@echo <font color="#666666">"Using include paths: ${PETSC_INCLUDE}"</font>
-        -@echo <font color="#666666">"------------------------------------------"</font>
+        -@echo <font color="#666666">"Using C/C++ include paths: ${PETSC_CC_INCLUDES}"</font>
         -@echo <font color="#666666">"Using C/C++ compiler: ${PCC} ${PCC_FLAGS} ${COPTFLAGS} ${CFLAGS}"</font>
-        -@echo <font color="#666666">"C/C++ Compiler version: "</font> `${CCV}`
         -@<font color="#4169E1">if</font> [ <font color="#666666">"${FC}"</font> != <font color="#666666">""</font> ]; then \
+           echo <font color="#666666">"Using Fortran include/module paths: ${PETSC_FC_INCLUDES}"</font>;\
            echo <font color="#666666">"Using Fortran compiler: ${FC} ${FC_FLAGS} ${FFLAGS} ${FPP_FLAGS}"</font>;\
-           echo <font color="#666666">"Fortran Compiler version: "</font> `${FCV}`;\
          fi
         -@echo <font color="#666666">"-----------------------------------------"</font>
         -@echo <font color="#666666">"Using C/C++ linker: ${PCC_LINKER}"</font>
@@ -98,37 +107,6 @@ include ${PETSC_DIR}/conf/test
         -@echo <font color="#666666">"------------------------------------------"</font>
         -@echo <font color="#666666">"Using mpiexec: ${MPIEXEC}"</font>
         -@echo <font color="#666666">"=========================================="</font>
-<font color="#A020F0">#</font>
-<font color="#A020F0">#</font>
-MINFO = ${PETSC_DIR}/${PETSC_ARCH}/include/petscmachineinfo.h
-<strong><font color="#FF0000">info_h:</font></strong>
-        -@$(RM) -f ${MINFO} MINFO
-        -@echo  <font color="#666666">"static const char *petscmachineinfo = \"\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"-----------------------------------------\__n__\""</font> &gt;&gt; MINFO
-        -@<font color="#4169E1">if</font> [ -f /usr/bin/cygcheck.exe ]; then \
-          echo  <font color="#666666">"\"Libraries compiled on `date` on `hostname|/usr/bin/dos2unix` \__n__\""</font> &gt;&gt; MINFO; \
-          <font color="#4169E1">else</font> \
-          echo  <font color="#666666">"\"Libraries compiled on `date` on `hostname` \__n__\""</font> &gt;&gt; MINFO; \
-          fi
-        -@echo  <font color="#666666">"\"Machine characteristics: `uname -a` \__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"Using PETSc directory: ${PETSC_DIR}\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"Using PETSc arch: ${PETSC_ARCH}\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"-----------------------------------------\"; "</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"static const char *petsccompilerinfo = \"\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"Using C compiler: ${PCC} ${PCC_FLAGS} ${COPTFLAGS} ${CFLAGS}\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"Using Fortran compiler: ${FC} ${FC_FLAGS} ${FFLAGS} ${FPP_FLAGS}\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"-----------------------------------------\"; "</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"static const char *petsccompilerflagsinfo = \"\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"Using include paths: ${PETSC_INCLUDE}\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"------------------------------------------\"; "</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"static const char *petsclinkerinfo = \"\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"Using C linker: ${CLINKER}\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"Using Fortran linker: ${FLINKER}\__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"Using libraries: ${PETSC_LIB} \__n__\""</font> &gt;&gt; MINFO
-        -@echo  <font color="#666666">"\"------------------------------------------\"; "</font> &gt;&gt; MINFO
-        -@cat MINFO | ${SED} -e 's/\\ /\\\\ /g' | ${SED} -e 's/__n__/n/g' &gt; ${MINFO}
-        -@ <font color="#4169E1">if</font> [ -f /usr/bin/cygcheck.exe ]; then /usr/bin/dos2unix ${MINFO} 2&gt; /dev/null; fi
-        -@$(RM) -f MINFO
 
 <font color="#A020F0">#</font>
 <font color="#A020F0"># Builds the PETSc libraries</font>
@@ -152,6 +130,7 @@ testx11:
         -@${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} testx11_build 2&gt;&amp;1 | tee ./${PETSC_ARCH}/conf/testx11.log
 test_build:
         -@echo "Running test examples to verify correct installation"
+        -@echo "Using PETSC_DIR=${PETSC_DIR} and PETSC_ARCH=${PETSC_ARCH}"
         @cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} clean
         @cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} testex19
         @if [ "${FC}" != "" ]; then cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} testex5f; fi;
@@ -159,6 +138,7 @@ test_build:
         -@echo "Completed test examples"
 testx11_build:
         -@echo "Running graphics test example to verify correct X11 installation"
+        -@echo "Using PETSC_DIR=${PETSC_DIR} and PETSC_ARCH=${PETSC_ARCH}"
         @cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} clean
         @cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} testx11ex19
         @cd src/snes/examples/tutorials; ${OMAKE} PETSC_ARCH=${PETSC_ARCH}  PETSC_DIR=${PETSC_DIR} clean
@@ -214,7 +194,7 @@ ranlib:
 
 # Deletes PETSc libraries
 deletelibs:
-        -${RM} -f ${PETSC_LIB_DIR}/libpetsc*.*
+        -${RM} -rf ${PETSC_LIB_DIR}/libpetsc*.*
 deletemods:
         -${RM} -f ${PETSC_DIR}/${PETSC_ARCH}/include/petsc*.mod
 
@@ -235,36 +215,35 @@ chk_petsc_dir:
 #
 #
 install:
-        -@./config/install.py
+        @${PYTHON} ./config/install.py -destDir=${DESTDIR}
 
 newall:
-        -@cd src/sys; ${PETSC_DIR}/config/builder.py
-        -@cd src/vec; ${PETSC_DIR}/config/builder.py
-        -@cd src/mat; ${PETSC_DIR}/config/builder.py
-        -@cd src/dm; ${PETSC_DIR}/config/builder.py
-        -@cd src/ksp; ${PETSC_DIR}/config/builder.py
-        -@cd src/snes; ${PETSC_DIR}/config/builder.py
-        -@cd src/ts; ${PETSC_DIR}/config/builder.py
+        -@cd src/sys;  @${PYTHON} ${PETSC_DIR}/config/builder.py
+        -@cd src/vec;  @${PYTHON} ${PETSC_DIR}/config/builder.py
+        -@cd src/mat;  @${PYTHON} ${PETSC_DIR}/config/builder.py
+        -@cd src/dm;   @${PYTHON} ${PETSC_DIR}/config/builder.py
+        -@cd src/ksp;  @${PYTHON} ${PETSC_DIR}/config/builder.py
+        -@cd src/snes; @${PYTHON} ${PETSC_DIR}/config/builder.py
+        -@cd src/ts;   @${PYTHON} ${PETSC_DIR}/config/builder.py
+
+streams:
+        cd src/benchmarks/streams; ${OMAKE} test
 # ------------------------------------------------------------------
 #
 # All remaining actions are intended for PETSc developers only.
 # PETSc users should not generally need to use these commands.
 #
-
-# To access the tags in EMACS, type M-x visit-tags-table and specify
-# the file petsc/TAGS.        
-# 1) To move to where a PETSc function is defined, enter M-. and the
-#     function name.
-# 2) To search for a string and move to the first occurrence,
-#     use M-x tags-search and the string.
-#     To locate later occurrences, use M-,
-# Builds all etags files
+#  See the users manual for how the tags files may be used from Emacs and Vi/Vim
+#
 alletags:
-        -@bin/maint/generateetags.py
+        -@${PYTHON} bin/maint/generateetags.py
         -@find config -type f -name "*.py" |grep -v SCCS | xargs etags -o TAGS_PYTHON
 
 allfortranstubs:
-        -@bin/maint/generatefortranstubs.py ${BFORT}
+        -@${RM} -rf include/finclude/ftn-auto/*-tmpdir
+        -@${PYTHON} bin/maint/generatefortranstubs.py ${BFORT}  ${VERBOSE}
+        -@${PYTHON} bin/maint/generatefortranstubs.py -merge  ${VERBOSE}
+        -@${RM} -rf include/finclude/ftn-auto/*-tmpdir
 deletefortranstubs:
         -@find . -type d -name ftn-auto | xargs rm -rf 
 #
@@ -282,7 +261,7 @@ SCRIPTS    = bin/maint/builddist  bin/maint/wwwman bin/maint/xclude bin/maint/bu
 
 
 # Builds all the documentation - should be done every night
-alldoc: alldoc1 alldoc2
+alldoc: alldoc1 alldoc2 alldoc3
 
 # Build everything that goes into 'doc' dir except html sources
 alldoc1: chk_loc deletemanualpages chk_concepts_dir
@@ -290,22 +269,32 @@ alldoc1: chk_loc deletemanualpages chk_concepts_dir
         -@sed -e s%man+../%man+manualpages/% ${LOC}/docs/manualpages/manualpages.cit &gt; ${LOC}/docs/manualpages/htmlmap
         -@cat ${PETSC_DIR}/src/docs/mpi.www.index &gt;&gt; ${LOC}/docs/manualpages/htmlmap
         -cd src/docs/tex/manual; ${OMAKE} manual.pdf LOC=${LOC}
+        -cd src/docs/tex/manual; ${OMAKE} developers.pdf LOC=${LOC}
         -${OMAKE} ACTION=manualpages tree_basic LOC=${LOC}
-        -bin/maint/wwwindex.py ${PETSC_DIR} ${LOC}
+        -${PYTHON} bin/maint/wwwindex.py ${PETSC_DIR} ${LOC}
         -${OMAKE} ACTION=manexamples tree_basic LOC=${LOC}
         -${OMAKE} manconcepts LOC=${LOC}
         -${OMAKE} ACTION=getexlist tree_basic LOC=${LOC}
         -${OMAKE} ACTION=exampleconcepts tree_basic LOC=${LOC}
-        -bin/maint/helpindex.py ${PETSC_DIR} ${LOC}
+        -${PYTHON} bin/maint/helpindex.py ${PETSC_DIR} ${LOC}
         -grep -h Polymorphic include/*.h | grep -v '#define ' | sed "s?PetscPolymorphic[a-zA-Z]*(??g" | cut -f1 -d"{" &gt; tmppoly
-        -bin/maint/processpoly.py ${PETSC_DIR} ${LOC}
+        -${PYTHON} bin/maint/processpoly.py ${PETSC_DIR} ${LOC}
         -${RM} tmppoly
 
 # Builds .html versions of the source
 # html overwrites some stuff created by update-docs - hence this is done later.
 alldoc2: chk_loc
         -${OMAKE} ACTION=html PETSC_DIR=${PETSC_DIR} alltree LOC=${LOC}
-        -bin/maint/update-docs.py ${PETSC_DIR} ${LOC}
+        -${PYTHON} bin/maint/update-docs.py ${PETSC_DIR} ${LOC}
+#
+# Builds HTML versions of Matlab scripts
+alldoc3: chk_loc
+        if  [ "${MATLAB_COMMAND}" != "" ]; then\
+          export MATLABPATH=${MATLABPATH}:${PETSC_DIR}/bin/matlab; \
+          cd ${PETSC_DIR}/bin/matlab; ${MATLAB_COMMAND} -nodisplay -nodesktop -r "generatehtml;exit" ; \
+          cd classes; ${MATLAB_COMMAND} -nodisplay -nodesktop -r "generatehtml;exit" ; \
+          cd examples/tutorials; ${MATLAB_COMMAND} -nodisplay -nodesktop -r "generatehtml;exit" ; \
+        fi
 
 alldocclean: deletemanualpages allcleanhtml
 
@@ -316,7 +305,7 @@ deletemanualpages: chk_loc
           ${RM} ${LOC}/docs/exampleconcepts ;\
           ${RM} ${LOC}/docs/manconcepts ;\
           ${RM} ${LOC}/docs/manualpages/manualpages.cit ;\
-          bin/maint/update-docs.py ${PETSC_DIR} ${LOC} clean;\
+          ${PYTHON} bin/maint/update-docs.py ${PETSC_DIR} ${LOC} clean;\
         fi
 
 allcleanhtml: 
@@ -335,7 +324,7 @@ chk_concepts_dir: chk_loc
 dist:
         ${PETSC_DIR}/bin/maint/builddist ${PETSC_DIR}
 
-# This target works only if you can do 'ssh petsc@harley.mcs.anl.gov'
+# This target works only if you can do 'ssh petsc@login.mcs.anl.gov'
 # also copy the file over to ftp site.
 web-snapshot:
         @if [ ! -f "${HOME}/petsc-dev.tar.gz" ]; then \
@@ -345,7 +334,7 @@ web-snapshot:
             tmpdir=`mktemp -d -t petsc-doc.XXXXXXXX`; \
             cd $${tmpdir}; tar -xzf ${HOME}/petsc-dev.tar.gz; \
             /usr/bin/rsync  -e ssh -az --delete $${tmpdir}/petsc-dev/ \
-              petsc@harley.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as/snapshots/petsc-dev ;\
+              petsc@login.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as/snapshots/petsc-dev ;\
             /bin/cp -f /home/petsc/petsc-dev.tar.gz /mcs/ftp/pub/petsc/petsc-dev.tar.gz;\
             ${RM} -rf $${tmpdir} ;\
           fi
@@ -356,10 +345,9 @@ update-web-snapshot: dist web-snapshot
 # This target updates website main pages
 update-web:
         @cd ${PETSC_DIR}/src/docs; make PETSC_DIR=${PETSC_DIR} PETSC_ARCH=${PETSC_ARCH} bib2html; \
-        /usr/bin/rsync -az -C --exclude=BitKeeper --exclude=documentation/installation.html \
-          ${PETSC_DIR}/src/docs/website/ petsc@harley.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as
-        @cd ${PETSC_DIR}/src/docs/tex/manual; make developers.pdf PETSC_DIR=${PETSC_DIR} PETSC_ARCH=${PETSC_ARCH} LOC=${PETSC_DIR}; \
-        /usr/bin/rsync -az developers.pdf petsc@harley.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as/developers/
+        /usr/bin/rsync -az -C --exclude=documentation/index.html --exclude=documentation/installation.html \
+          ${PETSC_DIR}/src/docs/website/ petsc@login.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as
+        @cd ${PETSC_DIR}/docs; /usr/bin/rsync -az developers.pdf petsc@login.mcs.anl.gov:/mcs/web/research/projects/petsc/petsc-as/developers/
 
 #
 #  builds a single list of files for each PETSc library so they may all be built in parallel
@@ -405,7 +393,7 @@ alladiclib:
         -@echo "Using configuration flags:"
         -@grep "define " ${PETSC_ARCH}/include/petscconf.h
         -@echo "-----------------------------------------"
-        -@echo "Using include paths: ${PETSC_INCLUDE}"
+        -@echo "Using include paths: ${CC_PETSC_INCLUDE}"
         -@echo "-----------------------------------------"
         -@echo "Using PETSc directory: ${PETSC_DIR}"
         -@echo "Using PETSc arch: ${PETSC_ARCH}"
@@ -495,36 +483,8 @@ exercises:
         allhtml allcleanhtml  allci allco allrcslabel alladicignore alladic alladiclib countfortranfunctions \
         start_configure configure_petsc configure_clean
 
-getsigs:
-        -@if [ ! -d src/sigs ]; then mkdir -p sigs; fi
-        -@echo ${PETSC_INCLUDE} &gt; sigs/petsc_include
-        -@echo "#include \"petscvec.h\"" &gt; sigs/vec.sigs.h
-        -@grep -h "enum " include/petscsys.h include/petscvec.h &gt;&gt; sigs/vec.sigs.h
-        -@grep " <A href="ROOT/docs/manualpages/Vec/Vec.html#Vec">Vec</A>[a-zA-Z][a-zA-Z]*(<A href="ROOT/docs/manualpages/Vec/Vec.html#Vec">Vec</A>," include/petscvec.h | grep EXTERN | grep -v "(\*)" | grep -v <A href="ROOT/docs/manualpages/IS/IS.html#IS">IS</A> |grep -v <A href="ROOT/docs/manualpages/Vec/VecType.html#VecType">VecType</A> | sed "s/EXTERN <A href="ROOT/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PETSCVEC_DLLEXPORT//g" &gt;&gt; sigs/vec.sigs.h
-        -@echo "#include \"petscmat.h\"" &gt; sigs/mat.sigs.h
-        -@grep "enum " include/petscmat.h | grep } &gt;&gt; sigs/mat.sigs.h
-        -@grep " <A href="ROOT/docs/manualpages/Mat/Mat.html#Mat">Mat</A>[a-zA-Z][a-zA-Z]*(<A href="ROOT/docs/manualpages/Mat/Mat.html#Mat">Mat</A>," include/petscmat.h | grep EXTERN | grep -v "(\*)" | grep -v <A href="ROOT/docs/manualpages/IS/IS.html#IS">IS</A> |grep -v <A href="ROOT/docs/manualpages/Mat/MatType.html#MatType">MatType</A> | sed "s/EXTERN <A href="ROOT/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PETSCMAT_DLLEXPORT//g" &gt;&gt; sigs/mat.sigs.h
-        -@echo "#include \"petscpc.h\"" &gt; sigs/pc.sigs.h
-        -@grep "enum " include/petscpc.h | grep } &gt;&gt; sigs/pc.sigs.h
-        -@grep " <A href="ROOT/docs/manualpages/PC/PC.html#PC">PC</A>[a-zA-Z][a-zA-Z]*(<A href="ROOT/docs/manualpages/PC/PC.html#PC">PC</A>," include/petscpc.h | grep EXTERN | grep -v "(\*)" | grep -v "(\*\*)" | grep -v <A href="ROOT/docs/manualpages/IS/IS.html#IS">IS</A> |grep -v <A href="ROOT/docs/manualpages/PC/PCType.html#PCType">PCType</A> | sed "s/EXTERN <A href="ROOT/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PETSCKSP_DLLEXPORT//g" &gt;&gt; sigs/pc.sigs.h
-        -@echo "#include \"petscksp.h\"" &gt; sigs/ksp.sigs.h
-        -@grep "enum " include/petscksp.h | grep } &gt;&gt; sigs/ksp.sigs.h
-        -@grep " <A href="ROOT/docs/manualpages/KSP/KSP.html#KSP">KSP</A>[a-zA-Z][a-zA-Z]*(<A href="ROOT/docs/manualpages/KSP/KSP.html#KSP">KSP</A>," include/petscksp.h | grep EXTERN | grep -v "(\*)" | grep -v "(\*\*)" | grep -v <A href="ROOT/docs/manualpages/IS/IS.html#IS">IS</A> |grep -v <A href="ROOT/docs/manualpages/KSP/KSPType.html#KSPType">KSPType</A> | sed "s/EXTERN <A href="ROOT/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PETSCKSP_DLLEXPORT//g" &gt;&gt; sigs/ksp.sigs.h
-        -@echo "#include \"petscsnes.h\"" &gt; sigs/snes.sigs.h
-        -@grep " <A href="ROOT/docs/manualpages/SNES/SNES.html#SNES">SNES</A>[a-zA-Z][a-zA-Z]*(<A href="ROOT/docs/manualpages/SNES/SNES.html#SNES">SNES</A>," include/petscsnes.h | grep EXTERN | grep -v "(\*)" | grep -v "(\*\*)" | grep -v <A href="ROOT/docs/manualpages/IS/IS.html#IS">IS</A> |grep -v <A href="ROOT/docs/manualpages/SNES/SNESType.html#SNESType">SNESType</A> | sed "s/EXTERN <A href="ROOT/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PETSCSNES_DLLEXPORT//g" &gt;&gt; sigs/snes.sigs.h
-
-
-
-
-
-
-
-
-
-
-
 petscao : petscmat petscao.f90.h
-petscda : petscksp petscda.f90.h
+petscdm : petscksp petscdm.f90.h
 petscdraw : petsc petscdraw.f90.h
 petscis : petsc petscis.f90.h
 petscksp : petscpc  petscksp.f90.h
@@ -539,7 +499,7 @@ petsc : petsc.f90.h
 petscvec : petscis petscvec.f90.h
 petscviewer : petsc petscviewer.f90.h
 petscmesh : petsc petscmesh.f90.h
-modules : petscao petscda petscdraw petscis petscksp petsclog petscmat petscmg petscpc petscsnes petscsys petscts petsc petscvec petscviewer petscmesh
+modules : petscao petscdm petscdraw petscis petscksp petsclog petscmat petscmg petscpc petscsnes petscsys petscts petsc petscvec petscviewer petscmesh
 </pre>
 </body>
 

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* fieldsplit.c */
 /* Fortran interface file */
 
@@ -27,6 +28,7 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscpc.h"
+#include "petscdmcomposite.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcfieldsplitsetfields_ PCFIELDSPLITSETFIELDS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -36,6 +38,11 @@ extern void PetscRmPointer(void*);
 #define pcfieldsplitsetis_ PCFIELDSPLITSETIS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcfieldsplitsetis_ pcfieldsplitsetis
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcfieldsplitgetis_ PCFIELDSPLITGETIS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcfieldsplitgetis_ pcfieldsplitgetis
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcfieldsplitsetblocksize_ PCFIELDSPLITSETBLOCKSIZE
@@ -58,25 +65,29 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcfieldsplitsetfields_(PC pc,PetscInt *n,PetscInt *fields, int *__ierr ){
+void PETSC_STDCALL  pcfieldsplitsetfields_(PC pc, char splitname[],PetscInt *n, PetscInt *fields, int *__ierr ){
 *__ierr = PCFieldSplitSetFields(
-	(PC)PetscToPointer((pc) ),*n,fields);
+	(PC)PetscToPointer((pc) ),splitname,*n,fields);
 }
-void PETSC_STDCALL   pcfieldsplitsetis_(PC pc,IS is, int *__ierr ){
+void PETSC_STDCALL  pcfieldsplitsetis_(PC pc, char splitname[],IS is, int *__ierr ){
 *__ierr = PCFieldSplitSetIS(
-	(PC)PetscToPointer((pc) ),
+	(PC)PetscToPointer((pc) ),splitname,
 	(IS)PetscToPointer((is) ));
 }
-void PETSC_STDCALL   pcfieldsplitsetblocksize_(PC pc,PetscInt *bs, int *__ierr ){
+void PETSC_STDCALL  pcfieldsplitgetis_(PC pc, char splitname[],IS *is, int *__ierr ){
+*__ierr = PCFieldSplitGetIS(
+	(PC)PetscToPointer((pc) ),splitname,is);
+}
+void PETSC_STDCALL  pcfieldsplitsetblocksize_(PC pc,PetscInt *bs, int *__ierr ){
 *__ierr = PCFieldSplitSetBlockSize(
 	(PC)PetscToPointer((pc) ),*bs);
 }
-void PETSC_STDCALL   pcfieldsplitschurprecondition_(PC pc,PCFieldSplitSchurPreType *ptype,Mat pre, int *__ierr ){
+void PETSC_STDCALL  pcfieldsplitschurprecondition_(PC pc,PCFieldSplitSchurPreType *ptype,Mat pre, int *__ierr ){
 *__ierr = PCFieldSplitSchurPrecondition(
 	(PC)PetscToPointer((pc) ),*ptype,
 	(Mat)PetscToPointer((pre) ));
 }
-void PETSC_STDCALL   pcfieldsplitsettype_(PC pc,PCCompositeType *type, int *__ierr ){
+void PETSC_STDCALL  pcfieldsplitsettype_(PC pc,PCCompositeType *type, int *__ierr ){
 *__ierr = PCFieldSplitSetType(
 	(PC)PetscToPointer((pc) ),*type);
 }

@@ -4,17 +4,17 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:22:10+00:00">
+<meta name="date" content="2011-10-29T18:52:45+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">  This is to allow one to measure CPU time usage of their job, </font>
 <a name="line4">  4: </a><font color="#B22222">  NOT real time usage. Do not use this for reported timings, speedup etc.</font>
 <a name="line5">  5: </a><font color="#B22222">*/</font>
 
-<a name="line7"> 7: </a> #include <A href="../../../include/petscsys.h.html">petscsys.h</A>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petscsys.h&gt;                       </font><font color="#B22222">/*I "petscsys.h" I*/</font><font color="#A020F0"></font>
 <a name="line8">  8: </a><font color="#A020F0">#include &lt;ctype.h&gt;</font>
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;sys/types.h&gt;</font>
 <a name="line10"> 10: </a><font color="#A020F0">#include &lt;sys/stat.h&gt;</font>
@@ -71,7 +71,7 @@
 
 <a name="line70"> 70: </a><font color="#B22222">    Example:</font>
 <a name="line71"> 71: </a><font color="#B22222">.vb</font>
-<a name="line72"> 72: </a><font color="#B22222">    #include "petscsys.h"</font>
+<a name="line72"> 72: </a><font color="#B22222">    #include &lt;petscsys.h&gt;</font>
 <a name="line73"> 73: </a><font color="#B22222">    ...</font>
 <a name="line74"> 74: </a><font color="#B22222">    PetscLogDouble t1, t2;</font>
 <a name="line75"> 75: </a><font color="#B22222"> </font>

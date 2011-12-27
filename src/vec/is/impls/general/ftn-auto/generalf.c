@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* general.c */
 /* Fortran interface file */
 
@@ -32,15 +33,24 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define iscreategeneral_ iscreategeneral
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define isgeneralsetindices_ ISGENERALSETINDICES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define isgeneralsetindices_ isgeneralsetindices
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   iscreategeneral_(MPI_Fint * comm,PetscInt *n, PetscInt idx[],IS *is, int *__ierr ){
+void PETSC_STDCALL  iscreategeneral_(MPI_Fint * comm,PetscInt *n, PetscInt idx[],PetscCopyMode *mode,IS *is, int *__ierr ){
 *__ierr = ISCreateGeneral(
-	MPI_Comm_f2c( *(comm) ),*n,idx,is);
+	MPI_Comm_f2c( *(comm) ),*n,idx,*mode,is);
+}
+void PETSC_STDCALL  isgeneralsetindices_(IS is,PetscInt *n, PetscInt idx[],PetscCopyMode *mode, int *__ierr ){
+*__ierr = ISGeneralSetIndices(
+	(IS)PetscToPointer((is) ),*n,idx,*mode);
 }
 #if defined(__cplusplus)
 }

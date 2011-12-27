@@ -33,7 +33,7 @@ is solved.  The command line options are:\n\
     nonlinear equations. 
 */
 
-#include "petscsnes.h"
+#include <petscsnes.h>
 
 typedef struct {
       PetscReal   param;        /* test problem parameter */
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
   PetscDraw      draw;                 /* drawing context */
   PetscInt       its, N, nfails;
   PetscErrorCode ierr;
-  PetscTruth     cavity; 
+  PetscBool      cavity; 
   PetscReal      bratu_lambda_max = 6.81, bratu_lambda_min = 0.;
   PetscScalar    *xvalues;
 
@@ -77,9 +77,7 @@ int main(int argc, char **argv)
   if (cavity) user.param = 100.0;
   else        user.param = 6.0;
   ierr = PetscOptionsGetReal(PETSC_NULL,"-par",&user.param,PETSC_NULL);CHKERRQ(ierr);
-  if (!cavity && (user.param >= bratu_lambda_max || user.param <= bratu_lambda_min)) {
-    SETERRQ(1,"Lambda is out of range");
-  }
+  if (!cavity && (user.param >= bratu_lambda_max || user.param <= bratu_lambda_min)) SETERRQ(PETSC_COMM_SELF,1,"Lambda is out of range");
   N = user.mx*user.my;
   
   /* Set up data structures */
@@ -115,10 +113,10 @@ int main(int argc, char **argv)
   ierr = VecRestoreArray(x,&xvalues);CHKERRQ(ierr);
 
   /* Free data structures */
-  ierr = VecDestroy(x);CHKERRQ(ierr);  ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = MatDestroy(J);CHKERRQ(ierr);  ierr = SNESDestroy(snes);CHKERRQ(ierr);
-  ierr = PetscDrawDestroy(draw);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);  ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = MatDestroy(&J);CHKERRQ(ierr);  ierr = SNESDestroy(&snes);CHKERRQ(ierr);
+  ierr = PetscDrawDestroy(&draw);CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }
@@ -157,7 +155,7 @@ PetscErrorCode  FormInitialGuess1(AppCtx *user,Vec X)
         x[row] = 0.0; 
         continue;
       }
-      x[row] = temp1*sqrt(PetscMin((PetscReal)(PetscMin(i,mx-i-1))*hx,temp)); 
+      x[row] = temp1*PetscSqrtReal(PetscMin((PetscReal)(PetscMin(i,mx-i-1))*hx,temp)); 
     }
   }
   ierr = VecRestoreArray(X,&x);CHKERRQ(ierr);
@@ -273,7 +271,7 @@ PetscErrorCode  FormInitialGuess2(AppCtx *user,Vec X)
   my	 = user->my;
 
   /* Test for invalid input parameters */
-  if ((mx <= 0) || (my <= 0)) SETERRQ(1,0);
+  if ((mx <= 0) || (my <= 0)) SETERRQ(PETSC_COMM_SELF,1,0);
 
   hx    = 1.0 / (PetscReal)(mx-1);
   hy    = 1.0 / (PetscReal)(my-1);
@@ -436,7 +434,7 @@ PetscErrorCode  FormJacobian2(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,v
   PetscScalar    ptl,pt,ptt,dpdy,dpdx,pblap,ptlap,rey,pbl,ptr,pllap,plap,prlap;
   PetscScalar    val,four = 4.0, three = 3.0,*x;
   PetscReal      hx, hy,hx2, hy2, hxhy2;
-  PetscTruth     assembled;
+  PetscBool      assembled;
 
   mx	 = user->mx; 
   my	 = user->my;

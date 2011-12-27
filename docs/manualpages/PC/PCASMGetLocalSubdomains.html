@@ -10,9 +10,9 @@ Gets the local subdomains (for this processor only) for the additive Schwarz pre
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCASMGetLocalSubdomains(PC pc,PetscInt *n,IS *is[],IS *is_local[])
+PetscErrorCode  PCASMGetLocalSubdomains(PC pc,PetscInt *n,IS *is[],IS *is_local[])
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>pc </B> -the preconditioner context

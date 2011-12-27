@@ -10,12 +10,12 @@ sets the acceptance test
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode PETSCTS_DLLEXPORT TSGLSetAcceptType(TS ts,const TSGLAcceptType type)
+PetscErrorCode  TSGLSetAcceptType(TS ts,const TSGLAcceptType type)
 </PRE>
 Time integrators that need to control error must have the option to reject a time step based on local error
 estimates.  This function allows different schemes to be set.
 <P>
-Collective on <A HREF="../TS/TS.html#TS">TS</A>
+Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

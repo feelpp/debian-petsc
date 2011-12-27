@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dmouse.c */
 /* Fortran interface file */
 
@@ -43,12 +44,12 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawgetmousebutton_(PetscDraw draw,PetscDrawButton *button,PetscReal* x_user,PetscReal *y_user,PetscReal *x_phys,PetscReal *y_phys, int *__ierr ){
+void PETSC_STDCALL  petscdrawgetmousebutton_(PetscDraw draw,PetscDrawButton *button,PetscReal* x_user,PetscReal *y_user,PetscReal *x_phys,PetscReal *y_phys, int *__ierr ){
 *__ierr = PetscDrawGetMouseButton(
 	(PetscDraw)PetscToPointer((draw) ),
 	(PetscDrawButton* )PetscToPointer((button) ),x_user,y_user,x_phys,y_phys);
 }
-void PETSC_STDCALL   petscdrawsynchronizedgetmousebutton_(PetscDraw draw,PetscDrawButton *button,PetscReal* x_user,PetscReal *y_user,PetscReal *x_phys,PetscReal *y_phys, int *__ierr ){
+void PETSC_STDCALL  petscdrawsynchronizedgetmousebutton_(PetscDraw draw,PetscDrawButton *button,PetscReal* x_user,PetscReal *y_user,PetscReal *x_phys,PetscReal *y_phys, int *__ierr ){
 *__ierr = PetscDrawSynchronizedGetMouseButton(
 	(PetscDraw)PetscToPointer((draw) ),
 	(PetscDrawButton* )PetscToPointer((button) ),x_user,y_user,x_phys,y_phys);

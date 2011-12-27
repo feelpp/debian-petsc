@@ -9,12 +9,16 @@
 Sets the nonlinear function that defines the nonlinear set of equations to be solved using the grid hierarchy. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"    
-#include "petscmg.h"    
+#include "petscdmda.h"    
+#include "petscdmmesh.h"  
+#include "petscpcmg.h"    
 #include "petscdmmg.h"  
 #include "petscmat.h" 
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetSNES(DMMG *dmmg,PetscErrorCode (*function)(SNES,Vec,Vec,void*),PetscErrorCode (*jacobian)(SNES,Vec,Mat*,Mat*,MatStructure*,void*))
+PetscErrorCode  DMMGSetSNES(DMMG *dmmg,PetscErrorCode (*function)(SNES,Vec,Vec,void*),PetscErrorCode (*jacobian)(SNES,Vec,Mat*,Mat*,MatStructure*,void*))
 </PRE>
+This is being deprecated. Use <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>() for linear problems and <A HREF="../SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>() for nonlinear problems.
+See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c
+<P>
 Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
@@ -28,7 +32,7 @@ Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor</B></TD><TD>- .    -dmmg_coloring_from_mat - use graph coloring on the actual matrix nonzero structure instead of getting the coloring from the <A HREF="../DA/DM.html#DM">DM</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor</B></TD><TD>- .    -dmmg_coloring_from_mat - use graph coloring on the actual matrix nonzero structure instead of getting the coloring from the DM
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-dmmg_jacobian_fd</B></TD><TD>- .    -dmmg_jacobian_ad
 </TD></TR>
@@ -54,7 +58,6 @@ fields dmmg[i]-&gt;updatejacobian and dmmg[i]-&gt;updatejacobianperiod directly 
 <BR><A HREF="./index.html">Index of all DMMG routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex18.c.html">src/snes/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex20.c.html">src/snes/examples/tutorials/ex20.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex22.c.html">src/snes/examples/tutorials/ex22.c.html</A><BR>
@@ -62,8 +65,7 @@ fields dmmg[i]-&gt;updatejacobian and dmmg[i]-&gt;updatejacobianperiod directly 
 <A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex25.c.html">src/snes/examples/tutorials/ex25.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex34f90.F.html">src/snes/examples/tutorials/ex34f90.F.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex35f90.F90.html">src/snes/examples/tutorials/ex35f90.F90.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex36f90.F90.html">src/snes/examples/tutorials/ex36f90.F90.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex37f90.F90.html">src/snes/examples/tutorials/ex37f90.F90.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex32.c.html">src/snes/examples/tutorials/ex32.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex49.c.html">src/snes/examples/tutorials/ex49.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
 </BODY></HTML>

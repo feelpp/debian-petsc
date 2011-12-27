@@ -10,7 +10,7 @@ Creates a sparse matrix in AIJ (compressed row) format (the default parallel PET
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreateSeqAIJ(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt nz,const PetscInt nnz[],Mat *A)
+PetscErrorCode  MatCreateSeqAIJ(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt nz,const PetscInt nnz[],Mat *A)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -75,10 +75,6 @@ reusing matrix information to achieve increased efficiency.
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_no_inode  </B></TD><TD>- Do not use inodes
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_inode_limit &lt;limit&gt; </B></TD><TD>- Sets inode limit (max limit=5)
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_aij_oneindex </B></TD><TD>- Internally use indexing starting at 1
-rather than 0.  Note that when calling <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(),
-the user still MUST index entries starting at 0!
 </TD></TR></TABLE>
 <P>
 
@@ -97,11 +93,11 @@ the user still MUST index entries starting at 0!
 <A HREF="../../../src/mat/examples/tutorials/ex12.c.html">src/mat/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex13.c.html">src/ksp/ksp/examples/tutorials/ex13.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex13f90.F.html">src/ksp/ksp/examples/tutorials/ex13f90.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex6.c.html">src/snes/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex38.c.html">src/snes/examples/tutorials/ex38.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex45.c.html">src/snes/examples/tutorials/ex45.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex59.c.html">src/snes/examples/tutorials/ex59.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex1.c.html">src/ts/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

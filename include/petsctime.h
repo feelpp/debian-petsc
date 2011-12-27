@@ -13,21 +13,24 @@
 #endif
 #if defined(PETSC_NEEDS_GETTIMEOFDAY_PROTO)
 EXTERN_C_BEGIN
-EXTERN int gettimeofday(struct timeval *,struct timezone *);
+extern int gettimeofday(struct timeval *,struct timezone *);
 EXTERN_C_END
 #endif
 
 /* Global counters */
-extern PetscLogDouble PETSC_DLLEXPORT BaseTime;
+extern PetscLogDouble  BaseTime;
 
 /*
    PetscTime - Returns the current time of day in seconds.  
 
+   Synopsis:
+   PetscTime(PetscLogDouble v)
+
+   Not Collective
+
    Output Parameter:
 .  v - time counter
 
-   Synopsis:
-   PetscTime(PetscLogDouble v)
 
    Usage: 
      PetscLogDouble v;
@@ -39,7 +42,7 @@ extern PetscLogDouble PETSC_DLLEXPORT BaseTime;
    Since the PETSc libraries incorporate timing of phases and operations, 
    PetscTime() is intended only for timing of application codes.  
    The options database commands -log, -log_summary, and -log_all activate
-   PETSc library timing.  See the users manual for further details.
+   PETSc library timing. See the <A href="../../docs/manual.pdf">Users Manual</A> for more details.
 
 .seealso:  PetscTimeSubtract(), PetscTimeAdd()
 
@@ -50,20 +53,23 @@ extern PetscLogDouble PETSC_DLLEXPORT BaseTime;
    PetscTimeSubtract - Subtracts the current time of day (in seconds) from
    the value v.  
 
+   Synopsis:
+   PetscTimeSubtract(PetscLogDouble v)
+
+   Not Collective
+
    Input Parameter:
 .  v - time counter
 
    Output Parameter:
 .  v - time counter (v = v - current time)
 
-   Synopsis:
-   PetscTimeSubtract(PetscLogDouble v)
 
    Notes:
    Since the PETSc libraries incorporate timing of phases and operations, 
    PetscTimeSubtract() is intended only for timing of application codes.  
    The options database commands -log, -log_summary, and -log_all activate
-   PETSc library timing.  See the users manual for further details.
+   PETSc library timing.  See the <A href="../../docs/manual.pdf">Users Manual</A> for more details.
 
 .seealso:  PetscTime(), PetscTimeAdd()
 
@@ -73,20 +79,22 @@ extern PetscLogDouble PETSC_DLLEXPORT BaseTime;
 /*
    PetscTimeAdd - Adds the current time of day (in seconds) to the value v.  
 
+   Synopsis:
+   PetscTimeAdd(PetscLogDouble v)
+
+   Not Collective
+
    Input Parameter:
 .  v - time counter
 
    Output Parameter:
 .  v - time counter (v = v + current time)
 
-   Synopsis:
-   PetscTimeAdd(PetscLogDouble v)
-
    Notes:
    Since the PETSc libraries incorporate timing of phases and operations, 
    PetscTimeAdd() is intended only for timing of application codes.  
    The options database commands -log, -log_summary, and -log_all activate
-   PETSc library timing.  See the users manual for further details.
+   PETSc library timing. See the <A href="../../docs/manual.pdf">Users Manual</A> for more details.
 
 .seealso:  PetscTime(), PetscTimeSubtract()
 
@@ -107,7 +115,7 @@ extern PetscLogDouble PETSC_DLLEXPORT BaseTime;
    Power1,2,3,PC machines have a fast clock read_real_time()
 */ 
 #elif defined(PETSC_USE_READ_REAL_TIME)
-EXTERN PetscLogDouble rs6000_time(void);
+extern PetscLogDouble rs6000_time(void);
 #define PetscTime(v)         (v)=rs6000_time();
 
 #define PetscTimeSubtract(v) (v)-=rs6000_time();
@@ -120,7 +128,7 @@ EXTERN PetscLogDouble rs6000_time(void);
 */
 #elif defined(PETSC_USE_GETCLOCK)
 EXTERN_C_BEGIN
-EXTERN int getclock(int clock_type,struct timespec *tp);
+extern int getclock(int clock_type,struct timespec *tp);
 EXTERN_C_END
 
 
@@ -141,7 +149,7 @@ EXTERN_C_END
 */
 #elif defined (PETSC_USE_DCLOCK)
 EXTERN_C_BEGIN
-EXTERN PetscLogDouble dclock();
+extern PetscLogDouble dclock();
 EXTERN_C_END
 
 #define PetscTime(v)         (v)=dclock();
@@ -157,7 +165,7 @@ EXTERN_C_END
 #elif defined (PETSC_USE_NT_TIME)
 #include <time.h>
 EXTERN_C_BEGIN
-EXTERN PetscLogDouble nt_time(void);
+extern PetscLogDouble nt_time(void);
 EXTERN_C_END
 #define PetscTime(v)         (v)=nt_time();
 
@@ -169,17 +177,23 @@ EXTERN_C_END
     The usual Unix time routines.
 */
 #else
-#define PetscTime(v)         {static struct timeval _tp; \
-                             gettimeofday(&_tp,(struct timezone *)0);\
-                             (v)=((PetscLogDouble)_tp.tv_sec)+(1.0e-6)*(_tp.tv_usec);}
+#define PetscTime(v)         do {                                       \
+    static struct timeval _tp;                                          \
+    gettimeofday(&_tp,(struct timezone *)0);                            \
+    (v)=((PetscLogDouble)_tp.tv_sec)+(1.0e-6)*(_tp.tv_usec);            \
+  } while (0)
 
-#define PetscTimeSubtract(v) {static struct timeval _tp; \
-                             gettimeofday(&_tp,(struct timezone *)0);\
-                             (v)-=((PetscLogDouble)_tp.tv_sec)+(1.0e-6)*(_tp.tv_usec);}
+#define PetscTimeSubtract(v) do {                                       \
+    static struct timeval _tp;                                          \
+    gettimeofday(&_tp,(struct timezone *)0);                            \
+    (v)-=((PetscLogDouble)_tp.tv_sec)+(1.0e-6)*(_tp.tv_usec);           \
+  } while (0)
 
-#define PetscTimeAdd(v)      {static struct timeval _tp; \
-                             gettimeofday(&_tp,(struct timezone *)0);\
-                             (v)+=((PetscLogDouble)_tp.tv_sec)+(1.0e-6)*(_tp.tv_usec);}
+#define PetscTimeAdd(v) do {                                            \
+    static struct timeval _tp;                                          \
+    gettimeofday(&_tp,(struct timezone *)0);                            \
+    (v)+=((PetscLogDouble)_tp.tv_sec)+(1.0e-6)*(_tp.tv_usec);           \
+  } while (0)
 #endif
 
 #endif

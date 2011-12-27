@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "../src/sys/random/randomimpl.h"
+#include <../src/sys/random/randomimpl.h>
 #if defined (PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
 #endif
@@ -8,12 +7,12 @@
 #define USE_MPI
 #define SIMPLE_SPRNG
 EXTERN_C_BEGIN
-#include "sprng.h"
+#include <sprng.h>
 EXTERN_C_END
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomSeed_Sprng"
-PetscErrorCode PETSC_DLLEXPORT PetscRandomSeed_Sprng(PetscRandom r)
+PetscErrorCode  PetscRandomSeed_Sprng(PetscRandom r)
 {
   PetscFunctionBegin;
   init_sprng(r->seed,SPRNG_DEFAULT);
@@ -22,7 +21,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomSeed_Sprng(PetscRandom r)
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomGetValue_Sprng"
-PetscErrorCode PETSC_DLLEXPORT PetscRandomGetValue_Sprng(PetscRandom r,PetscScalar *val)
+PetscErrorCode  PetscRandomGetValue_Sprng(PetscRandom r,PetscScalar *val)
 {
   PetscFunctionBegin;
 #if defined(PETSC_USE_COMPLEX)  
@@ -41,7 +40,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomGetValue_Sprng(PetscRandom r,PetscScal
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomGetValue_Sprng"
-PetscErrorCode PETSC_DLLEXPORT PetscRandomGetValueReal_Sprng(PetscRandom r,PetscScalar *val)
+PetscErrorCode  PetscRandomGetValueReal_Sprng(PetscRandom r,PetscScalar *val)
 {
   PetscFunctionBegin;
 #if defined(PETSC_USE_COMPLEX)
@@ -72,7 +71,7 @@ static struct _PetscRandomOps PetscRandomOps_Values = {
 
   Level: beginner
 
-   PETSc must have been config/configure.py with the option --download-sprng to use
+   PETSc must have been ./configure with the option --download-sprng to use
    this random number generator.
 
    This is NOT currently using a parallel random number generator. Sprng does have
@@ -84,14 +83,13 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomCreate_Sprng" 
-PetscErrorCode PETSC_DLLEXPORT PetscRandomCreate_Sprng(PetscRandom r)
+PetscErrorCode  PetscRandomCreate_Sprng(PetscRandom r)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   ierr = PetscMemcpy(r->ops,&PetscRandomOps_Values,sizeof(PetscRandomOps_Values));CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)r,PETSCSPRNG);CHKERRQ(ierr);
-  ierr = PetscPublishAll(r);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 EXTERN_C_END

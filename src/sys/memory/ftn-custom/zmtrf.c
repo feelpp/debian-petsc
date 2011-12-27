@@ -1,5 +1,5 @@
-#include "private/fortranimpl.h"
-#include "petscsys.h"
+#include <private/fortranimpl.h>
+#include <petscsys.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define petscmallocdump_           PETSCMALLOCDUMP
@@ -17,6 +17,8 @@
 
 EXTERN_C_BEGIN
 
+#undef __FUNCT__  
+#define __FUNCT__ "PetscFixSlashN"
 static PetscErrorCode PetscFixSlashN(const char *in, char **out)
 {
   PetscErrorCode ierr;

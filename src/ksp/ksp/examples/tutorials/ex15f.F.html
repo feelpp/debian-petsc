@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:42:18+00:00">
+<meta name="date" content="2011-10-29T19:14:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -34,11 +34,11 @@
 <a name="line24"> 24: </a>!     petscmat.h - matrices
 <a name="line25"> 25: </a>!     petscksp.h    - Krylov subspace methods  petscpc.h  - preconditioners
 
-<a name="line27"> 27: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line28"> 28: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line29"> 29: </a> #include <A href="../../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line30"> 30: </a> #include <A href="../../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line31"> 31: </a> #include <A href="../../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
+<a name="line27"> 27: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line28"> 28: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line29"> 29: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line30"> 30: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line31"> 31: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
 
 <a name="line33"> 33: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 <a name="line34"> 34: </a>!                   Variable declarations
@@ -63,7 +63,7 @@
 <a name="line53"> 53: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   i,j,II,JJ,Istart
 <a name="line54"> 54: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   Iend,m,n,i1,its,five
 <a name="line55"> 55: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank
-<a name="line56"> 56: </a>      <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> user_defined_pc,flg
+<a name="line56"> 56: </a>      <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  user_defined_pc,flg
 
 <a name="line58"> 58: </a>!  Note: Any user-defined Fortran routines MUST be declared as external.
 
@@ -250,7 +250,7 @@
 <a name="line240">240: </a>           write(6,110) its
 <a name="line241">241: </a>        endif
 <a name="line242">242: </a>      endif
-<a name="line243">243: </a>  100 format('Norm of error ',1pe10.4,' iterations ',i5)
+<a name="line243">243: </a>  100 format('Norm of error ',1pe11.4,' iterations ',i5)
 <a name="line244">244: </a>  110 format('Norm of error < 1.e-12,iterations ',i5)
 
 <a name="line246">246: </a>!  Free work space.  All PETSc objects should be destroyed when they
@@ -291,9 +291,9 @@
 
 <a name="line282">282: </a>      implicit none
 
-<a name="line284">284: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line285">285: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line286">286: </a> #include <A href="../../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
+<a name="line284">284: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line285">285: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line286">286: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
 <a name="line287">287: </a>      <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>      pc
 
 <a name="line289">289: </a>      <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>     pmat
@@ -336,8 +336,8 @@
 
 <a name="line327">327: </a>      implicit none
 
-<a name="line329">329: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line330">330: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
+<a name="line329">329: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line330">330: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
 
 <a name="line332">332: </a>      <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>      pc
 <a name="line333">333: </a>      <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>     x,y
@@ -370,9 +370,9 @@
 
 <a name="line361">361: </a>      implicit none
 
-<a name="line363">363: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line364">364: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line365">365: </a> #include <A href="../../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
+<a name="line363">363: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line364">364: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line365">365: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
 <a name="line366">366: </a>      <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>      pc
 <a name="line367">367: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 

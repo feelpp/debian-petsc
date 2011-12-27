@@ -4,10 +4,10 @@
   between Fortran and C.
 */
 
-#include "private/fortranimpl.h" 
+#include <private/fortranimpl.h> 
 
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscoptionsgettruth_              PETSCOPTIONSGETTRUTH
+#define petscoptionsgetbool_               PETSCOPTIONSGETBOOL
 #define petscoptionsgetintarray_           PETSCOPTIONSGETINTARRAY
 #define petscoptionssetvalue_              PETSCOPTIONSSETVALUE
 #define petscoptionsclearvalue_            PETSCOPTIONSCLEARVALUE
@@ -21,7 +21,7 @@
 #define petscoptionsclear_                 PETSCOPTIONSCLEAR
 #define petscoptionsinsertstring_          PETSCOPTIONSINSERTSTRING
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE)
-#define petscoptionsgettruth_              petscoptionsgettruth
+#define petscoptionsgetbool_               petscoptionsgetbool
 #define petscoptionssetvalue_              petscoptionssetvalue
 #define petscoptionsclearvalue_            petscoptionsclearvalue
 #define petscoptionshasname_               petscoptionshasname
@@ -49,7 +49,7 @@ void PETSC_STDCALL petscoptionsinsertstring_(CHAR file PETSC_MIXED_LEN(len),Pets
   FREECHAR(file,c1);
 }
 
-void PETSC_STDCALL petscoptionsinsertfile_(MPI_Fint *comm,CHAR file PETSC_MIXED_LEN(len),PetscTruth *require,PetscErrorCode *ierr PETSC_END_LEN(len))
+void PETSC_STDCALL petscoptionsinsertfile_(MPI_Fint *comm,CHAR file PETSC_MIXED_LEN(len),PetscBool  *require,PetscErrorCode *ierr PETSC_END_LEN(len))
 {
   char *c1;
 
@@ -85,7 +85,7 @@ void PETSC_STDCALL petscoptionsclearvalue_(CHAR name PETSC_MIXED_LEN(len),PetscE
 }
 
 void PETSC_STDCALL petscoptionshasname_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name PETSC_MIXED_LEN(len2),
-                    PetscTruth *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
+                    PetscBool  *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
 {
   char *c1,*c2;
 
@@ -97,10 +97,10 @@ void PETSC_STDCALL petscoptionshasname_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name
 }
 
 void PETSC_STDCALL petscoptionsgetint_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name PETSC_MIXED_LEN(len2),
-                    PetscInt *ivalue,PetscTruth *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
+                    PetscInt *ivalue,PetscBool  *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
 {
   char *c1,*c2;
-  PetscTruth flag;
+  PetscBool  flag;
 
   FIXCHAR(pre,len1,c1);
   FIXCHAR(name,len2,c2);
@@ -110,25 +110,25 @@ void PETSC_STDCALL petscoptionsgetint_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name 
   FREECHAR(name,c2);
 }
 
-void PETSC_STDCALL petscoptionsgettruth_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name PETSC_MIXED_LEN(len2),
-                    PetscTruth *ivalue,PetscTruth *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
+void PETSC_STDCALL petscoptionsgetbool_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name PETSC_MIXED_LEN(len2),
+                    PetscBool  *ivalue,PetscBool  *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
 {
   char *c1,*c2;
-  PetscTruth flag;
+  PetscBool  flag;
 
   FIXCHAR(pre,len1,c1);
   FIXCHAR(name,len2,c2);
-  *ierr = PetscOptionsGetTruth(c1,c2,ivalue,&flag);
+  *ierr = PetscOptionsGetBool(c1,c2,ivalue,&flag);
   if (!FORTRANNULLTRUTH(flg)) *flg = flag;
   FREECHAR(pre,c1);
   FREECHAR(name,c2);
 }
 
 void PETSC_STDCALL petscoptionsgetreal_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name PETSC_MIXED_LEN(len2),
-                    PetscReal *dvalue,PetscTruth *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
+                    PetscReal *dvalue,PetscBool  *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
 {
   char *c1,*c2;
-  PetscTruth flag;
+  PetscBool  flag;
 
   FIXCHAR(pre,len1,c1);
   FIXCHAR(name,len2,c2);
@@ -139,10 +139,10 @@ void PETSC_STDCALL petscoptionsgetreal_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name
 }
 
 void PETSC_STDCALL petscoptionsgetrealarray_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name PETSC_MIXED_LEN(len2),
-                PetscReal *dvalue,PetscInt *nmax,PetscTruth *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
+                PetscReal *dvalue,PetscInt *nmax,PetscBool  *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
 {
   char *c1,*c2;
-  PetscTruth flag;
+  PetscBool  flag;
 
   FIXCHAR(pre,len1,c1);
   FIXCHAR(name,len2,c2);
@@ -153,10 +153,10 @@ void PETSC_STDCALL petscoptionsgetrealarray_(CHAR pre PETSC_MIXED_LEN(len1),CHAR
 }
 
 void PETSC_STDCALL petscoptionsgetintarray_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name PETSC_MIXED_LEN(len2),
-                   PetscInt *dvalue,PetscInt *nmax,PetscTruth *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
+                   PetscInt *dvalue,PetscInt *nmax,PetscBool  *flg,PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2))
 {
   char *c1,*c2;
-  PetscTruth flag;
+  PetscBool  flag;
 
   FIXCHAR(pre,len1,c1);
   FIXCHAR(name,len2,c2);
@@ -167,12 +167,12 @@ void PETSC_STDCALL petscoptionsgetintarray_(CHAR pre PETSC_MIXED_LEN(len1),CHAR 
 }
 
 void PETSC_STDCALL petscoptionsgetstring_(CHAR pre PETSC_MIXED_LEN(len1),CHAR name PETSC_MIXED_LEN(len2),
-                    CHAR string PETSC_MIXED_LEN(len),PetscTruth *flg,
+                    CHAR string PETSC_MIXED_LEN(len),PetscBool  *flg,
                     PetscErrorCode *ierr PETSC_END_LEN(len1) PETSC_END_LEN(len2) PETSC_END_LEN(len))
 {
   char *c1,*c2,*c3;
   size_t len3;
-  PetscTruth flag;
+  PetscBool  flag;
 
   FIXCHAR(pre,len1,c1);
   FIXCHAR(name,len2,c2);

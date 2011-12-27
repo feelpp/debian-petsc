@@ -66,7 +66,7 @@ class Info(logger.Logger):
       for name in names[1]:
         f.write(format % (name.split('@')[0], self.getDescription(section, name)))
     return
-  
+
 class Help(Info):
   '''Help provides a simple help system for RDict'''
   def __init__(self, argDB):
@@ -88,7 +88,7 @@ class Help(Info):
     while argName[0] == '-': argName = argName[1:]
     return argName
 
-  def addArgument(self, section, name, type, ignoreDuplicates = 0):
+  def addArgument(self, section, name, argType, ignoreDuplicates = 0):
     '''Add an argument with given name and type to a help section. The type, which can also have an initializer and help string, will be put into RDict.'''
 ##  super(Info, self).addArgument(section, name, None)
     if section in self.sections:
@@ -98,23 +98,28 @@ class Help(Info):
         raise RuntimeError('Duplicate configure option '+name+' in section '+section)
     else:
       self.sections[section] = (len(self.sections), [])
-    self.sections[section][1].append(name)
+    if not argType.deprecated:
+      self.sections[section][1].append(name)
 
-    self.argDB.setType(self.getArgName(name), type, forceLocal = 1)
+    self.argDB.setType(self.getArgName(name), argType, forceLocal = 1)
     return
 
-  def output(self, f = None):
+  def output(self, f = None, sections = None):
     '''Print a help screen with all the argument information.'''
     if f is  None:
       import sys
       f = sys.stdout
+    if sections: sections = [s.lower() for s in sections]
     self.printBanner(f)
     (nameLen, descLen) = self.getTextSizes()
-    format    = '  -%-'+str(nameLen)+'s: %s\n'
-    formatDef = '  -%-'+str(nameLen)+'s: %-'+str(descLen)+'s  current: %s\n'
+#    format    = '  -%-'+str(nameLen)+'s: %s\n'
+#    formatDef = '  -%-'+str(nameLen)+'s: %-'+str(descLen)+'s  current: %s\n'
+    format    = '  -%s\n       %s\n'
+    formatDef = '  -%s\n       %s  current: %s\n'
     items = self.sections.items()
     items.sort(lambda a, b: a[1][0].__cmp__(b[1][0]))
     for section, names in items:
+      if sections and not section.lower() in sections: continue
       f.write(section+':\n')
       for name in names[1]:
         argName = self.getArgName(name)

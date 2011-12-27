@@ -70,7 +70,7 @@ the new submatrix.
 Removed, use MatGetSubMatrix
           </dl>
         </li>
-        <li>Changed name of option MAT_KEEP_NONZERO_ROWS to
+        <li>Changed name of option MAT_KEEP_ZEROED_ROWS to
 MAT_KEEP_NONZERO_PATTERN to more clearly indicate what it does.</li>
         <li>Added MAT_SHARE_NONZERO_PATTERN as option for
 MatDuplicate() this allows several matrices to share the same data
@@ -111,6 +111,7 @@ with PCFactorSetShiftType() and PCFactorSetShiftAmount(). Replaced
 with -pc_factor_shift_type <shifttype> and -pc_factor_shift_amount <shiftamount>.
 
           </shiftamount></shifttype></li>
+        <li>Added PCREDISTRIBUTE for load balancing and removal of Dirichlet degrees of freedom.</li>
       </ul>
       <p><u><b>KSP:</b></u></p>
       <ul>
@@ -118,6 +119,8 @@ with -pc_factor_shift_type <shifttype> and -pc_factor_shift_amount <shiftamount>
 recommended for use with many processors when VecDot() starts to take a
 large amount of time, Requires 2 extra work vectors.<br>
         </li>
+        <li>Added KSPGCR (Generalized Conjugate Residuals), a flexible
+method (like FGMRES) providing inexpensive residuals.</li>
       </ul>
       <ul>
       </ul>

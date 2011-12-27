@@ -10,9 +10,9 @@ Turns on logging of objects and events. This logs flop rates and object creation
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscLogBegin(void)
+PetscErrorCode  PetscLogBegin(void)
 </PRE>
-Collective over <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>
+Logically Collective over <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -27,13 +27,13 @@ screen (for code compiled with PETSC_USE_LOG)
       <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(...);
       <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A>();
        ... code ...
-      <A HREF="../Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>(<A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>,filename); or <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(); 
+      PetscLogView(viewer); or <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(); 
       <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 </PRE>
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-<A HREF="../Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>(<A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>,filename) or <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>() actually cause the printing of
+PetscLogView(viewer) or <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>() actually cause the printing of
 the logging information.
 <P>
 
@@ -42,7 +42,7 @@ the logging information.
  log, begin
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(), <A HREF="../Profiling/PetscLogAllBegin.html#PetscLogAllBegin">PetscLogAllBegin</A>(), <A HREF="../Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>(), <A HREF="../Profiling/PetscLogTraceBegin.html#PetscLogTraceBegin">PetscLogTraceBegin</A>()
+ <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(), <A HREF="../Profiling/PetscLogAllBegin.html#PetscLogAllBegin">PetscLogAllBegin</A>(), PetscLogView(), <A HREF="../Profiling/PetscLogTraceBegin.html#PetscLogTraceBegin">PetscLogTraceBegin</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogBegin">src/sys/plog/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>

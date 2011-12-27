@@ -1,6 +1,5 @@
-#define PETSCMAT_DLL
 
-#include "private/matimpl.h"       /*I "petscmat.h"  I*/
+#include <private/matimpl.h>       /*I "petscmat.h"  I*/
 
 #if 0
 #undef __FUNCT__  
@@ -59,7 +58,7 @@ static PetscErrorCode MatPublish_Base(PetscObject obj)
           MatCreateSeqSBAIJ(), MatCreateMPISBAIJ(),
           MatConvert()
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreate(MPI_Comm comm,Mat *A)
+PetscErrorCode  MatCreate(MPI_Comm comm,Mat *A)
 {
   Mat            B;
   PetscErrorCode ierr;
@@ -72,7 +71,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatCreate(MPI_Comm comm,Mat *A)
   ierr = MatInitializePackage(PETSC_NULL);CHKERRQ(ierr);
 #endif
 
-  ierr = PetscHeaderCreate(B,_p_Mat,struct _MatOps,MAT_COOKIE,0,"Mat",comm,MatDestroy,MatView);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(B,_p_Mat,struct _MatOps,MAT_CLASSID,0,"Mat","Matrix","Mat",comm,MatDestroy,MatView);CHKERRQ(ierr);
   ierr = PetscLayoutCreate(comm,&B->rmap);CHKERRQ(ierr);
   ierr = PetscLayoutCreate(comm,&B->cmap);CHKERRQ(ierr);
   B->preallocated  = PETSC_FALSE;
@@ -110,30 +109,26 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatCreate(MPI_Comm comm,Mat *A)
 
 .seealso: MatGetSize(), PetscSplitOwnership()
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatSetSizes(Mat A, PetscInt m, PetscInt n, PetscInt M, PetscInt N)
+PetscErrorCode  MatSetSizes(Mat A, PetscInt m, PetscInt n, PetscInt M, PetscInt N)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(A,MAT_COOKIE,1); 
-  if (M > 0 && m > M) SETERRQ2(PETSC_ERR_ARG_INCOMP,"Local column size %D cannot be larger than global column size %D",m,M);
-  if (N > 0 && n > N) SETERRQ2(PETSC_ERR_ARG_INCOMP,"Local row size %D cannot be larger than global row size %D",n,N);
+  PetscValidHeaderSpecific(A,MAT_CLASSID,1); 
+  if (M > 0 && m > M) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Local column size %D cannot be larger than global column size %D",m,M);
+  if (N > 0 && n > N) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Local row size %D cannot be larger than global row size %D",n,N);
   if (A->ops->setsizes) {
     /* Since this will not be set until the type has been set, this will NOT be called on the initial
        call of MatSetSizes() (which must be called BEFORE MatSetType() */
     ierr = (*A->ops->setsizes)(A,m,n,M,N);CHKERRQ(ierr);
   } else {
-    if ((A->rmap->n >= 0 || A->rmap->N >= 0) && (A->rmap->n != m || A->rmap->N != M)) SETERRQ4(PETSC_ERR_SUP,"Cannot change/reset row sizes to %D local %D global after previously setting them to %D local %D global",m,M,A->rmap->n,A->rmap->N);
-    if ((A->cmap->n >= 0 || A->cmap->N >= 0) && (A->cmap->n != n || A->cmap->N != N)) SETERRQ4(PETSC_ERR_SUP,"Cannot change/reset column sizes to %D local %D global after previously setting them to %D local %D global",n,N,A->cmap->n,A->cmap->N);
+    if ((A->rmap->n >= 0 || A->rmap->N >= 0) && (A->rmap->n != m || A->rmap->N != M)) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot change/reset row sizes to %D local %D global after previously setting them to %D local %D global",m,M,A->rmap->n,A->rmap->N);
+    if ((A->cmap->n >= 0 || A->cmap->N >= 0) && (A->cmap->n != n || A->cmap->N != N)) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot change/reset column sizes to %D local %D global after previously setting them to %D local %D global",n,N,A->cmap->n,A->cmap->N);
   }
   A->rmap->n = m;
   A->cmap->n = n;
   A->rmap->N = M;
   A->cmap->N = N;
-  if (A->ops->create) {
-    ierr = (*A->ops->create)(A);CHKERRQ(ierr);
-    A->ops->create = 0;
-  }
 
   PetscFunctionReturn(0);
 }
@@ -174,17 +169,17 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatSetSizes(Mat A, PetscInt m, PetscInt n, Pet
           MatCreateSeqSBAIJ(), MatCreateMPISBAIJ(),
           MatConvert()
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatSetFromOptions(Mat B)
+PetscErrorCode  MatSetFromOptions(Mat B)
 {
   PetscErrorCode ierr;
   const char     *deft = MATAIJ;
   char           type[256];
-  PetscTruth     flg;
+  PetscBool      flg,set;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(B,MAT_COOKIE,1);
+  PetscValidHeaderSpecific(B,MAT_CLASSID,1);
 
-  ierr = PetscOptionsBegin(((PetscObject)B)->comm,((PetscObject)B)->prefix,"Matrix options","Mat");CHKERRQ(ierr); 
+  ierr = PetscObjectOptionsBegin((PetscObject)B);CHKERRQ(ierr);
     ierr = PetscOptionsList("-mat_type","Matrix type","MatSetType",MatList,deft,type,256,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = MatSetType(B,type);CHKERRQ(ierr);
@@ -196,6 +191,15 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatSetFromOptions(Mat B)
       ierr = (*B->ops->setfromoptions)(B);CHKERRQ(ierr);
     }
 
+    flg = PETSC_FALSE;
+    ierr = PetscOptionsBool("-mat_new_nonzero_location_err","Generate an error if new nonzeros are created in the matrix structure (useful to test preallocation)","MatSetOption",flg,&flg,&set);CHKERRQ(ierr);
+    if (set) {ierr = MatSetOption(B,MAT_NEW_NONZERO_LOCATION_ERR,flg);CHKERRQ(ierr);}
+    flg = PETSC_FALSE;
+    ierr = PetscOptionsBool("-mat_new_nonzero_allocation_err","Generate an error if new nonzeros are allocated in the matrix structure (useful to test preallocation)","MatSetOption",flg,&flg,&set);CHKERRQ(ierr);
+    if (set) {ierr = MatSetOption(B,MAT_NEW_NONZERO_ALLOCATION_ERR,flg);CHKERRQ(ierr);}
+
+    /* process any options handlers added with PetscObjectAddOptionsHandler() */
+    ierr = PetscObjectProcessOptionsHandlers((PetscObject)B);CHKERRQ(ierr);
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
@@ -204,14 +208,16 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatSetFromOptions(Mat B)
 #undef __FUNCT__  
 #define __FUNCT__ "MatSetUpPreallocation"
 /*@
-   MatSetUpPreallocation
+   MatSetUpPreallocation - If the user has not set preallocation for this matrix then a default preallocation that is likely to be inefficient is used.
 
    Collective on Mat
 
    Input Parameter:
 .  A - the matrix
 
-   Level: beginner
+   Level: advanced
+
+   Notes: See the Performance chapter of the PETSc users manual for how to preallocate matrices
 
 .keywords: matrix, create
 
@@ -221,7 +227,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatSetFromOptions(Mat B)
           MatCreateSeqSBAIJ(), MatCreateMPISBAIJ(),
           MatConvert()
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatSetUpPreallocation(Mat B)
+PetscErrorCode  MatSetUpPreallocation(Mat B)
 {
   PetscErrorCode ierr;
 
@@ -235,20 +241,20 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatSetUpPreallocation(Mat B)
 }
 
 /*
-        Copies from Cs header to A
+        Merges some information from Cs header to A; the C object is then destroyed
 
         This is somewhat different from MatHeaderReplace() it would be nice to merge the code
 */
 #undef __FUNCT__  
-#define __FUNCT__ "MatHeaderCopy"
-PetscErrorCode MatHeaderCopy(Mat A,Mat C)
+#define __FUNCT__ "MatHeaderMerge"
+PetscErrorCode MatHeaderMerge(Mat A,Mat C)
 {
-  PetscErrorCode ierr;
-  PetscInt       refct;
-  PetscOps       *Abops;
-  MatOps         Aops;
-  char           *mtype,*mname;
-  void           *spptr;
+  PetscErrorCode         ierr;
+  PetscInt               refct;
+  PetscOps               *Abops;
+  MatOps                 Aops;
+  char                   *mtype,*mname;
+  void                   *spptr;
 
   PetscFunctionBegin;
   /* save the parts of A we need */
@@ -268,10 +274,10 @@ PetscErrorCode MatHeaderCopy(Mat A,Mat C)
 
   ierr = PetscFree(C->spptr);CHKERRQ(ierr);
 
-  ierr = PetscLayoutDestroy(A->rmap);CHKERRQ(ierr);
-  ierr = PetscLayoutDestroy(A->cmap);CHKERRQ(ierr);
+  ierr = PetscLayoutDestroy(&A->rmap);CHKERRQ(ierr);
+  ierr = PetscLayoutDestroy(&A->cmap);CHKERRQ(ierr);
   ierr = PetscFListDestroy(&((PetscObject)A)->qlist);CHKERRQ(ierr);
-  ierr = PetscOListDestroy(((PetscObject)A)->olist);CHKERRQ(ierr);
+  ierr = PetscOListDestroy(&((PetscObject)A)->olist);CHKERRQ(ierr);
 
   /* copy C over to A */
   ierr  = PetscMemcpy(A,C,sizeof(struct _p_Mat));CHKERRQ(ierr);
@@ -287,37 +293,43 @@ PetscErrorCode MatHeaderCopy(Mat A,Mat C)
   /* since these two are copied into A we do not want them destroyed in C */
   ((PetscObject)C)->qlist = 0;
   ((PetscObject)C)->olist = 0;
-  ierr = PetscHeaderDestroy(C);CHKERRQ(ierr);
+  ierr = PetscHeaderDestroy(&C);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 /*
-        Replace A's header with that of C
-        This is essentially code moved from MatDestroy
+        Replace A's header with that of C; the C object is then destroyed
 
-        This is somewhat different from MatHeaderCopy() it would be nice to merge the code
+        This is essentially code moved from MatDestroy()
+
+        This is somewhat different from MatHeaderMerge() it would be nice to merge the code
 */
 #undef __FUNCT__  
 #define __FUNCT__ "MatHeaderReplace"
 PetscErrorCode MatHeaderReplace(Mat A,Mat C)
 {
   PetscErrorCode ierr;
+  PetscInt refct;
 
   PetscFunctionBegin;
+  PetscValidHeaderSpecific(A,MAT_CLASSID,1);
+  PetscValidHeaderSpecific(C,MAT_CLASSID,2);
   if (A == C) PetscFunctionReturn(0);
+  PetscCheckSameComm(A,1,C,2);
+  if (((PetscObject)C)->refct != 1) SETERRQ1(((PetscObject)C)->comm,PETSC_ERR_ARG_WRONGSTATE,"Object C has refct %D > 1, would leave hanging reference",((PetscObject)C)->refct);
 
   /* free all the interior data structures from mat */
   ierr = (*A->ops->destroy)(A);CHKERRQ(ierr);
   ierr = PetscHeaderDestroy_Private((PetscObject)A);CHKERRQ(ierr);
   ierr = PetscFree(A->ops);CHKERRQ(ierr);
-  ierr = PetscLayoutDestroy(A->rmap);CHKERRQ(ierr);
-  ierr = PetscLayoutDestroy(A->cmap);CHKERRQ(ierr);
+  ierr = PetscLayoutDestroy(&A->rmap);CHKERRQ(ierr);
+  ierr = PetscLayoutDestroy(&A->cmap);CHKERRQ(ierr);
   ierr = PetscFree(A->spptr);CHKERRQ(ierr);
-  
+
   /* copy C over to A */
-  if (C) {
-    ierr = PetscMemcpy(A,C,sizeof(struct _p_Mat));CHKERRQ(ierr);
-    ierr = PetscLogObjectDestroy((PetscObject)C);CHKERRQ(ierr);
-    ierr = PetscFree(C);CHKERRQ(ierr);
-  }
+  refct = ((PetscObject)A)->refct;
+  ierr = PetscMemcpy(A,C,sizeof(struct _p_Mat));CHKERRQ(ierr);
+  ((PetscObject)A)->refct = refct;
+  ierr = PetscLogObjectDestroy((PetscObject)C);CHKERRQ(ierr);
+  ierr = PetscFree(C);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

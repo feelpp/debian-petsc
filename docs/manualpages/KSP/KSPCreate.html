@@ -10,7 +10,7 @@ Creates the default <A HREF="../KSP/KSP.html#KSP">KSP</A> context.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate(MPI_Comm comm,KSP *inksp)
+PetscErrorCode  KSPCreate(MPI_Comm comm,KSP *inksp)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -42,13 +42,13 @@ orthogonalization.
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex8.c.html">src/ksp/ksp/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex8g.c.html">src/ksp/ksp/examples/tutorials/ex8g.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 </BODY></HTML>

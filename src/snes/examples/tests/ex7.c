@@ -2,7 +2,7 @@
 static char help[] = "Solves u`` + u^{2} = f with Newton-like methods. Using\n\
  matrix-free techniques with user-provided explicit preconditioner matrix.\n\n";
 
-#include "petscsnes.h"
+#include <petscsnes.h>
 
 extern PetscErrorCode   FormJacobian(SNES,Vec,Mat*,Mat*,MatStructure*,void*);
 extern PetscErrorCode   FormFunction(SNES,Vec,Vec,void*);
@@ -15,7 +15,7 @@ typedef struct {
 
 typedef struct {
   Mat        precond;
-  PetscTruth variant;
+  PetscBool  variant;
 } AppCtx;
 
 #undef __FUNCT__
@@ -85,12 +85,12 @@ int main(int argc,char **argv)
   ierr = PetscPrintf(PETSC_COMM_SELF,"number of Newton iterations = %D\n\n",its);CHKERRQ(ierr);
 
   /* Free data structures */
-  ierr = VecDestroy(x);CHKERRQ(ierr);  ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = VecDestroy(U);CHKERRQ(ierr);  ierr = VecDestroy(F);CHKERRQ(ierr);
-  ierr = MatDestroy(J);CHKERRQ(ierr);  ierr = MatDestroy(B);CHKERRQ(ierr);
-  ierr = SNESDestroy(snes);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(monP.viewer);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);  ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = VecDestroy(&U);CHKERRQ(ierr);  ierr = VecDestroy(&F);CHKERRQ(ierr);
+  ierr = MatDestroy(&J);CHKERRQ(ierr);  ierr = MatDestroy(&B);CHKERRQ(ierr);
+  ierr = SNESDestroy(&snes);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&monP.viewer);CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }

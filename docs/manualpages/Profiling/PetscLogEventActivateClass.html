@@ -10,12 +10,12 @@ Activates event logging for a PETSc object class.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscLogEventActivateClass(PetscCookie cookie) 
+PetscErrorCode  PetscLogEventActivateClass(PetscClassId classid)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>cookie </B> -The event class, for example MAT_COOKIE, SNES_COOKIE, etc.
+<DT><B>classid </B> -The event class, for example MAT_CLASSID, SNES_CLASSID, etc.
 <br>
 <P>
 

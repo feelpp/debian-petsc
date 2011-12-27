@@ -10,7 +10,7 @@ Creates a sparse symmetric matrix in block AIJ (block compressed row) format.  F
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatSeqSBAIJSetPreallocation(Mat B,PetscInt bs,PetscInt nz,const PetscInt nnz[]) 
+PetscErrorCode  MatSeqSBAIJSetPreallocation(Mat B,PetscInt bs,PetscInt nz,const PetscInt nnz[]) 
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -42,8 +42,7 @@ block calculations (much slower)
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Specify the preallocated storage with either nz or nnz (not both).
 Set nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and nnz=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to control dynamic memory
-allocation.  For additional details, see the users manual chapter on
-matrices.
+allocation.  See the &lt;a href="../../docs/manual.pdf#nameddest=ch_mat"&gt;<A HREF="../Mat/Mat.html#Mat">Mat</A> chapter of the users manual&lt;/a&gt; for details.
 <P>
 You can call <A HREF="../Mat/MatGetInfo.html#MatGetInfo">MatGetInfo</A>() to get information on how effective the preallocation was;
 for example the fields mallocs,nz_allocated,nz_used,nz_unneeded;

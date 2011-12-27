@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:58+00:00">
+<meta name="date" content="2011-10-29T19:05:35+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -14,13 +14,13 @@
 <a name="line4">  4: </a><font color="#B22222">     mpiexec -n 4 ./ex107 -M 50 -mat_plapack_nprows 2 -mat_plapack_npcols 2 -mat_plapack_nb 1 </font>
 <a name="line5">  5: </a><font color="#B22222"> */</font>
 
-<a name="line7"> 7: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 <a name="line10"> 10: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line11"> 11: </a>{
 <a name="line12"> 12: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            C,F,Cpetsc,Csymm;
 <a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            u,x,b,bpla;
 <a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank,nproc;
-<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,k,M = 10,m,n,nfact,nsolve,Istart,Iend,*im,*in;
+<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,k,M = 10,m,nfact,nsolve,Istart,Iend,*im,*in,start,end;
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *array,rval;
 <a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm,tol=1.e-12;
 <a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>             perm,iperm;
@@ -41,8 +41,8 @@
 <a name="line34"> 34: </a>  <A href="../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(C);
 
 <a name="line36"> 36: </a>  <font color="#B22222">/* Create vectors */</font>
-<a name="line37"> 37: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(C,&amp;m,&amp;n);
-<a name="line38"> 38: </a>  <font color="#4169E1">if</font> (m != n) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_ARG_WRONG,<font color="#666666">"Matrix local size m %d must equal n %d"</font>,m,n);
+<a name="line37"> 37: </a>  <A href="../../../../docs/manualpages/Mat/MatGetOwnershipRange.html#MatGetOwnershipRange">MatGetOwnershipRange</A>(C,&amp;start,&amp;end);
+<a name="line38"> 38: </a>  m    = end - start;
 <a name="line39"> 39: </a>  <font color="#B22222">/* printf("[%d] C - local size m: %d\n",rank,m); */</font>
 <a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;x);
 <a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(x,m,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>);
@@ -94,7 +94,7 @@
 <a name="line87"> 87: </a><font color="#B22222">  if (!rank) {printf("main, Cpetsc: \n");}</font>
 <a name="line88"> 88: </a><font color="#B22222">  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(Cpetsc,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>); </font>
 <a name="line89"> 89: </a><font color="#B22222">  */</font>
-<a name="line90"> 90: </a>  <A href="../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(C,MATORDERING_NATURAL,&amp;perm,&amp;iperm);
+<a name="line90"> 90: </a>  <A href="../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(C,MATORDERINGNATURAL,&amp;perm,&amp;iperm);
 
 <a name="line92"> 92: </a>  <font color="#B22222">/* Test nonsymmetric <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>() */</font>
 <a name="line93"> 93: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(x,&amp;array);
@@ -114,9 +114,9 @@
 
 <a name="line108">108: </a>  <font color="#B22222">/* Test LU Factorization */</font>
 <a name="line109">109: </a>  <font color="#4169E1">if</font> (nproc == 1){
-<a name="line110">110: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(C,MAT_SOLVER_PETSC,MAT_FACTOR_LU,&amp;F);
+<a name="line110">110: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(C,MATSOLVERPETSC,MAT_FACTOR_LU,&amp;F);
 <a name="line111">111: </a>  } <font color="#4169E1">else</font> {
-<a name="line112">112: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(C,<A href="../../../../docs/manualpages/Mat/MAT_SOLVER_PLAPACK.html#MAT_SOLVER_PLAPACK">MAT_SOLVER_PLAPACK</A>,MAT_FACTOR_LU,&amp;F);
+<a name="line112">112: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(C,<A href="../../../../docs/manualpages/Mat/MATSOLVERPLAPACK.html#MATSOLVERPLAPACK">MATSOLVERPLAPACK</A>,MAT_FACTOR_LU,&amp;F);
 <a name="line113">113: </a>  }
 <a name="line114">114: </a>  <A href="../../../../docs/manualpages/Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(F,C,perm,iperm,&amp;info);
 <a name="line115">115: </a>  <font color="#4169E1">for</font> (nfact = 0; nfact &lt; 2; nfact++){
@@ -163,7 +163,7 @@
 <a name="line156">156: </a>      }
 <a name="line157">157: </a>    }
 <a name="line158">158: </a>  }
-<a name="line159">159: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(F);
+<a name="line159">159: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;F);
 <a name="line160">160: </a>
 <a name="line161">161: </a>  <font color="#B22222">/* Test non-symmetric operations */</font>
 <a name="line162">162: </a>  <font color="#B22222">/*-------------------------------*/</font>
@@ -215,9 +215,9 @@
 <a name="line208">208: </a>  <font color="#B22222">/* Test Cholesky Factorization */</font>
 <a name="line209">209: </a>  <A href="../../../../docs/manualpages/Mat/MatShift.html#MatShift">MatShift</A>(Csymm,M);  <font color="#B22222">/* make Csymm positive definite */</font>
 <a name="line210">210: </a>  <font color="#4169E1">if</font> (nproc == 1){
-<a name="line211">211: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(Csymm,MAT_SOLVER_PETSC,MAT_FACTOR_CHOLESKY,&amp;F);
+<a name="line211">211: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(Csymm,MATSOLVERPETSC,MAT_FACTOR_CHOLESKY,&amp;F);
 <a name="line212">212: </a>  } <font color="#4169E1">else</font> {
-<a name="line213">213: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(Csymm,<A href="../../../../docs/manualpages/Mat/MAT_SOLVER_PLAPACK.html#MAT_SOLVER_PLAPACK">MAT_SOLVER_PLAPACK</A>,MAT_FACTOR_CHOLESKY,&amp;F);
+<a name="line213">213: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(Csymm,<A href="../../../../docs/manualpages/Mat/MATSOLVERPLAPACK.html#MATSOLVERPLAPACK">MATSOLVERPLAPACK</A>,MAT_FACTOR_CHOLESKY,&amp;F);
 <a name="line214">214: </a>  }
 <a name="line215">215: </a>  <A href="../../../../docs/manualpages/Mat/MatCholeskyFactorSymbolic.html#MatCholeskyFactorSymbolic">MatCholeskyFactorSymbolic</A>(F,Csymm,perm,&amp;info);
 <a name="line216">216: </a>  <font color="#4169E1">for</font> (nfact = 0; nfact &lt; 2; nfact++){
@@ -246,21 +246,21 @@
 <a name="line239">239: </a>      }
 <a name="line240">240: </a>    }
 <a name="line241">241: </a>  }
-<a name="line242">242: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(F);
+<a name="line242">242: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;F);
 
 <a name="line244">244: </a>  <font color="#B22222">/* Free data structures */</font>
-<a name="line245">245: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(perm);
-<a name="line246">246: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(iperm);
+<a name="line245">245: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;perm);
+<a name="line246">246: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;iperm);
 <a name="line247">247: </a>
-<a name="line248">248: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rand);
-<a name="line249">249: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line250">250: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line251">251: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(bpla);
-<a name="line252">252: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
+<a name="line248">248: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rand);
+<a name="line249">249: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line250">250: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line251">251: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;bpla);
+<a name="line252">252: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
 <a name="line253">253: </a>
-<a name="line254">254: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(Cpetsc);
-<a name="line255">255: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
-<a name="line256">256: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(Csymm);
+<a name="line254">254: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;Cpetsc);
+<a name="line255">255: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
+<a name="line256">256: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;Csymm);
 
 <a name="line258">258: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line259">259: </a>  <font color="#4169E1">return</font> 0;

@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:26:08+00:00">
+<meta name="date" content="2011-10-29T18:56:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -26,9 +26,9 @@
 <a name="line16"> 16: </a>      program main
 <a name="line17"> 17: </a>      implicit none
 
-<a name="line19"> 19: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line20"> 20: </a> #include <A href="../../../../../include/finclude/petscis.h.html">finclude/petscis.h</A>
-<a name="line21"> 21: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscis.h90"</font><font color="#A020F0"></font>
+<a name="line19"> 19: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line20"> 20: </a><font color="#A020F0">#include &lt;finclude/petscis.h&gt;</font>
+<a name="line21"> 21: </a><font color="#A020F0">#include &lt;finclude/petscis.h90&gt;</font>
 
 <a name="line23"> 23: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line24"> 24: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> indices(5),n
@@ -49,48 +49,49 @@
 <a name="line39"> 39: </a>      indices(3) = rank + 3
 <a name="line40"> 40: </a>      indices(4) = rank + 4
 <a name="line41"> 41: </a>      indices(5) = rank + 5
-<a name="line42"> 42: </a>      call <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,five,indices,is,ierr)
+<a name="line42"> 42: </a>      call <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,five,indices,                   &amp;
+<a name="line43"> 43: </a>     &amp;                     PETSC_COPY_VALUES,is,ierr)
 
-<a name="line44"> 44: </a>!  Print the index set to stdout
+<a name="line45"> 45: </a>!  Print the index set to stdout
 
-<a name="line46"> 46: </a>      call <A href="../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(is,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line47"> 47: </a>      call <A href="../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(is,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
 
-<a name="line48"> 48: </a>!  Get the number of indices in the set
+<a name="line49"> 49: </a>!  Get the number of indices in the set
 
-<a name="line50"> 50: </a>      call <A href="../../../../../docs/manualpages/IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(is,n,ierr)
+<a name="line51"> 51: </a>      call <A href="../../../../../docs/manualpages/IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(is,n,ierr)
 
-<a name="line52"> 52: </a>!   Get the indices in the index set
+<a name="line53"> 53: </a>!   Get the indices in the index set
 
-<a name="line54"> 54: </a>      call <A href="../../../../../docs/manualpages/IS/ISGetIndicesF90.html#ISGetIndicesF90">ISGetIndicesF90</A>(is,idx,ierr)
+<a name="line55"> 55: </a>      call <A href="../../../../../docs/manualpages/IS/ISGetIndicesF90.html#ISGetIndicesF90">ISGetIndicesF90</A>(is,idx,ierr)
 
-<a name="line56"> 56: </a>      <font color="#4169E1">if</font> (associated(idx)) then
-<a name="line57"> 57: </a>         write (*,*) 'Association check passed'
-<a name="line58"> 58: </a>      <font color="#4169E1">else</font>
-<a name="line59"> 59: </a>         write (*,*) 'Association check failed'
-<a name="line60"> 60: </a>      endif
+<a name="line57"> 57: </a>      <font color="#4169E1">if</font> (associated(idx)) then
+<a name="line58"> 58: </a>         write (*,*) 'Association check passed'
+<a name="line59"> 59: </a>      <font color="#4169E1">else</font>
+<a name="line60"> 60: </a>         write (*,*) 'Association check failed'
+<a name="line61"> 61: </a>      endif
 
-<a name="line62"> 62: </a>!   Now any code that needs access to the list of integers
-<a name="line63"> 63: </a>!   has access to it here
+<a name="line63"> 63: </a>!   Now any code that needs access to the list of integers
+<a name="line64"> 64: </a>!   has access to it here
 
-<a name="line65"> 65: </a>      write(6,50) idx
-<a name="line66"> 66: </a> 50   format(5I3)
+<a name="line66"> 66: </a>      write(6,50) idx
+<a name="line67"> 67: </a> 50   format(5I3)
 
-<a name="line68"> 68: </a>      write(6,100) rank,idx(1),idx(5)
-<a name="line69"> 69: </a> 100  format('[',i5,'] First index = ',i5,' fifth index = ',i5)
-<a name="line70"> 70: </a>
-<a name="line71"> 71: </a>!   Once we no longer need access to the indices they should
-<a name="line72"> 72: </a>!   returned to the system
+<a name="line69"> 69: </a>      write(6,100) rank,idx(1),idx(5)
+<a name="line70"> 70: </a> 100  format('[',i5,'] First index = ',i5,' fifth index = ',i5)
+<a name="line71"> 71: </a>
+<a name="line72"> 72: </a>!   Once we no longer need access to the indices they should
+<a name="line73"> 73: </a>!   returned to the system
 
-<a name="line74"> 74: </a>      call <A href="../../../../../docs/manualpages/IS/ISRestoreIndicesF90.html#ISRestoreIndicesF90">ISRestoreIndicesF90</A>(is,idx,ierr)
-<a name="line75"> 75: </a>
-<a name="line76"> 76: </a>!   All PETSc objects should be destroyed once they are
-<a name="line77"> 77: </a>!   no longer needed
+<a name="line75"> 75: </a>      call <A href="../../../../../docs/manualpages/IS/ISRestoreIndicesF90.html#ISRestoreIndicesF90">ISRestoreIndicesF90</A>(is,idx,ierr)
+<a name="line76"> 76: </a>
+<a name="line77"> 77: </a>!   All PETSc objects should be destroyed once they are
+<a name="line78"> 78: </a>!   no longer needed
 
-<a name="line79"> 79: </a>      call <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is,ierr)
-<a name="line80"> 80: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line81"> 81: </a>      end
+<a name="line80"> 80: </a>      call <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is,ierr)
+<a name="line81"> 81: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line82"> 82: </a>      end
 
-<a name="line83"> 83: </a>
+<a name="line84"> 84: </a>
 
 
 

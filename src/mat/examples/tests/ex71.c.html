@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:37+00:00">
+<meta name="date" content="2011-10-29T19:05:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
-<a name="line2">  2: </a>static char help[] = <font color="#666666">"Passes a sparse matrix to Matlab.\n\n"</font>;
+<a name="line2">  2: </a>static char help[] = <font color="#666666">"Passes a sparse matrix to MATLAB.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -51,8 +51,8 @@
 <a name="line44"> 44: </a>
 <a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Sys/PetscSleep.html#PetscSleep">PetscSleep</A>(30);
 
-<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 <a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line50"> 50: </a>  <font color="#4169E1">return</font> 0;
 <a name="line51"> 51: </a>}

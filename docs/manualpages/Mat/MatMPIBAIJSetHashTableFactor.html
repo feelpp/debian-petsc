@@ -10,7 +10,7 @@ Sets the factor required to compute the size of the HashTable.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"  
-PetscErrorCode PETSCMAT_DLLEXPORT MatMPIBAIJSetHashTableFactor(Mat mat,PetscReal fact)
+PetscErrorCode  MatMPIBAIJSetHashTableFactor(Mat mat,PetscReal fact)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>mat  </B> -the matrix
@@ -18,7 +18,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatMPIBAIJSetHashTableFactor(Mat mat,PetscReal
 <DT><B>fact </B> -factor
 <br>
 <P>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Not Collective, each process can use a different factor
 <P>
 
 <P>

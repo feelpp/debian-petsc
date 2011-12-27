@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:37:15+00:00">
+<meta name="date" content="2011-10-29T19:09:43+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 
-<a name="line5"> 5: </a> #include <A href="../../../../../include/private/pcimpl.h.html">private/pcimpl.h</A>
-<a name="line6"> 6: </a> #include <A href="../../../../../include/../src/mat/impls/is/matis.h.html">../src/mat/impls/is/matis.h</A>
-<a name="line7"> 7: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;</font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;../src/mat/impls/is/matis.h&gt;</font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line9">  9: </a><font color="#B22222">/* </font>
 <a name="line10"> 10: </a><font color="#B22222">   Context (data structure) common for all Iterative Substructuring preconditioners.  </font>
@@ -53,9 +53,9 @@
 <a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A>      global_to_D;    <font color="#B22222">/* scattering context from global to local interior nodes */</font>
 <a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A>      N_to_B     ;    <font color="#B22222">/* scattering context from all local nodes to local interface nodes */</font>
 <a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A>      global_to_B;    <font color="#B22222">/* scattering context from global to local interface nodes */</font>
-<a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      pure_neumann;
+<a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       pure_neumann;
 
-<a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> ISLocalToGlobalMappingGetInfoWasCalled;
+<a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  ISLocalToGlobalMappingGetInfoWasCalled;
 <a name="line51"> 51: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   n_neigh;    <font color="#B22222">/* number of neighbours this subdomain has (by now, INCLUDING OR NOT the subdomain itself). */</font>
 <a name="line52"> 52: </a>                         <font color="#B22222">/* Once this is definitively decided, the code can be simplifies and some if's eliminated.  */</font>
 <a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *neigh;     <font color="#B22222">/* list of neighbouring subdomains                                                          */</font>
@@ -77,12 +77,6 @@
 <a name="line69"> 69: </a>                  <font color="#B22222">/* for all 0 &lt;= m &lt; proc[k].n_shared[i], or equiv'ly, for all 0 &lt;= m &lt; proc[l].n_shared[j]  */</font>
 <a name="line70"> 70: </a>} PC_IS;
 
-<a name="line72"> 72: </a><strong><font color="#4169E1">EXTERN <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISSetUp(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>;
-<a name="line73"> 73: </a><strong><font color="#4169E1">EXTERN <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISDestroy(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>;
-<a name="line74"> 74: </a><strong><font color="#4169E1">EXTERN <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISCreate(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>;
-<a name="line75"> 75: </a><strong><font color="#4169E1">EXTERN <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISApplySchur(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec1_B, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec2_B, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec1_D, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec2_D)</font></strong>;
-<a name="line76"> 76: </a><strong><font color="#4169E1">EXTERN <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISScatterArrayNToVecB(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *array_N, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v_B, <A href="../../../../../docs/manualpages/Sys/InsertMode.html#InsertMode">InsertMode</A> imode, <A href="../../../../../docs/manualpages/Sys/ScatterMode.html#ScatterMode">ScatterMode</A> smode, <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>;
-<a name="line77"> 77: </a><strong><font color="#4169E1">EXTERN <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISApplyInvSchur(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec1_N, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec2_N)</font></strong>;
 
 <a name="line79"> 79: </a><font color="#A020F0">#endif </font><font color="#B22222">/* __pcis_h */</font><font color="#A020F0"></font>
 </pre>

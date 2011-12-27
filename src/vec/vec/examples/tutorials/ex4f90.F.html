@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:48+00:00">
+<meta name="date" content="2011-10-29T18:56:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -34,9 +34,9 @@
 <a name="line24"> 24: </a>!     petscvec.h    - vectors
 <a name="line25"> 25: </a>!     petscvec.h90  - to allow access to Fortran90 features of vectors
 
-<a name="line27"> 27: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line28"> 28: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line29"> 29: </a><font color="#A020F0">#include </font><font color="#666666">"finclude/petscvec.h90"</font><font color="#A020F0"></font>
+<a name="line27"> 27: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line28"> 28: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line29"> 29: </a><font color="#A020F0">#include &lt;finclude/petscvec.h90&gt;</font>
 
 <a name="line31"> 31: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 <a name="line32"> 32: </a>!                 Beginning of program
@@ -79,51 +79,46 @@
 <a name="line69"> 69: </a>       call <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(x,ierr)
 
 <a name="line71"> 71: </a>!  View vector
+<a name="line72"> 72: </a>       call <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>(x, <font color="#666666">"initial vector:"</font>,ierr)
+<a name="line73"> 73: </a>       call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line74"> 74: </a>       call <A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x,y,ierr)
 
-<a name="line73"> 73: </a>       write(6,20)
-<a name="line74"> 74: </a>  20   format('initial vector:')
-<a name="line75"> 75: </a>       call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
-<a name="line76"> 76: </a>       call <A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x,y,ierr)
+<a name="line76"> 76: </a>!  Get a pointer to vector data.
+<a name="line77"> 77: </a>!    - For <font color="#4169E1">default</font> PETSc vectors, <A href="../../../../../docs/manualpages/Vec/VecGetArrayF90.html#VecGetArrayF90">VecGetArrayF90</A>() returns a pointer to
+<a name="line78"> 78: </a>!      the data array.  Otherwise, the routine is implementation dependent.
+<a name="line79"> 79: </a>!    - You MUST call <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>() when you no longer need access to
+<a name="line80"> 80: </a>!      the array.
 
-<a name="line78"> 78: </a>!  Get a pointer to vector data.
-<a name="line79"> 79: </a>!    - For <font color="#4169E1">default</font> PETSc vectors, <A href="../../../../../docs/manualpages/Vec/VecGetArrayF90.html#VecGetArrayF90">VecGetArrayF90</A>() returns a pointer to
-<a name="line80"> 80: </a>!      the data array.  Otherwise, the routine is implementation dependent.
-<a name="line81"> 81: </a>!    - You MUST call <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>() when you no longer need access to
-<a name="line82"> 82: </a>!      the array.
+<a name="line82"> 82: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGetArrayF90.html#VecGetArrayF90">VecGetArrayF90</A>(x,xx_v,ierr)
+<a name="line83"> 83: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGetArrayF90.html#VecGetArrayF90">VecGetArrayF90</A>(y,yy_v,ierr)
 
-<a name="line84"> 84: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGetArrayF90.html#VecGetArrayF90">VecGetArrayF90</A>(x,xx_v,ierr)
-<a name="line85"> 85: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGetArrayF90.html#VecGetArrayF90">VecGetArrayF90</A>(y,yy_v,ierr)
+<a name="line85"> 85: </a>!  Modify vector data
 
-<a name="line87"> 87: </a>!  Modify vector data
+<a name="line87"> 87: </a>       <font color="#4169E1">do</font> 30 i=1,n
+<a name="line88"> 88: </a>          xx_v(i) = 100.0*i
+<a name="line89"> 89: </a>          yy_v(i) = 1000.0*i
+<a name="line90"> 90: </a>  30   <font color="#4169E1">continue</font>
 
-<a name="line89"> 89: </a>       <font color="#4169E1">do</font> 30 i=1,n
-<a name="line90"> 90: </a>          xx_v(i) = 100.0*i
-<a name="line91"> 91: </a>          yy_v(i) = 1000.0*i
-<a name="line92"> 92: </a>  30   <font color="#4169E1">continue</font>
+<a name="line92"> 92: </a>!  Restore vectors
 
-<a name="line94"> 94: </a>!  Restore vectors
+<a name="line94"> 94: </a>       call <A href="../../../../../docs/manualpages/Vec/VecRestoreArrayF90.html#VecRestoreArrayF90">VecRestoreArrayF90</A>(x,xx_v,ierr)
+<a name="line95"> 95: </a>       call <A href="../../../../../docs/manualpages/Vec/VecRestoreArrayF90.html#VecRestoreArrayF90">VecRestoreArrayF90</A>(y,yy_v,ierr)
 
-<a name="line96"> 96: </a>       call <A href="../../../../../docs/manualpages/Vec/VecRestoreArrayF90.html#VecRestoreArrayF90">VecRestoreArrayF90</A>(x,xx_v,ierr)
-<a name="line97"> 97: </a>       call <A href="../../../../../docs/manualpages/Vec/VecRestoreArrayF90.html#VecRestoreArrayF90">VecRestoreArrayF90</A>(y,yy_v,ierr)
+<a name="line97"> 97: </a>!  View vectors
+<a name="line98"> 98: </a>       call <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>(x, <font color="#666666">"new vector 1:"</font>,ierr)
+<a name="line99"> 99: </a>       call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
 
-<a name="line99"> 99: </a>!  View vectors
+<a name="line101">101: </a>       call <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>(y, <font color="#666666">"new vector 2:"</font>,ierr)
+<a name="line102">102: </a>       call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(y,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
 
-<a name="line101">101: </a>       write(6,40)
-<a name="line102">102: </a>  40   format('new vector 1:')
-<a name="line103">103: </a>       call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line104">104: </a>!  Free work space.  All PETSc objects should be destroyed when they
+<a name="line105">105: </a>!  are no longer needed.
 
-<a name="line105">105: </a>       write(6,50)
-<a name="line106">106: </a>  50   format('new vector 2:')
-<a name="line107">107: </a>       call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(y,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
-
-<a name="line109">109: </a>!  Free work space.  All PETSc objects should be destroyed when they
-<a name="line110">110: </a>!  are no longer needed.
-
-<a name="line112">112: </a>       call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x,ierr)
-<a name="line113">113: </a>       call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y,ierr)
-<a name="line114">114: </a>       call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line115">115: </a>       end
-<a name="line116">116: </a>
+<a name="line107">107: </a>       call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x,ierr)
+<a name="line108">108: </a>       call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y,ierr)
+<a name="line109">109: </a>       call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line110">110: </a>       end
+<a name="line111">111: </a>
 </pre>
 </body>
 

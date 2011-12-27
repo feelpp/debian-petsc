@@ -19,7 +19,7 @@ T*/
      petscsys.h       - base PETSc routines   petscis.h     - index sets
      petscviewer.h - viewers
 */
-#include "petscvec.h"
+#include <petscvec.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -28,14 +28,14 @@ int main(int argc,char **argv)
   PetscMPIInt    rank,size;
   PetscInt       nlocal = 6,nghost = 2,ifrom[2],i,rstart,rend;
   PetscErrorCode ierr;
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscScalar    value,*array,*tarray=0;
   Vec            lx,gx,gxs;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 2) SETERRQ(1,"Must run example with two processors\n");
+  if (size != 2) SETERRQ(PETSC_COMM_SELF,1,"Must run example with two processors\n");
 
   /*
      Construct a two dimensional graph connecting nlocal degrees of 
@@ -81,7 +81,7 @@ int main(int argc,char **argv)
       Test VecDuplicate()
   */
   ierr = VecDuplicate(gxs,&gx);CHKERRQ(ierr);
-  ierr = VecDestroy(gxs);CHKERRQ(ierr);
+  ierr = VecDestroy(&gxs);CHKERRQ(ierr);
 
   /*
      Access the local representation
@@ -113,9 +113,9 @@ int main(int argc,char **argv)
   ierr = PetscSynchronizedFlush(PETSC_COMM_WORLD);CHKERRQ(ierr);
 
   ierr = VecGhostRestoreLocalForm(gx,&lx);CHKERRQ(ierr); 
-  ierr = VecDestroy(gx);CHKERRQ(ierr);
+  ierr = VecDestroy(&gx);CHKERRQ(ierr);
   if (flg) {ierr = PetscFree(tarray);CHKERRQ(ierr);}
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

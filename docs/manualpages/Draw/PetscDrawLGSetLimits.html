@@ -9,8 +9,7 @@
 Sets the axis limits for a line graph. If more points are added after this call, the limits will be adjusted to include those additional points. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscsys.h" 
-PetscErrorCode  PetscDrawLGSetLimits(PetscDrawLG lg,PetscReal x_min,PetscReal x_max,PetscReal y_min,PetscReal y_max) 
+PetscErrorCode  PetscDrawLGSetLimits(PetscDrawLG lg,PetscReal x_min,PetscReal x_max,PetscReal y_min,PetscReal y_max)
 </PRE>
 Not Collective, but ignored by all processors except processor 0 in <A HREF="../Draw/PetscDrawLG.html#PetscDrawLG">PetscDrawLG</A>
 <P>

@@ -6,7 +6,7 @@ is similar to ex40.c; here the index sets used are random. Input arguments are:\
   -nd <size>      : > 0  no of domains per processor \n\
   -ov <overlap>   : >=0  amount of overlap between domains\n\n";
 
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -15,7 +15,7 @@ int main(int argc,char **args)
   PetscInt       nd = 2,ov=1,i,j,m,n,*idx,lsize;
   PetscErrorCode ierr;
   PetscMPIInt    rank;
-  PetscTruth     flg;
+  PetscBool      flg;
   Mat            A,B;
   char           file[PETSC_MAX_PATH_LEN]; 
   PetscViewer    fd;
@@ -25,23 +25,27 @@ int main(int argc,char **args)
 
   PetscInitialize(&argc,&args,(char *)0,help);
 #if defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"This example does not work with complex numbers");
+  SETERRQ(PETSC_COMM_WORLD,1,"This example does not work with complex numbers");
 #else
   
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-nd",&nd,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-ov",&ov,PETSC_NULL);CHKERRQ(ierr);
 
   /* Read matrix and RHS */
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file,FILE_MODE_READ,&fd);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATMPIAIJ,&A);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATMPIAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
   /* Read the matrix again as a seq matrix */
   ierr = PetscViewerBinaryOpen(PETSC_COMM_SELF,file,FILE_MODE_READ,&fd);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATSEQAIJ,&B);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_SELF,&B);CHKERRQ(ierr);
+  ierr = MatSetType(B,MATSEQAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(B,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
   
   /* Create the Random no generator */
   ierr = MatGetSize(A,&m,&n);CHKERRQ(ierr);  
@@ -64,8 +68,8 @@ int main(int argc,char **args)
       ierr   = PetscRandomGetValue(r,&rand);CHKERRQ(ierr);
       idx[j] = (PetscInt)(rand*m);
     }
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,lsize,idx,is1+i);CHKERRQ(ierr);
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,lsize,idx,is2+i);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,lsize,idx,PETSC_COPY_VALUES,is1+i);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,lsize,idx,PETSC_COPY_VALUES,is2+i);CHKERRQ(ierr);
   }
   
   ierr = MatIncreaseOverlap(A,nd,is1,ov);CHKERRQ(ierr);
@@ -84,17 +88,17 @@ int main(int argc,char **args)
 
   /* Free Allocated Memory */
   for (i=0; i<nd; ++i) { 
-    ierr = ISDestroy(is1[i]);CHKERRQ(ierr);
-    ierr = ISDestroy(is2[i]);CHKERRQ(ierr);
+    ierr = ISDestroy(&is1[i]);CHKERRQ(ierr);
+    ierr = ISDestroy(&is2[i]);CHKERRQ(ierr);
   }
-  ierr = PetscRandomDestroy(r);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&r);CHKERRQ(ierr);
   ierr = PetscFree(is1);CHKERRQ(ierr);
   ierr = PetscFree(is2);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(B);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
   ierr = PetscFree(idx);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 #endif
   return 0;
 }

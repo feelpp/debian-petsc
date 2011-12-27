@@ -1,11 +1,11 @@
 
-#requirespackage   'PETSC_HAVE_FORTRAN'
+#requiresdefine   'PETSC_HAVE_FORTRAN'
 ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = vmpicrf.c pbvecf.c
-OBJSC    = vmpicrf.o pbvecf.o
+SOURCEC  = vmpicrf.c pbvecf.c commonmpvecf.c
+OBJSC    = vmpicrf.o pbvecf.o commonmpvecf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

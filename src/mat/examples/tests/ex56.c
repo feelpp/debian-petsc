@@ -1,7 +1,7 @@
 
 static char help[] = "Test the use of MatSetValuesBlocked(), MatZeroRows() for rectangular MatBAIJ matrix, test MatSetValuesBlocked() for MatSBAIJ matrix (-test_mat_sbaij).";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -12,7 +12,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscMPIInt    size,rank;
   PetscScalar    x[6][9],y[3][3],one=1.0;
-  PetscTruth     flg,testsbaij=PETSC_FALSE;
+  PetscBool      flg,testsbaij=PETSC_FALSE;
 
   PetscInitialize(&argc,&args,(char *)0,help);
 
@@ -76,12 +76,12 @@ int main(int argc,char **args)
     col[0] = rstart*bs+0;
     col[1] = rstart*bs+1;
     col[2] = rstart*bs+2;
-    ierr = MatZeroRows(A,3,col,one);CHKERRQ(ierr);
+    ierr = MatZeroRows(A,3,col,one,0,0);CHKERRQ(ierr);
   }
 
   ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

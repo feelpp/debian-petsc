@@ -10,7 +10,7 @@ Builds the residual in a vector provided.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPBuildResidual(KSP ksp,Vec t,Vec v,Vec *V)
+PetscErrorCode  KSPBuildResidual(KSP ksp,Vec t,Vec v,Vec *V)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -45,4 +45,6 @@ returned in V.
 <BR><A HREF="./index.html">Index of all KSP routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
 </BODY></HTML>

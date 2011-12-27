@@ -10,7 +10,7 @@ Computes the Jacobian matrix that has been set with <A HREF="../SNES/SNESSetJaco
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESComputeJacobian(SNES snes,Vec X,Mat *A,Mat *B,MatStructure *flg)
+PetscErrorCode  SNESComputeJacobian(SNES snes,Vec X,Mat *A,Mat *B,MatStructure *flg)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -32,8 +32,16 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_lag_preconditioner &lt;lag&gt;</B></TD><TD>- -    -snes_lag_jacobian &lt;lag&gt;
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_lag_preconditioner &lt;lag&gt;</B></TD><TD>- .    -snes_lag_jacobian &lt;lag&gt;
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_explicit </B></TD><TD>- Compare the computed Jacobian to the finite difference Jacobian and output the differences
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_explicit_draw  </B></TD><TD>- Compare the computed Jacobian to the finite difference Jacobian and draw the result
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_explicit_contour  </B></TD><TD>- Compare the computed Jacobian to the finite difference Jacobian and draw a contour plot with the result
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_operator  </B></TD><TD>- Make the comparison options above use the operator instead of the preconditioning matrix
+</TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Most users should not need to explicitly call this routine, as it

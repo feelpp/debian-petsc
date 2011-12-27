@@ -9,8 +9,8 @@
 Checks if Galerkin multigrid is being used, i.e. A_i-1 = r_i * A_i * r_i^t 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscmg.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetGalerkin(PC pc,PetscTruth *galerkin)
+#include "petscpcmg.h" 
+PetscErrorCode  PCMGGetGalerkin(PC pc,PetscBool  *galerkin)
 </PRE>
 Not Collective
 <P>

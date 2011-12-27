@@ -1,34 +1,38 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"  /*I "petscksp.h" I*/
+#include <private/kspimpl.h>  /*I "petscksp.h" I*/
 
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_Richardson(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_Chebychev(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CG(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CGNE(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_NASH(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_STCG(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_GLTR(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_TCQMR(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_GMRES(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_BCGS(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_IBCGS(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_BCGSL(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CGS(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_TFQMR(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_LSQR(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_PREONLY(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CR(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_QCG(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_BiCG(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_FGMRES(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_MINRES(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_SYMMLQ(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_LGMRES(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_LCD(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_Broyden(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_GCR(KSP);
+extern PetscErrorCode  KSPCreate_Richardson(KSP);
+extern PetscErrorCode  KSPCreate_Chebychev(KSP);
+extern PetscErrorCode  KSPCreate_CG(KSP);
+extern PetscErrorCode  KSPCreate_CGNE(KSP);
+extern PetscErrorCode  KSPCreate_NASH(KSP);
+extern PetscErrorCode  KSPCreate_STCG(KSP);
+extern PetscErrorCode  KSPCreate_GLTR(KSP);
+extern PetscErrorCode  KSPCreate_TCQMR(KSP);
+extern PetscErrorCode  KSPCreate_GMRES(KSP);
+extern PetscErrorCode  KSPCreate_BCGS(KSP);
+extern PetscErrorCode  KSPCreate_IBCGS(KSP);
+extern PetscErrorCode  KSPCreate_BCGSL(KSP);
+extern PetscErrorCode  KSPCreate_CGS(KSP);
+extern PetscErrorCode  KSPCreate_TFQMR(KSP);
+extern PetscErrorCode  KSPCreate_LSQR(KSP);
+extern PetscErrorCode  KSPCreate_PREONLY(KSP);
+extern PetscErrorCode  KSPCreate_CR(KSP);
+extern PetscErrorCode  KSPCreate_QCG(KSP);
+extern PetscErrorCode  KSPCreate_BiCG(KSP);
+extern PetscErrorCode  KSPCreate_FGMRES(KSP);
+extern PetscErrorCode  KSPCreate_MINRES(KSP);
+extern PetscErrorCode  KSPCreate_SYMMLQ(KSP);
+extern PetscErrorCode  KSPCreate_LGMRES(KSP);
+extern PetscErrorCode  KSPCreate_LCD(KSP);
+extern PetscErrorCode  KSPCreate_Broyden(KSP);
+extern PetscErrorCode  KSPCreate_GCR(KSP);
+extern PetscErrorCode  KSPCreate_NGMRES(KSP);
+extern PetscErrorCode  KSPCreate_SpecEst(KSP);
+#if !defined(PETSC_USE_COMPLEX)
+extern PetscErrorCode  KSPCreate_DGMRES(KSP);
+#endif
 EXTERN_C_END
   
 /*
@@ -36,7 +40,7 @@ EXTERN_C_END
     KSPRegisterAll() is called. In general, if there is more than one
     DLL, then KSPRegisterAll() may be called several times.
 */
-EXTERN PetscTruth KSPRegisterAllCalled;
+extern PetscBool  KSPRegisterAllCalled;
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPRegisterAll"
@@ -51,7 +55,7 @@ EXTERN PetscTruth KSPRegisterAllCalled;
 
 .seealso:  KSPRegisterDestroy()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPRegisterAll(const char path[])
+PetscErrorCode  KSPRegisterAll(const char path[])
 {
   PetscErrorCode ierr;
 
@@ -81,9 +85,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPRegisterAll(const char path[])
   ierr = KSPRegisterDynamic(KSPMINRES,     path,"KSPCreate_MINRES",    KSPCreate_MINRES);CHKERRQ(ierr);
   ierr = KSPRegisterDynamic(KSPSYMMLQ,     path,"KSPCreate_SYMMLQ",    KSPCreate_SYMMLQ);CHKERRQ(ierr);
   ierr = KSPRegisterDynamic(KSPLGMRES,     path,"KSPCreate_LGMRES",    KSPCreate_LGMRES);CHKERRQ(ierr);
-  ierr = KSPRegisterDynamic(KSPLCD,        path,"KSPCreate_LCD",       KSPCreate_LCD);CHKERRQ(ierr)
+  ierr = KSPRegisterDynamic(KSPLCD,        path,"KSPCreate_LCD",       KSPCreate_LCD);CHKERRQ(ierr);
   ierr = KSPRegisterDynamic(KSPBROYDEN,    path,"KSPCreate_Broyden",   KSPCreate_Broyden);CHKERRQ(ierr);
   ierr = KSPRegisterDynamic(KSPGCR,        path,"KSPCreate_GCR",       KSPCreate_GCR);CHKERRQ(ierr);
+  ierr = KSPRegisterDynamic(KSPNGMRES,     path,"KSPCreate_NGMRES",    KSPCreate_NGMRES);CHKERRQ(ierr);
+  ierr = KSPRegisterDynamic(KSPSPECEST,    path,"KSPCreate_SpecEst",  KSPCreate_SpecEst);CHKERRQ(ierr);
+#if !defined(PETSC_USE_COMPLEX)
+  ierr = KSPRegisterDynamic(KSPDGMRES,     path,"KSPCreate_DGMRES", KSPCreate_DGMRES); CHKERRQ(ierr);
+#endif
   PetscFunctionReturn(0);
 }
 

@@ -4,7 +4,7 @@ static char help[] = "Tests PLAPACK interface.\n\n";
      mpiexec -n 4 ./ex107 -M 50 -mat_plapack_nprows 2 -mat_plapack_npcols 2 -mat_plapack_nb 1 
  */
 
-#include "petscmat.h"
+#include <petscmat.h>
 #undef __FUNCT__
 #define __FUNCT__ "main"
 int main(int argc,char **args)
@@ -13,7 +13,7 @@ int main(int argc,char **args)
   Vec            u,x,b,bpla;
   PetscErrorCode ierr;
   PetscMPIInt    rank,nproc;
-  PetscInt       i,j,k,M = 10,m,n,nfact,nsolve,Istart,Iend,*im,*in;
+  PetscInt       i,j,k,M = 10,m,nfact,nsolve,Istart,Iend,*im,*in,start,end;
   PetscScalar    *array,rval;
   PetscReal      norm,tol=1.e-12;
   IS             perm,iperm;
@@ -34,8 +34,8 @@ int main(int argc,char **args)
   ierr = MatSetFromOptions(C);CHKERRQ(ierr); 
 
   /* Create vectors */
-  ierr = MatGetLocalSize(C,&m,&n);CHKERRQ(ierr);
-  if (m != n) SETERRQ2(PETSC_ERR_ARG_WRONG,"Matrix local size m %d must equal n %d",m,n);
+  ierr = MatGetOwnershipRange(C,&start,&end);CHKERRQ(ierr);
+  m    = end - start;
   /* printf("[%d] C - local size m: %d\n",rank,m); */
   ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
   ierr = VecSetSizes(x,m,PETSC_DECIDE);CHKERRQ(ierr);
@@ -87,7 +87,7 @@ int main(int argc,char **args)
   if (!rank) {printf("main, Cpetsc: \n");}
   ierr = MatView(Cpetsc,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); 
   */
-  ierr = MatGetOrdering(C,MATORDERING_NATURAL,&perm,&iperm);CHKERRQ(ierr);
+  ierr = MatGetOrdering(C,MATORDERINGNATURAL,&perm,&iperm);CHKERRQ(ierr);
 
   /* Test nonsymmetric MatMult() */
   ierr = VecGetArray(x,&array);CHKERRQ(ierr);
@@ -107,9 +107,9 @@ int main(int argc,char **args)
 
   /* Test LU Factorization */
   if (nproc == 1){
-    ierr = MatGetFactor(C,MAT_SOLVER_PETSC,MAT_FACTOR_LU,&F);CHKERRQ(ierr);
+    ierr = MatGetFactor(C,MATSOLVERPETSC,MAT_FACTOR_LU,&F);CHKERRQ(ierr);
   } else {
-    ierr = MatGetFactor(C,MAT_SOLVER_PLAPACK,MAT_FACTOR_LU,&F);CHKERRQ(ierr);
+    ierr = MatGetFactor(C,MATSOLVERPLAPACK,MAT_FACTOR_LU,&F);CHKERRQ(ierr);
   }
   ierr = MatLUFactorSymbolic(F,C,perm,iperm,&info);CHKERRQ(ierr); 
   for (nfact = 0; nfact < 2; nfact++){
@@ -156,7 +156,7 @@ int main(int argc,char **args)
       }
     }
   } 
-  ierr = MatDestroy(F);CHKERRQ(ierr); 
+  ierr = MatDestroy(&F);CHKERRQ(ierr); 
   
   /* Test non-symmetric operations */
   /*-------------------------------*/
@@ -208,9 +208,9 @@ int main(int argc,char **args)
   /* Test Cholesky Factorization */
   ierr = MatShift(Csymm,M);CHKERRQ(ierr);  /* make Csymm positive definite */
   if (nproc == 1){
-    ierr = MatGetFactor(Csymm,MAT_SOLVER_PETSC,MAT_FACTOR_CHOLESKY,&F);CHKERRQ(ierr);
+    ierr = MatGetFactor(Csymm,MATSOLVERPETSC,MAT_FACTOR_CHOLESKY,&F);CHKERRQ(ierr);
   } else {
-    ierr = MatGetFactor(Csymm,MAT_SOLVER_PLAPACK,MAT_FACTOR_CHOLESKY,&F);CHKERRQ(ierr);
+    ierr = MatGetFactor(Csymm,MATSOLVERPLAPACK,MAT_FACTOR_CHOLESKY,&F);CHKERRQ(ierr);
   }
   ierr = MatCholeskyFactorSymbolic(F,Csymm,perm,&info);CHKERRQ(ierr);
   for (nfact = 0; nfact < 2; nfact++){
@@ -239,22 +239,22 @@ int main(int argc,char **args)
       }
     }
   }
-  ierr = MatDestroy(F);CHKERRQ(ierr); 
+  ierr = MatDestroy(&F);CHKERRQ(ierr); 
 
   /* Free data structures */
-  ierr = ISDestroy(perm);CHKERRQ(ierr);
-  ierr = ISDestroy(iperm);CHKERRQ(ierr);
+  ierr = ISDestroy(&perm);CHKERRQ(ierr);
+  ierr = ISDestroy(&iperm);CHKERRQ(ierr);
   
-  ierr = PetscRandomDestroy(rand);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr); 
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(bpla);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr); 
+  ierr = PetscRandomDestroy(&rand);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr); 
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&bpla);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr); 
   
-  ierr = MatDestroy(Cpetsc);CHKERRQ(ierr); 
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = MatDestroy(Csymm);CHKERRQ(ierr);
+  ierr = MatDestroy(&Cpetsc);CHKERRQ(ierr); 
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = MatDestroy(&Csymm);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

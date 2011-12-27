@@ -1,14 +1,22 @@
-#define PETSCVEC_DLL
 
-#include "private/vecimpl.h"     /*I  "vec.h"  I*/
+#include <private/vecimpl.h>     /*I  "vec.h"  I*/
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT VecCreate_Seq(Vec);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT VecCreate_MPI(Vec);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT VecCreate_Shared(Vec);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT VecCreate_FETI(Vec);
+extern PetscErrorCode  VecCreate_Seq(Vec);
+extern PetscErrorCode  VecCreate_MPI(Vec);
+extern PetscErrorCode  VecCreate_Standard(Vec);
+extern PetscErrorCode  VecCreate_Shared(Vec);
+#if defined(PETSC_HAVE_PTHREADCLASSES)
+extern PetscErrorCode  VecCreate_SeqPThread(Vec);
+extern PetscErrorCode  VecCreate_PThread(Vec);
+#endif
+#if defined(PETSC_HAVE_CUSP)
+extern PetscErrorCode  VecCreate_SeqCUSP(Vec);
+extern PetscErrorCode  VecCreate_MPICUSP(Vec);
+extern PetscErrorCode  VecCreate_CUSP(Vec);
+#endif
 #if 0
 #if defined(PETSC_HAVE_SIEVE)
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT VecCreate_Sieve(Vec);
+extern PetscErrorCode  VecCreate_Sieve(Vec);
 #endif
 #endif
 EXTERN_C_END
@@ -28,17 +36,26 @@ EXTERN_C_END
 .keywords: Vec, register, all
 .seealso:  VecRegister(), VecRegisterDestroy(), VecRegisterDynamic()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecRegisterAll(const char path[])
+PetscErrorCode  VecRegisterAll(const char path[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   VecRegisterAllCalled = PETSC_TRUE;
 
-  ierr = VecRegisterDynamic(VECSEQ,      path, "VecCreate_Seq",      VecCreate_Seq);CHKERRQ(ierr);
-  ierr = VecRegisterDynamic(VECMPI,      path, "VecCreate_MPI",      VecCreate_MPI);CHKERRQ(ierr);
-  ierr = VecRegisterDynamic(VECSHARED,   path, "VecCreate_Shared",   VecCreate_Shared);CHKERRQ(ierr);
-  ierr = VecRegisterDynamic(VECFETI,     path, "VecCreate_FETI",     VecCreate_FETI);CHKERRQ(ierr);
+  ierr = VecRegisterDynamic(VECSEQ,       path, "VecCreate_Seq",       VecCreate_Seq);CHKERRQ(ierr);
+  ierr = VecRegisterDynamic(VECMPI,       path, "VecCreate_MPI",       VecCreate_MPI);CHKERRQ(ierr);
+  ierr = VecRegisterDynamic(VECSTANDARD,  path, "VecCreate_Standard",  VecCreate_Standard);CHKERRQ(ierr);
+  ierr = VecRegisterDynamic(VECSHARED,    path, "VecCreate_Shared",    VecCreate_Shared);CHKERRQ(ierr);
+#if defined(PETSC_HAVE_PTHREADCLASSES)
+  ierr = VecRegisterDynamic(VECSEQPTHREAD,path, "VecCreate_SeqPThread",VecCreate_SeqPThread);CHKERRQ(ierr);
+  ierr = VecRegisterDynamic(VECPTHREAD,   path, "VecCreate_PThread",   VecCreate_PThread);CHKERRQ(ierr);
+#endif
+#if defined PETSC_HAVE_CUSP
+  ierr = VecRegisterDynamic(VECSEQCUSP,  path, "VecCreate_SeqCUSP",  VecCreate_SeqCUSP);CHKERRQ(ierr);
+  ierr = VecRegisterDynamic(VECMPICUSP,  path, "VecCreate_MPICUSP",  VecCreate_MPICUSP);CHKERRQ(ierr);
+  ierr = VecRegisterDynamic(VECCUSP,     path, "VecCreate_CUSP",     VecCreate_CUSP);CHKERRQ(ierr);
+#endif
 #if 0
 #if defined(PETSC_HAVE_SIEVE)
   ierr = VecRegisterDynamic(VECSIEVE,    path, "VecCreate_Sieve",    VecCreate_Sieve);CHKERRQ(ierr);

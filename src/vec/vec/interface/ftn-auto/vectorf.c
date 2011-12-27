@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* vector.c */
 /* Fortran interface file */
 
@@ -41,6 +42,16 @@ extern void PetscRmPointer(void*);
 #define vecsetlocaltoglobalmappingblock_ VECSETLOCALTOGLOBALMAPPINGBLOCK
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define vecsetlocaltoglobalmappingblock_ vecsetlocaltoglobalmappingblock
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecgetlocaltoglobalmapping_ VECGETLOCALTOGLOBALMAPPING
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecgetlocaltoglobalmapping_ vecgetlocaltoglobalmapping
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecgetlocaltoglobalmappingblock_ VECGETLOCALTOGLOBALMAPPINGBLOCK
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecgetlocaltoglobalmappingblock_ vecgetlocaltoglobalmappingblock
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecassemblybegin_ VECASSEMBLYBEGIN
@@ -158,11 +169,6 @@ extern void PetscRmPointer(void*);
 #define vecgetblocksize_ vecgetblocksize
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define vecvalid_ VECVALID
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define vecvalid_ vecvalid
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecsetup_ VECSETUP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define vecsetup_ vecsetup
@@ -188,142 +194,145 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   vecstashgetinfo_(Vec vec,PetscInt *nstash,PetscInt *reallocs,PetscInt *bnstash,PetscInt *breallocs, int *__ierr ){
+void PETSC_STDCALL  vecstashgetinfo_(Vec vec,PetscInt *nstash,PetscInt *reallocs,PetscInt *bnstash,PetscInt *breallocs, int *__ierr ){
 *__ierr = VecStashGetInfo(
 	(Vec)PetscToPointer((vec) ),nstash,reallocs,bnstash,breallocs);
 }
-void PETSC_STDCALL   vecsetlocaltoglobalmapping_(Vec x,ISLocalToGlobalMapping mapping, int *__ierr ){
+void PETSC_STDCALL  vecsetlocaltoglobalmapping_(Vec x,ISLocalToGlobalMapping mapping, int *__ierr ){
 *__ierr = VecSetLocalToGlobalMapping(
 	(Vec)PetscToPointer((x) ),
 	(ISLocalToGlobalMapping)PetscToPointer((mapping) ));
 }
-void PETSC_STDCALL   vecsetlocaltoglobalmappingblock_(Vec x,ISLocalToGlobalMapping mapping, int *__ierr ){
+void PETSC_STDCALL  vecsetlocaltoglobalmappingblock_(Vec x,ISLocalToGlobalMapping mapping, int *__ierr ){
 *__ierr = VecSetLocalToGlobalMappingBlock(
 	(Vec)PetscToPointer((x) ),
 	(ISLocalToGlobalMapping)PetscToPointer((mapping) ));
 }
-void PETSC_STDCALL   vecassemblybegin_(Vec vec, int *__ierr ){
+void PETSC_STDCALL  vecgetlocaltoglobalmapping_(Vec X,ISLocalToGlobalMapping *mapping, int *__ierr ){
+*__ierr = VecGetLocalToGlobalMapping(
+	(Vec)PetscToPointer((X) ),mapping);
+}
+void PETSC_STDCALL  vecgetlocaltoglobalmappingblock_(Vec X,ISLocalToGlobalMapping *mapping, int *__ierr ){
+*__ierr = VecGetLocalToGlobalMappingBlock(
+	(Vec)PetscToPointer((X) ),mapping);
+}
+void PETSC_STDCALL  vecassemblybegin_(Vec vec, int *__ierr ){
 *__ierr = VecAssemblyBegin(
 	(Vec)PetscToPointer((vec) ));
 }
-void PETSC_STDCALL   vecassemblyend_(Vec vec, int *__ierr ){
+void PETSC_STDCALL  vecassemblyend_(Vec vec, int *__ierr ){
 *__ierr = VecAssemblyEnd(
 	(Vec)PetscToPointer((vec) ));
 }
-void PETSC_STDCALL   vecpointwisemax_(Vec w,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  vecpointwisemax_(Vec w,Vec x,Vec y, int *__ierr ){
 *__ierr = VecPointwiseMax(
 	(Vec)PetscToPointer((w) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecpointwisemin_(Vec w,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  vecpointwisemin_(Vec w,Vec x,Vec y, int *__ierr ){
 *__ierr = VecPointwiseMin(
 	(Vec)PetscToPointer((w) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecpointwisemaxabs_(Vec w,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  vecpointwisemaxabs_(Vec w,Vec x,Vec y, int *__ierr ){
 *__ierr = VecPointwiseMaxAbs(
 	(Vec)PetscToPointer((w) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecpointwisedivide_(Vec w,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  vecpointwisedivide_(Vec w,Vec x,Vec y, int *__ierr ){
 *__ierr = VecPointwiseDivide(
 	(Vec)PetscToPointer((w) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecduplicate_(Vec v,Vec *newv, int *__ierr ){
+void PETSC_STDCALL  vecduplicate_(Vec v,Vec *newv, int *__ierr ){
 *__ierr = VecDuplicate(
 	(Vec)PetscToPointer((v) ),newv);
 }
-void PETSC_STDCALL   vecdestroy_(Vec v, int *__ierr ){
-*__ierr = VecDestroy(
-	(Vec)PetscToPointer((v) ));
+void PETSC_STDCALL  vecdestroy_(Vec *v, int *__ierr ){
+*__ierr = VecDestroy(v);
 }
-void PETSC_STDCALL   vecviewfromoptions_(Vec vec, char *title, int *__ierr ){
+void PETSC_STDCALL  vecviewfromoptions_(Vec vec, char *title, int *__ierr ){
 *__ierr = VecViewFromOptions(
 	(Vec)PetscToPointer((vec) ),title);
 }
-void PETSC_STDCALL   vecgetsize_(Vec x,PetscInt *size, int *__ierr ){
+void PETSC_STDCALL  vecgetsize_(Vec x,PetscInt *size, int *__ierr ){
 *__ierr = VecGetSize(
 	(Vec)PetscToPointer((x) ),size);
 }
-void PETSC_STDCALL   vecgetlocalsize_(Vec x,PetscInt *size, int *__ierr ){
+void PETSC_STDCALL  vecgetlocalsize_(Vec x,PetscInt *size, int *__ierr ){
 *__ierr = VecGetLocalSize(
 	(Vec)PetscToPointer((x) ),size);
 }
-void PETSC_STDCALL   vecsetoption_(Vec x,VecOption *op,PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  vecsetoption_(Vec x,VecOption *op,PetscBool  *flag, int *__ierr ){
 *__ierr = VecSetOption(
 	(Vec)PetscToPointer((x) ),*op,*flag);
 }
-void PETSC_STDCALL   vecresetarray_(Vec vec, int *__ierr ){
+void PETSC_STDCALL  vecresetarray_(Vec vec, int *__ierr ){
 *__ierr = VecResetArray(
 	(Vec)PetscToPointer((vec) ));
 }
-void PETSC_STDCALL   vecreciprocal_(Vec vec, int *__ierr ){
+void PETSC_STDCALL  vecreciprocal_(Vec vec, int *__ierr ){
 *__ierr = VecReciprocal(
 	(Vec)PetscToPointer((vec) ));
 }
-void PETSC_STDCALL   vecstashsetinitialsize_(Vec vec,PetscInt *size,PetscInt *bsize, int *__ierr ){
+void PETSC_STDCALL  vecstashsetinitialsize_(Vec vec,PetscInt *size,PetscInt *bsize, int *__ierr ){
 *__ierr = VecStashSetInitialSize(
 	(Vec)PetscToPointer((vec) ),*size,*bsize);
 }
-void PETSC_STDCALL   vecconjugate_(Vec x, int *__ierr ){
+void PETSC_STDCALL  vecconjugate_(Vec x, int *__ierr ){
 *__ierr = VecConjugate(
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   vecpointwisemult_(Vec w,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  vecpointwisemult_(Vec w,Vec x,Vec y, int *__ierr ){
 *__ierr = VecPointwiseMult(
 	(Vec)PetscToPointer((w) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecsetrandom_(Vec x,PetscRandom rctx, int *__ierr ){
+void PETSC_STDCALL  vecsetrandom_(Vec x,PetscRandom rctx, int *__ierr ){
 *__ierr = VecSetRandom(
 	(Vec)PetscToPointer((x) ),
 	(PetscRandom)PetscToPointer((rctx) ));
 }
-void PETSC_STDCALL   veczeroentries_(Vec vec, int *__ierr ){
+void PETSC_STDCALL  veczeroentries_(Vec vec, int *__ierr ){
 *__ierr = VecZeroEntries(
 	(Vec)PetscToPointer((vec) ));
 }
-void PETSC_STDCALL   vecsetfromoptions_(Vec vec, int *__ierr ){
+void PETSC_STDCALL  vecsetfromoptions_(Vec vec, int *__ierr ){
 *__ierr = VecSetFromOptions(
 	(Vec)PetscToPointer((vec) ));
 }
-void PETSC_STDCALL   vecsetsizes_(Vec v,PetscInt *n,PetscInt *N, int *__ierr ){
+void PETSC_STDCALL  vecsetsizes_(Vec v,PetscInt *n,PetscInt *N, int *__ierr ){
 *__ierr = VecSetSizes(
 	(Vec)PetscToPointer((v) ),*n,*N);
 }
-void PETSC_STDCALL   vecsetblocksize_(Vec v,PetscInt *bs, int *__ierr ){
+void PETSC_STDCALL  vecsetblocksize_(Vec v,PetscInt *bs, int *__ierr ){
 *__ierr = VecSetBlockSize(
 	(Vec)PetscToPointer((v) ),*bs);
 }
-void PETSC_STDCALL   vecgetblocksize_(Vec v,PetscInt *bs, int *__ierr ){
+void PETSC_STDCALL  vecgetblocksize_(Vec v,PetscInt *bs, int *__ierr ){
 *__ierr = VecGetBlockSize(
 	(Vec)PetscToPointer((v) ),bs);
 }
-void PETSC_STDCALL   vecvalid_(Vec v,PetscTruth *flg, int *__ierr ){
-*__ierr = VecValid(
-	(Vec)PetscToPointer((v) ),flg);
-}
-void PETSC_STDCALL   vecsetup_(Vec v, int *__ierr ){
+void PETSC_STDCALL  vecsetup_(Vec v, int *__ierr ){
 *__ierr = VecSetUp(
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL   veccopy_(Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  veccopy_(Vec x,Vec y, int *__ierr ){
 *__ierr = VecCopy(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecswap_(Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  vecswap_(Vec x,Vec y, int *__ierr ){
 *__ierr = VecSwap(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecstashview_(Vec v,PetscViewer viewer, int *__ierr ){
+void PETSC_STDCALL  vecstashview_(Vec v,PetscViewer viewer, int *__ierr ){
 *__ierr = VecStashView(
 	(Vec)PetscToPointer((v) ),
 	(PetscViewer)PetscToPointer((viewer) ));

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* hists.c */
 /* Fortran interface file */
 
@@ -78,39 +79,39 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawhgsetnumberbins_(PetscDrawHG hist,int *bins, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgsetnumberbins_(PetscDrawHG hist,int *bins, int *__ierr ){
 *__ierr = PetscDrawHGSetNumberBins(
 	(PetscDrawHG)PetscToPointer((hist) ),*bins);
 }
-void PETSC_STDCALL   petscdrawhgreset_(PetscDrawHG hist, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgreset_(PetscDrawHG hist, int *__ierr ){
 *__ierr = PetscDrawHGReset(
 	(PetscDrawHG)PetscToPointer((hist) ));
 }
-void PETSC_STDCALL   petscdrawhgaddvalue_(PetscDrawHG hist,PetscReal *value, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgaddvalue_(PetscDrawHG hist,PetscReal *value, int *__ierr ){
 *__ierr = PetscDrawHGAddValue(
 	(PetscDrawHG)PetscToPointer((hist) ),*value);
 }
-void PETSC_STDCALL   petscdrawhgdraw_(PetscDrawHG hist, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgdraw_(PetscDrawHG hist, int *__ierr ){
 *__ierr = PetscDrawHGDraw(
 	(PetscDrawHG)PetscToPointer((hist) ));
 }
-void PETSC_STDCALL   petscdrawhgprint_(PetscDrawHG hist, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgprint_(PetscDrawHG hist, int *__ierr ){
 *__ierr = PetscDrawHGPrint(
 	(PetscDrawHG)PetscToPointer((hist) ));
 }
-void PETSC_STDCALL   petscdrawhgsetcolor_(PetscDrawHG hist,int *color, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgsetcolor_(PetscDrawHG hist,int *color, int *__ierr ){
 *__ierr = PetscDrawHGSetColor(
 	(PetscDrawHG)PetscToPointer((hist) ),*color);
 }
-void PETSC_STDCALL   petscdrawhgsetlimits_(PetscDrawHG hist,PetscReal *x_min,PetscReal *x_max,int *y_min,int *y_max, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgsetlimits_(PetscDrawHG hist,PetscReal *x_min,PetscReal *x_max,int *y_min,int *y_max, int *__ierr ){
 *__ierr = PetscDrawHGSetLimits(
 	(PetscDrawHG)PetscToPointer((hist) ),*x_min,*x_max,*y_min,*y_max);
 }
-void PETSC_STDCALL   petscdrawhgcalcstats_(PetscDrawHG hist,PetscTruth *calc, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgcalcstats_(PetscDrawHG hist,PetscBool  *calc, int *__ierr ){
 *__ierr = PetscDrawHGCalcStats(
 	(PetscDrawHG)PetscToPointer((hist) ),*calc);
 }
-void PETSC_STDCALL   petscdrawhgintegerbins_(PetscDrawHG hist,PetscTruth *ints, int *__ierr ){
+void PETSC_STDCALL  petscdrawhgintegerbins_(PetscDrawHG hist,PetscBool  *ints, int *__ierr ){
 *__ierr = PetscDrawHGIntegerBins(
 	(PetscDrawHG)PetscToPointer((hist) ),*ints);
 }

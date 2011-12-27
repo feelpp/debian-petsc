@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:44:45+00:00">
+<meta name="date" content="2011-10-29T19:17:33+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -32,7 +32,7 @@
 <a name="line22"> 22: </a><font color="#B22222">   Processors: 1</font>
 <a name="line23"> 23: </a><font color="#B22222">T*/</font>
 
-<a name="line25"> 25: </a> #include <A href="../../../../include/petscsnes.h.html">petscsnes.h</A>
+<a name="line25"> 25: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 
 <a name="line27"> 27: </a><font color="#B22222">/* User-defined routines */</font>
 <a name="line28"> 28: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
@@ -48,11 +48,11 @@
 <a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
 <a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      h,xp = 0.0;
 <a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v,pfive = .5;
-<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
 <a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
 <a name="line45"> 45: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
-<a name="line46"> 46: </a>  <font color="#4169E1">if</font> (size != 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"This is a uniprocessor example only!"</font>);
+<a name="line46"> 46: </a>  <font color="#4169E1">if</font> (size != 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"This is a uniprocessor example only!"</font>);
 <a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-n"</font>,&amp;n,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line48"> 48: </a>  h = 1.0/(n-1);
 
@@ -77,7 +77,7 @@
 <a name="line68"> 68: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 <a name="line69"> 69: </a>  <font color="#B22222">/* Set preconditioner for matrix-free method */</font>
 <a name="line70"> 70: </a>  flg  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line71"> 71: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-snes_mf"</font>,&amp;flg,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line71"> 71: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-snes_mf"</font>,&amp;flg,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line72"> 72: </a>  <font color="#4169E1">if</font> (flg) {
 <a name="line73"> 73: </a>    <A href="../../../../docs/manualpages/SNES/SNESGetKSP.html#SNESGetKSP">SNESGetKSP</A>(snes,&amp;ksp);
 <a name="line74"> 74: </a>    <A href="../../../../docs/manualpages/KSP/KSPGetPC.html#KSPGetPC">KSPGetPC</A>(ksp,&amp;pc);
@@ -113,10 +113,10 @@
 <a name="line104">104: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
 <a name="line105">105: </a><font color="#B22222">     Free work space.  </font>
 <a name="line106">106: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
-<a name="line107">107: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(r);
-<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(F);
-<a name="line110">110: </a>  <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(snes);
+<a name="line107">107: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;r);
+<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;F);
+<a name="line110">110: </a>  <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(&amp;snes);
 <a name="line111">111: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line112">112: </a>  <font color="#4169E1">return</font> 0;
 <a name="line113">113: </a>}

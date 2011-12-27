@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mg.c */
 /* Fortran interface file */
 
@@ -26,7 +27,7 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscmg.h"
+#include "petscpcmg.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcmggetlevels_ PCMGGETLEVELS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -73,35 +74,35 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcmggetlevels_(PC pc,PetscInt *levels, int *__ierr ){
+void PETSC_STDCALL  pcmggetlevels_(PC pc,PetscInt *levels, int *__ierr ){
 *__ierr = PCMGGetLevels(
 	(PC)PetscToPointer((pc) ),levels);
 }
-void PETSC_STDCALL   pcmgsettype_(PC pc,PCMGType *form, int *__ierr ){
+void PETSC_STDCALL  pcmgsettype_(PC pc,PCMGType *form, int *__ierr ){
 *__ierr = PCMGSetType(
 	(PC)PetscToPointer((pc) ),*form);
 }
-void PETSC_STDCALL   pcmgsetcycletype_(PC pc,PCMGCycleType *n, int *__ierr ){
+void PETSC_STDCALL  pcmgsetcycletype_(PC pc,PCMGCycleType *n, int *__ierr ){
 *__ierr = PCMGSetCycleType(
 	(PC)PetscToPointer((pc) ),*n);
 }
-void PETSC_STDCALL   pcmgmultiplicativesetcycles_(PC pc,PetscInt *n, int *__ierr ){
+void PETSC_STDCALL  pcmgmultiplicativesetcycles_(PC pc,PetscInt *n, int *__ierr ){
 *__ierr = PCMGMultiplicativeSetCycles(
 	(PC)PetscToPointer((pc) ),*n);
 }
-void PETSC_STDCALL   pcmgsetgalerkin_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcmgsetgalerkin_(PC pc,PetscBool *use, int *__ierr ){
 *__ierr = PCMGSetGalerkin(
-	(PC)PetscToPointer((pc) ));
+	(PC)PetscToPointer((pc) ),*use);
 }
-void PETSC_STDCALL   pcmggetgalerkin_(PC pc,PetscTruth *galerkin, int *__ierr ){
+void PETSC_STDCALL  pcmggetgalerkin_(PC pc,PetscBool  *galerkin, int *__ierr ){
 *__ierr = PCMGGetGalerkin(
 	(PC)PetscToPointer((pc) ),galerkin);
 }
-void PETSC_STDCALL   pcmgsetnumbersmoothdown_(PC pc,PetscInt *n, int *__ierr ){
+void PETSC_STDCALL  pcmgsetnumbersmoothdown_(PC pc,PetscInt *n, int *__ierr ){
 *__ierr = PCMGSetNumberSmoothDown(
 	(PC)PetscToPointer((pc) ),*n);
 }
-void PETSC_STDCALL   pcmgsetnumbersmoothup_(PC pc,PetscInt *n, int *__ierr ){
+void PETSC_STDCALL  pcmgsetnumbersmoothup_(PC pc,PetscInt *n, int *__ierr ){
 *__ierr = PCMGSetNumberSmoothUp(
 	(PC)PetscToPointer((pc) ),*n);
 }

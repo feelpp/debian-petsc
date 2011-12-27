@@ -26,17 +26,17 @@
 
       module Petscmod
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscvec.h90"
-#include "finclude/petscmat.h"
-#include "finclude/petscmat.h90"
-#include "finclude/petscviewer.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscis.h"
-#include "finclude/petscda.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscvec.h90>
+#include <finclude/petscmat.h>
+#include <finclude/petscmat.h90>
+#include <finclude/petscviewer.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscis.h>
+#include <finclude/petscdmda.h>
       end module Petscmod
 
       module Snesmonitormod
@@ -99,7 +99,7 @@ c      call flush(6)
       PetscErrorCode ierr
       PetscInt N,start,end,nn,i
       PetscInt ii,its,i1,i0,i3
-      PetscTruth flg
+      PetscBool  flg
       SNES             snes
       PC               pc
       KSP              ksp
@@ -125,11 +125,11 @@ c      call flush(6)
       ctx(5) = size
 
 ! Set up data structures
-      call DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,N,i1,i1,            &
+      call DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,N,i1,i1,            &
      &     PETSC_NULL_INTEGER,ctx(1),ierr)
 
-      call DACreateGlobalVector(ctx(1),x,ierr)
-      call DACreateLocalVector(ctx(1),ctx(3),ierr)
+      call DMCreateGlobalVector(ctx(1),x,ierr)
+      call DMCreateLocalVector(ctx(1),ctx(3),ierr)
 
       call PetscObjectSetName(x,'Approximate Solution',ierr)
       call VecDuplicate(x,r,ierr)
@@ -173,7 +173,7 @@ c      call flush(6)
       call KSPGetPC(ksp,pc,ierr)
 #ifdef PETSC_HAVE_MUMPS
       call PCSetType(pc,PCLU,ierr)
-      call PCFactorSetMatSolverPackage(pc,MAT_SOLVER_MUMPS,ierr)
+      call PCFactorSetMatSolverPackage(pc,MATSOLVERMUMPS,ierr)
 #endif
 
       snesmonitor%its = 0
@@ -224,7 +224,7 @@ c      call flush(6)
       call VecDestroy(ctx(2),ierr)
       call MatDestroy(J,ierr)
       call SNESDestroy(snes,ierr)
-      call DADestroy(ctx(1),ierr)
+      call DMDestroy(ctx(1),ierr)
       call PetscFinalize(ierr)
       end
 
@@ -241,18 +241,18 @@ c      call flush(6)
       PetscErrorCode ierr
       PetscOffset      ixx,iff,iF2
       PetscScalar      h,d,vf2(1),vxx(1),vff(1)
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscsnes.h>
 
 
       rank  = ctx(4)
       size  = ctx(5)
       h     = 1.d0/(ctx(6) - 1.d0)
-      call DAGlobalToLocalBegin(ctx(1),x,INSERT_VALUES,ctx(3),ierr)
-      call DAGlobalToLocalEnd(ctx(1),x,INSERT_VALUES,ctx(3),ierr)
+      call DMGlobalToLocalBegin(ctx(1),x,INSERT_VALUES,ctx(3),ierr)
+      call DMGlobalToLocalEnd(ctx(1),x,INSERT_VALUES,ctx(3),ierr)
 
       call VecGetLocalSize(ctx(3),n,ierr)
       if (n .gt. 1000) then 
@@ -313,9 +313,9 @@ c      call flush(6)
 
       subroutine FormInitialGuess(snes,x,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscsnes.h>
       PetscErrorCode   ierr
       Vec              x
       SNES             snes
@@ -337,7 +337,7 @@ c      call flush(6)
       Vec              x
       Mat              jac,B
       PetscFortranAddr ctx(*)
-      PetscTruth       flag
+      PetscBool        flag
       PetscInt         ii,istart,iend
       PetscInt         i,j,n,end,start,i1
       PetscErrorCode   ierr

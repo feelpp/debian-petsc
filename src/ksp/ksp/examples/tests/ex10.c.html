@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:40:56+00:00">
+<meta name="date" content="2011-10-29T19:12:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -15,7 +15,7 @@
 <a name="line5">  5: </a><font color="#666666">diagonal data structure.  Input arguments are:\n\</font>
 <a name="line6">  6: </a><font color="#666666">  -m : problem size\n\n"</font>;
 
-<a name="line8"> 8: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line10"> 10: </a><font color="#B22222">/* This code is not intended as an efficient implementation, it is only</font>
 <a name="line11"> 11: </a><font color="#B22222">   here to produce an interesting sparse matrix quickly.</font>
@@ -76,11 +76,11 @@
 <a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %A, Number of iterations %D\n"</font>,norm,its);
 
 <a name="line76"> 76: </a>  <font color="#B22222">/* Free work space */</font>
-<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
-<a name="line78"> 78: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line79"> 79: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(mat);
+<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line78"> 78: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line79"> 79: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;mat);
 
 <a name="line83"> 83: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line84"> 84: </a>  <font color="#4169E1">return</font> 0;
@@ -156,19 +156,19 @@
 <a name="line157">157: </a>    <font color="#4169E1">if</font> (nz) rowkeep[ict++] = i;
 <a name="line158">158: </a>    <A href="../../../../../docs/manualpages/Mat/MatRestoreRow.html#MatRestoreRow">MatRestoreRow</A>(mat,i,&amp;nz,0,0);
 <a name="line159">159: </a>  }
-<a name="line160">160: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,ict,rowkeep,&amp;iskeep);
+<a name="line160">160: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,ict,rowkeep,PETSC_COPY_VALUES,&amp;iskeep);
 <a name="line161">161: </a>  <A href="../../../../../docs/manualpages/Mat/MatGetSubMatrices.html#MatGetSubMatrices">MatGetSubMatrices</A>(mat,1,&amp;iskeep,&amp;iskeep,MAT_INITIAL_MATRIX,&amp;submatb);
 <a name="line162">162: </a>  submat = *submatb;
 <a name="line163">163: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(submatb);
 <a name="line164">164: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rowkeep);
-<a name="line165">165: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(iskeep);
-<a name="line166">166: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(mat);
+<a name="line165">165: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;iskeep);
+<a name="line166">166: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;mat);
 
 <a name="line168">168: </a>  <font color="#B22222">/* Convert storage formats -- just to demonstrate conversion to various</font>
 <a name="line169">169: </a><font color="#B22222">     formats (in particular, block diagonal storage).  This is NOT the</font>
 <a name="line170">170: </a><font color="#B22222">     recommended means to solve such a problem.  */</font>
 <a name="line171">171: </a>  <A href="../../../../../docs/manualpages/Mat/MatConvert.html#MatConvert">MatConvert</A>(submat,type,MAT_INITIAL_MATRIX,newmat);
-<a name="line172">172: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(submat);
+<a name="line172">172: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;submat);
 
 <a name="line174">174: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,PETSC_VIEWER_ASCII_INFO);
 <a name="line175">175: </a>  <A href="../../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(*newmat,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
@@ -329,7 +329,7 @@
 <a name="line337">337: </a>                w[3] = 0.347854845137454;
 <a name="line338">338: </a>  }
 <a name="line339">339: </a>  <font color="#4169E1">else</font> {
-<a name="line340">340: </a>    <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Unknown value for n_int"</font>);
+<a name="line340">340: </a>    <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"Unknown value for n_int"</font>);
 <a name="line341">341: </a>  }
 
 <a name="line343">343: </a>  <font color="#B22222">/* rst[][i] contains the location of the i-th integration point</font>

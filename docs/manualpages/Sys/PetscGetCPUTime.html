@@ -10,7 +10,7 @@ Returns the CPU time in seconds used by the process.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-PetscErrorCode PETSC_DLLEXPORT PetscGetCPUTime(PetscLogDouble *t)
+PetscErrorCode  PetscGetCPUTime(PetscLogDouble *t)
 </PRE>
 Not Collective
 <P>
@@ -20,7 +20,7 @@ Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Example</FONT></H3>
 <PRE>
-    #include "petscsys.h"
+    #include &lt;petscsys.h&gt;
     ...
     PetscLogDouble t1, t2;
  

@@ -3,9 +3,9 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
-    self.download  = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/fftw-3.2alpha3.tar.gz']
+    self.download  = ['http://www.fftw.org/fftw-3.3.1-beta1.tar.gz']
     self.functions = ['fftw_malloc'] 
-    self.includes  = ['fftw3.h']  
+    self.includes  = ['fftw3-mpi.h']  
     self.liblist   = [['libfftw3_mpi.a','libfftw3.a']]
     self.complex   = 1
     return
@@ -19,7 +19,7 @@ class Configure(PETSc.package.NewPackage):
     import os
 
     args = ['--prefix='+self.installDir]
-
+    args.append('--libdir='+os.path.join(self.installDir,self.libdir))
     self.framework.pushLanguage('C')
     ccompiler=self.framework.getCompiler()
     args.append('CC="'+self.framework.getCompiler()+'"')
@@ -52,20 +52,13 @@ class Configure(PETSc.package.NewPackage):
     if self.installNeeded('fftw'):
       try:
         self.logPrintBox('Configuring FFTW; this may take several minutes')
-        output1,err1,ret1  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+'; ./configure '+args, timeout=900, log = self.framework.log)
+        output1,err1,ret1  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && ./configure '+args, timeout=900, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running configure on FFTW: '+str(e))
       try:
         self.logPrintBox('Compiling FFTW; this may take several minutes')
-        output2,err2,ret2  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+'; make; make install', timeout=2500, log = self.framework.log)
+        output2,err2,ret2  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && make && make install', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running make on FFTW: '+str(e))
       self.postInstall(output1+err1+output2+err2,'fftw')
     return self.installDir
-
-  def consistencyChecks(self):
-    PETSc.package.NewPackage.consistencyChecks(self)
-    if self.framework.argDB['with-'+self.package]:
-      if not self.scalartypes.scalartype.lower() == 'complex':
-        raise RuntimeError('FFTW requires the complex precision, run config/configure.py --with-scalar-type=complex')
-    return

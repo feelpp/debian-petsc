@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "private/viewerimpl.h"  /*I "petscviewer.h" I*/
+#include <private/viewerimpl.h>  /*I "petscviewer.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerFlush" 
@@ -21,12 +20,12 @@
 .seealso: PetscViewerSocketOpen(), PetscViewerASCIIOpen(), PetscViewerDrawOpen(), PetscViewerCreate(), PetscViewerDestroy(),
           PetscViewerSetType()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewerFlush(PetscViewer viewer)
+PetscErrorCode  PetscViewerFlush(PetscViewer viewer)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,1);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
   if (viewer->ops->flush) {
     ierr = (*viewer->ops->flush)(viewer);CHKERRQ(ierr);
   }

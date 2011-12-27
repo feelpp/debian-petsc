@@ -1,18 +1,64 @@
 #!/usr/bin/env python
-import os
-import sys
+import os, sys
 import commands
 # to load ~/.pythonrc.py before inserting correct BuildSystem to path
 import user
 extraLogs = []
 petsc_arch = ''
 
+import urllib
+import tarfile
+
+def untar(tar, path = '.', leading = ''):
+  if leading:
+    entries = [t.name for t in tar.getmembers()]
+    prefix = os.path.commonprefix(entries)
+    if prefix:
+      for tarinfo in tar.getmembers():
+        tail = tarinfo.name.split(prefix, 1)[1]
+        tarinfo.name = os.path.join(leading, tail)
+  for tarinfo in tar.getmembers():
+    tar.extract(tarinfo, path)
+  return
+
+def downloadPackage(url, filename, targetDirname):
+  '''Download the tarball for a package at url, save it as filename, and untar it into targetDirname'''
+  filename, headers = urllib.urlretrieve(url, filename)
+  tar = tarfile.open(filename, 'r:gz')
+  untar(tar, targetDirname, leading = filename.split('.')[0])
+  return
+
+def getBuildSystem(configDir,bsDir):
+  print '==============================================================================='
+  print '''++ Could not locate BuildSystem in %s.''' % configDir
+  (status,output) = commands.getstatusoutput('hg showconfig paths.default')
+  if status or not output:
+    print '++ Mercurial clone not found. Downloading it from http://petsc.cs.iit.edu/petsc/BuildSystem/archive/tip.tar.gz'
+    downloadPackage('http://petsc.cs.iit.edu/petsc/BuildSystem/archive/tip.tar.gz', 'BuildSystem.tar.gz', configDir)
+  else:
+    print '++ Mercurial clone found. URL : ' + output
+    if output.find("petsc.cs.iit.edu") >=0:
+      bsurl = output.replace('petsc-dev','BuildSystem').replace('releases/petsc-','releases/BuildSystem-')
+      print '++ Using: hg clone '+ bsurl +' '+ bsDir
+      (status,output) = commands.getstatusoutput('hg clone '+ bsurl +' '+ bsDir)
+      if status:
+        print '++ Unable to clone BuildSystem. Please clone manually'
+        print '==============================================================================='
+        sys.exit(3)
+    else:
+      print '++ Nonstandard parent URL. Cannot determine appropriate BuildSystem URL. Please clone appropriate BuildSystem'
+      print '==============================================================================='
+      sys.exit(3)
+  print '==============================================================================='
+  return
+
+
 # Use en_US as language so that BuildSystem parses compiler messages in english
 if 'LC_LOCAL' in os.environ and os.environ['LC_LOCAL'] != '' and os.environ['LC_LOCAL'] != 'en_US' and os.environ['LC_LOCAL']!= 'en_US.UTF-8': os.environ['LC_LOCAL'] = 'en_US.UTF-8'
 if 'LANG' in os.environ and os.environ['LANG'] != '' and os.environ['LANG'] != 'en_US' and os.environ['LANG'] != 'en_US.UTF-8': os.environ['LANG'] = 'en_US.UTF-8'
 
-if not hasattr(sys, 'version_info') or not sys.version_info[1] >= 2 or not sys.version_info[0] >= 2:
-  print '*** You must have Python version 2.2 or higher to run config/configure.py *****'
+if not hasattr(sys, 'version_info') or not sys.version_info[0] == 2 or not sys.version_info[1] >= 3:
+  print '*** You must have Python2 version 2.3 or higher to run ./configure        *****'
   print '*          Python is easy to install for end users or sys-admin.              *'
   print '*                  http://www.python.org/download/                            *'
   print '*                                                                             *'
@@ -31,6 +77,20 @@ def check_for_option_mistakes(opts):
           exception = True
       if not exception:
         raise ValueError('The option '+name+' should probably be '+name.replace('_', '-'));
+    if opt.find('=') >=0:
+      optval = opt.split('=')[1]
+      if optval == 'ifneeded':
+        raise ValueError('The option '+opt+' should probably be '+opt.replace('ifneeded', '1'));
+  return
+
+def check_for_option_changed(opts):
+# Document changes in command line options here.
+  optMap = [('c-blas-lapack','f2cblaslapack')]
+  for opt in opts[1:]:
+    optname = opt.split('=')[0].strip('-')
+    for oldname,newname in optMap:
+      if optname.find(oldname) >=0:
+        raise ValueError('The option '+opt+' should probably be '+opt.replace(oldname,newname))
   return
 
 def check_petsc_arch(opts):
@@ -45,7 +105,7 @@ def check_petsc_arch(opts):
   # If not yet specified - use the filename of script
   if not found:
       filename = os.path.basename(sys.argv[0])
-      if not filename.startswith('configure') and not filename.startswith('reconfigure'):
+      if not filename.startswith('configure') and not filename.startswith('reconfigure') and not filename.startswith('setup'):
         petsc_arch=os.path.splitext(os.path.basename(sys.argv[0]))[0]
         useName = 'PETSC_ARCH='+petsc_arch
         opts.append(useName)
@@ -73,31 +133,20 @@ def chkbrokencygwin():
     buf = os.popen('/usr/bin/cygcheck.exe -c cygwin').read()
     if buf.find('1.5.11-1') > -1:
       print '==============================================================================='
-      print ' *** cygwin-1.5.11-1 detected. config/configure.py fails with this version ***'
+      print ' *** cygwin-1.5.11-1 detected. ./configure fails with this version ***'
       print ' *** Please upgrade to cygwin-1.5.12-1 or newer version. This can  ***'
       print ' *** be done by running cygwin-setup, selecting "next" all the way.***'
       print '==============================================================================='
       sys.exit(3)
   return 0
 
-def chkusingwindowspython():
-  if os.path.exists('/usr/bin/cygcheck.exe') and sys.platform != 'cygwin':
-    print '==============================================================================='
-    print ' *** Non-cygwin python detected. Please rerun config/configure.py **'
-    print ' *** with cygwin-python. ***'
-    print '==============================================================================='
-    sys.exit(3)
-  return 0
-
-def chkcygwinpythonver():
-  if os.path.exists('/usr/bin/cygcheck.exe'):
-    buf = os.popen('/usr/bin/cygcheck.exe -c python').read()
-    if (buf.find('2.4') > -1) or (buf.find('2.5') > -1) or (buf.find('2.6') > -1):
-      sys.argv.append('--useThreads=0')
-      extraLogs.append('''\
+def chkcygwinpython():
+  if os.path.exists('/usr/bin/cygcheck.exe') and sys.platform == 'cygwin' :
+    sys.argv.append('--useThreads=0')
+    extraLogs.append('''\
 ===============================================================================
-** Cygwin-python-2.4/2.5/2.6 detected. Threads do not work correctly with this
-** version. Disabling thread usage for this run of config/configure.py *******
+** Cygwin-python detected. Threads do not work correctly. ***
+** Disabling thread usage for this run of ./configure *******
 ===============================================================================''')
   return 0
 
@@ -115,7 +164,7 @@ def chkrhl9():
       extraLogs.append('''\
 ==============================================================================
    *** RHL9 detected. Threads do not work correctly with this distribution ***
-   ****** Disabling thread usage for this run of config/configure.py *********
+   ****** Disabling thread usage for this run of ./configure *********
 ===============================================================================''')
   return 0
 
@@ -165,9 +214,19 @@ def petsc_configure(configure_options):
   print '             Configuring PETSc to compile on your system                       '
   print '==============================================================================='  
 
-  # Command line arguments take precedence (but don't destroy argv[0])
-  sys.argv = sys.argv[:1] + configure_options + sys.argv[1:]
-  check_for_option_mistakes(sys.argv)
+  try:
+    # Command line arguments take precedence (but don't destroy argv[0])
+    sys.argv = sys.argv[:1] + configure_options + sys.argv[1:]
+    check_for_option_mistakes(sys.argv)
+    check_for_option_changed(sys.argv)
+  except (TypeError, ValueError), e:
+    emsg = str(e)
+    if not emsg.endswith('\n'): emsg = emsg+'\n'
+    msg ='*******************************************************************************\n'\
+    +'                ERROR in COMMAND LINE ARGUMENT to ./configure \n' \
+    +'-------------------------------------------------------------------------------\n'  \
+    +emsg+'*******************************************************************************\n'
+    sys.exit(msg)
   # check PETSC_ARCH
   check_petsc_arch(sys.argv)
   check_broken_configure_log_links()
@@ -200,10 +259,8 @@ def petsc_configure(configure_options):
   chkbrokencygwin()
   # Disable threads on RHL9
   chkrhl9()
-  # Make sure cygwin-python is used on windows
-  chkusingwindowspython()
-  # Threads don't work for cygwin & python-2.4, 2.5 etc..
-  chkcygwinpythonver()
+  # Threads don't work for cygwin & python...
+  chkcygwinpython()
   chkcygwinlink()
 
   # Should be run from the toplevel
@@ -211,31 +268,7 @@ def petsc_configure(configure_options):
   bsDir     = os.path.join(configDir, 'BuildSystem')
   if not os.path.isdir(configDir):
     raise RuntimeError('Run configure from $PETSC_DIR, not '+os.path.abspath('.'))
-  if not os.path.isdir(bsDir):
-    print '==============================================================================='
-    print '''++ Could not locate BuildSystem in %s.''' % configDir
-    print '''++ Downloading it using "hg clone http://hg.mcs.anl.gov/petsc/BuildSystem %s"''' % bsDir
-    print '==============================================================================='
-    (status,output) = commands.getstatusoutput('hg clone http://petsc.cs.iit.edu/petsc/BuildSystem '+ bsDir)
-    if status:
-      if output.find('ommand not found') >= 0:
-        print '==============================================================================='
-        print '''** Unable to locate hg (Mercurial) to download BuildSystem; make sure hg is'''
-        print '''** in your path or manually copy BuildSystem to $PETSC_DIR/config/BuildSystem'''
-        print '''**  from a machine where you do have hg installed and can clone BuildSystem. '''
-        print '==============================================================================='
-      elif output.find('Cannot resolve host') >= 0:
-        print '==============================================================================='
-        print '''** Unable to download BuildSystem. You must be off the network.'''
-        print '''** Connect to the internet and run config/configure.py again.'''
-        print '==============================================================================='
-      else:
-        print '==============================================================================='
-        print '''** Unable to download BuildSystem. Please send this message to petsc-maint@mcs.anl.gov'''
-        print '==============================================================================='
-      print output
-      sys.exit(3)
-      
+  if not os.path.isdir(bsDir): getBuildSystem(configDir,bsDir)
   sys.path.insert(0, bsDir)
   sys.path.insert(0, configDir)
   import config.base
@@ -255,6 +288,7 @@ def petsc_configure(configure_options):
       if hasattr(i,'postProcess'):
         i.postProcess()
     framework.printSummary()
+    framework.argDB.save(force = True)
     framework.logClear()
     framework.closeLog()
     try:
@@ -275,7 +309,7 @@ def petsc_configure(configure_options):
     emsg = str(e)
     if not emsg.endswith('\n'): emsg = emsg+'\n'
     msg ='*******************************************************************************\n'\
-    +'                ERROR in COMMAND LINE ARGUMENT to config/configure.py \n' \
+    +'                ERROR in COMMAND LINE ARGUMENT to ./configure \n' \
     +'-------------------------------------------------------------------------------\n'  \
     +emsg+'*******************************************************************************\n'
     se = ''
@@ -283,7 +317,7 @@ def petsc_configure(configure_options):
     emsg = str(e)
     if not emsg.endswith('\n'): emsg = emsg+'\n'
     msg ='*******************************************************************************\n'\
-    +'                     UNABLE to FIND MODULE for config/configure.py \n' \
+    +'                     UNABLE to FIND MODULE for ./configure \n' \
     +'-------------------------------------------------------------------------------\n'  \
     +emsg+'*******************************************************************************\n'
     se = ''
@@ -291,7 +325,7 @@ def petsc_configure(configure_options):
     emsg = str(e)
     if not emsg.endswith('\n'): emsg = emsg+'\n'
     msg ='*******************************************************************************\n'\
-    +'                    UNABLE to EXECUTE BINARIES for config/configure.py \n' \
+    +'                    UNABLE to EXECUTE BINARIES for ./configure \n' \
     +'-------------------------------------------------------------------------------\n'  \
     +emsg+'*******************************************************************************\n'
     se = ''
@@ -316,7 +350,7 @@ def petsc_configure(configure_options):
       try:
         framework.log.write(msg+se)
         traceback.print_tb(sys.exc_info()[2], file = framework.log)
-        close(framework.log)
+        if hasattr(framework,'log'): framework.log.close()
         move_configure_log(framework)
       except:
         pass
@@ -325,8 +359,7 @@ def petsc_configure(configure_options):
     print se
     import traceback
     traceback.print_tb(sys.exc_info()[2])
-  close(framework.log)
-  move_configure_log(framework)
+  if hasattr(framework,'log'): framework.log.close()
 
 if __name__ == '__main__':
   petsc_configure([])

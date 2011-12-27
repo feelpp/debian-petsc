@@ -6,7 +6,7 @@
 #define __PETSCPCDEF_H
 
 #include "finclude/petscmatdef.h"
-#include "finclude/petscdadef.h"
+#include "finclude/petscdmdef.h"
 
 #if !defined(PETSC_USE_FORTRAN_DATATYPES)
 #define PC PetscFortranAddr
@@ -17,6 +17,8 @@
 #define PCRichardsonConvergedReason PetscEnum 
 #define PCType character*(80)
 #define PCFieldSplitSchurPreType PetscEnum
+#define PCPARMSGlobalType PetscEnum
+#define PCPARMSLocalType PetscEnum
 !
 !  Various preconditioners
 !
@@ -31,20 +33,37 @@
 #define PCILU 'ilu'
 #define PCICC 'icc'
 #define PCASM 'asm'
+#define PCGASM 'gasm'
 #define PCKSP 'ksp'
 #define PCCOMPOSITE 'composite'
 #define PCREDUNDANT 'redundant'
 #define PCSPAI 'spai'
-#define PCMILU 'milu'
 #define PCNN 'nn'
 #define PCCHOLESKY 'cholesky'
 #define PCPBJACOBI 'pbjacobi'
 #define PCMAT 'mat'
 #define PCHYPRE 'hypre'
+#define PCPARMS 'parms'
 #define PCFIELDSPLIT 'fieldsplit'
 #define PCTFS 'tfs'
 #define PCML 'ml'
+#define PCPROMETHEUS 'prometheus'
+#define PCGALERKIN 'galerkin'
+#define PCEXOTIC 'exotic'
+#define PCHMPI 'hmpi'
+#define PCSUPPORTGRAPH 'supportgraph'
+#define PCASA 'asa'
+#define PCCP 'cp'
+#define PCBFBT 'bfbt'
+#define PCLSC 'lsc'
 #define PCPYTHON 'python'
 #define PCPFMG 'pfmg'
 #define PCSYSPFMG 'syspfmg'
+#define PCREDISTRIBUTE 'redistribute'
+#define PCSACUSP 'sacusp'
+#define PCSACUSPPOLY 'sacusppoly'
+#define PCBICGSTABCUSP 'bicgstabcusp'
+#define PCSVD 'svd'
+#define PCAINVCUSP 'ainvcusp'
+
 #endif

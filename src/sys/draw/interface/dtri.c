@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawTriangle" 
@@ -23,14 +23,14 @@
    Concepts: triangle
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawTriangle(PetscDraw draw,PetscReal x1,PetscReal y_1,PetscReal x2,PetscReal y2,PetscReal x3,PetscReal y3,
+PetscErrorCode  PetscDrawTriangle(PetscDraw draw,PetscReal x1,PetscReal y_1,PetscReal x2,PetscReal y2,PetscReal x3,PetscReal y3,
                  int c1,int c2,int c3)
 {
   PetscErrorCode ierr;
-  PetscTruth     isnull;
+  PetscBool      isnull;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   ierr = PetscTypeCompare((PetscObject)draw,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
   if (isnull) PetscFunctionReturn(0);
   ierr = (*draw->ops->triangle)(draw,x1,y_1,x2,y2,x3,y3,c1,c2,c3);CHKERRQ(ierr);
@@ -56,9 +56,9 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawTriangle(PetscDraw draw,PetscReal x1,Pet
      All processors that share the draw MUST call this routine
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawScalePopup(PetscDraw popup,PetscReal min,PetscReal max)
+PetscErrorCode  PetscDrawScalePopup(PetscDraw popup,PetscReal min,PetscReal max)
 {
-  PetscReal      xl = 0.0,yl = 0.0,xr = 1.0,yr = 1.0,value;
+  PetscReal      xl = 0.0,yl = 0.0,xr = 2.0,yr = 1.0,value;
   PetscErrorCode ierr;
   int            i,c = PETSC_DRAW_BASIC_COLORS,rank;
   char           string[32];
@@ -78,7 +78,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawScalePopup(PetscDraw popup,PetscReal min
     value = min + i*(max-min)/9.0;
     /* look for a value that should be zero, but is not due to round-off */
     if (PetscAbsReal(value) < 1.e-10 && max-min > 1.e-6) value = 0.0;
-    sprintf(string,"%g",(double)value);
+    sprintf(string,"%18.16e",(double)value);
     ierr = PetscDrawString(popup,.2,.02 + i/10.0,PETSC_DRAW_BLACK,string);CHKERRQ(ierr);
   }
   ierr = PetscDrawSetTitle(popup,"Contour Scale");CHKERRQ(ierr);
@@ -89,7 +89,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawScalePopup(PetscDraw popup,PetscReal min
 typedef struct {
   int        m,n;
   PetscReal  *x,*y,min,max,*v;
-  PetscTruth showgrid;
+  PetscBool  showgrid;
 } ZoomCtx;
 
 #undef __FUNCT__  
@@ -140,11 +140,11 @@ static PetscErrorCode PetscDrawTensorContour_Zoom(PetscDraw win,void *dctx)
 .seealso: PetscDrawTensorContourPatch()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawTensorContour(PetscDraw win,int m,int n,const PetscReal xi[],const PetscReal yi[],PetscReal *v)
+PetscErrorCode  PetscDrawTensorContour(PetscDraw win,int m,int n,const PetscReal xi[],const PetscReal yi[],PetscReal *v)
 {
   PetscErrorCode ierr;
   int            N = m*n;
-  PetscTruth     isnull;
+  PetscBool      isnull;
   PetscDraw      popup;
   MPI_Comm       comm;
   int            xin=1,yin=1,i;
@@ -156,11 +156,8 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawTensorContour(PetscDraw win,int m,int n,
   ierr = PetscDrawIsNull(win,&isnull);CHKERRQ(ierr); if (isnull) PetscFunctionReturn(0);
   ierr = PetscObjectGetComm((PetscObject)win,&comm);CHKERRQ(ierr);
   ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr);
-  if (size > 1) SETERRQ(PETSC_ERR_ARG_WRONG,"May only be used with single processor PetscDraw");
-
-  if (N <= 0) {
-    SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE,"n %d and m %d must be positive",m,n);
-  }
+  if (size > 1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"May only be used with single processor PetscDraw");
+  if (N <= 0) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"n %d and m %d must be positive",m,n);
 
   /* create scale window */
   ierr = PetscDrawGetPopup(win,&popup);CHKERRQ(ierr);
@@ -180,7 +177,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawTensorContour(PetscDraw win,int m,int n,
   if (popup) {ierr = PetscDrawScalePopup(popup,ctx.min,ctx.max);CHKERRQ(ierr);}
 
   ctx.showgrid = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-draw_contour_grid",&ctx.showgrid,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-draw_contour_grid",&ctx.showgrid,PETSC_NULL);CHKERRQ(ierr);
 
   /* fill up x and y coordinates */
   if (!xi) {
@@ -239,7 +236,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawTensorContour(PetscDraw win,int m,int n,
 .seealso: PetscDrawTensorContour()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawTensorContourPatch(PetscDraw draw,int m,int n,PetscReal *x,PetscReal *y,PetscReal max,PetscReal min,PetscReal *v)
+PetscErrorCode  PetscDrawTensorContourPatch(PetscDraw draw,int m,int n,PetscReal *x,PetscReal *y,PetscReal max,PetscReal min,PetscReal *v)
 {
   PetscErrorCode ierr;
   int            c1,c2,c3,c4,i,j;

@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:30+00:00">
+<meta name="date" content="2011-10-29T19:13:09+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -28,7 +28,7 @@
 
 <a name="line19"> 19: </a><font color="#B22222">  Note:  The corresponding uniprocessor example is ex1.c</font>
 <a name="line20"> 20: </a><font color="#B22222">*/</font>
-<a name="line21"> 21: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line21"> 21: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line25"> 25: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line26"> 26: </a>{
@@ -185,9 +185,9 @@
 <a name="line178">178: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
 <a name="line179">179: </a><font color="#B22222">     are no longer needed.</font>
 <a name="line180">180: </a><font color="#B22222">  */</font>
-<a name="line181">181: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line182">182: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b); <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line183">183: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
+<a name="line181">181: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line182">182: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b); <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line183">183: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
 
 <a name="line185">185: </a>  <font color="#B22222">/*</font>
 <a name="line186">186: </a><font color="#B22222">     Always call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>() before exiting a program.  This routine</font>

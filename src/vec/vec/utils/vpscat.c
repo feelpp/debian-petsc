@@ -1,13 +1,12 @@
-#define PETSCVEC_DLL
 
 /*
     Defines parallel vector scatters.
 */
 
-#include "private/isimpl.h"
-#include "private/vecimpl.h"         /*I "petscvec.h" I*/
-#include "../src/vec/vec/impls/dvecimpl.h"
-#include "../src/vec/vec/impls/mpi/pvecimpl.h"
+#include <private/isimpl.h>
+#include <private/vecimpl.h>         /*I "petscvec.h" I*/
+#include <../src/vec/vec/impls/dvecimpl.h>
+#include <../src/vec/vec/impls/mpi/pvecimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "VecScatterView_MPI"
@@ -19,10 +18,10 @@ PetscErrorCode VecScatterView_MPI(VecScatter ctx,PetscViewer viewer)
   PetscInt               i;
   PetscMPIInt            rank;
   PetscViewerFormat      format;
-  PetscTruth             iascii;
+  PetscBool              iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = MPI_Comm_rank(((PetscObject)ctx)->comm,&rank);CHKERRQ(ierr);
     ierr = PetscViewerGetFormat(viewer,&format);CHKERRQ(ierr);
@@ -45,6 +44,7 @@ PetscErrorCode VecScatterView_MPI(VecScatter ctx,PetscViewer viewer)
       ierr = PetscViewerASCIIPrintf(viewer,"  Total data sent %D\n",(int)(alldata*to->bs*sizeof(PetscScalar)));CHKERRQ(ierr);
 
     } else { 
+      ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_TRUE);CHKERRQ(ierr);      
       ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] Number sends = %D; Number to self = %D\n",rank,to->n,to->local.n);CHKERRQ(ierr);
       if (to->n) {
         for (i=0; i<to->n; i++){
@@ -52,11 +52,11 @@ PetscErrorCode VecScatterView_MPI(VecScatter ctx,PetscViewer viewer)
         }
         ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Now the indices for all remote sends (in order by process sent to)\n");CHKERRQ(ierr);
         for (i=0; i<to->starts[to->n]; i++){
-          ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d]%D \n",rank,to->indices[i]);CHKERRQ(ierr);
+          ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] %D \n",rank,to->indices[i]);CHKERRQ(ierr);
         }
       }
 
-      ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d]Number receives = %D; Number from self = %D\n",rank,from->n,from->local.n);CHKERRQ(ierr);
+      ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] Number receives = %D; Number from self = %D\n",rank,from->n,from->local.n);CHKERRQ(ierr);
       if (from->n) {
 	for (i=0; i<from->n; i++){
 	  ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] %D length %D from whom %D\n",rank,i,from->starts[i+1]-from->starts[i],from->procs[i]);CHKERRQ(ierr);
@@ -64,21 +64,20 @@ PetscErrorCode VecScatterView_MPI(VecScatter ctx,PetscViewer viewer)
 
 	ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Now the indices for all remote receives (in order by process received from)\n");CHKERRQ(ierr);
 	for (i=0; i<from->starts[from->n]; i++){
-	  ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d]%D \n",rank,from->indices[i]);CHKERRQ(ierr);
+	  ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] %D \n",rank,from->indices[i]);CHKERRQ(ierr);
 	}
       }
       if (to->local.n) {
-        ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d]Indices for local part of scatter\n",rank);CHKERRQ(ierr);
+        ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] Indices for local part of scatter\n",rank);CHKERRQ(ierr);
         for (i=0; i<to->local.n; i++){
-          ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d]From %D to %D \n",rank,from->local.vslots[i],to->local.vslots[i]);CHKERRQ(ierr);
+          ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] From %D to %D \n",rank,from->local.vslots[i],to->local.vslots[i]);CHKERRQ(ierr);
         }
       }
 
       ierr = PetscViewerFlush(viewer);CHKERRQ(ierr);
+      ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_FALSE);CHKERRQ(ierr);      
     }
-  } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for this scatter",((PetscObject)viewer)->type_name);
-  }
+  } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported for this scatter",((PetscObject)viewer)->type_name);
   PetscFunctionReturn(0);
 }  
 
@@ -89,7 +88,7 @@ PetscErrorCode VecScatterView_MPI(VecScatter ctx,PetscViewer viewer)
   then know that we need not perform that portion of the scatter when the vector is
   scattering to itself with INSERT_VALUES.
 
-     This is currently not used but would speed up, for example DALocalToLocalBegin/End()
+     This is currently not used but would speed up, for example DMDALocalToLocalBegin/End()
 
 */
 #undef __FUNCT__  
@@ -155,6 +154,8 @@ PetscErrorCode VecScatterDestroy_PtoP(VecScatter ctx)
     for (i=0; i<to->n; i++) {
       ierr = MPI_Cancel(to->rev_requests+i);CHKERRQ(ierr);
     }
+    ierr = MPI_Waitall(from->n,from->requests,to->rstatus);CHKERRQ(ierr);
+    ierr = MPI_Waitall(to->n,to->rev_requests,to->rstatus);CHKERRQ(ierr);
   }
 
 #if defined(PETSC_HAVE_MPI_ALLTOALLW) && !defined(PETSC_USE_64BIT_INDICES)
@@ -231,7 +232,9 @@ PetscErrorCode VecScatterDestroy_PtoP(VecScatter ctx)
   ierr = PetscFree4(from->values,from->indices,from->starts,from->procs);CHKERRQ(ierr);
   ierr = PetscFree(from);CHKERRQ(ierr);
   ierr = PetscFree(to);CHKERRQ(ierr);
-  ierr = PetscHeaderDestroy(ctx);CHKERRQ(ierr);
+#if defined(PETSC_HAVE_CUSP)
+  ierr = PetscCUSPIndicesDestroy((PetscCUSPIndices*)&ctx->spptr);CHKERRQ(ierr);
+#endif
   PetscFunctionReturn(0);
 }
 
@@ -346,7 +349,7 @@ PetscErrorCode VecScatterCopy_PtoP_X(VecScatter in,VecScatter out)
     PetscInt    *sstarts = out_to->starts,  *rstarts = out_from->starts;
     PetscMPIInt *sprocs  = out_to->procs,   *rprocs  = out_from->procs;
     PetscInt    i;
-    PetscTruth  flg;
+    PetscBool   flg;
     MPI_Request *swaits  = out_to->requests,*rwaits  = out_from->requests;
     MPI_Request *rev_swaits,*rev_rwaits;
     PetscScalar *Ssvalues = out_to->values, *Srvalues = out_from->values;
@@ -368,7 +371,7 @@ PetscErrorCode VecScatterCopy_PtoP_X(VecScatter in,VecScatter out)
     }
 
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_rsend",&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_rsend",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       out_to->use_readyreceiver    = PETSC_TRUE;
       out_from->use_readyreceiver  = PETSC_TRUE;
@@ -382,7 +385,7 @@ PetscErrorCode VecScatterCopy_PtoP_X(VecScatter in,VecScatter out)
       out_to->use_readyreceiver    = PETSC_FALSE;
       out_from->use_readyreceiver  = PETSC_FALSE;
       flg                          = PETSC_FALSE;
-      ierr                         = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_ssend",&flg,PETSC_NULL);CHKERRQ(ierr);
+      ierr                         = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_ssend",&flg,PETSC_NULL);CHKERRQ(ierr);
       if (flg) {
         ierr = PetscInfo(in,"Using VecScatter Ssend mode\n");CHKERRQ(ierr);
       }
@@ -499,11 +502,13 @@ PETSC_STATIC_INLINE void UnPack_1(PetscInt n,const PetscScalar *x,const PetscInt
   PetscInt i;
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       y[indicesy[i]] = x[i];
     }
     break;
   case ADD_VALUES: 
+  case ADD_ALL_VALUES: 
     for (i=0; i<n; i++) {
       y[indicesy[i]] += x[i];
     }
@@ -526,11 +531,13 @@ PETSC_STATIC_INLINE void Scatter_1(PetscInt n,const PetscInt *indicesx,const Pet
   PetscInt i;
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       y[indicesy[i]] = x[indicesx[i]];
     }
     break;
   case ADD_VALUES: 
+  case ADD_ALL_VALUES: 
     for (i=0; i<n; i++) {
       y[indicesy[i]] += x[indicesx[i]];
     }
@@ -566,6 +573,7 @@ PETSC_STATIC_INLINE void UnPack_2(PetscInt n,const PetscScalar *x,const PetscInt
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    = x[0];
@@ -574,6 +582,7 @@ PETSC_STATIC_INLINE void UnPack_2(PetscInt n,const PetscScalar *x,const PetscInt
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    += x[0];
@@ -603,6 +612,7 @@ PETSC_STATIC_INLINE void Scatter_2(PetscInt n,const PetscInt *indicesx,const Pet
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -611,6 +621,7 @@ PETSC_STATIC_INLINE void Scatter_2(PetscInt n,const PetscInt *indicesx,const Pet
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -652,6 +663,7 @@ PETSC_STATIC_INLINE void UnPack_3(PetscInt n,const PetscScalar *x,const PetscInt
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    = x[0];
@@ -661,6 +673,7 @@ PETSC_STATIC_INLINE void UnPack_3(PetscInt n,const PetscScalar *x,const PetscInt
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    += x[0];
@@ -692,6 +705,7 @@ PETSC_STATIC_INLINE void Scatter_3(PetscInt n,const PetscInt *indicesx,const Pet
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -701,6 +715,7 @@ PETSC_STATIC_INLINE void Scatter_3(PetscInt n,const PetscInt *indicesx,const Pet
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -745,6 +760,7 @@ PETSC_STATIC_INLINE void UnPack_4(PetscInt n,const PetscScalar *x,const PetscInt
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    = x[0];
@@ -755,6 +771,7 @@ PETSC_STATIC_INLINE void UnPack_4(PetscInt n,const PetscScalar *x,const PetscInt
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    += x[0];
@@ -788,6 +805,7 @@ PETSC_STATIC_INLINE void Scatter_4(PetscInt n,const PetscInt *indicesx,const Pet
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -798,6 +816,7 @@ PETSC_STATIC_INLINE void Scatter_4(PetscInt n,const PetscInt *indicesx,const Pet
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -845,6 +864,7 @@ PETSC_STATIC_INLINE void UnPack_5(PetscInt n,const PetscScalar *x,const PetscInt
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    = x[0];
@@ -856,6 +876,7 @@ PETSC_STATIC_INLINE void UnPack_5(PetscInt n,const PetscScalar *x,const PetscInt
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    += x[0];
@@ -891,6 +912,7 @@ PETSC_STATIC_INLINE void Scatter_5(PetscInt n,const PetscInt *indicesx,const Pet
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -902,6 +924,7 @@ PETSC_STATIC_INLINE void Scatter_5(PetscInt n,const PetscInt *indicesx,const Pet
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -952,6 +975,7 @@ PETSC_STATIC_INLINE void UnPack_6(PetscInt n,const PetscScalar *x,const PetscInt
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    = x[0];
@@ -964,6 +988,7 @@ PETSC_STATIC_INLINE void UnPack_6(PetscInt n,const PetscScalar *x,const PetscInt
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    += x[0];
@@ -1001,6 +1026,7 @@ PETSC_STATIC_INLINE void Scatter_6(PetscInt n,const PetscInt *indicesx,const Pet
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -1013,6 +1039,7 @@ PETSC_STATIC_INLINE void Scatter_6(PetscInt n,const PetscInt *indicesx,const Pet
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -1066,6 +1093,7 @@ PETSC_STATIC_INLINE void UnPack_7(PetscInt n,const PetscScalar *x,const PetscInt
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    = x[0];
@@ -1079,6 +1107,7 @@ PETSC_STATIC_INLINE void UnPack_7(PetscInt n,const PetscScalar *x,const PetscInt
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    += x[0];
@@ -1118,6 +1147,7 @@ PETSC_STATIC_INLINE void Scatter_7(PetscInt n,const PetscInt *indicesx,const Pet
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -1131,6 +1161,7 @@ PETSC_STATIC_INLINE void Scatter_7(PetscInt n,const PetscInt *indicesx,const Pet
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -1187,6 +1218,7 @@ PETSC_STATIC_INLINE void UnPack_8(PetscInt n,const PetscScalar *x,const PetscInt
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    = x[0];
@@ -1201,6 +1233,7 @@ PETSC_STATIC_INLINE void UnPack_8(PetscInt n,const PetscScalar *x,const PetscInt
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    += x[0];
@@ -1242,6 +1275,7 @@ PETSC_STATIC_INLINE void Scatter_8(PetscInt n,const PetscInt *indicesx,const Pet
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -1256,6 +1290,7 @@ PETSC_STATIC_INLINE void Scatter_8(PetscInt n,const PetscInt *indicesx,const Pet
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -1319,6 +1354,7 @@ PETSC_STATIC_INLINE void UnPack_12(PetscInt n,const PetscScalar *x,const PetscIn
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    = x[0];
@@ -1337,6 +1373,7 @@ PETSC_STATIC_INLINE void UnPack_12(PetscInt n,const PetscScalar *x,const PetscIn
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idy       = *indicesy++;
       y[idy]    += x[0];
@@ -1386,6 +1423,7 @@ PETSC_STATIC_INLINE void Scatter_12(PetscInt n,const PetscInt *indicesx,const Pe
 
   switch (addv) {
   case INSERT_VALUES: 
+  case INSERT_ALL_VALUES: 
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -1404,6 +1442,7 @@ PETSC_STATIC_INLINE void Scatter_12(PetscInt n,const PetscInt *indicesx,const Pe
     }
     break;
   case ADD_VALUES:
+  case ADD_ALL_VALUES:
     for (i=0; i<n; i++) {
       idx       = *indicesx++;
       idy       = *indicesy++;
@@ -1449,23 +1488,23 @@ PETSC_STATIC_INLINE void Scatter_12(PetscInt n,const PetscInt *indicesx,const Pe
 
 /* Create the VecScatterBegin/End_P for our chosen block sizes */
 #define BS 1
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 #define BS 2
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 #define BS 3
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 #define BS 4
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 #define BS 5
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 #define BS 6
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 #define BS 7
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 #define BS 8
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 #define BS 12
-#include "../src/vec/vec/utils/vpscat.h"
+#include <../src/vec/vec/utils/vpscat.h>
 
 /* ==========================================================================================*/
 
@@ -1517,7 +1556,7 @@ PetscErrorCode VecScatterCreateLocal(VecScatter ctx,PetscInt nsends,const PetscI
   ierr = PetscMalloc2(PetscMax(to->n,nrecvs),MPI_Status,&to->sstatus,PetscMax(to->n,nrecvs),MPI_Status,&to->rstatus);CHKERRQ(ierr);
   to->starts[0] = 0;
   for(n = 0; n < to->n; n++) {
-    if (sendSizes[n] <=0 ) SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE,"sendSizes[n=%D] = %D cannot be less than 1",n,sendSizes[n]);
+    if (sendSizes[n] <=0 ) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"sendSizes[n=%D] = %D cannot be less than 1",n,sendSizes[n]);
     to->starts[n+1] = to->starts[n] + sendSizes[n];
     to->procs[n] = sendProcs[n];
     for(i = to->starts[n]; i < to->starts[n]+sendSizes[n]; i++) {
@@ -1534,7 +1573,7 @@ PetscErrorCode VecScatterCreateLocal(VecScatter ctx,PetscInt nsends,const PetscI
   ierr = PetscMalloc4(bs*recvSize,PetscScalar,&from->values,recvSize,PetscInt,&from->indices,from->n+1,PetscInt,&from->starts,from->n,PetscMPIInt,&from->procs);CHKERRQ(ierr);
   from->starts[0] = 0;
   for(n = 0; n < from->n; n++) {
-    if (recvSizes[n] <=0 ) SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE,"recvSizes[n=%D] = %D cannot be less than 1",n,recvSizes[n]);
+    if (recvSizes[n] <=0 ) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"recvSizes[n=%D] = %D cannot be less than 1",n,recvSizes[n]);
     from->starts[n+1] = from->starts[n] + recvSizes[n];
     from->procs[n] = recvProcs[n];
     for(i = from->starts[n]; i < from->starts[n]+recvSizes[n]; i++) {
@@ -1559,7 +1598,10 @@ PetscErrorCode VecScatterCreateLocal(VecScatter ctx,PetscInt nsends,const PetscI
   to->type   = VEC_SCATTER_MPI_GENERAL; 
   from->bs = bs;
   to->bs   = bs;
-  ierr = VecScatterCreateCommon_PtoS(from, to, ctx); CHKERRQ(ierr);
+  ierr = VecScatterCreateCommon_PtoS(from, to, ctx);CHKERRQ(ierr);
+
+  /* mark lengths as negative so it won't check local vector lengths */
+  ctx->from_n = ctx->to_n = -1;
   PetscFunctionReturn(0);
 }
 
@@ -1598,10 +1640,11 @@ PetscErrorCode VecScatterCreate_PtoS(PetscInt nx,const PetscInt *inidx,PetscInt 
   /*  first count number of contributors to each processor */
   ierr = PetscMalloc2(size,PetscMPIInt,&nprocs,nx,PetscInt,&owner);CHKERRQ(ierr);
   ierr = PetscMemzero(nprocs,size*sizeof(PetscMPIInt));CHKERRQ(ierr);
+
   j      = 0;
   nsends = 0;
   for (i=0; i<nx; i++) {
-    idx = inidx[i];
+    idx = bs*inidx[i];
     if (idx < owners[j]) j = 0;
     for (; j<size; j++) {
       if (idx < owners[j+1]) {
@@ -1611,6 +1654,7 @@ PetscErrorCode VecScatterCreate_PtoS(PetscInt nx,const PetscInt *inidx,PetscInt 
       }
     }
   }
+
   nprocslocal  = nprocs[rank]; 
   nprocs[rank] = 0;
   if (nprocslocal) nsends--;
@@ -1633,14 +1677,14 @@ PetscErrorCode VecScatterCreate_PtoS(PetscInt nx,const PetscInt *inidx,PetscInt 
      the ith processor
   */
   ierr = PetscMalloc3(nx,PetscInt,&svalues,nsends,MPI_Request,&send_waits,size+1,PetscInt,&starts);CHKERRQ(ierr);
+
   starts[0]  = 0; 
   for (i=1; i<size; i++) { starts[i] = starts[i-1] + nprocs[i-1];} 
   for (i=0; i<nx; i++) {
     if (owner[i] != rank) {
-      svalues[starts[owner[i]]++] = inidx[i];
+      svalues[starts[owner[i]]++] = bs*inidx[i];
     }
   }
-
   starts[0] = 0;
   for (i=1; i<size+1; i++) { starts[i] = starts[i-1] + nprocs[i-1];} 
   count = 0;
@@ -1661,7 +1705,7 @@ PetscErrorCode VecScatterCreate_PtoS(PetscInt nx,const PetscInt *inidx,PetscInt 
     count--;
   }
 
-  if (slen != recvtotal) SETERRQ2(PETSC_ERR_PLIB,"Total message lengths %D not expected %D",slen,recvtotal);
+  if (slen != recvtotal) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Total message lengths %D not expected %D",slen,recvtotal);
  
   /* allocate entire send scatter context */
   ierr  = PetscNewLog(ctx,VecScatter_MPI_General,&to);CHKERRQ(ierr);
@@ -1712,8 +1756,8 @@ PetscErrorCode VecScatterCreate_PtoS(PetscInt nx,const PetscInt *inidx,PetscInt 
 
   for (i=0; i<nx; i++) {
     if (owner[i] != rank) {
-      from->indices[start[lowner[owner[i]]]++] = inidy[i];
-      if (inidy[i] >= lengthy) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Scattering past end of TO vector");
+      from->indices[start[lowner[owner[i]]]++] = bs*inidy[i];
+      if (bs*inidy[i] >= lengthy) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Scattering past end of TO vector");
     }
   }
   ierr = PetscFree2(lowner,start);CHKERRQ(ierr);
@@ -1734,11 +1778,11 @@ PetscErrorCode VecScatterCreate_PtoS(PetscInt nx,const PetscInt *inidx,PetscInt 
     ierr = PetscMalloc(nt*sizeof(PetscInt),&from->local.vslots);CHKERRQ(ierr);
     nt   = 0;
     for (i=0; i<nx; i++) {
-      idx = inidx[i];
+      idx = bs*inidx[i];
       if (idx >= owners[rank] && idx < owners[rank+1]) {
         to->local.vslots[nt]     = idx - owners[rank];        
-        from->local.vslots[nt++] = inidy[i];        
-        if (inidy[i] >= lengthy) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Scattering past end of TO vector");
+        from->local.vslots[nt++] = bs*inidy[i];        
+        if (bs*inidy[i] >= lengthy) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Scattering past end of TO vector");
       }
     }
   } else { 
@@ -1783,8 +1827,8 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
 
   ctx->reproduce = PETSC_FALSE;
   to->sendfirst  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_reproduce",&ctx->reproduce,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_sendfirst",&to->sendfirst,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_reproduce",&ctx->reproduce,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_sendfirst",&to->sendfirst,PETSC_NULL);CHKERRQ(ierr);
   from->sendfirst = to->sendfirst;
 
   ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr);
@@ -1800,13 +1844,13 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
   }
 
   to->use_alltoallv = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_alltoall",&to->use_alltoallv,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_alltoall",&to->use_alltoallv,PETSC_NULL);CHKERRQ(ierr);
   from->use_alltoallv = to->use_alltoallv;
   if (from->use_alltoallv) PetscInfo(ctx,"Using MPI_Alltoallv() for scatter\n");
 #if defined(PETSC_HAVE_MPI_ALLTOALLW)  && !defined(PETSC_USE_64BIT_INDICES)
   if (to->use_alltoallv) {
     to->use_alltoallw = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_nopack",&to->use_alltoallw,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_nopack",&to->use_alltoallw,PETSC_NULL);CHKERRQ(ierr);
   }
   from->use_alltoallw = to->use_alltoallw;
   if (from->use_alltoallw) PetscInfo(ctx,"Using MPI_Alltoallw() for scatter\n");
@@ -1814,7 +1858,7 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
 
 #if defined(PETSC_HAVE_MPI_WIN_CREATE)
   to->use_window = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_window",&to->use_window,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_window",&to->use_window,PETSC_NULL);CHKERRQ(ierr);
   from->use_window = to->use_window;
 #endif
 
@@ -1896,7 +1940,7 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
     ierr = PetscObjectGetNewTag((PetscObject)ctx,&temptag);CHKERRQ(ierr);
     winsize = (to->n ? to->starts[to->n] : 0)*bs*sizeof(PetscScalar);
     ierr = MPI_Win_create(to->values ? to->values : MPI_BOTTOM,winsize,sizeof(PetscScalar),MPI_INFO_NULL,comm,&to->window);CHKERRQ(ierr); 
-    ierr = PetscMalloc(to->n,&to->winstarts);CHKERRQ(ierr);
+    ierr = PetscMalloc(to->n*sizeof(PetscInt),&to->winstarts);CHKERRQ(ierr);
     ierr = PetscMalloc2(to->n,MPI_Request,&request,to->n,MPI_Status,&status);CHKERRQ(ierr);
     for (i=0; i<to->n; i++) {
       ierr = MPI_Irecv(to->winstarts+i,1,MPIU_INT,to->procs[i],temptag,comm,request+i);CHKERRQ(ierr);
@@ -1909,7 +1953,7 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
 
     winsize = (from->n ? from->starts[from->n] : 0)*bs*sizeof(PetscScalar);
     ierr = MPI_Win_create(from->values ? from->values : MPI_BOTTOM,winsize,sizeof(PetscScalar),MPI_INFO_NULL,comm,&from->window);CHKERRQ(ierr); 
-    ierr = PetscMalloc(from->n,&from->winstarts);CHKERRQ(ierr);
+    ierr = PetscMalloc(from->n*sizeof(PetscInt),&from->winstarts);CHKERRQ(ierr);
     ierr = PetscMalloc2(from->n,MPI_Request,&request,from->n,MPI_Status,&status);CHKERRQ(ierr);
     for (i=0; i<from->n; i++) {
       ierr = MPI_Irecv(from->winstarts+i,1,MPIU_INT,from->procs[i],temptag,comm,request+i);CHKERRQ(ierr);
@@ -1921,7 +1965,7 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
     ierr = PetscFree2(request,status);CHKERRQ(ierr);
 #endif
   } else {
-    PetscTruth  use_rsend = PETSC_FALSE, use_ssend = PETSC_FALSE;
+    PetscBool   use_rsend = PETSC_FALSE, use_ssend = PETSC_FALSE;
     PetscInt    *sstarts = to->starts,  *rstarts = from->starts;
     PetscMPIInt *sprocs  = to->procs,   *rprocs  = from->procs;
     MPI_Request *swaits  = to->requests,*rwaits  = from->requests;
@@ -1935,8 +1979,8 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
     from->rev_requests = rev_swaits;
 
     /* Register the receives that you will use later (sends for scatter reverse) */
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_rsend",&use_rsend,PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-vecscatter_ssend",&use_ssend,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_rsend",&use_rsend,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-vecscatter_ssend",&use_ssend,PETSC_NULL);CHKERRQ(ierr);
     if (use_rsend) {
       ierr = PetscInfo(ctx,"Using VecScatter ready receiver mode\n");CHKERRQ(ierr);
       to->use_readyreceiver    = PETSC_TRUE;
@@ -2022,7 +2066,7 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
     ctx->end       = VecScatterEnd_1; 
     break;
   default:
-    SETERRQ(PETSC_ERR_SUP,"Blocksize not supported");
+    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Blocksize not supported");
   }
   ctx->view      = VecScatterView_MPI;
   /* Check if the local scatter is actually a copy; important special case */
@@ -2073,7 +2117,7 @@ PetscErrorCode VecScatterCreate_StoP(PetscInt nx,const PetscInt *inidx,PetscInt 
 /* ---------------------------------------------------------------------------------*/
 #undef __FUNCT__  
 #define __FUNCT__ "VecScatterCreate_PtoP"
-PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt ny,const PetscInt *inidy,Vec xin,Vec yin,VecScatter ctx)
+PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt ny,const PetscInt *inidy,Vec xin,Vec yin,PetscInt bs,VecScatter ctx)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size,rank,tag,imdex,n;
@@ -2086,9 +2130,9 @@ PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt 
   MPI_Comm       comm;
   MPI_Request    *send_waits = PETSC_NULL,*recv_waits = PETSC_NULL;
   MPI_Status     recv_status,*send_status = PETSC_NULL;
-  PetscTruth     duplicate = PETSC_FALSE;
+  PetscBool      duplicate = PETSC_FALSE;
 #if defined(PETSC_USE_DEBUG)
-  PetscTruth     found = PETSC_FALSE;
+  PetscBool      found = PETSC_FALSE;
 #endif
 
   PetscFunctionBegin;
@@ -2097,7 +2141,7 @@ PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt 
   ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr);
   ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr);
   if (size == 1) {
-    ierr = VecScatterCreate_StoP(nx,inidx,ny,inidy,xin,yin,1,ctx);CHKERRQ(ierr);
+    ierr = VecScatterCreate_StoP(nx,inidx,ny,inidy,xin,yin,bs,ctx);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
 
@@ -2112,7 +2156,7 @@ PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt 
   j       = 0;
   for (i=0; i<nx; i++) {
     /* if indices are NOT locally sorted, need to start search at the beginning */
-    if (lastidx > (idx = inidx[i])) j = 0;
+    if (lastidx > (idx = bs*inidx[i])) j = 0;
     lastidx = idx;
     for (; j<size; j++) {
       if (idx >= owners[j] && idx < owners[j+1]) {
@@ -2125,7 +2169,7 @@ PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt 
       }
     }
 #if defined(PETSC_USE_DEBUG)
-    if (!found) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"Index %D out of range",idx);
+    if (!found) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Index %D out of range",idx);
     found = PETSC_FALSE;
 #endif
   }
@@ -2154,8 +2198,8 @@ PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt 
   starts[0]= 0; 
   for (i=1; i<size; i++) { starts[i] = starts[i-1] + nprocs[i-1];} 
   for (i=0; i<nx; i++) {
-    svalues[2*starts[owner[i]]]       = inidx[i];
-    svalues[1 + 2*starts[owner[i]]++] = inidy[i];
+    svalues[2*starts[owner[i]]]       = bs*inidx[i];
+    svalues[1 + 2*starts[owner[i]]++] = bs*inidy[i];
   }
 
   starts[0] = 0;
@@ -2179,7 +2223,7 @@ PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt 
     slen += n/2;
     count--;
   }
-  if (slen != recvtotal) SETERRQ2(PETSC_ERR_PLIB,"Total message lengths %D not as expected %D",slen,recvtotal);
+  if (slen != recvtotal) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Total message lengths %D not as expected %D",slen,recvtotal);
   
   ierr  = PetscMalloc2(slen,PetscInt,&local_inidx,slen,PetscInt,&local_inidy);CHKERRQ(ierr);
   base  = owners[rank];
@@ -2236,7 +2280,7 @@ PetscErrorCode VecScatterCreate_PtoP(PetscInt nx,const PetscInt *inidx,PetscInt 
   if (duplicate) {
     ierr = PetscInfo(ctx,"Duplicate from to indices passed in VecScatterCreate(), they are ignored\n");CHKERRQ(ierr);
   }
-  ierr = VecScatterCreate_StoP(slen,local_inidx,slen,local_inidy,xin,yin,1,ctx);CHKERRQ(ierr);
+  ierr = VecScatterCreate_StoP(slen,local_inidx,slen,local_inidy,xin,yin,bs,ctx);CHKERRQ(ierr);
   ierr = PetscFree2(local_inidx,local_inidy);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

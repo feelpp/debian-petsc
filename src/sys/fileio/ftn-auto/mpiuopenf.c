@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mpiuopen.c */
 /* Fortran interface file */
 
@@ -37,7 +38,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscfclose_(MPI_Fint * comm,FILE *fd, int *__ierr ){
+void PETSC_STDCALL  petscfclose_(MPI_Fint * comm,FILE *fd, int *__ierr ){
 *__ierr = PetscFClose(
 	MPI_Comm_f2c( *(comm) ),
 	(FILE* )PetscToPointer((fd) ));

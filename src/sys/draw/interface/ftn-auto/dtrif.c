@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dtri.c */
 /* Fortran interface file */
 
@@ -48,16 +49,16 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawtriangle_(PetscDraw draw,PetscReal *x1,PetscReal *y_1,PetscReal *x2,PetscReal *y2,PetscReal *x3,PetscReal *y3,
+void PETSC_STDCALL  petscdrawtriangle_(PetscDraw draw,PetscReal *x1,PetscReal *y_1,PetscReal *x2,PetscReal *y2,PetscReal *x3,PetscReal *y3,
                  int *c1,int *c2,int *c3, int *__ierr ){
 *__ierr = PetscDrawTriangle(
 	(PetscDraw)PetscToPointer((draw) ),*x1,*y_1,*x2,*y2,*x3,*y3,*c1,*c2,*c3);
 }
-void PETSC_STDCALL   petscdrawscalepopup_(PetscDraw popup,PetscReal *min,PetscReal *max, int *__ierr ){
+void PETSC_STDCALL  petscdrawscalepopup_(PetscDraw popup,PetscReal *min,PetscReal *max, int *__ierr ){
 *__ierr = PetscDrawScalePopup(
 	(PetscDraw)PetscToPointer((popup) ),*min,*max);
 }
-void PETSC_STDCALL   petscdrawtensorcontourpatch_(PetscDraw draw,int *m,int *n,PetscReal *x,PetscReal *y,PetscReal *max,PetscReal *min,PetscReal *v, int *__ierr ){
+void PETSC_STDCALL  petscdrawtensorcontourpatch_(PetscDraw draw,int *m,int *n,PetscReal *x,PetscReal *y,PetscReal *max,PetscReal *min,PetscReal *v, int *__ierr ){
 *__ierr = PetscDrawTensorContourPatch(
 	(PetscDraw)PetscToPointer((draw) ),*m,*n,x,y,*max,*min,v);
 }

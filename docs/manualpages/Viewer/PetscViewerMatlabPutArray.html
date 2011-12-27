@@ -6,10 +6,10 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscViewerMatlabPutArray"><H1>PetscViewerMatlabPutArray</H1></A>
-Puts an array into the Matlab viewer. 
+Puts an array into the MATLAB viewer. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscViewerMatlabPutArray(PetscViewer mfile,int m,int n,PetscScalar *array,char *name)
+PetscErrorCode  PetscViewerMatlabPutArray(PetscViewer mfile,int m,int n,const PetscScalar *array,const char *name)
 </PRE>
 Not collective: only processor zero saves the array
 <P>

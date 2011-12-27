@@ -18,15 +18,17 @@ class Configure(config.base.Configure):
   def setupHelp(self, help):
     import nargs
     help.addArgument('Compiler Flags', '-optionsModule=<module name>', nargs.Arg(None, 'config.compilerOptions', 'The Python module used to determine compiler options and versions'))
-    help.addArgument('Compiler Flags', '-with-debugging=<yes or no>', nargs.ArgBool(None, 1, 'Specify debugging version of libraries'))
-    help.addArgument('Compiler Flags', '-C_VERSION',   nargs.Arg(None, 'Unknown', 'The version of the C compiler'))
-    help.addArgument('Compiler Flags', '-CXX_VERSION', nargs.Arg(None, 'Unknown', 'The version of the C++ compiler'))
-    help.addArgument('Compiler Flags', '-FC_VERSION',  nargs.Arg(None, 'Unknown', 'The version of the Fortran compiler'))
-    help.addArgument('Compiler Flags', '-COPTFLAGS',   nargs.Arg(None, None, 'Override the debugging/optimization flags for the C compiler'))
-    help.addArgument('Compiler Flags', '-CXXOPTFLAGS', nargs.Arg(None, None, 'Override the debugging/optimization flags for the C++ compiler'))
-    help.addArgument('Compiler Flags', '-FOPTFLAGS',   nargs.Arg(None, None, 'Override the debugging/optimization flags for the Fortran compiler'))
+    help.addArgument('Compiler Flags', '-with-debugging=<bool>', nargs.ArgBool(None, 1, 'Specify debugging version of libraries'))
+    help.addArgument('Compiler Flags', '-C_VERSION=<string>',   nargs.Arg(None, 'Unknown', 'The version of the C compiler'))
+    help.addArgument('Compiler Flags', '-CXX_VERSION=<string>', nargs.Arg(None, 'Unknown', 'The version of the C++ compiler'))
+    help.addArgument('Compiler Flags', '-FC_VERSION=<string>',  nargs.Arg(None, 'Unknown', 'The version of the Fortran compiler'))
+    help.addArgument('Compiler Flags', '-CUDA_VERSION=<string>',nargs.Arg(None, 'Unknown', 'The version of the CUDA compiler'))
+    help.addArgument('Compiler Flags', '-COPTFLAGS=<string>',   nargs.Arg(None, None, 'Override the debugging/optimization flags for the C compiler'))
+    help.addArgument('Compiler Flags', '-CXXOPTFLAGS=<string>', nargs.Arg(None, None, 'Override the debugging/optimization flags for the C++ compiler'))
+    help.addArgument('Compiler Flags', '-FOPTFLAGS=<string>',   nargs.Arg(None, None, 'Override the debugging/optimization flags for the Fortran compiler'))
+    help.addArgument('Compiler Flags', '-CUDAOPTFLAGS=<string>',   nargs.Arg(None, None, 'Override the debugging/optimization flags for the CUDA compiler'))
     # not sure where to put this, currently gcov is handled in ../compilerOptions.py
-    help.addArgument('Compiler Flags', '-with-gcov=<yes or no>', nargs.ArgBool(None, 0, 'Specify that GNUs coverage tool gcov is used'))
+    help.addArgument('Compiler Flags', '-with-gcov=<bool>', nargs.ArgBool(None, 0, 'Specify that GNUs coverage tool gcov is used'))
     return
 
   def setupDependencies(self, framework):
@@ -44,6 +46,8 @@ class Configure(config.base.Configure):
         flagsArg = 'CXXOPTFLAGS'
     elif language == 'FC':
       flagsArg = 'FOPTFLAGS'
+    elif language == 'CUDA':
+      flagsArg = 'CUDAOPTFLAGS'
     else:
       raise RuntimeError('Unknown language: '+language)
     return flagsArg
@@ -69,7 +73,7 @@ class Configure(config.base.Configure):
     options = self.getOptionsObject()
     if not options:
       return
-    for language, compiler in [('C', 'CC'), ('Cxx', 'CXX'), ('FC', 'FC')]:
+    for language, compiler in [('C', 'CC'), ('Cxx', 'CXX'), ('FC', 'FC'), ('CUDA', 'CUDAC')]:
       if not hasattr(self.setCompilers, compiler):
         continue
       self.setCompilers.pushLanguage(language)
@@ -84,7 +88,7 @@ class Configure(config.base.Configure):
         self.rejected[language] = []
         for bopt in bopts:
           if not bopt == '' and self.getOptionalFlagsName(language) in self.framework.argDB:
-            # treat user supplied optons as single option - as it coud include options separated by spaces '-tp k8-64'
+            # treat user supplied options as single option - as it could include options separated by spaces '-tp k8-64'
             flags = [self.framework.argDB[self.getOptionalFlagsName(language)]]
           elif bopt == '' and self.getCompilerFlagsName(language) in self.framework.argDB and self.framework.argDB[self.getCompilerFlagsName(language)] != '':
             self.logPrint('Ignoring default options which were overridden using --'+self.getCompilerFlagsName(language)+ ' ' + self.framework.argDB[self.getCompilerFlagsName(language)])

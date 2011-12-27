@@ -10,7 +10,7 @@ Sets a local-to-global numbering for use by the routine <A HREF="../Mat/MatSetVa
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatSetLocalToGlobalMappingBlock(Mat x,ISLocalToGlobalMapping mapping)
+PetscErrorCode  MatSetLocalToGlobalMappingBlock(Mat x,ISLocalToGlobalMapping rmapping,ISLocalToGlobalMapping cmapping)
 </PRE>
 Not Collective
 <P>
@@ -18,8 +18,10 @@ Not Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- the matrix
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mapping </B></TD><TD>- mapping created with <A HREF="../IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>() or
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rmapping </B></TD><TD>- row mapping created with <A HREF="../IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>() or
 <A HREF="../IS/ISLocalToGlobalMappingCreateIS.html#ISLocalToGlobalMappingCreateIS">ISLocalToGlobalMappingCreateIS</A>()
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cmapping </B></TD><TD>- column mapping
 </TD></TR></TABLE>
 <P>
 

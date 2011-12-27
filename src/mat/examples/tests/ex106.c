@@ -3,7 +3,7 @@ static char help[] = "Test repeated LU factorizations. Used for checking memory 
   -m <size> : problem size\n\
   -mat_nonsym : use nonsymmetric matrix (default is symmetric)\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 #undef __FUNCT__
 #define __FUNCT__ "main"
 int main(int argc,char **args)
@@ -16,7 +16,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscInt       i,j,m = 3,n = 2,its;
   PetscMPIInt    size,rank;
-  PetscTruth     mat_nonsymmetric;
+  PetscBool      mat_nonsymmetric;
   PetscInt       its_max;
   MatFactorInfo  factinfo;
   IS             perm,iperm;
@@ -127,20 +127,20 @@ int main(int argc,char **args)
   /* Compute right-hand-side vector */
   ierr = MatMult(C,u,b);CHKERRQ(ierr);
 
-  ierr = MatGetOrdering(C,MATORDERING_NATURAL,&perm,&iperm);CHKERRQ(ierr);
+  ierr = MatGetOrdering(C,MATORDERINGNATURAL,&perm,&iperm);CHKERRQ(ierr);
   its_max = 2000;
   for (i=0; i<its_max; i++){
     /* printf(" it %d\n",i); */
-    ierr = MatGetFactor(C,MAT_SOLVER_PETSC,MAT_FACTOR_LU,&F);CHKERRQ(ierr);
+    ierr = MatGetFactor(C,MATSOLVERPETSC,MAT_FACTOR_LU,&F);CHKERRQ(ierr);
     ierr = MatLUFactorSymbolic(F,C,perm,iperm,&factinfo);CHKERRQ(ierr);
     for (j=0; j<1; j++){
       ierr = MatLUFactorNumeric(F,C,&factinfo);CHKERRQ(ierr);
     }
     ierr = MatSolve(F,b,x);CHKERRQ(ierr);
-    ierr = MatDestroy(F);CHKERRQ(ierr);
+    ierr = MatDestroy(&F);CHKERRQ(ierr);
   } 
-  ierr = ISDestroy(perm);CHKERRQ(ierr);
-  ierr = ISDestroy(iperm);CHKERRQ(ierr);
+  ierr = ISDestroy(&perm);CHKERRQ(ierr);
+  ierr = ISDestroy(&iperm);CHKERRQ(ierr);
 
   /* Check the error */
   ierr = VecAXPY(x,none,u);CHKERRQ(ierr);
@@ -148,11 +148,11 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %A\n",norm);CHKERRQ(ierr);
 
   /* Free work space. */
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

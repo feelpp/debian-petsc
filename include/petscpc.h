@@ -3,10 +3,10 @@
 */
 #if !defined(__PETSCPC_H)
 #define __PETSCPC_H
-#include "petscmat.h"
+#include "petscdm.h"
 PETSC_EXTERN_CXX_BEGIN
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT  PCInitializePackage(const char[]);
+extern PetscErrorCode   PCInitializePackage(const char[]);
 
 /*
     PCList contains the list of preconditioners currently registered
@@ -25,7 +25,7 @@ extern PetscFList PCList;
 S*/
 typedef struct _p_PC* PC;
 
-/*E
+/*J
     PCType - String with the name of a PETSc preconditioner method or the creation function
        with an optional dynamic library name, for example
        http://www.mcs.anl.gov/petsc/lib.a:mypccreate()
@@ -35,7 +35,7 @@ typedef struct _p_PC* PC;
    Notes: Click on the links below to see details on a particular solver
 
 .seealso: PCSetType(), PC, PCCreate()
-E*/
+J*/
 #define PCType char*
 #define PCNONE            "none"
 #define PCJACOBI          "jacobi"
@@ -48,6 +48,7 @@ E*/
 #define PCILU             "ilu"
 #define PCICC             "icc"
 #define PCASM             "asm"
+#define PCGASM            "gasm"
 #define PCKSP             "ksp"
 #define PCCOMPOSITE       "composite"
 #define PCREDUNDANT       "redundant"
@@ -57,13 +58,14 @@ E*/
 #define PCPBJACOBI        "pbjacobi"
 #define PCMAT             "mat"
 #define PCHYPRE           "hypre"
+#define PCPARMS           "parms"
 #define PCFIELDSPLIT      "fieldsplit"
 #define PCTFS             "tfs"
 #define PCML              "ml"
 #define PCPROMETHEUS      "prometheus"
 #define PCGALERKIN        "galerkin"
 #define PCEXOTIC          "exotic"
-#define PCOPENMP          "openmp"
+#define PCHMPI            "hmpi"
 #define PCSUPPORTGRAPH    "supportgraph"
 #define PCASA             "asa"
 #define PCCP              "cp"
@@ -73,9 +75,15 @@ E*/
 #define PCPFMG            "pfmg"
 #define PCSYSPFMG         "syspfmg"
 #define PCREDISTRIBUTE    "redistribute"
+#define PCSACUSP          "sacusp"
+#define PCSACUSPPOLY      "sacusppoly"
+#define PCBICGSTABCUSP    "bicgstabcusp"
+#define PCSVD             "svd"
+#define PCAINVCUSP        "ainvcusp"
+#define PCGAMG            "gamg"
 
 /* Logging support */
-extern PetscCookie PETSCKSP_DLLEXPORT PC_COOKIE;
+extern PetscClassId  PC_CLASSID;
 
 /*E
     PCSide - If the preconditioner is to be applied to the left, right
@@ -85,20 +93,21 @@ extern PetscCookie PETSCKSP_DLLEXPORT PC_COOKIE;
 
 .seealso: 
 E*/
-typedef enum { PC_LEFT,PC_RIGHT,PC_SYMMETRIC } PCSide;
+typedef enum { PC_SIDE_DEFAULT=-1,PC_LEFT,PC_RIGHT,PC_SYMMETRIC} PCSide;
+#define PC_SIDE_MAX (PC_SYMMETRIC + 1)
 extern const char *PCSides[];
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCCreate(MPI_Comm,PC*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetType(PC,const PCType);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetUp(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetUpOnBlocks(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApply(PC,Vec,Vec);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApplySymmetricLeft(PC,Vec,Vec);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApplySymmetricRight(PC,Vec,Vec);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorAB(PC,PCSide,Vec,Vec,Vec);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApplyTranspose(PC,Vec,Vec);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApplyTransposeExists(PC,PetscTruth*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorABTranspose(PC,PCSide,Vec,Vec,Vec);
+extern PetscErrorCode  PCCreate(MPI_Comm,PC*);
+extern PetscErrorCode  PCSetType(PC,const PCType);
+extern PetscErrorCode  PCSetUp(PC);
+extern PetscErrorCode  PCSetUpOnBlocks(PC);
+extern PetscErrorCode  PCApply(PC,Vec,Vec);
+extern PetscErrorCode  PCApplySymmetricLeft(PC,Vec,Vec);
+extern PetscErrorCode  PCApplySymmetricRight(PC,Vec,Vec);
+extern PetscErrorCode  PCApplyBAorAB(PC,PCSide,Vec,Vec,Vec);
+extern PetscErrorCode  PCApplyTranspose(PC,Vec,Vec);
+extern PetscErrorCode  PCApplyTransposeExists(PC,PetscBool *);
+extern PetscErrorCode  PCApplyBAorABTranspose(PC,PCSide,Vec,Vec,Vec);
 
 /*E
     PCRichardsonConvergedReason - reason a PCApplyRichardson method terminates
@@ -115,21 +124,21 @@ typedef enum {
               PCRICHARDSON_CONVERGED_ITS                =  4,
               PCRICHARDSON_DIVERGED_DTOL                = -4} PCRichardsonConvergedReason;
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApplyRichardson(PC,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal,PetscInt,PetscTruth,PetscInt*,PCRichardsonConvergedReason*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCApplyRichardsonExists(PC,PetscTruth*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetInitialGuessNonzero(PC,PetscTruth);
+extern PetscErrorCode  PCApplyRichardson(PC,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal,PetscInt,PetscBool ,PetscInt*,PCRichardsonConvergedReason*);
+extern PetscErrorCode  PCApplyRichardsonExists(PC,PetscBool *);
+extern PetscErrorCode  PCSetInitialGuessNonzero(PC,PetscBool );
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCRegisterDestroy(void);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCRegisterAll(const char[]);
-extern PetscTruth PCRegisterAllCalled;
+extern PetscErrorCode  PCRegisterDestroy(void);
+extern PetscErrorCode  PCRegisterAll(const char[]);
+extern PetscBool  PCRegisterAllCalled;
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCRegister(const char[],const char[],const char[],PetscErrorCode(*)(PC));
+extern PetscErrorCode  PCRegister(const char[],const char[],const char[],PetscErrorCode(*)(PC));
 
 /*MC
    PCRegisterDynamic - Adds a method to the preconditioner package.
 
    Synopsis:
-   PetscErrorCode PCRegisterDynamic(char *name_solver,char *path,char *name_create,PetscErrorCode (*routine_create)(PC))
+   PetscErrorCode PCRegisterDynamic(const char *name_solver,const char *path,const char *name_create,PetscErrorCode (*routine_create)(PC))
 
    Not collective
 
@@ -172,93 +181,96 @@ M*/
 #define PCRegisterDynamic(a,b,c,d) PCRegister(a,b,c,d)
 #endif
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCDestroy(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetFromOptions(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCGetType(PC,const PCType*);
+extern PetscErrorCode  PCReset(PC);
+extern PetscErrorCode  PCDestroy(PC*);
+extern PetscErrorCode  PCSetFromOptions(PC);
+extern PetscErrorCode  PCGetType(PC,const PCType*);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorGetMatrix(PC,Mat*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetModifySubMatrices(PC,PetscErrorCode(*)(PC,PetscInt,const IS[],const IS[],Mat[],void*),void*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCModifySubMatrices(PC,PetscInt,const IS[],const IS[],Mat[],void*);
+extern PetscErrorCode  PCFactorGetMatrix(PC,Mat*);
+extern PetscErrorCode  PCSetModifySubMatrices(PC,PetscErrorCode(*)(PC,PetscInt,const IS[],const IS[],Mat[],void*),void*);
+extern PetscErrorCode  PCModifySubMatrices(PC,PetscInt,const IS[],const IS[],Mat[],void*);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetOperators(PC,Mat,Mat,MatStructure);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCGetOperators(PC,Mat*,Mat*,MatStructure*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCGetOperatorsSet(PC,PetscTruth*,PetscTruth*);
+extern PetscErrorCode  PCSetOperators(PC,Mat,Mat,MatStructure);
+extern PetscErrorCode  PCGetOperators(PC,Mat*,Mat*,MatStructure*);
+extern PetscErrorCode  PCGetOperatorsSet(PC,PetscBool *,PetscBool *);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCView(PC,PetscViewer);
+extern PetscErrorCode  PCView(PC,PetscViewer);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetOptionsPrefix(PC,const char[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCAppendOptionsPrefix(PC,const char[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCGetOptionsPrefix(PC,const char*[]);
+extern PetscErrorCode  PCSetOptionsPrefix(PC,const char[]);
+extern PetscErrorCode  PCAppendOptionsPrefix(PC,const char[]);
+extern PetscErrorCode  PCGetOptionsPrefix(PC,const char*[]);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCComputeExplicitOperator(PC,Mat*);
+extern PetscErrorCode  PCComputeExplicitOperator(PC,Mat*);
 
 /*
       These are used to provide extra scaling of preconditioned 
    operator for time-stepping schemes like in SUNDIALS 
 */
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScale(PC,PetscTruth*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleLeft(PC,Vec,Vec);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleRight(PC,Vec,Vec);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCDiagonalScaleSet(PC,Vec);
+extern PetscErrorCode  PCGetDiagonalScale(PC,PetscBool *);
+extern PetscErrorCode  PCDiagonalScaleLeft(PC,Vec,Vec);
+extern PetscErrorCode  PCDiagonalScaleRight(PC,Vec,Vec);
+extern PetscErrorCode  PCSetDiagonalScale(PC,Vec);
 
 /* ------------- options specific to particular preconditioners --------- */
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCJacobiSetUseRowMax(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCJacobiSetUseRowSum(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCJacobiSetUseAbs(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSORSetSymmetric(PC,MatSORType);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSORSetOmega(PC,PetscReal);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSORSetIterations(PC,PetscInt,PetscInt);
+extern PetscErrorCode  PCJacobiSetUseRowMax(PC);
+extern PetscErrorCode  PCJacobiSetUseRowSum(PC);
+extern PetscErrorCode  PCJacobiSetUseAbs(PC);
+extern PetscErrorCode  PCSORSetSymmetric(PC,MatSORType);
+extern PetscErrorCode  PCSORSetOmega(PC,PetscReal);
+extern PetscErrorCode  PCSORSetIterations(PC,PetscInt,PetscInt);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCEisenstatSetOmega(PC,PetscReal);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCEisenstatNoDiagonalScaling(PC);
+extern PetscErrorCode  PCEisenstatSetOmega(PC,PetscReal);
+extern PetscErrorCode  PCEisenstatNoDiagonalScaling(PC);
 
 #define USE_PRECONDITIONER_MATRIX 0
 #define USE_TRUE_MATRIX           1
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetUseTrueLocal(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetTotalBlocks(PC,PetscInt,const PetscInt[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiSetLocalBlocks(PC,PetscInt,const PetscInt[]);
+extern PetscErrorCode  PCBJacobiSetUseTrueLocal(PC);
+extern PetscErrorCode  PCBJacobiSetTotalBlocks(PC,PetscInt,const PetscInt[]);
+extern PetscErrorCode  PCBJacobiSetLocalBlocks(PC,PetscInt,const PetscInt[]);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCKSPSetUseTrue(PC);
+extern PetscErrorCode  PCKSPSetUseTrue(PC);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetApply(PC,PetscErrorCode (*)(PC,Vec,Vec)); 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetApplyBA(PC,PetscErrorCode (*)(PC,PCSide,Vec,Vec,Vec)); 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetApplyTranspose(PC,PetscErrorCode (*)(PC,Vec,Vec));
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetSetUp(PC,PetscErrorCode (*)(PC));
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetApplyRichardson(PC,PetscErrorCode (*)(PC,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal,PetscInt,PetscTruth,PetscInt*,PCRichardsonConvergedReason*));
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetView(PC,PetscErrorCode (*)(PC,PetscViewer));
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetDestroy(PC,PetscErrorCode (*)(PC));
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellGetContext(PC,void**);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetContext(PC,void*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellSetName(PC,const char[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCShellGetName(PC,char*[]);
+extern PetscErrorCode  PCShellSetApply(PC,PetscErrorCode (*)(PC,Vec,Vec)); 
+extern PetscErrorCode  PCShellSetApplyBA(PC,PetscErrorCode (*)(PC,PCSide,Vec,Vec,Vec)); 
+extern PetscErrorCode  PCShellSetApplyTranspose(PC,PetscErrorCode (*)(PC,Vec,Vec));
+extern PetscErrorCode  PCShellSetSetUp(PC,PetscErrorCode (*)(PC));
+extern PetscErrorCode  PCShellSetApplyRichardson(PC,PetscErrorCode (*)(PC,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal,PetscInt,PetscBool ,PetscInt*,PCRichardsonConvergedReason*));
+extern PetscErrorCode  PCShellSetView(PC,PetscErrorCode (*)(PC,PetscViewer));
+extern PetscErrorCode  PCShellSetDestroy(PC,PetscErrorCode (*)(PC));
+extern PetscErrorCode  PCShellGetContext(PC,void**);
+extern PetscErrorCode  PCShellSetContext(PC,void*);
+extern PetscErrorCode  PCShellSetName(PC,const char[]);
+extern PetscErrorCode  PCShellGetName(PC,char*[]);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetZeroPivot(PC,PetscReal);
+extern PetscErrorCode  PCFactorSetZeroPivot(PC,PetscReal);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetShiftType(PC,MatFactorShiftType); 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetShiftAmount(PC,PetscReal); 
+extern PetscErrorCode  PCFactorSetShiftType(PC,MatFactorShiftType); 
+extern PetscErrorCode  PCFactorSetShiftAmount(PC,PetscReal); 
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetMatSolverPackage(PC,const MatSolverPackage);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorGetMatSolverPackage(PC,const MatSolverPackage*);
+extern PetscErrorCode  PCFactorSetMatSolverPackage(PC,const MatSolverPackage);
+extern PetscErrorCode  PCFactorGetMatSolverPackage(PC,const MatSolverPackage*);
+extern PetscErrorCode  PCFactorSetUpMatSolverPackage(PC);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetFill(PC,PetscReal);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetColumnPivot(PC,PetscReal);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorReorderForNonzeroDiagonal(PC,PetscReal);
+extern PetscErrorCode  PCFactorSetFill(PC,PetscReal);
+extern PetscErrorCode  PCFactorSetColumnPivot(PC,PetscReal);
+extern PetscErrorCode  PCFactorReorderForNonzeroDiagonal(PC,PetscReal);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetMatOrderingType(PC,const MatOrderingType);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetReuseOrdering(PC,PetscTruth);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetReuseFill(PC,PetscTruth);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetUseInPlace(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetAllowDiagonalFill(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetPivotInBlocks(PC,PetscTruth);
+extern PetscErrorCode  PCFactorSetMatOrderingType(PC,const MatOrderingType);
+extern PetscErrorCode  PCFactorSetReuseOrdering(PC,PetscBool );
+extern PetscErrorCode  PCFactorSetReuseFill(PC,PetscBool );
+extern PetscErrorCode  PCFactorSetUseInPlace(PC);
+extern PetscErrorCode  PCFactorSetAllowDiagonalFill(PC);
+extern PetscErrorCode  PCFactorSetPivotInBlocks(PC,PetscBool );
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetLevels(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetDropTolerance(PC,PetscReal,PetscReal,PetscInt);
+extern PetscErrorCode  PCFactorSetLevels(PC,PetscInt);
+extern PetscErrorCode  PCFactorSetDropTolerance(PC,PetscReal,PetscReal,PetscInt);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMSetLocalSubdomains(PC,PetscInt,IS[],IS[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMSetTotalSubdomains(PC,PetscInt,IS[],IS[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMSetOverlap(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMSetSortIndices(PC,PetscTruth);
+extern PetscErrorCode  PCASMSetLocalSubdomains(PC,PetscInt,IS[],IS[]);
+extern PetscErrorCode  PCASMSetTotalSubdomains(PC,PetscInt,IS[],IS[]);
+extern PetscErrorCode  PCASMSetOverlap(PC,PetscInt);
+extern PetscErrorCode  PCASMSetSortIndices(PC,PetscBool );
+
 /*E
     PCASMType - Type of additive Schwarz method to use
 
@@ -279,13 +291,44 @@ E*/
 typedef enum {PC_ASM_BASIC = 3,PC_ASM_RESTRICT = 1,PC_ASM_INTERPOLATE = 2,PC_ASM_NONE = 0} PCASMType;
 extern const char *PCASMTypes[];
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMSetType(PC,PCASMType);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMCreateSubdomains(Mat,PetscInt,IS*[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMDestroySubdomains(PetscInt,IS[],IS[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMCreateSubdomains2D(PetscInt,PetscInt,PetscInt,PetscInt,PetscInt,PetscInt,PetscInt *,IS **);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMSetUseInPlace(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMGetLocalSubdomains(PC,PetscInt*,IS*[],IS*[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCASMGetLocalSubmatrices(PC,PetscInt*,Mat*[]);
+extern PetscErrorCode  PCASMSetType(PC,PCASMType);
+extern PetscErrorCode  PCASMCreateSubdomains(Mat,PetscInt,IS*[]);
+extern PetscErrorCode  PCASMDestroySubdomains(PetscInt,IS[],IS[]);
+extern PetscErrorCode  PCASMCreateSubdomains2D(PetscInt,PetscInt,PetscInt,PetscInt,PetscInt,PetscInt,PetscInt*,IS**,IS**);
+extern PetscErrorCode  PCASMGetLocalSubdomains(PC,PetscInt*,IS*[],IS*[]);
+extern PetscErrorCode  PCASMGetLocalSubmatrices(PC,PetscInt*,Mat*[]);
+
+/*E
+    PCGASMType - Type of generalized additive Schwarz method to use (differs from ASM in allowing multiple processors per domain)
+
+$  PC_GASM_BASIC - symmetric version where residuals from the ghost points are used
+$                 and computed values in ghost regions are added together. Classical
+$                 standard additive Schwarz
+$  PC_GASM_RESTRICT - residuals from ghost points are used but computed values in ghost
+$                    region are discarded. Default
+$  PC_GASM_INTERPOLATE - residuals from ghost points are not used, computed values in ghost
+$                       region are added back in
+$  PC_GASM_NONE - ghost point residuals are not used, computed ghost values are discarded
+$                not very good.                
+
+   Level: beginner
+
+.seealso: PCGASMSetType()
+E*/
+typedef enum {PC_GASM_BASIC = 3,PC_GASM_RESTRICT = 1,PC_GASM_INTERPOLATE = 2,PC_GASM_NONE = 0} PCGASMType;
+extern const char *PCGASMTypes[];
+
+extern PetscErrorCode  PCGASMSetLocalSubdomains(PC,PetscInt,IS[],IS[]);
+extern PetscErrorCode  PCGASMSetTotalSubdomains(PC,PetscInt);
+extern PetscErrorCode  PCGASMSetOverlap(PC,PetscInt);
+extern PetscErrorCode  PCGASMSetSortIndices(PC,PetscBool );
+
+extern PetscErrorCode  PCGASMSetType(PC,PCGASMType);
+extern PetscErrorCode  PCGASMCreateSubdomains(Mat,PetscInt,IS*[]);
+extern PetscErrorCode  PCGASMDestroySubdomains(PetscInt,IS[],IS[]);
+extern PetscErrorCode  PCGASMCreateSubdomains2D(PC,PetscInt,PetscInt,PetscInt,PetscInt,PetscInt,PetscInt,PetscInt*,IS**,IS**);
+extern PetscErrorCode  PCGASMGetLocalSubdomains(PC,PetscInt*,IS*[],IS*[]);
+extern PetscErrorCode  PCGASMGetLocalSubmatrices(PC,PetscInt*,Mat*[]);
 
 /*E
     PCCompositeType - Determines how two or more preconditioner are composed
@@ -306,35 +349,35 @@ E*/
 typedef enum {PC_COMPOSITE_ADDITIVE,PC_COMPOSITE_MULTIPLICATIVE,PC_COMPOSITE_SYMMETRIC_MULTIPLICATIVE,PC_COMPOSITE_SPECIAL,PC_COMPOSITE_SCHUR} PCCompositeType;
 extern const char *PCCompositeTypes[];
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCCompositeSetUseTrue(PC);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCCompositeSetType(PC,PCCompositeType);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCCompositeAddPC(PC,PCType);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCCompositeGetPC(PC,PetscInt,PC *);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCCompositeSpecialSetAlpha(PC,PetscScalar);
+extern PetscErrorCode  PCCompositeSetUseTrue(PC);
+extern PetscErrorCode  PCCompositeSetType(PC,PCCompositeType);
+extern PetscErrorCode  PCCompositeAddPC(PC,PCType);
+extern PetscErrorCode  PCCompositeGetPC(PC,PetscInt,PC *);
+extern PetscErrorCode  PCCompositeSpecialSetAlpha(PC,PetscScalar);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCRedundantSetNumber(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCRedundantSetScatter(PC,VecScatter,VecScatter);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCRedundantGetOperators(PC,Mat*,Mat*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCRedundantGetPC(PC,PC*);
+extern PetscErrorCode  PCRedundantSetNumber(PC,PetscInt);
+extern PetscErrorCode  PCRedundantSetScatter(PC,VecScatter,VecScatter);
+extern PetscErrorCode  PCRedundantGetOperators(PC,Mat*,Mat*);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSPAISetEpsilon(PC,double);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSPAISetNBSteps(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSPAISetMax(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSPAISetMaxNew(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSPAISetBlockSize(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSPAISetCacheSize(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSPAISetVerbose(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSPAISetSp(PC,PetscInt);
+extern PetscErrorCode  PCSPAISetEpsilon(PC,double);
+extern PetscErrorCode  PCSPAISetNBSteps(PC,PetscInt);
+extern PetscErrorCode  PCSPAISetMax(PC,PetscInt);
+extern PetscErrorCode  PCSPAISetMaxNew(PC,PetscInt);
+extern PetscErrorCode  PCSPAISetBlockSize(PC,PetscInt);
+extern PetscErrorCode  PCSPAISetCacheSize(PC,PetscInt);
+extern PetscErrorCode  PCSPAISetVerbose(PC,PetscInt);
+extern PetscErrorCode  PCSPAISetSp(PC,PetscInt);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCHYPRESetType(PC,const char[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCHYPREGetType(PC,const char*[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetLocalBlocks(PC,PetscInt*,const PetscInt*[]);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCBJacobiGetTotalBlocks(PC,PetscInt*,const PetscInt*[]);
+extern PetscErrorCode  PCHYPRESetType(PC,const char[]);
+extern PetscErrorCode  PCHYPREGetType(PC,const char*[]);
+extern PetscErrorCode  PCBJacobiGetLocalBlocks(PC,PetscInt*,const PetscInt*[]);
+extern PetscErrorCode  PCBJacobiGetTotalBlocks(PC,PetscInt*,const PetscInt*[]);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitSetFields(PC,PetscInt,PetscInt*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitSetType(PC,PCCompositeType);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitSetBlockSize(PC,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitSetIS(PC,IS);
+extern PetscErrorCode  PCFieldSplitSetFields(PC,const char[],PetscInt,const PetscInt*);
+extern PetscErrorCode  PCFieldSplitSetType(PC,PCCompositeType);
+extern PetscErrorCode  PCFieldSplitSetBlockSize(PC,PetscInt);
+extern PetscErrorCode  PCFieldSplitSetIS(PC,const char[],IS);
+extern PetscErrorCode  PCFieldSplitGetIS(PC,const char[],IS*);
 
 /*E
     PCFieldSplitSchurPreType - Determines how to precondition Schur complement
@@ -344,18 +387,58 @@ EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitSetIS(PC,IS);
 .seealso: PCFieldSplitSchurPrecondition()
 E*/
 typedef enum {PC_FIELDSPLIT_SCHUR_PRE_SELF,PC_FIELDSPLIT_SCHUR_PRE_DIAG,PC_FIELDSPLIT_SCHUR_PRE_USER} PCFieldSplitSchurPreType;
-extern const char *PCFieldSplitSchurPreTypes[];
+extern const char *const PCFieldSplitSchurPreTypes[];
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitSchurPrecondition(PC,PCFieldSplitSchurPreType,Mat);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitGetSchurBlocks(PC,Mat*,Mat*,Mat*,Mat*);
+extern PetscErrorCode  PCFieldSplitSchurPrecondition(PC,PCFieldSplitSchurPreType,Mat);
+extern PetscErrorCode  PCFieldSplitGetSchurBlocks(PC,Mat*,Mat*,Mat*,Mat*);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCGalerkinSetRestriction(PC,Mat);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCGalerkinSetInterpolation(PC,Mat);
+extern PetscErrorCode  PCGalerkinSetRestriction(PC,Mat);
+extern PetscErrorCode  PCGalerkinSetInterpolation(PC,Mat);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSetCoordinates(PC,PetscInt,PetscReal*);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCSASetVectors(PC,PetscInt,PetscReal *);
+extern PetscErrorCode  PCSetCoordinates(PC,PetscInt,PetscReal*);
+extern PetscErrorCode  PCSASetVectors(PC,PetscInt,PetscReal *);
 
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT PCPythonSetType(PC,const char[]);
+extern PetscErrorCode  PCPythonSetType(PC,const char[]);
+
+extern PetscErrorCode  PCSetDM(PC,DM);
+extern PetscErrorCode  PCGetDM(PC,DM*);
+
+extern PetscErrorCode  PCSetApplicationContext(PC,void*);
+extern PetscErrorCode  PCGetApplicationContext(PC,void*);
+
+extern PetscErrorCode  PCBiCGStabCUSPSetTolerance(PC,PetscReal);
+extern PetscErrorCode  PCBiCGStabCUSPSetIterations(PC,PetscInt);
+extern PetscErrorCode  PCBiCGStabCUSPSetUseVerboseMonitor(PC,PetscBool);
+
+extern PetscErrorCode  PCAINVCUSPSetDropTolerance(PC,PetscReal);
+extern PetscErrorCode  PCAINVCUSPUseScaling(PC,PetscBool);
+extern PetscErrorCode  PCAINVCUSPSetNonzeros(PC,PetscInt);
+extern PetscErrorCode  PCAINVCUSPSetLinParameter(PC,PetscInt);
+/*E
+    PCPARMSGlobalType - Determines the global preconditioner method in PARMS
+
+    Level: intermediate
+
+.seealso: PCPARMSSetGlobal()
+E*/
+typedef enum {PC_PARMS_GLOBAL_RAS,PC_PARMS_GLOBAL_SCHUR,PC_PARMS_GLOBAL_BJ} PCPARMSGlobalType;
+extern const char *PCPARMSGlobalTypes[];
+/*E
+    PCPARMSLocalType - Determines the local preconditioner method in PARMS
+
+    Level: intermediate
+
+.seealso: PCPARMSSetLocal()
+E*/
+typedef enum {PC_PARMS_LOCAL_ILU0,PC_PARMS_LOCAL_ILUK,PC_PARMS_LOCAL_ILUT,PC_PARMS_LOCAL_ARMS} PCPARMSLocalType;
+extern const char *PCPARMSLocalTypes[];
+
+extern PetscErrorCode PCPARMSSetGlobal(PC pc,PCPARMSGlobalType type);
+extern PetscErrorCode PCPARMSSetLocal(PC pc,PCPARMSLocalType type);
+extern PetscErrorCode PCPARMSSetSolveTolerances(PC pc,PetscReal tol,PetscInt maxits);
+extern PetscErrorCode PCPARMSSetSolveRestart(PC pc,PetscInt restart);
+extern PetscErrorCode PCPARMSSetNonsymPerm(PC pc,PetscBool nonsym);
+extern PetscErrorCode PCPARMSSetFill(PC pc,PetscInt lfil0,PetscInt lfil1,PetscInt lfil2);
 
 PETSC_EXTERN_CXX_END
 

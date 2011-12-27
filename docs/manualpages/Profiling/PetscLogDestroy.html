@@ -10,7 +10,7 @@ Destroys the object and event logging data and resets the global counters.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscLogDestroy(void) 
+PetscErrorCode  PetscLogDestroy(void)
 </PRE>
 Not Collective
 <P>
@@ -24,7 +24,7 @@ This routine should not usually be used by programmers. Instead employ
  log, destroy
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(), <A HREF="../Profiling/PetscLogAllBegin.html#PetscLogAllBegin">PetscLogAllBegin</A>(), <A HREF="../Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>(), <A HREF="../Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(), PlogStagePop()
+ <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(), <A HREF="../Profiling/PetscLogAllBegin.html#PetscLogAllBegin">PetscLogAllBegin</A>(), PetscLogView(), <A HREF="../Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(), PlogStagePop()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogDestroy">src/sys/plog/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>

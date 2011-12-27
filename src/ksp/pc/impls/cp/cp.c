@@ -1,7 +1,6 @@
-#define PETSCKSP_DLL
 
-#include "private/pcimpl.h"   /*I "petscpc.h" I*/
-#include "../src/mat/impls/aij/seq/aij.h"
+#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <../src/mat/impls/aij/seq/aij.h>
 
 /* 
    Private context (data structure) for the CP preconditioner.  
@@ -22,15 +21,15 @@ static PetscErrorCode PCSetUp_CP(PC pc)
   PC_CP          *cp = (PC_CP*)pc->data;
   PetscInt       i,j,*colcnt;
   PetscErrorCode ierr;  
-  PetscTruth     flg;
+  PetscBool      flg;
   Mat_SeqAIJ     *aij = (Mat_SeqAIJ*)pc->pmat->data;
 
   PetscFunctionBegin;
   ierr = PetscTypeCompare((PetscObject)pc->pmat,MATSEQAIJ,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(PETSC_ERR_SUP,"Currently only handles SeqAIJ matrices");
+  if (!flg) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Currently only handles SeqAIJ matrices");
   
   ierr = MatGetLocalSize(pc->pmat,&cp->m,&cp->n);CHKERRQ(ierr);
-  if (cp->m != cp->n) SETERRQ(PETSC_ERR_SUP,"Currently only for square matrices");
+  if (cp->m != cp->n) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Currently only for square matrices");
    
   if (!cp->work) {ierr = MatGetVecs(pc->pmat,&cp->work,PETSC_NULL);CHKERRQ(ierr);}
   if (!cp->d) {ierr = PetscMalloc(cp->n*sizeof(PetscScalar),&cp->d);CHKERRQ(ierr);}
@@ -116,6 +115,20 @@ static PetscErrorCode PCApply_CP(PC pc,Vec bb,Vec xx)
 }
 /* -------------------------------------------------------------------------- */
 #undef __FUNCT__  
+#define __FUNCT__ "PCReset_CP"
+static PetscErrorCode PCReset_CP(PC pc)
+{
+  PC_CP          *cp = (PC_CP*)pc->data;
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = PetscFree(cp->d);CHKERRQ(ierr);
+  ierr = VecDestroy(&cp->work);CHKERRQ(ierr);
+  ierr = PetscFree3(cp->a,cp->i,cp->j);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
 #define __FUNCT__ "PCDestroy_CP"
 static PetscErrorCode PCDestroy_CP(PC pc)
 {
@@ -123,10 +136,10 @@ static PetscErrorCode PCDestroy_CP(PC pc)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
+  ierr = PCReset_CP(pc);CHKERRQ(ierr);
   ierr = PetscFree(cp->d);CHKERRQ(ierr);
-  if (cp->work) {ierr = VecDestroy(cp->work);CHKERRQ(ierr);}
   ierr = PetscFree3(cp->a,cp->i,cp->j);CHKERRQ(ierr);
-  ierr = PetscFree(cp);CHKERRQ(ierr);
+  ierr = PetscFree(pc->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -181,7 +194,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCCreate_CP"
-PetscErrorCode PETSCKSP_DLLEXPORT PCCreate_CP(PC pc)
+PetscErrorCode  PCCreate_CP(PC pc)
 {
   PC_CP          *cp;
   PetscErrorCode ierr;
@@ -193,6 +206,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCCreate_CP(PC pc)
   pc->ops->apply               = PCApply_CP;
   pc->ops->applytranspose      = PCApply_CP;
   pc->ops->setup               = PCSetUp_CP;
+  pc->ops->reset               = PCReset_CP;
   pc->ops->destroy             = PCDestroy_CP;
   pc->ops->setfromoptions      = PCSetFromOptions_CP;
   pc->ops->view                = 0;

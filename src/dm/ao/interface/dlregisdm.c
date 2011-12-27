@@ -1,12 +1,82 @@
-#define PETSCDM_DLL
 
-#include "../src/dm/ao/aoimpl.h"
-#include "private/daimpl.h"
+#include <../src/dm/ao/aoimpl.h>
+#include <private/daimpl.h>
 #ifdef PETSC_HAVE_SIEVE
-#include "private/meshimpl.h"
+#include <private/meshimpl.h>
 #endif
 
-static PetscTruth DMPackageInitialized = PETSC_FALSE;
+static PetscBool  AOPackageInitialized = PETSC_FALSE;
+
+#undef __FUNCT__  
+#define __FUNCT__ "AOFinalizePackage"
+/*@C
+  AOFinalizePackage - This function finalizes everything in the AO package. It is called
+  from PetscFinalize().
+
+  Level: developer
+
+.keywords: AO, initialize, package
+.seealso: PetscInitialize()
+@*/
+PetscErrorCode  AOFinalizePackage(void)
+{
+  PetscFunctionBegin;
+  AOPackageInitialized = PETSC_FALSE;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "AOInitializePackage"
+/*@C
+  AOInitializePackage - This function initializes everything in the AO package. It is called
+  from PetscDLLibraryRegister() when using dynamic libraries, and on the first call to AOCreate().
+
+  Input Parameter:
+  path - The dynamic library path, or PETSC_NULL
+
+  Level: developer
+
+.keywords: AO, initialize, package
+.seealso: PetscInitialize()
+@*/
+PetscErrorCode  AOInitializePackage(const char path[]) 
+{
+  char              logList[256];
+  char              *className;
+  PetscBool         opt;
+  PetscErrorCode    ierr;
+
+  PetscFunctionBegin;
+  if (AOPackageInitialized) PetscFunctionReturn(0);
+  AOPackageInitialized = PETSC_TRUE;
+  /* Register Classes */
+  ierr = PetscClassIdRegister("Application Order",&AO_CLASSID);CHKERRQ(ierr);
+  /* Register Constructors */
+  ierr = AORegisterAll(path);CHKERRQ(ierr);
+  /* Register Events */
+  ierr = PetscLogEventRegister("AOPetscToApplication", AO_CLASSID,&AO_PetscToApplication);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("AOApplicationToPetsc", AO_CLASSID,&AO_ApplicationToPetsc);CHKERRQ(ierr);
+  /* Process info exclusions */
+  ierr = PetscOptionsGetString(PETSC_NULL, "-info_exclude", logList, 256, &opt);CHKERRQ(ierr);
+  if (opt) {
+    ierr = PetscStrstr(logList, "ao", &className);CHKERRQ(ierr);
+    if (className) {
+      ierr = PetscInfoDeactivateClass(AO_CLASSID);CHKERRQ(ierr);
+    }
+  }
+  /* Process summary exclusions */
+  ierr = PetscOptionsGetString(PETSC_NULL, "-log_summary_exclude", logList, 256, &opt);CHKERRQ(ierr);
+  if (opt) {
+    ierr = PetscStrstr(logList, "ao", &className);CHKERRQ(ierr);
+    if (className) {
+      ierr = PetscLogEventDeactivateClass(AO_CLASSID);CHKERRQ(ierr);
+    }
+  }
+  ierr = PetscRegisterFinalize(AOFinalizePackage);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+static PetscBool  DMPackageInitialized = PETSC_FALSE;
 #undef __FUNCT__  
 #define __FUNCT__ "DMFinalizePackage"
 /*@C
@@ -15,25 +85,28 @@ static PetscTruth DMPackageInitialized = PETSC_FALSE;
 
   Level: developer
 
-.keywords: AO, DA, initialize, package
+.keywords: AO, initialize, package
 .seealso: PetscInitialize()
 @*/
-PetscErrorCode PETSCDM_DLLEXPORT DMFinalizePackage(void) {
+PetscErrorCode  DMFinalizePackage(void)
+{
 #ifdef PETSC_HAVE_SIEVE
   PetscErrorCode ierr;
 #endif
 
   PetscFunctionBegin;
   DMPackageInitialized = PETSC_FALSE;
+  DMList               = PETSC_NULL;
+  DMRegisterAllCalled  = PETSC_FALSE;
 #ifdef PETSC_HAVE_SIEVE
-  ierr = MeshFinalize();CHKERRQ(ierr);
+  ierr = DMMeshFinalize();CHKERRQ(ierr);
 #endif
   PetscFunctionReturn(0);
 }
 
 #if defined(PETSC_HAVE_HYPRE)
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PETSCMAT_DLLEXPORT MatCreate_HYPREStruct(Mat);
+extern PetscErrorCode  MatCreate_HYPREStruct(Mat);
 EXTERN_C_END
 #endif
 
@@ -42,34 +115,32 @@ EXTERN_C_END
 /*@C
   DMInitializePackage - This function initializes everything in the DM package. It is called
   from PetscDLLibraryRegister() when using dynamic libraries, and on the first call to AOCreate()
-  or DACreate() when using static libraries.
+  or DMDACreate() when using static libraries.
 
   Input Parameter:
   path - The dynamic library path, or PETSC_NULL
 
   Level: developer
 
-.keywords: AO, DA, initialize, package
+.keywords: AO, initialize, package
 .seealso: PetscInitialize()
 @*/
-PetscErrorCode PETSCDM_DLLEXPORT DMInitializePackage(const char path[]) 
+PetscErrorCode  DMInitializePackage(const char path[]) 
 {
   char              logList[256];
   char              *className;
-  PetscTruth        opt;
+  PetscBool         opt;
   PetscErrorCode    ierr;
 
   PetscFunctionBegin;
   if (DMPackageInitialized) PetscFunctionReturn(0);
   DMPackageInitialized = PETSC_TRUE;
+
   /* Register Classes */
-  ierr = PetscCookieRegister("Application Order",&AO_COOKIE);CHKERRQ(ierr);
-  ierr = PetscCookieRegister("Distributed array",&DM_COOKIE);CHKERRQ(ierr);
-  ierr = PetscCookieRegister("Arbitrary Dimension Distributed array",&ADDA_COOKIE);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("Distributed Mesh",&DM_CLASSID);CHKERRQ(ierr);
 #ifdef PETSC_HAVE_SIEVE
-  ierr = PetscCookieRegister("Mesh",&MESH_COOKIE);CHKERRQ(ierr);
-  ierr = PetscCookieRegister("SectionReal",&SECTIONREAL_COOKIE);CHKERRQ(ierr);
-  ierr = PetscCookieRegister("SectionInt",&SECTIONINT_COOKIE);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("SectionReal",&SECTIONREAL_CLASSID);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("SectionInt",&SECTIONINT_CLASSID);CHKERRQ(ierr);
 #endif
 
 #if defined(PETSC_HAVE_HYPRE)
@@ -77,76 +148,58 @@ PetscErrorCode PETSCDM_DLLEXPORT DMInitializePackage(const char path[])
 #endif
 
   /* Register Constructors */
-  ierr = DARegisterAll(path);CHKERRQ(ierr);
-#ifdef PETSC_HAVE_SIEVE
-  ierr = MeshRegisterAll(path);CHKERRQ(ierr);
-#endif
+  ierr = DMRegisterAll(path);CHKERRQ(ierr);
   /* Register Events */
-  ierr = PetscLogEventRegister("AOPetscToApplication", AO_COOKIE,&AO_PetscToApplication);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("AOApplicationToPetsc", AO_COOKIE,&AO_ApplicationToPetsc);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("DAGlobalToLocal",      DM_COOKIE,&DA_GlobalToLocal);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("DALocalToGlobal",      DM_COOKIE,&DA_LocalToGlobal);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("DALocalADFunc",        DM_COOKIE,&DA_LocalADFunction);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMConvert",              DM_CLASSID,&DM_Convert);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMGlobalToLocal",        DM_CLASSID,&DM_GlobalToLocal);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMLocalToGlobal",        DM_CLASSID,&DM_LocalToGlobal);CHKERRQ(ierr);
+
+  ierr = PetscLogEventRegister("DMDALocalADFunc",        DM_CLASSID,&DMDA_LocalADFunction);CHKERRQ(ierr);
+
 #ifdef PETSC_HAVE_SIEVE
-  ierr = PetscLogEventRegister("MeshView",             MESH_COOKIE,&Mesh_View);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("MeshGetGlobalScatter", MESH_COOKIE,&Mesh_GetGlobalScatter);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("MeshRestrictVector",   MESH_COOKIE,&Mesh_restrictVector);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("MeshAssembleVector",   MESH_COOKIE,&Mesh_assembleVector);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("MeshAssemVecComplete", MESH_COOKIE,&Mesh_assembleVectorComplete);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("MeshAssembleMatrix",   MESH_COOKIE,&Mesh_assembleMatrix);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("MeshUpdateOperator",   MESH_COOKIE,&Mesh_updateOperator);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("SectionRealView",      SECTIONREAL_COOKIE,&SectionReal_View);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("SectionIntView",       SECTIONINT_COOKIE,&SectionInt_View);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMMeshView",             DM_CLASSID,&DMMesh_View);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMMeshGetGlobalScatter", DM_CLASSID,&DMMesh_GetGlobalScatter);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMMeshRestrictVector",   DM_CLASSID,&DMMesh_restrictVector);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMMeshAssembleVector",   DM_CLASSID,&DMMesh_assembleVector);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMMeshAssemVecComplete", DM_CLASSID,&DMMesh_assembleVectorComplete);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMMeshAssembleMatrix",   DM_CLASSID,&DMMesh_assembleMatrix);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("DMMeshUpdateOperator",   DM_CLASSID,&DMMesh_updateOperator);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("SectionRealView",        SECTIONREAL_CLASSID,&SectionReal_View);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("SectionIntView",         SECTIONINT_CLASSID,&SectionInt_View);CHKERRQ(ierr);
 #endif
   /* Process info exclusions */
   ierr = PetscOptionsGetString(PETSC_NULL, "-info_exclude", logList, 256, &opt);CHKERRQ(ierr);
   if (opt) {
-    ierr = PetscStrstr(logList, "ao", &className);CHKERRQ(ierr);
-    if (className) {
-      ierr = PetscInfoDeactivateClass(AO_COOKIE);CHKERRQ(ierr);
-    }
     ierr = PetscStrstr(logList, "da", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscInfoDeactivateClass(DM_COOKIE);CHKERRQ(ierr);
+      ierr = PetscInfoDeactivateClass(DM_CLASSID);CHKERRQ(ierr);
     }
 #ifdef PETSC_HAVE_SIEVE
-    ierr = PetscStrstr(logList, "mesh", &className);CHKERRQ(ierr);
-    if (className) {
-      ierr = PetscInfoDeactivateClass(MESH_COOKIE);CHKERRQ(ierr);
-    }
     ierr = PetscStrstr(logList, "sectionreal", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscInfoDeactivateClass(SECTIONREAL_COOKIE);CHKERRQ(ierr);
+      ierr = PetscInfoDeactivateClass(SECTIONREAL_CLASSID);CHKERRQ(ierr);
     }
     ierr = PetscStrstr(logList, "sectionint", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscInfoDeactivateClass(SECTIONINT_COOKIE);CHKERRQ(ierr);
+      ierr = PetscInfoDeactivateClass(SECTIONINT_CLASSID);CHKERRQ(ierr);
     }
 #endif
   }
   /* Process summary exclusions */
   ierr = PetscOptionsGetString(PETSC_NULL, "-log_summary_exclude", logList, 256, &opt);CHKERRQ(ierr);
   if (opt) {
-    ierr = PetscStrstr(logList, "ao", &className);CHKERRQ(ierr);
-    if (className) {
-      ierr = PetscLogEventDeactivateClass(AO_COOKIE);CHKERRQ(ierr);
-    }
     ierr = PetscStrstr(logList, "da", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscLogEventDeactivateClass(DM_COOKIE);CHKERRQ(ierr);
+      ierr = PetscLogEventDeactivateClass(DM_CLASSID);CHKERRQ(ierr);
     }
 #ifdef PETSC_HAVE_SIEVE
-    ierr = PetscStrstr(logList, "mesh", &className);CHKERRQ(ierr);
-    if (className) {
-      ierr = PetscLogEventDeactivateClass(MESH_COOKIE);CHKERRQ(ierr);
-    }
     ierr = PetscStrstr(logList, "sectionreal", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscLogEventDeactivateClass(SECTIONREAL_COOKIE);CHKERRQ(ierr);
+      ierr = PetscLogEventDeactivateClass(SECTIONREAL_CLASSID);CHKERRQ(ierr);
     }
     ierr = PetscStrstr(logList, "sectionint", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscLogEventDeactivateClass(SECTIONINT_COOKIE);CHKERRQ(ierr);
+      ierr = PetscLogEventDeactivateClass(SECTIONINT_CLASSID);CHKERRQ(ierr);
     }
 #endif
   }
@@ -154,6 +207,7 @@ PetscErrorCode PETSCDM_DLLEXPORT DMInitializePackage(const char path[])
   PetscFunctionReturn(0);
 }
 
+extern PetscErrorCode  SAMappingInitializePackage(const char path[]);
 
 
 #ifdef PETSC_USE_DYNAMIC_LIBRARIES
@@ -169,18 +223,16 @@ EXTERN_C_BEGIN
   Input Parameter:
   path - library path
 */
-PetscErrorCode PETSCDM_DLLEXPORT PetscDLLibraryRegister_petscdm(const char path[])
+PetscErrorCode  PetscDLLibraryRegister_petscdm(const char path[])
 {
   PetscErrorCode ierr;
 
-  ierr = PetscInitializeNoArguments();
-  if (ierr) return(1);
+  PetscFunctionBegin;
+  ierr = SAMappingInitializePackage(PETSC_NULL); CHKERRQ(ierr);
 
-  /*
-      If we got here then PETSc was properly loaded
-  */
+  ierr = AOInitializePackage(path);CHKERRQ(ierr);
   ierr = DMInitializePackage(path);CHKERRQ(ierr);
-  return(0);
+  PetscFunctionReturn(0);
 }
 EXTERN_C_END
 

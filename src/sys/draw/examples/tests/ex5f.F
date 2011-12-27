@@ -1,8 +1,8 @@
 !
 !
       program main
-#include "finclude/petscsys.h"
-#include "finclude/petscdraw.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscdraw.h>
 !
 !  This example demonstrates basic use of the Fortran interface for
 !  PetscDraw routines.
@@ -11,7 +11,7 @@
       PetscDrawLG       lg
       PetscDrawAxis     axis
       PetscErrorCode    ierr
-      PetscTruth        flg
+      PetscBool         flg
       integer           x,y,width,height
       PetscScalar       xd,yd
       PetscInt          i,n,w,h

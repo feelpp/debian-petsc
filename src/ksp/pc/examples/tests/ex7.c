@@ -1,8 +1,8 @@
 
 static char help[] = "Tests MatILUFactorSymbolic() on matrix with missing diagonal.\n\n"; 
 
-#include "petscmat.h"
-#include "petscpc.h"
+#include <petscmat.h>
+#include <petscpc.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -43,11 +43,11 @@ int main(int argc,char **args)
   ierr = PCFactorGetMatrix(pc,&A);CHKERRQ(ierr);
   ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-  ierr = PCDestroy(pc);CHKERRQ(ierr);
-  ierr = VecDestroy(xtmp);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
+  ierr = PCDestroy(&pc);CHKERRQ(ierr);
+  ierr = VecDestroy(&xtmp);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

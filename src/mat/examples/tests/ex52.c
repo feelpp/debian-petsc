@@ -2,7 +2,7 @@
 static char help[] = "Tests the vatious routines in MatMPIBAIJ format.\n";
 
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -13,7 +13,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscMPIInt    rank,size;
   PetscScalar    data=100;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
@@ -72,8 +72,8 @@ int main(int argc,char **args)
   }
 
   ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-  ierr = MatDestroy(A);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&A);
+  ierr = PetscFinalize();
   return 0;
 }
  

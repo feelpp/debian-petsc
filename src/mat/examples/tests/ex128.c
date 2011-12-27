@@ -8,7 +8,7 @@ Note that most users should employ the KSP interface to the\n\
 linear solvers instead of using the factorization routines\n\
 directly.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -17,7 +17,7 @@ int main(int argc,char **args)
   Mat            C,sC,sA;
   PetscInt       i,j,m = 5,n = 5,Ii,J,lf = 0;
   PetscErrorCode ierr;
-  PetscTruth     CHOLESKY=PETSC_FALSE,TRIANGULAR=PETSC_FALSE,flg;
+  PetscBool      CHOLESKY=PETSC_FALSE,TRIANGULAR=PETSC_FALSE,flg;
   PetscScalar    v;
   IS             row,col;
   MatFactorInfo  info;
@@ -28,7 +28,7 @@ int main(int argc,char **args)
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(PETSC_ERR_SUP,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP,"This is a uniprocessor example only!");
   ierr = PetscOptionsGetInt(PETSC_NULL,"-m",&m,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-n",&n,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-lf",&lf,PETSC_NULL);CHKERRQ(ierr);
@@ -52,7 +52,7 @@ int main(int argc,char **args)
   ierr = MatAssemblyEnd(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
   ierr = MatIsSymmetric(C,0.0,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"C is non-symmetric");
+  if (!flg) SETERRQ(PETSC_COMM_SELF,1,"C is non-symmetric");
   ierr = MatConvert(C,MATSEQSBAIJ,MAT_INITIAL_MATRIX,&sC);CHKERRQ(ierr);
 
   /* Create vectors for error checking */
@@ -64,7 +64,7 @@ int main(int argc,char **args)
   ierr = VecSetRandom(x,rdm);CHKERRQ(ierr);
   ierr = MatMult(C,x,b);CHKERRQ(ierr);
 
-  ierr = MatGetOrdering(C,MATORDERING_NATURAL,&row,&col);CHKERRQ(ierr);
+  ierr = MatGetOrdering(C,MATORDERINGNATURAL,&row,&col);CHKERRQ(ierr);
 
   /* Compute CHOLESKY or ICC factor sA */
   ierr = MatFactorInfoInitialize(&info);CHKERRQ(ierr);
@@ -74,12 +74,12 @@ int main(int argc,char **args)
   ierr = PetscOptionsHasName(PETSC_NULL,"-cholesky",&CHOLESKY);CHKERRQ(ierr);
   if (CHOLESKY){ 
     printf("Test CHOLESKY...\n");
-    ierr = MatGetFactor(sC,MAT_SOLVER_PETSC,MAT_FACTOR_CHOLESKY,&sA);CHKERRQ(ierr);
+    ierr = MatGetFactor(sC,MATSOLVERPETSC,MAT_FACTOR_CHOLESKY,&sA);CHKERRQ(ierr);
     ierr = MatCholeskyFactorSymbolic(sA,sC,row,&info);CHKERRQ(ierr);
   } else {
     printf("Test ICC...\n");
     info.levels = lf;
-    ierr = MatGetFactor(sC,MAT_SOLVER_PETSC,MAT_FACTOR_ICC,&sA);CHKERRQ(ierr);
+    ierr = MatGetFactor(sC,MATSOLVERPETSC,MAT_FACTOR_ICC,&sA);CHKERRQ(ierr);
     ierr = MatICCFactorSymbolic(sA,sC,row,&info);CHKERRQ(ierr);
   }
   ierr = MatCholeskyFactorNumeric(sA,sC,&info);CHKERRQ(ierr);
@@ -101,8 +101,8 @@ int main(int argc,char **args)
   } 
 
   ierr = MatSolve(sA,b,y);CHKERRQ(ierr);
-  ierr = MatDestroy(sC);CHKERRQ(ierr);
-  ierr = MatDestroy(sA);CHKERRQ(ierr);
+  ierr = MatDestroy(&sC);CHKERRQ(ierr);
+  ierr = MatDestroy(&sA);CHKERRQ(ierr);
   ierr = VecAXPY(y,-1.0,x);CHKERRQ(ierr);
   ierr = VecNorm(y,NORM_2,&norm2);CHKERRQ(ierr);
   if (lf == -1 && norm2 > 1.e-14){
@@ -110,14 +110,14 @@ int main(int argc,char **args)
   }
  
   /* Free data structures */
-  ierr = MatDestroy(C);CHKERRQ(ierr);
- ierr = ISDestroy(row);CHKERRQ(ierr);
-  ierr = ISDestroy(col);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(rdm);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = VecDestroy(ytmp);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+ ierr = ISDestroy(&row);CHKERRQ(ierr);
+  ierr = ISDestroy(&col);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rdm);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = VecDestroy(&ytmp);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

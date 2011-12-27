@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "../src/ksp/pc/impls/is/nn/nn.h"
+#include <../src/ksp/pc/impls/is/nn/nn.h>
 
 /* -------------------------------------------------------------------------- */
 /*
@@ -122,10 +121,10 @@ static PetscErrorCode PCDestroy_NN(PC pc)
   PetscFunctionBegin;
   ierr = PCISDestroy(pc);CHKERRQ(ierr);
 
-  if (pcnn->coarse_mat)  {ierr = MatDestroy(pcnn->coarse_mat);CHKERRQ(ierr);}
-  if (pcnn->coarse_x)    {ierr = VecDestroy(pcnn->coarse_x);CHKERRQ(ierr);}
-  if (pcnn->coarse_b)    {ierr = VecDestroy(pcnn->coarse_b);CHKERRQ(ierr);}
-  if (pcnn->ksp_coarse) {ierr = KSPDestroy(pcnn->ksp_coarse);CHKERRQ(ierr);}
+  ierr = MatDestroy(&pcnn->coarse_mat);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcnn->coarse_x);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcnn->coarse_b);CHKERRQ(ierr);
+  ierr = KSPDestroy(&pcnn->ksp_coarse);CHKERRQ(ierr);
   if (pcnn->DZ_IN) {
     ierr = PetscFree(pcnn->DZ_IN[0]);CHKERRQ(ierr);
     ierr = PetscFree(pcnn->DZ_IN);CHKERRQ(ierr);
@@ -134,7 +133,7 @@ static PetscErrorCode PCDestroy_NN(PC pc)
   /*
       Free the private data structure that was hanging off the PC
   */
-  ierr = PetscFree(pcnn);CHKERRQ(ierr);
+  ierr = PetscFree(pc->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -172,7 +171,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCCreate_NN"
-PetscErrorCode PETSCKSP_DLLEXPORT PCCreate_NN(PC pc)
+PetscErrorCode  PCCreate_NN(PC pc)
 {
   PetscErrorCode ierr;
   PC_NN          *pcnn;
@@ -356,23 +355,26 @@ PetscErrorCode PCNNCreateCoarseMatrix (PC pc)
     ierr = MPI_Comm_rank(((PetscObject)pc)->comm,&rank);CHKERRQ(ierr);
     /* "Zero out" rows of not-purely-Neumann subdomains */
     if (pcis->pure_neumann) {  /* does NOT zero the row; create an empty index set. The reason is that MatZeroRows() is collective. */
-      ierr = MatZeroRows(pcnn->coarse_mat,0,PETSC_NULL,one);CHKERRQ(ierr);
+      ierr = MatZeroRows(pcnn->coarse_mat,0,PETSC_NULL,one,0,0);CHKERRQ(ierr);
     } else { /* here it DOES zero the row, since it's not a floating subdomain. */
       PetscInt row = (PetscInt) rank;
-      ierr = MatZeroRows(pcnn->coarse_mat,1,&row,one);CHKERRQ(ierr);
+      ierr = MatZeroRows(pcnn->coarse_mat,1,&row,one,0,0);CHKERRQ(ierr);
     }
   }
 
   /* Create the coarse linear solver context */
   {
     PC  pc_ctx, inner_pc;
+    KSP inner_ksp;
+
     ierr = KSPCreate(((PetscObject)pc)->comm,&pcnn->ksp_coarse);CHKERRQ(ierr);
     ierr = PetscObjectIncrementTabLevel((PetscObject)pcnn->ksp_coarse,(PetscObject)pc,2);CHKERRQ(ierr);
     ierr = KSPSetOperators(pcnn->ksp_coarse,pcnn->coarse_mat,pcnn->coarse_mat,SAME_PRECONDITIONER);CHKERRQ(ierr);
     ierr = KSPGetPC(pcnn->ksp_coarse,&pc_ctx);CHKERRQ(ierr);
     ierr = PCSetType(pc_ctx,PCREDUNDANT);CHKERRQ(ierr);                
     ierr = KSPSetType(pcnn->ksp_coarse,KSPPREONLY);CHKERRQ(ierr);               
-    ierr = PCRedundantGetPC(pc_ctx,&inner_pc);CHKERRQ(ierr);           
+    ierr = PCRedundantGetKSP(pc_ctx,&inner_ksp);CHKERRQ(ierr);           
+    ierr = KSPGetPC(inner_ksp,&inner_pc);CHKERRQ(ierr);           
     ierr = PCSetType(inner_pc,PCLU);CHKERRQ(ierr);                     
     ierr = KSPSetOptionsPrefix(pcnn->ksp_coarse,"nn_coarse_");CHKERRQ(ierr);
     ierr = KSPSetFromOptions(pcnn->ksp_coarse);CHKERRQ(ierr);
@@ -385,14 +387,14 @@ PetscErrorCode PCNNCreateCoarseMatrix (PC pc)
 
   /* for DEBUGGING, save the coarse matrix to a file. */
   {
-    PetscTruth flg = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-pc_nn_save_coarse_matrix",&flg,PETSC_NULL);CHKERRQ(ierr);
+    PetscBool  flg = PETSC_FALSE;
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-pc_nn_save_coarse_matrix",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       PetscViewer viewer;
       ierr = PetscViewerASCIIOpen(PETSC_COMM_WORLD,"coarse.m",&viewer);CHKERRQ(ierr);
       ierr = PetscViewerSetFormat(viewer,PETSC_VIEWER_ASCII_MATLAB);CHKERRQ(ierr);
       ierr = MatView(pcnn->coarse_mat,viewer);CHKERRQ(ierr);
-      ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+      ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
     }
   }
 
@@ -473,8 +475,8 @@ PetscErrorCode PCNNApplyInterfacePreconditioner (PC pc, Vec r, Vec z, PetscScala
     First balancing step.
   */
   {
-    PetscTruth flg = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-pc_nn_turn_off_first_balancing",&flg,PETSC_NULL);CHKERRQ(ierr);
+    PetscBool  flg = PETSC_FALSE;
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-pc_nn_turn_off_first_balancing",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (!flg) {
       ierr = PCNNBalancing(pc,r,(Vec)0,z,vec1_B,vec2_B,(Vec)0,vec1_D,vec2_D,work_N);CHKERRQ(ierr);
     } else {
@@ -496,8 +498,8 @@ PetscErrorCode PCNNApplyInterfacePreconditioner (PC pc, Vec r, Vec z, PetscScala
     Second balancing step.
   */
   {
-    PetscTruth flg = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-pc_turn_off_second_balancing",&flg,PETSC_NULL);CHKERRQ(ierr);
+    PetscBool  flg = PETSC_FALSE;
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-pc_turn_off_second_balancing",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (!flg) {
       ierr = PCNNBalancing(pc,r,vec1_B,z,vec2_B,vec3_B,(Vec)0,vec1_D,vec2_D,work_N);CHKERRQ(ierr);
     } else {

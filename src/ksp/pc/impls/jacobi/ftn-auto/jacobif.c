@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* jacobi.c */
 /* Fortran interface file */
 
@@ -48,15 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcjacobisetuseabs_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcjacobisetuseabs_(PC pc, int *__ierr ){
 *__ierr = PCJacobiSetUseAbs(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pcjacobisetuserowmax_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcjacobisetuserowmax_(PC pc, int *__ierr ){
 *__ierr = PCJacobiSetUseRowMax(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pcjacobisetuserowsum_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcjacobisetuserowsum_(PC pc, int *__ierr ){
 *__ierr = PCJacobiSetUseRowSum(
 	(PC)PetscToPointer((pc) ));
 }

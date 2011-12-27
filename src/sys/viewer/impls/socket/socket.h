@@ -3,12 +3,12 @@
    binary read/writes can be called directly on it.
 */
 
-#include "private/viewerimpl.h"   /*I  "petscsys.h"  I*/
+#include <private/viewerimpl.h>   /*I  "petscsys.h"  I*/
 
 typedef struct {
   int           port;
 #if defined(PETSC_HAVE_MPIIO)
-  PetscTruth    MPIIO;
+  PetscBool     MPIIO;
 #endif
 } PetscViewer_Socket;
 

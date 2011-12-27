@@ -10,7 +10,7 @@ Returns the Jacobian J at the present timestep.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSGetRHSJacobian(TS ts,Mat *J,Mat *M,void **ctx)
+PetscErrorCode  TSGetRHSJacobian(TS ts,Mat *J,Mat *M,TSRHSJacobian *func,void **ctx)
 </PRE>
 Not Collective, but parallel objects are returned if <A HREF="../TS/TS.html#TS">TS</A> is parallel
 <P>
@@ -24,6 +24,8 @@ Not Collective, but parallel objects are returned if <A HREF="../TS/TS.html#TS">
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>M   </B></TD><TD>- The preconditioner matrix, usually the same as J
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- Function to compute the Jacobian of the RHS
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- User-defined context for Jacobian evaluation routine
 </TD></TR></TABLE>
 <P>
@@ -32,7 +34,7 @@ Notes: You can pass in <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../TS/TSGetTimeStep.html#TSGetTimeStep">TSGetTimeStep</A>(), <A HREF="../TS/TSGetMatrices.html#TSGetMatrices">TSGetMatrices</A>(), <A HREF="../TS/TSGetTime.html#TSGetTime">TSGetTime</A>(), <A HREF="../TS/TSGetTimeStepNumber.html#TSGetTimeStepNumber">TSGetTimeStepNumber</A>()
+ <A HREF="../TS/TSGetTimeStep.html#TSGetTimeStep">TSGetTimeStep</A>(), TSGetMatrices(), <A HREF="../TS/TSGetTime.html#TSGetTime">TSGetTime</A>(), <A HREF="../TS/TSGetTimeStepNumber.html#TSGetTimeStepNumber">TSGetTimeStepNumber</A>()
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
@@ -42,4 +44,6 @@ Notes: You can pass in <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A
 <BR><A HREF="./index.html">Index of all TS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ts/examples/tutorials/ex4.c.html">src/ts/examples/tutorials/ex4.c.html</A><BR>
 </BODY></HTML>

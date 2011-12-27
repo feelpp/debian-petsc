@@ -10,18 +10,21 @@ Sets the fields for one particular split in the field split preconditioner
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCFieldSplitSetFields(PC pc,PetscInt n, PetscInt *fields)
+#include "petscdmcomposite.h" 
+PetscErrorCode  PCFieldSplitSetFields(PC pc,const char splitname[],PetscInt n,const PetscInt *fields)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc  </B></TD><TD>- the preconditioner context
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>splitname </B></TD><TD>- name of this split, if <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> the number of the split is used
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of fields in this split
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fields </B></TD><TD>- the fields in this split
-</TD></TR>
+</TD></TR></TABLE>
 <P>
 
 <P>
@@ -32,6 +35,9 @@ size is three then one can define a field as 0, or 1 or 2 or 0,1 or 0,2 or 1,2 w
 0xx3xx6xx9xx12 ... x1xx4xx7xx ... xx2xx5xx8xx.. 01x34x67x... 0x1x3x5x7.. x12x45x78x....
 where the numbered entries indicate what is in the field.
 <P>
+This function is called once per split (it creates a new split each time).  Solve options
+for this split will be available under the prefix -fieldsplit_SPLITNAME_.
+<P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PC/PCFieldSplitGetSubKSP.html#PCFieldSplitGetSubKSP">PCFieldSplitGetSubKSP</A>(), <A HREF="../PC/PCFIELDSPLIT.html#PCFIELDSPLIT">PCFIELDSPLIT</A>, <A HREF="../PC/PCFieldSplitSetBlockSize.html#PCFieldSplitSetBlockSize">PCFieldSplitSetBlockSize</A>(), <A HREF="../PC/PCFieldSplitSetIS.html#PCFieldSplitSetIS">PCFieldSplitSetIS</A>()
 <BR>
@@ -41,4 +47,7 @@ where the numbered entries indicate what is in the field.
 <BR><A HREF="./index.html">Index of all PC routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
 </BODY></HTML>

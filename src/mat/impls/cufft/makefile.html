@@ -1,0 +1,33 @@
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:04:19+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><font color="#A020F0">#requirespackage 'PETSC_HAVE_CUDA'</font>
+<font color="#A020F0">#requiresprecision single</font>
+<font color="#A020F0">#requiresscalar    complex</font>
+<strong><font color="#FF0000">ALL:</font></strong> lib
+
+CFLAGS    =
+FFLAGS    =
+SOURCECU  = cufft.cu
+SOURCEF   = 
+SOURCEH   = 
+OBJSC     = cufft.o 
+OBJSF     = 
+LIBBASE   = libpetscmat
+DIRS      =
+MANSEC    = <A href="ROOT/docs/manualpages/Mat/Mat.html#Mat">Mat</A>
+LOCDIR    = src/mat/impls/cufft
+
+include ${PETSC_DIR}/conf/variables
+include ${PETSC_DIR}/conf/rules
+include ${PETSC_DIR}/conf/test
+</pre>
+</body>
+
+</html>

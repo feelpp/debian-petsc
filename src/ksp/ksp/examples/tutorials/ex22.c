@@ -1,5 +1,10 @@
 
 /*
+       THIS EXAMPLE IS DEPRECATED, USE ex45.c
+*/
+
+
+/*
 Laplacian in 3D. Modeled by the partial differential equation
 
    - Laplacian u = 1,0 < x,y,z < 1,
@@ -14,9 +19,9 @@ with boundary conditions
 
 static char help[] = "Solves 3D Laplacian using multigrid.\n\n";
 
-#include "petscda.h"
-#include "petscksp.h"
-#include "petscdmmg.h"
+#include <petscdmda.h>
+#include <petscksp.h>
+#include <petscdmmg.h>
 
 extern PetscErrorCode ComputeMatrix(DMMG,Mat,Mat);
 extern PetscErrorCode ComputeRHS(DMMG,Vec);
@@ -28,18 +33,18 @@ int main(int argc,char **argv)
   PetscErrorCode ierr;
   DMMG           *dmmg;
   PetscReal      norm;
-  DA             da;
+  PetscInt       nlevels = 3;
+  DM             da;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
-
-  ierr = DMMGCreate(PETSC_COMM_WORLD,3,PETSC_NULL,&dmmg);CHKERRQ(ierr);
-  ierr = DACreate3d(PETSC_COMM_WORLD,DA_NONPERIODIC,DA_STENCIL_STAR,-3,-3,-3,PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,1,1,0,0,0,&da);CHKERRQ(ierr);  
+  ierr = PetscOptionsGetInt(PETSC_NULL,"-nlevels",&nlevels,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMMGCreate(PETSC_COMM_WORLD,nlevels,PETSC_NULL,&dmmg);CHKERRQ(ierr);
+  ierr = DMDACreate3d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_STENCIL_STAR,-3,-3,-3,PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,1,1,0,0,0,&da);CHKERRQ(ierr);  
   ierr = DMMGSetDM(dmmg,(DM)da);CHKERRQ(ierr);
-  ierr = DADestroy(da);CHKERRQ(ierr);
+  ierr = DMDestroy(&da);CHKERRQ(ierr);
 
   ierr = DMMGSetKSP(dmmg,ComputeRHS,ComputeMatrix);CHKERRQ(ierr);
 
-  ierr = DMMGSetUp(dmmg);CHKERRQ(ierr);
   ierr = DMMGSolve(dmmg);CHKERRQ(ierr);
 
   ierr = MatMult(DMMGGetJ(dmmg),DMMGGetx(dmmg),DMMGGetr(dmmg));CHKERRQ(ierr);
@@ -48,7 +53,7 @@ int main(int argc,char **argv)
   /* ierr = PetscPrintf(PETSC_COMM_WORLD,"Residual norm %G\n",norm);CHKERRQ(ierr); */
 
   ierr = DMMGDestroy(dmmg);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }
@@ -62,7 +67,7 @@ PetscErrorCode ComputeRHS(DMMG dmmg,Vec b)
   PetscScalar    h;
 
   PetscFunctionBegin;
-  ierr = DAGetInfo((DA)dmmg->dm,0,&mx,&my,&mz,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(dmmg->dm,0,&mx,&my,&mz,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   h    = 1.0/((mx-1)*(my-1)*(mz-1));
   ierr = VecSet(b,h);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -72,16 +77,16 @@ PetscErrorCode ComputeRHS(DMMG dmmg,Vec b)
 #define __FUNCT__ "ComputeMatrix"
 PetscErrorCode ComputeMatrix(DMMG dmmg,Mat jac,Mat B)
 {
-  DA             da = (DA)dmmg->dm;
+  DM             da = dmmg->dm;
   PetscErrorCode ierr;
   PetscInt       i,j,k,mx,my,mz,xm,ym,zm,xs,ys,zs;
   PetscScalar    v[7],Hx,Hy,Hz,HxHydHz,HyHzdHx,HxHzdHy;
   MatStencil     row,col[7];
 
-  ierr = DAGetInfo(da,0,&mx,&my,&mz,0,0,0,0,0,0,0);CHKERRQ(ierr);  
+  ierr = DMDAGetInfo(da,0,&mx,&my,&mz,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);  
   Hx = 1.0 / (PetscReal)(mx-1); Hy = 1.0 / (PetscReal)(my-1); Hz = 1.0 / (PetscReal)(mz-1);
   HxHydHz = Hx*Hy/Hz; HxHzdHy = Hx*Hz/Hy; HyHzdHx = Hy*Hz/Hx;
-  ierr = DAGetCorners(da,&xs,&ys,&zs,&xm,&ym,&zm);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,&ys,&zs,&xm,&ym,&zm);CHKERRQ(ierr);
   
   for (k=zs; k<zs+zm; k++){
     for (j=ys; j<ys+ym; j++){

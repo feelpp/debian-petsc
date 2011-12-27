@@ -1,4 +1,4 @@
-#include "private/pcimpl.h"          /*I "petscpc.h" I*/
+#include <private/pcimpl.h>          /*I "petscpc.h" I*/
 
 #undef __FUNCT__
 #define __FUNCT__ "PCPythonSetType"
@@ -20,15 +20,13 @@
 
 .seealso: PCCreate(), PCSetType(), PCPYTHON, PetscPythonInitialize()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCPythonSetType(PC pc,const char pyname[])
+PetscErrorCode  PCPythonSetType(PC pc,const char pyname[])
 {
-  PetscErrorCode (*f)(PC, const char[]) = 0;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(pc,PC_COOKIE,1);
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   PetscValidCharPointer(pyname,2);
-  ierr = PetscObjectQueryFunction((PetscObject)pc,"PCPythonSetType_C",(PetscVoidFunction*)&f);CHKERRQ(ierr);
-  if (f) {ierr = (*f)(pc,pyname);CHKERRQ(ierr);}
+  ierr = PetscTryMethod(pc,"PCPythonSetType_C",(PC, const char[]),(pc,pyname));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

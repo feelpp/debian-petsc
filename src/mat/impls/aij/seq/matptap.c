@@ -1,13 +1,12 @@
-#define PETSCMAT_DLL
 
 /*
   Defines projective product routines where A is a SeqAIJ matrix
           C = P^T * A * P
 */
 
-#include "../src/mat/impls/aij/seq/aij.h"   /*I "petscmat.h" I*/
-#include "../src/mat/utils/freespace.h"
-#include "petscbt.h"
+#include <../src/mat/impls/aij/seq/aij.h>   /*I "petscmat.h" I*/
+#include <../src/mat/utils/freespace.h>
+#include <petscbt.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "MatPtAPSymbolic_SeqAIJ"
@@ -16,9 +15,7 @@ PetscErrorCode MatPtAPSymbolic_SeqAIJ(Mat A,Mat P,PetscReal fill,Mat *C)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!P->ops->ptapsymbolic_seqaij) {
-    SETERRQ2(PETSC_ERR_SUP,"Not implemented for A=%s and P=%s",((PetscObject)A)->type_name,((PetscObject)P)->type_name);
-  }
+  if (!P->ops->ptapsymbolic_seqaij) SETERRQ2(((PetscObject)A)->comm,PETSC_ERR_SUP,"Not implemented for A=%s and P=%s",((PetscObject)A)->type_name,((PetscObject)P)->type_name);
   ierr = (*P->ops->ptapsymbolic_seqaij)(A,P,fill,C);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -30,9 +27,7 @@ PetscErrorCode MatPtAPNumeric_SeqAIJ(Mat A,Mat P,Mat C)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!P->ops->ptapnumeric_seqaij) {
-    SETERRQ2(PETSC_ERR_SUP,"Not implemented for A=%s and P=%s",((PetscObject)A)->type_name,((PetscObject)P)->type_name);
-  }
+  if (!P->ops->ptapnumeric_seqaij) SETERRQ2(((PetscObject)A)->comm,PETSC_ERR_SUP,"Not implemented for A=%s and P=%s",((PetscObject)A)->type_name,((PetscObject)P)->type_name);
   ierr = (*P->ops->ptapnumeric_seqaij)(A,P,C);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -164,7 +159,6 @@ PetscErrorCode MatPtAPSymbolic_SeqAIJ_SeqAIJ(Mat A,Mat P,PetscReal fill,Mat *C)
 PetscErrorCode MatPtAPNumeric_SeqAIJ_SeqAIJ(Mat A,Mat P,Mat C) 
 {
   PetscErrorCode ierr;
-  PetscLogDouble flops=0.0;
   Mat_SeqAIJ     *a  = (Mat_SeqAIJ *) A->data;
   Mat_SeqAIJ     *p  = (Mat_SeqAIJ *) P->data;
   Mat_SeqAIJ     *c  = (Mat_SeqAIJ *) C->data;
@@ -201,7 +195,7 @@ PetscErrorCode MatPtAPNumeric_SeqAIJ_SeqAIJ(Mat A,Mat P,Mat C)
         }
         apa[pjj[k]] += (*aa)*paj[k];
       }
-      flops += 2.0*pnzj;
+      ierr = PetscLogFlops(2.0*pnzj);CHKERRQ(ierr);
       aa++;
     }
 
@@ -220,14 +214,14 @@ PetscErrorCode MatPtAPNumeric_SeqAIJ_SeqAIJ(Mat A,Mat P,Mat C)
       for (k=0;nextap<apnzj;k++) {
 #if defined(PETSC_USE_DEBUG)  
         if (k >= ci[crow+1] - ci[crow]) {
-          SETERRQ2(PETSC_ERR_PLIB,"k too large k %d, crow %d",k,crow);
+          SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"k too large k %d, crow %d",k,crow);
         }
 #endif
         if (cjj[k]==apj[nextap]) {
           caj[k] += (*pA)*apa[apj[nextap++]];
         }
       }
-      flops += 2.0*apnzj;
+      ierr = PetscLogFlops(2.0*apnzj);CHKERRQ(ierr);
       pA++;
     }
 
@@ -242,7 +236,5 @@ PetscErrorCode MatPtAPNumeric_SeqAIJ_SeqAIJ(Mat A,Mat P,Mat C)
   ierr = MatAssemblyBegin(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = PetscFree(apa);CHKERRQ(ierr);
-  ierr = PetscLogFlops(flops);CHKERRQ(ierr);
-
   PetscFunctionReturn(0);
 }
