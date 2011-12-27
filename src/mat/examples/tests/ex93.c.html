@@ -4,13 +4,13 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:48+00:00">
+<meta name="date" content="2011-10-29T19:05:26+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Test sequential <A href="../../../../docs/manualpages/Mat/MatMatMult.html#MatMatMult">MatMatMult</A>() and <A href="../../../../docs/manualpages/Mat/MatPtAP.html#MatPtAP">MatPtAP</A>() for AIJ matrices.\n\n"</font>;
 
-<a name="line3"> 3: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 
 <a name="line9">  9: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong> {
@@ -41,8 +41,8 @@
 <a name="line35"> 35: </a>  <A href="../../../../docs/manualpages/Mat/MatMatMultNumeric.html#MatMatMultNumeric">MatMatMultNumeric</A>(C,A,D);
 <a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(D,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 
-<a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B);
-<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 
 <a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Mat/MatDuplicate.html#MatDuplicate">MatDuplicate</A>(A,MAT_COPY_VALUES,&amp;B);
 <a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Mat/MatPtAP.html#MatPtAP">MatPtAP</A>(A,B,MAT_INITIAL_MATRIX,fill,&amp;C);
@@ -50,8 +50,8 @@
 <a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Mat/MatAXPY.html#MatAXPY">MatAXPY</A>(D,none,C,DIFFERENT_NONZERO_PATTERN);
 <a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(D,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 
-<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
-<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(D);
+<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
+<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;D);
 
 <a name="line50"> 50: </a>  <font color="#B22222">/* Repeat PtAP to test symbolic/numeric separation for reuse of the symbolic product */</font>
 <a name="line51"> 51: </a>  <A href="../../../../docs/manualpages/Mat/MatPtAP.html#MatPtAP">MatPtAP</A>(A,B,MAT_INITIAL_MATRIX,fill,&amp;C);
@@ -68,10 +68,10 @@
 <a name="line62"> 62: </a>  <font color="#B22222">/* A test contributed by Tobias Neckel &lt;neckel@in.tum.de&gt; */</font>
 <a name="line63"> 63: </a>  testPTAPRectangular();
 
-<a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B);
-<a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
-<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(D);
+<a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
+<a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
+<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;D);
 <a name="line69"> 69: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line70"> 70: </a>  <font color="#4169E1">return</font>(0);
 <a name="line71"> 71: </a>}
@@ -171,11 +171,11 @@
 <a name="line168">168: </a><font color="#B22222">  validateEqualsWithParams3(check, -1 , "testPTAPRectangular()", check, actualC(check), expectedC(check));</font>
 <a name="line169">169: </a><font color="#B22222">  */</font>
 <a name="line170">170: </a>
-<a name="line171">171: </a>  _MatDestroy(A);
+<a name="line171">171: </a>  _MatDestroy(&amp;A);
 <a name="line172">172: </a>  PETSc_CHKERRQ(_ierr);
-<a name="line173">173: </a>  _MatDestroy(P);
+<a name="line173">173: </a>  _MatDestroy(&amp;P);
 <a name="line174">174: </a>  PETSc_CHKERRQ(_ierr);
-<a name="line175">175: </a>  _MatDestroy(C);
+<a name="line175">175: </a>  _MatDestroy(&amp;C);
 <a name="line176">176: </a>  PETSc_CHKERRQ(_ierr);
 <a name="line177">177: </a>  <font color="#4169E1">return</font>(0);
 <a name="line178">178: </a>}

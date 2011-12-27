@@ -24,11 +24,11 @@
 !     petscmat.h - matrices
 !     petscksp.h    - Krylov subspace methods  petscpc.h  - preconditioners
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                   Variable declarations
@@ -53,7 +53,7 @@
       PetscInt   i,j,II,JJ,Istart
       PetscInt   Iend,m,n,i1,its,five
       PetscMPIInt rank
-      PetscTruth user_defined_pc,flg
+      PetscBool  user_defined_pc,flg
 
 !  Note: Any user-defined Fortran routines MUST be declared as external.
 
@@ -240,7 +240,7 @@
            write(6,110) its
         endif
       endif
-  100 format('Norm of error ',1pe10.4,' iterations ',i5)
+  100 format('Norm of error ',1pe11.4,' iterations ',i5)
   110 format('Norm of error < 1.e-12,iterations ',i5)
 
 !  Free work space.  All PETSc objects should be destroyed when they
@@ -281,9 +281,9 @@
 
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
       PC      pc
 
       Mat     pmat
@@ -326,8 +326,8 @@
 
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
 
       PC      pc
       Vec     x,y
@@ -360,9 +360,9 @@
 
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
       PC      pc
       PetscErrorCode ierr
 

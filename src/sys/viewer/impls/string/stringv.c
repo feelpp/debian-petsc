@@ -1,5 +1,5 @@
-#define PETSC_DLL
-#include "private/viewerimpl.h"   /*I  "petscsys.h"  I*/
+
+#include <private/viewerimpl.h>   /*I  "petscsys.h"  I*/
 #include <stdarg.h>
 #if defined(PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
@@ -28,7 +28,7 @@ static PetscErrorCode PetscViewerDestroy_String(PetscViewer viewer)
 /*@C
     PetscViewerStringSPrintf - Prints information to a PetscViewer string.
 
-    Collective on PetscViewer (Hmmm, each processor maintains a separate string)
+    Logically Collective on PetscViewer (Hmmm, each processor maintains a separate string)
 
     Input Parameters:
 +   v - a string PetscViewer, formed by PetscViewerStringOpen()
@@ -43,22 +43,22 @@ static PetscErrorCode PetscViewerDestroy_String(PetscViewer viewer)
 
 .seealso: PetscViewerStringOpen()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewerStringSPrintf(PetscViewer viewer,const char format[],...)
+PetscErrorCode  PetscViewerStringSPrintf(PetscViewer viewer,const char format[],...)
 {
   va_list            Argp;
-  int                fullLength;
+  size_t             fullLength;
   size_t             shift;
   PetscErrorCode     ierr;
-  PetscTruth         isstring;
+  PetscBool          isstring;
   char               tmp[4096];
   PetscViewer_String *vstr = (PetscViewer_String*)viewer->data;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,1);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
   PetscValidCharPointer(format,2);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_STRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (!isstring) PetscFunctionReturn(0);
-  if (!vstr->string) SETERRQ(PETSC_ERR_ORDER,"Must call PetscViewerStringSetString() before using");
+  if (!vstr->string) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ORDER,"Must call PetscViewerStringSetString() before using");
 
   va_start(Argp,format);
   ierr = PetscVSNPrintf(tmp,4096,format,&fullLength,Argp);CHKERRQ(ierr);
@@ -98,13 +98,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewerStringSPrintf(PetscViewer viewer,const
 
 .seealso: PetscViewerDestroy(), PetscViewerStringSPrintf()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewerStringOpen(MPI_Comm comm,char string[],PetscInt len,PetscViewer *lab)
+PetscErrorCode  PetscViewerStringOpen(MPI_Comm comm,char string[],PetscInt len,PetscViewer *lab)
 {
   PetscErrorCode ierr;
   
   PetscFunctionBegin;
   ierr = PetscViewerCreate(comm,lab);CHKERRQ(ierr);
-  ierr = PetscViewerSetType(*lab,PETSC_VIEWER_STRING);CHKERRQ(ierr);
+  ierr = PetscViewerSetType(*lab,PETSCVIEWERSTRING);CHKERRQ(ierr);
   ierr = PetscViewerStringSetString(*lab,string,len);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -132,14 +132,14 @@ PetscErrorCode PetscViewerRestoreSingleton_String(PetscViewer viewer,PetscViewer
   PetscFunctionBegin;
   vstr->head    = iviewer->head;  
   vstr->curlen += iviewer->curlen;  
-  ierr = PetscViewerDestroy(*sviewer);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(sviewer);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerCreate_String" 
-PetscErrorCode PETSC_DLLEXPORT PetscViewerCreate_String(PetscViewer v)
+PetscErrorCode  PetscViewerCreate_String(PetscViewer v)
 {
   PetscViewer_String *vstr;
   PetscErrorCode     ierr;
@@ -163,7 +163,7 @@ EXTERN_C_END
 
    PetscViewerStringSetString - sets the string that a string viewer will print to
 
-   Collective on PetscViewer
+   Logically Collective on PetscViewer
 
   Input Parameters:
 +   viewer - string viewer you wish to attach string to
@@ -174,18 +174,18 @@ EXTERN_C_END
 
 .seealso: PetscViewerStringOpen()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewerStringSetString(PetscViewer viewer,char string[],PetscInt len)
+PetscErrorCode  PetscViewerStringSetString(PetscViewer viewer,char string[],PetscInt len)
 {
   PetscViewer_String *vstr = (PetscViewer_String*)viewer->data;
   PetscErrorCode     ierr;
-  PetscTruth         isstring;
+  PetscBool          isstring;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,1);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
   PetscValidCharPointer(string,2);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_STRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (!isstring)  PetscFunctionReturn(0);
-  if (len <= 2) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"String must have length at least 2");
+  if (len <= 2) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"String must have length at least 2");
 
   ierr = PetscMemzero(string,len*sizeof(char));CHKERRQ(ierr);
   vstr->string      = string;

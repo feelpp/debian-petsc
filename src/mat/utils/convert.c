@@ -1,6 +1,5 @@
-#define PETSCMAT_DLL
 
-#include "private/matimpl.h"
+#include <private/matimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "MatConvert_Basic"
@@ -17,6 +16,7 @@ PetscErrorCode MatConvert_Basic(Mat mat, const MatType newtype,MatReuse reuse,Ma
   PetscErrorCode     ierr;
   PetscInt           i,nz,m,n,rstart,rend,lm,ln;
   const PetscInt     *cwork;
+  PetscBool          isseqsbaij,ismpisbaij;
 
   PetscFunctionBegin;
   ierr = MatGetSize(mat,&m,&n);CHKERRQ(ierr);
@@ -27,6 +27,9 @@ PetscErrorCode MatConvert_Basic(Mat mat, const MatType newtype,MatReuse reuse,Ma
   ierr = MatCreate(((PetscObject)mat)->comm,&M);CHKERRQ(ierr);
   ierr = MatSetSizes(M,lm,ln,m,n);CHKERRQ(ierr);
   ierr = MatSetType(M,newtype);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)M,MATSEQSBAIJ,&isseqsbaij);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)M,MATMPISBAIJ,&ismpisbaij);CHKERRQ(ierr);
+  if (isseqsbaij || ismpisbaij) {ierr = MatSetOption(M,MAT_IGNORE_LOWER_TRIANGULAR,PETSC_TRUE);CHKERRQ(ierr);}
 
   ierr = MatGetOwnershipRange(mat,&rstart,&rend);CHKERRQ(ierr);
   for (i=rstart; i<rend; i++) {
@@ -36,9 +39,6 @@ PetscErrorCode MatConvert_Basic(Mat mat, const MatType newtype,MatReuse reuse,Ma
   }
   ierr = MatAssemblyBegin(M,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(M,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-  if (mat->hermitian){
-    ierr = MatSetOption(M,MAT_HERMITIAN,PETSC_TRUE);CHKERRQ(ierr);
-  }
 
   if (reuse == MAT_REUSE_MATRIX) {
     ierr = MatHeaderReplace(mat,M);CHKERRQ(ierr);

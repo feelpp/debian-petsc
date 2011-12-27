@@ -1,7 +1,7 @@
 
 static char help[] = "Tests MatGetSubmatrix() in parallel.";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -13,7 +13,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscScalar    v;
   IS             isrow,iscol;
-  PetscTruth     flg;
+  PetscBool      flg;
   char           type[256];
 
   PetscInitialize(&argc,&args,(char *)0,help);
@@ -63,10 +63,10 @@ int main(int argc,char **args)
   ierr = MatGetSubMatrix(C,isrow,iscol,MAT_REUSE_MATRIX,&A);CHKERRQ(ierr); 
   ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); 
 
-  ierr = ISDestroy(isrow);CHKERRQ(ierr);
-  ierr = ISDestroy(iscol);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISDestroy(&isrow);CHKERRQ(ierr);
+  ierr = ISDestroy(&iscol);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

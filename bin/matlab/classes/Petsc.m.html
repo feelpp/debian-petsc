@@ -1,0 +1,184 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Petsc</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="Petsc.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">classdef</span> Petsc &lt; handle
+<span class="comment">%</span>
+<span class="comment">%     PETSc MATLAB Interface Help</span>
+<span class="comment">%</span>
+<span class="comment">%   PetscInitialize({'-option1','value1','-option2'});</span>
+<span class="comment">%   PetscFinalize;</span>
+<span class="comment">%</span>
+<span class="comment">%   Petsc.INSERT_VALUES, Petsc.ADD_VALUES  --- Options for setting values into Vecs and Mats</span>
+<span class="comment">%   Petsc.DECIDE,Petsc.DEFAULT,Petsc.DETERMINE --- Use instead of some integer arguments</span>
+<span class="comment">%</span>
+<span class="comment">%   PetscOptionsView;  % show current options</span>
+<span class="comment">%   PetscOptionsSetValue('-optionname','value');</span>
+<span class="comment">%   PetscOptionsClearValue('-optionname');         % remove from the database</span>
+<span class="comment">%</span>
+<span class="comment">%   PetscObjectsView; % show all current PETSc objects, like MATLAB who</span>
+<span class="comment">%   A = PetscObjectsGetObject('name'); % return MATLAB pointer to PETSc object of given name</span>
+<span class="comment">%</span>
+<span class="comment">%   PetscCHKERRQ(ierr); % check if an error code is non-zero and set MATLAB error</span>
+<span class="comment">%   PETSC_COMM_SELF;    % returns current MPI_COMM_SELF communicator, not needed by users</span>
+<span class="comment">%</span>
+<span class="comment">%   Each of the following have their own help</span>
+<span class="comment">%      PetscObject - Abstract base class of all PETSc classes</span>
+<span class="comment">%      PetscIS     - Index set class</span>
+<span class="comment">%      PetscVec    - Vector class</span>
+<span class="comment">%      PetscMat    - Matrix class</span>
+<span class="comment">%      PetscPC     - Preconditioner class, not ususally used directly</span>
+<span class="comment">%      PetscKSP    - Linear solver class</span>
+<span class="comment">%      PetscSNES   - Nonlinear solver class</span>
+<span class="comment">%      PetscTS     - ODE integrator class</span>
+<span class="comment">%      PetscDM     - Manages interface between mesh data and the solvers</span>
+<span class="comment">%</span>
+<span class="comment">%  The script demo.m in bin/matlab/classes/examples/tutorials demonstrates several example</span>
+<span class="comment">%     usages of PETSc from MATLAB</span>
+
+<span class="comment">%  Notes: You can call PetscInitialize() multiple times so long as you call PetscFinalize() between each call</span>
+<span class="comment">%         The interface currently works only for sequential (one processor) runs, for</span>
+<span class="comment">%            a good hacker it should be relatively easy to make it parallel.</span>
+<span class="comment">%         All PETSc MATLAB functions that end with Internal.m are used by PETSc and should not be called</span>
+<span class="comment">%            directly by users.</span>
+<span class="comment">%</span>
+  <span class="keyword">properties</span> (Constant)
+    INSERT_VALUES=1;
+    ADD_VALUES=2;
+    DECIDE=-1;
+    DETERMINE=-1;
+    DEFAULT=-2;
+
+    COPY_VALUES=0;
+
+    FILE_MODE_READ=0;
+    FILE_MODE_WRITE=1;
+    FILE_MODE_APPEND=2;
+    FILE_MODE_UPDATE=3;
+    FILE_MODE_APPEND_UPDATE=4;
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+classdef Petsc < handle
+%
+%     PETSc MATLAB Interface Help
+%
+%   PetscInitialize({'-option1','value1','-option2'});
+%   PetscFinalize; 
+%
+%   Petsc.INSERT_VALUES, Petsc.ADD_VALUES  REPLACE_WITH_DASH_DASH- Options for setting values into Vecs and Mats
+%   Petsc.DECIDE,Petsc.DEFAULT,Petsc.DETERMINE REPLACE_WITH_DASH_DASH- Use instead of some integer arguments
+%
+%   PetscOptionsView;  % show current options
+%   PetscOptionsSetValue('-optionname','value');
+%   PetscOptionsClearValue('-optionname');         % remove from the database
+%
+%   PetscObjectsView; % show all current PETSc objects, like MATLAB who
+%   A = PetscObjectsGetObject('name'); % return MATLAB pointer to PETSc object of given name
+%
+%   PetscCHKERRQ(ierr); % check if an error code is non-zero and set MATLAB error
+%   PETSC_COMM_SELF;    % returns current MPI_COMM_SELF communicator, not needed by users
+%
+%   Each of the following have their own help
+%      PetscObject - Abstract base class of all PETSc classes
+%      PetscIS     - Index set class
+%      PetscVec    - Vector class
+%      PetscMat    - Matrix class
+%      PetscPC     - Preconditioner class, not ususally used directly
+%      PetscKSP    - Linear solver class
+%      PetscSNES   - Nonlinear solver class
+%      PetscTS     - ODE integrator class
+%      PetscDM     - Manages interface between mesh data and the solvers
+%
+%  The script demo.m in bin/matlab/classes/examples/tutorials demonstrates several example 
+%     usages of PETSc from MATLAB
+
+%  Notes: You can call PetscInitialize() multiple times so long as you call PetscFinalize() between each call
+%         The interface currently works only for sequential (one processor) runs, for 
+%            a good hacker it should be relatively easy to make it parallel.
+%         All PETSc MATLAB functions that end with Internal.m are used by PETSc and should not be called 
+%            directly by users.
+%
+  properties (Constant)
+    INSERT_VALUES=1;
+    ADD_VALUES=2;
+    DECIDE=-1;
+    DETERMINE=-1;
+    DEFAULT=-2;
+    
+    COPY_VALUES=0;
+  
+    FILE_MODE_READ=0;
+    FILE_MODE_WRITE=1;
+    FILE_MODE_APPEND=2;
+    FILE_MODE_UPDATE=3;
+    FILE_MODE_APPEND_UPDATE=4;
+  end
+end
+
+ 
+
+##### SOURCE END #####
+--></body></html>

@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
       Some PETSc utilites routines to add simple parallel IO capability
 */
-#include "petscsys.h"
+#include <petscsys.h>
 #include <stdarg.h>
 #if defined(PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
@@ -14,7 +14,7 @@
     PetscFOpen - Has the first process in the communicator open a file;
     all others do nothing.
 
-    Collective on MPI_Comm
+    Logically Collective on MPI_Comm
 
     Input Parameters:
 +   comm - the communicator
@@ -38,7 +38,7 @@
 .seealso: PetscFClose(), PetscSynchronizedFGets(), PetscSynchronizedPrintf(), PetscSynchronizedFlush(),
           PetscFPrintf()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscFOpen(MPI_Comm comm,const char name[],const char mode[],FILE **fp)
+PetscErrorCode  PetscFOpen(MPI_Comm comm,const char name[],const char mode[],FILE **fp)
 {
   PetscErrorCode ierr;
   PetscMPIInt    rank;
@@ -48,7 +48,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscFOpen(MPI_Comm comm,const char name[],const 
   PetscFunctionBegin;
   ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr);
   if (!rank) {
-    PetscTruth isstdout,isstderr;
+    PetscBool  isstdout,isstderr;
     ierr = PetscStrcmp(name,"stdout",&isstdout);CHKERRQ(ierr);
     ierr = PetscStrcmp(name,"stderr",&isstderr);CHKERRQ(ierr);
     if (isstdout || !name) {
@@ -60,7 +60,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscFOpen(MPI_Comm comm,const char name[],const 
       ierr = PetscFixFilename(tname,fname);CHKERRQ(ierr);
       ierr = PetscInfo1(0,"Opening file %s\n",fname);CHKERRQ(ierr);
       fd   = fopen(fname,mode);
-      if (!fd) SETERRQ1(PETSC_ERR_FILE_OPEN,"Unable to open file %s\n",fname);
+      if (!fd) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_FILE_OPEN,"Unable to open file %s\n",fname);
     }
   } else fd = 0;
   *fp = fd;
@@ -73,7 +73,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscFOpen(MPI_Comm comm,const char name[],const 
     PetscFClose - Has the first processor in the communicator close a 
     file; all others do nothing.
 
-    Collective on MPI_Comm
+    Logically Collective on MPI_Comm
 
     Input Parameters:
 +   comm - the communicator
@@ -89,7 +89,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscFOpen(MPI_Comm comm,const char name[],const 
 
 .seealso: PetscFOpen()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscFClose(MPI_Comm comm,FILE *fd)
+PetscErrorCode  PetscFClose(MPI_Comm comm,FILE *fd)
 {
   PetscErrorCode ierr;
   PetscMPIInt    rank;
@@ -99,7 +99,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscFClose(MPI_Comm comm,FILE *fd)
   ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr);
   if (!rank && fd != PETSC_STDOUT && fd != PETSC_STDERR) {
     err = fclose(fd);
-    if (err) SETERRQ(PETSC_ERR_SYS,"fclose() failed on file");    
+    if (err) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SYS,"fclose() failed on file");    
   }
   PetscFunctionReturn(0);
 }
@@ -125,7 +125,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscFClose(MPI_Comm comm,FILE *fd)
 .seealso: PetscFOpen(), PetscFClose(), PetscPOpen()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscPClose(MPI_Comm comm,FILE *fd)
+PetscErrorCode  PetscPClose(MPI_Comm comm,FILE *fd)
 {
   PetscErrorCode ierr;
   PetscMPIInt    rank;
@@ -137,7 +137,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscPClose(MPI_Comm comm,FILE *fd)
     char buf[1024];
     while (fgets(buf,1024,fd)) {;} /* wait till it prints everything */
     err = pclose(fd);
-    if (err) SETERRQ1(PETSC_ERR_SYS,"pclose() failed on process %D",err);    
+    if (err) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SYS,"pclose() failed on process %D",err);    
   }
   PetscFunctionReturn(0);
 }
@@ -149,7 +149,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscPClose(MPI_Comm comm,FILE *fd)
       PetscPOpen - Runs a program on processor zero and sends either its input or output to 
           a file.
 
-     Collective on MPI_Comm, but only process 0 runs the command
+     Logically Collective on MPI_Comm, but only process 0 runs the command
 
    Input Parameters:
 +   comm - MPI communicator, only processor zero runs the program
@@ -172,7 +172,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscPClose(MPI_Comm comm,FILE *fd)
 .seealso: PetscFOpen(), PetscFClose(), PetscPClose()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscPOpen(MPI_Comm comm,const char machine[],const char program[],const char mode[],FILE **fp)
+PetscErrorCode  PetscPOpen(MPI_Comm comm,const char machine[],const char program[],const char mode[],FILE **fp)
 {
   PetscErrorCode ierr;
   PetscMPIInt    rank;
@@ -186,7 +186,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscPOpen(MPI_Comm comm,const char machine[],con
   if (machine && machine[0]) {
     ierr = PetscStrcpy(command,"ssh ");CHKERRQ(ierr);
     ierr = PetscStrcat(command,machine);CHKERRQ(ierr);
-    ierr = PetscStrcat(command," \" setenv DISPLAY ${DISPLAY}; ");CHKERRQ(ierr);
+    ierr = PetscStrcat(command," \" export DISPLAY=${DISPLAY}; ");CHKERRQ(ierr);
     /*
         Copy program into command but protect the " with a \ in front of it 
     */
@@ -210,7 +210,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscPOpen(MPI_Comm comm,const char machine[],con
   if (!rank) {
     ierr = PetscInfo1(0,"Running command :%s\n",commandt);CHKERRQ(ierr);
     if (!(fd = popen(commandt,mode))) {
-       SETERRQ1(PETSC_ERR_LIB,"Cannot run command %s",commandt);
+       SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"Cannot run command %s",commandt);
     }
     if (fp) *fp = fd;
   }

@@ -1,7 +1,310 @@
-        subroutine MatGetDiagonalBlock(aupper, iscopy, reuse, a ,ierr)
+        subroutine MatCreateMFFD(comm, m, n, mupper, nupper, J ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt m ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt mupper ! PetscInt
+       PetscInt nupper ! PetscInt
+       Mat J ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatMFFDGetH(mat, h ,ierr)
+       Mat mat ! Mat
+       PetscScalar h ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine MatMFFDSetPeriod(mat, period ,ierr)
+       Mat mat ! Mat
+       PetscInt period ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatMFFDSetFunctionError(mat, error ,ierr)
+       Mat mat ! Mat
+       PetscReal error ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatMFFDAddNullSpace(J, nullsp ,ierr)
+       Mat J ! Mat
+       MatNullSpace nullsp ! MatNullSpace
+       integer ierr
+       end subroutine
+        subroutine MatMFFDSetHHistory(J, history, nhistory ,ierr)
+       Mat J ! Mat
+       PetscScalar history (*) ! PetscScalar
+       PetscInt nhistory ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatMFFDResetHHistory(J ,ierr)
+       Mat J ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatMFFDSetBase(J, U, F ,ierr)
+       Mat J ! Mat
+       Vec U ! Vec
+       Vec F ! Vec
+       integer ierr
+       end subroutine
+        subroutine MatMFFDCheckPositivity(dummy, U, a, h ,ierr)
+       PetscVoid dummy ! void
+       Vec U ! Vec
+       Vec a ! Vec
+       PetscScalar h ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine MatMFFDWPSetComputeNormU(A, flag ,ierr)
+       Mat A ! Mat
+       PetscBool flag ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine MatMFFDDSSetUmin(A, umin ,ierr)
+       Mat A ! Mat
+       PetscReal umin ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatISGetLocalMat(mat, local ,ierr)
+       Mat mat ! Mat
+       Mat local ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatCreateIS(comm, m, n, mupper, nupper, map, A ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt m ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt mupper ! PetscInt
+       PetscInt nupper ! PetscInt
+       ISLocalToGlobalMapping map ! ISLocalToGlobalMapping
+       Mat A ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatCompositeAddMat(mat, smat ,ierr)
+       Mat mat ! Mat
+       Mat smat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatNestSetSubMats(aupper, nr, is_row, nc, is_col, a ,&
+     &ierr)
        Mat aupper ! Mat
-       PetscTruth iscopy ! PetscTruth
-       MatReuse reuse ! MatReuse
+       PetscInt nr ! PetscInt
+       IS is_row (*) ! IS
+       PetscInt nc ! PetscInt
+       IS is_col (*) ! IS
+       Mat a (*) ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatCreateNest(comm, nr, is_row, nc, is_col, a, B ,   &
+     &ierr)
+       integer comm ! MPI_Comm
+       PetscInt nr ! PetscInt
+       IS is_row (*) ! IS
+       PetscInt nc ! PetscInt
+       IS is_col (*) ! IS
+       Mat a (*) ! Mat
+       Mat B ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatSuperluSetILUDropTol(F, dtol ,ierr)
+       Mat F ! Mat
+       PetscReal dtol ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatMumpsSetIcntl(F, icntl, ival ,ierr)
+       Mat F ! Mat
+       PetscInt icntl ! PetscInt
+       PetscInt ival ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatSeqAIJSetColumnIndices(mat, indices ,ierr)
+       Mat mat ! Mat
+       PetscInt indices ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatStoreValues(mat ,ierr)
+       Mat mat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatRetrieveValues(mat ,ierr)
+       Mat mat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatSeqAIJSetPreallocationCSR(B, i, j, v ,ierr)
+       Mat B ! Mat
+       PetscInt i (*) ! PetscInt
+       PetscInt j (*) ! PetscInt
+       PetscScalar v (*) ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine MatCreateSeqAIJWithArrays(comm, m, n, i, j, a, mat , &
+     &ierr)
+       integer comm ! MPI_Comm
+       PetscInt m ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt i ! PetscInt
+       PetscInt j ! PetscInt
+       PetscScalar a ! PetscScalar
+       Mat mat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatRegisterDAAD(ierr)
+       integer ierr
+       end subroutine
+        subroutine MatCreateLRC(A, U, V, N ,ierr)
+       Mat A ! Mat
+       Mat U ! Mat
+       Mat V ! Mat
+       Mat N ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatCreateLocalRef(A, isrow, iscol, newmat ,ierr)
+       Mat A ! Mat
+       IS isrow ! IS
+       IS iscol ! IS
+       Mat newmat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatGetVecsFFTW(A, x, y, z ,ierr)
+       Mat A ! Mat
+       Vec x ! Vec
+       Vec y ! Vec
+       Vec z ! Vec
+       integer ierr
+       end subroutine
+        subroutine VecScatterPetscToFFTW(A, x, y ,ierr)
+       Mat A ! Mat
+       Vec x ! Vec
+       Vec y ! Vec
+       integer ierr
+       end subroutine
+        subroutine VecScatterFFTWToPetsc(A, x, y ,ierr)
+       Mat A ! Mat
+       Vec x ! Vec
+       Vec y ! Vec
+       integer ierr
+       end subroutine
+        subroutine MatAXPY(Y, a, X, str ,ierr)
+       Mat Y ! Mat
+       PetscScalar a ! PetscScalar
+       Mat X ! Mat
+       MatStructure str ! MatStructure
+       integer ierr
+       end subroutine
+        subroutine MatShift(Y, a ,ierr)
+       Mat Y ! Mat
+       PetscScalar a ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine MatDiagonalSet(Y, D, is ,ierr)
+       Mat Y ! Mat
+       Vec D ! Vec
+       InsertMode is ! InsertMode
+       integer ierr
+       end subroutine
+        subroutine MatAYPX(Y, a, X, str ,ierr)
+       Mat Y ! Mat
+       PetscScalar a ! PetscScalar
+       Mat X ! Mat
+       MatStructure str ! MatStructure
+       integer ierr
+       end subroutine
+        subroutine MatComputeExplicitOperator(inmat, mat ,ierr)
+       Mat inmat ! Mat
+       Mat mat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatMultEqual(A, B, n, flg ,ierr)
+       Mat A ! Mat
+       Mat B ! Mat
+       PetscInt n ! PetscInt
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine MatMultAddEqual(A, B, n, flg ,ierr)
+       Mat A ! Mat
+       Mat B ! Mat
+       PetscInt n ! PetscInt
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine MatMultTransposeEqual(A, B, n, flg ,ierr)
+       Mat A ! Mat
+       Mat B ! Mat
+       PetscInt n ! PetscInt
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine MatMultTransposeAddEqual(A, B, n, flg ,ierr)
+       Mat A ! Mat
+       Mat B ! Mat
+       PetscInt n ! PetscInt
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine MatCreate(comm, A ,ierr)
+       integer comm ! MPI_Comm
+       Mat A ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatSetSizes(A, m, n, mupper, nupper ,ierr)
+       Mat A ! Mat
+       PetscInt m ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt mupper ! PetscInt
+       PetscInt nupper ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatSetFromOptions(B ,ierr)
+       Mat B ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatSetUpPreallocation(B ,ierr)
+       Mat B ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatGetColumnVector(A, yy, col ,ierr)
+       Mat A ! Mat
+       Vec yy ! Vec
+       PetscInt col ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatGetColumnNorms(A, type, norms ,ierr)
+       Mat A ! Mat
+       NormType type ! NormType
+       PetscReal norms ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine MatReorderForNonzeroDiagonal(mat, abstol, ris, cis , &
+     &ierr)
+       Mat mat ! Mat
+       PetscReal abstol ! PetscReal
+       IS ris ! IS
+       IS cis ! IS
+       integer ierr
+       end subroutine
+        subroutine MatCreateFFT(comm, ndim, dim, mattype, A ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt ndim ! PetscInt
+       PetscInt dim (*) ! PetscInt
+       MatType mattype ! MatType
+       Mat A ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatSeqBAIJSetColumnIndices(mat, indices ,ierr)
+       Mat mat ! Mat
+       PetscInt indices ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatCreateSeqBAIJWithArrays(comm, bs, m, n, i, j, a,  &
+     &mat ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt bs ! PetscInt
+       PetscInt m ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt i ! PetscInt
+       PetscInt j ! PetscInt
+       PetscScalar a ! PetscScalar
+       Mat mat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatGetDiagonalBlock(aupper, a ,ierr)
+       Mat aupper ! Mat
        Mat a ! Mat
        integer ierr
        end subroutine
@@ -20,7 +323,7 @@
        end subroutine
         subroutine MatMissingDiagonal(mat, missing, dd ,ierr)
        Mat mat ! Mat
-       PetscTruth missing ! PetscTruth
+       PetscBool missing ! PetscBool
        PetscInt dd ! PetscInt
        integer ierr
        end subroutine
@@ -54,16 +357,11 @@
        end subroutine
         subroutine MatUseScaledForm(mat, scaled ,ierr)
        Mat mat ! Mat
-       PetscTruth scaled ! PetscTruth
+       PetscBool scaled ! PetscBool
        integer ierr
        end subroutine
         subroutine MatDestroy(A ,ierr)
        Mat A ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatValid(m, flg ,ierr)
-       Mat m ! Mat
-       PetscTruth flg ! PetscTruth
        integer ierr
        end subroutine
         subroutine MatSetValues(mat, m, idxm, n, idxn, v, addv ,ierr)
@@ -127,14 +425,40 @@
        PetscScalar v (*) ! PetscScalar
        integer ierr
        end subroutine
-        subroutine MatSetLocalToGlobalMapping(x, mapping ,ierr)
-       Mat x ! Mat
-       ISLocalToGlobalMapping mapping ! ISLocalToGlobalMapping
+        subroutine MatSetValuesBatch(mat, nb, bs, rows, v ,ierr)
+       Mat mat ! Mat
+       PetscInt nb ! PetscInt
+       PetscInt bs ! PetscInt
+       PetscInt rows (*) ! PetscInt
+       PetscScalar v (*) ! PetscScalar
        integer ierr
        end subroutine
-        subroutine MatSetLocalToGlobalMappingBlock(x, mapping ,ierr)
+        subroutine MatSetLocalToGlobalMapping(x, rmapping, cmapping ,   &
+     &ierr)
        Mat x ! Mat
-       ISLocalToGlobalMapping mapping ! ISLocalToGlobalMapping
+       ISLocalToGlobalMapping rmapping ! ISLocalToGlobalMapping
+       ISLocalToGlobalMapping cmapping ! ISLocalToGlobalMapping
+       integer ierr
+       end subroutine
+        subroutine MatSetLocalToGlobalMappingBlock(x, rmapping, cmapping&
+     & ,ierr)
+       Mat x ! Mat
+       ISLocalToGlobalMapping rmapping ! ISLocalToGlobalMapping
+       ISLocalToGlobalMapping cmapping ! ISLocalToGlobalMapping
+       integer ierr
+       end subroutine
+        subroutine MatGetLocalToGlobalMapping(A, rmapping, cmapping ,   &
+     &ierr)
+       Mat A ! Mat
+       ISLocalToGlobalMapping rmapping ! ISLocalToGlobalMapping
+       ISLocalToGlobalMapping cmapping ! ISLocalToGlobalMapping
+       integer ierr
+       end subroutine
+        subroutine MatGetLocalToGlobalMappingBlock(A, rmapping, cmapping&
+     & ,ierr)
+       Mat A ! Mat
+       ISLocalToGlobalMapping rmapping ! ISLocalToGlobalMapping
+       ISLocalToGlobalMapping cmapping ! ISLocalToGlobalMapping
        integer ierr
        end subroutine
         subroutine MatSetValuesLocal(mat, nrow, irow, ncol, icol, y,    &
@@ -328,7 +652,7 @@
        Mat A ! Mat
        Mat B ! Mat
        PetscReal tol ! PetscReal
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatHermitianTranspose(mat, reuse, B ,ierr)
@@ -341,7 +665,7 @@
        Mat A ! Mat
        Mat B ! Mat
        PetscReal tol ! PetscReal
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatPermute(mat, row, col, B ,ierr)
@@ -351,21 +675,10 @@
        Mat B ! Mat
        integer ierr
        end subroutine
-        subroutine MatPermuteSparsify(A, band, frac, tol, rowp, colp, B &
-     &,ierr)
-       Mat A ! Mat
-       PetscInt band ! PetscInt
-       PetscReal frac ! PetscReal
-       PetscReal tol ! PetscReal
-       IS rowp ! IS
-       IS colp ! IS
-       Mat B ! Mat
-       integer ierr
-       end subroutine
         subroutine MatEqual(A, B, flg ,ierr)
        Mat A ! Mat
        Mat B ! Mat
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatDiagonalScale(mat, l, r ,ierr)
@@ -392,7 +705,7 @@
        end subroutine
         subroutine MatAssembled(mat, assembled ,ierr)
        Mat mat ! Mat
-       PetscTruth assembled ! PetscTruth
+       PetscBool assembled ! PetscBool
        integer ierr
        end subroutine
         subroutine MatAssemblyEnd(mat, type ,ierr)
@@ -403,7 +716,7 @@
         subroutine MatSetOption(mat, op, flg ,ierr)
        Mat mat ! Mat
        MatOption op ! MatOption
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatZeroEntries(mat ,ierr)
@@ -455,8 +768,7 @@
        Mat mat ! Mat
        integer ierr
        end subroutine
-        subroutine MatGetSubMatrix(mat, isrow, iscol, cll, newmat ,ierr)&
-     &
+        subroutine MatGetSubMatrix(mat, isrow, iscol, cll, newmat ,ierr)
        Mat mat ! Mat
        IS isrow ! IS
        IS iscol ! IS
@@ -525,30 +837,30 @@
         subroutine MatIsSymmetric(A, tol, flg ,ierr)
        Mat A ! Mat
        PetscReal tol ! PetscReal
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatIsHermitian(A, tol, flg ,ierr)
        Mat A ! Mat
        PetscReal tol ! PetscReal
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatIsSymmetricKnown(A, set, flg ,ierr)
        Mat A ! Mat
-       PetscTruth set ! PetscTruth
-       PetscTruth flg ! PetscTruth
+       PetscBool set ! PetscBool
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatIsHermitianKnown(A, set, flg ,ierr)
        Mat A ! Mat
-       PetscTruth set ! PetscTruth
-       PetscTruth flg ! PetscTruth
+       PetscBool set ! PetscBool
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatIsStructurallySymmetric(A, flg ,ierr)
        Mat A ! Mat
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine MatStashGetInfo(mat, nstash, reallocs, bnstash,      &
@@ -610,16 +922,40 @@
        Mat C ! Mat
        integer ierr
        end subroutine
+        subroutine MatGetLocalSubMatrix(mat, isrow, iscol, submat ,ierr)
+       Mat mat ! Mat
+       IS isrow ! IS
+       IS iscol ! IS
+       Mat submat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatRestoreLocalSubMatrix(mat, isrow, iscol, submat , &
+     &ierr)
+       Mat mat ! Mat
+       IS isrow ! IS
+       IS iscol ! IS
+       Mat submat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatFindZeroDiagonals(mat, is ,ierr)
+       Mat mat ! Mat
+       IS is ! IS
+       integer ierr
+       end subroutine
+        subroutine MatInvertBlockDiagonal(mat, values ,ierr)
+       Mat mat ! Mat
+       PetscScalar values ! PetscScalar
+       integer ierr
+       end subroutine
         subroutine MatHasOperation(mat, op, has ,ierr)
        Mat mat ! Mat
        MatOperation op ! MatOperation
-       PetscTruth has ! PetscTruth
+       PetscBool has ! PetscBool
        integer ierr
        end subroutine
-        subroutine MatNullSpaceCreate(comm, has_cnst, n, vecs, SP ,ierr)&
-     &
+        subroutine MatNullSpaceCreate(comm, has_cnst, n, vecs, SP ,ierr)
        integer comm ! MPI_Comm
-       PetscTruth has_cnst ! PetscTruth
+       PetscBool has_cnst ! PetscBool
        PetscInt n ! PetscInt
        Vec vecs (*) ! Vec
        MatNullSpace SP ! MatNullSpace
@@ -632,38 +968,77 @@
         subroutine MatNullSpaceTest(sp, mat, isNull ,ierr)
        MatNullSpace sp ! MatNullSpace
        Mat mat ! Mat
-       PetscTruth isNull ! PetscTruth
+       PetscBool isNull ! PetscBool
        integer ierr
        end subroutine
-        subroutine MatSeqAIJSetColumnIndices(mat, indices ,ierr)
+        subroutine MatCreateMPISBAIJWithArrays(comm, bs, m, n, mupper,  &
+     &nupper, i, j, a, mat ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt bs ! PetscInt
+       PetscInt m ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt mupper ! PetscInt
+       PetscInt nupper ! PetscInt
+       PetscInt i (*) ! PetscInt
+       PetscInt j (*) ! PetscInt
+       PetscScalar a (*) ! PetscScalar
+       Mat mat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatSeqSBAIJSetColumnIndices(mat, indices ,ierr)
        Mat mat ! Mat
        PetscInt indices ! PetscInt
        integer ierr
        end subroutine
-        subroutine MatStoreValues(mat ,ierr)
-       Mat mat ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatRetrieveValues(mat ,ierr)
-       Mat mat ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatSeqAIJSetPreallocationCSR(B, i, j, v ,ierr)
-       Mat B ! Mat
-       PetscInt i (*) ! PetscInt
-       PetscInt j (*) ! PetscInt
-       PetscScalar v (*) ! PetscScalar
-       integer ierr
-       end subroutine
-        subroutine MatCreateSeqAIJWithArrays(comm, m, n, i, j, a, mat , &
-     &ierr)
+        subroutine MatCreateSeqSBAIJWithArrays(comm, bs, m, n, i, j, a, &
+     &mat ,ierr)
        integer comm ! MPI_Comm
+       PetscInt bs ! PetscInt
        PetscInt m ! PetscInt
        PetscInt n ! PetscInt
        PetscInt i ! PetscInt
        PetscInt j ! PetscInt
        PetscScalar a ! PetscScalar
        Mat mat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatCreateSubMatrix(A, isrow, iscol, newmat ,ierr)
+       Mat A ! Mat
+       IS isrow ! IS
+       IS iscol ! IS
+       Mat newmat ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatSubMatrixUpdate(N, A, isrow, iscol ,ierr)
+       Mat N ! Mat
+       Mat A ! Mat
+       IS isrow ! IS
+       IS iscol ! IS
+       integer ierr
+       end subroutine
+        subroutine MatScatterGetVecScatter(mat, scatter ,ierr)
+       Mat mat ! Mat
+       VecScatter scatter ! VecScatter
+       integer ierr
+       end subroutine
+        subroutine MatScatterSetVecScatter(mat, scatter ,ierr)
+       Mat mat ! Mat
+       VecScatter scatter ! VecScatter
+       integer ierr
+       end subroutine
+        subroutine MatCreateNormal(A, N ,ierr)
+       Mat A ! Mat
+       Mat N ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatDenseGetLocalMatrix(A, B ,ierr)
+       Mat A ! Mat
+       Mat B ! Mat
+       integer ierr
+       end subroutine
+        subroutine MatCreateTranspose(A, N ,ierr)
+       Mat A ! Mat
+       Mat N ! Mat
        integer ierr
        end subroutine
         subroutine MatMPIAIJSetPreallocationCSR(B, i, j, v ,ierr)
@@ -694,7 +1069,7 @@
        Mat outmat ! Mat
        integer ierr
        end subroutine
-        subroutine MatGetLocalMat(A, scall, A_loc ,ierr)
+        subroutine MatMPIAIJGetLocalMat(A, scall, A_loc ,ierr)
        Mat A ! Mat
        MatReuse scall ! MatReuse
        Mat A_loc ! Mat
@@ -716,299 +1091,27 @@
        Mat mat ! Mat
        integer ierr
        end subroutine
-        subroutine MatMumpsSetIcntl(F, idx, icntl ,ierr)
-       Mat F ! Mat
-       PetscInt idx ! PetscInt
-       PetscInt icntl ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatSeqSBAIJSetColumnIndices(mat, indices ,ierr)
-       Mat mat ! Mat
-       PetscInt indices ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatCreateSeqSBAIJWithArrays(comm, bs, m, n, i, j, a, &
-     &mat ,ierr)
-       integer comm ! MPI_Comm
-       PetscInt bs ! PetscInt
-       PetscInt m ! PetscInt
-       PetscInt n ! PetscInt
-       PetscInt i ! PetscInt
-       PetscInt j ! PetscInt
-       PetscScalar a ! PetscScalar
-       Mat mat ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatCreateSeqFFTW(comm, ndim, dim, A ,ierr)
-       integer comm ! MPI_Comm
-       PetscInt ndim ! PetscInt
-       PetscInt dim (*) ! PetscInt
-       Mat A ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatCompositeAddMat(mat, smat ,ierr)
-       Mat mat ! Mat
-       Mat smat ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatCreateLRC(A, U, V, N ,ierr)
-       Mat A ! Mat
-       Mat U ! Mat
-       Mat V ! Mat
-       Mat N ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatMFFDSetFromOptions(mat ,ierr)
-       Mat mat ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatCreateMFFD(comm, m, n, mupper, nupper, J ,ierr)
-       integer comm ! MPI_Comm
-       PetscInt m ! PetscInt
-       PetscInt n ! PetscInt
-       PetscInt mupper ! PetscInt
-       PetscInt nupper ! PetscInt
-       Mat J ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatMFFDGetH(mat, h ,ierr)
-       Mat mat ! Mat
-       PetscScalar h ! PetscScalar
-       integer ierr
-       end subroutine
-        subroutine MatMFFDSetPeriod(mat, period ,ierr)
-       Mat mat ! Mat
-       PetscInt period ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatMFFDSetFunctionError(mat, error ,ierr)
-       Mat mat ! Mat
-       PetscReal error ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine MatMFFDAddNullSpace(J, nullsp ,ierr)
-       Mat J ! Mat
-       MatNullSpace nullsp ! MatNullSpace
-       integer ierr
-       end subroutine
-        subroutine MatMFFDSetHHistory(J, history, nhistory ,ierr)
-       Mat J ! Mat
-       PetscScalar history (*) ! PetscScalar
-       PetscInt nhistory ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatMFFDResetHHistory(J ,ierr)
-       Mat J ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatMFFDSetBase(J, U, F ,ierr)
-       Mat J ! Mat
-       Vec U ! Vec
-       Vec F ! Vec
-       integer ierr
-       end subroutine
-        subroutine MatMFFDCheckPositivity(dummy, U, a, h ,ierr)
-       PetscVoid dummy ! void
-       Vec U ! Vec
-       Vec a ! Vec
-       PetscScalar h ! PetscScalar
-       integer ierr
-       end subroutine
-        subroutine MatMFFDWPSetComputeNormU(A, flag ,ierr)
-       Mat A ! Mat
-       PetscTruth flag ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine MatMFFDDSSetUmin(A, umin ,ierr)
-       Mat A ! Mat
-       PetscReal umin ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine MatScatterGetVecScatter(mat, scatter ,ierr)
-       Mat mat ! Mat
-       VecScatter scatter ! VecScatter
-       integer ierr
-       end subroutine
-        subroutine MatScatterSetVecScatter(mat, scatter ,ierr)
-       Mat mat ! Mat
-       VecScatter scatter ! VecScatter
-       integer ierr
-       end subroutine
-        subroutine MatDenseGetLocalMatrix(A, B ,ierr)
-       Mat A ! Mat
-       Mat B ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatISGetLocalMat(mat, local ,ierr)
-       Mat mat ! Mat
-       Mat local ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatCreateIS(comm, m, n, mupper, nupper, map, A ,ierr)&
-     &
-       integer comm ! MPI_Comm
-       PetscInt m ! PetscInt
-       PetscInt n ! PetscInt
-       PetscInt mupper ! PetscInt
-       PetscInt nupper ! PetscInt
-       ISLocalToGlobalMapping map ! ISLocalToGlobalMapping
-       Mat A ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatCreateNormal(A, N ,ierr)
-       Mat A ! Mat
-       Mat N ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatCreateTranspose(A, N ,ierr)
-       Mat A ! Mat
-       Mat N ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatShellSetContext(mat, ctx ,ierr)
-       Mat mat ! Mat
-       PetscVoid ctx ! void
-       integer ierr
-       end subroutine
-        subroutine MatRegisterDAAD(ierr)
-       integer ierr
-       end subroutine
-        subroutine MatSeqBAIJInvertBlockDiagonal(mat ,ierr)
-       Mat mat ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatSeqBAIJSetColumnIndices(mat, indices ,ierr)
-       Mat mat ! Mat
-       PetscInt indices ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatCreateSeqBAIJWithArrays(comm, bs, m, n, i, j, a,  &
-     &mat ,ierr)
-       integer comm ! MPI_Comm
-       PetscInt bs ! PetscInt
-       PetscInt m ! PetscInt
-       PetscInt n ! PetscInt
-       PetscInt i ! PetscInt
-       PetscInt j ! PetscInt
-       PetscScalar a ! PetscScalar
-       Mat mat ! Mat
-       integer ierr
-       end subroutine
         subroutine MatMPIBAIJSetHashTableFactor(mat, fact ,ierr)
        Mat mat ! Mat
        PetscReal fact ! PetscReal
        integer ierr
        end subroutine
-        subroutine MatCreateSubMatrix(A, isrow, iscol, newmat ,ierr)
-       Mat A ! Mat
-       IS isrow ! IS
-       IS iscol ! IS
-       Mat newmat ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatSubMatrixUpdate(N, A, isrow, iscol ,ierr)
-       Mat N ! Mat
-       Mat A ! Mat
-       IS isrow ! IS
-       IS iscol ! IS
-       integer ierr
-       end subroutine
-        subroutine MatAXPY(Y, a, X, str ,ierr)
-       Mat Y ! Mat
-       PetscScalar a ! PetscScalar
-       Mat X ! Mat
-       MatStructure str ! MatStructure
-       integer ierr
-       end subroutine
-        subroutine MatShift(Y, a ,ierr)
-       Mat Y ! Mat
-       PetscScalar a ! PetscScalar
-       integer ierr
-       end subroutine
-        subroutine MatDiagonalSet(Y, D, is ,ierr)
-       Mat Y ! Mat
-       Vec D ! Vec
-       InsertMode is ! InsertMode
-       integer ierr
-       end subroutine
-        subroutine MatAYPX(Y, a, X, str ,ierr)
-       Mat Y ! Mat
-       PetscScalar a ! PetscScalar
-       Mat X ! Mat
-       MatStructure str ! MatStructure
-       integer ierr
-       end subroutine
-        subroutine MatComputeExplicitOperator(inmat, mat ,ierr)
-       Mat inmat ! Mat
-       Mat mat ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatMultEqual(A, B, n, flg ,ierr)
-       Mat A ! Mat
-       Mat B ! Mat
-       PetscInt n ! PetscInt
-       PetscTruth flg ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine MatMultAddEqual(A, B, n, flg ,ierr)
-       Mat A ! Mat
-       Mat B ! Mat
-       PetscInt n ! PetscInt
-       PetscTruth flg ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine MatMultTransposeEqual(A, B, n, flg ,ierr)
-       Mat A ! Mat
-       Mat B ! Mat
-       PetscInt n ! PetscInt
-       PetscTruth flg ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine MatMultTransposeAddEqual(A, B, n, flg ,ierr)
-       Mat A ! Mat
-       Mat B ! Mat
-       PetscInt n ! PetscInt
-       PetscTruth flg ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine MatCreate(comm, A ,ierr)
+        subroutine MatCreateMPIBAIJWithArrays(comm, bs, m, n, mupper,   &
+     &nupper, i, j, a, mat ,ierr)
        integer comm ! MPI_Comm
-       Mat A ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatSetSizes(A, m, n, mupper, nupper ,ierr)
-       Mat A ! Mat
+       PetscInt bs ! PetscInt
        PetscInt m ! PetscInt
        PetscInt n ! PetscInt
        PetscInt mupper ! PetscInt
        PetscInt nupper ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatSetFromOptions(B ,ierr)
-       Mat B ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatSetUpPreallocation(B ,ierr)
-       Mat B ! Mat
-       integer ierr
-       end subroutine
-        subroutine MatGetColumnVector(A, yy, col ,ierr)
-       Mat A ! Mat
-       Vec yy ! Vec
-       PetscInt col ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatGetColumnNorms(A, type, norms ,ierr)
-       Mat A ! Mat
-       NormType type ! NormType
-       PetscReal norms ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine MatReorderForNonzeroDiagonal(mat, abstol, ris, cis , &
-     &ierr)
+       PetscInt i (*) ! PetscInt
+       PetscInt j (*) ! PetscInt
+       PetscScalar a (*) ! PetscScalar
        Mat mat ! Mat
-       PetscReal abstol ! PetscReal
-       IS ris ! IS
-       IS cis ! IS
+       integer ierr
+       end subroutine
+        subroutine MatShellSetContext(mat, ctx ,ierr)
+       Mat mat ! Mat
+       PetscVoid ctx ! void
        integer ierr
        end subroutine

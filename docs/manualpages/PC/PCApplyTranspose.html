@@ -10,7 +10,7 @@ Applies the transpose of preconditioner to a vector.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyTranspose(PC pc,Vec x,Vec y)
+PetscErrorCode  PCApplyTranspose(PC pc,Vec x,Vec y)
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -24,6 +24,10 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Vec/Vec.html#Vec
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>y </B> -output vector
 <br>
+<P>
+Notes: For complex numbers this applies the non-Hermitian transpose.
+<P>
+Developer Notes: We need to implement a PCApplyHermitianTranspose()
 <P>
 
 <P>

@@ -10,7 +10,7 @@ Creates a mathematical function context.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpf.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT PFCreate(MPI_Comm comm,PetscInt dimin,PetscInt dimout,PF *pf)
+PetscErrorCode  PFCreate(MPI_Comm comm,PetscInt dimin,PetscInt dimout,PF *pf)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -34,7 +34,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- PFSetUp(), <A HREF="../PF/PFApply.html#PFApply">PFApply</A>(), <A HREF="../PF/PFDestroy.html#PFDestroy">PFDestroy</A>(), <A HREF="../PF/PFApplyVec.html#PFApplyVec">PFApplyVec</A>()
+ <A HREF="../PF/PFSet.html#PFSet">PFSet</A>(), <A HREF="../PF/PFApply.html#PFApply">PFApply</A>(), <A HREF="../PF/PFDestroy.html#PFDestroy">PFDestroy</A>(), <A HREF="../PF/PFApplyVec.html#PFApplyVec">PFApplyVec</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/pf/interface/pf.c.html#PFCreate">src/vec/pf/interface/pf.c</A>
 <BR><A HREF="./index.html">Index of all PF routines</A>

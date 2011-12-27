@@ -1,6 +1,6 @@
-#include "../src/sys/f90-src/f90impl.h"
-#include "private/fortranimpl.h"
-#include "petscviewer.h"
+#include <../src/sys/f90-src/f90impl.h>
+#include <private/fortranimpl.h>
+#include <petscviewer.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define petscviewerbinarywriteint_ PETSCVIEWERBINARYWRITEINT
@@ -21,21 +21,21 @@
 EXTERN_C_BEGIN
 
 
-void PETSC_STDCALL petscviewerbinarywriteint_(PetscViewer *viewer,PetscInt *a,PetscInt *len,PetscTruth *tmp,PetscErrorCode *ierr)
+void PETSC_STDCALL petscviewerbinarywriteint_(PetscViewer *viewer,PetscInt *a,PetscInt *len,PetscBool  *tmp,PetscErrorCode *ierr)
 {
   PetscViewer v;
   PetscPatchDefaultViewers_Fortran(viewer,v);
   *ierr = PetscViewerBinaryWrite(v,a,*len,PETSC_INT,*tmp);
 }
 
-void PETSC_STDCALL petscviewerbinarywritescalar_(PetscViewer *viewer,PetscScalar *a,PetscInt *len,PetscTruth *tmp,PetscErrorCode *ierr)
+void PETSC_STDCALL petscviewerbinarywritescalar_(PetscViewer *viewer,PetscScalar *a,PetscInt *len,PetscBool  *tmp,PetscErrorCode *ierr)
 {
   PetscViewer v;
   PetscPatchDefaultViewers_Fortran(viewer,v);
   *ierr = PetscViewerBinaryWrite(v,a,*len,PETSC_SCALAR,*tmp);
 }
 
-void PETSC_STDCALL petscviewerbinarywritereal_(PetscViewer *viewer,PetscReal *a,PetscInt *len,PetscTruth *tmp,PetscErrorCode *ierr)
+void PETSC_STDCALL petscviewerbinarywritereal_(PetscViewer *viewer,PetscReal *a,PetscInt *len,PetscBool  *tmp,PetscErrorCode *ierr)
 {
   PetscViewer v;
   PetscPatchDefaultViewers_Fortran(viewer,v);

@@ -2,7 +2,7 @@
 #define included_ALE_SieveBuilder_hh
 
 #ifndef  included_ALE_ALE_hh
-#include <ALE.hh>
+#include <sieve/ALE.hh>
 #endif
 
 namespace ALE {
@@ -144,6 +144,257 @@ namespace ALE {
         }
         if (debug > 1) {std::cout << "  Added cell " << cell << " dim " << dim << std::endl;}
       }
+    };
+    static void buildQuadraticHexFaces(Obj<sieve_type> sieve, Obj<arrow_section_type> orientation, int dim, std::map<int, int*>& curElement, std::map<int,PointArray>& bdVertices, std::map<int,oPointArray>& faces, typename sieve_type::point_type& cell, int& cellOrientation) {
+      int debug = sieve->debug();
+
+      if (debug > 1) {std::cout << "  Building hex faces for boundary of " << cell << " (size " << bdVertices[dim].size() << "), dim " << dim << std::endl;}
+      faces[dim].clear();
+      if (dim > 3) {
+        throw ALE::Exception("Cannot do hexes of dimension greater than three");
+      } else if (dim > 2) {
+	const int faceSizeQuadHex = 9;
+	const int numFacesQuadHex = 6;
+        int nodes[54] = {
+          3, 2, 1, 0,  10, 9, 8, 11,  24, // bottom
+          4, 5, 6, 7,  12, 13, 14, 15,  25, // top
+          0, 1, 5, 4,  8, 17, 12, 16,  22, // front
+          1, 2, 6, 5,  9, 18, 13, 17,  21, // right
+          2, 3, 7, 6,  10, 19, 14, 18,  23, // back
+          3, 0, 4, 7,  11, 16, 15, 19,  20 // left
+	};
+
+        for(int b = 0; b < numFacesQuadHex; b++) {
+          typename sieve_type::point_type face;
+          int o = 1;
+
+          bdVertices[dim-1].clear();
+          for(int c = 0; c < faceSizeQuadHex; c++) {
+            bdVertices[dim-1].push_back(bdVertices[dim][nodes[b*faceSizeQuadHex+c]]);
+          }
+          if (debug > 1) {std::cout << "    boundary hex face " << b << std::endl;}
+          buildQuadraticHexFaces(sieve, orientation, dim-1, curElement, bdVertices, faces, face, o);
+          if (debug > 1) {std::cout << "    added face " << face << std::endl;}
+          faces[dim].push_back(oPoint_type(face, o));
+        }
+      } else if (dim > 1) {
+	const int edgeSizeQuadHex = 3;
+	const int numEdgesQuadHex = 4;
+        int nodes[12] = {
+          0, 1,  4, // bottom
+          1, 2,  5, // right
+          2, 3,  6, // top
+          3, 0,  7, // left
+        };
+        for(int b = 0; b < numEdgesQuadHex; b++) {
+          typename sieve_type::point_type face;
+          int o = 1;
+
+          bdVertices[dim-1].clear();
+          for(int c = 0; c < edgeSizeQuadHex; c++) {
+            bdVertices[dim-1].push_back(bdVertices[dim][nodes[b*edgeSizeQuadHex+c]]);
+          }
+          if (debug > 1) {
+            std::cout << "    boundary point " << bdVertices[dim][b] << std::endl;
+            std::cout << "      boundary vertices";
+            for(int c = 0; c < (int) bdVertices[dim-1].size(); c++) {
+              std::cout << " " << bdVertices[dim-1][c];
+            }
+            std::cout << std::endl;
+          }
+          buildQuadraticHexFaces(sieve, orientation, dim-1, curElement, bdVertices, faces, face, o);
+          if (debug > 1) {std::cout << "    added face " << face << std::endl;}
+          faces[dim].push_back(oPoint_type(face, o));
+        }
+      } else {
+        if (debug > 1) {std::cout << "  Just set faces to boundary in 1d" << std::endl;}
+        typename PointArray::iterator bdEnd = bdVertices[dim].end();
+	for (typename PointArray::iterator bd_iter = bdVertices[dim].begin(); bd_iter != bdEnd; ++bd_iter)
+	  faces[dim].push_back(oPoint_type(*bd_iter, 0));
+        //faces[dim].insert(faces[dim].end(), bdVertices[dim].begin(), bdVertices[dim].end());
+      }
+      if (debug > 1) {
+        for(typename oPointArray::iterator f_iter = faces[dim].begin(); f_iter != faces[dim].end(); ++f_iter) {
+          std::cout << "  face point " << f_iter->first << " orientation " << f_iter->second << std::endl;
+        }
+      }
+      // We always create the toplevel, so we could short circuit somehow
+      // Should not have to loop here since the meet of just 2 boundary elements is an element
+      typename oPointArray::iterator         f_itor = faces[dim].begin();
+      const typename sieve_type::point_type& start  = f_itor->first;
+      const typename sieve_type::point_type& next   = (++f_itor)->first;
+      Obj<typename sieve_type::supportSet> preElement = sieve->nJoin(start, next, 1);
+
+      if (preElement->size() > 0) {
+        cell = *preElement->begin();
+
+        const int size = faces[dim].size();
+        const Obj<typename sieve_type::traits::coneSequence>& cone = sieve->cone(cell);
+        int       wrap = size > 2 ? size-1 : 0;
+        int       indA = 0, indB = 0;
+
+        for(typename sieve_type::traits::coneSequence::iterator c_iter = cone->begin(); c_iter != cone->end(); ++c_iter, ++indA) {
+          if (start == *c_iter) break;
+        }
+        if (debug > 1) {std::cout << "    pointA " << start << " indA " << indA << std::endl;}
+        for(typename sieve_type::traits::coneSequence::iterator c_iter = cone->begin(); c_iter != cone->end(); ++c_iter, ++indB) {
+          if (next  == *c_iter) break;
+        }
+        if (debug > 1) {std::cout << "    pointB " << next  << " indB " << indB << std::endl;}
+        if ((indB - indA == 1) || (indA - indB == wrap)) {
+          if (cellOrientation > 0) {
+            cellOrientation = indA+1;
+          } else {
+            if (dim == 1) {
+              cellOrientation = -2;
+            } else {
+              cellOrientation = -(indA+1);
+            }
+          }
+        } else if ((indA - indB == 1) || (indB - indA == wrap)) {
+          if (debug > 1) {std::cout << "      reversing cell orientation" << std::endl;}
+          if (cellOrientation > 0) {
+            cellOrientation = -(indA+1);
+          } else {
+            if (dim == 1) {
+              cellOrientation = 1;
+            } else {
+              cellOrientation = indA+1;
+            }
+          }
+        } else {
+          throw ALE::Exception("Inconsistent orientation");
+        }
+        if (debug > 1) {std::cout << "  Found old cell " << cell << " orientation " << cellOrientation << std::endl;}
+      } else {
+        int color = 0;
+
+        cell = typename sieve_type::point_type((*curElement[dim])++);
+        for(typename oPointArray::iterator f_iter = faces[dim].begin(); f_iter != faces[dim].end(); ++f_iter) {
+          MinimalArrow<typename sieve_type::point_type,typename sieve_type::point_type> arrow(f_iter->first, cell);
+
+          sieve->addArrow(f_iter->first, cell, color++);
+          if (f_iter->second) {
+            orientation->addPoint(arrow);
+            orientation->updatePoint(arrow, &(f_iter->second));
+            if (debug > 1) {std::cout << "    Orienting arrow (" << f_iter->first << ", " << cell << ") to " << f_iter->second << std::endl;}
+          }
+        }
+        if (cellOrientation > 0) {
+          cellOrientation = 1;
+        } else {
+          cellOrientation = -(dim+1);
+        }
+        if (debug > 1) {std::cout << "  Added cell " << cell << " dim " << dim << std::endl;}
+      }
+    };
+    static void buildQuadraticTetFaces(Obj<sieve_type> sieve, Obj<arrow_section_type> orientation, 
+				       int dim, 
+				       std::map<int, int*>& curElement, 
+				       std::map<int,PointArray>& bdVertices, 
+				       std::map<int,oPointArray>& faces, 
+				       typename sieve_type::point_type& cell, 
+				       int& cellOrientation) {
+      int debug = sieve->debug();
+
+      if (debug > 1) 
+	std::cout << "  Building tet faces for cell " << cell << " (size " << bdVertices[dim].size() << "), dim " << dim << std::endl;
+
+      switch (dim) {
+      case 1: {
+	break;
+      } // case 1
+      case 2: {
+	assert(6 == bdVertices[dim].size());
+
+	// Edges on face
+	int color = 0;
+	int faceOrientation = 1;
+
+	// Bottom edge
+	typename sieve_type::point_type edge = bdVertices[dim][0];
+	MinimalArrow<typename sieve_type::point_type,typename sieve_type::point_type> arrow(edge, cell);
+	sieve->addArrow(edge, cell, color++);
+	orientation->addPoint(arrow);
+	if (bdVertices[dim][3] < bdVertices[dim][4])
+	  faceOrientation = 1;
+	else
+	  faceOrientation = -dim;
+	orientation->updatePoint(arrow, &faceOrientation);
+	if (debug > 1)
+	  std::cout << "    Adding bottom edge " << edge << " with orientation " << faceOrientation << std::endl;
+
+	// Right edge
+	faceOrientation = 1;
+	edge = bdVertices[dim][1];
+	arrow.source = edge;
+	sieve->addArrow(edge, cell, color++);
+	orientation->addPoint(arrow);
+	if (bdVertices[dim][4] < bdVertices[dim][5])
+	  faceOrientation = 1;
+	else
+	  faceOrientation = -dim;
+	orientation->updatePoint(arrow, &faceOrientation);
+	if (debug > 1)
+	  std::cout << "    Adding right edge " << edge << " with orientation " << faceOrientation << std::endl;
+	
+	// Left edge
+	faceOrientation = 1;
+	edge = bdVertices[dim][2];
+	arrow.source = edge;
+	sieve->addArrow(edge, cell, color++);
+	orientation->addPoint(arrow);
+	if (bdVertices[dim][5] < bdVertices[dim][3])
+	  faceOrientation = 1;
+	else
+	  faceOrientation = -dim;
+	orientation->updatePoint(arrow, &faceOrientation);
+	if (debug > 1)
+	  std::cout << "    Adding left edge " << edge << " with orientation " << faceOrientation << std::endl;
+	
+	// Vertices on edges
+
+	// Vertices on bottom edge
+	color = 0;
+	edge = bdVertices[dim][0];
+	typename sieve_type::point_type vertexA = bdVertices[dim][3];
+	typename sieve_type::point_type vertexB = bdVertices[dim][4];
+	sieve->addArrow(vertexA, edge, color++);
+	sieve->addArrow(vertexB, edge, color++);
+	if (debug > 1)
+	  std::cout << "    Adding vertices " << vertexA << " and " << vertexB << std::endl;
+	  
+	// Vertices on right edge
+	color = 0;
+	edge = bdVertices[dim][1];
+	vertexA = bdVertices[dim][4];
+	vertexB = bdVertices[dim][5];
+	sieve->addArrow(vertexA, edge, color++);
+	sieve->addArrow(vertexB, edge, color++);
+	if (debug > 1)
+	  std::cout << "    Adding vertices " << vertexA << " and " << vertexB << std::endl;
+	  
+	// Vertices on left edge
+	color = 0;
+	edge = bdVertices[dim][2];
+	vertexA = bdVertices[dim][5];
+	vertexB = bdVertices[dim][3];
+	sieve->addArrow(vertexA, edge, color++);
+	sieve->addArrow(vertexB, edge, color++);
+	if (debug > 1)
+	  std::cout << "    Adding vertices " << vertexA << " and " << vertexB << std::endl;
+	  
+	break;
+      } // case 2
+      case 3: {
+	break;
+      } // case 3
+      default:
+	std::cerr << "Unknown dimension " << dim << std::endl;
+	assert(0);
+	throw ALE::Exception("Unknown dimension");
+      } // switch
+
     };
     static void buildFaces(Obj<sieve_type> sieve, Obj<arrow_section_type> orientation, int dim, std::map<int, int*>& curElement, std::map<int,PointArray>& bdVertices, std::map<int,oPointArray>& faces, typename sieve_type::point_type& cell, int& cellOrientation) {
       int debug = sieve->debug();
@@ -299,6 +550,9 @@ namespace ALE {
     //   (0, numCells) ... (0, numVertices): vertices
     // The other cells are numbered as they are requested
     static void buildTopology(Obj<sieve_type> sieve, int dim, int numCells, int cells[], int numVertices, bool interpolate = true, int corners = -1, int firstVertex = -1, Obj<arrow_section_type> orientation = NULL, int firstCell = 0) {
+      if (interpolate && orientation.isNull()) {
+        throw ALE::Exception("Cannot interpolate mesh without providing an orientation Section");
+      }
       ALE_LOG_EVENT_BEGIN;
       if (sieve->commRank() != 0) {
         ALE_LOG_EVENT_END;
@@ -343,8 +597,12 @@ namespace ALE {
           }
           if (debug) {std::cout << "cell " << cell << " num boundary vertices " << bdVertices[dim].size() << std::endl;}
 
-          if (corners != dim+1) {
+          if ((2 == dim && 4 == corners) || (3 == dim && 8 == corners)) {
             buildHexFaces(sieve, orientation, dim, curElement, bdVertices, oFaces, cell, o);
+          } else if ((2 == dim && 9 == corners) || (3 == dim && 27 == corners)) {
+            buildQuadraticHexFaces(sieve, orientation, dim, curElement, bdVertices, oFaces, cell, o);
+          } else if ((2 == dim && 6 == corners) || (3 == dim && 10 == corners)) {
+            buildQuadraticTetFaces(sieve, orientation, dim, curElement, bdVertices, oFaces, cell, o);
           } else {
             buildFaces(sieve, orientation, dim, curElement, bdVertices, oFaces, cell, o);
           }
@@ -424,12 +682,14 @@ namespace ALE {
         }
       }
     };
-    static void buildCoordinates(const Obj<Bundle_>& bundle, const int embedDim, const double coords[]) {
+    static void buildCoordinates(const Obj<Bundle_>& bundle, const int embedDim, const PetscReal coords[], int numCells = -1) {
       const Obj<typename Bundle_::real_section_type>& coordinates = bundle->getRealSection("coordinates");
       const Obj<typename Bundle_::label_sequence>&    vertices    = bundle->depthStratum(0);
-      const int numCells = bundle->heightStratum(0)->size();
-      const int debug    = bundle->debug();
+      const int                                       debug       = bundle->debug();
 
+      if (numCells < 0) {
+        numCells = bundle->heightStratum(0)->size();
+      }
       bundle->setupCoordinates(coordinates);
       coordinates->setFiberDimension(vertices, embedDim);
       bundle->allocate(coordinates);
@@ -495,8 +755,12 @@ namespace ALE {
           }
           if (debug) {std::cout << "cell " << cell << " num boundary vertices " << bdVertices[dim].size() << std::endl;}
 
-          if (corners != dim+1) {
+          if ((2 == dim && 4 == corners) || (3 == dim && 8 == corners)) {
             buildHexFaces(sieve, orientation, dim, curElement, bdVertices, oFaces, cell, o);
+          } else if ((2 == dim && 9 == corners) || (3 == dim && 27 == corners)) {
+            buildQuadraticHexFaces(sieve, orientation, dim, curElement, bdVertices, oFaces, cell, o);
+          } else if ((2 == dim && 6 == corners) || (3 == dim && 10 == corners)) {
+            buildQuadraticTetFaces(sieve, orientation, dim, curElement, bdVertices, oFaces, cell, o);
           } else {
             buildFaces(sieve, orientation, dim, curElement, bdVertices, oFaces, cell, o);
           }
@@ -524,14 +788,16 @@ namespace ALE {
       delete [] vertexOffset;
       ALE_LOG_EVENT_END;
     };
-    static void buildCoordinatesMultiple(const Obj<Bundle_>& bundle, const int embedDim, const double coords[]) {
+    static void buildCoordinatesMultiple(const Obj<Bundle_>& bundle, const int embedDim, const double coords[], int numGlobalCells = -1) {
       const Obj<typename Bundle_::real_section_type>& coordinates = bundle->getRealSection("coordinates");
       const Obj<typename Bundle_::label_sequence>&    vertices    = bundle->depthStratum(0);
       const int numCells = bundle->heightStratum(0)->size(), numVertices = vertices->size();
       const int debug    = bundle->debug();
-      int       numGlobalCells, offset;
+      int       offset;
 
-      MPI_Allreduce((void *) &numCells, &numGlobalCells, 1, MPI_INT, MPI_SUM, bundle->comm());
+      if (numGlobalCells < 0) {
+        MPI_Allreduce((void *) &numCells, &numGlobalCells, 1, MPI_INT, MPI_SUM, bundle->comm());
+      }
       MPI_Scan((void *) &numVertices, &offset, 1, MPI_INT, MPI_SUM, bundle->comm());
       offset += numGlobalCells - numVertices;
       coordinates->setFiberDimension(vertices, embedDim);

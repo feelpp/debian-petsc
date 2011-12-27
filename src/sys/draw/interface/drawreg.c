@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the registration process for PETSc PetscDraw routines
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 /*
    Contains the list of registered PetscDraw routines
@@ -34,19 +34,19 @@ PetscFList PetscDrawList              = 0;
 
 .seealso: PetscDrawSetFromOptions(), PetscDrawDestroy(), PetscDrawSetType()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawCreate(MPI_Comm comm,const char display[],const char title[],int x,int y,int w,int h,PetscDraw *indraw)
+PetscErrorCode  PetscDrawCreate(MPI_Comm comm,const char display[],const char title[],int x,int y,int w,int h,PetscDraw *indraw)
 {
   PetscDraw      draw;
   PetscErrorCode ierr;
   PetscReal      dpause;
-  PetscTruth     flag;
+  PetscBool      flag;
 
   PetscFunctionBegin;
 #ifndef PETSC_USE_DYNAMIC_LIBRARIES
   ierr = PetscDrawInitializePackage(PETSC_NULL);CHKERRQ(ierr);
 #endif
   *indraw = 0;
-  ierr = PetscHeaderCreate(draw,_p_PetscDraw,struct _PetscDrawOps,PETSC_DRAW_COOKIE,-1,"Draw",comm,PetscDrawDestroy,0);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(draw,_p_PetscDraw,struct _PetscDrawOps,PETSC_DRAW_CLASSID,-1,"Draw","Graphics","Draw",comm,PetscDrawDestroy,0);CHKERRQ(ierr);
   draw->data    = 0;
   ierr          = PetscStrallocpy(title,&draw->title);CHKERRQ(ierr);
   ierr          = PetscStrallocpy(display,&draw->display);CHKERRQ(ierr);
@@ -99,14 +99,14 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawCreate(MPI_Comm comm,const char display[
 
 .seealso: PetscDrawSetFromOptions(), PetscDrawCreate(), PetscDrawDestroy()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSetType(PetscDraw draw,const PetscDrawType type)
+PetscErrorCode  PetscDrawSetType(PetscDraw draw,const PetscDrawType type)
 {
   PetscErrorCode ierr,(*r)(PetscDraw);
-  PetscTruth      match;
-  PetscTruth      flg=PETSC_FALSE;
+  PetscBool       match;
+  PetscBool       flg=PETSC_FALSE;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidCharPointer(type,2);
 
   ierr = PetscTypeCompare((PetscObject)draw,type,&match);CHKERRQ(ierr);
@@ -124,7 +124,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSetType(PetscDraw draw,const PetscDrawTy
   if (!flg) {
     ierr = PetscStrcmp(type,PETSC_DRAW_X,&match);CHKERRQ(ierr);
     if (match) {
-      PetscTruth dontwarn = PETSC_TRUE;
+      PetscBool  dontwarn = PETSC_TRUE;
       flg = PETSC_TRUE;
       ierr = PetscOptionsHasName(PETSC_NULL,"-nox_warning",&dontwarn);CHKERRQ(ierr);
       if (!dontwarn) {
@@ -143,8 +143,8 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSetType(PetscDraw draw,const PetscDrawTy
     draw->data = 0;
   }
 
-  ierr =  PetscFListFind(PetscDrawList,((PetscObject)draw)->comm,type,(void (**)(void)) &r);CHKERRQ(ierr);
-  if (!r) SETERRQ1(PETSC_ERR_ARG_UNKNOWN_TYPE,"Unknown PetscDraw type given: %s",type);
+  ierr =  PetscFListFind(PetscDrawList,((PetscObject)draw)->comm,type,PETSC_TRUE,(void (**)(void)) &r);CHKERRQ(ierr);
+  if (!r) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_UNKNOWN_TYPE,"Unknown PetscDraw type given: %s",type);
   ierr = PetscObjectChangeTypeName((PetscObject)draw,type);CHKERRQ(ierr);
   draw->data        = 0;
   ierr = (*r)(draw);CHKERRQ(ierr);
@@ -163,7 +163,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSetType(PetscDraw draw,const PetscDrawTy
 
 .seealso: PetscDrawRegisterDynamic(), PetscDrawRegisterAll()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawRegisterDestroy(void)
+PetscErrorCode  PetscDrawRegisterDestroy(void)
 {
   PetscErrorCode ierr;
 
@@ -188,10 +188,10 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawRegisterDestroy(void)
    Level: advanced
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawGetType(PetscDraw draw,const PetscDrawType *type)
+PetscErrorCode  PetscDrawGetType(PetscDraw draw,const PetscDrawType *type)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidPointer(type,2);
   *type = ((PetscObject)draw)->type_name;
   PetscFunctionReturn(0);
@@ -199,7 +199,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawGetType(PetscDraw draw,const PetscDrawTy
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawRegister" 
-PetscErrorCode PETSC_DLLEXPORT PetscDrawRegister(const char *sname,const char *path,const char *name,PetscErrorCode (*function)(PetscDraw))
+PetscErrorCode  PetscDrawRegister(const char *sname,const char *path,const char *name,PetscErrorCode (*function)(PetscDraw))
 {
   PetscErrorCode ierr;
   char fullname[PETSC_MAX_PATH_LEN];
@@ -237,18 +237,20 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawRegister(const char *sname,const char *p
 .seealso: PetscDrawCreate(), PetscDrawSetType()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSetFromOptions(PetscDraw draw)
+PetscErrorCode  PetscDrawSetFromOptions(PetscDraw draw)
 {
   PetscErrorCode ierr;
-  PetscTruth flg,nox;
-  char       vtype[256];
-  const char *def;
+  PetscBool      flg,nox;
+  char           vtype[256];
+  const char     *def;
+  PetscBool      save;
 #if !defined(PETSC_USE_WINDOWS_GRAPHICS) && !defined(PETSC_HAVE_X11)
-  PetscTruth warn;
+  PetscBool      warn;
 #endif
+  char           filename[PETSC_MAX_PATH_LEN];
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
 
   if (!PetscDrawList) {
     ierr = PetscDrawRegisterAll(PETSC_NULL);CHKERRQ(ierr);
@@ -270,7 +272,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSetFromOptions(PetscDraw draw)
     }
 #endif
   }
-  ierr = PetscOptionsBegin(((PetscObject)draw)->comm,((PetscObject)draw)->prefix,"Graphics (PetscDraw) Options","Draw");CHKERRQ(ierr);
+  ierr = PetscObjectOptionsBegin((PetscObject)draw);CHKERRQ(ierr);
     ierr = PetscOptionsList("-draw_type","Type of graphical output","PetscDrawSetType",PetscDrawList,def,vtype,256,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = PetscDrawSetType(draw,vtype);CHKERRQ(ierr);
@@ -278,6 +280,57 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawSetFromOptions(PetscDraw draw)
       ierr = PetscDrawSetType(draw,def);CHKERRQ(ierr);
     }
     ierr = PetscOptionsName("-nox","Run without graphics","None",&nox);CHKERRQ(ierr);
+    ierr = PetscOptionsString("-draw_save","Save graphics to file","PetscDrawSetSave",filename,filename,PETSC_MAX_PATH_LEN,&save);CHKERRQ(ierr);
+    if (save) {
+      ierr = PetscDrawSetSave(draw,filename);CHKERRQ(ierr);
+    }
+
+    /* process any options handlers added with PetscObjectAddOptionsHandler() */
+    ierr = PetscObjectProcessOptionsHandlers((PetscObject)draw);CHKERRQ(ierr);
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscDrawSetSave" 
+/*@C
+   PetscDrawSave - Saves images produced in a PetscDraw into a file as JPGEG
+
+   Collective on PetscDraw
+
+   Input Parameter:
++  draw      - the graphics context
+-  filename  - name of the file, if PETSC_NULL uses name of draw object
+
+   Options Database Command:
+.  -draw_save  <filename>
+
+   Level: intermediate
+
+   Concepts: X windows^graphics
+   Concepts: drawing^postscript
+   Concepts: postscript^graphics
+   Concepts: drawing^Microsoft Windows
+
+.seealso: PetscDrawSetFromOptions(), PetscDrawCreate(), PetscDrawDestroy()
+@*/
+PetscErrorCode  PetscDrawSetSave(PetscDraw draw,const char *filename)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
+  ierr = PetscFree(draw->savefilename);CHKERRQ(ierr);
+  draw->savefilecount = 0;
+  if (filename && filename[0]) {
+    ierr = PetscStrallocpy(filename,&draw->savefilename);CHKERRQ(ierr);
+  } else {
+    const char *name;
+    ierr = PetscObjectGetName((PetscObject)draw,&name);CHKERRQ(ierr);
+    ierr = PetscStrallocpy(name,&draw->savefilename);CHKERRQ(ierr);
+  }
+  if (draw->ops->setsave) {
+    ierr = (*draw->ops->setsave)(draw,filename);CHKERRQ(ierr);
+  }
   PetscFunctionReturn(0);
 }

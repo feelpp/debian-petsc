@@ -7,7 +7,7 @@ and matrices.
 #if !defined(_IS_H)
 #define _IS_H
 
-#include "petscis.h"
+#include <petscis.h>
 
 struct _ISOps {
   PetscErrorCode (*getsize)(IS,PetscInt*);
@@ -15,21 +15,29 @@ struct _ISOps {
   PetscErrorCode (*getindices)(IS,const PetscInt*[]);
   PetscErrorCode (*restoreindices)(IS,const PetscInt*[]);
   PetscErrorCode (*invertpermutation)(IS,PetscInt,IS*);
-  PetscErrorCode (*sortindices)(IS);
-  PetscErrorCode (*sorted)(IS,PetscTruth *);
-  PetscErrorCode (*duplicate)(IS,IS *);
+  PetscErrorCode (*sort)(IS);
+  PetscErrorCode (*sorted)(IS,PetscBool*);
+  PetscErrorCode (*duplicate)(IS,IS*);
   PetscErrorCode (*destroy)(IS);
   PetscErrorCode (*view)(IS,PetscViewer);
-  PetscErrorCode (*identity)(IS,PetscTruth*);
+  PetscErrorCode (*identity)(IS,PetscBool*);
   PetscErrorCode (*copy)(IS,IS);
+  PetscErrorCode (*togeneral)(IS);
+  PetscErrorCode (*oncomm)(IS,MPI_Comm,PetscCopyMode,IS*);
+  PetscErrorCode (*setblocksize)(IS,PetscInt);
+  PetscErrorCode (*contiguous)(IS,PetscInt,PetscInt,PetscInt*,PetscBool*);
 };
 
 struct _p_IS {
   PETSCHEADER(struct _ISOps);
-  PetscTruth   isperm;          /* if is a permutation */
+  PetscBool    isperm;          /* if is a permutation */
   PetscInt     max,min;         /* range of possible values */
+  PetscInt     bs;              /* block size */
   void         *data;
-  PetscTruth   isidentity;
+  PetscBool    isidentity;
+  PetscInt     *total, *nonlocal;   /* local representation of ALL indices across the comm as well as the nonlocal part. */
+  PetscInt     local_offset;        /* offset to the local part within the total index set */
+  IS           complement;          /* IS wrapping nonlocal indices. */
 };
 
 

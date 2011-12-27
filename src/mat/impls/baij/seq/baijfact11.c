@@ -1,10 +1,9 @@
-#define PETSCMAT_DLL
 
 /*
     Factorization code for BAIJ format. 
 */
-#include "../src/mat/impls/baij/seq/baij.h"
-#include "../src/mat/blockinvert.h"
+#include <../src/mat/impls/baij/seq/baij.h>
+#include <../src/mat/blockinvert.h>
 
 /* ------------------------------------------------------------*/
 /*
@@ -27,7 +26,7 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4_inplace(Mat C,Mat A,const MatFactorI
   MatScalar      p10,p11,p12,p13,p14,p15,p16,m10,m11,m12;
   MatScalar      m13,m14,m15,m16;
   MatScalar      *ba = b->a,*aa = a->a;
-  PetscTruth     pivotinblocks = b->pivotinblocks;
+  PetscBool      pivotinblocks = b->pivotinblocks;
   PetscReal      shift = info->shiftamount;
 
   PetscFunctionBegin;
@@ -173,22 +172,27 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4(Mat B,Mat A,const MatFactorInfo *inf
   Mat_SeqBAIJ    *a=(Mat_SeqBAIJ*)A->data,*b=(Mat_SeqBAIJ *)C->data;
   IS             isrow = b->row,isicol = b->icol;
   PetscErrorCode ierr;
-  const PetscInt *r,*ic,*ics;
+  const PetscInt *r,*ic;
   PetscInt       i,j,k,nz,nzL,row;
   const PetscInt n=a->mbs,*ai=a->i,*aj=a->j,*bi=b->i,*bj=b->j;
   const PetscInt *ajtmp,*bjtmp,*bdiag=b->diag,*pj,bs2=a->bs2;
   MatScalar      *rtmp,*pc,*mwork,*v,*pv,*aa=a->a;
   PetscInt       flg;
-  PetscReal      shift = info->shiftamount;
+  PetscReal      shift;
 
   PetscFunctionBegin;
   ierr = ISGetIndices(isrow,&r);CHKERRQ(ierr);
   ierr = ISGetIndices(isicol,&ic);CHKERRQ(ierr);
 
+  if (info->shifttype == MAT_SHIFT_NONE){
+    shift = 0;
+  } else { /* info->shifttype == MAT_SHIFT_INBLOCKS */
+    shift = info->shiftamount;
+  }
+
   /* generate work space needed by the factorization */
   ierr = PetscMalloc2(bs2*n,MatScalar,&rtmp,bs2,MatScalar,&mwork);CHKERRQ(ierr);
   ierr = PetscMemzero(rtmp,bs2*n*sizeof(MatScalar));CHKERRQ(ierr);
-  ics  = ic;
 
   for (i=0; i<n; i++){
     /* zero rtmp */
@@ -253,7 +257,6 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4(Mat B,Mat A,const MatFactorInfo *inf
     pv   = b->a + bs2*bdiag[i];
     pj   = b->j + bdiag[i];
     ierr = PetscMemcpy(pv,rtmp+bs2*pj[0],bs2*sizeof(MatScalar));CHKERRQ(ierr);   
-    /* ierr = Kernel_A_gets_inverse_A(bs,pv,v_pivots,v_work);CHKERRQ(ierr); */
     ierr = Kernel_A_gets_inverse_A_4(pv,shift);CHKERRQ(ierr);
       
     /* U part */
@@ -293,7 +296,7 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4_NaturalOrdering_inplace(Mat C,Mat A,
   MatScalar      p10,p11,p12,p13,p14,p15,p16,m10,m11,m12;
   MatScalar      m13,m14,m15,m16;
   MatScalar      *ba = b->a,*aa = a->a;
-  PetscTruth     pivotinblocks = b->pivotinblocks;
+  PetscBool      pivotinblocks = b->pivotinblocks;
   PetscReal      shift = info->shiftamount;
 
   PetscFunctionBegin;
@@ -434,12 +437,18 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4_NaturalOrdering(Mat B,Mat A,const Ma
   const PetscInt *ajtmp,*bjtmp,*bdiag=b->diag,*pj,bs2=a->bs2;
   MatScalar      *rtmp,*pc,*mwork,*v,*pv,*aa=a->a;
   PetscInt       flg;
-  PetscReal      shift = info->shiftamount;
+  PetscReal      shift;
 
   PetscFunctionBegin;
   /* generate work space needed by the factorization */
   ierr = PetscMalloc2(bs2*n,MatScalar,&rtmp,bs2,MatScalar,&mwork);CHKERRQ(ierr);
   ierr = PetscMemzero(rtmp,bs2*n*sizeof(MatScalar));CHKERRQ(ierr);
+
+  if (info->shifttype == MAT_SHIFT_NONE){
+    shift = 0;
+  } else { /* info->shifttype == MAT_SHIFT_INBLOCKS */
+    shift = info->shiftamount;
+  }
 
   for (i=0; i<n; i++){
     /* zero rtmp */
@@ -504,7 +513,6 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4_NaturalOrdering(Mat B,Mat A,const Ma
     pv   = b->a + bs2*bdiag[i];
     pj   = b->j + bdiag[i];
     ierr = PetscMemcpy(pv,rtmp+bs2*pj[0],bs2*sizeof(MatScalar));CHKERRQ(ierr);   
-    /* ierr = Kernel_A_gets_inverse_A(bs,pv,v_pivots,v_work);CHKERRQ(ierr); */
     ierr = Kernel_A_gets_inverse_A_4(pv,shift);CHKERRQ(ierr);
       
     /* U part */
@@ -543,16 +551,16 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4_NaturalOrdering_SSE(Mat B,Mat A,cons
   MatScalar   *ba = b->a,*aa = a->a;
   int         nonzero=0;
 /*    int            nonzero=0,colscale = 16; */
-  PetscTruth  pivotinblocks = b->pivotinblocks;
+  PetscBool   pivotinblocks = b->pivotinblocks;
   PetscReal      shift = info->shiftamount;
 
   PetscFunctionBegin;
   SSE_SCOPE_BEGIN;
 
-  if ((unsigned long)aa%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer aa is not 16 byte aligned.  SSE will not work.");
-  if ((unsigned long)ba%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer ba is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)aa%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer aa is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)ba%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer ba is not 16 byte aligned.  SSE will not work.");
   ierr = PetscMalloc(16*(n+1)*sizeof(MatScalar),&rtmp);CHKERRQ(ierr);
-  if ((unsigned long)rtmp%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer rtmp is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)rtmp%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer rtmp is not 16 byte aligned.  SSE will not work.");
 /*    if ((unsigned long)bj==(unsigned long)aj) { */
 /*      colscale = 4; */
 /*    } */
@@ -984,16 +992,16 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4_NaturalOrdering_SSE_usj_Inplace(Mat 
   MatScalar      *ba = b->a,*aa = a->a;
   int            nonzero=0;
 /*    int            nonzero=0,colscale = 16; */
-  PetscTruth     pivotinblocks = b->pivotinblocks;
+  PetscBool      pivotinblocks = b->pivotinblocks;
   PetscReal      shift = info->shiftamount;
 
   PetscFunctionBegin;
   SSE_SCOPE_BEGIN;
 
-  if ((unsigned long)aa%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer aa is not 16 byte aligned.  SSE will not work.");
-  if ((unsigned long)ba%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer ba is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)aa%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer aa is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)ba%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer ba is not 16 byte aligned.  SSE will not work.");
   ierr = PetscMalloc(16*(n+1)*sizeof(MatScalar),&rtmp);CHKERRQ(ierr);
-  if ((unsigned long)rtmp%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer rtmp is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)rtmp%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer rtmp is not 16 byte aligned.  SSE will not work.");
 /*    if ((unsigned long)bj==(unsigned long)aj) { */
 /*      colscale = 4; */
 /*    } */
@@ -1425,16 +1433,16 @@ PetscErrorCode MatLUFactorNumeric_SeqBAIJ_4_NaturalOrdering_SSE_usj(Mat C,Mat A,
   MatScalar      *ba = b->a,*aa = a->a;
   int            nonzero=0;
 /*    int            nonzero=0,colscale = 16; */
-  PetscTruth     pivotinblocks = b->pivotinblocks;
+  PetscBool      pivotinblocks = b->pivotinblocks;
   PetscReal      shift = info->shiftamount;
 
   PetscFunctionBegin;
   SSE_SCOPE_BEGIN;
 
-  if ((unsigned long)aa%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer aa is not 16 byte aligned.  SSE will not work.");
-  if ((unsigned long)ba%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer ba is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)aa%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer aa is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)ba%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer ba is not 16 byte aligned.  SSE will not work.");
   ierr = PetscMalloc(16*(n+1)*sizeof(MatScalar),&rtmp);CHKERRQ(ierr);
-  if ((unsigned long)rtmp%16!=0) SETERRQ(PETSC_ERR_ARG_BADPTR,"Pointer rtmp is not 16 byte aligned.  SSE will not work.");
+  if ((unsigned long)rtmp%16!=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_BADPTR,"Pointer rtmp is not 16 byte aligned.  SSE will not work.");
 /*    if ((unsigned long)bj==(unsigned long)aj) { */
 /*      colscale = 4; */
 /*    } */

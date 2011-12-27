@@ -12,7 +12,7 @@ Computes matrix Hermitian transpose times a vector.
 #include "petscmat.h" 
 PetscErrorCode  MatMultHermitianTranspose(Mat mat,Vec x,Vec y)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -28,6 +28,10 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF="../Vec/Vec.html
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 The vectors x and y cannot be the same.  I.e., one cannot
 call <A HREF="../Mat/MatMultHermitianTranspose.html#MatMultHermitianTranspose">MatMultHermitianTranspose</A>(A,y,y).
+<P>
+Also called the conjugate transpose, complex conjugate transpose, or adjoint.
+<P>
+For real numbers <A HREF="../Mat/MatMultTranspose.html#MatMultTranspose">MatMultTranspose</A>() and <A HREF="../Mat/MatMultHermitianTranspose.html#MatMultHermitianTranspose">MatMultHermitianTranspose</A>() are identical.
 <P>
 
 <P>

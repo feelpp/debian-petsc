@@ -3,10 +3,11 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
-    self.download          = ['http://mpi4py.googlecode.com/files/mpi4py-1.2.1.tar.gz']
+    self.download          = ['http://mpi4py.googlecode.com/files/mpi4py-1.2.2.tar.gz']
     self.functions         = []
     self.includes          = []
     self.liblist           = []
+    self.complex           = 1
     return
 
   def setupDependencies(self, framework):
@@ -26,14 +27,14 @@ class Configure(PETSc.package.NewPackage):
       apple = ''
     self.logClearRemoveDirectory()
     self.logResetRemoveDirectory()
-    if self.framework.argDB['prefix']:
-      arch = ''
-      self.addMakeRule('mpi4py_noinstall','')
-    else:
-      arch = self.arch
-      self.addMakeRule('mpi4py_noinstall','mpi4py')      
+    archflags = ""
+    if self.setCompilers.isDarwin():
+      if self.types.sizes['known-sizeof-void-p'] == 32:
+        archflags = "ARCHFLAGS=\'-arch i386\'"
+      else:
+        archflags = "ARCHFLAGS=\'-arch x86_64\'"
     self.addMakeRule('mpi4py','', \
-                       ['@MPICC=${PCC}; export MPICC; cd '+self.packageDir+';python setup.py clean --all; python setup.py install --install-lib='+os.path.join(self.petscconfigure.installdir,'lib'),\
+                       ['@MPICC=${PCC}; export MPICC; cd '+self.packageDir+';python setup.py clean --all; '+archflags+' python setup.py install --install-lib='+os.path.join(self.installDir,'lib'),\
                           '@echo "====================================="',\
                           '@echo "To use mpi4py, add '+os.path.join(self.petscconfigure.installdir,'lib')+' to PYTHONPATH"',\
                           '@echo "====================================="'])
@@ -43,7 +44,7 @@ class Configure(PETSc.package.NewPackage):
   def configureLibrary(self):
     self.checkDownload(1)
     if not self.sharedLibraries.useShared:
-        raise RuntimeError('mpi4py requires PETSc be built with shared libraries; rerun with --with-shared')
+        raise RuntimeError('mpi4py requires PETSc be built with shared libraries; rerun with --with-shared-libraries')
 
   def alternateConfigureLibrary(self):
     self.addMakeRule('mpi4py','')   

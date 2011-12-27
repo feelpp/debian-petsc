@@ -1,13 +1,12 @@
-#define PETSC_DLL
 
-#include "../src/sys/random/randomimpl.h"
+#include <../src/sys/random/randomimpl.h>
 #if defined (PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
 #endif
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomSeed_Rand"
-PetscErrorCode PETSC_DLLEXPORT PetscRandomSeed_Rand(PetscRandom r)
+PetscErrorCode  PetscRandomSeed_Rand(PetscRandom r)
 {
   PetscFunctionBegin;
   srand(r->seed);  
@@ -17,7 +16,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomSeed_Rand(PetscRandom r)
 #define RAND_WRAP ((PetscReal)((rand()/(double)((unsigned int)RAND_MAX+1))))
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomGetValue_Rand"
-PetscErrorCode PETSC_DLLEXPORT PetscRandomGetValue_Rand(PetscRandom r,PetscScalar *val)
+PetscErrorCode  PetscRandomGetValue_Rand(PetscRandom r,PetscScalar *val)
 {
   PetscFunctionBegin;
 #if defined(PETSC_USE_COMPLEX)
@@ -34,7 +33,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomGetValue_Rand(PetscRandom r,PetscScala
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomGetValueReal_Rand"
-PetscErrorCode PETSC_DLLEXPORT PetscRandomGetValueReal_Rand(PetscRandom r,PetscReal *val)
+PetscErrorCode  PetscRandomGetValueReal_Rand(PetscRandom r,PetscReal *val)
 {
   PetscFunctionBegin;
 #if defined(PETSC_USE_COMPLEX)
@@ -71,14 +70,13 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomCreate_Rand" 
-PetscErrorCode PETSC_DLLEXPORT PetscRandomCreate_Rand(PetscRandom r)
+PetscErrorCode  PetscRandomCreate_Rand(PetscRandom r)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   ierr = PetscMemcpy(r->ops,&PetscRandomOps_Values,sizeof(PetscRandomOps_Values));CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)r,PETSCRAND);CHKERRQ(ierr);
-  ierr = PetscPublishAll(r);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 EXTERN_C_END

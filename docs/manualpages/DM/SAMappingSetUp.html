@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SAMappingSetUp</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<A NAME="SAMappingSetUp"><H1>SAMappingSetUp</H1></A>
+Sets up the internal mapping data structures for the later use. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsa.h"  
+PetscErrorCode SAMappingSetUp(SAMapping map)
+</PRE>
+Collective on SAMapping
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<DT><B>map </B> -the SAMapping context
+<br>
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+For basic use of the SAMapping classes the user need not explicitly call
+<A HREF="../DM/SAMappingSetUp.html#SAMappingSetUp">SAMappingSetUp</A>(), since these actions will happen automatically.
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
+ SAMapping, setup
+<BR>
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ SAMappingCreate(), SAMappingDestroy(), <A HREF="../DM/SAMappingSetSizes.html#SAMappingSetSizes">SAMappingSetSizes</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/sa/interface/sa.c.html#SAMappingSetUp">src/dm/sa/interface/sa.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

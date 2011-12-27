@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* cholesky.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcfactorsetreuseordering_(PC pc,PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetreuseordering_(PC pc,PetscBool  *flag, int *__ierr ){
 *__ierr = PCFactorSetReuseOrdering(
 	(PC)PetscToPointer((pc) ),*flag);
 }

@@ -22,11 +22,11 @@
 !     petscis.h     - index sets
 !
       program main
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
 
 !  Variables:
 !
@@ -42,7 +42,7 @@
       PetscInt Istart,Iend
       PetscInt nsteps,one
       PetscErrorCode ierr
-      PetscTruth flg
+      PetscBool  flg
       PetscScalar  v
       
 
@@ -149,11 +149,11 @@
 !
       subroutine solve1(ksp,A,x,b,u,count,nsteps,ierr)
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
 
 !
 !   solve1 - This routine is used for repeated linear system solves.
@@ -174,7 +174,7 @@
 ! Use common block to retain matrix between successive subroutine calls
       Mat              A2
       PetscMPIInt      rank
-      PetscTruth       pflag
+      PetscBool        pflag
       common /my_data/ A2,pflag,rank
 
       one = 1

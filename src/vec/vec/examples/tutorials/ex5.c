@@ -1,7 +1,7 @@
 
 static char help[] = "Tests binary I/O of vectors and illustrates the use of user-defined event logging.\n\n";
 
-#include "petscvec.h"
+#include <petscvec.h>
 
 /* Note:  Most applications would not read and write a vector within
   the same program.  This example is intended only to demonstrate
@@ -28,7 +28,7 @@ int main(int argc,char **args)
 
   /* PART 1:  Generate vector, then write it in binary format */
 
-  ierr = PetscLogEventRegister("Generate Vector",VEC_COOKIE,&VECTOR_GENERATE);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("Generate Vector",VEC_CLASSID,&VECTOR_GENERATE);CHKERRQ(ierr);
   ierr = PetscLogEventBegin(VECTOR_GENERATE,0,0,0,0);CHKERRQ(ierr);
   /* Generate vector */
   ierr = VecCreate(PETSC_COMM_WORLD,&u);CHKERRQ(ierr);
@@ -48,8 +48,8 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"writing vector in binary to vector.dat ...\n");CHKERRQ(ierr);
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
   ierr = VecView(u,viewer);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
   /*  ierr = PetscOptionsClear();CHKERRQ(ierr);*/
   ierr = PetscOptionsSetValue("-viewer_binary_mpiio","");CHKERRQ(ierr); 
 
@@ -58,18 +58,19 @@ int main(int argc,char **args)
   /* PART 2:  Read in vector in binary format */
 
   /* Read new vector in binary format */
-  ierr = PetscLogEventRegister("Read Vector",VEC_COOKIE,&VECTOR_READ);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("Read Vector",VEC_CLASSID,&VECTOR_READ);CHKERRQ(ierr);
   ierr = PetscLogEventBegin(VECTOR_READ,0,0,0,0);CHKERRQ(ierr);
   ierr = PetscPrintf(PETSC_COMM_WORLD,"reading vector in binary from vector.dat ...\n");CHKERRQ(ierr);
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_READ,&viewer);CHKERRQ(ierr);
-  ierr = VecLoad(viewer,PETSC_NULL,&u);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&u);CHKERRQ(ierr);
+  ierr = VecLoad(u,viewer);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(VECTOR_READ,0,0,0,0);CHKERRQ(ierr);
   ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
   /* Free data structures */
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

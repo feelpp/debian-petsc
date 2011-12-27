@@ -7,7 +7,7 @@ static char help[] = "Test procedural KSPSetFromOptions() or at runtime.\n\n";
    Concepts: KSP^basic parallel example;
    Processors: n
 T*/
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -21,11 +21,11 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   PetscInt       i,n = 10,col[3],its,rstart,rend,nlocal;
   PetscScalar    neg_one = -1.0,one = 1.0,value[3];
-  PetscTruth     TEST_PROCEDURAL=PETSC_FALSE;
+  PetscBool      TEST_PROCEDURAL=PETSC_FALSE;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-n",&n,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-procedural",&TEST_PROCEDURAL,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-procedural",&TEST_PROCEDURAL,PETSC_NULL);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
          Compute the matrix and right-hand-side vector that define
@@ -102,7 +102,7 @@ int main(int argc,char **args)
     ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
     ierr = PCSetType(pc,PCREDUNDANT);CHKERRQ(ierr);
     ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-    if (size < 3) SETERRQ1(PETSC_ERR_ARG_SIZ, "Num of processes %d must greater than 2",size);
+    if (size < 3) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ, "Num of processes %d must greater than 2",size);
     ierr = PCRedundantSetNumber(pc,size-2);CHKERRQ(ierr);
   } else {
     ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
@@ -121,9 +121,9 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %A, Iterations %D\n",norm,its);CHKERRQ(ierr);
   
   /* Free work space. */
-  ierr = VecDestroy(x);CHKERRQ(ierr); ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr); ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr); ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

@@ -1,13 +1,89 @@
-#define PETSCSNES_DLL
 
-#include "private/snesimpl.h"      /*I "petscsnes.h"  I*/
+#include <private/snesimpl.h>      /*I "petscsnes.h"  I*/
 
-PetscTruth SNESRegisterAllCalled = PETSC_FALSE;
+PetscBool  SNESRegisterAllCalled = PETSC_FALSE;
 PetscFList SNESList              = PETSC_NULL;
 
 /* Logging support */
-PetscCookie PETSCSNES_DLLEXPORT SNES_COOKIE;
+PetscClassId  SNES_CLASSID;
 PetscLogEvent  SNES_Solve, SNES_LineSearch, SNES_FunctionEval, SNES_JacobianEval;
+
+#undef __FUNCT__
+#define __FUNCT__ "SNESDMComputeJacobian"
+/*
+    Translates from a SNES call to a DM call in computing a Jacobian
+*/
+PetscErrorCode SNESDMComputeJacobian(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,void *ptr)
+{
+  PetscErrorCode ierr;
+  DM             dm;
+
+  PetscFunctionBegin;
+  ierr = SNESGetDM(snes,&dm);CHKERRQ(ierr);
+  ierr = DMComputeJacobian(dm,X,*J,*B,flag);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESSetErrorIfNotConverged"
+/*@
+   SNESSetErrorIfNotConverged - Causes SNESSolve() to generate an error if the solver has not converged.
+
+   Logically Collective on SNES
+
+   Input Parameters:
++  snes - iterative context obtained from SNESCreate()
+-  flg - PETSC_TRUE indicates you want the error generated
+
+   Options database keys:
+.  -snes_error_if_not_converged : this takes an optional truth value (0/1/no/yes/true/false)
+
+   Level: intermediate
+
+   Notes:
+    Normally PETSc continues if a linear solver fails to converge, you can call SNESGetConvergedReason() after a SNESSolve() 
+    to determine if it has converged.
+
+.keywords: SNES, set, initial guess, nonzero
+
+.seealso: SNESGetErrorIfNotConverged(), KSPGetErrorIfNotConverged(), KSPSetErrorIFNotConverged()
+@*/
+PetscErrorCode  SNESSetErrorIfNotConverged(SNES snes,PetscBool  flg)
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidLogicalCollectiveBool(snes,flg,2);
+  snes->errorifnotconverged = flg;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESGetErrorIfNotConverged"
+/*@
+   SNESGetErrorIfNotConverged - Will SNESSolve() generate an error if the solver does not converge?
+
+   Not Collective
+
+   Input Parameter:
+.  snes - iterative context obtained from SNESCreate()
+
+   Output Parameter:
+.  flag - PETSC_TRUE if it will generate an error, else PETSC_FALSE
+
+   Level: intermediate
+
+.keywords: SNES, set, initial guess, nonzero
+
+.seealso:  SNESSetErrorIfNotConverged(), KSPGetErrorIfNotConverged(), KSPSetErrorIFNotConverged()
+@*/
+PetscErrorCode  SNESGetErrorIfNotConverged(SNES snes,PetscBool  *flag)
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidPointer(flag,2);
+  *flag = snes->errorifnotconverged;
+  PetscFunctionReturn(0);
+}
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESSetFunctionDomainError"
@@ -15,7 +91,7 @@ PetscLogEvent  SNES_Solve, SNES_LineSearch, SNES_FunctionEval, SNES_JacobianEval
    SNESSetFunctionDomainError - tells SNES that the input vector to your FormFunction is not
      in the functions domain. For example, negative pressure.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 .  SNES - the SNES context
@@ -26,10 +102,10 @@ PetscLogEvent  SNES_Solve, SNES_LineSearch, SNES_FunctionEval, SNES_JacobianEval
 
 .seealso: SNESCreate(), SNESSetFunction()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFunctionDomainError(SNES snes)
+PetscErrorCode  SNESSetFunctionDomainError(SNES snes)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   snes->domainerror = PETSC_TRUE;
   PetscFunctionReturn(0);
 }
@@ -65,36 +141,25 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFunctionDomainError(SNES snes)
 
 .seealso: PetscViewerASCIIOpen()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESView(SNES snes,PetscViewer viewer)
+PetscErrorCode  SNESView(SNES snes,PetscViewer viewer)
 {
   SNESKSPEW           *kctx;
   PetscErrorCode      ierr;
   KSP                 ksp;
-  const SNESType      type;
-  PetscTruth          iascii,isstring;
+  PetscBool           iascii,isstring;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (!viewer) {
     ierr = PetscViewerASCIIGetStdout(((PetscObject)snes)->comm,&viewer);CHKERRQ(ierr);
   }
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,2);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,2);
   PetscCheckSameComm(snes,1,viewer,2);
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_STRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (iascii) {
-    if (((PetscObject)snes)->prefix) {
-      ierr = PetscViewerASCIIPrintf(viewer,"SNES Object:(%s)\n",((PetscObject)snes)->prefix);CHKERRQ(ierr);
-    } else {
-      ierr = PetscViewerASCIIPrintf(viewer,"SNES Object:\n");CHKERRQ(ierr);
-    }
-    ierr = SNESGetType(snes,&type);CHKERRQ(ierr);
-    if (type) {
-      ierr = PetscViewerASCIIPrintf(viewer,"  type: %s\n",type);CHKERRQ(ierr);
-    } else {
-      ierr = PetscViewerASCIIPrintf(viewer,"  type: not set yet\n");CHKERRQ(ierr);
-    }
+    ierr = PetscObjectPrintClassNamePrefixType((PetscObject)snes,viewer,"SNES Object");CHKERRQ(ierr);
     if (snes->ops->view) {
       ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
       ierr = (*snes->ops->view)(snes,viewer);CHKERRQ(ierr);
@@ -124,10 +189,16 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESView(SNES snes,PetscViewer viewer)
       ierr = PetscViewerASCIIPrintf(viewer,"  Jacobian is rebuilt every %D Newton iterations\n",snes->lagjacobian);CHKERRQ(ierr);
     }
   } else if (isstring) {
+    const char *type;
     ierr = SNESGetType(snes,&type);CHKERRQ(ierr);
     ierr = PetscViewerStringSPrintf(viewer," %-3.3s",type);CHKERRQ(ierr);
   }
   ierr = SNESGetKSP(snes,&ksp);CHKERRQ(ierr);
+  if (snes->pc) {
+    ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
+    ierr = SNESView(snes->pc, viewer);CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
+  }
   ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
   ierr = KSPView(ksp,viewer);CHKERRQ(ierr);
   ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
@@ -156,30 +227,30 @@ static PetscErrorCode (*othersetfromoptions[MAXSETFROMOPTIONS])(SNES);
 
 .seealso: SNESSetFromOptions()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESAddOptionsChecker(PetscErrorCode (*snescheck)(SNES))
+PetscErrorCode  SNESAddOptionsChecker(PetscErrorCode (*snescheck)(SNES))
 {
   PetscFunctionBegin;
   if (numberofsetfromoptions >= MAXSETFROMOPTIONS) {
-    SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE, "Too many options checkers, only %D allowed", MAXSETFROMOPTIONS);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE, "Too many options checkers, only %D allowed", MAXSETFROMOPTIONS);
   }
   othersetfromoptions[numberofsetfromoptions++] = snescheck;
   PetscFunctionReturn(0);
 }
 
-EXTERN PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultMatrixFreeCreate2(SNES,Vec,Mat*);
+extern PetscErrorCode  SNESDefaultMatrixFreeCreate2(SNES,Vec,Mat*);
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESSetUpMatrixFree_Private"
-static PetscErrorCode SNESSetUpMatrixFree_Private(SNES snes, PetscTruth hasOperator, PetscInt version)
+static PetscErrorCode SNESSetUpMatrixFree_Private(SNES snes, PetscBool  hasOperator, PetscInt version)
 {
   Mat            J;
   KSP            ksp;
   PC             pc;
-  PetscTruth     match;
+  PetscBool      match;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
 
   if(!snes->vec_func && (snes->jacobian || snes->jacobian_pre)) {
     Mat A = snes->jacobian, B = snes->jacobian_pre;
@@ -189,17 +260,15 @@ static PetscErrorCode SNESSetUpMatrixFree_Private(SNES snes, PetscTruth hasOpera
   if (version == 1) {
     ierr = MatCreateSNESMF(snes,&J);CHKERRQ(ierr);
     ierr = MatMFFDSetOptionsPrefix(J,((PetscObject)snes)->prefix);CHKERRQ(ierr);
-    ierr = MatMFFDSetFromOptions(J);CHKERRQ(ierr);
+    ierr = MatSetFromOptions(J);CHKERRQ(ierr);
   } else if (version == 2) {
-    if (!snes->vec_func) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"SNESSetFunction() must be called first");
-#if !defined(PETSC_USE_COMPLEX) && !defined(PETSC_USE_SCALAR_SINGLE) && !defined(PETSC_USE_SCALAR_MAT_SINGLE) && !defined(PETSC_USE_SCALAR_LONG_DOUBLE) && !defined(PETSC_USE_SCALAR_INT)
+    if (!snes->vec_func) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"SNESSetFunction() must be called first");
+#if !defined(PETSC_USE_COMPLEX) && !defined(PETSC_USE_REAL_SINGLE) && !defined(PETSC_USE_REAL___FLOAT128) && !defined(PETSC_USE_REAL_LONG_DOUBLE)
     ierr = SNESDefaultMatrixFreeCreate2(snes,snes->vec_func,&J);CHKERRQ(ierr);
 #else
-    SETERRQ(PETSC_ERR_SUP, "matrix-free operator rutines (version 2)");
+    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP, "matrix-free operator rutines (version 2)");
 #endif
-  } else {
-    SETERRQ(PETSC_ERR_ARG_OUTOFRANGE, "matrix-free operator rutines, only version 1 and 2");
-  }
+  } else SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE, "matrix-free operator rutines, only version 1 and 2");
   
   ierr = PetscInfo1(snes,"Setting default matrix-free operator routines (version %D)\n", version);CHKERRQ(ierr);
   if (hasOperator) {
@@ -219,12 +288,11 @@ static PetscErrorCode SNESSetUpMatrixFree_Private(SNES snes, PetscTruth hasOpera
       ierr = PCSetType(pc,PCNONE);CHKERRQ(ierr);
     }
   }
-  ierr = MatDestroy(J);CHKERRQ(ierr);
-
+  ierr = MatDestroy(&J);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "SNESSetFromOptions"
 /*@
    SNESSetFromOptions - Sets various SNES and KSP parameters from user options.
@@ -247,7 +315,7 @@ static PetscErrorCode SNESSetUpMatrixFree_Private(SNES snes, PetscTruth hasOpera
 .  -snes_lag_preconditioner <lag> - how often preconditioner is rebuilt (use -1 to never rebuild)
 .  -snes_lag_jacobian <lag> - how often Jacobian is rebuilt (use -1 to never rebuild)
 .  -snes_trtol <trtol> - trust region tolerance
-.  -snes_no_convergence_test - skip convergence test in nonlinear 
+.  -snes_no_convergence_test - skip convergence test in nonlinear
                                solver; hence iterations will continue until max_it
                                or some other criterion is reached. Saves expense
                                of convergence test
@@ -255,8 +323,8 @@ static PetscErrorCode SNESSetUpMatrixFree_Private(SNES snes, PetscTruth hasOpera
                                        filename given prints to stdout
 .  -snes_monitor_solution - plots solution at each iteration
 .  -snes_monitor_residual - plots residual (not its norm) at each iteration
-.  -snes_monitor_solution_update - plots update to solution at each iteration 
-.  -snes_monitor_draw - plots residual norm at each iteration 
+.  -snes_monitor_solution_update - plots update to solution at each iteration
+.  -snes_monitor_draw - plots residual norm at each iteration
 .  -snes_fd - use finite differences to compute Jacobian; very slow, only for testing
 .  -snes_mf_ksp_monitor - if using matrix-free multiply then print h at each KSP iteration
 -  -snes_converged_reason - print the reason for convergence/divergence after each solve
@@ -268,12 +336,12 @@ static PetscErrorCode SNESSetUpMatrixFree_Private(SNES snes, PetscTruth hasOpera
 .  -snes_ksp_ew_rtolmax <rtolmax> - Sets rtolmax
 .  -snes_ksp_ew_gamma <gamma> - Sets gamma
 .  -snes_ksp_ew_alpha <alpha> - Sets alpha
-.  -snes_ksp_ew_alpha2 <alpha2> - Sets alpha2 
+.  -snes_ksp_ew_alpha2 <alpha2> - Sets alpha2
 -  -snes_ksp_ew_threshold <threshold> - Sets threshold
 
    Notes:
    To see all options, run your program with the -help option or consult
-   the users manual.
+   the <A href="../../docs/manual.pdf#nameddest=ch_snes">SNES chapter of the users manual</A>.
 
    Level: beginner
 
@@ -281,24 +349,24 @@ static PetscErrorCode SNESSetUpMatrixFree_Private(SNES snes, PetscTruth hasOpera
 
 .seealso: SNESSetOptionsPrefix()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
+PetscErrorCode  SNESSetFromOptions(SNES snes)
 {
-  PetscTruth              flg,mf,mf_operator;
-  PetscInt                i,indx,lag,mf_version;
+  PetscBool               flg,mf,mf_operator;
+  PetscInt                i,indx,lag,mf_version,grids;
   MatStructure            matflag;
   const char              *deft = SNESLS;
   const char              *convtests[] = {"default","skip"};
   SNESKSPEW               *kctx = NULL;
   char                    type[256], monfilename[PETSC_MAX_PATH_LEN];
-  PetscViewerASCIIMonitor monviewer;
+  PetscViewer             monviewer;
   PetscErrorCode          ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
 
   if (!SNESRegisterAllCalled) {ierr = SNESRegisterAll(PETSC_NULL);CHKERRQ(ierr);}
-  ierr = PetscOptionsBegin(((PetscObject)snes)->comm,((PetscObject)snes)->prefix,"Nonlinear solver (SNES) options","SNES");CHKERRQ(ierr); 
-    if (((PetscObject)snes)->type_name) { deft = ((PetscObject)snes)->type_name; } 
+  ierr = PetscObjectOptionsBegin((PetscObject)snes);CHKERRQ(ierr);
+    if (((PetscObject)snes)->type_name) { deft = ((PetscObject)snes)->type_name; }
     ierr = PetscOptionsList("-snes_type","Nonlinear solver method","SNESSetType",SNESList,deft,type,256,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = SNESSetType(snes,type);CHKERRQ(ierr);
@@ -316,6 +384,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
     ierr = PetscOptionsInt("-snes_max_funcs","Maximum function evaluations","SNESSetTolerances",snes->max_funcs,&snes->max_funcs,PETSC_NULL);CHKERRQ(ierr);
     ierr = PetscOptionsInt("-snes_max_fail","Maximum failures","SNESSetTolerances",snes->maxFailures,&snes->maxFailures,PETSC_NULL);CHKERRQ(ierr);
     ierr = PetscOptionsInt("-snes_max_linear_solve_fail","Maximum failures in linear solves allowed","SNESSetMaxLinearSolveFailures",snes->maxLinearSolveFailures,&snes->maxLinearSolveFailures,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_error_if_not_converged","Generate error if solver does not converge","SNESSetErrorIfNotConverged",snes->errorifnotconverged,&snes->errorifnotconverged,PETSC_NULL);CHKERRQ(ierr);
 
     ierr = PetscOptionsInt("-snes_lag_preconditioner","How often to rebuild preconditioner","SNESSetLagPreconditioner",snes->lagpreconditioner,&lag,&flg);CHKERRQ(ierr);
     if (flg) {
@@ -324,6 +393,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
     ierr = PetscOptionsInt("-snes_lag_jacobian","How often to rebuild Jacobian","SNESSetLagJacobian",snes->lagjacobian,&lag,&flg);CHKERRQ(ierr);
     if (flg) {
       ierr = SNESSetLagJacobian(snes,lag);CHKERRQ(ierr);
+    }
+    ierr = PetscOptionsInt("-snes_grid_sequence","Use grid sequencing to generate initial guess","SNESSetGridSequence",snes->gridsequence,&grids,&flg);CHKERRQ(ierr);
+    if (flg) {
+      ierr = SNESSetGridSequence(snes,grids);CHKERRQ(ierr);
     }
 
     ierr = PetscOptionsEList("-snes_convergence_test","Convergence test","SNESSetConvergenceTest",convtests,2,"default",&indx,&flg);CHKERRQ(ierr);
@@ -334,11 +407,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
       }
     }
 
-    ierr = PetscOptionsTruth("-snes_converged_reason","Print reason for converged or diverged","SNESSolve",snes->printreason,&snes->printreason,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_converged_reason","Print reason for converged or diverged","SNESSolve",snes->printreason,&snes->printreason,PETSC_NULL);CHKERRQ(ierr);
 
     kctx = (SNESKSPEW *)snes->kspconvctx;
 
-    ierr = PetscOptionsTruth("-snes_ksp_ew","Use Eisentat-Walker linear system convergence test","SNESKSPSetUseEW",snes->ksp_ewconv,&snes->ksp_ewconv,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_ksp_ew","Use Eisentat-Walker linear system convergence test","SNESKSPSetUseEW",snes->ksp_ewconv,&snes->ksp_ewconv,PETSC_NULL);CHKERRQ(ierr);
 
     ierr = PetscOptionsInt("-snes_ksp_ew_version","Version 1, 2 or 3","SNESKSPSetParametersEW",kctx->version,&kctx->version,0);CHKERRQ(ierr);
     ierr = PetscOptionsReal("-snes_ksp_ew_rtol0","0 <= rtol0 < 1","SNESKSPSetParametersEW",kctx->rtol_0,&kctx->rtol_0,0);CHKERRQ(ierr);
@@ -349,13 +422,13 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
     ierr = PetscOptionsReal("-snes_ksp_ew_threshold","0 < threshold < 1","SNESKSPSetParametersEW",kctx->threshold,&kctx->threshold,0);CHKERRQ(ierr);
 
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_monitor_cancel","Remove all monitors","SNESMonitorCancel",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_monitor_cancel","Remove all monitors","SNESMonitorCancel",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {ierr = SNESMonitorCancel(snes);CHKERRQ(ierr);}
 
     ierr = PetscOptionsString("-snes_monitor","Monitor norm of function","SNESMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
     if (flg) {
-      ierr = PetscViewerASCIIMonitorCreate(((PetscObject)snes)->comm,monfilename,((PetscObject)snes)->tablevel,&monviewer);CHKERRQ(ierr);
-      ierr = SNESMonitorSet(snes,SNESMonitorDefault,monviewer,(PetscErrorCode (*)(void*))PetscViewerASCIIMonitorDestroy);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIOpen(((PetscObject)snes)->comm,monfilename,&monviewer);CHKERRQ(ierr);
+      ierr = SNESMonitorSet(snes,SNESMonitorDefault,monviewer,(PetscErrorCode (*)(void**))PetscViewerDestroy);CHKERRQ(ierr);
     }
 
     ierr = PetscOptionsString("-snes_monitor_range","Monitor range of elements of function","SNESMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
@@ -365,34 +438,37 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
 
     ierr = PetscOptionsString("-snes_ratiomonitor","Monitor ratios of norms of function","SNESMonitorSetRatio","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
     if (flg) {
-      ierr = PetscViewerASCIIMonitorCreate(((PetscObject)snes)->comm,monfilename,((PetscObject)snes)->tablevel,&monviewer);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIOpen(((PetscObject)snes)->comm,monfilename,&monviewer);CHKERRQ(ierr);
       ierr = SNESMonitorSetRatio(snes,monviewer);CHKERRQ(ierr);
     }
 
     ierr = PetscOptionsString("-snes_monitor_short","Monitor norm of function (fewer digits)","SNESMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
     if (flg) {
-      ierr = PetscViewerASCIIMonitorCreate(((PetscObject)snes)->comm,monfilename,((PetscObject)snes)->tablevel,&monviewer);CHKERRQ(ierr);
-      ierr = SNESMonitorSet(snes,SNESMonitorDefaultShort,monviewer,(PetscErrorCode (*)(void*))PetscViewerASCIIMonitorDestroy);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIOpen(((PetscObject)snes)->comm,monfilename,&monviewer);CHKERRQ(ierr);
+      ierr = SNESMonitorSet(snes,SNESMonitorDefaultShort,monviewer,(PetscErrorCode (*)(void**))PetscViewerDestroy);CHKERRQ(ierr);
     }
 
+    ierr = PetscOptionsString("-snes_monitor_python","Use Python function","SNESMonitorSet",0,monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+    if (flg) {ierr = PetscPythonMonitorSet((PetscObject)snes,monfilename);CHKERRQ(ierr);}
+
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_monitor_solution","Plot solution at each iteration","SNESMonitorSolution",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_monitor_solution","Plot solution at each iteration","SNESMonitorSolution",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {ierr = SNESMonitorSet(snes,SNESMonitorSolution,0,0);CHKERRQ(ierr);}
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_monitor_solution_update","Plot correction at each iteration","SNESMonitorSolutionUpdate",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_monitor_solution_update","Plot correction at each iteration","SNESMonitorSolutionUpdate",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {ierr = SNESMonitorSet(snes,SNESMonitorSolutionUpdate,0,0);CHKERRQ(ierr);}
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_monitor_residual","Plot residual at each iteration","SNESMonitorResidual",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_monitor_residual","Plot residual at each iteration","SNESMonitorResidual",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {ierr = SNESMonitorSet(snes,SNESMonitorResidual,0,0);CHKERRQ(ierr);}
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_monitor_draw","Plot function norm at each iteration","SNESMonitorLG",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_monitor_draw","Plot function norm at each iteration","SNESMonitorLG",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {ierr = SNESMonitorSet(snes,SNESMonitorLG,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);}
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_monitor_range_draw","Plot function range at each iteration","SNESMonitorLG",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_monitor_range_draw","Plot function range at each iteration","SNESMonitorLG",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {ierr = SNESMonitorSet(snes,SNESMonitorLGRange,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);}
 
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_fd","Use finite differences (slow) to compute Jacobian","SNESDefaultComputeJacobian",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_fd","Use finite differences (slow) to compute Jacobian","SNESDefaultComputeJacobian",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       ierr = SNESSetJacobian(snes,snes->jacobian,snes->jacobian_pre,SNESDefaultComputeJacobian,snes->funP);CHKERRQ(ierr);
       ierr = PetscInfo(snes,"Setting default finite difference Jacobian matrix\n");CHKERRQ(ierr);
@@ -400,10 +476,13 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
 
     mf = mf_operator = PETSC_FALSE;
     flg = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_mf_operator","Use a Matrix-Free Jacobian with user-provided preconditioner matrix","MatCreateSNESMF",PETSC_FALSE,&mf_operator,&flg);CHKERRQ(ierr);
-    if (flg && mf_operator) mf = PETSC_TRUE;
+    ierr = PetscOptionsBool("-snes_mf_operator","Use a Matrix-Free Jacobian with user-provided preconditioner matrix","MatCreateSNESMF",PETSC_FALSE,&mf_operator,&flg);CHKERRQ(ierr);
+    if (flg && mf_operator) {
+      snes->mf_operator = PETSC_TRUE;
+      mf = PETSC_TRUE;
+    }
     flg = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-snes_mf","Use a Matrix-Free Jacobian with no preconditioner matrix","MatCreateSNESMF",PETSC_FALSE,&mf,&flg);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-snes_mf","Use a Matrix-Free Jacobian with no preconditioner matrix","MatCreateSNESMF",PETSC_FALSE,&mf,&flg);CHKERRQ(ierr);
     if (!flg && mf_operator) mf = PETSC_TRUE;
     mf_version = 1;
     ierr = PetscOptionsInt("-snes_mf_version","Matrix-Free routines version 1 or 2","None",mf_version,&mf_version,0);CHKERRQ(ierr);
@@ -415,18 +494,56 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
     if (snes->ops->setfromoptions) {
       ierr = (*snes->ops->setfromoptions)(snes);CHKERRQ(ierr);
     }
+
+    /* process any options handlers added with PetscObjectAddOptionsHandler() */
+    ierr = PetscObjectProcessOptionsHandlers((PetscObject)snes);CHKERRQ(ierr);
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
 
   if (mf) { ierr = SNESSetUpMatrixFree_Private(snes, mf_operator, mf_version);CHKERRQ(ierr); }
-  
+
   if (!snes->ksp) {ierr = SNESGetKSP(snes,&snes->ksp);CHKERRQ(ierr);}
   ierr = KSPGetOperators(snes->ksp,PETSC_NULL,PETSC_NULL,&matflag);
   ierr = KSPSetOperators(snes->ksp,snes->jacobian,snes->jacobian_pre,matflag);CHKERRQ(ierr);
   ierr = KSPSetFromOptions(snes->ksp);CHKERRQ(ierr);
 
-  PetscFunctionReturn(0); 
+  if (snes->pc) {
+    ierr = SNESSetOptionsPrefix(snes->pc, "npc_");CHKERRQ(ierr);
+    ierr = SNESSetDM(snes->pc, snes->dm);CHKERRQ(ierr);
+    /* Should we make a duplicate vector and matrix? Leave the DM to make it? */
+    ierr = SNESSetFunction(snes->pc, snes->vec_func, snes->ops->computefunction, snes->funP);CHKERRQ(ierr);
+    ierr = SNESSetJacobian(snes->pc, snes->jacobian, snes->jacobian_pre, snes->ops->computejacobian, snes->jacP);CHKERRQ(ierr);
+    ierr = SNESSetFromOptions(snes->pc);CHKERRQ(ierr);
+  }
+  PetscFunctionReturn(0);
 }
 
+#undef __FUNCT__  
+#define __FUNCT__ "SNESSetComputeApplicationContext"
+/*@
+   SNESSetComputeApplicationContext - Sets an optional function to compute a user-defined context for 
+   the nonlinear solvers.  
+
+   Logically Collective on SNES
+
+   Input Parameters:
++  snes - the SNES context
+.  compute - function to compute the context
+-  destroy - function to destroy the context
+
+   Level: intermediate
+
+.keywords: SNES, nonlinear, set, application, context
+
+.seealso: SNESGetApplicationContext(), SNESSetComputeApplicationContext(), SNESGetApplicationContext()
+@*/
+PetscErrorCode  SNESSetComputeApplicationContext(SNES snes,PetscErrorCode (*compute)(SNES,void**),PetscErrorCode (*destroy)(void**))
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  snes->ops->usercompute = compute;
+  snes->ops->userdestroy = destroy;
+  PetscFunctionReturn(0);
+}
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESSetApplicationContext"
@@ -434,7 +551,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
    SNESSetApplicationContext - Sets the optional user-defined context for 
    the nonlinear solvers.  
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -444,19 +561,24 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
 
 .keywords: SNES, nonlinear, set, application, context
 
-.seealso: SNESGetApplicationContext()
+.seealso: SNESGetApplicationContext(), SNESSetApplicationContext()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetApplicationContext(SNES snes,void *usrP)
+PetscErrorCode  SNESSetApplicationContext(SNES snes,void *usrP)
 {
+  PetscErrorCode ierr;
+  KSP            ksp;
+
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  snes->user		= usrP;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  ierr       = SNESGetKSP(snes,&ksp);CHKERRQ(ierr);
+  ierr       = KSPSetApplicationContext(ksp,usrP);CHKERRQ(ierr);
+  snes->user = usrP;
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESGetApplicationContext"
-/*@C
+/*@
    SNESGetApplicationContext - Gets the user-defined context for the 
    nonlinear solvers.  
 
@@ -474,11 +596,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetApplicationContext(SNES snes,void *usr
 
 .seealso: SNESSetApplicationContext()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetApplicationContext(SNES snes,void **usrP)
+PetscErrorCode  SNESGetApplicationContext(SNES snes,void *usrP)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  *usrP = snes->user;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  *(void**)usrP = snes->user;
   PetscFunctionReturn(0);
 }
 
@@ -516,10 +638,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetApplicationContext(SNES snes,void **us
 
 .seealso:   SNESGetFunctionNorm(), SNESGetLinearSolveIterations()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetIterationNumber(SNES snes,PetscInt* iter)
+PetscErrorCode  SNESGetIterationNumber(SNES snes,PetscInt* iter)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidIntPointer(iter,2);
   *iter = snes->iter;
   PetscFunctionReturn(0);
@@ -545,10 +667,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetIterationNumber(SNES snes,PetscInt* it
 
 .seealso: SNESGetFunction(), SNESGetIterationNumber(), SNESGetLinearSolveIterations()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetFunctionNorm(SNES snes,PetscReal *fnorm)
+PetscErrorCode  SNESGetFunctionNorm(SNES snes,PetscReal *fnorm)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidScalarPointer(fnorm,2);
   *fnorm = snes->norm;
   PetscFunctionReturn(0);
@@ -578,10 +700,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetFunctionNorm(SNES snes,PetscReal *fnor
 .seealso: SNESGetMaxLinearSolveFailures(), SNESGetLinearSolveIterations(), SNESSetMaxLinearSolveFailures(), SNESGetLinearSolveFailures(),
           SNESSetMaxNonlinearStepFailures(), SNESGetMaxNonlinearStepFailures()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetNonlinearStepFailures(SNES snes,PetscInt* nfails)
+PetscErrorCode  SNESGetNonlinearStepFailures(SNES snes,PetscInt* nfails)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidIntPointer(nfails,2);
   *nfails = snes->numFailures;
   PetscFunctionReturn(0);
@@ -606,10 +728,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetNonlinearStepFailures(SNES snes,PetscI
 .seealso: SNESGetMaxLinearSolveFailures(), SNESGetLinearSolveIterations(), SNESSetMaxLinearSolveFailures(), SNESGetLinearSolveFailures(),
           SNESGetMaxNonlinearStepFailures(), SNESGetNonlinearStepFailures()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetMaxNonlinearStepFailures(SNES snes, PetscInt maxFails)
+PetscErrorCode  SNESSetMaxNonlinearStepFailures(SNES snes, PetscInt maxFails)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   snes->maxFailures = maxFails;
   PetscFunctionReturn(0);
 }
@@ -636,10 +758,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetMaxNonlinearStepFailures(SNES snes, Pe
           SNESSetMaxNonlinearStepFailures(), SNESGetNonlinearStepFailures()
  
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetMaxNonlinearStepFailures(SNES snes, PetscInt *maxFails)
+PetscErrorCode  SNESGetMaxNonlinearStepFailures(SNES snes, PetscInt *maxFails)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidIntPointer(maxFails,2);
   *maxFails = snes->maxFailures;
   PetscFunctionReturn(0);
@@ -665,10 +787,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetMaxNonlinearStepFailures(SNES snes, Pe
 
 .seealso: SNESGetMaxLinearSolveFailures(), SNESGetLinearSolveIterations(), SNESSetMaxLinearSolveFailures(), SNESGetLinearSolveFailures()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetNumberFunctionEvals(SNES snes, PetscInt *nfuncs)
+PetscErrorCode  SNESGetNumberFunctionEvals(SNES snes, PetscInt *nfuncs)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidIntPointer(nfuncs,2);
   *nfuncs = snes->nfuncs;
   PetscFunctionReturn(0);
@@ -697,10 +819,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetNumberFunctionEvals(SNES snes, PetscIn
 
 .seealso: SNESGetMaxLinearSolveFailures(), SNESGetLinearSolveIterations(), SNESSetMaxLinearSolveFailures()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLinearSolveFailures(SNES snes,PetscInt* nfails)
+PetscErrorCode  SNESGetLinearSolveFailures(SNES snes,PetscInt* nfails)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidIntPointer(nfails,2);
   *nfails = snes->numLinearSolveFailures;
   PetscFunctionReturn(0);
@@ -712,7 +834,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLinearSolveFailures(SNES snes,PetscInt
    SNESSetMaxLinearSolveFailures - the number of failed linear solve attempts
    allowed before SNES returns with a diverged reason of SNES_DIVERGED_LINEAR_SOLVE
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes     - SNES context
@@ -726,10 +848,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLinearSolveFailures(SNES snes,PetscInt
 
 .seealso: SNESGetLinearSolveFailures(), SNESGetMaxLinearSolveFailures(), SNESGetLinearSolveIterations()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetMaxLinearSolveFailures(SNES snes, PetscInt maxFails)
+PetscErrorCode  SNESSetMaxLinearSolveFailures(SNES snes, PetscInt maxFails)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidLogicalCollectiveInt(snes,maxFails,2);
   snes->maxLinearSolveFailures = maxFails;
   PetscFunctionReturn(0);
 }
@@ -756,10 +879,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetMaxLinearSolveFailures(SNES snes, Pets
 
 .seealso: SNESGetLinearSolveFailures(), SNESGetLinearSolveIterations(), SNESSetMaxLinearSolveFailures(),
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetMaxLinearSolveFailures(SNES snes, PetscInt *maxFails)
+PetscErrorCode  SNESGetMaxLinearSolveFailures(SNES snes, PetscInt *maxFails)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidIntPointer(maxFails,2);
   *maxFails = snes->maxLinearSolveFailures;
   PetscFunctionReturn(0);
@@ -788,10 +911,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetMaxLinearSolveFailures(SNES snes, Pets
 
 .seealso:  SNESGetIterationNumber(), SNESGetFunctionNorm(), SNESGetLinearSolveFailures(), SNESGetMaxLinearSolveFailures()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLinearSolveIterations(SNES snes,PetscInt* lits)
+PetscErrorCode  SNESGetLinearSolveIterations(SNES snes,PetscInt* lits)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidIntPointer(lits,2);
   *lits = snes->linear_its;
   PetscFunctionReturn(0);
@@ -821,12 +944,12 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLinearSolveIterations(SNES snes,PetscI
 
 .seealso: KSPGetPC(), SNESCreate(), KSPCreate(), SNESSetKSP()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetKSP(SNES snes,KSP *ksp)
+PetscErrorCode  SNESGetKSP(SNES snes,KSP *ksp)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidPointer(ksp,2);
 
   if (!snes->ksp) {
@@ -862,13 +985,13 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetKSP(SNES snes,KSP *ksp)
 
 .seealso: KSPGetPC(), SNESCreate(), KSPCreate(), SNESSetKSP()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetKSP(SNES snes,KSP ksp)
+PetscErrorCode  SNESSetKSP(SNES snes,KSP ksp)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,2);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,2);
   PetscCheckSameComm(snes,1,ksp,2);
   ierr = PetscObjectReference((PetscObject)ksp);CHKERRQ(ierr);
   if (snes->ksp) {ierr = PetscObjectDereference((PetscObject)snes->ksp);CHKERRQ(ierr);}
@@ -915,7 +1038,7 @@ static PetscErrorCode SNESPublish_Petsc(PetscObject obj)
 .seealso: SNESSolve(), SNESDestroy(), SNES, SNESSetLagPreconditioner()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESCreate(MPI_Comm comm,SNES *outsnes)
+PetscErrorCode  SNESCreate(MPI_Comm comm,SNES *outsnes)
 {
   PetscErrorCode      ierr;
   SNES                snes;
@@ -928,7 +1051,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESCreate(MPI_Comm comm,SNES *outsnes)
   ierr = SNESInitializePackage(PETSC_NULL);CHKERRQ(ierr);
 #endif
 
-  ierr = PetscHeaderCreate(snes,_p_SNES,struct _SNESOps,SNES_COOKIE,0,"SNES",comm,SNESDestroy,SNESView);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(snes,_p_SNES,struct _SNESOps,SNES_CLASSID,0,"SNES","Nonlinear solver","SNES",comm,SNESDestroy,SNESView);CHKERRQ(ierr);
 
   snes->ops->converged    = SNESDefaultConverged;
   snes->max_its           = 50;
@@ -949,8 +1072,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESCreate(MPI_Comm comm,SNES *outsnes)
   snes->data              = 0;
   snes->setupcalled       = PETSC_FALSE;
   snes->ksp_ewconv        = PETSC_FALSE;
-  snes->vwork             = 0;
   snes->nwork             = 0;
+  snes->work              = 0;
+  snes->nvwork            = 0;
+  snes->vwork             = 0;
   snes->conv_hist_len     = 0;
   snes->conv_hist_max     = 0;
   snes->conv_hist         = PETSC_NULL;
@@ -977,7 +1102,6 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESCreate(MPI_Comm comm,SNES *outsnes)
   kctx->norm_last   = 0.0;
 
   *outsnes = snes;
-  ierr = PetscPublishAll(snes);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -988,7 +1112,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESCreate(MPI_Comm comm,SNES *outsnes)
    vector for use by the SNES routines in solving systems of nonlinear
    equations.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -1014,18 +1138,56 @@ $      f'(x) x = -f(x),
 
 .seealso: SNESGetFunction(), SNESComputeFunction(), SNESSetJacobian()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFunction(SNES snes,Vec r,PetscErrorCode (*func)(SNES,Vec,Vec,void*),void *ctx)
+PetscErrorCode  SNESSetFunction(SNES snes,Vec r,PetscErrorCode (*func)(SNES,Vec,Vec,void*),void *ctx)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  PetscValidHeaderSpecific(r,VEC_COOKIE,2);
-  PetscCheckSameComm(snes,1,r,2);
-  ierr = PetscObjectReference((PetscObject)r);CHKERRQ(ierr); 
-  if (snes->vec_func) { ierr = VecDestroy(snes->vec_func);CHKERRQ(ierr); }
-  snes->ops->computefunction = func; 
-  snes->vec_func             = r;
-  snes->funP                 = ctx;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  if (r) {
+    PetscValidHeaderSpecific(r,VEC_CLASSID,2);
+    PetscCheckSameComm(snes,1,r,2);
+    ierr = PetscObjectReference((PetscObject)r);CHKERRQ(ierr);
+    ierr = VecDestroy(&snes->vec_func);CHKERRQ(ierr);
+    snes->vec_func = r;
+  } else if (!snes->vec_func && snes->dm) {
+    ierr = DMCreateGlobalVector(snes->dm,&snes->vec_func);CHKERRQ(ierr);
+  }
+  if (func) snes->ops->computefunction = func;
+  if (ctx)  snes->funP                 = ctx;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESSetComputeInitialGuess"
+/*@C
+   SNESSetComputeInitialGuess - Sets a routine used to compute an initial guess for the problem
+
+   Logically Collective on SNES
+
+   Input Parameters:
++  snes - the SNES context
+.  func - function evaluation routine
+-  ctx - [optional] user-defined context for private data for the 
+         function evaluation routine (may be PETSC_NULL)
+
+   Calling sequence of func:
+$    func (SNES snes,Vec x,void *ctx);
+
+.  f - function vector
+-  ctx - optional user-defined function context 
+
+   Level: intermediate
+
+.keywords: SNES, nonlinear, set, function
+
+.seealso: SNESGetFunction(), SNESComputeFunction(), SNESSetJacobian()
+@*/
+PetscErrorCode  SNESSetComputeInitialGuess(SNES snes,PetscErrorCode (*func)(SNES,Vec,void*),void *ctx)
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  if (func) snes->ops->computeinitialguess = func;
+  if (ctx)  snes->initialguessP            = ctx;
   PetscFunctionReturn(0);
 }
 
@@ -1036,7 +1198,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFunction(SNES snes,Vec r,PetscErrorCod
    SNESGetRhs - Gets the vector for solving F(x) = rhs. If rhs is not set
    it assumes a zero right hand side.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameter:
 .  snes - the SNES context
@@ -1050,10 +1212,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFunction(SNES snes,Vec r,PetscErrorCod
 
 .seealso: SNESGetSolution(), SNESGetFunction(), SNESComputeFunction(), SNESSetJacobian(), SNESSetFunction()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetRhs(SNES snes,Vec *rhs)
+PetscErrorCode  SNESGetRhs(SNES snes,Vec *rhs)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidPointer(rhs,2);
   *rhs = snes->vec_rhs;
   PetscFunctionReturn(0);
@@ -1085,33 +1247,27 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetRhs(SNES snes,Vec *rhs)
 
 .seealso: SNESSetFunction(), SNESGetFunction()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESComputeFunction(SNES snes,Vec x,Vec y)
+PetscErrorCode  SNESComputeFunction(SNES snes,Vec x,Vec y)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,3);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,3);
   PetscCheckSameComm(snes,1,x,2);
   PetscCheckSameComm(snes,1,y,3);
 
   ierr = PetscLogEventBegin(SNES_FunctionEval,snes,x,y,0);CHKERRQ(ierr);
   if (snes->ops->computefunction) {
     PetscStackPush("SNES user function");
-    CHKMEMQ;
-    ierr = (*snes->ops->computefunction)(snes,x,y,snes->funP);
-    CHKMEMQ;
+    ierr = (*snes->ops->computefunction)(snes,x,y,snes->funP);CHKERRQ(ierr);
     PetscStackPop;
-    if (PetscExceptionValue(ierr)) {
-      PetscErrorCode pierr = PetscLogEventEnd(SNES_FunctionEval,snes,x,y,0);CHKERRQ(pierr);
-    }
-    CHKERRQ(ierr);
   } else if (snes->vec_rhs) {
     ierr = MatMult(snes->jacobian, x, y);CHKERRQ(ierr);
-  } else {
-    SETERRQ(PETSC_ERR_ARG_WRONGSTATE, "Must call SNESSetFunction() before SNESComputeFunction(), likely called from SNESSolve().");
-  }
+  } else if (snes->dm) {
+    ierr = DMComputeFunction(snes->dm,x,y);CHKERRQ(ierr);
+  } else SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE, "Must call SNESSetFunction() or SNESSetDM() before SNESComputeFunction(), likely called from SNESSolve().");
   if (snes->vec_rhs) {
     ierr = VecAXPY(y,-1.0,snes->vec_rhs);CHKERRQ(ierr);
   }
@@ -1139,7 +1295,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESComputeFunction(SNES snes,Vec x,Vec y)
 
   Options Database Keys: 
 +    -snes_lag_preconditioner <lag>
--    -snes_lag_jacobian <lag>
+.    -snes_lag_jacobian <lag>
+.    -snes_compare_explicit - Compare the computed Jacobian to the finite difference Jacobian and output the differences
+.    -snes_compare_explicit_draw  - Compare the computed Jacobian to the finite difference Jacobian and draw the result
+.    -snes_compare_explicit_contour  - Compare the computed Jacobian to the finite difference Jacobian and draw a contour plot with the result
+-    -snes_compare_operator  - Make the comparison options above use the operator instead of the preconditioning matrix
 
    Notes: 
    Most users should not need to explicitly call this routine, as it 
@@ -1154,14 +1314,14 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESComputeFunction(SNES snes,Vec x,Vec y)
 
 .seealso:  SNESSetJacobian(), KSPSetOperators(), MatStructure, SNESSetLagPreconditioner(), SNESSetLagJacobian()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESComputeJacobian(SNES snes,Vec X,Mat *A,Mat *B,MatStructure *flg)
+PetscErrorCode  SNESComputeJacobian(SNES snes,Vec X,Mat *A,Mat *B,MatStructure *flg)
 {
   PetscErrorCode ierr;
-  PetscTruth     flag;
+  PetscBool      flag;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  PetscValidHeaderSpecific(X,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidHeaderSpecific(X,VEC_CLASSID,2);
   PetscValidPointer(flg,5);
   PetscCheckSameComm(snes,1,X,2);
   if (!snes->ops->computejacobian) PetscFunctionReturn(0);
@@ -1194,9 +1354,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESComputeJacobian(SNES snes,Vec X,Mat *A,Ma
   *flg = DIFFERENT_NONZERO_PATTERN;
   ierr = PetscLogEventBegin(SNES_JacobianEval,snes,X,*A,*B);CHKERRQ(ierr);
   PetscStackPush("SNES user Jacobian function");
-  CHKMEMQ;
   ierr = (*snes->ops->computejacobian)(snes,X,A,B,flg,snes->jacP);CHKERRQ(ierr);
-  CHKMEMQ;
   PetscStackPop;
   ierr = PetscLogEventEnd(SNES_JacobianEval,snes,X,*A,*B);CHKERRQ(ierr);
 
@@ -1212,8 +1370,59 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESComputeJacobian(SNES snes,Vec X,Mat *A,Ma
   }
 
   /* make sure user returned a correct Jacobian and preconditioner */
-  /* PetscValidHeaderSpecific(*A,MAT_COOKIE,3);
-    PetscValidHeaderSpecific(*B,MAT_COOKIE,4);   */
+  /* PetscValidHeaderSpecific(*A,MAT_CLASSID,3);
+    PetscValidHeaderSpecific(*B,MAT_CLASSID,4);   */
+  {
+    PetscBool flag = PETSC_FALSE,flag_draw = PETSC_FALSE,flag_contour = PETSC_FALSE,flag_operator = PETSC_FALSE;
+    ierr  = PetscOptionsGetBool(((PetscObject)snes)->prefix,"-snes_compare_explicit",&flag,PETSC_NULL);CHKERRQ(ierr);
+    ierr  = PetscOptionsGetBool(((PetscObject)snes)->prefix,"-snes_compare_explicit_draw",&flag_draw,PETSC_NULL);CHKERRQ(ierr);
+    ierr  = PetscOptionsGetBool(((PetscObject)snes)->prefix,"-snes_compare_explicit_draw_contour",&flag_contour,PETSC_NULL);CHKERRQ(ierr);
+    ierr  = PetscOptionsGetBool(((PetscObject)snes)->prefix,"-snes_compare_operator",&flag_operator,PETSC_NULL);CHKERRQ(ierr);
+    if (flag || flag_draw || flag_contour) {
+      Mat Bexp_mine = PETSC_NULL,Bexp,FDexp;
+      MatStructure mstruct;
+      PetscViewer vdraw,vstdout;
+      PetscBool flg;
+      if (flag_operator) {
+        ierr = MatComputeExplicitOperator(*A,&Bexp_mine);CHKERRQ(ierr);
+        Bexp = Bexp_mine;
+      } else {
+        /* See if the preconditioning matrix can be viewed and added directly */
+        ierr = PetscTypeCompareAny((PetscObject)*B,&flg,MATSEQAIJ,MATMPIAIJ,MATSEQDENSE,MATMPIDENSE,MATSEQBAIJ,MATMPIBAIJ,MATSEQSBAIJ,MATMPIBAIJ,"");CHKERRQ(ierr);
+        if (flg) Bexp = *B;
+        else {
+          /* If the "preconditioning" matrix is itself MATSHELL or some other type without direct support */
+          ierr = MatComputeExplicitOperator(*B,&Bexp_mine);CHKERRQ(ierr);
+          Bexp = Bexp_mine;
+        }
+      }
+      ierr = MatConvert(Bexp,MATSAME,MAT_INITIAL_MATRIX,&FDexp);CHKERRQ(ierr);
+      ierr = SNESDefaultComputeJacobian(snes,X,&FDexp,&FDexp,&mstruct,NULL);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIGetStdout(((PetscObject)snes)->comm,&vstdout);CHKERRQ(ierr);
+      if (flag_draw || flag_contour) {
+        ierr = PetscViewerDrawOpen(((PetscObject)snes)->comm,0,"Explicit Jacobians",PETSC_DECIDE,PETSC_DECIDE,300,300,&vdraw);CHKERRQ(ierr);
+        if (flag_contour) {ierr = PetscViewerPushFormat(vdraw,PETSC_VIEWER_DRAW_CONTOUR);CHKERRQ(ierr);}
+      } else vdraw = PETSC_NULL;
+      ierr = PetscViewerASCIIPrintf(vstdout,"Explicit %s\n",flag_operator?"Jacobian":"preconditioning Jacobian");CHKERRQ(ierr);
+      if (flag) {ierr = MatView(Bexp,vstdout);CHKERRQ(ierr);}
+      if (vdraw) {ierr = MatView(Bexp,vdraw);CHKERRQ(ierr);}
+      ierr = PetscViewerASCIIPrintf(vstdout,"Finite difference Jacobian\n");CHKERRQ(ierr);
+      if (flag) {ierr = MatView(FDexp,vstdout);CHKERRQ(ierr);}
+      if (vdraw) {ierr = MatView(FDexp,vdraw);CHKERRQ(ierr);}
+      ierr = MatAYPX(FDexp,-1.0,Bexp,SAME_NONZERO_PATTERN);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIPrintf(vstdout,"User-provided matrix minus finite difference Jacobian\n");CHKERRQ(ierr);
+      if (flag) {ierr = MatView(FDexp,vstdout);CHKERRQ(ierr);}
+      if (vdraw) {              /* Always use contour for the difference */
+        ierr = PetscViewerPushFormat(vdraw,PETSC_VIEWER_DRAW_CONTOUR);CHKERRQ(ierr);
+        ierr = MatView(FDexp,vdraw);CHKERRQ(ierr);
+        ierr = PetscViewerPopFormat(vdraw);CHKERRQ(ierr);
+      }
+      if (flag_contour) {ierr = PetscViewerPopFormat(vdraw);CHKERRQ(ierr);}
+      ierr = PetscViewerDestroy(&vdraw);CHKERRQ(ierr);
+      ierr = MatDestroy(&Bexp_mine);CHKERRQ(ierr);
+      ierr = MatDestroy(&FDexp);CHKERRQ(ierr);
+    }
+  }
   PetscFunctionReturn(0);
 }
 
@@ -1223,15 +1432,15 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESComputeJacobian(SNES snes,Vec X,Mat *A,Ma
    SNESSetJacobian - Sets the function to compute Jacobian as well as the
    location to store the matrix.
 
-   Collective on SNES and Mat
+   Logically Collective on SNES and Mat
 
    Input Parameters:
 +  snes - the SNES context
 .  A - Jacobian matrix
 .  B - preconditioner matrix (usually same as the Jacobian)
-.  func - Jacobian evaluation routine
+.  func - Jacobian evaluation routine (if PETSC_NULL then SNES retains any previously set value)
 -  ctx - [optional] user-defined context for private data for the 
-         Jacobian evaluation routine (may be PETSC_NULL)
+         Jacobian evaluation routine (may be PETSC_NULL) (if PETSC_NULL then SNES retains any previously set value)
 
    Calling sequence of func:
 $     func (SNES snes,Vec x,Mat *A,Mat *B,int *flag,void *ctx);
@@ -1256,32 +1465,35 @@ $     func (SNES snes,Vec x,Mat *A,Mat *B,int *flag,void *ctx);
    If the A matrix and B matrix are different you must call MatAssemblyBegin/End() on
    each matrix.
 
+   If using SNESDefaultComputeJacobianColor() to assemble a Jacobian, the ctx argument
+   must be a MatFDColoring.
+
    Level: beginner
 
 .keywords: SNES, nonlinear, set, Jacobian, matrix
 
 .seealso: KSPSetOperators(), SNESSetFunction(), MatMFFDComputeJacobian(), SNESDefaultComputeJacobianColor(), MatStructure
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetJacobian(SNES snes,Mat A,Mat B,PetscErrorCode (*func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void *ctx)
+PetscErrorCode  SNESSetJacobian(SNES snes,Mat A,Mat B,PetscErrorCode (*func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void *ctx)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  if (A) PetscValidHeaderSpecific(A,MAT_COOKIE,2);
-  if (B) PetscValidHeaderSpecific(B,MAT_COOKIE,3);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  if (A) PetscValidHeaderSpecific(A,MAT_CLASSID,2);
+  if (B) PetscValidHeaderSpecific(B,MAT_CLASSID,3);
   if (A) PetscCheckSameComm(snes,1,A,2);
   if (B) PetscCheckSameComm(snes,1,B,3);
   if (func) snes->ops->computejacobian = func;
   if (ctx)  snes->jacP                 = ctx;
   if (A) {
     ierr = PetscObjectReference((PetscObject)A);CHKERRQ(ierr);
-    if (snes->jacobian) {ierr = MatDestroy(snes->jacobian);CHKERRQ(ierr);}
+    ierr = MatDestroy(&snes->jacobian);CHKERRQ(ierr);
     snes->jacobian = A;
   }
   if (B) {
     ierr = PetscObjectReference((PetscObject)B);CHKERRQ(ierr);
-    if (snes->jacobian_pre) {ierr = MatDestroy(snes->jacobian_pre);CHKERRQ(ierr);}
+    ierr = MatDestroy(&snes->jacobian_pre);CHKERRQ(ierr);
     snes->jacobian_pre = B;
   }
   PetscFunctionReturn(0);
@@ -1308,10 +1520,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetJacobian(SNES snes,Mat A,Mat B,PetscEr
 
 .seealso: SNESSetJacobian(), SNESComputeJacobian()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetJacobian(SNES snes,Mat *A,Mat *B,PetscErrorCode (**func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void **ctx)
+PetscErrorCode  SNESGetJacobian(SNES snes,Mat *A,Mat *B,PetscErrorCode (**func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void **ctx)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (A)    *A    = snes->jacobian;
   if (B)    *B    = snes->jacobian_pre;
   if (func) *func = snes->ops->computejacobian;
@@ -1321,7 +1533,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetJacobian(SNES snes,Mat *A,Mat *B,Petsc
 
 /* ----- Routines to initialize and destroy a nonlinear solver ---- */
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "SNESSetUp"
 /*@
    SNESSetUp - Sets up the internal data structures for the later use
@@ -1337,7 +1549,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetJacobian(SNES snes,Mat *A,Mat *B,Petsc
    SNESSetUp(), since these actions will automatically occur during
    the call to SNESSolve().  However, if one wishes to control this
    phase separately, SNESSetUp() should be called after SNESCreate()
-   and optional routines of the form SNESSetXXX(), but before SNESSolve().  
+   and optional routines of the form SNESSetXXX(), but before SNESSolve().
 
    Level: advanced
 
@@ -1345,38 +1557,125 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetJacobian(SNES snes,Mat *A,Mat *B,Petsc
 
 .seealso: SNESCreate(), SNESSolve(), SNESDestroy()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetUp(SNES snes)
+PetscErrorCode  SNESSetUp(SNES snes)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (snes->setupcalled) PetscFunctionReturn(0);
 
   if (!((PetscObject)snes)->type_name) {
     ierr = SNESSetType(snes,SNESLS);CHKERRQ(ierr);
   }
 
-  if (!snes->vec_func && !snes->vec_rhs) {
-    SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must call SNESSetFunction() first");
+  if (!snes->vec_func) {
+    if (snes->vec_rhs) {
+      ierr = VecDuplicate(snes->vec_rhs,&snes->vec_func);CHKERRQ(ierr);
+    } else if (snes->vec_sol) {
+      ierr = VecDuplicate(snes->vec_sol,&snes->vec_func);CHKERRQ(ierr);
+    } else if (snes->dm) {
+      ierr = DMCreateGlobalVector(snes->dm,&snes->vec_func);CHKERRQ(ierr);
+    }
   }
-  if (!snes->ops->computefunction && !snes->vec_rhs) {
-    SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must call SNESSetFunction() first");
+  if (snes->vec_func == snes->vec_sol) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_IDN,"Solution vector cannot be function vector");
+  if (snes->vec_rhs  == snes->vec_sol) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_IDN,"Solution vector cannot be right hand side vector");
+
+  if (!snes->vec_sol_update /* && snes->vec_sol */) {
+    ierr = VecDuplicate(snes->vec_sol,&snes->vec_sol_update);CHKERRQ(ierr);
+    ierr = PetscLogObjectParent(snes,snes->vec_sol_update);CHKERRQ(ierr);
   }
-  if (snes->vec_func == snes->vec_sol) {
-    SETERRQ(PETSC_ERR_ARG_IDN,"Solution vector cannot be function vector");
+
+  if (!snes->ops->computejacobian && snes->dm) {
+    Mat J;
+    ierr = DMGetMatrix(snes->dm,MATAIJ,&J);CHKERRQ(ierr);
+    ierr = SNESSetJacobian(snes,J,J,SNESDMComputeJacobian,PETSC_NULL);CHKERRQ(ierr);
+    ierr = MatDestroy(&J);CHKERRQ(ierr);
+  } else if (!snes->jacobian && snes->ops->computejacobian == MatMFFDComputeJacobian) {
+    Mat J;
+    ierr = MatCreateSNESMF(snes,&J);CHKERRQ(ierr);
+    ierr = MatMFFDSetOptionsPrefix(J,((PetscObject)snes)->prefix);CHKERRQ(ierr);
+    ierr = MatSetFromOptions(J);CHKERRQ(ierr);
+    ierr = SNESSetJacobian(snes,J,J,MatMFFDComputeJacobian,snes->funP);CHKERRQ(ierr);
+    ierr = MatDestroy(&J);CHKERRQ(ierr);
+  } else if (snes->dm && snes->mf_operator && !snes->jacobian_pre && !snes->jacobian) {
+    Mat J,B;
+    ierr = MatCreateSNESMF(snes,&J);CHKERRQ(ierr);
+    ierr = MatMFFDSetOptionsPrefix(J,((PetscObject)snes)->prefix);CHKERRQ(ierr);
+    ierr = MatSetFromOptions(J);CHKERRQ(ierr);
+    ierr = DMGetMatrix(snes->dm,MATAIJ,&B);CHKERRQ(ierr);
+    ierr = SNESSetJacobian(snes,J,B,SNESDMComputeJacobian,snes->funP);CHKERRQ(ierr);
+    ierr = MatDestroy(&J);CHKERRQ(ierr);
+    ierr = MatDestroy(&B);CHKERRQ(ierr);
+  } else if (snes->dm && !snes->jacobian_pre){
+    Mat J;
+    ierr = DMGetMatrix(snes->dm,MATAIJ,&J);CHKERRQ(ierr);
+    ierr = SNESSetJacobian(snes,J,J,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
+    ierr = MatDestroy(&J);CHKERRQ(ierr);
   }
-  
+  if (!snes->ops->computefunction && !snes->dm) SETERRQ(((PetscObject)snes)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must provide a residual function with SNESSetFunction() or call SNESSetDM()");
+  if (!snes->vec_func) SETERRQ(((PetscObject)snes)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must provide a vector when calling SNESSetFunction() or call SNESSetDM()");
+
   if (!snes->ksp) {ierr = SNESGetKSP(snes, &snes->ksp);CHKERRQ(ierr);}
-  
+
+  if (snes->ops->usercompute && !snes->user) {
+    ierr = (*snes->ops->usercompute)(snes,(void**)&snes->user);CHKERRQ(ierr);
+  }
+
   if (snes->ops->setup) {
     ierr = (*snes->ops->setup)(snes);CHKERRQ(ierr);
   }
+
   snes->setupcalled = PETSC_TRUE;
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
+#define __FUNCT__ "SNESReset"
+/*@
+   SNESReset - Resets a SNES context to the snessetupcalled = 0 state and removes any allocated Vecs and Mats
+
+   Collective on SNES
+
+   Input Parameter:
+.  snes - iterative context obtained from SNESCreate()
+
+   Level: intermediate
+
+   Notes: Also calls the application context destroy routine set with SNESSetComputeApplicationContext() 
+
+.keywords: SNES, destroy
+
+.seealso: SNESCreate(), SNESSetUp(), SNESSolve()
+@*/
+PetscErrorCode  SNESReset(SNES snes)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  if (snes->ops->userdestroy && snes->user) {
+    ierr       = (*snes->ops->userdestroy)((void**)&snes->user);CHKERRQ(ierr);
+    snes->user = PETSC_NULL;
+  }
+  if (snes->ops->reset) {
+    ierr = (*snes->ops->reset)(snes);CHKERRQ(ierr);
+  }
+  if (snes->ksp) {ierr = KSPReset(snes->ksp);CHKERRQ(ierr);}
+  ierr = VecDestroy(&snes->vec_rhs);CHKERRQ(ierr);
+  ierr = VecDestroy(&snes->vec_sol);CHKERRQ(ierr);
+  ierr = VecDestroy(&snes->vec_sol_update);CHKERRQ(ierr);
+  ierr = VecDestroy(&snes->vec_func);CHKERRQ(ierr);
+  ierr = MatDestroy(&snes->jacobian);CHKERRQ(ierr);
+  ierr = MatDestroy(&snes->jacobian_pre);CHKERRQ(ierr);
+  if (snes->work) {ierr = VecDestroyVecs(snes->nwork,&snes->work);CHKERRQ(ierr);}
+  if (snes->vwork) {ierr = VecDestroyVecs(snes->nvwork,&snes->vwork);CHKERRQ(ierr);}
+  snes->nwork = snes->nvwork = 0;
+  snes->setupcalled = PETSC_FALSE;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
 #define __FUNCT__ "SNESDestroy"
 /*@
    SNESDestroy - Destroys the nonlinear solver context that was created
@@ -1393,28 +1692,33 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetUp(SNES snes)
 
 .seealso: SNESCreate(), SNESSolve()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDestroy(SNES snes)
+PetscErrorCode  SNESDestroy(SNES *snes)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  if (--((PetscObject)snes)->refct > 0) PetscFunctionReturn(0);
+  if (!*snes) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific((*snes),SNES_CLASSID,1);
+  if (--((PetscObject)(*snes))->refct > 0) {*snes = 0; PetscFunctionReturn(0);}
+
+  ierr = SNESReset((*snes));CHKERRQ(ierr);
 
   /* if memory was published with AMS then destroy it */
-  ierr = PetscObjectDepublish(snes);CHKERRQ(ierr);
-  if (snes->ops->destroy) {ierr = (*(snes)->ops->destroy)(snes);CHKERRQ(ierr);}
-  
-  if (snes->vec_rhs) {ierr = VecDestroy(snes->vec_rhs);CHKERRQ(ierr);}
-  if (snes->vec_sol) {ierr = VecDestroy(snes->vec_sol);CHKERRQ(ierr);}
-  if (snes->vec_func) {ierr = VecDestroy(snes->vec_func);CHKERRQ(ierr);}
-  if (snes->jacobian) {ierr = MatDestroy(snes->jacobian);CHKERRQ(ierr);}
-  if (snes->jacobian_pre) {ierr = MatDestroy(snes->jacobian_pre);CHKERRQ(ierr);}
-  if (snes->ksp) {ierr = KSPDestroy(snes->ksp);CHKERRQ(ierr);}
-  ierr = PetscFree(snes->kspconvctx);CHKERRQ(ierr);
-  if (snes->vwork) {ierr = VecDestroyVecs(snes->vwork,snes->nvwork);CHKERRQ(ierr);}
-  ierr = SNESMonitorCancel(snes);CHKERRQ(ierr);
-  if (snes->ops->convergeddestroy) {ierr = (*snes->ops->convergeddestroy)(snes->cnvP);CHKERRQ(ierr);}
+  ierr = PetscObjectDepublish((*snes));CHKERRQ(ierr);
+  if ((*snes)->ops->destroy) {ierr = (*((*snes))->ops->destroy)((*snes));CHKERRQ(ierr);}
+
+  ierr = DMDestroy(&(*snes)->dm);CHKERRQ(ierr);
+  ierr = KSPDestroy(&(*snes)->ksp);CHKERRQ(ierr);
+
+  ierr = PetscFree((*snes)->kspconvctx);CHKERRQ(ierr);
+  if ((*snes)->ops->convergeddestroy) {
+    ierr = (*(*snes)->ops->convergeddestroy)((*snes)->cnvP);CHKERRQ(ierr);
+  }
+  if ((*snes)->conv_malloc) {
+    ierr = PetscFree((*snes)->conv_hist);CHKERRQ(ierr);
+    ierr = PetscFree((*snes)->conv_hist_its);CHKERRQ(ierr);
+  }
+  ierr = SNESMonitorCancel((*snes));CHKERRQ(ierr);
   ierr = PetscHeaderDestroy(snes);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -1426,7 +1730,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESDestroy(SNES snes)
 /*@
    SNESSetLagPreconditioner - Determines when the preconditioner is rebuilt in the nonlinear solve.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -1448,13 +1752,44 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESDestroy(SNES snes)
 .seealso: SNESSetTrustRegionTolerance(), SNESGetLagPreconditioner(), SNESSetLagJacobian(), SNESGetLagJacobian()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetLagPreconditioner(SNES snes,PetscInt lag)
+PetscErrorCode  SNESSetLagPreconditioner(SNES snes,PetscInt lag)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  if (lag < -2) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Lag must be -2, -1, 1 or greater");
-  if (!lag) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Lag cannot be 0");
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  if (lag < -2) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Lag must be -2, -1, 1 or greater");
+  if (!lag) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Lag cannot be 0");
+  PetscValidLogicalCollectiveInt(snes,lag,2);
   snes->lagpreconditioner = lag;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESSetGridSequence"
+/*@
+   SNESSetGridSequence - sets the number of steps of grid sequencing that SNES does
+
+   Logically Collective on SNES
+
+   Input Parameters:
++  snes - the SNES context
+-  steps - the number of refinements to do, defaults to 0
+
+   Options Database Keys: 
+.    -snes_grid_sequence <steps>
+
+   Level: intermediate
+
+.keywords: SNES, nonlinear, set, convergence, tolerances
+
+.seealso: SNESSetTrustRegionTolerance(), SNESGetLagPreconditioner(), SNESSetLagJacobian(), SNESGetLagJacobian()
+
+@*/
+PetscErrorCode  SNESSetGridSequence(SNES snes,PetscInt steps)
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidLogicalCollectiveInt(snes,steps,2);
+  snes->gridsequence = steps;
   PetscFunctionReturn(0);
 }
 
@@ -1463,7 +1798,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetLagPreconditioner(SNES snes,PetscInt l
 /*@
    SNESGetLagPreconditioner - Indicates how often the preconditioner is rebuilt
 
-   Collective on SNES
+   Not Collective
 
    Input Parameter:
 .  snes - the SNES context
@@ -1486,10 +1821,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetLagPreconditioner(SNES snes,PetscInt l
 .seealso: SNESSetTrustRegionTolerance(), SNESSetLagPreconditioner()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLagPreconditioner(SNES snes,PetscInt *lag)
+PetscErrorCode  SNESGetLagPreconditioner(SNES snes,PetscInt *lag)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   *lag = snes->lagpreconditioner;
   PetscFunctionReturn(0);
 }
@@ -1500,7 +1835,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLagPreconditioner(SNES snes,PetscInt *
    SNESSetLagJacobian - Determines when the Jacobian is rebuilt in the nonlinear solve. See SNESSetLagPreconditioner() for determining how
      often the preconditioner is rebuilt.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -1523,12 +1858,13 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLagPreconditioner(SNES snes,PetscInt *
 .seealso: SNESSetTrustRegionTolerance(), SNESGetLagPreconditioner(), SNESSetLagPreconditioner(), SNESGetLagJacobian()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetLagJacobian(SNES snes,PetscInt lag)
+PetscErrorCode  SNESSetLagJacobian(SNES snes,PetscInt lag)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  if (lag < -2) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Lag must be -2, -1, 1 or greater");
-  if (!lag) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Lag cannot be 0");
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  if (lag < -2) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Lag must be -2, -1, 1 or greater");
+  if (!lag) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Lag cannot be 0");
+  PetscValidLogicalCollectiveInt(snes,lag,2);
   snes->lagjacobian = lag;
   PetscFunctionReturn(0);
 }
@@ -1538,7 +1874,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetLagJacobian(SNES snes,PetscInt lag)
 /*@
    SNESGetLagJacobian - Indicates how often the Jacobian is rebuilt. See SNESGetLagPreconditioner() to determine when the preconditioner is rebuilt
 
-   Collective on SNES
+   Not Collective
 
    Input Parameter:
 .  snes - the SNES context
@@ -1561,10 +1897,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetLagJacobian(SNES snes,PetscInt lag)
 .seealso: SNESSetTrustRegionTolerance(), SNESSetLagJacobian(), SNESSetLagPreconditioner(), SNESGetLagPreconditioner()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLagJacobian(SNES snes,PetscInt *lag)
+PetscErrorCode  SNESGetLagJacobian(SNES snes,PetscInt *lag)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   *lag = snes->lagjacobian;
   PetscFunctionReturn(0);
 }
@@ -1574,7 +1910,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLagJacobian(SNES snes,PetscInt *lag)
 /*@
    SNESSetTolerances - Sets various parameters used in convergence tests.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -1602,15 +1938,36 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLagJacobian(SNES snes,PetscInt *lag)
 
 .seealso: SNESSetTrustRegionTolerance()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetTolerances(SNES snes,PetscReal abstol,PetscReal rtol,PetscReal stol,PetscInt maxit,PetscInt maxf)
+PetscErrorCode  SNESSetTolerances(SNES snes,PetscReal abstol,PetscReal rtol,PetscReal stol,PetscInt maxit,PetscInt maxf)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  if (abstol != PETSC_DEFAULT)  snes->abstol      = abstol;
-  if (rtol != PETSC_DEFAULT)  snes->rtol      = rtol;
-  if (stol != PETSC_DEFAULT)  snes->xtol      = stol;
-  if (maxit != PETSC_DEFAULT) snes->max_its   = maxit;
-  if (maxf != PETSC_DEFAULT)  snes->max_funcs = maxf;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidLogicalCollectiveReal(snes,abstol,2);
+  PetscValidLogicalCollectiveReal(snes,rtol,3);
+  PetscValidLogicalCollectiveReal(snes,stol,4);
+  PetscValidLogicalCollectiveInt(snes,maxit,5);
+  PetscValidLogicalCollectiveInt(snes,maxf,6);
+
+  if (abstol != PETSC_DEFAULT) {
+    if (abstol < 0.0) SETERRQ1(((PetscObject)snes)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Absolute tolerance %G must be non-negative",abstol);
+    snes->abstol = abstol;
+  }
+  if (rtol != PETSC_DEFAULT) {
+    if (rtol < 0.0 || 1.0 <= rtol) SETERRQ1(((PetscObject)snes)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Relative tolerance %G must be non-negative and less than 1.0",rtol);
+    snes->rtol = rtol;
+  }
+  if (stol != PETSC_DEFAULT) {
+    if (stol < 0.0) SETERRQ1(((PetscObject)snes)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Step tolerance %G must be non-negative",stol);
+    snes->xtol = stol;
+  }
+  if (maxit != PETSC_DEFAULT) {
+    if (maxit < 0) SETERRQ1(((PetscObject)snes)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Maximum number of iterations %D must be non-negative",maxit);
+    snes->max_its = maxit;
+  }
+  if (maxf != PETSC_DEFAULT) {
+    if (maxf < 0) SETERRQ1(((PetscObject)snes)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Maximum number of function evaluations %D must be non-negative",maxf);
+    snes->max_funcs = maxf;
+  }
   PetscFunctionReturn(0);
 }
 
@@ -1639,10 +1996,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetTolerances(SNES snes,PetscReal abstol,
 
 .seealso: SNESSetTolerances()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetTolerances(SNES snes,PetscReal *atol,PetscReal *rtol,PetscReal *stol,PetscInt *maxit,PetscInt *maxf)
+PetscErrorCode  SNESGetTolerances(SNES snes,PetscReal *atol,PetscReal *rtol,PetscReal *stol,PetscInt *maxit,PetscInt *maxf)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (atol)  *atol  = snes->abstol;
   if (rtol)  *rtol  = snes->rtol;
   if (stol)  *stol  = snes->xtol;
@@ -1656,7 +2013,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetTolerances(SNES snes,PetscReal *atol,P
 /*@
    SNESSetTrustRegionTolerance - Sets the trust region parameter tolerance.  
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -1671,10 +2028,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetTolerances(SNES snes,PetscReal *atol,P
 
 .seealso: SNESSetTolerances()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetTrustRegionTolerance(SNES snes,PetscReal tol)
+PetscErrorCode  SNESSetTrustRegionTolerance(SNES snes,PetscReal tol)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidLogicalCollectiveReal(snes,tol,2);
   snes->deltatol = tol;
   PetscFunctionReturn(0);
 }
@@ -1686,19 +2044,19 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetTrustRegionTolerance(SNES snes,PetscRe
 */
 #undef __FUNCT__  
 #define __FUNCT__ "SNESMonitorLG"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLG(SNES snes,PetscInt it,PetscReal norm,void *ctx)
+PetscErrorCode  SNESMonitorLG(SNES snes,PetscInt it,PetscReal norm,void *ctx)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   ierr = KSPMonitorLG((KSP)snes,it,norm,ctx);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESMonitorLGCreate"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGCreate(const char host[],const char label[],int x,int y,int m,int n,PetscDrawLG *draw)
+PetscErrorCode  SNESMonitorLGCreate(const char host[],const char label[],int x,int y,int m,int n,PetscDrawLG *draw)
 {
   PetscErrorCode ierr;
 
@@ -1709,7 +2067,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGCreate(const char host[],const c
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESMonitorLGDestroy"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGDestroy(PetscDrawLG draw)
+PetscErrorCode  SNESMonitorLGDestroy(PetscDrawLG *draw)
 {
   PetscErrorCode ierr;
 
@@ -1718,10 +2076,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGDestroy(PetscDrawLG draw)
   PetscFunctionReturn(0);
 }
 
-extern PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorRange_Private(SNES,PetscInt,PetscReal*);
+extern PetscErrorCode  SNESMonitorRange_Private(SNES,PetscInt,PetscReal*);
 #undef __FUNCT__  
 #define __FUNCT__ "SNESMonitorLGRange"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGRange(SNES snes,PetscInt n,PetscReal rnorm,void *monctx)
+PetscErrorCode  SNESMonitorLGRange(SNES snes,PetscInt n,PetscReal rnorm,void *monctx)
 {
   PetscDrawLG      lg;
   PetscErrorCode   ierr;
@@ -1788,7 +2146,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGRange(SNES snes,PetscInt n,Petsc
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESMonitorLGRangeCreate"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGRangeCreate(const char host[],const char label[],int x,int y,int m,int n,PetscDrawLG *draw)
+PetscErrorCode  SNESMonitorLGRangeCreate(const char host[],const char label[],int x,int y,int m,int n,PetscDrawLG *draw)
 {
   PetscErrorCode ierr;
 
@@ -1799,12 +2157,44 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGRangeCreate(const char host[],co
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESMonitorLGRangeDestroy"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGRangeDestroy(PetscDrawLG draw)
+PetscErrorCode  SNESMonitorLGRangeDestroy(PetscDrawLG *draw)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   ierr = KSPMonitorLGDestroy(draw);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "SNESMonitor"
+/*@
+   SNESMonitor - runs the user provided monitor routines, if they exist
+
+   Collective on SNES
+
+   Input Parameters:
++  snes - nonlinear solver context obtained from SNESCreate()
+.  iter - iteration number
+-  rnorm - relative norm of the residual
+
+   Notes:
+   This routine is called by the SNES implementations.
+   It does not typically need to be called by the user.
+
+   Level: developer
+
+.seealso: SNESMonitorSet()
+@*/
+PetscErrorCode  SNESMonitor(SNES snes,PetscInt iter,PetscReal rnorm)
+{
+  PetscErrorCode ierr;
+  PetscInt       i,n = snes->numbermonitors;
+
+  PetscFunctionBegin;
+  for (i=0; i<n; i++) {
+    ierr = (*snes->monitor[i])(snes,iter,rnorm,snes->monitorcontext[i]);CHKERRQ(ierr);
+  }
   PetscFunctionReturn(0);
 }
 
@@ -1817,7 +2207,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorLGRangeDestroy(PetscDrawLG draw)
    iteration of the nonlinear solver to display the iteration's 
    progress.   
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -1839,7 +2229,7 @@ $     int func(SNES snes,PetscInt its, PetscReal norm,void *mctx)
 +    -snes_monitor        - sets SNESMonitorDefault()
 .    -snes_monitor_draw    - sets line graph monitor,
                             uses SNESMonitorLGCreate()
-_    -snes_monitor_cancel - cancels all monitors that have
+-    -snes_monitor_cancel - cancels all monitors that have
                             been hardwired into a code by 
                             calls to SNESMonitorSet(), but
                             does not cancel those set via
@@ -1858,29 +2248,20 @@ _    -snes_monitor_cancel - cancels all monitors that have
 
 .seealso: SNESMonitorDefault(), SNESMonitorCancel()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorSet(SNES snes,PetscErrorCode (*monitor)(SNES,PetscInt,PetscReal,void*),void *mctx,PetscErrorCode (*monitordestroy)(void*))
+PetscErrorCode  SNESMonitorSet(SNES snes,PetscErrorCode (*monitor)(SNES,PetscInt,PetscReal,void*),void *mctx,PetscErrorCode (*monitordestroy)(void**))
 {
-  PetscInt i;
+  PetscInt       i;
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  if (snes->numbermonitors >= MAXSNESMONITORS) {
-    SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Too many monitors set");
-  }
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  if (snes->numbermonitors >= MAXSNESMONITORS) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Too many monitors set");
   for (i=0; i<snes->numbermonitors;i++) {
-    if (monitor == snes->monitor[i] && monitordestroy == snes->monitordestroy[i] && mctx == snes->monitorcontext[i]) PetscFunctionReturn(0);
-
-    /* check if both default monitors that share common ASCII viewer */
-    if (monitor == snes->monitor[i] && monitor == SNESMonitorDefault) {
-      if (mctx && snes->monitorcontext[i]) {
-        PetscErrorCode          ierr;
-        PetscViewerASCIIMonitor viewer1 = (PetscViewerASCIIMonitor) mctx;
-        PetscViewerASCIIMonitor viewer2 = (PetscViewerASCIIMonitor) snes->monitorcontext[i];
-        if (viewer1->viewer == viewer2->viewer) {
-          ierr = (*monitordestroy)(mctx);CHKERRQ(ierr);
-          PetscFunctionReturn(0);
-        }
+    if (monitor == snes->monitor[i] && monitordestroy == snes->monitordestroy[i] && mctx == snes->monitorcontext[i]) {
+      if (monitordestroy) {
+        ierr = (*monitordestroy)(&mctx);CHKERRQ(ierr);
       }
+      PetscFunctionReturn(0);
     }
   }
   snes->monitor[snes->numbermonitors]           = monitor;
@@ -1894,7 +2275,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorSet(SNES snes,PetscErrorCode (*mon
 /*@C
    SNESMonitorCancel - Clears all the monitor functions for a SNES object.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 .  snes - the SNES context
@@ -1913,16 +2294,16 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorSet(SNES snes,PetscErrorCode (*mon
 
 .seealso: SNESMonitorDefault(), SNESMonitorSet()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorCancel(SNES snes)
+PetscErrorCode  SNESMonitorCancel(SNES snes)
 {
   PetscErrorCode ierr;
   PetscInt       i;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   for (i=0; i<snes->numbermonitors; i++) {
     if (snes->monitordestroy[i]) {
-      ierr = (*snes->monitordestroy[i])(snes->monitorcontext[i]);CHKERRQ(ierr);
+      ierr = (*snes->monitordestroy[i])(&snes->monitorcontext[i]);CHKERRQ(ierr);
     }
   }
   snes->numbermonitors = 0;
@@ -1935,7 +2316,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorCancel(SNES snes)
    SNESSetConvergenceTest - Sets the function that is to be used 
    to test for convergence of the nonlinear iterative solution.   
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -1960,12 +2341,12 @@ $     PetscErrorCode func (SNES snes,PetscInt it,PetscReal xnorm,PetscReal gnorm
 
 .seealso: SNESDefaultConverged(), SNESSkipConverged()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetConvergenceTest(SNES snes,PetscErrorCode (*func)(SNES,PetscInt,PetscReal,PetscReal,PetscReal,SNESConvergedReason*,void*),void *cctx,PetscErrorCode (*destroy)(void*))
+PetscErrorCode  SNESSetConvergenceTest(SNES snes,PetscErrorCode (*func)(SNES,PetscInt,PetscReal,PetscReal,PetscReal,SNESConvergedReason*,void*),void *cctx,PetscErrorCode (*destroy)(void*))
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (!func) func = SNESSkipConverged;
   if (snes->ops->convergeddestroy) {
     ierr = (*snes->ops->convergeddestroy)(snes->cnvP);CHKERRQ(ierr);
@@ -1998,10 +2379,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetConvergenceTest(SNES snes,PetscErrorCo
 
 .seealso: SNESSetConvergenceTest(), SNESConvergedReason
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetConvergedReason(SNES snes,SNESConvergedReason *reason)
+PetscErrorCode  SNESGetConvergedReason(SNES snes,SNESConvergedReason *reason)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidPointer(reason,2);
   *reason = snes->reason;
   PetscFunctionReturn(0);
@@ -2012,7 +2393,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetConvergedReason(SNES snes,SNESConverge
 /*@
    SNESSetConvergenceHistory - Sets the array used to hold the convergence history.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - iterative context obtained from SNESCreate()
@@ -2021,6 +2402,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetConvergedReason(SNES snes,SNESConverge
 .  na  - size of a and its
 -  reset - PETSC_TRUE indicates each new nonlinear solve resets the history counter to zero,
            else it continues storing new values for new nonlinear solves after the old ones
+
+   Notes:
+   If 'a' and 'its' are PETSC_NULL then space is allocated for the history. If 'na' PETSC_DECIDE or PETSC_DEFAULT then a
+   default array of length 10000 is allocated.
 
    This routine is useful, e.g., when running a code for purposes
    of accurate performance monitoring, when no I/O should be done
@@ -2033,12 +2418,20 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetConvergedReason(SNES snes,SNESConverge
 .seealso: SNESGetConvergenceHistory()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetConvergenceHistory(SNES snes,PetscReal a[],PetscInt its[],PetscInt na,PetscTruth reset)
+PetscErrorCode  SNESSetConvergenceHistory(SNES snes,PetscReal a[],PetscInt its[],PetscInt na,PetscBool  reset)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (na)  PetscValidScalarPointer(a,2);
   if (its) PetscValidIntPointer(its,3);
+  if (na == PETSC_DECIDE || na == PETSC_DEFAULT || !a) {
+    if (na == PETSC_DECIDE || na == PETSC_DEFAULT) na = 1000;
+    ierr = PetscMalloc(na*sizeof(PetscReal),&a);CHKERRQ(ierr);
+    ierr = PetscMalloc(na*sizeof(PetscInt),&its);CHKERRQ(ierr);
+    snes->conv_malloc   = PETSC_TRUE;
+  }
   snes->conv_hist       = a;
   snes->conv_hist_its   = its;
   snes->conv_hist_max   = na;
@@ -2047,12 +2440,36 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetConvergenceHistory(SNES snes,PetscReal
   PetscFunctionReturn(0);
 }
 
+#if defined(PETSC_HAVE_MATLAB_ENGINE)
+#include <engine.h>   /* MATLAB include file */
+#include <mex.h>      /* MATLAB include file */
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "SNESGetConvergenceHistoryMatlab"
+mxArray *SNESGetConvergenceHistoryMatlab(SNES snes)
+{
+  mxArray        *mat;
+  PetscInt       i;
+  PetscReal      *ar;
+
+  PetscFunctionBegin;
+  mat  = mxCreateDoubleMatrix(snes->conv_hist_len,1,mxREAL);
+  ar   = (PetscReal*) mxGetData(mat);
+  for (i=0; i<snes->conv_hist_len; i++) {
+    ar[i] = snes->conv_hist[i];
+  }
+  PetscFunctionReturn(mat);
+}
+EXTERN_C_END
+#endif
+
+
 #undef __FUNCT__  
 #define __FUNCT__ "SNESGetConvergenceHistory"
 /*@C
    SNESGetConvergenceHistory - Gets the array used to hold the convergence history.
 
-   Collective on SNES
+   Not Collective
 
    Input Parameter:
 .  snes - iterative context obtained from SNESCreate()
@@ -2078,10 +2495,10 @@ $   call SNESGetConvergenceHistory(SNES snes, integer na, integer ierr)
 .seealso: SNESSetConvergencHistory()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetConvergenceHistory(SNES snes,PetscReal *a[],PetscInt *its[],PetscInt *na)
+PetscErrorCode  SNESGetConvergenceHistory(SNES snes,PetscReal *a[],PetscInt *its[],PetscInt *na)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (a)   *a   = snes->conv_hist;
   if (its) *its = snes->conv_hist_its;
   if (na)  *na  = snes->conv_hist_len;
@@ -2092,10 +2509,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetConvergenceHistory(SNES snes,PetscReal
 #define __FUNCT__ "SNESSetUpdate"
 /*@C
   SNESSetUpdate - Sets the general-purpose update function called
-  at the beginning o every iteration of the nonlinear solve. Specifically
+  at the beginning of every iteration of the nonlinear solve. Specifically
   it is called just before the Jacobian is "evaluated".
 
-  Collective on SNES
+  Logically Collective on SNES
 
   Input Parameters:
 . snes - The nonlinear solver context
@@ -2115,10 +2532,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetConvergenceHistory(SNES snes,PetscReal
 
 .seealso SNESDefaultUpdate(), SNESSetJacobian(), SNESSolve()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetUpdate(SNES snes, PetscErrorCode (*func)(SNES, PetscInt))
+PetscErrorCode  SNESSetUpdate(SNES snes, PetscErrorCode (*func)(SNES, PetscInt))
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes, SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes, SNES_CLASSID,1);
   snes->ops->update = func;
   PetscFunctionReturn(0);
 }
@@ -2139,7 +2556,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetUpdate(SNES snes, PetscErrorCode (*fun
 .keywords: SNES, update
 .seealso SNESSetUpdate(), SNESDefaultRhsBC(), SNESDefaultShortolutionBC()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultUpdate(SNES snes, PetscInt step)
+PetscErrorCode  SNESDefaultUpdate(SNES snes, PetscInt step)
 {
   PetscFunctionBegin;
   PetscFunctionReturn(0);
@@ -2176,8 +2593,8 @@ PetscErrorCode SNESScaleStep_Private(SNES snes,Vec y,PetscReal *fnorm,PetscReal 
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,2);
   PetscCheckSameComm(snes,1,y,2);
 
   ierr = VecNorm(y,NORM_2,&nrm);CHKERRQ(ierr);
@@ -2204,7 +2621,7 @@ PetscErrorCode SNESScaleStep_Private(SNES snes,Vec y,PetscReal *fnorm,PetscReal 
 
    Input Parameters:
 +  snes - the SNES context
-.  b - the constant part of the equation, or PETSC_NULL to use zero.
+.  b - the constant part of the equation F(x) = b, or PETSC_NULL to use zero.
 -  x - the solution vector.
 
    Notes:
@@ -2219,68 +2636,90 @@ PetscErrorCode SNESScaleStep_Private(SNES snes,Vec y,PetscReal *fnorm,PetscReal 
 
 .seealso: SNESCreate(), SNESDestroy(), SNESSetFunction(), SNESSetJacobian()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSolve(SNES snes,Vec b,Vec x)
+PetscErrorCode  SNESSolve(SNES snes,Vec b,Vec x)
 {
   PetscErrorCode ierr;
-  PetscTruth     flg;
+  PetscBool      flg;
   char           filename[PETSC_MAX_PATH_LEN];
   PetscViewer    viewer;
+  PetscInt       grid;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,3);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,3);
   PetscCheckSameComm(snes,1,x,3);
-  if (b) PetscValidHeaderSpecific(b,VEC_COOKIE,2);
+  if (b) PetscValidHeaderSpecific(b,VEC_CLASSID,2);
   if (b) PetscCheckSameComm(snes,1,b,2);
 
-  /* set solution vector */
-  ierr = PetscObjectReference((PetscObject)x);CHKERRQ(ierr);
-  if (snes->vec_sol) { ierr = VecDestroy(snes->vec_sol);CHKERRQ(ierr); }
-  snes->vec_sol = x;
-  /* set afine vector if provided */
-  if (b) { ierr = PetscObjectReference((PetscObject)b);CHKERRQ(ierr); }
-  if (snes->vec_rhs) { ierr = VecDestroy(snes->vec_rhs);CHKERRQ(ierr); }
-  snes->vec_rhs = b;
-  
-  if (!snes->vec_func && snes->vec_rhs) {
-    ierr = VecDuplicate(b, &snes->vec_func);CHKERRQ(ierr);
-  }
+  for (grid=0; grid<snes->gridsequence; grid++) {ierr = PetscViewerASCIIPushTab(PETSC_VIEWER_STDOUT_(((PetscObject)snes)->comm));CHKERRQ(ierr);}
+  for (grid=0; grid<snes->gridsequence+1; grid++) {
 
-  ierr = SNESSetUp(snes);CHKERRQ(ierr);
+    /* set solution vector */
+    if (!grid) {ierr = PetscObjectReference((PetscObject)x);CHKERRQ(ierr);}
+    ierr = VecDestroy(&snes->vec_sol);CHKERRQ(ierr);
+    snes->vec_sol = x;
+    /* set afine vector if provided */
+    if (b) { ierr = PetscObjectReference((PetscObject)b);CHKERRQ(ierr); }
+    ierr = VecDestroy(&snes->vec_rhs);CHKERRQ(ierr);
+    snes->vec_rhs = b;
 
-  if (snes->conv_hist_reset) snes->conv_hist_len = 0;
-  snes->nfuncs = 0; snes->linear_its = 0; snes->numFailures = 0;
+    ierr = SNESSetUp(snes);CHKERRQ(ierr);
 
-  ierr = PetscLogEventBegin(SNES_Solve,snes,0,0,0);CHKERRQ(ierr);
-  ierr = (*snes->ops->solve)(snes);CHKERRQ(ierr);
-  ierr = PetscLogEventEnd(SNES_Solve,snes,0,0,0);CHKERRQ(ierr);
-  if (snes->domainerror){
-    snes->reason      = SNES_DIVERGED_FUNCTION_DOMAIN;
-    snes->domainerror = PETSC_FALSE;
-  } 
+    if (!grid && snes->ops->computeinitialguess) {
+      ierr = (*snes->ops->computeinitialguess)(snes,snes->vec_sol,snes->initialguessP);CHKERRQ(ierr);
+    }
 
-  if (!snes->reason) {
-    SETERRQ(PETSC_ERR_PLIB,"Internal error, solver returned without setting converged reason");
-  }
-  
-  ierr = PetscOptionsGetString(((PetscObject)snes)->prefix,"-snes_view",filename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
-  if (flg && !PetscPreLoadingOn) {
-    ierr = PetscViewerASCIIOpen(((PetscObject)snes)->comm,filename,&viewer);CHKERRQ(ierr);
-    ierr = SNESView(snes,viewer);CHKERRQ(ierr); 
-    ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
-  }
+    if (snes->conv_hist_reset) snes->conv_hist_len = 0;
+    snes->nfuncs = 0; snes->linear_its = 0; snes->numFailures = 0;
 
-  flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(((PetscObject)snes)->prefix,"-snes_test_local_min",&flg,PETSC_NULL);CHKERRQ(ierr);
-  if (flg && !PetscPreLoadingOn) { ierr = SNESTestLocalMin(snes);CHKERRQ(ierr); }
-  if (snes->printreason) {
-    if (snes->reason > 0) {
-      ierr = PetscPrintf(((PetscObject)snes)->comm,"Nonlinear solve converged due to %s\n",SNESConvergedReasons[snes->reason]);CHKERRQ(ierr);
-    } else {
-      ierr = PetscPrintf(((PetscObject)snes)->comm,"Nonlinear solve did not converge due to %s\n",SNESConvergedReasons[snes->reason]);CHKERRQ(ierr);
+    ierr = PetscLogEventBegin(SNES_Solve,snes,0,0,0);CHKERRQ(ierr);
+    ierr = (*snes->ops->solve)(snes);CHKERRQ(ierr);
+    ierr = PetscLogEventEnd(SNES_Solve,snes,0,0,0);CHKERRQ(ierr);
+    if (snes->domainerror){
+      snes->reason      = SNES_DIVERGED_FUNCTION_DOMAIN;
+      snes->domainerror = PETSC_FALSE;
+    }
+    if (!snes->reason) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Internal error, solver returned without setting converged reason");
+
+    ierr = PetscOptionsGetString(((PetscObject)snes)->prefix,"-snes_view",filename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+    if (flg && !PetscPreLoadingOn) {
+      ierr = PetscViewerASCIIOpen(((PetscObject)snes)->comm,filename,&viewer);CHKERRQ(ierr);
+      ierr = SNESView(snes,viewer);CHKERRQ(ierr);
+      ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+    }
+    
+    flg  = PETSC_FALSE;
+    ierr = PetscOptionsGetBool(((PetscObject)snes)->prefix,"-snes_test_local_min",&flg,PETSC_NULL);CHKERRQ(ierr);
+    if (flg && !PetscPreLoadingOn) { ierr = SNESTestLocalMin(snes);CHKERRQ(ierr); }
+    if (snes->printreason) {
+      ierr = PetscViewerASCIIAddTab(PETSC_VIEWER_STDOUT_(((PetscObject)snes)->comm),((PetscObject)snes)->tablevel);CHKERRQ(ierr);
+      if (snes->reason > 0) {
+        ierr = PetscViewerASCIIPrintf(PETSC_VIEWER_STDOUT_(((PetscObject)snes)->comm),"Nonlinear solve converged due to %s\n",SNESConvergedReasons[snes->reason]);CHKERRQ(ierr);
+      } else {
+        ierr = PetscViewerASCIIPrintf(PETSC_VIEWER_STDOUT_(((PetscObject)snes)->comm),"Nonlinear solve did not converge due to %s\n",SNESConvergedReasons[snes->reason]);CHKERRQ(ierr);
+      }
+      ierr = PetscViewerASCIISubtractTab(PETSC_VIEWER_STDOUT_(((PetscObject)snes)->comm),((PetscObject)snes)->tablevel);CHKERRQ(ierr);
+    }
+    
+    if (snes->errorifnotconverged && snes->reason < 0) SETERRQ(((PetscObject)snes)->comm,PETSC_ERR_NOT_CONVERGED,"SNESSolve has not converged");
+    if (grid <  snes->gridsequence) {
+      DM  fine;
+      Vec xnew;
+      Mat interp;
+
+      ierr = DMRefine(snes->dm,((PetscObject)snes)->comm,&fine);CHKERRQ(ierr);
+      ierr = DMGetInterpolation(snes->dm,fine,&interp,PETSC_NULL);CHKERRQ(ierr);
+      ierr = DMCreateGlobalVector(fine,&xnew);CHKERRQ(ierr);
+      ierr = MatInterpolate(interp,x,xnew);CHKERRQ(ierr);
+      ierr = MatDestroy(&interp);CHKERRQ(ierr);
+      x    = xnew;
+
+      ierr = SNESReset(snes);CHKERRQ(ierr);
+      ierr = SNESSetDM(snes,fine);CHKERRQ(ierr);
+      ierr = DMDestroy(&fine);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIPopTab(PETSC_VIEWER_STDOUT_(((PetscObject)snes)->comm));CHKERRQ(ierr);
     }
   }
-
   PetscFunctionReturn(0);
 }
 
@@ -2326,20 +2765,20 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSolve(SNES snes,Vec b,Vec x)
 .seealso: SNESType, SNESCreate()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetType(SNES snes,const SNESType type)
+PetscErrorCode  SNESSetType(SNES snes,const SNESType type)
 {
   PetscErrorCode ierr,(*r)(SNES);
-  PetscTruth     match;
+  PetscBool      match;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidCharPointer(type,2);
 
   ierr = PetscTypeCompare((PetscObject)snes,type,&match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
-  ierr =  PetscFListFind(SNESList,((PetscObject)snes)->comm,type,(void (**)(void)) &r);CHKERRQ(ierr);
-  if (!r) SETERRQ1(PETSC_ERR_ARG_UNKNOWN_TYPE,"Unable to find requested SNES type %s",type);
+  ierr =  PetscFListFind(SNESList,((PetscObject)snes)->comm,type,PETSC_TRUE,(void (**)(void)) &r);CHKERRQ(ierr);
+  if (!r) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_UNKNOWN_TYPE,"Unable to find requested SNES type %s",type);
   /* Destroy the previous private SNES context */
   if (snes->ops->destroy) { ierr = (*(snes)->ops->destroy)(snes);CHKERRQ(ierr); }
   /* Reinitialize function pointers in SNESOps structure */
@@ -2350,8 +2789,13 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetType(SNES snes,const SNESType type)
   snes->ops->destroy        = 0;
   /* Call the SNESCreate_XXX routine for this particular Nonlinear solver */
   snes->setupcalled = PETSC_FALSE;
-  ierr = (*r)(snes);CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)snes,type);CHKERRQ(ierr);
+  ierr = (*r)(snes);CHKERRQ(ierr);
+#if defined(PETSC_HAVE_AMS)
+  if (PetscAMSPublishAll) {
+    ierr = PetscObjectAMSPublish((PetscObject)snes);CHKERRQ(ierr);
+  }
+#endif
   PetscFunctionReturn(0); 
 }
 
@@ -2371,7 +2815,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetType(SNES snes,const SNESType type)
 
 .seealso: SNESRegisterAll(), SNESRegisterAll()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESRegisterDestroy(void)
+PetscErrorCode  SNESRegisterDestroy(void)
 {
   PetscErrorCode ierr;
 
@@ -2398,10 +2842,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESRegisterDestroy(void)
 
 .keywords: SNES, nonlinear, get, type, name
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetType(SNES snes,const SNESType *type)
+PetscErrorCode  SNESGetType(SNES snes,const SNESType *type)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidPointer(type,2);
   *type = ((PetscObject)snes)->type_name;
   PetscFunctionReturn(0);
@@ -2427,10 +2871,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetType(SNES snes,const SNESType *type)
 
 .seealso:  SNESGetSolutionUpdate(), SNESGetFunction()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetSolution(SNES snes,Vec *x)
+PetscErrorCode  SNESGetSolution(SNES snes,Vec *x)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidPointer(x,2);
   *x = snes->vec_sol;
   PetscFunctionReturn(0);
@@ -2456,10 +2900,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetSolution(SNES snes,Vec *x)
 
 .seealso: SNESGetSolution(), SNESGetFunction()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetSolutionUpdate(SNES snes,Vec *x)
+PetscErrorCode  SNESGetSolutionUpdate(SNES snes,Vec *x)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidPointer(x,2);
   *x = snes->vec_sol_update;
   PetscFunctionReturn(0);
@@ -2486,10 +2930,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetSolutionUpdate(SNES snes,Vec *x)
 
 .seealso: SNESSetFunction(), SNESGetSolution()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetFunction(SNES snes,Vec *r,PetscErrorCode (**func)(SNES,Vec,Vec,void*),void **ctx)
+PetscErrorCode  SNESGetFunction(SNES snes,Vec *r,PetscErrorCode (**func)(SNES,Vec,Vec,void*),void **ctx)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   if (r)    *r    = snes->vec_func;
   if (func) *func = snes->ops->computefunction;
   if (ctx)  *ctx  = snes->funP;
@@ -2502,7 +2946,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetFunction(SNES snes,Vec *r,PetscErrorCo
    SNESSetOptionsPrefix - Sets the prefix used for searching for all 
    SNES options in the database.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameter:
 +  snes - the SNES context
@@ -2518,12 +2962,12 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetFunction(SNES snes,Vec *r,PetscErrorCo
 
 .seealso: SNESSetFromOptions()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetOptionsPrefix(SNES snes,const char prefix[])
+PetscErrorCode  SNESSetOptionsPrefix(SNES snes,const char prefix[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   ierr = PetscObjectSetOptionsPrefix((PetscObject)snes,prefix);CHKERRQ(ierr);
   if (!snes->ksp) {ierr = SNESGetKSP(snes,&snes->ksp);CHKERRQ(ierr);}
   ierr = KSPSetOptionsPrefix(snes->ksp,prefix);CHKERRQ(ierr);
@@ -2536,7 +2980,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetOptionsPrefix(SNES snes,const char pre
    SNESAppendOptionsPrefix - Appends to the prefix used for searching for all 
    SNES options in the database.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - the SNES context
@@ -2552,12 +2996,12 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESSetOptionsPrefix(SNES snes,const char pre
 
 .seealso: SNESGetOptionsPrefix()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESAppendOptionsPrefix(SNES snes,const char prefix[])
+PetscErrorCode  SNESAppendOptionsPrefix(SNES snes,const char prefix[])
 {
   PetscErrorCode ierr;
   
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   ierr = PetscObjectAppendOptionsPrefix((PetscObject)snes,prefix);CHKERRQ(ierr);
   if (!snes->ksp) {ierr = SNESGetKSP(snes,&snes->ksp);CHKERRQ(ierr);}
   ierr = KSPAppendOptionsPrefix(snes->ksp,prefix);CHKERRQ(ierr);
@@ -2587,12 +3031,12 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESAppendOptionsPrefix(SNES snes,const char 
 
 .seealso: SNESAppendOptionsPrefix()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetOptionsPrefix(SNES snes,const char *prefix[])
+PetscErrorCode  SNESGetOptionsPrefix(SNES snes,const char *prefix[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   ierr = PetscObjectGetOptionsPrefix((PetscObject)snes,prefix);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -2605,7 +3049,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESGetOptionsPrefix(SNES snes,const char *pr
 
   Level: advanced
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(SNES))
+PetscErrorCode  SNESRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(SNES))
 {
   char           fullname[PETSC_MAX_PATH_LEN];
   PetscErrorCode ierr;
@@ -2618,7 +3062,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESRegister(const char sname[],const char pa
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESTestLocalMin"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESTestLocalMin(SNES snes)
+PetscErrorCode  SNESTestLocalMin(SNES snes)
 {
   PetscErrorCode ierr;
   PetscInt       N,i,j;
@@ -2647,8 +3091,8 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESTestLocalMin(SNES snes)
       ierr  = VecSetValue(uh,i,value,ADD_VALUES);CHKERRQ(ierr);
     }
   }
-  ierr = VecDestroy(uh);CHKERRQ(ierr);
-  ierr = VecDestroy(fh);CHKERRQ(ierr);
+  ierr = VecDestroy(&uh);CHKERRQ(ierr);
+  ierr = VecDestroy(&fh);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -2659,7 +3103,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESTestLocalMin(SNES snes)
    computing relative tolerance for linear solvers within an inexact
    Newton method.
 
-   Collective on SNES
+   Logically Collective on SNES
 
    Input Parameters:
 +  snes - SNES context
@@ -2692,10 +3136,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESTestLocalMin(SNES snes)
 
 .seealso: SNESKSPGetUseEW(), SNESKSPGetParametersEW(), SNESKSPSetParametersEW()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPSetUseEW(SNES snes,PetscTruth flag)
+PetscErrorCode  SNESKSPSetUseEW(SNES snes,PetscBool  flag)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidLogicalCollectiveBool(snes,flag,2);
   snes->ksp_ewconv = flag;
   PetscFunctionReturn(0);
 }
@@ -2732,10 +3177,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPSetUseEW(SNES snes,PetscTruth flag)
 
 .seealso: SNESKSPSetUseEW(), SNESKSPGetParametersEW(), SNESKSPSetParametersEW()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPGetUseEW(SNES snes, PetscTruth *flag)
+PetscErrorCode  SNESKSPGetUseEW(SNES snes, PetscBool  *flag)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   PetscValidPointer(flag,2);
   *flag = snes->ksp_ewconv;
   PetscFunctionReturn(0);
@@ -2748,7 +3193,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPGetUseEW(SNES snes, PetscTruth *flag)
    convergence criteria for the linear solvers within an inexact
    Newton method.
 
-   Collective on SNES
+   Logically Collective on SNES
  
    Input Parameters:
 +    snes - SNES context
@@ -2777,14 +3222,21 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPGetUseEW(SNES snes, PetscTruth *flag)
 
 .seealso: SNESKSPSetUseEW(), SNESKSPGetUseEW(), SNESKSPGetParametersEW()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPSetParametersEW(SNES snes,PetscInt version,PetscReal rtol_0,PetscReal rtol_max,
+PetscErrorCode  SNESKSPSetParametersEW(SNES snes,PetscInt version,PetscReal rtol_0,PetscReal rtol_max,
 							    PetscReal gamma,PetscReal alpha,PetscReal alpha2,PetscReal threshold)
 {
   SNESKSPEW *kctx;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   kctx = (SNESKSPEW*)snes->kspconvctx;
-  if (!kctx) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"No Eisenstat-Walker context existing");
+  if (!kctx) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"No Eisenstat-Walker context existing");
+  PetscValidLogicalCollectiveInt(snes,version,2);
+  PetscValidLogicalCollectiveReal(snes,rtol_0,3);
+  PetscValidLogicalCollectiveReal(snes,rtol_max,4);
+  PetscValidLogicalCollectiveReal(snes,gamma,5);
+  PetscValidLogicalCollectiveReal(snes,alpha,6);
+  PetscValidLogicalCollectiveReal(snes,alpha2,7);
+  PetscValidLogicalCollectiveReal(snes,threshold,8);
 
   if (version != PETSC_DEFAULT)   kctx->version   = version;
   if (rtol_0 != PETSC_DEFAULT)    kctx->rtol_0    = rtol_0;
@@ -2795,22 +3247,22 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPSetParametersEW(SNES snes,PetscInt ver
   if (threshold != PETSC_DEFAULT) kctx->threshold = threshold;
   
   if (kctx->version < 1 || kctx->version > 3) {
-    SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"Only versions 1, 2 and 3 are supported: %D",kctx->version);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Only versions 1, 2 and 3 are supported: %D",kctx->version);
   }
   if (kctx->rtol_0 < 0.0 || kctx->rtol_0 >= 1.0) {
-    SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"0.0 <= rtol_0 < 1.0: %G",kctx->rtol_0);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"0.0 <= rtol_0 < 1.0: %G",kctx->rtol_0);
   }
   if (kctx->rtol_max < 0.0 || kctx->rtol_max >= 1.0) {
-    SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"0.0 <= rtol_max (%G) < 1.0\n",kctx->rtol_max);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"0.0 <= rtol_max (%G) < 1.0\n",kctx->rtol_max);
   }
   if (kctx->gamma < 0.0 || kctx->gamma > 1.0) {
-    SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"0.0 <= gamma (%G) <= 1.0\n",kctx->gamma);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"0.0 <= gamma (%G) <= 1.0\n",kctx->gamma);
   }
   if (kctx->alpha <= 1.0 || kctx->alpha > 2.0) {
-    SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"1.0 < alpha (%G) <= 2.0\n",kctx->alpha);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"1.0 < alpha (%G) <= 2.0\n",kctx->alpha);
   }
   if (kctx->threshold <= 0.0 || kctx->threshold >= 1.0) {
-    SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"0.0 < threshold (%G) < 1.0\n",kctx->threshold);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"0.0 < threshold (%G) < 1.0\n",kctx->threshold);
   }
   PetscFunctionReturn(0);
 }
@@ -2843,14 +3295,14 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPSetParametersEW(SNES snes,PetscInt ver
 
 .seealso: SNESKSPSetUseEW(), SNESKSPGetUseEW(), SNESKSPSetParametersEW()
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESKSPGetParametersEW(SNES snes,PetscInt *version,PetscReal *rtol_0,PetscReal *rtol_max,
+PetscErrorCode  SNESKSPGetParametersEW(SNES snes,PetscInt *version,PetscReal *rtol_0,PetscReal *rtol_max,
 							    PetscReal *gamma,PetscReal *alpha,PetscReal *alpha2,PetscReal *threshold)
 {
   SNESKSPEW *kctx;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(snes,SNES_COOKIE,1);
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
   kctx = (SNESKSPEW*)snes->kspconvctx;
-  if (!kctx) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"No Eisenstat-Walker context existing");
+  if (!kctx) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"No Eisenstat-Walker context existing");
   if(version)   *version   = kctx->version;
   if(rtol_0)    *rtol_0    = kctx->rtol_0;
   if(rtol_max)  *rtol_max  = kctx->rtol_max;
@@ -2870,7 +3322,7 @@ static PetscErrorCode SNESKSPEW_PreSolve(SNES snes, KSP ksp, Vec b, Vec x)
   PetscReal      rtol=PETSC_DEFAULT,stol;
 
   PetscFunctionBegin;
-  if (!kctx) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"No Eisenstat-Walker context exists");
+  if (!kctx) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"No Eisenstat-Walker context exists");
   if (!snes->iter) { /* first time in, so use the original user rtol */
     rtol = kctx->rtol_0;
   } else {
@@ -2893,7 +3345,7 @@ static PetscErrorCode SNESKSPEW_PreSolve(SNES snes, KSP ksp, Vec b, Vec x)
       stol = kctx->gamma*(snes->ttol)/snes->norm;
       stol = PetscMax(rtol,stol);
       rtol = PetscMin(kctx->rtol_0,stol);
-    } else SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"Only versions 1, 2 or 3 are supported: %D",kctx->version);
+    } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Only versions 1, 2 or 3 are supported: %D",kctx->version);
   }
   /* safeguard: avoid rtol greater than one */
   rtol = PetscMin(rtol,kctx->rtol_max);
@@ -2912,11 +3364,11 @@ static PetscErrorCode SNESKSPEW_PostSolve(SNES snes, KSP ksp, Vec b, Vec x)
   Vec            lres;
 
   PetscFunctionBegin;
-  if (!kctx) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"No Eisenstat-Walker context exists");
+  if (!kctx) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"No Eisenstat-Walker context exists");
   ierr = KSPGetTolerances(ksp,&kctx->rtol_last,0,0,0);CHKERRQ(ierr);
   ierr = SNESGetFunctionNorm(snes,&kctx->norm_last);CHKERRQ(ierr);
   if (kctx->version == 1) {
-    ierr = KSPGetPreconditionerSide(ksp,&pcside);CHKERRQ(ierr);
+    ierr = KSPGetPCSide(ksp,&pcside);CHKERRQ(ierr);
     if (pcside == PC_RIGHT) { /* XXX Should we also test KSP_UNPRECONDITIONED_NORM ? */
       /* KSP residual is true linear residual */
       ierr = KSPGetResidualNorm(ksp,&kctx->lresid_last);CHKERRQ(ierr);
@@ -2927,7 +3379,7 @@ static PetscErrorCode SNESKSPEW_PostSolve(SNES snes, KSP ksp, Vec b, Vec x)
       ierr = MatMult(snes->jacobian,x,lres);CHKERRQ(ierr);
       ierr = VecAYPX(lres,-1.0,b);CHKERRQ(ierr);
       ierr = VecNorm(lres,NORM_2,&kctx->lresid_last);CHKERRQ(ierr);
-      ierr = VecDestroy(lres);CHKERRQ(ierr);
+      ierr = VecDestroy(&lres);CHKERRQ(ierr);
     }
   }
   PetscFunctionReturn(0);
@@ -2945,3 +3397,423 @@ PetscErrorCode SNES_KSPSolve(SNES snes, KSP ksp, Vec b, Vec x)
   if (snes->ksp_ewconv) { ierr = SNESKSPEW_PostSolve(snes,ksp,b,x);CHKERRQ(ierr); }
   PetscFunctionReturn(0);
 }
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESSetDM"
+/*@
+   SNESSetDM - Sets the DM that may be used by some preconditioners
+
+   Logically Collective on SNES
+
+   Input Parameters:
++  snes - the preconditioner context
+-  dm - the dm
+
+   Level: intermediate
+
+
+.seealso: SNESGetDM(), KSPSetDM(), KSPGetDM()
+@*/
+PetscErrorCode  SNESSetDM(SNES snes,DM dm)
+{
+  PetscErrorCode ierr;
+  KSP            ksp;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  if (dm) {ierr = PetscObjectReference((PetscObject)dm);CHKERRQ(ierr);}
+  ierr = DMDestroy(&snes->dm);CHKERRQ(ierr);
+  snes->dm = dm;
+  ierr = SNESGetKSP(snes,&ksp);CHKERRQ(ierr);
+  ierr = KSPSetDM(ksp,dm);CHKERRQ(ierr);
+  ierr = KSPSetDMActive(ksp,PETSC_FALSE);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESGetDM"
+/*@
+   SNESGetDM - Gets the DM that may be used by some preconditioners
+
+   Not Collective but DM obtained is parallel on SNES
+
+   Input Parameter:
+. snes - the preconditioner context
+
+   Output Parameter:
+.  dm - the dm
+
+   Level: intermediate
+
+
+.seealso: SNESSetDM(), KSPSetDM(), KSPGetDM()
+@*/
+PetscErrorCode  SNESGetDM(SNES snes,DM *dm)
+{
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  *dm = snes->dm;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "SNESSetPC"
+/*@
+  SNESSetPC - Sets the nonlinear preconditioner to be used.
+
+  Collective on SNES
+
+  Input Parameters:
++ snes - iterative context obtained from SNESCreate()
+- pc   - the preconditioner object
+
+  Notes:
+  Use SNESGetPC() to retrieve the preconditioner context (for example,
+  to configure it using the API).
+
+  Level: developer
+
+.keywords: SNES, set, precondition
+.seealso: SNESGetPC()
+@*/
+PetscErrorCode SNESSetPC(SNES snes, SNES pc)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes, SNES_CLASSID, 1);
+  PetscValidHeaderSpecific(pc, SNES_CLASSID, 2);
+  PetscCheckSameComm(snes, 1, pc, 2);
+  ierr = PetscObjectReference((PetscObject) pc);CHKERRQ(ierr);
+  ierr = SNESDestroy(&snes->pc);CHKERRQ(ierr);
+  snes->pc = pc;
+  ierr = PetscLogObjectParent(snes, snes->pc);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "SNESGetPC"
+/*@
+  SNESGetPC - Returns a pointer to the nonlinear preconditioning context set with SNESSetPC().
+
+  Not Collective
+
+  Input Parameter:
+. snes - iterative context obtained from SNESCreate()
+
+  Output Parameter:
+. pc - preconditioner context
+
+  Level: developer
+
+.keywords: SNES, get, preconditioner
+.seealso: SNESSetPC()
+@*/
+PetscErrorCode SNESGetPC(SNES snes, SNES *pc)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes, SNES_CLASSID, 1);
+  PetscValidPointer(pc, 2);
+  if (!snes->pc) {
+    ierr = SNESCreate(((PetscObject) snes)->comm, &snes->pc);CHKERRQ(ierr);
+    ierr = PetscObjectIncrementTabLevel((PetscObject) snes->pc, (PetscObject) snes, 1);CHKERRQ(ierr);
+    ierr = PetscLogObjectParent(snes, snes->pc);CHKERRQ(ierr);
+  }
+  *pc = snes->pc;
+  PetscFunctionReturn(0);
+}
+
+#if defined(PETSC_HAVE_MATLAB_ENGINE)
+#include <mex.h>
+
+typedef struct {char *funcname; mxArray *ctx;} SNESMatlabContext;
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESComputeFunction_Matlab"
+/*
+   SNESComputeFunction_Matlab - Calls the function that has been set with
+                         SNESSetFunctionMatlab().  
+
+   Collective on SNES
+
+   Input Parameters:
++  snes - the SNES context
+-  x - input vector
+
+   Output Parameter:
+.  y - function vector, as set by SNESSetFunction()
+
+   Notes:
+   SNESComputeFunction() is typically used within nonlinear solvers
+   implementations, so most users would not generally call this routine
+   themselves.
+
+   Level: developer
+
+.keywords: SNES, nonlinear, compute, function
+
+.seealso: SNESSetFunction(), SNESGetFunction()
+*/
+PetscErrorCode  SNESComputeFunction_Matlab(SNES snes,Vec x,Vec y, void *ctx)
+{
+  PetscErrorCode    ierr;
+  SNESMatlabContext *sctx = (SNESMatlabContext *)ctx;
+  int               nlhs = 1,nrhs = 5;
+  mxArray	    *plhs[1],*prhs[5];
+  long long int     lx = 0,ly = 0,ls = 0;
+      
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,3);
+  PetscCheckSameComm(snes,1,x,2);
+  PetscCheckSameComm(snes,1,y,3);
+
+  /* call Matlab function in ctx with arguments x and y */
+
+  ierr = PetscMemcpy(&ls,&snes,sizeof(snes));CHKERRQ(ierr); 
+  ierr = PetscMemcpy(&lx,&x,sizeof(x));CHKERRQ(ierr); 
+  ierr = PetscMemcpy(&ly,&y,sizeof(x));CHKERRQ(ierr); 
+  prhs[0] =  mxCreateDoubleScalar((double)ls);
+  prhs[1] =  mxCreateDoubleScalar((double)lx);
+  prhs[2] =  mxCreateDoubleScalar((double)ly);
+  prhs[3] =  mxCreateString(sctx->funcname);
+  prhs[4] =  sctx->ctx;
+  ierr    =  mexCallMATLAB(nlhs,plhs,nrhs,prhs,"PetscSNESComputeFunctionInternal");CHKERRQ(ierr);
+  ierr    =  mxGetScalar(plhs[0]);CHKERRQ(ierr);
+  mxDestroyArray(prhs[0]);
+  mxDestroyArray(prhs[1]);
+  mxDestroyArray(prhs[2]);
+  mxDestroyArray(prhs[3]);
+  mxDestroyArray(plhs[0]);
+  PetscFunctionReturn(0);
+}
+
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESSetFunctionMatlab"
+/*
+   SNESSetFunctionMatlab - Sets the function evaluation routine and function 
+   vector for use by the SNES routines in solving systems of nonlinear
+   equations from MATLAB. Here the function is a string containing the name of a MATLAB function
+
+   Logically Collective on SNES
+
+   Input Parameters:
++  snes - the SNES context
+.  r - vector to store function value
+-  func - function evaluation routine
+
+   Calling sequence of func:
+$    func (SNES snes,Vec x,Vec f,void *ctx);
+
+
+   Notes:
+   The Newton-like methods typically solve linear systems of the form
+$      f'(x) x = -f(x),
+   where f'(x) denotes the Jacobian matrix and f(x) is the function.
+
+   Level: beginner
+
+.keywords: SNES, nonlinear, set, function
+
+.seealso: SNESGetFunction(), SNESComputeFunction(), SNESSetJacobian(), SNESSetFunction()
+*/
+PetscErrorCode  SNESSetFunctionMatlab(SNES snes,Vec r,const char *func,mxArray *ctx)
+{
+  PetscErrorCode    ierr;
+  SNESMatlabContext *sctx;
+
+  PetscFunctionBegin;
+  /* currently sctx is memory bleed */
+  ierr = PetscMalloc(sizeof(SNESMatlabContext),&sctx);CHKERRQ(ierr);
+  ierr = PetscStrallocpy(func,&sctx->funcname);CHKERRQ(ierr);
+  /* 
+     This should work, but it doesn't 
+  sctx->ctx = ctx; 
+  mexMakeArrayPersistent(sctx->ctx);
+  */
+  sctx->ctx = mxDuplicateArray(ctx);
+  ierr = SNESSetFunction(snes,r,SNESComputeFunction_Matlab,sctx);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESComputeJacobian_Matlab"
+/*
+   SNESComputeJacobian_Matlab - Calls the function that has been set with
+                         SNESSetJacobianMatlab().  
+
+   Collective on SNES
+
+   Input Parameters:
++  snes - the SNES context
+.  x - input vector
+.  A, B - the matrices
+-  ctx - user context
+
+   Output Parameter:
+.  flag - structure of the matrix
+
+   Level: developer
+
+.keywords: SNES, nonlinear, compute, function
+
+.seealso: SNESSetFunction(), SNESGetFunction()
+@*/
+PetscErrorCode  SNESComputeJacobian_Matlab(SNES snes,Vec x,Mat *A,Mat *B,MatStructure *flag, void *ctx)
+{
+  PetscErrorCode    ierr;
+  SNESMatlabContext *sctx = (SNESMatlabContext *)ctx;
+  int               nlhs = 2,nrhs = 6;
+  mxArray	    *plhs[2],*prhs[6];
+  long long int     lx = 0,lA = 0,ls = 0, lB = 0;
+      
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
+
+  /* call Matlab function in ctx with arguments x and y */
+
+  ierr = PetscMemcpy(&ls,&snes,sizeof(snes));CHKERRQ(ierr); 
+  ierr = PetscMemcpy(&lx,&x,sizeof(x));CHKERRQ(ierr); 
+  ierr = PetscMemcpy(&lA,A,sizeof(x));CHKERRQ(ierr); 
+  ierr = PetscMemcpy(&lB,B,sizeof(x));CHKERRQ(ierr); 
+  prhs[0] =  mxCreateDoubleScalar((double)ls);
+  prhs[1] =  mxCreateDoubleScalar((double)lx);
+  prhs[2] =  mxCreateDoubleScalar((double)lA);
+  prhs[3] =  mxCreateDoubleScalar((double)lB);
+  prhs[4] =  mxCreateString(sctx->funcname);
+  prhs[5] =  sctx->ctx;
+  ierr    =  mexCallMATLAB(nlhs,plhs,nrhs,prhs,"PetscSNESComputeJacobianInternal");CHKERRQ(ierr);
+  ierr    =  mxGetScalar(plhs[0]);CHKERRQ(ierr);
+  *flag   =  (MatStructure) mxGetScalar(plhs[1]);CHKERRQ(ierr);
+  mxDestroyArray(prhs[0]);
+  mxDestroyArray(prhs[1]);
+  mxDestroyArray(prhs[2]);
+  mxDestroyArray(prhs[3]);
+  mxDestroyArray(prhs[4]);
+  mxDestroyArray(plhs[0]);
+  mxDestroyArray(plhs[1]);
+  PetscFunctionReturn(0);
+}
+
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESSetJacobianMatlab"
+/*
+   SNESSetJacobianMatlab - Sets the Jacobian function evaluation routine and two empty Jacobian matrices
+   vector for use by the SNES routines in solving systems of nonlinear
+   equations from MATLAB. Here the function is a string containing the name of a MATLAB function
+
+   Logically Collective on SNES
+
+   Input Parameters:
++  snes - the SNES context
+.  A,B - Jacobian matrices
+.  func - function evaluation routine
+-  ctx - user context
+
+   Calling sequence of func:
+$    flag = func (SNES snes,Vec x,Mat A,Mat B,void *ctx);
+
+
+   Level: developer
+
+.keywords: SNES, nonlinear, set, function
+
+.seealso: SNESGetFunction(), SNESComputeFunction(), SNESSetJacobian(), SNESSetFunction()
+*/
+PetscErrorCode  SNESSetJacobianMatlab(SNES snes,Mat A,Mat B,const char *func,mxArray *ctx)
+{
+  PetscErrorCode    ierr;
+  SNESMatlabContext *sctx;
+
+  PetscFunctionBegin;
+  /* currently sctx is memory bleed */
+  ierr = PetscMalloc(sizeof(SNESMatlabContext),&sctx);CHKERRQ(ierr);
+  ierr = PetscStrallocpy(func,&sctx->funcname);CHKERRQ(ierr);
+  /* 
+     This should work, but it doesn't 
+  sctx->ctx = ctx; 
+  mexMakeArrayPersistent(sctx->ctx);
+  */
+  sctx->ctx = mxDuplicateArray(ctx);
+  ierr = SNESSetJacobian(snes,A,B,SNESComputeJacobian_Matlab,sctx);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESMonitor_Matlab"
+/*
+   SNESMonitor_Matlab - Calls the function that has been set with SNESMonitorSetMatlab().  
+
+   Collective on SNES
+
+.seealso: SNESSetFunction(), SNESGetFunction()
+@*/
+PetscErrorCode  SNESMonitor_Matlab(SNES snes,PetscInt it, PetscReal fnorm, void *ctx)
+{
+  PetscErrorCode  ierr;
+  SNESMatlabContext *sctx = (SNESMatlabContext *)ctx;
+  int             nlhs = 1,nrhs = 6;
+  mxArray	  *plhs[1],*prhs[6];
+  long long int   lx = 0,ls = 0;
+  Vec             x=snes->vec_sol;
+      
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(snes,SNES_CLASSID,1);
+
+  ierr = PetscMemcpy(&ls,&snes,sizeof(snes));CHKERRQ(ierr); 
+  ierr = PetscMemcpy(&lx,&x,sizeof(x));CHKERRQ(ierr); 
+  prhs[0] =  mxCreateDoubleScalar((double)ls);
+  prhs[1] =  mxCreateDoubleScalar((double)it);
+  prhs[2] =  mxCreateDoubleScalar((double)fnorm);
+  prhs[3] =  mxCreateDoubleScalar((double)lx);
+  prhs[4] =  mxCreateString(sctx->funcname);
+  prhs[5] =  sctx->ctx;
+  ierr    =  mexCallMATLAB(nlhs,plhs,nrhs,prhs,"PetscSNESMonitorInternal");CHKERRQ(ierr);
+  ierr    =  mxGetScalar(plhs[0]);CHKERRQ(ierr);
+  mxDestroyArray(prhs[0]);
+  mxDestroyArray(prhs[1]);
+  mxDestroyArray(prhs[2]);
+  mxDestroyArray(prhs[3]);
+  mxDestroyArray(prhs[4]);
+  mxDestroyArray(plhs[0]);
+  PetscFunctionReturn(0);
+}
+
+
+#undef __FUNCT__  
+#define __FUNCT__ "SNESMonitorSetMatlab"
+/*
+   SNESMonitorSetMatlab - Sets the monitor function from MATLAB
+
+   Level: developer
+
+.keywords: SNES, nonlinear, set, function
+
+.seealso: SNESGetFunction(), SNESComputeFunction(), SNESSetJacobian(), SNESSetFunction()
+*/
+PetscErrorCode  SNESMonitorSetMatlab(SNES snes,const char *func,mxArray *ctx)
+{
+  PetscErrorCode    ierr;
+  SNESMatlabContext *sctx;
+
+  PetscFunctionBegin;
+  /* currently sctx is memory bleed */
+  ierr = PetscMalloc(sizeof(SNESMatlabContext),&sctx);CHKERRQ(ierr);
+  ierr = PetscStrallocpy(func,&sctx->funcname);CHKERRQ(ierr);
+  /* 
+     This should work, but it doesn't 
+  sctx->ctx = ctx; 
+  mexMakeArrayPersistent(sctx->ctx);
+  */
+  sctx->ctx = mxDuplicateArray(ctx);
+  ierr = SNESMonitorSet(snes,SNESMonitor_Matlab,sctx,PETSC_NULL);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#endif

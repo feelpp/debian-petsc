@@ -2,7 +2,7 @@
 #ifndef __MATIMPL_H
 #define __MATIMPL_H
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 /*
   This file defines the parts of the matrix data structure that are 
@@ -35,17 +35,17 @@ struct _MatOps {
   PetscErrorCode (*transpose)(Mat,MatReuse,Mat *);
   /*15*/
   PetscErrorCode (*getinfo)(Mat,MatInfoType,MatInfo*);
-  PetscErrorCode (*equal)(Mat,Mat,PetscTruth *);
+  PetscErrorCode (*equal)(Mat,Mat,PetscBool  *);
   PetscErrorCode (*getdiagonal)(Mat,Vec);
   PetscErrorCode (*diagonalscale)(Mat,Vec,Vec);
   PetscErrorCode (*norm)(Mat,NormType,PetscReal*);
   /*20*/
   PetscErrorCode (*assemblybegin)(Mat,MatAssemblyType);
   PetscErrorCode (*assemblyend)(Mat,MatAssemblyType);
-  PetscErrorCode (*setoption)(Mat,MatOption,PetscTruth);
+  PetscErrorCode (*setoption)(Mat,MatOption,PetscBool );
   PetscErrorCode (*zeroentries)(Mat);
   /*24*/
-  PetscErrorCode (*zerorows)(Mat,PetscInt,const PetscInt[],PetscScalar);
+  PetscErrorCode (*zerorows)(Mat,PetscInt,const PetscInt[],PetscScalar,Vec,Vec);
   PetscErrorCode (*lufactorsymbolic)(Mat,Mat,IS,IS,const MatFactorInfo*);
   PetscErrorCode (*lufactornumeric)(Mat,Mat,const MatFactorInfo*);
   PetscErrorCode (*choleskyfactorsymbolic)(Mat,Mat,IS,const MatFactorInfo*);
@@ -73,13 +73,13 @@ struct _MatOps {
   PetscErrorCode (*scale)(Mat,PetscScalar);
   PetscErrorCode (*shift)(Mat,PetscScalar);
   PetscErrorCode (*diagonalset)(Mat,Vec,InsertMode);
-  PetscErrorCode (*dummy)(void);
+  PetscErrorCode (*zerorowscolumns)(Mat,PetscInt,const PetscInt[],PetscScalar,Vec,Vec);
   /*49*/
   PetscErrorCode (*setblocksize)(Mat,PetscInt);
-  PetscErrorCode (*getrowij)(Mat,PetscInt,PetscTruth,PetscTruth,PetscInt*,PetscInt *[],PetscInt *[],PetscTruth *);
-  PetscErrorCode (*restorerowij)(Mat,PetscInt,PetscTruth,PetscTruth,PetscInt *,PetscInt *[],PetscInt *[],PetscTruth *);
-  PetscErrorCode (*getcolumnij)(Mat,PetscInt,PetscTruth,PetscTruth,PetscInt*,PetscInt *[],PetscInt *[],PetscTruth *);
-  PetscErrorCode (*restorecolumnij)(Mat,PetscInt,PetscTruth,PetscTruth,PetscInt*,PetscInt *[],PetscInt *[],PetscTruth *);
+  PetscErrorCode (*getrowij)(Mat,PetscInt,PetscBool ,PetscBool ,PetscInt*,PetscInt *[],PetscInt *[],PetscBool  *);
+  PetscErrorCode (*restorerowij)(Mat,PetscInt,PetscBool ,PetscBool ,PetscInt *,PetscInt *[],PetscInt *[],PetscBool  *);
+  PetscErrorCode (*getcolumnij)(Mat,PetscInt,PetscBool ,PetscBool ,PetscInt*,PetscInt *[],PetscInt *[],PetscBool  *);
+  PetscErrorCode (*restorecolumnij)(Mat,PetscInt,PetscBool ,PetscBool ,PetscInt*,PetscInt *[],PetscInt *[],PetscBool  *);
   /*54*/
   PetscErrorCode (*fdcoloringcreate)(Mat,ISColoring,MatFDColoring);
   PetscErrorCode (*coloringpatch)(Mat,PetscInt,PetscInt,ISColoringValue[],ISColoring*);
@@ -91,13 +91,13 @@ struct _MatOps {
   PetscErrorCode (*destroy)(Mat);
   PetscErrorCode (*view)(Mat,PetscViewer);
   PetscErrorCode (*convertfrom)(Mat, const MatType,MatReuse,Mat*);
-  PetscErrorCode (*usescaledform)(Mat,PetscTruth);
+  PetscErrorCode (*usescaledform)(Mat,PetscBool );
   /*64*/
   PetscErrorCode (*scalesystem)(Mat,Vec,Vec);
   PetscErrorCode (*unscalesystem)(Mat,Vec,Vec);
-  PetscErrorCode (*setlocaltoglobalmapping)(Mat,ISLocalToGlobalMapping);
+  PetscErrorCode (*setlocaltoglobalmapping)(Mat,ISLocalToGlobalMapping,ISLocalToGlobalMapping);
   PetscErrorCode (*setvalueslocal)(Mat,PetscInt,const PetscInt[],PetscInt,const PetscInt[],const PetscScalar[],InsertMode);
-  PetscErrorCode (*zerorowslocal)(Mat,PetscInt,const PetscInt[],PetscScalar);
+  PetscErrorCode (*zerorowslocal)(Mat,PetscInt,const PetscInt[],PetscScalar,Vec,Vec);
   /*69*/
   PetscErrorCode (*getrowmaxabs)(Mat,Vec,PetscInt[]);
   PetscErrorCode (*getrowminabs)(Mat,Vec,PetscInt[]);
@@ -111,16 +111,16 @@ struct _MatOps {
   PetscErrorCode (*multconstrained)(Mat,Vec,Vec);
   PetscErrorCode (*multtransposeconstrained)(Mat,Vec,Vec);
   /*79*/
-  PetscErrorCode (*permutesparsify)(Mat, PetscInt, double, double, IS, IS, Mat *);
+  PetscErrorCode (*findzerodiagonals)(Mat,IS*);
   PetscErrorCode (*mults)(Mat, Vecs, Vecs);
   PetscErrorCode (*solves)(Mat, Vecs, Vecs);
   PetscErrorCode (*getinertia)(Mat,PetscInt*,PetscInt*,PetscInt*);
-  PetscErrorCode (*load)(PetscViewer, const MatType,Mat*);
+  PetscErrorCode (*load)(Mat, PetscViewer);
   /*84*/
-  PetscErrorCode (*issymmetric)(Mat,PetscReal,PetscTruth*);
-  PetscErrorCode (*ishermitian)(Mat,PetscReal,PetscTruth*);
-  PetscErrorCode (*isstructurallysymmetric)(Mat,PetscTruth*);
-  PetscErrorCode (*dummy4)(void);
+  PetscErrorCode (*issymmetric)(Mat,PetscReal,PetscBool *);
+  PetscErrorCode (*ishermitian)(Mat,PetscReal,PetscBool *);
+  PetscErrorCode (*isstructurallysymmetric)(Mat,PetscBool *);
+  PetscErrorCode (*setvaluesblockedlocal)(Mat,PetscInt,const PetscInt[],PetscInt,const PetscInt[],const PetscScalar[],InsertMode);
   PetscErrorCode (*getvecs)(Mat,Vec*,Vec*);
   /*89*/
   PetscErrorCode (*matmult)(Mat,Mat,MatReuse,PetscReal,Mat*);
@@ -151,36 +151,53 @@ struct _MatOps {
   PetscErrorCode (*getredundantmatrix)(Mat,PetscInt,MPI_Comm,PetscInt,MatReuse,Mat*);
   PetscErrorCode (*getrowmin)(Mat,Vec,PetscInt[]);
   PetscErrorCode (*getcolumnvector)(Mat,Vec,PetscInt);
-  PetscErrorCode (*missingdiagonal)(Mat,PetscTruth*,PetscInt*);
+  PetscErrorCode (*missingdiagonal)(Mat,PetscBool *,PetscInt*);
   /*114*/
   PetscErrorCode (*getseqnonzerostructure)(Mat,Mat *);
   PetscErrorCode (*create)(Mat);  
   PetscErrorCode (*getghosts)(Mat,PetscInt*,const PetscInt *[]);
-  PetscErrorCode (*dummy2)(void);
-  PetscErrorCode (*dummy3)(void);
+  PetscErrorCode (*getlocalsubmatrix)(Mat,IS,IS,Mat*);
+  PetscErrorCode (*restorelocalsubmatrix)(Mat,IS,IS,Mat*);
   /*119*/
   PetscErrorCode (*multdiagonalblock)(Mat,Vec,Vec);
   PetscErrorCode (*hermitiantranspose)(Mat,MatReuse,Mat*);
   PetscErrorCode (*multhermitiantranspose)(Mat,Vec,Vec);
   PetscErrorCode (*multhermitiantransposeadd)(Mat,Vec,Vec,Vec);
+  PetscErrorCode (*getmultiprocblock)(Mat,MPI_Comm,Mat*);
+  /*124*/
+  PetscErrorCode (*findnonzerorows)(Mat,IS*);
+  PetscErrorCode (*getcolumnnorms)(Mat,NormType,PetscReal*);
+  PetscErrorCode (*invertblockdiagonal)(Mat,PetscScalar**);
+  PetscErrorCode (*dummy4)(Mat,Vec,Vec,Vec);
+  PetscErrorCode (*getsubmatricesparallel)(Mat,PetscInt,const IS[], const IS[], MatReuse, Mat**);
+  /*129*/
+  PetscErrorCode (*setvaluesbatch)(Mat,PetscInt,PetscInt,PetscInt*,const PetscScalar*);
 };
 /*
     If you add MatOps entries above also add them to the MATOP enum
     in include/petscmat.h and include/finclude/petscmat.h
 */
 
+typedef struct _p_MatBaseName* MatBaseName;
+struct _p_MatBaseName {
+  char        *bname,*sname,*mname;
+  MatBaseName next;
+};
+
+extern MatBaseName MatBaseNameList;
+
 /*
    Utility private matrix routines
 */
-EXTERN PetscErrorCode MatConvert_Basic(Mat, const MatType,MatReuse,Mat*);
-EXTERN PetscErrorCode MatCopy_Basic(Mat,Mat,MatStructure);
-EXTERN PetscErrorCode MatView_Private(Mat);
+extern PetscErrorCode MatConvert_Basic(Mat, const MatType,MatReuse,Mat*);
+extern PetscErrorCode MatCopy_Basic(Mat,Mat,MatStructure);
+extern PetscErrorCode MatView_Private(Mat);
 
-EXTERN PetscErrorCode MatHeaderCopy(Mat,Mat);
-EXTERN PetscErrorCode MatHeaderReplace(Mat,Mat);
-EXTERN PetscErrorCode MatAXPYGetxtoy_Private(PetscInt,PetscInt*,PetscInt*,PetscInt*, PetscInt*,PetscInt*,PetscInt*, PetscInt**);
-EXTERN PetscErrorCode MatPtAP_Basic(Mat,Mat,MatReuse,PetscReal,Mat*);
-EXTERN PetscErrorCode MatDiagonalSet_Default(Mat,Vec,InsertMode);
+extern PetscErrorCode MatHeaderMerge(Mat,Mat);
+extern PetscErrorCode MatHeaderReplace(Mat,Mat);
+extern PetscErrorCode MatAXPYGetxtoy_Private(PetscInt,PetscInt*,PetscInt*,PetscInt*, PetscInt*,PetscInt*,PetscInt*, PetscInt**);
+extern PetscErrorCode MatPtAP_Basic(Mat,Mat,MatReuse,PetscReal,Mat*);
+extern PetscErrorCode MatDiagonalSet_Default(Mat,Vec,InsertMode);
 
 /* 
   The stash is used to temporarily store inserted matrix values that 
@@ -199,9 +216,9 @@ struct _MatStashSpace {
   PetscInt           local_remaining;
 };
 
-EXTERN PetscErrorCode PetscMatStashSpaceGet(PetscInt,PetscInt,PetscMatStashSpace *);
-EXTERN PetscErrorCode PetscMatStashSpaceContiguous(PetscInt,PetscMatStashSpace *,PetscScalar *,PetscInt *,PetscInt *);
-EXTERN PetscErrorCode PetscMatStashSpaceDestroy(PetscMatStashSpace);
+extern PetscErrorCode PetscMatStashSpaceGet(PetscInt,PetscInt,PetscMatStashSpace *);
+extern PetscErrorCode PetscMatStashSpaceContiguous(PetscInt,PetscMatStashSpace *,PetscScalar *,PetscInt *,PetscInt *);
+extern PetscErrorCode PetscMatStashSpaceDestroy(PetscMatStashSpace*);
 
 typedef struct {
   PetscInt      nmax;                   /* maximum stash size */
@@ -225,64 +242,68 @@ typedef struct {
   PetscInt      **rindices;             /* receiving data (indices) */
   PetscInt      nprocessed;             /* number of messages already processed */
   PetscMPIInt   *flg_v;                 /* indicates what messages have arrived so far and from whom */
+  PetscBool     reproduce;
+  PetscInt      reproduce_count;
 } MatStash;
 
-EXTERN PetscErrorCode MatStashCreate_Private(MPI_Comm,PetscInt,MatStash*);
-EXTERN PetscErrorCode MatStashDestroy_Private(MatStash*);
-EXTERN PetscErrorCode MatStashScatterEnd_Private(MatStash*);
-EXTERN PetscErrorCode MatStashSetInitialSize_Private(MatStash*,PetscInt);
-EXTERN PetscErrorCode MatStashGetInfo_Private(MatStash*,PetscInt*,PetscInt*);
-EXTERN PetscErrorCode MatStashValuesRow_Private(MatStash*,PetscInt,PetscInt,const PetscInt[],const PetscScalar[],PetscTruth);
-EXTERN PetscErrorCode MatStashValuesCol_Private(MatStash*,PetscInt,PetscInt,const PetscInt[],const PetscScalar[],PetscInt,PetscTruth);
-EXTERN PetscErrorCode MatStashValuesRowBlocked_Private(MatStash*,PetscInt,PetscInt,const PetscInt[],const PetscScalar[],PetscInt,PetscInt,PetscInt);
-EXTERN PetscErrorCode MatStashValuesColBlocked_Private(MatStash*,PetscInt,PetscInt,const PetscInt[],const PetscScalar[],PetscInt,PetscInt,PetscInt);
-EXTERN PetscErrorCode MatStashScatterBegin_Private(Mat,MatStash*,PetscInt*);
-EXTERN PetscErrorCode MatStashScatterGetMesg_Private(MatStash*,PetscMPIInt*,PetscInt**,PetscInt**,PetscScalar**,PetscInt*);
+extern PetscErrorCode MatStashCreate_Private(MPI_Comm,PetscInt,MatStash*);
+extern PetscErrorCode MatStashDestroy_Private(MatStash*);
+extern PetscErrorCode MatStashScatterEnd_Private(MatStash*);
+extern PetscErrorCode MatStashSetInitialSize_Private(MatStash*,PetscInt);
+extern PetscErrorCode MatStashGetInfo_Private(MatStash*,PetscInt*,PetscInt*);
+extern PetscErrorCode MatStashValuesRow_Private(MatStash*,PetscInt,PetscInt,const PetscInt[],const PetscScalar[],PetscBool );
+extern PetscErrorCode MatStashValuesCol_Private(MatStash*,PetscInt,PetscInt,const PetscInt[],const PetscScalar[],PetscInt,PetscBool );
+extern PetscErrorCode MatStashValuesRowBlocked_Private(MatStash*,PetscInt,PetscInt,const PetscInt[],const PetscScalar[],PetscInt,PetscInt,PetscInt);
+extern PetscErrorCode MatStashValuesColBlocked_Private(MatStash*,PetscInt,PetscInt,const PetscInt[],const PetscScalar[],PetscInt,PetscInt,PetscInt);
+extern PetscErrorCode MatStashScatterBegin_Private(Mat,MatStash*,PetscInt*);
+extern PetscErrorCode MatStashScatterGetMesg_Private(MatStash*,PetscMPIInt*,PetscInt**,PetscInt**,PetscScalar**,PetscInt*);
 
 typedef struct {
   PetscInt   dim;
   PetscInt   dims[4];
   PetscInt   starts[4];
-  PetscTruth noc;        /* this is a single component problem, hence user will not set MatStencil.c */
+  PetscBool  noc;        /* this is a single component problem, hence user will not set MatStencil.c */
 } MatStencilInfo;
 
 /* Info about using compressed row format */
 typedef struct {
-  PetscTruth use;
+  PetscBool  check;                         /* indicates that at MatAssembly() it should check if compressed rows will be efficient */
+  PetscBool  use;                           /* indicates compressed rows have been checked and will be used */
   PetscInt   nrows;                         /* number of non-zero rows */
   PetscInt   *i;                            /* compressed row pointer  */
   PetscInt   *rindex;                       /* compressed row index               */
-  PetscTruth checked;                       /* if compressed row format have been checked for */
 } Mat_CompressedRow;
-EXTERN PetscErrorCode Mat_CheckCompressedRow(Mat,Mat_CompressedRow*,PetscInt*,PetscInt,PetscReal);
+extern PetscErrorCode MatCheckCompressedRow(Mat,Mat_CompressedRow*,PetscInt*,PetscInt,PetscReal);
 
 struct _p_Mat {
   PETSCHEADER(struct _MatOps);
   PetscLayout            rmap,cmap;
   void                   *data;            /* implementation-specific data */
-  MatFactorType          factor;           /* MAT_FACTOR_LU, or MAT_FACTOR_CHOLESKY */
-  PetscTruth             assembled;        /* is the matrix assembled? */
-  PetscTruth             was_assembled;    /* new values inserted into assembled mat */
+  MatFactorType          factortype;       /* MAT_FACTOR_LU, ILU, CHOLESKY or ICC */
+  PetscBool              assembled;        /* is the matrix assembled? */
+  PetscBool              was_assembled;    /* new values inserted into assembled mat */
   PetscInt               num_ass;          /* number of times matrix has been assembled */
-  PetscTruth             same_nonzero;     /* matrix has same nonzero pattern as previous */
+  PetscBool              same_nonzero;     /* matrix has same nonzero pattern as previous */
   MatInfo                info;             /* matrix information */
-  ISLocalToGlobalMapping mapping;          /* mapping used in MatSetValuesLocal() */
-  ISLocalToGlobalMapping bmapping;         /* mapping used in MatSetValuesBlockedLocal() */
   InsertMode             insertmode;       /* have values been inserted in matrix or added? */
   MatStash               stash,bstash;     /* used for assembling off-proc mat emements */
   MatNullSpace           nullsp;
-  PetscTruth             preallocated;
+  PetscBool              preallocated;
   MatStencilInfo         stencil;          /* information for structured grid */
-  PetscTruth             symmetric,hermitian,structurally_symmetric;
-  PetscTruth             symmetric_set,hermitian_set,structurally_symmetric_set; /* if true, then corresponding flag is correct*/
-  PetscTruth             symmetric_eternal;
+  PetscBool              symmetric,hermitian,structurally_symmetric,spd;
+  PetscBool              symmetric_set,hermitian_set,structurally_symmetric_set,spd_set; /* if true, then corresponding flag is correct*/
+  PetscBool              symmetric_eternal;
+  PetscBool              nooffprocentries,nooffproczerorows;
+#if defined(PETSC_HAVE_CUSP)
+  PetscCUSPFlag          valid_GPU_matrix; /* flag pointing to the matrix on the gpu*/
+#endif
   void                   *spptr;          /* pointer for special library like SuperLU */
   MatSolverPackage       solvertype;
-};
+  };
 
 #define MatPreallocated(A)  ((!(A)->preallocated) ? MatSetUpPreallocation(A) : 0)
 extern PetscErrorCode MatAXPY_Basic(Mat,PetscScalar,Mat,MatStructure);
-
+extern PetscErrorCode MatAXPY_BasicWithPreallocation(Mat,Mat,PetscScalar,Mat,MatStructure);
 /*
     Object for partitioning graphs
 */
@@ -376,7 +397,7 @@ struct  _p_MatFDColoring{
 */
 struct _p_MatNullSpace {
   PETSCHEADER(int);
-  PetscTruth     has_cnst;
+  PetscBool      has_cnst;
   PetscInt       n;
   Vec*           vecs;
   PetscScalar*   alpha;                 /* for projections */
@@ -391,199 +412,112 @@ struct _p_MatNullSpace {
 typedef struct {
   PetscInt       nshift,nshift_max;
   PetscReal      shift_amount,shift_lo,shift_hi,shift_top,shift_fraction;
-  PetscTruth     useshift;
+  PetscBool      newshift;
   PetscReal      rs;  /* active row sum of abs(offdiagonals) */
   PetscScalar    pv;  /* pivot of the active row */
 } FactorShiftCtx;
 
-EXTERN PetscErrorCode MatFactorDumpMatrix(Mat);
+extern PetscErrorCode MatFactorDumpMatrix(Mat);
 
-#undef __FUNCT__  
-#define __FUNCT__ "MatLUCheckShift_inline"
-/*@C
-   MatLUCheckShift_inline - shift the diagonals when zero pivot is detected on LU factor
+#undef __FUNCT__
+#define __FUNCT__ "MatPivotCheck_nz"
+PETSC_STATIC_INLINE PetscErrorCode MatPivotCheck_nz(Mat mat,const MatFactorInfo *info,FactorShiftCtx *sctx,PetscInt row)
+{
+  PetscReal _rs   = sctx->rs;
+  PetscReal _zero = info->zeropivot*_rs;
 
-   Collective on Mat
-
-   Input Parameters:
-+  info - information about the matrix factorization 
-.  sctx - pointer to the struct FactorShiftCtx
--  row  - active row index
-
-   Output  Parameter:
-+  newshift - 0: shift is unchanged; 1: shft is updated; -1: zeropivot  
-
-   Level: developer
-@*/
-#define MatLUCheckShift_inline(info,sctx,row,newshift) 0;\
-{\
-  PetscInt  _newshift;\
-  PetscReal _rs   = sctx.rs;\
-  PetscReal _zero = info->zeropivot*_rs;\
-  if (info->shifttype == (PetscReal)MAT_SHIFT_NONZERO && PetscAbsScalar(sctx.pv) <= _zero){\
-    /* force |diag| > zeropivot*rs */\
-    if (!sctx.nshift){\
-      sctx.shift_amount = info->shiftamount;\
-    } else {\
-      sctx.shift_amount *= 2.0;\
-    }\
-    sctx.useshift = PETSC_TRUE;\
-    (sctx.nshift)++;\
-    _newshift = 1;\
-  } else if (info->shifttype == (PetscReal)MAT_SHIFT_POSITIVE_DEFINITE && PetscRealPart(sctx.pv) <= _zero){\
-    /* force matfactor to be diagonally dominant */\
-    if (sctx.nshift > sctx.nshift_max) {\
-      ierr = MatFactorDumpMatrix(A);CHKERRQ(ierr);\
-      SETERRQ1(PETSC_ERR_CONV_FAILED,"Unable to determine shift to enforce positive definite preconditioner after %d tries",sctx.nshift);\
-    } else if (sctx.nshift == sctx.nshift_max) {\
-      sctx.shift_fraction = sctx.shift_hi;\
-      sctx.useshift        = PETSC_TRUE;\
-    } else {\
-      sctx.shift_lo = sctx.shift_fraction;\
-      sctx.shift_fraction = (sctx.shift_hi+sctx.shift_lo)/2.;\
-      sctx.useshift  = PETSC_TRUE;\
-    }\
-    sctx.shift_amount = sctx.shift_fraction * sctx.shift_top;\
-    sctx.nshift++;\
-    _newshift = 1;\
-  } else if (PetscAbsScalar(sctx.pv) <= _zero){\
-    ierr = MatFactorDumpMatrix(A);CHKERRQ(ierr);\
-    SETERRQ4(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot row %D value %G tolerance %G * rowsum %G",row,PetscAbsScalar(sctx.pv),_zero,_rs); \
-  } else {\
-    _newshift = 0;\
-  }\
-  newshift = _newshift;\
+  PetscFunctionBegin;
+  if (PetscAbsScalar(sctx->pv) <= _zero){
+    /* force |diag| > zeropivot*rs */
+    if (!sctx->nshift) sctx->shift_amount = info->shiftamount;
+    else sctx->shift_amount *= 2.0;
+    sctx->newshift = PETSC_TRUE;
+    (sctx->nshift)++;
+  } else {
+    sctx->newshift = PETSC_FALSE;
+  }
+  PetscFunctionReturn(0);
 }
 
-#define MatPivotCheck_nz(info,sctx,row) 0;\
-{\
-  PetscReal _rs   = sctx.rs;\
-  PetscReal _zero = info->zeropivot*_rs;\
-  if (PetscAbsScalar(sctx.pv) <= _zero){\
-    /* force |diag| > zeropivot*rs */\
-    if (!sctx.nshift){\
-      sctx.shift_amount = info->shiftamount;\
-    } else {\
-      sctx.shift_amount *= 2.0;\
-    }\
-    sctx.useshift = PETSC_TRUE;\
-    (sctx.nshift)++;\
-    break;          \
-  } \
+#undef __FUNCT__
+#define __FUNCT__ "MatPivotCheck_pd"
+PETSC_STATIC_INLINE PetscErrorCode MatPivotCheck_pd(Mat mat,const MatFactorInfo *info,FactorShiftCtx *sctx,PetscInt row)
+{
+  PetscReal _rs   = sctx->rs;
+  PetscReal _zero = info->zeropivot*_rs;
+
+  PetscFunctionBegin;
+  if (PetscRealPart(sctx->pv) <= _zero){
+    /* force matfactor to be diagonally dominant */
+    if (sctx->nshift == sctx->nshift_max) {
+      sctx->shift_fraction = sctx->shift_hi;
+    } else {
+      sctx->shift_lo = sctx->shift_fraction;
+      sctx->shift_fraction = (sctx->shift_hi+sctx->shift_lo)/2.;
+    }
+    sctx->shift_amount = sctx->shift_fraction * sctx->shift_top;
+    sctx->nshift++;
+    sctx->newshift = PETSC_TRUE;
+  } else {
+    sctx->newshift = PETSC_FALSE;
+  }
+  PetscFunctionReturn(0);
 }
 
-#define MatPivotCheck_pd(info,sctx,row) 0;\
-{\
-  PetscReal _rs   = sctx.rs;\
-  PetscReal _zero = info->zeropivot*_rs;\
-  if (PetscRealPart(sctx.pv) <= _zero){\
-    /* force matfactor to be diagonally dominant */\
-    if (sctx.nshift > sctx.nshift_max) {\
-      ierr = MatFactorDumpMatrix(A);CHKERRQ(ierr);\
-      SETERRQ1(PETSC_ERR_CONV_FAILED,"Unable to determine shift to enforce positive definite preconditioner after %d tries",sctx.nshift);\
-    } else if (sctx.nshift == sctx.nshift_max) {\
-      sctx.shift_fraction = sctx.shift_hi;\
-      sctx.useshift        = PETSC_TRUE;\
-    } else {\
-      sctx.shift_lo = sctx.shift_fraction;\
-      sctx.shift_fraction = (sctx.shift_hi+sctx.shift_lo)/2.;\
-      sctx.useshift = PETSC_TRUE;\
-    }\
-    sctx.shift_amount = sctx.shift_fraction * sctx.shift_top;\
-    sctx.nshift++;\
-    break; \
-  }\
+#undef __FUNCT__
+#define __FUNCT__ "MatPivotCheck_inblocks"
+PETSC_STATIC_INLINE PetscErrorCode MatPivotCheck_inblocks(Mat mat,const MatFactorInfo *info,FactorShiftCtx *sctx,PetscInt row)
+{
+  PetscReal _zero = info->zeropivot;
+
+  PetscFunctionBegin;
+  if (PetscAbsScalar(sctx->pv) <= _zero){
+    sctx->pv          += info->shiftamount;
+    sctx->shift_amount = 0.0;
+    sctx->nshift++;
+  }
+  sctx->newshift = PETSC_FALSE;
+  PetscFunctionReturn(0);
 }
 
-#define MatPivotCheck_inblocks(info,sctx,row) 0;\
-{\
-  PetscReal _zero = info->zeropivot;\
-  if (PetscAbsScalar(sctx.pv) <= _zero){\
-    sctx.pv          += info->shiftamount;\
-    sctx.shift_amount = 0.0;\
-    sctx.nshift++;\
-  }\
+#undef __FUNCT__
+#define __FUNCT__ "MatPivotCheck_none"
+PETSC_STATIC_INLINE PetscErrorCode MatPivotCheck_none(Mat mat,const MatFactorInfo *info,FactorShiftCtx *sctx,PetscInt row)
+{
+  PetscReal _zero = info->zeropivot;
+
+  PetscFunctionBegin;
+  sctx->newshift = PETSC_FALSE;
+  if (PetscAbsScalar(sctx->pv) <= _zero) {
+    PetscErrorCode ierr;
+    PetscBool      flg = PETSC_FALSE;
+    
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-mat_dump",&flg,PETSC_NULL);CHKERRQ(ierr);
+    if (flg) {
+      ierr = MatView(mat,PETSC_VIEWER_BINARY_(((PetscObject)mat)->comm));CHKERRQ(ierr);
+    }
+    SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot row %D value %G tolerance %G",row,PetscAbsScalar(sctx->pv),_zero);
+  }
+  PetscFunctionReturn(0);
 }
 
-#define MatPivotCheck_none(info,sctx,row) 0;\
-{\
-  PetscReal _zero = info->zeropivot;\
-  if (PetscAbsScalar(sctx.pv) <= _zero){\
-    ierr = MatFactorDumpMatrix(A);CHKERRQ(ierr);\
-    SETERRQ3(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot row %D value %G tolerance %G",row,PetscAbsScalar(sctx.pv),_zero); \
-  } \
-}
+#undef __FUNCT__
+#define __FUNCT__ "MatPivotCheck"
+PETSC_STATIC_INLINE PetscErrorCode MatPivotCheck(Mat mat,const MatFactorInfo *info,FactorShiftCtx *sctx,PetscInt row)
+{
+  PetscErrorCode ierr;
 
-#define MatPivotCheck(info,sctx,row) 0;\
-{\
-  if (info->shifttype == (PetscReal)MAT_SHIFT_NONZERO){\
-    ierr = MatPivotCheck_nz(info,sctx,row);CHKERRQ(ierr);\
-  } else if (info->shifttype == (PetscReal)MAT_SHIFT_POSITIVE_DEFINITE){\
-    ierr = MatPivotCheck_pd(info,sctx,row);CHKERRQ(ierr);\
-  } else if (info->shifttype == (PetscReal)MAT_SHIFT_INBLOCKS){\
-    ierr = MatPivotCheck_inblocks(info,sctx,srow);CHKERRQ(ierr);\
-  } else {\
-    ierr = MatPivotCheck_none(info,sctx,row);CHKERRQ(ierr);\
-  }\
-}
-
-/* 
-   Checking zero pivot for Cholesky, ICC preconditioners.
-*/
-typedef struct {
-  PetscInt       nshift;
-  PetscReal      shift_amount;
-  PetscTruth     chshift;
-  PetscReal      rs;  /* active row sum of abs(offdiagonals) */
-  PetscScalar    pv;  /* pivot of the active row */
-} ChShift_Ctx;
-
-#undef __FUNCT__  
-#define __FUNCT__ "MatCholeskyCheckShift_inline"
-/*@C
-   MatCholeskyCheckShift_inline -  shift the diagonals when zero pivot is detected on Cholesky factor
-
-   Collective on Mat
-
-   Input Parameters:
-+  info - information about the matrix factorization 
-.  sctx - pointer to the struct CholeskyShift_Ctx
-.  row  - pivot row
--  newshift - 0: shift is unchanged; 1: shft is updated; -1: zeropivot  
-
-   Level: developer
-   Note: Unlike in the ILU case there is no exit condition on nshift:
-       we increase the shift until it converges. There is no guarantee that
-       this algorithm converges faster or slower, or is better or worse
-       than the ILU algorithm. 
-@*/
-#define MatCholeskyCheckShift_inline(info,sctx,row,newshift) 0;	\
-{\
-  PetscInt  _newshift;\
-  PetscReal _rs   = sctx.rs;\
-  PetscReal _zero = info->zeropivot*_rs;\
-  if (info->shifttype == (PetscReal)MAT_SHIFT_NONZERO && PetscAbsScalar(sctx.pv) <= _zero){\
-    /* force |diag| > zeropivot*sctx.rs */\
-    if (!sctx.nshift){\
-      sctx.shift_amount = info->shiftamount;\
-    } else {\
-      sctx.shift_amount *= 2.0;\
-    }\
-    sctx.chshift = PETSC_TRUE;\
-    sctx.nshift++;\
-    _newshift = 1;\
-  } else if (info->shifttype == (PetscReal)MAT_SHIFT_POSITIVE_DEFINITE && PetscRealPart(sctx.pv) <= _zero){\
-    /* calculate a shift that would make this row diagonally dominant */\
-    sctx.shift_amount = PetscMax(_rs+PetscAbs(PetscRealPart(sctx.pv)),1.1*sctx.shift_amount);\
-    sctx.chshift      = PETSC_TRUE;\
-    sctx.nshift++;\
-    _newshift = 1;\
-  } else if (PetscAbsScalar(sctx.pv) <= _zero){\
-    SETERRQ4(PETSC_ERR_MAT_CH_ZRPVT,"Zero pivot row %D value %G tolerance %G * rowsum %G",row,PetscAbsScalar(sctx.pv),_zero,_rs); \
-  } else {\
-    _newshift = 0; \
-  }\
-  newshift = _newshift;\
+  PetscFunctionBegin;
+  if (info->shifttype == (PetscReal) MAT_SHIFT_NONZERO){
+    ierr = MatPivotCheck_nz(mat,info,sctx,row);CHKERRQ(ierr);
+  } else if (info->shifttype == (PetscReal) MAT_SHIFT_POSITIVE_DEFINITE){
+    ierr = MatPivotCheck_pd(mat,info,sctx,row);CHKERRQ(ierr);
+  } else if (info->shifttype == (PetscReal) MAT_SHIFT_INBLOCKS){
+    ierr = MatPivotCheck_inblocks(mat,info,sctx,row);CHKERRQ(ierr);
+  } else {
+    ierr = MatPivotCheck_none(mat,info,sctx,row);CHKERRQ(ierr);
+  }
+  PetscFunctionReturn(0);
 }
 
 /* 
@@ -1068,5 +1002,7 @@ extern PetscLogEvent  MAT_Applypapt, MAT_Applypapt_symbolic, MAT_Applypapt_numer
 extern PetscLogEvent  MAT_Getsymtranspose, MAT_Transpose_SeqAIJ, MAT_Getsymtransreduced,MAT_GetSequentialNonzeroStructure;
 
 extern PetscLogEvent  MATMFFD_Mult;
+extern PetscLogEvent  MAT_GetMultiProcBlock;
+extern PetscLogEvent  MAT_CUSPCopyToGPU, MAT_SetValuesBatch, MAT_SetValuesBatchI, MAT_SetValuesBatchII, MAT_SetValuesBatchIII, MAT_SetValuesBatchIV;
 
 #endif

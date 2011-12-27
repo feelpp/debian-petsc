@@ -1,11 +1,11 @@
 
-#requirespackage   'PETSC_HAVE_FORTRAN'
+#requiresdefine   'PETSC_HAVE_FORTRAN'
 ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = axisf.c histsf.c lgf.c dscatterf.c
-OBJSC    = axisf.o histsf.o lgf.o dscatterf.o
+SOURCEC  = axiscf.c lgcf.c axisf.c histsf.c lgf.c dscatterf.c
+OBJSC    = axiscf.o lgcf.o axisf.o histsf.o lgf.o dscatterf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

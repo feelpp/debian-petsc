@@ -1,9 +1,9 @@
 !
       program main
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscviewer.h>
 
 !
 !      This example demonstrates writing an array to a file in binary
@@ -12,14 +12,14 @@
        PetscInt n,i,ione
        PetscErrorCode ierr
        integer fd
-       PetscInt veccookie(1)
+       PetscInt vecclassid(1)
        PetscScalar      array(5)
        Vec              x
        PetscViewer           v
 
        ione         = 1
        n            = 5
-       veccookie(1) = 1211211 + 3
+       vecclassid(1) = 1211211 + 3
 
        call PetscInitialize(PETSC_NULL_CHARACTER,ierr)                  
 
@@ -30,7 +30,7 @@
 !      Open binary file for writing
        call PetscBinaryOpen('testfile',FILE_MODE_WRITE,fd,ierr)
 !      Write the Vec header
-       call PetscBinaryWrite(fd,veccookie,ione,PETSC_INT,                    &
+       call PetscBinaryWrite(fd,vecclassid,ione,PETSC_INT,                    &
      &                       PETSC_FALSE,ierr)
 !      Write the array length
        call PetscBinaryWrite(fd,n,ione,PETSC_INT,PETSC_FALSE,ierr)
@@ -47,7 +47,8 @@
 !
 !      Load the vector
 !
-       Call VecLoad(v,PETSC_NULL_CHARACTER,x,ierr)
+       call VecCreate(PETSC_COMM_WORLD,x,ierr)
+       call VecLoad(x,v,ierr)
        call PetscViewerDestroy(v,ierr)
 !
 !      Print the vector

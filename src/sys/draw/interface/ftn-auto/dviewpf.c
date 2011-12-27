@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dviewp.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawsetviewport_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr, int *__ierr ){
+void PETSC_STDCALL  petscdrawsetviewport_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr, int *__ierr ){
 *__ierr = PetscDrawSetViewPort(
 	(PetscDraw)PetscToPointer((draw) ),*xl,*yl,*xr,*yr);
 }
-void PETSC_STDCALL   petscdrawsplitviewport_(PetscDraw draw, int *__ierr ){
+void PETSC_STDCALL  petscdrawsplitviewport_(PetscDraw draw, int *__ierr ){
 *__ierr = PetscDrawSplitViewPort(
 	(PetscDraw)PetscToPointer((draw) ));
 }

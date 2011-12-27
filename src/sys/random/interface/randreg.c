@@ -1,9 +1,8 @@
-#define PETSC_DLL
 
-#include "../src/sys/random/randomimpl.h"         /*I "petscsys.h" I*/
+#include <../src/sys/random/randomimpl.h>         /*I "petscsys.h" I*/
 
 PetscFList PetscRandomList              = PETSC_NULL;
-PetscTruth PetscRandomRegisterAllCalled = PETSC_FALSE;
+PetscBool  PetscRandomRegisterAllCalled = PETSC_FALSE;
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomSetType"
@@ -29,19 +28,19 @@ PetscTruth PetscRandomRegisterAllCalled = PETSC_FALSE;
 .seealso: PetscRandomGetType(), PetscRandomCreate()
 @*/
 
-PetscErrorCode PETSC_DLLEXPORT PetscRandomSetType(PetscRandom rnd, const PetscRandomType type)
+PetscErrorCode  PetscRandomSetType(PetscRandom rnd, const PetscRandomType type)
 {
   PetscErrorCode (*r)(PetscRandom);
-  PetscTruth     match;
+  PetscBool      match;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(rnd, PETSC_RANDOM_COOKIE,1);
+  PetscValidHeaderSpecific(rnd, PETSC_RANDOM_CLASSID,1);
   ierr = PetscTypeCompare((PetscObject)rnd, type, &match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
-  ierr = PetscFListFind(PetscRandomList,((PetscObject)rnd)->comm,  type,(void (**)(void)) &r);CHKERRQ(ierr); 
-  if (!r) SETERRQ1(PETSC_ERR_ARG_UNKNOWN_TYPE, "Unknown random type: %s", type);
+  ierr = PetscFListFind(PetscRandomList,((PetscObject)rnd)->comm,  type,PETSC_TRUE,(void (**)(void)) &r);CHKERRQ(ierr); 
+  if (!r) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_UNKNOWN_TYPE, "Unknown random type: %s", type);
 
   if (rnd->ops->destroy) {
     ierr = (*rnd->ops->destroy)(rnd);CHKERRQ(ierr);
@@ -50,6 +49,11 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomSetType(PetscRandom rnd, const PetscRa
   ierr = PetscRandomSeed(rnd);CHKERRQ(ierr);
 
   ierr = PetscObjectChangeTypeName((PetscObject)rnd, type);CHKERRQ(ierr);
+#if defined(PETSC_HAVE_AMS)
+  if (PetscAMSPublishAll) {
+    ierr = PetscObjectAMSPublish((PetscObject)rnd);CHKERRQ(ierr);
+  }
+#endif
   PetscFunctionReturn(0);
 }
 
@@ -71,10 +75,10 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomSetType(PetscRandom rnd, const PetscRa
 .keywords: random, get, type, name
 .seealso: PetscRandomSetType(), PetscRandomCreate()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscRandomGetType(PetscRandom rnd, const PetscRandomType *type)
+PetscErrorCode  PetscRandomGetType(PetscRandom rnd, const PetscRandomType *type)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(rnd, PETSC_RANDOM_COOKIE,1);
+  PetscValidHeaderSpecific(rnd, PETSC_RANDOM_CLASSID,1);
   PetscValidPointer(type,2);
   *type = ((PetscObject)rnd)->type_name;
   PetscFunctionReturn(0);
@@ -87,7 +91,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomGetType(PetscRandom rnd, const PetscRa
 
   Level: advanced
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscRandomRegister(const char sname[], const char path[], const char name[], PetscErrorCode (*function)(PetscRandom))
+PetscErrorCode  PetscRandomRegister(const char sname[], const char path[], const char name[], PetscErrorCode (*function)(PetscRandom))
 {
   char           fullname[PETSC_MAX_PATH_LEN];
   PetscErrorCode ierr;
@@ -112,7 +116,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomRegister(const char sname[], const cha
 .keywords: PetscRandom, register, destroy
 .seealso: PetscRandomRegister(), PetscRandomRegisterAll(), PetscRandomRegisterDynamic()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscRandomRegisterDestroy(void)
+PetscErrorCode  PetscRandomRegisterDestroy(void)
 {
   PetscErrorCode ierr;
 
@@ -124,13 +128,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomRegisterDestroy(void)
 
 EXTERN_C_BEGIN
 #if defined(PETSC_HAVE_RAND)
-EXTERN PetscErrorCode PETSC_DLLEXPORT PetscRandomCreate_Rand(PetscRandom);
+extern PetscErrorCode  PetscRandomCreate_Rand(PetscRandom);
 #endif
 #if defined(PETSC_HAVE_DRAND48)
-EXTERN PetscErrorCode PETSC_DLLEXPORT PetscRandomCreate_Rand48(PetscRandom);
+extern PetscErrorCode  PetscRandomCreate_Rand48(PetscRandom);
 #endif
 #if defined(PETSC_HAVE_SPRNG)
-EXTERN PetscErrorCode PETSC_DLLEXPORT PetscRandomCreate_Sprng(PetscRandom);
+extern PetscErrorCode  PetscRandomCreate_Sprng(PetscRandom);
 #endif
 EXTERN_C_END
 
@@ -149,7 +153,7 @@ EXTERN_C_END
 .keywords: PetscRandom, register, all
 .seealso:  PetscRandomRegister(), PetscRandomRegisterDestroy(), PetscRandomRegisterDynamic()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscRandomRegisterAll(const char path[])
+PetscErrorCode  PetscRandomRegisterAll(const char path[])
 {
   PetscErrorCode ierr;
 

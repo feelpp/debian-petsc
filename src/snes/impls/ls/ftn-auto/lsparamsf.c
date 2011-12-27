@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* lsparams.c */
 /* Fortran interface file */
 
@@ -38,9 +39,9 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   sneslinesearchsetparams_(SNES snes,PetscReal *alpha,PetscReal *maxstep, int *__ierr ){
+void PETSC_STDCALL  sneslinesearchsetparams_(SNES snes,PetscReal *alpha,PetscReal *maxstep,PetscReal *minlambda, int *__ierr ){
 *__ierr = SNESLineSearchSetParams(
-	(SNES)PetscToPointer((snes) ),*alpha,*maxstep);
+	(SNES)PetscToPointer((snes) ),*alpha,*maxstep,*minlambda);
 }
 #if defined(__cplusplus)
 }

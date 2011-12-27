@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:48:00+00:00">
+<meta name="date" content="2011-10-29T19:21:18+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -38,11 +38,11 @@
 <a name="line28"> 28: </a>!23456789012345678901234567890123456789012345678901234567890123456789012
 <a name="line29"> 29: </a>      program main
 <a name="line30"> 30: </a>      implicit none
-<a name="line31"> 31: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line32"> 32: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line33"> 33: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line34"> 34: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line35"> 35: </a> #include <A href="../../../../include/finclude/petscts.h.html">finclude/petscts.h</A>
+<a name="line31"> 31: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line32"> 32: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line33"> 33: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line34"> 34: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line35"> 35: </a><font color="#A020F0">#include &lt;finclude/petscts.h&gt;</font>
 <a name="line36"> 36: </a>!
 <a name="line37"> 37: </a>!  Create an application context to contain data needed by the
 <a name="line38"> 38: </a>!  application-provided call-back routines, FormJacobian() and
@@ -63,7 +63,7 @@
 <a name="line53"> 53: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>               x,r
 <a name="line54"> 54: </a>      <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               J
 <a name="line55"> 55: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           its,N,i1000
-<a name="line56"> 56: </a>      <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> flg
+<a name="line56"> 56: </a>      <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flg
 <a name="line57"> 57: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>      ierr
 <a name="line58"> 58: </a>      double precision  param_max,param_min,dt,tmax,zero
 <a name="line59"> 59: </a>      double precision  ftime
@@ -134,7 +134,7 @@
 <a name="line124">124: </a>!    is the application context used by the call-back functions.
 <a name="line125">125: </a>!
 
-<a name="line127">127: </a>      call <A href="../../../../docs/manualpages/TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>(ts,FormFunction,user,ierr)
+<a name="line127">127: </a>      call <A href="../../../../docs/manualpages/TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>(ts,PETSC_NULL_OBJECT,FormFunction,user,ierr)
 
 <a name="line129">129: </a>!
 <a name="line130">130: </a>!     Set the Jacobian matrix and the function used to compute
@@ -185,9 +185,9 @@
 <a name="line175">175: </a>!
 <a name="line176">176: </a>!      Perform the solve. This is where the timestepping takes place.
 <a name="line177">177: </a>!
-<a name="line178">178: </a>
-<a name="line179">179: </a>      call <A href="../../../../docs/manualpages/TS/TSStep.html#TSStep">TSStep</A>(ts,its,ftime,ierr)
-<a name="line180">180: </a>
+<a name="line178">178: </a>      call <A href="../../../../docs/manualpages/TS/TSSolve.html#TSSolve">TSSolve</A>(ts,x,ftime,ierr)
+<a name="line179">179: </a>      call <A href="../../../../docs/manualpages/TS/TSGetTimeStepNumber.html#TSGetTimeStepNumber">TSGetTimeStepNumber</A>(ts,its,ierr)
+
 <a name="line181">181: </a>      write(6,100) its,ftime
 <a name="line182">182: </a> 100  format('Number of pseudo time-steps ',i5,' final time ',1pe8.2)
 
@@ -207,11 +207,11 @@
 <a name="line197">197: </a>!
 <a name="line198">198: </a>      subroutine FormInitialGuess(X,user,ierr)
 <a name="line199">199: </a>      implicit none
-<a name="line200">200: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line201">201: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line202">202: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line203">203: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line204">204: </a> #include <A href="../../../../include/finclude/petscts.h.html">finclude/petscts.h</A>
+<a name="line200">200: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line201">201: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line202">202: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line203">203: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line204">204: </a><font color="#A020F0">#include &lt;finclude/petscts.h&gt;</font>
 <a name="line205">205: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>              X
 <a name="line206">206: </a>      double precision user(3)
 <a name="line207">207: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  i,j,row,mx,my
@@ -255,11 +255,11 @@
 <a name="line245">245: </a>!
 <a name="line246">246: </a>      subroutine FormFunction(ts,t,X,F,user,ierr)
 <a name="line247">247: </a>      implicit none
-<a name="line248">248: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line249">249: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line250">250: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line251">251: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line252">252: </a> #include <A href="../../../../include/finclude/petscts.h.html">finclude/petscts.h</A>
+<a name="line248">248: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line249">249: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line250">250: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line251">251: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line252">252: </a><font color="#A020F0">#include &lt;finclude/petscts.h&gt;</font>
 <a name="line253">253: </a>      <A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>       ts
 <a name="line254">254: </a>      double precision  t
 <a name="line255">255: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>               X,F
@@ -318,11 +318,11 @@
 <a name="line308">308: </a>!
 <a name="line309">309: </a>      subroutine FormJacobian(ts,ctime,X,JJ,B,flag,user,ierr)
 <a name="line310">310: </a>      implicit none
-<a name="line311">311: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line312">312: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line313">313: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line314">314: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line315">315: </a> #include <A href="../../../../include/finclude/petscts.h.html">finclude/petscts.h</A>
+<a name="line311">311: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line312">312: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line313">313: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line314">314: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line315">315: </a><font color="#A020F0">#include &lt;finclude/petscts.h&gt;</font>
 <a name="line316">316: </a>      <A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>               ts
 <a name="line317">317: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>              X
 <a name="line318">318: </a>      <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>              JJ,B

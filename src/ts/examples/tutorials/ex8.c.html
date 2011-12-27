@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:47:50+00:00">
+<meta name="date" content="2011-10-29T19:20:38+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -23,7 +23,7 @@
 <a name="line13"> 13: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
 <a name="line14"> 14: </a><font color="#B22222">     petscksp.h   - linear solvers</font>
 <a name="line15"> 15: </a><font color="#B22222">*/</font>
-<a name="line16"> 16: </a> #include <A href="../../../../include/petscts.h.html">petscts.h</A>
+<a name="line16"> 16: </a><font color="#A020F0">#include &lt;petscts.h&gt;</font>
 
 <a name="line18"> 18: </a><font color="#4169E1">typedef struct _Problem *Problem;</font>
 <a name="line19"> 19: </a><font color="#4169E1"><a name="_Problem"></a>struct _Problem </font>{
@@ -89,7 +89,7 @@
 <a name="line89"> 89: </a>{
 <a name="line91"> 91: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x;
 
-<a name="line94"> 94: </a>  <font color="#4169E1">if</font> (t != 0) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"not implemented"</font>);
+<a name="line94"> 94: </a>  <font color="#4169E1">if</font> (t != 0) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"not implemented"</font>);
 <a name="line95"> 95: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(X,&amp;x);
 <a name="line96"> 96: </a>  x[0] = 1;
 <a name="line97"> 97: </a>  x[1] = 0;
@@ -236,7 +236,7 @@
 <a name="line267">267: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>             x,r;          <font color="#B22222">/* solution, residual vectors */</font>
 <a name="line268">268: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>             A;            <font color="#B22222">/* Jacobian matrix */</font>
 <a name="line269">269: </a>  Problem         problem;
-<a name="line270">270: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      use_monitor;
+<a name="line270">270: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       use_monitor;
 <a name="line271">271: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        steps,maxsteps = 100;
 <a name="line272">272: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       ftime;
 <a name="line273">273: </a>  MonitorCtx      mon;
@@ -259,7 +259,7 @@
 <a name="line290">290: </a>  {
 <a name="line291">291: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsList.html#PetscOptionsList">PetscOptionsList</A>(<font color="#666666">"-problem_type"</font>,<font color="#666666">"Name of problem to run"</font>,<font color="#666666">""</font>,plist,pname,pname,<font color="#4169E1">sizeof</font>(pname),<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line292">292: </a>    use_monitor = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line293">293: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsTruth.html#PetscOptionsTruth">PetscOptionsTruth</A>(<font color="#666666">"-monitor_error"</font>,<font color="#666666">"Display errors relative to exact solutions"</font>,<font color="#666666">""</font>,use_monitor,&amp;use_monitor,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line293">293: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(<font color="#666666">"-monitor_error"</font>,<font color="#666666">"Display errors relative to exact solutions"</font>,<font color="#666666">""</font>,use_monitor,&amp;use_monitor,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line294">294: </a>  }
 <a name="line295">295: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>();
 
@@ -269,8 +269,8 @@
 <a name="line300">300: </a>  {
 <a name="line301">301: </a>    <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*pcreate)(Problem);
 
-<a name="line303">303: </a>    <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(plist,MPI_COMM_WORLD,pname,(void(**)(void))&amp;pcreate);
-<a name="line304">304: </a>    <font color="#4169E1">if</font> (!pcreate) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(1,<font color="#666666">"No problem '%s'"</font>,pname);
+<a name="line303">303: </a>    <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(plist,MPI_COMM_WORLD,pname,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,(void(**)(void))&amp;pcreate);
+<a name="line304">304: </a>    <font color="#4169E1">if</font> (!pcreate) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"No problem '%s'"</font>,pname);
 <a name="line305">305: </a>    (*pcreate)(problem);
 <a name="line306">306: </a>  }
 
@@ -295,7 +295,7 @@
 <a name="line326">326: </a>  <A href="../../../../docs/manualpages/TS/TSCreate.html#TSCreate">TSCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;ts);
 <a name="line327">327: </a>  <A href="../../../../docs/manualpages/TS/TSSetProblemType.html#TSSetProblemType">TSSetProblemType</A>(ts,TS_NONLINEAR);
 <a name="line328">328: </a>  <A href="../../../../docs/manualpages/TS/TSSetType.html#TSSetType">TSSetType</A>(ts,<A href="../../../../docs/manualpages/TS/TSGL.html#TSGL">TSGL</A>); <font color="#B22222">/* General Linear method, <A href="../../../../docs/manualpages/TS/TSTHETA.html#TSTHETA">TSTHETA</A> can also solve DAE */</font>
-<a name="line329">329: </a>  <A href="../../../../docs/manualpages/TS/TSSetIFunction.html#TSSetIFunction">TSSetIFunction</A>(ts,problem-&gt;function,problem-&gt;data);
+<a name="line329">329: </a>  <A href="../../../../docs/manualpages/TS/TSSetIFunction.html#TSSetIFunction">TSSetIFunction</A>(ts,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,problem-&gt;function,problem-&gt;data);
 <a name="line330">330: </a>  <A href="../../../../docs/manualpages/TS/TSSetIJacobian.html#TSSetIJacobian">TSSetIJacobian</A>(ts,A,A,problem-&gt;jacobian,problem-&gt;data);
 <a name="line331">331: </a>  <A href="../../../../docs/manualpages/TS/TSSetDuration.html#TSSetDuration">TSSetDuration</A>(ts,maxsteps,problem-&gt;final_time);
 <a name="line332">332: </a>  <font color="#4169E1">if</font> (use_monitor) {
@@ -317,27 +317,29 @@
 <a name="line348">348: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
 <a name="line349">349: </a><font color="#B22222">     Solve nonlinear system</font>
 <a name="line350">350: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
-<a name="line351">351: </a>  <A href="../../../../docs/manualpages/TS/TSStep.html#TSStep">TSStep</A>(ts,&amp;steps,&amp;ftime);
-<a name="line352">352: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"steps %D, ftime %G\n"</font>,steps,ftime);
+<a name="line351">351: </a>  <A href="../../../../docs/manualpages/TS/TSSolve.html#TSSolve">TSSolve</A>(ts,x,&amp;ftime);
+<a name="line352">352: </a>  <A href="../../../../docs/manualpages/TS/TSGetTimeStepNumber.html#TSGetTimeStepNumber">TSGetTimeStepNumber</A>(ts,&amp;steps);
+<a name="line353">353: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"steps %D, ftime %G\n"</font>,steps,ftime);
+<a name="line354">354: </a>  MonitorError(ts,steps,ftime,x,&amp;mon);
 
-<a name="line354">354: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
-<a name="line355">355: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
-<a name="line356">356: </a><font color="#B22222">     are no longer needed.</font>
-<a name="line357">357: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
-<a name="line358">358: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line359">359: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line360">360: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(r);
-<a name="line361">361: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(mon.x);
-<a name="line362">362: </a>  <A href="../../../../docs/manualpages/TS/TSDestroy.html#TSDestroy">TSDestroy</A>(ts);
-<a name="line363">363: </a>  <font color="#4169E1">if</font> (problem-&gt;destroy) {
-<a name="line364">364: </a>    (*problem-&gt;destroy)(problem);
-<a name="line365">365: </a>  }
-<a name="line366">366: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(problem);
-<a name="line367">367: </a>  <A href="../../../../docs/manualpages/Sys/PetscFListDestroy.html#PetscFListDestroy">PetscFListDestroy</A>(&amp;plist);
+<a name="line356">356: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line357">357: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
+<a name="line358">358: </a><font color="#B22222">     are no longer needed.</font>
+<a name="line359">359: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line360">360: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line361">361: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line362">362: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;r);
+<a name="line363">363: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mon.x);
+<a name="line364">364: </a>  <A href="../../../../docs/manualpages/TS/TSDestroy.html#TSDestroy">TSDestroy</A>(&amp;ts);
+<a name="line365">365: </a>  <font color="#4169E1">if</font> (problem-&gt;destroy) {
+<a name="line366">366: </a>    (*problem-&gt;destroy)(problem);
+<a name="line367">367: </a>  }
+<a name="line368">368: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(problem);
+<a name="line369">369: </a>  <A href="../../../../docs/manualpages/Sys/PetscFListDestroy.html#PetscFListDestroy">PetscFListDestroy</A>(&amp;plist);
 
-<a name="line369">369: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line370">370: </a>  <font color="#4169E1">return</font>(0);
-<a name="line371">371: </a>}
+<a name="line371">371: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line372">372: </a>  <font color="#4169E1">return</font>(0);
+<a name="line373">373: </a>}
 </pre>
 </body>
 

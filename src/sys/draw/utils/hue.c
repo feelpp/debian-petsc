@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscsys.h"              /*I "petscsys.h" I*/
+#include <petscsys.h>              /*I "petscsys.h" I*/
 
 /*
     Set up a color map, using uniform separation in hue space.
@@ -16,7 +15,7 @@ static PetscReal Gamma = 2.0;
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawUtilitySetGamma"  
-PetscErrorCode PETSC_DLLEXPORT PetscDrawUtilitySetGamma(PetscReal g)
+PetscErrorCode  PetscDrawUtilitySetGamma(PetscReal g)
 {
   PetscFunctionBegin;
   Gamma = g;
@@ -72,7 +71,7 @@ static PetscErrorCode PetscDrawUtilityHlsToRgb(int h,int l,int s,unsigned char *
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawUtilitySetCmapHue" 
-PetscErrorCode PETSC_DLLEXPORT PetscDrawUtilitySetCmapHue(unsigned char *red,unsigned char *green,unsigned char * blue,int mapsize)
+PetscErrorCode  PetscDrawUtilitySetCmapHue(unsigned char *red,unsigned char *green,unsigned char * blue,int mapsize)
 {
   PetscErrorCode ierr;
   int        i,hue,lightness,saturation;

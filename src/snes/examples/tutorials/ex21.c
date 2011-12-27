@@ -1,9 +1,10 @@
 
 static char help[] = "Solves PDE optimization problem.\n\n";
 
-#include "petscda.h"
-#include "petscpf.h"
-#include "petscsnes.h"
+#include <petscdmda.h>
+#include <petscdmcomposite.h>
+#include <petscpf.h>
+#include <petscsnes.h>
 
 /*
 
@@ -35,9 +36,9 @@ static char help[] = "Solves PDE optimization problem.\n\n";
 */
 
 typedef struct {
-  DA           da1,da2;
+  DM           da1,da2;
   PetscInt     nredundant;
-  DMComposite  packer;
+  DM           packer;
   PetscViewer  u_viewer,lambda_viewer;
   PetscViewer  fu_viewer,flambda_viewer;
 } UserCtx;
@@ -62,11 +63,11 @@ int main(int argc,char **argv)
   ierr = DMCompositeCreate(PETSC_COMM_WORLD,&user.packer);CHKERRQ(ierr);
   user.nredundant = 1;
   ierr = DMCompositeAddArray(user.packer,0,user.nredundant);CHKERRQ(ierr);
-  ierr = DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,-5,1,1,PETSC_NULL,&user.da1);CHKERRQ(ierr);
+  ierr = DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,-5,1,1,PETSC_NULL,&user.da1);CHKERRQ(ierr);
   ierr = DMCompositeAddDM(user.packer,(DM)user.da1);CHKERRQ(ierr);
-  ierr = DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,-5,1,1,PETSC_NULL,&user.da2);CHKERRQ(ierr);
+  ierr = DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,-5,1,1,PETSC_NULL,&user.da2);CHKERRQ(ierr);
   ierr = DMCompositeAddDM(user.packer,(DM)user.da2);CHKERRQ(ierr);
-  ierr = DMCompositeCreateGlobalVector(user.packer,&U);CHKERRQ(ierr);
+  ierr = DMCreateGlobalVector(user.packer,&U);CHKERRQ(ierr);
   ierr = VecDuplicate(U,&FU);CHKERRQ(ierr);
 
   /* create graphics windows */
@@ -83,21 +84,23 @@ int main(int argc,char **argv)
   ierr = SNESMonitorSet(snes,Monitor,&user,0);CHKERRQ(ierr);
   ierr = SNESSolve(snes,PETSC_NULL,U);CHKERRQ(ierr);
   ierr = SNESGetIterationNumber(snes,&its);CHKERRQ(ierr);
-  ierr = SNESDestroy(snes);CHKERRQ(ierr);
+  ierr = SNESDestroy(&snes);CHKERRQ(ierr);
 
-  ierr = DADestroy(user.da1);CHKERRQ(ierr);
-  ierr = DADestroy(user.da2);CHKERRQ(ierr);
-  ierr = DMCompositeDestroy(user.packer);CHKERRQ(ierr);
-  ierr = VecDestroy(U);CHKERRQ(ierr);
-  ierr = VecDestroy(FU);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(user.u_viewer);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(user.lambda_viewer);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(user.fu_viewer);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(user.flambda_viewer);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = DMDestroy(&user.da1);CHKERRQ(ierr);
+  ierr = DMDestroy(&user.da2);CHKERRQ(ierr);
+  ierr = DMDestroy(&user.packer);CHKERRQ(ierr);
+  ierr = VecDestroy(&U);CHKERRQ(ierr);
+  ierr = VecDestroy(&FU);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&user.u_viewer);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&user.lambda_viewer);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&user.fu_viewer);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&user.flambda_viewer);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  
+#undef __FUNCT__
+#define __FUNCT__ "FormFunction"
 /*
       Evaluates FU = Gradiant(L(w,u,lambda))
 
@@ -115,12 +118,12 @@ PetscErrorCode FormFunction(SNES snes,Vec U,Vec FU,void* dummy)
   ierr = DMCompositeGetLocalVectors(user->packer,&fw,&vfu,&vflambda);CHKERRQ(ierr);
   ierr = DMCompositeScatter(user->packer,U,w,vu,vlambda);CHKERRQ(ierr);
 
-  ierr = DAGetCorners(user->da1,&xs,PETSC_NULL,PETSC_NULL,&xm,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
-  ierr = DAGetInfo(user->da1,0,&N,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
-  ierr = DAVecGetArray(user->da1,vu,&u);CHKERRQ(ierr);
-  ierr = DAVecGetArray(user->da1,vfu,&fu);CHKERRQ(ierr);
-  ierr = DAVecGetArray(user->da1,vlambda,&lambda);CHKERRQ(ierr);
-  ierr = DAVecGetArray(user->da1,vflambda,&flambda);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(user->da1,&xs,PETSC_NULL,PETSC_NULL,&xm,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(user->da1,0,&N,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(user->da1,vu,&u);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(user->da1,vfu,&fu);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(user->da1,vlambda,&lambda);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(user->da1,vflambda,&flambda);CHKERRQ(ierr);
   d    = (N-1.0);
   h    = 1.0/d;
 
@@ -145,17 +148,19 @@ PetscErrorCode FormFunction(SNES snes,Vec U,Vec FU,void* dummy)
     else               fu[i]   = -(d*(u[i+1] - 2.0*u[i] + u[i-1]) - 2.0*h);
   } 
 
-  ierr = DAVecRestoreArray(user->da1,vu,&u);CHKERRQ(ierr);
-  ierr = DAVecRestoreArray(user->da1,vfu,&fu);CHKERRQ(ierr);
-  ierr = DAVecRestoreArray(user->da1,vlambda,&lambda);CHKERRQ(ierr);
-  ierr = DAVecRestoreArray(user->da1,vflambda,&flambda);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(user->da1,vu,&u);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(user->da1,vfu,&fu);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(user->da1,vlambda,&lambda);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(user->da1,vflambda,&flambda);CHKERRQ(ierr);
 
-  ierr = DMCompositeGather(user->packer,FU,fw,vfu,vflambda);CHKERRQ(ierr);
+  ierr = DMCompositeGather(user->packer,FU,INSERT_VALUES,fw,vfu,vflambda);CHKERRQ(ierr);
   ierr = DMCompositeRestoreLocalVectors(user->packer,&w,&vu,&vlambda);CHKERRQ(ierr);
   ierr = DMCompositeRestoreLocalVectors(user->packer,&fw,&vfu,&vflambda);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
+#undef __FUNCT__
+#define __FUNCT__ "Monitor"
 PetscErrorCode Monitor(SNES snes,PetscInt its,PetscReal rnorm,void *dummy)
 {
   UserCtx        *user = (UserCtx*)dummy;
@@ -166,14 +171,14 @@ PetscErrorCode Monitor(SNES snes,PetscInt its,PetscReal rnorm,void *dummy)
   PetscFunctionBegin;
   ierr = SNESGetSolution(snes,&U);CHKERRQ(ierr);
   ierr = DMCompositeGetAccess(user->packer,U,&w,&u,&lambda);CHKERRQ(ierr);
-  ierr = VecView(u,user->u_viewer);
-  ierr = VecView(lambda,user->lambda_viewer);
+  ierr = VecView(u,user->u_viewer);CHKERRQ(ierr);
+  ierr = VecView(lambda,user->lambda_viewer);CHKERRQ(ierr);
   ierr = DMCompositeRestoreAccess(user->packer,U,&w,&u,&lambda);CHKERRQ(ierr);
 
   ierr = SNESGetFunction(snes,&F,0,0);CHKERRQ(ierr);
   ierr = DMCompositeGetAccess(user->packer,F,&w,&u,&lambda);CHKERRQ(ierr);
-  ierr = VecView(u,user->fu_viewer);
-  ierr = VecView(lambda,user->flambda_viewer);
+  ierr = VecView(u,user->fu_viewer);CHKERRQ(ierr);
+  ierr = VecView(lambda,user->flambda_viewer);CHKERRQ(ierr);
   ierr = DMCompositeRestoreAccess(user->packer,F,&w,&u,&lambda);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

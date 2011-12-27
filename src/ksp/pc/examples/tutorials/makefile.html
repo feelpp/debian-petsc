@@ -3,7 +3,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:39:07+00:00">
+<meta name="date" content="2011-10-29T19:11:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@ FFLAGS          =
 CPPFLAGS        =
 FPPFLAGS        =
 LOCDIR          = src/ksp/pc/examples/tutorials/
-EXAMPLESC       = ex1.c ex2.c ex3.c
+EXAMPLESC       = ex1.c ex2.c
 EXAMPLESF       =
 MANSEC          = <A href="ROOT/docs/manualpages/PC/PC.html#PC">PC</A>
 
@@ -28,25 +28,12 @@ include ${PETSC_DIR}/conf/rules
         -${CLINKER}  -o ex2 ex2.o ${PETSC_KSP_LIB} 
         ${RM} ex2.o
 
-<strong><font color="#FF0000">ex3:</font></strong> ex3.o  chkopts
-        -${CLINKER}  -o ex3 ex3.o ${PETSC_KSP_LIB} 
-        ${RM} ex3.o
 <font color="#A020F0">#------------------------------------------------------------------------------------</font>
-<strong><font color="#FF0000">runex3:</font></strong>
-        -@${MPIEXEC} -n 1 ./ex3 -ksp_monitor_short &gt; ex3_inode.out 2&gt;&amp;1;
-        -@${MPIEXEC} -n 1 ./ex3 -ksp_monitor_short -mat_no_inode &gt; ex3.tmp 2&gt;&amp;1; \
-        <font color="#4169E1">if</font> (${DIFF} ex3_inode.out ex3.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex3, diffs above"</font>; fi; \
-           ${RM} -f ex3_inode.out; ${RM} -f ex3.tmp
+<strong><font color="#FF0000">runex1:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex1 -pc_factor_shift_type positive_definite 
+        -@${RM} -f ex1.tmp
 
-<strong><font color="#FF0000">runex3_pd:</font></strong>
-        -@${MPIEXEC} -n 1 ./ex3 -ksp_monitor_short -pc_factor_shift_type POSITIVE_DEFINITE &gt; ex3_inode.out 2&gt;&amp;1;
-        -@${MPIEXEC} -n 1 ./ex3 -ksp_monitor_short -pc_factor_shift_type POSITIVE_DEFINITE -mat_no_inode &gt; ex3.tmp 2&gt;&amp;1; \
-        <font color="#4169E1">if</font> (${DIFF} ex3_inode.out ex3.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex3, diffs above"</font>; fi; \
-           ${RM} -f ex3_inode.out; ${RM} -f ex3.tmp
-
-TESTEXAMPLES_C           = ex3.PETSc runex3 runex3_pd ex3.rm 
+TESTEXAMPLES_C           = ex1.PETSc runex1 ex1.rm 
 TESTEXAMPLES_C_X11 = ex2.PETSc ex2.rm
 
 include ${PETSC_DIR}/conf/test

@@ -26,12 +26,18 @@ if useThreads is None:
 else:
   useThreads = int(useThreads)
 
+useSelect = nargs.Arg.findArgument('useSelect', sys.argv[1:])
+if useSelect is None:
+  useSelect = 1
+else:
+  useSelect = int(useSelect)
+
 import logger
 
 class Script(logger.Logger):
-  def __init__(self, clArgs = None, argDB = None):
+  def __init__(self, clArgs = None, argDB = None, log = None):
     self.checkPython()
-    logger.Logger.__init__(self, clArgs, argDB)
+    logger.Logger.__init__(self, clArgs, argDB, log)
     self.shell = '/bin/sh'
     self.showHelp = 1
     return
@@ -76,7 +82,11 @@ class Script(logger.Logger):
     logger.Logger.setup(self)
     self._setup = 1
     if self.hasHelpFlag():
-      self.help.output()
+      if self.argDB.target == ['default']:
+        sections = None
+      else:
+        sections = self.argDB.target
+      self.help.output(sections = sections)
       sys.exit()
     return
 
@@ -86,8 +96,8 @@ class Script(logger.Logger):
     return
 
   def checkPython(self):
-    if not hasattr(sys, 'version_info') or float(sys.version_info[0]) < 2 or float(sys.version_info[1]) < 2:
-      raise RuntimeError('BuildSystem requires Python version 2.2 or higher. Get Python at http://www.python.org')
+    if not hasattr(sys, 'version_info') or float(sys.version_info[0]) != 2 or float(sys.version_info[1]) < 3:
+      raise RuntimeError('BuildSystem requires Python2 version 2.3 or higher. Get Python at http://www.python.org')
     return
 
   def getModule(root, name):
@@ -114,11 +124,11 @@ class Script(logger.Logger):
 
   if USE_SUBPROCESS:
 
-    def runShellCommand(command, log=None):
+    def runShellCommand(command, log=None, cwd=None):
       Popen = subprocess.Popen
       PIPE  = subprocess.PIPE
-      if log: log.write('Executing: '+command+'\n')
-      pipe = Popen(command, stdin=None, stdout=PIPE, stderr=PIPE,
+      if log: log.write('Executing: %s\n' % (command,))
+      pipe = Popen(command, cwd=cwd, stdin=None, stdout=PIPE, stderr=PIPE,
                    bufsize=-1, shell=True, universal_newlines=True)
       (out, err) = pipe.communicate()
       ret = pipe.returncode
@@ -142,41 +152,50 @@ class Script(logger.Logger):
       return (input, output, err, pipe)
     openPipe = staticmethod(openPipe)
 
-    def runShellCommand(command, log = None):
-      import select
+    def runShellCommand(command, log = None, cwd = None):
+      import select, os
 
       ret        = None
       out        = ''
       err        = ''
       loginError = 0
-      if log: log.write('Executing: '+command+'\n')
+      if cwd is not None:
+        oldpath = os.getcwd()
+        os.chdir(cwd)
+      if log: log.write('Executing: %s\n' % (command,))
       (input, output, error, pipe) = Script.openPipe(command)
+      if cwd is not None:
+        os.chdir(oldpath)
       input.close()
-      outputClosed = 0
-      errorClosed  = 0
-      lst = [output, error]
-      while 1:
-        ready = select.select(lst, [], [])
-        if len(ready[0]):
-          if error in ready[0]:
-            msg = error.readline()
-            if msg:
-              err += msg
-            else:
-              errorClosed = 1
-              lst.remove(error)
-          if output in ready[0]:
-            msg = output.readline()
-            if msg:
-              out += msg
-            else:
-              outputClosed = 1
-              lst.remove(output)
-          if out.find('password:') >= 0 or err.find('password:') >= 0:
-            loginError = 1
+      if useSelect:
+        outputClosed = 0
+        errorClosed  = 0  
+        lst = [output, error]
+        while 1:
+          ready = select.select(lst, [], [])
+          if len(ready[0]):
+            if error in ready[0]:
+              msg = error.readline()
+              if msg:
+                err += msg
+              else:
+                errorClosed = 1
+                lst.remove(error)
+            if output in ready[0]:
+              msg = output.readline()
+              if msg:
+                out += msg
+              else:
+                outputClosed = 1
+                lst.remove(output)
+            if out.find('password:') >= 0 or err.find('password:') >= 0:
+              loginError = 1
+              break
+          if outputClosed and errorClosed:
             break
-        if outputClosed and errorClosed:
-          break
+      else:
+        out = output.read()
+        err = error.read()
       output.close()
       error.close()
       if pipe:
@@ -190,10 +209,10 @@ class Script(logger.Logger):
 
   def defaultCheckCommand(command, status, output, error):
     '''Raise an error if the exit status is nonzero'''
-    if status: raise RuntimeError('Could not execute \''+command+'\':\n'+output+error)
+    if status: raise RuntimeError('Could not execute "%s":\n%s' % (command,output+error))
   defaultCheckCommand = staticmethod(defaultCheckCommand)
 
-  def executeShellCommand(command, checkCommand = None, timeout = 600.0, log = None):
+  def executeShellCommand(command, checkCommand = None, timeout = 600.0, log = None, lineLimit = 0, cwd=None):
     '''Execute a shell command returning the output, and optionally provide a custom error checker
        - This returns a tuple of the (output, error, statuscode)'''
     if not checkCommand:
@@ -204,9 +223,11 @@ class Script(logger.Logger):
       import re
       # get rid of multiple blank lines
       output = re.sub('\n[\n]*','\n', output)
+      if lineLimit:
+        output = '\n'.join(output.split('\n')[:lineLimit])
       log.write('sh: '+output+'\n')
       return output
-    def runInShell(command, log):
+    def runInShell(command, log, cwd):
       if useThreads:
         import threading
         class InShell(threading.Thread):
@@ -215,7 +236,8 @@ class Script(logger.Logger):
             self.name = 'Shell Command'
             self.setDaemon(1)
           def run(self):
-            (self.output, self.error, self.status) = Script.runShellCommand(command, log)
+            (self.output, self.error, self.status) = ('', '', -1) # So these fields exist even if command fails with no output
+            (self.output, self.error, self.status) = Script.runShellCommand(command, log, cwd)
         thread = InShell()
         thread.start()
         thread.join(timeout)
@@ -226,47 +248,20 @@ class Script(logger.Logger):
         else:
           return (thread.output, thread.error, thread.status)
       else:
-        return Script.runShellCommand(command, log)
+        return Script.runShellCommand(command, log, cwd)
 
-    log.write('sh: '+command+'\n')
-    (output, error, status) = runInShell(command, log)
+    log.write('sh: %s\n' % (command,))
+    (output, error, status) = runInShell(command, log, cwd)
     output = logOutput(log, output)
     checkCommand(command, status, output, error)
     return (output, error, status)
   executeShellCommand = staticmethod(executeShellCommand)
 
-  def getDebugger(self, className = 'PETSc.DebugI.GDB.Debugger'):
-    if not hasattr(self, '_debugger'):
-      try:
-        import SIDL.Loader
-      except ImportError, e:
-        self.logPrint('Cannot locate a functional SIDL loader: '+str(e))
-        return
-      try:
-        import PETSc.Debug.Debugger
-      except ImportError, e:
-        self.logPrint('Could not load Petsc debugger module: '+str(e))
-        return
-      debugger = PETSc.Debug.Debugger.Debugger(SIDL.Loader.createClass(className))
-      if not debugger:
-        self.logPrint('Could not load debugger: '+cls)
-        return
-      debugger.setProgram('/usr/local/python/bin/python')
-      debugger.setUseXterm(1)
-      debugger.setDebugger('/usr/local/gdb/bin/gdb')
-      debugger.attach()
-      self._debugger = debugger
-    return self._debugger
-  def setDebugger(self, debugger):
-    self._debugger = debugger
-    return
-  debugger = property(getDebugger, setDebugger, doc = 'The debugger')
-
   def loadConfigure(self, argDB = None):
     if argDB is None:
       argDB = self.argDB
     if not 'configureCache' in argDB:
-      self.logPrint('No cached configure in RDict')
+      self.logPrint('No cached configure in RDict at '+str(argDB.saveFilename))
       return None
     try:
       cache = argDB['configureCache']

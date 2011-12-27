@@ -7,6 +7,12 @@
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscMalloc"><H1>PetscMalloc</H1></A>
 Allocates memory 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode PetscMalloc(size_t m,void **result)
+</PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>m </B> -number of bytes to allocate
 <br>
@@ -15,10 +21,6 @@ Allocates memory
 <DT><B>result </B> -memory allocated
 <br>
 <P>
-<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
-<PRE>
-PetscErrorCode PetscMalloc(size_t m,void **result)
-</PRE>
 
 <P>
 Notes: Memory is always allocated at least double aligned
@@ -37,6 +39,7 @@ properly handle not freeing the null pointer.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/sys/random/examples/tutorials/ex1.c.html">src/sys/random/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex6.c.html">src/vec/vec/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex8.c.html">src/vec/vec/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex9.c.html">src/vec/vec/examples/tutorials/ex9.c.html</A><BR>
@@ -46,6 +49,5 @@ properly handle not freeing the null pointer.
 <A HREF="../../../src/mat/examples/tutorials/ex10.c.html">src/mat/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex11.c.html">src/mat/examples/tutorials/ex11.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex12.c.html">src/mat/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
 </BODY></HTML>

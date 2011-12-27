@@ -1,5 +1,5 @@
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -10,7 +10,7 @@ int main(int argc,char **argv)
   void        *arr[1000],*dummy;
   int         ierr,i,rand1[1000],rand2[1000];
   PetscRandom r;
-  PetscTruth  flg;
+  PetscBool   flg;
   
   PetscInitialize(&argc,&argv,0,0);
   
@@ -54,7 +54,7 @@ int main(int argc,char **argv)
   if(PetscOptionsHasName(PETSC_NULL,"-malloc",&flg),flg) fprintf(stdout,"-malloc ");
   fprintf(stdout,"\n"); 
   
-  ierr = PetscRandomDestroy(r);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&r);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   PetscFunctionReturn(0);
 }

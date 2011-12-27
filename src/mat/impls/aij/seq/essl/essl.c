@@ -1,10 +1,9 @@
-#define PETSCMAT_DLL
 
 /* 
         Provides an interface to the IBM RS6000 Essl sparse solver
 
 */
-#include "../src/mat/impls/aij/seq/aij.h"
+#include <../src/mat/impls/aij/seq/aij.h>
 
 /* #include <essl.h> This doesn't work!  */
 
@@ -25,21 +24,21 @@ typedef struct {
   PetscScalar *aux;
   int         naux;
 
-  PetscTruth CleanUpESSL;
+  PetscBool  CleanUpESSL;
 } Mat_Essl;
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "MatDestroy_Essl"
-PetscErrorCode MatDestroy_Essl(Mat A) 
+PetscErrorCode MatDestroy_Essl(Mat A)
 {
   PetscErrorCode ierr;
   Mat_Essl       *essl=(Mat_Essl*)A->spptr;
 
   PetscFunctionBegin;
-  if (essl->CleanUpESSL) {
+  if (essl && essl->CleanUpESSL) {
     ierr = PetscFree4(essl->a,essl->aux,essl->ia,essl->ja);CHKERRQ(ierr);
   }
-  ierr = PetscFree(essl);CHKERRQ(ierr);
+  ierr = PetscFree(A->spptr);CHKERRQ(ierr);
   ierr = MatDestroy_SeqAIJ(A);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -131,12 +130,12 @@ EXTERN_C_BEGIN
 PetscErrorCode MatFactorGetSolverPackage_essl(Mat A,const MatSolverPackage *type)
 {
   PetscFunctionBegin;
-  *type = MAT_SOLVER_ESSL;
+  *type = MATSOLVERESSL;
   PetscFunctionReturn(0);
 }
 
 /*MC
-  MAT_SOLVER_ESSL - "essl" - Provides direct solvers (LU) for sequential matrices 
+  MATSOLVERESSL - "essl" - Provides direct solvers (LU) for sequential matrices 
                               via the external package ESSL.
 
   If ESSL is installed (see the manual for
@@ -158,7 +157,7 @@ PetscErrorCode MatGetFactor_seqaij_essl(Mat A,MatFactorType ftype,Mat *F)
   Mat_Essl       *essl;
 
   PetscFunctionBegin;
-  if (A->cmap->N != A->rmap->N) SETERRQ(PETSC_ERR_ARG_SIZ,"matrix must be square"); 
+  if (A->cmap->N != A->rmap->N) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"matrix must be square"); 
   ierr = MatCreate(((PetscObject)A)->comm,&B);CHKERRQ(ierr);
   ierr = MatSetSizes(B,PETSC_DECIDE,PETSC_DECIDE,A->rmap->n,A->cmap->n);CHKERRQ(ierr);
   ierr = MatSetType(B,((PetscObject)A)->type_name);CHKERRQ(ierr);
@@ -168,7 +167,7 @@ PetscErrorCode MatGetFactor_seqaij_essl(Mat A,MatFactorType ftype,Mat *F)
   B->spptr                 = essl;
   B->ops->lufactorsymbolic = MatLUFactorSymbolic_Essl;
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)B,"MatFactorGetSolverPackage_C","MatFactorGetSolverPackage_essl",MatFactorGetSolverPackage_essl);CHKERRQ(ierr);
-  B->factor                = MAT_FACTOR_LU;
+  B->factortype            = MAT_FACTOR_LU;
   *F                       = B;
   PetscFunctionReturn(0);
 }

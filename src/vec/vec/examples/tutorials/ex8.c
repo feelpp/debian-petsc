@@ -12,7 +12,7 @@ T*/
      petscsys.h       - base PETSc routines   petscis.h     - index sets
      petscviewer.h - viewers
 */
-#include "petscvec.h"
+#include <petscvec.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -61,9 +61,9 @@ int main(int argc,char **argv)
   if (gindices[ng-1] == M)  gindices[ng-1] = 0;
   {
     ISLocalToGlobalMapping ltog;
-    ierr = ISLocalToGlobalMappingCreate(PETSC_COMM_SELF,ng,gindices,&ltog);CHKERRQ(ierr);
+    ierr = ISLocalToGlobalMappingCreate(PETSC_COMM_SELF,ng,gindices,PETSC_COPY_VALUES,&ltog);CHKERRQ(ierr);
     ierr = VecSetLocalToGlobalMapping(x,ltog);CHKERRQ(ierr);
-    ierr = ISLocalToGlobalMappingDestroy(ltog);CHKERRQ(ierr);
+    ierr = ISLocalToGlobalMappingDestroy(&ltog);CHKERRQ(ierr);
   }
   ierr = PetscFree(gindices);CHKERRQ(ierr);
 
@@ -94,9 +94,9 @@ int main(int argc,char **argv)
       View the vector; then destroy it.
   */
   ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

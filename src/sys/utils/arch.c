@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscsys.h"         /*I  "petscsys.h"  I*/
+#include <petscsys.h>         /*I  "petscsys.h"  I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscGetArchType"
@@ -23,7 +22,7 @@
      Concepts: architecture
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscGetArchType(char str[],size_t slen)
+PetscErrorCode  PetscGetArchType(char str[],size_t slen)
 {
   PetscErrorCode ierr;
 

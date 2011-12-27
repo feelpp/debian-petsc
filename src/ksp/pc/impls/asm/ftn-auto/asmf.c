@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* asm.c */
 /* Fortran interface file */
 
@@ -53,20 +54,20 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcasmsetoverlap_(PC pc,PetscInt *ovl, int *__ierr ){
+void PETSC_STDCALL  pcasmsetoverlap_(PC pc,PetscInt *ovl, int *__ierr ){
 *__ierr = PCASMSetOverlap(
 	(PC)PetscToPointer((pc) ),*ovl);
 }
-void PETSC_STDCALL   pcasmsettype_(PC pc,PCASMType *type, int *__ierr ){
+void PETSC_STDCALL  pcasmsettype_(PC pc,PCASMType *type, int *__ierr ){
 *__ierr = PCASMSetType(
 	(PC)PetscToPointer((pc) ),*type);
 }
-void PETSC_STDCALL   pcasmsetsortindices_(PC pc,PetscTruth *doSort, int *__ierr ){
+void PETSC_STDCALL  pcasmsetsortindices_(PC pc,PetscBool  *doSort, int *__ierr ){
 *__ierr = PCASMSetSortIndices(
 	(PC)PetscToPointer((pc) ),*doSort);
 }
-void PETSC_STDCALL   pcasmcreatesubdomains2d_(PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,PetscInt *dof,PetscInt *overlap,PetscInt *Nsub,IS **is, int *__ierr ){
-*__ierr = PCASMCreateSubdomains2D(*m,*n,*M,*N,*dof,*overlap,Nsub,is);
+void PETSC_STDCALL  pcasmcreatesubdomains2d_(PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,PetscInt *dof,PetscInt *overlap,PetscInt *Nsub,IS **is,IS **is_local, int *__ierr ){
+*__ierr = PCASMCreateSubdomains2D(*m,*n,*M,*N,*dof,*overlap,Nsub,is,is_local);
 }
 #if defined(__cplusplus)
 }

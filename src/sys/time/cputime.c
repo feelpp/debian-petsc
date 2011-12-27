@@ -1,10 +1,10 @@
-#define PETSC_DLL
+
 /*
   This is to allow one to measure CPU time usage of their job, 
   NOT real time usage. Do not use this for reported timings, speedup etc.
 */
 
-#include "petscsys.h"                       /*I "petscsys.h" I*/
+#include <petscsys.h>                       /*I "petscsys.h" I*/
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -27,7 +27,7 @@
 #include <limits.h>
 #undef __FUNCT__  
 #define __FUNCT__ "PetscGetCPUTime"
-PetscErrorCode PETSC_DLLEXPORT PetscGetCPUTime(PetscLogDouble *t)
+PetscErrorCode  PetscGetCPUTime(PetscLogDouble *t)
 {
   struct tms temp;
 
@@ -44,7 +44,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscGetCPUTime(PetscLogDouble *t)
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscGetCPUTime"
-PetscErrorCode PETSC_DLLEXPORT PetscGetCPUTime(PetscLogDouble *t)
+PetscErrorCode  PetscGetCPUTime(PetscLogDouble *t)
 {
   PetscFunctionBegin;
   *t = ((double)clock()) / ((double)CLOCKS_PER_SEC);
@@ -69,7 +69,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscGetCPUTime(PetscLogDouble *t)
 
     Example:
 .vb
-    #include "petscsys.h"
+    #include <petscsys.h>
     ...
     PetscLogDouble t1, t2;
  
@@ -87,7 +87,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscGetCPUTime(PetscLogDouble *t)
     use since it does not include the time for message passing etc.
     Also on many systems the accuracy is only on the order of microseconds.
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscGetCPUTime(PetscLogDouble *t)
+PetscErrorCode  PetscGetCPUTime(PetscLogDouble *t)
 {
   static struct rusage temp;
   PetscLogDouble       foo,foo1;

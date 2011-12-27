@@ -1,15 +1,9 @@
-        subroutine PetscGetCPUTime(t ,ierr)
-       PetscLogDouble t ! PetscLogDouble
+        subroutine PetscMemoryGetCurrentUsage(mem ,ierr)
+       PetscLogDouble mem ! PetscLogDouble
        integer ierr
        end subroutine
-        subroutine PetscGetTime(t ,ierr)
-       PetscLogDouble t ! PetscLogDouble
-       integer ierr
-       end subroutine
-        subroutine PetscBagCreate(comm, bagsize, bag ,ierr)
-       integer comm ! MPI_Comm
-       size_t bagsize ! size_t
-       PetscBag bag ! PetscBag
+        subroutine PetscMemoryGetMaximumUsage(mem ,ierr)
+       PetscLogDouble mem ! PetscLogDouble
        integer ierr
        end subroutine
         subroutine PetscFListDestroy(fl ,ierr)
@@ -30,6 +24,95 @@
         subroutine PetscFListDuplicate(fl, nl ,ierr)
        PetscFList fl ! PetscFList
        PetscFList nl ! PetscFList
+       integer ierr
+       end subroutine
+        subroutine PetscObjectDestroy(obj ,ierr)
+       PetscObject obj ! PetscObject
+       integer ierr
+       end subroutine
+        subroutine PetscCommGetNewTag(comm, tag ,ierr)
+       integer comm ! MPI_Comm
+       PetscMPIInt tag ! PetscMPIInt
+       integer ierr
+       end subroutine
+        subroutine PetscOptionsValidKey(in_str, key ,ierr)
+       character in_str (*) ! char
+       PetscBool key ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PetscOptionsPrefixPush(prefix ,ierr)
+       character prefix (*) ! char
+       integer ierr
+       end subroutine
+        subroutine PetscOptionsPrefixPop(ierr)
+       integer ierr
+       end subroutine
+        subroutine PetscOptionsLeft(ierr)
+       integer ierr
+       end subroutine
+        subroutine PetscOptionsSetFromOptions(ierr)
+       integer ierr
+       end subroutine
+        subroutine PetscOptionsMonitorCancel(ierr)
+       integer ierr
+       end subroutine
+        subroutine PetscObjectGetTabLevel(obj, tab ,ierr)
+       PetscObject obj ! PetscObject
+       PetscInt tab ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscObjectIncrementTabLevel(obj, oldobj, tab ,ierr)
+       PetscObject obj ! PetscObject
+       PetscObject oldobj ! PetscObject
+       PetscInt tab ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscInitialized(isInitialized ,ierr)
+       PetscBool isInitialized ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PetscFinalized(isFinalized ,ierr)
+       PetscBool isFinalized ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PetscDataTypeGetSize(ptype, size ,ierr)
+       PetscDataType ptype ! PetscDataType
+       size_t size ! size_t
+       integer ierr
+       end subroutine
+        subroutine PetscObjectReference(obj ,ierr)
+       PetscObject obj ! PetscObject
+       integer ierr
+       end subroutine
+        subroutine PetscObjectGetReference(obj, cnt ,ierr)
+       PetscObject obj ! PetscObject
+       PetscInt cnt ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscObjectDereference(obj ,ierr)
+       PetscObject obj ! PetscObject
+       integer ierr
+       end subroutine
+        subroutine PetscObjectSetFromOptions(obj ,ierr)
+       PetscObject obj ! PetscObject
+       integer ierr
+       end subroutine
+        subroutine PetscObjectSetUp(obj ,ierr)
+       PetscObject obj ! PetscObject
+       integer ierr
+       end subroutine
+        subroutine PetscMatlabEngineDestroy(v ,ierr)
+       PetscMatlabEngine v ! PetscMatlabEngine
+       integer ierr
+       end subroutine
+        subroutine PetscMatlabEnginePut(mengine, obj ,ierr)
+       PetscMatlabEngine mengine ! PetscMatlabEngine
+       PetscObject obj ! PetscObject
+       integer ierr
+       end subroutine
+        subroutine PetscMatlabEngineGet(mengine, obj ,ierr)
+       PetscMatlabEngine mengine ! PetscMatlabEngine
+       PetscObject obj ! PetscObject
        integer ierr
        end subroutine
         subroutine PetscSynchronizedFlush(comm ,ierr)
@@ -53,7 +136,7 @@
        PetscVoid p ! void
        PetscInt n ! PetscInt
        PetscDataType type ! PetscDataType
-       PetscTruth istemp ! PetscTruth
+       PetscBool istemp ! PetscBool
        integer ierr
        end subroutine
         subroutine PetscBinaryClose(fd ,ierr)
@@ -67,6 +150,20 @@
        off_t offset ! off_t
        integer ierr
        end subroutine
+        subroutine PetscGetCPUTime(t ,ierr)
+       PetscLogDouble t ! PetscLogDouble
+       integer ierr
+       end subroutine
+        subroutine PetscGetTime(t ,ierr)
+       PetscLogDouble t ! PetscLogDouble
+       integer ierr
+       end subroutine
+        subroutine PetscBagCreate(comm, bagsize, bag ,ierr)
+       integer comm ! MPI_Comm
+       size_t bagsize ! size_t
+       PetscBag bag ! PetscBag
+       integer ierr
+       end subroutine
         subroutine PetscSetDefaultDebugger(ierr)
        integer ierr
        end subroutine
@@ -74,19 +171,6 @@
        integer ierr
        end subroutine
         subroutine PetscPopErrorHandler(ierr)
-       integer ierr
-       end subroutine
-        subroutine PetscErrorSetCatchable(err, flg ,ierr)
-       PetscErrorCode err ! PetscErrorCode
-       PetscTruth flg ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine PetscExceptionPush(err ,ierr)
-       PetscErrorCode err ! PetscErrorCode
-       integer ierr
-       end subroutine
-        subroutine PetscExceptionPop(err ,ierr)
-       PetscErrorCode err ! PetscErrorCode
        integer ierr
        end subroutine
         subroutine PetscSetFPTrap(flag ,ierr)
@@ -101,17 +185,14 @@
         subroutine PetscPopSignalHandler(ierr)
        integer ierr
        end subroutine
-        subroutine PetscMemoryGetCurrentUsage(mem ,ierr)
-       PetscLogDouble mem ! PetscLogDouble
-       integer ierr
-       end subroutine
-        subroutine PetscMemoryGetMaximumUsage(mem ,ierr)
-       PetscLogDouble mem ! PetscLogDouble
-       integer ierr
-       end subroutine
         subroutine PetscSortInt(n, i ,ierr)
        PetscInt n ! PetscInt
        PetscInt i (*) ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscSortRemoveDupsInt(n, ii ,ierr)
+       PetscInt n ! PetscInt
+       PetscInt ii (*) ! PetscInt
        integer ierr
        end subroutine
         subroutine PetscSortIntWithArray(n, i, Ii ,ierr)
@@ -130,6 +211,18 @@
        PetscInt n ! PetscInt
        PetscInt i (*) ! PetscInt
        PetscScalar Ii (*) ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine PetscProcessTree(n, mask, parentid, Nlevels, Level,  &
+     &Levelcnt, Idbylevel, Column ,ierr)
+       PetscInt n ! PetscInt
+       PetscBool mask (*) ! PetscBool
+       PetscInt parentid (*) ! PetscInt
+       PetscInt Nlevels ! PetscInt
+       PetscInt Level ! PetscInt
+       PetscInt Levelcnt ! PetscInt
+       PetscInt Idbylevel ! PetscInt
+       PetscInt Column ! PetscInt
        integer ierr
        end subroutine
         subroutine PetscSortIntWithPermutation(n, i, idx ,ierr)
@@ -180,7 +273,7 @@
        PetscVoid str1 ! void
        PetscVoid str2 ! void
        size_t len ! size_t
-       PetscTruth e ! PetscTruth
+       PetscBool e ! PetscBool
        integer ierr
        end subroutine
         subroutine PetscMemmove(a, b, n ,ierr)
@@ -203,85 +296,40 @@
        PetscReal s ! PetscReal
        integer ierr
        end subroutine
-        subroutine PetscObjectDestroy(obj ,ierr)
-       PetscObject obj ! PetscObject
-       integer ierr
-       end subroutine
-        subroutine PetscCommGetNewTag(comm, tag ,ierr)
-       integer comm ! MPI_Comm
-       PetscMPIInt tag ! PetscMPIInt
-       integer ierr
-       end subroutine
-        subroutine PetscOptionsValidKey(in_str, key ,ierr)
-       character in_str (*) ! char
-       PetscTruth key ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine PetscOptionsLeft(ierr)
-       integer ierr
-       end subroutine
-        subroutine PetscOptionsSetFromOptions(ierr)
-       integer ierr
-       end subroutine
-        subroutine PetscOptionsMonitorCancel(ierr)
-       integer ierr
-       end subroutine
-        subroutine PetscObjectExists(obj, exists ,ierr)
-       PetscObject obj ! PetscObject
-       PetscTruth exists ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine PetscInitialized(isInitialized ,ierr)
-       PetscTruth isInitialized ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine PetscFinalized(isFinalized ,ierr)
-       PetscTruth isFinalized ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine PetscGlobalMax(local, result, comm ,ierr)
-       PetscReal local ! PetscReal
-       PetscReal result ! PetscReal
-       integer comm ! MPI_Comm
-       integer ierr
-       end subroutine
-        subroutine PetscGlobalMin(local, result, comm ,ierr)
-       PetscReal local ! PetscReal
-       PetscReal result ! PetscReal
-       integer comm ! MPI_Comm
-       integer ierr
-       end subroutine
-        subroutine PetscGlobalSum(local, result, comm ,ierr)
-       PetscScalar local ! PetscScalar
-       PetscScalar result ! PetscScalar
-       integer comm ! MPI_Comm
-       integer ierr
-       end subroutine
-        subroutine PetscDataTypeGetSize(ptype, size ,ierr)
-       PetscDataType ptype ! PetscDataType
-       size_t size ! size_t
-       integer ierr
-       end subroutine
-        subroutine PetscObjectDereference(obj ,ierr)
-       PetscObject obj ! PetscObject
-       integer ierr
-       end subroutine
-        subroutine PetscObjectSetFromOptions(obj ,ierr)
-       PetscObject obj ! PetscObject
-       integer ierr
-       end subroutine
-        subroutine PetscObjectSetUp(obj ,ierr)
-       PetscObject obj ! PetscObject
-       integer ierr
-       end subroutine
-        subroutine PetscRandomDestroy(r ,ierr)
+        subroutine PetscRandomGetValue(r, val ,ierr)
        PetscRandom r ! PetscRandom
+       PetscScalar val ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine PetscRandomGetValueReal(r, val ,ierr)
+       PetscRandom r ! PetscRandom
+       PetscReal val ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine PetscRandomGetInterval(r, low, high ,ierr)
+       PetscRandom r ! PetscRandom
+       PetscScalar low ! PetscScalar
+       PetscScalar high ! PetscScalar
        integer ierr
        end subroutine
         subroutine PetscRandomSetInterval(r, low, high ,ierr)
        PetscRandom r ! PetscRandom
        PetscScalar low ! PetscScalar
        PetscScalar high ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine PetscRandomDestroy(r ,ierr)
+       PetscRandom r ! PetscRandom
+       integer ierr
+       end subroutine
+        subroutine PetscRandomGetSeed(r, seed ,ierr)
+       PetscRandom r ! PetscRandom
+       unsigned long seed ! unsigned long
+       integer ierr
+       end subroutine
+        subroutine PetscRandomSetSeed(r, seed ,ierr)
+       PetscRandom r ! PetscRandom
+       unsigned long seed ! unsigned long
        integer ierr
        end subroutine
         subroutine PetscRandomSetFromOptions(rnd ,ierr)
@@ -298,27 +346,7 @@
        PetscRandom r ! PetscRandom
        integer ierr
        end subroutine
-        subroutine PetscRandomGetValue(r, val ,ierr)
+        subroutine PetscRandomSeed(r ,ierr)
        PetscRandom r ! PetscRandom
-       PetscScalar val ! PetscScalar
-       integer ierr
-       end subroutine
-        subroutine PetscRandomGetValueReal(r, val ,ierr)
-       PetscRandom r ! PetscRandom
-       PetscReal val ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PetscMatlabEngineDestroy(v ,ierr)
-       PetscMatlabEngine v ! PetscMatlabEngine
-       integer ierr
-       end subroutine
-        subroutine PetscMatlabEnginePut(mengine, obj ,ierr)
-       PetscMatlabEngine mengine ! PetscMatlabEngine
-       PetscObject obj ! PetscObject
-       integer ierr
-       end subroutine
-        subroutine PetscMatlabEngineGet(mengine, obj ,ierr)
-       PetscMatlabEngine mengine ! PetscMatlabEngine
-       PetscObject obj ! PetscObject
        integer ierr
        end subroutine

@@ -8,8 +8,8 @@ Test MatMatSolve().  Input parameters include\n\
      ex27 -f0 <mat_binaryfile>  
 */
 
-#include "petscksp.h"
-EXTERN PetscErrorCode PCShellApply_Matinv(PC,Vec,Vec);
+#include <petscksp.h>
+extern PetscErrorCode PCShellApply_Matinv(PC,Vec,Vec);
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -20,7 +20,7 @@ int main(int argc,char **args)
   Vec            x,b,u;          /* approx solution, RHS, exact solution */
   PetscViewer    fd;             /* viewer */
   char           file[1][PETSC_MAX_PATH_LEN];     /* input file name */
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscErrorCode ierr;
   PetscInt       M,N,i,its;
   PetscReal      norm;
@@ -30,29 +30,21 @@ int main(int argc,char **args)
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(PETSC_ERR_SUP,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP,"This is a uniprocessor example only!");
 
   /* Read matrix and right-hand-side vector */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file[0],PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file[0],PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
   if (!flg) {
-    SETERRQ(PETSC_ERR_USER,"Must indicate binary file with the -f option");   
+    SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_USER,"Must indicate binary file with the -f option");   
   }
 
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file[0],FILE_MODE_READ,&fd);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATAIJ,&A);CHKERRQ(ierr);
-  ierr = PetscExceptionTry1(VecLoad(fd,PETSC_NULL,&b),PETSC_ERR_FILE_READ);     
-  if (PetscExceptionCaught(ierr,PETSC_ERR_FILE_UNEXPECTED) || PetscExceptionCaught(ierr,PETSC_ERR_FILE_READ)) { 
-    /* if file contains no RHS, then use a vector of all ones */
-    PetscInt    m;
-    PetscScalar one = 1.0;
-    ierr = PetscInfo(0,"Using vector of ones for RHS\n");CHKERRQ(ierr);
-    ierr = MatGetLocalSize(A,&m,PETSC_NULL);CHKERRQ(ierr);
-    ierr = VecCreate(PETSC_COMM_WORLD,&b);CHKERRQ(ierr);
-    ierr = VecSetSizes(b,m,PETSC_DECIDE);CHKERRQ(ierr);
-    ierr = VecSetFromOptions(b);CHKERRQ(ierr);
-    ierr = VecSet(b,one);CHKERRQ(ierr);
-  } else CHKERRQ(ierr); 
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr); 
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&b);CHKERRQ(ierr);
+  ierr = VecLoad(b,fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr); 
 
   /* 
      If the loaded matrix is larger than the vector (due to being padded 
@@ -65,9 +57,7 @@ int main(int argc,char **args)
 
     /* Create a new vector b by padding the old one */
     ierr = MatGetLocalSize(A,&m,&n);CHKERRQ(ierr);
-    if (m != n) {
-      SETERRQ2(PETSC_ERR_ARG_SIZ, "This example is not intended for rectangular matrices (%d, %d)", m, n);
-    }
+    if (m != n) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ, "This example is not intended for rectangular matrices (%d, %d)", m, n);
     ierr = VecCreate(PETSC_COMM_WORLD,&tmp);CHKERRQ(ierr);
     ierr = VecSetSizes(tmp,m,PETSC_DECIDE);CHKERRQ(ierr);
     ierr = VecSetFromOptions(tmp);CHKERRQ(ierr);
@@ -79,7 +69,7 @@ int main(int argc,char **args)
       ierr  = VecSetValues(tmp,1,&indx,bold+j,INSERT_VALUES);CHKERRQ(ierr);
     }
     ierr = VecRestoreArray(b,&bold);CHKERRQ(ierr);
-    ierr = VecDestroy(b);CHKERRQ(ierr);
+    ierr = VecDestroy(&b);CHKERRQ(ierr);
     ierr = VecAssemblyBegin(tmp);CHKERRQ(ierr);
     ierr = VecAssemblyEnd(tmp);CHKERRQ(ierr);
     b = tmp;
@@ -110,7 +100,7 @@ int main(int argc,char **args)
   ierr = KSPSetUp(ksp);CHKERRQ(ierr);
   ierr = PCFactorGetMatrix(pc,&F);CHKERRQ(ierr);
   ierr = MatMatSolve(F,B,X);CHKERRQ(ierr);
-  ierr = MatDestroy(B);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
 
   /* Now, set X=inv(A) as a preconditioner */
   ierr = PCSetType(pc,PCSHELL);CHKERRQ(ierr);
@@ -130,11 +120,11 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Residual norm %A\n",norm);CHKERRQ(ierr);    
   
   /* Free work space.  */
-  ierr = MatDestroy(X);CHKERRQ(ierr); 
-  ierr = MatDestroy(A);CHKERRQ(ierr); ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr); ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr); 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&X);CHKERRQ(ierr); 
+  ierr = MatDestroy(&A);CHKERRQ(ierr); ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr); ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr); 
+  ierr = PetscFinalize();
   return 0;
 }
 

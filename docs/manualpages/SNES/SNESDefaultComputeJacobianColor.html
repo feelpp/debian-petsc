@@ -9,9 +9,8 @@
 Computes the Jacobian using finite differences and coloring to exploit matrix sparsity.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscmat.h"  
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultComputeJacobianColor(SNES snes,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
+PetscErrorCode  SNESDefaultComputeJacobianColor(SNES snes,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -51,9 +50,12 @@ as created via <A HREF="../MatFD/MatFDColoringCreate.html#MatFDColoringCreate">M
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex45.c.html">src/snes/examples/tutorials/ex45.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
 </BODY></HTML>

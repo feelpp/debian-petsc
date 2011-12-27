@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:15+00:00">
+<meta name="date" content="2011-10-29T19:12:53+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -30,7 +30,7 @@
 <a name="line20"> 20: </a><font color="#B22222">     petscis.h     - index sets            petscksp.h - Krylov subspace methods</font>
 <a name="line21"> 21: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
 <a name="line22"> 22: </a><font color="#B22222">*/</font>
-<a name="line23"> 23: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line23"> 23: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line27"> 27: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line28"> 28: </a>{
@@ -42,9 +42,9 @@
 <a name="line34"> 34: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       Ii,J,ldim,low,high,iglobal,Istart,Iend;
 <a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,m = 3,n = 2,its;
 <a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank;
-<a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     mat_nonsymmetric = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      mat_nonsymmetric = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line39"> 39: </a><font color="#A020F0">#if defined (PETSC_USE_LOG)</font>
-<a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Sys/PetscLogStage.html#PetscLogStage">PetscLogStage</A>  stages[2];
+<a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Profiling/PetscLogStage.html#PetscLogStage">PetscLogStage</A>  stages[2];
 <a name="line41"> 41: </a><font color="#A020F0">#endif</font>
 
 <a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
@@ -56,7 +56,7 @@
 <a name="line49"> 49: </a>  <font color="#B22222">/*</font>
 <a name="line50"> 50: </a><font color="#B22222">     Set flag if we are doing a nonsymmetric problem; the default is symmetric.</font>
 <a name="line51"> 51: </a><font color="#B22222">  */</font>
-<a name="line52"> 52: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-mat_nonsym"</font>,&amp;mat_nonsymmetric,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line52"> 52: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-mat_nonsym"</font>,&amp;mat_nonsymmetric,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
 <a name="line54"> 54: </a>  <font color="#B22222">/*</font>
 <a name="line55"> 55: </a><font color="#B22222">     Register two stages for separate profiling of the two linear solves.</font>
@@ -298,11 +298,11 @@
 <a name="line291">291: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
 <a name="line292">292: </a><font color="#B22222">     are no longer needed.</font>
 <a name="line293">293: </a><font color="#B22222">  */</font>
-<a name="line294">294: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
-<a name="line295">295: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line296">296: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line297">297: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line298">298: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line294">294: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line295">295: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line296">296: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line297">297: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line298">298: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 
 <a name="line300">300: </a>  <font color="#B22222">/*</font>
 <a name="line301">301: </a><font color="#B22222">     Indicate to PETSc profiling that we're concluding the second stage </font>

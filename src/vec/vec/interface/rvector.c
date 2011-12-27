@@ -1,14 +1,14 @@
-#define PETSCVEC_DLL
 
 /*
      Provides the interface functions for vector operations that have PetscScalar/PetscReal in the signature
    These are the vector functions the user calls.
 */
-#include "private/vecimpl.h"    /*I "petscvec.h" I*/
+#include <private/vecimpl.h>    /*I "petscvec.h" I*/
+static PetscInt VecGetSubVectorSavedStateId = -1;
 
 #define PetscCheckSameSizeVec(x,y) \
-  if ((x)->map->N != (y)->map->N) SETERRQ(PETSC_ERR_ARG_INCOMP,"Incompatible vector global lengths"); \
-  if ((x)->map->n != (y)->map->n) SETERRQ(PETSC_ERR_ARG_INCOMP,"Incompatible vector local lengths");
+  if ((x)->map->N != (y)->map->N) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Incompatible vector global lengths"); \
+  if ((x)->map->n != (y)->map->n) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Incompatible vector local lengths");
 
 
 #undef __FUNCT__  
@@ -16,7 +16,7 @@
 /*@
    VecMaxPointwiseDivide - Computes the maximum of the componentwise division max = max_i abs(x_i/y_i).
 
-   Collective on Vec
+   Logically Collective on Vec
 
    Input Parameters:
 .  x, y  - the vectors
@@ -26,18 +26,18 @@
 
    Level: advanced
 
-   Notes: any subset of the x and may be the same vector.
+   Notes: x and y may be the same vector
           if a particular y_i is zero, it is treated as 1 in the above formula
 
 .seealso: VecPointwiseDivide(), VecPointwiseMult(), VecPointwiseMax(), VecPointwiseMin(), VecPointwiseMaxAbs()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecMaxPointwiseDivide(Vec x,Vec y,PetscReal *max)
+PetscErrorCode  VecMaxPointwiseDivide(Vec x,Vec y,PetscReal *max)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1); 
-  PetscValidHeaderSpecific(y,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1); 
+  PetscValidHeaderSpecific(y,VEC_CLASSID,2);
   PetscValidDoublePointer(max,3);
   PetscValidType(x,1);
   PetscValidType(y,2);
@@ -62,10 +62,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecMaxPointwiseDivide(Vec x,Vec y,PetscReal *m
 .  val - the dot product
 
    Performance Issues:
-+    per-processor memory bandwidth
-.    interprocessor latency
--    work load inbalance that causes certain processes to arrive much earlier than
-     others
+$    per-processor memory bandwidth
+$    interprocessor latency
+$    work load inbalance that causes certain processes to arrive much earlier than others
 
    Notes for Users of Complex Numbers:
    For complex vectors, VecDot() computes 
@@ -83,13 +82,13 @@ $     val = (x,y) = y^T x,
 
 .seealso: VecMDot(), VecTDot(), VecNorm(), VecDotBegin(), VecDotEnd()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecDot(Vec x,Vec y,PetscScalar *val)
+PetscErrorCode  VecDot(Vec x,Vec y,PetscScalar *val)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1); 
-  PetscValidHeaderSpecific(y,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1); 
+  PetscValidHeaderSpecific(y,VEC_CLASSID,2);
   PetscValidScalarPointer(val,3);
   PetscValidType(x,1);
   PetscValidType(y,2);
@@ -99,6 +98,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecDot(Vec x,Vec y,PetscScalar *val)
   ierr = PetscLogEventBarrierBegin(VEC_DotBarrier,x,y,0,0,((PetscObject)x)->comm);CHKERRQ(ierr);
   ierr = (*x->ops->dot)(x,y,val);CHKERRQ(ierr);
   ierr = PetscLogEventBarrierEnd(VEC_DotBarrier,x,y,0,0,((PetscObject)x)->comm);CHKERRQ(ierr);
+  if (PetscIsInfOrNanScalar(*val)) SETERRQ(((PetscObject)x)->comm,PETSC_ERR_FP,"Infinite or not-a-number generated in dot product");
   PetscFunctionReturn(0);
 }
 
@@ -126,10 +126,9 @@ $     NORM_INFINITY denotes max_i |x_i|
    Level: intermediate
 
    Performance Issues:
-+    per-processor memory bandwidth
-.    interprocessor latency
--    work load inbalance that causes certain processes to arrive much earlier than
-     others
+$    per-processor memory bandwidth
+$    interprocessor latency
+$    work load inbalance that causes certain processes to arrive much earlier than others
 
    Compile Option:
    PETSC_HAVE_SLOW_BLAS_NORM2 will cause a C (loop unrolled) version of the norm to be used, rather
@@ -143,15 +142,16 @@ $     NORM_INFINITY denotes max_i |x_i|
           VecNormBegin(), VecNormEnd()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecNorm(Vec x,NormType type,PetscReal *val)  
+PetscErrorCode  VecNorm(Vec x,NormType type,PetscReal *val)  
 {
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidDoublePointer(val,3);
   PetscValidType(x,1);
+  if (((PetscObject)x)->precision != sizeof(PetscScalar)) SETERRQ(((PetscObject)x)->comm,PETSC_ERR_SUP,"Wrong precision of input argument");
 
   /*
    * Cached data?
@@ -164,6 +164,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecNorm(Vec x,NormType type,PetscReal *val)
   ierr = PetscLogEventBarrierBegin(VEC_NormBarrier,x,0,0,0,((PetscObject)x)->comm);CHKERRQ(ierr);
   ierr = (*x->ops->norm)(x,type,val);CHKERRQ(ierr);
   ierr = PetscLogEventBarrierEnd(VEC_NormBarrier,x,0,0,0,((PetscObject)x)->comm);CHKERRQ(ierr);
+  if (PetscIsInfOrNanScalar(*val)) SETERRQ(((PetscObject)x)->comm,PETSC_ERR_FP,"Infinite or not-a-number generated in norm");
 
   if (type!=NORM_1_AND_2) {
     ierr = PetscObjectComposedDataSetReal((PetscObject)x,NormIds[type],*val);CHKERRQ(ierr);
@@ -176,7 +177,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecNorm(Vec x,NormType type,PetscReal *val)
 /*@
    VecNormAvailable  - Returns the vector norm if it is already known.
 
-   Collective on Vec
+   Not Collective
 
    Input Parameters:
 +  x - the vector
@@ -196,10 +197,9 @@ $     NORM_INFINITY denotes max_i |x_i|
    Level: intermediate
 
    Performance Issues:
-+    per-processor memory bandwidth
-.    interprocessor latency
--    work load inbalance that causes certain processes to arrive much earlier than
-     others
+$    per-processor memory bandwidth
+$    interprocessor latency
+$    work load inbalance that causes certain processes to arrive much earlier than others
 
    Compile Option:
    PETSC_HAVE_SLOW_BLAS_NORM2 will cause a C (loop unrolled) version of the norm to be used, rather
@@ -213,12 +213,12 @@ $     NORM_INFINITY denotes max_i |x_i|
           VecNormBegin(), VecNormEnd()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecNormAvailable(Vec x,NormType type,PetscTruth *available,PetscReal *val)  
+PetscErrorCode  VecNormAvailable(Vec x,NormType type,PetscBool  *available,PetscReal *val)  
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidDoublePointer(val,3);
   PetscValidType(x,1);
 
@@ -249,13 +249,13 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecNormAvailable(Vec x,NormType type,PetscTrut
    Concepts: normalizing^vector
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecNormalize(Vec x,PetscReal *val)
+PetscErrorCode  VecNormalize(Vec x,PetscReal *val)
 {
   PetscErrorCode ierr;
   PetscReal      norm;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidType(x,1);
   ierr = PetscLogEventBegin(VEC_Normalize,x,0,0,0);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
@@ -282,11 +282,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecNormalize(Vec x,PetscReal *val)
 
    Output Parameters:
 +  val - the maximum component
--  p - the location of val
+-  p - the location of val (pass PETSC_NULL if you don't want this)
 
    Notes:
-   Returns the value PETSC_MIN and p = -1 if the vector is of length 0.
+   Returns the value PETSC_MIN_REAL and p = -1 if the vector is of length 0.
 
+   Returns the smallest index with the maximum value
    Level: intermediate
 
    Concepts: maximum^of vector
@@ -294,12 +295,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecNormalize(Vec x,PetscReal *val)
 
 .seealso: VecNorm(), VecMin()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecMax(Vec x,PetscInt *p,PetscReal *val)
+PetscErrorCode  VecMax(Vec x,PetscInt *p,PetscReal *val)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidScalarPointer(val,3);
   PetscValidType(x,1);
   ierr = PetscLogEventBegin(VEC_Max,x,0,0,0);CHKERRQ(ierr);
@@ -320,24 +321,26 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecMax(Vec x,PetscInt *p,PetscReal *val)
 
    Output Parameter:
 +  val - the minimum component
--  p - the location of val
+-  p - the location of val (pass PETSC_NULL if you don't want this location)
 
    Level: intermediate
 
    Notes:
-   Returns the value PETSC_MAX and p = -1 if the vector is of length 0.
+   Returns the value PETSC_MAX_REAL and p = -1 if the vector is of length 0.
+
+   This returns the smallest index with the minumum value
 
    Concepts: minimum^of vector
    Concepts: vector^minimum entry
 
 .seealso: VecMax()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecMin(Vec x,PetscInt *p,PetscReal *val)
+PetscErrorCode  VecMin(Vec x,PetscInt *p,PetscReal *val)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidScalarPointer(val,3);
   PetscValidType(x,1);
   ierr = PetscLogEventBegin(VEC_Min,x,0,0,0);CHKERRQ(ierr);
@@ -377,13 +380,13 @@ $     val = (x,y) = y^H x,
 
 .seealso: VecDot(), VecMTDot()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecTDot(Vec x,Vec y,PetscScalar *val) 
+PetscErrorCode  VecTDot(Vec x,Vec y,PetscScalar *val) 
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,2);
   PetscValidScalarPointer(val,3);
   PetscValidType(x,1);
   PetscValidType(y,2);
@@ -401,7 +404,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecTDot(Vec x,Vec y,PetscScalar *val)
 /*@
    VecScale - Scales a vector. 
 
-   Collective on Vec
+   Not collective on Vec
 
    Input Parameters:
 +  x - the vector
@@ -420,31 +423,26 @@ $      x[i] = alpha * x[i], for i=1,...,n.
    Concepts: scaling^vector
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecScale (Vec x, PetscScalar alpha)
+PetscErrorCode  VecScale (Vec x, PetscScalar alpha)
 {
   PetscReal      norms[4] = {0.0,0.0,0.0, 0.0};
-  PetscTruth     flgs[4];
+  PetscBool      flgs[4];
   PetscErrorCode ierr;
   PetscInt       i;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidType(x,1);
-  if (x->stash.insertmode != NOT_SET_VALUES) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Not for unassembled vector");
+  if (x->stash.insertmode != NOT_SET_VALUES) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Not for unassembled vector");
   ierr = PetscLogEventBegin(VEC_Scale,x,0,0,0);CHKERRQ(ierr);
-  if (alpha != 1.0) {
-    ierr = (*x->ops->scale)(x,alpha);CHKERRQ(ierr);
-
-    /*
-     * Update cached data
-     */
+  if (alpha != (PetscScalar)1.0) {
+    /* get current stashed norms */
     for (i=0; i<4; i++) {
       ierr = PetscObjectComposedDataGetReal((PetscObject)x,NormIds[i],norms[i],flgs[i]);CHKERRQ(ierr);
     }
-
-    /* in general we consider this object touched */
+    ierr = (*x->ops->scale)(x,alpha);CHKERRQ(ierr);
     ierr = PetscObjectStateIncrease((PetscObject)x);CHKERRQ(ierr);
-
+    /* put the scaled stashed norms back into the Vec */
     for (i=0; i<4; i++) {
       if (flgs[i]) {
         ierr = PetscObjectComposedDataSetReal((PetscObject)x,NormIds[i],PetscAbsScalar(alpha)*norms[i]);CHKERRQ(ierr);
@@ -455,13 +453,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecScale (Vec x, PetscScalar alpha)
   PetscFunctionReturn(0);
 }
 
-
 #undef __FUNCT__  
 #define __FUNCT__ "VecSet"
 /*@
    VecSet - Sets all components of a vector to a single scalar value. 
 
-   Collective on Vec
+   Logically Collective on Vec
 
    Input Parameters:
 +  x  - the vector
@@ -487,35 +484,23 @@ $     x[i] = alpha, for i=1,...,n,
    Concepts: vector^setting to constant
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecSet(Vec x,PetscScalar alpha) 
+PetscErrorCode  VecSet(Vec x,PetscScalar alpha) 
 {
   PetscReal      val;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidType(x,1);
-  if (x->stash.insertmode != NOT_SET_VALUES) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"You cannot call this after you have called VecSetValues() but\n before you have called VecAssemblyBegin/End()");
-#if defined (PETSC_USE_DEBUG)
- {
-   PetscReal alpha_local,alpha_max;
-   alpha_local = PetscAbsScalar(alpha);
-   ierr = MPI_Allreduce(&alpha_local,&alpha_max,1,MPIU_REAL,MPI_MAX,((PetscObject)x)->comm);CHKERRQ(ierr);
-   if (alpha_local != alpha_max) SETERRQ(PETSC_ERR_ARG_WRONG,"Same value should be used across all processors");
- }
-#endif
+  if (x->stash.insertmode != NOT_SET_VALUES) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"You cannot call this after you have called VecSetValues() but\n before you have called VecAssemblyBegin/End()");
+  PetscValidLogicalCollectiveScalar(x,alpha,2);
 
   ierr = PetscLogEventBegin(VEC_Set,x,0,0,0);CHKERRQ(ierr);
   ierr = (*x->ops->set)(x,alpha);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(VEC_Set,x,0,0,0);CHKERRQ(ierr);
-
-  /*
-   * Update cached data
-   */
-  /* in general we consider this object touched */
   ierr = PetscObjectStateIncrease((PetscObject)x);CHKERRQ(ierr);
 
-  /* however, norms can be simply set */
+  /*  norms can be simply set */
   val = PetscAbsScalar(alpha);
   ierr = PetscObjectComposedDataSetReal((PetscObject)x,NormIds[NORM_1],x->map->N * val);CHKERRQ(ierr);
   ierr = PetscObjectComposedDataSetReal((PetscObject)x,NormIds[NORM_INFINITY],val);CHKERRQ(ierr);
@@ -531,7 +516,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecSet(Vec x,PetscScalar alpha)
 /*@
    VecAXPY - Computes y = alpha x + y. 
 
-   Collective on Vec
+   Logically Collective on Vec
 
    Input Parameters:
 +  alpha - the scalar
@@ -542,24 +527,26 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecSet(Vec x,PetscScalar alpha)
 
    Level: intermediate
 
-   Notes: x and y must be different vectors
+   Notes: x and y MUST be different vectors
 
    Concepts: vector^BLAS
    Concepts: BLAS
 
 .seealso: VecAYPX(), VecMAXPY(), VecWAXPY()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecAXPY(Vec y,PetscScalar alpha,Vec x)
+PetscErrorCode  VecAXPY(Vec y,PetscScalar alpha,Vec x)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,3);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,3);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,1);
   PetscValidType(x,3);
   PetscValidType(y,1);
   PetscCheckSameTypeAndComm(x,3,y,1);
   PetscCheckSameSizeVec(x,y);
+  if (x == y) SETERRQ(((PetscObject)x)->comm,PETSC_ERR_ARG_IDN,"x and y cannot be the same vector");
+  PetscValidLogicalCollectiveScalar(y,alpha,2);
 
   ierr = PetscLogEventBegin(VEC_AXPY,x,y,0,0);CHKERRQ(ierr);
   ierr = (*y->ops->axpy)(y,alpha,x);CHKERRQ(ierr);
@@ -573,7 +560,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAXPY(Vec y,PetscScalar alpha,Vec x)
 /*@
    VecAXPBY - Computes y = alpha x + beta y. 
 
-   Collective on Vec
+   Logically Collective on Vec
 
    Input Parameters:
 +  alpha,beta - the scalars
@@ -584,24 +571,27 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAXPY(Vec y,PetscScalar alpha,Vec x)
 
    Level: intermediate
 
-   Notes: x and y must be different vectors 
+   Notes: x and y MUST be different vectors 
 
    Concepts: BLAS
    Concepts: vector^BLAS
 
 .seealso: VecAYPX(), VecMAXPY(), VecWAXPY(), VecAXPY()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecAXPBY(Vec y,PetscScalar alpha,PetscScalar beta,Vec x)
+PetscErrorCode  VecAXPBY(Vec y,PetscScalar alpha,PetscScalar beta,Vec x)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,4);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,4);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,1);
   PetscValidType(x,4);
   PetscValidType(y,1);
   PetscCheckSameTypeAndComm(x,4,y,1);
   PetscCheckSameSizeVec(x,y);
+  if (x == y) SETERRQ(((PetscObject)x)->comm,PETSC_ERR_ARG_IDN,"x and y cannot be the same vector");
+  PetscValidLogicalCollectiveScalar(y,alpha,2);
+  PetscValidLogicalCollectiveScalar(y,beta,3);
 
   ierr = PetscLogEventBegin(VEC_AXPY,x,y,0,0);CHKERRQ(ierr);
   ierr = (*y->ops->axpby)(y,alpha,beta,x);CHKERRQ(ierr);
@@ -615,7 +605,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAXPBY(Vec y,PetscScalar alpha,PetscScalar b
 /*@
    VecAXPBYPCZ - Computes z = alpha x + beta y + gamma z
 
-   Collective on Vec
+   Logically Collective on Vec
 
    Input Parameters:
 +  alpha,beta, gamma - the scalars
@@ -628,21 +618,21 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAXPBY(Vec y,PetscScalar alpha,PetscScalar b
 
    Notes: x, y and z must be different vectors 
 
-          alpha = 1 or gamma = 1 are handled as special cases
+   Developer Note:   alpha = 1 or gamma = 1 or gamma = 0.0 are handled as special cases
 
    Concepts: BLAS
    Concepts: vector^BLAS
 
 .seealso: VecAYPX(), VecMAXPY(), VecWAXPY(), VecAXPY()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecAXPBYPCZ(Vec z,PetscScalar alpha,PetscScalar beta,PetscScalar gamma,Vec x,Vec y)
+PetscErrorCode  VecAXPBYPCZ(Vec z,PetscScalar alpha,PetscScalar beta,PetscScalar gamma,Vec x,Vec y)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,5);
-  PetscValidHeaderSpecific(y,VEC_COOKIE,6);
-  PetscValidHeaderSpecific(z,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,5);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,6);
+  PetscValidHeaderSpecific(z,VEC_CLASSID,1);
   PetscValidType(x,5);
   PetscValidType(y,6);
   PetscValidType(z,1);
@@ -650,11 +640,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAXPBYPCZ(Vec z,PetscScalar alpha,PetscScala
   PetscCheckSameTypeAndComm(x,5,z,1);
   PetscCheckSameSizeVec(x,y);
   PetscCheckSameSizeVec(x,z);
+  if (x == y || x == z) SETERRQ(((PetscObject)x)->comm,PETSC_ERR_ARG_IDN,"x, y, and z must be different vectors");
+  if (y == z) SETERRQ(((PetscObject)y)->comm,PETSC_ERR_ARG_IDN,"x, y, and z must be different vectors");
+  PetscValidLogicalCollectiveScalar(z,alpha,2);
+  PetscValidLogicalCollectiveScalar(z,beta,3);
+  PetscValidLogicalCollectiveScalar(z,gamma,4);
 
   ierr = PetscLogEventBegin(VEC_AXPBYPCZ,x,y,z,0);CHKERRQ(ierr);
   ierr = (*y->ops->axpbypcz)(z,alpha,beta,gamma,x,y);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(VEC_AXPBYPCZ,x,y,z,0);CHKERRQ(ierr);
-  ierr = PetscObjectStateIncrease((PetscObject)y);CHKERRQ(ierr);
+  ierr = PetscObjectStateIncrease((PetscObject)z);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 } 
 
@@ -663,7 +658,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAXPBYPCZ(Vec z,PetscScalar alpha,PetscScala
 /*@
    VecAYPX - Computes y = x + alpha y.
 
-   Collective on Vec
+   Logically Collective on Vec
 
    Input Parameters:
 +  alpha - the scalar
@@ -674,22 +669,24 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAXPBYPCZ(Vec z,PetscScalar alpha,PetscScala
 
    Level: intermediate
 
-   Notes: x and y must be different vectors
+   Notes: x and y MUST be different vectors
 
    Concepts: vector^BLAS
    Concepts: BLAS
 
 .seealso: VecAXPY(), VecWAXPY()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecAYPX(Vec y,PetscScalar alpha,Vec x)
+PetscErrorCode  VecAYPX(Vec y,PetscScalar alpha,Vec x)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,3); 
-  PetscValidHeaderSpecific(y,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,3); 
+  PetscValidHeaderSpecific(y,VEC_CLASSID,1);
   PetscValidType(x,3);
   PetscValidType(y,1);
+  if (x == y) SETERRQ(((PetscObject)x)->comm,PETSC_ERR_ARG_IDN,"x and y must be different vectors");
+  PetscValidLogicalCollectiveScalar(y,alpha,2);
 
   ierr = PetscLogEventBegin(VEC_AYPX,x,y,0,0);CHKERRQ(ierr);
   ierr =  (*y->ops->aypx)(y,alpha,x);CHKERRQ(ierr);
@@ -704,7 +701,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAYPX(Vec y,PetscScalar alpha,Vec x)
 /*@
    VecWAXPY - Computes w = alpha x + y.
 
-   Collective on Vec
+   Logically Collective on Vec
 
    Input Parameters:
 +  alpha - the scalar
@@ -715,21 +712,21 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecAYPX(Vec y,PetscScalar alpha,Vec x)
 
    Level: intermediate
 
-   Notes: Neither the vector x or y can be the same as vector w
+   Notes: w cannot be either x or y, but x and y can be the same
 
    Concepts: vector^BLAS
    Concepts: BLAS
 
 .seealso: VecAXPY(), VecAYPX(), VecAXPBY()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecWAXPY(Vec w,PetscScalar alpha,Vec x,Vec y)
+PetscErrorCode  VecWAXPY(Vec w,PetscScalar alpha,Vec x,Vec y)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(w,VEC_COOKIE,1);
-  PetscValidHeaderSpecific(x,VEC_COOKIE,3); 
-  PetscValidHeaderSpecific(y,VEC_COOKIE,4);
+  PetscValidHeaderSpecific(w,VEC_CLASSID,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,3); 
+  PetscValidHeaderSpecific(y,VEC_CLASSID,4);
   PetscValidType(w,1);
   PetscValidType(x,3);
   PetscValidType(y,4);
@@ -737,8 +734,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecWAXPY(Vec w,PetscScalar alpha,Vec x,Vec y)
   PetscCheckSameTypeAndComm(y,4,w,1);
   PetscCheckSameSizeVec(x,y);
   PetscCheckSameSizeVec(x,w);
-  if (w == y) SETERRQ(PETSC_ERR_SUP,"Result vector w cannot be same as input vector y, suggest VecAXPY()");
-  if (w == x) SETERRQ(PETSC_ERR_SUP,"Result vector w cannot be same as input vector x, suggest VecAYPX()");
+  if (w == y) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Result vector w cannot be same as input vector y, suggest VecAXPY()");
+  if (w == x) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Result vector w cannot be same as input vector x, suggest VecAYPX()");
+  PetscValidLogicalCollectiveScalar(y,alpha,2);
 
   ierr = PetscLogEventBegin(VEC_WAXPY,x,y,w,0);CHKERRQ(ierr);
   ierr =  (*w->ops->waxpy)(w,alpha,x,y);CHKERRQ(ierr);
@@ -789,12 +787,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecWAXPY(Vec w,PetscScalar alpha,Vec x,Vec y)
 .seealso:  VecAssemblyBegin(), VecAssemblyEnd(), VecSetValuesLocal(),
            VecSetValue(), VecSetValuesBlocked(), InsertMode, INSERT_VALUES, ADD_VALUES, VecGetValues()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecSetValues(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
+PetscErrorCode  VecSetValues(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidIntPointer(ix,3);
   PetscValidScalarPointer(y,4);
   PetscValidType(x,1);
@@ -811,7 +809,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecSetValues(Vec x,PetscInt ni,const PetscInt 
    VecGetValues - Gets values from certain locations of a vector. Currently 
           can only get values on the same processor
 
-    Collective on Vec
+    Not Collective
  
    Input Parameters:
 +  x - vector to get values from
@@ -841,12 +839,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecSetValues(Vec x,PetscInt ni,const PetscInt 
 .seealso:  VecAssemblyBegin(), VecAssemblyEnd(), VecGetValuesLocal(),
            VecGetValuesBlocked(), InsertMode, INSERT_VALUES, ADD_VALUES, VecSetValues()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecGetValues(Vec x,PetscInt ni,const PetscInt ix[],PetscScalar y[])
+PetscErrorCode  VecGetValues(Vec x,PetscInt ni,const PetscInt ix[],PetscScalar y[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidIntPointer(ix,3);
   PetscValidScalarPointer(y,4);
   PetscValidType(x,1);
@@ -895,12 +893,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecGetValues(Vec x,PetscInt ni,const PetscInt 
 .seealso:  VecAssemblyBegin(), VecAssemblyEnd(), VecSetValuesBlockedLocal(),
            VecSetValues()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecSetValuesBlocked(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
+PetscErrorCode  VecSetValuesBlocked(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidIntPointer(ix,3);
   PetscValidScalarPointer(y,4);
   PetscValidType(x,1);
@@ -948,26 +946,24 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecSetValuesBlocked(Vec x,PetscInt ni,const Pe
 .seealso:  VecAssemblyBegin(), VecAssemblyEnd(), VecSetValues(), VecSetLocalToGlobalMapping(),
            VecSetValuesBlockedLocal()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecSetValuesLocal(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
+PetscErrorCode  VecSetValuesLocal(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
 {
   PetscErrorCode ierr;
   PetscInt       lixp[128],*lix = lixp;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidIntPointer(ix,3);
   PetscValidScalarPointer(y,4);
   PetscValidType(x,1);
 
   ierr = PetscLogEventBegin(VEC_SetValues,x,0,0,0);CHKERRQ(ierr);
   if (!x->ops->setvalueslocal) {
-    if (!x->mapping) {
-      SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Local to global never set with VecSetLocalToGlobalMapping()");
-    }
+    if (!x->map->mapping) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Local to global never set with VecSetLocalToGlobalMapping()");
     if (ni > 128) {
       ierr = PetscMalloc(ni*sizeof(PetscInt),&lix);CHKERRQ(ierr);
     }
-    ierr = ISLocalToGlobalMappingApply(x->mapping,ni,(PetscInt*)ix,lix);CHKERRQ(ierr);
+    ierr = ISLocalToGlobalMappingApply(x->map->mapping,ni,(PetscInt*)ix,lix);CHKERRQ(ierr);
     ierr = (*x->ops->setvalues)(x,ni,lix,y,iora);CHKERRQ(ierr);
     if (ni > 128) {
       ierr = PetscFree(lix);CHKERRQ(ierr);
@@ -1018,25 +1014,23 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecSetValuesLocal(Vec x,PetscInt ni,const Pets
 .seealso:  VecAssemblyBegin(), VecAssemblyEnd(), VecSetValues(), VecSetValuesBlocked(), 
            VecSetLocalToGlobalMappingBlock()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecSetValuesBlockedLocal(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
+PetscErrorCode  VecSetValuesBlockedLocal(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
 {
   PetscErrorCode ierr;
   PetscInt       lixp[128],*lix = lixp;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidIntPointer(ix,3);
   PetscValidScalarPointer(y,4);
   PetscValidType(x,1);
-  if (!x->bmapping) {
-    SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Local to global never set with VecSetLocalToGlobalMappingBlock()");
-  }
+  if (!x->map->bmapping) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Local to global never set with VecSetLocalToGlobalMappingBlock()");
   if (ni > 128) {
     ierr = PetscMalloc(ni*sizeof(PetscInt),&lix);CHKERRQ(ierr);
   }
 
   ierr = PetscLogEventBegin(VEC_SetValues,x,0,0,0);CHKERRQ(ierr);
-  ierr = ISLocalToGlobalMappingApply(x->bmapping,ni,(PetscInt*)ix,lix);CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingApply(x->map->bmapping,ni,(PetscInt*)ix,lix);CHKERRQ(ierr);
   ierr = (*x->ops->setvaluesblocked)(x,ni,lix,y,iora);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(VEC_SetValues,x,0,0,0);CHKERRQ(ierr);
   if (ni > 128) {
@@ -1045,8 +1039,6 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecSetValuesBlockedLocal(Vec x,PetscInt ni,con
   ierr = PetscObjectStateIncrease((PetscObject)x);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
-
-
 
 #undef __FUNCT__  
 #define __FUNCT__ "VecMTDot"
@@ -1080,14 +1072,14 @@ $      val = (x,y) = y^H x,
 
 .seealso: VecMDot(), VecTDot()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecMTDot(Vec x,PetscInt nv,const Vec y[],PetscScalar val[])
+PetscErrorCode  VecMTDot(Vec x,PetscInt nv,const Vec y[],PetscScalar val[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,2);
   PetscValidPointer(y,3);
-  PetscValidHeaderSpecific(*y,VEC_COOKIE,3);
+  PetscValidHeaderSpecific(*y,VEC_CLASSID,3);
   PetscValidScalarPointer(val,4);
   PetscValidType(x,2);
   PetscValidType(*y,3);
@@ -1131,16 +1123,17 @@ $     val = (x,y) = y^T x,
 
 .seealso: VecMTDot(), VecDot()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecMDot(Vec x,PetscInt nv,const Vec y[],PetscScalar val[])
+PetscErrorCode  VecMDot(Vec x,PetscInt nv,const Vec y[],PetscScalar val[])
 {
   PetscErrorCode ierr;
+  PetscInt       i;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1); 
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1); 
   if (!nv) PetscFunctionReturn(0);
-  if (nv < 0) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"Number of vectors (given %D) cannot be negative",nv);
+  if (nv < 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Number of vectors (given %D) cannot be negative",nv);
   PetscValidPointer(y,3);
-  PetscValidHeaderSpecific(*y,VEC_COOKIE,3);
+  PetscValidHeaderSpecific(*y,VEC_CLASSID,3);
   PetscValidScalarPointer(val,4);
   PetscValidType(x,2);
   PetscValidType(*y,3);
@@ -1150,6 +1143,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecMDot(Vec x,PetscInt nv,const Vec y[],PetscS
   ierr = PetscLogEventBarrierBegin(VEC_MDotBarrier,x,*y,0,0,((PetscObject)x)->comm);CHKERRQ(ierr);
   ierr = (*x->ops->mdot)(x,nv,y,val);CHKERRQ(ierr);
   ierr = PetscLogEventBarrierEnd(VEC_MDotBarrier,x,*y,0,0,((PetscObject)x)->comm);CHKERRQ(ierr);
+  for (i=0; i<nv; i++) {
+    if (PetscIsInfOrNanScalar(val[i])) SETERRQ1(((PetscObject)x)->comm,PETSC_ERR_FP,"Infinite or not-a-number generated in mdot, entry %D",i);
+  }
   PetscFunctionReturn(0);
 }
 
@@ -1158,7 +1154,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecMDot(Vec x,PetscInt nv,const Vec y[],PetscS
 /*@
    VecMAXPY - Computes y = y + sum alpha[j] x[j]
 
-   Collective on Vec
+   Logically Collective on Vec
 
    Input Parameters:
 +  nv - number of scalars and x-vectors
@@ -1168,32 +1164,162 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecMDot(Vec x,PetscInt nv,const Vec y[],PetscS
 
    Level: intermediate
 
+   Notes: y cannot be any of the x vectors
+
    Concepts: BLAS
 
 .seealso: VecAXPY(), VecWAXPY(), VecAYPX()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecMAXPY(Vec y,PetscInt nv,const PetscScalar alpha[],Vec x[])
+PetscErrorCode  VecMAXPY(Vec y,PetscInt nv,const PetscScalar alpha[],Vec x[])
 {
   PetscErrorCode ierr;
+  PetscInt       i;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(y,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(y,VEC_CLASSID,1);
   if (!nv) PetscFunctionReturn(0);
-  if (nv < 0) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"Number of vectors (given %D) cannot be negative",nv);
+  if (nv < 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Number of vectors (given %D) cannot be negative",nv);
   PetscValidScalarPointer(alpha,3);
   PetscValidPointer(x,4);
-  PetscValidHeaderSpecific(*x,VEC_COOKIE,4);
+  PetscValidHeaderSpecific(*x,VEC_CLASSID,4);
   PetscValidType(y,1);
   PetscValidType(*x,4);
   PetscCheckSameTypeAndComm(y,1,*x,4);
   PetscCheckSameSizeVec(y,*x);
+  for (i=0; i<nv; i++) {
+    PetscValidLogicalCollectiveScalar(y,alpha[i],3);
+  }
 
   ierr = PetscLogEventBegin(VEC_MAXPY,*x,y,0,0);CHKERRQ(ierr);
   ierr = (*y->ops->maxpy)(y,nv,alpha,x);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(VEC_MAXPY,*x,y,0,0);CHKERRQ(ierr);
   ierr = PetscObjectStateIncrease((PetscObject)y);CHKERRQ(ierr);
   PetscFunctionReturn(0);
-} 
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "VecGetSubVector"
+/*@
+   VecGetSubVector - Gets a vector representing part of another vector
+
+   Collective on IS (and Vec if nonlocal entries are needed)
+
+   Input Arguments:
++ X - vector from which to extract a subvector
+- is - index set representing portion of X to extract
+
+   Output Arguments:
+. Y - subvector corresponding to is
+
+   Level: advanced
+
+   Notes:
+   The subvector Y should be returned with VecRestoreSubVector().
+
+   This function may return a subvector without making a copy, therefore it is not safe to use the original vector while
+   modifying the subvector.  Other non-overlapping subvectors can still be obtained from X using this function.
+
+.seealso: MatGetSubMatrix()
+@*/
+PetscErrorCode  VecGetSubVector(Vec X,IS is,Vec *Y)
+{
+  PetscErrorCode ierr;
+  Vec            Z;
+  PetscInt       state;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(X,VEC_CLASSID,1);
+  PetscValidHeaderSpecific(is,IS_CLASSID,2);
+  PetscValidPointer(Y,3);
+  if (X->ops->getsubvector) {
+    ierr = (*X->ops->getsubvector)(X,is,&Z);CHKERRQ(ierr);
+  } else {                      /* Default implementation currently does no caching */
+    PetscInt gstart,gend,start;
+    PetscBool contiguous,gcontiguous;
+    ierr = VecGetOwnershipRange(X,&gstart,&gend);CHKERRQ(ierr);
+    ierr = ISContiguousLocal(is,gstart,gend,&start,&contiguous);CHKERRQ(ierr);
+    ierr = MPI_Allreduce(&contiguous,&gcontiguous,1,MPI_INT,MPI_LAND,((PetscObject)is)->comm);CHKERRQ(ierr);
+    if (gcontiguous) {          /* We can do a no-copy implementation */
+      PetscInt n,N;
+      PetscScalar *x;
+      PetscMPIInt size;
+      ierr = ISGetLocalSize(is,&n);CHKERRQ(ierr);
+      ierr = VecGetArray(X,&x);CHKERRQ(ierr);
+      ierr = MPI_Comm_size(((PetscObject)X)->comm,&size);CHKERRQ(ierr);
+      if (size == 1) {
+        ierr = VecCreateSeqWithArray(((PetscObject)X)->comm,n,x+start,&Z);CHKERRQ(ierr);
+      } else {
+        ierr = ISGetSize(is,&N);CHKERRQ(ierr);
+        ierr = VecCreateMPIWithArray(((PetscObject)X)->comm,n,N,x+start,&Z);CHKERRQ(ierr);
+      }
+      ierr = VecRestoreArray(X,&x);CHKERRQ(ierr);
+    } else {                    /* Have to create a scatter and do a copy */
+      VecScatter scatter;
+      PetscInt   n,N;
+      ierr = ISGetLocalSize(is,&n);CHKERRQ(ierr);
+      ierr = ISGetSize(is,&N);CHKERRQ(ierr);
+      ierr = VecCreate(((PetscObject)is)->comm,&Z);CHKERRQ(ierr);
+      ierr = VecSetSizes(Z,n,N);CHKERRQ(ierr);
+      ierr = VecSetType(Z,((PetscObject)X)->type_name);CHKERRQ(ierr);
+      ierr = VecScatterCreate(X,is,Z,PETSC_NULL,&scatter);CHKERRQ(ierr);
+      ierr = VecScatterBegin(scatter,X,Z,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
+      ierr = VecScatterEnd(scatter,X,Z,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
+      ierr = VecScatterDestroy(&scatter);CHKERRQ(ierr);
+    }
+  }
+  /* Record the state when the subvector was gotten so we know whether its values need to be put back */
+  if (VecGetSubVectorSavedStateId < 0) {ierr = PetscObjectComposedDataRegister(&VecGetSubVectorSavedStateId);CHKERRQ(ierr);}
+  ierr = PetscObjectStateQuery((PetscObject)Z,&state);CHKERRQ(ierr);
+  ierr = PetscObjectComposedDataSetInt((PetscObject)Z,VecGetSubVectorSavedStateId,state);CHKERRQ(ierr);
+  *Y = Z;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "VecRestoreSubVector"
+/*@
+   VecRestoreSubVector - Restores a subvector extracted using VecGetSubVector()
+
+   Collective on IS (and Vec if nonlocal entries need to be written)
+
+   Input Arguments:
++ X - vector from which subvector was obtained
+. is - index set representing the subset of X
+- Y - subvector being restored
+
+   Level: advanced
+
+.seealso: VecGetSubVector()
+@*/
+PetscErrorCode  VecRestoreSubVector(Vec X,IS is,Vec *Y)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(X,VEC_CLASSID,1);
+  PetscValidHeaderSpecific(is,IS_CLASSID,2);
+  PetscValidPointer(Y,3);
+  PetscValidHeaderSpecific(*Y,VEC_CLASSID,3);
+  if (X->ops->restoresubvector) {
+    ierr = (*X->ops->restoresubvector)(X,is,Y);CHKERRQ(ierr);
+  } else {
+    PetscInt savedstate=0,newstate;
+    PetscBool valid;
+    ierr = PetscObjectComposedDataGetInt((PetscObject)*Y,VecGetSubVectorSavedStateId,savedstate,valid);CHKERRQ(ierr);
+    ierr = PetscObjectStateQuery((PetscObject)*Y,&newstate);CHKERRQ(ierr);
+    if (valid && savedstate < newstate) {
+      /* We might need to copy entries back, first check whether we have no-copy view */
+      PetscInt gstart,gend,start;
+      PetscBool contiguous,gcontiguous;
+      ierr = VecGetOwnershipRange(X,&gstart,&gend);CHKERRQ(ierr);
+      ierr = ISContiguousLocal(is,gstart,gend,&start,&contiguous);CHKERRQ(ierr);
+      ierr = MPI_Allreduce(&contiguous,&gcontiguous,1,MPI_INT,MPI_LAND,((PetscObject)is)->comm);CHKERRQ(ierr);
+      if (!gcontiguous) SETERRQ(((PetscObject)is)->comm,PETSC_ERR_SUP,"Unhandled case, values have been changed and need to be copied back into X");
+    }
+    ierr = VecDestroy(Y);CHKERRQ(ierr);
+  }
+  PetscFunctionReturn(0);
+}
 
 /*MC
    VecGetArray - Returns a pointer to a contiguous array that contains this 
@@ -1239,19 +1365,6 @@ $       call VecRestoreArray(x,x_array,i_x,ierr)
 
 .seealso: VecRestoreArray(), VecGetArrays(), VecGetArrayF90(), VecPlaceArray(), VecGetArray2d()
 M*/
-#undef __FUNCT__  
-#define __FUNCT__ "VecGetArray_Private"
-PetscErrorCode VecGetArray_Private(Vec x,PetscScalar *a[])
-{
-  PetscErrorCode ierr;
-
-  PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
-  PetscValidPointer(a,2);
-  PetscValidType(x,1);
-  ierr = (*x->ops->getarray)(x,a);CHKERRQ(ierr);
-  PetscFunctionReturn(0);
-}
 
 
 #undef __FUNCT__  
@@ -1277,7 +1390,7 @@ PetscErrorCode VecGetArray_Private(Vec x,PetscScalar *a[])
 
 .seealso: VecGetArray(), VecRestoreArrays()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecGetArrays(const Vec x[],PetscInt n,PetscScalar **a[])
+PetscErrorCode  VecGetArrays(const Vec x[],PetscInt n,PetscScalar **a[])
 {
   PetscErrorCode ierr;
   PetscInt       i;
@@ -1285,9 +1398,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecGetArrays(const Vec x[],PetscInt n,PetscSca
 
   PetscFunctionBegin;
   PetscValidPointer(x,1);
-  PetscValidHeaderSpecific(*x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(*x,VEC_CLASSID,1);
   PetscValidPointer(a,3);
-  if (n <= 0) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"Must get at least one array n = %D",n);
+  if (n <= 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Must get at least one array n = %D",n);
   ierr = PetscMalloc(n*sizeof(PetscScalar*),&q);CHKERRQ(ierr);
   for (i=0; i<n; ++i) {
     ierr = VecGetArray(x[i],&q[i]);CHKERRQ(ierr);
@@ -1322,7 +1435,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecGetArrays(const Vec x[],PetscInt n,PetscSca
 
 .seealso: VecGetArrays(), VecRestoreArray()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArrays(const Vec x[],PetscInt n,PetscScalar **a[])
+PetscErrorCode  VecRestoreArrays(const Vec x[],PetscInt n,PetscScalar **a[])
 {
   PetscErrorCode ierr;
   PetscInt       i;
@@ -1330,7 +1443,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArrays(const Vec x[],PetscInt n,Pets
 
   PetscFunctionBegin;
   PetscValidPointer(x,1);
-  PetscValidHeaderSpecific(*x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(*x,VEC_CLASSID,1);
   PetscValidPointer(a,3);
 
   for(i=0;i<n;++i) {
@@ -1343,10 +1456,10 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArrays(const Vec x[],PetscInt n,Pets
 /*MC
    VecRestoreArray - Restores a vector after VecGetArray() has been called.
 
-   Not Collective
-
    Synopsis:
    PetscErrorCode VecRestoreArray(Vec x,PetscScalar *a[])
+
+   Not Collective
 
    Input Parameters:
 +  x - the vector
@@ -1384,26 +1497,6 @@ $       call VecRestoreArray(x,x_array,i_x,ierr)
 
 .seealso: VecGetArray(), VecRestoreArrays(), VecRestoreArrayF90(), VecPlaceArray(), VecRestoreArray2d()
 M*/
-#undef __FUNCT__  
-#define __FUNCT__ "VecRestoreArray_Private"
-PetscErrorCode VecRestoreArray_Private(Vec x,PetscScalar *a[])
-{
-  PetscErrorCode ierr;
-
-  PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
-  if (a) PetscValidPointer(a,2);
-  PetscValidType(x,1);
-#if defined(PETSC_USE_DEBUG)
-  CHKMEMQ;
-#endif
-  if (x->ops->restorearray) {
-    ierr = (*x->ops->restorearray)(x,a);CHKERRQ(ierr);
-  }
-  ierr = PetscObjectStateIncrease((PetscObject)x);CHKERRQ(ierr);
-  PetscFunctionReturn(0);
-}
-
 
 #undef __FUNCT__  
 #define __FUNCT__ "VecPlaceArray"
@@ -1426,19 +1519,17 @@ PetscErrorCode VecRestoreArray_Private(Vec x,PetscScalar *a[])
 .seealso: VecGetArray(), VecRestoreArray(), VecReplaceArray(), VecResetArray()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecPlaceArray(Vec vec,const PetscScalar array[])
+PetscErrorCode  VecPlaceArray(Vec vec,const PetscScalar array[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(vec,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(vec,VEC_CLASSID,1);
   PetscValidType(vec,1);
   if (array) PetscValidScalarPointer(array,2);
   if (vec->ops->placearray) {
     ierr = (*vec->ops->placearray)(vec,array);CHKERRQ(ierr);
-  } else {
-    SETERRQ(PETSC_ERR_SUP,"Cannot place array in this type of vector");
-  }
+  } else SETERRQ(((PetscObject)vec)->comm,PETSC_ERR_SUP,"Cannot place array in this type of vector");
   ierr = PetscObjectStateIncrease((PetscObject)vec);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -1471,18 +1562,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecPlaceArray(Vec vec,const PetscScalar array[
 .seealso: VecGetArray(), VecRestoreArray(), VecPlaceArray(), VecResetArray()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecReplaceArray(Vec vec,const PetscScalar array[])
+PetscErrorCode  VecReplaceArray(Vec vec,const PetscScalar array[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(vec,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(vec,VEC_CLASSID,1);
   PetscValidType(vec,1);
   if (vec->ops->replacearray) {
     ierr = (*vec->ops->replacearray)(vec,array);CHKERRQ(ierr);
- } else {
-    SETERRQ(PETSC_ERR_SUP,"Cannot replace array in this type of vector");
-  }
+  } else  SETERRQ(((PetscObject)vec)->comm,PETSC_ERR_SUP,"Cannot replace array in this type of vector");
   ierr = PetscObjectStateIncrease((PetscObject)vec);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -1513,7 +1602,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecReplaceArray(Vec vec,const PetscScalar arra
     call VecSet(y(2),alpha,ierr)
     call VecSet(y(2),alpha,ierr)
     ....
-    call VecDestroyVecsF90(y,2,ierr)
+    call VecDestroyVecsF90(2,y,ierr)
 .ve
 
     Notes:
@@ -1563,6 +1652,8 @@ M*/
 
     Synopsis:
     VecDestroyVecsF90({Vec, pointer :: x(:)},integer n,integer ierr)
+
+    Collective on Vec
 
     Input Parameters:
 +   x - pointer to array of vector pointers
@@ -1636,31 +1727,31 @@ M*/
    Level: developer
 
   Notes:
-   For a vector obtained from DACreateLocalVector() mstart and nstart are likely
-   obtained from the corner indices obtained from DAGetGhostCorners() while for
-   DACreateGlobalVector() they are the corner indices from DAGetCorners(). In both cases
-   the arguments from DAGet[Ghost]Corners() are reversed in the call to VecGetArray2d().
+   For a vector obtained from DMCreateLocalVector() mstart and nstart are likely
+   obtained from the corner indices obtained from DMDAGetGhostCorners() while for
+   DMCreateGlobalVector() they are the corner indices from DMDAGetCorners(). In both cases
+   the arguments from DMDAGet[Ghost]Corners() are reversed in the call to VecGetArray2d().
    
    For standard PETSc vectors this is an inexpensive call; it does not copy the vector values.
 
    Concepts: vector^accessing local values as 2d array
 
 .seealso: VecGetArray(), VecRestoreArray(), VecGetArrays(), VecGetArrayF90(), VecPlaceArray(),
-          VecRestoreArray2d(), DAVecGetArray(), DAVecRestoreArray(), VecGetArray3d(), VecRestoreArray3d(),
+          VecRestoreArray2d(), DMDAVecGetArray(), DMDAVecRestoreArray(), VecGetArray3d(), VecRestoreArray3d(),
           VecGetArray1d(), VecRestoreArray1d(), VecGetArray4d(), VecRestoreArray4d()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecGetArray2d(Vec x,PetscInt m,PetscInt n,PetscInt mstart,PetscInt nstart,PetscScalar **a[])
+PetscErrorCode  VecGetArray2d(Vec x,PetscInt m,PetscInt n,PetscInt mstart,PetscInt nstart,PetscScalar **a[])
 {
   PetscErrorCode ierr;
   PetscInt       i,N;
   PetscScalar    *aa;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidPointer(a,6);
   PetscValidType(x,1);
   ierr = VecGetLocalSize(x,&N);CHKERRQ(ierr);
-  if (m*n != N) SETERRQ3(PETSC_ERR_ARG_INCOMP,"Local array size %D does not match 2d array dimensions %D by %D",N,m,n);
+  if (m*n != N) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Local array size %D does not match 2d array dimensions %D by %D",N,m,n);
   ierr = VecGetArray(x,&aa);CHKERRQ(ierr);
 
   ierr = PetscMalloc(m*sizeof(PetscScalar*),a);CHKERRQ(ierr);
@@ -1695,16 +1786,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecGetArray2d(Vec x,PetscInt m,PetscInt n,Pets
    This routine actually zeros out the a pointer. 
 
 .seealso: VecGetArray(), VecRestoreArray(), VecRestoreArrays(), VecRestoreArrayF90(), VecPlaceArray(),
-          VecGetArray2d(), VecGetArray3d(), VecRestoreArray3d(), DAVecGetArray(), DAVecRestoreArray()
+          VecGetArray2d(), VecGetArray3d(), VecRestoreArray3d(), DMDAVecGetArray(), DMDAVecRestoreArray()
           VecGetArray1d(), VecRestoreArray1d(), VecGetArray4d(), VecRestoreArray4d()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArray2d(Vec x,PetscInt m,PetscInt n,PetscInt mstart,PetscInt nstart,PetscScalar **a[])
+PetscErrorCode  VecRestoreArray2d(Vec x,PetscInt m,PetscInt n,PetscInt mstart,PetscInt nstart,PetscScalar **a[])
 {
   PetscErrorCode ierr;
   void           *dummy;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidPointer(a,6);
   PetscValidType(x,1);
   dummy = (void*)(*a + mstart);
@@ -1733,27 +1824,27 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArray2d(Vec x,PetscInt m,PetscInt n,
    Level: developer
 
   Notes:
-   For a vector obtained from DACreateLocalVector() mstart are likely
-   obtained from the corner indices obtained from DAGetGhostCorners() while for
-   DACreateGlobalVector() they are the corner indices from DAGetCorners(). 
+   For a vector obtained from DMCreateLocalVector() mstart are likely
+   obtained from the corner indices obtained from DMDAGetGhostCorners() while for
+   DMCreateGlobalVector() they are the corner indices from DMDAGetCorners(). 
    
    For standard PETSc vectors this is an inexpensive call; it does not copy the vector values.
 
 .seealso: VecGetArray(), VecRestoreArray(), VecGetArrays(), VecGetArrayF90(), VecPlaceArray(),
-          VecRestoreArray2d(), DAVecGetArray(), DAVecRestoreArray(), VecGetArray3d(), VecRestoreArray3d(),
+          VecRestoreArray2d(), DMDAVecGetArray(), DMDAVecRestoreArray(), VecGetArray3d(), VecRestoreArray3d(),
           VecGetArray2d(), VecRestoreArray1d(), VecGetArray4d(), VecRestoreArray4d()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecGetArray1d(Vec x,PetscInt m,PetscInt mstart,PetscScalar *a[])
+PetscErrorCode  VecGetArray1d(Vec x,PetscInt m,PetscInt mstart,PetscScalar *a[])
 {
   PetscErrorCode ierr;
   PetscInt       N;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidPointer(a,4);
   PetscValidType(x,1);
   ierr = VecGetLocalSize(x,&N);CHKERRQ(ierr);
-  if (m != N) SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE,"Local array size %D does not match 1d array dimensions %D",N,m);
+  if (m != N) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local array size %D does not match 1d array dimensions %D",N,m);
   ierr = VecGetArray(x,a);CHKERRQ(ierr);
   *a  -= mstart;
   PetscFunctionReturn(0);
@@ -1785,15 +1876,15 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecGetArray1d(Vec x,PetscInt m,PetscInt mstart
    Concepts: vector^accessing local values as 1d array
 
 .seealso: VecGetArray(), VecRestoreArray(), VecRestoreArrays(), VecRestoreArrayF90(), VecPlaceArray(),
-          VecGetArray2d(), VecGetArray3d(), VecRestoreArray3d(), DAVecGetArray(), DAVecRestoreArray()
+          VecGetArray2d(), VecGetArray3d(), VecRestoreArray3d(), DMDAVecGetArray(), DMDAVecRestoreArray()
           VecGetArray1d(), VecRestoreArray2d(), VecGetArray4d(), VecRestoreArray4d()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArray1d(Vec x,PetscInt m,PetscInt mstart,PetscScalar *a[])
+PetscErrorCode  VecRestoreArray1d(Vec x,PetscInt m,PetscInt mstart,PetscScalar *a[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidType(x,1);
   ierr = VecRestoreArray(x,PETSC_NULL);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -1824,31 +1915,31 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArray1d(Vec x,PetscInt m,PetscInt ms
    Level: developer
 
   Notes:
-   For a vector obtained from DACreateLocalVector() mstart, nstart, and pstart are likely
-   obtained from the corner indices obtained from DAGetGhostCorners() while for
-   DACreateGlobalVector() they are the corner indices from DAGetCorners(). In both cases
-   the arguments from DAGet[Ghost]Corners() are reversed in the call to VecGetArray3d().
+   For a vector obtained from DMCreateLocalVector() mstart, nstart, and pstart are likely
+   obtained from the corner indices obtained from DMDAGetGhostCorners() while for
+   DMCreateGlobalVector() they are the corner indices from DMDAGetCorners(). In both cases
+   the arguments from DMDAGet[Ghost]Corners() are reversed in the call to VecGetArray3d().
    
    For standard PETSc vectors this is an inexpensive call; it does not copy the vector values.
 
    Concepts: vector^accessing local values as 3d array
 
 .seealso: VecGetArray(), VecRestoreArray(), VecGetArrays(), VecGetArrayF90(), VecPlaceArray(),
-          VecRestoreArray2d(), DAVecGetarray(), DAVecRestoreArray(), VecGetArray3d(), VecRestoreArray3d(),
+          VecRestoreArray2d(), DMDAVecGetarray(), DMDAVecRestoreArray(), VecGetArray3d(), VecRestoreArray3d(),
           VecGetArray1d(), VecRestoreArray1d(), VecGetArray4d(), VecRestoreArray4d()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecGetArray3d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscScalar ***a[])
+PetscErrorCode  VecGetArray3d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscScalar ***a[])
 {
   PetscErrorCode ierr;
   PetscInt       i,N,j;
   PetscScalar    *aa,**b;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidPointer(a,8);
   PetscValidType(x,1);
   ierr = VecGetLocalSize(x,&N);CHKERRQ(ierr);
-  if (m*n*p != N) SETERRQ4(PETSC_ERR_ARG_INCOMP,"Local array size %D does not match 3d array dimensions %D by %D by %D",N,m,n,p);
+  if (m*n*p != N) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Local array size %D does not match 3d array dimensions %D by %D by %D",N,m,n,p);
   ierr = VecGetArray(x,&aa);CHKERRQ(ierr);
 
   ierr = PetscMalloc(m*sizeof(PetscScalar**)+m*n*sizeof(PetscScalar*),a);CHKERRQ(ierr);
@@ -1891,16 +1982,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecGetArray3d(Vec x,PetscInt m,PetscInt n,Pets
    This routine actually zeros out the a pointer. 
 
 .seealso: VecGetArray(), VecRestoreArray(), VecRestoreArrays(), VecRestoreArrayF90(), VecPlaceArray(),
-          VecGetArray2d(), VecGetArray3d(), VecRestoreArray3d(), DAVecGetArray(), DAVecRestoreArray()
+          VecGetArray2d(), VecGetArray3d(), VecRestoreArray3d(), DMDAVecGetArray(), DMDAVecRestoreArray()
           VecGetArray1d(), VecRestoreArray1d(), VecGetArray4d(), VecRestoreArray4d(), VecGet
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArray3d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscScalar ***a[])
+PetscErrorCode  VecRestoreArray3d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscScalar ***a[])
 {
   PetscErrorCode ierr;
   void           *dummy;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidPointer(a,8);
   PetscValidType(x,1);
   dummy = (void*)(*a + mstart);
@@ -1935,31 +2026,31 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArray3d(Vec x,PetscInt m,PetscInt n,
    Level: beginner
 
   Notes:
-   For a vector obtained from DACreateLocalVector() mstart, nstart, and pstart are likely
-   obtained from the corner indices obtained from DAGetGhostCorners() while for
-   DACreateGlobalVector() they are the corner indices from DAGetCorners(). In both cases
-   the arguments from DAGet[Ghost}Corners() are reversed in the call to VecGetArray3d().
+   For a vector obtained from DMCreateLocalVector() mstart, nstart, and pstart are likely
+   obtained from the corner indices obtained from DMDAGetGhostCorners() while for
+   DMCreateGlobalVector() they are the corner indices from DMDAGetCorners(). In both cases
+   the arguments from DMDAGet[Ghost}Corners() are reversed in the call to VecGetArray3d().
    
    For standard PETSc vectors this is an inexpensive call; it does not copy the vector values.
 
    Concepts: vector^accessing local values as 3d array
 
 .seealso: VecGetArray(), VecRestoreArray(), VecGetArrays(), VecGetArrayF90(), VecPlaceArray(),
-          VecRestoreArray2d(), DAVecGetarray(), DAVecRestoreArray(), VecGetArray3d(), VecRestoreArray3d(),
+          VecRestoreArray2d(), DMDAVecGetarray(), DMDAVecRestoreArray(), VecGetArray3d(), VecRestoreArray3d(),
           VecGetArray1d(), VecRestoreArray1d(), VecGetArray4d(), VecRestoreArray4d()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecGetArray4d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt q,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscInt qstart,PetscScalar ****a[])
+PetscErrorCode  VecGetArray4d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt q,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscInt qstart,PetscScalar ****a[])
 {
   PetscErrorCode ierr;
   PetscInt       i,N,j,k;
   PetscScalar    *aa,***b,**c;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidPointer(a,10);
   PetscValidType(x,1);
   ierr = VecGetLocalSize(x,&N);CHKERRQ(ierr);
-  if (m*n*p*q != N) SETERRQ5(PETSC_ERR_ARG_INCOMP,"Local array size %D does not match 4d array dimensions %D by %D by %D by %D",N,m,n,p,q);
+  if (m*n*p*q != N) SETERRQ5(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Local array size %D does not match 4d array dimensions %D by %D by %D by %D",N,m,n,p,q);
   ierr = VecGetArray(x,&aa);CHKERRQ(ierr);
 
   ierr = PetscMalloc(m*sizeof(PetscScalar***)+m*n*sizeof(PetscScalar**)+m*n*p*sizeof(PetscScalar*),a);CHKERRQ(ierr);
@@ -2012,16 +2103,16 @@ PetscErrorCode PETSCVEC_DLLEXPORT VecGetArray4d(Vec x,PetscInt m,PetscInt n,Pets
    This routine actually zeros out the a pointer. 
 
 .seealso: VecGetArray(), VecRestoreArray(), VecRestoreArrays(), VecRestoreArrayF90(), VecPlaceArray(),
-          VecGetArray2d(), VecGetArray3d(), VecRestoreArray3d(), DAVecGetArray(), DAVecRestoreArray()
+          VecGetArray2d(), VecGetArray3d(), VecRestoreArray3d(), DMDAVecGetArray(), DMDAVecRestoreArray()
           VecGetArray1d(), VecRestoreArray1d(), VecGetArray4d(), VecRestoreArray4d(), VecGet
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArray4d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt q,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscInt qstart,PetscScalar ****a[])
+PetscErrorCode  VecRestoreArray4d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt q,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscInt qstart,PetscScalar ****a[])
 {
   PetscErrorCode ierr;
   void           *dummy;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(x,VEC_COOKIE,1);
+  PetscValidHeaderSpecific(x,VEC_CLASSID,1);
   PetscValidPointer(a,8);
   PetscValidType(x,1);
   dummy = (void*)(*a + mstart);

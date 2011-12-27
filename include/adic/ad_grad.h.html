@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:23:09+00:00">
+<meta name="date" content="2011-10-29T18:53:45+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -91,7 +91,7 @@
 <a name="line85"> 85: </a><font color="#A020F0">#   define ad_AD_IncrementTotalGradSize(x) \</font>
 <a name="line86"> 86: </a>    { \
 <a name="line87"> 87: </a>         <font color="#4169E1">if</font> (x + ad_grad_size_shadow &gt; ad_GRAD_MAX) {\
-<a name="line88"> 88: </a>                <A href="../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_USER, <font color="#666666">"The number of independent variables exceeds the maximum compiled for!\n Edit your program and change Process adiC(%d) to Process adiC(%d)"</font>, x + ad_grad_size_shadow,ad_GRAD_MAX);\
+<a name="line88"> 88: </a>                <A href="../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_USER, <font color="#666666">"The number of independent variables exceeds the maximum compiled for!\n Edit your program and change Process adiC(%d) to Process adiC(%d)"</font>, x + ad_grad_size_shadow,ad_GRAD_MAX);\
 <a name="line89"> 89: </a>        }\
 <a name="line90"> 90: </a>        ad_grad_size_shadow += x;\
 <a name="line91"> 91: </a>    }
@@ -121,7 +121,7 @@
 <a name="line115">115: </a>    { \
 <a name="line116">116: </a>        int pOsItIoN = ad_AD_IncrShadowVar(); \
 <a name="line117">117: </a>        <font color="#4169E1">if</font> (pOsItIoN &gt; ad_GRAD_MAX) {\
-<a name="line118">118: </a>          <A href="../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_USER, <font color="#666666">"The number of independent variables exceeds the maximum compiled for!\n Edit your program and change Process adiC(%d) to Process adiC(%d)"</font>,pOsItIoN ,ad_GRAD_MAX);\
+<a name="line118">118: </a>          <A href="../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_USER, <font color="#666666">"The number of independent variables exceeds the maximum compiled for!\n Edit your program and change Process adiC(%d) to Process adiC(%d)"</font>,pOsItIoN ,ad_GRAD_MAX);\
 <a name="line119">119: </a>        }\
 <a name="line120">120: </a>        ad_AD_ClearGrad(DERIV_grad(var)); \
 <a name="line121">121: </a>        DERIV_grad(var)[pOsItIoN] = 1; \

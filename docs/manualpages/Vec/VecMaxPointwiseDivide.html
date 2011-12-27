@@ -10,9 +10,9 @@ Computes the maximum of the componentwise division max = max_i abs(x_i/y_i).
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT VecMaxPointwiseDivide(Vec x,Vec y,PetscReal *max)
+PetscErrorCode  VecMaxPointwiseDivide(Vec x,Vec y,PetscReal *max)
 </PRE>
-Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>x, y  </B> -the vectors
@@ -24,7 +24,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 
 <P>
-Notes: any subset of the x and may be the same vector.
+Notes: x and y may be the same vector
 if a particular y_i is zero, it is treated as 1 in the above formula
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

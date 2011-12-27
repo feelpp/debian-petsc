@@ -1,11 +1,11 @@
-#requirespackage    'PETSC_USE_LOG'
+#requiresdefine    'PETSC_USE_LOG'
 
 ALL: lib 
 
 CFLAGS    =
 FFLAGS    =
 CPPFLAGS  =
-SOURCEC	  = classLog.c stageLog.c eventLog.c
+SOURCEC	  = classLog.c stageLog.c eventLog.c stack.c
 SOURCEF	  =
 SOURCEH	  = 
 OBJSC	  = ${SOURCEC:.c=.o}

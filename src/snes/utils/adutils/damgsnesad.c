@@ -1,19 +1,18 @@
-#define PETSCSNES_DLL
  
-#include "petscda.h"      /*I      "petscda.h"    I*/
-#include "petscmg.h"      /*I      "petscmg.h"    I*/
-#include "petscdmmg.h"    /*I      "petscdmmg.h"  I*/
-#include "../src/mat/blockinvert.h"
-#include "../src/snes/impls/ls/ls.h"
+#include <petscdmda.h>      /*I      "petscdmda.h"    I*/
+#include <petscpcmg.h>      /*I      "petscpcmg.h"    I*/
+#include <petscdmmg.h>    /*I      "petscdmmg.h"  I*/
+#include <../src/mat/blockinvert.h>
+#include <../src/snes/impls/ls/lsimpl.h>
 
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PETSCSNES_DLLEXPORT NLFRelax_DAAD(NLF,MatSORType,PetscInt,Vec);
-EXTERN PetscErrorCode PETSCSNES_DLLEXPORT NLFRelax_DAAD4(NLF,MatSORType,PetscInt,Vec);
-EXTERN PetscErrorCode PETSCSNES_DLLEXPORT NLFRelax_DAAD9(NLF,MatSORType,PetscInt,Vec);
-EXTERN PetscErrorCode PETSCSNES_DLLEXPORT NLFRelax_DAADb(NLF,MatSORType,PetscInt,Vec);
+extern PetscErrorCode  NLFRelax_DAAD(NLF,MatSORType,PetscInt,Vec);
+extern PetscErrorCode  NLFRelax_DAAD4(NLF,MatSORType,PetscInt,Vec);
+extern PetscErrorCode  NLFRelax_DAAD9(NLF,MatSORType,PetscInt,Vec);
+extern PetscErrorCode  NLFRelax_DAADb(NLF,MatSORType,PetscInt,Vec);
 EXTERN_C_END
-EXTERN PetscErrorCode DMMGFormFunction(SNES,Vec,Vec,void *);
-EXTERN PetscErrorCode SNESLSCheckLocalMin_Private(Mat,Vec,Vec,PetscReal,PetscTruth*);
+extern PetscErrorCode DMMGFormFunction(SNES,Vec,Vec,void *);
+extern PetscErrorCode SNESLSCheckLocalMin_Private(Mat,Vec,Vec,PetscReal,PetscBool *);
 
 #undef __FUNCT__
 #define __FUNCT__ "DMMGComputeJacobianWithAdic"
@@ -26,14 +25,14 @@ PetscErrorCode DMMGComputeJacobianWithAdic(SNES snes,Vec X,Mat *J,Mat *B,MatStru
   DMMG           dmmg = (DMMG) ptr;
   PetscErrorCode ierr;
   Vec            localX;
-  DA             da = (DA) dmmg->dm;
+  DM             da =  dmmg->dm;
 
   PetscFunctionBegin;
-  ierr = DAGetLocalVector(da,&localX);CHKERRQ(ierr);
-  ierr = DAGlobalToLocalBegin(da,X,INSERT_VALUES,localX);CHKERRQ(ierr);
-  ierr = DAGlobalToLocalEnd(da,X,INSERT_VALUES,localX);CHKERRQ(ierr);
-  ierr = DAComputeJacobian1WithAdic(da,localX,*B,dmmg->user);CHKERRQ(ierr);
-  ierr = DARestoreLocalVector(da,&localX);CHKERRQ(ierr);
+  ierr = DMGetLocalVector(da,&localX);CHKERRQ(ierr);
+  ierr = DMGlobalToLocalBegin(da,X,INSERT_VALUES,localX);CHKERRQ(ierr);
+  ierr = DMGlobalToLocalEnd(da,X,INSERT_VALUES,localX);CHKERRQ(ierr);
+  ierr = DMDAComputeJacobian1WithAdic(da,localX,*B,dmmg->user);CHKERRQ(ierr);
+  ierr = DMRestoreLocalVector(da,&localX);CHKERRQ(ierr);
   /* Assemble true Jacobian; if it is different */
   if (*J != *B) {
     ierr  = MatAssemblyBegin(*J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
@@ -48,8 +47,8 @@ PetscErrorCode DMMGComputeJacobianWithAdic(SNES snes,Vec X,Mat *J,Mat *B,MatStru
 #define __FUNCT__ "SNESDAComputeJacobianWithAdic"
 /*@
     SNESDAComputeJacobianWithAdic - This is a universal Jacobian evaluation routine
-    that may be used with SNESSetJacobian() as long as the user context has a DA as
-    its first record and DASetLocalAdicFunction() has been called.  
+    that may be used with SNESSetJacobian() as long as the user context has a DMDA as
+    its first record and DMDASetLocalAdicFunction() has been called.  
 
    Collective on SNES
 
@@ -63,21 +62,21 @@ PetscErrorCode DMMGComputeJacobianWithAdic(SNES snes,Vec X,Mat *J,Mat *B,MatStru
 
    Level: intermediate
 
-.seealso: DASetLocalFunction(), DASetLocalAdicFunction(), SNESSetFunction(), SNESSetJacobian()
+.seealso: DMDASetLocalFunction(), DMDASetLocalAdicFunction(), SNESSetFunction(), SNESSetJacobian()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDAComputeJacobianWithAdic(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,void *ptr)
+PetscErrorCode  SNESDAComputeJacobianWithAdic(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,void *ptr)
 {
-  DA             da = *(DA*) ptr;
+  DM             da = *(DM*) ptr;
   PetscErrorCode ierr;
   Vec            localX;
 
   PetscFunctionBegin;
-  ierr = DAGetLocalVector(da,&localX);CHKERRQ(ierr);
-  ierr = DAGlobalToLocalBegin(da,X,INSERT_VALUES,localX);CHKERRQ(ierr);
-  ierr = DAGlobalToLocalEnd(da,X,INSERT_VALUES,localX);CHKERRQ(ierr);
-  ierr = DAComputeJacobian1WithAdic(da,localX,*B,ptr);CHKERRQ(ierr);
-  ierr = DARestoreLocalVector(da,&localX);CHKERRQ(ierr);
+  ierr = DMGetLocalVector(da,&localX);CHKERRQ(ierr);
+  ierr = DMGlobalToLocalBegin(da,X,INSERT_VALUES,localX);CHKERRQ(ierr);
+  ierr = DMGlobalToLocalEnd(da,X,INSERT_VALUES,localX);CHKERRQ(ierr);
+  ierr = DMDAComputeJacobian1WithAdic(da,localX,*B,ptr);CHKERRQ(ierr);
+  ierr = DMRestoreLocalVector(da,&localX);CHKERRQ(ierr);
   /* Assemble true Jacobian; if it is different */
   if (*J != *B) {
     ierr  = MatAssemblyBegin(*J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
@@ -88,7 +87,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESDAComputeJacobianWithAdic(SNES snes,Vec X
   PetscFunctionReturn(0);
 }
 
-#include "../src/ksp/pc/impls/mg/mgimpl.h"                    /*I "petscmg.h" I*/
+#include <../src/ksp/pc/impls/mg/mgimpl.h>                    /*I "petscpcmg.h" I*/
 /*
           This is pre-beta FAS code. It's design should not be taken seriously!
 
@@ -329,7 +328,7 @@ PetscErrorCode DMMGSolveFASb(DMMG *dmmg,PetscInt level)
 }
 
 EXTERN_C_BEGIN
-#include "adic/ad_utils.h"
+#include <adic/ad_utils.h>
 EXTERN_C_END
 
 #undef __FUNCT__  
@@ -630,7 +629,7 @@ Options:
 
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGSolveFASMCycle"
-PetscErrorCode DMMGSolveFASMCycle(DMMG *dmmg,PetscInt level,PetscTruth* converged)
+PetscErrorCode DMMGSolveFASMCycle(DMMG *dmmg,PetscInt level,PetscBool * converged)
 {
   PetscErrorCode ierr;
   PetscInt       j,k,cycles=1,nlevels=level;//nlevels=dmmg[0]->nlevels-1; 
@@ -782,7 +781,7 @@ Options:
 
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGSolveFASMCycle9"
-PetscErrorCode DMMGSolveFASMCycle9(DMMG *dmmg,PetscInt level,PetscTruth* converged)
+PetscErrorCode DMMGSolveFASMCycle9(DMMG *dmmg,PetscInt level,PetscBool * converged)
 {
   PetscErrorCode ierr;
   PetscInt       j,k,cycles=1,nlevels=level;//nlevels=dmmg[0]->nlevels-1; 
@@ -946,7 +945,7 @@ Options:
 
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGSolveFASFCycle"
-PetscErrorCode DMMGSolveFASFCycle(DMMG *dmmg,PetscInt l,PetscTruth* converged)
+PetscErrorCode DMMGSolveFASFCycle(DMMG *dmmg,PetscInt l,PetscBool * converged)
 {
   PetscErrorCode ierr;
   PetscInt       j;//l = dmmg[0]->nlevels-1;
@@ -1007,7 +1006,7 @@ Options:
 */
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGSolveFASFCycle"
-PetscErrorCode DMMGSolveFASFCycle9(DMMG *dmmg,PetscInt l,PetscTruth* converged)
+PetscErrorCode DMMGSolveFASFCycle9(DMMG *dmmg,PetscInt l,PetscBool * converged)
 {
   PetscErrorCode ierr;
   PetscInt       j;//l = dmmg[0]->nlevels-1;
@@ -1070,16 +1069,16 @@ PetscErrorCode DMMGSolveFASCycle(DMMG *dmmg,PetscInt level)
 {
   PetscErrorCode ierr;
   PetscInt       i;
-  PetscTruth     converged = PETSC_FALSE, flg = PETSC_FALSE,flgb = PETSC_FALSE;
+  PetscBool      converged = PETSC_FALSE, flg = PETSC_FALSE,flgb = PETSC_FALSE;
   PetscReal      norm;
 
   PetscFunctionBegin;
   ierr =  DMMGSolveFASSetUp(dmmg,level);CHKERRQ(ierr);
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_fas_9",&flgb,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_fas_9",&flgb,PETSC_NULL);CHKERRQ(ierr);
  
   if(flgb){
 
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_fas_full",&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_fas_full",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       for(i=0;i<1000;i++){
 	ierr = PetscPrintf(dmmg[level]->comm,"%D ",i+1);CHKERRQ(ierr);
@@ -1108,7 +1107,7 @@ PetscErrorCode DMMGSolveFASCycle(DMMG *dmmg,PetscInt level)
   }
   else {
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_fas_full",&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_fas_full",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       for(i=0;i<1000;i++){
 	ierr = PetscPrintf(dmmg[level]->comm,"%D ",i+1);CHKERRQ(ierr);
@@ -1154,18 +1153,18 @@ Options:
 PetscErrorCode DMMGSolveFASCyclen(DMMG *dmmg,PetscInt level)
 {
   PetscErrorCode ierr;
-  PetscTruth     converged = PETSC_FALSE, flg = PETSC_FALSE,flgb = PETSC_FALSE;
+  PetscBool      converged = PETSC_FALSE, flg = PETSC_FALSE,flgb = PETSC_FALSE;
   PetscReal      norm;
   // PC_MG          **mg;
   //PC             pc;
 
   PetscFunctionBegin;
   ierr =  DMMGSolveFASSetUp(dmmg,level);CHKERRQ(ierr);
-     ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_fas_9",&flgb,PETSC_NULL);CHKERRQ(ierr);
+     ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_fas_9",&flgb,PETSC_NULL);CHKERRQ(ierr);
  
   if(flgb){
 
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_fas_full",&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_fas_full",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
     
 	ierr = DMMGSolveFASFCycle9(dmmg,level,&converged);CHKERRQ(ierr); 
@@ -1190,7 +1189,7 @@ PetscErrorCode DMMGSolveFASCyclen(DMMG *dmmg,PetscInt level)
   }
   else {
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_fas_full",&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_fas_full",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
    
 	ierr = DMMGSolveFASFCycle(dmmg,level,&converged);CHKERRQ(ierr); 
@@ -1241,7 +1240,7 @@ PetscErrorCode DMMGSolveFAS_NCG(DMMG *dmmg, PetscInt level)
   SNES_LS        *neP = (SNES_LS*)snes->data;
   PetscErrorCode ierr;
   PetscInt       maxits,i,lits;
-  PetscTruth     lssucceed;
+  PetscBool      lssucceed;
   // MatStructure   flg = DIFFERENT_NONZERO_PATTERN;
   PetscReal      fnorm,gnorm,xnorm,ynorm,betaFR,betaPR,beta,betaHS,betaDY;
   Vec            Y,X,F,G,W,Gradold,Sk;
@@ -1280,12 +1279,12 @@ PetscErrorCode DMMGSolveFAS_NCG(DMMG *dmmg, PetscInt level)
   ierr = SNESComputeFunction(snes,X,F);CHKERRQ(ierr);
   
   ierr = VecNorm(F,NORM_2,&fnorm);CHKERRQ(ierr);	/* fnorm <- ||F||  */
-  if (fnorm != fnorm) SETERRQ(PETSC_ERR_FP,"User provided compute function generated a Not-a-Number");
+  if (fnorm != fnorm) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_FP,"User provided compute function generated a Not-a-Number");
   ierr = PetscObjectTakeAccess(snes);CHKERRQ(ierr);
   snes->norm = fnorm;
   ierr = PetscObjectGrantAccess(snes);CHKERRQ(ierr);
   SNESLogConvHistory(snes,fnorm,0);
-  SNESMonitor(snes,0,fnorm);
+  ierr = SNESMonitor(snes,0,fnorm);CHKERRQ(ierr);
 
   if (fnorm < snes->abstol) {snes->reason = SNES_CONVERGED_FNORM_ABS; PetscFunctionReturn(0);}
 
@@ -1399,13 +1398,13 @@ PetscErrorCode DMMGSolveFAS_NCG(DMMG *dmmg, PetscInt level)
     snes->norm = fnorm;
     ierr = PetscObjectGrantAccess(snes);CHKERRQ(ierr);
     SNESLogConvHistory(snes,fnorm,lits);
-    SNESMonitor(snes,i+1,fnorm);
+    ierr = SNESMonitor(snes,i+1,fnorm);CHKERRQ(ierr);
     
      if (!lssucceed) { 
-      PetscTruth ismin;
+      PetscBool  ismin;
       beta=0;
       if (++snes->numFailures >= snes->maxFailures) {
-      snes->reason = SNES_DIVERGED_LS_FAILURE;
+      snes->reason = SNES_DIVERGED_LINE_SEARCH;
         ierr = SNESLSCheckLocalMin_Private(snes->jacobian,F,W,fnorm,&ismin);CHKERRQ(ierr);
         if (ismin) snes->reason = SNES_DIVERGED_LOCAL_MIN;
         break;
@@ -1463,7 +1462,7 @@ PetscErrorCode DMMGSolveFAS_NGMRES(DMMG *dmmg, PetscInt level)
   PetscInt       maxits=10000,i,k,l,j,subm=3,iter;
  ierr = PetscOptionsGetInt(PETSC_NULL,"-dmmg_fas_ngmres_m",&subm,PETSC_NULL);CHKERRQ(ierr);
 
-  PetscTruth     restart=PETSC_FALSE, selectA=PETSC_FALSE;
+  PetscBool      restart=PETSC_FALSE, selectA=PETSC_FALSE;
   PetscReal      fnorm,gnorm,dnorm,dnormtemp,dminnorm,fminnorm,tol=1.e-12,gammaA=2,epsilonB=0.1,deltaB=0.9,gammaC;
   Vec            X,F,G,W,D,u[subm],res[subm];
    PetscScalar    H[subm][subm],q[subm][subm],beta[subm],xi[subm],alpha[subm],alphasum,det,Hinv[16];
@@ -1715,14 +1714,14 @@ PetscErrorCode DMMGSolveFAS_QNewton(DMMG *dmmg, PetscInt level)
   PetscInt       maxits=10000,i,k,l,subm=3,subm01;
   ierr = PetscOptionsGetInt(PETSC_NULL,"-dmmg_fas_QNewton_m",&subm,PETSC_NULL);CHKERRQ(ierr);
   subm01=subm-1;
-   PetscTruth   flg = PETSC_FALSE;  
+   PetscBool    flg = PETSC_FALSE;  
    PetscReal      fnorm,gnorm,tol=1.e-12;
   Vec            X,F,G,W,D,Y,v[subm],w[subm],s0,s1,F0,F1;
  
 
  PetscFunctionBegin;
 
- ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_fas_initialJacobian",&flg,PETSC_NULL);CHKERRQ(ierr);
+ ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_fas_initialJacobian",&flg,PETSC_NULL);CHKERRQ(ierr);
  ierr = VecDuplicate(dmmg[level]->x,&X);CHKERRQ(ierr);
  ierr = VecDuplicate(dmmg[level]->x,&F);CHKERRQ(ierr);
  ierr = VecDuplicate(dmmg[level]->x,&W);CHKERRQ(ierr);

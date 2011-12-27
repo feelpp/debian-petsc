@@ -1,3 +1,4 @@
+import os
 import args
 import config.compile.processor
 import config.compile.C
@@ -12,30 +13,30 @@ class Preprocessor(config.compile.C.Preprocessor):
     config.compile.C.Preprocessor.__init__(self, argDB)
     self.language        = 'FC'
     self.targetExtension = '.F'
+    self.includeDirectories = sets.Set()
     return
 
 class Compiler(config.compile.processor.Processor):
   '''The Fortran compiler'''
-  def __init__(self, argDB):
+  def __init__(self, argDB, usePreprocessorFlags = True):
     config.compile.processor.Processor.__init__(self, argDB, 'FC', 'FFLAGS', '.F', '.o')
     self.language           = 'FC'
     self.requiredFlags[-1]  = '-c'
     self.outputFlag         = '-o'
     self.includeDirectories = sets.Set()
-    self.flagsName.extend(Preprocessor(argDB).flagsName)
+    if usePreprocessorFlags:
+      self.flagsName.extend(Preprocessor(argDB).flagsName)
     return
 
   def getTarget(self, source):
-    import os
-
     base, ext = os.path.splitext(source)
     return base+'.o'
 
 class Linker(config.compile.processor.Processor):
   '''The Fortran linker'''
   def __init__(self, argDB):
-    self.compiler        = Compiler(argDB)
-    self.configLibraries = config.libraries.Configure(config.framework.Framework(clArgs = '', argDB = argDB))
+    self.compiler        = Compiler(argDB, usePreprocessorFlags = False)
+    self.configLibraries = config.libraries.Configure(config.framework.Framework(clArgs = '', argDB = argDB, tmpDir = os.getcwd()))
     config.compile.processor.Processor.__init__(self, argDB, ['FC_LD', 'LD', self.compiler.name], ['LDFLAGS', 'FC_LINKER_FLAGS'], '.o', '.a')
     self.language   = 'FC'
     self.outputFlag = '-o'
@@ -77,7 +78,6 @@ class Linker(config.compile.processor.Processor):
   extraArguments = property(getExtraArguments, config.compile.processor.Processor.setExtraArguments, doc = 'Optional arguments for the end of the command')
 
   def getTarget(self, source, shared):
-    import os
     import sys
 
     base, ext = os.path.splitext(source)

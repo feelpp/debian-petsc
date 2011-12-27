@@ -10,9 +10,9 @@ Sets an ADDITIONAL function that is to be used at every iteration of the nonline
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorSet(SNES snes,PetscErrorCode (*monitor)(SNES,PetscInt,PetscReal,void*),void *mctx,PetscErrorCode (*monitordestroy)(void*))
+PetscErrorCode  SNESMonitorSet(SNES snes,PetscErrorCode (*monitor)(SNES,PetscInt,PetscReal,void*),void *mctx,PetscErrorCode (*monitordestroy)(void**))
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -48,12 +48,13 @@ monitor routine (use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> 
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor_draw    </B></TD><TD>- sets line graph monitor,
 uses SNESMonitorLGCreate()
-_    -snes_monitor_cancel - cancels all monitors that have
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor_cancel </B></TD><TD>- cancels all monitors that have
 been hardwired into a code by 
 calls to <A HREF="../SNES/SNESMonitorSet.html#SNESMonitorSet">SNESMonitorSet</A>(), but
 does not cancel those set via
 the options database.
-</TD></TR>
+</TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Several different monitoring routines may be set by calling
@@ -82,4 +83,5 @@ Fortran notes: Only a single monitor function can be set for each <A HREF="../SN
 <A HREF="../../../src/snes/examples/tutorials/ex22.c.html">src/snes/examples/tutorials/ex22.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex43.c.html">src/snes/examples/tutorials/ex43.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
 </BODY></HTML>

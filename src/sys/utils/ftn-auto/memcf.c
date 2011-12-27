@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* memc.c */
 /* Fortran interface file */
 
@@ -43,10 +44,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscmemcmp_( void*str1, void*str2,size_t *len,PetscTruth *e, int *__ierr ){
+void PETSC_STDCALL  petscmemcmp_( void*str1, void*str2,size_t *len,PetscBool  *e, int *__ierr ){
 *__ierr = PetscMemcmp(str1,str2,*len,e);
 }
-void PETSC_STDCALL   petscmemmove_(void*a,void*b,size_t *n, int *__ierr ){
+void PETSC_STDCALL  petscmemmove_(void*a,void*b,size_t *n, int *__ierr ){
 *__ierr = PetscMemmove(a,b,*n);
 }
 #if defined(__cplusplus)

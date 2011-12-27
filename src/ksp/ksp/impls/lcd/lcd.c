@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "../src/ksp/ksp/impls/lcd/lcdimpl.h"
+#include <../src/ksp/ksp/impls/lcd/lcdimpl.h>
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetUp_LCD"
 
@@ -11,12 +10,6 @@ PetscErrorCode KSPSetUp_LCD(KSP ksp)
   PetscInt        restart = lcd->restart;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(2,"No right preconditioning for KSPLCD");
-  } else if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(2,"No symmetric preconditioning for KSPLCD");
-  }
-
   /* get work vectors needed by LCD */
   ierr = KSPDefaultGetWork(ksp,2);CHKERRQ(ierr);
  
@@ -43,18 +36,17 @@ PetscErrorCode  KSPSolve_LCD(KSP ksp)
 {
   PetscErrorCode ierr;
   PetscInt       it,j,max_k;
-  PetscScalar    alfa, beta, num, den, mone, pone;
+  PetscScalar    alfa, beta, num, den, mone;
   PetscReal      rnorm;
   Vec            X,B,R,Z;
   KSP_LCD        *lcd;
   Mat            Amat,Pmat;
   MatStructure   pflag;
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
-  
-  ierr = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
+  ierr = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
 
   lcd            = (KSP_LCD*)ksp->data;
   X              = ksp->vec_sol;
@@ -63,7 +55,6 @@ PetscErrorCode  KSPSolve_LCD(KSP ksp)
   Z              = ksp->work[1];
   max_k          = lcd->restart;
   mone = -1;
-  pone = 1;
 
   ierr = PCGetOperators(ksp->pc,&Amat,&Pmat,&pflag);CHKERRQ(ierr);
 
@@ -78,7 +69,7 @@ PetscErrorCode  KSPSolve_LCD(KSP ksp)
   ierr = KSP_PCApply(ksp,Z,R);CHKERRQ(ierr);                   /*     r <- M^-1z         */
   ierr = VecNorm(R,NORM_2,&rnorm);CHKERRQ(ierr);
   KSPLogResidualHistory(ksp,rnorm);
-  KSPMonitor(ksp,0,rnorm);                    /* call any registered monitor routines */
+  ierr = KSPMonitor(ksp,0,rnorm);CHKERRQ(ierr);
   ksp->rnorm = rnorm;
  
    /* test for convergence */
@@ -104,7 +95,7 @@ PetscErrorCode  KSPSolve_LCD(KSP ksp)
 
       ksp->rnorm = rnorm;
       KSPLogResidualHistory(ksp,rnorm);
-      KSPMonitor(ksp,ksp->its,rnorm);
+      ierr = KSPMonitor(ksp,ksp->its,rnorm);CHKERRQ(ierr);
       ierr = (*ksp->converged)(ksp,ksp->its,rnorm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
       
       if (ksp->reason) break;
@@ -134,16 +125,27 @@ PetscErrorCode  KSPSolve_LCD(KSP ksp)
 
 */
 #undef __FUNCT__  
-#define __FUNCT__ "KSPDestroy_LCD" 
-PetscErrorCode KSPDestroy_LCD(KSP ksp)
+#define __FUNCT__ "KSPReset_LCD" 
+PetscErrorCode KSPReset_LCD(KSP ksp)
 {
   KSP_LCD         *lcd = (KSP_LCD*)ksp->data;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = KSPDefaultFreeWork(ksp);CHKERRQ(ierr);
-  if (lcd->P) { ierr = VecDestroyVecs(lcd->P, lcd->restart+1);CHKERRQ(ierr); }
-  if (lcd->Q) { ierr = VecDestroyVecs(lcd->Q, lcd->restart+1);CHKERRQ(ierr); }
+  if (lcd->P) { ierr = VecDestroyVecs(lcd->restart+1,&lcd->P);CHKERRQ(ierr);}
+  if (lcd->Q) { ierr = VecDestroyVecs(lcd->restart+1,&lcd->Q);CHKERRQ(ierr);}
+  PetscFunctionReturn(0);
+}
+
+
+#undef __FUNCT__  
+#define __FUNCT__ "KSPDestroy_LCD" 
+PetscErrorCode KSPDestroy_LCD(KSP ksp)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = KSPReset_LCD(ksp);CHKERRQ(ierr);
   ierr = PetscFree(ksp->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -163,15 +165,15 @@ PetscErrorCode KSPView_LCD(KSP ksp,PetscViewer viewer)
 
   KSP_LCD         *lcd = (KSP_LCD *)ksp->data; 
   PetscErrorCode ierr;
-  PetscTruth     iascii;
+  PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
       ierr = PetscViewerASCIIPrintf(viewer,"  LCD: restart=%d\n",lcd->restart);CHKERRQ(ierr);
       ierr = PetscViewerASCIIPrintf(viewer,"  LCD: happy breakdown tolerance %g\n",lcd->haptol);CHKERRQ(ierr);
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for KSP LCD",((PetscObject)viewer)->type_name);
+    SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Viewer type %s not supported for KSP LCD",((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
@@ -185,15 +187,15 @@ PetscErrorCode KSPView_LCD(KSP ksp,PetscViewer viewer)
 PetscErrorCode KSPSetFromOptions_LCD(KSP ksp)
 {
   PetscErrorCode ierr;
-  PetscTruth     flg;
+  PetscBool      flg;
   KSP_LCD        *lcd = (KSP_LCD *)ksp->data;
   
   PetscFunctionBegin;
   ierr = PetscOptionsHead("KSP LCD options");CHKERRQ(ierr);
   ierr = PetscOptionsInt("-ksp_lcd_restart","Number of vectors conjugate","KSPLCDSetRestart",lcd->restart,&lcd->restart,&flg);CHKERRQ(ierr);
-  if(flg && lcd->restart < 1) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Restart must be positive");
+  if(flg && lcd->restart < 1) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Restart must be positive");
   ierr = PetscOptionsReal("-ksp_lcd_haptol","Tolerance for exact convergence (happy ending)","KSPLCDSetHapTol",lcd->haptol,&lcd->haptol,&flg);CHKERRQ(ierr);
-  if (flg && lcd->haptol < 0.0) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Tolerance must be non-negative");
+  if (flg && lcd->haptol < 0.0) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Tolerance must be non-negative");
   PetscFunctionReturn(0);
 }
 
@@ -206,6 +208,7 @@ PetscErrorCode KSPSetFromOptions_LCD(KSP ksp)
 
    Level: beginner
 
+    Notes: Support only for left preconditioning
 
     References: 
    - J.Y. Yuan, G.H.Golub, R.J. Plemmons, and W.A.G. Cecilio. Semiconjugate
@@ -243,7 +246,7 @@ PetscErrorCode KSPCreate_LCD(KSP ksp)
   PetscFunctionBegin;
   ierr = PetscNewLog(ksp,KSP_LCD,&lcd);CHKERRQ(ierr);
   ksp->data                      = (void*)lcd;
-  ksp->pc_side                   = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
   lcd->restart                   = 30;
   lcd->haptol                    = 1.0e-30;
 
@@ -253,6 +256,7 @@ PetscErrorCode KSPCreate_LCD(KSP ksp)
   */
   ksp->ops->setup                = KSPSetUp_LCD;
   ksp->ops->solve                = KSPSolve_LCD;
+  ksp->ops->reset                = KSPReset_LCD;
   ksp->ops->destroy              = KSPDestroy_LCD;
   ksp->ops->view                 = KSPView_LCD;
   ksp->ops->setfromoptions       = KSPSetFromOptions_LCD;

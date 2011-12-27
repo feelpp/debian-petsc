@@ -10,7 +10,7 @@ Returns a matrix suitable to calls to MatXXFactorSymbolic()
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatGetFactor(Mat mat, const MatSolverPackage type,MatFactorType ftype,Mat *f)
+PetscErrorCode  MatGetFactor(Mat mat, const MatSolverPackage type,MatFactorType ftype,Mat *f)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -31,7 +31,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 Some PETSc matrix formats have alternative solvers available that are contained in alternative packages
 such as pastix, superlu, mumps, spooles etc.
 <P>
-PETSc must have been config/configure.py to use the external solver, using the option --download-package
+PETSc must have been ./configure to use the external solver, using the option --download-package
 <P>
 
 <P>
@@ -44,4 +44,5 @@ PETSc must have been config/configure.py to use the external solver, using the o
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex13.c.html">src/mat/examples/tutorials/ex13.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
 </BODY></HTML>

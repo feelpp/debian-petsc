@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscsys.h"           /*I "petscsys.h" I*/
+#include <petscsys.h>           /*I "petscsys.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscMPIAbortErrorHandler" 
@@ -10,13 +9,14 @@
    Not Collective
 
    Input Parameters:
-+  line - the line number of the error (indicated by __LINE__)
++  comm - communicator over which error occurred
+.  line - the line number of the error (indicated by __LINE__)
 .  fun - the function where the error occurred (indicated by __FUNCT__)
 .  file - the file in which the error was detected (indicated by __FILE__)
 .  dir - the directory of the file (indicated by __SDIR__)
 .  mess - an error text string, usually just printed to the screen
 .  n - the generic error number
-.  p - the specific error number
+.  p - PETSC_ERROR_INITIAL if error just detected, otherwise PETSC_ERROR_REPEAT
 -  ctx - error handler context
 
    Level: developer
@@ -25,7 +25,7 @@
    Most users need not directly employ this routine and the other error 
    handlers, but can instead use the simplified interface SETERRQ, which has 
    the calling sequence
-$     SETERRQ(n,p,mess)
+$     SETERRQ(comm,n,p,mess)
 
    Notes for experienced users:
    Use PetscPushErrorHandler() to set the desired error handler.  The
@@ -37,9 +37,9 @@ $     SETERRQ(n,p,mess)
 .seealso:  PetscPushErrorHandler(), PetscAttachDebuggerErrorHandler(), 
            PetscAbortErrorHandler(), PetscTraceBackErrorHandler()
  @*/
-PetscErrorCode PETSC_DLLEXPORT PetscMPIAbortErrorHandler(int line,const char *fun,const char *file,const char *dir,PetscErrorCode n,int p,const char *mess,void *ctx)
+PetscErrorCode  PetscMPIAbortErrorHandler(MPI_Comm comm,int line,const char *fun,const char *file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,void *ctx)
 {
-  PetscTruth     flg1 = PETSC_FALSE,flg2 = PETSC_FALSE;
+  PetscBool      flg1 = PETSC_FALSE,flg2 = PETSC_FALSE;
   PetscLogDouble mem,rss;
 
   PetscFunctionBegin;
@@ -51,12 +51,12 @@ PetscErrorCode PETSC_DLLEXPORT PetscMPIAbortErrorHandler(int line,const char *fu
     (*PetscErrorPrintf)("too large an object or bleeding by not properly\n");
     (*PetscErrorPrintf)("destroying unneeded objects.\n");
     PetscMallocGetCurrentUsage(&mem); PetscMemoryGetCurrentUsage(&rss);
-    PetscOptionsGetTruth(PETSC_NULL,"-malloc_dump",&flg1,PETSC_NULL);
-    PetscOptionsGetTruth(PETSC_NULL,"-malloc_log",&flg2,PETSC_NULL);
+    PetscOptionsGetBool(PETSC_NULL,"-malloc_dump",&flg1,PETSC_NULL);
+    PetscOptionsGetBool(PETSC_NULL,"-malloc_log",&flg2,PETSC_NULL);
     if (flg2) {
       PetscMallocDumpLog(stdout);
     } else {
-      (*PetscErrorPrintf)("Memory allocated %D Memory used by process %D\n",(PetscInt)mem,(PetscInt)rss);
+      (*PetscErrorPrintf)("Memory allocated %.0f Memory used by process %.0f\n",mem,rss);
       if (flg1) {
         PetscMallocDump(stdout);
       }  else {

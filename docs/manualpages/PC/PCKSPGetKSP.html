@@ -11,7 +11,7 @@ Gets the <A HREF="../KSP/KSP.html#KSP">KSP</A> context for a <A HREF="../KSP/KSP
 <PRE>
 #include "petscpc.h" 
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCKSPGetKSP(PC pc,KSP *ksp)
+PetscErrorCode  PCKSPGetKSP(PC pc,KSP *ksp)
 </PRE>
 Not Collective but <A HREF="../KSP/KSP.html#KSP">KSP</A> returned is parallel if <A HREF="../PC/PC.html#PC">PC</A> was parallel
 <P>

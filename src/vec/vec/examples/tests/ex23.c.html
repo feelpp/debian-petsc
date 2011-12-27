@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:32+00:00">
+<meta name="date" content="2011-10-29T18:56:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -18,7 +18,7 @@
 <a name="line8">  8: </a><font color="#B22222">     Scatter first and third block to first processor and </font>
 <a name="line9">  9: </a><font color="#B22222">     second and third block to second processor</font>
 <a name="line10"> 10: </a><font color="#B22222">*/</font>
-<a name="line11"> 11: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line11"> 11: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line15"> 15: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line16"> 16: </a>{
@@ -33,7 +33,7 @@
 <a name="line26"> 26: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
 <a name="line27"> 27: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rank);
 
-<a name="line29"> 29: </a>  <font color="#4169E1">if</font> (size != 2) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Must run with 2 processors"</font>);
+<a name="line29"> 29: </a>  <font color="#4169E1">if</font> (size != 2) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"Must run with 2 processors"</font>);
 
 <a name="line31"> 31: </a>  <font color="#B22222">/* create two vectors */</font>
 <a name="line32"> 32: </a>  <font color="#4169E1">if</font> (!rank) nlocal = 8;
@@ -45,11 +45,11 @@
 
 <a name="line39"> 39: </a>  <font color="#B22222">/* create two index sets */</font>
 <a name="line40"> 40: </a>  <font color="#4169E1">if</font> (!rank) {
-<a name="line41"> 41: </a>    blocks[0] = 0; blocks[1] = 8;
+<a name="line41"> 41: </a>    blocks[0] = 0; blocks[1] = 2;
 <a name="line42"> 42: </a>  } <font color="#4169E1">else</font> {
-<a name="line43"> 43: </a>    blocks[0] = 4; blocks[1] = 8;
+<a name="line43"> 43: </a>    blocks[0] = 1; blocks[1] = 2;
 <a name="line44"> 44: </a>  }
-<a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,4,2,blocks,&amp;is1);
+<a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,4,2,blocks,PETSC_COPY_VALUES,&amp;is1);
 <a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,8,0,1,&amp;is2);
 
 <a name="line48"> 48: </a>  <font color="#4169E1">for</font> (i=0; i&lt;12; i++) {
@@ -60,17 +60,17 @@
 <a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(x);
 
 <a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,is1,y,is2,&amp;ctx);
-<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(ctx,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(ctx,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line58"> 58: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(ctx);
+<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(ctx,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(ctx,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line58"> 58: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(&amp;ctx);
 <a name="line59"> 59: </a>
 <a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/Sys/PetscSleep.html#PetscSleep">PetscSleep</A>(2.0*rank);
 <a name="line61"> 61: </a>  <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(y,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
 
-<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y);
-<a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is1);
-<a name="line66"> 66: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is2);
+<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y);
+<a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is1);
+<a name="line66"> 66: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is2);
 
 <a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line69"> 69: </a>  <font color="#4169E1">return</font> 0;

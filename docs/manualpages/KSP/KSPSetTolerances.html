@@ -10,9 +10,9 @@ Sets the relative, absolute, divergence, and maximum iteration tolerances used b
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetTolerances(KSP ksp,PetscReal rtol,PetscReal abstol,PetscReal dtol,PetscInt maxits)
+PetscErrorCode  KSPSetTolerances(KSP ksp,PetscReal rtol,PetscReal abstol,PetscReal dtol,PetscInt maxits)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -67,11 +67,11 @@ for setting user-defined stopping criteria.
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex8.c.html">src/ksp/ksp/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex8g.c.html">src/ksp/ksp/examples/tutorials/ex8g.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15.c.html">src/ksp/ksp/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex23.c.html">src/ksp/ksp/examples/tutorials/ex23.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1f.F.html">src/ksp/ksp/examples/tutorials/ex1f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2f.F.html">src/ksp/ksp/examples/tutorials/ex2f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15f.F.html">src/ksp/ksp/examples/tutorials/ex15f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex21f.F.html">src/ksp/ksp/examples/tutorials/ex21f.F.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex1.c.html">src/snes/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

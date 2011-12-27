@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "private/viewerimpl.h"  /*I     "petscsys.h"   I*/
+#include <private/viewerimpl.h>  /*I     "petscsys.h"   I*/
 #include <stdarg.h>
 
 typedef struct {
@@ -11,7 +10,9 @@ typedef struct {
   PetscViewer   bviewer;        /* if PetscViewer is a singleton, this points to mother */
   PetscViewer   sviewer;        /* if PetscViewer has a singleton, this points to singleton */
   char          *filename;
-  PetscTruth    storecompressed; 
+  PetscBool     storecompressed; 
+  PetscBool     closefile;       
+  PetscBool     allowsynchronized; /* allow synchronized writes from any process to the viewer */
 } PetscViewer_ASCII;
 
 typedef struct PetscViewerLink_t PetscViewerLink;
@@ -23,5 +24,5 @@ struct PetscViewerLink_t {
 extern PetscMPIInt Petsc_Viewer_keyval;
 
 EXTERN_C_BEGIN
-EXTERN PetscMPIInt PETSC_DLLEXPORT MPIAPI Petsc_DelViewer(MPI_Comm,PetscMPIInt,void*,void*);
+extern PetscMPIInt  MPIAPI Petsc_DelViewer(MPI_Comm,PetscMPIInt,void*,void*);
 EXTERN_C_END

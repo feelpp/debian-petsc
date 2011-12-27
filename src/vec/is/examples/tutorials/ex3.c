@@ -9,17 +9,17 @@ static char help[] = "Demonstrates creating a blocked index set.\n\n";
     and then destroys it.
 T*/
 
-#include "petscis.h"
+#include <petscis.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
 int main(int argc,char **argv)
 {
   PetscErrorCode ierr;
-  PetscInt       i,n = 4, inputindices[] = {0,3,9,12},bs = 3,issize;
+  PetscInt       i,n = 4, inputindices[] = {0,1,3,4},bs = 3,issize;
   const PetscInt *indices;
   IS             set;
-  PetscTruth     isblock;
+  PetscBool      isblock;
 
   ierr = PetscInitialize(&argc,&argv,(char*)0,help);CHKERRQ(ierr);
       
@@ -29,7 +29,7 @@ int main(int argc,char **argv)
     Note each processor is generating its own index set 
     (in this case they are all identical)
   */
-  ierr = ISCreateBlock(PETSC_COMM_SELF,bs,n,inputindices,&set);CHKERRQ(ierr);
+  ierr = ISCreateBlock(PETSC_COMM_SELF,bs,n,inputindices,PETSC_COPY_VALUES,&set);CHKERRQ(ierr);
   ierr = ISView(set,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
 
   /*
@@ -56,23 +56,23 @@ int main(int argc,char **argv)
   /*
     Check if this is really a block index set
   */
-  ierr = ISBlock(set,&isblock);CHKERRQ(ierr);
-  if (!isblock) SETERRQ(1,"Index set is not blocked!");
+  ierr = PetscTypeCompare((PetscObject)set,ISBLOCK,&isblock);CHKERRQ(ierr);
+  if (!isblock) SETERRQ(PETSC_COMM_SELF,1,"Index set is not blocked!");
 
   /*
     Determine the block size of the index set
   */
-  ierr = ISBlockGetBlockSize(set,&bs);CHKERRQ(ierr);
-  if (bs != 3) SETERRQ(1,"Block size is not 3!");
+  ierr = ISGetBlockSize(set,&bs);CHKERRQ(ierr);
+  if (bs != 3) SETERRQ(PETSC_COMM_SELF,1,"Block size is not 3!");
 
   /*
     Get the number of blocks
   */
   ierr = ISBlockGetLocalSize(set,&n);CHKERRQ(ierr);
-  if (n != 4) SETERRQ(1,"Number of blocks not 4!");
+  if (n != 4) SETERRQ(PETSC_COMM_SELF,1,"Number of blocks not 4!");
 
-  ierr = ISDestroy(set);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISDestroy(&set);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

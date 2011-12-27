@@ -10,19 +10,21 @@ import config.setsOrdered as sets
 class Preprocessor(config.compile.processor.Processor):
   '''The C++ preprocessor'''
   def __init__(self, argDB):
-    config.compile.processor.Processor.__init__(self, argDB, 'CXXCPP', 'CPPFLAGS', '.cpp', '.cc')
+    config.compile.processor.Processor.__init__(self, argDB, 'CXXCPP', ['CXXCPPFLAGS', 'CPPFLAGS'], '.cpp', '.cc')
     self.language = 'CXX'
+    self.includeDirectories = sets.Set()
     return
 
 class Compiler(config.compile.processor.Processor):
   '''The C++ compiler'''
-  def __init__(self, argDB):
+  def __init__(self, argDB, usePreprocessorFlags = True):
     config.compile.processor.Processor.__init__(self, argDB, 'CXX', ['CXXFLAGS', 'CXX_CXXFLAGS'], '.cc', '.o')
     self.language           = 'CXX'
     self.requiredFlags[-1]  = '-c'
     self.outputFlag         = '-o'
     self.includeDirectories = sets.Set()
-    self.flagsName.extend(Preprocessor(argDB).flagsName)
+    if usePreprocessorFlags:
+      self.flagsName.extend(Preprocessor(argDB).flagsName)
     return
 
   def getTarget(self, source):
@@ -43,8 +45,8 @@ class Compiler(config.compile.processor.Processor):
 class Linker(config.compile.processor.Processor):
   '''The C++ linker'''
   def __init__(self, argDB):
-    self.compiler        = Compiler(argDB)
-    self.configLibraries = config.libraries.Configure(config.framework.Framework(clArgs = '', argDB = argDB))
+    self.compiler        = Compiler(argDB, usePreprocessorFlags = False)
+    self.configLibraries = config.libraries.Configure(config.framework.Framework(clArgs = '', argDB = argDB, tmpDir = os.getcwd()))
     config.compile.processor.Processor.__init__(self, argDB, ['CXX_LD', 'LD', self.compiler.name], ['LDFLAGS', 'CXX_LINKER_FLAGS'], '.o', '.a')
     self.language   = 'CXX'
     self.outputFlag = '-o'
@@ -97,8 +99,8 @@ class Linker(config.compile.processor.Processor):
 class SharedLinker(config.compile.processor.Processor):
   '''The C linker'''
   def __init__(self, argDB):
-    self.compiler = Compiler(argDB)
-    self.configLibraries = config.libraries.Configure(config.framework.Framework(clArgs = '', argDB = argDB))
+    self.compiler = Compiler(argDB, usePreprocessorFlags = False)
+    self.configLibraries = config.libraries.Configure(config.framework.Framework(clArgs = '', argDB = argDB, tmpDir = os.getcwd()))
     config.compile.processor.Processor.__init__(self, argDB, ['LD_SHARED', self.compiler.name], ['LDFLAGS', 'sharedLibraryFlags'], '.o', None)
     self.language   = 'CXX'
     self.outputFlag = '-o'
@@ -143,7 +145,8 @@ class SharedLinker(config.compile.processor.Processor):
   extraArguments = property(getExtraArguments, config.compile.processor.Processor.setExtraArguments, doc = 'Optional arguments for the end of the command')
 
   def getTarget(self, source, shared, prefix = 'lib'):
-    base, ext = os.path.splitext(source)
+    dirname, basename = os.path.split(source)
+    base, ext = os.path.splitext(basename)
     if prefix:
       if not (len(base) > len(prefix) and base[:len(prefix)] == prefix):
         base = prefix+base
@@ -151,4 +154,4 @@ class SharedLinker(config.compile.processor.Processor):
       base += '.'+self.configCompilers.setCompilers.sharedLibraryExt
     else:
       base += '.'+self.argDB['LD_SHARED_SUFFIX']
-    return base
+    return os.path.join(dirname, base)

@@ -10,19 +10,19 @@ Clears all the monitor functions for a <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESMonitorCancel(SNES snes)
+PetscErrorCode  SNESMonitorCancel(SNES snes)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes </B></TD><TD>- the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
-</TD></TR>
+<DT><B>snes </B> -the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
+<br>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor_cancel </B></TD><TD>- cancels all monitors that have been hardwired
+<DT><B>-snes_monitor_cancel </B> -cancels all monitors that have been hardwired
 into a code by calls to <A HREF="../SNES/SNESMonitorSet.html#SNESMonitorSet">SNESMonitorSet</A>(), but does not cancel those 
 set via the options database
-</TD></TR>
+<br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 There is no way to clear one specific monitor from a <A HREF="../SNES/SNES.html#SNES">SNES</A> object.

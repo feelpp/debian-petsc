@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:43+00:00">
+<meta name="date" content="2011-10-29T18:56:29+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -24,7 +24,7 @@
 <a name="line14"> 14: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscis.h     - index sets</font>
 <a name="line15"> 15: </a><font color="#B22222">     petscviewer.h - viewers</font>
 <a name="line16"> 16: </a><font color="#B22222">*/</font>
-<a name="line17"> 17: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line17"> 17: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line19"> 19: </a><strong><font color="#4169E1"><a name="func"></a><A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> func(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> a)</font></strong>{<font color="#4169E1">return</font> 2*a/(1+a*a);}
 
@@ -99,8 +99,8 @@
 <a name="line92"> 92: </a><font color="#B22222">      Return the value of the integral.</font>
 <a name="line93"> 93: </a><font color="#B22222">  */</font>
 <a name="line94"> 94: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"ln(2) is %A\n"</font>,result);
-<a name="line95"> 95: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line96"> 96: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(xend);
+<a name="line95"> 95: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line96"> 96: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xend);
 
 <a name="line98"> 98: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line99"> 99: </a>  <font color="#4169E1">return</font> 0;

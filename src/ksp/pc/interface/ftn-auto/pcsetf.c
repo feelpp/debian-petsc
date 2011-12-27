@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* pcset.c */
 /* Fortran interface file */
 
@@ -37,18 +38,55 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcsetfromoptions_ pcsetfromoptions
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcsetdm_ PCSETDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcsetdm_ pcsetdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcgetdm_ PCGETDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcgetdm_ pcgetdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcsetapplicationcontext_ PCSETAPPLICATIONCONTEXT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcsetapplicationcontext_ pcsetapplicationcontext
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcgetapplicationcontext_ PCGETAPPLICATIONCONTEXT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcgetapplicationcontext_ pcgetapplicationcontext
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcregisterdestroy_(int *__ierr ){
+void PETSC_STDCALL  pcregisterdestroy_(int *__ierr ){
 *__ierr = PCRegisterDestroy();
 }
-void PETSC_STDCALL   pcsetfromoptions_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcsetfromoptions_(PC pc, int *__ierr ){
 *__ierr = PCSetFromOptions(
 	(PC)PetscToPointer((pc) ));
+}
+void PETSC_STDCALL  pcsetdm_(PC pc,DM dm, int *__ierr ){
+*__ierr = PCSetDM(
+	(PC)PetscToPointer((pc) ),
+	(DM)PetscToPointer((dm) ));
+}
+void PETSC_STDCALL  pcgetdm_(PC pc,DM *dm, int *__ierr ){
+*__ierr = PCGetDM(
+	(PC)PetscToPointer((pc) ),dm);
+}
+void PETSC_STDCALL  pcsetapplicationcontext_(PC pc,void*usrP, int *__ierr ){
+*__ierr = PCSetApplicationContext(
+	(PC)PetscToPointer((pc) ),usrP);
+}
+void PETSC_STDCALL  pcgetapplicationcontext_(PC pc,void*usrP, int *__ierr ){
+*__ierr = PCGetApplicationContext(
+	(PC)PetscToPointer((pc) ),usrP);
 }
 #if defined(__cplusplus)
 }

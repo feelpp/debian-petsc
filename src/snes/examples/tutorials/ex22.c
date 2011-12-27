@@ -1,10 +1,11 @@
 
 static char help[] = "Solves PDE optimization problem.\n\n";
 
-#include "petscda.h"
-#include "petscpf.h"
-#include "petscsnes.h"
-#include "petscdmmg.h"
+#include <petscdmda.h>
+#include <petscdmcomposite.h>
+#include <petscpf.h>
+#include <petscsnes.h>
+#include <petscdmmg.h>
 
 /*
 
@@ -68,11 +69,13 @@ char  matrix_free_options[] = "-mat_mffd_compute_normu no \
 /*
     Currently only global coloring is supported with DMComposite
 */
-char  matrix_based_options[] = "-dmmg_iscoloring_type global";
+char  matrix_based_options[] = "-dmmg_iscoloring_type global \
+                                -mg_coarse_ksp_type gmres \
+                                -ksp_type fgmres ";
 
 /*
      The -use_matrix_based version does not work! This is because the DMComposite code cannot determine the nonzero
-  pattern of the Jacobian since the coupling between the boundary condition (array variable) and DA variables is problem 
+  pattern of the Jacobian since the coupling between the boundary condition (array variable) and DMDA variables is problem 
   dependent. To get the explicit Jacobian correct you would need to use the DMCompositeSetCoupling() to indicate the extra nonzero 
   pattern and run with -dmmg_coloring_from_mat.
 */
@@ -84,10 +87,10 @@ int main(int argc,char **argv)
 {
   PetscErrorCode ierr;
   UserCtx        user;
-  DA             da;
+  DM             da;
   DMMG           *dmmg;
-  DMComposite    packer;
-  PetscTruth     use_matrix_based = PETSC_FALSE,use_monitor = PETSC_FALSE;
+  DM             packer;
+  PetscBool      use_matrix_based = PETSC_FALSE,use_monitor = PETSC_FALSE;
   PetscInt       i;
 
   PetscInitialize(&argc,&argv,PETSC_NULL,help);
@@ -95,19 +98,19 @@ int main(int argc,char **argv)
 
   /* Hardwire several options; can be changed at command line */
   ierr = PetscOptionsInsertString(common_options);CHKERRQ(ierr);
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-use_matrix_based",&use_matrix_based,PETSC_IGNORE);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-use_matrix_based",&use_matrix_based,PETSC_IGNORE);CHKERRQ(ierr);
   if (use_matrix_based) {
     ierr = PetscOptionsInsertString(matrix_based_options);CHKERRQ(ierr);
   } else {
     ierr = PetscOptionsInsertString(matrix_free_options);CHKERRQ(ierr);
   }
   ierr = PetscOptionsInsert(&argc,&argv,PETSC_NULL);CHKERRQ(ierr); 
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-use_monitor",&use_monitor,PETSC_IGNORE);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-use_monitor",&use_monitor,PETSC_IGNORE);CHKERRQ(ierr);
 
   /* Create a global vector that includes a single redundant array and two da arrays */
   ierr = DMCompositeCreate(PETSC_COMM_WORLD,&packer);CHKERRQ(ierr);
   ierr = DMCompositeAddArray(packer,0,1);CHKERRQ(ierr);
-  ierr = DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,-5,2,1,PETSC_NULL,&da);CHKERRQ(ierr);
+  ierr = DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,-5,2,1,PETSC_NULL,&da);CHKERRQ(ierr);
   ierr = DMCompositeAddDM(packer,(DM)da);CHKERRQ(ierr);
 
 
@@ -129,14 +132,14 @@ int main(int argc,char **argv)
   ierr = DMMGSolve(dmmg);CHKERRQ(ierr);
   ierr = DMMGDestroy(dmmg);CHKERRQ(ierr);
 
-  ierr = DADestroy(da);CHKERRQ(ierr);
-  ierr = DMCompositeDestroy(packer);CHKERRQ(ierr);
+  ierr = DMDestroy(&da);CHKERRQ(ierr);
+  ierr = DMDestroy(&packer);CHKERRQ(ierr);
   if (use_monitor) {
-    ierr = PetscViewerDestroy(user.u_lambda_viewer);CHKERRQ(ierr);
-    ierr = PetscViewerDestroy(user.fu_lambda_viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&user.u_lambda_viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&user.fu_lambda_viewer);CHKERRQ(ierr);
   }
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -144,7 +147,9 @@ typedef struct {
   PetscScalar u;
   PetscScalar lambda;
 } ULambda;
- 
+
+#undef __FUNCT__  
+#define __FUNCT__ "FormFunction"
 /*
       Evaluates FU = Gradiant(L(w,u,lambda))
 
@@ -160,8 +165,8 @@ PetscErrorCode FormFunction(SNES snes,Vec U,Vec FU,void* dummy)
   ULambda        *u_lambda,*fu_lambda;
   PetscScalar    d,h,*w,*fw;
   Vec            vu_lambda,vfu_lambda;
-  DA             da;
-  DMComposite        packer = (DMComposite)dmmg->dm;
+  DM             da;
+  DM             packer = (DM)dmmg->dm;
 
   PetscFunctionBegin;
   ierr = DMCompositeGetEntries(packer,&nredundant,&da);CHKERRQ(ierr);
@@ -169,10 +174,10 @@ PetscErrorCode FormFunction(SNES snes,Vec U,Vec FU,void* dummy)
   ierr = DMCompositeScatter(packer,U,w,vu_lambda);CHKERRQ(ierr);
   ierr = DMCompositeGetAccess(packer,FU,&fw,&vfu_lambda);CHKERRQ(ierr);
 
-  ierr = DAGetCorners(da,&xs,PETSC_NULL,PETSC_NULL,&xm,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
-  ierr = DAGetInfo(da,0,&N,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
-  ierr = DAVecGetArray(da,vu_lambda,&u_lambda);CHKERRQ(ierr);
-  ierr = DAVecGetArray(da,vfu_lambda,&fu_lambda);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,PETSC_NULL,PETSC_NULL,&xm,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(da,0,&N,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(da,vu_lambda,&u_lambda);CHKERRQ(ierr);
+  ierr = DMDAVecGetArray(da,vfu_lambda,&fu_lambda);CHKERRQ(ierr);
   d    = N-1.0;
   h    = 1.0/d;
 
@@ -197,18 +202,20 @@ PetscErrorCode FormFunction(SNES snes,Vec U,Vec FU,void* dummy)
     else               fu_lambda[i].u   = -(d*(u_lambda[i+1].u - 2.0*u_lambda[i].u + u_lambda[i-1].u) - 2.0*h);
   } 
 
-  ierr = DAVecRestoreArray(da,vu_lambda,&u_lambda);CHKERRQ(ierr);
-  ierr = DAVecRestoreArray(da,vfu_lambda,&fu_lambda);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,vu_lambda,&u_lambda);CHKERRQ(ierr);
+  ierr = DMDAVecRestoreArray(da,vfu_lambda,&fu_lambda);CHKERRQ(ierr);
   ierr = DMCompositeRestoreLocalVectors(packer,&w,&vu_lambda);CHKERRQ(ierr);
   ierr = DMCompositeRestoreAccess(packer,FU,&fw,&vfu_lambda);CHKERRQ(ierr);
   ierr = PetscLogFlops(13.0*N);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
+#undef __FUNCT__  
+#define __FUNCT__ "u_solution"
 /* 
     Computes the exact solution
 */
-PetscErrorCode u_solution(void *dummy,PetscInt n,PetscScalar *x,PetscScalar *u)
+PetscErrorCode u_solution(void *dummy,PetscInt n,const PetscScalar *x,PetscScalar *u)
 {
   PetscInt i;
   PetscFunctionBegin;
@@ -218,12 +225,14 @@ PetscErrorCode u_solution(void *dummy,PetscInt n,PetscScalar *x,PetscScalar *u)
   PetscFunctionReturn(0);
 }
 
-PetscErrorCode ExactSolution(DMComposite packer,Vec U) 
+#undef __FUNCT__  
+#define __FUNCT__ "ExactSolution"
+PetscErrorCode ExactSolution(DM packer,Vec U) 
 {
   PF             pf;
   Vec            x,u_global;
   PetscScalar    *w;
-  DA             da;
+  DM             da;
   PetscErrorCode ierr;
   PetscInt       m;
 
@@ -232,21 +241,21 @@ PetscErrorCode ExactSolution(DMComposite packer,Vec U)
 
   ierr = PFCreate(PETSC_COMM_WORLD,1,2,&pf);CHKERRQ(ierr);
   ierr = PFSetType(pf,PFQUICK,(void*)u_solution);CHKERRQ(ierr);
-  ierr = DAGetCoordinates(da,&x);CHKERRQ(ierr);
+  ierr = DMDAGetCoordinates(da,&x);CHKERRQ(ierr);
   if (!x) {
-    ierr = DASetUniformCoordinates(da,0.0,1.0,0.0,1.0,0.0,1.0);CHKERRQ(ierr);
-    ierr = DAGetCoordinates(da,&x);CHKERRQ(ierr);
+    ierr = DMDASetUniformCoordinates(da,0.0,1.0,0.0,1.0,0.0,1.0);CHKERRQ(ierr);
+    ierr = DMDAGetCoordinates(da,&x);CHKERRQ(ierr);
   }
   ierr = DMCompositeGetAccess(packer,U,&w,&u_global,0);CHKERRQ(ierr);
   if (w) w[0] = .25;
   ierr = PFApplyVec(pf,x,u_global);CHKERRQ(ierr);
-  ierr = PFDestroy(pf);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
+  ierr = PFDestroy(&pf);CHKERRQ(ierr);
   ierr = DMCompositeRestoreAccess(packer,U,&w,&u_global,0);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-
+#undef __FUNCT__  
+#define __FUNCT__ "Monitor"
 PetscErrorCode Monitor(SNES snes,PetscInt its,PetscReal rnorm,void *dummy)
 {
   DMMG           dmmg = (DMMG)dummy;
@@ -255,9 +264,9 @@ PetscErrorCode Monitor(SNES snes,PetscInt its,PetscReal rnorm,void *dummy)
   PetscInt       m,N;
   PetscScalar    *w,*dw;
   Vec            u_lambda,U,F,Uexact;
-  DMComposite        packer = (DMComposite)dmmg->dm;
+  DM             packer = (DM)dmmg->dm;
   PetscReal      norm;
-  DA             da;
+  DM             da;
 
   PetscFunctionBegin;
   ierr = SNESGetSolution(snes,&U);CHKERRQ(ierr);
@@ -271,7 +280,7 @@ PetscErrorCode Monitor(SNES snes,PetscInt its,PetscReal rnorm,void *dummy)
   ierr = DMCompositeRestoreAccess(packer,U,&w,&u_lambda);CHKERRQ(ierr);
 
   ierr = DMCompositeGetEntries(packer,&m,&da);CHKERRQ(ierr);
-  ierr = DAGetInfo(da,0,&N,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(da,0,&N,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   ierr = VecDuplicate(U,&Uexact);CHKERRQ(ierr);
   ierr = ExactSolution(packer,Uexact);CHKERRQ(ierr);
   ierr = VecAXPY(Uexact,-1.0,U);CHKERRQ(ierr);
@@ -281,7 +290,7 @@ PetscErrorCode Monitor(SNES snes,PetscInt its,PetscReal rnorm,void *dummy)
   if (dw) ierr = PetscPrintf(dmmg->comm,"Norm of error %G Error at x = 0 %G\n",norm,PetscRealPart(dw[0]));CHKERRQ(ierr);
   ierr = VecView(u_lambda,user->fu_lambda_viewer);
   ierr = DMCompositeRestoreAccess(packer,Uexact,&dw,&u_lambda);CHKERRQ(ierr);
-  ierr = VecDestroy(Uexact);CHKERRQ(ierr);
+  ierr = VecDestroy(&Uexact);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

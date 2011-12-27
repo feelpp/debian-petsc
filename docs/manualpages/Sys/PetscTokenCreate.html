@@ -10,7 +10,7 @@ Creates a <A HREF="../Sys/PetscToken.html#PetscToken">PetscToken</A> used to fin
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscTokenCreate(const char a[],const char b,PetscToken *t)
+PetscErrorCode  PetscTokenCreate(const char a[],const char b,PetscToken *t)
 </PRE>
 Not Collective
 <P>
@@ -29,6 +29,8 @@ Not Collective
 <P>
 This version is different from the system version in that
 it allows you to pass a read-only string into the function.
+<P>
+Not for use in Fortran
 <P>
 
 <P>

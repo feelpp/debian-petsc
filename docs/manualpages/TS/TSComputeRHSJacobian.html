@@ -10,7 +10,7 @@ Computes the Jacobian matrix that has been set with <A HREF="../TS/TSSetRHSJacob
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSComputeRHSJacobian(TS ts,PetscReal t,Vec X,Mat *A,Mat *B,MatStructure *flg)
+PetscErrorCode  TSComputeRHSJacobian(TS ts,PetscReal t,Vec X,Mat *A,Mat *B,MatStructure *flg)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -38,8 +38,6 @@ is used internally within the nonlinear solvers.
 <P>
 See <A HREF="../KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>() for important information about setting the
 flag parameter.
-<P>
-TSComputeJacobian() is valid only for TS_NONLINEAR
 <P>
 
 <P>

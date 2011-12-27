@@ -15,7 +15,7 @@
 #if defined(PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
 #endif
-#include "petscdraw.h"
+#include <petscdraw.h>
 
 /* Nodes that record mouse actions when needed */
 typedef struct _p_MouseNode *MouseNode;
@@ -36,7 +36,7 @@ struct _p_WindowNode {
   MouseNode  MouseListHead;
   MouseNode  MouseListTail;
   BOOL       IsGetMouseOn;
-  PetscTruth DoubleBuffered;
+  PetscBool  DoubleBuffered;
   HDC        Buffer,DoubleBuffer;
   HBITMAP    BufferBit,DoubleBufferBit;
   HGDIOBJ    store,dbstore;
@@ -53,7 +53,7 @@ typedef struct  {
   int        stringheight;
   int        stringwidth;
   int        pause;
-  PetscTruth haveresized;
+  PetscBool  haveresized;
   HANDLE     hReadyEvent;
   int        x,y,w,h;  /* Size and location of window */
   WindowNode node;/* so we can grab windownode info if needed */

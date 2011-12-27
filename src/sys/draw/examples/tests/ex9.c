@@ -1,7 +1,7 @@
 
 static char help[] = "Makes a simple histogram.\n";
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -16,7 +16,7 @@ int main(int argc,char **argv)
   int             color = PETSC_DRAW_GREEN;
   const char      *xlabel,*ylabel,*toplabel;
   PetscReal       xd;
-  PetscTruth      flg;
+  PetscBool       flg;
 
   xlabel = "X-axis Label";toplabel = "Top Label";ylabel = "Y-axis Label";
 
@@ -47,9 +47,9 @@ int main(int argc,char **argv)
   ierr = PetscDrawHGDraw(hist);CHKERRQ(ierr);
   ierr = PetscDrawFlush(draw);CHKERRQ(ierr);
 
-  ierr = PetscDrawHGDestroy(hist);CHKERRQ(ierr);
-  ierr = PetscDrawDestroy(draw);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscDrawHGDestroy(&hist);CHKERRQ(ierr);
+  ierr = PetscDrawDestroy(&draw);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

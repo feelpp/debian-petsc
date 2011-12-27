@@ -1,8 +1,8 @@
 
 #if !defined(__MPIBAIJ_H)
 #define __MPIBAIJ_H
-#include "../src/mat/impls/baij/seq/baij.h"
-#include "../src/sys/ctable.h"
+#include <../src/mat/impls/baij/seq/baij.h>
+#include <../src/sys/ctable.h>
 
 #if defined (PETSC_USE_CTABLE)
 #define PETSCTABLE PetscTable
@@ -22,7 +22,7 @@
                                                                                                \
   /* The following variables are used for matrix assembly */                                   \
                                                                                                \
-  PetscTruth    donotstash;             /* if 1, off processor entries dropped */              \
+  PetscBool     donotstash;             /* if 1, off processor entries dropped */              \
   MPI_Request   *send_waits;            /* array of send requests */                           \
   MPI_Request   *recv_waits;            /* array of receive requests */                        \
   PetscInt      nsends,nrecvs;         /* numbers of sends and receives */                     \
@@ -39,13 +39,13 @@
                                                                                                \
   Vec           lvec;              /* local vector */                                          \
   VecScatter    Mvctx;             /* scatter context for vector */                            \
-  PetscTruth    roworiented;       /* if true, row-oriented input, default true */             \
+  PetscBool     roworiented;       /* if true, row-oriented input, default true */             \
                                                                                                \
   /* The following variables are for MatGetRow() */                                            \
                                                                                                \
   PetscInt      *rowindices;       /* column indices for row */                                \
   PetscScalar   *rowvalues;        /* nonzero values in row */                                 \
-  PetscTruth    getrowactive;      /* indicates MatGetRow(), not restored */                   \
+  PetscBool     getrowactive;      /* indicates MatGetRow(), not restored */                   \
                                                                                                \
   /* Some variables to make MatSetValues and others more efficient */                          \
   PetscInt      rstart_bs,rend_bs;                                                             \
@@ -54,19 +54,22 @@
   MatScalar     **hd;                     /* Hash table data */                                \
   PetscInt      ht_size;                                                                       \
   PetscInt      ht_total_ct,ht_insert_ct; /* Hash table statistics */                          \
-  PetscTruth    ht_flag;                  /* Flag to indicate if hash tables are used */       \
+  PetscBool     ht_flag;                  /* Flag to indicate if hash tables are used */       \
   double        ht_fact;                  /* Factor to determine the HT size */                \
                                                                                                \
   PetscInt      setvalueslen;    /* only used for single precision computations */             \
-  MatScalar     *setvaluescopy /* area double precision values in MatSetValuesXXX() are copied*/ \
-                                   /*   before calling MatSetValuesXXX_MPIBAIJ_MatScalar() */
-
+  MatScalar     *setvaluescopy; /* area double precision values in MatSetValuesXXX() are copied*/ \
+                                   /*   before calling MatSetValuesXXX_MPIBAIJ_MatScalar() */   \
+  PetscBool     ijonly         /*   used in  MatGetSubMatrices_MPIBAIJ_local() for getting ij structure only */
 typedef struct {
   MPIBAIJHEADER;
 } Mat_MPIBAIJ;
 
-EXTERN PetscErrorCode MatLoad_MPIBAIJ(PetscViewer, const MatType,Mat*);
-EXTERN PetscErrorCode CreateColmap_MPIBAIJ_Private(Mat);
-EXTERN PetscErrorCode MatGetSubMatrices_MPIBAIJ(Mat,PetscInt,const IS[],const IS[],MatReuse,Mat*[]);
-EXTERN PetscErrorCode MatGetSubMatrix_MPIBAIJ_Private(Mat,IS,IS,PetscInt,MatReuse,Mat*);
+extern PetscErrorCode MatLoad_MPIBAIJ(Mat,PetscViewer);
+extern PetscErrorCode CreateColmap_MPIBAIJ_Private(Mat);
+extern PetscErrorCode MatGetSubMatrices_MPIBAIJ(Mat,PetscInt,const IS[],const IS[],MatReuse,Mat*[]);
+extern PetscErrorCode MatGetSubMatrices_MPIBAIJ_local(Mat,PetscInt,const IS[],const IS[],MatReuse,Mat *);
+extern PetscErrorCode MatGetSubMatrix_MPIBAIJ_Private(Mat,IS,IS,PetscInt,MatReuse,Mat*);
+extern PetscErrorCode MatIncreaseOverlap_MPIBAIJ(Mat,PetscInt,IS[],PetscInt); 
+extern PetscErrorCode MatIncreaseOverlap_MPIBAIJ_Once(Mat,PetscInt,IS *);
 #endif

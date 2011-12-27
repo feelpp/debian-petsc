@@ -1,0 +1,119 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>exKSPDM</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="exKSPDM.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre>Solves a linear system where the DM object manages the mesh--solver interactions</pre><pre> Set the Matlab path and initialize PETSc</pre><pre class="codeinput">path(path,<span class="string">'../../'</span>)
+PetscInitialize({<span class="string">'-ksp_monitor'</span>,<span class="string">'-pc_type'</span>,<span class="string">'none'</span>,<span class="string">'-ksp_converged_reason'</span>});
+</pre><pre> Create a DM object</pre><pre class="codeinput">da = PetscDMDACreate2d(PetscDM.NONPERIODIC,PetscDM.STENCIL_BOX,4,4,1,1,1,1);
+da.SetFunction(<span class="string">'rhsfunction'</span>);
+type <span class="string">rhsfunction</span>
+da.SetJacobian(<span class="string">'jacobian'</span>);
+type <span class="string">jacobian</span>
+</pre><pre> Create the linear solver, tell it the DM</pre><pre class="codeinput">ksp = PetscKSP();
+ksp.SetType(<span class="string">'gmres'</span>);
+ksp.SetDM(da);
+ksp.SetFromOptions();
+ksp.Solve();
+x = ksp.GetSolution();
+x.View;
+ksp.View;
+</pre><pre> Free PETSc objects and shutdown PETSc</pre><pre class="codeinput">da.Destroy();
+ksp.Destroy();
+PetscFinalize();
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+%
+%  Solves a linear system where the DM object manages the meshREPLACE_WITH_DASH_DASHsolver interactions
+%
+%   Set the Matlab path and initialize PETSc
+path(path,'../../')
+PetscInitialize({'-ksp_monitor','-pc_type','none','-ksp_converged_reason'});
+%%
+%   Create a DM object
+da = PetscDMDACreate2d(PetscDM.NONPERIODIC,PetscDM.STENCIL_BOX,4,4,1,1,1,1);
+da.SetFunction('rhsfunction');
+type rhsfunction
+da.SetJacobian('jacobian');
+type jacobian
+%%
+%%
+%   Create the linear solver, tell it the DM
+ksp = PetscKSP();
+ksp.SetType('gmres');
+ksp.SetDM(da);
+ksp.SetFromOptions();
+ksp.Solve();
+x = ksp.GetSolution();
+x.View;
+ksp.View;
+%%
+%   Free PETSc objects and shutdown PETSc
+%
+da.Destroy();
+ksp.Destroy();
+PetscFinalize();
+
+##### SOURCE END #####
+--></body></html>

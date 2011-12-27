@@ -10,7 +10,7 @@ Gets the double precision value for a particular  option in the database.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscOptionsGetReal(const char pre[],const char name[],PetscReal *dvalue,PetscTruth *flg)
+PetscErrorCode  PetscOptionsGetReal(const char pre[],const char name[],PetscReal *dvalue,PetscBool  *set)
 </PRE>
 Not Collective
 <P>
@@ -25,22 +25,24 @@ Not Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dvalue </B></TD><TD>- the double value to return
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flg </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if found, <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> if not found
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>set </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if found, <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> if not found
 </TD></TR></TABLE>
+<P>
+Note: if the option is given but no value is provided then set is given the value <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
 <P>
 
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp PetscOptionsGetReal(const char b[],PetscReal *i,PetscTruth *f)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscOptionsGetReal(PETSC_NULL,b,i,f)</TR></TD>
+<TR><TD WIDTH=40></TD><TD>&nbsp PetscOptionsGetReal(const char b[],PetscReal *i,PetscBool  *f)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscOptionsGetReal(PETSC_NULL,b,i,f)</TR></TD>
 
 </TABLE>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(), 
-<BR><A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsGetRealArray.html#PetscOptionsGetRealArray">PetscOptionsGetRealArray</A>(),<A HREF="../Sys/PetscOptionsTruth.html#PetscOptionsTruth">PetscOptionsTruth</A>(),
+<BR><A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsGetRealArray.html#PetscOptionsGetRealArray">PetscOptionsGetRealArray</A>(),<A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(),
 <A HREF="../Sys/PetscOptionsName.html#PetscOptionsName">PetscOptionsName</A>(), <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(), <A HREF="../Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>(), <A HREF="../Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(),
 <A HREF="../Sys/PetscOptionsStringArray.html#PetscOptionsStringArray">PetscOptionsStringArray</A>(),<A HREF="../Sys/PetscOptionsRealArray.html#PetscOptionsRealArray">PetscOptionsRealArray</A>(), <A HREF="../Sys/PetscOptionsScalar.html#PetscOptionsScalar">PetscOptionsScalar</A>(),
-<A HREF="../Sys/PetscOptionsTruthGroupBegin.html#PetscOptionsTruthGroupBegin">PetscOptionsTruthGroupBegin</A>(), <A HREF="../Sys/PetscOptionsTruthGroup.html#PetscOptionsTruthGroup">PetscOptionsTruthGroup</A>(), <A HREF="../Sys/PetscOptionsTruthGroupEnd.html#PetscOptionsTruthGroupEnd">PetscOptionsTruthGroupEnd</A>(),
+<A HREF="../Sys/PetscOptionsBoolGroupBegin.html#PetscOptionsBoolGroupBegin">PetscOptionsBoolGroupBegin</A>(), <A HREF="../Sys/PetscOptionsBoolGroup.html#PetscOptionsBoolGroup">PetscOptionsBoolGroup</A>(), <A HREF="../Sys/PetscOptionsBoolGroupEnd.html#PetscOptionsBoolGroupEnd">PetscOptionsBoolGroupEnd</A>(),
 <A HREF="../Sys/PetscOptionsList.html#PetscOptionsList">PetscOptionsList</A>(), <A HREF="../Sys/PetscOptionsEList.html#PetscOptionsEList">PetscOptionsEList</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/objects/options.c.html#PetscOptionsGetReal">src/sys/objects/options.c</A>
@@ -48,15 +50,15 @@ Not Collective
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/sys/random/examples/tutorials/ex2.c.html">src/sys/random/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex11.c.html">src/ksp/ksp/examples/tutorials/ex11.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex39.c.html">src/ksp/ksp/examples/tutorials/ex39.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex40.c.html">src/ksp/ksp/examples/tutorials/ex40.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex54.c.html">src/ksp/ksp/examples/tutorials/ex54.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex55.c.html">src/ksp/ksp/examples/tutorials/ex55.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex11f.F.html">src/ksp/ksp/examples/tutorials/ex11f.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex3.c.html">src/snes/examples/tutorials/ex3.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex18.c.html">src/snes/examples/tutorials/ex18.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex19.c.html">src/snes/examples/tutorials/ex19.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex20.c.html">src/snes/examples/tutorials/ex20.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
 </BODY></HTML>

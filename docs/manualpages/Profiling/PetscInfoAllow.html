@@ -10,7 +10,7 @@ Causes <A HREF="../Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>() messages 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscInfoAllow(PetscTruth flag, const char filename[])
+PetscErrorCode  PetscInfoAllow(PetscBool  flag, const char filename[])
 </PRE>
 Not Collective, each processor may call this separately, but printing is only
 turned on if the lowest processor number associated with the <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> associated

@@ -5,9 +5,9 @@
    the TS component will eventually be incorporated as part of
    the base PETSc libraries.
 */
-#include "private/tsimpl.h"
-#include "private/snesimpl.h"
-#include "private/fortranimpl.h"
+#include <private/tsimpl.h>
+#include <private/snesimpl.h>
+#include <private/fortranimpl.h>
 
 PetscErrorCode RHSFunction(TS,PetscReal,Vec,Vec,void*);
 PetscErrorCode RHSJacobianFD(TS,PetscReal,Vec,Mat*,Mat*,MatStructure *,void*);
@@ -61,7 +61,7 @@ PetscErrorCode RHSJacobianFD(TS ts,PetscReal t,Vec xx1,Mat *J,Mat *B,MatStructur
   PetscReal      amax,epsilon = 1.e-8; /* assumes PetscReal precision */
   PetscReal      dx_min = 1.e-16,dx_par = 1.e-1;
   MPI_Comm       comm;
-  PetscTruth     assembled;
+  PetscBool      assembled;
 
   ierr = VecDuplicate(xx1,&jj1);CHKERRQ(ierr);
   ierr = VecDuplicate(xx1,&jj2);CHKERRQ(ierr);
@@ -120,9 +120,9 @@ PetscErrorCode RHSJacobianFD(TS ts,PetscReal t,Vec xx1,Mat *J,Mat *B,MatStructur
   ierr = MatAssemblyEnd(*J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   *flag =  DIFFERENT_NONZERO_PATTERN;
 
-  ierr = VecDestroy(jj1);CHKERRQ(ierr);
-  ierr = VecDestroy(jj2);CHKERRQ(ierr);
-  ierr = VecDestroy(xx2);CHKERRQ(ierr);
+  ierr = VecDestroy(&jj1);CHKERRQ(ierr);
+  ierr = VecDestroy(&jj2);CHKERRQ(ierr);
+  ierr = VecDestroy(&xx2);CHKERRQ(ierr);
 
   return 0;
 }

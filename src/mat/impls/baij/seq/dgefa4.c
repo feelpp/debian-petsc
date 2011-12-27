@@ -1,4 +1,3 @@
-#define PETSCMAT_DLL
 
 /*
        Inverts 4 by 4 matrix using partial pivoting.
@@ -10,7 +9,7 @@
     dgefa() and dgedi() specialized for a size of 4.
 
 */
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "Kernel_A_gets_inverse_A_4"
@@ -24,7 +23,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_4(MatScalar *a,PetscReal shift)
 /*     gaussian elimination with partial pivoting */
 
     PetscFunctionBegin;
-    shift = .25*shift*(PetscAbsScalar(a[0]) + PetscAbsScalar(a[5]) + PetscAbsScalar(a[10]) + PetscAbsScalar(a[15]));
+    shift = .25*shift*(1.e-12 + PetscAbsScalar(a[0]) + PetscAbsScalar(a[5]) + PetscAbsScalar(a[10]) + PetscAbsScalar(a[15]));
     /* Parameter adjustments */
     a       -= 5;
 
@@ -47,7 +46,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_4(MatScalar *a,PetscReal shift)
 
         if (a[l + k3] == 0.0) {
           if (shift == 0.0) {
-	    SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
+	    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",k-1);
   	  } else {
             /* SHIFT is applied to SINGLE diagonal entry; does this make any sense? */
   	    a[l + k3] = shift;
@@ -90,9 +89,7 @@ PetscErrorCode Kernel_A_gets_inverse_A_4(MatScalar *a,PetscReal shift)
         }
     }
     ipvt[3] = 4;
-    if (a[20] == 0.0) {
-      SETERRQ1(PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",3);
-    }
+    if (a[20] == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MAT_LU_ZRPVT,"Zero pivot, row %D",3);
 
     /*
          Now form the inverse 

@@ -1,7 +1,6 @@
-#define PETSCVEC_DLL
 
-#include "petscis.h"                    /*I "petscis.h"  I*/
-#include "petscbt.h"
+#include <petscis.h>                    /*I "petscis.h"  I*/
+#include <petscbt.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISDifference"
@@ -30,7 +29,7 @@
 .seealso: ISDestroy(), ISView(), ISSum(), ISExpand()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISDifference(IS is1,IS is2,IS *isout)
+PetscErrorCode  ISDifference(IS is1,IS is2,IS *isout)
 {
   PetscErrorCode ierr;
   PetscInt       i,n1,n2,imin,imax,nout,*iout;
@@ -39,8 +38,8 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISDifference(IS is1,IS is2,IS *isout)
   MPI_Comm       comm;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is1,IS_COOKIE,1);
-  PetscValidHeaderSpecific(is2,IS_COOKIE,2);
+  PetscValidHeaderSpecific(is1,IS_CLASSID,1);
+  PetscValidHeaderSpecific(is2,IS_CLASSID,2);
   PetscValidPointer(isout,3);
 
   ierr = ISGetIndices(is1,&i1);CHKERRQ(ierr);
@@ -87,7 +86,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISDifference(IS is1,IS is2,IS *isout)
     if (PetscBTLookup(mask,i)) iout[nout++] = i + imin;
   }
   ierr = PetscObjectGetComm((PetscObject)is1,&comm);CHKERRQ(ierr);
-  ierr = ISCreateGeneralNC(comm,nout,iout,isout);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(comm,nout,iout,PETSC_OWN_POINTER,isout);CHKERRQ(ierr);
 
   ierr = PetscBTDestroy(mask);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -120,26 +119,26 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISDifference(IS is1,IS is2,IS *isout)
    Concepts: IS^union
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISSum(IS is1,IS is2,IS *is3)
+PetscErrorCode  ISSum(IS is1,IS is2,IS *is3)
 {
   MPI_Comm       comm;
-  PetscTruth     f;
+  PetscBool      f;
   PetscMPIInt    size;
   const PetscInt *i1,*i2;
   PetscInt       n1,n2,n3, p1,p2, *iout;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is1,IS_COOKIE,1);
-  PetscValidHeaderSpecific(is2,IS_COOKIE,2);
-  ierr = PetscObjectGetComm((PetscObject)(is1),&comm); CHKERRQ(ierr);
+  PetscValidHeaderSpecific(is1,IS_CLASSID,1);
+  PetscValidHeaderSpecific(is2,IS_CLASSID,2);
+  ierr = PetscObjectGetComm((PetscObject)(is1),&comm);CHKERRQ(ierr);
   ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr);
-  if (size>1) SETERRQ(PETSC_ERR_SUP,"Currently only for uni-processor IS");
+  if (size>1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Currently only for uni-processor IS");
 
-  ierr = ISSorted(is1,&f); CHKERRQ(ierr);
-  if (!f) SETERRQ(PETSC_ERR_ARG_INCOMP,"Arg 1 is not sorted");
-  ierr = ISSorted(is2,&f); CHKERRQ(ierr);
-  if (!f) SETERRQ(PETSC_ERR_ARG_INCOMP,"Arg 2 is not sorted");
+  ierr = ISSorted(is1,&f);CHKERRQ(ierr);
+  if (!f) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Arg 1 is not sorted");
+  ierr = ISSorted(is2,&f);CHKERRQ(ierr);
+  if (!f) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Arg 2 is not sorted");
 
   ierr = ISGetLocalSize(is1,&n1);CHKERRQ(ierr);
   ierr = ISGetLocalSize(is2,&n2);CHKERRQ(ierr);
@@ -168,8 +167,8 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISSum(IS is1,IS is2,IS *is3)
   } while (p1<n1 || p2<n2);
 
   if (n3==n1) { /* no new elements to be added */
-    ierr = ISRestoreIndices(is1,&i1); CHKERRQ(ierr);
-    ierr = ISRestoreIndices(is2,&i2); CHKERRQ(ierr);
+    ierr = ISRestoreIndices(is1,&i1);CHKERRQ(ierr);
+    ierr = ISRestoreIndices(is2,&i2);CHKERRQ(ierr);
     ierr = ISDuplicate(is1,is3);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
@@ -203,10 +202,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISSum(IS is1,IS is2,IS *is3)
     }
   } while (p1<n1 || p2<n2);
 
-  ierr = ISRestoreIndices(is1,&i1); CHKERRQ(ierr);
-  ierr = ISRestoreIndices(is2,&i2); CHKERRQ(ierr);
-  ierr = ISCreateGeneral(comm,n3,iout,is3); CHKERRQ(ierr);
-  ierr = PetscFree(iout); CHKERRQ(ierr);
+  ierr = ISRestoreIndices(is1,&i1);CHKERRQ(ierr);
+  ierr = ISRestoreIndices(is2,&i2);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(comm,n3,iout,PETSC_OWN_POINTER,is3);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -249,8 +247,8 @@ PetscErrorCode ISExpand(IS is1,IS is2,IS *isout)
   MPI_Comm       comm;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is1,IS_COOKIE,1);
-  PetscValidHeaderSpecific(is2,IS_COOKIE,2);
+  PetscValidHeaderSpecific(is1,IS_CLASSID,1);
+  PetscValidHeaderSpecific(is2,IS_CLASSID,2);
   PetscValidPointer(isout,3);
 
   ierr = ISGetIndices(is1,&i1);CHKERRQ(ierr);
@@ -297,8 +295,7 @@ PetscErrorCode ISExpand(IS is1,IS is2,IS *isout)
 
   /* create the new IS containing the sum */
   ierr = PetscObjectGetComm((PetscObject)is1,&comm);CHKERRQ(ierr);
-  ierr = ISCreateGeneral(comm,nout,iout,isout);CHKERRQ(ierr);
-  ierr = PetscFree(iout);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(comm,nout,iout,PETSC_OWN_POINTER,isout);CHKERRQ(ierr);
 
   ierr = PetscBTDestroy(mask);CHKERRQ(ierr);
   PetscFunctionReturn(0);

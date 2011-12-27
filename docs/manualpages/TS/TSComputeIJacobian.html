@@ -10,7 +10,7 @@ Evaluates the Jacobian of the DAE
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSComputeIJacobian(TS ts,PetscReal t,Vec X,Vec Xdot,PetscReal shift,Mat *A,Mat *B,MatStructure *flg)
+PetscErrorCode TSComputeIJacobian(TS ts,PetscReal t,Vec X,Vec Xdot,PetscReal shift,Mat *A,Mat *B,MatStructure *flg,PetscBool imex)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -26,6 +26,8 @@ Input
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Xdot </B></TD><TD>- time derivative of state vector
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>shift </B></TD><TD>- shift to apply, see note below
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>imex </B></TD><TD>- flag indicates if the method is IMEX so that the RHSJacobian should be kept separate
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
@@ -44,8 +46,6 @@ dF/dX + shift*dF/dXdot
 <P>
 Most users should not need to explicitly call this routine, as it
 is used internally within the nonlinear solvers.
-<P>
-<A HREF="../TS/TSComputeIJacobian.html#TSComputeIJacobian">TSComputeIJacobian</A>() is valid only for TS_NONLINEAR
 <P>
 
 <P>

@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:31+00:00">
+<meta name="date" content="2011-10-29T18:56:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -15,7 +15,7 @@
 <a name="line5">  5: </a><font color="#666666">arguments are\n\</font>
 <a name="line6">  6: </a><font color="#666666">  -n &lt;length&gt; : local vector length\n\n"</font>;
 
-<a name="line8"> 8: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line13"> 13: </a>{
@@ -44,8 +44,8 @@
 <a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(x,y,&amp;v);
 <a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,stdout,<font color="#666666">"Vector inner product %16.12e\n"</font>,v);
 
-<a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y);
+<a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y);
 
 <a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line44"> 44: </a>  <font color="#4169E1">return</font> 0;

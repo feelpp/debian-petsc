@@ -10,7 +10,7 @@ Gets the matrix associated with the linear system and a (possibly) different one
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetOperators(KSP ksp,Mat *Amat,Mat *Pmat,MatStructure *flag)
+PetscErrorCode  KSPGetOperators(KSP ksp,Mat *Amat,Mat *Pmat,MatStructure *flag)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -22,8 +22,7 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A> and <A HREF="../Mat/Mat.html
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- the matrix associated with the linear system
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- the matrix to be used in constructing the preconditioner, usually the
-same as Amat. 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- the matrix to be used in constructing the preconditioner, usually the same as Amat. 
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flag </B></TD><TD>- flag indicating information about the preconditioner matrix structure
 during successive linear solves.  This flag is ignored the first time a
@@ -32,6 +31,8 @@ system.
 </TD></TR></TABLE>
 <P>
 
+<P>
+Notes: DOES NOT increase the reference counts of the matrix, so you should NOT destroy them.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../KSP/KSP.html#KSP">KSP</A>, set, get, operators, matrix, preconditioner, linear system
@@ -44,4 +45,7 @@ system.
 <BR><A HREF="./index.html">Index of all KSP routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex45.c.html">src/ksp/ksp/examples/tutorials/ex45.c.html</A><BR>
 </BODY></HTML>

@@ -10,7 +10,7 @@ Computes the residual. Either b - A*C*x with right preconditioning or C*b - C*A*
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPInitialResidual(KSP ksp,Vec vsoln,Vec vt1,Vec vt2,Vec vres,Vec vb)
+PetscErrorCode  KSPInitialResidual(KSP ksp,Vec vsoln,Vec vt1,Vec vt2,Vec vres,Vec vb)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -53,7 +53,7 @@ is returned in the vt2 temporary.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  KSPMonitor()
+  <A HREF="../KSP/KSPMonitor.html#KSPMonitor">KSPMonitor</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/interface/itres.c.html#KSPInitialResidual">src/ksp/ksp/interface/itres.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

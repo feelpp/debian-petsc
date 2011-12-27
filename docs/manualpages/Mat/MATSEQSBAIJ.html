@@ -6,9 +6,16 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="MATSEQSBAIJ"><H1>MATSEQSBAIJ</H1></A>
-<A HREF="../Mat/MATSEQSBAIJ.html#MATSEQSBAIJ">MATSEQSBAIJ</A> = "seqsbaij" - A matrix type to be used for sequential symmetric block sparse matrices,  based on block compressed sparse row format.  Only the upper triangular portion of the matrix is stored. 
+<A HREF="../Mat/MATSEQSBAIJ.html#MATSEQSBAIJ">MATSEQSBAIJ</A> = "seqsbaij" - A matrix type to be used for sequential symmetric block sparse matrices,  based on block compressed sparse row format.  Only the upper triangular portion of the matrix is stored. For complex numbers by default this matrix is symmetric, NOT Hermitian symmetric. To make it Hermitian symmetric you
+can call <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(<A HREF="../Mat/Mat.html#Mat">Mat</A>, MAT_HERMITIAN); after <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>()
+<P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 . -mat_type seqsbaij - sets the matrix type to "seqsbaij" during a call to <A HREF="../Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>()
+<P>
+Notes: By default if you insert values into the lower triangular part of the matrix they are simply ignored (since they are not
+stored and it is assumed they symmetric to the upper triangular). If you call <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(<A HREF="../Mat/Mat.html#Mat">Mat</A>,MAT_IGNORE_LOWER_TRIANGULAR,<A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>) or use
+the options database -mat_ignore_lower_triangular false it will generate an error if you try to set a value in the lower triangular portion.
+<P>
 <P>
 
 <P>

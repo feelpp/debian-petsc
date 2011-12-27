@@ -1,5 +1,5 @@
-#include "private/fortranimpl.h"
-#include "petscsnes.h"
+#include <private/fortranimpl.h>
+#include <petscsnes.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define matmffdcomputejacobian_          MATMFFDCOMPUTEJACOBIAN
@@ -28,7 +28,6 @@
 #define snesmonitorlg_                   SNESMONITORLG
 #define snesmonitorsolutionupdate_       SNESMONITORSOLUTIONUPDATE
 #define snesmonitorset_                  SNESMONITORSET
-#define snesgetapplicationcontext_       SNESGETAPPLICATIONCONTEXT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE)
 #define matmffdcomputejacobian_          matmffdcomputejacobian           
 #define snessolve_                       snessolve
@@ -56,7 +55,6 @@
 #define snesmonitorsolution_             snesmonitorsolution
 #define snesmonitorsolutionupdate_       snesmonitorsolutionupdate
 #define snesmonitorset_                  snesmonitorset
-#define snesgetapplicationcontext_       snesgetapplicationcontext
 #endif
 
 static PetscErrorCode oursnesfunction(SNES snes,Vec x,Vec f,void *ctx)
@@ -97,10 +95,10 @@ static PetscErrorCode oursnesmonitor(SNES snes,PetscInt i,PetscReal d,void*ctx)
   (*(void (PETSC_STDCALL *)(SNES*,PetscInt*,PetscReal*,void*,PetscErrorCode*))(((PetscObject)snes)->fortran_func_pointers[3]))(&snes,&i,&d,mctx,&ierr);CHKERRQ(ierr);
   return 0;
 }
-static PetscErrorCode ourmondestroy(void* ctx)
+static PetscErrorCode ourmondestroy(void** ctx)
 {
   PetscErrorCode ierr = 0;
-  SNES           snes = (SNES)ctx;
+  SNES           snes = *(SNES*)ctx;
   void           *mctx = (void*) ((PetscObject)snes)->fortran_func_pointers[4];
   (*(void (PETSC_STDCALL *)(void*,PetscErrorCode*))(((PetscObject)snes)->fortran_func_pointers[5]))(mctx,&ierr);CHKERRQ(ierr);
   return 0;
@@ -189,10 +187,6 @@ void PETSC_STDCALL snesgettype_(SNES *snes,CHAR name PETSC_MIXED_LEN(len), Petsc
   FIXRETURNCHAR(PETSC_TRUE,name,len);
 }
 
-void PETSC_STDCALL snesgetapplicationcontext_(SNES *snes,void **ctx,PetscErrorCode *ierr)
-{
-  *ierr = SNESGetApplicationContext(*snes,ctx);
-} 
 /* ---------------------------------------------------------*/
 
 /*

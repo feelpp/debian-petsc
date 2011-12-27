@@ -10,12 +10,12 @@ Activates PlogInfo() messages for a PETSc object class.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscInfoActivateClass(int objclass)
+PetscErrorCode  PetscInfoActivateClass(int objclass)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>objclass </B> -The object class, e.g., MAT_COOKIE, SNES_COOKIE, etc.
+<DT><B>objclass </B> -The object class, e.g., MAT_CLASSID, SNES_CLASSID, etc.
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>

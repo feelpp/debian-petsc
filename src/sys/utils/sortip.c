@@ -1,4 +1,4 @@
-#define PETSC_DLL
+
 /*
    This file contains routines for sorting integers and doubles with a permutation array.
 
@@ -6,7 +6,7 @@
    aliased.  For some compilers, this can cause the compiler to fail to
    place inner-loop variables into registers.
  */
-#include "petscsys.h"                /*I  "petscsys.h"  I*/
+#include <petscsys.h>                /*I  "petscsys.h"  I*/
 
 #define SWAP(a,b,t) {t=a;a=b;b=t;}
 
@@ -56,9 +56,9 @@ static PetscErrorCode PetscSortIntWithPermutation_Private(const PetscInt v[],Pet
 
    Concepts: sorting^ints with permutation
 
-.seealso: PetscSortInt(), PetscSortRealWithPermutation()
+.seealso: PetscSortInt(), PetscSortRealWithPermutation(), PetscSortIntWithArray()
  @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSortIntWithPermutation(PetscInt n,const PetscInt i[],PetscInt idx[])
+PetscErrorCode  PetscSortIntWithPermutation(PetscInt n,const PetscInt i[],PetscInt idx[])
 {
   PetscErrorCode ierr;
   PetscInt       j,k,tmp,ik;
@@ -131,7 +131,7 @@ static PetscErrorCode PetscSortRealWithPermutation_Private(const PetscReal v[],P
 
 .seealso: PetscSortReal(), PetscSortIntWithPermutation()
  @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSortRealWithPermutation(PetscInt n,const PetscReal i[],PetscInt idx[])
+PetscErrorCode  PetscSortRealWithPermutation(PetscInt n,const PetscReal i[],PetscInt idx[])
 {
   PetscErrorCode ierr;
   PetscInt       j,k,tmp;
@@ -160,7 +160,7 @@ static PetscErrorCode PetscSortStrWithPermutation_Private(const char* v[],PetscI
 {
   PetscErrorCode ierr;
   PetscInt       tmp,i,last;
-  PetscTruth     gt;
+  PetscBool      gt;
   const char     *vl;
 
   PetscFunctionBegin;
@@ -206,12 +206,12 @@ static PetscErrorCode PetscSortStrWithPermutation_Private(const char* v[],PetscI
 
 .seealso: PetscSortInt(), PetscSortRealWithPermutation()
  @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSortStrWithPermutation(PetscInt n,const char* i[],PetscInt idx[])
+PetscErrorCode  PetscSortStrWithPermutation(PetscInt n,const char* i[],PetscInt idx[])
 {
   PetscErrorCode ierr;
   PetscInt       j,k,tmp;
   const char     *ik;
-  PetscTruth     gt;
+  PetscBool      gt;
 
   PetscFunctionBegin;
   if (n<8) {

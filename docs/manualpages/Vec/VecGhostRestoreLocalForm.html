@@ -10,7 +10,7 @@ Restores the local ghosted representation of  a parallel vector obtained with <A
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h"   
-PetscErrorCode PETSCVEC_DLLEXPORT VecGhostRestoreLocalForm(Vec g,Vec *l)
+PetscErrorCode  VecGhostRestoreLocalForm(Vec g,Vec *l)
 </PRE>
 Not Collective
 <P>
@@ -31,7 +31,7 @@ and their current values.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Vec/VecCreateGhost.html#VecCreateGhost">VecCreateGhost</A>(), <A HREF="../Vec/VecGhostGetLocalForm.html#VecGhostGetLocalForm">VecGhostGetLocalForm</A>(), <A HREF="../Vec/VecCreateGhostWithArray.html#VecCreateGhostWithArray">VecCreateGhostWithArray</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/vec/impls/mpi/pbvec.c.html#VecGhostRestoreLocalForm">src/vec/vec/impls/mpi/pbvec.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/vec/impls/mpi/commonmpvec.c.html#VecGhostRestoreLocalForm">src/vec/vec/impls/mpi/commonmpvec.c</A>
 <BR><A HREF="./index.html">Index of all Vec routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

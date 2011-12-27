@@ -9,7 +9,7 @@
 This function initializes everything in the Petsc interface to Mathematica. It is called from PetscDLLibraryRegister() when using dynamic libraries, and on the call to <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>() when using static libraries. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscViewerMathematicaInitializePackage(const char path[])
+PetscErrorCode  PetscViewerMathematicaInitializePackage(const char path[])
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 path - The dynamic library path, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
@@ -20,7 +20,7 @@ path - The dynamic library path, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
  Petsc, initialize, package, PLAPACK
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Viewer/PetscInitializePackage.html#PetscInitializePackage">PetscInitializePackage</A>(), <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>()
+ <A HREF="../Viewer/PetscSysInitializePackage.html#PetscSysInitializePackage">PetscSysInitializePackage</A>(), <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/mathematica/mathematica.c.html#PetscViewerMathematicaInitializePackage">src/sys/viewer/impls/mathematica/mathematica.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>

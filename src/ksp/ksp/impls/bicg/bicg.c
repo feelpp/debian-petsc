@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"
+#include <private/kspimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetUp_BiCG"
@@ -10,13 +9,8 @@ PetscErrorCode KSPSetUp_BiCG(KSP ksp)
 
   PetscFunctionBegin;
   /* check user parameters and functions */
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP,"no right preconditioning for KSPBiCG");
-  } else if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"no symmetric preconditioning for KSPBiCG");
-  }
-
-  /* get work vectors from user code */
+  if (ksp->pc_side == PC_RIGHT) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"no right preconditioning for KSPBiCG");
+  else if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"no symmetric preconditioning for KSPBiCG");
   ierr = KSPDefaultGetWork(ksp,6);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -27,7 +21,7 @@ PetscErrorCode  KSPSolve_BiCG(KSP ksp)
 {
   PetscErrorCode ierr;
   PetscInt       i;
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
   PetscScalar    dpi,a=1.0,beta,betaold=1.0,b,ma; 
   PetscReal      dp;
   Vec            X,B,Zl,Zr,Rl,Rr,Pl,Pr;
@@ -35,10 +29,8 @@ PetscErrorCode  KSPSolve_BiCG(KSP ksp)
   MatStructure   pflag;
 
   PetscFunctionBegin;
-  if (ksp->normtype == KSP_NORM_NATURAL) SETERRQ(PETSC_ERR_SUP,"Cannot use natural residual norm with KSPIBCGS");
-
-  ierr    = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
+  ierr    = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
 
   X       = ksp->vec_sol;
   B       = ksp->vec_rhs;
@@ -68,7 +60,7 @@ PetscErrorCode  KSPSolve_BiCG(KSP ksp)
   } else {
     ierr = VecNorm(Rr,NORM_2,&dp);CHKERRQ(ierr);  /*    dp <- r'*r       */
   }
-  KSPMonitor(ksp,0,dp);
+  ierr = KSPMonitor(ksp,0,dp);CHKERRQ(ierr);
   ierr = PetscObjectTakeAccess(ksp);CHKERRQ(ierr);
   ksp->its   = 0;
   ksp->rnorm = dp;
@@ -103,7 +95,7 @@ PetscErrorCode  KSPSolve_BiCG(KSP ksp)
      a = beta/dpi;                                 /*     a = beta/p'z    */
      ierr = VecAXPY(X,a,Pr);CHKERRQ(ierr);       /*     x <- x + ap     */
      ma = -a;
-     ierr = VecAXPY(Rr,ma,Zr);CHKERRQ(ierr)
+     ierr = VecAXPY(Rr,ma,Zr);CHKERRQ(ierr);
      ma = PetscConj(ma);
      ierr = VecAXPY(Rl,ma,Zl);CHKERRQ(ierr);
      if (ksp->normtype == KSP_NORM_PRECONDITIONED) {
@@ -121,7 +113,7 @@ PetscErrorCode  KSPSolve_BiCG(KSP ksp)
      ksp->rnorm = dp;
      ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
      KSPLogResidualHistory(ksp,dp);
-     KSPMonitor(ksp,i+1,dp);
+     ierr = KSPMonitor(ksp,i+1,dp);CHKERRQ(ierr);
      ierr = (*ksp->converged)(ksp,i+1,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
      if (ksp->reason) break;
      if (ksp->normtype == KSP_NORM_UNPRECONDITIONED) {
@@ -139,17 +131,6 @@ PetscErrorCode  KSPSolve_BiCG(KSP ksp)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
-#define __FUNCT__ "KSPDestroy_BiCG" 
-PetscErrorCode KSPDestroy_BiCG(KSP ksp)
-{
-  PetscErrorCode ierr;
-
-  PetscFunctionBegin;
-  ierr = KSPDefaultFreeWork(ksp);CHKERRQ(ierr);
-  PetscFunctionReturn(0);
-}
-
 /*MC
      KSPBICG - Implements the Biconjugate gradient method (similar to running the conjugate
          gradient on the normal equations).
@@ -159,8 +140,9 @@ PetscErrorCode KSPDestroy_BiCG(KSP ksp)
 
    Level: beginner
 
-   Note: this method requires that one be apply to apply the transpose of the preconditioner and operator
+   Notes: this method requires that one be apply to apply the transpose of the preconditioner and operator
          as well as the operator and preconditioner.
+         Supports only left preconditioning
 
          See KSPCGNE for code that EXACTLY runs the preconditioned conjugate gradient method on the 
          normal equations
@@ -171,14 +153,18 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_BiCG"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_BiCG(KSP ksp)
+PetscErrorCode  KSPCreate_BiCG(KSP ksp)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
   ksp->data                      = (void*)0;
-  ksp->pc_side                   = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_LEFT,1);CHKERRQ(ierr);
+
   ksp->ops->setup                = KSPSetUp_BiCG;
   ksp->ops->solve                = KSPSolve_BiCG;
-  ksp->ops->destroy              = KSPDestroy_BiCG;
+  ksp->ops->destroy              = KSPDefaultDestroy;
   ksp->ops->view                 = 0;
   ksp->ops->setfromoptions       = 0;
   ksp->ops->buildsolution        = KSPDefaultBuildSolution;

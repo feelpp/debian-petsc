@@ -1,20 +1,22 @@
-#define PETSCSNES_DLL
  
-#include "petscda.h"            /*I "petscda.h"   I*/
-#include "petscksp.h"           /*I "petscksp.h"  I*/
-#include "petscmg.h"            /*I "petscmg.h"   I*/
-#include "petscdmmg.h"          /*I "petscdmmg.h" I*/
-#include "private/pcimpl.h"     /*I "petscpc.h"   I*/
+#include <petscdm.h>            /*I "petscdm.h"   I*/
+#include <petscksp.h>           /*I "petscksp.h"  I*/
+#include <petscpcmg.h>            /*I "petscpcmg.h"   I*/
+#include <petscdmmg.h>          /*I "petscdmmg.h" I*/
+#include <private/pcimpl.h>     /*I "petscpc.h"   I*/
 
 /*
-   Code for almost fully managing multigrid/multi-level linear solvers for DA grids
+   Code for almost fully managing multigrid/multi-level linear solvers for DM grids
 */
 
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGCreate"
 /*@C
-    DMMGCreate - Creates a DA based multigrid solver object. This allows one to 
+    DMMGCreate - Creates a DM based multigrid solver object. This allows one to 
       easily implement MG methods on regular grids.
+
+     This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
 
     Collective on MPI_Comm
 
@@ -41,12 +43,12 @@
          DMMGSetISColoringType()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGCreate(MPI_Comm comm,PetscInt nlevels,void *user,DMMG **dmmg)
+PetscErrorCode  DMMGCreate(MPI_Comm comm,PetscInt nlevels,void *user,DMMG **dmmg)
 {
   PetscErrorCode ierr;
   PetscInt       i;
   DMMG           *p;
-  PetscTruth     ftype;
+  PetscBool      ftype;
   char           mtype[256];
 
   PetscFunctionBegin;
@@ -55,7 +57,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGCreate(MPI_Comm comm,PetscInt nlevels,voi
   } else {
     ierr = PetscOptionsGetInt(0,"-dmmg_nlevels",&nlevels,PETSC_IGNORE);CHKERRQ(ierr);
   }
-  if (nlevels < 1) SETERRQ(PETSC_ERR_USER,"Cannot set levels less than 1");
+  if (nlevels < 1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_USER,"Cannot set levels less than 1");
 
   ierr = PetscMalloc(nlevels*sizeof(DMMG),&p);CHKERRQ(ierr);
   for (i=0; i<nlevels; i++) {
@@ -82,7 +84,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGCreate(MPI_Comm comm,PetscInt nlevels,voi
 /*@C
     DMMGSetMatType - Sets the type of matrices that DMMG will create for its solvers.
 
-    Collective on MPI_Comm 
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
+
+    Logically Collective on MPI_Comm 
 
     Input Parameters:
 +    dmmg - the DMMG object created with DMMGCreate()
@@ -93,7 +98,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGCreate(MPI_Comm comm,PetscInt nlevels,voi
 .seealso DMMGDestroy(), DMMGSetUser(), DMMGGetUser(), DMMGCreate(), DMMGSetNullSpace()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetMatType(DMMG *dmmg,const MatType mtype)
+PetscErrorCode  DMMGSetMatType(DMMG *dmmg,const MatType mtype)
 {
   PetscInt       i;
   PetscErrorCode ierr;
@@ -111,7 +116,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetMatType(DMMG *dmmg,const MatType mtype
 /*@C
     DMMGSetOptionsPrefix - Sets the prefix used for the solvers inside a DMMG
 
-    Collective on MPI_Comm 
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
+
+    Logically Collective on MPI_Comm 
 
     Input Parameters:
 +    dmmg - the DMMG object created with DMMGCreate()
@@ -122,7 +130,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetMatType(DMMG *dmmg,const MatType mtype
 .seealso DMMGDestroy(), DMMGSetUser(), DMMGGetUser(), DMMGCreate(), DMMGSetNullSpace()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetOptionsPrefix(DMMG *dmmg,const char prefix[])
+PetscErrorCode  DMMGSetOptionsPrefix(DMMG *dmmg,const char prefix[])
 {
   PetscInt       i;
   PetscErrorCode ierr;
@@ -137,7 +145,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetOptionsPrefix(DMMG *dmmg,const char pr
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGDestroy"
 /*@C
-    DMMGDestroy - Destroys a DA based multigrid solver object. 
+    DMMGDestroy - Destroys a DM based multigrid solver object. 
+
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
 
     Collective on DMMG
 
@@ -149,35 +160,35 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetOptionsPrefix(DMMG *dmmg,const char pr
 .seealso DMMGCreate()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGDestroy(DMMG *dmmg)
+PetscErrorCode  DMMGDestroy(DMMG *dmmg)
 {
   PetscErrorCode ierr;
   PetscInt       i,nlevels = dmmg[0]->nlevels;
 
   PetscFunctionBegin;
-  if (!dmmg) SETERRQ(PETSC_ERR_ARG_NULL,"Passing null as DMMG");
+  if (!dmmg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_NULL,"Passing null as DMMG");
 
   for (i=1; i<nlevels; i++) {
-    if (dmmg[i]->R) {ierr = MatDestroy(dmmg[i]->R);CHKERRQ(ierr);}
+    ierr = MatDestroy(&dmmg[i]->R);CHKERRQ(ierr);
   }
   for (i=0; i<nlevels; i++) {
-    ierr = PetscStrfree(dmmg[i]->prefix);CHKERRQ(ierr);
-    ierr = PetscStrfree(dmmg[i]->mtype);CHKERRQ(ierr);
-    if (dmmg[i]->dm)      {ierr = DMDestroy(dmmg[i]->dm);CHKERRQ(ierr);}
-    if (dmmg[i]->x)       {ierr = VecDestroy(dmmg[i]->x);CHKERRQ(ierr);}
-    if (dmmg[i]->b)       {ierr = VecDestroy(dmmg[i]->b);CHKERRQ(ierr);}
-    if (dmmg[i]->r)       {ierr = VecDestroy(dmmg[i]->r);CHKERRQ(ierr);}
-    if (dmmg[i]->work1)   {ierr = VecDestroy(dmmg[i]->work1);CHKERRQ(ierr);}
-    if (dmmg[i]->w)       {ierr = VecDestroy(dmmg[i]->w);CHKERRQ(ierr);}
-    if (dmmg[i]->work2)   {ierr = VecDestroy(dmmg[i]->work2);CHKERRQ(ierr);}
-    if (dmmg[i]->lwork1)  {ierr = VecDestroy(dmmg[i]->lwork1);CHKERRQ(ierr);}
-    if (dmmg[i]->B)         {ierr = MatDestroy(dmmg[i]->B);CHKERRQ(ierr);}
-    if (dmmg[i]->J)         {ierr = MatDestroy(dmmg[i]->J);CHKERRQ(ierr);}
-    if (dmmg[i]->Rscale)    {ierr = VecDestroy(dmmg[i]->Rscale);CHKERRQ(ierr);}
-    if (dmmg[i]->fdcoloring){ierr = MatFDColoringDestroy(dmmg[i]->fdcoloring);CHKERRQ(ierr);}
-    if (dmmg[i]->ksp && !dmmg[i]->snes) {ierr = KSPDestroy(dmmg[i]->ksp);CHKERRQ(ierr);}
-    if (dmmg[i]->snes)      {ierr = PetscObjectDestroy((PetscObject)dmmg[i]->snes);CHKERRQ(ierr);} 
-    if (dmmg[i]->inject)    {ierr = VecScatterDestroy(dmmg[i]->inject);CHKERRQ(ierr);} 
+    ierr = PetscFree(dmmg[i]->prefix);CHKERRQ(ierr);
+    ierr = PetscFree(dmmg[i]->mtype);CHKERRQ(ierr);
+    ierr = DMDestroy(&dmmg[i]->dm);CHKERRQ(ierr);
+    ierr = VecDestroy(&dmmg[i]->x);CHKERRQ(ierr);
+    ierr = VecDestroy(&dmmg[i]->b);CHKERRQ(ierr);
+    ierr = VecDestroy(&dmmg[i]->r);CHKERRQ(ierr);
+    ierr = VecDestroy(&dmmg[i]->work1);CHKERRQ(ierr);
+    ierr = VecDestroy(&dmmg[i]->w);CHKERRQ(ierr);
+    ierr = VecDestroy(&dmmg[i]->work2);CHKERRQ(ierr);
+    ierr = VecDestroy(&dmmg[i]->lwork1);CHKERRQ(ierr);
+    ierr = MatDestroy(&dmmg[i]->B);CHKERRQ(ierr);
+    ierr = MatDestroy(&dmmg[i]->J);CHKERRQ(ierr);
+    ierr = VecDestroy(&dmmg[i]->Rscale);CHKERRQ(ierr);
+    ierr = MatFDColoringDestroy(&dmmg[i]->fdcoloring);CHKERRQ(ierr);
+    if (dmmg[i]->ksp && !dmmg[i]->snes) {ierr = KSPDestroy(&dmmg[i]->ksp);CHKERRQ(ierr);}
+    ierr = PetscObjectDestroy((PetscObject*)&dmmg[i]->snes);CHKERRQ(ierr);
+    ierr = VecScatterDestroy(&dmmg[i]->inject);CHKERRQ(ierr);
     ierr = PetscFree(dmmg[i]);CHKERRQ(ierr);
   }
   ierr = PetscFree(dmmg);CHKERRQ(ierr);
@@ -189,33 +200,37 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGDestroy(DMMG *dmmg)
 /*@C
     DMMGSetDM - Sets the coarse grid information for the grids
 
-    Collective on DMMG
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
+
+    Logically Collective on DMMG and DM
 
     Input Parameter:
 +   dmmg - the context
--   dm - the DA or DMComposite object
+-   dm - the DMDA or DMComposite object
 
     Options Database Keys:
-.   -dmmg_refine: Use the input problem as the coarse level and refine. Otherwise, use it as the fine level and coarsen.
+.   -dmmg_refine: Use the input problem as the coarse level and refine.
+.   -dmmg_refine false: Use the input problem as the fine level and coarsen.
 
     Level: advanced
 
 .seealso DMMGCreate(), DMMGDestroy(), DMMGSetMatType()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetDM(DMMG *dmmg, DM dm)
+PetscErrorCode  DMMGSetDM(DMMG *dmmg, DM dm)
 {
   PetscInt       nlevels     = dmmg[0]->nlevels;
-  PetscTruth     doRefine    = PETSC_TRUE;
+  PetscBool      doRefine    = PETSC_TRUE;
   PetscInt       i;
   DM             *hierarchy;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!dmmg) SETERRQ(PETSC_ERR_ARG_NULL,"Passing null as DMMG");
+  if (!dmmg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_NULL,"Passing null as DMMG");
 
   /* Create DM data structure for all the levels */
-  ierr = PetscOptionsGetTruth(PETSC_NULL, "-dmmg_refine", &doRefine, PETSC_IGNORE);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL, "-dmmg_refine", &doRefine, PETSC_IGNORE);CHKERRQ(ierr);
   ierr = PetscObjectReference((PetscObject) dm);CHKERRQ(ierr);
   ierr = PetscMalloc(nlevels*sizeof(DM),&hierarchy);CHKERRQ(ierr);
   if (doRefine) {
@@ -234,8 +249,8 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetDM(DMMG *dmmg, DM dm)
   ierr = PetscFree(hierarchy);CHKERRQ(ierr);
   /* Cleanup old structures (should use some private Destroy() instead) */
   for(i = 0; i < nlevels; ++i) {
-    if (dmmg[i]->B) {ierr = MatDestroy(dmmg[i]->B);CHKERRQ(ierr); dmmg[i]->B = PETSC_NULL;}
-    if (dmmg[i]->J) {ierr = MatDestroy(dmmg[i]->J);CHKERRQ(ierr); dmmg[i]->J = PETSC_NULL;}
+    ierr = MatDestroy(&dmmg[i]->B);CHKERRQ(ierr);
+    ierr = MatDestroy(&dmmg[i]->J);CHKERRQ(ierr);
   }
 
   /* Create work vectors and matrix for each level */
@@ -258,6 +273,9 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetDM(DMMG *dmmg, DM dm)
 /*@C
     DMMGSolve - Actually solves the (non)linear system defined with the DMMG
 
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
+
     Collective on DMMG
 
     Input Parameter:
@@ -276,15 +294,15 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetDM(DMMG *dmmg, DM dm)
 .seealso DMMGCreate(), DMMGDestroy(), DMMG, DMMGSetSNES(), DMMGSetKSP(), DMMGSetUp(), DMMGSetMatType()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSolve(DMMG *dmmg)
+PetscErrorCode  DMMGSolve(DMMG *dmmg)
 {
   PetscErrorCode ierr;
   PetscInt       i,nlevels = dmmg[0]->nlevels;
-  PetscTruth     gridseq = PETSC_FALSE,vecmonitor = PETSC_FALSE,flg;
+  PetscBool      gridseq = PETSC_FALSE,vecmonitor = PETSC_FALSE,flg;
 
   PetscFunctionBegin;
-  ierr = PetscOptionsGetTruth(0,"-dmmg_grid_sequence",&gridseq,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscOptionsGetTruth(0,"-dmmg_monitor_solution",&vecmonitor,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(0,"-dmmg_grid_sequence",&gridseq,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(0,"-dmmg_monitor_solution",&vecmonitor,PETSC_NULL);CHKERRQ(ierr);
   if (gridseq) {
     if (dmmg[0]->initialguess) {
       ierr = (*dmmg[0]->initialguess)(dmmg[0],dmmg[0]->x);CHKERRQ(ierr);
@@ -316,14 +334,14 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSolve(DMMG *dmmg)
   }
 
   flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_view",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_view",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg && !PetscPreLoadingOn) {
     PetscViewer viewer;
     ierr = PetscViewerASCIIGetStdout(dmmg[0]->comm,&viewer);CHKERRQ(ierr);
     ierr = DMMGView(dmmg,viewer);CHKERRQ(ierr);
   }
   flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-dmmg_view_binary",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-dmmg_view_binary",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg && !PetscPreLoadingOn) {
     ierr = DMMGView(dmmg,PETSC_VIEWER_BINARY_(dmmg[0]->comm));CHKERRQ(ierr);
   }
@@ -332,7 +350,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSolve(DMMG *dmmg)
 
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGSolveKSP"
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSolveKSP(DMMG *dmmg,PetscInt level)
+PetscErrorCode  DMMGSolveKSP(DMMG *dmmg,PetscInt level)
 {
   PetscErrorCode ierr;
 
@@ -356,17 +374,17 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSolveKSP(DMMG *dmmg,PetscInt level)
 */
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGSetUpLevel"
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetUpLevel(DMMG *dmmg,KSP ksp,PetscInt nlevels)
+PetscErrorCode  DMMGSetUpLevel(DMMG *dmmg,KSP ksp,PetscInt nlevels)
 {
   PetscErrorCode          ierr;
   PetscInt                i;
   PC                      pc;
-  PetscTruth              ismg,ismf,isshell,ismffd;
+  PetscBool               ismg,ismf,isshell,ismffd;
   KSP                     lksp; /* solver internal to the multigrid preconditioner */
   MPI_Comm                *comms;
 
   PetscFunctionBegin;
-  if (!dmmg) SETERRQ(PETSC_ERR_ARG_NULL,"Passing null as DMMG");
+  if (!dmmg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_NULL,"Passing null as DMMG");
 
   /* use fgmres on outer iteration by default */
   ierr  = KSPSetType(ksp,KSPFGMRES);CHKERRQ(ierr);
@@ -419,7 +437,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetUpLevel(DMMG *dmmg,KSP ksp,PetscInt nl
 /*@C
     DMMGSetKSP - Sets the linear solver object that will use the grid hierarchy
 
-    Collective on DMMG
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
+
+    Logically Collective on DMMG
 
     Input Parameter:
 +   dmmg - the context
@@ -436,16 +457,16 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetUpLevel(DMMG *dmmg,KSP ksp,PetscInt nl
 .seealso DMMGCreate(), DMMGDestroy, DMMGSetDM(), DMMGSolve(), DMMGSetMatType()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetKSP(DMMG *dmmg,PetscErrorCode (*rhs)(DMMG,Vec),PetscErrorCode (*func)(DMMG,Mat,Mat))
+PetscErrorCode  DMMGSetKSP(DMMG *dmmg,PetscErrorCode (*rhs)(DMMG,Vec),PetscErrorCode (*func)(DMMG,Mat,Mat))
 {
   PetscErrorCode ierr;
   PetscInt       i,nlevels = dmmg[0]->nlevels,level;
-  PetscTruth     ismg,galerkin=PETSC_FALSE;
+  PetscBool      ismg,galerkin=PETSC_FALSE;
   PC             pc;
   KSP            lksp;
   
   PetscFunctionBegin;
-  if (!dmmg) SETERRQ(PETSC_ERR_ARG_NULL,"Passing null as DMMG");
+  if (!dmmg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_NULL,"Passing null as DMMG");
 
   if (!dmmg[0]->ksp) {
     /* create solvers for each level if they don't already exist*/
@@ -511,7 +532,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetKSP(DMMG *dmmg,PetscErrorCode (*rhs)(D
 #undef __FUNCT__  
 #define __FUNCT__ "DMMGView"
 /*@C
-    DMMGView - prints information on a DA based multi-level preconditioner
+    DMMGView - prints information on a DM based multi-level preconditioner
+
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
 
     Collective on DMMG and PetscViewer
 
@@ -524,25 +548,23 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetKSP(DMMG *dmmg,PetscErrorCode (*rhs)(D
 .seealso DMMGCreate(), DMMGDestroy(), DMMGSetMatType()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGView(DMMG *dmmg,PetscViewer viewer)
+PetscErrorCode  DMMGView(DMMG *dmmg,PetscViewer viewer)
 {
   PetscErrorCode ierr;
   PetscInt       i,nlevels = dmmg[0]->nlevels;
   PetscMPIInt    flag;
   MPI_Comm       comm;
-  PetscTruth     iascii,isbinary;
+  PetscBool      iascii,isbinary;
 
   PetscFunctionBegin;
   PetscValidPointer(dmmg,1);
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,2);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,2);
   ierr = PetscObjectGetComm((PetscObject)viewer,&comm);CHKERRQ(ierr);
   ierr = MPI_Comm_compare(comm,dmmg[0]->comm,&flag);CHKERRQ(ierr);
-  if (flag != MPI_CONGRUENT && flag != MPI_IDENT) {
-    SETERRQ(PETSC_ERR_ARG_NOTSAMECOMM,"Different communicators in the DMMG and the PetscViewer");
-  }
+  if (flag != MPI_CONGRUENT && flag != MPI_IDENT) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_NOTSAMECOMM,"Different communicators in the DMMG and the PetscViewer");
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_BINARY,&isbinary);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERBINARY,&isbinary);CHKERRQ(ierr);
   if (isbinary) {
     for (i=0; i<nlevels; i++) {
       ierr = MatView(dmmg[i]->J,viewer);CHKERRQ(ierr);
@@ -583,7 +605,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGView(DMMG *dmmg,PetscViewer viewer)
 /*@C
     DMMGSetNullSpace - Indicates the null space in the linear operator (this is needed by the linear solver)
 
-    Collective on DMMG
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
+
+    Logically Collective on DMMG
 
     Input Parameter:
 +   dmmg - the context
@@ -596,7 +621,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGView(DMMG *dmmg,PetscViewer viewer)
 .seealso DMMGCreate(), DMMGDestroy, DMMGSetDM(), DMMGSolve(), MatNullSpaceCreate(), KSPSetNullSpace(), DMMGSetMatType()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetNullSpace(DMMG *dmmg,PetscTruth has_cnst,PetscInt n,PetscErrorCode (*func)(DMMG,Vec[]))
+PetscErrorCode  DMMGSetNullSpace(DMMG *dmmg,PetscBool  has_cnst,PetscInt n,PetscErrorCode (*func)(DMMG,Vec[]))
 {
   PetscErrorCode ierr;
   PetscInt       i,j,nlevels = dmmg[0]->nlevels;
@@ -604,13 +629,13 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetNullSpace(DMMG *dmmg,PetscTruth has_cn
   MatNullSpace   nullsp;
   KSP            iksp;
   PC             pc,ipc;
-  PetscTruth     ismg,isred;
+  PetscBool      ismg,isred;
 
   PetscFunctionBegin;
-  if (!dmmg) SETERRQ(PETSC_ERR_ARG_NULL,"Passing null as DMMG");
-  if (!dmmg[0]->ksp) SETERRQ(PETSC_ERR_ORDER,"Must call AFTER DMMGSetKSP() or DMMGSetSNES()");
-  if ((n && !func) || (!n && func)) SETERRQ(PETSC_ERR_ARG_INCOMP,"Both n and func() must be set together");
-  if (n < 0) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"Cannot have negative number of vectors in null space n = %D",n)
+  if (!dmmg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_NULL,"Passing null as DMMG");
+  if (!dmmg[0]->ksp) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ORDER,"Must call AFTER DMMGSetKSP() or DMMGSetSNES()");
+  if ((n && !func) || (!n && func)) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Both n and func() must be set together");
+  if (n < 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Cannot have negative number of vectors in null space n = %D",n);
 
   for (i=0; i<nlevels; i++) {
     if (n) {
@@ -627,9 +652,9 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetNullSpace(DMMG *dmmg,PetscTruth has_cn
         ierr = KSPSetNullSpace(iksp, nullsp);CHKERRQ(ierr);
       }
     }
-    ierr = MatNullSpaceDestroy(nullsp);CHKERRQ(ierr);
+    ierr = MatNullSpaceDestroy(&nullsp);CHKERRQ(ierr);
     if (n) {
-      ierr = VecDestroyVecs(nulls,n);CHKERRQ(ierr);
+      ierr = VecDestroyVecs(n,&nulls);CHKERRQ(ierr);
     }
   }
   /* make all the coarse grid solvers have LU shift since they are singular */
@@ -641,7 +666,9 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetNullSpace(DMMG *dmmg,PetscTruth has_cn
       ierr = KSPGetPC(iksp,&ipc);CHKERRQ(ierr);
       ierr = PetscTypeCompare((PetscObject)ipc,PCREDUNDANT,&isred);CHKERRQ(ierr);
       if (isred) {
-        ierr = PCRedundantGetPC(ipc,&ipc);CHKERRQ(ierr);
+        KSP iksp;
+        ierr = PCRedundantGetKSP(ipc,&iksp);CHKERRQ(ierr);
+        ierr = KSPGetPC(iksp,&ipc);CHKERRQ(ierr);
       }
       ierr = PCFactorSetShiftType(ipc,MAT_SHIFT_POSITIVE_DEFINITE);CHKERRQ(ierr);
     }
@@ -657,7 +684,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetNullSpace(DMMG *dmmg,PetscTruth has_cn
        problems zero is used for the initial guess (unless grid sequencing is used). For nonlinear 
        problems this is not needed; it always uses the previous solution as the initial guess.
 
-    Collective on DMMG
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
+
+    Logically Collective on DMMG
 
     Input Parameter:
 +   dmmg - the context
@@ -668,7 +698,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetNullSpace(DMMG *dmmg,PetscTruth has_cn
 .seealso DMMGCreate(), DMMGDestroy, DMMGSetKSP(), DMMGSetSNES(), DMMGSetInitialGuess()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGInitialGuessCurrent(DMMG dmmg,Vec vec)
+PetscErrorCode  DMMGInitialGuessCurrent(DMMG dmmg,Vec vec)
 {
   PetscFunctionBegin;
   PetscFunctionReturn(0);
@@ -679,7 +709,10 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGInitialGuessCurrent(DMMG dmmg,Vec vec)
 /*@C
     DMMGSetInitialGuess - Sets the function that computes an initial guess.
 
-    Collective on DMMG
+    This is being deprecated. Use KSPSetDM() for linear problems and SNESSetDM() for nonlinear problems. 
+    See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c 
+
+    Logically Collective on DMMG
 
     Input Parameter:
 +   dmmg - the context
@@ -701,7 +734,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT DMMGInitialGuessCurrent(DMMG dmmg,Vec vec)
 .seealso DMMGCreate(), DMMGDestroy, DMMGSetKSP(), DMMGSetSNES(), DMMGInitialGuessCurrent(), DMMGSetGalekin(), DMMGSetMatType(), DMMGSetNullSpace()
 
 @*/
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGSetInitialGuess(DMMG *dmmg,PetscErrorCode (*guess)(DMMG,Vec))
+PetscErrorCode  DMMGSetInitialGuess(DMMG *dmmg,PetscErrorCode (*guess)(DMMG,Vec))
 {
   PetscInt       i,nlevels = dmmg[0]->nlevels;
   PetscErrorCode ierr;

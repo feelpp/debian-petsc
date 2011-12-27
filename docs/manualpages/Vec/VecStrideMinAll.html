@@ -30,7 +30,7 @@ if you need this, send mail to petsc-maint@mcs.anl.gov to request it)
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 One must call <A HREF="../Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>() before this routine to set the stride
-information, or use a vector created from a multicomponent <A HREF="../DA/DA.html#DA">DA</A>.
+information, or use a vector created from a multicomponent DMDA.
 <P>
 This is useful for computing, say the minimum of the pressure variable when
 the pressure is stored (interlaced) with other variables, e.g., density, etc.

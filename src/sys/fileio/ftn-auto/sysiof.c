@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* sysio.c */
 /* Fortran interface file */
 
@@ -52,16 +53,16 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscbinaryread_(int *fd,void*p,PetscInt *n,PetscDataType *type, int *__ierr ){
+void PETSC_STDCALL  petscbinaryread_(int *fd,void*p,PetscInt *n,PetscDataType *type, int *__ierr ){
 *__ierr = PetscBinaryRead(*fd,p,*n,*type);
 }
-void PETSC_STDCALL   petscbinarywrite_(int *fd,void*p,PetscInt *n,PetscDataType *type,PetscTruth *istemp, int *__ierr ){
+void PETSC_STDCALL  petscbinarywrite_(int *fd,void*p,PetscInt *n,PetscDataType *type,PetscBool  *istemp, int *__ierr ){
 *__ierr = PetscBinaryWrite(*fd,p,*n,*type,*istemp);
 }
-void PETSC_STDCALL   petscbinaryclose_(int *fd, int *__ierr ){
+void PETSC_STDCALL  petscbinaryclose_(int *fd, int *__ierr ){
 *__ierr = PetscBinaryClose(*fd);
 }
-void PETSC_STDCALL   petscbinaryseek_(int *fd,off_t *off,PetscBinarySeekType *whence,off_t *offset, int *__ierr ){
+void PETSC_STDCALL  petscbinaryseek_(int *fd,off_t *off,PetscBinarySeekType *whence,off_t *offset, int *__ierr ){
 *__ierr = PetscBinarySeek(*fd,*off,*whence,
 	(off_t* )PetscToPointer((offset) ));
 }

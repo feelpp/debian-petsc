@@ -12,7 +12,7 @@ Create a <A HREF="../Mat/Mat.html#Mat">Mat</A> object implemented in Python.
 #include "petscmat.h" 
 #undef __FUNCT__
 #define __FUNCT__ "MatPythonCreate"
-PetscErrorCode PETSCMAT_DLLEXPORT MatPythonCreate(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,const char pyname[],Mat *A)
+PetscErrorCode  MatPythonCreate(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,const char pyname[],Mat *A)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>

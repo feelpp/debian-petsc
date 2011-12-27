@@ -2,7 +2,7 @@
 static char help[] = "Solves a linear system with KSP.  This problem is\n\
 intended to test the complex numbers version of various solvers.\n\n";
 
-#include "petscksp.h"
+#include <petscksp.h>
 
 typedef enum {TEST_1,TEST_2,TEST_3,HELMHOLTZ_1,HELMHOLTZ_2} TestType;
 extern PetscErrorCode FormTestMatrix(Mat,PetscInt,TestType);
@@ -20,7 +20,7 @@ int main(int argc,char **args)
   PetscReal      norm;
   PetscRandom    rctx;
   TestType       type;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-n",&n,PETSC_NULL);CHKERRQ(ierr);
@@ -43,7 +43,7 @@ int main(int argc,char **args)
 
   use_random = 1;
   flg        = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-norandom",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-norandom",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     use_random = 0;
     ierr = VecSet(u,pfive);CHKERRQ(ierr);
@@ -60,7 +60,7 @@ int main(int argc,char **args)
   ierr = FormTestMatrix(A,n,type);CHKERRQ(ierr);
   ierr = MatMult(A,u,b);CHKERRQ(ierr);
   flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-printout",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-printout",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
     ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
@@ -81,11 +81,11 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %A,Iterations %D\n",norm,its);CHKERRQ(ierr);
 
   /* Free work space */
-  ierr = VecDestroy(x);CHKERRQ(ierr); ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr); ierr = MatDestroy(A);CHKERRQ(ierr);
-  if (use_random) {ierr = PetscRandomDestroy(rctx);CHKERRQ(ierr);}
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr); ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
+  if (use_random) {ierr = PetscRandomDestroy(&rctx);CHKERRQ(ierr);}
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -94,7 +94,7 @@ int main(int argc,char **args)
 PetscErrorCode FormTestMatrix(Mat A,PetscInt n,TestType type)
 {
 #if !defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"FormTestMatrix: These problems require complex numbers.");
+  SETERRQ(((PetscObject)A)->comm,1,"FormTestMatrix: These problems require complex numbers.");
 #else
 
   PetscScalar    val[5];
@@ -171,7 +171,7 @@ PetscErrorCode FormTestMatrix(Mat A,PetscInt n,TestType type)
       *val = 4.0 - sigma1*h2 + sigma2*h2;
       ierr = MatSetValues(A,1,&Ii,1,&Ii,val,ADD_VALUES);CHKERRQ(ierr);
     }
-    ierr = PetscRandomDestroy(rctx);CHKERRQ(ierr);
+    ierr = PetscRandomDestroy(&rctx);CHKERRQ(ierr);
   }
   else if (type == HELMHOLTZ_2) {
     /* Problem domain: unit square: (0,1) x (0,1)
@@ -201,7 +201,7 @@ PetscErrorCode FormTestMatrix(Mat A,PetscInt n,TestType type)
       ierr = MatSetValues(A,1,&Ii,1,&Ii,val,ADD_VALUES);CHKERRQ(ierr);
     }
   }
-  else SETERRQ(1,"FormTestMatrix: unknown test matrix type");
+  else SETERRQ(((PetscObject)A)->comm,1,"FormTestMatrix: unknown test matrix type");
 
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);

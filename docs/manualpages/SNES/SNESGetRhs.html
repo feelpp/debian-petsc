@@ -10,9 +10,9 @@ Gets the vector for solving F(x) = rhs. If rhs is not set it assumes a zero righ
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetRhs(SNES snes,Vec *rhs)
+PetscErrorCode  SNESGetRhs(SNES snes,Vec *rhs)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>snes </B> -the <A HREF="../SNES/SNES.html#SNES">SNES</A> context

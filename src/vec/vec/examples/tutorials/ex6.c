@@ -1,7 +1,7 @@
 
 static char help[] = "Writes an array to a file, then reads an array from a file, then forms a vector.\n\n";
 
-#include "petscvec.h"
+#include <petscvec.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -17,7 +17,7 @@ int main(int argc,char **args)
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(1,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_SELF,1,"This is a uniprocessor example only!");
   
   ierr = PetscOptionsGetInt(PETSC_NULL,"-m",&m,PETSC_NULL);CHKERRQ(ierr);
 
@@ -40,7 +40,7 @@ int main(int argc,char **args)
   ierr = PetscBinaryWrite(fd,array,m,PETSC_SCALAR,PETSC_FALSE);CHKERRQ(ierr);
 
   /* Destroy the output viewer and work array */
-  ierr = PetscViewerDestroy(view_out);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&view_out);CHKERRQ(ierr);
   ierr = PetscFree(array);CHKERRQ(ierr);
 
   /* ---------------------------------------------------------------------- */
@@ -59,7 +59,7 @@ int main(int argc,char **args)
 
   /* Read data into vector */
   ierr = PetscBinaryRead(fd,&sz,1,PETSC_INT);CHKERRQ(ierr);
-  if (sz <=0) SETERRQ(1,"Error: Must have array length > 0");
+  if (sz <=0) SETERRQ(PETSC_COMM_SELF,1,"Error: Must have array length > 0");
 
   ierr = PetscPrintf(PETSC_COMM_SELF,"reading data in binary from input.dat, sz =%D ...\n",sz);CHKERRQ(ierr); 
   ierr = PetscBinaryRead(fd,avec,sz,PETSC_SCALAR);CHKERRQ(ierr);
@@ -69,9 +69,9 @@ int main(int argc,char **args)
   ierr = VecView(vec,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
 
   /* Free data structures */
-  ierr = VecDestroy(vec);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(view_in);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&vec);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&view_in);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

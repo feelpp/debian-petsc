@@ -10,7 +10,7 @@ Sets the C/C++/Fortran functions to be used by the <A HREF="../PF/PF.html#PF">PF
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpf.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT PFSet(PF pf,PetscErrorCode (*apply)(void*,PetscInt,PetscScalar*,PetscScalar*),PetscErrorCode (*applyvec)(void*,Vec,Vec),PetscErrorCode (*view)(void*,PetscViewer),PetscErrorCode (*destroy)(void*),void*ctx)
+PetscErrorCode  PFSet(PF pf,PetscErrorCode (*apply)(void*,PetscInt,const PetscScalar*,PetscScalar*),PetscErrorCode (*applyvec)(void*,Vec,Vec),PetscErrorCode (*view)(void*,PetscViewer),PetscErrorCode (*destroy)(void*),void*ctx)
 </PRE>
 Collective on <A HREF="../PF/PF.html#PF">PF</A>
 <P>
@@ -43,5 +43,5 @@ Collective on <A HREF="../PF/PF.html#PF">PF</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/dm/da/examples/tutorials/ex4.c.html">src/dm/da/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex4.c.html">src/dm/examples/tutorials/ex4.c.html</A><BR>
 </BODY></HTML>

@@ -1,7 +1,6 @@
-#define PETSCKSP_DLL
 
-#include "../src/ksp/pc/impls/mg/mgimpl.h"       /*I "petscksp.h" I*/
-                          /*I "petscmg.h"   I*/
+#include <../src/ksp/pc/impls/mg/mgimpl.h>       /*I "petscksp.h" I*/
+                          /*I "petscpcmg.h"   I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PCMGDefaultResidual"
@@ -24,7 +23,7 @@
 
 .seealso: PCMGSetResidual()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGDefaultResidual(Mat mat,Vec b,Vec x,Vec r)
+PetscErrorCode  PCMGDefaultResidual(Mat mat,Vec b,Vec x,Vec r)
 {
   PetscErrorCode ierr;
 
@@ -53,12 +52,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGDefaultResidual(Mat mat,Vec b,Vec x,Vec r)
 
 .keywords: MG, multigrid, get, coarse grid
 @*/ 
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetCoarseSolve(PC pc,KSP *ksp)  
+PetscErrorCode  PCMGGetCoarseSolve(PC pc,KSP *ksp)  
 { 
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
 
   PetscFunctionBegin;
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   *ksp =  mglevels[0]->smoothd;
   PetscFunctionReturn(0);
 }
@@ -69,12 +69,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetCoarseSolve(PC pc,KSP *ksp)
    PCMGSetResidual - Sets the function to be used to calculate the residual 
    on the lth level. 
 
-   Collective on PC and Mat
+   Logically Collective on PC and Mat
 
    Input Parameters:
 +  pc       - the multigrid context
 .  l        - the level (0 is coarsest) to supply
-.  residual - function used to form residual (usually PCMGDefaultResidual)
+.  residual - function used to form residual, if none is provided the previously provide one is used, if no 
+              previous one were provided then PCMGDefaultResidual() is used
 -  mat      - matrix associated with residual
 
    Level: advanced
@@ -83,15 +84,22 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetCoarseSolve(PC pc,KSP *ksp)
 
 .seealso: PCMGDefaultResidual()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetResidual(PC pc,PetscInt l,PetscErrorCode (*residual)(Mat,Vec,Vec,Vec),Mat mat) 
+PetscErrorCode  PCMGSetResidual(PC pc,PetscInt l,PetscErrorCode (*residual)(Mat,Vec,Vec,Vec),Mat mat) 
 {
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!mglevels) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
-
-  mglevels[l]->residual = residual;  
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!mglevels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  if (residual) {
+    mglevels[l]->residual = residual;  
+  } if (!mglevels[l]->residual) {
+    mglevels[l]->residual = PCMGDefaultResidual;
+  }
+  if (mat) {ierr = PetscObjectReference((PetscObject)mat);CHKERRQ(ierr);}
+  ierr = MatDestroy(&mglevels[l]->A);CHKERRQ(ierr);
   mglevels[l]->A        = mat;
   PetscFunctionReturn(0);
 }
@@ -102,7 +110,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetResidual(PC pc,PetscInt l,PetscErrorCod
    PCMGSetInterpolation - Sets the function to be used to calculate the 
    interpolation from l-1 to the lth level
 
-   Collective on PC and Mat
+   Logically Collective on PC and Mat
 
    Input Parameters:
 +  pc  - the multigrid context
@@ -122,17 +130,18 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetResidual(PC pc,PetscInt l,PetscErrorCod
 
 .seealso: PCMGSetRestriction()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetInterpolation(PC pc,PetscInt l,Mat mat)
+PetscErrorCode  PCMGSetInterpolation(PC pc,PetscInt l,Mat mat)
 { 
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!mglevels) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
-  if (!l) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Do not set interpolation routine for coarsest level");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!mglevels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  if (!l) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Do not set interpolation routine for coarsest level");
   ierr = PetscObjectReference((PetscObject)mat);CHKERRQ(ierr);
-  if (mglevels[l]->interpolate) {ierr = MatDestroy(mglevels[l]->interpolate);CHKERRQ(ierr);}
+  ierr = MatDestroy(&mglevels[l]->interpolate);CHKERRQ(ierr);
   mglevels[l]->interpolate = mat;  
   PetscFunctionReturn(0);
 }
@@ -143,7 +152,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetInterpolation(PC pc,PetscInt l,Mat mat)
    PCMGSetRestriction - Sets the function to be used to restrict vector
    from level l to l-1. 
 
-   Collective on PC and Mat
+   Logically Collective on PC and Mat
 
    Input Parameters:
 +  pc - the multigrid context 
@@ -166,18 +175,56 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetInterpolation(PC pc,PetscInt l,Mat mat)
 
 .seealso: PCMGSetInterpolation()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetRestriction(PC pc,PetscInt l,Mat mat)  
+PetscErrorCode  PCMGSetRestriction(PC pc,PetscInt l,Mat mat)  
 {
   PetscErrorCode ierr;
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
 
   PetscFunctionBegin;
-  if (!mglevels) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
-  if (!l) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Do not set restriction routine for coarsest level");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!mglevels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  if (!l) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Do not set restriction routine for coarsest level");
   ierr = PetscObjectReference((PetscObject)mat);CHKERRQ(ierr);
-  if (mglevels[l]->restrct) {ierr = MatDestroy(mglevels[l]->restrct);CHKERRQ(ierr);}
+  ierr = MatDestroy(&mglevels[l]->restrct);CHKERRQ(ierr);
   mglevels[l]->restrct  = mat;  
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PCMGSetRScale"
+/*@
+   PCMGSetRScale - Sets the pointwise scaling for the restriction operator from level l to l-1. 
+
+   Logically Collective on PC and Mat
+
+   Input Parameters:
++  pc - the multigrid context 
+.  rscale - the scaling
+-  l - the level (0 is coarsest) to supply [Do not supply 0]
+
+   Level: advanced
+
+   Notes: 
+       When evaluating a function on a coarse level one does not want to do F( R * x) one does F( rscale * R * x) where rscale is 1 over the row sums of R. 
+
+.keywords: MG, set, multigrid, restriction, level
+
+.seealso: PCMGSetInterpolation(), PCMGSetRestriction()
+@*/
+PetscErrorCode  PCMGSetRScale(PC pc,PetscInt l,Vec rscale)
+{
+  PetscErrorCode ierr;
+  PC_MG          *mg = (PC_MG*)pc->data;
+  PC_MG_Levels   **mglevels = mg->levels;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!mglevels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  if (!l) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Do not set restriction routine for coarsest level");
+  ierr = PetscObjectReference((PetscObject)rscale);CHKERRQ(ierr);
+  ierr = VecDestroy(&mglevels[l]->rscale);CHKERRQ(ierr);
+  mglevels[l]->rscale  = rscale;  
   PetscFunctionReturn(0);
 }
 
@@ -204,12 +251,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetRestriction(PC pc,PetscInt l,Mat mat)
 
 .seealso: PCMGGetSmootherUp(), PCMGGetSmootherDown()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetSmoother(PC pc,PetscInt l,KSP *ksp)
+PetscErrorCode  PCMGGetSmoother(PC pc,PetscInt l,KSP *ksp)
 {
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
 
   PetscFunctionBegin;
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   *ksp = mglevels[l]->smoothd;  
   PetscFunctionReturn(0);
 }
@@ -231,11 +279,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetSmoother(PC pc,PetscInt l,KSP *ksp)
 
    Level: advanced
 
+   Notes: calling this will result in a different pre and post smoother so you may need to 
+         set options on the pre smoother also
+
 .keywords: MG, multigrid, get, smoother, up, post-smoother, level
 
 .seealso: PCMGGetSmootherUp(), PCMGGetSmootherDown()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetSmootherUp(PC pc,PetscInt l,KSP *ksp)
+PetscErrorCode  PCMGGetSmootherUp(PC pc,PetscInt l,KSP *ksp)
 {
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
@@ -244,12 +295,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetSmootherUp(PC pc,PetscInt l,KSP *ksp)
   MPI_Comm       comm;
 
   PetscFunctionBegin;
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   /*
      This is called only if user wants a different pre-smoother from post.
      Thus we check if a different one has already been allocated, 
      if not we allocate it.
   */
-  if (!l) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"There is no such thing as a up smoother on the coarse grid");
+  if (!l) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"There is no such thing as a up smoother on the coarse grid");
   if (mglevels[l]->smoothu == mglevels[l]->smoothd) {
     ierr = PetscObjectGetComm((PetscObject)mglevels[l]->smoothd,&comm);CHKERRQ(ierr);
     ierr = KSPGetOptionsPrefix(mglevels[l]->smoothd,&prefix);CHKERRQ(ierr);
@@ -280,19 +332,23 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetSmootherUp(PC pc,PetscInt l,KSP *ksp)
 
    Level: advanced
 
+   Notes: calling this will result in a different pre and post smoother so you may need to 
+         set options on the post smoother also
+
 .keywords: MG, multigrid, get, smoother, down, pre-smoother, level
 
 .seealso: PCMGGetSmootherUp(), PCMGGetSmoother()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetSmootherDown(PC pc,PetscInt l,KSP *ksp)
+PetscErrorCode  PCMGGetSmootherDown(PC pc,PetscInt l,KSP *ksp)
 {
   PetscErrorCode ierr;
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
 
   PetscFunctionBegin;
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
   /* make sure smoother up and down are different */
-  if (l != 0) {
+  if (l) {
     ierr = PCMGGetSmootherUp(pc,l,PETSC_NULL);CHKERRQ(ierr);
   }
   *ksp = mglevels[l]->smoothd;  
@@ -304,7 +360,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetSmootherDown(PC pc,PetscInt l,KSP *ksp)
 /*@
    PCMGSetCyclesOnLevel - Sets the number of cycles to run on this level. 
 
-   Collective on PC
+   Logically Collective on PC
 
    Input Parameters:
 +  pc - the multigrid context 
@@ -317,13 +373,16 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGGetSmootherDown(PC pc,PetscInt l,KSP *ksp)
 
 .seealso: PCMGSetCycles()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetCyclesOnLevel(PC pc,PetscInt l,PetscInt c) 
+PetscErrorCode  PCMGSetCyclesOnLevel(PC pc,PetscInt l,PetscInt c) 
 {
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
 
   PetscFunctionBegin;
-  if (!mglevels) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!mglevels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  PetscValidLogicalCollectiveInt(pc,l,2);
+  PetscValidLogicalCollectiveInt(pc,c,3);
   mglevels[l]->cycles  = c;
   PetscFunctionReturn(0);
 }
@@ -334,7 +393,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetCyclesOnLevel(PC pc,PetscInt l,PetscInt
    PCMGSetRhs - Sets the vector space to be used to store the right-hand side
    on a particular level. 
 
-   Collective on PC and Vec
+   Logically Collective on PC and Vec
 
    Input Parameters:
 +  pc - the multigrid context 
@@ -352,17 +411,18 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetCyclesOnLevel(PC pc,PetscInt l,PetscInt
 
 .seealso: PCMGSetX(), PCMGSetR()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetRhs(PC pc,PetscInt l,Vec c)  
+PetscErrorCode  PCMGSetRhs(PC pc,PetscInt l,Vec c)  
 { 
   PetscErrorCode ierr;
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
 
   PetscFunctionBegin;
-  if (!mglevels) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
-  if (l == mglevels[0]->levels-1) SETERRQ(PETSC_ERR_ARG_INCOMP,"Do not set rhs for finest level");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!mglevels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  if (l == mglevels[0]->levels-1) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_INCOMP,"Do not set rhs for finest level");
   ierr = PetscObjectReference((PetscObject)c);CHKERRQ(ierr);
-  if (mglevels[l]->b) {ierr = VecDestroy(mglevels[l]->b);CHKERRQ(ierr);}
+  ierr = VecDestroy(&mglevels[l]->b);CHKERRQ(ierr);
   mglevels[l]->b  = c;
   PetscFunctionReturn(0);
 }
@@ -373,7 +433,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetRhs(PC pc,PetscInt l,Vec c)
    PCMGSetX - Sets the vector space to be used to store the solution on a 
    particular level.
 
-   Collective on PC and Vec
+   Logically Collective on PC and Vec
 
    Input Parameters:
 +  pc - the multigrid context 
@@ -391,17 +451,18 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetRhs(PC pc,PetscInt l,Vec c)
 
 .seealso: PCMGSetRhs(), PCMGSetR()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetX(PC pc,PetscInt l,Vec c)  
+PetscErrorCode  PCMGSetX(PC pc,PetscInt l,Vec c)  
 { 
   PetscErrorCode ierr;
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
 
   PetscFunctionBegin;
-  if (!mglevels) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
-  if (l == mglevels[0]->levels-1) SETERRQ(PETSC_ERR_ARG_INCOMP,"Do not set rhs for finest level");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!mglevels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  if (l == mglevels[0]->levels-1) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_INCOMP,"Do not set x for finest level");
   ierr = PetscObjectReference((PetscObject)c);CHKERRQ(ierr);
-  if (mglevels[l]->x) {ierr = VecDestroy(mglevels[l]->x);CHKERRQ(ierr);}
+  ierr = VecDestroy(&mglevels[l]->x);CHKERRQ(ierr);
   mglevels[l]->x  = c;
   PetscFunctionReturn(0);
 }
@@ -412,7 +473,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetX(PC pc,PetscInt l,Vec c)
    PCMGSetR - Sets the vector space to be used to store the residual on a
    particular level. 
 
-   Collective on PC and Vec
+   Logically Collective on PC and Vec
 
    Input Parameters:
 +  pc - the multigrid context 
@@ -428,17 +489,18 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetX(PC pc,PetscInt l,Vec c)
 
 .keywords: MG, multigrid, set, residual, level
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetR(PC pc,PetscInt l,Vec c)
+PetscErrorCode  PCMGSetR(PC pc,PetscInt l,Vec c)
 { 
   PetscErrorCode ierr;
   PC_MG          *mg = (PC_MG*)pc->data;
   PC_MG_Levels   **mglevels = mg->levels;
 
   PetscFunctionBegin;
-  if (!mglevels) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
-  if (!l) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Need not set residual vector for coarse grid");
+  PetscValidHeaderSpecific(pc,PC_CLASSID,1);
+  if (!mglevels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set MG levels before calling");
+  if (!l) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Need not set residual vector for coarse grid");
   ierr = PetscObjectReference((PetscObject)c);CHKERRQ(ierr);
-  if (mglevels[l]->r) {ierr = VecDestroy(mglevels[l]->r);CHKERRQ(ierr);}
+  ierr = VecDestroy(&mglevels[l]->r);CHKERRQ(ierr);
   mglevels[l]->r  = c;
   PetscFunctionReturn(0);
 }

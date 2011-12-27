@@ -8,14 +8,20 @@
 <A NAME="KSPCHEBYCHEV"><H1>KSPCHEBYCHEV</H1></A>
 The preconditioned Chebychev iterative method 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
-<DT><B>-ksp_chebychev_eigenvalues &lt;emin,emax&gt; </B> -set approximations to the smallest and largest eigenvalues
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_chebychev_eigenvalues &lt;emin,emax&gt; </B></TD><TD>- set approximations to the smallest and largest eigenvalues
 of the preconditioned operator. If these are accurate you will get much faster convergence.
-<br>
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_chebychev_estimate_eigenvalues &lt;a,b,c,d&gt; </B></TD><TD>- estimate eigenvalues using a Krylov method, then use this
+transform for Chebychev eigenvalue bounds (<A HREF="../KSP/KSPChebychevSetEstimateEigenvalues.html#KSPChebychevSetEstimateEigenvalues">KSPChebychevSetEstimateEigenvalues</A>)
+</TD></TR></TABLE>
+<P>
 <P>
 
 <P>
 Notes: The Chebychev method requires both the matrix and preconditioner to
-be symmetric positive (semi) definite
+be symmetric positive (semi) definite.
+Only support for left preconditioning.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A HREF="../KSP/KSP.html#KSP">KSP</A>,

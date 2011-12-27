@@ -1,9 +1,8 @@
-#define PETSCKSP_DLL
 
 /*
     Identity preconditioner, simply copies vector x to y.
 */
-#include "private/pcimpl.h"          /*I "petscpc.h" I*/
+#include <private/pcimpl.h>          /*I "petscpc.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PCApply_None"
@@ -32,7 +31,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PCCreate_None"
-PetscErrorCode PETSCKSP_DLLEXPORT PCCreate_None(PC pc)
+PetscErrorCode  PCCreate_None(PC pc)
 {
   PetscFunctionBegin;
   pc->ops->apply               = PCApply_None;

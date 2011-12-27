@@ -29,9 +29,9 @@ PETSC_EXTERN_CXX_BEGIN
 S*/
 typedef char* PetscBT;
 
-extern PETSC_DLLEXPORT char      _BT_mask;
-extern PETSC_DLLEXPORT char      _BT_c;
-extern PETSC_DLLEXPORT PetscInt  _BT_idx;
+extern  char      _BT_mask;
+extern  char      _BT_c;
+extern  PetscInt  _BT_idx;
 
 #define PetscBTLength(m)        ((m)/PETSC_BITS_PER_BYTE+1)
 #define PetscBTMemzero(m,array) PetscMemzero(array,sizeof(char)*((m)/PETSC_BITS_PER_BYTE+1))
@@ -41,9 +41,11 @@ extern PETSC_DLLEXPORT PetscInt  _BT_idx;
   PetscInt __i; PetscErrorCode _8_ierr; \
   PetscViewer __viewer = viewer; \
   if (!__viewer) __viewer = PETSC_VIEWER_STDOUT_SELF;\
+  _8_ierr = PetscViewerASCIISynchronizedAllow(__viewer,PETSC_TRUE);CHKERRQ(_8_ierr);\
   for (__i=0; __i<m; __i++) { \
     _8_ierr = PetscViewerASCIISynchronizedPrintf(__viewer,"%D %d\n",__i,PetscBTLookup(bt,__i));CHKERRQ(_8_ierr);\
-  }  _8_ierr = PetscViewerFlush(__viewer);CHKERRQ(_8_ierr);}
+  }  _8_ierr = PetscViewerFlush(__viewer);CHKERRQ(_8_ierr);\
+  _8_ierr = PetscViewerASCIISynchronizedAllow(__viewer,PETSC_FALSE);CHKERRQ(_8_ierr);}
 
 #define PetscBTCreate(m,array)  \
   (PetscMalloc(((m)/PETSC_BITS_PER_BYTE+1)*sizeof(char),&(array)) || PetscBTMemzero(m,array))

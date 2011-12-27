@@ -7,6 +7,12 @@
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscFree4"><H1>PetscFree4</H1></A>
 Frees 4 chunks of memory obtained with <A HREF="../Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>() 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode PetscFree4(void *m1,void *m2,void *m3,void *m4)
+</PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m1 </B></TD><TD>- memory to free
@@ -18,11 +24,6 @@ Frees 4 chunks of memory obtained with <A HREF="../Sys/PetscMalloc4.html#PetscMa
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m4 </B></TD><TD>- 4th memory to free
 </TD></TR></TABLE>
 <P>
-<P>
-<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
-<PRE>
-PetscErrorCode PetscFree4(void *m1,void *m2,void *m3,void *m4)
-</PRE>
 
 <P>
 Notes: Memory must have been obtained with <A HREF="../Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>()
@@ -38,5 +39,7 @@ Notes: Memory must have been obtained with <A HREF="../Sys/PetscMalloc4.html#Pet
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex52.c.html">src/snes/examples/tutorials/ex52.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>
 </BODY></HTML>

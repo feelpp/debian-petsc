@@ -10,9 +10,9 @@ Gets the norm of a trial step vector.  The WCG step may be constrained, so this 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGGetTrialStepNorm(KSP ksp,PetscReal *tsnorm)
+PetscErrorCode  KSPQCGGetTrialStepNorm(KSP ksp,PetscReal *tsnorm)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>ksp </B> -the iterative context

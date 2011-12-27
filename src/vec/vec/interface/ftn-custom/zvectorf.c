@@ -1,9 +1,9 @@
-#include "private/fortranimpl.h"
-#include "petscvec.h"
+#include <private/fortranimpl.h>
+#include <petscvec.h>
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define vecsetvalue_              VECSETVALUE
 #define vecsetvaluelocal_         VECSETVALUELOCAL
-#define vecloadintovector_        VECLOADINTOVECTOR  
+#define vecload_                  VECLOAD
 #define vecview_                  VECVIEW
 #define vecgetarray_              VECGETARRAY
 #define vecgetarrayaligned_       VECGETARRAYALIGNED
@@ -17,7 +17,7 @@
 #define vecgetarrayaligned_       vecgetarrayaligned
 #define vecsetvalue_              vecsetvalue
 #define vecsetvaluelocal_         vecsetvaluelocal
-#define vecloadintovector_        vecloadintovector
+#define vecload_                  vecload
 #define vecview_                  vecview
 #define vecgetarray_              vecgetarray
 #define vecrestorearray_          vecrestorearray
@@ -41,11 +41,11 @@ void PETSC_STDCALL vecsetvaluelocal_(Vec *v,PetscInt *i,PetscScalar *va,InsertMo
   *ierr = VecSetValuesLocal(*v,1,i,va,*mode);
 }
 
-void PETSC_STDCALL vecloadintovector_(PetscViewer *viewer,Vec *vec,PetscErrorCode *ierr)
+void PETSC_STDCALL vecload_(Vec *vec, PetscViewer *viewer,PetscErrorCode *ierr)
 {
   PetscViewer v;
   PetscPatchDefaultViewers_Fortran(viewer,v);
-  *ierr = VecLoadIntoVector(v,*vec);
+  *ierr = VecLoad(*vec,v);
 }
 
 void PETSC_STDCALL vecview_(Vec *x,PetscViewer *vin,PetscErrorCode *ierr)
@@ -89,7 +89,7 @@ $      type(Field)     :: a(*)
 
 .seealso: VecGetArray(), VecGetArrayF90()
 M*/
-static PetscTruth VecGetArrayAligned = PETSC_FALSE;
+static PetscBool  VecGetArrayAligned = PETSC_FALSE;
 void PETSC_STDCALL vecgetarrayaligned_(PetscErrorCode *ierr)
 {
   VecGetArrayAligned = PETSC_TRUE;
@@ -136,11 +136,11 @@ void PETSC_STDCALL vecduplicatevecs_(Vec *v,PetscInt *m,Vec *newv,PetscErrorCode
   *ierr = PetscFree(lV); 
 }
 
-void PETSC_STDCALL vecdestroyvecs_(Vec *vecs,PetscInt *m,PetscErrorCode *ierr)
+void PETSC_STDCALL vecdestroyvecs_(PetscInt *m,Vec *vecs,PetscErrorCode *ierr)
 {
   PetscInt i;
   for (i=0; i<*m; i++) {
-    *ierr = VecDestroy(vecs[i]);if (*ierr) return;
+    *ierr = VecDestroy(&vecs[i]);if (*ierr) return;
   }
 }
 

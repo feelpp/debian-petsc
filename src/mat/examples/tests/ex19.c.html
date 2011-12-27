@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:19+00:00">
+<meta name="date" content="2011-10-29T19:04:51+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -15,7 +15,7 @@
 <a name="line5">  5: </a><font color="#666666">This example uses bilinear elements on the unit square.  Input arguments are:\n\</font>
 <a name="line6">  6: </a><font color="#666666">  -m &lt;size&gt; : problem size\n\n"</font>;
 
-<a name="line8"> 8: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><a name="FormElementStiffness"></a>int FormElementStiffness(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> H,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *Ke)</font></strong>
 <a name="line13"> 13: </a>{
@@ -33,7 +33,7 @@
 <a name="line29"> 29: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank;
 <a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,m = 5,N,start,end,M,idx[4];
 <a name="line31"> 31: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       j,nrsub,ncsub,*rsub,*csub,mystart,myend;
-<a name="line32"> 32: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line32"> 32: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 <a name="line33"> 33: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    one = 1.0,Ke[16],*vals;
 <a name="line34"> 34: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      h,norm;
 
@@ -128,9 +128,9 @@
 <a name="line124">124: </a>  }
 
 <a name="line126">126: </a>  <font color="#B22222">/* Free data structures */</font>
-<a name="line127">127: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line128">128: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line129">129: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line127">127: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line128">128: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line129">129: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 <a name="line130">130: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line131">131: </a>  <font color="#4169E1">return</font> 0;
 <a name="line132">132: </a>}

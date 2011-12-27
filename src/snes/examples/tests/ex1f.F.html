@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:43:29+00:00">
+<meta name="date" content="2011-10-29T19:15:56+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -63,14 +63,14 @@
 <a name="line53"> 53: </a>!     petscviewer.h - viewers
 <a name="line54"> 54: </a>!     petscis.h     - index sets
 <a name="line55"> 55: </a>!
-<a name="line56"> 56: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line57"> 57: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line58"> 58: </a> #include <A href="../../../../include/finclude/petscis.h.html">finclude/petscis.h</A>
-<a name="line59"> 59: </a> #include <A href="../../../../include/finclude/petscdraw.h.html">finclude/petscdraw.h</A>
-<a name="line60"> 60: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line61"> 61: </a> #include <A href="../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
-<a name="line62"> 62: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line63"> 63: </a> #include <A href="../../../../include/finclude/petscsnes.h.html">finclude/petscsnes.h</A>
+<a name="line56"> 56: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line57"> 57: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line58"> 58: </a><font color="#A020F0">#include &lt;finclude/petscis.h&gt;</font>
+<a name="line59"> 59: </a><font color="#A020F0">#include &lt;finclude/petscdraw.h&gt;</font>
+<a name="line60"> 60: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line61"> 61: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
+<a name="line62"> 62: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line63"> 63: </a><font color="#A020F0">#include &lt;finclude/petscsnes.h&gt;</font>
 <a name="line64"> 64: </a>!
 <a name="line65"> 65: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 <a name="line66"> 66: </a>!                   Variable declarations
@@ -89,7 +89,7 @@
 <a name="line79"> 79: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                x,r
 <a name="line80"> 80: </a>      <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A>               draw
 <a name="line81"> 81: </a>      <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>                J
-<a name="line82"> 82: </a>      <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> matrix_free,flg,fd_coloring
+<a name="line82"> 82: </a>      <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  matrix_free,flg,fd_coloring
 <a name="line83"> 83: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line84"> 84: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   its,N, mx,my,i5
 <a name="line85"> 85: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> size,rank
@@ -122,7 +122,7 @@
 <a name="line112">112: </a>         <font color="#4169E1">if</font> (rank .eq. 0) then
 <a name="line113">113: </a>            write(6,*) 'This is a uniprocessor example only!'
 <a name="line114">114: </a>         endif
-<a name="line115">115: </a>         <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,' ',ierr)
+<a name="line115">115: </a>         <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,' ',ierr)
 <a name="line116">116: </a>      endif
 
 <a name="line118">118: </a>!  Initialize problem parameters
@@ -138,7 +138,7 @@
 <a name="line128">128: </a>     &amp;     flg,ierr)
 <a name="line129">129: </a>      <font color="#4169E1">if</font> (lambda .ge. lambda_max .or. lambda .le. lambda_min) then
 <a name="line130">130: </a>         <font color="#4169E1">if</font> (rank .eq. 0) write(6,*) 'Lambda is out of range'
-<a name="line131">131: </a>         <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,' ',ierr)
+<a name="line131">131: </a>         <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,' ',ierr)
 <a name="line132">132: </a>      endif
 <a name="line133">133: </a>      N       = mx*my
 
@@ -200,7 +200,7 @@
 <a name="line190">190: </a>!       Color the matrix, i.e. determine groups of columns that share no common
 <a name="line191">191: </a>!      rows. These columns in the Jacobian can all be computed simulataneously.
 <a name="line192">192: </a>!
-<a name="line193">193: </a>        call <A href="../../../../docs/manualpages/MatOrderings/MatGetColoring.html#MatGetColoring">MatGetColoring</A>(J,MATCOLORING_NATURAL,iscoloring,ierr)
+<a name="line193">193: </a>        call <A href="../../../../docs/manualpages/MatOrderings/MatGetColoring.html#MatGetColoring">MatGetColoring</A>(J,MATCOLORINGNATURAL,iscoloring,ierr)
 <a name="line194">194: </a>
 <a name="line195">195: </a>!
 <a name="line196">196: </a>!       Create the data structure that <A href="../../../../docs/manualpages/SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>() uses
@@ -313,10 +313,10 @@
 <a name="line303">303: </a>      subroutine FormInitialGuess(X,ierr)
 <a name="line304">304: </a>      implicit none
 
-<a name="line306">306: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line307">307: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line308">308: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line309">309: </a> #include <A href="../../../../include/finclude/petscsnes.h.html">finclude/petscsnes.h</A>
+<a name="line306">306: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line307">307: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line308">308: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line309">309: </a><font color="#A020F0">#include &lt;finclude/petscsnes.h&gt;</font>
 
 <a name="line311">311: </a>!  Input/output variables:
 <a name="line312">312: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>           X
@@ -429,9 +429,9 @@
 <a name="line419">419: </a>      subroutine FormFunction(snes,X,F,dummy,ierr)
 <a name="line420">420: </a>      implicit none
 
-<a name="line422">422: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line423">423: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line424">424: </a> #include <A href="../../../../include/finclude/petscsnes.h.html">finclude/petscsnes.h</A>
+<a name="line422">422: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line423">423: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line424">424: </a><font color="#A020F0">#include &lt;finclude/petscsnes.h&gt;</font>
 
 <a name="line426">426: </a>!  Input/output variables:
 <a name="line427">427: </a>      <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>              snes
@@ -562,11 +562,11 @@
 <a name="line552">552: </a>      subroutine FormJacobian(snes,X,jac,jac_prec,flag,dummy,ierr)
 <a name="line553">553: </a>      implicit none
 
-<a name="line555">555: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line556">556: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line557">557: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line558">558: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line559">559: </a> #include <A href="../../../../include/finclude/petscsnes.h.html">finclude/petscsnes.h</A>
+<a name="line555">555: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line556">556: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line557">557: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line558">558: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line559">559: </a><font color="#A020F0">#include &lt;finclude/petscsnes.h&gt;</font>
 
 <a name="line561">561: </a>!  Input/output variables:
 <a name="line562">562: </a>      <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>          snes
@@ -642,11 +642,11 @@
 <a name="line632">632: </a>      subroutine ApplicationJacobian(x,jac,jac_prec,ierr)
 <a name="line633">633: </a>      implicit none
 
-<a name="line635">635: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line636">636: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line637">637: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line638">638: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line639">639: </a> #include <A href="../../../../include/finclude/petscsnes.h.html">finclude/petscsnes.h</A>
+<a name="line635">635: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line636">636: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line637">637: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line638">638: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line639">639: </a><font color="#A020F0">#include &lt;finclude/petscsnes.h&gt;</font>
 
 <a name="line641">641: </a>!  Common blocks:
 <a name="line642">642: </a>      <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>    lambda

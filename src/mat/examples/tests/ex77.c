@@ -1,7 +1,7 @@
 
 static char help[] = "Tests the various sequential routines in MatSBAIJ format. Same as ex74.c except diagonal entries of the matrices are zeros.\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -17,13 +17,13 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   IS             ip, isrow, iscol;
   PetscRandom    rdm;
-  PetscTruth     reorder=PETSC_FALSE;
+  PetscBool      reorder=PETSC_FALSE;
   MatInfo        minfo1,minfo2;
   PetscReal      norm1,norm2,tol=1.e-10;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(1,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only!");
   ierr = PetscOptionsGetInt(PETSC_NULL,"-bs",&bs,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-mbs",&mbs,PETSC_NULL);CHKERRQ(ierr);
 
@@ -59,8 +59,8 @@ int main(int argc,char **args)
       ierr = MatSetValues(sA,1,&i,3,col,value,INSERT_VALUES);CHKERRQ(ierr);
     }
     else if (prob ==2){ /* matrix for the five point stencil */
-      n1 = (int) (sqrt((PetscReal)n) + 0.001); 
-      if (n1*n1 - n) SETERRQ(PETSC_ERR_ARG_WRONG,"sqrt(n) must be a positive interger!"); 
+      n1 = (int) (PetscSqrtReal((PetscReal)n) + 0.001); 
+      if (n1*n1 - n) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"sqrt(n) must be a positive interger!"); 
       for (i=0; i<n1; i++) {
         for (j=0; j<n1; j++) {
           Ii = j + n1*i;
@@ -229,7 +229,7 @@ int main(int argc,char **args)
   }
 
   /* Test MatReordering() */
-  ierr = MatGetOrdering(A,MATORDERING_NATURAL,&isrow,&iscol);CHKERRQ(ierr); 
+  ierr = MatGetOrdering(A,MATORDERINGNATURAL,&isrow,&iscol);CHKERRQ(ierr); 
   ip = isrow;
 
   if (reorder){
@@ -241,28 +241,28 @@ int main(int argc,char **args)
     i = nip_ptr[1]; nip_ptr[1] = nip_ptr[mbs-2]; nip_ptr[mbs-2] = i; 
     i = nip_ptr[0]; nip_ptr[0] = nip_ptr[mbs-1]; nip_ptr[mbs-1] = i; 
     ierr = ISRestoreIndices(ip,&ip_ptr);CHKERRQ(ierr);
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,mbs,nip_ptr,&nip);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,mbs,nip_ptr,PETSC_COPY_VALUES,&nip);CHKERRQ(ierr);
     ierr = PetscFree(nip_ptr);CHKERRQ(ierr);
 
     ierr = MatReorderingSeqSBAIJ(sA, ip);CHKERRQ(ierr);  
-    ierr = ISDestroy(nip);CHKERRQ(ierr);
+    ierr = ISDestroy(&nip);CHKERRQ(ierr);
     /* ierr = ISView(ip, VIEWER_STDOUT_SELF);CHKERRQ(ierr); 
        ierr = MatView(sA,VIEWER_DRAW_SELF);CHKERRQ(ierr); */
   }
   
-  ierr = ISDestroy(iscol);CHKERRQ(ierr);
-  /* ierr = ISDestroy(isrow);CHKERRQ(ierr);*/
+  ierr = ISDestroy(&iscol);CHKERRQ(ierr);
+  /* ierr = ISDestroy(&isrow);CHKERRQ(ierr);*/
 
-  ierr = ISDestroy(isrow);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(sA);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = VecDestroy(s1);CHKERRQ(ierr);
-  ierr = VecDestroy(s2);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(rdm);CHKERRQ(ierr);
+  ierr = ISDestroy(&isrow);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&sA);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = VecDestroy(&s1);CHKERRQ(ierr);
+  ierr = VecDestroy(&s2);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rdm);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

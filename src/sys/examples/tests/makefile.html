@@ -3,7 +3,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:23:39+00:00">
+<meta name="date" content="2011-10-29T18:54:12+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -13,9 +13,10 @@ FFLAGS                =
 CPPFLAGS        =
 FPPFLAGS        =
 LOCDIR          = src/sys/examples/tests/
-EXAMPLESC       = ex1.c ex2.c ex3.c ex9.c ex10.c ex11.c ex12.c \
-                  ex14.c ex15.c ex16.c ex18.c ex19.c
-EXAMPLESF       = ex1f.F ex5f.F ex6f.F  ex17f.F
+EXAMPLESC       = ex1.c ex2.c ex3.c ex7.c ex9.c ex10.c ex11.c ex12.c \
+                ex14.c ex15.c ex16.c ex18.c ex19.c ex20.c ex21.c \
+                ex22.c ex23.c
+EXAMPLESF       = ex1f.F ex5f.F ex6f.F ex17f.F
 MANSEC          = Sys
 
 include ${PETSC_DIR}/conf/variables
@@ -48,6 +49,10 @@ include ${PETSC_DIR}/conf/rules
 <strong><font color="#FF0000">ex6f:</font></strong> ex6f.o chkopts
         -${FLINKER} -o ex6f ex6f.o  ${PETSC_SYS_LIB}
         ${RM} -f ex6f.o
+
+<strong><font color="#FF0000">ex7:</font></strong> ex7.o chkopts
+        -${CLINKER} -o ex7 ex7.o  ${PETSC_SYS_LIB}
+        ${RM} -f ex7.o
 
 <strong><font color="#FF0000">ex9:</font></strong> ex9.o chkopts
         -${CLINKER} -o ex9 ex9.o  ${PETSC_SYS_LIB}
@@ -83,6 +88,18 @@ include ${PETSC_DIR}/conf/rules
 <strong><font color="#FF0000">ex19:</font></strong> ex19.o chkopts
         -${CLINKER} -o ex19 ex19.o  ${PETSC_SYS_LIB}
         ${RM} -f ex19.o
+<strong><font color="#FF0000">ex20:</font></strong> ex20.o chkopts
+        -${CLINKER} -o ex20 ex20.o  ${PETSC_SYS_LIB}
+        ${RM} -f ex20.o
+<strong><font color="#FF0000">ex21:</font></strong> ex21.o chkopts
+        -${CLINKER} -o ex21 ex21.o  ${PETSC_SYS_LIB}
+        ${RM} -f ex21.o
+<strong><font color="#FF0000">ex22:</font></strong> ex22.o chkopts
+        -${CLINKER} -o ex22 ex22.o  ${PETSC_SYS_LIB}
+        ${RM} -f ex22.o
+<strong><font color="#FF0000">ex23:</font></strong> ex23.o chkopts
+        -${CLINKER} -o ex23 ex23.o  ${PETSC_SYS_LIB}
+        ${RM} -f ex23.o
 <font color="#A020F0">#----------------------------------------------------------------------------</font>
 <strong><font color="#FF0000">runex1:</font></strong>
         -@${MPIEXEC} -n 1 ./ex1
@@ -100,6 +117,12 @@ include ${PETSC_DIR}/conf/rules
         -@${MPIEXEC} -n 1 ./ex3 -fp_trap
         -@echo <font color="#666666">"This is a contrived error to test error handling of floating point exceptions."</font>
 
+<strong><font color="#FF0000">runex7:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex7 &gt; ex7.tmp 2&gt;&amp;1;\
+           <font color="#4169E1">if</font> (${DIFF} output/ex7.out ex7.tmp) then true; \
+           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex7_1, diffs above"</font>; fi; \
+           ${RM} -f ex7.tmp ex7.tmp
+
 <strong><font color="#FF0000">runex10:</font></strong>
         -@${MPIEXEC} -n 1 ./ex10 &gt; ex10_1.tmp 2&gt;&amp;1;\
            <font color="#4169E1">if</font> (${DIFF} output/ex10_1.out ex10_1.tmp) then true; \
@@ -111,8 +134,31 @@ include ${PETSC_DIR}/conf/rules
            <font color="#4169E1">if</font> (${DIFF} output/ex19_1.out ex19_1.tmp) then true; \
            <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex19_1, diffs above"</font>; fi; \
            ${RM} -f ex19_1.tmp
+<strong><font color="#FF0000">runex20:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex20 &gt; ex20_1.tmp 2&gt;&amp;1;   \
+           ${DIFF} output/ex20_1.out ex20_1.tmp || echo <font color="#666666">"Possible problem with ex20_1, diffs above"</font>; \
+           ${RM} -f ex20_1.tmp
+<strong><font color="#FF0000">runex20_2:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex20 -cl -prefix_push cl_ -zero 10 -prefix_push a_ -one 11 -prefix_push bb_ -two 12 -prefix_pop -three 13 -prefix_push cc_ -prefix_push ddd_ -four 14 -prefix_pop -prefix_pop -prefix_pop -five 15 -prefix_pop &gt; ex20_2.tmp 2&gt;&amp;1;   \
+           ${DIFF} output/ex20_2.out ex20_2.tmp || echo <font color="#666666">"Possible problem with ex20_2, diffs above"</font>; \
+           ${RM} -f ex20_2.tmp
+<strong><font color="#FF0000">runex20_3:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex20 -str &gt; ex20_3.tmp 2&gt;&amp;1;   \
+           ${DIFF} output/ex20_3.out ex20_3.tmp || echo <font color="#666666">"Possible problem with ex20_3, diffs above"</font>; \
+           ${RM} -f ex20_3.tmp
+<strong><font color="#FF0000">runex22:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex22 &gt; ex22.tmp 2&gt;&amp;1;   \
+           ${DIFF} output/ex22.out ex22.tmp || echo <font color="#666666">"Possible problem with ex22, diffs above"</font>; \
+           ${RM} -f ex22.tmp
+<strong><font color="#FF0000">runex23:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex23 -options_file_yaml ex23options &gt; ex23.tmp 2&gt;&amp;1;   \
+           ${DIFF} output/ex23.out ex23.tmp || echo <font color="#666666">"Possible problem with ex23, diffs above"</font>; \
+           ${RM} -f ex23.tmp
 
-TESTEXAMPLES_C                       = ex19.PETSc runex19 ex19.rm
+
+TESTEXAMPLES_C                       = ex19.PETSc runex19 ex19.rm \
+                                 ex20.PETSc runex20 runex20_2 runex20_3 ex20.rm  ex21.PETSc ex21.rm \
+                                 ex22.PETSc runex22 ex22.rm
 TESTEXAMPLES_C_X11               = ex1.PETSc runex1 ex1.rm ex2.PETSc runex2 ex2.rm ex3.PETSc runex3 ex3.rm 
 TESTEXAMPLES_FORTRAN               = ex5f.PETSc ex5f.rm ex6f.PETSc ex6f.rm ex17f.PETSc ex17f.rm
 TESTEXAMPLES_FORTRAN_NOCOMPLEX = ex1f.PETSc runex1f ex1f.rm

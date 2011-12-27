@@ -1,0 +1,78 @@
+<center><a href="logimpl.h">Actual source code: logimpl.h</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T18:53:17+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsctime.h&gt;</font>
+
+<a name="line4">  4: </a><font color="#B22222">/* A simple stack */</font>
+<a name="line5">  5: </a><font color="#4169E1"><a name="_n_PetscIntStack"></a>struct _n_PetscIntStack </font>{
+<a name="line6">  6: </a>  int  top;   <font color="#B22222">/* The top of the stack */</font>
+<a name="line7">  7: </a>  int  max;   <font color="#B22222">/* The maximum stack size */</font>
+<a name="line8">  8: </a>  int *stack; <font color="#B22222">/* The storage */</font>
+<a name="line9">  9: </a>};
+
+<a name="line11"> 11: </a><font color="#B22222">/* The structure for action logging */</font>
+<a name="line12"> 12: </a><strong><font color="#228B22">#define CREATE      0</font></strong>
+<a name="line13"> 13: </a><strong><font color="#228B22">#define DESTROY     1</font></strong>
+<a name="line14"> 14: </a><strong><font color="#228B22">#define ACTIONBEGIN 2</font></strong>
+<a name="line15"> 15: </a><strong><font color="#228B22">#define ACTIONEND   3</font></strong>
+<a name="line16"> 16: </a><font color="#4169E1"><a name="_Action"></a>typedef struct _Action </font>{
+<a name="line17"> 17: </a>  int            action;        <font color="#B22222">/* The type of execution */</font>
+<a name="line18"> 18: </a>  <A href="../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A>  event;         <font color="#B22222">/* The event number */</font>
+<a name="line19"> 19: </a>  <A href="../docs/manualpages/Sys/PetscClassId.html#PetscClassId">PetscClassId</A>   classid;        <font color="#B22222">/* The event class id */</font>
+<a name="line20"> 20: </a>  PetscLogDouble time;          <font color="#B22222">/* The time of occurence */</font>
+<a name="line21"> 21: </a>  PetscLogDouble flops;         <font color="#B22222">/* The cumlative flops */</font>
+<a name="line22"> 22: </a>  PetscLogDouble mem;           <font color="#B22222">/* The current memory usage */</font>
+<a name="line23"> 23: </a>  PetscLogDouble maxmem;        <font color="#B22222">/* The maximum memory usage */</font>
+<a name="line24"> 24: </a>  int            id1, id2, id3; <font color="#B22222">/* The ids of associated objects */</font>
+<a name="line25"> 25: </a>} Action;
+
+<a name="line27"> 27: </a><font color="#B22222">/* The structure for object logging */</font>
+<a name="line28"> 28: </a><font color="#4169E1"><a name="_Object"></a>typedef struct _Object </font>{
+<a name="line29"> 29: </a>  <A href="../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>    obj;      <font color="#B22222">/* The associated <A href="../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> */</font>
+<a name="line30"> 30: </a>  int            parent;   <font color="#B22222">/* The parent id */</font>
+<a name="line31"> 31: </a>  PetscLogDouble mem;      <font color="#B22222">/* The memory associated with the object */</font>
+<a name="line32"> 32: </a>  char           name[64]; <font color="#B22222">/* The object name */</font>
+<a name="line33"> 33: </a>  char           info[64]; <font color="#B22222">/* The information string */</font>
+<a name="line34"> 34: </a>} Object;
+
+<a name="line36"> 36: </a><font color="#B22222">/* Action and object logging variables */</font>
+
+
+<a name="line51"> 51: </a><font color="#A020F0">#ifdef PETSC_USE_LOG</font>
+
+<a name="line53"> 53: </a><font color="#B22222">/* Runtime functions */</font>
+
+
+<a name="line59"> 59: </a><font color="#B22222">/* Creation and destruction functions */</font>
+<a name="line64"> 64: </a><font color="#B22222">/* General functions */</font>
+<a name="line68"> 68: </a><font color="#B22222">/* Registration functions */</font>
+<a name="line70"> 70: </a><font color="#B22222">/* Query functions */</font>
+<a name="line73"> 73: </a><font color="#B22222">/* Activaton functions */</font>
+
+<a name="line79"> 79: </a><font color="#B22222">/* Logging functions */</font>
+
+<a name="line87"> 87: </a><font color="#B22222">/* Creation and destruction functions */</font>
+<a name="line93"> 93: </a><font color="#B22222">/* General functions */</font>
+<a name="line96"> 96: </a><font color="#B22222">/* Registration functions */</font>
+<a name="line98"> 98: </a><font color="#B22222">/* Query functions */</font>
+<a name="line100">100: </a><font color="#B22222">/* Logging functions */</font>
+
+<a name="line104">104: </a><font color="#B22222">/* Creation and destruction functions */</font>
+<a name="line107">107: </a><font color="#B22222">/* Registration functions */</font>
+<a name="line109">109: </a><font color="#B22222">/* Runtime functions */</font>
+
+
+
+<a name="line124">124: </a><font color="#A020F0">#endif </font><font color="#B22222">/* PETSC_USE_LOG */</font><font color="#A020F0"></font>
+</pre>
+</body>
+
+</html>

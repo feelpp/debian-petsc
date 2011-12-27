@@ -1,15 +1,14 @@
-#define PETSC_DLL
 
-#include "../src/sys/random/randomimpl.h"
+#include <../src/sys/random/randomimpl.h>
 #if defined (PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
 #endif
 
-static PetscTruth PetscRandomPackageInitialized = PETSC_FALSE;
+static PetscBool  PetscRandomPackageInitialized = PETSC_FALSE;
 #undef __FUNCT__  
 #define __FUNCT__ "PetscRandomFinalizePackage"
 /*@C
-  PetscRandomFinalizePackage - This function destroys everything in the Petsc interface to the charactoristics package. It is
+  PetscRandomFinalizePackage - This function destroys everything in the Petsc interface to the Random package. It is
   called from PetscFinalize().
 
   Level: developer
@@ -17,7 +16,7 @@ static PetscTruth PetscRandomPackageInitialized = PETSC_FALSE;
 .keywords: Petsc, destroy, package, mathematica
 .seealso: PetscFinalize()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscRandomFinalizePackage(void) 
+PetscErrorCode  PetscRandomFinalizePackage(void)
 {
   PetscFunctionBegin;
   PetscRandomPackageInitialized = PETSC_FALSE;
@@ -41,7 +40,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomFinalizePackage(void)
 .keywords: PetscRandom, initialize, package
 .seealso: PetscInitialize()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscRandomInitializePackage(const char path[]) 
+PetscErrorCode  PetscRandomInitializePackage(const char path[])
 {
   PetscErrorCode    ierr;
 
@@ -49,7 +48,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscRandomInitializePackage(const char path[])
   if (PetscRandomPackageInitialized) PetscFunctionReturn(0);
   PetscRandomPackageInitialized = PETSC_TRUE;
   /* Register Class */
-  ierr = PetscCookieRegister("PetscRandom",&PETSC_RANDOM_COOKIE);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("PetscRandom",&PETSC_RANDOM_CLASSID);CHKERRQ(ierr);
   ierr = PetscRandomRegisterAll(path);CHKERRQ(ierr);
   ierr = PetscRegisterFinalize(PetscRandomFinalizePackage);CHKERRQ(ierr);
   PetscFunctionReturn(0);

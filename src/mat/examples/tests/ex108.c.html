@@ -4,13 +4,13 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:59+00:00">
+<meta name="date" content="2011-10-29T19:05:36+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Testing <A href="../../../../docs/manualpages/Mat/MatCreateSeqBAIJWithArrays.html#MatCreateSeqBAIJWithArrays">MatCreateSeqBAIJWithArrays</A>() and <A href="../../../../docs/manualpages/Mat/MatCreateSeqSBAIJWithArrays.html#MatCreateSeqSBAIJWithArrays">MatCreateSeqSBAIJWithArrays</A>().\n\n"</font>;
 
-<a name="line3"> 3: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line7">  7: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong> {
 <a name="line8">  8: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            A,B,As;
@@ -19,11 +19,11 @@
 <a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    asa[7],*aa;
 <a name="line12"> 12: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A>    rctx;
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
-<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
 <a name="line18"> 18: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
-<a name="line19"> 19: </a>  <font color="#4169E1">if</font> (size != 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP,<font color="#666666">"This is a uniprocessor example only!"</font>);
+<a name="line19"> 19: </a>  <font color="#4169E1">if</font> (size != 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP,<font color="#666666">"This is a uniprocessor example only!"</font>);
 
 <a name="line21"> 21: </a>  <font color="#B22222">/* Create a aij matrix for checking */</font>
 <a name="line22"> 22: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateSeqAIJ.html#MatCreateSeqAIJ">MatCreateSeqAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,5,5,2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;A);
@@ -53,18 +53,18 @@
 <a name="line46"> 46: </a>  <A href="../../../../docs/manualpages/Mat/MatRestoreArray.html#MatRestoreArray">MatRestoreArray</A>(A,&amp;aa);
 <a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/Mat/MatRestoreRowIJ.html#MatRestoreRowIJ">MatRestoreRowIJ</A>(A,0,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,&amp;n,&amp;ai,&amp;aj,&amp;flg);
 <a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatMultEqual.html#MatMultEqual">MatMultEqual</A>(A,B,10,&amp;flg);
-<a name="line49"> 49: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_NOTSAMETYPE,<font color="#666666">"<A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(A,B) are NOT equal"</font>);
+<a name="line49"> 49: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_NOTSAMETYPE,<font color="#666666">"<A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(A,B) are NOT equal"</font>);
 
 <a name="line51"> 51: </a>  <font color="#B22222">/* Create a sbaij matrix using <A href="../../../../docs/manualpages/Mat/MatCreateSeqSBAIJWithArrays.html#MatCreateSeqSBAIJWithArrays">MatCreateSeqSBAIJWithArrays</A>() */</font>
 <a name="line52"> 52: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateSeqSBAIJWithArrays.html#MatCreateSeqSBAIJWithArrays">MatCreateSeqSBAIJWithArrays</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,5,5,asi,asj,asa,&amp;As);
 <a name="line53"> 53: </a>  <A href="../../../../docs/manualpages/Mat/MatMultEqual.html#MatMultEqual">MatMultEqual</A>(A,As,10,&amp;flg);
-<a name="line54"> 54: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_NOTSAMETYPE,<font color="#666666">"<A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(A,As) are NOT equal"</font>);
+<a name="line54"> 54: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_NOTSAMETYPE,<font color="#666666">"<A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(A,As) are NOT equal"</font>);
 <a name="line55"> 55: </a>
 <a name="line56"> 56: </a>  <font color="#B22222">/* Free spaces */</font>
-<a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rctx);
-<a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B);
-<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(As);
+<a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rctx);
+<a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
+<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;As);
 <a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line62"> 62: </a>  <font color="#4169E1">return</font>(0);
 <a name="line63"> 63: </a>}

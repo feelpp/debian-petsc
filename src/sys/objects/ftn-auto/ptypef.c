@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* ptype.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdatatypegetsize_(PetscDataType *ptype,size_t *size, int *__ierr ){
+void PETSC_STDCALL  petscdatatypegetsize_(PetscDataType *ptype,size_t *size, int *__ierr ){
 *__ierr = PetscDataTypeGetSize(*ptype,size);
 }
 #if defined(__cplusplus)

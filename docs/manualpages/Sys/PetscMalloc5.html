@@ -6,7 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscMalloc5"><H1>PetscMalloc5</H1></A>
-Allocates 5 chunks of  memory 
+Allocates 5 chunks of  memory all aligned to PETSC_MEMALIGN 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode PetscMalloc5(size_t m1,type, t1,void **r1,size_t m2,type t2,void **r2,size_t m3,type t3,void **r3,size_t m4,type t4,void **r4,size_t m5,type t5,void **r5)
+</PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m1 </B></TD><TD>- number of elements to allocate in 1st chunk  (may be zero)
@@ -43,13 +49,7 @@ Allocates 5 chunks of  memory
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>r5 </B></TD><TD>- memory allocated in fifth chunk
 </TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
-<PRE>
-PetscErrorCode PetscMalloc5(size_t m1,type, t1,void **r1,size_t m2,type t2,void **r2,size_t m3,type t3,void **r3,size_t m4,type t4,void **r4,size_t m5,type t5,void **r5)
-</PRE>
 
-<P>
-Notes: Memory of first chunk is always allocated at least double aligned
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscFree.html#PetscFree">PetscFree</A>(), <A HREF="../Sys/PetscNew.html#PetscNew">PetscNew</A>(), <A HREF="../Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(), <A HREF="../Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(), <A HREF="../Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(), <A HREF="../Sys/PetscFree4.html#PetscFree4">PetscFree4</A>(), <A HREF="../Sys/PetscFree5.html#PetscFree5">PetscFree5</A>()

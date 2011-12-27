@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* fdmatrix.c */
 /* Fortran interface file */
 
@@ -63,30 +64,29 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matfdcoloringsetparameters_(MatFDColoring matfd,PetscReal *error,PetscReal *umin, int *__ierr ){
+void PETSC_STDCALL  matfdcoloringsetparameters_(MatFDColoring matfd,PetscReal *error,PetscReal *umin, int *__ierr ){
 *__ierr = MatFDColoringSetParameters(
 	(MatFDColoring)PetscToPointer((matfd) ),*error,*umin);
 }
-void PETSC_STDCALL   matfdcoloringsetfromoptions_(MatFDColoring matfd, int *__ierr ){
+void PETSC_STDCALL  matfdcoloringsetfromoptions_(MatFDColoring matfd, int *__ierr ){
 *__ierr = MatFDColoringSetFromOptions(
 	(MatFDColoring)PetscToPointer((matfd) ));
 }
-void PETSC_STDCALL   matfdcoloringcreate_(Mat mat,ISColoring iscoloring,MatFDColoring *color, int *__ierr ){
+void PETSC_STDCALL  matfdcoloringcreate_(Mat mat,ISColoring iscoloring,MatFDColoring *color, int *__ierr ){
 *__ierr = MatFDColoringCreate(
 	(Mat)PetscToPointer((mat) ),
 	(ISColoring)PetscToPointer((iscoloring) ),color);
 }
-void PETSC_STDCALL   matfdcoloringdestroy_(MatFDColoring c, int *__ierr ){
-*__ierr = MatFDColoringDestroy(
-	(MatFDColoring)PetscToPointer((c) ));
+void PETSC_STDCALL  matfdcoloringdestroy_(MatFDColoring *c, int *__ierr ){
+*__ierr = MatFDColoringDestroy(c);
 }
-void PETSC_STDCALL   matfdcoloringapply_(Mat J,MatFDColoring coloring,Vec x1,MatStructure *flag,void*sctx, int *__ierr ){
+void PETSC_STDCALL  matfdcoloringapply_(Mat J,MatFDColoring coloring,Vec x1,MatStructure *flag,void*sctx, int *__ierr ){
 *__ierr = MatFDColoringApply(
 	(Mat)PetscToPointer((J) ),
 	(MatFDColoring)PetscToPointer((coloring) ),
 	(Vec)PetscToPointer((x1) ),flag,sctx);
 }
-void PETSC_STDCALL   matfdcoloringapplyts_(Mat J,MatFDColoring coloring,PetscReal *t,Vec x1,MatStructure *flag,void*sctx, int *__ierr ){
+void PETSC_STDCALL  matfdcoloringapplyts_(Mat J,MatFDColoring coloring,PetscReal *t,Vec x1,MatStructure *flag,void*sctx, int *__ierr ){
 *__ierr = MatFDColoringApplyTS(
 	(Mat)PetscToPointer((J) ),
 	(MatFDColoring)PetscToPointer((coloring) ),*t,

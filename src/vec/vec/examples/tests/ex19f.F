@@ -1,15 +1,15 @@
 !
 !
       program main
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
 !
 !  This example demonstrates basic use of the PETSc Fortran interface
 !  to vectors.
 !
        PetscInt  n
        PetscErrorCode ierr
-       PetscTruth flg
+       PetscBool  flg
        PetscScalar      one,two,three,dot
        PetscReal        norm,rdot
        Vec              x,y,w

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* submat.c */
 /* Fortran interface file */
 
@@ -43,13 +44,13 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matcreatesubmatrix_(Mat A,IS isrow,IS iscol,Mat *newmat, int *__ierr ){
+void PETSC_STDCALL  matcreatesubmatrix_(Mat A,IS isrow,IS iscol,Mat *newmat, int *__ierr ){
 *__ierr = MatCreateSubMatrix(
 	(Mat)PetscToPointer((A) ),
 	(IS)PetscToPointer((isrow) ),
 	(IS)PetscToPointer((iscol) ),newmat);
 }
-void PETSC_STDCALL   matsubmatrixupdate_(Mat N,Mat A,IS isrow,IS iscol, int *__ierr ){
+void PETSC_STDCALL  matsubmatrixupdate_(Mat N,Mat A,IS isrow,IS iscol, int *__ierr ){
 *__ierr = MatSubMatrixUpdate(
 	(Mat)PetscToPointer((N) ),
 	(Mat)PetscToPointer((A) ),

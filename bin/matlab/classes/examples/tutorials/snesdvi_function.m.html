@@ -1,0 +1,266 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>snesdvi_function</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="snesdvi_function.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> err = snesdvi_function(snes,xsol,func,user)
+<span class="comment">%</span>
+<span class="comment">%  Minimal surface area problem nonlinear function as in</span>
+<span class="comment">%  snes/examples/tests/ex8.c</span>
+<span class="comment">%</span>
+err = 0;
+
+mx = user.mx; my = user.my;
+hx = 1/(mx+1); hy = 1/(my+1);
+hydhx = hy/hx; hxdhy = hx/hy;
+
+<span class="comment">% Initialize f to zero</span>
+func.Set(0.0);
+
+f = user.dm.VecGetArray(func);
+x = user.dm.VecGetArray(xsol);
+
+<span class="comment">% Compute function over the mesh</span>
+<span class="keyword">for</span> (j = 1:my)
+  <span class="keyword">for</span> (i = 1:mx)
+    xc = x(i,j);
+    xlt = xc; xr = xc;
+    xrb = xc; xb = xc;
+    xl = xc; xt  = xc;
+
+    <span class="keyword">if</span> (i == 1) <span class="comment">% left side</span>
+      xl = user.left(j+1);
+      xlt = user.left(j+2);
+    <span class="keyword">else</span>
+      xl = x(i-1,j);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (j == 1) <span class="comment">% bottom side</span>
+      xb = user.bottom(i+1);
+      xrb = user.bottom(i+2);
+    <span class="keyword">else</span>
+      xb = x(i,j-1);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (i == mx) <span class="comment">%right side</span>
+      xr  = user.right(j+1);
+      xrb = user.right(j);
+    <span class="keyword">else</span>
+      xr = x(i+1,j);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (j == my) <span class="comment">% top side</span>
+      xt  = user.top(i+1);
+      xlt = user.top(i);
+    <span class="keyword">else</span>
+      xt = x(i,j+1);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (i &gt; 1 &amp; j&lt;my)
+      xlt = x(i-1,j+1);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> (j &gt; 1 &amp; i&lt;mx)
+      xrb = x(i+1,j-1);
+    <span class="keyword">end</span>
+
+    d1 = xc-xl; d2 = xc-xr;  d3 = xc-xt;
+    d4 = xc-xb; d5 = xr-xrb; d6 = xrb-xb;
+    d7 = xlt-xl; d8 = xt-xlt;
+
+    df1dxc = d1*hydhx;
+    df2dxc = ( d1*hydhx + d4*hxdhy );
+    df3dxc = d3*hxdhy;
+    df4dxc = ( d2*hydhx + d3*hxdhy );
+    df5dxc = d2*hydhx;
+    df6dxc = d4*hxdhy;
+
+    d1 = d1/hx;
+    d2 = d2/hx;
+    d3 = d3/hy;
+    d4 = d4/hy;
+    d5 = d5/hy;
+    d6 = d6/hx;
+    d7 = d7/hy;
+    d8 = d8/hx;
+
+    f1 = sqrt( 1.0 + d1*d1 + d7*d7);
+    f2 = sqrt( 1.0 + d1*d1 + d4*d4);
+    f3 = sqrt( 1.0 + d3*d3 + d8*d8);
+    f4 = sqrt( 1.0 + d3*d3 + d2*d2);
+    f5 = sqrt( 1.0 + d2*d2 + d5*d5);
+    f6 = sqrt( 1.0 + d4*d4 + d6*d6);
+
+    df1dxc = df1dxc/f1;
+    df2dxc = df2dxc/f2;
+    df3dxc = df3dxc/f3;
+    df4dxc = df4dxc/f4;
+    df5dxc = df5dxc/f5;
+    df6dxc = df6dxc/f6;
+
+    f(i,j) = (df1dxc+df2dxc+df3dxc+df4dxc+df5dxc+df6dxc )/2.0;
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+function err = snesdvi_function(snes,xsol,func,user)
+%
+%  Minimal surface area problem nonlinear function as in
+%  snes/examples/tests/ex8.c
+%
+err = 0;
+
+mx = user.mx; my = user.my;
+hx = 1/(mx+1); hy = 1/(my+1);
+hydhx = hy/hx; hxdhy = hx/hy;
+
+% Initialize f to zero
+func.Set(0.0);
+
+f = user.dm.VecGetArray(func);
+x = user.dm.VecGetArray(xsol);
+
+% Compute function over the mesh
+for (j = 1:my)
+  for (i = 1:mx)
+    xc = x(i,j);
+    xlt = xc; xr = xc;
+    xrb = xc; xb = xc;
+    xl = xc; xt  = xc;
+        
+    if (i == 1) % left side
+      xl = user.left(j+1);
+      xlt = user.left(j+2);
+    else
+      xl = x(i-1,j);
+    end
+        
+    if (j == 1) % bottom side
+      xb = user.bottom(i+1);
+      xrb = user.bottom(i+2);
+    else
+      xb = x(i,j-1);
+    end
+      
+    if (i == mx) %right side
+      xr  = user.right(j+1);
+      xrb = user.right(j);
+    else
+      xr = x(i+1,j);
+    end
+        
+    if (j == my) % top side
+      xt  = user.top(i+1);
+      xlt = user.top(i);
+    else
+      xt = x(i,j+1);
+    end
+        
+    if (i > 1 & j<my)
+      xlt = x(i-1,j+1);
+    end
+        
+    if (j > 1 & i<mx)
+      xrb = x(i+1,j-1);
+    end
+        
+    d1 = xc-xl; d2 = xc-xr;  d3 = xc-xt;
+    d4 = xc-xb; d5 = xr-xrb; d6 = xrb-xb;
+    d7 = xlt-xl; d8 = xt-xlt;
+        
+    df1dxc = d1*hydhx;
+    df2dxc = ( d1*hydhx + d4*hxdhy );
+    df3dxc = d3*hxdhy;
+    df4dxc = ( d2*hydhx + d3*hxdhy );
+    df5dxc = d2*hydhx;
+    df6dxc = d4*hxdhy;
+        
+    d1 = d1/hx;
+    d2 = d2/hx;
+    d3 = d3/hy;
+    d4 = d4/hy;
+    d5 = d5/hy;
+    d6 = d6/hx;
+    d7 = d7/hy;
+    d8 = d8/hx;
+
+    f1 = sqrt( 1.0 + d1*d1 + d7*d7);
+    f2 = sqrt( 1.0 + d1*d1 + d4*d4);
+    f3 = sqrt( 1.0 + d3*d3 + d8*d8);
+    f4 = sqrt( 1.0 + d3*d3 + d2*d2);
+    f5 = sqrt( 1.0 + d2*d2 + d5*d5);
+    f6 = sqrt( 1.0 + d4*d4 + d6*d6);
+
+    df1dxc = df1dxc/f1;
+    df2dxc = df2dxc/f2;
+    df3dxc = df3dxc/f3;
+    df4dxc = df4dxc/f4;
+    df5dxc = df5dxc/f5;
+    df6dxc = df6dxc/f6;
+
+    f(i,j) = (df1dxc+df2dxc+df3dxc+df4dxc+df5dxc+df6dxc )/2.0;
+  end
+end
+
+##### SOURCE END #####
+--></body></html>

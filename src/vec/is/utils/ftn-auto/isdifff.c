@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* isdiff.c */
 /* Fortran interface file */
 
@@ -48,12 +49,12 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   isdifference_(IS is1,IS is2,IS *isout, int *__ierr ){
+void PETSC_STDCALL  isdifference_(IS is1,IS is2,IS *isout, int *__ierr ){
 *__ierr = ISDifference(
 	(IS)PetscToPointer((is1) ),
 	(IS)PetscToPointer((is2) ),isout);
 }
-void PETSC_STDCALL   issum_(IS is1,IS is2,IS *is3, int *__ierr ){
+void PETSC_STDCALL  issum_(IS is1,IS is2,IS *is3, int *__ierr ){
 *__ierr = ISSum(
 	(IS)PetscToPointer((is1) ),
 	(IS)PetscToPointer((is2) ),is3);

@@ -1,27 +1,25 @@
-#include <petscmg.h>      /*I      "petscmg.h"    I*/
-#include <petscdmmg.h>    /*I      "petscdmmg.h"  I*/
-#include <petscmesh.h>    /*I      "petscmesh.h"  I*/
+#include <petscpcmg.h>      /*I "petscpcmg.h"   I*/
+#include <petscdmmg.h>      /*I "petscdmmg.h"   I*/
+#include <petscdmmesh.h>    /*I "petscdmmesh.h" I*/
 #include <Selection.hh>
 
 /* Just to set iterations */
-#include "private/snesimpl.h"      /*I "petscsnes.h"  I*/
-
-PetscErrorCode DMMGFormFunctionMesh(SNES snes, Vec X, Vec F, void *ptr);
+#include <private/snesimpl.h>      /*I "petscsnes.h"  I*/
 
 #if 0
 PetscErrorCode CreateNullSpace(DMMG dmmg, Vec *nulls) {
-  Mesh           mesh = (Mesh) dmmg->dm;
+  DM             mesh = dmmg->dm;
   Vec            nS   = nulls[0];
   SectionReal    nullSpace;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = MeshGetSectionReal(mesh, "nullSpace", &nullSpace);CHKERRQ(ierr);
+  ierr = DMMeshGetSectionReal(mesh, "nullSpace", &nullSpace);CHKERRQ(ierr);
   {
     ALE::Obj<PETSC_MESH_TYPE> m;
     ALE::Obj<PETSC_MESH_TYPE::real_section_type> s;
 
-    ierr = MeshGetMesh(mesh, m);CHKERRQ(ierr);
+    ierr = DMMeshGetMesh(mesh, m);CHKERRQ(ierr);
     ierr = SectionRealGetSection(nullSpace, s);CHKERRQ(ierr);
     ALE::Obj<ALE::Discretization> disc = m->getDiscretization("p");
     const int dim = m->getDimension();
@@ -44,43 +42,43 @@ PetscErrorCode CreateNullSpace(DMMG dmmg, Vec *nulls) {
   ierr = SectionRealToVec(nullSpace, mesh, SCATTER_FORWARD, nS);CHKERRQ(ierr);
   std::cout << "Null space:" << std::endl;
   ierr = VecView(nS, PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
-  ierr = SectionRealDestroy(nullSpace);CHKERRQ(ierr);
+  ierr = SectionRealDestroy(&nullSpace);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 #endif
 
 /* Nonlinear relaxation on all the equations with an initial guess in x */
 EXTERN_C_BEGIN
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "Relax_Mesh"
-PetscErrorCode PETSCMAT_DLLEXPORT Relax_Mesh(DMMG *dmmg, Mesh mesh, MatSORType flag, int its, Vec X, Vec B)
+PetscErrorCode Relax_Mesh(DMMG *dmmg, DM mesh, MatSORType flag, int its, Vec X, Vec B)
 {
   SectionReal      sectionX, sectionB, cellX;
-  Mesh             smallMesh;
+  DM               smallMesh;
   DMMG            *smallDmmg;
-  DALocalFunction1 func;
-  DALocalFunction1 jac;
+  DMDALocalFunction1 func;
+  DMDALocalFunction1 jac;
   ALE::Obj<PETSC_MESH_TYPE> m;
   ALE::Obj<PETSC_MESH_TYPE::real_section_type> sX;
   ALE::Obj<PETSC_MESH_TYPE::real_section_type> sB;
-  PetscTruth       fasDebug;
+  PetscBool        fasDebug;
   PetscErrorCode   ierr;
 
   PetscFunctionBegin;
   ierr = PetscOptionsHasName(dmmg[0]->prefix, "-dmmg_fas_debug", &fasDebug);CHKERRQ(ierr);
   if (fasDebug) {ierr = PetscPrintf(dmmg[0]->comm, "  FAS mesh relaxation\n");CHKERRQ(ierr);}
-  if (its <= 0) SETERRQ1(PETSC_ERR_ARG_WRONG, "Relaxation requires global its %D positive", its);
-  ierr = MeshCreate(PETSC_COMM_SELF, &smallMesh);CHKERRQ(ierr);
+  if (its <= 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG, "Relaxation requires global its %D positive", its);
+  ierr = DMMeshCreate(PETSC_COMM_SELF, &smallMesh);CHKERRQ(ierr);
   ierr = DMMGCreate(PETSC_COMM_SELF, -1, PETSC_NULL, &smallDmmg);CHKERRQ(ierr);
   //ierr = DMMGSetMatType(smallDmmg, MATSEQDENSE);CHKERRQ(ierr);
   ierr = DMMGSetOptionsPrefix(smallDmmg, "fas_");CHKERRQ(ierr);
   ierr = DMMGSetUser(smallDmmg, 0, DMMGGetUser(dmmg, 0));CHKERRQ(ierr);
   ierr = DMMGGetSNESLocal(dmmg, &func, &jac);CHKERRQ(ierr);
-  ierr = MeshGetMesh(mesh, m);CHKERRQ(ierr);
-  ierr = MeshGetSectionReal(mesh, "default", &sectionX);CHKERRQ(ierr);
+  ierr = DMMeshGetMesh(mesh, m);CHKERRQ(ierr);
+  ierr = DMMeshGetSectionReal(mesh, "default", &sectionX);CHKERRQ(ierr);
   ierr = SectionRealToVec(sectionX, mesh, SCATTER_REVERSE, X);CHKERRQ(ierr);
   ierr = SectionRealGetSection(sectionX, sX);CHKERRQ(ierr);
-  ierr = MeshGetSectionReal(mesh, "constant", &sectionB);CHKERRQ(ierr);
+  ierr = DMMeshGetSectionReal(mesh, "constant", &sectionB);CHKERRQ(ierr);
   ierr = SectionRealToVec(sectionB, mesh, SCATTER_REVERSE, B);CHKERRQ(ierr);
   ierr = SectionRealGetSection(sectionB, sB);CHKERRQ(ierr);
   ierr = SectionRealCreate(PETSC_COMM_SELF, &cellX);CHKERRQ(ierr);
@@ -91,7 +89,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT Relax_Mesh(DMMG *dmmg, Mesh mesh, MatSORType f
   //const int                                  cellDof = m->sizeWithBC(sX, *cells->begin());
 
 #ifdef PETSC_OPT_SIEVE
-  SETERRQ(PETSC_ERR_SUP, "I am being lazy, bug me.");
+  SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP, "I am being lazy, bug me.");
 #else
   ALE::Obj<PETSC_MESH_TYPE::names_type> fields = m->getDiscretizations();
   std::map<std::string, ALE::Obj<ALE::Discretization> > sDiscs;
@@ -160,8 +158,8 @@ PetscErrorCode PETSCMAT_DLLEXPORT Relax_Mesh(DMMG *dmmg, Mesh mesh, MatSORType f
         // Setup constant
         sm->setRealSection("constant", sB);
         // Setup DMMG
-        ierr = MeshSetMesh(smallMesh, sm);CHKERRQ(ierr);
-        ierr = DMMGSetDM(smallDmmg, (DM) smallMesh);CHKERRQ(ierr);
+        ierr = DMMeshSetMesh(smallMesh, sm);CHKERRQ(ierr);
+        ierr = DMMGSetDM(smallDmmg, smallMesh);CHKERRQ(ierr);
         ierr = DMMGSetSNESLocal(smallDmmg, func, jac, 0, 0);CHKERRQ(ierr);
         ierr = DMMGSetFromOptions(smallDmmg);CHKERRQ(ierr);
         // TODO: Construct null space, if necessary
@@ -193,14 +191,17 @@ PetscErrorCode PETSCMAT_DLLEXPORT Relax_Mesh(DMMG *dmmg, Mesh mesh, MatSORType f
 #endif
   sB->zero();
   ierr = SectionRealToVec(sectionX, mesh, SCATTER_FORWARD, X);CHKERRQ(ierr);
-  ierr = SectionRealDestroy(sectionX);CHKERRQ(ierr);
-  ierr = SectionRealDestroy(sectionB);CHKERRQ(ierr);
-  ierr = SectionRealDestroy(cellX);CHKERRQ(ierr);
+  ierr = SectionRealDestroy(&sectionX);CHKERRQ(ierr);
+  ierr = SectionRealDestroy(&sectionB);CHKERRQ(ierr);
+  ierr = SectionRealDestroy(&cellX);CHKERRQ(ierr);
   ierr = DMMGDestroy(smallDmmg);CHKERRQ(ierr);
-  ierr = MeshDestroy(smallMesh);CHKERRQ(ierr);
+  ierr = DMDestroy(&smallMesh);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
+
+#if 0
+PetscErrorCode DMMGFormFunctionMesh(SNES snes, Vec X, Vec F, void *ptr);
 
 /*
  This is alpha FAS code.
@@ -215,7 +216,7 @@ PetscErrorCode DMMGSolveFAS_Mesh(DMMG *dmmg, PetscInt level)
   SNES           snes = dmmg[level]->snes;
   PetscReal      norm;
   PetscInt       i, j, k;
-  PetscTruth     fasDebug;
+  PetscBool      fasDebug;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
@@ -232,7 +233,7 @@ PetscErrorCode DMMGSolveFAS_Mesh(DMMG *dmmg, PetscInt level)
     for(j = level; j > 0; j--) {
       if (dmmg[j]->monitorall) {ierr = PetscPrintf(dmmg[0]->comm, "  FAS level %d\n", j);CHKERRQ(ierr);}
       /* Relax on fine mesh to obtain x^{new}_{fine}, residual^{new}_{fine} = F_{fine}(x^{new}_{fine}) \approx 0 */
-      ierr = Relax_Mesh(dmmg, (Mesh) dmmg[j]->dm, SOR_SYMMETRIC_SWEEP, dmmg[j]->presmooth, dmmg[j]->x, dmmg[j]->r);CHKERRQ(ierr);
+      ierr = Relax_Mesh(dmmg, dmmg[j]->dm, SOR_SYMMETRIC_SWEEP, dmmg[j]->presmooth, dmmg[j]->x, dmmg[j]->r);CHKERRQ(ierr);
       ierr = DMMGFormFunctionMesh(0,dmmg[j]->x,dmmg[j]->w,dmmg[j]);CHKERRQ(ierr);
 
       /* residual^{old}_fine} - residual^{new}_{fine} = F(x^{old}_{fine}) - residual^{new}_{fine} */
@@ -256,10 +257,10 @@ PetscErrorCode DMMGSolveFAS_Mesh(DMMG *dmmg, PetscInt level)
       }
 
       /* residual^{new}_{coarse} = R*(residual^{old}_fine} - residual^{new}_{fine}) */
-      ierr = MatRestrict(dmmg[j]->R, dmmg[j]->w, dmmg[j-1]->r);CHKERRQ(ierr); 
-      
+      ierr = MatRestrict(dmmg[j]->R, dmmg[j]->w, dmmg[j-1]->r);CHKERRQ(ierr);
+
       /* F_{coarse}(R*x^{new}_{fine}) */
-      ierr = MatRestrict(dmmg[j]->R, dmmg[j]->x, dmmg[j-1]->x);CHKERRQ(ierr); 
+      ierr = MatRestrict(dmmg[j]->R, dmmg[j]->x, dmmg[j-1]->x);CHKERRQ(ierr);
 /*       ierr = VecScatterBegin(dmmg[j]->inject,dmmg[j]->x,dmmg[j-1]->x,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr); */
 /*       ierr = VecScatterEnd(dmmg[j]->inject,dmmg[j]->x,dmmg[j-1]->x,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr); */
       ierr = DMMGFormFunctionMesh(0,dmmg[j-1]->x,dmmg[j-1]->w,dmmg[j-1]);CHKERRQ(ierr);
@@ -279,27 +280,27 @@ PetscErrorCode DMMGSolveFAS_Mesh(DMMG *dmmg, PetscInt level)
       ierr = DMMGFormFunctionMesh(0,dmmg[0]->x,dmmg[0]->w,dmmg[0]);CHKERRQ(ierr);
       ierr = VecAYPX(dmmg[j]->w,-1.0,dmmg[j]->r);CHKERRQ(ierr);
       ierr = VecNorm(dmmg[0]->w,NORM_2,&norm);CHKERRQ(ierr);
-      if (norm < dmmg[level]->abstol) goto theend; 
+      if (norm < dmmg[level]->abstol) goto theend;
       if (i == 0) {
         dmmg[level]->rrtol = norm*dmmg[level]->rtol;
       }
     }
-    ierr = Relax_Mesh(dmmg, (Mesh) dmmg[0]->dm, SOR_SYMMETRIC_SWEEP, dmmg[0]->coarsesmooth, dmmg[0]->x, dmmg[0]->r);CHKERRQ(ierr);
+    ierr = Relax_Mesh(dmmg, dmmg[0]->dm, SOR_SYMMETRIC_SWEEP, dmmg[0]->coarsesmooth, dmmg[0]->x, dmmg[0]->r);CHKERRQ(ierr);
     if (level == 0 || dmmg[0]->monitorall) {
       ierr = DMMGFormFunctionMesh(0,dmmg[0]->x,dmmg[0]->w,dmmg[0]);CHKERRQ(ierr);
       if (fasDebug) {
         SectionReal residual;
 
-        ierr = MeshGetSectionReal((Mesh) dmmg[0]->dm, "default", &residual);CHKERRQ(ierr);
+        ierr = DMMeshGetSectionReal(dmmg[0]->dm, "default", &residual);CHKERRQ(ierr);
         ierr = SectionRealView(residual, PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-        ierr = SectionRealDestroy(residual);CHKERRQ(ierr);
+        ierr = SectionRealDestroy(&residual);CHKERRQ(ierr);
       }
       ierr = VecAXPY(dmmg[0]->w,-1.0,dmmg[0]->r);CHKERRQ(ierr);
       ierr = VecNorm(dmmg[0]->w,NORM_2,&norm);CHKERRQ(ierr);
       for (k=0; k<level+1; k++) {ierr = PetscPrintf(dmmg[0]->comm,"  ");CHKERRQ(ierr);}
       ierr = PetscPrintf(dmmg[0]->comm,"FAS coarse grid function norm %G\n",norm);CHKERRQ(ierr);
       if (level == 0) {
-        if (norm < dmmg[level]->abstol) goto theend; 
+        if (norm < dmmg[level]->abstol) goto theend;
         if (norm < dmmg[level]->rrtol)  goto theend;
       }
     }
@@ -322,7 +323,7 @@ PetscErrorCode DMMGSolveFAS_Mesh(DMMG *dmmg, PetscInt level)
 
       /* Relax residual_fine - F(x_fine)  = 0 */
       for (k=0; k<dmmg[j]->postsmooth; k++) {
-        ierr = Relax_Mesh(dmmg, (Mesh) dmmg[j]->dm, SOR_SYMMETRIC_SWEEP, 1, dmmg[j]->x, dmmg[j]->r);CHKERRQ(ierr);
+        ierr = Relax_Mesh(dmmg, dmmg[j]->dm, SOR_SYMMETRIC_SWEEP, 1, dmmg[j]->x, dmmg[j]->r);CHKERRQ(ierr);
       }
 
       if ((j == level) || dmmg[j]->monitorall) {
@@ -333,7 +334,7 @@ PetscErrorCode DMMGSolveFAS_Mesh(DMMG *dmmg, PetscInt level)
         for (k=0; k<level-j+1; k++) {ierr = PetscPrintf(dmmg[j]->comm,"  ");CHKERRQ(ierr);}
         ierr = PetscPrintf(dmmg[j]->comm,"FAS lvl %d function norm %G\n",j,norm);CHKERRQ(ierr);
         if (j == level) {
-          if (norm < dmmg[level]->abstol) goto theend; 
+          if (norm < dmmg[level]->abstol) goto theend;
           if (norm < dmmg[level]->rrtol) goto theend;
         }
       }
@@ -348,3 +349,4 @@ PetscErrorCode DMMGSolveFAS_Mesh(DMMG *dmmg, PetscInt level)
   theend:
   PetscFunctionReturn(0);
 }
+#endif

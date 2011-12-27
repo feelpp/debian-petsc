@@ -10,9 +10,9 @@ Sets the general-purpose function called once at the beginning of each time step
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSSetPreStep(TS ts, PetscErrorCode (*func)(TS))
+PetscErrorCode  TSSetPreStep(TS ts, PetscErrorCode (*func)(TS))
 </PRE>
-Collective on <A HREF="../TS/TS.html#TS">TS</A>
+Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

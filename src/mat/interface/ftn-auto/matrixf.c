@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* matrix.c */
 /* Fortran interface file */
 
@@ -93,11 +94,6 @@ extern void PetscRmPointer(void*);
 #define matdestroy_ matdestroy
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matvalid_ MATVALID
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matvalid_ matvalid
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matsetvalues_ MATSETVALUES
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matsetvalues_ matsetvalues
@@ -133,6 +129,11 @@ extern void PetscRmPointer(void*);
 #define matgetvalues_ matgetvalues
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matsetvaluesbatch_ MATSETVALUESBATCH
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matsetvaluesbatch_ matsetvaluesbatch
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matsetlocaltoglobalmapping_ MATSETLOCALTOGLOBALMAPPING
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matsetlocaltoglobalmapping_ matsetlocaltoglobalmapping
@@ -141,6 +142,16 @@ extern void PetscRmPointer(void*);
 #define matsetlocaltoglobalmappingblock_ MATSETLOCALTOGLOBALMAPPINGBLOCK
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matsetlocaltoglobalmappingblock_ matsetlocaltoglobalmappingblock
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matgetlocaltoglobalmapping_ MATGETLOCALTOGLOBALMAPPING
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matgetlocaltoglobalmapping_ matgetlocaltoglobalmapping
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matgetlocaltoglobalmappingblock_ MATGETLOCALTOGLOBALMAPPINGBLOCK
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matgetlocaltoglobalmappingblock_ matgetlocaltoglobalmappingblock
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matsetvalueslocal_ MATSETVALUESLOCAL
@@ -301,11 +312,6 @@ extern void PetscRmPointer(void*);
 #define matpermute_ MATPERMUTE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matpermute_ matpermute
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matpermutesparsify_ MATPERMUTESPARSIFY
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matpermutesparsify_ matpermutesparsify
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matequal_ MATEQUAL
@@ -512,481 +518,524 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matmatmulttranspose_ matmatmulttranspose
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matgetlocalsubmatrix_ MATGETLOCALSUBMATRIX
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matgetlocalsubmatrix_ matgetlocalsubmatrix
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matrestorelocalsubmatrix_ MATRESTORELOCALSUBMATRIX
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matrestorelocalsubmatrix_ matrestorelocalsubmatrix
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matfindzerodiagonals_ MATFINDZERODIAGONALS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matfindzerodiagonals_ matfindzerodiagonals
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matinvertblockdiagonal_ MATINVERTBLOCKDIAGONAL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matinvertblockdiagonal_ matinvertblockdiagonal
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matgetdiagonalblock_(Mat A,PetscTruth *iscopy,MatReuse *reuse,Mat *a, int *__ierr ){
+void PETSC_STDCALL  matgetdiagonalblock_(Mat A,Mat *a, int *__ierr ){
 *__ierr = MatGetDiagonalBlock(
-	(Mat)PetscToPointer((A) ),iscopy,*reuse,a);
+	(Mat)PetscToPointer((A) ),a);
 }
-void PETSC_STDCALL  matgettrace_(Mat mat,PetscScalar * trace, int *__ierr ){
+void PETSC_STDCALL  matgettrace_(Mat mat,PetscScalar *trace, int *__ierr ){
 *__ierr = MatGetTrace(
 	(Mat)PetscToPointer((mat) ),trace);
 }
-void PETSC_STDCALL   matrealpart_(Mat mat, int *__ierr ){
+void PETSC_STDCALL  matrealpart_(Mat mat, int *__ierr ){
 *__ierr = MatRealPart(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   matimaginarypart_(Mat mat, int *__ierr ){
+void PETSC_STDCALL  matimaginarypart_(Mat mat, int *__ierr ){
 *__ierr = MatImaginaryPart(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   matmissingdiagonal_(Mat mat,PetscTruth *missing,PetscInt *dd, int *__ierr ){
+void PETSC_STDCALL  matmissingdiagonal_(Mat mat,PetscBool  *missing,PetscInt *dd, int *__ierr ){
 *__ierr = MatMissingDiagonal(
 	(Mat)PetscToPointer((mat) ),missing,dd);
 }
-void PETSC_STDCALL   matconjugate_(Mat mat, int *__ierr ){
+void PETSC_STDCALL  matconjugate_(Mat mat, int *__ierr ){
 *__ierr = MatConjugate(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   matgetrowuppertriangular_(Mat mat, int *__ierr ){
+void PETSC_STDCALL  matgetrowuppertriangular_(Mat mat, int *__ierr ){
 *__ierr = MatGetRowUpperTriangular(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   matrestorerowuppertriangular_(Mat mat, int *__ierr ){
+void PETSC_STDCALL  matrestorerowuppertriangular_(Mat mat, int *__ierr ){
 *__ierr = MatRestoreRowUpperTriangular(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   matsetup_(Mat A, int *__ierr ){
+void PETSC_STDCALL  matsetup_(Mat A, int *__ierr ){
 *__ierr = MatSetUp(
 	(Mat)PetscToPointer((A) ));
 }
-void PETSC_STDCALL   matscalesystem_(Mat mat,Vec b,Vec x, int *__ierr ){
+void PETSC_STDCALL  matscalesystem_(Mat mat,Vec b,Vec x, int *__ierr ){
 *__ierr = MatScaleSystem(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matunscalesystem_(Mat mat,Vec b,Vec x, int *__ierr ){
+void PETSC_STDCALL  matunscalesystem_(Mat mat,Vec b,Vec x, int *__ierr ){
 *__ierr = MatUnScaleSystem(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matusescaledform_(Mat mat,PetscTruth *scaled, int *__ierr ){
+void PETSC_STDCALL  matusescaledform_(Mat mat,PetscBool  *scaled, int *__ierr ){
 *__ierr = MatUseScaledForm(
 	(Mat)PetscToPointer((mat) ),*scaled);
 }
-void PETSC_STDCALL   matdestroy_(Mat A, int *__ierr ){
-*__ierr = MatDestroy(
-	(Mat)PetscToPointer((A) ));
+void PETSC_STDCALL  matdestroy_(Mat *A, int *__ierr ){
+*__ierr = MatDestroy(A);
 }
-void PETSC_STDCALL   matvalid_(Mat m,PetscTruth *flg, int *__ierr ){
-*__ierr = MatValid(
-	(Mat)PetscToPointer((m) ),flg);
-}
-void PETSC_STDCALL   matsetvalues_(Mat mat,PetscInt *m, PetscInt idxm[],PetscInt *n, PetscInt idxn[], PetscScalar v[],InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  matsetvalues_(Mat mat,PetscInt *m, PetscInt idxm[],PetscInt *n, PetscInt idxn[], PetscScalar v[],InsertMode *addv, int *__ierr ){
 *__ierr = MatSetValues(
 	(Mat)PetscToPointer((mat) ),*m,idxm,*n,idxn,v,*addv);
 }
-void PETSC_STDCALL   matsetvaluesrowlocal_(Mat mat,PetscInt *row, PetscScalar v[], int *__ierr ){
+void PETSC_STDCALL  matsetvaluesrowlocal_(Mat mat,PetscInt *row, PetscScalar v[], int *__ierr ){
 *__ierr = MatSetValuesRowLocal(
 	(Mat)PetscToPointer((mat) ),*row,v);
 }
-void PETSC_STDCALL   matsetvaluesrow_(Mat mat,PetscInt *row, PetscScalar v[], int *__ierr ){
+void PETSC_STDCALL  matsetvaluesrow_(Mat mat,PetscInt *row, PetscScalar v[], int *__ierr ){
 *__ierr = MatSetValuesRow(
 	(Mat)PetscToPointer((mat) ),*row,v);
 }
-void PETSC_STDCALL   matsetvaluesstencil_(Mat mat,PetscInt *m, MatStencil idxm[],PetscInt *n, MatStencil idxn[], PetscScalar v[],InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  matsetvaluesstencil_(Mat mat,PetscInt *m, MatStencil idxm[],PetscInt *n, MatStencil idxn[], PetscScalar v[],InsertMode *addv, int *__ierr ){
 *__ierr = MatSetValuesStencil(
 	(Mat)PetscToPointer((mat) ),*m,idxm,*n,idxn,v,*addv);
 }
-void PETSC_STDCALL   matsetstencil_(Mat mat,PetscInt *dim, PetscInt dims[], PetscInt starts[],PetscInt *dof, int *__ierr ){
+void PETSC_STDCALL  matsetstencil_(Mat mat,PetscInt *dim, PetscInt dims[], PetscInt starts[],PetscInt *dof, int *__ierr ){
 *__ierr = MatSetStencil(
 	(Mat)PetscToPointer((mat) ),*dim,dims,starts,*dof);
 }
-void PETSC_STDCALL   matsetvaluesblocked_(Mat mat,PetscInt *m, PetscInt idxm[],PetscInt *n, PetscInt idxn[], PetscScalar v[],InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  matsetvaluesblocked_(Mat mat,PetscInt *m, PetscInt idxm[],PetscInt *n, PetscInt idxn[], PetscScalar v[],InsertMode *addv, int *__ierr ){
 *__ierr = MatSetValuesBlocked(
 	(Mat)PetscToPointer((mat) ),*m,idxm,*n,idxn,v,*addv);
 }
-void PETSC_STDCALL   matgetvalues_(Mat mat,PetscInt *m, PetscInt idxm[],PetscInt *n, PetscInt idxn[],PetscScalar v[], int *__ierr ){
+void PETSC_STDCALL  matgetvalues_(Mat mat,PetscInt *m, PetscInt idxm[],PetscInt *n, PetscInt idxn[],PetscScalar v[], int *__ierr ){
 *__ierr = MatGetValues(
 	(Mat)PetscToPointer((mat) ),*m,idxm,*n,idxn,v);
 }
-void PETSC_STDCALL   matsetlocaltoglobalmapping_(Mat x,ISLocalToGlobalMapping mapping, int *__ierr ){
+void PETSC_STDCALL  matsetvaluesbatch_(Mat mat,PetscInt *nb,PetscInt *bs,PetscInt rows[], PetscScalar v[], int *__ierr ){
+*__ierr = MatSetValuesBatch(
+	(Mat)PetscToPointer((mat) ),*nb,*bs,rows,v);
+}
+void PETSC_STDCALL  matsetlocaltoglobalmapping_(Mat x,ISLocalToGlobalMapping rmapping,ISLocalToGlobalMapping cmapping, int *__ierr ){
 *__ierr = MatSetLocalToGlobalMapping(
 	(Mat)PetscToPointer((x) ),
-	(ISLocalToGlobalMapping)PetscToPointer((mapping) ));
+	(ISLocalToGlobalMapping)PetscToPointer((rmapping) ),
+	(ISLocalToGlobalMapping)PetscToPointer((cmapping) ));
 }
-void PETSC_STDCALL   matsetlocaltoglobalmappingblock_(Mat x,ISLocalToGlobalMapping mapping, int *__ierr ){
+void PETSC_STDCALL  matsetlocaltoglobalmappingblock_(Mat x,ISLocalToGlobalMapping rmapping,ISLocalToGlobalMapping cmapping, int *__ierr ){
 *__ierr = MatSetLocalToGlobalMappingBlock(
 	(Mat)PetscToPointer((x) ),
-	(ISLocalToGlobalMapping)PetscToPointer((mapping) ));
+	(ISLocalToGlobalMapping)PetscToPointer((rmapping) ),
+	(ISLocalToGlobalMapping)PetscToPointer((cmapping) ));
 }
-void PETSC_STDCALL   matsetvalueslocal_(Mat mat,PetscInt *nrow, PetscInt irow[],PetscInt *ncol, PetscInt icol[], PetscScalar y[],InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  matgetlocaltoglobalmapping_(Mat A,ISLocalToGlobalMapping *rmapping,ISLocalToGlobalMapping *cmapping, int *__ierr ){
+*__ierr = MatGetLocalToGlobalMapping(
+	(Mat)PetscToPointer((A) ),rmapping,cmapping);
+}
+void PETSC_STDCALL  matgetlocaltoglobalmappingblock_(Mat A,ISLocalToGlobalMapping *rmapping,ISLocalToGlobalMapping *cmapping, int *__ierr ){
+*__ierr = MatGetLocalToGlobalMappingBlock(
+	(Mat)PetscToPointer((A) ),rmapping,cmapping);
+}
+void PETSC_STDCALL  matsetvalueslocal_(Mat mat,PetscInt *nrow, PetscInt irow[],PetscInt *ncol, PetscInt icol[], PetscScalar y[],InsertMode *addv, int *__ierr ){
 *__ierr = MatSetValuesLocal(
 	(Mat)PetscToPointer((mat) ),*nrow,irow,*ncol,icol,y,*addv);
 }
-void PETSC_STDCALL   matsetvaluesblockedlocal_(Mat mat,PetscInt *nrow, PetscInt irow[],PetscInt *ncol, PetscInt icol[], PetscScalar y[],InsertMode *addv, int *__ierr ){
+void PETSC_STDCALL  matsetvaluesblockedlocal_(Mat mat,PetscInt *nrow, PetscInt irow[],PetscInt *ncol, PetscInt icol[], PetscScalar y[],InsertMode *addv, int *__ierr ){
 *__ierr = MatSetValuesBlockedLocal(
 	(Mat)PetscToPointer((mat) ),*nrow,irow,*ncol,icol,y,*addv);
 }
-void PETSC_STDCALL   matmultdiagonalblock_(Mat mat,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  matmultdiagonalblock_(Mat mat,Vec x,Vec y, int *__ierr ){
 *__ierr = MatMultDiagonalBlock(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   matmult_(Mat mat,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  matmult_(Mat mat,Vec x,Vec y, int *__ierr ){
 *__ierr = MatMult(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   matmulttranspose_(Mat mat,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  matmulttranspose_(Mat mat,Vec x,Vec y, int *__ierr ){
 *__ierr = MatMultTranspose(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   matmulthermitiantranspose_(Mat mat,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  matmulthermitiantranspose_(Mat mat,Vec x,Vec y, int *__ierr ){
 *__ierr = MatMultHermitianTranspose(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   matmultadd_(Mat mat,Vec v1,Vec v2,Vec v3, int *__ierr ){
+void PETSC_STDCALL  matmultadd_(Mat mat,Vec v1,Vec v2,Vec v3, int *__ierr ){
 *__ierr = MatMultAdd(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v1) ),
 	(Vec)PetscToPointer((v2) ),
 	(Vec)PetscToPointer((v3) ));
 }
-void PETSC_STDCALL   matmulttransposeadd_(Mat mat,Vec v1,Vec v2,Vec v3, int *__ierr ){
+void PETSC_STDCALL  matmulttransposeadd_(Mat mat,Vec v1,Vec v2,Vec v3, int *__ierr ){
 *__ierr = MatMultTransposeAdd(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v1) ),
 	(Vec)PetscToPointer((v2) ),
 	(Vec)PetscToPointer((v3) ));
 }
-void PETSC_STDCALL   matmulthermitiantransposeadd_(Mat mat,Vec v1,Vec v2,Vec v3, int *__ierr ){
+void PETSC_STDCALL  matmulthermitiantransposeadd_(Mat mat,Vec v1,Vec v2,Vec v3, int *__ierr ){
 *__ierr = MatMultHermitianTransposeAdd(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v1) ),
 	(Vec)PetscToPointer((v2) ),
 	(Vec)PetscToPointer((v3) ));
 }
-void PETSC_STDCALL   matmultconstrained_(Mat mat,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  matmultconstrained_(Mat mat,Vec x,Vec y, int *__ierr ){
 *__ierr = MatMultConstrained(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   matmulttransposeconstrained_(Mat mat,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  matmulttransposeconstrained_(Mat mat,Vec x,Vec y, int *__ierr ){
 *__ierr = MatMultTransposeConstrained(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   matsolve_(Mat mat,Vec b,Vec x, int *__ierr ){
+void PETSC_STDCALL  matsolve_(Mat mat,Vec b,Vec x, int *__ierr ){
 *__ierr = MatSolve(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matmatsolve_(Mat A,Mat B,Mat X, int *__ierr ){
+void PETSC_STDCALL  matmatsolve_(Mat A,Mat B,Mat X, int *__ierr ){
 *__ierr = MatMatSolve(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),
 	(Mat)PetscToPointer((X) ));
 }
-void PETSC_STDCALL   matforwardsolve_(Mat mat,Vec b,Vec x, int *__ierr ){
+void PETSC_STDCALL  matforwardsolve_(Mat mat,Vec b,Vec x, int *__ierr ){
 *__ierr = MatForwardSolve(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matbackwardsolve_(Mat mat,Vec b,Vec x, int *__ierr ){
+void PETSC_STDCALL  matbackwardsolve_(Mat mat,Vec b,Vec x, int *__ierr ){
 *__ierr = MatBackwardSolve(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matsolveadd_(Mat mat,Vec b,Vec y,Vec x, int *__ierr ){
+void PETSC_STDCALL  matsolveadd_(Mat mat,Vec b,Vec y,Vec x, int *__ierr ){
 *__ierr = MatSolveAdd(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((y) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matsolvetranspose_(Mat mat,Vec b,Vec x, int *__ierr ){
+void PETSC_STDCALL  matsolvetranspose_(Mat mat,Vec b,Vec x, int *__ierr ){
 *__ierr = MatSolveTranspose(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matsolvetransposeadd_(Mat mat,Vec b,Vec y,Vec x, int *__ierr ){
+void PETSC_STDCALL  matsolvetransposeadd_(Mat mat,Vec b,Vec y,Vec x, int *__ierr ){
 *__ierr = MatSolveTransposeAdd(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),
 	(Vec)PetscToPointer((y) ),
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matsor_(Mat mat,Vec b,PetscReal *omega,MatSORType *flag,PetscReal *shift,PetscInt *its,PetscInt *lits,Vec x, int *__ierr ){
+void PETSC_STDCALL  matsor_(Mat mat,Vec b,PetscReal *omega,MatSORType *flag,PetscReal *shift,PetscInt *its,PetscInt *lits,Vec x, int *__ierr ){
 *__ierr = MatSOR(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((b) ),*omega,*flag,*shift,*its,*lits,
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   matcopy_(Mat A,Mat B,MatStructure *str, int *__ierr ){
+void PETSC_STDCALL  matcopy_(Mat A,Mat B,MatStructure *str, int *__ierr ){
 *__ierr = MatCopy(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*str);
 }
-void PETSC_STDCALL   matduplicate_(Mat mat,MatDuplicateOption *op,Mat *M, int *__ierr ){
+void PETSC_STDCALL  matduplicate_(Mat mat,MatDuplicateOption *op,Mat *M, int *__ierr ){
 *__ierr = MatDuplicate(
 	(Mat)PetscToPointer((mat) ),*op,M);
 }
-void PETSC_STDCALL   matgetdiagonal_(Mat mat,Vec v, int *__ierr ){
+void PETSC_STDCALL  matgetdiagonal_(Mat mat,Vec v, int *__ierr ){
 *__ierr = MatGetDiagonal(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL   matgetrowmin_(Mat mat,Vec v,PetscInt idx[], int *__ierr ){
+void PETSC_STDCALL  matgetrowmin_(Mat mat,Vec v,PetscInt idx[], int *__ierr ){
 *__ierr = MatGetRowMin(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v) ),idx);
 }
-void PETSC_STDCALL   matgetrowminabs_(Mat mat,Vec v,PetscInt idx[], int *__ierr ){
+void PETSC_STDCALL  matgetrowminabs_(Mat mat,Vec v,PetscInt idx[], int *__ierr ){
 *__ierr = MatGetRowMinAbs(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v) ),idx);
 }
-void PETSC_STDCALL   matgetrowmax_(Mat mat,Vec v,PetscInt idx[], int *__ierr ){
+void PETSC_STDCALL  matgetrowmax_(Mat mat,Vec v,PetscInt idx[], int *__ierr ){
 *__ierr = MatGetRowMax(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v) ),idx);
 }
-void PETSC_STDCALL   matgetrowmaxabs_(Mat mat,Vec v,PetscInt idx[], int *__ierr ){
+void PETSC_STDCALL  matgetrowmaxabs_(Mat mat,Vec v,PetscInt idx[], int *__ierr ){
 *__ierr = MatGetRowMaxAbs(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v) ),idx);
 }
-void PETSC_STDCALL   matgetrowsum_(Mat mat,Vec v, int *__ierr ){
+void PETSC_STDCALL  matgetrowsum_(Mat mat,Vec v, int *__ierr ){
 *__ierr = MatGetRowSum(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL   mattranspose_(Mat mat,MatReuse *reuse,Mat *B, int *__ierr ){
+void PETSC_STDCALL  mattranspose_(Mat mat,MatReuse *reuse,Mat *B, int *__ierr ){
 *__ierr = MatTranspose(
 	(Mat)PetscToPointer((mat) ),*reuse,B);
 }
-void PETSC_STDCALL   matistranspose_(Mat A,Mat B,PetscReal *tol,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matistranspose_(Mat A,Mat B,PetscReal *tol,PetscBool  *flg, int *__ierr ){
 *__ierr = MatIsTranspose(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*tol,flg);
 }
-void PETSC_STDCALL   mathermitiantranspose_(Mat mat,MatReuse *reuse,Mat *B, int *__ierr ){
+void PETSC_STDCALL  mathermitiantranspose_(Mat mat,MatReuse *reuse,Mat *B, int *__ierr ){
 *__ierr = MatHermitianTranspose(
 	(Mat)PetscToPointer((mat) ),*reuse,B);
 }
-void PETSC_STDCALL   matishermitiantranspose_(Mat A,Mat B,PetscReal *tol,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matishermitiantranspose_(Mat A,Mat B,PetscReal *tol,PetscBool  *flg, int *__ierr ){
 *__ierr = MatIsHermitianTranspose(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*tol,flg);
 }
-void PETSC_STDCALL   matpermute_(Mat mat,IS row,IS col,Mat *B, int *__ierr ){
+void PETSC_STDCALL  matpermute_(Mat mat,IS row,IS col,Mat *B, int *__ierr ){
 *__ierr = MatPermute(
 	(Mat)PetscToPointer((mat) ),
 	(IS)PetscToPointer((row) ),
 	(IS)PetscToPointer((col) ),B);
 }
-void PETSC_STDCALL   matpermutesparsify_(Mat A,PetscInt *band,PetscReal *frac,PetscReal *tol,IS rowp,IS colp,Mat *B, int *__ierr ){
-*__ierr = MatPermuteSparsify(
-	(Mat)PetscToPointer((A) ),*band,*frac,*tol,
-	(IS)PetscToPointer((rowp) ),
-	(IS)PetscToPointer((colp) ),B);
-}
-void PETSC_STDCALL   matequal_(Mat A,Mat B,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matequal_(Mat A,Mat B,PetscBool  *flg, int *__ierr ){
 *__ierr = MatEqual(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),flg);
 }
-void PETSC_STDCALL   matdiagonalscale_(Mat mat,Vec l,Vec r, int *__ierr ){
+void PETSC_STDCALL  matdiagonalscale_(Mat mat,Vec l,Vec r, int *__ierr ){
 *__ierr = MatDiagonalScale(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((l) ),
 	(Vec)PetscToPointer((r) ));
 }
-void PETSC_STDCALL   matscale_(Mat mat,PetscScalar *a, int *__ierr ){
+void PETSC_STDCALL  matscale_(Mat mat,PetscScalar *a, int *__ierr ){
 *__ierr = MatScale(
 	(Mat)PetscToPointer((mat) ),*a);
 }
-void PETSC_STDCALL   matnorm_(Mat mat,NormType *type,PetscReal *nrm, int *__ierr ){
+void PETSC_STDCALL  matnorm_(Mat mat,NormType *type,PetscReal *nrm, int *__ierr ){
 *__ierr = MatNorm(
 	(Mat)PetscToPointer((mat) ),*type,nrm);
 }
-void PETSC_STDCALL   matassemblybegin_(Mat mat,MatAssemblyType *type, int *__ierr ){
+void PETSC_STDCALL  matassemblybegin_(Mat mat,MatAssemblyType *type, int *__ierr ){
 *__ierr = MatAssemblyBegin(
 	(Mat)PetscToPointer((mat) ),*type);
 }
-void PETSC_STDCALL   matassembled_(Mat mat,PetscTruth *assembled, int *__ierr ){
+void PETSC_STDCALL  matassembled_(Mat mat,PetscBool  *assembled, int *__ierr ){
 *__ierr = MatAssembled(
 	(Mat)PetscToPointer((mat) ),assembled);
 }
-void PETSC_STDCALL   matassemblyend_(Mat mat,MatAssemblyType *type, int *__ierr ){
+void PETSC_STDCALL  matassemblyend_(Mat mat,MatAssemblyType *type, int *__ierr ){
 *__ierr = MatAssemblyEnd(
 	(Mat)PetscToPointer((mat) ),*type);
 }
-void PETSC_STDCALL   matsetoption_(Mat mat,MatOption *op,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matsetoption_(Mat mat,MatOption *op,PetscBool  *flg, int *__ierr ){
 *__ierr = MatSetOption(
 	(Mat)PetscToPointer((mat) ),*op,*flg);
 }
-void PETSC_STDCALL   matzeroentries_(Mat mat, int *__ierr ){
+void PETSC_STDCALL  matzeroentries_(Mat mat, int *__ierr ){
 *__ierr = MatZeroEntries(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   matgetsize_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
+void PETSC_STDCALL  matgetsize_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
 *__ierr = MatGetSize(
 	(Mat)PetscToPointer((mat) ),m,n);
 }
-void PETSC_STDCALL   matgetlocalsize_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
+void PETSC_STDCALL  matgetlocalsize_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
 *__ierr = MatGetLocalSize(
 	(Mat)PetscToPointer((mat) ),m,n);
 }
-void PETSC_STDCALL   matgetownershiprangecolumn_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
+void PETSC_STDCALL  matgetownershiprangecolumn_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
 *__ierr = MatGetOwnershipRangeColumn(
 	(Mat)PetscToPointer((mat) ),m,n);
 }
-void PETSC_STDCALL   matgetownershiprange_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
+void PETSC_STDCALL  matgetownershiprange_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
 *__ierr = MatGetOwnershipRange(
 	(Mat)PetscToPointer((mat) ),m,n);
 }
-void PETSC_STDCALL   matincreaseoverlap_(Mat mat,PetscInt *n,IS is[],PetscInt *ov, int *__ierr ){
+void PETSC_STDCALL  matincreaseoverlap_(Mat mat,PetscInt *n,IS is[],PetscInt *ov, int *__ierr ){
 *__ierr = MatIncreaseOverlap(
 	(Mat)PetscToPointer((mat) ),*n,is,*ov);
 }
-void PETSC_STDCALL   matgetblocksize_(Mat mat,PetscInt *bs, int *__ierr ){
+void PETSC_STDCALL  matgetblocksize_(Mat mat,PetscInt *bs, int *__ierr ){
 *__ierr = MatGetBlockSize(
 	(Mat)PetscToPointer((mat) ),bs);
 }
-void PETSC_STDCALL   matsetblocksize_(Mat mat,PetscInt *bs, int *__ierr ){
+void PETSC_STDCALL  matsetblocksize_(Mat mat,PetscInt *bs, int *__ierr ){
 *__ierr = MatSetBlockSize(
 	(Mat)PetscToPointer((mat) ),*bs);
 }
-void PETSC_STDCALL   matsetunfactored_(Mat mat, int *__ierr ){
+void PETSC_STDCALL  matsetunfactored_(Mat mat, int *__ierr ){
 *__ierr = MatSetUnfactored(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL   matgetsubmatrix_(Mat mat,IS isrow,IS iscol,MatReuse *cll,Mat *newmat, int *__ierr ){
+void PETSC_STDCALL  matgetsubmatrix_(Mat mat,IS isrow,IS iscol,MatReuse *cll,Mat *newmat, int *__ierr ){
 *__ierr = MatGetSubMatrix(
 	(Mat)PetscToPointer((mat) ),
 	(IS)PetscToPointer((isrow) ),
 	(IS)PetscToPointer((iscol) ),*cll,newmat);
 }
-void PETSC_STDCALL   matstashsetinitialsize_(Mat mat,PetscInt *size,PetscInt *bsize, int *__ierr ){
+void PETSC_STDCALL  matstashsetinitialsize_(Mat mat,PetscInt *size,PetscInt *bsize, int *__ierr ){
 *__ierr = MatStashSetInitialSize(
 	(Mat)PetscToPointer((mat) ),*size,*bsize);
 }
-void PETSC_STDCALL   matinterpolateadd_(Mat A,Vec x,Vec y,Vec w, int *__ierr ){
+void PETSC_STDCALL  matinterpolateadd_(Mat A,Vec x,Vec y,Vec w, int *__ierr ){
 *__ierr = MatInterpolateAdd(
 	(Mat)PetscToPointer((A) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),
 	(Vec)PetscToPointer((w) ));
 }
-void PETSC_STDCALL   matinterpolate_(Mat A,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  matinterpolate_(Mat A,Vec x,Vec y, int *__ierr ){
 *__ierr = MatInterpolate(
 	(Mat)PetscToPointer((A) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   matrestrict_(Mat A,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  matrestrict_(Mat A,Vec x,Vec y, int *__ierr ){
 *__ierr = MatRestrict(
 	(Mat)PetscToPointer((A) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   matnullspaceattach_(Mat mat,MatNullSpace nullsp, int *__ierr ){
+void PETSC_STDCALL  matnullspaceattach_(Mat mat,MatNullSpace nullsp, int *__ierr ){
 *__ierr = MatNullSpaceAttach(
 	(Mat)PetscToPointer((mat) ),
 	(MatNullSpace)PetscToPointer((nullsp) ));
 }
-void PETSC_STDCALL   matsetvaluesadic_(Mat mat,void*v, int *__ierr ){
+void PETSC_STDCALL  matsetvaluesadic_(Mat mat,void*v, int *__ierr ){
 *__ierr = MatSetValuesAdic(
 	(Mat)PetscToPointer((mat) ),v);
 }
-void PETSC_STDCALL   matsetcoloring_(Mat mat,ISColoring coloring, int *__ierr ){
+void PETSC_STDCALL  matsetcoloring_(Mat mat,ISColoring coloring, int *__ierr ){
 *__ierr = MatSetColoring(
 	(Mat)PetscToPointer((mat) ),
 	(ISColoring)PetscToPointer((coloring) ));
 }
-void PETSC_STDCALL   matsetvaluesadifor_(Mat mat,PetscInt *nl,void*v, int *__ierr ){
+void PETSC_STDCALL  matsetvaluesadifor_(Mat mat,PetscInt *nl,void*v, int *__ierr ){
 *__ierr = MatSetValuesAdifor(
 	(Mat)PetscToPointer((mat) ),*nl,v);
 }
-void PETSC_STDCALL   matdiagonalscalelocal_(Mat mat,Vec diag, int *__ierr ){
+void PETSC_STDCALL  matdiagonalscalelocal_(Mat mat,Vec diag, int *__ierr ){
 *__ierr = MatDiagonalScaleLocal(
 	(Mat)PetscToPointer((mat) ),
 	(Vec)PetscToPointer((diag) ));
 }
-void PETSC_STDCALL   matgetinertia_(Mat mat,PetscInt *nneg,PetscInt *nzero,PetscInt *npos, int *__ierr ){
+void PETSC_STDCALL  matgetinertia_(Mat mat,PetscInt *nneg,PetscInt *nzero,PetscInt *npos, int *__ierr ){
 *__ierr = MatGetInertia(
 	(Mat)PetscToPointer((mat) ),nneg,nzero,npos);
 }
-void PETSC_STDCALL   matissymmetric_(Mat A,PetscReal *tol,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matissymmetric_(Mat A,PetscReal *tol,PetscBool  *flg, int *__ierr ){
 *__ierr = MatIsSymmetric(
 	(Mat)PetscToPointer((A) ),*tol,flg);
 }
-void PETSC_STDCALL   matishermitian_(Mat A,PetscReal *tol,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matishermitian_(Mat A,PetscReal *tol,PetscBool  *flg, int *__ierr ){
 *__ierr = MatIsHermitian(
 	(Mat)PetscToPointer((A) ),*tol,flg);
 }
-void PETSC_STDCALL   matissymmetricknown_(Mat A,PetscTruth *set,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matissymmetricknown_(Mat A,PetscBool  *set,PetscBool  *flg, int *__ierr ){
 *__ierr = MatIsSymmetricKnown(
 	(Mat)PetscToPointer((A) ),set,flg);
 }
-void PETSC_STDCALL   matishermitianknown_(Mat A,PetscTruth *set,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matishermitianknown_(Mat A,PetscBool  *set,PetscBool  *flg, int *__ierr ){
 *__ierr = MatIsHermitianKnown(
 	(Mat)PetscToPointer((A) ),set,flg);
 }
-void PETSC_STDCALL   matisstructurallysymmetric_(Mat A,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matisstructurallysymmetric_(Mat A,PetscBool  *flg, int *__ierr ){
 *__ierr = MatIsStructurallySymmetric(
 	(Mat)PetscToPointer((A) ),flg);
 }
-void PETSC_STDCALL   matstashgetinfo_(Mat mat,PetscInt *nstash,PetscInt *reallocs,PetscInt *bnstash,PetscInt *breallocs, int *__ierr ){
+void PETSC_STDCALL  matstashgetinfo_(Mat mat,PetscInt *nstash,PetscInt *reallocs,PetscInt *bnstash,PetscInt *breallocs, int *__ierr ){
 *__ierr = MatStashGetInfo(
 	(Mat)PetscToPointer((mat) ),nstash,reallocs,bnstash,breallocs);
 }
-void PETSC_STDCALL   matptap_(Mat A,Mat P,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
+void PETSC_STDCALL  matptap_(Mat A,Mat P,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
 *__ierr = MatPtAP(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((P) ),*scall,*fill,C);
 }
-void PETSC_STDCALL   matptapnumeric_(Mat A,Mat P,Mat C, int *__ierr ){
+void PETSC_STDCALL  matptapnumeric_(Mat A,Mat P,Mat C, int *__ierr ){
 *__ierr = MatPtAPNumeric(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((P) ),
 	(Mat)PetscToPointer((C) ));
 }
-void PETSC_STDCALL   matptapsymbolic_(Mat A,Mat P,PetscReal *fill,Mat *C, int *__ierr ){
+void PETSC_STDCALL  matptapsymbolic_(Mat A,Mat P,PetscReal *fill,Mat *C, int *__ierr ){
 *__ierr = MatPtAPSymbolic(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((P) ),*fill,C);
 }
-void PETSC_STDCALL   matmatmult_(Mat A,Mat B,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
+void PETSC_STDCALL  matmatmult_(Mat A,Mat B,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
 *__ierr = MatMatMult(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*scall,*fill,C);
 }
-void PETSC_STDCALL   matmatmultsymbolic_(Mat A,Mat B,PetscReal *fill,Mat *C, int *__ierr ){
+void PETSC_STDCALL  matmatmultsymbolic_(Mat A,Mat B,PetscReal *fill,Mat *C, int *__ierr ){
 *__ierr = MatMatMultSymbolic(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*fill,C);
 }
-void PETSC_STDCALL   matmatmultnumeric_(Mat A,Mat B,Mat C, int *__ierr ){
+void PETSC_STDCALL  matmatmultnumeric_(Mat A,Mat B,Mat C, int *__ierr ){
 *__ierr = MatMatMultNumeric(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),
 	(Mat)PetscToPointer((C) ));
 }
-void PETSC_STDCALL   matmatmulttranspose_(Mat A,Mat B,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
+void PETSC_STDCALL  matmatmulttranspose_(Mat A,Mat B,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
 *__ierr = MatMatMultTranspose(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*scall,*fill,C);
+}
+void PETSC_STDCALL  matgetlocalsubmatrix_(Mat mat,IS isrow,IS iscol,Mat *submat, int *__ierr ){
+*__ierr = MatGetLocalSubMatrix(
+	(Mat)PetscToPointer((mat) ),
+	(IS)PetscToPointer((isrow) ),
+	(IS)PetscToPointer((iscol) ),submat);
+}
+void PETSC_STDCALL  matrestorelocalsubmatrix_(Mat mat,IS isrow,IS iscol,Mat *submat, int *__ierr ){
+*__ierr = MatRestoreLocalSubMatrix(
+	(Mat)PetscToPointer((mat) ),
+	(IS)PetscToPointer((isrow) ),
+	(IS)PetscToPointer((iscol) ),submat);
+}
+void PETSC_STDCALL  matfindzerodiagonals_(Mat mat,IS *is, int *__ierr ){
+*__ierr = MatFindZeroDiagonals(
+	(Mat)PetscToPointer((mat) ),is);
+}
+void PETSC_STDCALL  matinvertblockdiagonal_(Mat mat,PetscScalar **values, int *__ierr ){
+*__ierr = MatInvertBlockDiagonal(
+	(Mat)PetscToPointer((mat) ),values);
 }
 #if defined(__cplusplus)
 }

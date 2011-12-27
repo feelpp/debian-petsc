@@ -10,7 +10,7 @@ Creates a matrix-free matrix context for use with a <A HREF="../SNES/SNES.html#S
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode PETSCSNES_DLLEXPORT MatCreateSNESMF(SNES snes,Mat *J)
+PetscErrorCode  MatCreateSNESMF(SNES snes,Mat *J)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -34,13 +34,15 @@ automatically gets the current base vector from the <A HREF="../SNES/SNES.html#S
 explicit call to <A HREF="../Mat/MatMFFDSetBase.html#MatMFFDSetBase">MatMFFDSetBase</A>().
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(), <A HREF="../Mat/MatMFFDSetFunctionError.html#MatMFFDSetFunctionError">MatMFFDSetFunctionError</A>(), MatMFFDDefaultSetUmin()
+ <A HREF="../Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(), <A HREF="../Mat/MatMFFDSetFunctionError.html#MatMFFDSetFunctionError">MatMFFDSetFunctionError</A>(), <A HREF="../Mat/MatMFFDDSSetUmin.html#MatMFFDDSSetUmin">MatMFFDDSSetUmin</A>()
 <BR><A HREF="../Mat/MatMFFDSetHHistory.html#MatMFFDSetHHistory">MatMFFDSetHHistory</A>(), <A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>(), <A HREF="../Mat/MatCreateMFFD.html#MatCreateMFFD">MatCreateMFFD</A>(),
-<A HREF="../Mat/MatMFFDGetH.html#MatMFFDGetH">MatMFFDGetH</A>(),MatMFFDKSPMonitor(), <A HREF="../Mat/MatMFFDRegisterDynamic.html#MatMFFDRegisterDynamic">MatMFFDRegisterDynamic</A>), <A HREF="../SNES/MatMFFDComputeJacobian.html#MatMFFDComputeJacobian">MatMFFDComputeJacobian</A>()
+<A HREF="../Mat/MatMFFDGetH.html#MatMFFDGetH">MatMFFDGetH</A>(), <A HREF="../Mat/MatMFFDRegisterDynamic.html#MatMFFDRegisterDynamic">MatMFFDRegisterDynamic</A>), <A HREF="../SNES/MatMFFDComputeJacobian.html#MatMFFDComputeJacobian">MatMFFDComputeJacobian</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/mf/snesmfj.c.html#MatCreateSNESMF">src/snes/mf/snesmfj.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
 </BODY></HTML>

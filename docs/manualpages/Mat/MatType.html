@@ -11,85 +11,60 @@ String with the name of a PETSc matrix or the creation function with an optional
 <PRE>
 #define MatType char*
 #define MATSAME            "same"
+#define MATMAIJ            "maij"
 #define MATSEQMAIJ         "seqmaij"
 #define MATMPIMAIJ         "mpimaij"
-#define MATMAIJ            "maij"
 #define MATIS              "is"
-#define MATSEQAIJ          "seqaij"
-#define MATMPIAIJ          "mpiaij"
 #define MATAIJ             "aij"
+#define MATSEQAIJ          "seqaij"
+#define MATSEQAIJPTHREAD   "seqaijpthread"
+#define MATAIJPTHREAD      "aijpthread"
+#define MATMPIAIJ          "mpiaij"
+#define MATAIJCRL          "aijcrl"
+#define MATSEQAIJCRL       "seqaijcrl"
+#define MATMPIAIJCRL       "mpiaijcrl"
+#define MATAIJCUSP         "aijcusp"
+#define MATSEQAIJCUSP      "seqaijcusp"
+#define MATMPIAIJCUSP      "mpiaijcusp"
+#define MATAIJPERM         "aijperm"
+#define MATSEQAIJPERM      "seqaijperm"
+#define MATMPIAIJPERM      "mpiaijperm"
 #define MATSHELL           "shell"
+#define MATDENSE           "dense"
 #define MATSEQDENSE        "seqdense"
 #define MATMPIDENSE        "mpidense"
-#define MATDENSE           "dense"
+#define MATBAIJ            "baij"
 #define MATSEQBAIJ         "seqbaij"
 #define MATMPIBAIJ         "mpibaij"
-#define MATBAIJ            "baij"
 #define MATMPIADJ          "mpiadj"
+#define MATSBAIJ           "sbaij"
 #define MATSEQSBAIJ        "seqsbaij"
 #define MATMPISBAIJ        "mpisbaij"
-#define MATSBAIJ           "sbaij"
+#define MATSEQBSTRM        "seqbstrm"
+#define MATMPIBSTRM        "mpibstrm"
+#define MATBSTRM           "bstrm"
+#define MATSEQSBSTRM       "seqsbstrm"
+#define MATMPISBSTRM       "mpisbstrm"
+#define MATSBSTRM          "sbstrm"
 #define MATDAAD            "daad"
 #define MATMFFD            "mffd"
 #define MATNORMAL          "normal"
 #define MATLRC             "lrc"
-#define MATSEQCSRPERM      "seqcsrperm"
-#define MATMPICSRPERM      "mpicsrperm"
-#define MATCSRPERM         "csrperm"
-#define MATSEQCRL          "seqcrl"
-#define MATMPICRL          "mpicrl"
-#define MATCRL             "crl"
 #define MATSCATTER         "scatter"
 #define MATBLOCKMAT        "blockmat"
 #define MATCOMPOSITE       "composite"
-#define MATSEQFFTW         "seqfftw"
+#define MATFFT             "fft"
+#define MATFFTW            "fftw"
+#define MATSEQCUFFT        "seqcufft"
 #define MATTRANSPOSEMAT    "transpose"
 #define MATSCHURCOMPLEMENT "schurcomplement"
 #define MATPYTHON          "python"
 #define MATHYPRESTRUCT     "hyprestruct"
 #define MATHYPRESSTRUCT    "hypresstruct"
 #define MATSUBMATRIX       "submatrix"
+#define MATLOCALREF        "localref"
+#define MATNEST            "nest"
 
-#ifdef PETSC_USE_MATFWK
-#define MATFWK           "matfwk"
-#endif
-
-/*E
-    MatSolverPackage - String with the name of a PETSc matrix solver type. 
-
-    For example: "petsc" indicates what PETSc provides, "superlu" indicates either 
-       SuperLU or SuperLU_Dist etc.
-
-
-   
-
-.seealso: MatGetFactor(), Mat, MatSetType(), MatType
-E*/
-#define MatSolverPackage char*
-#define MAT_SOLVER_SPOOLES      "spooles"
-#define MAT_SOLVER_SUPERLU      "superlu"
-#define MAT_SOLVER_SUPERLU_DIST "superlu_dist"
-#define MAT_SOLVER_UMFPACK      "umfpack"
-#define MAT_SOLVER_ESSL         "essl"
-#define MAT_SOLVER_LUSOL        "lusol"
-#define MAT_SOLVER_MUMPS        "mumps"
-#define MAT_SOLVER_PASTIX       "pastix"
-#define MAT_SOLVER_DSCPACK      "dscpack"
-#define MAT_SOLVER_MATLAB       "matlab"
-#define MAT_SOLVER_PETSC        "petsc"
-#define MAT_SOLVER_PLAPACK      "plapack"
-#define MAT_SOLVER_BAS          "bas"
-
-/*E
-    MatFactorType - indicates what type of factorization is requested
-
-    
-
-   Any additions/changes here MUST also be made in include/finclude/petscmat.h
-
-.seealso: MatSolverPackage, MatGetFactor()
-E*/
-typedef enum {MAT_FACTOR_NONE, MAT_FACTOR_LU, MAT_FACTOR_CHOLESKY, MAT_FACTOR_ILU, MAT_FACTOR_ICC,MAT_FACTOR_ILUDT} MatFactorType;
 </PRE>
 
 <P>

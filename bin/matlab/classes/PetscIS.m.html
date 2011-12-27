@@ -1,0 +1,205 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>PetscIS</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="PetscIS.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">classdef</span> PetscIS &lt; PetscObject
+<span class="comment">%</span>
+<span class="comment">%   PetscIS - PETSc object representing a collection of integers used for indexing</span>
+<span class="comment">%</span>
+<span class="comment">%   Creation:</span>
+<span class="comment">%     is  = PetscIS();</span>
+<span class="comment">%     is.SetType("general");</span>
+<span class="comment">%     is.GeneralSetIndices(indices);</span>
+<span class="comment">%</span>
+<span class="comment">%     is  = PetscIS(indices);</span>
+<span class="comment">%</span>
+  <span class="keyword">methods</span>
+    <span class="keyword">function</span> obj = PetscIS(indices,flag)
+      <span class="keyword">if</span> (nargin &gt; 1)
+        <span class="comment">%  PetscIS(pid,'pobj') uses an already existing PETSc IS object</span>
+        obj.pobj = indices;
+        <span class="keyword">return</span>
+      <span class="keyword">end</span>
+      comm = PETSC_COMM_SELF();
+      <span class="keyword">if</span> (nargin == 1)
+        [err,obj.pobj] = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISCreate'</span>,comm ,0);PetscCHKERRQ(err);
+        err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISSetType'</span>, obj.pobj,<span class="string">'general'</span>);PetscCHKERRQ(err);
+        indices = indices-1;
+        err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISGeneralSetIndices'</span>, obj.pobj,length(indices),indices,Petsc.COPY_VALUES);PetscCHKERRQ(err);
+      <span class="keyword">else</span>
+        [err,obj.pobj] = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISCreate'</span>,comm ,0);PetscCHKERRQ(err);
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = SetType(obj,name)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISSetType'</span>, obj.pobj,name);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> [n,err] = GetSize(obj)
+      n = 0;
+      [err,n] = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISGetSize'</span>, obj.pobj,n);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = GeneralSetIndices(obj,indices)
+      indices = indices - 1;
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISGeneralSetIndices'</span>, obj.pobj,length(indices),indices,Petsc.COPY_VALUES);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> [indices,err] = GetIndices(obj,idx)
+        [n,err] = GetSize(obj);
+        indices = zeros(n,1);
+        [err,indices] = calllib(<span class="string">'libpetsc'</span>,<span class="string">'ISGetIndicesMatlab'</span>,obj.pobj,indices);
+        indices = indices + 1;
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = View(obj,viewer)
+      <span class="keyword">if</span> (nargin == 1)
+        err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISView'</span>, obj.pobj,0);PetscCHKERRQ(err);
+      <span class="keyword">else</span>
+        err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISView'</span>, obj.pobj,viewer.pobj);PetscCHKERRQ(err);
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="keyword">function</span> err = Destroy(obj)
+      err = calllib(<span class="string">'libpetsc'</span>, <span class="string">'ISDestroy'</span>, obj.pobj);PetscCHKERRQ(err);
+    <span class="keyword">end</span>
+    <span class="comment">%</span>
+<span class="comment">%   The following overload a = x(idx)</span>
+    <span class="keyword">function</span> varargout = subsref(obj,S)
+      <span class="keyword">if</span> (S(1).type == <span class="string">'.'</span>)
+        [varargout{1:nargout}] = builtin(<span class="string">'subsref'</span>, obj, S);
+      <span class="keyword">else</span>
+        varargout = {obj.GetIndices(S.subs{1})};
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+classdef PetscIS < PetscObject
+%
+%   PetscIS - PETSc object representing a collection of integers used for indexing
+%
+%   Creation:
+%     is  = PetscIS();
+%     is.SetType("general");
+%     is.GeneralSetIndices(indices);
+%
+%     is  = PetscIS(indices);
+% 
+  methods
+    function obj = PetscIS(indices,flag)
+      if (nargin > 1) 
+        %  PetscIS(pid,'pobj') uses an already existing PETSc IS object
+        obj.pobj = indices;
+        return
+      end
+      comm = PETSC_COMM_SELF();
+      if (nargin == 1) 
+        [err,obj.pobj] = calllib('libpetsc', 'ISCreate',comm ,0);PetscCHKERRQ(err);
+        err = calllib('libpetsc', 'ISSetType', obj.pobj,'general');PetscCHKERRQ(err);
+        indices = indices-1;
+        err = calllib('libpetsc', 'ISGeneralSetIndices', obj.pobj,length(indices),indices,Petsc.COPY_VALUES);PetscCHKERRQ(err);
+      else
+        [err,obj.pobj] = calllib('libpetsc', 'ISCreate',comm ,0);PetscCHKERRQ(err);
+      end
+    end
+    function err = SetType(obj,name)
+      err = calllib('libpetsc', 'ISSetType', obj.pobj,name);PetscCHKERRQ(err);
+    end
+    function [n,err] = GetSize(obj)
+      n = 0;
+      [err,n] = calllib('libpetsc', 'ISGetSize', obj.pobj,n);PetscCHKERRQ(err);
+    end
+    function err = GeneralSetIndices(obj,indices)  
+      indices = indices - 1;  
+      err = calllib('libpetsc', 'ISGeneralSetIndices', obj.pobj,length(indices),indices,Petsc.COPY_VALUES);PetscCHKERRQ(err);
+    end
+    function [indices,err] = GetIndices(obj,idx)
+        [n,err] = GetSize(obj);
+        indices = zeros(n,1);
+        [err,indices] = calllib('libpetsc','ISGetIndicesMatlab',obj.pobj,indices);
+        indices = indices + 1;
+    end
+    function err = View(obj,viewer)
+      if (nargin == 1)
+        err = calllib('libpetsc', 'ISView', obj.pobj,0);PetscCHKERRQ(err);
+      else
+        err = calllib('libpetsc', 'ISView', obj.pobj,viewer.pobj);PetscCHKERRQ(err);
+      end
+    end
+    function err = Destroy(obj)
+      err = calllib('libpetsc', 'ISDestroy', obj.pobj);PetscCHKERRQ(err);
+    end
+    %
+%   The following overload a = x(idx)
+    function varargout = subsref(obj,S)
+      if (S(1).type == '.')
+        [varargout{1:nargout}] = builtin('subsref', obj, S);
+      else  
+        varargout = {obj.GetIndices(S.subs{1})};
+      end
+    end
+  end
+end
+
+ 
+
+
+##### SOURCE END #####
+--></body></html>

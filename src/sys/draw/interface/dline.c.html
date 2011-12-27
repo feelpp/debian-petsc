@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:20:06+00:00">
+<meta name="date" content="2011-10-29T18:50:40+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">       Provides the calling sequences for all the basic <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> routines.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
-<a name="line5"> 5: </a> #include <A href="../../../../include/../src/sys/draw/drawimpl.h.html">../src/sys/draw/drawimpl.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;../src/sys/draw/drawimpl.h&gt;  </font><font color="#B22222">/*I "petscdraw.h" I*/</font><font color="#A020F0"></font>
 <a name="line6">  6: </a>
 <a name="line9">  9: </a><font color="#B22222">/*@</font>
 <a name="line10"> 10: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Draw/PetscDrawLine.html#PetscDrawLine">PetscDrawLine</A> - PetscDraws a line onto a drawable.</font>
@@ -32,7 +32,7 @@
 <a name="line24"> 24: </a><font color="#B22222">@*/</font>
 <a name="line25"> 25: </a><strong><font color="#4169E1"><a name="PetscDrawLine"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawLine.html#PetscDrawLine">PetscDrawLine</A>(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xl,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> yl,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xr,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> yr,int cl)</font></strong>
 <a name="line26"> 26: </a>{
-<a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> isdrawnull;
+<a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  isdrawnull;
 
 <a name="line32"> 32: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw,PETSC_DRAW_NULL,&amp;isdrawnull);
 <a name="line33"> 33: </a>  <font color="#4169E1">if</font> (isdrawnull) <font color="#4169E1">return</font>(0);
@@ -41,28 +41,31 @@
 <a name="line36"> 36: </a>}
 
 <a name="line40"> 40: </a><font color="#B22222">/*@</font>
-<a name="line41"> 41: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Draw/PetscDrawIsNull.html#PetscDrawIsNull">PetscDrawIsNull</A> - Returns <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if draw is a null draw object.</font>
+<a name="line41"> 41: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Draw/PetscDrawArrow.html#PetscDrawArrow">PetscDrawArrow</A> - PetscDraws a line with arrow head at end if the line is long enough</font>
 
 <a name="line43"> 43: </a><font color="#B22222">   Not collective</font>
 
-<a name="line45"> 45: </a><font color="#B22222">   Input Parameter:</font>
-<a name="line46"> 46: </a><font color="#B22222">.  draw - the draw context</font>
+<a name="line45"> 45: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line46"> 46: </a><font color="#B22222">+  draw - the drawing context</font>
+<a name="line47"> 47: </a><font color="#B22222">.  xl,yl,xr,yr - the coordinates of the line endpoints</font>
+<a name="line48"> 48: </a><font color="#B22222">-  cl - the colors of the endpoints</font>
 
-<a name="line48"> 48: </a><font color="#B22222">   Output Parameter:</font>
-<a name="line49"> 49: </a><font color="#B22222">.  yes - <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if it is a null draw object; otherwise <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A></font>
+<a name="line50"> 50: </a><font color="#B22222">   Level: beginner</font>
 
-<a name="line51"> 51: </a><font color="#B22222">   Level: advanced</font>
+<a name="line52"> 52: </a><font color="#B22222">   Concepts: line^drawing</font>
+<a name="line53"> 53: </a><font color="#B22222">   Concepts: drawing^line</font>
 
-<a name="line53"> 53: </a><font color="#B22222">@*/</font>
-<a name="line54"> 54: </a><strong><font color="#4169E1"><a name="PetscDrawIsNull"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawIsNull.html#PetscDrawIsNull">PetscDrawIsNull</A>(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw,<A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *yes)</font></strong>
-<a name="line55"> 55: </a>{
-<a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> isdrawnull;
+<a name="line55"> 55: </a><font color="#B22222">@*/</font>
+<a name="line56"> 56: </a><strong><font color="#4169E1"><a name="PetscDrawArrow"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawArrow.html#PetscDrawArrow">PetscDrawArrow</A>(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xl,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> yl,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xr,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> yr,int cl)</font></strong>
+<a name="line57"> 57: </a>{
+<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  isdrawnull;
 
-<a name="line62"> 62: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw,PETSC_DRAW_NULL,&amp;isdrawnull);
-<a name="line63"> 63: </a>  <font color="#4169E1">if</font> (isdrawnull) *yes = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line64"> 64: </a>  <font color="#4169E1">else</font>            *yes = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line65"> 65: </a>  <font color="#4169E1">return</font>(0);
-<a name="line66"> 66: </a>}
+<a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw,PETSC_DRAW_NULL,&amp;isdrawnull);
+<a name="line64"> 64: </a>  <font color="#4169E1">if</font> (isdrawnull) <font color="#4169E1">return</font>(0);
+<a name="line65"> 65: </a>  (*draw-&gt;ops-&gt;arrow)(draw,xl,yl,xr,yr,cl);
+<a name="line66"> 66: </a>  <font color="#4169E1">return</font>(0);
+<a name="line67"> 67: </a>}
+
 </pre>
 </body>
 

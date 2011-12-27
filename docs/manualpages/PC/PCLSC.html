@@ -18,20 +18,20 @@ This preconditioner will normally be used with PCFieldSplit to precondition the 
 it can be used for any Schur complement system.  Consider the Schur complement
 <P>
 <PRE>
-   S = D - C inv(A) B
+   S = A11 - A10 inv(A00) A01
 </PRE>
 
 <P>
-<A HREF="../PC/PCLSC.html#PCLSC">PCLSC</A> currently doesn't do anything with D, so let's assume it is 0.  The idea is that a good approximation to
+<A HREF="../PC/PCLSC.html#PCLSC">PCLSC</A> currently doesn't do anything with A11, so let's assume it is 0.  The idea is that a good approximation to
 inv(S) is given by
 <P>
 <PRE>
-   inv(CB) C A B inv(CB)
+   inv(A10 A01) A10 A00 A01 inv(A10 A01)
 </PRE>
 
 <P>
-At some point, we'll be able to form the product CB for you, but for now the application has to provide it (this is
-usually more efficient anyway).  In the case of incompressible flow, CB is a Laplacian, call it L.  The current
+The product A10 A01 can be computed for you, but you can provide it (this is
+usually more efficient anyway).  In the case of incompressible flow, A10 A10 is a Laplacian, call it L.  The current
 interface is to hang L and a preconditioning matrix Lp on the preconditioning matrix.
 <P>
 If you had called <A HREF="../KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(ksp,S,Sp,flg), S should have type MATSCHURCOMPLEMENT and Sp can be any type you
@@ -65,7 +65,7 @@ Since we do not use the values in Sp, you can still put an assembled matrix ther
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>, <A HREF="../PC/Block_Preconditioners.html#Block_Preconditioners">Block_Preconditioners</A>, <A HREF="../PC/PCFIELDSPLIT.html#PCFIELDSPLIT">PCFIELDSPLIT</A>,
+  <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>, Block_Preconditioners, <A HREF="../PC/PCFIELDSPLIT.html#PCFIELDSPLIT">PCFIELDSPLIT</A>,
 <BR><A HREF="../PC/PCFieldSplitGetSubKSP.html#PCFieldSplitGetSubKSP">PCFieldSplitGetSubKSP</A>(), <A HREF="../PC/PCFieldSplitSetFields.html#PCFieldSplitSetFields">PCFieldSplitSetFields</A>(), <A HREF="../PC/PCFieldSplitSetType.html#PCFieldSplitSetType">PCFieldSplitSetType</A>(), <A HREF="../PC/PCFieldSplitSetIS.html#PCFieldSplitSetIS">PCFieldSplitSetIS</A>(), <A HREF="../PC/PCFieldSplitSchurPrecondition.html#PCFieldSplitSchurPrecondition">PCFieldSplitSchurPrecondition</A>(),
 <A HREF="../KSP/MatCreateSchurComplement.html#MatCreateSchurComplement">MatCreateSchurComplement</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
@@ -73,4 +73,6 @@ Since we do not use the values in Sp, you can still put an assembled matrix ther
 <BR><A HREF="./index.html">Index of all PC routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex55.c.html">src/snes/examples/tutorials/ex55.c.html</A><BR>
 </BODY></HTML>

@@ -10,15 +10,15 @@ Sets the ordering routine (to reduce fill) to  be used in the LU factorization.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCFactorSetMatOrderingType(PC pc,const MatOrderingType ordering)
+PetscErrorCode  PCFactorSetMatOrderingType(PC pc,const MatOrderingType ordering)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc </B></TD><TD>- the preconditioner context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ordering </B></TD><TD>- the matrix ordering name, for example, MATORDERING_ND or MATORDERING_RCM
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ordering </B></TD><TD>- the matrix ordering name, for example, MATORDERINGND or MATORDERINGRCM
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>

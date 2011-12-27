@@ -10,9 +10,9 @@ Turns on extensive logging of objects and events. Logs  all events. This creates
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscLogAllBegin(void)
+PetscErrorCode  PetscLogAllBegin(void)
 </PRE>
-Collective on <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>
+Logically Collective on <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <DT><B>-log_all </B> -Prints extensive log information (for code compiled with PETSC_USE_LOG)

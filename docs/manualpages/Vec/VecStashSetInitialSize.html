@@ -12,7 +12,7 @@ sets the sizes of the vec-stash, that is used during the assembly process to sto
 #include "petscvec.h" 
 PetscErrorCode  VecStashSetInitialSize(Vec vec,PetscInt size,PetscInt bsize)
 </PRE>
-Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Not Collective, different processes can have different size stashes
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

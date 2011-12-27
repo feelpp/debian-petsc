@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* viewreg.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscviewercreate_(MPI_Fint * comm,PetscViewer *inviewer, int *__ierr ){
+void PETSC_STDCALL  petscviewercreate_(MPI_Fint * comm,PetscViewer *inviewer, int *__ierr ){
 *__ierr = PetscViewerCreate(
 	MPI_Comm_f2c( *(comm) ),inviewer);
 }

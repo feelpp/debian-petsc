@@ -1,7 +1,7 @@
 
 static char help[] = "Tests MatTranspose()\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -12,7 +12,7 @@ int main(int argc,char **args)
   PetscInt       i,j,m = 4,n = 4,Ii,J,Istart,Iend;
   PetscMPIInt    rank,size;
   PetscErrorCode ierr;
-  PetscTruth     equal=PETSC_FALSE;
+  PetscBool      equal=PETSC_FALSE;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
@@ -40,10 +40,10 @@ int main(int argc,char **args)
   ierr = MatTranspose(C,MAT_INITIAL_MATRIX,&A);CHKERRQ(ierr);
 
   ierr = MatEqual(C,A,&equal);CHKERRQ(ierr);
-  if (!equal) SETERRQ(PETSC_ERR_SUP,"C != C^T");
+  if (!equal) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"C != C^T");
 
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

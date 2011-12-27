@@ -13,7 +13,7 @@ T*/
      petscmat.h    - matrices
      petscis.h     - index sets            petscviewer.h - viewers               
 */
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -23,7 +23,7 @@ int main(int argc,char **args)
   PetscViewer           fd;               /* viewer */
   char                  file[PETSC_MAX_PATH_LEN];     /* input file name */
   PetscErrorCode        ierr;
-  PetscTruth            flg;
+  PetscBool             flg;
   Vec                   x,y,z,work;
   PetscReal             rnorm;
 
@@ -34,8 +34,8 @@ int main(int argc,char **args)
      Determine files from which we read the two linear systems
      (matrix and right-hand-side vector).
   */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Must indicate binary file with the -f option");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Must indicate binary file with the -f option");
 
     /* 
        Open binary file.  Note that we use FILE_MODE_READ to indicate
@@ -46,8 +46,9 @@ int main(int argc,char **args)
     /*
        Load the matrix; then destroy the viewer.
     */
-    ierr = MatLoad(fd,MATAIJ,&A[0]);CHKERRQ(ierr);
-    ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+    ierr = MatCreate(PETSC_COMM_WORLD,&A[0]);CHKERRQ(ierr);
+    ierr = MatLoad(A[0],fd);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
     ierr = MatDuplicate(A[0],MAT_COPY_VALUES,&A[1]);CHKERRQ(ierr);
     ierr = MatDuplicate(A[0],MAT_COPY_VALUES,&A[2]);CHKERRQ(ierr);
@@ -65,7 +66,7 @@ int main(int argc,char **args)
 
     ierr = MatCreateComposite(PETSC_COMM_WORLD,3,A,&B);CHKERRQ(ierr);
     ierr = MatMult(B,x,y);CHKERRQ(ierr);
-    ierr = MatDestroy(B);CHKERRQ(ierr);
+    ierr = MatDestroy(&B);CHKERRQ(ierr);
     ierr = VecAXPY(y,-1.0,y);CHKERRQ(ierr);
     ierr = VecNorm(y,NORM_2,&rnorm);CHKERRQ(ierr);
     if (rnorm > 1.e-10) {
@@ -75,7 +76,7 @@ int main(int argc,char **args)
     ierr = MatCreateComposite(PETSC_COMM_WORLD,3,A,&B);CHKERRQ(ierr);
     ierr = MatCompositeMerge(B);CHKERRQ(ierr);
     ierr = MatMult(B,x,y);CHKERRQ(ierr);
-    ierr = MatDestroy(B);CHKERRQ(ierr);
+    ierr = MatDestroy(&B);CHKERRQ(ierr);
     ierr = VecAXPY(y,-1.0,y);CHKERRQ(ierr);
     ierr = VecNorm(y,NORM_2,&rnorm);CHKERRQ(ierr);
     if (rnorm > 1.e-10) {
@@ -90,7 +91,7 @@ int main(int argc,char **args)
     ierr = MatCreateComposite(PETSC_COMM_WORLD,3,A,&B);CHKERRQ(ierr);
     ierr = MatCompositeSetType(B,MAT_COMPOSITE_MULTIPLICATIVE);CHKERRQ(ierr);
     ierr = MatMult(B,x,y);CHKERRQ(ierr);
-    ierr = MatDestroy(B);CHKERRQ(ierr);
+    ierr = MatDestroy(&B);CHKERRQ(ierr);
     ierr = VecAXPY(y,-1.0,y);CHKERRQ(ierr);
     ierr = VecNorm(y,NORM_2,&rnorm);CHKERRQ(ierr);
     if (rnorm > 1.e-10) {
@@ -101,7 +102,7 @@ int main(int argc,char **args)
     ierr = MatCompositeSetType(B,MAT_COMPOSITE_MULTIPLICATIVE);CHKERRQ(ierr);
     ierr = MatCompositeMerge(B);CHKERRQ(ierr);
     ierr = MatMult(B,x,y);CHKERRQ(ierr);
-    ierr = MatDestroy(B);CHKERRQ(ierr);
+    ierr = MatDestroy(&B);CHKERRQ(ierr);
     ierr = VecAXPY(y,-1.0,y);CHKERRQ(ierr);
     ierr = VecNorm(y,NORM_2,&rnorm);CHKERRQ(ierr);
     if (rnorm > 1.e-10) {
@@ -112,15 +113,15 @@ int main(int argc,char **args)
        Free work space.  All PETSc objects should be destroyed when they
        are no longer needed.
     */
-    ierr = VecDestroy(x);CHKERRQ(ierr);
-    ierr = VecDestroy(y);CHKERRQ(ierr);
-    ierr = VecDestroy(work);CHKERRQ(ierr);
-    ierr = VecDestroy(z);CHKERRQ(ierr);
-    ierr = MatDestroy(A[0]);CHKERRQ(ierr);
-    ierr = MatDestroy(A[1]);CHKERRQ(ierr);
-    ierr = MatDestroy(A[2]);CHKERRQ(ierr);
+    ierr = VecDestroy(&x);CHKERRQ(ierr);
+    ierr = VecDestroy(&y);CHKERRQ(ierr);
+    ierr = VecDestroy(&work);CHKERRQ(ierr);
+    ierr = VecDestroy(&z);CHKERRQ(ierr);
+    ierr = MatDestroy(&A[0]);CHKERRQ(ierr);
+    ierr = MatDestroy(&A[1]);CHKERRQ(ierr);
+    ierr = MatDestroy(&A[2]);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

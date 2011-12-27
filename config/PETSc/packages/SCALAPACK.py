@@ -4,13 +4,14 @@ class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
     # use the version from PETSc ftp site - it has lapack removed
-    self.download  = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/scalapack.tgz']
-    self.includes  = []
-    self.liblist   = [['libscalapack.a']]
-    self.functions = ['pssytrd']
-    self.requires32bitint = 0;
+    self.download         = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/SCALAPACK-1.7.tar.gz']
+    self.includes         = []
+    self.liblist          = [[],['libscalapack.a']]
+    self.functions        = ['pssytrd']
+    self.requires32bitint = 0
     self.functionsFortran = 1
-    self.complex   = 1
+    self.complex          = 1
+    self.useddirectly     = 0 # PETSc does not use ScaLAPACK, it is only used by MUMPS
     return
 
   def setupDependencies(self, framework):
@@ -37,7 +38,7 @@ class Configure(PETSc.package.NewPackage):
     g.write('BLACSDBGLVL  = -DBlacsDebugLvl=1\n')
     g.write('BLACSLIB     = '+self.libraries.toString(self.blacs.lib)+'\n') 
     g.write('SMPLIB       = '+self.libraries.toString(self.mpi.lib)+'\n')
-    g.write('SCALAPACKLIB = '+os.path.join(self.installDir,self.libdir,'libscalapack.a')+' \n')
+    g.write('SCALAPACKLIB = '+os.path.join(self.installDir,self.libdir,'libscalapack.'+self.setCompilers.AR_LIB_SUFFIX)+' \n')
     g.write('CBLACSLIB    = $(BLACSCINIT) $(BLACSLIB) $(BLACSCINIT)\n')
     g.write('FBLACSLIB    = $(BLACSFINIT) $(BLACSLIB) $(BLACSFINIT)\n')
     # this mangling information is for both BLAS and the Fortran compiler so cannot use the BlasLapack mangling flag    
@@ -73,12 +74,12 @@ class Configure(PETSc.package.NewPackage):
 
     if self.installNeeded('SLmake.inc'):
       try:
-        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+';make cleanlib', timeout=2500, log = self.framework.log)
+        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && make cleanlib', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         pass
       try:
         self.logPrintBox('Compiling Scalapack; this may take several minutes')
-        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+';make', timeout=2500, log = self.framework.log)
+        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && make', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running make on SCALAPACK: '+str(e))
       self.postInstall(output,'SLmake.inc')
@@ -97,5 +98,5 @@ class Configure(PETSc.package.NewPackage):
     if self.framework.argDB['with-'+self.package]:
       # SCALAPACK requires ALL of BLAS/LAPACK
       if self.blasLapack.f2c:
-        raise RuntimeError('SCALAPACK requires a COMPLETE BLAS and LAPACK, it cannot be used with the --download-c-blas-lapack\nUse --download-f-blas-lapack option instead.')
+        raise RuntimeError('SCALAPACK requires a COMPLETE BLAS and LAPACK, it cannot be used with the --download-f2cblaslapack\nUse --download-f-blas-lapack option instead.')
     return

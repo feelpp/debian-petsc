@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* plog.c */
 /* Fortran interface file */
 
@@ -87,10 +88,11 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petsclogeventdeactivateclass_ petsclogeventdeactivateclass
 #endif
+#include "petscsys.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscloggetstagelog_ PETSCLOGGETSTAGELOG
+#define petsclogviewpython_ PETSCLOGVIEWPYTHON
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscloggetstagelog_ petscloggetstagelog
+#define petsclogviewpython_ petsclogviewpython
 #endif
 
 
@@ -98,45 +100,46 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petsclogtracebegin_(FILE *file, int *__ierr ){
+void PETSC_STDCALL  petsclogtracebegin_(FILE *file, int *__ierr ){
 *__ierr = PetscLogTraceBegin(
 	(FILE* )PetscToPointer((file) ));
 }
-void PETSC_STDCALL   petsclogactions_(PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  petsclogactions_(PetscBool  *flag, int *__ierr ){
 *__ierr = PetscLogActions(*flag);
 }
-void PETSC_STDCALL   petsclogobjects_(PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  petsclogobjects_(PetscBool  *flag, int *__ierr ){
 *__ierr = PetscLogObjects(*flag);
 }
-void PETSC_STDCALL   petsclogstagesetactive_(PetscLogStage *stage,PetscTruth *isActive, int *__ierr ){
+void PETSC_STDCALL  petsclogstagesetactive_(PetscLogStage *stage,PetscBool  *isActive, int *__ierr ){
 *__ierr = PetscLogStageSetActive(*stage,*isActive);
 }
-void PETSC_STDCALL   petsclogstagegetactive_(PetscLogStage *stage,PetscTruth *isActive, int *__ierr ){
+void PETSC_STDCALL  petsclogstagegetactive_(PetscLogStage *stage,PetscBool  *isActive, int *__ierr ){
 *__ierr = PetscLogStageGetActive(*stage,isActive);
 }
-void PETSC_STDCALL   petsclogstagesetvisible_(PetscLogStage *stage,PetscTruth *isVisible, int *__ierr ){
+void PETSC_STDCALL  petsclogstagesetvisible_(PetscLogStage *stage,PetscBool  *isVisible, int *__ierr ){
 *__ierr = PetscLogStageSetVisible(*stage,*isVisible);
 }
-void PETSC_STDCALL   petsclogstagegetvisible_(PetscLogStage *stage,PetscTruth *isVisible, int *__ierr ){
+void PETSC_STDCALL  petsclogstagegetvisible_(PetscLogStage *stage,PetscBool  *isVisible, int *__ierr ){
 *__ierr = PetscLogStageGetVisible(*stage,isVisible);
 }
-void PETSC_STDCALL   petsclogeventactivate_(PetscLogEvent *event, int *__ierr ){
+void PETSC_STDCALL  petsclogeventactivate_(PetscLogEvent *event, int *__ierr ){
 *__ierr = PetscLogEventActivate(*event);
 }
-void PETSC_STDCALL   petsclogeventdeactivate_(PetscLogEvent *event, int *__ierr ){
+void PETSC_STDCALL  petsclogeventdeactivate_(PetscLogEvent *event, int *__ierr ){
 *__ierr = PetscLogEventDeactivate(*event);
 }
-void PETSC_STDCALL   petsclogeventsetactiveall_(PetscLogEvent *event,PetscTruth *isActive, int *__ierr ){
+void PETSC_STDCALL  petsclogeventsetactiveall_(PetscLogEvent *event,PetscBool  *isActive, int *__ierr ){
 *__ierr = PetscLogEventSetActiveAll(*event,*isActive);
 }
-void PETSC_STDCALL   petsclogeventactivateclass_(PetscCookie *cookie, int *__ierr ){
-*__ierr = PetscLogEventActivateClass(*cookie);
+void PETSC_STDCALL  petsclogeventactivateclass_(PetscClassId *classid, int *__ierr ){
+*__ierr = PetscLogEventActivateClass(*classid);
 }
-void PETSC_STDCALL   petsclogeventdeactivateclass_(PetscCookie *cookie, int *__ierr ){
-*__ierr = PetscLogEventDeactivateClass(*cookie);
+void PETSC_STDCALL  petsclogeventdeactivateclass_(PetscClassId *classid, int *__ierr ){
+*__ierr = PetscLogEventDeactivateClass(*classid);
 }
-void PETSC_STDCALL   petscloggetstagelog_(StageLog *stageLog, int *__ierr ){
-*__ierr = PetscLogGetStageLog(stageLog);
+void PETSC_STDCALL  petsclogviewpython_(PetscViewer viewer, int *__ierr ){
+*__ierr = PetscLogViewPython(
+	(PetscViewer)PetscToPointer((viewer) ));
 }
 #if defined(__cplusplus)
 }

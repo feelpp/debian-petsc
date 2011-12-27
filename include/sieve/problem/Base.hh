@@ -1,7 +1,7 @@
 #ifndef included_ALE_Problem_Base_hh
 #define included_ALE_Problem_Base_hh
 
-#include <DMBuilder.hh>
+#include <sieve/DMBuilder.hh>
 
 #include <petscmesh_viewers.hh>
 #include <petscdmmg.h>
@@ -13,10 +13,8 @@ namespace ALE {
     typedef enum {ASSEMBLY_FULL, ASSEMBLY_STORED, ASSEMBLY_CALCULATED} AssemblyType;
     typedef union {SectionReal section; Vec vec;} ExactSolType;
 
-#if 0
+#if 1
     namespace Functions {
-      extern PetscScalar lambda;
-
       PetscScalar zero(const double x[]);
       PetscScalar constant(const double x[]);
       PetscScalar nonlinear_2d(const double x[]);
@@ -37,12 +35,12 @@ namespace ALE {
       PetscScalar linear_nder_2d(const double x[]);
       PetscScalar quadratic_nder_2d(const double x[]);
 
-      PetscErrorCode Function_Structured_2d(DALocalInfo *info, PetscScalar *x[], PetscScalar *f[], void *ctx);
-      PetscErrorCode Rhs_Structured_2d_FD(DALocalInfo *info, PetscScalar *x[], PetscScalar *f[], void *ctx);
-      PetscErrorCode Jac_Structured_2d_FD(DALocalInfo *info, PetscScalar *x[], Mat J, void *ctx);
-      PetscErrorCode Function_Structured_3d(DALocalInfo *info, PetscScalar **x[], PetscScalar **f[], void *ctx);
-      PetscErrorCode Rhs_Structured_3d_FD(DALocalInfo *info, PetscScalar **x[], PetscScalar **f[], void *ctx);
-      PetscErrorCode Jac_Structured_3d_FD(DALocalInfo *info, PetscScalar **x[], Mat J, void *ctx);
+      PetscErrorCode Function_Structured_2d(DMDALocalInfo *info, PetscScalar *x[], PetscScalar *f[], void *ctx);
+      PetscErrorCode Rhs_Structured_2d_FD(DMDALocalInfo *info, PetscScalar *x[], PetscScalar *f[], void *ctx);
+      PetscErrorCode Jac_Structured_2d_FD(DMDALocalInfo *info, PetscScalar *x[], Mat J, void *ctx);
+      PetscErrorCode Function_Structured_3d(DMDALocalInfo *info, PetscScalar **x[], PetscScalar **f[], void *ctx);
+      PetscErrorCode Rhs_Structured_3d_FD(DMDALocalInfo *info, PetscScalar **x[], PetscScalar **f[], void *ctx);
+      PetscErrorCode Jac_Structured_3d_FD(DMDALocalInfo *info, PetscScalar **x[], Mat J, void *ctx);
       PetscErrorCode Rhs_Unstructured(::Mesh mesh, SectionReal X, SectionReal section, void *ctx);
       PetscErrorCode Jac_Unstructured(::Mesh mesh, SectionReal section, Mat A, void *ctx);
 
@@ -56,12 +54,12 @@ namespace ALE {
       PetscInt      debug;                       // The debugging level
       RunType       run;                         // The run type
       PetscInt      dim;                         // The topological mesh dimension
-      PetscTruth    reentrantMesh;               // Generate a reentrant mesh?
-      PetscTruth    circularMesh;                // Generate a circular mesh?
-      PetscTruth    refineSingularity;           // Generate an a priori graded mesh for the poisson problem
-      PetscTruth    structured;                  // Use a structured mesh
-      PetscTruth    generateMesh;                // Generate the unstructure mesh
-      PetscTruth    interpolate;                 // Generate intermediate mesh elements
+      PetscBool     reentrantMesh;               // Generate a reentrant mesh?
+      PetscBool     circularMesh;                // Generate a circular mesh?
+      PetscBool     refineSingularity;           // Generate an a priori graded mesh for the poisson problem
+      PetscBool     structured;                  // Use a structured mesh
+      PetscBool     generateMesh;                // Generate the unstructure mesh
+      PetscBool     interpolate;                 // Generate intermediate mesh elements
       PetscReal     refinementLimit;             // The largest allowable cell volume
       char          baseFilename[2048];          // The base filename for mesh files
       char          partitioner[2048];           // The graph partitioner
@@ -80,12 +78,12 @@ namespace ALE {
       PetscInt      debug;                       // The debugging level
       RunType       run;                         // The run type
       PetscInt      dim;                         // The topological mesh dimension
-      PetscTruth    reentrantMesh;               // Generate a reentrant mesh?
-      PetscTruth    circularMesh;                // Generate a circular mesh?
-      PetscTruth    refineSingularity;           // Generate an a priori graded mesh for the poisson problem
-      PetscTruth    structured;                  // Use a structured mesh
-      PetscTruth    generateMesh;                // Generate the unstructure mesh
-      PetscTruth    interpolate;                 // Generate intermediate mesh elements
+      PetscBool     reentrantMesh;               // Generate a reentrant mesh?
+      PetscBool     circularMesh;                // Generate a circular mesh?
+      PetscBool     refineSingularity;           // Generate an a priori graded mesh for the poisson problem
+      PetscBool     structured;                  // Use a structured mesh
+      PetscBool     generateMesh;                // Generate the unstructure mesh
+      PetscBool     interpolate;                 // Generate intermediate mesh elements
       PetscReal     refinementLimit;             // The largest allowable cell volume
       char          baseFilename[2048];          // The base filename for mesh files
       char          partitioner[2048];           // The graph partitioner

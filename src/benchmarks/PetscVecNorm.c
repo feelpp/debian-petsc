@@ -1,5 +1,5 @@
 
-#include "petscvec.h"
+#include <petscvec.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -17,7 +17,7 @@ int main(int argc,char **argv)
   ierr = VecSetSizes(x,n,n);CHKERRQ(ierr);
   ierr = VecSetFromOptions(x);CHKERRQ(ierr);
 
-  PreLoadBegin(PETSC_TRUE,"VecNorm");
+  PetscPreLoadBegin(PETSC_TRUE,"VecNorm");
   ierr = PetscGetTime(&t1);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
@@ -29,13 +29,13 @@ int main(int argc,char **argv)
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
-  PreLoadEnd();
+  PetscPreLoadEnd();
   ierr = PetscGetTime(&t2);CHKERRQ(ierr);
 
 
   fprintf(stdout,"%s : \n","VecNorm");
   fprintf(stdout," Time %g\n",t2-t1);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   PetscFunctionReturn(0);
 }

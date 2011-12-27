@@ -15,9 +15,9 @@ with boundary conditions
 
 static char help[] = "Solves 1D variable coefficient Laplacian using multigrid.\n\n";
 
-#include "petscda.h"
-#include "petscksp.h"
-#include "petscdmmg.h"
+#include <petscdmda.h>
+#include <petscksp.h>
+#include <petscdmmg.h>
 
 extern PetscErrorCode ComputeMatrix(DMMG,Mat,Mat);
 extern PetscErrorCode ComputeRHS(DMMG,Vec);
@@ -34,7 +34,7 @@ int main(int argc,char **argv)
   PetscErrorCode ierr;
   DMMG           *dmmg;
   PetscReal      norm;
-  DA             da;
+  DM             da;
   AppCtx         user;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
@@ -45,9 +45,9 @@ int main(int argc,char **argv)
   ierr = PetscOptionsGetScalar(0,"-e",&user.e,0);CHKERRQ(ierr);
 
   ierr = DMMGCreate(PETSC_COMM_WORLD,3,&user,&dmmg);CHKERRQ(ierr);
-  ierr = DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,-3,1,1,0,&da);CHKERRQ(ierr);  
+  ierr = DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,-3,1,1,0,&da);CHKERRQ(ierr);  
   ierr = DMMGSetDM(dmmg,(DM)da);CHKERRQ(ierr);
-  ierr = DADestroy(da);CHKERRQ(ierr);
+  ierr = DMDestroy(&da);CHKERRQ(ierr);
 
   ierr = DMMGSetKSP(dmmg,ComputeRHS,ComputeMatrix);CHKERRQ(ierr);
 
@@ -59,7 +59,7 @@ int main(int argc,char **argv)
   /* ierr = PetscPrintf(PETSC_COMM_WORLD,"Residual norm %G\n",norm);CHKERRQ(ierr); */
 
   ierr = DMMGDestroy(dmmg);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }
@@ -73,7 +73,7 @@ PetscErrorCode ComputeRHS(DMMG dmmg,Vec b)
   PetscScalar    h,v[2];
 
   PetscFunctionBegin;
-  ierr   = DAGetInfo((DA)dmmg->dm,0,&mx,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr   = DMDAGetInfo(dmmg->dm,0,&mx,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   h      = 1.0/((mx-1));
   ierr   = VecSet(b,h);CHKERRQ(ierr);
   idx[0] = 0; idx[1] = mx -1;
@@ -88,15 +88,15 @@ PetscErrorCode ComputeRHS(DMMG dmmg,Vec b)
 #define __FUNCT__ "ComputeMatrix"
 PetscErrorCode ComputeMatrix(DMMG dmmg,Mat J,Mat jac)
 {
-  DA             da = (DA)dmmg->dm;
+  DM             da = dmmg->dm;
   PetscErrorCode ierr;
   PetscInt       i,mx,xm,xs;
   PetscScalar    v[3],h,xlow,xhigh;
   MatStencil     row,col[3];
   AppCtx         *user = (AppCtx*)dmmg->user;
 
-  ierr = DAGetInfo(da,0,&mx,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);  
-  ierr = DAGetCorners(da,&xs,0,0,&xm,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(da,0,&mx,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);  
+  ierr = DMDAGetCorners(da,&xs,0,0,&xm,0,0);CHKERRQ(ierr);
   h    = 1.0/(mx-1);
 
   for(i=xs; i<xs+xm; i++){

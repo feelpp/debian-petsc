@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:20:14+00:00">
+<meta name="date" content="2011-10-29T18:50:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">       Provides the registration process for PETSc <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> routines</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
-<a name="line5"> 5: </a> #include <A href="../../../../include/../src/sys/draw/drawimpl.h.html">../src/sys/draw/drawimpl.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;../src/sys/draw/drawimpl.h&gt;  </font><font color="#B22222">/*I "petscdraw.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line7">  7: </a><font color="#B22222">/*</font>
 <a name="line8">  8: </a><font color="#B22222">   Contains the list of registered <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> routines</font>
@@ -46,13 +46,13 @@
 <a name="line38"> 38: </a>{
 <a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A>      draw;
 <a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      dpause;
-<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flag;
+<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flag;
 
 <a name="line45"> 45: </a><font color="#A020F0">#ifndef PETSC_USE_DYNAMIC_LIBRARIES</font>
 <a name="line46"> 46: </a>  PetscDrawInitializePackage(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line47"> 47: </a><font color="#A020F0">#endif</font>
 <a name="line48"> 48: </a>  *indraw = 0;
-<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(draw,_p_PetscDraw,<font color="#4169E1">struct _PetscDrawOps</font>,PETSC_DRAW_COOKIE,-1,<font color="#666666">"Draw"</font>,comm,<A href="../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>,0);
+<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(draw,_p_PetscDraw,<font color="#4169E1">struct _PetscDrawOps</font>,PETSC_DRAW_CLASSID,-1,<font color="#666666">"Draw"</font>,<font color="#666666">"Graphics"</font>,<font color="#666666">"Draw"</font>,comm,<A href="../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>,0);
 <a name="line50"> 50: </a>  draw-&gt;data    = 0;
 <a name="line51"> 51: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(title,&amp;draw-&gt;title);
 <a name="line52"> 52: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(display,&amp;draw-&gt;display);
@@ -106,8 +106,8 @@
 <a name="line102">102: </a><strong><font color="#4169E1"><a name="PetscDrawSetType"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw,const <A href="../../../../docs/manualpages/Draw/PetscDrawType.html#PetscDrawType">PetscDrawType</A> type)</font></strong>
 <a name="line103">103: </a>{
 <a name="line104">104: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr,(*r)(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A>);
-<a name="line105">105: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      match;
-<a name="line106">106: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      flg=<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line105">105: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       match;
+<a name="line106">106: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       flg=<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
 
 <a name="line112">112: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw,type,&amp;match);
@@ -125,7 +125,7 @@
 <a name="line124">124: </a>  <font color="#4169E1">if</font> (!flg) {
 <a name="line125">125: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrcmp.html#PetscStrcmp">PetscStrcmp</A>(type,PETSC_DRAW_X,&amp;match);
 <a name="line126">126: </a>    <font color="#4169E1">if</font> (match) {
-<a name="line127">127: </a>      <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> dontwarn = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line127">127: </a>      <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  dontwarn = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line128">128: </a>      flg = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line129">129: </a>      <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-nox_warning"</font>,&amp;dontwarn);
 <a name="line130">130: </a>      <font color="#4169E1">if</font> (!dontwarn) {
@@ -144,8 +144,8 @@
 <a name="line143">143: </a>    draw-&gt;data = 0;
 <a name="line144">144: </a>  }
 
-<a name="line146">146: </a>   <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(PetscDrawList,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;comm,type,(void (**)(void)) &amp;r);
-<a name="line147">147: </a>  <font color="#4169E1">if</font> (!r) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_UNKNOWN_TYPE,<font color="#666666">"Unknown <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> type given: %s"</font>,type);
+<a name="line146">146: </a>   <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(PetscDrawList,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;comm,type,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,(void (**)(void)) &amp;r);
+<a name="line147">147: </a>  <font color="#4169E1">if</font> (!r) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_UNKNOWN_TYPE,<font color="#666666">"Unknown <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> type given: %s"</font>,type);
 <a name="line148">148: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw,type);
 <a name="line149">149: </a>  draw-&gt;data        = 0;
 <a name="line150">150: </a>  (*r)(draw);
@@ -225,45 +225,93 @@
 <a name="line239">239: </a><font color="#B22222">@*/</font>
 <a name="line240">240: </a><strong><font color="#4169E1"><a name="PetscDrawSetFromOptions"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawSetFromOptions.html#PetscDrawSetFromOptions">PetscDrawSetFromOptions</A>(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw)</font></strong>
 <a name="line241">241: </a>{
-<a name="line243">243: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> flg,nox;
-<a name="line244">244: </a>  char       vtype[256];
-<a name="line245">245: </a>  const char *def;
-<a name="line246">246: </a><font color="#A020F0">#if !defined(PETSC_USE_WINDOWS_GRAPHICS) &amp;&amp; !defined(PETSC_HAVE_X11)</font>
-<a name="line247">247: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> warn;
-<a name="line248">248: </a><font color="#A020F0">#endif</font>
+<a name="line243">243: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg,nox;
+<a name="line244">244: </a>  char           vtype[256];
+<a name="line245">245: </a>  const char     *def;
+<a name="line246">246: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      save;
+<a name="line247">247: </a><font color="#A020F0">#if !defined(PETSC_USE_WINDOWS_GRAPHICS) &amp;&amp; !defined(PETSC_HAVE_X11)</font>
+<a name="line248">248: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      warn;
+<a name="line249">249: </a><font color="#A020F0">#endif</font>
+<a name="line250">250: </a>  char           filename[PETSC_MAX_PATH_LEN];
 
 
-<a name="line253">253: </a>  <font color="#4169E1">if</font> (!PetscDrawList) {
-<a name="line254">254: </a>    <A href="../../../../docs/manualpages/Draw/PetscDrawRegisterAll.html#PetscDrawRegisterAll">PetscDrawRegisterAll</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line255">255: </a>  }
+<a name="line255">255: </a>  <font color="#4169E1">if</font> (!PetscDrawList) {
+<a name="line256">256: </a>    <A href="../../../../docs/manualpages/Draw/PetscDrawRegisterAll.html#PetscDrawRegisterAll">PetscDrawRegisterAll</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line257">257: </a>  }
 
-<a name="line257">257: </a>  <font color="#4169E1">if</font> (((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;type_name) {
-<a name="line258">258: </a>    def = ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;type_name;
-<a name="line259">259: </a>  } <font color="#4169E1">else</font> {
-<a name="line260">260: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-nox"</font>,&amp;nox);
-<a name="line261">261: </a>    def  = PETSC_DRAW_NULL;
-<a name="line262">262: </a><font color="#A020F0">#if defined(PETSC_USE_WINDOWS_GRAPHICS) &amp;&amp; !defined(PETSC_HAVE_X11)</font>
-<a name="line263">263: </a>    <font color="#4169E1">if</font> (!nox) def = PETSC_DRAW_WIN32;
-<a name="line264">264: </a><font color="#A020F0">#elif defined(PETSC_HAVE_X11)</font>
-<a name="line265">265: </a>    <font color="#4169E1">if</font> (!nox) def = PETSC_DRAW_X;
-<a name="line266">266: </a><font color="#A020F0">#else</font>
-<a name="line267">267: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-nox_warning"</font>,&amp;warn);
-<a name="line268">268: </a>    <font color="#4169E1">if</font> (!nox &amp;&amp; !warn) {
-<a name="line269">269: </a>      (*<A href="../../../../docs/manualpages/Sys/PetscErrorPrintf.html#PetscErrorPrintf">PetscErrorPrintf</A>)(<font color="#666666">"PETSc installed without X windows on this machine\nproceeding without graphics\n"</font>);
-<a name="line270">270: </a>    }
-<a name="line271">271: </a><font color="#A020F0">#endif</font>
-<a name="line272">272: </a>  }
-<a name="line273">273: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;comm,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;prefix,<font color="#666666">"Graphics (<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A>) Options"</font>,<font color="#666666">"Draw"</font>);
-<a name="line274">274: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsList.html#PetscOptionsList">PetscOptionsList</A>(<font color="#666666">"-draw_type"</font>,<font color="#666666">"Type of graphical output"</font>,<font color="#666666">"<A href="../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>"</font>,PetscDrawList,def,vtype,256,&amp;flg);
-<a name="line275">275: </a>    <font color="#4169E1">if</font> (flg) {
-<a name="line276">276: </a>      <A href="../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(draw,vtype);
-<a name="line277">277: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (!((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;type_name) {
-<a name="line278">278: </a>      <A href="../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(draw,def);
-<a name="line279">279: </a>    }
-<a name="line280">280: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsName.html#PetscOptionsName">PetscOptionsName</A>(<font color="#666666">"-nox"</font>,<font color="#666666">"Run without graphics"</font>,<font color="#666666">"None"</font>,&amp;nox);
-<a name="line281">281: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>();
-<a name="line282">282: </a>  <font color="#4169E1">return</font>(0);
-<a name="line283">283: </a>}
+<a name="line259">259: </a>  <font color="#4169E1">if</font> (((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;type_name) {
+<a name="line260">260: </a>    def = ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;type_name;
+<a name="line261">261: </a>  } <font color="#4169E1">else</font> {
+<a name="line262">262: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-nox"</font>,&amp;nox);
+<a name="line263">263: </a>    def  = PETSC_DRAW_NULL;
+<a name="line264">264: </a><font color="#A020F0">#if defined(PETSC_USE_WINDOWS_GRAPHICS) &amp;&amp; !defined(PETSC_HAVE_X11)</font>
+<a name="line265">265: </a>    <font color="#4169E1">if</font> (!nox) def = PETSC_DRAW_WIN32;
+<a name="line266">266: </a><font color="#A020F0">#elif defined(PETSC_HAVE_X11)</font>
+<a name="line267">267: </a>    <font color="#4169E1">if</font> (!nox) def = PETSC_DRAW_X;
+<a name="line268">268: </a><font color="#A020F0">#else</font>
+<a name="line269">269: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-nox_warning"</font>,&amp;warn);
+<a name="line270">270: </a>    <font color="#4169E1">if</font> (!nox &amp;&amp; !warn) {
+<a name="line271">271: </a>      (*<A href="../../../../docs/manualpages/Sys/PetscErrorPrintf.html#PetscErrorPrintf">PetscErrorPrintf</A>)(<font color="#666666">"PETSc installed without X windows on this machine\nproceeding without graphics\n"</font>);
+<a name="line272">272: </a>    }
+<a name="line273">273: </a><font color="#A020F0">#endif</font>
+<a name="line274">274: </a>  }
+<a name="line275">275: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectOptionsBegin.html#PetscObjectOptionsBegin">PetscObjectOptionsBegin</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw);
+<a name="line276">276: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsList.html#PetscOptionsList">PetscOptionsList</A>(<font color="#666666">"-draw_type"</font>,<font color="#666666">"Type of graphical output"</font>,<font color="#666666">"<A href="../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>"</font>,PetscDrawList,def,vtype,256,&amp;flg);
+<a name="line277">277: </a>    <font color="#4169E1">if</font> (flg) {
+<a name="line278">278: </a>      <A href="../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(draw,vtype);
+<a name="line279">279: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (!((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw)-&gt;type_name) {
+<a name="line280">280: </a>      <A href="../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(draw,def);
+<a name="line281">281: </a>    }
+<a name="line282">282: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsName.html#PetscOptionsName">PetscOptionsName</A>(<font color="#666666">"-nox"</font>,<font color="#666666">"Run without graphics"</font>,<font color="#666666">"None"</font>,&amp;nox);
+<a name="line283">283: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsString.html#PetscOptionsString">PetscOptionsString</A>(<font color="#666666">"-draw_save"</font>,<font color="#666666">"Save graphics to file"</font>,<font color="#666666">"PetscDrawSetSave"</font>,filename,filename,PETSC_MAX_PATH_LEN,&amp;save);
+<a name="line284">284: </a>    <font color="#4169E1">if</font> (save) {
+<a name="line285">285: </a>      PetscDrawSetSave(draw,filename);
+<a name="line286">286: </a>    }
+
+<a name="line288">288: </a>    <font color="#B22222">/* process any options handlers added with <A href="../../../../docs/manualpages/Sys/PetscObjectAddOptionsHandler.html#PetscObjectAddOptionsHandler">PetscObjectAddOptionsHandler</A>() */</font>
+<a name="line289">289: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectProcessOptionsHandlers.html#PetscObjectProcessOptionsHandlers">PetscObjectProcessOptionsHandlers</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw);
+<a name="line290">290: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>();
+<a name="line291">291: </a>  <font color="#4169E1">return</font>(0);
+<a name="line292">292: </a>}
+
+<a name="line296">296: </a><font color="#B22222">/*@C</font>
+<a name="line297">297: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Draw/PetscDrawSave.html#PetscDrawSave">PetscDrawSave</A> - Saves images produced in a <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> into a file as JPGEG</font>
+
+<a name="line299">299: </a><font color="#B22222">   Collective on <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A></font>
+
+<a name="line301">301: </a><font color="#B22222">   Input Parameter:</font>
+<a name="line302">302: </a><font color="#B22222">+  draw      - the graphics context</font>
+<a name="line303">303: </a><font color="#B22222">-  filename  - name of the file, if <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> uses name of draw object</font>
+
+<a name="line305">305: </a><font color="#B22222">   Options Database Command:</font>
+<a name="line306">306: </a><font color="#B22222">.  -draw_save  &lt;filename&gt;</font>
+
+<a name="line308">308: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line310">310: </a><font color="#B22222">   Concepts: X windows^graphics</font>
+<a name="line311">311: </a><font color="#B22222">   Concepts: drawing^postscript</font>
+<a name="line312">312: </a><font color="#B22222">   Concepts: postscript^graphics</font>
+<a name="line313">313: </a><font color="#B22222">   Concepts: drawing^Microsoft Windows</font>
+
+<a name="line315">315: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Draw/PetscDrawSetFromOptions.html#PetscDrawSetFromOptions">PetscDrawSetFromOptions</A>(), <A href="../../../../docs/manualpages/Draw/PetscDrawCreate.html#PetscDrawCreate">PetscDrawCreate</A>(), <A href="../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>()</font>
+<a name="line316">316: </a><font color="#B22222">@*/</font>
+<a name="line317">317: </a><strong><font color="#4169E1"><a name="PetscDrawSetSave"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscDrawSetSave(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw,const char *filename)</font></strong>
+<a name="line318">318: </a>{
+
+<a name="line323">323: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(draw-&gt;savefilename);
+<a name="line324">324: </a>  draw-&gt;savefilecount = 0;
+<a name="line325">325: </a>  <font color="#4169E1">if</font> (filename &amp;&amp; filename[0]) {
+<a name="line326">326: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(filename,&amp;draw-&gt;savefilename);
+<a name="line327">327: </a>  } <font color="#4169E1">else</font> {
+<a name="line328">328: </a>    const char *name;
+<a name="line329">329: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectGetName.html#PetscObjectGetName">PetscObjectGetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw,&amp;name);
+<a name="line330">330: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(name,&amp;draw-&gt;savefilename);
+<a name="line331">331: </a>  }
+<a name="line332">332: </a>  <font color="#4169E1">if</font> (draw-&gt;ops-&gt;setsave) {
+<a name="line333">333: </a>    (*draw-&gt;ops-&gt;setsave)(draw,filename);
+<a name="line334">334: </a>  }
+<a name="line335">335: </a>  <font color="#4169E1">return</font>(0);
+<a name="line336">336: </a>}
 </pre>
 </body>
 

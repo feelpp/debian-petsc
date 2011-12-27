@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* richscale.c */
 /* Fortran interface file */
 
@@ -32,14 +33,23 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define ksprichardsonsetscale_ ksprichardsonsetscale
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define ksprichardsonsetselfscale_ KSPRICHARDSONSETSELFSCALE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define ksprichardsonsetselfscale_ ksprichardsonsetselfscale
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   ksprichardsonsetscale_(KSP ksp,PetscReal *scale, int *__ierr ){
+void PETSC_STDCALL  ksprichardsonsetscale_(KSP ksp,PetscReal *scale, int *__ierr ){
 *__ierr = KSPRichardsonSetScale(
+	(KSP)PetscToPointer((ksp) ),*scale);
+}
+void PETSC_STDCALL  ksprichardsonsetselfscale_(KSP ksp,PetscBool  *scale, int *__ierr ){
+*__ierr = KSPRichardsonSetSelfScale(
 	(KSP)PetscToPointer((ksp) ),*scale);
 }
 #if defined(__cplusplus)

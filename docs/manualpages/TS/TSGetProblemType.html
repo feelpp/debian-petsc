@@ -10,7 +10,7 @@ Gets the type of problem to be solved.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSGetProblemType(TS ts, TSProblemType *type) 
+PetscErrorCode  TSGetProblemType(TS ts, TSProblemType *type) 
 </PRE>
 Not collective
 <P>
@@ -22,9 +22,9 @@ Not collective
 <DT><B>type </B> -One of TS_LINEAR, TS_NONLINEAR where these types refer to problems of the forms
 <br>
 <PRE>
-         U_t = A U    
-         U_t = A(t) U 
-         U_t = F(t,U) 
+         M U_t = A U
+         M(t) U_t = A(t) U
+         U_t = F(t,U)
 </PRE>
 
 <P>

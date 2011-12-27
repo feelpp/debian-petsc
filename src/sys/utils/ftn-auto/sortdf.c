@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* sortd.c */
 /* Fortran interface file */
 
@@ -48,13 +49,13 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscsortreal_(PetscInt *n,PetscReal v[], int *__ierr ){
+void PETSC_STDCALL  petscsortreal_(PetscInt *n,PetscReal v[], int *__ierr ){
 *__ierr = PetscSortReal(*n,v);
 }
-void PETSC_STDCALL   petscsortsplit_(PetscInt *ncut,PetscInt *n,PetscScalar a[],PetscInt idx[], int *__ierr ){
+void PETSC_STDCALL  petscsortsplit_(PetscInt *ncut,PetscInt *n,PetscScalar a[],PetscInt idx[], int *__ierr ){
 *__ierr = PetscSortSplit(*ncut,*n,a,idx);
 }
-void PETSC_STDCALL   petscsortsplitreal_(PetscInt *ncut,PetscInt *n,PetscReal a[],PetscInt idx[], int *__ierr ){
+void PETSC_STDCALL  petscsortsplitreal_(PetscInt *ncut,PetscInt *n,PetscReal a[],PetscInt idx[], int *__ierr ){
 *__ierr = PetscSortSplitReal(*ncut,*n,a,idx);
 }
 #if defined(__cplusplus)

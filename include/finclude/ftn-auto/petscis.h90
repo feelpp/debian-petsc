@@ -1,15 +1,24 @@
         subroutine ISIdentity(is, ident ,ierr)
        IS is ! IS
-       PetscTruth ident ! PetscTruth
+       PetscBool ident ! PetscBool
        integer ierr
        end subroutine
         subroutine ISSetIdentity(is ,ierr)
        IS is ! IS
        integer ierr
        end subroutine
+        subroutine ISContiguousLocal(is, gstart, gend, start, contig ,  &
+     &ierr)
+       IS is ! IS
+       PetscInt gstart ! PetscInt
+       PetscInt gend ! PetscInt
+       PetscInt start ! PetscInt
+       PetscBool contig ! PetscBool
+       integer ierr
+       end subroutine
         subroutine ISPermutation(is, perm ,ierr)
        IS is ! IS
-       PetscTruth perm ! PetscTruth
+       PetscBool perm ! PetscBool
        integer ierr
        end subroutine
         subroutine ISSetPermutation(is ,ierr)
@@ -36,13 +45,27 @@
        PetscInt size ! PetscInt
        integer ierr
        end subroutine
+        subroutine ISGetNonlocalIS(is, complement ,ierr)
+       IS is ! IS
+       IS complement ! IS
+       integer ierr
+       end subroutine
+        subroutine ISRestoreNonlocalIS(is, complement ,ierr)
+       IS is ! IS
+       IS complement ! IS
+       integer ierr
+       end subroutine
         subroutine ISSort(is ,ierr)
+       IS is ! IS
+       integer ierr
+       end subroutine
+        subroutine ISToGeneral(is ,ierr)
        IS is ! IS
        integer ierr
        end subroutine
         subroutine ISSorted(is, flg ,ierr)
        IS is ! IS
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine ISDuplicate(is, newIS ,ierr)
@@ -55,29 +78,64 @@
        IS isy ! IS
        integer ierr
        end subroutine
-        subroutine ISCreateGeneral(comm, n, idx, is ,ierr)
-       integer comm ! MPI_Comm
-       PetscInt n ! PetscInt
-       PetscInt idx (*) ! PetscInt
+        subroutine ISOnComm(is, comm, mode, newis ,ierr)
        IS is ! IS
+       integer comm ! MPI_Comm
+       PetscCopyMode mode ! PetscCopyMode
+       IS newis ! IS
        integer ierr
        end subroutine
-        subroutine ISCreateBlock(comm, bs, n, idx, is ,ierr)
-       integer comm ! MPI_Comm
+        subroutine ISSetBlockSize(is, bs ,ierr)
+       IS is ! IS
        PetscInt bs ! PetscInt
-       PetscInt n ! PetscInt
-       PetscInt idx (*) ! PetscInt
-       IS is ! IS
        integer ierr
        end subroutine
-        subroutine ISBlockGetBlockSize(is, size ,ierr)
+        subroutine ISGetBlockSize(is, size ,ierr)
        IS is ! IS
        PetscInt size ! PetscInt
        integer ierr
        end subroutine
-        subroutine ISBlock(is, flag ,ierr)
+        subroutine ISCreate(comm, is ,ierr)
+       integer comm ! MPI_Comm
        IS is ! IS
-       PetscTruth flag ! PetscTruth
+       integer ierr
+       end subroutine
+        subroutine ISStrideGetInfo(is, first, step ,ierr)
+       IS is ! IS
+       PetscInt first ! PetscInt
+       PetscInt step ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine ISStrideSetStride(is, n, first, step ,ierr)
+       IS is ! IS
+       PetscInt n ! PetscInt
+       PetscInt first ! PetscInt
+       PetscInt step ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine ISCreateStride(comm, n, first, step, is ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt n ! PetscInt
+       PetscInt first ! PetscInt
+       PetscInt step ! PetscInt
+       IS is ! IS
+       integer ierr
+       end subroutine
+        subroutine ISBlockSetIndices(is, bs, n, idx, mode ,ierr)
+       IS is ! IS
+       PetscInt bs ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt idx (*) ! PetscInt
+       PetscCopyMode mode ! PetscCopyMode
+       integer ierr
+       end subroutine
+        subroutine ISCreateBlock(comm, bs, n, idx, mode, is ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt bs ! PetscInt
+       PetscInt n ! PetscInt
+       PetscInt idx (*) ! PetscInt
+       PetscCopyMode mode ! PetscCopyMode
+       IS is ! IS
        integer ierr
        end subroutine
         subroutine ISBlockGetLocalSize(is, size ,ierr)
@@ -88,25 +146,6 @@
         subroutine ISBlockGetSize(is, size ,ierr)
        IS is ! IS
        PetscInt size ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine ISStrideGetInfo(is, first, step ,ierr)
-       IS is ! IS
-       PetscInt first ! PetscInt
-       PetscInt step ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine ISStride(is, flag ,ierr)
-       IS is ! IS
-       PetscTruth flag ! PetscTruth
-       integer ierr
-       end subroutine
-        subroutine ISCreateStride(comm, n, first, step, is ,ierr)
-       integer comm ! MPI_Comm
-       PetscInt n ! PetscInt
-       PetscInt first ! PetscInt
-       PetscInt step ! PetscInt
-       IS is ! IS
        integer ierr
        end subroutine
         subroutine ISDifference(is1, is2, isout ,ierr)
@@ -132,15 +171,23 @@
        ISLocalToGlobalMapping mapping ! ISLocalToGlobalMapping
        integer ierr
        end subroutine
-        subroutine ISLocalToGlobalMappingCreate(cm, n, indices, mapping &
-     &,ierr)
+        subroutine ISLocalToGlobalMappingCreate(cm, n, indices, mode,   &
+     &mapping ,ierr)
        integer cm ! MPI_Comm
        PetscInt n ! PetscInt
        PetscInt indices (*) ! PetscInt
+       PetscCopyMode mode ! PetscCopyMode
        ISLocalToGlobalMapping mapping ! ISLocalToGlobalMapping
        integer ierr
        end subroutine
         subroutine ISLocalToGlobalMappingBlock(inmap, bs, outmap ,ierr)
+       ISLocalToGlobalMapping inmap ! ISLocalToGlobalMapping
+       PetscInt bs ! PetscInt
+       ISLocalToGlobalMapping outmap ! ISLocalToGlobalMapping
+       integer ierr
+       end subroutine
+        subroutine ISLocalToGlobalMappingUnBlock(inmap, bs, outmap ,ierr&
+     &)
        ISLocalToGlobalMapping inmap ! ISLocalToGlobalMapping
        PetscInt bs ! PetscInt
        ISLocalToGlobalMapping outmap ! ISLocalToGlobalMapping
@@ -197,6 +244,21 @@
         subroutine ISEqual(is1, is2, flg ,ierr)
        IS is1 ! IS
        IS is2 ! IS
-       PetscTruth flg ! PetscTruth
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine ISCreateGeneral(comm, n, idx, mode, is ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt n ! PetscInt
+       PetscInt idx (*) ! PetscInt
+       PetscCopyMode mode ! PetscCopyMode
+       IS is ! IS
+       integer ierr
+       end subroutine
+        subroutine ISGeneralSetIndices(is, n, idx, mode ,ierr)
+       IS is ! IS
+       PetscInt n ! PetscInt
+       PetscInt idx (*) ! PetscInt
+       PetscCopyMode mode ! PetscCopyMode
        integer ierr
        end subroutine

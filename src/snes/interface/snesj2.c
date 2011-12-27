@@ -1,7 +1,5 @@
-#define PETSCSNES_DLL
 
-#include "private/matimpl.h"      /*I  "petscmat.h"  I*/
-#include "private/snesimpl.h"    /*I  "petscsnes.h"  I*/
+#include <private/snesimpl.h>    /*I  "petscsnes.h"  I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESDefaultComputeJacobianColor"
@@ -32,7 +30,7 @@
 
 @*/
 
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultComputeJacobianColor(SNES snes,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
+PetscErrorCode  SNESDefaultComputeJacobianColor(SNES snes,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
 {
   MatFDColoring  color = (MatFDColoring) ctx;
   PetscErrorCode ierr;
@@ -40,6 +38,7 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultComputeJacobianColor(SNES snes,Vec
   PetscErrorCode (*ff)(void),(*fd)(void);
 
   PetscFunctionBegin;
+  PetscValidHeaderSpecific(color,MAT_FDCOLORING_CLASSID,6);
   *flag = SAME_NONZERO_PATTERN;
   ierr  = SNESGetFunction(snes,&f,(PetscErrorCode (**)(SNES,Vec,Vec,void*))&ff,0);CHKERRQ(ierr);
   ierr  = MatFDColoringGetFunction(color,&fd,PETSC_NULL);CHKERRQ(ierr);

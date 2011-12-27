@@ -4,8 +4,8 @@
 !
       program main
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscis.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscis.h>
 
 
        PetscErrorCode ierr
@@ -13,7 +13,7 @@
        PetscMPIInt size,rank
        PetscOffset iis
        IS          is,newis
-       PetscTruth  flag
+       PetscBool   flag
 
        call PetscInitialize(PETSC_NULL_CHARACTER,ierr)
            CHKERRQ(ierr)
@@ -23,7 +23,8 @@
 !     Test IS of size 0 
 
        n = 0
-       call ISCreateGeneral(PETSC_COMM_SELF,n,indices,is,ierr) 
+       call ISCreateGeneral(PETSC_COMM_SELF,n,indices,PETSC_COPY_VALUES,    &
+     &                      is,ierr) 
            CHKERRQ(ierr)
        call ISGetLocalSize(is,n,ierr) 
            CHKERRQ(ierr)
@@ -40,7 +41,8 @@
       do 10, i=1,n
         indices(i) = i-1
  10   continue
-      call ISCreateGeneral(PETSC_COMM_SELF,n,indices,is,ierr) 
+      call ISCreateGeneral(PETSC_COMM_SELF,n,indices,PETSC_COPY_VALUES,       &
+     &                     is,ierr) 
            CHKERRQ(ierr)
       call ISGetIndices(is,ii,iis,ierr) 
            CHKERRQ(ierr)
@@ -106,13 +108,13 @@
 
 !     Thinks it is a different type?
 
-      call ISStride(is,flag,ierr) 
+      call PetscTypeCompare(is,ISSTRIDE,flag,ierr) 
            CHKERRQ(ierr)
       if (flag) then
          print*, 'Error checking stride'
          stop
       endif
-      call ISBlock(is,flag,ierr) 
+      call PetscTypeCompare(is,ISBLOCK,flag,ierr) 
            CHKERRQ(ierr)
       if (flag) then
          print*, 'Error checking block'
@@ -128,7 +130,8 @@
         indices(i) = n - i
  30   continue
 
-      call ISCreateGeneral(PETSC_COMM_SELF,n,indices,is,ierr) 
+      call ISCreateGeneral(PETSC_COMM_SELF,n,indices,PETSC_COPY_VALUES,         &
+     &                     is,ierr) 
            CHKERRQ(ierr)
       call ISSetPermutation(is,ierr) 
            CHKERRQ(ierr)

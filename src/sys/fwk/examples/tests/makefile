@@ -8,7 +8,7 @@ SOURCEF     =
 SOURCEH     =
 OBJSC       = testcomponentsI.o testcomponentsII.o
 OBJSF       = 
-MANSEC      = fwk
+MANSEC      = Sys
 LOCDIR      = src/sys/fwk/examples/tests/
 
 
@@ -18,19 +18,19 @@ include ${PETSC_DIR}/conf/test
 LIBBASE     = libtestcomponents
 LIBNAME    = ${INSTALL_LIB_DIR}/${LIBBASE}.${AR_LIB_SUFFIX}
 SHLIBS = ${LIBBASE}
-OTHERSHAREDLIBS=${PETSC_LIB_BASIC}
+OTHERSHAREDLIBS=${PETSC_LIB}
 
 TESTS = test1
 
 libs: chklib_dir lib shared
 
-test1:
+test1: test1.c
 	make PETSC_DIR=${PETSC_DIR} PETSC_ARCH=${PETSC_ARCH} EX=test1 ex
 
 EX_DIR     = .
 TESTS       = test1
 ex: libs chkex_dir ${EX}.o
-	${SL_LINKER} -o ${EX} ${EX}.o ${PETSC_LIB_BASIC};\
+	${SL_LINKER} -o ${EX} ${EX}.o ${PETSC_LIB};\
 	${MV} ${EX} ${EX_DIR}/;\
 	${RM} ${EX}.o 
 

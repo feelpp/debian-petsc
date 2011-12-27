@@ -1,7 +1,6 @@
-#define PETSCMAT_DLL
 
-#include "../src/mat/impls/baij/seq/baij.h"
-#include "../src/mat/impls/sbaij/seq/sbaij.h"   
+#include <../src/mat/impls/baij/seq/baij.h>
+#include <../src/mat/impls/sbaij/seq/sbaij.h>   
 
 /* 
 This function is used before applying a 
@@ -33,7 +32,7 @@ C    STORED IN ROW J (AND THUS M(I,J) IS NOT STORED).
 */
 #undef __FUNCT__  
 #define __FUNCT__ "MatReorderingSeqSBAIJ"
-PetscErrorCode PETSCMAT_DLLEXPORT MatReorderingSeqSBAIJ(Mat A,IS perm)
+PetscErrorCode  MatReorderingSeqSBAIJ(Mat A,IS perm)
 {
   Mat_SeqSBAIJ   *a=(Mat_SeqSBAIJ *)A->data;
   PetscErrorCode ierr;
@@ -44,17 +43,17 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatReorderingSeqSBAIJ(Mat A,IS perm)
 
   PetscFunctionBegin;
   if (!mbs) PetscFunctionReturn(0); 
-  SETERRQ(PETSC_ERR_SUP,"Matrix reordering is not supported for sbaij matrix. Use aij format");
+  SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Matrix reordering is not supported for sbaij matrix. Use aij format");
   ierr = ISGetIndices(perm,&rip);CHKERRQ(ierr);
 
   ierr = ISInvertPermutation(perm,PETSC_DECIDE,&iperm);CHKERRQ(ierr);  
   ierr = ISGetIndices(iperm,&riip);CHKERRQ(ierr);
 
   for (i=0; i<mbs; i++) {
-    if (rip[i] != riip[i]) SETERRQ(PETSC_ERR_ARG_INCOMP,"Non-symmetric permutation, use symmetric permutation for symmetric matrices");
+    if (rip[i] != riip[i]) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Non-symmetric permutation, use symmetric permutation for symmetric matrices");
   }
   ierr = ISRestoreIndices(iperm,&riip);CHKERRQ(ierr);
-  ierr = ISDestroy(iperm);CHKERRQ(ierr);
+  ierr = ISDestroy(&iperm);CHKERRQ(ierr);
 
   if (!a->inew){ 
     ierr = PetscMalloc2(mbs+1,PetscInt,&ai, 2*a->i[mbs],PetscInt,&aj);CHKERRQ(ierr);
@@ -135,22 +134,17 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatReorderingSeqSBAIJ(Mat A,IS perm)
   a->inew = ai;
   a->jnew = aj;
 
-  if (a->row) {
-    ierr = ISDestroy(a->row);CHKERRQ(ierr);
-  }
-  if (a->icol) {
-    ierr = ISDestroy(a->icol);CHKERRQ(ierr);
-  }
+  ierr = ISDestroy(&a->row);CHKERRQ(ierr);
+  ierr = ISDestroy(&a->icol);CHKERRQ(ierr);
   ierr = PetscObjectReference((PetscObject)perm);CHKERRQ(ierr);
-  if (a->row) { ierr = ISDestroy(a->row);CHKERRQ(ierr); }
+  ierr = ISDestroy(&a->row);CHKERRQ(ierr);
   a->row  = perm;
   ierr = PetscObjectReference((PetscObject)perm);CHKERRQ(ierr);
-  if (a->icol) { ierr = ISDestroy(a->icol);CHKERRQ(ierr); }
+  ierr = ISDestroy(&a->icol);CHKERRQ(ierr);
   a->icol = perm;
 
   ierr = PetscFree(nzr);CHKERRQ(ierr); 
   ierr = PetscFree(r);CHKERRQ(ierr); 
-  
   PetscFunctionReturn(0);
 }
 

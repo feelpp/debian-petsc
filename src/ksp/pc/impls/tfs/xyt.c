@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /*************************************xyt.c************************************
 Module Name: xyt
@@ -17,7 +16,7 @@ contact:
 
 Last Modification: 3.20.01
 **************************************xyt.c***********************************/
-#include "../src/ksp/pc/impls/tfs/tfs.h"
+#include <../src/ksp/pc/impls/tfs/tfs.h>
 
 #define LEFT  -1
 #define RIGHT  1
@@ -93,8 +92,7 @@ PetscInt XYT_factor(xyt_ADT xyt_handle, /* prev. allocated xyt  handle */
   check_handle(xyt_handle);
 
   /* only 2^k for now and all nodes participating */
-  if ((1<<(xyt_handle->level=i_log2_num_nodes))!=num_nodes)
-    {SETERRQ2(PETSC_ERR_PLIB,"only 2^k for now and MPI_COMM_WORLD!!! %D != %D\n",1<<i_log2_num_nodes,num_nodes);}
+  if ((1<<(xyt_handle->level=i_log2_num_nodes))!=num_nodes) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"only 2^k for now and MPI_COMM_WORLD!!! %D != %D\n",1<<i_log2_num_nodes,num_nodes);
 
   /* space for X info */
   xyt_handle->info = (xyt_info*)malloc(sizeof(xyt_info));
@@ -163,22 +161,19 @@ PetscInt XYT_free(xyt_ADT xyt_handle)
 /**************************************xyt.c***********************************/
 PetscInt XYT_stats(xyt_ADT xyt_handle)
 {
-  PetscInt  op[] = {NON_UNIFORM,GL_MIN,GL_MAX,GL_ADD,GL_MIN,GL_MAX,GL_ADD,GL_MIN,GL_MAX,GL_ADD};
-  PetscInt fop[] = {NON_UNIFORM,GL_MIN,GL_MAX,GL_ADD};
-  PetscInt   vals[9],  work[9];
+  PetscInt    op[] = {NON_UNIFORM,GL_MIN,GL_MAX,GL_ADD,GL_MIN,GL_MAX,GL_ADD,GL_MIN,GL_MAX,GL_ADD};
+  PetscInt   fop[] = {NON_UNIFORM,GL_MIN,GL_MAX,GL_ADD};
+  PetscInt    vals[9],  work[9];
   PetscScalar fvals[3], fwork[3];
-  PetscErrorCode ierr;
 
   comm_init();
   check_handle(xyt_handle);
 
   /* if factorization not done there are no stats */
-  if (!xyt_handle->info||!xyt_handle->mvi)
-    {
-      if (!my_id) 
-	{ierr = PetscPrintf(PETSC_COMM_WORLD,"XYT_stats() :: no stats available!\n");}
-      return 1;
-    }
+  if (!xyt_handle->info||!xyt_handle->mvi) {
+    if (!my_id) PetscPrintf(PETSC_COMM_WORLD,"XYT_stats() :: no stats available!\n");
+    return 1;
+  }
 
   vals[0]=vals[1]=vals[2]=xyt_handle->info->nnz;
   vals[3]=vals[4]=vals[5]=xyt_handle->mvi->n;
@@ -189,25 +184,24 @@ PetscInt XYT_stats(xyt_ADT xyt_handle)
     =xyt_handle->info->tot_solve_time/xyt_handle->info->nsolves++;
   grop(fvals,fwork,sizeof(fop)/sizeof(fop[0])-1,fop);
 
-  if (!my_id) 
-    {
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: min   xyt_nnz=%D\n",my_id,vals[0]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: max   xyt_nnz=%D\n",my_id,vals[1]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: avg   xyt_nnz=%g\n",my_id,1.0*vals[2]/num_nodes);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: tot   xyt_nnz=%D\n",my_id,vals[2]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: xyt   C(2d)  =%g\n",my_id,vals[2]/(pow(1.0*vals[5],1.5)));
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: xyt   C(3d)  =%g\n",my_id,vals[2]/(pow(1.0*vals[5],1.6667)));
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: min   xyt_n  =%D\n",my_id,vals[3]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: max   xyt_n  =%D\n",my_id,vals[4]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: avg   xyt_n  =%g\n",my_id,1.0*vals[5]/num_nodes);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: tot   xyt_n  =%D\n",my_id,vals[5]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: min   xyt_buf=%D\n",my_id,vals[6]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: max   xyt_buf=%D\n",my_id,vals[7]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: avg   xyt_buf=%g\n",my_id,1.0*vals[8]/num_nodes);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: min   xyt_slv=%g\n",my_id,fvals[0]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: max   xyt_slv=%g\n",my_id,fvals[1]);
-      ierr = PetscPrintf(PETSC_COMM_WORLD,"%D :: avg   xyt_slv=%g\n",my_id,fvals[2]/num_nodes);
-    }
+  if (!my_id) {
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: min   xyt_nnz=%D\n",my_id,vals[0]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: max   xyt_nnz=%D\n",my_id,vals[1]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: avg   xyt_nnz=%g\n",my_id,1.0*vals[2]/num_nodes);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: tot   xyt_nnz=%D\n",my_id,vals[2]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: xyt   C(2d)  =%g\n",my_id,vals[2]/(pow(1.0*vals[5],1.5)));
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: xyt   C(3d)  =%g\n",my_id,vals[2]/(pow(1.0*vals[5],1.6667)));
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: min   xyt_n  =%D\n",my_id,vals[3]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: max   xyt_n  =%D\n",my_id,vals[4]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: avg   xyt_n  =%g\n",my_id,1.0*vals[5]/num_nodes);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: tot   xyt_n  =%D\n",my_id,vals[5]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: min   xyt_buf=%D\n",my_id,vals[6]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: max   xyt_buf=%D\n",my_id,vals[7]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: avg   xyt_buf=%g\n",my_id,1.0*vals[8]/num_nodes);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: min   xyt_slv=%g\n",my_id,fvals[0]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: max   xyt_slv=%g\n",my_id,fvals[1]);
+    PetscPrintf(PETSC_COMM_WORLD,"%D :: avg   xyt_slv=%g\n",my_id,fvals[2]/num_nodes);
+  }
 
   return(0);
 }
@@ -342,7 +336,7 @@ static PetscInt xyt_generate(xyt_ADT xyt_handle)
     {
       /* time to move to the next level? */
       while (i==segs[dim]){
-        if (dim==level) SETERRQ(PETSC_ERR_PLIB,"dim about to exceed level\n");
+        if (dim==level) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"dim about to exceed level\n");
 	stages[dim++]=i;
 	end+=lnsep[dim];
       }
@@ -369,8 +363,7 @@ static PetscInt xyt_generate(xyt_ADT xyt_handle)
 	  idx=ivec_linear_search(col, a_local2global, a_n);
 	  if (idx!=-1)
 	    {v[idx] = 1.0; j++;}
-	  else
-	    {SETERRQ(PETSC_ERR_PLIB,"NOT FOUND!\n");}
+	  else SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"NOT FOUND!\n");
 	}
       else
 	{
@@ -431,12 +424,11 @@ static PetscInt xyt_generate(xyt_ADT xyt_handle)
       /* compute sqrt(alpha) = sqrt(u_l^T.u_l) - comm portion */
       grop_hc(&alpha, &alpha_w, 1, op, dim);
 
-      alpha = (PetscScalar) sqrt((double)alpha);
+      alpha = (PetscScalar) PetscSqrtReal((PetscReal)alpha);
 
       /* check for small alpha                             */
       /* LATER use this to detect and determine null space */
-      if (fabs(alpha)<1.0e-14)
-	{SETERRQ1(PETSC_ERR_PLIB,"bad alpha! %g\n",alpha);}
+      if (fabs(alpha)<1.0e-14) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_PLIB,"bad alpha! %g\n",alpha);
 
       /* compute v_l = v_l/sqrt(alpha) */
       rvec_scale(v,1.0/alpha,n);
@@ -647,13 +639,11 @@ static PetscErrorCode check_handle(xyt_ADT xyt_handle)
   PetscInt vals[2], work[2], op[] = {NON_UNIFORM,GL_MIN,GL_MAX};
 
   PetscFunctionBegin;
-  if (xyt_handle==NULL)
-    {SETERRQ1(PETSC_ERR_PLIB,"check_handle() :: bad handle :: NULL %D\n",xyt_handle);}
+  if (!xyt_handle) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_PLIB,"check_handle() :: bad handle :: NULL %D\n",xyt_handle);
 
   vals[0]=vals[1]=xyt_handle->id;
   giop(vals,work,sizeof(op)/sizeof(op[0])-1,op);
-  if ((vals[0]!=vals[1])||(xyt_handle->id<=0))
-    {SETERRQ3(PETSC_ERR_PLIB,"check_handle() :: bad handle :: id mismatch min/max %D/%D %D\n", vals[0],vals[1], xyt_handle->id);}
+  if ((vals[0]!=vals[1])||(xyt_handle->id<=0)) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_PLIB,"check_handle() :: bad handle :: id mismatch min/max %D/%D %D\n", vals[0],vals[1], xyt_handle->id);
   PetscFunctionReturn(0);
 }
 
@@ -723,7 +713,7 @@ static PetscErrorCode det_separators(xyt_ADT xyt_handle)
       /* pick the sub-hc with the most free dofs and do a mat-vec   */
       /* and pick up the responses on the other sub-hc from the     */
       /* initial separator set obtained from the symm. shared case  */
-      SETERRQ(PETSC_ERR_PLIB,"shared dof separator determination not ready ... see hmt!!!\n"); 
+      SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"shared dof separator determination not ready ... see hmt!!!\n"); 
       for (iptr=fo+n,id=my_id,mask=num_nodes>>1,edge=level;edge>0;edge--,mask>>=1)
 	{
 	  /* set rsh of hc, fire, and collect lhs responses */
@@ -792,8 +782,7 @@ static PetscErrorCode det_separators(xyt_ADT xyt_handle)
 		    {
 		      ct++; nfo++;
 
-		      if (nfo>n)
-			{SETERRQ(PETSC_ERR_PLIB,"nfo about to exceed n\n");}
+		      if (nfo>n) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"nfo about to exceed n\n");
 
 		      *--iptr = local2global[i];
 		      used[i]=edge;
@@ -815,8 +804,7 @@ static PetscErrorCode det_separators(xyt_ADT xyt_handle)
 		    {
 		      ct++; nfo++;
 
-		      if (nfo>n)
-			{SETERRQ(PETSC_ERR_PLIB,"nfo about to exceed n\n");}
+		      if (nfo>n) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"nfo about to exceed n\n");
 
 		      *--iptr = local2global[i];
 		      used[i]=edge;

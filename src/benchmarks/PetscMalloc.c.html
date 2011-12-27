@@ -4,12 +4,12 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:54:01+00:00">
+<meta name="date" content="2011-10-29T19:22:58+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
-<a name="line2"> 2: </a> #include <A href="../../include/petscsys.h.html">petscsys.h</A>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 
 <a name="line6">  6: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line7">  7: </a>{
@@ -18,7 +18,7 @@
 <a name="line10"> 10: </a>  void        *arr[1000],*dummy;
 <a name="line11"> 11: </a>  int         ierr,i,rand1[1000],rand2[1000];
 <a name="line12"> 12: </a>  <A href="../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A> r;
-<a name="line13"> 13: </a>  <A href="../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>  flg;
+<a name="line13"> 13: </a>  <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   flg;
 <a name="line14"> 14: </a>
 <a name="line15"> 15: </a>  <A href="../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,0,0);
 <a name="line16"> 16: </a>
@@ -62,7 +62,7 @@
 <a name="line54"> 54: </a>  <font color="#4169E1">if</font>(<A href="../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-malloc"</font>,&amp;flg),flg) fprintf(stdout,<font color="#666666">"-malloc "</font>);
 <a name="line55"> 55: </a>  fprintf(stdout,<font color="#666666">"\n"</font>);
 <a name="line56"> 56: </a>
-<a name="line57"> 57: </a>  <A href="../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(r);
+<a name="line57"> 57: </a>  <A href="../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;r);
 <a name="line58"> 58: </a>  <A href="../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line59"> 59: </a>  <font color="#4169E1">return</font>(0);
 <a name="line60"> 60: </a>}

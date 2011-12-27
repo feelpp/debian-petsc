@@ -10,7 +10,7 @@ Convergence test that do not return as converged until the maximum number of ite
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSkipConverged(KSP ksp,PetscInt n,PetscReal rnorm,KSPConvergedReason *reason,void *dummy)
+PetscErrorCode  KSPSkipConverged(KSP ksp,PetscInt n,PetscReal rnorm,KSPConvergedReason *reason,void *dummy)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -31,7 +31,7 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 This should be used as the convergence test with the option
-<A HREF="../KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(ksp,<A HREF="../KSP/KSP_NORM_NO.html#KSP_NORM_NO">KSP_NORM_NO</A>), since norms of the residual are
+<A HREF="../KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(ksp,<A HREF="../KSP/KSP_NORM_NONE.html#KSP_NORM_NONE">KSP_NORM_NONE</A>), since norms of the residual are
 not computed. Convergence is then declared after the maximum number
 of iterations have been reached. Useful when one is using CG or
 BiCGStab as a smoother.

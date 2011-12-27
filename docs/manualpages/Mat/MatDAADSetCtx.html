@@ -6,14 +6,14 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="MatDAADSetCtx"><H1>MatDAADSetCtx</H1></A>
-Sets the user context for a DAAD (ADIC matrix-free) matrix. 
+Sets the user context for a DMDAAD (ADIC matrix-free) matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"    
+#include "petscdmda.h"    
 #include "petscsnes.h"  
-PetscErrorCode PETSCMAT_DLLEXPORT MatDAADSetCtx(Mat A,void *ctx)
+PetscErrorCode  MatDAADSetCtx(Mat A,void *ctx)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -25,7 +25,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../DA/DASetLocalAdicMFFunction.html#DASetLocalAdicMFFunction">DASetLocalAdicMFFunction</A>(), <A HREF="../Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A HREF="../Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>()
+ <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A HREF="../Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A HREF="../Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
@@ -34,6 +34,5 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
 </BODY></HTML>

@@ -12,7 +12,7 @@ Sets the format for <A HREF="../Viewer/PetscViewers.html#PetscViewers">PetscView
 #include "petscsys.h" 
 PetscErrorCode  PetscViewerSetFormat(PetscViewer viewer,PetscViewerFormat format)
 </PRE>
-Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
+Logically Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -28,7 +28,7 @@ Available formats include
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_DEFAULT </B></TD><TD>- default format
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_MATLAB </B></TD><TD>- Matlab format
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_MATLAB </B></TD><TD>- MATLAB format
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_DENSE </B></TD><TD>- print matrix as dense
 </TD></TR>
@@ -49,9 +49,11 @@ element number next to each vector entry
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_SYMMODU </B></TD><TD>- print parallel vectors without
 indicating the processor ranges
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_VTK </B></TD><TD>- outputs the object to a VTK file
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_NATIVE </B></TD><TD>- store the object to the binary
 file in its native format (for example, dense
-matrices are stored as dense), <A HREF="../DA/DA.html#DA">DA</A> vectors are dumped directly to the
+matrices are stored as dense), DMDA vectors are dumped directly to the
 file instead of being first put in the natural ordering
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_DRAW_BASIC </B></TD><TD>- views the vector with a simple 1d plot
@@ -77,9 +79,13 @@ for that viewer to be used.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex33.c.html">src/ksp/ksp/examples/tutorials/ex33.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex35.c.html">src/ksp/ksp/examples/tutorials/ex35.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex37.c.html">src/ksp/ksp/examples/tutorials/ex37.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex54.c.html">src/ksp/ksp/examples/tutorials/ex54.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex55.c.html">src/ksp/ksp/examples/tutorials/ex55.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex61.c.html">src/snes/examples/tutorials/ex61.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex61view.c.html">src/snes/examples/tutorials/ex61view.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>
 </BODY></HTML>

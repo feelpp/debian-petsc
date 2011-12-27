@@ -4,7 +4,7 @@
 
 static char help[] = "Tests ISAllGather().\n\n";
 
-#include "petscis.h"
+#include <petscis.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -27,7 +27,7 @@ int main(int argc,char **argv)
   for (i=0; i<n; i++) {
     indices[i] = rank + i;
   }
-  ierr = ISCreateGeneral(PETSC_COMM_WORLD,n,indices,&is);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(PETSC_COMM_WORLD,n,indices,PETSC_COPY_VALUES,&is);CHKERRQ(ierr);
   ierr = PetscFree(indices);CHKERRQ(ierr);
 
   /*
@@ -39,9 +39,9 @@ int main(int argc,char **argv)
     ierr = ISView(newis,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
   }
 
-  ierr = ISDestroy(newis);CHKERRQ(ierr);
-  ierr = ISDestroy(is);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISDestroy(&newis);CHKERRQ(ierr);
+  ierr = ISDestroy(&is);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

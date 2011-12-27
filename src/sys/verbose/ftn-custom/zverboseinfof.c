@@ -1,4 +1,4 @@
-#include "private/fortranimpl.h"
+#include <private/fortranimpl.h>
 
 
 #ifdef PETSC_HAVE_FORTRAN_CAPS
@@ -9,6 +9,8 @@
 
 EXTERN_C_BEGIN
 
+#undef __FUNCT__  
+#define __FUNCT__ "PetscFixSlashN"
 static PetscErrorCode PetscFixSlashN(const char *in, char **out)
 {
   PetscErrorCode ierr;
@@ -31,7 +33,7 @@ void PETSC_STDCALL petscinfo_(CHAR text PETSC_MIXED_LEN(len1),PetscErrorCode *ie
   FIXCHAR(text,len1,c1);
   *ierr = PetscFixSlashN(c1,&tmp);if (*ierr) return;
   *ierr = PetscInfo(PETSC_NULL,tmp);if (*ierr) return;
-  *ierr = PetscStrfree(tmp);if (*ierr) return;
+  *ierr = PetscFree(tmp);if (*ierr) return;
   FREECHAR(text,c1);
 }
 

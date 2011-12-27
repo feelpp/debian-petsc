@@ -1,7 +1,7 @@
 
 static char help[] = "Tests MatSetValues().\n\n"; 
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -10,7 +10,7 @@ int main(int argc,char **args)
   Mat            C; 
   PetscInt       i,n = 5,midx[3],nidx[2];
   PetscErrorCode ierr;
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscScalar    v[6];
 
   PetscInitialize(&argc,&args,(char *)0,help);
@@ -31,8 +31,8 @@ int main(int argc,char **args)
 
   ierr = MatView(C,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

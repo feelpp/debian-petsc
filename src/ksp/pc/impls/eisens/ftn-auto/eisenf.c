@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* eisen.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pceisenstatsetomega_(PC pc,PetscReal *omega, int *__ierr ){
+void PETSC_STDCALL  pceisenstatsetomega_(PC pc,PetscReal *omega, int *__ierr ){
 *__ierr = PCEisenstatSetOmega(
 	(PC)PetscToPointer((pc) ),*omega);
 }
-void PETSC_STDCALL   pceisenstatnodiagonalscaling_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pceisenstatnodiagonalscaling_(PC pc, int *__ierr ){
 *__ierr = PCEisenstatNoDiagonalScaling(
 	(PC)PetscToPointer((pc) ));
 }

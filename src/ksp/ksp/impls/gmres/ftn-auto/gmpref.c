@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* gmpre.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspgmressetpreallocatevectors_(KSP ksp, int *__ierr ){
+void PETSC_STDCALL  kspgmressetpreallocatevectors_(KSP ksp, int *__ierr ){
 *__ierr = KSPGMRESSetPreAllocateVectors(
 	(KSP)PetscToPointer((ksp) ));
 }

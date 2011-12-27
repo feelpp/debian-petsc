@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* itcreate.c */
 /* Fortran interface file */
 
@@ -43,6 +44,11 @@ extern void PetscRmPointer(void*);
 #define kspsetlagnorm_ kspsetlagnorm
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspsetsupportednorm_ KSPSETSUPPORTEDNORM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspsetsupportednorm_ kspsetsupportednorm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspgetnormtype_ KSPGETNORMTYPE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspgetnormtype_ kspgetnormtype
@@ -83,46 +89,50 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspsetnormtype_(KSP ksp,KSPNormType *normtype, int *__ierr ){
+void PETSC_STDCALL  kspsetnormtype_(KSP ksp,KSPNormType *normtype, int *__ierr ){
 *__ierr = KSPSetNormType(
 	(KSP)PetscToPointer((ksp) ),*normtype);
 }
-void PETSC_STDCALL   kspsetchecknormiteration_(KSP ksp,PetscInt *it, int *__ierr ){
+void PETSC_STDCALL  kspsetchecknormiteration_(KSP ksp,PetscInt *it, int *__ierr ){
 *__ierr = KSPSetCheckNormIteration(
 	(KSP)PetscToPointer((ksp) ),*it);
 }
-void PETSC_STDCALL   kspsetlagnorm_(KSP ksp,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  kspsetlagnorm_(KSP ksp,PetscBool  *flg, int *__ierr ){
 *__ierr = KSPSetLagNorm(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }
-void PETSC_STDCALL   kspgetnormtype_(KSP ksp,KSPNormType *normtype, int *__ierr ){
+void PETSC_STDCALL  kspsetsupportednorm_(KSP ksp,KSPNormType *normtype,PCSide *pcside,PetscInt *priority, int *__ierr ){
+*__ierr = KSPSetSupportedNorm(
+	(KSP)PetscToPointer((ksp) ),*normtype,*pcside,*priority);
+}
+void PETSC_STDCALL  kspgetnormtype_(KSP ksp,KSPNormType *normtype, int *__ierr ){
 *__ierr = KSPGetNormType(
 	(KSP)PetscToPointer((ksp) ),
 	(KSPNormType* )PetscToPointer((normtype) ));
 }
-void PETSC_STDCALL   kspsetoperators_(KSP ksp,Mat Amat,Mat Pmat,MatStructure *flag, int *__ierr ){
+void PETSC_STDCALL  kspsetoperators_(KSP ksp,Mat Amat,Mat Pmat,MatStructure *flag, int *__ierr ){
 *__ierr = KSPSetOperators(
 	(KSP)PetscToPointer((ksp) ),
 	(Mat)PetscToPointer((Amat) ),
 	(Mat)PetscToPointer((Pmat) ),*flag);
 }
-void PETSC_STDCALL   kspgetoperators_(KSP ksp,Mat *Amat,Mat *Pmat,MatStructure *flag, int *__ierr ){
+void PETSC_STDCALL  kspgetoperators_(KSP ksp,Mat *Amat,Mat *Pmat,MatStructure *flag, int *__ierr ){
 *__ierr = KSPGetOperators(
 	(KSP)PetscToPointer((ksp) ),Amat,Pmat,flag);
 }
-void PETSC_STDCALL   kspcreate_(MPI_Fint * comm,KSP *inksp, int *__ierr ){
+void PETSC_STDCALL  kspcreate_(MPI_Fint * comm,KSP *inksp, int *__ierr ){
 *__ierr = KSPCreate(
 	MPI_Comm_f2c( *(comm) ),inksp);
 }
-void PETSC_STDCALL   kspregisterdestroy_(int *__ierr ){
+void PETSC_STDCALL  kspregisterdestroy_(int *__ierr ){
 *__ierr = KSPRegisterDestroy();
 }
-void PETSC_STDCALL   kspsetnullspace_(KSP ksp,MatNullSpace nullsp, int *__ierr ){
+void PETSC_STDCALL  kspsetnullspace_(KSP ksp,MatNullSpace nullsp, int *__ierr ){
 *__ierr = KSPSetNullSpace(
 	(KSP)PetscToPointer((ksp) ),
 	(MatNullSpace)PetscToPointer((nullsp) ));
 }
-void PETSC_STDCALL   kspgetnullspace_(KSP ksp,MatNullSpace *nullsp, int *__ierr ){
+void PETSC_STDCALL  kspgetnullspace_(KSP ksp,MatNullSpace *nullsp, int *__ierr ){
 *__ierr = KSPGetNullSpace(
 	(KSP)PetscToPointer((ksp) ),nullsp);
 }

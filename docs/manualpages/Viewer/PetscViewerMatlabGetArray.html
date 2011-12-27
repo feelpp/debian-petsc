@@ -6,16 +6,16 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscViewerMatlabGetArray"><H1>PetscViewerMatlabGetArray</H1></A>
-Gets a variable from a Matlab viewer into an array 
+Gets a variable from a MATLAB viewer into an array 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscViewerMatlabGetArray(PetscViewer mfile,int m,int n,PetscScalar *array,char *name)
+PetscErrorCode  PetscViewerMatlabGetArray(PetscViewer mfile,int m,int n,PetscScalar *array,const char *name)
 </PRE>
 Not Collective; only processor zero reads in the array
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mfile </B></TD><TD>- the Matlab file viewer
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mfile </B></TD><TD>- the MATLAB file viewer
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m,n </B></TD><TD>- the dimensions of the array
 </TD></TR>

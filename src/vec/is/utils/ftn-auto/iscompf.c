@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* iscomp.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   isequal_(IS is1,IS is2,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  isequal_(IS is1,IS is2,PetscBool  *flg, int *__ierr ){
 *__ierr = ISEqual(
 	(IS)PetscToPointer((is1) ),
 	(IS)PetscToPointer((is2) ),flg);

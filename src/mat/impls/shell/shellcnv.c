@@ -1,7 +1,6 @@
-#define PETSCMAT_DLL
 
-#include "private/matimpl.h"        /*I "petscmat.h" I*/
-#include "private/vecimpl.h"  
+#include <private/matimpl.h>        /*I "petscmat.h" I*/
+#include <private/vecimpl.h>  
   
 #undef __FUNCT__  
 #define __FUNCT__ "MatConvert_Shell"
@@ -27,7 +26,7 @@ PetscErrorCode MatConvert_Shell(Mat oldmat, const MatType newtype,MatReuse reuse
 
   ierr = MatCreate(comm,&mat);CHKERRQ(ierr);
   ierr = MatSetSizes(mat,m,M,M,M);CHKERRQ(ierr);
-  ierr = MatSetType(mat,newtype);CHKERRQ(ierr);
+  ierr = MatSetType(mat,MATSHELL);CHKERRQ(ierr);
   ierr = MatSetBlockSize(mat,oldmat->rmap->bs);CHKERRQ(ierr);
 
   for (i=0; i<M; i++) {
@@ -44,8 +43,8 @@ PetscErrorCode MatConvert_Shell(Mat oldmat, const MatType newtype,MatReuse reuse
 
   }
   ierr = PetscFree(rows);CHKERRQ(ierr);
-  ierr = VecDestroy(in);CHKERRQ(ierr);
-  ierr = VecDestroy(out);CHKERRQ(ierr);
+  ierr = VecDestroy(&in);CHKERRQ(ierr);
+  ierr = VecDestroy(&out);CHKERRQ(ierr);
   ierr = MatAssemblyBegin(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 

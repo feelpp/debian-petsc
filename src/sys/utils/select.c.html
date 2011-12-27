@@ -4,12 +4,12 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:22:23+00:00">
+<meta name="date" content="2011-10-29T18:53:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
-<a name="line2"> 2: </a> #include <A href="../../../include/petscsys.h.html">petscsys.h</A>
+<pre width="80">
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;              </font><font color="#B22222">/*I  "petscsys.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line6">  6: </a><font color="#B22222">/*@C</font>
 <a name="line7">  7: </a><font color="#B22222">     <A href="../../../docs/manualpages/Sys/PetscPopUpSelect.html#PetscPopUpSelect">PetscPopUpSelect</A> - Pops up a windows with a list of choices; allows one to be chosen</font>
@@ -49,8 +49,8 @@
 <a name="line41"> 41: </a>  char           buffer[2048],display[256],geometry[64];
 <a name="line42"> 42: </a>  FILE           *fp;
 
-<a name="line46"> 46: </a>  <font color="#4169E1">if</font> (!title) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_NULL,<font color="#666666">"Must pass in a title line"</font>);
-<a name="line47"> 47: </a>  <font color="#4169E1">if</font> (n &lt; 1) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_WRONG,<font color="#666666">"Must pass in at least one selection"</font>);
+<a name="line46"> 46: </a>  <font color="#4169E1">if</font> (!title) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_NULL,<font color="#666666">"Must pass in a title line"</font>);
+<a name="line47"> 47: </a>  <font color="#4169E1">if</font> (n &lt; 1) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,<font color="#666666">"Must pass in at least one selection"</font>);
 <a name="line48"> 48: </a>  <font color="#4169E1">if</font> (n == 1) {*choice = 0; <font color="#4169E1">return</font>(0);}
 
 <a name="line50"> 50: </a>  <A href="../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(title,&amp;cols);
@@ -82,13 +82,13 @@
 <a name="line76"> 76: </a>    FILE *fd;
 
 <a name="line78"> 78: </a>    <A href="../../../docs/manualpages/Sys/PetscFOpen.html#PetscFOpen">PetscFOpen</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"${HOMEDIRECTORY}/.popuptmp"</font>,<font color="#666666">"r"</font>,&amp;fd);
-<a name="line79"> 79: </a>    fscanf(fd,<font color="#666666">"%d"</font>,choice);
+<a name="line79"> 79: </a>    <font color="#4169E1">if</font> (fscanf(fd,<font color="#666666">"%d"</font>,choice) != 1) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fscanf() could not read numeric choice"</font>);
 <a name="line80"> 80: </a>    *choice -= 1;
-<a name="line81"> 81: </a>    <font color="#4169E1">if</font> (*choice &lt; 0 || *choice &gt; n-1) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Selection %d out of range"</font>,*choice);
+<a name="line81"> 81: </a>    <font color="#4169E1">if</font> (*choice &lt; 0 || *choice &gt; n-1) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Selection %d out of range"</font>,*choice);
 <a name="line82"> 82: </a>    <A href="../../../docs/manualpages/Sys/PetscFClose.html#PetscFClose">PetscFClose</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,fd);
 <a name="line83"> 83: </a>  }
 <a name="line84"> 84: </a><font color="#A020F0">#else</font>
-<a name="line85"> 85: </a>  <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP_SYS,<font color="#666666">"Cannot run external programs on this machine"</font>);
+<a name="line85"> 85: </a>  <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP_SYS,<font color="#666666">"Cannot run external programs on this machine"</font>);
 <a name="line86"> 86: </a><font color="#A020F0">#endif</font>
 <a name="line87"> 87: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Bcast.html#MPI_Bcast">MPI_Bcast</A>(choice,1,MPI_INT,0,comm);
 <a name="line88"> 88: </a>  <font color="#4169E1">return</font>(0);

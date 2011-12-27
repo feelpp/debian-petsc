@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:45:54+00:00">
+<meta name="date" content="2011-10-29T19:18:46+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -37,16 +37,16 @@
 <a name="line27"> 27: </a>!     petscpc.h     - preconditioners
 <a name="line28"> 28: </a>!     petscsnes.h   - <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> interface
 <a name="line29"> 29: </a>!  In addition, we need the following <font color="#4169E1">for</font> use of distributed arrays
-<a name="line30"> 30: </a>!     petscda.h     - distributed arrays (DAs)
+<a name="line30"> 30: </a>!     petscdmda.h     - distributed arrays (DMDAs)
 
-<a name="line32"> 32: </a> #include <A href="../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line33"> 33: </a> #include <A href="../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line34"> 34: </a> #include <A href="../../../../include/finclude/petscda.h.html">finclude/petscda.h</A>
-<a name="line35"> 35: </a> #include <A href="../../../../include/finclude/petscis.h.html">finclude/petscis.h</A>
-<a name="line36"> 36: </a> #include <A href="../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line37"> 37: </a> #include <A href="../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
-<a name="line38"> 38: </a> #include <A href="../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line39"> 39: </a> #include <A href="../../../../include/finclude/petscsnes.h.html">finclude/petscsnes.h</A>
+<a name="line32"> 32: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line33"> 33: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line34"> 34: </a><font color="#A020F0">#include &lt;finclude/petscdmda.h&gt;</font>
+<a name="line35"> 35: </a><font color="#A020F0">#include &lt;finclude/petscis.h&gt;</font>
+<a name="line36"> 36: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line37"> 37: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
+<a name="line38"> 38: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line39"> 39: </a><font color="#A020F0">#include &lt;finclude/petscsnes.h&gt;</font>
 
 <a name="line41"> 41: </a>!  Common blocks:
 <a name="line42"> 42: </a>!  In this example we use common blocks to store data needed by the
@@ -67,12 +67,12 @@
 <a name="line57"> 57: </a>!     gxs, gys - local starting grid indices (including ghost points)
 <a name="line58"> 58: </a>!     gxm, gym - widths of local grid (including ghost points)
 
-<a name="line60"> 60: </a>      <A href="../../../../docs/manualpages/DA/DA.html#DA">DA</A>      da
+<a name="line60"> 60: </a>      DM      da
 <a name="line61"> 61: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> xs,xe,xm,gxs,gxe,gxm
 <a name="line62"> 62: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ys,ye,ym,gys,gye,gym
 <a name="line63"> 63: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mx,my
 <a name="line64"> 64: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank,size
-<a name="line65"> 65: </a>      double precision lambda
+<a name="line65"> 65: </a>      <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> lambda
 
 <a name="line67"> 67: </a>      common /params/ lambda,mx,my
 <a name="line68"> 68: </a>      common /pdata/  xs,xe,xm,gxs,gxe,gxm

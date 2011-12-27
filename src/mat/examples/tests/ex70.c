@@ -1,8 +1,8 @@
 
 static char help[] = "Tests Vec/MatSetValues() with negative row and column indices.\n\n"; 
 
-#include "petscmat.h"
-#include "petscpc.h"
+#include <petscmat.h>
+#include <petscpc.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -32,10 +32,10 @@ int main(int argc,char **args)
   ierr = MatView(C,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
   ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

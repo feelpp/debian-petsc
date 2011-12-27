@@ -15,7 +15,7 @@ T*/
     Include petscis.h so we can use PETSc IS objects. Note that this automatically 
   includes petscsys.h.
 */
-#include "petscis.h"
+#include <petscis.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -40,7 +40,7 @@ int main(int argc,char **argv)
   indices[2] = rank + 3; 
   indices[3] = rank + 4; 
   indices[4] = rank + 5; 
-  ierr = ISCreateGeneral(PETSC_COMM_SELF,5,indices,&is);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(PETSC_COMM_SELF,5,indices,PETSC_COPY_VALUES,&is);CHKERRQ(ierr);
   /*
      Note that ISCreateGeneral() has made a copy of the indices
      so we may (and generally should) free indices[]
@@ -77,8 +77,8 @@ int main(int argc,char **argv)
      One should destroy any PETSc object once one is completely
     done with it.
   */
-  ierr = ISDestroy(is);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISDestroy(&is);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

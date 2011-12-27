@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:57:33+00:00">
+<meta name="date" content="2011-10-29T19:24:58+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,7 +12,7 @@
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_CoSieve_hh</font></strong>
 
 <a name="line4">  4: </a><font color="#A020F0">#ifndef  included_ALE_Sieve_hh</font>
-<a name="line5">  5: </a><font color="#A020F0">#include &lt;Sieve.hh&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;sieve/Sieve.hh&gt;</font>
 <a name="line6">  6: </a><font color="#A020F0">#endif</font>
 
 <a name="line8">  8: </a>namespace ALE {
@@ -132,7 +132,7 @@
 <a name="line122">122: </a>        maxValue = std::max(maxValue, this-&gt;getValue(label, *p_iter, defValue));
 <a name="line123">123: </a>      }
 <a name="line124">124: </a>      <font color="#4169E1">return</font> maxValue;
-<a name="line125">125: </a>    };
+<a name="line125">125: </a>    }
 <a name="line126">126: </a>    void setValue(const Obj&lt;patch_label_type&gt;&amp; label, const point_type&amp; point, const int value) {
 <a name="line127">127: </a>      label-&gt;setCone(value, point);
 <a name="line128">128: </a>    };
@@ -194,7 +194,7 @@
 <a name="line184">184: </a>      <font color="#4169E1">if</font>(this-&gt;_modifiedPoints-&gt;size() &gt; 0) {
 <a name="line185">185: </a>        this-&gt;computeHeight(height, sieve, sieve-&gt;cone(this-&gt;_modifiedPoints), maxHeight);
 <a name="line186">186: </a>      }
-<a name="line187">187: </a>    };
+<a name="line187">187: </a>    }
 <a name="line188">188: </a>    void computeHeights() {
 <a name="line189">189: </a>      const std::string name(<font color="#666666">"height"</font>);
 
@@ -206,18 +206,18 @@
 <a name="line196">196: </a>        this-&gt;computeHeight(label, s_iter-&gt;second, s_iter-&gt;second-&gt;leaves(), this-&gt;_maxHeights[s_iter-&gt;first]);
 <a name="line197">197: </a>        <font color="#4169E1">if</font> (this-&gt;_maxHeights[s_iter-&gt;first] &gt; this-&gt;_maxHeight) this-&gt;_maxHeight = this-&gt;_maxHeights[s_iter-&gt;first];
 <a name="line198">198: </a>      }
-<a name="line199">199: </a>    };
+<a name="line199">199: </a>    }
 <a name="line200">200: </a>    int height() const {<font color="#4169E1">return</font> this-&gt;_maxHeight;};
 <a name="line201">201: </a>    int height(const patch_type&amp; patch) {
 <a name="line202">202: </a>      this-&gt;checkPatch(patch);
 <a name="line203">203: </a>      <font color="#4169E1">return</font> this-&gt;_maxHeights[patch];
-<a name="line204">204: </a>    };
+<a name="line204">204: </a>    }
 <a name="line205">205: </a>    int height(const patch_type&amp; patch, const point_type&amp; point) {
 <a name="line206">206: </a>      <font color="#4169E1">return</font> this-&gt;getValue(this-&gt;_labels[<font color="#666666">"height"</font>][patch], point, -1);
-<a name="line207">207: </a>    };
+<a name="line207">207: </a>    }
 <a name="line208">208: </a>    const Obj&lt;label_sequence&gt;&amp; heightStratum(const patch_type&amp; patch, int height) {
 <a name="line209">209: </a>      <font color="#4169E1">return</font> this-&gt;getLabelStratum(patch, <font color="#666666">"height"</font>, height);
-<a name="line210">210: </a>    };
+<a name="line210">210: </a>    }
 <a name="line211">211: </a>    template&lt;class InputPoints&gt;
 <a name="line212">212: </a>    void computeDepth(const Obj&lt;patch_label_type&gt;&amp; depth, const Obj&lt;sieve_type&gt;&amp; sieve, const Obj&lt;InputPoints&gt;&amp; points, int&amp; maxDepth) {
 <a name="line213">213: </a>      this-&gt;_modifiedPoints-&gt;clear();
@@ -237,7 +237,7 @@
 <a name="line227">227: </a>      <font color="#4169E1">if</font>(this-&gt;_modifiedPoints-&gt;size() &gt; 0) {
 <a name="line228">228: </a>        this-&gt;computeDepth(depth, sieve, sieve-&gt;support(this-&gt;_modifiedPoints), maxDepth);
 <a name="line229">229: </a>      }
-<a name="line230">230: </a>    };
+<a name="line230">230: </a>    }
 <a name="line231">231: </a>    void computeDepths() {
 <a name="line232">232: </a>      const std::string name(<font color="#666666">"depth"</font>);
 
@@ -249,24 +249,24 @@
 <a name="line239">239: </a>        this-&gt;computeDepth(label, s_iter-&gt;second, s_iter-&gt;second-&gt;roots(), this-&gt;_maxDepths[s_iter-&gt;first]);
 <a name="line240">240: </a>        <font color="#4169E1">if</font> (this-&gt;_maxDepths[s_iter-&gt;first] &gt; this-&gt;_maxDepth) this-&gt;_maxDepth = this-&gt;_maxDepths[s_iter-&gt;first];
 <a name="line241">241: </a>      }
-<a name="line242">242: </a>    };
+<a name="line242">242: </a>    }
 <a name="line243">243: </a>    int depth() const {<font color="#4169E1">return</font> this-&gt;_maxDepth;};
 <a name="line244">244: </a>    int depth(const patch_type&amp; patch) {
 <a name="line245">245: </a>      this-&gt;checkPatch(patch);
 <a name="line246">246: </a>      <font color="#4169E1">return</font> this-&gt;_maxDepths[patch];
-<a name="line247">247: </a>    };
+<a name="line247">247: </a>    }
 <a name="line248">248: </a>    int depth(const patch_type&amp; patch, const point_type&amp; point) {
 <a name="line249">249: </a>      <font color="#4169E1">return</font> this-&gt;getValue(this-&gt;_labels[<font color="#666666">"depth"</font>][patch], point, -1);
-<a name="line250">250: </a>    };
+<a name="line250">250: </a>    }
 <a name="line251">251: </a>    const Obj&lt;label_sequence&gt;&amp; depthStratum(const patch_type&amp; patch, int depth) {
 <a name="line252">252: </a>      <font color="#4169E1">return</font> this-&gt;getLabelStratum(patch, <font color="#666666">"depth"</font>, depth);
-<a name="line253">253: </a>    };
+<a name="line253">253: </a>    }
 <a name="line256">256: </a>    void stratify() {
 <a name="line257">257: </a>      ALE_LOG_EVENT_BEGIN;
 <a name="line258">258: </a>      this-&gt;computeHeights();
 <a name="line259">259: </a>      this-&gt;computeDepths();
 <a name="line260">260: </a>      ALE_LOG_EVENT_END;
-<a name="line261">261: </a>    };
+<a name="line261">261: </a>    }
 <a name="line262">262: </a><strong><font color="#FF0000">  public:</font></strong> // Viewers
 <a name="line263">263: </a>    void view(const std::string&amp; name, <A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm = MPI_COMM_NULL) {
 <a name="line264">264: </a>      <font color="#4169E1">if</font> (comm == MPI_COMM_NULL) {
@@ -288,7 +288,7 @@
 <a name="line280">280: </a>      <font color="#4169E1">for</font>(typename labels_type::const_iterator l_iter = this-&gt;_labels.begin(); l_iter != this-&gt;_labels.end(); ++l_iter) {
 <a name="line281">281: </a>        <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(comm, <font color="#666666">"  label %s constructed\n"</font>, l_iter-&gt;first.c_str());
 <a name="line282">282: </a>      }
-<a name="line283">283: </a>    };
+<a name="line283">283: </a>    }
 <a name="line284">284: </a><strong><font color="#FF0000">  public:</font></strong>
 <a name="line285">285: </a>    void constructOverlap(const patch_type&amp; patch) {
 <a name="line286">286: </a>      <font color="#4169E1">if</font> (this-&gt;_calculatedOverlap) <font color="#4169E1">return</font>;
@@ -301,7 +301,7 @@
 <a name="line293">293: </a>        this-&gt;_recvOverlap-&gt;view(<font color="#666666">"Receive overlap"</font>);
 <a name="line294">294: </a>      }
 <a name="line295">295: </a>      this-&gt;_calculatedOverlap = true;
-<a name="line296">296: </a>    };
+<a name="line296">296: </a>    }
 <a name="line297">297: </a>    template&lt;typename Sequence&gt;
 <a name="line298">298: </a>    void constructOverlap(const Obj&lt;Sequence&gt;&amp; points, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap) {
 <a name="line299">299: </a>      point_type *sendBuf = this-&gt;_allocator.allocate(points-&gt;size());
@@ -426,7 +426,7 @@
 <a name="line418">418: </a>        delete [] remotePoints;
 <a name="line419">419: </a>        delete [] sendPoints;
 <a name="line420">420: </a>      }
-<a name="line421">421: </a>    };
+<a name="line421">421: </a>    }
 <a name="line422">422: </a>  };
 
 <a name="line424">424: </a>  // An Overlap is a Sifter describing the overlap of two Sieves

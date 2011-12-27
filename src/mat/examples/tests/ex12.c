@@ -2,10 +2,10 @@
 static char help[] = "Tests the use of MatZeroRows() for parallel matrices.\n\
 This example also tests the use of MatDuplicate() for both MPIAIJ and MPIBAIJ matrices";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
-EXTERN PetscErrorCode TestMatZeroRows_Basic(Mat,IS,PetscScalar);
-EXTERN PetscErrorCode TestMatZeroRows_with_no_allocation(Mat,IS,PetscScalar);
+extern PetscErrorCode TestMatZeroRows_Basic(Mat,IS,PetscScalar);
+extern PetscErrorCode TestMatZeroRows_with_no_allocation(Mat,IS,PetscScalar);
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -50,7 +50,7 @@ int main(int argc,char **args)
   ierr = TestMatZeroRows_with_no_allocation(A,is,0.0);CHKERRQ(ierr);
   ierr = TestMatZeroRows_with_no_allocation(A,is,diag);CHKERRQ(ierr);
 
-  ierr = MatDestroy(A);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
 
   /* Now Create a rectangular matrix with five point stencil (app) 
    n+size is used so that this dimension is always divisible by size.
@@ -74,9 +74,9 @@ int main(int argc,char **args)
   ierr = TestMatZeroRows_Basic(A,is,0.0);CHKERRQ(ierr);
   ierr = TestMatZeroRows_Basic(A,is,diag);CHKERRQ(ierr);
 
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = ISDestroy(is);CHKERRQ(ierr); 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = ISDestroy(&is);CHKERRQ(ierr); 
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -86,7 +86,7 @@ PetscErrorCode TestMatZeroRows_Basic(Mat A,IS is,PetscScalar diag)
 {
   Mat            B;
   PetscErrorCode ierr;
-  PetscTruth     keepnonzeropattern;
+  PetscBool      keepnonzeropattern;
 
   /* Now copy A into B, and test it with MatZeroRows() */
   ierr = MatDuplicate(A,MAT_COPY_VALUES,&B);CHKERRQ(ierr);
@@ -96,9 +96,9 @@ PetscErrorCode TestMatZeroRows_Basic(Mat A,IS is,PetscScalar diag)
     ierr = MatSetOption(B,MAT_KEEP_NONZERO_PATTERN,PETSC_TRUE);CHKERRQ(ierr);
   }
 
-  ierr = MatZeroRowsIS(B,is,diag);CHKERRQ(ierr);
+  ierr = MatZeroRowsIS(B,is,diag,0,0);CHKERRQ(ierr);
   ierr = MatView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); 
-  ierr = MatDestroy(B);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
   return 0;
 }
 
@@ -114,8 +114,8 @@ PetscErrorCode TestMatZeroRows_with_no_allocation(Mat A,IS is,PetscScalar diag)
   /* Set this flag after assembly. This way, it affects only MatZeroRows() */
   ierr = MatSetOption(B,MAT_NEW_NONZERO_ALLOCATION_ERR,PETSC_TRUE);CHKERRQ(ierr);
 
-  ierr = MatZeroRowsIS(B,is,diag);CHKERRQ(ierr);
+  ierr = MatZeroRowsIS(B,is,diag,0,0);CHKERRQ(ierr);
   ierr = MatView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); 
-  ierr = MatDestroy(B);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);CHKERRQ(ierr);
   return 0;
 }

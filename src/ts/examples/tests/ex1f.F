@@ -7,18 +7,20 @@
 !
 !23456789012345678901234567890123456789012345678901234567890123456789012
 
+! This example need rewritten using newly developed TS interface!
+
       program main
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscda.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscts.h"
-#include "finclude/petscdraw.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscts.h>
+#include <finclude/petscdraw.h>
+#include <finclude/petscviewer.h>
 
 #include "ex1f.h"
 
@@ -42,7 +44,7 @@
       character*(60)   type,tsinfo
       character*(5)    etype
       PetscInt         i1,i60
-      PetscTruth flg
+      PetscBool  flg
       PetscSizeT five
 
       external Monitor,RHSFunctionHeat,RHSMatrixFree,Initial
@@ -75,11 +77,11 @@
 
 !   Set up the ghost point communication pattern                       
 
-      call DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,M,i1,i1,            &
+      call DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,M,i1,i1,            &
      &     PETSC_NULL_INTEGER,da,ierr)
-      call DACreateGlobalVector(da,global,ierr) 
+      call DMCreateGlobalVector(da,global,ierr) 
       call VecGetLocalSize(global,m,ierr) 
-      call DACreateLocalVector(da,local,ierr) 
+      call DMCreateLocalVector(da,local,ierr) 
 
 !   Set up display to show wave graph 
 
@@ -124,12 +126,6 @@
         problem   = linear_no_time
       endif
       call PetscOptionsHasName(PETSC_NULL_CHARACTER,                    &
-     &     '-linear_variable_matrix',flg,ierr) 
-      if (flg) then
-        tsproblem = TS_LINEAR
-        problem   = linear
-      endif
-      call PetscOptionsHasName(PETSC_NULL_CHARACTER,                    &
      &     '-nonlinear_no_jacobian',flg,ierr) 
       if (flg) then
         tsproblem = TS_NONLINEAR
@@ -158,9 +154,10 @@
          call MatCreateShell(PETSC_COMM_WORLD,m,M,M,M,                  &
      &        PETSC_NULL_OBJECT,A,ierr)
          call MatShellSetOperation(A,MATOP_MULT,RHSMatrixFree,ierr)
-         call TSSetMatrices(ts,A,PETSC_NULL_FUNCTION,                    &
-     &           PETSC_NULL_OBJECT,PETSC_NULL_FUNCTION,                  &
-     &           DIFFERENT_NONZERO_PATTERN,PETSC_NULL_OBJECT,ierr) 
+         call TSSetRHSJacobian(ts,A,A,TSComputeRHSJacobianConstant,     &
+     &        PETSC_NULL_OBJECT,ierr)
+         call TSSetRHSFunction(ts,PETSC_NULL_OBJECT,                    &
+     &        TSComputeRHSFunctionLinear,PETSC_NULL_OBJECT,ierr)
       else if (problem .eq. linear_no_time) then
 !    
 !         The user provides the RHS as a matrix
@@ -170,45 +167,34 @@
          call MatSetFromOptions(A,ierr)
          call RHSMatrixHeat(ts,zero,A,A,A_structure,PETSC_NULL_OBJECT,  &
      &        ierr)  
-         call TSSetMatrices(ts,A,PETSC_NULL_FUNCTION,                    &
-     &           PETSC_NULL_OBJECT,PETSC_NULL_FUNCTION,                  &
-     &           DIFFERENT_NONZERO_PATTERN,PETSC_NULL_OBJECT,ierr) 
-      else if (problem .eq. linear) then
-!    
-!         The user provides the RHS as a time dependent matrix
-!    
-         call MatCreate(PETSC_COMM_WORLD,A,ierr) 
-         call MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,M,M,ierr) 
-         call MatSetFromOptions(A,ierr)
-         call RHSMatrixHeat(ts,zero,A,A,A_structure,PETSC_NULL_OBJECT,  &
-     &        ierr)  
-         call TSSetMatrices(ts,A,RHSMatrixHeat,                          &
-     &           PETSC_NULL_OBJECT,PETSC_NULL_FUNCTION,                  &
-     &           DIFFERENT_NONZERO_PATTERN,PETSC_NULL_OBJECT,ierr) 
+         call TSSetRHSJacobian(ts,A,A,TSComputeRHSJacobianConstant,     &
+     &        PETSC_NULL_OBJECT,ierr)
+         call TSSetRHSFunction(ts,PETSC_NULL_OBJECT,                    &
+     &        TSComputeRHSFunctionLinear,PETSC_NULL_OBJECT,ierr)
       else if (problem .eq. nonlinear_no_jacobian) then
 !    
 !         The user provides the RHS and a Shell Jacobian
 !    
-         call TSSetRHSFunction(ts,RHSFunctionHeat,PETSC_NULL_OBJECT,    &
-     &        ierr) 
+         call TSSetRHSFunction(ts,PETSC_NULL_OBJECT,RHSFunctionHeat,    &
+     &        PETSC_NULL_OBJECT,ierr)
          call MatCreateShell(PETSC_COMM_WORLD,m,M,M,M,                  &
      &        PETSC_NULL_OBJECT,A,ierr)
          call MatShellSetOperation(A,MATOP_MULT,RHSMatrixFree,ierr)
-         call TSSetRHSJacobian(ts,A,A,PETSC_NULL_FUNCTION,               &
-     &        PETSC_NULL_OBJECT,ierr)   
+         call TSSetRHSJacobian(ts,A,A,TSComputeRHSJacobianConstant,     &
+     &        PETSC_NULL_OBJECT,ierr) 
       else if (problem .eq. nonlinear) then
 !    
 !         The user provides the RHS and Jacobian
 !    
-         call TSSetRHSFunction(ts,RHSFunctionHeat,PETSC_NULL_OBJECT,     &
-     &                         ierr) 
+         call TSSetRHSFunction(ts,PETSC_NULL_OBJECT,RHSFunctionHeat,    &
+     &        PETSC_NULL_OBJECT,ierr)
          call MatCreate(PETSC_COMM_WORLD,A,ierr) 
          call MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,M,M,ierr) 
          call MatSetFromOptions(A,ierr)
          call RHSMatrixHeat(ts,zero,A,A,A_structure,PETSC_NULL_OBJECT,   &
      &        ierr)  
          call TSSetRHSJacobian(ts,A,A,RHSJacobianHeat,                   &
-     &PETSC_NULL_OBJECT,ierr)   
+     &        PETSC_NULL_OBJECT,ierr)
       endif
 
       call TSSetFromOptions(ts,ierr)
@@ -257,7 +243,7 @@
       call VecDestroy(csolution,ierr)
       call VecDestroy(local,ierr) 
       call VecDestroy(global,ierr) 
-      call DADestroy(da,ierr) 
+      call DMDestroy(da,ierr) 
       if (A .ne. 0) then
         call MatDestroy(A,ierr) 
       endif
@@ -269,15 +255,15 @@
  
       subroutine Initial(global,ctx,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscda.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscts.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscts.h>
+#include <finclude/petscviewer.h>
 
 #include "ex1f.h"
 
@@ -310,15 +296,15 @@
 !  
       subroutine Solution(t,sol,ctx)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscda.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscts.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscts.h>
+#include <finclude/petscviewer.h>
 
 #include "ex1f.h"
 
@@ -353,16 +339,16 @@
 
       subroutine Monitor(ts,step,time,global,ctx,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscda.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscts.h"
-#include "finclude/petscdraw.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscts.h>
+#include <finclude/petscdraw.h>
+#include <finclude/petscviewer.h>
 
 #include "ex1f.h"
       TS                ts
@@ -398,15 +384,15 @@
 
       subroutine RHSMatrixFree(mat,x,y,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscda.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscts.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscts.h>
+#include <finclude/petscviewer.h>
       Mat              mat
       Vec              x,y
       PetscErrorCode          ierr
@@ -425,15 +411,15 @@
 
       subroutine RHSFunctionHeat(ts,t,globalin,globalout,ctx,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscda.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscts.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscts.h>
+#include <finclude/petscviewer.h>
 
 #include "ex1f.h"
       TS               ts
@@ -449,9 +435,9 @@
 
 !  Extract local array  
 
-      call DACreateLocalVector(da,local,ierr) 
-      call DAGlobalToLocalBegin(da,globalin,INSERT_VALUES,local,ierr) 
-      call DAGlobalToLocalEnd(da,globalin,INSERT_VALUES,local,ierr) 
+      call DMCreateLocalVector(da,local,ierr) 
+      call DMGlobalToLocalBegin(da,globalin,INSERT_VALUES,local,ierr) 
+      call DMGlobalToLocalEnd(da,globalin,INSERT_VALUES,local,ierr) 
       call VecGetArray(local,localptr,ldx,ierr) 
 
 !  Extract work vector 
@@ -476,7 +462,10 @@
 
 !   Local to Global 
 
-      call DALocalToGlobal(da,localwork,INSERT_VALUES,globalout,ierr) 
+      call DMLocalToGlobalBegin(da,localwork,INSERT_VALUES,globalout,    &
+     &             ierr) 
+      call DMLocalToGlobalEnd(da,localwork,INSERT_VALUES,globalout,      &
+     &            ierr) 
       return 
       end
 
@@ -484,15 +473,15 @@
 
       subroutine RHSMatrixHeat(ts,t,AA,BB,str,ctx,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscda.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscts.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscts.h>
+#include <finclude/petscviewer.h>
 
 #include "ex1f.h"
       Mat              AA,BB
@@ -553,15 +542,15 @@
 
       subroutine RHSJacobianHeat(ts,t,x,AA,BB,str,ctx,ierr)
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscda.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscts.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscts.h>
+#include <finclude/petscviewer.h>
       TS               ts
       double precision t
       Vec              x
@@ -573,9 +562,3 @@
       call RHSMatrixHeat(ts,t,AA,BB,str,ctx,ierr)
       return
       end
-
-
-
-
-
-

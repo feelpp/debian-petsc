@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* partition.c */
 /* Fortran interface file */
 
@@ -58,24 +59,23 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matpartitioningapply_(MatPartitioning matp,IS *partitioning, int *__ierr ){
+void PETSC_STDCALL  matpartitioningapply_(MatPartitioning matp,IS *partitioning, int *__ierr ){
 *__ierr = MatPartitioningApply(
 	(MatPartitioning)PetscToPointer((matp) ),partitioning);
 }
-void PETSC_STDCALL   matpartitioningsetadjacency_(MatPartitioning part,Mat adj, int *__ierr ){
+void PETSC_STDCALL  matpartitioningsetadjacency_(MatPartitioning part,Mat adj, int *__ierr ){
 *__ierr = MatPartitioningSetAdjacency(
 	(MatPartitioning)PetscToPointer((part) ),
 	(Mat)PetscToPointer((adj) ));
 }
-void PETSC_STDCALL   matpartitioningdestroy_(MatPartitioning part, int *__ierr ){
-*__ierr = MatPartitioningDestroy(
-	(MatPartitioning)PetscToPointer((part) ));
+void PETSC_STDCALL  matpartitioningdestroy_(MatPartitioning *part, int *__ierr ){
+*__ierr = MatPartitioningDestroy(part);
 }
-void PETSC_STDCALL   matpartitioningcreate_(MPI_Fint * comm,MatPartitioning *newp, int *__ierr ){
+void PETSC_STDCALL  matpartitioningcreate_(MPI_Fint * comm,MatPartitioning *newp, int *__ierr ){
 *__ierr = MatPartitioningCreate(
 	MPI_Comm_f2c( *(comm) ),newp);
 }
-void PETSC_STDCALL   matpartitioningsetfromoptions_(MatPartitioning part, int *__ierr ){
+void PETSC_STDCALL  matpartitioningsetfromoptions_(MatPartitioning part, int *__ierr ){
 *__ierr = MatPartitioningSetFromOptions(
 	(MatPartitioning)PetscToPointer((part) ));
 }

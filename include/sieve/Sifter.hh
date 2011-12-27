@@ -12,10 +12,10 @@
 // ALE extensions
 
 #ifndef  included_ALE_hh
-#include <ALE.hh>
+#include <sieve/ALE.hh>
 #endif
 
-extern PetscErrorCode PetscObjectDestroy_PetscObject(PetscObject);
+extern PetscErrorCode PetscObjectDestroy_PetscObject(PetscObject*);
 
 namespace ALE {
 
@@ -652,13 +652,13 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
     int         _commSize;
     PetscObject _petscObj;
     void __init(MPI_Comm comm) {
-      static PetscCookie sifterType = -1;
+      static PetscClassId sifterType = -1;
       //const char        *id_name = ALE::getClassName<T>();
       const char        *id_name = "Sifter";
       PetscErrorCode     ierr;
 
       if (sifterType < 0) {
-        ierr = PetscCookieRegister(id_name,&sifterType);CHKERROR(ierr, "Error in MPI_Comm_rank"); 
+        ierr = PetscClassIdRegister(id_name,&sifterType);CHKERROR(ierr, "Error in MPI_Comm_rank"); 
       }
       this->_comm = comm;
       ierr = MPI_Comm_rank(this->_comm, &this->_commRank);CHKERROR(ierr, "Error in MPI_Comm_rank");
@@ -682,11 +682,8 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
    }
     virtual ~ASifter() {
 #ifdef USE_PETSC_OBJ
-      if (this->_petscObj) {
-        PetscErrorCode ierr;
-        ierr = PetscObjectDestroy(this->_petscObj);CHKERROR(ierr, "Failed in PetscObjectDestroy");
-        this->_petscObj = NULL;
-      }
+      PetscErrorCode ierr;
+      ierr = PetscObjectDestroy(&this->_petscObj);CHKERROR(ierr, "Failed in PetscObjectDestroy");
 #endif
     };
     //
@@ -701,6 +698,8 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
     PetscObject petscObj() const {return this->_petscObj;};
 #endif
 
+    // Added to allow optimized versions
+    void assemble() {};
     // FIX: need const_cap, const_base returning const capSequence etc, but those need to have const_iterators, const_begin etc.
     Obj<typename traits::capSequence> cap() {
       return typename traits::capSequence(::boost::multi_index::get<typename traits::capInd>(this->_cap.set));
@@ -708,6 +707,22 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
     Obj<typename traits::baseSequence> base() {
       return typename traits::baseSequence(::boost::multi_index::get<typename traits::baseInd>(this->_base.set));
     };
+    typename traits::capSequence::iterator capBegin() {
+      return this->cap()->begin();
+    };
+    typename traits::capSequence::iterator capEnd() {
+      return this->cap()->end();
+    };
+    typename traits::baseSequence::iterator baseBegin() {
+      return this->base()->begin();
+    };
+    typename traits::baseSequence::iterator baseEnd() {
+      return this->base()->end();
+    };
+    int getBaseSize() {return this->base()->size();};
+    void setBaseSize(int size) {};
+    int getCapSize() {return this->cap()->size();};
+    void setCapSize(int size) {};
     bool capContains(const typename traits::source_type& p) {
       typename traits::capSequence cap(::boost::multi_index::get<typename traits::capInd>(this->_cap.set));
 
@@ -743,6 +758,15 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
       this->_coneSeq->setUseSubkey(false);
       return this->_coneSeq;
     };
+    const typename traits::coneSequence::iterator
+    coneBegin(const typename traits::target_type& p) {
+      return this->cone(p)->begin();
+    };
+    const typename traits::coneSequence::iterator
+    coneEnd(const typename traits::target_type& p) {
+      return this->cone(p)->end();
+    };
+    void setConeSize(const typename traits::target_type& p, int size) {};
 #endif
     template<class InputSequence> 
     Obj<typename traits::coneSet> 
@@ -810,6 +834,23 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
       this->_supportSeq->setUseSubkey(false);
       return this->_supportSeq;
     };
+    const typename traits::supportSequence::iterator
+    supportBegin(const typename traits::source_type& p) {
+      return this->support(p)->begin();
+    };
+    const typename traits::supportSequence::iterator
+    supportEnd(const typename traits::source_type& p) {
+      return this->support(p)->end();
+    };
+    const typename traits::supportSequence::iterator
+    supportBegin(const typename traits::source_type& p, const typename traits::color_type& color) {
+      return this->support(p, color)->begin();
+    };
+    const typename traits::supportSequence::iterator
+    supportEnd(const typename traits::source_type& p, const typename traits::color_type& color) {
+      return this->support(p, color)->end();
+    };
+    void setSupportSize(const typename traits::source_type& p, int size) {};
 #endif
 #ifdef SLOW
     Obj<typename traits::supportSequence> 
@@ -864,6 +905,9 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
     }
     int getSupportSize(const typename traits::source_type& p) {
       return this->support(p)->size();
+    }
+    int getSupportSize(const typename traits::source_type& p, const typename traits::color_type& color) {
+      return this->support(p, color)->size();
     }
 
     template<typename ostream_type>
@@ -926,6 +970,8 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
       }
     }
     // A parallel viewer
+    #undef __FUNCT__
+    #define __FUNCT__ "view"
     PetscErrorCode view(const char* label = NULL, bool raw = false){
       PetscErrorCode ierr;
       ostringstream txt;
@@ -1031,6 +1077,25 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
       PetscFunctionReturn(0);
     };
   public:
+    void copy(ASifter *newSifter) {
+      const typename traits::baseSequence::iterator sBegin = this->baseBegin();
+      const typename traits::baseSequence::iterator sEnd   = this->baseEnd();
+
+      for(typename traits::baseSequence::iterator r_iter = sBegin; r_iter != sEnd; ++r_iter) {
+        const typename traits::coneSequence::iterator pBegin = this->coneBegin(*r_iter);
+        const typename traits::coneSequence::iterator pEnd   = this->coneEnd(*r_iter);
+
+        for(typename traits::coneSequence::iterator p_iter = pBegin; p_iter != pEnd; ++p_iter) {
+          const Obj<typename traits::supportSequence>&              support  = this->support(*p_iter);
+          const typename traits::supportSequence::iterator supBegin = support->begin();
+          const typename traits::supportSequence::iterator supEnd   = support->end();
+
+          for(typename traits::supportSequence::iterator s_iter = supBegin; s_iter != supEnd; ++s_iter) {
+            newSifter->addArrow(*p_iter, *s_iter, s_iter.color());
+          }
+        }
+      }
+    };
     //
     // Lattice queries
     //
@@ -1330,6 +1395,7 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
     // Re-export some typedefs expected by CoSifter
     typedef typename traits::source_type                                            source_type;
     typedef typename traits::target_type                                            target_type;
+    typedef typename traits::color_type                                             color_type;
     typedef typename traits::arrow_type                                             Arrow_;
     typedef typename traits::coneSequence                                           coneSequence;
     typedef typename traits::supportSequence                                        supportSequence;
@@ -1407,6 +1473,17 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
         this->addArrow(a);
       }
     };
+    template<typename Labeling, typename AnotherSifter>
+    void relabel(Labeling& relabeling, AnotherSifter& newLabel) {
+      typename ::boost::multi_index::index<typename traits::arrow_container_type::set_type, typename traits::arrowInd>::type& aInd = ::boost::multi_index::get<typename traits::arrowInd>(this->_arrows.set);
+
+      for(typename ::boost::multi_index::index<typename traits::arrow_container_type::set_type, typename traits::arrowInd>::type::iterator a_iter = aInd.begin(); a_iter != aInd.end(); ++a_iter) {
+        const typename traits::source_type newSource = relabeling.restrictPoint(a_iter->source)[0];
+        const typename traits::target_type newTarget = relabeling.restrictPoint(a_iter->target)[0];
+
+        newLabel.addArrow(newSource, newTarget);
+      }
+    }
   };// class Sifter
 
   class SifterSerializer {
@@ -1460,7 +1537,7 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
         ierr = MPI_Send(arrows, size*3, MPIU_INT, 0, 1, sifter.comm());CHKERRXX(ierr);
         ierr = PetscFree(arrows);CHKERRXX(ierr);
       }
-    };
+    }
     template<typename Sifter>
     static void loadSifter(std::ifstream& fs, Sifter& sifter) {
       typedef typename Sifter::traits::arrow_container_type::set_type::size_type size_type;
@@ -1519,7 +1596,7 @@ template<typename Source_, typename Target_, typename Color_, SifterDef::ColorMu
         }
         ierr = PetscFree(arrows);CHKERRXX(ierr);
       }
-    };
+    }
   };
 } // namespace ALE
 

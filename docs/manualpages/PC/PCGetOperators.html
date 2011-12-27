@@ -10,7 +10,7 @@ Gets the matrix associated with the linear system and possibly a different one a
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCGetOperators(PC pc,Mat *mat,Mat *pmat,MatStructure *flag)
+PetscErrorCode  PCGetOperators(PC pc,Mat *mat,Mat *pmat,MatStructure *flag)
 </PRE>
 Not collective, though parallel Mats are returned if the <A HREF="../PC/PC.html#PC">PC</A> is parallel
 <P>
@@ -30,6 +30,8 @@ matrix structure.  See <A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetO
 </TD></TR></TABLE>
 <P>
 
+<P>
+Notes: Does not increase the reference count of the matrices, so you should not destroy them
 <P>
 Alternative usage: If the operators have NOT been set with <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>() then the operators
 are created in <A HREF="../PC/PC.html#PC">PC</A> and returned to the user. In this case, if both operators

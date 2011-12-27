@@ -1,10 +1,9 @@
-#define PETSCMAT_DLL
 
 /*
     Factorization code for BAIJ format. 
 */
-#include "../src/mat/impls/baij/seq/baij.h"
-#include "../src/mat/blockinvert.h"
+#include <../src/mat/impls/baij/seq/baij.h>
+#include <../src/mat/blockinvert.h>
 
 /* ----------------------------------------------------------- */
 #undef __FUNCT__  

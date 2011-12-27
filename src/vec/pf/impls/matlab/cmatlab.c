@@ -1,9 +1,8 @@
-#define PETSCVEC_DLL
 
-#include "../src/vec/pf/pfimpl.h"            /*I "petscpf.h" I*/
+#include <../src/vec/pf/pfimpl.h>            /*I "petscpf.h" I*/
 
 /*
-        Ths PF generates a Matlab function on the fly
+        Ths PF generates a MATLAB function on the fly
 */
 typedef struct {
   PetscInt          dimin,dimout;
@@ -16,11 +15,11 @@ typedef struct {
 PetscErrorCode PFView_Matlab(void *value,PetscViewer viewer)
 {
   PetscErrorCode ierr;
-  PetscTruth     iascii;
+  PetscBool      iascii;
   PF_Matlab      *matlab = (PF_Matlab*)value;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"Matlab Matlab = %s\n",matlab->string);CHKERRQ(ierr);
   }
@@ -35,21 +34,21 @@ PetscErrorCode PFDestroy_Matlab(void *value)
   PF_Matlab      *matlab = (PF_Matlab*)value;
 
   PetscFunctionBegin;
-  ierr = PetscStrfree(matlab->string);CHKERRQ(ierr);
-  ierr = PetscMatlabEngineDestroy(matlab->mengine);CHKERRQ(ierr);
+  ierr = PetscFree(matlab->string);CHKERRQ(ierr);
+  ierr = PetscMatlabEngineDestroy(&matlab->mengine);CHKERRQ(ierr);
   ierr = PetscFree(matlab);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "PFApply_Matlab"
-PetscErrorCode PFApply_Matlab(void *value,PetscInt n,PetscScalar *in,PetscScalar *out)
+PetscErrorCode PFApply_Matlab(void *value,PetscInt n,const PetscScalar *in,PetscScalar *out)
 {
   PF_Matlab      *matlab = (PF_Matlab*)value;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!value) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Need to set string for Matlab function, via -pf_matlab string");
+  if (!value) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Need to set string for MATLAB function, via -pf_matlab string");
   ierr = PetscMatlabEnginePutArray(matlab->mengine,matlab->dimin,n,in,"x");CHKERRQ(ierr);
   ierr = PetscMatlabEngineEvaluate(matlab->mengine,matlab->string);CHKERRQ(ierr);
   ierr = PetscMatlabEngineGetArray(matlab->mengine,matlab->dimout,n,out,"f");CHKERRQ(ierr);
@@ -61,7 +60,7 @@ PetscErrorCode PFApply_Matlab(void *value,PetscInt n,PetscScalar *in,PetscScalar
 PetscErrorCode PFSetFromOptions_Matlab(PF pf)
 {
   PetscErrorCode ierr;
-  PetscTruth     flag;
+  PetscBool      flag;
   char           value[256];
   PF_Matlab      *matlab = (PF_Matlab*)pf->data;
 
@@ -79,7 +78,7 @@ PetscErrorCode PFSetFromOptions_Matlab(PF pf)
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "PFCreate_Matlab"
-PetscErrorCode PETSCVEC_DLLEXPORT PFCreate_Matlab(PF pf,void *value)
+PetscErrorCode  PFCreate_Matlab(PF pf,void *value)
 {
   PetscErrorCode ierr;
   PF_Matlab      *matlab;

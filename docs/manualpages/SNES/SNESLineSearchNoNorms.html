@@ -9,9 +9,9 @@
 This routine is not a line search at  all; it simply uses the full Newton step. This version does not even compute the norm of the function or search direction; this is intended only when you know the full step is fine and are not checking for convergence of the nonlinear iteration (for example, you are running always for a fixed number of Newton steps). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchNoNorms(SNES snes,void *lsctx,Vec x,Vec f,Vec g,Vec y,Vec w,PetscReal fnorm,PetscReal xnorm,PetscReal *ynorm,PetscReal *gnorm,PetscTruth *flag)
+PetscErrorCode  SNESLineSearchNoNorms(SNES snes,void *lsctx,Vec x,Vec f,Vec g,Vec y,Vec w,PetscReal fnorm,PetscReal xnorm,PetscReal *ynorm,PetscReal *gnorm,PetscBool  *flag)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

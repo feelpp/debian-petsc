@@ -9,11 +9,11 @@
 Tells the matrix what <A HREF="../SNES/SNES.html#SNES">SNES</A> it is using for the base U. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"    
+#include "petscdmda.h"    
 #include "petscsnes.h"  
-PetscErrorCode PETSCMAT_DLLEXPORT MatDAADSetSNES(Mat A,SNES snes)
+PetscErrorCode  MatDAADSetSNES(Mat A,SNES snes)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -27,7 +27,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF="../SNES/SNES.ht
 Notes: this is currently turned off for Fortran usage
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../DA/DASetLocalAdicMFFunction.html#DASetLocalAdicMFFunction">DASetLocalAdicMFFunction</A>(), <A HREF="../Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A HREF="../Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>()
+ <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A HREF="../Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A HREF="../Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
@@ -36,7 +36,6 @@ Notes: this is currently turned off for Fortran usage
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5f.F.html">src/snes/examples/tutorials/ex5f.F.html</A><BR>
 </BODY></HTML>

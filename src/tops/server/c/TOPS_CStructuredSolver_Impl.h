@@ -61,7 +61,7 @@
 #if defined(HAVE_LONG_LONG)
 #undef HAVE_LONG_LONG
 #endif
-#include "petscdmmg.h"
+#include <petscdmmg.h>
 #include "TOPS.hxx"
 #include "gov_cca_ports_ParameterPortFactory.h"
 #include "gov_cca_ports_ParameterPort.h"
@@ -78,10 +78,10 @@ struct TOPS_CStructuredSolver__data {
   int ignore; /* dummy to force non-empty struct; remove if you add data */
 
   DMMG                                  *dmmg;
-  DA                                    da;
+  DM                                    da;
   int                                   lengths[4],m,n,p,dim,s,levels,bs;
-  DAStencilType                         stencil_type;
-  DAPeriodicType                        wrap;
+  DMDAStencilType                         stencil_type;
+  DMDABoundaryType                        wrap;
   int                                   startedpetsc;
   gov_cca_Services			myServices;
   gov_cca_ports_ParameterPortFactory 	ppf;

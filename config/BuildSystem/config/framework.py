@@ -43,9 +43,12 @@ MPI libraries in order to link a test object, the module can use self.mpi.lib.
 import user
 import script
 import config.base
+import time
+import tempfile
 
 import os
 import re
+import platform
 # workarround for python2.2 which does not have pathsep
 if not hasattr(os.path,'pathsep'): os.path.pathsep=':'
 
@@ -65,7 +68,7 @@ except NameError:
 
 class Framework(config.base.Configure, script.LanguageProcessor):
   '''This needs to manage configure information in itself just as Builder manages it for configurations'''
-  def __init__(self, clArgs = None, argDB = None, loadArgDB = 1):
+  def __init__(self, clArgs = None, argDB = None, loadArgDB = 1, tmpDir = None):
     import graph
     import nargs
 
@@ -73,6 +76,8 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       import RDict
 
       argDB = RDict.RDict(load = loadArgDB)
+    # Storage for intermediate test results
+    self.tmpDir          = tmpDir
     script.LanguageProcessor.__init__(self, clArgs, argDB)
     config.base.Configure.__init__(self, self)
     self.childGraph      = graph.DirectedGraph()
@@ -103,6 +108,8 @@ class Framework(config.base.Configure, script.LanguageProcessor):
     # List of packages actually found
     self.packages           = []
     self.createChildren()
+    # Create argDB for user specified options only
+    self.clArgDB = dict([(nargs.Arg.parseArgument(arg)[0], arg) for arg in self.clArgs])
     return
 
   def __getstate__(self):
@@ -137,58 +144,29 @@ class Framework(config.base.Configure, script.LanguageProcessor):
           dirs.extend(self.listDirs(os.path.join(base, dir),rest ))            
     return dirs
 
-  def getArchitecture(self):
-    import sys
-
-    auxDir = None
-    searchDirs = [os.path.join(self.root, 'packages')] + sys.path
-    for d in searchDirs:
-      if os.path.isfile(os.path.join(d, 'config.sub')):
-        auxDir      = d
-        configSub   = os.path.join(auxDir, 'config.sub')
-        configGuess = os.path.join(auxDir, 'config.guess')
-        break
-    if auxDir is None:
-      self.logPrintBox('Unable to locate config.sub in '+str(searchDirs)+'.\nYour BuildSystem installation is incomplete.\n Get BuildSystem again', 'screen')
-      return ('Unknown', 'Unknown', sys.platform)
-    try:
-      host   = config.base.Configure.executeShellCommand(self.shell+' '+configGuess, log = self.log)[0]
-      output = config.base.Configure.executeShellCommand(self.shell+' '+configSub+' '+host, log = self.log)[0]
-    except RuntimeError, e:
-      fd = open(configGuess)
-      data = fd.read()
-      fd.close()
-      if data.find('\r\n') >= 0:
-        raise RuntimeError('''It appears BuildSystem.tar.gz is uncompressed on Windows (perhaps with Winzip)
-          and files copied over to Unix/Linux. Windows introduces LF characters which are
-          inappropriate on other systems. Please use gunzip/tar on the install machine.\n''')
-      raise RuntimeError('Unable to determine host type using '+configSub+': '+str(e))
-    m = re.match(r'^(?P<cpu>[^-]*)-(?P<vendor>[^-]*)-(?P<os>.*)$', output)
-    if not m:
-      raise RuntimeError('Unable to parse output of '+configSub+': '+output)
-    return (m.group('cpu'), m.group('vendor'), m.group('os'))
-
-  def getHostCPU(self):
-    if not hasattr(self, '_host_cpu'):
-      return self.argDB['with-host-cpu']
-    return self._host_cpu
-  def setHostCPU(self, cpu):
-    self._host_cpu = cpu
-  host_cpu = property(getHostCPU, setHostCPU, doc = 'Machine CPU')
-  def getHostVendor(self):
-    if not hasattr(self, '_host_vendor'):
-      return self.argDB['with-host-vendor']
-    return self._host_vendor
-  def setHostVendor(self, vendor):
-    self._host_vendor = vendor
-  host_vendor = property(getHostVendor, setHostVendor, doc = 'Machine Vendor')
-  def getHostOS(self):
-    if not hasattr(self, '_host_os'):
-      return self.argDB['with-host-os']
-    return self._host_os
-  def setHostOS(self, os):
-    self._host_os = os
-  host_os = property(getHostOS, setHostOS, doc = 'Machine OS')
+  def getTmpDir(self):
+    if not hasattr(self, '_tmpDir'):
+      self._tmpDir = tempfile.mkdtemp(prefix = 'petsc-')
+      self.logPrint('All intermediate test results are stored in '+self._tmpDir)
+    return self._tmpDir
+  def setTmpDir(self, temp):
+    if hasattr(self, '_tmpDir'):
+      if os.path.isdir(self._tmpDir):
+        import shutil
+        shutil.rmtree(self._tmpDir)
+      if temp is None:
+        delattr(self, '_tmpDir')
+    if not temp is None:
+      self._tmpDir = temp
+    return
+  tmpDir = property(getTmpDir, setTmpDir, doc = 'Temporary directory for test byproducts')
+  def getFileCreatePause(self):
+    if not hasattr(self, '_file_create_pause'):
+      return self.argDB['with-file-create-pause']
+    return self._file_create_pause
+  def setFileCreatePause(self, file_create_pause):
+    self.file_create_pause = file_create_pause
+  file_create_pause = property(getFileCreatePause, setFileCreatePause, doc = 'Add 1 sec pause between config temp file delete/recreate')
 
   def setupHelp(self, help):
     import nargs
@@ -209,21 +187,18 @@ class Framework(config.base.Configure, script.LanguageProcessor):
     list = self.listDirs('/opt/','intel_fc_[0-9.]*/bin')
     if list: searchdirs.append(list[-1])
 
-    host_cpu, host_vendor, host_os = self.getArchitecture()
 
     help.addArgument('Framework', '-configModules',       nargs.Arg(None, None, 'A list of Python modules with a Configure class'))
-    help.addArgument('Framework', '-ignoreCompileOutput', nargs.ArgBool(None, 1, 'Ignore compiler output'))
-    help.addArgument('Framework', '-ignoreLinkOutput',    nargs.ArgBool(None, 1, 'Ignore linker output'))
-    help.addArgument('Framework', '-ignoreWarnings',      nargs.ArgBool(None, 0, 'Ignore compiler and linker warnings'))
-    help.addArgument('Framework', '-doCleanup',           nargs.ArgBool(None, 1, 'Delete any configure generated files (turn off for debugging)'))
-    help.addArgument('Framework', '-with-alternatives',   nargs.ArgBool(None, 0, 'Provide a choice among alternative package installations'))
+    help.addArgument('Framework', '-ignoreCompileOutput=<bool>', nargs.ArgBool(None, 1, 'Ignore compiler output'))
+    help.addArgument('Framework', '-ignoreLinkOutput=<bool>',    nargs.ArgBool(None, 1, 'Ignore linker output'))
+    help.addArgument('Framework', '-ignoreWarnings=<bool>',      nargs.ArgBool(None, 0, 'Ignore compiler and linker warnings'))
+    help.addArgument('Framework', '-doCleanup=<bool>',           nargs.ArgBool(None, 1, 'Delete any configure generated files (turn off for debugging)'))
+    help.addArgument('Framework', '-with-alternatives=<bool>',   nargs.ArgBool(None, 0, 'Provide a choice among alternative package installations'))
     help.addArgument('Framework', '-search-dirs',         nargs.Arg(None, searchdirs, 'A list of directories used to search for executables'))
     help.addArgument('Framework', '-package-dirs',        nargs.Arg(None, packagedirs, 'A list of directories used to search for packages'))
     help.addArgument('Framework', '-with-external-packages-dir=<dir>', nargs.Arg(None, None, 'Location to install downloaded packages'))
-    help.addArgument('Framework', '-with-batch',          nargs.ArgBool(None, 0, 'Machine using cross-compilers or a batch system to submit jobs'))
-    help.addArgument('Framework', '-with-host-cpu',       nargs.Arg(None, host_cpu,    'Machine CPU'))
-    help.addArgument('Framework', '-with-host-vendor',    nargs.Arg(None, host_vendor, 'Machine vendor'))
-    help.addArgument('Framework', '-with-host-os',        nargs.Arg(None, host_os,     'Machine OS'))
+    help.addArgument('Framework', '-with-batch=<bool>',          nargs.ArgBool(None, 0, 'Machine using cross-compilers or a batch system to submit jobs'))
+    help.addArgument('Framework', '-with-file-create-pause=<bool>', nargs.ArgBool(None, 0, 'Add 1 sec pause between config temp file delete/recreate'))
     return help
 
   def getCleanup(self):
@@ -239,8 +214,8 @@ class Framework(config.base.Configure, script.LanguageProcessor):
     '''Change titles and setup all children'''
     argDB = script.Script.setupArguments(self, argDB)
 
-    self.help.title = 'Python Configure Help\n   Comma seperated lists should be given between [] (use \[ \] in tcsh/csh)\n    For example: --with-mpi-lib=\[/usr/local/lib/libmpich.a,/usr/local/lib/libpmpich.a\]'
-    self.actions.title = 'Python Configure Actions\n   These are the actions performed by configure on the filesystem'
+    self.help.title = 'Configure Help\n   Comma seperated lists should be given between [] (use \[ \] in tcsh/csh)\n      For example: --with-mpi-lib=\[/usr/local/lib/libmpich.a,/usr/local/lib/libpmpich.a\]\n   Options beginning with --known- are to provide values you already know\n      For example:--known-endian=big\n   Options beginning with --with- indicate that you are requesting something\n      For example: --with-c-support=1\n   <prog> means a program name or a full path to a program\n      For example:--with-cmake=/Users/bsmith/bin/cmake\n   <bool> means a boolean, use either 0 or 1\n   <dir> means a directory\n      For example: --with-external-packages-dir=/Users/bsmith/external\n   For packages use --with-PACKAGE-dir=<dir> OR\n      --with-PACKAGE-include=<dir> --with-PACKAGE-lib=<lib> OR --download-PACKAGE'
+    self.actions.title = 'Configure Actions\n   These are the actions performed by configure on the filesystem'
 
     for child in self.childGraph.vertices:
       if hasattr(child, 'setupHelp'): child.setupHelp(self.help)
@@ -274,6 +249,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       self.actions.addArgument('Framework', 'File creation', 'Created C specific configure header '+self.cHeader)
     self.log.write('\n')
     self.actions.output(self.log)
+    self.tmpDir = None
     return
 
   def printSummary(self):
@@ -436,9 +412,12 @@ class Framework(config.base.Configure, script.LanguageProcessor):
     elif output:
       lines = output.splitlines()
       if self.argDB['ignoreWarnings']:
+        # EXCEPT warnings that those bastards say we want
+        extraLines = filter(lambda s: s.find('implicit declaration of function') >= 0, lines)
         lines = filter(lambda s: not self.warningRE.search(s), lines)
         lines = filter(lambda s: s.find('In file included from') < 0, lines)
         lines = filter(lambda s: s.find('from ') < 0, lines)
+        lines += extraLines
       # GCC: Ignore headers to toplevel
       lines = filter(lambda s: s.find('At the top level') < 0, lines)
       # GCC: Ignore headers to functions
@@ -557,6 +536,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
     if os.path.dirname(outName):
       if not os.path.exists(os.path.dirname(outName)):
         os.makedirs(os.path.dirname(outName))
+    if self.file_create_pause: time.sleep(1)
     outFile = file(outName, 'w')
     for line in inFile.xreadlines():
       outFile.write(self.substRE.sub(self.substituteName, line))
@@ -711,6 +691,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       dir = os.path.dirname(name)
       if dir and not os.path.exists(dir):
         os.makedirs(dir)
+      if self.file_create_pause: time.sleep(1)
       f = file(name, 'w')
       filename = os.path.basename(name)
     self.outputMakeMacros(f, self)
@@ -729,6 +710,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       dir = os.path.dirname(name)
       if dir and not os.path.exists(dir):
         os.makedirs(dir)
+      if self.file_create_pause: time.sleep(1)
       f = file(name, 'w')
       filename = os.path.basename(name)
     self.outputMakeRules(f, self)
@@ -747,6 +729,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       dir = os.path.dirname(name)
       if dir and not os.path.exists(dir):
         os.makedirs(dir)
+      if self.file_create_pause: time.sleep(1)
       f = file(name, 'w')
       filename = os.path.basename(name)
     guard = 'INCLUDED_'+filename.upper().replace('.', '_')
@@ -773,6 +756,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       dir = os.path.dirname(name)
       if dir and not os.path.exists(dir):
         os.makedirs(dir)
+      if self.file_create_pause: time.sleep(1)
       f = file(name, 'w')
       filename = os.path.basename(name)
     guard = 'INCLUDED_'+filename.upper().replace('.', '_')
@@ -821,7 +805,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
     self.log.write('Starting Configure Run at '+time.ctime(time.time())+'\n')
     self.log.write('Configure Options: '+self.getOptionsString()+'\n')
     self.log.write('Working directory: '+os.getcwd()+'\n')
-    self.log.write('Machine uname:\n' + str(os.uname())+'\n')
+    self.log.write('Machine platform:\n' + str(platform.uname())+'\n')
     self.log.write('Python version:\n' + sys.version+'\n')
     self.log.write(('='*80)+'\n')
     return
@@ -874,8 +858,15 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       import nargs
       import sys
 
+      if self.arch:
+        confname = 'conftest-%s' % (self.arch,)
+        reconfname = 'reconfigure-%s.py' % (self.arch,)
+      else:
+        confname = 'conftest'
+        reconfname = reconfigure.py
       args = self.clArgs[:]
-      body = ['FILE *output = fopen("reconfigure.py","w");']
+      body = ['const char reconfname[] = "' + reconfname + '";',
+              'FILE *output = fopen(reconfname,"w");']
       body.append('fprintf(output, "#!'+sys.executable+'\\n");')
       body.append('fprintf(output, "\\nconfigure_options = [\\n");')
       body.extend(self.batchSetup)
@@ -894,7 +885,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
                 '  configure.petsc_configure(configure_options)\\n");']
       body.append('\\n'.join(driver))
       body.append('\nfclose(output);\n')
-      body.append('chmod("reconfigure.py",0744);')
+      body.append('chmod(reconfname,0744);')
 
       oldFlags = self.compilers.CPPFLAGS
       oldLibs  = self.compilers.LIBS
@@ -903,14 +894,18 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       self.batchIncludes.insert(0, '#include <stdio.h>\n#include <sys/types.h>\n#include <sys/stat.h>')
       if not self.checkLink('\n'.join(self.batchIncludes)+'\n', '\n'.join(body), cleanup = 0, codeBegin = '\nint main(int argc, char **argv) {\n'):
         sys.exit('Unable to generate test file for cross-compilers/batch-system\n')
+      import shutil
+      # Could use shutil.copy, but want an error if confname exists as a directory
+      shutil.copyfile(os.path.join(self.tmpDir,'conftest'),confname)
+      shutil.copymode(os.path.join(self.tmpDir,'conftest'),confname)
       self.compilers.CPPFLAGS = oldFlags
       self.compilers.LIBS = oldLibs
       self.logClear()
       print '=================================================================================\r'
       print '    Since your compute nodes require use of a batch system or mpiexec you must:  \r'
-      print ' 1) Submit ./conftest to 1 processor of your batch system or system you are      \r'
+      print ' 1) Submit ./'+confname+' to 1 processor of your batch system or system you are  \r'
       print '    cross-compiling for; this will generate the file reconfigure.py              \r'
-      print ' 2) Run ./reconfigure.py (to complete the configure process).                    \r'
+      print ' 2) Run ./'+reconfname+' (to complete the configure process).                    \r'
       print '=================================================================================\r'
       sys.exit(0)
     return

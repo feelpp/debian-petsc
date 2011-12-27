@@ -1,7 +1,6 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"   /*I "petscksp.h" I*/
-#include "petscblaslapack.h"
+#include <private/kspimpl.h>   /*I "petscksp.h" I*/
+#include <petscblaslapack.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPComputeExplicitOperator"
@@ -30,7 +29,7 @@
 
 .seealso: KSPComputeEigenvaluesExplicitly(), PCComputeExplicitOperator()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPComputeExplicitOperator(KSP ksp,Mat *mat)
+PetscErrorCode  KSPComputeExplicitOperator(KSP ksp,Mat *mat)
 {
   Vec            in,out;
   PetscErrorCode ierr;
@@ -41,7 +40,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPComputeExplicitOperator(KSP ksp,Mat *mat)
   PetscScalar    *array,one = 1.0;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidPointer(mat,2);
   comm = ((PetscObject)ksp)->comm;
 
@@ -84,8 +83,8 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPComputeExplicitOperator(KSP ksp,Mat *mat)
 
   }
   ierr = PetscFree(rows);CHKERRQ(ierr);
-  ierr = VecDestroy(in);CHKERRQ(ierr);
-  ierr = VecDestroy(out);CHKERRQ(ierr);
+  ierr = VecDestroy(&in);CHKERRQ(ierr);
+  ierr = VecDestroy(&out);CHKERRQ(ierr);
   ierr = MatAssemblyBegin(*mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(*mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -127,7 +126,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPComputeExplicitOperator(KSP ksp,Mat *mat)
 
 .seealso: KSPComputeEigenvalues(), KSPMonitorSingularValue(), KSPComputeExtremeSingularValues(), KSPSetOperators(), KSPSolve()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPComputeEigenvaluesExplicitly(KSP ksp,PetscInt nmax,PetscReal *r,PetscReal *c) 
+PetscErrorCode  KSPComputeEigenvaluesExplicitly(KSP ksp,PetscInt nmax,PetscReal *r,PetscReal *c) 
 {
   Mat                BA;
   PetscErrorCode     ierr;
@@ -234,14 +233,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPComputeEigenvaluesExplicitly(KSP ksp,PetscI
     imagpart = realpart + n;
     ierr     = PetscMalloc(5*n*sizeof(PetscReal),&work);CHKERRQ(ierr);
 #if defined(PETSC_MISSING_LAPACK_GEEV) 
-    SETERRQ(PETSC_ERR_SUP,"GEEV - Lapack routine is unavailable\nNot able to provide eigen values.");
+    SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"GEEV - Lapack routine is unavailable\nNot able to provide eigen values.");
 #else
     {
       PetscBLASInt lierr;
       PetscScalar sdummy;
       PetscBLASInt bn = PetscBLASIntCast(n);
       LAPACKgeev_("N","N",&bn,array,&bn,realpart,imagpart,&sdummy,&idummy,&sdummy,&idummy,work,&lwork,&lierr);
-      if (lierr) SETERRQ1(PETSC_ERR_LIB,"Error in LAPACK routine %d",(int)lierr);
+      if (lierr) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"Error in LAPACK routine %d",(int)lierr);
     }
 #endif
     ierr = PetscFree(work);CHKERRQ(ierr);
@@ -268,14 +267,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPComputeEigenvaluesExplicitly(KSP ksp,PetscI
     ierr = PetscMalloc(2*n*sizeof(PetscReal),&rwork);CHKERRQ(ierr);
     ierr = PetscMalloc(n*sizeof(PetscScalar),&eigs);CHKERRQ(ierr);
 #if defined(PETSC_MISSING_LAPACK_GEEV) 
-    SETERRQ(PETSC_ERR_SUP,"GEEV - Lapack routine is unavailable\nNot able to provide eigen values.");
+    SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"GEEV - Lapack routine is unavailable\nNot able to provide eigen values.");
 #else
     {
       PetscBLASInt lierr;
       PetscScalar  sdummy;
       PetscBLASInt nb = PetscBLASIntCast(n);
       LAPACKgeev_("N","N",&nb,array,&nb,eigs,&sdummy,&idummy,&sdummy,&idummy,work,&lwork,rwork,&lierr);
-      if (lierr) SETERRQ1(PETSC_ERR_LIB,"Error in LAPACK routine %d",(int)lierr);
+      if (lierr) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"Error in LAPACK routine %d",(int)lierr);
     }
 #endif
     ierr = PetscFree(work);CHKERRQ(ierr);
@@ -294,10 +293,10 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPComputeEigenvaluesExplicitly(KSP ksp,PetscI
 #endif  
   if (size > 1) {
     ierr = MatRestoreArray(A,&array);CHKERRQ(ierr);
-    ierr = MatDestroy(A);CHKERRQ(ierr);
+    ierr = MatDestroy(&A);CHKERRQ(ierr);
   } else {
     ierr = MatRestoreArray(BA,&array);CHKERRQ(ierr);
   }
-  ierr = MatDestroy(BA);CHKERRQ(ierr);
+  ierr = MatDestroy(&BA);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

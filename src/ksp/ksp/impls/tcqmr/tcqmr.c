@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /*
     This file contains an implementation of Tony Chan's transpose-free QMR.
@@ -7,8 +6,8 @@
     complex numbers version, so most probably some are incorrect.
 */
 
-#include "private/kspimpl.h"
-#include "../src/ksp/ksp/impls/tcqmr/tcqmrimpl.h"
+#include <private/kspimpl.h>
+#include <../src/ksp/ksp/impls/tcqmr/tcqmrimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSolve_TCQMR"
@@ -56,7 +55,7 @@ static PetscErrorCode KSPSolve_TCQMR(KSP ksp)
    */
   ierr = (*ksp->converged)(ksp,ksp->its,rnorm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
   while (!ksp->reason){
-    KSPMonitor(ksp,ksp->its,rnorm);
+    ierr = KSPMonitor(ksp,ksp->its,rnorm);CHKERRQ(ierr);
     ksp->its++;
 
     ierr   = KSP_PCApplyBAorAB(ksp,u,y,vtmp);CHKERRQ(ierr); /* y = A*u */
@@ -130,9 +129,9 @@ static PetscErrorCode KSPSolve_TCQMR(KSP ksp)
     /* Compute the upper bound on the residual norm r (See QMR paper p. 13) */
     sprod = sprod*PetscAbsScalar(s);
 #if defined(PETSC_USE_COMPLEX)
-    rnorm = rnorm0 * sqrt((double)ksp->its+2.0) * PetscRealPart(sprod);     
+    rnorm = rnorm0 * PetscSqrtReal((PetscReal)ksp->its+2.0) * PetscRealPart(sprod);     
 #else
-    rnorm = rnorm0 * sqrt((double)ksp->its+2.0) * sprod;     
+    rnorm = rnorm0 * PetscSqrtReal((PetscReal)ksp->its+2.0) * sprod;     
 #endif
     ierr = (*ksp->converged)(ksp,ksp->its,rnorm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
     if (ksp->its >= ksp->max_it) {
@@ -140,7 +139,7 @@ static PetscErrorCode KSPSolve_TCQMR(KSP ksp)
       break;
     }
   }
-  KSPMonitor(ksp,ksp->its,rnorm);
+  ierr = KSPMonitor(ksp,ksp->its,rnorm);CHKERRQ(ierr);
   ierr = KSPUnwindPreconditioner(ksp,x,vtmp);CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
@@ -153,20 +152,24 @@ static PetscErrorCode KSPSetUp_TCQMR(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_SYMMETRIC){
-    SETERRQ(PETSC_ERR_SUP,"no symmetric preconditioning for KSPTCQMR");
-  }
+  if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"no symmetric preconditioning for KSPTCQMR");
   ierr = KSPDefaultGetWork(ksp,TCQMR_VECS);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 /*MC
-     KSPRTCQMR - A variant of QMR (quasi minimal residual) developed by Tony Chan
+     KSPTCQMR - A variant of QMR (quasi minimal residual) developed by Tony Chan
 
    Options Database Keys:
 .   see KSPSolve()
 
    Level: beginner
+
+  Notes: Supports either left or right preconditioning, but not symmetric
+  
+          The "residual norm" computed in this algorithm is actually just an upper bound on the actual residual norm.
+          That is for left preconditioning it is a bound on the preconditioned residual and for right preconditioning 
+          it is a bound on the true residual.
 
   References:
   Transpose-free formulations of Lanczos-type methods for nonsymmetric linear systems, 
@@ -180,11 +183,14 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_TCQMR"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_TCQMR(KSP ksp)
+PetscErrorCode  KSPCreate_TCQMR(KSP ksp)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_RIGHT,1);CHKERRQ(ierr);
   ksp->data                = (void*)0;
-  ksp->pc_side             = PC_LEFT;
   ksp->ops->buildsolution  = KSPDefaultBuildSolution;
   ksp->ops->buildresidual  = KSPDefaultBuildResidual;
   ksp->ops->setup          = KSPSetUp_TCQMR;

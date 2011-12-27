@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:35+00:00">
+<meta name="date" content="2011-10-29T19:05:09+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Mat/MatTranspose.html#MatTranspose">MatTranspose</A>() and <A href="../../../../docs/manualpages/Mat/MatEqual.html#MatEqual">MatEqual</A>() for MPIAIJ matrices.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 
 <a name="line9">  9: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
@@ -19,7 +19,7 @@
 <a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            A,B;
 <a name="line12"> 12: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m = 7,n,i,rstart,rend,cols[3];
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v[3];
-<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     equal;
+<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      equal;
 <a name="line16"> 16: </a>  const char     *eq[2];
 
 <a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
@@ -27,7 +27,7 @@
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-m"</font>,&amp;m,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line21"> 21: </a>  n = m;
 
-<a name="line23"> 23: </a>  <font color="#B22222">/* ------- Assemble matrix, test <A href="../../../../docs/manualpages/Mat/MatValid.html#MatValid">MatValid</A>() --------- */</font>
+<a name="line23"> 23: </a>  <font color="#B22222">/* ------- Assemble matrix, --------- */</font>
 
 <a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,m,n,0,0,0,0,&amp;A);
 <a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/Mat/MatGetOwnershipRange.html#MatGetOwnershipRange">MatGetOwnershipRange</A>(A,&amp;rstart,&amp;rend);
@@ -64,8 +64,8 @@
 <a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Matrices are %s\n"</font>,eq[equal]);
 
 <a name="line59"> 59: </a>  <font color="#B22222">/* Free data structures */</font>
-<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B);
+<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
 
 
 <a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();

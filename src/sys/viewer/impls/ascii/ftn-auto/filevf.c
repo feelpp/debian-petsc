@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* filev.c */
 /* Fortran interface file */
 
@@ -33,6 +34,16 @@ extern void PetscRmPointer(void*);
 #define petscviewerasciisettab_ petscviewerasciisettab
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscviewerasciiaddtab_ PETSCVIEWERASCIIADDTAB
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscviewerasciiaddtab_ petscviewerasciiaddtab
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscviewerasciisubtracttab_ PETSCVIEWERASCIISUBTRACTTAB
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscviewerasciisubtracttab_ petscviewerasciisubtracttab
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscviewerasciipushtab_ PETSCVIEWERASCIIPUSHTAB
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscviewerasciipushtab_ petscviewerasciipushtab
@@ -53,19 +64,27 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscviewerasciisettab_(PetscViewer viewer,PetscInt *tabs, int *__ierr ){
+void PETSC_STDCALL  petscviewerasciisettab_(PetscViewer viewer,PetscInt *tabs, int *__ierr ){
 *__ierr = PetscViewerASCIISetTab(
 	(PetscViewer)PetscToPointer((viewer) ),*tabs);
 }
-void PETSC_STDCALL   petscviewerasciipushtab_(PetscViewer viewer, int *__ierr ){
+void PETSC_STDCALL  petscviewerasciiaddtab_(PetscViewer viewer,PetscInt *tabs, int *__ierr ){
+*__ierr = PetscViewerASCIIAddTab(
+	(PetscViewer)PetscToPointer((viewer) ),*tabs);
+}
+void PETSC_STDCALL  petscviewerasciisubtracttab_(PetscViewer viewer,PetscInt *tabs, int *__ierr ){
+*__ierr = PetscViewerASCIISubtractTab(
+	(PetscViewer)PetscToPointer((viewer) ),*tabs);
+}
+void PETSC_STDCALL  petscviewerasciipushtab_(PetscViewer viewer, int *__ierr ){
 *__ierr = PetscViewerASCIIPushTab(
 	(PetscViewer)PetscToPointer((viewer) ));
 }
-void PETSC_STDCALL   petscviewerasciipoptab_(PetscViewer viewer, int *__ierr ){
+void PETSC_STDCALL  petscviewerasciipoptab_(PetscViewer viewer, int *__ierr ){
 *__ierr = PetscViewerASCIIPopTab(
 	(PetscViewer)PetscToPointer((viewer) ));
 }
-void PETSC_STDCALL   petscviewerasciiusetabs_(PetscViewer viewer,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  petscviewerasciiusetabs_(PetscViewer viewer,PetscBool  *flg, int *__ierr ){
 *__ierr = PetscViewerASCIIUseTabs(
 	(PetscViewer)PetscToPointer((viewer) ),*flg);
 }

@@ -6,16 +6,16 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscMatlabEnginePutArray"><H1>PetscMatlabEnginePutArray</H1></A>
-Puts a Petsc object into the Matlab space. For parallel objects, each processors part is put in a separate  Matlab process. 
+Puts an array into the MATLAB space, treating it as a Fortran style (column major ordering) array. For parallel objects, each processors part is put in a separate  MATLAB process. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscMatlabEnginePutArray(PetscMatlabEngine mengine,int m,int n,PetscScalar *array,const char name[])
+PetscErrorCode  PetscMatlabEnginePutArray(PetscMatlabEngine mengine,int m,int n,const PetscScalar *array,const char name[])
 </PRE>
 Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mengine </B></TD><TD>- the Matlab engine
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mengine </B></TD><TD>- the MATLAB engine
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m,n </B></TD><TD>- the dimensions of the array
 </TD></TR>

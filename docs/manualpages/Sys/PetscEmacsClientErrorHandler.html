@@ -10,12 +10,14 @@ Error handler that uses the emacsclient program to  load the file where the erro
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-PetscErrorCode  PetscEmacsClientErrorHandler(int line,const char *fun,const char* file,const char *dir,PetscErrorCode n,int p,const char *mess,void *ctx)
+PetscErrorCode  PetscEmacsClientErrorHandler(MPI_Comm comm,int line,const char *fun,const char* file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,void *ctx)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- communicator over which error occured
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>line </B></TD><TD>- the line number of the error (indicated by __LINE__)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- the function where error is detected (indicated by __FUNCT__)
@@ -45,7 +47,7 @@ Most users need not directly employ this routine and the other error
 handlers, but can instead use the simplified interface <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>, which has
 the calling sequence
 <pre>
-    <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(number,p,mess)
+    <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A HREF="../Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,number,p,mess)
 </pre>
 <P>
 <H3><FONT COLOR="#CC3333">Notes for experienced users</FONT></H3>

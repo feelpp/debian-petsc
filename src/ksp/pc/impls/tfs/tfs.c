@@ -1,11 +1,10 @@
-#define PETSCKSP_DLL
 /* 
         Provides an interface to the Tufo-Fischer parallel direct solver
 */
 
-#include "private/pcimpl.h"   /*I "petscpc.h" I*/
-#include "../src/mat/impls/aij/mpi/mpiaij.h"
-#include "../src/ksp/pc/impls/tfs/tfs.h"
+#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <../src/mat/impls/aij/mpi/mpiaij.h>
+#include <../src/ksp/pc/impls/tfs/tfs.h>
 
 typedef struct {
   xxt_ADT  xxt;
@@ -29,16 +28,10 @@ PetscErrorCode PCDestroy_TFS(PC pc)
   if (tfs->xyt) {
     ierr = XYT_free(tfs->xyt);CHKERRQ(ierr);
   }
-  if (tfs->b) {
-  ierr = VecDestroy(tfs->b);CHKERRQ(ierr);
-  }
-  if (tfs->xd) {
-  ierr = VecDestroy(tfs->xd);CHKERRQ(ierr);
-  }
-  if (tfs->xo) {
-  ierr = VecDestroy(tfs->xo);CHKERRQ(ierr);
-  }
-  ierr = PetscFree(tfs);CHKERRQ(ierr);
+  ierr = VecDestroy(&tfs->b);CHKERRQ(ierr);
+  ierr = VecDestroy(&tfs->xd);CHKERRQ(ierr);
+  ierr = VecDestroy(&tfs->xo);CHKERRQ(ierr);
+  ierr = PetscFree(pc->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -106,19 +99,17 @@ static PetscErrorCode PCSetUp_TFS(PC pc)
   Mat_MPIAIJ     *a = (Mat_MPIAIJ*)A->data;
   PetscErrorCode ierr;
   PetscInt      *localtoglobal,ncol,i;
-  PetscTruth     ismpiaij;
+  PetscBool      ismpiaij;
 
   /*
-  PetscTruth     issymmetric;
+  PetscBool      issymmetric;
   Petsc Real tol = 0.0;
   */
 
   PetscFunctionBegin;
-  if (A->cmap->N != A->rmap->N) SETERRQ(PETSC_ERR_ARG_SIZ,"matrix must be square"); 
+  if (A->cmap->N != A->rmap->N) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_SIZ,"matrix must be square"); 
   ierr = PetscTypeCompare((PetscObject)pc->pmat,MATMPIAIJ,&ismpiaij);CHKERRQ(ierr);
-  if (!ismpiaij) {
-    SETERRQ(PETSC_ERR_SUP,"Currently only supports MPIAIJ matrices");
-  }
+  if (!ismpiaij) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Currently only supports MPIAIJ matrices");
 
   /* generate the local to global mapping */
   ncol = a->A->cmap->n + a->B->cmap->n;
@@ -183,7 +174,7 @@ EXTERN_C_BEGIN
 
 .seealso:  PCCreate(), PCSetType(), PCType (for list of available types), PC
 M*/
-PetscErrorCode PETSCKSP_DLLEXPORT PCCreate_TFS(PC pc)
+PetscErrorCode  PCCreate_TFS(PC pc)
 {
   PetscErrorCode ierr;
   PC_TFS         *tfs;

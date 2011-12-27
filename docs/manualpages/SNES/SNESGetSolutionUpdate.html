@@ -10,7 +10,7 @@ Returns the vector where the solution update is stored.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetSolutionUpdate(SNES snes,Vec *x)
+PetscErrorCode  SNESGetSolutionUpdate(SNES snes,Vec *x)
 </PRE>
 Not Collective, but <A HREF="../Vec/Vec.html#Vec">Vec</A> is parallel if <A HREF="../SNES/SNES.html#SNES">SNES</A> is parallel
 <P>

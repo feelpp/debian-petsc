@@ -9,9 +9,9 @@
 Runs a program on processor zero and sends either its input or output to  a file. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscPOpen(MPI_Comm comm,const char machine[],const char program[],const char mode[],FILE **fp)
+PetscErrorCode  PetscPOpen(MPI_Comm comm,const char machine[],const char program[],const char mode[],FILE **fp)
 </PRE>
-Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, but only process 0 runs the command
+Logically Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, but only process 0 runs the command
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

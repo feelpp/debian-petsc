@@ -14,7 +14,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 
 #undef __FUNCT__
@@ -37,7 +37,7 @@ int main(int argc,char **args)
      Determine files from which we read the linear system
      (matrix and right-hand-side vector).
   */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,PETSC_NULL);CHKERRQ(ierr);
 
   /* -----------------------------------------------------------
                   Beginning of linear solver loop
@@ -51,7 +51,7 @@ int main(int argc,char **args)
         -log_summary) can be done with the larger one (that actually
         is the system of interest). 
   */
-  PreLoadBegin(PETSC_FALSE,"Load system");
+  PetscPreLoadBegin(PETSC_FALSE,"Load system");
 
     /* - - - - - - - - - - - New Stage - - - - - - - - - - - - -
                            Load system
@@ -66,9 +66,12 @@ int main(int argc,char **args)
     /*
        Load the matrix and vector; then destroy the viewer.
     */
-    ierr  = MatLoad(fd,MATMPIAIJ,&A);CHKERRQ(ierr);
-    ierr  = PetscPushErrorHandler(PetscIgnoreErrorHandler,PETSC_NULL);CHKERRQ(ierr);
-    ierrp = VecLoad(fd,PETSC_NULL,&b);
+    ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+    ierr = MatSetType(A,MATMPIAIJ);CHKERRQ(ierr);
+    ierr = MatLoad(A,fd);CHKERRQ(ierr);
+    ierr = VecCreate(PETSC_COMM_WORLD,&b);CHKERRQ(ierr);
+    ierr = PetscPushErrorHandler(PetscIgnoreErrorHandler,PETSC_NULL);CHKERRQ(ierr);
+    ierrp = VecLoad(b,fd);
     ierr  = PetscPopErrorHandler();CHKERRQ(ierr);
     ierr  = MatGetLocalSize(A,&m,&n);CHKERRQ(ierr);
     if (ierrp) { /* if file contains no RHS, then use a vector of all ones */
@@ -78,7 +81,7 @@ int main(int argc,char **args)
       ierr = VecSetFromOptions(b);CHKERRQ(ierr);
       ierr = VecSet(b,one);CHKERRQ(ierr);
     }
-    ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
 
     /* 
        If the loaded matrix is larger than the vector (due to being padded 
@@ -101,7 +104,7 @@ int main(int argc,char **args)
         ierr  = VecSetValues(tmp,1,&idex,bold+j,INSERT_VALUES);CHKERRQ(ierr);
       }
       ierr = VecRestoreArray(b,&bold);CHKERRQ(ierr);
-      ierr = VecDestroy(b);CHKERRQ(ierr);
+      ierr = VecDestroy(&b);CHKERRQ(ierr);
       ierr = VecAssemblyBegin(tmp);CHKERRQ(ierr);
       ierr = VecAssemblyEnd(tmp);CHKERRQ(ierr);
       b = tmp;
@@ -118,7 +121,7 @@ int main(int argc,char **args)
     /*
        Conclude profiling last stage; begin profiling next stage.
     */
-    PreLoadStage("KSPSetUp");
+    PetscPreLoadStage("KSPSetUp");
 
     ierr = MatCreateNormal(A,&N);CHKERRQ(ierr);
     ierr = MatMultTranspose(A,b,Ab);CHKERRQ(ierr);
@@ -147,7 +150,7 @@ int main(int argc,char **args)
     /*
        Begin profiling next stage
     */
-    PreLoadStage("KSPSolve");
+    PetscPreLoadStage("KSPSolve");
 
     /*
        Solve linear system
@@ -157,7 +160,7 @@ int main(int argc,char **args)
    /* 
        Conclude profiling this stage
     */
-    PreLoadStage("Cleanup");
+    PetscPreLoadStage("Cleanup");
 
     /* - - - - - - - - - - - New Stage - - - - - - - - - - - - -
             Check error, print output, free data structures.
@@ -177,16 +180,16 @@ int main(int argc,char **args)
        Free work space.  All PETSc objects should be destroyed when they
        are no longer needed.
     */
-    ierr = MatDestroy(A);CHKERRQ(ierr); ierr = VecDestroy(b);CHKERRQ(ierr);
-    ierr = MatDestroy(N);CHKERRQ(ierr); ierr = VecDestroy(Ab);CHKERRQ(ierr);
-    ierr = VecDestroy(u);CHKERRQ(ierr); ierr = VecDestroy(x);CHKERRQ(ierr);
-    ierr = KSPDestroy(ksp);CHKERRQ(ierr); 
-  PreLoadEnd();
+    ierr = MatDestroy(&A);CHKERRQ(ierr); ierr = VecDestroy(&b);CHKERRQ(ierr);
+    ierr = MatDestroy(&N);CHKERRQ(ierr); ierr = VecDestroy(&Ab);CHKERRQ(ierr);
+    ierr = VecDestroy(&u);CHKERRQ(ierr); ierr = VecDestroy(&x);CHKERRQ(ierr);
+    ierr = KSPDestroy(&ksp);CHKERRQ(ierr); 
+  PetscPreLoadEnd();
   /* -----------------------------------------------------------
                       End of linear solver loop
      ----------------------------------------------------------- */
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

@@ -2,6 +2,7 @@ import config.base
 
 import re
 import os
+import shutil
 
 class MissingProcessor(RuntimeError):
   pass
@@ -31,9 +32,10 @@ class Configure(config.base.Configure):
   def setupHelp(self, help):
     import nargs
 
-    help.addArgument('Compilers', '-with-clib-autodetect',           nargs.ArgBool(None, 1, 'Autodetect C compiler libraries'))
-    help.addArgument('Compilers', '-with-fortranlib-autodetect',     nargs.ArgBool(None, 1, 'Autodetect Fortran compiler libraries'))
-    help.addArgument('Compilers', '-with-cxxlib-autodetect',         nargs.ArgBool(None, 1, 'Autodetect C++ compiler libraries'))
+    help.addArgument('Compilers', '-with-clib-autodetect=<bool>',           nargs.ArgBool(None, 1, 'Autodetect C compiler libraries'))
+    help.addArgument('Compilers', '-with-fortranlib-autodetect=<bool>',     nargs.ArgBool(None, 1, 'Autodetect Fortran compiler libraries'))
+    help.addArgument('Compilers', '-with-cxxlib-autodetect=<bool>',         nargs.ArgBool(None, 1, 'Autodetect C++ compiler libraries'))
+    help.addArgument('Compilers', '-with-dependencies=<bool>',              nargs.ArgBool(None, 1, 'Compile with -MMD or equivalent flag if possible'))
 
     return
 
@@ -42,14 +44,17 @@ class Configure(config.base.Configure):
     names = {}
     names['CC'] = 'No C compiler found.'
     names['CPP'] = 'No C preprocessor found.'
+    names['CUDAC'] = 'No CUDA compiler found.'
+    names['CUDAPP'] = 'No CUDA preprocessor found.'
     names['CXX'] = 'No C++ compiler found.'
     names['CXXCPP'] = 'No C++ preprocessor found.'
     names['FC'] = 'No Fortran compiler found.'
     names['AR'] = 'No archiver found.'
     names['RANLIB'] = 'No ranlib found.'
     names['LD_SHARED'] = 'No shared linker found.'
+    names['CC_LD'] = 'No C linker found.'
     names['dynamicLinker'] = 'No dynamic linker found.'
-    for language in ['C', 'Cxx', 'FC']:
+    for language in ['C', 'CUDA', 'Cxx', 'FC']:
       self.pushLanguage(language)
       key = self.getCompilerFlagsName(language)
       names[key] = 'No '+language+' compiler flags found.'
@@ -59,6 +64,8 @@ class Configure(config.base.Configure):
       names[key] = 'No '+language+' linker flags found.'
       self.popLanguage()
     names['CPPFLAGS'] = 'No preprocessor flags found.'
+    names['CUDAPPFLAGS'] = 'No CUDA preprocessor flags found.'
+    names['CXXCPPFLAGS'] = 'No C++ preprocessor flags found.'
     names['AR_FLAGS'] = 'No archiver flags found.'
     names['AR_LIB_SUFFIX'] = 'No static library suffix found.'
     names['LIBS'] = 'No extra libraries found.'
@@ -78,8 +85,10 @@ class Configure(config.base.Configure):
         if not hasattr(self.setCompilers, name):
           raise MissingProcessor(self.dispatchNames[name])
         return getattr(self.setCompilers, name)
-      if name in ['CC_LINKER_FLAGS', 'FC_LINKER_FLAGS', 'CXX_LINKER_FLAGS', 'sharedLibraryFlags', 'dynamicLibraryFlags']:
-        return ' '.join(getattr(self.setCompilers, name))
+      if name in ['CC_LINKER_FLAGS', 'FC_LINKER_FLAGS', 'CXX_LINKER_FLAGS', 'CUDAC_LINKER_FLAGS','sharedLibraryFlags', 'dynamicLibraryFlags']:
+        flags = getattr(self.setCompilers, name)
+        if not isinstance(flags, list): flags = [flags]
+        return ' '.join(flags)
     raise AttributeError('Configure attribute not found: '+name)
 
   def __setattr__(self, name, value):
@@ -160,11 +169,12 @@ class Configure(config.base.Configure):
 
     # PGI: kill anything enclosed in single quotes
     if output.find('\'') >= 0:
-      if output.count('\'')%2: raise RuntimeError('Mismatched single quotes in C library string')
-      while output.find('\'') >= 0:
-        start = output.index('\'')
-        end   = output.index('\'', start+1)+1
-        output = output.replace(output[start:end], '')
+      # Cray has crazy non-matching single quotes so skip the removal
+      if not output.count('\'')%2:
+        while output.find('\'') >= 0:
+          start = output.index('\'')
+          end   = output.index('\'', start+1)+1
+          output = output.replace(output[start:end], '')
 
     # The easiest thing to do for xlc output is to replace all the commas
     # with spaces.  Try to only do that if the output is really from xlc,
@@ -192,7 +202,6 @@ class Configure(config.base.Configure):
         # Intel 11 has a bogus -long_double option
         if arg == '-long_double':
           continue
-                   
         # if options of type -L foobar
         if arg == '-L':
           lib = argIter.next()
@@ -206,10 +215,24 @@ class Configure(config.base.Configure):
             lflags.append(arg)
             self.logPrint('Found full library spec: '+arg, 4, 'compilers')
             clibs.append(arg)
+          else:
+            self.logPrint('Skipping, already in lflags: '+arg, 4, 'compilers')
+          continue
+        # Check for full dylib library name
+        m = re.match(r'^/.*\.dylib$', arg)
+        if m:
+          if not arg in lflags:
+            lflags.append(arg)
+            self.logPrint('Found full library spec: '+arg, 4, 'compilers')
+            clibs.append(arg)
+          else:
+            self.logPrint('already in lflags: '+arg, 4, 'compilers')
           continue
         # Check for system libraries
         m = re.match(r'^-l(ang.*|crt[0-9].o|crtbegin.o|c|gcc|cygwin|crt[0-9].[0-9][0-9].[0-9].o)$', arg)
-        if m: continue
+        if m: 
+          self.logPrint('Skipping system library: '+arg, 4, 'compilers')
+          continue
         # Check for special library arguments
         m = re.match(r'^-l.*$', arg)
         if m:
@@ -241,6 +264,8 @@ class Configure(config.base.Configure):
             rpathflags.append(lib)
             self.logPrint('Found '+arg+' library: '+lib, 4, 'compilers')
             clibs.append(self.setCompilers.CSharedLinkerFlag+lib)
+          else:
+            self.logPrint('Already in rpathflags, skipping'+arg, 4, 'compilers')
           continue
         # Check for '-R/sharedlibpath/'
         m = re.match(r'^-R.*$', arg)
@@ -250,6 +275,8 @@ class Configure(config.base.Configure):
             rpathflags.append(lib)
             self.logPrint('Found -R library: '+lib, 4, 'compilers')
             clibs.append(self.setCompilers.CSharedLinkerFlag+lib)
+          else:
+            self.logPrint('Already in rpathflags, skipping'+arg, 4, 'compilers')
           continue
         self.logPrint('Unknown arg '+arg, 4, 'compilers')
     except StopIteration:
@@ -277,7 +304,8 @@ class Configure(config.base.Configure):
 
   def checkCFormatting(self):
     '''Activate format string checking if using the GNU compilers'''
-    if self.isGCC:
+    '''No checking because we use additional formating conventions'''
+    if self.isGCC and 0:
       self.gccFormatChecking = ('PRINTF_FORMAT_CHECK(A,B)', '__attribute__((format (printf, A, B)))')
       self.logPrint('Added gcc printf format checking', 4, 'compilers')
       self.addDefine(self.gccFormatChecking[0], self.gccFormatChecking[1])
@@ -395,10 +423,24 @@ class Configure(config.base.Configure):
             lflags.append(arg)
             self.logPrint('Found full library spec: '+arg, 4, 'compilers')
             cxxlibs.append(arg)
+          else:
+            self.logPrint('Already in lflags: '+arg, 4, 'compilers')
+          continue
+        # Check for full dylib library name
+        m = re.match(r'^/.*\.dylib$', arg)
+        if m:
+          if not arg in lflags:
+            lflags.append(arg)
+            self.logPrint('Found full library spec: '+arg, 4, 'compilers')
+            cxxlibs.append(arg)
+          else:
+            self.logPrint('already in lflags: '+arg, 4, 'compilers')
           continue
         # Check for system libraries
         m = re.match(r'^-l(ang.*|crt[0-9].o|crtbegin.o|c|gcc|cygwin|crt[0-9].[0-9][0-9].[0-9].o)$', arg)
-        if m: continue
+        if m: 
+          self.logPrint('Skipping system library: '+arg, 4, 'compilers')
+          continue
         # Check for special library arguments
         m = re.match(r'^-l.*$', arg)
         if m:
@@ -437,6 +479,8 @@ class Configure(config.base.Configure):
             rpathflags.append(lib)
             self.logPrint('Found '+arg+' library: '+lib, 4, 'compilers')
             cxxlibs.append(self.setCompilers.CSharedLinkerFlag+lib)
+          else:
+            self.logPrint('Already in rpathflags, skipping:'+arg, 4, 'compilers')
           continue
         # Check for '-R/sharedlibpath/'
         m = re.match(r'^-R.*$', arg)
@@ -446,6 +490,8 @@ class Configure(config.base.Configure):
             rpathflags.append(lib)
             self.logPrint('Found -R library: '+lib, 4, 'compilers')
             cxxlibs.append(self.setCompilers.CSharedLinkerFlag+lib)
+          else:
+            self.logPrint('Already in rpathflags, skipping:'+arg, 4, 'compilers')
           continue
         self.logPrint('Unknown arg '+arg, 4, 'compilers')
     except StopIteration:
@@ -500,11 +546,11 @@ class Configure(config.base.Configure):
   def mangleFortranFunction(self, name):
     if self.fortranMangling == 'underscore':
       if self.fortranManglingDoubleUnderscore and name.find('_') >= 0:
-        return name+'__'
+        return name.lower()+'__'
       else:
-        return name+'_'
+        return name.lower()+'_'
     elif self.fortranMangling == 'unchanged':
-      return name
+      return name.lower()
     elif self.fortranMangling == 'caps':
       return name.upper()
     elif self.fortranMangling == 'stdcall':
@@ -513,7 +559,7 @@ class Configure(config.base.Configure):
 
   def testMangling(self, cfunc, ffunc, clanguage = 'C', extraObjs = []):
     '''Test a certain name mangling'''
-    cobj = 'confc.o'
+    cobj = os.path.join(self.tmpDir, 'confc.o')
     found = 0
     # Compile the C test object
     self.pushLanguage(clanguage)
@@ -558,7 +604,11 @@ class Configure(config.base.Configure):
         self.fortranMangling = mangler
         break
     else:
-      raise RuntimeError('Unknown Fortran name mangling')
+      if self.setCompilers.isDarwin():
+        mess = '  See http://www.mcs.anl.gov/petsc/petsc-as/documentation/faq.html#gfortran'
+      else:
+        mess = ''
+      raise RuntimeError('Unknown Fortran name mangling: Are you sure the C and Fortran compilers are compatible?\n  Perhaps one is 64 bit and one is 32 bit?\n'+mess)
     self.logPrint('Fortran name mangling is '+self.fortranMangling, 4, 'compilers')
     if self.fortranMangling == 'underscore':
       self.addDefine('HAVE_FORTRAN_UNDERSCORE', 1)
@@ -619,7 +669,6 @@ class Configure(config.base.Configure):
     self.setCompilers.popLanguage()
     self.logPrint('Fortran does not support defining macro', 3, 'compilers')
     return
-    
 
   def checkFortranLibraries(self):
     '''Substitutes for FLIBS the libraries needed to link with Fortran
@@ -672,7 +721,7 @@ class Configure(config.base.Configure):
         output = output[0:loc] + ' -lpgf90rtl -lpgftnrtl' + output[loc:]
     elif output.find(' -lpgf90rtl -lpgftnrtl') >= 0:
       # somehow doing this hacky thing appears to get rid of error with undefined __hpf_exit
-      self.logPrint('Adding -lpgftnrtl before -lpgf90rtl in library list')
+      self.logPrint('Adding -lpgftnrtl before -lpgf90rtl in librarylist')
       output = output.replace(' -lpgf90rtl -lpgftnrtl',' -lpgftnrtl -lpgf90rtl -lpgftnrtl')
 
     # PGI: kill anything enclosed in single quotes
@@ -726,6 +775,18 @@ class Configure(config.base.Configure):
             lflags.append(arg)
             self.logPrint('Found full library spec: '+arg, 4, 'compilers')
             flibs.append(arg)
+          else:
+            self.logPrint('already in lflags: '+arg, 4, 'compilers')
+          continue
+        # Check for full dylib library name
+        m = re.match(r'^/.*\.dylib$', arg)
+        if m:
+          if not arg in lflags:
+            lflags.append(arg)
+            self.logPrint('Found full library spec: '+arg, 4, 'compilers')
+            flibs.append(arg)
+          else:
+            self.logPrint('already in lflags: '+arg, 4, 'compilers')
           continue
         # prevent false positives for include with pathscalr
         if re.match(r'^-INTERNAL.*$', arg): continue
@@ -746,10 +807,14 @@ class Configure(config.base.Configure):
             lflags.append(arg)
             self.logPrint('Found binary include: '+arg, 4, 'compilers')
             flibs.append(arg)
+          else:
+            self.logPrint('Already in lflags so skipping: '+arg, 4, 'compilers')
           continue
         # Check for system libraries
         m = re.match(r'^-l(ang.*|crt[0-9].o|crtbegin.o|c|gcc|cygwin|crt[0-9].[0-9][0-9].[0-9].o)$', arg)
-        if m: continue
+        if m: 
+          self.logPrint('Found system library therefor skipping: '+arg, 4, 'compilers')
+          continue
         # Check for canonical library argument
         m = re.match(r'^-[lL]$', arg)
         if m:
@@ -765,8 +830,6 @@ class Configure(config.base.Configure):
           if arg == '-l:libF90.a':  arg = '-lF90'
           if arg == '-l:libIO77.a': arg = '-lIO77'                      
           if not arg in lflags:
-            
-            #TODO: if arg == '-lkernel32' and host_os.startswith('cygwin'):
             if arg == '-lkernel32':
               continue
             elif arg == '-lm':
@@ -781,17 +844,19 @@ class Configure(config.base.Configure):
               lflags.append(arg)
             self.logPrint('Found library: '+arg, 4, 'compilers')
             flibs.append(arg)
+          else:
+            self.logPrint('Already in lflags: '+arg, 4, 'compilers')
           continue
         m = re.match(r'^-L.*$', arg)
         if m:
           arg = '-L'+os.path.abspath(arg[2:])
           if arg in ['-L/usr/lib','-L/lib','-L/usr/lib64','-L/lib64']: continue          
           if not arg in lflags:
-            
-            #TODO: if arg == '-lkernel32' and host_os.startswith('cygwin'):
             lflags.append(arg)
             self.logPrint('Found library directory: '+arg, 4, 'compilers')
             flibs.append(arg)
+          else:
+            self.logPrint('Already in lflags so skipping: '+arg, 4, 'compilers')
           continue
         # Check for '-rpath /sharedlibpath/ or -R /sharedlibpath/'
         if arg == '-rpath' or arg == '-R':
@@ -804,6 +869,8 @@ class Configure(config.base.Configure):
             rpathflags.append(lib)
             self.logPrint('Found '+arg+' library: '+lib, 4, 'compilers')
             flibs.append(self.setCompilers.CSharedLinkerFlag+lib)
+          else:
+            self.logPrint('Already in rpathflags so skipping: '+arg, 4, 'compilers')
           continue
         # Check for '-R/sharedlibpath/'
         m = re.match(r'^-R.*$', arg)
@@ -813,6 +880,8 @@ class Configure(config.base.Configure):
             rpathflags.append(lib)
             self.logPrint('Found -R library: '+lib, 4, 'compilers')
             flibs.append(self.setCompilers.CSharedLinkerFlag+lib)
+          else:
+            self.logPrint('Already in rpathflags so skipping: '+arg, 4, 'compilers')
           continue
         if arg.startswith('-zallextract') or arg.startswith('-zdefaultextract') or arg.startswith('-zweakextract'):
           self.framework.log.write( 'Found Solaris -z option: '+arg+'\n')
@@ -823,13 +892,19 @@ class Configure(config.base.Configure):
         # This probably only applies to Solaris systems, and then will only
         # work with gcc...
         if arg == '-Y':
-          for lib in argIter.next().split(':'):
+          libs = argIter.next()
+          if libs.startswith('"') and libs.endswith('"'):
+            libs = libs[1:-1]
+          for lib in libs.split(':'):
             #solaris gnu g77 has this extra P, here, not sure why it means
             if lib.startswith('P,'):lib = lib[2:]
             self.logPrint('Handling -Y option: '+lib, 4, 'compilers')
             lib1 = '-L'+os.path.abspath(lib)
             if lib1 in ['-L/usr/lib','-L/lib','-L/usr/lib64','-L/lib64']: continue
             flibs.append(lib1)
+          continue
+        if arg.startswith('COMPILER_PATH=') or arg.startswith('LIBRARY_PATH='):
+          self.logPrint('Skipping arg '+arg, 4, 'compilers')
           continue
         # HPUX lists a bunch of library directories seperated by :
         if arg.find(':') >=0:
@@ -949,7 +1024,7 @@ class Configure(config.base.Configure):
     cinc = 'extern "C" '+cinc+'\n'
 
     cxxCode = 'void foo(void){'+self.mangleFortranFunction('d1chk')+'();}'
-    cxxobj = 'cxxobj.o'
+    cxxobj  = os.path.join(self.tmpDir, 'cxxobj.o')
     self.pushLanguage('Cxx')
     if not self.checkCompile(cinc+cxxCode, None, cleanup = 0):
       self.logPrint('Cannot compile Cxx function: '+cfunc, 3, 'compilers')
@@ -999,7 +1074,9 @@ class Configure(config.base.Configure):
     if self.framework.argDB['with-batch']:
       if config.setCompilers.Configure.isPGI(self.setCompilers.FC):
         self.addDefine('HAVE_F90_2PTR_ARG', 1)
-        self.logPrint('PGI F90 compiler detected & using --with-batch', 3, 'compilers')
+        self.logPrint('PGI F90 compiler detected & using --with-batch, so use two arguments for array pointers', 3, 'compilers')
+      else:
+        self.logPrint('Using --with-batch, so guess that F90 uses a single argument for array pointers', 3, 'compilers')
       return
     # do not check on windows - as it pops up the annoying debugger
     if config.setCompilers.Configure.isCygwin():
@@ -1027,7 +1104,7 @@ class Configure(config.base.Configure):
   }
   return;
 }\n'''
-    cobj = 'fooobj.o'
+    cobj = os.path.join(self.tmpDir, 'fooobj.o')
     self.pushLanguage('C')
     if not self.checkCompile(cinc+ccode, None, cleanup = 0):
       self.logPrint('Cannot compile C function: f90ptrtest', 3, 'compilers')
@@ -1082,8 +1159,8 @@ class Configure(config.base.Configure):
       self.logPrint('Not a Fortran90 compiler - hence skipping module include test')
       return
     found   = False
-    testdir = 'confdir'
-    modobj  = 'configtest.o'
+    testdir = os.path.join(self.tmpDir, 'confdir')
+    modobj  = os.path.join(self.tmpDir, 'configtest.o')
     modcode = '''\
       module configtest
       integer testint
@@ -1108,7 +1185,7 @@ class Configure(config.base.Configure):
       modname = 'CONFIGTEST.mod'
     else:
       raise RuntimeError('Fortran module was not created during the compile. configtest.mod/CONFIGTEST.mod not found')
-    os.rename(modname, os.path.join(testdir, modname))
+    shutil.move(modname, os.path.join(testdir, modname))
     fcode = '''\
       use configtest
 
@@ -1144,8 +1221,8 @@ class Configure(config.base.Configure):
       self.logPrint('Not a Fortran90 compiler - hence skipping module include test')
       return
     found   = False
-    testdir = 'confdir'
-    modobj  = 'configtest.o'
+    testdir = os.path.join(self.tmpDir, 'confdir')
+    modobj  = os.path.join(self.tmpDir, 'configtest.o')
     modcode = '''\
       module configtest
       integer testint
@@ -1182,6 +1259,47 @@ class Configure(config.base.Configure):
     #  raise RuntimeError('Cannot determine Fortran module output flag')
     return
 
+  def checkDependencyGenerationFlag(self):
+    '''Check if -MMD works for dependency generation, and add it if it does'''
+    self.generateDependencies       = {}
+    self.dependenciesGenerationFlag = {}
+    if not self.framework.argDB['with-dependencies'] :
+      self.framework.logPrint("Skip checking dependency compiler options on user request")
+      return
+    languages = ['C']
+    if hasattr(self, 'CXX'):
+      languages.append('Cxx')
+    if hasattr(self, 'FC'):
+      languages.append('FC')
+    if hasattr(self, 'CUDAC'):
+      languages.append('CUDA')
+    for language in languages:
+      self.generateDependencies[language] = 0
+      self.setCompilers.pushLanguage(language)
+      for testFlag in ['-MMD', '-M']:
+        try:
+          self.framework.logPrint('Trying '+language+' compiler flag '+testFlag)
+          if not self.setCompilers.checkLinkerFlag(testFlag):
+            self.framework.logPrint('Rejected '+language+' compiler flag '+testFlag+' because linker cannot handle it')
+            continue
+          self.framework.logPrint('Testing '+language+' compiler flag '+testFlag)
+          if self.setCompilers.checkCompilerFlag(testFlag, compilerOnly = 1):
+            depFilename = os.path.splitext(self.setCompilers.compilerObj)[0]+'.d'
+            if os.path.isfile(depFilename):
+              os.remove(depFilename)
+              #self.setCompilers.insertCompilerFlag(testFlag, compilerOnly = 1)
+              self.dependenciesGenerationFlag[language] = testFlag
+              self.generateDependencies[language]       = 1
+              break
+            else:
+              self.framework.logPrint('Rejected '+language+' compiler flag '+testFlag+' because no dependency file ('+depFilename+') was generated')
+          else:
+            self.framework.logPrint('Rejected '+language+' compiler flag '+testFlag)
+        except RuntimeError:
+          self.framework.logPrint('Rejected '+language+' compiler flag '+testFlag)
+      self.setCompilers.popLanguage()
+    return
+
   def configure(self):
     import config.setCompilers
     if hasattr(self.setCompilers, 'CC'):
@@ -1191,7 +1309,8 @@ class Configure(config.base.Configure):
       self.executeTest(self.checkCStaticInline)
       self.executeTest(self.checkDynamicLoadFlag)
       if self.framework.argDB['with-clib-autodetect']:
-        self.executeTest(self.checkCLibraries)      
+        self.executeTest(self.checkCLibraries)
+      self.executeTest(self.checkDependencyGenerationFlag)
     else:
       self.isGCC = 0
     if hasattr(self.setCompilers, 'CXX'):

@@ -6,11 +6,11 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscLogStageGetVisible"><H1>PetscLogStageGetVisible</H1></A>
-Returns stage visibility in <A HREF="../Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>() 
+Returns stage visibility in PetscLogView() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscLogStageGetVisible(PetscLogStage stage, PetscTruth *isVisible)
+PetscErrorCode  PetscLogStageGetVisible(PetscLogStage stage, PetscBool  *isVisible)
 </PRE>
 Not Collective
 <P>
@@ -25,7 +25,7 @@ Not Collective
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(), <A HREF="../Profiling/PetscLogStagePop.html#PetscLogStagePop">PetscLogStagePop</A>(), <A HREF="../Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>()
+ <A HREF="../Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(), <A HREF="../Profiling/PetscLogStagePop.html#PetscLogStagePop">PetscLogStagePop</A>(), PetscLogView()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogStageGetVisible">src/sys/plog/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>

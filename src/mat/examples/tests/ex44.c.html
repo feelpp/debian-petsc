@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:26+00:00">
+<meta name="date" content="2011-10-29T19:05:00+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Loads matrix dumped by ex43.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -20,13 +20,15 @@
 
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,0,help);
 <a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"matrix.dat"</font>,FILE_MODE_READ,&amp;viewer);
-<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(viewer,MATMPIDENSE,&amp;C);
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(viewer);
-<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(C,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
-<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
-<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line21"> 21: </a>  <font color="#4169E1">return</font> 0;
-<a name="line22"> 22: </a>}
+<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;C);
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(C,MATMPIDENSE);
+<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(C,viewer);
+<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer);
+<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(C,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
+<a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
+<a name="line22"> 22: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line23"> 23: </a>  <font color="#4169E1">return</font> 0;
+<a name="line24"> 24: </a>}
 
 
 </pre>

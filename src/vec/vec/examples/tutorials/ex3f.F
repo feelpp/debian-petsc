@@ -21,9 +21,9 @@
 !     petscvec.h    - vectors
 !  Include petscviewer.h so that we can use the PETSc viewers.
 !
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscviewer.h>
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                 Beginning of program
@@ -34,7 +34,7 @@
       PetscScalar  v
       PetscInt i,istart,iend,n,ione
       PetscErrorCode ierr
-      PetscTruth flg
+      PetscBool  flg
 
       call PetscInitialize(PETSC_NULL_CHARACTER,ierr)
       n = 50

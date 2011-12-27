@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dupl.c */
 /* Fortran interface file */
 
@@ -53,20 +54,20 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscviewergetsingleton_(PetscViewer viewer,PetscViewer *outviewer, int *__ierr ){
+void PETSC_STDCALL  petscviewergetsingleton_(PetscViewer viewer,PetscViewer *outviewer, int *__ierr ){
 *__ierr = PetscViewerGetSingleton(
 	(PetscViewer)PetscToPointer((viewer) ),outviewer);
 }
-void PETSC_STDCALL   petscviewerrestoresingleton_(PetscViewer viewer,PetscViewer *outviewer, int *__ierr ){
+void PETSC_STDCALL  petscviewerrestoresingleton_(PetscViewer viewer,PetscViewer *outviewer, int *__ierr ){
 *__ierr = PetscViewerRestoreSingleton(
 	(PetscViewer)PetscToPointer((viewer) ),outviewer);
 }
-void PETSC_STDCALL   petscviewergetsubcomm_(PetscViewer viewer,MPI_Fint * subcomm,PetscViewer *outviewer, int *__ierr ){
+void PETSC_STDCALL  petscviewergetsubcomm_(PetscViewer viewer,MPI_Fint * subcomm,PetscViewer *outviewer, int *__ierr ){
 *__ierr = PetscViewerGetSubcomm(
 	(PetscViewer)PetscToPointer((viewer) ),
 	MPI_Comm_f2c( *(subcomm) ),outviewer);
 }
-void PETSC_STDCALL   petscviewerrestoresubcomm_(PetscViewer viewer,MPI_Fint * subcomm,PetscViewer *outviewer, int *__ierr ){
+void PETSC_STDCALL  petscviewerrestoresubcomm_(PetscViewer viewer,MPI_Fint * subcomm,PetscViewer *outviewer, int *__ierr ){
 *__ierr = PetscViewerRestoreSubcomm(
 	(PetscViewer)PetscToPointer((viewer) ),
 	MPI_Comm_f2c( *(subcomm) ),outviewer);

@@ -14,7 +14,7 @@ T*/
      petscsys.h       - base PETSc routines   petscis.h     - index sets
      petscviewer.h - viewers
 */
-#include "petscvec.h"
+#include <petscvec.h>
 
 PetscScalar func(PetscScalar a){return 2*a/(1+a*a);}
 
@@ -92,10 +92,10 @@ int main(int argc,char **argv)
       Return the value of the integral.
   */
   ierr = PetscPrintf(PETSC_COMM_WORLD,"ln(2) is %A\n",result);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(xend);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&xend);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"
+#include <private/kspimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetUp_CR"
@@ -9,8 +8,8 @@ static PetscErrorCode KSPSetUp_CR(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_RIGHT) {SETERRQ(PETSC_ERR_SUP,"no right preconditioning for KSPCR");}
-  else if (ksp->pc_side == PC_SYMMETRIC) {SETERRQ(PETSC_ERR_SUP,"no symmetric preconditioning for KSPCR");}
+  if (ksp->pc_side == PC_RIGHT) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"no right preconditioning for KSPCR");
+  else if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"no symmetric preconditioning for KSPCR");
   ierr = KSPDefaultGetWork(ksp,6);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -62,7 +61,7 @@ static PetscErrorCode  KSPSolve_CR(KSP ksp)
     ierr = VecNormEnd  (R,NORM_2,&dp);CHKERRQ(ierr);        /*   dp <- RT'*RT       */
   } else if (ksp->normtype == KSP_NORM_NATURAL) {
     ierr = VecDotEnd   (RT,ART,&btop) ;CHKERRQ(ierr);          /*   (RT,ART)           */
-    dp = sqrt(PetscAbsScalar(btop));                    /* dp = sqrt(R,AR)      */
+    dp = PetscSqrtReal(PetscAbsScalar(btop));                    /* dp = sqrt(R,AR)      */
   }
   if (PetscAbsScalar(btop) < 0.0) {
     ksp->reason = KSP_DIVERGED_INDEFINITE_MAT;
@@ -71,7 +70,7 @@ static PetscErrorCode  KSPSolve_CR(KSP ksp)
   }
 
   ksp->its = 0;
-  KSPMonitor(ksp,0,dp);
+  ierr = KSPMonitor(ksp,0,dp);CHKERRQ(ierr);
   ierr = PetscObjectTakeAccess(ksp);CHKERRQ(ierr);
   ksp->rnorm              = dp;
   ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
@@ -103,8 +102,8 @@ static PetscErrorCode  KSPSolve_CR(KSP ksp)
       ierr = VecNormEnd  (RT,NORM_2,&dp);CHKERRQ(ierr);      /*   dp <- || RT ||      */
     } else if (ksp->normtype == KSP_NORM_NATURAL) {
       ierr = VecDotEnd(RT,ART,&btop);CHKERRQ(ierr);
-      dp = sqrt(PetscAbsScalar(btop));                  /* dp = sqrt(R,AR)       */
-    } else if (ksp->normtype == KSP_NORM_NO) {
+      dp = PetscSqrtReal(PetscAbsScalar(btop));                  /* dp = sqrt(R,AR)       */
+    } else if (ksp->normtype == KSP_NORM_NONE) {
       ierr = VecDotEnd(RT,ART,&btop);CHKERRQ(ierr);
       dp = 0.0; 
     } else if (ksp->normtype == KSP_NORM_UNPRECONDITIONED) {
@@ -113,7 +112,7 @@ static PetscErrorCode  KSPSolve_CR(KSP ksp)
       ierr = VecDotEnd   (RT,ART,&btop);CHKERRQ(ierr);
       ierr = VecNormEnd  (R,NORM_2,&dp);CHKERRQ(ierr);       /*   dp <- R'*R          */
     } else {
-      SETERRQ1(PETSC_ERR_SUP,"KSPNormType of %d not supported",(int)ksp->normtype);
+      SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"KSPNormType of %d not supported",(int)ksp->normtype);
     }
     if (PetscAbsScalar(btop) < 0.0) {
       ksp->reason = KSP_DIVERGED_INDEFINITE_MAT;
@@ -127,7 +126,7 @@ static PetscErrorCode  KSPSolve_CR(KSP ksp)
     ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
 
     KSPLogResidualHistory(ksp,dp);
-    KSPMonitor(ksp,i+1,dp);
+    ierr = KSPMonitor(ksp,i+1,dp);CHKERRQ(ierr);
     ierr = (*ksp->converged)(ksp,i+1,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
     if (ksp->reason) break;
 
@@ -153,7 +152,7 @@ static PetscErrorCode  KSPSolve_CR(KSP ksp)
 
    Notes: The operator and the preconditioner must be symmetric for this method. The 
           preconditioner must be POSITIVE-DEFINITE and the operator POSITIVE-SEMIDEFINITE
-
+          Support only for left preconditioning.
 
    References:
    Methods of Conjugate Gradients for Solving Linear Systems, Magnus R. Hestenes and Eduard Stiefel,
@@ -166,10 +165,15 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_CR"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CR(KSP ksp)
+PetscErrorCode  KSPCreate_CR(KSP ksp)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
-  ksp->pc_side                   = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_LEFT,1);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_NATURAL,PC_LEFT,1);CHKERRQ(ierr);
+
   ksp->ops->setup                = KSPSetUp_CR;
   ksp->ops->solve                = KSPSolve_CR;
   ksp->ops->destroy              = KSPDefaultDestroy;

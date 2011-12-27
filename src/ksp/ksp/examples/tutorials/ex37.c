@@ -59,10 +59,10 @@ This uses multigrid to solve the linear system on a 2D radially-symmetric channe
 
 static char help[] = "Solves 2D inhomogeneous Laplacian using multigrid in an ion channel.\n\n";
 
-#include "petscmesh.h"
-#include "petscksp.h"
-#include "petscmg.h"
-#include "petscdmmg.h"
+#include <petscmesh.h>
+#include <petscksp.h>
+#include <petscpcmg.h>
+#include <petscdmmg.h>
 
 PetscErrorCode MeshView_Sieve_Newer(ALE::Obj<ALE::Mesh>, PetscViewer);
 PetscErrorCode CreateMeshBoundary(ALE::Obj<ALE::Mesh>);
@@ -101,7 +101,7 @@ int main(int argc,char **argv)
   PetscViewer    viewer;
   PetscReal      norm;
   PetscInt       dim, l, meshDebug;
-  PetscTruth     viewEnergy;
+  PetscBool      viewEnergy;
   PetscErrorCode ierr;
 
   ierr = PetscInitialize(&argc,&argv,(char *)0,help);CHKERRQ(ierr);
@@ -120,7 +120,7 @@ int main(int argc,char **argv)
     user.voltage = 1.0;
     ierr = PetscOptionsScalar("-voltage", "The voltage of the clamp", "ex37.c", 1.0, &user.voltage, PETSC_NULL);CHKERRQ(ierr);
     viewEnergy = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-view_energy", "View the energy density as a field", "ex37.c", PETSC_FALSE, &viewEnergy, PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-view_energy", "View the energy density as a field", "ex37.c", PETSC_FALSE, &viewEnergy, PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsEnd();
 
   ALE::Obj<ALE::Mesh> meshBoundary = ALE::Mesh(comm, dim-1, meshDebug);
@@ -230,7 +230,7 @@ int main(int argc,char **argv)
     ierr = MeshSetMesh(petscMesh, mesh);CHKERRQ(ierr);
     ierr = DMMGCreate(comm,3,PETSC_NULL,&dmmg);CHKERRQ(ierr);
     ierr = DMMGSetDM(dmmg, (DM) petscMesh);CHKERRQ(ierr);
-    ierr = MeshDestroy(petscMesh);CHKERRQ(ierr);
+    ierr = MeshDestroy(&petscMesh);CHKERRQ(ierr);
     for (l = 0; l < DMMGGetLevels(dmmg); l++) {
       ierr = DMMGSetUser(dmmg,l,&user);CHKERRQ(ierr);
     }
@@ -258,7 +258,7 @@ int main(int argc,char **argv)
     ALE::LogStagePush(stage);
     ierr = PetscPrintf(comm, "Creating VTK mesh file\n");CHKERRQ(ierr);
     ierr = PetscViewerCreate(comm, &viewer);CHKERRQ(ierr);
-    ierr = PetscViewerSetType(viewer, PETSC_VIEWER_ASCII);CHKERRQ(ierr);
+    ierr = PetscViewerSetType(viewer, PETSCVIEWERASCII);CHKERRQ(ierr);
     ierr = PetscViewerSetFormat(viewer, PETSC_VIEWER_ASCII_VTK);CHKERRQ(ierr);
     ierr = PetscViewerFileSetName(viewer, "channel.vtk");CHKERRQ(ierr);
     ierr = MeshView_Sieve_Newer(mesh, viewer);CHKERRQ(ierr);
@@ -270,7 +270,7 @@ int main(int argc,char **argv)
       ierr = VecCreateSeqWithArray(PETSC_COMM_SELF, u->getSize(patch), u->restrict(patch), &locU);CHKERRQ(ierr);
       ierr = VecScatterBegin(user.injection, DMMGGetx(dmmg), locU, INSERT_VALUES, SCATTER_REVERSE);CHKERRQ(ierr);
       ierr = VecScatterEnd(user.injection, DMMGGetx(dmmg), locU, INSERT_VALUES, SCATTER_REVERSE);CHKERRQ(ierr);
-      ierr = VecDestroy(locU);CHKERRQ(ierr);
+      ierr = VecDestroy(&locU);CHKERRQ(ierr);
 
       ierr = PetscViewerPushFormat(viewer, PETSC_VIEWER_ASCII_VTK_CELL);CHKERRQ(ierr);
       ierr = CreateEnergyDensity(mesh, u, mesh->getField("epsilon"), &energy);CHKERRQ(ierr);
@@ -279,7 +279,7 @@ int main(int argc,char **argv)
     } else {
       ierr = VecView(DMMGGetx(dmmg), viewer);CHKERRQ(ierr);
     }
-    ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
     ALE::LogStagePop(stage);
 
     ierr = PetscFree2(user.charge,user.chargeLocation);CHKERRQ(ierr);
@@ -287,7 +287,7 @@ int main(int argc,char **argv)
   } catch (ALE::Exception e) {
     std::cout << e << std::endl;
   }
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -659,7 +659,7 @@ PetscErrorCode ElementGeometry(ALE::Obj<ALE::Mesh> mesh, const ALE::Mesh::point_
     }
     invDet = 1.0/det;
     if (detJ) {
-      if (det < 0) {SETERRQ(PETSC_ERR_ARG_WRONG, "Negative Matrix determinant");}
+      if (det < 0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG, "Negative Matrix determinant");
       *detJ = det;
     }
     if (invJ) {
@@ -711,7 +711,7 @@ PetscErrorCode ElementGeometry(ALE::Obj<ALE::Mesh> mesh, const ALE::Mesh::point_
 
 #undef __FUNCT__
 #define __FUNCT__ "ElementContains"
-PetscErrorCode ElementContains(ALE::Obj<ALE::Mesh> mesh, const ALE::Mesh::point_type& e, double point[], PetscTruth *contains)
+PetscErrorCode ElementContains(ALE::Obj<ALE::Mesh> mesh, const ALE::Mesh::point_type& e, double point[], PetscBool  *contains)
 {
   const double  *coords = mesh->getCoordinates()->restrict(std::string("element"), e);
   int            dim = mesh->getDimension();
@@ -757,7 +757,7 @@ PetscErrorCode ComputeChargeDensity(ALE::Obj<ALE::Mesh> mesh, double points[], d
 {
   ALE::Obj<ALE::Mesh::sieve_type::traits::heightSequence> elements = mesh->getTopology()->heightStratum(0);
   PetscReal      elementVec[NUM_BASIS_FUNCTIONS];
-  PetscTruth     contains;
+  PetscBool      contains;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
@@ -849,7 +849,7 @@ PetscErrorCode ComputeRHS(DMMG dmmg, Vec b)
   ierr = VecCreateSeqWithArray(PETSC_COMM_SELF, field->getSize(patch), field->restrict(patch), &locB);CHKERRQ(ierr);
   ierr = VecScatterBegin(user.injection, locB, b, ADD_VALUES, SCATTER_FORWARD);CHKERRQ(ierr);
   ierr = VecScatterEnd(user.injection, locB, b, ADD_VALUES, SCATTER_FORWARD);CHKERRQ(ierr);
-  ierr = VecDestroy(locB);CHKERRQ(ierr);
+  ierr = VecDestroy(&locB);CHKERRQ(ierr);
 
   {
     /* Zero out BC rows */
@@ -1015,7 +1015,7 @@ PetscErrorCode ComputeMatrix(DMMG dmmg, Mat J, Mat jac)
       }
     }
     ierr = PetscSynchronizedFlush(comm);
-    ierr = MatZeroRows(jac, numBoundaryIndices, boundaryIndices, 1.0);CHKERRQ(ierr);
+    ierr = MatZeroRows(jac, numBoundaryIndices, boundaryIndices, 1.0,0,0);CHKERRQ(ierr);
     ierr = PetscFree(boundaryIndices);CHKERRQ(ierr);
   }
   ierr = MatAssemblyBegin(jac, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
@@ -1275,7 +1275,7 @@ PetscErrorCode CreateEnergyDensity(ALE::Obj<ALE::Mesh> mesh, ALE::Obj<ALE::Mesh:
   ierr = VecCreateSeqWithArray(PETSC_COMM_SELF, e2->getSize(patch), e2->restrict(patch), &locEnergy);CHKERRQ(ierr);
   ierr = VecScatterBegin(injection, locEnergy, *energy, INSERT_VALUES, SCATTER_FORWARD);CHKERRQ(ierr);
   ierr = VecScatterEnd(injection, locEnergy, *energy, INSERT_VALUES, SCATTER_FORWARD);CHKERRQ(ierr);
-  ierr = VecDestroy(locEnergy);CHKERRQ(ierr);
+  ierr = VecDestroy(&locEnergy);CHKERRQ(ierr);
   ALE_LOG_EVENT_END;
   PetscFunctionReturn(0);
 }

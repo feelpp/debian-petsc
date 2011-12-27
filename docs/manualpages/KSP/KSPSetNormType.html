@@ -10,9 +10,9 @@ Sets the norm that is used for convergence testing.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetNormType(KSP ksp,KSPNormType normtype)
+PetscErrorCode  KSPSetNormType(KSP ksp,KSPNormType normtype)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -21,7 +21,7 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>normtype </B></TD><TD>- one of 
 </TD></TR></TABLE>
 <pre>
-  <A HREF="../KSP/KSP_NORM_NO.html#KSP_NORM_NO">KSP_NORM_NO</A> - skips computing the norm, this should only be used if you are using
+  <A HREF="../KSP/KSP_NORM_NONE.html#KSP_NORM_NONE">KSP_NORM_NONE</A> - skips computing the norm, this should only be used if you are using
 </pre>
 <pre>
                 the Krylov method as a smoother with a fixed small number of iterations.
@@ -42,7 +42,7 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
   <A HREF="../KSP/KSP_NORM_UNPRECONDITIONED.html#KSP_NORM_UNPRECONDITIONED">KSP_NORM_UNPRECONDITIONED</A> - uses the l2 norm of the true b - Ax residual, supported only by
 </pre>
 <pre>
-                CG, CHEBYCHEV, and RICHARDSON, automatically true for right (see KSPSetPreconditioningSide()) 
+                CG, CHEBYCHEV, and RICHARDSON, automatically true for right (see <A HREF="../KSP/KSPSetPCSide.html#KSPSetPCSide">KSPSetPCSide</A>()) 
 </pre>
 <pre>
                 preconditioning..

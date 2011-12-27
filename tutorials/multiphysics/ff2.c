@@ -5,7 +5,7 @@
 
 #undef __FUNCT__
 #define __FUNCT__ "FormInitialGuessLocal2"
-PetscErrorCode FormInitialGuessLocal2(DALocalInfo *info,Field2 **x,AppCtx *user)
+PetscErrorCode FormInitialGuessLocal2(DMDALocalInfo *info,Field2 **x,AppCtx *user)
 {
   PetscInt       i,j;
   PetscScalar    dx;
@@ -28,12 +28,12 @@ PetscLogEvent EVENT_FORMFUNCTIONLOCAL2;
      x1 contains given velocity field
 
 */
-PetscErrorCode FormFunctionLocal2(DALocalInfo *info,Field1**x1,Field2 **x,Field2 **f,void *ptr)
+PetscErrorCode FormFunctionLocal2(DMDALocalInfo *info,Field1**x1,Field2 **x,Field2 **f,void *ptr)
  {
   AppCtx         *user = (AppCtx*)ptr;
   PetscInt       xints,xinte,yints,yinte,i,j;
   PetscReal      hx,hy,dhx,dhy,hxdhy,hydhx;
-  PetscReal      grashof,prandtl,lid;
+  PetscReal      grashof,prandtl; /* ,lid */
   PetscScalar    u,uxx,uyy,vx,vy,avx,avy,vxp,vxm,vyp,vym;
   PetscErrorCode ierr;
 
@@ -41,7 +41,7 @@ PetscErrorCode FormFunctionLocal2(DALocalInfo *info,Field1**x1,Field2 **x,Field2
   ierr = PetscLogEventBegin(EVENT_FORMFUNCTIONLOCAL2,0,0,0,0);CHKERRQ(ierr);
   grashof = user->grashof;  
   prandtl = user->prandtl;
-  lid     = user->lidvelocity;
+  /* lid     = user->lidvelocity; */
 
   dhx = (PetscReal)(info->mx-1);  dhy = (PetscReal)(info->my-1);
   hx = 1.0/dhx;                   hy = 1.0/dhy;

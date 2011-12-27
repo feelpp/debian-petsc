@@ -2,12 +2,12 @@
       program main
        implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscviewer.h>
 !
 !  This example is the Fortran version of ex6.c.  The program reads a PETSc matrix
 !  and vector from a file and solves a linear system.  Input arguments are:
@@ -17,7 +17,7 @@
 
       PetscErrorCode  ierr
       PetscInt its,m,n,mlocal,nlocal
-      PetscTruth flg
+      PetscBool  flg
       PetscScalar      norm,none
       Vec              x,b,u
       Mat              A
@@ -35,7 +35,9 @@
       call PetscViewerBinaryOpen(PETSC_COMM_WORLD,f,FILE_MODE_READ,     &
      &     fd,ierr)
 
-      call MatLoad(fd,MATSEQAIJ,A,ierr)
+      call MatCreate(PETSC_COMM_WORLD,A,ierr)
+      call MatSetType(A, MATSEQAIJ,ierr)
+      call MatLoad(A,fd,ierr)
 
 ! Get information about matrix
       call MatGetSize(A,m,n,ierr)
@@ -50,7 +52,8 @@
      &  info(MAT_INFO_MALLOCS)
 
  100  format(4(i4,1x),7(g7.1,1x))
-      call VecLoad(fd,PETSC_NULL_CHARACTER,b,ierr)
+      call VecCreate(PETSC_COMM_WORLD,b,ierr)
+      call VecLoad(b,fd,ierr)
       call PetscViewerDestroy(fd,ierr)
 
 ! Set up solution

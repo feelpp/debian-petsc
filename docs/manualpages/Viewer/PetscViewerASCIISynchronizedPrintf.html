@@ -10,7 +10,7 @@ Prints synchronized output to the specified file from several processors.  Outpu
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscViewerASCIISynchronizedPrintf(PetscViewer viewer,const char format[],...)
+PetscErrorCode  PetscViewerASCIISynchronizedPrintf(PetscViewer viewer,const char format[],...)
 </PRE>
 Not Collective, must call collective <A HREF="../Viewer/PetscViewerFlush.html#PetscViewerFlush">PetscViewerFlush</A>() to get the results out
 <P>
@@ -23,13 +23,15 @@ Not Collective, must call collective <A HREF="../Viewer/PetscViewerFlush.html#Pe
 <P>
 
 <P>
+Notes: You must have previously called PetscViewerASCIISynchronizeAllow() to allow this routine to be called.
+<P>
 <H3><FONT COLOR="#CC3333">Fortran Note</FONT></H3>
 Can only print a single character* string
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(), <A HREF="../Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(), <A HREF="../Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(),
 <BR><A HREF="../Sys/PetscFOpen.html#PetscFOpen">PetscFOpen</A>(), <A HREF="../Viewer/PetscViewerFlush.html#PetscViewerFlush">PetscViewerFlush</A>(), <A HREF="../Viewer/PetscViewerASCIIGetPointer.html#PetscViewerASCIIGetPointer">PetscViewerASCIIGetPointer</A>(), <A HREF="../Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(), <A HREF="../Viewer/PetscViewerASCIIOpen.html#PetscViewerASCIIOpen">PetscViewerASCIIOpen</A>(),
-<A HREF="../Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>()
+<A HREF="../Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(), <A HREF="../Viewer/PetscViewerASCIISynchronizedAllow.html#PetscViewerASCIISynchronizedAllow">PetscViewerASCIISynchronizedAllow</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/ascii/filev.c.html#PetscViewerASCIISynchronizedPrintf">src/sys/viewer/impls/ascii/filev.c</A>

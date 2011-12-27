@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* transm.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matcreatetranspose_(Mat A,Mat *N, int *__ierr ){
+void PETSC_STDCALL  matcreatetranspose_(Mat A,Mat *N, int *__ierr ){
 *__ierr = MatCreateTranspose(
 	(Mat)PetscToPointer((A) ),N);
 }

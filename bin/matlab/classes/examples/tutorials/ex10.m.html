@@ -1,0 +1,141 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ex10</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="ex10.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#4">Create a vector</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> ex10(args)
+</pre><pre>Mimics src/ksp/ksp/examples/tutorials/ex10.c loads a matrix from a binary file
+and solves a linear system with it.</pre><pre> Set the Matlab path and initialize PETSc</pre><pre class="codeinput">path(path,<span class="string">'../../'</span>)
+<span class="keyword">if</span> (nargin == 0); args = {};<span class="keyword">end</span>
+PetscInitialize([args {<span class="string">'-ksp_monitor_true_residual'</span>,<span class="string">'-ksp_converged_reason'</span>,<span class="string">'-ksp_view'</span>}]);
+</pre><pre>Create a matrix and put some values in it</pre><pre class="codeinput">filename = PetscOptionsGetString(<span class="string">'-f0'</span>);
+filename
+viewer = PetscViewer(filename,Petsc.FILE_MODE_READ);
+mat = PetscMat();
+mat.SetFromOptions()
+mat.Load(viewer);
+viewer.Destroy();
+</pre><h2>Create a vector<a name="4"></a></h2><pre class="codeinput">m = mat.GetSize();
+b = PetscVec();
+b.SetType(<span class="string">'seq'</span>);
+b.SetSizes(m,m);
+b.Set(1.0);
+x = b.Duplicate();
+</pre><pre> Create the linear solver, tell it the matrix to use and solve the system</pre><pre class="codeinput">ksp = PetscKSP();
+ksp.SetType(<span class="string">'gmres'</span>);
+ksp.SetOperators(mat,mat,PetscMat.SAME_NONZERO_PATTERN);
+ksp.SetFromOptions();
+ksp.Solve(b,x);
+</pre><pre> Free PETSc objects and shutdown PETSc</pre><pre class="codeinput">x.Destroy();
+b.Destroy();
+mat.Destroy();
+ksp.Destroy();
+PetscFinalize();
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+function ex10(args)
+%%
+%
+%  Mimics src/ksp/ksp/examples/tutorials/ex10.c loads a matrix from a binary file
+%  and solves a linear system with it.
+%
+%   Set the Matlab path and initialize PETSc
+path(path,'../../')
+if (nargin == 0); args = {};end
+PetscInitialize([args {'-ksp_monitor_true_residual','-ksp_converged_reason','-ksp_view'}]);
+%%
+%  Create a matrix and put some values in it
+filename = PetscOptionsGetString('-f0');
+filename
+viewer = PetscViewer(filename,Petsc.FILE_MODE_READ);
+mat = PetscMat();
+mat.SetFromOptions()
+mat.Load(viewer);
+viewer.Destroy();
+%%   Create a vector 
+%
+m = mat.GetSize();
+b = PetscVec();
+b.SetType('seq');
+b.SetSizes(m,m);
+b.Set(1.0);
+x = b.Duplicate();
+
+%%
+%   Create the linear solver, tell it the matrix to use and solve the system
+ksp = PetscKSP();
+ksp.SetType('gmres');
+ksp.SetOperators(mat,mat,PetscMat.SAME_NONZERO_PATTERN);
+ksp.SetFromOptions();
+ksp.Solve(b,x);
+%%
+%   Free PETSc objects and shutdown PETSc
+%
+x.Destroy();
+b.Destroy();
+mat.Destroy();
+ksp.Destroy();
+PetscFinalize();
+
+##### SOURCE END #####
+--></body></html>

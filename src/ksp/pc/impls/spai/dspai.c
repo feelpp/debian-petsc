@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 /*
      MatDumpSPAI - Dumps a PETSc matrix to a file in an ASCII format 
@@ -9,7 +8,7 @@
   code, rather then through the PETSc interface.
 
 */
-PetscErrorCode PETSCKSP_DLLEXPORT MatDumpSPAI(Mat A,FILE *file)
+PetscErrorCode  MatDumpSPAI(Mat A,FILE *file)
 {
   const PetscScalar *vals;
   PetscErrorCode ierr;
@@ -20,7 +19,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT MatDumpSPAI(Mat A,FILE *file)
   PetscObjectGetComm((PetscObject)A,&comm);
  
   MPI_Comm_size(comm,&size);
-  if (size > 1) SETERRQ(PETSC_ERR_SUP,"Only single processor dumps");
+  if (size > 1) SETERRQ(((PetscObject)A)->comm,PETSC_ERR_SUP,"Only single processor dumps");
 
   ierr = MatGetSize(A,&n,&n);CHKERRQ(ierr);
 
@@ -37,7 +36,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT MatDumpSPAI(Mat A,FILE *file)
   PetscFunctionReturn(0);
 }
 
-PetscErrorCode PETSCKSP_DLLEXPORT VecDumpSPAI(Vec b,FILE *file)
+PetscErrorCode  VecDumpSPAI(Vec b,FILE *file)
 {
   PetscErrorCode ierr;
   int    n,i;

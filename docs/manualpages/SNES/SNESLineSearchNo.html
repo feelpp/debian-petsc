@@ -9,9 +9,9 @@
 This routine is not a line search at all;  it simply uses the full Newton step.  Thus, this routine is intended  to serve as a template and is not recommended for general use.   
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchNo(SNES snes,void *lsctx,Vec x,Vec f,Vec g,Vec y,Vec w,PetscReal fnorm,PetscReal xnorm,PetscReal *ynorm,PetscReal *gnorm,PetscTruth *flag)
+PetscErrorCode  SNESLineSearchNo(SNES snes,void *lsctx,Vec x,Vec f,Vec g,Vec y,Vec w,PetscReal fnorm,PetscReal xnorm,PetscReal *ynorm,PetscReal *gnorm,PetscBool  *flag)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

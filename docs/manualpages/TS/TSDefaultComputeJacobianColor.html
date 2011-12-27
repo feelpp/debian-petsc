@@ -9,9 +9,8 @@
 Computes the Jacobian using finite differences and coloring to exploit matrix sparsity.   
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscmat.h"  
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSDefaultComputeJacobianColor(TS ts,PetscReal t,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
+PetscErrorCode  TSDefaultComputeJacobianColor(TS ts,PetscReal t,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../Vec/Vec.html#Vec">Vec</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -50,5 +49,6 @@ as created via <A HREF="../MatFD/MatFDColoringCreate.html#MatFDColoringCreate">M
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex13.c.html">src/ts/examples/tutorials/ex13.c.html</A><BR>
 </BODY></HTML>

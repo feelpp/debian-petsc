@@ -15,9 +15,7 @@ ODE solver using the LLNL CVODE/SUNDIALS package (now called SUNDIALS)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_sundials_rtol &lt;tol&gt; </B></TD><TD>- Relative tolerance for convergence
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_sundials_linear_tolerance &lt;tol&gt; </B></TD><TD>- .    -ts_sundials_gmres_restart &lt;restart&gt; - Number of GMRES orthogonalization directions
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_sundials_exact_final_time </B></TD><TD>- Interpolate output to stop exactly at the final time
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_sundials_linear_tolerance &lt;tol&gt;</B></TD><TD>- .    -ts_sundials_maxl &lt;maxl&gt; - Max dimension of the Krylov subspace
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_sundials_monitor_steps </B></TD><TD>- Monitor SUNDIALS internel steps
 </TD></TR></TABLE>
@@ -29,8 +27,8 @@ only PETSc <A HREF="../PC/PC.html#PC">PC</A> options
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../TS/TSSetType.html#TSSetType">TSSetType</A>(), <A HREF="../TS/TSSundialsSetType.html#TSSundialsSetType">TSSundialsSetType</A>(), <A HREF="../TS/TSSundialsSetGMRESRestart.html#TSSundialsSetGMRESRestart">TSSundialsSetGMRESRestart</A>(), <A HREF="../TS/TSSundialsSetLinearTolerance.html#TSSundialsSetLinearTolerance">TSSundialsSetLinearTolerance</A>(),
-<BR><A HREF="../TS/TSSundialsSetGramSchmidtType.html#TSSundialsSetGramSchmidtType">TSSundialsSetGramSchmidtType</A>(), <A HREF="../TS/TSSundialsSetTolerance.html#TSSundialsSetTolerance">TSSundialsSetTolerance</A>(), <A HREF="../TS/TSSundialsGetPC.html#TSSundialsGetPC">TSSundialsGetPC</A>(), <A HREF="../TS/TSSundialsGetIterations.html#TSSundialsGetIterations">TSSundialsGetIterations</A>(), <A HREF="../TS/TSSundialsSetExactFinalTime.html#TSSundialsSetExactFinalTime">TSSundialsSetExactFinalTime</A>()
+  <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../TS/TSSetType.html#TSSetType">TSSetType</A>(), <A HREF="../TS/TSSundialsSetType.html#TSSundialsSetType">TSSundialsSetType</A>(), <A HREF="../TS/TSSundialsSetMaxl.html#TSSundialsSetMaxl">TSSundialsSetMaxl</A>(), <A HREF="../TS/TSSundialsSetLinearTolerance.html#TSSundialsSetLinearTolerance">TSSundialsSetLinearTolerance</A>(),
+<BR><A HREF="../TS/TSSundialsSetGramSchmidtType.html#TSSundialsSetGramSchmidtType">TSSundialsSetGramSchmidtType</A>(), <A HREF="../TS/TSSundialsSetTolerance.html#TSSundialsSetTolerance">TSSundialsSetTolerance</A>(), <A HREF="../TS/TSSundialsGetPC.html#TSSundialsGetPC">TSSundialsGetPC</A>(), <A HREF="../TS/TSSundialsGetIterations.html#TSSundialsGetIterations">TSSundialsGetIterations</A>(), <A HREF="../TS/TSSetExactFinalTime.html#TSSetExactFinalTime">TSSetExactFinalTime</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/impls/implicit/sundials/sundials.c.html#TSSUNDIALS">src/ts/impls/implicit/sundials/sundials.c</A>

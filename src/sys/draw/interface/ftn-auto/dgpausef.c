@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dgpause.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawgetpause_(PetscDraw draw,PetscReal *lpause, int *__ierr ){
+void PETSC_STDCALL  petscdrawgetpause_(PetscDraw draw,PetscReal *lpause, int *__ierr ){
 *__ierr = PetscDrawGetPause(
 	(PetscDraw)PetscToPointer((draw) ),lpause);
 }

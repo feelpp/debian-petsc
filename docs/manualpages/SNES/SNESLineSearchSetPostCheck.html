@@ -9,7 +9,7 @@
 Sets a routine to check the validity of new iterate computed by the line search routine in the Newton-based method <A HREF="../SNES/SNESLS.html#SNESLS">SNESLS</A>. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetPostCheck(SNES snes,PetscErrorCode (*func)(SNES,Vec,Vec,Vec,void*,PetscTruth*,PetscTruth*),void *checkctx)
+PetscErrorCode  SNESLineSearchSetPostCheck(SNES snes,PetscErrorCode (*func)(SNES,Vec,Vec,Vec,void*,PetscBool *,PetscBool *),void *checkctx)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -20,11 +20,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetPostCheck(SNES snes,PetscErr
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>checkctx </B></TD><TD>- optional user-defined context for use by step checking routine 
 </TD></TR></TABLE>
 <P>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of func</FONT></H3>
 <PRE>
-   int func (<A HREF="../SNES/SNES.html#SNES">SNES</A> snes, <A HREF="../Vec/Vec.html#Vec">Vec</A> x,<A HREF="../Vec/Vec.html#Vec">Vec</A> y,<A HREF="../Vec/Vec.html#Vec">Vec</A> w,void *checkctx, <A HREF="../Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *changed_y,<A HREF="../Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *changed_w)
+   int func (<A HREF="../SNES/SNES.html#SNES">SNES</A> snes, <A HREF="../Vec/Vec.html#Vec">Vec</A> x,<A HREF="../Vec/Vec.html#Vec">Vec</A> y,<A HREF="../Vec/Vec.html#Vec">Vec</A> w,void *checkctx, <A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A>  *changed_y,<A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A>  *changed_w)
 </PRE>
 
 where func returns an error code of 0 on success and a nonzero
@@ -60,7 +60,7 @@ Notes: All line searches accept the new iterate computed by the line search chec
 <P>
 Only one of changed_y and changed_w can  be <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>
 <P>
-On input w = x + y
+On input w = x - y
 <P>
 <A HREF="../SNES/SNESLineSearchNo.html#SNESLineSearchNo">SNESLineSearchNo</A>() and <A HREF="../SNES/SNESLineSearchNoNorms.html#SNESLineSearchNoNorms">SNESLineSearchNoNorms</A>() (1) compute a candidate iterate u_{i+1}, (2) pass control
 to the checking routine, and then (3) compute the corresponding nonlinear

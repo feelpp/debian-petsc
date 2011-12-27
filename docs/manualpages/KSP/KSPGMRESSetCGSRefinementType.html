@@ -6,13 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="KSPGMRESSetCGSRefinementType"><H1>KSPGMRESSetCGSRefinementType</H1></A>
-Sets the type of iterative refinement to use in the classical Gram Schmidt orthogonalization. of the preconditioned problem. 
+Sets the type of iterative refinement to use in the classical Gram Schmidt orthogonalization. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h"  
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetCGSRefinementType(KSP ksp,KSPGMRESCGSRefinementType type)
+PetscErrorCode  KSPGMRESSetCGSRefinementType(KSP ksp,KSPGMRESCGSRefinementType type)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -31,8 +31,9 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESCGSRefinementType.html#KSPGMRESCGSRefinementType">KSPGMRESCGSRefinementType</A>, <A HREF="../KSP/KSPGMRESClassicalGramSchmidtOrthogonalization.html#KSPGMRESClassicalGramSchmidtOrthogonalization">KSPGMRESClassicalGramSchmidtOrthogonalization</A>()
-<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+ <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESCGSRefinementType.html#KSPGMRESCGSRefinementType">KSPGMRESCGSRefinementType</A>, <A HREF="../KSP/KSPGMRESClassicalGramSchmidtOrthogonalization.html#KSPGMRESClassicalGramSchmidtOrthogonalization">KSPGMRESClassicalGramSchmidtOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESGetCGSRefinementType.html#KSPGMRESGetCGSRefinementType">KSPGMRESGetCGSRefinementType</A>(),
+<BR><A HREF="../KSP/KSPGMRESGetOrthogonalization.html#KSPGMRESGetOrthogonalization">KSPGMRESGetOrthogonalization</A>()
+<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/impls/gmres/gmres.c.html#KSPGMRESSetCGSRefinementType">src/ksp/ksp/impls/gmres/gmres.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>

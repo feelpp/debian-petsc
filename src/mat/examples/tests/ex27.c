@@ -2,7 +2,7 @@
 static char help[] = "Tests repeated use of assembly for matrices.\n\
  does nasty case where matrix must be rebuilt.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -65,9 +65,9 @@ int main(int argc,char **args)
   v = 1.0; ierr = VecSet(x,v);CHKERRQ(ierr);
   ierr = MatMult(C,x,y);CHKERRQ(ierr);
 
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

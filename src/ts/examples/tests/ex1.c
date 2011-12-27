@@ -14,19 +14,19 @@
 
 static char help[] = "Solves 1D heat equation.\n\n";
 
-#include "petscda.h"
-#include "petscts.h"
+#include <petscdmda.h>
+#include <petscts.h>
 
 #define PETSC_NEAR(a,b,c) (!(PetscAbsReal((a)-(b)) > (c)*PetscMax(PetscAbsReal(a),PetscAbsReal(b))))
 
 typedef struct {
   Vec         global,local,localwork,solution;    /* location for local work (with ghost points) vector */
-  DA          da;                    /* manages ghost point communication */
+  DM          da;                    /* manages ghost point communication */
   PetscViewer viewer1,viewer2;
   PetscInt    M;                     /* total number of grid points */
   PetscReal   h;                     /* mesh width h = 1/(M-1) */
   PetscReal   norm_2,norm_max;
-  PetscTruth  nox;                   /* indicates problem is to be run without graphics */ 
+  PetscBool   nox;                   /* indicates problem is to be run without graphics */ 
 } AppCtx;
 
 extern PetscErrorCode Monitor(TS,PetscInt,PetscReal,Vec,void *);
@@ -51,7 +51,7 @@ int main(int argc,char **argv)
   PetscInt       maxsteps = 100,steps,m;
   PetscMPIInt    size;
   PetscInt       problem = linear_no_matrix;
-  PetscTruth     flg;
+  PetscBool      flg;
   AppCtx         appctx;
   PetscReal      dt,ftime,maxtime=100.;
   TS             ts;
@@ -59,7 +59,6 @@ int main(int argc,char **argv)
   MatStructure   A_structure;
   TSProblemType  tsproblem = TS_LINEAR;
   PetscDraw      draw;
-  PetscViewer    viewer;
   char           tsinfo[120];
  
   ierr = PetscInitialize(&argc,&argv,(char*)0,help);CHKERRQ(ierr); 
@@ -73,10 +72,10 @@ int main(int argc,char **argv)
   appctx.norm_2 = 0.0; appctx.norm_max = 0.0;
 
   /* Set up the ghost point communication pattern */ 
-  ierr = DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,appctx.M,1,1,PETSC_NULL,&appctx.da);CHKERRQ(ierr);
-  ierr = DACreateGlobalVector(appctx.da,&appctx.global);CHKERRQ(ierr);
+  ierr = DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,appctx.M,1,1,PETSC_NULL,&appctx.da);CHKERRQ(ierr);
+  ierr = DMCreateGlobalVector(appctx.da,&appctx.global);CHKERRQ(ierr);
   ierr = VecGetLocalSize(appctx.global,&m);CHKERRQ(ierr);
-  ierr = DACreateLocalVector(appctx.da,&appctx.local);CHKERRQ(ierr);
+  ierr = DMCreateLocalVector(appctx.da,&appctx.local);CHKERRQ(ierr);
 
   /* Set up display to show wave graph */
   ierr = PetscViewerDrawOpen(PETSC_COMM_WORLD,0,"",80,380,400,160,&appctx.viewer1);CHKERRQ(ierr);
@@ -102,6 +101,8 @@ int main(int argc,char **argv)
     of TS, we do not expect users to generally need to use more
     then a single TSProblemType
   */
+  tsproblem = TS_NONLINEAR;
+  problem   = nonlinear_no_jacobian;
   ierr = PetscOptionsHasName(PETSC_NULL,"-linear_no_matrix",&flg);CHKERRQ(ierr);
   if (flg) {
     tsproblem = TS_LINEAR;
@@ -120,7 +121,7 @@ int main(int argc,char **argv)
   ierr = PetscOptionsHasName(PETSC_NULL,"-nonlinear_no_jacobian",&flg);CHKERRQ(ierr);
   if (flg) {
     tsproblem = TS_NONLINEAR;
-    problem   = nonlinear_no_jacobian;
+    problem   = nonlinear_jacobian;
   }
   ierr = PetscOptionsHasName(PETSC_NULL,"-nonlinear_jacobian",&flg);CHKERRQ(ierr);
   if (flg) {
@@ -139,29 +140,37 @@ int main(int argc,char **argv)
   dt = appctx.h*appctx.h/2.01;
 
   if (problem == linear_no_matrix) {
+    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"This case needs rewritten");
     /*
          The user provides the RHS as a Shell matrix.
     */
+    /*
     ierr = MatCreateShell(PETSC_COMM_WORLD,m,m,PETSC_DECIDE,PETSC_DECIDE,&appctx,&A);CHKERRQ(ierr);
     ierr = MatShellSetOperation(A,MATOP_MULT,(void(*)(void))RHSMatrixFree);CHKERRQ(ierr);
     ierr = TSSetMatrices(ts,A,PETSC_NULL,PETSC_NULL,PETSC_NULL,DIFFERENT_NONZERO_PATTERN,&appctx);CHKERRQ(ierr);
+     */
   } else if (problem == linear_constant_matrix) {
+    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"This case needs rewritten");
     /*
          The user provides the RHS as a constant matrix
     */
+    /*
     ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
     ierr = MatSetSizes(A,m,m,PETSC_DECIDE,PETSC_DECIDE);CHKERRQ(ierr);
     ierr = MatSetFromOptions(A);CHKERRQ(ierr);
-    ierr = RHSMatrixHeat(ts,0.0,&A,&A,&A_structure,&appctx);CHKERRQ(ierr); /* A is assembled here */
+    ierr = RHSMatrixHeat(ts,0.0,&A,&A,&A_structure,&appctx);CHKERRQ(ierr); 
 
     ierr = MatDuplicate(A,MAT_DO_NOT_COPY_VALUES,&Alhs);CHKERRQ(ierr); 
     ierr = MatZeroEntries(Alhs);CHKERRQ(ierr);
     ierr = MatShift(Alhs,1.0);CHKERRQ(ierr);
     ierr = TSSetMatrices(ts,A,PETSC_NULL,Alhs,PETSC_NULL,DIFFERENT_NONZERO_PATTERN,&appctx);CHKERRQ(ierr);
+     */
   } else if (problem == linear_variable_matrix) {
+    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"This case needs rewritten");
     /*
          The user provides the RHS as a time dependent matrix
     */
+    /*
     ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
     ierr = MatSetSizes(A,m,m,PETSC_DECIDE,PETSC_DECIDE);CHKERRQ(ierr);
     ierr = MatSetFromOptions(A);CHKERRQ(ierr);
@@ -172,11 +181,12 @@ int main(int argc,char **argv)
     ierr = MatShift(Alhs,1.0);CHKERRQ(ierr);
     ierr = LHSMatrixHeat(ts,0.0,&Alhs,&Alhs,&A_structure,&appctx);CHKERRQ(ierr);
     ierr = TSSetMatrices(ts,A,RHSMatrixHeat,Alhs,LHSMatrixHeat,DIFFERENT_NONZERO_PATTERN,&appctx);CHKERRQ(ierr);
+     */
   } else if (problem == nonlinear_no_jacobian) {
     /*
          The user provides the RHS and a Shell Jacobian
     */
-    ierr = TSSetRHSFunction(ts,RHSFunctionHeat,&appctx);CHKERRQ(ierr);
+    ierr = TSSetRHSFunction(ts,PETSC_NULL,RHSFunctionHeat,&appctx);CHKERRQ(ierr);
     ierr = MatCreateShell(PETSC_COMM_WORLD,m,m,PETSC_DECIDE,PETSC_DECIDE,&appctx,&A);CHKERRQ(ierr);
     ierr = MatShellSetOperation(A,MATOP_MULT,(void(*)(void))RHSMatrixFree);CHKERRQ(ierr);
     ierr = TSSetRHSJacobian(ts,A,A,PETSC_NULL,&appctx);CHKERRQ(ierr);  
@@ -184,29 +194,27 @@ int main(int argc,char **argv)
     /*
          The user provides the RHS and Jacobian
     */
-    ierr = TSSetRHSFunction(ts,RHSFunctionHeat,&appctx);CHKERRQ(ierr);
+    ierr = TSSetRHSFunction(ts,PETSC_NULL,RHSFunctionHeat,&appctx);CHKERRQ(ierr);
     ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
     ierr = MatSetSizes(A,m,m,PETSC_DECIDE,PETSC_DECIDE);CHKERRQ(ierr);
     ierr = MatSetFromOptions(A);CHKERRQ(ierr);
     ierr = RHSMatrixHeat(ts,0.0,&A,&A,&A_structure,&appctx);CHKERRQ(ierr);
     ierr = TSSetRHSJacobian(ts,A,A,RHSJacobianHeat,&appctx);CHKERRQ(ierr);  
   }
-  ierr = TSSetFromOptions(ts);CHKERRQ(ierr);
 
   ierr = TSSetInitialTimeStep(ts,0.0,dt);CHKERRQ(ierr);
   ierr = TSSetDuration(ts,maxsteps,maxtime);CHKERRQ(ierr);
   ierr = TSSetSolution(ts,appctx.global);CHKERRQ(ierr);
 
-  ierr = TSSetUp(ts);CHKERRQ(ierr);
-  ierr = TSStep(ts,&steps,&ftime);CHKERRQ(ierr);
-  ierr = PetscViewerStringOpen(PETSC_COMM_WORLD,tsinfo,120,&viewer);CHKERRQ(ierr);
-  if (size == 1){ /* TSView() crashes for non euler methods with np>1 ? */
-    ierr = TSView(ts,viewer);CHKERRQ(ierr);
-  }
+  ierr = TSSetFromOptions(ts);CHKERRQ(ierr);
+
+  ierr = TSSolve(ts,appctx.global,&ftime);CHKERRQ(ierr);
 
   ierr = PetscOptionsHasName(PETSC_NULL,"-testinfo",&flg);CHKERRQ(ierr);
   if (flg) {
-    PetscTruth iseuler;
+    PetscBool  iseuler;
+    ierr = TSGetTimeStepNumber(ts,&steps);CHKERRQ(ierr);
+
     ierr = PetscTypeCompare((PetscObject)ts,"euler",&iseuler);CHKERRQ(ierr);
     if (iseuler) {
       if (!PETSC_NEAR(appctx.norm_2/steps,0.00257244,1.e-4)) {
@@ -218,19 +226,18 @@ int main(int argc,char **argv)
     }
   }
 
-  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
-  ierr = TSDestroy(ts);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(appctx.viewer1);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(appctx.viewer2);CHKERRQ(ierr);
-  ierr = VecDestroy(appctx.localwork);CHKERRQ(ierr);
-  ierr = VecDestroy(appctx.solution);CHKERRQ(ierr);
-  ierr = VecDestroy(appctx.local);CHKERRQ(ierr);
-  ierr = VecDestroy(appctx.global);CHKERRQ(ierr);
-  ierr = DADestroy(appctx.da);CHKERRQ(ierr);
-  if (A) {ierr= MatDestroy(A);CHKERRQ(ierr);}
-  if (Alhs) {ierr= MatDestroy(Alhs);CHKERRQ(ierr);}
+  ierr = TSDestroy(&ts);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&appctx.viewer1);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&appctx.viewer2);CHKERRQ(ierr);
+  ierr = VecDestroy(&appctx.localwork);CHKERRQ(ierr);
+  ierr = VecDestroy(&appctx.solution);CHKERRQ(ierr);
+  ierr = VecDestroy(&appctx.local);CHKERRQ(ierr);
+  ierr = VecDestroy(&appctx.global);CHKERRQ(ierr);
+  ierr = DMDestroy(&appctx.da);CHKERRQ(ierr);
+  if (A) {ierr= MatDestroy(&A);CHKERRQ(ierr);}
+  if (Alhs) {ierr= MatDestroy(&Alhs);CHKERRQ(ierr);}
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -342,7 +349,7 @@ PetscErrorCode RHSMatrixFree(Mat mat,Vec x,Vec y)
 PetscErrorCode RHSFunctionHeat(TS ts,PetscReal t,Vec globalin,Vec globalout,void *ctx)
 {
   AppCtx         *appctx = (AppCtx*) ctx;
-  DA             da = appctx->da;
+  DM             da = appctx->da;
   Vec            local = appctx->local,localwork = appctx->localwork;
   PetscErrorCode ierr;
   PetscInt       i,localsize; 
@@ -350,8 +357,8 @@ PetscErrorCode RHSFunctionHeat(TS ts,PetscReal t,Vec globalin,Vec globalout,void
 
   PetscFunctionBegin;
   /*Extract local array */ 
-  ierr = DAGlobalToLocalBegin(da,globalin,INSERT_VALUES,local);CHKERRQ(ierr);
-  ierr = DAGlobalToLocalEnd(da,globalin,INSERT_VALUES,local);CHKERRQ(ierr);
+  ierr = DMGlobalToLocalBegin(da,globalin,INSERT_VALUES,local);CHKERRQ(ierr);
+  ierr = DMGlobalToLocalEnd(da,globalin,INSERT_VALUES,local);CHKERRQ(ierr);
   ierr = VecGetArray(local,&localptr);CHKERRQ(ierr);
 
   /* Extract work vector */
@@ -371,7 +378,8 @@ PetscErrorCode RHSFunctionHeat(TS ts,PetscReal t,Vec globalin,Vec globalout,void
   ierr = VecRestoreArray(localwork,&copyptr);CHKERRQ(ierr);
 
   /* Local to Global */
-  ierr = DALocalToGlobal(da,localwork,INSERT_VALUES,globalout);CHKERRQ(ierr);
+  ierr = DMLocalToGlobalBegin(da,localwork,INSERT_VALUES,globalout);CHKERRQ(ierr);
+  ierr = DMLocalToGlobalEnd(da,localwork,INSERT_VALUES,globalout);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

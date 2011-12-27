@@ -4,13 +4,14 @@ class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
     self.download  = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/blacs-dev.tar.gz']
-    self.liblist   = [['libblacs.a']]
+    self.liblist   = [[],['libblacs.a']]
     self.includes  = []
     self.fc        = 1
     self.functions = ['blacs_pinfo']
-    self.requires32bitint = 0;
+    self.requires32bitint = 0
     self.functionsFortran = 1
     self.complex   = 1
+    self.useddirectly     = 0 # PETSc does not use BLACS, it is only used by ScaLAPACK which is used by MUMPS
     return
 
   def setupDependencies(self, framework):
@@ -32,7 +33,7 @@ class Configure(PETSc.package.NewPackage):
       g.write('WHATMPI      = -DCSAMEF77\n')
     g.write('DEBUGLVL  = -DBlacsDebugLvl=1\n')
     g.write('BLACSdir  = '+self.packageDir+'\n')
-    g.write('BLACSLIB  = '+os.path.join(self.installDir,self.libdir,'libblacs.a')+'\n')
+    g.write('BLACSLIB  = '+os.path.join(self.installDir,self.libdir,'libblacs.'+self.setCompilers.AR_LIB_SUFFIX)+'\n')
     g.write('MPILIB    = '+self.libraries.toString(self.mpi.lib)+'\n')
     g.write('SYSINC    = '+self.headers.toString(self.mpi.include)+'\n')
     g.write('BTLIBS    = $(BLACSLIB)  $(MPILIB) \n')
@@ -69,7 +70,7 @@ class Configure(PETSc.package.NewPackage):
     if self.installNeeded('Bmake.Inc'):
       try:
         self.logPrintBox('Compiling Blacs; this may take several minutes')
-        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+os.path.join(self.packageDir,'SRC','MPI')+';make clean; make', timeout=2500, log = self.framework.log)
+        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+os.path.join(self.packageDir,'SRC','MPI')+' && make clean && make', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running make on BLACS: '+str(e))
       self.postInstall(output+err,'Bmake.Inc')

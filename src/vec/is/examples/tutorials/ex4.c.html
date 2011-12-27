@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:26:07+00:00">
+<meta name="date" content="2011-10-29T18:56:58+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -19,7 +19,7 @@
 <a name="line9">  9: </a><font color="#B22222">    and then destroys it.</font>
 <a name="line10"> 10: </a><font color="#B22222">T*/</font>
 
-<a name="line12"> 12: </a> #include <A href="../../../../../include/petscis.h.html">petscis.h</A>
+<a name="line12"> 12: </a><font color="#A020F0">#include &lt;petscis.h&gt;</font>
 
 <a name="line16"> 16: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line17"> 17: </a>{
@@ -34,7 +34,7 @@
 <a name="line26"> 26: </a><font color="#B22222">      Create a local to global mapping. Each processor independently</font>
 <a name="line27"> 27: </a><font color="#B22222">     creates a mapping  </font>
 <a name="line28"> 28: </a><font color="#B22222">  */</font>
-<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,n,indices,&amp;mapping);
+<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,n,indices,PETSC_COPY_VALUES,&amp;mapping);
 
 <a name="line31"> 31: </a>  <font color="#B22222">/*</font>
 <a name="line32"> 32: </a><font color="#B22222">     Map a set of local indices to their global values </font>
@@ -60,7 +60,7 @@
 <a name="line52"> 52: </a>  <font color="#B22222">/*</font>
 <a name="line53"> 53: </a><font color="#B22222">     Free the space used by the local to global mapping</font>
 <a name="line54"> 54: </a><font color="#B22222">  */</font>
-<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMappingDestroy.html#ISLocalToGlobalMappingDestroy">ISLocalToGlobalMappingDestroy</A>(mapping);
+<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMappingDestroy.html#ISLocalToGlobalMappingDestroy">ISLocalToGlobalMappingDestroy</A>(&amp;mapping);
 
 
 <a name="line58"> 58: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();

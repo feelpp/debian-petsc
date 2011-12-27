@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:34+00:00">
+<meta name="date" content="2011-10-29T19:05:09+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Test the use of <A href="../../../../docs/manualpages/Mat/MatSetValuesBlocked.html#MatSetValuesBlocked">MatSetValuesBlocked</A>(), <A href="../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>() for rectangular MatBAIJ matrix, test <A href="../../../../docs/manualpages/Mat/MatSetValuesBlocked.html#MatSetValuesBlocked">MatSetValuesBlocked</A>() for MatSBAIJ matrix (-test_mat_sbaij)."</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -19,7 +19,7 @@
 <a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       bs=3,m=4,n=6,i,j,val = 10,row[2],col[3],eval,rstart;
 <a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank;
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    x[6][9],y[3][3],one=1.0;
-<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg,testsbaij=<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg,testsbaij=<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 
@@ -83,12 +83,12 @@
 <a name="line76"> 76: </a>    col[0] = rstart*bs+0;
 <a name="line77"> 77: </a>    col[1] = rstart*bs+1;
 <a name="line78"> 78: </a>    col[2] = rstart*bs+2;
-<a name="line79"> 79: </a>    <A href="../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>(A,3,col,one);
+<a name="line79"> 79: </a>    <A href="../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>(A,3,col,one,0,0);
 <a name="line80"> 80: </a>  }
 
 <a name="line82"> 82: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(A,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 
-<a name="line84"> 84: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line84"> 84: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 <a name="line85"> 85: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line86"> 86: </a>  <font color="#4169E1">return</font> 0;
 <a name="line87"> 87: </a>}

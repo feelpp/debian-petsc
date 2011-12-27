@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* sbaij.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matseqsbaijsetcolumnindices_(Mat mat,PetscInt *indices, int *__ierr ){
+void PETSC_STDCALL  matseqsbaijsetcolumnindices_(Mat mat,PetscInt *indices, int *__ierr ){
 *__ierr = MatSeqSBAIJSetColumnIndices(
 	(Mat)PetscToPointer((mat) ),indices);
 }
-void PETSC_STDCALL   matcreateseqsbaijwitharrays_(MPI_Fint * comm,PetscInt *bs,PetscInt *m,PetscInt *n,PetscInt* i,PetscInt*j,PetscScalar *a,Mat *mat, int *__ierr ){
+void PETSC_STDCALL  matcreateseqsbaijwitharrays_(MPI_Fint * comm,PetscInt *bs,PetscInt *m,PetscInt *n,PetscInt* i,PetscInt*j,PetscScalar *a,Mat *mat, int *__ierr ){
 *__ierr = MatCreateSeqSBAIJWithArrays(
 	MPI_Comm_f2c( *(comm) ),*bs,*m,*n,i,j,a,mat);
 }

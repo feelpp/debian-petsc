@@ -1,8 +1,7 @@
-#define PETSCMAT_DLL
 
 /* degree.f -- translated by f2c (version 19931217).*/
 
-#include "../src/mat/order/order.h"
+#include <../src/mat/order/order.h>
 
 /*****************************************************************/
 /*********     DEGREE ..... DEGREE IN MASKED COMPONENT   *********/

@@ -6,16 +6,16 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="MatOrderingRegisterDynamic"><H1>MatOrderingRegisterDynamic</H1></A>
-Adds a new sparse matrix ordering to the  matrix package.  
+Adds a new sparse matrix ordering to the matrix package.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode MatOrderingRegisterDynamic(char *name_ordering,char *path,char *name_create,PetscErrorCode (*routine_create)(MatOrdering))
+PetscErrorCode MatOrderingRegisterDynamic(const char *name_ordering,const char *path,const char *name_create,PetscErrorCode (*routine_create)(MatOrdering))
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>sname </B></TD><TD>- name of ordering (for example MATORDERING_ND)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>sname </B></TD><TD>- name of ordering (for example MATORDERINGND)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>path </B></TD><TD>- location of library where creation routine is 
 </TD></TR>

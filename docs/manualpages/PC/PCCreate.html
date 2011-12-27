@@ -10,7 +10,7 @@ Creates a preconditioner context.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCCreate(MPI_Comm comm,PC *newpc)
+PetscErrorCode  PCCreate(MPI_Comm comm,PC *newpc)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -41,5 +41,4 @@ in parallel. For dense matrices it is always <A HREF="../PC/PCNONE.html#PCNONE">
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex21f.F.html">src/ksp/ksp/examples/tutorials/ex21f.F.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex33f.F.html">src/snes/examples/tutorials/ex33f.F.html</A><BR>
 </BODY></HTML>

@@ -14,7 +14,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -29,8 +29,10 @@ int main(int argc,char **args)
   PetscInitialize(&argc,&args,(char *)0,help);
   fd = PETSC_VIEWER_SOCKET_WORLD;
 
-  ierr = VecLoad(fd,VECSEQ,&b);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATAIJ,&A);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&b);CHKERRQ(ierr);
+  ierr = VecLoad(b,fd);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
   ierr = VecDuplicate(b,&x);CHKERRQ(ierr);
 
   ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
@@ -39,12 +41,12 @@ int main(int argc,char **args)
   ierr = KSPSetUp(ksp);CHKERRQ(ierr);
   ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
   ierr = VecView(x,fd);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr); 
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr); 
+  ierr = MatDestroy(&A);CHKERRQ(ierr); 
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr); 
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

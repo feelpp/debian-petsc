@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:41+00:00">
+<meta name="date" content="2011-10-29T18:56:26+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -22,7 +22,7 @@
 <a name="line12"> 12: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscis.h     - index sets</font>
 <a name="line13"> 13: </a><font color="#B22222">     petscviewer.h - viewers</font>
 <a name="line14"> 14: </a><font color="#B22222">*/</font>
-<a name="line15"> 15: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line15"> 15: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line19"> 19: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line20"> 20: </a>{
@@ -68,9 +68,9 @@
 <a name="line61"> 61: </a>  <font color="#4169E1">if</font> (gindices[ng-1] == M)  gindices[ng-1] = 0;
 <a name="line62"> 62: </a>  {
 <a name="line63"> 63: </a>    <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMapping.html#ISLocalToGlobalMapping">ISLocalToGlobalMapping</A> ltog;
-<a name="line64"> 64: </a>    <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,ng,gindices,&amp;ltog);
+<a name="line64"> 64: </a>    <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,ng,gindices,PETSC_COPY_VALUES,&amp;ltog);
 <a name="line65"> 65: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetLocalToGlobalMapping.html#VecSetLocalToGlobalMapping">VecSetLocalToGlobalMapping</A>(x,ltog);
-<a name="line66"> 66: </a>    <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMappingDestroy.html#ISLocalToGlobalMappingDestroy">ISLocalToGlobalMappingDestroy</A>(ltog);
+<a name="line66"> 66: </a>    <A href="../../../../../docs/manualpages/IS/ISLocalToGlobalMappingDestroy.html#ISLocalToGlobalMappingDestroy">ISLocalToGlobalMappingDestroy</A>(&amp;ltog);
 <a name="line67"> 67: </a>  }
 <a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gindices);
 
@@ -101,7 +101,7 @@
 <a name="line94"> 94: </a><font color="#B22222">      View the vector; then destroy it.</font>
 <a name="line95"> 95: </a><font color="#B22222">  */</font>
 <a name="line96"> 96: </a>  <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
-<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
+<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
 
 <a name="line99"> 99: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line100">100: </a>  <font color="#4169E1">return</font> 0;

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* vecmpitoseq.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   vecscattercreatetoall_(Vec vin,VecScatter *ctx,Vec *vout, int *__ierr ){
+void PETSC_STDCALL  vecscattercreatetoall_(Vec vin,VecScatter *ctx,Vec *vout, int *__ierr ){
 *__ierr = VecScatterCreateToAll(
 	(Vec)PetscToPointer((vin) ),ctx,vout);
 }
-void PETSC_STDCALL   vecscattercreatetozero_(Vec vin,VecScatter *ctx,Vec *vout, int *__ierr ){
+void PETSC_STDCALL  vecscattercreatetozero_(Vec vin,VecScatter *ctx,Vec *vout, int *__ierr ){
 *__ierr = VecScatterCreateToZero(
 	(Vec)PetscToPointer((vin) ),ctx,vout);
 }

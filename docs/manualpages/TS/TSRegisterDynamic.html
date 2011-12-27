@@ -9,7 +9,7 @@
 Adds a creation method to the <A HREF="../TS/TS.html#TS">TS</A> package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode TSRegisterDynamic(char *name, char *path, char *func_name, PetscErrorCode (*create_func)(TS))
+PetscErrorCode TSRegisterDynamic(const char *name, const char *path, const char *func_name, PetscErrorCode (*create_func)(TS))
 </PRE>
 Not Collective
 <P>

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* rk.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   tsrksettolerance_(TS ts,PetscReal *aabs, int *__ierr ){
+void PETSC_STDCALL  tsrksettolerance_(TS ts,PetscReal *aabs, int *__ierr ){
 *__ierr = TSRKSetTolerance(
 	(TS)PetscToPointer((ts) ),*aabs);
 }

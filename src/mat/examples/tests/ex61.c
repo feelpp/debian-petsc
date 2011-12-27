@@ -1,7 +1,7 @@
 
 static char help[] = "Tests MatSeq(B)AIJSetColumnIndices().\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 /*
       Generate the following matrix:
@@ -18,7 +18,7 @@ int main(int argc,char **args)
   PetscScalar    v;
   PetscErrorCode ierr;
   PetscInt       i,j,rowlens[] = {2,3,1},cols[] = {0,2,0,1,2,2};
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscInitialize(&argc,&args,(char *)0,help);
 
@@ -50,7 +50,7 @@ int main(int argc,char **args)
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

@@ -1,7 +1,7 @@
 
 static char help[] = "Tests ISLocalToGlobalMappingGetInfo.()\n\n";
 
-#include "petscis.h"
+#include <petscis.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -15,7 +15,7 @@ int main(int argc,char **argv)
 
   ierr = PetscInitialize(&argc,&argv,(char*)0,help);CHKERRQ(ierr); 
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 3) SETERRQ(1,"Must run with three processors");
+  if (size != 3) SETERRQ(PETSC_COMM_SELF,1,"Must run with three processors");
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
   if (!rank) {
     nlocal = 4; local[0] = 0; local[1] = 3; local[2] = 2; local[3] = 1;
@@ -24,11 +24,11 @@ int main(int argc,char **argv)
   } else {
     nlocal = 4; local[0] = 7; local[1] = 6; local[2] = 5; local[3] = 3;
   }
-  ierr = ISLocalToGlobalMappingCreate(PETSC_COMM_WORLD,nlocal,local,&mapping);CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingCreate(PETSC_COMM_WORLD,nlocal,local,PETSC_COPY_VALUES,&mapping);CHKERRQ(ierr);
   ierr = ISLocalToGlobalMappingGetInfo(mapping,&nneigh,&neigh,&numneigh,&ineigh);CHKERRQ(ierr);
   ierr = ISLocalToGlobalMappingRestoreInfo(mapping,&nneigh,&neigh,&numneigh,&ineigh);CHKERRQ(ierr);
-  ierr = ISLocalToGlobalMappingDestroy(mapping);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = ISLocalToGlobalMappingDestroy(&mapping);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

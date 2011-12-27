@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* xmon.c */
 /* Fortran interface file */
 
@@ -43,13 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspmonitorlgdestroy_(PetscDrawLG drawlg, int *__ierr ){
-*__ierr = KSPMonitorLGDestroy(
-	(PetscDrawLG)PetscToPointer((drawlg) ));
+void PETSC_STDCALL  kspmonitorlgdestroy_(PetscDrawLG *drawlg, int *__ierr ){
+*__ierr = KSPMonitorLGDestroy(drawlg);
 }
-void PETSC_STDCALL   kspmonitorlgrangedestroy_(PetscDrawLG drawlg, int *__ierr ){
-*__ierr = KSPMonitorLGRangeDestroy(
-	(PetscDrawLG)PetscToPointer((drawlg) ));
+void PETSC_STDCALL  kspmonitorlgrangedestroy_(PetscDrawLG *drawlg, int *__ierr ){
+*__ierr = KSPMonitorLGRangeDestroy(drawlg);
 }
 #if defined(__cplusplus)
 }

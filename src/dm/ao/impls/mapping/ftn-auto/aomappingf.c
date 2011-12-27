@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* aomapping.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   aomappinghaspetscindex_(AO ao,PetscInt *idex,PetscTruth *hasIndex, int *__ierr ){
+void PETSC_STDCALL  aomappinghaspetscindex_(AO ao,PetscInt *idex,PetscBool  *hasIndex, int *__ierr ){
 *__ierr = AOMappingHasPetscIndex(
 	(AO)PetscToPointer((ao) ),*idex,hasIndex);
 }

@@ -24,13 +24,13 @@
 !     petscvec.h    - vectors
 !
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
 
       PetscMPIInt rank,size
       PetscInt nlocal,nghost,ifrom(2)
       PetscInt ierr,i,rstart,rend,ione
-      PetscTruth  flag
+      PetscBool   flag
       PetscScalar  value,tarray(20)
       Vec          lx,gx,gxs
 
@@ -42,7 +42,7 @@
       call MPI_Comm_size(PETSC_COMM_WORLD,size,ierr) 
 
       if (size .ne. 2) then
-       SETERRQ(1,'Must run with two processors',ierr)
+       SETERRQ(PETSC_COMM_SELF,1,'Must run with two processors',ierr)
       endif
 
 !
@@ -116,7 +116,13 @@
 
 !     Print out each vector, including the ghost padding region. 
 
-       call VecView(lx,PETSC_VIEWER_STDOUT_SELF,ierr)
+       if (rank .eq. 0) then
+          call VecView(lx,PETSC_VIEWER_STDOUT_SELF,ierr)
+       endif
+       call MPI_Barrier(PETSC_COMM_WORLD,ierr)
+       if (rank .eq. 1) then
+          call VecView(lx,PETSC_VIEWER_STDOUT_SELF,ierr)
+       endif
 
        call VecGhostRestoreLocalForm(gx,lx,ierr) 
        call VecDestroy(gx,ierr)

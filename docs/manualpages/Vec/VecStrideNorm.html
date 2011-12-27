@@ -35,7 +35,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 </TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 One must call <A HREF="../Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>() before this routine to set the stride
-information, or use a vector created from a multicomponent <A HREF="../DA/DA.html#DA">DA</A>.
+information, or use a vector created from a multicomponent DMDA.
 <P>
 If x is the array representing the vector x then this computes the norm
 of the array (x[start],x[start+stride],x[start+2*stride], ....)
@@ -58,5 +58,7 @@ This will only work if the desire subvector is a stride subvector
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex11.c.html">src/vec/vec/examples/tutorials/ex11.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex11f.F.html">src/vec/vec/examples/tutorials/ex11f.F.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex22.c.html">src/snes/examples/tutorials/ex22.c.html</A><BR>
 </BODY></HTML>

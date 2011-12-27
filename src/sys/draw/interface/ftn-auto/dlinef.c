@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dline.c */
 /* Fortran interface file */
 
@@ -33,9 +34,9 @@ extern void PetscRmPointer(void*);
 #define petscdrawline_ petscdrawline
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscdrawisnull_ PETSCDRAWISNULL
+#define petscdrawarrow_ PETSCDRAWARROW
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscdrawisnull_ petscdrawisnull
+#define petscdrawarrow_ petscdrawarrow
 #endif
 
 
@@ -43,13 +44,13 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawline_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr,int *cl, int *__ierr ){
+void PETSC_STDCALL  petscdrawline_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr,int *cl, int *__ierr ){
 *__ierr = PetscDrawLine(
 	(PetscDraw)PetscToPointer((draw) ),*xl,*yl,*xr,*yr,*cl);
 }
-void PETSC_STDCALL   petscdrawisnull_(PetscDraw draw,PetscTruth *yes, int *__ierr ){
-*__ierr = PetscDrawIsNull(
-	(PetscDraw)PetscToPointer((draw) ),yes);
+void PETSC_STDCALL  petscdrawarrow_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr,int *cl, int *__ierr ){
+*__ierr = PetscDrawArrow(
+	(PetscDraw)PetscToPointer((draw) ),*xl,*yl,*xr,*yr,*cl);
 }
 #if defined(__cplusplus)
 }

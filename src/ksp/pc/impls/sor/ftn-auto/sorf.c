@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* sor.c */
 /* Fortran interface file */
 
@@ -48,15 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcsorsetsymmetric_(PC pc,MatSORType *flag, int *__ierr ){
+void PETSC_STDCALL  pcsorsetsymmetric_(PC pc,MatSORType *flag, int *__ierr ){
 *__ierr = PCSORSetSymmetric(
 	(PC)PetscToPointer((pc) ),*flag);
 }
-void PETSC_STDCALL   pcsorsetomega_(PC pc,PetscReal *omega, int *__ierr ){
+void PETSC_STDCALL  pcsorsetomega_(PC pc,PetscReal *omega, int *__ierr ){
 *__ierr = PCSORSetOmega(
 	(PC)PetscToPointer((pc) ),*omega);
 }
-void PETSC_STDCALL   pcsorsetiterations_(PC pc,PetscInt *its,PetscInt *lits, int *__ierr ){
+void PETSC_STDCALL  pcsorsetiterations_(PC pc,PetscInt *its,PetscInt *lits, int *__ierr ){
 *__ierr = PCSORSetIterations(
 	(PC)PetscToPointer((pc) ),*its,*lits);
 }

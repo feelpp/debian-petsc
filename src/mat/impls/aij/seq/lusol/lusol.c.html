@@ -4,204 +4,203 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:28:46+00:00">
+<meta name="date" content="2011-10-29T18:59:48+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCMAT_DLL</font></strong>
+<pre width="80">
+<a name="line2">  2: </a><font color="#B22222">/* </font>
+<a name="line3">  3: </a><font color="#B22222">        Provides an interface to the LUSOL package of ....</font>
 
-<a name="line3">  3: </a><font color="#B22222">/* </font>
-<a name="line4">  4: </a><font color="#B22222">        Provides an interface to the LUSOL package of ....</font>
+<a name="line5">  5: </a><font color="#B22222">*/</font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
 
-<a name="line6">  6: </a><font color="#B22222">*/</font>
-<a name="line7"> 7: </a> #include <A href="../../../../../../include/../src/mat/impls/aij/seq/aij.h.html">../src/mat/impls/aij/seq/aij.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#if defined(PETSC_HAVE_FORTRAN_UNDERSCORE)</font>
+<a name="line9">  9: </a><strong><font color="#228B22">#define LU1FAC   lu1fac_</font></strong>
+<a name="line10"> 10: </a><strong><font color="#228B22">#define LU6SOL   lu6sol_</font></strong>
+<a name="line11"> 11: </a><strong><font color="#228B22">#define M1PAGE   m1page_</font></strong>
+<a name="line12"> 12: </a><strong><font color="#228B22">#define M5SETX   m5setx_</font></strong>
+<a name="line13"> 13: </a><strong><font color="#228B22">#define M6RDEL   m6rdel_</font></strong>
+<a name="line14"> 14: </a><font color="#A020F0">#elif !defined(PETSC_HAVE_FORTRAN_CAPS)</font>
+<a name="line15"> 15: </a><strong><font color="#228B22">#define LU1FAC   lu1fac</font></strong>
+<a name="line16"> 16: </a><strong><font color="#228B22">#define LU6SOL   lu6sol</font></strong>
+<a name="line17"> 17: </a><strong><font color="#228B22">#define M1PAGE   m1page</font></strong>
+<a name="line18"> 18: </a><strong><font color="#228B22">#define M5SETX   m5setx</font></strong>
+<a name="line19"> 19: </a><strong><font color="#228B22">#define M6RDEL   m6rdel</font></strong>
+<a name="line20"> 20: </a><font color="#A020F0">#endif</font>
 
-<a name="line9">  9: </a><font color="#A020F0">#if defined(PETSC_HAVE_FORTRAN_UNDERSCORE)</font>
-<a name="line10"> 10: </a><strong><font color="#228B22">#define LU1FAC   lu1fac_</font></strong>
-<a name="line11"> 11: </a><strong><font color="#228B22">#define LU6SOL   lu6sol_</font></strong>
-<a name="line12"> 12: </a><strong><font color="#228B22">#define M1PAGE   m1page_</font></strong>
-<a name="line13"> 13: </a><strong><font color="#228B22">#define M5SETX   m5setx_</font></strong>
-<a name="line14"> 14: </a><strong><font color="#228B22">#define M6RDEL   m6rdel_</font></strong>
-<a name="line15"> 15: </a><font color="#A020F0">#elif !defined(PETSC_HAVE_FORTRAN_CAPS)</font>
-<a name="line16"> 16: </a><strong><font color="#228B22">#define LU1FAC   lu1fac</font></strong>
-<a name="line17"> 17: </a><strong><font color="#228B22">#define LU6SOL   lu6sol</font></strong>
-<a name="line18"> 18: </a><strong><font color="#228B22">#define M1PAGE   m1page</font></strong>
-<a name="line19"> 19: </a><strong><font color="#228B22">#define M5SETX   m5setx</font></strong>
-<a name="line20"> 20: </a><strong><font color="#228B22">#define M6RDEL   m6rdel</font></strong>
-<a name="line21"> 21: </a><font color="#A020F0">#endif</font>
+<a name="line23"> 23: </a><font color="#B22222">/*</font>
+<a name="line24"> 24: </a><font color="#B22222">    Dummy symbols that the MINOS files mi25bfac.f and mi15blas.f may require</font>
+<a name="line25"> 25: </a><font color="#B22222">*/</font>
+<a name="line26"> 26: </a><strong><font color="#4169E1"><a name="M1PAGE"></a>void PETSC_STDCALL M1PAGE()</font></strong> {
+<a name="line27"> 27: </a>  ;
+<a name="line28"> 28: </a>}
+<a name="line29"> 29: </a><strong><font color="#4169E1"><a name="M5SETX"></a>void PETSC_STDCALL M5SETX()</font></strong> {
+<a name="line30"> 30: </a>  ;
+<a name="line31"> 31: </a>}
 
-<a name="line24"> 24: </a><font color="#B22222">/*</font>
-<a name="line25"> 25: </a><font color="#B22222">    Dummy symbols that the MINOS files mi25bfac.f and mi15blas.f may require</font>
-<a name="line26"> 26: </a><font color="#B22222">*/</font>
-<a name="line27"> 27: </a><strong><font color="#4169E1"><a name="M1PAGE"></a>void PETSC_STDCALL M1PAGE()</font></strong> {
-<a name="line28"> 28: </a>  ;
-<a name="line29"> 29: </a>}
-<a name="line30"> 30: </a><strong><font color="#4169E1"><a name="M5SETX"></a>void PETSC_STDCALL M5SETX()</font></strong> {
-<a name="line31"> 31: </a>  ;
-<a name="line32"> 32: </a>}
+<a name="line33"> 33: </a><strong><font color="#4169E1"><a name="M6RDEL"></a>void PETSC_STDCALL M6RDEL()</font></strong> {
+<a name="line34"> 34: </a>  ;
+<a name="line35"> 35: </a>}
 
-<a name="line34"> 34: </a><strong><font color="#4169E1"><a name="M6RDEL"></a>void PETSC_STDCALL M6RDEL()</font></strong> {
-<a name="line35"> 35: </a>  ;
-<a name="line36"> 36: </a>}
+<a name="line38"> 38: </a><strong><font color="#4169E1">                        double *parmlu, double *data, int *indc, int *indr,</font></strong>
+<a name="line39"> 39: </a><strong><font color="#4169E1">                        int *rowperm, int *colperm, int *collen, int *rowlen,</font></strong>
+<a name="line40"> 40: </a><strong><font color="#4169E1">                        int *colstart, int *rowstart, int *rploc, int *cploc,</font></strong>
+<a name="line41"> 41: </a><strong><font color="#4169E1">                        int *rpinv, int *cpinv, double *w, int *inform)</font></strong>;
 
-<a name="line39"> 39: </a><strong><font color="#4169E1">                        double *parmlu, double *data, int *indc, int *indr,</font></strong>
-<a name="line40"> 40: </a><strong><font color="#4169E1">                        int *rowperm, int *colperm, int *collen, int *rowlen,</font></strong>
-<a name="line41"> 41: </a><strong><font color="#4169E1">                        int *colstart, int *rowstart, int *rploc, int *cploc,</font></strong>
-<a name="line42"> 42: </a><strong><font color="#4169E1">                        int *rpinv, int *cpinv, double *w, int *inform)</font></strong>;
+<a name="line44"> 44: </a><strong><font color="#4169E1">                        int *size, int *luparm, double *parmlu, double *data,</font></strong>
+<a name="line45"> 45: </a><strong><font color="#4169E1">                        int *indc, int *indr, int *rowperm, int *colperm,</font></strong>
+<a name="line46"> 46: </a><strong><font color="#4169E1">                        int *collen, int *rowlen, int *colstart, int *rowstart,</font></strong>
+<a name="line47"> 47: </a><strong><font color="#4169E1">                        int *inform)</font></strong>;
 
-<a name="line45"> 45: </a><strong><font color="#4169E1">                        int *size, int *luparm, double *parmlu, double *data,</font></strong>
-<a name="line46"> 46: </a><strong><font color="#4169E1">                        int *indc, int *indr, int *rowperm, int *colperm,</font></strong>
-<a name="line47"> 47: </a><strong><font color="#4169E1">                        int *collen, int *rowlen, int *colstart, int *rowstart,</font></strong>
-<a name="line48"> 48: </a><strong><font color="#4169E1">                        int *inform)</font></strong>;
 
-<a name="line51"> 51: </a><strong><font color="#4169E1">EXTERN <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDuplicate_LUSOL(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/MatDuplicateOption.html#MatDuplicateOption">MatDuplicateOption</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*)</font></strong>;
+<a name="line52"> 52: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font>  {
+<a name="line53"> 53: </a>  double *data;
+<a name="line54"> 54: </a>  int *indc;
+<a name="line55"> 55: </a>  int *indr;
 
-<a name="line53"> 53: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font>  {
-<a name="line54"> 54: </a>  double *data;
-<a name="line55"> 55: </a>  int *indc;
-<a name="line56"> 56: </a>  int *indr;
+<a name="line57"> 57: </a>  int *ip;
+<a name="line58"> 58: </a>  int *iq;
+<a name="line59"> 59: </a>  int *lenc;
+<a name="line60"> 60: </a>  int *lenr;
+<a name="line61"> 61: </a>  int *locc;
+<a name="line62"> 62: </a>  int *locr;
+<a name="line63"> 63: </a>  int *iploc;
+<a name="line64"> 64: </a>  int *iqloc;
+<a name="line65"> 65: </a>  int *ipinv;
+<a name="line66"> 66: </a>  int *iqinv;
+<a name="line67"> 67: </a>  double *mnsw;
+<a name="line68"> 68: </a>  double *mnsv;
 
-<a name="line58"> 58: </a>  int *ip;
-<a name="line59"> 59: </a>  int *iq;
-<a name="line60"> 60: </a>  int *lenc;
-<a name="line61"> 61: </a>  int *lenr;
-<a name="line62"> 62: </a>  int *locc;
-<a name="line63"> 63: </a>  int *locr;
-<a name="line64"> 64: </a>  int *iploc;
-<a name="line65"> 65: </a>  int *iqloc;
-<a name="line66"> 66: </a>  int *ipinv;
-<a name="line67"> 67: </a>  int *iqinv;
-<a name="line68"> 68: </a>  double *mnsw;
-<a name="line69"> 69: </a>  double *mnsv;
+<a name="line70"> 70: </a>  double elbowroom;
+<a name="line71"> 71: </a>  double luroom;                <font color="#B22222">/* Extra space allocated when factor fails   */</font>
+<a name="line72"> 72: </a>  double parmlu[30];                <font color="#B22222">/* Input/output to LUSOL                     */</font>
 
-<a name="line71"> 71: </a>  double elbowroom;
-<a name="line72"> 72: </a>  double luroom;                <font color="#B22222">/* Extra space allocated when factor fails   */</font>
-<a name="line73"> 73: </a>  double parmlu[30];                <font color="#B22222">/* Input/output to LUSOL                     */</font>
+<a name="line74"> 74: </a>  int n;                        <font color="#B22222">/* Number of rows/columns in matrix          */</font>
+<a name="line75"> 75: </a>  int nz;                        <font color="#B22222">/* Number of nonzeros                        */</font>
+<a name="line76"> 76: </a>  int nnz;                        <font color="#B22222">/* Number of nonzeros allocated for factors  */</font>
+<a name="line77"> 77: </a>  int luparm[30];                <font color="#B22222">/* Input/output to LUSOL                     */</font>
 
-<a name="line75"> 75: </a>  int n;                        <font color="#B22222">/* Number of rows/columns in matrix          */</font>
-<a name="line76"> 76: </a>  int nz;                        <font color="#B22222">/* Number of nonzeros                        */</font>
-<a name="line77"> 77: </a>  int nnz;                        <font color="#B22222">/* Number of nonzeros allocated for factors  */</font>
-<a name="line78"> 78: </a>  int luparm[30];                <font color="#B22222">/* Input/output to LUSOL                     */</font>
+<a name="line79"> 79: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  CleanUpLUSOL;
 
-<a name="line80"> 80: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> CleanUpLUSOL;
+<a name="line81"> 81: </a>} Mat_LUSOL;
 
-<a name="line82"> 82: </a>} Mat_LUSOL;
-
-<a name="line84"> 84: </a><font color="#B22222">/*  LUSOL input/Output Parameters (Description uses C-style indexes</font>
-<a name="line85"> 85: </a><font color="#B22222"> *</font>
-<a name="line86"> 86: </a><font color="#B22222"> *  Input parameters                                        Typical value</font>
-<a name="line87"> 87: </a><font color="#B22222"> *</font>
-<a name="line88"> 88: </a><font color="#B22222"> *  luparm(0) = nout     File number for printed messages.         6</font>
-<a name="line89"> 89: </a><font color="#B22222"> *  luparm(1) = lprint   Print level.                              0</font>
-<a name="line90"> 90: </a><font color="#B22222"> *                    &lt; 0 suppresses output.</font>
-<a name="line91"> 91: </a><font color="#B22222"> *                    = 0 gives error messages.</font>
-<a name="line92"> 92: </a><font color="#B22222"> *                    = 1 gives debug output from some of the</font>
-<a name="line93"> 93: </a><font color="#B22222"> *                        other routines in LUSOL.</font>
-<a name="line94"> 94: </a><font color="#B22222"> *                   &gt;= 2 gives the pivot row and column and the</font>
-<a name="line95"> 95: </a><font color="#B22222"> *                        no. of rows and columns involved at</font>
-<a name="line96"> 96: </a><font color="#B22222"> *                        each elimination step in lu1fac.</font>
-<a name="line97"> 97: </a><font color="#B22222"> *  luparm(2) = maxcol   lu1fac: maximum number of columns         5</font>
-<a name="line98"> 98: </a><font color="#B22222"> *                        searched allowed in a Markowitz-type</font>
-<a name="line99"> 99: </a><font color="#B22222"> *                        search for the next pivot element.</font>
-<a name="line100">100: </a><font color="#B22222"> *                        For some of the factorization, the</font>
-<a name="line101">101: </a><font color="#B22222"> *                        number of rows searched is</font>
-<a name="line102">102: </a><font color="#B22222"> *                        maxrow = maxcol - 1.</font>
+<a name="line83"> 83: </a><font color="#B22222">/*  LUSOL input/Output Parameters (Description uses C-style indexes</font>
+<a name="line84"> 84: </a><font color="#B22222"> *</font>
+<a name="line85"> 85: </a><font color="#B22222"> *  Input parameters                                        Typical value</font>
+<a name="line86"> 86: </a><font color="#B22222"> *</font>
+<a name="line87"> 87: </a><font color="#B22222"> *  luparm(0) = nout     File number for printed messages.         6</font>
+<a name="line88"> 88: </a><font color="#B22222"> *  luparm(1) = lprint   Print level.                              0</font>
+<a name="line89"> 89: </a><font color="#B22222"> *                    &lt; 0 suppresses output.</font>
+<a name="line90"> 90: </a><font color="#B22222"> *                    = 0 gives error messages.</font>
+<a name="line91"> 91: </a><font color="#B22222"> *                    = 1 gives debug output from some of the</font>
+<a name="line92"> 92: </a><font color="#B22222"> *                        other routines in LUSOL.</font>
+<a name="line93"> 93: </a><font color="#B22222"> *                   &gt;= 2 gives the pivot row and column and the</font>
+<a name="line94"> 94: </a><font color="#B22222"> *                        no. of rows and columns involved at</font>
+<a name="line95"> 95: </a><font color="#B22222"> *                        each elimination step in lu1fac.</font>
+<a name="line96"> 96: </a><font color="#B22222"> *  luparm(2) = maxcol   lu1fac: maximum number of columns         5</font>
+<a name="line97"> 97: </a><font color="#B22222"> *                        searched allowed in a Markowitz-type</font>
+<a name="line98"> 98: </a><font color="#B22222"> *                        search for the next pivot element.</font>
+<a name="line99"> 99: </a><font color="#B22222"> *                        For some of the factorization, the</font>
+<a name="line100">100: </a><font color="#B22222"> *                        number of rows searched is</font>
+<a name="line101">101: </a><font color="#B22222"> *                        maxrow = maxcol - 1.</font>
+<a name="line102">102: </a><font color="#B22222"> *</font>
 <a name="line103">103: </a><font color="#B22222"> *</font>
-<a name="line104">104: </a><font color="#B22222"> *</font>
-<a name="line105">105: </a><font color="#B22222"> *  Output parameters</font>
-<a name="line106">106: </a><font color="#B22222"> *</font>
-<a name="line107">107: </a><font color="#B22222"> *  luparm(9) = inform   Return code from last call to any LU routine.</font>
-<a name="line108">108: </a><font color="#B22222"> *  luparm(10) = nsing    No. of singularities marked in the</font>
-<a name="line109">109: </a><font color="#B22222"> *                        output array w(*).</font>
-<a name="line110">110: </a><font color="#B22222"> *  luparm(11) = jsing    Column index of last singularity.</font>
-<a name="line111">111: </a><font color="#B22222"> *  luparm(12) = minlen   Minimum recommended value for  lena.</font>
-<a name="line112">112: </a><font color="#B22222"> *  luparm(13) = maxlen   ?</font>
-<a name="line113">113: </a><font color="#B22222"> *  luparm(14) = nupdat   No. of updates performed by the lu8 routines.</font>
-<a name="line114">114: </a><font color="#B22222"> *  luparm(15) = nrank    No. of nonempty rows of U.</font>
-<a name="line115">115: </a><font color="#B22222"> *  luparm(16) = ndens1   No. of columns remaining when the density of</font>
-<a name="line116">116: </a><font color="#B22222"> *                        the matrix being factorized reached dens1.</font>
-<a name="line117">117: </a><font color="#B22222"> *  luparm(17) = ndens2   No. of columns remaining when the density of</font>
-<a name="line118">118: </a><font color="#B22222"> *                        the matrix being factorized reached dens2.</font>
-<a name="line119">119: </a><font color="#B22222"> *  luparm(18) = jumin    The column index associated with dumin.</font>
-<a name="line120">120: </a><font color="#B22222"> *  luparm(19) = numl0    No. of columns in initial  L.</font>
-<a name="line121">121: </a><font color="#B22222"> *  luparm(20) = lenl0    Size of initial  L  (no. of nonzeros).</font>
-<a name="line122">122: </a><font color="#B22222"> *  luparm(21) = lenu0    Size of initial  U.</font>
-<a name="line123">123: </a><font color="#B22222"> *  luparm(22) = lenl     Size of current  L.</font>
-<a name="line124">124: </a><font color="#B22222"> *  luparm(23) = lenu     Size of current  U.</font>
-<a name="line125">125: </a><font color="#B22222"> *  luparm(24) = lrow     Length of row file.</font>
-<a name="line126">126: </a><font color="#B22222"> *  luparm(25) = ncp      No. of compressions of LU data structures.</font>
-<a name="line127">127: </a><font color="#B22222"> *  luparm(26) = mersum   lu1fac: sum of Markowitz merit counts.</font>
-<a name="line128">128: </a><font color="#B22222"> *  luparm(27) = nutri    lu1fac: triangular rows in U.</font>
-<a name="line129">129: </a><font color="#B22222"> *  luparm(28) = nltri    lu1fac: triangular rows in L.</font>
-<a name="line130">130: </a><font color="#B22222"> *  luparm(29) =</font>
+<a name="line104">104: </a><font color="#B22222"> *  Output parameters</font>
+<a name="line105">105: </a><font color="#B22222"> *</font>
+<a name="line106">106: </a><font color="#B22222"> *  luparm(9) = inform   Return code from last call to any LU routine.</font>
+<a name="line107">107: </a><font color="#B22222"> *  luparm(10) = nsing    No. of singularities marked in the</font>
+<a name="line108">108: </a><font color="#B22222"> *                        output array w(*).</font>
+<a name="line109">109: </a><font color="#B22222"> *  luparm(11) = jsing    Column index of last singularity.</font>
+<a name="line110">110: </a><font color="#B22222"> *  luparm(12) = minlen   Minimum recommended value for  lena.</font>
+<a name="line111">111: </a><font color="#B22222"> *  luparm(13) = maxlen   ?</font>
+<a name="line112">112: </a><font color="#B22222"> *  luparm(14) = nupdat   No. of updates performed by the lu8 routines.</font>
+<a name="line113">113: </a><font color="#B22222"> *  luparm(15) = nrank    No. of nonempty rows of U.</font>
+<a name="line114">114: </a><font color="#B22222"> *  luparm(16) = ndens1   No. of columns remaining when the density of</font>
+<a name="line115">115: </a><font color="#B22222"> *                        the matrix being factorized reached dens1.</font>
+<a name="line116">116: </a><font color="#B22222"> *  luparm(17) = ndens2   No. of columns remaining when the density of</font>
+<a name="line117">117: </a><font color="#B22222"> *                        the matrix being factorized reached dens2.</font>
+<a name="line118">118: </a><font color="#B22222"> *  luparm(18) = jumin    The column index associated with dumin.</font>
+<a name="line119">119: </a><font color="#B22222"> *  luparm(19) = numl0    No. of columns in initial  L.</font>
+<a name="line120">120: </a><font color="#B22222"> *  luparm(20) = lenl0    Size of initial  L  (no. of nonzeros).</font>
+<a name="line121">121: </a><font color="#B22222"> *  luparm(21) = lenu0    Size of initial  U.</font>
+<a name="line122">122: </a><font color="#B22222"> *  luparm(22) = lenl     Size of current  L.</font>
+<a name="line123">123: </a><font color="#B22222"> *  luparm(23) = lenu     Size of current  U.</font>
+<a name="line124">124: </a><font color="#B22222"> *  luparm(24) = lrow     Length of row file.</font>
+<a name="line125">125: </a><font color="#B22222"> *  luparm(25) = ncp      No. of compressions of LU data structures.</font>
+<a name="line126">126: </a><font color="#B22222"> *  luparm(26) = mersum   lu1fac: sum of Markowitz merit counts.</font>
+<a name="line127">127: </a><font color="#B22222"> *  luparm(27) = nutri    lu1fac: triangular rows in U.</font>
+<a name="line128">128: </a><font color="#B22222"> *  luparm(28) = nltri    lu1fac: triangular rows in L.</font>
+<a name="line129">129: </a><font color="#B22222"> *  luparm(29) =</font>
+<a name="line130">130: </a><font color="#B22222"> *</font>
 <a name="line131">131: </a><font color="#B22222"> *</font>
-<a name="line132">132: </a><font color="#B22222"> *</font>
-<a name="line133">133: </a><font color="#B22222"> *  Input parameters                                        Typical value</font>
-<a name="line134">134: </a><font color="#B22222"> *</font>
-<a name="line135">135: </a><font color="#B22222"> *  parmlu(0) = elmax1   Max multiplier allowed in  L           10.0</font>
-<a name="line136">136: </a><font color="#B22222"> *                        during factor.</font>
-<a name="line137">137: </a><font color="#B22222"> *  parmlu(1) = elmax2   Max multiplier allowed in  L           10.0</font>
-<a name="line138">138: </a><font color="#B22222"> *                        during updates.</font>
-<a name="line139">139: </a><font color="#B22222"> *  parmlu(2) = small    Absolute tolerance for             eps**0.8</font>
-<a name="line140">140: </a><font color="#B22222"> *                        treating reals as zero.     IBM double: 3.0d-13</font>
-<a name="line141">141: </a><font color="#B22222"> *  parmlu(3) = utol1    Absolute tol for flagging          eps**0.66667</font>
-<a name="line142">142: </a><font color="#B22222"> *                        small diagonals of U.       IBM double: 3.7d-11</font>
-<a name="line143">143: </a><font color="#B22222"> *  parmlu(4) = utol2    Relative tol for flagging          eps**0.66667</font>
-<a name="line144">144: </a><font color="#B22222"> *                        small diagonals of U.       IBM double: 3.7d-11</font>
-<a name="line145">145: </a><font color="#B22222"> *  parmlu(5) = uspace   Factor limiting waste space in  U.      3.0</font>
-<a name="line146">146: </a><font color="#B22222"> *                        In lu1fac, the row or column lists</font>
-<a name="line147">147: </a><font color="#B22222"> *                        are compressed if their length</font>
-<a name="line148">148: </a><font color="#B22222"> *                        exceeds uspace times the length of</font>
-<a name="line149">149: </a><font color="#B22222"> *                        either file after the last compression.</font>
-<a name="line150">150: </a><font color="#B22222"> *  parmlu(6) = dens1    The density at which the Markowitz      0.3</font>
-<a name="line151">151: </a><font color="#B22222"> *                        strategy should search maxcol columns</font>
-<a name="line152">152: </a><font color="#B22222"> *                        and no rows.</font>
-<a name="line153">153: </a><font color="#B22222"> *  parmlu(7) = dens2    the density at which the Markowitz      0.6</font>
-<a name="line154">154: </a><font color="#B22222"> *                        strategy should search only 1 column</font>
-<a name="line155">155: </a><font color="#B22222"> *                        or (preferably) use a dense LU for</font>
-<a name="line156">156: </a><font color="#B22222"> *                        all the remaining rows and columns.</font>
+<a name="line132">132: </a><font color="#B22222"> *  Input parameters                                        Typical value</font>
+<a name="line133">133: </a><font color="#B22222"> *</font>
+<a name="line134">134: </a><font color="#B22222"> *  parmlu(0) = elmax1   Max multiplier allowed in  L           10.0</font>
+<a name="line135">135: </a><font color="#B22222"> *                        during factor.</font>
+<a name="line136">136: </a><font color="#B22222"> *  parmlu(1) = elmax2   Max multiplier allowed in  L           10.0</font>
+<a name="line137">137: </a><font color="#B22222"> *                        during updates.</font>
+<a name="line138">138: </a><font color="#B22222"> *  parmlu(2) = small    Absolute tolerance for             eps**0.8</font>
+<a name="line139">139: </a><font color="#B22222"> *                        treating reals as zero.     IBM double: 3.0d-13</font>
+<a name="line140">140: </a><font color="#B22222"> *  parmlu(3) = utol1    Absolute tol for flagging          eps**0.66667</font>
+<a name="line141">141: </a><font color="#B22222"> *                        small diagonals of U.       IBM double: 3.7d-11</font>
+<a name="line142">142: </a><font color="#B22222"> *  parmlu(4) = utol2    Relative tol for flagging          eps**0.66667</font>
+<a name="line143">143: </a><font color="#B22222"> *                        small diagonals of U.       IBM double: 3.7d-11</font>
+<a name="line144">144: </a><font color="#B22222"> *  parmlu(5) = uspace   Factor limiting waste space in  U.      3.0</font>
+<a name="line145">145: </a><font color="#B22222"> *                        In lu1fac, the row or column lists</font>
+<a name="line146">146: </a><font color="#B22222"> *                        are compressed if their length</font>
+<a name="line147">147: </a><font color="#B22222"> *                        exceeds uspace times the length of</font>
+<a name="line148">148: </a><font color="#B22222"> *                        either file after the last compression.</font>
+<a name="line149">149: </a><font color="#B22222"> *  parmlu(6) = dens1    The density at which the Markowitz      0.3</font>
+<a name="line150">150: </a><font color="#B22222"> *                        strategy should search maxcol columns</font>
+<a name="line151">151: </a><font color="#B22222"> *                        and no rows.</font>
+<a name="line152">152: </a><font color="#B22222"> *  parmlu(7) = dens2    the density at which the Markowitz      0.6</font>
+<a name="line153">153: </a><font color="#B22222"> *                        strategy should search only 1 column</font>
+<a name="line154">154: </a><font color="#B22222"> *                        or (preferably) use a dense LU for</font>
+<a name="line155">155: </a><font color="#B22222"> *                        all the remaining rows and columns.</font>
+<a name="line156">156: </a><font color="#B22222"> *</font>
 <a name="line157">157: </a><font color="#B22222"> *</font>
-<a name="line158">158: </a><font color="#B22222"> *</font>
-<a name="line159">159: </a><font color="#B22222"> *  Output parameters</font>
-<a name="line160">160: </a><font color="#B22222"> *</font>
-<a name="line161">161: </a><font color="#B22222"> *  parmlu(9) = amax     Maximum element in  A.</font>
-<a name="line162">162: </a><font color="#B22222"> *  parmlu(10) = elmax    Maximum multiplier in current  L.</font>
-<a name="line163">163: </a><font color="#B22222"> *  parmlu(11) = umax     Maximum element in current  U.</font>
-<a name="line164">164: </a><font color="#B22222"> *  parmlu(12) = dumax    Maximum diagonal in  U.</font>
-<a name="line165">165: </a><font color="#B22222"> *  parmlu(13) = dumin    Minimum diagonal in  U.</font>
-<a name="line166">166: </a><font color="#B22222"> *  parmlu(14) =</font>
-<a name="line167">167: </a><font color="#B22222"> *  parmlu(15) =</font>
-<a name="line168">168: </a><font color="#B22222"> *  parmlu(16) =</font>
-<a name="line169">169: </a><font color="#B22222"> *  parmlu(17) =</font>
-<a name="line170">170: </a><font color="#B22222"> *  parmlu(18) =</font>
-<a name="line171">171: </a><font color="#B22222"> *  parmlu(19) = resid    lu6sol: residual after solve with U or U'.</font>
-<a name="line172">172: </a><font color="#B22222"> *  ...</font>
-<a name="line173">173: </a><font color="#B22222"> *  parmlu(29) =</font>
-<a name="line174">174: </a><font color="#B22222"> */</font>
+<a name="line158">158: </a><font color="#B22222"> *  Output parameters</font>
+<a name="line159">159: </a><font color="#B22222"> *</font>
+<a name="line160">160: </a><font color="#B22222"> *  parmlu(9) = amax     Maximum element in  A.</font>
+<a name="line161">161: </a><font color="#B22222"> *  parmlu(10) = elmax    Maximum multiplier in current  L.</font>
+<a name="line162">162: </a><font color="#B22222"> *  parmlu(11) = umax     Maximum element in current  U.</font>
+<a name="line163">163: </a><font color="#B22222"> *  parmlu(12) = dumax    Maximum diagonal in  U.</font>
+<a name="line164">164: </a><font color="#B22222"> *  parmlu(13) = dumin    Minimum diagonal in  U.</font>
+<a name="line165">165: </a><font color="#B22222"> *  parmlu(14) =</font>
+<a name="line166">166: </a><font color="#B22222"> *  parmlu(15) =</font>
+<a name="line167">167: </a><font color="#B22222"> *  parmlu(16) =</font>
+<a name="line168">168: </a><font color="#B22222"> *  parmlu(17) =</font>
+<a name="line169">169: </a><font color="#B22222"> *  parmlu(18) =</font>
+<a name="line170">170: </a><font color="#B22222"> *  parmlu(19) = resid    lu6sol: residual after solve with U or U'.</font>
+<a name="line171">171: </a><font color="#B22222"> *  ...</font>
+<a name="line172">172: </a><font color="#B22222"> *  parmlu(29) =</font>
+<a name="line173">173: </a><font color="#B22222"> */</font>
 
-<a name="line176">176: </a><strong><font color="#228B22">#define Factorization_Tolerance       1e-1</font></strong>
-<a name="line177">177: </a><strong><font color="#228B22">#define Factorization_Pivot_Tolerance pow(2.2204460492503131E-16, 2.0 / 3.0) </font></strong>
-<a name="line178">178: </a><strong><font color="#228B22">#define Factorization_Small_Tolerance 1e-15 </font><font color="#B22222">/* pow(DBL_EPSILON, 0.8) */</font><font color="#228B22"></font></strong>
+<a name="line175">175: </a><strong><font color="#228B22">#define Factorization_Tolerance       1e-1</font></strong>
+<a name="line176">176: </a><strong><font color="#228B22">#define Factorization_Pivot_Tolerance pow(2.2204460492503131E-16, 2.0 / 3.0) </font></strong>
+<a name="line177">177: </a><strong><font color="#228B22">#define Factorization_Small_Tolerance 1e-15 </font><font color="#B22222">/* pow(DBL_EPSILON, 0.8) */</font><font color="#228B22"></font></strong>
 
-<a name="line182">182: </a><strong><font color="#4169E1"><a name="MatDestroy_LUSOL"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_LUSOL(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
-<a name="line183">183: </a>{
-<a name="line185">185: </a>  Mat_LUSOL      *lusol=(Mat_LUSOL *)A-&gt;spptr;
+<a name="line181">181: </a><strong><font color="#4169E1"><a name="MatDestroy_LUSOL"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_LUSOL(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line182">182: </a>{
+<a name="line184">184: </a>  Mat_LUSOL      *lusol=(Mat_LUSOL *)A-&gt;spptr;
 
-<a name="line188">188: </a>  <font color="#4169E1">if</font> (lusol-&gt;CleanUpLUSOL) {
-<a name="line189">189: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;ip);
-<a name="line190">190: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;iq);
-<a name="line191">191: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;lenc);
-<a name="line192">192: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;lenr);
-<a name="line193">193: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;locc);
-<a name="line194">194: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;locr);
-<a name="line195">195: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;iploc);
-<a name="line196">196: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;iqloc);
-<a name="line197">197: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;ipinv);
-<a name="line198">198: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;iqinv);
-<a name="line199">199: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;mnsw);
-<a name="line200">200: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;mnsv);
-<a name="line201">201: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(lusol-&gt;data,lusol-&gt;indc,lusol-&gt;indr);
-<a name="line202">202: </a>  }
+<a name="line187">187: </a>  <font color="#4169E1">if</font> (lusol &amp;&amp; lusol-&gt;CleanUpLUSOL) {
+<a name="line188">188: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;ip);
+<a name="line189">189: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;iq);
+<a name="line190">190: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;lenc);
+<a name="line191">191: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;lenr);
+<a name="line192">192: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;locc);
+<a name="line193">193: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;locr);
+<a name="line194">194: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;iploc);
+<a name="line195">195: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;iqloc);
+<a name="line196">196: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;ipinv);
+<a name="line197">197: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;iqinv);
+<a name="line198">198: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;mnsw);
+<a name="line199">199: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lusol-&gt;mnsv);
+<a name="line200">200: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(lusol-&gt;data,lusol-&gt;indc,lusol-&gt;indr);
+<a name="line201">201: </a>  }
+<a name="line202">202: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(A-&gt;spptr);
 <a name="line203">203: </a>  MatDestroy_SeqAIJ(A);
 <a name="line204">204: </a>  <font color="#4169E1">return</font>(0);
 <a name="line205">205: </a>}
@@ -229,7 +228,7 @@
 <a name="line231">231: </a>         lusol-&gt;indc, lusol-&gt;indr, lusol-&gt;ip, lusol-&gt;iq,
 <a name="line232">232: </a>         lusol-&gt;lenc, lusol-&gt;lenr, lusol-&gt;locc, lusol-&gt;locr, &amp;status);
 
-<a name="line234">234: </a>  <font color="#4169E1">if</font> (status != 0) <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_SIZ,<font color="#666666">"solve failed, error code %d"</font>,status);
+<a name="line234">234: </a>  <font color="#4169E1">if</font> (status) <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_SIZ,<font color="#666666">"solve failed, error code %d"</font>,status);
 
 <a name="line236">236: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(x, &amp;xx);
 <a name="line237">237: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(b, &amp;bb);
@@ -247,7 +246,7 @@
 <a name="line253">253: </a>  <A href="../../../../../../docs/manualpages/Mat/MatGetSize.html#MatGetSize">MatGetSize</A>(A,&amp;m,&amp;n);
 <a name="line254">254: </a>  a = (Mat_SeqAIJ *)A-&gt;data;
 
-<a name="line256">256: </a>  <font color="#4169E1">if</font> (m != lusol-&gt;n) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_SIZ,<font color="#666666">"factorization struct inconsistent"</font>);
+<a name="line256">256: </a>  <font color="#4169E1">if</font> (m != lusol-&gt;n) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_SIZ,<font color="#666666">"factorization struct inconsistent"</font>);
 
 <a name="line258">258: </a>  factorizations = 0;
 <a name="line259">259: </a>  <font color="#4169E1">do</font>
@@ -318,14 +317,14 @@
 
 <a name="line325">325: </a>        <font color="#4169E1">case</font> 1:
 <a name="line326">326: </a>        <font color="#4169E1">case</font> -1:                <font color="#B22222">/* singular */</font>
-<a name="line327">327: </a>          <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_LIB,<font color="#666666">"Singular matrix"</font>);
+<a name="line327">327: </a>          <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Singular matrix"</font>);
 
 <a name="line329">329: </a>        <font color="#4169E1">case</font> 3:
 <a name="line330">330: </a>        <font color="#4169E1">case</font> 4:                <font color="#B22222">/* error conditions */</font>
-<a name="line331">331: </a>          <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_LIB,<font color="#666666">"matrix error"</font>);
+<a name="line331">331: </a>          <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"matrix error"</font>);
 
 <a name="line333">333: </a><strong><font color="#FF0000">        default:</font></strong>                <font color="#B22222">/* unknown condition */</font>
-<a name="line334">334: </a>          <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_LIB,<font color="#666666">"matrix unknown return code"</font>);
+<a name="line334">334: </a>          <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"matrix unknown return code"</font>);
 <a name="line335">335: </a>        }
 
 <a name="line337">337: </a>      factorizations++;
@@ -421,7 +420,7 @@
 
 <a name="line435">435: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqaij_lusol"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqaij_lusol(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
 <a name="line436">436: </a>{
-<a name="line438">438: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MAT_SOLVER_LUSOL.html#MAT_SOLVER_LUSOL">MAT_SOLVER_LUSOL</A>;
+<a name="line438">438: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MATSOLVERLUSOL.html#MATSOLVERLUSOL">MATSOLVERLUSOL</A>;
 <a name="line439">439: </a>  <font color="#4169E1">return</font>(0);
 <a name="line440">440: </a>}
 
@@ -437,18 +436,18 @@
 <a name="line456">456: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(B,((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;type_name);
 <a name="line457">457: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(B,0,<A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
-<a name="line459">459: </a>  PetscNewLog(B,Mat_LUSOL,&amp;lusol);
+<a name="line459">459: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(B,Mat_LUSOL,&amp;lusol);
 <a name="line460">460: </a>  B-&gt;spptr                 = lusol;
 
 <a name="line462">462: </a>  B-&gt;ops-&gt;lufactorsymbolic = MatLUFactorSymbolic_LUSOL;
 <a name="line463">463: </a>  B-&gt;ops-&gt;destroy          = MatDestroy_LUSOL;
 <a name="line464">464: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatFactorGetSolverPackage_C"</font>,<font color="#666666">"MatFactorGetSolverPackage_seqaij_lusol"</font>,MatFactorGetSolverPackage_seqaij_lusol);
-<a name="line465">465: </a>  B-&gt;factor                = MAT_FACTOR_LU;
+<a name="line465">465: </a>  B-&gt;factortype            = MAT_FACTOR_LU;
 <a name="line466">466: </a>  <font color="#4169E1">return</font>(0);
 <a name="line467">467: </a>}
 
 <a name="line469">469: </a><font color="#B22222">/*MC</font>
-<a name="line470">470: </a><font color="#B22222">  <A href="../../../../../../docs/manualpages/Mat/MAT_SOLVER_LUSOL.html#MAT_SOLVER_LUSOL">MAT_SOLVER_LUSOL</A> - "lusol" - Provides direct solvers (LU) for sequential matrices </font>
+<a name="line470">470: </a><font color="#B22222">  <A href="../../../../../../docs/manualpages/Mat/MATSOLVERLUSOL.html#MATSOLVERLUSOL">MATSOLVERLUSOL</A> - "lusol" - Provides direct solvers (LU) for sequential matrices </font>
 <a name="line471">471: </a><font color="#B22222">                         via the external package LUSOL.</font>
 
 <a name="line473">473: </a><font color="#B22222">  If LUSOL is installed (see the manual for</font>

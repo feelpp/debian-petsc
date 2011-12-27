@@ -1,6 +1,16 @@
-#define PETSCSNES_DLL
 
-#include "../src/snes/impls/picard/picard.h"
+#include <../src/snes/impls/picard/picard.h>
+
+#undef __FUNCT__
+#define __FUNCT__ "SNESReset_Picard"
+PetscErrorCode SNESReset_Picard(SNES snes)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  if (snes->work) {ierr = VecDestroyVecs(snes->nwork,&snes->work);CHKERRQ(ierr);}
+  PetscFunctionReturn(0);
+}
 
 /*
   SNESDestroy_Picard - Destroys the private SNES_Picard context that was created with SNESCreate_Picard().
@@ -17,15 +27,7 @@ PetscErrorCode SNESDestroy_Picard(SNES snes)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (snes->vec_sol_update) {
-    ierr = VecDestroy(snes->vec_sol_update);CHKERRQ(ierr);
-    snes->vec_sol_update = PETSC_NULL;
-  }
-  if (snes->nwork) {
-    ierr = VecDestroyVecs(snes->work, snes->nwork);CHKERRQ(ierr);
-    snes->nwork = 0;
-    snes->work  = PETSC_NULL;
-  }
+  ierr = SNESReset_Picard(snes);CHKERRQ(ierr);
   ierr = PetscFree(snes->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -47,19 +49,11 @@ PetscErrorCode SNESSetUp_Picard(SNES snes)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!snes->vec_sol_update) {
-    ierr = VecDuplicate(snes->vec_sol, &snes->vec_sol_update);CHKERRQ(ierr);
-    ierr = PetscLogObjectParent(snes, snes->vec_sol_update);CHKERRQ(ierr);
-  }
-  if (!snes->work) {
-    snes->nwork = 1;
-    ierr = VecDuplicateVecs(snes->vec_sol, snes->nwork, &snes->work);CHKERRQ(ierr);
-    ierr = PetscLogObjectParents(snes,snes->nwork, snes->work);CHKERRQ(ierr);
-  }
+  ierr = SNESDefaultGetWork(snes,1);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-PetscErrorCode PicardLineSearchQuadratic(SNES snes, void *lsctx, Vec X, Vec F, Vec dummyG, Vec Y, Vec dummyW, PetscReal fnorm, PetscReal dummyXnorm, PetscReal *dummyYnorm, PetscReal *gnorm, PetscTruth *flag);
+PetscErrorCode PicardLineSearchQuadratic(SNES snes, void *lsctx, Vec X, Vec F, Vec dummyG, Vec Y, Vec dummyW, PetscReal fnorm, PetscReal dummyXnorm, PetscReal *dummyYnorm, PetscReal *gnorm, PetscBool  *flag);
 /*
   SNESSetFromOptions_Picard - Sets various parameters for the SNESLS method.
 
@@ -75,7 +69,7 @@ static PetscErrorCode SNESSetFromOptions_Picard(SNES snes)
   SNES_Picard   *ls = (SNES_Picard *)snes->data;
   const char    *types[] = {"basic", "quadratic", "cubic"};
   PetscInt       indx = 0;
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
@@ -116,11 +110,11 @@ static PetscErrorCode SNESView_Picard(SNES snes, PetscViewer viewer)
 {
   SNES_Picard   *ls = (SNES_Picard *)snes->data;
   const char    *cstr;
-  PetscTruth     iascii;
+  PetscBool      iascii;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject) viewer, PETSC_VIEWER_ASCII, &iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject) viewer, PETSCVIEWERASCII, &iascii);CHKERRQ(ierr);
   if (iascii) {
     switch(ls->type) {
     case 0:
@@ -130,15 +124,13 @@ static PetscErrorCode SNESView_Picard(SNES snes, PetscViewer viewer)
       cstr = "unknown";
     }
     ierr = PetscViewerASCIIPrintf(viewer,"  picard variant: %s\n", cstr);CHKERRQ(ierr);
-  } else {
-    SETERRQ1(PETSC_ERR_SUP, "Viewer type %s not supported for SNES Picard", ((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__
 #define __FUNCT__ "PicardLineSearchQuadratic"
-PetscErrorCode PicardLineSearchQuadratic(SNES snes, void *lsctx, Vec X, Vec F, Vec dummyG, Vec Y, Vec W, PetscReal fnorm, PetscReal dummyXnorm, PetscReal *dummyYnorm, PetscReal *gnorm, PetscTruth *flag)
+PetscErrorCode PicardLineSearchQuadratic(SNES snes, void *lsctx, Vec X, Vec F, Vec dummyG, Vec Y, Vec W, PetscReal fnorm, PetscReal dummyXnorm, PetscReal *dummyYnorm, PetscReal *gnorm, PetscBool  *flag)
 {
   PetscInt       i;
   PetscReal      alphas[3] = {0.0, 0.5, 1.0};
@@ -233,12 +225,12 @@ PetscErrorCode SNESSolve_Picard(SNES snes)
     PetscFunctionReturn(0);
   }
   ierr = VecNorm(F, NORM_2, &fnorm);CHKERRQ(ierr); /* fnorm <- ||F||  */
-  if PetscIsInfOrNanReal(fnorm) SETERRQ(PETSC_ERR_FP,"Infinite or not-a-number generated in norm");
+  if (PetscIsInfOrNanReal(fnorm)) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_FP,"Infinite or not-a-number generated in norm");
   ierr = PetscObjectTakeAccess(snes);CHKERRQ(ierr);
   snes->norm = fnorm;
   ierr = PetscObjectGrantAccess(snes);CHKERRQ(ierr);
   SNESLogConvHistory(snes,fnorm,0);
-  SNESMonitor(snes,0,fnorm);
+  ierr = SNESMonitor(snes,0,fnorm);CHKERRQ(ierr);
 
   /* set parameter for default relative tolerance convergence test */
   snes->ttol = fnorm*snes->rtol;
@@ -247,7 +239,7 @@ PetscErrorCode SNESSolve_Picard(SNES snes)
   if (snes->reason) PetscFunctionReturn(0);
 
   for(i = 0; i < maxits; i++) {
-    PetscTruth lsSuccess = PETSC_TRUE;
+    PetscBool  lsSuccess = PETSC_TRUE;
 
     /* Call general purpose update function */
     if (snes->ops->update) {
@@ -262,7 +254,7 @@ PetscErrorCode SNESSolve_Picard(SNES snes)
       /* Compute F(X^{new}) */
       ierr = SNESComputeFunction(snes, X, F);CHKERRQ(ierr);
       ierr = VecNorm(F, NORM_2, &fnorm);CHKERRQ(ierr);
-      if PetscIsInfOrNanReal(fnorm) SETERRQ(PETSC_ERR_FP,"Infinite or not-a-number generated norm");
+      if (PetscIsInfOrNanReal(fnorm)) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_FP,"Infinite or not-a-number generated norm");
     } else {
       PetscReal dummyNorm;
       /* Compute a (scaled) negative update in the line search routine: 
@@ -334,7 +326,7 @@ PetscErrorCode SNESSolve_Picard(SNES snes)
     }
     if (!lsSuccess) {
       if (++snes->numFailures >= snes->maxFailures) {
-        snes->reason = SNES_DIVERGED_LS_FAILURE;
+        snes->reason = SNES_DIVERGED_LINE_SEARCH;
         break;
       }
     }
@@ -352,7 +344,7 @@ PetscErrorCode SNESSolve_Picard(SNES snes)
     snes->norm = fnorm;
     ierr = PetscObjectGrantAccess(snes);CHKERRQ(ierr);
     SNESLogConvHistory(snes,snes->norm,0);
-    SNESMonitor(snes,snes->iter,snes->norm);
+    ierr = SNESMonitor(snes,snes->iter,snes->norm);CHKERRQ(ierr);
     /* Test for convergence */
     ierr = (*snes->ops->converged)(snes,snes->iter,0.0,0.0,fnorm,&snes->reason,snes->cnvP);CHKERRQ(ierr);
     if (snes->reason) break;
@@ -364,11 +356,11 @@ PetscErrorCode SNESSolve_Picard(SNES snes)
   PetscFunctionReturn(0);
 }
 
-typedef PetscErrorCode (*FCN1)(SNES,Vec,Vec,void*,PetscTruth*);                 /* force argument to next function to not be extern C*/
+typedef PetscErrorCode (*FCN1)(SNES,Vec,Vec,void*,PetscBool *);                 /* force argument to next function to not be extern C*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "SNESLineSearchSetPreCheck_Picard"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetPreCheck_Picard(SNES snes, FCN1 func, void *checkctx)
+PetscErrorCode  SNESLineSearchSetPreCheck_Picard(SNES snes, FCN1 func, void *checkctx)
 {
   PetscFunctionBegin;
   ((SNES_Picard *)(snes->data))->precheckstep = func;
@@ -377,11 +369,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetPreCheck_Picard(SNES snes, F
 }
 EXTERN_C_END
 
-typedef PetscErrorCode (*FCN2)(SNES,void*,Vec,Vec,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal*,PetscReal*,PetscTruth*); /* force argument to next function to not be extern C*/
+typedef PetscErrorCode (*FCN2)(SNES,void*,Vec,Vec,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal*,PetscReal*,PetscBool *); /* force argument to next function to not be extern C*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "SNESLineSearchSet_Picard"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSet_Picard(SNES snes, FCN2 func, void *lsctx)
+PetscErrorCode  SNESLineSearchSet_Picard(SNES snes, FCN2 func, void *lsctx)
 {
   PetscFunctionBegin;
   ((SNES_Picard *)(snes->data))->LineSearch = func;
@@ -390,11 +382,11 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSet_Picard(SNES snes, FCN2 func
 }
 EXTERN_C_END
 
-typedef PetscErrorCode (*FCN3)(SNES,Vec,Vec,Vec,void*,PetscTruth*,PetscTruth*); /* force argument to next function to not be extern C*/
+typedef PetscErrorCode (*FCN3)(SNES,Vec,Vec,Vec,void*,PetscBool *,PetscBool *); /* force argument to next function to not be extern C*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "SNESLineSearchSetPostCheck_Picard"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESLineSearchSetPostCheck_Picard(SNES snes, FCN3 func, void *checkctx)
+PetscErrorCode  SNESLineSearchSetPostCheck_Picard(SNES snes, FCN3 func, void *checkctx)
 {
   PetscFunctionBegin;
   ((SNES_Picard *)(snes->data))->postcheckstep = func;
@@ -413,17 +405,18 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "SNESCreate_Picard"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESCreate_Picard(SNES snes)
+PetscErrorCode  SNESCreate_Picard(SNES snes)
 {
   SNES_Picard   *neP;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  snes->ops->destroy	    = SNESDestroy_Picard;
-  snes->ops->setup	        = SNESSetUp_Picard;
-  snes->ops->setfromoptions = SNESSetFromOptions_Picard;
-  snes->ops->view           = SNESView_Picard;
-  snes->ops->solve	        = SNESSolve_Picard;
+  snes->ops->destroy	     = SNESDestroy_Picard;
+  snes->ops->setup	     = SNESSetUp_Picard;
+  snes->ops->setfromoptions  = SNESSetFromOptions_Picard;
+  snes->ops->view            = SNESView_Picard;
+  snes->ops->solve	     = SNESSolve_Picard;
+  snes->ops->reset           = SNESReset_Picard;
 
   ierr = PetscNewLog(snes, SNES_Picard, &neP);CHKERRQ(ierr);
   snes->data = (void*) neP;

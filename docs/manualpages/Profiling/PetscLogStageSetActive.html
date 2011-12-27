@@ -10,7 +10,7 @@ Determines stage activity for <A HREF="../Profiling/PetscLogEventBegin.html#Pets
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscLogStageSetActive(PetscLogStage stage, PetscTruth isActive) 
+PetscErrorCode  PetscLogStageSetActive(PetscLogStage stage, PetscBool  isActive)
 </PRE>
 Not Collective
 <P>
@@ -24,7 +24,7 @@ Not Collective
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(), <A HREF="../Profiling/PetscLogStagePop.html#PetscLogStagePop">PetscLogStagePop</A>(), <A HREF="../Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(), <A HREF="../Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(), <A HREF="../Profiling/PreLoadBegin.html#PreLoadBegin">PreLoadBegin</A>(), <A HREF="../Profiling/PreLoadEnd.html#PreLoadEnd">PreLoadEnd</A>(), <A HREF="../Profiling/PreLoadStage.html#PreLoadStage">PreLoadStage</A>()
+ <A HREF="../Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(), <A HREF="../Profiling/PetscLogStagePop.html#PetscLogStagePop">PetscLogStagePop</A>(), <A HREF="../Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(), <A HREF="../Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(), <A HREF="../Profiling/PetscPreLoadBegin.html#PetscPreLoadBegin">PetscPreLoadBegin</A>(), <A HREF="../Profiling/PetscPreLoadEnd.html#PetscPreLoadEnd">PetscPreLoadEnd</A>(), <A HREF="../Profiling/PetscPreLoadStage.html#PetscPreLoadStage">PetscPreLoadStage</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogStageSetActive">src/sys/plog/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>

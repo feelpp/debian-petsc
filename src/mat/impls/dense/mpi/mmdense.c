@@ -1,10 +1,9 @@
-#define PETSCMAT_DLL
 
 /*
    Support for the parallel dense matrix vector multiply
 */
-#include "../src/mat/impls/dense/mpi/mpidense.h"
-#include "petscblaslapack.h"
+#include <../src/mat/impls/dense/mpi/mpidense.h>
+#include <petscblaslapack.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "MatSetUpMultiply_MPIDense"
@@ -36,13 +35,13 @@ PetscErrorCode MatSetUpMultiply_MPIDense(Mat mat)
   ierr = PetscLogObjectParent(mat,to);CHKERRQ(ierr);
   ierr = PetscLogObjectParent(mat,gvec);CHKERRQ(ierr);
 
-  ierr = ISDestroy(to);CHKERRQ(ierr);
-  ierr = ISDestroy(from);CHKERRQ(ierr);
-  ierr = VecDestroy(gvec);CHKERRQ(ierr);
+  ierr = ISDestroy(&to);CHKERRQ(ierr);
+  ierr = ISDestroy(&from);CHKERRQ(ierr);
+  ierr = VecDestroy(&gvec);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-EXTERN PetscErrorCode MatGetSubMatrices_MPIDense_Local(Mat,PetscInt,const IS[],const IS[],MatReuse,Mat*);
+extern PetscErrorCode MatGetSubMatrices_MPIDense_Local(Mat,PetscInt,const IS[],const IS[],MatReuse,Mat*);
 #undef __FUNCT__  
 #define __FUNCT__ "MatGetSubMatrices_MPIDense" 
 PetscErrorCode MatGetSubMatrices_MPIDense(Mat C,PetscInt ismax,const IS isrow[],const IS iscol[],MatReuse scall,Mat *submat[])
@@ -94,7 +93,7 @@ PetscErrorCode MatGetSubMatrices_MPIDense_Local(Mat C,PetscInt ismax,const IS is
   MPI_Status     *r_status1,*r_status2,*s_status1,*s_status2;
   MPI_Comm       comm;
   PetscScalar    **rbuf2,**sbuf2;
-  PetscTruth     sorted;
+  PetscBool      sorted;
 
   PetscFunctionBegin;
   comm   = ((PetscObject)C)->comm;
@@ -109,9 +108,9 @@ PetscErrorCode MatGetSubMatrices_MPIDense_Local(Mat C,PetscInt ismax,const IS is
     /* Check if the col indices are sorted */
   for (i=0; i<ismax; i++) {
     ierr = ISSorted(isrow[i],&sorted);CHKERRQ(ierr);
-    if (!sorted) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"ISrow is not sorted");
+    if (!sorted) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"ISrow is not sorted");
     ierr = ISSorted(iscol[i],&sorted);CHKERRQ(ierr);
-    if (!sorted) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"IScol is not sorted");
+    if (!sorted) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"IScol is not sorted");
   }
 
   ierr = PetscMalloc5(ismax,const PetscInt*,&irow,ismax,const PetscInt*,&icol,ismax,PetscInt,&nrow,ismax,PetscInt,&ncol,m,PetscInt,&rtable);CHKERRQ(ierr);
@@ -292,11 +291,9 @@ PetscErrorCode MatGetSubMatrices_MPIDense_Local(Mat C,PetscInt ismax,const IS is
   if (scall == MAT_REUSE_MATRIX) {
     for (i=0; i<ismax; i++) {
       mat = (Mat_SeqDense *)(submats[i]->data);
-      if ((submats[i]->rmap->n != nrow[i]) || (submats[i]->cmap->n != ncol[i])) {
-        SETERRQ(PETSC_ERR_ARG_SIZ,"Cannot reuse matrix. wrong size");
-      }
+      if ((submats[i]->rmap->n != nrow[i]) || (submats[i]->cmap->n != ncol[i])) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Cannot reuse matrix. wrong size");
       ierr = PetscMemzero(mat->v,submats[i]->rmap->n*submats[i]->cmap->n*sizeof(PetscScalar));CHKERRQ(ierr);
-      submats[i]->factor = C->factor;
+      submats[i]->factortype = C->factortype;
     }
   } else {
     for (i=0; i<ismax; i++) {

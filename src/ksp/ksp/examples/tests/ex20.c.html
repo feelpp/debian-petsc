@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:05+00:00">
+<meta name="date" content="2011-10-29T19:12:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -15,7 +15,7 @@
 <a name="line5">  5: </a><font color="#666666">differently from the way it is assembled.  Input arguments are:\n\</font>
 <a name="line6">  6: </a><font color="#666666">  -m &lt;size&gt; : problem size\n\n"</font>;
 
-<a name="line8"> 8: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><a name="FormElementStiffness"></a>int FormElementStiffness(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> H,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *Ke)</font></strong>
 <a name="line13"> 13: </a>{
@@ -31,7 +31,7 @@
 <a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>          C;
 <a name="line26"> 26: </a>  int          i,m = 5,rank,size,N,start,end,M;
 <a name="line27"> 27: </a>  int          ierr,idx[4];
-<a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>   flg;
+<a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>    flg;
 <a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  Ke[16];
 <a name="line30"> 30: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>    h;
 <a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>          u,b;
@@ -84,20 +84,20 @@
 <a name="line78"> 78: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetInitialGuessNonzero.html#KSPSetInitialGuessNonzero">KSPSetInitialGuessNonzero</A>(ksp,<A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
 
 <a name="line80"> 80: </a>  flg  = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fixnullspace"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fixnullspace"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line82"> 82: </a>  <font color="#4169E1">if</font> (flg) {
 <a name="line83"> 83: </a>    <A href="../../../../../docs/manualpages/Mat/MatNullSpaceCreate.html#MatNullSpaceCreate">MatNullSpaceCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,0,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;nullsp);
 <a name="line84"> 84: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetNullSpace.html#KSPSetNullSpace">KSPSetNullSpace</A>(ksp,nullsp);
-<a name="line85"> 85: </a>    <A href="../../../../../docs/manualpages/Mat/MatNullSpaceDestroy.html#MatNullSpaceDestroy">MatNullSpaceDestroy</A>(nullsp);
+<a name="line85"> 85: </a>    <A href="../../../../../docs/manualpages/Mat/MatNullSpaceDestroy.html#MatNullSpaceDestroy">MatNullSpaceDestroy</A>(&amp;&amp;nullsp);
 <a name="line86"> 86: </a>  }
 <a name="line87"> 87: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>(ksp,b,u);
 
 
 <a name="line90"> 90: </a>  <font color="#B22222">/* Free work space */</font>
-<a name="line91"> 91: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
-<a name="line92"> 92: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line93"> 93: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line94"> 94: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line91"> 91: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line92"> 92: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line93"> 93: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line94"> 94: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 <a name="line95"> 95: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line96"> 96: </a>  <font color="#4169E1">return</font> 0;
 <a name="line97"> 97: </a>}

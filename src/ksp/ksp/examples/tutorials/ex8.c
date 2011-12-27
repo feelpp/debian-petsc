@@ -13,7 +13,7 @@ parameters include:\n\
    (including working with matrices and vectors).
 
    The ASM preconditioner is fully parallel, but currently the routine
-   PCASMCreateSubDomains2D(), which is used in this example to demonstrate
+   PCASMCreateSubdomains2D(), which is used in this example to demonstrate
    user-defined subdomains (activated via -user_set_subdomains), is
    uniprocessor only.
 
@@ -35,7 +35,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -45,7 +45,7 @@ int main(int argc,char **args)
   Mat            A;                       /* linear system matrix */
   KSP            ksp;                    /* linear solver context */
   PC             pc;                      /* PC context */
-  IS             *is;                     /* array of index sets that define the subdomains */
+  IS             *is,*is_local;           /* array of index sets that define the subdomains */
   PetscInt       overlap = 1;             /* width of subdomain overlap */
   PetscInt       Nsub;                    /* number of subdomains */
   PetscInt       m = 15,n = 17;          /* mesh dimensions in x- and y- directions */
@@ -53,18 +53,19 @@ int main(int argc,char **args)
   PetscInt       i,j,Ii,J,Istart,Iend;
   PetscErrorCode ierr;
   PetscMPIInt    size;
-  PetscTruth     flg;
-  PetscTruth     user_subdomains = PETSC_FALSE;     
+  PetscBool      flg;
+  PetscBool      user_subdomains = PETSC_FALSE;     
   PetscScalar    v, one = 1.0;
+  PetscReal      e;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-m",&m,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-n",&n,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscOptionsGetInt(PETSC_NULL,"-M",&M,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscOptionsGetInt(PETSC_NULL,"-N",&N,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(PETSC_NULL,"-Mdomains",&M,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(PETSC_NULL,"-Ndomains",&N,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-overlap",&overlap,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-user_set_subdomains",&user_subdomains,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-user_set_subdomains",&user_subdomains,PETSC_NULL);CHKERRQ(ierr);
 
   /* -------------------------------------------------------------------
          Compute the matrix and right-hand-side vector that define
@@ -151,9 +152,23 @@ int main(int argc,char **args)
   if (!user_subdomains) { /* basic version */
     ierr = PCASMSetOverlap(pc,overlap);CHKERRQ(ierr);
   } else { /* advanced version */
-    if (size != 1) SETERRQ(1,"PCASMCreateSubdomains() is currently a uniprocessor routine only!");
-    ierr = PCASMCreateSubdomains2D(m,n,M,N,1,overlap,&Nsub,&is);CHKERRQ(ierr);
-    ierr = PCASMSetLocalSubdomains(pc,Nsub,is,PETSC_NULL);CHKERRQ(ierr);
+    if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"PCASMCreateSubdomains() is currently a uniprocessor routine only!");
+    ierr = PCASMCreateSubdomains2D(m,n,M,N,1,overlap,&Nsub,&is,&is_local);CHKERRQ(ierr);
+    ierr = PCASMSetLocalSubdomains(pc,Nsub,is,is_local);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-subdomain_view",&flg,PETSC_NULL);CHKERRQ(ierr);
+    if (flg){
+      printf("Nmesh points: %d x %d; subdomain partition: %d x %d; overlap: %d; Nsub: %d\n",m,n,M,N,overlap,Nsub);
+      printf("IS:\n");
+      for (i=0; i<Nsub; i++){
+        printf("  IS[%d]\n",i);
+        ierr = ISView(is[i],PETSC_VIEWER_STDOUT_SELF);
+      }
+      printf("IS_local:\n");
+      for (i=0; i<Nsub; i++){
+        printf("  IS_local[%d]\n",i);
+        ierr = ISView(is_local[i],PETSC_VIEWER_STDOUT_SELF);
+      }  
+    }
   }
 
   /* -------------------------------------------------------------------
@@ -185,12 +200,12 @@ int main(int argc,char **args)
   */
 
   flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-user_set_subdomain_solvers",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-user_set_subdomain_solvers",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     KSP        *subksp;       /* array of KSP contexts for local subblocks */
     PetscInt   nlocal,first;  /* number of local subblocks, first local subblock */
     PC         subpc;          /* PC context for subblock */
-    PetscTruth isasm;
+    PetscBool  isasm;
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"User explicitly sets subdomain solvers.\n");CHKERRQ(ierr);
 
@@ -203,9 +218,8 @@ int main(int argc,char **args)
        Flag an error if PCTYPE is changed from the runtime options
      */
     ierr = PetscTypeCompare((PetscObject)pc,PCASM,&isasm);CHKERRQ(ierr);
-    if (isasm) {
-      SETERRQ(1,"Cannot Change the PCTYPE when manually changing the subdomain solver settings");
-    }
+    if (!isasm) SETERRQ(PETSC_COMM_WORLD,1,"Cannot Change the PCTYPE when manually changing the subdomain solver settings");
+
     /* 
        Call KSPSetUp() to set the block Jacobi data structures (including
        creation of an internal KSP context for each block).
@@ -242,6 +256,18 @@ int main(int argc,char **args)
 
   ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
 
+  /* -------------------------------------------------------------------
+                      Compare result to the exact solution
+     ------------------------------------------------------------------- */
+  ierr = VecAXPY(x,-1.0,u); CHKERRQ(ierr);
+  ierr = VecNorm(x,NORM_INFINITY, &e); CHKERRQ(ierr);
+
+  flg  = PETSC_FALSE;
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-print_error",&flg,PETSC_NULL);CHKERRQ(ierr);
+  if(flg) {
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "Infinity norm of the error: %G\n", e); CHKERRQ(ierr);
+  }
+
   /* 
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
@@ -249,15 +275,17 @@ int main(int argc,char **args)
 
   if (user_subdomains) {
     for (i=0; i<Nsub; i++) {
-      ierr = ISDestroy(is[i]);CHKERRQ(ierr);
+      ierr = ISDestroy(&is[i]);CHKERRQ(ierr);
+      ierr = ISDestroy(&is_local[i]);CHKERRQ(ierr);
     }
     ierr = PetscFree(is);CHKERRQ(ierr);
+    ierr = PetscFree(is_local);CHKERRQ(ierr);
   }
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

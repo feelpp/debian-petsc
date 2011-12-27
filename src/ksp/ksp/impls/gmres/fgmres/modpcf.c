@@ -1,12 +1,11 @@
-#define PETSCKSP_DLL
 
-#include "petscksp.h"  /*I "petscksp.h" I*/
+#include <petscksp.h>  /*I "petscksp.h" I*/
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFGMRESSetModifyPC"
 /*@C
    KSPFGMRESSetModifyPC - Sets the routine used by FGMRES to modify the preconditioner.
 
-   Collective on KSP
+   Logically Collective on KSP
 
    Input Parameters:
 +  ksp - iterative context obtained from KSPCreate
@@ -39,16 +38,13 @@
 .seealso: KSPFGMRESModifyPCNoChange(), KSPFGMRESModifyPCKSP()
 
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFGMRESSetModifyPC(KSP ksp,PetscErrorCode (*fcn)(KSP,PetscInt,PetscInt,PetscReal,void*),void* ctx,PetscErrorCode (*d)(void*))
+PetscErrorCode  KSPFGMRESSetModifyPC(KSP ksp,PetscErrorCode (*fcn)(KSP,PetscInt,PetscInt,PetscReal,void*),void* ctx,PetscErrorCode (*d)(void*))
 {
-  PetscErrorCode ierr,(*f)(KSP,PetscErrorCode (*)(KSP,PetscInt,PetscInt,PetscReal,void*),void*,PetscErrorCode (*)(void*));
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  ierr = PetscObjectQueryFunction((PetscObject)ksp,"KSPFGMRESSetModifyPC_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp,fcn,ctx,d);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ierr = PetscTryMethod(ksp,"KSPFGMRESSetModifyPC_C",(KSP,PetscErrorCode (*)(KSP,PetscInt,PetscInt,PetscReal,void*),void*,PetscErrorCode (*)(void*)),(ksp,fcn,ctx,d));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -78,7 +74,7 @@ You can use this as a template!
 .seealso: KSPFGMRESSetModifyPC(), KSPFGMRESModifyPCKSP()
 
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFGMRESModifyPCNoChange(KSP ksp,PetscInt total_its,PetscInt loc_its,PetscReal res_norm,void* dummy)
+PetscErrorCode  KSPFGMRESModifyPCNoChange(KSP ksp,PetscInt total_its,PetscInt loc_its,PetscReal res_norm,void* dummy)
 {
   PetscFunctionBegin;
 
@@ -109,14 +105,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFGMRESModifyPCNoChange(KSP ksp,PetscInt tot
 .seealso: KSPFGMRESSetModifyPC(), KSPFGMRESModifyPCKSP()
 
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFGMRESModifyPCKSP(KSP ksp,PetscInt total_its,PetscInt loc_its,PetscReal res_norm,void *dummy)
+PetscErrorCode  KSPFGMRESModifyPCKSP(KSP ksp,PetscInt total_its,PetscInt loc_its,PetscReal res_norm,void *dummy)
 {
   PC             pc;
   PetscErrorCode ierr;
   PetscInt       maxits;
   KSP            sub_ksp;
   PetscReal      rtol,abstol,dtol;
-  PetscTruth     isksp;
+  PetscBool      isksp;
 
   PetscFunctionBegin;
   ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);

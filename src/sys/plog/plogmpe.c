@@ -1,13 +1,13 @@
-#define PETSC_DLL
+
 /*
       PETSc code to log PETSc events using MPE
 */
-#include "petscsys.h"        /*I    "petscsys.h"   I*/
+#include <petscsys.h>        /*I    "petscsys.h"   I*/
 #if defined(PETSC_USE_LOG) && defined (PETSC_HAVE_MPE)
-#include "mpe.h"
+#include <mpe.h>
 
-PetscTruth UseMPE = PETSC_FALSE;
-PetscTruth PetscBeganMPE = PETSC_FALSE;
+PetscBool  UseMPE = PETSC_FALSE;
+PetscBool  PetscBeganMPE = PETSC_FALSE;
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscLogMPEBegin"
@@ -34,10 +34,10 @@ PetscTruth PetscBeganMPE = PETSC_FALSE;
 .seealso: PetscLogDump(), PetscLogBegin(), PetscLogAllBegin(), PetscLogEventActivate(),
           PetscLogEventDeactivate()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscLogMPEBegin(void)
+PetscErrorCode  PetscLogMPEBegin(void)
 {
   PetscErrorCode ierr;
-  int        rank;
+  PetscMPIInt    rank;
     
   PetscFunctionBegin;
   /* Do MPE initialization */
@@ -64,9 +64,9 @@ PetscErrorCode PETSC_DLLEXPORT PetscLogMPEBegin(void)
 
 .seealso: PetscLogDump(), PetscLogAllBegin(), PetscLogMPEBegin()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscLogMPEDump(const char sname[])
+PetscErrorCode  PetscLogMPEDump(const char sname[])
 {
-  char name[PETSC_MAX_PATH_LEN];
+  char           name[PETSC_MAX_PATH_LEN];
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
@@ -145,7 +145,7 @@ const char *(PetscRGBColor[PETSC_RGB_COLOR_MAX]) = {
 .keywords: log, mpe , color
 .seealso: PetscLogEventRegister
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscLogGetRGBColor(const char *str[])
+PetscErrorCode  PetscLogGetRGBColor(const char *str[])
 {
   static int idx = 0;
 

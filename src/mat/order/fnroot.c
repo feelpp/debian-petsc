@@ -1,10 +1,9 @@
-#define PETSCMAT_DLL
 
 /* fnroot.f -- translated by f2c (version 19931217).*/
 
-#include "petscsys.h"
+#include <petscsys.h>
 
-EXTERN PetscErrorCode SPARSEPACKrootls(PetscInt*, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *);
+extern PetscErrorCode SPARSEPACKrootls(PetscInt*, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *);
 
 /*****************************************************************/
 /********     FNROOT ..... FIND PSEUDO-PERIPHERAL NODE    ********/

@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:55:58+00:00">
+<meta name="date" content="2011-10-29T19:24:07+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -14,7 +14,7 @@
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;iostream&gt;</font>
 
 <a name="line6">  6: </a><font color="#A020F0">#ifndef  included_ALE_hh</font>
-<a name="line7">  7: </a><font color="#A020F0">#include &lt;ALE.hh&gt;</font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;sieve/ALE.hh&gt;</font>
 <a name="line8">  8: </a><font color="#A020F0">#endif</font>
 
 <a name="line10"> 10: </a>namespace ALE {
@@ -258,7 +258,7 @@
 <a name="line248">248: </a>            os &lt;&lt; <font color="#666666">" ("</font> &lt;&lt; *i &lt;&lt; <font color="#666666">")"</font>;
 <a name="line249">249: </a>          }
 <a name="line250">250: </a>          os &lt;&lt; <font color="#666666">" ]"</font> &lt;&lt; std::endl;
-<a name="line251">251: </a>        };
+<a name="line251">251: </a>        }
 <a name="line252">252: </a>      };// class ArrowSequence
 <a name="line253">253: </a>    };// class ArrowContainerTraits
 <a name="line254">254: </a>
@@ -416,13 +416,13 @@
 <a name="line406">406: </a>    int         _commRank;
 <a name="line407">407: </a>    int         _commSize;
 <a name="line408">408: </a>    void __init(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm) {
-<a name="line409">409: </a>      static <A href="../../docs/manualpages/Sys/PetscCookie.html#PetscCookie">PetscCookie</A> sifterType = -1;
+<a name="line409">409: </a>      static <A href="../../docs/manualpages/Sys/PetscClassId.html#PetscClassId">PetscClassId</A> sifterType = -1;
 <a name="line410">410: </a>      //const char        *id_name = ALE::getClassName&lt;T&gt;();
 <a name="line411">411: </a>      const char        *id_name = <font color="#666666">"LabelSifter"</font>;
 <a name="line412">412: </a>      <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
 
 <a name="line414">414: </a>      <font color="#4169E1">if</font> (sifterType &lt; 0) {
-<a name="line415">415: </a>        <A href="../../docs/manualpages/Profiling/PetscCookieRegister.html#PetscCookieRegister">PetscCookieRegister</A>(id_name,&amp;sifterType);CHKERROR(ierr, <font color="#666666">"Error in <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>"</font>);
+<a name="line415">415: </a>        <A href="../../docs/manualpages/Profiling/PetscClassIdRegister.html#PetscClassIdRegister">PetscClassIdRegister</A>(id_name,&amp;sifterType);CHKERROR(ierr, <font color="#666666">"Error in <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>"</font>);
 <a name="line416">416: </a>      }
 <a name="line417">417: </a>      this-&gt;_comm = comm;
 <a name="line418">418: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(this-&gt;_comm, &amp;this-&gt;_commRank);CHKERROR(ierr, <font color="#666666">"Error in <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>"</font>);
@@ -488,7 +488,7 @@
 <a name="line478">478: </a>        cone-&gt;insert(pCone-&gt;begin(), pCone-&gt;end());
 <a name="line479">479: </a>      }
 <a name="line480">480: </a>      <font color="#4169E1">return</font> cone;
-<a name="line481">481: </a>    };
+<a name="line481">481: </a>    }
 <a name="line482">482: </a>    int getConeSize(const typename traits::target_type&amp; p) {
 <a name="line483">483: </a>      <font color="#4169E1">return</font> this-&gt;cone(p)-&gt;size();
 <a name="line484">484: </a>    };
@@ -500,7 +500,7 @@
 <a name="line490">490: </a>        <font color="#4169E1">if</font> (checker(*c_iter, p)) <font color="#4169E1">return</font> true;
 <a name="line491">491: </a>      }
 <a name="line492">492: </a>      <font color="#4169E1">return</font> false;
-<a name="line493">493: </a>    };
+<a name="line493">493: </a>    }
 <a name="line494">494: </a>    template&lt;typename PointProcess&gt;
 <a name="line495">495: </a>    void coneApply(const typename traits::target_type&amp; p, PointProcess&amp; processor) {
 <a name="line496">496: </a>      typename traits::coneSequence cone(*this, ::boost::multi_index::get&lt;typename traits::coneInd&gt;(this-&gt;_arrows.set), p);
@@ -508,7 +508,7 @@
 <a name="line498">498: </a>      <font color="#4169E1">for</font>(typename traits::coneSequence::iterator c_iter = cone.begin(); c_iter != cone.end(); ++c_iter) {
 <a name="line499">499: </a>        processor(*c_iter, p);
 <a name="line500">500: </a>      }
-<a name="line501">501: </a>    };
+<a name="line501">501: </a>    }
 <a name="line502">502: </a><font color="#A020F0">#ifdef SLOW</font>
 <a name="line503">503: </a>    Obj&lt;typename traits::supportSequence&gt;
 <a name="line504">504: </a>    support(const typename traits::source_type&amp; p) {
@@ -531,7 +531,7 @@
 <a name="line521">521: </a>        supp-&gt;insert(pSupport-&gt;begin(), pSupport-&gt;end());
 <a name="line522">522: </a>      }
 <a name="line523">523: </a>      <font color="#4169E1">return</font> supp;
-<a name="line524">524: </a>    };
+<a name="line524">524: </a>    }
 <a name="line525">525: </a>    template&lt;typename PointCheck&gt;
 <a name="line526">526: </a>    bool supportContains(const typename traits::source_type&amp; p, const PointCheck&amp; checker) {
 <a name="line527">527: </a>      typename traits::supportSequence support(*this, ::boost::multi_index::get&lt;typename traits::supportInd&gt;(this-&gt;_arrows.set), p);
@@ -540,7 +540,7 @@
 <a name="line530">530: </a>        <font color="#4169E1">if</font> (checker(*s_iter, p)) <font color="#4169E1">return</font> true;
 <a name="line531">531: </a>      }
 <a name="line532">532: </a>      <font color="#4169E1">return</font> false;
-<a name="line533">533: </a>    };
+<a name="line533">533: </a>    }
 <a name="line534">534: </a>    template&lt;typename PointProcess&gt;
 <a name="line535">535: </a>    void supportApply(const typename traits::source_type&amp; p, PointProcess&amp; processor) {
 <a name="line536">536: </a>      typename traits::supportSequence support(*this, ::boost::multi_index::get&lt;typename traits::supportInd&gt;(this-&gt;_arrows.set), p);
@@ -548,7 +548,7 @@
 <a name="line538">538: </a>      <font color="#4169E1">for</font>(typename traits::supportSequence::iterator s_iter = support.begin(); s_iter != support.end(); ++s_iter) {
 <a name="line539">539: </a>        processor(*s_iter, p);
 <a name="line540">540: </a>      }
-<a name="line541">541: </a>    };
+<a name="line541">541: </a>    }
 
 <a name="line543">543: </a>    template&lt;typename ostream_type&gt;
 <a name="line544">544: </a>    void view(ostream_type&amp; os, const char* label = NULL, bool rawData = false){
@@ -564,303 +564,314 @@
 <a name="line554">554: </a>      <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator ai = _arrows.set.begin(); ai != _arrows.set.end(); ai++) {
 <a name="line555">555: </a>        os &lt;&lt; *ai &lt;&lt; std::endl;
 <a name="line556">556: </a>      }
-<a name="line557">557: </a>    };
+<a name="line557">557: </a>    }
 <a name="line558">558: </a>    // A parallel viewer
-<a name="line559">559: </a>    <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> view(const char* label = NULL, bool raw = false){
-<a name="line561">561: </a>      ostringstream txt;
-<a name="line563">563: </a>      <font color="#4169E1">if</font>(this-&gt;_debug) {
-<a name="line564">564: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"viewing a LabelSifter, comm = "</font> &lt;&lt; this-&gt;comm() &lt;&lt; <font color="#666666">", <A href="../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A> = "</font> &lt;&lt; <A href="../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A> &lt;&lt; <font color="#666666">", commRank = "</font> &lt;&lt; this-&gt;commRank() &lt;&lt; std::endl;
-<a name="line565">565: </a>      }
-<a name="line566">566: </a>      <font color="#4169E1">if</font>(label != NULL) {
-<a name="line567">567: </a>        <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(this-&gt;comm(), <font color="#666666">"viewing LabelSifter: '%s'\n"</font>, label);
-<a name="line568">568: </a>      } <font color="#4169E1">else</font> {
-<a name="line569">569: </a>        <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(this-&gt;comm(), <font color="#666666">"viewing a LabelSifter: \n"</font>);
-<a name="line570">570: </a>      }
-<a name="line571">571: </a>      <font color="#4169E1">if</font>(!raw) {
-<a name="line572">572: </a>        ostringstream txt;
-<a name="line573">573: </a>        <font color="#4169E1">if</font>(this-&gt;commRank() == 0) {
-<a name="line574">574: </a>          txt &lt;&lt; <font color="#666666">"cap --&gt; base:\n"</font>;
-<a name="line575">575: </a>        }
-<a name="line576">576: </a>        <font color="#4169E1">if</font>(_arrows.set.empty()) {
-<a name="line577">577: </a>          txt &lt;&lt; <font color="#666666">"["</font> &lt;&lt; this-&gt;commRank() &lt;&lt; <font color="#666666">"]: empty"</font> &lt;&lt; std::endl;
-<a name="line578">578: </a>        }
-<a name="line579">579: </a>        <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator ai = _arrows.set.begin(); ai != _arrows.set.end(); ai++) {
-<a name="line580">580: </a>          txt &lt;&lt; <font color="#666666">"["</font> &lt;&lt; this-&gt;commRank() &lt;&lt; <font color="#666666">"]: "</font> &lt;&lt; ai-&gt;source &lt;&lt; <font color="#666666">"----&gt;"</font> &lt;&lt; ai-&gt;target &lt;&lt; std::endl;
-<a name="line581">581: </a>        }
-<a name="line582">582: </a>        <A href="../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(this-&gt;comm(), txt.str().c_str());CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>"</font>);
-<a name="line583">583: </a>        <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(this-&gt;comm()); CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>"</font>);
-<a name="line584">584: </a>      }
-<a name="line585">585: </a>      <font color="#4169E1">else</font> { // <font color="#4169E1">if</font>(raw)
-<a name="line586">586: </a>        ostringstream txt;
-<a name="line587">587: </a>        <font color="#4169E1">if</font>(this-&gt;commRank() == 0) {
-<a name="line588">588: </a>          txt &lt;&lt; <font color="#666666">"'raw' arrow set:"</font> &lt;&lt; std::endl;
-<a name="line589">589: </a>        }
-<a name="line590">590: </a>        <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator ai = _arrows.set.begin(); ai != _arrows.set.end(); ai++)
-<a name="line591">591: </a>        {
-<a name="line592">592: </a>          typename traits::arrow_type arr = *ai;
-<a name="line593">593: </a>          txt &lt;&lt; <font color="#666666">"["</font> &lt;&lt; this-&gt;commRank() &lt;&lt; <font color="#666666">"]: "</font> &lt;&lt; arr &lt;&lt; std::endl;
-<a name="line594">594: </a>        }
-<a name="line595">595: </a>        <A href="../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(this-&gt;comm(), txt.str().c_str());CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>"</font>);
-<a name="line596">596: </a>        <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(this-&gt;comm()); CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>"</font>);
-<a name="line597">597: </a>      }// <font color="#4169E1">if</font>(raw)
-<a name="line598">598: </a>
-<a name="line599">599: </a>      <font color="#4169E1">return</font>(0);
-<a name="line600">600: </a>    };
-<a name="line601">601: </a><strong><font color="#FF0000">  public:</font></strong>
-<a name="line602">602: </a>    //
-<a name="line603">603: </a>    // Lattice queries
+<a name="line561">561: </a>    <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> view(const char* label = NULL, bool raw = false){
+<a name="line563">563: </a>      ostringstream txt;
+<a name="line565">565: </a>      <font color="#4169E1">if</font>(this-&gt;_debug) {
+<a name="line566">566: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"viewing a LabelSifter, comm = "</font> &lt;&lt; this-&gt;comm() &lt;&lt; <font color="#666666">", <A href="../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A> = "</font> &lt;&lt; <A href="../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A> &lt;&lt; <font color="#666666">", commRank = "</font> &lt;&lt; this-&gt;commRank() &lt;&lt; std::endl;
+<a name="line567">567: </a>      }
+<a name="line568">568: </a>      <font color="#4169E1">if</font>(label != NULL) {
+<a name="line569">569: </a>        <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(this-&gt;comm(), <font color="#666666">"viewing LabelSifter: '%s'\n"</font>, label);
+<a name="line570">570: </a>      } <font color="#4169E1">else</font> {
+<a name="line571">571: </a>        <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(this-&gt;comm(), <font color="#666666">"viewing a LabelSifter: \n"</font>);
+<a name="line572">572: </a>      }
+<a name="line573">573: </a>      <font color="#4169E1">if</font>(!raw) {
+<a name="line574">574: </a>        ostringstream txt;
+<a name="line575">575: </a>        <font color="#4169E1">if</font>(this-&gt;commRank() == 0) {
+<a name="line576">576: </a>          txt &lt;&lt; <font color="#666666">"cap --&gt; base:\n"</font>;
+<a name="line577">577: </a>        }
+<a name="line578">578: </a>        <font color="#4169E1">if</font>(_arrows.set.empty()) {
+<a name="line579">579: </a>          txt &lt;&lt; <font color="#666666">"["</font> &lt;&lt; this-&gt;commRank() &lt;&lt; <font color="#666666">"]: empty"</font> &lt;&lt; std::endl;
+<a name="line580">580: </a>        }
+<a name="line581">581: </a>        <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator ai = _arrows.set.begin(); ai != _arrows.set.end(); ai++) {
+<a name="line582">582: </a>          txt &lt;&lt; <font color="#666666">"["</font> &lt;&lt; this-&gt;commRank() &lt;&lt; <font color="#666666">"]: "</font> &lt;&lt; ai-&gt;source &lt;&lt; <font color="#666666">"----&gt;"</font> &lt;&lt; ai-&gt;target &lt;&lt; std::endl;
+<a name="line583">583: </a>        }
+<a name="line584">584: </a>        <A href="../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(this-&gt;comm(), txt.str().c_str());CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>"</font>);
+<a name="line585">585: </a>        <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(this-&gt;comm()); CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>"</font>);
+<a name="line586">586: </a>      }
+<a name="line587">587: </a>      <font color="#4169E1">else</font> { // <font color="#4169E1">if</font>(raw)
+<a name="line588">588: </a>        ostringstream txt;
+<a name="line589">589: </a>        <font color="#4169E1">if</font>(this-&gt;commRank() == 0) {
+<a name="line590">590: </a>          txt &lt;&lt; <font color="#666666">"'raw' arrow set:"</font> &lt;&lt; std::endl;
+<a name="line591">591: </a>        }
+<a name="line592">592: </a>        <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator ai = _arrows.set.begin(); ai != _arrows.set.end(); ai++)
+<a name="line593">593: </a>        {
+<a name="line594">594: </a>          typename traits::arrow_type arr = *ai;
+<a name="line595">595: </a>          txt &lt;&lt; <font color="#666666">"["</font> &lt;&lt; this-&gt;commRank() &lt;&lt; <font color="#666666">"]: "</font> &lt;&lt; arr &lt;&lt; std::endl;
+<a name="line596">596: </a>        }
+<a name="line597">597: </a>        <A href="../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(this-&gt;comm(), txt.str().c_str());CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>"</font>);
+<a name="line598">598: </a>        <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(this-&gt;comm()); CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>"</font>);
+<a name="line599">599: </a>      }// <font color="#4169E1">if</font>(raw)
+
+<a name="line601">601: </a>      <font color="#4169E1">return</font>(0);
+<a name="line602">602: </a>    }
+<a name="line603">603: </a><strong><font color="#FF0000">  public:</font></strong>
 <a name="line604">604: </a>    //
-<a name="line605">605: </a>    template&lt;class targetInputSequence&gt;
-<a name="line606">606: </a>    Obj&lt;typename traits::coneSequence&gt; meet(const Obj&lt;targetInputSequence&gt;&amp; targets);
-<a name="line607">607: </a>    // unimplemented
-<a name="line608">608: </a>    template&lt;class sourceInputSequence&gt;
-<a name="line609">609: </a>    Obj&lt;typename traits::coneSequence&gt; join(const Obj&lt;sourceInputSequence&gt;&amp; sources);
-<a name="line610">610: </a><strong><font color="#FF0000">  public:</font></strong>
-<a name="line611">611: </a>    //
-<a name="line612">612: </a>    // Structural manipulation
+<a name="line605">605: </a>    // Lattice queries
+<a name="line606">606: </a>    //
+<a name="line607">607: </a>    template&lt;class targetInputSequence&gt;
+<a name="line608">608: </a>    Obj&lt;typename traits::coneSequence&gt; meet(const Obj&lt;targetInputSequence&gt;&amp; targets);
+<a name="line609">609: </a>    // unimplemented
+<a name="line610">610: </a>    template&lt;class sourceInputSequence&gt;
+<a name="line611">611: </a>    Obj&lt;typename traits::coneSequence&gt; join(const Obj&lt;sourceInputSequence&gt;&amp; sources);
+<a name="line612">612: </a><strong><font color="#FF0000">  public:</font></strong>
 <a name="line613">613: </a>    //
-<a name="line614">614: </a>    void clear() {
-<a name="line615">615: </a>      this-&gt;_arrows.set.clear();
-<a name="line616">616: </a>    };
-<a name="line617">617: </a>    // This is necessary to work with Completion right now
-<a name="line618">618: </a>    virtual void addArrow(const typename traits::source_type&amp; p, const typename traits::target_type&amp; q, const int dummy) {
-<a name="line619">619: </a>      this-&gt;addArrow(p, q);
-<a name="line620">620: </a>    };
-<a name="line621">621: </a>    virtual void addArrow(const typename traits::source_type&amp; p, const typename traits::target_type&amp; q) {
-<a name="line622">622: </a>      this-&gt;addArrow(typename traits::arrow_type(p, q));
-<a name="line623">623: </a>      //std::cout &lt;&lt; <font color="#666666">"Added "</font> &lt;&lt; arrow_type(p, q);
-<a name="line624">624: </a>    };
-<a name="line625">625: </a>    virtual void addArrow(const typename traits::arrow_type&amp; a) {
-<a name="line626">626: </a>      this-&gt;_arrows.set.insert(a);
-<a name="line627">627: </a>    };
-<a name="line628">628: </a>    virtual void removeArrow(const typename traits::arrow_type&amp; a) {
-<a name="line629">629: </a>      // First, produce an arrow sequence <font color="#4169E1">for</font> the given source, target combination.
-<a name="line630">630: </a>      typename traits::arrowSequence::traits::index_type&amp; arrowIndex =
-<a name="line631">631: </a>        ::boost::multi_index::get&lt;typename traits::arrowInd&gt;(this-&gt;_arrows.set);
-<a name="line632">632: </a>      typename traits::arrowSequence::traits::index_type::iterator i,ii,j;
-<a name="line633">633: </a>      i = arrowIndex.lower_bound(::boost::make_tuple(a.source,a.target));
-<a name="line634">634: </a>      ii = arrowIndex.upper_bound(::boost::make_tuple(a.source, a.target));
-<a name="line635">635: </a>      <font color="#4169E1">if</font> (this-&gt;_debug) {
-<a name="line636">636: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"removeArrow: attempting to remove arrow:"</font> &lt;&lt; a &lt;&lt; std::endl;
-<a name="line637">637: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"removeArrow: candidate arrows are:"</font> &lt;&lt; std::endl;
-<a name="line638">638: </a>      }
-<a name="line639">639: </a>      <font color="#4169E1">for</font>(j = i; j != ii; j++) {
-<a name="line640">640: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {
-<a name="line641">641: </a><strong><font color="#FF0000">          std:</font></strong>:cout &lt;&lt; <font color="#666666">" "</font> &lt;&lt; *j;
-<a name="line642">642: </a>        }
-<a name="line643">643: </a>        // Find the arrow of right color and remove it
-<a name="line644">644: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {
-<a name="line645">645: </a><strong><font color="#FF0000">          std:</font></strong>:cout &lt;&lt; std::endl &lt;&lt; <font color="#666666">"removeArrow: found:"</font> &lt;&lt; *j &lt;&lt; std::endl;
-<a name="line646">646: </a>        }
-<a name="line647">647: </a>        arrowIndex.erase(j);
-<a name="line648">648: </a>        <font color="#4169E1">break</font>;
-<a name="line649">649: </a>      }
-<a name="line650">650: </a>    };
+<a name="line614">614: </a>    // Structural manipulation
+<a name="line615">615: </a>    //
+<a name="line616">616: </a>    void clear() {
+<a name="line617">617: </a>      this-&gt;_arrows.set.clear();
+<a name="line618">618: </a>    };
+<a name="line619">619: </a>    // This is necessary to work with Completion right now
+<a name="line620">620: </a>    virtual void addArrow(const typename traits::source_type&amp; p, const typename traits::target_type&amp; q, const int dummy) {
+<a name="line621">621: </a>      this-&gt;addArrow(p, q);
+<a name="line622">622: </a>    };
+<a name="line623">623: </a>    virtual void addArrow(const typename traits::source_type&amp; p, const typename traits::target_type&amp; q) {
+<a name="line624">624: </a>      this-&gt;addArrow(typename traits::arrow_type(p, q));
+<a name="line625">625: </a>      //std::cout &lt;&lt; <font color="#666666">"Added "</font> &lt;&lt; arrow_type(p, q);
+<a name="line626">626: </a>    };
+<a name="line627">627: </a>    virtual void addArrow(const typename traits::arrow_type&amp; a) {
+<a name="line628">628: </a>      this-&gt;_arrows.set.insert(a);
+<a name="line629">629: </a>    };
+<a name="line630">630: </a>    virtual void removeArrow(const typename traits::arrow_type&amp; a) {
+<a name="line631">631: </a>      // First, produce an arrow sequence <font color="#4169E1">for</font> the given source, target combination.
+<a name="line632">632: </a>      typename traits::arrowSequence::traits::index_type&amp; arrowIndex =
+<a name="line633">633: </a>        ::boost::multi_index::get&lt;typename traits::arrowInd&gt;(this-&gt;_arrows.set);
+<a name="line634">634: </a>      typename traits::arrowSequence::traits::index_type::iterator i,ii,j;
+<a name="line635">635: </a>      i = arrowIndex.lower_bound(::boost::make_tuple(a.source,a.target));
+<a name="line636">636: </a>      ii = arrowIndex.upper_bound(::boost::make_tuple(a.source, a.target));
+<a name="line637">637: </a>      <font color="#4169E1">if</font> (this-&gt;_debug) {
+<a name="line638">638: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"removeArrow: attempting to remove arrow:"</font> &lt;&lt; a &lt;&lt; std::endl;
+<a name="line639">639: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"removeArrow: candidate arrows are:"</font> &lt;&lt; std::endl;
+<a name="line640">640: </a>      }
+<a name="line641">641: </a>      <font color="#4169E1">for</font>(j = i; j != ii; j++) {
+<a name="line642">642: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {
+<a name="line643">643: </a><strong><font color="#FF0000">          std:</font></strong>:cout &lt;&lt; <font color="#666666">" "</font> &lt;&lt; *j;
+<a name="line644">644: </a>        }
+<a name="line645">645: </a>        // Find the arrow of right color and remove it
+<a name="line646">646: </a>        <font color="#4169E1">if</font> (this-&gt;_debug) {
+<a name="line647">647: </a><strong><font color="#FF0000">          std:</font></strong>:cout &lt;&lt; std::endl &lt;&lt; <font color="#666666">"removeArrow: found:"</font> &lt;&lt; *j &lt;&lt; std::endl;
+<a name="line648">648: </a>        }
+<a name="line649">649: </a>        arrowIndex.erase(j);
+<a name="line650">650: </a>        <font color="#4169E1">break</font>;
+<a name="line651">651: </a>      }
+<a name="line652">652: </a>    };
 
-<a name="line652">652: </a>    void addCone(const typename traits::source_type&amp; source, const typename traits::target_type&amp; target){
-<a name="line653">653: </a>      this-&gt;addArrow(source, target);
-<a name="line654">654: </a>    };
-<a name="line655">655: </a>    template&lt;class sourceInputSequence&gt;
-<a name="line656">656: </a>    void
-<a name="line657">657: </a>    addCone(const Obj&lt;sourceInputSequence&gt;&amp; sources, const typename traits::target_type&amp; target){
-<a name="line658">658: </a>      <font color="#4169E1">if</font> (this-&gt;_debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"Adding a cone "</font> &lt;&lt; std::endl;}
-<a name="line659">659: </a>      <font color="#4169E1">for</font>(typename sourceInputSequence::iterator iter = sources-&gt;begin(); iter != sources-&gt;end(); ++iter) {
-<a name="line660">660: </a>        <font color="#4169E1">if</font> (this-&gt;_debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"Adding arrow from "</font> &lt;&lt; *iter &lt;&lt; <font color="#666666">" to "</font> &lt;&lt; target &lt;&lt; std::endl;}
-<a name="line661">661: </a>        this-&gt;addArrow(*iter, target);
-<a name="line662">662: </a>      }
-<a name="line663">663: </a>    };
-<a name="line664">664: </a>    void clearCone(const typename traits::target_type&amp; t) {
-<a name="line665">665: </a>      // Use the cone sequence types to clear the cone
-<a name="line666">666: </a>      typename traits::coneSequence::traits::index_type&amp; coneIndex =
-<a name="line667">667: </a>        ::boost::multi_index::get&lt;typename traits::coneInd&gt;(this-&gt;_arrows.set);
-<a name="line668">668: </a>      typename traits::coneSequence::traits::index_type::iterator i, ii, j;
-<a name="line669">669: </a>      <font color="#4169E1">if</font> (this-&gt;_debug &gt; 20) {
-<a name="line670">670: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"clearCone: removing cone over "</font> &lt;&lt; t;
-<a name="line671">671: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; std::endl;
-<a name="line672">672: </a>        const Obj&lt;typename traits::coneSequence&gt;&amp; cone = this-&gt;cone(t);
-<a name="line673">673: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"["</font>;
-<a name="line674">674: </a>        <font color="#4169E1">for</font>(typename traits::coneSequence::iterator ci = cone-&gt;begin(); ci != cone-&gt;end(); ci++) {
-<a name="line675">675: </a><strong><font color="#FF0000">          std:</font></strong>:cout &lt;&lt; <font color="#666666">"  "</font> &lt;&lt; ci.arrow();
-<a name="line676">676: </a>        }
-<a name="line677">677: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"]"</font> &lt;&lt; std::endl;
-<a name="line678">678: </a>      }
-<a name="line679">679: </a>      i = coneIndex.lower_bound(::boost::make_tuple(t));
-<a name="line680">680: </a>      ii = coneIndex.upper_bound(::boost::make_tuple(t));
-<a name="line681">681: </a>      coneIndex.erase(i,ii);
-<a name="line682">682: </a>    };// clearCone()
+<a name="line654">654: </a>    void addCone(const typename traits::source_type&amp; source, const typename traits::target_type&amp; target){
+<a name="line655">655: </a>      this-&gt;addArrow(source, target);
+<a name="line656">656: </a>    };
+<a name="line657">657: </a>    template&lt;class sourceInputSequence&gt;
+<a name="line658">658: </a>    void
+<a name="line659">659: </a>    addCone(const Obj&lt;sourceInputSequence&gt;&amp; sources, const typename traits::target_type&amp; target){
+<a name="line660">660: </a>      <font color="#4169E1">if</font> (this-&gt;_debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"Adding a cone "</font> &lt;&lt; std::endl;}
+<a name="line661">661: </a>      <font color="#4169E1">for</font>(typename sourceInputSequence::iterator iter = sources-&gt;begin(); iter != sources-&gt;end(); ++iter) {
+<a name="line662">662: </a>        <font color="#4169E1">if</font> (this-&gt;_debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"Adding arrow from "</font> &lt;&lt; *iter &lt;&lt; <font color="#666666">" to "</font> &lt;&lt; target &lt;&lt; std::endl;}
+<a name="line663">663: </a>        this-&gt;addArrow(*iter, target);
+<a name="line664">664: </a>      }
+<a name="line665">665: </a>    }
+<a name="line666">666: </a>    void clearCone(const typename traits::target_type&amp; t) {
+<a name="line667">667: </a>      // Use the cone sequence types to clear the cone
+<a name="line668">668: </a>      typename traits::coneSequence::traits::index_type&amp; coneIndex =
+<a name="line669">669: </a>        ::boost::multi_index::get&lt;typename traits::coneInd&gt;(this-&gt;_arrows.set);
+<a name="line670">670: </a>      typename traits::coneSequence::traits::index_type::iterator i, ii, j;
+<a name="line671">671: </a>      <font color="#4169E1">if</font> (this-&gt;_debug &gt; 20) {
+<a name="line672">672: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"clearCone: removing cone over "</font> &lt;&lt; t;
+<a name="line673">673: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; std::endl;
+<a name="line674">674: </a>        const Obj&lt;typename traits::coneSequence&gt;&amp; cone = this-&gt;cone(t);
+<a name="line675">675: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"["</font>;
+<a name="line676">676: </a>        <font color="#4169E1">for</font>(typename traits::coneSequence::iterator ci = cone-&gt;begin(); ci != cone-&gt;end(); ci++) {
+<a name="line677">677: </a><strong><font color="#FF0000">          std:</font></strong>:cout &lt;&lt; <font color="#666666">"  "</font> &lt;&lt; ci.arrow();
+<a name="line678">678: </a>        }
+<a name="line679">679: </a><strong><font color="#FF0000">        std:</font></strong>:cout &lt;&lt; <font color="#666666">"]"</font> &lt;&lt; std::endl;
+<a name="line680">680: </a>      }
+<a name="line681">681: </a>      i = coneIndex.lower_bound(::boost::make_tuple(t));
+<a name="line682">682: </a>      ii = coneIndex.upper_bound(::boost::make_tuple(t));
+<a name="line683">683: </a>      coneIndex.erase(i,ii);
+<a name="line684">684: </a>    }// clearCone()
 
-<a name="line684">684: </a>    void clearSupport(const typename traits::source_type&amp; s) {
-<a name="line685">685: </a>      // Use the cone sequence types to clear the cone
-<a name="line686">686: </a>      typename
-<a name="line687">687: </a><strong><font color="#FF0000">        traits:</font></strong>:supportSequence::traits::index_type&amp; suppIndex = ::boost::multi_index::get&lt;typename traits::supportInd&gt;(this-&gt;_arrows.set);
-<a name="line688">688: </a>      typename traits::supportSequence::traits::index_type::iterator i, ii, j;
-<a name="line689">689: </a>      i = suppIndex.lower_bound(::boost::make_tuple(s));
-<a name="line690">690: </a>      ii = suppIndex.upper_bound(::boost::make_tuple(s));
-<a name="line691">691: </a>      suppIndex.erase(i,ii);
-<a name="line692">692: </a>    };
-<a name="line693">693: </a>    void setCone(const typename traits::source_type&amp; source, const typename traits::target_type&amp; target){
-<a name="line694">694: </a>      this-&gt;clearCone(target); this-&gt;addCone(source, target);
-<a name="line695">695: </a>    };
-<a name="line696">696: </a>    template&lt;class sourceInputSequence&gt;
-<a name="line697">697: </a>    void setCone(const Obj&lt;sourceInputSequence&gt;&amp; sources, const typename traits::target_type&amp; target) {
-<a name="line698">698: </a>      this-&gt;clearCone(target); this-&gt;addCone(sources, target);
-<a name="line699">699: </a>    };
-<a name="line700">700: </a>    template&lt;class targetInputSequence&gt;
-<a name="line701">701: </a>    void addSupport(const typename traits::source_type&amp; source, const Obj&lt;targetInputSequence &gt;&amp; targets) {
-<a name="line702">702: </a>      <font color="#4169E1">if</font> (this-&gt;_debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"Adding a support "</font> &lt;&lt; std::endl;}
-<a name="line703">703: </a>      <font color="#4169E1">for</font>(typename targetInputSequence::iterator iter = targets-&gt;begin(); iter != targets-&gt;end(); ++iter) {
-<a name="line704">704: </a>        <font color="#4169E1">if</font> (this-&gt;_debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"Adding arrow from "</font> &lt;&lt; source &lt;&lt; <font color="#666666">" to "</font> &lt;&lt; *iter &lt;&lt; std::endl;}
-<a name="line705">705: </a>        this-&gt;addArrow(source, *iter);
-<a name="line706">706: </a>      }
-<a name="line707">707: </a>    };
-<a name="line708">708: </a>    template&lt;typename Sifter_, typename AnotherSifter_&gt;
-<a name="line709">709: </a>    void add(const Obj&lt;Sifter_&gt;&amp; cbg, const Obj&lt;AnotherSifter_&gt;&amp; baseRestriction = NULL) {
-<a name="line710">710: </a>      typename ::boost::multi_index::index&lt;typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd&gt;::type&amp; aInd = ::boost::multi_index::get&lt;typename Sifter_::traits::arrowInd&gt;(cbg-&gt;_arrows.set);
-<a name="line711">711: </a>      bool baseRestrict = !baseRestriction.isNull();
-<a name="line712">712: </a>
-<a name="line713">713: </a>      <font color="#4169E1">for</font>(typename ::boost::multi_index::index&lt;typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd&gt;::type::iterator a_iter = aInd.begin(); a_iter != aInd.end(); ++a_iter) {
-<a name="line714">714: </a>        <font color="#4169E1">if</font> (baseRestrict) {
-<a name="line715">715: </a>          <font color="#4169E1">if</font> (!baseRestriction-&gt;getSupportSize(a_iter-&gt;target) &amp;&amp; !baseRestriction-&gt;getConeSize(a_iter-&gt;target)) <font color="#4169E1">continue</font>;
-<a name="line716">716: </a>        }
-<a name="line717">717: </a>        this-&gt;addArrow(*a_iter);
-<a name="line718">718: </a>      }
-<a name="line719">719: </a>    };
-<a name="line720">720: </a>    template&lt;typename Sifter_, typename AnotherSifter_, typename Renumbering_&gt;
-<a name="line721">721: </a>    void add(const Obj&lt;Sifter_&gt;&amp; cbg, const Obj&lt;AnotherSifter_&gt;&amp; baseRestriction, Renumbering_&amp; renumbering) {
-<a name="line722">722: </a>      typename ::boost::multi_index::index&lt;typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd&gt;::type&amp; aInd = ::boost::multi_index::get&lt;typename Sifter_::traits::arrowInd&gt;(cbg-&gt;_arrows.set);
+<a name="line686">686: </a>    void clearSupport(const typename traits::source_type&amp; s) {
+<a name="line687">687: </a>      // Use the cone sequence types to clear the cone
+<a name="line688">688: </a>      typename
+<a name="line689">689: </a><strong><font color="#FF0000">        traits:</font></strong>:supportSequence::traits::index_type&amp; suppIndex = ::boost::multi_index::get&lt;typename traits::supportInd&gt;(this-&gt;_arrows.set);
+<a name="line690">690: </a>      typename traits::supportSequence::traits::index_type::iterator i, ii, j;
+<a name="line691">691: </a>      i = suppIndex.lower_bound(::boost::make_tuple(s));
+<a name="line692">692: </a>      ii = suppIndex.upper_bound(::boost::make_tuple(s));
+<a name="line693">693: </a>      suppIndex.erase(i,ii);
+<a name="line694">694: </a>    }
+<a name="line695">695: </a>    void setCone(const typename traits::source_type&amp; source, const typename traits::target_type&amp; target){
+<a name="line696">696: </a>      this-&gt;clearCone(target); this-&gt;addCone(source, target);
+<a name="line697">697: </a>    }
+<a name="line698">698: </a>    template&lt;class sourceInputSequence&gt;
+<a name="line699">699: </a>    void setCone(const Obj&lt;sourceInputSequence&gt;&amp; sources, const typename traits::target_type&amp; target) {
+<a name="line700">700: </a>      this-&gt;clearCone(target); this-&gt;addCone(sources, target);
+<a name="line701">701: </a>    }
+<a name="line702">702: </a>    template&lt;class targetInputSequence&gt;
+<a name="line703">703: </a>    void addSupport(const typename traits::source_type&amp; source, const Obj&lt;targetInputSequence &gt;&amp; targets) {
+<a name="line704">704: </a>      <font color="#4169E1">if</font> (this-&gt;_debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"Adding a support "</font> &lt;&lt; std::endl;}
+<a name="line705">705: </a>      <font color="#4169E1">for</font>(typename targetInputSequence::iterator iter = targets-&gt;begin(); iter != targets-&gt;end(); ++iter) {
+<a name="line706">706: </a>        <font color="#4169E1">if</font> (this-&gt;_debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"Adding arrow from "</font> &lt;&lt; source &lt;&lt; <font color="#666666">" to "</font> &lt;&lt; *iter &lt;&lt; std::endl;}
+<a name="line707">707: </a>        this-&gt;addArrow(source, *iter);
+<a name="line708">708: </a>      }
+<a name="line709">709: </a>    }
+<a name="line710">710: </a>    template&lt;typename Sifter_, typename AnotherSifter_&gt;
+<a name="line711">711: </a>    void add(const Obj&lt;Sifter_&gt;&amp; cbg, const Obj&lt;AnotherSifter_&gt;&amp; baseRestriction = NULL) {
+<a name="line712">712: </a>      typename ::boost::multi_index::index&lt;typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd&gt;::type&amp; aInd = ::boost::multi_index::get&lt;typename Sifter_::traits::arrowInd&gt;(cbg-&gt;_arrows.set);
+<a name="line713">713: </a>      bool baseRestrict = !baseRestriction.isNull();
+<a name="line714">714: </a>
+<a name="line715">715: </a>      <font color="#4169E1">for</font>(typename ::boost::multi_index::index&lt;typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd&gt;::type::iterator a_iter = aInd.begin(); a_iter != aInd.end(); ++a_iter) {
+<a name="line716">716: </a>        <font color="#4169E1">if</font> (baseRestrict) {
+<a name="line717">717: </a>          <font color="#4169E1">if</font> (!baseRestriction-&gt;getSupportSize(a_iter-&gt;target) &amp;&amp; !baseRestriction-&gt;getConeSize(a_iter-&gt;target)) <font color="#4169E1">continue</font>;
+<a name="line718">718: </a>        }
+<a name="line719">719: </a>        this-&gt;addArrow(*a_iter);
+<a name="line720">720: </a>      }
+<a name="line721">721: </a>    }
+<a name="line722">722: </a>    template&lt;typename Sifter_, typename AnotherSifter_, typename Renumbering_&gt;
+<a name="line723">723: </a>    void add(const Obj&lt;Sifter_&gt;&amp; cbg, const Obj&lt;AnotherSifter_&gt;&amp; baseRestriction, Renumbering_&amp; renumbering) {
+<a name="line724">724: </a>      typename ::boost::multi_index::index&lt;typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd&gt;::type&amp; aInd = ::boost::multi_index::get&lt;typename Sifter_::traits::arrowInd&gt;(cbg-&gt;_arrows.set);
 
-<a name="line724">724: </a>      <font color="#4169E1">for</font>(typename ::boost::multi_index::index&lt;typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd&gt;::type::iterator a_iter = aInd.begin(); a_iter != aInd.end(); ++a_iter) {
-<a name="line725">725: </a>        <font color="#4169E1">if</font> (renumbering.find(a_iter-&gt;target) == renumbering.end()) <font color="#4169E1">continue</font>;
-<a name="line726">726: </a>        target_type target = renumbering[a_iter-&gt;target];
+<a name="line726">726: </a>      <font color="#4169E1">for</font>(typename ::boost::multi_index::index&lt;typename Sifter_::traits::arrow_container_type::set_type, typename Sifter_::traits::arrowInd&gt;::type::iterator a_iter = aInd.begin(); a_iter != aInd.end(); ++a_iter) {
+<a name="line727">727: </a>        <font color="#4169E1">if</font> (renumbering.find(a_iter-&gt;target) == renumbering.end()) <font color="#4169E1">continue</font>;
+<a name="line728">728: </a>        target_type target = renumbering[a_iter-&gt;target];
 
-<a name="line728">728: </a>        <font color="#4169E1">if</font> (!baseRestriction-&gt;getSupportSize(target) &amp;&amp; !baseRestriction-&gt;getConeSize(target)) <font color="#4169E1">continue</font>;
-<a name="line729">729: </a>        this-&gt;addArrow(a_iter-&gt;source, target);
-<a name="line730">730: </a>      }
-<a name="line731">731: </a>    };
-<a name="line732">732: </a>    int size() const {<font color="#4169E1">return</font> _arrows.set.size();};
-<a name="line733">733: </a>    int getCapSize() const {
-<a name="line734">734: </a><strong><font color="#FF0000">      std:</font></strong>:set&lt;source_type&gt; cap;
-<a name="line735">735: </a>      <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator a_iter = _arrows.set.begin(); a_iter != _arrows.set.end(); ++a_iter) {
-<a name="line736">736: </a>        cap.insert(a_iter-&gt;source);
-<a name="line737">737: </a>      }
-<a name="line738">738: </a>      <font color="#4169E1">return</font> cap.size();
-<a name="line739">739: </a>    };
-<a name="line740">740: </a>    capSequence cap() const {
-<a name="line741">741: </a><strong><font color="#FF0000">      std:</font></strong>:set&lt;source_type&gt; cap;
-<a name="line742">742: </a>      <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator a_iter = _arrows.set.begin(); a_iter != _arrows.set.end(); ++a_iter) {
-<a name="line743">743: </a>        cap.insert(a_iter-&gt;source);
-<a name="line744">744: </a>      }
-<a name="line745">745: </a>      <font color="#4169E1">return</font> cap;
-<a name="line746">746: </a>    };
-<a name="line747">747: </a>    int getBaseSize() const {
-<a name="line748">748: </a><strong><font color="#FF0000">      std:</font></strong>:set&lt;target_type&gt; base;
-<a name="line749">749: </a>      <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator a_iter = _arrows.set.begin(); a_iter != _arrows.set.end(); ++a_iter) {
-<a name="line750">750: </a>        base.insert(a_iter-&gt;target);
-<a name="line751">751: </a>      }
-<a name="line752">752: </a>      <font color="#4169E1">return</font> base.size();
-<a name="line753">753: </a>    };
-<a name="line754">754: </a><strong><font color="#FF0000">  public:</font></strong> // Compatibility with fixed storage variants
-<a name="line755">755: </a>    <font color="#4169E1">typedef</font> Interval&lt;target_type&gt; chart_type;
-<a name="line756">756: </a>    chart_type&amp; getChart() {static chart_type chart(0, 0); <font color="#4169E1">return</font> chart;};
-<a name="line757">757: </a>    template&lt;typename chart_type&gt;
-<a name="line758">758: </a>    void setChart(const chart_type&amp; chart) {};
-<a name="line759">759: </a>    void setConeSize(target_type p, int s) {};
-<a name="line760">760: </a>    void setSupportSize(source_type p, int s) {};
-<a name="line761">761: </a>    void allocate() {};
-<a name="line762">762: </a>    void recalculateLabel() {};
-<a name="line763">763: </a>  }; // class LabelSifter
+<a name="line730">730: </a>        <font color="#4169E1">if</font> (!baseRestriction-&gt;getSupportSize(target) &amp;&amp; !baseRestriction-&gt;getConeSize(target)) <font color="#4169E1">continue</font>;
+<a name="line731">731: </a>        this-&gt;addArrow(a_iter-&gt;source, target);
+<a name="line732">732: </a>      }
+<a name="line733">733: </a>    }
+<a name="line734">734: </a>    template&lt;typename Labeling, typename AnotherSifter&gt;
+<a name="line735">735: </a>    void relabel(Labeling&amp; relabeling, AnotherSifter&amp; newLabel) {
+<a name="line736">736: </a>      typename ::boost::multi_index::index&lt;typename traits::arrow_container_type::set_type, typename traits::arrowInd&gt;::type&amp; aInd = ::boost::multi_index::get&lt;typename traits::arrowInd&gt;(this-&gt;_arrows.set);
 
-<a name="line765">765: </a>  class LabelSifterSerializer {
-<a name="line766">766: </a><strong><font color="#FF0000">  public:</font></strong>
-<a name="line767">767: </a>    template&lt;typename LabelSifter&gt;
-<a name="line768">768: </a>    static void writeLabel(std::ofstream&amp; fs, LabelSifter&amp; label) {
-<a name="line769">769: </a>      <font color="#4169E1">if</font> (label.commRank() == 0) {
-<a name="line770">770: </a>        // Write local
-<a name="line771">771: </a>        fs &lt;&lt; label._arrows.set.size() &lt;&lt; std::endl;
-<a name="line772">772: </a>        <font color="#4169E1">for</font>(typename LabelSifter::traits::arrow_container_type::set_type::iterator ai = label._arrows.set.begin(); ai != label._arrows.set.end(); ai++) {
-<a name="line773">773: </a>          fs &lt;&lt; ai-&gt;source &lt;&lt; <font color="#666666">" "</font> &lt;&lt; ai-&gt;target &lt;&lt; std::endl;
-<a name="line774">774: </a>        }
-<a name="line775">775: </a>        // Receive and write remote
-<a name="line776">776: </a>        <font color="#4169E1">for</font>(int p = 1; p &lt; label.commSize(); ++p) {
-<a name="line777">777: </a>          <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       size;
-<a name="line778">778: </a>          <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *arrows;
-<a name="line779">779: </a>          MPI_Status     status;
+<a name="line738">738: </a>      <font color="#4169E1">for</font>(typename ::boost::multi_index::index&lt;typename traits::arrow_container_type::set_type, typename traits::arrowInd&gt;::type::iterator a_iter = aInd.begin(); a_iter != aInd.end(); ++a_iter) {
+<a name="line739">739: </a>        const typename traits::target_type newTarget = relabeling.restrictPoint(a_iter-&gt;target)[0];
 
-<a name="line782">782: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(&amp;size, 1, MPIU_INT, p, 1, label.comm(), &amp;status);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line783">783: </a>          fs &lt;&lt; size &lt;&lt; std::endl;
-<a name="line784">784: </a>          <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*2 * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line785">785: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(arrows, size*2, MPIU_INT, p, 1, label.comm(), &amp;status);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line786">786: </a>          <font color="#4169E1">for</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> a = 0; a &lt; size; ++a) {
-<a name="line787">787: </a>            fs &lt;&lt; arrows[a*2+0] &lt;&lt; <font color="#666666">" "</font> &lt;&lt; arrows[a*2+1] &lt;&lt; std::endl;
-<a name="line788">788: </a>          }
-<a name="line789">789: </a>          <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line790">790: </a>        }
-<a name="line791">791: </a>      } <font color="#4169E1">else</font> {
-<a name="line792">792: </a>        // Send remote
-<a name="line793">793: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       size = label._arrows.set.size();
-<a name="line794">794: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       a    = 0;
-<a name="line795">795: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *arrows;
+<a name="line741">741: </a>        newLabel.addArrow(a_iter-&gt;source, newTarget);
+<a name="line742">742: </a>      }
+<a name="line743">743: </a>    }
 
-<a name="line798">798: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(&amp;size, 1, MPIU_INT, 0, 1, label.comm());<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line799">799: </a>        // There is no nice way to make a generic MPI type here. Really sucky
-<a name="line800">800: </a>        <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*2 * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line801">801: </a>        <font color="#4169E1">for</font>(typename LabelSifter::traits::arrow_container_type::set_type::iterator ai = label._arrows.set.begin(); ai != label._arrows.set.end(); ai++, ++a) {
-<a name="line802">802: </a>          arrows[a*2+0] = ai-&gt;source;
-<a name="line803">803: </a>          arrows[a*2+1] = ai-&gt;target;
-<a name="line804">804: </a>        }
-<a name="line805">805: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(arrows, size*2, MPIU_INT, 0, 1, label.comm());<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line806">806: </a>        <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line807">807: </a>      }
-<a name="line808">808: </a>    };
-<a name="line809">809: </a>    template&lt;typename LabelSifter&gt;
-<a name="line810">810: </a>    static void loadLabel(std::ifstream&amp; fs, LabelSifter&amp; label) {
-<a name="line811">811: </a>      <font color="#4169E1">if</font> (label.commRank() == 0) {
-<a name="line812">812: </a>        // Load local
-<a name="line813">813: </a>        size_t numArrows;
+<a name="line745">745: </a>    int size() const {<font color="#4169E1">return</font> _arrows.set.size();};
+<a name="line746">746: </a>    int getCapSize() const {
+<a name="line747">747: </a><strong><font color="#FF0000">      std:</font></strong>:set&lt;source_type&gt; cap;
+<a name="line748">748: </a>      <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator a_iter = _arrows.set.begin(); a_iter != _arrows.set.end(); ++a_iter) {
+<a name="line749">749: </a>        cap.insert(a_iter-&gt;source);
+<a name="line750">750: </a>      }
+<a name="line751">751: </a>      <font color="#4169E1">return</font> cap.size();
+<a name="line752">752: </a>    };
+<a name="line753">753: </a>    capSequence cap() const {
+<a name="line754">754: </a><strong><font color="#FF0000">      std:</font></strong>:set&lt;source_type&gt; cap;
+<a name="line755">755: </a>      <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator a_iter = _arrows.set.begin(); a_iter != _arrows.set.end(); ++a_iter) {
+<a name="line756">756: </a>        cap.insert(a_iter-&gt;source);
+<a name="line757">757: </a>      }
+<a name="line758">758: </a>      <font color="#4169E1">return</font> cap;
+<a name="line759">759: </a>    };
+<a name="line760">760: </a>    int getBaseSize() const {
+<a name="line761">761: </a><strong><font color="#FF0000">      std:</font></strong>:set&lt;target_type&gt; base;
+<a name="line762">762: </a>      <font color="#4169E1">for</font>(typename traits::arrow_container_type::set_type::iterator a_iter = _arrows.set.begin(); a_iter != _arrows.set.end(); ++a_iter) {
+<a name="line763">763: </a>        base.insert(a_iter-&gt;target);
+<a name="line764">764: </a>      }
+<a name="line765">765: </a>      <font color="#4169E1">return</font> base.size();
+<a name="line766">766: </a>    };
+<a name="line767">767: </a><strong><font color="#FF0000">  public:</font></strong> // Compatibility with fixed storage variants
+<a name="line768">768: </a>    <font color="#4169E1">typedef</font> Interval&lt;target_type&gt; chart_type;
+<a name="line769">769: </a>    chart_type&amp; getChart() {static chart_type chart(0, 0); <font color="#4169E1">return</font> chart;}
+<a name="line770">770: </a>    template&lt;typename chart_type&gt;
+<a name="line771">771: </a>    void setChart(const chart_type&amp; chart) {}
+<a name="line772">772: </a>    void setConeSize(target_type p, int s) {}
+<a name="line773">773: </a>    void setSupportSize(source_type p, int s) {}
+<a name="line774">774: </a>    void allocate() {}
+<a name="line775">775: </a>    void recalculateLabel() {}
+<a name="line776">776: </a>  }; // class LabelSifter
 
-<a name="line815">815: </a>        fs &gt;&gt; numArrows;
-<a name="line816">816: </a>        <font color="#4169E1">for</font>(size_t a = 0; a &lt; numArrows; ++a) {
-<a name="line817">817: </a>          typename LabelSifter::traits::arrow_type::source_type source;
-<a name="line818">818: </a>          typename LabelSifter::traits::arrow_type::target_type target;
+<a name="line778">778: </a>  class LabelSifterSerializer {
+<a name="line779">779: </a><strong><font color="#FF0000">  public:</font></strong>
+<a name="line780">780: </a>    template&lt;typename LabelSifter&gt;
+<a name="line781">781: </a>    static void writeLabel(std::ofstream&amp; fs, LabelSifter&amp; label) {
+<a name="line782">782: </a>      <font color="#4169E1">if</font> (label.commRank() == 0) {
+<a name="line783">783: </a>        // Write local
+<a name="line784">784: </a>        fs &lt;&lt; label._arrows.set.size() &lt;&lt; std::endl;
+<a name="line785">785: </a>        <font color="#4169E1">for</font>(typename LabelSifter::traits::arrow_container_type::set_type::iterator ai = label._arrows.set.begin(); ai != label._arrows.set.end(); ai++) {
+<a name="line786">786: </a>          fs &lt;&lt; ai-&gt;source &lt;&lt; <font color="#666666">" "</font> &lt;&lt; ai-&gt;target &lt;&lt; std::endl;
+<a name="line787">787: </a>        }
+<a name="line788">788: </a>        // Receive and write remote
+<a name="line789">789: </a>        <font color="#4169E1">for</font>(int p = 1; p &lt; label.commSize(); ++p) {
+<a name="line790">790: </a>          <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       size;
+<a name="line791">791: </a>          <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *arrows;
+<a name="line792">792: </a>          MPI_Status     status;
 
-<a name="line820">820: </a>          fs &gt;&gt; source;
-<a name="line821">821: </a>          fs &gt;&gt; target;
-<a name="line822">822: </a>          label.addArrow(typename LabelSifter::traits::arrow_type(source, target));
-<a name="line823">823: </a>        }
-<a name="line824">824: </a>        // Load and send remote
-<a name="line825">825: </a>        <font color="#4169E1">for</font>(int p = 1; p &lt; label.commSize(); ++p) {
-<a name="line826">826: </a>          <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       size;
-<a name="line827">827: </a>          <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *arrows;
+<a name="line795">795: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(&amp;size, 1, MPIU_INT, p, 1, label.comm(), &amp;status);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line796">796: </a>          fs &lt;&lt; size &lt;&lt; std::endl;
+<a name="line797">797: </a>          <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*2 * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line798">798: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(arrows, size*2, MPIU_INT, p, 1, label.comm(), &amp;status);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line799">799: </a>          <font color="#4169E1">for</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> a = 0; a &lt; size; ++a) {
+<a name="line800">800: </a>            fs &lt;&lt; arrows[a*2+0] &lt;&lt; <font color="#666666">" "</font> &lt;&lt; arrows[a*2+1] &lt;&lt; std::endl;
+<a name="line801">801: </a>          }
+<a name="line802">802: </a>          <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line803">803: </a>        }
+<a name="line804">804: </a>      } <font color="#4169E1">else</font> {
+<a name="line805">805: </a>        // Send remote
+<a name="line806">806: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       size = label._arrows.set.size();
+<a name="line807">807: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       a    = 0;
+<a name="line808">808: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *arrows;
 
-<a name="line830">830: </a>          fs &gt;&gt; size;
-<a name="line831">831: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(&amp;size, 1, MPIU_INT, p, 1, label.comm());<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line832">832: </a>          <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*2 * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line833">833: </a>          <font color="#4169E1">for</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> a = 0; a &lt; size; ++a) {
-<a name="line834">834: </a>            fs &gt;&gt; arrows[a*2+0];
-<a name="line835">835: </a>            fs &gt;&gt; arrows[a*2+1];
-<a name="line836">836: </a>          }
-<a name="line837">837: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(arrows, size*2, MPIU_INT, p, 1, label.comm());<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line838">838: </a>          <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line839">839: </a>        }
-<a name="line840">840: </a>      } <font color="#4169E1">else</font> {
-<a name="line841">841: </a>        // Load remote
-<a name="line842">842: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       size;
-<a name="line843">843: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *arrows;
-<a name="line844">844: </a>        MPI_Status     status;
+<a name="line811">811: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(&amp;size, 1, MPIU_INT, 0, 1, label.comm());<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line812">812: </a>        // There is no nice way to make a generic MPI type here. Really sucky
+<a name="line813">813: </a>        <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*2 * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line814">814: </a>        <font color="#4169E1">for</font>(typename LabelSifter::traits::arrow_container_type::set_type::iterator ai = label._arrows.set.begin(); ai != label._arrows.set.end(); ai++, ++a) {
+<a name="line815">815: </a>          arrows[a*2+0] = ai-&gt;source;
+<a name="line816">816: </a>          arrows[a*2+1] = ai-&gt;target;
+<a name="line817">817: </a>        }
+<a name="line818">818: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(arrows, size*2, MPIU_INT, 0, 1, label.comm());<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line819">819: </a>        <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line820">820: </a>      }
+<a name="line821">821: </a>    }
+<a name="line822">822: </a>    template&lt;typename LabelSifter&gt;
+<a name="line823">823: </a>    static void loadLabel(std::ifstream&amp; fs, LabelSifter&amp; label) {
+<a name="line824">824: </a>      <font color="#4169E1">if</font> (label.commRank() == 0) {
+<a name="line825">825: </a>        // Load local
+<a name="line826">826: </a>        size_t numArrows;
 
-<a name="line847">847: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(&amp;size, 1, MPIU_INT, 0, 1, label.comm(), &amp;status);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line848">848: </a>        <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*2 * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line849">849: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(arrows, size*2, MPIU_INT, 0, 1, label.comm(), &amp;status);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line850">850: </a>        <font color="#4169E1">for</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> a = 0; a &lt; size; ++a) {
-<a name="line851">851: </a>          label.addArrow(typename LabelSifter::traits::arrow_type(arrows[a*2+0], arrows[a*2+1]));
+<a name="line828">828: </a>        fs &gt;&gt; numArrows;
+<a name="line829">829: </a>        <font color="#4169E1">for</font>(size_t a = 0; a &lt; numArrows; ++a) {
+<a name="line830">830: </a>          typename LabelSifter::traits::arrow_type::source_type source;
+<a name="line831">831: </a>          typename LabelSifter::traits::arrow_type::target_type target;
+
+<a name="line833">833: </a>          fs &gt;&gt; source;
+<a name="line834">834: </a>          fs &gt;&gt; target;
+<a name="line835">835: </a>          label.addArrow(typename LabelSifter::traits::arrow_type(source, target));
+<a name="line836">836: </a>        }
+<a name="line837">837: </a>        // Load and send remote
+<a name="line838">838: </a>        <font color="#4169E1">for</font>(int p = 1; p &lt; label.commSize(); ++p) {
+<a name="line839">839: </a>          <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       size;
+<a name="line840">840: </a>          <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *arrows;
+
+<a name="line843">843: </a>          fs &gt;&gt; size;
+<a name="line844">844: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(&amp;size, 1, MPIU_INT, p, 1, label.comm());<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line845">845: </a>          <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*2 * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line846">846: </a>          <font color="#4169E1">for</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> a = 0; a &lt; size; ++a) {
+<a name="line847">847: </a>            fs &gt;&gt; arrows[a*2+0];
+<a name="line848">848: </a>            fs &gt;&gt; arrows[a*2+1];
+<a name="line849">849: </a>          }
+<a name="line850">850: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(arrows, size*2, MPIU_INT, p, 1, label.comm());<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line851">851: </a>          <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line852">852: </a>        }
-<a name="line853">853: </a>        <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
-<a name="line854">854: </a>      }
-<a name="line855">855: </a>    };
-<a name="line856">856: </a>  };
-<a name="line857">857: </a>} // namespace ALE
+<a name="line853">853: </a>      } <font color="#4169E1">else</font> {
+<a name="line854">854: </a>        // Load remote
+<a name="line855">855: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       size;
+<a name="line856">856: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *arrows;
+<a name="line857">857: </a>        MPI_Status     status;
 
-<a name="line859">859: </a><font color="#A020F0">#endif // ifdef included_ALE_LabelSifter_hh</font>
+<a name="line860">860: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(&amp;size, 1, MPIU_INT, 0, 1, label.comm(), &amp;status);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line861">861: </a>        <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*2 * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line862">862: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(arrows, size*2, MPIU_INT, 0, 1, label.comm(), &amp;status);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line863">863: </a>        <font color="#4169E1">for</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> a = 0; a &lt; size; ++a) {
+<a name="line864">864: </a>          label.addArrow(typename LabelSifter::traits::arrow_type(arrows[a*2+0], arrows[a*2+1]));
+<a name="line865">865: </a>        }
+<a name="line866">866: </a>        <A href="../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(arrows);<A href="../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line867">867: </a>      }
+<a name="line868">868: </a>    }
+<a name="line869">869: </a>  };
+<a name="line870">870: </a>} // namespace ALE
+
+<a name="line872">872: </a><font color="#A020F0">#endif // ifdef included_ALE_LabelSifter_hh</font>
 </pre>
 </body>
 

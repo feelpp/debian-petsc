@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 struct _n_PetscViewers {
    MPI_Comm    comm;
@@ -23,17 +22,18 @@ struct _n_PetscViewers {
 .seealso: PetscViewerSocketOpen(), PetscViewerASCIIOpen(), PetscViewerCreate(), PetscViewerDrawOpen(), PetscViewersCreate()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewersDestroy(PetscViewers v)
+PetscErrorCode  PetscViewersDestroy(PetscViewers *v)
 {
-  int         i;
+  int            i;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  for (i=0; i<v->n; i++) {
-    if (v->viewer[i]) {ierr = PetscViewerDestroy(v->viewer[i]);CHKERRQ(ierr);}
+  if (!*v) PetscFunctionReturn(0);
+  for (i=0; i<(*v)->n; i++) {
+    ierr = PetscViewerDestroy(&(*v)->viewer[i]);CHKERRQ(ierr);
   }
-  ierr = PetscFree(v->viewer);CHKERRQ(ierr);
-  ierr = PetscFree(v);CHKERRQ(ierr);
+  ierr = PetscFree((*v)->viewer);CHKERRQ(ierr);
+  ierr = PetscFree(*v);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -57,7 +57,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewersDestroy(PetscViewers v)
 .seealso: PetscViewerCreate(), PetscViewersDestroy()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewersCreate(MPI_Comm comm,PetscViewers *v)
+PetscErrorCode  PetscViewersCreate(MPI_Comm comm,PetscViewers *v)
 {
   PetscErrorCode ierr;
 
@@ -91,12 +91,12 @@ PetscErrorCode PETSC_DLLEXPORT PetscViewersCreate(MPI_Comm comm,PetscViewers *v)
 .seealso: PetscViewersCreate(), PetscViewersDestroy()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscViewersGetViewer(PetscViewers viewers,PetscInt n,PetscViewer *viewer)
+PetscErrorCode  PetscViewersGetViewer(PetscViewers viewers,PetscInt n,PetscViewer *viewer)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (n < 0) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"Cannot access using a negative index - %d\n",n);
+  if (n < 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Cannot access using a negative index - %d\n",n);
   if (n >= viewers->n) {
     PetscViewer *v;
     int    newn = n + 64; /* add 64 new ones at a time */

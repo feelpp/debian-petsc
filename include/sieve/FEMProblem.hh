@@ -11,7 +11,7 @@ This includes derived types doing what indicesExcluded does for all things marke
 
 */
 
-#include <Mesh.hh>
+#include <sieve/Mesh.hh>
 
 namespace ALE { 
   namespace Problem {
@@ -930,7 +930,7 @@ namespace ALE {
 	ierr = SectionRealGetSection(section, s);CHKERRQ(ierr);
 	s->axpy(-1.0, constant);
       }
-      PetscTruth flag;
+      PetscBool  flag;
       PetscOptionsHasName(PETSC_NULL, "-vec_view", &flag);
       if (flag) {
 	ierr = SectionRealGetSection(section, s);CHKERRQ(ierr);
@@ -1091,7 +1091,7 @@ namespace ALE {
 	  }
 	}
 	if (k != size) {
-	  SETERRQ2(PETSC_ERR_PLIB, "Invalid number of values to send for field, %d should be %d", k, size);
+	  SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB, "Invalid number of values to send for field, %d should be %d", k, size);
 	}
 	int numLocalElementsAndFiberDim[2] = {numLocalElements, fiberDim};
 	ierr = MPI_Send(numLocalElementsAndFiberDim, 2, MPI_INT, 0, 1, field->comm());CHKERRQ(ierr);

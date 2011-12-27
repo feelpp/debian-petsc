@@ -1,6 +1,5 @@
-#define PETSCMAT_DLL
 
-#include "private/matimpl.h"        /*I "petscmat.h" I*/
+#include <private/matimpl.h>        /*I "petscmat.h" I*/
 
 typedef struct _Mat_CompositeLink *Mat_CompositeLink;
 struct _Mat_CompositeLink {
@@ -18,7 +17,7 @@ typedef struct {
   Vec               leftwork,rightwork;
 } Mat_Composite;
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "MatDestroy_Composite"
 PetscErrorCode MatDestroy_Composite(Mat mat)
 {
@@ -28,21 +27,20 @@ PetscErrorCode MatDestroy_Composite(Mat mat)
 
   PetscFunctionBegin;
   while (next) {
-    ierr = MatDestroy(next->mat);CHKERRQ(ierr);
+    ierr = MatDestroy(&next->mat);CHKERRQ(ierr);
     if (next->work && (!next->next || next->work != next->next->work)) {
-      ierr = VecDestroy(next->work);CHKERRQ(ierr);
+      ierr = VecDestroy(&next->work);CHKERRQ(ierr);
     }
     oldnext = next;
     next     = next->next;
     ierr     = PetscFree(oldnext);CHKERRQ(ierr);
   }
-  if (shell->work) {ierr = VecDestroy(shell->work);CHKERRQ(ierr);}
-  if (shell->left) {ierr = VecDestroy(shell->left);CHKERRQ(ierr);}
-  if (shell->right) {ierr = VecDestroy(shell->right);CHKERRQ(ierr);}
-  if (shell->leftwork) {ierr = VecDestroy(shell->leftwork);CHKERRQ(ierr);}
-  if (shell->rightwork) {ierr = VecDestroy(shell->rightwork);CHKERRQ(ierr);}
-  ierr      = PetscFree(shell);CHKERRQ(ierr);
-  mat->data = 0;
+  ierr = VecDestroy(&shell->work);CHKERRQ(ierr);
+  ierr = VecDestroy(&shell->left);CHKERRQ(ierr);
+  ierr = VecDestroy(&shell->right);CHKERRQ(ierr);
+  ierr = VecDestroy(&shell->leftwork);CHKERRQ(ierr);
+  ierr = VecDestroy(&shell->rightwork);CHKERRQ(ierr);
+  ierr = PetscFree(mat->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -56,7 +54,7 @@ PetscErrorCode MatMult_Composite_Multiplicative(Mat A,Vec x,Vec y)
   Vec               in,out;
 
   PetscFunctionBegin;
-  if (!next) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
+  if (!next) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
   in = x;
   if (shell->right) {
     if (!shell->rightwork) {
@@ -92,7 +90,7 @@ PetscErrorCode MatMultTranspose_Composite_Multiplicative(Mat A,Vec x,Vec y)
   Vec               in,out;
 
   PetscFunctionBegin;
-  if (!tail) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
+  if (!tail) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
   in = x;
   if (shell->left) {
     if (!shell->leftwork) {
@@ -128,7 +126,7 @@ PetscErrorCode MatMult_Composite(Mat A,Vec x,Vec y)
   Vec               in;
 
   PetscFunctionBegin;
-  if (!next) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
+  if (!next) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
   in = x;
   if (shell->right) {
     if (!shell->rightwork) {
@@ -158,7 +156,7 @@ PetscErrorCode MatMultTranspose_Composite(Mat A,Vec x,Vec y)
   Vec               in;
 
   PetscFunctionBegin;
-  if (!next) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
+  if (!next) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
   in = x;
   if (shell->left) {
     if (!shell->leftwork) {
@@ -187,8 +185,8 @@ PetscErrorCode MatGetDiagonal_Composite(Mat A,Vec v)
   PetscErrorCode    ierr;
 
   PetscFunctionBegin;
-  if (!next) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
-  if (shell->right || shell->left) SETERRQ(PETSC_ERR_SUP,"Cannot get diagonal if left or right scaling");
+  if (!next) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
+  if (shell->right || shell->left) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot get diagonal if left or right scaling");
 
   ierr = MatGetDiagonal(next->mat,v);CHKERRQ(ierr);
   if (next->next && !shell->work) {
@@ -207,10 +205,10 @@ PetscErrorCode MatGetDiagonal_Composite(Mat A,Vec v)
 PetscErrorCode MatAssemblyEnd_Composite(Mat Y,MatAssemblyType t)
 {
   PetscErrorCode ierr;
-  PetscTruth     flg = PETSC_FALSE;
+  PetscBool      flg = PETSC_FALSE;
 
   PetscFunctionBegin;
-  ierr = PetscOptionsGetTruth(((PetscObject)Y)->prefix,"-mat_composite_merge",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(((PetscObject)Y)->prefix,"-mat_composite_merge",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     ierr = MatCompositeMerge(Y);CHKERRQ(ierr);
   }
@@ -367,7 +365,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "MatCreate_Composite"
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreate_Composite(Mat A)
+PetscErrorCode  MatCreate_Composite(Mat A)
 {
   Mat_Composite  *b;
   PetscErrorCode ierr;
@@ -424,13 +422,13 @@ $       MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);
 .seealso: MatDestroy(), MatMult(), MatCompositeAddMat(), MatCompositeMerge(), MatCompositeSetType(), MatCompositeType
 
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreateComposite(MPI_Comm comm,PetscInt nmat,const Mat *mats,Mat *mat)
+PetscErrorCode  MatCreateComposite(MPI_Comm comm,PetscInt nmat,const Mat *mats,Mat *mat)
 {
   PetscErrorCode ierr;
   PetscInt       m,n,M,N,i;
   
   PetscFunctionBegin;
-  if (nmat < 1) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Must pass in at least one matrix");
+  if (nmat < 1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Must pass in at least one matrix");
   PetscValidPointer(mat,3);
 
   ierr = MatGetLocalSize(mats[0],&m,&n);CHKERRQ(ierr);
@@ -461,15 +459,15 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatCreateComposite(MPI_Comm comm,PetscInt nmat
 
 .seealso: MatCreateComposite()
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatCompositeAddMat(Mat mat,Mat smat)
+PetscErrorCode  MatCompositeAddMat(Mat mat,Mat smat)
 {
   Mat_Composite     *shell;
   PetscErrorCode    ierr;
   Mat_CompositeLink ilink,next;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(mat,MAT_COOKIE,1);
-  PetscValidHeaderSpecific(smat,MAT_COOKIE,2);
+  PetscValidHeaderSpecific(mat,MAT_CLASSID,1);
+  PetscValidHeaderSpecific(smat,MAT_CLASSID,2);
   ierr        = PetscNewLog(mat,struct _Mat_CompositeLink,&ilink);CHKERRQ(ierr);
   ilink->next = 0;
   ierr        = PetscObjectReference((PetscObject)smat);CHKERRQ(ierr);
@@ -510,15 +508,15 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatCompositeAddMat(Mat mat,Mat smat)
 .seealso: MatDestroy(), MatMult(), MatCompositeAddMat(), MatCreateComposite(), MATCOMPOSITE
 
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatCompositeSetType(Mat mat,MatCompositeType type)
+PetscErrorCode  MatCompositeSetType(Mat mat,MatCompositeType type)
 {
   Mat_Composite  *b = (Mat_Composite*)mat->data;  
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   ierr = PetscTypeCompare((PetscObject)mat,MATCOMPOSITE,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Can only use with composite matrix");
+  if (!flg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Can only use with composite matrix");
   if (type == MAT_COMPOSITE_MULTIPLICATIVE) {
     mat->ops->getdiagonal   = 0;
     mat->ops->mult          = MatMult_Composite_Multiplicative;
@@ -558,7 +556,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatCompositeSetType(Mat mat,MatCompositeType t
 .seealso: MatDestroy(), MatMult(), MatCompositeAddMat(), MatCreateComposite(), MATCOMPOSITE
 
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatCompositeMerge(Mat mat)
+PetscErrorCode  MatCompositeMerge(Mat mat)
 {
   Mat_Composite     *shell = (Mat_Composite*)mat->data;  
   Mat_CompositeLink next = shell->head, prev = shell->tail;
@@ -566,7 +564,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatCompositeMerge(Mat mat)
   Mat               tmat,newmat;
 
   PetscFunctionBegin;
-  if (!next) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
+  if (!next) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Must provide at least one matrix with MatCompositeAddMat()");
 
   PetscFunctionBegin;
   if (shell->type == MAT_COMPOSITE_ADDITIVE) {
@@ -578,7 +576,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatCompositeMerge(Mat mat)
     ierr = MatDuplicate(next->mat,MAT_COPY_VALUES,&tmat);CHKERRQ(ierr);
     while ((prev = prev->prev)) {
       ierr = MatMatMult(tmat,prev->mat,MAT_INITIAL_MATRIX,PETSC_DECIDE,&newmat);CHKERRQ(ierr);
-      ierr = MatDestroy(tmat);CHKERRQ(ierr);
+      ierr = MatDestroy(&tmat);CHKERRQ(ierr);
       tmat = newmat;
     }
   }

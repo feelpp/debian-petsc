@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:40:24+00:00">
+<meta name="date" content="2011-10-29T19:11:52+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -14,7 +14,7 @@
 <a name="line4">  4: </a><font color="#B22222">*/</font>
 
 
-<a name="line9"> 9: </a> #include <A href="../../../../../../include/private/kspimpl.h.html">private/kspimpl.h</A>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt; </font><font color="#B22222">/*includes petscksp.h */</font><font color="#A020F0"></font>
 
 <a name="line11"> 11: </a>  <font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line12"> 12: </a>    <font color="#B22222">/* Hessenberg matrix and orthogonalization information. */</font>
@@ -84,48 +84,49 @@
 <a name="line76"> 76: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    aug_vecs_allocated;    <font color="#B22222">/* aug_vecs_allocated is the total number of augmentation vecs </font>
 <a name="line77"> 77: </a><font color="#B22222">                                          available - used to simplify the dynamic</font>
 <a name="line78"> 78: </a><font color="#B22222">                                       allocation of vectors */</font>
+<a name="line79"> 79: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *hwork;              <font color="#B22222">/* work array to hold Hessenberg product */</font>
 
-<a name="line80"> 80: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    augwork_alloc;       <font color="#B22222">/*size of chunk allocated for augmentation vectors */</font>
+<a name="line81"> 81: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    augwork_alloc;       <font color="#B22222">/*size of chunk allocated for augmentation vectors */</font>
 
-<a name="line82"> 82: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    aug_dim;             <font color="#B22222">/* max number of augmented directions to add */</font>
+<a name="line83"> 83: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    aug_dim;             <font color="#B22222">/* max number of augmented directions to add */</font>
 
-<a name="line84"> 84: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    aug_ct;              <font color="#B22222">/* number of aug. vectors available */</font>
+<a name="line85"> 85: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    aug_ct;              <font color="#B22222">/* number of aug. vectors available */</font>
 
-<a name="line86"> 86: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *aug_order;          <font color="#B22222">/*keeps track of order to use aug. vectors*/</font>
+<a name="line87"> 87: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *aug_order;          <font color="#B22222">/*keeps track of order to use aug. vectors*/</font>
 
-<a name="line88"> 88: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    approx_constant;   <font color="#B22222">/* = 1 then the approx space at each restart will </font>
-<a name="line89"> 89: </a><font color="#B22222">                                  be  size max_k .  Therefore, more than (max_k - aug_dim) </font>
-<a name="line90"> 90: </a><font color="#B22222">                                  krylov vectors may be used if less than aug_dim error </font>
-<a name="line91"> 91: </a><font color="#B22222">                                  approximations are available (in the first few restarts,</font>
-<a name="line92"> 92: </a><font color="#B22222">                                  for example) to keep the space a constant size. */</font>
-<a name="line93"> 93: </a>
-<a name="line94"> 94: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    matvecs;            <font color="#B22222">/*keep track of matvecs */</font>
-<a name="line95"> 95: </a>} KSP_LGMRES;
+<a name="line89"> 89: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    approx_constant;   <font color="#B22222">/* = 1 then the approx space at each restart will </font>
+<a name="line90"> 90: </a><font color="#B22222">                                  be  size max_k .  Therefore, more than (max_k - aug_dim) </font>
+<a name="line91"> 91: </a><font color="#B22222">                                  krylov vectors may be used if less than aug_dim error </font>
+<a name="line92"> 92: </a><font color="#B22222">                                  approximations are available (in the first few restarts,</font>
+<a name="line93"> 93: </a><font color="#B22222">                                  for example) to keep the space a constant size. */</font>
+<a name="line94"> 94: </a>
+<a name="line95"> 95: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    matvecs;            <font color="#B22222">/*keep track of matvecs */</font>
+<a name="line96"> 96: </a>} KSP_LGMRES;
 
 
-<a name="line98"> 98: </a><strong><font color="#228B22">#define HH(a,b)  (lgmres-&gt;hh_origin + (b)*(lgmres-&gt;max_k+2)+(a)) </font></strong>
-<a name="line99"> 99: </a>                 <font color="#B22222">/* HH will be size (max_k+2)*(max_k+1)  -  think of HH as </font>
-<a name="line100">100: </a><font color="#B22222">                    being stored columnwise (inc. zeros) for access purposes. */</font>
-<a name="line101">101: </a><strong><font color="#228B22">#define HES(a,b) (lgmres-&gt;hes_origin + (b)*(lgmres-&gt;max_k+1)+(a)) </font></strong>
-<a name="line102">102: </a>                  <font color="#B22222">/* HES will be size (max_k + 1) * (max_k + 1) - </font>
-<a name="line103">103: </a><font color="#B22222">                     again, think of HES as being stored columnwise */</font>
-<a name="line104">104: </a><strong><font color="#228B22">#define CC(a)    (lgmres-&gt;cc_origin + (a)) </font><font color="#B22222">/* CC will be length (max_k+1) - cosines */</font><font color="#228B22"></font></strong>
-<a name="line105">105: </a><strong><font color="#228B22">#define SS(a)    (lgmres-&gt;ss_origin + (a)) </font><font color="#B22222">/* SS will be length (max_k+1) - sines */</font><font color="#228B22"></font></strong>
-<a name="line106">106: </a><strong><font color="#228B22">#define GRS(a)    (lgmres-&gt;rs_origin + (a)) </font><font color="#B22222">/* GRS will be length (max_k+2) - rt side */</font><font color="#228B22"></font></strong>
+<a name="line99"> 99: </a><strong><font color="#228B22">#define HH(a,b)  (lgmres-&gt;hh_origin + (b)*(lgmres-&gt;max_k+2)+(a)) </font></strong>
+<a name="line100">100: </a>                 <font color="#B22222">/* HH will be size (max_k+2)*(max_k+1)  -  think of HH as </font>
+<a name="line101">101: </a><font color="#B22222">                    being stored columnwise (inc. zeros) for access purposes. */</font>
+<a name="line102">102: </a><strong><font color="#228B22">#define HES(a,b) (lgmres-&gt;hes_origin + (b)*(lgmres-&gt;max_k+1)+(a)) </font></strong>
+<a name="line103">103: </a>                  <font color="#B22222">/* HES will be size (max_k + 1) * (max_k + 1) - </font>
+<a name="line104">104: </a><font color="#B22222">                     again, think of HES as being stored columnwise */</font>
+<a name="line105">105: </a><strong><font color="#228B22">#define CC(a)    (lgmres-&gt;cc_origin + (a)) </font><font color="#B22222">/* CC will be length (max_k+1) - cosines */</font><font color="#228B22"></font></strong>
+<a name="line106">106: </a><strong><font color="#228B22">#define SS(a)    (lgmres-&gt;ss_origin + (a)) </font><font color="#B22222">/* SS will be length (max_k+1) - sines */</font><font color="#228B22"></font></strong>
+<a name="line107">107: </a><strong><font color="#228B22">#define GRS(a)    (lgmres-&gt;rs_origin + (a)) </font><font color="#B22222">/* GRS will be length (max_k+2) - rt side */</font><font color="#228B22"></font></strong>
 
-<a name="line108">108: </a><font color="#B22222">/* vector names */</font>
-<a name="line109">109: </a><strong><font color="#228B22">#define VEC_OFFSET     2</font></strong>
-<a name="line110">110: </a><strong><font color="#228B22">#define VEC_TEMP       lgmres-&gt;vecs[0]               </font><font color="#B22222">/* work space */</font><font color="#228B22">  </font></strong>
-<a name="line111">111: </a><strong><font color="#228B22">#define VEC_TEMP_MATOP lgmres-&gt;vecs[1]               </font><font color="#B22222">/* work space */</font><font color="#228B22"></font></strong>
-<a name="line112">112: </a><strong><font color="#228B22">#define VEC_VV(i)      lgmres-&gt;vecs[VEC_OFFSET+i]    </font><font color="#B22222">/* use to access</font></strong>
-<a name="line113">113: </a><font color="#B22222">                                                        othog basis vectors */</font>
-<a name="line114">114: </a><font color="#B22222">/*LGMRES_MOD */</font>
-<a name="line115">115: </a><strong><font color="#228B22">#define AUG_OFFSET     1</font></strong>
-<a name="line116">116: </a><strong><font color="#228B22">#define AUGVEC(i)      lgmres-&gt;augvecs[AUG_OFFSET+i]   </font><font color="#B22222">/*error approx vecors */</font><font color="#228B22"></font></strong>
-<a name="line117">117: </a><strong><font color="#228B22">#define AUG_ORDER(i)   lgmres-&gt;aug_order[i]            </font><font color="#B22222">/*order in which to augment */</font><font color="#228B22"> </font></strong>
-<a name="line118">118: </a><strong><font color="#228B22">#define A_AUGVEC(i)    lgmres-&gt;augvecs[AUG_OFFSET+i+lgmres-&gt;aug_dim] </font><font color="#B22222">/*A times error vector */</font><font color="#228B22"></font></strong>
-<a name="line119">119: </a><strong><font color="#228B22">#define AUG_TEMP       lgmres-&gt;augvecs[0]              </font><font color="#B22222">/* work vector */</font><font color="#228B22"> </font></strong>
-<a name="line120">120: </a><font color="#A020F0">#endif</font>
+<a name="line109">109: </a><font color="#B22222">/* vector names */</font>
+<a name="line110">110: </a><strong><font color="#228B22">#define VEC_OFFSET     2</font></strong>
+<a name="line111">111: </a><strong><font color="#228B22">#define VEC_TEMP       lgmres-&gt;vecs[0]               </font><font color="#B22222">/* work space */</font><font color="#228B22">  </font></strong>
+<a name="line112">112: </a><strong><font color="#228B22">#define VEC_TEMP_MATOP lgmres-&gt;vecs[1]               </font><font color="#B22222">/* work space */</font><font color="#228B22"></font></strong>
+<a name="line113">113: </a><strong><font color="#228B22">#define VEC_VV(i)      lgmres-&gt;vecs[VEC_OFFSET+i]    </font><font color="#B22222">/* use to access</font></strong>
+<a name="line114">114: </a><font color="#B22222">                                                        othog basis vectors */</font>
+<a name="line115">115: </a><font color="#B22222">/*LGMRES_MOD */</font>
+<a name="line116">116: </a><strong><font color="#228B22">#define AUG_OFFSET     1</font></strong>
+<a name="line117">117: </a><strong><font color="#228B22">#define AUGVEC(i)      lgmres-&gt;augvecs[AUG_OFFSET+i]   </font><font color="#B22222">/*error approx vecors */</font><font color="#228B22"></font></strong>
+<a name="line118">118: </a><strong><font color="#228B22">#define AUG_ORDER(i)   lgmres-&gt;aug_order[i]            </font><font color="#B22222">/*order in which to augment */</font><font color="#228B22"> </font></strong>
+<a name="line119">119: </a><strong><font color="#228B22">#define A_AUGVEC(i)    lgmres-&gt;augvecs[AUG_OFFSET+i+lgmres-&gt;aug_dim] </font><font color="#B22222">/*A times error vector */</font><font color="#228B22"></font></strong>
+<a name="line120">120: </a><strong><font color="#228B22">#define AUG_TEMP       lgmres-&gt;augvecs[0]              </font><font color="#B22222">/* work vector */</font><font color="#228B22"> </font></strong>
+<a name="line121">121: </a><font color="#A020F0">#endif</font>
 
 
 

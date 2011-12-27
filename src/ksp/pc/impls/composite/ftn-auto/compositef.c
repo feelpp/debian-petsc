@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* composite.c */
 /* Fortran interface file */
 
@@ -54,19 +55,19 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pccompositesettype_(PC pc,PCCompositeType *type, int *__ierr ){
+void PETSC_STDCALL  pccompositesettype_(PC pc,PCCompositeType *type, int *__ierr ){
 *__ierr = PCCompositeSetType(
 	(PC)PetscToPointer((pc) ),*type);
 }
-void PETSC_STDCALL   pccompositespecialsetalpha_(PC pc,PetscScalar *alpha, int *__ierr ){
+void PETSC_STDCALL  pccompositespecialsetalpha_(PC pc,PetscScalar *alpha, int *__ierr ){
 *__ierr = PCCompositeSpecialSetAlpha(
 	(PC)PetscToPointer((pc) ),*alpha);
 }
-void PETSC_STDCALL   pccompositegetpc_(PC pc,PetscInt *n,PC *subpc, int *__ierr ){
+void PETSC_STDCALL  pccompositegetpc_(PC pc,PetscInt *n,PC *subpc, int *__ierr ){
 *__ierr = PCCompositeGetPC(
 	(PC)PetscToPointer((pc) ),*n,subpc);
 }
-void PETSC_STDCALL   pccompositesetusetrue_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pccompositesetusetrue_(PC pc, int *__ierr ){
 *__ierr = PCCompositeSetUseTrue(
 	(PC)PetscToPointer((pc) ));
 }

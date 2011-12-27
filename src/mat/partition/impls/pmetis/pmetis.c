@@ -1,13 +1,12 @@
-#define PETSCMAT_DLL
  
-#include "../src/mat/impls/adj/mpi/mpiadj.h"    /*I "petscmat.h" I*/
+#include <../src/mat/impls/adj/mpi/mpiadj.h>    /*I "petscmat.h" I*/
 
 /* 
    Currently using ParMetis-2.0. The following include file has
    to be changed to par_kmetis.h for ParMetis-1.0
 */
 EXTERN_C_BEGIN
-#include "parmetis.h"
+#include <parmetis.h>
 EXTERN_C_END
 
 /*
@@ -36,7 +35,7 @@ static PetscErrorCode MatPartitioningApply_Parmetis(MatPartitioning part,IS *par
   int                      wgtflag=0, numflag=0, ncon=1, nparts=part->n, options[3],  i,j;
   Mat                      mat = part->adj;
   Mat_MPIAdj               *adj = (Mat_MPIAdj *)mat->data;
-  PetscTruth               flg;
+  PetscBool                flg;
   float                    *tpwgts,*ubvec;
   PetscInt                 bs = 1,nold;
 
@@ -57,9 +56,9 @@ static PetscErrorCode MatPartitioningApply_Parmetis(MatPartitioning part,IS *par
   xadj    = adj->i;
   adjncy  = adj->j;
   ierr    = MPI_Comm_rank(((PetscObject)part)->comm,&rank);CHKERRQ(ierr);
-#if 0
-  if (!(vtxdist[rank+1] - vtxdist[rank])) {
-    SETERRQ(PETSC_ERR_LIB,"Does not support any processor with no entries");
+#if 1
+  if ((vtxdist[rank+1] - vtxdist[rank]) < 1) {
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"Does not support any processor with %d entries",vtxdist[rank+1] - vtxdist[rank]);
   }
 #endif
 #if defined(PETSC_USE_DEBUG)
@@ -69,7 +68,7 @@ static PetscErrorCode MatPartitioningApply_Parmetis(MatPartitioning part,IS *par
     ierr = MatGetOwnershipRange(mat,&rstart,PETSC_NULL);CHKERRQ(ierr);
     for (i=0; i<mat->rmap->n; i++) {
       for (j=xadj[i]; j<xadj[i+1]; j++) {
-        if (adjncy[j] == i+rstart) SETERRQ1(PETSC_ERR_ARG_WRONG,"Row %d has diagonal entry; Parmetis forbids diagonal entry",i+rstart);
+        if (adjncy[j] == i+rstart) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Row %d has diagonal entry; Parmetis forbids diagonal entry",i+rstart);
       }
     }
   }
@@ -107,15 +106,14 @@ static PetscErrorCode MatPartitioningApply_Parmetis(MatPartitioning part,IS *par
         newlocals[bs*i + j] = locals[i];
       }
     }
-    ierr = ISCreateGeneral(((PetscObject)part)->comm,bs*mat->rmap->n,newlocals,partitioning);CHKERRQ(ierr);
-    ierr = PetscFree(newlocals);CHKERRQ(ierr);
+    ierr = PetscFree(locals);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(((PetscObject)part)->comm,bs*mat->rmap->n,newlocals,PETSC_OWN_POINTER,partitioning);CHKERRQ(ierr);
   } else {
-    ierr = ISCreateGeneral(((PetscObject)part)->comm,mat->rmap->n,locals,partitioning);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(((PetscObject)part)->comm,mat->rmap->n,locals,PETSC_OWN_POINTER,partitioning);CHKERRQ(ierr);
   }
-  ierr = PetscFree(locals);CHKERRQ(ierr);
 
   if (!flg) {
-    ierr = MatDestroy(mat);CHKERRQ(ierr);
+    ierr = MatDestroy(&mat);CHKERRQ(ierr);
   }
   PetscFunctionReturn(0);
 }
@@ -128,11 +126,11 @@ PetscErrorCode MatPartitioningView_Parmetis(MatPartitioning part,PetscViewer vie
   MatPartitioning_Parmetis *parmetis = (MatPartitioning_Parmetis *)part->data;
   PetscErrorCode ierr;
   int rank;
-  PetscTruth               iascii;
+  PetscBool                iascii;
 
   PetscFunctionBegin;
   ierr = MPI_Comm_rank(((PetscObject)part)->comm,&rank);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     if (parmetis->parallel == 2) {
       ierr = PetscViewerASCIIPrintf(viewer,"  Using parallel coarse grid partitioner\n");CHKERRQ(ierr);
@@ -140,11 +138,11 @@ PetscErrorCode MatPartitioningView_Parmetis(MatPartitioning part,PetscViewer vie
       ierr = PetscViewerASCIIPrintf(viewer,"  Using sequential coarse grid partitioner\n");CHKERRQ(ierr);
     }
     ierr = PetscViewerASCIIPrintf(viewer,"  Using %d fold factor\n",parmetis->foldfactor);CHKERRQ(ierr);
+    ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_TRUE);CHKERRQ(ierr);
     ierr = PetscViewerASCIISynchronizedPrintf(viewer,"  [%d]Number of cuts found %d\n",rank,parmetis->cuts);CHKERRQ(ierr);
     ierr = PetscViewerFlush(viewer);CHKERRQ(ierr);
-  } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for this Parmetis partitioner",((PetscObject)viewer)->type_name);
-  }
+    ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_FALSE);CHKERRQ(ierr);
+  } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported for this Parmetis partitioner",((PetscObject)viewer)->type_name);
 
   PetscFunctionReturn(0);
 }
@@ -155,7 +153,7 @@ PetscErrorCode MatPartitioningView_Parmetis(MatPartitioning part,PetscViewer vie
      MatPartitioningParmetisSetCoarseSequential - Use the sequential code to 
          do the partitioning of the coarse grid.
 
-  Collective on MatPartitioning
+  Logically Collective on MatPartitioning
 
   Input Parameter:
 .  part - the partitioning context
@@ -163,7 +161,7 @@ PetscErrorCode MatPartitioningView_Parmetis(MatPartitioning part,PetscViewer vie
    Level: advanced
 
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatPartitioningParmetisSetCoarseSequential(MatPartitioning part)
+PetscErrorCode  MatPartitioningParmetisSetCoarseSequential(MatPartitioning part)
 {
   MatPartitioning_Parmetis *parmetis = (MatPartitioning_Parmetis *)part->data;
 
@@ -186,7 +184,7 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatPartitioningParmetisSetCoarseSequential(Mat
    Level: advanced
 
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatPartitioningParmetisGetEdgeCut(MatPartitioning part, PetscInt *cut)
+PetscErrorCode  MatPartitioningParmetisGetEdgeCut(MatPartitioning part, PetscInt *cut)
 {
   MatPartitioning_Parmetis *parmetis = (MatPartitioning_Parmetis *) part->data;
 
@@ -200,11 +198,11 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatPartitioningParmetisGetEdgeCut(MatPartition
 PetscErrorCode MatPartitioningSetFromOptions_Parmetis(MatPartitioning part)
 {
   PetscErrorCode ierr;
-  PetscTruth     flag = PETSC_FALSE;
+  PetscBool      flag = PETSC_FALSE;
 
   PetscFunctionBegin;
   ierr = PetscOptionsHead("Set ParMeTiS partitioning options");CHKERRQ(ierr);
-  ierr = PetscOptionsTruth("-mat_partitioning_parmetis_coarse_sequential","Use sequential coarse partitioner","MatPartitioningParmetisSetCoarseSequential",flag,&flag,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsBool("-mat_partitioning_parmetis_coarse_sequential","Use sequential coarse partitioner","MatPartitioningParmetisSetCoarseSequential",flag,&flag,PETSC_NULL);CHKERRQ(ierr);
     if (flag) {
       ierr = MatPartitioningParmetisSetCoarseSequential(part);CHKERRQ(ierr);
     }
@@ -228,7 +226,7 @@ PetscErrorCode MatPartitioningDestroy_Parmetis(MatPartitioning part)
 
 
 /*MC
-   MAT_PARTITIONING_PARMETIS - Creates a partitioning context via the external package PARMETIS.
+   MATPARTITIONINGPARMETIS - Creates a partitioning context via the external package PARMETIS.
 
    Collective on MPI_Comm
 
@@ -251,7 +249,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "MatPartitioningCreate_Parmetis" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatPartitioningCreate_Parmetis(MatPartitioning part)
+PetscErrorCode  MatPartitioningCreate_Parmetis(MatPartitioning part)
 {
   PetscErrorCode ierr;
   MatPartitioning_Parmetis *parmetis;
@@ -308,7 +306,7 @@ EXTERN_C_END
 PetscErrorCode MatMeshToVertexGraph(Mat mesh,PetscInt ncommonnodes,Mat *dual)
 {
   PetscFunctionBegin;
-  SETERRQ(PETSC_ERR_SUP,"ParMETIS does not provide this functionality");
+  SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"ParMETIS does not provide this functionality");
   PetscFunctionReturn(0);
 }
 
@@ -348,11 +346,11 @@ PetscErrorCode MatMeshToCellGraph(Mat mesh,PetscInt ncommonnodes,Mat *dual)
   int                      *newxadj,*newadjncy;
   int                      numflag=0;
   Mat_MPIAdj               *adj = (Mat_MPIAdj *)mesh->data,*newadj;
-  PetscTruth               flg;
+  PetscBool                flg;
 
   PetscFunctionBegin;
   ierr = PetscTypeCompare((PetscObject)mesh,MATMPIADJ,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(PETSC_ERR_SUP,"Must use MPIAdj matrix type");
+  if (!flg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Must use MPIAdj matrix type");
 
   /* ParMETIS has no error conditions ??? */
   CHKMEMQ;

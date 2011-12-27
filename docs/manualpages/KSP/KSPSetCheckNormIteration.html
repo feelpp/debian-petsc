@@ -10,9 +10,9 @@ Sets the first iteration at which the norm of the residual will be  computed and
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetCheckNormIteration(KSP ksp,PetscInt it)
+PetscErrorCode  KSPSetCheckNormIteration(KSP ksp,PetscInt it)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -24,7 +24,7 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Currently only works with <A HREF="../KSP/KSPCG.html#KSPCG">KSPCG</A>, <A HREF="../KSP/KSPBCGS.html#KSPBCGS">KSPBCGS</A> and <A HREF="../KSP/KSPIBCGS.html#KSPIBCGS">KSPIBCGS</A>
 <P>
-Use <A HREF="../KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(ksp,<A HREF="../KSP/KSP_NORM_NO.html#KSP_NORM_NO">KSP_NORM_NO</A>) to never check the norm
+Use <A HREF="../KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(ksp,<A HREF="../KSP/KSP_NORM_NONE.html#KSP_NORM_NONE">KSP_NORM_NONE</A>) to never check the norm
 <P>
 On steps where the norm is not computed, the previous norm is still in the variable, so if you run with, for example,
 -ksp_monitor the residual norm will appear to be unchanged for several iterations (though it is not really unchanged).

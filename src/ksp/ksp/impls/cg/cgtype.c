@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "../src/ksp/ksp/impls/cg/cgimpl.h"       /*I "petscksp.h" I*/
+#include <../src/ksp/ksp/impls/cg/cgimpl.h>       /*I "petscksp.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCGSetType" 
@@ -9,7 +8,7 @@
     use for solving a linear system with a complex coefficient matrix.
     This option is irrelevant when solving a real system.
 
-    Collective on KSP
+    Logically Collective on KSP
 
     Input Parameters:
 +   ksp - the iterative context
@@ -30,26 +29,22 @@
 
 .keywords: CG, conjugate gradient, Hermitian, symmetric, set, type
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCGSetType(KSP ksp,KSPCGType type)
+PetscErrorCode  KSPCGSetType(KSP ksp,KSPCGType type)
 {
-  PetscErrorCode ierr,(*f)(KSP,KSPCGType);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  ierr = PetscObjectQueryFunction((PetscObject)ksp,"KSPCGSetType_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp,type);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ierr = PetscTryMethod(ksp,"KSPCGSetType_C",(KSP,KSPCGType),(ksp,type));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCGUseSingleReduction" 
 /*@
-    KSPCGUseSingleReduction - Merge the two inner products needed in CG into a single 
-     MPI_Allreduce() call.
+    KSPCGUseSingleReduction - Merge the two inner products needed in CG into a single MPI_Allreduce() call.
 
-    Collective on KSP
+    Logically Collective on KSP
 
     Input Parameters:
 +   ksp - the iterative context
@@ -68,16 +63,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCGSetType(KSP ksp,KSPCGType type)
     
 .keywords: CG, conjugate gradient, Hermitian, symmetric, set, type
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCGUseSingleReduction(KSP ksp,PetscTruth flg)
+PetscErrorCode  KSPCGUseSingleReduction(KSP ksp,PetscBool  flg)
 {
-  PetscErrorCode ierr,(*f)(KSP,PetscTruth);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  ierr = PetscObjectQueryFunction((PetscObject)ksp,"KSPCGUseSingleReduction_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp,flg);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  PetscValidLogicalCollectiveBool(ksp,flg,2);
+  ierr = PetscTryMethod(ksp,"KSPCGUseSingleReduction_C",(KSP,PetscBool),(ksp,flg));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

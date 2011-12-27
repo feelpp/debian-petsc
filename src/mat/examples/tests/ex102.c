@@ -9,7 +9,7 @@ static char help[] = "Tests MatCreateLRC()\n\n";
    Processors: n
 T*/
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -19,7 +19,7 @@ int main(int argc,char **args)
   Mat            A,U,V,LR;    
   PetscInt       i,j,Ii,J,Istart,Iend,m = 8,n = 7,rstart,rend;
   PetscErrorCode ierr;
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscScalar    *u,a;
 
   PetscInitialize(&argc,&args,(char *)0,help);
@@ -99,13 +99,13 @@ int main(int argc,char **args)
   ierr = PetscOptionsHasName(PETSC_NULL,"-view_product",&flg);CHKERRQ(ierr);
   if (flg) {ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);}
 
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
   /* you can destroy the matrices in any order you like */
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(U);CHKERRQ(ierr);
-  ierr = MatDestroy(V);CHKERRQ(ierr);
-  ierr = MatDestroy(LR);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&U);CHKERRQ(ierr);
+  ierr = MatDestroy(&V);CHKERRQ(ierr);
+  ierr = MatDestroy(&LR);CHKERRQ(ierr);
 
   /*
      Always call PetscFinalize() before exiting a program.  This routine
@@ -113,6 +113,6 @@ int main(int argc,char **args)
        - provides summary and diagnostic information if certain runtime
          options are chosen (e.g., -log_summary). 
   */
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

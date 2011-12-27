@@ -6,17 +6,17 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="EventPerfLogGetVisible"><H1>EventPerfLogGetVisible</H1></A>
-This function returns whether an event is printed during <A HREF="../Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>() 
+This function returns whether an event is printed during PetscLogView() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode EventPerfLogGetVisible(EventPerfLog eventLog, PetscLogEvent event, PetscTruth *isVisible) 
+PetscErrorCode EventPerfLogGetVisible(PetscEventPerfLog eventLog, PetscLogEvent event, PetscBool  *isVisible) 
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>eventLog  </B></TD><TD>- The EventPerfLog
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>eventLog  </B></TD><TD>- The PetscEventPerfLog
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>event     </B></TD><TD>- The event id to log
 </TD></TR></TABLE>
@@ -35,8 +35,8 @@ Not Collective
  log, visible, event
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Profiling/EventPerfLogSetVisible.html#EventPerfLogSetVisible">EventPerfLogSetVisible</A>(), <A HREF="../Profiling/EventRegLogRegister.html#EventRegLogRegister">EventRegLogRegister</A>(), StageLogGetEventLog()
-<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+ <A HREF="../Profiling/EventPerfLogSetVisible.html#EventPerfLogSetVisible">EventPerfLogSetVisible</A>(), <A HREF="../Profiling/EventRegLogRegister.html#EventRegLogRegister">EventRegLogRegister</A>(), PetscStageLogGetEventLog()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/utils/eventLog.c.html#EventPerfLogGetVisible">src/sys/plog/utils/eventLog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>

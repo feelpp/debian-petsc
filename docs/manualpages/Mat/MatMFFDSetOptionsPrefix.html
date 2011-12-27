@@ -6,11 +6,11 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="MatMFFDSetOptionsPrefix"><H1>MatMFFDSetOptionsPrefix</H1></A>
-Sets the prefix used for searching for all  MatMFFD options in the database. 
+Sets the prefix used for searching for all  <A HREF="../Mat/MatMFFD.html#MatMFFD">MatMFFD</A> options in the database. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"   
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDSetOptionsPrefix(Mat mat,const char prefix[])
+PetscErrorCode  MatMFFDSetOptionsPrefix(Mat mat,const char prefix[])
 
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
@@ -33,7 +33,7 @@ The first character of all runtime options is AUTOMATICALLY the hyphen.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatMFFDSetFromOptions.html#MatMFFDSetFromOptions">MatMFFDSetFromOptions</A>(), <A HREF="../SNES/MatCreateSNESMF.html#MatCreateSNESMF">MatCreateSNESMF</A>()
+ <A HREF="../Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(), <A HREF="../SNES/MatCreateSNESMF.html#MatCreateSNESMF">MatCreateSNESMF</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/mffd/mffd.c.html#MatMFFDSetOptionsPrefix">src/mat/impls/mffd/mffd.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

@@ -190,19 +190,19 @@ namespace ALE {
 
   class boundary_condition {
   public:
-    PetscTruth (*_func)(PETSC_MESH_TYPE::point_type, const double *);
+    PetscBool  (*_func)(PETSC_MESH_TYPE::point_type, const double *);
     int marker;
     int cellmarker;
 
     boundary_condition(){};
-    boundary_condition (PetscTruth (*func)(PETSC_MESH_TYPE::point_type, const double *), int mark = 1, int cellmark = 2) {
+    boundary_condition (PetscBool  (*func)(PETSC_MESH_TYPE::point_type, const double *), int mark = 1, int cellmark = 2) {
       
     }
     void applyBC(Obj<PETSC_MESH_TYPE> m) {
     }
   };
   
-  PetscTruth Scalar_Dirichlet_Pred(PETSC_MESH_TYPE::point_type p, const double * coords) {
+  PetscBool  Scalar_Dirichlet_Pred(PETSC_MESH_TYPE::point_type p, const double * coords) {
     //set up the marker
     //if anything in the star of the thing has support size 1 but not height 0 then the thing's on the boundary! mark it!
     Obj<PETSC_MESH_TYPE::sieve_type::supportArray> star = 
@@ -616,7 +616,7 @@ PetscErrorCode Assemble_RHS_UFC(Mesh mesh, ufc::form * bform, ufc::form * lform,
     ierr = PetscMemzero(elemMat, numBasisFuncs*numBasisFuncs * sizeof(PetscScalar));CHKERRQ(ierr);
     //m->computeElementGeometry(coordinates, *c_iter, v0, J, invJ, detJ);
     Map_SieveCell_UFCCell(m, *c_iter, bform, &cell);
-    //if (detJ <= 0.0) SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE, "Invalid determinant %g for element %d", detJ, *c_iter);
+    //if (detJ <= 0.0) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE, "Invalid determinant %g for element %d", detJ, *c_iter);
 
     PetscScalar *x;
 
@@ -1083,7 +1083,7 @@ void SetupField_UFC(ALE::Obj<PETSC_MESH_TYPE> m, const ALE::Obj<PETSC_MESH_TYPE:
  PetscErrorCode CreateExactSolution_UFC(Obj<PETSC_MESH_TYPE> m, Obj<PETSC_MESH_TYPE::real_section_type> s, ufc::form * form, PetscScalar (*exactSolution)(const double *))
  {
    const int      dim = m->getDimension();
-   //PetscTruth     flag;
+   //PetscBool      flag;
    //PetscErrorCode ierr;
    
    PetscFunctionBegin;

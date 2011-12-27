@@ -12,11 +12,11 @@ This example also demonstrates matrix-free methods\n\n";
 /*
   This is not a good example to understand the use of multigrid with PETSc.
 */
-#include "petscmg.h"
+#include <petscpcmg.h>
 
 PetscErrorCode  residual(Mat,Vec,Vec,Vec);
-PetscErrorCode  gauss_seidel(PC,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal,PetscInt,PetscTruth,PetscInt*,PCRichardsonConvergedReason*);
-PetscErrorCode  jacobi(PC,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal,PetscInt,PetscTruth,PetscInt*,PCRichardsonConvergedReason*);
+PetscErrorCode  gauss_seidel(PC,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal,PetscInt,PetscBool ,PetscInt*,PCRichardsonConvergedReason*);
+PetscErrorCode  jacobi(PC,Vec,Vec,Vec,PetscReal,PetscReal,PetscReal,PetscInt,PetscBool ,PetscInt*,PCRichardsonConvergedReason*);
 PetscErrorCode  interpolate(Mat,Vec,Vec,Vec);
 PetscErrorCode  restrct(Mat,Vec,Vec);
 PetscErrorCode  Create1dLaplacian(PetscInt,Mat*);
@@ -39,7 +39,7 @@ int main(int Argc,char **Args)
   char            *shellname;
   Vec             x,solution,X[20],R[20],B[20];
   PC              pcmg,pc;
-  PetscTruth      flg;
+  PetscBool       flg;
 
   PetscInitialize(&Argc,&Args,(char *)0,help);
 
@@ -58,7 +58,7 @@ int main(int Argc,char **Args)
   N[0] = x_mesh;
   for (i=1; i<levels; i++) {
     N[i] = N[i-1]/2;
-    if (N[i] < 1) {SETERRQ(1,"Too many levels");}
+    if (N[i] < 1) SETERRQ(PETSC_COMM_WORLD,1,"Too many levels");
   }
 
   ierr = Create1dLaplacian(N[levels-1],&cmat);CHKERRQ(ierr);
@@ -149,22 +149,22 @@ int main(int Argc,char **Args)
   ierr = PetscPrintf(PETSC_COMM_SELF,"its %D l_2 error %G max error %G resi %G\n",its,e[0],e[1],e[2]);CHKERRQ(ierr);
 
   ierr = PetscFree(N);CHKERRQ(ierr);
-  ierr = VecDestroy(solution);CHKERRQ(ierr);
+  ierr = VecDestroy(&solution);CHKERRQ(ierr);
 
   /* note we have to keep a list of all vectors allocated, this is 
      not ideal, but putting it in MGDestroy is not so good either*/
   for (i=0; i<levels; i++) {
-    ierr = VecDestroy(X[i]);CHKERRQ(ierr);
-    ierr = VecDestroy(B[i]);CHKERRQ(ierr);
-    if(i){ierr = VecDestroy(R[i]);CHKERRQ(ierr);}
+    ierr = VecDestroy(&X[i]);CHKERRQ(ierr);
+    ierr = VecDestroy(&B[i]);CHKERRQ(ierr);
+    if(i){ierr = VecDestroy(&R[i]);CHKERRQ(ierr);}
   }
   for (i=0; i<levels-1; i++) {
-    ierr = MatDestroy(mat[i]);CHKERRQ(ierr);
+    ierr = MatDestroy(&mat[i]);CHKERRQ(ierr);
   }
-  ierr = MatDestroy(cmat);CHKERRQ(ierr);
-  ierr = MatDestroy(fmat);CHKERRQ(ierr);
-  ierr = KSPDestroy(kspmg);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&cmat);CHKERRQ(ierr);
+  ierr = MatDestroy(&fmat);CHKERRQ(ierr);
+  ierr = KSPDestroy(&kspmg);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -218,7 +218,7 @@ PetscErrorCode amult(Mat mat,Vec xx,Vec yy)
 /* --------------------------------------------------------------------- */
 #undef __FUNCT__
 #define __FUNCT__ "gauss_seidel"
-PetscErrorCode gauss_seidel(PC pc,Vec bb,Vec xx,Vec w,PetscReal rtol,PetscReal abstol,PetscReal dtol,PetscInt m,PetscTruth guesszero,PetscInt *its,PCRichardsonConvergedReason *reason)
+PetscErrorCode gauss_seidel(PC pc,Vec bb,Vec xx,Vec w,PetscReal rtol,PetscReal abstol,PetscReal dtol,PetscInt m,PetscBool  guesszero,PetscInt *its,PCRichardsonConvergedReason *reason)
 {
   PetscInt       i,n1;
   PetscErrorCode ierr;
@@ -248,7 +248,7 @@ PetscErrorCode gauss_seidel(PC pc,Vec bb,Vec xx,Vec w,PetscReal rtol,PetscReal a
 /* --------------------------------------------------------------------- */
 #undef __FUNCT__
 #define __FUNCT__ "jacobi"
-PetscErrorCode jacobi(PC pc,Vec bb,Vec xx,Vec w,PetscReal rtol,PetscReal abstol,PetscReal dtol,PetscInt m,PetscTruth guesszero,PetscInt *its,PCRichardsonConvergedReason *reason)
+PetscErrorCode jacobi(PC pc,Vec bb,Vec xx,Vec w,PetscReal rtol,PetscReal abstol,PetscReal dtol,PetscInt m,PetscBool  guesszero,PetscInt *its,PCRichardsonConvergedReason *reason)
 {
   PetscInt       i,n,n1;
   PetscErrorCode ierr;
@@ -327,7 +327,7 @@ PetscErrorCode restrct(Mat mat,Vec rr,Vec bb)
 }
 /* --------------------------------------------------------------------- */
 #undef __FUNCT__
-#define __FUNCT__ "Create2dLaplacian"
+#define __FUNCT__ "Create1dLaplacian"
 PetscErrorCode Create1dLaplacian(PetscInt n,Mat *mat)
 {
   PetscScalar    mone = -1.0,two = 2.0;

@@ -10,7 +10,7 @@ Displays an application ordering.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscao.h" 
-PetscErrorCode PETSCDM_DLLEXPORT AOView(AO ao,PetscViewer viewer)
+PetscErrorCode  AOView(AO ao,PetscViewer viewer)
 </PRE>
 Collective on <A HREF="../AO/AO.html#AO">AO</A> and <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 <P>
@@ -22,6 +22,10 @@ Collective on <A HREF="../AO/AO.html#AO">AO</A> and <A HREF="../Viewer/PetscView
 </TD></TR></TABLE>
 <P>
 
+<P>
+<H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
+<DT><B>-ao_view </B> -calls <A HREF="../AO/AOView.html#AOView">AOView</A>() at end of <A HREF="../AO/AOCreate.html#AOCreate">AOCreate</A>()
+<br>
 <P>
 <H3><FONT COLOR="#CC3333">Note</FONT></H3>
 The available visualization contexts include

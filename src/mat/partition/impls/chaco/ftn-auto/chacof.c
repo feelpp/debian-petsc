@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* chaco.c */
 /* Fortran interface file */
 
@@ -33,9 +34,19 @@ extern void PetscRmPointer(void*);
 #define matpartitioningchacosetglobal_ matpartitioningchacosetglobal
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matpartitioningchacogetglobal_ MATPARTITIONINGCHACOGETGLOBAL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matpartitioningchacogetglobal_ matpartitioningchacogetglobal
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matpartitioningchacosetlocal_ MATPARTITIONINGCHACOSETLOCAL
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matpartitioningchacosetlocal_ matpartitioningchacosetlocal
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matpartitioningchacogetlocal_ MATPARTITIONINGCHACOGETLOCAL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matpartitioningchacogetlocal_ matpartitioningchacogetlocal
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matpartitioningchacosetcoarselevel_ MATPARTITIONINGCHACOSETCOARSELEVEL
@@ -48,14 +59,29 @@ extern void PetscRmPointer(void*);
 #define matpartitioningchacoseteigensolver_ matpartitioningchacoseteigensolver
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matpartitioningchacogeteigensolver_ MATPARTITIONINGCHACOGETEIGENSOLVER
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matpartitioningchacogeteigensolver_ matpartitioningchacogeteigensolver
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matpartitioningchacoseteigentol_ MATPARTITIONINGCHACOSETEIGENTOL
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matpartitioningchacoseteigentol_ matpartitioningchacoseteigentol
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matpartitioningchacogeteigentol_ MATPARTITIONINGCHACOGETEIGENTOL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matpartitioningchacogeteigentol_ matpartitioningchacogeteigentol
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matpartitioningchacoseteigennumber_ MATPARTITIONINGCHACOSETEIGENNUMBER
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matpartitioningchacoseteigennumber_ matpartitioningchacoseteigennumber
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matpartitioningchacogeteigennumber_ MATPARTITIONINGCHACOGETEIGENNUMBER
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matpartitioningchacogeteigennumber_ matpartitioningchacogeteigennumber
 #endif
 
 
@@ -63,30 +89,52 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matpartitioningchacosetglobal_(MatPartitioning part,MPChacoGlobalType *method, int *__ierr ){
+void PETSC_STDCALL  matpartitioningchacosetglobal_(MatPartitioning part,MPChacoGlobalType *method, int *__ierr ){
 *__ierr = MatPartitioningChacoSetGlobal(
 	(MatPartitioning)PetscToPointer((part) ),*method);
 }
-void PETSC_STDCALL   matpartitioningchacosetlocal_(MatPartitioning part,MPChacoLocalType *method, int *__ierr ){
+void PETSC_STDCALL  matpartitioningchacogetglobal_(MatPartitioning part,MPChacoGlobalType *method, int *__ierr ){
+*__ierr = MatPartitioningChacoGetGlobal(
+	(MatPartitioning)PetscToPointer((part) ),
+	(MPChacoGlobalType* )PetscToPointer((method) ));
+}
+void PETSC_STDCALL  matpartitioningchacosetlocal_(MatPartitioning part,MPChacoLocalType *method, int *__ierr ){
 *__ierr = MatPartitioningChacoSetLocal(
 	(MatPartitioning)PetscToPointer((part) ),*method);
 }
-void PETSC_STDCALL   matpartitioningchacosetcoarselevel_(MatPartitioning part,PetscReal *level, int *__ierr ){
+void PETSC_STDCALL  matpartitioningchacogetlocal_(MatPartitioning part,MPChacoLocalType *method, int *__ierr ){
+*__ierr = MatPartitioningChacoGetLocal(
+	(MatPartitioning)PetscToPointer((part) ),
+	(MPChacoLocalType* )PetscToPointer((method) ));
+}
+void PETSC_STDCALL  matpartitioningchacosetcoarselevel_(MatPartitioning part,PetscReal *level, int *__ierr ){
 *__ierr = MatPartitioningChacoSetCoarseLevel(
 	(MatPartitioning)PetscToPointer((part) ),*level);
 }
-void PETSC_STDCALL   matpartitioningchacoseteigensolver_(MatPartitioning part,
-    MPChacoEigenType *method, int *__ierr ){
+void PETSC_STDCALL  matpartitioningchacoseteigensolver_(MatPartitioning part,MPChacoEigenType *method, int *__ierr ){
 *__ierr = MatPartitioningChacoSetEigenSolver(
 	(MatPartitioning)PetscToPointer((part) ),*method);
 }
-void PETSC_STDCALL   matpartitioningchacoseteigentol_(MatPartitioning part,PetscReal *tol, int *__ierr ){
+void PETSC_STDCALL  matpartitioningchacogeteigensolver_(MatPartitioning part,MPChacoEigenType *method, int *__ierr ){
+*__ierr = MatPartitioningChacoGetEigenSolver(
+	(MatPartitioning)PetscToPointer((part) ),
+	(MPChacoEigenType* )PetscToPointer((method) ));
+}
+void PETSC_STDCALL  matpartitioningchacoseteigentol_(MatPartitioning part,PetscReal *tol, int *__ierr ){
 *__ierr = MatPartitioningChacoSetEigenTol(
 	(MatPartitioning)PetscToPointer((part) ),*tol);
 }
-void PETSC_STDCALL   matpartitioningchacoseteigennumber_(MatPartitioning part,int *num, int *__ierr ){
+void PETSC_STDCALL  matpartitioningchacogeteigentol_(MatPartitioning part,PetscReal *tol, int *__ierr ){
+*__ierr = MatPartitioningChacoGetEigenTol(
+	(MatPartitioning)PetscToPointer((part) ),tol);
+}
+void PETSC_STDCALL  matpartitioningchacoseteigennumber_(MatPartitioning part,PetscInt *num, int *__ierr ){
 *__ierr = MatPartitioningChacoSetEigenNumber(
 	(MatPartitioning)PetscToPointer((part) ),*num);
+}
+void PETSC_STDCALL  matpartitioningchacogeteigennumber_(MatPartitioning part,PetscInt *num, int *__ierr ){
+*__ierr = MatPartitioningChacoGetEigenNumber(
+	(MatPartitioning)PetscToPointer((part) ),num);
 }
 #if defined(__cplusplus)
 }

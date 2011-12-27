@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* damgsnesad.c */
 /* Fortran interface file */
 
@@ -26,22 +27,22 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscda.h"
-#include "petscmg.h"
+#include "petscdmda.h"
+#include "petscpcmg.h"
 #include "petscdmmg.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define snesdacomputejacobianwithadic_ SNESDACOMPUTEJACOBIANWITHADIC
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define snesdacomputejacobianwithadic_ snesdacomputejacobianwithadic
 #endif
-#include "petscmg.h"
+#include "petscpcmg.h"
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   snesdacomputejacobianwithadic_(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,void*ptr, int *__ierr ){
+void PETSC_STDCALL  snesdacomputejacobianwithadic_(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,void*ptr, int *__ierr ){
 *__ierr = SNESDAComputeJacobianWithAdic(
 	(SNES)PetscToPointer((snes) ),
 	(Vec)PetscToPointer((X) ),J,B,flag,ptr);

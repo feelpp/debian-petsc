@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:20:33+00:00">
+<meta name="date" content="2011-10-29T18:51:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Makes a simple histogram.\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscsys.h.html">petscsys.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line9">  9: </a>{
@@ -23,7 +23,7 @@
 <a name="line16"> 16: </a>  int             color = PETSC_DRAW_GREEN;
 <a name="line17"> 17: </a>  const char      *xlabel,*ylabel,*toplabel;
 <a name="line18"> 18: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       xd;
-<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      flg;
+<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       flg;
 
 <a name="line21"> 21: </a>  xlabel = <font color="#666666">"X-axis Label"</font>;toplabel = <font color="#666666">"Top Label"</font>;ylabel = <font color="#666666">"Y-axis Label"</font>;
 
@@ -54,8 +54,8 @@
 <a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawHGDraw.html#PetscDrawHGDraw">PetscDrawHGDraw</A>(hist);
 <a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawFlush.html#PetscDrawFlush">PetscDrawFlush</A>(draw);
 
-<a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawHGDestroy.html#PetscDrawHGDestroy">PetscDrawHGDestroy</A>(hist);
-<a name="line51"> 51: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(draw);
+<a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawHGDestroy.html#PetscDrawHGDestroy">PetscDrawHGDestroy</A>(&amp;hist);
+<a name="line51"> 51: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(&amp;draw);
 <a name="line52"> 52: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line53"> 53: </a>  <font color="#4169E1">return</font> 0;
 <a name="line54"> 54: </a>}

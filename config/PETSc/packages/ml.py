@@ -3,12 +3,14 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
-    self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/ml-6.2.tar.gz']
+    self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/ml-6.2-win.tar.gz']
     self.functions = ['ML_Set_PrintLevel']
     self.includes  = ['ml_include.h']
     self.liblist   = [['libml.a']]
     self.license   = 'http://trilinos.sandia.gov/'
     self.fc        = 1
+    self.worksonWindows    = 1
+    self.downloadonWindows = 1
     return
 
   def setupDependencies(self, framework):
@@ -36,6 +38,7 @@ class Configure(PETSc.package.NewPackage):
     import os
 
     args = ['--prefix='+self.installDir]
+    args.append('--libdir='+os.path.join(self.installDir,self.libdir))
     args.append('--disable-ml-epetra')
     args.append('--disable-ml-aztecoo')
     args.append('--disable-ml-examples')
@@ -43,7 +46,7 @@ class Configure(PETSc.package.NewPackage):
     
     self.framework.pushLanguage('C')
     args.append('CC="'+self.framework.getCompiler()+'"')
-    args.append('--with-cflags="'+self.framework.getCompilerFlags()+' -DMPICH_SKIP_MPICXX '+ self.headers.toStringNoDupes(self.mpi.include)+'"')
+    args.append('--with-cflags="'+self.framework.getCompilerFlags()+' -DMPICH_SKIP_MPICXX -DOMPI_SKIP_MPICXX '+ self.headers.toStringNoDupes(self.mpi.include)+'"')
     args.append('CPPFLAGS="'+self.headers.toStringNoDupes(self.mpi.include)+'"')
     self.framework.popLanguage()
 
@@ -58,7 +61,7 @@ class Configure(PETSc.package.NewPackage):
     if hasattr(self.compilers, 'CXX'):
       self.framework.pushLanguage('Cxx')
       args.append('CXX="'+self.framework.getCompiler()+'"')
-      args.append('--with-cxxflags="'+self.framework.getCompilerFlags()+' -DMPICH_SKIP_MPICXX '+ self.headers.toStringNoDupes(self.mpi.include)+'"')
+      args.append('--with-cxxflags="'+self.framework.getCompilerFlags()+' -DMPICH_SKIP_MPICXX -DOMPI_SKIP_MPICXX '+ self.headers.toStringNoDupes(self.mpi.include)+'"')
       self.framework.popLanguage()
     else:
       raise RuntimeError('Error: ML requires C++ compiler. None specified')
@@ -76,16 +79,16 @@ class Configure(PETSc.package.NewPackage):
     if self.installNeeded('ml'):
       try:
         self.logPrintBox('Configuring ml; this may take several minutes')
-        output1,err1,ret1  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+'; ./configure '+args, timeout=900, log = self.framework.log)
+        output1,err1,ret1  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && ./configure '+args, timeout=900, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running configure on ML: '+str(e))
       try:
         self.logPrintBox('Compiling ml; this may take several minutes')
-        output2,err2,ret2  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+'; ML_INSTALL_DIR='+self.installDir+'; export ML_INSTALL_DIR; make clean; make; make install', timeout=2500, log = self.framework.log)
+        output2,err2,ret2  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && make clean && make && make install', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running make on ML: '+str(e))
       try:
-        output3,err3,ret3  = PETSc.package.NewPackage.executeShellCommand(self.setCompilers.RANLIB+' '+os.path.join(self.installDir,'lib')+'/lib*.a', timeout=2500, log = self.framework.log)
+        output3,err3,ret3  = PETSc.package.NewPackage.executeShellCommand(self.setCompilers.RANLIB+' '+os.path.join(self.installDir,self.libdir,'lib*.a'), timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running ranlib on ML libraries: '+str(e))
 
@@ -98,5 +101,8 @@ class Configure(PETSc.package.NewPackage):
       # ML requires LAPACK routine dgels() ?
       if not self.blasLapack.checkForRoutine('dgels'):
         raise RuntimeError('ML requires the LAPACK routine dgels(), the current Lapack libraries '+str(self.blasLapack.lib)+' does not have it')
+      if not self.blasLapack.checkForRoutine('dsteqr'):
+        raise RuntimeError('ML requires the LAPACK routine dsteqr(), the current Lapack libraries '+str(self.blasLapack.lib)+' does not have it')
+      self.framework.log.write('Found dsteqr() in Lapack library as needed by ML\n')
       self.framework.log.write('Found dgels() in Lapack library as needed by ML\n')
     return

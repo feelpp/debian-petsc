@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /***********************************gs.c***************************************
 
@@ -21,7 +20,7 @@ File Description:
 
 ************************************gs.c**************************************/
 
-#include "../src/ksp/pc/impls/tfs/tfs.h"
+#include <../src/ksp/pc/impls/tfs/tfs.h>
 
 /* default length of number of items via tree - doubles if exceeded */
 #define TREE_BUF_SZ 2048;
@@ -237,11 +236,8 @@ static gs_id * gsi_check_args(PetscInt *in_elms, PetscInt nel, PetscInt level)
   PetscErrorCode ierr;
 
 
-  if (!in_elms)
-    {SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"elms point to nothing!!!\n");}
-
-  if (nel<0)
-    {SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"can't have fewer than 0 elms!!!\n");}
+  if (!in_elms) SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"elms point to nothing!!!\n");
+  if (nel<0) SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"can't have fewer than 0 elms!!!\n");
 
   if (nel==0)
     {ierr = PetscInfo(0,"I don't have any elements!!!\n");CHKERRABORT(PETSC_COMM_WORLD,ierr);}
@@ -269,8 +265,7 @@ static gs_id * gsi_check_args(PetscInt *in_elms, PetscInt nel, PetscInt level)
         {elms[j] = in_elms[i]; companion[j++] = i;}
     }
 
-  if (j!=nel)
-    {SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"nel j mismatch!\n");}
+  if (j!=nel) SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"nel j mismatch!\n");
 
   /* pre-pass ... check to see if sorted */
   elms[nel] = INT_MAX;
@@ -380,11 +375,8 @@ static gs_id * gsi_check_args(PetscInt *in_elms, PetscInt nel, PetscInt level)
 
   /* must be semi-pos def - only pairwise depends on this */
   /* LATER - remove this restriction */
-  if (vals[3]<0)
-    {SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"gsi_check_args() :: system not semi-pos def \n");}
-
-  if (vals[4]==INT_MAX)
-    {SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"gsi_check_args() :: system ub too large !\n");}
+  if (vals[3]<0) SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"gsi_check_args() :: system not semi-pos def \n");
+  if (vals[4]==INT_MAX) SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"gsi_check_args() :: system ub too large !\n");
 
   gs->nel_min = vals[0];
   gs->nel_max = vals[1];
@@ -393,8 +385,7 @@ static gs_id * gsi_check_args(PetscInt *in_elms, PetscInt nel, PetscInt level)
   gs->gl_max  = vals[4];
   gs->negl    = vals[4]-vals[3]+1;
 
-  if (gs->negl<=0)
-    {SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"gsi_check_args() :: system empty or neg :: %d\n");}
+  if (gs->negl<=0) SETERRABORT(PETSC_COMM_WORLD,PETSC_ERR_PLIB,"gsi_check_args() :: system empty or neg :: %d\n");
   
   /* LATER :: add level == -1 -> program selects level */
   if (vals[5]<0)
@@ -447,7 +438,7 @@ static PetscErrorCode gsi_via_bit_mask(gs_id *gs)
               ivec_binary_search(**reduce,gs->tree_map_in,gs->tree_map_sz)>=0)
             {
               t1++; 
-              if (gs->num_local_reduce[i]<=0) SETERRQ(PETSC_ERR_PLIB,"nobody in list?");
+              if (gs->num_local_reduce[i]<=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"nobody in list?");
               gs->num_local_reduce[i] *= -1;
             }
            **reduce=map[**reduce];
@@ -473,7 +464,7 @@ static PetscErrorCode gsi_via_bit_mask(gs_id *gs)
 
           for (i=0; i<t1; i++)
             {
-              if (gs->num_gop_local_reduce[i]>=0) SETERRQ(PETSC_ERR_PLIB,"they aren't negative?");
+              if (gs->num_gop_local_reduce[i]>=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"they aren't negative?");
               gs->num_gop_local_reduce[i] *= -1;
               gs->local_reduce++;
               gs->num_local_reduce++;
@@ -575,7 +566,7 @@ static PetscErrorCode get_ngh_buf(gs_id *gs)
   buf_size = PetscMin(msg_buf,i);
 
   /* can we do it? */
-  if (p_mask_size>buf_size) SETERRQ2(PETSC_ERR_PLIB,"get_ngh_buf() :: buf<pms :: %d>%d\n",p_mask_size,buf_size);
+  if (p_mask_size>buf_size) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"get_ngh_buf() :: buf<pms :: %d>%d\n",p_mask_size,buf_size);
 
   /* get giop buf space ... make *only* one malloc */
   buf1 = (PetscInt*) malloc(buf_size<<1);
@@ -1090,7 +1081,7 @@ PetscErrorCode gs_gop_vec( gs_id *gs,  PetscScalar *vals,  const char *op,  Pets
 static PetscErrorCode gs_gop_vec_plus( gs_id *gs,  PetscScalar *vals,  PetscInt step)
 {
   PetscFunctionBegin;
-  if (!gs) {SETERRQ(PETSC_ERR_PLIB,"gs_gop_vec() passed NULL gs handle!!!");}
+  if (!gs) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"gs_gop_vec() passed NULL gs handle!!!");
 
   /* local only operations!!! */
   if (gs->num_local)

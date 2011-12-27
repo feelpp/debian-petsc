@@ -4,42 +4,42 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:20:00+00:00">
+<meta name="date" content="2011-10-29T18:50:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 
-<a name="line3"> 3: </a> #include <A href="../../../../include/petscsys.h.html">petscsys.h</A>
+<a name="line4">  4: </a><font color="#4169E1"><a name="_n_PetscViewers"></a>struct _n_PetscViewers </font>{
+<a name="line5">  5: </a>   <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>    comm;
+<a name="line6">  6: </a>   <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> *viewer;
+<a name="line7">  7: </a>   int         n;
+<a name="line8">  8: </a>} ;
 
-<a name="line5">  5: </a><font color="#4169E1"><a name="_n_PetscViewers"></a>struct _n_PetscViewers </font>{
-<a name="line6">  6: </a>   <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>    comm;
-<a name="line7">  7: </a>   <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> *viewer;
-<a name="line8">  8: </a>   int         n;
-<a name="line9">  9: </a>} ;
+<a name="line12"> 12: </a><font color="#B22222">/*@C</font>
+<a name="line13"> 13: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Viewer/PetscViewersDestroy.html#PetscViewersDestroy">PetscViewersDestroy</A> - Destroys a set of <A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A> created with <A href="../../../../docs/manualpages/Viewer/PetscViewersCreate.html#PetscViewersCreate">PetscViewersCreate</A>().</font>
 
-<a name="line13"> 13: </a><font color="#B22222">/*@C</font>
-<a name="line14"> 14: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Viewer/PetscViewersDestroy.html#PetscViewersDestroy">PetscViewersDestroy</A> - Destroys a set of <A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A> created with <A href="../../../../docs/manualpages/Viewer/PetscViewersCreate.html#PetscViewersCreate">PetscViewersCreate</A>().</font>
+<a name="line15"> 15: </a><font color="#B22222">   Collective on <A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A></font>
 
-<a name="line16"> 16: </a><font color="#B22222">   Collective on <A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A></font>
+<a name="line17"> 17: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line18"> 18: </a><font color="#B22222">.  v - the <A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A> to be destroyed.</font>
 
-<a name="line18"> 18: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line19"> 19: </a><font color="#B22222">.  v - the <A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A> to be destroyed.</font>
+<a name="line20"> 20: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line21"> 21: </a><font color="#B22222">   Level: intermediate</font>
+<a name="line22"> 22: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Viewer/PetscViewerSocketOpen.html#PetscViewerSocketOpen">PetscViewerSocketOpen</A>(), <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIOpen.html#PetscViewerASCIIOpen">PetscViewerASCIIOpen</A>(), <A href="../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(), <A href="../../../../docs/manualpages/Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>(), <A href="../../../../docs/manualpages/Viewer/PetscViewersCreate.html#PetscViewersCreate">PetscViewersCreate</A>()</font>
 
-<a name="line23"> 23: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Viewer/PetscViewerSocketOpen.html#PetscViewerSocketOpen">PetscViewerSocketOpen</A>(), <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIOpen.html#PetscViewerASCIIOpen">PetscViewerASCIIOpen</A>(), <A href="../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(), <A href="../../../../docs/manualpages/Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>(), <A href="../../../../docs/manualpages/Viewer/PetscViewersCreate.html#PetscViewersCreate">PetscViewersCreate</A>()</font>
+<a name="line24"> 24: </a><font color="#B22222">@*/</font>
+<a name="line25"> 25: </a><strong><font color="#4169E1"><a name="PetscViewersDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Viewer/PetscViewersDestroy.html#PetscViewersDestroy">PetscViewersDestroy</A>(<A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A> *v)</font></strong>
+<a name="line26"> 26: </a>{
+<a name="line27"> 27: </a>  int            i;
 
-<a name="line25"> 25: </a><font color="#B22222">@*/</font>
-<a name="line26"> 26: </a><strong><font color="#4169E1"><a name="PetscViewersDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Viewer/PetscViewersDestroy.html#PetscViewersDestroy">PetscViewersDestroy</A>(<A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A> v)</font></strong>
-<a name="line27"> 27: </a>{
-<a name="line28"> 28: </a>  int         i;
-
-<a name="line32"> 32: </a>  <font color="#4169E1">for</font> (i=0; i&lt;v-&gt;n; i++) {
-<a name="line33"> 33: </a>    <font color="#4169E1">if</font> (v-&gt;viewer[i]) {<A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(v-&gt;viewer[i]);}
+<a name="line31"> 31: </a>  <font color="#4169E1">if</font> (!*v) <font color="#4169E1">return</font>(0);
+<a name="line32"> 32: </a>  <font color="#4169E1">for</font> (i=0; i&lt;(*v)-&gt;n; i++) {
+<a name="line33"> 33: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;(*v)-&gt;viewer[i]);
 <a name="line34"> 34: </a>  }
-<a name="line35"> 35: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(v-&gt;viewer);
-<a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(v);
+<a name="line35"> 35: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>((*v)-&gt;viewer);
+<a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(*v);
 <a name="line37"> 37: </a>  <font color="#4169E1">return</font>(0);
 <a name="line38"> 38: </a>}
 
@@ -94,7 +94,7 @@
 <a name="line94"> 94: </a><strong><font color="#4169E1"><a name="PetscViewersGetViewer"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Viewer/PetscViewersGetViewer.html#PetscViewersGetViewer">PetscViewersGetViewer</A>(<A href="../../../../docs/manualpages/Viewer/PetscViewers.html#PetscViewers">PetscViewers</A> viewers,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> *viewer)</font></strong>
 <a name="line95"> 95: </a>{
 
-<a name="line99"> 99: </a>  <font color="#4169E1">if</font> (n &lt; 0) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Cannot access using a negative index - %d\n"</font>,n);
+<a name="line99"> 99: </a>  <font color="#4169E1">if</font> (n &lt; 0) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Cannot access using a negative index - %d\n"</font>,n);
 <a name="line100">100: </a>  <font color="#4169E1">if</font> (n &gt;= viewers-&gt;n) {
 <a name="line101">101: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> *v;
 <a name="line102">102: </a>    int    newn = n + 64; <font color="#B22222">/* add 64 new ones at a time */</font>

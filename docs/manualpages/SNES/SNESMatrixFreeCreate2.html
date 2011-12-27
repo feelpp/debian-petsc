@@ -10,7 +10,7 @@ Creates a matrix-free matrix context for use with a <A HREF="../SNES/SNES.html#S
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"   
-PetscErrorCode PETSCSNES_DLLEXPORT SNESDefaultMatrixFreeCreate2(SNES snes,Vec x,Mat *J)
+PetscErrorCode  SNESDefaultMatrixFreeCreate2(SNES snes,Vec x,Mat *J)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>snes </B> -the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
@@ -64,7 +64,7 @@ Jacobian-vector products, J(u)*a, via
 </pre>
 <P>
 The user can set these parameters via <A HREF="../Mat/MatMFFDSetFunctionError.html#MatMFFDSetFunctionError">MatMFFDSetFunctionError</A>().
-See the nonlinear solvers chapter of the users manual for details.
+See the &lt;A href="../../docs/manual.pdf#nameddest=ch_snes"&gt;<A HREF="../SNES/SNES.html#SNES">SNES</A> chapter of the users manual&lt;/A&gt;.
 <P>
 The user should call <A HREF="../Mat/MatDestroy.html#MatDestroy">MatDestroy</A>() when finished with the matrix-free
 matrix context.

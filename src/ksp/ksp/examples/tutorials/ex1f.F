@@ -41,11 +41,11 @@
 !     petscviewer.h - viewers
 !     petscis.h     - index sets
 !
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
 !
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                   Variable declarations
@@ -67,7 +67,7 @@
       PetscReal        norm,tol
       PetscErrorCode   ierr
       PetscInt i,n,col(3),its,i1,i2,i3
-      PetscTruth flg
+      PetscBool  flg
       PetscMPIInt size,rank
       PetscScalar      none,one,value(3)
 
@@ -82,7 +82,7 @@
          if (rank .eq. 0) then
             write(6,*) 'This is a uniprocessor example only!'
          endif
-         SETERRQ(1,' ',ierr)
+         SETERRQ(PETSC_COMM_WORLD,1,' ',ierr)
       endif
       none = -1.0
       one  = 1.0
@@ -203,7 +203,7 @@
       else
         write(6,200) its
       endif
- 100  format('Norm of error = ',e10.4,',  Iterations = ',i5)
+ 100  format('Norm of error = ',e11.4,',  Iterations = ',i5)
  200  format('Norm of error < 1.e-12,Iterations = ',i5)
 
 !  Free work space.  All PETSc objects should be destroyed when they

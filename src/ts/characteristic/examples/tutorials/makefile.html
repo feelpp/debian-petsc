@@ -1,0 +1,66 @@
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:21:41+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80">
+<font color="#A020F0"># This directory contains SemiLagrange example programs for</font>
+<font color="#A020F0"># advecting fields using the method of characteristics.</font>
+
+CFLAGS                   =
+FFLAGS                   =
+CPPFLAGS           =
+FPPFLAGS           =
+LOCDIR                   = src/ts/characteristic/examples/tutorials/
+MANSEC             = SemiLagrange
+EXAMPLESC           = ex1.c ex2.c ex4.c
+EXAMPLESF           =
+EXAMPLESCH           =
+EXAMPLESFH         =
+EXAMPLESMATLAB     =
+DIRS                   =
+
+include ${PETSC_DIR}/conf/variables
+include ${PETSC_DIR}/conf/rules
+
+<strong><font color="#FF0000">ex1:</font></strong> ex1.o  chkopts
+        -${CLINKER} -o ex1 ex1.o ${PETSC_TS_LIB}
+        ${RM} ex1.o
+
+<strong><font color="#FF0000">ex2:</font></strong> ex2.o  chkopts
+        -${CLINKER} -o ex2 ex2.o ${PETSC_TS_LIB}
+        ${RM} ex2.o
+
+<strong><font color="#FF0000">ex4:</font></strong> ex4.o  chkopts
+        -${CLINKER} -o ex4 ex4.o ${PETSC_TS_LIB}
+        ${RM} ex4.o
+<font color="#A020F0">#--------------------------------------------------------------------------</font>
+<strong><font color="#FF0000">runex1:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex1 &gt; ex1.tmp 2&gt;&amp;1;   \
+           <font color="#4169E1">if</font> (${DIFF} output/ex1.out ex1.tmp) then true; \
+           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex1, diffs above"</font>; fi; \
+           ${RM} -f ex1.tmp
+
+<strong><font color="#FF0000">runex2:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex2 &gt; ex2.tmp 2&gt;&amp;1;   \
+           <font color="#4169E1">if</font> (${DIFF} output/ex2.out ex2.tmp) then true; \
+           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex2, diffs above"</font>; fi; \
+           ${RM} -f ex2.tmp
+
+<strong><font color="#FF0000">runex4:</font></strong>
+        -@${MPIEXEC} -n 1 ./ex4 &gt; ex4.tmp 2&gt;&amp;1;   \
+           <font color="#4169E1">if</font> (${DIFF} output/ex4.out ex4.tmp) then true; \
+           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex4, diffs above"</font>; fi; \
+           ${RM} -f ex4.tmp
+
+TESTEXAMPLES_C_NOCOMPLEX = ex1.PETSc runex1 ex1.rm ex2.PETSc runex2 ex2.rm ex4.PETSc runex4 ex4.rm
+
+include ${PETSC_DIR}/conf/test
+</pre>
+</body>
+
+</html>

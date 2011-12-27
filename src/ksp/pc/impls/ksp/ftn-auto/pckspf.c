@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* pcksp.c */
 /* Fortran interface file */
 
@@ -44,11 +45,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pckspsetusetrue_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pckspsetusetrue_(PC pc, int *__ierr ){
 *__ierr = PCKSPSetUseTrue(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pckspgetksp_(PC pc,KSP *ksp, int *__ierr ){
+void PETSC_STDCALL  pckspgetksp_(PC pc,KSP *ksp, int *__ierr ){
 *__ierr = PCKSPGetKSP(
 	(PC)PetscToPointer((pc) ),ksp);
 }

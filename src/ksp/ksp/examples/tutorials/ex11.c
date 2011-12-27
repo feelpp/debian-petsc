@@ -31,7 +31,7 @@ T*/
      petscis.h     - index sets            petscksp.h - Krylov subspace methods
      petscviewer.h - viewers               petscpc.h  - preconditioners
 */
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -46,12 +46,16 @@ int main(int argc,char **args)
   PetscScalar    v,none = -1.0,sigma2,pfive = 0.5,*xa;
   PetscRandom    rctx;
   PetscReal      h2,sigma1 = 100.0;
-  PetscTruth     flg = PETSC_FALSE;
+  PetscBool      flg = PETSC_FALSE;
+  PetscScalar    a=1.0+PETSC_i;
 
   PetscInitialize(&argc,&args,(char *)0,help);
 #if !defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"This example requires complex numbers");
+  SETERRQ(PETSC_COMM_WORLD,1,"This example requires complex numbers");
 #endif
+
+  a=1.0+PETSC_i;
+  printf("%G+%Gi\n",PetscRealPart(a),PetscImaginaryPart(a));
 
   ierr = PetscOptionsGetReal(PETSC_NULL,"-sigma1",&sigma1,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-n",&n,PETSC_NULL);CHKERRQ(ierr);
@@ -86,7 +90,7 @@ int main(int argc,char **args)
       - Always specify global rows and columns of matrix entries.
   */
 
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-norandom",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-norandom",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) use_random = 0;
   else     use_random = 1;
   if (use_random) {
@@ -111,7 +115,7 @@ int main(int argc,char **args)
     v = 4.0 - sigma1*h2 + sigma2*h2;
     ierr = MatSetValues(A,1,&Ii,1,&Ii,&v,ADD_VALUES);CHKERRQ(ierr);
   }
-  if (use_random) {ierr = PetscRandomDestroy(rctx);CHKERRQ(ierr);}
+  if (use_random) {ierr = PetscRandomDestroy(&rctx);CHKERRQ(ierr);}
 
   /* 
      Assemble matrix, using the 2-step process:
@@ -184,7 +188,7 @@ int main(int argc,char **args)
       real and imaginary components of the complex vector, x.
   */
   flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-print_x3",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-print_x3",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     ierr = VecGetArray(x,&xa);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"The first three entries of x are:\n");CHKERRQ(ierr);
@@ -206,10 +210,10 @@ int main(int argc,char **args)
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
   */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  if (use_random) {ierr = PetscRandomDestroy(rctx);CHKERRQ(ierr);}
-  ierr = VecDestroy(u);CHKERRQ(ierr); ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr); ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  if (use_random) {ierr = PetscRandomDestroy(&rctx);CHKERRQ(ierr);}
+  ierr = VecDestroy(&u);CHKERRQ(ierr); ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

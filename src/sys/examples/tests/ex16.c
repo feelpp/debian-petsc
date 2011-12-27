@@ -3,7 +3,7 @@
    Demonstrates PetscMatlabEngineXXX()
 */
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -12,7 +12,7 @@ int main(int argc,char **argv)
   PetscErrorCode ierr;
   PetscMPIInt    rank;
   char           buffer[256],*output,user[256];
-  PetscTruth     userhappy = PETSC_FALSE;
+  PetscBool      userhappy = PETSC_FALSE;
 
   PetscInitialize(&argc,&argv,(char *)0,0);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
@@ -33,7 +33,7 @@ int main(int argc,char **argv)
     ierr = PetscSynchronizedFGets(PETSC_COMM_WORLD,stdin,256,user);CHKERRQ(ierr);
     ierr = PetscStrncmp(user,"exit",4,&userhappy);CHKERRQ(ierr);
   }
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

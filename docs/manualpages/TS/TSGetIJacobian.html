@@ -10,7 +10,7 @@ Returns the implicit Jacobian at the present timestep.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSGetIJacobian(TS ts,Mat *A,Mat *B,TSIJacobian *f,void **ctx)
+PetscErrorCode  TSGetIJacobian(TS ts,Mat *A,Mat *B,TSIJacobian *f,void **ctx)
 </PRE>
 Not Collective, but parallel objects are returned if <A HREF="../TS/TS.html#TS">TS</A> is parallel
 <P>
@@ -34,7 +34,7 @@ Notes: You can pass in <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../TS/TSGetTimeStep.html#TSGetTimeStep">TSGetTimeStep</A>(), <A HREF="../TS/TSGetRHSJacobian.html#TSGetRHSJacobian">TSGetRHSJacobian</A>(), <A HREF="../TS/TSGetMatrices.html#TSGetMatrices">TSGetMatrices</A>(), <A HREF="../TS/TSGetTime.html#TSGetTime">TSGetTime</A>(), <A HREF="../TS/TSGetTimeStepNumber.html#TSGetTimeStepNumber">TSGetTimeStepNumber</A>()
+ <A HREF="../TS/TSGetTimeStep.html#TSGetTimeStep">TSGetTimeStep</A>(), <A HREF="../TS/TSGetRHSJacobian.html#TSGetRHSJacobian">TSGetRHSJacobian</A>(), TSGetMatrices(), <A HREF="../TS/TSGetTime.html#TSGetTime">TSGetTime</A>(), <A HREF="../TS/TSGetTimeStepNumber.html#TSGetTimeStepNumber">TSGetTimeStepNumber</A>()
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>

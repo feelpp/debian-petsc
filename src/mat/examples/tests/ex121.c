@@ -4,7 +4,7 @@ static char help[] = "Test sequential FFTW convolution\n\n";
   Compiling the code:
     This code uses the complex numbers, so configure must be given --with-scalar-type=complex to enable this
 */
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -20,20 +20,20 @@ PetscInt main(PetscInt argc,char **args)
   PetscScalar    s;  
   PetscRandom    rdm;
   PetscReal      enorm;
-  PetscInt       func;
+  PetscInt       func=0;
   FuncType       function = RANDOM;
-  PetscTruth     view = PETSC_FALSE;
+  PetscBool      view = PETSC_FALSE;
   PetscErrorCode ierr;
 
   ierr = PetscInitialize(&argc,&args,(char *)0,help);CHKERRQ(ierr);
 #if !defined(PETSC_USE_COMPLEX)
-  SETERRQ(PETSC_ERR_SUP, "This example requires complex numbers");
+  SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP, "This example requires complex numbers");
 #endif
   ierr = MPI_Comm_size(PETSC_COMM_WORLD, &size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(PETSC_ERR_SUP, "This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP, "This is a uniprocessor example only!");
   ierr = PetscOptionsBegin(PETSC_COMM_WORLD, PETSC_NULL, "FFTW Options", "ex112");CHKERRQ(ierr);
-    ierr = PetscOptionsEList("-function", "Function type", "ex112", funcNames, NUM_FUNCS, funcNames[function], &func, PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsTruth("-vec_view_draw", "View the functions", "ex112", view, &view, PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsEList("-function", "Function type", "ex121", funcNames, NUM_FUNCS, funcNames[function], &func, PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-vec_view_draw", "View the functions", "ex112", view, &view, PETSC_NULL);CHKERRQ(ierr);
     function = (FuncType) func;
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
 
@@ -59,6 +59,7 @@ PetscInt main(PetscInt argc,char **args)
     ierr = PetscObjectSetName((PetscObject) z1, "Reconstructed convolution");CHKERRQ(ierr);
     ierr = VecDuplicate(x,&z2);CHKERRQ(ierr);
     ierr = PetscObjectSetName((PetscObject) z2, "Real space convolution");CHKERRQ(ierr);
+    
     if (function == RANDOM) {
       ierr = VecSetRandom(x, rdm);CHKERRQ(ierr);
     } else if (function == CONSTANT) {
@@ -84,16 +85,15 @@ PetscInt main(PetscInt argc,char **args)
     if (view) {ierr = VecView(w, PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);}
 
     /* create FFTW object */
-    //ierr = MatCreateSeqFFTW(PETSC_COMM_SELF,DIM,dim,&A);CHKERRQ(ierr);
-    ierr = MatCreateSeqFFTW(PETSC_COMM_SELF,1,&N,&A);CHKERRQ(ierr);
+    ierr = MatCreateFFT(PETSC_COMM_SELF,DIM,dim,MATFFTW,&A);CHKERRQ(ierr);
 
     /* Convolve x with w*/
     ierr = MatMult(A,x,y1);CHKERRQ(ierr);
     ierr = MatMult(A,w,y2);CHKERRQ(ierr);
-    ierr = VecPointwiseMult(y1, y1, y2);CHKERRQ(ierr);
+    ierr = VecPointwiseMult(y1, y1, y2);CHKERRQ(ierr); 
     if (view && i == 0) {ierr = VecView(y1, PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);}
     ierr = MatMultTranspose(A,y1,z1);CHKERRQ(ierr);
- 
+
     /* Compute the real space convolution */
     ierr = VecGetArray(x, &a);CHKERRQ(ierr);
     ierr = VecGetArray(w, &a2);CHKERRQ(ierr);
@@ -123,19 +123,19 @@ PetscInt main(PetscInt argc,char **args)
     ierr = VecAXPY(z1,-1.0,z2);CHKERRQ(ierr);
     ierr = VecNorm(z1,NORM_1,&enorm);CHKERRQ(ierr);
     if (enorm > 1.e-11){
-      ierr = PetscPrintf(PETSC_COMM_SELF,"  Error norm of |x - z| %A\n",enorm);CHKERRQ(ierr);
+      ierr = PetscPrintf(PETSC_COMM_SELF,"  Error norm of |z1 - z2| %A\n",enorm);CHKERRQ(ierr);
     }
 
     /* free spaces */
-    ierr = VecDestroy(x);CHKERRQ(ierr);
-    ierr = VecDestroy(y1);CHKERRQ(ierr);
-    ierr = VecDestroy(y2);CHKERRQ(ierr);
-    ierr = VecDestroy(z1);CHKERRQ(ierr);
-    ierr = VecDestroy(z2);CHKERRQ(ierr);
-    ierr = VecDestroy(w);CHKERRQ(ierr);
-    ierr = MatDestroy(A);CHKERRQ(ierr);
+    ierr = VecDestroy(&x);CHKERRQ(ierr);
+    ierr = VecDestroy(&y1);CHKERRQ(ierr);
+    ierr = VecDestroy(&y2);CHKERRQ(ierr);
+    ierr = VecDestroy(&z1);CHKERRQ(ierr);
+    ierr = VecDestroy(&z2);CHKERRQ(ierr);
+    ierr = VecDestroy(&w);CHKERRQ(ierr);
+    ierr = MatDestroy(&A);CHKERRQ(ierr);
   }
-  ierr = PetscRandomDestroy(rdm);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rdm);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

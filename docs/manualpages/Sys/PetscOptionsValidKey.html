@@ -10,7 +10,7 @@ PETSc Options database keys must begin with a - followed by a letter.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscOptionsValidKey(const char in_str[],PetscTruth *key)
+PetscErrorCode  PetscOptionsValidKey(const char in_str[],PetscBool  *key)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>in_str </B> -string to check if valid

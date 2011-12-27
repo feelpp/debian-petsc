@@ -1,0 +1,184 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>exSNES_DVI2</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="exSNES_DVI2.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#4">Data for the plate</a></li></ul></div><p>Solves a nonlinear variational inequality where the user manages the mesh--solver interactions</p><p>This is a translation of minimal surface area problem with a plate as written in src/snes/examples/tests/ex16.c</p><pre> Set the Matlab path and initialize PETSc</pre><pre class="codeinput">path(path,<span class="string">'../../'</span>)
+PetscInitialize({<span class="string">'-snes_monitor'</span>,<span class="string">'-ksp_monitor'</span>});
+</pre><pre> Open a viewer to display PETSc objects</pre><pre class="codeinput">viewer = PetscViewer();
+viewer.SetType(<span class="string">'ascii'</span>);
+</pre><pre>Create DM to manage the grid and get work vectors</pre><pre class="codeinput">user.mx = 24;user.my = 24;
+user.dm = PetscDMDACreate2d(PetscDM.NONPERIODIC,PetscDM.STENCIL_BOX,user.mx,user.my,Petsc.DECIDE,Petsc.DECIDE,1,1);
+x  = user.dm.CreateGlobalVector();
+r  = x.Duplicate();
+J  = user.dm.GetMatrix(<span class="string">'aij'</span>);
+</pre><h2>Data for the plate<a name="4"></a></h2><pre class="codeinput">user.bmx = user.mx/2; user.bmy = user.my/2;user.bheight=0.4;
+</pre><pre>Set Boundary conditions</pre><pre class="codeinput">[user] = MSA_BoundaryConditions(user);
+</pre><pre>Set initial guess</pre><pre class="codeinput">[x] = MSA_InitialGuess(user,x);
+</pre><pre>Create the nonlinear solver</pre><pre class="codeinput">snes = PetscSNES();
+snes.SetType(<span class="string">'vi'</span>);
+</pre><pre>Set minimum surface area problem function routine</pre><pre class="codeinput">snes.SetFunction(r,<span class="string">'snesdvi_function'</span>,user);
+</pre><pre>Set minimum surface area problem jacobian routine</pre><pre class="codeinput">snes.SetJacobian(J,J,<span class="string">'snesdvi_jacobian'</span>,user);
+</pre><pre>Set solution monitoring routine</pre><pre class="codeinput">snes.MonitorSet(<span class="string">'snesdvi_monitor'</span>,user);
+figure(1),clf;figure(2),clf;
+</pre><pre> Set VI bounds</pre><pre class="codeinput">xl = x.Duplicate();
+xu = x.Duplicate();
+[xl,xu] = MSA_Plate(xl,xu,user);
+
+snes.VISetVariableBounds(xl,xu);
+</pre><pre>Solve the nonlinear system</pre><pre class="codeinput">snes.SetFromOptions();
+snes.Solve(x);
+x.View(viewer);
+snes.View(viewer);
+</pre><pre> Free PETSc objects and Shutdown PETSc</pre><pre class="codeinput">user.bottom.Destroy();
+user.top.Destroy();
+user.right.Destroy();
+user.left.Destroy();
+r.Destroy();
+x.Destroy();
+J.Destroy();
+snes.Destroy();
+viewer.Destroy();
+PetscFinalize();
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% Solves a nonlinear variational inequality where the user manages the meshREPLACE_WITH_DASH_DASHsolver interactions
+%
+% This is a translation of minimal surface area problem with a plate 
+% as written in src/snes/examples/tests/ex16.c
+% 
+%
+%   Set the Matlab path and initialize PETSc
+path(path,'../../')
+PetscInitialize({'-snes_monitor','-ksp_monitor'});
+%%
+%   Open a viewer to display PETSc objects
+viewer = PetscViewer();
+viewer.SetType('ascii');
+%%
+%  Create DM to manage the grid and get work vectors
+user.mx = 24;user.my = 24;
+user.dm = PetscDMDACreate2d(PetscDM.NONPERIODIC,PetscDM.STENCIL_BOX,user.mx,user.my,Petsc.DECIDE,Petsc.DECIDE,1,1);
+x  = user.dm.CreateGlobalVector();
+r  = x.Duplicate();
+J  = user.dm.GetMatrix('aij');
+
+%% Data for the plate
+% 
+user.bmx = user.mx/2; user.bmy = user.my/2;user.bheight=0.4;
+%%
+%  Set Boundary conditions
+[user] = MSA_BoundaryConditions(user);
+%%
+%  Set initial guess
+[x] = MSA_InitialGuess(user,x);
+%%
+%  Create the nonlinear solver 
+snes = PetscSNES();
+snes.SetType('vi');
+
+%%
+%  Set minimum surface area problem function routine
+snes.SetFunction(r,'snesdvi_function',user);
+
+
+%%
+%  Set minimum surface area problem jacobian routine
+snes.SetJacobian(J,J,'snesdvi_jacobian',user);
+
+%%
+%  Set solution monitoring routine
+snes.MonitorSet('snesdvi_monitor',user);
+figure(1),clf;figure(2),clf;
+%%
+%   Set VI bounds
+xl = x.Duplicate();
+xu = x.Duplicate();
+[xl,xu] = MSA_Plate(xl,xu,user);
+
+snes.VISetVariableBounds(xl,xu);    
+
+%%
+%  Solve the nonlinear system
+snes.SetFromOptions();
+snes.Solve(x);
+x.View(viewer);
+snes.View(viewer);
+
+%%
+%   Free PETSc objects and Shutdown PETSc
+%
+user.bottom.Destroy();
+user.top.Destroy();
+user.right.Destroy();
+user.left.Destroy();
+r.Destroy();
+x.Destroy();
+J.Destroy();
+snes.Destroy();
+viewer.Destroy();
+PetscFinalize();
+
+##### SOURCE END #####
+--></body></html>

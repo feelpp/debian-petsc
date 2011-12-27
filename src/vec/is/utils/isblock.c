@@ -1,9 +1,8 @@
-#define PETSCVEC_DLL
 
 /* Routines to be used by MatIncreaseOverlap() for BAIJ and SBAIJ matrices */
-#include "petscis.h" 
-#include "petscbt.h"
-#include "petscctable.h"
+#include <petscis.h> 
+#include <petscbt.h>
+#include <petscctable.h>
 
 
 #undef __FUNCT__  
@@ -11,7 +10,8 @@
 /*@C
    ISCompressIndicesGeneral - convert the indices into block indices
    Input Parameters:
-+  n - the length of the index set
++  n - maximum possible length of the index set
+.  nkeys - expected number of keys when PETSC_USE_CTABLE
 .  bs - the size of block 
 .  imax - the number of index sets
 -  is_in - the non-blocked array of index sets 
@@ -20,15 +20,17 @@
 .  is_out - the blocked new index set
 
    Level: intermediate
+
+.seealso: ISExpandIndicesGeneral()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISCompressIndicesGeneral(PetscInt n,PetscInt bs,PetscInt imax,const IS is_in[],IS is_out[])
+PetscErrorCode  ISCompressIndicesGeneral(PetscInt n,PetscInt nkeys,PetscInt bs,PetscInt imax,const IS is_in[],IS is_out[])
 {
   PetscErrorCode     ierr;
   PetscInt           isz,len,i,j,ival,Nbs;
   const PetscInt     *idx;
 #if defined (PETSC_USE_CTABLE)
   PetscTable         gid1_lid1;
-  PetscInt           tt, gid1, *nidx;
+  PetscInt           tt, gid1, *nidx,Nkbs;
   PetscTablePosition tpos;
 #else
   PetscInt           *nidx;
@@ -38,7 +40,8 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISCompressIndicesGeneral(PetscInt n,PetscInt b
   PetscFunctionBegin;
   Nbs =n/bs;
 #if defined (PETSC_USE_CTABLE)
-  ierr = PetscTableCreate(Nbs,&gid1_lid1);CHKERRQ(ierr);
+  Nkbs = nkeys/bs;
+  ierr = PetscTableCreate(Nkbs,&gid1_lid1);CHKERRQ(ierr);
 #else
   ierr = PetscMalloc(Nbs*sizeof(PetscInt),&nidx);CHKERRQ(ierr); 
   ierr = PetscBTCreate(Nbs,table);CHKERRQ(ierr);
@@ -61,30 +64,30 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISCompressIndicesGeneral(PetscInt n,PetscInt b
         isz++;
       }
 #else
-      if (ival>Nbs) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"index greater than mat-dim");
+      if (ival>Nbs) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"index greater than mat-dim");
       if(!PetscBTLookupSet(table,ival)) { nidx[isz++] = ival;}
 #endif
     }
     ierr = ISRestoreIndices(is_in[i],&idx);CHKERRQ(ierr);
+    
 #if defined (PETSC_USE_CTABLE)
     ierr = PetscMalloc(isz*sizeof(PetscInt),&nidx);CHKERRQ(ierr); 
     ierr = PetscTableGetHeadPosition(gid1_lid1,&tpos);CHKERRQ(ierr); 
     j = 0;
     while (tpos) {  
       ierr = PetscTableGetNext(gid1_lid1,&tpos,&gid1,&tt);CHKERRQ(ierr);
-      if (tt-- > isz) { SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"index greater than array-dim"); }
+      if (tt-- > isz) { SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"index greater than array-dim"); }
       nidx[tt] = gid1 - 1;
       j++;
     }
-    if (j != isz) { SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"table error: jj != isz"); }
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,isz,nidx,(is_out+i));CHKERRQ(ierr);
-    ierr = PetscFree(nidx);CHKERRQ(ierr);
+    if (j != isz) { SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"table error: jj != isz"); }
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,isz,nidx,PETSC_OWN_POINTER,(is_out+i));CHKERRQ(ierr);
 #else
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,isz,nidx,(is_out+i));CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,isz,nidx,PETSC_COPY_VALUES,(is_out+i));CHKERRQ(ierr);
 #endif
   }
 #if defined (PETSC_USE_CTABLE)
-  ierr = PetscTableDestroy(gid1_lid1);CHKERRQ(ierr);
+  ierr = PetscTableDestroy(&gid1_lid1);CHKERRQ(ierr);
 #else
   ierr = PetscBTDestroy(table);CHKERRQ(ierr);
   ierr = PetscFree(nidx);CHKERRQ(ierr);
@@ -94,12 +97,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISCompressIndicesGeneral(PetscInt n,PetscInt b
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISCompressIndicesSorted"
-PetscErrorCode PETSCVEC_DLLEXPORT ISCompressIndicesSorted(PetscInt n,PetscInt bs,PetscInt imax,const IS is_in[],IS is_out[])
+PetscErrorCode  ISCompressIndicesSorted(PetscInt n,PetscInt bs,PetscInt imax,const IS is_in[],IS is_out[])
 {
   PetscErrorCode ierr;
   PetscInt       i,j,k,val,len,*nidx,bbs;
   const PetscInt *idx,*idx_local;
-  PetscTruth     flg,isblock;
+  PetscBool      flg,isblock;
 #if defined (PETSC_USE_CTABLE)
   PetscInt       maxsz;
 #else
@@ -109,14 +112,14 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISCompressIndicesSorted(PetscInt n,PetscInt bs
   PetscFunctionBegin;
   for (i=0; i<imax; i++) {
     ierr = ISSorted(is_in[i],&flg);CHKERRQ(ierr);
-    if (!flg) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Indices are not sorted");
+    if (!flg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Indices are not sorted");
   }
 
 #if defined (PETSC_USE_CTABLE)
   /* Now check max size */
   for (i=0,maxsz=0; i<imax; i++) {
     ierr = ISGetLocalSize(is_in[i],&len);CHKERRQ(ierr);
-    if (len%bs !=0) SETERRQ(PETSC_ERR_ARG_INCOMP,"Indices are not block ordered");
+    if (len%bs !=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Indices are not block ordered");
     len = len/bs; /* The reduced index size */
     if (len > maxsz) maxsz = len;
   }
@@ -129,34 +132,33 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISCompressIndicesSorted(PetscInt n,PetscInt bs
     ierr = ISGetLocalSize(is_in[i],&len);CHKERRQ(ierr);
 
     /* special case where IS is already block IS of the correct size */
-    ierr = ISBlock(is_in[i],&isblock);CHKERRQ(ierr);
+    ierr = PetscTypeCompare((PetscObject)is_in[i],ISBLOCK,&isblock);CHKERRQ(ierr);
     if (isblock) {
       ierr = ISBlockGetLocalSize(is_in[i],&bbs);CHKERRQ(ierr);
       if (bs == bbs) {
         len = len/bs;
         ierr = ISBlockGetIndices(is_in[i],&idx);CHKERRQ(ierr);
-        for (j=0; j<len; j++) nidx[j] = idx[j]/bs;
+        ierr = ISCreateGeneral(PETSC_COMM_SELF,len,idx,PETSC_COPY_VALUES,(is_out+i));CHKERRQ(ierr);
         ierr = ISBlockRestoreIndices(is_in[i],&idx);CHKERRQ(ierr);
-        ierr = ISCreateGeneral(PETSC_COMM_SELF,len,nidx,(is_out+i));CHKERRQ(ierr);
         continue;
       }
     }
     ierr = ISGetIndices(is_in[i],&idx);CHKERRQ(ierr);
-    if (len%bs !=0) SETERRQ(PETSC_ERR_ARG_INCOMP,"Indices are not block ordered");
+    if (len%bs !=0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Indices are not block ordered");
 
     len = len/bs; /* The reduced index size */
     idx_local = idx;
     for (j=0; j<len ; j++) {
       val = idx_local[0];
-      if (val%bs != 0) SETERRQ(PETSC_ERR_ARG_INCOMP,"Indices are not block ordered");
+      if (val%bs != 0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Indices are not block ordered");
       for (k=0; k<bs; k++) {
-        if (val+k != idx_local[k]) SETERRQ(PETSC_ERR_ARG_INCOMP,"Indices are not block ordered");
+        if (val+k != idx_local[k]) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Indices are not block ordered");
       }
       nidx[j] = val/bs;
       idx_local +=bs;
     }
     ierr = ISRestoreIndices(is_in[i],&idx);CHKERRQ(ierr);
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,len,nidx,(is_out+i));CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,len,nidx,PETSC_COPY_VALUES,(is_out+i));CHKERRQ(ierr);
   }
   ierr = PetscFree(nidx);CHKERRQ(ierr);
 
@@ -165,40 +167,46 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISCompressIndicesSorted(PetscInt n,PetscInt bs
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISExpandIndicesGeneral"
-PetscErrorCode PETSCVEC_DLLEXPORT ISExpandIndicesGeneral(PetscInt n,PetscInt bs,PetscInt imax,const IS is_in[],IS is_out[])
+/*@C
+   ISExpandIndicesGeneral - convert the indices into non-block indices
+   Input Parameters:
++  n - the length of the index set   (not being used)
+.  nkeys - expected number of keys when PETSC_USE_CTABLE (not being used)
+.  bs - the size of block 
+.  imax - the number of index sets
+-  is_in - the blocked array of index sets 
+
+   Output Parameter:
+.  is_out - the non-blocked new index set
+
+   Level: intermediate
+
+.seealso: ISCompressIndicesGeneral()
+@*/
+PetscErrorCode  ISExpandIndicesGeneral(PetscInt n,PetscInt nkeys,PetscInt bs,PetscInt imax,const IS is_in[],IS is_out[])
 {
   PetscErrorCode ierr;
   PetscInt       len,i,j,k,*nidx;
   const PetscInt *idx;
-#if defined (PETSC_USE_CTABLE)
   PetscInt       maxsz;
-#else
-  PetscInt       Nbs; 
-#endif
 
   PetscFunctionBegin;
-#if defined (PETSC_USE_CTABLE)
-  /* Now check max size */
-  for (i=0,maxsz=0; i<imax; i++) {
-    ierr = ISGetIndices(is_in[i],&idx);CHKERRQ(ierr);
+  /* Check max size of is_in[] */
+  maxsz=0;
+  for (i=0; i<imax; i++) {
     ierr = ISGetLocalSize(is_in[i],&len);CHKERRQ(ierr);
-    if (len*bs > maxsz) maxsz = len*bs;
+    if (len > maxsz) maxsz = len;
   }
-  ierr = PetscMalloc(maxsz*sizeof(PetscInt),&nidx);CHKERRQ(ierr);   
-#else
-  Nbs = n/bs; 
-  ierr = PetscMalloc(Nbs*bs*sizeof(PetscInt),&nidx);CHKERRQ(ierr); 
-#endif
+  ierr = PetscMalloc(maxsz*bs*sizeof(PetscInt),&nidx);CHKERRQ(ierr);   
 
   for (i=0; i<imax; i++) {
-    ierr = ISGetIndices(is_in[i],&idx);CHKERRQ(ierr);
     ierr = ISGetLocalSize(is_in[i],&len);CHKERRQ(ierr);
+    ierr = ISGetIndices(is_in[i],&idx);CHKERRQ(ierr);
     for (j=0; j<len ; ++j){
-      for (k=0; k<bs; k++)
-        nidx[j*bs+k] = idx[j]*bs+k;
+      for (k=0; k<bs; k++) nidx[j*bs+k] = idx[j]*bs+k;
     }
     ierr = ISRestoreIndices(is_in[i],&idx);CHKERRQ(ierr);
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,len*bs,nidx,is_out+i);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,len*bs,nidx,PETSC_COPY_VALUES,is_out+i);CHKERRQ(ierr);
   }
   ierr = PetscFree(nidx);CHKERRQ(ierr);
   PetscFunctionReturn(0);

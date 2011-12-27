@@ -1,15 +1,15 @@
 /*
  
-    This is the equivalent of Matlab's fwrite() only on sockets instead of
+    This is the equivalent of MATLAB's fwrite() only on sockets instead of
    binary files.
 */
 
 #include <stdio.h>
-#include "petscsys.h"
-#include "../src/sys/viewer/impls/socket/socket.h"
-#include "mex.h"
+#include <petscsys.h>
+#include <../src/sys/viewer/impls/socket/socket.h>
+#include <mex.h>
 
-PetscErrorCode PetscBinaryWrite(int,void *p,int,PetscDataType,PetscTruth);
+PetscErrorCode PetscBinaryWrite(int,void *p,int,PetscDataType,PetscBool );
 
 #define PETSC_MEX_ERROR(a) {fprintf(stdout,"sread: %s \n",a); return ;}
 /*-----------------------------------------------------------------*/
@@ -29,17 +29,17 @@ void mexFunction(int nlhs,mxArray *plhs[],int nrhs,const mxArray *prhs[])
   dt  = (PetscDataType) mxGetScalar(prhs[2]);
 
    if (dt == PETSC_DOUBLE) {
-    ierr = PetscBinaryWrite(fd,mxGetPr(prhs[1]),cnt,dt,PETSC_FALSE);if (ierr) PETSC_MEX_ERROR("Unable to send double items.");
+    ierr = PetscBinaryWrite(fd,mxGetPr(prhs[1]),cnt,(PetscDataType)dt,PETSC_FALSE);if (ierr) PETSC_MEX_ERROR("Unable to send double items.");
   } else if (dt == PETSC_INT) {
     int *tmp = (int*) mxMalloc((cnt+5)*sizeof(int));
     double *t = mxGetPr(prhs[1]);
     for (i=0; i<cnt; i++) tmp[i] = (int)t[i];
-    ierr = PetscBinaryWrite(fd,tmp,cnt,dt,PETSC_FALSE);if (ierr) PETSC_MEX_ERROR("Unable to send int items.");
+    ierr = PetscBinaryWrite(fd,tmp,cnt,(PetscDataType)dt,PETSC_FALSE);if (ierr) PETSC_MEX_ERROR("Unable to send int items.");
     mxFree(tmp);
   } else if (dt == PETSC_CHAR) {
     char *tmp = (char*) mxMalloc((cnt+5)*sizeof(char));
     mxGetNChars(prhs[1],tmp,cnt+1);
-    ierr = PetscBinaryWrite(fd,tmp,cnt,dt,PETSC_FALSE);if (ierr) PETSC_MEX_ERROR("Unable to send char items.");
+    ierr = PetscBinaryWrite(fd,tmp,cnt,(PetscDataType)dt,PETSC_FALSE);if (ierr) PETSC_MEX_ERROR("Unable to send char items.");
     mxFree(tmp);
   } else {
     PETSC_MEX_ERROR("Unknown datatype.");

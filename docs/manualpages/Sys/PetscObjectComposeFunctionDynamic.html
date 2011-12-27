@@ -6,7 +6,12 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscObjectComposeFunctionDynamic"><H1>PetscObjectComposeFunctionDynamic</H1></A>
-Associates a function with a given PETSc object.  Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>
+Associates a function with a given PETSc object.  
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode PetscObjectComposeFunctionDynamic(PetscObject obj,const char name[],const char fname[],void *ptr)
+</PRE>
+Logically Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -22,10 +27,7 @@ Associates a function with a given PETSc object.  Collective on <A HREF="../Sys/
 <P>
 
 <P>
-<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
-<PRE>
-PetscErrorCode PetscObjectComposeFunctionDynamic(PetscObject obj,const char name[],const char fname[],void *ptr)
-</PRE>
+<P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 To remove a registered routine, pass in a <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> rname and fnc().
 <P>
@@ -33,7 +35,7 @@ To remove a registered routine, pass in a <A HREF="../Sys/PETSC_NULL.html#PETSC_
 <A HREF="../Mat/Mat.html#Mat">Mat</A>, <A HREF="../Vec/Vec.html#Vec">Vec</A>, <A HREF="../KSP/KSP.html#KSP">KSP</A>, <A HREF="../SNES/SNES.html#SNES">SNES</A>, etc.) or any user-provided object.
 <P>
 The composed function must be wrapped in a EXTERN_C_BEGIN/END for this to
-work in C++/complex with dynamic link libraries (config/configure.py options --with-shared --with-dynamic)
+work in C++/complex with dynamic link libraries (./configure options --with-shared-libraries --with-dynamic-loading)
 enabled.
 <P>
 <P>

@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"   /*I "petscksp.h" I*/
+#include <private/kspimpl.h>   /*I "petscksp.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPInitialResidual"
@@ -37,17 +36,17 @@ $     b-Ax
 .seealso:  KSPMonitor()
 @*/
 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPInitialResidual(KSP ksp,Vec vsoln,Vec vt1,Vec vt2,Vec vres,Vec vb)
+PetscErrorCode  KSPInitialResidual(KSP ksp,Vec vsoln,Vec vt1,Vec vt2,Vec vres,Vec vb)
 {
   MatStructure   pflag;
   Mat            Amat,Pmat;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  PetscValidHeaderSpecific(vsoln,VEC_COOKIE,2);
-  PetscValidHeaderSpecific(vres,VEC_COOKIE,5);
-  PetscValidHeaderSpecific(vb,VEC_COOKIE,6);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  PetscValidHeaderSpecific(vsoln,VEC_CLASSID,2);
+  PetscValidHeaderSpecific(vres,VEC_CLASSID,5);
+  PetscValidHeaderSpecific(vb,VEC_CLASSID,6);
   if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
   ierr = PCGetOperators(ksp->pc,&Amat,&Pmat,&pflag);CHKERRQ(ierr);
   if (!ksp->guess_zero) {
@@ -67,7 +66,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPInitialResidual(KSP ksp,Vec vsoln,Vec vt1,V
     } else if (ksp->pc_side == PC_SYMMETRIC) {
       ierr = PCApplySymmetricLeft(ksp->pc, vb, vres);CHKERRQ(ierr);
     } else {
-      SETERRQ1(PETSC_ERR_SUP, "Invalid preconditioning side %d", (int)ksp->pc_side);
+      SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP, "Invalid preconditioning side %d", (int)ksp->pc_side);
     }
   }
   PetscFunctionReturn(0);
@@ -99,15 +98,15 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPInitialResidual(KSP ksp,Vec vsoln,Vec vt1,V
 
 .keywords: KSP, unwind, preconditioner
 
-.seealso: KSPSetPreconditionerSide()
+.seealso: KSPSetPCSide()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPUnwindPreconditioner(KSP ksp,Vec vsoln,Vec vt1)
+PetscErrorCode  KSPUnwindPreconditioner(KSP ksp,Vec vsoln,Vec vt1)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  PetscValidHeaderSpecific(vsoln,VEC_COOKIE,2);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  PetscValidHeaderSpecific(vsoln,VEC_CLASSID,2);
   if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
   if (ksp->pc_side == PC_RIGHT) {
     ierr = KSP_PCApply(ksp,vsoln,vt1);CHKERRQ(ierr);

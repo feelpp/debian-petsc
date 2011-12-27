@@ -2,7 +2,7 @@
 
 configure_options = [
   '--with-cc=gcc',
-  '--with-fc=gfortran -m64', # http://r.research.att.com/tools/ defaults to 32bit
+  '--with-fc=gfortran', # http://hpc.sourceforge.net/
   '--with-cxx=g++',
 
   '--with-clanguage=cxx',
@@ -12,6 +12,7 @@ configure_options = [
   '--download-mpich=1',
   '--download-plapack=1',
   '--download-parmetis=1',
+  '--download-ptscotch=1',
   '--download-triangle=1',
   '--download-spooles=1',
   #'--download-superlu=1',

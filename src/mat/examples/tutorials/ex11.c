@@ -13,7 +13,7 @@ T*/
      petscmat.h    - matrices
      petscis.h     - index sets            petscviewer.h - viewers               
 */
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -30,7 +30,7 @@ int main(int argc,char **args)
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(MPI_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 2) SETERRQ(PETSC_ERR_SUP,"This example is for exactly two processes");
+  if (size != 2) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_SUP,"This example is for exactly two processes");
   ierr = MPI_Comm_rank(MPI_COMM_WORLD,&rank);CHKERRQ(ierr);
 
   ierr = PetscMalloc(3*sizeof(PetscInt),&ii);CHKERRQ(ierr);
@@ -50,12 +50,12 @@ int main(int argc,char **args)
   ierr = MatPartitioningSetFromOptions(part);CHKERRQ(ierr);
   ierr = MatPartitioningApply(part,&is);CHKERRQ(ierr);
   ierr = ISView(is,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-  ierr = ISDestroy(is);CHKERRQ(ierr);
-  ierr = MatPartitioningDestroy(part);CHKERRQ(ierr);
+  ierr = ISDestroy(&is);CHKERRQ(ierr);
+  ierr = MatPartitioningDestroy(&part);CHKERRQ(ierr);
 
-  ierr = MatDestroy(mesh);CHKERRQ(ierr);
-  ierr = MatDestroy(dual);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&mesh);CHKERRQ(ierr);
+  ierr = MatDestroy(&dual);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

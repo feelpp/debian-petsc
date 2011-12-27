@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* inherit.c */
 /* Fortran interface file */
 
@@ -28,6 +29,16 @@ extern void PetscRmPointer(void*);
 
 #include "petscsys.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscobjectreference_ PETSCOBJECTREFERENCE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscobjectreference_ petscobjectreference
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscobjectgetreference_ PETSCOBJECTGETREFERENCE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscobjectgetreference_ petscobjectgetreference
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscobjectdereference_ PETSCOBJECTDEREFERENCE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscobjectdereference_ petscobjectdereference
@@ -48,15 +59,23 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscobjectdereference_(PetscObject obj, int *__ierr ){
+void PETSC_STDCALL  petscobjectreference_(PetscObject obj, int *__ierr ){
+*__ierr = PetscObjectReference(
+	(PetscObject)PetscToPointer((obj) ));
+}
+void PETSC_STDCALL  petscobjectgetreference_(PetscObject obj,PetscInt *cnt, int *__ierr ){
+*__ierr = PetscObjectGetReference(
+	(PetscObject)PetscToPointer((obj) ),cnt);
+}
+void PETSC_STDCALL  petscobjectdereference_(PetscObject obj, int *__ierr ){
 *__ierr = PetscObjectDereference(
 	(PetscObject)PetscToPointer((obj) ));
 }
-void PETSC_STDCALL   petscobjectsetfromoptions_(PetscObject obj, int *__ierr ){
+void PETSC_STDCALL  petscobjectsetfromoptions_(PetscObject obj, int *__ierr ){
 *__ierr = PetscObjectSetFromOptions(
 	(PetscObject)PetscToPointer((obj) ));
 }
-void PETSC_STDCALL   petscobjectsetup_(PetscObject obj, int *__ierr ){
+void PETSC_STDCALL  petscobjectsetup_(PetscObject obj, int *__ierr ){
 *__ierr = PetscObjectSetUp(
 	(PetscObject)PetscToPointer((obj) ));
 }

@@ -1,6 +1,5 @@
-#define PETSC_DLL
 
-#include "petscsys.h"        /*I    "petscsys.h"   I*/
+#include <petscsys.h>        /*I    "petscsys.h"   I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscObjectGetName"
@@ -21,14 +20,14 @@
 
 .seealso: PetscObjectSetName()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscObjectGetName(PetscObject obj,const char *name[])
+PetscErrorCode  PetscObjectGetName(PetscObject obj,const char *name[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   PetscValidHeader(obj,1);
   PetscValidPointer(name,2);
-  if (!obj->name) { ierr = PetscObjectName(obj);CHKERRQ(ierr); }
+  ierr = PetscObjectName(obj);CHKERRQ(ierr);
   *name = obj->name;
   PetscFunctionReturn(0);
 }

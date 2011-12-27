@@ -10,7 +10,7 @@ Applies the transpose of the preconditioner and operator to a vector. That is, a
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorABTranspose(PC pc,PCSide side,Vec x,Vec y,Vec work)
+PetscErrorCode  PCApplyBAorABTranspose(PC pc,PCSide side,Vec x,Vec y,Vec work)
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>

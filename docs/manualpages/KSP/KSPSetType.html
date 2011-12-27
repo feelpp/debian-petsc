@@ -10,9 +10,9 @@ Builds <A HREF="../KSP/KSP.html#KSP">KSP</A> for a particular solver.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPSetType(KSP ksp, const KSPType type)
+PetscErrorCode  KSPSetType(KSP ksp, const KSPType type)
 </PRE>
-Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
+Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -60,11 +60,13 @@ not for beginners.
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex8.c.html">src/ksp/ksp/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex8g.c.html">src/ksp/ksp/examples/tutorials/ex8g.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex30.c.html">src/ksp/ksp/examples/tutorials/ex30.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex38.c.html">src/ksp/ksp/examples/tutorials/ex38.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex39.c.html">src/ksp/ksp/examples/tutorials/ex39.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex40.c.html">src/ksp/ksp/examples/tutorials/ex40.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex33f.F.html">src/snes/examples/tutorials/ex33f.F.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex54.c.html">src/ksp/ksp/examples/tutorials/ex54.c.html</A><BR>
 </BODY></HTML>

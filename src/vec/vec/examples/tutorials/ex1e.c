@@ -22,9 +22,9 @@ T*/
 */
 #define PETSC_UNDERSCORE_CHKERR
 
-#include "petscvec.h"
+#include <petscvec.h>
 
-#if defined(PETSC_USE_SCALAR_SINGLE)
+#if defined(PETSC_USE_REAL_SINGLE)
 #define PETSC_EPS 1.e-5
 #else
 #define PETSC_EPS 1.e-10
@@ -38,7 +38,6 @@ int main(int argc,char **argv)
   Vec         *z;                    /* array of vectors */
   PetscReal   norm, v, v1, v2;
   PetscInt    n = 20;
-  PetscTruth  flg;
   PetscScalar one = 1.0, two = 2.0, three = 3.0, dots[3], dot;
 
 _ PetscInitialize(&argc,&argv,(char*)0,help);___
@@ -169,21 +168,15 @@ _ VecNorm(z[2],NORM_2,&norm);___
   v2 = norm-3.0*sqrt((PetscReal) n); if (v2 > -PETSC_EPS && v2 < PETSC_EPS) v2 = 0.0; 
 _ PetscPrintf(PETSC_COMM_WORLD,"VecMAXPY %G %G %G \n",v,v1,v2);___
 
-  /* 
-     Test whether vector has been corrupted (just to demonstrate this
-     routine) not needed in most application codes.
-  */
-_ VecValid(x,&flg);___
-  if (!flg) SETERRQ(1,"Corrupted vector.");
 
   /* 
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
   */
-_ VecDestroy(x);___
-_ VecDestroy(y);___
-_ VecDestroy(w);___
-_ VecDestroyVecs(z,3);___
+_ VecDestroy(&x);___
+_ VecDestroy(&y);___
+_ VecDestroy(&w);___
+_ VecDestroyVecs(3,&z);___
 _ PetscFinalize();___
   return 0;
 }

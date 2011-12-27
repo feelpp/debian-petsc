@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* draw.c */
 /* Fortran interface file */
 
@@ -58,23 +59,22 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawresizewindow_(PetscDraw draw,int *w,int *h, int *__ierr ){
+void PETSC_STDCALL  petscdrawresizewindow_(PetscDraw draw,int *w,int *h, int *__ierr ){
 *__ierr = PetscDrawResizeWindow(
 	(PetscDraw)PetscToPointer((draw) ),*w,*h);
 }
-void PETSC_STDCALL   petscdrawcheckresizedwindow_(PetscDraw draw, int *__ierr ){
+void PETSC_STDCALL  petscdrawcheckresizedwindow_(PetscDraw draw, int *__ierr ){
 *__ierr = PetscDrawCheckResizedWindow(
 	(PetscDraw)PetscToPointer((draw) ));
 }
-void PETSC_STDCALL   petscdrawdestroy_(PetscDraw draw, int *__ierr ){
-*__ierr = PetscDrawDestroy(
-	(PetscDraw)PetscToPointer((draw) ));
+void PETSC_STDCALL  petscdrawdestroy_(PetscDraw *draw, int *__ierr ){
+*__ierr = PetscDrawDestroy(draw);
 }
-void PETSC_STDCALL   petscdrawgetpopup_(PetscDraw draw,PetscDraw *popup, int *__ierr ){
+void PETSC_STDCALL  petscdrawgetpopup_(PetscDraw draw,PetscDraw *popup, int *__ierr ){
 *__ierr = PetscDrawGetPopup(
 	(PetscDraw)PetscToPointer((draw) ),popup);
 }
-void PETSC_STDCALL   petscdrawsetdisplay_(PetscDraw draw,char *display, int *__ierr ){
+void PETSC_STDCALL  petscdrawsetdisplay_(PetscDraw draw,char *display, int *__ierr ){
 *__ierr = PetscDrawSetDisplay(
 	(PetscDraw)PetscToPointer((draw) ),display);
 }

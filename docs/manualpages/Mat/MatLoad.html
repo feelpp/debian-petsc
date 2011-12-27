@@ -9,64 +9,42 @@
 Loads a matrix that has been stored in binary format with <A HREF="../Mat/MatView.html#MatView">MatView</A>().  The matrix format is determined from the options database. Generates a parallel MPI matrix if the communicator has more than one processor.  The default matrix type is AIJ. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscmat.h"  
-PetscErrorCode PETSCMAT_DLLEXPORT MatLoad(PetscViewer viewer, const MatType outtype,Mat *newmat)
+#include "petscmat.h" 
+PetscErrorCode  MatLoad(Mat newmat,PetscViewer viewer)
 </PRE>
 Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>newmat </B></TD><TD>- the newly loaded matrix, this needs to have been created with <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>()
+or some related function before a call to <A HREF="../Mat/MatLoad.html#MatLoad">MatLoad</A>()
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>viewer </B></TD><TD>- binary file viewer, created with <A HREF="../Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>()
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>outtype </B></TD><TD>- type of matrix desired, for example <A HREF="../Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,
-<A HREF="../Mat/MATMPISBAIJ.html#MATMPISBAIJ">MATMPISBAIJ</A> etc.  See types in petsc/include/petscmat.h.
 </TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
-<DT><B>newmat </B> -new matrix
-<br>
-<P>
-<H3><FONT COLOR="#CC3333">Basic Options Database Keys</FONT></H3>
-<TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_type seqaij   </B></TD><TD>- AIJ type
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_type mpiaij   </B></TD><TD>- parallel AIJ type
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_type seqbaij  </B></TD><TD>- block AIJ type
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_type mpibaij  </B></TD><TD>- parallel block AIJ type
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_type seqsbaij </B></TD><TD>- block symmetric AIJ type
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_type mpisbaij </B></TD><TD>- parallel block symmetric AIJ type
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_type seqdense </B></TD><TD>- dense type
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_type mpidense </B></TD><TD>- parallel dense type
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-matload_symmetric </B></TD><TD>- matrix in file is symmetric
-</TD></TR></TABLE>
-<P>
-<H3><FONT COLOR="#CC3333">More Options Database Keys</FONT></H3>
+<H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 Used with block matrix formats (<A HREF="../Mat/MATSEQBAIJ.html#MATSEQBAIJ">MATSEQBAIJ</A>,  ...) to specify
 block size
 <DT><B>-matload_block_size &lt;bs&gt;</B> -
 
 <br>
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD> Mat MatLoad(PetscViewer v,const MatType t)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>MatLoad(v,t,&a); return a;</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+If the <A HREF="../Mat/Mat.html#Mat">Mat</A> type has not yet been given then <A HREF="../Mat/MATAIJ.html#MATAIJ">MATAIJ</A> is used, call <A HREF="../Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>() on the
+<A HREF="../Mat/Mat.html#Mat">Mat</A> before calling this routine if you wish to set it from the options database.
+<P>
 <A HREF="../Mat/MatLoad.html#MatLoad">MatLoad</A>() automatically loads into the options database any options
 given in the file filename.info where filename is the name of the file
 that was passed to the <A HREF="../Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(). The options in the info
 file will be ignored if you use the -viewer_binary_skip_info option.
 <P>
+If the type or size of newmat is not set before a call to <A HREF="../Mat/MatLoad.html#MatLoad">MatLoad</A>, PETSc
+sets the default matrix type AIJ and sets the local and global sizes.
+If type and/or size is already set, then the same are used.
+<P>
 In parallel, each processor can load a subset of rows (or the
 entire matrix).  This routine is especially useful when a large
-matrix is stored on disk and only part of it existsis desired on each
+matrix is stored on disk and only part of it is desired on each
 processor.  For example, a parallel solver may access only some of
 the rows from each processor.  The algorithm used here reads
 relatively small blocks of data rather than reading the entire
@@ -79,7 +57,7 @@ But for anyone who's interested, the standard binary matrix storage
 format is
 <P>
 <pre>
-   int    MAT_FILE_COOKIE
+   int    MAT_FILE_CLASSID
 </pre>
 <pre>
    int    number of rows
@@ -115,7 +93,7 @@ and <A HREF="../Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/utils/matio.c.html#MatLoad">src/mat/utils/matio.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/interface/matrix.c.html#MatLoad">src/mat/interface/matrix.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
@@ -129,4 +107,5 @@ and <A HREF="../Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex27.c.html">src/ksp/ksp/examples/tutorials/ex27.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex41.c.html">src/ksp/ksp/examples/tutorials/ex41.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex53.c.html">src/snes/examples/tutorials/ex53.c.html</A><BR>
 </BODY></HTML>

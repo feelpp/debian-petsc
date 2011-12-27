@@ -10,7 +10,7 @@ Gets a reordering for a matrix to reduce fill or to improve numerical stability 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatGetOrdering(Mat mat,const MatOrderingType type,IS *rperm,IS *cperm)
+PetscErrorCode  MatGetOrdering(Mat mat,const MatOrderingType type,IS *rperm,IS *cperm)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -21,19 +21,19 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>type </B></TD><TD>- type of reordering, one of the following:
 </TD></TR></TABLE>
 <pre>
-     MATORDERING_NATURAL - Natural
+     MATORDERINGNATURAL - Natural
 </pre>
 <pre>
-     MATORDERING_ND - Nested Dissection
+     MATORDERINGND - Nested Dissection
 </pre>
 <pre>
-     MATORDERING_1WD - One-way Dissection
+     MATORDERING1WD - One-way Dissection
 </pre>
 <pre>
-     MATORDERING_RCM - Reverse Cuthill-McKee
+     MATORDERINGRCM - Reverse Cuthill-McKee
 </pre>
 <pre>
-     MATORDERING_QMD - Quotient Minimum Degree
+     MATORDERINGQMD - Quotient Minimum Degree
 </pre>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
@@ -56,6 +56,12 @@ that define a reordering. This is usually not used directly, rather use the
 options <A HREF="../PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A>()
 <P>
 The user can define additional orderings; see <A HREF="../Mat/MatOrderingRegisterDynamic.html#MatOrderingRegisterDynamic">MatOrderingRegisterDynamic</A>().
+<P>
+These are generally only implemented for sequential sparse matrices.
+<P>
+The external packages that PETSc can use for direct factorization such as SuperLU do not accept orderings provided by
+this call.
+<P>
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  matrix, set, ordering, factorization, direct, ILU, LU,

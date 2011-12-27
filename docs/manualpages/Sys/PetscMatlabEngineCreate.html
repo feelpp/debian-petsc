@@ -6,22 +6,26 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscMatlabEngineCreate"><H1>PetscMatlabEngineCreate</H1></A>
-Creates a Matlab engine object  
+Creates a MATLAB engine object  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscMatlabEngineCreate(MPI_Comm comm,const char machine[],PetscMatlabEngine *mengine)
+PetscErrorCode  PetscMatlabEngineCreate(MPI_Comm comm,const char machine[],PetscMatlabEngine *mengine)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- a separate Matlab engine is started for each process in the communicator
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- a separate MATLAB engine is started for each process in the communicator
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>machine </B></TD><TD>- name of machine where Matlab engine is to be run (usually <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>machine </B></TD><TD>- name of machine where MATLAB engine is to be run (usually <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>mengine </B> -the resulting object
+<br>
+<P>
+<H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
+<DT><B>-matlab_engine_graphics </B> -allow the MATLAB engine to display graphics
 <br>
 <P>
 

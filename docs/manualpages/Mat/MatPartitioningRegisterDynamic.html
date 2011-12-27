@@ -9,13 +9,13 @@
 Adds a new sparse matrix partitioning to the  matrix package.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode MatPartitioningRegisterDynamic(char *name_partitioning,char *path,char *name_create,PetscErrorCode (*routine_create)(MatPartitioning))
+PetscErrorCode MatPartitioningRegisterDynamic(const char *name_partitioning,const char *path,const char *name_create,PetscErrorCode (*routine_create)(MatPartitioning))
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>sname </B></TD><TD>- name of partitioning (for example MAT_PARTITIONING_CURRENT) or parmetis
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>sname </B></TD><TD>- name of partitioning (for example MATPARTITIONINGCURRENT) or parmetis
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>path </B></TD><TD>- location of library where creation routine is 
 </TD></TR>

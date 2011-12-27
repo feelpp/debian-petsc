@@ -10,9 +10,9 @@ Indicates how often the Jacobian is rebuilt. See <A HREF="../SNES/SNESGetLagPrec
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESGetLagJacobian(SNES snes,PetscInt *lag)
+PetscErrorCode  SNESGetLagJacobian(SNES snes,PetscInt *lag)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>snes </B> -the <A HREF="../SNES/SNES.html#SNES">SNES</A> context

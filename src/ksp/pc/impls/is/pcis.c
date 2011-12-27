@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "../src/ksp/pc/impls/is/pcis.h"
+#include <../src/ksp/pc/impls/is/pcis.h>
 
 /* -------------------------------------------------------------------------- */
 /*
@@ -8,19 +7,17 @@
 */
 #undef __FUNCT__  
 #define __FUNCT__ "PCISSetUp"
-PetscErrorCode PETSCKSP_DLLEXPORT PCISSetUp(PC pc)
+PetscErrorCode  PCISSetUp(PC pc)
 {
   PC_IS           *pcis = (PC_IS*)(pc->data);
   Mat_IS          *matis = (Mat_IS*)pc->mat->data; 
   PetscInt        i;
   PetscErrorCode  ierr;
-  PetscTruth      flg;
+  PetscBool       flg;
   
   PetscFunctionBegin;
   ierr = PetscTypeCompare((PetscObject)pc->mat,MATIS,&flg);CHKERRQ(ierr);
-  if (!flg){
-    SETERRQ(PETSC_ERR_ARG_WRONG,"Preconditioner type of Neumann Neumman requires matrix of type MATIS");
-  }
+  if (!flg) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONG,"Preconditioner type of Neumann Neumman requires matrix of type MATIS");
 
   pcis->pure_neumann = matis->pure_neumann;
 
@@ -41,7 +38,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISSetUp(PC pc)
     ierr = VecScatterEnd  (matis->ctx,pcis->vec1_N,counter,ADD_VALUES,SCATTER_REVERSE);CHKERRQ(ierr);
     ierr = VecScatterBegin(matis->ctx,counter,pcis->vec1_N,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
     ierr = VecScatterEnd  (matis->ctx,counter,pcis->vec1_N,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
-    ierr = VecDestroy(counter);CHKERRQ(ierr);
+    ierr = VecDestroy(&counter);CHKERRQ(ierr);
   }
   /*
     Creating local and global index sets for interior and
@@ -66,10 +63,10 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISSetUp(PC pc)
     ierr = ISLocalToGlobalMappingApply(matis->mapping,pcis->n_B,idx_B_local,idx_B_global);CHKERRQ(ierr);
     ierr = ISLocalToGlobalMappingApply(matis->mapping,n_I,      idx_I_local,idx_I_global);CHKERRQ(ierr);
     /* Creating the index sets. */
-    ierr = ISCreateGeneral(MPI_COMM_SELF,pcis->n_B,idx_B_local, &pcis->is_B_local);CHKERRQ(ierr);
-    ierr = ISCreateGeneral(MPI_COMM_SELF,pcis->n_B,idx_B_global,&pcis->is_B_global);CHKERRQ(ierr);
-    ierr = ISCreateGeneral(MPI_COMM_SELF,n_I      ,idx_I_local, &pcis->is_I_local);CHKERRQ(ierr);
-    ierr = ISCreateGeneral(MPI_COMM_SELF,n_I      ,idx_I_global,&pcis->is_I_global);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(MPI_COMM_SELF,pcis->n_B,idx_B_local,PETSC_COPY_VALUES, &pcis->is_B_local);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(MPI_COMM_SELF,pcis->n_B,idx_B_global,PETSC_COPY_VALUES,&pcis->is_B_global);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(MPI_COMM_SELF,n_I      ,idx_I_local,PETSC_COPY_VALUES, &pcis->is_I_local);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(MPI_COMM_SELF,n_I      ,idx_I_global,PETSC_COPY_VALUES,&pcis->is_I_global);CHKERRQ(ierr);
     /* Freeing memory and restoring arrays */
     ierr = PetscFree(idx_B_local);CHKERRQ(ierr);
     ierr = PetscFree(idx_I_local);CHKERRQ(ierr);
@@ -145,7 +142,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISSetUp(PC pc)
     ierr = KSPSetType(pcis->ksp_N,KSPPREONLY);CHKERRQ(ierr);
     ierr = KSPSetFromOptions(pcis->ksp_N);CHKERRQ(ierr);
     {
-      PetscTruth damp_fixed = PETSC_FALSE,
+      PetscBool  damp_fixed = PETSC_FALSE,
                  remove_nullspace_fixed = PETSC_FALSE,
                  set_damping_factor_floating = PETSC_FALSE,
                  not_damp_floating = PETSC_FALSE,
@@ -155,19 +152,19 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISSetUp(PC pc)
 
       ierr = PetscOptionsGetReal(((PetscObject)pc_ctx)->prefix,"-pc_is_damp_fixed",&fixed_factor,&damp_fixed);CHKERRQ(ierr);
       if (!damp_fixed) { fixed_factor = 0.0; }
-      ierr = PetscOptionsGetTruth(((PetscObject)pc_ctx)->prefix,"-pc_is_damp_fixed",&damp_fixed,PETSC_NULL);CHKERRQ(ierr);
+      ierr = PetscOptionsGetBool(((PetscObject)pc_ctx)->prefix,"-pc_is_damp_fixed",&damp_fixed,PETSC_NULL);CHKERRQ(ierr);
 
-      ierr = PetscOptionsGetTruth(((PetscObject)pc_ctx)->prefix,"-pc_is_remove_nullspace_fixed",&remove_nullspace_fixed,PETSC_NULL);CHKERRQ(ierr);
+      ierr = PetscOptionsGetBool(((PetscObject)pc_ctx)->prefix,"-pc_is_remove_nullspace_fixed",&remove_nullspace_fixed,PETSC_NULL);CHKERRQ(ierr);
 
       ierr = PetscOptionsGetReal(((PetscObject)pc_ctx)->prefix,"-pc_is_set_damping_factor_floating",
 			      &floating_factor,&set_damping_factor_floating);CHKERRQ(ierr);
       if (!set_damping_factor_floating) { floating_factor = 0.0; }
-      ierr = PetscOptionsGetTruth(((PetscObject)pc_ctx)->prefix,"-pc_is_set_damping_factor_floating",&set_damping_factor_floating,PETSC_NULL);CHKERRQ(ierr);
+      ierr = PetscOptionsGetBool(((PetscObject)pc_ctx)->prefix,"-pc_is_set_damping_factor_floating",&set_damping_factor_floating,PETSC_NULL);CHKERRQ(ierr);
       if (!set_damping_factor_floating) { floating_factor = 1.e-12; }
 
-      ierr = PetscOptionsGetTruth(((PetscObject)pc_ctx)->prefix,"-pc_is_not_damp_floating",&not_damp_floating,PETSC_NULL);CHKERRQ(ierr);
+      ierr = PetscOptionsGetBool(((PetscObject)pc_ctx)->prefix,"-pc_is_not_damp_floating",&not_damp_floating,PETSC_NULL);CHKERRQ(ierr);
 
-      ierr = PetscOptionsGetTruth(((PetscObject)pc_ctx)->prefix,"-pc_is_not_remove_nullspace_floating",&not_remove_nullspace_floating,PETSC_NULL);CHKERRQ(ierr);
+      ierr = PetscOptionsGetBool(((PetscObject)pc_ctx)->prefix,"-pc_is_not_remove_nullspace_floating",&not_remove_nullspace_floating,PETSC_NULL);CHKERRQ(ierr);
 
       if (pcis->pure_neumann) {  /* floating subdomain */ 
 	if (!(not_damp_floating)) {
@@ -178,7 +175,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISSetUp(PC pc)
 	  MatNullSpace nullsp;
 	  ierr = MatNullSpaceCreate(PETSC_COMM_SELF,PETSC_TRUE,0,PETSC_NULL,&nullsp);CHKERRQ(ierr);
 	  ierr = KSPSetNullSpace(pcis->ksp_N,nullsp);CHKERRQ(ierr);
-	  ierr = MatNullSpaceDestroy(nullsp);CHKERRQ(ierr);
+	  ierr = MatNullSpaceDestroy(&nullsp);CHKERRQ(ierr);
 	}
       } else {  /* fixed subdomain */
 	if (damp_fixed) {
@@ -189,7 +186,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISSetUp(PC pc)
 	  MatNullSpace nullsp;
 	  ierr = MatNullSpaceCreate(PETSC_COMM_SELF,PETSC_TRUE,0,PETSC_NULL,&nullsp);CHKERRQ(ierr);
 	  ierr = KSPSetNullSpace(pcis->ksp_N,nullsp);CHKERRQ(ierr);
-	  ierr = MatNullSpaceDestroy(nullsp);CHKERRQ(ierr);
+	  ierr = MatNullSpaceDestroy(&nullsp);CHKERRQ(ierr);
 	}
       }
     }
@@ -208,35 +205,35 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISSetUp(PC pc)
 */
 #undef __FUNCT__  
 #define __FUNCT__ "PCISDestroy"
-PetscErrorCode PETSCKSP_DLLEXPORT PCISDestroy(PC pc)
+PetscErrorCode  PCISDestroy(PC pc)
 {
   PC_IS          *pcis = (PC_IS*)(pc->data);
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (pcis->is_B_local)  {ierr = ISDestroy(pcis->is_B_local);CHKERRQ(ierr);}
-  if (pcis->is_I_local)  {ierr = ISDestroy(pcis->is_I_local);CHKERRQ(ierr);}
-  if (pcis->is_B_global) {ierr = ISDestroy(pcis->is_B_global);CHKERRQ(ierr);}
-  if (pcis->is_I_global) {ierr = ISDestroy(pcis->is_I_global);CHKERRQ(ierr);}
-  if (pcis->A_II)        {ierr = MatDestroy(pcis->A_II);CHKERRQ(ierr);}
-  if (pcis->A_IB)        {ierr = MatDestroy(pcis->A_IB);CHKERRQ(ierr);}
-  if (pcis->A_BI)        {ierr = MatDestroy(pcis->A_BI);CHKERRQ(ierr);}
-  if (pcis->A_BB)        {ierr = MatDestroy(pcis->A_BB);CHKERRQ(ierr);}
-  if (pcis->D)           {ierr = VecDestroy(pcis->D);CHKERRQ(ierr);}
-  if (pcis->ksp_N)      {ierr = KSPDestroy(pcis->ksp_N);CHKERRQ(ierr);}
-  if (pcis->ksp_D)      {ierr = KSPDestroy(pcis->ksp_D);CHKERRQ(ierr);}
-  if (pcis->vec1_N)      {ierr = VecDestroy(pcis->vec1_N);CHKERRQ(ierr);}
-  if (pcis->vec2_N)      {ierr = VecDestroy(pcis->vec2_N);CHKERRQ(ierr);}
-  if (pcis->vec1_D)      {ierr = VecDestroy(pcis->vec1_D);CHKERRQ(ierr);}
-  if (pcis->vec2_D)      {ierr = VecDestroy(pcis->vec2_D);CHKERRQ(ierr);}
-  if (pcis->vec3_D)      {ierr = VecDestroy(pcis->vec3_D);CHKERRQ(ierr);}
-  if (pcis->vec1_B)      {ierr = VecDestroy(pcis->vec1_B);CHKERRQ(ierr);}
-  if (pcis->vec2_B)      {ierr = VecDestroy(pcis->vec2_B);CHKERRQ(ierr);}
-  if (pcis->vec3_B)      {ierr = VecDestroy(pcis->vec3_B);CHKERRQ(ierr);}
-  if (pcis->vec1_global) {ierr = VecDestroy(pcis->vec1_global);CHKERRQ(ierr);}
-  if (pcis->global_to_D) {ierr = VecScatterDestroy(pcis->global_to_D);CHKERRQ(ierr);}
-  if (pcis->N_to_B)      {ierr = VecScatterDestroy(pcis->N_to_B);CHKERRQ(ierr);}
-  if (pcis->global_to_B) {ierr = VecScatterDestroy(pcis->global_to_B);CHKERRQ(ierr);}
+  ierr = ISDestroy(&pcis->is_B_local);CHKERRQ(ierr);
+  ierr = ISDestroy(&pcis->is_I_local);CHKERRQ(ierr);
+  ierr = ISDestroy(&pcis->is_B_global);CHKERRQ(ierr);
+  ierr = ISDestroy(&pcis->is_I_global);CHKERRQ(ierr);
+  ierr = MatDestroy(&pcis->A_II);CHKERRQ(ierr);
+  ierr = MatDestroy(&pcis->A_IB);CHKERRQ(ierr);
+  ierr = MatDestroy(&pcis->A_BI);CHKERRQ(ierr);
+  ierr = MatDestroy(&pcis->A_BB);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->D);CHKERRQ(ierr);
+  ierr = KSPDestroy(&pcis->ksp_N);CHKERRQ(ierr);
+  ierr = KSPDestroy(&pcis->ksp_D);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec1_N);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec2_N);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec1_D);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec2_D);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec3_D);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec1_B);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec2_B);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec3_B);CHKERRQ(ierr);
+  ierr = VecDestroy(&pcis->vec1_global);CHKERRQ(ierr);
+  ierr = VecScatterDestroy(&pcis->global_to_D);CHKERRQ(ierr);
+  ierr = VecScatterDestroy(&pcis->N_to_B);CHKERRQ(ierr);
+  ierr = VecScatterDestroy(&pcis->global_to_B);CHKERRQ(ierr);
   ierr = PetscFree(pcis->work_N);CHKERRQ(ierr);
   if (pcis->ISLocalToGlobalMappingGetInfoWasCalled) {
     ierr = ISLocalToGlobalMappingRestoreInfo((ISLocalToGlobalMapping)0,&(pcis->n_neigh),&(pcis->neigh),&(pcis->n_shared),&(pcis->shared));CHKERRQ(ierr);
@@ -250,7 +247,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISDestroy(PC pc)
 */
 #undef __FUNCT__  
 #define __FUNCT__ "PCISCreate"
-PetscErrorCode PETSCKSP_DLLEXPORT PCISCreate(PC pc)
+PetscErrorCode  PCISCreate(PC pc)
 {
   PC_IS *pcis = (PC_IS*)(pc->data);
 
@@ -300,7 +297,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISCreate(PC pc)
 */
 #undef __FUNCT__  
 #define __FUNCT__ "PCIterSuApplySchur"
-PetscErrorCode PETSCKSP_DLLEXPORT PCISApplySchur(PC pc, Vec v, Vec vec1_B, Vec vec2_B, Vec vec1_D, Vec vec2_D)
+PetscErrorCode  PCISApplySchur(PC pc, Vec v, Vec vec1_B, Vec vec2_B, Vec vec1_D, Vec vec2_D)
 {
   PetscErrorCode ierr;
   PC_IS          *pcis = (PC_IS*)(pc->data);
@@ -336,7 +333,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISApplySchur(PC pc, Vec v, Vec vec1_B, Vec v
 */
 #undef __FUNCT__
 #define __FUNCT__ "PCISScatterArrayNToVecB"
-PetscErrorCode PETSCKSP_DLLEXPORT PCISScatterArrayNToVecB (PetscScalar *array_N, Vec v_B, InsertMode imode, ScatterMode smode, PC pc)
+PetscErrorCode  PCISScatterArrayNToVecB (PetscScalar *array_N, Vec v_B, InsertMode imode, ScatterMode smode, PC pc)
 {
   PetscInt       i;
   const PetscInt *idex;
@@ -387,7 +384,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISScatterArrayNToVecB (PetscScalar *array_N,
 */
 #undef __FUNCT__
 #define __FUNCT__ "PCISApplyInvSchur"
-PetscErrorCode PETSCKSP_DLLEXPORT PCISApplyInvSchur (PC pc, Vec b, Vec x, Vec vec1_N, Vec vec2_N)
+PetscErrorCode  PCISApplyInvSchur (PC pc, Vec b, Vec x, Vec vec1_N, Vec vec2_N)
 {
   PetscErrorCode ierr;
   PC_IS          *pcis = (PC_IS*)(pc->data);
@@ -406,8 +403,8 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISApplyInvSchur (PC pc, Vec b, Vec x, Vec ve
   ierr = VecScatterEnd  (pcis->N_to_B,b,vec1_N,INSERT_VALUES,SCATTER_REVERSE);CHKERRQ(ierr);
   /* Checking for consistency of the RHS */
   {
-    PetscTruth flg = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-pc_is_check_consistency",&flg,PETSC_NULL);CHKERRQ(ierr);
+    PetscBool  flg = PETSC_FALSE;
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-pc_is_check_consistency",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       PetscScalar average;
       PetscViewer viewer;
@@ -415,15 +412,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT PCISApplyInvSchur (PC pc, Vec b, Vec x, Vec ve
 
       ierr = VecSum(vec1_N,&average);CHKERRQ(ierr);
       average = average / ((PetscReal)pcis->n);
+      ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_TRUE);CHKERRQ(ierr);
       if (pcis->pure_neumann) {
-
-        ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Subdomain %04d is floating. Average = % 1.14e\n",
-                                             PetscGlobalRank,PetscAbsScalar(average));CHKERRQ(ierr);
+        ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Subdomain %04d is floating. Average = % 1.14e\n",PetscGlobalRank,PetscAbsScalar(average));CHKERRQ(ierr);
       } else {
-        ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Subdomain %04d is fixed.    Average = % 1.14e\n",
-                                             PetscGlobalRank,PetscAbsScalar(average));CHKERRQ(ierr);
+        ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Subdomain %04d is fixed.    Average = % 1.14e\n",PetscGlobalRank,PetscAbsScalar(average));CHKERRQ(ierr);
       }
       ierr = PetscViewerFlush(viewer);CHKERRQ(ierr);
+      ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_FALSE);CHKERRQ(ierr);
     }
   }
   /* Solving the system for vec2_N */

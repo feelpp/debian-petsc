@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /*
     This file implements FGMRES (a Generalized Minimal Residual) method.  
@@ -15,15 +14,15 @@
 
 */
 
-#include "../src/ksp/ksp/impls/gmres/fgmres/fgmresimpl.h"       /*I  "petscksp.h"  I*/
+#include <../src/ksp/ksp/impls/gmres/fgmres/fgmresimpl.h>       /*I  "petscksp.h"  I*/
 #define FGMRES_DELTA_DIRECTIONS 10
 #define FGMRES_DEFAULT_MAXK     30
 static PetscErrorCode FGMRESGetNewVectors(KSP,PetscInt);
-static PetscErrorCode FGMRESUpdateHessenberg(KSP,PetscInt,PetscTruth,PetscReal *);
+static PetscErrorCode FGMRESUpdateHessenberg(KSP,PetscInt,PetscBool ,PetscReal *);
 static PetscErrorCode BuildFgmresSoln(PetscScalar*,Vec,Vec,KSP,PetscInt);
 
-EXTERN PetscErrorCode KSPView_GMRES(KSP,PetscViewer);
-EXTERN PetscErrorCode KSPSetUp_GMRES(KSP);
+extern PetscErrorCode KSPView_GMRES(KSP,PetscViewer);
+extern PetscErrorCode KSPSetUp_GMRES(KSP);
 /*
 
     KSPSetUp_FGMRES - Sets up the workspace needed by fgmres.
@@ -41,11 +40,9 @@ PetscErrorCode    KSPSetUp_FGMRES(KSP ksp)
   KSP_FGMRES     *fgmres = (KSP_FGMRES *)ksp->data;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"no symmetric preconditioning for KSPFGMRES");
-  } else if (ksp->pc_side == PC_LEFT) {
-    SETERRQ(PETSC_ERR_SUP,"no left preconditioning for KSPFGMRES");
-  }
+  if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"no symmetric preconditioning for KSPFGMRES");
+  else if (ksp->pc_side == PC_LEFT) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"no left preconditioning for KSPFGMRES");
+
   max_k         = fgmres->max_k;
 
   ierr = KSPSetUp_GMRES(ksp);CHKERRQ(ierr);
@@ -112,7 +109,7 @@ PetscErrorCode FGMREScycle(PetscInt *itcount,KSP ksp)
   KSP_FGMRES     *fgmres = (KSP_FGMRES *)(ksp->data);
   PetscReal      res_norm;             
   PetscReal      hapbnd,tt;
-  PetscTruth     hapend = PETSC_FALSE;  /* indicates happy breakdown ending */
+  PetscBool      hapend = PETSC_FALSE;  /* indicates happy breakdown ending */
   PetscErrorCode ierr;
   PetscInt       loc_it;                /* local count of # of dir. in Krylov space */ 
   PetscInt       max_k = fgmres->max_k; /* max # of directions Krylov space */
@@ -157,7 +154,7 @@ PetscErrorCode FGMREScycle(PetscInt *itcount,KSP ksp)
   while (!ksp->reason && loc_it < max_k && ksp->its < ksp->max_it) {
     if (loc_it) KSPLogResidualHistory(ksp,res_norm);
     fgmres->it = (loc_it - 1);
-    KSPMonitor(ksp,ksp->its,res_norm); 
+    ierr = KSPMonitor(ksp,ksp->its,res_norm);CHKERRQ(ierr);
 
     /* see if more space is needed for work vectors */
     if (fgmres->vv_allocated <= loc_it + VEC_OFFSET + 1) {
@@ -229,7 +226,7 @@ PetscErrorCode FGMREScycle(PetscInt *itcount,KSP ksp)
     /* Catch error in happy breakdown and signal convergence and break from loop */
     if (hapend) {
       if (!ksp->reason) {
-        SETERRQ(0,"You reached the happy break down,but convergence was not indicated.");
+        SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_PLIB,"You reached the happy break down,but convergence was not indicated.");
       }
       break;
     }
@@ -241,7 +238,7 @@ PetscErrorCode FGMREScycle(PetscInt *itcount,KSP ksp)
   /*
      Monitor if we know that we will not return for a restart */
   if (ksp->reason || ksp->its >= ksp->max_it) {
-    KSPMonitor(ksp,ksp->its,res_norm);
+    ierr = KSPMonitor(ksp,ksp->its,res_norm);CHKERRQ(ierr);
   }
 
   if (itcount) *itcount    = loc_it;
@@ -280,12 +277,11 @@ PetscErrorCode KSPSolve_FGMRES(KSP ksp)
   PetscErrorCode ierr;
   PetscInt       cycle_its = 0; /* iterations done in a call to FGMREScycle */
   KSP_FGMRES     *fgmres = (KSP_FGMRES *)ksp->data;
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
-  ierr    = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
-  if (ksp->normtype != KSP_NORM_UNPRECONDITIONED) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"Can only use FGMRES with unpreconditioned residual (it is coded with right preconditioning)");
+  ierr    = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
 
   ierr = PetscObjectTakeAccess(ksp);CHKERRQ(ierr);
   ksp->its = 0;
@@ -313,6 +309,7 @@ PetscErrorCode KSPSolve_FGMRES(KSP ksp)
 }
 
 extern PetscErrorCode KSPDestroy_GMRES(KSP);
+extern PetscErrorCode KSPReset_FGMRES(KSP);
 /*
 
    KSPDestroy_FGMRES - Frees all memory space used by the Krylov method.
@@ -322,21 +319,10 @@ extern PetscErrorCode KSPDestroy_GMRES(KSP);
 #define __FUNCT__ "KSPDestroy_FGMRES" 
 PetscErrorCode KSPDestroy_FGMRES(KSP ksp)
 {
-  KSP_FGMRES     *fgmres = (KSP_FGMRES*)ksp->data;
   PetscErrorCode ierr;
-  PetscInt       i;
 
   PetscFunctionBegin;
-  ierr = PetscFree (fgmres->prevecs);CHKERRQ(ierr);
-  for (i=0; i<fgmres->nwork_alloc; i++) {
-    ierr = VecDestroyVecs(fgmres->prevecs_user_work[i],fgmres->mwork_alloc[i]);CHKERRQ(ierr);
-  }
-  ierr = PetscFree(fgmres->prevecs_user_work);CHKERRQ(ierr);
-  if (fgmres->modifydestroy) {
-    ierr = (*fgmres->modifydestroy)(fgmres->modifyctx);CHKERRQ(ierr);
-  }
-
-  /* clear composed functions */
+  ierr = KSPReset_FGMRES(ksp);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPFGMRESSetModifyPC_C","",PETSC_NULL);CHKERRQ(ierr);
   ierr = KSPDestroy_GMRES(ksp);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -422,7 +408,7 @@ static PetscErrorCode BuildFgmresSoln(PetscScalar* nrs,Vec vguess,Vec vdest,KSP 
  */
 #undef __FUNCT__  
 #define __FUNCT__ "FGMRESUpdateHessenberg"
-static PetscErrorCode FGMRESUpdateHessenberg(KSP ksp,PetscInt it,PetscTruth hapend,PetscReal *res)
+static PetscErrorCode FGMRESUpdateHessenberg(KSP ksp,PetscInt it,PetscBool  hapend,PetscReal *res)
 {
   PetscScalar   *hh,*cc,*ss,tt;
   PetscInt      j;
@@ -602,31 +588,31 @@ extern PetscErrorCode KSPSetFromOptions_GMRES(KSP);
 PetscErrorCode KSPSetFromOptions_FGMRES(KSP ksp)
 {
   PetscErrorCode ierr;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscFunctionBegin;
   ierr = KSPSetFromOptions_GMRES(ksp);CHKERRQ(ierr);
   ierr = PetscOptionsHead("KSP flexible GMRES Options");CHKERRQ(ierr);
-    ierr = PetscOptionsTruthGroupBegin("-ksp_fgmres_modifypcnochange","do not vary the preconditioner","KSPFGMRESSetModifyPC",&flg);CHKERRQ(ierr);
+    ierr = PetscOptionsBoolGroupBegin("-ksp_fgmres_modifypcnochange","do not vary the preconditioner","KSPFGMRESSetModifyPC",&flg);CHKERRQ(ierr);
     if (flg) {ierr = KSPFGMRESSetModifyPC(ksp,KSPFGMRESModifyPCNoChange,0,0);CHKERRQ(ierr);} 
-    ierr = PetscOptionsTruthGroupEnd("-ksp_fgmres_modifypcksp","vary the KSP based preconditioner","KSPFGMRESSetModifyPC",&flg);CHKERRQ(ierr);
+    ierr = PetscOptionsBoolGroupEnd("-ksp_fgmres_modifypcksp","vary the KSP based preconditioner","KSPFGMRESSetModifyPC",&flg);CHKERRQ(ierr);
     if (flg) {ierr = KSPFGMRESSetModifyPC(ksp,KSPFGMRESModifyPCKSP,0,0);CHKERRQ(ierr);} 
   ierr = PetscOptionsTail();CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-EXTERN PetscErrorCode KSPComputeExtremeSingularValues_GMRES(KSP,PetscReal *,PetscReal *);
-EXTERN PetscErrorCode KSPComputeEigenvalues_GMRES(KSP,PetscInt,PetscReal *,PetscReal *,PetscInt *);
+extern PetscErrorCode KSPComputeExtremeSingularValues_GMRES(KSP,PetscReal *,PetscReal *);
+extern PetscErrorCode KSPComputeEigenvalues_GMRES(KSP,PetscInt,PetscReal *,PetscReal *,PetscInt *);
 
 typedef PetscErrorCode (*FCN1)(KSP,PetscInt,PetscInt,PetscReal,void*); /* force argument to next function to not be extern C*/
 typedef PetscErrorCode (*FCN2)(void*);
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPFGMRESSetModifyPC_FGMRES" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPFGMRESSetModifyPC_FGMRES(KSP ksp,FCN1 fcn,void *ctx,FCN2 d)
+PetscErrorCode  KSPFGMRESSetModifyPC_FGMRES(KSP ksp,FCN1 fcn,void *ctx,FCN2 d)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   ((KSP_FGMRES *)ksp->data)->modifypc      = fcn;
   ((KSP_FGMRES *)ksp->data)->modifydestroy = d;
   ((KSP_FGMRES *)ksp->data)->modifyctx     = ctx;
@@ -635,54 +621,74 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPFGMRESSetModifyPC_FGMRES(KSP ksp,FCN1 fcn,v
 EXTERN_C_END
 
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetPreAllocateVectors_GMRES(KSP);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetRestart_GMRES(KSP,PetscInt);
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetOrthogonalization_GMRES(KSP,PetscErrorCode (*)(KSP,PetscInt));
+extern PetscErrorCode  KSPGMRESSetPreAllocateVectors_GMRES(KSP);
+extern PetscErrorCode  KSPGMRESSetRestart_GMRES(KSP,PetscInt);
+extern PetscErrorCode  KSPGMRESGetRestart_GMRES(KSP,PetscInt*);
+extern PetscErrorCode  KSPGMRESSetOrthogonalization_GMRES(KSP,PetscErrorCode (*)(KSP,PetscInt));
+extern PetscErrorCode  KSPGMRESGetOrthogonalization_GMRES(KSP,PetscErrorCode (**)(KSP,PetscInt));
 EXTERN_C_END
 
-EXTERN PetscErrorCode KSPDestroy_GMRES_Internal(KSP);
+extern PetscErrorCode KSPReset_GMRES(KSP);
 
 #undef __FUNCT__  
-#define __FUNCT__ "KSPDestroy_FGMRES_Internal" 
-PetscErrorCode KSPDestroy_FGMRES_Internal(KSP ksp)
+#define __FUNCT__ "KSPReset_FGMRES" 
+PetscErrorCode KSPReset_FGMRES(KSP ksp)
 {
-  KSP_FGMRES     *gmres = (KSP_FGMRES*)ksp->data;
+  KSP_FGMRES     *fgmres = (KSP_FGMRES*)ksp->data;
   PetscErrorCode ierr;
+  PetscInt       i;
 
   PetscFunctionBegin;
-  ierr = KSPDestroy_GMRES_Internal(ksp);CHKERRQ(ierr);
-  ierr = PetscFree (gmres->prevecs);CHKERRQ(ierr);
-  ierr = PetscFree(gmres->prevecs_user_work);CHKERRQ(ierr);
-  if (gmres->modifydestroy) {
-    ierr = (*gmres->modifydestroy)(gmres->modifyctx);CHKERRQ(ierr);
+  ierr = PetscFree (fgmres->prevecs);CHKERRQ(ierr);
+  for (i=0; i<fgmres->nwork_alloc; i++) {
+    ierr = VecDestroyVecs(fgmres->mwork_alloc[i],&fgmres->prevecs_user_work[i]);CHKERRQ(ierr);
   }
+  ierr = PetscFree(fgmres->prevecs_user_work);CHKERRQ(ierr);
+  if (fgmres->modifydestroy) {
+    ierr = (*fgmres->modifydestroy)(fgmres->modifyctx);CHKERRQ(ierr);
+  }
+  ierr = KSPReset_GMRES(ksp);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPGMRESSetRestart_FGMRES" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetRestart_FGMRES(KSP ksp,PetscInt max_k)
+PetscErrorCode  KSPGMRESSetRestart_FGMRES(KSP ksp,PetscInt max_k)
 {
   KSP_FGMRES     *gmres = (KSP_FGMRES *)ksp->data;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (max_k < 1) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Restart must be positive");
-  if (!ksp->setupcalled) {
+  if (max_k < 1) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Restart must be positive");
+  if (!ksp->setupstage) {
     gmres->max_k = max_k;
   } else if (gmres->max_k != max_k) {
      gmres->max_k = max_k;
-     ksp->setupcalled = 0;
+     ksp->setupstage = KSP_SETUP_NEW;
      /* free the data structures, then create them again */
-     ierr = KSPDestroy_FGMRES_Internal(ksp);CHKERRQ(ierr);
+     ierr = KSPReset_FGMRES(ksp);CHKERRQ(ierr);
   }
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
 
 EXTERN_C_BEGIN
-EXTERN PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetCGSRefinementType_GMRES(KSP,KSPGMRESCGSRefinementType);
+#undef __FUNCT__  
+#define __FUNCT__ "KSPGMRESGetRestart_FGMRES" 
+PetscErrorCode  KSPGMRESGetRestart_FGMRES(KSP ksp,PetscInt *max_k)
+{
+  KSP_FGMRES     *gmres = (KSP_FGMRES *)ksp->data;
+
+  PetscFunctionBegin;
+  *max_k = gmres->max_k;
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END
+
+EXTERN_C_BEGIN
+extern PetscErrorCode  KSPGMRESSetCGSRefinementType_GMRES(KSP,KSPGMRESCGSRefinementType);
+extern PetscErrorCode  KSPGMRESGetCGSRefinementType_GMRES(KSP,KSPGMRESCGSRefinementType*);
 EXTERN_C_END
 
 /*MC
@@ -706,12 +712,17 @@ EXTERN_C_END
    Level: beginner
 
     Notes: See KSPFGMRESSetModifyPC() for how to vary the preconditioner between iterations
-           This object is subclassed off of KSPGMRES
+           Only right preconditioning is supported.
+
+    Notes: The following options -ksp_type fgmres -pc_type ksp -ksp_ksp_type bcgs -ksp_view -ksp_pc_type jacobi make the preconditioner (or inner solver) 
+           be bi-CG-stab with a preconditioner of Jacobi.
+
+    Developer Notes: This object is subclassed off of KSPGMRES
 
 .seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPGMRES, KSPLGMRES,
-           KSPGMRESSetRestart(), KSPGMRESSetHapTol(), KSPGMRESSetPreAllocateVectors(), KSPGMRESSetOrthogonalization()
+           KSPGMRESSetRestart(), KSPGMRESSetHapTol(), KSPGMRESSetPreAllocateVectors(), KSPGMRESSetOrthogonalization(), KSPGMRESGetOrthogonalization(),
            KSPGMRESClassicalGramSchmidtOrthogonalization(), KSPGMRESModifiedGramSchmidtOrthogonalization(),
-           KSPGMRESCGSRefinementType, KSPGMRESSetCGSRefinementType(), KSPGMRESMonitorKrylov(), KSPFGMRESSetModifyPC(),
+           KSPGMRESCGSRefinementType, KSPGMRESSetCGSRefinementType(),  KSPGMRESGetCGSRefinementType(), KSPGMRESMonitorKrylov(), KSPFGMRESSetModifyPC(),
            KSPFGMRESModifyPCKSP()
 
 M*/
@@ -719,7 +730,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_FGMRES"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_FGMRES(KSP ksp)
+PetscErrorCode  KSPCreate_FGMRES(KSP ksp)
 {
   KSP_FGMRES     *fgmres;
   PetscErrorCode ierr;
@@ -730,11 +741,14 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_FGMRES(KSP ksp)
   ksp->ops->buildsolution                = KSPBuildSolution_FGMRES;
   ksp->ops->setup                        = KSPSetUp_FGMRES;
   ksp->ops->solve                        = KSPSolve_FGMRES;
+  ksp->ops->reset                        = KSPReset_FGMRES;
   ksp->ops->destroy                      = KSPDestroy_FGMRES;
   ksp->ops->view                         = KSPView_GMRES;
   ksp->ops->setfromoptions               = KSPSetFromOptions_FGMRES;
   ksp->ops->computeextremesingularvalues = KSPComputeExtremeSingularValues_GMRES;
   ksp->ops->computeeigenvalues           = KSPComputeEigenvalues_GMRES;
+
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_RIGHT,2);CHKERRQ(ierr);
 
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPGMRESSetPreAllocateVectors_C",
                                     "KSPGMRESSetPreAllocateVectors_GMRES",
@@ -742,15 +756,24 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_FGMRES(KSP ksp)
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPGMRESSetOrthogonalization_C",
                                     "KSPGMRESSetOrthogonalization_GMRES",
                                      KSPGMRESSetOrthogonalization_GMRES);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPGMRESGetOrthogonalization_C",
+                                    "KSPGMRESGetOrthogonalization_GMRES",
+                                     KSPGMRESGetOrthogonalization_GMRES);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPGMRESSetRestart_C",
                                     "KSPGMRESSetRestart_FGMRES",
                                      KSPGMRESSetRestart_FGMRES);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPGMRESGetRestart_C",
+                                    "KSPGMRESGetRestart_FGMRES",
+                                     KSPGMRESGetRestart_FGMRES);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPFGMRESSetModifyPC_C",
                                     "KSPFGMRESSetModifyPC_FGMRES",
                                      KSPFGMRESSetModifyPC_FGMRES);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPGMRESSetCGSRefinementType_C",
                                     "KSPGMRESSetCGSRefinementType_GMRES",
                                      KSPGMRESSetCGSRefinementType_GMRES);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPGMRESGetCGSRefinementType_C",
+                                    "KSPGMRESGetCGSRefinementType_GMRES",
+                                     KSPGMRESGetCGSRefinementType_GMRES);CHKERRQ(ierr);
 
 
   fgmres->haptol              = 1.0e-30;
@@ -766,13 +789,6 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_FGMRES(KSP ksp)
   fgmres->modifyctx           = PETSC_NULL;
   fgmres->modifydestroy       = PETSC_NULL;
   fgmres->cgstype             = KSP_GMRES_CGS_REFINE_NEVER;
-  /*
-        This is not great since it changes this without explicit request from the user
-     but there is no left preconditioning in the FGMRES
-  */
-  ierr = PetscInfo(ksp,"WARNING! Setting PC_SIDE for FGMRES to right!\n");CHKERRQ(ierr);
-  ksp->pc_side  = PC_RIGHT;
-  ksp->normtype = KSP_NORM_UNPRECONDITIONED;
   PetscFunctionReturn(0);
 }
 EXTERN_C_END

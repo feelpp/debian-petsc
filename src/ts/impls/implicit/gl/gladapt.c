@@ -1,14 +1,13 @@
-#define PETSCTS_DLL
 
-#include "gl.h" /*I  "petscts.h" I*/
+#include <../src/ts/impls/implicit/gl/gl.h> /*I  "petscts.h" I*/
 
 static PetscFList TSGLAdaptList;
-static PetscTruth TSGLAdaptPackageInitialized;
-static PetscTruth TSGLAdaptRegisterAllCalled;
-static PetscCookie TSGLADAPT_COOKIE;
+static PetscBool  TSGLAdaptPackageInitialized;
+static PetscBool  TSGLAdaptRegisterAllCalled;
+static PetscClassId TSGLADAPT_CLASSID;
 
 struct _TSGLAdaptOps {
-  PetscErrorCode (*choose)(TSGLAdapt,PetscInt,const PetscInt[],const PetscReal[],const PetscReal[],PetscInt,PetscReal,PetscReal,PetscInt*,PetscReal*,PetscTruth*);
+  PetscErrorCode (*choose)(TSGLAdapt,PetscInt,const PetscInt[],const PetscReal[],const PetscReal[],PetscInt,PetscReal,PetscReal,PetscInt*,PetscReal*,PetscBool *);
   PetscErrorCode (*destroy)(TSGLAdapt);
   PetscErrorCode (*view)(TSGLAdapt,PetscViewer);
   PetscErrorCode (*setfromoptions)(TSGLAdapt);
@@ -19,9 +18,11 @@ struct _p_TSGLAdapt {
   void *data;
 };
 
-static PetscErrorCode TSGLAdaptCreate_None(TSGLAdapt);
-static PetscErrorCode TSGLAdaptCreate_Size(TSGLAdapt);
-static PetscErrorCode TSGLAdaptCreate_Both(TSGLAdapt);
+EXTERN_C_BEGIN
+PetscErrorCode  TSGLAdaptCreate_None(TSGLAdapt);
+PetscErrorCode  TSGLAdaptCreate_Size(TSGLAdapt);
+PetscErrorCode  TSGLAdaptCreate_Both(TSGLAdapt);
+EXTERN_C_END
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptRegister"
@@ -30,7 +31,7 @@ static PetscErrorCode TSGLAdaptCreate_Both(TSGLAdapt);
 
    Level: advanced
 @*/
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(TSGLAdapt))
+PetscErrorCode  TSGLAdaptRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(TSGLAdapt))
 {
   PetscErrorCode ierr;
   char           fullname[PETSC_MAX_PATH_LEN];
@@ -54,7 +55,7 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptRegister(const char sname[],const char
 
 .seealso: TSGLAdaptRegisterDestroy()
 @*/
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptRegisterAll(const char path[])
+PetscErrorCode  TSGLAdaptRegisterAll(const char path[])
 {
   PetscErrorCode ierr;
 
@@ -66,7 +67,7 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptRegisterAll(const char path[])
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "TSGLFinalizePackage"
+#define __FUNCT__ "TSGLAdaptFinalizePackage"
 /*@C
   TSGLFinalizePackage - This function destroys everything in the TSGL package. It is
   called from PetscFinalize().
@@ -76,7 +77,7 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptRegisterAll(const char path[])
 .keywords: Petsc, destroy, package
 .seealso: PetscFinalize()
 @*/
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptFinalizePackage(void) 
+PetscErrorCode  TSGLAdaptFinalizePackage(void) 
 {
   PetscFunctionBegin;
   TSGLAdaptPackageInitialized = PETSC_FALSE;
@@ -86,7 +87,7 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptFinalizePackage(void)
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "TSGLInitializePackage"
+#define __FUNCT__ "TSGLAdaptInitializePackage"
 /*@C
   TSGLAdaptInitializePackage - This function initializes everything in the TSGLAdapt package. It is
   called from PetscDLLibraryRegister() when using dynamic libraries, and on the first call to
@@ -100,14 +101,14 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptFinalizePackage(void)
 .keywords: TSGLAdapt, initialize, package
 .seealso: PetscInitialize()
 @*/
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptInitializePackage(const char path[])
+PetscErrorCode  TSGLAdaptInitializePackage(const char path[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   if (TSGLAdaptPackageInitialized) PetscFunctionReturn(0);
   TSGLAdaptPackageInitialized = PETSC_TRUE;
-  ierr = PetscCookieRegister("TSGLAdapt",&TSGLADAPT_COOKIE);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("TSGLAdapt",&TSGLADAPT_CLASSID);CHKERRQ(ierr);
   ierr = TSGLAdaptRegisterAll(path);CHKERRQ(ierr);
   ierr = PetscRegisterFinalize(TSGLAdaptFinalizePackage);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -125,7 +126,7 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptInitializePackage(const char path[])
 .keywords: TSGLAdapt, register, destroy
 .seealso: TSGLAdaptRegister(), TSGLAdaptRegisterAll(), TSGLAdaptRegisterDynamic()
 @*/
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptRegisterDestroy(void)
+PetscErrorCode  TSGLAdaptRegisterDestroy(void)
 {
   PetscErrorCode ierr;
 
@@ -138,13 +139,13 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptRegisterDestroy(void)
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptSetType"
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptSetType(TSGLAdapt adapt,const TSGLAdaptType type)
+PetscErrorCode  TSGLAdaptSetType(TSGLAdapt adapt,const TSGLAdaptType type)
 {
   PetscErrorCode ierr,(*r)(TSGLAdapt);
 
   PetscFunctionBegin;
-  ierr = PetscFListFind(TSGLAdaptList,((PetscObject)adapt)->comm,type,(void(**)(void))&r);CHKERRQ(ierr);
-  if (!r) SETERRQ1(PETSC_ERR_ARG_UNKNOWN_TYPE,"Unknown TSGLAdapt type \"%s\" given",type);
+  ierr = PetscFListFind(TSGLAdaptList,((PetscObject)adapt)->comm,type,PETSC_TRUE,(void(**)(void))&r);CHKERRQ(ierr);
+  if (!r) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_UNKNOWN_TYPE,"Unknown TSGLAdapt type \"%s\" given",type);
   if (((PetscObject)adapt)->type_name) {ierr = (*adapt->ops->destroy)(adapt);CHKERRQ(ierr);}
   ierr = (*r)(adapt);CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)adapt,type);CHKERRQ(ierr);
@@ -153,7 +154,7 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptSetType(TSGLAdapt adapt,const TSGLAdap
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptSetOptionsPrefix"
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptSetOptionsPrefix(TSGLAdapt adapt,const char prefix[])
+PetscErrorCode  TSGLAdaptSetOptionsPrefix(TSGLAdapt adapt,const char prefix[])
 {
   PetscErrorCode ierr;
 
@@ -164,27 +165,22 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptSetOptionsPrefix(TSGLAdapt adapt,const
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptView"
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptView(TSGLAdapt adapt,PetscViewer viewer)
+PetscErrorCode  TSGLAdaptView(TSGLAdapt adapt,PetscViewer viewer)
 {
   PetscErrorCode ierr;
-  PetscTruth iascii;
+  PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
-    if (((PetscObject)adapt)->prefix) {
-      ierr = PetscViewerASCIIPrintf(viewer,"TSGLAdapt object: (%s)\n",((PetscObject)adapt)->prefix);CHKERRQ(ierr);
-    } else {
-      ierr = PetscViewerASCIIPrintf(viewer,"TSGLAdapt object:\n");CHKERRQ(ierr);
-    }
-    ierr = PetscViewerASCIIPrintf(viewer,"  type: %s\n",((PetscObject)adapt)->type_name?((PetscObject)adapt)->type_name:"(not set yet)");CHKERRQ(ierr);
+    ierr = PetscObjectPrintClassNamePrefixType((PetscObject)adapt,viewer,"TSGLAdapt Object");CHKERRQ(ierr);
     if (adapt->ops->view) {
       ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
       ierr = (*adapt->ops->view)(adapt,viewer);CHKERRQ(ierr);
       ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
     }
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for TS_GL",((PetscObject)viewer)->type_name);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported",((PetscObject)viewer)->type_name);
   }
 
   PetscFunctionReturn(0);
@@ -192,25 +188,26 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptView(TSGLAdapt adapt,PetscViewer viewe
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptDestroy"
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptDestroy(TSGLAdapt adapt)
+PetscErrorCode  TSGLAdaptDestroy(TSGLAdapt *adapt)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(adapt,TSGLADAPT_COOKIE,1);
-  if (--((PetscObject)adapt)->refct > 0) PetscFunctionReturn(0);
-  if (adapt->ops->destroy) {ierr = (*adapt->ops->destroy)(adapt);CHKERRQ(ierr);}
+  if (!*adapt) PetscFunctionReturn(0);
+  PetscValidHeaderSpecific(*adapt,TSGLADAPT_CLASSID,1);
+  if (--((PetscObject)(*adapt))->refct > 0) {*adapt = 0; PetscFunctionReturn(0);}
+  if ((*adapt)->ops->destroy) {ierr = (*(*adapt)->ops->destroy)(*adapt);CHKERRQ(ierr);}
   ierr = PetscHeaderDestroy(adapt);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptSetFromOptions"
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptSetFromOptions(TSGLAdapt adapt)
+PetscErrorCode  TSGLAdaptSetFromOptions(TSGLAdapt adapt)
 {
   PetscErrorCode ierr;
   char           type[256] = TSGLADAPT_BOTH;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscFunctionBegin;
   /* This should use PetscOptionsBegin() if/when this becomes an object used outside of TSGL, but currently this
@@ -228,12 +225,12 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptSetFromOptions(TSGLAdapt adapt)
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptChoose"
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptChoose(TSGLAdapt adapt,PetscInt n,const PetscInt orders[],const PetscReal errors[],const PetscReal cost[],PetscInt cur,PetscReal h,PetscReal tleft,PetscInt *next_sc,PetscReal *next_h,PetscTruth *finish)
+PetscErrorCode  TSGLAdaptChoose(TSGLAdapt adapt,PetscInt n,const PetscInt orders[],const PetscReal errors[],const PetscReal cost[],PetscInt cur,PetscReal h,PetscReal tleft,PetscInt *next_sc,PetscReal *next_h,PetscBool  *finish)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(adapt,TSGLADAPT_COOKIE,1);
+  PetscValidHeaderSpecific(adapt,TSGLADAPT_CLASSID,1);
   PetscValidIntPointer(orders,3);
   PetscValidPointer(errors,4);
   PetscValidPointer(cost,5);
@@ -246,14 +243,14 @@ PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptChoose(TSGLAdapt adapt,PetscInt n,cons
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptCreate"
-PetscErrorCode PETSCTS_DLLEXPORT TSGLAdaptCreate(MPI_Comm comm,TSGLAdapt *inadapt)
+PetscErrorCode  TSGLAdaptCreate(MPI_Comm comm,TSGLAdapt *inadapt)
 {
   PetscErrorCode ierr;
   TSGLAdapt adapt;
 
   PetscFunctionBegin;
   *inadapt = 0;
-  ierr = PetscHeaderCreate(adapt,_p_TSGLAdapt,struct _TSGLAdaptOps,TSGLADAPT_COOKIE,0,"TSGLAdapt",comm,TSGLAdaptDestroy,TSGLAdaptView);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(adapt,_p_TSGLAdapt,struct _TSGLAdaptOps,TSGLADAPT_CLASSID,0,"TSGLAdapt","General Linear adaptivity","TS",comm,TSGLAdaptDestroy,TSGLAdaptView);CHKERRQ(ierr);
   *inadapt = adapt;
   PetscFunctionReturn(0);
 }
@@ -282,7 +279,7 @@ typedef struct {
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptChoose_None"
-static PetscErrorCode TSGLAdaptChoose_None(TSGLAdapt adapt,PetscInt n,const PetscInt orders[],const PetscReal errors[],const PetscReal cost[],PetscInt cur,PetscReal h,PetscReal tleft,PetscInt *next_sc,PetscReal *next_h,PetscTruth *finish)
+static PetscErrorCode TSGLAdaptChoose_None(TSGLAdapt adapt,PetscInt n,const PetscInt orders[],const PetscReal errors[],const PetscReal cost[],PetscInt cur,PetscReal h,PetscReal tleft,PetscInt *next_sc,PetscReal *next_h,PetscBool  *finish)
 {
 
   PetscFunctionBegin;
@@ -297,9 +294,10 @@ static PetscErrorCode TSGLAdaptChoose_None(TSGLAdapt adapt,PetscInt n,const Pets
   PetscFunctionReturn(0);
 }
 
+EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptCreate_None"
-static PetscErrorCode TSGLAdaptCreate_None(TSGLAdapt adapt)
+PetscErrorCode  TSGLAdaptCreate_None(TSGLAdapt adapt)
 {
   PetscErrorCode ierr;
   TSGLAdapt_None *a;
@@ -311,7 +309,7 @@ static PetscErrorCode TSGLAdaptCreate_None(TSGLAdapt adapt)
   adapt->ops->destroy = TSGLAdaptDestroy_JustFree;
   PetscFunctionReturn(0);
 }
-
+EXTERN_C_END
 
 /* -------------------------------- Size ----------------------------------- */
 typedef struct {
@@ -321,14 +319,14 @@ typedef struct {
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptChoose_Size"
-static PetscErrorCode TSGLAdaptChoose_Size(TSGLAdapt adapt,PetscInt n,const PetscInt orders[],const PetscReal errors[],const PetscReal cost[],PetscInt cur,PetscReal h,PetscReal tleft,PetscInt *next_sc,PetscReal *next_h,PetscTruth *finish)
+static PetscErrorCode TSGLAdaptChoose_Size(TSGLAdapt adapt,PetscInt n,const PetscInt orders[],const PetscReal errors[],const PetscReal cost[],PetscInt cur,PetscReal h,PetscReal tleft,PetscInt *next_sc,PetscReal *next_h,PetscBool  *finish)
 {
   TSGLAdapt_Size *sz = (TSGLAdapt_Size*)adapt->data;
   PetscReal dec = 0.2,inc = 5.0,safe = 0.9,optimal,last_desired_h;
 
   PetscFunctionBegin;
   *next_sc = cur;
-  optimal = pow(errors[cur],-1./(safe*orders[cur]));
+  optimal = pow((PetscReal)errors[cur],(PetscReal)-1./(safe*orders[cur]));
   /* Step sizes oscillate when there is no smoothing.  Here we use a geometric mean of the the current step size and the
   * one that would have been taken (without smoothing) on the last step. */
   last_desired_h = sz->desired_h;
@@ -347,9 +345,10 @@ static PetscErrorCode TSGLAdaptChoose_Size(TSGLAdapt adapt,PetscInt n,const Pets
   PetscFunctionReturn(0);
 }
 
+EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptCreate_Size"
-static PetscErrorCode TSGLAdaptCreate_Size(TSGLAdapt adapt)
+PetscErrorCode  TSGLAdaptCreate_Size(TSGLAdapt adapt)
 {
   PetscErrorCode ierr;
   TSGLAdapt_Size *a;
@@ -361,6 +360,7 @@ static PetscErrorCode TSGLAdaptCreate_Size(TSGLAdapt adapt)
   adapt->ops->destroy = TSGLAdaptDestroy_JustFree;
   PetscFunctionReturn(0);
 }
+EXTERN_C_END
 
 /* -------------------------------- Both ----------------------------------- */
 typedef struct {
@@ -371,7 +371,7 @@ typedef struct {
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptChoose_Both"
-static PetscErrorCode TSGLAdaptChoose_Both(TSGLAdapt adapt,PetscInt n,const PetscInt orders[],const PetscReal errors[],const PetscReal cost[],PetscInt cur,PetscReal h,PetscReal tleft,PetscInt *next_sc,PetscReal *next_h,PetscTruth *finish)
+static PetscErrorCode TSGLAdaptChoose_Both(TSGLAdapt adapt,PetscInt n,const PetscInt orders[],const PetscReal errors[],const PetscReal cost[],PetscInt cur,PetscReal h,PetscReal tleft,PetscInt *next_sc,PetscReal *next_h,PetscBool  *finish)
 {
   TSGLAdapt_Both *both = (TSGLAdapt_Both*)adapt->data;
   PetscErrorCode ierr;
@@ -383,7 +383,7 @@ static PetscErrorCode TSGLAdaptChoose_Both(TSGLAdapt adapt,PetscInt n,const Pets
   for (i=0; i<n; i++) {
     PetscReal optimal;
     trial.id = i;
-    optimal = pow(errors[i],-1./(safe*orders[i]));
+    optimal = pow((PetscReal)errors[i],(PetscReal)-1./(safe*orders[i]));
     trial.h = h*optimal;
     trial.eff = trial.h/cost[i];
     if (trial.eff > best.eff) {ierr = PetscMemcpy(&best,&trial,sizeof(trial));CHKERRQ(ierr);}
@@ -417,9 +417,10 @@ static PetscErrorCode TSGLAdaptChoose_Both(TSGLAdapt adapt,PetscInt n,const Pets
   PetscFunctionReturn(0);
 }
 
+EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "TSGLAdaptCreate_Both"
-static PetscErrorCode TSGLAdaptCreate_Both(TSGLAdapt adapt)
+PetscErrorCode TSGLAdaptCreate_Both(TSGLAdapt adapt)
 {
   PetscErrorCode ierr;
   TSGLAdapt_Both *a;
@@ -431,3 +432,4 @@ static PetscErrorCode TSGLAdaptCreate_Both(TSGLAdapt adapt)
   adapt->ops->destroy = TSGLAdaptDestroy_JustFree;
   PetscFunctionReturn(0);
 }
+EXTERN_C_END

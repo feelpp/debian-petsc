@@ -1,4 +1,4 @@
-#define PETSCKSP_DLL
+
 /*
  * Implementation of BiCGstab(L) the paper by D.R. Fokkema,
  * "Enhanced implementation of BiCGStab(L) for solving linear systems
@@ -11,9 +11,9 @@
  * loops and the macros for block solvers converted from LINPACK; there is no way
  * calls to BLAS/LAPACK make sense for size 2, 3, 4, etc.
  */
-#include "private/kspimpl.h"              /*I   "petscksp.h" I*/
-#include "../src/ksp/ksp/impls/bcgsl/bcgslimpl.h"
-#include "petscblaslapack.h"
+#include <private/kspimpl.h>              /*I   "petscksp.h" I*/
+#include <../src/ksp/ksp/impls/bcgsl/bcgslimpl.h>
+#include <petscblaslapack.h>
 
 
 #undef __FUNCT__
@@ -24,11 +24,9 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
   PetscScalar    alpha, beta, omega, sigma;
   PetscScalar    rho0, rho1;
   PetscReal      kappa0, kappaA, kappa1;
-  PetscReal      ghat, epsilon, abstol;
+  PetscReal      ghat;
   PetscReal      zeta, zeta0, rnmax_computed, rnmax_true, nrm0;
-  PetscTruth     bUpdateX;
-  PetscTruth     bBombed = PETSC_FALSE;
-
+  PetscBool      bUpdateX;
   PetscInt       maxit;
   PetscInt       h, i, j, k, vi, ell;
   PetscBLASInt   ldMZ,bierr;
@@ -36,10 +34,6 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->normtype == KSP_NORM_NATURAL) SETERRQ(PETSC_ERR_SUP,"Cannot use natural norm with KSPBCGSL");
-  if (ksp->normtype == KSP_NORM_PRECONDITIONED && ksp->pc_side != PC_LEFT) SETERRQ(PETSC_ERR_SUP,"Use -ksp_norm_type unpreconditioned for right preconditioning and KSPBCGSL");
-  if (ksp->normtype == KSP_NORM_UNPRECONDITIONED && ksp->pc_side != PC_RIGHT) SETERRQ(PETSC_ERR_SUP,"Use -ksp_norm_type preconditioned for left preconditioning and KSPBCGSL");
-
   /* set up temporary vectors */
   vi = 0;
   ell = bcgsl->ell;
@@ -82,17 +76,18 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
   ierr = VecCopy(VVR[0], VRT);CHKERRQ(ierr);
   zeta = zeta0;
 
-  ierr = KSPGetTolerances(ksp, &epsilon, &abstol, PETSC_NULL, &maxit);CHKERRQ(ierr);
+  ierr = KSPGetTolerances(ksp, PETSC_NULL, PETSC_NULL, PETSC_NULL, &maxit);CHKERRQ(ierr);
 
   for (k=0; k<maxit; k += bcgsl->ell) {
     ksp->its   = k;
     ksp->rnorm = zeta;
 
     KSPLogResidualHistory(ksp, zeta);
-    KSPMonitor(ksp, ksp->its, zeta);
+    ierr = KSPMonitor(ksp, ksp->its, zeta);CHKERRQ(ierr);
 
     ierr = (*ksp->converged)(ksp, k, zeta, &ksp->reason, ksp->cnvP);CHKERRQ(ierr);
-    if (ksp->reason) break;
+    if (ksp->reason < 0) PetscFunctionReturn(0);
+    else if (ksp->reason) break;
 
     /* BiCG part */
     rho0 = -omega*rho0;
@@ -102,8 +97,7 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
       ierr = VecDot(VVR[j], VRT, &rho1);CHKERRQ(ierr);
       if (rho1 == 0.0) {
         ksp->reason = KSP_DIVERGED_BREAKDOWN_BICG;
-        bBombed = PETSC_TRUE;
-        break;
+        PetscFunctionReturn(0);
       }
       beta = alpha*(rho1/rho0);
       rho0 = rho1;
@@ -117,8 +111,7 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
       ierr = VecDot(VVU[j+1], VRT, &sigma);CHKERRQ(ierr);
       if (sigma == 0.0) {
         ksp->reason = KSP_DIVERGED_BREAKDOWN_BICG;
-        bBombed = PETSC_TRUE;
-        break;
+        PetscFunctionReturn(0);
       }
       alpha = rho1/sigma;
 
@@ -146,11 +139,9 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
         ksp->its   = k+j;
         ksp->rnorm = nrm0;
         ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
-        break;
+        if (ksp->reason < 0) PetscFunctionReturn(0);
       }
     }
-
-    if (bBombed==PETSC_TRUE) break;
 
     /* Polynomial part */
     for(i = 0; i <= bcgsl->ell; ++i) {
@@ -172,8 +163,7 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
       LAPACKpotrf_("Lower", &bell, &MZa[1+ldMZ], &ldMZ, &bierr);
       if (ierr!=0) {
         ksp->reason = KSP_DIVERGED_BREAKDOWN;
-        bBombed = PETSC_TRUE;
-        break;
+        PetscFunctionReturn(0);
       }
       ierr = PetscMemcpy(&AY0c[1],&MZb[1],bcgsl->ell*sizeof(PetscScalar));CHKERRQ(ierr);
       LAPACKpotrs_("Lower", &bell, &ione, &MZa[1+ldMZ], &ldMZ, &AY0c[1], &ldMZ, &bierr);
@@ -185,8 +175,7 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
       LAPACKpotrf_("Lower", &neqs, &MZa[1+ldMZ], &ldMZ, &bierr);
       if (ierr!=0) {
         ksp->reason = KSP_DIVERGED_BREAKDOWN;
-        bBombed = PETSC_TRUE;
-        break;
+        PetscFunctionReturn(0);
       }
       ierr = PetscMemcpy(&AY0c[1],&MZb[1],(bcgsl->ell-1)*sizeof(PetscScalar));CHKERRQ(ierr);
       LAPACKpotrs_("Lower", &neqs, &ione, &MZa[1+ldMZ], &ldMZ, &AY0c[1], &ldMZ, &bierr);
@@ -214,7 +203,7 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
       kappa1 = BLASdot_(&ldMZ, AYlc, &ione, AYtc, &ione);
 
       if (kappa1<0) kappa1 = -kappa1;
-      kappa1 = sqrt(kappa1);
+      kappa1 = PetscSqrtReal(kappa1);
 
       if (kappa0!=0.0 && kappa1!=0.0) {
         if (kappaA<0.7*kappa0*kappa1) {
@@ -234,7 +223,7 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
     }
     if (omega==0.0) {
       ksp->reason = KSP_DIVERGED_BREAKDOWN;
-      break;
+      PetscFunctionReturn(0);
     }
 
 
@@ -254,7 +243,7 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
       if (rnmax_computed<zeta) rnmax_computed = zeta;
       if (rnmax_true<zeta) rnmax_true = zeta;
 
-      bUpdateX = (PetscTruth) (zeta<bcgsl->delta*zeta0 && zeta0<=rnmax_computed);
+      bUpdateX = (PetscBool) (zeta<bcgsl->delta*zeta0 && zeta0<=rnmax_computed);
       if ((zeta<bcgsl->delta*rnmax_true && zeta0<=rnmax_true) || bUpdateX) {
         /* r0 <- b-inv(K)*A*X */
         ierr = KSP_PCApplyBAorAB(ksp, VX, VVR[0], VTM);CHKERRQ(ierr);
@@ -285,7 +274,7 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
    KSPBCGSLSetXRes - Sets the parameter governing when
    exact residuals will be used instead of computed residuals.
 
-   Collective on KSP
+   Logically Collective on KSP
 
    Input Parameters:
 +  ksp - iterative context obtained from KSPCreate
@@ -301,17 +290,18 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
 
 .seealso: KSPBCGSLSetEll(), KSPBCGSLSetPol()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPBCGSLSetXRes(KSP ksp, PetscReal delta)
+PetscErrorCode  KSPBCGSLSetXRes(KSP ksp, PetscReal delta)
 {
   KSP_BCGSL      *bcgsl = (KSP_BCGSL *)ksp->data;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->setupcalled) {
+  PetscValidLogicalCollectiveReal(ksp,delta,2);
+  if (ksp->setupstage) {
     if ((delta<=0 && bcgsl->delta>0) || (delta>0 && bcgsl->delta<=0)) {
-      ierr = KSPDefaultFreeWork(ksp);CHKERRQ(ierr);
+      ierr = VecDestroyVecs(ksp->nwork,&ksp->work);CHKERRQ(ierr);
       ierr = PetscFree5(AY0c,AYlc,AYtc,MZa,MZb);CHKERRQ(ierr);
-      ksp->setupcalled = 0;
+      ksp->setupstage = KSP_SETUP_NEW;
     }
   }
   bcgsl->delta = delta;
@@ -324,7 +314,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPBCGSLSetXRes(KSP ksp, PetscReal delta)
    KSPBCGSLSetPol - Sets the type of polynomial part will
    be used in the BiCGSTab(L) solver.
 
-   Collective on KSP
+   Logically Collective on KSP
 
    Input Parameters:
 +  ksp - iterative context obtained from KSPCreate
@@ -341,22 +331,24 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPBCGSLSetXRes(KSP ksp, PetscReal delta)
 
 .seealso: @()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPBCGSLSetPol(KSP ksp, PetscTruth uMROR)
+PetscErrorCode  KSPBCGSLSetPol(KSP ksp, PetscBool  uMROR)
 {
   KSP_BCGSL      *bcgsl = (KSP_BCGSL *)ksp->data;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!ksp->setupcalled) {
+  PetscValidLogicalCollectiveBool(ksp,uMROR,2);
+
+  if (!ksp->setupstage) {
     bcgsl->bConvex = uMROR;
   } else if (bcgsl->bConvex != uMROR) {
     /* free the data structures,
        then create them again
      */
-    ierr = KSPDefaultFreeWork(ksp);CHKERRQ(ierr);
+    ierr = VecDestroyVecs(ksp->nwork,&ksp->work);CHKERRQ(ierr);
     ierr = PetscFree5(AY0c,AYlc,AYtc,MZa,MZb);CHKERRQ(ierr);
     bcgsl->bConvex = uMROR;
-    ksp->setupcalled = 0;
+    ksp->setupstage = KSP_SETUP_NEW;
   }
   PetscFunctionReturn(0);
 }
@@ -366,7 +358,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPBCGSLSetPol(KSP ksp, PetscTruth uMROR)
 /*@
    KSPBCGSLSetEll - Sets the number of search directions in BiCGStab(L).
 
-   Collective on KSP
+   Logically Collective on KSP
 
    Input Parameters:
 +  ksp - iterative context obtained from KSPCreate
@@ -382,22 +374,23 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPBCGSLSetPol(KSP ksp, PetscTruth uMROR)
 
 .seealso: @()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPBCGSLSetEll(KSP ksp, int ell)
+PetscErrorCode  KSPBCGSLSetEll(KSP ksp, PetscInt ell)
 {
   KSP_BCGSL      *bcgsl = (KSP_BCGSL *)ksp->data;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ell < 1) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE, "KSPBCGSLSetEll: second argument must be positive");
+  if (ell < 1) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE, "KSPBCGSLSetEll: second argument must be positive");
+  PetscValidLogicalCollectiveInt(ksp,ell,2);
 
-  if (!ksp->setupcalled) {
+  if (!ksp->setupstage) {
     bcgsl->ell = ell;
   } else if (bcgsl->ell != ell) {
     /* free the data structures, then create them again */
-    ierr = KSPDefaultFreeWork(ksp);CHKERRQ(ierr);
+    ierr = VecDestroyVecs(ksp->nwork,&ksp->work);CHKERRQ(ierr);
     ierr = PetscFree5(AY0c,AYlc,AYtc,MZa,MZb);CHKERRQ(ierr);
     bcgsl->ell = ell;
-    ksp->setupcalled = 0;
+    ksp->setupstage = KSP_SETUP_NEW;
   }
   PetscFunctionReturn(0);
 }
@@ -408,17 +401,17 @@ PetscErrorCode KSPView_BCGSL(KSP ksp, PetscViewer viewer)
 {
   KSP_BCGSL       *bcgsl = (KSP_BCGSL *)ksp->data;
   PetscErrorCode  ierr;
-  PetscTruth      isascii, isstring;
+  PetscBool       isascii, isstring;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer, PETSC_VIEWER_ASCII, &isascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer, PETSC_VIEWER_STRING, &isstring);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer, PETSCVIEWERASCII, &isascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer, PETSCVIEWERSTRING, &isstring);CHKERRQ(ierr);
 
   if (isascii) {
     ierr = PetscViewerASCIIPrintf(viewer, "  BCGSL: Ell = %D\n", bcgsl->ell);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer, "  BCGSL: Delta = %lg\n", bcgsl->delta);CHKERRQ(ierr);
   } else {
-    SETERRQ1(PETSC_ERR_SUP, "Viewer type %s not supported for KSP BCGSL", ((PetscObject)viewer)->type_name);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP, "Viewer type %s not supported for KSP BCGSL", ((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
@@ -431,7 +424,7 @@ PetscErrorCode KSPSetFromOptions_BCGSL(KSP ksp)
   PetscErrorCode ierr;
   PetscInt       this_ell;
   PetscReal      delta;
-  PetscTruth     flga = PETSC_FALSE, flg;
+  PetscBool      flga = PETSC_FALSE, flg;
 
   PetscFunctionBegin;
   /* PetscOptionsBegin/End are called in KSPSetFromOptions. They
@@ -446,12 +439,12 @@ PetscErrorCode KSPSetFromOptions_BCGSL(KSP ksp)
   }
 
   /* Set polynomial type */
-  ierr = PetscOptionsTruth("-ksp_bcgsl_cxpoly", "Polynomial part of BiCGStabL is MinRes + OR", "KSPBCGSLSetPol", flga,&flga,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsBool("-ksp_bcgsl_cxpoly", "Polynomial part of BiCGStabL is MinRes + OR", "KSPBCGSLSetPol", flga,&flga,PETSC_NULL);CHKERRQ(ierr);
   if (flga) {
     ierr = KSPBCGSLSetPol(ksp, PETSC_TRUE);CHKERRQ(ierr);
   } else {
     flg  = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-ksp_bcgsl_mrpoly", "Polynomial part of BiCGStabL is MinRes", "KSPBCGSLSetPol", flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-ksp_bcgsl_mrpoly", "Polynomial part of BiCGStabL is MinRes", "KSPBCGSLSetPol", flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     ierr = KSPBCGSLSetPol(ksp, PETSC_FALSE);CHKERRQ(ierr);
   }
 
@@ -473,25 +466,33 @@ PetscErrorCode KSPSetUp_BCGSL(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP, "no symmetric preconditioning for KSPBCGSL");
-  } else if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP, "no right preconditioning for KSPBCGSL");
-  }
+  if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP, "no symmetric preconditioning for KSPBCGSL");
+  else if (ksp->pc_side == PC_RIGHT) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP, "no right preconditioning for KSPBCGSL");
   ierr = KSPDefaultGetWork(ksp, 6+2*ell);CHKERRQ(ierr);
   ierr = PetscMalloc5(ldMZ,PetscScalar,&AY0c,ldMZ,PetscScalar,&AYlc,ldMZ,PetscScalar,&AYtc,ldMZ*ldMZ,PetscScalar,&MZa,ldMZ*ldMZ,PetscScalar,&MZb);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
-#define __FUNCT__ "KSPDestroy_BCGSL" 
+#undef __FUNCT__
+#define __FUNCT__ "KSPReset_BCGSL"
+PetscErrorCode KSPReset_BCGSL(KSP ksp)
+{
+  KSP_BCGSL      *bcgsl = (KSP_BCGSL *)ksp->data;
+  PetscErrorCode ierr;
+  PetscFunctionBegin;
+  ierr = VecDestroyVecs(ksp->nwork,&ksp->work);CHKERRQ(ierr);
+  ierr = PetscFree5(AY0c,AYlc,AYtc,MZa,MZb);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "KSPDestroy_BCGSL"
 PetscErrorCode KSPDestroy_BCGSL(KSP ksp)
 {
-  KSP_BCGSL      *bcgsl = (KSP_BCGSL*)ksp->data;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscFree5(AY0c,AYlc,AYtc,MZa,MZb);CHKERRQ(ierr);
+  ierr = KSPReset_BCGSL(ksp);CHKERRQ(ierr);
   ierr = KSPDefaultDestroy(ksp);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -522,15 +523,17 @@ PetscErrorCode KSPDestroy_BCGSL(KSP ksp)
 -  -ksp_bcgsl_cxpol Use a convex function of the MR and OR polynomials after the BiCG step
 -  -ksp_bcgsl_xres <res> Threshold used to decide when to refresh computed residuals
 
+   Notes: Supports left preconditioning only
+
    Level: beginner
 
-.seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPFGMRES, KSPBCGS
+.seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPFGMRES, KSPBCGS, KSPSetPCSide()
 
 M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__
 #define __FUNCT__ "KSPCreate_BCGSL"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_BCGSL(KSP ksp)
+PetscErrorCode  KSPCreate_BCGSL(KSP ksp)
 {
   PetscErrorCode ierr;
   KSP_BCGSL      *bcgsl;
@@ -540,9 +543,12 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_BCGSL(KSP ksp)
   ierr = PetscNewLog(ksp, KSP_BCGSL, &bcgsl);CHKERRQ(ierr);
   ksp->data = (void*)bcgsl;
 
-  ksp->pc_side              = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_RIGHT,1);CHKERRQ(ierr);
+
   ksp->ops->setup           = KSPSetUp_BCGSL;
   ksp->ops->solve           = KSPSolve_BCGSL;
+  ksp->ops->reset           = KSPReset_BCGSL;
   ksp->ops->destroy         = KSPDestroy_BCGSL;
   ksp->ops->buildsolution   = KSPDefaultBuildSolution;
   ksp->ops->buildresidual   = KSPDefaultBuildResidual;

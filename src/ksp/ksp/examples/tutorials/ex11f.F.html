@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:42:10+00:00">
+<meta name="date" content="2011-10-29T19:14:17+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -49,11 +49,11 @@
 <a name="line39"> 39: </a>!     petscviewer.h - viewers
 <a name="line40"> 40: </a>!     petscis.h     - index sets
 <a name="line41"> 41: </a>!
-<a name="line42"> 42: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line43"> 43: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line44"> 44: </a> #include <A href="../../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line45"> 45: </a> #include <A href="../../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line46"> 46: </a> #include <A href="../../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
+<a name="line42"> 42: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line43"> 43: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line44"> 44: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line45"> 45: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line46"> 46: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
 <a name="line47"> 47: </a>!
 <a name="line48"> 48: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 <a name="line49"> 49: </a>!                   Variable declarations
@@ -79,7 +79,7 @@
 <a name="line69"> 69: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> Iend,i,j,II,JJ,one
 <a name="line70"> 70: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line71"> 71: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank
-<a name="line72"> 72: </a>      <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> flg
+<a name="line72"> 72: </a>      <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flg
 <a name="line73"> 73: </a>      logical          use_random
 
 <a name="line75"> 75: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,7 +243,7 @@
 <a name="line233">233: </a>           write(6,110) its
 <a name="line234">234: </a>        endif
 <a name="line235">235: </a>      endif
-<a name="line236">236: </a>  100 format('Norm of error ',e10.4,',iterations ',i5)
+<a name="line236">236: </a>  100 format('Norm of error ',e11.4,',iterations ',i5)
 <a name="line237">237: </a>  110 format('Norm of error < 1.e-12,iterations ',i5)
 
 <a name="line239">239: </a>!  Free work space.  All PETSc objects should be destroyed when they

@@ -3,10 +3,11 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
-    self.download          = ['http://petsc4py.googlecode.com/files/petsc4py-1.1.tar.gz']
+    self.download          = ['http://petsc4py.googlecode.com/files/petsc4py-1.1.1.tar.gz']
     self.functions         = []
     self.includes          = []
     self.liblist           = []
+    self.complex           = 1
     return
 
   def setupDependencies(self, framework):
@@ -26,14 +27,14 @@ class Configure(PETSc.package.NewPackage):
       apple = ''
     self.logClearRemoveDirectory()
     self.logResetRemoveDirectory()
-    if self.framework.argDB['prefix']:
-      arch = ''
-      self.addMakeRule('petsc4py_noinstall','')
-    else:
-      arch = self.arch
-      self.addMakeRule('petsc4py_noinstall','petsc4py')      
+    archflags = ""
+    if self.setCompilers.isDarwin():
+      if self.types.sizes['known-sizeof-void-p'] == 32:
+        archflags = "ARCHFLAGS=\'-arch i386\'"
+      else:
+        archflags = "ARCHFLAGS=\'-arch x86_64\'"
     self.addMakeRule('petsc4py','', \
-                       ['@cd '+self.packageDir+';python setup.py clean --all; python setup.py install --install-lib='+os.path.join(self.petscconfigure.installdir,'lib'),\
+                       ['@cd '+self.packageDir+';python setup.py clean --all; '+archflags+' python setup.py install --install-lib='+os.path.join(self.installDir,'lib'),\
                           '@echo "====================================="',\
                           '@echo "To use petsc4py, add '+os.path.join(self.petscconfigure.installdir,'lib')+' to PYTHONPATH"',\
                           '@echo "====================================="'])
@@ -42,7 +43,7 @@ class Configure(PETSc.package.NewPackage):
 
   def configureLibrary(self):
     if not self.sharedLibraries.useShared:
-        raise RuntimeError('petsc4py requires PETSc be built with shared libraries; rerun with --with-shared')
+        raise RuntimeError('petsc4py requires PETSc be built with shared libraries; rerun with --with-shared-libraries')
     self.checkDownload(1)
     if self.setCompilers.isDarwin():
       # The name of the Python library on Apple is Python which does not end in the expected .dylib
@@ -55,7 +56,7 @@ class Configure(PETSc.package.NewPackage):
           if os.path.realpath(i) == os.path.join(prefix,'Python'):
             self.addDefine('PYTHON_LIB','"'+os.path.join(i)+'"')
             return
-        raise RuntimeError('realpath of /usr/lib/libpython.dylib ('+os.path.realpath('/usr/lib/libpython.dylib')+') does not point to Python library path ('+os.path.join(prefix,'Python')+') for current Python;\n Are you not using the Apple python?')
+        raise RuntimeError('realpath of /usr/lib/libpython.dylib ('+os.path.realpath('/usr/lib/libpython.dylib')+') does not point to the expected Python library path ('+os.path.join(prefix,'Python')+') for current Python;\n')
       elif os.path.isfile(os.path.join(prefix,'lib','libpython.dylib')):
         self.addDefine('PYTHON_LIB','"'+os.path.join(prefix,'lib','libpython.dylib')+'"')
       else:
@@ -63,5 +64,4 @@ class Configure(PETSc.package.NewPackage):
 
   def alternateConfigureLibrary(self):
     self.addMakeRule('petsc4py','')   
-    self.addMakeRule('petsc4py_noinstall','')
       

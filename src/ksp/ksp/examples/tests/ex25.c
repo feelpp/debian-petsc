@@ -5,7 +5,7 @@ static char help[] =
 Runtime options: ex25 -fload ~petsc/matrices/indefinite/afiro -pc_type jacobi -pc_jacobi_rowmax\n\
 See ~petsc/matrices/indefinite/readme \n\n";
 
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNC__
 #define __FUNC__ "main"
@@ -28,12 +28,16 @@ int main(int argc,char **args)
   
   /* Load the binary data file "filein". Set runtime option: -fload filein */
   ierr = PetscPrintf(PETSC_COMM_WORLD,"\n Load dataset ...\n");CHKERRQ(ierr);
-  ierr = PetscOptionsGetString(PETSC_NULL,"-fload",filein,127,PETSC_NULL);CHKERRQ(ierr); 
-  ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filein,FILE_MODE_READ,&view);CHKERRQ(ierr); 
-  ierr = MatLoad(view,MATMPISBAIJ,&C);CHKERRQ(ierr);
-  ierr = VecLoad(view,VECMPI,&b);CHKERRQ(ierr);
-  ierr = VecLoad(view,VECMPI,&u);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(view);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(PETSC_NULL,"-fload",filein,128,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filein,FILE_MODE_READ,&view);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&C);CHKERRQ(ierr);
+  ierr = MatSetType(C,MATMPISBAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(C,view);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&b);CHKERRQ(ierr);
+  ierr = VecCreate(PETSC_COMM_WORLD,&u);CHKERRQ(ierr);
+  ierr = VecLoad(b,view);CHKERRQ(ierr);
+  ierr = VecLoad(u,view);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&view);CHKERRQ(ierr);
   /* ierr = VecView(b,VIEWER_STDOUT_WORLD);CHKERRQ(ierr); */
   /* ierr = MatView(C,VIEWER_STDOUT_WORLD);CHKERRQ(ierr); */
 
@@ -97,18 +101,18 @@ int main(int argc,char **args)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Residual norm: %A;",res_norm);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"  Error norm: %A.\n",err_norm);CHKERRQ(ierr);
 
-    ierr = KSPDestroy(ksp);CHKERRQ(ierr);
+    ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
   }
    
   /* 
        Free work space.  All PETSc objects should be destroyed when they
        are no longer needed.
   */
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr); 
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(u_tmp);CHKERRQ(ierr);  
-  ierr = MatDestroy(C);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr); 
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&u_tmp);CHKERRQ(ierr);  
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
 
   PetscFinalize();
   return 0;

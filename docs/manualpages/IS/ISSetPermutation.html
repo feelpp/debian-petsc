@@ -12,7 +12,7 @@ Informs the index set that it is a permutation.
 #include "petscis.h" 
 PetscErrorCode  ISSetPermutation(IS is)
 </PRE>
-Collective on <A HREF="../IS/IS.html#IS">IS</A>
+Logically Collective on <A HREF="../IS/IS.html#IS">IS</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parmeters</FONT></H3>
 <DT><B>is </B> -the index set
@@ -21,7 +21,7 @@ Collective on <A HREF="../IS/IS.html#IS">IS</A>
 
 <P>
 <P>
-The debug version of the libraries (config/configure.py --with-debugging=1) checks if the
+The debug version of the libraries (./configure --with-debugging=1) checks if the
 index set is actually a permutation. The optimized version just believes you.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

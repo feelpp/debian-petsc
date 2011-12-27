@@ -1,7 +1,7 @@
 
-static char help[] = "Tests MatTranspose(), MatNorm(), MatValid(), MatAXPY() and MatAYPX().\n\n";
+static char help[] = "Tests MatTranspose(), MatNorm(), MatAXPY() and MatAYPX().\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -11,7 +11,7 @@ int main(int argc,char **argv)
   PetscInt         m = 7,n,i,j,rstart,rend,rect = 0;
   PetscErrorCode   ierr;
   PetscMPIInt      size,rank;
-  PetscTruth       flg;
+  PetscBool        flg;
   PetscScalar      v, alpha;
   PetscReal        normf,normi,norm1;
 
@@ -39,11 +39,6 @@ int main(int argc,char **argv)
   }
   ierr = MatAssemblyBegin(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-
-  /* Test whether matrix has been corrupted (just to demonstrate this
-     routine) not needed in most application codes. */
-  ierr = MatValid(mat,(PetscTruth*)&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Corrupted matrix.");
 
   /* ----------------- Test MatNorm()  ----------------- */
   ierr = MatNorm(mat,NORM_FROBENIUS,&normf);CHKERRQ(ierr);
@@ -91,7 +86,7 @@ int main(int argc,char **argv)
     ierr = MatDuplicate(mat,MAT_COPY_VALUES,&C);CHKERRQ(ierr); 
     ierr = MatAXPY(C,alpha,mat,SAME_NONZERO_PATTERN);CHKERRQ(ierr); 
     ierr = MatView(C,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); 
-    ierr = MatDestroy(C);CHKERRQ(ierr);
+    ierr = MatDestroy(&C);CHKERRQ(ierr);
   }
 
   {
@@ -117,14 +112,14 @@ int main(int argc,char **argv)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"MatAXPY:  B = B + alpha * A, SUBSET_NONZERO_PATTERN\n");CHKERRQ(ierr);
     ierr = MatAXPY(mat,alpha,matB,SUBSET_NONZERO_PATTERN);CHKERRQ(ierr);
     ierr = MatView(mat,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-    ierr = MatDestroy(matB);CHKERRQ(ierr);  
+    ierr = MatDestroy(&matB);CHKERRQ(ierr);  
   }
 
   /* Free data structures */  
-  if (mat)  {ierr = MatDestroy(mat);CHKERRQ(ierr);}
-  if (tmat) {ierr = MatDestroy(tmat);CHKERRQ(ierr);}
+  if (mat)  {ierr = MatDestroy(&mat);CHKERRQ(ierr);}
+  if (tmat) {ierr = MatDestroy(&tmat);CHKERRQ(ierr);}
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

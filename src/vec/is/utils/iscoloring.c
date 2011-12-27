@@ -1,6 +1,5 @@
-#define PETSCVEC_DLL
 
-#include "petscis.h"    /*I "petscis.h"  I*/
+#include <petscis.h>    /*I "petscis.h"  I*/
 
 const char *ISColoringTypes[] = {"global","ghosted","ISColoringType","IS_COLORING_",0};
 
@@ -18,24 +17,25 @@ const char *ISColoringTypes[] = {"global","ghosted","ISColoringType","IS_COLORIN
 
 .seealso: ISColoringView(), MatGetColoring()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISColoringDestroy(ISColoring iscoloring)
+PetscErrorCode  ISColoringDestroy(ISColoring *iscoloring)
 {
-  PetscInt i;
+  PetscInt       i;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidPointer(iscoloring,1);
-  if (--iscoloring->refct > 0) PetscFunctionReturn(0);
+  if (!*iscoloring) PetscFunctionReturn(0);
+  PetscValidPointer((*iscoloring),1);
+  if (--(*iscoloring)->refct > 0) {*iscoloring = 0; PetscFunctionReturn(0);}
 
-  if (iscoloring->is) {
-    for (i=0; i<iscoloring->n; i++) {
-      ierr = ISDestroy(iscoloring->is[i]);CHKERRQ(ierr);
+  if ((*iscoloring)->is) {
+    for (i=0; i<(*iscoloring)->n; i++) {
+      ierr = ISDestroy(&(*iscoloring)->is[i]);CHKERRQ(ierr);
     }
-    ierr = PetscFree(iscoloring->is);CHKERRQ(ierr);
+    ierr = PetscFree((*iscoloring)->is);CHKERRQ(ierr);
   }
-  ierr = PetscFree(iscoloring->colors);CHKERRQ(ierr);
-  PetscCommDestroy(&iscoloring->comm);
-  ierr = PetscFree(iscoloring);CHKERRQ(ierr);
+  ierr = PetscFree((*iscoloring)->colors);CHKERRQ(ierr);
+  ierr = PetscCommDestroy(&(*iscoloring)->comm);CHKERRQ(ierr);
+  ierr = PetscFree((*iscoloring));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -54,11 +54,11 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringDestroy(ISColoring iscoloring)
 
 .seealso: ISColoringDestroy(), ISColoringGetIS(), MatGetColoring()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISColoringView(ISColoring iscoloring,PetscViewer viewer)
+PetscErrorCode  ISColoringView(ISColoring iscoloring,PetscViewer viewer)
 {
   PetscInt       i;
   PetscErrorCode ierr;
-  PetscTruth     iascii;
+  PetscBool      iascii;
   IS             *is;
 
   PetscFunctionBegin;
@@ -66,19 +66,19 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringView(ISColoring iscoloring,PetscView
   if (!viewer) {
     ierr = PetscViewerASCIIGetStdout(iscoloring->comm,&viewer);CHKERRQ(ierr);
   }
-  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_COOKIE,2);
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,2);
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     MPI_Comm    comm;
     PetscMPIInt rank;
     ierr = PetscObjectGetComm((PetscObject)viewer,&comm);CHKERRQ(ierr);
     ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr);
+    ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_TRUE);CHKERRQ(ierr);      
     ierr = PetscViewerASCIISynchronizedPrintf(viewer,"[%d] Number of colors %d\n",rank,iscoloring->n);CHKERRQ(ierr);
     ierr = PetscViewerFlush(viewer);CHKERRQ(ierr);
-  } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for ISColoring",((PetscObject)viewer)->type_name);
-  }
+    ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_FALSE);CHKERRQ(ierr);      
+  } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported for ISColoring",((PetscObject)viewer)->type_name);
 
   ierr = ISColoringGetIS(iscoloring,PETSC_IGNORE,&is);CHKERRQ(ierr);
   for (i=0; i<iscoloring->n; i++) {
@@ -106,7 +106,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringView(ISColoring iscoloring,PetscView
 
 .seealso: ISColoringRestoreIS(), ISColoringView()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISColoringGetIS(ISColoring iscoloring,PetscInt *nn,IS *isis[])
+PetscErrorCode  ISColoringGetIS(ISColoring iscoloring,PetscInt *nn,IS *isis[])
 {
   PetscErrorCode ierr;
 
@@ -123,7 +123,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringGetIS(ISColoring iscoloring,PetscInt
 #if defined(PETSC_USE_DEBUG)
       for (i=0; i<n; i++) {
         if (((PetscInt)colors[i]) >= nc) {
-          SETERRQ3(PETSC_ERR_ARG_OUTOFRANGE,"Coloring is our of range index %d value %d number colors %d",(int)i,(int)colors[i],(int)nc);
+          SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Coloring is our of range index %d value %d number colors %d",(int)i,(int)colors[i],(int)nc);
         }
       }
 #endif
@@ -153,12 +153,12 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringGetIS(ISColoring iscoloring,PetscInt
           ii[colors[i]][mcolors[colors[i]]++] = i;   /* local idx */
         }
       } else {
-        SETERRQ(PETSC_ERR_SUP,"Not provided for this ISColoringType type");
+        SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Not provided for this ISColoringType type");
       }
      
       ierr = PetscMalloc(nc*sizeof(IS),&is);CHKERRQ(ierr);
       for (i=0; i<nc; i++) {
-	ierr = ISCreateGeneral(iscoloring->comm,mcolors[i],ii[i],is+i);CHKERRQ(ierr);
+	ierr = ISCreateGeneral(iscoloring->comm,mcolors[i],ii[i],PETSC_COPY_VALUES,is+i);CHKERRQ(ierr);
       }
 
       iscoloring->is   = is;
@@ -186,7 +186,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringGetIS(ISColoring iscoloring,PetscInt
 
 .seealso: ISColoringGetIS(), ISColoringView()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISColoringRestoreIS(ISColoring iscoloring,IS *is[])
+PetscErrorCode  ISColoringRestoreIS(ISColoring iscoloring,IS *is[])
 {
   PetscFunctionBegin;
   PetscValidPointer(iscoloring,1);
@@ -226,21 +226,21 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringRestoreIS(ISColoring iscoloring,IS *
 .seealso: MatColoringCreate(), ISColoringView(), ISColoringDestroy(), ISColoringSetType()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISColoringCreate(MPI_Comm comm,PetscInt ncolors,PetscInt n,const ISColoringValue colors[],ISColoring *iscoloring)
+PetscErrorCode  ISColoringCreate(MPI_Comm comm,PetscInt ncolors,PetscInt n,const ISColoringValue colors[],ISColoring *iscoloring)
 {
   PetscErrorCode ierr;
   PetscMPIInt    size,rank,tag;
   PetscInt       base,top,i;
   PetscInt       nc,ncwork;
-  PetscTruth     flg = PETSC_FALSE;
+  PetscBool      flg = PETSC_FALSE;
   MPI_Status     status;
 
   PetscFunctionBegin;
   if (ncolors != PETSC_DECIDE && ncolors > IS_COLORING_MAX) {
     if (ncolors > 65535) {
-      SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE,"Max color value exeeds 65535 limit. This number is unrealistic. Perhaps a bug in code?\nCurrent max: %d user rewuested: %d",IS_COLORING_MAX,ncolors);
+      SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Max color value exeeds 65535 limit. This number is unrealistic. Perhaps a bug in code?\nCurrent max: %d user rewuested: %d",IS_COLORING_MAX,ncolors);
     } else {
-      SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE,"Max color value exeeds limit. Perhaps reconfigure PETSc with --with-is-color-value-type=short?\n Current max: %d user rewuested: %d",IS_COLORING_MAX,ncolors);
+      SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Max color value exeeds limit. Perhaps reconfigure PETSc with --with-is-color-value-type=short?\n Current max: %d user rewuested: %d",IS_COLORING_MAX,ncolors);
     }
   }
   ierr = PetscNew(struct _n_ISColoring,iscoloring);CHKERRQ(ierr);
@@ -270,7 +270,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringCreate(MPI_Comm comm,PetscInt ncolor
   }
   ncwork++;
   ierr = MPI_Allreduce(&ncwork,&nc,1,MPIU_INT,MPI_MAX,comm);CHKERRQ(ierr);
-  if (nc > ncolors) SETERRQ2(PETSC_ERR_ARG_INCOMP,"Number of colors passed in %D is less then the actual number of colors in array %D",ncolors,nc);
+  if (nc > ncolors) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Number of colors passed in %D is less then the actual number of colors in array %D",ncolors,nc);
   (*iscoloring)->n      = nc;
   (*iscoloring)->is     = 0;
   (*iscoloring)->colors = (ISColoringValue *)colors;
@@ -278,7 +278,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringCreate(MPI_Comm comm,PetscInt ncolor
   (*iscoloring)->refct  = 1;
   (*iscoloring)->ctype  = IS_COLORING_GLOBAL;
 
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-is_coloring_view",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-is_coloring_view",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     PetscViewer viewer;
     ierr = PetscViewerASCIIGetStdout((*iscoloring)->comm,&viewer);CHKERRQ(ierr);
@@ -310,7 +310,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISColoringCreate(MPI_Comm comm,PetscInt ncolor
 .seealso: MatPartitioningCreate(), AOCreateBasic(), ISPartitioningCount()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISPartitioningToNumbering(IS part,IS *is)
+PetscErrorCode  ISPartitioningToNumbering(IS part,IS *is)
 {
   MPI_Comm       comm;
   PetscInt       i,np,npt,n,*starts = PETSC_NULL,*sums = PETSC_NULL,*lsizes = PETSC_NULL,*newi = PETSC_NULL;
@@ -360,8 +360,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISPartitioningToNumbering(IS part,IS *is)
   ierr = PetscFree3(lsizes,starts,sums);CHKERRQ(ierr);
 
   ierr = ISRestoreIndices(part,&indices);CHKERRQ(ierr);
-  ierr = ISCreateGeneral(comm,n,newi,is);CHKERRQ(ierr);
-  ierr = PetscFree(newi);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(comm,n,newi,PETSC_OWN_POINTER,is);CHKERRQ(ierr);
   ierr = ISSetPermutation(*is);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -396,7 +395,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISPartitioningToNumbering(IS part,IS *is)
         MatPartitioningSetNParts()
 
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISPartitioningCount(IS part,PetscInt len,PetscInt count[])
+PetscErrorCode  ISPartitioningCount(IS part,PetscInt len,PetscInt count[])
 {
   MPI_Comm       comm;
   PetscInt       i,n,*lsizes;
@@ -423,7 +422,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISPartitioningCount(IS part,PetscInt len,Petsc
     }    
     ierr = MPI_Allreduce(&np,&npt,1,MPIU_INT,MPI_MAX,comm);CHKERRQ(ierr);
     np = npt+1; /* so that it looks like a MPI_Comm_size output */
-    if (np > len) SETERRQ2(PETSC_ERR_ARG_SIZ,"Length of count array %D is less than number of partitions %D",len,np);
+    if (np > len) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Length of count array %D is less than number of partitions %D",len,np);
   }
 #endif
 
@@ -476,25 +475,25 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISPartitioningCount(IS part,PetscInt len,Petsc
     Concepts: index sets^gathering to all processors
     Concepts: IS^gathering to all processors
 
-.seealso: ISCreateGeneral(), ISCreateStride(), ISCreateBlock(), ISAllGatherIndices()
+.seealso: ISCreateGeneral(), ISCreateStride(), ISCreateBlock()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISAllGather(IS is,IS *isout)
+PetscErrorCode  ISAllGather(IS is,IS *isout)
 {
   PetscErrorCode ierr;
   PetscInt       *indices,n,i,N,step,first;
   const PetscInt *lindices;
   MPI_Comm       comm;
   PetscMPIInt    size,*sizes = PETSC_NULL,*offsets = PETSC_NULL,nn;
-  PetscTruth     stride;
+  PetscBool      stride;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is,IS_COOKIE,1);
+  PetscValidHeaderSpecific(is,IS_CLASSID,1);
   PetscValidPointer(isout,2);
 
   ierr = PetscObjectGetComm((PetscObject)is,&comm);CHKERRQ(ierr);
   ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr);
   ierr = ISGetLocalSize(is,&n);CHKERRQ(ierr);
-  ierr = ISStride(is,&stride);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)is,ISSTRIDE,&stride);CHKERRQ(ierr);
   if (size == 1 && stride) { /* should handle parallel ISStride also */
     ierr = ISStrideGetInfo(is,&first,&step);CHKERRQ(ierr);
     ierr = ISCreateStride(PETSC_COMM_SELF,n,first,step,isout);CHKERRQ(ierr);
@@ -513,67 +512,10 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISAllGather(IS is,IS *isout)
     ierr = ISRestoreIndices(is,&lindices);CHKERRQ(ierr);
     ierr = PetscFree2(sizes,offsets);CHKERRQ(ierr);
 
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,N,indices,isout);CHKERRQ(ierr);
-    ierr = PetscFree(indices);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,N,indices,PETSC_OWN_POINTER,isout);CHKERRQ(ierr);
   }
   PetscFunctionReturn(0);
 }
-
-#undef __FUNCT__  
-#define __FUNCT__ "ISAllGatherIndices"
-/*@C
-    ISAllGatherIndices - Given a a set of integers on each processor, generates a large 
-    set (same on each processor) by concatenating together each processors integers
-
-    Collective on MPI_Comm
-
-    Input Parameter:
-+   comm - communicator to share the indices
-.   n - local size of set
--   lindices - local indices
-
-    Output Parameter:
-+   outN - total number of indices
--   outindices - all of the integers
-
-    Notes: 
-    ISAllGatherIndices() is clearly not scalable for large index sets.
-
-
-    Level: intermediate
-
-    Concepts: gather^index sets
-    Concepts: index sets^gathering to all processors
-    Concepts: IS^gathering to all processors
-
-.seealso: ISCreateGeneral(), ISCreateStride(), ISCreateBlock(), ISAllGather()
-@*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISAllGatherIndices(MPI_Comm comm,PetscInt n,const PetscInt lindices[],PetscInt *outN,PetscInt *outindices[])
-{
-  PetscErrorCode ierr;
-  PetscInt       *indices,i,N;
-  PetscMPIInt    size,*sizes = PETSC_NULL,*offsets = PETSC_NULL,nn;
-
-  PetscFunctionBegin;
-  ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr);
-  ierr = PetscMalloc2(size,PetscMPIInt,&sizes,size,PetscMPIInt,&offsets);CHKERRQ(ierr);
-  
-  nn   = PetscMPIIntCast(n);
-  ierr = MPI_Allgather(&nn,1,MPI_INT,sizes,1,MPI_INT,comm);CHKERRQ(ierr);
-  offsets[0] = 0;
-  for (i=1;i<size; i++) offsets[i] = offsets[i-1] + sizes[i-1];
-  N    = offsets[size-1] + sizes[size-1];
-
-  ierr = PetscMalloc(N*sizeof(PetscInt),&indices);CHKERRQ(ierr);
-  ierr = MPI_Allgatherv((void*)lindices,nn,MPIU_INT,indices,sizes,offsets,MPIU_INT,comm);CHKERRQ(ierr); 
-  ierr = PetscFree2(sizes,offsets);CHKERRQ(ierr);
-
-  *outindices = indices;
-  if (outN) *outN = N;
-  PetscFunctionReturn(0);
-}
-
-
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISAllGatherColors"
@@ -602,9 +544,9 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISAllGatherIndices(MPI_Comm comm,PetscInt n,co
     Concepts: index sets^gathering to all processors
     Concepts: IS^gathering to all processors
 
-.seealso: ISCreateGeneral(), ISCreateStride(), ISCreateBlock(), ISAllGather(), ISAllGatherIndices()
+.seealso: ISCreateGeneral(), ISCreateStride(), ISCreateBlock(), ISAllGather()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISAllGatherColors(MPI_Comm comm,PetscInt n,ISColoringValue *lindices,PetscInt *outN,ISColoringValue *outindices[])
+PetscErrorCode  ISAllGatherColors(MPI_Comm comm,PetscInt n,ISColoringValue *lindices,PetscInt *outN,ISColoringValue *outindices[])
 {
   ISColoringValue *indices;
   PetscErrorCode  ierr;
@@ -658,46 +600,44 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISAllGatherColors(MPI_Comm comm,PetscInt n,ISC
     Concepts: index sets^gathering to all processors
     Concepts: IS^gathering to all processors
 
-.seealso: ISCreateGeneral(), ISCreateStride(), ISCreateBlock(), ISAllGatherIndices(), ISAllGather()
+.seealso: ISCreateGeneral(), ISCreateStride(), ISCreateBlock(), ISAllGather()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISComplement(IS is,PetscInt nmin,PetscInt nmax,IS *isout)
+PetscErrorCode  ISComplement(IS is,PetscInt nmin,PetscInt nmax,IS *isout)
 {
   PetscErrorCode ierr;
   const PetscInt *indices;
-  PetscInt       n,i,j,cnt,*nindices;
-  PetscTruth     sorted;
+  PetscInt       n,i,j,unique,cnt,*nindices;
+  PetscBool      sorted;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is,IS_COOKIE,1);
+  PetscValidHeaderSpecific(is,IS_CLASSID,1);
   PetscValidPointer(isout,3);
-  if (nmin < 0) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE,"nmin %D cannot be negative",nmin);
-  if (nmin > nmax) SETERRQ2(PETSC_ERR_ARG_OUTOFRANGE,"nmin %D cannot be greater than nmax %D",nmin,nmax);
+  if (nmin < 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"nmin %D cannot be negative",nmin);
+  if (nmin > nmax) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"nmin %D cannot be greater than nmax %D",nmin,nmax);
   ierr = ISSorted(is,&sorted);CHKERRQ(ierr);
-  if (!sorted) SETERRQ(PETSC_ERR_ARG_WRONG,"Index set must be sorted");
+  if (!sorted) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Index set must be sorted");
 
   ierr = ISGetLocalSize(is,&n);CHKERRQ(ierr);
   ierr = ISGetIndices(is,&indices);CHKERRQ(ierr);
 #if defined(PETSC_USE_DEBUG)
   for (i=0; i<n; i++) {
-    if (indices[i] <  nmin) SETERRQ3(PETSC_ERR_ARG_OUTOFRANGE,"Index %D's value %D is smaller than minimum given %D",i,indices[i],nmin);
-    if (indices[i] >= nmax) SETERRQ3(PETSC_ERR_ARG_OUTOFRANGE,"Index %D's value %D is larger than maximum given %D",i,indices[i],nmax);
+    if (indices[i] <  nmin) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Index %D's value %D is smaller than minimum given %D",i,indices[i],nmin);
+    if (indices[i] >= nmax) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Index %D's value %D is larger than maximum given %D",i,indices[i],nmax);
   }
 #endif
-  ierr = PetscMalloc((nmax - n)*sizeof(PetscInt),&nindices);CHKERRQ(ierr);
+  /* Count number of unique entries */
+  unique = (n>0);
+  for (i=0; i<n-1; i++) {
+    if (indices[i+1] != indices[i]) unique++;
+  }
+  ierr = PetscMalloc((nmax-nmin-unique)*sizeof(PetscInt),&nindices);CHKERRQ(ierr);
   cnt = 0;
-  j   = nmin;
-  for (i=0; i<n; i++) {
-    for (; j<indices[i]; j++) {
-      nindices[cnt++] = j;
-    }
-    j++;
+  for (i=nmin,j=0; i<nmax; i++) {
+    if (j<n && i==indices[j]) do { j++; } while (j<n && i==indices[j]);
+    else nindices[cnt++] = i;
   }
-  for (; j<nmax; j++) {
-    nindices[cnt++] = j;
-  }
-  if (cnt != nmax-nmin - n) SETERRQ2(PETSC_ERR_PLIB,"Number entries found in complement %D does not match expected %D",cnt,nmax-n);
-  ierr = ISCreateGeneral(((PetscObject)is)->comm,nmax-nmin-n,nindices,isout);CHKERRQ(ierr);
+  if (cnt != nmax-nmin-unique) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Number of entries found in complement %D does not match expected %D",cnt,nmax-nmin-unique);
+  ierr = ISCreateGeneral(((PetscObject)is)->comm,cnt,nindices,PETSC_OWN_POINTER,isout);CHKERRQ(ierr);
   ierr = ISRestoreIndices(is,&indices);CHKERRQ(ierr);
-  ierr = PetscFree(nindices);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

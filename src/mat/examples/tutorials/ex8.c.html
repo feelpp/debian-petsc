@@ -4,19 +4,19 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:35:18+00:00">
+<meta name="date" content="2011-10-29T19:06:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Shows how to add a new MatOperation to AIJ <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
-<a name="line5"> 5: </a> #include <A href="../../../../include/petscblaslapack.h.html">petscblaslapack.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscblaslapack.h&gt;</font>
 
 <a name="line7">  7: </a><font color="#B22222">/* This routine implments MatScaleUserImpl() functionality for <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A></font>
 <a name="line8">  8: </a><font color="#B22222">   SeqAIJ. MatScale_SeqAIJ() code duplicated here */</font>
-<a name="line9"> 9: </a> #include <A href="../../../../include/../src/mat/impls/aij/seq/aij.h.html">../src/mat/impls/aij/seq/aij.h</A>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
 <a name="line10"> 10: </a><strong><font color="#4169E1"><a name="MatScaleUserImpl_SeqAIJ"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatScaleUserImpl_SeqAIJ(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> inA,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> alpha)</font></strong>
 <a name="line11"> 11: </a>{
 <a name="line12"> 12: </a>  Mat_SeqAIJ   *a = (Mat_SeqAIJ*)inA-&gt;data;
@@ -29,7 +29,7 @@
 
 <a name="line21"> 21: </a><font color="#B22222">/* This routine implments MatScaleUserImpl() functionality for <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A></font>
 <a name="line22"> 22: </a><font color="#B22222">   SeqAIJ. MatScale_MPIAIJ() code duplicated here */</font>
-<a name="line24"> 24: </a> #include <A href="../../../../include/../src/mat/impls/aij/mpi/mpiaij.h.html">../src/mat/impls/aij/mpi/mpiaij.h</A>
+<a name="line24"> 24: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/mpi/mpiaij.h&gt;</font>
 <a name="line25"> 25: </a><strong><font color="#4169E1"><a name="MatScaleUserImpl_MPIAIJ"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatScaleUserImpl_MPIAIJ(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> aa)</font></strong>
 <a name="line26"> 26: </a>{
 <a name="line27"> 27: </a>  Mat_MPIAIJ     *a = (Mat_MPIAIJ*)A-&gt;data;
@@ -134,7 +134,7 @@
 <a name="line133">133: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Matrix _after_ MatScaleUserImpl() operation\n"</font>);
 <a name="line134">134: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(mat,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 
-<a name="line136">136: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(mat);
+<a name="line136">136: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;mat);
 <a name="line137">137: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line138">138: </a>  <font color="#4169E1">return</font> 0;
 <a name="line139">139: </a>}

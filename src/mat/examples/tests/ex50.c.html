@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:30+00:00">
+<meta name="date" content="2011-10-29T19:05:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -14,7 +14,7 @@
 <a name="line4">  4: </a><font color="#666666">  -fin &lt;filename&gt; : input file\n\</font>
 <a name="line5">  5: </a><font color="#666666">  -fout &lt;filename&gt; : output file\n\n"</font>;
 
-<a name="line7"> 7: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line11"> 11: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line12"> 12: </a>{
@@ -22,7 +22,7 @@
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            b;
 <a name="line15"> 15: </a>  char           filein[PETSC_MAX_PATH_LEN],finname[PETSC_MAX_PATH_LEN],fileout[PETSC_MAX_PATH_LEN];
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n,col,row,rowin;
-<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 <a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    val,*array;
 <a name="line20"> 20: </a>  FILE*          file;
 <a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    view;
@@ -30,14 +30,14 @@
 <a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 
 <a name="line25"> 25: </a>  <font color="#B22222">/* Read in matrix and RHS */</font>
-<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fin"</font>,filein,255,&amp;flg);
-<a name="line27"> 27: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Must indicate file for reading"</font>);
-<a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fout"</font>,fileout,255,&amp;flg);
-<a name="line29"> 29: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Must indicate file for writing"</font>);
+<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fin"</font>,filein,256,&amp;flg);
+<a name="line27"> 27: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"Must indicate file for reading"</font>);
+<a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fout"</font>,fileout,256,&amp;flg);
+<a name="line29"> 29: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"Must indicate file for writing"</font>);
 
 <a name="line31"> 31: </a>  <A href="../../../../docs/manualpages/Sys/PetscFixFilename.html#PetscFixFilename">PetscFixFilename</A>(filein,finname);
 <a name="line32"> 32: </a>  <font color="#4169E1">if</font> (!(file = fopen(finname,<font color="#666666">"r"</font>))) {
-<a name="line33"> 33: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"cannot open input file\n"</font>);
+<a name="line33"> 33: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"cannot open input file\n"</font>);
 <a name="line34"> 34: </a>  }
 <a name="line35"> 35: </a>  fscanf(file,<font color="#666666">"%d\n"</font>,&amp;n);
 
@@ -50,7 +50,7 @@
 
 <a name="line44"> 44: </a>  <font color="#4169E1">for</font> (row=0; row&lt;n; row++) {
 <a name="line45"> 45: </a>    fscanf(file,<font color="#666666">"row %d:"</font>,&amp;rowin);
-<a name="line46"> 46: </a>    <font color="#4169E1">if</font> (rowin != row) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Bad file"</font>);
+<a name="line46"> 46: </a>    <font color="#4169E1">if</font> (rowin != row) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"Bad file"</font>);
 <a name="line47"> 47: </a>    <font color="#4169E1">while</font> (fscanf(file,<font color="#666666">" %d %le"</font>,&amp;col,(double*)&amp;val)) {
 <a name="line48"> 48: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,1,&amp;row,1,&amp;col,&amp;val,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line49"> 49: </a>    }
@@ -69,10 +69,10 @@
 <a name="line62"> 62: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,fileout,FILE_MODE_WRITE,&amp;view);
 <a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(A,view);
 <a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(b,view);
-<a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(view);
+<a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view);
 
-<a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 
 <a name="line70"> 70: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line71"> 71: </a>  <font color="#4169E1">return</font> 0;

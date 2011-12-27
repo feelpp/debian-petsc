@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
      Provides utility routines for manulating any type of PETSc object.
 */
-#include "petscsys.h"  /*I   "petscsys.h"    I*/
+#include <petscsys.h>  /*I   "petscsys.h"    I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscObjectStateQuery"
@@ -27,12 +27,12 @@
 
    Level: advanced
 
-   seealso: PetscObjectStateIncrease, PetscObjectSetState
+   seealso: PetscObjectStateIncrease(), PetscObjectSetState()
 
    Concepts: state
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscObjectStateQuery(PetscObject obj,PetscInt *state)
+PetscErrorCode  PetscObjectStateQuery(PetscObject obj,PetscInt *state)
 {
   PetscFunctionBegin;
   PetscValidHeader(obj,1);
@@ -62,12 +62,12 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectStateQuery(PetscObject obj,PetscInt *s
 
    Level: advanced
 
-   seealso: PetscObjectStateQuery,PetscObjectStateIncrease
+   seealso: PetscObjectStateQuery(),PetscObjectStateIncrease()
 
    Concepts: state
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscObjectSetState(PetscObject obj,PetscInt state)
+PetscErrorCode  PetscObjectSetState(PetscObject obj,PetscInt state)
 {
   PetscFunctionBegin;
   PetscValidHeader(obj,1);
@@ -75,8 +75,11 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectSetState(PetscObject obj,PetscInt stat
   PetscFunctionReturn(0);
 }
 
-PetscInt PETSC_DLLEXPORT globalcurrentstate = 0;
-PetscInt PETSC_DLLEXPORT globalmaxstate = 10;
+PetscInt  globalcurrentstate = 0;
+PetscInt  globalmaxstate = 10;
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscObjectComposedDataRegister"
 /*@C
    PetscObjectComposedDataRegister - Get an available id for 
    composed data
@@ -88,10 +91,10 @@ PetscInt PETSC_DLLEXPORT globalmaxstate = 10;
 
    Level: developer
 
-   seealso: PetscObjectComposedDataSetInt
+   seealso: PetscObjectComposedDataSetInt()
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataRegister(PetscInt *id)
+PetscErrorCode  PetscObjectComposedDataRegister(PetscInt *id)
 {
   PetscFunctionBegin;
   *id = globalcurrentstate++;
@@ -99,7 +102,9 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataRegister(PetscInt *id)
   PetscFunctionReturn(0);
 }
 
-PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseInt(PetscObject obj)
+#undef __FUNCT__  
+#define __FUNCT__ "PetscObjectComposedDataIncreaseInt"
+PetscErrorCode  PetscObjectComposedDataIncreaseInt(PetscObject obj)
 {
   PetscInt       *ar = obj->intcomposeddata,*new_ar;
   PetscInt       *ir = obj->intcomposedstate,*new_ir,n = obj->int_idmax,new_n,i;
@@ -122,7 +127,10 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseInt(PetscObject ob
   obj->intcomposeddata = new_ar; obj->intcomposedstate = new_ir;
   PetscFunctionReturn(0);
 }
-PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseIntstar(PetscObject obj)
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscObjectComposedDataIncreaseIntstar"
+PetscErrorCode  PetscObjectComposedDataIncreaseIntstar(PetscObject obj)
 {
   PetscInt       **ar = obj->intstarcomposeddata,**new_ar;
   PetscInt       *ir = obj->intstarcomposedstate,*new_ir,n = obj->intstar_idmax,new_n,i;
@@ -146,7 +154,9 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseIntstar(PetscObjec
   PetscFunctionReturn(0);
 }
 
-PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseReal(PetscObject obj)
+#undef __FUNCT__  
+#define __FUNCT__ "PetscObjectComposedDataIncreaseReal"
+PetscErrorCode  PetscObjectComposedDataIncreaseReal(PetscObject obj)
 {
   PetscReal      *ar = obj->realcomposeddata,*new_ar;
   PetscInt       *ir = obj->realcomposedstate,*new_ir,n = obj->real_idmax,new_n,i;
@@ -170,7 +180,9 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseReal(PetscObject o
   PetscFunctionReturn(0);
 }
 
-PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseRealstar(PetscObject obj)
+#undef __FUNCT__  
+#define __FUNCT__ "PetscObjectComposedDataIncreaseRealstar"
+PetscErrorCode  PetscObjectComposedDataIncreaseRealstar(PetscObject obj)
 {
   PetscReal      **ar = obj->realstarcomposeddata,**new_ar;
   PetscInt       *ir = obj->realstarcomposedstate,*new_ir,n = obj->realstar_idmax,new_n,i;
@@ -194,7 +206,9 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseRealstar(PetscObje
   PetscFunctionReturn(0);
 }
 
-PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseScalar(PetscObject obj)
+#undef __FUNCT__  
+#define __FUNCT__ "PetscObjectComposedDataIncreaseScalar"
+PetscErrorCode  PetscObjectComposedDataIncreaseScalar(PetscObject obj)
 {
   PetscScalar    *ar = obj->scalarcomposeddata,*new_ar;
   PetscInt       *ir = obj->scalarcomposedstate,*new_ir,n = obj->scalar_idmax,new_n,i;
@@ -218,7 +232,9 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseScalar(PetscObject
   PetscFunctionReturn(0);
 }
 
-PetscErrorCode PETSC_DLLEXPORT PetscObjectComposedDataIncreaseScalarstar(PetscObject obj)
+#undef __FUNCT__  
+#define __FUNCT__ "PetscObjectComposedDataIncreaseScalarStar"
+PetscErrorCode  PetscObjectComposedDataIncreaseScalarstar(PetscObject obj)
 {
   PetscScalar    **ar = obj->scalarstarcomposeddata,**new_ar;
   PetscInt       *ir = obj->scalarstarcomposedstate,*new_ir,n = obj->scalarstar_idmax,new_n,i;

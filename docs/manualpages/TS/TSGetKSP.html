@@ -6,11 +6,11 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="TSGetKSP"><H1>TSGetKSP</H1></A>
-Returns the <A HREF="../KSP/KSP.html#KSP">KSP</A> (linear solver) associated with  a <A HREF="../TS/TS.html#TS">TS</A> (timestepper) context. 
+Returns the <A HREF="../KSP/KSP.html#KSP">KSP</A> (linear solver) associated with a <A HREF="../TS/TS.html#TS">TS</A> (timestepper) context. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode PETSCTS_DLLEXPORT TSGetKSP(TS ts,KSP *ksp)
+PetscErrorCode  TSGetKSP(TS ts,KSP *ksp)
 </PRE>
 Not Collective, but <A HREF="../KSP/KSP.html#KSP">KSP</A> is parallel if <A HREF="../TS/TS.html#TS">TS</A> is parallel
 <P>

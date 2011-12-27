@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:28+00:00">
+<meta name="date" content="2011-10-29T19:05:02+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests the vatious routines in MatSeqBAIJ format.\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -22,7 +22,7 @@
 <a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A>     rdm;
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>              is1,is2;
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       s1norm,s2norm,rnorm,tol = 1.e-4;
-<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      flg;
+<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       flg;
 <a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>   info;
 <a name="line20"> 20: </a>
 <a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
@@ -161,8 +161,8 @@
 <a name="line154">154: </a>  <font color="#B22222">/* Do LUFactor() on both the matrices */</font>
 <a name="line155">155: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(M*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;idx);
 <a name="line156">156: </a>  <font color="#4169E1">for</font> (i=0; i&lt;M; i++) idx[i] = i;
-<a name="line157">157: </a>  <A href="../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,M,idx,&amp;is1);
-<a name="line158">158: </a>  <A href="../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,M,idx,&amp;is2);
+<a name="line157">157: </a>  <A href="../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,M,idx,PETSC_COPY_VALUES,&amp;is1);
+<a name="line158">158: </a>  <A href="../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,M,idx,PETSC_COPY_VALUES,&amp;is2);
 <a name="line159">159: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(idx);
 <a name="line160">160: </a>  <A href="../../../../docs/manualpages/IS/ISSetPermutation.html#ISSetPermutation">ISSetPermutation</A>(is1);
 <a name="line161">161: </a>  <A href="../../../../docs/manualpages/IS/ISSetPermutation.html#ISSetPermutation">ISSetPermutation</A>(is2);
@@ -232,15 +232,15 @@
 <a name="line225">225: </a>    }
 <a name="line226">226: </a>  }
 
-<a name="line228">228: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line229">229: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B);
-<a name="line230">230: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(xx);
-<a name="line231">231: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(s1);
-<a name="line232">232: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(s2);
-<a name="line233">233: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(yy);
-<a name="line234">234: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is1);
-<a name="line235">235: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is2);
-<a name="line236">236: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(rdm);
+<a name="line228">228: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line229">229: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
+<a name="line230">230: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xx);
+<a name="line231">231: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;s1);
+<a name="line232">232: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;s2);
+<a name="line233">233: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;yy);
+<a name="line234">234: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is1);
+<a name="line235">235: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is2);
+<a name="line236">236: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rdm);
 <a name="line237">237: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line238">238: </a>  <font color="#4169E1">return</font> 0;
 <a name="line239">239: </a>}

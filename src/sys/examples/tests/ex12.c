@@ -1,7 +1,7 @@
 
 static char help[] = "Tests timing PetscSortInt().\n\n";
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -37,12 +37,12 @@ int main(int argc,char **argv)
   ierr = PetscLogEventEnd(event,0,0,0,0);CHKERRQ(ierr);
 
   for (i=1; i<n; i++) {
-    if (values[i] < values[i-1]) SETERRQ(1,"Values not sorted");
+    if (values[i] < values[i-1]) SETERRQ(PETSC_COMM_SELF,1,"Values not sorted");
   }
   ierr = PetscFree(values);CHKERRQ(ierr);
   ierr = PetscRandomDestroy(rand);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

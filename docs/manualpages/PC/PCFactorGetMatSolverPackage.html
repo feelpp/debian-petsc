@@ -10,16 +10,16 @@ gets the software that is used to perform the factorization
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCFactorGetMatSolverPackage(PC pc,const MatSolverPackage *stype)
+PetscErrorCode  PCFactorGetMatSolverPackage(PC pc,const MatSolverPackage *stype)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>pc </B> -the preconditioner context
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>stype </B> -for example, spooles, superlu, superlu_dist
+<DT><B>stype </B> -for example, spooles, superlu, superlu_dist (<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if the <A HREF="../PC/PC.html#PC">PC</A> does not have a solver package)
 <br>
 <P>
 

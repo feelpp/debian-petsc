@@ -9,7 +9,7 @@
 Gets an environmental variable, broadcasts to all processors in communicator from first. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscOptionsGetenv(MPI_Comm comm,const char name[],char env[],size_t len,PetscTruth *flag)
+PetscErrorCode  PetscOptionsGetenv(MPI_Comm comm,const char name[],char env[],size_t len,PetscBool  *flag)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>

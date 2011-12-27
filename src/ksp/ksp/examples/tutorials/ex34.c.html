@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:45+00:00">
+<meta name="date" content="2011-10-29T19:13:21+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -32,10 +32,10 @@
 
 <a name="line23"> 23: </a>static char help[] = <font color="#666666">"Solves 3D Laplacian using multigrid.\n\n"</font>;
 
-<a name="line25"> 25: </a> #include <A href="../../../../../include/petscda.h.html">petscda.h</A>
-<a name="line26"> 26: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
-<a name="line27"> 27: </a> #include <A href="../../../../../include/petscmg.h.html">petscmg.h</A>
-<a name="line28"> 28: </a> #include <A href="../../../../../include/petscdmmg.h.html">petscdmmg.h</A>
+<a name="line25"> 25: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
+<a name="line26"> 26: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
+<a name="line27"> 27: </a><font color="#A020F0">#include &lt;petscpcmg.h&gt;</font>
+<a name="line28"> 28: </a><font color="#A020F0">#include &lt;petscdmmg.h&gt;</font>
 
 
 <a name="line33"> 33: </a><font color="#4169E1">typedef</font> <font color="#4169E1">enum</font> {DIRICHLET, NEUMANN} BCType;
@@ -47,7 +47,7 @@
 <a name="line41"> 41: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line42"> 42: </a>{
 <a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A>           *dmmg;
-<a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da;
+<a name="line44"> 44: </a>  DM             da;
 <a name="line45"> 45: </a>  UserContext    user;
 <a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;
 <a name="line47"> 47: </a>  const char     *bcTypes[2] = {<font color="#666666">"dirichlet"</font>,<font color="#666666">"neumann"</font>};
@@ -61,11 +61,11 @@
 <a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
 <a name="line57"> 57: </a>
 <a name="line58"> 58: </a>  <A href="../../../../../docs/manualpages/DMMG/DMMGCreate.html#DMMGCreate">DMMGCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,3,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;dmmg);
-<a name="line59"> 59: </a>  <A href="../../../../../docs/manualpages/DA/DACreate3d.html#DACreate3d">DACreate3d</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DA_NONPERIODIC,<A href="../../../../../docs/manualpages/DA/DA_STENCIL_STAR.html#DA_STENCIL_STAR">DA_STENCIL_STAR</A>,-3,-3,-3,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,1,0,0,0,&amp;da);
-<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/DA/DASetInterpolationType.html#DASetInterpolationType">DASetInterpolationType</A>(da, DA_Q0);
+<a name="line59"> 59: </a>  <A href="../../../../../docs/manualpages/DM/DMDACreate3d.html#DMDACreate3d">DMDACreate3d</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,<A href="../../../../../docs/manualpages/DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>,-3,-3,-3,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,1,0,0,0,&amp;da);
+<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/DM/DMDASetInterpolationType.html#DMDASetInterpolationType">DMDASetInterpolationType</A>(da, DMDA_Q0);
 
-<a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/DMMG/DMMGSetDM.html#DMMGSetDM">DMMGSetDM</A>(dmmg,(<A href="../../../../../docs/manualpages/DA/DM.html#DM">DM</A>)da);
-<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/DA/DADestroy.html#DADestroy">DADestroy</A>(da);
+<a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/DMMG/DMMGSetDM.html#DMMGSetDM">DMMGSetDM</A>(dmmg,(DM)da);
+<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;da);
 <a name="line64"> 64: </a>  <font color="#4169E1">for</font> (l = 0; l &lt; <A href="../../../../../docs/manualpages/DMMG/DMMGGetLevels.html#DMMGGetLevels">DMMGGetLevels</A>(dmmg); l++) {
 <a name="line65"> 65: </a>    <A href="../../../../../docs/manualpages/DMMG/DMMGSetUser.html#DMMGSetUser">DMMGSetUser</A>(dmmg,l,&amp;user);
 <a name="line66"> 66: </a>  }
@@ -88,12 +88,12 @@
 <a name="line83"> 83: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(DMMGGetr(dmmg),<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
 <a name="line84"> 84: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Residual norm %G\n"</font>,norm);
 <a name="line85"> 85: </a>
-<a name="line86"> 86: </a>  <A href="../../../../../docs/manualpages/DA/DAGetInfo.html#DAGetInfo">DAGetInfo</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetDA.html#DMMGGetDA">DMMGGetDA</A>(dmmg), 0, &amp;mx, &amp;my, &amp;mz, 0,0,0,0,0,0,0);
+<a name="line86"> 86: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetDM.html#DMMGGetDM">DMMGGetDM</A>(dmmg), 0, &amp;mx, &amp;my, &amp;mz, 0,0,0,0,0,0,0,0,0);
 <a name="line87"> 87: </a>  Hx   = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(mx);
 <a name="line88"> 88: </a>  Hy   = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(my);
 <a name="line89"> 89: </a>  Hz   = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(mz);
-<a name="line90"> 90: </a>  <A href="../../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetDA.html#DMMGGetDA">DMMGGetDA</A>(dmmg),&amp;xs,&amp;ys,&amp;zs,&amp;xm,&amp;ym,&amp;zm);
-<a name="line91"> 91: </a>  <A href="../../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetDA.html#DMMGGetDA">DMMGGetDA</A>(dmmg), <A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), &amp;array);
+<a name="line90"> 90: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetDM.html#DMMGGetDM">DMMGGetDM</A>(dmmg),&amp;xs,&amp;ys,&amp;zs,&amp;xm,&amp;ym,&amp;zm);
+<a name="line91"> 91: </a>  <A href="../../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetDM.html#DMMGGetDM">DMMGGetDM</A>(dmmg), <A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), &amp;array);
 
 <a name="line93"> 93: </a>  <font color="#4169E1">for</font> (k=zs; k&lt;zs+zm; k++){
 <a name="line94"> 94: </a>    <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++){
@@ -105,7 +105,7 @@
 <a name="line100">100: </a>      }
 <a name="line101">101: </a>    }
 <a name="line102">102: </a>  }
-<a name="line103">103: </a>  <A href="../../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetDA.html#DMMGGetDA">DMMGGetDA</A>(dmmg), <A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), &amp;array);
+<a name="line103">103: </a>  <A href="../../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetDM.html#DMMGGetDM">DMMGGetDM</A>(dmmg), <A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg), &amp;array);
 <a name="line104">104: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg));
 <a name="line105">105: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(<A href="../../../../../docs/manualpages/DMMG/DMMGGetx.html#DMMGGetx">DMMGGetx</A>(dmmg));
 
@@ -123,18 +123,18 @@
 
 <a name="line121">121: </a><strong><font color="#4169E1"><a name="ComputeRHS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ComputeRHS(<A href="../../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A> dmmg, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b)</font></strong>
 <a name="line122">122: </a>{
-<a name="line123">123: </a>  <A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da = (<A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>)dmmg-&gt;dm;
+<a name="line123">123: </a>  DM             da = dmmg-&gt;dm;
 <a name="line124">124: </a>  UserContext    *user = (UserContext *) dmmg-&gt;user;
 <a name="line126">126: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,k,mx,my,mz,xm,ym,zm,xs,ys,zs;
 <a name="line127">127: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    Hx,Hy,Hz;
 <a name="line128">128: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    ***array;
 
-<a name="line131">131: </a>  <A href="../../../../../docs/manualpages/DA/DAGetInfo.html#DAGetInfo">DAGetInfo</A>(da, 0, &amp;mx, &amp;my, &amp;mz, 0,0,0,0,0,0,0);
+<a name="line131">131: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da, 0, &amp;mx, &amp;my, &amp;mz, 0,0,0,0,0,0,0,0,0);
 <a name="line132">132: </a>  Hx   = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(mx);
 <a name="line133">133: </a>  Hy   = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(my);
 <a name="line134">134: </a>  Hz   = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(mz);
-<a name="line135">135: </a>  <A href="../../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(da,&amp;xs,&amp;ys,&amp;zs,&amp;xm,&amp;ym,&amp;zm);
-<a name="line136">136: </a>  <A href="../../../../../docs/manualpages/DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(da, b, &amp;array);
+<a name="line135">135: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,&amp;zs,&amp;xm,&amp;ym,&amp;zm);
+<a name="line136">136: </a>  <A href="../../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da, b, &amp;array);
 <a name="line137">137: </a>  <font color="#4169E1">for</font> (k=zs; k&lt;zs+zm; k++){
 <a name="line138">138: </a>    <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++){
 <a name="line139">139: </a>      <font color="#4169E1">for</font>(i=xs; i&lt;xs+xm; i++){
@@ -146,7 +146,7 @@
 <a name="line145">145: </a>      }
 <a name="line146">146: </a>    }
 <a name="line147">147: </a>  }
-<a name="line148">148: </a>  <A href="../../../../../docs/manualpages/DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>(da, b, &amp;array);
+<a name="line148">148: </a>  <A href="../../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da, b, &amp;array);
 <a name="line149">149: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(b);
 <a name="line150">150: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(b);
 
@@ -166,20 +166,20 @@
 <a name="line165">165: </a>
 <a name="line168">168: </a><strong><font color="#4169E1"><a name="ComputeMatrix"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ComputeMatrix(<A href="../../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A> dmmg, <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> J,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> jac)</font></strong>
 <a name="line169">169: </a>{
-<a name="line170">170: </a>  <A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>             da = (<A href="../../../../../docs/manualpages/DA/DA.html#DA">DA</A>) dmmg-&gt;dm;
+<a name="line170">170: </a>  DM             da =  dmmg-&gt;dm;
 <a name="line171">171: </a>  UserContext    *user = (UserContext *) dmmg-&gt;user;
 <a name="line173">173: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,k,mx,my,mz,xm,ym,zm,xs,ys,zs,num, numi, numj, numk;
 <a name="line174">174: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v[7],Hx,Hy,Hz,HyHzdHx,HxHzdHy,HxHydHz;
 <a name="line175">175: </a>  <A href="../../../../../docs/manualpages/Mat/MatStencil.html#MatStencil">MatStencil</A>     row, col[7];
 
-<a name="line178">178: </a>  <A href="../../../../../docs/manualpages/DA/DAGetInfo.html#DAGetInfo">DAGetInfo</A>(da,0,&amp;mx,&amp;my,&amp;mz,0,0,0,0,0,0,0);
+<a name="line178">178: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,0,&amp;mx,&amp;my,&amp;mz,0,0,0,0,0,0,0,0,0);
 <a name="line179">179: </a>  Hx    = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(mx);
 <a name="line180">180: </a>  Hy    = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(my);
 <a name="line181">181: </a>  Hz    = 1.0 / (<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(mz);
 <a name="line182">182: </a>  HyHzdHx = Hy*Hz/Hx;
 <a name="line183">183: </a>  HxHzdHy = Hx*Hz/Hy;
 <a name="line184">184: </a>  HxHydHz = Hx*Hy/Hz;
-<a name="line185">185: </a>  <A href="../../../../../docs/manualpages/DA/DAGetCorners.html#DAGetCorners">DAGetCorners</A>(da,&amp;xs,&amp;ys,&amp;zs,&amp;xm,&amp;ym,&amp;zm);
+<a name="line185">185: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,&amp;zs,&amp;xm,&amp;ym,&amp;zm);
 <a name="line186">186: </a>  <font color="#4169E1">for</font> (k=zs; k&lt;zs+zm; k++)
 <a name="line187">187: </a>    {
 <a name="line188">188: </a>      <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++)
@@ -191,7 +191,7 @@
 <a name="line194">194: </a>                {
 <a name="line195">195: </a>                  <font color="#4169E1">if</font> (user-&gt;bcType == DIRICHLET)
 <a name="line196">196: </a>                    {
-<a name="line197">197: </a>                      <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP,<font color="#666666">"Dirichlet boundary conditions not supported !\n"</font>);
+<a name="line197">197: </a>                      <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP,<font color="#666666">"Dirichlet boundary conditions not supported !\n"</font>);
 <a name="line198">198: </a>                      v[0] = 2.0*(HyHzdHx + HxHzdHy + HxHydHz);
 <a name="line199">199: </a>                      <A href="../../../../../docs/manualpages/Mat/MatSetValuesStencil.html#MatSetValuesStencil">MatSetValuesStencil</A>(jac,1,&amp;row,1,&amp;row,v,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line200">200: </a>                    }

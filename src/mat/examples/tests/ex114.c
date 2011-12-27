@@ -1,7 +1,7 @@
 
 static char help[] = "Tests MatGetRowMax(), MatGetRowMin(), MatGetRowMaxAbs()\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #define M 5
 #define N 6
@@ -18,7 +18,7 @@ int main(int argc,char **args)
   PetscErrorCode ierr;
   const MatType  type;
   PetscMPIInt    size;
-  PetscTruth     doTest=PETSC_TRUE;
+  PetscBool      doTest=PETSC_TRUE;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
@@ -103,11 +103,11 @@ int main(int argc,char **args)
     ierr = PetscIntView(5,imaxabs,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
   }
 
-  ierr = VecDestroy(min);CHKERRQ(ierr);
-  ierr = VecDestroy(max);CHKERRQ(ierr);
-  ierr = VecDestroy(maxabs);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr); 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&min);CHKERRQ(ierr);
+  ierr = VecDestroy(&max);CHKERRQ(ierr);
+  ierr = VecDestroy(&maxabs);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr); 
+  ierr = PetscFinalize();
   return 0;
 }
 

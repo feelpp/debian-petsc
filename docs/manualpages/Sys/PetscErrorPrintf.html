@@ -6,12 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscErrorPrintf"><H1>PetscErrorPrintf</H1></A>
-Prints error messages. Not Collective
-<P>
+Prints error messages. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 PetscErrorCode (*PetscErrorPrintf)(const char format[],...);
 </PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>format </B> -the usual printf() format string 
 <br>
@@ -34,6 +35,9 @@ Notes: Use
 <pre>
     <A HREF="../Sys/PetscErrorPrintf.html#PetscErrorPrintf">PetscErrorPrintf</A> = PetscErrorPrintfDefault; to turn it back on
 </pre>
+<pre>
+       of you can use your own function
+</pre>
 <P>
 Use
 PETSC_STDERR = FILE* obtained from a file open etc. to have stderr printed to the file.
@@ -49,7 +53,7 @@ This routine is not supported in Fortran.
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(), <A HREF="../Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(), <A HREF="../Sys/PetscHelpPrintf.html#PetscHelpPrintf">PetscHelpPrintf</A>(), <A HREF="../Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(), PetscErrorHandlerPush()
+ <A HREF="../Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(), <A HREF="../Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(), <A HREF="../Sys/PetscHelpPrintf.html#PetscHelpPrintf">PetscHelpPrintf</A>(), <A HREF="../Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(), PetscErrorHandlerPush(), <A HREF="../Sys/PetscVFPrintf.html#PetscVFPrintf">PetscVFPrintf</A>(), <A HREF="../Sys/PetscHelpPrintf.html#PetscHelpPrintf">PetscHelpPrintf</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../include/petscsys.h.html#PetscErrorPrintf">include/petscsys.h</A>
 <BR><A HREF="./index.html">Index of all Sys routines</A>

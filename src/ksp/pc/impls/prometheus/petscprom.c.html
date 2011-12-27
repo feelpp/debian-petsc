@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:38:27+00:00">
+<meta name="date" content="2011-10-29T19:10:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -60,8 +60,8 @@
 
 <a name="line51"> 51: </a><font color="#B22222">    -------------------------------------------------------------------- */</font>
 
-<a name="line53"> 53: </a> #include <A href="../../../../../include/private/pcimpl.h.html">private/pcimpl.h</A>
-<a name="line54"> 54: </a><font color="#A020F0">#include </font><font color="#666666">"petscpromproto.h"</font><font color="#A020F0"></font>
+<a name="line53"> 53: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;     </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
+<a name="line54"> 54: </a><font color="#A020F0">#include &lt;petscpromproto.h&gt;</font>
 
 <a name="line56"> 56: </a><font color="#B22222">/* -------------------------------------------------------------------------- */</font>
 <a name="line57"> 57: </a><font color="#B22222">/*</font>
@@ -76,110 +76,73 @@
 <a name="line66"> 66: </a><font color="#B22222">*/</font>
 
 <a name="line68"> 68: </a><font color="#B22222">/*MC</font>
-<a name="line69"> 69: </a><font color="#B22222">     <A href="../../../../../docs/manualpages/PC/PCPROMETHEUS.html#PCPROMETHEUS">PCPROMETHEUS</A> - Prometheus (i.e. diagonal scaling preconditioning)</font>
+<a name="line69"> 69: </a><font color="#B22222">     <A href="../../../../../docs/manualpages/PC/PCPROMETHEUS.html#PCPROMETHEUS">PCPROMETHEUS</A> - Prometheus preconditioner</font>
 
-<a name="line71"> 71: </a><font color="#B22222">   Options Database Key:</font>
-<a name="line72"> 72: </a><font color="#B22222">.    -pc_prometheus_rowmax - use the maximum absolute value in each row as the scaling factor,</font>
-<a name="line73"> 73: </a><font color="#B22222">                        rather than the diagonal</font>
+<a name="line71"> 71: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line75"> 75: </a><font color="#B22222">   Level: beginner</font>
+<a name="line73"> 73: </a><font color="#B22222">  Concepts: Prometheus, preconditioners</font>
 
-<a name="line77"> 77: </a><font color="#B22222">  Concepts: Prometheus, diagonal scaling, preconditioners</font>
-
-<a name="line79"> 79: </a><font color="#B22222">  Notes: By using <A href="../../../../../docs/manualpages/KSP/KSPSetPreconditionerSide.html#KSPSetPreconditionerSide">KSPSetPreconditionerSide</A>(ksp,PC_SYMMETRIC) or -ksp_symmetric_pc you </font>
-<a name="line80"> 80: </a><font color="#B22222">         can scale each side of the matrix by the squareroot of the diagonal entries.</font>
-
-<a name="line82"> 82: </a><font color="#B22222">         Zero entries along the diagonal are replaced with the value 1.0</font>
-
-<a name="line84"> 84: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/PC/PCCreate.html#PCCreate">PCCreate</A>(), <A href="../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> (for list of available types), <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
-<a name="line85"> 85: </a><font color="#B22222">M*/</font>
+<a name="line75"> 75: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/PC/PCCreate.html#PCCreate">PCCreate</A>(), <A href="../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> (for list of available types), <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
+<a name="line76"> 76: </a><font color="#B22222">M*/</font>
 
 
-<a name="line91"> 91: </a><strong><font color="#4169E1"><a name="PCCreate_Prometheus"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCCreate_Prometheus(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
-<a name="line92"> 92: </a>{
-<a name="line94"> 94: </a>
+<a name="line82"> 82: </a><strong><font color="#4169E1"><a name="PCCreate_Prometheus"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCCreate_Prometheus(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
+<a name="line83"> 83: </a>{
+<a name="line85"> 85: </a>
 
-<a name="line97"> 97: </a>  PCCreate_Prometheus_private( pc );
-<a name="line98"> 98: </a>
-<a name="line99"> 99: </a>  <font color="#B22222">/*</font>
-<a name="line100">100: </a><font color="#B22222">    Set the pointers for the functions that are provided above.</font>
-<a name="line101">101: </a><font color="#B22222">    Now when the user-level routines (such as <A href="../../../../../docs/manualpages/PC/PCApply.html#PCApply">PCApply</A>(), <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>(), etc.)</font>
-<a name="line102">102: </a><font color="#B22222">    are called, they will automatically call these functions.  Note we</font>
-<a name="line103">103: </a><font color="#B22222">    choose not to provide a couple of these functions since they are</font>
-<a name="line104">104: </a><font color="#B22222">    not needed.</font>
-<a name="line105">105: </a><font color="#B22222">  */</font>
-<a name="line106">106: </a>  pc-&gt;ops-&gt;apply               = PCApply_Prometheus;
-<a name="line107">107: </a>  pc-&gt;ops-&gt;applytranspose      = PCApply_Prometheus;
-<a name="line108">108: </a>  pc-&gt;ops-&gt;setup               = PCSetUp_Prometheus;
-<a name="line109">109: </a>  pc-&gt;ops-&gt;destroy             = PCDestroy_Prometheus;
-<a name="line110">110: </a>  pc-&gt;ops-&gt;setfromoptions      = PCSetFromOptions_Prometheus;
-<a name="line111">111: </a>  pc-&gt;ops-&gt;view                = PCView_Prometheus;
-<a name="line112">112: </a>  pc-&gt;ops-&gt;applyrichardson     = 0;
-<a name="line113">113: </a>  pc-&gt;ops-&gt;applysymmetricleft  = 0;<font color="#B22222">/* PCApplySymmetricLeftOrRight_Prometheus; */</font>
-<a name="line114">114: </a>  pc-&gt;ops-&gt;applysymmetricright = 0;<font color="#B22222">/* PCApplySymmetricLeftOrRight_Prometheus; */</font>
-<a name="line115">115: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>( (<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,
-<a name="line116">116: </a>                                            <font color="#666666">"PCSetCoordinates_C"</font>,
-<a name="line117">117: </a>                                            <font color="#666666">"PCSetCoordinates_Prometheus"</font>,
-<a name="line118">118: </a>                                            PCSetCoordinates_Prometheus);
-<a name="line119">119: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>( (<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,
-<a name="line120">120: </a>                                            <font color="#666666">"PCSASetVectors_C"</font>,
-<a name="line121">121: </a>                                            <font color="#666666">"PCSASetVectors_Prometheus"</font>,
-<a name="line122">122: </a>                                            PCSASetVectors_Prometheus);
-<a name="line123">123: </a>  <font color="#4169E1">return</font>(0);
-<a name="line124">124: </a>}
+<a name="line88"> 88: </a>  PCCreate_Prometheus_private( pc );
+<a name="line89"> 89: </a>
+<a name="line90"> 90: </a>  <font color="#B22222">/*</font>
+<a name="line91"> 91: </a><font color="#B22222">    Set the pointers for the functions that are provided above.</font>
+<a name="line92"> 92: </a><font color="#B22222">    Now when the user-level routines (such as <A href="../../../../../docs/manualpages/PC/PCApply.html#PCApply">PCApply</A>(), <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>(), etc.)</font>
+<a name="line93"> 93: </a><font color="#B22222">    are called, they will automatically call these functions.  Note we</font>
+<a name="line94"> 94: </a><font color="#B22222">    choose not to provide a couple of these functions since they are</font>
+<a name="line95"> 95: </a><font color="#B22222">    not needed.</font>
+<a name="line96"> 96: </a><font color="#B22222">  */</font>
+<a name="line97"> 97: </a>  pc-&gt;ops-&gt;apply               = PCApply_Prometheus;
+<a name="line98"> 98: </a>  pc-&gt;ops-&gt;applytranspose      = PCApply_Prometheus;
+<a name="line99"> 99: </a>  pc-&gt;ops-&gt;setup               = PCSetUp_Prometheus;
+<a name="line100">100: </a>  pc-&gt;ops-&gt;destroy             = PCDestroy_Prometheus;
+<a name="line101">101: </a>  pc-&gt;ops-&gt;setfromoptions      = PCSetFromOptions_Prometheus;
+<a name="line102">102: </a>  pc-&gt;ops-&gt;view                = PCView_Prometheus;
+<a name="line103">103: </a>  pc-&gt;ops-&gt;applyrichardson     = 0;
+<a name="line104">104: </a>  pc-&gt;ops-&gt;applysymmetricleft  = 0;<font color="#B22222">/* PCApplySymmetricLeftOrRight_Prometheus; */</font>
+<a name="line105">105: </a>  pc-&gt;ops-&gt;applysymmetricright = 0;<font color="#B22222">/* PCApplySymmetricLeftOrRight_Prometheus; */</font>
+<a name="line106">106: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>( (<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,
+<a name="line107">107: </a>                                            <font color="#666666">"PCSetCoordinates_C"</font>,
+<a name="line108">108: </a>                                            <font color="#666666">"PCSetCoordinates_Prometheus"</font>,
+<a name="line109">109: </a>                                            PCSetCoordinates_Prometheus);
+<a name="line110">110: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>( (<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,
+<a name="line111">111: </a>                                            <font color="#666666">"PCSASetVectors_C"</font>,
+<a name="line112">112: </a>                                            <font color="#666666">"PCSASetVectors_Prometheus"</font>,
+<a name="line113">113: </a>                                            PCSASetVectors_Prometheus);
+<a name="line114">114: </a>  <font color="#4169E1">return</font>(0);
+<a name="line115">115: </a>}
 
-<a name="line129">129: </a><font color="#B22222">/*@</font>
-<a name="line130">130: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCSetCoordinates.html#PCSetCoordinates">PCSetCoordinates</A> - sets the coordinates of all the nodes on the local process</font>
 
-<a name="line132">132: </a><font color="#B22222">   Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
+<a name="line121">121: </a><font color="#B22222">/*@</font>
+<a name="line122">122: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCSASetVectors.html#PCSASetVectors">PCSASetVectors</A> - sets the vectors of all the nodes on the local process</font>
 
-<a name="line134">134: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line135">135: </a><font color="#B22222">+  pc - the solver context</font>
-<a name="line136">136: </a><font color="#B22222">.  dim - the dimension of the coordinates 1, 2, or 3</font>
-<a name="line137">137: </a><font color="#B22222">-  coords - the coordinates</font>
+<a name="line124">124: </a><font color="#B22222">   Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
 
-<a name="line139">139: </a><font color="#B22222">   Level: intermediate</font>
+<a name="line126">126: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line127">127: </a><font color="#B22222">+  pc - the solver context</font>
+<a name="line128">128: </a><font color="#B22222">.  nects - the number of vectors</font>
+<a name="line129">129: </a><font color="#B22222">-  vects - the vectors</font>
 
-<a name="line141">141: </a><font color="#B22222">   Notes: coords is an array of the 3D coordinates for the nodes on</font>
-<a name="line142">142: </a><font color="#B22222">   the local processor.  So if there are 108 equation on a processor</font>
-<a name="line143">143: </a><font color="#B22222">   for a displacement finite element discretization of elasticity (so</font>
-<a name="line144">144: </a><font color="#B22222">   that there are 36 = 108/3 nodes) then the array must have 108</font>
-<a name="line145">145: </a><font color="#B22222">   double precision values (ie, 3 * 36).  These x y z coordinates</font>
-<a name="line146">146: </a><font color="#B22222">   should be ordered for nodes 0 to N-1 like so: [ 0.x, 0.y, 0.z, 1.x,</font>
-<a name="line147">147: </a><font color="#B22222">   ... , N-1.z ].</font>
+<a name="line131">131: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line149">149: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCPROMETHEUS.html#PCPROMETHEUS">PCPROMETHEUS</A></font>
-<a name="line150">150: </a><font color="#B22222">@*/</font>
-<a name="line151">151: </a><strong><font color="#4169E1"><a name="PCSetCoordinates"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCSetCoordinates.html#PCSetCoordinates">PCSetCoordinates</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dim,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *coords)</font></strong>
-<a name="line152">152: </a>{
+<a name="line133">133: </a><font color="#B22222">   Notes: 'vects' is a dense tall skinny matrix with 'nvects' columns and </font>
+<a name="line134">134: </a><font color="#B22222">   the number of local equations rows.  'vects' is stored in row major order.</font>
 
-<a name="line156">156: </a>  PetscTryMethod(pc,<font color="#666666">"PCSetCoordinates_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*),(pc,dim,coords));
-<a name="line157">157: </a>  <font color="#4169E1">return</font>(0);
-<a name="line158">158: </a>}
+<a name="line136">136: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCPROMETHEUS.html#PCPROMETHEUS">PCPROMETHEUS</A></font>
+<a name="line137">137: </a><font color="#B22222">@*/</font>
+<a name="line138">138: </a><strong><font color="#4169E1"><a name="PCSASetVectors"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCSASetVectors.html#PCSASetVectors">PCSASetVectors</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nvects,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *vects)</font></strong>
+<a name="line139">139: </a>{
 
-<a name="line162">162: </a><font color="#B22222">/*@</font>
-<a name="line163">163: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCSASetVectors.html#PCSASetVectors">PCSASetVectors</A> - sets the vectors of all the nodes on the local process</font>
-
-<a name="line165">165: </a><font color="#B22222">   Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
-
-<a name="line167">167: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line168">168: </a><font color="#B22222">+  pc - the solver context</font>
-<a name="line169">169: </a><font color="#B22222">.  nects - the number of vectors</font>
-<a name="line170">170: </a><font color="#B22222">-  vects - the vectors</font>
-
-<a name="line172">172: </a><font color="#B22222">   Level: intermediate</font>
-
-<a name="line174">174: </a><font color="#B22222">   Notes: 'vects' is a dense tall skinny matrix with 'nvects' columns and </font>
-<a name="line175">175: </a><font color="#B22222">   the number of local equations rows.  'vects' is stored in row major order.</font>
-
-<a name="line177">177: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCPROMETHEUS.html#PCPROMETHEUS">PCPROMETHEUS</A></font>
-<a name="line178">178: </a><font color="#B22222">@*/</font>
-<a name="line179">179: </a><strong><font color="#4169E1"><a name="PCSASetVectors"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCSASetVectors.html#PCSASetVectors">PCSASetVectors</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nvects,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *vects)</font></strong>
-<a name="line180">180: </a>{
-
-<a name="line184">184: </a>  PetscTryMethod(pc,<font color="#666666">"PCSASetVectors_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*),(pc,nvects,vects));
-<a name="line185">185: </a>  <font color="#4169E1">return</font>(0);
-<a name="line186">186: </a>}
+<a name="line143">143: </a>  PetscTryMethod(pc,<font color="#666666">"PCSASetVectors_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*),(pc,nvects,vects));
+<a name="line144">144: </a>  <font color="#4169E1">return</font>(0);
+<a name="line145">145: </a>}
 </pre>
 </body>
 

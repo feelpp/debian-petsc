@@ -9,7 +9,7 @@
 Adds a new matrix type 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode MatRegisterDynamic(char *name,char *path,char *name_create,PetscErrorCode (*routine_create)(Mat))
+PetscErrorCode MatRegisterDynamic(const char *name,const char *path,const char *name_create,PetscErrorCode (*routine_create)(Mat))
 </PRE>
 Not Collective
 <P>

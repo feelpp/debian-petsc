@@ -13,7 +13,7 @@ static char help[] = "Nonlinear DAE.\n";
      petscviewer.h - viewers               petscpc.h  - preconditioners
      petscksp.h   - linear solvers
 */
-#include "petscts.h"
+#include <petscts.h>
 
 typedef struct _Problem *Problem;
 struct _Problem {
@@ -91,7 +91,7 @@ static PetscErrorCode RoberSolution(PetscReal t,Vec X,void *ctx)
   PetscScalar *x;
 
   PetscFunctionBegin;
-  if (t != 0) SETERRQ(1,"not implemented");
+  if (t != 0) SETERRQ(PETSC_COMM_SELF,1,"not implemented");
   ierr = VecGetArray(X,&x);CHKERRQ(ierr);
   x[0] = 1;
   x[1] = 0;
@@ -267,7 +267,7 @@ int main(int argc,char **argv)
   Vec             x,r;          /* solution, residual vectors */
   Mat             A;            /* Jacobian matrix */
   Problem         problem;
-  PetscTruth      use_monitor;
+  PetscBool       use_monitor;
   PetscInt        steps,maxsteps = 100;
   PetscReal       ftime;
   MonitorCtx      mon;
@@ -290,7 +290,7 @@ int main(int argc,char **argv)
   {
     ierr = PetscOptionsList("-problem_type","Name of problem to run","",plist,pname,pname,sizeof(pname),PETSC_NULL);CHKERRQ(ierr);
     use_monitor = PETSC_FALSE;
-    ierr = PetscOptionsTruth("-monitor_error","Display errors relative to exact solutions","",use_monitor,&use_monitor,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-monitor_error","Display errors relative to exact solutions","",use_monitor,&use_monitor,PETSC_NULL);CHKERRQ(ierr);
   }
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
 
@@ -300,8 +300,8 @@ int main(int argc,char **argv)
   {
     PetscErrorCode (*pcreate)(Problem);
 
-    ierr = PetscFListFind(plist,MPI_COMM_WORLD,pname,(void(**)(void))&pcreate);CHKERRQ(ierr);
-    if (!pcreate) SETERRQ1(1,"No problem '%s'",pname);
+    ierr = PetscFListFind(plist,MPI_COMM_WORLD,pname,PETSC_FALSE,(void(**)(void))&pcreate);CHKERRQ(ierr);
+    if (!pcreate) SETERRQ1(PETSC_COMM_SELF,1,"No problem '%s'",pname);
     ierr = (*pcreate)(problem);CHKERRQ(ierr);
   }
 
@@ -326,7 +326,7 @@ int main(int argc,char **argv)
   ierr = TSCreate(PETSC_COMM_WORLD,&ts);CHKERRQ(ierr);
   ierr = TSSetProblemType(ts,TS_NONLINEAR);CHKERRQ(ierr);
   ierr = TSSetType(ts,TSGL);CHKERRQ(ierr); /* General Linear method, TSTHETA can also solve DAE */
-  ierr = TSSetIFunction(ts,problem->function,problem->data);CHKERRQ(ierr);
+  ierr = TSSetIFunction(ts,PETSC_NULL,problem->function,problem->data);CHKERRQ(ierr);
   ierr = TSSetIJacobian(ts,A,A,problem->jacobian,problem->data);CHKERRQ(ierr);
   ierr = TSSetDuration(ts,maxsteps,problem->final_time);CHKERRQ(ierr);
   if (use_monitor) {
@@ -348,24 +348,26 @@ int main(int argc,char **argv)
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Solve nonlinear system
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ierr = TSStep(ts,&steps,&ftime);CHKERRQ(ierr);
+  ierr = TSSolve(ts,x,&ftime);CHKERRQ(ierr);
+  ierr = TSGetTimeStepNumber(ts,&steps);CHKERRQ(ierr);
   ierr = PetscPrintf(PETSC_COMM_WORLD,"steps %D, ftime %G\n",steps,ftime);CHKERRQ(ierr);
+  ierr = MonitorError(ts,steps,ftime,x,&mon);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = VecDestroy(mon.x);CHKERRQ(ierr);
-  ierr = TSDestroy(ts);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = VecDestroy(&mon.x);CHKERRQ(ierr);
+  ierr = TSDestroy(&ts);CHKERRQ(ierr);
   if (problem->destroy) {
     ierr = (*problem->destroy)(problem);CHKERRQ(ierr);
   }
   ierr = PetscFree(problem);CHKERRQ(ierr);
   ierr = PetscFListDestroy(&plist);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   PetscFunctionReturn(0);
 }

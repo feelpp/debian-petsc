@@ -9,7 +9,7 @@
 Load a symbol from the dynamic link libraries. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscDLLibrarySym(MPI_Comm comm,PetscDLLibrary *outlist,const char path[],const char insymbol[],void **value)
+PetscErrorCode  PetscDLLibrarySym(MPI_Comm comm,PetscDLLibrary *outlist,const char path[],const char insymbol[],void **value)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -17,17 +17,18 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- communicator that will open the library
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>outlist </B></TD><TD>- list of already open libraries that may contain symbol (checks here before path)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>outlist </B></TD><TD>- list of already open libraries that may contain symbol (can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> and only the executable is searched for the function)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>path     </B></TD><TD>- optional complete library name
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>path     </B></TD><TD>- optional complete library name (if provided checks here before checking outlist)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>insymbol </B></TD><TD>- name of symbol
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>value </B> -
-
+<DT><B>value </B> -if symbol not found then this value is set to <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
 <br>
+<P>
+
 <P>
 Notes: Symbol can be of the form
 [/path/libname[.so.1.0]:]functionname[()] where items in [] denote optional

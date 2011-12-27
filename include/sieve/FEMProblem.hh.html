@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:54:51+00:00">
+<meta name="date" content="2011-10-29T19:23:32+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -20,7 +20,7 @@
 
 <a name="line12"> 12: </a><font color="#B22222">*/</font>
 
-<a name="line14"> 14: </a><font color="#A020F0">#include &lt;Mesh.hh&gt;</font>
+<a name="line14"> 14: </a><font color="#A020F0">#include &lt;sieve/Mesh.hh&gt;</font>
 
 <a name="line16"> 16: </a>namespace ALE {
 <a name="line17"> 17: </a>  namespace Problem {
@@ -850,10 +850,10 @@
 <a name="line843">843: </a>      GenericFormSubProblem * subproblem = (GenericFormSubProblem *)ctx;
 <a name="line844">844: </a>      Obj&lt;PETSC_MESH_TYPE&gt; m;
 <a name="line846">846: </a>
-<a name="line848">848: </a>      <A href="../../docs/manualpages/Mesh/MeshGetMesh.html#MeshGetMesh">MeshGetMesh</A>(mesh, m);
-<a name="line849">849: </a>      <A href="../../docs/manualpages/Mesh/SectionRealZero.html#SectionRealZero">SectionRealZero</A>(section);
+<a name="line848">848: </a>      MeshGetMesh(mesh, m);
+<a name="line849">849: </a>      <A href="../../docs/manualpages/DM/SectionRealZero.html#SectionRealZero">SectionRealZero</A>(section);
 <a name="line850">850: </a>      Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; s;
-<a name="line851">851: </a>      <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line851">851: </a>      <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line852">852: </a>      // Loop over cells
 <a name="line853">853: </a>      //loop over integrals;
 <a name="line854">854: </a>
@@ -895,7 +895,7 @@
 <a name="line890">890: </a>            SectionRealUpdateAdd(section, *ic_iter, elemVec);
 <a name="line891">891: </a>            ic_iter++;
 <a name="line892">892: </a>          }
-<a name="line893">893: </a>          <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line893">893: </a>          <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line894">894: </a>        } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (cur_rank == 2) {
 <a name="line895">895: </a>          //cancel out BCs <font color="#4169E1">if</font> necessary... this doesn't require any knowledge of the discretization form (<font color="#4169E1">if</font> handled right).
 <a name="line896">896: </a>          <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> * full_tensor;
@@ -907,7 +907,7 @@
 <a name="line902">902: </a>            cur_integral-&gt;tabulateTensor(full_tensor);
 <a name="line903">903: </a>            //create the linear contribution from the BCs
 <a name="line904">904: </a>            <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> * xValues;
-<a name="line905">905: </a>            <A href="../../docs/manualpages/Mesh/SectionRealRestrict.html#SectionRealRestrict">SectionRealRestrict</A>(X, *ic_iter, &amp;xValues); //get the coefficients -- BUG: setCell restricts as well; static
+<a name="line905">905: </a>            <A href="../../docs/manualpages/DM/SectionRealRestrict.html#SectionRealRestrict">SectionRealRestrict</A>(X, *ic_iter, &amp;xValues); //get the coefficients -- BUG: setCell restricts as well; static
 <a name="line906">906: </a>            <font color="#4169E1">for</font>(int f = 0; f &lt; cur_dimension; f++) {
 <a name="line907">907: </a>              elemVec[f] = 0.;
 <a name="line908">908: </a>              <font color="#4169E1">for</font>(int g = 0; g &lt; cur_dimension; g++) {
@@ -923,22 +923,22 @@
 <a name="line918">918: </a>          throw Exception(<font color="#666666">"RHS_FEMProblem: Unsupported tensor rank"</font>);
 <a name="line919">919: </a>        }
 <a name="line920">920: </a>        n_iter++;
-<a name="line921">921: </a>        <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line921">921: </a>        <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line922">922: </a>      }
 <a name="line923">923: </a>      // Exchange neighbors
-<a name="line924">924: </a>      <A href="../../docs/manualpages/Mesh/SectionRealComplete.html#SectionRealComplete">SectionRealComplete</A>(section);
+<a name="line924">924: </a>      <A href="../../docs/manualpages/DM/SectionRealComplete.html#SectionRealComplete">SectionRealComplete</A>(section);
 <a name="line925">925: </a>      // Subtract the constant
 <a name="line926">926: </a>      <font color="#4169E1">if</font> (m-&gt;hasRealSection(<font color="#666666">"constant"</font>)) {
 <a name="line927">927: </a>        const Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;&amp; constant = m-&gt;getRealSection(<font color="#666666">"constant"</font>);
 <a name="line928">928: </a>        Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;        s;
 <a name="line929">929: </a>
-<a name="line930">930: </a>        <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line930">930: </a>        <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line931">931: </a>        s-&gt;axpy(-1.0, constant);
 <a name="line932">932: </a>      }
-<a name="line933">933: </a>      <A href="../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> flag;
+<a name="line933">933: </a>      <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flag;
 <a name="line934">934: </a>      <A href="../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-vec_view"</font>, &amp;flag);
 <a name="line935">935: </a>      <font color="#4169E1">if</font> (flag) {
-<a name="line936">936: </a>        <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line936">936: </a>        <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line937">937: </a>        s-&gt;view(<font color="#666666">"RHS"</font>);
 <a name="line938">938: </a>      }
 <a name="line939">939: </a>      <font color="#4169E1">return</font>(0);
@@ -950,8 +950,8 @@
 <a name="line948">948: </a>      Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; s;
 <a name="line949">949: </a>      Obj&lt;PETSC_MESH_TYPE&gt; m;
 <a name="line951">951: </a>      <A href="../../docs/manualpages/Mat/MatZeroEntries.html#MatZeroEntries">MatZeroEntries</A>(A);
-<a name="line952">952: </a>      <A href="../../docs/manualpages/Mesh/MeshGetMesh.html#MeshGetMesh">MeshGetMesh</A>(mesh, m);
-<a name="line953">953: </a>      <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
+<a name="line952">952: </a>      MeshGetMesh(mesh, m);
+<a name="line953">953: </a>      <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line954">954: </a>      //loop over integrals; <font color="#4169E1">for</font> now.
 <a name="line955">955: </a><strong><font color="#FF0000">      GenericFormSubProblem:</font></strong>:names_type integral_names = subproblem-&gt;getIntegrals();
 <a name="line956">956: </a><strong><font color="#FF0000">      GenericFormSubProblem:</font></strong>:names_type::iterator n_iter = integral_names.begin();
@@ -995,8 +995,8 @@
 <a name="line997">997: </a>
 <a name="line999">999: </a>      Obj&lt;PETSC_MESH_TYPE&gt; m;
 <a name="line1000">1000: </a>      Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; field;
-<a name="line1001">1001: </a>      <A href="../../docs/manualpages/Mesh/SectionRealGetBundle.html#SectionRealGetBundle">SectionRealGetBundle</A>(section, m);
-<a name="line1002">1002: </a>      <A href="../../docs/manualpages/Mesh/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, field);
+<a name="line1001">1001: </a>      <A href="../../docs/manualpages/DM/SectionRealGetBundle.html#SectionRealGetBundle">SectionRealGetBundle</A>(section, m);
+<a name="line1002">1002: </a>      <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, field);
 <a name="line1003">1003: </a>      const ALE::Obj&lt;PETSC_MESH_TYPE::numbering_type&gt;&amp; numbering = m-&gt;getFactory()-&gt;getNumbering(m, 0);
 <a name="line1004">1004: </a>      <A href="../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"POINT_DATA %d\n"</font>, numbering-&gt;getGlobalSize());
 <a name="line1005">1005: </a>
@@ -1088,7 +1088,7 @@
 <a name="line1091">1091: </a>          }
 <a name="line1092">1092: </a>        }
 <a name="line1093">1093: </a>        <font color="#4169E1">if</font> (k != size) {
-<a name="line1094">1094: </a>          <A href="../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_PLIB, <font color="#666666">"Invalid number of values to send for field, %d should be %d"</font>, k, size);
+<a name="line1094">1094: </a>          <A href="../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB, <font color="#666666">"Invalid number of values to send for field, %d should be %d"</font>, k, size);
 <a name="line1095">1095: </a>        }
 <a name="line1096">1096: </a>        int numLocalElementsAndFiberDim[2] = {numLocalElements, fiberDim};
 <a name="line1097">1097: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(numLocalElementsAndFiberDim, 2, MPI_INT, 0, 1, field-&gt;comm());

@@ -3,7 +3,7 @@
 
 static char help[] = "Tests the vatious routines in MatMPISBAIJ format.\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -17,7 +17,7 @@ int main(int argc,char **args)
   PetscInt          n,col[3],n1,block,row,i,j,i2,j2,Ii,J,rstart,rend,bs=1,mbs=16,d_nz=3,o_nz=3,prob=2;
   PetscErrorCode    ierr;
   PetscMPIInt       size,rank;
-  PetscTruth        flg;
+  PetscBool         flg;
   const MatType     type;
 
   PetscInitialize(&argc,&args,(char *)0,help);
@@ -54,9 +54,9 @@ int main(int argc,char **args)
       ierr = MatSetValues(sA,1,&i,3,col,value,INSERT_VALUES);CHKERRQ(ierr);
     }
     else if (prob ==2){ /* matrix for the five point stencil */
-      n1 =  (int) sqrt((double)n); 
+      n1 =  (int) PetscSqrtReal((PetscReal)n); 
       if (n1*n1 != n){
-        SETERRQ(PETSC_ERR_ARG_SIZ,"n must be a perfect square of n1");
+        SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"n must be a perfect square of n1");
       }
         
       for (i=0; i<n1; i++) {
@@ -123,7 +123,7 @@ int main(int argc,char **args)
       ierr = MatSetValues(A,1,&i,3,col,value,INSERT_VALUES);CHKERRQ(ierr);
     }
     else if (prob ==2){ /* matrix for the five point stencil */
-      n1 = (int) sqrt((double)n); 
+      n1 = (int) PetscSqrtReal((PetscReal)n); 
       for (i=0; i<n1; i++) {
         for (j=0; j<n1; j++) {
           Ii = j + n1*i;
@@ -228,7 +228,7 @@ int main(int argc,char **args)
   ierr = MatDiagonalScale(A,x,x);CHKERRQ(ierr);
   ierr = MatDiagonalScale(sA,x,x);CHKERRQ(ierr);
   ierr = MatMultEqual(A,sA,10,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(PETSC_ERR_ARG_NOTSAMETYPE,"Error in MatDiagonalScale");
+  if (!flg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_NOTSAMETYPE,"Error in MatDiagonalScale");
   
   /* Test MatGetDiagonal(), MatScale() */
   ierr = MatGetDiagonal(A,s1);CHKERRQ(ierr);  
@@ -313,17 +313,17 @@ int main(int argc,char **args)
     PetscSynchronizedPrintf(PETSC_COMM_WORLD,"[%d], Error: MatDuplicate() or MatMultAdd(()\n",rank);
     PetscSynchronizedFlush(PETSC_COMM_WORLD);
   }
-  ierr = MatDestroy(sB);CHKERRQ(ierr); 
+  ierr = MatDestroy(&sB);CHKERRQ(ierr); 
   
-  ierr = VecDestroy(u);CHKERRQ(ierr);  
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr); 
-  ierr = VecDestroy(s1);CHKERRQ(ierr);
-  ierr = VecDestroy(s2);CHKERRQ(ierr);
-  ierr = MatDestroy(sA);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(rctx);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);  
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr); 
+  ierr = VecDestroy(&s1);CHKERRQ(ierr);
+  ierr = VecDestroy(&s2);CHKERRQ(ierr);
+  ierr = MatDestroy(&sA);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rctx);CHKERRQ(ierr);
  
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

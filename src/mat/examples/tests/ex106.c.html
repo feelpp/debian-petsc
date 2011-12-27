@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:57+00:00">
+<meta name="date" content="2011-10-29T19:05:35+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -13,7 +13,7 @@
 <a name="line3">  3: </a><font color="#666666">  -m &lt;size&gt; : problem size\n\</font>
 <a name="line4">  4: </a><font color="#666666">  -mat_nonsym : use nonsymmetric matrix (default is symmetric)\n\n"</font>;
 
-<a name="line6"> 6: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 <a name="line9">  9: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line10"> 10: </a>{
 <a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            C,F;                <font color="#B22222">/* matrix */</font>
@@ -23,7 +23,7 @@
 <a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       I,J,ldim,low,high,iglobal,Istart,Iend;
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,m = 3,n = 2,its;
 <a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank;
-<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     mat_nonsymmetric;
+<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      mat_nonsymmetric;
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       its_max;
 <a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>  factinfo;
 <a name="line22"> 22: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>             perm,iperm;
@@ -134,20 +134,20 @@
 <a name="line127">127: </a>  <font color="#B22222">/* Compute right-hand-side vector */</font>
 <a name="line128">128: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(C,u,b);
 
-<a name="line130">130: </a>  <A href="../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(C,MATORDERING_NATURAL,&amp;perm,&amp;iperm);
+<a name="line130">130: </a>  <A href="../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(C,MATORDERINGNATURAL,&amp;perm,&amp;iperm);
 <a name="line131">131: </a>  its_max = 2000;
 <a name="line132">132: </a>  <font color="#4169E1">for</font> (i=0; i&lt;its_max; i++){
 <a name="line133">133: </a>    <font color="#B22222">/* printf(" it %d\n",i); */</font>
-<a name="line134">134: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(C,MAT_SOLVER_PETSC,MAT_FACTOR_LU,&amp;F);
+<a name="line134">134: </a>    <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(C,MATSOLVERPETSC,MAT_FACTOR_LU,&amp;F);
 <a name="line135">135: </a>    <A href="../../../../docs/manualpages/Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(F,C,perm,iperm,&amp;factinfo);
 <a name="line136">136: </a>    <font color="#4169E1">for</font> (j=0; j&lt;1; j++){
 <a name="line137">137: </a>      <A href="../../../../docs/manualpages/Mat/MatLUFactorNumeric.html#MatLUFactorNumeric">MatLUFactorNumeric</A>(F,C,&amp;factinfo);
 <a name="line138">138: </a>    }
 <a name="line139">139: </a>    <A href="../../../../docs/manualpages/Mat/MatSolve.html#MatSolve">MatSolve</A>(F,b,x);
-<a name="line140">140: </a>    <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(F);
+<a name="line140">140: </a>    <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;F);
 <a name="line141">141: </a>  }
-<a name="line142">142: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(perm);
-<a name="line143">143: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(iperm);
+<a name="line142">142: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;perm);
+<a name="line143">143: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;iperm);
 
 <a name="line145">145: </a>  <font color="#B22222">/* Check the error */</font>
 <a name="line146">146: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(x,none,u);
@@ -155,10 +155,10 @@
 <a name="line148">148: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %A\n"</font>,norm);
 
 <a name="line150">150: </a>  <font color="#B22222">/* Free work space. */</font>
-<a name="line151">151: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line152">152: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line153">153: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line154">154: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line151">151: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line152">152: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line153">153: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line154">154: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 <a name="line155">155: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line156">156: </a>  <font color="#4169E1">return</font> 0;
 <a name="line157">157: </a>}

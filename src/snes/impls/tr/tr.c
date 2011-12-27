@@ -1,6 +1,5 @@
-#define PETSCSNES_DLL
  
-#include "../src/snes/impls/tr/tr.h"                /*I   "petscsnes.h"   I*/
+#include <../src/snes/impls/tr/trimpl.h>                /*I   "petscsnes.h"   I*/
 
 typedef struct {
   void *ctx;
@@ -95,7 +94,7 @@ static PetscErrorCode SNESSolve_TR(SNES snes)
   PetscScalar         cnorm;
   KSP                 ksp;
   SNESConvergedReason reason = SNES_CONVERGED_ITERATING;
-  PetscTruth          conv = PETSC_FALSE,breakout = PETSC_FALSE;
+  PetscBool           conv = PETSC_FALSE,breakout = PETSC_FALSE;
 
   PetscFunctionBegin;
   maxits	= snes->max_its;	/* maximum number of iterations */
@@ -117,7 +116,7 @@ static PetscErrorCode SNESSolve_TR(SNES snes)
   delta = neP->delta0*fnorm;         
   neP->delta = delta;
   SNESLogConvHistory(snes,fnorm,0);
-  SNESMonitor(snes,0,fnorm);
+  ierr = SNESMonitor(snes,0,fnorm);CHKERRQ(ierr);
 
   /* set parameter for default relative tolerance convergence test */
   snes->ttol = fnorm*snes->rtol;
@@ -126,7 +125,7 @@ static PetscErrorCode SNESSolve_TR(SNES snes)
   if (snes->reason) PetscFunctionReturn(0);
 
   /* Set the stopping criteria to use the More' trick. */
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-snes_tr_ksp_regular_convergence_test",&conv,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-snes_tr_ksp_regular_convergence_test",&conv,PETSC_NULL);CHKERRQ(ierr);
   if (!conv) {
     SNES_TR_KSPConverged_Ctx *ctx;
     ierr = SNESGetKSP(snes,&ksp);CHKERRQ(ierr);
@@ -193,7 +192,7 @@ static PetscErrorCode SNESSolve_TR(SNES snes)
       if (!reason) { ierr = (*snes->ops->converged)(snes,snes->iter,xnorm,ynorm,fnorm,&reason,snes->cnvP);CHKERRQ(ierr); }
       if (reason) {
         /* We're not progressing, so return with the current iterate */
-        SNESMonitor(snes,i+1,fnorm);
+        ierr = SNESMonitor(snes,i+1,fnorm);CHKERRQ(ierr);
         breakout = PETSC_TRUE;
         break;
       }
@@ -210,7 +209,7 @@ static PetscErrorCode SNESSolve_TR(SNES snes)
       snes->norm = fnorm;
       ierr = PetscObjectGrantAccess(snes);CHKERRQ(ierr);
       SNESLogConvHistory(snes,snes->norm,lits);
-      SNESMonitor(snes,snes->iter,snes->norm);
+      ierr = SNESMonitor(snes,snes->iter,snes->norm);CHKERRQ(ierr);
       /* Test for convergence, xnorm = || X || */
       neP->itflag = PETSC_TRUE;
       if (snes->ops->converged != SNESSkipConverged) { ierr = VecNorm(X,NORM_2,&xnorm);CHKERRQ(ierr); }
@@ -237,18 +236,21 @@ static PetscErrorCode SNESSetUp_TR(SNES snes)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (!snes->vec_sol_update) {
-    ierr = VecDuplicate(snes->vec_sol,&snes->vec_sol_update);CHKERRQ(ierr);
-    ierr = PetscLogObjectParent(snes,snes->vec_sol_update);CHKERRQ(ierr);
-  }
-  if (!snes->work) {
-    snes->nwork = 3;
-    ierr = VecDuplicateVecs(snes->vec_sol,snes->nwork,&snes->work);CHKERRQ(ierr);
-    ierr = PetscLogObjectParents(snes,snes->nwork,snes->work);CHKERRQ(ierr);
-  }
+  ierr = SNESDefaultGetWork(snes,3);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
-/*------------------------------------------------------------*/
+
+#undef __FUNCT__
+#define __FUNCT__ "SNESReset_TR"
+PetscErrorCode SNESReset_TR(SNES snes)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  if (snes->work) {ierr = VecDestroyVecs(snes->nwork,&snes->work);CHKERRQ(ierr);}
+  PetscFunctionReturn(0);
+}
+
 #undef __FUNCT__  
 #define __FUNCT__ "SNESDestroy_TR"
 static PetscErrorCode SNESDestroy_TR(SNES snes)
@@ -256,15 +258,7 @@ static PetscErrorCode SNESDestroy_TR(SNES snes)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (snes->vec_sol_update) {
-    ierr = VecDestroy(snes->vec_sol_update);CHKERRQ(ierr);
-    snes->vec_sol_update = PETSC_NULL;
-  }
-  if (snes->nwork) {
-    ierr = VecDestroyVecs(snes->work,snes->nwork);CHKERRQ(ierr);
-    snes->nwork = 0;
-    snes->work  = PETSC_NULL;
-  }
+  ierr = SNESReset_TR(snes);CHKERRQ(ierr);
   ierr = PetscFree(snes->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -297,15 +291,13 @@ static PetscErrorCode SNESView_TR(SNES snes,PetscViewer viewer)
 {
   SNES_TR *tr = (SNES_TR *)snes->data;
   PetscErrorCode ierr;
-  PetscTruth iascii;
+  PetscBool  iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  mu=%G, eta=%G, sigma=%G\n",tr->mu,tr->eta,tr->sigma);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  delta0=%G, delta1=%G, delta2=%G, delta3=%G\n",tr->delta0,tr->delta1,tr->delta2,tr->delta3);CHKERRQ(ierr);
-  } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for SNES EQ TR",((PetscObject)viewer)->type_name);
   }
   PetscFunctionReturn(0);
 }
@@ -339,7 +331,7 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "SNESCreate_TR"
-PetscErrorCode PETSCSNES_DLLEXPORT SNESCreate_TR(SNES snes)
+PetscErrorCode  SNESCreate_TR(SNES snes)
 {
   SNES_TR        *neP;
   PetscErrorCode ierr;
@@ -350,7 +342,8 @@ PetscErrorCode PETSCSNES_DLLEXPORT SNESCreate_TR(SNES snes)
   snes->ops->destroy	     = SNESDestroy_TR;
   snes->ops->setfromoptions  = SNESSetFromOptions_TR;
   snes->ops->view            = SNESView_TR;
-  
+  snes->ops->reset           = SNESReset_TR;
+
   ierr			= PetscNewLog(snes,SNES_TR,&neP);CHKERRQ(ierr);
   snes->data	        = (void*)neP;
   neP->mu		= 0.25;

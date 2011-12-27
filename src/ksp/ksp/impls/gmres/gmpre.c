@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "../src/ksp/ksp/impls/gmres/gmresimpl.h"       /*I  "petscksp.h"  I*/
+#include <../src/ksp/ksp/impls/gmres/gmresimpl.h>       /*I  "petscksp.h"  I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPGMRESSetPreAllocateVectors" 
@@ -9,7 +8,7 @@
     needed work vectors at initial setup rather than the default, which 
     is to allocate them in chunks when needed.
 
-    Collective on KSP
+    Logically Collective on KSP
 
     Input Parameter:
 .   ksp   - iterative context obtained from KSPCreate
@@ -21,17 +20,14 @@
 
 .keywords: GMRES, preallocate, vectors
 
-.seealso: KSPGMRESSetRestart(), KSPGMRESSetOrthogonalization()
+.seealso: KSPGMRESSetRestart(), KSPGMRESSetOrthogonalization(), KSPGMRESGetOrthogonalization()
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESSetPreAllocateVectors(KSP ksp)
+PetscErrorCode  KSPGMRESSetPreAllocateVectors(KSP ksp)
 {
-  PetscErrorCode ierr,(*f)(KSP);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscObjectQueryFunction((PetscObject)ksp,"KSPGMRESSetPreAllocateVectors_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp);CHKERRQ(ierr);
-  }
+  ierr = PetscTryMethod(ksp,"KSPGMRESSetPreAllocateVectors_C",(KSP),(ksp));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

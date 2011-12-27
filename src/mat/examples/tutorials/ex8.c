@@ -1,12 +1,12 @@
 
 static char help[] = "Shows how to add a new MatOperation to AIJ MatType\n\n";
 
-#include "petscmat.h"
-#include "petscblaslapack.h"
+#include <petscmat.h>
+#include <petscblaslapack.h>
 
 /* This routine implments MatScaleUserImpl() functionality for MatType
    SeqAIJ. MatScale_SeqAIJ() code duplicated here */
-#include "../src/mat/impls/aij/seq/aij.h"
+#include <../src/mat/impls/aij/seq/aij.h>
 PetscErrorCode MatScaleUserImpl_SeqAIJ(Mat inA,PetscScalar alpha)
 {
   Mat_SeqAIJ   *a = (Mat_SeqAIJ*)inA->data;
@@ -21,7 +21,7 @@ PetscErrorCode MatScaleUserImpl_SeqAIJ(Mat inA,PetscScalar alpha)
 /* This routine implments MatScaleUserImpl() functionality for MatType
    SeqAIJ. MatScale_MPIAIJ() code duplicated here */
 extern PetscErrorCode MatScaleUserImpl(Mat,PetscScalar);
-#include "../src/mat/impls/aij/mpi/mpiaij.h"
+#include <../src/mat/impls/aij/mpi/mpiaij.h>
 PetscErrorCode MatScaleUserImpl_MPIAIJ(Mat A,PetscScalar aa)
 {
   Mat_MPIAIJ     *a = (Mat_MPIAIJ*)A->data;
@@ -133,7 +133,7 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Matrix _after_ MatScaleUserImpl() operation\n");
   ierr = MatView(mat,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-  ierr = MatDestroy(mat);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&mat);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

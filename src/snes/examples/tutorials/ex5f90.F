@@ -1,14 +1,14 @@
 !
 !  Description: Solves a nonlinear system in parallel with SNES.
 !  We solve the  Bratu (SFI - solid fuel ignition) problem in a 2D rectangular
-!  domain, using distributed arrays (DAs) to partition the parallel grid.
+!  domain, using distributed arrays (DMDAs) to partition the parallel grid.
 !  The command line options include:
 !    -par <parameter>, where <parameter> indicates the nonlinearity of the problem
 !       problem SFI:  <parameter> = Bratu parameter (0 <= par <= 6.81)
 !
 !/*T
 !  Concepts: SNES^parallel Bratu example
-!  Concepts: DA^using distributed arrays;
+!  Concepts: DMDA^using distributed arrays;
 !  Processors: n
 !T*/
 !
@@ -37,10 +37,10 @@
 
       module f90module
       type userctx
-#include "finclude/petscsysdef.h"
-#include "finclude/petscvecdef.h"
-#include "finclude/petscdadef.h"
-        DA      da
+#include <finclude/petscsysdef.h>
+#include <finclude/petscvecdef.h>
+#include <finclude/petscdmdef.h>
+        DM      da
         PetscInt xs,xe,xm,gxs,gxe,gxm
         PetscInt ys,ye,ym,gys,gye,gym
         PetscInt mx,my
@@ -73,15 +73,15 @@
       subroutine FormFunction(snes,X,F,user,ierr)
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscis.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscvec.h90"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscis.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscvec.h90>
 
 !  Input/output variables:
       SNES           snes
@@ -94,13 +94,13 @@
       Vec            localX
 
 !  Scatter ghost points to local vector, using the 2-step process
-!     DAGlobalToLocalBegin(), DAGlobalToLocalEnd().
+!     DMGlobalToLocalBegin(), DMGlobalToLocalEnd().
 !  By placing code between these two statements, computations can
 !  be done while messages are in transition.
-      call DAGetLocalVector(user%da,localX,ierr)
-      call DAGlobalToLocalBegin(user%da,X,INSERT_VALUES,                &
+      call DMGetLocalVector(user%da,localX,ierr)
+      call DMGlobalToLocalBegin(user%da,X,INSERT_VALUES,                &
      &     localX,ierr)                
-      call DAGlobalToLocalEnd(user%da,X,INSERT_VALUES,localX,ierr)
+      call DMGlobalToLocalEnd(user%da,X,INSERT_VALUES,localX,ierr)
 
 !  Get a pointer to vector data.
 !    - For default PETSc vectors, VecGetArray90() returns a pointer to
@@ -122,7 +122,7 @@
 
 !  Insert values into global vector
 
-      call DARestoreLocalVector(user%da,localX,ierr)
+      call DMRestoreLocalVector(user%da,localX,ierr)
       call PetscLogFlops(11.0d0*user%ym*user%xm,ierr)
 
 !      call VecView(X,PETSC_VIEWER_STDOUT_WORLD,ierr)
@@ -158,16 +158,16 @@
       use f90moduleinterfaces
       implicit none
 !
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscis.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
-#include "finclude/petscvec.h90"
-#include "finclude/petscda.h90"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscis.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
+#include <finclude/petscvec.h90>
+#include <finclude/petscdmda.h90>
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 !                   Variable declarations
@@ -186,7 +186,7 @@
       Mat              J
       PetscErrorCode   ierr
       PetscInt         its
-      PetscTruth       flg,matrix_free
+      PetscBool        flg,matrix_free
       PetscInt         ione,nfour
       double precision lambda_max,lambda_min
       type (userctx)   user
@@ -213,7 +213,7 @@
       if (user%lambda .ge. lambda_max .or. user%lambda .le. lambda_min) &
      &     then
          if (user%rank .eq. 0) write(6,*) 'Lambda is out of range'
-         SETERRQ(1,' ',ierr)
+         SETERRQ(PETSC_COMM_SELF,1,' ',ierr)
       endif
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -225,15 +225,17 @@
 !  Create vector data structures; set function evaluation routine
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-!  Create distributed array (DA) to manage parallel grid and vectors
+!  Create distributed array (DMDA) to manage parallel grid and vectors
 
 ! This really needs only the star-type stencil, but we use the box
 ! stencil temporarily.
-      call DACreate2d(PETSC_COMM_WORLD,DA_NONPERIODIC,DA_STENCIL_BOX,   &
-     &     nfour,nfour,PETSC_DECIDE,PETSC_DECIDE,ione,ione,             &
-     &     PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,user%da,ierr)
-      call DAGetInfo(user%da,PETSC_NULL_INTEGER,user%mx,user%my,        &
+      call DMDACreate2d(PETSC_COMM_WORLD,                               &
+     &     DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,                      &
+     &     DMDA_STENCIL_BOX,nfour,nfour,PETSC_DECIDE,PETSC_DECIDE,          &
+     &     ione,ione,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,user%da,ierr)
+      call DMDAGetInfo(user%da,PETSC_NULL_INTEGER,user%mx,user%my,        &
      &               PETSC_NULL_INTEGER,                                &
+     &               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &
      &               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &
      &               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &
      &               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &
@@ -242,17 +244,17 @@
 !
 !   Visualize the distribution of the array across the processors
 !
-!     call DAView(user%da,PETSC_VIEWER_DRAW_WORLD,ierr)
+!     call DMView(user%da,PETSC_VIEWER_DRAW_WORLD,ierr)
 
-!  Extract global and local vectors from DA; then duplicate for remaining
+!  Extract global and local vectors from DMDA; then duplicate for remaining
 !  vectors that are the same types
-      call DACreateGlobalVector(user%da,x,ierr)
+      call DMCreateGlobalVector(user%da,x,ierr)
       call VecDuplicate(x,r,ierr)
 
-!  Get local grid boundaries (for 2-dimensional DA)
-      call DAGetCorners(user%da,user%xs,user%ys,PETSC_NULL_INTEGER,     &
+!  Get local grid boundaries (for 2-dimensional DMDA)
+      call DMDAGetCorners(user%da,user%xs,user%ys,PETSC_NULL_INTEGER,     &
      &     user%xm,user%ym,PETSC_NULL_INTEGER,ierr)
-      call DAGetGhostCorners(user%da,user%gxs,user%gys,                 &
+      call DMDAGetGhostCorners(user%da,user%gxs,user%gys,                 &
      &     PETSC_NULL_INTEGER,user%gxm,user%gym,                        &
      &     PETSC_NULL_INTEGER,ierr)
 
@@ -287,8 +289,8 @@
 !                         products within Newton-Krylov method
 !
 !  Note:  For the parallel case, vectors and matrices MUST be partitioned
-!     accordingly.  When using distributed arrays (DAs) to create vectors,
-!     the DAs determine the problem partitioning.  We must explicitly
+!     accordingly.  When using distributed arrays (DMDAs) to create vectors,
+!     the DMDAs determine the problem partitioning.  We must explicitly
 !     specify the local matrix dimensions upon its creation for compatibility
 !     with the vector distribution.  Thus, the generic MatCreate() routine
 !     is NOT sufficient when working with distributed arrays.
@@ -300,7 +302,7 @@
       call PetscOptionsHasName(PETSC_NULL_CHARACTER,'-snes_mf',         &
      &     matrix_free,ierr)
       if (.not. matrix_free) then
-        call DAGetMatrix(user%da,MATAIJ,J,ierr)
+        call DMGetMatrix(user%da,MATAIJ,J,ierr)
         call SNESSetJacobian(snes,J,J,FormJacobian,user,ierr)
       endif
 
@@ -311,7 +313,7 @@
       call SNESSetFromOptions(snes,ierr)
 
 !     Test Fortran90 wrapper for SNESSet/Get ApplicationContext()
-      call PetscOptionsGetTruth(PETSC_NULL_CHARACTER,'-test_appctx',             &
+      call PetscOptionsGetBool(PETSC_NULL_CHARACTER,'-test_appctx',             &
      &     flg,PETSC_NULL_CHARACTER,ierr)
       if (flg) then
         call SNESGetApplicationContext(snes,puser,ierr)
@@ -346,7 +348,7 @@
       call VecDestroy(x,ierr)
       call VecDestroy(r,ierr)
       call SNESDestroy(snes,ierr)
-      call DADestroy(user%da,ierr)
+      call DMDestroy(user%da,ierr)
 
       call PetscFinalize(ierr)
       end
@@ -374,15 +376,15 @@
       use f90moduleinterfaces
       implicit none
 
-#include "finclude/petscvec.h90"
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscis.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscvec.h90>
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscis.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
 
 !  Input/output variables:
       SNES           snes
@@ -404,7 +406,7 @@
 !    - Note that the interface to VecGetArrayF90() differs from VecGetArray(),
 !      and is useable from Fortran-90 Only.
 
-      call DAGetLocalVector(puser%da,localX,ierr)
+      call DMGetLocalVector(puser%da,localX,ierr)
       call VecGetArrayF90(localX,lx_v,ierr)
 
 !  Compute initial guess over the locally owned part of the grid
@@ -414,8 +416,9 @@
       call VecRestoreArrayF90(localX,lx_v,ierr)
 
 !  Insert values into global vector
-      call DALocalToGlobal(puser%da,localX,INSERT_VALUES,X,ierr)
-      call DARestoreLocalVector(puser%da,localX,ierr)
+      call DMLocalToGlobalBegin(puser%da,localX,INSERT_VALUES,X,ierr)
+      call DMLocalToGlobalEnd(puser%da,localX,INSERT_VALUES,X,ierr)
+      call DMRestoreLocalVector(puser%da,localX,ierr)
 
       return 
       end
@@ -439,14 +442,14 @@
       use f90module
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscis.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscis.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
 
 !  Input/output variables:
       type (userctx)         user
@@ -568,9 +571,9 @@
 !  VecGetArrayF90() and VecRestoreArrayF90().
 !
 !  Notes:
-!  Due to grid point reordering with DAs, we must always work
+!  Due to grid point reordering with DMDAs, we must always work
 !  with the local grid points, and then transform them to the new
-!  global numbering with the "ltog" mapping (via DAGetGlobalIndicesF90()).
+!  global numbering with the "ltog" mapping (via DMDAGetGlobalIndicesF90()).
 !  We cannot work directly with the global numbers for the original
 !  uniprocessor grid!
 !
@@ -578,13 +581,13 @@
 !  when setting matrix entries:
 !    (A) MatSetValuesLocal(), using the local ordering (including
 !        ghost points!)
-!        - Use DAGetGlobalIndicesF90() to extract the local-to-global map
+!        - Use DMDAGetGlobalIndicesF90() to extract the local-to-global map
 !        - Associate this map with the matrix by calling
 !          MatSetLocalToGlobalMapping() once
 !        - Set matrix entries using the local ordering
 !          by calling MatSetValuesLocal()
 !    (B) MatSetValues(), using the global ordering 
-!        - Use DAGetGlobalIndicesF90() to extract the local-to-global map
+!        - Use DMDAGetGlobalIndicesF90() to extract the local-to-global map
 !        - Then apply this map explicitly yourself
 !        - Set matrix entries using the global ordering by calling
 !          MatSetValues()
@@ -595,16 +598,16 @@
       use f90module
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscis.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscis.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
 
-#include "finclude/petscvec.h90"
+#include <finclude/petscvec.h90>
 
 !  Input/output variables:
       SNES         snes
@@ -619,14 +622,14 @@
       Vec            localX
 
 !  Scatter ghost points to local vector, using the 2-step process
-!     DAGlobalToLocalBegin(), DAGlobalToLocalEnd()
+!     DMGlobalToLocalBegin(), DMGlobalToLocalEnd()
 !  Computations can be done while messages are in transition,
 !  by placing code between these two statements.
 
-      call DAGetLocalVector(user%da,localX,ierr)
-      call DAGlobalToLocalBegin(user%da,X,INSERT_VALUES,localX,            &
+      call DMGetLocalVector(user%da,localX,ierr)
+      call DMGlobalToLocalBegin(user%da,X,INSERT_VALUES,localX,            &
      &     ierr)
-      call DAGlobalToLocalEnd(user%da,X,INSERT_VALUES,localX,ierr)
+      call DMGlobalToLocalEnd(user%da,X,INSERT_VALUES,localX,ierr)
 
 !  Get a pointer to vector data
       call VecGetArrayF90(localX,lx_v,ierr)
@@ -644,7 +647,7 @@
          call MatAssemblyBegin(jac_prec,MAT_FINAL_ASSEMBLY,ierr)
       endif
       call VecRestoreArrayF90(localX,lx_v,ierr)
-      call DARestoreLocalVector(user%da,localX,ierr)
+      call DMRestoreLocalVector(user%da,localX,ierr)
       call MatAssemblyEnd(jac,MAT_FINAL_ASSEMBLY,ierr)
       if (jac .ne. jac_prec) then
         call MatAssemblyEnd(jac_prec,MAT_FINAL_ASSEMBLY,ierr)
@@ -693,9 +696,9 @@
 !  This routine uses standard Fortran-style computations over a 2-dim array.
 !
 !  Notes:
-!  Due to grid point reordering with DAs, we must always work
+!  Due to grid point reordering with DMDAs, we must always work
 !  with the local grid points, and then transform them to the new
-!  global numbering with the "ltog" mapping (via DAGetGlobalIndicesF90()).
+!  global numbering with the "ltog" mapping (via DMDAGetGlobalIndicesF90()).
 !  We cannot work directly with the global numbers for the original
 !  uniprocessor grid!
 !
@@ -703,13 +706,13 @@
 !  when setting matrix entries:
 !    (A) MatSetValuesLocal(), using the local ordering (including
 !        ghost points!)
-!        - Use DAGetGlobalIndicesF90() to extract the local-to-global map
+!        - Use DMDAGetGlobalIndicesF90() to extract the local-to-global map
 !        - Associate this map with the matrix by calling
 !          MatSetLocalToGlobalMapping() once
 !        - Set matrix entries using the local ordering
 !          by calling MatSetValuesLocal()
 !    (B) MatSetValues(), using the global ordering 
-!        - Use DAGetGlobalIndicesF90() to extract the local-to-global map
+!        - Use DMDAGetGlobalIndicesF90() to extract the local-to-global map
 !        - Then apply this map explicitly yourself
 !        - Set matrix entries using the global ordering by calling
 !          MatSetValues()
@@ -720,14 +723,14 @@
       use f90module
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscda.h"
-#include "finclude/petscis.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscdmda.h>
+#include <finclude/petscis.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
 
 !  Input/output variables:
       type (userctx) user

@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:20:32+00:00">
+<meta name="date" content="2011-10-29T18:51:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Demonstrates us of color map\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscsys.h.html">petscsys.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line9">  9: </a>{
@@ -28,7 +28,7 @@
 <a name="line21"> 21: </a>  }
 <a name="line22"> 22: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawFlush.html#PetscDrawFlush">PetscDrawFlush</A>(draw);
 <a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Sys/PetscSleep.html#PetscSleep">PetscSleep</A>(2);
-<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(draw);
+<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(&amp;draw);
 <a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line26"> 26: </a>  <font color="#4169E1">return</font> 0;
 <a name="line27"> 27: </a>}

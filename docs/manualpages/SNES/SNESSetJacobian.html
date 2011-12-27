@@ -10,9 +10,9 @@ Sets the function to compute Jacobian as well as the location to store the matri
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetJacobian(SNES snes,Mat A,Mat B,PetscErrorCode (*func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void *ctx)
+PetscErrorCode  SNESSetJacobian(SNES snes,Mat A,Mat B,PetscErrorCode (*func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void *ctx)
 </PRE>
-Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -22,10 +22,10 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>B </B></TD><TD>- preconditioner matrix (usually same as the Jacobian)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- Jacobian evaluation routine
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- Jacobian evaluation routine (if <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> then <A HREF="../SNES/SNES.html#SNES">SNES</A> retains any previously set value)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for private data for the 
-Jacobian evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+Jacobian evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) (if <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> then <A HREF="../SNES/SNES.html#SNES">SNES</A> retains any previously set value)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of func</FONT></H3>
@@ -59,6 +59,9 @@ throughout the global iterations.
 If the A matrix and B matrix are different you must call <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>/End() on
 each matrix.
 <P>
+If using <A HREF="../SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>() to assemble a Jacobian, the ctx argument
+must be a <A HREF="../Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A>.
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
@@ -76,12 +79,12 @@ each matrix.
 <A HREF="../../../src/snes/examples/tutorials/ex1.c.html">src/snes/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex2.c.html">src/snes/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex3.c.html">src/snes/examples/tutorials/ex3.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex6.c.html">src/snes/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex38.c.html">src/snes/examples/tutorials/ex38.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex42.c.html">src/snes/examples/tutorials/ex42.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 </BODY></HTML>

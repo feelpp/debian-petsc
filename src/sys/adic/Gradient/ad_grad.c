@@ -1,4 +1,4 @@
-#define PETSC_DLL
+
 /*
   THIS PROGRAM DISCLOSES MATERIAL PROTECTABLE UNDER COPYRIGHT
   LAWS OF THE UNITED STATES.  FOR LICENSING INFORMATION CONTACT:
@@ -8,11 +8,11 @@
   {bischof,roh}@mcs.anl.gov.
 */
 
-#include "petscsys.h"
+#include <petscsys.h>
 #include <stdarg.h>
 
-#include "ad_deriv.h"
-#include "ad_grad.h"
+#include <ad_deriv.h>
+#include <ad_grad.h>
 
 int ad_grad_size = 0;
 int ad_total_grad_size = 0;

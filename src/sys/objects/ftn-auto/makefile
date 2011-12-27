@@ -1,11 +1,11 @@
 
-#requirespackage   'PETSC_HAVE_FORTRAN'
+#requiresdefine   'PETSC_HAVE_FORTRAN'
 ALL: lib
 CPPFLAGS  = 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = optionsf.c destroyf.c gcookief.c ptypef.c tagmf.c inheritf.c pinitf.c
-OBJSC    = optionsf.o destroyf.o gcookief.o ptypef.o tagmf.o inheritf.o pinitf.o
+SOURCEC  = optionsf.c destroyf.c gcommf.c ptypef.c tagmf.c inheritf.c pinitf.c
+OBJSC    = optionsf.o destroyf.o gcommf.o ptypef.o tagmf.o inheritf.o pinitf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

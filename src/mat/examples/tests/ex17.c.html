@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:19+00:00">
+<meta name="date" content="2011-10-29T19:04:51+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests the use of <A href="../../../../docs/manualpages/Mat/MatSolveTranspose.html#MatSolveTranspose">MatSolveTranspose</A>().\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -44,7 +44,7 @@
 <a name="line37"> 37: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(C,MAT_FINAL_ASSEMBLY);
 
 <a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,(m*n)/2,0,2,&amp;isrow);
-<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Mat/MatZeroRowsIS.html#MatZeroRowsIS">MatZeroRowsIS</A>(C,isrow,five);
+<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Mat/MatZeroRowsIS.html#MatZeroRowsIS">MatZeroRowsIS</A>(C,isrow,five,0,0);
 
 <a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,m*n,&amp;u);
 <a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(u,&amp;x);
@@ -55,10 +55,10 @@
 
 <a name="line49"> 49: </a>  <font color="#B22222">/* Set default ordering to be Quotient Minimum Degree; also read</font>
 <a name="line50"> 50: </a><font color="#B22222">     orderings from the options database */</font>
-<a name="line51"> 51: </a>  <A href="../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(C,MATORDERING_QMD,&amp;row,&amp;col);
+<a name="line51"> 51: </a>  <A href="../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(C,MATORDERINGQMD,&amp;row,&amp;col);
 
 <a name="line53"> 53: </a>  <A href="../../../../docs/manualpages/Mat/MatFactorInfoInitialize.html#MatFactorInfoInitialize">MatFactorInfoInitialize</A>(&amp;info);
-<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(C,MAT_SOLVER_PETSC,MAT_FACTOR_LU,&amp;A);
+<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(C,MATSOLVERPETSC,MAT_FACTOR_LU,&amp;A);
 <a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(A,C,row,col,&amp;info);
 <a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Mat/MatLUFactorNumeric.html#MatLUFactorNumeric">MatLUFactorNumeric</A>(A,C,&amp;info);
 <a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Mat/MatSolveTranspose.html#MatSolveTranspose">MatSolveTranspose</A>(A,b,x);
@@ -68,14 +68,14 @@
 <a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
 <a name="line62"> 62: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"Norm of error %G\n"</font>,norm);
 
-<a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(row);
-<a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(col);
-<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(isrow);
-<a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line69"> 69: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line70"> 70: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
-<a name="line71"> 71: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;row);
+<a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;col);
+<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;isrow);
+<a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line69"> 69: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line70"> 70: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
+<a name="line71"> 71: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 <a name="line72"> 72: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line73"> 73: </a>  <font color="#4169E1">return</font> 0;
 <a name="line74"> 74: </a>}

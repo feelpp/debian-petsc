@@ -10,22 +10,14 @@ String with the name of a PETSc matrix ordering or the creation function with an
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #define MatOrderingType char*
-#define MATORDERING_NATURAL     "natural"
-#define MATORDERING_ND          "nd"
-#define MATORDERING_1WD         "1wd"
-#define MATORDERING_RCM         "rcm"
-#define MATORDERING_QMD         "qmd"
-#define MATORDERING_ROWLENGTH   "rowlength"
-#define MATORDERING_DSC_ND      "dsc_nd"         /* these three are only for DSCPACK, see its documentation for details */
-#define MATORDERING_DSC_MMD     "dsc_mmd"
-#define MATORDERING_DSC_MDF     "dsc_mdf"
-#define MATORDERING_CONSTRAINED "constrained"
-#define MATORDERING_IDENTITY    "identity"
-#define MATORDERING_REVERSE     "reverse"
-#define MATORDERING_FLOW        "flow"
-#define MATORDERING_AMD         "amd"
+#define MATORDERINGNATURAL     "natural"
+#define MATORDERINGND          "nd"
+#define MATORDERING1WD         "1wd"
+#define MATORDERINGRCM         "rcm"
+#define MATORDERINGQMD         "qmd"
+#define MATORDERINGROWLENGTH   "rowlength"
+#define MATORDERINGAMD         "amd"            /* only works if UMFPACK is installed with PETSc */
 
-EXTERN PetscErrorCode PETSCMAT_DLLEXPORT MatGetOrdering(Mat,const MatOrderingType,IS*,IS*);
 </PRE>
 
 <P>

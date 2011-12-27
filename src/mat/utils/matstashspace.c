@@ -1,7 +1,5 @@
 
-#define PETSCMAT_DLL
-
-#include "private/matimpl.h"
+#include <private/matimpl.h>
 
 /* Get new PetscMatStashSpace into the existing space */
 #undef __FUNCT__
@@ -58,17 +56,18 @@ PetscErrorCode PetscMatStashSpaceContiguous(PetscInt bs2,PetscMatStashSpace *spa
 
 #undef __FUNCT__
 #define __FUNCT__ "PetscMatStashSpaceDestroy"
-PetscErrorCode PetscMatStashSpaceDestroy(PetscMatStashSpace space) 
+PetscErrorCode PetscMatStashSpaceDestroy(PetscMatStashSpace *space) 
 {
   PetscMatStashSpace a;
   PetscErrorCode     ierr;
 
   PetscFunctionBegin;
-  while (space != PETSC_NULL){
-    a     = space->next;
-    ierr  = PetscFree3(space->space_head,space->idx,space->idy);CHKERRQ(ierr);
-    ierr  = PetscFree(space);CHKERRQ(ierr);
-    space = a;
+  while (*space){
+    a      = (*space)->next;
+    ierr   = PetscFree3((*space)->space_head,(*space)->idx,(*space)->idy);CHKERRQ(ierr);
+    ierr   = PetscFree((*space));CHKERRQ(ierr);
+    *space = a;
   }
+  *space = PETSC_NULL;
   PetscFunctionReturn(0);
 }

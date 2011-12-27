@@ -4,398 +4,854 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:23:44+00:00">
+<meta name="date" content="2011-10-29T18:54:18+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscfwk.h&gt;</font>
 
-<a name="line3"> 3: </a> #include <A href="../../../../include/petscsys.h.html">petscsys.h</A>
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscfwk.h.html">petscfwk.h</A>
+<a name="line5">  5: </a><font color="#B22222">/* FIX: is it okay to include this directly? */</font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;ctype.h&gt;</font>
 
-<a name="line6">  6: </a><A href="../../../../docs/manualpages/Sys/PetscCookie.html#PetscCookie">PetscCookie</A> PETSC_FWK_COOKIE;
-<a name="line7">  7: </a>static char PETSC_FWK_CLASS_NAME[] = <font color="#666666">"PetscFwk"</font>;
-
-<a name="line9">  9: </a>static <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> PetscFwkPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-
-
-<a name="line12"> 12: </a><font color="#B22222">/* </font>
-<a name="line13"> 13: </a><font color="#B22222">   Graph/topological sort stuff from BOOST.</font>
-<a name="line14"> 14: </a><font color="#B22222">   May need to be replaced with a custom, all-C implementation</font>
-<a name="line15"> 15: </a><font color="#B22222">*/</font>
-<a name="line16"> 16: </a>// &gt;&gt; C++
-<a name="line17"> 17: </a><font color="#A020F0">#include &lt;iostream&gt;</font>
-<a name="line18"> 18: </a><font color="#A020F0">#include &lt;map&gt;</font>
-<a name="line19"> 19: </a><font color="#A020F0">#include &lt;vector&gt;</font>
-<a name="line20"> 20: </a><font color="#A020F0">#include &lt;list&gt;</font>
-
-<a name="line22"> 22: </a><font color="#A020F0">#include &lt;boost/graph/graph_traits.hpp&gt;</font>
-<a name="line23"> 23: </a><font color="#A020F0">#include &lt;boost/graph/adjacency_list.hpp&gt;</font>
-<a name="line24"> 24: </a><font color="#A020F0">#include &lt;boost/graph/topological_sort.hpp&gt;</font>
+<a name="line8">  8: </a> <A href="../../../../docs/manualpages/Sys/PetscClassId.html#PetscClassId">PetscClassId</A> PETSC_FWK_CLASSID;
+<a name="line9">  9: </a>static char PETSC_FWK_CLASS_NAME[] = <font color="#666666">"PetscFwk"</font>;
+<a name="line10"> 10: </a>static <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  PetscFwkPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
 
-<a name="line27"> 27: </a><font color="#4169E1"><a name="vertex_id"></a>struct vertex_id </font>{
-<a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> id;
-<a name="line29"> 29: </a>};
-<a name="line30"> 30: </a>//
-<a name="line31"> 31: </a>// We use bundled properties to store id with the vertex.
-<a name="line32"> 32: </a><font color="#4169E1">typedef</font> ::boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, vertex_id&gt;             dependence_graph_type;
-<a name="line33"> 33: </a><font color="#4169E1">typedef</font> boost::graph_traits&lt;dependence_graph_type&gt;::vertex_descriptor                                   vertex_type;
-<a name="line34"> 34: </a>//
-<a name="line35"> 35: </a><font color="#4169E1"><a name="dependence_graph_cycle_detector_type"></a>struct dependence_graph_cycle_detector_type </font>: public boost::default_dfs_visitor {
-<a name="line36"> 36: </a>  void back_edge(boost::graph_traits&lt;dependence_graph_type&gt;::edge_descriptor e, const dependence_graph_type&amp; g) {
-<a name="line37"> 37: </a><strong><font color="#FF0000">    std:</font></strong>:basic_ostringstream&lt;char&gt; ss;
-<a name="line38"> 38: </a>    ss &lt;&lt; <font color="#666666">"Edge creates dependence loop: ["</font> &lt;&lt; (g[::boost::source(e,g)].id) &lt;&lt; <font color="#666666">" --&gt; "</font> &lt;&lt; (g[::boost::target(e,g)].id) &lt;&lt; <font color="#666666">"]; "</font>;
-<a name="line39"> 39: </a>    throw ss.str();
-<a name="line40"> 40: </a>  }//back_edge()
-<a name="line41"> 41: </a>};// dependence_graph_cycle_detector_type
-<a name="line42"> 42: </a>// &lt;&lt; C++
+<a name="line13"> 13: </a><strong><font color="#4169E1">typedef <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*PetscFwkPythonLoadVTableFunction)(PetscFwk fwk, const char* path, const char* name, void **vtable)</font></strong>;
+<a name="line14"> 14: </a><strong><font color="#4169E1">typedef <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*PetscFwkPythonClearVTableFunction)(PetscFwk fwk, void **vtable)</font></strong>;
+<a name="line15"> 15: </a><strong><font color="#4169E1">typedef <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*PetscFwkPythonCallFunction)(PetscFwk fwk, const char* message, void *vtable)</font></strong>;
 
-<a name="line44"> 44: </a><font color="#4169E1"><a name="_p_PetscFwk"></a>struct _p_PetscFwk </font>{
-<a name="line45"> 45: </a>  PETSCHEADER(int);
-<a name="line46"> 46: </a>  // &gt;&gt; C++
-<a name="line47"> 47: </a>  // Since PetscFwk is allocated using the C-style <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>, the C++-object data members have to be 'newed', hance must be pointers
-<a name="line48"> 48: </a><strong><font color="#FF0000">  std:</font></strong>:map&lt;std::string, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt;         *id;
-<a name="line49"> 49: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;std::string&gt;                *url;
-<a name="line50"> 50: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;PetscFwkComponentConfigure&gt; *configure;
-<a name="line51"> 51: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>&gt;                *component;
-<a name="line52"> 52: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;vertex_type&gt;                *vertex;
-<a name="line53"> 53: </a>  dependence_graph_type                   *dependence_graph;
-<a name="line54"> 54: </a>  // &lt;&lt; C++
-<a name="line55"> 55: </a>};
+<a name="line18"> 18: </a>PetscFwkPythonLoadVTableFunction      PetscFwkPythonLoadVTable      = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line19"> 19: </a>PetscFwkPythonClearVTableFunction     PetscFwkPythonClearVTable     = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line20"> 20: </a>PetscFwkPythonCallFunction            PetscFwkPythonCall            = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
 
-<a name="line57"> 57: </a>// &gt;&gt; C++
-<a name="line58"> 58: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line60"> 60: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkConfigure_Sort(PetscFwk fwk, std::list&lt;vertex_type&gt;&amp; antitopological_vertex_order){
-<a name="line62"> 62: </a>  // &gt;&gt; C++
-<a name="line63"> 63: </a>  <font color="#B22222">/* Run a cycle detector on the dependence graph */</font>
-<a name="line64"> 64: </a>  try {
-<a name="line65"> 65: </a>    dependence_graph_cycle_detector_type cycle_detector;
-<a name="line66"> 66: </a>    ::boost::depth_first_search(*(fwk-&gt;dependence_graph), boost::visitor(cycle_detector));
-<a name="line67"> 67: </a>  }
-<a name="line68"> 68: </a>  catch(const std::string&amp; s) {
-<a name="line69"> 69: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_WRONGSTATE, <font color="#666666">"Component dependence graph has a loop: %s"</font>, s.c_str());
-<a name="line70"> 70: </a>  }
-<a name="line71"> 71: </a>  catch(...) {
-<a name="line72"> 72: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_WRONGSTATE, <font color="#666666">"Exception caught while detecting loops in the dependence graph"</font>);
-<a name="line73"> 73: </a>  }
-<a name="line74"> 74: </a>  <font color="#B22222">/* </font>
-<a name="line75"> 75: </a><font color="#B22222">     Run topological sort on the dependence graph; remember that the vertices are returned in the "antitopological" order.</font>
-<a name="line76"> 76: </a><font color="#B22222">     This, in fact, is just what we need, since edges in the graph are entered as (client, server), implying that server </font>
-<a name="line77"> 77: </a><font color="#B22222">     must be configured *before* the client and BOOSTs topological sort will in fact order server before client.</font>
-<a name="line78"> 78: </a><font color="#B22222">   */</font>
-<a name="line79"> 79: </a>  try{
-<a name="line80"> 80: </a>    ::boost::topological_sort(*(fwk-&gt;dependence_graph), std::back_inserter(antitopological_vertex_order));
-<a name="line81"> 81: </a>  }
-<a name="line82"> 82: </a>  catch(...) {
-<a name="line83"> 83: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_WRONGSTATE, <font color="#666666">"Exception caught while performing topological_sort in the dependence graph"</font>);
-<a name="line84"> 84: </a>  }
+<a name="line23"> 23: </a><strong><font color="#228B22">#define PETSC_FWK_CHECKINIT_PYTHON()                                        \</font></strong>
+<a name="line24"> 24: </a><strong><font color="#228B22">  if(PetscFwkPythonLoadVTable == <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {                                \</font></strong>
+<a name="line26"> 26: </a><strong><font color="#228B22">    PetscPythonInitialize(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);        \</font></strong>
+<a name="line27"> 27: </a><strong><font color="#228B22">    if(PetscFwkPythonLoadVTable == <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {                                \</font></strong>
+<a name="line28"> 28: </a><strong><font color="#228B22">      <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,                                \</font></strong>
+<a name="line29"> 29: </a><strong><font color="#228B22">              </font><font color="#666666">"Couldn't initialize Python support for PetscFwk"</font><font color="#228B22">);        \</font></strong>
+<a name="line30"> 30: </a><strong><font color="#228B22">    }                                                                        \</font></strong>
+<a name="line31"> 31: </a><strong><font color="#228B22">  }                                                                        </font></strong>
+<a name="line32"> 32: </a>
+<a name="line33"> 33: </a><strong><font color="#228B22">#define PETSC_FWK_LOAD_VTABLE_PYTHON(fwk, path, name)                   \</font></strong>
+<a name="line34"> 34: </a><strong><font color="#228B22">  PETSC_FWK_CHECKINIT_PYTHON();                                                \</font></strong>
+<a name="line35"> 35: </a><strong><font color="#228B22">  {                                                                        \</font></strong>
+<a name="line37"> 37: </a><strong><font color="#228B22">    PetscFwkPythonLoadVTable(fwk, path, name, &amp;(fwk-&gt;vtable));   \</font></strong>
+<a name="line38"> 38: </a><strong><font color="#228B22">    if (ierr) { PetscPythonPrintError(); <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB, </font><font color="#666666">"Python error"</font><font color="#228B22">); } \</font></strong>
+<a name="line39"> 39: </a><strong><font color="#228B22">  }</font></strong>
 
-<a name="line86"> 86: </a>  <font color="#4169E1">return</font>(0);
-<a name="line87"> 87: </a>}<font color="#B22222">/* PetscFwkConfigure_Sort() */</font>
-<a name="line88"> 88: </a>// &lt;&lt; C++
+<a name="line41"> 41: </a><strong><font color="#228B22">#define PETSC_FWK_CLEAR_VTABLE_PYTHON(fwk)                              \</font></strong>
+<a name="line42"> 42: </a><strong><font color="#228B22">  PETSC_FWK_CHECKINIT_PYTHON();                                                \</font></strong>
+<a name="line43"> 43: </a><strong><font color="#228B22">  {                                                                        \</font></strong>
+<a name="line45"> 45: </a><strong><font color="#228B22">    PetscFwkPythonClearVTable(fwk, &amp;(fwk-&gt;vtable));              \</font></strong>
+<a name="line46"> 46: </a><strong><font color="#228B22">    if (ierr) { PetscPythonPrintError(); <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB, </font><font color="#666666">"Python error"</font><font color="#228B22">); } \</font></strong>
+<a name="line47"> 47: </a><strong><font color="#228B22">  }</font></strong>
+<a name="line48"> 48: </a>
+<a name="line49"> 49: </a><strong><font color="#228B22">#define PETSC_FWK_CALL_PYTHON(fwk, message)                             \</font></strong>
+<a name="line50"> 50: </a><strong><font color="#228B22">  PETSC_FWK_CHECKINIT_PYTHON();                                         \</font></strong>
+<a name="line51"> 51: </a><strong><font color="#228B22">  {                                                                        \</font></strong>
+<a name="line53"> 53: </a><strong><font color="#228B22">    PetscFwkPythonCall(fwk, message, fwk-&gt;vtable);                           \</font></strong>
+<a name="line54"> 54: </a><strong><font color="#228B22">    if (ierr) { PetscPythonPrintError(); <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB, </font><font color="#666666">"Python error"</font><font color="#228B22">); } \</font></strong>
+<a name="line55"> 55: </a><strong><font color="#228B22">  }</font></strong>
+<a name="line56"> 56: </a>
 
-<a name="line90"> 90: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line92"> 92: </a><strong><font color="#4169E1"><a name="PetscFwkViewConfigurationOrder"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkViewConfigurationOrder(PetscFwk fwk, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewerASCII)</font></strong>{
-<a name="line95"> 95: </a>  // &gt;&gt; C++
-<a name="line96"> 96: </a><strong><font color="#FF0000">  std:</font></strong>:list&lt;vertex_type&gt; antitopological_vertex_order;
-<a name="line97"> 97: </a>  PetscFwkConfigure_Sort(fwk, antitopological_vertex_order);
-<a name="line98"> 98: </a>  <font color="#B22222">/* traverse the vertices in their antitopological, extract component ids from vertices and  configure each corresponding component */</font>
-<a name="line99"> 99: </a>  <font color="#B22222">/* current_state starts with 1, since 0 was used during Preconfigure */</font>
-<a name="line100">100: </a>  <font color="#4169E1">for</font>(std::list&lt;vertex_type&gt;::iterator iter = antitopological_vertex_order.begin(); iter != antitopological_vertex_order.end(); ++iter) {
-<a name="line101">101: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> id = (*(fwk-&gt;dependence_graph))[*iter].id;
-<a name="line102">102: </a><strong><font color="#FF0000">    std:</font></strong>:string urlstring = (*fwk-&gt;url)[id];
-<a name="line103">103: </a>    <font color="#4169E1">if</font>(iter != antitopological_vertex_order.begin()) {
-<a name="line104">104: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewerASCII, <font color="#666666">", "</font>);
-<a name="line105">105: </a>    }
-<a name="line106">106: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewerASCII, <font color="#666666">"%d: %s"</font>, id, urlstring.c_str());
-<a name="line107">107: </a>  }
-<a name="line108">108: </a>  // &lt;&lt; C++
-<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewerASCII, <font color="#666666">"\n"</font>);
-<a name="line110">110: </a>  <font color="#4169E1">return</font>(0);
-<a name="line111">111: </a>}<font color="#B22222">/* PetscFwkViewConfigurationOrder() */</font>
+<a name="line58"> 58: </a><font color="#B22222">/* ---------------------------------------------------------------------------------------------- */</font>
+<a name="line59"> 59: </a><font color="#4169E1"><a name="_n_PetscFwkGraph"></a>struct _n_PetscFwkGraph </font>{
+<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> vcount, vmax; <font color="#B22222">/* actual and allocated number of vertices */</font>
+<a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *i, *j, *outdegree; <font color="#B22222">/* (A)IJ structure for the underlying matrix: </font>
+<a name="line62"> 62: </a><font color="#B22222">                                  i[row]             the row offset into j, </font>
+<a name="line63"> 63: </a><font color="#B22222">                                  i[row+1] - i[row]  allocated number of entries for row,</font>
+<a name="line64"> 64: </a><font color="#B22222">                                  outdegree[row]     actual number of entries in row</font>
+<a name="line65"> 65: </a><font color="#B22222">                               */</font>
+<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *indegree;
+<a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nz, maxnz;
+<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rowreallocs, colreallocs;
+<a name="line69"> 69: </a>};
 
-<a name="line113">113: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line115">115: </a><strong><font color="#4169E1"><a name="PetscFwkConfigure"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkConfigure(PetscFwk fwk, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> state)</font></strong>{
-<a name="line118">118: </a>  // &gt;&gt; C++
-<a name="line119">119: </a><strong><font color="#FF0000">  std:</font></strong>:list&lt;vertex_type&gt; antitopological_vertex_order;
-<a name="line120">120: </a>  PetscFwkConfigure_Sort(fwk, antitopological_vertex_order);
-<a name="line121">121: </a>  <font color="#B22222">/* traverse the vertices in their antitopological, extract component ids from vertices and  configure each corresponding component */</font>
-<a name="line122">122: </a>  <font color="#4169E1">for</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> current_state=0;current_state&lt;=state; ++current_state) {
-<a name="line123">123: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectSetState.html#PetscObjectSetState">PetscObjectSetState</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk,current_state);
-<a name="line124">124: </a>    <font color="#4169E1">for</font>(std::list&lt;vertex_type&gt;::iterator iter = antitopological_vertex_order.begin(); iter != antitopological_vertex_order.end(); ++iter) {
-<a name="line125">125: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> id = (*(fwk-&gt;dependence_graph))[*iter].id;
-<a name="line126">126: </a>      <A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> component = (*fwk-&gt;component)[id];
-<a name="line127">127: </a>      PetscFwkComponentConfigure configure = (*fwk-&gt;configure)[id];
-<a name="line128">128: </a>      <font color="#4169E1">if</font>(configure != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
-<a name="line129">129: </a>        (*configure)(fwk,current_state,&amp;component);
-<a name="line130">130: </a>      }
-<a name="line131">131: </a>    }
-<a name="line132">132: </a>  }
-<a name="line133">133: </a>  // &lt;&lt; C++
-<a name="line134">134: </a>  <font color="#4169E1">return</font>(0);
-<a name="line135">135: </a>}<font color="#B22222">/* PetscFwkConfigure() */</font>
+<a name="line71"> 71: </a><font color="#4169E1">typedef struct _n_PetscFwkGraph *PetscFwkGraph;</font>
+
+<a name="line73"> 73: </a><strong><font color="#228B22">#define CHUNKSIZE 5</font></strong>
+<a name="line74"> 74: </a><font color="#B22222">/*</font>
+<a name="line75"> 75: </a><font color="#B22222">    Inserts the (row,col) entry, allocating larger arrays, if necessary. </font>
+<a name="line76"> 76: </a><font color="#B22222">    Does NOT check whether row and col are within range (&lt; graph-&gt;vcount).</font>
+<a name="line77"> 77: </a><font color="#B22222">    Does NOT check whether the entry is already present.</font>
+<a name="line78"> 78: </a><font color="#B22222">*/</font>
+<a name="line79"> 79: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line81"> 81: </a><strong><font color="#4169E1"><a name="PetscFwkGraphExpandRow_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkGraphExpandRow_Private(PetscFwkGraph graph, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> row)</font></strong>
+<a name="line82"> 82: </a>{
+<a name="line84"> 84: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       rowlen, rowmax, rowoffset;
+<a name="line85"> 85: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       ii;
+
+<a name="line88"> 88: </a>  rowlen = graph-&gt;outdegree[row];
+<a name="line89"> 89: </a>  rowmax = graph-&gt;i[row+1] - graph-&gt;i[row];
+<a name="line90"> 90: </a>  rowoffset = graph-&gt;i[row];
+<a name="line91"> 91: </a>  <font color="#4169E1">if</font> (rowlen &gt;= rowmax) {
+<a name="line92"> 92: </a>    <font color="#B22222">/* there is no extra room in row, therefore enlarge */</font>
+<a name="line93"> 93: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   new_nz = graph-&gt;i[graph-&gt;vcount] + CHUNKSIZE;
+<a name="line94"> 94: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *new_i=0,*new_j=0;
+<a name="line95"> 95: </a>
+<a name="line96"> 96: </a>    <font color="#B22222">/* malloc new storage space */</font>
+<a name="line97"> 97: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(new_nz*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;new_j);
+<a name="line98"> 98: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((graph-&gt;vmax+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;new_i);
+<a name="line99"> 99: </a>
+<a name="line100">100: </a>    <font color="#B22222">/* copy over old data into new slots */</font>
+<a name="line101">101: </a>    <font color="#4169E1">for</font> (ii=0; ii&lt;row+1; ii++) {new_i[ii] = graph-&gt;i[ii];}
+<a name="line102">102: </a>    <font color="#4169E1">for</font> (ii=row+1; ii&lt;graph-&gt;vmax+1; ii++) {new_i[ii] = graph-&gt;i[ii]+CHUNKSIZE;}
+<a name="line103">103: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(new_j,graph-&gt;j,(rowoffset+rowlen)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line104">104: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(new_j+rowoffset+rowlen+CHUNKSIZE,graph-&gt;j+rowoffset+rowlen,(new_nz - CHUNKSIZE - rowoffset - rowlen)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line105">105: </a>    <font color="#B22222">/* free up old matrix storage */</font>
+<a name="line106">106: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;j);
+<a name="line107">107: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;i);
+<a name="line108">108: </a>    graph-&gt;i = new_i; graph-&gt;j = new_j;
+<a name="line109">109: </a>    graph-&gt;maxnz     += CHUNKSIZE;
+<a name="line110">110: </a>    graph-&gt;colreallocs++;
+<a name="line111">111: </a>  }
+<a name="line112">112: </a>  <font color="#4169E1">return</font>(0);
+<a name="line113">113: </a>}<font color="#B22222">/* PetscFwkGraphExpandRow_Private() */</font>
+
+<a name="line115">115: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line117">117: </a><strong><font color="#4169E1"><a name="PetscFwkGraphAddVertex"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkGraphAddVertex(PetscFwkGraph graph, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *v)</font></strong> {
+<a name="line118">118: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ii;
+<a name="line121">121: </a>  <font color="#4169E1">if</font>(graph-&gt;vcount &gt;= graph-&gt;vmax) {
+<a name="line122">122: </a>    <font color="#B22222">/* Add rows */</font>
+<a name="line123">123: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *new_i=0, *new_outdegree=0, *new_indegree;
+<a name="line124">124: </a>
+<a name="line125">125: </a>    <font color="#B22222">/* malloc new storage space */</font>
+<a name="line126">126: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((graph-&gt;vmax+CHUNKSIZE+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;new_i);
+<a name="line127">127: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((graph-&gt;vmax+CHUNKSIZE)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;new_outdegree);
+<a name="line128">128: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((graph-&gt;vmax+CHUNKSIZE)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;new_indegree);
+<a name="line129">129: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(new_outdegree, (graph-&gt;vmax+CHUNKSIZE)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line130">130: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(new_indegree, (graph-&gt;vmax+CHUNKSIZE)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
 
 
+<a name="line133">133: </a>    <font color="#B22222">/* copy over old data into new slots */</font>
+<a name="line134">134: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(new_i,graph-&gt;i,(graph-&gt;vmax+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line135">135: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(new_outdegree,graph-&gt;outdegree,(graph-&gt;vmax)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line136">136: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(new_indegree,graph-&gt;indegree,(graph-&gt;vmax)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line137">137: </a>    <font color="#4169E1">for</font> (ii=graph-&gt;vmax+1; ii&lt;=graph-&gt;vmax+CHUNKSIZE; ++ii) {
+<a name="line138">138: </a>      new_i[ii] = graph-&gt;i[graph-&gt;vmax];
+<a name="line139">139: </a>    }
 
-<a name="line139">139: </a>static <A href="../../../../docs/manualpages/Sys/PetscDLLibrary.html#PetscDLLibrary">PetscDLLibrary</A> PetscFwkDLList = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line140">140: </a><strong><font color="#228B22">#define PETSC_FWK_MAX_URL_LENGTH 1024</font></strong>
+<a name="line141">141: </a>    <font color="#B22222">/* free up old matrix storage */</font>
+<a name="line142">142: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;i);
+<a name="line143">143: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;outdegree);
+<a name="line144">144: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;indegree);
+<a name="line145">145: </a>    graph-&gt;i = new_i; graph-&gt;outdegree = new_outdegree; graph-&gt;indegree = new_indegree;
+<a name="line146">146: </a>
+<a name="line147">147: </a>    graph-&gt;vmax += CHUNKSIZE;
+<a name="line148">148: </a>    graph-&gt;rowreallocs++;
+<a name="line149">149: </a>  }
+<a name="line150">150: </a>  <font color="#4169E1">if</font>(v) {*v = graph-&gt;vcount;}
+<a name="line151">151: </a>  ++(graph-&gt;vcount);
+<a name="line152">152: </a>  <font color="#4169E1">return</font>(0);
+<a name="line153">153: </a>}<font color="#B22222">/* PetscFwkGraphAddVertex() */</font>
 
-<a name="line142">142: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line144">144: </a><strong><font color="#4169E1"><a name="PetscFwkNormalizeURL_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkNormalizeURL_Private(PetscFwk fwk, const char url[], char nurl[], char npath[], char nname[])</font></strong>{
-<a name="line145">145: </a>  char *n, *s;
-<a name="line146">146: </a>  char lpath[PETSC_FWK_MAX_URL_LENGTH+1], lname[PETSC_FWK_MAX_URL_LENGTH+1];
-<a name="line147">147: </a>  char *path, *name;
-<a name="line148">148: </a>  static <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nlen = PETSC_FWK_MAX_URL_LENGTH;
-<a name="line151">151: </a>  <font color="#B22222">/* FIX: this should replace the filesystem path by an abolute path for real normalization */</font>
-<a name="line152">152: </a>  <font color="#B22222">/* Use local buffers if npath or nname is NULL */</font>
-<a name="line153">153: </a>  <font color="#4169E1">if</font>(npath == <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
-<a name="line154">154: </a>    path = lpath;
-<a name="line155">155: </a>  }
-<a name="line156">156: </a>  <font color="#4169E1">else</font> {
-<a name="line157">157: </a>    path = npath;
-<a name="line158">158: </a>  }
-<a name="line159">159: </a>  <font color="#4169E1">if</font>(nname == <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
-<a name="line160">160: </a>    name = lname;
-<a name="line161">161: </a>  }
-<a name="line162">162: </a>  <font color="#4169E1">else</font> {
-<a name="line163">163: </a>    name = nname;
+<a name="line155">155: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line157">157: </a><strong><font color="#4169E1"><a name="PetscFwkGraphAddEdge"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkGraphAddEdge(PetscFwkGraph graph, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> row, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> col)</font></strong> {
+<a name="line158">158: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>        ierr;
+<a name="line159">159: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>              *rp,low,high,t,ii,i;
+
+<a name="line162">162: </a>  <font color="#4169E1">if</font>(row &lt; 0 || row &gt;= graph-&gt;vcount) {
+<a name="line163">163: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Source vertex %D out of range: min %D max %D"</font>,row, 0, graph-&gt;vcount);
 <a name="line164">164: </a>  }
-<a name="line165">165: </a>  <font color="#B22222">/* Copy the url so we can manipulate it inplace and also truncate to the max allowable length */</font>
-<a name="line166">166: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(path, url, nlen);
-<a name="line167">167: </a>  <font color="#B22222">/* Split url &lt;path&gt;:&lt;name&gt; into &lt;path&gt; and &lt;name&gt; */</font>
-<a name="line168">168: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrrchr.html#PetscStrrchr">PetscStrrchr</A>(path,':',&amp;n);
-<a name="line169">169: </a>  <font color="#B22222">/* Make sure it's not the ":/" of the "://" separator */</font>
-<a name="line170">170: </a>  <font color="#4169E1">if</font>(!n[0] || n[0] == '/') {
-<a name="line171">171: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_ARG_WRONG,
-<a name="line172">172: </a>             <font color="#666666">"Could not locate component name within the URL.\n"</font>
-<a name="line173">173: </a>             <font color="#666666">"Must have url = [&lt;path&gt;:]&lt;name&gt;, instead got %s\n"</font>
-<a name="line174">174: </a>             <font color="#666666">"Remember: URL was truncated past the max allowed length of %d"</font>,
-<a name="line175">175: </a>             path, nlen);
-<a name="line176">176: </a>  }
-<a name="line177">177: </a>  <font color="#B22222">/* Copy n to name */</font>
-<a name="line178">178: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(name, n);
-<a name="line179">179: </a>  <font color="#B22222">/* If n isn't the whole path (i.e., there is no ':' separator), end 'path' right before the located ':' */</font>
-<a name="line180">180: </a>  <font color="#4169E1">if</font>(n != path) {
-<a name="line181">181: </a>    n[-1] = '\0';
-<a name="line182">182: </a>  }
-<a name="line183">183: </a>  <font color="#B22222">/* Find and remove the library suffix */</font>
-<a name="line184">184: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrrchr.html#PetscStrrchr">PetscStrrchr</A>(path,'.',&amp;s);
-<a name="line185">185: </a>  <font color="#B22222">/* Make sure this isn't part of a relative path name (i.e.., "./" or "../") */</font>
-<a name="line186">186: </a>  <font color="#B22222">/* FIX: we should really be using PETSc's internally defined suffices, because otherwise, </font>
-<a name="line187">187: </a><font color="#B22222">     we might be removing names of hidden files (e.g., '${PETSC_DIR}/lib/${PETSC_ARCH}/.myhiddenlib.a') */</font>
-<a name="line188">188: </a>  <font color="#4169E1">if</font>(s[0] != '/') {
-<a name="line189">189: </a>    s[-1] = '\0';
-<a name="line190">190: </a>  }
-<a name="line191">191: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(nurl, path);
-<a name="line192">192: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(nurl, <font color="#666666">":"</font>);
-<a name="line193">193: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(nurl, name);
-<a name="line194">194: </a>  <font color="#4169E1">return</font>(0);
-<a name="line195">195: </a>}<font color="#B22222">/* PetscFwkNormalizeURL_Private() */</font>
-
-<a name="line197">197: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line199">199: </a><strong><font color="#4169E1"><a name="PetscFwkInsertComponent_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkInsertComponent_Private(PetscFwk fwk, const char url[], <A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> component, PetscFwkComponentConfigure configure, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_id)</font></strong>{
-<a name="line200">200: </a>  <font color="#B22222">/* </font>
-<a name="line201">201: </a><font color="#B22222">     WARNING: This routine will not check whether url has already been registered.  </font>
-<a name="line202">202: </a><font color="#B22222">     It will assign a new id to the url and insert the corresponding component and configure objects. </font>
-<a name="line203">203: </a><font color="#B22222">  */</font>
-<a name="line204">204: </a>  <A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> old_component;
-<a name="line205">205: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> id;
-<a name="line208">208: </a>  // &gt;&gt; C++
-<a name="line209">209: </a><strong><font color="#FF0000">  std:</font></strong>:string urlstring(url);
-<a name="line210">210: </a>  // Check whether url has already been registered
-<a name="line211">211: </a>  <font color="#4169E1">if</font>((*(fwk-&gt;id)).count(urlstring)) {
-<a name="line212">212: </a>    // Retrieve the existing id
-<a name="line213">213: </a>    id = (*(fwk-&gt;id))[urlstring];
-<a name="line214">214: </a>    // Reset the existing component and configure objects
-<a name="line215">215: </a>    old_component = (*(fwk-&gt;component))[id];
-<a name="line216">216: </a>    <font color="#4169E1">if</font>(old_component) {
-<a name="line217">217: </a>      <A href="../../../../docs/manualpages/Sys/PetscObjectDereference.html#PetscObjectDereference">PetscObjectDereference</A>(old_component);
-<a name="line218">218: </a>    }
-<a name="line219">219: </a>    <font color="#4169E1">if</font>(component) {
-<a name="line220">220: </a>      <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>(component);
-<a name="line221">221: </a>    }
-<a name="line222">222: </a>    (*(fwk-&gt;component))[id] = component;
-<a name="line223">223: </a>    (*(fwk-&gt;configure))[id] = configure;
-<a name="line224">224: </a>  }
-<a name="line225">225: </a>  <font color="#4169E1">else</font> {
-<a name="line226">226: </a>    // Assign and store the new id <font color="#4169E1">for</font> urlstring.
-<a name="line227">227: </a>    id = (*(fwk-&gt;id)).size();
-<a name="line228">228: </a>    (*(fwk-&gt;id))[urlstring] = id;
-<a name="line229">229: </a>    (*(fwk-&gt;url)).push_back(urlstring);
-<a name="line230">230: </a>    <font color="#B22222">/* Push new component and configure objects onto the list */</font>
-<a name="line231">231: </a>    <font color="#4169E1">if</font>(component) {
-<a name="line232">232: </a>      <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>(component);
-<a name="line233">233: </a>    }
-<a name="line234">234: </a>    (*(fwk-&gt;component)).push_back(component);
-<a name="line235">235: </a>    (*(fwk-&gt;configure)).push_back(configure);
-<a name="line236">236: </a>    <font color="#B22222">/* Add a new vertex to the dependence graph.  This vertex will correspond to the newly registered component. */</font>
-<a name="line237">237: </a>    vertex_type v = ::boost::add_vertex(*(fwk-&gt;dependence_graph));
-<a name="line238">238: </a>    <font color="#B22222">/* Attach id to v */</font>
-<a name="line239">239: </a>    (*(fwk-&gt;dependence_graph))[v].id = id;
-<a name="line240">240: </a>    <font color="#B22222">/* Store v in fwk */</font>
-<a name="line241">241: </a>    (*(fwk-&gt;vertex)).push_back(v);
-<a name="line242">242: </a>  }
-<a name="line243">243: </a>  // &lt;&lt; C++
-<a name="line244">244: </a>  <font color="#4169E1">if</font>(_id) {
-<a name="line245">245: </a>    *_id = id;
-<a name="line246">246: </a>  }
-<a name="line247">247: </a>  <font color="#4169E1">return</font>(0);
-<a name="line248">248: </a>}<font color="#B22222">/* PetscFwkInsertComponent_Private()*/</font>
+<a name="line165">165: </a>  <font color="#4169E1">if</font>(col &lt; 0 || col &gt;= graph-&gt;vcount) {
+<a name="line166">166: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Target vertex %D out of range: min %D max %D"</font>,col, 0, graph-&gt;vcount);
+<a name="line167">167: </a>  }
+<a name="line168">168: </a>  rp   = graph-&gt;j + graph-&gt;i[row];
+<a name="line169">169: </a>  low  = 0;
+<a name="line170">170: </a>  high = graph-&gt;outdegree[row];
+<a name="line171">171: </a>  <font color="#4169E1">while</font> (high-low &gt; 5) {
+<a name="line172">172: </a>    t = (low+high)/2;
+<a name="line173">173: </a>    <font color="#4169E1">if</font> (rp[t] &gt; col) high = t;
+<a name="line174">174: </a>    <font color="#4169E1">else</font>             low  = t;
+<a name="line175">175: </a>  }
+<a name="line176">176: </a>  <font color="#4169E1">for</font> (i=low; i&lt;high; ++i) {
+<a name="line177">177: </a>    <font color="#4169E1">if</font> (rp[i] &gt; col) <font color="#4169E1">break</font>;
+<a name="line178">178: </a>    <font color="#4169E1">if</font> (rp[i] == col) {
+<a name="line179">179: </a>      <font color="#4169E1">goto</font> we_are_done;
+<a name="line180">180: </a>    }
+<a name="line181">181: </a>  }
+<a name="line182">182: </a>  PetscFwkGraphExpandRow_Private(graph, row);
+<a name="line183">183: </a>  <font color="#B22222">/* </font>
+<a name="line184">184: </a><font color="#B22222">     If the graph was empty before, graph-&gt;j was NULL and rp was NULL as well.  </font>
+<a name="line185">185: </a><font color="#B22222">     Now that the row has been expanded, rp needs to be reset. </font>
+<a name="line186">186: </a><font color="#B22222">  */</font>
+<a name="line187">187: </a>  rp = graph-&gt;j + graph-&gt;i[row];
+<a name="line188">188: </a>  <font color="#B22222">/* shift up all the later entries in this row */</font>
+<a name="line189">189: </a>  <font color="#4169E1">for</font> (ii=graph-&gt;outdegree[row]; ii&gt;=i; --ii) {
+<a name="line190">190: </a>    rp[ii+1] = rp[ii];
+<a name="line191">191: </a>  }
+<a name="line192">192: </a>  rp[i] = col;
+<a name="line193">193: </a>  ++(graph-&gt;outdegree[row]);
+<a name="line194">194: </a>  ++(graph-&gt;indegree[col]);
+<a name="line195">195: </a>  ++(graph-&gt;nz);
+<a name="line196">196: </a>
+<a name="line197">197: </a><strong><font color="#FF0000"> we_are_done:</font></strong>
+<a name="line198">198: </a>  <font color="#4169E1">return</font>(0);
+<a name="line199">199: </a>}<font color="#B22222">/* PetscFwkGraphAddEdge() */</font>
 
 
-<a name="line251">251: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line253">253: </a><strong><font color="#4169E1"><a name="PetscFwkRegisterComponentWithID"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkRegisterComponentWithID(PetscFwk fwk, const char url[], <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_id)</font></strong>{
-<a name="line254">254: </a>  PetscFwkComponentConfigure configure = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line255">255: </a>  <A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> component = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line256">256: </a>  char nurl[PETSC_FWK_MAX_URL_LENGTH+1], path[PETSC_FWK_MAX_URL_LENGTH+1], name[PETSC_FWK_MAX_URL_LENGTH+1];
-<a name="line257">257: </a>  char sym[PETSC_FWK_MAX_URL_LENGTH+26+1];
-<a name="line258">258: </a>  //<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> id;
-<a name="line259">259: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm;
-<a name="line262">262: </a>  PetscFwkNormalizeURL_Private(fwk, url, nurl, path, name);
-<a name="line263">263: </a>  // &gt;&gt; C++
-<a name="line264">264: </a>  // Check whether a component with the given url has already been registered.  If so, <font color="#4169E1">return</font> its id, <font color="#4169E1">if</font> it has been requested.
-<a name="line265">265: </a><strong><font color="#FF0000">  std:</font></strong>:string urlstring(nurl);
-<a name="line266">266: </a>  <font color="#4169E1">if</font>((*(fwk-&gt;id)).count(urlstring)) {
-<a name="line267">267: </a>    <font color="#4169E1">if</font>(_id) {
-<a name="line268">268: </a>      *_id = (*(fwk-&gt;id))[urlstring];
-<a name="line269">269: </a>    }
-<a name="line270">270: </a>    <font color="#4169E1">return</font>(0);
-<a name="line271">271: </a>  }
-<a name="line272">272: </a>  // Insert a new url with empty corresponding component and configure objects
-<a name="line273">273: </a>  PetscFwkInsertComponent_Private(fwk, nurl, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line274">274: </a>  <font color="#B22222">/* Build the configure symbol from name and standard prefix */</font>
-<a name="line275">275: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(sym, <font color="#666666">"PetscFwkComponentConfigure"</font>);
-<a name="line276">276: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(sym, name);
-<a name="line277">277: </a>  <font color="#B22222">/* Load the library designated by 'path' and retrieve from it the configure routine designated by the constructed symbol */</font>
-<a name="line278">278: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk, &amp;comm);
-<a name="line279">279: </a>  <A href="../../../../docs/manualpages/Sys/PetscDLLibrarySym.html#PetscDLLibrarySym">PetscDLLibrarySym</A>(comm, &amp;PetscFwkDLList, path, sym, (void**)(&amp;configure));
-<a name="line280">280: </a>  <font color="#B22222">/* Run the configure routine, which should return a valid component object */</font>
-<a name="line281">281: </a>  (*configure)(fwk, 0, &amp;component);
-<a name="line282">282: </a>  <font color="#4169E1">if</font>(component == <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
-<a name="line283">283: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_LIB, <font color="#666666">"Configure routine %s from library %s returned a NULL component"</font>, path, sym);
-<a name="line284">284: </a>  }
-<a name="line285">285: </a>  <font color="#B22222">/* Reinsert nurl with the correct component and configure objects, and retrieve its id. */</font>
-<a name="line286">286: </a>  PetscFwkInsertComponent_Private(fwk, nurl, component, configure, _id);
-<a name="line287">287: </a>  <font color="#4169E1">return</font>(0);
-<a name="line288">288: </a>}<font color="#B22222">/* PetscFwkRegisterComponentWithID()*/</font>
+<a name="line202">202: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line204">204: </a><strong><font color="#4169E1"><a name="PetscFwkGraphTopologicalSort"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkGraphTopologicalSort(PetscFwkGraph graph, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *n, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **queue)</font></strong> {
+<a name="line205">205: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *queued;
+<a name="line206">206: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *indegree;
+<a name="line207">207: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ii, k, jj, Nqueued = 0;
+<a name="line208">208: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  progress;
+<a name="line211">211: </a>  <font color="#4169E1">if</font>(!n || !queue) {
+<a name="line212">212: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG, <font color="#666666">"Invalid return argument pointers n or vertices"</font>);
+<a name="line213">213: </a>  }
+<a name="line214">214: </a>  *n = graph-&gt;vcount;
+<a name="line215">215: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*graph-&gt;vcount, queue);
+<a name="line216">216: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>)*graph-&gt;vcount, &amp;queued);
+<a name="line217">217: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*graph-&gt;vcount, &amp;indegree);
+<a name="line218">218: </a>  <font color="#4169E1">for</font>(ii = 0; ii &lt; graph-&gt;vcount; ++ii) {
+<a name="line219">219: </a>    queued[ii]   = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line220">220: </a>    indegree[ii] = graph-&gt;indegree[ii];
+<a name="line221">221: </a>  }
+<a name="line222">222: </a>  <font color="#4169E1">while</font>(Nqueued &lt; graph-&gt;vcount) {
+<a name="line223">223: </a>    progress = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line224">224: </a>    <font color="#4169E1">for</font>(ii = 0; ii &lt; graph-&gt;vcount; ++ii) {
+<a name="line225">225: </a>      <font color="#B22222">/* If ii is not queued yet, and the indegree is 0, queue it. */</font>
+<a name="line226">226: </a>      <font color="#4169E1">if</font>(!queued[ii] &amp;&amp; !indegree[ii]) {
+<a name="line227">227: </a>        (*queue)[Nqueued] = ii;
+<a name="line228">228: </a>        queued[ii] = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line229">229: </a>        ++Nqueued;
+<a name="line230">230: </a>        progress = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line231">231: </a>        <font color="#B22222">/* Reduce the indegree of all vertices in row ii */</font>
+<a name="line232">232: </a>        <font color="#4169E1">for</font>(k = 0; k &lt; graph-&gt;outdegree[ii]; ++k) {
+<a name="line233">233: </a>          jj = graph-&gt;j[graph-&gt;i[ii]+k];
+<a name="line234">234: </a>          --(indegree[jj]);
+<a name="line235">235: </a>          <font color="#B22222">/* </font>
+<a name="line236">236: </a><font color="#B22222">             It probably would be more efficient to make a recursive call to the body of the for loop </font>
+<a name="line237">237: </a><font color="#B22222">             with the jj in place of ii, but we use a simple-minded algorithm instead, since the graphs</font>
+<a name="line238">238: </a><font color="#B22222">             we anticipate encountering are tiny. </font>
+<a name="line239">239: </a><font color="#B22222">          */</font>
+<a name="line240">240: </a>        }<font color="#B22222">/* for(k) */</font>
+<a name="line241">241: </a>      }<font color="#B22222">/* if(!queued) */</font>
+<a name="line242">242: </a>    }<font color="#B22222">/* for(ii) */</font>
+<a name="line243">243: </a>    <font color="#B22222">/* If no progress was made during this iteration, the graph must have a cycle */</font>
+<a name="line244">244: </a>    <font color="#4169E1">if</font>(!progress) {
+<a name="line245">245: </a>      <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE, <font color="#666666">"Cycle detected in the dependency graph"</font>);
+<a name="line246">246: </a>    }
+<a name="line247">247: </a>  }<font color="#B22222">/* while(Nqueued) */</font>
+<a name="line248">248: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(queued);
+<a name="line249">249: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(indegree);
+<a name="line250">250: </a>  <font color="#4169E1">return</font>(0);
+<a name="line251">251: </a>}<font color="#B22222">/* PetscFwkGraphTopologicalSort() */</font>
 
-<a name="line290">290: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line292">292: </a><strong><font color="#4169E1"><a name="PetscFwkRegisterComponent"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkRegisterComponent(PetscFwk fwk, const char url[])</font></strong>{
-<a name="line295">295: </a>  PetscFwkRegisterComponentWithID(fwk, url, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line296">296: </a>  <font color="#4169E1">return</font>(0);
-<a name="line297">297: </a>}<font color="#B22222">/* PetscFwkRegisterComponent()*/</font>
+<a name="line253">253: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line255">255: </a><strong><font color="#4169E1"><a name="PetscFwkGraphDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkGraphDestroy(PetscFwkGraph graph)</font></strong>
+<a name="line256">256: </a>{
+<a name="line259">259: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;i);
+<a name="line260">260: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;j);
+<a name="line261">261: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;outdegree);
+<a name="line262">262: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph-&gt;indegree);
+<a name="line263">263: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(graph);
+<a name="line264">264: </a>  <font color="#4169E1">return</font>(0);
+<a name="line265">265: </a>}<font color="#B22222">/* PetscFwkGraphDestroy() */</font>
 
-
-<a name="line300">300: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line302">302: </a><strong><font color="#4169E1"><a name="PetscFwkRegisterDependence"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkRegisterDependence(PetscFwk fwk, const char clienturl[], const char serverurl[])</font></strong>
-<a name="line303">303: </a>{
-<a name="line304">304: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> clientid, serverid;
-<a name="line309">309: </a>  <font color="#B22222">/* Register urls */</font>
-<a name="line310">310: </a>  PetscFwkRegisterComponentWithID(fwk, clienturl, &amp;clientid);
-<a name="line311">311: </a>  PetscFwkRegisterComponentWithID(fwk, serverurl, &amp;serverid);
-
-<a name="line313">313: </a>  <font color="#B22222">/*</font>
-<a name="line314">314: </a><font color="#B22222">    Add the dependency edge to the dependence_graph as follows (clienturl, serverurl): </font>
-<a name="line315">315: </a><font color="#B22222">     this means "client depends on server", so server should be configured first.</font>
-<a name="line316">316: </a><font color="#B22222">    For this reason we need to order components using an "antitopological" sort of the dependence_graph.</font>
-<a name="line317">317: </a><font color="#B22222">    BOOST Graph Library does just that, but keep that in mind if reimplementing the graph/sort in C.</font>
-<a name="line318">318: </a><font color="#B22222">  */</font>
-<a name="line319">319: </a>  vertex_type c,s;
-<a name="line320">320: </a>  c = (*(fwk-&gt;vertex))[clientid];
-<a name="line321">321: </a>  s = (*(fwk-&gt;vertex))[serverid];
-<a name="line322">322: </a>  ::boost::add_edge(c,s, *(fwk-&gt;dependence_graph));
-<a name="line323">323: </a>  <font color="#4169E1">return</font>(0);
-<a name="line324">324: </a>}<font color="#B22222">/* PetscFwkRegisterDependence()*/</font>
+<a name="line267">267: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line269">269: </a><strong><font color="#4169E1"><a name="PetscFwkGraphCreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkGraphCreate(PetscFwkGraph *graph_p)</font></strong>
+<a name="line270">270: </a>{
+<a name="line271">271: </a>  PetscFwkGraph graph;
+<a name="line274">274: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(<font color="#4169E1">struct _n_PetscFwkGraph</font>, graph_p);
+<a name="line275">275: </a>  graph = *graph_p;
+<a name="line276">276: </a>  graph-&gt;vcount = graph-&gt;vmax = graph-&gt;nz = graph-&gt;maxnz = graph-&gt;rowreallocs = graph-&gt;colreallocs = 0;
+<a name="line277">277: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;(graph-&gt;i));
+<a name="line278">278: </a>  graph-&gt;j = graph-&gt;outdegree = graph-&gt;indegree = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line279">279: </a>  <font color="#4169E1">return</font>(0);
+<a name="line280">280: </a>}<font color="#B22222">/* PetscFwkGraphCreate() */</font>
 
 
 
-<a name="line328">328: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line330">330: </a><strong><font color="#4169E1"><a name="PetscFwkDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkDestroy(PetscFwk fwk)</font></strong>
-<a name="line331">331: </a>{
-<a name="line333">333: </a>  // &gt;&gt; C++
-<a name="line334">334: </a>  delete fwk-&gt;id;
-<a name="line335">335: </a>  delete fwk-&gt;url;
-<a name="line336">336: </a>  delete fwk-&gt;configure;
-<a name="line337">337: </a>  delete fwk-&gt;component;
-<a name="line338">338: </a>  delete fwk-&gt;vertex;
-<a name="line339">339: </a>  delete fwk-&gt;dependence_graph;
-<a name="line340">340: </a>  // &lt;&lt; C++
-<a name="line341">341: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderDestroy.html#PetscHeaderDestroy">PetscHeaderDestroy</A>(fwk);
-<a name="line342">342: </a>  fwk = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line343">343: </a>  <font color="#4169E1">return</font>(0);
-<a name="line344">344: </a>}<font color="#B22222">/* PetscFwkDestroy()*/</font>
+<a name="line284">284: </a><font color="#B22222">/* ------------------------------------------------------------------------------------------------------- */</font>
 
-<a name="line346">346: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line348">348: </a><strong><font color="#4169E1"><a name="PetscFwkCreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkCreate(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, PetscFwk *framework)</font></strong>{
-<a name="line349">349: </a>  PetscFwk fwk;
-<a name="line352">352: </a>  <font color="#B22222">/*#if !defined(PETSC_USE_DYNAMIC_LIBRARIES)*/</font>
-<a name="line353">353: </a>  PetscFwkInitializePackage(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line354">354: </a>  <font color="#B22222">/*#endif*/</font>
-<a name="line356">356: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(fwk,_p_PetscFwk,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,PETSC_FWK_COOKIE,0,<font color="#666666">"PetscFwk"</font>,comm,PetscFwkDestroy,0);
-<a name="line357">357: </a>  // &gt;&gt; C++
-<a name="line358">358: </a>  fwk-&gt;id               = new std::map&lt;std::string, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt;;
-<a name="line359">359: </a>  fwk-&gt;url              = new std::vector&lt;std::string&gt;;
-<a name="line360">360: </a>  fwk-&gt;configure        = new std::vector&lt;PetscFwkComponentConfigure&gt;;
-<a name="line361">361: </a>  fwk-&gt;component        = new std::vector&lt;<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>&gt;;
-<a name="line362">362: </a>  fwk-&gt;vertex           = new std::vector&lt;vertex_type&gt;;
-<a name="line363">363: </a>  fwk-&gt;dependence_graph = new dependence_graph_type;
-<a name="line364">364: </a>  // &lt;&lt; C++
-<a name="line365">365: </a>  *framework = fwk;
-<a name="line366">366: </a>  <font color="#4169E1">return</font>(0);
-<a name="line367">367: </a>}<font color="#B22222">/* PetscFwkCreate() */</font>
+<a name="line286">286: </a><font color="#4169E1">typedef</font> <font color="#4169E1">enum</font>{PETSC_FWK_VTABLE_NONE, PETSC_FWK_VTABLE_SO, PETSC_FWK_VTABLE_PY} PetscFwkVTableType;
 
-<a name="line369">369: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line371">371: </a><strong><font color="#4169E1"><a name="PetscFwkGetComponentByID"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkGetComponentByID(PetscFwk fwk, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> id, <A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> *component)</font></strong> {
-<a name="line373">373: </a>  // &gt;&gt; C++
-<a name="line374">374: </a>  try{
-<a name="line375">375: </a>    *component = (*fwk-&gt;component)[id];
-<a name="line376">376: </a>  }
-<a name="line377">377: </a>  catch(...){
-<a name="line378">378: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_WRONG, <font color="#666666">"Couldn't retrieve PetscFwk component with id %d"</font>, id);
-<a name="line379">379: </a>  }
-<a name="line380">380: </a>  // &lt;&lt; C++
-<a name="line381">381: </a>  <font color="#4169E1">return</font>(0);
-<a name="line382">382: </a>}<font color="#B22222">/* PetscFwkGetComponentByID() */</font>
+<a name="line288">288: </a><font color="#4169E1"><a name="_n_PetscFwkVTable_SO"></a>struct _n_PetscFwkVTable_SO </font>{
+<a name="line289">289: </a>  char           *path, *name;
+<a name="line290">290: </a>};
 
-<a name="line384">384: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line386">386: </a><strong><font color="#4169E1"><a name="PetscFwkGetComponent"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkGetComponent(PetscFwk fwk, const char url[], <A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> *component)</font></strong> {
-<a name="line389">389: </a>  // &gt;&gt; C++
-<a name="line390">390: </a>  try{
-<a name="line391">391: </a>    *component = (*fwk-&gt;component)[(*fwk-&gt;id)[url]];
-<a name="line392">392: </a>  }
-<a name="line393">393: </a>  catch(...){
-<a name="line394">394: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_ARG_WRONG, <font color="#666666">"Couldn't retrieve PetscFwk component with url %s"</font>, url);
-<a name="line395">395: </a>  }
-<a name="line396">396: </a>  // &lt;&lt; C++
-<a name="line397">397: </a>  <font color="#4169E1">return</font>(0);
-<a name="line398">398: </a>}<font color="#B22222">/* PetscFwkGetComponent() */</font>
 
-<a name="line400">400: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line402">402: </a><strong><font color="#4169E1"><a name="PetscFwkFinalizePackage"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkFinalizePackage(void)</font></strong>{
-<a name="line405">405: </a>  PetscFwkPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line406">406: </a>  <font color="#4169E1">if</font>(PetscFwkDLList != <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
-<a name="line407">407: </a>    <A href="../../../../docs/manualpages/Sys/PetscDLLibraryClose.html#PetscDLLibraryClose">PetscDLLibraryClose</A>(PetscFwkDLList);
-<a name="line408">408: </a>    PetscFwkDLList = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line409">409: </a>  }
-<a name="line410">410: </a>  <font color="#4169E1">return</font>(0);
-<a name="line411">411: </a>}<font color="#B22222">/* PetscFwkFinalizePackage() */</font>
+<a name="line293">293: </a><font color="#4169E1"><a name="_p_PetscFwk"></a>struct _p_PetscFwk </font>{
+<a name="line294">294: </a>  PETSCHEADER(int);
+<a name="line295">295: </a>  PetscFwkVTableType        vtable_type;
+<a name="line296">296: </a>  void                      *vtable;
+<a name="line297">297: </a>  char *                    url;
+<a name="line298">298: </a>  PetscFwk                  parent;
+<a name="line299">299: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                  N, maxN;
+<a name="line300">300: </a>  PetscFwk                  *component;
+<a name="line301">301: </a>  PetscFwkGraph             dep_graph;
+<a name="line302">302: </a>};
+
+<a name="line304">304: </a>static PetscFwk defaultFwk = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
 
 
 
-<a name="line415">415: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
-<a name="line417">417: </a><strong><font color="#4169E1"><a name="PetscFwkInitializePackage"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkInitializePackage(const char path[])</font></strong>{
-<a name="line420">420: </a>  <font color="#4169E1">if</font>(PetscFwkPackageInitialized) {
-<a name="line421">421: </a>    PetscFwkPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line422">422: </a>  }
-<a name="line423">423: </a>  <font color="#B22222">/* Regster classes */</font>
-<a name="line424">424: </a>  <A href="../../../../docs/manualpages/Profiling/PetscCookieRegister.html#PetscCookieRegister">PetscCookieRegister</A>(PETSC_FWK_CLASS_NAME, &amp;PETSC_FWK_COOKIE);
-<a name="line425">425: </a>  <A href="../../../../docs/manualpages/Sys/PetscRegisterFinalize.html#PetscRegisterFinalize">PetscRegisterFinalize</A>(PetscFwkFinalizePackage);
-<a name="line426">426: </a>  <font color="#4169E1">return</font>(0);
-<a name="line427">427: </a>}<font color="#B22222">/* PetscFwkInitializePackage() */</font>
+<a name="line308">308: </a><font color="#B22222">/* ------------------------------------------------------------------------------------------------------- */</font>
+
+<a name="line310">310: </a><strong><font color="#4169E1">typedef <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*PetscFwkCallFunction)(PetscFwk, const char*)</font></strong>;
+<a name="line311">311: </a><strong><font color="#4169E1">typedef <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*PetscFwkMessageFunction)(PetscFwk)</font></strong>;
+<a name="line312">312: </a><strong><font color="#4169E1">typedef void (*QueryFunction)(void)</font></strong>;
+
+<a name="line314">314: </a>static <A href="../../../../docs/manualpages/Sys/PetscDLLibrary.html#PetscDLLibrary">PetscDLLibrary</A> PetscFwkDLLibrariesLoaded = 0;
+
+<a name="line316">316: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line318">318: </a><strong><font color="#4169E1"><a name="PetscFwkCall_SO"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkCall_SO(PetscFwk fwk, const char* path, const char* name, const char* message)</font></strong> {
+<a name="line319">319: </a>  size_t    namelen, messagelen, msgfunclen, callfunclen;
+<a name="line320">320: </a>  char *msgfunc  = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, *callfunc = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line321">321: </a>  PetscFwkCallFunction call = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line322">322: </a>  PetscFwkMessageFunction msg = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line325">325: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(name, &amp;namelen);
+<a name="line326">326: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(message, &amp;messagelen);
+<a name="line327">327: </a>  msgfunclen = namelen + messagelen;
+<a name="line328">328: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(char)*(msgfunclen+1), &amp;msgfunc);
+<a name="line329">329: </a>  msgfunc[0] = '\0';
+<a name="line330">330: </a>  <font color="#4169E1">if</font>(namelen){
+<a name="line331">331: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(msgfunc, name);
+<a name="line332">332: </a>  }
+<a name="line333">333: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(msgfunc, message);
+<a name="line334">334: </a>  <font color="#4169E1">if</font>(namelen) {
+<a name="line335">335: </a>    <font color="#B22222">/* HACK: is 'toupper' part of the C standard? Looks like starting with C89. */</font>
+<a name="line336">336: </a>    msgfunc[namelen] = toupper(msgfunc[namelen]);
+<a name="line337">337: </a>  }
+<a name="line338">338: </a>  <A href="../../../../docs/manualpages/Sys/PetscDLLibrarySym.html#PetscDLLibrarySym">PetscDLLibrarySym</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;comm, &amp;PetscFwkDLLibrariesLoaded, path, msgfunc, (void **)(&amp;msg));
+<a name="line339">339: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(msgfunc);
+<a name="line340">340: </a>  <font color="#4169E1">if</font>(msg) {
+<a name="line341">341: </a>    (*msg)(fwk);
+<a name="line342">342: </a>    <font color="#4169E1">return</font>(0);
+<a name="line343">343: </a>  }
+<a name="line344">344: </a>  callfunclen        = namelen+4;
+<a name="line345">345: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(char)*(callfunclen+1), &amp;callfunc);
+<a name="line346">346: </a>  <font color="#4169E1">if</font>(namelen) {
+<a name="line347">347: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(callfunc, name);
+<a name="line348">348: </a>  }
+<a name="line349">349: </a>  <font color="#4169E1">if</font>(namelen){
+<a name="line350">350: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(callfunc, <font color="#666666">"Call"</font>);
+<a name="line351">351: </a>  }
+<a name="line352">352: </a>  <font color="#4169E1">else</font> {
+<a name="line353">353: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(callfunc, <font color="#666666">"call"</font>);
+<a name="line354">354: </a>  }
+<a name="line355">355: </a>  <A href="../../../../docs/manualpages/Sys/PetscDLLibrarySym.html#PetscDLLibrarySym">PetscDLLibrarySym</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;comm, &amp;PetscFwkDLLibrariesLoaded, path, callfunc, (void**)(&amp;call));
+<a name="line356">356: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(callfunc);
+<a name="line357">357: </a>  <font color="#4169E1">if</font>(call) {
+<a name="line358">358: </a>    (*call)(fwk, message);
+<a name="line359">359: </a>    <font color="#4169E1">return</font>(0);
+<a name="line360">360: </a>  }
+<a name="line361">361: </a>  <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONGSTATE, <font color="#666666">"PetscFwk '%s' cannot execute '%s'"</font>, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;name, message);
+<a name="line362">362: </a>  <font color="#4169E1">return</font>(0);
+<a name="line363">363: </a>}<font color="#B22222">/* PetscFwkCall_SO() */</font>
+
+
+<a name="line366">366: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line368">368: </a><strong><font color="#4169E1"><a name="PetscFwkCall_NONE"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkCall_NONE(PetscFwk fwk, const char* message)</font></strong> {
+<a name="line369">369: </a>  PetscFwkCallFunction call = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line370">370: </a>  PetscFwkMessageFunction msg = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line373">373: </a>  <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;qlist, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;comm, message,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, (QueryFunction*)(&amp;msg));
+<a name="line374">374: </a>  <font color="#4169E1">if</font>(msg) {
+<a name="line375">375: </a>    (*msg)(fwk);
+<a name="line376">376: </a>    <font color="#4169E1">return</font>(0);
+<a name="line377">377: </a>  }
+<a name="line378">378: </a>  <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;qlist, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;comm, <font color="#666666">"call"</font>,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, (QueryFunction*)(&amp;call));
+<a name="line379">379: </a>  <font color="#4169E1">if</font>(call) {
+<a name="line380">380: </a>    (*call)(fwk, message);
+<a name="line381">381: </a>    <font color="#4169E1">return</font>(0);
+<a name="line382">382: </a>  }
+<a name="line383">383: </a>  <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONGSTATE, <font color="#666666">"PetscFwk '%s' cannot execute '%s'"</font>, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;name, message);
+<a name="line384">384: </a>  <font color="#4169E1">return</font>(0);
+<a name="line385">385: </a>}<font color="#B22222">/* PetscFwkCall_NONE() */</font>
+
+
+<a name="line388">388: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line390">390: </a><font color="#B22222">/*@C </font>
+<a name="line391">391: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A> -- send a string message to a PetscFwk object.  </font>
+
+<a name="line393">393: </a><font color="#B22222">   Logically collective on PetscFwk.</font>
+
+<a name="line395">395: </a><font color="#B22222">   Input paramters:</font>
+<a name="line396">396: </a><font color="#B22222">+  fwk     -- a PetscFwk object</font>
+<a name="line397">397: </a><font color="#B22222">-  message -- a character string</font>
+
+<a name="line399">399: </a><font color="#B22222">   Notes: In response to the message the object performs actions defined by its URL (see <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A>()). </font>
+<a name="line400">400: </a><font color="#B22222">          Side effects may include, in particular, actions on the composed objects (see <A href="../../../../docs/manualpages/Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>()).</font>
+
+<a name="line402">402: </a><font color="#B22222">  Level: beginner.</font>
+
+<a name="line404">404: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A>(), <A href="../../../../docs/manualpages/Sys/PetscFwkGetURL.html#PetscFwkGetURL">PetscFwkGetURL</A>(), <A href="../../../../docs/manualpages/Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>(), <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>()</font>
+<a name="line405">405: </a><font color="#B22222">@*/</font>
+<a name="line406">406: </a><strong><font color="#4169E1"><a name="PetscFwkCall"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>(PetscFwk fwk, const char* message)</font></strong> {
+<a name="line411">411: </a>  <font color="#4169E1">if</font>(!message || !message[0]) {
+<a name="line412">412: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Null or empty message string"</font>);
+<a name="line413">413: </a>  }
+<a name="line414">414: </a>  <font color="#4169E1">switch</font>(fwk-&gt;vtable_type) {
+<a name="line415">415: </a>  <font color="#4169E1">case</font> PETSC_FWK_VTABLE_NONE:
+<a name="line416">416: </a>    PetscFwkCall_NONE(fwk, message);
+<a name="line417">417: </a>    <font color="#4169E1">break</font>;
+<a name="line418">418: </a>  <font color="#4169E1">case</font> PETSC_FWK_VTABLE_SO:
+<a name="line419">419: </a>    PetscFwkCall_SO(fwk,
+<a name="line420">420: </a>                           ((<font color="#4169E1">struct _n_PetscFwkVTable_SO</font>*)fwk-&gt;vtable)-&gt;path,
+<a name="line421">421: </a>                           ((<font color="#4169E1">struct _n_PetscFwkVTable_SO</font>*)fwk-&gt;vtable)-&gt;name,
+<a name="line422">422: </a>                           message);
+<a name="line423">423: </a>
+<a name="line424">424: </a>    <font color="#4169E1">break</font>;
+<a name="line425">425: </a>  <font color="#4169E1">case</font> PETSC_FWK_VTABLE_PY:
+<a name="line426">426: </a>    PETSC_FWK_CALL_PYTHON(fwk, message);
+<a name="line427">427: </a>    <font color="#4169E1">break</font>;
+<a name="line428">428: </a><strong><font color="#FF0000">  default:</font></strong>
+<a name="line429">429: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Unknown PetscFwkVTableType value"</font>);
+<a name="line430">430: </a>    <font color="#4169E1">break</font>;
+<a name="line431">431: </a>  }
+<a name="line432">432: </a>  <font color="#4169E1">return</font>(0);
+<a name="line433">433: </a>}<font color="#B22222">/* <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>() */</font>
+
+
+<a name="line436">436: </a><strong><font color="#228B22">#define PETSC_FWK_MAX_URL_LENGTH 1024</font></strong>
+<a name="line437">437: </a><font color="#B22222">/* </font>
+<a name="line438">438: </a><font color="#B22222">   Normalize the url (by truncating to PETSC_FWK_MAX_URL_LENGTH) and parse it to find out the component type and location.</font>
+<a name="line439">439: </a><font color="#B22222">   Warning: the returned char pointers are borrowed and their contents must be copied elsewhere to be preserved.</font>
+<a name="line440">440: </a><font color="#B22222">*/</font>
+<a name="line441">441: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line443">443: </a><strong><font color="#4169E1"><a name="PetscFwkParseURL_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkParseURL_Private(const char inurl[], char **outpath, char **outname, PetscFwkVTableType *outtype)</font></strong>{
+<a name="line444">444: </a>  char *n, *s;
+<a name="line445">445: </a>  static <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nlen = PETSC_FWK_MAX_URL_LENGTH;
+<a name="line446">446: </a>  static char path[PETSC_FWK_MAX_URL_LENGTH+1], name[PETSC_FWK_MAX_URL_LENGTH+1];
+<a name="line447">447: </a>  PetscFwkVTableType type = PETSC_FWK_VTABLE_NONE;
+<a name="line450">450: </a>  <font color="#B22222">/* FIX: this routine should replace the filesystem path by an abolute path for real normalization */</font>
+<a name="line451">451: </a>  <font color="#B22222">/* Copy the inurl so we can manipulate it inplace and also truncate to the max allowable length */</font>
+<a name="line452">452: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(path, inurl, nlen);
+<a name="line453">453: </a>  <font color="#B22222">/* Split url &lt;path&gt;:&lt;name&gt; into &lt;path&gt; and &lt;name&gt; */</font>
+<a name="line454">454: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrrchr.html#PetscStrrchr">PetscStrrchr</A>(path,':',&amp;n);
+<a name="line455">455: </a>  <font color="#B22222">/* Make sure it's not the ":/" of the "://" separator */</font>
+<a name="line456">456: </a>  <font color="#4169E1">if</font>(!n[0] || n[0] == '/') {
+<a name="line457">457: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,
+<a name="line458">458: </a>           <font color="#666666">"Could not locate component name within the URL.\n"</font>
+<a name="line459">459: </a>           <font color="#666666">"Must have url = [&lt;path/&gt;&lt;library&gt;:]&lt;name&gt;.\n"</font>
+<a name="line460">460: </a>           <font color="#666666">"Instead got %s\n"</font>
+<a name="line461">461: </a>           <font color="#666666">"Remember that URL is always truncated to the max allowed length of %d"</font>,
+<a name="line462">462: </a>           inurl, nlen);
+<a name="line463">463: </a>  }
+<a name="line464">464: </a>  <font color="#B22222">/* Copy n to name */</font>
+<a name="line465">465: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(name, n);
+<a name="line466">466: </a>  <font color="#B22222">/* If n isn't the whole path (i.e., there is a ':' separator), end 'path' right before the located ':' */</font>
+<a name="line467">467: </a>  <font color="#4169E1">if</font>(n == path) {
+<a name="line468">468: </a>    <font color="#B22222">/* </font>
+<a name="line469">469: </a><font color="#B22222">       No library is provided, so the component is assumed to be "local", that is</font>
+<a name="line470">470: </a><font color="#B22222">       defined in an already loaded executable. So we set type to .so, path to "",</font>
+<a name="line471">471: </a><font color="#B22222">       and look for the configure symbol among already loaded symbols </font>
+<a name="line472">472: </a><font color="#B22222">       (or count on PetscDLXXX to do that.</font>
+<a name="line473">473: </a><font color="#B22222">    */</font>
+<a name="line474">474: </a>    type = PETSC_FWK_VTABLE_SO;
+<a name="line475">475: </a>    path[0] = '\0';
+<a name="line476">476: </a>  }
+<a name="line477">477: </a>  <font color="#4169E1">else</font> {
+<a name="line478">478: </a>    n[-1] = '\0';
+<a name="line479">479: </a>    <font color="#B22222">/* Find the library suffix and determine the component library type: .so or .py */</font>
+<a name="line480">480: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrrchr.html#PetscStrrchr">PetscStrrchr</A>(path,'.',&amp;s);
+<a name="line481">481: </a>    <font color="#B22222">/* FIX: we should really be using PETSc's internally defined suffices */</font>
+<a name="line482">482: </a>    <font color="#4169E1">if</font>(s != path &amp;&amp; s[-1] == '.') {
+<a name="line483">483: </a>      <font color="#4169E1">if</font>((s[0] == 'a' &amp;&amp; s[1] == '\0') || (s[0] == 's' &amp;&amp; s[1] == 'o' &amp;&amp; s[2] == '\0')){
+<a name="line484">484: </a>        type = PETSC_FWK_VTABLE_SO;
+<a name="line485">485: </a>      }
+<a name="line486">486: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (s[0] == 'p' &amp;&amp; s[1] == 'y' &amp;&amp; s[2] == '\0'){
+<a name="line487">487: </a>        type = PETSC_FWK_VTABLE_PY;
+<a name="line488">488: </a>      }
+<a name="line489">489: </a>      <font color="#4169E1">else</font> {
+<a name="line490">490: </a>        <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,
+<a name="line491">491: </a>                 <font color="#666666">"Unknown library suffix within the URL.\n"</font>
+<a name="line492">492: </a>                 <font color="#666666">"Must have url = [&lt;path/&gt;&lt;library&gt;:]&lt;name&gt;,\n"</font>
+<a name="line493">493: </a>                 <font color="#666666">"where library = &lt;libname&gt;.&lt;suffix&gt;, suffix = .a || .so || .py.\n"</font>
+<a name="line494">494: </a>                 <font color="#666666">"Instead got url %s\n"</font>
+<a name="line495">495: </a>                 <font color="#666666">"Remember that URL is always truncated to the max allowed length of %d"</font>,
+<a name="line496">496: </a>                 inurl, s,nlen);
+<a name="line497">497: </a>      }
+<a name="line498">498: </a>    }
+<a name="line499">499: </a>  }
+<a name="line500">500: </a>  *outpath = path;
+<a name="line501">501: </a>  *outname = name;
+<a name="line502">502: </a>  *outtype = type;
+<a name="line503">503: </a>  <font color="#4169E1">return</font>(0);
+<a name="line504">504: </a>}<font color="#B22222">/* PetscFwkParseURL_Private() */</font>
+
+<a name="line506">506: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line508">508: </a><strong><font color="#4169E1"><a name="PetscFwkClearURL_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkClearURL_Private(PetscFwk fwk)</font></strong> {
+<a name="line511">511: </a>  <font color="#4169E1">switch</font>(fwk-&gt;vtable_type) {
+<a name="line512">512: </a>  <font color="#4169E1">case</font> PETSC_FWK_VTABLE_SO:
+<a name="line513">513: </a>    {
+<a name="line514">514: </a>      <font color="#4169E1">struct _n_PetscFwkVTable_SO</font> *vt = (<font color="#4169E1">struct _n_PetscFwkVTable_SO</font>*)(fwk-&gt;vtable);
+<a name="line515">515: </a>      <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(vt-&gt;path);
+<a name="line516">516: </a>      <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(vt-&gt;name);
+<a name="line517">517: </a>      <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(vt);
+<a name="line518">518: </a>      fwk-&gt;vtable = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line519">519: </a>      fwk-&gt;vtable_type = PETSC_FWK_VTABLE_NONE;
+<a name="line520">520: </a>    }
+<a name="line521">521: </a>    <font color="#4169E1">break</font>;
+<a name="line522">522: </a>  <font color="#4169E1">case</font> PETSC_FWK_VTABLE_PY:
+<a name="line523">523: </a>    PETSC_FWK_CLEAR_VTABLE_PYTHON(fwk);
+<a name="line524">524: </a>    <font color="#4169E1">break</font>;
+<a name="line525">525: </a>  <font color="#4169E1">case</font> PETSC_FWK_VTABLE_NONE:
+<a name="line526">526: </a>    <font color="#4169E1">break</font>;
+<a name="line527">527: </a><strong><font color="#FF0000">  default:</font></strong>
+<a name="line528">528: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,
+<a name="line529">529: </a>             <font color="#666666">"Unknown PetscFwk vtable type: %d"</font>, fwk-&gt;vtable_type);
+<a name="line530">530: </a>  }
+<a name="line531">531: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(fwk-&gt;url);
+<a name="line532">532: </a>  fwk-&gt;url = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line533">533: </a>  <font color="#4169E1">return</font>(0);
+<a name="line534">534: </a>}<font color="#B22222">/* PetscFwkClearURL_Private() */</font>
+
+<a name="line536">536: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line538">538: </a><font color="#B22222">/*@C </font>
+<a name="line539">539: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A> -- set a backend implementing PetscFwk functionality from the URL string.</font>
+
+<a name="line541">541: </a><font color="#B22222">   Logically collective on PetscFwk.</font>
+
+<a name="line543">543: </a><font color="#B22222">   Input paramters:</font>
+<a name="line544">544: </a><font color="#B22222">+  fwk -- a PetscFwk object</font>
+<a name="line545">545: </a><font color="#B22222">-  url -- URL string</font>
+
+<a name="line547">547: </a><font color="#B22222">   Notes: URL can point to a backendn -- a .so file or a .py file.  </font>
+<a name="line548">548: </a><font color="#B22222">     The .so file must contain symbols for function 'void call(const char[])' or symbols 'void &lt;msg&gt;(void)'</font>
+<a name="line549">549: </a><font color="#B22222">   for any message &lt;msg&gt; that PetscFwk is expected to understand.  When <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>() is invoked</font>
+<a name="line550">550: </a><font color="#B22222">   with &lt;msg&gt;, a symbol for 'void &lt;msg&gt;(void)' is sought and called, if found.  If not, a symbol for</font>
+<a name="line551">551: </a><font color="#B22222">   'void call(const char[])' is sought and called with &lt;msg&gt; as the argument. If neither symbol is found,</font>
+<a name="line552">552: </a><font color="#B22222">   an error occurs.</font>
+<a name="line553">553: </a><font color="#B22222">     The .py file must define a class that implements 'call(str)' or '&lt;msg&gt;()' methods, as above.</font>
+<a name="line554">554: </a><font color="#B22222">     If no URL has been set, fwk attempts to reponsd to the message using function '&lt;msg&gt;' (failing that,</font>
+<a name="line555">555: </a><font color="#B22222">   'call') retrieved from fwk using <A href="../../../../docs/manualpages/Sys/PetscObjectQueryFunction.html#PetscObjectQueryFunction">PetscObjectQueryFunction</A>().  If neither '&lt;msg&gt;' nor 'call' have been</font>
+<a name="line556">556: </a><font color="#B22222">   previusly composed with fwk (see PetscObjectComposeFunction()), an error occurs.</font>
+
+<a name="line558">558: </a><font color="#B22222">   Level: intermediate.</font>
+
+<a name="line560">560: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Sys/PetscFwkGetURL.html#PetscFwkGetURL">PetscFwkGetURL</A>(), <A href="../../../../docs/manualpages/Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>(), <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>(), PetscObjectComposeFunction()</font>
+<a name="line561">561: </a><font color="#B22222">@*/</font>
+<a name="line562">562: </a><strong><font color="#4169E1"><a name="PetscFwkSetURL"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A>(PetscFwk fwk, const char url[])</font></strong> {
+<a name="line564">564: </a>  char *path, *name;
+<a name="line568">568: </a>  <font color="#4169E1">if</font>(fwk-&gt;vtable) {
+<a name="line569">569: </a>    PetscFwkClearURL_Private(fwk);
+<a name="line570">570: </a>  }
+<a name="line571">571: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(url,  &amp;(fwk-&gt;url));
+<a name="line572">572: </a>  PetscFwkParseURL_Private(url, &amp;path, &amp;name, &amp;fwk-&gt;vtable_type);
+<a name="line573">573: </a>  <font color="#4169E1">switch</font>(fwk-&gt;vtable_type) {
+<a name="line574">574: </a>  <font color="#4169E1">case</font> PETSC_FWK_VTABLE_SO:
+<a name="line575">575: </a>    {
+<a name="line576">576: </a>      <font color="#4169E1">struct _n_PetscFwkVTable_SO</font> *vt;
+<a name="line577">577: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<font color="#4169E1">struct _n_PetscFwkVTable_SO</font>), &amp;(vt));
+<a name="line578">578: </a>      fwk-&gt;vtable = (void*)vt;
+<a name="line579">579: </a>      <A href="../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(path, &amp;vt-&gt;path);
+<a name="line580">580: </a>      <A href="../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(name, &amp;vt-&gt;name);
+<a name="line581">581: </a>    }
+<a name="line582">582: </a>    <font color="#4169E1">break</font>;
+<a name="line583">583: </a>  <font color="#4169E1">case</font> PETSC_FWK_VTABLE_PY:
+<a name="line584">584: </a>    PETSC_FWK_LOAD_VTABLE_PYTHON(fwk, path, name);
+<a name="line585">585: </a>    <font color="#4169E1">break</font>;
+<a name="line586">586: </a><strong><font color="#FF0000">  default:</font></strong>
+<a name="line587">587: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,
+<a name="line588">588: </a>             <font color="#666666">"Unknown PetscFwk vtable type: %d"</font>, fwk-&gt;vtable_type);
+<a name="line589">589: </a>  }
+<a name="line590">590: </a>  <font color="#4169E1">return</font>(0);
+<a name="line591">591: </a>}<font color="#B22222">/* <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A>() */</font>
+
+
+<a name="line594">594: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line596">596: </a><font color="#B22222">/*@C </font>
+<a name="line597">597: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Sys/PetscFwkGetURL.html#PetscFwkGetURL">PetscFwkGetURL</A> -- retrieve the URL defining the backend that implements the <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>() functionality.</font>
+
+<a name="line599">599: </a><font color="#B22222">   Not collective.</font>
+
+<a name="line601">601: </a><font color="#B22222">   Input paramters:</font>
+<a name="line602">602: </a><font color="#B22222">.  fwk -- a PetscFwk object</font>
+
+<a name="line604">604: </a><font color="#B22222">   Output parameters:</font>
+<a name="line605">605: </a><font color="#B22222">.  url -- the URL string</font>
+
+<a name="line607">607: </a><font color="#B22222">   Level: beginner.</font>
+
+<a name="line609">609: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A>(), <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>()</font>
+<a name="line610">610: </a><font color="#B22222">@*/</font>
+<a name="line611">611: </a><strong><font color="#4169E1"><a name="PetscFwkGetURL"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Sys/PetscFwkGetURL.html#PetscFwkGetURL">PetscFwkGetURL</A>(PetscFwk fwk, const char **url)</font></strong> {
+<a name="line615">615: </a>  *url = fwk-&gt;url;
+<a name="line616">616: </a>  <font color="#4169E1">return</font>(0);
+<a name="line617">617: </a>}<font color="#B22222">/* <A href="../../../../docs/manualpages/Sys/PetscFwkGetURL.html#PetscFwkGetURL">PetscFwkGetURL</A>() */</font>
+<a name="line618">618: </a>
+
+<a name="line620">620: </a><font color="#B22222">/* ------------------------------------------------------------------------------------------------------- */</font>
+<a name="line621">621: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line623">623: </a><strong><font color="#4169E1"><a name="PetscFwkView"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkView(PetscFwk fwk, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong> {
+<a name="line624">624: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *vertices, N;
+<a name="line625">625: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, id;
+<a name="line626">626: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>         iascii;
+<a name="line627">627: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line630">630: </a>  <font color="#4169E1">if</font> (!viewer) {
+<a name="line631">631: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetStdout.html#PetscViewerASCIIGetStdout">PetscViewerASCIIGetStdout</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;comm,&amp;viewer);
+<a name="line632">632: </a>  }
+<a name="line635">635: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line636">636: </a>  <font color="#4169E1">if</font> (iascii) {
+<a name="line637">637: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"Framework url: %s\n"</font>, fwk-&gt;url);
+<a name="line638">638: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"Components are visited in this order:\n"</font>);
+<a name="line639">639: </a>    PetscFwkGraphTopologicalSort(fwk-&gt;dep_graph, &amp;N, &amp;vertices);
+<a name="line640">640: </a>    <font color="#4169E1">for</font>(i = 0; i &lt; N; ++i) {
+<a name="line641">641: </a>      <font color="#4169E1">if</font>(i) {
+<a name="line642">642: </a>        <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"\n"</font>);
+<a name="line643">643: </a>      }
+<a name="line644">644: </a>      id = vertices[i];
+<a name="line645">645: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"%d: name:%s, url:%s"</font>, id, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)(fwk-&gt;component[id]))-&gt;name, fwk-&gt;component[id]-&gt;url);
+<a name="line646">646: </a>    }
+<a name="line647">647: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"\n"</font>);
+<a name="line648">648: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(vertices);
+<a name="line649">649: </a>  }
+<a name="line650">650: </a>  <font color="#4169E1">else</font> {
+<a name="line651">651: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG, <font color="#666666">"PetscFwk can only be viewed with an ASCII viewer"</font>);
+<a name="line652">652: </a>  }
+<a name="line653">653: </a>  <font color="#4169E1">return</font>(0);
+<a name="line654">654: </a>}<font color="#B22222">/* PetscFwkView() */</font>
+
+<a name="line656">656: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line658">658: </a><strong><font color="#4169E1"><a name="PetscFwkGetParent"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkGetParent(PetscFwk fwk, PetscFwk *parent)</font></strong>
+<a name="line659">659: </a>{
+<a name="line663">663: </a>  *parent = fwk-&gt;parent;
+<a name="line664">664: </a>  <font color="#4169E1">return</font>(0);
+<a name="line665">665: </a>}<font color="#B22222">/* PetscFwkGetParent() */</font>
+
+<a name="line667">667: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line669">669: </a><strong><font color="#4169E1"><a name="PetscFwkVisit"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkVisit(PetscFwk fwk, const char* message)</font></strong>{
+<a name="line670">670: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, id, N, *vertices;
+<a name="line671">671: </a>  PetscFwk component;
+<a name="line676">676: </a>  PetscFwkGraphTopologicalSort(fwk-&gt;dep_graph, &amp;N, &amp;vertices);
+<a name="line677">677: </a>  <font color="#4169E1">for</font>(i = 0; i &lt; N; ++i) {
+<a name="line678">678: </a>    id = vertices[i];
+<a name="line679">679: </a>    component = fwk-&gt;component[id];
+<a name="line680">680: </a>    <font color="#B22222">/* Save the component's visitor */</font>
+<a name="line681">681: </a>    component-&gt;parent = fwk;
+<a name="line682">682: </a>    <font color="#B22222">/* Call "configure" */</font>
+<a name="line683">683: </a>    <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>(component, message);
+<a name="line684">684: </a>    <font color="#B22222">/* Clear visitor */</font>
+<a name="line685">685: </a>    component-&gt;parent = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line686">686: </a>  }
+<a name="line687">687: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(vertices);
+<a name="line688">688: </a>  <font color="#4169E1">return</font>(0);
+<a name="line689">689: </a>}<font color="#B22222">/* PetscFwkVisit() */</font>
+
+<a name="line691">691: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line693">693: </a><strong><font color="#4169E1"><a name="PetscFwkGetKeyID_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkGetKeyID_Private(PetscFwk fwk, const char key[], <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_id, <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *_found)</font></strong>{
+<a name="line694">694: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i;
+<a name="line695">695: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  eq;
+<a name="line698">698: </a>  <font color="#B22222">/* Check whether a component with the given key has already been registered. */</font>
+<a name="line699">699: </a>  <font color="#4169E1">if</font>(_found){*_found = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;}
+<a name="line700">700: </a>  <font color="#4169E1">for</font>(i = 0; i &lt; fwk-&gt;N; ++i) {
+<a name="line701">701: </a>    <A href="../../../../docs/manualpages/Sys/PetscStrcmp.html#PetscStrcmp">PetscStrcmp</A>(key, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk-&gt;component[i])-&gt;name, &amp;eq);
+<a name="line702">702: </a>    <font color="#4169E1">if</font>(eq) {
+<a name="line703">703: </a>      <font color="#4169E1">if</font>(_id) {*_id = i;}
+<a name="line704">704: </a>      <font color="#4169E1">if</font>(_found){*_found = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;}
+<a name="line705">705: </a>    }
+<a name="line706">706: </a>  }
+<a name="line707">707: </a>  <font color="#4169E1">return</font>(0);
+<a name="line708">708: </a>}<font color="#B22222">/* PetscFwkGetKeyID_Private() */</font>
+
+<a name="line710">710: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line712">712: </a><strong><font color="#4169E1"><a name="PetscFwkRegisterKey_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkRegisterKey_Private(PetscFwk fwk, const char key[], <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *_id)</font></strong> {
+<a name="line713">713: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> v, id;
+<a name="line714">714: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  found;
+<a name="line717">717: </a>  <font color="#B22222">/* Check whether a component with the given url has already been registered.  If so, return its id, if it has been requested. */</font>
+<a name="line718">718: </a>  PetscFwkGetKeyID_Private(fwk, key, &amp;id, &amp;found);
+<a name="line719">719: </a>  <font color="#4169E1">if</font>(found) {
+<a name="line720">720: </a>    <font color="#4169E1">goto</font> alldone;
+<a name="line721">721: </a>  }
+<a name="line722">722: </a>  <font color="#B22222">/***/</font>
+<a name="line723">723: </a>  <font color="#B22222">/* No such key found. */</font>
+<a name="line724">724: </a>  <font color="#B22222">/* Create a new component for this key. */</font>
+<a name="line725">725: </a>  <font color="#4169E1">if</font>(fwk-&gt;N &gt;= fwk-&gt;maxN) {
+<a name="line726">726: </a>    <font color="#B22222">/* No more empty component slots, therefore, expand the component array */</font>
+<a name="line727">727: </a>    PetscFwk *new_components;
+<a name="line728">728: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(PetscFwk)*(fwk-&gt;maxN+CHUNKSIZE), &amp;new_components);
+<a name="line729">729: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(new_components, fwk-&gt;component, <font color="#4169E1">sizeof</font>(PetscFwk)*(fwk-&gt;maxN));
+<a name="line730">730: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(new_components+fwk-&gt;maxN,<font color="#4169E1">sizeof</font>(PetscFwk)*(CHUNKSIZE));
+<a name="line731">731: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(fwk-&gt;component);
+<a name="line732">732: </a>    fwk-&gt;component = new_components;
+<a name="line733">733: </a>    fwk-&gt;maxN += CHUNKSIZE;
+<a name="line734">734: </a>  }
+<a name="line735">735: </a>  id = fwk-&gt;N;
+<a name="line736">736: </a>  ++(fwk-&gt;N);
+<a name="line737">737: </a>  <font color="#B22222">/* Store key */</font>
+<a name="line738">738: </a>  <font color="#B22222">/* Create the corresponding component. */</font>
+<a name="line739">739: </a>  <A href="../../../../docs/manualpages/Sys/PetscFwkCreate.html#PetscFwkCreate">PetscFwkCreate</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk)-&gt;comm, fwk-&gt;component+id);
+<a name="line740">740: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk-&gt;component[id], key);
+<a name="line741">741: </a>  <font color="#B22222">/* Add a new vertex to the dependence graph.  This vertex will correspond to the newly registered component. */</font>
+<a name="line742">742: </a>  PetscFwkGraphAddVertex(fwk-&gt;dep_graph, &amp;v);
+<a name="line743">743: </a>  <font color="#B22222">/* v must equal id */</font>
+<a name="line744">744: </a>  <font color="#4169E1">if</font>(v != id) {
+<a name="line745">745: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_CORRUPT, <font color="#666666">"New dependence graph vertex %d for key %s not the same as component id %d"</font>, v, key, id);
+<a name="line746">746: </a>  }
+<a name="line747">747: </a><strong><font color="#FF0000"> alldone:</font></strong>
+<a name="line748">748: </a>  <font color="#4169E1">if</font>(_id) {
+<a name="line749">749: </a>    *_id = id;
+<a name="line750">750: </a>  }
+<a name="line751">751: </a>  <font color="#4169E1">return</font>(0);
+<a name="line752">752: </a>}<font color="#B22222">/* PetscFwkRegisterKey_Private() */</font>
+
+
+<a name="line755">755: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line757">757: </a><strong><font color="#4169E1"><a name="PetscFwkRegisterComponent"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkRegisterComponent(PetscFwk fwk, const char key[])</font></strong>{
+<a name="line762">762: </a>  PetscFwkRegisterKey_Private(fwk, key, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line763">763: </a>  <font color="#4169E1">return</font>(0);
+<a name="line764">764: </a>}<font color="#B22222">/* PetscFwkRegisterComponent() */</font>
+
+<a name="line766">766: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line768">768: </a><strong><font color="#4169E1"><a name="PetscFwkRegisterComponentURL"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkRegisterComponentURL(PetscFwk fwk, const char key[], const char url[])</font></strong>{
+<a name="line770">770: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> id;
+<a name="line775">775: </a>  PetscFwkRegisterKey_Private(fwk, key, &amp;id);
+<a name="line776">776: </a>  <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A>(fwk-&gt;component[id], url);
+<a name="line777">777: </a>  <font color="#4169E1">return</font>(0);
+<a name="line778">778: </a>}<font color="#B22222">/* PetscFwkRegisterComponentURL() */</font>
+
+
+<a name="line781">781: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line783">783: </a><strong><font color="#4169E1"><a name="PetscFwkRegisterDependence"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkRegisterDependence(PetscFwk fwk, const char clientkey[], const char serverkey[])</font></strong>
+<a name="line784">784: </a>{
+<a name="line785">785: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> clientid, serverid;
+<a name="line791">791: </a>  <font color="#B22222">/* Register keys */</font>
+<a name="line792">792: </a>  PetscFwkRegisterKey_Private(fwk, clientkey, &amp;clientid);
+<a name="line793">793: </a>  PetscFwkRegisterKey_Private(fwk, serverkey, &amp;serverid);
+<a name="line794">794: </a>  <font color="#B22222">/*</font>
+<a name="line795">795: </a><font color="#B22222">    Add the dependency edge to the dependence_graph as follows (serverurl, clienturl): </font>
+<a name="line796">796: </a><font color="#B22222">     this means "server preceeds client", so server should be configured first.</font>
+<a name="line797">797: </a><font color="#B22222">  */</font>
+<a name="line798">798: </a>  PetscFwkGraphAddEdge(fwk-&gt;dep_graph, clientid, serverid);
+<a name="line799">799: </a>  <font color="#4169E1">return</font>(0);
+<a name="line800">800: </a>}<font color="#B22222">/* PetscFwkRegisterDependence() */</font>
 
 
 
+<a name="line804">804: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line806">806: </a><font color="#B22222">/*@C </font>
+<a name="line807">807: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Sys/PetscFwkDestroy.html#PetscFwkDestroy">PetscFwkDestroy</A> -- destroy PetscFwk.</font>
+
+<a name="line809">809: </a><font color="#B22222">   Not collective.</font>
+
+<a name="line811">811: </a><font color="#B22222">   Input paramters:</font>
+<a name="line812">812: </a><font color="#B22222">.  fwk -- a PetscFwk object</font>
+
+<a name="line814">814: </a><font color="#B22222">   Level: beginner.</font>
+
+<a name="line816">816: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Sys/PetscFwkCreate.html#PetscFwkCreate">PetscFwkCreate</A>(), <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A>(), <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>()</font>
+<a name="line817">817: </a><font color="#B22222">@*/</font>
+<a name="line818">818: </a><strong><font color="#4169E1"><a name="PetscFwkDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Sys/PetscFwkDestroy.html#PetscFwkDestroy">PetscFwkDestroy</A>(PetscFwk *fwk)</font></strong>
+<a name="line819">819: </a>{
+<a name="line820">820: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i;
+<a name="line822">822: </a>
+<a name="line824">824: </a>  <font color="#4169E1">if</font> (!*fwk) <font color="#4169E1">return</font>(0);
+<a name="line826">826: </a>  <font color="#4169E1">if</font> (--((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)(*fwk))-&gt;refct &gt; 0) <font color="#4169E1">return</font>(0);
+<a name="line827">827: </a>  <font color="#4169E1">for</font>(i = 0; i &lt; (*fwk)-&gt;N; ++i){
+<a name="line828">828: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectDestroy.html#PetscObjectDestroy">PetscObjectDestroy</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;(*fwk)-&gt;component[i]);
+<a name="line829">829: </a>  }
+<a name="line830">830: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>((*fwk)-&gt;component);
+<a name="line831">831: </a>  PetscFwkGraphDestroy((*fwk)-&gt;dep_graph);
+<a name="line832">832: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderDestroy.html#PetscHeaderDestroy">PetscHeaderDestroy</A>(fwk);
+<a name="line833">833: </a>  <font color="#4169E1">return</font>(0);
+<a name="line834">834: </a>}<font color="#B22222">/* <A href="../../../../docs/manualpages/Sys/PetscFwkDestroy.html#PetscFwkDestroy">PetscFwkDestroy</A>()*/</font>
+
+<a name="line836">836: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line838">838: </a><font color="#B22222">/*@C </font>
+<a name="line839">839: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Sys/PetscFwkCreate.html#PetscFwkCreate">PetscFwkCreate</A> -- create an empty PetscFwk object.</font>
+
+<a name="line841">841: </a><font color="#B22222">   Logically collective on comm.</font>
+
+<a name="line843">843: </a><font color="#B22222">   Input paramters:</font>
+<a name="line844">844: </a><font color="#B22222">.  comm      -- the <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> to create the PetscFwk object on.</font>
+
+<a name="line846">846: </a><font color="#B22222">   Output parameters:</font>
+<a name="line847">847: </a><font color="#B22222">.  framework -- the created PetscFwk object.</font>
+
+<a name="line849">849: </a><font color="#B22222">   Level: beginner.</font>
+
+<a name="line851">851: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Sys/PetscFwkDestroy.html#PetscFwkDestroy">PetscFwkDestroy</A>(), <A href="../../../../docs/manualpages/Sys/PetscFwkSetURL.html#PetscFwkSetURL">PetscFwkSetURL</A>(), <A href="../../../../docs/manualpages/Sys/PetscFwkCall.html#PetscFwkCall">PetscFwkCall</A>()</font>
+<a name="line852">852: </a><font color="#B22222">@*/</font>
+<a name="line853">853: </a><strong><font color="#4169E1"><a name="PetscFwkCreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Sys/PetscFwkCreate.html#PetscFwkCreate">PetscFwkCreate</A>(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, PetscFwk *framework)</font></strong>{
+<a name="line854">854: </a>  PetscFwk fwk;
+<a name="line857">857: </a><font color="#A020F0">#ifndef PETSC_USE_DYNAMIC_LIBRARIES</font>
+<a name="line858">858: </a>  PetscFwkInitializePackage(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line859">859: </a><font color="#A020F0">#endif</font>
+<a name="line861">861: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(fwk,_p_PetscFwk,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,PETSC_FWK_CLASSID,0,<font color="#666666">"PetscFwk"</font>,<font color="#666666">"Object dependence Framework"</font>,<font color="#666666">"fwk"</font>,comm,<A href="../../../../docs/manualpages/Sys/PetscFwkDestroy.html#PetscFwkDestroy">PetscFwkDestroy</A>,PetscFwkView);
+<a name="line862">862: </a>  fwk-&gt;parent      = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line863">863: </a>  fwk-&gt;component   = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line864">864: </a>  fwk-&gt;vtable_type = PETSC_FWK_VTABLE_NONE;
+<a name="line865">865: </a>  fwk-&gt;vtable      = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line866">866: </a>  fwk-&gt;N = fwk-&gt;maxN = 0;
+<a name="line867">867: </a>  <font color="#B22222">/* FIX: should only create a graph on demand */</font>
+<a name="line868">868: </a>  PetscFwkGraphCreate(&amp;fwk-&gt;dep_graph);
+<a name="line869">869: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk,PETSCFWK);
+<a name="line870">870: </a>  *framework = fwk;
+<a name="line871">871: </a>  <font color="#4169E1">return</font>(0);
+<a name="line872">872: </a>}<font color="#B22222">/* <A href="../../../../docs/manualpages/Sys/PetscFwkCreate.html#PetscFwkCreate">PetscFwkCreate</A>() */</font>
+
+
+<a name="line875">875: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line877">877: </a><strong><font color="#4169E1"><a name="PetscFwkGetComponent"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscFwkGetComponent(PetscFwk fwk, const char key[], PetscFwk *_component, <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *_found)</font></strong> {
+<a name="line878">878: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> id;
+<a name="line879">879: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  found;
+<a name="line886">886: </a>  PetscFwkGetKeyID_Private(fwk, key, &amp;id, &amp;found);
+<a name="line887">887: </a>  <font color="#4169E1">if</font>(found &amp;&amp; _component) {
+<a name="line888">888: </a>    *_component = fwk-&gt;component[id];
+<a name="line889">889: </a>  }
+<a name="line890">890: </a>  <font color="#4169E1">if</font>(_found) {*_found = found;}
+<a name="line891">891: </a>  <font color="#4169E1">return</font>(0);
+<a name="line892">892: </a>}<font color="#B22222">/* PetscFwkGetComponent() */</font>
+
+
+
+<a name="line896">896: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line898">898: </a><strong><font color="#4169E1"><a name="PetscFwkFinalizePackage"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkFinalizePackage(void)</font></strong>
+<a name="line899">899: </a>{
+<a name="line902">902: </a>  <font color="#4169E1">if</font> (defaultFwk) {
+<a name="line903">903: </a>    <A href="../../../../docs/manualpages/Sys/PetscFwkDestroy.html#PetscFwkDestroy">PetscFwkDestroy</A>(&amp;defaultFwk);
+<a name="line904">904: </a>  }
+<a name="line905">905: </a>  PetscFwkPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line906">906: </a>  <font color="#4169E1">return</font>(0);
+<a name="line907">907: </a>}<font color="#B22222">/* PetscFwkFinalizePackage() */</font>
+
+
+<a name="line910">910: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line912">912: </a><strong><font color="#4169E1"><a name="PetscFwkInitializePackage"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscFwkInitializePackage(const char path[])</font></strong>{
+<a name="line915">915: </a>  <font color="#4169E1">if</font>(PetscFwkPackageInitialized) <font color="#4169E1">return</font>(0);
+<a name="line916">916: </a>  PetscFwkPackageInitialized = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line917">917: </a>  <font color="#B22222">/* Register classes */</font>
+<a name="line918">918: </a>  <A href="../../../../docs/manualpages/Profiling/PetscClassIdRegister.html#PetscClassIdRegister">PetscClassIdRegister</A>(PETSC_FWK_CLASS_NAME, &amp;PETSC_FWK_CLASSID);
+<a name="line919">919: </a>  <font color="#B22222">/* Register finalization routine */</font>
+<a name="line920">920: </a>  <A href="../../../../docs/manualpages/Sys/PetscRegisterFinalize.html#PetscRegisterFinalize">PetscRegisterFinalize</A>(PetscFwkFinalizePackage);
+<a name="line921">921: </a>  <font color="#4169E1">return</font>(0);
+<a name="line922">922: </a>}<font color="#B22222">/* PetscFwkInitializePackage() */</font>
+
+<a name="line924">924: </a><font color="#B22222">/* ---------------------------------------------------------------------*/</font>
+<a name="line925">925: </a><font color="#B22222">/*</font>
+<a name="line926">926: </a><font color="#B22222">    The variable Petsc_Fwk_default_keyval is used to indicate an MPI attribute that</font>
+<a name="line927">927: </a><font color="#B22222">  is attached to a communicator, in this case the attribute is a PetscFwk.</font>
+<a name="line928">928: </a><font color="#B22222">*/</font>
+<a name="line929">929: </a>static <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> Petsc_Fwk_default_keyval = MPI_KEYVAL_INVALID;
+
+<a name="line931">931: </a><strong><font color="#228B22">#undef  __FUNCT__</font></strong>
+<a name="line933">933: </a><strong><font color="#4169E1"><a name="PETSC_FWK_DEFAULT_"></a>PetscFwk  PETSC_FWK_DEFAULT_(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm)</font></strong> {
+<a name="line935">935: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
+<a name="line936">936: </a>  PetscFwk       fwk;
+
+<a name="line939">939: </a>  <font color="#4169E1">if</font> (Petsc_Fwk_default_keyval == MPI_KEYVAL_INVALID) {
+<a name="line940">940: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Keyval_create.html#MPI_Keyval_create">MPI_Keyval_create</A>(<A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_NULL_COPY_FN.html#MPI_NULL_COPY_FN">MPI_NULL_COPY_FN</A>,<A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_NULL_DELETE_FN.html#MPI_NULL_DELETE_FN">MPI_NULL_DELETE_FN</A>,&amp;Petsc_Fwk_default_keyval,0);
+<a name="line941">941: </a>    <font color="#4169E1">if</font> (ierr) {<A href="../../../../docs/manualpages/Sys/PetscError.html#PetscError">PetscError</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,__LINE__,<font color="#666666">"PETSC_FWK_DEFAULT_"</font>,__FILE__,__SDIR__,PETSC_ERR_PLIB,PETSC_ERROR_INITIAL,<font color="#666666">" "</font>); <font color="#4169E1">return</font>(0);}
+<a name="line942">942: </a>  }
+<a name="line943">943: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Attr_get.html#MPI_Attr_get">MPI_Attr_get</A>(comm,Petsc_Fwk_default_keyval,(void **)(&amp;fwk),(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>*)&amp;flg);
+<a name="line944">944: </a>  <font color="#4169E1">if</font> (ierr) {<A href="../../../../docs/manualpages/Sys/PetscError.html#PetscError">PetscError</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,__LINE__,<font color="#666666">"PETSC_FWK_DEFAULT_"</font>,__FILE__,__SDIR__,PETSC_ERR_PLIB,PETSC_ERROR_INITIAL,<font color="#666666">" "</font>); <font color="#4169E1">return</font>(0);}
+<a name="line945">945: </a>  <font color="#4169E1">if</font> (!flg) { <font color="#B22222">/* PetscFwk not yet created */</font>
+<a name="line946">946: </a>    <A href="../../../../docs/manualpages/Sys/PetscFwkCreate.html#PetscFwkCreate">PetscFwkCreate</A>(comm, &amp;fwk);
+<a name="line947">947: </a>    <font color="#4169E1">if</font> (ierr) {<A href="../../../../docs/manualpages/Sys/PetscError.html#PetscError">PetscError</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,__LINE__,<font color="#666666">"PETSC_FWK_DEFAULT_"</font>,__FILE__,__SDIR__,PETSC_ERR_PLIB,PETSC_ERROR_INITIAL,<font color="#666666">" "</font>); <font color="#4169E1">return</font>(0);}
+<a name="line948">948: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectRegisterDestroy.html#PetscObjectRegisterDestroy">PetscObjectRegisterDestroy</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)fwk);
+<a name="line949">949: </a>    <font color="#4169E1">if</font> (ierr) {<A href="../../../../docs/manualpages/Sys/PetscError.html#PetscError">PetscError</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,__LINE__,<font color="#666666">"PETSC_FWK_DEFAULT_"</font>,__FILE__,__SDIR__,PETSC_ERR_PLIB,PETSC_ERROR_INITIAL,<font color="#666666">" "</font>); <font color="#4169E1">return</font>(0);}
+<a name="line950">950: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Attr_put.html#MPI_Attr_put">MPI_Attr_put</A>(comm,Petsc_Fwk_default_keyval,(void*)fwk);
+<a name="line951">951: </a>    <font color="#4169E1">if</font> (ierr) {<A href="../../../../docs/manualpages/Sys/PetscError.html#PetscError">PetscError</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,__LINE__,<font color="#666666">"PETSC_FWK_DEFAULT_"</font>,__FILE__,__SDIR__,PETSC_ERR_PLIB,PETSC_ERROR_INITIAL,<font color="#666666">" "</font>); <font color="#4169E1">return</font>(0);}
+<a name="line952">952: </a>  }
+<a name="line953">953: </a>  <A href="../../../../docs/manualpages/Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(fwk);
+<a name="line954">954: </a>}<font color="#B22222">/* PETSC_FWK_DEFAULT_() */</font>
 </pre>
 </body>
 

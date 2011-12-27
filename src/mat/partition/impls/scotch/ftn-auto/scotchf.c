@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* scotch.c */
 /* Fortran interface file */
 
@@ -28,29 +29,24 @@ extern void PetscRmPointer(void*);
 
 #include "petscmat.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matpartitioningscotchsetglobal_ MATPARTITIONINGSCOTCHSETGLOBAL
+#define matpartitioningptscotchsetimbalance_ MATPARTITIONINGPTSCOTCHSETIMBALANCE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matpartitioningscotchsetglobal_ matpartitioningscotchsetglobal
+#define matpartitioningptscotchsetimbalance_ matpartitioningptscotchsetimbalance
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matpartitioningscotchsetcoarselevel_ MATPARTITIONINGSCOTCHSETCOARSELEVEL
+#define matpartitioningptscotchgetimbalance_ MATPARTITIONINGPTSCOTCHGETIMBALANCE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matpartitioningscotchsetcoarselevel_ matpartitioningscotchsetcoarselevel
+#define matpartitioningptscotchgetimbalance_ matpartitioningptscotchgetimbalance
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matpartitioningscotchsetlocal_ MATPARTITIONINGSCOTCHSETLOCAL
+#define matpartitioningptscotchsetstrategy_ MATPARTITIONINGPTSCOTCHSETSTRATEGY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matpartitioningscotchsetlocal_ matpartitioningscotchsetlocal
+#define matpartitioningptscotchsetstrategy_ matpartitioningptscotchsetstrategy
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matpartitioningscotchsetmultilevel_ MATPARTITIONINGSCOTCHSETMULTILEVEL
+#define matpartitioningptscotchgetstrategy_ MATPARTITIONINGPTSCOTCHGETSTRATEGY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matpartitioningscotchsetmultilevel_ matpartitioningscotchsetmultilevel
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matpartitioningscotchsetmapping_ MATPARTITIONINGSCOTCHSETMAPPING
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matpartitioningscotchsetmapping_ matpartitioningscotchsetmapping
+#define matpartitioningptscotchgetstrategy_ matpartitioningptscotchgetstrategy
 #endif
 
 
@@ -58,26 +54,22 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matpartitioningscotchsetglobal_(MatPartitioning part,
-    MPScotchGlobalType *global, int *__ierr ){
-*__ierr = MatPartitioningScotchSetGlobal(
-	(MatPartitioning)PetscToPointer((part) ),*global);
+void PETSC_STDCALL  matpartitioningptscotchsetimbalance_(MatPartitioning part,PetscReal *imb, int *__ierr ){
+*__ierr = MatPartitioningPTScotchSetImbalance(
+	(MatPartitioning)PetscToPointer((part) ),*imb);
 }
-void PETSC_STDCALL   matpartitioningscotchsetcoarselevel_(MatPartitioning part,PetscReal *level, int *__ierr ){
-*__ierr = MatPartitioningScotchSetCoarseLevel(
-	(MatPartitioning)PetscToPointer((part) ),*level);
+void PETSC_STDCALL  matpartitioningptscotchgetimbalance_(MatPartitioning part,PetscReal *imb, int *__ierr ){
+*__ierr = MatPartitioningPTScotchGetImbalance(
+	(MatPartitioning)PetscToPointer((part) ),imb);
 }
-void PETSC_STDCALL   matpartitioningscotchsetlocal_(MatPartitioning part,MPScotchLocalType *local, int *__ierr ){
-*__ierr = MatPartitioningScotchSetLocal(
-	(MatPartitioning)PetscToPointer((part) ),*local);
+void PETSC_STDCALL  matpartitioningptscotchsetstrategy_(MatPartitioning part,MPPTScotchStrategyType *strategy, int *__ierr ){
+*__ierr = MatPartitioningPTScotchSetStrategy(
+	(MatPartitioning)PetscToPointer((part) ),*strategy);
 }
-void PETSC_STDCALL   matpartitioningscotchsetmultilevel_(MatPartitioning part, int *__ierr ){
-*__ierr = MatPartitioningScotchSetMultilevel(
-	(MatPartitioning)PetscToPointer((part) ));
-}
-void PETSC_STDCALL   matpartitioningscotchsetmapping_(MatPartitioning part, int *__ierr ){
-*__ierr = MatPartitioningScotchSetMapping(
-	(MatPartitioning)PetscToPointer((part) ));
+void PETSC_STDCALL  matpartitioningptscotchgetstrategy_(MatPartitioning part,MPPTScotchStrategyType *strategy, int *__ierr ){
+*__ierr = MatPartitioningPTScotchGetStrategy(
+	(MatPartitioning)PetscToPointer((part) ),
+	(MPPTScotchStrategyType* )PetscToPointer((strategy) ));
 }
 #if defined(__cplusplus)
 }

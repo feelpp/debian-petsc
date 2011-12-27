@@ -1,3 +1,4 @@
+
 !
 !/*T
 !   Concepts: TS^time-dependent nonlinear problems
@@ -75,10 +76,10 @@
       TS               ts
       Vec              u
       Mat              A
-      PetscTruth       flg,monitor
+      PetscBool        flg,monitor
       PetscErrorCode ierr
-      PetscInt  time_steps_max,steps,i1
-      PetscReal dt,ftime,time_total_max
+      PetscInt  time_steps_max,i1,steps
+      PetscReal dt,time_total_max,ftime,norm
 
 !  Note: Any user-defined Fortran routines (such as RHSFunction)
 !  MUST be declared as external.
@@ -114,18 +115,18 @@
 !  Create vector data structures
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-!  Create distributed array (DA) to manage parallel grid and vectors
+!  Create distributed array (DMDA) to manage parallel grid and vectors
 !  Set up the ghost point communication pattern.  There are m total
 !  grid values spread equally among all the processors.
       i1 = 1
-      call DACreate1d(PETSC_COMM_WORLD,DA_NONPERIODIC,m,i1,i1,                &
+      call DMDACreate1d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,m,i1,i1,                &
      &     PETSC_NULL_INTEGER,da,ierr)
 
-!  Extract global and local vectors from DA; then duplicate for remaining
+!  Extract global and local vectors from DMDA; then duplicate for remaining
 !  vectors that are the same types.
 
-      call DACreateGlobalVector(da,u,ierr)
-      call DACreateLocalVector(da,u_local,ierr)
+      call DMCreateGlobalVector(da,u,ierr)
+      call DMCreateLocalVector(da,u_local,ierr)
 
 !  Make local work vector for evaluating right-hand-side function
       call VecDuplicate(u_local,localwork,ierr)
@@ -140,7 +141,8 @@
 
       call TSCreate(comm,ts,ierr)
       call TSSetProblemType(ts,TS_NONLINEAR,ierr)
-      call TSSetRHSFunction(ts,RHSFunction,PETSC_NULL_OBJECT,ierr)
+      call TSSetRHSFunction(ts,PETSC_NULL_OBJECT,RHSFunction,           &
+     &                      PETSC_NULL_OBJECT,ierr)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Set optional user-defined monitoring routine
@@ -176,7 +178,6 @@
 
       dt = h/two_d0
       call TSSetInitialTimeStep(ts,0.d0,dt,ierr)
-      call TSSetSolution(ts,u,ierr)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Customize timestepping solver:  
@@ -188,7 +189,8 @@
 !  to override the defaults set by TSSetDuration().
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-      call TSSetType(ts,TSBEULER,ierr)
+      call TSSetType(ts,TSTHETA,ierr)
+      call TSThetaSetTheta(ts,one_d0,ierr)
       call TSSetDuration(ts,time_steps_max,time_total_max,ierr)
       call TSSetFromOptions(ts,ierr)
 
@@ -202,7 +204,13 @@
 
 !  Run the timestepping solver
 
-      call TSStep(ts,steps,ftime,ierr)
+      call TSSolve(ts,u,ftime,ierr)
+      call TSGetTimeStepNumber(ts,steps,ierr)
+      call VecNorm(u,NORM_2,norm,ierr)
+
+      write(6,100) steps,ftime,norm
+ 100  format('Number of pseudo time-steps ',i5,' final time ',1pe9.2,   &
+     & ' solution norm ',1pe9.2)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Free work space.  All PETSc objects should be destroyed when they
@@ -214,7 +222,7 @@
       call VecDestroy(solution,ierr)
       call VecDestroy(u_local,ierr)
       call VecDestroy(u,ierr)
-      call DADestroy(da,ierr)
+      call DMDestroy(da,ierr)
       call MatDestroy(A,ierr)
 
 !  Always call PetscFinalize() before exiting a program.  This routine
@@ -413,8 +421,8 @@
 !  Print only from processor 0
       if (rank .eq. 0) write(6,100) step,time,en2s,enmax
  100  format('Timestep = ',i5,',time = ',f8.3,                          &
-     &       ' sec, error [2-norm] = ',e9.3,                            &
-     &       ', error [max-norm] = ',e9.3)
+     &       ' sec, error [2-norm] = ',e10.3,                            &
+     &       ', error [max-norm] = ',e10.3)
 
 !  Print debugging information if desired
       if (debug) then
@@ -463,12 +471,12 @@
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 !  Scatter ghost points to local vector, using the 2-step process
-!     DAGlobalToLocalBegin(), DAGlobalToLocalEnd().
+!     DMGlobalToLocalBegin(), DMGlobalToLocalEnd().
 !  By placing code between these two statements, computations can be
 !  done while messages are in transition.
 
-      call DAGlobalToLocalBegin(da,global_in,INSERT_VALUES,u_local,ierr)
-      call DAGlobalToLocalEnd(da,global_in,INSERT_VALUES,u_local,ierr)
+      call DMGlobalToLocalBegin(da,global_in,INSERT_VALUES,u_local,ierr)
+      call DMGlobalToLocalEnd(da,global_in,INSERT_VALUES,u_local,ierr)
 
 !  Access directly the values in our local INPUT work vector
       call VecGetArray(u_local,localptr,idx_l,ierr) 
@@ -511,7 +519,10 @@
 !  Return the values from our local OUTPUT vector into our global 
 !  output vector.
 
-      call DALocalToGlobal(da,localwork,INSERT_VALUES,global_out,ierr)
+      call DMLocalToGlobalBegin(da,localwork,INSERT_VALUES,global_out   &
+     &                          ,ierr)
+      call DMLocalToGlobalEnd(da,localwork,INSERT_VALUES,global_out,    &
+     &                          ierr)
 
 !  Print debugging information if desired
       if (debug) then
@@ -577,12 +588,12 @@
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 !  Scatter ghost points to local vector, using the 2-step process
-!     DAGlobalToLocalBegin(), DAGlobalToLocalEnd().
+!     DMGlobalToLocalBegin(), DMGlobalToLocalEnd().
 !  By placing code between these two statements, computations can be
 !  done while messages are in transition.
 
-      call DAGlobalToLocalBegin(da,global_in,INSERT_VALUES,u_local,ierr)
-      call DAGlobalToLocalEnd(da,global_in,INSERT_VALUES,u_local,ierr)
+      call DMGlobalToLocalBegin(da,global_in,INSERT_VALUES,u_local,ierr)
+      call DMGlobalToLocalEnd(da,global_in,INSERT_VALUES,u_local,ierr)
 
 !  Get pointer to vector data
       call VecGetArray(u_local,localptr,idx,ierr) 

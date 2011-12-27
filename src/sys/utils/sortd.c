@@ -1,11 +1,11 @@
-#define PETSC_DLL
+
 /*
    This file contains routines for sorting doubles.  Values are sorted in place.
    These are provided because the general sort routines incur a great deal
    of overhead in calling the comparision routines.
 
  */
-#include "petscsys.h"                /*I  "petscsys.h"  I*/
+#include <petscsys.h>                /*I  "petscsys.h"  I*/
 
 #define SWAP(a,b,t) {t=a;a=b;b=t;}
    
@@ -53,7 +53,7 @@ static PetscErrorCode PetscSortReal_Private(PetscReal *v,PetscInt right)
 
 .seealso: PetscSortInt(), PetscSortRealWithPermutation()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSortReal(PetscInt n,PetscReal v[])
+PetscErrorCode  PetscSortReal(PetscInt n,PetscReal v[])
 {
   PetscInt  j,k;
   PetscReal tmp,vk;
@@ -100,7 +100,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscSortReal(PetscInt n,PetscReal v[])
 
 .seealso: PetscSortInt(), PetscSortRealWithPermutation()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSortSplit(PetscInt ncut,PetscInt n,PetscScalar a[],PetscInt idx[])
+PetscErrorCode  PetscSortSplit(PetscInt ncut,PetscInt n,PetscScalar a[],PetscInt idx[])
 {
   PetscInt    i,mid,last,itmp,j,first;
   PetscScalar d,tmp;
@@ -167,7 +167,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscSortSplit(PetscInt ncut,PetscInt n,PetscScal
 
 .seealso: PetscSortInt(), PetscSortRealWithPermutation()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSortSplitReal(PetscInt ncut,PetscInt n,PetscReal a[],PetscInt idx[])
+PetscErrorCode  PetscSortSplitReal(PetscInt ncut,PetscInt n,PetscReal a[],PetscInt idx[])
 {
   PetscInt    i,mid,last,itmp,j,first;
   PetscReal   d,tmp;
@@ -180,10 +180,10 @@ PetscErrorCode PETSC_DLLEXPORT PetscSortSplitReal(PetscInt ncut,PetscInt n,Petsc
 
   while (1){
     mid = first;
-    abskey = (d = a[mid],PetscAbsScalar(d));
+    abskey = (d = a[mid],PetscAbsReal(d));
     i = last;
     for (j = first + 1; j <= i; ++j) {
-      if ((d = a[j],PetscAbsScalar(d)) >= abskey) {
+      if ((d = a[j],PetscAbsReal(d)) >= abskey) {
         ++mid;
         /* interchange */
         tmp = a[mid];  itmp = idx[mid];

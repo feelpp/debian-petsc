@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawSynchronizedClear" 
@@ -20,11 +20,11 @@
    Concepts: clear^window
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSynchronizedClear(PetscDraw draw)
+PetscErrorCode  PetscDrawSynchronizedClear(PetscDraw draw)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   if (draw->ops->synchronizedclear) {
     ierr = (*draw->ops->synchronizedclear)(draw);CHKERRQ(ierr);
   }

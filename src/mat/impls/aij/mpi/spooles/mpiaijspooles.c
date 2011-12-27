@@ -1,12 +1,11 @@
-#define PETSCMAT_DLL
 
 /* 
    Provides an interface to the Spooles parallel sparse solver (MPI SPOOLES)
 */
 
 
-#include "../src/mat/impls/aij/mpi/mpiaij.h"
-#include "../src/mat/impls/aij/seq/spooles/spooles.h"
+#include <../src/mat/impls/aij/mpi/mpiaij.h>
+#include <../src/mat/impls/aij/seq/spooles/spooles.h>
 
 /* Note the Petsc r and c permutations are ignored */
 #undef __FUNCT__  
@@ -28,7 +27,7 @@ EXTERN_C_BEGIN
 PetscErrorCode MatFactorGetSolverPackage_spooles(Mat A,const MatSolverPackage *type)
 {
   PetscFunctionBegin;
-  *type = MAT_SOLVER_SPOOLES;
+  *type = MATSOLVERSPOOLES;
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
@@ -63,9 +62,9 @@ PetscErrorCode MatGetFactor_mpiaij_spooles(Mat A,MatFactorType ftype,Mat *F)
 
     lu->options.symflag      = SPOOLES_NONSYMMETRIC;
     lu->options.pivotingflag = SPOOLES_PIVOTING; 
-  } else SETERRQ(PETSC_ERR_SUP,"Only LU for AIJ matrices, use SBAIJ for Cholesky");
+  } else SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Only LU for AIJ matrices, use SBAIJ for Cholesky");
 
-  B->factor = ftype;
+  B->factortype = ftype;
   ierr = MPI_Comm_dup(((PetscObject)A)->comm,&(lu->comm_spooles));CHKERRQ(ierr);
   *F = B;
   PetscFunctionReturn(0); 

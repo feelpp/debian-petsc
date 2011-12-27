@@ -1,7 +1,3 @@
-        subroutine AODestroy(ao ,ierr)
-       AO ao ! AO
-       integer ierr
-       end subroutine
         subroutine AOPetscToApplicationIS(ao, is ,ierr)
        AO ao ! AO
        IS is ! IS
@@ -55,6 +51,6 @@
         subroutine AOMappingHasPetscIndex(ao, idex, hasIndex ,ierr)
        AO ao ! AO
        PetscInt idex ! PetscInt
-       PetscTruth hasIndex ! PetscTruth
+       PetscBool hasIndex ! PetscBool
        integer ierr
        end subroutine

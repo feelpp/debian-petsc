@@ -4,7 +4,7 @@
 
     Do NOT use this, use ../ex5.c instead, it is MUCH more memory efficient
 */
-#include "petscmat.h"
+#include <petscmat.h>
 #undef __FUNCT__
 #define __FUNCT__ "main"
 int main(int argc,char **argv)
@@ -17,17 +17,19 @@ int main(int argc,char **argv)
   PetscInitialize(&argc,&argv,(char*) 0,0);
 
   ierr = PetscViewerBinaryOpen(PETSC_COMM_SELF,infile,FILE_MODE_READ,&in);CHKERRQ(ierr);
-  ierr = MatLoad(in,MATSEQAIJ,&inmat);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(in);CHKERRQ(ierr);
+  ierr = MatCreate(PETSC_COMM_WORLD,&inmat);CHKERRQ(ierr);
+  ierr = MatSetType(inmat,MATSEQAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(inmat,in);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&in);CHKERRQ(ierr);
 
   ierr = MatMerge(PETSC_COMM_WORLD,inmat,PETSC_DECIDE,MAT_INITIAL_MATRIX,&outmat);CHKERRQ(ierr);
 
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,outfile,FILE_MODE_WRITE,&out);CHKERRQ(ierr);
   ierr = MatView(outmat,out);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(out);CHKERRQ(ierr);
-  ierr = MatDestroy(outmat);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&out);CHKERRQ(ierr);
+  ierr = MatDestroy(&outmat);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

@@ -10,7 +10,7 @@ Sets a local-to-global numbering for use by the routine <A HREF="../Mat/MatSetVa
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatSetLocalToGlobalMapping(Mat x,ISLocalToGlobalMapping mapping)
+PetscErrorCode  MatSetLocalToGlobalMapping(Mat x,ISLocalToGlobalMapping rmapping,ISLocalToGlobalMapping cmapping)
 </PRE>
 Not Collective
 <P>
@@ -18,8 +18,10 @@ Not Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- the matrix
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mapping </B></TD><TD>- mapping created with <A HREF="../IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>() 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rmapping </B></TD><TD>- row mapping created with <A HREF="../IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>()
 or <A HREF="../IS/ISLocalToGlobalMappingCreateIS.html#ISLocalToGlobalMappingCreateIS">ISLocalToGlobalMappingCreateIS</A>()
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cmapping </B></TD><TD>- column mapping
 </TD></TR></TABLE>
 <P>
 
@@ -36,5 +38,6 @@ or <A HREF="../IS/ISLocalToGlobalMappingCreateIS.html#ISLocalToGlobalMappingCrea
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5f.F.html">src/snes/examples/tutorials/ex5f.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5f90.F.html">src/snes/examples/tutorials/ex5f90.F.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex5f90t.F.html">src/snes/examples/tutorials/ex5f90t.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex39f90.F.html">src/snes/examples/tutorials/ex39f90.F.html</A><BR>
 </BODY></HTML>

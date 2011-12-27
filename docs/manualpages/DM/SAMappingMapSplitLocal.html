@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SAMappingMapSplitLocal</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<A NAME="SAMappingMapSplitLocal"><H1>SAMappingMapSplitLocal</H1></A>
+maps an SA with local indices from the rank's support to global indices from the rank's range. The image of each index is a separate SA. Since SAMapping is in general multivalued, some local  indices are mapped to multiple global indices.  Only the indices of the selected type (I or J) are mapped;  the other indices and weights, if any, are preserved on the images. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsa.h"  
+PetscErrorCode SAMappingMapSplitLocal(SAMapping map, SA inarr, SAIndex index, SA *outarr)
+</PRE>
+<P>
+Not collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>map    </B></TD><TD>- mapping of indices
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>inarr  </B></TD><TD>- input SA
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>index   </B></TD><TD>- selection of the index to map (SA_I or SA_J; <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is equivalent to SA_I)
+</TD></TR></TABLE>
+<P>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
+<DT><B>outarrs </B> -SA list; the list length is the same as inarr's SA length.
+<br>
+<P>
+<P>
+
+<P>
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ SAMappingGetSupport(), SAMappingGetImage(), SAMappingGetSupportSizeLocal(), SAMappingGetImageSizeLocal(),
+<BR><A HREF="../DM/SAMappingMapLocal.html#SAMappingMapLocal">SAMappingMapLocal</A>(),   <A HREF="../DM/SAMappingMapSplit.html#SAMappingMapSplit">SAMappingMapSplit</A>(), <A HREF="../DM/SAMappingBinSplit.html#SAMappingBinSplit">SAMappingBinSplit</A>(),            <A HREF="../DM/SAMappingBinSplitLocal.html#SAMappingBinSplitLocal">SAMappingBinSplitLocal</A>()
+<P>
+<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/sa/interface/sa.c.html#SAMappingMapSplitLocal">src/dm/sa/interface/sa.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

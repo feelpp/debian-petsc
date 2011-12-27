@@ -1,7 +1,5 @@
-#define PETSCTS_DLL
 
-#include "private/matimpl.h"      /*I  "petscmat.h"  I*/
-#include "private/tsimpl.h"        /*I  "petscts.h"  I*/
+#include <private/tsimpl.h>        /*I  "petscts.h"  I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "TSDefaultComputeJacobianColor"
@@ -29,7 +27,7 @@
 
 .seealso: TSSetJacobian(), MatFDColoringCreate(), MatFDColoringSetFunction()
 @*/
-PetscErrorCode PETSCTS_DLLEXPORT TSDefaultComputeJacobianColor(TS ts,PetscReal t,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
+PetscErrorCode  TSDefaultComputeJacobianColor(TS ts,PetscReal t,Vec x1,Mat *J,Mat *B,MatStructure *flag,void *ctx)
 {
   MatFDColoring  color = (MatFDColoring) ctx;
   PetscErrorCode ierr;
@@ -45,7 +43,7 @@ PetscErrorCode PETSCTS_DLLEXPORT TSDefaultComputeJacobianColor(TS ts,PetscReal t
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "TSSDefaultComputeJacobian"
+#define __FUNCT__ "TSDefaultComputeJacobian"
 /*@C
    TSDefaultComputeJacobian - Computes the Jacobian using finite differences.
 
@@ -78,7 +76,7 @@ PetscErrorCode TSDefaultComputeJacobian(TS ts,PetscReal t,Vec xx1,Mat *J,Mat *B,
   PetscReal      amax,epsilon = PETSC_SQRT_MACHINE_EPSILON;
   PetscReal      dx_min = 1.e-16,dx_par = 1.e-1;
   MPI_Comm       comm;
-  PetscTruth     assembled;
+  PetscBool      assembled;
   PetscMPIInt    size;
   const PetscInt *ranges;
   PetscMPIInt    root;
@@ -151,9 +149,9 @@ PetscErrorCode TSDefaultComputeJacobian(TS ts,PetscReal t,Vec xx1,Mat *J,Mat *B,
   }
   *flag =  DIFFERENT_NONZERO_PATTERN;
 
-  ierr = VecDestroy(f1);CHKERRQ(ierr);
-  ierr = VecDestroy(f2);CHKERRQ(ierr);
-  ierr = VecDestroy(xx2);CHKERRQ(ierr);
+  ierr = VecDestroy(&f1);CHKERRQ(ierr);
+  ierr = VecDestroy(&f2);CHKERRQ(ierr);
+  ierr = VecDestroy(&xx2);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

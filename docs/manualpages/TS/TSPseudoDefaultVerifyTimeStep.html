@@ -10,7 +10,7 @@ Default code to verify the quality of the last timestep.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode PETSCTS_DLLEXPORT TSPseudoDefaultVerifyTimeStep(TS ts,Vec update,void *dtctx,PetscReal *newdt,PetscTruth *flag)
+PetscErrorCode  TSPseudoDefaultVerifyTimeStep(TS ts,Vec update,void *dtctx,PetscReal *newdt,PetscBool  *flag)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -37,7 +37,7 @@ This routine always returns a flag of 1, indicating an acceptable
 timestep.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
- timestep, pseudo, default, verify 
+ timestep, pseudo, default, verify
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

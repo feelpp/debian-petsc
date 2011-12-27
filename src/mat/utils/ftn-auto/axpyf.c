@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* axpy.c */
 /* Fortran interface file */
 
@@ -58,26 +59,26 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   mataxpy_(Mat Y,PetscScalar *a,Mat X,MatStructure *str, int *__ierr ){
+void PETSC_STDCALL  mataxpy_(Mat Y,PetscScalar *a,Mat X,MatStructure *str, int *__ierr ){
 *__ierr = MatAXPY(
 	(Mat)PetscToPointer((Y) ),*a,
 	(Mat)PetscToPointer((X) ),*str);
 }
-void PETSC_STDCALL   matshift_(Mat Y,PetscScalar *a, int *__ierr ){
+void PETSC_STDCALL  matshift_(Mat Y,PetscScalar *a, int *__ierr ){
 *__ierr = MatShift(
 	(Mat)PetscToPointer((Y) ),*a);
 }
-void PETSC_STDCALL   matdiagonalset_(Mat Y,Vec D,InsertMode *is, int *__ierr ){
+void PETSC_STDCALL  matdiagonalset_(Mat Y,Vec D,InsertMode *is, int *__ierr ){
 *__ierr = MatDiagonalSet(
 	(Mat)PetscToPointer((Y) ),
 	(Vec)PetscToPointer((D) ),*is);
 }
-void PETSC_STDCALL   mataypx_(Mat Y,PetscScalar *a,Mat X,MatStructure *str, int *__ierr ){
+void PETSC_STDCALL  mataypx_(Mat Y,PetscScalar *a,Mat X,MatStructure *str, int *__ierr ){
 *__ierr = MatAYPX(
 	(Mat)PetscToPointer((Y) ),*a,
 	(Mat)PetscToPointer((X) ),*str);
 }
-void PETSC_STDCALL   matcomputeexplicitoperator_(Mat inmat,Mat *mat, int *__ierr ){
+void PETSC_STDCALL  matcomputeexplicitoperator_(Mat inmat,Mat *mat, int *__ierr ){
 *__ierr = MatComputeExplicitOperator(
 	(Mat)PetscToPointer((inmat) ),mat);
 }

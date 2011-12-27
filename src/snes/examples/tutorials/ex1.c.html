@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:43:35+00:00">
+<meta name="date" content="2011-10-29T19:16:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -24,7 +24,7 @@
 <a name="line14"> 14: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
 <a name="line15"> 15: </a><font color="#B22222">     petscksp.h   - linear solvers</font>
 <a name="line16"> 16: </a><font color="#B22222">*/</font>
-<a name="line17"> 17: </a> #include <A href="../../../../include/petscsnes.h.html">petscsnes.h</A>
+<a name="line17"> 17: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 
 <a name="line19"> 19: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>         xloc,rloc;    <font color="#B22222">/* local solution, residual vectors */</font>
@@ -45,7 +45,7 @@
 <a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       its;
 <a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank;
 <a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    pfive = .5,*xx;
-<a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
+<a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 <a name="line46"> 46: </a>  AppCtx         user;         <font color="#B22222">/* user-defined work context */</font>
 <a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>             isglobal,islocal;
 
@@ -77,8 +77,8 @@
 <a name="line74"> 74: </a>    <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(MPI_COMM_SELF,2,0,1,&amp;islocal);
 <a name="line75"> 75: </a>    <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(MPI_COMM_SELF,2,0,1,&amp;isglobal);
 <a name="line76"> 76: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,isglobal,user.xloc,islocal,&amp;user.scatter);
-<a name="line77"> 77: </a>    <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(isglobal);
-<a name="line78"> 78: </a>    <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(islocal);
+<a name="line77"> 77: </a>    <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;isglobal);
+<a name="line78"> 78: </a>    <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;islocal);
 <a name="line79"> 79: </a>  }
 
 <a name="line81"> 81: </a>  <font color="#B22222">/*</font>
@@ -100,7 +100,7 @@
 <a name="line97"> 97: </a><font color="#B22222">    */</font>
 <a name="line98"> 98: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,FormJacobian1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line99"> 99: </a>  } <font color="#4169E1">else</font> {
-<a name="line100">100: </a>    <font color="#4169E1">if</font> (size != 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"This case is a uniprocessor example only!"</font>);
+<a name="line100">100: </a>    <font color="#4169E1">if</font> (size != 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"This case is a uniprocessor example only!"</font>);
 <a name="line101">101: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(snes,r,FormFunction2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line102">102: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,FormJacobian2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line103">103: </a>  }
@@ -160,12 +160,12 @@
 <a name="line157">157: </a><font color="#B22222">     are no longer needed.</font>
 <a name="line158">158: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 
-<a name="line160">160: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x); <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(r);
-<a name="line161">161: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(J); <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(snes);
+<a name="line160">160: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x); <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;r);
+<a name="line161">161: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;J); <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(&amp;snes);
 <a name="line162">162: </a>  <font color="#4169E1">if</font> (size &gt; 1){
-<a name="line163">163: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.xloc);
-<a name="line164">164: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(user.rloc);
-<a name="line165">165: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(user.scatter);
+<a name="line163">163: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.xloc);
+<a name="line164">164: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.rloc);
+<a name="line165">165: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(&amp;user.scatter);
 <a name="line166">166: </a>  }
 <a name="line167">167: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line168">168: </a>  <font color="#4169E1">return</font> 0;
@@ -203,8 +203,8 @@
 <a name="line203">203: </a><font color="#B22222">       (2) each process evaluates all values of floc; </font>
 <a name="line204">204: </a><font color="#B22222">       (3) scatter floc back to the parallel f.</font>
 <a name="line205">205: </a><font color="#B22222">     */</font>
-<a name="line206">206: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(scatter,x,xloc,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line207">207: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(scatter,x,xloc,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../docs/manualpages/Sys/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line206">206: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(scatter,x,xloc,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line207">207: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(scatter,x,xloc,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 
 <a name="line209">209: </a>    <A href="../../../../docs/manualpages/Vec/VecGetOwnershipRange.html#VecGetOwnershipRange">VecGetOwnershipRange</A>(f,&amp;rstart,&amp;rend);
 <a name="line210">210: </a>    <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xloc,&amp;xx);
@@ -214,8 +214,8 @@
 <a name="line214">214: </a>    <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(floc,&amp;ff);
 <a name="line215">215: </a>    <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xloc,&amp;xx);
 
-<a name="line217">217: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(scatter,floc,f,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../docs/manualpages/Sys/SCATTER_REVERSE.html#SCATTER_REVERSE">SCATTER_REVERSE</A>);
-<a name="line218">218: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(scatter,floc,f,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../docs/manualpages/Sys/SCATTER_REVERSE.html#SCATTER_REVERSE">SCATTER_REVERSE</A>);
+<a name="line217">217: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(scatter,floc,f,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../docs/manualpages/Vec/SCATTER_REVERSE.html#SCATTER_REVERSE">SCATTER_REVERSE</A>);
+<a name="line218">218: </a>    <A href="../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(scatter,floc,f,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../docs/manualpages/Vec/SCATTER_REVERSE.html#SCATTER_REVERSE">SCATTER_REVERSE</A>);
 <a name="line219">219: </a>  } <font color="#4169E1">else</font> {
 <a name="line220">220: </a>    <font color="#B22222">/*</font>
 <a name="line221">221: </a><font color="#B22222">     Get pointers to vector data.</font>

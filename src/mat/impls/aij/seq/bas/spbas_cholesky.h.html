@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:29:01+00:00">
+<meta name="date" content="2011-10-29T19:00:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -276,7 +276,7 @@
 <a name="line274">274: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      * lvec;
 <a name="line275">275: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      epsdiag;
 <a name="line276">276: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         i,j,k;
-<a name="line277">277: </a>   const <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> do_values = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line277">277: </a>   const <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  do_values = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line278">278: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         * r1_icol;
 <a name="line279">279: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      *r1_val;
 <a name="line280">280: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         * r_icol;
@@ -298,7 +298,7 @@
 
 <a name="line298">298: </a>   <font color="#4169E1">if</font> (droptol&lt;1e-10) {droptol=1e-10;}
 
-<a name="line300">300: </a>   <font color="#4169E1">if</font> ( (nrows != pattern.nrows) || (ncols != pattern.ncols) || (ncols != nrows) ) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_ARG_INCOMP,<font color="#666666">"Dimension error in spbas_incomplete_cholesky\n"</font>);
+<a name="line300">300: </a>   <font color="#4169E1">if</font> ( (nrows != pattern.nrows) || (ncols != pattern.ncols) || (ncols != nrows) ) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_INCOMP,<font color="#666666">"Dimension error in spbas_incomplete_cholesky\n"</font>);
 
 <a name="line302">302: </a>   retval.nrows = nrows;
 <a name="line303">303: </a>   retval.ncols = nrows;
@@ -315,14 +315,14 @@
 <a name="line314">314: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;val);
 <a name="line315">315: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;lvec);
 <a name="line316">316: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrows*<font color="#4169E1">sizeof</font>(int), &amp;max_row_nnz);
-<a name="line317">317: </a>   <font color="#4169E1">if</font> (!(diag &amp;&amp; val &amp;&amp; lvec &amp;&amp; max_row_nnz))  <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_MEM, <font color="#666666">"Allocation error in spbas_incomplete_cholesky\n"</font>);
+<a name="line317">317: </a>   <font color="#4169E1">if</font> (!(diag &amp;&amp; val &amp;&amp; lvec &amp;&amp; max_row_nnz))  <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_MEM, <font color="#666666">"Allocation error in spbas_incomplete_cholesky\n"</font>);
 
 <a name="line319">319: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>((void*) val, nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
 <a name="line320">320: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>((void*) lvec, nrows*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
 <a name="line321">321: </a>   <A href="../../../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>((void*) max_row_nnz, nrows*<font color="#4169E1">sizeof</font>(int));
 
 <a name="line323">323: </a>   <font color="#B22222">/* Check correct format of sparseness pattern */</font>
-<a name="line324">324: </a>   <font color="#4169E1">if</font> (pattern.col_idx_type != SPBAS_DIAGONAL_OFFSETS)  <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>( PETSC_ERR_SUP_SYS, <font color="#666666">"Error in spbas_incomplete_cholesky: must have diagonal offsets in pattern\n"</font>);
+<a name="line324">324: </a>   <font color="#4169E1">if</font> (pattern.col_idx_type != SPBAS_DIAGONAL_OFFSETS)  <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP_SYS, <font color="#666666">"Error in spbas_incomplete_cholesky: must have diagonal offsets in pattern\n"</font>);
 
 <a name="line326">326: </a>   <font color="#B22222">/* Count the nonzeros on transpose of pattern */</font>
 <a name="line327">327: </a>   <font color="#4169E1">for</font> (i = 0; i&lt;nrows; i++)  {

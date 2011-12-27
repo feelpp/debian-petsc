@@ -1,4 +1,3 @@
-#define PETSCKSP_DLL
 
 /*                       
 
@@ -6,7 +5,7 @@
     within the code MUST remain in the order given for correct computation
     of inner products.
 */
-#include "private/kspimpl.h"
+#include <private/kspimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetUp_CGS"
@@ -15,7 +14,6 @@ static PetscErrorCode KSPSetUp_CGS(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_SYMMETRIC) SETERRQ(PETSC_ERR_SUP,"no symmetric preconditioning for KSPCGS");
   ierr = KSPDefaultGetWork(ksp,7);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -29,13 +27,13 @@ static PetscErrorCode  KSPSolve_CGS(KSP ksp)
   PetscScalar    rho,rhoold,a,s,b;
   Vec            X,B,V,P,R,RP,T,Q,U,AUQ;
   PetscReal      dp = 0.0;
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
   /* not sure what residual norm it does use, should use for right preconditioning */
 
-  ierr    = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
+  ierr    = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
 
   X       = ksp->vec_sol;
   B       = ksp->vec_rhs;
@@ -61,7 +59,7 @@ static PetscErrorCode  KSPSolve_CGS(KSP ksp)
   ksp->rnorm = dp;
   ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
   KSPLogResidualHistory(ksp,dp);
-  KSPMonitor(ksp,0,dp);
+  ierr = KSPMonitor(ksp,0,dp);CHKERRQ(ierr);
   ierr = (*ksp->converged)(ksp,0,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
   if (ksp->reason) PetscFunctionReturn(0);
 
@@ -103,10 +101,10 @@ static PetscErrorCode  KSPSolve_CGS(KSP ksp)
     ierr = KSP_PCApplyBAorAB(ksp,T,AUQ,U);CHKERRQ(ierr);
     ierr = VecAXPY(R,-a,AUQ);CHKERRQ(ierr);       /* r <- r - a K (u + q) */
     ierr = VecDot(R,RP,&rho);CHKERRQ(ierr);         /* rho <- (r,rp)        */
-    if (ksp->normtype == KSP_NORM_PRECONDITIONED) {
-      ierr = VecNorm(R,NORM_2,&dp);CHKERRQ(ierr);
-    } else if (ksp->normtype == KSP_NORM_NATURAL) {
+    if (ksp->normtype == KSP_NORM_NATURAL) {
       dp = PetscAbsScalar(rho);
+    } else {
+      ierr = VecNorm(R,NORM_2,&dp);CHKERRQ(ierr);
     }
 
     ierr = PetscObjectTakeAccess(ksp);CHKERRQ(ierr);
@@ -114,7 +112,7 @@ static PetscErrorCode  KSPSolve_CGS(KSP ksp)
     ksp->rnorm = dp;
     ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
     KSPLogResidualHistory(ksp,dp);
-    KSPMonitor(ksp,i+1,dp);
+    ierr = KSPMonitor(ksp,i+1,dp);CHKERRQ(ierr);
     ierr = (*ksp->converged)(ksp,i+1,dp,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
     if (ksp->reason) break;
 
@@ -142,18 +140,30 @@ static PetscErrorCode  KSPSolve_CGS(KSP ksp)
 
    Level: beginner
 
-   Notes: Reference: Sonneveld, 1989.
+   References: Sonneveld, 1989.
 
-.seealso: KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPBCGS
+   Notes: Does not require a symmetric matrix. Does not apply transpose of the matrix.
+        Supports left and right preconditioning, but not symmetric.
+
+   Developer Notes: Has this weird support for doing the convergence test with the natural norm, I assume this works only with 
+      no preconditioning and symmetric positive definite operator.
+
+.seealso: KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPBCGS, KSPSetPCSide()
 M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_CGS"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_CGS(KSP ksp)
+PetscErrorCode  KSPCreate_CGS(KSP ksp)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
   ksp->data                      = (void*)0;
-  ksp->pc_side                   = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_RIGHT,1);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_NATURAL,PC_LEFT,1);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_NATURAL,PC_RIGHT,1);CHKERRQ(ierr);
+
   ksp->ops->setup                = KSPSetUp_CGS;
   ksp->ops->solve                = KSPSolve_CGS;
   ksp->ops->destroy              = KSPDefaultDestroy;

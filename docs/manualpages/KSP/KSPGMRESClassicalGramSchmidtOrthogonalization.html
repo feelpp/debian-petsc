@@ -11,7 +11,7 @@ This is the basic orthogonalization routine  using classical Gram-Schmidt with p
 <PRE>
 #undef __FUNCT__  
 #define __FUNCT__ "KSPGMRESClassicalGramSchmidtOrthogonalization"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGMRESClassicalGramSchmidtOrthogonalization(KSP  ksp,PetscInt it)
+PetscErrorCode  KSPGMRESClassicalGramSchmidtOrthogonalization(KSP  ksp,PetscInt it)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -35,8 +35,8 @@ Notes: Use <A HREF="../KSP/KSPGMRESSetCGSRefinementType.html#KSPGMRESSetCGSRefin
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-aso:  <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESClassicalGramSchmidtOrthogonalization.html#KSPGMRESClassicalGramSchmidtOrthogonalization">KSPGMRESClassicalGramSchmidtOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESSetCGSRefinementType.html#KSPGMRESSetCGSRefinementType">KSPGMRESSetCGSRefinementType</A>()
-<BR>
+aso:  <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESClassicalGramSchmidtOrthogonalization.html#KSPGMRESClassicalGramSchmidtOrthogonalization">KSPGMRESClassicalGramSchmidtOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESSetCGSRefinementType.html#KSPGMRESSetCGSRefinementType">KSPGMRESSetCGSRefinementType</A>(), 
+<BR><A HREF="../KSP/KSPGMRESGetCGSRefinementType.html#KSPGMRESGetCGSRefinementType">KSPGMRESGetCGSRefinementType</A>(), <A HREF="../KSP/KSPGMRESGetOrthogonalization.html#KSPGMRESGetOrthogonalization">KSPGMRESGetOrthogonalization</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/impls/gmres/borthog2.c.html#KSPGMRESClassicalGramSchmidtOrthogonalization">src/ksp/ksp/impls/gmres/borthog2.c</A>

@@ -10,7 +10,7 @@ Verifies whether the last timestep was acceptable.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode PETSCTS_DLLEXPORT TSPseudoVerifyTimeStep(TS ts,Vec update,PetscReal *dt,PetscTruth *flag)
+PetscErrorCode  TSPseudoVerifyTimeStep(TS ts,Vec update,PetscReal *dt,PetscBool  *flag)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -35,7 +35,7 @@ The routine to be called here to compute the timestep should be
 set by calling <A HREF="../TS/TSPseudoSetVerifyTimeStep.html#TSPseudoSetVerifyTimeStep">TSPseudoSetVerifyTimeStep</A>().
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
- timestep, pseudo, verify 
+ timestep, pseudo, verify
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

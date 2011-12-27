@@ -7,14 +7,16 @@
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscFreeVoid"><H1>PetscFreeVoid</H1></A>
 Frees memory 
-<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>memory </B> -memory to free
-<br>
-<P>
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 void PetscFreeVoid(void *memory)
 </PRE>
+Not Collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
+<DT><B>memory </B> -memory to free
+<br>
+<P>
 
 <P>
 Notes: This is different from <A HREF="../Sys/PetscFree.html#PetscFree">PetscFree</A>() in that no error code is returned

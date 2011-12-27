@@ -10,7 +10,7 @@ Permutes an array of blocks of integers in the application-defined ordering to t
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscao.h" 
-PetscErrorCode PETSCDM_DLLEXPORT AOApplicationToPetscPermuteInt(AO ao, PetscInt block, PetscInt array[])
+PetscErrorCode  AOApplicationToPetscPermuteInt(AO ao, PetscInt block, PetscInt array[])
 </PRE>
 Collective on <A HREF="../AO/AO.html#AO">AO</A>
 <P>
@@ -24,7 +24,7 @@ Collective on <A HREF="../AO/AO.html#AO">AO</A>
 </TD></TR></TABLE>
 <P>
 Note: The length of the array should be block*N, where N is length
-provided to the AOCreate*() method that created the <A HREF="../AO/AO.html#AO">AO</A>.
+provided to the <A HREF="../AO/AOCreate.html#AOCreate">AOCreate</A>*() method that created the <A HREF="../AO/AO.html#AO">AO</A>.
 <P>
 The permutation takes array[i_app] --&gt; array[i_pet], where i_app is
 the index of 'i' in the application ordering and i_pet is the index

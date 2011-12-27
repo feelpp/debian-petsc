@@ -10,7 +10,7 @@ Registers an event for logging operations in an application code.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode EventRegLogRegister(EventRegLog eventLog, const char ename[], PetscCookie cookie, PetscLogEvent *event) 
+PetscErrorCode EventRegLogRegister(PetscEventRegLog eventLog, const char ename[], PetscClassId classid, PetscLogEvent *event) 
 </PRE>
 Not Collective
 <P>
@@ -20,7 +20,7 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ename    </B></TD><TD>- The name associated with the event
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cookie   </B></TD><TD>- The cookie associated to the class for this event
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>classid   </B></TD><TD>- The classid associated to the class for this event
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -61,7 +61,7 @@ Upshot/Nupshot.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(), <A HREF="../Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(), <A HREF="../Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(), PetscLogEventMPEActivate(), PetscLogEventMPEDeactivate(),
 <BR>EventLogActivate(), EventLogDeactivate()
-<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/utils/eventLog.c.html#EventRegLogRegister">src/sys/plog/utils/eventLog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>

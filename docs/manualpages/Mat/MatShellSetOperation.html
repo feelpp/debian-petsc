@@ -10,9 +10,9 @@ Allows user to set a matrix operation for a shell matrix.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatShellSetOperation(Mat mat,MatOperation op,void (*f)(void))
+PetscErrorCode  MatShellSetOperation(Mat mat,MatOperation op,void (*f)(void))
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -56,6 +56,9 @@ nonzero on failure.
 Within each user-defined routine, the user should call
 <A HREF="../Mat/MatShellGetContext.html#MatShellGetContext">MatShellGetContext</A>() to obtain the user-defined context that was
 set by <A HREF="../Mat/MatCreateShell.html#MatCreateShell">MatCreateShell</A>().
+<P>
+Fortran Notes: For <A HREF="../Mat/MatGetVecs.html#MatGetVecs">MatGetVecs</A>() the user code should check if the input left or right matrix is -1 and in that case not
+generate a matrix. See src/mat/examples/tests/ex120f.F
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  matrix, shell, set, operation

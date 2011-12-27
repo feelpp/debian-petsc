@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:38:33+00:00">
+<meta name="date" content="2011-10-29T19:10:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -12,9 +12,9 @@
 
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;math.h&gt;</font>
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;queue&gt;</font>
-<a name="line5"> 5: </a> #include <A href="../../../../../include/private/pcimpl.h.html">private/pcimpl.h</A>
-<a name="line6">  6: </a><font color="#A020F0">#include </font><font color="#666666">"boost/graph/adjacency_list.hpp"</font><font color="#A020F0"></font>
-<a name="line7">  7: </a><font color="#A020F0">#include </font><font color="#666666">"boost/graph/subgraph.hpp"</font><font color="#A020F0"></font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;boost/graph/adjacency_list.hpp&gt;</font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;boost/graph/subgraph.hpp&gt;</font>
 
 <a name="line9">  9: </a>using namespace boost;
 
@@ -41,7 +41,7 @@
 <a name="line31"> 31: </a>                          property&lt;vertex_depth_t, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,
 <a name="line32"> 32: </a>                                   property&lt;vertex_index_t, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt; &gt; &gt; &gt; VertexProperty;
 <a name="line33"> 33: </a><font color="#4169E1">typedef</font> property&lt;edge_length_t, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,
-<a name="line34"> 34: </a>                 property&lt;edge_keep_t, <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>,
+<a name="line34"> 34: </a>                 property&lt;edge_keep_t, <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>,
 <a name="line35"> 35: </a>                          property&lt;edge_index_t, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt; &gt; &gt;  EdgeProperty2;
 <a name="line36"> 36: </a><font color="#4169E1">typedef</font> property&lt;edge_weight_t, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>, EdgeProperty2&gt; EdgeProperty;
 <a name="line37"> 37: </a>// I wish I knew a better way to make a convenient edge property constructor
@@ -146,7 +146,7 @@
 <a name="line136">136: </a><font color="#B22222">*/</font>
 <a name="line137">137: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> LowStretchSpanningTree(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *pre,
 <a name="line138">138: </a>                                      <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> tol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>&amp; maxCong);
-<a name="line139">139: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> AugmentedLowStretchSpanningTree(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *pre,<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> augment,
+<a name="line139">139: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> AugmentedLowStretchSpanningTree(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *pre,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> augment,
 <a name="line140">140: </a>                                               <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> tol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>&amp; maxCong);
 <a name="line141">141: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> LowStretchSpanningTreeHelper(Graph&amp; g,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> root,const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> alpha,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> perm[]);
 <a name="line142">142: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> StarDecomp(const Graph g,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> root,const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> delta,const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> epsilon,
@@ -208,7 +208,7 @@
 <a name="line201">201: </a><font color="#B22222">   Output Parameter:</font>
 <a name="line202">202: </a><font color="#B22222">.  pre - preconditioner matrix with cholesky factorization precomputed in place</font>
 <a name="line203">203: </a><font color="#B22222"> */</font>
-<a name="line206">206: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> AugmentedLowStretchSpanningTree(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *prefact,<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> augment,
+<a name="line206">206: </a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> AugmentedLowStretchSpanningTree(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *prefact,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> augment,
 <a name="line207">207: </a>                                               <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> tol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>&amp; maxCong)
 <a name="line208">208: </a>{
 <a name="line209">209: </a><font color="#A020F0">#ifndef PETSC_USE_COMPLEX</font>
@@ -318,7 +318,7 @@
 <a name="line314">314: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(perm,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);</font>
 <a name="line315">315: </a><font color="#B22222">  */</font>
 <a name="line316">316: </a>  <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> rperm, cperm;
-<a name="line317">317: </a>  <A href="../../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(*pre,MATORDERING_QMD,&amp;rperm,&amp;cperm);
+<a name="line317">317: </a>  <A href="../../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(*pre,MATORDERINGQMD,&amp;rperm,&amp;cperm);
 
 <a name="line319">319: </a>  <A href="../../../../../docs/manualpages/Mat/MatFactorInfoInitialize.html#MatFactorInfoInitialize">MatFactorInfoInitialize</A>(&amp;info);
 <a name="line320">320: </a>  <font color="#B22222">/*</font>
@@ -329,8 +329,8 @@
 <a name="line325">325: </a><font color="#B22222">  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(iperm);</font>
 <a name="line326">326: </a><font color="#B22222">  */</font>
 <a name="line327">327: </a>  <A href="../../../../../docs/manualpages/Mat/MatLUFactor.html#MatLUFactor">MatLUFactor</A>(*pre,rperm,cperm,&amp;info);
-<a name="line328">328: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(rperm);
-<a name="line329">329: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(cperm);
+<a name="line328">328: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;rperm);
+<a name="line329">329: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;cperm);
 <a name="line330">330: </a><font color="#A020F0">#endif</font>
 <a name="line331">331: </a>  <font color="#4169E1">return</font>(0);
 <a name="line332">332: </a>}
@@ -444,7 +444,7 @@
 <a name="line448">448: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt; *succ = new std::vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt;[n];
 <a name="line449">449: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt;::iterator i;
 <a name="line450">450: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *dist = new <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>[n];
-<a name="line451">451: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>&gt; taken(n,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
+<a name="line451">451: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>&gt; taken(n,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
 
 <a name="line453">453: </a>  <font color="#B22222">/** form tree of shortest paths to root **/</font>
 <a name="line454">454: </a>  graph_traits&lt;Graph&gt;::out_edge_iterator e, e_end;
@@ -528,7 +528,7 @@
 <a name="line532">532: </a><strong><font color="#FF0000">  std:</font></strong>:queue&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt; anchor_q;
 <a name="line533">533: </a>  ShortestPathPriorityQueue cone_pq;
 <a name="line534">534: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt; *cone_succ = new std::vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt;[n];
-<a name="line535">535: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>&gt; cone_found(n,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
+<a name="line535">535: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>&gt; cone_found(n,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
 
 <a name="line537">537: </a>  <font color="#B22222">/** form tree of shortest paths to an anchor **/</font>
 <a name="line538">538: </a>  <font color="#4169E1">while</font> (!pq.empty()) {
@@ -565,7 +565,7 @@
 <a name="line569">569: </a><strong><font color="#FF0000">      std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt; thisIdx;
 <a name="line570">570: </a><strong><font color="#FF0000">      std:</font></strong>:queue&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt; q;
 <a name="line571">571: </a>      ShortestPathPriorityQueue mycone_pq;
-<a name="line572">572: </a><strong><font color="#FF0000">      std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>&gt; mycone_taken(n,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
+<a name="line572">572: </a><strong><font color="#FF0000">      std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>&gt; mycone_taken(n,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
 <a name="line573">573: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> initialInternalConeEdges = 0;
 
 <a name="line575">575: </a>      boundary = 0;
@@ -919,7 +919,7 @@
 
 <a name="line938">938: </a><font color="#A020F0">#ifndef PETSC_USE_COMPLEX</font>
 <a name="line939">939: </a>  const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m = num_edges(g);
-<a name="line940">940: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>&gt; edgeSupported(m); // edgeSupported[i] <font color="#4169E1">if</font> edge i's component pair has been bridged
+<a name="line940">940: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>&gt; edgeSupported(m); // edgeSupported[i] <font color="#4169E1">if</font> edge i's component pair has been bridged
 <a name="line941">941: </a>  const EdgeLength edge_length_g = get(edge_length_t(),g);
 <a name="line942">942: </a>  const EdgeWeight edge_weight_g = get(edge_weight_t(),g);
 <a name="line943">943: </a>  const EdgeIndex edge_index_g = get(edge_index_t(),g);

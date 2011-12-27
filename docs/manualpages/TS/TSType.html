@@ -13,22 +13,16 @@ String with the name of a PETSc <A HREF="../TS/TS.html#TS">TS</A> method or the 
 #define TSEULER           "euler"
 #define TSBEULER          "beuler"
 #define TSPSEUDO          "pseudo"
-#define TSCRANK_NICHOLSON "crank-nicholson"
+#define TSCN              "cn"
 #define TSSUNDIALS        "sundials"
-#define TSRUNGE_KUTTA     "runge-kutta"
+#define TSRK              "rk"
 #define TSPYTHON          "python"
 #define TSTHETA           "theta"
+#define TSALPHA           "alpha"
 #define TSGL              "gl"
 #define TSSSP             "ssp"
+#define TSARKIMEX         "arkimex"
 
-/*E
-    TSProblemType - Determines the type of problem this TS object is to be used to solve
-
-   
-
-.seealso: TSCreate()
-E*/
-typedef enum {TS_LINEAR,TS_NONLINEAR} TSProblemType;
 </PRE>
 
 <P>

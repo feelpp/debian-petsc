@@ -10,14 +10,16 @@ Indicates to any <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> t
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"    
-PetscErrorCode PETSC_DLLEXPORT PetscObjectDereference(PetscObject obj)
+PetscErrorCode  PetscObjectDereference(PetscObject obj)
 </PRE>
-Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>
+Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> if reference reaches 0 otherwise Logically Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>obj </B> -the PETSc object; this must be cast with (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example, 
 <A HREF="../Sys/PetscObjectDereference.html#PetscObjectDereference">PetscObjectDereference</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat);
 <br>
+<P>
+Notes: <A HREF="../Sys/PetscObjectDestroy.html#PetscObjectDestroy">PetscObjectDestroy</A>(<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> *obj)  sets the obj pointer to null after the call, this routine does not.
 <P>
 
 <P>

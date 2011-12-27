@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mpiu.c */
 /* Fortran interface file */
 
@@ -43,11 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscsequentialphasebegin_(MPI_Fint * comm,int *ng, int *__ierr ){
+void PETSC_STDCALL  petscsequentialphasebegin_(MPI_Fint * comm,int *ng, int *__ierr ){
 *__ierr = PetscSequentialPhaseBegin(
 	MPI_Comm_f2c( *(comm) ),*ng);
 }
-void PETSC_STDCALL   petscsequentialphaseend_(MPI_Fint * comm,int *ng, int *__ierr ){
+void PETSC_STDCALL  petscsequentialphaseend_(MPI_Fint * comm,int *ng, int *__ierr ){
 *__ierr = PetscSequentialPhaseEnd(
 	MPI_Comm_f2c( *(comm) ),*ng);
 }

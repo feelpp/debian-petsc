@@ -9,9 +9,9 @@
 Returns the inode information of the Inode matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSCMAT_DLLEXPORT MatInodeGetInodeSizes(Mat A,PetscInt *node_count,PetscInt *sizes[],PetscInt *limit)
+PetscErrorCode  MatInodeGetInodeSizes(Mat A,PetscInt *node_count,PetscInt *sizes[],PetscInt *limit)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>A </B> -the Inode matrix or matrix derived from the Inode class -- e.g., SeqAIJ

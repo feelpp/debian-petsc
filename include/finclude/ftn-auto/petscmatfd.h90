@@ -18,8 +18,7 @@
        MatFDColoring c ! MatFDColoring
        integer ierr
        end subroutine
-        subroutine MatFDColoringApply(J, coloring, x1, flag, sctx ,ierr)&
-     &
+        subroutine MatFDColoringApply(J, coloring, x1, flag, sctx ,ierr)
        Mat J ! Mat
        MatFDColoring coloring ! MatFDColoring
        Vec x1 ! Vec

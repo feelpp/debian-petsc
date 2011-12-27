@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:35:15+00:00">
+<meta name="date" content="2011-10-29T19:06:03+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -15,7 +15,7 @@
 <a name="line5">  5: </a><font color="#B22222"> * and <A href="../../../../docs/manualpages/Mat/MatMultTranspose.html#MatMultTranspose">MatMultTranspose</A>.</font>
 <a name="line6">  6: </a><font color="#B22222"> */</font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;stdlib.h&gt;</font>
-<a name="line8"> 8: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line13"> 13: </a>{
@@ -114,10 +114,10 @@
 <a name="line107">107: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(Z,-1.0,Y);
 <a name="line108">108: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(Z,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;nrm);
 <a name="line109">109: </a>  printf(<font color="#666666">"Test1; error norm=%e\n"</font>,nrm);
-<a name="line110">110: </a>  <font color="#B22222">/*</font>
-<a name="line111">111: </a><font color="#B22222">  printf("<A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A> the usual way:\n"); <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(Y,0);</font>
-<a name="line112">112: </a><font color="#B22222">  printf("<A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A> by subblock:\n"); <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(Z,0);</font>
-<a name="line113">113: </a><font color="#B22222">  */</font>
+<a name="line110">110: </a>
+<a name="line111">111: </a>  printf(<font color="#666666">"<A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A> the usual way:\n"</font>); <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(Y,0);
+<a name="line112">112: </a>  printf(<font color="#666666">"<A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A> by subblock:\n"</font>); <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(Z,0);
+<a name="line113">113: </a>
 
 <a name="line115">115: </a>  <font color="#B22222">/*</font>
 <a name="line116">116: </a><font color="#B22222">   * Next test: change both matrices</font>
@@ -163,27 +163,24 @@
 <a name="line156">156: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(x);
 <a name="line157">157: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(y);
 <a name="line158">158: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(z);
-<a name="line159">159: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
-<a name="line160">160: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A11);
-<a name="line161">161: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A12);
-<a name="line162">162: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A21);
-<a name="line163">163: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A22);
+<a name="line159">159: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line160">160: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A11);
+<a name="line161">161: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A12);
+<a name="line162">162: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A21);
+<a name="line163">163: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A22);
 
-<a name="line165">165: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(X);
-<a name="line166">166: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(Y);
-<a name="line167">167: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(Z);
+<a name="line165">165: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;X);
+<a name="line166">166: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Y);
+<a name="line167">167: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Z);
 
-<a name="line169">169: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(X1);
-<a name="line170">170: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(X2);
-<a name="line171">171: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(Z1);
-<a name="line172">172: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(Z2);
+<a name="line169">169: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;X1);
+<a name="line170">170: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;X2);
+<a name="line171">171: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Z1);
+<a name="line172">172: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Z2);
 
-
-<a name="line175">175: </a>  <font color="#B22222">/*<A href="../../../../docs/manualpages/Profiling/PetscLogPrintSummary.html#PetscLogPrintSummary">PetscLogPrintSummary</A>(MPI_COMM_SELF,"ex2.log");*/</font>
-<a name="line176">176: </a>
-<a name="line177">177: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line178">178: </a>  <font color="#4169E1">return</font> 0;
-<a name="line179">179: </a>}
+<a name="line174">174: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line175">175: </a>  <font color="#4169E1">return</font> 0;
+<a name="line176">176: </a>}
 </pre>
 </body>
 

@@ -1,4 +1,3 @@
-#define PETSCMAT_DLL
 
 /*
   Implements the DS PETSc approach for computing the h 
@@ -11,7 +10,7 @@
   -------------------
       MatMFFDCompute_  - for a given point and direction computes h
 
-      MatMFFDCreate_ - fills in the MatMFFD data structure
+      MatCreateMFFD _ - fills in the MatMFFD data structure
                            for this particular implementation
 
       
@@ -32,8 +31,8 @@
    includes information about the computation of h. It is shared by 
    all implementations that people provide
 */
-#include "private/matimpl.h"
-#include "../src/mat/impls/mffd/mffdimpl.h"   /*I  "petscmat.h"   I*/
+#include <private/matimpl.h>
+#include <../src/mat/impls/mffd/mffdimpl.h>   /*I  "petscmat.h"   I*/
 
 /*
       The  method has one parameter that is used to 
@@ -63,7 +62,7 @@ typedef struct {
 .  h - the scale computed
 
 */
-static PetscErrorCode MatMFFDCompute_DS(MatMFFD ctx,Vec U,Vec a,PetscScalar *h,PetscTruth *zeroa)
+static PetscErrorCode MatMFFDCompute_DS(MatMFFD ctx,Vec U,Vec a,PetscScalar *h,PetscBool  *zeroa)
 {
   MatMFFD_DS      *hctx = (MatMFFD_DS*)ctx->hctx;
   PetscReal        nrm,sum,umin = hctx->umin;
@@ -104,7 +103,7 @@ static PetscErrorCode MatMFFDCompute_DS(MatMFFD ctx,Vec U,Vec a,PetscScalar *h,P
   } else {
     *h = ctx->currenth;
   }
-  if (*h != *h) SETERRQ3(PETSC_ERR_PLIB,"Differencing parameter is not a number sum = %G dot = %G norm = %G",sum,PetscRealPart(dot),nrm);
+  if (*h != *h) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Differencing parameter is not a number sum = %G dot = %G norm = %G",sum,PetscRealPart(dot),nrm);
   ctx->count++;
   PetscFunctionReturn(0);
 } 
@@ -125,7 +124,7 @@ static PetscErrorCode MatMFFDView_DS(MatMFFD ctx,PetscViewer viewer)
 {
   MatMFFD_DS       *hctx = (MatMFFD_DS *)ctx->hctx;
   PetscErrorCode   ierr;
-  PetscTruth       iascii;
+  PetscBool        iascii;
 
   PetscFunctionBegin;
   /*
@@ -133,11 +132,11 @@ static PetscErrorCode MatMFFDView_DS(MatMFFD ctx,PetscViewer viewer)
      could be added, but for this type of object other viewers
      make less sense
   */
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"    umin=%G (minimum iterate parameter)\n",hctx->umin);CHKERRQ(ierr); 
   } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for this SNES matrix free matrix",((PetscObject)viewer)->type_name);
+    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported for this SNES matrix free matrix",((PetscObject)viewer)->type_name);
   }    
   PetscFunctionReturn(0);
 }
@@ -168,7 +167,7 @@ static PetscErrorCode MatMFFDSetFromOptions_DS(MatMFFD ctx)
 #define __FUNCT__ "MatMFFDDestroy_DS"
 /*
    MatMFFDDestroy_DS - Frees the space allocated by 
-   MatMFFDCreate_DS(). 
+   MatCreateMFFD_DS(). 
 
    Input Parameter:
 .  ctx - the matrix free context
@@ -187,20 +186,18 @@ static PetscErrorCode MatMFFDDestroy_DS(MatMFFD ctx)
 
 EXTERN_C_BEGIN
 #undef __FUNCT__  
-#define __FUNCT__ "MatMFFDDSSetUmin_Private"
+#define __FUNCT__ "MatMFFDDSSetUmin_DS"
 /*
    The following two routines use the PetscObjectCompose() and PetscObjectQuery()
    mechanism to allow the user to change the Umin parameter used in this method.
 */
-PetscErrorCode MatMFFDDSSetUmin_Private(Mat mat,PetscReal umin)
+PetscErrorCode MatMFFDDSSetUmin_DS(Mat mat,PetscReal umin)
 {
   MatMFFD     ctx = (MatMFFD)mat->data;
   MatMFFD_DS *hctx;
 
   PetscFunctionBegin;
-  if (!ctx) {
-    SETERRQ(PETSC_ERR_ARG_WRONG,"MatMFFDDSSetUmin() attached to non-shell matrix");
-  }
+  if (!ctx) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"MatMFFDDSSetUmin() attached to non-shell matrix");
   hctx = (MatMFFD_DS*)ctx->hctx;
   hctx->umin = umin;
   PetscFunctionReturn(0);
@@ -227,16 +224,13 @@ EXTERN_C_END
 .seealso: MatMFFDSetFunctionError(), MatCreateSNESMF()
 
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDDSSetUmin(Mat A,PetscReal umin)
+PetscErrorCode  MatMFFDDSSetUmin(Mat A,PetscReal umin)
 {
-  PetscErrorCode ierr,(*f)(Mat,PetscReal);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(A,MAT_COOKIE,1);
-  ierr = PetscObjectQueryFunction((PetscObject)A,"MatMFFDDSSetUmin_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(A,umin);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(A,MAT_CLASSID,1);
+  ierr = PetscTryMethod(A,"MatMFFDDSSetUmin_C",(Mat,PetscReal),(A,umin));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -268,8 +262,8 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDDSSetUmin(Mat A,PetscReal umin)
 M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
-#define __FUNCT__ "MatMFFDCreate_DS"
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDCreate_DS(MatMFFD ctx)
+#define __FUNCT__ "MatCreateMFFD_DS"
+PetscErrorCode  MatCreateMFFD_DS(MatMFFD ctx)
 {
   MatMFFD_DS       *hctx;
   PetscErrorCode   ierr;
@@ -289,8 +283,8 @@ PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDCreate_DS(MatMFFD ctx)
   ctx->ops->setfromoptions = MatMFFDSetFromOptions_DS;  
 
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ctx->mat,"MatMFFDDSSetUmin_C",
-                            "MatMFFDDSSetUmin_Private",
-                             MatMFFDDSSetUmin_Private);CHKERRQ(ierr);
+                            "MatMFFDDSSetUmin_DS",
+                             MatMFFDDSSetUmin_DS);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 EXTERN_C_END

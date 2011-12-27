@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mumps.c */
 /* Fortran interface file */
 
@@ -38,11 +39,9 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-#undef __FUNCT__ 
-#define __FUNCT__ ""
-void PETSC_STDCALL  matmumpsseticntl_(Mat F,PetscInt *idx,PetscInt *icntl, int *__ierr ){
+void PETSC_STDCALL  matmumpsseticntl_(Mat F,PetscInt *icntl,PetscInt *ival, int *__ierr ){
 *__ierr = MatMumpsSetIcntl(
-	(Mat)PetscToPointer((F) ),*idx,*icntl);
+	(Mat)PetscToPointer((F) ),*icntl,*ival);
 }
 #if defined(__cplusplus)
 }

@@ -1,5 +1,5 @@
-#include "private/fortranimpl.h"
-#include "petscksp.h"
+#include <private/fortranimpl.h>
+#include <petscksp.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define pcasmgetsubksp_            PCASMGETSUBKSP
@@ -38,7 +38,7 @@ void PETSC_STDCALL pcasmdestroysubdomains_(Mat *mat,PetscInt *n,IS *subs,PetscEr
   PetscInt i;
 
   for (i=0; i<*n; i++) {
-    *ierr = ISDestroy(subs[i]);if (*ierr) return;
+    *ierr = ISDestroy(&subs[i]);if (*ierr) return;
   }
 }
 

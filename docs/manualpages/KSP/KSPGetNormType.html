@@ -6,11 +6,12 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="KSPGetNormType"><H1>KSPGetNormType</H1></A>
-Sets the norm that is used for convergence testing. 
+Gets the norm that is used for convergence testing. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetNormType(KSP ksp, KSPNormType *normtype)</PRE>
+PetscErrorCode  KSPGetNormType(KSP ksp, KSPNormType *normtype)
+</PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>

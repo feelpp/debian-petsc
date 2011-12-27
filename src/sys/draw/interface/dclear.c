@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawClear" 
@@ -20,12 +20,12 @@
 
 .seealso: PetscDrawBOP(), PetscDrawEOP(), PetscDrawSynchronizedClear()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawClear(PetscDraw draw)
+PetscErrorCode  PetscDrawClear(PetscDraw draw)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   if (draw->ops->clear) {
     ierr = (*draw->ops->clear)(draw);CHKERRQ(ierr);
   }
@@ -37,7 +37,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawClear(PetscDraw draw)
 /*@
    PetscDrawBOP - Begins a new page or frame on the selected graphical device.
 
-   Collective on PetscDraw
+   Logically Collective on PetscDraw
 
    Input Parameter:
 .  draw - the drawing context
@@ -46,12 +46,12 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawClear(PetscDraw draw)
 
 .seealso: PetscDrawEOP(), PetscDrawClear()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawBOP(PetscDraw draw)
+PetscErrorCode  PetscDrawBOP(PetscDraw draw)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   if (draw->ops->beginpage) {
     ierr = (*draw->ops->beginpage)(draw);CHKERRQ(ierr);
   }
@@ -62,7 +62,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawBOP(PetscDraw draw)
 /*@
    PetscDrawEOP - Ends a page or frame on the selected graphical device.
 
-   Collective on PetscDraw
+   Logically Collective on PetscDraw
 
    Input Parameter:
 .  draw - the drawing context
@@ -71,12 +71,12 @@ PetscErrorCode PETSC_DLLEXPORT PetscDrawBOP(PetscDraw draw)
 
 .seealso: PetscDrawBOP(), PetscDrawClear()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawEOP(PetscDraw draw)
+PetscErrorCode  PetscDrawEOP(PetscDraw draw)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   if (draw->ops->endpage) {
     ierr =  (*draw->ops->endpage)(draw);CHKERRQ(ierr);
   }

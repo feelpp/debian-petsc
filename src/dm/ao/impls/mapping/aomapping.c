@@ -1,4 +1,3 @@
-#define PETSCDM_DLL
 
 /*
   These AO application ordering routines do not require that the input
@@ -6,7 +5,7 @@
   keeps the entire ordering on each processor.
 */
 
-#include "../src/dm/ao/aoimpl.h"          /*I  "petscao.h" I*/
+#include <../src/dm/ao/aoimpl.h>          /*I  "petscao.h" I*/
 
 typedef struct {
   PetscInt N;
@@ -25,7 +24,7 @@ PetscErrorCode AODestroy_Mapping(AO ao)
 
   PetscFunctionBegin;
   ierr = PetscFree4(aomap->app,aomap->appPerm,aomap->petsc,aomap->petscPerm);CHKERRQ(ierr);
-  ierr = PetscFree(ao->data);CHKERRQ(ierr);
+  ierr = PetscFree(aomap);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -36,7 +35,7 @@ PetscErrorCode AOView_Mapping(AO ao, PetscViewer viewer)
   AO_Mapping     *aomap = (AO_Mapping *) ao->data;
   PetscMPIInt    rank;
   PetscInt       i;
-  PetscTruth     iascii;
+  PetscBool      iascii;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
@@ -47,7 +46,7 @@ PetscErrorCode AOView_Mapping(AO ao, PetscViewer viewer)
     viewer = PETSC_VIEWER_STDOUT_SELF; 
   }
 
-  ierr = PetscTypeCompare((PetscObject) viewer, PETSC_VIEWER_ASCII, &iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject) viewer, PETSCVIEWERASCII, &iascii);CHKERRQ(ierr);
   if (iascii) {
     PetscViewerASCIIPrintf(viewer, "Number of elements in ordering %D\n", aomap->N);
     PetscViewerASCIIPrintf(viewer, "   App.   PETSc\n");
@@ -93,7 +92,7 @@ PetscErrorCode AOPetscToApplication_Mapping(AO ao, PetscInt n, PetscInt *ia)
         low  = mid + 1;
       }
     }
-    if (low > high) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE, "Invalid input index %D", idex);
+    if (low > high) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE, "Invalid input index %D", idex);
     ia[i] = app[perm[mid]];
   }
   PetscFunctionReturn(0);
@@ -134,7 +133,7 @@ PetscErrorCode AOApplicationToPetsc_Mapping(AO ao, PetscInt n, PetscInt *ia)
         low  = mid + 1;
       }
     }
-    if (low > high) SETERRQ1(PETSC_ERR_ARG_OUTOFRANGE, "Invalid input index %D", idex);
+    if (low > high) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE, "Invalid input index %D", idex);
     ia[i] = petsc[perm[mid]];
   }
   PetscFunctionReturn(0);
@@ -166,14 +165,14 @@ static struct _AOOps AOps = {AOView_Mapping,
 .keywords: AO, index
 .seealso: AOMappingHasPetscIndex(), AOCreateMapping()
 @*/
-PetscErrorCode PETSCDM_DLLEXPORT AOMappingHasApplicationIndex(AO ao, PetscInt idex, PetscTruth *hasIndex)
+PetscErrorCode  AOMappingHasApplicationIndex(AO ao, PetscInt idex, PetscBool  *hasIndex)
 {
   AO_Mapping *aomap;
   PetscInt   *app;
   PetscInt   low, high, mid;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ao, AO_COOKIE,1);
+  PetscValidHeaderSpecific(ao, AO_CLASSID,1);
   PetscValidPointer(hasIndex,3);
   aomap = (AO_Mapping *) ao->data;
   app   = aomap->app;
@@ -215,14 +214,14 @@ PetscErrorCode PETSCDM_DLLEXPORT AOMappingHasApplicationIndex(AO ao, PetscInt id
 .keywords: AO, index
 .seealso: AOMappingHasApplicationIndex(), AOCreateMapping()
 @*/
-PetscErrorCode PETSCDM_DLLEXPORT AOMappingHasPetscIndex(AO ao, PetscInt idex, PetscTruth *hasIndex)
+PetscErrorCode  AOMappingHasPetscIndex(AO ao, PetscInt idex, PetscBool  *hasIndex)
 {
   AO_Mapping *aomap;
   PetscInt   *petsc;
   PetscInt   low, high, mid;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ao, AO_COOKIE,1);
+  PetscValidHeaderSpecific(ao, AO_CLASSID,1);
   PetscValidPointer(hasIndex,3);
   aomap = (AO_Mapping *) ao->data;
   petsc = aomap->petsc;
@@ -272,7 +271,7 @@ $ -ao_view : call AOView() at the conclusion of AOCreateMapping()
 .keywords: AO, create
 .seealso: AOCreateBasic(), AOCreateBasic(), AOCreateMappingIS(), AODestroy()
 @*/
-PetscErrorCode PETSCDM_DLLEXPORT AOCreateMapping(MPI_Comm comm,PetscInt napp,const PetscInt myapp[],const PetscInt mypetsc[],AO *aoout)
+PetscErrorCode  AOCreateMapping(MPI_Comm comm,PetscInt napp,const PetscInt myapp[],const PetscInt mypetsc[],AO *aoout)
 {
   AO             ao;
   AO_Mapping     *aomap;
@@ -282,17 +281,17 @@ PetscErrorCode PETSCDM_DLLEXPORT AOCreateMapping(MPI_Comm comm,PetscInt napp,con
   PetscMPIInt    size, rank,*lens, *disp,nnapp;
   PetscInt       N, start;
   PetscInt       i;
-  PetscTruth     opt;
+  PetscBool      opt;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   PetscValidPointer(aoout,5);
   *aoout = 0;
 #ifndef PETSC_USE_DYNAMIC_LIBRARIES
-  ierr = DMInitializePackage(PETSC_NULL);CHKERRQ(ierr);
+  ierr = AOInitializePackage(PETSC_NULL);CHKERRQ(ierr);
 #endif
 
-  ierr = PetscHeaderCreate(ao, _p_AO, struct _AOOps, AO_COOKIE, AO_MAPPING, "AO", comm, AODestroy, AOView);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(ao, _p_AO, struct _AOOps, AO_CLASSID, -1, "AO", "Application Ordering", "AO", comm, AODestroy, AOView);CHKERRQ(ierr);
   ierr = PetscNewLog(ao, AO_Mapping, &aomap);CHKERRQ(ierr);
   ierr = PetscMemcpy(ao->ops, &AOps, sizeof(AOps));CHKERRQ(ierr);
   ao->data = (void*) aomap;
@@ -362,8 +361,7 @@ PetscErrorCode PETSCDM_DLLEXPORT AOCreateMapping(MPI_Comm comm,PetscInt napp,con
 #ifdef PETSC_USE_DEBUG
   /* Check that the permutations are complementary */
   for(i = 0; i < N; i++) {
-    if (i != aomap->appPerm[aomap->petscPerm[i]])
-      SETERRQ(PETSC_ERR_PLIB, "Invalid ordering");
+    if (i != aomap->appPerm[aomap->petscPerm[i]]) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB, "Invalid ordering");
   }
 #endif
   /* Cleanup */
@@ -373,7 +371,7 @@ PetscErrorCode PETSCDM_DLLEXPORT AOCreateMapping(MPI_Comm comm,PetscInt napp,con
   ierr = PetscFree4(allapp,appPerm,allpetsc,petscPerm);CHKERRQ(ierr);
 
   opt  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL, "-ao_view", &opt,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL, "-ao_view", &opt,PETSC_NULL);CHKERRQ(ierr);
   if (opt) {
     ierr = AOView(ao, PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
   }
@@ -406,7 +404,7 @@ $ -ao_view : call AOView() at the conclusion of AOCreateMappingIS()
 .keywords: AO, create
 .seealso: AOCreateBasic(), AOCreateMapping(), AODestroy()
 @*/
-PetscErrorCode PETSCDM_DLLEXPORT AOCreateMappingIS(IS isapp, IS ispetsc, AO *aoout)
+PetscErrorCode  AOCreateMappingIS(IS isapp, IS ispetsc, AO *aoout)
 {
   MPI_Comm       comm;
   const PetscInt *mypetsc, *myapp;
@@ -418,7 +416,7 @@ PetscErrorCode PETSCDM_DLLEXPORT AOCreateMappingIS(IS isapp, IS ispetsc, AO *aoo
   ierr = ISGetLocalSize(isapp, &napp);CHKERRQ(ierr);
   if (ispetsc) {
     ierr = ISGetLocalSize(ispetsc, &npetsc);CHKERRQ(ierr);
-    if (napp != npetsc) SETERRQ(PETSC_ERR_ARG_SIZ, "Local IS lengths must match");
+    if (napp != npetsc) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ, "Local IS lengths must match");
     ierr = ISGetIndices(ispetsc, &mypetsc);CHKERRQ(ierr);
   } else {
     mypetsc = NULL;

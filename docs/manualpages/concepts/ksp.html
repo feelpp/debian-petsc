@@ -20,10 +20,10 @@ Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex29.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex33.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex34.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
@@ -46,6 +46,10 @@ Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex23.c.html"><CONCEPT>basic parallel example;</CONCEPT></A>
 <menu>
 Solves a tridiagonal linear system.<BR></menu>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex46.c.html"><CONCEPT>basic parallel example;</CONCEPT></A>
+<menu>
+Solves a linear system in parallel with KSP and DM.<BR>Compare this to ex2 which solves the same problem without a DM.<BR>
+</menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex12.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
@@ -79,10 +83,10 @@ Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex29.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex33.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex35.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
@@ -91,6 +95,10 @@ Subduction Zone Benchmark<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex37.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid in an ion channel.<BR></menu>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex46.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
+<menu>
+Solves a linear system in parallel with KSP and DM.<BR>Compare this to ex2 which solves the same problem without a DM.<BR>
+</menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex15.c.html"><CONCEPT>basic parallel example</CONCEPT></A>
 <menu>
 Solves a linear system in parallel with KSP.  Also<BR>illustrates setting a user-defined shell preconditioner and using the<BR>
@@ -178,6 +186,23 @@ parameters include:<BR>
   -user_set_subdomain_solvers:  User explicitly sets subdomain solvers<BR>
   -user_set_subdomains:  Activate user-defined subdomains<BR>
 </menu>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex8g.c.html"><CONCEPT>Additive Schwarz Method (GASM) with user-defined subdomains</CONCEPT></A>
+<menu>
+Illustrates use of the preconditioner GASM.<BR>The Additive Schwarz Method for solving a linear system in parallel with KSP.  The<BR>
+code indicates the procedure for setting user-defined subdomains.  Input<BR>
+parameters include:<BR>
+  -M:                           Number of mesh points in the x direction<BR>
+  -N:                           Number of mesh points in the y direction<BR>
+  -user_set_subdomain_solvers:  User explicitly sets subdomain solvers<BR>
+  -user_set_subdomains:         Use the user-provided subdomain partitioning routine<BR>
+With -user_set_subdomains on, the following options are meaningful:<BR>
+  -Mdomains:                    Number of subdomains in the x direction <BR>
+  -Ndomains:                    Number of subdomains in the y direction <BR>
+  -overlap:                     Size of domain overlap in terms of the number of mesh lines in x and y<BR>
+General useful options:<BR>
+  -pc_gasm_print_subdomains:    Print the index sets defining the subdomains<BR>
+<BR>
+</menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html"><CONCEPT>solving a linear system</CONCEPT></A>
 <menu>
 Reads a PETSc matrix and vector from a file and solves a linear system.<BR>This version first preloads and solves a small system, then loads <BR>
@@ -213,6 +238,9 @@ Solves a variable Poisson problem with KSP.<BR></menu>
 <BR>
 <BR>
 </menu>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html"><CONCEPT>semi-implicit</CONCEPT></A>
+<menu>
+Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex34.c.html"><CONCEPT>Laplacian, 3d</CONCEPT></A>
 <menu>
 Solves 3D Laplacian using multigrid.<BR></menu>
@@ -248,7 +276,7 @@ Solves 3D Laplacian using multigrid.<BR></menu>
   possible, as it offers many advantages over coding nonlinear solvers independently.<BR>
 <BR>
   We solve the  Bratu (SFI - solid fuel ignition) problem in a 2D rectangular<BR>
-  domain, using distributed arrays (DAs) to partition the parallel grid.<BR>
+  domain, using distributed arrays (DMDAs) to partition the parallel grid.<BR>
 <BR>
 </menu>
 </menu>

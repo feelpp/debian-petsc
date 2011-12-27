@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:35:20+00:00">
+<meta name="date" content="2011-10-29T19:06:07+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -26,8 +26,8 @@
 <a name="line16"> 16: </a><font color="#B22222">     petscmat.h    - matrices</font>
 <a name="line17"> 17: </a><font color="#B22222">     petscis.h     - index sets            petscviewer.h - viewers               </font>
 <a name="line18"> 18: </a><font color="#B22222">*/</font>
-<a name="line19"> 19: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
-<a name="line20"> 20: </a> #include <A href="../../../../include/../src/mat/impls/aij/seq/aij.h.html">../src/mat/impls/aij/seq/aij.h</A>
+<a name="line19"> 19: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
+<a name="line20"> 20: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
 
 <a name="line24"> 24: </a><strong><font color="#4169E1"><a name="PadMatrix"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PadMatrix(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> c,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *B)</font></strong>
 <a name="line25"> 25: </a>{
@@ -74,7 +74,7 @@
 <a name="line70"> 70: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>           fd;               <font color="#B22222">/* viewer */</font>
 <a name="line71"> 71: </a>  char                  file[PETSC_MAX_PATH_LEN];     <font color="#B22222">/* input file name */</font>
 <a name="line72"> 72: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>        ierr;
-<a name="line73"> 73: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>            flg;
+<a name="line73"> 73: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>             flg;
 <a name="line74"> 74: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                   v;
 
 <a name="line76"> 76: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
@@ -84,22 +84,25 @@
 <a name="line80"> 80: </a><font color="#B22222">     Determine files from which we read the two linear systems</font>
 <a name="line81"> 81: </a><font color="#B22222">     (matrix and right-hand-side vector).</font>
 <a name="line82"> 82: </a><font color="#B22222">  */</font>
-<a name="line83"> 83: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-f0"</font>,file,PETSC_MAX_PATH_LEN-1,&amp;flg);
-<a name="line84"> 84: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Must indicate binary file with the -f0 option"</font>);
+<a name="line83"> 83: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-f0"</font>,file,PETSC_MAX_PATH_LEN,&amp;flg);
+<a name="line84"> 84: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"Must indicate binary file with the -f0 option"</font>);
 
 <a name="line86"> 86: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,file,FILE_MODE_READ,&amp;fd);
 
-<a name="line88"> 88: </a>  <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(fd,<A href="../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,&amp;A);
-<a name="line89"> 89: </a>  <A href="../../../../docs/manualpages/Vec/VecLoad.html#VecLoad">VecLoad</A>(fd,<A href="../../../../docs/manualpages/Vec/VECSEQ.html#VECSEQ">VECSEQ</A>,&amp;v);
-<a name="line90"> 90: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(A,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
-<a name="line91"> 91: </a>  PadMatrix(A,v,3.0,&amp;B);
-<a name="line92"> 92: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
-<a name="line93"> 93: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B);
-<a name="line94"> 94: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line88"> 88: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;A);
+<a name="line89"> 89: </a>  <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A,<A href="../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>);
+<a name="line90"> 90: </a>  <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(A,fd);
+<a name="line91"> 91: </a>  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;v);
+<a name="line92"> 92: </a>  <A href="../../../../docs/manualpages/Vec/VecLoad.html#VecLoad">VecLoad</A>(v,fd);
+<a name="line93"> 93: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(A,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
+<a name="line94"> 94: </a>  PadMatrix(A,v,3.0,&amp;B);
+<a name="line95"> 95: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
+<a name="line96"> 96: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
+<a name="line97"> 97: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 
-<a name="line96"> 96: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line97"> 97: </a>  <font color="#4169E1">return</font> 0;
-<a name="line98"> 98: </a>}
+<a name="line99"> 99: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line100">100: </a>  <font color="#4169E1">return</font> 0;
+<a name="line101">101: </a>}
 
 </pre>
 </body>

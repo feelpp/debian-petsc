@@ -1,7 +1,7 @@
 
 static char help[] = "Demonstrates constructing an application ordering.\n\n";
 
-#include "petscao.h"
+#include <petscao.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -35,11 +35,11 @@ int main(int argc,char **argv)
   ierr = ISView(ispetsc,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 
-  ierr = ISDestroy(ispetsc);CHKERRQ(ierr);
-  ierr = ISDestroy(isapp);CHKERRQ(ierr);
+  ierr = ISDestroy(&ispetsc);CHKERRQ(ierr);
+  ierr = ISDestroy(&isapp);CHKERRQ(ierr);
 
-  ierr = AODestroy(ao);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = AODestroy(&ao);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

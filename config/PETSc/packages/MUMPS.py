@@ -3,7 +3,7 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
-    self.download  = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/MUMPS_4.9.2.tar.gz']
+    self.download  = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/MUMPS_4.10.0.tar.gz']
     self.liblist   = [['libcmumps.a','libdmumps.a','libsmumps.a','libzmumps.a','libmumps_common.a','libpord.a'],
                      ['libcmumps.a','libdmumps.a','libsmumps.a','libzmumps.a','libmumps_common.a','libpord.a','libpthread.a']]
     self.functions = ['dmumps_c']
@@ -21,27 +21,37 @@ class Configure(PETSc.package.NewPackage):
     self.scalapack  = framework.require('PETSc.packages.SCALAPACK',self)
     self.parmetis   = framework.require('PETSc.packages.ParMetis',self)
     self.deps       = [self.parmetis,self.scalapack,self.blacs,self.mpi,self.blasLapack]
+    if self.framework.argDB.get('download-scotch') or self.framework.argDB.get('with-scotch'):
+      self.scotch     = framework.require('PETSc.packages.PTScotch',self)
+      self.deps.append(self.scotch)
+    else:
+      self.scotch = 0
     return
-        
+
   def Install(self):
     import os
 
+    if not self.compilers.FortranDefineCompilerOption:
+      raise RuntimeError('Fortran compiler cannot handle preprocessing directives from command line.')
     g = open(os.path.join(self.packageDir,'Makefile.inc'),'w')
     g.write('LPORDDIR   = $(topdir)/PORD/lib/\n')
     g.write('IPORD      = -I$(topdir)/PORD/include/\n')
     g.write('LPORD      = -L$(LPORDDIR) -lpord\n')
-    g.write('IMETIS =\n')
-    g.write('LMETIS = '+self.libraries.toString(self.parmetis.lib)+'\n') 
-
+    g.write('IMETIS = '+self.headers.toString(self.parmetis.include)+'\n')
+    g.write('LMETIS = '+self.libraries.toString(self.parmetis.lib)+'\n')
+    orderingsc = '-Dmetis -Dparmetis -Dpord'
+    orderingsf = self.compilers.FortranDefineCompilerOption+'metis '+self.compilers.FortranDefineCompilerOption+'parmetis '+self.compilers.FortranDefineCompilerOption+'pord'
     # Disable threads on BGL
     if self.libraryOptions.isBGL():
-      g.write('ORDERINGSC = -DWITHOUT_PTHREAD -Dmetis -Dpord\n')
-    else:
-      g.write('ORDERINGSC = -Dmetis -Dpord\n')
-    if self.compilers.FortranDefineCompilerOption:
-      g.write('ORDERINGSF = '+self.compilers.FortranDefineCompilerOption+'metis'+' '+self.compilers.FortranDefineCompilerOption+'pord\n')
-    else:
-      raise RuntimeError('Fortran compiler cannot handle preprocessing directives from command line.')     
+      orderingsc += ' -DWITHOUT_PTHREAD'
+    if self.scotch:
+      g.write('ISCOTCH = '+self.headers.toString(self.scotch.include)+'\n')
+      g.write('LSCOTCH = '+self.libraries.toString(self.scotch.lib)+'\n')
+      orderingsc += ' -Dscotch  -Dptscotch'
+      orderingsf += ' '+self.compilers.FortranDefineCompilerOption+'scotch '+self.compilers.FortranDefineCompilerOption+'ptscotch'
+
+    g.write('ORDERINGSC = '+orderingsc+'\n')
+    g.write('ORDERINGSF = '+orderingsf+'\n')
     g.write('LORDERINGS  = $(LMETIS) $(LPORD) $(LSCOTCH)\n')
     g.write('IORDERINGSC = $(IMETIS) $(IPORD) $(ISCOTCH)\n')
     g.write('IORDERINGSF = $(ISCOTCH)\n')
@@ -50,6 +60,7 @@ class Configure(PETSc.package.NewPackage):
     self.setCompilers.pushLanguage('C')
     g.write('CC = '+self.setCompilers.getCompiler()+'\n')
     g.write('OPTC    = ' + self.setCompilers.getCompilerFlags().replace('-Wall','').replace('-Wshadow','') +'\n')
+    g.write('OUTC = -o \n')
     self.setCompilers.popLanguage()
     if not self.compilers.fortranIsF90:
       raise RuntimeError('Installing MUMPS requires a F90 compiler') 
@@ -57,6 +68,7 @@ class Configure(PETSc.package.NewPackage):
     g.write('FC = '+self.setCompilers.getCompiler()+'\n')
     g.write('FL = '+self.setCompilers.getCompiler()+'\n')
     g.write('OPTF    = ' + self.setCompilers.getCompilerFlags().replace('-Wall','').replace('-Wshadow','').replace('-Mfree','') +'\n')
+    g.write('OUTF = -o \n')
     self.setCompilers.popLanguage()
 
     # set fortran name mangling
@@ -68,7 +80,8 @@ class Configure(PETSc.package.NewPackage):
     elif self.compilers.fortranMangling == 'caps':
       g.write('CDEFS   = -DUPPPER\n')
 
-    g.write('AR      = '+self.setCompilers.AR+' '+self.setCompilers.AR_FLAGS+'\n')
+    g.write('AR      = '+self.setCompilers.AR+' '+self.setCompilers.AR_FLAGS+' \n')
+    g.write('LIBEXT  = .'+self.setCompilers.AR_LIB_SUFFIX+'\n')
     g.write('RANLIB  = '+self.setCompilers.RANLIB+'\n') 
     g.write('SCALAP  = '+self.libraries.toString(self.scalapack.lib)+' '+self.libraries.toString(self.blacs.lib)+'\n')
     g.write('INCPAR  = '+self.headers.toString(self.mpi.include)+'\n')
@@ -77,21 +90,21 @@ class Configure(PETSc.package.NewPackage):
     g.write('LIBSEQ  =  $(LAPACK) -L$(topdir)/libseq -lmpiseq\n')
     g.write('LIBBLAS = '+self.libraries.toString(self.blasLapack.dlib)+'\n')
     g.write('OPTL    = -O -I.\n')
-    g.write('INC = $(INCPAR)\n')
+    g.write('INCS = $(INCPAR)\n')
     g.write('LIB = $(LIBPAR)\n')
     g.write('LIBSEQNEEDED =\n')
     g.close()
     if self.installNeeded('Makefile.inc'):
       try:
-        output1,err1,ret1  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+';make clean', timeout=2500, log = self.framework.log)
+        output1,err1,ret1  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && make clean', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         pass
       try:
         self.logPrintBox('Compiling Mumps; this may take several minutes')
-        output2,err2,ret2 = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+'; make alllib',timeout=2500, log = self.framework.log)
+        output2,err2,ret2 = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' &&  make alllib',timeout=2500, log = self.framework.log)
         libDir     = os.path.join(self.installDir, self.libdir)
         includeDir = os.path.join(self.installDir, self.includedir)
-        output,err,ret = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+'; mv -f lib/*.* '+libDir+'/.; cp -f include/*.* '+includeDir+'/.;', timeout=2500, log = self.framework.log)
+        output,err,ret = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && mv -f lib/*.* '+libDir+'/. && cp -f include/*.* '+includeDir+'/.', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running make on MUMPS: '+str(e))
       self.postInstall(output1+err1+output2+err2,'Makefile.inc')

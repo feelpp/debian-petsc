@@ -10,7 +10,7 @@ Calls an optional user-defined routine within  certain preconditioners if one ha
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCModifySubMatrices(PC pc,PetscInt nsub,const IS row[],const IS col[],Mat submat[],void *ctx)
+PetscErrorCode  PCModifySubMatrices(PC pc,PetscInt nsub,const IS row[],const IS col[],Mat submat[],void *ctx)
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>

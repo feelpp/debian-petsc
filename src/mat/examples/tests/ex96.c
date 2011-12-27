@@ -1,5 +1,5 @@
 
-static char help[] ="Tests sequential and parallel DAGetMatrix(), MatMatMult() and MatPtAP()\n\
+static char help[] ="Tests sequential and parallel DMGetMatrix(), MatMatMult() and MatPtAP()\n\
   -Mx <xg>, where <xg> = number of coarse grid points in the x-direction\n\
   -My <yg>, where <yg> = number of coarse grid points in the y-direction\n\
   -Mz <zg>, where <zg> = number of coarse grid points in the z-direction\n\
@@ -12,24 +12,21 @@ static char help[] ="Tests sequential and parallel DAGetMatrix(), MatMatMult() a
     Example of usage: mpiexec -n 3 ex96 -Mx 10 -My 10 -Mz 10
 */
 
-#include "petscksp.h"
-#include "petscda.h"
-#include "petscmg.h"
-#include "../src/mat/impls/aij/seq/aij.h"
-#include "../src/mat/impls/aij/mpi/mpiaij.h"
+#include <petscdmda.h>
+#include <../src/mat/impls/aij/seq/aij.h>
+#include <../src/mat/impls/aij/mpi/mpiaij.h>
 
 /* User-defined application contexts */
 typedef struct {
    PetscInt   mx,my,mz;         /* number grid points in x, y and z direction */
    Vec        localX,localF;    /* local vectors with ghost region */
-   DA         da;
+   DM         da;
    Vec        x,b,r;            /* global vectors */
    Mat        J;                /* Jacobian on grid */
 } GridCtx;
 typedef struct {
    GridCtx     fine;
    GridCtx     coarse;
-   KSP         ksp_coarse;
    PetscInt    ratio;
    Mat         Ii;              /* interpolation from coarse to fine */
 } AppCtx;
@@ -56,7 +53,7 @@ int main(int argc,char **argv)
   Vec           x,v1,v2,v3,v4;
   PetscReal     norm,norm_tmp,norm_tmp1,tol=1.e-12;
   PetscRandom   rdm;
-  PetscTruth    Test_MatMatMult=PETSC_TRUE,Test_MatPtAP=PETSC_TRUE,Test_3D=PETSC_FALSE,flg;
+  PetscBool     Test_MatMatMult=PETSC_TRUE,Test_MatPtAP=PETSC_TRUE,Test_3D=PETSC_FALSE,flg;
 
   PetscInitialize(&argc,&argv,PETSC_NULL,help);
   ierr = PetscOptionsGetReal(PETSC_NULL,"-tol",&tol,PETSC_NULL);CHKERRQ(ierr);
@@ -80,26 +77,26 @@ int main(int argc,char **argv)
 
   /* Set up distributed array for fine grid */
   if (!Test_3D){
-    ierr = DACreate2d(PETSC_COMM_WORLD,DA_NONPERIODIC,DA_STENCIL_STAR,user.fine.mx,
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,DMDA_STENCIL_STAR,user.fine.mx,
                     user.fine.my,Npx,Npy,1,1,PETSC_NULL,PETSC_NULL,&user.fine.da);CHKERRQ(ierr);
   } else {
-    ierr = DACreate3d(PETSC_COMM_WORLD,DA_NONPERIODIC,DA_STENCIL_STAR,
+    ierr = DMDACreate3d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_STENCIL_STAR,
                     user.fine.mx,user.fine.my,user.fine.mz,Npx,Npy,Npz,
                     1,1,PETSC_NULL,PETSC_NULL,PETSC_NULL,&user.fine.da);CHKERRQ(ierr);
   }
 
-  /* Test DAGetMatrix()                                         */
+  /* Test DMGetMatrix()                                         */
   /*------------------------------------------------------------*/
-  ierr = DAGetMatrix(user.fine.da,MATAIJ,&A);CHKERRQ(ierr);
-  ierr = DAGetMatrix(user.fine.da,MATBAIJ,&C);CHKERRQ(ierr);
+  ierr = DMGetMatrix(user.fine.da,MATAIJ,&A);CHKERRQ(ierr);
+  ierr = DMGetMatrix(user.fine.da,MATBAIJ,&C);CHKERRQ(ierr);
   
   ierr = MatConvert(C,MATAIJ,MAT_INITIAL_MATRIX,&A_tmp);CHKERRQ(ierr); /* not work for mpisbaij matrix! */
   ierr = MatEqual(A,A_tmp,&flg);CHKERRQ(ierr);
   if (!flg) {
-    SETERRQ(PETSC_ERR_ARG_NOTSAMETYPE,"A != C"); 
+    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_NOTSAMETYPE,"A != C"); 
   }
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = MatDestroy(A_tmp);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = MatDestroy(&A_tmp);CHKERRQ(ierr);
   
   /*------------------------------------------------------------*/
   
@@ -127,16 +124,16 @@ int main(int argc,char **argv)
 
   /* Set up distributed array for coarse grid */
   if (!Test_3D){
-    ierr = DACreate2d(PETSC_COMM_WORLD,DA_NONPERIODIC,DA_STENCIL_STAR,user.coarse.mx,
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,DMDA_STENCIL_STAR,user.coarse.mx,
                     user.coarse.my,Npx,Npy,1,1,PETSC_NULL,PETSC_NULL,&user.coarse.da);CHKERRQ(ierr);
   } else {
-    ierr = DACreate3d(PETSC_COMM_WORLD,DA_NONPERIODIC,DA_STENCIL_STAR,
+    ierr = DMDACreate3d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_STENCIL_STAR,
                     user.coarse.mx,user.coarse.my,user.coarse.mz,Npx,Npy,Npz,
                     1,1,PETSC_NULL,PETSC_NULL,PETSC_NULL,&user.coarse.da);CHKERRQ(ierr);
   }
 
   /* Create interpolation between the levels */
-  ierr = DAGetInterpolation(user.coarse.da,user.fine.da,&P,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMGetInterpolation(user.coarse.da,user.fine.da,&P,PETSC_NULL);CHKERRQ(ierr);
   
   ierr = MatGetLocalSize(P,&m,&n);CHKERRQ(ierr);
   ierr = MatGetSize(P,&M,&N);CHKERRQ(ierr);
@@ -168,8 +165,8 @@ int main(int argc,char **argv)
     /*----------------------------*/
     ierr = MatDuplicate(C,MAT_COPY_VALUES,&C1);CHKERRQ(ierr);
     ierr = MatDuplicate(C1,MAT_COPY_VALUES,&C2);CHKERRQ(ierr);
-    ierr = MatDestroy(C1);CHKERRQ(ierr);
-    ierr = MatDestroy(C2);CHKERRQ(ierr);
+    ierr = MatDestroy(&C1);CHKERRQ(ierr);
+    ierr = MatDestroy(&C2);CHKERRQ(ierr);
 
     /* Create vector x that is compatible with P */
     ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
@@ -193,9 +190,9 @@ int main(int argc,char **argv)
       ierr = PetscPrintf(PETSC_COMM_SELF,"Error: MatMatMult(), |v1 - v2|/|v2|: %G\n",norm);CHKERRQ(ierr);
     }
     
-    ierr = VecDestroy(x);CHKERRQ(ierr);
-    ierr = MatDestroy(C);CHKERRQ(ierr);
-    ierr = MatDestroy(A_tmp);CHKERRQ(ierr);
+    ierr = VecDestroy(&x);CHKERRQ(ierr);
+    ierr = MatDestroy(&C);CHKERRQ(ierr);
+    ierr = MatDestroy(&A_tmp);CHKERRQ(ierr);
   }
 
   /* Test P^T * A * P - MatPtAP() */ 
@@ -216,8 +213,8 @@ int main(int argc,char **argv)
     /*----------------------------*/
     ierr = MatDuplicate(C,MAT_COPY_VALUES,&C1);CHKERRQ(ierr);
     ierr = MatDuplicate(C1,MAT_COPY_VALUES,&C2);CHKERRQ(ierr); 
-    ierr = MatDestroy(C1);CHKERRQ(ierr); 
-    ierr = MatDestroy(C2);CHKERRQ(ierr); 
+    ierr = MatDestroy(&C1);CHKERRQ(ierr); 
+    ierr = MatDestroy(&C2);CHKERRQ(ierr); 
 
     /* Create vector x that is compatible with P */
     ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
@@ -248,23 +245,23 @@ int main(int argc,char **argv)
       ierr = PetscPrintf(PETSC_COMM_SELF,"Error: MatPtAP(), |v3 - v4|/|v3|: %G\n",norm);CHKERRQ(ierr);
     }
   
-    ierr = MatDestroy(C);CHKERRQ(ierr);
-    ierr = VecDestroy(v3);CHKERRQ(ierr);
-    ierr = VecDestroy(v4);CHKERRQ(ierr);
-    ierr = VecDestroy(x);CHKERRQ(ierr);
+    ierr = MatDestroy(&C);CHKERRQ(ierr);
+    ierr = VecDestroy(&v3);CHKERRQ(ierr);
+    ierr = VecDestroy(&v4);CHKERRQ(ierr);
+    ierr = VecDestroy(&x);CHKERRQ(ierr);
  
   }
 
   /* Clean up */
-   ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(rdm);CHKERRQ(ierr);
-  ierr = VecDestroy(v1);CHKERRQ(ierr);
-  ierr = VecDestroy(v2);CHKERRQ(ierr);
-  ierr = DADestroy(user.fine.da);CHKERRQ(ierr);
-  ierr = DADestroy(user.coarse.da);CHKERRQ(ierr);
-  ierr = MatDestroy(P);CHKERRQ(ierr); 
+   ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rdm);CHKERRQ(ierr);
+  ierr = VecDestroy(&v1);CHKERRQ(ierr);
+  ierr = VecDestroy(&v2);CHKERRQ(ierr);
+  ierr = DMDestroy(&user.fine.da);CHKERRQ(ierr);
+  ierr = DMDestroy(&user.coarse.da);CHKERRQ(ierr);
+  ierr = MatDestroy(&P);CHKERRQ(ierr); 
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }

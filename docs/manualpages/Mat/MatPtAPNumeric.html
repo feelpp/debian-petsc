@@ -6,13 +6,13 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="MatPtAPNumeric"><H1>MatPtAPNumeric</H1></A>
-Computes the matrix projection C = P^T * A * P 
+Computes the matrix product C = P^T * A * P 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatPtAPNumeric(Mat A,Mat P,Mat C) 
+PetscErrorCode  MatPtAPNumeric(Mat A,Mat P,Mat C) 
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

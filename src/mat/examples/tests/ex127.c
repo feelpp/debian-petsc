@@ -5,7 +5,7 @@ static char help[] = "Test MatMult() for Hermitian matrix.\n\n";
     mpiexec -n 2 ./ex127 
 */
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -13,7 +13,7 @@ PetscInt main(PetscInt argc,char **args)
 {
   Mat            A,As;    
   Vec            x,y,ys;
-  PetscTruth     flg,disp_mat=PETSC_FALSE,disp_vec=PETSC_FALSE;  
+  PetscBool      flg,disp_mat=PETSC_FALSE,disp_vec=PETSC_FALSE;  
   PetscErrorCode ierr;
   PetscMPIInt    size,rank;
   PetscInt       m,i,j; 
@@ -24,7 +24,7 @@ PetscInt main(PetscInt argc,char **args)
   
   PetscInitialize(&argc,&args,(char *)0,help);
 #if !defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"This example requires complex numbers");
+  SETERRQ(PETSC_COMM_WORLD,1,"This example requires complex numbers");
 #endif
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
@@ -76,8 +76,8 @@ PetscInt main(PetscInt argc,char **args)
     Mat Trans;
     ierr = MatTranspose(A,MAT_INITIAL_MATRIX, &Trans);
     ierr = MatEqual(A, Trans, &flg);
-    if (!flg) SETERRQ(PETSC_ERR_USER,"A is not symmetric");
-    ierr = MatDestroy(Trans);CHKERRQ(ierr);
+    if (!flg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_USER,"A is not symmetric");
+    ierr = MatDestroy(&Trans);CHKERRQ(ierr);
   } 
   ierr = MatSetOption(A,MAT_SYMMETRIC,PETSC_TRUE);CHKERRQ(ierr);
 
@@ -115,8 +115,8 @@ PetscInt main(PetscInt argc,char **args)
       ierr = MatView(Hermit,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
     }
     ierr = MatEqual(A, Hermit, &flg);
-    if (!flg) SETERRQ(PETSC_ERR_USER,"A is not Hermitian");
-    ierr = MatDestroy(Hermit);CHKERRQ(ierr);
+    if (!flg) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_USER,"A is not Hermitian");
+    ierr = MatDestroy(&Hermit);CHKERRQ(ierr);
   }
   ierr = MatSetOption(A,MAT_HERMITIAN,PETSC_TRUE);CHKERRQ(ierr);
   
@@ -159,13 +159,13 @@ PetscInt main(PetscInt argc,char **args)
   }
 
   /* Free spaces */
-  if (use_random) {ierr = PetscRandomDestroy(rctx);CHKERRQ(ierr);}
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(As);CHKERRQ(ierr);
+  if (use_random) {ierr = PetscRandomDestroy(&rctx);CHKERRQ(ierr);}
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&As);CHKERRQ(ierr);
   
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = VecDestroy(ys);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = VecDestroy(&ys);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

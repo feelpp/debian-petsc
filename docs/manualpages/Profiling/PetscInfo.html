@@ -6,8 +6,7 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscInfo"><H1>PetscInfo</H1></A>
-Logs informative data, which is printed to standard output or a file when the option -info &lt;file&gt; is specified. Collective over <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> argument
-<P>
+Logs informative data, which is printed to standard output or a file when the option -info &lt;file&gt; is specified. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 PetscErrorCode PetscInfo(void *vobj, const char message[])
@@ -15,6 +14,8 @@ PetscErrorCode PetscInfo1(void *vobj, const char formatmessage[],arg1)
 PetscErrorCode PetscInfo2(void *vobj, const char formatmessage[],arg1,arg2)
 etc
 </PRE>
+Collective over <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> argument
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>vobj </B></TD><TD>- object most closely associated with the logging statement or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>

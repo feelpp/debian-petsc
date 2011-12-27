@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* matlab.c */
 /* Fortran interface file */
 
@@ -47,16 +48,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscmatlabenginedestroy_(PetscMatlabEngine v, int *__ierr ){
-*__ierr = PetscMatlabEngineDestroy(
-	(PetscMatlabEngine)PetscToPointer((v) ));
+void PETSC_STDCALL  petscmatlabenginedestroy_(PetscMatlabEngine *v, int *__ierr ){
+*__ierr = PetscMatlabEngineDestroy(v);
 }
-void PETSC_STDCALL   petscmatlabengineput_(PetscMatlabEngine mengine,PetscObject obj, int *__ierr ){
+void PETSC_STDCALL  petscmatlabengineput_(PetscMatlabEngine mengine,PetscObject obj, int *__ierr ){
 *__ierr = PetscMatlabEnginePut(
 	(PetscMatlabEngine)PetscToPointer((mengine) ),
 	(PetscObject)PetscToPointer((obj) ));
 }
-void PETSC_STDCALL   petscmatlabengineget_(PetscMatlabEngine mengine,PetscObject obj, int *__ierr ){
+void PETSC_STDCALL  petscmatlabengineget_(PetscMatlabEngine mengine,PetscObject obj, int *__ierr ){
 *__ierr = PetscMatlabEngineGet(
 	(PetscMatlabEngine)PetscToPointer((mengine) ),
 	(PetscObject)PetscToPointer((obj) ));

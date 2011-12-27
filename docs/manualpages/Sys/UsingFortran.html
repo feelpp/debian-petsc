@@ -10,7 +10,7 @@ Fortran can be used with PETSc in four distinct approaches
 <pre>
    1) classic Fortran 77 style
 </pre>
-.#include "petscXXX.h" to work with material from the XXX component of PETSc
+.#include "finclude/petscXXX.h" to work with material from the XXX component of PETSc
 </pre>
 <pre>
       XXX variablename
@@ -26,9 +26,9 @@ Fortran can be used with PETSc in four distinct approaches
 <pre>
    2) classic Fortran 90 style
 </pre>
-.#include "petscXXX.h" 
+.#include "finclude/petscXXX.h" 
 </pre>
-.#include "petscXXX.h90" to work with material from the XXX component of PETSc
+.#include "finclude/petscXXX.h90" to work with material from the XXX component of PETSc
 </pre>
 <pre>
       XXX variablename
@@ -38,7 +38,7 @@ Fortran can be used with PETSc in four distinct approaches
 <pre>
    3) Using Fortran modules
 </pre>
-.#include "petscXXXdef.h" 
+.#include "finclude/petscXXXdef.h" 
 </pre>
 <pre>
         use petscXXXX
@@ -51,7 +51,7 @@ Fortran can be used with PETSc in four distinct approaches
 <pre>
    4) Use Fortran modules and Fortran data types for PETSc types
 </pre>
-.#include "petscXXXdef.h" 
+.#include "finclude/petscXXXdef.h" 
 </pre>
 <pre>
         use petscXXXX
@@ -60,7 +60,7 @@ Fortran can be used with PETSc in four distinct approaches
       type(XXX) variablename
 </pre>
 <pre>
-     To use this approach you must config/configure.py PETSc with the additional
+     To use this approach you must ./configure PETSc with the additional
 </pre>
 <pre>
      option --with-fortran-datatypes You cannot use the type(XXX) declaration approach without using Fortran modules
@@ -129,7 +129,7 @@ their finclude/petscXXXdef.h file but DO NOT automatically include their predece
 finclude/petscvec.h does NOT automatically include finclude/petscis.h
 <P>
 The finclude/ftn-custom/petscXXXdef.h90 are not intended to be used directly in code, they define the
-Fortran data type type(XXX) (for example type(<A HREF="../Vec/Vec.html#Vec">Vec</A>)) when PETSc is config/configure.py with the --with-fortran-datatypes option.
+Fortran data type type(XXX) (for example type(<A HREF="../Vec/Vec.html#Vec">Vec</A>)) when PETSc is ./configure with the --with-fortran-datatypes option.
 <P>
 The finclude/ftn-custom/petscXXX.h90 (not included directly by code) contain interface definitions for
 the PETSc Fortran stubs that have different bindings then their C version (for example <A HREF="../Vec/VecGetArrayF90.html#VecGetArrayF90">VecGetArrayF90</A>).
@@ -137,7 +137,7 @@ the PETSc Fortran stubs that have different bindings then their C version (for e
 The finclude/ftn-auto/petscXXX.h90 (not included directly by code) contain interface definitions generated
 automatically by "make allfortranstubs".
 <P>
-The finclude/petscXXX.h90 includes the custom finclude/ftn-custom/petscXXX.h90 and if config/configure.py
+The finclude/petscXXX.h90 includes the custom finclude/ftn-custom/petscXXX.h90 and if ./configure
 was run with --with-fortran-interfaces it also includes the finclude/ftn-auto/petscXXX.h90 These DO NOT automatically
 include their predecessors
 <P>

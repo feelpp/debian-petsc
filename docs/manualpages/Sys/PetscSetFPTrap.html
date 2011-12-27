@@ -29,6 +29,16 @@ On systems that support it, this routine causes floating point
 overflow, divide-by-zero, and invalid-operand (e.g., a NaN) to
 cause a message to be printed and the program to exit.
 <P>
+<H3><FONT COLOR="#CC3333">Note</FONT></H3>
+On many common systems including x86 and x86-64 Linux, the floating
+point exception state is not preserved from the location where the trap
+occurred through to the signal handler.  In this case, the signal handler
+will just say that an unknown floating point exception occurred and which
+function it occurred in.  If you run with -fp_trap in a debugger, it will
+break on the line where the error occurred.  You can check which
+exception occurred using fetestexcept(FE_ALL_EXCEPT).  See fenv.h
+(usually at /usr/include/bits/fenv.h) for the enum values on your system.
+<P>
 <H3><FONT COLOR="#CC3333">Caution</FONT></H3>
 On certain machines, in particular the IBM rs6000, floating point
 trapping is VERY slow!

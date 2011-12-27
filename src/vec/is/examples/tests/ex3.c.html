@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:26:04+00:00">
+<meta name="date" content="2011-10-29T18:56:55+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -14,7 +14,7 @@
 
 <a name="line5">  5: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../../docs/manualpages/IS/ISAllGather.html#ISAllGather">ISAllGather</A>().\n\n"</font>;
 
-<a name="line7"> 7: </a> #include <A href="../../../../../include/petscis.h.html">petscis.h</A>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petscis.h&gt;</font>
 
 <a name="line11"> 11: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line12"> 12: </a>{
@@ -34,7 +34,7 @@
 <a name="line27"> 27: </a>  <font color="#4169E1">for</font> (i=0; i&lt;n; i++) {
 <a name="line28"> 28: </a>    indices[i] = rank + i;
 <a name="line29"> 29: </a>  }
-<a name="line30"> 30: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,n,indices,&amp;is);
+<a name="line30"> 30: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,n,indices,PETSC_COPY_VALUES,&amp;is);
 <a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(indices);
 
 <a name="line33"> 33: </a>  <font color="#B22222">/*</font>
@@ -46,8 +46,8 @@
 <a name="line39"> 39: </a>    <A href="../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(newis,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
 <a name="line40"> 40: </a>  }
 
-<a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(newis);
-<a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is);
+<a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;newis);
+<a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is);
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line45"> 45: </a>  <font color="#4169E1">return</font> 0;
 <a name="line46"> 46: </a>}

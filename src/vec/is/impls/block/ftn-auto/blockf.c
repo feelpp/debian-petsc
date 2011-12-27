@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* block.c */
 /* Fortran interface file */
 
@@ -28,19 +29,14 @@ extern void PetscRmPointer(void*);
 
 #include "petscis.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define isblocksetindices_ ISBLOCKSETINDICES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define isblocksetindices_ isblocksetindices
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define iscreateblock_ ISCREATEBLOCK
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define iscreateblock_ iscreateblock
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define isblockgetblocksize_ ISBLOCKGETBLOCKSIZE
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define isblockgetblocksize_ isblockgetblocksize
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define isblock_ ISBLOCK
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define isblock_ isblock
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define isblockgetlocalsize_ ISBLOCKGETLOCALSIZE
@@ -58,23 +54,19 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   iscreateblock_(MPI_Fint * comm,PetscInt *bs,PetscInt *n, PetscInt idx[],IS *is, int *__ierr ){
+void PETSC_STDCALL  isblocksetindices_(IS is,PetscInt *bs,PetscInt *n, PetscInt idx[],PetscCopyMode *mode, int *__ierr ){
+*__ierr = ISBlockSetIndices(
+	(IS)PetscToPointer((is) ),*bs,*n,idx,*mode);
+}
+void PETSC_STDCALL  iscreateblock_(MPI_Fint * comm,PetscInt *bs,PetscInt *n, PetscInt idx[],PetscCopyMode *mode,IS *is, int *__ierr ){
 *__ierr = ISCreateBlock(
-	MPI_Comm_f2c( *(comm) ),*bs,*n,idx,is);
+	MPI_Comm_f2c( *(comm) ),*bs,*n,idx,*mode,is);
 }
-void PETSC_STDCALL   isblockgetblocksize_(IS is,PetscInt *size, int *__ierr ){
-*__ierr = ISBlockGetBlockSize(
-	(IS)PetscToPointer((is) ),size);
-}
-void PETSC_STDCALL   isblock_(IS is,PetscTruth *flag, int *__ierr ){
-*__ierr = ISBlock(
-	(IS)PetscToPointer((is) ),flag);
-}
-void PETSC_STDCALL   isblockgetlocalsize_(IS is,PetscInt *size, int *__ierr ){
+void PETSC_STDCALL  isblockgetlocalsize_(IS is,PetscInt *size, int *__ierr ){
 *__ierr = ISBlockGetLocalSize(
 	(IS)PetscToPointer((is) ),size);
 }
-void PETSC_STDCALL   isblockgetsize_(IS is,PetscInt *size, int *__ierr ){
+void PETSC_STDCALL  isblockgetsize_(IS is,PetscInt *size, int *__ierr ){
 *__ierr = ISBlockGetSize(
 	(IS)PetscToPointer((is) ),size);
 }

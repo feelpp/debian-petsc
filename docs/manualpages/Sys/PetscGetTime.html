@@ -9,7 +9,7 @@
 Returns the current time of day in seconds. This  returns wall-clock time.   
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscGetTime(PetscLogDouble *t)
+PetscErrorCode  PetscGetTime(PetscLogDouble *t)
 </PRE>
 Not Collective
 <P>
@@ -19,7 +19,7 @@ Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Usage</FONT></H3>
 <PRE>
-      #include "petsctime.h"
+      #include &lt;petsctime.h&gt;
 
       PetscLogDouble v1,v2,elapsed_time;
       ierr = <A HREF="../Sys/PetscGetTime.html#PetscGetTime">PetscGetTime</A>(&amp;v1);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
@@ -35,7 +35,7 @@ Requires explicitly including "petsctime.h"
 Since the PETSc libraries incorporate timing of phases and operations,
 <A HREF="../Sys/PetscGetTime.html#PetscGetTime">PetscGetTime</A>() is intended only for timing of application codes.
 The options database commands -log, -log_summary, and -log_all activate
-PETSc library timing.  See the users manual for further details.
+PETSc library timing.
 <P>
 
 <P>
@@ -52,5 +52,6 @@ PETSc library timing.  See the users manual for further details.
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex27.c.html">src/snes/examples/tutorials/ex27.c.html</A><BR>
 </BODY></HTML>

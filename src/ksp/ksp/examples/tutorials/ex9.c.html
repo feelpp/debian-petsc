@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:18+00:00">
+<meta name="date" content="2011-10-29T19:12:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -29,7 +29,7 @@
 <a name="line19"> 19: </a><font color="#B22222">     petscis.h     - index sets            petscksp.h - Krylov subspace methods</font>
 <a name="line20"> 20: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
 <a name="line21"> 21: </a><font color="#B22222">*/</font>
-<a name="line22"> 22: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line22"> 22: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line24"> 24: </a><font color="#B22222">/* </font>
 <a name="line25"> 25: </a><font color="#B22222">   Declare user-defined routines</font>
@@ -42,14 +42,14 @@
 <a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            C1,C2;         <font color="#B22222">/* matrices for systems #1 and #2 */</font>
 <a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>            ksp1,ksp2;   <font color="#B22222">/* <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> contexts for systems #1 and #2 */</font>
 <a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       ntimes = 3;     <font color="#B22222">/* number of times to solve the linear systems */</font>
-<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/Sys/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A>  CHECK_ERROR;    <font color="#B22222">/* event number for error checking */</font>
+<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A>  CHECK_ERROR;    <font color="#B22222">/* event number for error checking */</font>
 <a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       ldim,low,high,iglobal,Istart,Iend,Istart2,Iend2;
 <a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       Ii,J,i,j,m = 3,n = 2,its,t;
-<a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v;
 <a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank,size;
 <a name="line46"> 46: </a><font color="#A020F0">#if defined (PETSC_USE_LOG)</font>
-<a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Sys/PetscLogStage.html#PetscLogStage">PetscLogStage</A>  stages[3];
+<a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Profiling/PetscLogStage.html#PetscLogStage">PetscLogStage</A>  stages[3];
 <a name="line48"> 48: </a><font color="#A020F0">#endif</font>
 
 <a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
@@ -70,7 +70,7 @@
 <a name="line65"> 65: </a><font color="#B22222">     Register a user-defined event for profiling (error checking).</font>
 <a name="line66"> 66: </a><font color="#B22222">  */</font>
 <a name="line67"> 67: </a>  CHECK_ERROR = 0;
-<a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"Check Error"</font>,KSP_COOKIE,&amp;CHECK_ERROR);
+<a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"Check Error"</font>,KSP_CLASSID,&amp;CHECK_ERROR);
 
 <a name="line70"> 70: </a>  <font color="#B22222">/* - - - - - - - - - - - - Stage 0: - - - - - - - - - - - - - -</font>
 <a name="line71"> 71: </a><font color="#B22222">                        Preliminary Setup</font>
@@ -112,7 +112,7 @@
 <a name="line107">107: </a>  <font color="#B22222">/* </font>
 <a name="line108">108: </a><font color="#B22222">     Set user-defined monitoring routine for first linear system.</font>
 <a name="line109">109: </a><font color="#B22222">  */</font>
-<a name="line110">110: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetTruth.html#PetscOptionsGetTruth">PetscOptionsGetTruth</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-my_ksp_monitor"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line110">110: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-my_ksp_monitor"</font>,&amp;flg,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line111">111: </a>  <font color="#4169E1">if</font> (flg) {<A href="../../../../../docs/manualpages/KSP/KSPMonitorSet.html#KSPMonitorSet">KSPMonitorSet</A>(ksp1,MyKSPMonitor,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,0);}
 
 <a name="line113">113: </a>  <font color="#B22222">/*</font>
@@ -360,11 +360,11 @@
 <a name="line355">355: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
 <a name="line356">356: </a><font color="#B22222">     are no longer needed.</font>
 <a name="line357">357: </a><font color="#B22222">  */</font>
-<a name="line358">358: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp1); <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp2);
-<a name="line359">359: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x1);   <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x2);
-<a name="line360">360: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b1);   <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b2);
-<a name="line361">361: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C1);   <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C2);
-<a name="line362">362: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
+<a name="line358">358: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp1); <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp2);
+<a name="line359">359: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x1);   <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x2);
+<a name="line360">360: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b1);   <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b2);
+<a name="line361">361: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C1);   <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C2);
+<a name="line362">362: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
 
 <a name="line364">364: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line365">365: </a>  <font color="#4169E1">return</font> 0;
@@ -392,7 +392,7 @@
 <a name="line389">389: </a><font color="#B22222">    the event (the vectors u,x,b).  Such information is optional;</font>
 <a name="line390">390: </a><font color="#B22222">    we could instead just use 0 instead for all objects.</font>
 <a name="line391">391: </a><font color="#B22222">*/</font>
-<a name="line392">392: </a><strong><font color="#4169E1"><a name="CheckError"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CheckError(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> u,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its,<A href="../../../../../docs/manualpages/Sys/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> CHECK_ERROR)</font></strong>
+<a name="line392">392: </a><strong><font color="#4169E1"><a name="CheckError"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CheckError(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> u,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its,<A href="../../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> CHECK_ERROR)</font></strong>
 <a name="line393">393: </a>{
 <a name="line394">394: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    none = -1.0;
 <a name="line395">395: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;

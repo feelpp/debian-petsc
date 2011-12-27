@@ -9,7 +9,7 @@
 Creates a socket viewer shared by all processors in a communicator. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscViewer PETSC_DLLEXPORT PETSC_VIEWER_SOCKET_(MPI_Comm comm)
+PetscViewer  PETSC_VIEWER_SOCKET_(MPI_Comm comm)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -41,12 +41,12 @@ an error code.  The socket <A HREF="../Viewer/PetscViewer.html#PetscViewer">Pets
       XXXView(XXX object,<A HREF="../Viewer/PETSC_VIEWER_SOCKET_.html#PETSC_VIEWER_SOCKET_">PETSC_VIEWER_SOCKET_</A>(comm));
 </pre>
 <P>
-Currently the only socket client available is Matlab. See
+Currently the only socket client available is MATLAB. See
 src/dm/da/examples/tests/ex12.c and ex12.m for an example of usage.
 <P>
 Connects to a waiting socket and stays connected until <A HREF="../Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>() is called.
 <P>
-Use this for communicating with an interactive Matlab session, see <A HREF="../Viewer/PETSC_VIEWER_MATLAB_.html#PETSC_VIEWER_MATLAB_">PETSC_VIEWER_MATLAB_</A>() for communicating with the Matlab engine.
+Use this for communicating with an interactive MATLAB session, see <A HREF="../Viewer/PETSC_VIEWER_MATLAB_.html#PETSC_VIEWER_MATLAB_">PETSC_VIEWER_MATLAB_</A>() for communicating with the MATLAB engine.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Viewer/PETSC_VIEWER_SOCKET_WORLD.html#PETSC_VIEWER_SOCKET_WORLD">PETSC_VIEWER_SOCKET_WORLD</A>, <A HREF="../Viewer/PETSC_VIEWER_SOCKET_SELF.html#PETSC_VIEWER_SOCKET_SELF">PETSC_VIEWER_SOCKET_SELF</A>, <A HREF="../Viewer/PetscViewerSocketOpen.html#PetscViewerSocketOpen">PetscViewerSocketOpen</A>(), <A HREF="../Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(),

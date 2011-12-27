@@ -22,15 +22,17 @@ Thus must be cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObj
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>name </B></TD><TD>- name associated with child object 
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ptr </B></TD><TD>- the other PETSc object associated with the PETSc object, this must also be 
-cast with (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ptr </B></TD><TD>- the other PETSc object associated with the PETSc object, this must be 
+cast with (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> *)
 </TD></TR></TABLE>
 <P>
 
 <P>
+The reference count of neither object is increased in this call
+<P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>()
+ <A HREF="../Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/objects/inherit.c.html#PetscObjectQuery">src/sys/objects/inherit.c</A>
 <BR><A HREF="./index.html">Index of all Sys routines</A>
@@ -38,5 +40,7 @@ cast with (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex29.c.html">src/ksp/ksp/examples/tutorials/ex29.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex50.c.html">src/ksp/ksp/examples/tutorials/ex50.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
 </BODY></HTML>

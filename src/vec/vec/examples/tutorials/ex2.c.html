@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:40+00:00">
+<meta name="date" content="2011-10-29T18:56:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -23,7 +23,7 @@
 <a name="line13"> 13: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscis.h     - index sets</font>
 <a name="line14"> 14: </a><font color="#B22222">     petscviewer.h - viewers</font>
 <a name="line15"> 15: </a><font color="#B22222">*/</font>
-<a name="line16"> 16: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line16"> 16: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line20"> 20: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line21"> 21: </a>{
@@ -76,7 +76,7 @@
 <a name="line69"> 69: </a><font color="#B22222">      View the vector; then destroy it.</font>
 <a name="line70"> 70: </a><font color="#B22222">  */</font>
 <a name="line71"> 71: </a>  <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
-<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
+<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
 
 <a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line75"> 75: </a>  <font color="#4169E1">return</font> 0;

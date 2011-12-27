@@ -1,14 +1,13 @@
-#define PETSCMAT_DLL
 
 /*
   Defines matrix-matrix product routines for pairs of SeqAIJ matrices
           C = A * B
 */
 
-#include "../src/mat/impls/aij/seq/aij.h" /*I "petscmat.h" I*/
-#include "../src/mat/utils/freespace.h"
-#include "petscbt.h"
-#include "../src/mat/impls/dense/seq/dense.h" /*I "petscmat.h" I*/
+#include <../src/mat/impls/aij/seq/aij.h> /*I "petscmat.h" I*/
+#include <../src/mat/utils/freespace.h>
+#include <petscbt.h>
+#include <../src/mat/impls/dense/seq/dense.h> /*I "petscmat.h" I*/
 
 EXTERN_C_BEGIN
 #undef __FUNCT__
@@ -38,6 +37,7 @@ PetscErrorCode MatMatMultSymbolic_SeqAIJ_SeqAIJ(Mat A,Mat B,PetscReal fill,Mat *
   PetscInt           i,j,anzi,brow,bnzj,cnzi,nlnk,*lnk,nspacedouble=0;
   MatScalar          *ca;
   PetscBT            lnkbt;
+  PetscReal          afill;
 
   PetscFunctionBegin;
   /* Set up */
@@ -107,10 +107,17 @@ PetscErrorCode MatMatMultSymbolic_SeqAIJ_SeqAIJ(Mat A,Mat B,PetscReal fill,Mat *
   c->free_ij  = PETSC_TRUE;
   c->nonew    = 0;
 
+  /* set MatInfo */
+  afill = (PetscReal)ci[am]/(ai[am]+bi[bm]) + 1.e-5;
+  if (afill < 1.0) afill = 1.0;
+  c->maxnz                     = ci[am]; 
+  c->nz                        = ci[am];
+  (*C)->info.mallocs           = nspacedouble;
+  (*C)->info.fill_ratio_given  = fill;               
+  (*C)->info.fill_ratio_needed = afill; 
+
 #if defined(PETSC_USE_INFO)
-  if (ci[am] != 0) {
-    PetscReal afill = ((PetscReal)ci[am])/(ai[am]+bi[bm]);
-    if (afill < 1.0) afill = 1.0;
+  if (ci[am]) {
     ierr = PetscInfo3((*C),"Reallocs %D; Fill ratio: given %G needed %G.\n",nspacedouble,fill,afill);CHKERRQ(ierr);
     ierr = PetscInfo1((*C),"Use MatMatMult(A,B,MatReuse,%G,&C) for best performance.;\n",afill);CHKERRQ(ierr);
   } else {
@@ -199,9 +206,8 @@ PetscErrorCode MatMatMultTransposeSymbolic_SeqAIJ_SeqAIJ(Mat A,Mat B,PetscReal f
   ierr = MatMatMultSymbolic_SeqAIJ_SeqAIJ(At,B,fill,C);CHKERRQ(ierr);
 
   /* clean up */
-  ierr = MatDestroy(At);CHKERRQ(ierr);
+  ierr = MatDestroy(&At);CHKERRQ(ierr);
   ierr = MatRestoreSymbolicTranspose_SeqAIJ(A,&ati,&atj);CHKERRQ(ierr);
- 
   PetscFunctionReturn(0);
 }
 
@@ -273,7 +279,7 @@ PetscErrorCode MatMatMultSymbolic_SeqAIJ_SeqDense(Mat A,Mat B,PetscReal fill,Mat
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = MatMatMultSymbolic_SeqDense_SeqDense(A,B,0.0,C);
+  ierr = MatMatMultSymbolic_SeqDense_SeqDense(A,B,0.0,C);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -290,9 +296,9 @@ PetscErrorCode MatMatMultNumeric_SeqAIJ_SeqDense(Mat A,Mat B,Mat C)
 
   PetscFunctionBegin;
   if (!cm || !cn) PetscFunctionReturn(0);
-  if (bm != A->cmap->n) SETERRQ2(PETSC_ERR_ARG_SIZ,"Number columns in A %D not equal rows in B %D\n",A->cmap->n,bm);
-  if (A->rmap->n != C->rmap->n) SETERRQ2(PETSC_ERR_ARG_SIZ,"Number rows in C %D not equal rows in A %D\n",C->rmap->n,A->rmap->n);
-  if (B->cmap->n != C->cmap->n) SETERRQ2(PETSC_ERR_ARG_SIZ,"Number columns in B %D not equal columns in C %D\n",B->cmap->n,C->cmap->n);
+  if (bm != A->cmap->n) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Number columns in A %D not equal rows in B %D\n",A->cmap->n,bm);
+  if (A->rmap->n != C->rmap->n) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Number rows in C %D not equal rows in A %D\n",C->rmap->n,A->rmap->n);
+  if (B->cmap->n != C->cmap->n) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Number columns in B %D not equal columns in C %D\n",B->cmap->n,C->cmap->n);
   ierr = MatGetArray(B,&b);CHKERRQ(ierr);
   ierr = MatGetArray(C,&c);CHKERRQ(ierr);
   b1 = b; b2 = b1 + bm; b3 = b2 + bm; b4 = b3 + bm;

@@ -10,7 +10,7 @@ Sets various <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../KSP/KSP.h
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode PETSCSNES_DLLEXPORT SNESSetFromOptions(SNES snes)
+PetscErrorCode  SNESSetFromOptions(SNES snes)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -43,7 +43,7 @@ of the change in the solution between steps
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_trtol &lt;trtol&gt; </B></TD><TD>- trust region tolerance
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_no_convergence_test </B></TD><TD>- skip convergence test in nonlinear 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_no_convergence_test </B></TD><TD>- skip convergence test in nonlinear
 solver; hence iterations will continue until max_it
 or some other criterion is reached. Saves expense
 of convergence test
@@ -55,9 +55,9 @@ filename given prints to stdout
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor_residual </B></TD><TD>- plots residual (not its norm) at each iteration
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor_solution_update </B></TD><TD>- plots update to solution at each iteration 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor_solution_update </B></TD><TD>- plots update to solution at each iteration
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor_draw </B></TD><TD>- plots residual norm at each iteration 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_monitor_draw </B></TD><TD>- plots residual norm at each iteration
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_fd </B></TD><TD>- use finite differences to compute Jacobian; very slow, only for testing
 </TD></TR>
@@ -80,14 +80,14 @@ filename given prints to stdout
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_ksp_ew_alpha &lt;alpha&gt; </B></TD><TD>- Sets alpha
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_ksp_ew_alpha2 &lt;alpha2&gt; </B></TD><TD>- Sets alpha2 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_ksp_ew_alpha2 &lt;alpha2&gt; </B></TD><TD>- Sets alpha2
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_ksp_ew_threshold &lt;threshold&gt; </B></TD><TD>- Sets threshold
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 To see all options, run your program with the -help option or consult
-the users manual.
+the &lt;A href="../../docs/manual.pdf#nameddest=ch_snes"&gt;<A HREF="../SNES/SNES.html#SNES">SNES</A> chapter of the users manual&lt;/A&gt;.
 <P>
 
 <P>
@@ -109,9 +109,9 @@ the users manual.
 <A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex6.c.html">src/snes/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex21.c.html">src/snes/examples/tutorials/ex21.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex38.c.html">src/snes/examples/tutorials/ex38.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex42.c.html">src/snes/examples/tutorials/ex42.c.html</A><BR>
 </BODY></HTML>

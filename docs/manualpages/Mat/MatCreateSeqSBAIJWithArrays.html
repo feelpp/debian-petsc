@@ -10,7 +10,7 @@ Creates an sequential SBAIJ matrix using matrix elements  (upper triangular entr
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreateSeqSBAIJWithArrays(MPI_Comm comm,PetscInt bs,PetscInt m,PetscInt n,PetscInt* i,PetscInt*j,PetscScalar *a,Mat *mat)
+PetscErrorCode  MatCreateSeqSBAIJWithArrays(MPI_Comm comm,PetscInt bs,PetscInt m,PetscInt n,PetscInt* i,PetscInt*j,PetscScalar *a,Mat *mat)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -45,11 +45,14 @@ You cannot set new nonzero locations into this matrix, that will generate an err
 <P>
 The i and j indices are 0 based
 <P>
+When block size is greater than 1 the matrix values must be stored using the SBAIJ storage format (see the SBAIJ code to determine this). For block size of 1
+it is the regular CSR format excluding the lower triangular elements.
+<P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../Mat/MatCreateMPISBAIJ.html#MatCreateMPISBAIJ">MatCreateMPISBAIJ</A>(), <A HREF="../Mat/MatCreateSeqSBAIJ.html#MatCreateSeqSBAIJ">MatCreateSeqSBAIJ</A>()
 <BR>
 <P>
-<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/sbaij/seq/sbaij.c.html#MatCreateSeqSBAIJWithArrays">src/mat/impls/sbaij/seq/sbaij.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>

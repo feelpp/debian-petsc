@@ -10,7 +10,7 @@ Applies the preconditioner and operator to a vector. y = B*A*x or y = A*B*x.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT PCApplyBAorAB(PC pc,PCSide side,Vec x,Vec y,Vec work)
+PetscErrorCode  PCApplyBAorAB(PC pc,PCSide side,Vec x,Vec y,Vec work)
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -30,6 +30,9 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Vec/Vec.html#Vec
 <br>
 <P>
 
+<P>
+Notes: If the <A HREF="../PC/PC.html#PC">PC</A> has had <A HREF="../PC/PCSetDiagonalScale.html#PCSetDiagonalScale">PCSetDiagonalScale</A>() set then D M A D^{-1} for left preconditioning or  D A M D^{-1} is actually applied. Note that the
+specific <A HREF="../KSP/KSPSolve.html#KSPSolve">KSPSolve</A>() method must also be written to handle the post-solve "correction" for the diagonal scaling.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../PC/PC.html#PC">PC</A>, apply, operator

@@ -10,7 +10,7 @@ Restores a vector after <A HREF="../Vec/VecGetArray2d.html#VecGetArray2d">VecGet
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
-PetscErrorCode PETSCVEC_DLLEXPORT VecRestoreArray2d(Vec x,PetscInt m,PetscInt n,PetscInt mstart,PetscInt nstart,PetscScalar **a[])
+PetscErrorCode  VecRestoreArray2d(Vec x,PetscInt m,PetscInt n,PetscInt mstart,PetscInt nstart,PetscScalar **a[])
 </PRE>
 Not Collective
 <P>
@@ -41,7 +41,7 @@ This routine actually zeros out the a pointer.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(), <A HREF="../Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(), <A HREF="../Vec/VecRestoreArrays.html#VecRestoreArrays">VecRestoreArrays</A>(), <A HREF="../Vec/VecRestoreArrayF90.html#VecRestoreArrayF90">VecRestoreArrayF90</A>(), <A HREF="../Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>(),
-<BR><A HREF="../Vec/VecGetArray2d.html#VecGetArray2d">VecGetArray2d</A>(), <A HREF="../Vec/VecGetArray3d.html#VecGetArray3d">VecGetArray3d</A>(), <A HREF="../Vec/VecRestoreArray3d.html#VecRestoreArray3d">VecRestoreArray3d</A>(), <A HREF="../DA/DAVecGetArray.html#DAVecGetArray">DAVecGetArray</A>(), <A HREF="../DA/DAVecRestoreArray.html#DAVecRestoreArray">DAVecRestoreArray</A>()
+<BR><A HREF="../Vec/VecGetArray2d.html#VecGetArray2d">VecGetArray2d</A>(), <A HREF="../Vec/VecGetArray3d.html#VecGetArray3d">VecGetArray3d</A>(), <A HREF="../Vec/VecRestoreArray3d.html#VecRestoreArray3d">VecRestoreArray3d</A>(), <A HREF="../DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(), <A HREF="../DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>()
 <A HREF="../Vec/VecGetArray1d.html#VecGetArray1d">VecGetArray1d</A>(), <A HREF="../Vec/VecRestoreArray1d.html#VecRestoreArray1d">VecRestoreArray1d</A>(), <A HREF="../Vec/VecGetArray4d.html#VecGetArray4d">VecGetArray4d</A>(), <A HREF="../Vec/VecRestoreArray4d.html#VecRestoreArray4d">VecRestoreArray4d</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/vec/interface/rvector.c.html#VecRestoreArray2d">src/vec/vec/interface/rvector.c</A>

@@ -4,13 +4,15 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
-    self.download     = ['hg://petsc.cs.iit.edu/petsc/ParMetis-dev','http://ftp.mcs.anl.gov/pub/petsc/externalpackages/ParMetis-dev-p3.tar.gz']
-    self.functions    = ['ParMETIS_V3_PartKway']
-    self.includes     = ['parmetis.h']
-    self.liblist      = [['libparmetis.a','libmetis.a']]
-    self.needsMath    = 1
-    self.complex      = 1
-    self.requires32bitint = 1;
+    self.download         = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/ParMetis-3.2.0-p1.tar.gz']
+    self.functions        = ['ParMETIS_V3_PartKway']
+    self.includes         = ['parmetis.h']
+    self.liblist          = [['libparmetis.a','libmetis.a']]
+    self.needsMath        = 1
+    self.complex          = 1
+    self.requires32bitint = 0 # see note in configureLibrary() method below
+    self.worksonWindows    = 1
+    self.downloadonWindows = 1
     return
 
   def setupDependencies(self, framework):
@@ -49,22 +51,33 @@ class Configure(PETSc.package.NewPackage):
     cflags += ' ' + self.headers.toString(self.mpi.include)+' '+self.headers.toString('.')
         
     g.write('CC             = '+self.setCompilers.getCompiler()+'\n')
-    g.write('CFLAGS         = '+cflags)
+    g.write('CFLAGS         = '+cflags+'\n')
+    # parmetis uses defaut 'make' targets, and this uses TARGET_ARCH var. If this var
+    # is set incorrectly in user env - build breaks.
+    g.write('TARGET_ARCH    = \n')
+
     self.setCompilers.popLanguage()
     g.close()
 
-#   Warning: Scotch also installs a file metis.h which will be incorrectly found by ParMetis when compiling so you cannot build PETSc to use
-#   both Scotch and ParMetis in the same PETSc build
-    if self.framework.argDB['download-scotch']:
-      raise RuntimeError('Cannot use both --download-scotch and --download-parmetis')
+#   Warning: PTScotch also installs a file metis.h which will be incorrectly found by ParMetis when compiling so you cannot build PETSc to use
+#   both PTScotch and ParMetis in the same PETSc build
+#    if self.framework.argDB['download-scotch']:
+#      raise RuntimeError('Cannot use both --download-scotch and --download-parmetis')
    
     if self.installNeeded('make.inc'):    # Now compile & install
       self.framework.outputHeader(metisconfigheader,prefix='METIS')
       self.framework.outputHeader(parmetisconfigheader,prefix='PARMETIS')
       try:
         self.logPrintBox('Compiling & installing Parmetis; this may take several minutes')
-        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+'; make clean; make lib; make minstall; make clean', timeout=2500, log = self.framework.log)
+        output,err,ret  = PETSc.package.NewPackage.executeShellCommand('cd '+self.packageDir+' && make clean && make lib && make minstall && make clean', timeout=2500, log = self.framework.log)
       except RuntimeError, e:
         raise RuntimeError('Error running make on ParMetis: '+str(e))
       self.postInstall(output+err,'make.inc')
     return self.installDir
+
+  def configureLibrary(self):
+    PETSc.package.NewPackage.configureLibrary(self)
+    #  PETSc can use ParMetis directly if built with 32 bit indices; ParMetis cannot work with 64 bit indices
+    #  so we turn off useddirectly, but it can still be used by SuperLU_Dist
+    if self.libraryOptions.integerSize == 64:
+      self.useddirectly = 0

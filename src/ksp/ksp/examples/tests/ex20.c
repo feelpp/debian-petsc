@@ -5,7 +5,7 @@ matrix assembly,the matrix is intentionally laid out across processors\n\
 differently from the way it is assembled.  Input arguments are:\n\
   -m <size> : problem size\n\n";
 
-#include "petscksp.h"
+#include <petscksp.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "FormElementStiffness"
@@ -25,7 +25,7 @@ int main(int argc,char **args)
   Mat          C; 
   int          i,m = 5,rank,size,N,start,end,M;
   int          ierr,idx[4];
-  PetscTruth   flg;
+  PetscBool    flg;
   PetscScalar  Ke[16];
   PetscReal    h;
   Vec          u,b;
@@ -78,21 +78,21 @@ int main(int argc,char **args)
   ierr = KSPSetInitialGuessNonzero(ksp,PETSC_TRUE);CHKERRQ(ierr);
 
   flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-fixnullspace",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-fixnullspace",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg) {
     ierr = MatNullSpaceCreate(PETSC_COMM_WORLD,PETSC_TRUE,0,PETSC_NULL,&nullsp);CHKERRQ(ierr);
     ierr = KSPSetNullSpace(ksp,nullsp);CHKERRQ(ierr);
-    ierr = MatNullSpaceDestroy(nullsp);CHKERRQ(ierr);
+    ierr = MatNullSpaceDestroy(&&nullsp);CHKERRQ(ierr);
   }
   ierr = KSPSolve(ksp,b,u);CHKERRQ(ierr);
 
 
   /* Free work space */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

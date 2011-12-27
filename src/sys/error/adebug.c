@@ -1,9 +1,8 @@
-#define PETSC_DLL
 /*
       Code to handle PETSc starting up in debuggers,etc.
 */
 
-#include "petscsys.h"               /*I   "petscsys.h"   I*/
+#include <petscsys.h>               /*I   "petscsys.h"   I*/
 #include <signal.h> 
 #if defined(PETSC_HAVE_UNISTD_H)
 #include <unistd.h>
@@ -17,7 +16,7 @@
 */
 static char       Debugger[PETSC_MAX_PATH_LEN];
 static char       DebugTerminal[PETSC_MAX_PATH_LEN];
-static PetscTruth Xterm = PETSC_TRUE;
+static PetscBool  Xterm = PETSC_TRUE;
 
 #undef __FUNCT__
 #define __FUNCT__ "PetscSetDebugTerminal"
@@ -49,7 +48,7 @@ static PetscTruth Xterm = PETSC_TRUE;
 
 .seealso: PetscSetDebugger()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSetDebugTerminal(const char terminal[])
+PetscErrorCode  PetscSetDebugTerminal(const char terminal[])
 {
   PetscErrorCode ierr;
 
@@ -84,7 +83,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscSetDebugTerminal(const char terminal[])
 
 .seealso: PetscAttachDebugger(), PetscAttachDebuggerErrorHandler()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSetDebugger(const char debugger[],PetscTruth xterm)
+PetscErrorCode  PetscSetDebugger(const char debugger[],PetscBool  xterm)
 {
   PetscErrorCode ierr;
 
@@ -93,15 +92,13 @@ PetscErrorCode PETSC_DLLEXPORT PetscSetDebugger(const char debugger[],PetscTruth
     ierr = PetscStrcpy(Debugger,debugger);CHKERRQ(ierr);
   }
   Xterm = xterm;
-
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscSetDefaultDebugger"
 /*@
-    PetscSetDefaultDebugger - Causes PETSc to use its default 
-          debugger.
+    PetscSetDefaultDebugger - Causes PETSc to use its default  debugger.
 
    Not collective
 
@@ -109,7 +106,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscSetDebugger(const char debugger[],PetscTruth
 
 .seealso: PetscSetDebugger(), PetscSetDebuggerFromString()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSetDefaultDebugger(void)
+PetscErrorCode  PetscSetDefaultDebugger(void)
 {
   PetscErrorCode ierr;
 
@@ -131,8 +128,8 @@ PetscErrorCode PETSC_DLLEXPORT PetscSetDefaultDebugger(void)
 #define __FUNCT__ "PetscCheckDebugger_Private"
 static PetscErrorCode PetscCheckDebugger_Private(const char defaultDbg[], const char string[], const char *debugger[])
 {
-  PetscTruth exists;
-  char      *f;
+  PetscBool      exists;
+  char           *f;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
@@ -160,11 +157,11 @@ static PetscErrorCode PetscCheckDebugger_Private(const char defaultDbg[], const 
 
 .seealso: PetscSetDebugger(), PetscSetDefaultDebugger()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscSetDebuggerFromString(char *string)
+PetscErrorCode  PetscSetDebuggerFromString(char *string)
 {
-  const char *debugger = PETSC_NULL;
-  PetscTruth  xterm    = PETSC_TRUE;
-  char       *f;
+  const char     *debugger = PETSC_NULL;
+  PetscBool      xterm    = PETSC_TRUE;
+  char           *f;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
@@ -201,9 +198,11 @@ PetscErrorCode PETSC_DLLEXPORT PetscSetDebuggerFromString(char *string)
 
    Concepts: debugger^starting from program
 
+   Developer Notes: Since this can be called by the error handler should it be calling SETERRQ() and CHKERRQ()?
+
 .seealso: PetscSetDebugger()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscAttachDebugger(void)
+PetscErrorCode  PetscAttachDebugger(void)
 {
 #if !defined(PETSC_CANNOT_START_DEBUGGER) 
   int            child=0;
@@ -218,8 +217,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscAttachDebugger(void)
   (*PetscErrorPrintf)("System cannot start debugger\n");
   (*PetscErrorPrintf)("On Cray run program in Totalview debugger\n");
   (*PetscErrorPrintf)("On Windows use Developer Studio(MSDEV)\n");
-  MPI_Finalize();
-  exit(0);
+  MPI_Abort(PETSC_COMM_WORLD,1);
 #else
   ierr = PetscGetDisplay(display,128);CHKERRQ(ierr);
   ierr = PetscGetProgramName(program,PETSC_MAX_PATH_LEN);CHKERRQ(ierr);
@@ -248,7 +246,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscAttachDebugger(void)
     const char *args[10];
     char       pid[10];
     PetscInt   j,jj;
-    PetscTruth isdbx,isidb,isxldb,isxxgdb,isups,isxdb,isworkshop,isddd,iskdbg;
+    PetscBool  isdbx,isidb,isxldb,isxxgdb,isups,isxdb,isworkshop,isddd,iskdbg;
 
     ierr = PetscGetHostName(hostname,64);CHKERRQ(ierr);
     /*
@@ -305,7 +303,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscAttachDebugger(void)
     } else {
       j = 0;
       if (Xterm) {
-        PetscTruth cmp;
+        PetscBool  cmp;
         char *tmp,*tmp1;
         ierr = PetscStrncmp(DebugTerminal,"screen",6,&cmp);CHKERRQ(ierr);
         if (cmp) display[0] = 0; /* when using screen, we never pass -display */
@@ -424,13 +422,14 @@ PetscErrorCode PETSC_DLLEXPORT PetscAttachDebugger(void)
    Not Collective
 
    Input Parameters:
-+  line - the line number of the error (indicated by __LINE__)
++  comm - communicator over which error occurred
+.  line - the line number of the error (indicated by __LINE__)
 .  fun - function where error occured (indicated by __FUNCT__)
 .  file - the file in which the error was detected (indicated by __FILE__)
 .  dir - the directory of the file (indicated by __SDIR__)
 .  message - an error text string, usually just printed to the screen
 .  number - the generic error number
-.  p - the specific error number
+.  p - PETSC_ERROR_INITIAL if error just detected, otherwise PETSC_ERROR_REPEAT
 -  ctx - error handler context
 
    Options Database Keys:
@@ -446,7 +445,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscAttachDebugger(void)
    Most users need not directly employ this routine and the other error 
    handlers, but can instead use the simplified interface SETERR, which has 
    the calling sequence
-$     SETERRQ(number,p,message)
+$     SETERRQ(PETSC_COMM_SELF,number,p,message)
 
    Notes for experienced users:
    Use PetscPushErrorHandler() to set the desired error handler.  The
@@ -462,7 +461,7 @@ $    PetscAbortErrorHandler()
 .seealso:  PetscPushErrorHandler(), PetscTraceBackErrorHandler(), 
            PetscAbortErrorHandler()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscAttachDebuggerErrorHandler(int line,const char* fun,const char *file,const char* dir,int num,int p,const char* mess,void *ctx)
+PetscErrorCode  PetscAttachDebuggerErrorHandler(MPI_Comm comm,int line,const char* fun,const char *file,const char* dir,PetscErrorCode num,PetscErrorType p,const char* mess,void *ctx)
 {
   PetscErrorCode ierr;
 
@@ -474,9 +473,8 @@ PetscErrorCode PETSC_DLLEXPORT PetscAttachDebuggerErrorHandler(int line,const ch
   (*PetscErrorPrintf)("%s() line %d in %s%s %s\n",fun,line,dir,file,mess);
 
   ierr = PetscAttachDebugger();
-  if (ierr) { /* hopeless so get out */
-    MPI_Finalize();
-    exit(num);
+  if (ierr) { /* call abort because don't want to kill other MPI processes that may successfully attach to debugger */
+    abort();
   }
   PetscFunctionReturn(0);
 }
@@ -492,20 +490,21 @@ PetscErrorCode PETSC_DLLEXPORT PetscAttachDebuggerErrorHandler(int line,const ch
 
    Level: advanced
 
+   Developer Notes: Since this can be called by the error handler should it be calling SETERRQ() and CHKERRQ()?
+
    Concepts: debugger^waiting for attachment
 
 .seealso: PetscSetDebugger(), PetscAttachDebugger()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscStopForDebugger(void)
+PetscErrorCode  PetscStopForDebugger(void)
 {
   PetscErrorCode ierr;
   PetscInt       sleeptime=0;
-  int            err;
 #if !defined(PETSC_CANNOT_START_DEBUGGER) 
   int            ppid;
   PetscMPIInt    rank;
   char           program[PETSC_MAX_PATH_LEN],hostname[256];
-  PetscTruth     isdbx,isxldb,isxxgdb,isddd,iskdbg,isups,isxdb;
+  PetscBool      isdbx,isxldb,isxxgdb,isddd,iskdbg,isups,isxdb;
 #endif
 
   PetscFunctionBegin;
@@ -513,6 +512,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscStopForDebugger(void)
   (*PetscErrorPrintf)("System cannot start debugger; just continuing program\n");
 #else
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
+  if (ierr) rank = 0; /* ignore error since this may be already in error handler */
   ierr = PetscGetHostName(hostname,256);
   if (ierr) {
     (*PetscErrorPrintf)("Cannot determine hostname; just continuing program\n");
@@ -570,11 +570,10 @@ PetscErrorCode PETSC_DLLEXPORT PetscStopForDebugger(void)
 #endif
 #endif /* PETSC_CANNOT_START_DEBUGGER */
 
-  err = fflush(stdout);
-  if (err) SETERRQ(PETSC_ERR_SYS,"fflush() failed on stdout");    
+  fflush(stdout); /* ignore error because may already be in error handler */
 
   sleeptime = 25; /* default to sleep waiting for debugger */
-  ierr = PetscOptionsGetInt(PETSC_NULL,"-debugger_pause",&sleeptime,PETSC_NULL);CHKERRQ(ierr);
+  PetscOptionsGetInt(PETSC_NULL,"-debugger_pause",&sleeptime,PETSC_NULL); /* ignore error because may already be in error handler */
   if (sleeptime < 0) sleeptime = -sleeptime;
 #if defined(PETSC_NEED_DEBUGGER_NO_SLEEP)
   /*

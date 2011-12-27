@@ -7,6 +7,13 @@
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscLogEventBarrierEnd"><H1>PetscLogEventBarrierEnd</H1></A>
 Logs the time in a barrier before an event. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode PetscLogEventBarrierEnd(int e,PetscObject o1,PetscObject o2,PetscObject o3,
+PetscObject o4,MPI_Comm comm)
+</PRE>
+Logically Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>e </B> -integer associated with the event obtained from <A HREF="../Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>()
 <br>
@@ -15,11 +22,7 @@ Logs the time in a barrier before an event.
 <DT><B>comm </B> -communicator the barrier takes place over
 <br>
 <P>
-<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
-<PRE>
-void PetscLogEventBarrierEnd(int e,PetscObject o1,PetscObject o2,PetscObject o3,
-PetscObject o4,MPI_Comm comm)
-</PRE>
+<P>
 <H3><FONT COLOR="#CC3333">Usage</FONT></H3>
 <PRE>
      <A HREF="../Profiling/PetscLogEventBarrierBegin.html#PetscLogEventBarrierBegin">PetscLogEventBarrierBegin</A>(VEC_NormBarrier,0,0,0,0,comm);

@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
       Code for manipulating files.
 */
-#include "petscsys.h"
+#include <petscsys.h>
 #if defined(PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
 #endif
@@ -45,11 +45,10 @@
 
 .seealso: PetscGetUserName()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscGetHostName(char name[],size_t nlen)
+PetscErrorCode  PetscGetHostName(char name[],size_t nlen)
 {
   char           *domain;
   PetscErrorCode ierr;
-  PetscTruth     flag;
 #if defined(PETSC_HAVE_UNAME) && !defined(PETSC_HAVE_GETCOMPUTERNAME)
   struct utsname utname;
 #endif
@@ -81,27 +80,17 @@ PetscErrorCode PETSC_DLLEXPORT PetscGetHostName(char name[],size_t nlen)
 #if defined(PETSC_HAVE_SYSINFO_3ARG)
     sysinfo(SI_SRPC_DOMAIN,name+l,nlen-l);
 #elif defined(PETSC_HAVE_GETDOMAINNAME)
-    getdomainname(name+l,nlen - l);
+    if (getdomainname(name+l,nlen - l)) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SYS,"getdomainname()");
 #endif
     /* check if domain name is not a dnsdomainname and nuke it */
     ierr = PetscStrlen(name,&ll);CHKERRQ(ierr);
     if (ll > 4) {
-      ierr = PetscStrcmp(name + ll - 4,".edu",&flag);CHKERRQ(ierr);
-      if (!flag) {
-        ierr = PetscStrcmp(name + ll - 4,".com",&flag);CHKERRQ(ierr);
-        if (!flag) {
-          ierr = PetscStrcmp(name + ll - 4,".net",&flag);CHKERRQ(ierr);
-          if (!flag) {
-            ierr = PetscStrcmp(name + ll - 4,".org",&flag);CHKERRQ(ierr);
-            if (!flag) {
-              ierr = PetscStrcmp(name + ll - 4,".mil",&flag);CHKERRQ(ierr);
-              if (!flag) {
-                ierr = PetscInfo1(0,"Rejecting domainname, likely is NIS %s\n",name);CHKERRQ(ierr);
-                name[l-1] = 0;
-              }
-            }
-          }
-        }
+      const char *suffixes[] = {".edu",".com",".net",".org",".mil",0};
+      PetscInt   index;
+      ierr = PetscStrendswithwhich(name,suffixes,&index);CHKERRQ(ierr);
+      if (!suffixes[index]) {
+        ierr = PetscInfo1(0,"Rejecting domainname, likely is NIS %s\n",name);CHKERRQ(ierr);
+        name[l-1] = 0;
       }
     }
   }

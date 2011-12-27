@@ -43,7 +43,7 @@ T*/
      petscksp.h   - linear solvers
 */
 
-#include "petscsnes.h"
+#include <petscsnes.h>
 
 /* 
    User-defined application context - contains data needed by the 
@@ -76,11 +76,11 @@ int main(int argc,char **argv)
   PetscMPIInt    size;
   PetscReal      bratu_lambda_max = 6.81,bratu_lambda_min = 0.,history[50];
   MatFDColoring  fdcoloring;           
-  PetscTruth     matrix_free = PETSC_FALSE,flg,fd_coloring = PETSC_FALSE;
+  PetscBool      matrix_free = PETSC_FALSE,flg,fd_coloring = PETSC_FALSE;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(1,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_SELF,1,"This is a uniprocessor example only!");
 
   /*
      Initialize problem parameters
@@ -89,9 +89,7 @@ int main(int argc,char **argv)
   ierr = PetscOptionsGetInt(PETSC_NULL,"-mx",&user.mx,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-my",&user.my,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetReal(PETSC_NULL,"-par",&user.param,PETSC_NULL);CHKERRQ(ierr);
-  if (user.param >= bratu_lambda_max || user.param <= bratu_lambda_min) {
-    SETERRQ(1,"Lambda is out of range");
-  }
+  if (user.param >= bratu_lambda_max || user.param <= bratu_lambda_min) SETERRQ(PETSC_COMM_SELF,1,"Lambda is out of range");
   N = user.mx*user.my;
   
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,10 +126,10 @@ int main(int argc,char **argv)
      for the Jacobian.  See the users manual for a discussion of better 
      techniques for preallocating matrix memory.
   */
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-snes_mf",&matrix_free,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-snes_mf",&matrix_free,PETSC_NULL);CHKERRQ(ierr);
   if (!matrix_free) {
-    PetscTruth matrix_free_operator = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-snes_mf_operator",&matrix_free_operator,PETSC_NULL);CHKERRQ(ierr);
+    PetscBool  matrix_free_operator = PETSC_FALSE;
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-snes_mf_operator",&matrix_free_operator,PETSC_NULL);CHKERRQ(ierr);
     if (matrix_free_operator) matrix_free = PETSC_FALSE;
   }
   if (!matrix_free) {
@@ -142,10 +140,8 @@ int main(int argc,char **argv)
      This option will cause the Jacobian to be computed via finite differences
     efficiently using a coloring of the columns of the matrix.
   */
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-snes_fd_coloring",&fd_coloring,PETSC_NULL);CHKERRQ(ierr);
-
-  if (matrix_free && fd_coloring)  SETERRQ(1,"Use only one of -snes_mf, -snes_fd_coloring options!\n\
-                                                You can do -snes_mf_operator -snes_fd_coloring");
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-snes_fd_coloring",&fd_coloring,PETSC_NULL);CHKERRQ(ierr);
+  if (matrix_free && fd_coloring)  SETERRQ(PETSC_COMM_SELF,1,"Use only one of -snes_mf, -snes_fd_coloring options!\nYou can do -snes_mf_operator -snes_fd_coloring");
 
   if (fd_coloring) {
     ISColoring   iscoloring;
@@ -162,7 +158,7 @@ int main(int argc,char **argv)
        Color the matrix, i.e. determine groups of columns that share no common 
       rows. These columns in the Jacobian can all be computed simulataneously.
     */
-    ierr = MatGetColoring(J,MATCOLORING_NATURAL,&iscoloring);CHKERRQ(ierr);
+    ierr = MatGetColoring(J,MATCOLORINGNATURAL,&iscoloring);CHKERRQ(ierr);
     /*
        Create the data structure that SNESDefaultComputeJacobianColor() uses
        to compute the actual Jacobians via finite differences.
@@ -175,7 +171,7 @@ int main(int argc,char **argv)
       to compute Jacobians.
     */
     ierr = SNESSetJacobian(snes,J,J,SNESDefaultComputeJacobianColor,fdcoloring);CHKERRQ(ierr);  
-    ierr = ISColoringDestroy(iscoloring);CHKERRQ(ierr);
+    ierr = ISColoringDestroy(&iscoloring);CHKERRQ(ierr);
   }
   /* 
      Set Jacobian matrix data structure and default Jacobian evaluation
@@ -244,15 +240,15 @@ int main(int argc,char **argv)
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   if (!matrix_free) {
-    ierr = MatDestroy(J);CHKERRQ(ierr);
+    ierr = MatDestroy(&J);CHKERRQ(ierr);
   }
   if (fd_coloring) {
-    ierr = MatFDColoringDestroy(fdcoloring);CHKERRQ(ierr);
+    ierr = MatFDColoringDestroy(&fdcoloring);CHKERRQ(ierr);
   }
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = SNESDestroy(snes);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = SNESDestroy(&snes);CHKERRQ(ierr);
+  ierr = PetscFinalize();
 
   return 0;
 }
@@ -300,7 +296,7 @@ PetscErrorCode FormInitialGuess(AppCtx *user,Vec X)
         x[row] = 0.0; 
         continue;
       }
-      x[row] = temp1*sqrt(PetscMin((PetscReal)(PetscMin(i,mx-i-1))*hx,temp)); 
+      x[row] = temp1*PetscSqrtReal(PetscMin((PetscReal)(PetscMin(i,mx-i-1))*hx,temp)); 
     }
   }
 

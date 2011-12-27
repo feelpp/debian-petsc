@@ -2,13 +2,13 @@
       program main
        implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscviewer.h"
-#include "finclude/petscis.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscviewer.h>
+#include <finclude/petscis.h>
 !
 !  This example is a modified Fortran version of ex6.c.  It tests the use of
 !  options prefixes in PETSc. Two linear problems are solved in this program.
@@ -46,16 +46,19 @@
      &     fd,ierr)
       if (ierr .ne. 0) then
         print*, 'Unable to open file ',f
-        SETERRQ(1,' ',ierr)
+        SETERRQ(PETSC_COMM_WORLD,1,' ',ierr)
       endif
 
-      call MatLoad(fd,MATSEQAIJ,A,ierr)
+      call MatCreate(PETSC_COMM_WORLD,A,ierr)
+      call MatSetType(A, MATSEQAIJ,ierr)
+      call MatLoad(A,fd,ierr)
       if (ierr .ne. 0) then
         print*, 'Unable to load matrix '
-        SETERRQ(1,' ',ierr)
+        SETERRQ(PETSC_COMM_WORLD,1,' ',ierr)
       endif
 
-      call VecLoad(fd,PETSC_NULL_CHARACTER,b,ierr)
+      call VecCreate(PETSC_COMM_WORLD,b,ierr)
+      call VecLoad(b,fd,ierr)
       call PetscViewerDestroy(fd,ierr)
 
 ! Set up solution
@@ -82,7 +85,8 @@
 
 ! Create system 2 by striping off some rows of the matrix
       call ISCreateStride(PETSC_COMM_SELF,ifive,izero,ione,isrow,ierr)
-      call MatZeroRowsIS(A,isrow,five,ierr)
+      call MatZeroRowsIS(A,isrow,five,PETSC_NULL_OBJECT,                   &
+     &                   PETSC_NULL_OBJECT,ierr)
 
 ! Solve system-2
       call KSPCreate(PETSC_COMM_WORLD,ksp2,ierr)

@@ -1,7 +1,7 @@
 
 static char help[] = "Tests relaxation for dense matrices.\n\n"; 
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -51,12 +51,12 @@ int main(int argc,char **args)
     ierr = VecNorm(e,NORM_2,&norm);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_SELF,"2-norm of error %G\n",norm);CHKERRQ(ierr);
   }
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(e);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&e);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

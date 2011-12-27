@@ -1,7 +1,6 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"             /*I "petscksp.h" I*/
-#include "../src/ksp/ksp/impls/qcg/qcgimpl.h"
+#include <private/kspimpl.h>             /*I "petscksp.h" I*/
+#include <../src/ksp/ksp/impls/qcg/qcgimpl.h>
 
 static PetscErrorCode QuadraticRoots_Private(Vec,Vec,PetscReal*,PetscReal*,PetscReal*);
 
@@ -10,7 +9,7 @@ static PetscErrorCode QuadraticRoots_Private(Vec,Vec,PetscReal*,PetscReal*,Petsc
 /*@
     KSPQCGSetTrustRegionRadius - Sets the radius of the trust region.
 
-    Collective on KSP
+    Logically Collective on KSP
 
     Input Parameters:
 +   ksp   - the iterative context
@@ -23,18 +22,14 @@ static PetscErrorCode QuadraticRoots_Private(Vec,Vec,PetscReal*,PetscReal*,Petsc
 
 .keywords: KSP, QCG, set, trust region radius
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGSetTrustRegionRadius(KSP ksp,PetscReal delta)
+PetscErrorCode  KSPQCGSetTrustRegionRadius(KSP ksp,PetscReal delta)
 {
-  PetscErrorCode ierr,(*f)(KSP,PetscReal);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  if (delta < 0.0) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Tolerance must be non-negative");
-  ierr = PetscObjectQueryFunction((PetscObject)ksp,"KSPQCGSetTrustRegionRadius_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp,delta);CHKERRQ(ierr);
-  }
-
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  if (delta < 0.0) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Tolerance must be non-negative");
+  ierr = PetscTryMethod(ksp,"KSPQCGSetTrustRegionRadius_C",(KSP,PetscReal),(ksp,delta));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -44,7 +39,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGSetTrustRegionRadius(KSP ksp,PetscReal d
     KSPQCGGetTrialStepNorm - Gets the norm of a trial step vector.  The WCG step may be
     constrained, so this is not necessarily the length of the ultimate step taken in QCG.
 
-    Collective on KSP
+    Not Collective
 
     Input Parameter:
 .   ksp - the iterative context
@@ -54,16 +49,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGSetTrustRegionRadius(KSP ksp,PetscReal d
 
     Level: advanced
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGGetTrialStepNorm(KSP ksp,PetscReal *tsnorm)
+PetscErrorCode  KSPQCGGetTrialStepNorm(KSP ksp,PetscReal *tsnorm)
 {
-  PetscErrorCode ierr,(*f)(KSP,PetscReal*);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  ierr = PetscObjectQueryFunction((PetscObject)ksp,"KSPQCGGetTrialStepNorm_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp,tsnorm);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ierr = PetscUseMethod(ksp,"KSPQCGGetTrialStepNorm_C",(KSP,PetscReal*),(ksp,tsnorm));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -95,16 +87,13 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGGetTrialStepNorm(KSP ksp,PetscReal *tsno
 
     Level: advanced
 @*/
-PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGGetQuadratic(KSP ksp,PetscReal *quadratic)
+PetscErrorCode  KSPQCGGetQuadratic(KSP ksp,PetscReal *quadratic)
 {
-  PetscErrorCode ierr,(*f)(KSP,PetscReal*);
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(ksp,KSP_COOKIE,1);
-  ierr = PetscObjectQueryFunction((PetscObject)ksp,"KSPQCGGetQuadratic_C",(void (**)(void))&f);CHKERRQ(ierr);
-  if (f) {
-    ierr = (*f)(ksp,quadratic);CHKERRQ(ierr);
-  }
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ierr = PetscUseMethod(ksp,"KSPQCGGetQuadratic_C",(KSP,PetscReal*),(ksp,quadratic));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -134,14 +123,12 @@ PetscErrorCode KSPSolve_QCG(KSP ksp)
 #if defined(PETSC_USE_COMPLEX)
   PetscScalar    cstep1,cstep2,cbstp,crtr,cwtasp,cptasp;
 #endif
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
-  ierr    = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
-  if (ksp->transpose_solve) {
-    SETERRQ(PETSC_ERR_SUP,"Currently does not support transpose solve");
-  }
+  ierr    = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
+  if (ksp->transpose_solve) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Currently does not support transpose solve");
 
   ksp->its = 0;
   maxit    = ksp->max_it;
@@ -155,9 +142,9 @@ PetscErrorCode KSPSolve_QCG(KSP ksp)
   X        = ksp->vec_sol;
   B        = ksp->vec_rhs;
 
-  if (pcgP->delta <= dzero) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Input error: delta <= 0");
-  ierr = KSPGetPreconditionerSide(ksp,&side);CHKERRQ(ierr);
-  if (side != PC_SYMMETRIC) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"Requires symmetric preconditioner!");
+  if (pcgP->delta <= dzero) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Input error: delta <= 0");
+  ierr = KSPGetPCSide(ksp,&side);CHKERRQ(ierr);
+  if (side != PC_SYMMETRIC) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Requires symmetric preconditioner!");
 
   /* Initialize variables */
   ierr = VecSet(W,0.0);CHKERRQ(ierr);	/* W = 0 */
@@ -173,7 +160,7 @@ PetscErrorCode KSPSolve_QCG(KSP ksp)
   ksp->rnorm  = bsnrm;
   ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
   KSPLogResidualHistory(ksp,bsnrm);
-  KSPMonitor(ksp,0,bsnrm);
+  ierr = KSPMonitor(ksp,0,bsnrm);CHKERRQ(ierr);
   ierr = (*ksp->converged)(ksp,0,bsnrm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
   if (ksp->reason) PetscFunctionReturn(0);
 
@@ -295,7 +282,7 @@ PetscErrorCode KSPSolve_QCG(KSP ksp)
          ksp->rnorm                                    = rnrm;
          ierr = PetscObjectGrantAccess(ksp);CHKERRQ(ierr);
          KSPLogResidualHistory(ksp,rnrm);
-         KSPMonitor(ksp,i+1,rnrm);
+         ierr = KSPMonitor(ksp,i+1,rnrm);CHKERRQ(ierr);
          ierr = (*ksp->converged)(ksp,i+1,rnrm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);
          if (ksp->reason) {                 /* convergence for */
 #if defined(PETSC_USE_COMPLEX)               
@@ -344,13 +331,6 @@ PetscErrorCode KSPSetUp_QCG(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  /* Check user parameters and functions */
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP,"no right preconditioning for QCG");
-  } else if (ksp->pc_side == PC_LEFT) {
-    SETERRQ(PETSC_ERR_SUP,"no left preconditioning for QCG");
-  }
-
   /* Get work vectors from user code */
   ierr = KSPDefaultGetWork(ksp,7);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -363,17 +343,17 @@ PetscErrorCode KSPDestroy_QCG(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = KSPDefaultDestroy(ksp);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPQCGGetQuadratic_C","",PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPQCGGetTrialStepNorm_C","",PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPQCGSetTrustRegionRadius_C","",PETSC_NULL);CHKERRQ(ierr);
+  ierr = KSPDefaultDestroy(ksp);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 EXTERN_C_BEGIN
 #undef __FUNCT__
 #define __FUNCT__ "KSPQCGSetTrustRegionRadius_QCG"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGSetTrustRegionRadius_QCG(KSP ksp,PetscReal delta)
+PetscErrorCode  KSPQCGSetTrustRegionRadius_QCG(KSP ksp,PetscReal delta)
 {
   KSP_QCG *cgP = (KSP_QCG*)ksp->data;
 
@@ -386,7 +366,7 @@ EXTERN_C_END
 EXTERN_C_BEGIN
 #undef __FUNCT__
 #define __FUNCT__ "KSPQCGGetTrialStepNorm_QCG"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGGetTrialStepNorm_QCG(KSP ksp,PetscReal *ltsnrm)
+PetscErrorCode  KSPQCGGetTrialStepNorm_QCG(KSP ksp,PetscReal *ltsnrm)
 {
   KSP_QCG *cgP = (KSP_QCG*)ksp->data;
 
@@ -399,7 +379,7 @@ EXTERN_C_END
 EXTERN_C_BEGIN
 #undef __FUNCT__
 #define __FUNCT__ "KSPQCGGetQuadratic_QCG"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPQCGGetQuadratic_QCG(KSP ksp,PetscReal *quadratic)
+PetscErrorCode  KSPQCGGetQuadratic_QCG(KSP ksp,PetscReal *quadratic)
 {
   KSP_QCG *cgP = (KSP_QCG*)ksp->data;
 
@@ -416,7 +396,7 @@ PetscErrorCode KSPSetFromOptions_QCG(KSP ksp)
   PetscErrorCode ierr;
   PetscReal      delta;
   KSP_QCG        *cgP = (KSP_QCG*)ksp->data;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscFunctionBegin;
   ierr = PetscOptionsHead("KSP QCG Options");CHKERRQ(ierr);
@@ -477,15 +457,15 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_QCG"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_QCG(KSP ksp)
+PetscErrorCode  KSPCreate_QCG(KSP ksp)
 {
   PetscErrorCode ierr;
   KSP_QCG        *cgP;
 
   PetscFunctionBegin;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_SYMMETRIC,2);CHKERRQ(ierr);
   ierr = PetscNewLog(ksp,KSP_QCG,&cgP);CHKERRQ(ierr);
   ksp->data                      = (void*)cgP;
-  ksp->pc_side                   = PC_SYMMETRIC;
   ksp->ops->setup                = KSPSetUp_QCG;
   ksp->ops->setfromoptions       = KSPSetFromOptions_QCG;
   ksp->ops->solve                = KSPSolve_QCG;
@@ -504,7 +484,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_QCG(KSP ksp)
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)ksp,"KSPQCGSetTrustRegionRadius_C",
                                     "KSPQCGSetTrustRegionRadius_QCG",
                                      KSPQCGSetTrustRegionRadius_QCG);CHKERRQ(ierr);
-  cgP->delta = PETSC_MAX; /* default trust region radius is infinite */ 
+  cgP->delta = PETSC_MAX_REAL; /* default trust region radius is infinite */ 
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
@@ -548,7 +528,7 @@ static PetscErrorCode QuadraticRoots_Private(Vec s,Vec p,PetscReal *delta,PetscR
   ierr = VecDot(s,s,&sts);CHKERRQ(ierr);
 #endif
   dsq  = (*delta)*(*delta);
-  rad  = sqrt((pts*pts) - ptp*(sts - dsq));
+  rad  = PetscSqrtReal((pts*pts) - ptp*(sts - dsq));
   if (pts > 0.0) {
     *step2 = -(pts + rad)/ptp;
     *step1 = (sts - dsq)/(ptp * *step2);

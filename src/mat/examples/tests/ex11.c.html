@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:34:17+00:00">
+<meta name="date" content="2011-10-29T19:04:49+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests the use of <A href="../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>() for uniprocessor matrices.\n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
@@ -19,7 +19,7 @@
 <a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,m = 5,n = 5,Ii,J;
 <a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v,five = 5.0;
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>             isrow;
-<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     keepnonzeropattern;
+<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      keepnonzeropattern;
 
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 
@@ -47,12 +47,12 @@
 <a name="line40"> 40: </a>    <A href="../../../../docs/manualpages/Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(C,MAT_KEEP_NONZERO_PATTERN,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
 <a name="line41"> 41: </a>  }
 
-<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Mat/MatZeroRowsIS.html#MatZeroRowsIS">MatZeroRowsIS</A>(C,isrow,five);
+<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Mat/MatZeroRowsIS.html#MatZeroRowsIS">MatZeroRowsIS</A>(C,isrow,five,0,0);
 
 <a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(C,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
 
-<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(isrow);
-<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;isrow);
+<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 <a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line50"> 50: </a>  <font color="#4169E1">return</font> 0;
 <a name="line51"> 51: </a>}

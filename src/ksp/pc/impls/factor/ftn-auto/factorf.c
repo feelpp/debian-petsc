@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* factor.c */
 /* Fortran interface file */
 
@@ -27,6 +28,11 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscpc.h"
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcfactorsetupmatsolverpackage_ PCFACTORSETUPMATSOLVERPACKAGE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcfactorsetupmatsolverpackage_ pcfactorsetupmatsolverpackage
+#endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcfactorsetzeropivot_ PCFACTORSETZEROPIVOT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -88,47 +94,51 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcfactorsetzeropivot_(PC pc,PetscReal *zero, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetupmatsolverpackage_(PC pc, int *__ierr ){
+*__ierr = PCFactorSetUpMatSolverPackage(
+	(PC)PetscToPointer((pc) ));
+}
+void PETSC_STDCALL  pcfactorsetzeropivot_(PC pc,PetscReal *zero, int *__ierr ){
 *__ierr = PCFactorSetZeroPivot(
 	(PC)PetscToPointer((pc) ),*zero);
 }
-void PETSC_STDCALL   pcfactorsetshifttype_(PC pc,MatFactorShiftType *shifttype, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetshifttype_(PC pc,MatFactorShiftType *shifttype, int *__ierr ){
 *__ierr = PCFactorSetShiftType(
 	(PC)PetscToPointer((pc) ),*shifttype);
 }
-void PETSC_STDCALL   pcfactorsetshiftamount_(PC pc,PetscReal *shiftamount, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetshiftamount_(PC pc,PetscReal *shiftamount, int *__ierr ){
 *__ierr = PCFactorSetShiftAmount(
 	(PC)PetscToPointer((pc) ),*shiftamount);
 }
-void PETSC_STDCALL   pcfactorsetlevels_(PC pc,PetscInt *levels, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetlevels_(PC pc,PetscInt *levels, int *__ierr ){
 *__ierr = PCFactorSetLevels(
 	(PC)PetscToPointer((pc) ),*levels);
 }
-void PETSC_STDCALL   pcfactorsetallowdiagonalfill_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetallowdiagonalfill_(PC pc, int *__ierr ){
 *__ierr = PCFactorSetAllowDiagonalFill(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pcfactorreorderfornonzerodiagonal_(PC pc,PetscReal *rtol, int *__ierr ){
+void PETSC_STDCALL  pcfactorreorderfornonzerodiagonal_(PC pc,PetscReal *rtol, int *__ierr ){
 *__ierr = PCFactorReorderForNonzeroDiagonal(
 	(PC)PetscToPointer((pc) ),*rtol);
 }
-void PETSC_STDCALL   pcfactorsetfill_(PC pc,PetscReal *fill, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetfill_(PC pc,PetscReal *fill, int *__ierr ){
 *__ierr = PCFactorSetFill(
 	(PC)PetscToPointer((pc) ),*fill);
 }
-void PETSC_STDCALL   pcfactorsetuseinplace_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetuseinplace_(PC pc, int *__ierr ){
 *__ierr = PCFactorSetUseInPlace(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pcfactorsetcolumnpivot_(PC pc,PetscReal *dtcol, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetcolumnpivot_(PC pc,PetscReal *dtcol, int *__ierr ){
 *__ierr = PCFactorSetColumnPivot(
 	(PC)PetscToPointer((pc) ),*dtcol);
 }
-void PETSC_STDCALL   pcfactorsetpivotinblocks_(PC pc,PetscTruth *pivot, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetpivotinblocks_(PC pc,PetscBool  *pivot, int *__ierr ){
 *__ierr = PCFactorSetPivotInBlocks(
 	(PC)PetscToPointer((pc) ),*pivot);
 }
-void PETSC_STDCALL   pcfactorsetreusefill_(PC pc,PetscTruth *flag, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetreusefill_(PC pc,PetscBool  *flag, int *__ierr ){
 *__ierr = PCFactorSetReuseFill(
 	(PC)PetscToPointer((pc) ),*flag);
 }

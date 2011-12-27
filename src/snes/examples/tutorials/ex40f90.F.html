@@ -1,0 +1,87 @@
+<center><a href="ex40f90.F">Actual source code: ex40f90.F</a></center><br>
+
+<html>
+<head>
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2011-10-29T19:18:45+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+<pre width="80"><a name="line1">  1: </a>!
+<a name="line2">  2: </a>!  Demonstrates use of <A href="../../../../docs/manualpages/DMMG/DMMGSetSNESLocal.html#DMMGSetSNESLocal">DMMGSetSNESLocal</A>() from Fortran
+<a name="line3">  3: </a>!
+<a name="line4">  4: </a>!    Note: the access to the entries of the local arrays below use the Fortran
+<a name="line5">  5: </a>!   convention of starting at zero. However calls to <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>()  start at 0.
+<a name="line6">  6: </a>!   Also note that you will have to map the i,j,k coordinates to the local PETSc ordering
+<a name="line7">  7: </a>!   before calling <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(). Often you will find that using PETSc's <font color="#4169E1">default</font>
+<a name="line8">  8: </a>!   code <font color="#4169E1">for</font> computing the Jacobian works fine and you will not need to implement
+<a name="line9">  9: </a>!   your own FormJacobianLocal().
+
+<a name="line11"> 11: </a>      program ex40f90
+<a name="line12"> 12: </a>      implicit none
+<a name="line13"> 13: </a><font color="#A020F0">#include &lt;finclude/petsc.h&gt;</font>
+
+<a name="line15"> 15: </a>      <A href="../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A>             dmmg
+<a name="line16"> 16: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>   ierr
+<a name="line17"> 17: </a>      DM               da
+<a name="line18"> 18: </a>      external         FormFunctionLocal
+
+
+<a name="line21"> 21: </a>      call <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(PETSC_NULL_CHARACTER,ierr)
+
+<a name="line23"> 23: </a>      call <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,                               &amp;
+<a name="line24"> 24: </a>     &amp;     DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,                       &amp;
+<a name="line25"> 25: </a>     &amp;                <A href="../../../../docs/manualpages/DM/DMDA_STENCIL_BOX.html#DMDA_STENCIL_BOX">DMDA_STENCIL_BOX</A>,                                 &amp;
+<a name="line26"> 26: </a>     &amp;                -10,-10,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,2,1,            &amp;
+<a name="line27"> 27: </a>     &amp;                PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,da,ierr)
+
+
+<a name="line30"> 30: </a>!       Create solver object and associate it with the unknowns (on the grid)
+
+<a name="line32"> 32: </a>      call <A href="../../../../docs/manualpages/DMMG/DMMGCreate.html#DMMGCreate">DMMGCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,PETSC_NULL_OBJECT,dmmg,ierr)
+<a name="line33"> 33: </a>      call <A href="../../../../docs/manualpages/DMMG/DMMGSetDM.html#DMMGSetDM">DMMGSetDM</A>(dmmg,da,ierr)
+<a name="line34"> 34: </a>      call <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(da,ierr)
+
+<a name="line36"> 36: </a>      call <A href="../../../../docs/manualpages/DMMG/DMMGSetSNESLocal.html#DMMGSetSNESLocal">DMMGSetSNESLocal</A>(dmmg,FormFunctionLocal,                     &amp;
+<a name="line37"> 37: </a>     &amp;             PETSC_NULL_FUNCTION,0,0,ierr)
+<a name="line38"> 38: </a>      call <A href="../../../../docs/manualpages/DMMG/DMMGSetFromOptions.html#DMMGSetFromOptions">DMMGSetFromOptions</A>(dmmg,ierr)
+
+<a name="line40"> 40: </a>!      Solve the nonlinear system
+<a name="line41"> 41: </a>!
+<a name="line42"> 42: </a>      call <A href="../../../../docs/manualpages/DMMG/DMMGSolve.html#DMMGSolve">DMMGSolve</A>(dmmg,ierr)
+
+<a name="line44"> 44: </a>      call <A href="../../../../docs/manualpages/DMMG/DMMGDestroy.html#DMMGDestroy">DMMGDestroy</A>(dmmg,ierr)
+<a name="line45"> 45: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line46"> 46: </a>      end
+
+
+<a name="line49"> 49: </a>      subroutine FormFunctionLocal(in,x,f,dmmg,ierr)
+<a name="line50"> 50: </a>      implicit none
+<a name="line51"> 51: </a>      <A href="../../../../docs/manualpages/DMMG/DMMG.html#DMMG">DMMG</A> dmmg
+<a name="line52"> 52: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i,j,k
+<a name="line53"> 53: </a>      <A href="../../../../docs/manualpages/DM/DMDALocalInfo.html#DMDALocalInfo">DMDALocalInfo</A> in(DMDA_LOCAL_INFO_SIZE)
+<a name="line54"> 54: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> x(in(DMDA_LOCAL_INFO_DOF),                            &amp;
+<a name="line55"> 55: </a>     &amp;              XG_RANGE,                                           &amp;
+<a name="line56"> 56: </a>     &amp;              YG_RANGE)
+<a name="line57"> 57: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> f(in(DMDA_LOCAL_INFO_DOF),                            &amp;
+<a name="line58"> 58: </a>     &amp;             X_RANGE,                                             &amp;
+<a name="line59"> 59: </a>     &amp;             Y_RANGE)
+<a name="line60"> 60: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
+
+<a name="line62"> 62: </a>      <font color="#4169E1">do</font> i=in(DMDA_LOCAL_INFO_XS)+1,in(DMDA_LOCAL_INFO_XS)+in(DMDA_LOCAL_INFO_XM)
+<a name="line63"> 63: </a>         <font color="#4169E1">do</font> j=in(DMDA_LOCAL_INFO_YS)+1,in(DMDA_LOCAL_INFO_YS)+in(DMDA_LOCAL_INFO_YM)
+<a name="line64"> 64: </a>            <font color="#4169E1">do</font> k=1,in(DMDA_LOCAL_INFO_DOF)
+<a name="line65"> 65: </a>               f(k,i,j) = x(k,i,j)*x(k,i,j) - 2.0
+<a name="line66"> 66: </a>               <A href="../../../../docs/manualpages/Sys/CHKMEMQ.html#CHKMEMQ">CHKMEMQ</A>
+<a name="line67"> 67: </a>            enddo
+<a name="line68"> 68: </a>         enddo
+<a name="line69"> 69: </a>      enddo
+
+<a name="line71"> 71: </a>      <font color="#4169E1">return</font>
+<a name="line72"> 72: </a>      end
+
+</pre>
+</body>
+
+</html>

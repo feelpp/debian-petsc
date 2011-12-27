@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* pmetis.c */
 /* Fortran interface file */
 
@@ -53,11 +54,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matpartitioningparmetissetcoarsesequential_(MatPartitioning part, int *__ierr ){
+void PETSC_STDCALL  matpartitioningparmetissetcoarsesequential_(MatPartitioning part, int *__ierr ){
 *__ierr = MatPartitioningParmetisSetCoarseSequential(
 	(MatPartitioning)PetscToPointer((part) ));
 }
-void PETSC_STDCALL   matpartitioningparmetisgetedgecut_(MatPartitioning part,PetscInt *cut, int *__ierr ){
+void PETSC_STDCALL  matpartitioningparmetisgetedgecut_(MatPartitioning part,PetscInt *cut, int *__ierr ){
 *__ierr = MatPartitioningParmetisGetEdgeCut(
 	(MatPartitioning)PetscToPointer((part) ),cut);
 }

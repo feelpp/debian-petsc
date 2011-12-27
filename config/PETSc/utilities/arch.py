@@ -18,8 +18,8 @@ class Configure(config.base.Configure):
   
   def setupHelp(self, help):
     import nargs
-    help.addArgument('PETSc', '-PETSC_ARCH',     nargs.Arg(None, None, 'The configuration name'))
-    help.addArgument('PETSc', '-with-petsc-arch',nargs.Arg(None, None, 'The configuration name'))
+    help.addArgument('PETSc', '-PETSC_ARCH=<string>',     nargs.Arg(None, None, 'The configuration name'))
+    help.addArgument('PETSc', '-with-petsc-arch=<string>',nargs.Arg(None, None, 'The configuration name'))
     return
 
   def setupDependencies(self, framework):
@@ -36,17 +36,20 @@ class Configure(config.base.Configure):
     # Warn if PETSC_ARCH doesnt match env variable
     if 'PETSC_ARCH' in self.framework.argDB and 'PETSC_ARCH' in os.environ and self.framework.argDB['PETSC_ARCH'] != os.environ['PETSC_ARCH']:
       self.logPrintBox('''\
-Warning: PETSC_ARCH from environment does not match command-line.
-Warning: Using from command-line: %s, ignoring environment: %s''' % (str(self.framework.argDB['PETSC_ARCH']), str(os.environ['PETSC_ARCH'])))
+Warning: PETSC_ARCH from environment does not match command-line or name of script.
+Warning: Using from command-line or name of script: %s, ignoring environment: %s''' % (str(self.framework.argDB['PETSC_ARCH']), str(os.environ['PETSC_ARCH'])))
     if 'with-petsc-arch' in self.framework.argDB:
       self.arch = self.framework.argDB['with-petsc-arch']
     elif 'PETSC_ARCH' in self.framework.argDB:
       self.arch = self.framework.argDB['PETSC_ARCH']
     else:
       if 'PETSC_ARCH' in os.environ:
+        if not len(os.environ['PETSC_ARCH']):
+          raise RuntimeError('PETSC_ARCH is the empty string in your environment. It must either be a valid string, or not be defined in the environment at all.')
         self.arch = os.environ['PETSC_ARCH']
       else:
-        self.arch = self.framework.host_os
+        import sys
+        self.arch = 'arch-' + sys.platform.replace('cygwin','mswin')
         # use opt/debug, c/c++ tags.
         self.arch+= '-'+self.languages.clanguage.lower()
         if self.compilerFlags.debugging:
@@ -56,7 +59,6 @@ Warning: Using from command-line: %s, ignoring environment: %s''' % (str(self.fr
     if self.arch.find('/') >= 0 or self.arch.find('\\') >= 0:
       raise RuntimeError('PETSC_ARCH should not contain path characters, but you have specified: '+str(self.arch))
     self.archBase = re.sub(r'^(\w+)[-_]?.*$', r'\1', self.arch)
-    self.hostOsBase = re.sub(r'^(\w+)[-_]?.*$', r'\1', self.framework.host_os)
     self.addDefine('ARCH', '"'+self.arch+'"')
     return
 

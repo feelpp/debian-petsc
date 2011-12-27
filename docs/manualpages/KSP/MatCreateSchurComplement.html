@@ -11,16 +11,16 @@ Creates a new matrix object that behaves like the Schur complement of a matrix
 <PRE>
 #include "petscmat.h" 
 #include "petscksp.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreateSchurComplement(Mat A,Mat Ap,Mat B,Mat C,Mat D,Mat *N)
+PetscErrorCode  MatCreateSchurComplement(Mat A00,Mat Ap00,Mat A01,Mat A10,Mat A11,Mat *N)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>A,B,C,D  </B> -the four parts of the original matrix (D is optional)
+<DT><B>A00,A01,A10,A11  </B> -the four parts of the original matrix (D is optional)
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>N </B> -the matrix that the Schur complement D - C inv(A) B
+<DT><B>N </B> -the matrix that the Schur complement A11 - A10 ksp(A00) A01
 <br>
 <P>
 
@@ -31,10 +31,10 @@ the Schur complement and a <A HREF="../KSP/KSP.html#KSP">KSP</A> solver to appro
 <P>
 All four matrices must have the same MPI communicator
 <P>
-A and  D must be square matrices
+A00 and  A11 must be square matrices
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatCreateNormal.html#MatCreateNormal">MatCreateNormal</A>(), <A HREF="../Mat/MatMult.html#MatMult">MatMult</A>(), <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../KSP/MatSchurComplementGetKSP.html#MatSchurComplementGetKSP">MatSchurComplementGetKSP</A>(), <A HREF="../KSP/MatSchurComplementUpdate.html#MatSchurComplementUpdate">MatSchurComplementUpdate</A>(), <A HREF="../Mat/MatCreateTranspose.html#MatCreateTranspose">MatCreateTranspose</A>()
+ <A HREF="../Mat/MatCreateNormal.html#MatCreateNormal">MatCreateNormal</A>(), <A HREF="../Mat/MatMult.html#MatMult">MatMult</A>(), <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../KSP/MatSchurComplementGetKSP.html#MatSchurComplementGetKSP">MatSchurComplementGetKSP</A>(), <A HREF="../KSP/MatSchurComplementUpdate.html#MatSchurComplementUpdate">MatSchurComplementUpdate</A>(), <A HREF="../Mat/MatCreateTranspose.html#MatCreateTranspose">MatCreateTranspose</A>(), <A HREF="../KSP/MatGetSchurComplement.html#MatGetSchurComplement">MatGetSchurComplement</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate

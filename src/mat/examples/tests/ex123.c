@@ -1,6 +1,6 @@
 static char help[] = "Test MatMatMult() for Dense matrices.\n\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -11,7 +11,7 @@ int main(int argc,char **argv)
   PetscScalar    *array;
   PetscErrorCode ierr;
   PetscRandom    r;
-  PetscTruth     equal;
+  PetscBool      equal;
   PetscReal      fill = 1.0;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
@@ -30,7 +30,7 @@ int main(int argc,char **argv)
     ierr = PetscRandomGetValue(r,&array[k++]);CHKERRQ(ierr);
   }
   ierr = MatRestoreArray(A,&array);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(r);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&r);CHKERRQ(ierr);
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
@@ -48,13 +48,13 @@ int main(int argc,char **argv)
     ierr = MatMatMultNumeric(B,A,D);CHKERRQ(ierr);
   }
   ierr = MatEqual(C,D,&equal);CHKERRQ(ierr);
-  if (!equal) SETERRQ(PETSC_ERR_ARG_WRONGSTATE,"C != D");
-  ierr = MatDestroy(D);CHKERRQ(ierr);
+  if (!equal) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"C != D");
+  ierr = MatDestroy(&D);CHKERRQ(ierr);
 
 
-  ierr = MatDestroy(C);CHKERRQ(ierr);
-  ierr = MatDestroy(B);
-  ierr = MatDestroy(A);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
+  ierr = MatDestroy(&B);
+  ierr = MatDestroy(&A);
   
   PetscFinalize();
   return(0);

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dbuff.c */
 /* Fortran interface file */
 
@@ -28,6 +29,11 @@ extern void PetscRmPointer(void*);
 
 #include "petscdraw.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscdrawisnull_ PETSCDRAWISNULL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscdrawisnull_ petscdrawisnull
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscdrawsetdoublebuffer_ PETSCDRAWSETDOUBLEBUFFER
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscdrawsetdoublebuffer_ petscdrawsetdoublebuffer
@@ -38,7 +44,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawsetdoublebuffer_(PetscDraw draw, int *__ierr ){
+void PETSC_STDCALL  petscdrawisnull_(PetscDraw draw,PetscBool  *yes, int *__ierr ){
+*__ierr = PetscDrawIsNull(
+	(PetscDraw)PetscToPointer((draw) ),yes);
+}
+void PETSC_STDCALL  petscdrawsetdoublebuffer_(PetscDraw draw, int *__ierr ){
 *__ierr = PetscDrawSetDoubleBuffer(
 	(PetscDraw)PetscToPointer((draw) ));
 }

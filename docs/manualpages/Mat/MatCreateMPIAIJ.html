@@ -10,7 +10,7 @@ Creates a sparse parallel matrix in AIJ format (the default parallel PETSc forma
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreateMPIAIJ(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,PetscInt d_nz,const PetscInt d_nnz[],PetscInt o_nz,const PetscInt o_nnz[],Mat *A)
+PetscErrorCode  MatCreateMPIAIJ(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,PetscInt d_nz,const PetscInt d_nnz[],PetscInt o_nz,const PetscInt o_nnz[],Mat *A)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -236,6 +236,9 @@ hence pre-allocation is perfect.
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex38.c.html">src/ksp/ksp/examples/tutorials/ex38.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex54.c.html">src/ksp/ksp/examples/tutorials/ex54.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex55.c.html">src/ksp/ksp/examples/tutorials/ex55.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex14f.F.html">src/ksp/ksp/examples/tutorials/ex14f.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
 </BODY></HTML>

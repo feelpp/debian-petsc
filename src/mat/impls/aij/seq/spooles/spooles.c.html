@@ -4,33 +4,33 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:28:38+00:00">
+<meta name="date" content="2011-10-29T18:59:39+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETCSMAT_DLL</font></strong>
+<pre width="80">
+<a name="line2">  2: </a><font color="#B22222">/*</font>
+<a name="line3">  3: </a><font color="#B22222">   Provides an interface to the Spooles serial sparse solver</font>
+<a name="line4">  4: </a><font color="#B22222">*/</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;../src/mat/impls/sbaij/seq/sbaij.h&gt;</font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/spooles/spooles.h&gt;</font>
 
-<a name="line3">  3: </a><font color="#B22222">/* </font>
-<a name="line4">  4: </a><font color="#B22222">   Provides an interface to the Spooles serial sparse solver</font>
-<a name="line5">  5: </a><font color="#B22222">*/</font>
-<a name="line6"> 6: </a> #include <A href="../../../../../../include/../src/mat/impls/aij/seq/aij.h.html">../src/mat/impls/aij/seq/aij.h</A>
-<a name="line7"> 7: </a> #include <A href="../../../../../../include/../src/mat/impls/sbaij/seq/sbaij.h.html">../src/mat/impls/sbaij/seq/sbaij.h</A>
-<a name="line8"> 8: </a> #include <A href="../../../../../../include/../src/mat/impls/aij/seq/spooles/spooles.h.html">../src/mat/impls/aij/seq/spooles/spooles.h</A>
+<a name="line11"> 11: </a><strong><font color="#4169E1"><a name="MatDestroy_SeqAIJSpooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqAIJSpooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line12"> 12: </a>{
+<a name="line13"> 13: </a>  Mat_Spooles    *lu = (Mat_Spooles*)A-&gt;spptr;
 
-<a name="line12"> 12: </a><strong><font color="#4169E1"><a name="MatDestroy_SeqAIJSpooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqAIJSpooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
-<a name="line13"> 13: </a>{
-<a name="line14"> 14: </a>  Mat_Spooles    *lu = (Mat_Spooles*)A-&gt;spptr;
-<a name="line16"> 16: </a>
-<a name="line18"> 18: </a>  <font color="#4169E1">if</font> (lu-&gt;CleanUpSpooles) {
-<a name="line19"> 19: </a>    FrontMtx_free(lu-&gt;frontmtx);
-<a name="line20"> 20: </a>    IV_free(lu-&gt;newToOldIV);
-<a name="line21"> 21: </a>    IV_free(lu-&gt;oldToNewIV);
-<a name="line22"> 22: </a>    InpMtx_free(lu-&gt;mtxA);
-<a name="line23"> 23: </a>    ETree_free(lu-&gt;frontETree);
-<a name="line24"> 24: </a>    IVL_free(lu-&gt;symbfacIVL);
-<a name="line25"> 25: </a>    SubMtxManager_free(lu-&gt;mtxmanager);
-<a name="line26"> 26: </a>    Graph_free(lu-&gt;graph);
-<a name="line27"> 27: </a>  }
+<a name="line17"> 17: </a>  <font color="#4169E1">if</font> (lu &amp;&amp; lu-&gt;CleanUpSpooles) {
+<a name="line18"> 18: </a>    FrontMtx_free(lu-&gt;frontmtx);
+<a name="line19"> 19: </a>    IV_free(lu-&gt;newToOldIV);
+<a name="line20"> 20: </a>    IV_free(lu-&gt;oldToNewIV);
+<a name="line21"> 21: </a>    InpMtx_free(lu-&gt;mtxA);
+<a name="line22"> 22: </a>    ETree_free(lu-&gt;frontETree);
+<a name="line23"> 23: </a>    IVL_free(lu-&gt;symbfacIVL);
+<a name="line24"> 24: </a>    SubMtxManager_free(lu-&gt;mtxmanager);
+<a name="line25"> 25: </a>    Graph_free(lu-&gt;graph);
+<a name="line26"> 26: </a>  }
+<a name="line27"> 27: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(A-&gt;spptr);
 <a name="line28"> 28: </a>  MatDestroy_SeqAIJ(A);
 <a name="line29"> 29: </a>  <font color="#4169E1">return</font>(0);
 <a name="line30"> 30: </a>}
@@ -86,7 +86,7 @@
 <a name="line83"> 83: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,lu-&gt;options.msgFile, <font color="#666666">"\n\n solution matrix in new ordering"</font>);
 <a name="line84"> 84: </a>    DenseMtx_writeForHumanEye(mtxX, lu-&gt;options.msgFile);
 <a name="line85"> 85: </a>    err = fflush(lu-&gt;options.msgFile);
-<a name="line86"> 86: </a>    <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
+<a name="line86"> 86: </a>    <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line87"> 87: </a>  }
 
 <a name="line89"> 89: </a>  <font color="#B22222">/* permute solution into original ordering, then copy to x */</font>
@@ -128,7 +128,7 @@
 <a name="line127">127: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           *ivec1,*ivec2,j;
 <a name="line128">128: </a>  double             *dvec;
 <a name="line129">129: </a><font color="#A020F0">#endif</font>
-<a name="line130">130: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>         isSeqAIJ,isMPIAIJ;
+<a name="line130">130: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          isSeqAIJ,isMPIAIJ;
 <a name="line131">131: </a>
 <a name="line133">133: </a>  <font color="#4169E1">if</font> (lu-&gt;flg == DIFFERENT_NONZERO_PATTERN) { <font color="#B22222">/* first numeric factorization */</font>
 <a name="line134">134: </a>    (F)-&gt;ops-&gt;solve   = MatSolve_SeqSpooles;
@@ -206,7 +206,7 @@
 <a name="line206">206: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,lu-&gt;options.msgFile, <font color="#666666">"\n\n input matrix"</font>);
 <a name="line207">207: </a>    InpMtx_writeForHumanEye(lu-&gt;mtxA, lu-&gt;options.msgFile);
 <a name="line208">208: </a>    err = fflush(lu-&gt;options.msgFile);
-<a name="line209">209: </a>    <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
+<a name="line209">209: </a>    <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line210">210: </a>  }
 
 <a name="line212">212: </a>  <font color="#4169E1">if</font> ( lu-&gt;flg == DIFFERENT_NONZERO_PATTERN){ <font color="#B22222">/* first numeric factorization */</font>
@@ -234,7 +234,7 @@
 <a name="line234">234: </a>      }
 <a name="line235">235: </a>      Graph_writeForHumanEye(lu-&gt;graph, lu-&gt;options.msgFile);
 <a name="line236">236: </a>      err = fflush(lu-&gt;options.msgFile);
-<a name="line237">237: </a>      <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
+<a name="line237">237: </a>      <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line238">238: </a>    }
 
 <a name="line240">240: </a>    <font color="#4169E1">switch</font> (lu-&gt;options.ordering) {
@@ -251,7 +251,7 @@
 <a name="line251">251: </a>      lu-&gt;frontETree = orderViaND(lu-&gt;graph, lu-&gt;options.maxdomainsize,
 <a name="line252">252: </a>                     lu-&gt;options.seed,lu-&gt;options.msglvl,lu-&gt;options.msgFile); <font color="#4169E1">break</font>;
 <a name="line253">253: </a><strong><font color="#FF0000">    default:</font></strong>
-<a name="line254">254: </a>      <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_ARG_WRONG,<font color="#666666">"Unknown Spooles's ordering"</font>);
+<a name="line254">254: </a>      <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,<font color="#666666">"Unknown Spooles's ordering"</font>);
 <a name="line255">255: </a>    }
 
 <a name="line257">257: </a>    <font color="#4169E1">if</font> ( lu-&gt;options.msglvl &gt; 0 ) {
@@ -260,7 +260,7 @@
 <a name="line260">260: </a>      <A href="../../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,lu-&gt;options.msgFile, <font color="#666666">"\n\n front tree from ordering"</font>);
 <a name="line261">261: </a>      ETree_writeForHumanEye(lu-&gt;frontETree, lu-&gt;options.msgFile);
 <a name="line262">262: </a>      err = fflush(lu-&gt;options.msgFile);
-<a name="line263">263: </a>      <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
+<a name="line263">263: </a>      <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line264">264: </a>    }
 <a name="line265">265: </a>
 <a name="line266">266: </a>    <font color="#B22222">/* get the permutation, permute the front tree */</font>
@@ -309,7 +309,7 @@
 <a name="line309">309: </a>      <A href="../../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,lu-&gt;options.msgFile, <font color="#666666">"\n\n symbolic factorization"</font>);
 <a name="line310">310: </a>      IVL_writeForHumanEye(lu-&gt;symbfacIVL, lu-&gt;options.msgFile);
 <a name="line311">311: </a>      err = fflush(lu-&gt;options.msgFile);
-<a name="line312">312: </a>      <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
+<a name="line312">312: </a>      <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line313">313: </a>    }
 
 <a name="line315">315: </a>    lu-&gt;frontmtx   = FrontMtx_new();
@@ -385,8 +385,8 @@
 <a name="line385">385: </a>    IVfill(20, lu-&gt;stats, 0);
 <a name="line386">386: </a>    rootchv = FrontMtx_factorInpMtx(lu-&gt;frontmtx, lu-&gt;mtxA, lu-&gt;options.tau, 0.0,
 <a name="line387">387: </a>            chvmanager, &amp;fierr, lu-&gt;cpus,lu-&gt;stats,lu-&gt;options.msglvl,lu-&gt;options.msgFile);
-<a name="line388">388: </a>    <font color="#4169E1">if</font> (rootchv) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_MAT_LU_ZRPVT,<font color="#666666">"\n matrix found to be singular"</font>);
-<a name="line389">389: </a>    <font color="#4169E1">if</font> (fierr &gt;= 0) <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(PETSC_ERR_LIB,<font color="#666666">"\n error encountered at front %D"</font>, fierr);
+<a name="line388">388: </a>    <font color="#4169E1">if</font> (rootchv) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_MAT_LU_ZRPVT,<font color="#666666">"\n matrix found to be singular"</font>);
+<a name="line389">389: </a>    <font color="#4169E1">if</font> (fierr &gt;= 0) <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"\n error encountered at front %D"</font>, fierr);
 <a name="line390">390: </a>
 <a name="line391">391: </a>    <font color="#4169E1">if</font>(lu-&gt;options.FrontMtxInfo){
 <a name="line392">392: </a>      <A href="../../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"\n %8d pivots, %8d pivot tests, %8d delayed rows and columns\n"</font>,lu-&gt;stats[0], lu-&gt;stats[1], lu-&gt;stats[2]);
@@ -422,7 +422,7 @@
 <a name="line422">422: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,lu-&gt;options.msgFile, <font color="#666666">"\n\n factor matrix"</font>);
 <a name="line423">423: </a>    FrontMtx_writeForHumanEye(lu-&gt;frontmtx, lu-&gt;options.msgFile);
 <a name="line424">424: </a>    err = fflush(lu-&gt;options.msgFile);
-<a name="line425">425: </a>    <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
+<a name="line425">425: </a>    <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line426">426: </a>  }
 
 <a name="line428">428: </a>  <font color="#4169E1">if</font> ( lu-&gt;options.symflag == SPOOLES_SYMMETRIC ) { <font color="#B22222">/* || SPOOLES_HERMITIAN ? */</font>
@@ -457,7 +457,7 @@
 <a name="line457">457: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,lu-&gt;options.msgFile, <font color="#666666">"\n\n factor matrix after post-processing"</font>);
 <a name="line458">458: </a>    FrontMtx_writeForHumanEye(lu-&gt;frontmtx, lu-&gt;options.msgFile);
 <a name="line459">459: </a>    err = fflush(lu-&gt;options.msgFile);
-<a name="line460">460: </a>    <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
+<a name="line460">460: </a>    <font color="#4169E1">if</font> (err) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line461">461: </a>  }
 
 <a name="line463">463: </a>  lu-&gt;flg = SAME_NONZERO_PATTERN;

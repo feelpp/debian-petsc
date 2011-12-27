@@ -24,14 +24,14 @@ ignition) test problem. The command line options are:\n\
     system of equations.
 */
 
-#include "petscsnes.h"
-#include "petscda.h"
+#include <petscsnes.h>
+#include <petscdmda.h>
 
 typedef struct {
     PetscReal param;           /* test problem nonlinearity parameter */
     PetscInt  mx,my,mz;      /* discretization in x,y,z-directions */
     Vec       localX,localF;  /* ghosted local vectors */
-    DA        da;              /* distributed array datastructure */
+    DM        da;              /* distributed array datastructure */
 } AppCtx;
 
 extern PetscErrorCode  FormFunction1(SNES,Vec,Vec,void*),FormInitialGuess1(AppCtx*,Vec);
@@ -46,15 +46,15 @@ int main(int argc,char **argv)
   Mat            J;                    /* Jacobian matrix */
   AppCtx         user;                 /* user-defined application context */
   Vec            x,r;                  /* vectors */
-  DAStencilType  stencil = DA_STENCIL_BOX;
+  DMDAStencilType  stencil = DMDA_STENCIL_BOX;
   PetscErrorCode ierr;
-  PetscTruth     flg;
+  PetscBool      flg;
   PetscInt       Nx = PETSC_DECIDE,Ny = PETSC_DECIDE,Nz = PETSC_DECIDE,its;
   PetscReal      bratu_lambda_max = 6.81,bratu_lambda_min = 0.;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
   ierr = PetscOptionsHasName(PETSC_NULL,"-star",&flg);CHKERRQ(ierr);
-  if (flg) stencil = DA_STENCIL_STAR;
+  if (flg) stencil = DMDA_STENCIL_STAR;
 
   user.mx    = 4; 
   user.my    = 4; 
@@ -67,16 +67,14 @@ int main(int argc,char **argv)
   ierr = PetscOptionsGetInt(PETSC_NULL,"-Ny",&Ny,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-Nz",&Nz,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetReal(PETSC_NULL,"-par",&user.param,PETSC_NULL);CHKERRQ(ierr);
-  if (user.param >= bratu_lambda_max || user.param <= bratu_lambda_min) {
-    SETERRQ(1,"Lambda is out of range");
-  }
+  if (user.param >= bratu_lambda_max || user.param <= bratu_lambda_min) SETERRQ(PETSC_COMM_SELF,1,"Lambda is out of range");
   
   /* Set up distributed array */
-  ierr = DACreate3d(PETSC_COMM_WORLD,DA_NONPERIODIC,stencil,user.mx,user.my,user.mz,
+  ierr = DMDACreate3d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,stencil,user.mx,user.my,user.mz,
                     Nx,Ny,Nz,1,1,PETSC_NULL,PETSC_NULL,PETSC_NULL,&user.da);CHKERRQ(ierr);
-  ierr = DACreateGlobalVector(user.da,&x);CHKERRQ(ierr);
+  ierr = DMCreateGlobalVector(user.da,&x);CHKERRQ(ierr);
   ierr = VecDuplicate(x,&r);CHKERRQ(ierr);
-  ierr = DACreateLocalVector(user.da,&user.localX);CHKERRQ(ierr);
+  ierr = DMCreateLocalVector(user.da,&user.localX);CHKERRQ(ierr);
   ierr = VecDuplicate(user.localX,&user.localF);CHKERRQ(ierr);
 
   /* Create nonlinear solver */
@@ -100,13 +98,13 @@ int main(int argc,char **argv)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Number of Newton iterations = %D\n",its);CHKERRQ(ierr);
 
   /* Free data structures */
-  ierr = VecDestroy(user.localX);CHKERRQ(ierr);
-  ierr = VecDestroy(user.localF);CHKERRQ(ierr);
-  ierr = DADestroy(user.da);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr); ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = MatDestroy(J);CHKERRQ(ierr); ierr = SNESDestroy(snes);CHKERRQ(ierr);
+  ierr = VecDestroy(&user.localX);CHKERRQ(ierr);
+  ierr = VecDestroy(&user.localF);CHKERRQ(ierr);
+  ierr = DMDestroy(&user.da);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr); ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = MatDestroy(&J);CHKERRQ(ierr); ierr = SNESDestroy(&snes);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }/* --------------------  Form initial approximation ----------------- */
 #undef __FUNCT__
@@ -124,8 +122,8 @@ PetscErrorCode  FormInitialGuess1(AppCtx *user,Vec X)
 
   ierr  = VecGetArray(localX,&x);CHKERRQ(ierr);
   temp1 = lambda/(lambda + one);
-  ierr  = DAGetCorners(user->da,&xs,&ys,&zs,&xm,&ym,&zm);CHKERRQ(ierr);
-  ierr  = DAGetGhostCorners(user->da,&Xs,&Ys,&Zs,&Xm,&Ym,&Zm);CHKERRQ(ierr);
+  ierr  = DMDAGetCorners(user->da,&xs,&ys,&zs,&xm,&ym,&zm);CHKERRQ(ierr);
+  ierr  = DMDAGetGhostCorners(user->da,&Xs,&Ys,&Zs,&Xm,&Ym,&Zm);CHKERRQ(ierr);
  
   for (k=zs; k<zs+zm; k++) {
     base1 = (Xm*Ym)*(k-Zs);
@@ -137,14 +135,15 @@ PetscErrorCode  FormInitialGuess1(AppCtx *user,Vec X)
           x[loc] = 0.0; 
           continue;
         }
-        x[loc] = temp1*sqrt(PetscMin((PetscReal)(PetscMin(i,mx-i-1))*Hx,temp)); 
+        x[loc] = temp1*PetscSqrtReal(PetscMin((PetscReal)(PetscMin(i,mx-i-1))*Hx,temp)); 
       }
     }
   }
 
   ierr = VecRestoreArray(localX,&x);CHKERRQ(ierr);
   /* stick values into global vector */
-  ierr = DALocalToGlobal(user->da,localX,INSERT_VALUES,X);CHKERRQ(ierr);
+  ierr = DMLocalToGlobalBegin(user->da,localX,INSERT_VALUES,X);CHKERRQ(ierr);
+  ierr = DMLocalToGlobalEnd(user->da,localX,INSERT_VALUES,X);CHKERRQ(ierr);
   return 0;
 }/* --------------------  Evaluate Function F(x) --------------------- */
 #undef __FUNCT__
@@ -165,13 +164,13 @@ PetscErrorCode  FormFunction1(SNES snes,Vec X,Vec F,void *ptr)
   sc      = Hx*Hy*Hz*lambda; HxHzdHy  = Hx*Hz/Hy; HyHzdHx  = Hy*Hz/Hx;
   HxHydHz = Hx*Hy/Hz;
 
-  ierr = DAGlobalToLocalBegin(user->da,X,INSERT_VALUES,localX);
-  ierr = DAGlobalToLocalEnd(user->da,X,INSERT_VALUES,localX);
+  ierr = DMGlobalToLocalBegin(user->da,X,INSERT_VALUES,localX);
+  ierr = DMGlobalToLocalEnd(user->da,X,INSERT_VALUES,localX);
   ierr = VecGetArray(localX,&x);CHKERRQ(ierr);
   ierr = VecGetArray(localF,&f);CHKERRQ(ierr);
 
-  ierr = DAGetCorners(user->da,&xs,&ys,&zs,&xm,&ym,&zm);CHKERRQ(ierr);
-  ierr = DAGetGhostCorners(user->da,&Xs,&Ys,&Zs,&Xm,&Ym,&Zm);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(user->da,&xs,&ys,&zs,&xm,&ym,&zm);CHKERRQ(ierr);
+  ierr = DMDAGetGhostCorners(user->da,&Xs,&Ys,&Zs,&Xm,&Ym,&Zm);CHKERRQ(ierr);
 
   for (k=zs; k<zs+zm; k++) {
     base1 = (Xm*Ym)*(k-Zs); 
@@ -195,7 +194,8 @@ PetscErrorCode  FormFunction1(SNES snes,Vec X,Vec F,void *ptr)
   ierr = VecRestoreArray(localX,&x);CHKERRQ(ierr);
   ierr = VecRestoreArray(localF,&f);CHKERRQ(ierr);
   /* stick values into global vector */
-  ierr = DALocalToGlobal(user->da,localF,INSERT_VALUES,F);CHKERRQ(ierr);
+  ierr = DMLocalToGlobalBegin(user->da,localF,INSERT_VALUES,F);CHKERRQ(ierr);
+  ierr = DMLocalToGlobalEnd(user->da,localF,INSERT_VALUES,F);CHKERRQ(ierr);
   ierr = PetscLogFlops(11.0*ym*xm*zm);CHKERRQ(ierr);
   return 0; 
 }

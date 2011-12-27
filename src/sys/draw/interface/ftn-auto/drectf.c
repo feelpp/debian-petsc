@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* drect.c */
 /* Fortran interface file */
 
@@ -32,15 +33,24 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscdrawrectangle_ petscdrawrectangle
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscdrawsave_ PETSCDRAWSAVE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscdrawsave_ petscdrawsave
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawrectangle_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr,int *c1,int *c2,int *c3,int *c4, int *__ierr ){
+void PETSC_STDCALL  petscdrawrectangle_(PetscDraw draw,PetscReal *xl,PetscReal *yl,PetscReal *xr,PetscReal *yr,int *c1,int *c2,int *c3,int *c4, int *__ierr ){
 *__ierr = PetscDrawRectangle(
 	(PetscDraw)PetscToPointer((draw) ),*xl,*yl,*xr,*yr,*c1,*c2,*c3,*c4);
+}
+void PETSC_STDCALL  petscdrawsave_(PetscDraw draw, int *__ierr ){
+*__ierr = PetscDrawSave(
+	(PetscDraw)PetscToPointer((draw) ));
 }
 #if defined(__cplusplus)
 }

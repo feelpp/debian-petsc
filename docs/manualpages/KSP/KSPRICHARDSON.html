@@ -20,19 +20,23 @@ Here B is the application of the preconditioner
 This method often (usually) will not converge unless scale is very small. It
 is described in
 <P>
-"The Approximate Arithmetical Solution by Finite Differences of Physical Problems Involving
-Differential Equations, with an Application to the Stresses in a Masonry Dam",
-L. F. Richardson, Philosophical Transactions of the Royal Society of London. Series A,
-Containing Papers of a Mathematical or Physical Character, Vol. 210, 1911 (1911), pp. 307-357.
 <P>
 Notes: For some preconditioners, currently SOR, the convergence test is skipped to improve speed,
 thus it always iterates the maximum number of iterations you've selected. When -ksp_monitor
 (or any other monitor) is turned on, the norm is computed at each iteration and so the convergence test is run unless
-you specifically call <A HREF="../KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(ksp,<A HREF="../KSP/KSP_NORM_NO.html#KSP_NORM_NO">KSP_NORM_NO</A>);
+you specifically call <A HREF="../KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(ksp,<A HREF="../KSP/KSP_NORM_NONE.html#KSP_NORM_NONE">KSP_NORM_NONE</A>);
 <P>
 For some preconditioners, currently <A HREF="../PC/PCMG.html#PCMG">PCMG</A> and <A HREF="../PC/PCHYPRE.html#PCHYPRE">PCHYPRE</A> with BoomerAMG if -ksp_monitor (and also
 any other monitor) is not turned on then the convergence test is done by the preconditioner itself and
 so the solver may run more or fewer iterations then if -ksp_monitor is selected.
+<P>
+Supports only left preconditioning
+<P>
+<H3><FONT COLOR="#CC3333">References</FONT></H3>
+"The Approximate Arithmetical Solution by Finite Differences of Physical Problems Involving
+Differential Equations, with an Application to the Stresses in a Masonry Dam",
+L. F. Richardson, Philosophical Transactions of the Royal Society of London. Series A,
+Containing Papers of a Mathematical or Physical Character, Vol. 210, 1911 (1911), pp. 307-357.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A HREF="../KSP/KSP.html#KSP">KSP</A>,

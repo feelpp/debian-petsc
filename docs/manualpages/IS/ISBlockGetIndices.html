@@ -10,7 +10,7 @@ Gets the indices associated with each block.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscis.h"     
-PetscErrorCode  ISBlockGetIndices(IS in,const PetscInt *idx[])
+PetscErrorCode  ISBlockGetIndices(IS is,const PetscInt *idx[])
 </PRE>
 Not Collective
 <P>
@@ -19,7 +19,7 @@ Not Collective
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>idx </B> -the integer indices
+<DT><B>idx </B> -the integer indices, one for each block and count of block not indices
 <br>
 <P>
 

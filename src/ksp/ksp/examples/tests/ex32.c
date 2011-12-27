@@ -1,4 +1,3 @@
-
 /*
   Laplacian in 3D. Use for testing BAIJ matrix. 
   Modeled by the partial differential equation
@@ -11,12 +10,12 @@
 
 static char help[] = "Solves 3D Laplacian using wirebasket based multigrid.\n\n";
 
-#include "petscda.h"
-#include "petscksp.h"
-#include "petscmg.h"
+#include <petscdmda.h>
+#include <petscksp.h>
+#include <petscpcmg.h>
 
-extern PetscErrorCode ComputeMatrix(DA,Mat);
-extern PetscErrorCode ComputeRHS(DA,Vec);
+extern PetscErrorCode ComputeMatrix(DM,Mat);
+extern PetscErrorCode ComputeRHS(DM,Vec);
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -26,31 +25,32 @@ int main(int argc,char **argv)
   KSP            ksp;
   PC             pc;
   Vec            x,b;
-  DA             da;
+  DM             da;
   Mat            A,Atrans;
   PetscInt       dof=1,M=-8;
-  PetscTruth     flg,trans=PETSC_FALSE;
+  PetscBool      flg,trans=PETSC_FALSE;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-dof",&dof,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(PETSC_NULL,"-M",&M,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-trans",&trans,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-trans",&trans,PETSC_NULL);CHKERRQ(ierr);
 
-  ierr = DACreate(PETSC_COMM_WORLD,&da);CHKERRQ(ierr);
-  ierr = DASetDim(da,3);CHKERRQ(ierr);
-  ierr = DASetPeriodicity(da,DA_NONPERIODIC);CHKERRQ(ierr);
-  ierr = DASetStencilType(da,DA_STENCIL_STAR);CHKERRQ(ierr);
-  ierr = DASetSizes(da,M,M,M);CHKERRQ(ierr);
-  ierr = DASetNumProcs(da,PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE);CHKERRQ(ierr);
-  ierr = DASetDof(da,dof);CHKERRQ(ierr);
-  ierr = DASetStencilWidth(da,1);CHKERRQ(ierr);
-  ierr = DASetVertexDivision(da,PETSC_NULL,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
-  ierr = DASetFromOptions(da);CHKERRQ(ierr);
+  ierr = DMDACreate(PETSC_COMM_WORLD,&da);CHKERRQ(ierr);
+  ierr = DMDASetDim(da,3);CHKERRQ(ierr);
+  ierr = DMDASetBoundaryType(da,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE);CHKERRQ(ierr);
+  ierr = DMDASetStencilType(da,DMDA_STENCIL_STAR);CHKERRQ(ierr);
+  ierr = DMDASetSizes(da,M,M,M);CHKERRQ(ierr);
+  ierr = DMDASetNumProcs(da,PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE);CHKERRQ(ierr);
+  ierr = DMDASetDof(da,dof);CHKERRQ(ierr);
+  ierr = DMDASetStencilWidth(da,1);CHKERRQ(ierr);
+  ierr = DMDASetOwnershipRanges(da,PETSC_NULL,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMSetFromOptions(da);CHKERRQ(ierr);
+  ierr = DMSetUp(da);CHKERRQ(ierr);
 
-  ierr = DACreateGlobalVector(da,&x);CHKERRQ(ierr);
-  ierr = DACreateGlobalVector(da,&b);CHKERRQ(ierr);
+  ierr = DMCreateGlobalVector(da,&x);CHKERRQ(ierr);
+  ierr = DMCreateGlobalVector(da,&b);CHKERRQ(ierr);
   ierr = ComputeRHS(da,b);CHKERRQ(ierr);
-  ierr = DAGetMatrix(da,MATBAIJ,&A);CHKERRQ(ierr);
+  ierr = DMGetMatrix(da,MATBAIJ,&A);CHKERRQ(ierr);
   ierr = ComputeMatrix(da,A);CHKERRQ(ierr);
 
 
@@ -58,15 +58,22 @@ int main(int argc,char **argv)
   ierr = MatTranspose(A,MAT_INITIAL_MATRIX,&Atrans);CHKERRQ(ierr);
   ierr = MatAXPY(A,1.0,Atrans,DIFFERENT_NONZERO_PATTERN);CHKERRQ(ierr);
   ierr = MatScale(A,0.5);CHKERRQ(ierr);
-  ierr = MatDestroy(Atrans);CHKERRQ(ierr);
+  ierr = MatDestroy(&Atrans);CHKERRQ(ierr);
 
   /* Test sbaij matrix */
   flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL, "-test_sbaij1", &flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL, "-test_sbaij1", &flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg){
     Mat sA;
+    PetscBool issymm;
+    ierr = MatIsTranspose(A,A,0.0,&issymm);CHKERRQ(ierr);
+    if (issymm) {
+      ierr = MatSetOption(A,MAT_SYMMETRIC,PETSC_TRUE);CHKERRQ(ierr);
+    } else {
+      printf("Warning: A is non-symmetric\n");
+    }
     ierr = MatConvert(A,MATSBAIJ,MAT_INITIAL_MATRIX,&sA);CHKERRQ(ierr);
-    ierr = MatDestroy(A);CHKERRQ(ierr);
+    ierr = MatDestroy(&A);CHKERRQ(ierr);
     A = sA;
   }
 
@@ -74,7 +81,7 @@ int main(int argc,char **argv)
   ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
   ierr = KSPSetOperators(ksp,A,A,SAME_NONZERO_PATTERN);CHKERRQ(ierr);
   ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
-  ierr = PCSetDA(pc,da);CHKERRQ(ierr);
+  ierr = PCSetDM(pc,(DM)da);CHKERRQ(ierr);
  
   if (trans) {
     ierr = KSPSolveTranspose(ksp,b,x);CHKERRQ(ierr);
@@ -84,7 +91,7 @@ int main(int argc,char **argv)
 
   /* check final residual */
   flg  = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL, "-check_final_residual", &flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL, "-check_final_residual", &flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg){
     Vec            b1;
     PetscReal      norm;
@@ -94,28 +101,28 @@ int main(int argc,char **argv)
     ierr = VecAXPY(b1,-1.0,b);CHKERRQ(ierr);
     ierr = VecNorm(b1,NORM_2,&norm);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Final residual %g\n",norm);CHKERRQ(ierr);
-    ierr = VecDestroy(b1);CHKERRQ(ierr);
+    ierr = VecDestroy(&b1);CHKERRQ(ierr);
   }
    
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = DADestroy(da);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = DMDestroy(&da);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
 #undef __FUNCT__
 #define __FUNCT__ "ComputeRHS"
-PetscErrorCode ComputeRHS(DA da,Vec b)
+PetscErrorCode ComputeRHS(DM da,Vec b)
 {
   PetscErrorCode ierr;
   PetscInt       mx,my,mz;
   PetscScalar    h;
 
   PetscFunctionBegin;
-  ierr = DAGetInfo(da,0,&mx,&my,&mz,0,0,0,0,0,0,0);CHKERRQ(ierr);
+  ierr = DMDAGetInfo(da,0,&mx,&my,&mz,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   h    = 1.0/((mx-1)*(my-1)*(mz-1));
   ierr = VecSet(b,h);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -123,7 +130,7 @@ PetscErrorCode ComputeRHS(DA da,Vec b)
     
 #undef __FUNCT__
 #define __FUNCT__ "ComputeMatrix"
-PetscErrorCode ComputeMatrix(DA da,Mat B)
+PetscErrorCode ComputeMatrix(DM da,Mat B)
 {
   PetscErrorCode ierr;
   PetscInt       i,j,k,mx,my,mz,xm,ym,zm,xs,ys,zs,dof,k1,k2,k3;
@@ -131,9 +138,9 @@ PetscErrorCode ComputeMatrix(DA da,Mat B)
   MatStencil     row,col;
  
   PetscFunctionBegin;
-  ierr = DAGetInfo(da,0,&mx,&my,&mz,0,0,0,&dof,0,0,0);CHKERRQ(ierr); 
+  ierr = DMDAGetInfo(da,0,&mx,&my,&mz,0,0,0,&dof,0,0,0,0,0);CHKERRQ(ierr); 
   /* For simplicity, this example only works on mx=my=mz */
-  if ( mx != my || mx != mz) SETERRQ3(1,"This example only works with mx %d = my %d = mz %d\n",mx,my,mz);
+  if ( mx != my || mx != mz) SETERRQ3(PETSC_COMM_SELF,1,"This example only works with mx %d = my %d = mz %d\n",mx,my,mz);
 
   Hx = 1.0 / (PetscReal)(mx-1); Hy = 1.0 / (PetscReal)(my-1); Hz = 1.0 / (PetscReal)(mz-1);
   HxHydHz = Hx*Hy/Hz; HxHzdHy = Hx*Hz/Hy; HyHzdHx = Hy*Hz/Hx;
@@ -154,7 +161,7 @@ PetscErrorCode ComputeMatrix(DA da,Mat B)
       k3++;
     }
   }
-  ierr = DAGetCorners(da,&xs,&ys,&zs,&xm,&ym,&zm);CHKERRQ(ierr);
+  ierr = DMDAGetCorners(da,&xs,&ys,&zs,&xm,&ym,&zm);CHKERRQ(ierr);
   
   for (k=zs; k<zs+zm; k++){
     for (j=ys; j<ys+ym; j++){

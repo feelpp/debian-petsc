@@ -10,7 +10,7 @@ If first string is greater than the second
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscStrgrt(const char a[],const char b[],PetscTruth *t)
+PetscErrorCode  PetscStrgrt(const char a[],const char b[],PetscBool  *t)
 </PRE>
 Not Collective
 <P>
@@ -28,6 +28,8 @@ Not Collective
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Null arguments are ok, a null string is considered smaller than
 all others
+<P>
+Not for use in Fortran
 <P>
 
 <P>

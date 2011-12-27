@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:26:06+00:00">
+<meta name="date" content="2011-10-29T18:56:58+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -19,14 +19,14 @@
 <a name="line9">  9: </a><font color="#B22222">    and then destroys it.</font>
 <a name="line10"> 10: </a><font color="#B22222">T*/</font>
 
-<a name="line12"> 12: </a> #include <A href="../../../../../include/petscis.h.html">petscis.h</A>
+<a name="line12"> 12: </a><font color="#A020F0">#include &lt;petscis.h&gt;</font>
 
 <a name="line16"> 16: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line17"> 17: </a>{
-<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n = 4, inputindices[] = {0,3,9,12},bs = 3,issize;
+<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n = 4, inputindices[] = {0,1,3,4},bs = 3,issize;
 <a name="line20"> 20: </a>  const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *indices;
 <a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>             set;
-<a name="line22"> 22: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     isblock;
+<a name="line22"> 22: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isblock;
 
 <a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
 <a name="line25"> 25: </a>
@@ -36,7 +36,7 @@
 <a name="line29"> 29: </a><font color="#B22222">    Note each processor is generating its own index set </font>
 <a name="line30"> 30: </a><font color="#B22222">    (in this case they are all identical)</font>
 <a name="line31"> 31: </a><font color="#B22222">  */</font>
-<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,bs,n,inputindices,&amp;set);
+<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,bs,n,inputindices,PETSC_COPY_VALUES,&amp;set);
 <a name="line33"> 33: </a>  <A href="../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(set,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
 
 <a name="line35"> 35: </a>  <font color="#B22222">/*</font>
@@ -63,22 +63,22 @@
 <a name="line56"> 56: </a>  <font color="#B22222">/*</font>
 <a name="line57"> 57: </a><font color="#B22222">    Check if this is really a block index set</font>
 <a name="line58"> 58: </a><font color="#B22222">  */</font>
-<a name="line59"> 59: </a>  <A href="../../../../../docs/manualpages/IS/ISBlock.html#ISBlock">ISBlock</A>(set,&amp;isblock);
-<a name="line60"> 60: </a>  <font color="#4169E1">if</font> (!isblock) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Index set is not blocked!"</font>);
+<a name="line59"> 59: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)set,ISBLOCK,&amp;isblock);
+<a name="line60"> 60: </a>  <font color="#4169E1">if</font> (!isblock) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"Index set is not blocked!"</font>);
 
 <a name="line62"> 62: </a>  <font color="#B22222">/*</font>
 <a name="line63"> 63: </a><font color="#B22222">    Determine the block size of the index set</font>
 <a name="line64"> 64: </a><font color="#B22222">  */</font>
-<a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/IS/ISBlockGetBlockSize.html#ISBlockGetBlockSize">ISBlockGetBlockSize</A>(set,&amp;bs);
-<a name="line66"> 66: </a>  <font color="#4169E1">if</font> (bs != 3) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Block size is not 3!"</font>);
+<a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/IS/ISGetBlockSize.html#ISGetBlockSize">ISGetBlockSize</A>(set,&amp;bs);
+<a name="line66"> 66: </a>  <font color="#4169E1">if</font> (bs != 3) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"Block size is not 3!"</font>);
 
 <a name="line68"> 68: </a>  <font color="#B22222">/*</font>
 <a name="line69"> 69: </a><font color="#B22222">    Get the number of blocks</font>
 <a name="line70"> 70: </a><font color="#B22222">  */</font>
 <a name="line71"> 71: </a>  <A href="../../../../../docs/manualpages/IS/ISBlockGetLocalSize.html#ISBlockGetLocalSize">ISBlockGetLocalSize</A>(set,&amp;n);
-<a name="line72"> 72: </a>  <font color="#4169E1">if</font> (n != 4) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Number of blocks not 4!"</font>);
+<a name="line72"> 72: </a>  <font color="#4169E1">if</font> (n != 4) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,<font color="#666666">"Number of blocks not 4!"</font>);
 
-<a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(set);
+<a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;set);
 <a name="line75"> 75: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line76"> 76: </a>  <font color="#4169E1">return</font> 0;
 <a name="line77"> 77: </a>}

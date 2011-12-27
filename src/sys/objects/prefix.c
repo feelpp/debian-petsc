@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
      Provides utility routines for manulating any type of PETSc object.
 */
-#include "petscsys.h"  /*I   "petscsys.h"    I*/
+#include <petscsys.h>  /*I   "petscsys.h"    I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscObjectSetOptionsPrefix"
@@ -22,18 +22,17 @@
    Concepts: prefix^setting
 
 */
-PetscErrorCode PETSC_DLLEXPORT PetscObjectSetOptionsPrefix(PetscObject obj,const char prefix[])
+PetscErrorCode  PetscObjectSetOptionsPrefix(PetscObject obj,const char prefix[])
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   PetscValidHeader(obj,1);
   if (!prefix) {
-    ierr = PetscStrfree(obj->prefix);CHKERRQ(ierr);
-    obj->prefix = PETSC_NULL;
+    ierr = PetscFree(obj->prefix);CHKERRQ(ierr);
   } else {
-    if (prefix[0] == '-') SETERRQ(PETSC_ERR_ARG_WRONG,"Options prefix should not begin with a hypen");
-    ierr = PetscStrfree(obj->prefix);CHKERRQ(ierr);
+    if (prefix[0] == '-') SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Options prefix should not begin with a hypen");
+    ierr = PetscFree(obj->prefix);CHKERRQ(ierr);
     ierr = PetscStrallocpy(prefix,&obj->prefix);CHKERRQ(ierr);
   }
   PetscFunctionReturn(0);
@@ -57,7 +56,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectSetOptionsPrefix(PetscObject obj,const
    Concepts: prefix^setting
 
 */
-PetscErrorCode PETSC_DLLEXPORT PetscObjectAppendOptionsPrefix(PetscObject obj,const char prefix[])
+PetscErrorCode  PetscObjectAppendOptionsPrefix(PetscObject obj,const char prefix[])
 {
   char   *buf = obj->prefix;
   PetscErrorCode ierr;
@@ -70,7 +69,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectAppendOptionsPrefix(PetscObject obj,co
     ierr = PetscObjectSetOptionsPrefix(obj,prefix);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
-  if (prefix[0] == '-') SETERRQ(PETSC_ERR_ARG_WRONG,"Options prefix should not begin with a hypen");
+  if (prefix[0] == '-') SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Options prefix should not begin with a hypen");
 
   ierr  = PetscStrlen(prefix,&len1);CHKERRQ(ierr);
   ierr  = PetscStrlen(buf,&len2);CHKERRQ(ierr);
@@ -95,7 +94,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectAppendOptionsPrefix(PetscObject obj,co
    Concepts: prefix^getting
 
 */
-PetscErrorCode PETSC_DLLEXPORT PetscObjectGetOptionsPrefix(PetscObject obj,const char *prefix[])
+PetscErrorCode  PetscObjectGetOptionsPrefix(PetscObject obj,const char *prefix[])
 {
   PetscFunctionBegin;
   PetscValidHeader(obj,1);
@@ -122,7 +121,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectGetOptionsPrefix(PetscObject obj,const
    Concepts: prefix^setting
 
 */
-PetscErrorCode PETSC_DLLEXPORT PetscObjectPrependOptionsPrefix(PetscObject obj,const char prefix[])
+PetscErrorCode  PetscObjectPrependOptionsPrefix(PetscObject obj,const char prefix[])
 {
   char           *buf;
   size_t         len1,len2;
@@ -136,7 +135,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscObjectPrependOptionsPrefix(PetscObject obj,c
     ierr = PetscObjectSetOptionsPrefix(obj,prefix);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
-  if (prefix[0] == '-') SETERRQ(PETSC_ERR_ARG_WRONG,"Options prefix should not begin with a hypen");
+  if (prefix[0] == '-') SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Options prefix should not begin with a hypen");
 
   ierr = PetscStrlen(prefix,&len1);CHKERRQ(ierr);
   ierr = PetscStrlen(buf,&len2);CHKERRQ(ierr);

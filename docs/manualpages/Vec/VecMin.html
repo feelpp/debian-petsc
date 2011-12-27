@@ -22,7 +22,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>val </B></TD><TD>- the minimum component
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- the location of val
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- the location of val (pass <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if you don't want this location)
 </TD></TR></TABLE>
 <P>
 
@@ -32,7 +32,9 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 
 </TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-Returns the value PETSC_MAX and p = -1 if the vector is of length 0.
+Returns the value PETSC_MAX_REAL and p = -1 if the vector is of length 0.
+<P>
+This returns the smallest index with the minumum value
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
@@ -43,7 +45,13 @@ Returns the value PETSC_MAX and p = -1 if the vector is of length 0.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/vec/vec/examples/tutorials/ex1.c.html">src/vec/vec/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex61.c.html">src/snes/examples/tutorials/ex61.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex63.c.html">src/snes/examples/tutorials/ex63.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
 </BODY></HTML>

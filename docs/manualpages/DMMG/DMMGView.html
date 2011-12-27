@@ -6,16 +6,19 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="DMMGView"><H1>DMMGView</H1></A>
-prints information on a <A HREF="../DA/DA.html#DA">DA</A> based multi-level preconditioner 
+prints information on a DM based multi-level preconditioner 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscda.h"   
+#include "petscdm.h"   
 #include "petscksp.h"  
-#include "petscmg.h"   
+#include "petscpcmg.h"   
 #include "petscdmmg.h" 
 #include "petscpc.h"   
-PetscErrorCode PETSCSNES_DLLEXPORT DMMGView(DMMG *dmmg,PetscViewer viewer)
+PetscErrorCode  DMMGView(DMMG *dmmg,PetscViewer viewer)
 </PRE>
+This is being deprecated. Use <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>() for linear problems and <A HREF="../SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>() for nonlinear problems.
+See src/ksp/ksp/examples/tutorials/ex45.c and src/snes/examples/tutorials/ex57.c
+<P>
 Collective on <A HREF="../DMMG/DMMG.html#DMMG">DMMG</A> and <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>

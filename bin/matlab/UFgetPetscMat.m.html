@@ -1,0 +1,141 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>UFgetPetscMat</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-29"><meta name="DC.source" content="UFgetPetscMat.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% UFgetPetscMat.m</span>
+<span class="comment">% modified from UFget_example.m</span>
+<span class="comment">%   This script</span>
+<span class="comment">%     (1) gets the selected index file of the UF sparse matrix collection,</span>
+<span class="comment">%     (2) loads in matrices in matlab format in increasing order of</span>
+<span class="comment">%         number of rows in the selected matrices,</span>
+<span class="comment">%     (3) writes into PETSc binary format in the given directory with</span>
+<span class="comment">%         each matrix named as A_{id}</span>
+<span class="comment">%</span>
+<span class="comment">%   See also UFget_example.m</span>
+<span class="comment">%   Copyright 2009, PETSc Team.</span>
+
+index = UFget;
+
+<span class="comment">% sets selection here</span>
+f = find (index.nrows == index.ncols &amp; index.nrows &gt; 940000 &amp; index.isReal) ;
+[y, j] = sort (index.nrows (f)) ;
+f = f (j) ;
+
+<span class="keyword">for</span> i = f
+    <span class="comment">%loads in matrix in matlab format</span>
+    <span class="comment">%---------------------------------</span>
+    fprintf (<span class="string">'Loading %s%s%s, please wait ...\n'</span>, <span class="keyword">...</span>
+        index.Group {i}, filesep, index.Name {i}) ;
+    Problem = UFget (i,index) ;
+    disp (Problem) ;
+    title (sprintf (<span class="string">'%s:%s'</span>, Problem.name, Problem.title')) ;
+
+    <span class="comment">% convets to PETSc binary format and writes into ~mat/A_{id}</span>
+    <span class="comment">%-----------------------------------------------------------</span>
+    fname = [<span class="string">'mat/A'</span>,num2str(i)];
+    fprintf (<span class="string">'write matrix into petsc binary file %s ...\n'</span>,fname);
+    PetscBinaryWrite(fname,Problem.A);
+    <span class="comment">%input ('hit enter to continue:') ;</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+% UFgetPetscMat.m  
+% modified from UFget_example.m 
+%   This script 
+%     (1) gets the selected index file of the UF sparse matrix collection,
+%     (2) loads in matrices in matlab format in increasing order of
+%         number of rows in the selected matrices,
+%     (3) writes into PETSc binary format in the given directory with
+%         each matrix named as A_{id}
+%
+%   See also UFget_example.m 
+%   Copyright 2009, PETSc Team.
+
+index = UFget;
+
+% sets selection here
+f = find (index.nrows == index.ncols & index.nrows > 940000 & index.isReal) ;
+[y, j] = sort (index.nrows (f)) ;
+f = f (j) ;
+
+for i = f
+    %loads in matrix in matlab format 
+    %REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+    fprintf ('Loading %s%s%s, please wait ...\n', ...
+        index.Group {i}, filesep, index.Name {i}) ;
+    Problem = UFget (i,index) ;
+    disp (Problem) ;
+    title (sprintf ('%s:%s', Problem.name, Problem.title')) ;
+
+    % convets to PETSc binary format and writes into ~mat/A_{id}
+    %REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+    fname = ['mat/A',num2str(i)];
+    fprintf ('write matrix into petsc binary file %s ...\n',fname);
+    PetscBinaryWrite(fname,Problem.A);
+    %input ('hit enter to continue:') ;
+end
+
+
+##### SOURCE END #####
+--></body></html>

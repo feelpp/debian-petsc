@@ -4,15 +4,15 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:20:08+00:00">
+<meta name="date" content="2011-10-29T18:50:42+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">       Provides the calling sequences for all the basic <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> routines.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
-<a name="line5"> 5: </a> #include <A href="../../../../include/../src/sys/draw/drawimpl.h.html">../src/sys/draw/drawimpl.h</A>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;../src/sys/draw/drawimpl.h&gt;  </font><font color="#B22222">/*I "petscdraw.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line9">  9: </a><font color="#B22222">/*@</font>
 <a name="line10"> 10: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Draw/PetscDrawSetViewPort.html#PetscDrawSetViewPort">PetscDrawSetViewPort</A> - Sets the portion of the window (page) to which draw</font>
@@ -35,7 +35,7 @@
 <a name="line27"> 27: </a><strong><font color="#4169E1"><a name="PetscDrawSetViewPort"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawSetViewPort.html#PetscDrawSetViewPort">PetscDrawSetViewPort</A>(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xl,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> yl,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xr,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> yr)</font></strong>
 <a name="line28"> 28: </a>{
 <a name="line32"> 32: </a>  <font color="#4169E1">if</font> (xl &lt; 0.0 || xr &gt; 1.0 || yl &lt; 0.0 || yr &gt; 1.0 || xr &lt;= xl || yr &lt;= yl) {
-<a name="line33"> 33: </a>    SETERRQ4(PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"ViewPort values must be &gt;= 0 and &lt;= 1: Instead %G %G %G %G"</font>,xl,yl,xr,yr);
+<a name="line33"> 33: </a>    SETERRQ4(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"ViewPort values must be &gt;= 0 and &lt;= 1: Instead %G %G %G %G"</font>,xl,yl,xr,yr);
 <a name="line34"> 34: </a>  }
 <a name="line35"> 35: </a>  draw-&gt;port_xl = xl; draw-&gt;port_yl = yl;
 <a name="line36"> 36: </a>  draw-&gt;port_xr = xr; draw-&gt;port_yr = yr;
@@ -65,7 +65,7 @@
 <a name="line62"> 62: </a>{
 <a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank,size;
 <a name="line65"> 65: </a>  int            n;
-<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     isnull;
+<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isnull;
 <a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      xl,xr,yl,yr,h;
 
 <a name="line71"> 71: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw,PETSC_DRAW_NULL,&amp;isnull);
@@ -123,7 +123,7 @@
 <a name="line125">125: </a><strong><font color="#4169E1"><a name="PetscDrawViewPortsCreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsCreate.html#PetscDrawViewPortsCreate">PetscDrawViewPortsCreate</A>(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nports,<A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A> **ports)</font></strong>
 <a name="line126">126: </a>{
 <a name="line127">127: </a>  int        i,n;
-<a name="line129">129: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> isnull;
+<a name="line129">129: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  isnull;
 <a name="line130">130: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>  *xl,*xr,*yl,*yr,h;
 
 <a name="line135">135: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw,PETSC_DRAW_NULL,&amp;isnull);
@@ -194,11 +194,11 @@
 <a name="line202">202: </a><strong><font color="#4169E1"><a name="PetscDrawViewPortsCreateRect"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsCreateRect.html#PetscDrawViewPortsCreateRect">PetscDrawViewPortsCreateRect</A>(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ny,<A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A> **ports)</font></strong>
 <a name="line203">203: </a>{
 <a name="line204">204: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>     *xl, *xr, *yl, *yr, hx, hy;
-<a name="line205">205: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     isnull;
+<a name="line205">205: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isnull;
 <a name="line206">206: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i, j, n;
 
 <a name="line211">211: </a>  <font color="#4169E1">if</font> ((nx &lt; 1) || (ny &lt; 1)) {
-<a name="line212">212: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Number of divisions must be positive: %d x %d"</font>, nx, ny);
+<a name="line212">212: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Number of divisions must be positive: %d x %d"</font>, nx, ny);
 <a name="line213">213: </a>  }
 <a name="line214">214: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) draw, PETSC_DRAW_NULL, &amp;isnull);
 <a name="line215">215: </a>  <font color="#4169E1">if</font> (isnull) {
@@ -230,10 +230,10 @@
 <a name="line241">241: </a>      <A href="../../../../docs/manualpages/Draw/PetscDrawLine.html#PetscDrawLine">PetscDrawLine</A>(draw,xr[k],yr[k],xr[k],yl[k],PETSC_DRAW_BLACK);
 <a name="line242">242: </a>      <A href="../../../../docs/manualpages/Draw/PetscDrawLine.html#PetscDrawLine">PetscDrawLine</A>(draw,xr[k],yl[k],xl[k],yl[k],PETSC_DRAW_BLACK);
 
-<a name="line244">244: </a>      xl[k] += .1*hx;
-<a name="line245">245: </a>      xr[k] -= .1*hx;
-<a name="line246">246: </a>      yl[k] += .1*hy;
-<a name="line247">247: </a>      yr[k] -= .1*hy;
+<a name="line244">244: </a>      xl[k] += .01*hx;
+<a name="line245">245: </a>      xr[k] -= .01*hx;
+<a name="line246">246: </a>      yl[k] += .01*hy;
+<a name="line247">247: </a>      yr[k] -= .01*hy;
 <a name="line248">248: </a>    }
 <a name="line249">249: </a>  }
 <a name="line250">250: </a>  <A href="../../../../docs/manualpages/Draw/PetscDrawSynchronizedFlush.html#PetscDrawSynchronizedFlush">PetscDrawSynchronizedFlush</A>(draw);
@@ -256,45 +256,43 @@
 <a name="line269">269: </a><strong><font color="#4169E1"><a name="PetscDrawViewPortsDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsDestroy.html#PetscDrawViewPortsDestroy">PetscDrawViewPortsDestroy</A>(<A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A> *ports)</font></strong>
 <a name="line270">270: </a>{
 
+<a name="line274">274: </a>  <font color="#4169E1">if</font> (!ports) <font color="#4169E1">return</font>(0);
+<a name="line275">275: </a>  <A href="../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(&amp;ports-&gt;draw);
+<a name="line276">276: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports-&gt;xl);
+<a name="line277">277: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports-&gt;xr);
+<a name="line278">278: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports-&gt;yl);
+<a name="line279">279: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports-&gt;yr);
+<a name="line280">280: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports);
+<a name="line281">281: </a>  <font color="#4169E1">return</font>(0);
+<a name="line282">282: </a>}
 
-<a name="line275">275: </a>  <font color="#4169E1">if</font> (!ports) <font color="#4169E1">return</font>(0);
-<a name="line276">276: </a>  <font color="#4169E1">if</font> (ports-&gt;draw) {<A href="../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(ports-&gt;draw);}
-<a name="line277">277: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports-&gt;xl);
-<a name="line278">278: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports-&gt;xr);
-<a name="line279">279: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports-&gt;yl);
-<a name="line280">280: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports-&gt;yr);
-<a name="line281">281: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ports);
+<a name="line286">286: </a><font color="#B22222">/*@C</font>
+<a name="line287">287: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsSet.html#PetscDrawViewPortsSet">PetscDrawViewPortsSet</A> - sets a draw object to use a particular subport</font>
 
-<a name="line283">283: </a>  <font color="#4169E1">return</font>(0);
-<a name="line284">284: </a>}
+<a name="line289">289: </a><font color="#B22222">   Logically Collective on <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> inside <A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A></font>
 
-<a name="line288">288: </a><font color="#B22222">/*@C</font>
-<a name="line289">289: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsSet.html#PetscDrawViewPortsSet">PetscDrawViewPortsSet</A> - sets a draw object to use a particular subport</font>
+<a name="line291">291: </a><font color="#B22222">   Input Parameter:</font>
+<a name="line292">292: </a><font color="#B22222">+  ports - the <A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A> object</font>
+<a name="line293">293: </a><font color="#B22222">-  port - the port number, from 0 to nports-1</font>
 
-<a name="line291">291: </a><font color="#B22222">   Collective on <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> inside <A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A></font>
+<a name="line295">295: </a><font color="#B22222">   Level: advanced</font>
 
-<a name="line293">293: </a><font color="#B22222">   Input Parameter:</font>
-<a name="line294">294: </a><font color="#B22222">+  ports - the <A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A> object</font>
-<a name="line295">295: </a><font color="#B22222">-  port - the port number, from 0 to nports-1</font>
+<a name="line297">297: </a><font color="#B22222">   Concepts: drawing^in subset of window</font>
 
-<a name="line297">297: </a><font color="#B22222">   Level: advanced</font>
+<a name="line299">299: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Draw/PetscDrawSplitViewPort.html#PetscDrawSplitViewPort">PetscDrawSplitViewPort</A>(), <A href="../../../../docs/manualpages/Draw/PetscDrawSetViewPort.html#PetscDrawSetViewPort">PetscDrawSetViewPort</A>(), <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsDestroy.html#PetscDrawViewPortsDestroy">PetscDrawViewPortsDestroy</A>(), <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsCreate.html#PetscDrawViewPortsCreate">PetscDrawViewPortsCreate</A>()</font>
 
-<a name="line299">299: </a><font color="#B22222">   Concepts: drawing^in subset of window</font>
+<a name="line301">301: </a><font color="#B22222">@*/</font>
+<a name="line302">302: </a><strong><font color="#4169E1"><a name="PetscDrawViewPortsSet"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsSet.html#PetscDrawViewPortsSet">PetscDrawViewPortsSet</A>(<A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A> *ports,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> port)</font></strong>
+<a name="line303">303: </a>{
 
-<a name="line301">301: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Draw/PetscDrawSplitViewPort.html#PetscDrawSplitViewPort">PetscDrawSplitViewPort</A>(), <A href="../../../../docs/manualpages/Draw/PetscDrawSetViewPort.html#PetscDrawSetViewPort">PetscDrawSetViewPort</A>(), <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsDestroy.html#PetscDrawViewPortsDestroy">PetscDrawViewPortsDestroy</A>(), <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsCreate.html#PetscDrawViewPortsCreate">PetscDrawViewPortsCreate</A>()</font>
-
-<a name="line303">303: </a><font color="#B22222">@*/</font>
-<a name="line304">304: </a><strong><font color="#4169E1"><a name="PetscDrawViewPortsSet"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Draw/PetscDrawViewPortsSet.html#PetscDrawViewPortsSet">PetscDrawViewPortsSet</A>(<A href="../../../../docs/manualpages/Draw/PetscDrawViewPorts.html#PetscDrawViewPorts">PetscDrawViewPorts</A> *ports,int port)</font></strong>
-<a name="line305">305: </a>{
-
-<a name="line309">309: </a>  <font color="#4169E1">if</font> (ports) {
-<a name="line310">310: </a>    <font color="#4169E1">if</font> (port &lt; 0 || port &gt; ports-&gt;nports-1) {
-<a name="line311">311: </a>      <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Port is out of range requested %d from 0 to %d\n"</font>,port,ports-&gt;nports);
-<a name="line312">312: </a>    }
-<a name="line313">313: </a>    <A href="../../../../docs/manualpages/Draw/PetscDrawSetViewPort.html#PetscDrawSetViewPort">PetscDrawSetViewPort</A>(ports-&gt;draw,ports-&gt;xl[port],ports-&gt;yl[port],ports-&gt;xr[port],ports-&gt;yr[port]);
-<a name="line314">314: </a>  }
-<a name="line315">315: </a>  <font color="#4169E1">return</font>(0);
-<a name="line316">316: </a>}
+<a name="line307">307: </a>  <font color="#4169E1">if</font> (ports) {
+<a name="line308">308: </a>    <font color="#4169E1">if</font> (port &lt; 0 || port &gt; ports-&gt;nports-1) {
+<a name="line309">309: </a>      <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Port is out of range requested %d from 0 to %d\n"</font>,port,ports-&gt;nports);
+<a name="line310">310: </a>    }
+<a name="line311">311: </a>    <A href="../../../../docs/manualpages/Draw/PetscDrawSetViewPort.html#PetscDrawSetViewPort">PetscDrawSetViewPort</A>(ports-&gt;draw,ports-&gt;xl[port],ports-&gt;yl[port],ports-&gt;xr[port],ports-&gt;yr[port]);
+<a name="line312">312: </a>  }
+<a name="line313">313: </a>  <font color="#4169E1">return</font>(0);
+<a name="line314">314: </a>}
 </pre>
 </body>
 

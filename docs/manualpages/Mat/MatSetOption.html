@@ -10,9 +10,9 @@ Sets a parameter option for a matrix. Some options may be specific to certain st
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatSetOption(Mat mat,MatOption op,PetscTruth flg)
+PetscErrorCode  MatSetOption(Mat mat,MatOption op,PetscBool  flg)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -25,18 +25,21 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Options Describing Matrix Structure</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>MAT_SPD </B></TD><TD>- symmetric positive definite
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>MAT_SYMMETRIC </B></TD><TD>- symmetric in terms of both structure and value
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>MAT_HERMITIAN </B></TD><TD>- transpose is the complex conjugation
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>MAT_STRUCTURALLY_SYMMETRIC </B></TD><TD>- symmetric nonzero structure
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>MAT_SYMMETRY_ETERNAL </B></TD><TD>- if you would like the symmetry/Hermitian flag
+</TD></TR></TABLE>
+<DT><B>MAT_HERMITIAN </B> -transpose is the complex conjugation
+<br>
+<DT><B>MAT_STRUCTURALLY_SYMMETRIC </B> -symmetric nonzero structure
+<br>
+<DT><B>MAT_SYMMETRY_ETERNAL </B> -if you would like the symmetry/Hermitian flag
 you set to be kept with all future use of the matrix
 including after <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>/End() which could
 potentially change the symmetry structure, i.e. you 
 KNOW the matrix will ALWAYS have the property you set.
-</TD></TR></TABLE>
+<br>
+</TABLE>
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">Options For Use with MatSetValues()</FONT></H3>
@@ -61,7 +64,10 @@ allowed if they generate a new nonzero
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>MAT_NEW_NONZERO_LOCATION_ERR </B></TD><TD>- generates an error for new matrix entry
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>MAT_USE_HASH_TABLE </B></TD><TD>- uses a hash table to speed up matrix assembly
-</TD></TR></TABLE>
++    MAT_NO_OFF_PROC_ENTRIES - you know each process will only set values for its own rows, will generate an error if
+any process sets values for another process. This avoids all reductions in the MatAssembly routines and thus improves
+performance for very large process counts.
+</TD></TR>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Some options are relevant only for particular matrix types and
@@ -114,6 +120,12 @@ a zero location in the matrix
 MAT_USE_INODES - indicates using inode version of the code - works with AIJ and
 ROWBS matrix types
 <P>
+MAT_NO_OFF_PROC_ZERO_ROWS - you know each process will only zero its own rows. This avoids all reductions in the
+zero row routines and thus improves performance for very large process counts.
+<P>
+MAT_IGNORE_LOWER_TRIANGULAR - For SBAIJ matrices will ignore any insertions you make in the lower triangular
+part of the matrix (since they should match the upper triangular part).
+<P>
 
 <P>
 <P>
@@ -124,14 +136,14 @@ ROWBS matrix types
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex12.c.html">src/mat/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex5f90.F.html">src/snes/examples/tutorials/ex5f90.F.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex39f90.F.html">src/snes/examples/tutorials/ex39f90.F.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex2.c.html">src/ts/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex3.c.html">src/ts/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 </BODY></HTML>

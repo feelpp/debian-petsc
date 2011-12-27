@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* binv.c */
 /* Fortran interface file */
 
@@ -43,9 +44,14 @@ extern void PetscRmPointer(void*);
 #define petscviewerbinarygetskipoptions_ petscviewerbinarygetskipoptions
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscviewerbinarycreate_ PETSCVIEWERBINARYCREATE
+#define petscviewerbinarysetskipheader_ PETSCVIEWERBINARYSETSKIPHEADER
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscviewerbinarycreate_ petscviewerbinarycreate
+#define petscviewerbinarysetskipheader_ petscviewerbinarysetskipheader
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscviewerbinarygetskipheader_ PETSCVIEWERBINARYGETSKIPHEADER
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscviewerbinarygetskipheader_ petscviewerbinarygetskipheader
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscviewerbinarysetmpiio_ PETSCVIEWERBINARYSETMPIIO
@@ -58,23 +64,27 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscviewerbinaryskipinfo_(PetscViewer viewer, int *__ierr ){
+void PETSC_STDCALL  petscviewerbinaryskipinfo_(PetscViewer viewer, int *__ierr ){
 *__ierr = PetscViewerBinarySkipInfo(
 	(PetscViewer)PetscToPointer((viewer) ));
 }
-void PETSC_STDCALL   petscviewerbinarysetskipoptions_(PetscViewer viewer,PetscTruth *skip, int *__ierr ){
+void PETSC_STDCALL  petscviewerbinarysetskipoptions_(PetscViewer viewer,PetscBool  *skip, int *__ierr ){
 *__ierr = PetscViewerBinarySetSkipOptions(
 	(PetscViewer)PetscToPointer((viewer) ),*skip);
 }
-void PETSC_STDCALL   petscviewerbinarygetskipoptions_(PetscViewer viewer,PetscTruth *skip, int *__ierr ){
+void PETSC_STDCALL  petscviewerbinarygetskipoptions_(PetscViewer viewer,PetscBool  *skip, int *__ierr ){
 *__ierr = PetscViewerBinaryGetSkipOptions(
 	(PetscViewer)PetscToPointer((viewer) ),skip);
 }
-void PETSC_STDCALL   petscviewerbinarycreate_(MPI_Fint * comm,PetscViewer *binv, int *__ierr ){
-*__ierr = PetscViewerBinaryCreate(
-	MPI_Comm_f2c( *(comm) ),binv);
+void PETSC_STDCALL  petscviewerbinarysetskipheader_(PetscViewer viewer,PetscBool  *skip, int *__ierr ){
+*__ierr = PetscViewerBinarySetSkipHeader(
+	(PetscViewer)PetscToPointer((viewer) ),*skip);
 }
-void PETSC_STDCALL   petscviewerbinarysetmpiio_(PetscViewer viewer, int *__ierr ){
+void PETSC_STDCALL  petscviewerbinarygetskipheader_(PetscViewer viewer,PetscBool  *skip, int *__ierr ){
+*__ierr = PetscViewerBinaryGetSkipHeader(
+	(PetscViewer)PetscToPointer((viewer) ),skip);
+}
+void PETSC_STDCALL  petscviewerbinarysetmpiio_(PetscViewer viewer, int *__ierr ){
 *__ierr = PetscViewerBinarySetMPIIO(
 	(PetscViewer)PetscToPointer((viewer) ));
 }

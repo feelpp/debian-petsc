@@ -10,9 +10,9 @@ Returns a a flag if matrix supports particular package and factor type
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatGetFactorAvailable(Mat mat, const MatSolverPackage type,MatFactorType ftype,PetscTruth *flg)
+PetscErrorCode  MatGetFactorAvailable(Mat mat, const MatSolverPackage type,MatFactorType ftype,PetscBool  *flg)
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -31,7 +31,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 Some PETSc matrix formats have alternative solvers available that are contained in alternative packages
 such as pastix, superlu, mumps, spooles etc.
 <P>
-PETSc must have been config/configure.py to use the external solver, using the option --download-package
+PETSc must have been ./configure to use the external solver, using the option --download-package
 <P>
 
 <P>

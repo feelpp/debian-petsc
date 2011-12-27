@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:39:52+00:00">
+<meta name="date" content="2011-10-29T19:11:32+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -22,7 +22,7 @@
 <a name="line14"> 14: </a><font color="#B22222">/*</font>
 <a name="line15"> 15: </a><font color="#B22222">        Defines the basic <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> object</font>
 <a name="line16"> 16: </a><font color="#B22222">*/</font>
-<a name="line17"> 17: </a> #include <A href="../../../../../include/private/kspimpl.h.html">private/kspimpl.h</A>
+<a name="line17"> 17: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;</font>
 
 <a name="line19"> 19: </a><font color="#B22222">/*</font>
 <a name="line20"> 20: </a><font color="#B22222">    The field should remain the same since it is shared by the BiCG code</font>
@@ -34,7 +34,7 @@
 <a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *e,*d;
 <a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>   *ee,*dd;             <font color="#B22222">/* work space for Lanczos algorithm */</font>
 
-<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>  singlereduction;        <font color="#B22222">/* use variant of CG that combines both inner products */</font>
+<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   singlereduction;        <font color="#B22222">/* use variant of CG that combines both inner products */</font>
 <a name="line30"> 30: </a>} KSP_CG;
 
 <a name="line32"> 32: </a><font color="#A020F0">#endif</font>

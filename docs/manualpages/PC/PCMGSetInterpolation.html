@@ -10,10 +10,10 @@ Sets the function to be used to calculate the  interpolation from l-1 to the lth
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-#include "petscmg.h"   
-PetscErrorCode PETSCKSP_DLLEXPORT PCMGSetInterpolation(PC pc,PetscInt l,Mat mat)
+#include "petscpcmg.h"   
+PetscErrorCode  PCMGSetInterpolation(PC pc,PetscInt l,Mat mat)
 </PRE>
-Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -44,4 +44,6 @@ out from the matrix size which one it is.
 <BR><A HREF="./index.html">Index of all PC routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
 </BODY></HTML>

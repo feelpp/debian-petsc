@@ -3,10 +3,10 @@
 !
       program main
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscis.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscis.h>
+#include <finclude/petscviewer.h>
 
       Mat         A,Ad,Ao
       PetscErrorCode ierr
@@ -15,7 +15,7 @@
       PetscInt i,j,ia(1),ja(1)
       PetscInt n,icol(1),rstart
       PetscInt zero,one,rend
-      PetscTruth  done
+      PetscBool   done
       PetscOffset iia,jja,aaa,iicol
       PetscScalar aa(1)
 
@@ -24,7 +24,9 @@
 
       call PetscViewerBinaryOpen(PETSC_COMM_WORLD,'../matbinary.ex',         &
      &                          FILE_MODE_READ,v,ierr)
-      call MatLoad(v,MATMPIAIJ,A,ierr)
+      call MatCreate(PETSC_COMM_WORLD,A,ierr)
+      call MatSetType(A, MATMPIAIJ,ierr)
+      call MatLoad(A,v,ierr)
       CHKERRQ(ierr)
       call MatView(A,PETSC_VIEWER_STDOUT_WORLD,ierr)
 

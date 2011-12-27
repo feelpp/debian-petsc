@@ -44,14 +44,22 @@ class Installer(script.Script):
     argDB.saveFilename = os.path.join(PETSC_DIR, PETSC_ARCH, 'conf', 'RDict.db')
     argDB.load()
     script.Script.__init__(self, argDB = argDB)
+    if not clArgs is None: self.clArgs = clArgs
     self.copies = []
     return
+
+  def setupHelp(self, help):
+    import nargs
+    script.Script.setupHelp(self, help)
+    help.addArgument('Installer', '-destDir=<path>', nargs.Arg(None, None, 'Destination Directory for install'))
+    return
+
 
   def setupModules(self):
     self.setCompilers  = self.framework.require('config.setCompilers',         None)
     self.arch          = self.framework.require('PETSc.utilities.arch',        None)
     self.petscdir      = self.framework.require('PETSc.utilities.petscdir',    None)
-    self.makesys       = self.framework.require('PETSc.utilities.Make',        None)
+    self.makesys       = self.framework.require('config.programs',        None)
     self.compilers     = self.framework.require('config.compilers',            None)
     return
   
@@ -63,6 +71,7 @@ class Installer(script.Script):
 
   def setupDirectories(self):
     self.rootDir    = self.petscdir.dir
+    self.destDir    = os.path.abspath(self.argDB['destDir'])
     self.installDir = self.framework.argDB['prefix']
     self.arch       = self.arch.arch
     self.rootIncludeDir    = os.path.join(self.rootDir, 'include')
@@ -72,10 +81,14 @@ class Installer(script.Script):
     self.rootBinDir        = os.path.join(self.rootDir, 'bin')
     self.archBinDir        = os.path.join(self.rootDir, self.arch, 'bin')
     self.archLibDir        = os.path.join(self.rootDir, self.arch, 'lib')
+    self.destIncludeDir    = os.path.join(self.destDir, 'include')
+    self.destConfDir       = os.path.join(self.destDir, 'conf')
+    self.destLibDir        = os.path.join(self.destDir, 'lib')
+    self.destBinDir        = os.path.join(self.destDir, 'bin')
     self.installIncludeDir = os.path.join(self.installDir, 'include')
-    self.installConfDir    = os.path.join(self.installDir, 'conf')
-    self.installLibDir     = os.path.join(self.installDir, 'lib')
     self.installBinDir     = os.path.join(self.installDir, 'bin')
+    self.rootShareDir      = os.path.join(self.rootDir, 'share')
+    self.destShareDir      = os.path.join(self.destDir, 'share')
 
     self.make      = self.makesys.make+' '+self.makesys.flags
     self.ranlib    = self.compilers.RANLIB
@@ -118,7 +131,7 @@ class Installer(script.Script):
       # catch the Error from the recursive copytree so that we can
       # continue with other files
       except shutil.Error, err:
-        errors.extend(err.args[0])
+        errors.extend((srcname,dstname,str(err.args[0])))
     try:
       shutil.copystat(src, dst)
     except OSError, e:
@@ -131,14 +144,8 @@ class Installer(script.Script):
       raise shutil.Error, errors
     return copies
 
-  def installIncludes(self):
-    self.copies.extend(self.copytree(self.rootIncludeDir, self.installIncludeDir))
-    self.copies.extend(self.copytree(self.archIncludeDir, self.installIncludeDir))
-    return
 
-  def copyConf(self, src, dst):
-    if os.path.isdir(dst):
-      dst = os.path.join(dst, os.path.basename(src))
+  def fixConfFile(self, src):
     lines   = []
     oldFile = open(src, 'r')
     for line in oldFile.readlines():
@@ -155,45 +162,27 @@ class Installer(script.Script):
       line = re.sub('\$\{PETSC_DIR\}', self.installDir, line)
       lines.append(line)
     oldFile.close()
-    newFile = open(dst, 'w')
+    newFile = open(src, 'w')
     newFile.write(''.join(lines))
     newFile.close()
-    shutil.copystat(src, dst)
     return
 
-  def installConf(self):
-    # rootConfDir can have a duplicate petscvariables - so processing it first removes the appropriate duplicate file.
-    self.copies.extend(self.copytree(self.rootConfDir, self.installConfDir, copyFunc = self.copyConf))
-    self.copies.extend(self.copytree(self.archConfDir, self.installConfDir))
-    # Just copyConf() a couple of files manually [as the rest of the files should not be modified]
-    for file in ['petscrules', 'petscvariables']:
-      self.copyConf(os.path.join(self.archConfDir,file),os.path.join(self.installConfDir,file))
-    return
-
-  def installBin(self):
-    self.copies.extend(self.copytree(self.rootBinDir, self.installBinDir))
-    self.copies.extend(self.copytree(self.archBinDir, self.installBinDir))
-    return
-
-  def copyLib(self, src, dst):
-    '''Run ranlib on the destination library if it is an archive'''
-    shutil.copy2(src, dst)
-    if os.path.splitext(dst)[1] == '.'+self.libSuffix:
-      self.executeShellCommand(self.ranlib+' '+dst)
-    return
-
-  def installLib(self):
-    self.copies.extend(self.copytree(self.archLibDir, self.installLibDir, copyFunc = self.copyLib))
-    return
+  def fixConf(self):
+    import shutil
+    # copy standard rules and variables file so that we can change them in place
+    for file in ['rules', 'variables']:
+      shutil.copy2(os.path.join(self.rootConfDir,file),os.path.join(self.archConfDir,file))
+    for file in ['rules', 'variables','petscrules', 'petscvariables']:
+      self.fixConfFile(os.path.join(self.archConfDir,file))
 
   def createUninstaller(self):
-    uninstallscript = os.path.join(self.installConfDir, 'uninstall.py')
+    uninstallscript = os.path.join(self.archConfDir, 'uninstall.py')
     f = open(uninstallscript, 'w')
     # Could use the Python AST to do this
     f.write('#!'+sys.executable+'\n')
     f.write('import os\n')
 
-    f.write('copies = '+repr(self.copies))
+    f.write('copies = '+re.sub(self.destDir,self.installDir,repr(self.copies)))
     f.write('''
 for src, dst in copies:
   if os.path.exists(dst):
@@ -203,7 +192,40 @@ for src, dst in copies:
     os.chmod(uninstallscript,0744)
     return
 
-  def outputHelp(self):
+  def installIncludes(self):
+    self.copies.extend(self.copytree(self.rootIncludeDir, self.destIncludeDir))
+    self.copies.extend(self.copytree(self.archIncludeDir, self.destIncludeDir))
+    return
+
+  def installConf(self):
+    self.copies.extend(self.copytree(self.rootConfDir, self.destConfDir))
+    self.copies.extend(self.copytree(self.archConfDir, self.destConfDir))
+
+  def installBin(self):
+    self.copies.extend(self.copytree(self.rootBinDir, self.destBinDir))
+    self.copies.extend(self.copytree(self.archBinDir, self.destBinDir))
+    return
+
+  def installShare(self):
+    self.copies.extend(self.copytree(self.rootShareDir, self.destShareDir))
+    return
+
+  def copyLib(self, src, dst):
+    '''Run ranlib on the destination library if it is an archive. Also run install_name_tool on dylib on Mac'''
+    shutil.copy2(src, dst)
+    if os.path.splitext(dst)[1] == '.'+self.libSuffix:
+      self.executeShellCommand(self.ranlib+' '+dst)
+    if os.path.splitext(dst)[1] == '.dylib' and os.path.isfile('/usr/bin/install_name_tool'):
+      installName = re.sub(self.destDir, self.installDir, dst)
+      self.executeShellCommand('/usr/bin/install_name_tool -id ' + installName + ' ' + dst)
+    return
+
+  def installLib(self):
+    self.copies.extend(self.copytree(self.archLibDir, self.destLibDir, copyFunc = self.copyLib))
+    return
+
+
+  def outputDone(self):
     print '''\
 ====================================
 Install complete. It is useable with PETSC_DIR=%s [and no more PETSC_ARCH].
@@ -213,49 +235,50 @@ make PETSC_DIR=%s test
 ''' % (self.installDir,self.installDir)
     return
 
-  def run(self):
+  def runfix(self):
     self.setup()
     self.setupDirectories()
-    if os.path.exists(self.installDir) and os.path.samefile(self.installDir, os.path.join(self.rootDir,self.arch)):
+    self.createUninstaller()
+    self.fixConf()
+
+  def runcopy(self):
+    if os.path.exists(self.destDir) and os.path.samefile(self.destDir, os.path.join(self.rootDir,self.arch)):
       print '********************************************************************'
       print 'Install directory is current directory; nothing needs to be done'
       print '********************************************************************'
       return
-    print '*** Installing PETSc at',self.installDir, ' ***'
-    if not os.path.exists(self.installDir):
+    print '*** Installing PETSc at',self.destDir, ' ***'
+    if not os.path.exists(self.destDir):
       try:
-        os.makedirs(self.installDir)
+        os.makedirs(self.destDir)
       except:
         print '********************************************************************'
-        print 'Unable to create', self.installDir, 'Perhaps you need to do "sudo make install"'
+        print 'Unable to create', self.destDir, 'Perhaps you need to do "sudo make install"'
         print '********************************************************************'
         return
-    if not os.path.isdir(os.path.realpath(self.installDir)):
+    if not os.path.isdir(os.path.realpath(self.destDir)):
       print '********************************************************************'
-      print 'Specified prefix', self.installDir, 'is not a directory. Cannot proceed!'
-      print '********************************************************************'
-      return
-    if not os.access(self.installDir, os.W_OK):
-      print '********************************************************************'
-      print 'Unable to write to ', self.installDir, 'Perhaps you need to do "sudo make install"'
+      print 'Specified destDir', self.destDir, 'is not a directory. Cannot proceed!'
       print '********************************************************************'
       return
+    if not os.access(self.destDir, os.W_OK):
+      print '********************************************************************'
+      print 'Unable to write to ', self.destDir, 'Perhaps you need to do "sudo make install"'
+      print '********************************************************************'
+      return
+
     self.installIncludes()
     self.installConf()
     self.installBin()
     self.installLib()
-    output,err,ret = self.executeShellCommand(self.make+' PETSC_ARCH=""'+' PETSC_DIR='+self.installDir+' ARCHFLAGS= shared mpi4py petsc4py')
-    print output+err
-    # this file will mess up the make test run since it resets PETSC_ARCH when PETSC_ARCH needs to be null now
-    os.unlink(os.path.join(self.rootDir,'conf','petscvariables'))
-    fd = file(os.path.join('conf','petscvariables'),'w')
-    fd.close()
-    # if running as root then change file ownership back to user
-    if os.environ.has_key('SUDO_USER'):
-      os.chown(os.path.join(self.rootDir,'conf','petscvariables'),int(os.environ['SUDO_UID']),int(os.environ['SUDO_GID']))
-    self.createUninstaller()
-    self.outputHelp()
+    self.installShare()
+    self.outputDone()
+
     return
+
+  def run(self):
+    self.runfix()
+    self.runcopy()
 
 if __name__ == '__main__':
   Installer(sys.argv[1:]).run()

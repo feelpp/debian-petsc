@@ -13,10 +13,10 @@ Subduction Zone Benchmark
 
 static char help[] = "Subduction Zone Benchmark\n\n";
 
-#include "petscmesh.h"
-#include "petscksp.h"
-#include "petscmg.h"
-#include "petscdmmg.h"
+#include <petscmesh.h>
+#include <petscksp.h>
+#include <petscpcmg.h>
+#include <petscdmmg.h>
 
 PetscErrorCode MeshView_Sieve_Newer(ALE::Obj<ALE::Two::Mesh>, PetscViewer);
 PetscErrorCode CreateZoneBoundary(ALE::Obj<ALE::Two::Mesh>);
@@ -150,7 +150,7 @@ int main(int argc,char **argv)
     ierr = MeshSetMesh(petscMesh, mesh);CHKERRQ(ierr);
     ierr = DMMGCreate(comm,3,PETSC_NULL,&dmmg);CHKERRQ(ierr);
     ierr = DMMGSetDM(dmmg, (DM) petscMesh);CHKERRQ(ierr);
-    ierr = MeshDestroy(petscMesh);CHKERRQ(ierr);
+    ierr = MeshDestroy(&petscMesh);CHKERRQ(ierr);
     for (l = 0; l < DMMGGetLevels(dmmg); l++) {
       ierr = DMMGSetUser(dmmg,l,&user);CHKERRQ(ierr);
     }
@@ -174,20 +174,20 @@ int main(int argc,char **argv)
     ALE::LogStagePush(stage);
     ierr = PetscPrintf(comm, "Creating VTK mesh file\n");CHKERRQ(ierr);
     ierr = PetscViewerCreate(comm, &viewer);CHKERRQ(ierr);
-    ierr = PetscViewerSetType(viewer, PETSC_VIEWER_ASCII);CHKERRQ(ierr);
+    ierr = PetscViewerSetType(viewer, PETSCVIEWERASCII);CHKERRQ(ierr);
     ierr = PetscViewerSetFormat(viewer, PETSC_VIEWER_ASCII_VTK);CHKERRQ(ierr);
     ierr = PetscViewerFileSetName(viewer, "poisson.vtk");CHKERRQ(ierr);
     ierr = MeshView_Sieve_Newer(mesh, viewer);CHKERRQ(ierr);
     //ierr = VecView(DMMGGetRHS(dmmg), viewer);CHKERRQ(ierr);
     ierr = VecView(DMMGGetx(dmmg), viewer);CHKERRQ(ierr);
-    ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
     ALE::LogStagePop(stage);
 
     ierr = DMMGDestroy(dmmg);CHKERRQ(ierr);
   } catch (ALE::Exception e) {
     std::cout << e << std::endl;
   }
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 
@@ -1005,7 +1005,7 @@ PetscErrorCode ElementGeometry(ALE::Obj<ALE::Two::Mesh> mesh, const ALE::Two::Me
     }
     invDet = 1.0/det;
     if (detJ) {
-      if (det < 0) {SETERRQ(PETSC_ERR_ARG_WRONG, "Negative Matrix determinant");}
+      if (det < 0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG, "Negative Matrix determinant");
       *detJ = det;
     }
     if (invJ) {
@@ -1120,7 +1120,7 @@ PetscErrorCode ComputeRHS(DMMG dmmg, Vec b)
   ierr = VecCreateSeqWithArray(PETSC_COMM_SELF, field->getSize(patch), field->restrict(patch), &locB);CHKERRQ(ierr);
   ierr = VecScatterBegin(user->injection, locB, b, ADD_VALUES, SCATTER_FORWARD);CHKERRQ(ierr);
   ierr = VecScatterEnd(user->injection, locB, b, ADD_VALUES, SCATTER_FORWARD);CHKERRQ(ierr);
-  ierr = VecDestroy(locB);CHKERRQ(ierr);
+  ierr = VecDestroy(&locB);CHKERRQ(ierr);
 
   /* force right hand side to be consistent for singular matrix */
   /* note this is really a hack, normally the model would provide you with a consistent right handside */
@@ -1233,7 +1233,7 @@ PetscErrorCode ComputeMatrix(DMMG dmmg, Mat J, Mat jac)
       }
     }
     ierr = PetscSynchronizedFlush(comm);
-    ierr = MatZeroRows(jac, numBoundaryIndices, boundaryIndices, 1.0);CHKERRQ(ierr);
+    ierr = MatZeroRows(jac, numBoundaryIndices, boundaryIndices, 1.0,0,0);CHKERRQ(ierr);
     ierr = PetscFree(boundaryIndices);CHKERRQ(ierr);
   }
   ierr = MatAssemblyBegin(jac, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);

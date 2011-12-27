@@ -6,16 +6,18 @@
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscError"><H1>PetscError</H1></A>
-Routine that is called when an error has been detected,  usually called through the macro <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(). 
+Routine that is called when an error has been detected,  usually called through the macro <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A HREF="../Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-PetscErrorCode  PetscError(int line,const char *func,const char* file,const char *dir,PetscErrorCode n,int p,const char *mess,...)
+PetscErrorCode  PetscError(MPI_Comm comm,int line,const char *func,const char* file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,...)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- communicator over which error occurred.  ALL ranks of this communicator MUST call this routine
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>line </B></TD><TD>- the line number of the error (indicated by __LINE__)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- the function where the error occured (indicated by __FUNCT__)
@@ -28,8 +30,7 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the generic error number
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- 1 indicates the error was initially detected, 0 indicates this is a traceback from a 
-previously detected error
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- PETSC_ERROR_INITIAL indicates the error was initially detected, PETSC_ERROR_REPEAT indicates this is a traceback from a previously detected error
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mess </B></TD><TD>- formatted message string - aka printf
 </TD></TR></TABLE>
@@ -41,7 +42,7 @@ Most users need not directly use this routine and the error handlers, but
 can instead use the simplified interface <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>, which has the calling
 sequence
 <pre>
-    <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(n,mess)
+    <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(comm,n,mess)
 </pre>
 <P>
 Experienced users can set the error handler with <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>().
@@ -54,8 +55,4 @@ Experienced users can set the error handler with <A HREF="../Sys/PetscPushErrorH
 <BR><A HREF="./index.html">Index of all Sys routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex35f90.F90.html">src/snes/examples/tutorials/ex35f90.F90.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex36f90.F90.html">src/snes/examples/tutorials/ex36f90.F90.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex37f90.F90.html">src/snes/examples/tutorials/ex37f90.F90.html</A><BR>
 </BODY></HTML>

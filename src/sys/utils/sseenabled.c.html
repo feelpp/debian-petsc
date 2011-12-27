@@ -4,12 +4,12 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:22:25+00:00">
+<meta name="date" content="2011-10-29T18:53:03+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
-<a name="line2"> 2: </a> #include <A href="../../../include/petscsys.h.html">petscsys.h</A>
+<pre width="80">
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt; </font><font color="#B22222">/*I "petscsys.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line4">  4: </a><font color="#A020F0">#ifdef PETSC_HAVE_SSE</font>
 
@@ -18,7 +18,7 @@
 
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;string.h&gt;</font>
 
-<a name="line13"> 13: </a><strong><font color="#4169E1"><a name="PetscSSEHardwareTest"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscSSEHardwareTest(<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *flag)</font></strong>
+<a name="line13"> 13: </a><strong><font color="#4169E1"><a name="PetscSSEHardwareTest"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscSSEHardwareTest(<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *flag)</font></strong>
 <a name="line14"> 14: </a>{
 <a name="line16"> 16: </a>  char *vendor;
 <a name="line17"> 17: </a>  char Intel[13]=<font color="#666666">"GenuineIntel"</font>;
@@ -58,7 +58,7 @@
 <a name="line52"> 52: </a>  exit(-1);
 <a name="line53"> 53: </a>}
 
-<a name="line57"> 57: </a><strong><font color="#4169E1"><a name="PetscSSEOSEnabledTest_Linux"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscSSEOSEnabledTest_Linux(<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *flag)</font></strong>
+<a name="line57"> 57: </a><strong><font color="#4169E1"><a name="PetscSSEOSEnabledTest_Linux"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscSSEOSEnabledTest_Linux(<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *flag)</font></strong>
 <a name="line58"> 58: </a>{
 <a name="line59"> 59: </a>  int status, pid = 0;
 <a name="line61"> 61: </a>  signal(SIGILL,PetscSSEDisabledHandler);
@@ -87,7 +87,7 @@
 <a name="line84"> 84: </a><strong><font color="#228B22">#define PetscSSEOSEnabledTest(arg) PetscSSEOSEnabledTest_TRUE(arg)</font></strong>
 <a name="line85"> 85: </a><font color="#A020F0">#endif </font>
 
-<a name="line89"> 89: </a><strong><font color="#4169E1"><a name="PetscSSEOSEnabledTest_TRUE"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscSSEOSEnabledTest_TRUE(<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *flag)</font></strong>
+<a name="line89"> 89: </a><strong><font color="#4169E1"><a name="PetscSSEOSEnabledTest_TRUE"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscSSEOSEnabledTest_TRUE(<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *flag)</font></strong>
 <a name="line90"> 90: </a>{
 <a name="line92"> 92: </a>  <font color="#4169E1">if</font> (flag) {
 <a name="line93"> 93: </a>    *flag = <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
@@ -100,7 +100,7 @@
 <a name="line100">100: </a><strong><font color="#228B22">#define PetscSSEHardwareTest(arg) PetscSSEEnabledTest_FALSE(arg)</font></strong>
 <a name="line101">101: </a><strong><font color="#228B22">#define PetscSSEOSEnabledTest(arg) PetscSSEEnabledTest_FALSE(arg)</font></strong>
 
-<a name="line105">105: </a><strong><font color="#4169E1"><a name="PetscSSEEnabledTest_FALSE"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscSSEEnabledTest_FALSE(<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *flag)</font></strong>
+<a name="line105">105: </a><strong><font color="#4169E1"><a name="PetscSSEEnabledTest_FALSE"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscSSEEnabledTest_FALSE(<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *flag)</font></strong>
 <a name="line106">106: </a>{
 <a name="line108">108: </a>  <font color="#4169E1">if</font> (flag) {
 <a name="line109">109: </a>    *flag = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
@@ -132,18 +132,18 @@
 
 <a name="line138">138: </a><font color="#B22222">     Level: developer</font>
 <a name="line139">139: </a><font color="#B22222">@*/</font>
-<a name="line140">140: </a>static <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> petsc_sse_local_is_untested  = <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line141">141: </a>static <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> petsc_sse_enabled_local      = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line142">142: </a>static <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> petsc_sse_global_is_untested = <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line143">143: </a>static <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> petsc_sse_enabled_global     = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line144">144: </a><strong><font color="#4169E1"><a name="PetscSSEIsEnabled"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSSEIsEnabled.html#PetscSSEIsEnabled">PetscSSEIsEnabled</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *lflag,<A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> *gflag)</font></strong> {
-<a name="line146">146: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> disabled_option;
+<a name="line140">140: </a>static <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  petsc_sse_local_is_untested  = <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line141">141: </a>static <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  petsc_sse_enabled_local      = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line142">142: </a>static <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  petsc_sse_global_is_untested = <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line143">143: </a>static <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  petsc_sse_enabled_global     = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line144">144: </a><strong><font color="#4169E1"><a name="PetscSSEIsEnabled"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSSEIsEnabled.html#PetscSSEIsEnabled">PetscSSEIsEnabled</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *lflag,<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *gflag)</font></strong> {
+<a name="line146">146: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  disabled_option;
 
 
 <a name="line150">150: </a>  <font color="#4169E1">if</font> (petsc_sse_local_is_untested &amp;&amp; petsc_sse_global_is_untested) {
 <a name="line151">151: </a>    disabled_option = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
-<a name="line153">153: </a>    <A href="../../../docs/manualpages/Sys/PetscOptionsTruth.html#PetscOptionsTruth">PetscOptionsTruth</A>(<font color="#666666">"-disable_sse"</font>,
+<a name="line153">153: </a>    <A href="../../../docs/manualpages/Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(<font color="#666666">"-disable_sse"</font>,
 <a name="line154">154: </a>                            <font color="#666666">"Disable use of hand tuned Intel SSE implementations &lt;true,false&gt;."</font>,
 <a name="line155">155: </a>                            <font color="#666666">"<A href="../../../docs/manualpages/Sys/PetscSSEIsEnabled.html#PetscSSEIsEnabled">PetscSSEIsEnabled</A>"</font>,disabled_option,&amp;disabled_option,<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line156">156: </a>    <font color="#4169E1">if</font> (disabled_option) {

@@ -2,7 +2,7 @@
 static char help[] = "Tests the vatious routines in MatMPIBAIJ format.\n";
 
 
-#include "petscmat.h"
+#include <petscmat.h>
 #define IMAX 15 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -20,30 +20,26 @@ int main(int argc,char **args)
   const PetscInt    *cols1,*cols2;
   PetscScalar       vals1[4],vals2[4],v;
   const PetscScalar *v1,*v2;
-  PetscTruth        flg;
+  PetscBool         flg;
 
   PetscInitialize(&argc,&args,(char *)0,help);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
 
 #if defined(PETSC_USE_COMPLEX)
-  SETERRQ(1,"This example does not work with complex numbers");
+  SETERRQ(PETSC_COMM_WORLD,1,"This example does not work with complex numbers");
 #else
 
  /* Check out if MatLoad() works */
-  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN-1,&flg);CHKERRQ(ierr);
-  if (!flg) SETERRQ(1,"Input file not specified");
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",file,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  if (!flg) SETERRQ(PETSC_COMM_WORLD,1,"Input file not specified");
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,file,FILE_MODE_READ,&fd);CHKERRQ(ierr);
-  ierr = MatLoad(fd,MATBAIJ,&A);CHKERRQ(ierr);
-  /*
-  if (size == 1){
-    ierr = MatConvert(A,MATSEQAIJ,MAT_INITIAL_MATRIX,&B);CHKERRQ(ierr);
-  } else {
-    ierr = MatConvert(A,MATMPIAIJ,MAT_INITIAL_MATRIX,&B);CHKERRQ(ierr);
-  }
-  */
+  ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+  ierr = MatSetType(A,MATBAIJ);CHKERRQ(ierr);
+  ierr = MatLoad(A,fd);CHKERRQ(ierr);
+
   ierr = MatConvert(A,MATAIJ,MAT_INITIAL_MATRIX,&B);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(fd);CHKERRQ(ierr);
+  ierr = PetscViewerDestroy(&fd);CHKERRQ(ierr);
  
   ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rand);CHKERRQ(ierr);
   ierr = PetscRandomSetFromOptions(rand);CHKERRQ(ierr);
@@ -162,9 +158,9 @@ int main(int argc,char **args)
     
     for (i=0,j=0; i<ncols1 && j<ncols2; j++) {
       while (cols2[j] != cols1[i]) i++;
-      if (v1[i] != v2[j]) SETERRQ(1,"MatGetRow() failed - vals incorrect.");
+      if (v1[i] != v2[j]) SETERRQ(PETSC_COMM_SELF,1,"MatGetRow() failed - vals incorrect.");
     }
-    if (j<ncols2) SETERRQ(1,"MatGetRow() failed - cols incorrect");
+    if (j<ncols2) SETERRQ(PETSC_COMM_SELF,1,"MatGetRow() failed - cols incorrect");
     
     ierr = MatRestoreRow(A,row,&ncols1,&cols1,&v1);CHKERRQ(ierr);
     ierr = MatRestoreRow(B,row,&ncols2,&cols2,&v2);CHKERRQ(ierr);
@@ -185,7 +181,7 @@ int main(int argc,char **args)
       ierr = PetscPrintf(PETSC_COMM_SELF,"[%d] Error in MatConvert: MatMult - Norm1=%16.14e Norm2=%16.14e bs = %D\n",rank,s1norm,s2norm,bs);CHKERRQ(ierr);  
     }
   }
-  ierr = MatDestroy(C);CHKERRQ(ierr);
+  ierr = MatDestroy(&C);CHKERRQ(ierr);
 
   /* Test MatTranspose() */
   ierr = MatTranspose(A,MAT_INITIAL_MATRIX,&At);CHKERRQ(ierr);
@@ -202,17 +198,17 @@ int main(int argc,char **args)
                   rank,s1norm,s2norm,bs);CHKERRQ(ierr);
     }
   }
-  ierr = MatDestroy(At);CHKERRQ(ierr);
-  ierr = MatDestroy(Bt);CHKERRQ(ierr);
+  ierr = MatDestroy(&At);CHKERRQ(ierr);
+  ierr = MatDestroy(&Bt);CHKERRQ(ierr);
 
-  ierr = MatDestroy(A);CHKERRQ(ierr); 
-  ierr = MatDestroy(B);CHKERRQ(ierr); 
-  ierr = VecDestroy(xx);CHKERRQ(ierr);
-  ierr = VecDestroy(yy);CHKERRQ(ierr);
-  ierr = VecDestroy(s1);CHKERRQ(ierr);
-  ierr = VecDestroy(s2);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(rand);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr); 
+  ierr = MatDestroy(&B);CHKERRQ(ierr); 
+  ierr = VecDestroy(&xx);CHKERRQ(ierr);
+  ierr = VecDestroy(&yy);CHKERRQ(ierr);
+  ierr = VecDestroy(&s1);CHKERRQ(ierr);
+  ierr = VecDestroy(&s2);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rand);CHKERRQ(ierr);
+  ierr = PetscFinalize();
 #endif
   return 0;
 }

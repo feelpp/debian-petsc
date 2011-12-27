@@ -17,23 +17,23 @@
       program main
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscis.h"
-#include "finclude/petscis.h90"
+#include <finclude/petscsys.h>
+#include <finclude/petscis.h>
+#include <finclude/petscis.h90>
 
       PetscErrorCode ierr
       PetscInt n,bs,issize
       PetscInt inputindices(4)
       PetscInt, pointer :: indices(:)
       IS       set
-      PetscTruth isablock;
+      PetscBool  isablock;
 
       n               = 4
       bs              = 3
       inputindices(1) = 0
-      inputindices(2) = 3
-      inputindices(3) = 9
-      inputindices(4) = 12
+      inputindices(2) = 1
+      inputindices(3) = 3
+      inputindices(4) = 4
     
       call PetscInitialize(PETSC_NULL_CHARACTER,ierr)
       
@@ -43,7 +43,8 @@
 !    Note each processor is generating its own index set 
 !    (in this case they are all identical)
 !
-      call ISCreateBlock(PETSC_COMM_SELF,bs,n,inputindices,set,ierr) 
+      call ISCreateBlock(PETSC_COMM_SELF,bs,n,inputindices,                   &
+     &                   PETSC_COPY_VALUES,set,ierr) 
       call ISView(set,PETSC_VIEWER_STDOUT_SELF,ierr) 
 
 !
@@ -66,7 +67,7 @@
 !
 !    Check if this is really a block index set
 !
-      call ISBlock(set,isablock,ierr) 
+      call PetscTypeCompare(set,ISBLOCK,isablock,ierr) 
       if (.not. isablock) then
         write(6,*) 'Index set is not blocked!'
       endif
@@ -74,7 +75,7 @@
 !
 !    Determine the block size of the index set
 !
-      call ISBlockGetBlockSize(set,bs,ierr) 
+      call ISGetBlockSize(set,bs,ierr) 
       if (bs .ne. 3) then
         write(6,*) 'Blocksize != 3'
       endif

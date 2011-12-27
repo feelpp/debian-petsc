@@ -17,7 +17,7 @@ Input arguments are:\n\
   ./ex45 -n 10 -snes_jacobian_default -fd_jacobian_coloring -my_jacobian_struct -log_summary |grep SNESFunctionEval 
  */
 
-#include "petscsnes.h"
+#include <petscsnes.h>
 
 /* 
    User-defined routines
@@ -36,13 +36,13 @@ int main(int argc,char **argv)
   PetscMPIInt    size;
   PetscReal      h,xp = 0.0; 
   PetscScalar    v,pfive = .5;
-  PetscTruth     flg;
+  PetscBool      flg;
   MatFDColoring  matfdcoloring = 0;
-  PetscTruth     fd_jacobian_coloring;
+  PetscBool      fd_jacobian_coloring;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(1,"This is a uniprocessor example only!");
+  if (size != 1) SETERRQ(PETSC_COMM_SELF,1,"This is a uniprocessor example only!");
   ierr = PetscOptionsGetInt(PETSC_NULL,"-n",&n,PETSC_NULL);CHKERRQ(ierr);
   h = 1.0/(n-1);
 
@@ -88,7 +88,7 @@ int main(int argc,char **argv)
   ierr = MatCreateSeqAIJ(PETSC_COMM_SELF,n,n,1,PETSC_NULL,&JPrec);CHKERRQ(ierr);
   
   flg = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-snes_jacobian_default",&flg,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-snes_jacobian_default",&flg,PETSC_NULL);CHKERRQ(ierr);
   if (flg){ 
     /* Jacobian using finite differences. Slow and expensive, not take advantage of sparsity */ 
     ierr = SNESSetJacobian(snes,J,J,SNESDefaultComputeJacobian,PETSC_NULL);CHKERRQ(ierr);
@@ -98,7 +98,7 @@ int main(int argc,char **argv)
   } 
 
   fd_jacobian_coloring = PETSC_FALSE;
-  ierr = PetscOptionsGetTruth(PETSC_NULL,"-fd_jacobian_coloring",&fd_jacobian_coloring,PETSC_NULL);CHKERRQ(ierr);  
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-fd_jacobian_coloring",&fd_jacobian_coloring,PETSC_NULL);CHKERRQ(ierr);  
   if (fd_jacobian_coloring){ 
     /* Jacobian using finite differences with matfdcoloring based on the sparse structure.
      In this case, only three calls to FormFunction() for each Jacobian evaluation - very fast! */
@@ -106,7 +106,7 @@ int main(int argc,char **argv)
     
     /* Get the data structure of J */
     flg = PETSC_FALSE;
-    ierr = PetscOptionsGetTruth(PETSC_NULL,"-my_jacobian_struct",&flg,PETSC_NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-my_jacobian_struct",&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg){ 
       /* use user-provided jacobian data structure */
       ierr = MyApproxJacobianStructure(&J,PETSC_NULL);CHKERRQ(ierr);
@@ -117,7 +117,7 @@ int main(int argc,char **argv)
     }
 
     /* Create coloring context */
-    ierr = MatGetColoring(J,MATCOLORING_SL,&iscoloring);CHKERRQ(ierr);
+    ierr = MatGetColoring(J,MATCOLORINGSL,&iscoloring);CHKERRQ(ierr);
     ierr = MatFDColoringCreate(J,iscoloring,&matfdcoloring);CHKERRQ(ierr);
     ierr = MatFDColoringSetFunction(matfdcoloring,(PetscErrorCode (*)(void))FormFunction,(void*)F);CHKERRQ(ierr);
     ierr = MatFDColoringSetFromOptions(matfdcoloring);CHKERRQ(ierr);
@@ -125,7 +125,7 @@ int main(int argc,char **argv)
     
     /* Use SNESDefaultComputeJacobianColor() for Jacobian evaluation */
     ierr = SNESSetJacobian(snes,J,J,SNESDefaultComputeJacobianColor,matfdcoloring);CHKERRQ(ierr); 
-    ierr = ISColoringDestroy(iscoloring);CHKERRQ(ierr);
+    ierr = ISColoringDestroy(&iscoloring);CHKERRQ(ierr);
   }
 
   ierr = SNESSetFromOptions(snes);CHKERRQ(ierr);
@@ -141,13 +141,13 @@ int main(int argc,char **argv)
      Free work space.  All PETSc objects should be destroyed when they
      are no longer needed.
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ierr = VecDestroy(x);CHKERRQ(ierr);     ierr = VecDestroy(r);CHKERRQ(ierr);
-  ierr = VecDestroy(F);CHKERRQ(ierr);     ierr = MatDestroy(J);CHKERRQ(ierr);
-  ierr = MatDestroy(JPrec);CHKERRQ(ierr); ierr = SNESDestroy(snes);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);     ierr = VecDestroy(&r);CHKERRQ(ierr);
+  ierr = VecDestroy(&F);CHKERRQ(ierr);     ierr = MatDestroy(&J);CHKERRQ(ierr);
+  ierr = MatDestroy(&JPrec);CHKERRQ(ierr); ierr = SNESDestroy(&snes);CHKERRQ(ierr);
   if (fd_jacobian_coloring){
-    ierr = MatFDColoringDestroy(matfdcoloring);CHKERRQ(ierr);
+    ierr = MatFDColoringDestroy(&matfdcoloring);CHKERRQ(ierr);
   }
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 /* ------------------------------------------------------------------- */

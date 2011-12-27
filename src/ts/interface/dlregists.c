@@ -1,8 +1,7 @@
-#define PETSCTS_DLL
 
-#include "private/tsimpl.h"
+#include <private/tsimpl.h>
 
-static PetscTruth TSPackageInitialized = PETSC_FALSE;
+static PetscBool  TSPackageInitialized = PETSC_FALSE;
 #undef __FUNCT__  
 #define __FUNCT__ "TSFinalizePackage"
 /*@C
@@ -14,7 +13,7 @@ static PetscTruth TSPackageInitialized = PETSC_FALSE;
 .keywords: Petsc, destroy, package, mathematica
 .seealso: PetscFinalize()
 @*/
-PetscErrorCode PETSC_DLLEXPORT TSFinalizePackage(void) 
+PetscErrorCode  TSFinalizePackage(void)
 {
   PetscFunctionBegin;
   TSPackageInitialized = PETSC_FALSE;
@@ -38,11 +37,11 @@ PetscErrorCode PETSC_DLLEXPORT TSFinalizePackage(void)
 .keywords: TS, initialize, package
 .seealso: PetscInitialize()
 @*/
-PetscErrorCode PETSCTS_DLLEXPORT TSInitializePackage(const char path[]) 
+PetscErrorCode  TSInitializePackage(const char path[])
 {
   char              logList[256];
   char              *className;
-  PetscTruth        opt;
+  PetscBool         opt;
   PetscErrorCode    ierr;
 
   PetscFunctionBegin;
@@ -50,22 +49,23 @@ PetscErrorCode PETSCTS_DLLEXPORT TSInitializePackage(const char path[])
   TSPackageInitialized = PETSC_TRUE;
   /* Inialize subpackages */
   ierr = TSGLInitializePackage(path);CHKERRQ(ierr);
+  ierr = TSARKIMEXInitializePackage(path);CHKERRQ(ierr);
   ierr = TSGLAdaptInitializePackage(path);CHKERRQ(ierr);
   /* Register Classes */
-  ierr = PetscCookieRegister("TS",&TS_COOKIE);CHKERRQ(ierr);
+  ierr = PetscClassIdRegister("TS",&TS_CLASSID);CHKERRQ(ierr);
   /* Register Constructors */
   ierr = TSRegisterAll(path);CHKERRQ(ierr);
   /* Register Events */
-  ierr = PetscLogEventRegister("TSStep",           TS_COOKIE,&TS_Step);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("TSPseudoCmptTStp", TS_COOKIE,&TS_PseudoComputeTimeStep);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("TSFunctionEval",   TS_COOKIE,&TS_FunctionEval);CHKERRQ(ierr);
-  ierr = PetscLogEventRegister("TSJacobianEval",   TS_COOKIE,&TS_JacobianEval);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("TSStep",           TS_CLASSID,&TS_Step);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("TSPseudoCmptTStp", TS_CLASSID,&TS_PseudoComputeTimeStep);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("TSFunctionEval",   TS_CLASSID,&TS_FunctionEval);CHKERRQ(ierr);
+  ierr = PetscLogEventRegister("TSJacobianEval",   TS_CLASSID,&TS_JacobianEval);CHKERRQ(ierr);
   /* Process info exclusions */
   ierr = PetscOptionsGetString(PETSC_NULL, "-info_exclude", logList, 256, &opt);CHKERRQ(ierr);
   if (opt) {
     ierr = PetscStrstr(logList, "ts", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscInfoDeactivateClass(TS_COOKIE);CHKERRQ(ierr);
+      ierr = PetscInfoDeactivateClass(TS_CLASSID);CHKERRQ(ierr);
     }
   }
   /* Process summary exclusions */
@@ -73,7 +73,7 @@ PetscErrorCode PETSCTS_DLLEXPORT TSInitializePackage(const char path[])
   if (opt) {
     ierr = PetscStrstr(logList, "ts", &className);CHKERRQ(ierr);
     if (className) {
-      ierr = PetscLogEventDeactivateClass(TS_COOKIE);CHKERRQ(ierr);
+      ierr = PetscLogEventDeactivateClass(TS_CLASSID);CHKERRQ(ierr);
     }
   }
   ierr = PetscRegisterFinalize(TSFinalizePackage);CHKERRQ(ierr);
@@ -92,15 +92,11 @@ EXTERN_C_BEGIN
   Input Parameter:
   path - library path
  */
-PetscErrorCode PETSCTS_DLLEXPORT PetscDLLibraryRegister_petscts(const char path[])
+PetscErrorCode  PetscDLLibraryRegister_petscts(const char path[])
 {
   PetscErrorCode ierr;
 
-  ierr = PetscInitializeNoArguments(); if (ierr) return 1;
   PetscFunctionBegin;
-  /*
-      If we got here then PETSc was properly loaded
-  */
   ierr = TSInitializePackage(path);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

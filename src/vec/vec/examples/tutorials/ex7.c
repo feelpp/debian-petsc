@@ -3,12 +3,12 @@ static char help[] = "Demonstrates calling a Fortran computational routine from 
 Also demonstrates passing  PETSc objects, MPI Communicators from C to Fortran\n\
 and from Fortran to C\n\n";
 
-#include "petscvec.h"
-
+#include <petscvec.h>
 /*
   Ugly stuff to insure the function names match between Fortran 
   and C. Sorry, but this is out of our PETSc hands to cleanup.
 */
+#include <private/fortranimpl.h>
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
 #define ex7f_ EX7F
 #define ex7c_ EX7C
@@ -17,7 +17,7 @@ and from Fortran to C\n\n";
 #define ex7c_ ex7c
 #endif
 EXTERN_C_BEGIN
-EXTERN void PETSC_STDCALL ex7f_(Vec *,int*);
+extern void PETSC_STDCALL ex7f_(Vec *,int*);
 EXTERN_C_END
 
 #undef __FUNCT__
@@ -50,8 +50,8 @@ int main(int argc,char **args)
   ex7f_(&vec,&fcomm);
 
   ierr = VecView(vec,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-  ierr = VecDestroy(vec);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = VecDestroy(&vec);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 

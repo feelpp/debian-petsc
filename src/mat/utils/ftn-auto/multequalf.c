@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* multequal.c */
 /* Fortran interface file */
 
@@ -53,22 +54,22 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matmultequal_(Mat A,Mat B,PetscInt *n,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matmultequal_(Mat A,Mat B,PetscInt *n,PetscBool  *flg, int *__ierr ){
 *__ierr = MatMultEqual(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*n,flg);
 }
-void PETSC_STDCALL   matmultaddequal_(Mat A,Mat B,PetscInt *n,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matmultaddequal_(Mat A,Mat B,PetscInt *n,PetscBool  *flg, int *__ierr ){
 *__ierr = MatMultAddEqual(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*n,flg);
 }
-void PETSC_STDCALL   matmulttransposeequal_(Mat A,Mat B,PetscInt *n,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matmulttransposeequal_(Mat A,Mat B,PetscInt *n,PetscBool  *flg, int *__ierr ){
 *__ierr = MatMultTransposeEqual(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*n,flg);
 }
-void PETSC_STDCALL   matmulttransposeaddequal_(Mat A,Mat B,PetscInt *n,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  matmulttransposeaddequal_(Mat A,Mat B,PetscInt *n,PetscBool  *flg, int *__ierr ){
 *__ierr = MatMultTransposeAddEqual(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*n,flg);

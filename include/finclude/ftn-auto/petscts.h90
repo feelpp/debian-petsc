@@ -2,11 +2,6 @@
        TS ts ! TS
        integer ierr
        end subroutine
-        subroutine TSViewFromOptions(ts, title ,ierr)
-       TS ts ! TS
-       character title (*) ! char
-       integer ierr
-       end subroutine
         subroutine TSComputeRHSJacobian(ts, t, X, A, B, flg ,ierr)
        TS ts ! TS
        PetscReal t ! PetscReal
@@ -23,16 +18,17 @@
        Vec y ! Vec
        integer ierr
        end subroutine
-        subroutine TSComputeIFunction(ts, t, X, Xdot, Y ,ierr)
+        subroutine TSComputeIFunction(ts, t, X, Xdot, Y, imex ,ierr)
        TS ts ! TS
        PetscReal t ! PetscReal
        Vec X ! Vec
        Vec Xdot ! Vec
        Vec Y ! Vec
+       PetscBool imex ! PetscBool
        integer ierr
        end subroutine
-        subroutine TSComputeIJacobian(ts, t, X, Xdot, shift, A, B, flg ,&
-     &ierr)
+        subroutine TSComputeIJacobian(ts, t, X, Xdot, shift, A, B, flg, &
+     &imex ,ierr)
        TS ts ! TS
        PetscReal t ! PetscReal
        Vec X ! Vec
@@ -41,6 +37,17 @@
        Mat A ! Mat
        Mat B ! Mat
        MatStructure flg ! MatStructure
+       PetscBool imex ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine TSSetApplicationContext(ts, usrP ,ierr)
+       TS ts ! TS
+       PetscVoid usrP ! void
+       integer ierr
+       end subroutine
+        subroutine TSGetApplicationContext(ts, usrP ,ierr)
+       TS ts ! TS
+       PetscVoid usrP ! void
        integer ierr
        end subroutine
         subroutine TSGetTimeStepNumber(ts, iter ,ierr)
@@ -60,6 +67,11 @@
        PetscReal time_step ! PetscReal
        integer ierr
        end subroutine
+        subroutine TSSetExactFinalTime(ts, flg ,ierr)
+       TS ts ! TS
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
         subroutine TSGetTimeStep(ts, dt ,ierr)
        TS ts ! TS
        PetscReal dt ! PetscReal
@@ -76,6 +88,10 @@
        integer ierr
        end subroutine
         subroutine TSSetUp(ts ,ierr)
+       TS ts ! TS
+       integer ierr
+       end subroutine
+        subroutine TSReset(ts ,ierr)
        TS ts ! TS
        integer ierr
        end subroutine
@@ -110,30 +126,47 @@
        Vec x ! Vec
        integer ierr
        end subroutine
-        subroutine TSDefaultPreStep(ts ,ierr)
+        subroutine TSPreStep(ts ,ierr)
        TS ts ! TS
        integer ierr
        end subroutine
-        subroutine TSDefaultPostStep(ts ,ierr)
+        subroutine TSPostStep(ts ,ierr)
        TS ts ! TS
        integer ierr
        end subroutine
-        subroutine TSMonitorDefault(ts, step, ptime, v, ctx ,ierr)
+        subroutine TSMonitorDefault(ts, step, ptime, v, dummy ,ierr)
        TS ts ! TS
        PetscInt step ! PetscInt
        PetscReal ptime ! PetscReal
        Vec v ! Vec
-       PetscVoid ctx ! void
+       PetscVoid dummy ! void
        integer ierr
        end subroutine
-        subroutine TSStep(ts, steps, ptime ,ierr)
+        subroutine TSSetRetainStages(ts, flg ,ierr)
        TS ts ! TS
-       PetscInt steps ! PetscInt
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine TSInterpolate(ts, t, X ,ierr)
+       TS ts ! TS
+       PetscReal t ! PetscReal
+       Vec X ! Vec
+       integer ierr
+       end subroutine
+        subroutine TSStep(ts ,ierr)
+       TS ts ! TS
+       integer ierr
+       end subroutine
+        subroutine TSSolve(ts, x, ftime ,ierr)
+       TS ts ! TS
+       Vec x ! Vec
+       PetscReal ftime ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine TSMonitor(ts, step, ptime, x ,ierr)
+       TS ts ! TS
+       PetscInt step ! PetscInt
        PetscReal ptime ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine TSSolve(ts, x ,ierr)
-       TS ts ! TS
        Vec x ! Vec
        integer ierr
        end subroutine
@@ -147,6 +180,53 @@
        PetscReal t ! PetscReal
        integer ierr
        end subroutine
+        subroutine TSSetDM(ts, dm ,ierr)
+       TS ts ! TS
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine TSGetDM(ts, dm ,ierr)
+       TS ts ! TS
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine SNESTSFormFunction(snes, X, F, ctx ,ierr)
+       SNES snes ! SNES
+       Vec X ! Vec
+       Vec F ! Vec
+       PetscVoid ctx ! void
+       integer ierr
+       end subroutine
+        subroutine SNESTSFormJacobian(snes, X, A, B, flag, ctx ,ierr)
+       SNES snes ! SNES
+       Vec X ! Vec
+       Mat A ! Mat
+       Mat B ! Mat
+       MatStructure flag ! MatStructure
+       PetscVoid ctx ! void
+       integer ierr
+       end subroutine
+        subroutine TSGetConvergedReason(ts, reason ,ierr)
+       TS ts ! TS
+       TSConvergedReason reason ! TSConvergedReason
+       integer ierr
+       end subroutine
+        subroutine TSVISetVariableBounds(ts, xl, xu ,ierr)
+       TS ts ! TS
+       Vec xl ! Vec
+       Vec xu ! Vec
+       integer ierr
+       end subroutine
+        subroutine TSSSPSetNumStages(ts, nstages ,ierr)
+       TS ts ! TS
+       PetscInt nstages ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine TSSSPGetNumStages(ts, nstages ,ierr)
+       TS ts ! TS
+       PetscInt nstages ! PetscInt
+       integer ierr
+       end subroutine
         subroutine TSPseudoComputeTimeStep(ts, dt ,ierr)
        TS ts ! TS
        PetscReal dt ! PetscReal
@@ -156,7 +236,7 @@
        TS ts ! TS
        Vec update ! Vec
        PetscReal dt ! PetscReal
-       PetscTruth flag ! PetscTruth
+       PetscBool flag ! PetscBool
        integer ierr
        end subroutine
         subroutine TSPseudoSetTimeStepIncrement(ts, inc ,ierr)
@@ -168,9 +248,23 @@
        TS ts ! TS
        integer ierr
        end subroutine
-        subroutine TSRKSetTolerance(ts, aabs ,ierr)
+        subroutine TSAlphaSetRadius(ts, radius ,ierr)
        TS ts ! TS
-       PetscReal aabs ! PetscReal
+       PetscReal radius ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine TSAlphaSetParams(ts, alpha_m, alpha_f, gamma ,ierr)
+       TS ts ! TS
+       PetscReal alpha_m ! PetscReal
+       PetscReal alpha_f ! PetscReal
+       PetscReal gamma ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine TSAlphaGetParams(ts, alpha_m, alpha_f, gamma ,ierr)
+       TS ts ! TS
+       PetscReal alpha_m ! PetscReal
+       PetscReal alpha_f ! PetscReal
+       PetscReal gamma ! PetscReal
        integer ierr
        end subroutine
         subroutine TSSundialsSetType(ts, type ,ierr)
@@ -178,9 +272,9 @@
        TSSundialsLmmType type ! TSSundialsLmmType
        integer ierr
        end subroutine
-        subroutine TSSundialsSetGMRESRestart(ts, restart ,ierr)
+        subroutine TSSundialsSetMaxl(ts, maxl ,ierr)
        TS ts ! TS
-       integer restart ! int
+       PetscInt maxl ! PetscInt
        integer ierr
        end subroutine
         subroutine TSSundialsSetLinearTolerance(ts, tol ,ierr)
@@ -204,13 +298,43 @@
        PC pc ! PC
        integer ierr
        end subroutine
-        subroutine TSSundialsSetExactFinalTime(ts, ft ,ierr)
+        subroutine TSSundialsSetMinTimeStep(ts, mindt ,ierr)
        TS ts ! TS
-       PetscTruth ft ! PetscTruth
+       PetscReal mindt ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine TSSundialsSetMaxTimeStep(ts, maxdt ,ierr)
+       TS ts ! TS
+       PetscReal maxdt ! PetscReal
        integer ierr
        end subroutine
         subroutine TSSundialsMonitorInternalSteps(ts, ft ,ierr)
        TS ts ! TS
-       PetscTruth ft ! PetscTruth
+       PetscBool ft ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine TSRKSetTolerance(ts, aabs ,ierr)
+       TS ts ! TS
+       PetscReal aabs ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine TSThetaGetTheta(ts, theta ,ierr)
+       TS ts ! TS
+       PetscReal theta ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine TSThetaSetTheta(ts, theta ,ierr)
+       TS ts ! TS
+       PetscReal theta ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine TSThetaGetEndpoint(ts, endpoint ,ierr)
+       TS ts ! TS
+       PetscBool endpoint ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine TSThetaSetEndpoint(ts, flg ,ierr)
+       TS ts ! TS
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine

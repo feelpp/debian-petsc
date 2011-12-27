@@ -10,7 +10,7 @@ Stashes a copy of the matrix values; this allows, for  example, reuse of the lin
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatStoreValues(Mat mat)
+PetscErrorCode  MatStoreValues(Mat mat)
 </PRE>
 Collect on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -57,7 +57,7 @@ Collect on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Common Usage without SNESSolve(), i.e. when you handle nonlinear solve yourself</FONT></H3>
 <pre>
-   // build linear portion of Jacobian 
+   // build linear portion of Jacobian
 </pre>
 <pre>
    ierr = <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(mat,MAT_NEW_NONZERO_LOCATIONS,<A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
@@ -72,7 +72,7 @@ Collect on <A HREF="../Mat/Mat.html#Mat">Mat</A>
       ierr = <A HREF="../Mat/MatRetrieveValues.html#MatRetrieveValues">MatRetrieveValues</A>(mat);
 </pre>
 <pre>
-      // call <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(mat,...) to set nonliner portion of Jacobian 
+      // call <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(mat,...) to set nonliner portion of Jacobian
 </pre>
 <pre>
       // call <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>/End() on matrix

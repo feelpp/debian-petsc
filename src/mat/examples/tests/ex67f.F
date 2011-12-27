@@ -3,10 +3,10 @@
 !
       program main
       implicit none
-#include "finclude/petscsys.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscis.h"
-#include "finclude/petscviewer.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscis.h>
+#include <finclude/petscviewer.h>
 
       Mat      A,B
       PetscErrorCode  ierr
@@ -19,11 +19,14 @@
       call PetscViewerBinaryOpen(PETSC_COMM_WORLD,'../matbinary.ex',         &
      &                          FILE_MODE_READ,v,ierr)
 
-      call MatLoad(v,MATSEQAIJ,A,ierr)
+      call MatCreate(PETSC_COMM_WORLD,A,ierr)
+      call MatSetType(A, MATSEQAIJ,ierr)
+      call MatLoad(A,v,ierr)
 
       one  = 1
       zero = 0
-      call ISCreateGeneral(PETSC_COMM_SELF,one,zero,isrow,ierr)
+      call ISCreateGeneral(PETSC_COMM_SELF,one,zero,PETSC_COPY_VALUES,    &
+     &                     isrow,ierr)
 
       call MatGetSubmatrices(A,one,isrow,isrow,                           &
      &        MAT_INITIAL_MATRIX,B,ierr)

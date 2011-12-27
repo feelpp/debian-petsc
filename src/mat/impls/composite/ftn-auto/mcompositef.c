@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* mcomposite.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matcompositeaddmat_(Mat mat,Mat smat, int *__ierr ){
+void PETSC_STDCALL  matcompositeaddmat_(Mat mat,Mat smat, int *__ierr ){
 *__ierr = MatCompositeAddMat(
 	(Mat)PetscToPointer((mat) ),
 	(Mat)PetscToPointer((smat) ));

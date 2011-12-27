@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:42:09+00:00">
+<meta name="date" content="2011-10-29T19:14:16+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -32,11 +32,11 @@
 <a name="line22"> 22: </a>!     petscis.h     - index sets
 <a name="line23"> 23: </a>!
 <a name="line24"> 24: </a>      program main
-<a name="line25"> 25: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line26"> 26: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line27"> 27: </a> #include <A href="../../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line28"> 28: </a> #include <A href="../../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line29"> 29: </a> #include <A href="../../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
+<a name="line25"> 25: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line26"> 26: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line27"> 27: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line28"> 28: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line29"> 29: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
 
 <a name="line31"> 31: </a>!  Variables:
 <a name="line32"> 32: </a>!
@@ -52,7 +52,7 @@
 <a name="line42"> 42: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> Istart,Iend
 <a name="line43"> 43: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nsteps,one
 <a name="line44"> 44: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
-<a name="line45"> 45: </a>      <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> flg
+<a name="line45"> 45: </a>      <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flg
 <a name="line46"> 46: </a>      <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  v
 <a name="line47"> 47: </a>
 
@@ -159,11 +159,11 @@
 <a name="line149">149: </a>!
 <a name="line150">150: </a>      subroutine solve1(ksp,A,x,b,u,count,nsteps,ierr)
 
-<a name="line152">152: </a> #include <A href="../../../../../include/finclude/petscsys.h.html">finclude/petscsys.h</A>
-<a name="line153">153: </a> #include <A href="../../../../../include/finclude/petscvec.h.html">finclude/petscvec.h</A>
-<a name="line154">154: </a> #include <A href="../../../../../include/finclude/petscmat.h.html">finclude/petscmat.h</A>
-<a name="line155">155: </a> #include <A href="../../../../../include/finclude/petscpc.h.html">finclude/petscpc.h</A>
-<a name="line156">156: </a> #include <A href="../../../../../include/finclude/petscksp.h.html">finclude/petscksp.h</A>
+<a name="line152">152: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
+<a name="line153">153: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
+<a name="line154">154: </a><font color="#A020F0">#include &lt;finclude/petscmat.h&gt;</font>
+<a name="line155">155: </a><font color="#A020F0">#include &lt;finclude/petscpc.h&gt;</font>
+<a name="line156">156: </a><font color="#A020F0">#include &lt;finclude/petscksp.h&gt;</font>
 
 <a name="line158">158: </a>!
 <a name="line159">159: </a>!   solve1 - This routine is used <font color="#4169E1">for</font> repeated linear system solves.
@@ -184,7 +184,7 @@
 <a name="line174">174: </a>! Use common block to retain matrix between successive subroutine calls
 <a name="line175">175: </a>      <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>              A2
 <a name="line176">176: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>      rank
-<a name="line177">177: </a>      <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>       pflag
+<a name="line177">177: </a>      <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>        pflag
 <a name="line178">178: </a>      common /my_data/ A2,pflag,rank
 
 <a name="line180">180: </a>      one = 1

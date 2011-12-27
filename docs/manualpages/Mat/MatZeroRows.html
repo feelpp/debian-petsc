@@ -10,7 +10,7 @@ Zeros all entries (except possibly the main diagonal) of a set of rows of a matr
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatZeroRows(Mat mat,PetscInt numRows,const PetscInt rows[],PetscScalar diag)
+PetscErrorCode  MatZeroRows(Mat mat,PetscInt numRows,const PetscInt rows[],PetscScalar diag,Vec x,Vec b)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -23,6 +23,10 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rows </B></TD><TD>- the global row indices
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>diag </B></TD><TD>- value put in all diagonals of eliminated rows (0.0 will even eliminate diagonal entry)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- optional vector of solutions for zeroed rows (other entries in vector are not used)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>b </B></TD><TD>- optional vector of right hand side, that will be adjusted by provided solution
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
@@ -46,11 +50,14 @@ them.
 Each processor can indicate any rows in the entire matrix to be zeroed (i.e. each process does NOT have to
 list only rows local to itself).
 <P>
+You can call <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(mat,MAT_NO_OFF_PROC_ZERO_ROWS,<A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>) if each process indicates only rows it
+owns that are to be zeroed. This saves a global synchronization in the implementation.
+<P>
 
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatZeroRowsIS.html#MatZeroRowsIS">MatZeroRowsIS</A>(), <A HREF="../Mat/MatZeroEntries.html#MatZeroEntries">MatZeroEntries</A>(), <A HREF="../Mat/MatZeroRowsLocal.html#MatZeroRowsLocal">MatZeroRowsLocal</A>(), <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>()
+ <A HREF="../Mat/MatZeroRowsIS.html#MatZeroRowsIS">MatZeroRowsIS</A>(), <A HREF="../Mat/MatZeroRowsStencil.html#MatZeroRowsStencil">MatZeroRowsStencil</A>(), <A HREF="../Mat/MatZeroEntries.html#MatZeroEntries">MatZeroEntries</A>(), <A HREF="../Mat/MatZeroRowsLocal.html#MatZeroRowsLocal">MatZeroRowsLocal</A>(), <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/interface/matrix.c.html#MatZeroRows">src/mat/interface/matrix.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
@@ -58,7 +65,9 @@ list only rows local to itself).
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex33.c.html">src/ksp/ksp/examples/tutorials/ex33.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex35.c.html">src/ksp/ksp/examples/tutorials/ex35.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex37.c.html">src/ksp/ksp/examples/tutorials/ex37.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex51.c.html">src/ksp/ksp/examples/tutorials/ex51.c.html</A><BR>
 </BODY></HTML>

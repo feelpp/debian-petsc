@@ -1,6 +1,5 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"
+#include <private/kspimpl.h>
 
 typedef struct {
   PetscReal haptol;
@@ -13,11 +12,6 @@ PetscErrorCode KSPSetUp_SYMMLQ(KSP ksp)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_RIGHT) {
-    SETERRQ(PETSC_ERR_SUP,"No right preconditioning for KSPSYMMLQ");
-  } else if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"No symmetric preconditioning for KSPSYMMLQ");
-  }
   ierr = KSPDefaultGetWork(ksp,9);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -36,11 +30,11 @@ PetscErrorCode  KSPSolve_SYMMLQ(KSP ksp)
   Mat            Amat,Pmat;
   MatStructure   pflag;
   KSP_SYMMLQ     *symmlq = (KSP_SYMMLQ*)ksp->data;
-  PetscTruth     diagonalscale;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
-  ierr    = PCDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
-  if (diagonalscale) SETERRQ1(PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
+  ierr    = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
 
   X       = ksp->vec_sol;
   B       = ksp->vec_rhs;
@@ -96,7 +90,7 @@ PetscErrorCode  KSPSolve_SYMMLQ(KSP ksp)
   ierr = VecCopy(U,Wbar);CHKERRQ(ierr);        /* w_bar <- u;   */
   ierr = VecNorm(Z,NORM_2,&np);CHKERRQ(ierr);      /*   np <- ||z||        */
   KSPLogResidualHistory(ksp,np);
-  KSPMonitor(ksp,0,np);            /* call any registered monitor routines */
+  ierr = KSPMonitor(ksp,0,np);CHKERRQ(ierr);
   ksp->rnorm = np;  
   ierr = (*ksp->converged)(ksp,0,np,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);  /* test for convergence */
   if (ksp->reason) PetscFunctionReturn(0);
@@ -174,7 +168,7 @@ PetscErrorCode  KSPSolve_SYMMLQ(KSP ksp)
     }
     ksp->rnorm = np;
     KSPLogResidualHistory(ksp,np);
-    KSPMonitor(ksp,i+1,np);
+    ierr = KSPMonitor(ksp,i+1,np);CHKERRQ(ierr);
     ierr = (*ksp->converged)(ksp,i+1,np,&ksp->reason,ksp->cnvP);CHKERRQ(ierr); /* test for convergence */
     if (ksp->reason) break;
     i++;
@@ -205,6 +199,8 @@ PetscErrorCode  KSPSolve_SYMMLQ(KSP ksp)
    Notes: The operator and the preconditioner must be symmetric for this method. The 
           preconditioner must be POSITIVE-DEFINITE.
 
+          Supports only left preconditioning.
+
    Reference: Paige & Saunders, 1975.
 
 .seealso: KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP
@@ -212,14 +208,13 @@ M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_SYMMLQ"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_SYMMLQ(KSP ksp)
+PetscErrorCode  KSPCreate_SYMMLQ(KSP ksp)
 {
   KSP_SYMMLQ     *symmlq;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ksp->pc_side                   = PC_LEFT;
-
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
   ierr           = PetscNewLog(ksp,KSP_SYMMLQ,&symmlq);CHKERRQ(ierr);
   symmlq->haptol = 1.e-18;
   ksp->data      = (void*)symmlq;

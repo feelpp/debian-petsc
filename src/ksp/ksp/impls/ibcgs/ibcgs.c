@@ -1,24 +1,25 @@
-#define PETSCKSP_DLL
 
-#include "private/kspimpl.h"
+#include <private/kspimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetUp_IBCGS"
 static PetscErrorCode KSPSetUp_IBCGS(KSP ksp)
 {
   PetscErrorCode ierr;
+  PetscBool      diagonalscale;
 
   PetscFunctionBegin;
-  if (ksp->pc_side == PC_SYMMETRIC) {
-    SETERRQ(PETSC_ERR_SUP,"no symmetric preconditioning for KSPIBCGS");
-  }
+  ierr = PCGetDiagonalScale(ksp->pc,&diagonalscale);CHKERRQ(ierr);
+  if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
   ierr = KSPDefaultGetWork(ksp,9);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 /* 
     The code below "cheats" from PETSc style
-       1) VecRestoreArray() is called immediately after VecGetArray() and the array values are still accessed
+       1) VecRestoreArray() is called immediately after VecGetArray() and the array values are still accessed; the reason for the immediate
+          restore is that Vec operations are done on some of the vectors during the solve and if we did not restore immediately it would
+          generate two VecGetArray() (the second one inside the Vec operation) calls without a restore between them.
        2) The vector operations on done directly on the arrays instead of with VecXXXX() calls
 
        For clarity in the code we name single VECTORS with two names, for example, Rn_1 and R, but they actually always
@@ -58,7 +59,7 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
   PetscScalar    insums[7],outsums[7];
 #endif
   PetscScalar    sigman_2, sigman_1, sigman, pin_1, pin, phin_1, phin,tmp1,tmp2;
-  PetscScalar    taun_1, taun, rhon_1, rhon, alphan_1, alphan, omegan_1, omegan;
+  PetscScalar    taun_1, taun, rhon, alphan_1, alphan, omegan_1, omegan;
   PetscScalar    *PETSC_RESTRICT r0, *PETSC_RESTRICT rn, *PETSC_RESTRICT xn, *PETSC_RESTRICT f0, *PETSC_RESTRICT vn, *PETSC_RESTRICT zn, *PETSC_RESTRICT qn;
   PetscScalar    *PETSC_RESTRICT b, *PETSC_RESTRICT un;
   /* the rest do not have to keep n_1 values */
@@ -68,9 +69,7 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
   Mat            A;
 
   PetscFunctionBegin;
-  if (ksp->normtype == KSP_NORM_PRECONDITIONED && ksp->pc_side != PC_LEFT) SETERRQ(PETSC_ERR_SUP,"Use -ksp_norm_type unpreconditioned for right preconditioning and KSPIBCGS");
-  if (ksp->normtype == KSP_NORM_UNPRECONDITIONED && ksp->pc_side != PC_RIGHT) SETERRQ(PETSC_ERR_SUP,"Use -ksp_norm_type preconditioned for left preconditioning and KSPIBCGS");
-  if (!ksp->vec_rhs->petscnative) SETERRQ(PETSC_ERR_SUP,"Only coded for PETSc vectors");
+  if (!ksp->vec_rhs->petscnative) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Only coded for PETSc vectors");
 
   ierr = PCGetOperators(ksp->pc,&A,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
   ierr = VecGetLocalSize(ksp->vec_sol,&N);CHKERRQ(ierr);
@@ -92,7 +91,7 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
   ierr = KSPInitialResidual(ksp,Xn_1,Tn,Sn,Rn_1,B);CHKERRQ(ierr);
 
   ierr = VecNorm(Rn_1,NORM_2,&rnorm);CHKERRQ(ierr);
-  KSPMonitor(ksp,0,rnorm);
+  ierr = KSPMonitor(ksp,0,rnorm);CHKERRQ(ierr);
   ierr = (*ksp->converged)(ksp,0,rnorm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);   
   if (ksp->reason) PetscFunctionReturn(0);
 
@@ -123,16 +122,16 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
   /* sigman_1 = rn_1'un_1  */
   ierr = VecDot(R0,Un_1,&sigman_1);CHKERRQ(ierr); 
 
-  rhon_1 = alphan_1 = omegan_1 = 1.0;
+  alphan_1 = omegan_1 = 1.0;
 
   for (ksp->its = 1; ksp->its<ksp->max_it+1; ksp->its++) {
     rhon   = phin_1 - omegan_1*sigman_2 + omegan_1*alphan_1*pin_1;
-    /*    if (rhon == 0.0) SETERRQ1(PETSC_ERR_CONV_FAILED,"rhon is zero, iteration %D",n); */
+    /*    if (rhon == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_CONV_FAILED,"rhon is zero, iteration %D",n); */
     if (ksp->its == 1) deltan = rhon;
     else deltan = rhon/taun_1;
     betan  = deltan/omegan_1;
     taun   = sigman_1 + betan*taun_1  - deltan*pin_1;
-    if (taun == 0.0) SETERRQ1(PETSC_ERR_CONV_FAILED,"taun is zero, iteration %D",ksp->its);
+    if (taun == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_CONV_FAILED,"taun is zero, iteration %D",ksp->its);
     alphan = rhon/taun;
     ierr = PetscLogFlops(15.0);
 
@@ -213,10 +212,10 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
     etan     = outsums[3];
     thetan   = outsums[4];
     kappan   = outsums[5];
-    if (ksp->lagnorm && ksp->its > 1) rnorm = sqrt(PetscRealPart(outsums[6]));
+    if (ksp->lagnorm && ksp->its > 1) rnorm = PetscSqrtReal(PetscRealPart(outsums[6]));
 
-    if (kappan == 0.0) SETERRQ1(PETSC_ERR_CONV_FAILED,"kappan is zero, iteration %D",ksp->its);
-    if (thetan == 0.0) SETERRQ1(PETSC_ERR_CONV_FAILED,"thetan is zero, iteration %D",ksp->its);
+    if (kappan == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_CONV_FAILED,"kappan is zero, iteration %D",ksp->its);
+    if (thetan == 0.0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_CONV_FAILED,"thetan is zero, iteration %D",ksp->its);
     omegan = thetan/kappan;
     sigman = gamman - omegan*etan;
 
@@ -236,13 +235,13 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
 
     if (!ksp->lagnorm && ksp->chknorm < ksp->its) {
       ierr = PetscLogEventBarrierBegin(VEC_ReduceBarrier,0,0,0,0,((PetscObject)ksp)->comm);CHKERRQ(ierr);
-      ierr = MPI_Allreduce(&rnormin,&rnorm,1,MPIU_REAL,MPI_SUM,((PetscObject)ksp)->comm);CHKERRQ(ierr);
+      ierr = MPI_Allreduce(&rnormin,&rnorm,1,MPIU_REAL,MPIU_SUM,((PetscObject)ksp)->comm);CHKERRQ(ierr);
       ierr = PetscLogEventBarrierEnd(VEC_ReduceBarrier,0,0,0,0,((PetscObject)ksp)->comm);CHKERRQ(ierr);
-      rnorm = sqrt(rnorm);
+      rnorm = PetscSqrtReal(rnorm);
     } 
 
     /* Test for convergence */
-    KSPMonitor(ksp,ksp->its,rnorm);
+    ierr = KSPMonitor(ksp,ksp->its,rnorm);CHKERRQ(ierr);
     ierr = (*ksp->converged)(ksp,ksp->its,rnorm,&ksp->reason,ksp->cnvP);CHKERRQ(ierr);   
     if (ksp->reason) break;
  
@@ -256,7 +255,6 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
     phin_1   = phin;
     alphan_1 = alphan;
     taun_1   = taun;
-    rhon_1   = rhon;
     omegan_1 = omegan;
   }
   if (ksp->its >= ksp->max_it) {
@@ -276,9 +274,8 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
 
    Level: beginner
 
-   Notes: Reference: The Improved BiCGStab Method for Large and Sparse Unsymmetric Linear Systems on Parallel Distributed Memory
-                     Architectures. L. T. Yand and R. Brent, Proceedings of the Fifth International Conference on Algorithms and 
-                     Architectures for Parallel Processing, 2002, IEEE.
+   Notes: Supports left and right preconditioning 
+
           See KSPBCGSL for additional stabilization
 
           Unlike the Bi-CG-stab algorithm, this requires one multiplication be the transpose of the operator
@@ -291,16 +288,23 @@ static PetscErrorCode  KSPSolve_IBCGS(KSP ksp)
 
           This is not supported for complex numbers.
 
+   Reference: The Improved BiCGStab Method for Large and Sparse Unsymmetric Linear Systems on Parallel Distributed Memory
+                     Architectures. L. T. Yand and R. Brent, Proceedings of the Fifth International Conference on Algorithms and 
+                     Architectures for Parallel Processing, 2002, IEEE.
+
 .seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPBICG, KSPBCGSL, KSPIBCGS, KSPSetLagNorm()
 M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
 #define __FUNCT__ "KSPCreate_IBCGS"
-PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_IBCGS(KSP ksp)
+PetscErrorCode  KSPCreate_IBCGS(KSP ksp)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
   ksp->data                 = (void*)0;
-  ksp->pc_side              = PC_LEFT;
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
+  ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_RIGHT,1);CHKERRQ(ierr);
   ksp->ops->setup           = KSPSetUp_IBCGS;
   ksp->ops->solve           = KSPSolve_IBCGS;
   ksp->ops->destroy         = KSPDefaultDestroy;
@@ -309,7 +313,7 @@ PetscErrorCode PETSCKSP_DLLEXPORT KSPCreate_IBCGS(KSP ksp)
   ksp->ops->setfromoptions  = 0;
   ksp->ops->view            = 0;
 #if defined(PETSC_USE_COMPLEX)
-  SETERRQ(PETSC_ERR_SUP,"This is not supported for complex numbers");
+  SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"This is not supported for complex numbers");
 #endif
   PetscFunctionReturn(0);
 }

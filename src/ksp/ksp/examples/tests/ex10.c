@@ -5,7 +5,7 @@ elasticity. This also demonstrates use of  block\n\
 diagonal data structure.  Input arguments are:\n\
   -m : problem size\n\n";
 
-#include "petscksp.h"
+#include <petscksp.h>
 
 /* This code is not intended as an efficient implementation, it is only
    here to produce an interesting sparse matrix quickly.
@@ -74,13 +74,13 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %A, Number of iterations %D\n",norm,its);CHKERRQ(ierr);
 
   /* Free work space */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(mat);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&mat);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
 /* -------------------------------------------------------------------- */
@@ -157,19 +157,19 @@ PetscErrorCode GetElasticityMatrix(PetscInt m,Mat *newmat)
     if (nz) rowkeep[ict++] = i;
     ierr = MatRestoreRow(mat,i,&nz,0,0);CHKERRQ(ierr);
   }
-  ierr = ISCreateGeneral(PETSC_COMM_SELF,ict,rowkeep,&iskeep);CHKERRQ(ierr);
+  ierr = ISCreateGeneral(PETSC_COMM_SELF,ict,rowkeep,PETSC_COPY_VALUES,&iskeep);CHKERRQ(ierr);
   ierr = MatGetSubMatrices(mat,1,&iskeep,&iskeep,MAT_INITIAL_MATRIX,&submatb);CHKERRQ(ierr);
   submat = *submatb; 
   ierr = PetscFree(submatb);CHKERRQ(ierr);
   ierr = PetscFree(rowkeep);CHKERRQ(ierr);
-  ierr = ISDestroy(iskeep);CHKERRQ(ierr);
-  ierr = MatDestroy(mat);CHKERRQ(ierr);
+  ierr = ISDestroy(&iskeep);CHKERRQ(ierr);
+  ierr = MatDestroy(&mat);CHKERRQ(ierr);
 
   /* Convert storage formats -- just to demonstrate conversion to various
      formats (in particular, block diagonal storage).  This is NOT the
      recommended means to solve such a problem.  */
   ierr = MatConvert(submat,type,MAT_INITIAL_MATRIX,newmat);CHKERRQ(ierr);
-  ierr = MatDestroy(submat);CHKERRQ(ierr);
+  ierr = MatDestroy(&submat);CHKERRQ(ierr);
 
   ierr = PetscViewerSetFormat(PETSC_VIEWER_STDOUT_WORLD,PETSC_VIEWER_ASCII_INFO);CHKERRQ(ierr);
   ierr = MatView(*newmat,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
@@ -337,7 +337,7 @@ PetscErrorCode paulsetup20(void)
 		w[3] = 0.347854845137454;
   }
   else {
-    SETERRQ(1,"Unknown value for n_int");
+    SETERRQ(PETSC_COMM_SELF,1,"Unknown value for n_int");
   }
 
   /* rst[][i] contains the location of the i-th integration point

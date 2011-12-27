@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* schurm.c */
 /* Fortran interface file */
 
@@ -54,19 +55,19 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   matcreateschurcomplement_(Mat A,Mat Ap,Mat B,Mat C,Mat D,Mat *N, int *__ierr ){
+void PETSC_STDCALL  matcreateschurcomplement_(Mat A00,Mat Ap00,Mat A01,Mat A10,Mat A11,Mat *N, int *__ierr ){
 *__ierr = MatCreateSchurComplement(
-	(Mat)PetscToPointer((A) ),
-	(Mat)PetscToPointer((Ap) ),
-	(Mat)PetscToPointer((B) ),
-	(Mat)PetscToPointer((C) ),
-	(Mat)PetscToPointer((D) ),N);
+	(Mat)PetscToPointer((A00) ),
+	(Mat)PetscToPointer((Ap00) ),
+	(Mat)PetscToPointer((A01) ),
+	(Mat)PetscToPointer((A10) ),
+	(Mat)PetscToPointer((A11) ),N);
 }
-void PETSC_STDCALL   matschurcomplementgetksp_(Mat A,KSP *ksp, int *__ierr ){
+void PETSC_STDCALL  matschurcomplementgetksp_(Mat A,KSP *ksp, int *__ierr ){
 *__ierr = MatSchurComplementGetKSP(
 	(Mat)PetscToPointer((A) ),ksp);
 }
-void PETSC_STDCALL   matschurcomplementupdate_(Mat N,Mat A,Mat Ap,Mat B,Mat C,Mat D,MatStructure *str, int *__ierr ){
+void PETSC_STDCALL  matschurcomplementupdate_(Mat N,Mat A,Mat Ap,Mat B,Mat C,Mat D,MatStructure *str, int *__ierr ){
 *__ierr = MatSchurComplementUpdate(
 	(Mat)PetscToPointer((N) ),
 	(Mat)PetscToPointer((A) ),
@@ -75,7 +76,7 @@ void PETSC_STDCALL   matschurcomplementupdate_(Mat N,Mat A,Mat Ap,Mat B,Mat C,Ma
 	(Mat)PetscToPointer((C) ),
 	(Mat)PetscToPointer((D) ),*str);
 }
-void PETSC_STDCALL   matgetschurcomplement_(Mat mat,IS isrow0,IS iscol0,IS isrow1,IS iscol1,MatReuse *mreuse,Mat *newmat,MatReuse *preuse,Mat *newpmat, int *__ierr ){
+void PETSC_STDCALL  matgetschurcomplement_(Mat mat,IS isrow0,IS iscol0,IS isrow1,IS iscol1,MatReuse *mreuse,Mat *newmat,MatReuse *preuse,Mat *newpmat, int *__ierr ){
 *__ierr = MatGetSchurComplement(
 	(Mat)PetscToPointer((mat) ),
 	(IS)PetscToPointer((isrow0) ),

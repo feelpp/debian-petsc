@@ -16,7 +16,7 @@
       subroutine FORLINK()
 
       implicit none
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       PetscScalar  title(20),beta,alpha
       PetscScalar  Re,dt,tot,res0,resc
       integer ntt,mseq,ivisc,irest,icyc,ihane,ntturb
@@ -45,7 +45,7 @@
 !=====================================================================72
       block data Block_Initialization
       implicit none
-#include "finclude/petscsysdef.h"
+#include <finclude/petscsysdef.h>
       PetscScalar vkar,cmu,ce1,ce2
       PetscScalar aplus1,aplus2,turbinf
       PetscScalar cb1,sig,cb2,cw1,cw2
@@ -72,7 +72,7 @@
 #define __FUNCT__ "INIT"
       subroutine INIT(nnodes, qvec, turbre, amut,nvnode, ivnode,irank)
       implicit none
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       PetscScalar  turbre(1),amut(1)
       integer ivnode(1),nnodes,nvnode,irank
       PetscScalar  title(20),beta,alpha
@@ -215,7 +215,7 @@
       subroutine READR1(ileast, irank)
 
       implicit none
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       PetscScalar  title(20),beta,alpha
       PetscScalar  Re,dt,tot,res0,resc
       integer ntt,mseq,ivisc,irest,icyc,ihane,ntturb
@@ -288,7 +288,7 @@
      &                  irank)
 !
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       PetscScalar pinf
       PetscScalar gamma,gm1,gp1,gm1g,gp1g,ggm1
       PetscScalar p0,rho0,c0,u0,v0,w0,et0,h0,pt0
@@ -448,7 +448,7 @@
      &                 evec,qvec,xyz,sface_bit,vface_bit,               &
      &                 clift, cdrag, cmom,irank,nvertices)
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       PetscScalar  title(20),beta,alpha
       PetscScalar  Re,dt,tot,res0,resc
       integer ntt,mseq,ivisc,irest,icyc,ihane,ntturb
@@ -721,7 +721,7 @@
      &                  LocalTS,irank,nvertices)
 !
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       PetscScalar  title(20),beta,alpha
       PetscScalar  Re,dt,tot,res0,resc
       integer ntt,mseq,ivisc,irest,icyc,ihane,ntturb
@@ -975,7 +975,7 @@
      &                irank,nvertices)
 #endif  
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       PetscScalar  title(20),beta,alpha
       PetscScalar  Re,dt,tot,res0,resc
       integer ntt,mseq,ivisc,irest,icyc,ihane,ntturb
@@ -1091,7 +1091,6 @@
        integer ncolor,ncount(1)
 #elif defined(HAVE_REDUNDANT_WORK)
        PetscScalar resd(4,nnodes)
-       PetscSizeT sizeofscalar
 #undef res
 #define res(a,b) resd(a,b)
 #else
@@ -1116,7 +1115,7 @@
        data flag/-1/,flux_label/'FluxEvaluation  '/
        save flux_event, fun3d_class, flag, flux_label
        if (flag .eq. -1) then
-          call PetscCookieRegister('PetscFun3d',fun3d_class,ierr)
+          call PetscClassIdRegister('PetscFun3d',fun3d_class,ierr)
           call PetscLogEventRegister(flux_label,                        &
      &         fun3d_class,flux_event,ierr)         
           flag = 1
@@ -1134,8 +1133,11 @@
        do i = 1,ncolor
              last_edge = first_edge + ncount(i) - 1
 #elif defined(HAVE_REDUNDANT_WORK)
-      call PetscDataTypeGetSize(PETSC_SCALAR,sizeofscalar,ierr)
-       call PetscMemzero(resd,sizeofscalar*4*nnodes,ierr)
+       do i = 1,nnodes
+          do j = 1,4
+             resd(j,i) = 0.0
+          enddo
+       enddo
        first_edge = 1
        last_edge = nedge
 #endif
@@ -1802,7 +1804,7 @@
       subroutine SUMGS(nnodes,nedge,evec,xyz,rxy,irank,nvertices)
 
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       integer nnodes,nedge,irank,nvertices
 #if defined(INTERLACING)
       PetscScalar xyz(3,nvertices)
@@ -1840,23 +1842,19 @@
       PetscScalar x1,y1,z1,x2,y2,z2,dx,dy,dz
       PetscScalar dist,weight,w2,w11,w22,w33
       PetscScalar r12r11,r13r11,r23r22,rmess
-      PetscSizeT sizeofscalar
 
 !
 ! Initialize all the rij to 0.0 
 !
-!     do 1000 i = 1,nnodes
-!        r11(i) = 0.0
-!        r12(i) = 0.0
-!        r13(i) = 0.0
-!        r22(i) = 0.0
-!        r23(i) = 0.0
-!        r33(i) = 0.0
-!        r44(i) = 0.0
-!1000 continue
-      call PetscDataTypeGetSize(PETSC_SCALAR,sizeofscalar,ierr)
-      call PetscMemzero(rxy,sizeofscalar*7*nnodes,ierr)
-      
+      do 1000 i = 1,nnodes
+         r11(i) = 0.0
+         r12(i) = 0.0
+         r13(i) = 0.0
+         r22(i) = 0.0
+         r23(i) = 0.0
+         r33(i) = 0.0
+         r44(i) = 0.0
+ 1000 continue
 !
 ! Now loop over the edges and accumulate the r 
 !
@@ -2057,7 +2055,7 @@
      &                 rxy,irank,nvertices)
 !
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       integer nnodes,nedge,irank,nvertices
 !
 #if defined(INTERLACING)
@@ -2105,7 +2103,7 @@
 #endif
       PetscScalar  title(20),beta,alpha
       PetscScalar  Re,dt,tot,res0,resc
-      integer ntt,mseq,ivisc,irest,icyc,ihane,ntturb
+      integer i,ntt,mseq,ivisc,irest,icyc,ihane,ntturb
       PetscScalar  cfl1,cfl2
       integer nsmoth,iflim,itran,nbtran,jupdate,                          &
      &        nstage,ncyct,iramp,nitfo
@@ -2119,7 +2117,6 @@
      &        dq1,dq2,dq3,dq4,                                            &
      &        weight,w11,r12r11,r13r11,w22,r23r22,w33,rmess,              &
      &        coef1,coef2,termx,termy,termz
-      PetscSizeT sizeofscalar
 !     logging variables
 !     integer flag
 !     integer grad_event,node1_event,node2_event
@@ -2155,28 +2152,24 @@
 !
 ! Zero out the gradients
 !
-!     do 1000 i = 1,nnodes
-!
-!       gradx(1,i) = 0.0
-!       grady(1,i) = 0.0
-!       gradz(1,i) = 0.0
-!
-!       gradx(2,i) = 0.0
-!       grady(2,i) = 0.0
-!       gradz(2,i) = 0.0
-!
-!       gradx(3,i) = 0.0
-!       grady(3,i) = 0.0
-!       gradz(3,i) = 0.0
-!
-!       gradx(4,i) = 0.0
-!       grady(4,i) = 0.0
-!       gradz(4,i) = 0.0
-!
-!1000  continue
-      call PetscDataTypeGetSize(PETSC_SCALAR,sizeofscalar,ierr)
-      call PetscMemzero(grad,sizeofscalar*12*nnodes,ierr)
-!
+      do 1000 i = 1,nnodes
+         gradx(1,i) = 0.0
+         grady(1,i) = 0.0
+         gradz(1,i) = 0.0
+
+         gradx(2,i) = 0.0
+         grady(2,i) = 0.0
+         gradz(2,i) = 0.0
+
+         gradx(3,i) = 0.0
+         grady(3,i) = 0.0
+         gradz(3,i) = 0.0
+
+         gradx(4,i) = 0.0
+         grady(4,i) = 0.0
+         gradz(4,i) = 0.0
+ 1000 continue
+
 ! If second order, loop over all the faces accumulate sums
 !
 !     nitfo = 0
@@ -2385,7 +2378,7 @@
 #endif
 !
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
 !
       integer nnodes, ncell, nedge,                                         &
      &        nbface,ileast,ires,                                           &
@@ -2674,7 +2667,7 @@
 #define __FUNCT__ "GETIA"
       subroutine GETIA(nnodes,nedge,evec,ia,ideg,irank)
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       integer nnodes,nedge,irank
       integer ia(1),ideg(1)
 #if defined(INTERLACING)
@@ -2725,7 +2718,7 @@
 #define __FUNCT__ "GETJA"
       subroutine GETJA(nnodes,nedge,evec,ia,ja,iwork,irank)
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       integer nnodes,nedge,irank
       integer ia(1),ja(1),iwork(1)
 #if defined(INTERLACING)
@@ -2844,7 +2837,7 @@
 #define __FUNCT__ "SORTER"
       subroutine SORTER(istart,iend,ja,inode)
       implicit none      
-#include "finclude/petscsys.h"
+#include <finclude/petscsys.h>
       integer istart,iend,inode
       integer ja(1)
 !

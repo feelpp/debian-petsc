@@ -1,17 +1,16 @@
-#define PETSC_DLL
 
-#include "petscsys.h"
+#include <petscsys.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "PetscStartMatlab"	
 /*@C
-    PetscStartMatlab - starts up Matlab with a Matlab script
+    PetscStartMatlab - starts up MATLAB with a MATLAB script
 
-    Collective on MPI_Comm, but only processor zero in the communicator does anything
+    Logically Collective on MPI_Comm, but only processor zero in the communicator does anything
 
     Input Parameters:
 +     comm - MPI communicator
-.     machine - optional machine to run Matlab on
+.     machine - optional machine to run MATLAB on
 -     script - name of script (without the .m)
 
     Output Parameter:
@@ -22,13 +21,13 @@
     Notes: 
      This overwrites your matlab/startup.m file
 
-     The script must be in your Matlab path or current directory
+     The script must be in your MATLAB path or current directory
 
      Assumes that all machines share a common file system
 
 .seealso: PetscPOpen(), PetscPClose()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscStartMatlab(MPI_Comm comm,const char machine[],const char script[],FILE **fp)
+PetscErrorCode  PetscStartMatlab(MPI_Comm comm,const char machine[],const char script[],FILE **fp)
 {
   PetscErrorCode ierr;
   FILE           *fd;
@@ -41,7 +40,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscStartMatlab(MPI_Comm comm,const char machine
   PetscFunctionBegin;
 
 #if defined(PETSC_HAVE_UCBPS) && defined(PETSC_HAVE_POPEN)
-  /* check if Matlab is not already running */
+  /* check if MATLAB is not already running */
   ierr = PetscPOpen(comm,machine,"/usr/ucb/ps -ugxww | grep matlab | grep -v grep","r",&fd);CHKERRQ(ierr);
   ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr);
   if (!rank) {
@@ -53,7 +52,7 @@ PetscErrorCode PETSC_DLLEXPORT PetscStartMatlab(MPI_Comm comm,const char machine
 #endif
 
   if (script) {
-    /* the remote machine won't know about current directory, so add it to Matlab path */
+    /* the remote machine won't know about current directory, so add it to MATLAB path */
     /* the extra \" are to protect possible () in the script command from the shell */
     sprintf(command,"echo \"delete ${HOMEDIRECTORY}/matlab/startup.m ; path(path,'${WORKINGDIRECTORY}'); %s  \" > ${HOMEDIRECTORY}/matlab/startup.m",script);
 #if defined(PETSC_HAVE_POPEN)

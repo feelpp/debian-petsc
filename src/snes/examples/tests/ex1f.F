@@ -53,14 +53,14 @@
 !     petscviewer.h - viewers
 !     petscis.h     - index sets
 !
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscis.h"
-#include "finclude/petscdraw.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscksp.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscis.h>
+#include <finclude/petscdraw.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscksp.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
 !
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 !                   Variable declarations
@@ -79,7 +79,7 @@
       Vec                x,r
       PetscDraw               draw
       Mat                J
-      PetscTruth matrix_free,flg,fd_coloring
+      PetscBool  matrix_free,flg,fd_coloring
       PetscErrorCode ierr
       PetscInt   its,N, mx,my,i5
       PetscMPIInt size,rank
@@ -112,7 +112,7 @@
          if (rank .eq. 0) then
             write(6,*) 'This is a uniprocessor example only!'
          endif
-         SETERRQ(1,' ',ierr)
+         SETERRQ(PETSC_COMM_SELF,1,' ',ierr)
       endif
 
 !  Initialize problem parameters
@@ -128,7 +128,7 @@
      &     flg,ierr)
       if (lambda .ge. lambda_max .or. lambda .le. lambda_min) then
          if (rank .eq. 0) write(6,*) 'Lambda is out of range'
-         SETERRQ(1,' ',ierr)
+         SETERRQ(PETSC_COMM_SELF,1,' ',ierr)
       endif
       N       = mx*my
 
@@ -190,7 +190,7 @@
 !       Color the matrix, i.e. determine groups of columns that share no common 
 !      rows. These columns in the Jacobian can all be computed simulataneously.
 !
-        call MatGetColoring(J,MATCOLORING_NATURAL,iscoloring,ierr)
+        call MatGetColoring(J,MATCOLORINGNATURAL,iscoloring,ierr)
     
 !
 !       Create the data structure that SNESDefaultComputeJacobianColor() uses
@@ -303,10 +303,10 @@
       subroutine FormInitialGuess(X,ierr)
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscsnes.h>
 
 !  Input/output variables:
       Vec           X
@@ -419,9 +419,9 @@
       subroutine FormFunction(snes,X,F,dummy,ierr)
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscsnes.h>
 
 !  Input/output variables:
       SNES              snes
@@ -552,11 +552,11 @@
       subroutine FormJacobian(snes,X,jac,jac_prec,flag,dummy,ierr)
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
 
 !  Input/output variables:
       SNES          snes
@@ -632,11 +632,11 @@
       subroutine ApplicationJacobian(x,jac,jac_prec,ierr)
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscsnes.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscsnes.h>
 
 !  Common blocks:
       PetscReal    lambda

@@ -8,7 +8,7 @@ static char help[] = "Scatters from a parallel vector to a sequential vector.\n\
      Scatter first and third block to first processor and 
      second and third block to second processor
 */
-#include "petscvec.h"
+#include <petscvec.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -26,7 +26,7 @@ int main(int argc,char **argv)
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
 
-  if (size != 2) SETERRQ(1,"Must run with 2 processors");
+  if (size != 2) SETERRQ(PETSC_COMM_SELF,1,"Must run with 2 processors");
 
   /* create two vectors */
   if (!rank) nlocal = 8;
@@ -38,11 +38,11 @@ int main(int argc,char **argv)
 
   /* create two index sets */
   if (!rank) {
-    blocks[0] = 0; blocks[1] = 8;
+    blocks[0] = 0; blocks[1] = 2;
   } else {
-    blocks[0] = 4; blocks[1] = 8;
+    blocks[0] = 1; blocks[1] = 2;
   }
-  ierr = ISCreateBlock(PETSC_COMM_SELF,4,2,blocks,&is1);CHKERRQ(ierr);
+  ierr = ISCreateBlock(PETSC_COMM_SELF,4,2,blocks,PETSC_COPY_VALUES,&is1);CHKERRQ(ierr);
   ierr = ISCreateStride(PETSC_COMM_SELF,8,0,1,&is2);CHKERRQ(ierr);
 
   for (i=0; i<12; i++) {
@@ -55,17 +55,17 @@ int main(int argc,char **argv)
   ierr = VecScatterCreate(x,is1,y,is2,&ctx);CHKERRQ(ierr);
   ierr = VecScatterBegin(ctx,x,y,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
   ierr = VecScatterEnd(ctx,x,y,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
-  ierr = VecScatterDestroy(ctx);CHKERRQ(ierr); 
+  ierr = VecScatterDestroy(&ctx);CHKERRQ(ierr); 
  
   ierr = PetscSleep(2.0*rank);CHKERRQ(ierr);
   ierr = VecView(y,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
 
-  ierr = VecDestroy(x);CHKERRQ(ierr);
-  ierr = VecDestroy(y);CHKERRQ(ierr);
-  ierr = ISDestroy(is1);CHKERRQ(ierr);
-  ierr = ISDestroy(is2);CHKERRQ(ierr);
+  ierr = VecDestroy(&x);CHKERRQ(ierr);
+  ierr = VecDestroy(&y);CHKERRQ(ierr);
+  ierr = ISDestroy(&is1);CHKERRQ(ierr);
+  ierr = ISDestroy(&is2);CHKERRQ(ierr);
 
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
  

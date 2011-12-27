@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* gmres.c */
 /* Fortran interface file */
 
@@ -33,9 +34,19 @@ extern void PetscRmPointer(void*);
 #define kspgmressetcgsrefinementtype_ kspgmressetcgsrefinementtype
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspgmresgetcgsrefinementtype_ KSPGMRESGETCGSREFINEMENTTYPE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspgmresgetcgsrefinementtype_ kspgmresgetcgsrefinementtype
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspgmressetrestart_ KSPGMRESSETRESTART
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspgmressetrestart_ kspgmressetrestart
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspgmresgetrestart_ KSPGMRESGETRESTART
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspgmresgetrestart_ kspgmresgetrestart
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspgmressethaptol_ KSPGMRESSETHAPTOL
@@ -48,15 +59,24 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspgmressetcgsrefinementtype_(KSP ksp,KSPGMRESCGSRefinementType *type, int *__ierr ){
+void PETSC_STDCALL  kspgmressetcgsrefinementtype_(KSP ksp,KSPGMRESCGSRefinementType *type, int *__ierr ){
 *__ierr = KSPGMRESSetCGSRefinementType(
 	(KSP)PetscToPointer((ksp) ),*type);
 }
-void PETSC_STDCALL   kspgmressetrestart_(KSP ksp,PetscInt *restart, int *__ierr ){
+void PETSC_STDCALL  kspgmresgetcgsrefinementtype_(KSP ksp,KSPGMRESCGSRefinementType *type, int *__ierr ){
+*__ierr = KSPGMRESGetCGSRefinementType(
+	(KSP)PetscToPointer((ksp) ),
+	(KSPGMRESCGSRefinementType* )PetscToPointer((type) ));
+}
+void PETSC_STDCALL  kspgmressetrestart_(KSP ksp,PetscInt *restart, int *__ierr ){
 *__ierr = KSPGMRESSetRestart(
 	(KSP)PetscToPointer((ksp) ),*restart);
 }
-void PETSC_STDCALL   kspgmressethaptol_(KSP ksp,PetscReal *tol, int *__ierr ){
+void PETSC_STDCALL  kspgmresgetrestart_(KSP ksp,PetscInt *restart, int *__ierr ){
+*__ierr = KSPGMRESGetRestart(
+	(KSP)PetscToPointer((ksp) ),restart);
+}
+void PETSC_STDCALL  kspgmressethaptol_(KSP ksp,PetscReal *tol, int *__ierr ){
 *__ierr = KSPGMRESSetHapTol(
 	(KSP)PetscToPointer((ksp) ),*tol);
 }

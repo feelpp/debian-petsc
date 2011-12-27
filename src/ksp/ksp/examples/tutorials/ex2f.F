@@ -46,11 +46,11 @@
 !     petscviewer.h - viewers
 !     petscis.h     - index sets
 !
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscmat.h"
-#include "finclude/petscpc.h"
-#include "finclude/petscksp.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscmat.h>
+#include <finclude/petscpc.h>
+#include <finclude/petscksp.h>
 !
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                   Variable declarations
@@ -78,7 +78,7 @@
       PetscInt  Istart,Iend,ione
       PetscErrorCode ierr
       PetscMPIInt     rank,size
-      PetscTruth  flg
+      PetscBool   flg
       PetscScalar v,one,neg_one
       Vec         x,b,u
       Mat         A 
@@ -286,7 +286,6 @@
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 !  Check the error
-
       call VecAXPY(x,neg_one,u,ierr)
       call VecNorm(x,NORM_2,norm,ierr)
       call KSPGetIterationNumber(ksp,its,ierr)
@@ -297,7 +296,7 @@
            write(6,110) its
         endif
       endif
-  100 format('Norm of error ',e10.4,' iterations ',i5)
+  100 format('Norm of error ',e11.4,' iterations ',i5)
   110 format('Norm of error < 1.e-12,iterations ',i5)
 
 !  Free work space.  All PETSc objects should be destroyed when they
@@ -333,9 +332,9 @@
 
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscksp.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscksp.h>
 
       KSP              ksp
       Vec              x
@@ -359,7 +358,7 @@
       if (rank .eq. 0) write(6,200) n,rnorm
 
  100  format('iteration ',i5,' solution vector:')
- 200  format('iteration ',i5,' residual norm ',e10.4)
+ 200  format('iteration ',i5,' residual norm ',e11.4)
       ierr = 0
       end
 
@@ -378,9 +377,9 @@
 
       implicit none
 
-#include "finclude/petscsys.h"
-#include "finclude/petscvec.h"
-#include "finclude/petscksp.h"
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscksp.h>
 
       KSP              ksp
       PetscErrorCode ierr

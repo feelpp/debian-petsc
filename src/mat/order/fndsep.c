@@ -1,10 +1,9 @@
-#define PETSCMAT_DLL
 
 /* fndsep.f -- translated by f2c (version 19931217).
 */
 
-#include "../src/mat/order/order.h"
-EXTERN PetscErrorCode SPARSEPACKfnroot(PetscInt*, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *);
+#include <../src/mat/order/order.h>
+extern PetscErrorCode SPARSEPACKfnroot(PetscInt*, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *, PetscInt *);
 
 /*****************************************************************/
 /*************     FNDSEP ..... FIND SEPARATOR       *************/

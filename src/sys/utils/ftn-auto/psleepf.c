@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* psleep.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscsleep_(PetscReal *s, int *__ierr ){
+void PETSC_STDCALL  petscsleep_(PetscReal *s, int *__ierr ){
 *__ierr = PetscSleep(*s);
 }
 #if defined(__cplusplus)

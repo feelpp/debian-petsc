@@ -19,11 +19,11 @@ namespace ALE {
       PetscInt      debug;                       // The debugging level
       RunType       run;                         // The run type
       PetscInt      dim;                         // The topological mesh dimension
-      PetscTruth    reentrantMesh;               // Generate a reentrant mesh?
-      PetscTruth    circularMesh;                // Generate a circular mesh?
-      PetscTruth    refineSingularity;           // Generate an a priori graded mesh for the poisson problem
-      PetscTruth    generateMesh;                // Generate the unstructure mesh
-      PetscTruth    interpolate;                 // Generate intermediate mesh elements
+      PetscBool     reentrantMesh;               // Generate a reentrant mesh?
+      PetscBool     circularMesh;                // Generate a circular mesh?
+      PetscBool     refineSingularity;           // Generate an a priori graded mesh for the poisson problem
+      PetscBool     generateMesh;                // Generate the unstructure mesh
+      PetscBool     interpolate;                 // Generate intermediate mesh elements
       PetscReal     refinementLimit;             // The largest allowable cell volume
       char          baseFilename[2048];          // The base filename for mesh files
       char          partitioner[2048];           // The graph partitioner
@@ -357,7 +357,7 @@ namespace ALE {
       ~Ex_UFC() {
         PetscErrorCode ierr;
 
-        if (this->_dmmg) {ierr = DMMGDestroy(this->_dmmg);CHKERRXX(ierr);}
+        ierr = DMMGDestroy(this->_dmmg);CHKERRXX(ierr);
         //ierr = this->destroyExactSolution(this->_options.exactSol);CHKERRXX(ierr);
         //ierr = this->destroyExactSolution(this->_options.error);CHKERRXX(ierr);
         ierr = this->destroyMesh();CHKERRXX(ierr);
@@ -396,11 +396,11 @@ namespace ALE {
           ierr = PetscOptionsEList("-run", "The run type", "ex_ufc.cxx", runTypes, 3, runTypes[options->run], &run, PETSC_NULL);CHKERRQ(ierr);
           options->run = (RunType) run;
           ierr = PetscOptionsInt("-dim", "The topological mesh dimension", "bratu.cxx", options->dim, &options->dim, PETSC_NULL);CHKERRQ(ierr);
-          ierr = PetscOptionsTruth("-reentrant", "Make a reentrant-corner mesh", "bratu.cxx", options->reentrantMesh, &options->reentrantMesh, PETSC_NULL);CHKERRQ(ierr);
-          ierr = PetscOptionsTruth("-circular_mesh", "Make a reentrant-corner mesh", "bratu.cxx", options->circularMesh, &options->circularMesh, PETSC_NULL);CHKERRQ(ierr);
-          ierr = PetscOptionsTruth("-singularity", "Refine the mesh around a singularity with a priori poisson error estimation", "bratu.cxx", options->refineSingularity, &options->refineSingularity, PETSC_NULL);CHKERRQ(ierr);
-          ierr = PetscOptionsTruth("-generate", "Generate the unstructured mesh", "bratu.cxx", options->generateMesh, &options->generateMesh, PETSC_NULL);CHKERRQ(ierr);
-          ierr = PetscOptionsTruth("-interpolate", "Generate intermediate mesh elements", "bratu.cxx", options->interpolate, &options->interpolate, PETSC_NULL);CHKERRQ(ierr);
+          ierr = PetscOptionsBool("-reentrant", "Make a reentrant-corner mesh", "bratu.cxx", options->reentrantMesh, &options->reentrantMesh, PETSC_NULL);CHKERRQ(ierr);
+          ierr = PetscOptionsBool("-circular_mesh", "Make a reentrant-corner mesh", "bratu.cxx", options->circularMesh, &options->circularMesh, PETSC_NULL);CHKERRQ(ierr);
+          ierr = PetscOptionsBool("-singularity", "Refine the mesh around a singularity with a priori poisson error estimation", "bratu.cxx", options->refineSingularity, &options->refineSingularity, PETSC_NULL);CHKERRQ(ierr);
+          ierr = PetscOptionsBool("-generate", "Generate the unstructured mesh", "bratu.cxx", options->generateMesh, &options->generateMesh, PETSC_NULL);CHKERRQ(ierr);
+          ierr = PetscOptionsBool("-interpolate", "Generate intermediate mesh elements", "bratu.cxx", options->interpolate, &options->interpolate, PETSC_NULL);CHKERRQ(ierr);
           ierr = PetscOptionsReal("-refinement_limit", "The largest allowable cell volume", "bratu.cxx", options->refinementLimit, &options->refinementLimit, PETSC_NULL);CHKERRQ(ierr);
           filename << "data/bratu_" << options->dim <<"d";
           ierr = PetscStrcpy(options->baseFilename, filename.str().c_str());CHKERRQ(ierr);
@@ -422,7 +422,7 @@ namespace ALE {
       Ex_UFCOptions *getOptions() {return &this->_options;};
       int  dim() const {return this->_options.dim;};
       bool interpolated() const {return this->_options.interpolate;};
-      void interpolated(const bool i) {this->_options.interpolate = (PetscTruth) i;};
+      void interpolated(const bool i) {this->_options.interpolate = (PetscBool) i;};
       BCType bcType() const {return this->_options.bcType;};
       UFCHook * ufcHook() const {return this->_ufchook;};
       void ufcHook(UFCHook * uh) {this->_ufchook = uh;};
@@ -438,7 +438,7 @@ namespace ALE {
       #undef __FUNCT__
       #define __FUNCT__ "CreateMesh"
       PetscErrorCode createMesh() {
-        PetscTruth     view;
+        PetscBool      view;
         PetscErrorCode ierr;
 
         PetscFunctionBegin;
@@ -474,11 +474,11 @@ namespace ALE {
           PetscViewer viewer;
 	  
           ierr = PetscViewerCreate(this->comm(), &viewer);CHKERRQ(ierr);
-          ierr = PetscViewerSetType(viewer, PETSC_VIEWER_ASCII);CHKERRQ(ierr);
+          ierr = PetscViewerSetType(viewer, PETSCVIEWERASCII);CHKERRQ(ierr);
           ierr = PetscViewerSetFormat(viewer, PETSC_VIEWER_ASCII_VTK);CHKERRQ(ierr);
           ierr = PetscViewerFileSetName(viewer, "bratu.vtk");CHKERRQ(ierr);
           ierr = MeshView((::Mesh) this->_dm, viewer);CHKERRQ(ierr);
-          ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+          ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
         }
         ierr = PetscOptionsHasName(PETSC_NULL, "-mesh_view", &view);CHKERRQ(ierr);
         if (view) {this->_mesh->view("Mesh");}
@@ -494,7 +494,7 @@ namespace ALE {
         if (_options.refinementLimit > 0.0) {
           ::Mesh refinedMesh;
 
-          ierr = MeshRefine((::Mesh) this->_dm, _options.refinementLimit, (PetscTruth) interpolated(), &refinedMesh);CHKERRQ(ierr);
+          ierr = MeshRefine((::Mesh) this->_dm, _options.refinementLimit, (PetscBool) interpolated(), &refinedMesh);CHKERRQ(ierr);
           ierr = MeshDestroy((::Mesh) this->_dm);CHKERRQ(ierr);
           this->_dm = (DM) refinedMesh;
           ierr = MeshGetMesh((::Mesh) this->_dm, this->_mesh);CHKERRQ(ierr);
@@ -758,7 +758,7 @@ namespace ALE {
 	const ALE::Obj<PETSC_MESH_TYPE::real_section_type>& s = this->_mesh->getRealSection("default");
 	s->setDebug(debug());
 	_subproblem->setupField(this->_mesh, s);
-	PetscTruth flag;
+	PetscBool  flag;
 	ierr = PetscOptionsHasName(PETSC_NULL, "-vec_view", &flag);CHKERRQ(ierr);
 	if (flag) {s->view("Exact Solution");}
 	ierr = PetscOptionsHasName(PETSC_NULL, "-mesh_view", &flag);CHKERRQ(ierr);
@@ -773,7 +773,7 @@ namespace ALE {
       #undef __FUNCT__
       #define __FUNCT__ "CreateExactSolution"
       PetscErrorCode createExactSolution() {
-        PetscTruth     flag;
+        PetscBool      flag;
         PetscErrorCode ierr;
 
         PetscFunctionBegin;
@@ -791,12 +791,12 @@ namespace ALE {
 	  PetscViewer viewer;
 	  
 	  ierr = PetscViewerCreate(this->comm(), &viewer);CHKERRQ(ierr);
-	  ierr = PetscViewerSetType(viewer, PETSC_VIEWER_ASCII);CHKERRQ(ierr);
+	  ierr = PetscViewerSetType(viewer, PETSCVIEWERASCII);CHKERRQ(ierr);
 	  ierr = PetscViewerSetFormat(viewer, PETSC_VIEWER_ASCII_VTK);CHKERRQ(ierr);
 	  ierr = PetscViewerFileSetName(viewer, "exact_sol.vtk");CHKERRQ(ierr);
 	  ierr = MeshView((::Mesh) this->_dm, viewer);CHKERRQ(ierr);
 	  ierr = SectionRealView(exactSolution().section, viewer);CHKERRQ(ierr);
-	  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+	  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
 	}
 	ierr = MeshGetSectionReal(mesh, "error", &this->_options.error.section);CHKERRQ(ierr);
 	const Obj<PETSC_MESH_TYPE::real_section_type>& e = this->_mesh->getRealSection("error");
@@ -811,7 +811,7 @@ namespace ALE {
         PetscErrorCode ierr;
 
         PetscFunctionBegin;
-	ierr = SectionRealDestroy(sol.section);CHKERRQ(ierr);
+	ierr = SectionRealDestroy(&sol.section);CHKERRQ(ierr);
         PetscFunctionReturn(0);
       };
     public:
@@ -835,7 +835,7 @@ namespace ALE {
 	  ierr = DMMGSetSNESLocal(this->_dmmg, ALE::Problem::UFCFunctions::Rhs_Unstructured, ALE::Problem::UFCFunctions::Jac_Unstructured_Stored, 0, 0);CHKERRQ(ierr);
 #endif
 	} else {
-	  SETERRQ1(PETSC_ERR_ARG_WRONG, "Assembly type not supported: %d", opAssembly());
+	  SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG, "Assembly type not supported: %d", opAssembly());
 	}
 	ierr = DMMGSetFromOptions(this->_dmmg);CHKERRQ(ierr);
 	if (bcType() == ALE::Problem::NEUMANN) {
@@ -854,7 +854,7 @@ namespace ALE {
         // Report on solve
         SNES                snes = DMMGGetSNES(this->_dmmg);
         PetscInt            its;
-        PetscTruth          flag;
+        PetscBool           flag;
         SNESConvergedReason reason;
 
         ierr = SNESGetIterationNumber(snes, &its);CHKERRQ(ierr);
@@ -878,7 +878,7 @@ namespace ALE {
 	  PetscViewer viewer;
 	  
 	  ierr = PetscViewerCreate(comm(), &viewer);CHKERRQ(ierr);
-	  ierr = PetscViewerSetType(viewer, PETSC_VIEWER_ASCII);CHKERRQ(ierr);
+	  ierr = PetscViewerSetType(viewer, PETSCVIEWERASCII);CHKERRQ(ierr);
 	  ierr = PetscViewerSetFormat(viewer, PETSC_VIEWER_ASCII_VTK);CHKERRQ(ierr);
 	  ierr = PetscViewerFileSetName(viewer, "sol.vtk");CHKERRQ(ierr);
 	  ierr = MeshView((::Mesh) this->_dm, viewer);CHKERRQ(ierr);
@@ -890,16 +890,16 @@ namespace ALE {
 	      //ierr = ALE::Problem::SubProblemView(solution, "pressure", viewer, dim(), dim());
 	    }
 	  }
-	  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+	  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
 	  
 	  ierr = PetscViewerCreate(comm(), &viewer);CHKERRQ(ierr);
-	  ierr = PetscViewerSetType(viewer, PETSC_VIEWER_ASCII);CHKERRQ(ierr);
+	  ierr = PetscViewerSetType(viewer, PETSCVIEWERASCII);CHKERRQ(ierr);
 	  ierr = PetscViewerSetFormat(viewer, PETSC_VIEWER_ASCII_VTK);CHKERRQ(ierr);
 	  ierr = PetscViewerFileSetName(viewer, "error.vtk");CHKERRQ(ierr);
 	  ierr = MeshView((::Mesh) this->_dm, viewer);CHKERRQ(ierr);
 	  ierr = PetscViewerSetFormat(viewer, PETSC_VIEWER_ASCII_VTK_CELL);CHKERRQ(ierr);
 	  ierr = SectionRealView(this->_options.error.section, viewer);CHKERRQ(ierr);
-	  ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+	  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
           ierr = PetscOptionsHasName(PETSC_NULL, "-vec_view", &flag);CHKERRQ(ierr);
           if (flag) {sol->view("Solution");}
           ierr = PetscOptionsHasName(PETSC_NULL, "-hierarchy_vtk", &flag);CHKERRQ(ierr);
@@ -908,16 +908,16 @@ namespace ALE {
             PetscViewer viewer;
 
             ierr = PetscViewerCreate(comm(), &viewer);CHKERRQ(ierr);
-            ierr = PetscViewerSetType(viewer, PETSC_VIEWER_ASCII);CHKERRQ(ierr);
+            ierr = PetscViewerSetType(viewer, PETSCVIEWERASCII);CHKERRQ(ierr);
             ierr = PetscViewerSetFormat(viewer, PETSC_VIEWER_ASCII_VTK);CHKERRQ(ierr);
             ierr = PetscViewerFileSetName(viewer, "mesh_hierarchy.vtk");CHKERRQ(ierr);
             ierr = PetscOptionsReal("-hierarchy_vtk", PETSC_NULL, "bratu.cxx", *offset, offset, PETSC_NULL);CHKERRQ(ierr);
             ierr = VTKViewer::writeHeader(viewer);CHKERRQ(ierr);
             ierr = VTKViewer::writeHierarchyVertices(this->_dmmg, viewer, offset);CHKERRQ(ierr);
             ierr = VTKViewer::writeHierarchyElements(this->_dmmg, viewer);CHKERRQ(ierr);
-            ierr = PetscViewerDestroy(viewer);CHKERRQ(ierr);
+            ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
           }
-          ierr = SectionRealDestroy(solution);CHKERRQ(ierr);
+          ierr = SectionRealDestroy(&solution);CHKERRQ(ierr);
         }
         PetscFunctionReturn(0);
       };
@@ -992,7 +992,7 @@ namespace ALE {
       PetscErrorCode checkResidual(ALE::Problem::ExactSolType sol) {
         const char    *name;
         PetscScalar    norm;
-        PetscTruth     flag;
+        PetscBool      flag;
         PetscErrorCode ierr;
 
         PetscFunctionBegin;
@@ -1005,7 +1005,7 @@ namespace ALE {
 	ierr = ALE::Problem::RHS_FEMProblem(mesh, sol.section, residual, this->_subproblem);CHKERRQ(ierr);
 	if (flag) {ierr = SectionRealView(residual, PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);}
 	ierr = SectionRealNorm(residual, mesh, NORM_2, &norm);CHKERRQ(ierr);
-	ierr = SectionRealDestroy(residual);CHKERRQ(ierr);
+	ierr = SectionRealDestroy(&residual);CHKERRQ(ierr);
 	ierr = PetscObjectGetName((PetscObject) sol.section, &name);CHKERRQ(ierr);
         PetscPrintf(comm(), "Residual for trial solution %s: %g\n", name, norm);
         PetscFunctionReturn(0);

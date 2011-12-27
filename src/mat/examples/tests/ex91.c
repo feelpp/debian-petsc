@@ -1,7 +1,7 @@
 
 static char help[] = "Tests MatIncreaseOverlap(), MatGetSubMatrices() for sequential MatSBAIJ format. Derived from ex51.c\n";
 
-#include "petscmat.h"
+#include <petscmat.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -16,7 +16,7 @@ int main(int argc,char **args)
   PetscRandom    rand;
   Vec            xx,s1,s2;
   PetscReal      s1norm,s2norm,rnorm,tol = 1.e-10;
-  PetscTruth     flg;
+  PetscBool      flg;
 
   PetscInitialize(&argc,&args,(char *)0,help);
  
@@ -72,13 +72,13 @@ int main(int argc,char **args)
   /* make A a symmetric matrix: A <- A^T + A */
   ierr = MatTranspose(A,MAT_INITIAL_MATRIX, &Atrans);CHKERRQ(ierr);
   ierr = MatAXPY(A,one,Atrans,DIFFERENT_NONZERO_PATTERN);CHKERRQ(ierr); 
-  ierr = MatDestroy(Atrans);CHKERRQ(ierr);
+  ierr = MatDestroy(&Atrans);CHKERRQ(ierr);
   ierr = MatTranspose(A,MAT_INITIAL_MATRIX, &Atrans);
   ierr = MatEqual(A, Atrans, &flg);
   if (!flg) {
-    SETERRQ(1,"A+A^T is non-symmetric");
+    SETERRQ(PETSC_COMM_SELF,1,"A+A^T is non-symmetric");
   }
-  ierr = MatDestroy(Atrans);CHKERRQ(ierr);
+  ierr = MatDestroy(&Atrans);CHKERRQ(ierr);
 
   /* create a SeqSBAIJ matrix sA (= A) */
   ierr = MatConvert(A,MATSEQSBAIJ,MAT_INITIAL_MATRIX,&sA);CHKERRQ(ierr); 
@@ -100,9 +100,9 @@ int main(int argc,char **args)
         ierr = PetscPrintf(PETSC_COMM_SELF,"Error:MatMult - Norm1=%16.14e Norm2=%16.14e\n",s1norm,s2norm);CHKERRQ(ierr);
       }
     }
-    ierr = VecDestroy(xx);CHKERRQ(ierr);
-    ierr = VecDestroy(s1);CHKERRQ(ierr);
-    ierr = VecDestroy(s2);CHKERRQ(ierr);
+    ierr = VecDestroy(&xx);CHKERRQ(ierr);
+    ierr = VecDestroy(&s1);CHKERRQ(ierr);
+    ierr = VecDestroy(&s2);CHKERRQ(ierr);
   } 
 
   /* Test MatIncreaseOverlap() */
@@ -118,8 +118,8 @@ int main(int argc,char **args)
       idx[j*bs] = bs*(int)(PetscRealPart(rval)*m);
       for (k=1; k<bs; k++) idx[j*bs+k] = idx[j*bs]+k;
     }
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,size*bs,idx,is1+i);CHKERRQ(ierr);
-    ierr = ISCreateGeneral(PETSC_COMM_SELF,size*bs,idx,is2+i);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,size*bs,idx,PETSC_COPY_VALUES,is1+i);CHKERRQ(ierr);
+    ierr = ISCreateGeneral(PETSC_COMM_SELF,size*bs,idx,PETSC_COPY_VALUES,is2+i);CHKERRQ(ierr);
   }
   /* for debugging */
   /*
@@ -140,7 +140,7 @@ int main(int argc,char **args)
     if (!flg){
       /* ISView(is1[i],PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
          ISView(is2[i],PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr); */
-      SETERRQ1(1,"i=%d, is1 != is2",i);
+      SETERRQ1(PETSC_COMM_SELF,1,"i=%d, is1 != is2",i);
     }
   }
   
@@ -164,9 +164,9 @@ int main(int argc,char **args)
         ierr = PetscPrintf(PETSC_COMM_SELF,"Error:MatMult - Norm1=%16.14e Norm2=%16.14e\n",s1norm,s2norm);CHKERRQ(ierr);
       }
     }
-    ierr = VecDestroy(xx);CHKERRQ(ierr);
-    ierr = VecDestroy(s1);CHKERRQ(ierr);
-    ierr = VecDestroy(s2);CHKERRQ(ierr);
+    ierr = VecDestroy(&xx);CHKERRQ(ierr);
+    ierr = VecDestroy(&s1);CHKERRQ(ierr);
+    ierr = VecDestroy(&s2);CHKERRQ(ierr);
   } 
 
   /* Now test MatGetSubmatrices with MAT_REUSE_MATRIX option */
@@ -190,18 +190,18 @@ int main(int argc,char **args)
         ierr = PetscPrintf(PETSC_COMM_SELF,"Error:MatMult - Norm1=%16.14e Norm2=%16.14e\n",s1norm,s2norm);CHKERRQ(ierr);
       }
     }
-    ierr = VecDestroy(xx);CHKERRQ(ierr);
-    ierr = VecDestroy(s1);CHKERRQ(ierr);
-    ierr = VecDestroy(s2);CHKERRQ(ierr);
+    ierr = VecDestroy(&xx);CHKERRQ(ierr);
+    ierr = VecDestroy(&s1);CHKERRQ(ierr);
+    ierr = VecDestroy(&s2);CHKERRQ(ierr);
   } 
     
   /* Free allocated memory */
   for (i=0; i<nd; ++i) { 
-    ierr = ISDestroy(is1[i]);CHKERRQ(ierr);
-    ierr = ISDestroy(is2[i]);CHKERRQ(ierr);
+    ierr = ISDestroy(&is1[i]);CHKERRQ(ierr);
+    ierr = ISDestroy(&is2[i]);CHKERRQ(ierr);
     
-    ierr = MatDestroy(submatA[i]);CHKERRQ(ierr);
-    ierr = MatDestroy(submatsA[i]);CHKERRQ(ierr);
+    ierr = MatDestroy(&submatA[i]);CHKERRQ(ierr);
+    ierr = MatDestroy(&submatsA[i]);CHKERRQ(ierr);
     
   }
   
@@ -214,9 +214,9 @@ int main(int argc,char **args)
   ierr = PetscFree(rows);CHKERRQ(ierr);
   ierr = PetscFree(cols);CHKERRQ(ierr);
   ierr = PetscFree(vals);CHKERRQ(ierr);
-  ierr = MatDestroy(A);CHKERRQ(ierr);
-  ierr = MatDestroy(sA);CHKERRQ(ierr);
-  ierr = PetscRandomDestroy(rand);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
+  ierr = MatDestroy(&sA);CHKERRQ(ierr);
+  ierr = PetscRandomDestroy(&rand);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }

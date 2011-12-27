@@ -12,13 +12,13 @@ PETSC_EXTERN_CXX_BEGIN
 */
 extern PetscFList PFList;
 
-/*E
+/*J
     PFType - Type of PETSc mathematical function, a string name
 
    Level: beginner
 
 .seealso: PFSetType(), PF
-E*/
+J*/
 #define PFType char*
 #define PFCONSTANT      "constant"
 #define PFMAT           "mat"
@@ -38,31 +38,31 @@ E*/
 S*/
 typedef struct _p_PF* PF;
 
-extern PetscCookie PF_COOKIE;
+extern PetscClassId PF_CLASSID;
 
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFCreate(MPI_Comm,PetscInt,PetscInt,PF*);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFSetType(PF,const PFType,void*);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFSet(PF,PetscErrorCode(*)(void*,PetscInt,PetscScalar*,PetscScalar*),PetscErrorCode(*)(void*,Vec,Vec),PetscErrorCode(*)(void*,PetscViewer),PetscErrorCode(*)(void*),void*);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFApply(PF,PetscInt,PetscScalar*,PetscScalar*);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFApplyVec(PF,Vec,Vec);
+extern PetscErrorCode  PFCreate(MPI_Comm,PetscInt,PetscInt,PF*);
+extern PetscErrorCode  PFSetType(PF,const PFType,void*);
+extern PetscErrorCode  PFSet(PF,PetscErrorCode(*)(void*,PetscInt,const PetscScalar*,PetscScalar*),PetscErrorCode(*)(void*,Vec,Vec),PetscErrorCode(*)(void*,PetscViewer),PetscErrorCode(*)(void*),void*);
+extern PetscErrorCode  PFApply(PF,PetscInt,const PetscScalar*,PetscScalar*);
+extern PetscErrorCode  PFApplyVec(PF,Vec,Vec);
 
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFRegisterDestroy(void);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFRegisterAll(const char[]);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFInitializePackage(const char[]);
-extern PetscTruth PFRegisterAllCalled;
+extern PetscErrorCode  PFRegisterDestroy(void);
+extern PetscErrorCode  PFRegisterAll(const char[]);
+extern PetscErrorCode  PFInitializePackage(const char[]);
+extern PetscBool  PFRegisterAllCalled;
 
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFRegister(const char[],const char[],const char[],PetscErrorCode (*)(PF,void*));
+extern PetscErrorCode  PFRegister(const char[],const char[],const char[],PetscErrorCode (*)(PF,void*));
 #if defined(PETSC_USE_DYNAMIC_LIBRARIES)
 #define PFRegisterDynamic(a,b,c,d) PFRegister(a,b,c,0)
 #else
 #define PFRegisterDynamic(a,b,c,d) PFRegister(a,b,c,d)
 #endif
 
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFDestroy(PF);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFSetFromOptions(PF);
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFGetType(PF,const PFType*);
+extern PetscErrorCode  PFDestroy(PF*);
+extern PetscErrorCode  PFSetFromOptions(PF);
+extern PetscErrorCode  PFGetType(PF,const PFType*);
 
-EXTERN PetscErrorCode PETSCVEC_DLLEXPORT PFView(PF,PetscViewer);
+extern PetscErrorCode  PFView(PF,PetscViewer);
 
 #define PFSetOptionsPrefix(a,s) PetscObjectSetOptionsPrefix((PetscObject)(a),s)
 

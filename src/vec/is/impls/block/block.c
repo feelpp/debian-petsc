@@ -1,16 +1,15 @@
-#define PETSCVEC_DLL
+
 /*
      Provides the functions for index sets (IS) defined by a list of integers.
    These are for blocks of data, each block is indicated with a single integer.
 */
-#include "private/isimpl.h"               /*I  "petscis.h"     I*/
-#include "petscvec.h"
+#include <private/isimpl.h>               /*I  "petscis.h"     I*/
+#include <petscvec.h>
 
 typedef struct {
   PetscInt        N,n;            /* number of blocks */
-  PetscTruth      sorted;       /* are the blocks sorted? */
+  PetscBool       sorted;       /* are the blocks sorted? */
   PetscInt        *idx;
-  PetscInt        bs;           /* blocksize */
 } IS_Block;
 
 #undef __FUNCT__  
@@ -22,7 +21,12 @@ PetscErrorCode ISDestroy_Block(IS is)
 
   PetscFunctionBegin;
   ierr = PetscFree(is_block->idx);CHKERRQ(ierr);
-  ierr = PetscFree(is_block);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockSetIndices_C","",0);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockGetIndices_C","",0);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockRestoreIndices_C","",0);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockGetSize_C","",0);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockGetLocalSize_C","",0);CHKERRQ(ierr);
+  ierr = PetscFree(is->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -32,19 +36,19 @@ PetscErrorCode ISGetIndices_Block(IS in,const PetscInt *idx[])
 {
   IS_Block       *sub = (IS_Block*)in->data;
   PetscErrorCode ierr;
-  PetscInt       i,j,k,bs = sub->bs,n = sub->n,*ii,*jj;
+  PetscInt       i,j,k,bs = in->bs,n = sub->n,*ii,*jj;
 
   PetscFunctionBegin;
-  if (sub->bs == 1) {
-    *idx = sub->idx; 
+  if (bs == 1) {
+    *idx = sub->idx;
   } else {
-    ierr = PetscMalloc(sub->bs*sub->n*sizeof(PetscInt),&jj);CHKERRQ(ierr);
+    ierr = PetscMalloc(bs*n*sizeof(PetscInt),&jj);CHKERRQ(ierr);
     *idx = jj;
     k    = 0;
     ii   = sub->idx;
     for (i=0; i<n; i++) {
       for (j=0; j<bs; j++) {
-        jj[k++] = ii[i] + j;
+        jj[k++] = bs*ii[i] + j;
       }
     }
   }
@@ -59,12 +63,10 @@ PetscErrorCode ISRestoreIndices_Block(IS in,const PetscInt *idx[])
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (sub->bs != 1) {
+  if (in->bs != 1) {
     ierr = PetscFree(*(void**)idx);CHKERRQ(ierr);
   } else {
-    if (*idx !=  sub->idx) {
-      SETERRQ(PETSC_ERR_ARG_WRONG,"Must restore with value from ISGetIndices()");
-    }
+    if (*idx !=  sub->idx) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Must restore with value from ISGetIndices()");
   }
   PetscFunctionReturn(0);
 }
@@ -76,7 +78,7 @@ PetscErrorCode ISGetSize_Block(IS is,PetscInt *size)
   IS_Block *sub = (IS_Block *)is->data;
 
   PetscFunctionBegin;
-  *size = sub->bs*sub->N; 
+  *size = is->bs*sub->N;
   PetscFunctionReturn(0);
 }
 
@@ -87,7 +89,7 @@ PetscErrorCode ISGetLocalSize_Block(IS is,PetscInt *size)
   IS_Block *sub = (IS_Block *)is->data;
 
   PetscFunctionBegin;
-  *size = sub->bs*sub->n; 
+  *size = is->bs*sub->n;
   PetscFunctionReturn(0);
 }
 
@@ -107,11 +109,10 @@ PetscErrorCode ISInvertPermutation_Block(IS is,PetscInt nlocal,IS *isout)
     for (i=0; i<n; i++) {
       ii[idx[i]] = i;
     }
-    ierr = ISCreateBlock(PETSC_COMM_SELF,sub->bs,n,ii,isout);CHKERRQ(ierr);
+    ierr = ISCreateBlock(PETSC_COMM_SELF,is->bs,n,ii,PETSC_OWN_POINTER,isout);CHKERRQ(ierr);
     ierr = ISSetPermutation(*isout);CHKERRQ(ierr);
-    ierr = PetscFree(ii);CHKERRQ(ierr);
   } else {
-    SETERRQ(PETSC_ERR_SUP,"No inversion written yet for block IS");
+    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"No inversion written yet for block IS");
   }
   PetscFunctionReturn(0);
 }
@@ -123,24 +124,24 @@ PetscErrorCode ISView_Block(IS is, PetscViewer viewer)
   IS_Block       *sub = (IS_Block *)is->data;
   PetscErrorCode ierr;
   PetscInt       i,n = sub->n,*idx = sub->idx;
-  PetscTruth     iascii;
+  PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSC_VIEWER_ASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) { 
+    ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_TRUE);CHKERRQ(ierr);      
     if (is->isperm) {
       ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Block Index set is permutation\n");CHKERRQ(ierr);
     }
-    ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Block size %D\n",sub->bs);CHKERRQ(ierr);
+    ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Block size %D\n",is->bs);CHKERRQ(ierr);
     ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Number of block indices in set %D\n",n);CHKERRQ(ierr);
     ierr = PetscViewerASCIISynchronizedPrintf(viewer,"The first indices of each block are\n");CHKERRQ(ierr);
     for (i=0; i<n; i++) {
       ierr = PetscViewerASCIISynchronizedPrintf(viewer,"Block %D Index %D\n",i,idx[i]);CHKERRQ(ierr);
     }
     ierr = PetscViewerFlush(viewer);CHKERRQ(ierr);
-  } else {
-    SETERRQ1(PETSC_ERR_SUP,"Viewer type %s not supported for this object",((PetscObject)viewer)->type_name);
-  }
+    ierr = PetscViewerASCIISynchronizedAllow(viewer,PETSC_FALSE);CHKERRQ(ierr);      
+  } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported for this object",((PetscObject)viewer)->type_name);
   PetscFunctionReturn(0);
 }
 
@@ -160,7 +161,7 @@ PetscErrorCode ISSort_Block(IS is)
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISSorted_Block" 
-PetscErrorCode ISSorted_Block(IS is,PetscTruth *flg)
+PetscErrorCode ISSorted_Block(IS is,PetscBool  *flg)
 {
   IS_Block *sub = (IS_Block *)is->data;
 
@@ -177,16 +178,16 @@ PetscErrorCode ISDuplicate_Block(IS is,IS *newIS)
   IS_Block       *sub = (IS_Block *)is->data;
 
   PetscFunctionBegin;
-  ierr = ISCreateBlock(((PetscObject)is)->comm,sub->bs,sub->n,sub->idx,newIS);CHKERRQ(ierr);
+  ierr = ISCreateBlock(((PetscObject)is)->comm,is->bs,sub->n,sub->idx,PETSC_COPY_VALUES,newIS);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISIdentity_Block" 
-PetscErrorCode ISIdentity_Block(IS is,PetscTruth *ident)
+PetscErrorCode ISIdentity_Block(IS is,PetscBool  *ident)
 {
   IS_Block *is_block = (IS_Block*)is->data;
-  PetscInt i,n = is_block->n,*idx = is_block->idx,bs = is_block->bs;
+  PetscInt i,n = is_block->n,*idx = is_block->idx,bs = is->bs;
 
   PetscFunctionBegin;
   is->isidentity = PETSC_TRUE;
@@ -209,11 +210,35 @@ static PetscErrorCode ISCopy_Block(IS is,IS isy)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (is_block->n != isy_block->n || is_block->N != isy_block->N || is_block->bs != isy_block->bs) SETERRQ(PETSC_ERR_ARG_INCOMP,"Index sets incompatible");
+  if (is_block->n != isy_block->n || is_block->N != isy_block->N || is->bs != isy->bs) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_INCOMP,"Index sets incompatible");
   isy_block->sorted = is_block->sorted;
   ierr = PetscMemcpy(isy_block->idx,is_block->idx,is_block->n*sizeof(PetscInt));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
+
+#undef __FUNCT__  
+#define __FUNCT__ "ISOnComm_Block"
+static PetscErrorCode ISOnComm_Block(IS is,MPI_Comm comm,PetscCopyMode mode,IS *newis)
+{
+  PetscErrorCode ierr;
+  IS_Block       *sub = (IS_Block*)is->data;
+
+  PetscFunctionBegin;
+  if (mode == PETSC_OWN_POINTER) SETERRQ(comm,PETSC_ERR_ARG_WRONG,"Cannot use PETSC_OWN_POINTER");
+  ierr = ISCreateBlock(comm,is->bs,sub->n,sub->idx,mode,newis);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "ISSetBlockSize_Block"
+static PetscErrorCode ISSetBlockSize_Block(IS is,PetscInt bs)
+{
+
+  PetscFunctionBegin;
+  if (is->bs != bs) SETERRQ2(((PetscObject)is)->comm,PETSC_ERR_ARG_SIZ,"Cannot change block size for ISBLOCK from %D to %D",is->bs,bs);
+  PetscFunctionReturn(0);
+}
+
 
 static struct _ISOps myops = { ISGetSize_Block,
                                ISGetLocalSize_Block,
@@ -226,7 +251,93 @@ static struct _ISOps myops = { ISGetSize_Block,
                                ISDestroy_Block,
                                ISView_Block,
                                ISIdentity_Block,
-                               ISCopy_Block };
+                               ISCopy_Block,
+                               0,
+                               ISOnComm_Block,
+                               ISSetBlockSize_Block
+};
+
+#undef __FUNCT__  
+#define __FUNCT__ "ISBlockSetIndices" 
+/*@
+   ISBlockSetIndices - The indices are relative to entries, not blocks. 
+
+   Collective on IS
+
+   Input Parameters:
++  is - the index set
+.  bs - number of elements in each block, one for each block and count of block not indices
+.   n - the length of the index set (the number of blocks)
+.  idx - the list of integers, these are by block, not by location
++  mode - see PetscCopyMode, only PETSC_COPY_VALUES and PETSC_OWN_POINTER are supported
+
+
+   Notes:
+   When the communicator is not MPI_COMM_SELF, the operations on the 
+   index sets, IS, are NOT conceptually the same as MPI_Group operations. 
+   The index sets are then distributed sets of indices and thus certain operations
+   on them are collective. 
+
+   Example:
+   If you wish to index the values {0,1,4,5}, then use
+   a block size of 2 and idx of {0,2}.
+
+   Level: beginner
+
+  Concepts: IS^block
+  Concepts: index sets^block
+  Concepts: block^index set
+
+.seealso: ISCreateStride(), ISCreateGeneral(), ISAllGather()
+@*/
+PetscErrorCode  ISBlockSetIndices(IS is,PetscInt bs,PetscInt n,const PetscInt idx[],PetscCopyMode mode)
+{
+  PetscErrorCode ierr;
+  PetscFunctionBegin;
+  ierr = PetscUseMethod(is,"ISBlockSetIndices_C",(IS,PetscInt,PetscInt,const PetscInt[],PetscCopyMode),(is,bs,n,idx,mode));CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "ISBlockSetIndices_Block" 
+PetscErrorCode  ISBlockSetIndices_Block(IS is,PetscInt bs,PetscInt n,const PetscInt idx[],PetscCopyMode mode)
+{
+  PetscErrorCode ierr;
+  PetscInt       i,min,max;
+  IS_Block       *sub = (IS_Block*)is->data;
+  PetscBool      sorted = PETSC_TRUE;
+
+  PetscFunctionBegin;
+  ierr = PetscFree(sub->idx);CHKERRQ(ierr);
+  sub->n = n;
+  ierr = MPI_Allreduce(&n,&sub->N,1,MPIU_INT,MPI_SUM,((PetscObject)is)->comm);CHKERRQ(ierr);
+  for (i=1; i<n; i++) {
+    if (idx[i] < idx[i-1]) {sorted = PETSC_FALSE; break;}
+  }
+  if (n) {min = max = idx[0];} else {min = max = 0;}
+  for (i=1; i<n; i++) {
+    if (idx[i] < min) min = idx[i];
+    if (idx[i] > max) max = idx[i];
+  }
+  if (mode == PETSC_COPY_VALUES) {
+    ierr = PetscMalloc(n*sizeof(PetscInt),&sub->idx);CHKERRQ(ierr);
+    ierr = PetscLogObjectMemory(is,n*sizeof(PetscInt));CHKERRQ(ierr);
+    ierr = PetscMemcpy(sub->idx,idx,n*sizeof(PetscInt));CHKERRQ(ierr);
+  } else if (mode == PETSC_OWN_POINTER) {
+    sub->idx = (PetscInt*) idx;
+  } else SETERRQ(((PetscObject)is)->comm,PETSC_ERR_SUP,"Only supports PETSC_COPY_VALUES and PETSC_OWN_POINTER");
+  sub->sorted = sorted;
+  is->bs      = bs;
+  is->min     = bs*min;
+  is->max     = bs*max+bs-1;
+  is->data    = (void*)sub;
+  ierr = PetscMemcpy(is->ops,&myops,sizeof(myops));CHKERRQ(ierr);
+  is->isperm  = PETSC_FALSE;
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END
+
 #undef __FUNCT__  
 #define __FUNCT__ "ISCreateBlock" 
 /*@
@@ -236,10 +347,11 @@ static struct _ISOps myops = { ISGetSize_Block,
    Collective on MPI_Comm
 
    Input Parameters:
-+  n - the length of the index set (the number of blocks)
++  comm - the MPI communicator
 .  bs - number of elements in each block
-.  idx - the list of integers
--  comm - the MPI communicator
+.  n - the length of the index set (the number of blocks)
+.  idx - the list of integers, one for each block and count of block not indices
+-  mode - see PetscCopyMode, only PETSC_COPY_VALUES and PETSC_OWN_POINTER are supported in this routine
 
    Output Parameter:
 .  is - the new index set
@@ -251,8 +363,8 @@ static struct _ISOps myops = { ISGetSize_Block,
    on them are collective. 
 
    Example:
-   If you wish to index the values {0,1,4,5}, then use
-   a block size of 2 and idx of {0,4}.
+   If you wish to index the values {0,1,6,7}, then use
+   a block size of 2 and idx of {0,3}.
 
    Level: beginner
 
@@ -262,48 +374,43 @@ static struct _ISOps myops = { ISGetSize_Block,
 
 .seealso: ISCreateStride(), ISCreateGeneral(), ISAllGather()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISCreateBlock(MPI_Comm comm,PetscInt bs,PetscInt n,const PetscInt idx[],IS *is)
+PetscErrorCode  ISCreateBlock(MPI_Comm comm,PetscInt bs,PetscInt n,const PetscInt idx[],PetscCopyMode mode,IS *is)
 {
   PetscErrorCode ierr;
-  PetscInt       i,min,max;
-  IS             Nindex;
-  IS_Block       *sub;
-  PetscTruth     sorted = PETSC_TRUE;
 
   PetscFunctionBegin;
   PetscValidPointer(is,5);
-  if (n < 0) SETERRQ(PETSC_ERR_ARG_OUTOFRANGE,"length < 0");
+  if (n < 0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"length < 0");
   if (n) {PetscValidIntPointer(idx,4);}
-  *is = PETSC_NULL;
-#ifndef PETSC_USE_DYNAMIC_LIBRARIES
-  ierr = ISInitializePackage(PETSC_NULL);CHKERRQ(ierr);
-#endif
 
-  ierr = PetscHeaderCreate(Nindex,_p_IS,struct _ISOps,IS_COOKIE,IS_BLOCK,"IS",comm,ISDestroy,ISView);CHKERRQ(ierr);
-  ierr = PetscNewLog(Nindex,IS_Block,&sub);CHKERRQ(ierr);
-  ierr = PetscMalloc(n*sizeof(PetscInt),&sub->idx);CHKERRQ(ierr);
-  ierr = PetscLogObjectMemory(Nindex,n*sizeof(PetscInt));CHKERRQ(ierr);
-  sub->n = n;
-  ierr = MPI_Allreduce(&n,&sub->N,1,MPIU_INT,MPI_SUM,comm);CHKERRQ(ierr);
-  for (i=1; i<n; i++) {
-    if (idx[i] < idx[i-1]) {sorted = PETSC_FALSE; break;}
-  }
-  if (n) {min = max = idx[0];} else {min = max = 0;}
-  for (i=1; i<n; i++) {
-    if (idx[i] < min) min = idx[i];
-    if (idx[i] > max) max = idx[i];
-  }
-  ierr = PetscMemcpy(sub->idx,idx,n*sizeof(PetscInt));CHKERRQ(ierr);
-  sub->sorted     = sorted;
-  sub->bs         = bs;
-  Nindex->min     = min;
-  Nindex->max     = max;
-  Nindex->data    = (void*)sub;
-  ierr = PetscMemcpy(Nindex->ops,&myops,sizeof(myops));CHKERRQ(ierr);
-  Nindex->isperm  = PETSC_FALSE;
-  *is = Nindex; PetscFunctionReturn(0);
+  ierr = ISCreate(comm,is);CHKERRQ(ierr);
+  ierr = ISSetType(*is,ISBLOCK);CHKERRQ(ierr);
+  ierr = ISBlockSetIndices(*is,bs,n,idx,mode);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
 }
 
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "ISBlockGetIndices_Block" 
+PetscErrorCode  ISBlockGetIndices_Block(IS is,const PetscInt *idx[])
+{
+  IS_Block       *sub = (IS_Block*)is->data;
+
+  PetscFunctionBegin;
+  *idx = sub->idx; 
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "ISBlockRestoreIndices_Block" 
+PetscErrorCode  ISBlockRestoreIndices_Block(IS is,const PetscInt *idx[])
+{
+  PetscFunctionBegin;
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISBlockGetIndices" 
@@ -316,7 +423,7 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISCreateBlock(MPI_Comm comm,PetscInt bs,PetscI
 .  is - the index set
 
    Output Parameter:
-.  idx - the integer indices
+.  idx - the integer indices, one for each block and count of block not indices
 
    Level: intermediate
 
@@ -326,17 +433,11 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISCreateBlock(MPI_Comm comm,PetscInt bs,PetscI
 
 .seealso: ISGetIndices(), ISBlockRestoreIndices()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISBlockGetIndices(IS in,const PetscInt *idx[])
+PetscErrorCode  ISBlockGetIndices(IS is,const PetscInt *idx[])
 {
-  IS_Block *sub;
-
+  PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(in,IS_COOKIE,1);
-  PetscValidPointer(idx,2);
-  if (((PetscObject)in)->type != IS_BLOCK) SETERRQ(PETSC_ERR_ARG_WRONG,"Not a block index set");
-
-  sub = (IS_Block*)in->data;
-  *idx = sub->idx; 
+  ierr = PetscUseMethod(is,"ISBlockGetIndices_C",(IS,const PetscInt*[]),(is,idx));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -361,76 +462,11 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISBlockGetIndices(IS in,const PetscInt *idx[])
 
 .seealso: ISRestoreIndices(), ISBlockGetIndices()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISBlockRestoreIndices(IS is,const PetscInt *idx[])
+PetscErrorCode  ISBlockRestoreIndices(IS is,const PetscInt *idx[])
 {
+  PetscErrorCode ierr;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is,IS_COOKIE,1);
-  PetscValidPointer(idx,2);
-  if (((PetscObject)is)->type != IS_BLOCK) SETERRQ(PETSC_ERR_ARG_WRONG,"Not a block index set");
-  PetscFunctionReturn(0);
-}
-
-#undef __FUNCT__  
-#define __FUNCT__ "ISBlockGetBlockSize" 
-/*@
-   ISBlockGetBlockSize - Returns the number of elements in a block.
-
-   Not Collective
-
-   Input Parameter:
-.  is - the index set
-
-   Output Parameter:
-.  size - the number of elements in a block
-
-   Level: intermediate
-
-   Concepts: IS^block size
-   Concepts: index sets^block size
-
-.seealso: ISBlockGetSize(), ISGetSize(), ISBlock(), ISCreateBlock()
-@*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISBlockGetBlockSize(IS is,PetscInt *size)
-{
-  IS_Block *sub;
-
-  PetscFunctionBegin;
-  PetscValidHeaderSpecific(is,IS_COOKIE,1);
-  PetscValidIntPointer(size,2);
-  if (((PetscObject)is)->type != IS_BLOCK) SETERRQ(PETSC_ERR_ARG_WRONG,"Not a block index set");
-
-  sub = (IS_Block *)is->data;
-  *size = sub->bs; 
-  PetscFunctionReturn(0);
-}
-
-#undef __FUNCT__  
-#define __FUNCT__ "ISBlock" 
-/*@
-   ISBlock - Checks whether an index set is blocked.
-
-   Not Collective
-
-   Input Parameter:
-.  is - the index set
-
-   Output Parameter:
-.  flag - PETSC_TRUE if a block index set, else PETSC_FALSE
-
-   Level: intermediate
-
-   Concepts: IS^block
-   Concepts: index sets^block
-
-.seealso: ISBlockGetSize(), ISGetSize(), ISBlockGetBlockSize(), ISCreateBlock()
-@*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISBlock(IS is,PetscTruth *flag)
-{
-  PetscFunctionBegin;
-  PetscValidHeaderSpecific(is,IS_COOKIE,1);
-  PetscValidIntPointer(flag,2);
-  if (((PetscObject)is)->type != IS_BLOCK) *flag = PETSC_FALSE;
-  else                          *flag = PETSC_TRUE;
+  ierr = PetscUseMethod(is,"ISBlockRestoreIndices_C",(IS,const PetscInt*[]),(is,idx));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -452,21 +488,28 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISBlock(IS is,PetscTruth *flag)
    Concepts: IS^block sizes
    Concepts: index sets^block sizes
 
-.seealso: ISBlockGetBlockSize(), ISBlockGetSize(), ISGetSize(), ISBlock(), ISCreateBlock()
+.seealso: ISGetBlockSize(), ISBlockGetSize(), ISGetSize(), ISCreateBlock()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISBlockGetLocalSize(IS is,PetscInt *size)
+PetscErrorCode  ISBlockGetLocalSize(IS is,PetscInt *size)
 {
-  IS_Block *sub;
+  PetscErrorCode ierr;
+  PetscFunctionBegin;
+  ierr = PetscUseMethod(is,"ISBlockGetLocalSize_C",(IS,PetscInt*),(is,size));CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "ISBlockGetLocalSize_Block" 
+PetscErrorCode  ISBlockGetLocalSize_Block(IS is,PetscInt *size)
+{
+  IS_Block *sub = (IS_Block *)is->data;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is,IS_COOKIE,1);
-  PetscValidIntPointer(size,2);
-  if (((PetscObject)is)->type != IS_BLOCK) SETERRQ(PETSC_ERR_ARG_WRONG,"Not a block index set");
-
-  sub = (IS_Block *)is->data;
   *size = sub->n; 
   PetscFunctionReturn(0);
 }
+EXTERN_C_END
 
 #undef __FUNCT__  
 #define __FUNCT__ "ISBlockGetSize" 
@@ -486,18 +529,66 @@ PetscErrorCode PETSCVEC_DLLEXPORT ISBlockGetLocalSize(IS is,PetscInt *size)
    Concepts: IS^block sizes
    Concepts: index sets^block sizes
 
-.seealso: ISBlockGetBlockSize(), ISBlockGetLocalSize(), ISGetSize(), ISBlock(), ISCreateBlock()
+.seealso: ISGetBlockSize(), ISBlockGetLocalSize(), ISGetSize(), ISCreateBlock()
 @*/
-PetscErrorCode PETSCVEC_DLLEXPORT ISBlockGetSize(IS is,PetscInt *size)
+PetscErrorCode  ISBlockGetSize(IS is,PetscInt *size)
 {
-  IS_Block *sub;
+  PetscErrorCode ierr;
+  PetscFunctionBegin;
+  ierr = PetscUseMethod(is,"ISBlockGetSize_C",(IS,PetscInt*),(is,size));CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "ISBlockGetSize_Block" 
+PetscErrorCode  ISBlockGetSize_Block(IS is,PetscInt *size)
+{
+  IS_Block *sub = (IS_Block *)is->data;
 
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(is,IS_COOKIE,1);
-  PetscValidIntPointer(size,2);
-  if (((PetscObject)is)->type != IS_BLOCK) SETERRQ(PETSC_ERR_ARG_WRONG,"Not a block index set");
-
-  sub = (IS_Block *)is->data;
   *size = sub->N;
   PetscFunctionReturn(0);
 }
+EXTERN_C_END
+
+#undef __FUNCT__  
+#define __FUNCT__ "ISToGeneral_Block" 
+PetscErrorCode  ISToGeneral_Block(IS inis)
+{
+  PetscErrorCode ierr;
+  const PetscInt *idx;
+  PetscInt       n;
+
+  PetscFunctionBegin;
+  ierr = ISGetLocalSize(inis,&n);CHKERRQ(ierr);
+  ierr = ISGetIndices(inis,&idx);CHKERRQ(ierr);
+  ierr = ISSetType(inis,ISGENERAL);CHKERRQ(ierr);
+  ierr = ISGeneralSetIndices(inis,n,idx,PETSC_OWN_POINTER);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "ISCreate_Block" 
+PetscErrorCode  ISCreate_Block(IS is)
+{
+  PetscErrorCode ierr;
+  IS_Block       *sub;
+
+  PetscFunctionBegin;
+  ierr = PetscNewLog(is,IS_Block,&sub);CHKERRQ(ierr);
+  is->data = sub;
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockSetIndices_C","ISBlockSetIndices_Block",
+					   ISBlockSetIndices_Block);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockGetIndices_C","ISBlockGetIndices_Block",
+					   ISBlockGetIndices_Block);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockRestoreIndices_C","ISBlockRestoreIndices_Block",
+					   ISBlockRestoreIndices_Block);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockGetSize_C","ISBlockGetSize_Block",
+					   ISBlockGetSize_Block);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)is,"ISBlockGetLocalSize_C","ISBlockGetLocalSize_Block",
+					   ISBlockGetLocalSize_Block);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END

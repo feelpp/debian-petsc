@@ -7,6 +7,13 @@
 <BODY BGCOLOR="FFFFFF">
 <A NAME="PetscLogEventEnd"><H1>PetscLogEventEnd</H1></A>
 Log the end of a user event. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+PetscErrorCode PetscLogEventEnd(int e,PetscObject o1,PetscObject o2,PetscObject o3,
+PetscObject o4)
+</PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>e </B></TD><TD>- integer associated with the event obtained with <A HREF="../Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>()
@@ -14,17 +21,13 @@ Log the end of a user event.
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>o1,o2,o3,o4 </B></TD><TD>- objects associated with the event, or 0
 </TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
-<PRE>
-void PetscLogEventEnd(int e,PetscObject o1,PetscObject o2,PetscObject o3,
-PetscObject o4)
-</PRE>
+<P>
 <H3><FONT COLOR="#CC3333">Fortran Synopsis</FONT></H3>
 void <A HREF="../Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(int e,<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr)
 <P>
 <H3><FONT COLOR="#CC3333">Usage</FONT></H3>
 <PRE>
-     int USER_EVENT;
+     <A HREF="../Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> USER_EVENT;
      PetscLogDouble user_event_flops;
      <A HREF="../Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>("User event",0,&amp;USER_EVENT,);
      <A HREF="../Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(USER_EVENT,0,0,0,0);
@@ -58,9 +61,14 @@ to supplement this PETSc information.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/sys/random/examples/tutorials/ex1.c.html">src/sys/random/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex3.c.html">src/sys/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex3f.F.html">src/sys/examples/tutorials/ex3f.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex5.c.html">src/vec/vec/examples/tutorials/ex5.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
+<A HREF="../../../src/vec/vec/examples/tutorials/ex10.c.html">src/vec/vec/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/vec/vec/examples/tutorials/ex15.c.html">src/vec/vec/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex54.c.html">src/snes/examples/tutorials/ex54.c.html</A><BR>
 </BODY></HTML>

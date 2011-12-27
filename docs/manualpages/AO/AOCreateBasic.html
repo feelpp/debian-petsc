@@ -10,7 +10,7 @@ Creates a basic application ordering using two integer arrays.
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscao.h"   
-PetscErrorCode PETSCDM_DLLEXPORT AOCreateBasic(MPI_Comm comm,PetscInt napp,const PetscInt myapp[],const PetscInt mypetsc[],AO *aoout)
+PetscErrorCode  AOCreateBasic(MPI_Comm comm,PetscInt napp,const PetscInt myapp[],const PetscInt mypetsc[],AO *aoout)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -28,10 +28,6 @@ indicate the natural ordering, that is 0,1,2,3,...)
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>aoout </B> -the new application ordering
-<br>
-<P>
-<H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-<DT><B>-ao_view </B> -call <A HREF="../AO/AOView.html#AOView">AOView</A>() at the conclusion of <A HREF="../AO/AOCreateBasic.html#AOCreateBasic">AOCreateBasic</A>()
 <br>
 <P>
 
@@ -52,6 +48,6 @@ in the indices. Use <A HREF="../AO/AOCreateMapping.html#AOCreateMapping">AOCreat
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/dm/da/examples/tutorials/ex6.c.html">src/dm/da/examples/tutorials/ex6.c.html</A><BR>
-<A HREF="../../../src/dm/da/examples/tutorials/ex6f90.F.html">src/dm/da/examples/tutorials/ex6f90.F.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
 </BODY></HTML>

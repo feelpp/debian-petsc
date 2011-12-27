@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* dellipse.c */
 /* Fortran interface file */
 
@@ -38,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscdrawellipse_(PetscDraw draw,PetscReal *x,PetscReal *y,PetscReal *a,PetscReal *b,int *c, int *__ierr ){
+void PETSC_STDCALL  petscdrawellipse_(PetscDraw draw,PetscReal *x,PetscReal *y,PetscReal *a,PetscReal *b,int *c, int *__ierr ){
 *__ierr = PetscDrawEllipse(
 	(PetscDraw)PetscToPointer((draw) ),*x,*y,*a,*b,*c);
 }

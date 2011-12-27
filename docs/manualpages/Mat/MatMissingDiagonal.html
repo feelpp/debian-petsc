@@ -10,7 +10,7 @@ Determine if sparse matrix is missing a diagonal entry (or block entry for BAIJ 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatMissingDiagonal(Mat mat,PetscTruth *missing,PetscInt *dd)
+PetscErrorCode  MatMissingDiagonal(Mat mat,PetscBool  *missing,PetscInt *dd)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>

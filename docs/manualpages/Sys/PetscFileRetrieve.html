@@ -9,7 +9,7 @@
 Obtains a library from a URL or compressed  and copies into local disk space as uncompressed. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PETSC_DLLEXPORT PetscFileRetrieve(MPI_Comm comm,const char libname[],char llibname[],size_t llen,PetscTruth *found)
+PetscErrorCode  PetscFileRetrieve(MPI_Comm comm,const char libname[],char llibname[],size_t llen,PetscBool  *found)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>

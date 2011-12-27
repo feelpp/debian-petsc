@@ -1,6 +1,5 @@
-#define PETSCMAT_DLL
 
-#include "private/matimpl.h"          /*I "petscmat.h" I*/
+#include <private/matimpl.h>          /*I "petscmat.h" I*/
 
 typedef struct {
   Mat A;
@@ -54,7 +53,7 @@ PetscErrorCode MatMultTransposeAdd_Transpose(Mat N,Vec v1,Vec v2,Vec v3)
   PetscFunctionReturn(0); 
 } 
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "MatDestroy_Transpose"
 PetscErrorCode MatDestroy_Transpose(Mat N)
 {
@@ -62,11 +61,11 @@ PetscErrorCode MatDestroy_Transpose(Mat N)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (Na->A) { ierr = MatDestroy(Na->A);CHKERRQ(ierr); }
-  ierr = PetscFree(Na);CHKERRQ(ierr);
+  ierr = MatDestroy(&Na->A);CHKERRQ(ierr);
+  ierr = PetscFree(N->data);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
-  
+
 #undef __FUNCT__  
 #define __FUNCT__ "MatCreateTranspose"
 /*@
@@ -89,7 +88,7 @@ PetscErrorCode MatDestroy_Transpose(Mat N)
 .seealso: MatCreateNormal(), MatMult(), MatMultTranspose(), MatCreate()
 
 @*/
-PetscErrorCode PETSCMAT_DLLEXPORT MatCreateTranspose(Mat A,Mat *N)
+PetscErrorCode  MatCreateTranspose(Mat A,Mat *N)
 {
   PetscErrorCode ierr;
   PetscInt       m,n;

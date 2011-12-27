@@ -1,12 +1,12 @@
 
 #include <stdio.h>
-#include "petscsys.h"
-#include "../src/sys/viewer/impls/socket/socket.h"
+#include <petscsys.h>
+#include <../src/sys/viewer/impls/socket/socket.h>
 
 
 /*
    TAKEN from src/sys/fileio/sysio.c The swap byte routines are 
-  included here because the Matlab programs that use this do NOT
+  included here because the MATLAB programs that use this do NOT
   link to the PETSc libraries.
 */
 #include <errno.h>
@@ -26,7 +26,7 @@ void SYByteSwapInt(int *buff,int n)
   char *ptr1,*ptr2 = (char*)&tmp;
   for (j=0; j<n; j++) {
     ptr1 = (char*)(buff + j);
-    for (i=0; i<sizeof(int); i++) {
+    for (i=0; i<(int)sizeof(int); i++) {
       ptr2[i] = ptr1[sizeof(int)-1-i];
     }
     buff[j] = tmp;
@@ -44,7 +44,7 @@ void SYByteSwapShort(short *buff,int n)
   char  *ptr1,*ptr2 = (char*)&tmp;
   for (j=0; j<n; j++) {
     ptr1 = (char*)(buff + j);
-    for (i=0; i<sizeof(short); i++) {
+    for (i=0; i<(int)sizeof(short); i++) {
       ptr2[i] = ptr1[sizeof(int)-1-i];
     }
     buff[j] = tmp;
@@ -66,7 +66,7 @@ void SYByteSwapScalar(PetscScalar *buff,int n)
 #endif
   for (j=0; j<n; j++) {
     ptr1 = (char*)(buff1 + j);
-    for (i=0; i<sizeof(double); i++) {
+    for (i=0; i<(int)sizeof(double); i++) {
       ptr2[i] = ptr1[sizeof(double)-1-i];
     }
     buff1[j] = tmp;
@@ -79,7 +79,7 @@ void SYByteSwapScalar(PetscScalar *buff,int n)
 #undef __FUNCT__  
 #define __FUNCT__ "PetscBinaryRead"
 /*
-    PetscBinaryRead - Reads from a socket, called from Matlab
+    PetscBinaryRead - Reads from a socket, called from MATLAB
 
   Input Parameters:
 .   fd - the file
@@ -133,7 +133,7 @@ PetscErrorCode PetscBinaryRead(int fd,void *p,int n,PetscDataType type)
 #undef __FUNCT__  
 #define __FUNCT__ "PetscBinaryWrite"
 /*
-    PetscBinaryWrite - Writes to a socket, called from Matlab
+    PetscBinaryWrite - Writes to a socket, called from MATLAB
 
   Input Parameters:
 .   fd - the file
@@ -144,7 +144,7 @@ PetscErrorCode PetscBinaryRead(int fd,void *p,int n,PetscDataType type)
 
   Notes: does byte swapping to work on all machines.
 */
-PetscErrorCode PetscBinaryWrite(int fd,void *p,int n,PetscDataType type,PetscTruth dummy)
+PetscErrorCode PetscBinaryWrite(int fd,void *p,int n,PetscDataType type,PetscBool  dummy)
 {
 
   int  maxblock,wsize,err;

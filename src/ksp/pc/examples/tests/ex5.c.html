@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:39:01+00:00">
+<meta name="date" content="2011-10-29T19:11:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -22,11 +22,11 @@
 <a name="line12"> 12: </a><font color="#B22222">/*</font>
 <a name="line13"> 13: </a><font color="#B22222">  This is not a good example to understand the use of multigrid with PETSc.</font>
 <a name="line14"> 14: </a><font color="#B22222">*/</font>
-<a name="line15"> 15: </a> #include <A href="../../../../../include/petscmg.h.html">petscmg.h</A>
+<a name="line15"> 15: </a><font color="#A020F0">#include &lt;petscpcmg.h&gt;</font>
 
 <a name="line17"> 17: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  residual(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
-<a name="line18"> 18: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  gauss_seidel(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A>*)</font></strong>;
-<a name="line19"> 19: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  jacobi(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A>*)</font></strong>;
+<a name="line18"> 18: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  gauss_seidel(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> ,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A>*)</font></strong>;
+<a name="line19"> 19: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  jacobi(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> ,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A>*)</font></strong>;
 <a name="line20"> 20: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  interpolate(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
 <a name="line21"> 21: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  restrct(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
 <a name="line22"> 22: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  Create1dLaplacian(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*)</font></strong>;
@@ -47,7 +47,7 @@
 <a name="line39"> 39: </a>  char            *shellname;
 <a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>             x,solution,X[20],R[20],B[20];
 <a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>              pcmg,pc;
-<a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>      flg;
+<a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       flg;
 
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;Argc,&amp;Args,(char *)0,help);
 
@@ -66,7 +66,7 @@
 <a name="line58"> 58: </a>  N[0] = x_mesh;
 <a name="line59"> 59: </a>  <font color="#4169E1">for</font> (i=1; i&lt;levels; i++) {
 <a name="line60"> 60: </a>    N[i] = N[i-1]/2;
-<a name="line61"> 61: </a>    <font color="#4169E1">if</font> (N[i] &lt; 1) {<A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Too many levels"</font>);}
+<a name="line61"> 61: </a>    <font color="#4169E1">if</font> (N[i] &lt; 1) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"Too many levels"</font>);
 <a name="line62"> 62: </a>  }
 
 <a name="line64"> 64: </a>  Create1dLaplacian(N[levels-1],&amp;cmat);
@@ -157,21 +157,21 @@
 <a name="line149">149: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"its %D l_2 error %G max error %G resi %G\n"</font>,its,e[0],e[1],e[2]);
 
 <a name="line151">151: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(N);
-<a name="line152">152: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(solution);
+<a name="line152">152: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;solution);
 
 <a name="line154">154: </a>  <font color="#B22222">/* note we have to keep a list of all vectors allocated, this is </font>
 <a name="line155">155: </a><font color="#B22222">     not ideal, but putting it in MGDestroy is not so good either*/</font>
 <a name="line156">156: </a>  <font color="#4169E1">for</font> (i=0; i&lt;levels; i++) {
-<a name="line157">157: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(X[i]);
-<a name="line158">158: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(B[i]);
-<a name="line159">159: </a>    <font color="#4169E1">if</font>(i){<A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(R[i]);}
+<a name="line157">157: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;X[i]);
+<a name="line158">158: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;B[i]);
+<a name="line159">159: </a>    <font color="#4169E1">if</font>(i){<A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;R[i]);}
 <a name="line160">160: </a>  }
 <a name="line161">161: </a>  <font color="#4169E1">for</font> (i=0; i&lt;levels-1; i++) {
-<a name="line162">162: </a>    <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(mat[i]);
+<a name="line162">162: </a>    <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;mat[i]);
 <a name="line163">163: </a>  }
-<a name="line164">164: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(cmat);
-<a name="line165">165: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(fmat);
-<a name="line166">166: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(kspmg);
+<a name="line164">164: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;cmat);
+<a name="line165">165: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;fmat);
+<a name="line166">166: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;kspmg);
 <a name="line167">167: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line168">168: </a>  <font color="#4169E1">return</font> 0;
 <a name="line169">169: </a>}
@@ -216,7 +216,7 @@
 <a name="line216">216: </a>  <font color="#4169E1">return</font>(0);
 <a name="line217">217: </a>}
 <a name="line218">218: </a><font color="#B22222">/* --------------------------------------------------------------------- */</font>
-<a name="line221">221: </a><strong><font color="#4169E1"><a name="gauss_seidel"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> gauss_seidel(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> w,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rtol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> abstol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dtol,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> guesszero,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *its,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A> *reason)</font></strong>
+<a name="line221">221: </a><strong><font color="#4169E1"><a name="gauss_seidel"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> gauss_seidel(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> w,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rtol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> abstol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dtol,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  guesszero,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *its,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A> *reason)</font></strong>
 <a name="line222">222: </a>{
 <a name="line223">223: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n1;
 <a name="line225">225: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *x,*b;
@@ -242,7 +242,7 @@
 <a name="line246">246: </a>  <font color="#4169E1">return</font>(0);
 <a name="line247">247: </a>}
 <a name="line248">248: </a><font color="#B22222">/* --------------------------------------------------------------------- */</font>
-<a name="line251">251: </a><strong><font color="#4169E1"><a name="jacobi"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> jacobi(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> w,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rtol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> abstol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dtol,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> guesszero,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *its,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A> *reason)</font></strong>
+<a name="line251">251: </a><strong><font color="#4169E1"><a name="jacobi"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> jacobi(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> w,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rtol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> abstol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dtol,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  guesszero,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *its,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A> *reason)</font></strong>
 <a name="line252">252: </a>{
 <a name="line253">253: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n,n1;
 <a name="line255">255: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *r,*b,*x;

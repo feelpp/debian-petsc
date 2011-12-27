@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* cheby.c */
 /* Fortran interface file */
 
@@ -32,15 +33,24 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspchebychevseteigenvalues_ kspchebychevseteigenvalues
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspchebychevsetestimateeigenvalues_ KSPCHEBYCHEVSETESTIMATEEIGENVALUES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspchebychevsetestimateeigenvalues_ kspchebychevsetestimateeigenvalues
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   kspchebychevseteigenvalues_(KSP ksp,PetscReal *emax,PetscReal *emin, int *__ierr ){
+void PETSC_STDCALL  kspchebychevseteigenvalues_(KSP ksp,PetscReal *emax,PetscReal *emin, int *__ierr ){
 *__ierr = KSPChebychevSetEigenvalues(
 	(KSP)PetscToPointer((ksp) ),*emax,*emin);
+}
+void PETSC_STDCALL  kspchebychevsetestimateeigenvalues_(KSP ksp,PetscReal *a,PetscReal *b,PetscReal *c,PetscReal *d, int *__ierr ){
+*__ierr = KSPChebychevSetEstimateEigenvalues(
+	(KSP)PetscToPointer((ksp) ),*a,*b,*c,*d);
 }
 #if defined(__cplusplus)
 }

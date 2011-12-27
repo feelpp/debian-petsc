@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* pinit.c */
 /* Fortran interface file */
 
@@ -37,44 +38,17 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscfinalized_ petscfinalized
 #endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscglobalmax_ PETSCGLOBALMAX
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscglobalmax_ petscglobalmax
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscglobalmin_ PETSCGLOBALMIN
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscglobalmin_ petscglobalmin
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscglobalsum_ PETSCGLOBALSUM
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscglobalsum_ petscglobalsum
-#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscinitialized_(PetscTruth *isInitialized, int *__ierr ){
+void PETSC_STDCALL  petscinitialized_(PetscBool  *isInitialized, int *__ierr ){
 *__ierr = PetscInitialized(isInitialized);
 }
-void PETSC_STDCALL   petscfinalized_(PetscTruth *isFinalized, int *__ierr ){
+void PETSC_STDCALL  petscfinalized_(PetscBool  *isFinalized, int *__ierr ){
 *__ierr = PetscFinalized(isFinalized);
-}
-void PETSC_STDCALL   petscglobalmax_(PetscReal* local,PetscReal* result,MPI_Fint * comm, int *__ierr ){
-*__ierr = PetscGlobalMax(local,result,
-	MPI_Comm_f2c( *(comm) ));
-}
-void PETSC_STDCALL   petscglobalmin_(PetscReal* local,PetscReal* result,MPI_Fint * comm, int *__ierr ){
-*__ierr = PetscGlobalMin(local,result,
-	MPI_Comm_f2c( *(comm) ));
-}
-void PETSC_STDCALL   petscglobalsum_(PetscScalar* local,PetscScalar* result,MPI_Fint * comm, int *__ierr ){
-*__ierr = PetscGlobalSum(local,result,
-	MPI_Comm_f2c( *(comm) ));
 }
 #if defined(__cplusplus)
 }

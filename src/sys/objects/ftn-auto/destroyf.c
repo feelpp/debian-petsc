@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* destroy.c */
 /* Fortran interface file */
 
@@ -38,9 +39,8 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   petscobjectdestroy_(PetscObject obj, int *__ierr ){
-*__ierr = PetscObjectDestroy(
-	(PetscObject)PetscToPointer((obj) ));
+void PETSC_STDCALL  petscobjectdestroy_(PetscObject *obj, int *__ierr ){
+*__ierr = PetscObjectDestroy(obj);
 }
 #if defined(__cplusplus)
 }

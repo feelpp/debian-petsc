@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawSetPause" 
@@ -10,7 +10,7 @@
    PetscDrawSetPause - Sets the amount of time that program pauses after 
    a PetscDrawPause() is called. 
 
-   Collective on PetscDraw
+   Logically Collective on PetscDraw
 
    Input Parameters:
 +  draw   - the drawing object
@@ -26,10 +26,11 @@
 
 .seealso: PetscDrawGetPause(), PetscDrawPause()
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawSetPause(PetscDraw draw,PetscReal lpause)
+PetscErrorCode  PetscDrawSetPause(PetscDraw draw,PetscReal lpause)
 {
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
+  PetscValidLogicalCollectiveReal(draw,lpause,2);
   draw->pause = lpause;
   PetscFunctionReturn(0);
 }

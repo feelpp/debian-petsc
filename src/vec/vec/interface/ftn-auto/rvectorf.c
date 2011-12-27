@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* rvector.c */
 /* Fortran interface file */
 
@@ -138,6 +139,16 @@ extern void PetscRmPointer(void*);
 #define vecmaxpy_ vecmaxpy
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecgetsubvector_ VECGETSUBVECTOR
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecgetsubvector_ vecgetsubvector
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecrestoresubvector_ VECRESTORESUBVECTOR
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecrestoresubvector_ vecrestoresubvector
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecplacearray_ VECPLACEARRAY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define vecplacearray_ vecplacearray
@@ -148,105 +159,115 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   vecmaxpointwisedivide_(Vec x,Vec y,PetscReal *max, int *__ierr ){
+void PETSC_STDCALL  vecmaxpointwisedivide_(Vec x,Vec y,PetscReal *max, int *__ierr ){
 *__ierr = VecMaxPointwiseDivide(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),max);
 }
-void PETSC_STDCALL   vecdot_(Vec x,Vec y,PetscScalar *val, int *__ierr ){
+void PETSC_STDCALL  vecdot_(Vec x,Vec y,PetscScalar *val, int *__ierr ){
 *__ierr = VecDot(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),val);
 }
-void PETSC_STDCALL   vecnorm_(Vec x,NormType *type,PetscReal *val, int *__ierr ){
+void PETSC_STDCALL  vecnorm_(Vec x,NormType *type,PetscReal *val, int *__ierr ){
 *__ierr = VecNorm(
 	(Vec)PetscToPointer((x) ),*type,val);
 }
-void PETSC_STDCALL   vecnormavailable_(Vec x,NormType *type,PetscTruth *available,PetscReal *val, int *__ierr ){
+void PETSC_STDCALL  vecnormavailable_(Vec x,NormType *type,PetscBool  *available,PetscReal *val, int *__ierr ){
 *__ierr = VecNormAvailable(
 	(Vec)PetscToPointer((x) ),*type,available,val);
 }
-void PETSC_STDCALL   vecnormalize_(Vec x,PetscReal *val, int *__ierr ){
+void PETSC_STDCALL  vecnormalize_(Vec x,PetscReal *val, int *__ierr ){
 *__ierr = VecNormalize(
 	(Vec)PetscToPointer((x) ),val);
 }
-void PETSC_STDCALL   vecmin_(Vec x,PetscInt *p,PetscReal *val, int *__ierr ){
+void PETSC_STDCALL  vecmin_(Vec x,PetscInt *p,PetscReal *val, int *__ierr ){
 *__ierr = VecMin(
 	(Vec)PetscToPointer((x) ),p,val);
 }
-void PETSC_STDCALL   vectdot_(Vec x,Vec y,PetscScalar *val, int *__ierr ){
+void PETSC_STDCALL  vectdot_(Vec x,Vec y,PetscScalar *val, int *__ierr ){
 *__ierr = VecTDot(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),val);
 }
-void PETSC_STDCALL    vecscale_(Vec x,PetscScalar *alpha, int *__ierr ){
+void PETSC_STDCALL   vecscale_(Vec x,PetscScalar *alpha, int *__ierr ){
 *__ierr = VecScale(
 	(Vec)PetscToPointer((x) ),*alpha);
 }
-void PETSC_STDCALL   vecset_(Vec x,PetscScalar *alpha, int *__ierr ){
+void PETSC_STDCALL  vecset_(Vec x,PetscScalar *alpha, int *__ierr ){
 *__ierr = VecSet(
 	(Vec)PetscToPointer((x) ),*alpha);
 }
-void PETSC_STDCALL   vecaxpy_(Vec y,PetscScalar *alpha,Vec x, int *__ierr ){
+void PETSC_STDCALL  vecaxpy_(Vec y,PetscScalar *alpha,Vec x, int *__ierr ){
 *__ierr = VecAXPY(
 	(Vec)PetscToPointer((y) ),*alpha,
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   vecaxpby_(Vec y,PetscScalar *alpha,PetscScalar *beta,Vec x, int *__ierr ){
+void PETSC_STDCALL  vecaxpby_(Vec y,PetscScalar *alpha,PetscScalar *beta,Vec x, int *__ierr ){
 *__ierr = VecAXPBY(
 	(Vec)PetscToPointer((y) ),*alpha,*beta,
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   vecaxpbypcz_(Vec z,PetscScalar *alpha,PetscScalar *beta,PetscScalar *gamma,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  vecaxpbypcz_(Vec z,PetscScalar *alpha,PetscScalar *beta,PetscScalar *gamma,Vec x,Vec y, int *__ierr ){
 *__ierr = VecAXPBYPCZ(
 	(Vec)PetscToPointer((z) ),*alpha,*beta,*gamma,
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecaypx_(Vec y,PetscScalar *alpha,Vec x, int *__ierr ){
+void PETSC_STDCALL  vecaypx_(Vec y,PetscScalar *alpha,Vec x, int *__ierr ){
 *__ierr = VecAYPX(
 	(Vec)PetscToPointer((y) ),*alpha,
 	(Vec)PetscToPointer((x) ));
 }
-void PETSC_STDCALL   vecwaxpy_(Vec w,PetscScalar *alpha,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  vecwaxpy_(Vec w,PetscScalar *alpha,Vec x,Vec y, int *__ierr ){
 *__ierr = VecWAXPY(
 	(Vec)PetscToPointer((w) ),*alpha,
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   vecsetvalues_(Vec x,PetscInt *ni, PetscInt ix[], PetscScalar y[],InsertMode *iora, int *__ierr ){
+void PETSC_STDCALL  vecsetvalues_(Vec x,PetscInt *ni, PetscInt ix[], PetscScalar y[],InsertMode *iora, int *__ierr ){
 *__ierr = VecSetValues(
 	(Vec)PetscToPointer((x) ),*ni,ix,y,*iora);
 }
-void PETSC_STDCALL   vecgetvalues_(Vec x,PetscInt *ni, PetscInt ix[],PetscScalar y[], int *__ierr ){
+void PETSC_STDCALL  vecgetvalues_(Vec x,PetscInt *ni, PetscInt ix[],PetscScalar y[], int *__ierr ){
 *__ierr = VecGetValues(
 	(Vec)PetscToPointer((x) ),*ni,ix,y);
 }
-void PETSC_STDCALL   vecsetvaluesblocked_(Vec x,PetscInt *ni, PetscInt ix[], PetscScalar y[],InsertMode *iora, int *__ierr ){
+void PETSC_STDCALL  vecsetvaluesblocked_(Vec x,PetscInt *ni, PetscInt ix[], PetscScalar y[],InsertMode *iora, int *__ierr ){
 *__ierr = VecSetValuesBlocked(
 	(Vec)PetscToPointer((x) ),*ni,ix,y,*iora);
 }
-void PETSC_STDCALL   vecsetvalueslocal_(Vec x,PetscInt *ni, PetscInt ix[], PetscScalar y[],InsertMode *iora, int *__ierr ){
+void PETSC_STDCALL  vecsetvalueslocal_(Vec x,PetscInt *ni, PetscInt ix[], PetscScalar y[],InsertMode *iora, int *__ierr ){
 *__ierr = VecSetValuesLocal(
 	(Vec)PetscToPointer((x) ),*ni,ix,y,*iora);
 }
-void PETSC_STDCALL   vecsetvaluesblockedlocal_(Vec x,PetscInt *ni, PetscInt ix[], PetscScalar y[],InsertMode *iora, int *__ierr ){
+void PETSC_STDCALL  vecsetvaluesblockedlocal_(Vec x,PetscInt *ni, PetscInt ix[], PetscScalar y[],InsertMode *iora, int *__ierr ){
 *__ierr = VecSetValuesBlockedLocal(
 	(Vec)PetscToPointer((x) ),*ni,ix,y,*iora);
 }
-void PETSC_STDCALL   vecmtdot_(Vec x,PetscInt *nv, Vec y[],PetscScalar val[], int *__ierr ){
+void PETSC_STDCALL  vecmtdot_(Vec x,PetscInt *nv, Vec y[],PetscScalar val[], int *__ierr ){
 *__ierr = VecMTDot(
 	(Vec)PetscToPointer((x) ),*nv,y,val);
 }
-void PETSC_STDCALL   vecmdot_(Vec x,PetscInt *nv, Vec y[],PetscScalar val[], int *__ierr ){
+void PETSC_STDCALL  vecmdot_(Vec x,PetscInt *nv, Vec y[],PetscScalar val[], int *__ierr ){
 *__ierr = VecMDot(
 	(Vec)PetscToPointer((x) ),*nv,y,val);
 }
-void PETSC_STDCALL   vecmaxpy_(Vec y,PetscInt *nv, PetscScalar alpha[],Vec x[], int *__ierr ){
+void PETSC_STDCALL  vecmaxpy_(Vec y,PetscInt *nv, PetscScalar alpha[],Vec x[], int *__ierr ){
 *__ierr = VecMAXPY(
 	(Vec)PetscToPointer((y) ),*nv,alpha,x);
 }
-void PETSC_STDCALL   vecplacearray_(Vec vec, PetscScalar array[], int *__ierr ){
+void PETSC_STDCALL  vecgetsubvector_(Vec X,IS is,Vec *Y, int *__ierr ){
+*__ierr = VecGetSubVector(
+	(Vec)PetscToPointer((X) ),
+	(IS)PetscToPointer((is) ),Y);
+}
+void PETSC_STDCALL  vecrestoresubvector_(Vec X,IS is,Vec *Y, int *__ierr ){
+*__ierr = VecRestoreSubVector(
+	(Vec)PetscToPointer((X) ),
+	(IS)PetscToPointer((is) ),Y);
+}
+void PETSC_STDCALL  vecplacearray_(Vec vec, PetscScalar array[], int *__ierr ){
 *__ierr = VecPlaceArray(
 	(Vec)PetscToPointer((vec) ),array);
 }

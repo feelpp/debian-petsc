@@ -10,7 +10,7 @@ Get the AIJ matrix describing the blockwise action of the MAIJ matrix
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode PETSCMAT_DLLEXPORT MatMAIJGetAIJ(Mat A,Mat *B)
+PetscErrorCode  MatMAIJGetAIJ(Mat A,Mat *B)
 </PRE>
 Not Collective, but if the MAIJ matrix is parallel, the AIJ matrix is also parallel
 <P>

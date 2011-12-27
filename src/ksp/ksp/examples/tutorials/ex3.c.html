@@ -4,7 +4,7 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:14+00:00">
+<meta name="date" content="2011-10-29T19:12:51+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -29,7 +29,7 @@
 <a name="line19"> 19: </a><font color="#B22222">     petscis.h     - index sets            petscksp.h - Krylov subspace methods</font>
 <a name="line20"> 20: </a><font color="#B22222">     petscviewer.h - viewers               petscpc.h  - preconditioners</font>
 <a name="line21"> 21: </a><font color="#B22222">*/</font>
-<a name="line22"> 22: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line22"> 22: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line24"> 24: </a><font color="#B22222">/* Declare user-defined routines */</font>
 
@@ -69,149 +69,151 @@
 <a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;A);
 <a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,N,N);
 <a name="line66"> 66: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(A);
-<a name="line67"> 67: </a>  start = rank*(M/size) + ((M%size) &lt; rank ? (M%size) : rank);
-<a name="line68"> 68: </a>  end   = start + M/size + ((M%size) &gt; rank);
+<a name="line67"> 67: </a>  <A href="../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(A,9,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/Mat/MatMPIAIJSetPreallocation.html#MatMPIAIJSetPreallocation">MatMPIAIJSetPreallocation</A>(A,9,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,5,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>); <font color="#B22222">/* More than necessary */</font>
+<a name="line69"> 69: </a>  start = rank*(M/size) + ((M%size) &lt; rank ? (M%size) : rank);
+<a name="line70"> 70: </a>  end   = start + M/size + ((M%size) &gt; rank);
 
-<a name="line70"> 70: </a>  <font color="#B22222">/*</font>
-<a name="line71"> 71: </a><font color="#B22222">     Assemble matrix</font>
-<a name="line72"> 72: </a><font color="#B22222">  */</font>
-<a name="line73"> 73: </a>  FormElementStiffness(h*h,Ke);
-<a name="line74"> 74: </a>  <font color="#4169E1">for</font> (i=start; i&lt;end; i++) {
-<a name="line75"> 75: </a>     <font color="#B22222">/* location of lower left corner of element */</font>
-<a name="line76"> 76: </a>     x = h*(i % m); y = h*(i/m);
-<a name="line77"> 77: </a>     <font color="#B22222">/* node numbers for the four corners of element */</font>
-<a name="line78"> 78: </a>     idx[0] = (m+1)*(i/m) + (i % m);
-<a name="line79"> 79: </a>     idx[1] = idx[0]+1; idx[2] = idx[1] + m + 1; idx[3] = idx[2] - 1;
-<a name="line80"> 80: </a>     <A href="../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,4,idx,4,idx,Ke,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line81"> 81: </a>  }
-<a name="line82"> 82: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A,MAT_FINAL_ASSEMBLY);
-<a name="line83"> 83: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A,MAT_FINAL_ASSEMBLY);
+<a name="line72"> 72: </a>  <font color="#B22222">/*</font>
+<a name="line73"> 73: </a><font color="#B22222">     Assemble matrix</font>
+<a name="line74"> 74: </a><font color="#B22222">  */</font>
+<a name="line75"> 75: </a>  FormElementStiffness(h*h,Ke);
+<a name="line76"> 76: </a>  <font color="#4169E1">for</font> (i=start; i&lt;end; i++) {
+<a name="line77"> 77: </a>     <font color="#B22222">/* location of lower left corner of element */</font>
+<a name="line78"> 78: </a>     x = h*(i % m); y = h*(i/m);
+<a name="line79"> 79: </a>     <font color="#B22222">/* node numbers for the four corners of element */</font>
+<a name="line80"> 80: </a>     idx[0] = (m+1)*(i/m) + (i % m);
+<a name="line81"> 81: </a>     idx[1] = idx[0]+1; idx[2] = idx[1] + m + 1; idx[3] = idx[2] - 1;
+<a name="line82"> 82: </a>     <A href="../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,4,idx,4,idx,Ke,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line83"> 83: </a>  }
+<a name="line84"> 84: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A,MAT_FINAL_ASSEMBLY);
+<a name="line85"> 85: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A,MAT_FINAL_ASSEMBLY);
 
-<a name="line85"> 85: </a>  <font color="#B22222">/*</font>
-<a name="line86"> 86: </a><font color="#B22222">     Create right-hand-side and solution vectors</font>
-<a name="line87"> 87: </a><font color="#B22222">  */</font>
-<a name="line88"> 88: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;u);
-<a name="line89"> 89: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(u,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,N);
-<a name="line90"> 90: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(u);
-<a name="line91"> 91: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)u,<font color="#666666">"Approx. Solution"</font>);
-<a name="line92"> 92: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(u,&amp;b);
-<a name="line93"> 93: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)b,<font color="#666666">"Right hand side"</font>);
-<a name="line94"> 94: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(b,&amp;ustar);
-<a name="line95"> 95: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(u,0.0);
-<a name="line96"> 96: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(b,0.0);
+<a name="line87"> 87: </a>  <font color="#B22222">/*</font>
+<a name="line88"> 88: </a><font color="#B22222">     Create right-hand-side and solution vectors</font>
+<a name="line89"> 89: </a><font color="#B22222">  */</font>
+<a name="line90"> 90: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;u);
+<a name="line91"> 91: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(u,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,N);
+<a name="line92"> 92: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(u);
+<a name="line93"> 93: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)u,<font color="#666666">"Approx. Solution"</font>);
+<a name="line94"> 94: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(u,&amp;b);
+<a name="line95"> 95: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)b,<font color="#666666">"Right hand side"</font>);
+<a name="line96"> 96: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(b,&amp;ustar);
+<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(u,0.0);
+<a name="line98"> 98: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(b,0.0);
 
-<a name="line98"> 98: </a>  <font color="#B22222">/* </font>
-<a name="line99"> 99: </a><font color="#B22222">     Assemble right-hand-side vector</font>
-<a name="line100">100: </a><font color="#B22222">  */</font>
-<a name="line101">101: </a>  <font color="#4169E1">for</font> (i=start; i&lt;end; i++) {
-<a name="line102">102: </a>     <font color="#B22222">/* location of lower left corner of element */</font>
-<a name="line103">103: </a>     x = h*(i % m); y = h*(i/m);
-<a name="line104">104: </a>     <font color="#B22222">/* node numbers for the four corners of element */</font>
-<a name="line105">105: </a>     idx[0] = (m+1)*(i/m) + (i % m);
-<a name="line106">106: </a>     idx[1] = idx[0]+1; idx[2] = idx[1] + m + 1; idx[3] = idx[2] - 1;
-<a name="line107">107: </a>     FormElementRhs(x,y,h*h,r);
-<a name="line108">108: </a>     <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(b,4,idx,r,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line109">109: </a>  }
-<a name="line110">110: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(b);
-<a name="line111">111: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(b);
+<a name="line100">100: </a>  <font color="#B22222">/* </font>
+<a name="line101">101: </a><font color="#B22222">     Assemble right-hand-side vector</font>
+<a name="line102">102: </a><font color="#B22222">  */</font>
+<a name="line103">103: </a>  <font color="#4169E1">for</font> (i=start; i&lt;end; i++) {
+<a name="line104">104: </a>     <font color="#B22222">/* location of lower left corner of element */</font>
+<a name="line105">105: </a>     x = h*(i % m); y = h*(i/m);
+<a name="line106">106: </a>     <font color="#B22222">/* node numbers for the four corners of element */</font>
+<a name="line107">107: </a>     idx[0] = (m+1)*(i/m) + (i % m);
+<a name="line108">108: </a>     idx[1] = idx[0]+1; idx[2] = idx[1] + m + 1; idx[3] = idx[2] - 1;
+<a name="line109">109: </a>     FormElementRhs(x,y,h*h,r);
+<a name="line110">110: </a>     <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(b,4,idx,r,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line111">111: </a>  }
+<a name="line112">112: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(b);
+<a name="line113">113: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(b);
 
-<a name="line113">113: </a>  <font color="#B22222">/* </font>
-<a name="line114">114: </a><font color="#B22222">     Modify matrix and right-hand-side for Dirichlet boundary conditions</font>
-<a name="line115">115: </a><font color="#B22222">  */</font>
-<a name="line116">116: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(4*m*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;rows);
-<a name="line117">117: </a>  <font color="#4169E1">for</font> (i=0; i&lt;m+1; i++) {
-<a name="line118">118: </a>    rows[i] = i; <font color="#B22222">/* bottom */</font>
-<a name="line119">119: </a>    rows[3*m - 1 +i] = m*(m+1) + i; <font color="#B22222">/* top */</font>
-<a name="line120">120: </a>  }
-<a name="line121">121: </a>  count = m+1; <font color="#B22222">/* left side */</font>
-<a name="line122">122: </a>  <font color="#4169E1">for</font> (i=m+1; i&lt;m*(m+1); i+= m+1) {
-<a name="line123">123: </a>    rows[count++] = i;
-<a name="line124">124: </a>  }
-<a name="line125">125: </a>  count = 2*m; <font color="#B22222">/* left side */</font>
-<a name="line126">126: </a>  <font color="#4169E1">for</font> (i=2*m+1; i&lt;m*(m+1); i+= m+1) {
-<a name="line127">127: </a>    rows[count++] = i;
-<a name="line128">128: </a>  }
-<a name="line129">129: </a>  <font color="#4169E1">for</font> (i=0; i&lt;4*m; i++) {
-<a name="line130">130: </a>     x = h*(rows[i] % (m+1)); y = h*(rows[i]/(m+1));
-<a name="line131">131: </a>     val = y;
-<a name="line132">132: </a>     <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(u,1,&amp;rows[i],&amp;val,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line133">133: </a>     <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(b,1,&amp;rows[i],&amp;val,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line134">134: </a>  }
-<a name="line135">135: </a>  <A href="../../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>(A,4*m,rows,1.0);
-<a name="line136">136: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rows);
+<a name="line115">115: </a>  <font color="#B22222">/* </font>
+<a name="line116">116: </a><font color="#B22222">     Modify matrix and right-hand-side for Dirichlet boundary conditions</font>
+<a name="line117">117: </a><font color="#B22222">  */</font>
+<a name="line118">118: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(4*m*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;rows);
+<a name="line119">119: </a>  <font color="#4169E1">for</font> (i=0; i&lt;m+1; i++) {
+<a name="line120">120: </a>    rows[i] = i; <font color="#B22222">/* bottom */</font>
+<a name="line121">121: </a>    rows[3*m - 1 +i] = m*(m+1) + i; <font color="#B22222">/* top */</font>
+<a name="line122">122: </a>  }
+<a name="line123">123: </a>  count = m+1; <font color="#B22222">/* left side */</font>
+<a name="line124">124: </a>  <font color="#4169E1">for</font> (i=m+1; i&lt;m*(m+1); i+= m+1) {
+<a name="line125">125: </a>    rows[count++] = i;
+<a name="line126">126: </a>  }
+<a name="line127">127: </a>  count = 2*m; <font color="#B22222">/* left side */</font>
+<a name="line128">128: </a>  <font color="#4169E1">for</font> (i=2*m+1; i&lt;m*(m+1); i+= m+1) {
+<a name="line129">129: </a>    rows[count++] = i;
+<a name="line130">130: </a>  }
+<a name="line131">131: </a>  <font color="#4169E1">for</font> (i=0; i&lt;4*m; i++) {
+<a name="line132">132: </a>     x = h*(rows[i] % (m+1)); y = h*(rows[i]/(m+1));
+<a name="line133">133: </a>     val = y;
+<a name="line134">134: </a>     <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(u,1,&amp;rows[i],&amp;val,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line135">135: </a>     <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(b,1,&amp;rows[i],&amp;val,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line136">136: </a>  }
+<a name="line137">137: </a>  <A href="../../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>(A,4*m,rows,1.0,0,0);
+<a name="line138">138: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rows);
 
-<a name="line138">138: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(u);
-<a name="line139">139: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(u);
-<a name="line140">140: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(b);
-<a name="line141">141: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(b);
+<a name="line140">140: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(u);
+<a name="line141">141: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(u);
+<a name="line142">142: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(b);
+<a name="line143">143: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(b);
 
-<a name="line143">143: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </font>
-<a name="line144">144: </a><font color="#B22222">                Create the linear solver and set various options</font>
-<a name="line145">145: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line145">145: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </font>
+<a name="line146">146: </a><font color="#B22222">                Create the linear solver and set various options</font>
+<a name="line147">147: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 
-<a name="line147">147: </a>  <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;ksp);
-<a name="line148">148: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(ksp,A,A,DIFFERENT_NONZERO_PATTERN);
-<a name="line149">149: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetInitialGuessNonzero.html#KSPSetInitialGuessNonzero">KSPSetInitialGuessNonzero</A>(ksp,<A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
-<a name="line150">150: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetFromOptions.html#KSPSetFromOptions">KSPSetFromOptions</A>(ksp);
+<a name="line149">149: </a>  <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;ksp);
+<a name="line150">150: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(ksp,A,A,DIFFERENT_NONZERO_PATTERN);
+<a name="line151">151: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetInitialGuessNonzero.html#KSPSetInitialGuessNonzero">KSPSetInitialGuessNonzero</A>(ksp,<A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
+<a name="line152">152: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetFromOptions.html#KSPSetFromOptions">KSPSetFromOptions</A>(ksp);
 
-<a name="line152">152: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </font>
-<a name="line153">153: </a><font color="#B22222">                      Solve the linear system</font>
-<a name="line154">154: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line154">154: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </font>
+<a name="line155">155: </a><font color="#B22222">                      Solve the linear system</font>
+<a name="line156">156: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 
-<a name="line156">156: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>(ksp,b,u);
+<a name="line158">158: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>(ksp,b,u);
 
-<a name="line158">158: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </font>
-<a name="line159">159: </a><font color="#B22222">                      Check solution and clean up</font>
-<a name="line160">160: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line160">160: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </font>
+<a name="line161">161: </a><font color="#B22222">                      Check solution and clean up</font>
+<a name="line162">162: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 
-<a name="line162">162: </a>  <font color="#B22222">/* Check error */</font>
-<a name="line163">163: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetOwnershipRange.html#VecGetOwnershipRange">VecGetOwnershipRange</A>(ustar,&amp;start,&amp;end);
-<a name="line164">164: </a>  <font color="#4169E1">for</font> (i=start; i&lt;end; i++) {
-<a name="line165">165: </a>     x = h*(i % (m+1)); y = h*(i/(m+1));
-<a name="line166">166: </a>     val = y;
-<a name="line167">167: </a>     <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(ustar,1,&amp;i,&amp;val,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line168">168: </a>  }
-<a name="line169">169: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(ustar);
-<a name="line170">170: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(ustar);
-<a name="line171">171: </a>  <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(u,-1.0,ustar);
-<a name="line172">172: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(u,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line173">173: </a>  <A href="../../../../../docs/manualpages/KSP/KSPGetIterationNumber.html#KSPGetIterationNumber">KSPGetIterationNumber</A>(ksp,&amp;its);
-<a name="line174">174: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %A Iterations %D\n"</font>,norm*h,its);
+<a name="line164">164: </a>  <font color="#B22222">/* Check error */</font>
+<a name="line165">165: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetOwnershipRange.html#VecGetOwnershipRange">VecGetOwnershipRange</A>(ustar,&amp;start,&amp;end);
+<a name="line166">166: </a>  <font color="#4169E1">for</font> (i=start; i&lt;end; i++) {
+<a name="line167">167: </a>     x = h*(i % (m+1)); y = h*(i/(m+1));
+<a name="line168">168: </a>     val = y;
+<a name="line169">169: </a>     <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(ustar,1,&amp;i,&amp;val,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line170">170: </a>  }
+<a name="line171">171: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(ustar);
+<a name="line172">172: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(ustar);
+<a name="line173">173: </a>  <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(u,-1.0,ustar);
+<a name="line174">174: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(u,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line175">175: </a>  <A href="../../../../../docs/manualpages/KSP/KSPGetIterationNumber.html#KSPGetIterationNumber">KSPGetIterationNumber</A>(ksp,&amp;its);
+<a name="line176">176: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %A Iterations %D\n"</font>,norm*h,its);
 
-<a name="line176">176: </a>  <font color="#B22222">/* </font>
-<a name="line177">177: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
-<a name="line178">178: </a><font color="#B22222">     are no longer needed.</font>
-<a name="line179">179: </a><font color="#B22222">  */</font>
-<a name="line180">180: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line181">181: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(ustar); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line182">182: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line178">178: </a>  <font color="#B22222">/* </font>
+<a name="line179">179: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
+<a name="line180">180: </a><font color="#B22222">     are no longer needed.</font>
+<a name="line181">181: </a><font color="#B22222">  */</font>
+<a name="line182">182: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line183">183: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;ustar); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line184">184: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 
-<a name="line184">184: </a>  <font color="#B22222">/*</font>
-<a name="line185">185: </a><font color="#B22222">     Always call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>() before exiting a program.  This routine</font>
-<a name="line186">186: </a><font color="#B22222">       - finalizes the PETSc libraries as well as MPI</font>
-<a name="line187">187: </a><font color="#B22222">       - provides summary and diagnostic information if certain runtime</font>
-<a name="line188">188: </a><font color="#B22222">         options are chosen (e.g., -log_summary).</font>
-<a name="line189">189: </a><font color="#B22222">  */</font>
-<a name="line190">190: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line191">191: </a>  <font color="#4169E1">return</font> 0;
-<a name="line192">192: </a>}
+<a name="line186">186: </a>  <font color="#B22222">/*</font>
+<a name="line187">187: </a><font color="#B22222">     Always call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>() before exiting a program.  This routine</font>
+<a name="line188">188: </a><font color="#B22222">       - finalizes the PETSc libraries as well as MPI</font>
+<a name="line189">189: </a><font color="#B22222">       - provides summary and diagnostic information if certain runtime</font>
+<a name="line190">190: </a><font color="#B22222">         options are chosen (e.g., -log_summary).</font>
+<a name="line191">191: </a><font color="#B22222">  */</font>
+<a name="line192">192: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line193">193: </a>  <font color="#4169E1">return</font> 0;
+<a name="line194">194: </a>}
 
-<a name="line194">194: </a><font color="#B22222">/* --------------------------------------------------------------------- */</font>
-<a name="line197">197: </a>   <font color="#B22222">/* element stiffness for Laplacian */</font>
-<a name="line198">198: </a><strong><font color="#4169E1"><a name="FormElementStiffness"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormElementStiffness(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> H,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *Ke)</font></strong>
-<a name="line199">199: </a>{
-<a name="line201">201: </a>  Ke[0]  = H/6.0;    Ke[1]  = -.125*H; Ke[2]  = H/12.0;   Ke[3]  = -.125*H;
-<a name="line202">202: </a>  Ke[4]  = -.125*H;  Ke[5]  = H/6.0;   Ke[6]  = -.125*H;  Ke[7]  = H/12.0;
-<a name="line203">203: </a>  Ke[8]  = H/12.0;   Ke[9]  = -.125*H; Ke[10] = H/6.0;    Ke[11] = -.125*H;
-<a name="line204">204: </a>  Ke[12] = -.125*H;  Ke[13] = H/12.0;  Ke[14] = -.125*H;  Ke[15] = H/6.0;
-<a name="line205">205: </a>  <font color="#4169E1">return</font>(0);
-<a name="line206">206: </a>}
-<a name="line207">207: </a><font color="#B22222">/* --------------------------------------------------------------------- */</font>
-<a name="line210">210: </a><strong><font color="#4169E1"><a name="FormElementRhs"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormElementRhs(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> x,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> y,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> H,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *r)</font></strong>
-<a name="line211">211: </a>{
-<a name="line213">213: </a>  r[0] = 0.; r[1] = 0.; r[2] = 0.; r[3] = 0.0;
-<a name="line214">214: </a>  <font color="#4169E1">return</font>(0);
-<a name="line215">215: </a>}
+<a name="line196">196: </a><font color="#B22222">/* --------------------------------------------------------------------- */</font>
+<a name="line199">199: </a>   <font color="#B22222">/* element stiffness for Laplacian */</font>
+<a name="line200">200: </a><strong><font color="#4169E1"><a name="FormElementStiffness"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormElementStiffness(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> H,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *Ke)</font></strong>
+<a name="line201">201: </a>{
+<a name="line203">203: </a>  Ke[0]  = H/6.0;    Ke[1]  = -.125*H; Ke[2]  = H/12.0;   Ke[3]  = -.125*H;
+<a name="line204">204: </a>  Ke[4]  = -.125*H;  Ke[5]  = H/6.0;   Ke[6]  = -.125*H;  Ke[7]  = H/12.0;
+<a name="line205">205: </a>  Ke[8]  = H/12.0;   Ke[9]  = -.125*H; Ke[10] = H/6.0;    Ke[11] = -.125*H;
+<a name="line206">206: </a>  Ke[12] = -.125*H;  Ke[13] = H/12.0;  Ke[14] = -.125*H;  Ke[15] = H/6.0;
+<a name="line207">207: </a>  <font color="#4169E1">return</font>(0);
+<a name="line208">208: </a>}
+<a name="line209">209: </a><font color="#B22222">/* --------------------------------------------------------------------- */</font>
+<a name="line212">212: </a><strong><font color="#4169E1"><a name="FormElementRhs"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormElementRhs(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> x,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> y,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> H,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *r)</font></strong>
+<a name="line213">213: </a>{
+<a name="line215">215: </a>  r[0] = 0.; r[1] = 0.; r[2] = 0.; r[3] = 0.0;
+<a name="line216">216: </a>  <font color="#4169E1">return</font>(0);
+<a name="line217">217: </a>}
 </pre>
 </body>
 

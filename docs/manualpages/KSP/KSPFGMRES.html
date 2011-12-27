@@ -34,13 +34,18 @@ stability of the classical Gram-Schmidt  orthogonalization.
 
 <P>
 Notes: See <A HREF="../KSP/KSPFGMRESSetModifyPC.html#KSPFGMRESSetModifyPC">KSPFGMRESSetModifyPC</A>() for how to vary the preconditioner between iterations
-This object is subclassed off of <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>
+Only right preconditioning is supported.
+<P>
+Notes: The following options -ksp_type fgmres -pc_type ksp -ksp_ksp_type bcgs -ksp_view -ksp_pc_type jacobi make the preconditioner (or inner solver)
+be bi-CG-stab with a preconditioner of Jacobi.
+<P>
+Developer Notes: This object is subclassed off of <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A HREF="../KSP/KSP.html#KSP">KSP</A>, <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, <A HREF="../KSP/KSPLGMRES.html#KSPLGMRES">KSPLGMRES</A>,
-<BR><A HREF="../KSP/KSPGMRESSetRestart.html#KSPGMRESSetRestart">KSPGMRESSetRestart</A>(), <A HREF="../KSP/KSPGMRESSetHapTol.html#KSPGMRESSetHapTol">KSPGMRESSetHapTol</A>(), <A HREF="../KSP/KSPGMRESSetPreAllocateVectors.html#KSPGMRESSetPreAllocateVectors">KSPGMRESSetPreAllocateVectors</A>(), <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>()
+<BR><A HREF="../KSP/KSPGMRESSetRestart.html#KSPGMRESSetRestart">KSPGMRESSetRestart</A>(), <A HREF="../KSP/KSPGMRESSetHapTol.html#KSPGMRESSetHapTol">KSPGMRESSetHapTol</A>(), <A HREF="../KSP/KSPGMRESSetPreAllocateVectors.html#KSPGMRESSetPreAllocateVectors">KSPGMRESSetPreAllocateVectors</A>(), <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESGetOrthogonalization.html#KSPGMRESGetOrthogonalization">KSPGMRESGetOrthogonalization</A>(),
 <A HREF="../KSP/KSPGMRESClassicalGramSchmidtOrthogonalization.html#KSPGMRESClassicalGramSchmidtOrthogonalization">KSPGMRESClassicalGramSchmidtOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESModifiedGramSchmidtOrthogonalization.html#KSPGMRESModifiedGramSchmidtOrthogonalization">KSPGMRESModifiedGramSchmidtOrthogonalization</A>(),
-<A HREF="../KSP/KSPGMRESCGSRefinementType.html#KSPGMRESCGSRefinementType">KSPGMRESCGSRefinementType</A>, <A HREF="../KSP/KSPGMRESSetCGSRefinementType.html#KSPGMRESSetCGSRefinementType">KSPGMRESSetCGSRefinementType</A>(), <A HREF="../KSP/KSPGMRESMonitorKrylov.html#KSPGMRESMonitorKrylov">KSPGMRESMonitorKrylov</A>(), <A HREF="../KSP/KSPFGMRESSetModifyPC.html#KSPFGMRESSetModifyPC">KSPFGMRESSetModifyPC</A>(),
+<A HREF="../KSP/KSPGMRESCGSRefinementType.html#KSPGMRESCGSRefinementType">KSPGMRESCGSRefinementType</A>, <A HREF="../KSP/KSPGMRESSetCGSRefinementType.html#KSPGMRESSetCGSRefinementType">KSPGMRESSetCGSRefinementType</A>(),  <A HREF="../KSP/KSPGMRESGetCGSRefinementType.html#KSPGMRESGetCGSRefinementType">KSPGMRESGetCGSRefinementType</A>(), <A HREF="../KSP/KSPGMRESMonitorKrylov.html#KSPGMRESMonitorKrylov">KSPGMRESMonitorKrylov</A>(), <A HREF="../KSP/KSPFGMRESSetModifyPC.html#KSPFGMRESSetModifyPC">KSPFGMRESSetModifyPC</A>(),
 <A HREF="../KSP/KSPFGMRESModifyPCKSP.html#KSPFGMRESModifyPCKSP">KSPFGMRESModifyPCKSP</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner

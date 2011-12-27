@@ -10,9 +10,9 @@ Sets the base vector for a single component function evaluation
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"   
-PetscErrorCode PETSCMAT_DLLEXPORT MatMFFDSetFunctioniBase(Mat mat,PetscErrorCode (*func)(void*,Vec))
+PetscErrorCode  MatMFFDSetFunctioniBase(Mat mat,PetscErrorCode (*func)(void*,Vec))
 </PRE>
-Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -34,8 +34,7 @@ matrix inside your compute Jacobian routine
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../SNES/MatCreateSNESMF.html#MatCreateSNESMF">MatCreateSNESMF</A>(),<A HREF="../Mat/MatMFFDGetH.html#MatMFFDGetH">MatMFFDGetH</A>(), <A HREF="../Mat/MatCreateMFFD.html#MatCreateMFFD">MatCreateMFFD</A>(), <A HREF="../Mat/MATMFFD.html#MATMFFD">MATMFFD</A>
-<BR><A HREF="../Mat/MatMFFDSetHHistory.html#MatMFFDSetHHistory">MatMFFDSetHHistory</A>(), <A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>(),
-MatMFFDKSPMonitor(), SNESetFunction()
+<BR><A HREF="../Mat/MatMFFDSetHHistory.html#MatMFFDSetHHistory">MatMFFDSetHHistory</A>(), <A HREF="../Mat/MatMFFDResetHHistory.html#MatMFFDResetHHistory">MatMFFDResetHHistory</A>(), SNESetFunction()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/mffd/mffd.c.html#MatMFFDSetFunctioniBase">src/mat/impls/mffd/mffd.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

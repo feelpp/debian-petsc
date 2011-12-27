@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:35:01+00:00">
+<meta name="date" content="2011-10-29T19:05:38+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Mat/MatGetRowMax.html#MatGetRowMax">MatGetRowMax</A>(), <A href="../../../../docs/manualpages/Mat/MatGetRowMin.html#MatGetRowMin">MatGetRowMin</A>(), <A href="../../../../docs/manualpages/Mat/MatGetRowMaxAbs.html#MatGetRowMaxAbs">MatGetRowMaxAbs</A>()\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../include/petscmat.h.html">petscmat.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line6">  6: </a><strong><font color="#228B22">#define M 5</font></strong>
 <a name="line7">  7: </a><strong><font color="#228B22">#define N 6</font></strong>
@@ -25,7 +25,7 @@
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    values[N];
 <a name="line19"> 19: </a>  const <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>  type;
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
-<a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     doTest=<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      doTest=<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 
 <a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 <a name="line24"> 24: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
@@ -110,10 +110,10 @@
 <a name="line103">103: </a>    <A href="../../../../docs/manualpages/Sys/PetscIntView.html#PetscIntView">PetscIntView</A>(5,imaxabs,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line104">104: </a>  }
 
-<a name="line106">106: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(min);
-<a name="line107">107: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(max);
-<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(maxabs);
-<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A);
+<a name="line106">106: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;min);
+<a name="line107">107: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;max);
+<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;maxabs);
+<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 <a name="line110">110: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line111">111: </a>  <font color="#4169E1">return</font> 0;
 <a name="line112">112: </a>}

@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* comb.c */
 /* Fortran interface file */
 
@@ -83,47 +84,47 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   vecdotbegin_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
+void PETSC_STDCALL  vecdotbegin_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
 *__ierr = VecDotBegin(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),result);
 }
-void PETSC_STDCALL   vecdotend_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
+void PETSC_STDCALL  vecdotend_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
 *__ierr = VecDotEnd(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),result);
 }
-void PETSC_STDCALL   vectdotbegin_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
+void PETSC_STDCALL  vectdotbegin_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
 *__ierr = VecTDotBegin(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),result);
 }
-void PETSC_STDCALL   vectdotend_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
+void PETSC_STDCALL  vectdotend_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
 *__ierr = VecTDotEnd(
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),result);
 }
-void PETSC_STDCALL   vecnormbegin_(Vec x,NormType *ntype,PetscReal *result, int *__ierr ){
+void PETSC_STDCALL  vecnormbegin_(Vec x,NormType *ntype,PetscReal *result, int *__ierr ){
 *__ierr = VecNormBegin(
 	(Vec)PetscToPointer((x) ),*ntype,result);
 }
-void PETSC_STDCALL   vecnormend_(Vec x,NormType *ntype,PetscReal *result, int *__ierr ){
+void PETSC_STDCALL  vecnormend_(Vec x,NormType *ntype,PetscReal *result, int *__ierr ){
 *__ierr = VecNormEnd(
 	(Vec)PetscToPointer((x) ),*ntype,result);
 }
-void PETSC_STDCALL   vecmdotbegin_(Vec x,PetscInt *nv, Vec y[],PetscScalar result[], int *__ierr ){
+void PETSC_STDCALL  vecmdotbegin_(Vec x,PetscInt *nv, Vec y[],PetscScalar result[], int *__ierr ){
 *__ierr = VecMDotBegin(
 	(Vec)PetscToPointer((x) ),*nv,y,result);
 }
-void PETSC_STDCALL   vecmdotend_(Vec x,PetscInt *nv, Vec y[],PetscScalar result[], int *__ierr ){
+void PETSC_STDCALL  vecmdotend_(Vec x,PetscInt *nv, Vec y[],PetscScalar result[], int *__ierr ){
 *__ierr = VecMDotEnd(
 	(Vec)PetscToPointer((x) ),*nv,y,result);
 }
-void PETSC_STDCALL   vecmtdotbegin_(Vec x,PetscInt *nv, Vec y[],PetscScalar result[], int *__ierr ){
+void PETSC_STDCALL  vecmtdotbegin_(Vec x,PetscInt *nv, Vec y[],PetscScalar result[], int *__ierr ){
 *__ierr = VecMTDotBegin(
 	(Vec)PetscToPointer((x) ),*nv,y,result);
 }
-void PETSC_STDCALL   vecmtdotend_(Vec x,PetscInt *nv, Vec y[],PetscScalar result[], int *__ierr ){
+void PETSC_STDCALL  vecmtdotend_(Vec x,PetscInt *nv, Vec y[],PetscScalar result[], int *__ierr ){
 *__ierr = VecMTDotEnd(
 	(Vec)PetscToPointer((x) ),*nv,y,result);
 }

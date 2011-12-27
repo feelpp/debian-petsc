@@ -7,8 +7,8 @@
 Empty page for makefiles that are missing a MANSEC variable (the directories 
 don't have code in them).
 <P><p>
-<a href="ex1.c.html">ex1.c: Tests LU and Cholesky factorization for a dense matrix</a><br>
-<a href="ex2.c.html">ex2.c: Tests MatTranspose(), MatNorm(), MatValid(), MatAXPY() and MatAYPX()</a><br>
+<a href="ex1.c.html">ex1.c: Tests LU, Cholesky factorization and MatMatSolve() for a sequential dense matrix</a><br>
+<a href="ex2.c.html">ex2.c: Tests MatTranspose(), MatNorm(), MatAXPY() and MatAYPX()</a><br>
 <a href="ex3.c.html">ex3.c: Tests relaxation for dense matrices</a><br>
 <a href="ex4.c.html">ex4.c: Creates a matrix, inserts some values, and tests MatGetSubMatrices() and MatZeroEntries()</a><br>
 <a href="ex5.c.html">ex5.c: Tests MatMult(), MatMultAdd(), MatMultTranspose()</a><br>
@@ -48,7 +48,7 @@ don't have code in them).
 <a href="ex45.c.html">ex45.c: </a><br>
 <a href="ex47.c.html">ex47.c: Tests the various routines in MatBAIJ format</a><br>
 <a href="ex48.c.html">ex48.c: Tests the vatious routines in MatSeqBAIJ format</a><br>
-<a href="ex49.c.html">ex49.c: Tests MatTranspose(), MatNorm(), MatValid(), and MatAXPY()</a><br>
+<a href="ex49.c.html">ex49.c: Tests MatTranspose(), MatNorm(), and MatAXPY()</a><br>
 <a href="ex50.c.html">ex50.c: Reads in a matrix and vector in ASCII format</a><br>
 <a href="ex51.c.html">ex51.c: Tests MatIncreaseOverlap(), MatGetSubMatrices() for MatBAIJ format</a><br>
 <a href="ex52.c.html">ex52.c: Tests the vatious routines in MatMPIBAIJ format</a><br>
@@ -67,24 +67,26 @@ don't have code in them).
 <a href="ex66.c.html">ex66.c: Reads in rectangular matrix from disk, stored from ex65</a><br>
 <a href="ex68.c.html">ex68.c: Tests MatReorderForNonzeroDiagonal()</a><br>
 <a href="ex70.c.html">ex70.c: Tests Vec/MatSetValues() with negative row and column indices</a><br>
-<a href="ex71.c.html">ex71.c: Passes a sparse matrix to Matlab</a><br>
+<a href="ex71.c.html">ex71.c: Passes a sparse matrix to MATLAB</a><br>
 <a href="ex72.c.html">ex72.c: Reads in a Symmetric matrix in MatrixMarket format</a><br>
 <a href="ex73.c.html">ex73.c: Reads a PETSc matrix from a file partitions it\n\n</a><br>
 <a href="ex74.c.html">ex74.c: Tests the various sequential routines in MatSBAIJ format</a><br>
 <a href="ex75.c.html">ex75.c: Tests the vatious routines in MatMPISBAIJ format</a><br>
 <a href="ex76.c.html">ex76.c: Tests cholesky, icc factorization and solve on sequential aij, baij and sbaij matrices</a><br>
+<a href="ex77.c.html">ex77.c: Tests the various sequential routines in MatSBAIJ format</a><br>
+<a href="ex78.c.html">ex78.c: Reads in a matrix in ASCII MATLAB format (I,J,A), read in vectors rhs and exact_solu in ASCII format</a><br>
 <a href="ex80.c.html">ex80.c: Partition tiny grid</a><br>
 <a href="ex81.c.html">ex81.c: Reads in a PETSc binary matrix and saves in Harwell-Boeing format</a><br>
-<a href="ex77.c.html">ex77.c: Tests the various sequential routines in MatSBAIJ format</a><br>
-<a href="ex78.c.html">ex78.c: Reads in a matrix in ASCII Matlab format (I,J,A), read in vectors rhs and exact_solu in ASCII format</a><br>
 <a href="ex86.c.html">ex86.c: </a><br>
 <a href="ex87.c.html">ex87.c: Tests MatGetSubMatrices() for SBAIJ matrices\n\n</a><br>
+<a href="ex88.c.html">ex88.c: Tests MatShift(), MatScale(), and MatDiagonalScale() for SHELL and NEST matrices\n\n</a><br>
 <a href="ex91.c.html">ex91.c: Tests MatIncreaseOverlap(), MatGetSubMatrices() for sequential MatSBAIJ format</a><br>
 <a href="ex92.c.html">ex92.c: Tests MatIncreaseOverlap(), MatGetSubMatrices() for parallel MatSBAIJ format</a><br>
 <a href="ex93.c.html">ex93.c: Test sequential MatMatMult() and MatPtAP() for AIJ matrices</a><br>
 <a href="ex94.c.html">ex94.c: Tests sequential and parallel MatMatMult() and MatPtAP(), sequential MatMatMultTranspose()\n\</a><br>
 <a href="ex95.c.html">ex95.c: Testing MatMerge_SeqsToMPI()</a><br>
-<a href="ex96.c.html">ex96.c: Tests sequential and parallel DAGetMatrix(), MatMatMult() and MatPtAP()\n\</a><br>
+<a href="ex96.c.html">ex96.c: Tests sequential and parallel DMGetMatrix(), MatMatMult() and MatPtAP()\n\</a><br>
+<a href="ex97.c.html">ex97.c: </a><br>
 <a href="ex98.c.html">ex98.c: Tests MatMPIAIJSetPreallocationCSR()\n\n</a><br>
 <a href="ex99.c.html">ex99.c: Test LAPACK routine DSYGV() or DSYGVX()</a><br>
 <a href="ex100.c.html">ex100.c: Tests vatious routines in MatMAIJ format</a><br>
@@ -111,6 +113,36 @@ don't have code in them).
 <a href="ex122.c.html">ex122.c: Test MatMatMult() for AIJ and Dense matrices</a><br>
 <a href="ex123.c.html">ex123.c: Test MatMatMult() for Dense matrices</a><br>
 <a href="ex124.c.html">ex124.c: Check the difference of the two matrices \n\</a><br>
+<a href="ex125.c.html">ex125.c: Tests MatSolve and MatMatSolve (interface to superlu_dist)</a><br>
+<a href="ex127.c.html">ex127.c: Test MatMult() for Hermitian matrix</a><br>
+<a href="ex128.c.html">ex128.c: Tests ILU and ICC factorization with and without matrix ordering on seqsbaij format</a><br>
 <a href="ex129.c.html">ex129.c: This example is for testing different MatSolve routines :MatSolve,MatSolveAdd,MatSolveTranspose,MatSolveTransposeAdd and MatMatSolve</a><br>
+<a href="ex130.c.html">ex130.c: Tests external direct solvers</a><br>
+<a href="ex131.c.html">ex131.c: Tests MatMult() on MatLoad() matrix \n\n</a><br>
+<a href="ex132.c.html">ex132.c: Test MatAXPY(), and illustrate how to reduce number of mallocs used during MatSetValues() calls \n\</a><br>
+<a href="ex133.c.html">ex133.c: Test saving SeqSBAIJ matrix that is missing diagonal entries</a><br>
+<a href="ex134.c.html">ex134.c: </a><br>
+<a href="ex135.c.html">ex135.c: </a><br>
+<a href="ex136.c.html">ex136.c: Tests MatLoad() MatView() for MPIBAIJ</a><br>
+<a href="ex137.c.html">ex137.c: Tests MatCreateMPISBAIJWithArrays()</a><br>
+<a href="ex138.c.html">ex138.c: Tests MatGetColumnNorms() for matrix read from file</a><br>
+<a href="ex139.c.html">ex139.c: </a><br>
+<a href="ex140.c.html">ex140.c: Tests MatLoad(), MatZeroRowsColumns(), MatView() for MPIBAIJ</a><br>
+<a href="ex141.c.html">ex141.c: Tests converting a SBAIJ matrix to BAIJ format with MatCovert</a><br>
+<a href="ex142.c.html">ex142.c: Test sequential r2c/c2r FFTW interface \n\n</a><br>
+<a href="ex143.c.html">ex143.c: Illustrate how to use mpi FFTW and PETSc-FFTW interface \n\n</a><br>
+<a href="ex144.c.html">ex144.c: This program illustrates the use of parallel real 2D fft using fftw (without PETSc interface)</a><br>
+<a href="ex145.c.html">ex145.c: This program illustrates the use of parallel 1D FFTW for both real and complex precision</a><br>
+<a href="ex146.c.html">ex146.c: This program illustrates the use of parallel real 3D fftw (without PETSc interface)</a><br>
+<a href="ex147.c.html">ex147.c: This program illustrates the use of parallel real fftw (without PETSc interface)</a><br>
+<a href="ex148.c.html">ex148.c: This program illustrates the use of PETSc-fftw interface for real 2D DFT\n</a><br>
+<a href="ex149.c.html">ex149.c: This program illustrates the use of PETSc-fftw interface for real DFT\n</a><br>
+<a href="ex150.c.html">ex150.c: This program illustrates the use of PETSc-fftw interface for real DFT\n</a><br>
+<a href="ex153.c.html">ex153.c: This program illustrates the use of PETSc-fftw interface for sequential real DFT\n</a><br>
+<a href="ex154.c.html">ex154.c: This program illustrates the use of PETSc-fftw interface for Complex parallel DFT\n</a><br>
+<a href="ex155.c.html">ex155.c: This program illustrates the use of PETSc-fftw interface for parallel real DFT\n</a><br>
+<a href="ex157.c.html">ex157.c: This program illustrates the use of PETSc-fftw interface for parallel real DFT\n</a><br>
+<a href="ex158.c.html">ex158.c: Illustrate how to use mpi FFTW and PETSc-FFTW interface \n\n</a><br>
+<a href="ex159.c.html">ex159.c: </a><br>
  
 <a href="makefile.html">makefile</a><br>

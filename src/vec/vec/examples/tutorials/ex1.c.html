@@ -4,189 +4,199 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:25:38+00:00">
+<meta name="date" content="2011-10-29T18:56:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80">
-<a name="line2">  2: </a><font color="#B22222">/* Program usage:  mpiexec ex1 [-help] [all PETSc options] */</font>
+<pre width="80"><a name="line1">  1: </a><font color="#B22222">/* Program usage:  mpiexec ex1 [-help] [all PETSc options] */</font>
 
-<a name="line4">  4: </a>static char help[] = <font color="#666666">"Basic vector routines.\n\n"</font>;
+<a name="line3">  3: </a>static char help[] = <font color="#666666">"Basic vector routines.\n\n"</font>;
 
-<a name="line6">  6: </a><font color="#B22222">/*T</font>
-<a name="line7">  7: </a><font color="#B22222">   Concepts: vectors^basic routines;</font>
-<a name="line8">  8: </a><font color="#B22222">   Processors: n</font>
-<a name="line9">  9: </a><font color="#B22222">T*/</font>
+<a name="line5">  5: </a><font color="#B22222">/*T</font>
+<a name="line6">  6: </a><font color="#B22222">   Concepts: vectors^basic routines;</font>
+<a name="line7">  7: </a><font color="#B22222">   Processors: n</font>
+<a name="line8">  8: </a><font color="#B22222">T*/</font>
 
-<a name="line11"> 11: </a><font color="#B22222">/* </font>
-<a name="line12"> 12: </a><font color="#B22222">  Include "petscvec.h" so that we can use vectors.  Note that this file</font>
-<a name="line13"> 13: </a><font color="#B22222">  automatically includes:</font>
-<a name="line14"> 14: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscis.h     - index sets</font>
-<a name="line15"> 15: </a><font color="#B22222">     petscviewer.h - viewers</font>
-<a name="line16"> 16: </a><font color="#B22222">*/</font>
+<a name="line10"> 10: </a><font color="#B22222">/* </font>
+<a name="line11"> 11: </a><font color="#B22222">  Include "petscvec.h" so that we can use vectors.  Note that this file</font>
+<a name="line12"> 12: </a><font color="#B22222">  automatically includes:</font>
+<a name="line13"> 13: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscis.h     - index sets</font>
+<a name="line14"> 14: </a><font color="#B22222">     petscviewer.h - viewers</font>
+<a name="line15"> 15: </a><font color="#B22222">*/</font>
 
-<a name="line18"> 18: </a> #include <A href="../../../../../include/petscvec.h.html">petscvec.h</A>
+<a name="line17"> 17: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
-<a name="line22"> 22: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
-<a name="line23"> 23: </a>{
-<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x,y,w;               <font color="#B22222">/* vectors */</font>
-<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            *z;                    <font color="#B22222">/* array of vectors */</font>
-<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm,v,v1,v2;
-<a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n = 20;
-<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     flg;
-<a name="line30"> 30: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    one = 1.0,two = 2.0,three = 3.0,dots[3],dot;
+<a name="line21"> 21: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
+<a name="line22"> 22: </a>{
+<a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x,y,w;               <font color="#B22222">/* vectors */</font>
+<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            *z;                    <font color="#B22222">/* array of vectors */</font>
+<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm,v,v1,v2,maxval;
+<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n = 20,maxind;
+<a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    one = 1.0,two = 2.0,three = 3.0,dots[3],dot;
 
-<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
-<a name="line33"> 33: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-n"</font>,&amp;n,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line30"> 30: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
+<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-n"</font>,&amp;n,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
-<a name="line35"> 35: </a>  <font color="#B22222">/* </font>
-<a name="line36"> 36: </a><font color="#B22222">     Create a vector, specifying only its global dimension.</font>
-<a name="line37"> 37: </a><font color="#B22222">     When using <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(), <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>() and <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(), the vector format </font>
-<a name="line38"> 38: </a><font color="#B22222">     (currently parallel, shared, or sequential) is determined at runtime.  Also, the </font>
-<a name="line39"> 39: </a><font color="#B22222">     parallel partitioning of the vector is determined by PETSc at runtime.</font>
+<a name="line33"> 33: </a>  <font color="#B22222">/* </font>
+<a name="line34"> 34: </a><font color="#B22222">     Create a vector, specifying only its global dimension.</font>
+<a name="line35"> 35: </a><font color="#B22222">     When using <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(), <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>() and <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(), the vector format </font>
+<a name="line36"> 36: </a><font color="#B22222">     (currently parallel, shared, or sequential) is determined at runtime.  Also, the </font>
+<a name="line37"> 37: </a><font color="#B22222">     parallel partitioning of the vector is determined by PETSc at runtime.</font>
 
-<a name="line41"> 41: </a><font color="#B22222">     Routines for creating particular vector types directly are:</font>
-<a name="line42"> 42: </a><font color="#B22222">        <A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>() - uniprocessor vector</font>
-<a name="line43"> 43: </a><font color="#B22222">        <A href="../../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>() - distributed vector, where the user can</font>
-<a name="line44"> 44: </a><font color="#B22222">                         determine the parallel partitioning</font>
-<a name="line45"> 45: </a><font color="#B22222">        <A href="../../../../../docs/manualpages/Vec/VecCreateShared.html#VecCreateShared">VecCreateShared</A>() - parallel vector that uses shared memory</font>
-<a name="line46"> 46: </a><font color="#B22222">                            (available only on the SGI); otherwise,</font>
-<a name="line47"> 47: </a><font color="#B22222">                            is the same as <A href="../../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>()</font>
+<a name="line39"> 39: </a><font color="#B22222">     Routines for creating particular vector types directly are:</font>
+<a name="line40"> 40: </a><font color="#B22222">        <A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>() - uniprocessor vector</font>
+<a name="line41"> 41: </a><font color="#B22222">        <A href="../../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>() - distributed vector, where the user can</font>
+<a name="line42"> 42: </a><font color="#B22222">                         determine the parallel partitioning</font>
+<a name="line43"> 43: </a><font color="#B22222">        <A href="../../../../../docs/manualpages/Vec/VecCreateShared.html#VecCreateShared">VecCreateShared</A>() - parallel vector that uses shared memory</font>
+<a name="line44"> 44: </a><font color="#B22222">                            (available only on the SGI); otherwise,</font>
+<a name="line45"> 45: </a><font color="#B22222">                            is the same as <A href="../../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>()</font>
 
-<a name="line49"> 49: </a><font color="#B22222">     With <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(), <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>() and <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>() the option -vec_type mpi or </font>
-<a name="line50"> 50: </a><font color="#B22222">     -vec_type shared causes the particular type of vector to be formed.</font>
+<a name="line47"> 47: </a><font color="#B22222">     With <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(), <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>() and <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>() the option -vec_type mpi or </font>
+<a name="line48"> 48: </a><font color="#B22222">     -vec_type shared causes the particular type of vector to be formed.</font>
+<a name="line49"> 49: </a><font color="#B22222">y</font>
 
-<a name="line52"> 52: </a><font color="#B22222">  */</font>
+<a name="line51"> 51: </a><font color="#B22222">  */</font>
 
-<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;x);
-<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(x,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,n);
-<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(x);
-
-<a name="line58"> 58: </a>  <font color="#B22222">/*</font>
-<a name="line59"> 59: </a><font color="#B22222">     Duplicate some work vectors (of the same format and</font>
-<a name="line60"> 60: </a><font color="#B22222">     partitioning as the initial vector).</font>
-<a name="line61"> 61: </a><font color="#B22222">  */</font>
-<a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,&amp;y);
-<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,&amp;w);
-<a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-
-
-<a name="line67"> 67: </a>  <font color="#B22222">/*</font>
-<a name="line68"> 68: </a><font color="#B22222">     Duplicate more work vectors (of the same format and</font>
-<a name="line69"> 69: </a><font color="#B22222">     partitioning as the initial vector).  Here we duplicate</font>
-<a name="line70"> 70: </a><font color="#B22222">     an array of vectors, which is often more convenient than</font>
-<a name="line71"> 71: </a><font color="#B22222">     duplicating individual ones.</font>
+<a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;x);
+<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(x,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,n);
+<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(x);
+<a name="line56"> 56: </a>  <font color="#B22222">/*</font>
+<a name="line57"> 57: </a><font color="#B22222">     Duplicate some work vectors (of the same format and</font>
+<a name="line58"> 58: </a><font color="#B22222">     partitioning as the initial vector).</font>
+<a name="line59"> 59: </a><font color="#B22222">  */</font>
+<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,&amp;y);
+<a name="line61"> 61: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,&amp;w);
+<a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line63"> 63: </a>  <font color="#B22222">/*</font>
+<a name="line64"> 64: </a><font color="#B22222">     Duplicate more work vectors (of the same format and</font>
+<a name="line65"> 65: </a><font color="#B22222">     partitioning as the initial vector).  Here we duplicate</font>
+<a name="line66"> 66: </a><font color="#B22222">     an array of vectors, which is often more convenient than</font>
+<a name="line67"> 67: </a><font color="#B22222">     duplicating individual ones.</font>
+<a name="line68"> 68: </a><font color="#B22222">  */</font>
+<a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>(x,3,&amp;z);
+<a name="line70"> 70: </a>  <font color="#B22222">/*</font>
+<a name="line71"> 71: </a><font color="#B22222">     Set the vectors to entries to a constant value.</font>
 <a name="line72"> 72: </a><font color="#B22222">  */</font>
-<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>(x,3,&amp;z);
+<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(x,one);
+<a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(y,two);
+<a name="line75"> 75: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(z[0],one);
+<a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(z[1],two);
+<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(z[2],three);
+<a name="line78"> 78: </a>  <font color="#B22222">/*</font>
+<a name="line79"> 79: </a><font color="#B22222">     Demonstrate various basic vector routines.</font>
+<a name="line80"> 80: </a><font color="#B22222">  */</font>
+<a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(x,x,&amp;dot);
+<a name="line82"> 82: </a>  <A href="../../../../../docs/manualpages/Vec/VecMDot.html#VecMDot">VecMDot</A>(x,3,z,dots);
 
-<a name="line75"> 75: </a>  <font color="#B22222">/*</font>
-<a name="line76"> 76: </a><font color="#B22222">     Set the vectors to entries to a constant value.</font>
-<a name="line77"> 77: </a><font color="#B22222">  */</font>
-<a name="line78"> 78: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(x,one);
-<a name="line79"> 79: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(y,two);
-<a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(z[0],one);
-<a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(z[1],two);
-<a name="line82"> 82: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(z[2],three);
+<a name="line84"> 84: </a>  <font color="#B22222">/* </font>
+<a name="line85"> 85: </a><font color="#B22222">     Note: If using a complex numbers version of PETSc, then</font>
+<a name="line86"> 86: </a><font color="#B22222">     PETSC_USE_COMPLEX is defined in the makefiles; otherwise,</font>
+<a name="line87"> 87: </a><font color="#B22222">     (when using real numbers) it is undefined.</font>
+<a name="line88"> 88: </a><font color="#B22222">  */</font>
+<a name="line89"> 89: </a>  //printf(<font color="#666666">"Size Of Void* =  %ld, Size Of <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> =  %ld\n"</font>,<font color="#4169E1">sizeof</font>(void*),<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>));
+<a name="line90"> 90: </a>  //printf(<font color="#666666">"Size of <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> = %ld\n"</font>,<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>));
 
-<a name="line84"> 84: </a>  <font color="#B22222">/*</font>
-<a name="line85"> 85: </a><font color="#B22222">     Demonstrate various basic vector routines.</font>
-<a name="line86"> 86: </a><font color="#B22222">  */</font>
-<a name="line87"> 87: </a>  <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(x,x,&amp;dot);
-<a name="line88"> 88: </a>  <A href="../../../../../docs/manualpages/Vec/VecMDot.html#VecMDot">VecMDot</A>(x,3,z,dots);
+<a name="line92"> 92: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line93"> 93: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vector length %D\n"</font>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) (PetscRealPart(dot)));
+<a name="line94"> 94: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vector length %D %D %D\n"</font>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)PetscRealPart(dots[0]),
+<a name="line95"> 95: </a>                             (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)PetscRealPart(dots[1]),(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)PetscRealPart(dots[2]));
+<a name="line96"> 96: </a><font color="#A020F0">#else</font>
+<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vector length %D\n"</font>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)dot);
+<a name="line98"> 98: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vector length %D %D %D\n"</font>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)dots[0],
+<a name="line99"> 99: </a>                             (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)dots[1],(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)dots[2]);
+<a name="line100">100: </a><font color="#A020F0">#endif</font>
+<a name="line101">101: </a>  //<font color="#4169E1">struct timeval</font> t1, t2, result;
+<a name="line102">102: </a>  //gettimeofday(&amp;t1,NULL);
+<a name="line103">103: </a>  <A href="../../../../../docs/manualpages/Vec/VecMax.html#VecMax">VecMax</A>(x,&amp;maxind,&amp;maxval);
+<a name="line104">104: </a>  //gettimeofday(&amp;t2,NULL);
+<a name="line105">105: </a>  //timersub(&amp;t2,&amp;t1,&amp;result);
+<a name="line106">106: </a>  //printf(<font color="#666666">"Time for <A href="../../../../../docs/manualpages/Vec/VecMax.html#VecMax">VecMax</A> = %lf\n"</font>,result.tv_sec+result.tv_usec/1000000.0);
+<a name="line107">107: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecMax.html#VecMax">VecMax</A> %g, VecInd %D\n"</font>,(double)maxval,maxind);
 
-<a name="line90"> 90: </a>  <font color="#B22222">/* </font>
-<a name="line91"> 91: </a><font color="#B22222">     Note: If using a complex numbers version of PETSc, then</font>
-<a name="line92"> 92: </a><font color="#B22222">     PETSC_USE_COMPLEX is defined in the makefiles; otherwise,</font>
-<a name="line93"> 93: </a><font color="#B22222">     (when using real numbers) it is undefined.</font>
-<a name="line94"> 94: </a><font color="#B22222">  */</font>
-<a name="line95"> 95: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line96"> 96: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vector length %D\n"</font>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) (PetscRealPart(dot)));
-<a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vector length %D %D %D\n"</font>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)PetscRealPart(dots[0]),
-<a name="line98"> 98: </a>                             (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)PetscRealPart(dots[1]),(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)PetscRealPart(dots[2]));
-<a name="line99"> 99: </a><font color="#A020F0">#else</font>
-<a name="line100">100: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vector length %D\n"</font>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)dot);
-<a name="line101">101: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vector length %D %D %D\n"</font>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)dots[0],
-<a name="line102">102: </a>                             (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)dots[1],(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)dots[2]);
-<a name="line103">103: </a><font color="#A020F0">#endif</font>
-
-<a name="line105">105: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"All other values should be near zero\n"</font>);
-
-<a name="line107">107: </a>  <A href="../../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(x,two);
-<a name="line108">108: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line109">109: </a>  v = norm-2.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line110">110: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A> %G\n"</font>,v);
+<a name="line109">109: </a>  <A href="../../../../../docs/manualpages/Vec/VecMin.html#VecMin">VecMin</A>(x,&amp;maxind,&amp;maxval);
+<a name="line110">110: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecMin.html#VecMin">VecMin</A> %g, VecInd %D\n"</font>,(double)maxval,maxind);
+<a name="line111">111: </a>  <font color="#B22222">/*</font>
+<a name="line112">112: </a><font color="#B22222">  const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ix_kds[] = {3,7,14};</font>
+<a name="line113">113: </a><font color="#B22222">  const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> y_kds[] = {13.2,69.3,-8.7};</font>
+<a name="line114">114: </a><font color="#B22222">  <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(x,3,ix_kds,y_kds,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);</font>
+<a name="line115">115: </a><font color="#B22222">  <A href="../../../../../docs/manualpages/Vec/VecMax.html#VecMax">VecMax</A>(x,&amp;maxind,&amp;maxval);</font>
+<a name="line116">116: </a><font color="#B22222">  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,"<A href="../../../../../docs/manualpages/Vec/VecMax.html#VecMax">VecMax</A> %g, VecInd %D\n",maxval,maxind);</font>
+<a name="line117">117: </a><font color="#B22222">  <A href="../../../../../docs/manualpages/Vec/VecMin.html#VecMin">VecMin</A>(x,&amp;maxind,&amp;maxval);</font>
+<a name="line118">118: </a><font color="#B22222">  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,"<A href="../../../../../docs/manualpages/Vec/VecMax.html#VecMax">VecMax</A> %g, VecInd %D\n",maxval,maxind);</font>
+<a name="line119">119: </a><font color="#B22222">   */</font>
+<a name="line120">120: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"All other values should be near zero\n"</font>);
 
 
-<a name="line113">113: </a>  <A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x,w);
-<a name="line114">114: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line115">115: </a>  v = norm-2.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line116">116: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>  %G\n"</font>,v);
+<a name="line123">123: </a>  <A href="../../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(x,two);
+<a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line125">125: </a>  v = norm-2.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line126">126: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A> %g\n"</font>,(double)v);
 
-<a name="line118">118: </a>  <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(y,three,x);
-<a name="line119">119: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line120">120: </a>  v = norm-8.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A> %G\n"</font>,v);
 
-<a name="line123">123: </a>  <A href="../../../../../docs/manualpages/Vec/VecAYPX.html#VecAYPX">VecAYPX</A>(y,two,x);
-<a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line125">125: </a>  v = norm-18.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line126">126: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecAYPX.html#VecAYPX">VecAYPX</A> %G\n"</font>,v);
+<a name="line129">129: </a>  <A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x,w);
+<a name="line130">130: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line131">131: </a>  v = norm-2.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line132">132: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>  %g\n"</font>,(double)v);
 
-<a name="line128">128: </a>  <A href="../../../../../docs/manualpages/Vec/VecSwap.html#VecSwap">VecSwap</A>(x,y);
-<a name="line129">129: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line130">130: </a>  v = norm-2.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line131">131: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecSwap.html#VecSwap">VecSwap</A>  %G\n"</font>,v);
-<a name="line132">132: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line133">133: </a>  v = norm-18.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line134">134: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecSwap.html#VecSwap">VecSwap</A>  %G\n"</font>,v);
+<a name="line134">134: </a>  <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(y,three,x);
+<a name="line135">135: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line136">136: </a>  v = norm-8.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line137">137: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A> %g\n"</font>,(double)v);
 
-<a name="line136">136: </a>  <A href="../../../../../docs/manualpages/Vec/VecWAXPY.html#VecWAXPY">VecWAXPY</A>(w,two,x,y);
-<a name="line137">137: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line138">138: </a>  v = norm-38.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line139">139: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecWAXPY.html#VecWAXPY">VecWAXPY</A> %G\n"</font>,v);
+<a name="line139">139: </a>  <A href="../../../../../docs/manualpages/Vec/VecAYPX.html#VecAYPX">VecAYPX</A>(y,two,x);
+<a name="line140">140: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line141">141: </a>  v = norm-18.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line142">142: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecAYPX.html#VecAYPX">VecAYPX</A> %g\n"</font>,(double)v);
 
-<a name="line141">141: </a>  <A href="../../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(w,y,x);
-<a name="line142">142: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line143">143: </a>  v = norm-36.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line144">144: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A> %G\n"</font>,v);
+<a name="line144">144: </a>  <A href="../../../../../docs/manualpages/Vec/VecSwap.html#VecSwap">VecSwap</A>(x,y);
+<a name="line145">145: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line146">146: </a>  v = norm-2.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line147">147: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecSwap.html#VecSwap">VecSwap</A>  %g\n"</font>,(double)v);
+<a name="line148">148: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line149">149: </a>  v = norm-18.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line150">150: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecSwap.html#VecSwap">VecSwap</A>  %g\n"</font>,(double)v);
 
-<a name="line146">146: </a>  <A href="../../../../../docs/manualpages/Vec/VecPointwiseDivide.html#VecPointwiseDivide">VecPointwiseDivide</A>(w,x,y);
-<a name="line147">147: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line148">148: </a>  v = norm-9.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line149">149: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecPointwiseDivide.html#VecPointwiseDivide">VecPointwiseDivide</A> %G\n"</font>,v);
+<a name="line152">152: </a>  <A href="../../../../../docs/manualpages/Vec/VecWAXPY.html#VecWAXPY">VecWAXPY</A>(w,two,x,y);
+<a name="line153">153: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line154">154: </a>  v = norm-38.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line155">155: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecWAXPY.html#VecWAXPY">VecWAXPY</A> %g\n"</font>,(double)v);
 
-<a name="line151">151: </a>  dots[0] = one;
-<a name="line152">152: </a>  dots[1] = three;
-<a name="line153">153: </a>  dots[2] = two;
-<a name="line154">154: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(x,one);
-<a name="line155">155: </a>  <A href="../../../../../docs/manualpages/Vec/VecMAXPY.html#VecMAXPY">VecMAXPY</A>(x,3,dots,z);
-<a name="line156">156: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(z[0],<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line157">157: </a>  v = norm-sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
-<a name="line158">158: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(z[1],<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line159">159: </a>  v1 = norm-2.0*sqrt((double)n); <font color="#4169E1">if</font> (v1 &gt; -PETSC_SMALL &amp;&amp; v1 &lt; PETSC_SMALL) v1 = 0.0;
-<a name="line160">160: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(z[2],<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line161">161: </a>  v2 = norm-3.0*sqrt((double)n); <font color="#4169E1">if</font> (v2 &gt; -PETSC_SMALL &amp;&amp; v2 &lt; PETSC_SMALL) v2 = 0.0;
-<a name="line162">162: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecMAXPY.html#VecMAXPY">VecMAXPY</A> %G %G %G \n"</font>,v,v1,v2);
+<a name="line157">157: </a>  <A href="../../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(w,y,x);
+<a name="line158">158: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line159">159: </a>  v = norm-36.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line160">160: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A> %g\n"</font>,(double)v);
 
-<a name="line164">164: </a>  <font color="#B22222">/* </font>
-<a name="line165">165: </a><font color="#B22222">     Test whether vector has been corrupted (just to demonstrate this</font>
-<a name="line166">166: </a><font color="#B22222">     routine) not needed in most application codes.</font>
-<a name="line167">167: </a><font color="#B22222">  */</font>
-<a name="line168">168: </a>  <A href="../../../../../docs/manualpages/Vec/VecValid.html#VecValid">VecValid</A>(x,&amp;flg);
-<a name="line169">169: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(1,<font color="#666666">"Corrupted vector."</font>);
+<a name="line162">162: </a>  <A href="../../../../../docs/manualpages/Vec/VecPointwiseDivide.html#VecPointwiseDivide">VecPointwiseDivide</A>(w,x,y);
+<a name="line163">163: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(w,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line164">164: </a>  v = norm-9.0*sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line165">165: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecPointwiseDivide.html#VecPointwiseDivide">VecPointwiseDivide</A> %g\n"</font>,(double)v);
 
-<a name="line171">171: </a>  <font color="#B22222">/* </font>
-<a name="line172">172: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
-<a name="line173">173: </a><font color="#B22222">     are no longer needed.</font>
-<a name="line174">174: </a><font color="#B22222">  */</font>
-<a name="line175">175: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line176">176: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(y);
-<a name="line177">177: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(w);
-<a name="line178">178: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroyVecs.html#VecDestroyVecs">VecDestroyVecs</A>(z,3);
-<a name="line179">179: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line180">180: </a>  <font color="#4169E1">return</font> 0;
-<a name="line181">181: </a>}
-<a name="line182">182: </a>
+<a name="line167">167: </a>  dots[0] = one;
+<a name="line168">168: </a>  dots[1] = three;
+<a name="line169">169: </a>  dots[2] = two;
+<a name="line170">170: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(x,one);
+<a name="line171">171: </a>  <A href="../../../../../docs/manualpages/Vec/VecMAXPY.html#VecMAXPY">VecMAXPY</A>(x,3,dots,z);
+<a name="line172">172: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(z[0],<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line173">173: </a>  v = norm-sqrt((double)n); <font color="#4169E1">if</font> (v &gt; -PETSC_SMALL &amp;&amp; v &lt; PETSC_SMALL) v = 0.0;
+<a name="line174">174: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(z[1],<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line175">175: </a>  v1 = norm-2.0*sqrt((double)n); <font color="#4169E1">if</font> (v1 &gt; -PETSC_SMALL &amp;&amp; v1 &lt; PETSC_SMALL) v1 = 0.0;
+<a name="line176">176: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(z[2],<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line177">177: </a>  v2 = norm-3.0*sqrt((double)n); <font color="#4169E1">if</font> (v2 &gt; -PETSC_SMALL &amp;&amp; v2 &lt; PETSC_SMALL) v2 = 0.0;
+<a name="line178">178: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../../docs/manualpages/Vec/VecMAXPY.html#VecMAXPY">VecMAXPY</A> %g %g %g \n"</font>,(double)v,(double)v1,(double)v2);
+<a name="line179">179: </a>
+
+<a name="line181">181: </a>  <font color="#B22222">/* </font>
+<a name="line182">182: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
+<a name="line183">183: </a><font color="#B22222">     are no longer needed.</font>
+<a name="line184">184: </a><font color="#B22222">  */</font>
+<a name="line185">185: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line186">186: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y);
+<a name="line187">187: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;w);
+<a name="line188">188: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroyVecs.html#VecDestroyVecs">VecDestroyVecs</A>(3,&amp;z);
+<a name="line189">189: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line190">190: </a>  <font color="#4169E1">return</font> 0;
+<a name="line191">191: </a>}
+<a name="line192">192: </a>
 </pre>
 </body>
 

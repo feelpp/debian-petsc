@@ -3,8 +3,8 @@ static char help[] = "Demonstrates the use of fast Richardson for SOR. And\n\
 also tests the MatSOR() routines.  Input parameters are:\n\
  -n <n> : problem dimension\n\n";
 
-#include "petscksp.h"
-#include "petscpc.h"
+#include <petscksp.h>
+#include <petscpc.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -71,13 +71,13 @@ int main(int argc,char **args)
   ierr = PetscPrintf(PETSC_COMM_WORLD,"Number of iterations %D\n",its);
 
   /* Free data structures */
-  ierr = KSPDestroy(ksp);CHKERRQ(ierr);
-  ierr = VecDestroy(u);CHKERRQ(ierr);
-  ierr = VecDestroy(ustar);CHKERRQ(ierr);
-  ierr = VecDestroy(b);CHKERRQ(ierr);
-  ierr = MatDestroy(mat);CHKERRQ(ierr);
-  ierr = PCDestroy(pc);CHKERRQ(ierr);
-  ierr = PetscFinalize();CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = VecDestroy(&u);CHKERRQ(ierr);
+  ierr = VecDestroy(&ustar);CHKERRQ(ierr);
+  ierr = VecDestroy(&b);CHKERRQ(ierr);
+  ierr = MatDestroy(&mat);CHKERRQ(ierr);
+  ierr = PCDestroy(&pc);CHKERRQ(ierr);
+  ierr = PetscFinalize();
   return 0;
 }
     

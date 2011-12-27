@@ -4,14 +4,14 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:41:06+00:00">
+<meta name="date" content="2011-10-29T19:12:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests CG, MINRES and SYMMLQ on symmetric matrices with SBAIJ format. The preconditioner ICC only works on sequential SBAIJ format. \n\n"</font>;
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/petscksp.h.html">petscksp.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 
 <a name="line9">  9: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
@@ -66,7 +66,7 @@
 <a name="line59"> 59: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomCreate.html#PetscRandomCreate">PetscRandomCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;r);
 <a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomSetFromOptions.html#PetscRandomSetFromOptions">PetscRandomSetFromOptions</A>(r);
 <a name="line61"> 61: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetRandom.html#VecSetRandom">VecSetRandom</A>(u,r);
-<a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(r);
+<a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;r);
 <a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(C,u,b);
 
 <a name="line65"> 65: </a>  <font color="#4169E1">for</font> (k=0; k&lt;3; k++){
@@ -117,18 +117,18 @@
 <a name="line110">110: </a>    <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Residual norm %A;"</font>,res_norm);
 <a name="line111">111: </a>    <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"  Error norm %A.\n"</font>,err_norm);
 
-<a name="line113">113: </a>    <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(ksp);
+<a name="line113">113: </a>    <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
 <a name="line114">114: </a>  }
 <a name="line115">115: </a>
 <a name="line116">116: </a>  <font color="#B22222">/* </font>
 <a name="line117">117: </a><font color="#B22222">       Free work space.  All PETSc objects should be destroyed when they</font>
 <a name="line118">118: </a><font color="#B22222">       are no longer needed.</font>
 <a name="line119">119: </a><font color="#B22222">  */</font>
-<a name="line120">120: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b);
-<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u);
-<a name="line122">122: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x);
-<a name="line123">123: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u_tmp);
-<a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(C);
+<a name="line120">120: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
+<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);
+<a name="line122">122: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line123">123: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u_tmp);
+<a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 
 <a name="line126">126: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line127">127: </a>  <font color="#4169E1">return</font> 0;

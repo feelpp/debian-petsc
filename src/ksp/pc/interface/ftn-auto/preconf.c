@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* precon.c */
 /* Fortran interface file */
 
@@ -28,14 +29,19 @@ extern void PetscRmPointer(void*);
 
 #include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcreset_ PCRESET
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcreset_ pcreset
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcdestroy_ PCDESTROY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcdestroy_ pcdestroy
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define pcdiagonalscaleset_ PCDIAGONALSCALESET
+#define pcsetdiagonalscale_ PCSETDIAGONALSCALE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define pcdiagonalscaleset_ pcdiagonalscaleset
+#define pcsetdiagonalscale_ pcsetdiagonalscale
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcdiagonalscaleleft_ PCDIAGONALSCALELEFT
@@ -137,84 +143,92 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pccomputeexplicitoperator_ pccomputeexplicitoperator
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcsetcoordinates_ PCSETCOORDINATES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcsetcoordinates_ pcsetcoordinates
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   pcdestroy_(PC pc, int *__ierr ){
-*__ierr = PCDestroy(
+void PETSC_STDCALL  pcreset_(PC pc, int *__ierr ){
+*__ierr = PCReset(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pcdiagonalscaleset_(PC pc,Vec s, int *__ierr ){
-*__ierr = PCDiagonalScaleSet(
+void PETSC_STDCALL  pcdestroy_(PC *pc, int *__ierr ){
+*__ierr = PCDestroy(pc);
+}
+void PETSC_STDCALL  pcsetdiagonalscale_(PC pc,Vec s, int *__ierr ){
+*__ierr = PCSetDiagonalScale(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((s) ));
 }
-void PETSC_STDCALL   pcdiagonalscaleleft_(PC pc,Vec in,Vec out, int *__ierr ){
+void PETSC_STDCALL  pcdiagonalscaleleft_(PC pc,Vec in,Vec out, int *__ierr ){
 *__ierr = PCDiagonalScaleLeft(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((in) ),
 	(Vec)PetscToPointer((out) ));
 }
-void PETSC_STDCALL   pcdiagonalscaleright_(PC pc,Vec in,Vec out, int *__ierr ){
+void PETSC_STDCALL  pcdiagonalscaleright_(PC pc,Vec in,Vec out, int *__ierr ){
 *__ierr = PCDiagonalScaleRight(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((in) ),
 	(Vec)PetscToPointer((out) ));
 }
-void PETSC_STDCALL   pccreate_(MPI_Fint * comm,PC *newpc, int *__ierr ){
+void PETSC_STDCALL  pccreate_(MPI_Fint * comm,PC *newpc, int *__ierr ){
 *__ierr = PCCreate(
 	MPI_Comm_f2c( *(comm) ),newpc);
 }
-void PETSC_STDCALL   pcapply_(PC pc,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  pcapply_(PC pc,Vec x,Vec y, int *__ierr ){
 *__ierr = PCApply(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   pcapplysymmetricleft_(PC pc,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  pcapplysymmetricleft_(PC pc,Vec x,Vec y, int *__ierr ){
 *__ierr = PCApplySymmetricLeft(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   pcapplysymmetricright_(PC pc,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  pcapplysymmetricright_(PC pc,Vec x,Vec y, int *__ierr ){
 *__ierr = PCApplySymmetricRight(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   pcapplytranspose_(PC pc,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  pcapplytranspose_(PC pc,Vec x,Vec y, int *__ierr ){
 *__ierr = PCApplyTranspose(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL   pcapplytransposeexists_(PC pc,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  pcapplytransposeexists_(PC pc,PetscBool  *flg, int *__ierr ){
 *__ierr = PCApplyTransposeExists(
 	(PC)PetscToPointer((pc) ),flg);
 }
-void PETSC_STDCALL   pcapplybaorab_(PC pc,PCSide *side,Vec x,Vec y,Vec work, int *__ierr ){
+void PETSC_STDCALL  pcapplybaorab_(PC pc,PCSide *side,Vec x,Vec y,Vec work, int *__ierr ){
 *__ierr = PCApplyBAorAB(
 	(PC)PetscToPointer((pc) ),*side,
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),
 	(Vec)PetscToPointer((work) ));
 }
-void PETSC_STDCALL   pcapplybaorabtranspose_(PC pc,PCSide *side,Vec x,Vec y,Vec work, int *__ierr ){
+void PETSC_STDCALL  pcapplybaorabtranspose_(PC pc,PCSide *side,Vec x,Vec y,Vec work, int *__ierr ){
 *__ierr = PCApplyBAorABTranspose(
 	(PC)PetscToPointer((pc) ),*side,
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),
 	(Vec)PetscToPointer((work) ));
 }
-void PETSC_STDCALL   pcapplyrichardsonexists_(PC pc,PetscTruth *exists, int *__ierr ){
+void PETSC_STDCALL  pcapplyrichardsonexists_(PC pc,PetscBool  *exists, int *__ierr ){
 *__ierr = PCApplyRichardsonExists(
 	(PC)PetscToPointer((pc) ),exists);
 }
-void PETSC_STDCALL   pcapplyrichardson_(PC pc,Vec b,Vec y,Vec w,PetscReal *rtol,PetscReal *abstol,PetscReal *dtol,PetscInt *its,PetscTruth *guesszero,PetscInt *outits,PCRichardsonConvergedReason *reason, int *__ierr ){
+void PETSC_STDCALL  pcapplyrichardson_(PC pc,Vec b,Vec y,Vec w,PetscReal *rtol,PetscReal *abstol,PetscReal *dtol,PetscInt *its,PetscBool  *guesszero,PetscInt *outits,PCRichardsonConvergedReason *reason, int *__ierr ){
 *__ierr = PCApplyRichardson(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((b) ),
@@ -222,41 +236,45 @@ void PETSC_STDCALL   pcapplyrichardson_(PC pc,Vec b,Vec y,Vec w,PetscReal *rtol,
 	(Vec)PetscToPointer((w) ),*rtol,*abstol,*dtol,*its,*guesszero,outits,
 	(PCRichardsonConvergedReason* )PetscToPointer((reason) ));
 }
-void PETSC_STDCALL   pcsetup_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcsetup_(PC pc, int *__ierr ){
 *__ierr = PCSetUp(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pcsetuponblocks_(PC pc, int *__ierr ){
+void PETSC_STDCALL  pcsetuponblocks_(PC pc, int *__ierr ){
 *__ierr = PCSetUpOnBlocks(
 	(PC)PetscToPointer((pc) ));
 }
-void PETSC_STDCALL   pcsetoperators_(PC pc,Mat Amat,Mat Pmat,MatStructure *flag, int *__ierr ){
+void PETSC_STDCALL  pcsetoperators_(PC pc,Mat Amat,Mat Pmat,MatStructure *flag, int *__ierr ){
 *__ierr = PCSetOperators(
 	(PC)PetscToPointer((pc) ),
 	(Mat)PetscToPointer((Amat) ),
 	(Mat)PetscToPointer((Pmat) ),*flag);
 }
-void PETSC_STDCALL   pcfactorgetmatrix_(PC pc,Mat *mat, int *__ierr ){
+void PETSC_STDCALL  pcfactorgetmatrix_(PC pc,Mat *mat, int *__ierr ){
 *__ierr = PCFactorGetMatrix(
 	(PC)PetscToPointer((pc) ),mat);
 }
-void PETSC_STDCALL   pcpresolve_(PC pc,KSP ksp, int *__ierr ){
+void PETSC_STDCALL  pcpresolve_(PC pc,KSP ksp, int *__ierr ){
 *__ierr = PCPreSolve(
 	(PC)PetscToPointer((pc) ),
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL   pcpostsolve_(PC pc,KSP ksp, int *__ierr ){
+void PETSC_STDCALL  pcpostsolve_(PC pc,KSP ksp, int *__ierr ){
 *__ierr = PCPostSolve(
 	(PC)PetscToPointer((pc) ),
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL   pcsetinitialguessnonzero_(PC pc,PetscTruth *flg, int *__ierr ){
+void PETSC_STDCALL  pcsetinitialguessnonzero_(PC pc,PetscBool  *flg, int *__ierr ){
 *__ierr = PCSetInitialGuessNonzero(
 	(PC)PetscToPointer((pc) ),*flg);
 }
-void PETSC_STDCALL   pccomputeexplicitoperator_(PC pc,Mat *mat, int *__ierr ){
+void PETSC_STDCALL  pccomputeexplicitoperator_(PC pc,Mat *mat, int *__ierr ){
 *__ierr = PCComputeExplicitOperator(
 	(PC)PetscToPointer((pc) ),mat);
+}
+void PETSC_STDCALL  pcsetcoordinates_(PC pc,PetscInt *dim,PetscReal *coords, int *__ierr ){
+*__ierr = PCSetCoordinates(
+	(PC)PetscToPointer((pc) ),*dim,coords);
 }
 #if defined(__cplusplus)
 }

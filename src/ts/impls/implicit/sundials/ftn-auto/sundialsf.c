@@ -1,5 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
+#include "private/fortranimpl.h"
 /* sundials.c */
 /* Fortran interface file */
 
@@ -33,9 +34,9 @@ extern void PetscRmPointer(void*);
 #define tssundialssettype_ tssundialssettype
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define tssundialssetgmresrestart_ TSSUNDIALSSETGMRESRESTART
+#define tssundialssetmaxl_ TSSUNDIALSSETMAXL
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define tssundialssetgmresrestart_ tssundialssetgmresrestart
+#define tssundialssetmaxl_ tssundialssetmaxl
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tssundialssetlineartolerance_ TSSUNDIALSSETLINEARTOLERANCE
@@ -58,9 +59,14 @@ extern void PetscRmPointer(void*);
 #define tssundialsgetpc_ tssundialsgetpc
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define tssundialssetexactfinaltime_ TSSUNDIALSSETEXACTFINALTIME
+#define tssundialssetmintimestep_ TSSUNDIALSSETMINTIMESTEP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define tssundialssetexactfinaltime_ tssundialssetexactfinaltime
+#define tssundialssetmintimestep_ tssundialssetmintimestep
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tssundialssetmaxtimestep_ TSSUNDIALSSETMAXTIMESTEP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tssundialssetmaxtimestep_ tssundialssetmaxtimestep
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tssundialsmonitorinternalsteps_ TSSUNDIALSMONITORINTERNALSTEPS
@@ -73,35 +79,39 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL   tssundialssettype_(TS ts,TSSundialsLmmType *type, int *__ierr ){
+void PETSC_STDCALL  tssundialssettype_(TS ts,TSSundialsLmmType *type, int *__ierr ){
 *__ierr = TSSundialsSetType(
 	(TS)PetscToPointer((ts) ),*type);
 }
-void PETSC_STDCALL   tssundialssetgmresrestart_(TS ts,int *restart, int *__ierr ){
-*__ierr = TSSundialsSetGMRESRestart(
-	(TS)PetscToPointer((ts) ),*restart);
+void PETSC_STDCALL  tssundialssetmaxl_(TS ts,PetscInt *maxl, int *__ierr ){
+*__ierr = TSSundialsSetMaxl(
+	(TS)PetscToPointer((ts) ),*maxl);
 }
-void PETSC_STDCALL   tssundialssetlineartolerance_(TS ts,double *tol, int *__ierr ){
+void PETSC_STDCALL  tssundialssetlineartolerance_(TS ts,double *tol, int *__ierr ){
 *__ierr = TSSundialsSetLinearTolerance(
 	(TS)PetscToPointer((ts) ),*tol);
 }
-void PETSC_STDCALL   tssundialssetgramschmidttype_(TS ts,TSSundialsGramSchmidtType *type, int *__ierr ){
+void PETSC_STDCALL  tssundialssetgramschmidttype_(TS ts,TSSundialsGramSchmidtType *type, int *__ierr ){
 *__ierr = TSSundialsSetGramSchmidtType(
 	(TS)PetscToPointer((ts) ),*type);
 }
-void PETSC_STDCALL   tssundialssettolerance_(TS ts,double *aabs,double *rel, int *__ierr ){
+void PETSC_STDCALL  tssundialssettolerance_(TS ts,double *aabs,double *rel, int *__ierr ){
 *__ierr = TSSundialsSetTolerance(
 	(TS)PetscToPointer((ts) ),*aabs,*rel);
 }
-void PETSC_STDCALL   tssundialsgetpc_(TS ts,PC *pc, int *__ierr ){
+void PETSC_STDCALL  tssundialsgetpc_(TS ts,PC *pc, int *__ierr ){
 *__ierr = TSSundialsGetPC(
 	(TS)PetscToPointer((ts) ),pc);
 }
-void PETSC_STDCALL   tssundialssetexactfinaltime_(TS ts,PetscTruth *ft, int *__ierr ){
-*__ierr = TSSundialsSetExactFinalTime(
-	(TS)PetscToPointer((ts) ),*ft);
+void PETSC_STDCALL  tssundialssetmintimestep_(TS ts,PetscReal *mindt, int *__ierr ){
+*__ierr = TSSundialsSetMinTimeStep(
+	(TS)PetscToPointer((ts) ),*mindt);
 }
-void PETSC_STDCALL   tssundialsmonitorinternalsteps_(TS ts,PetscTruth *ft, int *__ierr ){
+void PETSC_STDCALL  tssundialssetmaxtimestep_(TS ts,PetscReal *maxdt, int *__ierr ){
+*__ierr = TSSundialsSetMaxTimeStep(
+	(TS)PetscToPointer((ts) ),*maxdt);
+}
+void PETSC_STDCALL  tssundialsmonitorinternalsteps_(TS ts,PetscBool  *ft, int *__ierr ){
 *__ierr = TSSundialsMonitorInternalSteps(
 	(TS)PetscToPointer((ts) ),*ft);
 }

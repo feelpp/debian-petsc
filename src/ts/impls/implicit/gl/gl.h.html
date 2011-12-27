@@ -4,12 +4,12 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:47:11+00:00">
+<meta name="date" content="2011-10-29T19:19:56+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
 
-<a name="line4"> 4: </a> #include <A href="../../../../../include/private/tsimpl.h.html">private/tsimpl.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;private/tsimpl.h&gt;</font>
 
 <a name="line6">  6: </a><font color="#4169E1">typedef</font> <font color="#4169E1">enum</font> {TSGLERROR_FORWARD,TSGLERROR_BACKWARD} TSGLErrorDirection;
 
@@ -36,8 +36,8 @@
 <a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *stage_error;
 
 <a name="line30"> 30: </a>  <font color="#B22222">/* Desirable properties which enable extra optimizations */</font>
-<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> stiffly_accurate;  <font color="#B22222">/* Last row of [A U] is equal t first row of [B V]? */</font>
-<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> fsal;              <font color="#B22222">/* First Same As Last: X[1] = h*Ydot[s-1] (and stiffly accurate) */</font>
+<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  stiffly_accurate;  <font color="#B22222">/* Last row of [A U] is equal t first row of [B V]? */</font>
+<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  fsal;              <font color="#B22222">/* First Same As Last: X[1] = h*Ydot[s-1] (and stiffly accurate) */</font>
 <a name="line33"> 33: </a>};
 
 <a name="line35"> 35: </a><font color="#4169E1"><a name="TS_GL"></a>typedef struct TS_GL </font>{
@@ -74,12 +74,12 @@
 <a name="line66"> 66: </a>  <font color="#B22222">/* Runtime options */</font>
 <a name="line67"> 67: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> current_scheme;
 <a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> max_order,min_order,start_order;
-<a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> extrapolate;           <font color="#B22222">/* use extrapolation to produce initial Newton iterate? */</font>
+<a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  extrapolate;           <font color="#B22222">/* use extrapolation to produce initial Newton iterate? */</font>
 <a name="line70"> 70: </a>  TSGLErrorDirection error_direction; <font color="#B22222">/* TSGLERROR_FORWARD or TSGLERROR_BACKWARD */</font>
 
 <a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> max_step_rejections;
 
-<a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A> setupcalled;
+<a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  setupcalled;
 <a name="line75"> 75: </a>  void *data;
 <a name="line76"> 76: </a>} TS_GL;
 

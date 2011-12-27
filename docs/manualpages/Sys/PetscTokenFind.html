@@ -10,7 +10,7 @@ Locates next "token" in a string
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode PETSC_DLLEXPORT PetscTokenFind(PetscToken a,char *result[])
+PetscErrorCode  PetscTokenFind(PetscToken a,char *result[])
 </PRE>
 Not Collective
 <P>
@@ -30,7 +30,10 @@ it allows you to pass a read-only string into the function.
 This version also treats all characters etc. inside a double quote "
 as a single token.
 <P>
+Not for use in Fortran
+<P>
 
+<P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscTokenCreate.html#PetscTokenCreate">PetscTokenCreate</A>(), <A HREF="../Sys/PetscTokenDestroy.html#PetscTokenDestroy">PetscTokenDestroy</A>()

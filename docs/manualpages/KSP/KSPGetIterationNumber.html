@@ -10,7 +10,7 @@ Gets the current iteration number; if the  <A HREF="../KSP/KSPSolve.html#KSPSolv
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode PETSCKSP_DLLEXPORT KSPGetIterationNumber(KSP ksp,PetscInt *its)
+PetscErrorCode  KSPGetIterationNumber(KSP ksp,PetscInt *its)
 </PRE>
 Not Collective
 <P>
@@ -40,7 +40,6 @@ During the ith iteration this returns i-1
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/pc/examples/tutorials/ex3.c.html">src/ksp/pc/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
@@ -49,4 +48,5 @@ During the ith iteration this returns i-1
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex11.c.html">src/ksp/ksp/examples/tutorials/ex11.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex12.c.html">src/ksp/ksp/examples/tutorials/ex12.c.html</A><BR>
 </BODY></HTML>

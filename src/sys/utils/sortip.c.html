@@ -4,11 +4,11 @@
 <head>
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2010-04-08T19:22:20+00:00">
+<meta name="date" content="2011-10-29T18:52:58+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSC_DLL</font></strong>
+<pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">   This file contains routines for sorting integers and doubles with a permutation array.</font>
 
@@ -16,7 +16,7 @@
 <a name="line6">  6: </a><font color="#B22222">   aliased.  For some compilers, this can cause the compiler to fail to</font>
 <a name="line7">  7: </a><font color="#B22222">   place inner-loop variables into registers.</font>
 <a name="line8">  8: </a><font color="#B22222"> */</font>
-<a name="line9"> 9: </a> #include <A href="../../../include/petscsys.h.html">petscsys.h</A>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;petscsys.h&gt;                </font><font color="#B22222">/*I  "petscsys.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line11"> 11: </a><strong><font color="#228B22">#define SWAP(a,b,t) {t=a;a=b;b=t;}</font></strong>
 
@@ -60,7 +60,7 @@
 
 <a name="line57"> 57: </a><font color="#B22222">   Concepts: sorting^ints with permutation</font>
 
-<a name="line59"> 59: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscSortInt.html#PetscSortInt">PetscSortInt</A>(), <A href="../../../docs/manualpages/Sys/PetscSortRealWithPermutation.html#PetscSortRealWithPermutation">PetscSortRealWithPermutation</A>()</font>
+<a name="line59"> 59: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscSortInt.html#PetscSortInt">PetscSortInt</A>(), <A href="../../../docs/manualpages/Sys/PetscSortRealWithPermutation.html#PetscSortRealWithPermutation">PetscSortRealWithPermutation</A>(), <A href="../../../docs/manualpages/Sys/PetscSortIntWithArray.html#PetscSortIntWithArray">PetscSortIntWithArray</A>()</font>
 <a name="line60"> 60: </a><font color="#B22222"> @*/</font>
 <a name="line61"> 61: </a><strong><font color="#4169E1"><a name="PetscSortIntWithPermutation"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSortIntWithPermutation.html#PetscSortIntWithPermutation">PetscSortIntWithPermutation</A>(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i[],<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> idx[])</font></strong>
 <a name="line62"> 62: </a>{
@@ -151,7 +151,7 @@
 <a name="line159">159: </a><strong><font color="#4169E1"><a name="PetscSortStrWithPermutation_Private"></a>static <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscSortStrWithPermutation_Private(const char* v[],<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> vdx[],<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> right)</font></strong>
 <a name="line160">160: </a>{
 <a name="line162">162: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       tmp,i,last;
-<a name="line163">163: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     gt;
+<a name="line163">163: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      gt;
 <a name="line164">164: </a>  const char     *vl;
 
 <a name="line167">167: </a>  <font color="#4169E1">if</font> (right &lt;= 1) {
@@ -198,7 +198,7 @@
 <a name="line210">210: </a>{
 <a name="line212">212: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       j,k,tmp;
 <a name="line213">213: </a>  const char     *ik;
-<a name="line214">214: </a>  <A href="../../../docs/manualpages/Sys/PetscTruth.html#PetscTruth">PetscTruth</A>     gt;
+<a name="line214">214: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      gt;
 
 <a name="line217">217: </a>  <font color="#4169E1">if</font> (n&lt;8) {
 <a name="line218">218: </a>    <font color="#4169E1">for</font> (k=0; k&lt;n; k++) {

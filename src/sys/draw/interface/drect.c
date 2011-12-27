@@ -1,8 +1,8 @@
-#define PETSC_DLL
+
 /*
        Provides the calling sequences for all the basic PetscDraw routines.
 */
-#include "../src/sys/draw/drawimpl.h"  /*I "petscdraw.h" I*/
+#include <../src/sys/draw/drawimpl.h>  /*I "petscdraw.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawRectangle" 
@@ -23,14 +23,40 @@
    Concepts: rectangle
 
 @*/
-PetscErrorCode PETSC_DLLEXPORT PetscDrawRectangle(PetscDraw draw,PetscReal xl,PetscReal yl,PetscReal xr,PetscReal yr,int c1,int c2,int c3,int c4)
+PetscErrorCode  PetscDrawRectangle(PetscDraw draw,PetscReal xl,PetscReal yl,PetscReal xr,PetscReal yr,int c1,int c2,int c3,int c4)
 {
   PetscErrorCode ierr;
-  PetscTruth isnull;
+  PetscBool  isnull;
   PetscFunctionBegin;
-  PetscValidHeaderSpecific(draw,PETSC_DRAW_COOKIE,1);
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   ierr = PetscTypeCompare((PetscObject)draw,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
   if (isnull) PetscFunctionReturn(0);
   ierr = (*draw->ops->rectangle)(draw,xl,yl,xr,yr,c1,c2,c3,c4);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscDrawSave" 
+/*@
+   PetscDrawSave - Saves a drawn image in a viewer
+
+   Not Collective
+
+   Input Parameters:
+.  draw - the drawing context
+
+   Level: advanced
+
+@*/
+PetscErrorCode  PetscDrawSave(PetscDraw draw)
+{
+  PetscErrorCode ierr;
+  PetscBool  isnull;
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
+  ierr = PetscTypeCompare((PetscObject)draw,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
+  if (isnull) PetscFunctionReturn(0);
+  if (!draw->ops->save) PetscFunctionReturn(0);
+  ierr = (*draw->ops->save)(draw);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
