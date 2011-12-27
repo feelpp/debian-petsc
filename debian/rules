@@ -59,7 +59,7 @@ clean:
 # These are needed for -lam, -dec and -contrib builds
 	-rm -rf debian/lib$(PETSC_NAME) debian/lib$(PETSC_NAME)-dev \
 	  debian/lib$(PETSC_NAME)-dbg
-	-rm -f patch build* install* debian/*.substvars debian/extemp $(ARCH_GENERATED_FILES)
+	-rm -f build* install* debian/*.substvars debian/extemp $(ARCH_GENERATED_FILES)
 # This is commented because it really doesn't do anything useful for us
 # (removes example executables, so what?)
 # make PETSC_ARCH=$(PETSC_ARCH) PETSC_DIR=$(CURDIR) clean
@@ -69,28 +69,17 @@ clean:
 	-rm -f `find . -name \*.o -print` `find . -name \*.pyc -print`
 	-rm -rf lib $(PETSC_ARCH)-c-debug $(PETSC_ARCH)-c-opt configure.log
 
-	if [ -d .pc ]; then \
-	  QUILT_PATCHES=debian/patches quilt pop -a -R || test $$? = 2; \
-	  rm -rf .pc; \
-	fi
-
-patch:
-	if [ ! -d .pc ]; then \
-	  QUILT_PATCHES=debian/patches quilt push -a; \
-	fi
-	touch $@
-
 # PETSc uses the "doctext" program to convert html docs to man pages, which
 # apparently is open-source and available from
 # http://www.mcs.anl.gov/~gropp/sowing .  When it is Debianized, I'll use it.
-build-indep: patch
+build-indep: 
 #	$(MAKE) -C docs PETSC_ARCH=$(PETSC_ARCH) \
 #	 	PETSC_DIR=$(CURDIR)/lib$(PETSC_NAME) manualpages
 	touch $@
 
 # With debugging=1, only static libraries are generated.
 # Build optimized libs second so files are consistent with optimized.
-build-arch: patch
+build-arch: 
 	echo Using MPI implementation $(PETSC_MPI) in directory $(PETSC_MPI_DIR)
 	cp -fp /usr/share/automake-1.11/config.* config/configarch/
 	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/

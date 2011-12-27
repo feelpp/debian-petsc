@@ -5,7 +5,7 @@ Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.
 Uploaders: "Adam C. Powell, IV" <hazelsct@debian.org>
 DM-Upload-Allowed: yes
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 5.0), quilt, python (>= 2.2), gfortran, automake,
+Build-Depends: debhelper (>= 5.0), python (>= 2.2), gfortran, automake,
  libx11-dev, mpi-default-dev, mpi-default-bin,
  libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so,
  libsuitesparse-dev (>= 3.1.0-2),
