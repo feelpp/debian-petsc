@@ -66,8 +66,8 @@ clean:
 # make PETSC_ARCH=$(PETSC_ARCH) PETSC_DIR=$(CURDIR) clean
 # These probably should be removed by `make clean' but aren't
 	-rm -f RDict.log RDict.db configure.log.bkp debian/control.in make.log \
-	  confdefs.h conffix.h conftest.c lib1.so lib2.so
-	-rm -f config/BuildSystem/config/packages/config.*
+	  confdefs.h conffix.h conftest.c lib1.so lib2.so CMakeLists.txt
+	-rm -f config/BuildSystem/config/packages/config.* conf/petscvariables
 	-rm -f `find . -name \*.o -print` `find . -name \*.pyc -print`
 	-rm -rf lib $(PETSC_ARCH)-c-debug $(PETSC_ARCH)-c-opt configure.log
 
