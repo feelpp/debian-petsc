@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+# Remove alternatives links
+if [ "$1" = "remove" ]; then
+  update-alternatives --remove petsc /usr/lib/petscdir/petsc_ver
+  update-alternatives --remove math-blaslapack.m4 /usr/lib/petscdir/petsc_ver/aclocal/math-blaslapack.m4
+  # Somewhat inelegant, but there's no test for empty dir
+  if [ -z "`ls /usr/share/aclocal`" ]; then
+    rmdir /usr/share/aclocal
+  fi
+fi
+
+#DEBHELPER#
