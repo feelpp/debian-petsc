@@ -1,8 +1,11 @@
 petsc (3.2.dfsg-1) unstable; urgency=low
 
   * New upstream (closes: #652101).
+  * Removed bin/win32fe/win32fe.exe and win32feutils.dll, docs/developers.pdf,
+    docs/manual.pdf, src/tops/twopager.pdf and the share and xcode directories
+    from upstream due to lack of source.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 29 Dec 2011 08:44:19 -0500
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 29 Dec 2011 10:19:03 -0500
 
 petsc (3.1.dfsg-11.1) unstable; urgency=low
 
