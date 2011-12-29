@@ -1,0 +1,17 @@
+Fix build system to set hypre libraries properly.
+
+Index: petsc/config/PETSc/packages/hypre.py
+===================================================================
+--- petsc.orig/config/PETSc/packages/hypre.py
++++ petsc/config/PETSc/packages/hypre.py
+@@ -6,7 +6,9 @@
+     self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.7.0b.tar.gz']
+     self.functions = ['HYPRE_IJMatrixCreate']
+     self.includes  = ['HYPRE.h']
+-    self.liblist   = [['libHYPRE.a']]
++    self.liblist   = [['libHYPRE.a', 'libHYPRE_IJ_mv.a']]
++    self.liblist   = [['libHYPRE.a', 'libHYPRE_utilities.a', 'libHYPRE_multivector.a', 'libHYPRE_krylov.a', 'libHYPRE_struct_mv.a', 'libHYPRE_struct_ls.a', 'libHYPRE_sstruct_mv.a', 'libHYPRE_sstruct_ls.a', 'libHYPRE_seq_mv.a', 'libHYPRE_parcsr_mv.a', 'libHYPRE_parcsr_block_mv.a', 'libHYPRE_DistributedMatrix.a', 'libHYPRE_MatrixMatrix.a', 'libHYPRE_IJ_mv.a', 'libHYPRE_Euclid.a', 'libHYPRE_ParaSails.a', 'libHYPRE_DistributedMatrixPilutSolver.a', 'libHYPRE_parcsr_ls.a', 'libHYPRE_FEI_fgmres.a', 'libHYPRE_mli.a', 'libHYPRE_FEI.a']]
++
+     self.license   = 'https://computation.llnl.gov/casc/linear_solvers/sls_hypre.html'
+     return
+ 

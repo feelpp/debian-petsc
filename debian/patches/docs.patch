@@ -1,70 +1,71 @@
 A few minor Debian customizations of the HTML PETSc documentation.
 
-Index: petsc-3.1.dfsg/docs/bugreporting.html
+Index: petsc/docs/bugreporting.html
 ===================================================================
---- petsc-3.1.dfsg.orig/docs/bugreporting.html	2010-04-08 15:58:02.000000000 -0400
-+++ petsc-3.1.dfsg/docs/bugreporting.html	2010-04-30 08:02:27.000000000 -0400
-@@ -21,7 +21,10 @@
+--- petsc.orig/docs/bugreporting.html
++++ petsc/docs/bugreporting.html
+@@ -13,6 +13,11 @@
          </tbody>
        </table>
  
--    
 +    <b>Debian users:</b> If you find a bug, please file a bug report in the
 +    usual Debian way at http://bugs.debian.org , and I'll forward it
 +    upstream, as discussed in the
 +    <a href="../README.Debian.gz">README.Debian</a> file.<p>
++
+  The PETSc maintenance
+ e-mail,&nbsp; <a href="mailto:petsc-maint@mcs.anl.gov">petsc-maint@mcs.anl.gov</a>,&nbsp;
+ is
+@@ -65,7 +70,7 @@
+         <li>OS Version: (run <em>uname -a</em> to get the version
+ number) </li>
+         <li>PETSc Version: (run PETSc program with -v, or look in <a
+- href="petscversion.h">include/petscversion.h</a>)
++ href="/usr/lib/petscdir/3.2/include/petscversion.h">include/petscversion.h</a>)
  
-     The PETSc maintenance e-mail,&nbsp; <a href="mailto:petsc-maint@mcs.anl.gov">petsc-maint@mcs.anl.gov</a>,&nbsp; is intended for
-     users to 
-@@ -84,7 +87,7 @@
  
-       <li>OS Version: (run <em>uname -a</em> to get the version number) </li>
  
--      <li>PETSc Version: (run PETSc program with -v, or look in <a href="petscversion.h">include/petscversion.h</a>)
-+      <li>PETSc Version: (run PETSc program with -v, or look in <a href="/usr/lib/petscdir/3.1/include/petscversion.h">include/petscversion.h</a>)
-       </li>
- 
-       <li>MPI implementation: (e.g., MPICH, LAM, IBM, SGI) </li>
-Index: petsc-3.1.dfsg/docs/index.html
+Index: petsc/docs/index.html
 ===================================================================
---- petsc-3.1.dfsg.orig/docs/index.html	2010-04-08 15:58:03.000000000 -0400
-+++ petsc-3.1.dfsg/docs/index.html	2010-04-30 08:02:27.000000000 -0400
-@@ -129,5 +129,8 @@
+--- petsc.orig/docs/index.html
++++ petsc/docs/index.html
+@@ -170,5 +170,8 @@
          <li><a href="faq.html">FAQ</a> - frequently asked questions
  about PETSc</li>
-         <li><a href="copyright.html">Copyright</a> - statement of the
+         <li><a href="copyright.html">License</a> - statement of the
 -PETSc copyright</body>
 +PETSc copyright</li>
 +        <li><a href="../README.Debian.gz">README.Debian</a> - a description of
 +this Debian package, see also the
 +<a href="http://lyre.mit.edu/~powell/petsc.html">package homepage</a></body>
  </html>
-Index: petsc-3.1.dfsg/docs/faq.html
+Index: petsc/docs/faq.html
 ===================================================================
---- petsc-3.1.dfsg.orig/docs/faq.html	2010-04-30 08:02:48.000000000 -0400
-+++ petsc-3.1.dfsg/docs/faq.html	2010-04-30 08:03:42.000000000 -0400
-@@ -361,22 +361,8 @@
-       <p><a name="reduce-disk-space"><strong><font color="#ff0000">The
- PETSc distribution is SO large. How can
- I reduce my disk space usage?</font> </strong></a></p>
--      <p>a) The directory ${PETSC_DIR}/docs contains a set of
--HTML manual pages in for use with a browser. You can delete these pages
--to save about .8 Mbyte of space. </p>
--      <p>b) The PETSc users manual is provided in PDF in
--${PETSC_DIR}/docs/manual.pdf. You can delete this.&nbsp; </p>
--      <p>c) The PETSc test suite contains sample output for many
--of the examples. These are contained in the PETSc directories
--${PETSC_DIR}/src/*/examples/tutorials/output and
--${PETSC_DIR}/src/*/examples/tests/output. Once you have run the test
--examples, you may remove all of these directories to save about 300
--Kbytes of disk space. </p>
--      <p>d) The debugging versions of the libraries are larger
--than the optimized versions&nbsp;. In a pinch you can work with the
--optimized version although we do not recommend it generally because
--finding bugs is much easier with the debug version. </p>
--      <p>e) <strong><font color="#ff0000"><a name="petsc-uni">I want
-+      <p>a) Don't install the -doc package.</p>
-+      <p>b) <strong><font color="#ff0000"><a name="petsc-uni">I want
- to use PETSc only for uniprocessor
- programs. Must I still install and use a version of MPI</a>?</font> </strong></p>
- No, run config/configure.py with the option --with-mpi=0<br>
+--- petsc.orig/docs/faq.html
++++ petsc/docs/faq.html
+@@ -562,23 +562,8 @@
+             <p><a name="reduce-disk-space"><font color="#ff0000">The
+                   PETSc distribution is SO large. How can I reduce my
+                   disk space usage?</font> </a></p>
+-            <p>a) The directory ${PETSC_DIR}/docs contains a set of HTML
+-              manual pages in for use with a browser. You can delete
+-              these pages to save about .8 Mbyte of space. </p>
+-            <p>b) The PETSc users manual is provided in PDF in
+-              ${PETSC_DIR}/docs/manual.pdf. You can delete this.&nbsp; </p>
+-            <p>c) The PETSc test suite contains sample output for many
+-              of the examples. These are contained in the PETSc
+-              directories ${PETSC_DIR}/src/*/examples/tutorials/output
+-              and ${PETSC_DIR}/src/*/examples/tests/output. Once you
+-              have run the test examples, you may remove all of these
+-              directories to save about 300 Kbytes of disk space. </p>
+-            <p>d) The debugging versions of the libraries are larger
+-              than the optimized versions&nbsp;. In a pinch you can work
+-              with the optimized version although we do not recommend it
+-              generally because finding bugs is much easier with the
+-              debug version. </p>
+-            <p>e) <font color="#ff0000"><a name="petsc-uni">I want to
++            <p>a) Don't install the -doc package.</p>
++            <p>b) <font color="#ff0000"><a name="petsc-uni">I want to
+                   use PETSc only for uniprocessor programs. Must I still
+                   install and use a version of MPI</a>?</font> </p>
+             No, run ./configure with the option --with-mpi=0<br>

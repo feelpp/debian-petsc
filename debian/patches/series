@@ -1,8 +1,3 @@
-upstream-p2.patch
-upstream-p3.patch
-upstream-p5.patch
-upstream-p8.patch
-restore-upstream.patch
 build-debug-nowarn.patch
 build-no-rpath.patch
 docs.patch
@@ -11,6 +6,7 @@ example-src-dir.patch
 lib-versions.patch
 sprng-2.patch
 clean-no-double-colon.patch
-configure-kfreebsd8.patch
+#configure-kfreebsd8.patch
 mumps.patch
-ld.patch
+hypre.patch
+nocleanup.patch
