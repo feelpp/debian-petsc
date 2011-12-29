@@ -55,6 +55,7 @@ ARCH_GENERATED_FILES=debian/lib$(PETSC_NAME)-dev.docs \
 clean:
 	dh_testdir
 	if [ -f TAGS.backup ]; then mv -f TAGS.backup TAGS; fi
+	dh_quilt_unpatch
 	dh_clean -XTAGS
 # These are needed for -lam, -dec and -contrib builds
 	-rm -rf debian/lib$(PETSC_NAME) debian/lib$(PETSC_NAME)-dev \
@@ -73,6 +74,7 @@ clean:
 # apparently is open-source and available from
 # http://www.mcs.anl.gov/~gropp/sowing .  When it is Debianized, I'll use it.
 build-indep: 
+	dh_quilt_patch
 #	$(MAKE) -C docs PETSC_ARCH=$(PETSC_ARCH) \
 #	 	PETSC_DIR=$(CURDIR)/lib$(PETSC_NAME) manualpages
 	touch $@
@@ -80,6 +82,7 @@ build-indep:
 # With debugging=1, only static libraries are generated.
 # Build optimized libs second so files are consistent with optimized.
 build-arch: 
+	dh_quilt_patch
 	echo Using MPI implementation $(PETSC_MPI) in directory $(PETSC_MPI_DIR)
 	cp -fp /usr/share/automake-1.11/config.* config/configarch/
 	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/
