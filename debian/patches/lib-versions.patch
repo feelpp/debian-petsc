@@ -1,9 +1,19 @@
-This changes the shared library name to a versioned one, with a symlink.
+This changes the shared library name to a versioned one, with a symlink, and
+fixes the shared library out-of-date test accordingly.
 
 Index: petsc/conf/rules
 ===================================================================
 --- petsc.orig/conf/rules
 +++ petsc/conf/rules
+@@ -41,7 +41,7 @@
+ chkopts: remote
+ 	@for LIBNAME in ${SHLIBS}; do \
+ 	  library=${INSTALL_LIB_DIR}/$$LIBNAME.a; \
+-	sharedlibrary=${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX}; \
++	sharedlibrary=`readlink -e ${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX}`; \
+ 	flag=""; \
+ 	if [ -f $$library ]; then \
+ 	  if [ -f $$sharedlibrary ]; then \
 @@ -526,8 +526,8 @@
               echo ${RM} -rf ${INSTALL_LIB_DIR}/$${LIBNAME}.dylib.dSYM; \
  	     ${RM} -rf ${INSTALL_LIB_DIR}/$${LIBNAME}.dylib.dSYM; \
