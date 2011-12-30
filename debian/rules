@@ -259,11 +259,11 @@ install-arch: build-arch
 	install -d debian/lib$(PETSC_NAME)/usr/share/lintian/overrides
 	install -d debian/lib$(PETSC_NAME)-dev/usr/share/lintian/overrides
 	install -d debian/lib$(PETSC_NAME)-dbg/usr/share/lintian/overrides
-	sed "s/3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME).overrides > \
+	sed "s/petsc3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME).overrides > \
 	  debian/lib$(PETSC_NAME)/usr/share/lintian/overrides/lib$(PETSC_NAME)
-	sed "s/3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dev.overrides > \
+	sed "s/petsc3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dev.overrides > \
 	  debian/lib$(PETSC_NAME)-dev/usr/share/lintian/overrides/lib$(PETSC_NAME)-dev
-	sed "s/3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dbg.overrides > \
+	sed "s/petsc3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dbg.overrides > \
 	  debian/lib$(PETSC_NAME)-dbg/usr/share/lintian/overrides/lib$(PETSC_NAME)-dbg
 	touch install-arch
 
@@ -347,7 +347,7 @@ ifeq ($(PETSC_VERSION),3.2)
 		  usr/lib/petscdir/$(PETSC_VERSION)/src
 # Lintian overrides
 	install -d debian/$(PETSC_NAME)-doc/usr/share/lintian/overrides
-	sed "s/3.2/$(PETSC_NAME)/" < debian/petsc3.2-doc.overrides > \
+	sed "s/petsc3.2/$(PETSC_NAME)/" < debian/petsc3.2-doc.overrides > \
 	  debian/$(PETSC_NAME)-doc/usr/share/lintian/overrides/$(PETSC_NAME)-doc
 	install -d debian/petsc-dev/usr/share/lintian/overrides
 	install -m 644 debian/petsc-dev.overrides \

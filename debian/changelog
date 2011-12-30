@@ -16,7 +16,7 @@ petsc (3.2.dfsg-1) unstable; urgency=low
   * Lintian overrides for false positives on copyright and petsc-dev.
   * Using MPI selection from mpi-default-dev.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Fri, 30 Dec 2011 12:58:19 -0500
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Fri, 30 Dec 2011 13:27:43 -0500
 
 petsc (3.1.dfsg-11.1) unstable; urgency=low
 
