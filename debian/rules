@@ -115,7 +115,7 @@ build-arch:
 #	  --with-fftw=1 --with-fftw-dir=/usr
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-debug PETSC_DIR=$(CURDIR) \
-	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION)
+	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) all-legacy
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-opt \
 	  ./config/configure.py --with-shared-libraries --with-debugging=0 \
 	  --useThreads 0 --with-clanguage=C++ --with-c-support \
@@ -144,7 +144,7 @@ build-arch:
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-opt PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) \
-	  SL_LINKER_SUFFIX_VERSIONED="so.$(PETSC_VERSION)"
+	  SL_LINKER_SUFFIX_VERSIONED="so.$(PETSC_VERSION)" all-legacy
 	touch $@
 
 build: build-arch build-indep
