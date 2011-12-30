@@ -7,10 +7,10 @@ petsc (3.2.dfsg-1) unstable; urgency=low
   * Forward-ported patches, splitting ld.patch into hypre.patch and
     nocleanup.patch.
   * Reinstated patch/unpatch in build-arch, build-indep and clean targets.
-  * Replaced Scotch with its ParMETIS-compatible interface because PETSc
-    dropped support for Scotch.
+  * PETSc dropped support for Scotch, need to disable MUMPS as well for now
+    (but keeping both in dependencies).
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 29 Dec 2011 18:10:00 -0500
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 29 Dec 2011 20:02:39 -0500
 
 petsc (3.1.dfsg-11.1) unstable; urgency=low
 
