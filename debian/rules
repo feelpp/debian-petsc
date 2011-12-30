@@ -254,6 +254,16 @@ install-arch: build-arch
 	ln -s ../$(PETSC_ARCH)-c-debug/lib debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/lib/libg_c++
 # Legacy symlink so packages for 3.0 can build against 3.2
 	ln -s variables debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/conf/base
+# Lintian overrides
+	install -d debian/lib$(PETSC_NAME)/usr/share/lintian/overrides
+	install -d debian/lib$(PETSC_NAME)-dev/usr/share/lintian/overrides
+	install -d debian/lib$(PETSC_NAME)-dbg/usr/share/lintian/overrides
+	sed "s/3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME).overrides > \
+	  debian/lib$(PETSC_NAME)/usr/share/lintian/overrides/lib$(PETSC_NAME).overrides
+	sed "s/3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dev.overrides > \
+	  debian/lib$(PETSC_NAME)-dev/usr/share/lintian/overrides/lib$(PETSC_NAME)-dev.overrides
+	sed "s/3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dbg.overrides > \
+	  debian/lib$(PETSC_NAME)-dbg/usr/share/lintian/overrides/lib$(PETSC_NAME)-dbg.overrides
 	touch install-arch
 
 # Depends on install-arch because it creates PETSC_DIR
@@ -334,6 +344,13 @@ ifeq ($(PETSC_VERSION),3.2)
 		  usr/lib/petscdir/$(PETSC_VERSION)/makefile.html \
 		usr/share/doc/$(PETSC_NAME)-doc/src \
 		  usr/lib/petscdir/$(PETSC_VERSION)/src
+# Lintian overrides
+	install -d debian/$(PETSC_NAME)-doc/usr/share/lintian/overrides
+	sed "s/3.2/$(PETSC_NAME)/" < debian/petsc3.2-doc.overrides > \
+	  debian/$(PETSC_NAME)-doc/usr/share/lintian/overrides/$(PETSC_NAME)-doc.overrides
+	install -d debian/petsc-dev/usr/share/lintian/overrides
+	install -m 644 debian/petsc-dev.overrides \
+	  debian/petsc-dev/usr/share/lintian/overrides/petsc-dev.overrides
 	touch install-indep
 endif
 
