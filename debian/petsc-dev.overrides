@@ -1,0 +1,2 @@
+# False positive: the copyright notice is somewhat buried in the upstream text
+petsc-dev: copyright-without-copyright-notice

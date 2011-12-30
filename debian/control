@@ -37,8 +37,8 @@ Architecture: all
 Section: libdevel
 Depends: libpetsc3.2-dev, ${misc:Depends}
 Suggests: petsc-dbg
-Description: Meta-package depending on latest PETSc development package
- This package will always depend on the most recent version of petscX-dev
+Description: Virtual package depending on latest PETSc development package
+ This metapackage will always depend on the most recent version of petscX-dev
  (X=version), so if you install it then you will get upgrades automatically.
 
 Package: libpetsc3.2
