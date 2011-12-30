@@ -9,8 +9,10 @@ petsc (3.2.dfsg-1) unstable; urgency=low
   * Reinstated patch/unpatch in build-arch, build-indep and clean targets.
   * PETSc dropped support for Scotch, need to disable MUMPS as well for now
     (but keeping both in dependencies).
+  * Requires newer SuiteSparse than version 3.4.0 in Debian, kludged it to
+    compile properly but runtime behavior is unpredictable at best.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 29 Dec 2011 20:02:39 -0500
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 29 Dec 2011 20:16:09 -0500
 
 petsc (3.1.dfsg-11.1) unstable; urgency=low
 

@@ -1,0 +1,29 @@
+A kludge to get PETSc to compile with SuiteSparse 3.4.0:
+replace Control[UMFPACK_ORDERING] with Info[UMFPACK_ORDERING_USED]
+
+It compiles, but runtime behavior is unpredictable at best.
+
+Index: petsc/src/mat/impls/aij/seq/umfpack/umfpack.c
+===================================================================
+--- petsc.orig/src/mat/impls/aij/seq/umfpack/umfpack.c
++++ petsc/src/mat/impls/aij/seq/umfpack/umfpack.c
+@@ -309,7 +309,7 @@
+ 
+   /* mat ordering */
+   if (!lu->PetscMatOrdering) {
+-    ierr = PetscViewerASCIIPrintf(viewer,"  Control[UMFPACK_ORDERING]: %s (not using the PETSc ordering)\n",UmfpackOrderingTypes[(int)lu->Control[UMFPACK_ORDERING]]);CHKERRQ(ierr);
++    ierr = PetscViewerASCIIPrintf(viewer,"  Info[UMFPACK_ORDERING_USED]: %s (not using the PETSc ordering)\n",UmfpackOrderingTypes[(int)lu->Info[UMFPACK_ORDERING_USED]]);CHKERRQ(ierr);
+   }
+ 
+   PetscFunctionReturn(0);
+@@ -428,8 +428,8 @@
+     case 2: lu->Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC; break;
+     }
+   }
+-  ierr = PetscOptionsEList("-mat_umfpack_ordering","Internal ordering method","None",UmfpackOrderingTypes,sizeof UmfpackOrderingTypes/sizeof UmfpackOrderingTypes[0],UmfpackOrderingTypes[(int)lu->Control[UMFPACK_ORDERING]],&idx,&flg);CHKERRQ(ierr);
+-  if (flg) lu->Control[UMFPACK_ORDERING] = (int)idx;
++  ierr = PetscOptionsEList("-mat_umfpack_ordering","Internal ordering method","None",UmfpackOrderingTypes,sizeof UmfpackOrderingTypes/sizeof UmfpackOrderingTypes[0],UmfpackOrderingTypes[(int)lu->Info[UMFPACK_ORDERING_USED]],&idx,&flg);CHKERRQ(ierr);
++  if (flg) lu->Info[UMFPACK_ORDERING_USED] = (int)idx;
+   ierr = PetscOptionsReal("-mat_umfpack_dense_col","Control[UMFPACK_DENSE_COL]","None",lu->Control[UMFPACK_DENSE_COL],&lu->Control[UMFPACK_DENSE_COL],PETSC_NULL);CHKERRQ(ierr);
+   ierr = PetscOptionsReal("-mat_umfpack_dense_row","Control[UMFPACK_DENSE_ROW]","None",lu->Control[UMFPACK_DENSE_ROW],&lu->Control[UMFPACK_DENSE_ROW],PETSC_NULL);CHKERRQ(ierr);
+   ierr = PetscOptionsReal("-mat_umfpack_amd_dense","Control[UMFPACK_AMD_DENSE]","None",lu->Control[UMFPACK_AMD_DENSE],&lu->Control[UMFPACK_AMD_DENSE],PETSC_NULL);CHKERRQ(ierr);

@@ -10,3 +10,4 @@ clean-no-double-colon.patch
 #mumps.patch
 hypre.patch
 nocleanup.patch
+umfpack.patch
