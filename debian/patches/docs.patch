@@ -1,4 +1,5 @@
 A few minor Debian customizations of the HTML PETSc documentation.
+Remove links to non-free PDF files.
 
 Index: petsc/docs/bugreporting.html
 ===================================================================
@@ -29,7 +30,20 @@ Index: petsc/docs/index.html
 ===================================================================
 --- petsc.orig/docs/index.html
 +++ petsc/docs/index.html
-@@ -170,5 +170,8 @@
+@@ -10,12 +10,6 @@
+ details according to their needs. Users should read the users
+ manual before attempting to do any serious coding with <b>PETSc</b>!
+       <ul>
+-        <li><strong>PETSc users manual</strong> - <a
+- href="manual.pdf">pdf
+-(fully
+-searchable
+-with
+-hyperlinks)</a> </li>
+         <li> <a
+  href="manualpages/help.html">Index</a>
+ of all help topics</li>
+@@ -170,5 +164,8 @@
          <li><a href="faq.html">FAQ</a> - frequently asked questions
  about PETSc</li>
          <li><a href="copyright.html">License</a> - statement of the
