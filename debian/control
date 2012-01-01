@@ -9,8 +9,7 @@ Build-Depends: debhelper (>= 5.0), quilt, python (>= 2.2), gfortran, automake,
  libx11-dev, mpi-default-dev, mpi-default-bin,
  libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so,
  libsuitesparse-dev (>= 3.1.0-2),
- libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0),
- libscotchparmetis-dev, libscotchmetis-dev,
+ libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libptscotch-dev,
  libhdf5-mpi-dev [i386 amd64 lpia ia64 powerpc kfreebsd-i386 kfreebsd-amd64],
  libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
 Build-Conflicts: libatlas3gf-base, libatlas-base-dev

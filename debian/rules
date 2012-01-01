@@ -99,16 +99,16 @@ build-arch:
 	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI).so,/usr/lib/libblacs-$(PETSC_MPI).so] \
 	  --with-scalapack=1 --with-scalapack-include=/usr/include \
 	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
+	  --with-mumps=1 --with-mumps-include=/usr/include \
+	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
 	  --with-hypre=1 --with-hypre-dir=/usr \
+	  --with-ptscotch=1 --with-ptscotch-include=/usr/include/scotch \
+	  --with-ptscotch-lib=[/usr/lib/libptesmumps.so,/usr/lib/libptscotch.so,/usr/lib/libptscotcherr.so] \
 	  $(PETSC_HDF5_FLAGS)
-#	  --with-mumps=1 --with-mumps-include=/usr/include \
-#	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
-#	  --with-parmetis=1 --with-parmetis-include=/usr/include/parmetis \
-#	  --with-parmetis-lib=/usr/lib/libparmetis.so \
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
@@ -127,16 +127,16 @@ build-arch:
 	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI).so,/usr/lib/libblacs-$(PETSC_MPI).so] \
 	  --with-scalapack=1 --with-scalapack-include=/usr/include \
 	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
+	  --with-mumps=1 --with-mumps-include=/usr/include \
+	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
 	  --with-hypre=1 --with-hypre-dir=/usr \
+	  --with-ptscotch=1 --with-ptscotch-include=/usr/include/scotch \
+	  --with-ptscotch-lib=[/usr/lib/libptesmumps.so,/usr/lib/libptscotch.so,/usr/lib/libptscotcherr.so] \
 	  $(PETSC_HDF5_FLAGS)
-#	  --with-mumps=1 --with-mumps-include=/usr/include \
-#	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
-#	  --with-parmetis=1 --with-parmetis-include=/usr/include/parmetis \
-#	  --with-parmetis-lib=/usr/lib/libparmetis.so \
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
