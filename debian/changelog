@@ -2,8 +2,9 @@ petsc (3.2.dfsg-2) unstable; urgency=low
 
   * Fixed MUMPS support to work with PTScotch (thanks: Satish Balay).
   * Removed doc link to non-free PDF file.
+  * Added mpich2 case to debian/rules (closes: #652307).
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Sun, 01 Jan 2012 12:11:30 -0500
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Wed, 11 Jan 2012 13:31:57 -0500
 
 petsc (3.2.dfsg-1) unstable; urgency=low
 
