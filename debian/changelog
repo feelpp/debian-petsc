@@ -3,8 +3,11 @@ petsc (3.2.dfsg-2) unstable; urgency=low
   * Fixed MUMPS support to work with PTScotch (thanks: Satish Balay).
   * Removed doc link to non-free PDF file.
   * Added mpich2 case to debian/rules (closes: #652307).
+  * Restrict architectures to exclude armel because of an unknown python bug
+    (closes: #651453), kfreebsd-* because of a FORTRAN test problem, and s390x
+    because of dependency issues (missing architecture in PVM).
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Wed, 11 Jan 2012 13:31:57 -0500
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Wed, 11 Jan 2012 18:49:43 -0500
 
 petsc (3.2.dfsg-1) unstable; urgency=low
 
