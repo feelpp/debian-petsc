@@ -2,8 +2,9 @@ petsc (3.2.dfsg-3) unstable; urgency=low
 
   * Reinstated s390x arch since an external error prevents it from building (no
     s390x support in PVM -> no ScaLAPACK).
+  * Changed libscotch-dev to libptscotch-dev in libpetsc3.2-dev Build-Depends.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Mon, 16 Jan 2012 10:48:05 -0500
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Mon, 16 Jan 2012 10:50:14 -0500
 
 petsc (3.2.dfsg-2) unstable; urgency=low
 
