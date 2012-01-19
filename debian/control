@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 5.0), quilt, python (>= 2.2), gfortran, automake,
  libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so,
  libsuitesparse-dev (>= 3.1.0-2),
  libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libptscotch-dev,
- libhdf5-mpi-dev [i386 amd64 lpia ia64 powerpc kfreebsd-i386 kfreebsd-amd64],
+ libhdf5-mpi-dev [i386 alpha amd64 lpia ia64 powerpc kfreebsd-i386 kfreebsd-amd64],
  libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
 Build-Conflicts: libatlas3gf-base, libatlas-base-dev, cmake, lam4-dev
 Vcs-Git: git://git.debian.org/git/debian-science/packages/petsc.git
@@ -18,7 +18,7 @@ Vcs-Browser: http://git.debian.org/?p=debian-science/packages/petsc.git
 Homepage: http://www.mcs.anl.gov/petsc
 
 Package: libpetsc3.2-dev
-Architecture: amd64 armhf hurd-i386 i386 ia64 mips mipsel powerpc s390 s390x sparc
+Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: libdevel
 Depends: libpetsc3.2 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libptscotch-dev, ${babel-dev}, ${misc:Depends}, ${hdf5-dev}, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
 Suggests: petsc-dev (= ${binary:Version}), libpetsc3.2-dbg (= ${binary:Version}), petsc3.2-doc (= ${binary:Version}), libluminate-dev
@@ -41,7 +41,7 @@ Description: Virtual package depending on latest PETSc development package
  (X=version), so if you install it then you will get upgrades automatically.
 
 Package: libpetsc3.2
-Architecture: amd64 armhf hurd-i386 i386 ia64 mips mipsel powerpc s390 s390x sparc
+Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: libs
 Depends: ${shlibs:Depends}, ${mpi}, ${misc:Depends}
 Description: Shared libraries for version 3.2 of PETSc
@@ -53,7 +53,7 @@ Description: Shared libraries for version 3.2 of PETSc
  features of the PETSc libraries.
 
 Package: libpetsc3.2-dbg
-Architecture: amd64 armhf hurd-i386 i386 ia64 mips mipsel powerpc s390 s390x sparc
+Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: debug
 Depends: libpetsc3.2-dev (= ${binary:Version}), ${misc:Depends}
 Suggests: petsc-dbg (= ${binary:Version})
