@@ -3,8 +3,9 @@ petsc (3.2.dfsg-4) UNRELEASED; urgency=low
   * Added lam4-dev to Build-Conflicts (closes: #656189).
   * Added alpha and lpia to architecture list (closes: #655940).
   * Added CHOLMOD support (closes: #642439).
+  * Test building with HDF5 on all arches.
 
- -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 19 Jan 2012 14:39:47 -0500
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Thu, 19 Jan 2012 16:48:16 -0500
 
 petsc (3.2.dfsg-3) unstable; urgency=low
 
