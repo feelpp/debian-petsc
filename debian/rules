@@ -102,6 +102,8 @@ build-arch:
 	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
+	  --with-cholmod=1 --with-cholmod-include=/usr/include/suitesparse \
+	  --with-cholmod-lib=/usr/lib/libcholmod.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
 	  --with-hypre=1 --with-hypre-dir=/usr \
@@ -130,6 +132,8 @@ build-arch:
 	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
 	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
+	  --with-cholmod=1 --with-cholmod-include=/usr/include/suitesparse \
+	  --with-cholmod-lib=/usr/lib/libcholmod.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
 	  --with-hypre=1 --with-hypre-dir=/usr \
