@@ -1,13 +1,14 @@
 <center><a href="sacusppoly.cu">Actual source code: sacusppoly.cu</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/sacusp/sacusppoly.cu.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:40+00:00">
+<meta name="date" content="2012-08-29T17:01:30+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*  -------------------------------------------------------------------- */</font>
 
@@ -16,7 +17,7 @@
 <a name="line6">  6: </a><font color="#B22222">     pcimpl.h - private include file intended for use by all preconditioners </font>
 <a name="line7">  7: </a><font color="#B22222">*/</font>
 
-<a name="line9">  9: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 <a name="line10"> 10: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
 <a name="line11"> 11: </a><font color="#A020F0">#include &lt;cusp/monitor.h&gt;</font>
 <a name="line12"> 12: </a><strong><font color="#228B22">#undef <A href="../../../../../docs/manualpages/Vec/VecType.html#VecType">VecType</A></font></strong>
@@ -58,7 +59,7 @@
 <a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line52"> 52: </a>  Mat_SeqAIJCUSP *gpustruct;
 
-<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,MATSEQAIJCUSP,&amp;flg);
+<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,MATSEQAIJCUSP,&amp;flg);
 <a name="line56"> 56: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Currently only handles CUSP matrices"</font>);
 <a name="line57"> 57: </a>  <font color="#4169E1">if</font> (pc-&gt;setupcalled != 0){
 <a name="line58"> 58: </a>    try {
@@ -68,7 +69,7 @@
 <a name="line62"> 62: </a>    }
 <a name="line63"> 63: </a>  }
 <a name="line64"> 64: </a>  try {
-<a name="line65"> 65: </a>    MatCUSPCopyToGPU(pc-&gt;pmat);CHKERRCUSP(ierr);
+<a name="line65"> 65: </a>    MatCUSPCopyToGPU(pc-&gt;pmat);
 <a name="line66"> 66: </a>    gpustruct  = (Mat_SeqAIJCUSP *)(pc-&gt;pmat-&gt;spptr);
 <a name="line67"> 67: </a>    sa-&gt;SACUSPPoly = new cuspsaprecond(*(CUSPMATRIX*)gpustruct-&gt;mat);
 <a name="line68"> 68: </a>  } catch(char* ex) {
@@ -122,8 +123,8 @@
 <a name="line124">124: </a>  CUSPARRAY      *xarray,*yarray;
 
 <a name="line127">127: </a>  <font color="#B22222">/*how to apply a certain fixed number of iterations?*/</font>
-<a name="line128">128: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)x,VECSEQCUSP,&amp;flg1);
-<a name="line129">129: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)y,VECSEQCUSP,&amp;flg2);
+<a name="line128">128: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)x,<A href="../../../../../docs/manualpages/Vec/VECSEQCUSP.html#VECSEQCUSP">VECSEQCUSP</A>,&amp;flg1);
+<a name="line129">129: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)y,<A href="../../../../../docs/manualpages/Vec/VECSEQCUSP.html#VECSEQCUSP">VECSEQCUSP</A>,&amp;flg2);
 <a name="line130">130: </a>  <font color="#4169E1">if</font> (!(flg1 &amp;&amp; flg2)) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_SUP, <font color="#666666">"Currently only handles CUSP vectors"</font>);
 <a name="line131">131: </a>  <font color="#4169E1">if</font> (!sac-&gt;SACUSPPoly) {
 <a name="line132">132: </a>    PCSetUp_SACUSPPoly(pc);
@@ -182,6 +183,7 @@
 
 
 
+<a name="line196">196: </a>EXTERN_C_BEGIN
 <a name="line199">199: </a><strong><font color="#4169E1"><a name="PCCreate_SACUSPPoly"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_SACUSPPoly(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line200">200: </a>{
 <a name="line201">201: </a>  PC_SACUSPPoly      *sac;
@@ -219,6 +221,7 @@
 <a name="line235">235: </a>  pc-&gt;ops-&gt;applysymmetricright = 0;
 <a name="line236">236: </a>  <font color="#4169E1">return</font>(0);
 <a name="line237">237: </a>}
+<a name="line238">238: </a>EXTERN_C_END
 </pre>
 </body>
 

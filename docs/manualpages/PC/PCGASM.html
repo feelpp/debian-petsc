@@ -1,19 +1,22 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCGASM.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCGASM</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCGASM"><H1>PCGASM</H1></A>
 Use the (restricted) additive Schwarz method, each block is (approximately) solved with  its own <A HREF="../KSP/KSP.html#KSP">KSP</A> object. 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_truelocal </B></TD><TD>- Activates PCGGASMSetUseTrueLocal()
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_total_block_count &lt;n&gt; </B></TD><TD>- Sets total number of local subdomains (known as blocks) to be distributed among processors
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_blocks &lt;blks&gt; </B></TD><TD>- Sets total blocks
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_view_subdomains       </B></TD><TD>- activates the printing of subdomain indices in <A HREF="../PC/PCView.html#PCView">PCView</A>(), -ksp_view or -snes_view
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_overlap &lt;ovl&gt; </B></TD><TD>- Sets overlap
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_print_subdomains      </B></TD><TD>- activates the printing of subdomain indices in <A HREF="../PC/PCSetUp.html#PCSetUp">PCSetUp</A>()
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_overlap &lt;ovl&gt;         </B></TD><TD>- Sets overlap by which to (automatically) extend local subdomains
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_type [basic,restrict,interpolate,none] </B></TD><TD>- Sets GASM type
 </TD></TR></TABLE>
@@ -45,7 +48,7 @@ Barry Smith, Petter Bjorstad, and William Gropp, Cambridge University Press, ISB
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>,
-<BR><A HREF="../PC/PCBJACOBI.html#PCBJACOBI">PCBJACOBI</A>, PCGASMSetUseTrueLocal(), <A HREF="../PC/PCGASMGetSubKSP.html#PCGASMGetSubKSP">PCGASMGetSubKSP</A>(), <A HREF="../PC/PCGASMSetLocalSubdomains.html#PCGASMSetLocalSubdomains">PCGASMSetLocalSubdomains</A>(),
+<BR><A HREF="../PC/PCBJACOBI.html#PCBJACOBI">PCBJACOBI</A>, PCGASMSetUseTrueLocal(), <A HREF="../PC/PCGASMGetSubKSP.html#PCGASMGetSubKSP">PCGASMGetSubKSP</A>(), <A HREF="../PC/PCGASMSetSubdomains.html#PCGASMSetSubdomains">PCGASMSetSubdomains</A>(),
 <A HREF="../PC/PCGASMSetTotalSubdomains.html#PCGASMSetTotalSubdomains">PCGASMSetTotalSubdomains</A>(), PCSetModifySubmatrices(), <A HREF="../PC/PCGASMSetOverlap.html#PCGASMSetOverlap">PCGASMSetOverlap</A>(), <A HREF="../PC/PCGASMSetType.html#PCGASMSetType">PCGASMSetType</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner

@@ -1,13 +1,14 @@
 <center><a href="ex2.c">Actual source code: ex2.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/random/examples/tutorials/ex2.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:53:43+00:00">
+<meta name="date" content="2012-08-29T16:36:53+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A> functions.\n\n"</font>;
 
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;stdlib.h&gt;</font>
@@ -52,7 +53,7 @@
 <a name="line44"> 44: </a>    double         r,dt;
 <a name="line45"> 45: </a>    int            n;
 <a name="line46"> 46: </a>    unsigned long  i,myNumSim,totalNumSim,numdim;
-<a name="line47"> 47: </a>    double         payoff;
+<a name="line47"> 47: </a>    <font color="#B22222">/* double         payoff; */</font>
 <a name="line48"> 48: </a>    double         *vol, *St0, x, totalx;
 <a name="line49"> 49: </a>    int            np,myid;
 <a name="line50"> 50: </a>    time_t         start,stop;
@@ -118,8 +119,8 @@
 
 <a name="line112">112: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Reduce.html#MPI_Reduce">MPI_Reduce</A>(&amp;x, &amp;totalx, 1, MPI_DOUBLE, MPI_SUM,0,<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>);
 <a name="line113">113: </a>    time(&amp;stop);
-<a name="line114">114: </a>    payoff = exp(-r*dt*n)*(totalx/totalNumSim);
-<a name="line115">115: </a>    <font color="#B22222">/* <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,"Option price = $%.3f using %ds of %s computation with %d %s for %d stocks, %d trading period per year, %.2f%% interest rate\n",</font>
+<a name="line114">114: </a>    <font color="#B22222">/* payoff = exp(-r*dt*n)*(totalx/totalNumSim);</font>
+<a name="line115">115: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,"Option price = $%.3f using %ds of %s computation with %d %s for %d stocks, %d trading period per year, %.2f%% interest rate\n",</font>
 <a name="line116">116: </a><font color="#B22222">     payoff,(int)(stop - start),"parallel",np,"processors",n,(int)(1/dt),r); */</font>
 <a name="line117">117: </a>
 <a name="line118">118: </a>    free(vol);
@@ -135,8 +136,8 @@
 <a name="line128">128: </a>  double         u1,u2,t;
 
 <a name="line131">131: </a>  <font color="#4169E1">for</font> (i=0;i&lt;size;i+=2){
-<a name="line132">132: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomGetValue.html#PetscRandomGetValue">PetscRandomGetValue</A>(ran,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)&amp;u1);
-<a name="line133">133: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomGetValue.html#PetscRandomGetValue">PetscRandomGetValue</A>(ran,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)&amp;u2);
+<a name="line132">132: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomGetValue.html#PetscRandomGetValue">PetscRandomGetValue</A>(ran,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)&amp;u1);CHKERRABORT(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,ierr);
+<a name="line133">133: </a>    <A href="../../../../../docs/manualpages/Sys/PetscRandomGetValue.html#PetscRandomGetValue">PetscRandomGetValue</A>(ran,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)&amp;u2);CHKERRABORT(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,ierr);
 <a name="line134">134: </a>
 <a name="line135">135: </a>    t = sqrt(-2*log(u1));
 <a name="line136">136: </a>    eps[i] = t * cos(2*PI*u2);

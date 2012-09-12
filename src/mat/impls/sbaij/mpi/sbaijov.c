@@ -22,7 +22,7 @@ PetscErrorCode MatIncreaseOverlap_MPISBAIJ(Mat C,PetscInt is_max,IS is[],PetscIn
   PetscBT        table;
   PetscInt       *ai,brow,nz,nis,l,nmax,nstages_local,nstages,max_no,pos;
   const PetscInt *idx;
-  PetscBool      flg;
+  PetscBool      flg,*allcolumns,*allrows;
 
   PetscFunctionBegin;
   ierr = PetscMalloc(is_max*sizeof(IS),&is_new);CHKERRQ(ierr);
@@ -38,18 +38,34 @@ PetscErrorCode MatIncreaseOverlap_MPISBAIJ(Mat C,PetscInt is_max,IS is[],PetscIn
     for (i=0; i<ov; ++i) {
       ierr = MatIncreaseOverlap_MPISBAIJ_Once(C,is_max,is_new);CHKERRQ(ierr);
     }
-  } else { /* scalable implementation using modified BAIJ routines */
-
+  } else { /* implementation using modified BAIJ routines */
+    
   ierr = PetscMalloc((Mbs+1)*sizeof(PetscInt),&nidx);CHKERRQ(ierr); 
-  ierr = PetscBTCreate(Mbs,table);CHKERRQ(ierr); /* for column search */
+  ierr = PetscBTCreate(Mbs,&table);CHKERRQ(ierr); /* for column search */
+  ierr = PetscMalloc2(is_max+1,PetscBool,&allcolumns,is_max+1,PetscBool,&allrows);CHKERRQ(ierr);
 
   /* Create is_row */
   ierr = PetscMalloc(is_max*sizeof(IS **),&is_row);CHKERRQ(ierr);
   ierr = ISCreateStride(PETSC_COMM_SELF,Mbs,0,1,&is_row[0]);CHKERRQ(ierr); 
-  for (i=1; i<is_max; i++) is_row[i] = is_row[0]; /* reuse is_row[0] */
+  allrows[0] = PETSC_TRUE; 
+  for (i=1; i<is_max; i++) {
+    is_row[i]  = is_row[0]; /* reuse is_row[0] */
+    allrows[i] = PETSC_TRUE; 
+  }
   
   /* Allocate memory to hold all the submatrices - Modified from MatGetSubMatrices_MPIBAIJ() */
   ierr = PetscMalloc((is_max+1)*sizeof(Mat),&submats);CHKERRQ(ierr);
+
+  /* Check for special case: each processor gets entire matrix columns */
+  for (i=0; i<is_max; i++) {
+    ierr = ISIdentity(is_new[i],&flg);CHKERRQ(ierr);
+    ierr = ISGetLocalSize(is_new[i],&isz);CHKERRQ(ierr);
+    if (flg && isz == Mbs){
+      allcolumns[i] = PETSC_TRUE;
+    } else {
+      allcolumns[i] = PETSC_FALSE;
+    }
+  }
 
   /* Determine the number of stages through which submatrices are done */
   nmax = 20*1000000 / (c->Nbs * sizeof(PetscInt));
@@ -65,15 +81,14 @@ PetscErrorCode MatIncreaseOverlap_MPISBAIJ(Mat C,PetscInt is_max,IS is[],PetscIn
       if (pos+nmax <= is_max) max_no = nmax;
       else if (pos == is_max) max_no = 0;
       else                   max_no = is_max-pos;
-     
       c->ijonly = PETSC_TRUE; 
-      ierr = MatGetSubMatrices_MPIBAIJ_local(C,max_no,is_row+pos,is_new+pos,MAT_INITIAL_MATRIX,submats+pos);CHKERRQ(ierr);
+      ierr = MatGetSubMatrices_MPIBAIJ_local(C,max_no,is_row+pos,is_new+pos,MAT_INITIAL_MATRIX,allrows+pos,allcolumns+pos,submats+pos);CHKERRQ(ierr);
       pos += max_no;
     }
    
     /* 2) Row search */
     ierr = MatIncreaseOverlap_MPIBAIJ_Once(C,is_max,is_new);CHKERRQ(ierr);
-
+    
     /* 3) Column search */
     for (i=0; i<is_max; i++){ 
       asub_i = (Mat_SeqSBAIJ*)submats[i]->data;
@@ -109,8 +124,8 @@ PetscErrorCode MatIncreaseOverlap_MPISBAIJ(Mat C,PetscInt is_max,IS is[],PetscIn
       ierr = MatDestroy(&submats[i]);CHKERRQ(ierr);
     }
   } 
-
-  ierr = PetscBTDestroy(table);CHKERRQ(ierr);
+  ierr = PetscFree2(allcolumns,allrows);CHKERRQ(ierr);
+  ierr = PetscBTDestroy(&table);CHKERRQ(ierr);
   ierr = PetscFree(submats);CHKERRQ(ierr);
   ierr = ISDestroy(&is_row[0]);CHKERRQ(ierr);
   ierr = PetscFree(is_row);CHKERRQ(ierr);
@@ -326,7 +341,7 @@ static PetscErrorCode MatIncreaseOverlap_MPISBAIJ_Once(Mat C,PetscInt is_max,IS 
   
   ierr = PetscMalloc((len+1)*sizeof(PetscInt),&odata1);CHKERRQ(ierr);
   ierr = PetscMalloc(size*sizeof(PetscInt**),&odata2_ptr);CHKERRQ(ierr); 
-  ierr = PetscBTCreate(Mbs,otable);CHKERRQ(ierr);
+  ierr = PetscBTCreate(Mbs,&otable);CHKERRQ(ierr);
 
   len_max = ois_max*(Mbs+1);  /* max space storing all is[] for each receive */
   len_est = 2*len_max; /* estimated space of storing is[] for all receiving messages */
@@ -368,7 +383,7 @@ static PetscErrorCode MatIncreaseOverlap_MPISBAIJ_Once(Mat C,PetscInt is_max,IS 
     } 
   } 
   ierr = PetscFree(odata1);CHKERRQ(ierr); 
-  ierr = PetscBTDestroy(otable);CHKERRQ(ierr); 
+  ierr = PetscBTDestroy(&otable);CHKERRQ(ierr); 
 
   /* 3. Do local work on this processor's is[] */
   /*-------------------------------------------*/
@@ -483,7 +498,7 @@ static PetscErrorCode MatIncreaseOverlap_MPISBAIJ_Local(Mat C,PetscInt *data,Pet
   rstart = c->rstartbs;
   is_max = data[0];
 
-  ierr = PetscBTCreate(Mbs,table0);CHKERRQ(ierr);
+  ierr = PetscBTCreate(Mbs,&table0);CHKERRQ(ierr);
   
   nidx[0] = is_max; 
   idx_i   = data + is_max + 1; /* ptr to input is[0] array */
@@ -562,7 +577,7 @@ static PetscErrorCode MatIncreaseOverlap_MPISBAIJ_Local(Mat C,PetscInt *data,Pet
     }
     nidx[1+i] = isz; /* size of new is[i] */
   } /* for each is */
-  ierr = PetscBTDestroy(table0);CHKERRQ(ierr); 
+  ierr = PetscBTDestroy(&table0);CHKERRQ(ierr); 
   
   PetscFunctionReturn(0);
 }

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* matrix.c */
 /* Fortran interface file */
 
@@ -28,6 +28,11 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscmat.h"
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matfindnonzerorows_ MATFINDNONZEROROWS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matfindnonzerorows_ matfindnonzerorows
+#endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matgetdiagonalblock_ MATGETDIAGONALBLOCK
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -72,21 +77,6 @@ extern void PetscRmPointer(void*);
 #define matsetup_ MATSETUP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matsetup_ matsetup
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matscalesystem_ MATSCALESYSTEM
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matscalesystem_ matscalesystem
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matunscalesystem_ MATUNSCALESYSTEM
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matunscalesystem_ matunscalesystem
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matusescaledform_ MATUSESCALEDFORM
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matusescaledform_ matusescaledform
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matdestroy_ MATDESTROY
@@ -389,9 +379,19 @@ extern void PetscRmPointer(void*);
 #define matgetblocksize_ matgetblocksize
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matgetblocksizes_ MATGETBLOCKSIZES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matgetblocksizes_ matgetblocksizes
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matsetblocksize_ MATSETBLOCKSIZE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matsetblocksize_ matsetblocksize
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matsetblocksizes_ MATSETBLOCKSIZES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matsetblocksizes_ matsetblocksizes
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matsetunfactored_ MATSETUNFACTORED
@@ -424,9 +424,24 @@ extern void PetscRmPointer(void*);
 #define matrestrict_ matrestrict
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matnullspaceattach_ MATNULLSPACEATTACH
+#define matgetnullspace_ MATGETNULLSPACE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matnullspaceattach_ matnullspaceattach
+#define matgetnullspace_ matgetnullspace
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matsetnullspace_ MATSETNULLSPACE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matsetnullspace_ matsetnullspace
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matsetnearnullspace_ MATSETNEARNULLSPACE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matsetnearnullspace_ matsetnearnullspace
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matgetnearnullspace_ MATGETNEARNULLSPACE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matgetnearnullspace_ matgetnearnullspace
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matsetvaluesadic_ MATSETVALUESADIC
@@ -499,6 +514,21 @@ extern void PetscRmPointer(void*);
 #define matptapsymbolic_ matptapsymbolic
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matrart_ MATRART
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matrart_ matrart
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matrartnumeric_ MATRARTNUMERIC
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matrartnumeric_ matrartnumeric
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matrartsymbolic_ MATRARTSYMBOLIC
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matrartsymbolic_ matrartsymbolic
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matmatmult_ MATMATMULT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matmatmult_ matmatmult
@@ -514,9 +544,14 @@ extern void PetscRmPointer(void*);
 #define matmatmultnumeric_ matmatmultnumeric
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matmatmulttranspose_ MATMATMULTTRANSPOSE
+#define matmattransposemult_ MATMATTRANSPOSEMULT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matmatmulttranspose_ matmatmulttranspose
+#define matmattransposemult_ matmattransposemult
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define mattransposematmult_ MATTRANSPOSEMATMULT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define mattransposematmult_ mattransposematmult
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matgetlocalsubmatrix_ MATGETLOCALSUBMATRIX
@@ -533,17 +568,16 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matfindzerodiagonals_ matfindzerodiagonals
 #endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matinvertblockdiagonal_ MATINVERTBLOCKDIAGONAL
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matinvertblockdiagonal_ matinvertblockdiagonal
-#endif
 
 
 /* Definitions of Fortran Wrapper routines */
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  matfindnonzerorows_(Mat mat,IS *keptrows, int *__ierr ){
+*__ierr = MatFindNonzeroRows(
+	(Mat)PetscToPointer((mat) ),keptrows);
+}
 void PETSC_STDCALL  matgetdiagonalblock_(Mat A,Mat *a, int *__ierr ){
 *__ierr = MatGetDiagonalBlock(
 	(Mat)PetscToPointer((A) ),a);
@@ -579,22 +613,6 @@ void PETSC_STDCALL  matrestorerowuppertriangular_(Mat mat, int *__ierr ){
 void PETSC_STDCALL  matsetup_(Mat A, int *__ierr ){
 *__ierr = MatSetUp(
 	(Mat)PetscToPointer((A) ));
-}
-void PETSC_STDCALL  matscalesystem_(Mat mat,Vec b,Vec x, int *__ierr ){
-*__ierr = MatScaleSystem(
-	(Mat)PetscToPointer((mat) ),
-	(Vec)PetscToPointer((b) ),
-	(Vec)PetscToPointer((x) ));
-}
-void PETSC_STDCALL  matunscalesystem_(Mat mat,Vec b,Vec x, int *__ierr ){
-*__ierr = MatUnScaleSystem(
-	(Mat)PetscToPointer((mat) ),
-	(Vec)PetscToPointer((b) ),
-	(Vec)PetscToPointer((x) ));
-}
-void PETSC_STDCALL  matusescaledform_(Mat mat,PetscBool  *scaled, int *__ierr ){
-*__ierr = MatUseScaledForm(
-	(Mat)PetscToPointer((mat) ),*scaled);
 }
 void PETSC_STDCALL  matdestroy_(Mat *A, int *__ierr ){
 *__ierr = MatDestroy(A);
@@ -892,9 +910,17 @@ void PETSC_STDCALL  matgetblocksize_(Mat mat,PetscInt *bs, int *__ierr ){
 *__ierr = MatGetBlockSize(
 	(Mat)PetscToPointer((mat) ),bs);
 }
+void PETSC_STDCALL  matgetblocksizes_(Mat mat,PetscInt *rbs,PetscInt *cbs, int *__ierr ){
+*__ierr = MatGetBlockSizes(
+	(Mat)PetscToPointer((mat) ),rbs,cbs);
+}
 void PETSC_STDCALL  matsetblocksize_(Mat mat,PetscInt *bs, int *__ierr ){
 *__ierr = MatSetBlockSize(
 	(Mat)PetscToPointer((mat) ),*bs);
+}
+void PETSC_STDCALL  matsetblocksizes_(Mat mat,PetscInt *rbs,PetscInt *cbs, int *__ierr ){
+*__ierr = MatSetBlockSizes(
+	(Mat)PetscToPointer((mat) ),*rbs,*cbs);
 }
 void PETSC_STDCALL  matsetunfactored_(Mat mat, int *__ierr ){
 *__ierr = MatSetUnfactored(
@@ -929,10 +955,23 @@ void PETSC_STDCALL  matrestrict_(Mat A,Vec x,Vec y, int *__ierr ){
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL  matnullspaceattach_(Mat mat,MatNullSpace nullsp, int *__ierr ){
-*__ierr = MatNullSpaceAttach(
+void PETSC_STDCALL  matgetnullspace_(Mat mat,MatNullSpace *nullsp, int *__ierr ){
+*__ierr = MatGetNullSpace(
+	(Mat)PetscToPointer((mat) ),nullsp);
+}
+void PETSC_STDCALL  matsetnullspace_(Mat mat,MatNullSpace nullsp, int *__ierr ){
+*__ierr = MatSetNullSpace(
 	(Mat)PetscToPointer((mat) ),
 	(MatNullSpace)PetscToPointer((nullsp) ));
+}
+void PETSC_STDCALL  matsetnearnullspace_(Mat mat,MatNullSpace nullsp, int *__ierr ){
+*__ierr = MatSetNearNullSpace(
+	(Mat)PetscToPointer((mat) ),
+	(MatNullSpace)PetscToPointer((nullsp) ));
+}
+void PETSC_STDCALL  matgetnearnullspace_(Mat mat,MatNullSpace *nullsp, int *__ierr ){
+*__ierr = MatGetNearNullSpace(
+	(Mat)PetscToPointer((mat) ),nullsp);
 }
 void PETSC_STDCALL  matsetvaluesadic_(Mat mat,void*v, int *__ierr ){
 *__ierr = MatSetValuesAdic(
@@ -996,6 +1035,22 @@ void PETSC_STDCALL  matptapsymbolic_(Mat A,Mat P,PetscReal *fill,Mat *C, int *__
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((P) ),*fill,C);
 }
+void PETSC_STDCALL  matrart_(Mat A,Mat R,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
+*__ierr = MatRARt(
+	(Mat)PetscToPointer((A) ),
+	(Mat)PetscToPointer((R) ),*scall,*fill,C);
+}
+void PETSC_STDCALL  matrartnumeric_(Mat A,Mat R,Mat C, int *__ierr ){
+*__ierr = MatRARtNumeric(
+	(Mat)PetscToPointer((A) ),
+	(Mat)PetscToPointer((R) ),
+	(Mat)PetscToPointer((C) ));
+}
+void PETSC_STDCALL  matrartsymbolic_(Mat A,Mat R,PetscReal *fill,Mat *C, int *__ierr ){
+*__ierr = MatRARtSymbolic(
+	(Mat)PetscToPointer((A) ),
+	(Mat)PetscToPointer((R) ),*fill,C);
+}
 void PETSC_STDCALL  matmatmult_(Mat A,Mat B,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
 *__ierr = MatMatMult(
 	(Mat)PetscToPointer((A) ),
@@ -1012,8 +1067,13 @@ void PETSC_STDCALL  matmatmultnumeric_(Mat A,Mat B,Mat C, int *__ierr ){
 	(Mat)PetscToPointer((B) ),
 	(Mat)PetscToPointer((C) ));
 }
-void PETSC_STDCALL  matmatmulttranspose_(Mat A,Mat B,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
-*__ierr = MatMatMultTranspose(
+void PETSC_STDCALL  matmattransposemult_(Mat A,Mat B,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
+*__ierr = MatMatTransposeMult(
+	(Mat)PetscToPointer((A) ),
+	(Mat)PetscToPointer((B) ),*scall,*fill,C);
+}
+void PETSC_STDCALL  mattransposematmult_(Mat A,Mat B,MatReuse *scall,PetscReal *fill,Mat *C, int *__ierr ){
+*__ierr = MatTransposeMatMult(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*scall,*fill,C);
 }
@@ -1032,10 +1092,6 @@ void PETSC_STDCALL  matrestorelocalsubmatrix_(Mat mat,IS isrow,IS iscol,Mat *sub
 void PETSC_STDCALL  matfindzerodiagonals_(Mat mat,IS *is, int *__ierr ){
 *__ierr = MatFindZeroDiagonals(
 	(Mat)PetscToPointer((mat) ),is);
-}
-void PETSC_STDCALL  matinvertblockdiagonal_(Mat mat,PetscScalar **values, int *__ierr ){
-*__ierr = MatInvertBlockDiagonal(
-	(Mat)PetscToPointer((mat) ),values);
 }
 #if defined(__cplusplus)
 }

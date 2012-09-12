@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecDuplicate.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecDuplicate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecDuplicate"><H1>VecDuplicate</H1></A>
 Creates a new vector of the same type as an existing vector. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -23,7 +24,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-<A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() does not copy the vector, but rather allocates storage
+<A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() DOES NOT COPY the vector entries, but rather allocates storage
 for the new vector.  Use <A HREF="../Vec/VecCopy.html#VecCopy">VecCopy</A>() to copy a vector.
 <P>
 Use <A HREF="../Vec/VecDestroy.html#VecDestroy">VecDestroy</A>() to free the space. Use <A HREF="../Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>() to get several
@@ -40,14 +41,14 @@ vectors.
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1.c.html">src/vec/vec/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex1e.c.html">src/vec/vec/examples/tutorials/ex1e.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex9.c.html">src/vec/vec/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex16.c.html">src/vec/vec/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex18.c.html">src/vec/vec/examples/tutorials/ex18.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex19.c.html">src/vec/vec/examples/tutorials/ex19.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1f.F.html">src/vec/vec/examples/tutorials/ex1f.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1f90.F.html">src/vec/vec/examples/tutorials/ex1f90.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex4f.F.html">src/vec/vec/examples/tutorials/ex4f.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex4f90.F.html">src/vec/vec/examples/tutorials/ex4f90.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex9f.F.html">src/vec/vec/examples/tutorials/ex9f.F.html</A><BR>
+<A HREF="../../../src/vec/vec/examples/tutorials/ex14f.F.html">src/vec/vec/examples/tutorials/ex14f.F.html</A><BR>
+<A HREF="../../../src/vec/vec/examples/tutorials/ex20f90.F90.html">src/vec/vec/examples/tutorials/ex20f90.F90.html</A><BR>
 </BODY></HTML>

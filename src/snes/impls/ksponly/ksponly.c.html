@@ -1,15 +1,16 @@
 <center><a href="ksponly.c">Actual source code: ksponly.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/impls/ksponly/ksponly.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:15:00+00:00">
+<meta name="date" content="2012-08-29T17:07:55+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/snesimpl.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/snesimpl.h&gt;</font>
 
 <a name="line6">  6: </a><strong><font color="#4169E1"><a name="SNESSolve_KSPONLY"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESSolve_KSPONLY(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
 <a name="line7">  7: </a>{
@@ -59,38 +60,44 @@
 <a name="line54"> 54: </a><strong><font color="#4169E1"><a name="SNESSetUp_KSPONLY"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESSetUp_KSPONLY(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
 <a name="line55"> 55: </a>{
 
-<a name="line58"> 58: </a>  <font color="#4169E1">return</font>(0);
-<a name="line59"> 59: </a>}
+<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetUpMatrices.html#SNESSetUpMatrices">SNESSetUpMatrices</A>(snes);
+<a name="line60"> 60: </a>  <font color="#4169E1">return</font>(0);
+<a name="line61"> 61: </a>}
 
-<a name="line63"> 63: </a><strong><font color="#4169E1"><a name="SNESDestroy_KSPONLY"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESDestroy_KSPONLY(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
-<a name="line64"> 64: </a>{
+<a name="line65"> 65: </a><strong><font color="#4169E1"><a name="SNESDestroy_KSPONLY"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESDestroy_KSPONLY(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line66"> 66: </a>{
 
-<a name="line67"> 67: </a>  <font color="#4169E1">return</font>(0);
-<a name="line68"> 68: </a>}
+<a name="line69"> 69: </a>  <font color="#4169E1">return</font>(0);
+<a name="line70"> 70: </a>}
 
-<a name="line70"> 70: </a><font color="#B22222">/* -------------------------------------------------------------------------- */</font>
-<a name="line71"> 71: </a><font color="#B22222">/*MC</font>
-<a name="line72"> 72: </a><font color="#B22222">      <A href="../../../../docs/manualpages/SNES/SNESKSPONLY.html#SNESKSPONLY">SNESKSPONLY</A> - Nonlinear solver that only performs one Newton step and does not compute any norms.</font>
-<a name="line73"> 73: </a><font color="#B22222">      The main purpose of this solver is to solve linear problems using the <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> interface, without</font>
-<a name="line74"> 74: </a><font color="#B22222">      any additional overhead in the form of vector operations.</font>
+<a name="line72"> 72: </a><font color="#B22222">/* -------------------------------------------------------------------------- */</font>
+<a name="line73"> 73: </a><font color="#B22222">/*MC</font>
+<a name="line74"> 74: </a><font color="#B22222">      <A href="../../../../docs/manualpages/SNES/SNESKSPONLY.html#SNESKSPONLY">SNESKSPONLY</A> - Nonlinear solver that only performs one Newton step and does not compute any norms.</font>
+<a name="line75"> 75: </a><font color="#B22222">      The main purpose of this solver is to solve linear problems using the <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> interface, without</font>
+<a name="line76"> 76: </a><font color="#B22222">      any additional overhead in the form of vector operations.</font>
 
-<a name="line76"> 76: </a><font color="#B22222">   Level: beginner</font>
+<a name="line78"> 78: </a><font color="#B22222">   Level: beginner</font>
 
-<a name="line78"> 78: </a><font color="#B22222">.seealso:  <A href="../../../../docs/manualpages/SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(), <A href="../../../../docs/manualpages/SNES/SNESLS.html#SNESLS">SNESLS</A>, <A href="../../../../docs/manualpages/SNES/SNESTR.html#SNESTR">SNESTR</A></font>
-<a name="line79"> 79: </a><font color="#B22222">M*/</font>
-<a name="line83"> 83: </a><strong><font color="#4169E1"><a name="SNESCreate_KSPONLY"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  SNESCreate_KSPONLY(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
-<a name="line84"> 84: </a>{
+<a name="line80"> 80: </a><font color="#B22222">.seealso:  <A href="../../../../docs/manualpages/SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(), <A href="../../../../docs/manualpages/SNES/SNESLS.html#SNESLS">SNESLS</A>, <A href="../../../../docs/manualpages/SNES/SNESTR.html#SNESTR">SNESTR</A></font>
+<a name="line81"> 81: </a><font color="#B22222">M*/</font>
+<a name="line82"> 82: </a>EXTERN_C_BEGIN
+<a name="line85"> 85: </a><strong><font color="#4169E1"><a name="SNESCreate_KSPONLY"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  SNESCreate_KSPONLY(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line86"> 86: </a>{
 
-<a name="line87"> 87: </a>  snes-&gt;ops-&gt;setup           = SNESSetUp_KSPONLY;
-<a name="line88"> 88: </a>  snes-&gt;ops-&gt;solve           = SNESSolve_KSPONLY;
-<a name="line89"> 89: </a>  snes-&gt;ops-&gt;destroy         = SNESDestroy_KSPONLY;
-<a name="line90"> 90: </a>  snes-&gt;ops-&gt;setfromoptions  = 0;
-<a name="line91"> 91: </a>  snes-&gt;ops-&gt;view            = 0;
-<a name="line92"> 92: </a>  snes-&gt;ops-&gt;reset           = 0;
+<a name="line89"> 89: </a>  snes-&gt;ops-&gt;setup           = SNESSetUp_KSPONLY;
+<a name="line90"> 90: </a>  snes-&gt;ops-&gt;solve           = SNESSolve_KSPONLY;
+<a name="line91"> 91: </a>  snes-&gt;ops-&gt;destroy         = SNESDestroy_KSPONLY;
+<a name="line92"> 92: </a>  snes-&gt;ops-&gt;setfromoptions  = 0;
+<a name="line93"> 93: </a>  snes-&gt;ops-&gt;view            = 0;
+<a name="line94"> 94: </a>  snes-&gt;ops-&gt;reset           = 0;
 
-<a name="line94"> 94: </a>  snes-&gt;data = 0;
-<a name="line95"> 95: </a>  <font color="#4169E1">return</font>(0);
-<a name="line96"> 96: </a>}
+<a name="line96"> 96: </a>  snes-&gt;usesksp         = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line97"> 97: </a>  snes-&gt;usespc          = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+
+<a name="line99"> 99: </a>  snes-&gt;data = 0;
+<a name="line100">100: </a>  <font color="#4169E1">return</font>(0);
+<a name="line101">101: </a>}
+<a name="line102">102: </a>EXTERN_C_END
 </pre>
 </body>
 

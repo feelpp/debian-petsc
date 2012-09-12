@@ -1,6 +1,6 @@
 #include <../src/sys/draw/utils/axisimpl.h>
 
-PetscClassId DRAWAXIS_CLASSID = 0;
+PetscClassId PETSC_DRAWAXIS_CLASSID = 0;
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawAxisCreate" 
@@ -28,13 +28,13 @@ PetscErrorCode  PetscDrawAxisCreate(PetscDraw draw,PetscDrawAxis *axis)
   PetscFunctionBegin;
   PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidPointer(axis,2);
-  ierr = PetscTypeCompare(obj,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare(obj,PETSC_DRAW_NULL,&isnull);CHKERRQ(ierr);
   if (isnull) {
     ierr = PetscDrawOpenNull(((PetscObject)obj)->comm,(PetscDraw*)axis);CHKERRQ(ierr);
     (*axis)->win = draw;
     PetscFunctionReturn(0);
   }
-  ierr = PetscHeaderCreate(ad,_p_DrawAxis,int,DRAWAXIS_CLASSID,0,"PetscDrawAxis","Draw Axis","Draw",((PetscObject)obj)->comm,PetscDrawAxisDestroy,0);CHKERRQ(ierr);
+  ierr = PetscHeaderCreate(ad,_p_PetscDrawAxis,int,PETSC_DRAWAXIS_CLASSID,0,"PetscDrawAxis","Draw Axis","Draw",((PetscObject)obj)->comm,PetscDrawAxisDestroy,0);CHKERRQ(ierr);
   ierr = PetscLogObjectParent(draw,ad);CHKERRQ(ierr);
   ad->xticks    = PetscADefTicks;
   ad->yticks    = PetscADefTicks;
@@ -129,6 +129,9 @@ PetscErrorCode  PetscDrawAxisSetLabels(PetscDrawAxis axis,const char top[],const
 
   PetscFunctionBegin;
   if (!axis) PetscFunctionReturn(0);
+  ierr = PetscFree(axis->xlabel);CHKERRQ(ierr);
+  ierr = PetscFree(axis->ylabel);CHKERRQ(ierr);
+  ierr = PetscFree(axis->toplabel);CHKERRQ(ierr);
   ierr = PetscStrallocpy(xlabel,&axis->xlabel);CHKERRQ(ierr);
   ierr = PetscStrallocpy(ylabel,&axis->ylabel);CHKERRQ(ierr);
   ierr = PetscStrallocpy(top,&axis->toplabel);CHKERRQ(ierr);

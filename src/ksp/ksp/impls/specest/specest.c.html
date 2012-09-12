@@ -1,15 +1,16 @@
 <center><a href="specest.c">Actual source code: specest.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/specest/specest.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:22+00:00">
+<meta name="date" content="2012-08-29T17:04:53+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;</font>
 
 <a name="line4">  4: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line5">  5: </a>  <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> kspest;                   <font color="#B22222">/* <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> capable of estimating eigenvalues */</font>
@@ -71,7 +72,7 @@
 <a name="line73"> 73: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(real,imag);
 <a name="line74"> 74: </a>    spec-&gt;radius = rad;
 
-<a name="line76"> 76: </a>    <A href="../../../../../docs/manualpages/KSP/KSPChebychevSetEigenvalues.html#KSPChebychevSetEigenvalues">KSPChebychevSetEigenvalues</A>(spec-&gt;kspcheap,spec-&gt;max*spec-&gt;maxfactor,spec-&gt;min*spec-&gt;minfactor);
+<a name="line76"> 76: </a>    <A href="../../../../../docs/manualpages/KSP/KSPChebyshevSetEigenvalues.html#KSPChebyshevSetEigenvalues">KSPChebyshevSetEigenvalues</A>(spec-&gt;kspcheap,spec-&gt;max*spec-&gt;maxfactor,spec-&gt;min*spec-&gt;minfactor);
 <a name="line77"> 77: </a>    <A href="../../../../../docs/manualpages/KSP/KSPRichardsonSetScale.html#KSPRichardsonSetScale">KSPRichardsonSetScale</A>(spec-&gt;kspcheap,spec-&gt;richfactor/spec-&gt;radius);
 <a name="line78"> 78: </a>    PetscInfo3(ksp,<font color="#666666">"Estimated singular value min=%G max=%G, spectral radius=%G"</font>,spec-&gt;min,spec-&gt;max,spec-&gt;radius);
 <a name="line79"> 79: </a>    spec-&gt;current = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
@@ -84,7 +85,7 @@
 <a name="line88"> 88: </a>  KSP_SpecEst *spec = (KSP_SpecEst*)ksp-&gt;data;
 <a name="line90"> 90: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line93"> 93: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line93"> 93: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line94"> 94: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line95"> 95: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  SpecEst: last singular value estimate min=%G max=%G rad=%G\n"</font>,spec-&gt;min,spec-&gt;max,spec-&gt;radius);
 <a name="line96"> 96: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  Using scaling factors min=%G max=%G rich=%G\n"</font>,spec-&gt;minfactor,spec-&gt;maxfactor,spec-&gt;richfactor);
@@ -126,7 +127,7 @@
 <a name="line136">136: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(spec-&gt;kspest,<A href="../../../../../docs/manualpages/KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>);
 <a name="line137">137: </a>  }
 <a name="line138">138: </a>  <font color="#4169E1">if</font> (!((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)spec-&gt;kspcheap)-&gt;type_name) {
-<a name="line139">139: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(spec-&gt;kspcheap,<A href="../../../../../docs/manualpages/KSP/KSPCHEBYCHEV.html#KSPCHEBYCHEV">KSPCHEBYCHEV</A>);
+<a name="line139">139: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(spec-&gt;kspcheap,<A href="../../../../../docs/manualpages/KSP/KSPCHEBYSHEV.html#KSPCHEBYSHEV">KSPCHEBYSHEV</A>);
 <a name="line140">140: </a>  }
 <a name="line141">141: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetFromOptions.html#KSPSetFromOptions">KSPSetFromOptions</A>(spec-&gt;kspest);
 <a name="line142">142: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetFromOptions.html#KSPSetFromOptions">KSPSetFromOptions</A>(spec-&gt;kspcheap);
@@ -149,6 +150,7 @@
 <a name="line163">163: </a>  <font color="#4169E1">return</font>(0);
 <a name="line164">164: </a>}
 
+<a name="line166">166: </a>EXTERN_C_BEGIN
 <a name="line169">169: </a><font color="#B22222">/*MC</font>
 <a name="line170">170: </a><font color="#B22222">     <A href="../../../../../docs/manualpages/KSP/KSPSPECEST.html#KSPSPECEST">KSPSPECEST</A> - Estimate the spectrum on the first <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>, then use cheaper smoother for subsequent solves.</font>
 
@@ -157,7 +159,7 @@
 <a name="line174">174: </a><font color="#B22222">.  -ksp_specest_maxfactor &lt;1.1&gt; - Multiplier on the maximum eigen/singular value</font>
 <a name="line175">175: </a><font color="#B22222">.  -ksp_specest_richfactor &lt;1&gt;  - Multiplier on the richimum eigen/singular value</font>
 <a name="line176">176: </a><font color="#B22222">.  -specest_ksp_type &lt;type&gt;     - <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> used to estimate the spectrum (usually CG or GMRES)</font>
-<a name="line177">177: </a><font color="#B22222">.  -speccheap_ksp_type &lt;type&gt;   - <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> used as a cheap smoother once the spectrum has been estimated (usually Chebychev or Richardson)</font>
+<a name="line177">177: </a><font color="#B22222">.  -speccheap_ksp_type &lt;type&gt;   - <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> used as a cheap smoother once the spectrum has been estimated (usually Chebyshev or Richardson)</font>
 <a name="line178">178: </a><font color="#B22222">-   see <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>() for more</font>
 
 <a name="line180">180: </a><font color="#B22222">   Notes:</font>
@@ -170,7 +172,7 @@
 
 <a name="line188">188: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line190">190: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A href="../../../../../docs/manualpages/KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, <A href="../../../../../docs/manualpages/KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, <A href="../../../../../docs/manualpages/KSP/KSPCG.html#KSPCG">KSPCG</A>, <A href="../../../../../docs/manualpages/KSP/KSPCHEBYCHEV.html#KSPCHEBYCHEV">KSPCHEBYCHEV</A>, <A href="../../../../../docs/manualpages/KSP/KSPRICHARDSON.html#KSPRICHARDSON">KSPRICHARDSON</A></font>
+<a name="line190">190: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A href="../../../../../docs/manualpages/KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, <A href="../../../../../docs/manualpages/KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, <A href="../../../../../docs/manualpages/KSP/KSPCG.html#KSPCG">KSPCG</A>, <A href="../../../../../docs/manualpages/KSP/KSPCHEBYSHEV.html#KSPCHEBYSHEV">KSPCHEBYSHEV</A>, <A href="../../../../../docs/manualpages/KSP/KSPRICHARDSON.html#KSPRICHARDSON">KSPRICHARDSON</A></font>
 <a name="line191">191: </a><font color="#B22222">M*/</font>
 <a name="line192">192: </a><strong><font color="#4169E1"><a name="KSPCreate_SpecEst"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_SpecEst(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line193">193: </a>{
@@ -213,6 +215,7 @@
 <a name="line232">232: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>(spec-&gt;kspcheap,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,5);
 <a name="line233">233: </a>  <font color="#4169E1">return</font>(0);
 <a name="line234">234: </a>}
+<a name="line235">235: </a>EXTERN_C_END
 </pre>
 </body>
 

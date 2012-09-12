@@ -1,13 +1,14 @@
 <center><a href="ex67f.F">Actual source code: ex67f.F</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex67f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:01+00:00">
+<meta name="date" content="2012-08-29T16:52:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!   This program demonstrates use of <A href="../../../../docs/manualpages/Mat/MatGetSubMatrices.html#MatGetSubMatrices">MatGetSubMatrices</A>() from Fortran
 <a name="line3">  3: </a>!
@@ -26,35 +27,37 @@
 
 <a name="line17"> 17: </a>      call <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(PETSC_NULL_CHARACTER,ierr)
 
-<a name="line19"> 19: </a>      call <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,'../matbinary.ex',         &amp;
-<a name="line20"> 20: </a>     &amp;                          FILE_MODE_READ,v,ierr)
+<a name="line19"> 19: </a>      call <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,                          &amp;
+<a name="line20"> 20: </a>     &amp; '../../../../share/petsc/datafiles/matrices/' //                       &amp;
+<a name="line21"> 21: </a>     &amp; 'ns-real-int32-float64',                                               &amp;
+<a name="line22"> 22: </a>     &amp;                          FILE_MODE_READ,v,ierr)
 
-<a name="line22"> 22: </a>      call <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,A,ierr)
-<a name="line23"> 23: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A, <A href="../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,ierr)
-<a name="line24"> 24: </a>      call <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(A,v,ierr)
+<a name="line24"> 24: </a>      call <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,A,ierr)
+<a name="line25"> 25: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A, <A href="../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,ierr)
+<a name="line26"> 26: </a>      call <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(A,v,ierr)
 
-<a name="line26"> 26: </a>      one  = 1
-<a name="line27"> 27: </a>      zero = 0
-<a name="line28"> 28: </a>      call <A href="../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,one,zero,PETSC_COPY_VALUES,    &amp;
-<a name="line29"> 29: </a>     &amp;                     isrow,ierr)
+<a name="line28"> 28: </a>      one  = 1
+<a name="line29"> 29: </a>      zero = 0
+<a name="line30"> 30: </a>      call <A href="../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,one,zero,PETSC_COPY_VALUES,    &amp;
+<a name="line31"> 31: </a>     &amp;                     isrow,ierr)
 
-<a name="line31"> 31: </a>      call MatGetSubmatrices(A,one,isrow,isrow,                           &amp;
-<a name="line32"> 32: </a>     &amp;        MAT_INITIAL_MATRIX,B,ierr)
+<a name="line33"> 33: </a>      call MatGetSubmatrices(A,one,isrow,isrow,                           &amp;
+<a name="line34"> 34: </a>     &amp;        MAT_INITIAL_MATRIX,B,ierr)
 
-<a name="line34"> 34: </a>      call <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line36"> 36: </a>      call <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
 
-<a name="line36"> 36: </a>      call MatGetSubmatrices(A,one,isrow,isrow,                           &amp;
-<a name="line37"> 37: </a>     &amp;        MAT_REUSE_MATRIX,B,ierr)
+<a name="line38"> 38: </a>      call MatGetSubmatrices(A,one,isrow,isrow,                           &amp;
+<a name="line39"> 39: </a>     &amp;        MAT_REUSE_MATRIX,B,ierr)
 
-<a name="line39"> 39: </a>      call <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
+<a name="line41"> 41: </a>      call <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(B,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
 
-<a name="line41"> 41: </a>      call <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(isrow,ierr)
-<a name="line42"> 42: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A,ierr)
-<a name="line43"> 43: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B,ierr)
-<a name="line44"> 44: </a>      call <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(v,ierr)
+<a name="line43"> 43: </a>      call <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(isrow,ierr)
+<a name="line44"> 44: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A,ierr)
+<a name="line45"> 45: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(B,ierr)
+<a name="line46"> 46: </a>      call <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(v,ierr)
 
-<a name="line46"> 46: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line47"> 47: </a>      end
+<a name="line48"> 48: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line49"> 49: </a>      end
 
 
 

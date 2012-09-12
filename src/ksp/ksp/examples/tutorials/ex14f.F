@@ -159,7 +159,7 @@
 !     for preallocating matrix memory.
 !  
       call VecGetLocalSize(X,m,ierr)
-      call MatCreateMPIAIJ(comm,m,m,N,N,ifive,PETSC_NULL_INTEGER,ithree,         &
+      call MatCreateAIJ(comm,m,m,N,N,ifive,PETSC_NULL_INTEGER,ithree,         &
      &     PETSC_NULL_INTEGER,B,ierr)
 
 !  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -263,7 +263,7 @@
  20   continue
 
       write(6,100) i+1
- 100  format('Number of Newton iterations =',I2)
+ 100  format('Number of SNES iterations =',I2)
 
 !  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !     Free work space.  All PETSc objects should be destroyed when they

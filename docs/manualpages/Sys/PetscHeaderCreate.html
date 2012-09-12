@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscHeaderCreate.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscHeaderCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscHeaderCreate"><H1>PetscHeaderCreate</H1></A>
 Creates a PETSc object 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -17,8 +18,8 @@ Creates a PETSc object
    PetscLogObjectCreate(h) ||                                      \
    PetscLogObjectMemory(h, sizeof(struct tp) + sizeof(PetscOps) + sizeof(pops)))
 
-extern PetscErrorCode PetscComposedQuantitiesDestroy(PetscObject obj);
-extern PetscErrorCode PetscHeaderCreate_Private(PetscObject,PetscClassId,PetscInt,const char[],const char[],const char[],MPI_Comm,PetscErrorCode (*)(PetscObject*),PetscErrorCode (*)(PetscObject,PetscViewer));
+PETSC_EXTERN PetscErrorCode PetscComposedQuantitiesDestroy(PetscObject obj);
+PETSC_EXTERN PetscErrorCode PetscHeaderCreate_Private(PetscObject,PetscClassId,PetscInt,const char[],const char[],const char[],MPI_Comm,PetscErrorCode (*)(PetscObject*),PetscErrorCode (*)(PetscObject,PetscViewer));
 
 /*@C
     PetscHeaderDestroy - Final step in destroying a PetscObject
@@ -37,8 +38,8 @@ extern PetscErrorCode PetscHeaderCreate_Private(PetscObject,PetscClassId,PetscIn
    PetscFree((*h)->ops) ||                       \
    PetscFree(*h))
 
-extern PetscErrorCode  PetscHeaderDestroy_Private(PetscObject);
-extern PetscErrorCode PetscObjectCopyFortranFunctionPointers(PetscObject,PetscObject);
+PETSC_EXTERN PetscErrorCode PetscHeaderDestroy_Private(PetscObject);
+PETSC_EXTERN PetscErrorCode PetscObjectCopyFortranFunctionPointers(PetscObject,PetscObject);
 
 /* ---------------------------------------------------------------------------------------*/
 
@@ -75,7 +76,7 @@ extern PetscErrorCode PetscObjectCopyFortranFunctionPointers(PetscObject,PetscOb
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../include/private/petscimpl.h.html#PetscHeaderCreate">include/private/petscimpl.h</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../include/petsc-private/petscimpl.h.html#PetscHeaderCreate">include/petsc-private/petscimpl.h</A>
 <BR><A HREF="./index.html">Index of all Sys routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

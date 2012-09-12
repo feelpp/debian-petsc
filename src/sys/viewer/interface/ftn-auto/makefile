@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = viewregf.c flushf.c viewf.c duplf.c
-OBJSC    = viewregf.o flushf.o viewf.o duplf.o
+SOURCEC  = flushf.c viewf.c duplf.c viewregf.c
+OBJSC    = flushf.o viewf.o duplf.o viewregf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

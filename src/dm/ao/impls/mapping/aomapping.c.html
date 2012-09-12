@@ -1,13 +1,14 @@
 <center><a href="aomapping.c">Actual source code: aomapping.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/ao/impls/mapping/aomapping.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:54+00:00">
+<meta name="date" content="2012-08-29T16:53:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">  These <A href="../../../../../docs/manualpages/AO/AO.html#AO">AO</A> application ordering routines do not require that the input</font>
@@ -48,7 +49,7 @@
 <a name="line46"> 46: </a>    viewer = <A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>;
 <a name="line47"> 47: </a>  }
 
-<a name="line49"> 49: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERASCII, &amp;iascii);
+<a name="line49"> 49: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERASCII, &amp;iascii);
 <a name="line50"> 50: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line51"> 51: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"Number of elements in ordering %D\n"</font>, aomap-&gt;N);
 <a name="line52"> 52: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"   App.   PETSc\n"</font>);

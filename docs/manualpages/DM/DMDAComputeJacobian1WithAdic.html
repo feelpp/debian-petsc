@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMDAComputeJacobian1WithAdic.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMDAComputeJacobian1WithAdic</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMDAComputeJacobian1WithAdic"><H1>DMDAComputeJacobian1WithAdic</H1></A>
 Evaluates a adiC provided Jacobian function on each processor that  share a DMDA 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -28,7 +29,7 @@ PetscErrorCode  DMDAComputeJacobian1WithAdic(DM da,Vec vu,Mat J,void *w)
 Notes: Does NOT do ghost updates on vu upon entry
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../DM/DMDAFormFunction1.html#DMDAFormFunction1">DMDAFormFunction1</A>()
+ <A HREF="../DM/DMDAComputeFunction1.html#DMDAComputeFunction1">DMDAComputeFunction1</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
@@ -36,6 +37,4 @@ Notes: Does NOT do ghost updates on vu upon entry
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
 </BODY></HTML>

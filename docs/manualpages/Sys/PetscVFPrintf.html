@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscVFPrintf.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscVFPrintf</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscVFPrintf"><H1>PetscVFPrintf</H1></A>
 All PETSc standard out and error messages are sent through this function; so, in theory, this can can be replaced with something that does not simply write to a file.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -57,7 +58,8 @@ To use, write your own function for example,
 Notes: For error messages this may be called by any process, for regular standard out it is
 called only by process 0 of a given communicator
 <P>
-No error handling because may be called by error handler
+Developer Notes: this could be called by an error handler, if that happens then a recursion of the error handler may occur
+and a crash
 <P>
 
 <P>

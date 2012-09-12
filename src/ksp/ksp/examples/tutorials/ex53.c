@@ -15,7 +15,7 @@ int main(int argc,char **args)
   Mat            A;            /* linear system matrix */
   KSP            ksp;          /* linear solver context */
   PC             pc;           /* preconditioner context */
-  PetscReal      norm;         /* norm of solution error */
+  PetscReal      norm,tol=1.e-14; /* norm of solution error */
   PetscErrorCode ierr;
   PetscInt       i,n = 10,col[3],its;
   PetscMPIInt    rank;
@@ -39,6 +39,7 @@ int main(int argc,char **args)
   ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
   ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
   ierr = MatSetFromOptions(A);CHKERRQ(ierr);
+  ierr = MatSetUp(A);CHKERRQ(ierr);
 
   if (!rank){
     value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
@@ -78,8 +79,10 @@ int main(int argc,char **args)
   ierr = VecAXPY(x,neg_one,u);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"1. Norm of error for Ax=b: %A, Iterations %D\n",
+  if (norm > tol){
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"1. Norm of error for Ax=b: %G, Iterations %D\n",
                      norm,its);CHKERRQ(ierr);
+  }
  
   /* 2. Solve linear system A^T x = b*/
   ierr = MatMultTranspose(A,u,b);CHKERRQ(ierr);
@@ -89,8 +92,10 @@ int main(int argc,char **args)
   ierr = VecAXPY(x2,neg_one,u);CHKERRQ(ierr);
   ierr = VecNorm(x2,NORM_2,&norm);CHKERRQ(ierr);
   ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"2. Norm of error for A^T x=b: %A, Iterations %D\n",
+  if (norm > tol){
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"2. Norm of error for A^T x=b: %G, Iterations %D\n",
                      norm,its);CHKERRQ(ierr);
+  }
 
   /* 3. Change A and solve A x = b with an iterative solver using A=LU as a preconditioner*/
   if (!rank){
@@ -107,8 +112,10 @@ int main(int argc,char **args)
   ierr = VecAXPY(x,neg_one,u);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"3. Norm of error for (A+Delta) x=b: %A, Iterations %D\n",
+  if (norm > tol){
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"3. Norm of error for (A+Delta) x=b: %G, Iterations %D\n",
                      norm,its);CHKERRQ(ierr);
+  }
 
   /* Free work space. */
   ierr = VecDestroy(&x);CHKERRQ(ierr); 

@@ -3,10 +3,9 @@
     Code for setting KSP options from the options database.
 */
 
-#include <private/kspimpl.h>  /*I "petscksp.h" I*/
+#include <petsc-private/kspimpl.h>  /*I "petscksp.h" I*/
 
 extern PetscBool  KSPRegisterAllCalled;
-
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetOptionsPrefix"
@@ -277,7 +276,9 @@ PetscErrorCode  KSPSetFromOptions(KSP ksp)
   char                    type[256], monfilename[PETSC_MAX_PATH_LEN];
   PetscViewer             monviewer;
   PetscBool               flg,flag;
-  PetscInt                model[2],nmax;
+  PetscInt                model[2]={0,0},nmax;
+  KSPNormType             normtype;
+  PCSide                  pcside;
   void                    *ctx;
 
   PetscFunctionBegin;
@@ -335,8 +336,9 @@ PetscErrorCode  KSPSetFromOptions(KSP ksp)
       }
     }
 
-    ierr = PetscOptionsEList("-ksp_norm_type","KSP Norm type","KSPSetNormType",KSPNormTypes,4,"preconditioned",&indx,&flg);CHKERRQ(ierr);
-    if (flg) { ierr = KSPSetNormType(ksp,(KSPNormType)indx);CHKERRQ(ierr); }
+    ierr = KSPSetUpNorms_Private(ksp,&normtype,&pcside);CHKERRQ(ierr);
+    ierr = PetscOptionsEnum("-ksp_norm_type","KSP Norm type","KSPSetNormType",KSPNormTypes,(PetscEnum)normtype,(PetscEnum*)&normtype,&flg);CHKERRQ(ierr);
+    if (flg) { ierr = KSPSetNormType(ksp,normtype);CHKERRQ(ierr); }
 
     ierr = PetscOptionsInt("-ksp_check_norm_iteration","First iteration to compute residual norm","KSPSetCheckNormIteration",ksp->chknorm,&ksp->chknorm,PETSC_NULL);CHKERRQ(ierr);
 
@@ -469,9 +471,24 @@ PetscErrorCode  KSPSetFromOptions(KSP ksp)
       ierr = KSPMonitorSet(ksp,KSPMonitorLGRange,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
     }
 
+    /*
+      Publishes convergence information using AMS
+    */
+    flg  = PETSC_FALSE;
+    ierr = PetscOptionsBool("-ksp_monitor_ams","Publish KSP progress using AMS","KSPMonitorSet",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    if (flg) {
+      char amscommname[256];
+      void *ctx;
+      ierr = PetscSNPrintf(amscommname,sizeof amscommname,"%sksp_monitor_ams",((PetscObject)ksp)->prefix?((PetscObject)ksp)->prefix:"");CHKERRQ(ierr);
+      ierr = KSPMonitorAMSCreate(ksp,amscommname,&ctx);CHKERRQ(ierr);
+      ierr = KSPMonitorSet(ksp,KSPMonitorAMS,ctx,KSPMonitorAMSDestroy);CHKERRQ(ierr);
+      ierr = KSPSetComputeSingularValues(ksp,PETSC_TRUE);CHKERRQ(ierr);
+    }
+
     /* -----------------------------------------------------------------------*/
-   ierr = PetscOptionsEList("-ksp_pc_side","KSP preconditioner side","KSPSetPCSide",PCSides,3,PCSides[ksp->pc_side],&indx,&flg);CHKERRQ(ierr);
-   if (flg) {ierr = KSPSetPCSide(ksp,(PCSide)indx);CHKERRQ(ierr);}
+    ierr = KSPSetUpNorms_Private(ksp,&normtype,&pcside);CHKERRQ(ierr);
+    ierr = PetscOptionsEnum("-ksp_pc_side","KSP preconditioner side","KSPSetPCSide",PCSides,(PetscEnum)pcside,(PetscEnum*)&pcside,&flg);CHKERRQ(ierr);
+    if (flg) {ierr = KSPSetPCSide(ksp,pcside);CHKERRQ(ierr);}
 
     flg  = PETSC_FALSE;
     ierr = PetscOptionsBool("-ksp_compute_singularvalues","Compute singular values of preconditioned operator","KSPSetComputeSingularValues",flg,&flg,PETSC_NULL);CHKERRQ(ierr);

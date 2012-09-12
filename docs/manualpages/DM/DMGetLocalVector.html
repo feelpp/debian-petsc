@@ -1,15 +1,16 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMGetLocalVector.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMGetLocalVector</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMGetLocalVector"><H1>DMGetLocalVector</H1></A>
 Gets a Seq PETSc vector that may be used with the DMXXX routines. This vector has spaces for the ghost values. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscdmda.h"   
+#include "petscdm.h" 
 PetscErrorCode  DMGetLocalVector(DM dm,Vec* g)
 </PRE>
 Not Collective
@@ -43,7 +44,7 @@ VecStride*() operations can be useful when using DM with dof &gt; 1
 <A HREF="../DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(), <A HREF="../DM/DMLocalToGlobalBegin.html#DMLocalToGlobalBegin">DMLocalToGlobalBegin</A>(), <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>(), <A HREF="../DM/DMRestoreLocalVector.html#DMRestoreLocalVector">DMRestoreLocalVector</A>(),
 <A HREF="../Vec/VecStrideMax.html#VecStrideMax">VecStrideMax</A>(), <A HREF="../Vec/VecStrideMin.html#VecStrideMin">VecStrideMin</A>(), <A HREF="../Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/da/dalocal.c.html#DMGetLocalVector">src/dm/impls/da/dalocal.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/interface/dmget.c.html#DMGetLocalVector">src/dm/interface/dmget.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

@@ -1,16 +1,18 @@
 <center><a href="fdmpiaij.c">Actual source code: fdmpiaij.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/mpi/fdmpiaij.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:00:48+00:00">
+<meta name="date" content="2012-08-29T16:45:28+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/mpi/mpiaij.h&gt;</font>
 
+<a name="line4">  4: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCreateColmap_MPIAIJ_Private(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="MatFDColoringCreate_MPIAIJ"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFDColoringCreate_MPIAIJ(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../../docs/manualpages/IS/ISColoring.html#ISColoring">ISColoring</A> iscoloring,<A href="../../../../../docs/manualpages/Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A> c)</font></strong>
 <a name="line9">  9: </a>{
@@ -50,7 +52,7 @@
 
 <a name="line45"> 45: </a>  <font color="#B22222">/* Allow access to data structures of local part of matrix */</font>
 <a name="line46"> 46: </a>  <font color="#4169E1">if</font> (!aij-&gt;colmap) {
-<a name="line47"> 47: </a>    CreateColmap_MPIAIJ_Private(mat);
+<a name="line47"> 47: </a>    MatCreateColmap_MPIAIJ_Private(mat);
 <a name="line48"> 48: </a>  }
 <a name="line49"> 49: </a>  <A href="../../../../../docs/manualpages/Mat/MatGetColumnIJ.html#MatGetColumnIJ">MatGetColumnIJ</A>(aij-&gt;A,0,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,&amp;ncols,&amp;A_ci,&amp;A_cj,&amp;done);
 <a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Mat/MatGetColumnIJ.html#MatGetColumnIJ">MatGetColumnIJ</A>(aij-&gt;B,0,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,&amp;ncols,&amp;B_ci,&amp;B_cj,&amp;done);

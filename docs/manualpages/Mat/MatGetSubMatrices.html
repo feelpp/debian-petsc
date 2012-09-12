@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatGetSubMatrices.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatGetSubMatrices</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatGetSubMatrices"><H1>MatGetSubMatrices</H1></A>
 Extracts several submatrices from a matrix. If submat points to an array of valid matrices, they may be reused to store the new submatrices. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -20,7 +21,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n   </B></TD><TD>- the number of submatrixes to be extracted (on this processor, may be zero)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>irow, icol </B></TD><TD>- index sets of rows and columns to extract
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>irow, icol </B></TD><TD>- index sets of rows and columns to extract (must be sorted)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>scall </B></TD><TD>- either MAT_INITIAL_MATRIX or MAT_REUSE_MATRIX
 </TD></TR></TABLE>
@@ -33,6 +34,9 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <A HREF="../Mat/MatGetSubMatrices.html#MatGetSubMatrices">MatGetSubMatrices</A>() can extract ONLY sequential submatrices
 (from both sequential and parallel matrices). Use <A HREF="../Mat/MatGetSubMatrix.html#MatGetSubMatrix">MatGetSubMatrix</A>()
 to extract a parallel submatrix.
+<P>
+Currently both row and column indices must be sorted to guarantee
+correctness with all matrix types.
 <P>
 When extracting submatrices from a parallel matrix, each processor can
 form a different submatrix by setting the rows and columns of its

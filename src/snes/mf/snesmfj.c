@@ -1,7 +1,7 @@
 
-#include <private/snesimpl.h>  /*I  "petscsnes.h" I*/
+#include <petsc-private/snesimpl.h>  /*I  "petscsnes.h" I*/
 #include <../src/mat/impls/mffd/mffdimpl.h>
-#include <private/matimpl.h>
+#include <petsc-private/matimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "MatMFFDComputeJacobian"
@@ -28,7 +28,8 @@
     change the base vector x.
 
    Notes:
-     This can be passed into SNESSetJacobian() when using a completely matrix-free solver,
+     This can be passed into SNESSetJacobian() as the Jacobian evaluation function argument
+     when using a completely matrix-free solver,
      that is the B matrix is also the same matrix operator. This is used when you select
      -snes_mf but rarely used directly by users. (All this routine does is call MatAssemblyBegin/End() on
      the Mat jac.

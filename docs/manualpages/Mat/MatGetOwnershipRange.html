@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatGetOwnershipRange.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatGetOwnershipRange</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatGetOwnershipRange"><H1>MatGetOwnershipRange</H1></A>
 Returns the range of matrix rows owned by this processor, assuming that the matrix is laid out with the first n1 rows on the first processor, the next n2 rows on the second, etc. For certain parallel layouts this range may not be well defined. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -41,6 +42,8 @@ Note: both output parameters can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex15.c.html">src/mat/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
@@ -49,6 +52,4 @@ Note: both output parameters can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex11.c.html">src/ksp/ksp/examples/tutorials/ex11.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex12.c.html">src/ksp/ksp/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex15.c.html">src/ksp/ksp/examples/tutorials/ex15.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex16.c.html">src/ksp/ksp/examples/tutorials/ex16.c.html</A><BR>
 </BODY></HTML>

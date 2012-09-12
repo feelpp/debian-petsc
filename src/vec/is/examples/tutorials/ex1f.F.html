@@ -1,13 +1,14 @@
 <center><a href="ex1f.F">Actual source code: ex1f.F</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/is/examples/tutorials/ex1f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:56:59+00:00">
+<meta name="date" content="2012-08-29T16:40:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!  Description: Creates an index set based on a set of integers. Views that index set
 <a name="line3">  3: </a>!  and then destroys it.
@@ -31,7 +32,7 @@
 <a name="line21"> 21: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line22"> 22: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> indices(5),n,index1,index5
 <a name="line23"> 23: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank
-<a name="line24"> 24: </a>      PetscOffset ix
+<a name="line24"> 24: </a>      <A href="../../../../../docs/manualpages/Sys/PetscOffset.html#PetscOffset">PetscOffset</A> ix
 <a name="line25"> 25: </a>      <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>          is
 
 <a name="line27"> 27: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(PETSC_NULL_CHARACTER,ierr)

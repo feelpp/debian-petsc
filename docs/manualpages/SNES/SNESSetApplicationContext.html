@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESSetApplicationContext.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESSetApplicationContext</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESSetApplicationContext"><H1>SNESSetApplicationContext</H1></A>
 Sets the optional user-defined context for  the nonlinear solvers.   
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESSetApplicationContext(SNES snes,void *usrP)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -28,7 +31,7 @@ Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/SNESGetApplicationContext.html#SNESGetApplicationContext">SNESGetApplicationContext</A>(), <A HREF="../SNES/SNESSetApplicationContext.html#SNESSetApplicationContext">SNESSetApplicationContext</A>()
+ <A HREF="../SNES/SNESGetApplicationContext.html#SNESGetApplicationContext">SNESGetApplicationContext</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/interface/snes.c.html#SNESSetApplicationContext">src/snes/interface/snes.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>

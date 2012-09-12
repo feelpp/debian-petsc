@@ -1,12 +1,13 @@
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:57:35+00:00">
+<meta name="date" content="2012-08-29T16:41:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
@@ -14,11 +15,11 @@ CFLAGS   =
 FFLAGS   =
 SOURCEC  =
 SOURCEF  =
-SOURCEH  = ../../include/private/matimpl.h ../../include/petscmat.h blockinvert.h blocktranspose.h
+SOURCEH  = ../../include/petsc-private/matimpl.h ../../include/petscmat.h blockinvert.h blocktranspose.h
 OBJSC    =
 OBJSF    =
 LIBBASE  = libpetscmat
-DIRS     = interface impls examples utils matfd partition order color f90-mod ftn-kernels
+DIRS     = interface impls examples utils matfd partition coarsen order color f90-mod ftn-kernels
 LOCDIR   = src/mat/
 MANSEC   = <A href="ROOT/docs/manualpages/Mat/Mat.html#Mat">Mat</A>
 

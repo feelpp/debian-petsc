@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatSetOption.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatSetOption</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatSetOption"><H1>MatSetOption</H1></A>
-Sets a parameter option for a matrix. Some options may be specific to certain storage formats.  Some options determine how values will be inserted (or added). Sorted,  row-oriented input will generally assemble the fastest. The default is row-oriented, nonsorted input.  
+Sets a parameter option for a matrix. Some options may be specific to certain storage formats.  Some options determine how values will be inserted (or added). Sorted,  row-oriented input will generally assemble the fastest. The default is row-oriented.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
@@ -126,6 +127,8 @@ zero row routines and thus improves performance for very large process counts.
 MAT_IGNORE_LOWER_TRIANGULAR - For SBAIJ matrices will ignore any insertions you make in the lower triangular
 part of the matrix (since they should match the upper triangular part).
 <P>
+Notes: Can only be called after <A HREF="../Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>() and <A HREF="../Mat/MatSetType.html#MatSetType">MatSetType</A>() have been set.
+<P>
 
 <P>
 <P>
@@ -140,10 +143,10 @@ part of the matrix (since they should match the upper triangular part).
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html">src/ksp/ksp/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 </BODY></HTML>

@@ -66,6 +66,8 @@ PetscErrorCode  PetscDrawCreate(MPI_Comm comm,const char display[],const char ti
   draw->popup   = 0;
   ierr = PetscOptionsGetReal(PETSC_NULL,"-draw_pause",&dpause,&flag);CHKERRQ(ierr);
   if (flag) draw->pause = dpause;
+  draw->savefilename = PETSC_NULL;
+  draw->savefilemovie = PETSC_FALSE;
   *indraw       = draw;
   PetscFunctionReturn(0);
 }
@@ -109,7 +111,7 @@ PetscErrorCode  PetscDrawSetType(PetscDraw draw,const PetscDrawType type)
   PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   PetscValidCharPointer(type,2);
 
-  ierr = PetscTypeCompare((PetscObject)draw,type,&match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)draw,type,&match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
   /*  User requests no graphics */
@@ -120,7 +122,7 @@ PetscErrorCode  PetscDrawSetType(PetscDraw draw,const PetscDrawType type)
    was requested but is not installed on this machine. Mostly this is for
    testing.
    */
-#if !defined(PETSC_HAVE_X11)
+#if !defined(PETSC_HAVE_X)
   if (!flg) {
     ierr = PetscStrcmp(type,PETSC_DRAW_X,&match);CHKERRQ(ierr);
     if (match) {
@@ -140,6 +142,7 @@ PetscErrorCode  PetscDrawSetType(PetscDraw draw,const PetscDrawType type)
   if (draw->data) {
     /* destroy the old private PetscDraw context */
     ierr       = (*draw->ops->destroy)(draw);CHKERRQ(ierr);
+    draw->ops->destroy = PETSC_NULL;
     draw->data = 0;
   }
 
@@ -244,10 +247,11 @@ PetscErrorCode  PetscDrawSetFromOptions(PetscDraw draw)
   char           vtype[256];
   const char     *def;
   PetscBool      save;
-#if !defined(PETSC_USE_WINDOWS_GRAPHICS) && !defined(PETSC_HAVE_X11)
+#if !defined(PETSC_USE_WINDOWS_GRAPHICS) && !defined(PETSC_HAVE_X)
   PetscBool      warn;
 #endif
   char           filename[PETSC_MAX_PATH_LEN];
+  PetscBool      movie = PETSC_FALSE;
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
@@ -261,9 +265,9 @@ PetscErrorCode  PetscDrawSetFromOptions(PetscDraw draw)
   } else {
     ierr = PetscOptionsHasName(PETSC_NULL,"-nox",&nox);CHKERRQ(ierr);
     def  = PETSC_DRAW_NULL;
-#if defined(PETSC_USE_WINDOWS_GRAPHICS) && !defined(PETSC_HAVE_X11)
+#if defined(PETSC_USE_WINDOWS_GRAPHICS) && !defined(PETSC_HAVE_X)
     if (!nox) def = PETSC_DRAW_WIN32;
-#elif defined(PETSC_HAVE_X11)
+#elif defined(PETSC_HAVE_X)
     if (!nox) def = PETSC_DRAW_X;
 #else
     ierr = PetscOptionsHasName(PETSC_NULL,"-nox_warning",&warn);CHKERRQ(ierr);
@@ -280,9 +284,10 @@ PetscErrorCode  PetscDrawSetFromOptions(PetscDraw draw)
       ierr = PetscDrawSetType(draw,def);CHKERRQ(ierr);
     }
     ierr = PetscOptionsName("-nox","Run without graphics","None",&nox);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-draw_save_movie","Make a movie from the images saved","PetscDrawSetSave",movie,&movie,PETSC_NULL);CHKERRQ(ierr);
     ierr = PetscOptionsString("-draw_save","Save graphics to file","PetscDrawSetSave",filename,filename,PETSC_MAX_PATH_LEN,&save);CHKERRQ(ierr);
     if (save) {
-      ierr = PetscDrawSetSave(draw,filename);CHKERRQ(ierr);
+      ierr = PetscDrawSetSave(draw,filename,movie);CHKERRQ(ierr);
     }
 
     /* process any options handlers added with PetscObjectAddOptionsHandler() */
@@ -294,16 +299,18 @@ PetscErrorCode  PetscDrawSetFromOptions(PetscDraw draw)
 #undef __FUNCT__  
 #define __FUNCT__ "PetscDrawSetSave" 
 /*@C
-   PetscDrawSave - Saves images produced in a PetscDraw into a file as JPGEG
+   PetscDrawSave - Saves images produced in a PetscDraw into a file as a Gif file using AfterImage
 
    Collective on PetscDraw
 
    Input Parameter:
 +  draw      - the graphics context
--  filename  - name of the file, if PETSC_NULL uses name of draw object
+.  filename  - name of the file, if PETSC_NULL uses name of draw object
+-  movie - produce a movie of all the images 
 
    Options Database Command:
-.  -draw_save  <filename>
++  -draw_save  <filename>
+-  -draw_save_movie
 
    Level: intermediate
 
@@ -312,9 +319,12 @@ PetscErrorCode  PetscDrawSetFromOptions(PetscDraw draw)
    Concepts: postscript^graphics
    Concepts: drawing^Microsoft Windows
 
-.seealso: PetscDrawSetFromOptions(), PetscDrawCreate(), PetscDrawDestroy()
+   Notes: Requires that PETSc be configured with the option --with-afterimage
+
+
+.seealso: PetscDrawSetFromOptions(), PetscDrawCreate(), PetscDrawDestroy(), PetscDrawSave()
 @*/
-PetscErrorCode  PetscDrawSetSave(PetscDraw draw,const char *filename)
+PetscErrorCode  PetscDrawSetSave(PetscDraw draw,const char *filename,PetscBool movie)
 {
   PetscErrorCode ierr;
 
@@ -322,6 +332,7 @@ PetscErrorCode  PetscDrawSetSave(PetscDraw draw,const char *filename)
   PetscValidHeaderSpecific(draw,PETSC_DRAW_CLASSID,1);
   ierr = PetscFree(draw->savefilename);CHKERRQ(ierr);
   draw->savefilecount = 0;
+  draw->savefilemovie = movie;
   if (filename && filename[0]) {
     ierr = PetscStrallocpy(filename,&draw->savefilename);CHKERRQ(ierr);
   } else {

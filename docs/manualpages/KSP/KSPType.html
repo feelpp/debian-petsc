@@ -1,17 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/KSPType.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>KSPType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="KSPType"><H1>KSPType</H1></A>
 String with the name of a PETSc Krylov method or the creation function with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:mykspcreate() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #define KSPType char*
 #define KSPRICHARDSON "richardson"
-#define KSPCHEBYCHEV  "chebychev"
+#define KSPCHEBYSHEV  "chebyshev"
 #define KSPCG         "cg"
 #define   KSPCGNE       "cgne"
 #define   KSPNASH       "nash"
@@ -21,10 +22,13 @@ String with the name of a PETSc Krylov method or the creation function with an o
 #define   KSPFGMRES     "fgmres" 
 #define   KSPLGMRES     "lgmres"
 #define   KSPDGMRES     "dgmres"
+#define   KSPPGMRES     "pgmres"
 #define KSPTCQMR      "tcqmr"
 #define KSPBCGS       "bcgs"
-#define KSPIBCGS        "ibcgs"
-#define KSPBCGSL        "bcgsl"
+#define   KSPIBCGS      "ibcgs"
+#define   KSPFBCGS      "fbcgs"
+#define   KSPIFBCGS     "ifbcgs"
+#define   KSPBCGSL      "bcgsl"
 #define KSPCGS        "cgs"
 #define KSPTFQMR      "tfqmr"
 #define KSPCR         "cr"
@@ -36,9 +40,7 @@ String with the name of a PETSc Krylov method or the creation function with an o
 #define KSPSYMMLQ     "symmlq"
 #define KSPLCD        "lcd"
 #define KSPPYTHON     "python"
-#define KSPBROYDEN    "broyden"
 #define KSPGCR        "gcr"
-#define KSPNGMRES     "ngmres"
 #define KSPSPECEST    "specest"
 
 </PRE>

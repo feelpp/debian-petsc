@@ -39,8 +39,7 @@ PetscErrorCode VecNorm_MPICUSP(Vec xin,NormType type,PetscReal *z)
     ierr = VecNorm_SeqCUSP(xin,NORM_2,&work);
     work *= work;
     ierr = MPI_Allreduce(&work,&sum,1,MPIU_REAL,MPIU_SUM,((PetscObject)xin)->comm);CHKERRQ(ierr);
-    *z = sqrt(sum);
-    ierr = PetscLogFlops(2.0*xin->map->n);CHKERRQ(ierr);
+    *z = PetscSqrtReal(sum);
   } else if (type == NORM_1) {
     /* Find the local part */
     ierr = VecNorm_SeqCUSP(xin,NORM_1,&work);CHKERRQ(ierr);
@@ -57,7 +56,7 @@ PetscErrorCode VecNorm_MPICUSP(Vec xin,NormType type,PetscReal *z)
     ierr = VecNorm_SeqCUSP(xin,NORM_2,temp+1);CHKERRQ(ierr);
     temp[1] = temp[1]*temp[1];
     ierr = MPI_Allreduce(temp,z,2,MPIU_REAL,MPIU_SUM,((PetscObject)xin)->comm);CHKERRQ(ierr);
-    z[1] = sqrt(z[1]);
+    z[1] = PetscSqrtReal(z[1]);
   }
   PetscFunctionReturn(0);
 }
@@ -140,7 +139,7 @@ PetscErrorCode VecDuplicate_MPICUSP(Vec win,Vec *v)
   /* save local representation of the parallel vector (and scatter) if it exists */
   if (w->localrep) {
     ierr = VecGetArray(*v,&array);CHKERRQ(ierr);
-    ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,win->map->n+w->nghost,array,&vw->localrep);CHKERRQ(ierr);
+    ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,1,win->map->n+w->nghost,array,&vw->localrep);CHKERRQ(ierr);
     ierr = PetscMemcpy(vw->localrep->ops,w->localrep->ops,sizeof(struct _VecOps));CHKERRQ(ierr);
     ierr = VecRestoreArray(*v,&array);CHKERRQ(ierr);
     ierr = PetscLogObjectParent(*v,vw->localrep);CHKERRQ(ierr);
@@ -153,7 +152,10 @@ PetscErrorCode VecDuplicate_MPICUSP(Vec win,Vec *v)
   /* New vector should inherit stashing property of parent */
   (*v)->stash.donotstash = win->stash.donotstash;
   (*v)->stash.ignorenegidx = win->stash.ignorenegidx;
-  
+
+  /* change type_name appropriately */
+  ierr = PetscObjectChangeTypeName((PetscObject)(*v),VECMPICUSP);CHKERRQ(ierr);
+
   ierr = PetscOListDuplicate(((PetscObject)win)->olist,&((PetscObject)(*v))->olist);CHKERRQ(ierr);
   ierr = PetscFListDuplicate(((PetscObject)win)->qlist,&((PetscObject)(*v))->qlist);CHKERRQ(ierr);
   (*v)->map->bs    = win->map->bs;
@@ -186,7 +188,6 @@ PetscErrorCode  VecCreate_MPICUSP(Vec vv)
   PetscFunctionBegin;
   ierr = VecCreate_MPI_Private(vv,PETSC_FALSE,0,0);CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)vv,VECMPICUSP);CHKERRQ(ierr);
-  vv->valid_GPU_array      = PETSC_CUSP_UNALLOCATED;
   vv->ops->dotnorm2        = VecDotNorm2_MPICUSP;
   vv->ops->waxpy           = VecWAXPY_SeqCUSP;
   vv->ops->duplicate       = VecDuplicate_MPICUSP;
@@ -216,6 +217,9 @@ PetscErrorCode  VecCreate_MPICUSP(Vec vv)
      reset array?
      get values?
   */
+  ierr = VecCUSPAllocateCheck(vv);CHKERRCUSP(ierr);
+  vv->valid_GPU_array      = PETSC_CUSP_GPU;
+  ierr = VecSet(vv,0.0);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 EXTERN_C_END

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* precon.c */
 /* Fortran interface file */
 
@@ -272,9 +272,9 @@ void PETSC_STDCALL  pccomputeexplicitoperator_(PC pc,Mat *mat, int *__ierr ){
 *__ierr = PCComputeExplicitOperator(
 	(PC)PetscToPointer((pc) ),mat);
 }
-void PETSC_STDCALL  pcsetcoordinates_(PC pc,PetscInt *dim,PetscReal *coords, int *__ierr ){
+void PETSC_STDCALL  pcsetcoordinates_(PC pc,PetscInt *dim,PetscInt *nloc,PetscReal *coords, int *__ierr ){
 *__ierr = PCSetCoordinates(
-	(PC)PetscToPointer((pc) ),*dim,coords);
+	(PC)PetscToPointer((pc) ),*dim,*nloc,coords);
 }
 #if defined(__cplusplus)
 }

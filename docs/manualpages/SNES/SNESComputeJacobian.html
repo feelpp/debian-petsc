@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESComputeJacobian.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESComputeJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESComputeJacobian"><H1>SNESComputeJacobian</H1></A>
 Computes the Jacobian matrix that has been set with <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESComputeJacobian(SNES snes,Vec X,Mat *A,Mat *B,MatStructure *flg)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
@@ -41,7 +44,22 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_explicit_contour  </B></TD><TD>- Compare the computed Jacobian to the finite difference Jacobian and draw a contour plot with the result
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_operator  </B></TD><TD>- Make the comparison options above use the operator instead of the preconditioning matrix
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_coloring </B></TD><TD>- Compute the finite differece Jacobian using coloring and display norms of difference
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_coloring_display </B></TD><TD>- Compute the finite differece Jacobian using coloring and display verbose differences
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_coloring_threshold </B></TD><TD>- Display only those matrix entries that differ by more than a given threshold
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_coloring_threshold_atol </B></TD><TD>- Absolute tolerance for difference in matrix entries to be displayed by -snes_compare_coloring_threshold
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_coloring_threshold_rtol </B></TD><TD>- Relative tolerance for difference in matrix entries to be displayed by -snes_compare_coloring_threshold
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_coloring_draw </B></TD><TD>- Compute the finite differece Jacobian using coloring and draw differences
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_compare_coloring_draw_contour </B></TD><TD>- Compute the finite differece Jacobian using coloring and show contours of matrices and differences
 </TD></TR></TABLE>
+<P>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Most users should not need to explicitly call this routine, as it

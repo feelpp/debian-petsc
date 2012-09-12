@@ -1,13 +1,14 @@
 <center><a href="win32draw.c">Actual source code: win32draw.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/draw/impls/win32/win32draw.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:50:59+00:00">
+<meta name="date" content="2012-08-29T16:34:00+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;../src/sys/draw/drawimpl.h&gt;</font>
@@ -787,6 +788,7 @@
 <a name="line861">861: </a>  <font color="#4169E1">return</font>(0);
 <a name="line862">862: </a>}
 
+<a name="line864">864: </a>EXTERN_C_BEGIN
 <a name="line867">867: </a><strong><font color="#4169E1"><a name="PetscDrawCreate_Win32"></a><A href="../../../..32/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscDrawCreate_Win32(<A href="../../../..32/../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> draw)</font></strong>
 <a name="line868">868: </a>{
 <a name="line869">869: </a>  PetscDraw_Win32 *windraw;
@@ -846,6 +848,7 @@
 <a name="line925">925: </a>  ReleaseMutex(g_hWindowListMutex);
 <a name="line926">926: </a>  <font color="#4169E1">return</font>(0);
 <a name="line927">927: </a>}
+<a name="line928">928: </a>EXTERN_C_END
 
 
 <a name="line931">931: </a><font color="#B22222">/* FUNCTION: PetscWndProc(HWND, unsigned, WORD, LONG)</font>
@@ -874,13 +877,13 @@
 <a name="line957">957: </a>    }
 <a name="line958">958: </a>    <font color="#4169E1">break</font>;
 <a name="line959">959: </a>  <font color="#4169E1">case</font> WM_LBUTTONUP:
-<a name="line960">960: </a>    MouseRecord_Win32(hWnd,BUTTON_LEFT);
+<a name="line960">960: </a>    MouseRecord_Win32(hWnd,PETSC_BUTTON_LEFT);
 <a name="line961">961: </a>    <font color="#4169E1">break</font>;
 <a name="line962">962: </a>  <font color="#4169E1">case</font> WM_RBUTTONUP:
-<a name="line963">963: </a>    MouseRecord_Win32(hWnd,BUTTON_RIGHT);
+<a name="line963">963: </a>    MouseRecord_Win32(hWnd,PETSC_BUTTON_RIGHT);
 <a name="line964">964: </a>    <font color="#4169E1">break</font>;
 <a name="line965">965: </a>  <font color="#4169E1">case</font> WM_MBUTTONUP:
-<a name="line966">966: </a>    MouseRecord_Win32(hWnd,BUTTON_CENTER);
+<a name="line966">966: </a>    MouseRecord_Win32(hWnd,PETSC_BUTTON_CENTER);
 <a name="line967">967: </a>    <font color="#4169E1">break</font>;
 <a name="line968">968: </a><strong><font color="#FF0000">  default:</font></strong>
 <a name="line969">969: </a>    <A href="../../../..32/../docs/manualpages/Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(DefWindowProc(hWnd, message, wParam, lParam));

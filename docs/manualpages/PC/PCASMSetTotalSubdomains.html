@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCASMSetTotalSubdomains.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCASMSetTotalSubdomains</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCASMSetTotalSubdomains"><H1>PCASMSetTotalSubdomains</H1></A>
-Sets the subdomains for all processor for the  additive Schwarz preconditioner.  Either all or no processors in the <A HREF="../PC/PC.html#PC">PC</A> communicator must call this routine, with the same index sets. 
+Sets the subdomains for all processors for the  additive Schwarz preconditioner.  Either all or no processors in the <A HREF="../PC/PC.html#PC">PC</A> communicator must call this routine, with the same index sets. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
@@ -18,10 +19,10 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc </B></TD><TD>- the preconditioner context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of subdomains for all processors
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N  </B></TD><TD>- the number of subdomains for all processors
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is </B></TD><TD>- the index sets that define the subdomains for all processor
-(or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to determine subdomains)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is </B></TD><TD>- the index sets that define the subdomains for all processors
+(or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to ask PETSc to compe up with subdomains)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_local </B></TD><TD>- the index sets that define the local part of the subdomains for this processor
 (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to use the default of 1 subdomain per process)

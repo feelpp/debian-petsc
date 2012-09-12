@@ -1,3 +1,11 @@
+        subroutine PetscInfoDeactivateClass(objclass ,ierr)
+       integer objclass ! int
+       integer ierr
+       end subroutine
+        subroutine PetscInfoActivateClass(objclass ,ierr)
+       integer objclass ! int
+       integer ierr
+       end subroutine
         subroutine PetscLogTraceBegin(file ,ierr)
        FILE file ! FILE
        integer ierr
@@ -53,13 +61,5 @@
        end subroutine
         subroutine PetscLogViewPython(viewer ,ierr)
        PetscViewer viewer ! PetscViewer
-       integer ierr
-       end subroutine
-        subroutine PetscInfoDeactivateClass(objclass ,ierr)
-       integer objclass ! int
-       integer ierr
-       end subroutine
-        subroutine PetscInfoActivateClass(objclass ,ierr)
-       integer objclass ! int
        integer ierr
        end subroutine

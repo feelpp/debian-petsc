@@ -1,15 +1,16 @@
 <center><a href="stcg.c">Actual source code: stcg.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/cg/stcg/stcg.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:11:40+00:00">
+<meta name="date" content="2012-08-29T17:03:51+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;             </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;             </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/cg/stcg/stcgimpl.h&gt;</font>
 
 <a name="line5">  5: </a><strong><font color="#228B22">#define STCG_PRECONDITIONED_DIRECTION   0</font></strong>
@@ -645,6 +646,7 @@
 <a name="line663">663: </a>  <font color="#4169E1">return</font>(0);
 <a name="line664">664: </a>}
 
+<a name="line666">666: </a>EXTERN_C_BEGIN
 <a name="line669">669: </a><strong><font color="#4169E1"><a name="KSPSTCGSetRadius_STCG"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPSTCGSetRadius_STCG(<A href="../../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp, <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> radius)</font></strong>
 <a name="line670">670: </a>{
 <a name="line671">671: </a>  KSP_STCG *cg = (KSP_STCG *)ksp-&gt;data;
@@ -667,6 +669,7 @@
 <a name="line695">695: </a>  *o_fcn = cg-&gt;o_fcn;
 <a name="line696">696: </a>  <font color="#4169E1">return</font>(0);
 <a name="line697">697: </a>}
+<a name="line698">698: </a>EXTERN_C_END
 
 <a name="line702">702: </a><strong><font color="#4169E1"><a name="KSPSetFromOptions_STCG"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPSetFromOptions_STCG(<A href="../../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line703">703: </a>{
@@ -718,6 +721,7 @@
 <a name="line751">751: </a><font color="#B22222">.seealso:  <A href="../../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A href="../../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A href="../../../../../../docs/manualpages/KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A href="../../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, <A href="../../../../../../docs/manualpages/KSP/KSPSTCGSetRadius.html#KSPSTCGSetRadius">KSPSTCGSetRadius</A>(), <A href="../../../../../../docs/manualpages/KSP/KSPSTCGGetNormD.html#KSPSTCGGetNormD">KSPSTCGGetNormD</A>(), <A href="../../../../../../docs/manualpages/KSP/KSPSTCGGetObjFcn.html#KSPSTCGGetObjFcn">KSPSTCGGetObjFcn</A>()</font>
 <a name="line752">752: </a><font color="#B22222">M*/</font>
 
+<a name="line754">754: </a>EXTERN_C_BEGIN
 <a name="line757">757: </a><strong><font color="#4169E1"><a name="KSPCreate_STCG"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_STCG(<A href="../../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line758">758: </a>{
 <a name="line760">760: </a>  KSP_STCG       *cg;
@@ -760,6 +764,7 @@
 <a name="line798">798: </a>                                            KSPSTCGGetObjFcn_STCG);
 <a name="line799">799: </a>  <font color="#4169E1">return</font>(0);
 <a name="line800">800: </a>}
+<a name="line801">801: </a>EXTERN_C_END
 </pre>
 </body>
 

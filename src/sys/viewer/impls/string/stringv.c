@@ -1,5 +1,5 @@
 
-#include <private/viewerimpl.h>   /*I  "petscsys.h"  I*/
+#include <petsc-private/viewerimpl.h>   /*I  "petscsys.h"  I*/
 #include <stdarg.h>
 #if defined(PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
@@ -56,7 +56,7 @@ PetscErrorCode  PetscViewerStringSPrintf(PetscViewer viewer,const char format[],
   PetscFunctionBegin;
   PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
   PetscValidCharPointer(format,2);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (!isstring) PetscFunctionReturn(0);
   if (!vstr->string) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ORDER,"Must call PetscViewerStringSetString() before using");
 
@@ -84,7 +84,8 @@ PetscErrorCode  PetscViewerStringSPrintf(PetscViewer viewer,const char format[],
 
     Input Parameters:
 +   comm - the communicator
--   string - the string to use
+.   string - the string to use
+-   len    - the string length
 
     Output Parameter:
 .   lab - the PetscViewer
@@ -183,7 +184,7 @@ PetscErrorCode  PetscViewerStringSetString(PetscViewer viewer,char string[],Pets
   PetscFunctionBegin;
   PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
   PetscValidCharPointer(string,2);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (!isstring)  PetscFunctionReturn(0);
   if (len <= 2) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"String must have length at least 2");
 

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* filev.c */
 /* Fortran interface file */
 
@@ -32,6 +32,11 @@ extern void PetscRmPointer(void*);
 #define petscviewerasciisettab_ PETSCVIEWERASCIISETTAB
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscviewerasciisettab_ petscviewerasciisettab
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscviewerasciigettab_ PETSCVIEWERASCIIGETTAB
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscviewerasciigettab_ petscviewerasciigettab
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscviewerasciiaddtab_ PETSCVIEWERASCIIADDTAB
@@ -67,6 +72,10 @@ extern "C" {
 void PETSC_STDCALL  petscviewerasciisettab_(PetscViewer viewer,PetscInt *tabs, int *__ierr ){
 *__ierr = PetscViewerASCIISetTab(
 	(PetscViewer)PetscToPointer((viewer) ),*tabs);
+}
+void PETSC_STDCALL  petscviewerasciigettab_(PetscViewer viewer,PetscInt *tabs, int *__ierr ){
+*__ierr = PetscViewerASCIIGetTab(
+	(PetscViewer)PetscToPointer((viewer) ),tabs);
 }
 void PETSC_STDCALL  petscviewerasciiaddtab_(PetscViewer viewer,PetscInt *tabs, int *__ierr ){
 *__ierr = PetscViewerASCIIAddTab(

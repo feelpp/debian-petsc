@@ -1,13 +1,14 @@
 <center><a href="eventLog.c">Actual source code: eventLog.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/plog/utils/eventLog.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:53:24+00:00">
+<meta name="date" content="2012-08-29T16:36:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">     This defines part of the private API for logging performance information. It is intended to be used only by the</font>
@@ -15,7 +16,7 @@
 <a name="line5">  5: </a><font color="#B22222">   in the public PETSc include files.</font>
 
 <a name="line7">  7: </a><font color="#B22222">*/</font>
-<a name="line8">  8: </a><font color="#A020F0">#include &lt;private/logimpl.h&gt;  </font><font color="#B22222">/*I    "petscsys.h"   I*/</font><font color="#A020F0"></font>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petsc-private/logimpl.h&gt;  </font><font color="#B22222">/*I    "petscsys.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line10"> 10: </a><font color="#B22222">/*----------------------------------------------- Creation Functions -------------------------------------------------*/</font>
 <a name="line11"> 11: </a><font color="#B22222">/* Note: these functions do not have prototypes in a public directory, so they are considered "internal" and not exported. */</font>
@@ -513,6 +514,7 @@
 <a name="line568">568: </a><font color="#A020F0">#endif</font>
 <a name="line569">569: </a><font color="#A020F0">#if defined(PETSC_HAVE_PAPI)</font>
 <a name="line570">570: </a><font color="#A020F0">#include &lt;papi.h&gt;</font>
+<a name="line571">571: </a>extern int PAPIEventSet;
 <a name="line572">572: </a><font color="#A020F0">#endif</font>
 
 <a name="line574">574: </a><font color="#B22222">/*------------------------------------------------ Action Functions -------------------------------------------------*/</font>
@@ -540,7 +542,7 @@
 <a name="line600">600: </a>    <font color="#B22222">/*    printf("fma %g flops %g\n",(double)values[1],(double)values[0]); */</font>
 <a name="line601">601: </a>  }
 <a name="line602">602: </a><font color="#A020F0">#else</font>
-<a name="line603">603: </a>  eventLog-&gt;eventInfo[event].flops         -= _TotalFlops;
+<a name="line603">603: </a>  eventLog-&gt;eventInfo[event].flops         -= petsc_TotalFlops;
 <a name="line604">604: </a><font color="#A020F0">#endif</font>
 <a name="line605">605: </a>  eventLog-&gt;eventInfo[event].numMessages   -= petsc_irecv_ct  + petsc_isend_ct  + petsc_recv_ct  + petsc_send_ct;
 <a name="line606">606: </a>  eventLog-&gt;eventInfo[event].messageLength -= petsc_irecv_len + petsc_isend_len + petsc_recv_len + petsc_send_len;
@@ -575,7 +577,7 @@
 <a name="line639">639: </a>    <font color="#B22222">/* printf("fma %g flops %g\n",(double)values[1],(double)values[0]); */</font>
 <a name="line640">640: </a>  }
 <a name="line641">641: </a><font color="#A020F0">#else</font>
-<a name="line642">642: </a>  eventLog-&gt;eventInfo[event].flops         += _TotalFlops;
+<a name="line642">642: </a>  eventLog-&gt;eventInfo[event].flops         += petsc_TotalFlops;
 <a name="line643">643: </a><font color="#A020F0">#endif</font>
 <a name="line644">644: </a>  eventLog-&gt;eventInfo[event].numMessages   += petsc_irecv_ct  + petsc_isend_ct  + petsc_recv_ct  + petsc_send_ct;
 <a name="line645">645: </a>  eventLog-&gt;eventInfo[event].messageLength += petsc_irecv_len + petsc_isend_len + petsc_recv_len + petsc_send_len;
@@ -594,15 +596,15 @@
 <a name="line660">660: </a>  int            stage;
 
 <a name="line664">664: </a>  <font color="#B22222">/* Dynamically enlarge logging structures */</font>
-<a name="line665">665: </a>  <font color="#4169E1">if</font> (numActions &gt;= maxActions) {
+<a name="line665">665: </a>  <font color="#4169E1">if</font> (petsc_numActions &gt;= petsc_maxActions) {
 <a name="line666">666: </a>    PetscTime(start);
-<a name="line667">667: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(maxActions*2 * <font color="#4169E1">sizeof</font>(Action), &amp;tmpAction);
-<a name="line668">668: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpAction, actions, maxActions * <font color="#4169E1">sizeof</font>(Action));
-<a name="line669">669: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(actions);
-<a name="line670">670: </a>    actions     = tmpAction;
-<a name="line671">671: </a>    maxActions *= 2;
+<a name="line667">667: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(petsc_maxActions*2 * <font color="#4169E1">sizeof</font>(Action), &amp;tmpAction);
+<a name="line668">668: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpAction, petsc_actions, petsc_maxActions * <font color="#4169E1">sizeof</font>(Action));
+<a name="line669">669: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(petsc_actions);
+<a name="line670">670: </a>    petsc_actions     = tmpAction;
+<a name="line671">671: </a>    petsc_maxActions *= 2;
 <a name="line672">672: </a>    PetscTime(end);
-<a name="line673">673: </a>    BaseTime += (end - start);
+<a name="line673">673: </a>    petsc_BaseTime += (end - start);
 <a name="line674">674: </a>  }
 <a name="line675">675: </a>  <font color="#B22222">/* Record the event */</font>
 <a name="line676">676: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogGetStageLog.html#PetscLogGetStageLog">PetscLogGetStageLog</A>(&amp;stageLog);
@@ -610,18 +612,18 @@
 <a name="line678">678: </a>  <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetEventRegLog.html#PetscStageLogGetEventRegLog">PetscStageLogGetEventRegLog</A>(stageLog, &amp;eventRegLog);
 <a name="line679">679: </a>  <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetEventPerfLog.html#PetscStageLogGetEventPerfLog">PetscStageLogGetEventPerfLog</A>(stageLog, stage, &amp;eventPerfLog);
 <a name="line680">680: </a>  PetscTime(curTime);
-<a name="line681">681: </a>  <font color="#4169E1">if</font> (logActions) {
-<a name="line682">682: </a>    actions[numActions].time   = curTime - BaseTime;
-<a name="line683">683: </a>    actions[numActions].action = ACTIONBEGIN;
-<a name="line684">684: </a>    actions[numActions].event  = event;
-<a name="line685">685: </a>    actions[numActions].classid = eventRegLog-&gt;eventInfo[event].classid;
-<a name="line686">686: </a>    <font color="#4169E1">if</font> (o1) actions[numActions].id1 = o1-&gt;id; <font color="#4169E1">else</font> actions[numActions].id1 = -1;
-<a name="line687">687: </a>    <font color="#4169E1">if</font> (o2) actions[numActions].id2 = o2-&gt;id; <font color="#4169E1">else</font> actions[numActions].id2 = -1;
-<a name="line688">688: </a>    <font color="#4169E1">if</font> (o3) actions[numActions].id3 = o3-&gt;id; <font color="#4169E1">else</font> actions[numActions].id3 = -1;
-<a name="line689">689: </a>    actions[numActions].flops    = _TotalFlops;
-<a name="line690">690: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetCurrentUsage.html#PetscMallocGetCurrentUsage">PetscMallocGetCurrentUsage</A>(&amp;actions[numActions].mem);
-<a name="line691">691: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetMaximumUsage.html#PetscMallocGetMaximumUsage">PetscMallocGetMaximumUsage</A>(&amp;actions[numActions].maxmem);
-<a name="line692">692: </a>    numActions++;
+<a name="line681">681: </a>  <font color="#4169E1">if</font> (petsc_logActions) {
+<a name="line682">682: </a>    petsc_actions[petsc_numActions].time   = curTime - petsc_BaseTime;
+<a name="line683">683: </a>    petsc_actions[petsc_numActions].action = ACTIONBEGIN;
+<a name="line684">684: </a>    petsc_actions[petsc_numActions].event  = event;
+<a name="line685">685: </a>    petsc_actions[petsc_numActions].classid = eventRegLog-&gt;eventInfo[event].classid;
+<a name="line686">686: </a>    <font color="#4169E1">if</font> (o1) petsc_actions[petsc_numActions].id1 = o1-&gt;id; <font color="#4169E1">else</font> petsc_actions[petsc_numActions].id1 = -1;
+<a name="line687">687: </a>    <font color="#4169E1">if</font> (o2) petsc_actions[petsc_numActions].id2 = o2-&gt;id; <font color="#4169E1">else</font> petsc_actions[petsc_numActions].id2 = -1;
+<a name="line688">688: </a>    <font color="#4169E1">if</font> (o3) petsc_actions[petsc_numActions].id3 = o3-&gt;id; <font color="#4169E1">else</font> petsc_actions[petsc_numActions].id3 = -1;
+<a name="line689">689: </a>    petsc_actions[petsc_numActions].flops    = petsc_TotalFlops;
+<a name="line690">690: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetCurrentUsage.html#PetscMallocGetCurrentUsage">PetscMallocGetCurrentUsage</A>(&amp;petsc_actions[petsc_numActions].mem);
+<a name="line691">691: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetMaximumUsage.html#PetscMallocGetMaximumUsage">PetscMallocGetMaximumUsage</A>(&amp;petsc_actions[petsc_numActions].maxmem);
+<a name="line692">692: </a>    petsc_numActions++;
 <a name="line693">693: </a>  }
 <a name="line694">694: </a>  <font color="#B22222">/* Check for double counting */</font>
 <a name="line695">695: </a>  eventPerfLog-&gt;eventInfo[event].depth++;
@@ -629,7 +631,7 @@
 <a name="line697">697: </a>  <font color="#B22222">/* Log the performance info */</font>
 <a name="line698">698: </a>  eventPerfLog-&gt;eventInfo[event].count++;
 <a name="line699">699: </a>  eventPerfLog-&gt;eventInfo[event].time          -= curTime;
-<a name="line700">700: </a>  eventPerfLog-&gt;eventInfo[event].flops         -= _TotalFlops;
+<a name="line700">700: </a>  eventPerfLog-&gt;eventInfo[event].flops         -= petsc_TotalFlops;
 <a name="line701">701: </a>  eventPerfLog-&gt;eventInfo[event].numMessages   -= petsc_irecv_ct  + petsc_isend_ct  + petsc_recv_ct  + petsc_send_ct;
 <a name="line702">702: </a>  eventPerfLog-&gt;eventInfo[event].messageLength -= petsc_irecv_len + petsc_isend_len + petsc_recv_len + petsc_send_len;
 <a name="line703">703: </a>  eventPerfLog-&gt;eventInfo[event].numReductions -= petsc_allreduce_ct + petsc_gather_ct + petsc_scatter_ct;
@@ -647,15 +649,15 @@
 <a name="line717">717: </a>  int            stage;
 
 <a name="line721">721: </a>  <font color="#B22222">/* Dynamically enlarge logging structures */</font>
-<a name="line722">722: </a>  <font color="#4169E1">if</font> (numActions &gt;= maxActions) {
+<a name="line722">722: </a>  <font color="#4169E1">if</font> (petsc_numActions &gt;= petsc_maxActions) {
 <a name="line723">723: </a>    PetscTime(start);
-<a name="line724">724: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(maxActions*2 * <font color="#4169E1">sizeof</font>(Action), &amp;tmpAction);
-<a name="line725">725: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpAction, actions, maxActions * <font color="#4169E1">sizeof</font>(Action));
-<a name="line726">726: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(actions);
-<a name="line727">727: </a>    actions     = tmpAction;
-<a name="line728">728: </a>    maxActions *= 2;
+<a name="line724">724: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(petsc_maxActions*2 * <font color="#4169E1">sizeof</font>(Action), &amp;tmpAction);
+<a name="line725">725: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpAction, petsc_actions, petsc_maxActions * <font color="#4169E1">sizeof</font>(Action));
+<a name="line726">726: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(petsc_actions);
+<a name="line727">727: </a>    petsc_actions     = tmpAction;
+<a name="line728">728: </a>    petsc_maxActions *= 2;
 <a name="line729">729: </a>    PetscTime(end);
-<a name="line730">730: </a>    BaseTime += (end - start);
+<a name="line730">730: </a>    petsc_BaseTime += (end - start);
 <a name="line731">731: </a>  }
 <a name="line732">732: </a>  <font color="#B22222">/* Record the event */</font>
 <a name="line733">733: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogGetStageLog.html#PetscLogGetStageLog">PetscLogGetStageLog</A>(&amp;stageLog);
@@ -663,18 +665,18 @@
 <a name="line735">735: </a>  <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetEventRegLog.html#PetscStageLogGetEventRegLog">PetscStageLogGetEventRegLog</A>(stageLog, &amp;eventRegLog);
 <a name="line736">736: </a>  <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetEventPerfLog.html#PetscStageLogGetEventPerfLog">PetscStageLogGetEventPerfLog</A>(stageLog, stage, &amp;eventPerfLog);
 <a name="line737">737: </a>  PetscTime(curTime);
-<a name="line738">738: </a>  <font color="#4169E1">if</font> (logActions) {
-<a name="line739">739: </a>    actions[numActions].time   = curTime - BaseTime;
-<a name="line740">740: </a>    actions[numActions].action = ACTIONEND;
-<a name="line741">741: </a>    actions[numActions].event  = event;
-<a name="line742">742: </a>    actions[numActions].classid = eventRegLog-&gt;eventInfo[event].classid;
-<a name="line743">743: </a>    <font color="#4169E1">if</font> (o1) actions[numActions].id1 = o1-&gt;id; <font color="#4169E1">else</font> actions[numActions].id1 = -1;
-<a name="line744">744: </a>    <font color="#4169E1">if</font> (o2) actions[numActions].id2 = o2-&gt;id; <font color="#4169E1">else</font> actions[numActions].id2 = -1;
-<a name="line745">745: </a>    <font color="#4169E1">if</font> (o3) actions[numActions].id3 = o3-&gt;id; <font color="#4169E1">else</font> actions[numActions].id3 = -1;
-<a name="line746">746: </a>    actions[numActions].flops    = _TotalFlops;
-<a name="line747">747: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetCurrentUsage.html#PetscMallocGetCurrentUsage">PetscMallocGetCurrentUsage</A>(&amp;actions[numActions].mem);
-<a name="line748">748: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetMaximumUsage.html#PetscMallocGetMaximumUsage">PetscMallocGetMaximumUsage</A>(&amp;actions[numActions].maxmem);
-<a name="line749">749: </a>    numActions++;
+<a name="line738">738: </a>  <font color="#4169E1">if</font> (petsc_logActions) {
+<a name="line739">739: </a>    petsc_actions[petsc_numActions].time   = curTime - petsc_BaseTime;
+<a name="line740">740: </a>    petsc_actions[petsc_numActions].action = ACTIONEND;
+<a name="line741">741: </a>    petsc_actions[petsc_numActions].event  = event;
+<a name="line742">742: </a>    petsc_actions[petsc_numActions].classid = eventRegLog-&gt;eventInfo[event].classid;
+<a name="line743">743: </a>    <font color="#4169E1">if</font> (o1) petsc_actions[petsc_numActions].id1 = o1-&gt;id; <font color="#4169E1">else</font> petsc_actions[petsc_numActions].id1 = -1;
+<a name="line744">744: </a>    <font color="#4169E1">if</font> (o2) petsc_actions[petsc_numActions].id2 = o2-&gt;id; <font color="#4169E1">else</font> petsc_actions[petsc_numActions].id2 = -1;
+<a name="line745">745: </a>    <font color="#4169E1">if</font> (o3) petsc_actions[petsc_numActions].id3 = o3-&gt;id; <font color="#4169E1">else</font> petsc_actions[petsc_numActions].id3 = -1;
+<a name="line746">746: </a>    petsc_actions[petsc_numActions].flops    = petsc_TotalFlops;
+<a name="line747">747: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetCurrentUsage.html#PetscMallocGetCurrentUsage">PetscMallocGetCurrentUsage</A>(&amp;petsc_actions[petsc_numActions].mem);
+<a name="line748">748: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetMaximumUsage.html#PetscMallocGetMaximumUsage">PetscMallocGetMaximumUsage</A>(&amp;petsc_actions[petsc_numActions].maxmem);
+<a name="line749">749: </a>    petsc_numActions++;
 <a name="line750">750: </a>  }
 <a name="line751">751: </a>  <font color="#B22222">/* Check for double counting */</font>
 <a name="line752">752: </a>  eventPerfLog-&gt;eventInfo[event].depth--;
@@ -686,7 +688,7 @@
 <a name="line758">758: </a>  <font color="#B22222">/* Log the performance info */</font>
 <a name="line759">759: </a>  eventPerfLog-&gt;eventInfo[event].count++;
 <a name="line760">760: </a>  eventPerfLog-&gt;eventInfo[event].time          += curTime;
-<a name="line761">761: </a>  eventPerfLog-&gt;eventInfo[event].flops         += _TotalFlops;
+<a name="line761">761: </a>  eventPerfLog-&gt;eventInfo[event].flops         += petsc_TotalFlops;
 <a name="line762">762: </a>  eventPerfLog-&gt;eventInfo[event].numMessages   += petsc_irecv_ct  + petsc_isend_ct  + petsc_recv_ct  + petsc_send_ct;
 <a name="line763">763: </a>  eventPerfLog-&gt;eventInfo[event].messageLength += petsc_irecv_len + petsc_isend_len + petsc_recv_len + petsc_send_len;
 <a name="line764">764: </a>  eventPerfLog-&gt;eventInfo[event].numReductions += petsc_allreduce_ct + petsc_gather_ct + petsc_scatter_ct;
@@ -702,7 +704,7 @@
 <a name="line776">776: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank;
 <a name="line777">777: </a>  int            stage,err;
 
-<a name="line781">781: </a>  <font color="#4169E1">if</font> (!tracetime) {PetscTime(tracetime);}
+<a name="line781">781: </a>  <font color="#4169E1">if</font> (!petsc_tracetime) {PetscTime(petsc_tracetime);}
 
 <a name="line783">783: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, &amp;rank);
 <a name="line784">784: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogGetStageLog.html#PetscLogGetStageLog">PetscLogGetStageLog</A>(&amp;stageLog);
@@ -711,14 +713,14 @@
 <a name="line787">787: </a>  <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetEventPerfLog.html#PetscStageLogGetEventPerfLog">PetscStageLogGetEventPerfLog</A>(stageLog, stage, &amp;eventPerfLog);
 <a name="line788">788: </a>  <font color="#B22222">/* Check for double counting */</font>
 <a name="line789">789: </a>  eventPerfLog-&gt;eventInfo[event].depth++;
-<a name="line790">790: </a>  tracelevel++;
+<a name="line790">790: </a>  petsc_tracelevel++;
 <a name="line791">791: </a>  <font color="#4169E1">if</font> (eventPerfLog-&gt;eventInfo[event].depth &gt; 1) <font color="#4169E1">return</font>(0);
 <a name="line792">792: </a>  <font color="#B22222">/* Log performance info */</font>
 <a name="line793">793: </a>  PetscTime(cur_time);
-<a name="line794">794: </a>  <A href="../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,tracefile, <font color="#666666">"%s[%d] %g Event begin: %s\n"</font>, tracespace, rank, cur_time-tracetime, eventRegLog-&gt;eventInfo[event].name);
-<a name="line795">795: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(tracespace, traceblanks, 2*tracelevel);
-<a name="line796">796: </a>  tracespace[2*tracelevel] = 0;
-<a name="line797">797: </a>  err = fflush(tracefile);
+<a name="line794">794: </a>  <A href="../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,petsc_tracefile, <font color="#666666">"%s[%d] %g Event begin: %s\n"</font>, petsc_tracespace, rank, cur_time-petsc_tracetime, eventRegLog-&gt;eventInfo[event].name);
+<a name="line795">795: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(petsc_tracespace, petsc_traceblanks, 2*petsc_tracelevel);
+<a name="line796">796: </a>  petsc_tracespace[2*petsc_tracelevel] = 0;
+<a name="line797">797: </a>  err = fflush(petsc_tracefile);
 <a name="line798">798: </a>  <font color="#4169E1">if</font> (err) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 
 <a name="line800">800: </a>  <font color="#4169E1">return</font>(0);
@@ -733,7 +735,7 @@
 <a name="line811">811: </a>  int            stage,err;
 <a name="line812">812: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank;
 
-<a name="line816">816: </a>  tracelevel--;
+<a name="line816">816: </a>  petsc_tracelevel--;
 <a name="line817">817: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, &amp;rank);
 <a name="line818">818: </a>  <A href="../../../../docs/manualpages/Profiling/PetscLogGetStageLog.html#PetscLogGetStageLog">PetscLogGetStageLog</A>(&amp;stageLog);
 <a name="line819">819: </a>  <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetCurrent.html#PetscStageLogGetCurrent">PetscStageLogGetCurrent</A>(stageLog, &amp;stage);
@@ -743,15 +745,15 @@
 <a name="line823">823: </a>  eventPerfLog-&gt;eventInfo[event].depth--;
 <a name="line824">824: </a>  <font color="#4169E1">if</font> (eventPerfLog-&gt;eventInfo[event].depth &gt; 0) {
 <a name="line825">825: </a>    <font color="#4169E1">return</font>(0);
-<a name="line826">826: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (eventPerfLog-&gt;eventInfo[event].depth &lt; 0 || tracelevel &lt; 0) {
+<a name="line826">826: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (eventPerfLog-&gt;eventInfo[event].depth &lt; 0 || petsc_tracelevel &lt; 0) {
 <a name="line827">827: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE, <font color="#666666">"Logging event had unbalanced begin/end pairs"</font>);
 <a name="line828">828: </a>  }
 <a name="line829">829: </a>  <font color="#B22222">/* Log performance info */</font>
-<a name="line830">830: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(tracespace, traceblanks, 2*tracelevel);
-<a name="line831">831: </a>  tracespace[2*tracelevel] = 0;
+<a name="line830">830: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(petsc_tracespace, petsc_traceblanks, 2*petsc_tracelevel);
+<a name="line831">831: </a>  petsc_tracespace[2*petsc_tracelevel] = 0;
 <a name="line832">832: </a>  PetscTime(cur_time);
-<a name="line833">833: </a>  <A href="../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,tracefile, <font color="#666666">"%s[%d] %g Event end: %s\n"</font>, tracespace, rank, cur_time-tracetime, eventRegLog-&gt;eventInfo[event].name);
-<a name="line834">834: </a>  err = fflush(tracefile);
+<a name="line833">833: </a>  <A href="../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,petsc_tracefile, <font color="#666666">"%s[%d] %g Event end: %s\n"</font>, petsc_tracespace, rank, cur_time-petsc_tracetime, eventRegLog-&gt;eventInfo[event].name);
+<a name="line834">834: </a>  err = fflush(petsc_tracefile);
 <a name="line835">835: </a>  <font color="#4169E1">if</font> (err) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line836">836: </a>  <font color="#4169E1">return</font>(0);
 <a name="line837">837: </a>}

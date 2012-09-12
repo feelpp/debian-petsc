@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCFactorSetUseInPlace.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCFactorSetUseInPlace</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCFactorSetUseInPlace"><H1>PCFactorSetUseInPlace</H1></A>
 Tells the system to do an in-place factorization. For dense matrices, this enables the solution of much larger problems.  For sparse matrices the factorization cannot be done truly in-place  so this does not save memory during the factorization, but after the matrix is factored, the original unfactored matrix is freed, thus recovering that space. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>

@@ -1,19 +1,21 @@
 <center><a href="ex120.c">Actual source code: ex120.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex120.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:05:41+00:00">
+<meta name="date" content="2012-08-29T16:51:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Test LAPACK routine ZHEEV, ZHEEVX, ZHEGV and ZHEGVX. \n\</font>
 <a name="line2">  2: </a><font color="#666666">ZHEEV computes all eigenvalues and, optionally, eigenvectors of a complex Hermitian matrix A. \n\n"</font>;
 
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 <a name="line5">  5: </a><font color="#A020F0">#include &lt;petscblaslapack.h&gt;</font>
 
+<a name="line7">  7: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CkEigenSolutions(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>*,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*)</font></strong>;
 
 <a name="line11"> 11: </a><strong><font color="#4169E1"><a name="main"></a><A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> main(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> argc,char **args)</font></strong>
 <a name="line12"> 12: </a>{
@@ -114,7 +116,7 @@
 <a name="line108">108: </a>  }
 
 <a name="line110">110: </a>  <font color="#B22222">/* Convert aij matrix to MatSeqDense for LAPACK */</font>
-<a name="line111">111: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<A href="../../../../docs/manualpages/Mat/MATSEQDENSE.html#MATSEQDENSE">MATSEQDENSE</A>,&amp;flg);
+<a name="line111">111: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<A href="../../../../docs/manualpages/Mat/MATSEQDENSE.html#MATSEQDENSE">MATSEQDENSE</A>,&amp;flg);
 <a name="line112">112: </a>  <font color="#4169E1">if</font> (flg) {
 <a name="line113">113: </a>    <A href="../../../../docs/manualpages/Mat/MatDuplicate.html#MatDuplicate">MatDuplicate</A>(A,MAT_COPY_VALUES,&amp;A_dense);
 <a name="line114">114: </a>  } <font color="#4169E1">else</font> {

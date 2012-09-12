@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESMonitorSet.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESMonitorSet</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESMonitorSet"><H1>SNESMonitorSet</H1></A>
 Sets an ADDITIONAL function that is to be used at every iteration of the nonlinear solver to display the iteration's  progress.    
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESMonitorSet(SNES snes,PetscErrorCode (*monitor)(SNES,PetscInt,PetscReal,void*),void *mctx,PetscErrorCode (*monitordestroy)(void**))
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>

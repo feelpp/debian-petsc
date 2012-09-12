@@ -1,13 +1,14 @@
 <center><a href="ex6f90.F">Actual source code: ex6f90.F</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tutorials/ex6f90.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:09:03+00:00">
+<meta name="date" content="2012-08-29T16:58:29+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!-----------------------------------------------------------------------
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!     manages tokamak edge region.
@@ -760,7 +761,7 @@
 <a name="line750">750: </a>!-----------------------------------------------------------------------
 <a name="line751">751: </a>!     draw it.
 <a name="line752">752: </a>!-----------------------------------------------------------------------
-<a name="line753">753: </a><font color="#A020F0">#if defined(PETSC_HAVE_X11)</font>
+<a name="line753">753: </a><font color="#A020F0">#if defined(PETSC_HAVE_X)</font>
 <a name="line754">754: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawOpenX.html#PetscDrawOpenX">PetscDrawOpenX</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,0,<font color="#666666">"meshes"</font>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,                  &amp;
 <a name="line755">755: </a>     &amp;     <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,700,700,draw,ierr)
 <a name="line756">756: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawSetCoordinates.html#PetscDrawSetCoordinates">PetscDrawSetCoordinates</A>(draw,xmin,ymin,xmax,ymax,ierr)
@@ -770,7 +771,7 @@
 <a name="line760">760: </a>!     clean up.
 <a name="line761">761: </a>!-----------------------------------------------------------------------
 <a name="line762">762: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(v,va,iv,ierr)
-<a name="line763">763: </a><font color="#A020F0">#if defined(PETSC_HAVE_X11)</font>
+<a name="line763">763: </a><font color="#A020F0">#if defined(PETSC_HAVE_X)</font>
 <a name="line764">764: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(draw,ierr)
 <a name="line765">765: </a><font color="#A020F0">#endif</font>
 <a name="line766">766: </a>!-----------------------------------------------------------------------

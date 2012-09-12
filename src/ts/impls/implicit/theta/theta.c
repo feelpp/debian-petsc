@@ -1,7 +1,8 @@
 /*
   Code for timestepping with implicit Theta method
 */
-#include <private/tsimpl.h>                /*I   "petscts.h"   I*/
+#include <petsc-private/tsimpl.h>                /*I   "petscts.h"   I*/
+#include <petscsnesfas.h>
 
 typedef struct {
   Vec       X,Xdot;                   /* Storage for one stage */
@@ -14,18 +15,83 @@ typedef struct {
 } TS_Theta;
 
 #undef __FUNCT__
+#define __FUNCT__ "TSThetaGetX0AndXdot"
+static PetscErrorCode TSThetaGetX0AndXdot(TS ts,DM dm,Vec *X0,Vec *Xdot)
+{
+  TS_Theta       *th = (TS_Theta*)ts->data;
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  if (X0) {
+    if (dm && dm != ts->dm) {
+      ierr = PetscObjectQuery((PetscObject)dm,"TSTheta_X0",(PetscObject*)X0);CHKERRQ(ierr);
+      if (!*X0) SETERRQ(((PetscObject)ts)->comm,PETSC_ERR_ARG_INCOMP,"TSTheta_X0 has not been composed with DM from SNES");
+    } else *X0 = ts->vec_sol;
+  }
+  if (Xdot) {
+    if (dm && dm != ts->dm) {
+      ierr = PetscObjectQuery((PetscObject)dm,"TSTheta_Xdot",(PetscObject*)Xdot);CHKERRQ(ierr);
+      if (!*Xdot) SETERRQ(((PetscObject)ts)->comm,PETSC_ERR_ARG_INCOMP,"TSTheta_Xdot has not been composed with DM from SNES");
+    } else *Xdot = th->Xdot;
+  }
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "DMCoarsenHook_TSTheta"
+static PetscErrorCode DMCoarsenHook_TSTheta(DM fine,DM coarse,void *ctx)
+{
+  Vec X0,Xdot;
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = DMCreateGlobalVector(coarse,&X0);CHKERRQ(ierr);
+  ierr = DMCreateGlobalVector(coarse,&Xdot);CHKERRQ(ierr);
+  /* Oh noes, this would create a loop because the Vec holds a reference to the DM.
+     Making a PetscContainer to hold these Vecs would make the following call succeed, but would create a reference loop.
+     Need to decide on a way to break the reference counting loop.
+   */
+  ierr = PetscObjectCompose((PetscObject)coarse,"TSTheta_X0",(PetscObject)X0);CHKERRQ(ierr);
+  ierr = PetscObjectCompose((PetscObject)coarse,"TSTheta_Xdot",(PetscObject)Xdot);CHKERRQ(ierr);
+  ierr = VecDestroy(&X0);CHKERRQ(ierr);
+  ierr = VecDestroy(&Xdot);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "DMRestrictHook_TSTheta"
+static PetscErrorCode DMRestrictHook_TSTheta(DM fine,Mat restrct,Vec rscale,Mat inject,DM coarse,void *ctx)
+{
+  TS ts = (TS)ctx;
+  PetscErrorCode ierr;
+  Vec X0,Xdot,X0_c,Xdot_c;
+
+  PetscFunctionBegin;
+  ierr = TSThetaGetX0AndXdot(ts,fine,&X0,&Xdot);CHKERRQ(ierr);
+  ierr = TSThetaGetX0AndXdot(ts,coarse,&X0_c,&Xdot_c);CHKERRQ(ierr);
+  ierr = MatRestrict(restrct,X0,X0_c);CHKERRQ(ierr);
+  ierr = MatRestrict(restrct,Xdot,Xdot_c);CHKERRQ(ierr);
+  ierr = VecPointwiseMult(X0_c,rscale,X0_c);CHKERRQ(ierr);
+  ierr = VecPointwiseMult(Xdot_c,rscale,Xdot_c);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
 #define __FUNCT__ "TSStep_Theta"
 static PetscErrorCode TSStep_Theta(TS ts)
 {
-  TS_Theta       *th = (TS_Theta*)ts->data;
-  PetscInt       its,lits;
-  PetscReal      next_time_step;
-  PetscErrorCode ierr;
+  TS_Theta            *th = (TS_Theta*)ts->data;
+  PetscInt            its,lits;
+  PetscReal           next_time_step;
+  SNESConvergedReason snesreason;
+  PetscErrorCode      ierr;
 
   PetscFunctionBegin;
   next_time_step = ts->time_step;
   th->stage_time = ts->ptime + (th->endpoint ? 1. : th->Theta)*ts->time_step;
   th->shift = 1./(th->Theta*ts->time_step);
+  ierr = TSPreStep(ts);CHKERRQ(ierr);
+  ierr = TSPreStage(ts,th->stage_time);CHKERRQ(ierr);
 
   if (th->endpoint) {           /* This formulation assumes linear time-independent mass matrix */
     ierr = VecZeroEntries(th->Xdot);CHKERRQ(ierr);
@@ -41,8 +107,13 @@ static PetscErrorCode TSStep_Theta(TS ts)
   ierr = SNESSolve(ts->snes,th->affine,th->X);CHKERRQ(ierr);
   ierr = SNESGetIterationNumber(ts->snes,&its);CHKERRQ(ierr);
   ierr = SNESGetLinearSolveIterations(ts->snes,&lits);CHKERRQ(ierr);
-  ts->nonlinear_its += its; ts->linear_its += lits;
-
+  ierr = SNESGetConvergedReason(ts->snes,&snesreason);CHKERRQ(ierr);
+  ts->snes_its += its; ts->ksp_its += lits;
+  if (snesreason < 0 && ts->max_snes_failures > 0 && ++ts->num_snes_failures >= ts->max_snes_failures) {
+    ts->reason = TS_DIVERGED_NONLINEAR_SOLVE;
+    ierr = PetscInfo2(ts,"Step=%D, nonlinear solve solve failures %D greater than current TS allowed, stopping solve\n",ts->steps,ts->num_snes_failures);CHKERRQ(ierr);
+    PetscFunctionReturn(0);
+  }
   if (th->endpoint) {
     ierr = VecCopy(th->X,ts->vec_sol);CHKERRQ(ierr);
   } else {
@@ -111,11 +182,20 @@ static PetscErrorCode SNESTSFormFunction_Theta(SNES snes,Vec x,Vec y,TS ts)
 {
   TS_Theta       *th = (TS_Theta*)ts->data;
   PetscErrorCode ierr;
+  Vec            X0,Xdot;
+  DM             dm,dmsave;
 
   PetscFunctionBegin;
+  ierr = SNESGetDM(snes,&dm);CHKERRQ(ierr);
   /* When using the endpoint variant, this is actually 1/Theta * Xdot */
-  ierr = VecAXPBYPCZ(th->Xdot,-th->shift,th->shift,0,ts->vec_sol,x);CHKERRQ(ierr);
-  ierr = TSComputeIFunction(ts,th->stage_time,x,th->Xdot,y,PETSC_FALSE);CHKERRQ(ierr);
+  ierr = TSThetaGetX0AndXdot(ts,dm,&X0,&Xdot);CHKERRQ(ierr);
+  ierr = VecAXPBYPCZ(Xdot,-th->shift,th->shift,0,X0,x);CHKERRQ(ierr);
+
+  /* DM monkey-business allows user code to call TSGetDM() inside of functions evaluated on levels of FAS */
+  dmsave = ts->dm;
+  ts->dm = dm;
+  ierr = TSComputeIFunction(ts,th->stage_time,x,Xdot,y,PETSC_FALSE);CHKERRQ(ierr);
+  ts->dm = dmsave;
   PetscFunctionReturn(0);
 }
 
@@ -125,13 +205,21 @@ static PetscErrorCode SNESTSFormJacobian_Theta(SNES snes,Vec x,Mat *A,Mat *B,Mat
 {
   TS_Theta       *th = (TS_Theta*)ts->data;
   PetscErrorCode ierr;
+  Vec            Xdot;
+  DM             dm,dmsave;
 
   PetscFunctionBegin;
+  ierr = SNESGetDM(snes,&dm);CHKERRQ(ierr);
+
   /* th->Xdot has already been computed in SNESTSFormFunction_Theta (SNES guarantees this) */
-  ierr = TSComputeIJacobian(ts,th->stage_time,x,th->Xdot,th->shift,A,B,str,PETSC_FALSE);CHKERRQ(ierr);
+  ierr = TSThetaGetX0AndXdot(ts,dm,PETSC_NULL,&Xdot);CHKERRQ(ierr);
+
+  dmsave = ts->dm;
+  ts->dm = dm;
+  ierr = TSComputeIJacobian(ts,th->stage_time,x,Xdot,th->shift,A,B,str,PETSC_FALSE);CHKERRQ(ierr);
+  ts->dm = dmsave;
   PetscFunctionReturn(0);
 }
-
 
 #undef __FUNCT__
 #define __FUNCT__ "TSSetUp_Theta"
@@ -139,10 +227,17 @@ static PetscErrorCode TSSetUp_Theta(TS ts)
 {
   TS_Theta       *th = (TS_Theta*)ts->data;
   PetscErrorCode ierr;
+  SNES           snes;
+  DM             dm;
 
   PetscFunctionBegin;
   ierr = VecDuplicate(ts->vec_sol,&th->X);CHKERRQ(ierr);
   ierr = VecDuplicate(ts->vec_sol,&th->Xdot);CHKERRQ(ierr);
+  ierr = TSGetSNES(ts,&snes);CHKERRQ(ierr);
+  ierr = TSGetDM(ts,&dm);CHKERRQ(ierr);
+  if (dm) {
+    ierr = DMCoarsenHookAdd(dm,DMCoarsenHook_TSTheta,DMRestrictHook_TSTheta,ts);CHKERRQ(ierr);
+  }
   PetscFunctionReturn(0);
 }
 /*------------------------------------------------------------*/
@@ -175,7 +270,7 @@ static PetscErrorCode TSView_Theta(TS ts,PetscViewer viewer)
   PetscErrorCode  ierr;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  Theta=%G\n",th->Theta);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  Extrapolation=%s\n",th->extrapolate?"yes":"no");CHKERRQ(ierr);

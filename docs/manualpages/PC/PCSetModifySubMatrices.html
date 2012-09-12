@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCSetModifySubMatrices.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCSetModifySubMatrices</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCSetModifySubMatrices"><H1>PCSetModifySubMatrices</H1></A>
 Sets a user-defined routine for modifying the submatrices that arise within certain subdomain-based preconditioners. The basic submatrices are extracted from the preconditioner matrix as usual; the user can then alter these (for example, to set different boundary conditions for each submatrix) before they are used for the local solves. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>

@@ -1,21 +1,27 @@
 <center><a href="sbstream.c">Actual source code: sbstream.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/sbaij/seq/sbstream/sbstream.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:03:39+00:00">
+<meta name="date" content="2012-08-29T16:49:27+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCMAT_DLL</font></strong>
 
 <a name="line3"> 3: </a> #include <A href="../../../../../../include/../src/mat/impls/sbaij/seq/sbaij.h.html">../src/mat/impls/sbaij/seq/sbaij.h</A>
 <a name="line4"> 4: </a> #include <A href="../../../../../../include/../src/mat/impls/sbaij/seq/sbstream/sbstream.h.html">../src/mat/impls/sbaij/seq/sbstream/sbstream.h</A>
 
 <a name="line6">  6: </a><font color="#A020F0">#if 0 </font>
+<a name="line7">  7: </a><strong><font color="#4169E1">extern   <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqsbaij_sbstrm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *)</font></strong>;
+<a name="line8">  8: </a><strong><font color="#4169E1">extern   <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatICCFactorSymbolic_sbstrm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>, const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *)</font></strong>;
+<a name="line9">  9: </a><strong><font color="#4169E1">extern   <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCholeskyFactorSymbolic_sbstrm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>, const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *)</font></strong>;
+<a name="line10"> 10: </a><strong><font color="#4169E1">extern   <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCholeskyFactorNumeric_sbstrm (<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *)</font></strong>;
 <a name="line11"> 11: </a><font color="#A020F0">#endif </font>
 
+<a name="line13"> 13: </a><strong><font color="#4169E1">extern   <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatAssemblyEnd_SeqSBAIJ(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/MatAssemblyType.html#MatAssemblyType">MatAssemblyType</A>)</font></strong>;
 
 
 <a name="line18"> 18: </a><strong><font color="#4169E1"><a name="MatDestroy_SeqSBSTRM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqSBSTRM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
@@ -87,6 +93,7 @@
 <a name="line90"> 90: </a>  <font color="#4169E1">return</font>(0);
 <a name="line91"> 91: </a>}
 <a name="line92"> 92: </a><font color="#B22222">/*=========================================================*/</font>
+<a name="line93"> 93: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SeqSBSTRM_create_sbstrm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
 <a name="line94"> 94: </a><font color="#B22222">/*=========================================================*/</font>
 <a name="line97"> 97: </a><strong><font color="#4169E1"><a name="MatAssemblyEnd_SeqSBSTRM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatAssemblyEnd_SeqSBSTRM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A, <A href="../../../../../../docs/manualpages/Mat/MatAssemblyType.html#MatAssemblyType">MatAssemblyType</A> mode)</font></strong>
 <a name="line98"> 98: </a>{
@@ -98,6 +105,7 @@
 <a name="line106">106: </a>  <font color="#4169E1">return</font>(0);
 <a name="line107">107: </a>}
 <a name="line108">108: </a><font color="#B22222">/*=========================================================*/</font>
+<a name="line109">109: </a>EXTERN_C_BEGIN
 <a name="line112">112: </a><strong><font color="#4169E1"><a name="MatConvert_SeqSBAIJ_SeqSBSTRM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatConvert_SeqSBAIJ_SeqSBSTRM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> type,<A href="../../../../../../docs/manualpages/Mat/MatReuse.html#MatReuse">MatReuse</A> reuse,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *newmat)</font></strong>
 <a name="line113">113: </a>{
 
@@ -128,6 +136,7 @@
 <a name="line141">141: </a>  *newmat = B;
 <a name="line142">142: </a>  <font color="#4169E1">return</font>(0);
 <a name="line143">143: </a>}
+<a name="line144">144: </a>EXTERN_C_END
 
 <a name="line146">146: </a><font color="#B22222">/*=========================================================*/</font>
 <a name="line149">149: </a><strong><font color="#4169E1"><a name="MatCreateSeqSBSTRM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCreateSeqSBSTRM(<A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nz,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nnz[],<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *A)</font></strong>
@@ -140,6 +149,7 @@
 <a name="line158">158: </a>  <font color="#4169E1">return</font>(0);
 <a name="line159">159: </a>}
 <a name="line160">160: </a><font color="#B22222">/*=========================================================*/</font>
+<a name="line161">161: </a>EXTERN_C_BEGIN
 <a name="line164">164: </a><strong><font color="#4169E1"><a name="MatCreate_SeqSBSTRM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreate_SeqSBSTRM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
 <a name="line165">165: </a>{
 
@@ -151,6 +161,7 @@
 <a name="line174">174: </a>                                      MatConvert_SeqSBAIJ_SeqSBSTRM);
 <a name="line175">175: </a>  <font color="#4169E1">return</font>(0);
 <a name="line176">176: </a>}
+<a name="line177">177: </a>EXTERN_C_END
 <a name="line178">178: </a><font color="#B22222">/*=========================================================*/</font>
 <a name="line179">179: </a><font color="#B22222">/*=========================================================*/</font>
 <a name="line182">182: </a><strong><font color="#4169E1"><a name="MatMult_SeqSBSTRM_4"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMult_SeqSBSTRM_4(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> zz)</font></strong>
@@ -504,11 +515,13 @@
 <a name="line544">544: </a>  <font color="#4169E1">return</font>(0);
 <a name="line545">545: </a>}
 <a name="line546">546: </a><font color="#B22222">/*=========================================================*/</font>
+<a name="line547">547: </a>EXTERN_C_BEGIN
 <a name="line550">550: </a><strong><font color="#4169E1"><a name="MatSeqSBSTRMTransform"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqSBSTRMTransform(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
 <a name="line551">551: </a>{
 <a name="line553">553: </a>    SeqSBSTRM_convert_sbstrm(A);
 <a name="line554">554: </a>  <font color="#4169E1">return</font>(0);
 <a name="line555">555: </a>}
+<a name="line556">556: </a>EXTERN_C_END
 
 </pre>
 </body>

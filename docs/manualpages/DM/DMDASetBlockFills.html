@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMDASetBlockFills.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMDASetBlockFills</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMDASetBlockFills"><H1>DMDASetBlockFills</H1></A>
-Sets the fill pattern in each block for a multi-component problem of the matrix returned by <A HREF="../DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(). 
+Sets the fill pattern in each block for a multi-component problem of the matrix returned by <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"     
@@ -51,7 +52,7 @@ can be represented in the dfill, ofill format
 Contributed by Glenn Hammond
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-<A HREF="../DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(), <A HREF="../DM/DMDASetGetMatrix.html#DMDASetGetMatrix">DMDASetGetMatrix</A>(), DMDASetMatPreallocateOnly()
+<A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(), <A HREF="../DM/DMDASetGetMatrix.html#DMDASetGetMatrix">DMDASetGetMatrix</A>(), <A HREF="../DM/DMSetMatrixPreallocateOnly.html#DMSetMatrixPreallocateOnly">DMSetMatrixPreallocateOnly</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
@@ -59,6 +60,4 @@ Contributed by Glenn Hammond
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex29.c.html">src/snes/examples/tutorials/ex29.c.html</A><BR>
 </BODY></HTML>

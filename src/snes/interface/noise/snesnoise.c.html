@@ -1,15 +1,16 @@
 <center><a href="snesnoise.c">Actual source code: snesnoise.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/interface/noise/snesnoise.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:14:56+00:00">
+<meta name="date" content="2012-08-29T17:07:51+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/snesimpl.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/snesimpl.h&gt;</font>
 
 <a name="line4">  4: </a><font color="#B22222">/* Data used by Jorge's diff parameter computation method */</font>
 <a name="line5">  5: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -24,8 +25,12 @@
 <a name="line14"> 14: </a>} DIFFPAR_MORE;
 
 
+<a name="line17"> 17: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESNoise_dnest_(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)</font></strong>;
+<a name="line18"> 18: </a><strong><font color="#4169E1">static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> JacMatMultCompare(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,double)</font></strong>;
+<a name="line19"> 19: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/SNES/SNESDefaultMatrixFreeSetParameters2.html#SNESDefaultMatrixFreeSetParameters2">SNESDefaultMatrixFreeSetParameters2</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,double,double,double)</font></strong>;
+<a name="line20"> 20: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESUnSetMatrixFreeParameter(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>;
 
-<a name="line24"> 24: </a><strong><font color="#4169E1"><a name="DiffParameterCreate_More"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DiffParameterCreate_More(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,void **outneP)</font></strong>
+<a name="line24"> 24: </a><strong><font color="#4169E1"><a name="SNESDiffParameterCreate_More"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESDiffParameterCreate_More(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,void **outneP)</font></strong>
 <a name="line25"> 25: </a>{
 <a name="line26"> 26: </a>  DIFFPAR_MORE   *neP;
 <a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            w;
@@ -63,7 +68,7 @@
 <a name="line61"> 61: </a>  <font color="#4169E1">return</font>(0);
 <a name="line62"> 62: </a>}
 
-<a name="line66"> 66: </a><strong><font color="#4169E1"><a name="DiffParameterDestroy_More"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DiffParameterDestroy_More(void *nePv)</font></strong>
+<a name="line66"> 66: </a><strong><font color="#4169E1"><a name="SNESDiffParameterDestroy_More"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESDiffParameterDestroy_More(void *nePv)</font></strong>
 <a name="line67"> 67: </a>{
 <a name="line68"> 68: </a>  DIFFPAR_MORE   *neP = (DIFFPAR_MORE *)nePv;
 <a name="line70"> 70: </a>  int            err;
@@ -76,7 +81,7 @@
 <a name="line78"> 78: </a>  <font color="#4169E1">return</font>(0);
 <a name="line79"> 79: </a>}
 
-<a name="line83"> 83: </a><strong><font color="#4169E1"><a name="DiffParameterCompute_More"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DiffParameterCompute_More(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,void *nePv,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> p,double *fnoise,double *hopt)</font></strong>
+<a name="line83"> 83: </a><strong><font color="#4169E1"><a name="SNESDiffParameterCompute_More"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESDiffParameterCompute_More(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,void *nePv,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> p,double *fnoise,double *hopt)</font></strong>
 <a name="line84"> 84: </a>{
 <a name="line85"> 85: </a>  DIFFPAR_MORE   *neP = (DIFFPAR_MORE *)nePv;
 <a name="line86"> 86: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            w, xp, fvec;    <font color="#B22222">/* work vectors to use in computing h */</font>
@@ -144,7 +149,7 @@
 <a name="line150">150: </a>    }
 
 <a name="line152">152: </a>    <font color="#B22222">/* Call the noise estimator */</font>
-<a name="line153">153: </a>    dnest_(&amp;nf,fval,&amp;h,fnoise,&amp;fder2,hopt,&amp;info,eps);
+<a name="line153">153: </a>    SNESNoise_dnest_(&amp;nf,fval,&amp;h,fnoise,&amp;fder2,hopt,&amp;info,eps);
 
 <a name="line155">155: </a>    <font color="#B22222">/* Output statements */</font>
 <a name="line156">156: </a>    rerrf = *fnoise/PetscAbsScalar(f);

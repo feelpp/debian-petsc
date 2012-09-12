@@ -1,4 +1,4 @@
-#include <private/fortranimpl.h>
+#include <petsc-private/fortranimpl.h>
 #include <petscsnes.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
@@ -6,14 +6,13 @@
 #define snessolve_                       SNESSOLVE
 #define snesdefaultcomputejacobian_      SNESDEFAULTCOMPUTEJACOBIAN
 #define snesdefaultcomputejacobiancolor_ SNESDEFAULTCOMPUTEJACOBIANCOLOR
-#define snesdacomputejacobian_           SNESDACOMPUTEJACOBIAN
-#define snesdacomputejacobianwithadifor_ SNESDACOMPUTEJACOBIANWITHADIFOR
 #define snessetjacobian_                 SNESSETJACOBIAN
 #define snesgetoptionsprefix_            SNESGETOPTIONSPREFIX
 #define snesgettype_                     SNESGETTYPE
-#define snesdaformfunction_              SNESDAFORMFUNCTION          
 #define snessetfunction_                 SNESSETFUNCTION
+#define snessetgs_                       SNESSETGS
 #define snesgetfunction_                 SNESGETFUNCTION
+#define snesgetgs_                       SNESGETGS
 #define snessetconvergencetest_          SNESSETCONVERGENCETEST
 #define snesdefaultconverged_            SNESDEFAULTCONVERGED
 #define snesskipconverged_               SNESSKIPCONVERGED
@@ -28,19 +27,19 @@
 #define snesmonitorlg_                   SNESMONITORLG
 #define snesmonitorsolutionupdate_       SNESMONITORSOLUTIONUPDATE
 #define snesmonitorset_                  SNESMONITORSET
+#define snesgetsneslinesearch_           SNESGETSNESLINESEARCH
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE)
-#define matmffdcomputejacobian_          matmffdcomputejacobian           
+#define matmffdcomputejacobian_          matmffdcomputejacobian
 #define snessolve_                       snessolve
 #define snesdefaultcomputejacobian_      snesdefaultcomputejacobian
 #define snesdefaultcomputejacobiancolor_ snesdefaultcomputejacobiancolor
-#define snesdacomputejacobian_           snesdacomputejacobian
-#define snesdacomputejacobianwithadifor_ snesdacomputejacobianwithadifor
 #define snessetjacobian_                 snessetjacobian
 #define snesgetoptionsprefix_            snesgetoptionsprefix
 #define snesgettype_                     snesgettype
-#define snesdaformfunction_              snesdaformfunction
 #define snessetfunction_                 snessetfunction
+#define snessetgs_                       snessetgs
 #define snesgetfunction_                 snesgetfunction
+#define snesgetgs_                       snesgetgs
 #define snessetconvergencetest_          snessetconvergencetest
 #define snesdefaultconverged_            snesdefaultconverged
 #define snesskipconverged_               snesskipconverged
@@ -49,13 +48,34 @@
 #define snesgetconvergencehistory_       snesgetconvergencehistory
 #define snessettype_                     snessettype
 #define snesappendoptionsprefix_         snesappendoptionsprefix
-#define snessetoptionsprefix_            snessetoptionsprefix 
+#define snessetoptionsprefix_            snessetoptionsprefix
 #define snesmonitorlg_                   snesmonitorlg
 #define snesmonitordefault_              snesmonitordefault
 #define snesmonitorsolution_             snesmonitorsolution
 #define snesmonitorsolutionupdate_       snesmonitorsolutionupdate
 #define snesmonitorset_                  snesmonitorset
+#define snesgetsneslinesearch            snesgetsneslinesearch
 #endif
+
+/*
+snes->fortran_func_pointers usage:
+
+0: oursnesfunction
+1: oursnestest
+2: oursnesjacobian
+3: oursnesmonitor
+4: oursnesmonitor ctx
+5: ourmondestroy
+6: unused
+7: unused
+8: unused
+9: unused
+10: ourdestroy
+11: oursnestest ctx
+12: unused
+13: oursnesgs
+
+ */
 
 static PetscErrorCode oursnesfunction(SNES snes,Vec x,Vec f,void *ctx)
 {
@@ -85,6 +105,12 @@ static PetscErrorCode oursnesjacobian(SNES snes,Vec x,Mat* m,Mat* p,MatStructure
 {
   PetscErrorCode ierr = 0;
   (*(void (PETSC_STDCALL *)(SNES*,Vec*,Mat*,Mat*,MatStructure*,void*,PetscErrorCode*))(((PetscObject)snes)->fortran_func_pointers[2]))(&snes,&x,m,p,type,ctx,&ierr);CHKERRQ(ierr);
+  return 0;
+}
+static PetscErrorCode oursnesgs(SNES snes,Vec x,Vec b,void*ctx)
+{
+  PetscErrorCode ierr = 0;
+  (*(void (PETSC_STDCALL *)(SNES*,Vec*,Vec*,void*,PetscErrorCode*))(((PetscObject)snes)->fortran_func_pointers[13]))(&snes,&x,&b,ctx,&ierr);CHKERRQ(ierr);
   return 0;
 }
 static PetscErrorCode oursnesmonitor(SNES snes,PetscInt i,PetscReal d,void*ctx)
@@ -126,32 +152,16 @@ void  snesdefaultcomputejacobiancolor_(SNES *snes,Vec *x,Mat *m,Mat *p,MatStruct
   *ierr = SNESDefaultComputeJacobianColor(*snes,*x,m,p,type,*(MatFDColoring*)ctx);
 }
 
-void  snesdacomputejacobianwithadifor_(SNES *snes,Vec *X,Mat *m,Mat *p,MatStructure* type,void *ctx,PetscErrorCode *ierr) 
-{
-  (*PetscErrorPrintf)("Cannot call this function from Fortran");
-  *ierr = 1;
-}
-
-void  snesdacomputejacobian_(SNES *snes,Vec *X,Mat *m,Mat *p,MatStructure* type,void *ctx,PetscErrorCode *ierr) 
-{
-  (*PetscErrorPrintf)("Cannot call this function from Fortran");
-  *ierr = 1;
-}
-
 void PETSC_STDCALL snessetjacobian_(SNES *snes,Mat *A,Mat *B,void (PETSC_STDCALL *func)(SNES*,Vec*,Mat*,Mat*,
             MatStructure*,void*,PetscErrorCode*),void *ctx,PetscErrorCode *ierr)
 {
   CHKFORTRANNULLOBJECT(ctx);
   CHKFORTRANNULLFUNCTION(func);
-  PetscObjectAllocateFortranPointers(*snes,12);
+  PetscObjectAllocateFortranPointers(*snes,14);
   if ((PetscVoidFunction)func == (PetscVoidFunction)snesdefaultcomputejacobian_) {
     *ierr = SNESSetJacobian(*snes,*A,*B,SNESDefaultComputeJacobian,ctx);
   } else if ((PetscVoidFunction)func == (PetscVoidFunction)snesdefaultcomputejacobiancolor_) {
     *ierr = SNESSetJacobian(*snes,*A,*B,SNESDefaultComputeJacobianColor,*(MatFDColoring*)ctx);
-  } else if ((PetscVoidFunction)func == (PetscVoidFunction)snesdacomputejacobianwithadifor_) {
-    *ierr = SNESSetJacobian(*snes,*A,*B,SNESDAComputeJacobianWithAdifor,ctx);
-  } else if ((PetscVoidFunction)func == (PetscVoidFunction)snesdacomputejacobian_) {
-    *ierr = SNESSetJacobian(*snes,*A,*B,SNESDAComputeJacobian,ctx);
   } else if ((PetscVoidFunction)func == (PetscVoidFunction)matmffdcomputejacobian_) {
     *ierr = SNESSetJacobian(*snes,*A,*B,MatMFFDComputeJacobian,ctx);
   } else if (!func) {
@@ -165,9 +175,10 @@ void PETSC_STDCALL snessetjacobian_(SNES *snes,Mat *A,Mat *B,void (PETSC_STDCALL
 
 void PETSC_STDCALL   snessolve_(SNES *snes,Vec *b,Vec *x, int *__ierr )
 {
-  Vec B = *b;
-  if (*b == PETSC_NULL_OBJECT_Fortran) B = PETSC_NULL;
-  *__ierr = SNESSolve(*snes,B,*x);
+  Vec B = *b,X = *x;
+  if (FORTRANNULLOBJECT(b)) B = PETSC_NULL;
+  if (FORTRANNULLOBJECT(x)) X = PETSC_NULL;
+  *__ierr = SNESSolve(*snes,B,X);
 }
 
 void PETSC_STDCALL snesgetoptionsprefix_(SNES *snes,CHAR prefix PETSC_MIXED_LEN(len),PetscErrorCode *ierr PETSC_END_LEN(len))
@@ -190,26 +201,27 @@ void PETSC_STDCALL snesgettype_(SNES *snes,CHAR name PETSC_MIXED_LEN(len), Petsc
 /* ---------------------------------------------------------*/
 
 /*
-        These are not usually called from Fortran but allow Fortran users 
+   These are not usually called from Fortran but allow Fortran users
    to transparently set these monitors from .F code
-   
+
    functions, hence no STDCALL
 */
-void  snesdaformfunction_(SNES *snes,Vec *X, Vec *F,void *ptr,PetscErrorCode *ierr)
-{
-  *ierr = SNESDAFormFunction(*snes,*X,*F,ptr);
-}
 
 void PETSC_STDCALL snessetfunction_(SNES *snes,Vec *r,void (PETSC_STDCALL *func)(SNES*,Vec*,Vec*,void*,PetscErrorCode*),void *ctx,PetscErrorCode *ierr)
 {
   CHKFORTRANNULLOBJECT(ctx);
-  PetscObjectAllocateFortranPointers(*snes,12);
-  if ((PetscVoidFunction)func == (PetscVoidFunction)snesdaformfunction_) {
-    *ierr = SNESSetFunction(*snes,*r,SNESDAFormFunction,ctx);
-  } else {
-    ((PetscObject)*snes)->fortran_func_pointers[0] = (PetscVoidFunction)func;
-    *ierr = SNESSetFunction(*snes,*r,oursnesfunction,ctx);
-  }
+  PetscObjectAllocateFortranPointers(*snes,14);
+  ((PetscObject)*snes)->fortran_func_pointers[0] = (PetscVoidFunction)func;
+  *ierr = SNESSetFunction(*snes,*r,oursnesfunction,ctx);
+}
+
+
+void PETSC_STDCALL snessetgs_(SNES *snes,void (PETSC_STDCALL *func)(SNES*,Vec*,Vec*,void*,PetscErrorCode*),void *ctx,PetscErrorCode *ierr)
+{
+  CHKFORTRANNULLOBJECT(ctx);
+  PetscObjectAllocateFortranPointers(*snes,14);
+  ((PetscObject)*snes)->fortran_func_pointers[13] = (PetscVoidFunction)func;
+  *ierr = SNESSetGS(*snes,oursnesgs,ctx);
 }
 /* ---------------------------------------------------------*/
 
@@ -220,6 +232,13 @@ void PETSC_STDCALL snesgetfunction_(SNES *snes,Vec *r,void *func,void **ctx,Pets
   CHKFORTRANNULLOBJECT(r);
   *ierr = SNESGetFunction(*snes,r,PETSC_NULL,ctx);
 }
+
+void PETSC_STDCALL snesgetgs_(SNES *snes,void *func,void **ctx,PetscErrorCode *ierr)
+{
+  CHKFORTRANNULLINTEGER(ctx);
+  *ierr = SNESGetGS(*snes,PETSC_NULL,ctx);
+}
+
 /*----------------------------------------------------------------------*/
 
 void snesdefaultconverged_(SNES *snes,PetscInt *it,PetscReal *a,PetscReal *b,PetscReal *c,SNESConvergedReason *r, void *ct,PetscErrorCode *ierr)
@@ -237,7 +256,7 @@ void PETSC_STDCALL snessetconvergencetest_(SNES *snes,void (PETSC_STDCALL *func)
 {
   CHKFORTRANNULLOBJECT(cctx);
   CHKFORTRANNULLFUNCTION(destroy);
-  PetscObjectAllocateFortranPointers(*snes,12);
+  PetscObjectAllocateFortranPointers(*snes,14);
 
   if ((PetscVoidFunction)func == (PetscVoidFunction)snesdefaultconverged_){
     *ierr = SNESSetConvergenceTest(*snes,SNESDefaultConverged,0,0);
@@ -331,7 +350,7 @@ void snesmonitorsolutionupdate_(SNES *snes,PetscInt *its,PetscReal *fgnorm,void 
 void PETSC_STDCALL snesmonitorset_(SNES *snes,void (PETSC_STDCALL *func)(SNES*,PetscInt*,PetscReal*,void*,PetscErrorCode*),void *mctx,void (PETSC_STDCALL *mondestroy)(void*,PetscErrorCode*),PetscErrorCode *ierr)
 {
   CHKFORTRANNULLOBJECT(mctx);
-  PetscObjectAllocateFortranPointers(*snes,12);
+  PetscObjectAllocateFortranPointers(*snes,14);
   if ((PetscVoidFunction)func == (PetscVoidFunction)snesmonitordefault_) {
     *ierr = SNESMonitorSet(*snes,SNESMonitorDefault,0,0);
   } else if ((PetscVoidFunction)func == (PetscVoidFunction)snesmonitorsolution_) {
@@ -354,6 +373,8 @@ void PETSC_STDCALL snesmonitorset_(SNES *snes,void (PETSC_STDCALL *func)(SNES*,P
   }
 }
 
-
+void PETSC_STDCALL  snesgetsneslinesearch_(SNES *snes,SNESLineSearch *linesearch, int *__ierr ){
+*__ierr = SNESGetSNESLineSearch(*snes, linesearch);
+}
 
 EXTERN_C_END

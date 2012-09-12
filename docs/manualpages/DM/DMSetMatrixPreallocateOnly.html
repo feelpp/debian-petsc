@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMSetMatrixPreallocateOnly.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMSetMatrixPreallocateOnly</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMSetMatrixPreallocateOnly"><H1>DMSetMatrixPreallocateOnly</H1></A>
-When <A HREF="../DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>() is called the matrix will be properly preallocated but the nonzero structure and zero values will not be set. 
+When <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>() is called the matrix will be properly preallocated but the nonzero structure and zero values will not be set. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"     
@@ -23,7 +24,7 @@ Logically Collective on DMDA
 <P>
 
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-<A HREF="../DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>()
+<A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/interface/dm.c.html#DMSetMatrixPreallocateOnly">src/dm/interface/dm.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/KSPGetDiagonalScale.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>KSPGetDiagonalScale</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="KSPGetDiagonalScale"><H1>KSPGetDiagonalScale</H1></A>
 Checks if <A HREF="../KSP/KSP.html#KSP">KSP</A> solver scales the matrix and right hand side 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -25,10 +26,7 @@ Not Collective
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 BE CAREFUL with this routine: it actually scales the matrix and right
 hand side that define the system. After the system is solved the matrix
-and right hand side remain scaled.
-<P>
-This routine is only used if the matrix and preconditioner matrix are
-the same thing.
+and right hand side remain scaled  unless you use <A HREF="../KSP/KSPSetDiagonalScaleFix.html#KSPSetDiagonalScaleFix">KSPSetDiagonalScaleFix</A>()
 <P>
 
 <P>

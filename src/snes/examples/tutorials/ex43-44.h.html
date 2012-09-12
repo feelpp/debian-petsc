@@ -1,13 +1,14 @@
 <center><a href="ex43-44.h">Actual source code: ex43-44.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex43-44.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:18:45+00:00">
+<meta name="date" content="2012-08-29T17:12:19+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#B22222">/*</font>
 <a name="line2">  2: </a><font color="#B22222">  Accelerates Newton's method by solving a small problem defined by those elements with large residual plus one level of overlap</font>
 
@@ -18,6 +19,8 @@
 <a name="line8">  8: </a><font color="#B22222">*/</font>
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 
+<a name="line11"> 11: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunctionSub(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
+<a name="line12"> 12: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobianSub(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*)</font></strong>;
 
 
 <a name="line15"> 15: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -133,6 +136,7 @@
 <a name="line137">137: </a>}
 
 
+<a name="line140">140: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  SNESMonitorRange_Private(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*)</font></strong>;
 <a name="line141">141: </a>static <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> CountGood = 0;
 
 <a name="line145">145: </a><strong><font color="#4169E1"><a name="MonitorRange"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MonitorRange(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> it,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rnorm,void *dummy)</font></strong>

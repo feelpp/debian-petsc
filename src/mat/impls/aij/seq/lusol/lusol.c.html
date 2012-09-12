@@ -1,13 +1,14 @@
 <center><a href="lusol.c">Actual source code: lusol.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/lusol/lusol.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:59:48+00:00">
+<meta name="date" content="2012-08-29T16:44:26+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* </font>
 <a name="line3">  3: </a><font color="#B22222">        Provides an interface to the LUSOL package of ....</font>
@@ -29,6 +30,7 @@
 <a name="line19"> 19: </a><strong><font color="#228B22">#define M6RDEL   m6rdel</font></strong>
 <a name="line20"> 20: </a><font color="#A020F0">#endif</font>
 
+<a name="line22"> 22: </a>EXTERN_C_BEGIN
 <a name="line23"> 23: </a><font color="#B22222">/*</font>
 <a name="line24"> 24: </a><font color="#B22222">    Dummy symbols that the MINOS files mi25bfac.f and mi15blas.f may require</font>
 <a name="line25"> 25: </a><font color="#B22222">*/</font>
@@ -43,16 +45,20 @@
 <a name="line34"> 34: </a>  ;
 <a name="line35"> 35: </a>}
 
+<a name="line37"> 37: </a><strong><font color="#4169E1">extern void PETSC_STDCALL LU1FAC (int *m, int *n, int *nnz, int *size, int *luparm,</font></strong>
 <a name="line38"> 38: </a><strong><font color="#4169E1">                        double *parmlu, double *data, int *indc, int *indr,</font></strong>
 <a name="line39"> 39: </a><strong><font color="#4169E1">                        int *rowperm, int *colperm, int *collen, int *rowlen,</font></strong>
 <a name="line40"> 40: </a><strong><font color="#4169E1">                        int *colstart, int *rowstart, int *rploc, int *cploc,</font></strong>
 <a name="line41"> 41: </a><strong><font color="#4169E1">                        int *rpinv, int *cpinv, double *w, int *inform)</font></strong>;
 
+<a name="line43"> 43: </a><strong><font color="#4169E1">extern void PETSC_STDCALL LU6SOL (int *mode, int *m, int *n, double *rhs, double *x,</font></strong>
 <a name="line44"> 44: </a><strong><font color="#4169E1">                        int *size, int *luparm, double *parmlu, double *data,</font></strong>
 <a name="line45"> 45: </a><strong><font color="#4169E1">                        int *indc, int *indr, int *rowperm, int *colperm,</font></strong>
 <a name="line46"> 46: </a><strong><font color="#4169E1">                        int *collen, int *rowlen, int *colstart, int *rowstart,</font></strong>
 <a name="line47"> 47: </a><strong><font color="#4169E1">                        int *inform)</font></strong>;
+<a name="line48"> 48: </a><strong><font color="#4169E1">EXTERN_C_END</font></strong>
 
+<a name="line50"> 50: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDuplicate_LUSOL(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/MatDuplicateOption.html#MatDuplicateOption">MatDuplicateOption</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*)</font></strong>;
 
 <a name="line52"> 52: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font>  {
 <a name="line53"> 53: </a>  double *data;
@@ -418,11 +424,13 @@
 <a name="line429">429: </a>  <font color="#4169E1">return</font>(0);
 <a name="line430">430: </a>}
 
+<a name="line432">432: </a>EXTERN_C_BEGIN
 <a name="line435">435: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqaij_lusol"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqaij_lusol(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
 <a name="line436">436: </a>{
 <a name="line438">438: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MATSOLVERLUSOL.html#MATSOLVERLUSOL">MATSOLVERLUSOL</A>;
 <a name="line439">439: </a>  <font color="#4169E1">return</font>(0);
 <a name="line440">440: </a>}
+<a name="line441">441: </a>EXTERN_C_END
 
 <a name="line445">445: </a><strong><font color="#4169E1"><a name="MatGetFactor_seqaij_lusol"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetFactor_seqaij_lusol(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatFactorType.html#MatFactorType">MatFactorType</A> ftype,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *F)</font></strong>
 <a name="line446">446: </a>{

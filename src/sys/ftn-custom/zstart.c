@@ -11,11 +11,12 @@
 #define T3DMPI_FORTRAN
 #define T3EMPI_FORTRAN
 
-#include <private/fortranimpl.h>
+#include <petsc-private/fortranimpl.h>
 
 #if defined(PETSC_HAVE_CUSP)
 #include <cublas.h>
 #endif
+#include <petscthreadcomm.h>
 
 extern  PetscBool  PetscBeganMPI;
 
@@ -113,16 +114,18 @@ extern void PXFGETARG(int*,_fcd,int*,int*);
 #endif
 EXTERN_C_END
 
-#if (defined(PETSC_USE_COMPLEX) && !defined(PETSC_HAVE_MPI_C_DOUBLE_COMPLEX)) || defined(PETSC_USE_REAL__FLOAT128)
+#if (defined(PETSC_USE_COMPLEX) && !defined(PETSC_HAVE_MPI_C_DOUBLE_COMPLEX)) || defined(PETSC_USE_REAL___FLOAT128)
 extern MPI_Op MPIU_SUM;
 EXTERN_C_BEGIN
 extern void  MPIAPI PetscSum_Local(void*,void *,PetscMPIInt *,MPI_Datatype *);
 EXTERN_C_END
 #endif
 #if defined(PETSC_USE_REAL___FLOAT128)
+EXTERN_C_BEGIN
 void  MPIAPI PetscSum_Local(void *,void *,PetscMPIInt *,MPI_Datatype *);
 void  MPIAPI PetscMax_Local(void *,void *,PetscMPIInt *,MPI_Datatype *);
 void  MPIAPI PetscMin_Local(void *,void *,PetscMPIInt *,MPI_Datatype *);
+EXTERN_C_END
 #endif
 
 extern  MPI_Op PetscMaxSum_Op;
@@ -419,6 +422,11 @@ void PETSC_STDCALL petscinitialize_(CHAR filename PETSC_MIXED_LEN(len),PetscErro
   if (*ierr) { (*PetscErrorPrintf)("PetscInitialize:Calling PetscInfo()\n");return;}  
   *ierr = PetscOptionsCheckInitial_Components(); 
   if (*ierr) {(*PetscErrorPrintf)("PetscInitialize:Checking initial options\n");return;}
+
+#if defined(PETSC_THREADCOMM_ACTIVE)
+  *ierr = PetscThreadCommInitializePackage(PETSC_NULL);
+  if (*ierr) {(*PetscErrorPrintf)("PetscInitialize:Calling PetscThreadCommInitialize()\n");return;}
+#endif
 
 #if defined(PETSC_HAVE_CUDA)
   cublasInit();

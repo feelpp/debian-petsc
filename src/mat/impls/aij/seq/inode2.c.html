@@ -1,16 +1,22 @@
 <center><a href="inode2.c">Actual source code: inode2.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/inode2.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:59:36+00:00">
+<meta name="date" content="2012-08-29T16:44:14+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
 
+<a name="line4">  4: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Mat_CheckInode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> )</font></strong>;
+<a name="line5">  5: </a><strong><font color="#4169E1">EXTERN_C_BEGIN</font></strong>
+<a name="line6">  6: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatInodeAdjustForInodes_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
+<a name="line7">  7: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatInodeGetInodeSizes_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)</font></strong>;
+<a name="line8">  8: </a>EXTERN_C_END
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><a name="MatView_SeqAIJ_Inode"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatView_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
 <a name="line13"> 13: </a>{
@@ -19,7 +25,7 @@
 <a name="line16"> 16: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>         iascii;
 <a name="line17"> 17: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerFormat.html#PetscViewerFormat">PetscViewerFormat</A> format;
 
-<a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line21"> 21: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line22"> 22: </a>    PetscViewerGetFormat(viewer,&amp;format);
 <a name="line23"> 23: </a>    <font color="#4169E1">if</font> (format == PETSC_VIEWER_ASCII_INFO_DETAIL || format == PETSC_VIEWER_ASCII_INFO) {
@@ -111,29 +117,7 @@
 <a name="line124">124: </a>  <font color="#4169E1">return</font>(0);
 <a name="line125">125: </a>}
 
-<a name="line129">129: </a><strong><font color="#4169E1"><a name="MatDuplicate_SeqAIJ_Inode"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDuplicate_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Mat/MatDuplicateOption.html#MatDuplicateOption">MatDuplicateOption</A> cpvalues,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *C)</font></strong>
-<a name="line130">130: </a>{
-<a name="line131">131: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B=*C;
-<a name="line132">132: </a>  Mat_SeqAIJ     *c=(Mat_SeqAIJ*)B-&gt;data,*a=(Mat_SeqAIJ*)A-&gt;data;
-<a name="line134">134: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m=A-&gt;rmap-&gt;n;
 
-
-<a name="line138">138: </a>  c-&gt;inode.use          = a-&gt;inode.use;
-<a name="line139">139: </a>  c-&gt;inode.limit        = a-&gt;inode.limit;
-<a name="line140">140: </a>  c-&gt;inode.max_limit    = a-&gt;inode.max_limit;
-<a name="line141">141: </a>  <font color="#4169E1">if</font> (a-&gt;inode.size){
-<a name="line142">142: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((m+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;c-&gt;inode.size);
-<a name="line143">143: </a>    c-&gt;inode.node_count = a-&gt;inode.node_count;
-<a name="line144">144: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(c-&gt;inode.size,a-&gt;inode.size,(m+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
-<a name="line145">145: </a>  } <font color="#4169E1">else</font> {
-<a name="line146">146: </a>    c-&gt;inode.size       = 0;
-<a name="line147">147: </a>    c-&gt;inode.node_count = 0;
-<a name="line148">148: </a>  }
-<a name="line149">149: </a>  c-&gt;inode.ibdiagvalid = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line150">150: </a>  c-&gt;inode.ibdiag      = 0;
-<a name="line151">151: </a>  c-&gt;inode.bdiag       = 0;
-<a name="line152">152: </a>  <font color="#4169E1">return</font>(0);
-<a name="line153">153: </a>}
 
 
 

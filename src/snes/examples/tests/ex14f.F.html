@@ -1,13 +1,14 @@
 <center><a href="ex14f.F">Actual source code: ex14f.F</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tests/ex14f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:16:03+00:00">
+<meta name="date" content="2012-08-29T17:09:21+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  This example demonstrates use of the <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> Fortran interface.
@@ -104,7 +105,7 @@
 <a name="line94"> 94: </a>      implicit none
 
 <a name="line96"> 96: </a>      type(monctx) :: snesmonitor
-<a name="line97"> 97: </a>      PetscFortranAddr ctx(6)
+<a name="line97"> 97: </a>      <A href="../../../../docs/manualpages/Sys/PetscFortranAddr.html#PetscFortranAddr">PetscFortranAddr</A> ctx(6)
 <a name="line98"> 98: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank,size
 <a name="line99"> 99: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line100">100: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> N,start,end,nn,i
@@ -147,7 +148,7 @@
 <a name="line137">137: </a>      call <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,U,ierr)
 <a name="line138">138: </a>      call <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>(U,'Exact Solution',ierr)
 
-<a name="line140">140: </a>      call <A href="../../../../docs/manualpages/Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,N, &amp;
+<a name="line140">140: </a>      call <A href="../../../../docs/manualpages/Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,N,           &amp;
 <a name="line141">141: </a>     &amp;     N,i3,PETSC_NULL_INTEGER,i0,PETSC_NULL_INTEGER,J,ierr)
 
 <a name="line143">143: </a>      call <A href="../../../../docs/manualpages/Mat/MatGetType.html#MatGetType">MatGetType</A>(J,matrixname,ierr)
@@ -223,7 +224,7 @@
 <a name="line213">213: </a>      <font color="#4169E1">if</font> (ctx(4) .eq. 0) then
 <a name="line214">214: </a>        write(6,100) its
 <a name="line215">215: </a>      endif
-<a name="line216">216: </a>  100 format('Number of Newton iterations = ',i5)
+<a name="line216">216: </a>  100 format('Number of <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = ',i5)
 
 <a name="line218">218: </a>!  Free work space.  All PETSc objects should be destroyed when they
 <a name="line219">219: </a>!  are no longer needed.
@@ -245,11 +246,11 @@
 <a name="line235">235: </a>      implicit none
 <a name="line236">236: </a>      <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>             snes
 <a name="line237">237: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>              x,f
-<a name="line238">238: </a>      PetscFortranAddr ctx(*)
+<a name="line238">238: </a>      <A href="../../../../docs/manualpages/Sys/PetscFortranAddr.html#PetscFortranAddr">PetscFortranAddr</A> ctx(*)
 <a name="line239">239: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>  rank,size
 <a name="line240">240: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i,s,n
 <a name="line241">241: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
-<a name="line242">242: </a>      PetscOffset      ixx,iff,iF2
+<a name="line242">242: </a>      <A href="../../../../docs/manualpages/Sys/PetscOffset.html#PetscOffset">PetscOffset</A>      ixx,iff,iF2
 <a name="line243">243: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      h,d,vf2(1),vxx(1),vff(1)
 <a name="line244">244: </a><font color="#A020F0">#include &lt;finclude/petscsys.h&gt;</font>
 <a name="line245">245: </a><font color="#A020F0">#include &lt;finclude/petscvec.h&gt;</font>
@@ -346,13 +347,13 @@
 <a name="line336">336: </a>      <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>             snes
 <a name="line337">337: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>              x
 <a name="line338">338: </a>      <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>              jac,B
-<a name="line339">339: </a>      PetscFortranAddr ctx(*)
+<a name="line339">339: </a>      <A href="../../../../docs/manualpages/Sys/PetscFortranAddr.html#PetscFortranAddr">PetscFortranAddr</A> ctx(*)
 <a name="line340">340: </a>      <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>        flag
 <a name="line341">341: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         ii,istart,iend
 <a name="line342">342: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         i,j,n,end,start,i1
 <a name="line343">343: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>   ierr
 <a name="line344">344: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>      rank,size
-<a name="line345">345: </a>      PetscOffset      ixx
+<a name="line345">345: </a>      <A href="../../../../docs/manualpages/Sys/PetscOffset.html#PetscOffset">PetscOffset</A>      ixx
 <a name="line346">346: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      d,A,h,vxx(1)
 
 <a name="line348">348: </a>      rank = ctx(4)

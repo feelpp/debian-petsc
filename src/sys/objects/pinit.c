@@ -8,12 +8,20 @@
 #if defined(PETSC_HAVE_CUSP)
 #include <cublas.h>
 #endif
+#if defined(PETSC_HAVE_VALGRIND)
+#  include <valgrind/valgrind.h>
+#  define PETSC_RUNNING_ON_VALGRIND RUNNING_ON_VALGRIND
+#else
+#  define PETSC_RUNNING_ON_VALGRIND PETSC_FALSE
+#endif
+
+#include <petscthreadcomm.h>
 
 #if defined(PETSC_USE_LOG)
 extern PetscErrorCode PetscLogBegin_Private(void);
 #endif
 extern PetscBool  PetscHMPIWorker;
-extern PetscBool  PetscUseThreadPool;
+
 /* -----------------------------------------------------------------------------------------*/
 
 extern FILE *petsc_history;
@@ -21,13 +29,14 @@ extern FILE *petsc_history;
 extern PetscErrorCode PetscInitialize_DynamicLibraries(void);
 extern PetscErrorCode PetscFinalize_DynamicLibraries(void);
 extern PetscErrorCode PetscFListDestroyAll(void);
+extern PetscErrorCode PetscOpFListDestroyAll(void);
 extern PetscErrorCode PetscSequentialPhaseBegin_Private(MPI_Comm,int);
 extern PetscErrorCode PetscSequentialPhaseEnd_Private(MPI_Comm,int);
 extern PetscErrorCode PetscCloseHistoryFile(FILE **);
-extern PetscErrorCode (*PetscThreadFinalize)(void);
-extern int* ThreadCoreAffinity;
-/* this is used by the _, __, and ___ macros (see include/petscerror.h) */
-PetscErrorCode __gierr = 0;
+
+#if defined(PETSC_HAVE_PTHREADCLASSES)
+# include <../src/sys/objects/pthread/pthreadimpl.h>
+#endif
 
 /* user may set this BEFORE calling PetscInitialize() */
 MPI_Comm PETSC_COMM_WORLD = MPI_COMM_NULL;
@@ -72,27 +81,26 @@ PetscErrorCode  PetscOptionsCheckInitial_Components(void)
   PetscFunctionReturn(0);
 }
 
-#if defined(PETSC_HAVE_MATLAB_ENGINE)
 extern PetscBool PetscBeganMPI;
 
 #undef __FUNCT__  
-#define __FUNCT__ "PetscInitializeMatlab"
+#define __FUNCT__ "PetscInitializeNoPointers"
 /*
-      PetscInitializeMatlab - Calls PetscInitialize() from C/C++ without the pointers to argc and args
+      PetscInitializeNoPointers - Calls PetscInitialize() from C/C++ without the pointers to argc and args
 
    Collective
   
    Level: advanced
 
-    Notes: this is called only by the PETSc MATLAB interface. Even though it might start MPI it sets the flag to 
+    Notes: this is called only by the PETSc MATLAB and Julia interface. Even though it might start MPI it sets the flag to 
      indicate that it did NOT start MPI so that the PetscFinalize() does not end MPI, thus allowing PetscInitialize() to 
-     be called multiple times from MATLAB without the problem of trying to initialize MPI more than once.
+     be called multiple times from MATLAB and Julia without the problem of trying to initialize MPI more than once.
 
      Turns off PETSc signal handling because that can interact with MATLAB's signal handling causing random crashes.
 
 .seealso: PetscInitialize(), PetscInitializeFortran(), PetscInitializeNoArguments()
 */
-PetscErrorCode  PetscInitializeMatlab(int argc,char **args,const char *filename,const char *help)
+PetscErrorCode  PetscInitializeNoPointers(int argc,char **args,const char *filename,const char *help)
 {
   PetscErrorCode ierr;
   int            myargc = argc;
@@ -106,39 +114,16 @@ PetscErrorCode  PetscInitializeMatlab(int argc,char **args,const char *filename,
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "PetscInitializedMatlab"
+#define __FUNCT__ "PetscGetPETSC_COMM_SELF"
 /*
-      PetscInitializedMatlab - Has PETSc been initialized already?
-
-   Not Collective
-  
-   Level: advanced
-
-    Notes: this is called only by the PETSc MATLAB interface.
-
-.seealso: PetscInitialize(), PetscInitializeFortran(), PetscInitializeNoArguments()
+      Used by MATLAB and Julia interface to get communicator
 */
-int  PetscInitializedMatlab(void)
-{
-  PetscBool flg;
-
-  PetscInitialized(&flg);
-  if (flg) return 1;
-  else return 0;
-}
-
-#undef __FUNCT__  
-#define __FUNCT__ "PetscGetPETSC_COMM_SELFMatlab"
-/*
-      Used by MATLAB interface to get communicator
-*/
-PetscErrorCode  PetscGetPETSC_COMM_SELFMatlab(MPI_Comm *comm)
+PetscErrorCode  PetscGetPETSC_COMM_SELF(MPI_Comm *comm)
 {
   PetscFunctionBegin;
   *comm = PETSC_COMM_SELF;
   PetscFunctionReturn(0);
 }
-#endif
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscInitializeNoArguments"
@@ -596,6 +581,7 @@ PetscErrorCode  PetscFreeArguments(char **args)
 .  -malloc - Indicates use of PETSc error-checking malloc (on by default for debug version of libraries)
 .  -malloc no - Indicates not to use error-checking malloc
 .  -malloc_debug - check for memory corruption at EVERY malloc or free
+.  -malloc_test - like -malloc_dump -malloc_debug, but only active for debugging builds
 .  -fp_trap - Stops on floating point exceptions (Note that on the
               IBM RS6000 this slows code by at least a factor of 10.)
 .  -no_signal_handler - Indicates not to trap error signals
@@ -679,7 +665,14 @@ PetscErrorCode  PetscInitialize(int *argc,char ***args,const char file[],const c
   ierr = MPI_Initialized(&flag);CHKERRQ(ierr);
   if (!flag) {
     if (PETSC_COMM_WORLD != MPI_COMM_NULL) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"You cannot set PETSC_COMM_WORLD if you have not initialized MPI first");
-    ierr          = MPI_Init(argc,args);CHKERRQ(ierr);
+#if defined(PETSC_HAVE_MPI_INIT_THREAD)
+    {
+      PetscMPIInt provided;
+      ierr = MPI_Init_thread(argc,args,MPI_THREAD_FUNNELED,&provided);CHKERRQ(ierr);
+    }
+#else
+    ierr = MPI_Init(argc,args);CHKERRQ(ierr);
+#endif
     PetscBeganMPI = PETSC_TRUE;
   }
   if (argc && args) {
@@ -833,6 +826,10 @@ PetscErrorCode  PetscInitialize(int *argc,char ***args,const char file[],const c
     ierr = PetscPythonInitialize(PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
   }
 
+#if defined(PETSC_THREADCOMM_ACTIVE)
+  ierr = PetscThreadCommInitializePackage(PETSC_NULL);CHKERRQ(ierr);
+#endif
+
   /*
       Once we are completedly initialized then we can set this variables
   */
@@ -912,12 +909,9 @@ PetscErrorCode  PetscFinalize(void)
 #endif
 
   ierr = PetscHMPIFinalize();CHKERRQ(ierr);
+
 #if defined(PETSC_HAVE_PTHREADCLASSES)
-  if (PetscThreadFinalize) {
-    /* thread pool case */
-    ierr = (*PetscThreadFinalize)();CHKERRQ(ierr);
-  }
-  free(ThreadCoreAffinity);
+  ierr = PetscThreadsFinalize();CHKERRQ(ierr);
 #endif
 
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
@@ -935,7 +929,7 @@ PetscErrorCode  PetscFinalize(void)
   ierr = PetscOptionsGetBool(PETSC_NULL,"-get_total_flops",&flg1,PETSC_NULL);CHKERRQ(ierr);
   if (flg1) {
     PetscLogDouble flops = 0;
-    ierr = MPI_Reduce(&_TotalFlops,&flops,1,MPI_DOUBLE,MPI_SUM,0,PETSC_COMM_WORLD);CHKERRQ(ierr);
+    ierr = MPI_Reduce(&petsc_TotalFlops,&flops,1,MPI_DOUBLE,MPI_SUM,0,PETSC_COMM_WORLD);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Total flops over all processors %g\n",flops);CHKERRQ(ierr);
   }
 #endif
@@ -993,7 +987,7 @@ PetscErrorCode  PetscFinalize(void)
   }
 #endif
 
-#if defined(PETSC_USE_DEBUG) && !defined(PETSC_USE_PTHREAD)
+#if defined(PETSC_USE_DEBUG)
   if (PetscStackActive) {
     ierr = PetscStackDestroy();CHKERRQ(ierr);
   }
@@ -1084,6 +1078,11 @@ PetscErrorCode  PetscFinalize(void)
   */
   ierr = PetscFListDestroyAll();CHKERRQ(ierr); 
 
+  /*
+       Free all the registered op functions, such as MatOpList, etc
+  */
+  ierr = PetscOpFListDestroyAll();CHKERRQ(ierr); 
+
   /* 
      Destroy any packages that registered a finalize 
   */
@@ -1108,6 +1107,13 @@ PetscErrorCode  PetscFinalize(void)
 
     fname[0] = 0;
     ierr = PetscOptionsGetString(PETSC_NULL,"-malloc_dump",fname,250,&flg1);CHKERRQ(ierr);
+    flg2 = PETSC_FALSE;
+    ierr = PetscOptionsGetBool(PETSC_NULL,"-malloc_test",&flg2,PETSC_NULL);CHKERRQ(ierr);
+#if defined(PETSC_USE_DEBUG)
+    if (PETSC_RUNNING_ON_VALGRIND) flg2 = PETSC_FALSE;
+#else
+    flg2 = PETSC_FALSE;         /* Skip reporting for optimized builds regardless of -malloc_test */
+#endif
     if (flg1 && fname[0]) {
       char sname[PETSC_MAX_PATH_LEN];
 
@@ -1116,7 +1122,7 @@ PetscErrorCode  PetscFinalize(void)
       ierr = PetscMallocDump(fd);CHKERRQ(ierr);
       err = fclose(fd);
       if (err) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SYS,"fclose() failed on file");    
-    } else if (flg1) {
+    } else if (flg1 || flg2) {
       MPI_Comm local_comm;
 
       ierr = MPI_Comm_dup(MPI_COMM_WORLD,&local_comm);CHKERRQ(ierr);
@@ -1221,11 +1227,6 @@ PetscErrorCode  PetscFinalize(void)
     ierr = MPI_Finalize();CHKERRQ(ierr);
   }
 
-  if (PETSC_ZOPEFD){ 
-    if (PETSC_ZOPEFD != PETSC_STDOUT) fprintf(PETSC_ZOPEFD, "<<<end>>>");
-    else fprintf(PETSC_STDOUT, "<<<end>>>");
-  }
-
 #if defined(PETSC_HAVE_CUDA)
   cublasShutdown();
 #endif
@@ -1246,3 +1247,26 @@ PetscErrorCode  PetscFinalize(void)
   PetscFunctionReturn(ierr);
 }
 
+#if defined(PETSC_MISSING_LAPACK_lsame_)
+EXTERN_C_BEGIN
+int lsame_(char *a,char *b)
+{
+  if (*a == *b) return 1;
+  if (*a + 32 == *b) return 1;
+  if (*a - 32 == *b) return 1;
+  return 0;
+}
+EXTERN_C_END
+#endif
+
+#if defined(PETSC_MISSING_LAPACK_lsame)
+EXTERN_C_BEGIN
+int lsame(char *a,char *b)
+{
+  if (*a == *b) return 1;
+  if (*a + 32 == *b) return 1;
+  if (*a - 32 == *b) return 1;
+  return 0;
+}
+EXTERN_C_END
+#endif

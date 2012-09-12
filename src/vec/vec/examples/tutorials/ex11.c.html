@@ -1,13 +1,14 @@
 <center><a href="ex11.c">Actual source code: ex11.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tutorials/ex11.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:56:27+00:00">
+<meta name="date" content="2012-08-29T16:40:21+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* Program usage:  mpiexec ex1 [-help] [all PETSc options] */</font>
 
@@ -59,39 +60,38 @@
 <a name="line52"> 52: </a><font color="#B22222">  */</font>
 <a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;x);
 <a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(x,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,n);
+<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>(x,2);
+<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(x);
 
-<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>(x,2);
-<a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(x);
+<a name="line58"> 58: </a>  <font color="#B22222">/*</font>
+<a name="line59"> 59: </a><font color="#B22222">     Set the vectors to entries to a constant value.</font>
+<a name="line60"> 60: </a><font color="#B22222">  */</font>
+<a name="line61"> 61: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(x,one);
 
-<a name="line59"> 59: </a>  <font color="#B22222">/*</font>
-<a name="line60"> 60: </a><font color="#B22222">     Set the vectors to entries to a constant value.</font>
-<a name="line61"> 61: </a><font color="#B22222">  */</font>
-<a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(x,one);
+<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of entire vector %G\n"</font>,norm);
 
-<a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of entire vector %G\n"</font>,norm);
+<a name="line66"> 66: </a>  <A href="../../../../../docs/manualpages/Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>(x,0,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line67"> 67: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of sub-vector %G\n"</font>,norm);
 
-<a name="line67"> 67: </a>  <A href="../../../../../docs/manualpages/Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>(x,0,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of sub-vector %G\n"</font>,norm);
+<a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>(x,1,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
+<a name="line70"> 70: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of sub-vector %G\n"</font>,norm);
 
-<a name="line70"> 70: </a>  <A href="../../../../../docs/manualpages/Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>(x,1,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line71"> 71: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of sub-vector %G\n"</font>,norm);
+<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>(x,1,<A href="../../../../../docs/manualpages/Vec/NORM_1.html#NORM_1">NORM_1</A>,&amp;norm);
+<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of sub-vector %G\n"</font>,norm);
 
-<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>(x,1,<A href="../../../../../docs/manualpages/Vec/NORM_1.html#NORM_1">NORM_1</A>,&amp;norm);
-<a name="line74"> 74: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of sub-vector %G\n"</font>,norm);
+<a name="line75"> 75: </a>  <A href="../../../../../docs/manualpages/Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>(x,1,<A href="../../../../../docs/manualpages/Vec/NORM_INFINITY.html#NORM_INFINITY">NORM_INFINITY</A>,&amp;norm);
+<a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of sub-vector %G\n"</font>,norm);
 
-<a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>(x,1,<A href="../../../../../docs/manualpages/Vec/NORM_INFINITY.html#NORM_INFINITY">NORM_INFINITY</A>,&amp;norm);
-<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of sub-vector %G\n"</font>,norm);
-
-<a name="line79"> 79: </a>  <font color="#B22222">/* </font>
-<a name="line80"> 80: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
-<a name="line81"> 81: </a><font color="#B22222">     are no longer needed.</font>
-<a name="line82"> 82: </a><font color="#B22222">  */</font>
-<a name="line83"> 83: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
-<a name="line84"> 84: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line85"> 85: </a>  <font color="#4169E1">return</font> 0;
-<a name="line86"> 86: </a>}
-<a name="line87"> 87: </a>
+<a name="line78"> 78: </a>  <font color="#B22222">/* </font>
+<a name="line79"> 79: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
+<a name="line80"> 80: </a><font color="#B22222">     are no longer needed.</font>
+<a name="line81"> 81: </a><font color="#B22222">  */</font>
+<a name="line82"> 82: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line83"> 83: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line84"> 84: </a>  <font color="#4169E1">return</font> 0;
+<a name="line85"> 85: </a>}
+<a name="line86"> 86: </a>
 </pre>
 </body>
 

@@ -96,9 +96,7 @@ PetscErrorCode MatCholeskyFactorSymbolic_SeqSBAIJ_MSR(Mat F,Mat A,IS perm,const 
         do {
           m  = qm; qm = q[m];
         } while(qm < vj);
-        if (qm == vj) {
-          SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Duplicate entry in A\n"); 
-        }     
+        if (qm == vj) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Duplicate entry in A\n"); 
         nzk++;
         q[m]  = vj;
         q[vj] = qm;  
@@ -646,10 +644,10 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_N(Mat C,Mat A,const MatFactorIn
       diag = ba + i*bs2;
       u    = ba + ili*bs2;
       ierr = PetscMemzero(uik,bs2*sizeof(MatScalar));CHKERRQ(ierr);
-      Kernel_A_gets_A_minus_B_times_C(bs,uik,diag,u);
+      PetscKernel_A_gets_A_minus_B_times_C(bs,uik,diag,u);
       
       /* update D(k) += -U(i,k)^T * U_bar(i,k) */
-      Kernel_A_gets_A_plus_Btranspose_times_C(bs,dk,uik,u);
+      PetscKernel_A_gets_A_plus_Btranspose_times_C(bs,dk,uik,u);
       ierr = PetscLogFlops(bslog*2.0);CHKERRQ(ierr);
  
       /* update -U(i,k) */
@@ -662,7 +660,7 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_N(Mat C,Mat A,const MatFactorIn
           /* rtmp += -U(i,k)^T * U_bar(i,j) */
           rtmp_ptr = rtmp + bj[j]*bs2;
           u = ba + j*bs2;
-          Kernel_A_gets_A_plus_Btranspose_times_C(bs,rtmp_ptr,uik,u);
+          PetscKernel_A_gets_A_plus_Btranspose_times_C(bs,rtmp_ptr,uik,u);
         }
         ierr = PetscLogFlops(bslog*(jmax-jmin));CHKERRQ(ierr);
       
@@ -679,7 +677,7 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_N(Mat C,Mat A,const MatFactorIn
     /* invert diagonal block */
     diag = ba+k*bs2;
     ierr = PetscMemcpy(diag,dk,bs2*sizeof(MatScalar));CHKERRQ(ierr);   
-    ierr = Kernel_A_gets_inverse_A(bs,diag,pivots,work);CHKERRQ(ierr);
+    ierr = PetscKernel_A_gets_inverse_A(bs,diag,pivots,work);CHKERRQ(ierr);
     
     jmin = bi[k]; jmax = bi[k+1];
     if (jmin < jmax) {
@@ -775,10 +773,10 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_N_NaturalOrdering(Mat C,Mat A,c
       diag = ba + i*bs2;
       u    = ba + ili*bs2;
       ierr = PetscMemzero(uik,bs2*sizeof(MatScalar));CHKERRQ(ierr);
-      Kernel_A_gets_A_minus_B_times_C(bs,uik,diag,u);
+      PetscKernel_A_gets_A_minus_B_times_C(bs,uik,diag,u);
       
       /* update D(k) += -U(i,k)^T * U_bar(i,k) */
-      Kernel_A_gets_A_plus_Btranspose_times_C(bs,dk,uik,u);
+      PetscKernel_A_gets_A_plus_Btranspose_times_C(bs,dk,uik,u);
       ierr = PetscLogFlops(bslog*2.0);CHKERRQ(ierr);
  
       /* update -U(i,k) */
@@ -791,7 +789,7 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_N_NaturalOrdering(Mat C,Mat A,c
           /* rtmp += -U(i,k)^T * U_bar(i,j) */
           rtmp_ptr = rtmp + bj[j]*bs2;
           u = ba + j*bs2;
-          Kernel_A_gets_A_plus_Btranspose_times_C(bs,rtmp_ptr,uik,u);
+          PetscKernel_A_gets_A_plus_Btranspose_times_C(bs,rtmp_ptr,uik,u);
         }
         ierr = PetscLogFlops(bslog*(jmax-jmin));CHKERRQ(ierr);
       
@@ -808,7 +806,7 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_N_NaturalOrdering(Mat C,Mat A,c
     /* invert diagonal block */
     diag = ba+k*bs2;
     ierr = PetscMemcpy(diag,dk,bs2*sizeof(MatScalar));CHKERRQ(ierr);   
-    ierr = Kernel_A_gets_inverse_A(bs,diag,pivots,work);CHKERRQ(ierr);
+    ierr = PetscKernel_A_gets_inverse_A(bs,diag,pivots,work);CHKERRQ(ierr);
     
     jmin = bi[k]; jmax = bi[k+1];
     if (jmin < jmax) {
@@ -982,7 +980,7 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_2(Mat C,Mat A,const MatFactorIn
     /* invert diagonal block */
     diag = ba+k*4;
     ierr = PetscMemcpy(diag,dk,4*sizeof(MatScalar));CHKERRQ(ierr);
-    ierr = Kernel_A_gets_inverse_A_2(diag,shift);CHKERRQ(ierr);
+    ierr = PetscKernel_A_gets_inverse_A_2(diag,shift);CHKERRQ(ierr);
     
     jmin = bi[k]; jmax = bi[k+1];
     if (jmin < jmax) {
@@ -1118,7 +1116,7 @@ PetscErrorCode MatCholeskyFactorNumeric_SeqSBAIJ_2_NaturalOrdering(Mat C,Mat A,c
     /* invert diagonal block */
     diag = ba+k*4;
     ierr = PetscMemcpy(diag,dk,4*sizeof(MatScalar));CHKERRQ(ierr);
-    ierr = Kernel_A_gets_inverse_A_2(diag,shift);CHKERRQ(ierr);
+    ierr = PetscKernel_A_gets_inverse_A_2(diag,shift);CHKERRQ(ierr);
     
     jmin = bi[k]; jmax = bi[k+1];
     if (jmin < jmax) {

@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESSolve.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESSolve</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESSolve"><H1>SNESSolve</H1></A>
 Solves a nonlinear system F(x) = b. Call <A HREF="../SNES/SNESSolve.html#SNESSolve">SNESSolve</A>() after calling <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>() and optional routines of the form SNESSetXXX(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESSolve(SNES snes,Vec b,Vec x)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -36,7 +39,7 @@ this vector to zero by calling <A HREF="../Vec/VecSet.html#VecSet">VecSet</A>().
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A HREF="../SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(), <A HREF="../SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(), <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>()
+ <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A HREF="../SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(), <A HREF="../SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(), <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(), <A HREF="../SNES/SNESSetGridSequence.html#SNESSetGridSequence">SNESSetGridSequence</A>(), <A HREF="../SNES/SNESGetSolution.html#SNESGetSolution">SNESGetSolution</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/interface/snes.c.html#SNESSolve">src/snes/interface/snes.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>

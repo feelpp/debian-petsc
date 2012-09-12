@@ -198,6 +198,7 @@ int main(int argc,char **argv)
     ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
     ierr = MatSetSizes(A,m,m,PETSC_DECIDE,PETSC_DECIDE);CHKERRQ(ierr);
     ierr = MatSetFromOptions(A);CHKERRQ(ierr);
+    ierr = MatSetUp(A);CHKERRQ(ierr);
     ierr = RHSMatrixHeat(ts,0.0,&A,&A,&A_structure,&appctx);CHKERRQ(ierr);
     ierr = TSSetRHSJacobian(ts,A,A,RHSJacobianHeat,&appctx);CHKERRQ(ierr);  
   }
@@ -215,7 +216,7 @@ int main(int argc,char **argv)
     PetscBool  iseuler;
     ierr = TSGetTimeStepNumber(ts,&steps);CHKERRQ(ierr);
 
-    ierr = PetscTypeCompare((PetscObject)ts,"euler",&iseuler);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)ts,"euler",&iseuler);CHKERRQ(ierr);
     if (iseuler) {
       if (!PETSC_NEAR(appctx.norm_2/steps,0.00257244,1.e-4)) {
         fprintf(stdout,"Error in Euler method: 2-norm %G expecting: 0.00257244\n",appctx.norm_2/steps);
@@ -318,7 +319,7 @@ PetscErrorCode Monitor(TS ts,PetscInt step,PetscReal ltime,Vec global,void *ctx)
   ierr = Solution(ltime,appctx->solution,ctx);CHKERRQ(ierr); /* get true solution at current time */
   ierr = VecAXPY(appctx->solution,-1.0,global);CHKERRQ(ierr);
   ierr = VecNorm(appctx->solution,NORM_2,&norm_2);CHKERRQ(ierr);
-  norm_2 = sqrt(appctx->h)*norm_2;
+  norm_2 = PetscSqrtReal(appctx->h)*norm_2;
   ierr = VecNorm(appctx->solution,NORM_MAX,&norm_max);CHKERRQ(ierr);
   ierr = PetscPrintf(comm,"timestep %D time %G norm of error %.5f %.5f\n",step,ltime,norm_2,norm_max);CHKERRQ(ierr);
 

@@ -1,15 +1,16 @@
 <center><a href="vecreg.c">Actual source code: vecreg.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/interface/vecreg.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:55:16+00:00">
+<meta name="date" content="2012-08-29T16:38:33+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/vecimpl.h&gt;    </font><font color="#B22222">/*I "petscvec.h"  I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/vecimpl.h&gt;    </font><font color="#B22222">/*I "petscvec.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line4">  4: </a><A href="../../../../docs/manualpages/Sys/PetscFList.html#PetscFList">PetscFList</A> VecList                       = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
 <a name="line5">  5: </a><A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  VecRegisterAllCalled          = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
@@ -42,14 +43,14 @@
 <a name="line34"> 34: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*r)(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>);
 <a name="line35"> 35: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      match;
 
-<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) vec, method, &amp;match);
+<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) vec, method, &amp;match);
 <a name="line41"> 41: </a>  <font color="#4169E1">if</font> (match) <font color="#4169E1">return</font>(0);
 
-<a name="line43"> 43: </a>  <font color="#4169E1">if</font> (!VecRegisterAllCalled) {<A href="../../../../docs/manualpages/Vec/VecRegisterAll.html#VecRegisterAll">VecRegisterAll</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);}
-<a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(VecList, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)vec)-&gt;comm, method,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,(void (**)(void)) &amp;r);
-<a name="line45"> 45: </a>  <font color="#4169E1">if</font> (!r) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_UNKNOWN_TYPE, <font color="#666666">"Unknown vector type: %s"</font>, method);
-<a name="line46"> 46: </a>  <font color="#4169E1">if</font> (vec-&gt;ops-&gt;destroy) {
-<a name="line47"> 47: </a>    (*vec-&gt;ops-&gt;destroy)(vec);
+<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>(VecList, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)vec)-&gt;comm, method,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,(void (**)(void)) &amp;r);
+<a name="line44"> 44: </a>  <font color="#4169E1">if</font> (!r) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_UNKNOWN_TYPE, <font color="#666666">"Unknown vector type: %s"</font>, method);
+<a name="line45"> 45: </a>  <font color="#4169E1">if</font> (vec-&gt;ops-&gt;destroy) {
+<a name="line46"> 46: </a>    (*vec-&gt;ops-&gt;destroy)(vec);
+<a name="line47"> 47: </a>    vec-&gt;ops-&gt;destroy = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
 <a name="line48"> 48: </a>  }
 <a name="line49"> 49: </a>  <font color="#4169E1">if</font> (vec-&gt;map-&gt;n &lt; 0 &amp;&amp; vec-&gt;map-&gt;N &lt; 0) {
 <a name="line50"> 50: </a>    vec-&gt;ops-&gt;create = r;
@@ -101,7 +102,7 @@
 <a name="line106">106: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(fullname, path);
 <a name="line107">107: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(fullname, <font color="#666666">":"</font>);
 <a name="line108">108: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(fullname, name);
-<a name="line109">109: </a>  PetscFListAdd(&amp;VecList, sname, fullname, (void (*)(void)) function);
+<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Sys/PetscFListAdd.html#PetscFListAdd">PetscFListAdd</A>(&amp;VecList, sname, fullname, (void (*)(void)) function);
 <a name="line110">110: </a>  <font color="#4169E1">return</font>(0);
 <a name="line111">111: </a>}
 

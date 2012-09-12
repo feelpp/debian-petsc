@@ -3,7 +3,7 @@
       Interface KSP routines that the user calls.
 */
 
-#include <private/kspimpl.h>   /*I "petscksp.h" I*/
+#include <petsc-private/kspimpl.h>   /*I "petscksp.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPComputeExtremeSingularValues"
@@ -104,9 +104,9 @@ PetscErrorCode  KSPComputeEigenvalues(KSP ksp,PetscInt n,PetscReal *r,PetscReal 
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
-  PetscValidScalarPointer(r,2);
-  PetscValidScalarPointer(c,3);
-  PetscValidIntPointer(neig,4);
+  PetscValidScalarPointer(r,3);
+  PetscValidScalarPointer(c,4);
+  PetscValidIntPointer(neig,5);
   if (!ksp->calc_sings) SETERRQ(((PetscObject)ksp)->comm,4,"Eigenvalues not requested before KSPSetUp()");
 
   if (ksp->ops->computeeigenvalues) {
@@ -175,11 +175,9 @@ PetscErrorCode  KSPSetUpOnBlocks(KSP ksp)
 PetscErrorCode  KSPSetUp(KSP ksp)
 {
   PetscErrorCode ierr;
-  PetscBool      ir = PETSC_FALSE,ig = PETSC_FALSE;
-  Mat            A;
+  PetscBool      ig = PETSC_FALSE;
+  Mat            A,B;
   MatStructure   stflg = SAME_NONZERO_PATTERN;
-
-  /* PetscBool      im = PETSC_FALSE; */
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
@@ -190,40 +188,60 @@ PetscErrorCode  KSPSetUp(KSP ksp)
   if (!((PetscObject)ksp)->type_name){
     ierr = KSPSetType(ksp,KSPGMRES);CHKERRQ(ierr);
   }
-  ierr = KSPSetUpNorms_Private(ksp);CHKERRQ(ierr);
+  ierr = KSPSetUpNorms_Private(ksp,&ksp->normtype,&ksp->pc_side);CHKERRQ(ierr);
 
   if (ksp->dmActive && !ksp->setupstage) {
     /* first time in so build matrix and vector data structures using DM */
     if (!ksp->vec_rhs) {ierr = DMCreateGlobalVector(ksp->dm,&ksp->vec_rhs);CHKERRQ(ierr);}
     if (!ksp->vec_sol) {ierr = DMCreateGlobalVector(ksp->dm,&ksp->vec_sol);CHKERRQ(ierr);}
-    ierr = DMGetMatrix(ksp->dm,MATAIJ,&A);CHKERRQ(ierr);
+    ierr = DMCreateMatrix(ksp->dm,MATAIJ,&A);CHKERRQ(ierr);
     ierr = KSPSetOperators(ksp,A,A,stflg);CHKERRQ(ierr);  
     ierr = PetscObjectDereference((PetscObject)A);CHKERRQ(ierr); 
   }
 
   if (ksp->dmActive) {
+    KSPDM kdm;
+    ierr = DMKSPGetContext(ksp->dm,&kdm);CHKERRQ(ierr);
+
     ierr = DMHasInitialGuess(ksp->dm,&ig);CHKERRQ(ierr);
     if (ig && ksp->setupstage != KSP_SETUP_NEWRHS) {
+      /* only computes initial guess the first time through */
       ierr = DMComputeInitialGuess(ksp->dm,ksp->vec_sol);CHKERRQ(ierr);
       ierr = KSPSetInitialGuessNonzero(ksp,PETSC_TRUE);CHKERRQ(ierr);
     }
-    ierr = DMHasFunction(ksp->dm,&ir);CHKERRQ(ierr);
-    if (ir && ksp->setupstage != KSP_SETUP_NEWRHS) {
-      ierr = DMComputeFunction(ksp->dm,PETSC_NULL,ksp->vec_rhs);CHKERRQ(ierr);
+    if (kdm->computerhs) {
+      ierr = (*kdm->computerhs)(ksp,ksp->vec_rhs,kdm->rhsctx);CHKERRQ(ierr);
+    } else {
+      PetscBool irhs;
+      ierr = DMHasFunction(ksp->dm,&irhs);CHKERRQ(ierr);
+      if (irhs) {
+        ierr = DMComputeFunction(ksp->dm,PETSC_NULL,ksp->vec_rhs);CHKERRQ(ierr);
+      }
     }
 
     if (ksp->setupstage != KSP_SETUP_NEWRHS) {
-      ierr = KSPGetOperators(ksp,&A,&A,PETSC_NULL);CHKERRQ(ierr);
-      ierr = DMComputeJacobian(ksp->dm,PETSC_NULL,A,A,&stflg);CHKERRQ(ierr);
-      ierr = KSPSetOperators(ksp,A,A,stflg);CHKERRQ(ierr); 
+      ierr = KSPGetOperators(ksp,&A,&B,PETSC_NULL);CHKERRQ(ierr);
+      if (kdm->computeoperators) {
+        ierr = (*kdm->computeoperators)(ksp,A,B,&stflg,kdm->operatorsctx);CHKERRQ(ierr);
+      } else {                  /* Eventually remove this code path */
+        if (0) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_USER,"Must call KSPSetComputeOperators()");
+        ierr = DMComputeJacobian(ksp->dm,PETSC_NULL,A,B,&stflg);CHKERRQ(ierr);
+      }
+      ierr = KSPSetOperators(ksp,A,B,stflg);CHKERRQ(ierr); 
     }
   }
 
   if (ksp->setupstage == KSP_SETUP_NEWRHS) PetscFunctionReturn(0);
   ierr = PetscLogEventBegin(KSP_SetUp,ksp,ksp->vec_rhs,ksp->vec_sol,0);CHKERRQ(ierr);
 
-  if (!ksp->setupstage) {
+  switch (ksp->setupstage) {
+  case KSP_SETUP_NEW:
     ierr = (*ksp->ops->setup)(ksp);CHKERRQ(ierr);
+    break;
+  case KSP_SETUP_NEWMATRIX: {   /* This should be replaced with a more general mechanism */
+    ierr = KSPChebyshevSetNewMatrix(ksp);CHKERRQ(ierr);
+  } break;
+  default: break;
   }
 
   /* scale the matrix if requested */
@@ -296,7 +314,9 @@ PetscErrorCode  KSPSetUp(KSP ksp)
 
    Notes:
 
-   The operator is specified with PCSetOperators().
+   If one uses KSPSetDM() then x or b need not be passed. Use KSPGetSolution() to access the solution in this case. 
+
+   The operator is specified with KSPSetOperators().
 
    Call KSPGetConvergedReason() to determine if the solver converged or failed and 
    why. The number of iterations can be obtained from KSPGetIterationNumber().
@@ -333,16 +353,19 @@ PetscErrorCode  KSPSolve(KSP ksp,Vec b,Vec x)
   if (b) PetscValidHeaderSpecific(b,VEC_CLASSID,2);
   if (x) PetscValidHeaderSpecific(x,VEC_CLASSID,3);
 
-  if (b && x) {
-    if (x == b) {
-      ierr     = VecDuplicate(b,&x);CHKERRQ(ierr);
-      inXisinB = PETSC_TRUE;
-    }
+  if (x && x == b) {
+    if (!ksp->guess_zero) SETERRQ(((PetscObject)ksp)->comm,PETSC_ERR_ARG_INCOMP,"Cannot use x == b with nonzero initial guess");
+    ierr     = VecDuplicate(b,&x);CHKERRQ(ierr);
+    inXisinB = PETSC_TRUE;
+  }
+  if (b) {
     ierr = PetscObjectReference((PetscObject)b);CHKERRQ(ierr);
-    ierr = PetscObjectReference((PetscObject)x);CHKERRQ(ierr);
     ierr = VecDestroy(&ksp->vec_rhs);CHKERRQ(ierr);
-    ierr = VecDestroy(&ksp->vec_sol);CHKERRQ(ierr);
     ksp->vec_rhs = b;
+  }
+  if (x) {
+    ierr = PetscObjectReference((PetscObject)x);CHKERRQ(ierr);
+    ierr = VecDestroy(&ksp->vec_sol);CHKERRQ(ierr);
     ksp->vec_sol = x;
   }
 
@@ -740,14 +763,22 @@ PetscErrorCode  KSPReset(KSP ksp)
 PetscErrorCode  KSPDestroy(KSP *ksp)
 {
   PetscErrorCode ierr;
+  PC pc;
 
   PetscFunctionBegin;
   if (!*ksp) PetscFunctionReturn(0);
   PetscValidHeaderSpecific((*ksp),KSP_CLASSID,1);
   if (--((PetscObject)(*ksp))->refct > 0) {*ksp = 0; PetscFunctionReturn(0);}
-
+  
+  /* 
+   Avoid a cascading call to PCReset(ksp->pc) from the following call:
+   PCReset() shouldn't be called from KSPDestroy() as it is unprotected by pc's 
+   refcount (and may be shared, e.g., by other ksps).
+   */
+  pc = (*ksp)->pc;
+  (*ksp)->pc = PETSC_NULL;
   ierr = KSPReset((*ksp));CHKERRQ(ierr);
-
+  (*ksp)->pc = pc;
   ierr = PetscObjectDepublish((*ksp));CHKERRQ(ierr);
   if ((*ksp)->ops->destroy) {ierr = (*(*ksp)->ops->destroy)(*ksp);CHKERRQ(ierr);}
 
@@ -835,7 +866,7 @@ PetscErrorCode  KSPGetPCSide(KSP ksp,PCSide *side)
   PetscFunctionBegin;
   PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidPointer(side,2);
-  ierr = KSPSetUpNorms_Private(ksp);CHKERRQ(ierr);
+  ierr = KSPSetUpNorms_Private(ksp,&ksp->normtype,&ksp->pc_side);CHKERRQ(ierr);
   *side = ksp->pc_side;
   PetscFunctionReturn(0);
 }
@@ -1710,7 +1741,7 @@ $     converge (KSP ksp, int it, PetscReal rnorm, KSPConvergedReason *reason,voi
 
 .keywords: KSP, set, convergence, test, context
 
-.seealso: KSPDefaultConverged(), KSPGetConvergenceContext()
+.seealso: KSPDefaultConverged(), KSPGetConvergenceContext(), KSPSetTolerances()
 @*/
 PetscErrorCode  KSPSetConvergenceTest(KSP ksp,PetscErrorCode (*converge)(KSP,PetscInt,PetscReal,KSPConvergedReason*,void*),void *cctx,PetscErrorCode (*destroy)(void*))
 {
@@ -1873,10 +1904,7 @@ PetscErrorCode  KSPBuildResidual(KSP ksp,Vec t,Vec v,Vec *V)
 
     BE CAREFUL with this routine: it actually scales the matrix and right 
     hand side that define the system. After the system is solved the matrix
-    and right hand side remain scaled.
-
-    This routine is only used if the matrix and preconditioner matrix are
-    the same thing.
+    and right hand side remain scaled unless you use KSPSetDiagonalScaleFix()
 
     This should NOT be used within the SNES solves if you are using a line
     search.
@@ -1917,10 +1945,7 @@ PetscErrorCode  KSPSetDiagonalScale(KSP ksp,PetscBool  scale)
    Notes:
     BE CAREFUL with this routine: it actually scales the matrix and right 
     hand side that define the system. After the system is solved the matrix
-    and right hand side remain scaled.
-
-    This routine is only used if the matrix and preconditioner matrix are
-    the same thing.
+    and right hand side remain scaled  unless you use KSPSetDiagonalScaleFix()
 
    Level: intermediate
 
@@ -1957,9 +1982,6 @@ PetscErrorCode  KSPGetDiagonalScale(KSP ksp,PetscBool  *scale)
      after each linear solve. This is intended mainly for testing to allow one
      to easily get back the original system to make sure the solution computed is
      accurate enough.
-
-    This routine is only used if the matrix and preconditioner matrix are
-    the same thing.
 
    Level: intermediate
 
@@ -1999,9 +2021,6 @@ PetscErrorCode  KSPSetDiagonalScaleFix(KSP ksp,PetscBool  fix)
      to easily get back the original system to make sure the solution computed is
      accurate enough.
 
-    This routine is only used if the matrix and preconditioner matrix are
-    the same thing.
-
    Level: intermediate
 
 .keywords: KSP, set, options, prefix, database
@@ -2014,5 +2033,78 @@ PetscErrorCode  KSPGetDiagonalScaleFix(KSP ksp,PetscBool  *fix)
   PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidPointer(fix,2);
   *fix = ksp->dscalefix;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "KSPSetComputeOperators"
+/*@C
+   KSPSetComputeOperators - set routine to compute the linear operators
+
+   Logically Collective
+
+   Input Arguments:
++  ksp - the KSP context
+.  func - function to compute the operators
+-  ctx - optional context
+
+   Calling sequence of func:
+$  func(KSP ksp,Mat *A,Mat *B,MatStructure *mstruct,void *ctx)
+
++  ksp - the KSP context
+.  A - the linear operator
+.  B - preconditioning matrix
+.  mstruct - flag indicating structure, same as in KSPSetOperators(), one of SAME_NONZERO_PATTERN,DIFFERENT_NONZERO_PATTERN,SAME_PRECONDITIONER
+-  ctx - optional user-provided context
+
+   Level: beginner
+
+.seealso: KSPSetOperators()
+@*/
+PetscErrorCode KSPSetComputeOperators(KSP ksp,PetscErrorCode (*func)(KSP,Mat,Mat,MatStructure*,void*),void *ctx)
+{
+  PetscErrorCode ierr;
+  DM dm;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ierr = KSPGetDM(ksp,&dm);CHKERRQ(ierr);
+  ierr = DMKSPSetComputeOperators(dm,func,ctx);CHKERRQ(ierr);
+  if (ksp->setupstage == KSP_SETUP_NEWRHS) ksp->setupstage = KSP_SETUP_NEWMATRIX;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "KSPSetComputeRHS"
+/*@C
+   KSPSetComputeRHS - set routine to compute the right hand side of the linear system
+
+   Logically Collective
+
+   Input Arguments:
++  ksp - the KSP context
+.  func - function to compute the right hand side
+-  ctx - optional context
+
+   Calling sequence of func:
+$  func(KSP ksp,Vec b,void *ctx)
+
++  ksp - the KSP context
+.  b - right hand side of linear system
+-  ctx - optional user-provided context
+
+   Level: beginner
+
+.seealso: KSPSolve()
+@*/
+PetscErrorCode KSPSetComputeRHS(KSP ksp,PetscErrorCode (*func)(KSP,Vec,void*),void *ctx)
+{
+  PetscErrorCode ierr;
+  DM dm;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  ierr = KSPGetDM(ksp,&dm);CHKERRQ(ierr);
+  ierr = DMKSPSetComputeRHS(dm,func,ctx);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

@@ -29,14 +29,14 @@ PetscErrorCode MatSetUpMultiply_MPIBAIJ(Mat mat)
 
 #if defined (PETSC_USE_CTABLE)
   /* use a table - Mark Adams */
-  ierr = PetscTableCreate(B->mbs,&gid1_lid1);CHKERRQ(ierr);
+  ierr = PetscTableCreate(B->mbs,baij->Nbs+1,&gid1_lid1);CHKERRQ(ierr);
   for (i=0; i<B->mbs; i++) {
     for (j=0; j<B->ilen[i]; j++) {
       PetscInt data,gid1 = aj[B->i[i]+j] + 1;
       ierr = PetscTableFind(gid1_lid1,gid1,&data);CHKERRQ(ierr);
       if (!data) {
         /* one based table */ 
-        ierr = PetscTableAdd(gid1_lid1,gid1,++ec);CHKERRQ(ierr); 
+        ierr = PetscTableAdd(gid1_lid1,gid1,++ec,INSERT_VALUES);CHKERRQ(ierr); 
       }
     }
   } 
@@ -51,7 +51,7 @@ PetscErrorCode MatSetUpMultiply_MPIBAIJ(Mat mat)
   ierr = PetscSortInt(ec,garray);CHKERRQ(ierr);
   ierr = PetscTableRemoveAll(gid1_lid1);CHKERRQ(ierr);
   for (i=0; i<ec; i++) {
-    ierr = PetscTableAdd(gid1_lid1,garray[i]+1,i+1);CHKERRQ(ierr); 
+    ierr = PetscTableAdd(gid1_lid1,garray[i]+1,i+1,INSERT_VALUES);CHKERRQ(ierr); 
   }
   /* compact out the extra columns in B */
   for (i=0; i<B->mbs; i++) {
@@ -115,7 +115,7 @@ PetscErrorCode MatSetUpMultiply_MPIBAIJ(Mat mat)
   ierr = ISCreateBlock(PETSC_COMM_SELF,bs,ec,stmp,PETSC_OWN_POINTER,&to);CHKERRQ(ierr);
 
   /* create temporary global vector to generate scatter context */
-  ierr = VecCreateMPIWithArray(((PetscObject)mat)->comm,mat->cmap->n,mat->cmap->N,PETSC_NULL,&gvec);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(((PetscObject)mat)->comm,1,mat->cmap->n,mat->cmap->N,PETSC_NULL,&gvec);CHKERRQ(ierr);
 
   ierr = VecScatterCreate(gvec,from,baij->lvec,to,&baij->Mvctx);CHKERRQ(ierr);
 
@@ -141,8 +141,8 @@ PetscErrorCode MatSetUpMultiply_MPIBAIJ(Mat mat)
    they are sloppy.
 */
 #undef __FUNCT__  
-#define __FUNCT__ "DisAssemble_MPIBAIJ"
-PetscErrorCode DisAssemble_MPIBAIJ(Mat A)
+#define __FUNCT__ "MatDisAssemble_MPIBAIJ"
+PetscErrorCode MatDisAssemble_MPIBAIJ(Mat A)
 {
   Mat_MPIBAIJ    *baij = (Mat_MPIBAIJ*)A->data;
   Mat            B = baij->B,Bnew;
@@ -181,6 +181,7 @@ PetscErrorCode DisAssemble_MPIBAIJ(Mat A)
   ierr = MatSetSizes(Bnew,m,n,m,n);CHKERRQ(ierr);
   ierr = MatSetType(Bnew,((PetscObject)B)->type_name);CHKERRQ(ierr);
   ierr = MatSeqBAIJSetPreallocation(Bnew,B->rmap->bs,0,nz);CHKERRQ(ierr);
+  ((Mat_SeqBAIJ*)Bnew->data)->nonew = Bbaij->nonew; /* Inherit insertion error options. */
   ierr = MatSetOption(Bnew,MAT_ROW_ORIENTED,PETSC_FALSE);CHKERRQ(ierr);
 
   for (i=0; i<mbs; i++) {

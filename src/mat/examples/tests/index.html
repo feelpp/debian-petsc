@@ -1,8 +1,9 @@
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/index.html" />
 <TITLE>Generic PETSc Manual Pages</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 
 Empty page for makefiles that are missing a MANSEC variable (the directories 
 don't have code in them).
@@ -77,23 +78,23 @@ don't have code in them).
 <a href="ex78.c.html">ex78.c: Reads in a matrix in ASCII MATLAB format (I,J,A), read in vectors rhs and exact_solu in ASCII format</a><br>
 <a href="ex80.c.html">ex80.c: Partition tiny grid</a><br>
 <a href="ex81.c.html">ex81.c: Reads in a PETSc binary matrix and saves in Harwell-Boeing format</a><br>
-<a href="ex86.c.html">ex86.c: </a><br>
+<a href="ex86.c.html">ex86.c: Testing MatCreateMPIAIJConcatenateSeqAIJ()</a><br>
 <a href="ex87.c.html">ex87.c: Tests MatGetSubMatrices() for SBAIJ matrices\n\n</a><br>
 <a href="ex88.c.html">ex88.c: Tests MatShift(), MatScale(), and MatDiagonalScale() for SHELL and NEST matrices\n\n</a><br>
 <a href="ex91.c.html">ex91.c: Tests MatIncreaseOverlap(), MatGetSubMatrices() for sequential MatSBAIJ format</a><br>
 <a href="ex92.c.html">ex92.c: Tests MatIncreaseOverlap(), MatGetSubMatrices() for parallel MatSBAIJ format</a><br>
 <a href="ex93.c.html">ex93.c: Test sequential MatMatMult() and MatPtAP() for AIJ matrices</a><br>
-<a href="ex94.c.html">ex94.c: Tests sequential and parallel MatMatMult() and MatPtAP(), sequential MatMatMultTranspose()\n\</a><br>
-<a href="ex95.c.html">ex95.c: Testing MatMerge_SeqsToMPI()</a><br>
-<a href="ex96.c.html">ex96.c: Tests sequential and parallel DMGetMatrix(), MatMatMult() and MatPtAP()\n\</a><br>
-<a href="ex97.c.html">ex97.c: </a><br>
+<a href="ex94.c.html">ex94.c: Tests sequential and parallel MatMatMult() and MatPtAP(), MatTransposeMatMult(), sequential MatMatTransposeMult(), MatRARt()\n\</a><br>
+<a href="ex95.c.html">ex95.c: Testing MatCreateMPIAIJSumSeqAIJ()</a><br>
+<a href="ex96.c.html">ex96.c: Tests sequential and parallel DMCreateMatrix(), MatMatMult() and MatPtAP()\n\</a><br>
+<a href="ex97.c.html">ex97.c: Tests MatGetSubMatrix with MatSubMatrix versus MatAIJ, non-square\n</a><br>
 <a href="ex98.c.html">ex98.c: Tests MatMPIAIJSetPreallocationCSR()\n\n</a><br>
 <a href="ex99.c.html">ex99.c: Test LAPACK routine DSYGV() or DSYGVX()</a><br>
 <a href="ex100.c.html">ex100.c: Tests vatious routines in MatMAIJ format</a><br>
 <a href="ex101.c.html">ex101.c: Testing PtAP for SeqMAIJ matrix, P, with SeqAIJ matrix, A</a><br>
 <a href="ex102.c.html">ex102.c: Tests MatCreateLRC()\n\n</a><br>
 <a href="ex103.c.html">ex103.c: Tests PLAPACK interface</a><br>
-<a href="ex104.c.html">ex104.c: Test MatMatMult(), MatMatMultTranspose() for SeqDense matrices</a><br>
+<a href="ex104.c.html">ex104.c: Test MatMatMult(), MatTransposeMatMult() for SeqDense matrices</a><br>
 <a href="ex106.c.html">ex106.c: Test repeated LU factorizations</a><br>
 <a href="ex107.c.html">ex107.c: Tests PLAPACK interface</a><br>
 <a href="ex108.c.html">ex108.c: Testing MatCreateSeqBAIJWithArrays() and MatCreateSeqSBAIJWithArrays()</a><br>
@@ -121,8 +122,8 @@ don't have code in them).
 <a href="ex131.c.html">ex131.c: Tests MatMult() on MatLoad() matrix \n\n</a><br>
 <a href="ex132.c.html">ex132.c: Test MatAXPY(), and illustrate how to reduce number of mallocs used during MatSetValues() calls \n\</a><br>
 <a href="ex133.c.html">ex133.c: Test saving SeqSBAIJ matrix that is missing diagonal entries</a><br>
-<a href="ex134.c.html">ex134.c: </a><br>
-<a href="ex135.c.html">ex135.c: </a><br>
+<a href="ex134.c.html">ex134.c: Test parallel assembly of SBAIJ matrices\n\n</a><br>
+<a href="ex135.c.html">ex135.c: Test parallel assembly of SBAIJ matrices\n\n</a><br>
 <a href="ex136.c.html">ex136.c: Tests MatLoad() MatView() for MPIBAIJ</a><br>
 <a href="ex137.c.html">ex137.c: Tests MatCreateMPISBAIJWithArrays()</a><br>
 <a href="ex138.c.html">ex138.c: Tests MatGetColumnNorms() for matrix read from file</a><br>
@@ -132,17 +133,17 @@ don't have code in them).
 <a href="ex142.c.html">ex142.c: Test sequential r2c/c2r FFTW interface \n\n</a><br>
 <a href="ex143.c.html">ex143.c: Illustrate how to use mpi FFTW and PETSc-FFTW interface \n\n</a><br>
 <a href="ex144.c.html">ex144.c: This program illustrates the use of parallel real 2D fft using fftw (without PETSc interface)</a><br>
-<a href="ex145.c.html">ex145.c: This program illustrates the use of parallel 1D FFTW for both real and complex precision</a><br>
 <a href="ex146.c.html">ex146.c: This program illustrates the use of parallel real 3D fftw (without PETSc interface)</a><br>
 <a href="ex147.c.html">ex147.c: This program illustrates the use of parallel real fftw (without PETSc interface)</a><br>
-<a href="ex148.c.html">ex148.c: This program illustrates the use of PETSc-fftw interface for real 2D DFT\n</a><br>
+<a href="ex148.c.html">ex148.c: This program illustrates the use of PETSc-fftw interface for real 2D DFT</a><br>
 <a href="ex149.c.html">ex149.c: This program illustrates the use of PETSc-fftw interface for real DFT\n</a><br>
 <a href="ex150.c.html">ex150.c: This program illustrates the use of PETSc-fftw interface for real DFT\n</a><br>
+<a href="ex151.c.html">ex151.c: Tests MatPermute() in parallel</a><br>
 <a href="ex153.c.html">ex153.c: This program illustrates the use of PETSc-fftw interface for sequential real DFT\n</a><br>
-<a href="ex154.c.html">ex154.c: This program illustrates the use of PETSc-fftw interface for Complex parallel DFT\n</a><br>
 <a href="ex155.c.html">ex155.c: This program illustrates the use of PETSc-fftw interface for parallel real DFT\n</a><br>
 <a href="ex157.c.html">ex157.c: This program illustrates the use of PETSc-fftw interface for parallel real DFT\n</a><br>
 <a href="ex158.c.html">ex158.c: Illustrate how to use mpi FFTW and PETSc-FFTW interface \n\n</a><br>
-<a href="ex159.c.html">ex159.c: </a><br>
+<a href="ex159.c.html">ex159.c: Test MatGetLocalSubMatrix() with multiple levels of nesting</a><br>
+<a href="ex164.c.html">ex164.c: Tests MatConvert() from SeqDense to SeqAIJ \n\n</a><br>
  
 <a href="makefile.html">makefile</a><br>

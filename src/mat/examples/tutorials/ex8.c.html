@@ -1,13 +1,14 @@
 <center><a href="ex8.c">Actual source code: ex8.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tutorials/ex8.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:05+00:00">
+<meta name="date" content="2012-08-29T16:52:35+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Shows how to add a new MatOperation to AIJ <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>\n\n"</font>;
 
@@ -29,6 +30,7 @@
 
 <a name="line21"> 21: </a><font color="#B22222">/* This routine implments MatScaleUserImpl() functionality for <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A></font>
 <a name="line22"> 22: </a><font color="#B22222">   SeqAIJ. MatScale_MPIAIJ() code duplicated here */</font>
+<a name="line23"> 23: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatScaleUserImpl(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)</font></strong>;
 <a name="line24"> 24: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/mpi/mpiaij.h&gt;</font>
 <a name="line25"> 25: </a><strong><font color="#4169E1"><a name="MatScaleUserImpl_MPIAIJ"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatScaleUserImpl_MPIAIJ(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> aa)</font></strong>
 <a name="line26"> 26: </a>{

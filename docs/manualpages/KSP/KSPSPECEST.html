@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/KSPSPECEST.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>KSPSPECEST</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="KSPSPECEST"><H1>KSPSPECEST</H1></A>
 Estimate the spectrum on the first <A HREF="../KSP/KSPSolve.html#KSPSolve">KSPSolve</A>, then use cheaper smoother for subsequent solves. 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
@@ -17,7 +18,7 @@ Estimate the spectrum on the first <A HREF="../KSP/KSPSolve.html#KSPSolve">KSPSo
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-specest_ksp_type &lt;type&gt;     </B></TD><TD>- <A HREF="../KSP/KSP.html#KSP">KSP</A> used to estimate the spectrum (usually CG or GMRES)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-speccheap_ksp_type &lt;type&gt;   </B></TD><TD>- <A HREF="../KSP/KSP.html#KSP">KSP</A> used as a cheap smoother once the spectrum has been estimated (usually Chebychev or Richardson)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-speccheap_ksp_type &lt;type&gt;   </B></TD><TD>- <A HREF="../KSP/KSP.html#KSP">KSP</A> used as a cheap smoother once the spectrum has been estimated (usually Chebyshev or Richardson)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>see <A HREF="../KSP/KSPSolve.html#KSPSolve">KSPSolve</A>() for more</B></TD><TD>- 
 Notes:
@@ -32,7 +33,7 @@ keys for -specest_pc_ or speccheap_pc_ since it is the same object as -pc_.
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A HREF="../KSP/KSP.html#KSP">KSP</A>, <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, <A HREF="../KSP/KSPCG.html#KSPCG">KSPCG</A>, <A HREF="../KSP/KSPCHEBYCHEV.html#KSPCHEBYCHEV">KSPCHEBYCHEV</A>, <A HREF="../KSP/KSPRICHARDSON.html#KSPRICHARDSON">KSPRICHARDSON</A>
+ <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A HREF="../KSP/KSP.html#KSP">KSP</A>, <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, <A HREF="../KSP/KSPCG.html#KSPCG">KSPCG</A>, <A HREF="../KSP/KSPCHEBYSHEV.html#KSPCHEBYSHEV">KSPCHEBYSHEV</A>, <A HREF="../KSP/KSPRICHARDSON.html#KSPRICHARDSON">KSPRICHARDSON</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/impls/specest/specest.c.html#KSPSPECEST">src/ksp/ksp/impls/specest/specest.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

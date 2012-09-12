@@ -1,13 +1,14 @@
 <center><a href="adintrinsics.h">Actual source code: adintrinsics.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/adic/adintrinsics.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:53:47+00:00">
+<meta name="date" content="2012-08-29T16:36:58+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef ADINTRINSICS_H</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define ADINTRINSICS_H 1</font></strong>
 
@@ -23,6 +24,7 @@
 
 <a name="line14"> 14: </a><font color="#A020F0">#if defined(__cplusplus)</font>
 <a name="line15"> 15: </a><strong><font color="#228B22">#undef ADINTR_EXTERN</font></strong>
+<a name="line16"> 16: </a><strong><font color="#228B22">#define ADINTR_EXTERN extern </font><font color="#666666">"C"</font><font color="#228B22"></font></strong>
 <a name="line17"> 17: </a><font color="#A020F0">#endif </font>
 
 <a name="line19"> 19: </a><font color="#4169E1">enum</font> ADIntr_Modes
@@ -101,6 +103,8 @@
 <a name="line92"> 92: </a><font color="#A020F0">#endif </font><font color="#B22222">/* ndef ADINTRINSICS_H */</font><font color="#A020F0"></font>
 
 <a name="line94"> 94: </a><font color="#A020F0">#if ad_GRAD_MAX == 1</font>
+<a name="line95"> 95: </a>PETSC_EXTERN MPI_Op PetscADMax_Op;
+<a name="line96"> 96: </a>PETSC_EXTERN MPI_Op PetscADMin_Op;
 <a name="line97"> 97: </a><font color="#A020F0">#  define admf_PetscGlobalMax(c,a,b) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>((void*)a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,PetscADMax_Op,c)</font>
 <a name="line98"> 98: </a><font color="#A020F0">#  define admf_PetscGlobalMin(c,a,b) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>((void*)a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,PetscADMin_Op,c)</font>
 <a name="line99"> 99: </a><font color="#A020F0">#  define admf_PetscGlobalSum(c,a,b) <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>((void*)a,b,2,<A href="../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPIU_SUM,c)</font>

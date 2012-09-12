@@ -1,7 +1,7 @@
 /*
        Code for Timestepping with explicit SSP.
 */
-#include <private/tsimpl.h>                /*I   "petscts.h"   I*/
+#include <petsc-private/tsimpl.h>                /*I   "petscts.h"   I*/
 
 PetscFList TSSSPList = 0;
 
@@ -16,8 +16,8 @@ typedef struct {
 
 
 #undef __FUNCT__
-#define __FUNCT__ "SSPGetWorkVectors"
-static PetscErrorCode SSPGetWorkVectors(TS ts,PetscInt n,Vec **work)
+#define __FUNCT__ "TSSSPGetWorkVectors"
+static PetscErrorCode TSSSPGetWorkVectors(TS ts,PetscInt n,Vec **work)
 {
   TS_SSP *ssp = (TS_SSP*)ts->data;
   PetscErrorCode ierr;
@@ -37,8 +37,8 @@ static PetscErrorCode SSPGetWorkVectors(TS ts,PetscInt n,Vec **work)
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "SSPRestoreWorkVectors"
-static PetscErrorCode SSPRestoreWorkVectors(TS ts,PetscInt n,Vec **work)
+#define __FUNCT__ "TSSSPRestoreWorkVectors"
+static PetscErrorCode TSSSPRestoreWorkVectors(TS ts,PetscInt n,Vec **work)
 {
   TS_SSP *ssp = (TS_SSP*)ts->data;
 
@@ -52,7 +52,7 @@ static PetscErrorCode SSPRestoreWorkVectors(TS ts,PetscInt n,Vec **work)
 
 
 #undef __FUNCT__
-#define __FUNCT__ "SSPStep_RK_2"
+#define __FUNCT__ "TSSSPStep_RK_2"
 /*MC
    TSSSPRKS2 - Optimal second order SSP Runge-Kutta method, low-storage, c_eff=(s-1)/s
 
@@ -62,7 +62,7 @@ static PetscErrorCode SSPRestoreWorkVectors(TS ts,PetscInt n,Vec **work)
 
 .seealso: TSSSP, TSSSPSetType(), TSSSPSetNumStages()
 M*/
-static PetscErrorCode SSPStep_RK_2(TS ts,PetscReal t0,PetscReal dt,Vec sol)
+static PetscErrorCode TSSSPStep_RK_2(TS ts,PetscReal t0,PetscReal dt,Vec sol)
 {
   TS_SSP *ssp = (TS_SSP*)ts->data;
   Vec *work,F;
@@ -71,23 +71,25 @@ static PetscErrorCode SSPStep_RK_2(TS ts,PetscReal t0,PetscReal dt,Vec sol)
 
   PetscFunctionBegin;
   s = ssp->nstages;
-  ierr = SSPGetWorkVectors(ts,2,&work);CHKERRQ(ierr);
+  ierr = TSSSPGetWorkVectors(ts,2,&work);CHKERRQ(ierr);
   F = work[1];
   ierr = VecCopy(sol,work[0]);CHKERRQ(ierr);
   for (i=0; i<s-1; i++) {
-    ierr = TSComputeRHSFunction(ts,t0+dt*(i/(s-1.)),work[0],F);CHKERRQ(ierr);
+    PetscReal stage_time = t0+dt*(i/(s-1.));
+    ierr = TSPreStage(ts,stage_time);CHKERRQ(ierr);
+    ierr = TSComputeRHSFunction(ts,stage_time,work[0],F);CHKERRQ(ierr);
     ierr = VecAXPY(work[0],dt/(s-1.),F);CHKERRQ(ierr);
   }
   ierr = TSComputeRHSFunction(ts,t0+dt,work[0],F);CHKERRQ(ierr);
   ierr = VecAXPBYPCZ(sol,(s-1.)/s,dt/s,1./s,work[0],F);CHKERRQ(ierr);
-  ierr = SSPRestoreWorkVectors(ts,2,&work);CHKERRQ(ierr);
+  ierr = TSSSPRestoreWorkVectors(ts,2,&work);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "SSPStep_RK_3"
+#define __FUNCT__ "TSSSPStep_RK_3"
 /*MC
-   TSSSPRKS3 - Optimal third order SSP Runge-Kutta, low-storage, c_eff=(sqrt(s)-1)/sqrt(s), where sqrt(s) is an integer
+   TSSSPRKS3 - Optimal third order SSP Runge-Kutta, low-storage, c_eff=(PetscSqrtReal(s)-1)/PetscSqrtReal(s), where PetscSqrtReal(s) is an integer
 
    Pseudocode 2 of Ketcheson 2008
 
@@ -95,51 +97,59 @@ static PetscErrorCode SSPStep_RK_2(TS ts,PetscReal t0,PetscReal dt,Vec sol)
 
 .seealso: TSSSP, TSSSPSetType(), TSSSPSetNumStages()
 M*/
-static PetscErrorCode SSPStep_RK_3(TS ts,PetscReal t0,PetscReal dt,Vec sol)
+static PetscErrorCode TSSSPStep_RK_3(TS ts,PetscReal t0,PetscReal dt,Vec sol)
 {
   TS_SSP *ssp = (TS_SSP*)ts->data;
   Vec *work,F;
   PetscInt i,s,n,r;
-  PetscReal c;
+  PetscReal c,stage_time;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   s = ssp->nstages;
-  n = (PetscInt)(sqrt((PetscReal)s)+0.001);
+  n = (PetscInt)(PetscSqrtReal((PetscReal)s)+0.001);
   r = s-n;
   if (n*n != s) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"No support for optimal third order schemes with %d stages, must be a square number at least 4",s);
-  ierr = SSPGetWorkVectors(ts,3,&work);CHKERRQ(ierr);
+  ierr = TSSSPGetWorkVectors(ts,3,&work);CHKERRQ(ierr);
   F = work[2];
   ierr = VecCopy(sol,work[0]);CHKERRQ(ierr);
   for (i=0; i<(n-1)*(n-2)/2; i++) {
     c = (i<n*(n+1)/2) ? 1.*i/(s-n) : (1.*i-n)/(s-n);
-    ierr = TSComputeRHSFunction(ts,t0+c*dt,work[0],F);CHKERRQ(ierr);
+    stage_time = t0+c*dt;
+    ierr = TSPreStage(ts,stage_time);CHKERRQ(ierr);
+    ierr = TSComputeRHSFunction(ts,stage_time,work[0],F);CHKERRQ(ierr);
     ierr = VecAXPY(work[0],dt/r,F);CHKERRQ(ierr);
   }
   ierr = VecCopy(work[0],work[1]);CHKERRQ(ierr);
   for ( ; i<n*(n+1)/2-1; i++) {
     c = (i<n*(n+1)/2) ? 1.*i/(s-n) : (1.*i-n)/(s-n);
-    ierr = TSComputeRHSFunction(ts,t0+c*dt,work[0],F);CHKERRQ(ierr);
+    stage_time = t0+c*dt;
+    ierr = TSPreStage(ts,stage_time);CHKERRQ(ierr);
+    ierr = TSComputeRHSFunction(ts,stage_time,work[0],F);CHKERRQ(ierr);
     ierr = VecAXPY(work[0],dt/r,F);CHKERRQ(ierr);
   }
   {
     c = (i<n*(n+1)/2) ? 1.*i/(s-n) : (1.*i-n)/(s-n);
-    ierr = TSComputeRHSFunction(ts,t0+c*dt,work[0],F);CHKERRQ(ierr);
+    stage_time = t0+c*dt;
+    ierr = TSPreStage(ts,stage_time);CHKERRQ(ierr);
+    ierr = TSComputeRHSFunction(ts,stage_time,work[0],F);CHKERRQ(ierr);
     ierr = VecAXPBYPCZ(work[0],1.*n/(2*n-1.),(n-1.)*dt/(r*(2*n-1)),(n-1.)/(2*n-1.),work[1],F);CHKERRQ(ierr);
     i++;
   }
   for ( ; i<s; i++) {
     c = (i<n*(n+1)/2) ? 1.*i/(s-n) : (1.*i-n)/(s-n);
-    ierr = TSComputeRHSFunction(ts,t0+c*dt,work[0],F);CHKERRQ(ierr);
+    stage_time = t0+c*dt;
+    ierr = TSPreStage(ts,stage_time);CHKERRQ(ierr);
+    ierr = TSComputeRHSFunction(ts,stage_time,work[0],F);CHKERRQ(ierr);
     ierr = VecAXPY(work[0],dt/r,F);CHKERRQ(ierr);
   }
   ierr = VecCopy(work[0],sol);CHKERRQ(ierr);
-  ierr = SSPRestoreWorkVectors(ts,3,&work);CHKERRQ(ierr);
+  ierr = TSSSPRestoreWorkVectors(ts,3,&work);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "SSPStep_RK_10_4"
+#define __FUNCT__ "TSSSPStep_RK_10_4"
 /*MC
    TSSSPRKS104 - Optimal fourth order SSP Runge-Kutta, low-storage (2N), c_eff=0.6
 
@@ -149,31 +159,38 @@ static PetscErrorCode SSPStep_RK_3(TS ts,PetscReal t0,PetscReal dt,Vec sol)
 
 .seealso: TSSSP, TSSSPSetType()
 M*/
-static PetscErrorCode SSPStep_RK_10_4(TS ts,PetscReal t0,PetscReal dt,Vec sol)
+static PetscErrorCode TSSSPStep_RK_10_4(TS ts,PetscReal t0,PetscReal dt,Vec sol)
 {
   const PetscReal c[10] = {0, 1./6, 2./6, 3./6, 4./6, 2./6, 3./6, 4./6, 5./6, 1};
   Vec *work,F;
   PetscInt i;
+  PetscReal stage_time;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = SSPGetWorkVectors(ts,3,&work);CHKERRQ(ierr);
+  ierr = TSSSPGetWorkVectors(ts,3,&work);CHKERRQ(ierr);
   F = work[2];
   ierr = VecCopy(sol,work[0]);CHKERRQ(ierr);
   for (i=0; i<5; i++) {
-    ierr = TSComputeRHSFunction(ts,t0+c[i],work[0],F);CHKERRQ(ierr);
+    stage_time = t0+c[i]*dt;
+    ierr = TSPreStage(ts,stage_time);CHKERRQ(ierr);
+    ierr = TSComputeRHSFunction(ts,stage_time,work[0],F);CHKERRQ(ierr);
     ierr = VecAXPY(work[0],dt/6,F);CHKERRQ(ierr);
   }
   ierr = VecAXPBYPCZ(work[1],1./25,9./25,0,sol,work[0]);CHKERRQ(ierr);
   ierr = VecAXPBY(work[0],15,-5,work[1]);CHKERRQ(ierr);
   for ( ; i<9; i++) {
-    ierr = TSComputeRHSFunction(ts,t0+c[i],work[0],F);CHKERRQ(ierr);
+    stage_time = t0+c[i]*dt;
+    ierr = TSPreStage(ts,stage_time);CHKERRQ(ierr);
+    ierr = TSComputeRHSFunction(ts,stage_time,work[0],F);CHKERRQ(ierr);
     ierr = VecAXPY(work[0],dt/6,F);CHKERRQ(ierr);
   }
-  ierr = TSComputeRHSFunction(ts,t0+dt,work[0],F);CHKERRQ(ierr);
+  stage_time = t0+dt;
+  ierr = TSPreStage(ts,stage_time);CHKERRQ(ierr);
+  ierr = TSComputeRHSFunction(ts,stage_time,work[0],F);CHKERRQ(ierr);
   ierr = VecAXPBYPCZ(work[1],3./5,dt/10,1,work[0],F);CHKERRQ(ierr);
   ierr = VecCopy(work[1],sol);CHKERRQ(ierr);
-  ierr = SSPRestoreWorkVectors(ts,3,&work);CHKERRQ(ierr);
+  ierr = TSSSPRestoreWorkVectors(ts,3,&work);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -196,6 +213,7 @@ static PetscErrorCode TSStep_SSP(TS ts)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
+  ierr = TSPreStep(ts);CHKERRQ(ierr);
   ierr = (*ssp->onestep)(ts,ts->ptime,ts->time_step,sol);CHKERRQ(ierr);
   ts->ptime += ts->time_step;
   ts->steps++;
@@ -480,9 +498,9 @@ PetscErrorCode  TSCreate_SSP(TS ts)
 
   PetscFunctionBegin;
   if (!TSSSPList) {
-    ierr = PetscFListAdd(&TSSSPList,TSSSPRKS2,  "SSPStep_RK_2",   (void(*)(void))SSPStep_RK_2);CHKERRQ(ierr);
-    ierr = PetscFListAdd(&TSSSPList,TSSSPRKS3,  "SSPStep_RK_3",   (void(*)(void))SSPStep_RK_3);CHKERRQ(ierr);
-    ierr = PetscFListAdd(&TSSSPList,TSSSPRK104, "SSPStep_RK_10_4",(void(*)(void))SSPStep_RK_10_4);CHKERRQ(ierr);
+    ierr = PetscFListAdd(&TSSSPList,TSSSPRKS2,  "TSSSPStep_RK_2",   (void(*)(void))TSSSPStep_RK_2);CHKERRQ(ierr);
+    ierr = PetscFListAdd(&TSSSPList,TSSSPRKS3,  "TSSSPStep_RK_3",   (void(*)(void))TSSSPStep_RK_3);CHKERRQ(ierr);
+    ierr = PetscFListAdd(&TSSSPList,TSSSPRK104, "TSSSPStep_RK_10_4",(void(*)(void))TSSSPStep_RK_10_4);CHKERRQ(ierr);
   }
 
   ts->ops->setup           = TSSetUp_SSP;

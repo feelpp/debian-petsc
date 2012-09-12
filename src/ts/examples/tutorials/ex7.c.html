@@ -1,13 +1,14 @@
 <center><a href="ex7.c">Actual source code: ex7.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/examples/tutorials/ex7.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:20:37+00:00">
+<meta name="date" content="2012-08-29T17:14:46+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* Program usage:  mpiexec -n &lt;procs&gt; ex5 [-help] [all PETSc options] */</font>
 
@@ -31,6 +32,9 @@
 <a name="line21"> 21: </a><font color="#B22222">/* </font>
 <a name="line22"> 22: </a><font color="#B22222">   User-defined routines</font>
 <a name="line23"> 23: </a><font color="#B22222">*/</font>
+<a name="line24"> 24: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),FormInitialSolution(DM,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line25"> 25: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MyTSMonitor(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
+<a name="line26"> 26: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MySNESMonitor(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,void *)</font></strong>;
 
 <a name="line30"> 30: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line31"> 31: </a>{
@@ -83,8 +87,8 @@
 <a name="line78"> 78: </a><font color="#B22222">                         products within Newton-Krylov method</font>
 
 <a name="line80"> 80: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
-<a name="line81"> 81: </a>  <A href="../../../../docs/manualpages/DM/DMGetColoring.html#DMGetColoring">DMGetColoring</A>(da,IS_COLORING_GLOBAL,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;iscoloring);
-<a name="line82"> 82: </a>  <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
+<a name="line81"> 81: </a>  <A href="../../../../docs/manualpages/DM/DMCreateColoring.html#DMCreateColoring">DMCreateColoring</A>(da,IS_COLORING_GLOBAL,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;iscoloring);
+<a name="line82"> 82: </a>  <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
 <a name="line83"> 83: </a>  <A href="../../../../docs/manualpages/MatFD/MatFDColoringCreate.html#MatFDColoringCreate">MatFDColoringCreate</A>(J,iscoloring,&amp;matfdcoloring);
 <a name="line84"> 84: </a>  <A href="../../../../docs/manualpages/IS/ISColoringDestroy.html#ISColoringDestroy">ISColoringDestroy</A>(&amp;iscoloring);
 <a name="line85"> 85: </a>  <A href="../../../../docs/manualpages/MatFD/MatFDColoringSetFunction.html#MatFDColoringSetFunction">MatFDColoringSetFunction</A>(matfdcoloring,(<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>(*)(void))<A href="../../../../docs/manualpages/TS/SNESTSFormFunction.html#SNESTSFormFunction">SNESTSFormFunction</A>,ts);

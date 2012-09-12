@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSSetRHSJacobian.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSSetRHSJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSSetRHSJacobian"><H1>TSSetRHSJacobian</H1></A>
-Sets the function to compute the Jacobian of F, where U_t = F(U,t), as well as the location to store the matrix. Use TSSetMatrices() for linear problems. 
+Sets the function to compute the Jacobian of F, where U_t = F(U,t), as well as the location to store the matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
@@ -65,8 +66,8 @@ throughout the global iterations.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../TS/TSDefaultComputeJacobianColor.html#TSDefaultComputeJacobianColor">TSDefaultComputeJacobianColor</A>(),
-<BR><A HREF="../SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>(), <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>(), TSSetMatrices()
+ <A HREF="../SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>(), <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>()
+<BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/interface/ts.c.html#TSSetRHSJacobian">src/ts/interface/ts.c</A>
@@ -81,8 +82,8 @@ throughout the global iterations.
 <A HREF="../../../src/ts/examples/tutorials/ex4.c.html">src/ts/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex5.c.html">src/ts/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex6.c.html">src/ts/examples/tutorials/ex6.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex13.c.html">src/ts/examples/tutorials/ex13.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex21.c.html">src/ts/examples/tutorials/ex21.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex1f.F.html">src/ts/examples/tutorials/ex1f.F.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex2f.F.html">src/ts/examples/tutorials/ex2f.F.html</A><BR>
 </BODY></HTML>

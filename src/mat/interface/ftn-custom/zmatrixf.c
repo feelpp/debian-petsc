@@ -1,4 +1,4 @@
-#include <private/fortranimpl.h>
+#include <petsc-private/fortranimpl.h>
 #include <petscmat.h>
 
 #if defined(PETSC_HAVE_FORTRAN_CAPS)
@@ -26,7 +26,7 @@
 #define matzerorowscolumnslocalis_       MATZEROROWSCOLUMNSLOCALIS
 #define matsetoptionsprefix_             MATSETOPTIONSPREFIX
 #define matgetvecs_                      MATGETVECS
-#define matnullspaceremove_              MATNULLSPACEREMOV
+#define matnullspaceremove_              MATNULLSPACEREMOVE
 #define matgetinfo_                      MATGETINFO
 #define matlufactor_                     MATLUFACTOR
 #define matilufactor_                    MATILUFACTOR
@@ -40,6 +40,7 @@
 #define maticcfactor_                    MATICCFACTOR
 #define matfactorinfoinitialize_         MATFACTORINFOINITIALIZE
 #define matnullspacesetfunction_         MATNULLSPACESETFUNCTION
+#define matfindnonzerorows_              MATFINDNONZEROROWS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE)
 #define matdestroymatrices_              matdestroymatrices_
 #define matgetfactor_                    matgetfactor
@@ -79,6 +80,7 @@
 #define maticcfactor_                    maticcfactor
 #define matfactorinfoinitialize_         matfactorinfoinitialize
 #define matnullspacesetfunction_         matnullspacesetfunction
+#define matfindnonzerorows_              matfindnonzerorows
 #endif
 
 EXTERN_C_BEGIN

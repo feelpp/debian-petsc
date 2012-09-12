@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/IS/ISGlobalToLocalMappingApply.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>ISGlobalToLocalMappingApply</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="ISGlobalToLocalMappingApply"><H1>ISGlobalToLocalMappingApply</H1></A>
 Provides the local numbering for a list of integers specified with a global numbering. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -46,6 +47,9 @@ This is not scalable in memory usage. Each processor requires O(Nglobal) size
 array to compute these.
 <P>
 
+<P>
+Developer Note: The manual page states that idx and idxout may be identical but the calling
+sequence declares idx as const so it cannot be the same as idxout.
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

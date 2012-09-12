@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSGetTimeStepNumber.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSGetTimeStepNumber</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSGetTimeStepNumber"><H1>TSGetTimeStepNumber</H1></A>
-Gets the current number of timesteps. 
+Gets the number of time steps completed. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
@@ -19,13 +20,16 @@ Not Collective
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>iter </B> -number steps so far
+<DT><B>iter </B> -number of steps completed so far
 <br>
 <P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../TS/TS.html#TS">TS</A>, timestep, get, iteration, number
+<BR>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../TS/TSGetTime.html#TSGetTime">TSGetTime</A>(), <A HREF="../TS/TSGetTimeStep.html#TSGetTimeStep">TSGetTimeStep</A>(), <A HREF="../TS/TSSetPreStep.html#TSSetPreStep">TSSetPreStep</A>(), <A HREF="../TS/TSSetPreStage.html#TSSetPreStage">TSSetPreStage</A>(), <A HREF="../TS/TSSetPostStep.html#TSSetPostStep">TSSetPostStep</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/interface/ts.c.html#TSGetTimeStepNumber">src/ts/interface/ts.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

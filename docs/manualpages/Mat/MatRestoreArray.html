@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatRestoreArray.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatRestoreArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatRestoreArray"><H1>MatRestoreArray</H1></A>
 Restores the matrix after <A HREF="../Mat/MatGetArray.html#MatGetArray">MatGetArray</A>() has been called. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -26,7 +27,7 @@ This routine is used differently from Fortran, e.g.,
 <PRE>
         <A HREF="../Mat/Mat.html#Mat">Mat</A>         mat
         <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A> mat_array(1)
-        PetscOffset i_mat
+        <A HREF="../Sys/PetscOffset.html#PetscOffset">PetscOffset</A> i_mat
         <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
         call <A HREF="../Mat/MatGetArray.html#MatGetArray">MatGetArray</A>(mat,mat_array,i_mat,ierr)
 
@@ -39,7 +40,7 @@ This routine is used differently from Fortran, e.g.,
 </PRE>
 
 <P>
-See the &lt;a href="../../docs/manual.pdf#<A HREF="../../manual.pdf#chapter.10">Chapter 10 PETSc for Fortran Users</A>"&gt;Fortran chapter of the users manual&lt;/a&gt;
+See the &lt;a href="../../docs/manual.pdf#<A HREF="../../manual.pdf#chapter.9">Chapter 9 PETSc for Fortran Users</A>"&gt;Fortran chapter of the users manual&lt;/a&gt;
 src/mat/examples/tests for details
 <P>
 

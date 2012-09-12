@@ -1,12 +1,13 @@
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tests/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:57+00:00">
+<meta name="date" content="2012-08-29T16:58:20+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 CFLAGS                = 
 FFLAGS                = 
@@ -173,29 +174,29 @@ include ${PETSC_DIR}/conf/rules
 <strong><font color="#FF0000">runex1:</font></strong>
         -@${MPIEXEC} -n 2 ./ex1 -nox | grep -v -i Object &gt; ex1_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex1_1.out ex1_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex1_1, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex1_1, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex1_1.tmp
 <strong><font color="#FF0000">runex2:</font></strong>
-        -@${MPIEXEC} -n 2 ./ex2 -nox &gt; ex2_1.tmp 2&gt;&amp;1;          \
+        -@${MPIEXEC} -n 2 ./ex2 -nox | grep -v <font color="#666666">"MPI processes"</font> &gt; ex2_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex2_1.out ex2_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex2_1, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex2_1, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex2_1.tmp
 <strong><font color="#FF0000">runex2_2:</font></strong>
         -@${MPIEXEC} -n 3 ./ex2 -wrap nonperiodic -local_print -nox &gt; ex2_2.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex2_2.out ex2_2.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex2_2, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex2_2, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex2_2.tmp
 <strong><font color="#FF0000">runex2_3:</font></strong>
         -@${MPIEXEC} -n 3 ./ex2 -wrap xyzghosted -local_print -nox &gt; ex2_3.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex2_3.out ex2_3.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex2_3, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex2_3, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex2_3.tmp
 <strong><font color="#FF0000">runex3:</font></strong>
         -@${MPIEXEC} -n 3 ./ex3 -time 50 -nox
 <strong><font color="#FF0000">runex4:</font></strong>
         -@${MPIEXEC} -n 4 ./ex4  -nox  | grep -v -i Object &gt; ex4_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex4_1.out ex4_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex4_1, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex4_1, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex4_1.tmp
 <strong><font color="#FF0000">runex5:</font></strong>
         -@${MPIEXEC} -n 3 ./ex5 -time 50 -nox
@@ -203,7 +204,7 @@ include ${PETSC_DIR}/conf/rules
         -@${MPIEXEC} -n 6 ./ex6 -testorder -nox
 <strong><font color="#FF0000">runex12:</font></strong>
         -@echo <font color="#666666">"path([getenv('PETSC_DIR') '/bin/matlab'],path); ex12(2) ; exit"</font> | ${MATLAB_COMMAND} -display ${DISPLAY} &gt; ex12_1.tmp 2&gt;&amp;1; grep -v flops ex12_1.tmp | grep -v Completed | grep -v About | grep -v Color | grep -v <font color="#666666">"at line 27"</font> &gt; ex12_1.tmp2 ; <font color="#4169E1">if</font> (${DIFF} output/ex12_1.out ex12_1.tmp2) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with PETSC SOCKET MATLAB INTERFACE ex12_1, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with PETSC SOCKET MATLAB INTERFACE ex12_1, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex12_1.tmp ex12_1.tmp2
 
 <font color="#A020F0"># ex13 uses the output of ex14</font>
@@ -215,11 +216,11 @@ include ${PETSC_DIR}/conf/rules
 
 <strong><font color="#FF0000">runex16:</font></strong>
         -@${MPIEXEC} -n 3 ./ex16 &gt; ex16_1.tmp 2&gt;&amp;1; \
-          ${DIFF} output/ex16_1.out ex16_1.tmp || echo <font color="#666666">"Possible problem with ex16, diffs above"</font>; \
+          ${DIFF} output/ex16_1.out ex16_1.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex16, diffs above \n========================================="</font>; \
           ${RM} -f ex16_1.tmp
 <strong><font color="#FF0000">runex16_2:</font></strong>
         -@${MPIEXEC} -n 3 ./ex16 -gather_add &gt; ex16_2.tmp 2&gt;&amp;1; \
-          ${DIFF} output/ex16_2.out ex16_2.tmp || echo <font color="#666666">"Possible problem with ex16_2, diffs above"</font>; \
+          ${DIFF} output/ex16_2.out ex16_2.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex16_2, diffs above \n========================================="</font>; \
           ${RM} -f ex16_2.tmp
 
 <strong><font color="#FF0000">runex21:</font></strong>
@@ -231,7 +232,7 @@ include ${PETSC_DIR}/conf/rules
           done;
 
 <strong><font color="#FF0000">runex23:</font></strong>
-        -@<font color="#4169E1">for</font> d in -1d -2d -3d; <font color="#4169E1">do</font> \
+        -@<font color="#4169E1">for</font> d in one two three; <font color="#4169E1">do</font> \
             <font color="#4169E1">for</font> np in 1 2 3 4; <font color="#4169E1">do</font> \
               <font color="#4169E1">for</font> dof in 1 2 3; <font color="#4169E1">do</font> \
                 <font color="#4169E1">for</font> stencil_type in 0 1; <font color="#4169E1">do</font> \
@@ -244,69 +245,69 @@ include ${PETSC_DIR}/conf/rules
 <strong><font color="#FF0000">runex24:</font></strong>
         -@${MPIEXEC} -n 1 ./ex24  | grep -v -i Process &gt; ex24_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex24_1.out ex24_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex24_1 1 process, diffs above"</font>; fi; ${RM} -f ex24_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex24_1 1 process, diffs above \n========================================="</font>; fi; ${RM} -f ex24_1.tmp
         -@${MPIEXEC} -n 2 ./ex24  | grep -v -i Process &gt; ex24_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex24_1.out ex24_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex24_1 2 processes, diffs above"</font>; fi; ${RM} -f ex24_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex24_1 2 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex24_1.tmp
         -@${MPIEXEC} -n 3 ./ex24  | grep -v -i Process &gt; ex24_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex24_1.out ex24_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex24_1 3 processes, diffs above"</font>; fi; ${RM} -f ex24_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex24_1 3 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex24_1.tmp
         -@${MPIEXEC} -n 4 ./ex24  | grep -v -i Process &gt; ex24_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex24_1.out ex24_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex24_1 4 processes, diffs above"</font>; fi; ${RM} -f ex24_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex24_1 4 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex24_1.tmp
         -@${MPIEXEC} -n 5 ./ex24  | grep -v -i Process &gt; ex24_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex24_1.out ex24_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex24_1 5 processes, diffs above"</font>; fi; ${RM} -f ex24_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex24_1 5 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex24_1.tmp
         -@${MPIEXEC} -n 6 ./ex24  | grep -v -i Process &gt; ex24_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex24_1.out ex24_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex24_1 6 processes, diffs above"</font>; fi; ${RM} -f ex24_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex24_1 6 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex24_1.tmp
 
 <strong><font color="#FF0000">runex25:</font></strong>
         -@${MPIEXEC} -n 1 ./ex25  | grep -v -i Process &gt; ex25_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex25_1.out ex25_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex25_1 1 process, diffs above"</font>; fi; ${RM} -f ex25_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex25_1 1 process, diffs above \n========================================="</font>; fi; ${RM} -f ex25_1.tmp
         -@${MPIEXEC} -n 2 ./ex25  | grep -v -i Process &gt; ex25_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex25_1.out ex25_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex25_1 2 processes, diffs above"</font>; fi; ${RM} -f ex25_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex25_1 2 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex25_1.tmp
         -@${MPIEXEC} -n 3 ./ex25  | grep -v -i Process &gt; ex25_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex25_1.out ex25_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex25_1 3 processes, diffs above"</font>; fi; ${RM} -f ex25_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex25_1 3 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex25_1.tmp
         -@${MPIEXEC} -n 4 ./ex25  | grep -v -i Process &gt; ex25_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex25_1.out ex25_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex25_1 4 processes, diffs above"</font>; fi; ${RM} -f ex25_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex25_1 4 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex25_1.tmp
         -@${MPIEXEC} -n 5 ./ex25  | grep -v -i Process &gt; ex25_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex25_1.out ex25_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex25_1 5 processes, diffs above"</font>; fi; ${RM} -f ex25_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex25_1 5 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex25_1.tmp
         -@${MPIEXEC} -n 6 ./ex25  | grep -v -i Process &gt; ex25_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex25_1.out ex25_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex25_1 6 processes, diffs above"</font>; fi; ${RM} -f ex25_1.tmp
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex25_1 6 processes, diffs above \n========================================="</font>; fi; ${RM} -f ex25_1.tmp
 
 <strong><font color="#FF0000">runex30:</font></strong>
         -@${MPIEXEC} -n 2 ./ex30 -bs 2 -block 0 -sliced_mat_type baij -alpha 10 -u0 0.1 &gt; ex30_1.tmp; \
-           ${DIFF} output/ex30_1.out ex30_1.tmp || echo <font color="#666666">"Possible problem with ex30_1, diffs above"</font>; \
+           ${DIFF} output/ex30_1.out ex30_1.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex30_1, diffs above \n========================================="</font>; \
            ${RM} -f ex30_1.tmp
 <strong><font color="#FF0000">runex30_2:</font></strong>
         -@${MPIEXEC} -n 2 ./ex30 -bs 2 -block 1 -sliced_mat_type aij -alpha 10 -u0 0.1 &gt; ex30_2.tmp; \
-           ${DIFF} output/ex30_2.out ex30_2.tmp || echo <font color="#666666">"Possible problem with ex30_2, diffs above"</font>; \
+           ${DIFF} output/ex30_2.out ex30_2.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex30_2, diffs above \n========================================="</font>; \
            ${RM} -f ex30_2.tmp
 <strong><font color="#FF0000">runex30_3:</font></strong>
         -@${MPIEXEC} -n 2 ./ex30 -bs 2 -block 0 -sliced_mat_type aij -alpha 10 -u0 0.1 &gt; ex30_3.tmp; \
-           ${DIFF} output/ex30_3.out ex30_3.tmp || echo <font color="#666666">"Possible problem with ex30_3, diffs above"</font>; \
+           ${DIFF} output/ex30_3.out ex30_3.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex30_3, diffs above \n========================================="</font>; \
            ${RM} -f ex30_3.tmp
 <strong><font color="#FF0000">runex31:</font></strong>
         -@${MPIEXEC} -n 2 ./ex31 
 <strong><font color="#FF0000">runex32:</font></strong>
         -@${MPIEXEC} -n 2 ./ex32 &gt; ex32_1.tmp; \
-          ${DIFF} output/ex32_1.out ex32_1.tmp || echo <font color="#666666">"Possible problem with ex32, diffs above"</font>; \
+          ${DIFF} output/ex32_1.out ex32_1.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex32, diffs above \n========================================="</font>; \
           ${RM} -f ex32_1.tmp
 <strong><font color="#FF0000">runex34:</font></strong>
         -@${MPIEXEC} -n 12 ./ex34 -da_view -dim 3 -da_grid_x 11 -da_grid_y 5 -da_grid_z 7 &gt; ex34_1.tmp; \
-          ${DIFF} output/ex34_1.out ex34_1.tmp || echo <font color="#666666">"Possible problem with ex34, diffs above"</font>; \
+          ${DIFF} output/ex34_1.out ex34_1.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex34, diffs above \n========================================="</font>; \
           ${RM} -f ex34_1.tmp
 
 <strong><font color="#FF0000">runex36_1d:</font></strong>
         -@${MPIEXEC} -n 1 ./ex36 -mx 10 -nl 6 -dim 1 &gt; ex36_1d.tmp; \
-          ${DIFF} output/ex36_1d.out ex36_1d.tmp || echo <font color="#666666">"Possible problem with ex36_1d, diffs above"</font>; \
+          ${DIFF} output/ex36_1d.out ex36_1d.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex36_1d, diffs above \n========================================="</font>; \
           ${RM} -f ex36_1d.tmp
 
 <strong><font color="#FF0000">runex36_2d:</font></strong>
@@ -314,25 +315,25 @@ include ${PETSC_DIR}/conf/rules
           ${MPIEXEC} -n 1 ./ex36 -mx 10 -my 10 -nl 6 -dim 2 -cmap 1 &gt;&gt; ex36_2d.tmp; \
           ${MPIEXEC} -n 1 ./ex36 -mx 10 -my 10 -nl 6 -dim 2 -cmap 2 &gt;&gt; ex36_2d.tmp; \
           ${MPIEXEC} -n 1 ./ex36 -mx 10 -my 10 -nl 6 -dim 2 -cmap 3 &gt;&gt; ex36_2d.tmp; \
-          ${DIFF} output/ex36_2d.out ex36_2d.tmp || echo <font color="#666666">"Possible problem with ex36_2d, diffs above"</font>; \
+          ${DIFF} output/ex36_2d.out ex36_2d.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex36_2d, diffs above \n========================================="</font>; \
           ${RM} -f ex36_2d.tmp
 <strong><font color="#FF0000">runex36_2dp1:</font></strong>
         -@${MPIEXEC} -n 32 ./ex36 -mx 10 -my 10 -nl 4 -dim 2 -cmap 3 -da_refine_x 3 -da_refine_y 4 &gt; ex36_2dp1.tmp; \
-          ${DIFF} output/ex36_2dp1.out ex36_2dp1.tmp || echo <font color="#666666">"Possible problem with ex36_2dp1, diffs above"</font>; \
+          ${DIFF} output/ex36_2dp1.out ex36_2dp1.tmp || echo ${PWD} <font color="#666666">"\n Possible problem with with ex36_2dp1, diffs above \n========================================="</font>; \
           ${RM} -f ex36_2dp1.tmp
 <strong><font color="#FF0000">runex36_2dp2:</font></strong>
         -@${MPIEXEC} -n 32 ./ex36 -mx 10 -my 10 -nl 4 -dim 2 -cmap 3 -da_refine_x 3 -da_refine_y 1 &gt; ex36_2dp2.tmp; \
-          ${DIFF} output/ex36_2dp2.out ex36_2dp2.tmp || echo <font color="#666666">"Possible problem with ex36_2dp1, diffs above"</font>; \
+          ${DIFF} output/ex36_2dp2.out ex36_2dp2.tmp || echo ${PWD} <font color="#666666">"\nPossible problem with with ex36_2dp1, diffs above \n========================================="</font>; \
           ${RM} -f ex36_2dp2.tmp
 
 <strong><font color="#FF0000">runex36_3d:</font></strong>
         -@${MPIEXEC} -n 1 ./ex36 -mx 5 -my 5 -mz 5 -nl 4 -dim 3 -cmap 3 &gt; ex36_3d.tmp; \
-          ${DIFF} output/ex36_3d.out ex36_3d.tmp || echo <font color="#666666">"Possible problem with ex36_3d, diffs above"</font>; \
+          ${DIFF} output/ex36_3d.out ex36_3d.tmp || echo ${PWD} <font color="#666666">"\nPossible problem with with ex36_3d, diffs above \n========================================="</font>; \
           ${RM} -f ex36_3d.tmp
 
 <strong><font color="#FF0000">runex36_3dp1:</font></strong>
         -@${MPIEXEC} -n 32 ./ex36 -mx 5 -my 5 -mz 5 -nl 3 -dim 3 -cmap 1 -da_refine_x 1 -da_refine_y 3 -da_refine_z 4 &gt; ex36_3dp1.tmp; \
-          ${DIFF} output/ex36_3dp1.out ex36_3dp1.tmp || echo <font color="#666666">"Possible problem with ex36_3dp1, diffs above"</font>; \
+          ${DIFF} output/ex36_3dp1.out ex36_3dp1.tmp || echo ${PWD} <font color="#666666">"\nPossible problem with with ex36_3dp1, diffs above \n========================================="</font>; \
           ${RM} -f ex36_3dp1.tmp
 
 <strong><font color="#FF0000">runex37:</font></strong>
@@ -344,11 +345,11 @@ TESTEXAMPLES_C                  = ex1.PETSc runex1 ex1.rm ex4.PETSc runex4 ex4.r
                             ex21.PETSc runex21 ex21.rm ex24.PETSc runex24 ex24.rm ex25.PETSc \
                             runex25 ex25.rm ex30.PETSc runex30 runex30_2 runex30_3 ex30.rm ex31.PETSc runex31 ex31.rm ex32.PETSc runex32 ex32.rm \
                             ex34.PETSc runex34 ex34.rm ex36.PETSc runex36_1d runex36_2d runex36_2dp1 runex36_2dp2 runex36_3d runex36_3dp1 ex36.rm
-TESTEXAMPLES_C_X11          = ex2.PETSc runex2 ex2.rm ex3.PETSc runex3 ex3.rm ex5.PETSc runex5 ex5.rm ex6.PETSc runex6 \
+TESTEXAMPLES_C_X          = ex2.PETSc runex2 ex2.rm ex3.PETSc runex3 ex3.rm ex5.PETSc runex5 ex5.rm ex6.PETSc runex6 \
                             ex6.rm ex7.PETSc ex7.rm  ex14.PETSc runex14 ex14.rm \
                             ex13.PETSc runex13 ex13.rm ex23.PETSc runex23 ex23.rm ex37.PETSc runex37 ex37.rm
 TESTEXAMPLES_FORTRAN          = 
-TESTEXAMPLES_C_X11_MPIUNI = ex1.PETSc ex1.rm ex2.PETSc ex2.rm ex3.PETSc ex3.rm ex4.PETSc ex4.rm ex5.PETSc ex5.rm\
+TESTEXAMPLES_C_X_MPIUNI = ex1.PETSc ex1.rm ex2.PETSc ex2.rm ex3.PETSc ex3.rm ex4.PETSc ex4.rm ex5.PETSc ex5.rm\
                             ex6.PETSc ex6.rm ex12.PETSc ex12.rm
 TESTEXAMPLES_C_COMPLEX          = 
 TESTEXAMPLES_C_NOCOMPLEX  = ex16.PETSc runex16 runex16_2 ex16.rm 

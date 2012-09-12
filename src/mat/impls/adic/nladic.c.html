@@ -1,13 +1,14 @@
 <center><a href="nladic.c">Actual source code: nladic.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/adic/nladic.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:04+00:00">
+<meta name="date" content="2012-08-29T16:49:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    ADIC based nonlinear operator object that can be used with FAS</font>
@@ -19,9 +20,11 @@
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 <a name="line10"> 10: </a><font color="#A020F0">#include &lt;petscdm.h&gt;</font>
 
+<a name="line12"> 12: </a>EXTERN_C_BEGIN
 <a name="line13"> 13: </a><font color="#A020F0">#include &lt;adic/ad_utils.h&gt;</font>
+<a name="line14"> 14: </a>EXTERN_C_END
 
-<a name="line16"> 16: </a><font color="#A020F0">#include &lt;private/daimpl.h&gt;</font>
+<a name="line16"> 16: </a><font color="#A020F0">#include &lt;petsc-private/daimpl.h&gt;</font>
 <a name="line17"> 17: </a><font color="#A020F0">#include &lt;../src/mat/blockinvert.h&gt;</font>
 
 <a name="line19"> 19: </a><font color="#4169E1"><a name="NLF_DAAD"></a>struct NLF_DAAD </font>{
@@ -218,7 +221,7 @@
 <a name="line222">222: </a>      f[i]= -ad_f[i*10] + residual[ngI[i]];
 <a name="line223">223: </a>    }
 
-<a name="line225">225: </a>    Kernel_A_gets_inverse_A_9(J,0.0);
+<a name="line225">225: </a>    PetscKernel_A_gets_inverse_A_9(J,0.0);
 <a name="line226">226: </a>
 <a name="line227">227: </a>    res =0 ;
 <a name="line228">228: </a>    <font color="#4169E1">for</font>(i=0; i&lt;9; i++){
@@ -240,6 +243,7 @@
 <a name="line244">244: </a><font color="#B22222">/*</font>
 <a name="line245">245: </a><font color="#B22222">        Nonlinear relax on all the equations with an initial guess in x</font>
 <a name="line246">246: </a><font color="#B22222">*/</font>
+<a name="line247">247: </a>EXTERN_C_BEGIN
 <a name="line250">250: </a><strong><font color="#4169E1"><a name="NLFRelax_DAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFRelax_DAAD(NLF A,<A href="../../../../docs/manualpages/Mat/MatSORType.html#MatSORType">MatSORType</A> flag,int its,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
 <a name="line251">251: </a>{
 <a name="line253">253: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       j,gtdof,nI,gI;
@@ -324,7 +328,9 @@
 <a name="line333">333: </a>  <A href="../../../../docs/manualpages/DM/DMDARestoreAdicMFArray.html#DMDARestoreAdicMFArray">DMDARestoreAdicMFArray</A>(A-&gt;da,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,(void **)&amp;ad_vu,(void**)&amp;ad_vustart,&amp;gtdof);
 <a name="line334">334: </a>  <font color="#4169E1">return</font>(0);
 <a name="line335">335: </a>}
+<a name="line336">336: </a>EXTERN_C_END
 
+<a name="line338">338: </a>EXTERN_C_BEGIN
 <a name="line341">341: </a><strong><font color="#4169E1"><a name="NLFRelax_DAAD4"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFRelax_DAAD4(NLF A,<A href="../../../../docs/manualpages/Mat/MatSORType.html#MatSORType">MatSORType</A> flag,int its,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
 <a name="line342">342: </a>{
 <a name="line344">344: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       j,gtdof,nI,gI;
@@ -412,6 +418,7 @@
 <a name="line427">427: </a>  <A href="../../../../docs/manualpages/DM/DMDARestoreAdicMFArray.html#DMDARestoreAdicMFArray">DMDARestoreAdicMFArray</A>(A-&gt;da,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,(void **)&amp;ad_vu,(void**)&amp;ad_vustart,&amp;gtdof);
 <a name="line428">428: </a>  <font color="#4169E1">return</font>(0);
 <a name="line429">429: </a>}
+<a name="line430">430: </a>EXTERN_C_END
 
 <a name="line434">434: </a><strong><font color="#4169E1"><a name="NLFRelax_DAAD9"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFRelax_DAAD9(NLF A,<A href="../../../../docs/manualpages/Mat/MatSORType.html#MatSORType">MatSORType</A> flag,int its,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
 <a name="line435">435: </a>{
@@ -508,6 +515,7 @@
 <a name="line528">528: </a><font color="#B22222">/*</font>
 <a name="line529">529: </a><font color="#B22222">        Point-block nonlinear relax on all the equations with an initial guess in xx using </font>
 <a name="line530">530: </a><font color="#B22222">*/</font>
+<a name="line531">531: </a>EXTERN_C_BEGIN
 <a name="line534">534: </a><strong><font color="#4169E1"><a name="NLFRelax_DAADb"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFRelax_DAADb(NLF A,<A href="../../../../docs/manualpages/Mat/MatSORType.html#MatSORType">MatSORType</A> flag,int its,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
 <a name="line535">535: </a>{
 <a name="line537">537: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,gtdof,nI,gI, bs = A-&gt;da-&gt;w, bs1 = bs + 1;
@@ -594,6 +602,7 @@
 <a name="line619">619: </a>  <A href="../../../../docs/manualpages/DM/DMDARestoreAdicMFArray.html#DMDARestoreAdicMFArray">DMDARestoreAdicMFArray</A>(A-&gt;da,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,(void **)&amp;ad_vu,(void**)&amp;ad_vustart,&amp;gtdof);
 <a name="line620">620: </a>  <font color="#4169E1">return</font>(0);
 <a name="line621">621: </a>}
+<a name="line622">622: </a>EXTERN_C_END
 
 
 <a name="line627">627: </a><strong><font color="#4169E1"><a name="NLFDestroy_DAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> NLFDestroy_DAAD(NLF A)</font></strong>
@@ -604,6 +613,7 @@
 <a name="line634">634: </a>  <font color="#4169E1">return</font>(0);
 <a name="line635">635: </a>}
 
+<a name="line637">637: </a>EXTERN_C_BEGIN
 <a name="line640">640: </a><strong><font color="#4169E1"><a name="NLFDAADSetDA_DAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFDAADSetDA_DAAD(NLF A,DM da)</font></strong>
 <a name="line641">641: </a>{
 
@@ -612,26 +622,34 @@
 <a name="line647">647: </a>  A-&gt;da = da;
 <a name="line648">648: </a>  <font color="#4169E1">return</font>(0);
 <a name="line649">649: </a>}
+<a name="line650">650: </a>EXTERN_C_END
 
+<a name="line652">652: </a>EXTERN_C_BEGIN
 <a name="line655">655: </a><strong><font color="#4169E1"><a name="NLFDAADSetNewtonIterations_DAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFDAADSetNewtonIterations_DAAD(NLF A,int its)</font></strong>
 <a name="line656">656: </a>{
 <a name="line658">658: </a>  A-&gt;newton_its = its;
 <a name="line659">659: </a>  <font color="#4169E1">return</font>(0);
 <a name="line660">660: </a>}
+<a name="line661">661: </a>EXTERN_C_END
 
+<a name="line663">663: </a>EXTERN_C_BEGIN
 <a name="line666">666: </a><strong><font color="#4169E1"><a name="NLFDAADSetResidual_DAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFDAADSetResidual_DAAD(NLF A,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> residual)</font></strong>
 <a name="line667">667: </a>{
 <a name="line669">669: </a>  A-&gt;residual = residual;
 <a name="line670">670: </a>  <font color="#4169E1">return</font>(0);
 <a name="line671">671: </a>}
+<a name="line672">672: </a>EXTERN_C_END
 
 
+<a name="line675">675: </a>EXTERN_C_BEGIN
 <a name="line678">678: </a><strong><font color="#4169E1"><a name="NLFDAADSetCtx_DAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFDAADSetCtx_DAAD(NLF A,void *ctx)</font></strong>
 <a name="line679">679: </a>{
 <a name="line681">681: </a>  A-&gt;ctx = ctx;
 <a name="line682">682: </a>  <font color="#4169E1">return</font>(0);
 <a name="line683">683: </a>}
+<a name="line684">684: </a>EXTERN_C_END
 
+<a name="line686">686: </a>EXTERN_C_BEGIN
 <a name="line689">689: </a><strong><font color="#4169E1"><a name="NLFCreate_DAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  NLFCreate_DAAD(NLF *A)</font></strong>
 <a name="line690">690: </a>{
 
@@ -641,6 +659,7 @@
 <a name="line697">697: </a>  (*A)-&gt;newton_its = 2;
 <a name="line698">698: </a>  <font color="#4169E1">return</font>(0);
 <a name="line699">699: </a>}
+<a name="line700">700: </a>EXTERN_C_END
 
 
 

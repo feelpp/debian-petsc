@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* mesh.c */
 /* Fortran interface file */
 
@@ -52,6 +52,61 @@ extern void PetscRmPointer(void*);
 #define dmmeshgetdimension_ DMMESHGETDIMENSION
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmmeshgetdimension_ dmmeshgetdimension
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshsetdimension_ DMMESHSETDIMENSION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshsetdimension_ dmmeshsetdimension
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshgetchart_ DMMESHGETCHART
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshgetchart_ dmmeshgetchart
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshsetchart_ DMMESHSETCHART
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshsetchart_ dmmeshsetchart
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshgetconesize_ DMMESHGETCONESIZE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshgetconesize_ dmmeshgetconesize
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshsetconesize_ DMMESHSETCONESIZE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshsetconesize_ dmmeshsetconesize
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshsetcone_ DMMESHSETCONE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshsetcone_ dmmeshsetcone
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshgetsupportsize_ DMMESHGETSUPPORTSIZE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshgetsupportsize_ dmmeshgetsupportsize
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshgetmaxsizes_ DMMESHGETMAXSIZES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshgetmaxsizes_ dmmeshgetmaxsizes
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshsetup_ DMMESHSETUP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshsetup_ dmmeshsetup
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshsymmetrize_ DMMESHSYMMETRIZE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshsymmetrize_ dmmeshsymmetrize
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshstratify_ DMMESHSTRATIFY
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshstratify_ dmmeshstratify
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmmeshrestrictvector_ DMMESHRESTRICTVECTOR
@@ -106,6 +161,50 @@ void PETSC_STDCALL  dmmeshgetglobalscatter_(DM dm,VecScatter *scatter, int *__ie
 void PETSC_STDCALL  dmmeshgetdimension_(DM dm,PetscInt *dim, int *__ierr ){
 *__ierr = DMMeshGetDimension(
 	(DM)PetscToPointer((dm) ),dim);
+}
+void PETSC_STDCALL  dmmeshsetdimension_(DM dm,PetscInt *dim, int *__ierr ){
+*__ierr = DMMeshSetDimension(
+	(DM)PetscToPointer((dm) ),*dim);
+}
+void PETSC_STDCALL  dmmeshgetchart_(DM dm,PetscInt *pStart,PetscInt *pEnd, int *__ierr ){
+*__ierr = DMMeshGetChart(
+	(DM)PetscToPointer((dm) ),pStart,pEnd);
+}
+void PETSC_STDCALL  dmmeshsetchart_(DM dm,PetscInt *pStart,PetscInt *pEnd, int *__ierr ){
+*__ierr = DMMeshSetChart(
+	(DM)PetscToPointer((dm) ),*pStart,*pEnd);
+}
+void PETSC_STDCALL  dmmeshgetconesize_(DM dm,PetscInt *p,PetscInt *size, int *__ierr ){
+*__ierr = DMMeshGetConeSize(
+	(DM)PetscToPointer((dm) ),*p,size);
+}
+void PETSC_STDCALL  dmmeshsetconesize_(DM dm,PetscInt *p,PetscInt *size, int *__ierr ){
+*__ierr = DMMeshSetConeSize(
+	(DM)PetscToPointer((dm) ),*p,*size);
+}
+void PETSC_STDCALL  dmmeshsetcone_(DM dm,PetscInt *p, PetscInt cone[], int *__ierr ){
+*__ierr = DMMeshSetCone(
+	(DM)PetscToPointer((dm) ),*p,cone);
+}
+void PETSC_STDCALL  dmmeshgetsupportsize_(DM dm,PetscInt *p,PetscInt *size, int *__ierr ){
+*__ierr = DMMeshGetSupportSize(
+	(DM)PetscToPointer((dm) ),*p,size);
+}
+void PETSC_STDCALL  dmmeshgetmaxsizes_(DM dm,PetscInt *maxConeSize,PetscInt *maxSupportSize, int *__ierr ){
+*__ierr = DMMeshGetMaxSizes(
+	(DM)PetscToPointer((dm) ),maxConeSize,maxSupportSize);
+}
+void PETSC_STDCALL  dmmeshsetup_(DM dm, int *__ierr ){
+*__ierr = DMMeshSetUp(
+	(DM)PetscToPointer((dm) ));
+}
+void PETSC_STDCALL  dmmeshsymmetrize_(DM dm, int *__ierr ){
+*__ierr = DMMeshSymmetrize(
+	(DM)PetscToPointer((dm) ));
+}
+void PETSC_STDCALL  dmmeshstratify_(DM dm, int *__ierr ){
+*__ierr = DMMeshStratify(
+	(DM)PetscToPointer((dm) ));
 }
 void PETSC_STDCALL  dmmeshrestrictvector_(Vec g,Vec l,InsertMode *mode, int *__ierr ){
 *__ierr = DMMeshRestrictVector(

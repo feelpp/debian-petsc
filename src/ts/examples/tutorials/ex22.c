@@ -1,4 +1,4 @@
-static const char help[] = "Time-dependent advection-reaction PDE in 1d. Demonstrates IMEX methods.\n";
+static const char help[] = "Time-dependent advection-reaction PDE in 1d, demonstrates IMEX methods.\n";
 /*
    u_t + a1*u_x = -k1*u + k2*v + s1
    v_t + a2*v_x = k1*u - k2*v + s2
@@ -7,7 +7,7 @@ static const char help[] = "Time-dependent advection-reaction PDE in 1d. Demonst
    a2 = 0, k2 = 2*k1, s2 = 1
 
    Initial conditions:
-   u(x,0) = 1 * s2*x
+   u(x,0) = 1 + s2*x
    v(x,0) = k0/k1*u(x,0) + s1/k1
 
    Upstream boundary conditions:
@@ -35,14 +35,15 @@ static PetscErrorCode FormInitialSolution(TS,Vec,void*);
 #define __FUNCT__ "main"
 int main(int argc,char **argv)
 {
-  TS             ts;                   /* nonlinear solver */
-  Vec            X;                    /* solution, residual vectors */
-  Mat            J;                    /* Jacobian matrix */
-  PetscInt       steps,maxsteps,mx;
-  PetscErrorCode ierr;
-  DM             da;
-  PetscReal      ftime,dt;
-  struct _User    user;          /* user-defined work context */
+  TS                ts;         /* nonlinear solver */
+  Vec               X;          /* solution, residual vectors */
+  Mat               J;          /* Jacobian matrix */
+  PetscInt          steps,maxsteps,mx;
+  PetscErrorCode    ierr;
+  DM                da;
+  PetscReal         ftime,dt;
+  struct _User      user;       /* user-defined work context */
+  TSConvergedReason reason;
 
   PetscInitialize(&argc,&argv,(char *)0,help);
 
@@ -58,12 +59,12 @@ int main(int argc,char **argv)
 
   /* Initialize user application context */
   ierr = PetscOptionsBegin(PETSC_COMM_WORLD,PETSC_NULL,"Advection-reaction options",""); {
-    ierr = PetscOptionsReal("-a0","Advection rate 0","",user.a[0]=1,&user.a[0],PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsReal("-a1","Advection rate 1","",user.a[1]=0,&user.a[1],PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsReal("-k0","Reaction rate 0","",user.k[0]=1e6,&user.k[0],PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsReal("-k1","Reaction rate 1","",user.k[1]=2*user.k[0],&user.k[1],PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsReal("-s0","Source 0","",user.s[0]=0,&user.s[0],PETSC_NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsReal("-s1","Source 1","",user.s[1]=1,&user.s[1],PETSC_NULL);CHKERRQ(ierr);
+    user.a[0] = 1;           ierr = PetscOptionsReal("-a0","Advection rate 0","",user.a[0],&user.a[0],PETSC_NULL);CHKERRQ(ierr);
+    user.a[1] = 0;           ierr = PetscOptionsReal("-a1","Advection rate 1","",user.a[1],&user.a[1],PETSC_NULL);CHKERRQ(ierr);
+    user.k[0] = 1e6;         ierr = PetscOptionsReal("-k0","Reaction rate 0","",user.k[0],&user.k[0],PETSC_NULL);CHKERRQ(ierr);
+    user.k[1] = 2*user.k[0]; ierr = PetscOptionsReal("-k1","Reaction rate 1","",user.k[1],&user.k[1],PETSC_NULL);CHKERRQ(ierr);
+    user.s[0] = 0;           ierr = PetscOptionsReal("-s0","Source 0","",user.s[0],&user.s[0],PETSC_NULL);CHKERRQ(ierr);
+    user.s[1] = 1;           ierr = PetscOptionsReal("-s1","Source 1","",user.s[1],&user.s[1],PETSC_NULL);CHKERRQ(ierr);
   } ierr = PetscOptionsEnd();CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,7 +75,7 @@ int main(int argc,char **argv)
   ierr = TSSetType(ts,TSARKIMEX);CHKERRQ(ierr);
   ierr = TSSetRHSFunction(ts,PETSC_NULL,FormRHSFunction,&user);CHKERRQ(ierr);
   ierr = TSSetIFunction(ts,PETSC_NULL,FormIFunction,&user);CHKERRQ(ierr);
-  ierr = DMGetMatrix(da,MATAIJ,&J);CHKERRQ(ierr);
+  ierr = DMCreateMatrix(da,MATAIJ,&J);CHKERRQ(ierr);
   ierr = TSSetIJacobian(ts,J,J,FormIJacobian,&user);CHKERRQ(ierr);
 
   ftime = 1.0;
@@ -100,6 +101,8 @@ int main(int argc,char **argv)
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ierr = TSSolve(ts,X,&ftime);CHKERRQ(ierr);
   ierr = TSGetTimeStepNumber(ts,&steps);CHKERRQ(ierr);
+  ierr = TSGetConvergedReason(ts,&reason);CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"%s at time %G after %D steps\n",TSConvergedReasons[reason],ftime,steps);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Free work space.

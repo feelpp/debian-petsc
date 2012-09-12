@@ -379,6 +379,7 @@ int main(int argc,char **argv)
   ierr = MatCreate(MPI_COMM_WORLD,&Jac);CHKERRQ(ierr);
   ierr = MatSetSizes(Jac,PETSC_DECIDE,PETSC_DECIDE,N,N);CHKERRQ(ierr);
   ierr = MatSetFromOptions(Jac);CHKERRQ(ierr);
+  ierr = MatSetUp(Jac);CHKERRQ(ierr);
 
   /* 
     The following routine allows us to set the matrix values in local ordering 
@@ -462,7 +463,7 @@ int main(int argc,char **argv)
    ierr = PetscFPrintf(PETSC_COMM_SELF,fptr1,"Solution at node %D is %f \n",inode,xx[inode]);CHKERRQ(ierr);
   ierr = VecRestoreArray(x,&xx);CHKERRQ(ierr);
   fclose(fptr1);
-  ierr = PetscPrintf(MPI_COMM_WORLD,"number of Newton iterations = %D, ",its);CHKERRQ(ierr);
+  ierr = PetscPrintf(MPI_COMM_WORLD,"number of SNES iterations = %D, ",its);CHKERRQ(ierr);
   ierr = PetscPrintf(MPI_COMM_WORLD,"number of unsuccessful steps = %D\n",nfails);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

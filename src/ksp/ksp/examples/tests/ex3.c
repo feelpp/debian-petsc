@@ -35,7 +35,7 @@ int main(int argc,char **args)
   PetscMPIInt    rank,size;
   PetscInt       i,m = 5,N,start,end,M,its;
   PetscScalar    val,Ke[16],r[4];
-  PetscReal      x,y,h,norm;
+  PetscReal      x,y,h,norm,tol=1.e-14;
   PetscErrorCode ierr;
   PetscInt       idx[4],count,*rows;
   Vec            u,ustar,b;
@@ -53,6 +53,7 @@ int main(int argc,char **args)
   ierr = MatCreate(PETSC_COMM_WORLD,&C);CHKERRQ(ierr);
   ierr = MatSetSizes(C,PETSC_DECIDE,PETSC_DECIDE,N,N);CHKERRQ(ierr);
   ierr = MatSetFromOptions(C);CHKERRQ(ierr);
+  ierr = MatSetUp(C);CHKERRQ(ierr);
   start = rank*(M/size) + ((M%size) < rank ? (M%size) : rank);
   end   = start + M/size + ((M%size) > rank); 
 
@@ -147,7 +148,9 @@ int main(int argc,char **args)
   ierr = VecAXPY(u,-1.0,ustar);CHKERRQ(ierr);
   ierr = VecNorm(u,NORM_2,&norm);CHKERRQ(ierr);
   ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %A Iterations %D\n",norm*h,its);CHKERRQ(ierr);
+  if (norm > tol){
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %G Iterations %D\n",norm*h,its);CHKERRQ(ierr);
+  }
 
   /* Free work space */
   ierr = KSPDestroy(&ksp);CHKERRQ(ierr);

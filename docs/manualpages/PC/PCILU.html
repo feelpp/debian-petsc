@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCILU.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCILU</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCILU"><H1>PCILU</H1></A>
 Incomplete factorization preconditioners. 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
@@ -39,6 +40,10 @@ For BAIJ matrices this implements a point block ILU
 <P>
 The "symmetric" application of this preconditioner is not actually symmetric since L is not transpose(U)
 even when the matrix is not symmetric since the U stores the diagonals of the factorization.
+<P>
+If you are using MATSEQAIJCUSP matrices (or MATMPIAIJCUSP matrices with block Jacobi) you must have ./configured
+PETSc with also --download-txpetscgpu to have the triangular solves performed on the GPU (factorization is never
+done on the GPU).
 <P>
 <H3><FONT COLOR="#CC3333">References</FONT></H3>
 T. Dupont, R. Kendall, and H. Rachford. An approximate factorization procedure for solving

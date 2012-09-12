@@ -1,16 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESDefaultConverged.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESDefaultConverged</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESDefaultConverged"><H1>SNESDefaultConverged</H1></A>
 Convergence test of the solvers for systems of nonlinear equations (default). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"   
-PetscErrorCode  SNESDefaultConverged(SNES snes,PetscInt it,PetscReal xnorm,PetscReal pnorm,PetscReal fnorm,SNESConvergedReason *reason,void *dummy)
+PetscErrorCode  SNESDefaultConverged(SNES snes,PetscInt it,PetscReal xnorm,PetscReal snorm,PetscReal fnorm,SNESConvergedReason *reason,void *dummy)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -22,7 +23,7 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>xnorm </B></TD><TD>- 2-norm of current iterate
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pnorm </B></TD><TD>- 2-norm of current step 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snorm </B></TD><TD>- 2-norm of current step 
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fnorm </B></TD><TD>- 2-norm of function at current iterate
 </TD></TR>
@@ -36,7 +37,7 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
  <A HREF="../SNES/SNES_CONVERGED_FNORM_ABS.html#SNES_CONVERGED_FNORM_ABS">SNES_CONVERGED_FNORM_ABS</A>       - (fnorm &lt; abstol),
 </pre>
 <pre>
- <A HREF="../SNES/SNES_CONVERGED_PNORM_RELATIVE.html#SNES_CONVERGED_PNORM_RELATIVE">SNES_CONVERGED_PNORM_RELATIVE</A>  - (pnorm &lt; xtol*xnorm),
+ <A HREF="../SNES/SNES_CONVERGED_SNORM_RELATIVE.html#SNES_CONVERGED_SNORM_RELATIVE">SNES_CONVERGED_SNORM_RELATIVE</A>  - (snorm &lt; stol*xnorm),
 </pre>
 <pre>
  <A HREF="../SNES/SNES_CONVERGED_FNORM_RELATIVE.html#SNES_CONVERGED_FNORM_RELATIVE">SNES_CONVERGED_FNORM_RELATIVE</A>  - (fnorm &lt; rtol*fnorm0),

@@ -1,24 +1,26 @@
 <center><a href="sorder.c">Actual source code: sorder.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/order/sorder.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:33+00:00">
+<meta name="date" content="2012-08-29T16:53:28+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">     Provides the code that allows PETSc users to register their own</font>
 <a name="line4">  4: </a><font color="#B22222">  sequential matrix Ordering routines.</font>
 <a name="line5">  5: </a><font color="#B22222">*/</font>
-<a name="line6">  6: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;</font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;</font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;petscmat.h&gt;  </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line9">  9: </a><A href="../../../docs/manualpages/Sys/PetscFList.html#PetscFList">PetscFList</A>      MatOrderingList = 0;
 <a name="line10"> 10: </a><A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  MatOrderingRegisterAllCalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
+<a name="line12"> 12: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetOrdering_Flow_SeqAIJ(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A> *,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A> *)</font></strong>;
 
 <a name="line16"> 16: </a><strong><font color="#4169E1"><a name="MatGetOrdering_Flow"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetOrdering_Flow(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A> type,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A> *irow,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A> *icol)</font></strong>
 <a name="line17"> 17: </a>{
@@ -28,6 +30,7 @@
 <a name="line22"> 22: </a><font color="#A020F0">#endif</font>
 <a name="line23"> 23: </a>}
 
+<a name="line25"> 25: </a>EXTERN_C_BEGIN
 <a name="line28"> 28: </a><strong><font color="#4169E1"><a name="MatGetOrdering_Natural"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_Natural(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A> type,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A> *irow,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A> *icol)</font></strong>
 <a name="line29"> 29: </a>{
 <a name="line31"> 31: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n,i,*ii;
@@ -59,7 +62,9 @@
 <a name="line58"> 58: </a>  <A href="../../../docs/manualpages/IS/ISSetIdentity.html#ISSetIdentity">ISSetIdentity</A>(*icol);
 <a name="line59"> 59: </a>  <font color="#4169E1">return</font>(0);
 <a name="line60"> 60: </a>}
+<a name="line61"> 61: </a>EXTERN_C_END
 
+<a name="line63"> 63: </a>EXTERN_C_BEGIN
 <a name="line64"> 64: </a><font color="#B22222">/*</font>
 <a name="line65"> 65: </a><font color="#B22222">     Orders the rows (and columns) by the lengths of the rows. </font>
 <a name="line66"> 66: </a><font color="#B22222">   This produces a symmetric Ordering but does not require a </font>
@@ -87,13 +92,14 @@
 <a name="line92"> 92: </a>  <A href="../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(lens,permr);
 <a name="line93"> 93: </a>  <font color="#4169E1">return</font>(0);
 <a name="line94"> 94: </a>}
+<a name="line95"> 95: </a>EXTERN_C_END
 
 <a name="line99"> 99: </a><strong><font color="#4169E1"><a name="MatOrderingRegister"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatOrderingRegister(const char sname[],const char path[],const char name[],<A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*function)(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*))</font></strong>
 <a name="line100">100: </a>{
 <a name="line102">102: </a>  char           fullname[PETSC_MAX_PATH_LEN];
 
 <a name="line105">105: </a>  PetscFListConcat(path,name,fullname);
-<a name="line106">106: </a>  PetscFListAdd(&amp;MatOrderingList,sname,fullname,(void (*)(void))function);
+<a name="line106">106: </a>  <A href="../../../docs/manualpages/Sys/PetscFListAdd.html#PetscFListAdd">PetscFListAdd</A>(&amp;MatOrderingList,sname,fullname,(void (*)(void))function);
 <a name="line107">107: </a>  <font color="#4169E1">return</font>(0);
 <a name="line108">108: </a>}
 
@@ -173,12 +179,12 @@
 
 <a name="line195">195: </a>  <font color="#B22222">/* this chunk of code is REALLY bad, should maybe get the ordering from the factor matrix,</font>
 <a name="line196">196: </a><font color="#B22222">     then those that don't support orderings will handle their cases themselfs. */</font>
-<a name="line197">197: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../docs/manualpages/Mat/MATSEQDENSE.html#MATSEQDENSE">MATSEQDENSE</A>,&amp;isseqdense);
-<a name="line198">198: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,MATMPIDENSE,&amp;ismpidense);
-<a name="line199">199: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>,&amp;ismpiaij);
-<a name="line200">200: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,MATMPIAIJCUSP,&amp;ismpiaijcusp);
-<a name="line201">201: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../docs/manualpages/Mat/MATMPIBAIJ.html#MATMPIBAIJ">MATMPIBAIJ</A>,&amp;ismpibaij);
-<a name="line202">202: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../docs/manualpages/Mat/MATMPISBAIJ.html#MATMPISBAIJ">MATMPISBAIJ</A>,&amp;ismpisbaij);
+<a name="line197">197: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../docs/manualpages/Mat/MATSEQDENSE.html#MATSEQDENSE">MATSEQDENSE</A>,&amp;isseqdense);
+<a name="line198">198: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,MATMPIDENSE,&amp;ismpidense);
+<a name="line199">199: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>,&amp;ismpiaij);
+<a name="line200">200: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,MATMPIAIJCUSP,&amp;ismpiaijcusp);
+<a name="line201">201: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../docs/manualpages/Mat/MATMPIBAIJ.html#MATMPIBAIJ">MATMPIBAIJ</A>,&amp;ismpibaij);
+<a name="line202">202: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../docs/manualpages/Mat/MATMPISBAIJ.html#MATMPISBAIJ">MATMPISBAIJ</A>,&amp;ismpisbaij);
 <a name="line203">203: </a>  <font color="#4169E1">if</font> (isseqdense || ismpidense || ismpiaij || ismpibaij || ismpisbaij || ismpiaijcusp) {
 <a name="line204">204: </a>    <A href="../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(mat,&amp;m,<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line205">205: </a>    <font color="#B22222">/*</font>

@@ -1,13 +1,14 @@
 <center><a href="ex8.c">Actual source code: ex8.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tests/ex8.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:15:37+00:00">
+<meta name="date" content="2012-08-29T17:08:53+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
 
@@ -45,6 +46,10 @@
 
 <a name="line36"> 36: </a><font color="#B22222">/* -------- User-defined Routines --------- */</font>
 
+<a name="line38"> 38: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MSA_BoundaryConditions(AppCtx *)</font></strong>;
+<a name="line39"> 39: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MSA_InitialPoint(AppCtx *, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line40"> 40: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormGradient(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, void *)</font></strong>;
+<a name="line41"> 41: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*, <A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void *)</font></strong>;
 
 <a name="line45"> 45: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc, char **argv)</font></strong>
 <a name="line46"> 46: </a>{
@@ -79,7 +84,7 @@
 <a name="line75"> 75: </a>  info = <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x, &amp;r); <A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(info);
 
 <a name="line77"> 77: </a>  N = user.mx*user.my;
-<a name="line78"> 78: </a>  info = <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(user.da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(info);
+<a name="line78"> 78: </a>  info = <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(user.da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(info);
 
 <a name="line80"> 80: </a>  <font color="#B22222">/* Create nonlinear solver context */</font>
 <a name="line81"> 81: </a>  info = <A href="../../../../docs/manualpages/SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;snes); <A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(info);

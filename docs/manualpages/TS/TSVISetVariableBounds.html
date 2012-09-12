@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSVISetVariableBounds.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSVISetVariableBounds</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSVISetVariableBounds"><H1>TSVISetVariableBounds</H1></A>
 Sets the lower and upper bounds for the solution vector. xl &lt;= x &lt;= xu 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -22,7 +23,7 @@ PetscErrorCode TSVISetVariableBounds(TS ts, Vec xl, Vec xu)
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 If this routine is not called then the lower and upper bounds are set to
-SNES_VI_INF and SNES_VI_NINF respectively during <A HREF="../SNES/SNESSetUp.html#SNESSetUp">SNESSetUp</A>().
+SNES_VI_NINF and SNES_VI_INF respectively during <A HREF="../SNES/SNESSetUp.html#SNESSetUp">SNESSetUp</A>().
 <P>
 
 <P>

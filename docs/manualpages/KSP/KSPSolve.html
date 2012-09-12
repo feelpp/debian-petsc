@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/KSPSolve.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>KSPSolve</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="KSPSolve"><H1>KSPSolve</H1></A>
 Solves linear system. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -45,7 +46,9 @@ read later with src/ksp/examples/tutorials/ex10.c for testing solvers)
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 <P>
-The operator is specified with <A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>().
+If one uses <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>() then x or b need not be passed. Use <A HREF="../KSP/KSPGetSolution.html#KSPGetSolution">KSPGetSolution</A>() to access the solution in this case.
+<P>
+The operator is specified with <A HREF="../KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>().
 <P>
 Call <A HREF="../KSP/KSPGetConvergedReason.html#KSPGetConvergedReason">KSPGetConvergedReason</A>() to determine if the solver converged or failed and
 why. The number of iterations can be obtained from <A HREF="../KSP/KSPGetIterationNumber.html#KSPGetIterationNumber">KSPGetIterationNumber</A>().

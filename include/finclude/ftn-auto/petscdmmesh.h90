@@ -1,3 +1,23 @@
+        subroutine DMMeshCreateMeshFromAdjacency(comm, dim, numCells,   &
+     &numCorners, cellVertices, spatialDim, numVertices, coordinates,   &
+     &interpolate, dm ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt dim ! PetscInt
+       PetscInt numCells ! PetscInt
+       PetscInt numCorners ! PetscInt
+       PetscInt cellVertices (*) ! PetscInt
+       PetscInt spatialDim ! PetscInt
+       PetscInt numVertices ! PetscInt
+       PetscReal coordinates (*) ! PetscReal
+       PetscBool interpolate ! PetscBool
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine DMMeshCreate(comm, mesh ,ierr)
+       integer comm ! MPI_Comm
+       DM mesh ! DM
+       integer ierr
+       end subroutine
         subroutine SectionRealDestroy(section ,ierr)
        SectionReal section ! SectionReal
        integer ierr
@@ -153,14 +173,125 @@
        SectionInt subsection ! SectionInt
        integer ierr
        end subroutine
-        subroutine DMMeshExodusGetInfo(dm, dim, numVertices, numCells,  &
-     &numCellBlocks, numVertexSets ,ierr)
+        subroutine DMMeshCreateExodusNG(comm, exoid, dm ,ierr)
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
        DM dm ! DM
-       PetscInt dim ! PetscInt
-       PetscInt numVertices ! PetscInt
-       PetscInt numCells ! PetscInt
-       PetscInt numCellBlocks ! PetscInt
-       PetscInt numVertexSets ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshViewExodusSplit(dm, exoid ,ierr)
+       DM dm ! DM
+       PetscInt exoid ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshCreateScatterToZeroVertex(dm, scatter ,ierr)
+       DM dm ! DM
+       VecScatter scatter ! VecScatter
+       integer ierr
+       end subroutine
+        subroutine DMMeshCreateScatterToZeroVertexSet(dm, is_local,     &
+     &is_zero, scatter ,ierr)
+       DM dm ! DM
+       IS is_local ! IS
+       IS is_zero ! IS
+       VecScatter scatter ! VecScatter
+       integer ierr
+       end subroutine
+        subroutine DMMeshCreateScatterToZeroCell(dm, scatter ,ierr)
+       DM dm ! DM
+       VecScatter scatter ! VecScatter
+       integer ierr
+       end subroutine
+        subroutine DMMeshCreateScatterToZeroCellSet(dm, is_local,       &
+     &is_zero, scatter ,ierr)
+       DM dm ! DM
+       IS is_local ! IS
+       IS is_zero ! IS
+       VecScatter scatter ! VecScatter
+       integer ierr
+       end subroutine
+        subroutine VecViewExodusVertex(dm, v, comm, exoid, step,        &
+     &exofield ,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
+       PetscInt step ! PetscInt
+       PetscInt exofield ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine VecLoadExodusVertex(dm, v, comm, exoid, step,        &
+     &exofield ,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
+       PetscInt step ! PetscInt
+       PetscInt exofield ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine VecViewExodusVertexSet(dm, v, vsID, comm, exoid, step&
+     &, exofield ,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       PetscInt vsID ! PetscInt
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
+       PetscInt step ! PetscInt
+       PetscInt exofield ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine VecLoadExodusVertexSet(dm, v, vsID, comm, exoid, step&
+     &, exofield ,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       PetscInt vsID ! PetscInt
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
+       PetscInt step ! PetscInt
+       PetscInt exofield ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine VecViewExodusCell(dm, v, comm, exoid, step, exofield &
+     &,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
+       PetscInt step ! PetscInt
+       PetscInt exofield ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine VecLoadExodusCell(dm, v, comm, exoid, step, exofield &
+     &,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
+       PetscInt step ! PetscInt
+       PetscInt exofield ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine VecViewExodusCellSet(dm, v, csID, comm, exoid, step, &
+     &exofield ,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       PetscInt csID ! PetscInt
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
+       PetscInt step ! PetscInt
+       PetscInt exofield ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine VecLoadExodusCellSet(dm, v, csID, comm, exoid, step, &
+     &exofield ,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       PetscInt csID ! PetscInt
+       integer comm ! MPI_Comm
+       PetscInt exoid ! PetscInt
+       PetscInt step ! PetscInt
+       PetscInt exofield ! PetscInt
        integer ierr
        end subroutine
         subroutine DMMeshLoad(viewer, dm ,ierr)
@@ -188,6 +319,66 @@
         subroutine DMMeshGetDimension(dm, dim ,ierr)
        DM dm ! DM
        PetscInt dim ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshSetDimension(dm, dim ,ierr)
+       DM dm ! DM
+       PetscInt dim ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshGetChart(dm, pStart, pEnd ,ierr)
+       DM dm ! DM
+       PetscInt pStart ! PetscInt
+       PetscInt pEnd ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshSetChart(dm, pStart, pEnd ,ierr)
+       DM dm ! DM
+       PetscInt pStart ! PetscInt
+       PetscInt pEnd ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshGetConeSize(dm, p, size ,ierr)
+       DM dm ! DM
+       PetscInt p ! PetscInt
+       PetscInt size ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshSetConeSize(dm, p, size ,ierr)
+       DM dm ! DM
+       PetscInt p ! PetscInt
+       PetscInt size ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshSetCone(dm, p, cone ,ierr)
+       DM dm ! DM
+       PetscInt p ! PetscInt
+       PetscInt cone (*) ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshGetSupportSize(dm, p, size ,ierr)
+       DM dm ! DM
+       PetscInt p ! PetscInt
+       PetscInt size ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshGetMaxSizes(dm, maxConeSize, maxSupportSize ,  &
+     &ierr)
+       DM dm ! DM
+       PetscInt maxConeSize ! PetscInt
+       PetscInt maxSupportSize ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMMeshSetUp(dm ,ierr)
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine DMMeshSymmetrize(dm ,ierr)
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine DMMeshStratify(dm ,ierr)
+       DM dm ! DM
        integer ierr
        end subroutine
         subroutine DMMeshRestrictVector(g, l, mode ,ierr)
@@ -222,10 +413,5 @@
        PetscInt e ! PetscInt
        PetscScalar v (*) ! PetscScalar
        InsertMode mode ! InsertMode
-       integer ierr
-       end subroutine
-        subroutine DMMeshCreate(comm, mesh ,ierr)
-       integer comm ! MPI_Comm
-       DM mesh ! DM
        integer ierr
        end subroutine

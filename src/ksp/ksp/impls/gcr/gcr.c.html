@@ -1,16 +1,17 @@
 <center><a href="gcr.c">Actual source code: gcr.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/gcr/gcr.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:18+00:00">
+<meta name="date" content="2012-08-29T17:04:51+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
-<a name="line3">  3: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;</font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;</font>
 
 <a name="line5">  5: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line6">  6: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       restart;
@@ -130,7 +131,7 @@
 <a name="line130">130: </a>  KSP_GCR        *ctx = (KSP_GCR*)ksp-&gt;data;
 <a name="line132">132: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line135">135: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line135">135: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line136">136: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line137">137: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  GCR: restart = %D \n"</font>, ctx-&gt;restart );
 <a name="line138">138: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  GCR: restarts performed = %D \n"</font>, ctx-&gt;n_restarts );
@@ -196,6 +197,7 @@
 <a name="line214">214: </a><strong><font color="#4169E1">typedef <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*KSPGCRModifyPCFunction)(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,void*)</font></strong>;
 <a name="line215">215: </a><strong><font color="#4169E1">typedef <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*KSPGCRDestroyFunction)(void*)</font></strong>;
 
+<a name="line217">217: </a>EXTERN_C_BEGIN
 <a name="line220">220: </a><strong><font color="#4169E1"><a name="KSPGCRSetModifyPC_GCR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPGCRSetModifyPC_GCR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,KSPGCRModifyPCFunction function,void *data,KSPGCRDestroyFunction destroy)</font></strong>
 <a name="line221">221: </a>{
 <a name="line222">222: </a>  KSP_GCR         *ctx = (KSP_GCR *)ksp-&gt;data;
@@ -205,6 +207,7 @@
 <a name="line228">228: </a>  ctx-&gt;modifypc_ctx     = data;
 <a name="line229">229: </a>  <font color="#4169E1">return</font>(0);
 <a name="line230">230: </a>}
+<a name="line231">231: </a>EXTERN_C_END
 
 <a name="line235">235: </a><font color="#B22222">/*@C</font>
 <a name="line236">236: </a><font color="#B22222"> <A href="../../../../../docs/manualpages/KSP/KSPGCRSetModifyPC.html#KSPGCRSetModifyPC">KSPGCRSetModifyPC</A> - Sets the routine used by GCR to modify the preconditioner.</font>
@@ -318,6 +321,7 @@
 <a name="line361">361: </a><font color="#B22222">           KSPGCRSetRestart(), <A href="../../../../../docs/manualpages/KSP/KSPGCRSetModifyPC.html#KSPGCRSetModifyPC">KSPGCRSetModifyPC</A>(), <A href="../../../../../docs/manualpages/KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, <A href="../../../../../docs/manualpages/KSP/KSPFGMRES.html#KSPFGMRES">KSPFGMRES</A></font>
 <a name="line362">362: </a><font color="#B22222"> </font>
 <a name="line363">363: </a><font color="#B22222">M*/</font>
+<a name="line364">364: </a>EXTERN_C_BEGIN
 <a name="line367">367: </a><strong><font color="#4169E1"><a name="KSPCreate_GCR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPCreate_GCR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line368">368: </a>{
 <a name="line370">370: </a>  KSP_GCR        *ctx;
@@ -343,6 +347,7 @@
 <a name="line391">391: </a>                                           <font color="#666666">"KSPGCRSetModifyPC_GCR"</font>,KSPGCRSetModifyPC_GCR);
 <a name="line392">392: </a>  <font color="#4169E1">return</font>(0);
 <a name="line393">393: </a>}
+<a name="line394">394: </a>EXTERN_C_END
 
 
 

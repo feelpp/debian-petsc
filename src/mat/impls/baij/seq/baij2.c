@@ -23,7 +23,7 @@ PetscErrorCode MatIncreaseOverlap_SeqBAIJ(Mat A,PetscInt is_max,IS is[],PetscInt
 
   if (ov < 0)  SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Negative overlap specified");
 
-  ierr = PetscBTCreate(m,table);CHKERRQ(ierr);
+  ierr = PetscBTCreate(m,&table);CHKERRQ(ierr);
   ierr = PetscMalloc((m+1)*sizeof(PetscInt),&nidx);CHKERRQ(ierr); 
   ierr = PetscMalloc((A->rmap->N+1)*sizeof(PetscInt),&nidx2);CHKERRQ(ierr);
 
@@ -65,7 +65,7 @@ PetscErrorCode MatIncreaseOverlap_SeqBAIJ(Mat A,PetscInt is_max,IS is[],PetscInt
     }
     ierr = ISCreateGeneral(PETSC_COMM_SELF,isz*bs,nidx2,PETSC_COPY_VALUES,is+i);CHKERRQ(ierr);
   }
-  ierr = PetscBTDestroy(table);CHKERRQ(ierr);
+  ierr = PetscBTDestroy(&table);CHKERRQ(ierr);
   ierr = PetscFree(nidx);CHKERRQ(ierr);
   ierr = PetscFree(nidx2);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -1020,7 +1020,7 @@ PetscErrorCode MatMult_SeqBAIJ_N(Mat A,Vec xx,Vec zz)
       workt += bs;
     }
     if (usecprow) z = zarray + bs*ridx[i];
-    Kernel_w_gets_Ar_times_v(bs,ncols,work,v,z);
+    PetscKernel_w_gets_Ar_times_v(bs,ncols,work,v,z);
     /* BLASgemv_("N",&bs,&ncols,&_DOne,v,&bs,work,&_One,&_DZero,z,&_One); */
     v += n*bs2;
     if (!usecprow) z += bs;
@@ -1548,7 +1548,7 @@ PetscErrorCode MatMultAdd_SeqBAIJ_N(Mat A,Vec xx,Vec yy,Vec zz)
       workt += bs;
     }
     if (usecprow) z = zarray + bs*ridx[i];
-    Kernel_w_gets_w_plus_Ar_times_v(bs,ncols,work,v,z);
+    PetscKernel_w_gets_w_plus_Ar_times_v(bs,ncols,work,v,z);
     /* BLASgemv_("N",&bs,&ncols,&_DOne,v,&bs,work,&_One,&_DOne,z,&_One); */
     v += n*bs2;
     if (!usecprow){
@@ -1717,7 +1717,7 @@ PetscErrorCode MatMultHermitianTransposeAdd_SeqBAIJ(Mat A,Vec xx,Vec yy,Vec zz)
         if (usecprow) {
           xtmp = x + bs*ridx[i];
         } 
-        Kernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,xtmp,v,work);
+        PetscKernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,xtmp,v,work);
         /* BLASgemv_("T",&bs,&ncols,&_DOne,v,&bs,xtmp,&_One,&_DOne,work,&_One); */
         v += n*bs2;
         if (!usecprow) xtmp += bs;
@@ -1864,7 +1864,7 @@ PetscErrorCode MatMultTransposeAdd_SeqBAIJ(Mat A,Vec xx,Vec yy,Vec zz)
         if (usecprow) {
           xtmp = x + bs*ridx[i];
         } 
-        Kernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,xtmp,v,work);
+        PetscKernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,xtmp,v,work);
         /* BLASgemv_("T",&bs,&ncols,&_DOne,v,&bs,xtmp,&_One,&_DOne,work,&_One); */
         v += n*bs2;
         if (!usecprow) xtmp += bs;

@@ -1,13 +1,14 @@
 <center><a href="mgfunc.c">Actual source code: mgfunc.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/mg/mgfunc.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:09:27+00:00">
+<meta name="date" content="2012-08-29T16:59:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/ksp/pc/impls/mg/mgimpl.h&gt;       </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
 <a name="line3">  3: </a>                          <font color="#B22222">/*I "petscpcmg.h"   I*/</font>
@@ -139,318 +140,449 @@
 <a name="line147">147: </a>}
 
 <a name="line151">151: </a><font color="#B22222">/*@</font>
-<a name="line152">152: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A> - Sets the function to be used to restrict vector</font>
-<a name="line153">153: </a><font color="#B22222">   from level l to l-1. </font>
+<a name="line152">152: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetInterpolation.html#PCMGGetInterpolation">PCMGGetInterpolation</A> - Gets the function to be used to calculate the </font>
+<a name="line153">153: </a><font color="#B22222">   interpolation from l-1 to the lth level</font>
 
-<a name="line155">155: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
+<a name="line155">155: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
 
 <a name="line157">157: </a><font color="#B22222">   Input Parameters:</font>
 <a name="line158">158: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line159">159: </a><font color="#B22222">.  mat - the restriction matrix</font>
-<a name="line160">160: </a><font color="#B22222">-  l - the level (0 is coarsest) to supply [Do not supply 0]</font>
+<a name="line159">159: </a><font color="#B22222">-  l - the level (0 is coarsest) to supply [Do not supply 0]</font>
+
+<a name="line161">161: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line162">162: </a><font color="#B22222">.  mat - the interpolation matrix</font>
+
+<a name="line164">164: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line166">166: </a><font color="#B22222">.keywords: MG, get, multigrid, interpolation, level</font>
+
+<a name="line168">168: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGGetRestriction.html#PCMGGetRestriction">PCMGGetRestriction</A>(), <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetRScale.html#PCMGGetRScale">PCMGGetRScale</A>()</font>
+<a name="line169">169: </a><font color="#B22222">@*/</font>
+<a name="line170">170: </a><strong><font color="#4169E1"><a name="PCMGGetInterpolation"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGGetInterpolation.html#PCMGGetInterpolation">PCMGGetInterpolation</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *mat)</font></strong>
+<a name="line171">171: </a>{
+<a name="line172">172: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line173">173: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
 
-<a name="line162">162: </a><font color="#B22222">   Level: advanced</font>
+<a name="line179">179: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line180">180: </a>  <font color="#4169E1">if</font> (l &lt;= 0 || mg-&gt;nlevels &lt;= l) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Level %D must be in range {1,...,%D}"</font>,l,mg-&gt;nlevels-1);
+<a name="line181">181: </a>  <font color="#4169E1">if</font> (!mglevels[l]-&gt;interpolate) {
+<a name="line182">182: </a>    <font color="#4169E1">if</font> (!mglevels[l]-&gt;restrct) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must call <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>() or <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>()"</font>);
+<a name="line183">183: </a>    <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>(pc,l,mglevels[l]-&gt;restrct);
+<a name="line184">184: </a>  }
+<a name="line185">185: </a>  *mat = mglevels[l]-&gt;interpolate;
+<a name="line186">186: </a>  <font color="#4169E1">return</font>(0);
+<a name="line187">187: </a>}
+
+<a name="line191">191: </a><font color="#B22222">/*@</font>
+<a name="line192">192: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A> - Sets the function to be used to restrict vector</font>
+<a name="line193">193: </a><font color="#B22222">   from level l to l-1. </font>
+
+<a name="line195">195: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
+
+<a name="line197">197: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line198">198: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line199">199: </a><font color="#B22222">.  l - the level (0 is coarsest) to supply [Do not supply 0]</font>
+<a name="line200">200: </a><font color="#B22222">-  mat - the restriction matrix</font>
+
+<a name="line202">202: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line204">204: </a><font color="#B22222">   Notes: </font>
+<a name="line205">205: </a><font color="#B22222">          Usually this is the same matrix used also to set the interpolation</font>
+<a name="line206">206: </a><font color="#B22222">    for the same level.</font>
+
+<a name="line208">208: </a><font color="#B22222">          One can pass in the interpolation matrix or its transpose; PETSc figures</font>
+<a name="line209">209: </a><font color="#B22222">    out from the matrix size which one it is.</font>
+
+<a name="line211">211: </a><font color="#B22222">         If you do not set this, the transpose of the <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> set with <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>()</font>
+<a name="line212">212: </a><font color="#B22222">    is used.</font>
 
-<a name="line164">164: </a><font color="#B22222">   Notes: </font>
-<a name="line165">165: </a><font color="#B22222">          Usually this is the same matrix used also to set the interpolation</font>
-<a name="line166">166: </a><font color="#B22222">    for the same level.</font>
+<a name="line214">214: </a><font color="#B22222">.keywords: MG, set, multigrid, restriction, level</font>
 
-<a name="line168">168: </a><font color="#B22222">          One can pass in the interpolation matrix or its transpose; PETSc figures</font>
-<a name="line169">169: </a><font color="#B22222">    out from the matrix size which one it is.</font>
-
-<a name="line171">171: </a><font color="#B22222">         If you do not set this, the transpose of the <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> set with <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>()</font>
-<a name="line172">172: </a><font color="#B22222">    is used.</font>
-
-<a name="line174">174: </a><font color="#B22222">.keywords: MG, set, multigrid, restriction, level</font>
-
-<a name="line176">176: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>()</font>
-<a name="line177">177: </a><font color="#B22222">@*/</font>
-<a name="line178">178: </a><strong><font color="#4169E1"><a name="PCMGSetRestriction"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat)</font></strong>
-<a name="line179">179: </a>{
-<a name="line181">181: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line182">182: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-
-<a name="line186">186: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
-<a name="line187">187: </a>  <font color="#4169E1">if</font> (!l) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Do not set restriction routine for coarsest level"</font>);
-<a name="line188">188: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat);
-<a name="line189">189: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;mglevels[l]-&gt;restrct);
-<a name="line190">190: </a>  mglevels[l]-&gt;restrct  = mat;
-<a name="line191">191: </a>  <font color="#4169E1">return</font>(0);
-<a name="line192">192: </a>}
-
-<a name="line196">196: </a><font color="#B22222">/*@</font>
-<a name="line197">197: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetRScale.html#PCMGSetRScale">PCMGSetRScale</A> - Sets the pointwise scaling for the restriction operator from level l to l-1. </font>
-
-<a name="line199">199: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
-
-<a name="line201">201: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line202">202: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line203">203: </a><font color="#B22222">.  rscale - the scaling</font>
-<a name="line204">204: </a><font color="#B22222">-  l - the level (0 is coarsest) to supply [Do not supply 0]</font>
-
-<a name="line206">206: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line208">208: </a><font color="#B22222">   Notes: </font>
-<a name="line209">209: </a><font color="#B22222">       When evaluating a function on a coarse level one does not want to do F( R * x) one does F( rscale * R * x) where rscale is 1 over the row sums of R. </font>
-
-<a name="line211">211: </a><font color="#B22222">.keywords: MG, set, multigrid, restriction, level</font>
-
-<a name="line213">213: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>(), <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>()</font>
-<a name="line214">214: </a><font color="#B22222">@*/</font>
-<a name="line215">215: </a><strong><font color="#4169E1"><a name="PCMGSetRScale"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetRScale.html#PCMGSetRScale">PCMGSetRScale</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> rscale)</font></strong>
-<a name="line216">216: </a>{
-<a name="line218">218: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line219">219: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-
-<a name="line223">223: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
-<a name="line224">224: </a>  <font color="#4169E1">if</font> (!l) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Do not set restriction routine for coarsest level"</font>);
-<a name="line225">225: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)rscale);
-<a name="line226">226: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mglevels[l]-&gt;rscale);
-<a name="line227">227: </a>  mglevels[l]-&gt;rscale  = rscale;
-<a name="line228">228: </a>  <font color="#4169E1">return</font>(0);
-<a name="line229">229: </a>}
-
-<a name="line233">233: </a><font color="#B22222">/*@</font>
-<a name="line234">234: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetSmoother.html#PCMGGetSmoother">PCMGGetSmoother</A> - Gets the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> context to be used as smoother for </font>
-<a name="line235">235: </a><font color="#B22222">   both pre- and post-smoothing.  Call both <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>() and </font>
-<a name="line236">236: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>() to use different functions for pre- and </font>
-<a name="line237">237: </a><font color="#B22222">   post-smoothing.</font>
-
-<a name="line239">239: </a><font color="#B22222">   Not Collective, <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> returned is parallel if <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> is </font>
-
-<a name="line241">241: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line242">242: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line243">243: </a><font color="#B22222">-  l - the level (0 is coarsest) to supply</font>
-
-<a name="line245">245: </a><font color="#B22222">   Ouput Parameters:</font>
-<a name="line246">246: </a><font color="#B22222">.  ksp - the smoother</font>
-
-<a name="line248">248: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line250">250: </a><font color="#B22222">.keywords: MG, get, multigrid, level, smoother, pre-smoother, post-smoother</font>
-
-<a name="line252">252: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>()</font>
-<a name="line253">253: </a><font color="#B22222">@*/</font>
-<a name="line254">254: </a><strong><font color="#4169E1"><a name="PCMGGetSmoother"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGGetSmoother.html#PCMGGetSmoother">PCMGGetSmoother</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> *ksp)</font></strong>
-<a name="line255">255: </a>{
-<a name="line256">256: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line257">257: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-
-<a name="line261">261: </a>  *ksp = mglevels[l]-&gt;smoothd;
-<a name="line262">262: </a>  <font color="#4169E1">return</font>(0);
-<a name="line263">263: </a>}
-
-<a name="line267">267: </a><font color="#B22222">/*@</font>
-<a name="line268">268: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A> - Gets the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> context to be used as smoother after </font>
-<a name="line269">269: </a><font color="#B22222">   coarse grid correction (post-smoother). </font>
-
-<a name="line271">271: </a><font color="#B22222">   Not Collective, <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> returned is parallel if <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> is</font>
-
-<a name="line273">273: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line274">274: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line275">275: </a><font color="#B22222">-  l  - the level (0 is coarsest) to supply</font>
-
-<a name="line277">277: </a><font color="#B22222">   Ouput Parameters:</font>
-<a name="line278">278: </a><font color="#B22222">.  ksp - the smoother</font>
-
-<a name="line280">280: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line282">282: </a><font color="#B22222">   Notes: calling this will result in a different pre and post smoother so you may need to </font>
-<a name="line283">283: </a><font color="#B22222">         set options on the pre smoother also</font>
-
-<a name="line285">285: </a><font color="#B22222">.keywords: MG, multigrid, get, smoother, up, post-smoother, level</font>
-
-<a name="line287">287: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>()</font>
-<a name="line288">288: </a><font color="#B22222">@*/</font>
-<a name="line289">289: </a><strong><font color="#4169E1"><a name="PCMGGetSmootherUp"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> *ksp)</font></strong>
-<a name="line290">290: </a>{
-<a name="line291">291: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line292">292: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-<a name="line294">294: </a>  const char     *prefix;
-<a name="line295">295: </a>  <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm;
-
-<a name="line299">299: </a>  <font color="#B22222">/*</font>
-<a name="line300">300: </a><font color="#B22222">     This is called only if user wants a different pre-smoother from post.</font>
-<a name="line301">301: </a><font color="#B22222">     Thus we check if a different one has already been allocated, </font>
-<a name="line302">302: </a><font color="#B22222">     if not we allocate it.</font>
-<a name="line303">303: </a><font color="#B22222">  */</font>
-<a name="line304">304: </a>  <font color="#4169E1">if</font> (!l) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"There is no such thing as a up smoother on the coarse grid"</font>);
-<a name="line305">305: </a>  <font color="#4169E1">if</font> (mglevels[l]-&gt;smoothu == mglevels[l]-&gt;smoothd) {
-<a name="line306">306: </a>    <A href="../../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mglevels[l]-&gt;smoothd,&amp;comm);
-<a name="line307">307: </a>    <A href="../../../../../docs/manualpages/KSP/KSPGetOptionsPrefix.html#KSPGetOptionsPrefix">KSPGetOptionsPrefix</A>(mglevels[l]-&gt;smoothd,&amp;prefix);
-<a name="line308">308: </a>    <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(comm,&amp;mglevels[l]-&gt;smoothu);
-<a name="line309">309: </a>    <A href="../../../../../docs/manualpages/Sys/PetscObjectIncrementTabLevel.html#PetscObjectIncrementTabLevel">PetscObjectIncrementTabLevel</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mglevels[l]-&gt;smoothu,(<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,mglevels[0]-&gt;levels-l);
-<a name="line310">310: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>(mglevels[l]-&gt;smoothu,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,1);
-<a name="line311">311: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetOptionsPrefix.html#KSPSetOptionsPrefix">KSPSetOptionsPrefix</A>(mglevels[l]-&gt;smoothu,prefix);
-<a name="line312">312: </a>    PetscLogObjectParent(pc,mglevels[l]-&gt;smoothu);
-<a name="line313">313: </a>  }
-<a name="line314">314: </a>  <font color="#4169E1">if</font> (ksp) *ksp = mglevels[l]-&gt;smoothu;
-<a name="line315">315: </a>  <font color="#4169E1">return</font>(0);
-<a name="line316">316: </a>}
-
-<a name="line320">320: </a><font color="#B22222">/*@</font>
-<a name="line321">321: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A> - Gets the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> context to be used as smoother before </font>
-<a name="line322">322: </a><font color="#B22222">   coarse grid correction (pre-smoother). </font>
-
-<a name="line324">324: </a><font color="#B22222">   Not Collective, <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> returned is parallel if <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> is</font>
-
-<a name="line326">326: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line327">327: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line328">328: </a><font color="#B22222">-  l  - the level (0 is coarsest) to supply</font>
-
-<a name="line330">330: </a><font color="#B22222">   Ouput Parameters:</font>
-<a name="line331">331: </a><font color="#B22222">.  ksp - the smoother</font>
-
-<a name="line333">333: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line335">335: </a><font color="#B22222">   Notes: calling this will result in a different pre and post smoother so you may need to </font>
-<a name="line336">336: </a><font color="#B22222">         set options on the post smoother also</font>
-
-<a name="line338">338: </a><font color="#B22222">.keywords: MG, multigrid, get, smoother, down, pre-smoother, level</font>
-
-<a name="line340">340: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetSmoother.html#PCMGGetSmoother">PCMGGetSmoother</A>()</font>
-<a name="line341">341: </a><font color="#B22222">@*/</font>
-<a name="line342">342: </a><strong><font color="#4169E1"><a name="PCMGGetSmootherDown"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> *ksp)</font></strong>
-<a name="line343">343: </a>{
-<a name="line345">345: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line346">346: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-
-<a name="line350">350: </a>  <font color="#B22222">/* make sure smoother up and down are different */</font>
-<a name="line351">351: </a>  <font color="#4169E1">if</font> (l) {
-<a name="line352">352: </a>    <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(pc,l,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line353">353: </a>  }
-<a name="line354">354: </a>  *ksp = mglevels[l]-&gt;smoothd;
-<a name="line355">355: </a>  <font color="#4169E1">return</font>(0);
-<a name="line356">356: </a>}
-
-<a name="line360">360: </a><font color="#B22222">/*@</font>
-<a name="line361">361: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetCyclesOnLevel.html#PCMGSetCyclesOnLevel">PCMGSetCyclesOnLevel</A> - Sets the number of cycles to run on this level. </font>
-
-<a name="line363">363: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
-
-<a name="line365">365: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line366">366: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line367">367: </a><font color="#B22222">.  l  - the level (0 is coarsest) this is to be used for</font>
-<a name="line368">368: </a><font color="#B22222">-  n  - the number of cycles</font>
-
-<a name="line370">370: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line372">372: </a><font color="#B22222">.keywords: MG, multigrid, set, cycles, V-cycle, W-cycle, level</font>
-
-<a name="line374">374: </a><font color="#B22222">.seealso: PCMGSetCycles()</font>
-<a name="line375">375: </a><font color="#B22222">@*/</font>
-<a name="line376">376: </a><strong><font color="#4169E1"><a name="PCMGSetCyclesOnLevel"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetCyclesOnLevel.html#PCMGSetCyclesOnLevel">PCMGSetCyclesOnLevel</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> c)</font></strong>
-<a name="line377">377: </a>{
-<a name="line378">378: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line379">379: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-
-<a name="line383">383: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
-<a name="line386">386: </a>  mglevels[l]-&gt;cycles  = c;
-<a name="line387">387: </a>  <font color="#4169E1">return</font>(0);
-<a name="line388">388: </a>}
-
-<a name="line392">392: </a><font color="#B22222">/*@</font>
-<a name="line393">393: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetRhs.html#PCMGSetRhs">PCMGSetRhs</A> - Sets the vector space to be used to store the right-hand side</font>
-<a name="line394">394: </a><font color="#B22222">   on a particular level. </font>
-
-<a name="line396">396: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
-
-<a name="line398">398: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line399">399: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line400">400: </a><font color="#B22222">.  l  - the level (0 is coarsest) this is to be used for</font>
-<a name="line401">401: </a><font color="#B22222">-  c  - the space</font>
-
-<a name="line403">403: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line405">405: </a><font color="#B22222">   Notes: If this is not provided PETSc will automatically generate one.</font>
-
-<a name="line407">407: </a><font color="#B22222">          You do not need to keep a reference to this vector if you do </font>
-<a name="line408">408: </a><font color="#B22222">          not need it <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>() will properly free it.</font>
-
-<a name="line410">410: </a><font color="#B22222">.keywords: MG, multigrid, set, right-hand-side, rhs, level</font>
-
-<a name="line412">412: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetX.html#PCMGSetX">PCMGSetX</A>(), <A href="../../../../../docs/manualpages/PC/PCMGSetR.html#PCMGSetR">PCMGSetR</A>()</font>
-<a name="line413">413: </a><font color="#B22222">@*/</font>
-<a name="line414">414: </a><strong><font color="#4169E1"><a name="PCMGSetRhs"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetRhs.html#PCMGSetRhs">PCMGSetRhs</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> c)</font></strong>
-<a name="line415">415: </a>{
-<a name="line417">417: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line418">418: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-
-<a name="line422">422: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
-<a name="line423">423: </a>  <font color="#4169E1">if</font> (l == mglevels[0]-&gt;levels-1) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Do not set rhs for finest level"</font>);
-<a name="line424">424: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)c);
-<a name="line425">425: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mglevels[l]-&gt;b);
-<a name="line426">426: </a>  mglevels[l]-&gt;b  = c;
-<a name="line427">427: </a>  <font color="#4169E1">return</font>(0);
-<a name="line428">428: </a>}
-
-<a name="line432">432: </a><font color="#B22222">/*@</font>
-<a name="line433">433: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetX.html#PCMGSetX">PCMGSetX</A> - Sets the vector space to be used to store the solution on a </font>
-<a name="line434">434: </a><font color="#B22222">   particular level.</font>
-
-<a name="line436">436: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
-
-<a name="line438">438: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line439">439: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line440">440: </a><font color="#B22222">.  l - the level (0 is coarsest) this is to be used for</font>
-<a name="line441">441: </a><font color="#B22222">-  c - the space</font>
-
-<a name="line443">443: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line445">445: </a><font color="#B22222">   Notes: If this is not provided PETSc will automatically generate one.</font>
-
-<a name="line447">447: </a><font color="#B22222">          You do not need to keep a reference to this vector if you do </font>
-<a name="line448">448: </a><font color="#B22222">          not need it <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>() will properly free it.</font>
-
-<a name="line450">450: </a><font color="#B22222">.keywords: MG, multigrid, set, solution, level</font>
-
-<a name="line452">452: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetRhs.html#PCMGSetRhs">PCMGSetRhs</A>(), <A href="../../../../../docs/manualpages/PC/PCMGSetR.html#PCMGSetR">PCMGSetR</A>()</font>
-<a name="line453">453: </a><font color="#B22222">@*/</font>
-<a name="line454">454: </a><strong><font color="#4169E1"><a name="PCMGSetX"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetX.html#PCMGSetX">PCMGSetX</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> c)</font></strong>
-<a name="line455">455: </a>{
-<a name="line457">457: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line458">458: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-
-<a name="line462">462: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
-<a name="line463">463: </a>  <font color="#4169E1">if</font> (l == mglevels[0]-&gt;levels-1) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Do not set x for finest level"</font>);
-<a name="line464">464: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)c);
-<a name="line465">465: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mglevels[l]-&gt;x);
-<a name="line466">466: </a>  mglevels[l]-&gt;x  = c;
-<a name="line467">467: </a>  <font color="#4169E1">return</font>(0);
-<a name="line468">468: </a>}
-
-<a name="line472">472: </a><font color="#B22222">/*@</font>
-<a name="line473">473: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetR.html#PCMGSetR">PCMGSetR</A> - Sets the vector space to be used to store the residual on a</font>
-<a name="line474">474: </a><font color="#B22222">   particular level. </font>
-
-<a name="line476">476: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
-
-<a name="line478">478: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line479">479: </a><font color="#B22222">+  pc - the multigrid context </font>
-<a name="line480">480: </a><font color="#B22222">.  l - the level (0 is coarsest) this is to be used for</font>
-<a name="line481">481: </a><font color="#B22222">-  c - the space</font>
-
-<a name="line483">483: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line485">485: </a><font color="#B22222">   Notes: If this is not provided PETSc will automatically generate one.</font>
-
-<a name="line487">487: </a><font color="#B22222">          You do not need to keep a reference to this vector if you do </font>
-<a name="line488">488: </a><font color="#B22222">          not need it <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>() will properly free it.</font>
-
-<a name="line490">490: </a><font color="#B22222">.keywords: MG, multigrid, set, residual, level</font>
-<a name="line491">491: </a><font color="#B22222">@*/</font>
-<a name="line492">492: </a><strong><font color="#4169E1"><a name="PCMGSetR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetR.html#PCMGSetR">PCMGSetR</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> c)</font></strong>
-<a name="line493">493: </a>{
-<a name="line495">495: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
-<a name="line496">496: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
-
-<a name="line500">500: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
-<a name="line501">501: </a>  <font color="#4169E1">if</font> (!l) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Need not set residual vector for coarse grid"</font>);
-<a name="line502">502: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)c);
-<a name="line503">503: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mglevels[l]-&gt;r);
-<a name="line504">504: </a>  mglevels[l]-&gt;r  = c;
-<a name="line505">505: </a>  <font color="#4169E1">return</font>(0);
-<a name="line506">506: </a>}
+<a name="line216">216: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>()</font>
+<a name="line217">217: </a><font color="#B22222">@*/</font>
+<a name="line218">218: </a><strong><font color="#4169E1"><a name="PCMGSetRestriction"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat)</font></strong>
+<a name="line219">219: </a>{
+<a name="line221">221: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line222">222: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line227">227: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line228">228: </a>  <font color="#4169E1">if</font> (!l) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Do not set restriction routine for coarsest level"</font>);
+<a name="line229">229: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat);
+<a name="line230">230: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;mglevels[l]-&gt;restrct);
+<a name="line231">231: </a>  mglevels[l]-&gt;restrct  = mat;
+<a name="line232">232: </a>  <font color="#4169E1">return</font>(0);
+<a name="line233">233: </a>}
+
+<a name="line237">237: </a><font color="#B22222">/*@</font>
+<a name="line238">238: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetRestriction.html#PCMGGetRestriction">PCMGGetRestriction</A> - Gets the function to be used to restrict vector</font>
+<a name="line239">239: </a><font color="#B22222">   from level l to l-1. </font>
+
+<a name="line241">241: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
+
+<a name="line243">243: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line244">244: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line245">245: </a><font color="#B22222">-  l - the level (0 is coarsest) to supply [Do not supply 0]</font>
+
+<a name="line247">247: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line248">248: </a><font color="#B22222">.  mat - the restriction matrix</font>
+
+<a name="line250">250: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line252">252: </a><font color="#B22222">.keywords: MG, get, multigrid, restriction, level</font>
+
+<a name="line254">254: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGGetInterpolation.html#PCMGGetInterpolation">PCMGGetInterpolation</A>(), <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetRScale.html#PCMGGetRScale">PCMGGetRScale</A>()</font>
+<a name="line255">255: </a><font color="#B22222">@*/</font>
+<a name="line256">256: </a><strong><font color="#4169E1"><a name="PCMGGetRestriction"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGGetRestriction.html#PCMGGetRestriction">PCMGGetRestriction</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *mat)</font></strong>
+<a name="line257">257: </a>{
+<a name="line258">258: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line259">259: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line265">265: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line266">266: </a>  <font color="#4169E1">if</font> (l &lt;= 0 || mg-&gt;nlevels &lt;= l) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Level %D must be in range {1,...,%D}"</font>,l,mg-&gt;nlevels-1);
+<a name="line267">267: </a>  <font color="#4169E1">if</font> (!mglevels[l]-&gt;restrct) {
+<a name="line268">268: </a>    <font color="#4169E1">if</font> (!mglevels[l]-&gt;interpolate) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must call <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>() or <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>()"</font>);
+<a name="line269">269: </a>    <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>(pc,l,mglevels[l]-&gt;interpolate);
+<a name="line270">270: </a>  }
+<a name="line271">271: </a>  *mat = mglevels[l]-&gt;restrct;
+<a name="line272">272: </a>  <font color="#4169E1">return</font>(0);
+<a name="line273">273: </a>}
+
+<a name="line277">277: </a><font color="#B22222">/*@</font>
+<a name="line278">278: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetRScale.html#PCMGSetRScale">PCMGSetRScale</A> - Sets the pointwise scaling for the restriction operator from level l to l-1.</font>
+
+<a name="line280">280: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
+
+<a name="line282">282: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line283">283: </a><font color="#B22222">+  pc - the multigrid context</font>
+<a name="line284">284: </a><font color="#B22222">-  l - the level (0 is coarsest) to supply [Do not supply 0]</font>
+<a name="line285">285: </a><font color="#B22222">.  rscale - the scaling</font>
+
+<a name="line287">287: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line289">289: </a><font color="#B22222">   Notes: </font>
+<a name="line290">290: </a><font color="#B22222">       When evaluating a function on a coarse level one does not want to do F( R * x) one does F( rscale * R * x) where rscale is 1 over the row sums of R. </font>
+
+<a name="line292">292: </a><font color="#B22222">.keywords: MG, set, multigrid, restriction, level</font>
+
+<a name="line294">294: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>(), <A href="../../../../../docs/manualpages/PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetRScale.html#PCMGGetRScale">PCMGGetRScale</A>()</font>
+<a name="line295">295: </a><font color="#B22222">@*/</font>
+<a name="line296">296: </a><strong><font color="#4169E1"><a name="PCMGSetRScale"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetRScale.html#PCMGSetRScale">PCMGSetRScale</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> rscale)</font></strong>
+<a name="line297">297: </a>{
+<a name="line299">299: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line300">300: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line304">304: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line305">305: </a>  <font color="#4169E1">if</font> (l &lt;= 0 || mg-&gt;nlevels &lt;= l) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Level %D must be in range {1,...,%D}"</font>,l,mg-&gt;nlevels-1);
+<a name="line306">306: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)rscale);
+<a name="line307">307: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mglevels[l]-&gt;rscale);
+<a name="line308">308: </a>  mglevels[l]-&gt;rscale  = rscale;
+<a name="line309">309: </a>  <font color="#4169E1">return</font>(0);
+<a name="line310">310: </a>}
+
+<a name="line314">314: </a><font color="#B22222">/*@</font>
+<a name="line315">315: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetRScale.html#PCMGGetRScale">PCMGGetRScale</A> - Gets the pointwise scaling for the restriction operator from level l to l-1.</font>
+
+<a name="line317">317: </a><font color="#B22222">   Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
+
+<a name="line319">319: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line320">320: </a><font color="#B22222">+  pc - the multigrid context</font>
+<a name="line321">321: </a><font color="#B22222">.  rscale - the scaling</font>
+<a name="line322">322: </a><font color="#B22222">-  l - the level (0 is coarsest) to supply [Do not supply 0]</font>
+
+<a name="line324">324: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line326">326: </a><font color="#B22222">   Notes: </font>
+<a name="line327">327: </a><font color="#B22222">       When evaluating a function on a coarse level one does not want to do F( R * x) one does F( rscale * R * x) where rscale is 1 over the row sums of R. </font>
+
+<a name="line329">329: </a><font color="#B22222">.keywords: MG, set, multigrid, restriction, level</font>
+
+<a name="line331">331: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetRestriction.html#PCMGGetRestriction">PCMGGetRestriction</A>()</font>
+<a name="line332">332: </a><font color="#B22222">@*/</font>
+<a name="line333">333: </a><strong><font color="#4169E1"><a name="PCMGGetRScale"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../../docs/manualpages/PC/PCMGGetRScale.html#PCMGGetRScale">PCMGGetRScale</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *rscale)</font></strong>
+<a name="line334">334: </a>{
+<a name="line336">336: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line337">337: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line341">341: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line342">342: </a>  <font color="#4169E1">if</font> (l &lt;= 0 || mg-&gt;nlevels &lt;= l) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Level %D must be in range {1,...,%D}"</font>,l,mg-&gt;nlevels-1);
+<a name="line343">343: </a>  <font color="#4169E1">if</font> (!mglevels[l]-&gt;rscale) {
+<a name="line344">344: </a>    <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> R;
+<a name="line345">345: </a>    <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,Y,coarse,fine;
+<a name="line346">346: </a>    <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> M,N;
+<a name="line347">347: </a>    <A href="../../../../../docs/manualpages/PC/PCMGGetRestriction.html#PCMGGetRestriction">PCMGGetRestriction</A>(pc,l,&amp;R);
+<a name="line348">348: </a>    <A href="../../../../../docs/manualpages/Mat/MatGetVecs.html#MatGetVecs">MatGetVecs</A>(R,&amp;X,&amp;Y);
+<a name="line349">349: </a>    <A href="../../../../../docs/manualpages/Mat/MatGetSize.html#MatGetSize">MatGetSize</A>(R,&amp;M,&amp;N);
+<a name="line350">350: </a>    <font color="#4169E1">if</font> (M &lt; N) {fine = X; coarse = Y;}
+<a name="line351">351: </a>    <font color="#4169E1">else</font> <font color="#4169E1">if</font> (N &lt; M) {fine = Y; coarse = X;}
+<a name="line352">352: </a>    <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)R)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Restriction matrix is square, cannot determine which <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> is coarser"</font>);
+<a name="line353">353: </a>    <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(fine,1.);
+<a name="line354">354: </a>    <A href="../../../../../docs/manualpages/Mat/MatRestrict.html#MatRestrict">MatRestrict</A>(R,fine,coarse);
+<a name="line355">355: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;fine);
+<a name="line356">356: </a>    <A href="../../../../../docs/manualpages/Vec/VecReciprocal.html#VecReciprocal">VecReciprocal</A>(coarse);
+<a name="line357">357: </a>    mglevels[l]-&gt;rscale = coarse;
+<a name="line358">358: </a>  }
+<a name="line359">359: </a>  *rscale = mglevels[l]-&gt;rscale;
+<a name="line360">360: </a>  <font color="#4169E1">return</font>(0);
+<a name="line361">361: </a>}
+
+<a name="line365">365: </a><font color="#B22222">/*@</font>
+<a name="line366">366: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetSmoother.html#PCMGGetSmoother">PCMGGetSmoother</A> - Gets the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> context to be used as smoother for </font>
+<a name="line367">367: </a><font color="#B22222">   both pre- and post-smoothing.  Call both <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>() and </font>
+<a name="line368">368: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>() to use different functions for pre- and </font>
+<a name="line369">369: </a><font color="#B22222">   post-smoothing.</font>
+
+<a name="line371">371: </a><font color="#B22222">   Not Collective, <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> returned is parallel if <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> is </font>
+
+<a name="line373">373: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line374">374: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line375">375: </a><font color="#B22222">-  l - the level (0 is coarsest) to supply</font>
+
+<a name="line377">377: </a><font color="#B22222">   Ouput Parameters:</font>
+<a name="line378">378: </a><font color="#B22222">.  ksp - the smoother</font>
+
+<a name="line380">380: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line382">382: </a><font color="#B22222">.keywords: MG, get, multigrid, level, smoother, pre-smoother, post-smoother</font>
+
+<a name="line384">384: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>()</font>
+<a name="line385">385: </a><font color="#B22222">@*/</font>
+<a name="line386">386: </a><strong><font color="#4169E1"><a name="PCMGGetSmoother"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGGetSmoother.html#PCMGGetSmoother">PCMGGetSmoother</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> *ksp)</font></strong>
+<a name="line387">387: </a>{
+<a name="line388">388: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line389">389: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line393">393: </a>  *ksp = mglevels[l]-&gt;smoothd;
+<a name="line394">394: </a>  <font color="#4169E1">return</font>(0);
+<a name="line395">395: </a>}
+
+<a name="line399">399: </a><font color="#B22222">/*@</font>
+<a name="line400">400: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A> - Gets the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> context to be used as smoother after </font>
+<a name="line401">401: </a><font color="#B22222">   coarse grid correction (post-smoother). </font>
+
+<a name="line403">403: </a><font color="#B22222">   Not Collective, <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> returned is parallel if <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> is</font>
+
+<a name="line405">405: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line406">406: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line407">407: </a><font color="#B22222">-  l  - the level (0 is coarsest) to supply</font>
+
+<a name="line409">409: </a><font color="#B22222">   Ouput Parameters:</font>
+<a name="line410">410: </a><font color="#B22222">.  ksp - the smoother</font>
+
+<a name="line412">412: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line414">414: </a><font color="#B22222">   Notes: calling this will result in a different pre and post smoother so you may need to </font>
+<a name="line415">415: </a><font color="#B22222">         set options on the pre smoother also</font>
+
+<a name="line417">417: </a><font color="#B22222">.keywords: MG, multigrid, get, smoother, up, post-smoother, level</font>
+
+<a name="line419">419: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>()</font>
+<a name="line420">420: </a><font color="#B22222">@*/</font>
+<a name="line421">421: </a><strong><font color="#4169E1"><a name="PCMGGetSmootherUp"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> *ksp)</font></strong>
+<a name="line422">422: </a>{
+<a name="line423">423: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line424">424: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+<a name="line426">426: </a>  const char     *prefix;
+<a name="line427">427: </a>  <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm;
+
+<a name="line431">431: </a>  <font color="#B22222">/*</font>
+<a name="line432">432: </a><font color="#B22222">     This is called only if user wants a different pre-smoother from post.</font>
+<a name="line433">433: </a><font color="#B22222">     Thus we check if a different one has already been allocated, </font>
+<a name="line434">434: </a><font color="#B22222">     if not we allocate it.</font>
+<a name="line435">435: </a><font color="#B22222">  */</font>
+<a name="line436">436: </a>  <font color="#4169E1">if</font> (!l) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"There is no such thing as a up smoother on the coarse grid"</font>);
+<a name="line437">437: </a>  <font color="#4169E1">if</font> (mglevels[l]-&gt;smoothu == mglevels[l]-&gt;smoothd) {
+<a name="line438">438: </a>    const <A href="../../../../../docs/manualpages/KSP/KSPType.html#KSPType">KSPType</A> ksptype;
+<a name="line439">439: </a>    const <A href="../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> pctype;
+<a name="line440">440: </a>    <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> ipc;
+<a name="line441">441: </a>    <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rtol,abstol,dtol;
+<a name="line442">442: </a>    <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> maxits;
+<a name="line443">443: </a>    <A href="../../../../../docs/manualpages/KSP/KSPNormType.html#KSPNormType">KSPNormType</A> normtype;
+<a name="line444">444: </a>    <A href="../../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mglevels[l]-&gt;smoothd,&amp;comm);
+<a name="line445">445: </a>    <A href="../../../../../docs/manualpages/KSP/KSPGetOptionsPrefix.html#KSPGetOptionsPrefix">KSPGetOptionsPrefix</A>(mglevels[l]-&gt;smoothd,&amp;prefix);
+<a name="line446">446: </a>    <A href="../../../../../docs/manualpages/KSP/KSPGetTolerances.html#KSPGetTolerances">KSPGetTolerances</A>(mglevels[l]-&gt;smoothd,&amp;rtol,&amp;abstol,&amp;dtol,&amp;maxits);
+<a name="line447">447: </a>    <A href="../../../../../docs/manualpages/KSP/KSPGetType.html#KSPGetType">KSPGetType</A>(mglevels[l]-&gt;smoothd,&amp;ksptype);
+<a name="line448">448: </a>    <A href="../../../../../docs/manualpages/KSP/KSPGetNormType.html#KSPGetNormType">KSPGetNormType</A>(mglevels[l]-&gt;smoothd,&amp;normtype);
+<a name="line449">449: </a>    <A href="../../../../../docs/manualpages/KSP/KSPGetPC.html#KSPGetPC">KSPGetPC</A>(mglevels[l]-&gt;smoothd,&amp;ipc);
+<a name="line450">450: </a>    <A href="../../../../../docs/manualpages/PC/PCGetType.html#PCGetType">PCGetType</A>(ipc,&amp;pctype);
+
+<a name="line452">452: </a>    <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(comm,&amp;mglevels[l]-&gt;smoothu);
+<a name="line453">453: </a>    <A href="../../../../../docs/manualpages/Sys/PetscObjectIncrementTabLevel.html#PetscObjectIncrementTabLevel">PetscObjectIncrementTabLevel</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mglevels[l]-&gt;smoothu,(<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,mglevels[0]-&gt;levels-l);
+<a name="line454">454: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetOptionsPrefix.html#KSPSetOptionsPrefix">KSPSetOptionsPrefix</A>(mglevels[l]-&gt;smoothu,prefix);
+<a name="line455">455: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>(mglevels[l]-&gt;smoothu,rtol,abstol,dtol,maxits);
+<a name="line456">456: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(mglevels[l]-&gt;smoothu,ksptype);
+<a name="line457">457: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(mglevels[l]-&gt;smoothu,normtype);
+<a name="line458">458: </a>    <A href="../../../../../docs/manualpages/KSP/KSPSetConvergenceTest.html#KSPSetConvergenceTest">KSPSetConvergenceTest</A>(mglevels[l]-&gt;smoothu,<A href="../../../../../docs/manualpages/KSP/KSPSkipConverged.html#KSPSkipConverged">KSPSkipConverged</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line459">459: </a>    <A href="../../../../../docs/manualpages/KSP/KSPGetPC.html#KSPGetPC">KSPGetPC</A>(mglevels[l]-&gt;smoothu,&amp;ipc);
+<a name="line460">460: </a>    <A href="../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(ipc,pctype);
+<a name="line461">461: </a>    PetscLogObjectParent(pc,mglevels[l]-&gt;smoothu);
+<a name="line462">462: </a>  }
+<a name="line463">463: </a>  <font color="#4169E1">if</font> (ksp) *ksp = mglevels[l]-&gt;smoothu;
+<a name="line464">464: </a>  <font color="#4169E1">return</font>(0);
+<a name="line465">465: </a>}
+
+<a name="line469">469: </a><font color="#B22222">/*@</font>
+<a name="line470">470: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A> - Gets the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> context to be used as smoother before </font>
+<a name="line471">471: </a><font color="#B22222">   coarse grid correction (pre-smoother). </font>
+
+<a name="line473">473: </a><font color="#B22222">   Not Collective, <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> returned is parallel if <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> is</font>
+
+<a name="line475">475: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line476">476: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line477">477: </a><font color="#B22222">-  l  - the level (0 is coarsest) to supply</font>
+
+<a name="line479">479: </a><font color="#B22222">   Ouput Parameters:</font>
+<a name="line480">480: </a><font color="#B22222">.  ksp - the smoother</font>
+
+<a name="line482">482: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line484">484: </a><font color="#B22222">   Notes: calling this will result in a different pre and post smoother so you may need to </font>
+<a name="line485">485: </a><font color="#B22222">         set options on the post smoother also</font>
+
+<a name="line487">487: </a><font color="#B22222">.keywords: MG, multigrid, get, smoother, down, pre-smoother, level</font>
+
+<a name="line489">489: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(), <A href="../../../../../docs/manualpages/PC/PCMGGetSmoother.html#PCMGGetSmoother">PCMGGetSmoother</A>()</font>
+<a name="line490">490: </a><font color="#B22222">@*/</font>
+<a name="line491">491: </a><strong><font color="#4169E1"><a name="PCMGGetSmootherDown"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> *ksp)</font></strong>
+<a name="line492">492: </a>{
+<a name="line494">494: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line495">495: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line499">499: </a>  <font color="#B22222">/* make sure smoother up and down are different */</font>
+<a name="line500">500: </a>  <font color="#4169E1">if</font> (l) {
+<a name="line501">501: </a>    <A href="../../../../../docs/manualpages/PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(pc,l,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line502">502: </a>  }
+<a name="line503">503: </a>  *ksp = mglevels[l]-&gt;smoothd;
+<a name="line504">504: </a>  <font color="#4169E1">return</font>(0);
+<a name="line505">505: </a>}
+
+<a name="line509">509: </a><font color="#B22222">/*@</font>
+<a name="line510">510: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetCyclesOnLevel.html#PCMGSetCyclesOnLevel">PCMGSetCyclesOnLevel</A> - Sets the number of cycles to run on this level. </font>
+
+<a name="line512">512: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
+
+<a name="line514">514: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line515">515: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line516">516: </a><font color="#B22222">.  l  - the level (0 is coarsest) this is to be used for</font>
+<a name="line517">517: </a><font color="#B22222">-  n  - the number of cycles</font>
+
+<a name="line519">519: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line521">521: </a><font color="#B22222">.keywords: MG, multigrid, set, cycles, V-cycle, W-cycle, level</font>
+
+<a name="line523">523: </a><font color="#B22222">.seealso: PCMGSetCycles()</font>
+<a name="line524">524: </a><font color="#B22222">@*/</font>
+<a name="line525">525: </a><strong><font color="#4169E1"><a name="PCMGSetCyclesOnLevel"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetCyclesOnLevel.html#PCMGSetCyclesOnLevel">PCMGSetCyclesOnLevel</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> c)</font></strong>
+<a name="line526">526: </a>{
+<a name="line527">527: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line528">528: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line532">532: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line535">535: </a>  mglevels[l]-&gt;cycles  = c;
+<a name="line536">536: </a>  <font color="#4169E1">return</font>(0);
+<a name="line537">537: </a>}
+
+<a name="line541">541: </a><font color="#B22222">/*@</font>
+<a name="line542">542: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetRhs.html#PCMGSetRhs">PCMGSetRhs</A> - Sets the vector space to be used to store the right-hand side</font>
+<a name="line543">543: </a><font color="#B22222">   on a particular level. </font>
+
+<a name="line545">545: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
+
+<a name="line547">547: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line548">548: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line549">549: </a><font color="#B22222">.  l  - the level (0 is coarsest) this is to be used for</font>
+<a name="line550">550: </a><font color="#B22222">-  c  - the space</font>
+
+<a name="line552">552: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line554">554: </a><font color="#B22222">   Notes: If this is not provided PETSc will automatically generate one.</font>
+
+<a name="line556">556: </a><font color="#B22222">          You do not need to keep a reference to this vector if you do </font>
+<a name="line557">557: </a><font color="#B22222">          not need it <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>() will properly free it.</font>
+
+<a name="line559">559: </a><font color="#B22222">.keywords: MG, multigrid, set, right-hand-side, rhs, level</font>
+
+<a name="line561">561: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetX.html#PCMGSetX">PCMGSetX</A>(), <A href="../../../../../docs/manualpages/PC/PCMGSetR.html#PCMGSetR">PCMGSetR</A>()</font>
+<a name="line562">562: </a><font color="#B22222">@*/</font>
+<a name="line563">563: </a><strong><font color="#4169E1"><a name="PCMGSetRhs"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetRhs.html#PCMGSetRhs">PCMGSetRhs</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> c)</font></strong>
+<a name="line564">564: </a>{
+<a name="line566">566: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line567">567: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line571">571: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line572">572: </a>  <font color="#4169E1">if</font> (l == mglevels[0]-&gt;levels-1) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Do not set rhs for finest level"</font>);
+<a name="line573">573: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)c);
+<a name="line574">574: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mglevels[l]-&gt;b);
+<a name="line575">575: </a>  mglevels[l]-&gt;b  = c;
+<a name="line576">576: </a>  <font color="#4169E1">return</font>(0);
+<a name="line577">577: </a>}
+
+<a name="line581">581: </a><font color="#B22222">/*@</font>
+<a name="line582">582: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetX.html#PCMGSetX">PCMGSetX</A> - Sets the vector space to be used to store the solution on a </font>
+<a name="line583">583: </a><font color="#B22222">   particular level.</font>
+
+<a name="line585">585: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
+
+<a name="line587">587: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line588">588: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line589">589: </a><font color="#B22222">.  l - the level (0 is coarsest) this is to be used for (do not supply the finest level)</font>
+<a name="line590">590: </a><font color="#B22222">-  c - the space</font>
+
+<a name="line592">592: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line594">594: </a><font color="#B22222">   Notes: If this is not provided PETSc will automatically generate one.</font>
+
+<a name="line596">596: </a><font color="#B22222">          You do not need to keep a reference to this vector if you do </font>
+<a name="line597">597: </a><font color="#B22222">          not need it <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>() will properly free it.</font>
+
+<a name="line599">599: </a><font color="#B22222">.keywords: MG, multigrid, set, solution, level</font>
+
+<a name="line601">601: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCMGSetRhs.html#PCMGSetRhs">PCMGSetRhs</A>(), <A href="../../../../../docs/manualpages/PC/PCMGSetR.html#PCMGSetR">PCMGSetR</A>()</font>
+<a name="line602">602: </a><font color="#B22222">@*/</font>
+<a name="line603">603: </a><strong><font color="#4169E1"><a name="PCMGSetX"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetX.html#PCMGSetX">PCMGSetX</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> c)</font></strong>
+<a name="line604">604: </a>{
+<a name="line606">606: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line607">607: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line611">611: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line612">612: </a>  <font color="#4169E1">if</font> (l == mglevels[0]-&gt;levels-1) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Do not set x for finest level"</font>);
+<a name="line613">613: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)c);
+<a name="line614">614: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mglevels[l]-&gt;x);
+<a name="line615">615: </a>  mglevels[l]-&gt;x  = c;
+<a name="line616">616: </a>  <font color="#4169E1">return</font>(0);
+<a name="line617">617: </a>}
+
+<a name="line621">621: </a><font color="#B22222">/*@</font>
+<a name="line622">622: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCMGSetR.html#PCMGSetR">PCMGSetR</A> - Sets the vector space to be used to store the residual on a</font>
+<a name="line623">623: </a><font color="#B22222">   particular level. </font>
+
+<a name="line625">625: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> and <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
+
+<a name="line627">627: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line628">628: </a><font color="#B22222">+  pc - the multigrid context </font>
+<a name="line629">629: </a><font color="#B22222">.  l - the level (0 is coarsest) this is to be used for</font>
+<a name="line630">630: </a><font color="#B22222">-  c - the space</font>
+
+<a name="line632">632: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line634">634: </a><font color="#B22222">   Notes: If this is not provided PETSc will automatically generate one.</font>
+
+<a name="line636">636: </a><font color="#B22222">          You do not need to keep a reference to this vector if you do </font>
+<a name="line637">637: </a><font color="#B22222">          not need it <A href="../../../../../docs/manualpages/PC/PCDestroy.html#PCDestroy">PCDestroy</A>() will properly free it.</font>
+
+<a name="line639">639: </a><font color="#B22222">.keywords: MG, multigrid, set, residual, level</font>
+<a name="line640">640: </a><font color="#B22222">@*/</font>
+<a name="line641">641: </a><strong><font color="#4169E1"><a name="PCMGSetR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCMGSetR.html#PCMGSetR">PCMGSetR</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> l,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> c)</font></strong>
+<a name="line642">642: </a>{
+<a name="line644">644: </a>  PC_MG          *mg = (PC_MG*)pc-&gt;data;
+<a name="line645">645: </a>  PC_MG_Levels   **mglevels = mg-&gt;levels;
+
+<a name="line649">649: </a>  <font color="#4169E1">if</font> (!mglevels) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must set MG levels before calling"</font>);
+<a name="line650">650: </a>  <font color="#4169E1">if</font> (!l) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Need not set residual vector for coarse grid"</font>);
+<a name="line651">651: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)c);
+<a name="line652">652: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;mglevels[l]-&gt;r);
+<a name="line653">653: </a>  mglevels[l]-&gt;r  = c;
+<a name="line654">654: </a>  <font color="#4169E1">return</font>(0);
+<a name="line655">655: </a>}
 </pre>
 </body>
 

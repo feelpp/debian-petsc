@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESSetJacobian.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESSetJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESSetJacobian"><H1>SNESSetJacobian</H1></A>
 Sets the function to compute Jacobian as well as the location to store the matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESSetJacobian(SNES snes,Mat A,Mat B,PetscErrorCode (*func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void *ctx)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
@@ -62,6 +65,9 @@ each matrix.
 If using <A HREF="../SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>() to assemble a Jacobian, the ctx argument
 must be a <A HREF="../Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A>.
 <P>
+Other defect-correction schemes can be used by computing a different matrix in place of the Jacobian.  One common
+example is to use the "Picard linearization" which only differentiates through the highest order parts of each term.
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
@@ -84,7 +90,7 @@ must be a <A HREF="../Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A>.
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex18.c.html">src/snes/examples/tutorials/ex18.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex20.c.html">src/snes/examples/tutorials/ex20.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 </BODY></HTML>

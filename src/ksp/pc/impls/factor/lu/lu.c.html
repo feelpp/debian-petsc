@@ -1,13 +1,14 @@
 <center><a href="lu.c">Actual source code: lu.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/factor/lu/lu.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:17+00:00">
+<meta name="date" content="2012-08-29T17:00:48+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">   Defines a direct factorization preconditioner for any <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> implementation</font>
@@ -17,6 +18,7 @@
 
 <a name="line8">  8: </a><font color="#A020F0">#include &lt;../src/ksp/pc/impls/factor/lu/lu.h&gt;  </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 
+<a name="line10"> 10: </a>EXTERN_C_BEGIN
 <a name="line13"> 13: </a><strong><font color="#4169E1"><a name="PCFactorReorderForNonzeroDiagonal_LU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorReorderForNonzeroDiagonal_LU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> z)</font></strong>
 <a name="line14"> 14: </a>{
 <a name="line15"> 15: </a>  PC_LU *lu = (PC_LU*)pc-&gt;data;
@@ -29,7 +31,9 @@
 <a name="line23"> 23: </a>  }
 <a name="line24"> 24: </a>  <font color="#4169E1">return</font>(0);
 <a name="line25"> 25: </a>}
+<a name="line26"> 26: </a>EXTERN_C_END
 
+<a name="line28"> 28: </a>EXTERN_C_BEGIN
 <a name="line31"> 31: </a><strong><font color="#4169E1"><a name="PCFactorSetReuseOrdering_LU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorSetReuseOrdering_LU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flag)</font></strong>
 <a name="line32"> 32: </a>{
 <a name="line33"> 33: </a>  PC_LU *lu = (PC_LU*)pc-&gt;data;
@@ -37,7 +41,9 @@
 <a name="line36"> 36: </a>  lu-&gt;reuseordering = flag;
 <a name="line37"> 37: </a>  <font color="#4169E1">return</font>(0);
 <a name="line38"> 38: </a>}
+<a name="line39"> 39: </a>EXTERN_C_END
 
+<a name="line41"> 41: </a>EXTERN_C_BEGIN
 <a name="line44"> 44: </a><strong><font color="#4169E1"><a name="PCFactorSetReuseFill_LU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorSetReuseFill_LU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flag)</font></strong>
 <a name="line45"> 45: </a>{
 <a name="line46"> 46: </a>  PC_LU *lu = (PC_LU*)pc-&gt;data;
@@ -45,6 +51,7 @@
 <a name="line49"> 49: </a>  lu-&gt;reusefill = flag;
 <a name="line50"> 50: </a>  <font color="#4169E1">return</font>(0);
 <a name="line51"> 51: </a>}
+<a name="line52"> 52: </a>EXTERN_C_END
 
 <a name="line56"> 56: </a><strong><font color="#4169E1"><a name="PCSetFromOptions_LU"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCSetFromOptions_LU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line57"> 57: </a>{
@@ -71,7 +78,7 @@
 <a name="line81"> 81: </a>  PC_LU          *lu = (PC_LU*)pc-&gt;data;
 <a name="line83"> 83: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line86"> 86: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line86"> 86: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line87"> 87: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line88"> 88: </a>    <font color="#4169E1">if</font> (lu-&gt;inplace) {
 <a name="line89"> 89: </a>      <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  LU: in-place factorization\n"</font>);
@@ -188,6 +195,7 @@
 
 <a name="line221">221: </a><font color="#B22222">/* -----------------------------------------------------------------------------------*/</font>
 
+<a name="line223">223: </a>EXTERN_C_BEGIN
 <a name="line226">226: </a><strong><font color="#4169E1"><a name="PCFactorSetUseInPlace_LU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorSetUseInPlace_LU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line227">227: </a>{
 <a name="line228">228: </a>  PC_LU *dir = (PC_LU*)pc-&gt;data;
@@ -195,6 +203,7 @@
 <a name="line231">231: </a>  dir-&gt;inplace = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line232">232: </a>  <font color="#4169E1">return</font>(0);
 <a name="line233">233: </a>}
+<a name="line234">234: </a>EXTERN_C_END
 
 <a name="line236">236: </a><font color="#B22222">/* ------------------------------------------------------------------------ */</font>
 
@@ -234,6 +243,7 @@
 <a name="line271">271: </a><font color="#B22222">           <A href="../../../../../../docs/manualpages/PC/PCFactorReorderForNonzeroDiagonal.html#PCFactorReorderForNonzeroDiagonal">PCFactorReorderForNonzeroDiagonal</A>()</font>
 <a name="line272">272: </a><font color="#B22222">M*/</font>
 
+<a name="line274">274: </a>EXTERN_C_BEGIN
 <a name="line277">277: </a><strong><font color="#4169E1"><a name="PCCreate_LU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_LU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line278">278: </a>{
 <a name="line280">280: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
@@ -307,6 +317,7 @@
 <a name="line349">349: </a>                    PCFactorReorderForNonzeroDiagonal_LU);
 <a name="line350">350: </a>  <font color="#4169E1">return</font>(0);
 <a name="line351">351: </a>}
+<a name="line352">352: </a>EXTERN_C_END
 </pre>
 </body>
 

@@ -2,6 +2,7 @@
 <TITLE>Concepts_File</TITLE>
 <!-- Created by helpindex.py -->
 <BODY>
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <H1><center> PETSc Help Index</center></H1>
 <A NAME="B"></A>
 <H3> <CENTER> | <FONT COLOR="#CC3333">B</FONT> | 
@@ -73,6 +74,9 @@
 <A HREF="help.html#U"> U </A> | 
 <A HREF="help.html#V"> V </A> | 
 </CENTER></H3> 
+<TABLE>
+<TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4>differential-algebraic equation</FONT></B></TD><TD WIDTH=500><A HREF="../../src/ts/examples/tutorials/ex26.c.html">Transient nonlinear driven cavity in 2d</A></TD></TR>
+</TABLE>
 <TABLE><TD WIDTH=4 ><BR></TD><TD WIDTH=300 ><B><FONT SIZE=4><A HREF="concepts/dm.html">DM</A></FONT></B></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>using distributed arrays</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex20.c.html">Nonlinear Radiative Transport PDE with multigrid in 3d</A></TD></TR>
@@ -81,27 +85,21 @@
 </TABLE>
 <TABLE><TD WIDTH=4 ><BR></TD><TD WIDTH=300 ><B><FONT SIZE=4><A HREF="concepts/dmda.html">DMDA</A></FONT></B></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>using distributed arrays</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex5.c.html">Bratu nonlinear PDE in 2d</A></TD></TR>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>using distributed arrays</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex35.c.html">-Laplacian u = b as a nonlinear problem</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex5.c.html">Bratu nonlinear PDE in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex14.c.html">Bratu nonlinear PDE in 3d</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex26.c.html">Grad-Shafranov solver for one dimensional CHI equilibrium</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex29.c.html">Hall MHD with in two dimensions with time stepping and multigrid</A></TD></TR>
-</TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex14f.F.html">ksp/ksp/ex14f.F</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex32.c.html">Model multi-physics solver</A></TD></TR>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex25.c.html">Minimum surface problem in 2D</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex27.c.html">Nonlinear driven cavity with multigrid and pseudo timestepping 2d</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex50.c.html">Nonlinear driven cavity with multigrid in 2d</A></TD></TR>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex19.c.html">Nonlinear driven cavity with multigrid in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex8.c.html">Nonlinear PDE in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex18.c.html">Nonlinear Radiative Transport PDE with multigrid in 2d</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex25.c.html">snes/ex25.c</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex5f.F.html">snes/ex5f.F</A></TD></TR>
 </TABLE>
@@ -110,6 +108,8 @@
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex5f90t.F.html">snes/ex5f90t.F</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex46.c.html">Surface processes in geophysics</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ts/examples/tutorials/ex26.c.html">Transient nonlinear driven cavity in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=4 ><BR></TD><TD WIDTH=300 ><B><FONT SIZE=4><A HREF="concepts/dmmesh.html">DMMESH</A></FONT></B></TD></TR>
 </TABLE>
@@ -284,7 +284,9 @@
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>creating a stride index set</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/vec/is/examples/tutorials/ex2.c.html">Demonstrates creating a stride index set</A></TD></TR>
 </TABLE>
 <TABLE>
-<TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4><A HREF="concepts/is_coloirng_types.html">IS coloirng types</A></FONT></B></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex5.c.html">Bratu nonlinear PDE in 2d</A></TD></TR>
+<TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4><A HREF="concepts/is_coloirng_types.html">IS coloirng types</A></FONT></B></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex35.c.html">-Laplacian u = b as a nonlinear problem</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex5.c.html">Bratu nonlinear PDE in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex46.c.html">Surface processes in geophysics</A></TD></TR>
 </TABLE>
@@ -336,11 +338,7 @@
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>Laplacian, 2d</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ksp/ksp/examples/tutorials/ex13f90.F.html">ksp/ksp/ex13f90.F</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex35.c.html">ksp/ksp/ex35.c</A></TD></TR>
-</TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex32.c.html">Solves 2D inhomogeneous Laplacian using multigrid</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex37.c.html">Solves 2D inhomogeneous Laplacian using multigrid in an ion channel</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex12.c.html">Solves a linear system in parallel with KSP</A></TD></TR>
 </TABLE>
@@ -360,7 +358,7 @@
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex9.c.html">The solution of 2 different linear systems with different linear solvers</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>semi-implicit</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ksp/ksp/examples/tutorials/ex31.c.html">Solves 2D inhomogeneous Laplacian using multigrid</A></TD></TR>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>semi-implicit</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ksp/ksp/examples/tutorials/ex31.c.html">Solves 2D compressible Euler using multigrid</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>setting a user-defined monitoring routine</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ksp/ksp/examples/tutorials/ex2f.F.html">ksp/ksp/ex2f.F</A></TD></TR>
 </TABLE>
@@ -376,17 +374,17 @@
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>solving a system of linear equations</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ksp/ksp/examples/tutorials/ex1f.F.html">ksp/ksp/ex1f.F</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex35.c.html">ksp/ksp/ex35.c</A></TD></TR>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex54f.F.html">ksp/ksp/ex54f.F</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex31.c.html">Solves 2D compressible Euler using multigrid</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex32.c.html">Solves 2D inhomogeneous Laplacian using multigrid</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex37.c.html">Solves 2D inhomogeneous Laplacian using multigrid in an ion channel</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex34.c.html">Solves 3D Laplacian using multigrid</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex12.c.html">Solves a linear system in parallel with KSP</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex1.c.html">Solves a tridiagonal linear system with KSP</A></TD></TR>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ksp/ksp/examples/tutorials/ex58.c.html">Solves a tridiagonal linear system with KSP</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>writing a user-defined nonlinear solver</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ksp/ksp/examples/tutorials/ex14f.F.html">ksp/ksp/ex14f.F</A></TD></TR>
 </TABLE>
@@ -450,6 +448,8 @@
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>image segmentation</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/mat/examples/tutorials/ex15.c.html">mat/ex15.c</A></TD></TR>
 </TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/mat/examples/tutorials/ex17.c.html">mat/ex17.c</A></TD></TR>
+</TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>loading a binary matrix</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/mat/examples/tutorials/ex10.c.html">mat/ex10.c</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>loading a binary matrix and vector</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/mat/examples/tutorials/ex12.c.html">mat/ex12.c</A></TD></TR>
@@ -457,6 +457,8 @@
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/mat/examples/tutorials/ex1.c.html">Reads a PETSc matrix and vector from a file and reorders it</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>mat partitioning</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/mat/examples/tutorials/ex15.c.html">mat/ex15.c</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/mat/examples/tutorials/ex17.c.html">mat/ex17.c</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>mesh partitioning</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/mat/examples/tutorials/ex11.c.html">mat/ex11.c</A></TD></TR>
 </TABLE>
@@ -477,20 +479,16 @@
 <TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4><A HREF="concepts/matrix-free_methods.html">matrix-free methods</A></FONT></B></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex44.c.html">u`` + u^{2} = f</A></TD></TR>
 </TABLE>
 <TABLE>
-<TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4><A HREF="concepts/multicomponent.html">multicomponent</A></FONT></B></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex29.c.html">Hall MHD with in two dimensions with time stepping and multigrid</A></TD></TR>
+<TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4><A HREF="concepts/multicomponent.html">multicomponent</A></FONT></B></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex19.c.html">Nonlinear driven cavity with multigrid in 2d</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex32.c.html">Model multi-physics solver</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex27.c.html">Nonlinear driven cavity with multigrid and pseudo timestepping 2d</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex50.c.html">Nonlinear driven cavity with multigrid in 2d</A></TD></TR>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ts/examples/tutorials/ex26.c.html">Transient nonlinear driven cavity in 2d</A></TD></TR>
 </TABLE>
 <TABLE>
-<TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4><A HREF="concepts/multigrid.html">multigrid</A></FONT></B></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex18.c.html">Nonlinear Radiative Transport PDE with multigrid in 2d</A></TD></TR>
+<TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4><A HREF="concepts/multigrid.html">multigrid</A></FONT></B></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex25.c.html">Minimum surface problem in 2D</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex18.c.html">Nonlinear Radiative Transport PDE with multigrid in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex20.c.html">Nonlinear Radiative Transport PDE with multigrid in 3d</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex25.c.html">snes/ex25.c</A></TD></TR>
 </TABLE>
 <A NAME="N"></A>
 <H3> <CENTER> | <A HREF="help.html#B"> B </A> | 
@@ -593,6 +591,12 @@
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>user-defined event profiling (basic example)</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/sys/examples/tutorials/ex3f.F.html">sys/ex3f.F</A></TD></TR>
 </TABLE>
+<TABLE><TD WIDTH=4 ><BR></TD><TD WIDTH=300 ><B><FONT SIZE=4><A HREF="concepts/petscthreadcomm.html">PetscThreadComm</A></FONT></B></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>basic example</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/sys/threadcomm/examples/tutorials/ex1.c.html">Test PetscThreadComm Interface</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>basic example: Threaded reductions and passing scalar values</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/sys/threadcomm/examples/tutorials/ex3.c.html">Test to demonstrate interface for thread reductions and passing scalar values</A></TD></TR>
+</TABLE>
 <TABLE><TD WIDTH=4 ><BR></TD><TD WIDTH=300 ><B><FONT SIZE=4><A HREF="concepts/printf.html">printf</A></FONT></B></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>in parallel</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/sys/examples/tutorials/ex2.c.html">Synchronized printing</A></TD></TR>
@@ -667,7 +671,9 @@
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>matrix-free methods</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex44.c.html">u`` + u^{2} = f</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>parallel Bratu example</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex5s.c.html">2d Bratu problem in shared memory parallel with SNES</A></TD></TR>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>parallel Bratu example</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex35.c.html">-Laplacian u = b as a nonlinear problem</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex5s.c.html">2d Bratu problem in shared memory parallel with SNES</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex12.c.html">Bratu nonlinear PDE in 2d</A></TD></TR>
 </TABLE>
@@ -681,9 +687,7 @@
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex5f90t.F.html">snes/ex5f90t.F</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>parallel CHI equilibrium</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex26.c.html">Grad-Shafranov solver for one dimensional CHI equilibrium</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>parallel Lane-Emden example</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex4tu.c.html">Nonlinear PDE in 2d</A></TD></TR>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>parallel Lane-Emden example</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex4.c.html">Nonlinear PDE in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>parallel Stokes example</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex7.c.html">Nonlinear PDE in 2d</A></TD></TR>
 </TABLE>
@@ -693,19 +697,13 @@
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex3.c.html">Newton methods to solve u'' + u^{2} = f in parallel</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>solving a system of nonlinear equations</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex18.c.html">Nonlinear Radiative Transport PDE with multigrid in 2d</A></TD></TR>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>solving a system of nonlinear equations</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex25.c.html">Minimum surface problem in 2D</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex18.c.html">Nonlinear Radiative Transport PDE with multigrid in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex20.c.html">Nonlinear Radiative Transport PDE with multigrid in 3d</A></TD></TR>
 </TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex25.c.html">snes/ex25.c</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>solving a system of nonlinear equations (parallel multicomponent example)</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex29.c.html">Hall MHD with in two dimensions with time stepping and multigrid</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex32.c.html">Model multi-physics solver</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex27.c.html">Nonlinear driven cavity with multigrid and pseudo timestepping 2d</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/snes/examples/tutorials/ex50.c.html">Nonlinear driven cavity with multigrid in 2d</A></TD></TR>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>solving a system of nonlinear equations (parallel multicomponent example)</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex19.c.html">Nonlinear driven cavity with multigrid in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>user-provided preconditioner</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/snes/examples/tutorials/ex44.c.html">u`` + u^{2} = f</A></TD></TR>
 </TABLE>
@@ -742,6 +740,8 @@
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>pseudo-timestepping</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ts/examples/tutorials/ex1.c.html">Solves the time dependent Bratu problem using pseudo-timestepping</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/ts/examples/tutorials/ex1f.F.html">ts/ex1f.F</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>solving a system of nonlinear equations (parallel multicomponent example)</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ts/examples/tutorials/ex26.c.html">Transient nonlinear driven cavity in 2d</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>time-dependent linear problems</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/ts/examples/tutorials/ex6.c.html">Solves a simple time-dependent linear PDE (the heat equation)</A></TD></TR>
 </TABLE>
@@ -804,6 +804,12 @@
 <A HREF="help.html#U"> U </A> | 
 <FONT COLOR="#CC3333">V</FONT> | 
 </CENTER></H3> 
+<TABLE><TD WIDTH=4 ><BR></TD><TD WIDTH=300 ><B><FONT SIZE=4><A HREF="concepts/vectors.html">Vectors</A></FONT></B></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>loading a binary vector</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/mat/examples/tutorials/ex12.c.html">mat/ex12.c</A></TD></TR>
+</TABLE>
+<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/mat/examples/tutorials/ex1.c.html">Reads a PETSc matrix and vector from a file and reorders it</A></TD></TR>
+</TABLE>
 <TABLE><TD WIDTH=4 ><BR></TD><TD WIDTH=300 ><B><FONT SIZE=4><A HREF="concepts/vectors.html">vectors</A></FONT></B></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>arrays</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/vec/vec/examples/tutorials/ex4f90.F.html">vec/vec/ex4f90.F</A></TD></TR>
@@ -829,8 +835,6 @@
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>assembling vectors with local ordering</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/vec/vec/examples/tutorials/ex8.c.html">Demonstrates using a local ordering to set values into a parallel vector</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>basic routines</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/vec/vec/examples/tutorials/ex1.c.html">Basic vector routines</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/vec/vec/examples/tutorials/ex1e.c.html">Demonstrates various vector routines</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/vec/vec/examples/tutorials/ex1f.F.html">vec/vec/ex1f.F</A></TD></TR>
 </TABLE>
@@ -861,12 +865,6 @@
 <TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/vec/vec/examples/tutorials/ex20f90.F90.html">vec/vec/ex20f90.F90</A></TD></TR>
 </TABLE>
 <TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>viewing</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/vec/vec/examples/tutorials/ex19.c.html">Parallel HDF5 Vec Viewing</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=4 ><BR></TD><TD WIDTH=300 ><B><FONT SIZE=4><A HREF="concepts/vectors.html">Vectors</A></FONT></B></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=60 ><BR></TD><TD WIDTH=205><FONT COLOR="#CC3333"><B>loading a binary vector</B></FONT></TD><TD WIDTH=500 ><A HREF="../../src/mat/examples/tutorials/ex12.c.html">mat/ex12.c</A></TD></TR>
-</TABLE>
-<TABLE><TD WIDTH=270><BR></TD><TD WIDTH=500><A HREF="../../src/mat/examples/tutorials/ex1.c.html">Reads a PETSc matrix and vector from a file and reorders it</A></TD></TR>
 </TABLE>
 <TABLE>
 <TD WIDTH=4 ><BR></TD><TD WIDTH=260 ><B><FONT SIZE=4><A HREF="concepts/viewer,_append.html">Viewer, append</A></FONT></B></TD><TD WIDTH=500><A HREF="../../src/sys/viewer/examples/tutorials/ex1.c.html">Appends to an ASCII file</A></TD></TR>

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* gasm.c */
 /* Fortran interface file */
 
@@ -66,9 +66,9 @@ void PETSC_STDCALL  pcgasmsetsortindices_(PC pc,PetscBool  *doSort, int *__ierr 
 *__ierr = PCGASMSetSortIndices(
 	(PC)PetscToPointer((pc) ),*doSort);
 }
-void PETSC_STDCALL  pcgasmcreatesubdomains2d_(PC pc,PetscInt *M,PetscInt *N,PetscInt *Mdomains,PetscInt *Ndomains,PetscInt *dof,PetscInt *overlap,PetscInt *nsub,IS **is,IS **is_local, int *__ierr ){
+void PETSC_STDCALL  pcgasmcreatesubdomains2d_(PC pc,PetscInt *M,PetscInt *N,PetscInt *Mdomains,PetscInt *Ndomains,PetscInt *dof,PetscInt *overlap,PetscInt *nsub,IS **iis,IS **ois, int *__ierr ){
 *__ierr = PCGASMCreateSubdomains2D(
-	(PC)PetscToPointer((pc) ),*M,*N,*Mdomains,*Ndomains,*dof,*overlap,nsub,is,is_local);
+	(PC)PetscToPointer((pc) ),*M,*N,*Mdomains,*Ndomains,*dof,*overlap,nsub,iis,ois);
 }
 #if defined(__cplusplus)
 }

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* dm.c */
 /* Fortran interface file */
 
@@ -74,14 +74,14 @@ extern void PetscRmPointer(void*);
 #define dmgetblocksize_ dmgetblocksize
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmgetinterpolation_ DMGETINTERPOLATION
+#define dmcreateinterpolation_ DMCREATEINTERPOLATION
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmgetinterpolation_ dmgetinterpolation
+#define dmcreateinterpolation_ dmcreateinterpolation
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmgetinjection_ DMGETINJECTION
+#define dmcreateinjection_ DMCREATEINJECTION
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmgetinjection_ dmgetinjection
+#define dmcreateinjection_ dmcreateinjection
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmsetmatrixpreallocateonly_ DMSETMATRIXPREALLOCATEONLY
@@ -92,6 +92,16 @@ extern void PetscRmPointer(void*);
 #define dmrefine_ DMREFINE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmrefine_ dmrefine
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmrefinehookadd_ DMREFINEHOOKADD
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmrefinehookadd_ dmrefinehookadd
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dminterpolate_ DMINTERPOLATE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dminterpolate_ dminterpolate
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmgetrefinelevel_ DMGETREFINELEVEL
@@ -129,9 +139,24 @@ extern void PetscRmPointer(void*);
 #define dmcoarsen_ dmcoarsen
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmgetaggregates_ DMGETAGGREGATES
+#define dmcoarsenhookadd_ DMCOARSENHOOKADD
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmgetaggregates_ dmgetaggregates
+#define dmcoarsenhookadd_ dmcoarsenhookadd
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmrestrict_ DMRESTRICT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmrestrict_ dmrestrict
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmgetcoarsenlevel_ DMGETCOARSENLEVEL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmgetcoarsenlevel_ dmgetcoarsenlevel
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmcreateaggregates_ DMCREATEAGGREGATES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmcreateaggregates_ dmcreateaggregates
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmsetapplicationcontext_ DMSETAPPLICATIONCONTEXT
@@ -142,6 +167,11 @@ extern void PetscRmPointer(void*);
 #define dmgetapplicationcontext_ DMGETAPPLICATIONCONTEXT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmgetapplicationcontext_ dmgetapplicationcontext
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmhasvariablebounds_ DMHASVARIABLEBOUNDS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmhasvariablebounds_ dmhasvariablebounds
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmcomputeinitialguess_ DMCOMPUTEINITIALGUESS
@@ -172,6 +202,31 @@ extern void PetscRmPointer(void*);
 #define dmcomputejacobian_ DMCOMPUTEJACOBIAN
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmcomputejacobian_ dmcomputejacobian
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmgetdefaultsection_ DMGETDEFAULTSECTION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmgetdefaultsection_ dmgetdefaultsection
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmsetdefaultsection_ DMSETDEFAULTSECTION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmsetdefaultsection_ dmsetdefaultsection
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmgetdefaultglobalsection_ DMGETDEFAULTGLOBALSECTION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmgetdefaultglobalsection_ dmgetdefaultglobalsection
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmgetdefaultsf_ DMGETDEFAULTSF
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmgetdefaultsf_ dmgetdefaultsf
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmsetdefaultsf_ DMSETDEFAULTSF
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmsetdefaultsf_ dmsetdefaultsf
 #endif
 
 
@@ -214,13 +269,13 @@ void PETSC_STDCALL  dmgetblocksize_(DM dm,PetscInt *bs, int *__ierr ){
 *__ierr = DMGetBlockSize(
 	(DM)PetscToPointer((dm) ),bs);
 }
-void PETSC_STDCALL  dmgetinterpolation_(DM dm1,DM dm2,Mat *mat,Vec *vec, int *__ierr ){
-*__ierr = DMGetInterpolation(
+void PETSC_STDCALL  dmcreateinterpolation_(DM dm1,DM dm2,Mat *mat,Vec *vec, int *__ierr ){
+*__ierr = DMCreateInterpolation(
 	(DM)PetscToPointer((dm1) ),
 	(DM)PetscToPointer((dm2) ),mat,vec);
 }
-void PETSC_STDCALL  dmgetinjection_(DM dm1,DM dm2,VecScatter *ctx, int *__ierr ){
-*__ierr = DMGetInjection(
+void PETSC_STDCALL  dmcreateinjection_(DM dm1,DM dm2,VecScatter *ctx, int *__ierr ){
+*__ierr = DMCreateInjection(
 	(DM)PetscToPointer((dm1) ),
 	(DM)PetscToPointer((dm2) ),ctx);
 }
@@ -232,6 +287,16 @@ void PETSC_STDCALL  dmrefine_(DM dm,MPI_Fint * comm,DM *dmf, int *__ierr ){
 *__ierr = DMRefine(
 	(DM)PetscToPointer((dm) ),
 	MPI_Comm_f2c( *(comm) ),dmf);
+}
+void PETSC_STDCALL  dmrefinehookadd_(DM coarse,PetscErrorCode (*refinehook)(DM,DM,void*),PetscErrorCode (*interphook)(DM,Mat,DM,void*),void*ctx, int *__ierr ){
+*__ierr = DMRefineHookAdd(
+	(DM)PetscToPointer((coarse) ),refinehook,interphook,ctx);
+}
+void PETSC_STDCALL  dminterpolate_(DM coarse,Mat interp,DM fine, int *__ierr ){
+*__ierr = DMInterpolate(
+	(DM)PetscToPointer((coarse) ),
+	(Mat)PetscToPointer((interp) ),
+	(DM)PetscToPointer((fine) ));
 }
 void PETSC_STDCALL  dmgetrefinelevel_(DM dm,PetscInt *level, int *__ierr ){
 *__ierr = DMGetRefineLevel(
@@ -273,8 +338,24 @@ void PETSC_STDCALL  dmcoarsen_(DM dm,MPI_Fint * comm,DM *dmc, int *__ierr ){
 	(DM)PetscToPointer((dm) ),
 	MPI_Comm_f2c( *(comm) ),dmc);
 }
-void PETSC_STDCALL  dmgetaggregates_(DM dmc,DM dmf,Mat *rest, int *__ierr ){
-*__ierr = DMGetAggregates(
+void PETSC_STDCALL  dmcoarsenhookadd_(DM fine,PetscErrorCode (*coarsenhook)(DM,DM,void*),PetscErrorCode (*restricthook)(DM,Mat,Vec,Mat,DM,void*),void*ctx, int *__ierr ){
+*__ierr = DMCoarsenHookAdd(
+	(DM)PetscToPointer((fine) ),coarsenhook,restricthook,ctx);
+}
+void PETSC_STDCALL  dmrestrict_(DM fine,Mat restrct,Vec rscale,Mat inject,DM coarse, int *__ierr ){
+*__ierr = DMRestrict(
+	(DM)PetscToPointer((fine) ),
+	(Mat)PetscToPointer((restrct) ),
+	(Vec)PetscToPointer((rscale) ),
+	(Mat)PetscToPointer((inject) ),
+	(DM)PetscToPointer((coarse) ));
+}
+void PETSC_STDCALL  dmgetcoarsenlevel_(DM dm,PetscInt *level, int *__ierr ){
+*__ierr = DMGetCoarsenLevel(
+	(DM)PetscToPointer((dm) ),level);
+}
+void PETSC_STDCALL  dmcreateaggregates_(DM dmc,DM dmf,Mat *rest, int *__ierr ){
+*__ierr = DMCreateAggregates(
 	(DM)PetscToPointer((dmc) ),
 	(DM)PetscToPointer((dmf) ),rest);
 }
@@ -285,6 +366,10 @@ void PETSC_STDCALL  dmsetapplicationcontext_(DM dm,void*ctx, int *__ierr ){
 void PETSC_STDCALL  dmgetapplicationcontext_(DM dm,void*ctx, int *__ierr ){
 *__ierr = DMGetApplicationContext(
 	(DM)PetscToPointer((dm) ),ctx);
+}
+void PETSC_STDCALL  dmhasvariablebounds_(DM dm,PetscBool  *flg, int *__ierr ){
+*__ierr = DMHasVariableBounds(
+	(DM)PetscToPointer((dm) ),flg);
 }
 void PETSC_STDCALL  dmcomputeinitialguess_(DM dm,Vec x, int *__ierr ){
 *__ierr = DMComputeInitialGuess(
@@ -315,6 +400,28 @@ void PETSC_STDCALL  dmcomputejacobian_(DM dm,Vec x,Mat A,Mat B,MatStructure *stf
 	(Vec)PetscToPointer((x) ),
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),stflag);
+}
+void PETSC_STDCALL  dmgetdefaultsection_(DM dm,PetscSection *section, int *__ierr ){
+*__ierr = DMGetDefaultSection(
+	(DM)PetscToPointer((dm) ),section);
+}
+void PETSC_STDCALL  dmsetdefaultsection_(DM dm,PetscSection section, int *__ierr ){
+*__ierr = DMSetDefaultSection(
+	(DM)PetscToPointer((dm) ),
+	(PetscSection)PetscToPointer((section) ));
+}
+void PETSC_STDCALL  dmgetdefaultglobalsection_(DM dm,PetscSection *section, int *__ierr ){
+*__ierr = DMGetDefaultGlobalSection(
+	(DM)PetscToPointer((dm) ),section);
+}
+void PETSC_STDCALL  dmgetdefaultsf_(DM dm,PetscSF *sf, int *__ierr ){
+*__ierr = DMGetDefaultSF(
+	(DM)PetscToPointer((dm) ),
+	(PetscSF* )PetscToPointer((sf) ));
+}
+void PETSC_STDCALL  dmsetdefaultsf_(DM dm,PetscSF *sf, int *__ierr ){
+*__ierr = DMSetDefaultSF(
+	(DM)PetscToPointer((dm) ),*sf);
 }
 #if defined(__cplusplus)
 }

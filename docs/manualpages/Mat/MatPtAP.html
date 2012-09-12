@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatPtAP.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatPtAP</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatPtAP"><H1>MatPtAP</H1></A>
 Creates the matrix product C = P^T * A * P 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -22,7 +23,7 @@ Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>scall </B></TD><TD>- either MAT_INITIAL_MATRIX or MAT_REUSE_MATRIX
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fill </B></TD><TD>- expected fill as ratio of nnz(C)/nnz(A) 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fill </B></TD><TD>- expected fill as ratio of nnz(C)/(nnz(A) + nnz(P))
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
@@ -38,7 +39,7 @@ which inherit from AIJ.
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatPtAPSymbolic.html#MatPtAPSymbolic">MatPtAPSymbolic</A>(), <A HREF="../Mat/MatPtAPNumeric.html#MatPtAPNumeric">MatPtAPNumeric</A>(), <A HREF="../Mat/MatMatMult.html#MatMatMult">MatMatMult</A>()
+ <A HREF="../Mat/MatPtAPSymbolic.html#MatPtAPSymbolic">MatPtAPSymbolic</A>(), <A HREF="../Mat/MatPtAPNumeric.html#MatPtAPNumeric">MatPtAPNumeric</A>(), <A HREF="../Mat/MatMatMult.html#MatMatMult">MatMatMult</A>(), <A HREF="../Mat/MatRARt.html#MatRARt">MatRARt</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/interface/matrix.c.html#MatPtAP">src/mat/interface/matrix.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

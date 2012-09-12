@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMDACreate1d.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMDACreate1d</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMDACreate1d"><H1>DMDACreate1d</H1></A>
 Creates an object that will manage the communication of  one-dimensional  regular array data that is distributed across some processors. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -53,7 +54,6 @@ or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>. If non-null, must
 The array data itself is NOT stored in the DMDA, it is stored in <A HREF="../Vec/Vec.html#Vec">Vec</A> objects;
 The appropriate vector objects can be obtained with calls to <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>()
 and <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>() and calls to <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() if more are needed.
-<P>
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  distributed array, create, one-dimensional

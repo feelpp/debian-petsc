@@ -1,13 +1,14 @@
 <center><a href="ex1f.F">Actual source code: ex1f.F</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tests/ex1f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:15:56+00:00">
+<meta name="date" content="2012-08-29T17:09:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!  Description: This example solves a nonlinear system on 1 processor with <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>.
 <a name="line3">  3: </a>!  We solve the  Bratu (SFI - solid fuel ignition) problem in a 2D rectangular
@@ -99,7 +100,7 @@
 <a name="line89"> 89: </a>      <A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>       str
 <a name="line90"> 90: </a>
 <a name="line91"> 91: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        lx_v(0:1)
-<a name="line92"> 92: </a>      PetscOffset        lx_i
+<a name="line92"> 92: </a>      <A href="../../../../docs/manualpages/Sys/PetscOffset.html#PetscOffset">PetscOffset</A>        lx_i
 
 <a name="line94"> 94: </a>!  Store parameters in common block
 
@@ -261,7 +262,7 @@
 <a name="line251">251: </a>      <font color="#4169E1">if</font> (rank .eq. 0) then
 <a name="line252">252: </a>         write(6,100) its
 <a name="line253">253: </a>      endif
-<a name="line254">254: </a>  100 format('Number of Newton iterations = ',i1)
+<a name="line254">254: </a>  100 format('Number of <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = ',i1)
 
 <a name="line256">256: </a>!  <A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A> contour plot of solution
 
@@ -324,7 +325,7 @@
 
 <a name="line315">315: </a>!  Declarations <font color="#4169E1">for</font> use with local arrays:
 <a name="line316">316: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>   lx_v(0:1)
-<a name="line317">317: </a>      PetscOffset   lx_i
+<a name="line317">317: </a>      <A href="../../../../docs/manualpages/Sys/PetscOffset.html#PetscOffset">PetscOffset</A>   lx_i
 
 <a name="line319">319: </a>      0
 
@@ -436,7 +437,7 @@
 <a name="line426">426: </a>!  Input/output variables:
 <a name="line427">427: </a>      <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>              snes
 <a name="line428">428: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>               X,F
-<a name="line429">429: </a>      PetscFortranAddr  dummy
+<a name="line429">429: </a>      <A href="../../../../docs/manualpages/Sys/PetscFortranAddr.html#PetscFortranAddr">PetscFortranAddr</A>  dummy
 <a name="line430">430: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>          ierr
 
 <a name="line432">432: </a>!  Common blocks:
@@ -446,7 +447,7 @@
 
 <a name="line437">437: </a>!  Declarations <font color="#4169E1">for</font> use with local arrays:
 <a name="line438">438: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       lx_v(0:1),lf_v(0:1)
-<a name="line439">439: </a>      PetscOffset       lx_i,lf_i
+<a name="line439">439: </a>      <A href="../../../../docs/manualpages/Sys/PetscOffset.html#PetscOffset">PetscOffset</A>       lx_i,lf_i
 
 <a name="line441">441: </a>!  Get pointers to vector data.
 <a name="line442">442: </a>!    - For <font color="#4169E1">default</font> PETSc vectors, <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>() returns a pointer to
@@ -583,7 +584,7 @@
 
 <a name="line574">574: </a>!  Declarations <font color="#4169E1">for</font> use with local array:
 <a name="line575">575: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>   lx_v(0:1)
-<a name="line576">576: </a>      PetscOffset   lx_i
+<a name="line576">576: </a>      <A href="../../../../docs/manualpages/Sys/PetscOffset.html#PetscOffset">PetscOffset</A>   lx_i
 
 <a name="line578">578: </a>!  Get a pointer to vector data
 

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatCreateShell.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatCreateShell</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatCreateShell"><H1>MatCreateShell</H1></A>
 Creates a new matrix class for use with a user-defined private data storage format.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -52,12 +53,6 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
    <A HREF="../Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(mat);
 </pre>
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD> Mat MatCreateShell(PetscInt m,PetscInt n,PetscInt M,PetscInt N,void *ctx)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>MatCreateShell(PETSC_COMM_WORLD,m,n,M,N,ctx,&A); return A;</TR></TD>
-
-<TR><TD WIDTH=40></TD><TD> Mat MatCreateShell(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,void *ctx)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>MatCreateShell(comm,m,n,M,N,ctx,&A); return A;</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 The shell matrix type is intended to provide a simple class to use
 with <A HREF="../KSP/KSP.html#KSP">KSP</A> (such as, for use with matrix-free methods). You should not

@@ -1,13 +1,14 @@
 <center><a href="party.c">Actual source code: party.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/partition/impls/party/party.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:27+00:00">
+<meta name="date" content="2012-08-29T16:53:07+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/adj/mpi/mpiadj.h&gt;       </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
 
@@ -22,7 +23,9 @@
 <a name="line12"> 12: </a><font color="#B22222">/* </font>
 <a name="line13"> 13: </a><font color="#B22222">   Currently using Party-1.99</font>
 <a name="line14"> 14: </a><font color="#B22222">*/</font>
+<a name="line15"> 15: </a>EXTERN_C_BEGIN
 <a name="line16"> 16: </a><font color="#A020F0">#include &lt;party_lib.h&gt;</font>
+<a name="line17"> 17: </a>EXTERN_C_END
 
 <a name="line19"> 19: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> redm;
@@ -55,7 +58,7 @@
 
 <a name="line51"> 51: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,&amp;size);
 <a name="line52"> 52: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,&amp;rank);
-<a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../../../docs/manualpages/Mat/MATMPIADJ.html#MATMPIADJ">MATMPIADJ</A>,&amp;flg);
+<a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../../../docs/manualpages/Mat/MATMPIADJ.html#MATMPIADJ">MATMPIADJ</A>,&amp;flg);
 <a name="line54"> 54: </a>  <font color="#4169E1">if</font> (size&gt;1) {
 <a name="line55"> 55: </a>    <font color="#4169E1">if</font> (flg) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Distributed matrix format MPIAdj is not supported for sequential partitioners"</font>);
 <a name="line56"> 56: </a>    <A href="../../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(part,<font color="#666666">"Converting distributed matrix to sequential: this could be a performance loss\n"</font>);
@@ -155,7 +158,7 @@
 <a name="line152">152: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>        ierr;
 <a name="line153">153: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>             isascii;
 
-<a name="line156">156: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;isascii);
+<a name="line156">156: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;isascii);
 <a name="line157">157: </a>  <font color="#4169E1">if</font> (isascii) {
 <a name="line158">158: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  Global method: %s\n"</font>,party-&gt;global);
 <a name="line159">159: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  Local method: %s\n"</font>,party-&gt;local);
@@ -204,6 +207,7 @@
 <a name="line207">207: </a>  <font color="#4169E1">return</font>(0);
 <a name="line208">208: </a>}
 
+<a name="line210">210: </a>EXTERN_C_BEGIN
 <a name="line213">213: </a><strong><font color="#4169E1"><a name="MatPartitioningPartySetGlobal_Party"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatPartitioningPartySetGlobal_Party(<A href="../../../../../docs/manualpages/Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> part,const char* global)</font></strong>
 <a name="line214">214: </a>{
 <a name="line215">215: </a>  MatPartitioning_Party *party = (MatPartitioning_Party*)part-&gt;data;
@@ -212,6 +216,7 @@
 <a name="line219">219: </a>  <A href="../../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(party-&gt;global,global,15);
 <a name="line220">220: </a>  <font color="#4169E1">return</font>(0);
 <a name="line221">221: </a>}
+<a name="line222">222: </a>EXTERN_C_END
 
 <a name="line226">226: </a><font color="#B22222">/*@C</font>
 <a name="line227">227: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/MatOrderings/MatPartitioningPartySetLocal.html#MatPartitioningPartySetLocal">MatPartitioningPartySetLocal</A> - Set local method for Party partitioner.</font>
@@ -240,6 +245,7 @@
 <a name="line253">253: </a>  <font color="#4169E1">return</font>(0);
 <a name="line254">254: </a>}
 
+<a name="line256">256: </a>EXTERN_C_BEGIN
 <a name="line259">259: </a><strong><font color="#4169E1"><a name="MatPartitioningPartySetLocal_Party"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatPartitioningPartySetLocal_Party(<A href="../../../../../docs/manualpages/Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> part,const char* local)</font></strong>
 
 <a name="line261">261: </a>{
@@ -249,6 +255,7 @@
 <a name="line266">266: </a>  <A href="../../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(party-&gt;local,local,15);
 <a name="line267">267: </a>  <font color="#4169E1">return</font>(0);
 <a name="line268">268: </a>}
+<a name="line269">269: </a>EXTERN_C_END
 
 <a name="line273">273: </a><font color="#B22222">/*@</font>
 <a name="line274">274: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/MatOrderings/MatPartitioningPartySetCoarseLevel.html#MatPartitioningPartySetCoarseLevel">MatPartitioningPartySetCoarseLevel</A> - Set the coarse level parameter for the</font>
@@ -272,6 +279,7 @@
 <a name="line296">296: </a>  <font color="#4169E1">return</font>(0);
 <a name="line297">297: </a>}
 
+<a name="line299">299: </a>EXTERN_C_BEGIN
 <a name="line302">302: </a><strong><font color="#4169E1"><a name="MatPartitioningPartySetCoarseLevel_Party"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatPartitioningPartySetCoarseLevel_Party(<A href="../../../../../docs/manualpages/Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> part,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> level)</font></strong>
 <a name="line303">303: </a>{
 <a name="line304">304: </a>  MatPartitioning_Party *party = (MatPartitioning_Party*)part-&gt;data;
@@ -281,6 +289,7 @@
 <a name="line309">309: </a>  <font color="#4169E1">if</font> (party-&gt;nbvtxcoarsed &lt; 20) party-&gt;nbvtxcoarsed = 20;
 <a name="line310">310: </a>  <font color="#4169E1">return</font>(0);
 <a name="line311">311: </a>}
+<a name="line312">312: </a>EXTERN_C_END
 
 <a name="line316">316: </a><font color="#B22222">/*@</font>
 <a name="line317">317: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/MatOrderings/MatPartitioningPartySetMatchOptimization.html#MatPartitioningPartySetMatchOptimization">MatPartitioningPartySetMatchOptimization</A> - Activate matching optimization for</font>
@@ -304,6 +313,7 @@
 <a name="line339">339: </a>  <font color="#4169E1">return</font>(0);
 <a name="line340">340: </a>}
 
+<a name="line342">342: </a>EXTERN_C_BEGIN
 <a name="line345">345: </a><strong><font color="#4169E1"><a name="MatPartitioningPartySetMatchOptimization_Party"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatPartitioningPartySetMatchOptimization_Party(<A href="../../../../../docs/manualpages/Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> part,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> opt)</font></strong>
 <a name="line346">346: </a>{
 <a name="line347">347: </a>  MatPartitioning_Party *party = (MatPartitioning_Party*)part-&gt;data;
@@ -311,6 +321,7 @@
 <a name="line350">350: </a>  party-&gt;redo = opt;
 <a name="line351">351: </a>  <font color="#4169E1">return</font>(0);
 <a name="line352">352: </a>}
+<a name="line353">353: </a>EXTERN_C_END
 
 <a name="line357">357: </a><font color="#B22222">/*@</font>
 <a name="line358">358: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/MatOrderings/MatPartitioningPartySetBipart.html#MatPartitioningPartySetBipart">MatPartitioningPartySetBipart</A> - Activate or deactivate recursive bisection.</font>
@@ -333,6 +344,7 @@
 <a name="line379">379: </a>  <font color="#4169E1">return</font>(0);
 <a name="line380">380: </a>}
 
+<a name="line382">382: </a>EXTERN_C_BEGIN
 <a name="line385">385: </a><strong><font color="#4169E1"><a name="MatPartitioningPartySetBipart_Party"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatPartitioningPartySetBipart_Party(<A href="../../../../../docs/manualpages/Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> part,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> bp)</font></strong>
 <a name="line386">386: </a>{
 <a name="line387">387: </a>  MatPartitioning_Party *party = (MatPartitioning_Party*)part-&gt;data;
@@ -340,6 +352,7 @@
 <a name="line390">390: </a>  party-&gt;recursive = bp;
 <a name="line391">391: </a>  <font color="#4169E1">return</font>(0);
 <a name="line392">392: </a>}
+<a name="line393">393: </a>EXTERN_C_END
 
 <a name="line397">397: </a><strong><font color="#4169E1"><a name="MatPartitioningSetFromOptions_Party"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatPartitioningSetFromOptions_Party(<A href="../../../../../docs/manualpages/Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> part)</font></strong>
 <a name="line398">398: </a>{
@@ -391,6 +404,7 @@
 
 <a name="line449">449: </a><font color="#B22222">M*/</font>
 
+<a name="line451">451: </a>EXTERN_C_BEGIN
 <a name="line454">454: </a><strong><font color="#4169E1"><a name="MatPartitioningCreate_Party"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatPartitioningCreate_Party(<A href="../../../../../docs/manualpages/Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> part)</font></strong>
 <a name="line455">455: </a>{
 <a name="line456">456: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>        ierr;
@@ -419,6 +433,7 @@
 <a name="line480">480: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)part,<font color="#666666">"MatPartitioningPartySetBipart_C"</font>,<font color="#666666">"MatPartitioningPartySetBipart_Party"</font>,MatPartitioningPartySetBipart_Party);
 <a name="line481">481: </a>  <font color="#4169E1">return</font>(0);
 <a name="line482">482: </a>}
+<a name="line483">483: </a>EXTERN_C_END
 </pre>
 </body>
 

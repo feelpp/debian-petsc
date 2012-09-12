@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatSeqAIJSetPreallocation.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatSeqAIJSetPreallocation</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatSeqAIJSetPreallocation"><H1>MatSeqAIJSetPreallocation</H1></A>
 For good matrix assembly performance the user should preallocate the matrix storage by setting the parameter nz (or the array nnz).  By setting these parameters accurately, performance during matrix assembly can be increased by more than a factor of 50. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -24,10 +25,6 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 (possibly different for each row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
 </TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp MatSeqAIJSetPreallocation(Mat A,const PetscInt nnz[])<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>MatSeqAIJSetPreallocation(A,0,nnz)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 If nnz is given then nz is ignored
 <P>
@@ -68,7 +65,7 @@ the user still MUST index entries starting at 0!
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(), <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(), <A HREF="../Mat/MatSeqAIJSetColumnIndices.html#MatSeqAIJSetColumnIndices">MatSeqAIJSetColumnIndices</A>(), <A HREF="../Mat/MatCreateSeqAIJWithArrays.html#MatCreateSeqAIJWithArrays">MatCreateSeqAIJWithArrays</A>(), <A HREF="../Mat/MatGetInfo.html#MatGetInfo">MatGetInfo</A>()
+ <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>(), <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(), <A HREF="../Mat/MatSeqAIJSetColumnIndices.html#MatSeqAIJSetColumnIndices">MatSeqAIJSetColumnIndices</A>(), <A HREF="../Mat/MatCreateSeqAIJWithArrays.html#MatCreateSeqAIJWithArrays">MatCreateSeqAIJWithArrays</A>(), <A HREF="../Mat/MatGetInfo.html#MatGetInfo">MatGetInfo</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
@@ -78,11 +75,14 @@ the user still MUST index entries starting at 0!
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex15.c.html">src/mat/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex55.c.html">src/ksp/ksp/examples/tutorials/ex55.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15f.F.html">src/ksp/ksp/examples/tutorials/ex15f.F.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 </BODY></HTML>

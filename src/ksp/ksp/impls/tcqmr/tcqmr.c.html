@@ -1,13 +1,14 @@
 <center><a href="tcqmr.c">Actual source code: tcqmr.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/tcqmr/tcqmr.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:07+00:00">
+<meta name="date" content="2012-08-29T17:04:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    This file contains an implementation of Tony Chan's transpose-free QMR.</font>
@@ -16,7 +17,7 @@
 <a name="line6">  6: </a><font color="#B22222">    complex numbers version, so most probably some are incorrect.</font>
 <a name="line7">  7: </a><font color="#B22222">*/</font>
 
-<a name="line9">  9: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;</font>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;</font>
 <a name="line10"> 10: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/tcqmr/tcqmrimpl.h&gt;</font>
 
 <a name="line14"> 14: </a><strong><font color="#4169E1"><a name="KSPSolve_TCQMR"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPSolve_TCQMR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
@@ -65,13 +66,13 @@
 <a name="line59"> 59: </a>    ksp-&gt;its++;
 
 <a name="line61"> 61: </a>    KSP_PCApplyBAorAB(ksp,u,y,vtmp); <font color="#B22222">/* y = A*u */</font>
-<a name="line62"> 62: </a>    <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(v0,y,&amp;dp11);
-<a name="line63"> 63: </a>    <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(v0,u,&amp;dp2);
+<a name="line62"> 62: </a>    <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(y,v0,&amp;dp11);
+<a name="line63"> 63: </a>    <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(u,v0,&amp;dp2);
 <a name="line64"> 64: </a>    alpha  = dp11 / dp2;                          <font color="#B22222">/* alpha = v0'*y/v0'*u */</font>
 <a name="line65"> 65: </a>    deltmp = alpha;
 <a name="line66"> 66: </a>    <A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(y,z);
 <a name="line67"> 67: </a>    <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(z,-alpha,u); <font color="#B22222">/* z = y - alpha u */</font>
-<a name="line68"> 68: </a>    <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(v0,u,&amp;rho);
+<a name="line68"> 68: </a>    <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(u,v0,&amp;rho);
 <a name="line69"> 69: </a>    beta   = rho / (f*rhom1);
 <a name="line70"> 70: </a>    rhom1  = rho;
 <a name="line71"> 71: </a>    <A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(z,utmp);    <font color="#B22222">/* up1 = (A-alpha*I)*</font>
@@ -182,6 +183,7 @@
 
 <a name="line181">181: </a><font color="#B22222">M*/</font>
 
+<a name="line183">183: </a>EXTERN_C_BEGIN
 <a name="line186">186: </a><strong><font color="#4169E1"><a name="KSPCreate_TCQMR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_TCQMR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line187">187: </a>{
 
@@ -197,6 +199,7 @@
 <a name="line200">200: </a>  ksp-&gt;ops-&gt;view           = 0;
 <a name="line201">201: </a>  <font color="#4169E1">return</font>(0);
 <a name="line202">202: </a>}
+<a name="line203">203: </a>EXTERN_C_END
 </pre>
 </body>
 

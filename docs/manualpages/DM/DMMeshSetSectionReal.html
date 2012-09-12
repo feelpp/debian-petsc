@@ -1,16 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMMeshSetSectionReal.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMMeshSetSectionReal</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMMeshSetSectionReal"><H1>DMMeshSetSectionReal</H1></A>
 Puts a SectionReal of the given name into the DMMesh. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmmesh.h"   
-PetscErrorCode DMMeshSetSectionReal(DM dm, SectionReal section)
+PetscErrorCode DMMeshSetSectionReal(DM dm, const char name[], SectionReal section)
 </PRE>
 Collective on DMMesh
 <P>

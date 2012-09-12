@@ -1,16 +1,21 @@
 <center><a href="mfregis.c">Actual source code: mfregis.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/mffd/mfregis.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:24+00:00">
+<meta name="date" content="2012-08-29T16:50:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/mffd/mffdimpl.h&gt;   </font><font color="#B22222">/*I  "petscmat.h"   I*/</font><font color="#A020F0"></font>
 
+<a name="line4">  4: </a><strong><font color="#4169E1">EXTERN_C_BEGIN</font></strong>
+<a name="line5">  5: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreateMFFD_DS(<A href="../../../../docs/manualpages/Mat/MatMFFD.html#MatMFFD">MatMFFD</A>)</font></strong>;
+<a name="line6">  6: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreateMFFD_WP(<A href="../../../../docs/manualpages/Mat/MatMFFD.html#MatMFFD">MatMFFD</A>)</font></strong>;
+<a name="line7">  7: </a>EXTERN_C_END
 
 <a name="line11"> 11: </a><font color="#B22222">/*@C</font>
 <a name="line12"> 12: </a><font color="#B22222">  <A href="../../../../docs/manualpages/Mat/MatMFFDRegisterAll.html#MatMFFDRegisterAll">MatMFFDRegisterAll</A> - Registers all of the compute-h in the <A href="../../../../docs/manualpages/Mat/MatMFFD.html#MatMFFD">MatMFFD</A> package.</font>

@@ -1,20 +1,21 @@
 <center><a href="gr2.c">Actual source code: gr2.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/da/gr2.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:07:36+00:00">
+<meta name="date" content="2012-08-29T16:54:50+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* </font>
 <a name="line3">  3: </a><font color="#B22222">   Plots vectors obtained with <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>()</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
 
-<a name="line6">  6: </a><font color="#A020F0">#include &lt;private/daimpl.h&gt;      </font><font color="#B22222">/*I  "petscdmda.h"   I*/</font><font color="#A020F0"></font>
-<a name="line7">  7: </a><font color="#A020F0">#include &lt;private/vecimpl.h&gt; </font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petsc-private/daimpl.h&gt;      </font><font color="#B22222">/*I  "petscdmda.h"   I*/</font><font color="#A020F0"></font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petsc-private/vecimpl.h&gt; </font>
 
 <a name="line9">  9: </a><font color="#B22222">/*</font>
 <a name="line10"> 10: </a><font color="#B22222">        The data that is passed into the graphics callback</font>
@@ -269,352 +270,437 @@
 <a name="line266">266: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
 <a name="line269">269: </a><strong><font color="#4169E1"><a name="VecView_MPI_HDF5_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecView_MPI_HDF5_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
 <a name="line270">270: </a>{
-<a name="line272">272: </a>  DM             dm;
-<a name="line273">273: </a>  DM_DA          *da;
-<a name="line274">274: </a>  hsize_t        dim,dims[5];
-<a name="line275">275: </a>  hsize_t        count[5];
-<a name="line276">276: </a>  hsize_t        offset[5];
-<a name="line277">277: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       cnt = 0;
-<a name="line278">278: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *x;
-<a name="line279">279: </a>  const char     *vecname;
-<a name="line280">280: </a>  hid_t          filespace; <font color="#B22222">/* file dataspace identifier */</font>
-<a name="line281">281: </a>  hid_t                 plist_id;  <font color="#B22222">/* property list identifier */</font>
-<a name="line282">282: </a>  hid_t          dset_id;   <font color="#B22222">/* dataset identifier */</font>
-<a name="line283">283: </a>  hid_t          memspace;  <font color="#B22222">/* memory dataspace identifier */</font>
-<a name="line284">284: </a>  hid_t          file_id;
-<a name="line285">285: </a>  herr_t         status;
+<a name="line271">271: </a>  DM             dm;
+<a name="line272">272: </a>  DM_DA          *da;
+<a name="line273">273: </a>  hid_t          filespace;  <font color="#B22222">/* file dataspace identifier */</font>
+<a name="line274">274: </a>  hid_t          chunkspace; <font color="#B22222">/* chunk dataset property identifier */</font>
+<a name="line275">275: </a>  hid_t                 plist_id;   <font color="#B22222">/* property list identifier */</font>
+<a name="line276">276: </a>  hid_t          dset_id;    <font color="#B22222">/* dataset identifier */</font>
+<a name="line277">277: </a>  hid_t          memspace;   <font color="#B22222">/* memory dataspace identifier */</font>
+<a name="line278">278: </a>  hid_t          file_id;
+<a name="line279">279: </a>  hid_t          group;
+<a name="line280">280: </a>  hid_t          scalartype; <font color="#B22222">/* scalar type (H5T_NATIVE_FLOAT or H5T_NATIVE_DOUBLE) */</font>
+<a name="line281">281: </a>  herr_t         status;
+<a name="line282">282: </a>  hsize_t        i, dim;
+<a name="line283">283: </a>  hsize_t        maxDims[6], dims[6], chunkDims[6], count[6], offset[6];
+<a name="line284">284: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       timestep;
+<a name="line285">285: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *x;
+<a name="line286">286: </a>  const char     *vecname;
 
-<a name="line288">288: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerHDF5GetFileId.html#PetscViewerHDF5GetFileId">PetscViewerHDF5GetFileId</A>(viewer, &amp;file_id);
-<a name="line289">289: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;dm);
-<a name="line290">290: </a>  <font color="#4169E1">if</font> (!dm) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Vector not generated from a DMDA"</font>);
-<a name="line291">291: </a>  da = (DM_DA*)dm-&gt;data;
+<a name="line290">290: </a>  PetscViewerHDF5OpenGroup(viewer, &amp;file_id, &amp;group);
+<a name="line291">291: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerHDF5GetTimestep.html#PetscViewerHDF5GetTimestep">PetscViewerHDF5GetTimestep</A>(viewer, &amp;timestep);
 
-<a name="line293">293: </a>  <font color="#B22222">/* Create the dataspace for the dataset */</font>
-<a name="line294">294: </a>  dim       = PetscHDF5IntCast(da-&gt;dim + ((da-&gt;w == 1) ? 0 : 1));
-<a name="line295">295: </a>  <font color="#4169E1">if</font> (da-&gt;dim == 3) dims[cnt++]   = PetscHDF5IntCast(da-&gt;P);
-<a name="line296">296: </a>  <font color="#4169E1">if</font> (da-&gt;dim &gt; 1)  dims[cnt++]   = PetscHDF5IntCast(da-&gt;N);
-<a name="line297">297: </a>  dims[cnt++]   = PetscHDF5IntCast(da-&gt;M);
-<a name="line298">298: </a>  <font color="#4169E1">if</font> (da-&gt;w &gt; 1) dims[cnt++] = PetscHDF5IntCast(da-&gt;w);
-<a name="line299">299: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line300">300: </a>  dim++;
-<a name="line301">301: </a>  dims[cnt++] = 2;
-<a name="line302">302: </a><font color="#A020F0">#endif</font>
-<a name="line303">303: </a>  filespace = H5Screate_simple(dim, dims, NULL);
-<a name="line304">304: </a>  <font color="#4169E1">if</font> (filespace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Screate_simple()"</font>);
+<a name="line293">293: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;dm);
+<a name="line294">294: </a>  <font color="#4169E1">if</font> (!dm) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Vector not generated from a DMDA"</font>);
+<a name="line295">295: </a>  da = (DM_DA*)dm-&gt;data;
 
-<a name="line306">306: </a>  <font color="#B22222">/* Create the dataset with default properties and close filespace */</font>
-<a name="line307">307: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetName.html#PetscObjectGetName">PetscObjectGetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;vecname);
-<a name="line308">308: </a><font color="#A020F0">#if (H5_VERS_MAJOR * 10000 + H5_VERS_MINOR * 100 + H5_VERS_RELEASE &gt;= 10800)</font>
-<a name="line309">309: </a>  dset_id = H5Dcreate2(file_id, vecname, H5T_NATIVE_DOUBLE, filespace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-<a name="line310">310: </a><font color="#A020F0">#else</font>
-<a name="line311">311: </a>  dset_id = H5Dcreate(file_id, vecname, H5T_NATIVE_DOUBLE, filespace, H5P_DEFAULT);
-<a name="line312">312: </a><font color="#A020F0">#endif</font>
-<a name="line313">313: </a>  <font color="#4169E1">if</font> (dset_id == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Dcreate2()"</font>);
-<a name="line314">314: </a>  status = H5Sclose(filespace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line297">297: </a>  <font color="#B22222">/* Create the dataspace for the dataset.</font>
+<a name="line298">298: </a><font color="#B22222">   *</font>
+<a name="line299">299: </a><font color="#B22222">   * dims - holds the current dimensions of the dataset</font>
+<a name="line300">300: </a><font color="#B22222">   *</font>
+<a name="line301">301: </a><font color="#B22222">   * maxDims - holds the maximum dimensions of the dataset (unlimited</font>
+<a name="line302">302: </a><font color="#B22222">   * for the number of time steps with the current dimensions for the</font>
+<a name="line303">303: </a><font color="#B22222">   * other dimensions; so only additional time steps can be added).</font>
+<a name="line304">304: </a><font color="#B22222">   *</font>
+<a name="line305">305: </a><font color="#B22222">   * chunkDims - holds the size of a single time step (required to</font>
+<a name="line306">306: </a><font color="#B22222">   * permit extending dataset).</font>
+<a name="line307">307: </a><font color="#B22222">   */</font>
+<a name="line308">308: </a>  dim = 0;
+<a name="line309">309: </a>  <font color="#4169E1">if</font> (timestep &gt;= 0) {
+<a name="line310">310: </a>    dims[dim]      = timestep+1;
+<a name="line311">311: </a>    maxDims[dim]   = H5S_UNLIMITED;
+<a name="line312">312: </a>    chunkDims[dim] = 1;
+<a name="line313">313: </a>    ++dim;
+<a name="line314">314: </a>  }
+<a name="line315">315: </a>  <font color="#4169E1">if</font> (da-&gt;dim == 3) {
+<a name="line316">316: </a>    dims[dim]      = PetscHDF5IntCast(da-&gt;P);
+<a name="line317">317: </a>    maxDims[dim]   = dims[dim];
+<a name="line318">318: </a>    chunkDims[dim] = dims[dim];
+<a name="line319">319: </a>    ++dim;
+<a name="line320">320: </a>  }
+<a name="line321">321: </a>  <font color="#4169E1">if</font> (da-&gt;dim &gt; 1) {
+<a name="line322">322: </a>    dims[dim]      = PetscHDF5IntCast(da-&gt;N);
+<a name="line323">323: </a>    maxDims[dim]   = dims[dim];
+<a name="line324">324: </a>    chunkDims[dim] = dims[dim];
+<a name="line325">325: </a>    ++dim;
+<a name="line326">326: </a>  }
+<a name="line327">327: </a>  dims[dim]    = PetscHDF5IntCast(da-&gt;M);
+<a name="line328">328: </a>  maxDims[dim]   = dims[dim];
+<a name="line329">329: </a>  chunkDims[dim] = dims[dim];
+<a name="line330">330: </a>  ++dim;
+<a name="line331">331: </a>  <font color="#4169E1">if</font> (da-&gt;w &gt; 1) {
+<a name="line332">332: </a>    dims[dim]      = PetscHDF5IntCast(da-&gt;w);
+<a name="line333">333: </a>    maxDims[dim]   = dims[dim];
+<a name="line334">334: </a>    chunkDims[dim] = dims[dim];
+<a name="line335">335: </a>    ++dim;
+<a name="line336">336: </a>  }
+<a name="line337">337: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line338">338: </a>    dims[dim]      = 2;
+<a name="line339">339: </a>    maxDims[dim]   = dims[dim];
+<a name="line340">340: </a>    chunkDims[dim] = dims[dim];
+<a name="line341">341: </a>    ++dim;
+<a name="line342">342: </a><font color="#A020F0">#endif</font>
+<a name="line343">343: </a>  <font color="#4169E1">for</font> (i=0; i &lt; dim; ++i)
+<a name="line344">344: </a>  filespace = H5Screate_simple(dim, dims, maxDims);
+<a name="line345">345: </a>  <font color="#4169E1">if</font> (filespace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Screate_simple()"</font>);
 
-<a name="line316">316: </a>  <font color="#B22222">/* Each process defines a dataset and writes it to the hyperslab in the file */</font>
-<a name="line317">317: </a>  cnt = 0;
-<a name="line318">318: </a>  <font color="#4169E1">if</font> (da-&gt;dim == 3) offset[cnt++] = PetscHDF5IntCast(da-&gt;zs);
-<a name="line319">319: </a>  <font color="#4169E1">if</font> (da-&gt;dim &gt; 1)  offset[cnt++] = PetscHDF5IntCast(da-&gt;ys);
-<a name="line320">320: </a>  offset[cnt++] = PetscHDF5IntCast(da-&gt;xs/da-&gt;w);
-<a name="line321">321: </a>  <font color="#4169E1">if</font> (da-&gt;w &gt; 1) offset[cnt++] = 0;
-<a name="line322">322: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line323">323: </a>  offset[cnt++] = 0;
-<a name="line324">324: </a><font color="#A020F0">#endif</font>
-<a name="line325">325: </a>  cnt = 0;
-<a name="line326">326: </a>  <font color="#4169E1">if</font> (da-&gt;dim == 3) count[cnt++] = PetscHDF5IntCast(da-&gt;ze - da-&gt;zs);
-<a name="line327">327: </a>  <font color="#4169E1">if</font> (da-&gt;dim &gt; 1)  count[cnt++] = PetscHDF5IntCast(da-&gt;ye - da-&gt;ys);
-<a name="line328">328: </a>  count[cnt++] = PetscHDF5IntCast((da-&gt;xe - da-&gt;xs)/da-&gt;w);
-<a name="line329">329: </a>  <font color="#4169E1">if</font> (da-&gt;w &gt; 1) count[cnt++] = PetscHDF5IntCast(da-&gt;w);
-<a name="line330">330: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line331">331: </a>  count[cnt++] = 2;
-<a name="line332">332: </a><font color="#A020F0">#endif</font>
-<a name="line333">333: </a>  memspace = H5Screate_simple(dim, count, NULL);
-<a name="line334">334: </a>  <font color="#4169E1">if</font> (memspace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Screate_simple()"</font>);
+<a name="line347">347: </a><font color="#A020F0">#if defined(PETSC_USE_REAL_SINGLE)</font>
+<a name="line348">348: </a>  scalartype = H5T_NATIVE_FLOAT;
+<a name="line349">349: </a><font color="#A020F0">#elif defined(PETSC_USE_REAL___FLOAT128)</font>
+<a name="line350">350: </a><font color="#A020F0">#error </font><font color="#666666">"HDF5 output with 128 bit floats not supported."</font><font color="#A020F0"></font>
+<a name="line351">351: </a><font color="#A020F0">#else</font>
+<a name="line352">352: </a>  scalartype = H5T_NATIVE_DOUBLE;
+<a name="line353">353: </a><font color="#A020F0">#endif</font>
 
+<a name="line355">355: </a>  <font color="#B22222">/* Create the dataset with default properties and close filespace */</font>
+<a name="line356">356: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetName.html#PetscObjectGetName">PetscObjectGetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;vecname);
+<a name="line357">357: </a>  <font color="#4169E1">if</font> (!H5Lexists(group, vecname, H5P_DEFAULT)) {
+<a name="line358">358: </a>    <font color="#B22222">/* Create chunk */</font>
+<a name="line359">359: </a>    chunkspace = H5Pcreate(H5P_DATASET_CREATE);
+<a name="line360">360: </a>    <font color="#4169E1">if</font> (chunkspace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Pcreate()"</font>);
+<a name="line361">361: </a>    status = H5Pset_chunk(chunkspace, dim, chunkDims); <A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line362">362: </a>
+<a name="line363">363: </a><font color="#A020F0">#if (H5_VERS_MAJOR * 10000 + H5_VERS_MINOR * 100 + H5_VERS_RELEASE &gt;= 10800)</font>
+<a name="line364">364: </a>    dset_id = H5Dcreate2(group, vecname, scalartype, filespace, H5P_DEFAULT, chunkspace, H5P_DEFAULT);
+<a name="line365">365: </a><font color="#A020F0">#else</font>
+<a name="line366">366: </a>    dset_id = H5Dcreate(group, vecname, scalartype, filespace, H5P_DEFAULT);
+<a name="line367">367: </a><font color="#A020F0">#endif</font>
+<a name="line368">368: </a>    <font color="#4169E1">if</font> (dset_id == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Dcreate2()"</font>);
+<a name="line369">369: </a>  } <font color="#4169E1">else</font> {
+<a name="line370">370: </a>    dset_id = H5Dopen2(group, vecname, H5P_DEFAULT);
+<a name="line371">371: </a>    status = H5Dset_extent(dset_id, dims);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line372">372: </a>  }
+<a name="line373">373: </a>  status = H5Sclose(filespace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
 
-<a name="line337">337: </a>  filespace = H5Dget_space(dset_id);
-<a name="line338">338: </a>  <font color="#4169E1">if</font> (filespace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Dget_space()"</font>);
-<a name="line339">339: </a>  status = H5Sselect_hyperslab(filespace, H5S_SELECT_SET, offset, NULL, count, NULL);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line375">375: </a>  <font color="#B22222">/* Each process defines a dataset and writes it to the hyperslab in the file */</font>
+<a name="line376">376: </a>  dim = 0;
+<a name="line377">377: </a>  <font color="#4169E1">if</font> (timestep &gt;= 0) {
+<a name="line378">378: </a>    offset[dim] = timestep;
+<a name="line379">379: </a>    ++dim;
+<a name="line380">380: </a>  }
+<a name="line381">381: </a>  <font color="#4169E1">if</font> (da-&gt;dim == 3) offset[dim++] = PetscHDF5IntCast(da-&gt;zs);
+<a name="line382">382: </a>  <font color="#4169E1">if</font> (da-&gt;dim &gt; 1)  offset[dim++] = PetscHDF5IntCast(da-&gt;ys);
+<a name="line383">383: </a>  offset[dim++] = PetscHDF5IntCast(da-&gt;xs/da-&gt;w);
+<a name="line384">384: </a>  <font color="#4169E1">if</font> (da-&gt;w &gt; 1) offset[dim++] = 0;
+<a name="line385">385: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line386">386: </a>  offset[dim++] = 0;
+<a name="line387">387: </a><font color="#A020F0">#endif</font>
+<a name="line388">388: </a>  dim = 0;
+<a name="line389">389: </a>  <font color="#4169E1">if</font> (timestep &gt;= 0) {
+<a name="line390">390: </a>    count[dim] = 1;
+<a name="line391">391: </a>    ++dim;
+<a name="line392">392: </a>  }
+<a name="line393">393: </a>  <font color="#4169E1">if</font> (da-&gt;dim == 3) count[dim++] = PetscHDF5IntCast(da-&gt;ze - da-&gt;zs);
+<a name="line394">394: </a>  <font color="#4169E1">if</font> (da-&gt;dim &gt; 1)  count[dim++] = PetscHDF5IntCast(da-&gt;ye - da-&gt;ys);
+<a name="line395">395: </a>  count[dim++] = PetscHDF5IntCast((da-&gt;xe - da-&gt;xs)/da-&gt;w);
+<a name="line396">396: </a>  <font color="#4169E1">if</font> (da-&gt;w &gt; 1) count[dim++] = PetscHDF5IntCast(da-&gt;w);
+<a name="line397">397: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line398">398: </a>  count[dim++] = 2;
+<a name="line399">399: </a><font color="#A020F0">#endif</font>
+<a name="line400">400: </a>  memspace = H5Screate_simple(dim, count, NULL);
+<a name="line401">401: </a>  <font color="#4169E1">if</font> (memspace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Screate_simple()"</font>);
 
-<a name="line341">341: </a>  <font color="#B22222">/* Create property list for collective dataset write */</font>
-<a name="line342">342: </a>  plist_id = H5Pcreate(H5P_DATASET_XFER);
-<a name="line343">343: </a>  <font color="#4169E1">if</font> (plist_id == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Pcreate()"</font>);
-<a name="line344">344: </a><font color="#A020F0">#if defined(PETSC_HAVE_H5PSET_FAPL_MPIO)</font>
-<a name="line345">345: </a>  status = H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line346">346: </a><font color="#A020F0">#endif</font>
-<a name="line347">347: </a>  <font color="#B22222">/* To write dataset independently use H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT) */</font>
+<a name="line403">403: </a>  filespace = H5Dget_space(dset_id);
+<a name="line404">404: </a>  <font color="#4169E1">if</font> (filespace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Dget_space()"</font>);
+<a name="line405">405: </a>  status = H5Sselect_hyperslab(filespace, H5S_SELECT_SET, offset, NULL, count, NULL);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
 
-<a name="line349">349: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xin, &amp;x);
-<a name="line350">350: </a>  status = H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, memspace, filespace, plist_id, x);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line351">351: </a>  status = H5Fflush(file_id, H5F_SCOPE_GLOBAL);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line352">352: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xin, &amp;x);
+<a name="line407">407: </a>  <font color="#B22222">/* Create property list for collective dataset write */</font>
+<a name="line408">408: </a>  plist_id = H5Pcreate(H5P_DATASET_XFER);
+<a name="line409">409: </a>  <font color="#4169E1">if</font> (plist_id == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Pcreate()"</font>);
+<a name="line410">410: </a><font color="#A020F0">#if defined(PETSC_HAVE_H5PSET_FAPL_MPIO)</font>
+<a name="line411">411: </a>  status = H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line412">412: </a><font color="#A020F0">#endif</font>
+<a name="line413">413: </a>  <font color="#B22222">/* To write dataset independently use H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT) */</font>
 
-<a name="line354">354: </a>  <font color="#B22222">/* Close/release resources */</font>
-<a name="line355">355: </a>  status = H5Pclose(plist_id);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line356">356: </a>  status = H5Sclose(filespace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line357">357: </a>  status = H5Sclose(memspace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line358">358: </a>  status = H5Dclose(dset_id);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line359">359: </a>  PetscInfo1(xin,<font color="#666666">"Wrote <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> object with name %s\n"</font>,vecname);
-<a name="line360">360: </a>  <font color="#4169E1">return</font>(0);
-<a name="line361">361: </a>}
-<a name="line362">362: </a><font color="#A020F0">#endif</font>
+<a name="line415">415: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xin, &amp;x);
+<a name="line416">416: </a>  status = H5Dwrite(dset_id, scalartype, memspace, filespace, plist_id, x);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line417">417: </a>  status = H5Fflush(file_id, H5F_SCOPE_GLOBAL);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line418">418: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xin, &amp;x);
 
+<a name="line420">420: </a>  <font color="#B22222">/* Close/release resources */</font>
+<a name="line421">421: </a>  <font color="#4169E1">if</font> (group != file_id) {
+<a name="line422">422: </a>    status = H5Gclose(group);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line423">423: </a>  }
+<a name="line424">424: </a>  status = H5Pclose(plist_id);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line425">425: </a>  status = H5Sclose(filespace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line426">426: </a>  status = H5Sclose(memspace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line427">427: </a>  status = H5Dclose(dset_id);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line428">428: </a>  PetscInfo1(xin,<font color="#666666">"Wrote <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> object with name %s\n"</font>,vecname);
+<a name="line429">429: </a>  <font color="#4169E1">return</font>(0);
+<a name="line430">430: </a>}
+<a name="line431">431: </a><font color="#A020F0">#endif</font>
 
-<a name="line366">366: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPIIO)</font>
-<a name="line369">369: </a><strong><font color="#4169E1"><a name="DMDAArrayMPIIO"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMDAArrayMPIIO(DM da,<A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  write)</font></strong>
-<a name="line370">370: </a>{
-<a name="line371">371: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
-<a name="line372">372: </a>  MPI_File          mfdes;
-<a name="line373">373: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>       gsizes[4],lsizes[4],lstarts[4],asiz,dof;
-<a name="line374">374: </a>  MPI_Datatype      view;
-<a name="line375">375: </a>  const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *array;
-<a name="line376">376: </a>  MPI_Offset        off;
-<a name="line377">377: </a>  MPI_Aint          ub,ul;
-<a name="line378">378: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          type,rows,vecrows,tr[2];
-<a name="line379">379: </a>  DM_DA             *dd = (DM_DA*)da-&gt;data;
+<a name="line433">433: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecView_MPI_Draw_DA1d(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>)</font></strong>;
 
-<a name="line382">382: </a>  <A href="../../../../docs/manualpages/Vec/VecGetSize.html#VecGetSize">VecGetSize</A>(xin,&amp;vecrows);
-<a name="line383">383: </a>  <font color="#4169E1">if</font> (!write) {
-<a name="line384">384: </a>    <font color="#B22222">/* Read vector header. */</font>
-<a name="line385">385: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryRead.html#PetscViewerBinaryRead">PetscViewerBinaryRead</A>(viewer,tr,2,PETSC_INT);
-<a name="line386">386: </a>    type = tr[0];
-<a name="line387">387: </a>    rows = tr[1];
-<a name="line388">388: </a>    <font color="#4169E1">if</font> (type != VEC_FILE_CLASSID) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da)-&gt;comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Not vector next in file"</font>);
-<a name="line389">389: </a>    <font color="#4169E1">if</font> (rows != vecrows) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da)-&gt;comm,PETSC_ERR_ARG_SIZ,<font color="#666666">"Vector in file not same size as DMDA vector"</font>);
-<a name="line390">390: </a>  } <font color="#4169E1">else</font> {
-<a name="line391">391: </a>    tr[0] = VEC_FILE_CLASSID;
-<a name="line392">392: </a>    tr[1] = vecrows;
-<a name="line393">393: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryWrite.html#PetscViewerBinaryWrite">PetscViewerBinaryWrite</A>(viewer,tr,2,PETSC_INT,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
-<a name="line394">394: </a>  }
+<a name="line435">435: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPIIO)</font>
+<a name="line438">438: </a><strong><font color="#4169E1"><a name="DMDAArrayMPIIO"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMDAArrayMPIIO(DM da,<A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  write)</font></strong>
+<a name="line439">439: </a>{
+<a name="line440">440: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line441">441: </a>  MPI_File          mfdes;
+<a name="line442">442: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>       gsizes[4],lsizes[4],lstarts[4],asiz,dof;
+<a name="line443">443: </a>  MPI_Datatype      view;
+<a name="line444">444: </a>  const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *array;
+<a name="line445">445: </a>  MPI_Offset        off;
+<a name="line446">446: </a>  MPI_Aint          ub,ul;
+<a name="line447">447: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          type,rows,vecrows,tr[2];
+<a name="line448">448: </a>  DM_DA             *dd = (DM_DA*)da-&gt;data;
 
-<a name="line396">396: </a>  dof = PetscMPIIntCast(dd-&gt;w);
-<a name="line397">397: </a>  gsizes[0]  = dof; gsizes[1] = PetscMPIIntCast(dd-&gt;M); gsizes[2] = PetscMPIIntCast(dd-&gt;N); gsizes[3] = PetscMPIIntCast(dd-&gt;P);
-<a name="line398">398: </a>  lsizes[0]  = dof;lsizes[1] = PetscMPIIntCast((dd-&gt;xe-dd-&gt;xs)/dof); lsizes[2] = PetscMPIIntCast(dd-&gt;ye-dd-&gt;ys); lsizes[3] = PetscMPIIntCast(dd-&gt;ze-dd-&gt;zs);
-<a name="line399">399: </a>  lstarts[0] = 0;  lstarts[1] = PetscMPIIntCast(dd-&gt;xs/dof); lstarts[2] = PetscMPIIntCast(dd-&gt;ys); lstarts[3] = PetscMPIIntCast(dd-&gt;zs);
-<a name="line400">400: </a>  MPI_Type_create_subarray(dd-&gt;dim+1,gsizes,lsizes,lstarts,MPI_ORDER_FORTRAN,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,&amp;view);
-<a name="line401">401: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Type_commit.html#MPI_Type_commit">MPI_Type_commit</A>(&amp;view);
-<a name="line402">402: </a>
-<a name="line403">403: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryGetMPIIODescriptor.html#PetscViewerBinaryGetMPIIODescriptor">PetscViewerBinaryGetMPIIODescriptor</A>(viewer,&amp;mfdes);
-<a name="line404">404: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryGetMPIIOOffset.html#PetscViewerBinaryGetMPIIOOffset">PetscViewerBinaryGetMPIIOOffset</A>(viewer,&amp;off);
-<a name="line405">405: </a>  MPI_File_set_view(mfdes,off,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,view,(char *)<font color="#666666">"native"</font>,MPI_INFO_NULL);
-<a name="line406">406: </a>  VecGetArrayRead(xin,&amp;array);
-<a name="line407">407: </a>  asiz = lsizes[1]*(lsizes[2] &gt; 0 ? lsizes[2] : 1)*(lsizes[3] &gt; 0 ? lsizes[3] : 1)*dof;
-<a name="line408">408: </a>  <font color="#4169E1">if</font> (write) {
-<a name="line409">409: </a>    MPIU_File_write_all(mfdes,(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)array,asiz,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPI_STATUS_IGNORE);
-<a name="line410">410: </a>  } <font color="#4169E1">else</font> {
-<a name="line411">411: </a>    MPIU_File_read_all(mfdes,(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)array,asiz,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPI_STATUS_IGNORE);
-<a name="line412">412: </a>  }
-<a name="line413">413: </a>  MPI_Type_get_extent(view,&amp;ul,&amp;ub);
-<a name="line414">414: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryAddMPIIOOffset.html#PetscViewerBinaryAddMPIIOOffset">PetscViewerBinaryAddMPIIOOffset</A>(viewer,ub);
-<a name="line415">415: </a>  VecRestoreArrayRead(xin,&amp;array);
-<a name="line416">416: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Type_free.html#MPI_Type_free">MPI_Type_free</A>(&amp;view);
-<a name="line417">417: </a>  <font color="#4169E1">return</font>(0);
-<a name="line418">418: </a>}
-<a name="line419">419: </a><font color="#A020F0">#endif</font>
+<a name="line451">451: </a>  <A href="../../../../docs/manualpages/Vec/VecGetSize.html#VecGetSize">VecGetSize</A>(xin,&amp;vecrows);
+<a name="line452">452: </a>  <font color="#4169E1">if</font> (!write) {
+<a name="line453">453: </a>    <font color="#B22222">/* Read vector header. */</font>
+<a name="line454">454: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryRead.html#PetscViewerBinaryRead">PetscViewerBinaryRead</A>(viewer,tr,2,PETSC_INT);
+<a name="line455">455: </a>    type = tr[0];
+<a name="line456">456: </a>    rows = tr[1];
+<a name="line457">457: </a>    <font color="#4169E1">if</font> (type != VEC_FILE_CLASSID) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da)-&gt;comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Not vector next in file"</font>);
+<a name="line458">458: </a>    <font color="#4169E1">if</font> (rows != vecrows) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da)-&gt;comm,PETSC_ERR_ARG_SIZ,<font color="#666666">"Vector in file not same size as DMDA vector"</font>);
+<a name="line459">459: </a>  } <font color="#4169E1">else</font> {
+<a name="line460">460: </a>    tr[0] = VEC_FILE_CLASSID;
+<a name="line461">461: </a>    tr[1] = vecrows;
+<a name="line462">462: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryWrite.html#PetscViewerBinaryWrite">PetscViewerBinaryWrite</A>(viewer,tr,2,PETSC_INT,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
+<a name="line463">463: </a>  }
 
-<a name="line424">424: </a><strong><font color="#4169E1"><a name="VecView_MPI_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  VecView_MPI_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
-<a name="line425">425: </a>{
-<a name="line426">426: </a>  DM             da;
-<a name="line428">428: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       dim;
-<a name="line429">429: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            natural;
-<a name="line430">430: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isdraw;
-<a name="line431">431: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
-<a name="line432">432: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      ishdf5;
-<a name="line433">433: </a><font color="#A020F0">#endif</font>
-<a name="line434">434: </a>  const char     *prefix,*name;
+<a name="line465">465: </a>  dof = PetscMPIIntCast(dd-&gt;w);
+<a name="line466">466: </a>  gsizes[0]  = dof; gsizes[1] = PetscMPIIntCast(dd-&gt;M); gsizes[2] = PetscMPIIntCast(dd-&gt;N); gsizes[3] = PetscMPIIntCast(dd-&gt;P);
+<a name="line467">467: </a>  lsizes[0]  = dof;lsizes[1] = PetscMPIIntCast((dd-&gt;xe-dd-&gt;xs)/dof); lsizes[2] = PetscMPIIntCast(dd-&gt;ye-dd-&gt;ys); lsizes[3] = PetscMPIIntCast(dd-&gt;ze-dd-&gt;zs);
+<a name="line468">468: </a>  lstarts[0] = 0;  lstarts[1] = PetscMPIIntCast(dd-&gt;xs/dof); lstarts[2] = PetscMPIIntCast(dd-&gt;ys); lstarts[3] = PetscMPIIntCast(dd-&gt;zs);
+<a name="line469">469: </a>  MPI_Type_create_subarray(dd-&gt;dim+1,gsizes,lsizes,lstarts,MPI_ORDER_FORTRAN,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,&amp;view);
+<a name="line470">470: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Type_commit.html#MPI_Type_commit">MPI_Type_commit</A>(&amp;view);
+<a name="line471">471: </a>
+<a name="line472">472: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryGetMPIIODescriptor.html#PetscViewerBinaryGetMPIIODescriptor">PetscViewerBinaryGetMPIIODescriptor</A>(viewer,&amp;mfdes);
+<a name="line473">473: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryGetMPIIOOffset.html#PetscViewerBinaryGetMPIIOOffset">PetscViewerBinaryGetMPIIOOffset</A>(viewer,&amp;off);
+<a name="line474">474: </a>  MPI_File_set_view(mfdes,off,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,view,(char *)<font color="#666666">"native"</font>,MPI_INFO_NULL);
+<a name="line475">475: </a>  VecGetArrayRead(xin,&amp;array);
+<a name="line476">476: </a>  asiz = lsizes[1]*(lsizes[2] &gt; 0 ? lsizes[2] : 1)*(lsizes[3] &gt; 0 ? lsizes[3] : 1)*dof;
+<a name="line477">477: </a>  <font color="#4169E1">if</font> (write) {
+<a name="line478">478: </a>    MPIU_File_write_all(mfdes,(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)array,asiz,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPI_STATUS_IGNORE);
+<a name="line479">479: </a>  } <font color="#4169E1">else</font> {
+<a name="line480">480: </a>    MPIU_File_read_all(mfdes,(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)array,asiz,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPI_STATUS_IGNORE);
+<a name="line481">481: </a>  }
+<a name="line482">482: </a>  MPI_Type_get_extent(view,&amp;ul,&amp;ub);
+<a name="line483">483: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryAddMPIIOOffset.html#PetscViewerBinaryAddMPIIOOffset">PetscViewerBinaryAddMPIIOOffset</A>(viewer,ub);
+<a name="line484">484: </a>  VecRestoreArrayRead(xin,&amp;array);
+<a name="line485">485: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Type_free.html#MPI_Type_free">MPI_Type_free</A>(&amp;view);
+<a name="line486">486: </a>  <font color="#4169E1">return</font>(0);
+<a name="line487">487: </a>}
+<a name="line488">488: </a><font color="#A020F0">#endif</font>
 
-<a name="line437">437: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;da);
-<a name="line438">438: </a>  <font color="#4169E1">if</font> (!da) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Vector not generated from a DMDA"</font>);
-<a name="line439">439: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERDRAW,&amp;isdraw);
-<a name="line440">440: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
-<a name="line441">441: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERHDF5,&amp;ishdf5);
-<a name="line442">442: </a><font color="#A020F0">#endif</font>
-<a name="line443">443: </a>  <font color="#4169E1">if</font> (isdraw) {
-<a name="line444">444: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,&amp;dim,0,0,0,0,0,0,0,0,0,0,0,0);
-<a name="line445">445: </a>    <font color="#4169E1">if</font> (dim == 1) {
-<a name="line446">446: </a>      VecView_MPI_Draw_DA1d(xin,viewer);
-<a name="line447">447: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (dim == 2) {
-<a name="line448">448: </a>      VecView_MPI_Draw_DA2d(xin,viewer);
-<a name="line449">449: </a>    } <font color="#4169E1">else</font> {
-<a name="line450">450: </a>      <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Cannot graphically view vector associated with this dimensional DMDA %D"</font>,dim);
-<a name="line451">451: </a>    }
-<a name="line452">452: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
-<a name="line453">453: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (ishdf5) {
-<a name="line454">454: </a>    VecView_MPI_HDF5_DA(xin,viewer);
-<a name="line455">455: </a><font color="#A020F0">#endif</font>
-<a name="line456">456: </a>  } <font color="#4169E1">else</font> {
-<a name="line457">457: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPIIO)</font>
-<a name="line458">458: </a>    <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  isbinary,isMPIIO;
+<a name="line490">490: </a>EXTERN_C_BEGIN
+<a name="line493">493: </a><strong><font color="#4169E1"><a name="VecView_MPI_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  VecView_MPI_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
+<a name="line494">494: </a>{
+<a name="line495">495: </a>  DM             da;
+<a name="line497">497: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       dim;
+<a name="line498">498: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            natural;
+<a name="line499">499: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isdraw,isvtk;
+<a name="line500">500: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
+<a name="line501">501: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      ishdf5;
+<a name="line502">502: </a><font color="#A020F0">#endif</font>
+<a name="line503">503: </a>  const char     *prefix,*name;
 
-<a name="line460">460: </a>    <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERBINARY,&amp;isbinary);
-<a name="line461">461: </a>    <font color="#4169E1">if</font> (isbinary) {
-<a name="line462">462: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryGetMPIIO.html#PetscViewerBinaryGetMPIIO">PetscViewerBinaryGetMPIIO</A>(viewer,&amp;isMPIIO);
-<a name="line463">463: </a>      <font color="#4169E1">if</font> (isMPIIO) {
-<a name="line464">464: </a>       DMDAArrayMPIIO(da,viewer,xin,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
-<a name="line465">465: </a>       <font color="#4169E1">return</font>(0);
-<a name="line466">466: </a>      }
-<a name="line467">467: </a>    }
-<a name="line468">468: </a><font color="#A020F0">#endif</font>
-<a name="line469">469: </a>
-<a name="line470">470: </a>    <font color="#B22222">/* call viewer on natural ordering */</font>
-<a name="line471">471: </a>    PetscObjectGetOptionsPrefix((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;prefix);
-<a name="line472">472: </a>    <A href="../../../../docs/manualpages/DM/DMDACreateNaturalVector.html#DMDACreateNaturalVector">DMDACreateNaturalVector</A>(da,&amp;natural);
-<a name="line473">473: </a>    PetscObjectSetOptionsPrefix((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)natural,prefix);
-<a name="line474">474: </a>    <A href="../../../../docs/manualpages/DM/DMDAGlobalToNaturalBegin.html#DMDAGlobalToNaturalBegin">DMDAGlobalToNaturalBegin</A>(da,xin,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,natural);
-<a name="line475">475: </a>    <A href="../../../../docs/manualpages/DM/DMDAGlobalToNaturalEnd.html#DMDAGlobalToNaturalEnd">DMDAGlobalToNaturalEnd</A>(da,xin,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,natural);
-<a name="line476">476: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectGetName.html#PetscObjectGetName">PetscObjectGetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;name);
-<a name="line477">477: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)natural,name);
-<a name="line478">478: </a>    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(natural,viewer);
-<a name="line479">479: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;natural);
-<a name="line480">480: </a>  }
-<a name="line481">481: </a>  <font color="#4169E1">return</font>(0);
-<a name="line482">482: </a>}
-
-<a name="line485">485: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
-<a name="line488">488: </a><strong><font color="#4169E1"><a name="VecLoad_HDF5_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecLoad_HDF5_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
-<a name="line489">489: </a>{
-<a name="line490">490: </a>  DM             da;
-<a name="line492">492: </a>  hsize_t        dim;
-<a name="line493">493: </a>  hsize_t        count[5];
-<a name="line494">494: </a>  hsize_t        offset[5];
-<a name="line495">495: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       cnt = 0;
-<a name="line496">496: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *x;
-<a name="line497">497: </a>  const char     *vecname;
-<a name="line498">498: </a>  hid_t          filespace; <font color="#B22222">/* file dataspace identifier */</font>
-<a name="line499">499: </a>  hid_t                 plist_id;  <font color="#B22222">/* property list identifier */</font>
-<a name="line500">500: </a>  hid_t          dset_id;   <font color="#B22222">/* dataset identifier */</font>
-<a name="line501">501: </a>  hid_t          memspace;  <font color="#B22222">/* memory dataspace identifier */</font>
-<a name="line502">502: </a>  hid_t          file_id;
-<a name="line503">503: </a>  herr_t         status;
-<a name="line504">504: </a>  DM_DA          *dd;
-
-<a name="line507">507: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerHDF5GetFileId.html#PetscViewerHDF5GetFileId">PetscViewerHDF5GetFileId</A>(viewer, &amp;file_id);
-<a name="line508">508: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;da);
-<a name="line509">509: </a>  dd = (DM_DA*)da-&gt;data;
-
-<a name="line511">511: </a>  <font color="#B22222">/* Create the dataspace for the dataset */</font>
-<a name="line512">512: </a>  dim       = PetscHDF5IntCast(dd-&gt;dim + ((dd-&gt;w == 1) ? 0 : 1));
-<a name="line513">513: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line514">514: </a>  dim++;
-<a name="line515">515: </a><font color="#A020F0">#endif</font>
-
-<a name="line517">517: </a>  <font color="#B22222">/* Create the dataset with default properties and close filespace */</font>
-<a name="line518">518: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetName.html#PetscObjectGetName">PetscObjectGetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;vecname);
-<a name="line519">519: </a><font color="#A020F0">#if (H5_VERS_MAJOR * 10000 + H5_VERS_MINOR * 100 + H5_VERS_RELEASE &gt;= 10800)</font>
-<a name="line520">520: </a>  dset_id = H5Dopen2(file_id, vecname, H5P_DEFAULT);
-<a name="line521">521: </a><font color="#A020F0">#else</font>
-<a name="line522">522: </a>  dset_id = H5Dopen(file_id, vecname);
-<a name="line523">523: </a><font color="#A020F0">#endif</font>
-<a name="line524">524: </a>  <font color="#4169E1">if</font> (dset_id == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Dopen2() with <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> named %s"</font>,vecname);
-<a name="line525">525: </a>  filespace = H5Dget_space(dset_id);
-
-<a name="line527">527: </a>  <font color="#B22222">/* Each process defines a dataset and reads it from the hyperslab in the file */</font>
-<a name="line528">528: </a>  cnt = 0;
-<a name="line529">529: </a>  <font color="#4169E1">if</font> (dd-&gt;dim == 3) offset[cnt++] = PetscHDF5IntCast(dd-&gt;zs);
-<a name="line530">530: </a>  <font color="#4169E1">if</font> (dd-&gt;dim &gt; 1)  offset[cnt++] = PetscHDF5IntCast(dd-&gt;ys);
-<a name="line531">531: </a>  offset[cnt++] = PetscHDF5IntCast(dd-&gt;xs/dd-&gt;w);
-<a name="line532">532: </a>  <font color="#4169E1">if</font> (dd-&gt;w &gt; 1) offset[cnt++] = 0;
-<a name="line533">533: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line534">534: </a>  offset[cnt++] = 0;
+<a name="line506">506: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;da);
+<a name="line507">507: </a>  <font color="#4169E1">if</font> (!da) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Vector not generated from a DMDA"</font>);
+<a name="line508">508: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERDRAW,&amp;isdraw);
+<a name="line509">509: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERVTK,&amp;isvtk);
+<a name="line510">510: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
+<a name="line511">511: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERHDF5,&amp;ishdf5);
+<a name="line512">512: </a><font color="#A020F0">#endif</font>
+<a name="line513">513: </a>  <font color="#4169E1">if</font> (isdraw) {
+<a name="line514">514: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,&amp;dim,0,0,0,0,0,0,0,0,0,0,0,0);
+<a name="line515">515: </a>    <font color="#4169E1">if</font> (dim == 1) {
+<a name="line516">516: </a>      VecView_MPI_Draw_DA1d(xin,viewer);
+<a name="line517">517: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (dim == 2) {
+<a name="line518">518: </a>      VecView_MPI_Draw_DA2d(xin,viewer);
+<a name="line519">519: </a>    } <font color="#4169E1">else</font> {
+<a name="line520">520: </a>      <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Cannot graphically view vector associated with this dimensional DMDA %D"</font>,dim);
+<a name="line521">521: </a>    }
+<a name="line522">522: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (isvtk) {           <font color="#B22222">/* Duplicate the <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> and hold a reference to the DM */</font>
+<a name="line523">523: </a>    <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> Y;
+<a name="line524">524: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da);
+<a name="line525">525: </a>    <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(xin,&amp;Y);
+<a name="line526">526: </a>    <font color="#4169E1">if</font> (((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;name) {
+<a name="line527">527: </a>      <font color="#B22222">/* If xin was named, copy the name over to Y. The duplicate names are safe because nobody else will ever see Y. */</font>
+<a name="line528">528: </a>      <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)Y,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;name);
+<a name="line529">529: </a>    }
+<a name="line530">530: </a>    <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(xin,Y);
+<a name="line531">531: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerVTKAddField.html#PetscViewerVTKAddField">PetscViewerVTKAddField</A>(viewer,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da,<A href="../../../../docs/manualpages/DM/DMDAVTKWriteAll.html#DMDAVTKWriteAll">DMDAVTKWriteAll</A>,PETSC_VTK_POINT_FIELD,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)Y);
+<a name="line532">532: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
+<a name="line533">533: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (ishdf5) {
+<a name="line534">534: </a>    VecView_MPI_HDF5_DA(xin,viewer);
 <a name="line535">535: </a><font color="#A020F0">#endif</font>
-<a name="line536">536: </a>  cnt = 0;
-<a name="line537">537: </a>  <font color="#4169E1">if</font> (dd-&gt;dim == 3) count[cnt++] = PetscHDF5IntCast(dd-&gt;ze - dd-&gt;zs);
-<a name="line538">538: </a>  <font color="#4169E1">if</font> (dd-&gt;dim &gt; 1)  count[cnt++] = PetscHDF5IntCast(dd-&gt;ye - dd-&gt;ys);
-<a name="line539">539: </a>  count[cnt++] = PetscHDF5IntCast((dd-&gt;xe - dd-&gt;xs)/dd-&gt;w);
-<a name="line540">540: </a>  <font color="#4169E1">if</font> (dd-&gt;w &gt; 1) count[cnt++] = PetscHDF5IntCast(dd-&gt;w);
-<a name="line541">541: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line542">542: </a>  count[cnt++] = 2;
-<a name="line543">543: </a><font color="#A020F0">#endif</font>
-<a name="line544">544: </a>  memspace = H5Screate_simple(dim, count, NULL);
-<a name="line545">545: </a>  <font color="#4169E1">if</font> (memspace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Screate_simple()"</font>);
+<a name="line536">536: </a>  } <font color="#4169E1">else</font> {
+<a name="line537">537: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPIIO)</font>
+<a name="line538">538: </a>    <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  isbinary,isMPIIO;
 
-<a name="line547">547: </a>  status = H5Sselect_hyperslab(filespace, H5S_SELECT_SET, offset, NULL, count, NULL);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line540">540: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERBINARY,&amp;isbinary);
+<a name="line541">541: </a>    <font color="#4169E1">if</font> (isbinary) {
+<a name="line542">542: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryGetMPIIO.html#PetscViewerBinaryGetMPIIO">PetscViewerBinaryGetMPIIO</A>(viewer,&amp;isMPIIO);
+<a name="line543">543: </a>      <font color="#4169E1">if</font> (isMPIIO) {
+<a name="line544">544: </a>       DMDAArrayMPIIO(da,viewer,xin,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
+<a name="line545">545: </a>       <font color="#4169E1">return</font>(0);
+<a name="line546">546: </a>      }
+<a name="line547">547: </a>    }
+<a name="line548">548: </a><font color="#A020F0">#endif</font>
+<a name="line549">549: </a>
+<a name="line550">550: </a>    <font color="#B22222">/* call viewer on natural ordering */</font>
+<a name="line551">551: </a>    PetscObjectGetOptionsPrefix((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;prefix);
+<a name="line552">552: </a>    <A href="../../../../docs/manualpages/DM/DMDACreateNaturalVector.html#DMDACreateNaturalVector">DMDACreateNaturalVector</A>(da,&amp;natural);
+<a name="line553">553: </a>    PetscObjectSetOptionsPrefix((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)natural,prefix);
+<a name="line554">554: </a>    <A href="../../../../docs/manualpages/DM/DMDAGlobalToNaturalBegin.html#DMDAGlobalToNaturalBegin">DMDAGlobalToNaturalBegin</A>(da,xin,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,natural);
+<a name="line555">555: </a>    <A href="../../../../docs/manualpages/DM/DMDAGlobalToNaturalEnd.html#DMDAGlobalToNaturalEnd">DMDAGlobalToNaturalEnd</A>(da,xin,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,natural);
+<a name="line556">556: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectGetName.html#PetscObjectGetName">PetscObjectGetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;name);
+<a name="line557">557: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)natural,name);
+<a name="line558">558: </a>    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(natural,viewer);
+<a name="line559">559: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;natural);
+<a name="line560">560: </a>  }
+<a name="line561">561: </a>  <font color="#4169E1">return</font>(0);
+<a name="line562">562: </a>}
+<a name="line563">563: </a>EXTERN_C_END
 
-<a name="line549">549: </a>  <font color="#B22222">/* Create property list for collective dataset write */</font>
-<a name="line550">550: </a>  plist_id = H5Pcreate(H5P_DATASET_XFER);
-<a name="line551">551: </a>  <font color="#4169E1">if</font> (plist_id == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Pcreate()"</font>);
-<a name="line552">552: </a><font color="#A020F0">#if defined(PETSC_HAVE_H5PSET_FAPL_MPIO)</font>
-<a name="line553">553: </a>  status = H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line554">554: </a><font color="#A020F0">#endif</font>
-<a name="line555">555: </a>  <font color="#B22222">/* To write dataset independently use H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT) */</font>
+<a name="line565">565: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
+<a name="line568">568: </a><strong><font color="#4169E1"><a name="VecLoad_HDF5_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecLoad_HDF5_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
+<a name="line569">569: </a>{
+<a name="line570">570: </a>  DM             da;
+<a name="line572">572: </a>  hsize_t        dim;
+<a name="line573">573: </a>  hsize_t        count[5];
+<a name="line574">574: </a>  hsize_t        offset[5];
+<a name="line575">575: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       cnt = 0;
+<a name="line576">576: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *x;
+<a name="line577">577: </a>  const char     *vecname;
+<a name="line578">578: </a>  hid_t          filespace; <font color="#B22222">/* file dataspace identifier */</font>
+<a name="line579">579: </a>  hid_t                 plist_id;  <font color="#B22222">/* property list identifier */</font>
+<a name="line580">580: </a>  hid_t          dset_id;   <font color="#B22222">/* dataset identifier */</font>
+<a name="line581">581: </a>  hid_t          memspace;  <font color="#B22222">/* memory dataspace identifier */</font>
+<a name="line582">582: </a>  hid_t          file_id;
+<a name="line583">583: </a>  herr_t         status;
+<a name="line584">584: </a>  DM_DA          *dd;
 
-<a name="line557">557: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xin, &amp;x);
-<a name="line558">558: </a>  status = H5Dread(dset_id, H5T_NATIVE_DOUBLE, memspace, filespace, plist_id, x);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line559">559: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xin, &amp;x);
+<a name="line587">587: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerHDF5GetFileId.html#PetscViewerHDF5GetFileId">PetscViewerHDF5GetFileId</A>(viewer, &amp;file_id);
+<a name="line588">588: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;da);
+<a name="line589">589: </a>  dd = (DM_DA*)da-&gt;data;
 
-<a name="line561">561: </a>  <font color="#B22222">/* Close/release resources */</font>
-<a name="line562">562: </a>  status = H5Pclose(plist_id);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line563">563: </a>  status = H5Sclose(filespace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line564">564: </a>  status = H5Sclose(memspace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line565">565: </a>  status = H5Dclose(dset_id);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
-<a name="line566">566: </a>  <font color="#4169E1">return</font>(0);
-<a name="line567">567: </a>}
-<a name="line568">568: </a><font color="#A020F0">#endif</font>
+<a name="line591">591: </a>  <font color="#B22222">/* Create the dataspace for the dataset */</font>
+<a name="line592">592: </a>  dim       = PetscHDF5IntCast(dd-&gt;dim + ((dd-&gt;w == 1) ? 0 : 1));
+<a name="line593">593: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line594">594: </a>  dim++;
+<a name="line595">595: </a><font color="#A020F0">#endif</font>
 
-<a name="line572">572: </a><strong><font color="#4169E1"><a name="VecLoad_Binary_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecLoad_Binary_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
-<a name="line573">573: </a>{
-<a name="line574">574: </a>  DM             da;
-<a name="line576">576: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            natural;
-<a name="line577">577: </a>  const char     *prefix;
-<a name="line578">578: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       bs;
-<a name="line579">579: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flag;
-<a name="line580">580: </a>  DM_DA          *dd;
-<a name="line581">581: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPIIO)</font>
-<a name="line582">582: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isMPIIO;
-<a name="line583">583: </a><font color="#A020F0">#endif</font>
+<a name="line597">597: </a>  <font color="#B22222">/* Create the dataset with default properties and close filespace */</font>
+<a name="line598">598: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetName.html#PetscObjectGetName">PetscObjectGetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;vecname);
+<a name="line599">599: </a><font color="#A020F0">#if (H5_VERS_MAJOR * 10000 + H5_VERS_MINOR * 100 + H5_VERS_RELEASE &gt;= 10800)</font>
+<a name="line600">600: </a>  dset_id = H5Dopen2(file_id, vecname, H5P_DEFAULT);
+<a name="line601">601: </a><font color="#A020F0">#else</font>
+<a name="line602">602: </a>  dset_id = H5Dopen(file_id, vecname);
+<a name="line603">603: </a><font color="#A020F0">#endif</font>
+<a name="line604">604: </a>  <font color="#4169E1">if</font> (dset_id == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Dopen2() with <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> named %s"</font>,vecname);
+<a name="line605">605: </a>  filespace = H5Dget_space(dset_id);
 
-<a name="line586">586: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;da);
-<a name="line587">587: </a>  dd   = (DM_DA*)da-&gt;data;
-<a name="line588">588: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPIIO)</font>
-<a name="line589">589: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryGetMPIIO.html#PetscViewerBinaryGetMPIIO">PetscViewerBinaryGetMPIIO</A>(viewer,&amp;isMPIIO);
-<a name="line590">590: </a>  <font color="#4169E1">if</font> (isMPIIO) {
-<a name="line591">591: </a>    DMDAArrayMPIIO(da,viewer,xin,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
-<a name="line592">592: </a>    <font color="#4169E1">return</font>(0);
-<a name="line593">593: </a>  }
-<a name="line594">594: </a><font color="#A020F0">#endif</font>
+<a name="line607">607: </a>  <font color="#B22222">/* Each process defines a dataset and reads it from the hyperslab in the file */</font>
+<a name="line608">608: </a>  cnt = 0;
+<a name="line609">609: </a>  <font color="#4169E1">if</font> (dd-&gt;dim == 3) offset[cnt++] = PetscHDF5IntCast(dd-&gt;zs);
+<a name="line610">610: </a>  <font color="#4169E1">if</font> (dd-&gt;dim &gt; 1)  offset[cnt++] = PetscHDF5IntCast(dd-&gt;ys);
+<a name="line611">611: </a>  offset[cnt++] = PetscHDF5IntCast(dd-&gt;xs/dd-&gt;w);
+<a name="line612">612: </a>  <font color="#4169E1">if</font> (dd-&gt;w &gt; 1) offset[cnt++] = 0;
+<a name="line613">613: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line614">614: </a>  offset[cnt++] = 0;
+<a name="line615">615: </a><font color="#A020F0">#endif</font>
+<a name="line616">616: </a>  cnt = 0;
+<a name="line617">617: </a>  <font color="#4169E1">if</font> (dd-&gt;dim == 3) count[cnt++] = PetscHDF5IntCast(dd-&gt;ze - dd-&gt;zs);
+<a name="line618">618: </a>  <font color="#4169E1">if</font> (dd-&gt;dim &gt; 1)  count[cnt++] = PetscHDF5IntCast(dd-&gt;ye - dd-&gt;ys);
+<a name="line619">619: </a>  count[cnt++] = PetscHDF5IntCast((dd-&gt;xe - dd-&gt;xs)/dd-&gt;w);
+<a name="line620">620: </a>  <font color="#4169E1">if</font> (dd-&gt;w &gt; 1) count[cnt++] = PetscHDF5IntCast(dd-&gt;w);
+<a name="line621">621: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line622">622: </a>  count[cnt++] = 2;
+<a name="line623">623: </a><font color="#A020F0">#endif</font>
+<a name="line624">624: </a>  memspace = H5Screate_simple(dim, count, NULL);
+<a name="line625">625: </a>  <font color="#4169E1">if</font> (memspace == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Screate_simple()"</font>);
 
-<a name="line596">596: </a>  PetscObjectGetOptionsPrefix((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;prefix);
-<a name="line597">597: </a>  <A href="../../../../docs/manualpages/DM/DMDACreateNaturalVector.html#DMDACreateNaturalVector">DMDACreateNaturalVector</A>(da,&amp;natural);
-<a name="line598">598: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)natural,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;name);
-<a name="line599">599: </a>  PetscObjectSetOptionsPrefix((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)natural,prefix);
-<a name="line600">600: </a>  VecLoad_Binary(natural,viewer);
-<a name="line601">601: </a>  <A href="../../../../docs/manualpages/DM/DMDANaturalToGlobalBegin.html#DMDANaturalToGlobalBegin">DMDANaturalToGlobalBegin</A>(da,natural,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,xin);
-<a name="line602">602: </a>  <A href="../../../../docs/manualpages/DM/DMDANaturalToGlobalEnd.html#DMDANaturalToGlobalEnd">DMDANaturalToGlobalEnd</A>(da,natural,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,xin);
-<a name="line603">603: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;natural);
-<a name="line604">604: </a>  <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(xin,<font color="#666666">"Loading vector from natural ordering into DMDA\n"</font>);
-<a name="line605">605: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;prefix,<font color="#666666">"-vecload_block_size"</font>,&amp;bs,&amp;flag);
-<a name="line606">606: </a>  <font color="#4169E1">if</font> (flag &amp;&amp; bs != dd-&gt;w) {
-<a name="line607">607: </a>    PetscInfo2(xin,<font color="#666666">"Block size in file %D not equal to DMDA's dof %D\n"</font>,bs,dd-&gt;w);
-<a name="line608">608: </a>  }
-<a name="line609">609: </a>  <font color="#4169E1">return</font>(0);
-<a name="line610">610: </a>}
+<a name="line627">627: </a>  status = H5Sselect_hyperslab(filespace, H5S_SELECT_SET, offset, NULL, count, NULL);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
 
-<a name="line615">615: </a><strong><font color="#4169E1"><a name="VecLoad_Default_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  VecLoad_Default_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
-<a name="line616">616: </a>{
-<a name="line618">618: </a>  DM             da;
-<a name="line619">619: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isbinary;
-<a name="line620">620: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
-<a name="line621">621: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      ishdf5;
-<a name="line622">622: </a><font color="#A020F0">#endif</font>
+<a name="line629">629: </a>  <font color="#B22222">/* Create property list for collective dataset write */</font>
+<a name="line630">630: </a>  plist_id = H5Pcreate(H5P_DATASET_XFER);
+<a name="line631">631: </a>  <font color="#4169E1">if</font> (plist_id == -1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"Cannot H5Pcreate()"</font>);
+<a name="line632">632: </a><font color="#A020F0">#if defined(PETSC_HAVE_H5PSET_FAPL_MPIO)</font>
+<a name="line633">633: </a>  status = H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line634">634: </a><font color="#A020F0">#endif</font>
+<a name="line635">635: </a>  <font color="#B22222">/* To write dataset independently use H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT) */</font>
 
-<a name="line625">625: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;da);
-<a name="line626">626: </a>  <font color="#4169E1">if</font> (!da) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Vector not generated from a DMDA"</font>);
+<a name="line637">637: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xin, &amp;x);
+<a name="line638">638: </a>  status = H5Dread(dset_id, H5T_NATIVE_DOUBLE, memspace, filespace, plist_id, x);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line639">639: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xin, &amp;x);
 
-<a name="line628">628: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
-<a name="line629">629: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERHDF5,&amp;ishdf5);
-<a name="line630">630: </a><font color="#A020F0">#endif</font>
-<a name="line631">631: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERBINARY,&amp;isbinary);
+<a name="line641">641: </a>  <font color="#B22222">/* Close/release resources */</font>
+<a name="line642">642: </a>  status = H5Pclose(plist_id);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line643">643: </a>  status = H5Sclose(filespace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line644">644: </a>  status = H5Sclose(memspace);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line645">645: </a>  status = H5Dclose(dset_id);<A href="../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(status);
+<a name="line646">646: </a>  <font color="#4169E1">return</font>(0);
+<a name="line647">647: </a>}
+<a name="line648">648: </a><font color="#A020F0">#endif</font>
 
-<a name="line633">633: </a>  <font color="#4169E1">if</font> (isbinary) {
-<a name="line634">634: </a>    VecLoad_Binary_DA(xin,viewer);
-<a name="line635">635: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
-<a name="line636">636: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (ishdf5) {
-<a name="line637">637: </a>    VecLoad_HDF5_DA(xin,viewer);
-<a name="line638">638: </a><font color="#A020F0">#endif</font>
-<a name="line639">639: </a>  } <font color="#4169E1">else</font> <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Viewer type %s not supported for vector loading"</font>, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer)-&gt;type_name);
-<a name="line640">640: </a>  <font color="#4169E1">return</font>(0);
-<a name="line641">641: </a>}
+<a name="line652">652: </a><strong><font color="#4169E1"><a name="VecLoad_Binary_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecLoad_Binary_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
+<a name="line653">653: </a>{
+<a name="line654">654: </a>  DM             da;
+<a name="line656">656: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            natural;
+<a name="line657">657: </a>  const char     *prefix;
+<a name="line658">658: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       bs;
+<a name="line659">659: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flag;
+<a name="line660">660: </a>  DM_DA          *dd;
+<a name="line661">661: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPIIO)</font>
+<a name="line662">662: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isMPIIO;
+<a name="line663">663: </a><font color="#A020F0">#endif</font>
+
+<a name="line666">666: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;da);
+<a name="line667">667: </a>  dd   = (DM_DA*)da-&gt;data;
+<a name="line668">668: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPIIO)</font>
+<a name="line669">669: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryGetMPIIO.html#PetscViewerBinaryGetMPIIO">PetscViewerBinaryGetMPIIO</A>(viewer,&amp;isMPIIO);
+<a name="line670">670: </a>  <font color="#4169E1">if</font> (isMPIIO) {
+<a name="line671">671: </a>    DMDAArrayMPIIO(da,viewer,xin,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
+<a name="line672">672: </a>    <font color="#4169E1">return</font>(0);
+<a name="line673">673: </a>  }
+<a name="line674">674: </a><font color="#A020F0">#endif</font>
+
+<a name="line676">676: </a>  PetscObjectGetOptionsPrefix((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;prefix);
+<a name="line677">677: </a>  <A href="../../../../docs/manualpages/DM/DMDACreateNaturalVector.html#DMDACreateNaturalVector">DMDACreateNaturalVector</A>(da,&amp;natural);
+<a name="line678">678: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)natural,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;name);
+<a name="line679">679: </a>  PetscObjectSetOptionsPrefix((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)natural,prefix);
+<a name="line680">680: </a>  VecLoad_Binary(natural,viewer);
+<a name="line681">681: </a>  <A href="../../../../docs/manualpages/DM/DMDANaturalToGlobalBegin.html#DMDANaturalToGlobalBegin">DMDANaturalToGlobalBegin</A>(da,natural,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,xin);
+<a name="line682">682: </a>  <A href="../../../../docs/manualpages/DM/DMDANaturalToGlobalEnd.html#DMDANaturalToGlobalEnd">DMDANaturalToGlobalEnd</A>(da,natural,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,xin);
+<a name="line683">683: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;natural);
+<a name="line684">684: </a>  <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(xin,<font color="#666666">"Loading vector from natural ordering into DMDA\n"</font>);
+<a name="line685">685: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;prefix,<font color="#666666">"-vecload_block_size"</font>,&amp;bs,&amp;flag);
+<a name="line686">686: </a>  <font color="#4169E1">if</font> (flag &amp;&amp; bs != dd-&gt;w) {
+<a name="line687">687: </a>    PetscInfo2(xin,<font color="#666666">"Block size in file %D not equal to DMDA's dof %D\n"</font>,bs,dd-&gt;w);
+<a name="line688">688: </a>  }
+<a name="line689">689: </a>  <font color="#4169E1">return</font>(0);
+<a name="line690">690: </a>}
+
+<a name="line692">692: </a>EXTERN_C_BEGIN
+<a name="line695">695: </a><strong><font color="#4169E1"><a name="VecLoad_Default_DA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  VecLoad_Default_DA(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
+<a name="line696">696: </a>{
+<a name="line698">698: </a>  DM             da;
+<a name="line699">699: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      isbinary;
+<a name="line700">700: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
+<a name="line701">701: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      ishdf5;
+<a name="line702">702: </a><font color="#A020F0">#endif</font>
+
+<a name="line705">705: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,<font color="#666666">"DM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;da);
+<a name="line706">706: </a>  <font color="#4169E1">if</font> (!da) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin)-&gt;comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Vector not generated from a DMDA"</font>);
+
+<a name="line708">708: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
+<a name="line709">709: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERHDF5,&amp;ishdf5);
+<a name="line710">710: </a><font color="#A020F0">#endif</font>
+<a name="line711">711: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERBINARY,&amp;isbinary);
+
+<a name="line713">713: </a>  <font color="#4169E1">if</font> (isbinary) {
+<a name="line714">714: </a>    VecLoad_Binary_DA(xin,viewer);
+<a name="line715">715: </a><font color="#A020F0">#if defined(PETSC_HAVE_HDF5)</font>
+<a name="line716">716: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (ishdf5) {
+<a name="line717">717: </a>    VecLoad_HDF5_DA(xin,viewer);
+<a name="line718">718: </a><font color="#A020F0">#endif</font>
+<a name="line719">719: </a>  } <font color="#4169E1">else</font> <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Viewer type %s not supported for vector loading"</font>, ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer)-&gt;type_name);
+<a name="line720">720: </a>  <font color="#4169E1">return</font>(0);
+<a name="line721">721: </a>}
+<a name="line722">722: </a>EXTERN_C_END
 </pre>
 </body>
 

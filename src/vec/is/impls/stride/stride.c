@@ -3,7 +3,7 @@
        Index sets of evenly space integers, defined by a 
     start, stride and length.
 */
-#include <private/isimpl.h>             /*I   "petscis.h"   I*/
+#include <petsc-private/isimpl.h>             /*I   "petscis.h"   I*/
 #include <petscvec.h>
 
 typedef struct {
@@ -208,7 +208,7 @@ PetscErrorCode ISView_Stride(IS is,PetscViewer viewer)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) { 
     ierr = MPI_Comm_rank(((PetscObject)is)->comm,&rank);CHKERRQ(ierr);
     ierr = MPI_Comm_size(((PetscObject)is)->comm,&size);CHKERRQ(ierr);
@@ -348,6 +348,7 @@ PetscErrorCode  ISStrideSetStride(IS is,PetscInt n,PetscInt first,PetscInt step)
 {
   PetscErrorCode ierr;
   PetscFunctionBegin;
+  if (n < 0) SETERRQ1(((PetscObject) is)->comm, PETSC_ERR_ARG_OUTOFRANGE, "Negative length %d not valid", n);
   ierr = PetscUseMethod(is,"ISStrideSetStride_C",(IS,PetscInt,PetscInt,PetscInt),(is,n,first,step));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

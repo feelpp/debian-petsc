@@ -1,5 +1,5 @@
 
-#include <private/matimpl.h>
+#include <petsc-private/matimpl.h>
 #include <../src/mat/impls/mffd/mffdimpl.h>   /*I  "petscmat.h"   I*/
 
 PetscFList MatMFFDList        = 0;
@@ -114,11 +114,11 @@ PetscErrorCode  MatMFFDSetType(Mat mat,const MatMFFDType ftype)
   PetscValidHeaderSpecific(mat,MAT_CLASSID,1);
   PetscValidCharPointer(ftype,2);
 
-  ierr = PetscTypeCompare((PetscObject)mat,MATMFFD,&match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATMFFD,&match);CHKERRQ(ierr);
   if (!match) PetscFunctionReturn(0);
 
   /* already set, so just return */
-  ierr = PetscTypeCompare((PetscObject)ctx,ftype,&match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)ctx,ftype,&match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
   /* destroy the old one if it exists */
@@ -272,21 +272,36 @@ PetscErrorCode MatView_MFFD(Mat J,PetscViewer viewer)
 {
   PetscErrorCode ierr;
   MatMFFD        ctx = (MatMFFD)J->data;
-  PetscBool      iascii;
+  PetscBool      iascii, viewbase, viewfunction;
+  const char*    prefix;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
-     ierr = PetscViewerASCIIPrintf(viewer,"  matrix-free approximation:\n");CHKERRQ(ierr);
-     ierr = PetscViewerASCIIPrintf(viewer,"    err=%G (relative error in function evaluation)\n",ctx->error_rel);CHKERRQ(ierr);
-     if (!((PetscObject)ctx)->type_name) {
-       ierr = PetscViewerASCIIPrintf(viewer,"    The compute h routine has not yet been set\n");CHKERRQ(ierr);
-     } else {
-       ierr = PetscViewerASCIIPrintf(viewer,"    Using %s compute h routine\n",((PetscObject)ctx)->type_name);CHKERRQ(ierr);
-     }
-     if (ctx->ops->view) {
-       ierr = (*ctx->ops->view)(ctx,viewer);CHKERRQ(ierr);
-     }
+    ierr = PetscViewerASCIIPrintf(viewer,"Matrix-free approximation:\n");CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPushTab(viewer); CHKERRQ(ierr);
+    ierr = PetscViewerASCIIPrintf(viewer,"err=%G (relative error in function evaluation)\n",ctx->error_rel);CHKERRQ(ierr);
+    if (!((PetscObject)ctx)->type_name) {
+      ierr = PetscViewerASCIIPrintf(viewer,"The compute h routine has not yet been set\n");CHKERRQ(ierr);
+    } else {
+      ierr = PetscViewerASCIIPrintf(viewer,"Using %s compute h routine\n",((PetscObject)ctx)->type_name);CHKERRQ(ierr);
+    }
+    if (ctx->ops->view) {
+      ierr = (*ctx->ops->view)(ctx,viewer);CHKERRQ(ierr);
+    }
+    ierr = PetscObjectGetOptionsPrefix((PetscObject)J, &prefix); CHKERRQ(ierr);
+    
+    ierr = PetscOptionsHasName(prefix, "-mat_mffd_view_base", &viewbase); CHKERRQ(ierr);
+    if(viewbase) {
+      ierr = PetscViewerASCIIPrintf(viewer, "Base:\n");     CHKERRQ(ierr);
+      ierr = VecView(ctx->current_u, viewer);                 CHKERRQ(ierr);
+    }
+    ierr = PetscOptionsHasName(prefix, "-mat_mffd_view_function", &viewfunction); CHKERRQ(ierr);
+    if(viewfunction) {
+      ierr = PetscViewerASCIIPrintf(viewer, "Function:\n"); CHKERRQ(ierr);
+      ierr = VecView(ctx->current_f, viewer);                 CHKERRQ(ierr);
+    }
+    ierr = PetscViewerASCIIPopTab(viewer); CHKERRQ(ierr);
   } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported for matrix-free matrix",((PetscObject)viewer)->type_name);
   PetscFunctionReturn(0);
 }
@@ -591,7 +606,7 @@ EXTERN_C_END
 PetscErrorCode  MatMFFDSetOptionsPrefix(Mat mat,const char prefix[])
 
 {
-  MatMFFD        mfctx = mat ? (MatMFFD)mat->data : PETSC_NULL;
+  MatMFFD        mfctx = mat ? (MatMFFD)mat->data : (MatMFFD)PETSC_NULL;
   PetscErrorCode ierr;
   PetscFunctionBegin;
   PetscValidHeaderSpecific(mat,MAT_CLASSID,1);
@@ -739,8 +754,6 @@ PetscErrorCode  MatCreate_MFFD(Mat A)
   A->ops->setfromoptions = MatSetFromOptions_MFFD;
   A->assembled = PETSC_TRUE;
 
-  ierr = PetscLayoutSetBlockSize(A->rmap,1);CHKERRQ(ierr);
-  ierr = PetscLayoutSetBlockSize(A->cmap,1);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(A->rmap);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(A->cmap);CHKERRQ(ierr);
 
@@ -831,6 +844,7 @@ PetscErrorCode  MatCreateMFFD(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,Pet
   ierr = MatCreate(comm,J);CHKERRQ(ierr);
   ierr = MatSetSizes(*J,m,n,M,N);CHKERRQ(ierr);
   ierr = MatSetType(*J,MATMFFD);CHKERRQ(ierr);
+  ierr = MatSetUp(*J);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -862,7 +876,7 @@ PetscErrorCode  MatMFFDGetH(Mat mat,PetscScalar *h)
   PetscBool      match;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)mat,MATMFFD,&match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATMFFD,&match);CHKERRQ(ierr);
   if (!match) SETERRQ(((PetscObject)mat)->comm,PETSC_ERR_ARG_WRONG,"Not a MFFD matrix");
 
   *h = ctx->currenth;
@@ -1104,7 +1118,7 @@ PetscErrorCode  MatMFFDSetHHistory(Mat J,PetscScalar history[],PetscInt nhistory
   PetscBool      match;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)J,MATMFFD,&match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)J,MATMFFD,&match);CHKERRQ(ierr);
   if (!match) SETERRQ(((PetscObject)J)->comm,PETSC_ERR_ARG_WRONG,"Not a MFFD matrix");
   ctx->historyh    = history;
   ctx->maxcurrenth = nhistory;

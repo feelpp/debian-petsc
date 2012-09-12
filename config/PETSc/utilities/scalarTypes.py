@@ -20,7 +20,7 @@ class Configure(config.base.Configure):
     
   def setupHelp(self, help):
     import nargs
-    help.addArgument('PETSc', '-with-precision=<single,double,longdouble(not supported),__float128>', nargs.Arg(None, 'double', 'Specify numerical precision'))    
+    help.addArgument('PETSc', '-with-precision=<single,double,__float128>', nargs.Arg(None, 'double', 'Specify numerical precision'))
     help.addArgument('PETSc', '-with-scalar-type=<real or complex>', nargs.Arg(None, 'real', 'Specify real or complex numbers'))
     help.addArgument('PETSc', '-with-mixed-precision=<bool>', nargs.ArgBool(None, 0, 'Allow single precision linear solve'))
     return
@@ -77,8 +77,6 @@ class Configure(config.base.Configure):
     self.precision = self.framework.argDB['with-precision'].lower()
     if self.precision == 'single':
       self.addDefine('USE_REAL_SINGLE', '1')
-    elif self.precision == 'longdouble':
-      self.addDefine('USE_REAL_LONG_DOUBLE', '1')
     elif self.precision == '_quad': # source code currently does not support this
       self.pushLanguage('C')
       if not config.setCompilers.Configure.isIntel(self.compilers.getCompiler()): raise RuntimeError('Only Intel compiler supports _quad')
@@ -87,10 +85,12 @@ class Configure(config.base.Configure):
     elif self.precision == 'double':
       self.addDefine('USE_REAL_DOUBLE', '1')
     elif self.precision == '__float128':  # supported by gcc 4.6
-      self.addDefine('USE_REAL___FLOAT128', '1')
-      self.libraries.add('quadmath','logq',prototype='#include <quadmath.h>',call='__float128 f; logq(f);')
+      if self.libraries.add('quadmath','logq',prototype='#include <quadmath.h>',call='__float128 f; logq(f);'):
+        self.addDefine('USE_REAL___FLOAT128', '1')
+      else:
+        raise RuntimeError('quadmath support not found. --with-precision=__float128 works with gcc-4.6 and newer compilers.')
     else:
-      raise RuntimeError('--with-precision must be single, double, longdouble')
+      raise RuntimeError('--with-precision must be single, double,__float128')
     self.framework.logPrint('Precision is '+str(self.precision))
     if self.framework.argDB['with-mixed-precision']:
       self.addDefine('USE_MIXED_PRECISION', '1')      

@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESGetKSP.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESGetKSP</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESGetKSP"><H1>SNESGetKSP</H1></A>
 Returns the <A HREF="../KSP/KSP.html#KSP">KSP</A> context for a <A HREF="../SNES/SNES.html#SNES">SNES</A> solver. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESGetKSP(SNES snes,KSP *ksp)
 </PRE>
 Not Collective, but if <A HREF="../SNES/SNES.html#SNES">SNES</A> object is parallel, then <A HREF="../KSP/KSP.html#KSP">KSP</A> object is parallel
@@ -42,14 +45,13 @@ options, etc.  Likewise, the user can then extract and manipulate the
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex1.c.html">src/snes/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex3.c.html">src/snes/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex6.c.html">src/snes/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex24.c.html">src/snes/examples/tutorials/ex24.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex29.c.html">src/snes/examples/tutorials/ex29.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex30.c.html">src/snes/examples/tutorials/ex30.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex38.c.html">src/snes/examples/tutorials/ex38.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex44.c.html">src/snes/examples/tutorials/ex44.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex1f.F.html">src/snes/examples/tutorials/ex1f.F.html</A><BR>
 </BODY></HTML>

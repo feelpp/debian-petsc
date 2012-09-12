@@ -1,19 +1,30 @@
 <center><a href="sregis.c">Actual source code: sregis.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/order/sregis.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:34+00:00">
+<meta name="date" content="2012-08-29T16:53:30+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;     </font><font color="#B22222">/*I       "petscmat.h"   I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;     </font><font color="#B22222">/*I       "petscmat.h"   I*/</font><font color="#A020F0"></font>
 
+<a name="line4">  4: </a><strong><font color="#4169E1">EXTERN_C_BEGIN</font></strong>
+<a name="line5">  5: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_Natural(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
+<a name="line6">  6: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_ND(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
+<a name="line7">  7: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_1WD(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
+<a name="line8">  8: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_QMD(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
+<a name="line9">  9: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_RCM(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
+<a name="line10"> 10: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_RowLength(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
+<a name="line11"> 11: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_DSC(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
 <a name="line12"> 12: </a><font color="#A020F0">#if defined(PETSC_HAVE_UMFPACK)</font>
+<a name="line13"> 13: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetOrdering_AMD(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A>*)</font></strong>;
 <a name="line14"> 14: </a><font color="#A020F0">#endif</font>
 
+<a name="line16"> 16: </a>EXTERN_C_END
 
 <a name="line20"> 20: </a><font color="#B22222">/*@C</font>
 <a name="line21"> 21: </a><font color="#B22222">  <A href="../../../docs/manualpages/MatOrderings/MatOrderingRegisterAll.html#MatOrderingRegisterAll">MatOrderingRegisterAll</A> - Registers all of the matrix </font>

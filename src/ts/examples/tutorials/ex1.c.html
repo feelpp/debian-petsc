@@ -1,13 +1,14 @@
 <center><a href="ex1.c">Actual source code: ex1.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/examples/tutorials/ex1.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:20:19+00:00">
+<meta name="date" content="2012-08-29T17:14:27+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] =<font color="#666666">"Solves the time dependent Bratu problem using pseudo-timestepping."</font>;
 
@@ -56,6 +57,7 @@
 <a name="line46"> 46: </a><font color="#B22222">/* </font>
 <a name="line47"> 47: </a><font color="#B22222">   User-defined routines</font>
 <a name="line48"> 48: </a><font color="#B22222">*/</font>
+<a name="line49"> 49: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  FormJacobian(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*),</font></strong>
 <a name="line50"> 50: </a><strong><font color="#4169E1">     FormFunction(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),</font></strong>
 <a name="line51"> 51: </a><strong><font color="#4169E1">     FormInitialGuess(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,AppCtx*)</font></strong>;
 
@@ -218,7 +220,7 @@
 <a name="line215">215: </a>        x[row] = 0.0;
 <a name="line216">216: </a>        <font color="#4169E1">continue</font>;
 <a name="line217">217: </a>      }
-<a name="line218">218: </a>      x[row] = temp1*sqrt(PetscMin((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(PetscMin(i,mx-i-1))*hx,temp));
+<a name="line218">218: </a>      x[row] = temp1*PetscSqrtReal(PetscMin((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(PetscMin(i,mx-i-1))*hx,temp));
 <a name="line219">219: </a>    }
 <a name="line220">220: </a>  }
 <a name="line221">221: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(X,&amp;x);

@@ -6,7 +6,7 @@
      pcimpl.h - private include file intended for use by all preconditioners 
 */
 
-#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>   /*I "petscpc.h" I*/
 #include <../src/mat/impls/aij/seq/aij.h>
 #include <cusp/monitor.h>
 #undef VecType
@@ -52,7 +52,7 @@ static PetscErrorCode PCSetUp_SACUSPPoly(PC pc)
   Mat_SeqAIJCUSP *gpustruct;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)pc->pmat,MATSEQAIJCUSP,&flg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)pc->pmat,MATSEQAIJCUSP,&flg);CHKERRQ(ierr);
   if (!flg) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Currently only handles CUSP matrices");
   if (pc->setupcalled != 0){
     try {
@@ -62,7 +62,7 @@ static PetscErrorCode PCSetUp_SACUSPPoly(PC pc)
     } 
   }
   try {
-    ierr = MatCUSPCopyToGPU(pc->pmat);CHKERRCUSP(ierr);
+    ierr = MatCUSPCopyToGPU(pc->pmat);CHKERRQ(ierr);
     gpustruct  = (Mat_SeqAIJCUSP *)(pc->pmat->spptr);
     sa->SACUSPPoly = new cuspsaprecond(*(CUSPMATRIX*)gpustruct->mat);
   } catch(char* ex) {
@@ -125,8 +125,8 @@ static PetscErrorCode PCApply_SACUSPPoly(PC pc,Vec x,Vec y)
 
   PetscFunctionBegin;
   /*how to apply a certain fixed number of iterations?*/
-  ierr = PetscTypeCompare((PetscObject)x,VECSEQCUSP,&flg1);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)y,VECSEQCUSP,&flg2);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)x,VECSEQCUSP,&flg1);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)y,VECSEQCUSP,&flg2);CHKERRQ(ierr);
   if (!(flg1 && flg2)) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP, "Currently only handles CUSP vectors");
   if (!sac->SACUSPPoly) {
     ierr = PCSetUp_SACUSPPoly(pc);CHKERRQ(ierr);

@@ -3,7 +3,7 @@
 */
 #if !defined(__MG_IMPL)
 #define __MG_IMPL
-#include <private/pcimpl.h>
+#include <petsc-private/pcimpl.h>
 #include <petscpcmg.h>
 #include <petscksp.h>
 
@@ -48,6 +48,7 @@ typedef struct {
   PetscReal     rtol,abstol,dtol,ttol;        /* tolerances for when running with PCApplyRichardson_MG */
 
   void          *innerctx;                   /* optional data for preconditioner, like PCEXOTIC that inherits off of PCMG */
+  PetscLogStage  stageApply;
 } PC_MG;
 
 extern PetscErrorCode PCSetUp_MG(PC);

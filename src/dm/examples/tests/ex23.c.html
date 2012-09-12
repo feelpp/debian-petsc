@@ -1,13 +1,14 @@
 <center><a href="ex23.c">Actual source code: ex23.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tests/ex23.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:50+00:00">
+<meta name="date" content="2012-08-29T16:58:11+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>()/<A href="../../../../docs/manualpages/Vec/VecLoad.html#VecLoad">VecLoad</A>() for DMDA vectors (this tests DMDAGlobalToNatural()).\n\n"</font>;
 
@@ -43,9 +44,9 @@
 <a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-stencil_type"</font>,&amp;st,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line37"> 37: </a>  stencil_type = (<A href="../../../../docs/manualpages/DM/DMDAStencilType.html#DMDAStencilType">DMDAStencilType</A>) st;
 
-<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-1d"</font>,&amp;flg2);
-<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-2d"</font>,&amp;flg2);
-<a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-3d"</font>,&amp;flg3);
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-one"</font>,&amp;flg2);
+<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-two"</font>,&amp;flg2);
+<a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-three"</font>,&amp;flg3);
 <a name="line42"> 42: </a>  <font color="#4169E1">if</font> (flg2) {
 <a name="line43"> 43: </a>    <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,bx,by,stencil_type,M,N,m,n,dof,stencil_width,0,0,&amp;da);
 <a name="line44"> 44: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (flg3) {

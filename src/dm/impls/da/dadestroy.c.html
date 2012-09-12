@@ -1,19 +1,20 @@
 <center><a href="dadestroy.c">Actual source code: dadestroy.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/da/dadestroy.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:07:29+00:00">
+<meta name="date" content="2012-08-29T16:54:38+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">  Code for manipulating distributed regular arrays in parallel.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
 
-<a name="line6">  6: </a><font color="#A020F0">#include &lt;private/daimpl.h&gt;    </font><font color="#B22222">/*I   "petscdmda.h"   I*/</font><font color="#A020F0"></font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petsc-private/daimpl.h&gt;    </font><font color="#B22222">/*I   "petscdmda.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line8">  8: </a><font color="#B22222">/* Logging support */</font>
 <a name="line9">  9: </a><A href="../../../../docs/manualpages/Sys/PetscClassId.html#PetscClassId">PetscClassId</A>  ADDA_CLASSID;
@@ -114,8 +115,10 @@
 <a name="line113">113: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(dd-&gt;dfill);
 <a name="line114">114: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(dd-&gt;ofill);
 <a name="line115">115: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(dd-&gt;e);
-<a name="line116">116: </a>  <font color="#4169E1">return</font>(0);
-<a name="line117">117: </a>}
+
+<a name="line117">117: </a>  <font color="#B22222">/* <A href="../../../../docs/manualpages/Vec/PetscSectionDestroy.html#PetscSectionDestroy">PetscSectionDestroy</A>(&amp;dd-&gt;defaultGlobalSection); */</font>
+<a name="line118">118: </a>  <font color="#4169E1">return</font>(0);
+<a name="line119">119: </a>}
 </pre>
 </body>
 

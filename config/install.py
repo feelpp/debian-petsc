@@ -33,14 +33,6 @@ class Installer(script.Script):
   def __init__(self, clArgs = None):
     import RDict
     argDB = RDict.RDict(None, None, 0, 0, readonly = True)
-    if os.environ.has_key('PETSC_DIR'):
-      PETSC_DIR = os.environ['PETSC_DIR']
-    else:
-      fd = file(os.path.join('conf','petscvariables'))
-      a = fd.readline()
-      a = fd.readline()
-      PETSC_DIR = a.split('=')[1][0:-1]
-      fd.close()
     argDB.saveFilename = os.path.join(PETSC_DIR, PETSC_ARCH, 'conf', 'RDict.db')
     argDB.load()
     script.Script.__init__(self, argDB = argDB)
@@ -59,7 +51,7 @@ class Installer(script.Script):
     self.setCompilers  = self.framework.require('config.setCompilers',         None)
     self.arch          = self.framework.require('PETSc.utilities.arch',        None)
     self.petscdir      = self.framework.require('PETSc.utilities.petscdir',    None)
-    self.makesys       = self.framework.require('config.programs',        None)
+    self.makesys       = self.framework.require('config.programs',             None)
     self.compilers     = self.framework.require('config.compilers',            None)
     return
   
@@ -93,6 +85,39 @@ class Installer(script.Script):
     self.make      = self.makesys.make+' '+self.makesys.flags
     self.ranlib    = self.compilers.RANLIB
     self.libSuffix = self.compilers.AR_LIB_SUFFIX
+    return
+
+  def checkPrefix(self):
+    if not self.installDir:
+      print '********************************************************************'
+      print 'PETSc is built without prefix option. So "make install" is not appropriate.'
+      print 'If you need a prefix install of PETSc - rerun configure with --prefix option.'
+      print '********************************************************************'
+      sys.exit(1)
+    return
+
+  def checkDestdir(self):
+    if os.path.exists(self.destDir):
+      if os.path.samefile(self.destDir, self.rootDir):
+        print '********************************************************************'
+        print 'Incorrect prefix usage. Specified destDir same as current PETSC_DIR'
+        print '********************************************************************'
+        sys.exit(1)
+      if os.path.samefile(self.destDir, os.path.join(self.rootDir,self.arch)):
+        print '********************************************************************'
+        print 'Incorrect prefix usage. Specified destDir same as current PETSC_DIR/PETSC_ARCH'
+        print '********************************************************************'
+        sys.exit(1)
+      if not os.path.isdir(os.path.realpath(self.destDir)):
+        print '********************************************************************'
+        print 'Specified destDir', self.destDir, 'is not a directory. Cannot proceed!'
+        print '********************************************************************'
+        sys.exit(1)
+      if not os.access(self.destDir, os.W_OK):
+        print '********************************************************************'
+        print 'Unable to write to ', self.destDir, 'Perhaps you need to do "sudo make install"'
+        print '********************************************************************'
+        sys.exit(1)
     return
 
   def copytree(self, src, dst, symlinks = False, copyFunc = shutil.copy2):
@@ -212,12 +237,16 @@ for src, dst in copies:
 
   def copyLib(self, src, dst):
     '''Run ranlib on the destination library if it is an archive. Also run install_name_tool on dylib on Mac'''
-    shutil.copy2(src, dst)
+    # Do not install object files
+    if not os.path.splitext(src)[1] == '.o':
+      shutil.copy2(src, dst)
     if os.path.splitext(dst)[1] == '.'+self.libSuffix:
       self.executeShellCommand(self.ranlib+' '+dst)
     if os.path.splitext(dst)[1] == '.dylib' and os.path.isfile('/usr/bin/install_name_tool'):
       installName = re.sub(self.destDir, self.installDir, dst)
       self.executeShellCommand('/usr/bin/install_name_tool -id ' + installName + ' ' + dst)
+    # preserve the original timestamps - so that the .a vs .so time order is preserved
+    shutil.copystat(src,dst)
     return
 
   def installLib(self):
@@ -238,15 +267,13 @@ make PETSC_DIR=%s test
   def runfix(self):
     self.setup()
     self.setupDirectories()
+    self.checkPrefix()
+    self.checkDestdir()
     self.createUninstaller()
     self.fixConf()
 
+
   def runcopy(self):
-    if os.path.exists(self.destDir) and os.path.samefile(self.destDir, os.path.join(self.rootDir,self.arch)):
-      print '********************************************************************'
-      print 'Install directory is current directory; nothing needs to be done'
-      print '********************************************************************'
-      return
     print '*** Installing PETSc at',self.destDir, ' ***'
     if not os.path.exists(self.destDir):
       try:
@@ -255,18 +282,7 @@ make PETSC_DIR=%s test
         print '********************************************************************'
         print 'Unable to create', self.destDir, 'Perhaps you need to do "sudo make install"'
         print '********************************************************************'
-        return
-    if not os.path.isdir(os.path.realpath(self.destDir)):
-      print '********************************************************************'
-      print 'Specified destDir', self.destDir, 'is not a directory. Cannot proceed!'
-      print '********************************************************************'
-      return
-    if not os.access(self.destDir, os.W_OK):
-      print '********************************************************************'
-      print 'Unable to write to ', self.destDir, 'Perhaps you need to do "sudo make install"'
-      print '********************************************************************'
-      return
-
+        sys.exit(1)
     self.installIncludes()
     self.installConf()
     self.installBin()

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MATSEQSBAIJ.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MATSEQSBAIJ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MATSEQSBAIJ"><H1>MATSEQSBAIJ</H1></A>
 <A HREF="../Mat/MATSEQSBAIJ.html#MATSEQSBAIJ">MATSEQSBAIJ</A> = "seqsbaij" - A matrix type to be used for sequential symmetric block sparse matrices,  based on block compressed sparse row format.  Only the upper triangular portion of the matrix is stored. For complex numbers by default this matrix is symmetric, NOT Hermitian symmetric. To make it Hermitian symmetric you
 can call <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(<A HREF="../Mat/Mat.html#Mat">Mat</A>, MAT_HERMITIAN); after <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>()
@@ -25,6 +26,4 @@ the options database -mat_ignore_lower_triangular false it will generate an erro
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 </BODY></HTML>

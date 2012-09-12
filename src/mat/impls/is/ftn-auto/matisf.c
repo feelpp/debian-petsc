@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* matis.c */
 /* Fortran interface file */
 
@@ -34,6 +34,11 @@ extern void PetscRmPointer(void*);
 #define matisgetlocalmat_ matisgetlocalmat
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matissetlocalmat_ MATISSETLOCALMAT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matissetlocalmat_ matissetlocalmat
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matcreateis_ MATCREATEIS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matcreateis_ matcreateis
@@ -48,9 +53,14 @@ void PETSC_STDCALL  matisgetlocalmat_(Mat mat,Mat *local, int *__ierr ){
 *__ierr = MatISGetLocalMat(
 	(Mat)PetscToPointer((mat) ),local);
 }
-void PETSC_STDCALL  matcreateis_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,ISLocalToGlobalMapping map,Mat *A, int *__ierr ){
+void PETSC_STDCALL  matissetlocalmat_(Mat mat,Mat local, int *__ierr ){
+*__ierr = MatISSetLocalMat(
+	(Mat)PetscToPointer((mat) ),
+	(Mat)PetscToPointer((local) ));
+}
+void PETSC_STDCALL  matcreateis_(MPI_Fint * comm,PetscInt *bs,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,ISLocalToGlobalMapping map,Mat *A, int *__ierr ){
 *__ierr = MatCreateIS(
-	MPI_Comm_f2c( *(comm) ),*m,*n,*M,*N,
+	MPI_Comm_f2c( *(comm) ),*bs,*m,*n,*M,*N,
 	(ISLocalToGlobalMapping)PetscToPointer((map) ),A);
 }
 #if defined(__cplusplus)

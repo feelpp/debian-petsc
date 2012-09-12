@@ -4,8 +4,8 @@ ALL: lib
 CPPFLAGS =
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = meshf.c meshexodusf.c sectionf.c meshcreatef.c
-OBJSC    = meshf.o meshexodusf.o sectionf.o meshcreatef.o
+SOURCEC  = sectionf.c meshexodusf.c meshf.c meshcreatef.c
+OBJSC    = sectionf.o meshexodusf.o meshf.o meshcreatef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESGetOptionsPrefix.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESGetOptionsPrefix</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESGetOptionsPrefix"><H1>SNESGetOptionsPrefix</H1></A>
 Sets the prefix used for searching for all  <A HREF="../SNES/SNES.html#SNES">SNES</A> options in the database. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESGetOptionsPrefix(SNES snes,const char *prefix[])
 </PRE>
 Not Collective

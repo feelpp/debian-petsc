@@ -7,7 +7,7 @@
 !   a2 = 0, k2 = 2*k1, s2 = 1
 !
 !   Initial conditions:
-!   u(x,0) = 1 * s2*x
+!   u(x,0) = 1 + s2*x
 !   v(x,0) = k0/k1*u(x,0) + s1/k1
 !
 !   Upstream boundary conditions:
@@ -95,7 +95,7 @@
       call TSSetRHSFunction(ts,PETSC_NULL_OBJECT,FormRHSFunction,       &
      &     user,ierr)
       call TSSetIFunction(ts,PETSC_NULL_OBJECT,FormIFunction,user,ierr)
-      call DMGetMatrix(da,MATAIJ,J,ierr)
+      call DMCreateMatrix(da,MATAIJ,J,ierr)
       call TSSetIJacobian(ts,J,J,FormIJacobian,user,ierr)
 
       ftime = 1.0
@@ -151,7 +151,7 @@
       call DMDAGetCorners(da,xs,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,  &
      &     xm,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,ierr)
       call DMDAGetGhostCorners(da,                                      &
-     &     gxs,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,
+     &     gxs,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,                   &
      &     gxm,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,ierr)
       xs = xs + 1
       gxs = gxs + 1
@@ -193,7 +193,6 @@
 
       DM             da
       PetscInt       mx,xs,xe,gxs,gxe
-      Vec            Xloc
       PetscOffset    ixx,ixxdot,iff
       PetscScalar    xx(0:1),xxdot(0:1),ff(0:1)
 
@@ -394,7 +393,6 @@
 #include <finclude/petscts.h>
 #include <finclude/petscdmda.h>
       TS ts
-      PetscReal t
       Vec X
       PetscReal user(6)
       PetscErrorCode ierr

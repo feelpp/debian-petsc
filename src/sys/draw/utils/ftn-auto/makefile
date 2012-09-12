@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = axiscf.c lgcf.c axisf.c histsf.c lgf.c dscatterf.c
-OBJSC    = axiscf.o lgcf.o axisf.o histsf.o lgf.o dscatterf.o
+SOURCEC  = lgf.c lgcf.c dscatterf.c histsf.c axisf.c axiscf.c
+OBJSC    = lgf.o lgcf.o dscatterf.o histsf.o axisf.o axiscf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

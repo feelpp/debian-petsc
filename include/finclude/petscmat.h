@@ -102,13 +102,13 @@
 !
 !  Flags for PCSetOperators()
 !
-      PetscEnum SAME_NONZERO_PATTERN
       PetscEnum DIFFERENT_NONZERO_PATTERN
-      PetscEnum SAME_PRECONDITIONER
       PetscEnum SUBSET_NONZERO_PATTERN
+      PetscEnum SAME_NONZERO_PATTERN
+      PetscEnum SAME_PRECONDITIONER
 
-      parameter (SAME_NONZERO_PATTERN = 0,DIFFERENT_NONZERO_PATTERN = 1)
-      parameter (SAME_PRECONDITIONER = 2,SUBSET_NONZERO_PATTERN=3)
+      parameter (DIFFERENT_NONZERO_PATTERN = 0,SUBSET_NONZERO_PATTERN=1)
+      parameter (SAME_NONZERO_PATTERN = 2,SAME_PRECONDITIONER = 3)
 #if !(PETSC_USE_FORTRAN_DATATYPES_)
 #include "finclude/petscmatinfosize.h"
 #endif
@@ -335,6 +335,7 @@
       PetscEnum MATOP_GETCOLUMNNORMS
       PetscEnum MATOP_GET_SUBMATRICES_PARALLEL
       PetscEnum MATOP_SET_VALUES_BATCH
+      PetscEnum MATOP_SET_BLOCK_SIZES
 
       parameter(MATOP_SET_VALUES=0)
       parameter(MATOP_GET_ROW=1)
@@ -463,6 +464,7 @@
       parameter(MATOP_GETCOLUMNNORMS=125)
       parameter(MATOP_GET_SUBMATRICES_PARALLEL=128)
       parameter(MATOP_SET_VALUES_BATCH=129)
+      parameter(MATOP_SET_BLOCK_SIZES=139)
 !
 !
 !

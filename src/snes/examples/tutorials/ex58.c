@@ -1,9 +1,9 @@
 #include <petscsnes.h>
 #include <petscdmda.h>
 
-static char  help[] = "Parallel version of the minimum surface area problem using DMs.\n\
+static const char help[] = "Parallel version of the minimum surface area problem in 2D using DMDA.\n\
  It solves a system of nonlinear equations in mixed\n\
-complementarity form using semismooth newton algorithm.This example is based on a\n\
+complementarity form.This example is based on a\n\
 problem from the MINPACK-2 test suite.  Given a rectangular 2-D domain and\n\
 boundary values along the edges of the domain, the objective is to find the\n\
 surface with the minimal area that satisfies the boundary conditions.\n\
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
   ierr = DMCreateGlobalVector(da,&x);CHKERRQ(ierr);
   ierr = VecDuplicate(x, &r); CHKERRQ(ierr);
 
-  ierr = DMGetMatrix(da,MATAIJ,&J);CHKERRQ(ierr);
+  ierr = DMCreateMatrix(da,MATAIJ,&J);CHKERRQ(ierr);
 
   /* Create nonlinear solver context */
   ierr = SNESCreate(PETSC_COMM_WORLD,&snes); CHKERRQ(ierr);
@@ -405,8 +405,8 @@ PetscErrorCode FormJacobian(SNES snes, Vec X, Mat *tH, Mat* tHPre, MatStructure*
 
       hc = hydhx*(1.0+d7*d7)/(f1*f1*f1) + hxdhy*(1.0+d8*d8)/(f3*f3*f3) +
 	hydhx*(1.0+d5*d5)/(f5*f5*f5) + hxdhy*(1.0+d6*d6)/(f6*f6*f6) +
-	(hxdhy*(1.0+d1*d1)+hydhx*(1.0+d4*d4)-2*d1*d4)/(f2*f2*f2) +
-	(hxdhy*(1.0+d2*d2)+hydhx*(1.0+d3*d3)-2*d2*d3)/(f4*f4*f4);
+	(hxdhy*(1.0+d1*d1)+hydhx*(1.0+d4*d4)-2.0*d1*d4)/(f2*f2*f2) +
+	(hxdhy*(1.0+d2*d2)+hydhx*(1.0+d3*d3)-2.0*d2*d3)/(f4*f4*f4);
 
       hl/=2.0; hr/=2.0; ht/=2.0; hb/=2.0; hbr/=2.0; htl/=2.0;  hc/=2.0; 
 
@@ -485,8 +485,9 @@ PetscErrorCode FormBoundaryConditions(SNES snes,AppCtx **ouser)
   PetscInt        i,j,k,limit=0,maxits=5;
   PetscInt        mx,my;
   PetscInt        bsize=0, lsize=0, tsize=0, rsize=0;
-  PetscScalar     one=1.0, two=2.0, three=3.0, tol=1e-10;
-  PetscScalar     fnorm,det,hx,hy,xt=0,yt=0;
+  PetscScalar     one=1.0, two=2.0, three=3.0;
+  PetscScalar     det,hx,hy,xt=0,yt=0;
+  PetscReal       fnorm, tol=1e-10;
   PetscScalar     u1,u2,nf1,nf2,njac11,njac12,njac21,njac22;
   PetscScalar     b=-0.5, t=0.5, l=-0.5, r=0.5;
   PetscScalar     *boundary;
@@ -511,7 +512,7 @@ PetscErrorCode FormBoundaryConditions(SNES snes,AppCtx **ouser)
   ierr = PetscMalloc(lsize*sizeof(PetscScalar), &user->left);CHKERRQ(ierr);
   ierr = PetscMalloc(rsize*sizeof(PetscScalar), &user->right);CHKERRQ(ierr);
 
-  hx= (r-l)/(mx+1); hy=(t-b)/(my+1);
+  hx= (r-l)/(mx+1.0); hy=(t-b)/(my+1.0);
 
   for (j=0; j<4; j++){
     if (j==0){
@@ -542,7 +543,7 @@ PetscErrorCode FormBoundaryConditions(SNES snes,AppCtx **ouser)
       for (k=0; k<maxits; k++){
 	nf1=u1 + u1*u2*u2 - u1*u1*u1/three-xt;
 	nf2=-u2 - u1*u1*u2 + u2*u2*u2/three-yt;
-	fnorm=sqrt(nf1*nf1+nf2*nf2);
+	fnorm=PetscRealPart(sqrt(nf1*nf1+nf2*nf2));
 	if (fnorm <= tol) break;
 	njac11=one+u2*u2-u1*u1;
 	njac12=two*u1*u2;
@@ -615,7 +616,7 @@ PetscErrorCode ComputeInitialGuess(SNES snes, Vec X,void *dummy)
   /* Perform local computations */
   for (j=ys; j<ys+ym; j++){
     for (i=xs; i< xs+xm; i++){
-      x[j][i] = ( ((j+1)*user->bottom[i+1]+(my-j+1)*user->top[i+1])/(my+2)+((i+1)*user->left[j+1]+(mx-i+1)*user->right[j+1])/(mx+2))/2.0;
+      x[j][i] = ( ((j+1.0)*user->bottom[i+1]+(my-j+1.0)*user->top[i+1])/(my+2.0)+((i+1.0)*user->left[j+1]+(mx-i+1.0)*user->right[j+1])/(mx+2.0))/2.0;
     }
   }
   /* Restore vectors */

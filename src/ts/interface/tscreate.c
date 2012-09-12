@@ -1,5 +1,5 @@
 
-#include <private/tsimpl.h>      /*I "petscts.h"  I*/
+#include <petsc-private/tsimpl.h>      /*I "petscts.h"  I*/
 
 const char *const TSConvergedReasons_Shifted[] = {
   "DIVERGED_STEP_REJECTED",
@@ -75,8 +75,8 @@ PetscErrorCode  TSCreate(MPI_Comm comm, TS *ts) {
   t->max_time           = 5.0;
   t->steps              = 0;
   t->max_steps          = 5000;
-  t->linear_its         = 0;
-  t->nonlinear_its      = 0;
+  t->ksp_its            = 0;
+  t->snes_its           = 0;
   t->work               = PETSC_NULL;
   t->nwork              = 0;
   t->max_snes_failures  = 1;
@@ -85,6 +85,10 @@ PetscErrorCode  TSCreate(MPI_Comm comm, TS *ts) {
   t->rhsjacobian.time   = -1e20;
   t->ijacobian.time     = -1e20;
 
+  t->atol             = 1e-4;
+  t->rtol             = 1e-4;
+  t->cfltime          = PETSC_MAX_REAL;
+  t->cfltime_local    = PETSC_MAX_REAL;
   t->exact_final_time = PETSC_DECIDE;
 
   *ts = t;

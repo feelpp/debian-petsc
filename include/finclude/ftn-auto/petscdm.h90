@@ -1,3 +1,27 @@
+        subroutine DMGetLocalVector(dm, g ,ierr)
+       DM dm ! DM
+       Vec g ! Vec
+       integer ierr
+       end subroutine
+        subroutine DMRestoreLocalVector(dm, g ,ierr)
+       DM dm ! DM
+       Vec g ! Vec
+       integer ierr
+       end subroutine
+        subroutine DMGetGlobalVector(dm, g ,ierr)
+       DM dm ! DM
+       Vec g ! Vec
+       integer ierr
+       end subroutine
+        subroutine DMClearGlobalVectors(dm ,ierr)
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine DMRestoreGlobalVector(dm, g ,ierr)
+       DM dm ! DM
+       Vec g ! Vec
+       integer ierr
+       end subroutine
         subroutine DMCreate(comm, dm ,ierr)
        integer comm ! MPI_Comm
        DM dm ! DM
@@ -40,14 +64,14 @@
        PetscInt bs ! PetscInt
        integer ierr
        end subroutine
-        subroutine DMGetInterpolation(dm1, dm2, mat, vec ,ierr)
+        subroutine DMCreateInterpolation(dm1, dm2, mat, vec ,ierr)
        DM dm1 ! DM
        DM dm2 ! DM
        Mat mat ! Mat
        Vec vec ! Vec
        integer ierr
        end subroutine
-        subroutine DMGetInjection(dm1, dm2, ctx ,ierr)
+        subroutine DMCreateInjection(dm1, dm2, ctx ,ierr)
        DM dm1 ! DM
        DM dm2 ! DM
        VecScatter ctx ! VecScatter
@@ -62,6 +86,20 @@
        DM dm ! DM
        integer comm ! MPI_Comm
        DM dmf ! DM
+       integer ierr
+       end subroutine
+        subroutine DMRefineHookAdd(coarse, refinehook, interphook, ctx ,&
+     &ierr)
+       DM coarse ! DM
+       external refinehook ! void function pointer
+       external interphook ! void function pointer
+       PetscVoid ctx ! void
+       integer ierr
+       end subroutine
+        subroutine DMInterpolate(coarse, interp, fine ,ierr)
+       DM coarse ! DM
+       Mat interp ! Mat
+       DM fine ! DM
        integer ierr
        end subroutine
         subroutine DMGetRefineLevel(dm, level ,ierr)
@@ -111,7 +149,29 @@
        DM dmc ! DM
        integer ierr
        end subroutine
-        subroutine DMGetAggregates(dmc, dmf, rest ,ierr)
+        subroutine DMCoarsenHookAdd(fine, coarsenhook, restricthook, ctx&
+     & ,ierr)
+       DM fine ! DM
+       external coarsenhook ! void function pointer
+       external restricthook ! void function pointer
+       PetscVoid ctx ! void
+       integer ierr
+       end subroutine
+        subroutine DMRestrict(fine, restrct, rscale, inject, coarse ,   &
+     &ierr)
+       DM fine ! DM
+       Mat restrct ! Mat
+       Vec rscale ! Vec
+       Mat inject ! Mat
+       DM coarse ! DM
+       integer ierr
+       end subroutine
+        subroutine DMGetCoarsenLevel(dm, level ,ierr)
+       DM dm ! DM
+       PetscInt level ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMCreateAggregates(dmc, dmf, rest ,ierr)
        DM dmc ! DM
        DM dmf ! DM
        Mat rest ! Mat
@@ -125,6 +185,11 @@
         subroutine DMGetApplicationContext(dm, ctx ,ierr)
        DM dm ! DM
        PetscVoid ctx ! void
+       integer ierr
+       end subroutine
+        subroutine DMHasVariableBounds(dm, flg ,ierr)
+       DM dm ! DM
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine DMComputeInitialGuess(dm, x ,ierr)
@@ -159,5 +224,30 @@
        Mat A ! Mat
        Mat B ! Mat
        MatStructure stflag ! MatStructure
+       integer ierr
+       end subroutine
+        subroutine DMGetDefaultSection(dm, section ,ierr)
+       DM dm ! DM
+       PetscSection section ! PetscSection
+       integer ierr
+       end subroutine
+        subroutine DMSetDefaultSection(dm, section ,ierr)
+       DM dm ! DM
+       PetscSection section ! PetscSection
+       integer ierr
+       end subroutine
+        subroutine DMGetDefaultGlobalSection(dm, section ,ierr)
+       DM dm ! DM
+       PetscSection section ! PetscSection
+       integer ierr
+       end subroutine
+        subroutine DMGetDefaultSF(dm, sf ,ierr)
+       DM dm ! DM
+       PetscSF sf ! PetscSF
+       integer ierr
+       end subroutine
+        subroutine DMSetDefaultSF(dm, sf ,ierr)
+       DM dm ! DM
+       PetscSF sf ! PetscSF
        integer ierr
        end subroutine

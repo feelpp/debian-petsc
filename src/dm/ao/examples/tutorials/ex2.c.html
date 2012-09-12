@@ -1,13 +1,14 @@
 <center><a href="ex2.c">Actual source code: ex2.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/ao/examples/tutorials/ex2.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:58+00:00">
+<meta name="date" content="2012-08-29T16:54:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Reads a a simple unstructured grid from a file. Partitions it,\n\</font>
 <a name="line3">  3: </a><font color="#666666">and distributes the grid data accordingly\n\n"</font>;
@@ -125,6 +126,12 @@
 <a name="line115">115: </a><font color="#B22222">   the profiling results are meaningless.</font>
 <a name="line116">116: </a><font color="#B22222">*/</font>
 
+<a name="line118">118: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DataRead(GridData *)</font></strong>;
+<a name="line119">119: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DataPartitionElements(GridData *)</font></strong>;
+<a name="line120">120: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DataMoveElements(GridData *)</font></strong>;
+<a name="line121">121: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DataPartitionVertices(GridData *)</font></strong>;
+<a name="line122">122: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DataMoveVertices(GridData *)</font></strong>;
+<a name="line123">123: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DataDestroy(GridData *)</font></strong>;
 
 <a name="line127">127: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line128">128: </a>{
@@ -591,7 +598,7 @@
 <a name="line605">605: </a>  <font color="#B22222">/*</font>
 <a name="line606">606: </a><font color="#B22222">      Allocated space to store bit-array indicting vertices marked</font>
 <a name="line607">607: </a><font color="#B22222">  */</font>
-<a name="line608">608: </a>  PetscBTCreate(n_vert,mask);
+<a name="line608">608: </a>  PetscBTCreate(n_vert,&amp;mask);
 
 <a name="line610">610: </a>  <font color="#B22222">/*</font>
 <a name="line611">611: </a><font color="#B22222">     All processors except last can have a maximum of n_vert/size vertices assigned</font>
@@ -651,7 +658,7 @@
 <a name="line665">665: </a>  <font color="#4169E1">if</font> (rank &lt; size-1) {
 <a name="line666">666: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(mask,PetscBTLength(n_vert),MPI_CHAR,rank+1,0,<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>);
 <a name="line667">667: </a>  }
-<a name="line668">668: </a>  PetscBTDestroy(mask);
+<a name="line668">668: </a>  PetscBTDestroy(&amp;mask);
 
 <a name="line670">670: </a>  gdata-&gt;localvert = localvert;
 <a name="line671">671: </a>  gdata-&gt;nlocal    = nlocal;
@@ -710,55 +717,54 @@
 <a name="line728">728: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,2*gdata-&gt;nlocal,&amp;vert);
 
 <a name="line730">730: </a>  <font color="#B22222">/* create a vector to contain the old ordered vertex information */</font>
-<a name="line731">731: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2*gdata-&gt;mlocal_vert,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,gdata-&gt;vert,
-<a name="line732">732: </a>                               &amp;overt);
+<a name="line731">731: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,2*gdata-&gt;mlocal_vert,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,gdata-&gt;vert,&amp;overt);
 
-<a name="line734">734: </a>  <font color="#B22222">/* </font>
-<a name="line735">735: </a><font color="#B22222">      There are two data items per vertex, the x and y coordinates (i.e. one can think </font>
-<a name="line736">736: </a><font color="#B22222">    of the vectors of having a block size of 2 and there is one index in localvert[] for each block)</font>
-<a name="line737">737: </a><font color="#B22222">  */</font>
-<a name="line738">738: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,gdata-&gt;nlocal,gdata-&gt;localvert,PETSC_COPY_VALUES,&amp;isscat);
-<a name="line739">739: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gdata-&gt;localvert);
+<a name="line733">733: </a>  <font color="#B22222">/* </font>
+<a name="line734">734: </a><font color="#B22222">      There are two data items per vertex, the x and y coordinates (i.e. one can think </font>
+<a name="line735">735: </a><font color="#B22222">    of the vectors of having a block size of 2 and there is one index in localvert[] for each block)</font>
+<a name="line736">736: </a><font color="#B22222">  */</font>
+<a name="line737">737: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,gdata-&gt;nlocal,gdata-&gt;localvert,PETSC_COPY_VALUES,&amp;isscat);
+<a name="line738">738: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gdata-&gt;localvert);
 
-<a name="line741">741: </a>  <font color="#B22222">/* </font>
-<a name="line742">742: </a><font color="#B22222">      Scatter the element vertex information to the correct processor</font>
-<a name="line743">743: </a><font color="#B22222">  */</font>
-<a name="line744">744: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(overt,isscat,vert,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;vecscat);
-<a name="line745">745: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;isscat);
-<a name="line746">746: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,overt,vert,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line747">747: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,overt,vert,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line748">748: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(&amp;vecscat);
+<a name="line740">740: </a>  <font color="#B22222">/* </font>
+<a name="line741">741: </a><font color="#B22222">      Scatter the element vertex information to the correct processor</font>
+<a name="line742">742: </a><font color="#B22222">  */</font>
+<a name="line743">743: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(overt,isscat,vert,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;vecscat);
+<a name="line744">744: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;isscat);
+<a name="line745">745: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,overt,vert,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line746">746: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,overt,vert,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line747">747: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(&amp;vecscat);
 
-<a name="line750">750: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;overt);
-<a name="line751">751: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gdata-&gt;vert);
-<a name="line752">752: </a>
-<a name="line753">753: </a>  <font color="#B22222">/*</font>
-<a name="line754">754: </a><font color="#B22222">        Put resulting vertex information into gdata-&gt;vert array</font>
-<a name="line755">755: </a><font color="#B22222">  */</font>
-<a name="line756">756: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(2*gdata-&gt;nlocal*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),&amp;gdata-&gt;vert);
-<a name="line757">757: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(vert,&amp;avert);
-<a name="line758">758: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(gdata-&gt;vert,avert,2*gdata-&gt;nlocal*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
-<a name="line759">759: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(vert,&amp;avert);
-<a name="line760">760: </a>  gdata-&gt;mlocal_vert = gdata-&gt;nlocal;
-<a name="line761">761: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;vert);
+<a name="line749">749: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;overt);
+<a name="line750">750: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gdata-&gt;vert);
+<a name="line751">751: </a>
+<a name="line752">752: </a>  <font color="#B22222">/*</font>
+<a name="line753">753: </a><font color="#B22222">        Put resulting vertex information into gdata-&gt;vert array</font>
+<a name="line754">754: </a><font color="#B22222">  */</font>
+<a name="line755">755: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(2*gdata-&gt;nlocal*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),&amp;gdata-&gt;vert);
+<a name="line756">756: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(vert,&amp;avert);
+<a name="line757">757: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(gdata-&gt;vert,avert,2*gdata-&gt;nlocal*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+<a name="line758">758: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(vert,&amp;avert);
+<a name="line759">759: </a>  gdata-&gt;mlocal_vert = gdata-&gt;nlocal;
+<a name="line760">760: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;vert);
 
-<a name="line763">763: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vertex coordinates in new numbering\n"</font>);
-<a name="line764">764: </a>  <font color="#4169E1">for</font> (i=0; i&lt;gdata-&gt;mlocal_vert; i++) {
-<a name="line765">765: </a>    <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"(%g,%g)\n"</font>,gdata-&gt;vert[2*i],gdata-&gt;vert[2*i+1]);
-<a name="line766">766: </a>  }
-<a name="line767">767: </a>  <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>);
+<a name="line762">762: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Vertex coordinates in new numbering\n"</font>);
+<a name="line763">763: </a>  <font color="#4169E1">for</font> (i=0; i&lt;gdata-&gt;mlocal_vert; i++) {
+<a name="line764">764: </a>    <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"(%g,%g)\n"</font>,gdata-&gt;vert[2*i],gdata-&gt;vert[2*i+1]);
+<a name="line765">765: </a>  }
+<a name="line766">766: </a>  <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>);
 
-<a name="line769">769: </a>  <font color="#4169E1">return</font>(0);
-<a name="line770">770: </a>}
+<a name="line768">768: </a>  <font color="#4169E1">return</font>(0);
+<a name="line769">769: </a>}
 
 
-<a name="line775">775: </a><strong><font color="#4169E1"><a name="DataDestroy"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DataDestroy(GridData *gdata)</font></strong>
-<a name="line776">776: </a>{
+<a name="line774">774: </a><strong><font color="#4169E1"><a name="DataDestroy"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DataDestroy(GridData *gdata)</font></strong>
+<a name="line775">775: </a>{
 
-<a name="line780">780: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gdata-&gt;ele);
-<a name="line781">781: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gdata-&gt;vert);
-<a name="line782">782: </a>  <font color="#4169E1">return</font>(0);
-<a name="line783">783: </a>}
+<a name="line779">779: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gdata-&gt;ele);
+<a name="line780">780: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(gdata-&gt;vert);
+<a name="line781">781: </a>  <font color="#4169E1">return</font>(0);
+<a name="line782">782: </a>}
 
 </pre>
 </body>

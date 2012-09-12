@@ -1,13 +1,14 @@
 <center><a href="blockinvert.h">Actual source code: blockinvert.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/blockinvert.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:57:32+00:00">
+<meta name="date" content="2012-08-29T16:41:23+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#B22222">/*</font>
 <a name="line2">  2: </a><font color="#B22222">    Kernels used in sparse ILU (and LU) and in the resulting triangular</font>
 <a name="line3">  3: </a><font color="#B22222"> solves. These are for block algorithms where the block sizes are on </font>
@@ -27,8 +28,12 @@
 <a name="line19"> 19: </a><font color="#B22222">   src/mat/impls/baij/seq</font>
 <a name="line20"> 20: </a><font color="#B22222">*/</font>
 
+<a name="line22"> 22: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscLINPACKgefa(MatScalar*,<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)</font></strong>;
+<a name="line23"> 23: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscLINPACKgedi(MatScalar*,<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,MatScalar*)</font></strong>;
+<a name="line24"> 24: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscKernel_A_gets_inverse_A_2(MatScalar*,<A href="../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)</font></strong>;
+<a name="line25"> 25: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscKernel_A_gets_inverse_A_3(MatScalar*,<A href="../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)</font></strong>;
 
-<a name="line27"> 27: </a><strong><font color="#228B22">#define Kernel_A_gets_inverse_A_4_nopivot(mat) 0;\</font></strong>
+<a name="line27"> 27: </a><strong><font color="#228B22">#define PetscKernel_A_gets_inverse_A_4_nopivot(mat) 0;\</font></strong>
 <a name="line28"> 28: </a><strong><font color="#228B22">{\</font></strong>
 <a name="line29"> 29: </a><strong><font color="#228B22">  MatScalar d, di;\</font></strong>
 <a name="line30"> 30: </a><strong><font color="#228B22">\</font></strong>
@@ -102,8 +107,15 @@
 <a name="line98"> 98: </a><strong><font color="#228B22">  mat[10] += mat[11] * mat[14] * di;\</font></strong>
 <a name="line99"> 99: </a><strong><font color="#228B22">}</font></strong>
 
+<a name="line101">101: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscKernel_A_gets_inverse_A_4(MatScalar *,<A href="../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)</font></strong>;
 <a name="line102">102: </a><font color="#A020F0"># if defined(PETSC_HAVE_SSE)</font>
+<a name="line103">103: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscKernel_A_gets_inverse_A_4_SSE(MatScalar *)</font></strong>;
 <a name="line104">104: </a><font color="#A020F0"># endif</font>
+<a name="line105">105: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscKernel_A_gets_inverse_A_5(MatScalar *,<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,MatScalar*,<A href="../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)</font></strong>;
+<a name="line106">106: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscKernel_A_gets_inverse_A_6(MatScalar *,<A href="../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)</font></strong>;
+<a name="line107">107: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscKernel_A_gets_inverse_A_7(MatScalar *,<A href="../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)</font></strong>;
+<a name="line108">108: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscKernel_A_gets_inverse_A_9(MatScalar *,<A href="../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)</font></strong>;
+<a name="line109">109: </a><strong><font color="#4169E1">extern <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscKernel_A_gets_inverse_A_15(MatScalar *,<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,MatScalar*,<A href="../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)</font></strong>;
 
 <a name="line111">111: </a><font color="#B22222">/*</font>
 <a name="line112">112: </a><font color="#B22222">    A = inv(A)    A_gets_inverse_A</font>
@@ -112,7 +124,7 @@
 <a name="line115">115: </a><font color="#B22222">   pivots - integer work array of length bs</font>
 <a name="line116">116: </a><font color="#B22222">   W      -  bs by 1 work array</font>
 <a name="line117">117: </a><font color="#B22222">*/</font>
-<a name="line118">118: </a><strong><font color="#228B22">#define Kernel_A_gets_inverse_A(bs,A,pivots,W) (LINPACKdgefa((A),(bs),(pivots)) || LINPACKdgedi((A),(bs),(pivots),(W)))</font></strong>
+<a name="line118">118: </a><strong><font color="#228B22">#define PetscKernel_A_gets_inverse_A(bs,A,pivots,W) (PetscLINPACKgefa((A),(bs),(pivots)) || PetscLINPACKgedi((A),(bs),(pivots),(W)))</font></strong>
 
 <a name="line120">120: </a><font color="#B22222">/* -----------------------------------------------------------------------*/</font>
 
@@ -127,7 +139,7 @@
 <a name="line130">130: </a><font color="#B22222">   W    - square bs by bs work array</font>
 
 <a name="line132">132: </a><font color="#B22222">*/</font>
-<a name="line133">133: </a><strong><font color="#228B22">#define Kernel_A_gets_A_times_B(bs,A,B,W) \</font></strong>
+<a name="line133">133: </a><strong><font color="#228B22">#define PetscKernel_A_gets_A_times_B(bs,A,B,W) \</font></strong>
 <a name="line134">134: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line135">135: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>   _bbs;                 \</font></strong>
 <a name="line136">136: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    _one = 1.0,_zero = 0.0; \</font></strong>
@@ -143,7 +155,7 @@
 
 <a name="line147">147: </a><font color="#B22222">   A, B, C - square bs by bs arrays stored in column major order</font>
 <a name="line148">148: </a><font color="#B22222">*/</font>
-<a name="line149">149: </a><strong><font color="#228B22">#define Kernel_A_gets_A_minus_B_times_C(bs,A,B,C) \</font></strong>
+<a name="line149">149: </a><strong><font color="#228B22">#define PetscKernel_A_gets_A_minus_B_times_C(bs,A,B,C) \</font></strong>
 <a name="line150">150: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line151">151: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _mone = -1.0,_one = 1.0; \</font></strong>
 <a name="line152">152: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _bbs = PetscBLASIntCast(bs);        \</font></strong>
@@ -156,7 +168,7 @@
 
 <a name="line160">160: </a><font color="#B22222">   A, B, C - square bs by bs arrays stored in column major order</font>
 <a name="line161">161: </a><font color="#B22222">*/</font>
-<a name="line162">162: </a><strong><font color="#228B22">#define Kernel_A_gets_A_plus_Btranspose_times_C(bs,A,B,C) \</font></strong>
+<a name="line162">162: </a><strong><font color="#228B22">#define PetscKernel_A_gets_A_plus_Btranspose_times_C(bs,A,B,C) \</font></strong>
 <a name="line163">163: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line164">164: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _one = 1.0; \</font></strong>
 <a name="line165">165: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _bbs = PetscBLASIntCast(bs);        \</font></strong>
@@ -170,7 +182,7 @@
 <a name="line173">173: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line174">174: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line175">175: </a><font color="#B22222">*/</font>
-<a name="line176">176: </a><strong><font color="#228B22">#define  Kernel_v_gets_v_plus_Atranspose_times_w(bs,v,A,w) \</font></strong>
+<a name="line176">176: </a><strong><font color="#228B22">#define  PetscKernel_v_gets_v_plus_Atranspose_times_w(bs,v,A,w) \</font></strong>
 <a name="line177">177: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line178">178: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _one = 1.0; \</font></strong>
 <a name="line179">179: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _ione = 1, _bbs = PetscBLASIntCast(bs);                        \</font></strong>
@@ -184,7 +196,7 @@
 <a name="line187">187: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line188">188: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line189">189: </a><font color="#B22222">*/</font>
-<a name="line190">190: </a><strong><font color="#228B22">#define  Kernel_v_gets_v_minus_A_times_w(bs,v,A,w) \</font></strong>
+<a name="line190">190: </a><strong><font color="#228B22">#define  PetscKernel_v_gets_v_minus_A_times_w(bs,v,A,w) \</font></strong>
 <a name="line191">191: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line192">192: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _mone = -1.0,_one = 1.0; \</font></strong>
 <a name="line193">193: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>  _ione = 1,_bbs = PetscBLASIntCast(bs);                        \</font></strong>
@@ -198,7 +210,7 @@
 <a name="line201">201: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line202">202: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line203">203: </a><font color="#B22222">*/</font>
-<a name="line204">204: </a><strong><font color="#228B22">#define  Kernel_v_gets_v_minus_transA_times_w(bs,v,A,w) \</font></strong>
+<a name="line204">204: </a><strong><font color="#228B22">#define  PetscKernel_v_gets_v_minus_transA_times_w(bs,v,A,w) \</font></strong>
 <a name="line205">205: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line206">206: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _mone = -1.0,_one = 1.0; \</font></strong>
 <a name="line207">207: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>  _ione = 1,_bbs = PetscBLASIntCast(bs);                        \</font></strong>
@@ -212,7 +224,7 @@
 <a name="line215">215: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line216">216: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line217">217: </a><font color="#B22222">*/</font>
-<a name="line218">218: </a><strong><font color="#228B22">#define  Kernel_v_gets_v_plus_A_times_w(bs,v,A,w) \</font></strong>
+<a name="line218">218: </a><strong><font color="#228B22">#define  PetscKernel_v_gets_v_plus_A_times_w(bs,v,A,w) \</font></strong>
 <a name="line219">219: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line220">220: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _one = 1.0; \</font></strong>
 <a name="line221">221: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _ione = 1,_bbs = PetscBLASIntCast(bs);                        \</font></strong>
@@ -226,7 +238,7 @@
 <a name="line229">229: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line230">230: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line231">231: </a><font color="#B22222">*/</font>
-<a name="line232">232: </a><strong><font color="#228B22">#define  Kernel_w_gets_w_plus_Ar_times_v(bs,ncols,v,A,w) \</font></strong>
+<a name="line232">232: </a><strong><font color="#228B22">#define  PetscKernel_w_gets_w_plus_Ar_times_v(bs,ncols,v,A,w) \</font></strong>
 <a name="line233">233: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line234">234: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _one = 1.0; \</font></strong>
 <a name="line235">235: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _ione = 1,_bbs,_bncols; \</font></strong>
@@ -241,7 +253,7 @@
 <a name="line244">244: </a><font color="#B22222">   A(bs,ncols)</font>
 <a name="line245">245: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line246">246: </a><font color="#B22222">*/</font>
-<a name="line247">247: </a><strong><font color="#228B22">#define  Kernel_w_gets_w_minus_Ar_times_v(bs,ncols,w,A,v) \</font></strong>
+<a name="line247">247: </a><strong><font color="#228B22">#define  PetscKernel_w_gets_w_minus_Ar_times_v(bs,ncols,w,A,v) \</font></strong>
 <a name="line248">248: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line249">249: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _one = 1.0,_mone = -1.0;               \</font></strong>
 <a name="line250">250: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _ione = 1,_bbs,_bncols; \</font></strong>
@@ -256,7 +268,7 @@
 <a name="line259">259: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line260">260: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line261">261: </a><font color="#B22222">*/</font>
-<a name="line262">262: </a><strong><font color="#228B22">#define Kernel_w_gets_A_times_v(bs,v,A,w) \</font></strong>
+<a name="line262">262: </a><strong><font color="#228B22">#define PetscKernel_w_gets_A_times_v(bs,v,A,w) \</font></strong>
 <a name="line263">263: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line264">264: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _zero = 0.0,_one = 1.0; \</font></strong>
 <a name="line265">265: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _ione = 1,_bbs = PetscBLASIntCast(bs);                        \</font></strong>
@@ -270,7 +282,7 @@
 <a name="line273">273: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line274">274: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line275">275: </a><font color="#B22222">*/</font>
-<a name="line276">276: </a><strong><font color="#228B22">#define Kernel_w_gets_transA_times_v(bs,v,A,w) \</font></strong>
+<a name="line276">276: </a><strong><font color="#228B22">#define PetscKernel_w_gets_transA_times_v(bs,v,A,w) \</font></strong>
 <a name="line277">277: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line278">278: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _zero = 0.0,_one = 1.0; \</font></strong>
 <a name="line279">279: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _ione = 1,_bbs = PetscBLASIntCast(bs);                        \</font></strong>
@@ -280,7 +292,7 @@
 <a name="line283">283: </a><font color="#B22222">/*</font>
 <a name="line284">284: </a><font color="#B22222">        z = A*x</font>
 <a name="line285">285: </a><font color="#B22222">*/</font>
-<a name="line286">286: </a><strong><font color="#228B22">#define Kernel_w_gets_Ar_times_v(bs,ncols,x,A,z) \</font></strong>
+<a name="line286">286: </a><strong><font color="#228B22">#define PetscKernel_w_gets_Ar_times_v(bs,ncols,x,A,z) \</font></strong>
 <a name="line287">287: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line288">288: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> _one = 1.0,_zero = 0.0; \</font></strong>
 <a name="line289">289: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _ione = 1,_bbs,_bncols; \</font></strong>
@@ -291,7 +303,7 @@
 <a name="line294">294: </a><font color="#B22222">/*</font>
 <a name="line295">295: </a><font color="#B22222">        z = trans(A)*x</font>
 <a name="line296">296: </a><font color="#B22222">*/</font>
-<a name="line297">297: </a><strong><font color="#228B22">#define Kernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,x,A,z) \</font></strong>
+<a name="line297">297: </a><strong><font color="#228B22">#define PetscKernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,x,A,z) \</font></strong>
 <a name="line298">298: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line299">299: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  _one = 1.0; \</font></strong>
 <a name="line300">300: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> _ione = 1,_bbs,_bncols;\</font></strong>
@@ -322,7 +334,7 @@
 <a name="line325">325: </a><font color="#B22222">   W    - square bs by bs work array</font>
 
 <a name="line327">327: </a><font color="#B22222">*/</font>
-<a name="line328">328: </a><strong><font color="#228B22">#define Kernel_A_gets_A_times_B(bs,A,B,W) \</font></strong>
+<a name="line328">328: </a><strong><font color="#228B22">#define PetscKernel_A_gets_A_times_B(bs,A,B,W) \</font></strong>
 <a name="line329">329: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line330">330: </a><strong><font color="#228B22">  <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> _PetscMemcpy((W),(A),(bs)*(bs)*sizeof(MatScalar));<A href="../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(_ierr); \</font></strong>
 <a name="line331">331: </a><strong><font color="#228B22">  msgemmi_(&amp;bs,A,B,W); \</font></strong>
@@ -334,7 +346,7 @@
 
 <a name="line338">338: </a><font color="#B22222">   A, B, C - square bs by bs arrays stored in column major order</font>
 <a name="line339">339: </a><font color="#B22222">*/</font>
-<a name="line340">340: </a><strong><font color="#228B22">#define Kernel_A_gets_A_minus_B_times_C(bs,A,B,C) \</font></strong>
+<a name="line340">340: </a><strong><font color="#228B22">#define PetscKernel_A_gets_A_minus_B_times_C(bs,A,B,C) \</font></strong>
 <a name="line341">341: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line342">342: </a><strong><font color="#228B22">  msgemm_(&amp;bs,A,B,C); \</font></strong>
 <a name="line343">343: </a><strong><font color="#228B22">}</font></strong>
@@ -346,7 +358,7 @@
 <a name="line349">349: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line350">350: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line351">351: </a><font color="#B22222">*/</font>
-<a name="line352">352: </a><strong><font color="#228B22">#define  Kernel_v_gets_v_minus_A_times_w(bs,v,A,w) \</font></strong>
+<a name="line352">352: </a><strong><font color="#228B22">#define  PetscKernel_v_gets_v_minus_A_times_w(bs,v,A,w) \</font></strong>
 <a name="line353">353: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line354">354: </a><strong><font color="#228B22">  msgemvm_(&amp;bs,&amp;bs,A,w,v); \</font></strong>
 <a name="line355">355: </a><strong><font color="#228B22">}</font></strong>
@@ -358,7 +370,7 @@
 <a name="line361">361: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line362">362: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line363">363: </a><font color="#B22222">*/</font>
-<a name="line364">364: </a><strong><font color="#228B22">#define  Kernel_v_gets_v_plus_A_times_w(bs,v,A,w) \</font></strong>
+<a name="line364">364: </a><strong><font color="#228B22">#define  PetscKernel_v_gets_v_plus_A_times_w(bs,v,A,w) \</font></strong>
 <a name="line365">365: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line366">366: </a><strong><font color="#228B22">  msgemvp_(&amp;bs,&amp;bs,A,w,v);\</font></strong>
 <a name="line367">367: </a><strong><font color="#228B22">}</font></strong>
@@ -370,7 +382,7 @@
 <a name="line373">373: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line374">374: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line375">375: </a><font color="#B22222">*/</font>
-<a name="line376">376: </a><strong><font color="#228B22">#define  Kernel_w_gets_w_plus_Ar_times_v(bs,ncol,v,A,w) \</font></strong>
+<a name="line376">376: </a><strong><font color="#228B22">#define  PetscKernel_w_gets_w_plus_Ar_times_v(bs,ncol,v,A,w) \</font></strong>
 <a name="line377">377: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line378">378: </a><strong><font color="#228B22">  msgemvp_(&amp;bs,&amp;ncol,A,v,w);\</font></strong>
 <a name="line379">379: </a><strong><font color="#228B22">}</font></strong>
@@ -382,7 +394,7 @@
 <a name="line385">385: </a><font color="#B22222">   A - square bs by bs array</font>
 <a name="line386">386: </a><font color="#B22222">   w - array of length bs</font>
 <a name="line387">387: </a><font color="#B22222">*/</font>
-<a name="line388">388: </a><strong><font color="#228B22">#define Kernel_w_gets_A_times_v(bs,v,A,w) \</font></strong>
+<a name="line388">388: </a><strong><font color="#228B22">#define PetscKernel_w_gets_A_times_v(bs,v,A,w) \</font></strong>
 <a name="line389">389: </a><strong><font color="#228B22">{  \</font></strong>
 <a name="line390">390: </a><strong><font color="#228B22">  msgemv_(&amp;bs,&amp;bs,A,v,w);\</font></strong>
 <a name="line391">391: </a><strong><font color="#228B22">}</font></strong>
@@ -390,7 +402,7 @@
 <a name="line393">393: </a><font color="#B22222">/*</font>
 <a name="line394">394: </a><font color="#B22222">        z = A*x</font>
 <a name="line395">395: </a><font color="#B22222">*/</font>
-<a name="line396">396: </a><strong><font color="#228B22">#define Kernel_w_gets_Ar_times_v(bs,ncols,x,A,z) \</font></strong>
+<a name="line396">396: </a><strong><font color="#228B22">#define PetscKernel_w_gets_Ar_times_v(bs,ncols,x,A,z) \</font></strong>
 <a name="line397">397: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line398">398: </a><strong><font color="#228B22">  msgemv_(&amp;bs,&amp;ncols,A,x,z);\</font></strong>
 <a name="line399">399: </a><strong><font color="#228B22">}</font></strong>
@@ -398,14 +410,14 @@
 <a name="line401">401: </a><font color="#B22222">/*</font>
 <a name="line402">402: </a><font color="#B22222">        z = trans(A)*x</font>
 <a name="line403">403: </a><font color="#B22222">*/</font>
-<a name="line404">404: </a><strong><font color="#228B22">#define Kernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,x,A,z) \</font></strong>
+<a name="line404">404: </a><strong><font color="#228B22">#define PetscKernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,x,A,z) \</font></strong>
 <a name="line405">405: </a><strong><font color="#228B22">{ \</font></strong>
 <a name="line406">406: </a><strong><font color="#228B22">  msgemvt_(&amp;bs,&amp;ncols,A,x,z);\</font></strong>
 <a name="line407">407: </a><strong><font color="#228B22">}</font></strong>
 
 <a name="line409">409: </a><font color="#B22222">/* These do not work yet */</font>
-<a name="line410">410: </a><strong><font color="#228B22">#define Kernel_A_gets_A_plus_Btranspose_times_C(bs,A,B,C) </font></strong>
-<a name="line411">411: </a><strong><font color="#228B22">#define Kernel_v_gets_v_plus_Atranspose_times_w(bs,v,A,w) </font></strong>
+<a name="line410">410: </a><strong><font color="#228B22">#define PetscKernel_A_gets_A_plus_Btranspose_times_C(bs,A,B,C) </font></strong>
+<a name="line411">411: </a><strong><font color="#228B22">#define PetscKernel_v_gets_v_plus_Atranspose_times_w(bs,v,A,w) </font></strong>
 
 
 <a name="line414">414: </a><font color="#A020F0">#endif</font>

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* meshcreate.c */
 /* Fortran interface file */
 
@@ -29,6 +29,11 @@ extern void PetscRmPointer(void*);
 
 #include "petscdmmesh.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshcreatemeshfromadjacency_ DMMESHCREATEMESHFROMADJACENCY
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshcreatemeshfromadjacency_ dmmeshcreatemeshfromadjacency
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmmeshcreate_ DMMESHCREATE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmmeshcreate_ dmmeshcreate
@@ -39,6 +44,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  dmmeshcreatemeshfromadjacency_(MPI_Fint * comm,PetscInt *dim,PetscInt *numCells,PetscInt *numCorners,PetscInt cellVertices[],PetscInt *spatialDim,PetscInt *numVertices, PetscReal coordinates[],PetscBool *interpolate,DM *dm, int *__ierr ){
+*__ierr = DMMeshCreateMeshFromAdjacency(
+	MPI_Comm_f2c( *(comm) ),*dim,*numCells,*numCorners,cellVertices,*spatialDim,*numVertices,coordinates,*interpolate,dm);
+}
 void PETSC_STDCALL  dmmeshcreate_(MPI_Fint * comm,DM *mesh, int *__ierr ){
 *__ierr = DMMeshCreate(
 	MPI_Comm_f2c( *(comm) ),mesh);

@@ -55,7 +55,7 @@
 
 !
 !     The numbers used below should match those in 
-!     private/fortranimpl.h
+!     petsc-private/fortranimpl.h
 !
       parameter (PETSC_VIEWER_DRAW_WORLD   = 4) 
       parameter (PETSC_VIEWER_DRAW_SELF    = 5)
@@ -82,12 +82,12 @@
       PetscEnum PETSC_BIT_LOGICAL
       PetscEnum PETSC_ENUM
       PetscEnum PETSC_BOOL
-      PetscEnum PETSC_LONG_DOUBLE
+      PetscEnum PETSC___FLOAT128
 
 #if defined(PETSC_USE_REAL_SINGLE)
 #define PETSC_REAL PETSC_FLOAT
-#elif defined(PETSC_USE_REAL_LONG_DOUBLE)
-#define PETSC_REAL PETSC_LONG_DOUBLE
+#elif defined(PETSC_USE_REAL___FLOAT128)
+#define PETSC_REAL PETSC___FLOAT128
 #else
 #define PETSC_REAL PETSC_DOUBLE
 #endif
@@ -96,7 +96,7 @@
       parameter (PETSC_INT=0,PETSC_DOUBLE=1,PETSC_COMPLEX=2)
       parameter (PETSC_LONG=3,PETSC_SHORT=4,PETSC_FLOAT=5)
       parameter (PETSC_CHAR=6,PETSC_BIT_LOGICAL=7,PETSC_ENUM=8)
-      parameter (PETSC_BOOL=9,PETSC_LONG_DOUBLE=10)
+      parameter (PETSC_BOOL=9,PETSC___FLOAT128=10)
 !
 !
 !
@@ -154,8 +154,6 @@
 #else
 #if defined (PETSC_USE_REAL_SINGLE)
       parameter (MPIU_SCALAR = MPI_REAL)
-#elif defined(PETSC_USE_REAL_LONG_DOUBLE)
-      parameter(MPIU_SCALAR = MPI_2DOUBLE_PRECISION)
 #else
       parameter(MPIU_SCALAR = MPI_DOUBLE_PRECISION)
 #endif
@@ -191,7 +189,7 @@
       external PETSC_NULL_FUNCTION
       PetscScalar   PETSC_NULL_SCALAR
       PetscReal     PETSC_NULL_REAL
-      PetscBool     PETSC_NULL_TRUTH
+      PetscBool     PETSC_NULL_BOOL
 !
 !     Common Block to store some of the PETSc constants.
 !     which can be set - only at runtime.
@@ -205,7 +203,7 @@
       common /petscfortran4/ PETSC_NULL_SCALAR
       common /petscfortran5/ PETSC_NULL_DOUBLE
       common /petscfortran6/ PETSC_NULL_REAL
-      common /petscfortran7/ PETSC_NULL_TRUTH
+      common /petscfortran7/ PETSC_NULL_BOOL
       common /petscfortran8/ PETSC_NULL_OBJECT
       common /petscfortran9/ PETSC_COMM_WORLD
       common /petscfortran10/ PETSC_COMM_SELF

@@ -1,13 +1,14 @@
 <center><a href="ex46.c">Actual source code: ex46.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials/ex46.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:13:55+00:00">
+<meta name="date" content="2012-08-29T17:06:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* Program usage:  mpiexec -n &lt;procs&gt; ex46 [-help] [all PETSc options] */</font>
 
@@ -62,9 +63,9 @@
 <a name="line55"> 55: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 <a name="line56"> 56: </a>  <font color="#B22222">/*</font>
 <a name="line57"> 57: </a><font color="#B22222">     Create parallel matrix preallocated according to the DMDA, format AIJ by default.</font>
-<a name="line58"> 58: </a><font color="#B22222">     To use symmetric storage, run with -da_mat_type sbaij -mat_ignore_lower_triangular</font>
+<a name="line58"> 58: </a><font color="#B22222">     To use symmetric storage, run with -dm_mat_type sbaij -mat_ignore_lower_triangular</font>
 <a name="line59"> 59: </a><font color="#B22222">  */</font>
-<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(da,<A href="../../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;A);
+<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da,<A href="../../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;A);
 
 <a name="line62"> 62: </a>  <font color="#B22222">/*</font>
 <a name="line63"> 63: </a><font color="#B22222">     Set matrix elements for the 2-D, five-point stencil in parallel.</font>
@@ -181,7 +182,7 @@
 <a name="line174">174: </a><font color="#B22222">     print statement from all processes that share a communicator.</font>
 <a name="line175">175: </a><font color="#B22222">     An alternative is <A href="../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(), which prints to a file.</font>
 <a name="line176">176: </a><font color="#B22222">  */</font>
-<a name="line177">177: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %A iterations %D\n"</font>,norm,its);
+<a name="line177">177: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %G iterations %D\n"</font>,norm,its);
 
 <a name="line179">179: </a>  <font color="#B22222">/*</font>
 <a name="line180">180: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>

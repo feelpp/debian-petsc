@@ -1,5 +1,5 @@
 
-#include <private/snesimpl.h>
+#include <petsc-private/snesimpl.h>
 
 /* Data used by Jorge's diff parameter computation method */
 typedef struct {
@@ -14,14 +14,14 @@ typedef struct {
 } DIFFPAR_MORE;
 
 
-extern PetscErrorCode dnest_(PetscInt*,PetscScalar*,PetscScalar*,PetscScalar*,PetscScalar*,PetscScalar*,PetscInt*,PetscScalar*);
-extern PetscErrorCode JacMatMultCompare(SNES,Vec,Vec,double);
+extern PetscErrorCode SNESNoise_dnest_(PetscInt*,PetscScalar*,PetscScalar*,PetscScalar*,PetscScalar*,PetscScalar*,PetscInt*,PetscScalar*);
+static PetscErrorCode JacMatMultCompare(SNES,Vec,Vec,double);
 extern PetscErrorCode SNESDefaultMatrixFreeSetParameters2(Mat,double,double,double);
 extern PetscErrorCode SNESUnSetMatrixFreeParameter(SNES snes);
 
 #undef __FUNCT__  
-#define __FUNCT__ "DiffParameterCreate_More"
-PetscErrorCode DiffParameterCreate_More(SNES snes,Vec x,void **outneP)
+#define __FUNCT__ "SNESDiffParameterCreate_More"
+PetscErrorCode SNESDiffParameterCreate_More(SNES snes,Vec x,void **outneP)
 {
   DIFFPAR_MORE   *neP;
   Vec            w;
@@ -62,8 +62,8 @@ PetscErrorCode DiffParameterCreate_More(SNES snes,Vec x,void **outneP)
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "DiffParameterDestroy_More"
-PetscErrorCode DiffParameterDestroy_More(void *nePv)
+#define __FUNCT__ "SNESDiffParameterDestroy_More"
+PetscErrorCode SNESDiffParameterDestroy_More(void *nePv)
 {
   DIFFPAR_MORE   *neP = (DIFFPAR_MORE *)nePv;
   PetscErrorCode ierr;
@@ -79,8 +79,8 @@ PetscErrorCode DiffParameterDestroy_More(void *nePv)
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "DiffParameterCompute_More"
-PetscErrorCode DiffParameterCompute_More(SNES snes,void *nePv,Vec x,Vec p,double *fnoise,double *hopt)
+#define __FUNCT__ "SNESDiffParameterCompute_More"
+PetscErrorCode SNESDiffParameterCompute_More(SNES snes,void *nePv,Vec x,Vec p,double *fnoise,double *hopt)
 {
   DIFFPAR_MORE   *neP = (DIFFPAR_MORE *)nePv;
   Vec            w, xp, fvec;    /* work vectors to use in computing h */
@@ -150,7 +150,7 @@ PetscErrorCode DiffParameterCompute_More(SNES snes,void *nePv,Vec x,Vec p,double
     }
 
     /* Call the noise estimator */
-    ierr = dnest_(&nf,fval,&h,fnoise,&fder2,hopt,&info,eps);CHKERRQ(ierr);
+    ierr = SNESNoise_dnest_(&nf,fval,&h,fnoise,&fder2,hopt,&info,eps);CHKERRQ(ierr);
 
     /* Output statements */
     rerrf = *fnoise/PetscAbsScalar(f);

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/IS/ISGetIndices.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>ISGetIndices</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="ISGetIndices"><H1>ISGetIndices</H1></A>
 Returns a pointer to the indices.  The user should call  <A HREF="../IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>() after having looked at the indices.  The user should  NOT change the indices. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -31,7 +32,7 @@ This routine is used differently from Fortran
    integer     is_array(1)
 </pre>
 <pre>
-   PetscOffset i_is
+   <A HREF="../Sys/PetscOffset.html#PetscOffset">PetscOffset</A> i_is
 </pre>
 <pre>
    int         ierr

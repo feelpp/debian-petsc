@@ -21,10 +21,10 @@ PetscErrorCode MatIncreaseOverlap_SeqSBAIJ(Mat A,PetscInt is_max,IS is[],PetscIn
   ai  = a->i;
   aj  = a->j;
   bs  = A->rmap->bs;
-  ierr = PetscBTCreate(mbs,table_out);CHKERRQ(ierr);
+  ierr = PetscBTCreate(mbs,&table_out);CHKERRQ(ierr);
   ierr = PetscMalloc((mbs+1)*sizeof(PetscInt),&nidx);CHKERRQ(ierr); 
   ierr = PetscMalloc((A->rmap->N+1)*sizeof(PetscInt),&nidx2);CHKERRQ(ierr);
-  ierr = PetscBTCreate(mbs,table_in);CHKERRQ(ierr);
+  ierr = PetscBTCreate(mbs,&table_in);CHKERRQ(ierr);
 
   for (i=0; i<is_max; i++) { /* for each is */
     isz  = 0;
@@ -86,10 +86,10 @@ PetscErrorCode MatIncreaseOverlap_SeqSBAIJ(Mat A,PetscInt is_max,IS is[],PetscIn
     }
     ierr = ISCreateGeneral(PETSC_COMM_SELF,isz*bs,nidx2,PETSC_COPY_VALUES,is+i);CHKERRQ(ierr);
   }
-  ierr = PetscBTDestroy(table_out);CHKERRQ(ierr);
+  ierr = PetscBTDestroy(&table_out);CHKERRQ(ierr);
   ierr = PetscFree(nidx);CHKERRQ(ierr); 
   ierr = PetscFree(nidx2);CHKERRQ(ierr); 
-  ierr = PetscBTDestroy(table_in);CHKERRQ(ierr); 
+  ierr = PetscBTDestroy(&table_in);CHKERRQ(ierr); 
   PetscFunctionReturn(0);
 }
 
@@ -624,7 +624,7 @@ PetscErrorCode MatMult_SeqSBAIJ_N(Mat A,Vec xx,Vec zz)
       workt += bs;
     }
     /* z(i*bs:(i+1)*bs-1) += A(i,:)*x */
-    Kernel_w_gets_w_plus_Ar_times_v(bs,ncols,work,v,z); 
+    PetscKernel_w_gets_w_plus_Ar_times_v(bs,ncols,work,v,z); 
     
     /* strict lower triangular part */    
     idx = aj+ii[0];    
@@ -635,7 +635,7 @@ PetscErrorCode MatMult_SeqSBAIJ_N(Mat A,Vec xx,Vec zz)
     if (ncols > 0){
       workt = work;
       ierr  = PetscMemzero(workt,ncols*sizeof(PetscScalar));CHKERRQ(ierr);
-      Kernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,x,v,workt);
+      PetscKernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,x,v,workt);
       for (j=0; j<n; j++) {
         zb = z_ptr + bs*(*idx++);  
         for (k=0; k<bs; k++) zb[k] += workt[k] ;
@@ -1086,7 +1086,7 @@ PetscErrorCode MatMultAdd_SeqSBAIJ_N(Mat A,Vec xx,Vec yy,Vec zz)
       workt += bs;
     }
     /* z(i*bs:(i+1)*bs-1) += A(i,:)*x */
-    Kernel_w_gets_w_plus_Ar_times_v(bs,ncols,work,v,z); 
+    PetscKernel_w_gets_w_plus_Ar_times_v(bs,ncols,work,v,z); 
 
     /* strict lower triangular part */
     idx = aj+ii[0];
@@ -1096,7 +1096,7 @@ PetscErrorCode MatMultAdd_SeqSBAIJ_N(Mat A,Vec xx,Vec yy,Vec zz)
     if (ncols > 0){
       workt = work;
       ierr  = PetscMemzero(workt,ncols*sizeof(PetscScalar));CHKERRQ(ierr);
-      Kernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,x,v,workt);
+      PetscKernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,x,v,workt);
       for (j=0; j<n; j++) {
         zb = z_ptr + bs*(*idx++); 
         for (k=0; k<bs; k++) zb[k] += workt[k] ;

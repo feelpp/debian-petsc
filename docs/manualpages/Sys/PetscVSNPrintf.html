@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscVSNPrintf.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscVSNPrintf</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscVSNPrintf"><H1>PetscVSNPrintf</H1></A>
 The PETSc version of vsnprintf(). Converts a PETSc format string into a standard C format string and then puts all the  function arguments into a string using the format statement. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,7 +22,8 @@ PetscErrorCode  PetscVSNPrintf(char *str,size_t len,const char *format,size_t *f
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fullLength </B></TD><TD>- the amount of space in str actually used.
 </TD></TR></TABLE>
 <P>
-Note:  No error handling because may be called by error handler
+Developer Notes: this function may be called from an error handler, if an error occurs when it is called by the error handler than likely
+a recursion will occur and possible crash.
 <P>
 
 <P>

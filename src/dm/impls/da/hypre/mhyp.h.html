@@ -1,13 +1,14 @@
 <center><a href="mhyp.h">Actual source code: mhyp.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/da/hypre/mhyp.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:07:59+00:00">
+<meta name="date" content="2012-08-29T16:55:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#if !defined(_MHYP_H)</font>
 <a name="line3">  3: </a><strong><font color="#228B22">#define _MHYP_H</font></strong>
@@ -56,6 +57,10 @@
 <a name="line46"> 46: </a>} Mat_HYPRESStruct;
 
 
+<a name="line49"> 49: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatHYPRE_IJMatrixCreate(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,HYPRE_IJMatrix*)</font></strong>;
+<a name="line50"> 50: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatHYPRE_IJMatrixCopy(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,HYPRE_IJMatrix)</font></strong>;
+<a name="line51"> 51: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatHYPRE_IJMatrixFastCopy(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,HYPRE_IJMatrix)</font></strong>;
+<a name="line52"> 52: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecHYPRE_IJVectorCreate(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,HYPRE_IJVector*)</font></strong>;
 
 <a name="line54"> 54: </a><font color="#B22222">/*</font>
 <a name="line55"> 55: </a><font color="#B22222">    PetscStackCallHypre - Calls a hypre library routine after pushing the name of the routine on the stack.</font>

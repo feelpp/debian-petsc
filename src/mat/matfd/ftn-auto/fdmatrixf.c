@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* fdmatrix.c */
 /* Fortran interface file */
 
@@ -53,11 +53,6 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matfdcoloringapply_ matfdcoloringapply
 #endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matfdcoloringapplyts_ MATFDCOLORINGAPPLYTS
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matfdcoloringapplyts_ matfdcoloringapplyts
-#endif
 
 
 /* Definitions of Fortran Wrapper routines */
@@ -84,12 +79,6 @@ void PETSC_STDCALL  matfdcoloringapply_(Mat J,MatFDColoring coloring,Vec x1,MatS
 *__ierr = MatFDColoringApply(
 	(Mat)PetscToPointer((J) ),
 	(MatFDColoring)PetscToPointer((coloring) ),
-	(Vec)PetscToPointer((x1) ),flag,sctx);
-}
-void PETSC_STDCALL  matfdcoloringapplyts_(Mat J,MatFDColoring coloring,PetscReal *t,Vec x1,MatStructure *flag,void*sctx, int *__ierr ){
-*__ierr = MatFDColoringApplyTS(
-	(Mat)PetscToPointer((J) ),
-	(MatFDColoring)PetscToPointer((coloring) ),*t,
 	(Vec)PetscToPointer((x1) ),flag,sctx);
 }
 #if defined(__cplusplus)

@@ -12,6 +12,7 @@
 #  define LAPACKungqr_ sorgqr
 #  define LAPACKgetrf_ sgetrf
 #  define BLASdot_     sdot
+#  define BLASdotu_    sdot
 #  define BLASnrm2_    snrm2
 #  define BLASscal_    sscal
 #  define BLAScopy_    scopy
@@ -48,6 +49,7 @@
 #  define LAPACKungqr_ dorgqr
 #  define LAPACKgetrf_ dgetrf
 #  define BLASdot_     ddot
+#  define BLASdotu_    ddot
 #  define BLASnrm2_    dnrm2
 #  define BLASscal_    dscal
 #  define BLAScopy_    dcopy
@@ -85,8 +87,8 @@
 #  define LAPACKgeqrf_ cgeqrf
 #  define LAPACKungqr_ cungqr
 #  define LAPACKgetrf_ cgetrf
-
-#  define BLASdot_     cdotc
+/* #  define BLASdot_     cdotc */
+/* #  define BLASdotu_    cdotu */
 #  define BLASnrm2_    scnrm2
 #  define BLASscal_    cscal
 #  define BLAScopy_    ccopy
@@ -122,8 +124,8 @@
 #  define LAPACKgeqrf_ zgeqrf
 #  define LAPACKungqr_ zungqr
 #  define LAPACKgetrf_ zgetrf
-
-#  define BLASdot_     zdotc
+/* #  define BLASdot_     zdotc */
+/* #  define BLASdotu_    zdotu */
 #  define BLASnrm2_    dznrm2
 #  define BLASscal_    zscal
 #  define BLAScopy_    zcopy

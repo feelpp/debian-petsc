@@ -2,7 +2,7 @@
         Provides an interface to the Tufo-Fischer parallel direct solver
 */
 
-#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>   /*I "petscpc.h" I*/
 #include <../src/mat/impls/aij/mpi/mpiaij.h>
 #include <../src/ksp/pc/impls/tfs/tfs.h>
 
@@ -70,8 +70,8 @@ static PetscErrorCode PCApply_TFS_XYT(PC pc,Vec x,Vec y)
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "LocalMult_TFS"
-static PetscErrorCode LocalMult_TFS(PC pc,PetscScalar *xin,PetscScalar *xout)
+#define __FUNCT__ "PCTFSLocalMult_TFS"
+static PetscErrorCode PCTFSLocalMult_TFS(PC pc,PetscScalar *xin,PetscScalar *xout)
 {
   PC_TFS        *tfs = (PC_TFS*)pc->data;
   Mat           A = pc->pmat;
@@ -108,7 +108,7 @@ static PetscErrorCode PCSetUp_TFS(PC pc)
 
   PetscFunctionBegin;
   if (A->cmap->N != A->rmap->N) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_SIZ,"matrix must be square"); 
-  ierr = PetscTypeCompare((PetscObject)pc->pmat,MATMPIAIJ,&ismpiaij);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)pc->pmat,MATMPIAIJ,&ismpiaij);CHKERRQ(ierr);
   if (!ismpiaij) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Currently only supports MPIAIJ matrices");
 
   /* generate the local to global mapping */
@@ -121,9 +121,9 @@ static PetscErrorCode PCSetUp_TFS(PC pc)
     localtoglobal[i+a->A->cmap->n] = a->garray[i] + 1;
   }
   /* generate the vectors needed for the local solves */
-  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,a->A->rmap->n,PETSC_NULL,&tfs->b);CHKERRQ(ierr);
-  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,a->A->cmap->n,PETSC_NULL,&tfs->xd);CHKERRQ(ierr);
-  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,a->B->cmap->n,PETSC_NULL,&tfs->xo);CHKERRQ(ierr);
+  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,1,a->A->rmap->n,PETSC_NULL,&tfs->b);CHKERRQ(ierr);
+  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,1,a->A->cmap->n,PETSC_NULL,&tfs->xd);CHKERRQ(ierr);
+  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,1,a->B->cmap->n,PETSC_NULL,&tfs->xo);CHKERRQ(ierr);
   tfs->nd = a->A->cmap->n;
 
 
@@ -132,11 +132,11 @@ static PetscErrorCode PCSetUp_TFS(PC pc)
   ierr = PetscBarrier((PetscObject)pc);CHKERRQ(ierr);
   if (A->symmetric) {
     tfs->xxt       = XXT_new();
-    ierr           = XXT_factor(tfs->xxt,localtoglobal,A->rmap->n,ncol,(void*)LocalMult_TFS,pc);CHKERRQ(ierr);
+    ierr           = XXT_factor(tfs->xxt,localtoglobal,A->rmap->n,ncol,(void*)PCTFSLocalMult_TFS,pc);CHKERRQ(ierr);
     pc->ops->apply = PCApply_TFS_XXT;
   } else {
     tfs->xyt       = XYT_new();
-    ierr           = XYT_factor(tfs->xyt,localtoglobal,A->rmap->n,ncol,(void*)LocalMult_TFS,pc);CHKERRQ(ierr);
+    ierr           = XYT_factor(tfs->xyt,localtoglobal,A->rmap->n,ncol,(void*)PCTFSLocalMult_TFS,pc);CHKERRQ(ierr);
     pc->ops->apply = PCApply_TFS_XYT;
   }
 
@@ -172,14 +172,19 @@ EXTERN_C_BEGIN
 
    Notes: Only implemented for the MPIAIJ matrices
 
+          Only works on a solver object that lives on all of PETSC_COMM_WORLD!
+
 .seealso:  PCCreate(), PCSetType(), PCType (for list of available types), PC
 M*/
 PetscErrorCode  PCCreate_TFS(PC pc)
 {
   PetscErrorCode ierr;
   PC_TFS         *tfs;
+  PetscMPIInt    cmp;
 
   PetscFunctionBegin;
+  ierr = MPI_Comm_compare(PETSC_COMM_WORLD,((PetscObject)pc)->comm,&cmp);CHKERRQ(ierr);
+  if (cmp != MPI_IDENT && cmp != MPI_CONGRUENT) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"TFS only works with PETSC_COMM_WORLD objects");
   ierr = PetscNewLog(pc,PC_TFS,&tfs);CHKERRQ(ierr);
 
   tfs->xxt = 0;

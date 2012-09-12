@@ -1,15 +1,16 @@
 <center><a href="snesut.c">Actual source code: snesut.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/interface/snesut.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:14:51+00:00">
+<meta name="date" content="2012-08-29T17:07:45+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/snesimpl.h&gt;       </font><font color="#B22222">/*I   "petscsnes.h"   I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/snesimpl.h&gt;       </font><font color="#B22222">/*I   "petscsnes.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line6">  6: </a><font color="#B22222">/*@C</font>
 <a name="line7">  7: </a><font color="#B22222">   <A href="../../../docs/manualpages/SNES/SNESMonitorSolution.html#SNESMonitorSolution">SNESMonitorSolution</A> - Monitors progress of the <A href="../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> solvers by calling </font>
@@ -332,14 +333,14 @@
 <a name="line359">359: </a><font color="#B22222">+  snes - the <A href="../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> context</font>
 <a name="line360">360: </a><font color="#B22222">.  it - the iteration (0 indicates before any Newton steps)</font>
 <a name="line361">361: </a><font color="#B22222">.  xnorm - 2-norm of current iterate</font>
-<a name="line362">362: </a><font color="#B22222">.  pnorm - 2-norm of current step </font>
+<a name="line362">362: </a><font color="#B22222">.  snorm - 2-norm of current step </font>
 <a name="line363">363: </a><font color="#B22222">.  fnorm - 2-norm of function at current iterate</font>
 <a name="line364">364: </a><font color="#B22222">-  dummy - unused context</font>
 
 <a name="line366">366: </a><font color="#B22222">   Output Parameter:</font>
 <a name="line367">367: </a><font color="#B22222">.   reason  - one of</font>
 <a name="line368">368: </a><font color="#B22222">$  <A href="../../../docs/manualpages/SNES/SNES_CONVERGED_FNORM_ABS.html#SNES_CONVERGED_FNORM_ABS">SNES_CONVERGED_FNORM_ABS</A>       - (fnorm &lt; abstol),</font>
-<a name="line369">369: </a><font color="#B22222">$  <A href="../../../docs/manualpages/SNES/SNES_CONVERGED_PNORM_RELATIVE.html#SNES_CONVERGED_PNORM_RELATIVE">SNES_CONVERGED_PNORM_RELATIVE</A>  - (pnorm &lt; xtol*xnorm),</font>
+<a name="line369">369: </a><font color="#B22222">$  <A href="../../../docs/manualpages/SNES/SNES_CONVERGED_SNORM_RELATIVE.html#SNES_CONVERGED_SNORM_RELATIVE">SNES_CONVERGED_SNORM_RELATIVE</A>  - (snorm &lt; stol*xnorm),</font>
 <a name="line370">370: </a><font color="#B22222">$  <A href="../../../docs/manualpages/SNES/SNES_CONVERGED_FNORM_RELATIVE.html#SNES_CONVERGED_FNORM_RELATIVE">SNES_CONVERGED_FNORM_RELATIVE</A>  - (fnorm &lt; rtol*fnorm0),</font>
 <a name="line371">371: </a><font color="#B22222">$  <A href="../../../docs/manualpages/SNES/SNES_DIVERGED_FUNCTION_COUNT.html#SNES_DIVERGED_FUNCTION_COUNT">SNES_DIVERGED_FUNCTION_COUNT</A>   - (nfct &gt; maxf),</font>
 <a name="line372">372: </a><font color="#B22222">$  <A href="../../../docs/manualpages/SNES/SNES_DIVERGED_FNORM_NAN.html#SNES_DIVERGED_FNORM_NAN">SNES_DIVERGED_FNORM_NAN</A>        - (fnorm == NaN),</font>
@@ -359,7 +360,7 @@
 
 <a name="line387">387: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/SNES/SNESSetConvergenceTest.html#SNESSetConvergenceTest">SNESSetConvergenceTest</A>()</font>
 <a name="line388">388: </a><font color="#B22222">@*/</font>
-<a name="line389">389: </a><strong><font color="#4169E1"><a name="SNESDefaultConverged"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/SNES/SNESDefaultConverged.html#SNESDefaultConverged">SNESDefaultConverged</A>(<A href="../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> it,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xnorm,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> pnorm,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> fnorm,<A href="../../../docs/manualpages/SNES/SNESConvergedReason.html#SNESConvergedReason">SNESConvergedReason</A> *reason,void *dummy)</font></strong>
+<a name="line389">389: </a><strong><font color="#4169E1"><a name="SNESDefaultConverged"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/SNES/SNESDefaultConverged.html#SNESDefaultConverged">SNESDefaultConverged</A>(<A href="../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> it,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xnorm,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> snorm,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> fnorm,<A href="../../../docs/manualpages/SNES/SNESConvergedReason.html#SNESConvergedReason">SNESConvergedReason</A> *reason,void *dummy)</font></strong>
 <a name="line390">390: </a>{
 
 <a name="line396">396: </a>
@@ -384,9 +385,9 @@
 <a name="line415">415: </a>    <font color="#4169E1">if</font> (fnorm &lt;= snes-&gt;ttol) {
 <a name="line416">416: </a>      PetscInfo2(snes,<font color="#666666">"Converged due to function norm %14.12e &lt; %14.12e (relative tolerance)\n"</font>,(double)fnorm,(double)snes-&gt;ttol);
 <a name="line417">417: </a>      *reason = <A href="../../../docs/manualpages/SNES/SNES_CONVERGED_FNORM_RELATIVE.html#SNES_CONVERGED_FNORM_RELATIVE">SNES_CONVERGED_FNORM_RELATIVE</A>;
-<a name="line418">418: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (pnorm &lt; snes-&gt;xtol*xnorm) {
-<a name="line419">419: </a>      PetscInfo3(snes,<font color="#666666">"Converged due to small update length: %14.12e &lt; %14.12e * %14.12e\n"</font>,(double)pnorm,(double)snes-&gt;xtol,(double)xnorm);
-<a name="line420">420: </a>      *reason = <A href="../../../docs/manualpages/SNES/SNES_CONVERGED_PNORM_RELATIVE.html#SNES_CONVERGED_PNORM_RELATIVE">SNES_CONVERGED_PNORM_RELATIVE</A>;
+<a name="line418">418: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (snorm &lt; snes-&gt;stol*xnorm) {
+<a name="line419">419: </a>      PetscInfo3(snes,<font color="#666666">"Converged due to small update length: %14.12e &lt; %14.12e * %14.12e\n"</font>,(double)snorm,(double)snes-&gt;stol,(double)xnorm);
+<a name="line420">420: </a>      *reason = <A href="../../../docs/manualpages/SNES/SNES_CONVERGED_SNORM_RELATIVE.html#SNES_CONVERGED_SNORM_RELATIVE">SNES_CONVERGED_SNORM_RELATIVE</A>;
 <a name="line421">421: </a>    }
 <a name="line422">422: </a>  }
 <a name="line423">423: </a>  <font color="#4169E1">return</font>(0);
@@ -402,7 +403,7 @@
 <a name="line435">435: </a><font color="#B22222">+  snes - the <A href="../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> context</font>
 <a name="line436">436: </a><font color="#B22222">.  it - the iteration (0 indicates before any Newton steps)</font>
 <a name="line437">437: </a><font color="#B22222">.  xnorm - 2-norm of current iterate</font>
-<a name="line438">438: </a><font color="#B22222">.  pnorm - 2-norm of current step </font>
+<a name="line438">438: </a><font color="#B22222">.  snorm - 2-norm of current step </font>
 <a name="line439">439: </a><font color="#B22222">.  fnorm - 2-norm of function at current iterate</font>
 <a name="line440">440: </a><font color="#B22222">-  dummy - unused context</font>
 
@@ -418,7 +419,7 @@
 
 <a name="line452">452: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/SNES/SNESSetConvergenceTest.html#SNESSetConvergenceTest">SNESSetConvergenceTest</A>()</font>
 <a name="line453">453: </a><font color="#B22222">@*/</font>
-<a name="line454">454: </a><strong><font color="#4169E1"><a name="SNESSkipConverged"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/SNES/SNESSkipConverged.html#SNESSkipConverged">SNESSkipConverged</A>(<A href="../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> it,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xnorm,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> pnorm,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> fnorm,<A href="../../../docs/manualpages/SNES/SNESConvergedReason.html#SNESConvergedReason">SNESConvergedReason</A> *reason,void *dummy)</font></strong>
+<a name="line454">454: </a><strong><font color="#4169E1"><a name="SNESSkipConverged"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/SNES/SNESSkipConverged.html#SNESSkipConverged">SNESSkipConverged</A>(<A href="../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> it,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xnorm,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> snorm,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> fnorm,<A href="../../../docs/manualpages/SNES/SNESConvergedReason.html#SNESConvergedReason">SNESConvergedReason</A> *reason,void *dummy)</font></strong>
 <a name="line455">455: </a>{
 
 

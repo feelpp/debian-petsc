@@ -1,13 +1,14 @@
 <center><a href="mpinit.c">Actual source code: mpinit.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/objects/mpinit.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:52:41+00:00">
+<meta name="date" content="2012-08-29T16:35:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;petscsys.h&gt;        </font><font color="#B22222">/*I  "petscsys.h"   I*/</font><font color="#A020F0"></font>
@@ -17,6 +18,7 @@
 <a name="line7">  7: </a><A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  PetscHMPIWorker           = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;  <font color="#B22222">/* this is a regular process, nonworker process */</font>
 <a name="line8">  8: </a>void* PetscHMPICtx                   = 0;
 
+<a name="line10"> 10: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscHMPIHandle.html#PetscHMPIHandle">PetscHMPIHandle</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>)</font></strong>;
 
 <a name="line12"> 12: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_COMM_SPAWN)</font>
 <a name="line15"> 15: </a><font color="#B22222">/*@C</font>
@@ -66,7 +68,7 @@
 
 <a name="line60"> 60: </a><font color="#B22222">   Concepts: HMPI</font>
 <a name="line61"> 61: </a><font color="#B22222">   </font>
-<a name="line62"> 62: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), PetscInitializeFortran(), <A href="../../../docs/manualpages/Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIFinalize.html#PetscHMPIFinalize">PetscHMPIFinalize</A>(), <A href="../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIMerge.html#PetscHMPIMerge">PetscHMPIMerge</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIRun.html#PetscHMPIRun">PetscHMPIRun</A>()</font>
+<a name="line62"> 62: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), <A href="../../../docs/manualpages/Sys/PetscInitializeFortran.html#PetscInitializeFortran">PetscInitializeFortran</A>(), <A href="../../../docs/manualpages/Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIFinalize.html#PetscHMPIFinalize">PetscHMPIFinalize</A>(), <A href="../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIMerge.html#PetscHMPIMerge">PetscHMPIMerge</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIRun.html#PetscHMPIRun">PetscHMPIRun</A>()</font>
 
 <a name="line64"> 64: </a><font color="#B22222">@*/</font>
 <a name="line65"> 65: </a><strong><font color="#4169E1"><a name="PetscHMPISpawn"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscHMPISpawn.html#PetscHMPISpawn">PetscHMPISpawn</A>(<A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> nodesize)</font></strong>
@@ -145,7 +147,7 @@
 
 <a name="line143">143: </a><font color="#B22222">   Concepts: HMPI</font>
 <a name="line144">144: </a><font color="#B22222">   </font>
-<a name="line145">145: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), PetscInitializeFortran(), <A href="../../../docs/manualpages/Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIFinalize.html#PetscHMPIFinalize">PetscHMPIFinalize</A>(), <A href="../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPISpawn.html#PetscHMPISpawn">PetscHMPISpawn</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIRun.html#PetscHMPIRun">PetscHMPIRun</A>()</font>
+<a name="line145">145: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), <A href="../../../docs/manualpages/Sys/PetscInitializeFortran.html#PetscInitializeFortran">PetscInitializeFortran</A>(), <A href="../../../docs/manualpages/Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIFinalize.html#PetscHMPIFinalize">PetscHMPIFinalize</A>(), <A href="../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPISpawn.html#PetscHMPISpawn">PetscHMPISpawn</A>(), <A href="../../../docs/manualpages/Sys/PetscHMPIRun.html#PetscHMPIRun">PetscHMPIRun</A>()</font>
 
 <a name="line147">147: </a><font color="#B22222">@*/</font>
 <a name="line148">148: </a><strong><font color="#4169E1"><a name="PetscHMPIMerge"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscHMPIMerge.html#PetscHMPIMerge">PetscHMPIMerge</A>(<A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> nodesize,<A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*func)(void*),void *ctx)</font></strong>

@@ -1,13 +1,14 @@
 <center><a href="meshlagrit.c">Actual source code: meshlagrit.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/mesh/meshlagrit.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:26+00:00">
+<meta name="date" content="2012-08-29T16:56:41+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petscdmmesh_formats.hh&gt;   </font><font color="#B22222">/*I      "petscmesh.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line3">  3: </a><font color="#A020F0">#if 0</font>
@@ -23,7 +24,7 @@
 <a name="line13"> 13: </a>    }
 <a name="line14"> 14: </a>  }
 <a name="line15"> 15: </a>}
-<a name="line16"> 16: </a>      //Obj&lt;PETSC_MESH_TYPE&gt; m = ALE::LaGriT::Builder::readMesh(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, 3, options-&gt;baseFilename, options-&gt;interpolate, options-&gt;debug);'
+<a name="line16"> 16: </a>      //Obj&lt;PETSC_MESH_TYPE&gt; m = ALE::LaGriT::Builder::readMesh(comm, 3, options-&gt;baseFilename, options-&gt;interpolate, options-&gt;debug);'
 <a name="line17"> 17: </a>      Obj&lt;PETSC_MESH_TYPE&gt;             m     = new PETSC_MESH_TYPE(comm, options-&gt;dim, options-&gt;debug);
 <a name="line18"> 18: </a>      Obj&lt;PETSC_MESH_TYPE::sieve_type&gt; sieve = new PETSC_MESH_TYPE::sieve_type(comm, options-&gt;debug);
 <a name="line19"> 19: </a>      bool                 flipEndian = false;
@@ -68,13 +69,13 @@
 <a name="line58"> 58: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       commRank;
 <a name="line59"> 59: </a>      char           buf[2048];
 
-<a name="line62"> 62: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm, &amp;commRank);
+<a name="line62"> 62: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm, &amp;commRank);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line63"> 63: </a>      <font color="#4169E1">if</font> (commRank != 0) <font color="#4169E1">return</font>;
-<a name="line64"> 64: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, &amp;viewer);
-<a name="line65"> 65: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>(viewer, PETSCVIEWERASCII);
-<a name="line66"> 66: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetMode.html#PetscViewerFileSetMode">PetscViewerFileSetMode</A>(viewer, FILE_MODE_READ);
-<a name="line67"> 67: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetName.html#PetscViewerFileSetName">PetscViewerFileSetName</A>(viewer, filename.c_str());
-<a name="line68"> 68: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetPointer.html#PetscViewerASCIIGetPointer">PetscViewerASCIIGetPointer</A>(viewer, &amp;f);
+<a name="line64"> 64: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, &amp;viewer);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line65"> 65: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>(viewer, PETSCVIEWERASCII);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line66"> 66: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetMode.html#PetscViewerFileSetMode">PetscViewerFileSetMode</A>(viewer, FILE_MODE_READ);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line67"> 67: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetName.html#PetscViewerFileSetName">PetscViewerFileSetName</A>(viewer, filename.c_str());<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line68"> 68: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetPointer.html#PetscViewerASCIIGetPointer">PetscViewerASCIIGetPointer</A>(viewer, &amp;f);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line69"> 69: </a>      // Read header
 <a name="line70"> 70: </a>      <font color="#4169E1">if</font> (fgets(buf, 2048, f) == NULL) throw ALE::Exception(<font color="#666666">"File ended prematurely"</font>);
 <a name="line71"> 71: </a>      // Number of vertices
@@ -89,7 +90,7 @@
 <a name="line80"> 80: </a>      x = strtok(NULL, <font color="#666666">" "</font>);
 <a name="line81"> 81: </a>      // ???
 <a name="line82"> 82: </a>      x = strtok(NULL, <font color="#666666">" "</font>);
-<a name="line83"> 83: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(numVertices*dim * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;coords);
+<a name="line83"> 83: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(numVertices*dim * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;coords);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line84"> 84: </a>      <font color="#4169E1">for</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i = 0; i &lt; numVertices; ++i) {
 <a name="line85"> 85: </a>        <font color="#4169E1">if</font> (fgets(buf, 2048, f) == NULL) throw ALE::Exception(<font color="#666666">"File ended prematurely"</font>);
 <a name="line86"> 86: </a>        x = strtok(buf, <font color="#666666">" "</font>);
@@ -101,7 +102,7 @@
 <a name="line92"> 92: </a>        }
 <a name="line93"> 93: </a>      }
 <a name="line94"> 94: </a>      *coordinates = coords;
-<a name="line95"> 95: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(numElements*numCorners * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;verts);
+<a name="line95"> 95: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(numElements*numCorners * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;verts);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line96"> 96: </a>      <font color="#4169E1">for</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i = 0; i &lt; numElements; ++i) {
 <a name="line97"> 97: </a>        <font color="#4169E1">if</font> (fgets(buf, 2048, f) == NULL) throw ALE::Exception(<font color="#666666">"File ended prematurely"</font>);
 <a name="line98"> 98: </a>        x = strtok(buf, <font color="#666666">" "</font>);
@@ -117,7 +118,7 @@
 <a name="line108">108: </a>        }
 <a name="line109">109: </a>      }
 <a name="line110">110: </a>      *vertices = verts;
-<a name="line111">111: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer);
+<a name="line111">111: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line112">112: </a>    };
 <a name="line113">113: </a>    Obj&lt;Builder::Mesh&gt; Builder::readMesh(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, const int dim, const std::string&amp; filename, const bool interpolate = false, const int debug = 0) {
 <a name="line114">114: </a>      <font color="#4169E1">typedef</font> ALE::Mesh&lt;<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>&gt; FlexMesh;
@@ -153,11 +154,11 @@
 <a name="line145">145: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       numPsets;
 
 <a name="line148">148: </a>      <font color="#4169E1">if</font> (mesh-&gt;commRank() != 0) <font color="#4169E1">return</font>;
-<a name="line149">149: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, &amp;viewer);
-<a name="line150">150: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>(viewer, PETSCVIEWERASCII);
-<a name="line151">151: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetMode.html#PetscViewerFileSetMode">PetscViewerFileSetMode</A>(viewer, FILE_MODE_READ);
-<a name="line152">152: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetName.html#PetscViewerFileSetName">PetscViewerFileSetName</A>(viewer, filename.c_str());
-<a name="line153">153: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetPointer.html#PetscViewerASCIIGetPointer">PetscViewerASCIIGetPointer</A>(viewer, &amp;f);
+<a name="line149">149: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, &amp;viewer);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line150">150: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>(viewer, PETSCVIEWERASCII);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line151">151: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetMode.html#PetscViewerFileSetMode">PetscViewerFileSetMode</A>(viewer, FILE_MODE_READ);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line152">152: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetName.html#PetscViewerFileSetName">PetscViewerFileSetName</A>(viewer, filename.c_str());<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line153">153: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetPointer.html#PetscViewerASCIIGetPointer">PetscViewerASCIIGetPointer</A>(viewer, &amp;f);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line154">154: </a>      // Read header
 <a name="line155">155: </a>      <font color="#4169E1">if</font> (fgets(buf, 2048, f) == NULL) throw ALE::Exception(<font color="#666666">"File ended prematurely"</font>);
 <a name="line156">156: </a>      // Check file type
@@ -194,7 +195,7 @@
 <a name="line187">187: </a>        }
 <a name="line188">188: </a>        fault-&gt;allocatePoint();
 <a name="line189">189: </a>      }
-<a name="line190">190: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer);
+<a name="line190">190: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line191">191: </a>    };
 <a name="line192">192: </a><font color="#A020F0">#endif</font>
 <a name="line193">193: </a>  }

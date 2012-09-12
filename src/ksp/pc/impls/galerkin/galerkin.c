@@ -2,7 +2,7 @@
 /*
       Defines a preconditioner defined by R^T S R 
 */
-#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>   /*I "petscpc.h" I*/
 #include <petscksp.h>         /*I "petscksp.h" I*/
 
 typedef struct {
@@ -46,9 +46,7 @@ static PetscErrorCode PCSetUp_Galerkin(PC pc)
     ierr   = PetscFree(xx);CHKERRQ(ierr);
     ierr   = PetscFree(yy);CHKERRQ(ierr);
   }
-  if (!jac->R && !jac->P) {
-    SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set restriction or interpolation of PCGALERKIN with PCGalerkinSetRestriction/Interpolation()");
-  }
+  if (!jac->R && !jac->P) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Must set restriction or interpolation of PCGALERKIN with PCGalerkinSetRestriction/Interpolation()");
   /* should check here that sizes of R/P match size of a */
   PetscFunctionReturn(0);
 }
@@ -92,7 +90,7 @@ static PetscErrorCode PCView_Galerkin(PC pc,PetscViewer viewer)
   PetscBool        iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"Galerkin PC\n");CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"KSP on Galerkin follow\n");CHKERRQ(ierr);
@@ -182,7 +180,7 @@ PetscErrorCode  PCGalerkinSetRestriction(PC pc,Mat R)
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "PCGalerkinSetRestriction"
+#define __FUNCT__ "PCGalerkinSetInterpolation"
 /*@
    PCGalerkinSetInterpolation - Sets the interpolation operator for the "Galerkin-type" preconditioner
    
@@ -251,9 +249,14 @@ PetscErrorCode  PCGalerkinGetKSP(PC pc,KSP *ksp)
      PCGALERKIN - Build (part of) a preconditioner by P S R (where P is often R^T)
 
 $   Use PCGalerkinSetRestriction(pc,R) and/or PCGalerkinSetInterpolation(pc,P) followed by 
-$   PCGalerkinGetKSP(pc,&ksp); KSPSetOperations(ksp,A,....)
+$   PCGalerkinGetKSP(pc,&ksp); KSPSetOperators(ksp,A,....)
 
    Level: intermediate
+
+   Developer Note: If KSPSetOperators() has not been called then PCGALERKIN could use MatRARt() or MatPtAP() to compute
+                   the operators automatically.
+                   Should there be a prefix for the inner KSP.
+                   There is no KSPSetFromOptions_Galerkin() that calls KSPSetFromOptions() on the inner KSP
 
 .seealso:  PCCreate(), PCSetType(), PCType (for list of available types), PC,
            PCSHELL, PCKSP, PCGalerkinSetRestriction(), PCGalerkinSetInterpolation(), PCGalerkinGetKSP()

@@ -1,13 +1,14 @@
 <center><a href="aomemscalable.c">Actual source code: aomemscalable.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/ao/impls/memscalable/aomemscalable.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:55+00:00">
+<meta name="date" content="2012-08-29T16:54:00+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    The memory scalable <A href="../../../../../docs/manualpages/AO/AO.html#AO">AO</A> application ordering routines. These store the </font>
@@ -36,7 +37,7 @@
 <a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          *app,*app_loc,*petsc,*petsc_loc,len,i,j;
 <a name="line29"> 29: </a>  MPI_Status        status;
 
-<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line33"> 33: </a>  <font color="#4169E1">if</font> (!iascii) <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Viewer type %s not supported for <A href="../../../../../docs/manualpages/AO/AO.html#AO">AO</A> MemoryScalable"</font>,((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer)-&gt;type_name);
 
 <a name="line35"> 35: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ao)-&gt;comm,&amp;rank);
@@ -395,6 +396,7 @@
 <a name="line403">403: </a>  <font color="#4169E1">return</font>(0);
 <a name="line404">404: </a>}
 
+<a name="line406">406: </a>EXTERN_C_BEGIN
 <a name="line409">409: </a><strong><font color="#4169E1"><a name="AOCreate_MemoryScalable"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> AOCreate_MemoryScalable(<A href="../../../../../docs/manualpages/AO/AO.html#AO">AO</A> ao)</font></strong>
 <a name="line410">410: </a>{
 <a name="line411">411: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
@@ -470,6 +472,7 @@
 <a name="line482">482: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(lens,disp);
 <a name="line483">483: </a>  <font color="#4169E1">return</font>(0);
 <a name="line484">484: </a>}
+<a name="line485">485: </a>EXTERN_C_END
 
 <a name="line489">489: </a><font color="#B22222">/*@C</font>
 <a name="line490">490: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/AO/AOCreateMemoryScalable.html#AOCreateMemoryScalable">AOCreateMemoryScalable</A> - Creates a memory scalable application ordering using two integer arrays.</font>

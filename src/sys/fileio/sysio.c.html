@@ -1,13 +1,14 @@
 <center><a href="sysio.c">Actual source code: sysio.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/fileio/sysio.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:51:51+00:00">
+<meta name="date" content="2012-08-29T16:34:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* </font>
 <a name="line3">  3: </a><font color="#B22222">   This file contains simple binary read/write routines.</font>
@@ -292,7 +293,7 @@
 <a name="line312">312: </a><font color="#B22222">   it is written to the file. This is done by byte-swapping in-place </font>
 <a name="line313">313: </a><font color="#B22222">   the second time. If the flag istemp is set to <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>, the second</font>
 <a name="line314">314: </a><font color="#B22222">   byte-swapping operation is not done, thus saving some computation,</font>
-<a name="line315">315: </a><font color="#B22222">   but the buffer corrupted is corrupted.</font>
+<a name="line315">315: </a><font color="#B22222">   but the buffer is left corrupted.</font>
 
 <a name="line317">317: </a><font color="#B22222">   Because byte-swapping may be done on the values in data it cannot be declared const</font>
 
@@ -616,6 +617,7 @@
 <a name="line659">659: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
 
 <a name="line661">661: </a><font color="#A020F0">#if defined(PETSC_USE_PETSC_MPI_EXTERNAL32)</font>
+<a name="line662">662: </a>EXTERN_C_BEGIN
 <a name="line663">663: </a><font color="#B22222">/*</font>
 <a name="line664">664: </a><font color="#B22222">      MPICH does not provide the external32 representation for MPI_File_set_view() so we need to provide the functions.</font>
 <a name="line665">665: </a><font color="#B22222">    These are set into MPI in <A href="../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>() via MPI_Register_datarep()</font>
@@ -667,6 +669,7 @@
 <a name="line711">711: </a>  PetscByteSwap(filebuf,pdtype,count);
 <a name="line712">712: </a>  <font color="#4169E1">return</font> ierr;
 <a name="line713">713: </a>}
+<a name="line714">714: </a>EXTERN_C_END
 <a name="line715">715: </a><font color="#A020F0">#endif</font>
 
 <a name="line719">719: </a><strong><font color="#4169E1"><a name="MPIU_File_write_all"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MPIU_File_write_all(MPI_File fd,void *data,<A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> cnt,MPI_Datatype dtype,MPI_Status *status)</font></strong>

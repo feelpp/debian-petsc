@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* ts.c */
 /* Fortran interface file */
 
@@ -144,6 +144,11 @@ extern void PetscRmPointer(void*);
 #define tsprestep_ tsprestep
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsprestage_ TSPRESTAGE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsprestage_ tsprestage
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tspoststep_ TSPOSTSTEP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tspoststep_ tspoststep
@@ -167,6 +172,11 @@ extern void PetscRmPointer(void*);
 #define tsstep_ TSSTEP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tsstep_ tsstep
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsevaluatestep_ TSEVALUATESTEP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsevaluatestep_ tsevaluatestep
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tssolve_ TSSOLVE
@@ -212,6 +222,71 @@ extern void PetscRmPointer(void*);
 #define tsgetconvergedreason_ TSGETCONVERGEDREASON
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tsgetconvergedreason_ tsgetconvergedreason
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgetsnesiterations_ TSGETSNESITERATIONS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgetsnesiterations_ tsgetsnesiterations
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgetkspiterations_ TSGETKSPITERATIONS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgetkspiterations_ tsgetkspiterations
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgetsteprejections_ TSGETSTEPREJECTIONS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgetsteprejections_ tsgetsteprejections
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgetsnesfailures_ TSGETSNESFAILURES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgetsnesfailures_ tsgetsnesfailures
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tssetmaxsteprejections_ TSSETMAXSTEPREJECTIONS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tssetmaxsteprejections_ tssetmaxsteprejections
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tssetmaxsnesfailures_ TSSETMAXSNESFAILURES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tssetmaxsnesfailures_ tssetmaxsnesfailures
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsseterrorifstepfails_ TSSETERRORIFSTEPFAILS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsseterrorifstepfails_ tsseterrorifstepfails
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgetadapt_ TSGETADAPT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgetadapt_ tsgetadapt
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tssettolerances_ TSSETTOLERANCES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tssettolerances_ tssettolerances
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgettolerances_ TSGETTOLERANCES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgettolerances_ tsgettolerances
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tserrornormwrms_ TSERRORNORMWRMS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tserrornormwrms_ tserrornormwrms
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tssetcfltimelocal_ TSSETCFLTIMELOCAL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tssetcfltimelocal_ tssetcfltimelocal
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgetcfltime_ TSGETCFLTIME
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgetcfltime_ tsgetcfltime
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tsvisetvariablebounds_ TSVISETVARIABLEBOUNDS
@@ -324,6 +399,10 @@ void PETSC_STDCALL  tsprestep_(TS ts, int *__ierr ){
 *__ierr = TSPreStep(
 	(TS)PetscToPointer((ts) ));
 }
+void PETSC_STDCALL  tsprestage_(TS ts,PetscReal *stagetime, int *__ierr ){
+*__ierr = TSPreStage(
+	(TS)PetscToPointer((ts) ),*stagetime);
+}
 void PETSC_STDCALL  tspoststep_(TS ts, int *__ierr ){
 *__ierr = TSPostStep(
 	(TS)PetscToPointer((ts) ));
@@ -345,6 +424,11 @@ void PETSC_STDCALL  tsinterpolate_(TS ts,PetscReal *t,Vec X, int *__ierr ){
 void PETSC_STDCALL  tsstep_(TS ts, int *__ierr ){
 *__ierr = TSStep(
 	(TS)PetscToPointer((ts) ));
+}
+void PETSC_STDCALL  tsevaluatestep_(TS ts,PetscInt *order,Vec X,PetscBool *done, int *__ierr ){
+*__ierr = TSEvaluateStep(
+	(TS)PetscToPointer((ts) ),*order,
+	(Vec)PetscToPointer((X) ),done);
 }
 void PETSC_STDCALL  tssolve_(TS ts,Vec x,PetscReal *ftime, int *__ierr ){
 *__ierr = TSSolve(
@@ -387,6 +471,61 @@ void PETSC_STDCALL  snestsformjacobian_(SNES snes,Vec X,Mat *A,Mat *B,MatStructu
 void PETSC_STDCALL  tsgetconvergedreason_(TS ts,TSConvergedReason *reason, int *__ierr ){
 *__ierr = TSGetConvergedReason(
 	(TS)PetscToPointer((ts) ),reason);
+}
+void PETSC_STDCALL  tsgetsnesiterations_(TS ts,PetscInt *nits, int *__ierr ){
+*__ierr = TSGetSNESIterations(
+	(TS)PetscToPointer((ts) ),nits);
+}
+void PETSC_STDCALL  tsgetkspiterations_(TS ts,PetscInt *lits, int *__ierr ){
+*__ierr = TSGetKSPIterations(
+	(TS)PetscToPointer((ts) ),lits);
+}
+void PETSC_STDCALL  tsgetsteprejections_(TS ts,PetscInt *rejects, int *__ierr ){
+*__ierr = TSGetStepRejections(
+	(TS)PetscToPointer((ts) ),rejects);
+}
+void PETSC_STDCALL  tsgetsnesfailures_(TS ts,PetscInt *fails, int *__ierr ){
+*__ierr = TSGetSNESFailures(
+	(TS)PetscToPointer((ts) ),fails);
+}
+void PETSC_STDCALL  tssetmaxsteprejections_(TS ts,PetscInt *rejects, int *__ierr ){
+*__ierr = TSSetMaxStepRejections(
+	(TS)PetscToPointer((ts) ),*rejects);
+}
+void PETSC_STDCALL  tssetmaxsnesfailures_(TS ts,PetscInt *fails, int *__ierr ){
+*__ierr = TSSetMaxSNESFailures(
+	(TS)PetscToPointer((ts) ),*fails);
+}
+void PETSC_STDCALL  tsseterrorifstepfails_(TS ts,PetscBool *err, int *__ierr ){
+*__ierr = TSSetErrorIfStepFails(
+	(TS)PetscToPointer((ts) ),*err);
+}
+void PETSC_STDCALL  tsgetadapt_(TS ts,TSAdapt *adapt, int *__ierr ){
+*__ierr = TSGetAdapt(
+	(TS)PetscToPointer((ts) ),adapt);
+}
+void PETSC_STDCALL  tssettolerances_(TS ts,PetscReal *atol,Vec vatol,PetscReal *rtol,Vec vrtol, int *__ierr ){
+*__ierr = TSSetTolerances(
+	(TS)PetscToPointer((ts) ),*atol,
+	(Vec)PetscToPointer((vatol) ),*rtol,
+	(Vec)PetscToPointer((vrtol) ));
+}
+void PETSC_STDCALL  tsgettolerances_(TS ts,PetscReal *atol,Vec *vatol,PetscReal *rtol,Vec *vrtol, int *__ierr ){
+*__ierr = TSGetTolerances(
+	(TS)PetscToPointer((ts) ),atol,vatol,rtol,vrtol);
+}
+void PETSC_STDCALL  tserrornormwrms_(TS ts,Vec Y,PetscReal *norm, int *__ierr ){
+*__ierr = TSErrorNormWRMS(
+	(TS)PetscToPointer((ts) ),
+	(Vec)PetscToPointer((Y) ),norm);
+}
+void PETSC_STDCALL  tssetcfltimelocal_(TS ts,PetscReal *cfltime, int *__ierr ){
+*__ierr = TSSetCFLTimeLocal(
+	(TS)PetscToPointer((ts) ),*cfltime);
+}
+void PETSC_STDCALL  tsgetcfltime_(TS ts,PetscReal *cfltime, int *__ierr ){
+*__ierr = TSGetCFLTime(
+	(TS)PetscToPointer((ts) ),cfltime);
 }
 void PETSC_STDCALL  tsvisetvariablebounds_(TS ts,Vec xl,Vec xu, int *__ierr ){
 *__ierr = TSVISetVariableBounds(

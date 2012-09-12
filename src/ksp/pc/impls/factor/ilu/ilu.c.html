@@ -1,13 +1,14 @@
 <center><a href="ilu.c">Actual source code: ilu.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/factor/ilu/ilu.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:18+00:00">
+<meta name="date" content="2012-08-29T17:00:50+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">   Defines a ILU factorization preconditioner for any <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> implementation</font>
@@ -15,6 +16,7 @@
 <a name="line5">  5: </a><font color="#A020F0">#include &lt;../src/ksp/pc/impls/factor/ilu/ilu.h&gt;     </font><font color="#B22222">/*I "petscpc.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line7">  7: </a><font color="#B22222">/* ------------------------------------------------------------------------------------------*/</font>
+<a name="line8">  8: </a>EXTERN_C_BEGIN
 <a name="line11"> 11: </a><strong><font color="#4169E1"><a name="PCFactorSetReuseFill_ILU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorSetReuseFill_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flag)</font></strong>
 <a name="line12"> 12: </a>{
 <a name="line13"> 13: </a>  PC_ILU *lu = (PC_ILU*)pc-&gt;data;
@@ -22,7 +24,9 @@
 <a name="line16"> 16: </a>  lu-&gt;reusefill = flag;
 <a name="line17"> 17: </a>  <font color="#4169E1">return</font>(0);
 <a name="line18"> 18: </a>}
+<a name="line19"> 19: </a>EXTERN_C_END
 
+<a name="line21"> 21: </a>EXTERN_C_BEGIN
 <a name="line24"> 24: </a><strong><font color="#4169E1"><a name="PCFactorReorderForNonzeroDiagonal_ILU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorReorderForNonzeroDiagonal_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> z)</font></strong>
 <a name="line25"> 25: </a>{
 <a name="line26"> 26: </a>  PC_ILU *ilu = (PC_ILU*)pc-&gt;data;
@@ -35,6 +39,7 @@
 <a name="line34"> 34: </a>  }
 <a name="line35"> 35: </a>  <font color="#4169E1">return</font>(0);
 <a name="line36"> 36: </a>}
+<a name="line37"> 37: </a>EXTERN_C_END
 
 <a name="line41"> 41: </a><strong><font color="#4169E1"><a name="PCReset_ILU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCReset_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line42"> 42: </a>{
@@ -46,6 +51,7 @@
 <a name="line50"> 50: </a>  <font color="#4169E1">return</font>(0);
 <a name="line51"> 51: </a>}
 
+<a name="line53"> 53: </a>EXTERN_C_BEGIN
 <a name="line56"> 56: </a><strong><font color="#4169E1"><a name="PCFactorSetDropTolerance_ILU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorSetDropTolerance_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dt,<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dtcol,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dtcount)</font></strong>
 <a name="line57"> 57: </a>{
 <a name="line58"> 58: </a>  PC_ILU         *ilu = (PC_ILU*)pc-&gt;data;
@@ -59,7 +65,9 @@
 <a name="line67"> 67: </a>  ((PC_Factor*)ilu)-&gt;info.usedt   = 1.0;
 <a name="line68"> 68: </a>  <font color="#4169E1">return</font>(0);
 <a name="line69"> 69: </a>}
+<a name="line70"> 70: </a>EXTERN_C_END
 
+<a name="line72"> 72: </a>EXTERN_C_BEGIN
 <a name="line75"> 75: </a><strong><font color="#4169E1"><a name="PCFactorSetReuseOrdering_ILU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorSetReuseOrdering_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flag)</font></strong>
 <a name="line76"> 76: </a>{
 <a name="line77"> 77: </a>  PC_ILU *ilu = (PC_ILU*)pc-&gt;data;
@@ -67,7 +75,9 @@
 <a name="line80"> 80: </a>  ilu-&gt;reuseordering = flag;
 <a name="line81"> 81: </a>  <font color="#4169E1">return</font>(0);
 <a name="line82"> 82: </a>}
+<a name="line83"> 83: </a>EXTERN_C_END
 
+<a name="line85"> 85: </a>EXTERN_C_BEGIN
 <a name="line88"> 88: </a><strong><font color="#4169E1"><a name="PCFactorSetUseInPlace_ILU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorSetUseInPlace_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line89"> 89: </a>{
 <a name="line90"> 90: </a>  PC_ILU *dir = (PC_ILU*)pc-&gt;data;
@@ -75,6 +85,7 @@
 <a name="line93"> 93: </a>  dir-&gt;inplace = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line94"> 94: </a>  <font color="#4169E1">return</font>(0);
 <a name="line95"> 95: </a>}
+<a name="line96"> 96: </a>EXTERN_C_END
 
 <a name="line100">100: </a><strong><font color="#4169E1"><a name="PCSetFromOptions_ILU"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCSetFromOptions_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line101">101: </a>{
@@ -119,7 +130,7 @@
 <a name="line144">144: </a>  PC_ILU         *ilu = (PC_ILU*)pc-&gt;data;
 <a name="line146">146: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line149">149: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line149">149: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line150">150: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line151">151: </a>    <font color="#4169E1">if</font> (ilu-&gt;inplace) {
 <a name="line152">152: </a>      <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  ILU: in-place factorization\n"</font>);
@@ -142,9 +153,9 @@
 
 <a name="line174">174: </a>  <font color="#B22222">/* ugly hack to change default, since it is not support by some matrix types */</font>
 <a name="line175">175: </a>  <font color="#4169E1">if</font> (((PC_Factor*)ilu)-&gt;info.shifttype == (<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)MAT_SHIFT_NONZERO) {
-<a name="line176">176: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,<A href="../../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,&amp;flg);
+<a name="line176">176: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,<A href="../../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>,&amp;flg);
 <a name="line177">177: </a>    <font color="#4169E1">if</font> (!flg) {
-<a name="line178">178: </a>      <A href="../../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,<A href="../../../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>,&amp;flg);
+<a name="line178">178: </a>      <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,<A href="../../../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>,&amp;flg);
 <a name="line179">179: </a>      <font color="#4169E1">if</font> (!flg) {
 <a name="line180">180: </a>        ((PC_Factor*)ilu)-&gt;info.shifttype = (<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)MAT_SHIFT_INBLOCKS;
 <a name="line181">181: </a>        <A href="../../../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(pc,<font color="#666666">"Changing shift type from NONZERO to INBLOCKS because block matrices do not support NONZERO"</font>);
@@ -200,7 +211,7 @@
 <a name="line231">231: </a>        }
 <a name="line232">232: </a>      }
 <a name="line233">233: </a>      <A href="../../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;((PC_Factor*)ilu)-&gt;fact);
-<a name="line234">234: </a>      <A href="../../../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(pc-&gt;pmat,MATSOLVERPETSC,MAT_FACTOR_ILU,&amp;((PC_Factor*)ilu)-&gt;fact);
+<a name="line234">234: </a>      <A href="../../../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(pc-&gt;pmat,((PC_Factor*)ilu)-&gt;solvertype,MAT_FACTOR_ILU,&amp;((PC_Factor*)ilu)-&gt;fact);
 <a name="line235">235: </a>      <A href="../../../../../../docs/manualpages/Mat/MatILUFactorSymbolic.html#MatILUFactorSymbolic">MatILUFactorSymbolic</A>(((PC_Factor*)ilu)-&gt;fact,pc-&gt;pmat,ilu-&gt;row,ilu-&gt;col,&amp;((PC_Factor*)ilu)-&gt;info);
 <a name="line236">236: </a>      <A href="../../../../../../docs/manualpages/Mat/MatGetInfo.html#MatGetInfo">MatGetInfo</A>(((PC_Factor*)ilu)-&gt;fact,MAT_LOCAL,&amp;info);
 <a name="line237">237: </a>      ilu-&gt;actualfill = info.fill_ratio_needed;
@@ -284,100 +295,106 @@
 <a name="line335">335: </a><font color="#B22222">          The "symmetric" application of this preconditioner is not actually symmetric since L is not transpose(U) </font>
 <a name="line336">336: </a><font color="#B22222">          even when the matrix is not symmetric since the U stores the diagonals of the factorization.</font>
 
-<a name="line338">338: </a><font color="#B22222">   References:</font>
-<a name="line339">339: </a><font color="#B22222">   T. Dupont, R. Kendall, and H. Rachford. An approximate factorization procedure for solving</font>
-<a name="line340">340: </a><font color="#B22222">   self-adjoint elliptic difference equations. SIAM J. Numer. Anal., 5:559--573, 1968.</font>
+<a name="line338">338: </a><font color="#B22222">          If you are using MATSEQAIJCUSP matrices (or MATMPIAIJCUSP matrices with block Jacobi) you must have ./configured</font>
+<a name="line339">339: </a><font color="#B22222">          PETSc with also --download-txpetscgpu to have the triangular solves performed on the GPU (factorization is never</font>
+<a name="line340">340: </a><font color="#B22222">          done on the GPU).</font>
 
-<a name="line342">342: </a><font color="#B22222">   T.A. Oliphant. An implicit numerical method for solving two-dimensional time-dependent dif-</font>
-<a name="line343">343: </a><font color="#B22222">   fusion problems. Quart. Appl. Math., 19:221--229, 1961.</font>
+<a name="line342">342: </a><font color="#B22222">   References:</font>
+<a name="line343">343: </a><font color="#B22222">   T. Dupont, R. Kendall, and H. Rachford. An approximate factorization procedure for solving</font>
+<a name="line344">344: </a><font color="#B22222">   self-adjoint elliptic difference equations. SIAM J. Numer. Anal., 5:559--573, 1968.</font>
 
-<a name="line345">345: </a><font color="#B22222">   Review article: APPROXIMATE AND INCOMPLETE FACTORIZATIONS, TONY F. CHAN AND HENK A. VAN DER VORST</font>
-<a name="line346">346: </a><font color="#B22222">      http://igitur-archive.library.uu.nl/math/2001-0621-115821/proc.pdf chapter in Parallel Numerical</font>
-<a name="line347">347: </a><font color="#B22222">      Algorithms, edited by D. Keyes, A. Semah, V. Venkatakrishnan, ICASE/LaRC Interdisciplinary Series in</font>
-<a name="line348">348: </a><font color="#B22222">      Science and Engineering, Kluwer, pp. 167--202.</font>
+<a name="line346">346: </a><font color="#B22222">   T.A. Oliphant. An implicit numerical method for solving two-dimensional time-dependent dif-</font>
+<a name="line347">347: </a><font color="#B22222">   fusion problems. Quart. Appl. Math., 19:221--229, 1961.</font>
+
+<a name="line349">349: </a><font color="#B22222">   Review article: APPROXIMATE AND INCOMPLETE FACTORIZATIONS, TONY F. CHAN AND HENK A. VAN DER VORST</font>
+<a name="line350">350: </a><font color="#B22222">      http://igitur-archive.library.uu.nl/math/2001-0621-115821/proc.pdf chapter in Parallel Numerical</font>
+<a name="line351">351: </a><font color="#B22222">      Algorithms, edited by D. Keyes, A. Semah, V. Venkatakrishnan, ICASE/LaRC Interdisciplinary Series in</font>
+<a name="line352">352: </a><font color="#B22222">      Science and Engineering, Kluwer, pp. 167--202.</font>
 
 
-<a name="line351">351: </a><font color="#B22222">.seealso:  <A href="../../../../../../docs/manualpages/PC/PCCreate.html#PCCreate">PCCreate</A>(), <A href="../../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> (for list of available types), <A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A>, <A href="../../../../../../docs/manualpages/PC/PCSOR.html#PCSOR">PCSOR</A>, <A href="../../../../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,</font>
-<a name="line352">352: </a><font color="#B22222">           <A href="../../../../../../docs/manualpages/PC/PCFactorSetZeroPivot.html#PCFactorSetZeroPivot">PCFactorSetZeroPivot</A>(), PCFactorSetShiftSetType(), PCFactorSetAmount(),</font>
-<a name="line353">353: </a><font color="#B22222">           PCFactorSetDropTolerance(),<A href="../../../../../../docs/manualpages/PC/PCFactorSetFill.html#PCFactorSetFill">PCFactorSetFill</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetReuseOrdering.html#PCFactorSetReuseOrdering">PCFactorSetReuseOrdering</A>(),</font>
-<a name="line354">354: </a><font color="#B22222">           <A href="../../../../../../docs/manualpages/PC/PCFactorSetLevels.html#PCFactorSetLevels">PCFactorSetLevels</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetUseInPlace.html#PCFactorSetUseInPlace">PCFactorSetUseInPlace</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetAllowDiagonalFill.html#PCFactorSetAllowDiagonalFill">PCFactorSetAllowDiagonalFill</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetPivotInBlocks.html#PCFactorSetPivotInBlocks">PCFactorSetPivotInBlocks</A>()</font>
+<a name="line355">355: </a><font color="#B22222">.seealso:  <A href="../../../../../../docs/manualpages/PC/PCCreate.html#PCCreate">PCCreate</A>(), <A href="../../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> (for list of available types), <A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A>, <A href="../../../../../../docs/manualpages/PC/PCSOR.html#PCSOR">PCSOR</A>, <A href="../../../../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>,</font>
+<a name="line356">356: </a><font color="#B22222">           <A href="../../../../../../docs/manualpages/PC/PCFactorSetZeroPivot.html#PCFactorSetZeroPivot">PCFactorSetZeroPivot</A>(), PCFactorSetShiftSetType(), PCFactorSetAmount(),</font>
+<a name="line357">357: </a><font color="#B22222">           PCFactorSetDropTolerance(),<A href="../../../../../../docs/manualpages/PC/PCFactorSetFill.html#PCFactorSetFill">PCFactorSetFill</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetReuseOrdering.html#PCFactorSetReuseOrdering">PCFactorSetReuseOrdering</A>(),</font>
+<a name="line358">358: </a><font color="#B22222">           <A href="../../../../../../docs/manualpages/PC/PCFactorSetLevels.html#PCFactorSetLevels">PCFactorSetLevels</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetUseInPlace.html#PCFactorSetUseInPlace">PCFactorSetUseInPlace</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetAllowDiagonalFill.html#PCFactorSetAllowDiagonalFill">PCFactorSetAllowDiagonalFill</A>(), <A href="../../../../../../docs/manualpages/PC/PCFactorSetPivotInBlocks.html#PCFactorSetPivotInBlocks">PCFactorSetPivotInBlocks</A>()</font>
 
-<a name="line356">356: </a><font color="#B22222">M*/</font>
+<a name="line360">360: </a><font color="#B22222">M*/</font>
 
-<a name="line361">361: </a><strong><font color="#4169E1"><a name="PCCreate_ILU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
-<a name="line362">362: </a>{
-<a name="line364">364: </a>  PC_ILU         *ilu;
+<a name="line362">362: </a>EXTERN_C_BEGIN
+<a name="line365">365: </a><strong><font color="#4169E1"><a name="PCCreate_ILU"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
+<a name="line366">366: </a>{
+<a name="line368">368: </a>  PC_ILU         *ilu;
 
-<a name="line367">367: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(pc,PC_ILU,&amp;ilu);
+<a name="line371">371: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(pc,PC_ILU,&amp;ilu);
 
-<a name="line369">369: </a>  ((PC_Factor*)ilu)-&gt;fact                    = 0;
-<a name="line370">370: </a>  <A href="../../../../../../docs/manualpages/Mat/MatFactorInfoInitialize.html#MatFactorInfoInitialize">MatFactorInfoInitialize</A>(&amp;((PC_Factor*)ilu)-&gt;info);
-<a name="line371">371: </a>  ((PC_Factor*)ilu)-&gt;factortype              = MAT_FACTOR_ILU;
-<a name="line372">372: </a>  ((PC_Factor*)ilu)-&gt;info.levels             = 0.;
-<a name="line373">373: </a>  ((PC_Factor*)ilu)-&gt;info.fill               = 1.0;
-<a name="line374">374: </a>  ilu-&gt;col                                   = 0;
-<a name="line375">375: </a>  ilu-&gt;row                                   = 0;
-<a name="line376">376: </a>  ilu-&gt;inplace                               = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line377">377: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(MATSOLVERPETSC,&amp;((PC_Factor*)ilu)-&gt;solvertype);
-<a name="line378">378: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(MATORDERINGNATURAL,&amp;((PC_Factor*)ilu)-&gt;ordering);
-<a name="line379">379: </a>  ilu-&gt;reuseordering                         = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line380">380: </a>  ((PC_Factor*)ilu)-&gt;info.dt                 = <A href="../../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>;
-<a name="line381">381: </a>  ((PC_Factor*)ilu)-&gt;info.dtcount            = <A href="../../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>;
-<a name="line382">382: </a>  ((PC_Factor*)ilu)-&gt;info.dtcol              = <A href="../../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>;
-<a name="line383">383: </a>  ((PC_Factor*)ilu)-&gt;info.shifttype          = (<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)MAT_SHIFT_NONZERO;
-<a name="line384">384: </a>  ((PC_Factor*)ilu)-&gt;info.shiftamount        = 100.0*PETSC_MACHINE_EPSILON;
-<a name="line385">385: </a>  ((PC_Factor*)ilu)-&gt;info.zeropivot          = 100.0*PETSC_MACHINE_EPSILON;
-<a name="line386">386: </a>  ((PC_Factor*)ilu)-&gt;info.pivotinblocks      = 1.0;
-<a name="line387">387: </a>  ilu-&gt;reusefill                             = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line388">388: </a>  ((PC_Factor*)ilu)-&gt;info.diagonal_fill      = 0.0;
-<a name="line389">389: </a>  pc-&gt;data                     = (void*)ilu;
+<a name="line373">373: </a>  ((PC_Factor*)ilu)-&gt;fact                    = 0;
+<a name="line374">374: </a>  <A href="../../../../../../docs/manualpages/Mat/MatFactorInfoInitialize.html#MatFactorInfoInitialize">MatFactorInfoInitialize</A>(&amp;((PC_Factor*)ilu)-&gt;info);
+<a name="line375">375: </a>  ((PC_Factor*)ilu)-&gt;factortype              = MAT_FACTOR_ILU;
+<a name="line376">376: </a>  ((PC_Factor*)ilu)-&gt;info.levels             = 0.;
+<a name="line377">377: </a>  ((PC_Factor*)ilu)-&gt;info.fill               = 1.0;
+<a name="line378">378: </a>  ilu-&gt;col                                   = 0;
+<a name="line379">379: </a>  ilu-&gt;row                                   = 0;
+<a name="line380">380: </a>  ilu-&gt;inplace                               = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line381">381: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(MATSOLVERPETSC,&amp;((PC_Factor*)ilu)-&gt;solvertype);
+<a name="line382">382: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(MATORDERINGNATURAL,&amp;((PC_Factor*)ilu)-&gt;ordering);
+<a name="line383">383: </a>  ilu-&gt;reuseordering                         = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line384">384: </a>  ((PC_Factor*)ilu)-&gt;info.dt                 = <A href="../../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>;
+<a name="line385">385: </a>  ((PC_Factor*)ilu)-&gt;info.dtcount            = <A href="../../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>;
+<a name="line386">386: </a>  ((PC_Factor*)ilu)-&gt;info.dtcol              = <A href="../../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>;
+<a name="line387">387: </a>  ((PC_Factor*)ilu)-&gt;info.shifttype          = (<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)MAT_SHIFT_NONZERO;
+<a name="line388">388: </a>  ((PC_Factor*)ilu)-&gt;info.shiftamount        = 100.0*PETSC_MACHINE_EPSILON;
+<a name="line389">389: </a>  ((PC_Factor*)ilu)-&gt;info.zeropivot          = 100.0*PETSC_MACHINE_EPSILON;
+<a name="line390">390: </a>  ((PC_Factor*)ilu)-&gt;info.pivotinblocks      = 1.0;
+<a name="line391">391: </a>  ilu-&gt;reusefill                             = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line392">392: </a>  ((PC_Factor*)ilu)-&gt;info.diagonal_fill      = 0.0;
+<a name="line393">393: </a>  pc-&gt;data                     = (void*)ilu;
 
-<a name="line391">391: </a>  pc-&gt;ops-&gt;reset               = PCReset_ILU;
-<a name="line392">392: </a>  pc-&gt;ops-&gt;destroy             = PCDestroy_ILU;
-<a name="line393">393: </a>  pc-&gt;ops-&gt;apply               = PCApply_ILU;
-<a name="line394">394: </a>  pc-&gt;ops-&gt;applytranspose      = PCApplyTranspose_ILU;
-<a name="line395">395: </a>  pc-&gt;ops-&gt;setup               = PCSetUp_ILU;
-<a name="line396">396: </a>  pc-&gt;ops-&gt;setfromoptions      = PCSetFromOptions_ILU;
-<a name="line397">397: </a>  pc-&gt;ops-&gt;getfactoredmatrix   = PCFactorGetMatrix_Factor;
-<a name="line398">398: </a>  pc-&gt;ops-&gt;view                = PCView_ILU;
-<a name="line399">399: </a>  pc-&gt;ops-&gt;applysymmetricleft  = PCApplySymmetricLeft_ILU;
-<a name="line400">400: </a>  pc-&gt;ops-&gt;applysymmetricright = PCApplySymmetricRight_ILU;
-<a name="line401">401: </a>  pc-&gt;ops-&gt;applyrichardson     = 0;
+<a name="line395">395: </a>  pc-&gt;ops-&gt;reset               = PCReset_ILU;
+<a name="line396">396: </a>  pc-&gt;ops-&gt;destroy             = PCDestroy_ILU;
+<a name="line397">397: </a>  pc-&gt;ops-&gt;apply               = PCApply_ILU;
+<a name="line398">398: </a>  pc-&gt;ops-&gt;applytranspose      = PCApplyTranspose_ILU;
+<a name="line399">399: </a>  pc-&gt;ops-&gt;setup               = PCSetUp_ILU;
+<a name="line400">400: </a>  pc-&gt;ops-&gt;setfromoptions      = PCSetFromOptions_ILU;
+<a name="line401">401: </a>  pc-&gt;ops-&gt;getfactoredmatrix   = PCFactorGetMatrix_Factor;
+<a name="line402">402: </a>  pc-&gt;ops-&gt;view                = PCView_ILU;
+<a name="line403">403: </a>  pc-&gt;ops-&gt;applysymmetricleft  = PCApplySymmetricLeft_ILU;
+<a name="line404">404: </a>  pc-&gt;ops-&gt;applysymmetricright = PCApplySymmetricRight_ILU;
+<a name="line405">405: </a>  pc-&gt;ops-&gt;applyrichardson     = 0;
 
-<a name="line403">403: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetZeroPivot_C"</font>,<font color="#666666">"PCFactorSetZeroPivot_Factor"</font>,
-<a name="line404">404: </a>                    PCFactorSetZeroPivot_Factor);
-<a name="line405">405: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetShiftType_C"</font>,<font color="#666666">"PCFactorSetShiftType_Factor"</font>,
-<a name="line406">406: </a>                    PCFactorSetShiftType_Factor);
-<a name="line407">407: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetShiftAmount_C"</font>,<font color="#666666">"PCFactorSetShiftAmount_Factor"</font>,
-<a name="line408">408: </a>                    PCFactorSetShiftAmount_Factor);
-<a name="line409">409: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorGetMatSolverPackage_C"</font>,<font color="#666666">"PCFactorGetMatSolverPackage_Factor"</font>,
-<a name="line410">410: </a>                    PCFactorGetMatSolverPackage_Factor);
-<a name="line411">411: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetMatSolverPackage_C"</font>,<font color="#666666">"PCFactorSetMatSolverPackage_Factor"</font>,
-<a name="line412">412: </a>                    PCFactorSetMatSolverPackage_Factor);
-<a name="line413">413: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetUpMatSolverPackage_C"</font>,<font color="#666666">"PCFactorSetUpMatSolverPackage_Factor"</font>,
-<a name="line414">414: </a>                    PCFactorSetUpMatSolverPackage_Factor);
-<a name="line415">415: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetDropTolerance_C"</font>,<font color="#666666">"PCFactorSetDropTolerance_ILU"</font>,
-<a name="line416">416: </a>                    PCFactorSetDropTolerance_ILU);
-<a name="line417">417: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetFill_C"</font>,<font color="#666666">"PCFactorSetFill_Factor"</font>,
-<a name="line418">418: </a>                    PCFactorSetFill_Factor);
-<a name="line419">419: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetMatOrderingType_C"</font>,<font color="#666666">"PCFactorSetMatOrderingType_Factor"</font>,
-<a name="line420">420: </a>                    PCFactorSetMatOrderingType_Factor);
-<a name="line421">421: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetReuseOrdering_C"</font>,<font color="#666666">"PCFactorSetReuseOrdering_ILU"</font>,
-<a name="line422">422: </a>                    PCFactorSetReuseOrdering_ILU);
-<a name="line423">423: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetReuseFill_C"</font>,<font color="#666666">"PCFactorSetReuseFill_ILU"</font>,
-<a name="line424">424: </a>                    PCFactorSetReuseFill_ILU);
-<a name="line425">425: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetLevels_C"</font>,<font color="#666666">"PCFactorSetLevels_Factor"</font>,
-<a name="line426">426: </a>                    PCFactorSetLevels_Factor);
-<a name="line427">427: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetUseInPlace_C"</font>,<font color="#666666">"PCFactorSetUseInPlace_ILU"</font>,
-<a name="line428">428: </a>                    PCFactorSetUseInPlace_ILU);
-<a name="line429">429: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetAllowDiagonalFill_C"</font>,<font color="#666666">"PCFactorSetAllowDiagonalFill_Factor"</font>,
-<a name="line430">430: </a>                    PCFactorSetAllowDiagonalFill_Factor);
-<a name="line431">431: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetPivotInBlocks_C"</font>,<font color="#666666">"PCFactorSetPivotInBlocks_Factor"</font>,
-<a name="line432">432: </a>                    PCFactorSetPivotInBlocks_Factor);
-<a name="line433">433: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorReorderForNonzeroDiagonal_C"</font>,<font color="#666666">"PCFactorReorderForNonzeroDiagonal_ILU"</font>,
-<a name="line434">434: </a>                    PCFactorReorderForNonzeroDiagonal_ILU);
-<a name="line435">435: </a>  <font color="#4169E1">return</font>(0);
-<a name="line436">436: </a>}
+<a name="line407">407: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetZeroPivot_C"</font>,<font color="#666666">"PCFactorSetZeroPivot_Factor"</font>,
+<a name="line408">408: </a>                    PCFactorSetZeroPivot_Factor);
+<a name="line409">409: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetShiftType_C"</font>,<font color="#666666">"PCFactorSetShiftType_Factor"</font>,
+<a name="line410">410: </a>                    PCFactorSetShiftType_Factor);
+<a name="line411">411: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetShiftAmount_C"</font>,<font color="#666666">"PCFactorSetShiftAmount_Factor"</font>,
+<a name="line412">412: </a>                    PCFactorSetShiftAmount_Factor);
+<a name="line413">413: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorGetMatSolverPackage_C"</font>,<font color="#666666">"PCFactorGetMatSolverPackage_Factor"</font>,
+<a name="line414">414: </a>                    PCFactorGetMatSolverPackage_Factor);
+<a name="line415">415: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetMatSolverPackage_C"</font>,<font color="#666666">"PCFactorSetMatSolverPackage_Factor"</font>,
+<a name="line416">416: </a>                    PCFactorSetMatSolverPackage_Factor);
+<a name="line417">417: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetUpMatSolverPackage_C"</font>,<font color="#666666">"PCFactorSetUpMatSolverPackage_Factor"</font>,
+<a name="line418">418: </a>                    PCFactorSetUpMatSolverPackage_Factor);
+<a name="line419">419: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetDropTolerance_C"</font>,<font color="#666666">"PCFactorSetDropTolerance_ILU"</font>,
+<a name="line420">420: </a>                    PCFactorSetDropTolerance_ILU);
+<a name="line421">421: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetFill_C"</font>,<font color="#666666">"PCFactorSetFill_Factor"</font>,
+<a name="line422">422: </a>                    PCFactorSetFill_Factor);
+<a name="line423">423: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetMatOrderingType_C"</font>,<font color="#666666">"PCFactorSetMatOrderingType_Factor"</font>,
+<a name="line424">424: </a>                    PCFactorSetMatOrderingType_Factor);
+<a name="line425">425: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetReuseOrdering_C"</font>,<font color="#666666">"PCFactorSetReuseOrdering_ILU"</font>,
+<a name="line426">426: </a>                    PCFactorSetReuseOrdering_ILU);
+<a name="line427">427: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetReuseFill_C"</font>,<font color="#666666">"PCFactorSetReuseFill_ILU"</font>,
+<a name="line428">428: </a>                    PCFactorSetReuseFill_ILU);
+<a name="line429">429: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetLevels_C"</font>,<font color="#666666">"PCFactorSetLevels_Factor"</font>,
+<a name="line430">430: </a>                    PCFactorSetLevels_Factor);
+<a name="line431">431: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetUseInPlace_C"</font>,<font color="#666666">"PCFactorSetUseInPlace_ILU"</font>,
+<a name="line432">432: </a>                    PCFactorSetUseInPlace_ILU);
+<a name="line433">433: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetAllowDiagonalFill_C"</font>,<font color="#666666">"PCFactorSetAllowDiagonalFill_Factor"</font>,
+<a name="line434">434: </a>                    PCFactorSetAllowDiagonalFill_Factor);
+<a name="line435">435: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorSetPivotInBlocks_C"</font>,<font color="#666666">"PCFactorSetPivotInBlocks_Factor"</font>,
+<a name="line436">436: </a>                    PCFactorSetPivotInBlocks_Factor);
+<a name="line437">437: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorReorderForNonzeroDiagonal_C"</font>,<font color="#666666">"PCFactorReorderForNonzeroDiagonal_ILU"</font>,
+<a name="line438">438: </a>                    PCFactorReorderForNonzeroDiagonal_ILU);
+<a name="line439">439: </a>  <font color="#4169E1">return</font>(0);
+<a name="line440">440: </a>}
+<a name="line441">441: </a>EXTERN_C_END
 </pre>
 </body>
 

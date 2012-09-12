@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/MatFD/MatFDColoringSetFunction.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatFDColoringSetFunction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatFDColoringSetFunction"><H1>MatFDColoringSetFunction</H1></A>
 Sets the function to use for computing the Jacobian. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -25,19 +26,17 @@ Logically Collective on <A HREF="../Mat/MatFDColoring.html#MatFDColoring">MatFDC
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of (*f) function</FONT></H3>
 For <A HREF="../SNES/SNES.html#SNES">SNES</A>:    <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*f)(<A HREF="../SNES/SNES.html#SNES">SNES</A>,<A HREF="../Vec/Vec.html#Vec">Vec</A>,<A HREF="../Vec/Vec.html#Vec">Vec</A>,void*)
-For <A HREF="../TS/TS.html#TS">TS</A>:      <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*f)(<A HREF="../TS/TS.html#TS">TS</A>,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A>,<A HREF="../Vec/Vec.html#Vec">Vec</A>,<A HREF="../Vec/Vec.html#Vec">Vec</A>,void*)
-If not using <A HREF="../SNES/SNES.html#SNES">SNES</A> or <A HREF="../TS/TS.html#TS">TS</A>: <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*f)(void *dummy,<A HREF="../Vec/Vec.html#Vec">Vec</A>,<A HREF="../Vec/Vec.html#Vec">Vec</A>,void*) and dummy is ignored
+If not using <A HREF="../SNES/SNES.html#SNES">SNES</A>: <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*f)(void *dummy,<A HREF="../Vec/Vec.html#Vec">Vec</A>,<A HREF="../Vec/Vec.html#Vec">Vec</A>,void*) and dummy is ignored
 <P>
 
 <P>
-Notes: This function is usually used automatically by <A HREF="../SNES/SNES.html#SNES">SNES</A> or <A HREF="../TS/TS.html#TS">TS</A> (when one uses <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>() with the argument
-<A HREF="../SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>() or <A HREF="../TS/TSSetRHSJacobian.html#TSSetRHSJacobian">TSSetRHSJacobian</A>() with the argument <A HREF="../TS/TSDefaultComputeJacobianColor.html#TSDefaultComputeJacobianColor">TSDefaultComputeJacobianColor</A>()) and only needs to be used
-by someone computing a matrix via coloring directly by calling <A HREF="../MatFD/MatFDColoringApply.html#MatFDColoringApply">MatFDColoringApply</A>()
+Notes: This function is usually used automatically by <A HREF="../SNES/SNES.html#SNES">SNES</A> (when one uses <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>() with the argument
+<A HREF="../SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>()) and only needs to be used by someone computing a matrix via coloring directly by
+calling <A HREF="../MatFD/MatFDColoringApply.html#MatFDColoringApply">MatFDColoringApply</A>()
 <P>
 <H3><FONT COLOR="#CC3333">Fortran Notes</FONT></H3>
 In Fortran you must call <A HREF="../MatFD/MatFDColoringSetFunction.html#MatFDColoringSetFunction">MatFDColoringSetFunction</A>() for a coloring object to
-be used without <A HREF="../SNES/SNES.html#SNES">SNES</A> or <A HREF="../TS/TS.html#TS">TS</A> or within the <A HREF="../SNES/SNES.html#SNES">SNES</A> solvers and MatFDColoringSetFunctionTS() if it is to be used
-within the <A HREF="../TS/TS.html#TS">TS</A> solvers.
+be used without <A HREF="../SNES/SNES.html#SNES">SNES</A> or within the <A HREF="../SNES/SNES.html#SNES">SNES</A> solvers.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../Mat/Mat.html#Mat">Mat</A>, Jacobian, finite differences, set, function
@@ -55,7 +54,6 @@ within the <A HREF="../TS/TS.html#TS">TS</A> solvers.
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex45.c.html">src/snes/examples/tutorials/ex45.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
@@ -63,4 +61,5 @@ within the <A HREF="../TS/TS.html#TS">TS</A> solvers.
 <A HREF="../../../src/ts/examples/tutorials/ex13.c.html">src/ts/examples/tutorials/ex13.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex26.c.html">src/ts/examples/tutorials/ex26.c.html</A><BR>
 </BODY></HTML>

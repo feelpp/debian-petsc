@@ -1,47 +1,42 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCGASMSetTotalSubdomains.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCGASMSetTotalSubdomains</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCGASMSetTotalSubdomains"><H1>PCGASMSetTotalSubdomains</H1></A>
-Sets the subdomains for all processor for the  additive Schwarz preconditioner.  Either all or no processors in the <A HREF="../PC/PC.html#PC">PC</A> communicator must call this routine, with the same index sets. 
+Sets the total number of subdomains to use in the generalized additive  Schwarz preconditioner.  The number of subdomains is cumulative across all processors in pc's communicator. Either all or no processors in the <A HREF="../PC/PC.html#PC">PC</A> communicator must call this routine with  the same N.  The subdomains will be created automatically during <A HREF="../PC/PCSetUp.html#PCSetUp">PCSetUp</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode  PCGASMSetTotalSubdomains(PC pc,PetscInt N)
+PetscErrorCode  PCGASMSetTotalSubdomains(PC pc,PetscInt N, PetscBool create_local)
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc </B></TD><TD>- the preconditioner context
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc           </B></TD><TD>- the preconditioner context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of subdomains for all processors
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N            </B></TD><TD>- the total number of subdomains cumulative across all processors
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is </B></TD><TD>- the index sets that define the subdomains for all processor
-(or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to determine subdomains)
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_local </B></TD><TD>- the index sets that define the local part of the subdomains for this processor
-(or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to use the default of 1 subdomain per process)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>create_local </B></TD><TD>- whether the subdomains to be created are to be local
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-To set the total number of subdomain blocks rather than specify the
-index sets, use the option
-<DT><B>-pc_gasm_blocks &lt;blks&gt; </B> -Sets total blocks
-<br>
+<H3><FONT COLOR="#CC3333">To set the total number of subdomains and let PCGASM autocreate them, rather than specify the index sets, use the following options</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_total_subdomains &lt;n&gt;                  </B></TD><TD>- sets the total number of subdomains to be autocreated by <A HREF="../PC/PCGASM.html#PCGASM">PCGASM</A>
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_gasm_subdomains_create_local &lt;true|false&gt;  </B></TD><TD>- whether autocreated subdomains should be local or not (default is true)
+</TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-Currently you cannot use this to set the actual subdomains with the argument is.
+By default the GASM preconditioner uses 1 subdomain per processor.
 <P>
-By default the GASM preconditioner uses 1 block per processor.
 <P>
-These index sets cannot be destroyed until after completion of the
-linear solves for which the GASM preconditioner is being used.
-<P>
-Use <A HREF="../PC/PCGASMSetLocalSubdomains.html#PCGASMSetLocalSubdomains">PCGASMSetLocalSubdomains</A>() to set local subdomains.
+Use <A HREF="../PC/PCGASMSetSubdomains.html#PCGASMSetSubdomains">PCGASMSetSubdomains</A>() to set subdomains explicitly or to set different numbers
+of subdomains per processor.
 <P>
 
 <P>
@@ -50,7 +45,7 @@ Use <A HREF="../PC/PCGASMSetLocalSubdomains.html#PCGASMSetLocalSubdomains">PCGAS
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../PC/PCGASMSetLocalSubdomains.html#PCGASMSetLocalSubdomains">PCGASMSetLocalSubdomains</A>(), <A HREF="../PC/PCGASMSetOverlap.html#PCGASMSetOverlap">PCGASMSetOverlap</A>(), <A HREF="../PC/PCGASMGetSubKSP.html#PCGASMGetSubKSP">PCGASMGetSubKSP</A>(),
+ <A HREF="../PC/PCGASMSetSubdomains.html#PCGASMSetSubdomains">PCGASMSetSubdomains</A>(), <A HREF="../PC/PCGASMSetOverlap.html#PCGASMSetOverlap">PCGASMSetOverlap</A>(), <A HREF="../PC/PCGASMGetSubKSP.html#PCGASMGetSubKSP">PCGASMGetSubKSP</A>(),
 <BR><A HREF="../PC/PCGASMCreateSubdomains2D.html#PCGASMCreateSubdomains2D">PCGASMCreateSubdomains2D</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/impls/gasm/gasm.c.html#PCGASMSetTotalSubdomains">src/ksp/pc/impls/gasm/gasm.c</A>

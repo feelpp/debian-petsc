@@ -18,7 +18,7 @@
 
 #include <../src/mat/impls/maij/maij.h> /*I "petscmat.h" I*/
 #include <../src/mat/utils/freespace.h>
-#include <private/vecimpl.h>
+#include <petsc-private/vecimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "MatMAIJGetAIJ"
@@ -45,8 +45,8 @@ PetscErrorCode  MatMAIJGetAIJ(Mat A,Mat *B)
   PetscBool      ismpimaij,isseqmaij;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)A,MATMPIMAIJ,&ismpimaij);CHKERRQ(ierr);  
-  ierr = PetscTypeCompare((PetscObject)A,MATSEQMAIJ,&isseqmaij);CHKERRQ(ierr);  
+  ierr = PetscObjectTypeCompare((PetscObject)A,MATMPIMAIJ,&ismpimaij);CHKERRQ(ierr);  
+  ierr = PetscObjectTypeCompare((PetscObject)A,MATSEQMAIJ,&isseqmaij);CHKERRQ(ierr);  
   if (ismpimaij) {
     Mat_MPIMAIJ *b = (Mat_MPIMAIJ*)A->data;
 
@@ -101,6 +101,15 @@ PetscErrorCode MatDestroy_SeqMAIJ(Mat A)
   PetscFunctionBegin;
   ierr = MatDestroy(&b->AIJ);CHKERRQ(ierr);
   ierr = PetscFree(A->data);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "MatSetUp_MAIJ" 
+PetscErrorCode MatSetUp_MAIJ(Mat A)
+{
+  PetscFunctionBegin;
+  SETERRQ(((PetscObject)A)->comm,PETSC_ERR_SUP,"Must use MatCreateMAIJ() to create MAIJ matrices");
   PetscFunctionReturn(0);
 }
 
@@ -179,6 +188,7 @@ PetscErrorCode  MatCreate_MAIJ(Mat A)
   ierr     = PetscNewLog(A,Mat_MPIMAIJ,&b);CHKERRQ(ierr);
   A->data  = (void*)b;
   ierr = PetscMemzero(A->ops,sizeof(struct _MatOps));CHKERRQ(ierr);
+  A->ops->setup = MatSetUp_MAIJ;
 
   b->AIJ  = 0;
   b->dof  = 0;  
@@ -3283,7 +3293,7 @@ PetscErrorCode  MatConvert_MPIMAIJ_MPIAIJ(Mat A, MatType newtype,MatReuse reuse,
       onz[dof*i+j] = OAIJ->ilen[i];
     }
   }
-  ierr = MatCreateMPIAIJ(((PetscObject)A)->comm,A->rmap->n,A->cmap->n,A->rmap->N,A->cmap->N,0,dnz,0,onz,&B);CHKERRQ(ierr);
+  ierr = MatCreateAIJ(((PetscObject)A)->comm,A->rmap->n,A->cmap->n,A->rmap->N,A->cmap->N,0,dnz,0,onz,&B);CHKERRQ(ierr);
   ierr = PetscFree2(dnz,onz);CHKERRQ(ierr);
 
   ierr   = PetscMalloc2(nmax,PetscInt,&icols,onmax,PetscInt,&oicols);CHKERRQ(ierr);
@@ -3395,6 +3405,7 @@ PetscErrorCode  MatCreateMAIJ(Mat A,PetscInt dof,Mat *maij)
       Mat_SeqMAIJ    *b;
 
       ierr = MatSetType(B,MATSEQMAIJ);CHKERRQ(ierr);
+      B->ops->setup   = PETSC_NULL;
       B->ops->destroy = MatDestroy_SeqMAIJ;
       B->ops->view    = MatView_SeqMAIJ;
       b      = (Mat_SeqMAIJ*)B->data;
@@ -3476,6 +3487,7 @@ PetscErrorCode  MatCreateMAIJ(Mat A,PetscInt dof,Mat *maij)
       Vec         gvec;
 
       ierr = MatSetType(B,MATMPIMAIJ);CHKERRQ(ierr);
+      B->ops->setup   = PETSC_NULL;
       B->ops->destroy = MatDestroy_MPIMAIJ;
       B->ops->view    = MatView_MPIMAIJ;
       b      = (Mat_MPIMAIJ*)B->data;
@@ -3485,16 +3497,17 @@ PetscErrorCode  MatCreateMAIJ(Mat A,PetscInt dof,Mat *maij)
       ierr = MatCreateMAIJ(mpiaij->B,dof,&b->OAIJ);CHKERRQ(ierr);
 
       ierr = VecGetSize(mpiaij->lvec,&n);CHKERRQ(ierr);
-      ierr = VecCreateSeq(PETSC_COMM_SELF,n*dof,&b->w);CHKERRQ(ierr);
+      ierr = VecCreate(PETSC_COMM_SELF,&b->w);CHKERRQ(ierr);
+      ierr = VecSetSizes(b->w,n*dof,n*dof);CHKERRQ(ierr);
       ierr = VecSetBlockSize(b->w,dof);CHKERRQ(ierr);
+      ierr = VecSetType(b->w,VECSEQ);CHKERRQ(ierr);
 
       /* create two temporary Index sets for build scatter gather */
       ierr = ISCreateBlock(((PetscObject)A)->comm,dof,n,mpiaij->garray,PETSC_COPY_VALUES,&from);CHKERRQ(ierr);
       ierr = ISCreateStride(PETSC_COMM_SELF,n*dof,0,1,&to);CHKERRQ(ierr);
 
       /* create temporary global vector to generate scatter context */
-      ierr = VecCreateMPIWithArray(((PetscObject)A)->comm,dof*A->cmap->n,dof*A->cmap->N,PETSC_NULL,&gvec);CHKERRQ(ierr);
-      ierr = VecSetBlockSize(gvec,dof);CHKERRQ(ierr);
+      ierr = VecCreateMPIWithArray(((PetscObject)A)->comm,dof,dof*A->cmap->n,dof*A->cmap->N,PETSC_NULL,&gvec);CHKERRQ(ierr);
 
       /* generate the scatter context */
       ierr = VecScatterCreate(gvec,from,b->w,to,&b->ctx);CHKERRQ(ierr);
@@ -3512,6 +3525,7 @@ PetscErrorCode  MatCreateMAIJ(Mat A,PetscInt dof,Mat *maij)
       ierr = PetscObjectComposeFunctionDynamic((PetscObject)B,"MatConvert_mpimaij_mpiaij_C","MatConvert_MPIMAIJ_MPIAIJ",MatConvert_MPIMAIJ_MPIAIJ);CHKERRQ(ierr);
     }
     B->ops->getsubmatrix        = MatGetSubMatrix_MAIJ;
+    ierr = MatSetUp(B);CHKERRQ(ierr);
     *maij = B;
     ierr = MatView_Private(B);CHKERRQ(ierr);
   }

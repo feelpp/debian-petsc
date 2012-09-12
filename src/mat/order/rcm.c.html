@@ -1,13 +1,14 @@
 <center><a href="rcm.c">Actual source code: rcm.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/order/rcm.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:36+00:00">
+<meta name="date" content="2012-08-29T16:53:33+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* rcm.f -- translated by f2c (version 19931217).*/</font>
 
@@ -55,6 +56,7 @@
 
 <a name="line48"> 48: </a>    <font color="#B22222">/* Local variables */</font>
 <a name="line49"> 49: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> node, fnbr, lnbr, i, j, k, l, lperm, jstop, jstrt;
+<a name="line50"> 50: </a>    extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SPARSEPACKdegree(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *,
 <a name="line51"> 51: </a>            <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *);
 <a name="line52"> 52: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> lbegin, lvlend, nbr;
 

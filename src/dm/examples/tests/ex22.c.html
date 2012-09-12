@@ -1,13 +1,14 @@
 <center><a href="ex22.c">Actual source code: ex22.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tests/ex22.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:50+00:00">
+<meta name="date" content="2012-08-29T16:58:10+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Mat/MatSetValuesBlockedStencil.html#MatSetValuesBlockedStencil">MatSetValuesBlockedStencil</A>() in 3d.\n\n"</font>;
 
@@ -42,7 +43,7 @@
 <a name="line35"> 35: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate3d.html#DMDACreate3d">DMDACreate3d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,stencil_type,M,N,P,m,n,p,w,s,
 <a name="line36"> 36: </a>                    0,0,0,&amp;da);
 
-<a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATMPIBAIJ.html#MATMPIBAIJ">MATMPIBAIJ</A>,&amp;mat);
+<a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATMPIBAIJ.html#MATMPIBAIJ">MATMPIBAIJ</A>,&amp;mat);
 
 <a name="line40"> 40: </a>  idx[0].i = 1;   idx[0].j = 1; idx[0].k = 0;
 <a name="line41"> 41: </a>  idx[1].i = 2;   idx[1].j = 1; idx[1].k = 0;

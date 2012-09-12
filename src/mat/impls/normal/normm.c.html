@@ -1,15 +1,16 @@
 <center><a href="normm.c">Actual source code: normm.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/normal/normm.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:06+00:00">
+<meta name="date" content="2012-08-29T16:50:03+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;          </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;          </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line4">  4: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line5">  5: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>         A;
@@ -179,7 +180,7 @@
 <a name="line199">199: </a>    }
 <a name="line200">200: </a>    <A href="../../../../docs/manualpages/Mat/MatRestoreRow.html#MatRestoreRow">MatRestoreRow</A>(A,i,&amp;nnz,&amp;cols,&amp;mvalues);
 <a name="line201">201: </a>  }
-<a name="line202">202: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(work,diag,A-&gt;cmap-&gt;N,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPI_SUM,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)N)-&gt;comm);
+<a name="line202">202: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(work,diag,A-&gt;cmap-&gt;N,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPIU_SUM,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)N)-&gt;comm);
 <a name="line203">203: </a>  rstart = N-&gt;cmap-&gt;rstart;
 <a name="line204">204: </a>  rend   = N-&gt;cmap-&gt;rend;
 <a name="line205">205: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(v,&amp;values);

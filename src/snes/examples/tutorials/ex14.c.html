@@ -1,13 +1,14 @@
 <center><a href="ex14.c">Actual source code: ex14.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex14.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:16:37+00:00">
+<meta name="date" content="2012-08-29T17:10:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* Program usage:  mpiexec -n &lt;procs&gt; ex14 [-help] [all PETSc options] */</font>
 
@@ -69,6 +70,8 @@
 <a name="line59"> 59: </a><font color="#B22222">/* </font>
 <a name="line60"> 60: </a><font color="#B22222">   User-defined routines</font>
 <a name="line61"> 61: </a><font color="#B22222">*/</font>
+<a name="line62"> 62: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),FormInitialGuess(AppCtx*,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line63"> 63: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*)</font></strong>;
 
 <a name="line67"> 67: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line68"> 68: </a>{
@@ -137,15 +140,15 @@
 <a name="line131">131: </a>    <font color="#4169E1">if</font> (coloring) {
 <a name="line132">132: </a>      <A href="../../../../docs/manualpages/IS/ISColoring.html#ISColoring">ISColoring</A>    iscoloring;
 
-<a name="line134">134: </a>      <A href="../../../../docs/manualpages/DM/DMGetColoring.html#DMGetColoring">DMGetColoring</A>(user.da,IS_COLORING_GLOBAL,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;iscoloring);
-<a name="line135">135: </a>      <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(user.da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
+<a name="line134">134: </a>      <A href="../../../../docs/manualpages/DM/DMCreateColoring.html#DMCreateColoring">DMCreateColoring</A>(user.da,IS_COLORING_GLOBAL,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;iscoloring);
+<a name="line135">135: </a>      <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(user.da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
 <a name="line136">136: </a>      <A href="../../../../docs/manualpages/MatFD/MatFDColoringCreate.html#MatFDColoringCreate">MatFDColoringCreate</A>(J,iscoloring,&amp;matfdcoloring);
 <a name="line137">137: </a>      <A href="../../../../docs/manualpages/IS/ISColoringDestroy.html#ISColoringDestroy">ISColoringDestroy</A>(&amp;iscoloring);
 <a name="line138">138: </a>      <A href="../../../../docs/manualpages/MatFD/MatFDColoringSetFunction.html#MatFDColoringSetFunction">MatFDColoringSetFunction</A>(matfdcoloring,(<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void))FormFunction,&amp;user);
 <a name="line139">139: </a>      <A href="../../../../docs/manualpages/MatFD/MatFDColoringSetFromOptions.html#MatFDColoringSetFromOptions">MatFDColoringSetFromOptions</A>(matfdcoloring);
 <a name="line140">140: </a>      <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,<A href="../../../../docs/manualpages/SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>,matfdcoloring);
 <a name="line141">141: </a>    } <font color="#4169E1">else</font> {
-<a name="line142">142: </a>      <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(user.da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
+<a name="line142">142: </a>      <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(user.da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
 <a name="line143">143: </a>      <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,FormJacobian,&amp;user);
 <a name="line144">144: </a>    }
 <a name="line145">145: </a>  }
@@ -175,7 +178,7 @@
 <a name="line169">169: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 <a name="line170">170: </a>  FormFunction(snes,x,r,(void*)&amp;user);
 <a name="line171">171: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(r,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;fnorm);
-<a name="line172">172: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Number of Newton iterations = %D fnorm %G\n"</font>,its,fnorm);
+<a name="line172">172: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Number of <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = %D fnorm %G\n"</font>,its,fnorm);
 
 <a name="line174">174: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
 <a name="line175">175: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>

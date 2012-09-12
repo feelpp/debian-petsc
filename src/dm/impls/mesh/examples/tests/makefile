@@ -13,6 +13,14 @@ EXTRA_ARGS      =
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules
 
+ex3: ex3.o chkopts
+	-${CLINKER} -o ex3 ex3.o ${PETSC_DM_LIB}
+	${RM} -f ex3.o
+
+ex4: ex4.o chkopts
+	-${CLINKER} -o ex4 ex4.o ${PETSC_DM_LIB}
+	${RM} -f ex4.o
+
 ex00: ex00.o chkopts
 	-${CLINKER} -o ex00 ex00.o ${PETSC_DM_LIB}
 	${RM} -f ex00.o
@@ -310,10 +318,10 @@ debugex1:
 	-@${MPIEXEC} -n ${NP} ./ex1 -log_summary ${EXTRA_ARGS} -start_in_debugger -display ${MATTSDISPLAY}
 
 TESTEXAMPLES_C            = 
-TESTEXAMPLES_C_X11        = 
+TESTEXAMPLES_C_X        = 
 TESTEXAMPLES_FORTRAN      = 
 TESTEXAMPLES_F90          = 
-TESTEXAMPLES_C_X11_MPIUNI = 
+TESTEXAMPLES_C_X_MPIUNI = 
 TESTEXAMPLES_C_COMPLEX    = 
 TESTEXAMPLES_C_NOCOMPLEX  = 
 TESTEXAMPLES_13           = 

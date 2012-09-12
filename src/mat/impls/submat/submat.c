@@ -1,5 +1,5 @@
 
-#include <private/matimpl.h>          /*I "petscmat.h" I*/
+#include <petsc-private/matimpl.h>          /*I "petscmat.h" I*/
 
 typedef struct {
   IS isrow,iscol;               /* rows and columns in submatrix, only used to check consistency */
@@ -311,8 +311,6 @@ PetscErrorCode  MatCreateSubMatrix(Mat A,IS isrow,IS iscol,Mat *newmat)
   N->ops->scale            = MatScale_SubMatrix;
   N->ops->diagonalscale    = MatDiagonalScale_SubMatrix;
 
-  N->assembled = PETSC_TRUE;
-
   ierr = PetscLayoutSetBlockSize(N->rmap,A->rmap->bs);CHKERRQ(ierr);
   ierr = PetscLayoutSetBlockSize(N->cmap,A->cmap->bs);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(N->rmap);CHKERRQ(ierr);
@@ -330,6 +328,8 @@ PetscErrorCode  MatCreateSubMatrix(Mat A,IS isrow,IS iscol,Mat *newmat)
   ierr = VecDestroy(&left);CHKERRQ(ierr);
   ierr = VecDestroy(&right);CHKERRQ(ierr);
 
+  N->assembled = PETSC_TRUE;
+  ierr = MatSetUp(N);CHKERRQ(ierr);
   *newmat = N;
   PetscFunctionReturn(0);
 }
@@ -366,7 +366,7 @@ PetscErrorCode  MatSubMatrixUpdate(Mat N,Mat A,IS isrow,IS iscol)
   PetscValidHeaderSpecific(A,MAT_CLASSID,2);
   PetscValidHeaderSpecific(isrow,IS_CLASSID,3);
   PetscValidHeaderSpecific(iscol,IS_CLASSID,4);
-  ierr = PetscTypeCompare((PetscObject)N,MATSUBMATRIX,&flg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)N,MATSUBMATRIX,&flg);CHKERRQ(ierr);
   if (!flg) SETERRQ(((PetscObject)A)->comm,PETSC_ERR_ARG_WRONG,"Matrix has wrong type");
 
   Na = (Mat_SubMatrix*)N->data;

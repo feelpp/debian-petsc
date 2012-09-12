@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MATMPISBAIJ.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MATMPISBAIJ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MATMPISBAIJ"><H1>MATMPISBAIJ</H1></A>
 <A HREF="../Mat/MATMPISBAIJ.html#MATMPISBAIJ">MATMPISBAIJ</A> = "mpisbaij" - A matrix type to be used for distributed symmetric sparse block matrices,  based on block compressed sparse row format.  Only the upper triangular portion of the "diagonal" portion of  the matrix is stored. For complex numbers by default this matrix is symmetric, NOT Hermitian symmetric. To make it Hermitian symmetric you
 can call <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(<A HREF="../Mat/Mat.html#Mat">Mat</A>, MAT_HERMITIAN);
@@ -16,12 +17,10 @@ can call <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(<A HRE
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatCreateMPISBAIJ.html#MatCreateMPISBAIJ">MatCreateMPISBAIJ</A>
+ MatCreateMPISBAIJ
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/sbaij/mpi/mpisbaij.c.html#MATMPISBAIJ">src/mat/impls/sbaij/mpi/mpisbaij.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 </BODY></HTML>

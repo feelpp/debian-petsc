@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* comb.c */
 /* Fortran interface file */
 
@@ -28,6 +28,11 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscvec.h"
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petsccommsplitreductionbegin_ PETSCCOMMSPLITREDUCTIONBEGIN
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petsccommsplitreductionbegin_ petsccommsplitreductionbegin
+#endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecdotbegin_ VECDOTBEGIN
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -84,6 +89,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  petsccommsplitreductionbegin_(MPI_Fint * comm, int *__ierr ){
+*__ierr = PetscCommSplitReductionBegin(
+	MPI_Comm_f2c( *(comm) ));
+}
 void PETSC_STDCALL  vecdotbegin_(Vec x,Vec y,PetscScalar *result, int *__ierr ){
 *__ierr = VecDotBegin(
 	(Vec)PetscToPointer((x) ),

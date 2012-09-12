@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSSetRHSFunction.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSSetRHSFunction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSSetRHSFunction"><H1>TSSetRHSFunction</H1></A>
 Sets the routine for evaluating the function, F(t,u), where U_t = F(t,u). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -41,9 +42,6 @@ function evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined function context 
 </TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Important</FONT></H3>
-The user MUST call either this routine or TSSetMatrices().
-<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
@@ -51,7 +49,7 @@ The user MUST call either this routine or TSSetMatrices().
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- TSSetMatrices()
+ <A HREF="../TS/TSSetRHSJacobian.html#TSSetRHSJacobian">TSSetRHSJacobian</A>(), <A HREF="../TS/TSSetIJacobian.html#TSSetIJacobian">TSSetIJacobian</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/interface/ts.c.html#TSSetRHSFunction">src/ts/interface/ts.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* gcomm.c */
 /* Fortran interface file */
 
@@ -34,6 +34,11 @@ extern void PetscRmPointer(void*);
 #define petscobjectgettablevel_ petscobjectgettablevel
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscobjectsettablevel_ PETSCOBJECTSETTABLEVEL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscobjectsettablevel_ petscobjectsettablevel
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscobjectincrementtablevel_ PETSCOBJECTINCREMENTTABLEVEL
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscobjectincrementtablevel_ petscobjectincrementtablevel
@@ -47,6 +52,10 @@ extern "C" {
 void PETSC_STDCALL  petscobjectgettablevel_(PetscObject obj,PetscInt *tab, int *__ierr ){
 *__ierr = PetscObjectGetTabLevel(
 	(PetscObject)PetscToPointer((obj) ),tab);
+}
+void PETSC_STDCALL  petscobjectsettablevel_(PetscObject obj,PetscInt *tab, int *__ierr ){
+*__ierr = PetscObjectSetTabLevel(
+	(PetscObject)PetscToPointer((obj) ),*tab);
 }
 void PETSC_STDCALL  petscobjectincrementtablevel_(PetscObject obj,PetscObject oldobj,PetscInt *tab, int *__ierr ){
 *__ierr = PetscObjectIncrementTabLevel(

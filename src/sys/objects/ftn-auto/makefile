@@ -4,8 +4,8 @@ ALL: lib
 CPPFLAGS  = 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = optionsf.c destroyf.c gcommf.c ptypef.c tagmf.c inheritf.c pinitf.c
-OBJSC    = optionsf.o destroyf.o gcommf.o ptypef.o tagmf.o inheritf.o pinitf.o
+SOURCEC  = pinitf.c ptypef.c tagmf.c gcommf.c optionsf.c inheritf.c destroyf.c
+OBJSC    = pinitf.o ptypef.o tagmf.o gcommf.o optionsf.o inheritf.o destroyf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

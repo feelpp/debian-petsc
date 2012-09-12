@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMCompositeGetLocalISs.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMCompositeGetLocalISs</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMCompositeGetLocalISs"><H1>DMCompositeGetLocalISs</H1></A>
-Gets index sets for each DM/array component of a composite local vector 
+Gets index sets for each component of a composite local vector 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmcomposite.h"   
@@ -27,7 +28,7 @@ Not Collective
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 At present, a composite local vector does not normally exist.  This function is used to provide index sets for
 <A HREF="../Mat/MatGetLocalSubMatrix.html#MatGetLocalSubMatrix">MatGetLocalSubMatrix</A>().  In the future, the scatters for each entry in the DMComposite may be be merged into a single
-scatter to a composite local vector.
+scatter to a composite local vector.  The user should not typically need to know which is being done.
 <P>
 To get the composite global indices at all local points (including ghosts), use <A HREF="../DM/DMCompositeGetISLocalToGlobalMappings.html#DMCompositeGetISLocalToGlobalMappings">DMCompositeGetISLocalToGlobalMappings</A>().
 <P>

@@ -1,13 +1,14 @@
 <center><a href="fdaij.c">Actual source code: fdaij.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/fdaij.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:59:15+00:00">
+<meta name="date" content="2012-08-29T16:43:36+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
 
@@ -28,8 +29,8 @@
 
 <a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/IS/ISColoringGetIS.html#ISColoringGetIS">ISColoringGetIS</A>(iscoloring,<A href="../../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,&amp;isa);
 <a name="line24"> 24: </a>  <font color="#B22222">/* this is ugly way to get blocksize but cannot call <A href="../../../../../docs/manualpages/Mat/MatGetBlockSize.html#MatGetBlockSize">MatGetBlockSize</A>() because AIJ can have bs &gt; 1 */</font>
-<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../../../docs/manualpages/Mat/MATSEQBAIJ.html#MATSEQBAIJ">MATSEQBAIJ</A>,&amp;flg1);
-<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../../../docs/manualpages/Mat/MATMPIBAIJ.html#MATMPIBAIJ">MATMPIBAIJ</A>,&amp;flg2);
+<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../../../docs/manualpages/Mat/MATSEQBAIJ.html#MATSEQBAIJ">MATSEQBAIJ</A>,&amp;flg1);
+<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../../../docs/manualpages/Mat/MATMPIBAIJ.html#MATMPIBAIJ">MATMPIBAIJ</A>,&amp;flg2);
 <a name="line27"> 27: </a>  <font color="#4169E1">if</font> (flg1 || flg2) {
 <a name="line28"> 28: </a>    <A href="../../../../../docs/manualpages/Mat/MatGetBlockSize.html#MatGetBlockSize">MatGetBlockSize</A>(mat,&amp;bs);
 <a name="line29"> 29: </a>  }

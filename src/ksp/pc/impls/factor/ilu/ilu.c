@@ -146,7 +146,7 @@ static PetscErrorCode PCView_ILU(PC pc,PetscViewer viewer)
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     if (ilu->inplace) {
       ierr = PetscViewerASCIIPrintf(viewer,"  ILU: in-place factorization\n");CHKERRQ(ierr);
@@ -173,9 +173,9 @@ static PetscErrorCode PCSetUp_ILU(PC pc)
   PetscFunctionBegin;
   /* ugly hack to change default, since it is not support by some matrix types */
   if (((PC_Factor*)ilu)->info.shifttype == (PetscReal)MAT_SHIFT_NONZERO) {
-    ierr = PetscTypeCompare((PetscObject)pc->pmat,MATSEQAIJ,&flg);
+    ierr = PetscObjectTypeCompare((PetscObject)pc->pmat,MATSEQAIJ,&flg);
     if (!flg) {
-      ierr = PetscTypeCompare((PetscObject)pc->pmat,MATMPIAIJ,&flg);
+      ierr = PetscObjectTypeCompare((PetscObject)pc->pmat,MATMPIAIJ,&flg);
       if (!flg) {
         ((PC_Factor*)ilu)->info.shifttype = (PetscReal)MAT_SHIFT_INBLOCKS;
         PetscInfo(pc,"Changing shift type from NONZERO to INBLOCKS because block matrices do not support NONZERO");
@@ -231,7 +231,7 @@ static PetscErrorCode PCSetUp_ILU(PC pc)
         }
       }
       ierr = MatDestroy(&((PC_Factor*)ilu)->fact);CHKERRQ(ierr);
-      ierr = MatGetFactor(pc->pmat,MATSOLVERPETSC,MAT_FACTOR_ILU,&((PC_Factor*)ilu)->fact);CHKERRQ(ierr);
+      ierr = MatGetFactor(pc->pmat,((PC_Factor*)ilu)->solvertype,MAT_FACTOR_ILU,&((PC_Factor*)ilu)->fact);CHKERRQ(ierr);
       ierr = MatILUFactorSymbolic(((PC_Factor*)ilu)->fact,pc->pmat,ilu->row,ilu->col,&((PC_Factor*)ilu)->info);CHKERRQ(ierr);
       ierr = MatGetInfo(((PC_Factor*)ilu)->fact,MAT_LOCAL,&info);CHKERRQ(ierr);
       ilu->actualfill = info.fill_ratio_needed;
@@ -334,6 +334,10 @@ static PetscErrorCode PCApplySymmetricRight_ILU(PC pc,Vec x,Vec y)
 
           The "symmetric" application of this preconditioner is not actually symmetric since L is not transpose(U) 
           even when the matrix is not symmetric since the U stores the diagonals of the factorization.
+
+          If you are using MATSEQAIJCUSP matrices (or MATMPIAIJCUSP matrices with block Jacobi) you must have ./configured
+          PETSc with also --download-txpetscgpu to have the triangular solves performed on the GPU (factorization is never
+          done on the GPU).
 
    References:
    T. Dupont, R. Kendall, and H. Rachford. An approximate factorization procedure for solving

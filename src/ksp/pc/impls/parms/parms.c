@@ -5,7 +5,7 @@
    Requires pARMS 3.2 or later.
 */
 
-#include "private/pcimpl.h"          /*I "petscpc.h" I*/
+#include "petsc-private/pcimpl.h"          /*I "petscpc.h" I*/
 
 #ifdef PETSC_USE_COMPLEX
 #define DBL_CMPLX
@@ -198,7 +198,7 @@ static PetscErrorCode PCView_PARMS(PC pc,PetscViewer viewer)
   double               fill_fact;
  
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     parms_PCGetName(parms->pc,&str);
     ierr = PetscViewerASCIIPrintf(viewer,"  global preconditioner: %s\n",str);CHKERRQ(ierr);

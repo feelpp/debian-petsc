@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* cheby.c */
 /* Fortran interface file */
 
@@ -29,14 +29,19 @@ extern void PetscRmPointer(void*);
 
 #include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define kspchebychevseteigenvalues_ KSPCHEBYCHEVSETEIGENVALUES
+#define kspchebyshevseteigenvalues_ KSPCHEBYSHEVSETEIGENVALUES
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define kspchebychevseteigenvalues_ kspchebychevseteigenvalues
+#define kspchebyshevseteigenvalues_ kspchebyshevseteigenvalues
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define kspchebychevsetestimateeigenvalues_ KSPCHEBYCHEVSETESTIMATEEIGENVALUES
+#define kspchebyshevsetestimateeigenvalues_ KSPCHEBYSHEVSETESTIMATEEIGENVALUES
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define kspchebychevsetestimateeigenvalues_ kspchebychevsetestimateeigenvalues
+#define kspchebyshevsetestimateeigenvalues_ kspchebyshevsetestimateeigenvalues
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspchebyshevsetnewmatrix_ KSPCHEBYSHEVSETNEWMATRIX
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspchebyshevsetnewmatrix_ kspchebyshevsetnewmatrix
 #endif
 
 
@@ -44,13 +49,17 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  kspchebychevseteigenvalues_(KSP ksp,PetscReal *emax,PetscReal *emin, int *__ierr ){
-*__ierr = KSPChebychevSetEigenvalues(
+void PETSC_STDCALL  kspchebyshevseteigenvalues_(KSP ksp,PetscReal *emax,PetscReal *emin, int *__ierr ){
+*__ierr = KSPChebyshevSetEigenvalues(
 	(KSP)PetscToPointer((ksp) ),*emax,*emin);
 }
-void PETSC_STDCALL  kspchebychevsetestimateeigenvalues_(KSP ksp,PetscReal *a,PetscReal *b,PetscReal *c,PetscReal *d, int *__ierr ){
-*__ierr = KSPChebychevSetEstimateEigenvalues(
+void PETSC_STDCALL  kspchebyshevsetestimateeigenvalues_(KSP ksp,PetscReal *a,PetscReal *b,PetscReal *c,PetscReal *d, int *__ierr ){
+*__ierr = KSPChebyshevSetEstimateEigenvalues(
 	(KSP)PetscToPointer((ksp) ),*a,*b,*c,*d);
+}
+void PETSC_STDCALL  kspchebyshevsetnewmatrix_(KSP ksp, int *__ierr ){
+*__ierr = KSPChebyshevSetNewMatrix(
+	(KSP)PetscToPointer((ksp) ));
 }
 #if defined(__cplusplus)
 }

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatCreateMPISBAIJWithArrays.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatCreateMPISBAIJWithArrays</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatCreateMPISBAIJWithArrays"><H1>MatCreateMPISBAIJWithArrays</H1></A>
 creates a MPI SBAIJ matrix using arrays that contain in standard CSR format the local rows.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -56,7 +57,7 @@ The i and j indices are 0 based, and i indices are indices corresponding to the 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../Mat/MatCreateSeqAIJ.html#MatCreateSeqAIJ">MatCreateSeqAIJ</A>(), <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(), <A HREF="../Mat/MatMPIAIJSetPreallocation.html#MatMPIAIJSetPreallocation">MatMPIAIJSetPreallocation</A>(), <A HREF="../Mat/MatMPIAIJSetPreallocationCSR.html#MatMPIAIJSetPreallocationCSR">MatMPIAIJSetPreallocationCSR</A>(),
-<BR>MPIAIJ, <A HREF="../Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(), <A HREF="../Mat/MatCreateMPIAIJWithSplitArrays.html#MatCreateMPIAIJWithSplitArrays">MatCreateMPIAIJWithSplitArrays</A>()
+<BR>MPIAIJ, <A HREF="../Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>(), <A HREF="../Mat/MatCreateMPIAIJWithSplitArrays.html#MatCreateMPIAIJWithSplitArrays">MatCreateMPIAIJWithSplitArrays</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/sbaij/mpi/mpisbaij.c.html#MatCreateMPISBAIJWithArrays">src/mat/impls/sbaij/mpi/mpisbaij.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

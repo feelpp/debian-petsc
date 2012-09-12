@@ -1,5 +1,5 @@
 
-#include <private/viewerimpl.h>    /*I   "petscsys.h"   I*/
+#include <petsc-private/viewerimpl.h>    /*I   "petscsys.h"   I*/
 #include <fcntl.h>
 #if defined(PETSC_HAVE_UNISTD_H)
 #include <unistd.h>
@@ -197,6 +197,19 @@ PetscErrorCode  PetscViewerBinaryGetMPIIO(PetscViewer viewer,PetscBool  *flg)
 }
 #endif
 
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "PetscViewerBinaryGetFlowControl_Binary"
+PetscErrorCode  PetscViewerBinaryGetFlowControl_Binary(PetscViewer viewer,PetscInt *fc)
+{
+  PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;
+
+  PetscFunctionBegin;
+  *fc = vbinary->flowcontrol;
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END
+
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerBinaryGetFlowControl"
 /*@C
@@ -217,12 +230,27 @@ PetscErrorCode  PetscViewerBinaryGetMPIIO(PetscViewer viewer,PetscBool  *flg)
 @*/
 PetscErrorCode  PetscViewerBinaryGetFlowControl(PetscViewer viewer,PetscInt *fc)
 {
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  *fc = 256;
+  ierr = PetscTryMethod(viewer,"PetscViewerBinaryGetFlowControl_C",(PetscViewer,PetscInt *),(viewer,fc));CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "PetscViewerBinarySetFlowControl_Binary"
+PetscErrorCode  PetscViewerBinarySetFlowControl_Binary(PetscViewer viewer,PetscInt fc)
+{
   PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;
 
   PetscFunctionBegin;
-  *fc = vbinary->flowcontrol;
+  if (fc <= 1) SETERRQ1(((PetscObject)viewer)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Flow control count must be greater than 1, %D was set",fc);
+  vbinary->flowcontrol = fc;
   PetscFunctionReturn(0);
 }
+EXTERN_C_END
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerBinarySetFlowControl"
@@ -242,11 +270,10 @@ PetscErrorCode  PetscViewerBinaryGetFlowControl(PetscViewer viewer,PetscInt *fc)
 @*/
 PetscErrorCode  PetscViewerBinarySetFlowControl(PetscViewer viewer,PetscInt fc)
 {
-  PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (fc <= 1) SETERRQ1(((PetscObject)viewer)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Flow control count must be greater than 1, %D was set",fc);
-  vbinary->flowcontrol = fc;
+  ierr = PetscUseMethod(viewer,"PetscViewerBinarySetFlowControl_C",(PetscViewer,PetscInt),(viewer,fc));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -383,9 +410,24 @@ PetscErrorCode  PetscViewerBinaryGetSkipOptions(PetscViewer viewer,PetscBool  *s
   PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;
 
   PetscFunctionBegin;
+  PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
+  vbinary = (PetscViewer_Binary*)viewer->data;
   *skip = vbinary->skipoptions;
   PetscFunctionReturn(0);
 }
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "PetscViewerBinarySetSkipHeader_Binary"
+PetscErrorCode PetscViewerBinarySetSkipHeader_Binary(PetscViewer viewer,PetscBool  skip)
+{
+  PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;
+
+  PetscFunctionBegin;
+  vbinary->skipheader = skip;
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerBinarySetSkipHeader"
@@ -405,17 +447,32 @@ PetscErrorCode  PetscViewerBinaryGetSkipOptions(PetscViewer viewer,PetscBool  *s
 
     Notes: This must be called after PetscViewerSetType()
 
+           Can ONLY be called on a binary viewer
+
 .seealso: PetscViewerBinaryOpen(), PetscViewerBinaryGetDescriptor(), PetscViewerBinarySkipInfo(),
           PetscViewerBinaryGetSkipHeader()
 @*/
 PetscErrorCode PetscViewerBinarySetSkipHeader(PetscViewer viewer,PetscBool  skip)
 {
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = PetscUseMethod(viewer,"PetscViewerBinarySetSkipHeader_C",(PetscViewer,PetscBool),(viewer,skip));CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "PetscViewerBinaryGetSkipHeader_Binary"
+PetscErrorCode PetscViewerBinaryGetSkipHeader_Binary(PetscViewer viewer,PetscBool  *skip)
+{
   PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;
 
   PetscFunctionBegin;
-  vbinary->skipheader = skip;
+  *skip   = vbinary->skipheader;
   PetscFunctionReturn(0);
 }
+EXTERN_C_END
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerBinaryGetSkipHeader"
@@ -434,17 +491,33 @@ PetscErrorCode PetscViewerBinarySetSkipHeader(PetscViewer viewer,PetscBool  skip
 
     Notes: This must be called after PetscViewerSetType()
 
+            Returns false for PETSCSOCKETVIEWER, you cannot skip the header for it.
+
 .seealso: PetscViewerBinaryOpen(), PetscViewerBinaryGetDescriptor(), PetscViewerBinarySkipInfo(),
           PetscViewerBinarySetSkipHeader()
 @*/
 PetscErrorCode PetscViewerBinaryGetSkipHeader(PetscViewer viewer,PetscBool  *skip)
 {
-  PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  *skip = vbinary->skipheader;
+  *skip = PETSC_FALSE;
+  ierr = PetscTryMethod(viewer,"PetscViewerBinaryGetSkipHeader_C",(PetscViewer,PetscBool*),(viewer,skip));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
+
+EXTERN_C_BEGIN
+#undef __FUNCT__  
+#define __FUNCT__ "PetscViewerBinaryGetInfoPointer_Binary"
+PetscErrorCode  PetscViewerBinaryGetInfoPointer_Binary(PetscViewer viewer,FILE **file)
+{
+  PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;;
+
+  PetscFunctionBegin;
+  *file = vbinary->fdes_info;
+  PetscFunctionReturn(0);
+}
+EXTERN_C_END
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerBinaryGetInfoPointer"
@@ -458,7 +531,7 @@ PetscErrorCode PetscViewerBinaryGetSkipHeader(PetscViewer viewer,PetscBool  *ski
 .   viewer - PetscViewer context, obtained from PetscViewerBinaryOpen()
 
     Output Parameter:
-.   file - file pointer
+.   file - file pointer  Always returns PETSC_NULL if not a binary viewer
 
     Level: advanced
 
@@ -475,16 +548,17 @@ PetscErrorCode PetscViewerBinaryGetSkipHeader(PetscViewer viewer,PetscBool  *ski
 @*/
 PetscErrorCode  PetscViewerBinaryGetInfoPointer(PetscViewer viewer,FILE **file)
 {
-  PetscViewer_Binary *vbinary = (PetscViewer_Binary*)viewer->data;
+  PetscErrorCode     ierr;
 
   PetscFunctionBegin;
-  *file = vbinary->fdes_info;
+  *file = PETSC_NULL;
+  ierr = PetscTryMethod(viewer,"PetscViewerBinaryGetInfoPointer_C",(PetscViewer,FILE **),(viewer,file));CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
-#define __FUNCT__ "PetscViewerDestroy_Binary"
-PetscErrorCode PetscViewerDestroy_Binary(PetscViewer v)
+#undef __FUNCT__
+#define __FUNCT__ "PetscViewerFileClose_Binary"
+static PetscErrorCode PetscViewerFileClose_Binary(PetscViewer v)
 {
   PetscViewer_Binary *vbinary = (PetscViewer_Binary*)v->data;
   PetscErrorCode     ierr;
@@ -517,18 +591,30 @@ PetscErrorCode PetscViewerDestroy_Binary(PetscViewer v)
     if (err) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SYS,"fclose() failed on file");
   }
   ierr = PetscFree(vbinary->filename);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscViewerDestroy_Binary"
+PetscErrorCode PetscViewerDestroy_Binary(PetscViewer v)
+{
+  PetscViewer_Binary *vbinary = (PetscViewer_Binary*)v->data;
+  PetscErrorCode     ierr;
+
+  PetscFunctionBegin;
+  ierr = PetscViewerFileClose_Binary(v);CHKERRQ(ierr);
   ierr = PetscFree(vbinary);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #if defined(PETSC_HAVE_MPIIO)
-#undef __FUNCT__  
-#define __FUNCT__ "PetscViewerDestroy_MPIIO"
-PetscErrorCode PetscViewerDestroy_MPIIO(PetscViewer v)
+#undef __FUNCT__
+#define __FUNCT__ "PetscViewerFileClose_MPIIO"
+static PetscErrorCode PetscViewerFileClose_MPIIO(PetscViewer v)
 {
   PetscViewer_Binary *vbinary = (PetscViewer_Binary*)v->data;
-  PetscErrorCode     ierr;
   int                err;
+  PetscErrorCode     ierr;
 
   PetscFunctionBegin;
   if (vbinary->mfdes) {
@@ -539,6 +625,19 @@ PetscErrorCode PetscViewerDestroy_MPIIO(PetscViewer v)
     if (err) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SYS,"fclose() failed on file");
   }
   ierr = PetscFree(vbinary->filename);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscViewerDestroy_MPIIO"
+PetscErrorCode PetscViewerDestroy_MPIIO(PetscViewer v)
+{
+  PetscViewer_Binary *vbinary = (PetscViewer_Binary*)v->data;
+  PetscErrorCode     ierr;
+
+  PetscFunctionBegin;
+  ierr = PetscViewerFileClose_MPIIO(v);CHKERRQ(ierr);
   ierr = PetscFree(vbinary);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -681,8 +780,8 @@ PetscErrorCode  PetscViewerBinaryRead(PetscViewer viewer,void *data,PetscInt cou
 +  viewer - the binary viewer
 .  data - location of data
 .  count - number of items of data to read
-.  istemp - data may be overwritten
--  datatype - type of data to read
+.  dtype - type of data to read
+-  istemp - data may be overwritten
 
    Level: beginner
 
@@ -952,7 +1051,8 @@ PetscErrorCode PetscViewerFileSetName_Binary(PetscViewer viewer,const char name[
   PetscFileMode       type = vbinary->btype;
 
   PetscFunctionBegin;
-  if (type == (PetscFileMode) -1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ORDER,"Must call PetscViewerBinarySetFileType() before PetscViewerFileSetName()");
+  if (type == (PetscFileMode) -1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ORDER,"Must call PetscViewerFileSetMode() before PetscViewerFileSetName()");
+  ierr = PetscViewerFileClose_Binary(viewer);CHKERRQ(ierr);
   ierr = PetscOptionsGetBool(((PetscObject)viewer)->prefix,"-viewer_binary_skip_info",&vbinary->skipinfo,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetBool(((PetscObject)viewer)->prefix,"-viewer_binary_skip_options",&vbinary->skipoptions,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetBool(((PetscObject)viewer)->prefix,"-viewer_binary_skip_header",&vbinary->skipheader,PETSC_NULL);CHKERRQ(ierr);
@@ -1080,7 +1180,8 @@ PetscErrorCode PetscViewerFileSetName_MPIIO(PetscViewer viewer,const char name[]
   PetscFileMode       type = vbinary->btype;
 
   PetscFunctionBegin;
-  if (type == (PetscFileMode) -1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ORDER,"Must call PetscViewerBinarySetFileType() before PetscViewerFileSetName()");
+  if (type == (PetscFileMode) -1) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ORDER,"Must call PetscViewerFileSetMode() before PetscViewerFileSetName()");
+  ierr = PetscViewerFileClose_MPIIO(viewer);CHKERRQ(ierr);
   ierr = PetscOptionsGetBool(((PetscObject)viewer)->prefix,"-viewer_binary_skip_info",&vbinary->skipinfo,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetBool(((PetscObject)viewer)->prefix,"-viewer_binary_skip_options",&vbinary->skipoptions,PETSC_NULL);CHKERRQ(ierr);
 
@@ -1183,6 +1284,21 @@ PetscErrorCode PetscViewerCreate_Binary(PetscViewer v)
   vbinary->filename        = 0;
   vbinary->flowcontrol     = 256; /* seems a good number for Cray XT-5 */
 
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)v,"PetscViewerBinaryGetFlowControl_C",
+                                    "PetscViewerBinaryGetFlowControl_Binary",
+                                     PetscViewerBinaryGetFlowControl_Binary);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)v,"PetscViewerBinarySetFlowControl_C",
+                                    "PetscViewerBinarySetFlowControl_Binary",
+                                     PetscViewerBinarySetFlowControl_Binary);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)v,"PetscViewerBinarySetSkipHeader_C",
+                                    "PetscViewerBinarySetSkipHeader_Binary",
+                                     PetscViewerBinarySetSkipHeader_Binary);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)v,"PetscViewerBinaryGetSkipHeader_C",
+                                    "PetscViewerBinaryGetSkipHeader_Binary",
+                                     PetscViewerBinaryGetSkipHeader_Binary);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)v,"PetscViewerBinaryGetInfoPointer_C",
+                                    "PetscViewerBinaryGetInfoPointer_Binary",
+                                     PetscViewerBinaryGetInfoPointer_Binary);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)v,"PetscViewerFileSetName_C",
                                     "PetscViewerFileSetName_Binary",
                                      PetscViewerFileSetName_Binary);CHKERRQ(ierr);

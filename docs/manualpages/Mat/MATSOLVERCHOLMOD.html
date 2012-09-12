@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MATSOLVERCHOLMOD.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MATSOLVERCHOLMOD</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MATSOLVERCHOLMOD"><H1>MATSOLVERCHOLMOD</H1></A>
 "cholmod" - A matrix type providing direct solvers (Cholesky) for sequential matrices via the external package CHOLMOD. ./configure --download-cholmod to install PETSc to use CHOLMOD
 <P>
@@ -12,19 +13,33 @@ Consult CHOLMOD documentation for more information about the Common parameters
 which correspond to the options database keys below.
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
--mat_cholmod_dbound &lt;0&gt;: Minimum absolute value of diagonal entries of D (None)
--mat_cholmod_grow0 &lt;1.2&gt;: Global growth ratio when factors are modified (None)
--mat_cholmod_grow1 &lt;1.2&gt;: Column growth ratio when factors are modified (None)
--mat_cholmod_grow2 &lt;5&gt;: Affine column growth constant when factors are modified (None)
--mat_cholmod_maxrank &lt;8&gt;: Max rank of update, larger values are faster but use more memory [2,4,8] (None)
--mat_cholmod_factor &lt;AUTO&gt; (choose one of) SIMPLICIAL AUTO SUPERNODAL
--mat_cholmod_supernodal_switch &lt;40&gt;: flop/nnz_L threshold for switching to supernodal factorization (None)
--mat_cholmod_final_asis: &lt;TRUE&gt; Leave factors "as is" (None)
--mat_cholmod_final_pack: &lt;TRUE&gt; Pack the columns when finished (use FALSE if the factors will be updated later) (None)
--mat_cholmod_zrelax &lt;0.8&gt;: 3 real supernodal relaxed amalgamation parameters (None)
--mat_cholmod_nrelax &lt;4&gt;: 3 size_t supernodal relaxed amalgamation parameters (None)
--mat_cholmod_prefer_upper: &lt;TRUE&gt; Work with upper triangular form (faster when using fill-reducing ordering, slower in natural ordering) (None)
--mat_cholmod_print &lt;3&gt;: Verbosity level (None)
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_dbound &lt;0&gt;          </B></TD><TD>- Minimum absolute value of diagonal entries of D (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_grow0 &lt;1.2&gt;         </B></TD><TD>- Global growth ratio when factors are modified (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_grow1 &lt;1.2&gt;         </B></TD><TD>- Column growth ratio when factors are modified (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_grow2 &lt;5&gt;           </B></TD><TD>- Affine column growth constant when factors are modified (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_maxrank &lt;8&gt;         </B></TD><TD>- Max rank of update, larger values are faster but use more memory [2,4,8] (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_factor &lt;AUTO&gt;       </B></TD><TD>- (choose one of) SIMPLICIAL AUTO SUPERNODAL
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_supernodal_switch &lt;40&gt; </B></TD><TD>- flop/nnz_L threshold for switching to supernodal factorization (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_final_asis &lt;TRUE&gt;   </B></TD><TD>- Leave factors "as is" (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_final_pack &lt;TRUE&gt;   </B></TD><TD>- Pack the columns when finished (use FALSE if the factors will be updated later) (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_zrelax &lt;0.8&gt;        </B></TD><TD>- 3 real supernodal relaxed amalgamation parameters (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_nrelax &lt;4&gt;          </B></TD><TD>- 3 size_t supernodal relaxed amalgamation parameters (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_prefer_upper &lt;TRUE&gt; </B></TD><TD>- Work with upper triangular form (faster when using fill-reducing ordering, slower in natural ordering) (None)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_cholmod_print &lt;3&gt;           </B></TD><TD>- Verbosity level (None)
+</TD></TR></TABLE>
 <P>
 
 <P>

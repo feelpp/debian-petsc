@@ -3,7 +3,7 @@
   Code for manipulating distributed regular arrays in parallel.
 */
 
-#include <private/daimpl.h>    /*I   "petscdmda.h"   I*/
+#include <petsc-private/daimpl.h>    /*I   "petscdmda.h"   I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "DMGlobalToLocalBegin_DA"
@@ -105,9 +105,7 @@ PetscErrorCode DMDAGlobalToNatural_Create(DM da)
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(da,DM_CLASSID,1);
-  if (!dd->natural) {
-    SETERRQ(((PetscObject)da)->comm,PETSC_ERR_ORDER,"Natural layout vector not yet created; cannot scatter into it");
-  }
+  if (!dd->natural) SETERRQ(((PetscObject)da)->comm,PETSC_ERR_ORDER,"Natural layout vector not yet created; cannot scatter into it");
 
   /* create the scatter context */
   ierr = VecGetLocalSize(dd->natural,&m);CHKERRQ(ierr);
@@ -116,8 +114,7 @@ PetscErrorCode DMDAGlobalToNatural_Create(DM da)
   ierr = DMDAGetNatural_Private(da,&Nlocal,&to);CHKERRQ(ierr);
   if (Nlocal != m) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Internal error: Nlocal %D local vector size %D",Nlocal,m);
   ierr = ISCreateStride(((PetscObject)da)->comm,m,start,1,&from);CHKERRQ(ierr);
-  ierr = VecCreateMPIWithArray(((PetscObject)da)->comm,dd->Nlocal,PETSC_DETERMINE,0,&global);
-  ierr = VecSetBlockSize(global,dd->w);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(((PetscObject)da)->comm,dd->w,dd->Nlocal,PETSC_DETERMINE,0,&global);
   ierr = VecScatterCreate(global,from,dd->natural,to,&dd->gton);CHKERRQ(ierr);
   ierr = VecDestroy(&global);CHKERRQ(ierr);
   ierr = ISDestroy(&from);CHKERRQ(ierr);

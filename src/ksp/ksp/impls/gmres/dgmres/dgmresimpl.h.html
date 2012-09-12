@@ -1,142 +1,99 @@
 <center><a href="dgmresimpl.h">Actual source code: dgmresimpl.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/gmres/dgmres/dgmresimpl.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:00+00:00">
+<meta name="date" content="2012-08-29T17:04:23+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><font color="#B22222">/*</font>
-<a name="line2">  2: </a><font color="#B22222">   Private data structure used by the GMRES method. This data structure</font>
-<a name="line3">  3: </a><font color="#B22222">  must be identical to the beginning of the KSP_FGMRES data structure</font>
-<a name="line4">  4: </a><font color="#B22222">  so if you CHANGE anything here you must also change it there.</font>
-<a name="line5">  5: </a><font color="#B22222">*/</font>
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 
-<a name="line9">  9: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;        </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
-<a name="line10"> 10: </a><font color="#A020F0">#include &lt;petscblaslapack.h&gt;</font>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;        </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscblaslapack.h&gt;</font>
+<a name="line6">  6: </a><strong><font color="#228B22">#define KSPGMRES_NO_MACROS</font></strong>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/gmres/gmresimpl.h&gt;</font>
 
-<a name="line12"> 12: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
-<a name="line13"> 13: </a>  <font color="#B22222">/* Hessenberg matrix and orthogonalization information.  Hes holds</font>
-<a name="line14"> 14: </a><font color="#B22222">       the original (unmodified) hessenberg matrix which may be used</font>
-<a name="line15"> 15: </a><font color="#B22222">       to estimate the Singular Values of the matrix */</font>
-<a name="line16"> 16: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *hh_origin,*hes_origin,*cc_origin,*ss_origin,*rs_origin;
+<a name="line9">  9: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line10"> 10: </a>  KSPGMRESHEADER
 
-<a name="line18"> 18: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *orthogwork; <font color="#B22222">/* holds dot products computed in orthogonalization */</font>
+<a name="line12"> 12: </a>  <font color="#B22222">/* Data specific to DGMRES */</font>
+<a name="line13"> 13: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                        *U;        <font color="#B22222">/* Vectors that form the basis of the invariant subspace */</font>
+<a name="line14"> 14: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *T;        <font color="#B22222">/* T=U^T*M^{-1}*A*U */</font>
+<a name="line15"> 15: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *TF;        <font color="#B22222">/* The factors L and U from T = P*L*U */</font>
+<a name="line16"> 16: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>                 *InvP;        <font color="#B22222">/* Permutation Vector from the LU factorization of T */</font>
+<a name="line17"> 17: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                neig;        <font color="#B22222">/* number of eigenvalues to extract at each restart */</font>
+<a name="line18"> 18: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                r;                <font color="#B22222">/* current number of deflated eigenvalues */</font>
+<a name="line19"> 19: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                 max_neig;        <font color="#B22222">/* Maximum number of eigenvalues to deflate */</font>
+<a name="line20"> 20: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>         lambdaN;        <font color="#B22222">/* modulus of the largest eigenvalue of A */</font>
+<a name="line21"> 21: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>                smv;         <font color="#B22222">/* smaller multiple of the remaining allowed number of steps -- used for the adaptive strategy */</font>
+<a name="line22"> 22: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                force; <font color="#B22222">/* Force the use of the deflation at the restart */</font>
+<a name="line23"> 23: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                matvecs; <font color="#B22222">/* Total number of matrix-vectors */</font>
+<a name="line24"> 24: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                GreatestEig; <font color="#B22222">/* Extract the greatest eigenvalues instead */</font>
+<a name="line25"> 25: </a>
+<a name="line26"> 26: </a>  <font color="#B22222">/* Work spaces */</font>
+<a name="line27"> 27: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                        *mu;        <font color="#B22222">/* Save the product M^{-1}AU */</font>
+<a name="line28"> 28: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *Sr;         <font color="#B22222">/* Schur vectors to extract */</font>
+<a name="line29"> 29: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                        *X;         <font color="#B22222">/* Schurs Vectors Sr projected to the entire space */</font>
+<a name="line30"> 30: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                        *mx;         <font color="#B22222">/* store the product M^{-1}*A*X */</font>
+<a name="line31"> 31: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *umx;         <font color="#B22222">/* store the product U^T*M^{-1}*A*X */</font>
+<a name="line32"> 32: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *xmu;         <font color="#B22222">/* store the product X^T*M^{-1}*A*U */</font>
+<a name="line33"> 33: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *xmx;        <font color="#B22222">/* store the product X^T*M^{-1}*A*X */</font>
+<a name="line34"> 34: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *x1;         <font color="#B22222">/* store the product U^T*x */</font>
+<a name="line35"> 35: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *x2;         <font color="#B22222">/* store the product U^T*x */</font>
+<a name="line36"> 36: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>         *Sr2;         <font color="#B22222">/* Schur vectors at the improvement step */</font>
+<a name="line37"> 37: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *auau;         <font color="#B22222">/* product of (M*A*U)^T*M*A*U */</font>
+<a name="line38"> 38: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *auu;         <font color="#B22222">/* product of (M*A*U)^T*U */</font>
+<a name="line39"> 39: </a>
+<a name="line40"> 40: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>         *work;         <font color="#B22222">/* work space for LAPACK functions */</font>
+<a name="line41"> 41: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                *iwork;        <font color="#B22222">/* work space for LAPACK functions */</font>
+<a name="line42"> 42: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>                *orth;         <font color="#B22222">/* Coefficients for the orthogonalization */</font>
+<a name="line43"> 43: </a>
+<a name="line44"> 44: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                improve; <font color="#B22222">/* 0 = do not improve the eigenvalues; This is an experimental option */</font>
+<a name="line45"> 45: </a>
+<a name="line46"> 46: </a>} KSP_DGMRES;
 
-<a name="line20"> 20: </a>  <font color="#B22222">/* Work space for computing eigenvalues/singular values */</font>
-<a name="line21"> 21: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>   *Dsvd;
-<a name="line22"> 22: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *Rsvd;
-<a name="line23"> 23: </a>
-<a name="line24"> 24: </a>  <font color="#B22222">/* parameters */</font>
-<a name="line25"> 25: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>   haptol;            <font color="#B22222">/* tolerance used for the "HAPPY BREAK DOWN"  */</font>
-<a name="line26"> 26: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    max_k;             <font color="#B22222">/* maximum size of the approximation space  </font>
-<a name="line27"> 27: </a><font color="#B22222">  before restarting */</font>
+<a name="line48"> 48: </a><A href="../../../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> KSP_DGMRESComputeDeflationData, KSP_DGMRESApplyDeflation;
+<a name="line49"> 49: </a><strong><font color="#228B22">#define HH(a,b)  (dgmres-&gt;hh_origin + (b)*(dgmres-&gt;max_k+2)+(a))</font></strong>
+<a name="line50"> 50: </a><strong><font color="#228B22">#define HES(a,b) (dgmres-&gt;hes_origin + (b)*(dgmres-&gt;max_k+1)+(a))</font></strong>
+<a name="line51"> 51: </a><strong><font color="#228B22">#define CC(a)    (dgmres-&gt;cc_origin + (a))</font></strong>
+<a name="line52"> 52: </a><strong><font color="#228B22">#define SS(a)    (dgmres-&gt;ss_origin + (a))</font></strong>
+<a name="line53"> 53: </a><strong><font color="#228B22">#define GRS(a)   (dgmres-&gt;rs_origin + (a))</font></strong>
 
-<a name="line29"> 29: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*orthog)(<A href="../../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>); <font color="#B22222">/* Functions to use (special to gmres) */</font>
-<a name="line30"> 30: </a>  <A href="../../../../../../docs/manualpages/KSP/KSPGMRESCGSRefinementType.html#KSPGMRESCGSRefinementType">KSPGMRESCGSRefinementType</A> cgstype;
-<a name="line31"> 31: </a>
-<a name="line32"> 32: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>   *vecs;  <font color="#B22222">/* holds the work vectors */</font>
-<a name="line33"> 33: </a>  <font color="#B22222">/* vv_allocated is the number of allocated gmres direction vectors */</font>
-<a name="line34"> 34: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    q_preallocate,delta_allocate;
-<a name="line35"> 35: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    vv_allocated;
-<a name="line36"> 36: </a>  <font color="#B22222">/* vecs_allocated is the total number of vecs available (used to </font>
-<a name="line37"> 37: </a><font color="#B22222">       simplify the dynamic allocation of vectors */</font>
-<a name="line38"> 38: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    vecs_allocated;
-<a name="line39"> 39: </a>  <font color="#B22222">/* Since we may call the user "obtain_work_vectors" several times, </font>
-<a name="line40"> 40: </a><font color="#B22222">       we have to keep track of the pointers that it has returned </font>
-<a name="line41"> 41: </a><font color="#B22222">      (so that we may free the storage) */</font>
-<a name="line42"> 42: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>         **user_work;
-<a name="line43"> 43: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *mwork_alloc;    <font color="#B22222">/* Number of work vectors allocated as part of</font>
-<a name="line44"> 44: </a><font color="#B22222">                               a work-vector chunck */</font>
-<a name="line45"> 45: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    nwork_alloc;     <font color="#B22222">/* Number of work vectors allocated */</font>
+<a name="line55"> 55: </a><font color="#B22222">/* vector names */</font>
+<a name="line56"> 56: </a><strong><font color="#228B22">#define VEC_OFFSET     2</font></strong>
+<a name="line57"> 57: </a><strong><font color="#228B22">#define VEC_TEMP       dgmres-&gt;vecs[0]</font></strong>
+<a name="line58"> 58: </a><strong><font color="#228B22">#define VEC_TEMP_MATOP dgmres-&gt;vecs[1]</font></strong>
+<a name="line59"> 59: </a><strong><font color="#228B22">#define VEC_VV(i)      dgmres-&gt;vecs[VEC_OFFSET+i]</font></strong>
 
-<a name="line47"> 47: </a>  <font color="#B22222">/* In order to allow the solution to be constructed during the solution</font>
-<a name="line48"> 48: </a><font color="#B22222">     process, we need some additional information: */</font>
+<a name="line61"> 61: </a><strong><font color="#228B22">#define EIG_OFFSET                        2</font></strong>
+<a name="line62"> 62: </a><strong><font color="#228B22">#define DGMRES_DEFAULT_EIG        1</font></strong>
+<a name="line63"> 63: </a><strong><font color="#228B22">#define DGMRES_DEFAULT_MAXEIG 100</font></strong>
 
-<a name="line50"> 50: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    it;              <font color="#B22222">/* Current itethreshn: inside restart */</font>
-<a name="line51"> 51: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *nrs;            <font color="#B22222">/* temp that holds the coefficients of the </font>
-<a name="line52"> 52: </a><font color="#B22222">                               Krylov vectors that form the minimum residual</font>
-<a name="line53"> 53: </a><font color="#B22222">                               solution */</font>
-<a name="line54"> 54: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>         sol_temp;        <font color="#B22222">/* used to hold temporary solution */</font>
-<a name="line55"> 55: </a>
-<a name="line56"> 56: </a>  <font color="#B22222">/* Data specific to DGMRES */</font>
-<a name="line57"> 57: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                        *U;        <font color="#B22222">/* Vectors that form the basis of the invariant subspace */</font>
-<a name="line58"> 58: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *T;        <font color="#B22222">/* T=U^T*M^{-1}*A*U */</font>
-<a name="line59"> 59: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *TF;        <font color="#B22222">/* The factors L and U from T = P*L*U */</font>
-<a name="line60"> 60: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>                 *InvP;        <font color="#B22222">/* Permutation Vector from the LU factorization of T */</font>
-<a name="line61"> 61: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                neig;        <font color="#B22222">/* number of eigenvalues to extract at each restart */</font>
-<a name="line62"> 62: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                r;                <font color="#B22222">/* current number of deflated eigenvalues */</font>
-<a name="line63"> 63: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                 max_neig;        <font color="#B22222">/* Maximum number of eigenvalues to deflate */</font>
-<a name="line64"> 64: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>         lambdaN;        <font color="#B22222">/* modulus of the largest eigenvalue of A */</font>
-<a name="line65"> 65: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>                smv;         <font color="#B22222">/* smaller multiple of the remaining allowed number of steps -- used for the adaptive strategy */</font>
-<a name="line66"> 66: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                force; <font color="#B22222">/* Force the use of the deflation at the restart */</font>
-<a name="line67"> 67: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                matvecs; <font color="#B22222">/* Total number of matrix-vectors */</font>
-<a name="line68"> 68: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                GreatestEig; <font color="#B22222">/* Extract the greatest eigenvalues instead */</font>
-<a name="line69"> 69: </a>
-<a name="line70"> 70: </a>  <font color="#B22222">/* Work spaces */</font>
-<a name="line71"> 71: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                        *mu;        <font color="#B22222">/* Save the product M^{-1}AU */</font>
-<a name="line72"> 72: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *Sr;         <font color="#B22222">/* Schur vectors to extract */</font>
-<a name="line73"> 73: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                        *X;         <font color="#B22222">/* Schurs Vectors Sr projected to the entire space */</font>
-<a name="line74"> 74: </a>  <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                        *mx;         <font color="#B22222">/* store the product M^{-1}*A*X */</font>
-<a name="line75"> 75: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *umx;         <font color="#B22222">/* store the product U^T*M^{-1}*A*X */</font>
-<a name="line76"> 76: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *xmu;         <font color="#B22222">/* store the product X^T*M^{-1}*A*U */</font>
-<a name="line77"> 77: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *xmx;        <font color="#B22222">/* store the product X^T*M^{-1}*A*X */</font>
-<a name="line78"> 78: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *x1;         <font color="#B22222">/* store the product U^T*x */</font>
-<a name="line79"> 79: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *x2;         <font color="#B22222">/* store the product U^T*x */</font>
-<a name="line80"> 80: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>         *Sr2;         <font color="#B22222">/* Schur vectors at the improvement step */</font>
-<a name="line81"> 81: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *auau;         <font color="#B22222">/* product of (M*A*U)^T*M*A*U */</font>
-<a name="line82"> 82: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *auu;         <font color="#B22222">/* product of (M*A*U)^T*U */</font>
-<a name="line83"> 83: </a>
-<a name="line84"> 84: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>         *work;         <font color="#B22222">/* work space for LAPACK functions */</font>
-<a name="line85"> 85: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                *iwork;        <font color="#B22222">/* work space for LAPACK functions */</font>
-<a name="line86"> 86: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>                *orth;         <font color="#B22222">/* Coefficients for the orthogonalization */</font>
-<a name="line87"> 87: </a>
-<a name="line88"> 88: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                improve; <font color="#B22222">/* 0 = do not improve the eigenvalues; This is an experimental option */</font>
-<a name="line89"> 89: </a>
-<a name="line90"> 90: </a>} KSP_DGMRES;
-
-<a name="line92"> 92: </a><A href="../../../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> KSP_DGMRESComputeDeflationData, KSP_DGMRESApplyDeflation;
-<a name="line93"> 93: </a><strong><font color="#228B22">#define HH(a,b)  (dgmres-&gt;hh_origin + (b)*(dgmres-&gt;max_k+2)+(a))</font></strong>
-<a name="line94"> 94: </a><strong><font color="#228B22">#define HES(a,b) (dgmres-&gt;hes_origin + (b)*(dgmres-&gt;max_k+1)+(a))</font></strong>
-<a name="line95"> 95: </a><strong><font color="#228B22">#define CC(a)    (dgmres-&gt;cc_origin + (a))</font></strong>
-<a name="line96"> 96: </a><strong><font color="#228B22">#define SS(a)    (dgmres-&gt;ss_origin + (a))</font></strong>
-<a name="line97"> 97: </a><strong><font color="#228B22">#define GRS(a)   (dgmres-&gt;rs_origin + (a))</font></strong>
-
-<a name="line99"> 99: </a><font color="#B22222">/* vector names */</font>
-<a name="line100">100: </a><strong><font color="#228B22">#define VEC_OFFSET     2</font></strong>
-<a name="line101">101: </a><strong><font color="#228B22">#define VEC_TEMP       dgmres-&gt;vecs[0]</font></strong>
-<a name="line102">102: </a><strong><font color="#228B22">#define VEC_TEMP_MATOP dgmres-&gt;vecs[1]</font></strong>
-<a name="line103">103: </a><strong><font color="#228B22">#define VEC_VV(i)      dgmres-&gt;vecs[VEC_OFFSET+i]</font></strong>
-
-<a name="line105">105: </a><strong><font color="#228B22">#define EIG_OFFSET                        2</font></strong>
-<a name="line106">106: </a><strong><font color="#228B22">#define DGMRES_DEFAULT_EIG        1</font></strong>
-<a name="line107">107: </a><strong><font color="#228B22">#define DGMRES_DEFAULT_MAXEIG 100</font></strong>
-
-<a name="line109">109: </a><strong><font color="#228B22">#define        UU                dgmres-&gt;U</font></strong>
-<a name="line110">110: </a><strong><font color="#228B22">#define        TT                dgmres-&gt;T</font></strong>
-<a name="line111">111: </a><strong><font color="#228B22">#define        TTF                dgmres-&gt;TF</font></strong>
-<a name="line112">112: </a><strong><font color="#228B22">#define        XX                dgmres-&gt;X</font></strong>
-<a name="line113">113: </a><strong><font color="#228B22">#define        INVP        dgmres-&gt;InvP</font></strong>
-<a name="line114">114: </a><strong><font color="#228B22">#define        MU                dgmres-&gt;mu</font></strong>
-<a name="line115">115: </a><strong><font color="#228B22">#define        MX                dgmres-&gt;mx</font></strong>
-<a name="line116">116: </a><strong><font color="#228B22">#define        UMX                dgmres-&gt;umx</font></strong>
-<a name="line117">117: </a><strong><font color="#228B22">#define        XMU                dgmres-&gt;xmu</font></strong>
-<a name="line118">118: </a><strong><font color="#228B22">#define        XMX                dgmres-&gt;xmx</font></strong>
-<a name="line119">119: </a><strong><font color="#228B22">#define        X1                dgmres-&gt;x1</font></strong>
-<a name="line120">120: </a><strong><font color="#228B22">#define        X2                dgmres-&gt;x2</font></strong>
-<a name="line121">121: </a><strong><font color="#228B22">#define        SR                dgmres-&gt;Sr</font></strong>
-<a name="line122">122: </a><strong><font color="#228B22">#define        SR2                dgmres-&gt;Sr2</font></strong>
-<a name="line123">123: </a><strong><font color="#228B22">#define AUAU        dgmres-&gt;auau</font></strong>
-<a name="line124">124: </a><strong><font color="#228B22">#define AUU                dgmres-&gt;auu</font></strong>
-<a name="line125">125: </a><strong><font color="#228B22">#define        MAX_K        dgmres-&gt;max_k</font></strong>
-<a name="line126">126: </a><strong><font color="#228B22">#define        MAX_NEIG dgmres-&gt;max_neig</font></strong>
-<a name="line127">127: </a><strong><font color="#228B22">#define WORK        dgmres-&gt;work</font></strong>
-<a name="line128">128: </a><strong><font color="#228B22">#define        IWORK        dgmres-&gt;iwork</font></strong>
-<a name="line129">129: </a><strong><font color="#228B22">#define        ORTH        dgmres-&gt;orth</font></strong>
-<a name="line130">130: </a><strong><font color="#228B22">#define SMV 1</font></strong>
-<a name="line131">131: </a><font color="#A020F0">#endif</font>
+<a name="line65"> 65: </a><strong><font color="#228B22">#define        UU                dgmres-&gt;U</font></strong>
+<a name="line66"> 66: </a><strong><font color="#228B22">#define        TT                dgmres-&gt;T</font></strong>
+<a name="line67"> 67: </a><strong><font color="#228B22">#define        TTF                dgmres-&gt;TF</font></strong>
+<a name="line68"> 68: </a><strong><font color="#228B22">#define        XX                dgmres-&gt;X</font></strong>
+<a name="line69"> 69: </a><strong><font color="#228B22">#define        INVP        dgmres-&gt;InvP</font></strong>
+<a name="line70"> 70: </a><strong><font color="#228B22">#define        MU                dgmres-&gt;mu</font></strong>
+<a name="line71"> 71: </a><strong><font color="#228B22">#define        MX                dgmres-&gt;mx</font></strong>
+<a name="line72"> 72: </a><strong><font color="#228B22">#define        UMX                dgmres-&gt;umx</font></strong>
+<a name="line73"> 73: </a><strong><font color="#228B22">#define        XMU                dgmres-&gt;xmu</font></strong>
+<a name="line74"> 74: </a><strong><font color="#228B22">#define        XMX                dgmres-&gt;xmx</font></strong>
+<a name="line75"> 75: </a><strong><font color="#228B22">#define        X1                dgmres-&gt;x1</font></strong>
+<a name="line76"> 76: </a><strong><font color="#228B22">#define        X2                dgmres-&gt;x2</font></strong>
+<a name="line77"> 77: </a><strong><font color="#228B22">#define        SR                dgmres-&gt;Sr</font></strong>
+<a name="line78"> 78: </a><strong><font color="#228B22">#define        SR2                dgmres-&gt;Sr2</font></strong>
+<a name="line79"> 79: </a><strong><font color="#228B22">#define AUAU        dgmres-&gt;auau</font></strong>
+<a name="line80"> 80: </a><strong><font color="#228B22">#define AUU                dgmres-&gt;auu</font></strong>
+<a name="line81"> 81: </a><strong><font color="#228B22">#define        MAX_K        dgmres-&gt;max_k</font></strong>
+<a name="line82"> 82: </a><strong><font color="#228B22">#define        MAX_NEIG dgmres-&gt;max_neig</font></strong>
+<a name="line83"> 83: </a><strong><font color="#228B22">#define WORK        dgmres-&gt;work</font></strong>
+<a name="line84"> 84: </a><strong><font color="#228B22">#define        IWORK        dgmres-&gt;iwork</font></strong>
+<a name="line85"> 85: </a><strong><font color="#228B22">#define        ORTH        dgmres-&gt;orth</font></strong>
+<a name="line86"> 86: </a><strong><font color="#228B22">#define SMV 1</font></strong>
+<a name="line87"> 87: </a><font color="#A020F0">#endif</font>
 </pre>
 </body>
 

@@ -1,13 +1,14 @@
 <center><a href="classLog.c">Actual source code: classLog.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/plog/utils/classLog.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:53:21+00:00">
+<meta name="date" content="2012-08-29T16:36:32+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">     This defines part of the private API for logging performance information. It is intended to be used only by the</font>
@@ -15,7 +16,7 @@
 <a name="line5">  5: </a><font color="#B22222">   in the public PETSc include files.</font>
 
 <a name="line7">  7: </a><font color="#B22222">*/</font>
-<a name="line8">  8: </a><font color="#A020F0">#include &lt;private/logimpl.h&gt; </font><font color="#B22222">/*I    "petscsys.h"   I*/</font><font color="#A020F0"></font>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petsc-private/logimpl.h&gt; </font><font color="#B22222">/*I    "petscsys.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line12"> 12: </a><font color="#B22222">/*@C</font>
 <a name="line13"> 13: </a><font color="#B22222">  <A href="../../../../docs/manualpages/Profiling/PetscClassRegLogCreate.html#PetscClassRegLogCreate">PetscClassRegLogCreate</A> - This creates a PetscClassRegLog object.</font>
@@ -280,49 +281,49 @@
 <a name="line310">310: </a>  <A href="../../../../docs/manualpages/Profiling/PetscClassRegLogGetClass.html#PetscClassRegLogGetClass">PetscClassRegLogGetClass</A>(classRegLog, obj-&gt;classid, &amp;oclass);
 <a name="line311">311: </a>  classPerfLog-&gt;classInfo[oclass].creations++;
 <a name="line312">312: </a>  <font color="#B22222">/* Dynamically enlarge logging structures */</font>
-<a name="line313">313: </a>  <font color="#4169E1">if</font> (numActions &gt;= maxActions) {
+<a name="line313">313: </a>  <font color="#4169E1">if</font> (petsc_numActions &gt;= petsc_maxActions) {
 <a name="line314">314: </a>    PetscTime(start);
-<a name="line315">315: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(maxActions*2 * <font color="#4169E1">sizeof</font>(Action), &amp;tmpAction);
-<a name="line316">316: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpAction, actions, maxActions * <font color="#4169E1">sizeof</font>(Action));
-<a name="line317">317: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(actions);
-<a name="line318">318: </a>    actions     = tmpAction;
-<a name="line319">319: </a>    maxActions *= 2;
+<a name="line315">315: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(petsc_maxActions*2 * <font color="#4169E1">sizeof</font>(Action), &amp;tmpAction);
+<a name="line316">316: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpAction, petsc_actions, petsc_maxActions * <font color="#4169E1">sizeof</font>(Action));
+<a name="line317">317: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(petsc_actions);
+<a name="line318">318: </a>    petsc_actions     = tmpAction;
+<a name="line319">319: </a>    petsc_maxActions *= 2;
 <a name="line320">320: </a>    PetscTime(end);
-<a name="line321">321: </a>    BaseTime += (end - start);
+<a name="line321">321: </a>    petsc_BaseTime += (end - start);
 <a name="line322">322: </a>  }
 
-<a name="line324">324: </a>  numObjects = obj-&gt;id;
+<a name="line324">324: </a>  petsc_numObjects = obj-&gt;id;
 <a name="line325">325: </a>  <font color="#B22222">/* Record the creation action */</font>
-<a name="line326">326: </a>  <font color="#4169E1">if</font> (logActions) {
-<a name="line327">327: </a>    PetscTime(actions[numActions].time);
-<a name="line328">328: </a>    actions[numActions].time  -= BaseTime;
-<a name="line329">329: </a>    actions[numActions].action = CREATE;
-<a name="line330">330: </a>    actions[numActions].classid = obj-&gt;classid;
-<a name="line331">331: </a>    actions[numActions].id1    = numObjects;
-<a name="line332">332: </a>    actions[numActions].id2    = -1;
-<a name="line333">333: </a>    actions[numActions].id3    = -1;
-<a name="line334">334: </a>    actions[numActions].flops  = _TotalFlops;
-<a name="line335">335: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetCurrentUsage.html#PetscMallocGetCurrentUsage">PetscMallocGetCurrentUsage</A>(&amp;actions[numActions].mem);
-<a name="line336">336: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetMaximumUsage.html#PetscMallocGetMaximumUsage">PetscMallocGetMaximumUsage</A>(&amp;actions[numActions].maxmem);
-<a name="line337">337: </a>    numActions++;
+<a name="line326">326: </a>  <font color="#4169E1">if</font> (petsc_logActions) {
+<a name="line327">327: </a>    PetscTime(petsc_actions[petsc_numActions].time);
+<a name="line328">328: </a>    petsc_actions[petsc_numActions].time  -= petsc_BaseTime;
+<a name="line329">329: </a>    petsc_actions[petsc_numActions].action = CREATE;
+<a name="line330">330: </a>    petsc_actions[petsc_numActions].classid = obj-&gt;classid;
+<a name="line331">331: </a>    petsc_actions[petsc_numActions].id1    = petsc_numObjects;
+<a name="line332">332: </a>    petsc_actions[petsc_numActions].id2    = -1;
+<a name="line333">333: </a>    petsc_actions[petsc_numActions].id3    = -1;
+<a name="line334">334: </a>    petsc_actions[petsc_numActions].flops  = petsc_TotalFlops;
+<a name="line335">335: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetCurrentUsage.html#PetscMallocGetCurrentUsage">PetscMallocGetCurrentUsage</A>(&amp;petsc_actions[petsc_numActions].mem);
+<a name="line336">336: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetMaximumUsage.html#PetscMallocGetMaximumUsage">PetscMallocGetMaximumUsage</A>(&amp;petsc_actions[petsc_numActions].maxmem);
+<a name="line337">337: </a>    petsc_numActions++;
 <a name="line338">338: </a>  }
 <a name="line339">339: </a>  <font color="#B22222">/* Record the object */</font>
-<a name="line340">340: </a>  <font color="#4169E1">if</font> (logObjects) {
-<a name="line341">341: </a>    objects[numObjects].parent = -1;
-<a name="line342">342: </a>    objects[numObjects].obj    = obj;
-<a name="line343">343: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(objects[numObjects].name, 64 * <font color="#4169E1">sizeof</font>(char));
-<a name="line344">344: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(objects[numObjects].info, 64 * <font color="#4169E1">sizeof</font>(char));
+<a name="line340">340: </a>  <font color="#4169E1">if</font> (petsc_logObjects) {
+<a name="line341">341: </a>    petsc_objects[petsc_numObjects].parent = -1;
+<a name="line342">342: </a>    petsc_objects[petsc_numObjects].obj    = obj;
+<a name="line343">343: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(petsc_objects[petsc_numObjects].name, 64 * <font color="#4169E1">sizeof</font>(char));
+<a name="line344">344: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(petsc_objects[petsc_numObjects].info, 64 * <font color="#4169E1">sizeof</font>(char));
 
 <a name="line346">346: </a>  <font color="#B22222">/* Dynamically enlarge logging structures */</font>
-<a name="line347">347: </a>    <font color="#4169E1">if</font> (numObjects &gt;= maxObjects) {
+<a name="line347">347: </a>    <font color="#4169E1">if</font> (petsc_numObjects &gt;= petsc_maxObjects) {
 <a name="line348">348: </a>      PetscTime(start);
-<a name="line349">349: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(maxObjects*2 * <font color="#4169E1">sizeof</font>(Object), &amp;tmpObjects);
-<a name="line350">350: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpObjects, objects, maxObjects * <font color="#4169E1">sizeof</font>(Object));
-<a name="line351">351: </a>      <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(objects);
-<a name="line352">352: </a>      objects     = tmpObjects;
-<a name="line353">353: </a>      maxObjects *= 2;
+<a name="line349">349: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(petsc_maxObjects*2 * <font color="#4169E1">sizeof</font>(Object), &amp;tmpObjects);
+<a name="line350">350: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpObjects, petsc_objects, petsc_maxObjects * <font color="#4169E1">sizeof</font>(Object));
+<a name="line351">351: </a>      <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(petsc_objects);
+<a name="line352">352: </a>      petsc_objects     = tmpObjects;
+<a name="line353">353: </a>      petsc_maxObjects *= 2;
 <a name="line354">354: </a>      PetscTime(end);
-<a name="line355">355: </a>      BaseTime += (end - start);
+<a name="line355">355: </a>      petsc_BaseTime += (end - start);
 <a name="line356">356: </a>    }
 <a name="line357">357: </a>  }
 <a name="line358">358: </a>  <font color="#4169E1">return</font>(0);
@@ -351,38 +352,38 @@
 <a name="line385">385: </a>    classPerfLog-&gt;classInfo[oclass].mem += obj-&gt;mem;
 <a name="line386">386: </a>  }
 <a name="line387">387: </a>  <font color="#B22222">/* Cannot Credit all ancestors with your memory because they may have already been destroyed*/</font>
-<a name="line388">388: </a>  numObjectsDestroyed++;
+<a name="line388">388: </a>  petsc_numObjectsDestroyed++;
 <a name="line389">389: </a>  <font color="#B22222">/* Dynamically enlarge logging structures */</font>
-<a name="line390">390: </a>  <font color="#4169E1">if</font> (numActions &gt;= maxActions) {
+<a name="line390">390: </a>  <font color="#4169E1">if</font> (petsc_numActions &gt;= petsc_maxActions) {
 <a name="line391">391: </a>    PetscTime(start);
-<a name="line392">392: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(maxActions*2 * <font color="#4169E1">sizeof</font>(Action), &amp;tmpAction);
-<a name="line393">393: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpAction, actions, maxActions * <font color="#4169E1">sizeof</font>(Action));
-<a name="line394">394: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(actions);
-<a name="line395">395: </a>    actions     = tmpAction;
-<a name="line396">396: </a>    maxActions *= 2;
+<a name="line392">392: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(petsc_maxActions*2 * <font color="#4169E1">sizeof</font>(Action), &amp;tmpAction);
+<a name="line393">393: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(tmpAction, petsc_actions, petsc_maxActions * <font color="#4169E1">sizeof</font>(Action));
+<a name="line394">394: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(petsc_actions);
+<a name="line395">395: </a>    petsc_actions     = tmpAction;
+<a name="line396">396: </a>    petsc_maxActions *= 2;
 <a name="line397">397: </a>    PetscTime(end);
-<a name="line398">398: </a>    BaseTime += (end - start);
+<a name="line398">398: </a>    petsc_BaseTime += (end - start);
 <a name="line399">399: </a>  }
 <a name="line400">400: </a>  <font color="#B22222">/* Record the destruction action */</font>
-<a name="line401">401: </a>  <font color="#4169E1">if</font> (logActions) {
-<a name="line402">402: </a>    PetscTime(actions[numActions].time);
-<a name="line403">403: </a>    actions[numActions].time  -= BaseTime;
-<a name="line404">404: </a>    actions[numActions].action = DESTROY;
-<a name="line405">405: </a>    actions[numActions].classid = obj-&gt;classid;
-<a name="line406">406: </a>    actions[numActions].id1    = obj-&gt;id;
-<a name="line407">407: </a>    actions[numActions].id2    = -1;
-<a name="line408">408: </a>    actions[numActions].id3    = -1;
-<a name="line409">409: </a>    actions[numActions].flops  = _TotalFlops;
-<a name="line410">410: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetCurrentUsage.html#PetscMallocGetCurrentUsage">PetscMallocGetCurrentUsage</A>(&amp;actions[numActions].mem);
-<a name="line411">411: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetMaximumUsage.html#PetscMallocGetMaximumUsage">PetscMallocGetMaximumUsage</A>(&amp;actions[numActions].maxmem);
-<a name="line412">412: </a>    numActions++;
+<a name="line401">401: </a>  <font color="#4169E1">if</font> (petsc_logActions) {
+<a name="line402">402: </a>    PetscTime(petsc_actions[petsc_numActions].time);
+<a name="line403">403: </a>    petsc_actions[petsc_numActions].time  -= petsc_BaseTime;
+<a name="line404">404: </a>    petsc_actions[petsc_numActions].action = DESTROY;
+<a name="line405">405: </a>    petsc_actions[petsc_numActions].classid = obj-&gt;classid;
+<a name="line406">406: </a>    petsc_actions[petsc_numActions].id1    = obj-&gt;id;
+<a name="line407">407: </a>    petsc_actions[petsc_numActions].id2    = -1;
+<a name="line408">408: </a>    petsc_actions[petsc_numActions].id3    = -1;
+<a name="line409">409: </a>    petsc_actions[petsc_numActions].flops  = petsc_TotalFlops;
+<a name="line410">410: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetCurrentUsage.html#PetscMallocGetCurrentUsage">PetscMallocGetCurrentUsage</A>(&amp;petsc_actions[petsc_numActions].mem);
+<a name="line411">411: </a>    <A href="../../../../docs/manualpages/Sys/PetscMallocGetMaximumUsage.html#PetscMallocGetMaximumUsage">PetscMallocGetMaximumUsage</A>(&amp;petsc_actions[petsc_numActions].maxmem);
+<a name="line412">412: </a>    petsc_numActions++;
 <a name="line413">413: </a>  }
-<a name="line414">414: </a>  <font color="#4169E1">if</font> (logObjects) {
+<a name="line414">414: </a>  <font color="#4169E1">if</font> (petsc_logObjects) {
 <a name="line415">415: </a>    <font color="#4169E1">if</font> (obj-&gt;name) {
-<a name="line416">416: </a>      <A href="../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(objects[obj-&gt;id].name, obj-&gt;name, 64);
+<a name="line416">416: </a>      <A href="../../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(petsc_objects[obj-&gt;id].name, obj-&gt;name, 64);
 <a name="line417">417: </a>    }
-<a name="line418">418: </a>    objects[obj-&gt;id].obj      = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line419">419: </a>    objects[obj-&gt;id].mem      = obj-&gt;mem;
+<a name="line418">418: </a>    petsc_objects[obj-&gt;id].obj      = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line419">419: </a>    petsc_objects[obj-&gt;id].mem      = obj-&gt;mem;
 <a name="line420">420: </a>  }
 <a name="line421">421: </a>  <font color="#4169E1">return</font>(0);
 <a name="line422">422: </a>}

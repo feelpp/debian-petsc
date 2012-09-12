@@ -1,13 +1,14 @@
 <center><a href="ex10.c">Actual source code: ex10.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tests/ex10.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:15:42+00:00">
+<meta name="date" content="2012-08-29T17:08:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/snes/impls/vi/viimpl.h&gt;</font>
 
@@ -46,6 +47,10 @@
 
 <a name="line37"> 37: </a><font color="#B22222">/* -------- User-defined Routines --------- */</font>
 
+<a name="line39"> 39: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MSA_BoundaryConditions(AppCtx *)</font></strong>;
+<a name="line40"> 40: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MSA_InitialPoint(AppCtx *, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line41"> 41: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormGradient(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, void *)</font></strong>;
+<a name="line42"> 42: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*, <A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void *)</font></strong>;
 
 <a name="line46"> 46: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc, char **argv)</font></strong>
 <a name="line47"> 47: </a>{

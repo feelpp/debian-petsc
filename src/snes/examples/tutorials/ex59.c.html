@@ -1,17 +1,18 @@
 <center><a href="ex59.c">Actual source code: ex59.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex59.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:18:01+00:00">
+<meta name="date" content="2012-08-29T17:11:11+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;stdlib.h&gt;</font>
 
-<a name="line4">  4: </a>static char help[] = <font color="#666666">"Tries to solve u`` + u^{2} = f for an easy case and an impossible case\n\n"</font>;
+<a name="line4">  4: </a>static const char help[] = <font color="#666666">"Tries to solve u`` + u^{2} = f for an easy case and an impossible case.\n\n"</font>;
 
 <a name="line6">  6: </a><font color="#B22222">/*</font>
 <a name="line7">  7: </a><font color="#B22222">       This example was contributed by Peter Graf to show how <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> fails when given a nonlinear problem with no solution.</font>
@@ -124,7 +125,7 @@
 <a name="line114">114: </a>
 <a name="line115">115: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,x);
 <a name="line116">116: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;it);
-<a name="line117">117: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"Newton iterations = %D\n\n"</font>,it);
+<a name="line117">117: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = %D\n\n"</font>,it);
 
 <a name="line119">119: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
 <a name="line120">120: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>

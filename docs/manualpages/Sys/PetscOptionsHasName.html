@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscOptionsHasName.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscOptionsHasName</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscOptionsHasName"><H1>PetscOptionsHasName</H1></A>
 Determines whether a certain option is given in the database. This returns true whether the option is a number, string or boolean, even  its value is set to false. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -32,10 +33,6 @@ Notes: Name cannot be simply -h
 <P>
 In many cases you probably want to use <A HREF="../Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>() instead of calling this, to allowing toggling values.
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp PetscOptionsHasName(const char b[],PetscBool  *f)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscOptionsHasName(PETSC_NULL,b,f)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(),
 <BR><A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsGetRealArray.html#PetscOptionsGetRealArray">PetscOptionsGetRealArray</A>(), <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(),
@@ -53,7 +50,7 @@ In many cases you probably want to use <A HREF="../Sys/PetscOptionsGetBool.html#
 <A HREF="../../../src/vec/vec/examples/tutorials/ex9.c.html">src/vec/vec/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex9f.F.html">src/vec/vec/examples/tutorials/ex9f.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex14f.F.html">src/vec/vec/examples/tutorials/ex14f.F.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex50.c.html">src/ksp/ksp/examples/tutorials/ex50.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2f.F.html">src/ksp/ksp/examples/tutorials/ex2f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex6f.F.html">src/ksp/ksp/examples/tutorials/ex6f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex11f.F.html">src/ksp/ksp/examples/tutorials/ex11f.F.html</A><BR>

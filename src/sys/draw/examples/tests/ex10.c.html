@@ -1,13 +1,14 @@
 <center><a href="ex10.c">Actual source code: ex10.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/draw/examples/tests/ex10.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:51:06+00:00">
+<meta name="date" content="2012-08-29T16:34:07+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests repeatedly setting a window type.\n"</font>;
 
@@ -21,7 +22,7 @@
 <a name="line14"> 14: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
 
 <a name="line16"> 16: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawCreate.html#PetscDrawCreate">PetscDrawCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,0,<font color="#666666">"Title"</font>,x,y,width,height,&amp;draw);
-<a name="line17"> 17: </a><font color="#A020F0">#if defined (PETSC_HAVE_X11)</font>
+<a name="line17"> 17: </a><font color="#A020F0">#if defined (PETSC_HAVE_X)</font>
 <a name="line18"> 18: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(draw,<font color="#666666">"x"</font>);
 <a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(draw,<font color="#666666">"null"</font>);
 <a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(draw,<font color="#666666">"x"</font>);

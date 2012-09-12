@@ -1,13 +1,14 @@
 <center><a href="iscoloring.c">Actual source code: iscoloring.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/is/utils/iscoloring.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:57:01+00:00">
+<meta name="date" content="2012-08-29T16:40:49+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscis.h&gt;    </font><font color="#B22222">/*I "petscis.h"  I*/</font><font color="#A020F0"></font>
 
@@ -67,7 +68,7 @@
 <a name="line67"> 67: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetStdout.html#PetscViewerASCIIGetStdout">PetscViewerASCIIGetStdout</A>(iscoloring-&gt;comm,&amp;viewer);
 <a name="line68"> 68: </a>  }
 
-<a name="line71"> 71: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line71"> 71: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line72"> 72: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line73"> 73: </a>    <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>    comm;
 <a name="line74"> 74: </a>    <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank;
@@ -270,7 +271,7 @@
 <a name="line284">284: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetStdout.html#PetscViewerASCIIGetStdout">PetscViewerASCIIGetStdout</A>((*iscoloring)-&gt;comm,&amp;viewer);
 <a name="line285">285: </a>    <A href="../../../../docs/manualpages/IS/ISColoringView.html#ISColoringView">ISColoringView</A>(*iscoloring,viewer);
 <a name="line286">286: </a>  }
-<a name="line287">287: </a>  PetscInfo1(0,<font color="#666666">"Number of colors %d\n"</font>,nc);
+<a name="line287">287: </a>  PetscInfo1(0,<font color="#666666">"Number of colors %D\n"</font>,nc);
 <a name="line288">288: </a>  <font color="#4169E1">return</font>(0);
 <a name="line289">289: </a>}
 
@@ -372,7 +373,7 @@
 
 
 <a name="line394">394: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/MatOrderings/MatPartitioningCreate.html#MatPartitioningCreate">MatPartitioningCreate</A>(), <A href="../../../../docs/manualpages/AO/AOCreateBasic.html#AOCreateBasic">AOCreateBasic</A>(), <A href="../../../../docs/manualpages/IS/ISPartitioningToNumbering.html#ISPartitioningToNumbering">ISPartitioningToNumbering</A>(),</font>
-<a name="line395">395: </a><font color="#B22222">        <A href="../../../../docs/manualpages/MatOrderings/MatPartitioningSetNParts.html#MatPartitioningSetNParts">MatPartitioningSetNParts</A>()</font>
+<a name="line395">395: </a><font color="#B22222">        <A href="../../../../docs/manualpages/MatOrderings/MatPartitioningSetNParts.html#MatPartitioningSetNParts">MatPartitioningSetNParts</A>(), <A href="../../../../docs/manualpages/MatOrderings/MatPartitioningApply.html#MatPartitioningApply">MatPartitioningApply</A>()</font>
 
 <a name="line397">397: </a><font color="#B22222">@*/</font>
 <a name="line398">398: </a><strong><font color="#4169E1"><a name="ISPartitioningCount"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/IS/ISPartitioningCount.html#ISPartitioningCount">ISPartitioningCount</A>(<A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A> part,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> len,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> count[])</font></strong>
@@ -465,7 +466,7 @@
 <a name="line493">493: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is,&amp;comm);
 <a name="line494">494: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
 <a name="line495">495: </a>  <A href="../../../../docs/manualpages/IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(is,&amp;n);
-<a name="line496">496: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is,ISSTRIDE,&amp;stride);
+<a name="line496">496: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is,ISSTRIDE,&amp;stride);
 <a name="line497">497: </a>  <font color="#4169E1">if</font> (size == 1 &amp;&amp; stride) { <font color="#B22222">/* should handle parallel ISStride also */</font>
 <a name="line498">498: </a>    <A href="../../../../docs/manualpages/IS/ISStrideGetInfo.html#ISStrideGetInfo">ISStrideGetInfo</A>(is,&amp;first,&amp;step);
 <a name="line499">499: </a>    <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,first,step,isout);

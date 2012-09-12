@@ -1,12 +1,13 @@
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/error/examples/tests/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:51:34+00:00">
+<meta name="date" content="2012-08-29T16:34:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 CFLAGS                 = 
 FFLAGS                 = 
@@ -28,7 +29,7 @@ include ${PETSC_DIR}/conf/rules
 <strong><font color="#FF0000">runex1:</font></strong>
         -@${MPIEXEC} -n 1 ex1 &gt; ex1_1.tmp 2&gt;&amp;1;          \
            <font color="#4169E1">if</font> (${DIFF} output/ex1_1.out ex1_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex1_1, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex1_1, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex1_1.tmp
 
 <font color="#A020F0">#TESTEXAMPLES_C = ex1.PETSc runex1 ex1.rm</font>

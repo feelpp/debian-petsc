@@ -3,7 +3,7 @@
      Provides the interface functions for vector operations that have PetscScalar/PetscReal in the signature
    These are the vector functions the user calls.
 */
-#include <private/vecimpl.h>    /*I "petscvec.h" I*/
+#include <petsc-private/vecimpl.h>    /*I "petscvec.h" I*/
 static PetscInt VecGetSubVectorSavedStateId = -1;
 
 #define PetscCheckSameSizeVec(x,y) \
@@ -69,7 +69,9 @@ $    work load inbalance that causes certain processes to arrive much earlier th
    Notes for Users of Complex Numbers:
    For complex vectors, VecDot() computes 
 $     val = (x,y) = y^H x,
-   where y^H denotes the conjugate transpose of y.
+   where y^H denotes the conjugate transpose of y. Note that this corresponds to the usual "mathematicians" complex 
+   inner product where the SECOND argument gets the complex conjugate. Since the BLASdot() complex conjugates the first
+   first argument we call the BLASdot() with the arguments reversed.
 
    Use VecTDot() for the indefinite form
 $     val = (x,y) = y^T x,
@@ -504,7 +506,7 @@ PetscErrorCode  VecSet(Vec x,PetscScalar alpha)
   val = PetscAbsScalar(alpha);
   ierr = PetscObjectComposedDataSetReal((PetscObject)x,NormIds[NORM_1],x->map->N * val);CHKERRQ(ierr);
   ierr = PetscObjectComposedDataSetReal((PetscObject)x,NormIds[NORM_INFINITY],val);CHKERRQ(ierr);
-  val = sqrt((double)x->map->N) * val;
+  val = PetscSqrtReal((double)x->map->N) * val;
   ierr = PetscObjectComposedDataSetReal((PetscObject)x,NormIds[NORM_2],val);CHKERRQ(ierr);
   ierr = PetscObjectComposedDataSetReal((PetscObject)x,NormIds[NORM_FROBENIUS],val);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -1247,10 +1249,10 @@ PetscErrorCode  VecGetSubVector(Vec X,IS is,Vec *Y)
       ierr = VecGetArray(X,&x);CHKERRQ(ierr);
       ierr = MPI_Comm_size(((PetscObject)X)->comm,&size);CHKERRQ(ierr);
       if (size == 1) {
-        ierr = VecCreateSeqWithArray(((PetscObject)X)->comm,n,x+start,&Z);CHKERRQ(ierr);
+        ierr = VecCreateSeqWithArray(((PetscObject)X)->comm,1,n,x+start,&Z);CHKERRQ(ierr);
       } else {
         ierr = ISGetSize(is,&N);CHKERRQ(ierr);
-        ierr = VecCreateMPIWithArray(((PetscObject)X)->comm,n,N,x+start,&Z);CHKERRQ(ierr);
+        ierr = VecCreateMPIWithArray(((PetscObject)X)->comm,1,n,N,x+start,&Z);CHKERRQ(ierr);
       }
       ierr = VecRestoreArray(X,&x);CHKERRQ(ierr);
     } else {                    /* Have to create a scatter and do a copy */
@@ -1581,7 +1583,7 @@ PetscErrorCode  VecReplaceArray(Vec vec,const PetscScalar array[])
     and makes them accessible via a Fortran90 pointer.
 
     Synopsis:
-    VecDuplicateVecsF90(Vec x,int n,{Vec, pointer :: y(:)},integer ierr)
+    VecDuplicateVecsF90(Vec x,PetscInt n,{Vec, pointer :: y(:)},integer ierr)
 
     Collective on Vec
 
@@ -1651,13 +1653,13 @@ M*/
     VecDestroyVecsF90 - Frees a block of vectors obtained with VecDuplicateVecsF90().
 
     Synopsis:
-    VecDestroyVecsF90({Vec, pointer :: x(:)},integer n,integer ierr)
+    VecDestroyVecsF90(PetscInt n,{Vec, pointer :: x(:)},PetscErrorCode ierr)
 
     Collective on Vec
 
     Input Parameters:
-+   x - pointer to array of vector pointers
--   n - the number of vectors previously obtained
++   n - the number of vectors previously obtained
+-   x - pointer to array of vector pointers
 
     Output Parameter:
 .   ierr - error code

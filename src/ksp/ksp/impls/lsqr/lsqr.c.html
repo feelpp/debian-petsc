@@ -1,20 +1,21 @@
 <center><a href="lsqr.c">Actual source code: lsqr.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/lsqr/lsqr.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:04+00:00">
+<meta name="date" content="2012-08-29T17:04:33+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* lourens.vanzanen@shell.com contributed the standard error estimates of the solution, Jul 25, 2006 */</font>
 <a name="line3">  3: </a><font color="#B22222">/* Bas van't Hof contributed the preconditioned aspects Feb 10, 2010 */</font>
 
 <a name="line5">  5: </a><strong><font color="#228B22">#define SWAP(a,b,c) { c = a; a = b; b = c; }</font></strong>
 
-<a name="line7">  7: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;</font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;</font>
 <a name="line8">  8: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/lsqr/lsqr.h&gt;</font>
 
 <a name="line10"> 10: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -28,13 +29,14 @@
 <a name="line18"> 18: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>  rhs_norm; <font color="#B22222">/* Norm of the right hand side */</font>
 <a name="line19"> 19: </a>} KSP_LSQR;
 
+<a name="line21"> 21: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  VecSquare(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
 
 <a name="line25"> 25: </a><strong><font color="#4169E1"><a name="KSPSetUp_LSQR"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPSetUp_LSQR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line26"> 26: </a>{
 <a name="line28"> 28: </a>  KSP_LSQR       *lsqr = (KSP_LSQR*)ksp-&gt;data;
 <a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      nopreconditioner;
 
-<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp-&gt;pc,<A href="../../../../../docs/manualpages/PC/PCNONE.html#PCNONE">PCNONE</A>,&amp;nopreconditioner);
+<a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp-&gt;pc,<A href="../../../../../docs/manualpages/PC/PCNONE.html#PCNONE">PCNONE</A>,&amp;nopreconditioner);
 <a name="line33"> 33: </a>  <font color="#B22222">/*  nopreconditioner =<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>; */</font>
 
 <a name="line35"> 35: </a>  lsqr-&gt;nwork_m = 2;
@@ -75,7 +77,7 @@
 <a name="line74"> 74: </a>  <font color="#4169E1">if</font> (diagonalscale) <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Krylov method %s does not support diagonal scaling"</font>,((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp)-&gt;type_name);
 
 <a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp-&gt;pc,&amp;Amat,&amp;Pmat,&amp;pflag);
-<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp-&gt;pc,<A href="../../../../../docs/manualpages/PC/PCNONE.html#PCNONE">PCNONE</A>,&amp;nopreconditioner);
+<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp-&gt;pc,<A href="../../../../../docs/manualpages/PC/PCNONE.html#PCNONE">PCNONE</A>,&amp;nopreconditioner);
 
 <a name="line79"> 79: </a>  <font color="#B22222">/*  nopreconditioner =<A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>; */</font>
 <a name="line80"> 80: </a>  <font color="#B22222">/* Calculate norm of right hand side */</font>
@@ -343,7 +345,7 @@
 
 <a name="line365">365: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(<font color="#666666">"<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> LSQR Options"</font>);
 <a name="line366">366: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsName.html#PetscOptionsName">PetscOptionsName</A>(<font color="#666666">"-ksp_lsqr_set_standard_error"</font>,<font color="#666666">"Set Standard Error Estimates of Solution"</font>,<font color="#666666">"KSPLSQRSetStandardErrorVec"</font>,&amp;lsqr-&gt;se_flg);
-<a name="line367">367: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsString.html#PetscOptionsString">PetscOptionsString</A>(<font color="#666666">"-ksp_monitor_lsqr"</font>,<font color="#666666">"Monitor residual norm and norm of residual of normal equations"</font>,<font color="#666666">"<A href="../../../../../docs/manualpages/KSP/KSPMonitorSet.html#KSPMonitorSet">KSPMonitorSet</A>"</font>,<font color="#666666">"stdout"</font>,monfilename,PETSC_MAX_PATH_LEN,&amp;flg);
+<a name="line367">367: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsString.html#PetscOptionsString">PetscOptionsString</A>(<font color="#666666">"-ksp_lsqr_monitor"</font>,<font color="#666666">"Monitor residual norm and norm of residual of normal equations"</font>,<font color="#666666">"<A href="../../../../../docs/manualpages/KSP/KSPMonitorSet.html#KSPMonitorSet">KSPMonitorSet</A>"</font>,<font color="#666666">"stdout"</font>,monfilename,PETSC_MAX_PATH_LEN,&amp;flg);
 <a name="line368">368: </a>  <font color="#4169E1">if</font> (flg) {
 <a name="line369">369: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIOpen.html#PetscViewerASCIIOpen">PetscViewerASCIIOpen</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp)-&gt;comm,monfilename,&amp;monviewer);
 <a name="line370">370: </a>    <A href="../../../../../docs/manualpages/KSP/KSPMonitorSet.html#KSPMonitorSet">KSPMonitorSet</A>(ksp,<A href="../../../../../docs/manualpages/KSP/KSPLSQRMonitorDefault.html#KSPLSQRMonitorDefault">KSPLSQRMonitorDefault</A>,monviewer,(<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void**))<A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>);
@@ -355,127 +357,135 @@
 <a name="line378">378: </a><strong><font color="#4169E1"><a name="KSPView_LSQR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPView_LSQR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
 <a name="line379">379: </a>{
 <a name="line380">380: </a>  KSP_LSQR       *lsqr = (KSP_LSQR*)ksp-&gt;data;
+<a name="line382">382: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line384">384: </a>  <font color="#4169E1">if</font> (lsqr-&gt;se) {
-<a name="line385">385: </a>    <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rnorm;
-<a name="line386">386: </a>    KSPLSQRGetStandardErrorVec(ksp,&amp;lsqr-&gt;se);
-<a name="line387">387: </a>    <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(lsqr-&gt;se,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;rnorm);
-<a name="line388">388: </a>    <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"  Norm of Standard Error %A, Iterations %D\n"</font>,rnorm,ksp-&gt;its);
-<a name="line389">389: </a>  }
-<a name="line390">390: </a>  <font color="#4169E1">return</font>(0);
-<a name="line391">391: </a>}
+<a name="line385">385: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line386">386: </a>  <font color="#4169E1">if</font> (iascii) {
+<a name="line387">387: </a>    <font color="#4169E1">if</font> (lsqr-&gt;se) {
+<a name="line388">388: </a>      <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rnorm;
+<a name="line389">389: </a>      KSPLSQRGetStandardErrorVec(ksp,&amp;lsqr-&gt;se);
+<a name="line390">390: </a>      <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(lsqr-&gt;se,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;rnorm);
+<a name="line391">391: </a>      <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  Norm of Standard Error %G, Iterations %D\n"</font>,rnorm,ksp-&gt;its);
+<a name="line392">392: </a>    }
+<a name="line393">393: </a>  } <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Viewer type %s not supported for <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> LSQR"</font>,((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer)-&gt;type_name);
+<a name="line394">394: </a>  <font color="#4169E1">return</font>(0);
+<a name="line395">395: </a>}
 
-<a name="line395">395: </a><font color="#B22222">/*@C</font>
-<a name="line396">396: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A> - Determines convergence of the LSQR Krylov method. This calls <A href="../../../../../docs/manualpages/KSP/KSPDefaultConverged.html#KSPDefaultConverged">KSPDefaultConverged</A>() and if that does not determine convergence then checks </font>
-<a name="line397">397: </a><font color="#B22222">      convergence for the least squares problem.</font>
+<a name="line399">399: </a><font color="#B22222">/*@C</font>
+<a name="line400">400: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A> - Determines convergence of the LSQR Krylov method. This calls <A href="../../../../../docs/manualpages/KSP/KSPDefaultConverged.html#KSPDefaultConverged">KSPDefaultConverged</A>() and if that does not determine convergence then checks </font>
+<a name="line401">401: </a><font color="#B22222">      convergence for the least squares problem.</font>
 
-<a name="line399">399: </a><font color="#B22222">   Collective on <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+<a name="line403">403: </a><font color="#B22222">   Collective on <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
 
-<a name="line401">401: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line402">402: </a><font color="#B22222">+  ksp   - iterative context</font>
-<a name="line403">403: </a><font color="#B22222">.  n     - iteration number</font>
-<a name="line404">404: </a><font color="#B22222">.  rnorm - 2-norm residual value (may be estimated)</font>
-<a name="line405">405: </a><font color="#B22222">-  ctx - convergence context which must be created by <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedCreate.html#KSPDefaultConvergedCreate">KSPDefaultConvergedCreate</A>()</font>
+<a name="line405">405: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line406">406: </a><font color="#B22222">+  ksp   - iterative context</font>
+<a name="line407">407: </a><font color="#B22222">.  n     - iteration number</font>
+<a name="line408">408: </a><font color="#B22222">.  rnorm - 2-norm residual value (may be estimated)</font>
+<a name="line409">409: </a><font color="#B22222">-  ctx - convergence context which must be created by <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedCreate.html#KSPDefaultConvergedCreate">KSPDefaultConvergedCreate</A>()</font>
 
-<a name="line407">407: </a><font color="#B22222">   reason is set to:</font>
-<a name="line408">408: </a><font color="#B22222">+   positive - if the iteration has converged;</font>
-<a name="line409">409: </a><font color="#B22222">.   negative - if residual norm exceeds divergence threshold;</font>
-<a name="line410">410: </a><font color="#B22222">-   0 - otherwise.</font>
+<a name="line411">411: </a><font color="#B22222">   reason is set to:</font>
+<a name="line412">412: </a><font color="#B22222">+   positive - if the iteration has converged;</font>
+<a name="line413">413: </a><font color="#B22222">.   negative - if residual norm exceeds divergence threshold;</font>
+<a name="line414">414: </a><font color="#B22222">-   0 - otherwise.</font>
 
-<a name="line412">412: </a><font color="#B22222">   Notes:</font>
-<a name="line413">413: </a><font color="#B22222">      Possible convergence for the least squares problem (which is based on the residual of the normal equations) are KSP_CONVERGED_RTOL_NORMAL norm and KSP_CONVERGED_ATOL_NORMAL.</font>
+<a name="line416">416: </a><font color="#B22222">   Notes:</font>
+<a name="line417">417: </a><font color="#B22222">      Possible convergence for the least squares problem (which is based on the residual of the normal equations) are KSP_CONVERGED_RTOL_NORMAL norm and KSP_CONVERGED_ATOL_NORMAL.</font>
 
-<a name="line415">415: </a><font color="#B22222">   Level: intermediate</font>
+<a name="line419">419: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line417">417: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, default, convergence, residual</font>
+<a name="line421">421: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, default, convergence, residual</font>
 
-<a name="line419">419: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/KSP/KSPSetConvergenceTest.html#KSPSetConvergenceTest">KSPSetConvergenceTest</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSkipConverged.html#KSPSkipConverged">KSPSkipConverged</A>(), <A href="../../../../../docs/manualpages/KSP/KSPConvergedReason.html#KSPConvergedReason">KSPConvergedReason</A>, <A href="../../../../../docs/manualpages/KSP/KSPGetConvergedReason.html#KSPGetConvergedReason">KSPGetConvergedReason</A>(),</font>
-<a name="line420">420: </a><font color="#B22222">          <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedSetUIRNorm.html#KSPDefaultConvergedSetUIRNorm">KSPDefaultConvergedSetUIRNorm</A>(), <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedSetUMIRNorm.html#KSPDefaultConvergedSetUMIRNorm">KSPDefaultConvergedSetUMIRNorm</A>(), <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedCreate.html#KSPDefaultConvergedCreate">KSPDefaultConvergedCreate</A>(), <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedDestroy.html#KSPDefaultConvergedDestroy">KSPDefaultConvergedDestroy</A>(), <A href="../../../../../docs/manualpages/KSP/KSPDefaultConverged.html#KSPDefaultConverged">KSPDefaultConverged</A>()</font>
-<a name="line421">421: </a><font color="#B22222">@*/</font>
-<a name="line422">422: </a><strong><font color="#4169E1"><a name="KSPLSQRDefaultConverged"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A>(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rnorm,<A href="../../../../../docs/manualpages/KSP/KSPConvergedReason.html#KSPConvergedReason">KSPConvergedReason</A> *reason,void *ctx)</font></strong>
-<a name="line423">423: </a>{
-<a name="line424">424: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>         ierr;
-<a name="line425">425: </a>  KSP_LSQR               *lsqr = (KSP_LSQR*)ksp-&gt;data;
+<a name="line423">423: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/KSP/KSPSetConvergenceTest.html#KSPSetConvergenceTest">KSPSetConvergenceTest</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSkipConverged.html#KSPSkipConverged">KSPSkipConverged</A>(), <A href="../../../../../docs/manualpages/KSP/KSPConvergedReason.html#KSPConvergedReason">KSPConvergedReason</A>, <A href="../../../../../docs/manualpages/KSP/KSPGetConvergedReason.html#KSPGetConvergedReason">KSPGetConvergedReason</A>(),</font>
+<a name="line424">424: </a><font color="#B22222">          <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedSetUIRNorm.html#KSPDefaultConvergedSetUIRNorm">KSPDefaultConvergedSetUIRNorm</A>(), <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedSetUMIRNorm.html#KSPDefaultConvergedSetUMIRNorm">KSPDefaultConvergedSetUMIRNorm</A>(), <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedCreate.html#KSPDefaultConvergedCreate">KSPDefaultConvergedCreate</A>(), <A href="../../../../../docs/manualpages/KSP/KSPDefaultConvergedDestroy.html#KSPDefaultConvergedDestroy">KSPDefaultConvergedDestroy</A>(), <A href="../../../../../docs/manualpages/KSP/KSPDefaultConverged.html#KSPDefaultConverged">KSPDefaultConverged</A>()</font>
+<a name="line425">425: </a><font color="#B22222">@*/</font>
+<a name="line426">426: </a><strong><font color="#4169E1"><a name="KSPLSQRDefaultConverged"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A>(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rnorm,<A href="../../../../../docs/manualpages/KSP/KSPConvergedReason.html#KSPConvergedReason">KSPConvergedReason</A> *reason,void *ctx)</font></strong>
+<a name="line427">427: </a>{
+<a name="line428">428: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>         ierr;
+<a name="line429">429: </a>  KSP_LSQR               *lsqr = (KSP_LSQR*)ksp-&gt;data;
 
-<a name="line428">428: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDefaultConverged.html#KSPDefaultConverged">KSPDefaultConverged</A>(ksp,n,rnorm,reason,ctx);
-<a name="line429">429: </a>  <font color="#4169E1">if</font> (!n || *reason) <font color="#4169E1">return</font>(0);
-<a name="line430">430: </a>  <font color="#4169E1">if</font> (lsqr-&gt;arnorm/lsqr-&gt;rhs_norm &lt; ksp-&gt;rtol) {
-<a name="line431">431: </a>    *reason = KSP_CONVERGED_RTOL_NORMAL;
-<a name="line432">432: </a>  }
-<a name="line433">433: </a>  <font color="#4169E1">if</font> (lsqr-&gt;arnorm &lt; ksp-&gt;abstol) {
-<a name="line434">434: </a>    *reason = KSP_CONVERGED_ATOL_NORMAL;
-<a name="line435">435: </a>  }
-<a name="line436">436: </a>  <font color="#4169E1">return</font>(0);
-<a name="line437">437: </a>}
+<a name="line432">432: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDefaultConverged.html#KSPDefaultConverged">KSPDefaultConverged</A>(ksp,n,rnorm,reason,ctx);
+<a name="line433">433: </a>  <font color="#4169E1">if</font> (!n || *reason) <font color="#4169E1">return</font>(0);
+<a name="line434">434: </a>  <font color="#4169E1">if</font> (lsqr-&gt;arnorm/lsqr-&gt;rhs_norm &lt; ksp-&gt;rtol) {
+<a name="line435">435: </a>    *reason = KSP_CONVERGED_RTOL_NORMAL;
+<a name="line436">436: </a>  }
+<a name="line437">437: </a>  <font color="#4169E1">if</font> (lsqr-&gt;arnorm &lt; ksp-&gt;abstol) {
+<a name="line438">438: </a>    *reason = KSP_CONVERGED_ATOL_NORMAL;
+<a name="line439">439: </a>  }
+<a name="line440">440: </a>  <font color="#4169E1">return</font>(0);
+<a name="line441">441: </a>}
 
 
 
-<a name="line441">441: </a><font color="#B22222">/*MC</font>
-<a name="line442">442: </a><font color="#B22222">     <A href="../../../../../docs/manualpages/KSP/KSPLSQR.html#KSPLSQR">KSPLSQR</A> - This implements LSQR</font>
+<a name="line445">445: </a><font color="#B22222">/*MC</font>
+<a name="line446">446: </a><font color="#B22222">     <A href="../../../../../docs/manualpages/KSP/KSPLSQR.html#KSPLSQR">KSPLSQR</A> - This implements LSQR</font>
 
-<a name="line444">444: </a><font color="#B22222">   Options Database Keys:</font>
-<a name="line445">445: </a><font color="#B22222">.   see <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>()</font>
+<a name="line448">448: </a><font color="#B22222">   Options Database Keys:</font>
+<a name="line449">449: </a><font color="#B22222">+   -ksp_lsqr_set_standard_error  - Set Standard Error Estimates of Solution see KSPLSQRSetStandardErrorVec()</font>
+<a name="line450">450: </a><font color="#B22222">.   -ksp_lsqr_monitor - Monitor residual norm and norm of residual of normal equations</font>
+<a name="line451">451: </a><font color="#B22222">-   see <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>()</font>
 
-<a name="line447">447: </a><font color="#B22222">   Level: beginner</font>
+<a name="line453">453: </a><font color="#B22222">   Level: beginner</font>
 
-<a name="line449">449: </a><font color="#B22222">   Notes:  </font>
-<a name="line450">450: </a><font color="#B22222">     This varient, when applied with no preconditioning is identical to the original algorithm in exact arithematic; however, in practice, with no preconditioning</font>
-<a name="line451">451: </a><font color="#B22222">     due to inexact arithematic, it can converge differently. Hence when no preconditioner is used (<A href="../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> <A href="../../../../../docs/manualpages/PC/PCNONE.html#PCNONE">PCNONE</A>) it automatically reverts to the original algorithm.</font>
+<a name="line455">455: </a><font color="#B22222">   Notes:  </font>
+<a name="line456">456: </a><font color="#B22222">     This varient, when applied with no preconditioning is identical to the original algorithm in exact arithematic; however, in practice, with no preconditioning</font>
+<a name="line457">457: </a><font color="#B22222">     due to inexact arithematic, it can converge differently. Hence when no preconditioner is used (<A href="../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> <A href="../../../../../docs/manualpages/PC/PCNONE.html#PCNONE">PCNONE</A>) it automatically reverts to the original algorithm.</font>
 
-<a name="line453">453: </a><font color="#B22222">     With the PETSc built-in preconditioners, such as ICC, one should call <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(ksp,A,A'*A,...) since the preconditioner needs to work </font>
-<a name="line454">454: </a><font color="#B22222">     for the normal equations A'*A.</font>
+<a name="line459">459: </a><font color="#B22222">     With the PETSc built-in preconditioners, such as ICC, one should call <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(ksp,A,A'*A,...) since the preconditioner needs to work </font>
+<a name="line460">460: </a><font color="#B22222">     for the normal equations A'*A.</font>
 
-<a name="line456">456: </a><font color="#B22222">     Supports only left preconditioning.</font>
+<a name="line462">462: </a><font color="#B22222">     Supports only left preconditioning.</font>
 
-<a name="line458">458: </a><font color="#B22222">   References:The original unpreconditioned algorithm can be found in Paige and Saunders, ACM Transactions on Mathematical Software, Vol 8, pp 43-71, 1982. </font>
-<a name="line459">459: </a><font color="#B22222">     In exact arithmetic the LSQR method (with no preconditioning) is identical to the <A href="../../../../../docs/manualpages/KSP/KSPCG.html#KSPCG">KSPCG</A> algorithm applied to the normal equations.</font>
-<a name="line460">460: </a><font color="#B22222">     The preconditioned varient was implemented by Bas van't Hof and is essentially a left preconditioning for the Normal Equations. It appears the implementation with preconditioner</font>
-<a name="line461">461: </a><font color="#B22222">     track the true norm of the residual and uses that in the convergence test.</font>
+<a name="line464">464: </a><font color="#B22222">   References:The original unpreconditioned algorithm can be found in Paige and Saunders, ACM Transactions on Mathematical Software, Vol 8, pp 43-71, 1982. </font>
+<a name="line465">465: </a><font color="#B22222">     In exact arithmetic the LSQR method (with no preconditioning) is identical to the <A href="../../../../../docs/manualpages/KSP/KSPCG.html#KSPCG">KSPCG</A> algorithm applied to the normal equations.</font>
+<a name="line466">466: </a><font color="#B22222">     The preconditioned varient was implemented by Bas van't Hof and is essentially a left preconditioning for the Normal Equations. It appears the implementation with preconditioner</font>
+<a name="line467">467: </a><font color="#B22222">     track the true norm of the residual and uses that in the convergence test.</font>
 
-<a name="line463">463: </a><font color="#B22222">   Developer Notes: How is this related to the <A href="../../../../../docs/manualpages/KSP/KSPCGNE.html#KSPCGNE">KSPCGNE</A> implementation? One difference is that <A href="../../../../../docs/manualpages/KSP/KSPCGNE.html#KSPCGNE">KSPCGNE</A> applies</font>
-<a name="line464">464: </a><font color="#B22222">            the preconditioner transpose times the preconditioner,  so one does not need to pass A'*A as the third argument to <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>().</font>
-<a name="line465">465: </a><font color="#B22222">            </font>
+<a name="line469">469: </a><font color="#B22222">   Developer Notes: How is this related to the <A href="../../../../../docs/manualpages/KSP/KSPCGNE.html#KSPCGNE">KSPCGNE</A> implementation? One difference is that <A href="../../../../../docs/manualpages/KSP/KSPCGNE.html#KSPCGNE">KSPCGNE</A> applies</font>
+<a name="line470">470: </a><font color="#B22222">            the preconditioner transpose times the preconditioner,  so one does not need to pass A'*A as the third argument to <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>().</font>
+<a name="line471">471: </a><font color="#B22222">            </font>
 
-<a name="line467">467: </a><font color="#B22222">   For least squares problems without a zero to A*x = b, there are additional convergence tests for the residual of the normal equations, A'*(b - Ax), see <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A>()</font>
+<a name="line473">473: </a><font color="#B22222">   For least squares problems without a zero to A*x = b, there are additional convergence tests for the residual of the normal equations, A'*(b - Ax), see <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A>()</font>
 
-<a name="line469">469: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A href="../../../../../docs/manualpages/KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A>()</font>
+<a name="line475">475: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A href="../../../../../docs/manualpages/KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A>()</font>
 
-<a name="line471">471: </a><font color="#B22222">M*/</font>
-<a name="line475">475: </a><strong><font color="#4169E1"><a name="KSPCreate_LSQR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_LSQR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
-<a name="line476">476: </a>{
-<a name="line477">477: </a>  KSP_LSQR       *lsqr;
+<a name="line477">477: </a><font color="#B22222">M*/</font>
+<a name="line478">478: </a>EXTERN_C_BEGIN
+<a name="line481">481: </a><strong><font color="#4169E1"><a name="KSPCreate_LSQR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_LSQR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
+<a name="line482">482: </a>{
+<a name="line483">483: </a>  KSP_LSQR       *lsqr;
 
-<a name="line481">481: </a>  <A href="../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(ksp,KSP_LSQR,&amp;lsqr);
-<a name="line482">482: </a>  lsqr-&gt;se     = <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line483">483: </a>  lsqr-&gt;se_flg = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line484">484: </a>  lsqr-&gt;arnorm = 0.0;
-<a name="line485">485: </a>  ksp-&gt;data                      = (void*)lsqr;
-<a name="line486">486: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetSupportedNorm.html#KSPSetSupportedNorm">KSPSetSupportedNorm</A>(ksp,<A href="../../../../../docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED.html#KSP_NORM_UNPRECONDITIONED">KSP_NORM_UNPRECONDITIONED</A>,PC_LEFT,2);
+<a name="line487">487: </a>  <A href="../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(ksp,KSP_LSQR,&amp;lsqr);
+<a name="line488">488: </a>  lsqr-&gt;se     = <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line489">489: </a>  lsqr-&gt;se_flg = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line490">490: </a>  lsqr-&gt;arnorm = 0.0;
+<a name="line491">491: </a>  ksp-&gt;data                      = (void*)lsqr;
+<a name="line492">492: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetSupportedNorm.html#KSPSetSupportedNorm">KSPSetSupportedNorm</A>(ksp,<A href="../../../../../docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED.html#KSP_NORM_UNPRECONDITIONED">KSP_NORM_UNPRECONDITIONED</A>,PC_LEFT,2);
 
-<a name="line488">488: </a>  ksp-&gt;ops-&gt;setup                = KSPSetUp_LSQR;
-<a name="line489">489: </a>  ksp-&gt;ops-&gt;solve                = KSPSolve_LSQR;
-<a name="line490">490: </a>  ksp-&gt;ops-&gt;destroy              = KSPDestroy_LSQR;
-<a name="line491">491: </a>  ksp-&gt;ops-&gt;buildsolution        = KSPDefaultBuildSolution;
-<a name="line492">492: </a>  ksp-&gt;ops-&gt;buildresidual        = KSPDefaultBuildResidual;
-<a name="line493">493: </a>  ksp-&gt;ops-&gt;setfromoptions       = KSPSetFromOptions_LSQR;
-<a name="line494">494: </a>  ksp-&gt;ops-&gt;view                 = KSPView_LSQR;
-<a name="line495">495: </a>  ksp-&gt;converged                 = <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A>;
-<a name="line496">496: </a>  <font color="#4169E1">return</font>(0);
-<a name="line497">497: </a>}
+<a name="line494">494: </a>  ksp-&gt;ops-&gt;setup                = KSPSetUp_LSQR;
+<a name="line495">495: </a>  ksp-&gt;ops-&gt;solve                = KSPSolve_LSQR;
+<a name="line496">496: </a>  ksp-&gt;ops-&gt;destroy              = KSPDestroy_LSQR;
+<a name="line497">497: </a>  ksp-&gt;ops-&gt;buildsolution        = KSPDefaultBuildSolution;
+<a name="line498">498: </a>  ksp-&gt;ops-&gt;buildresidual        = KSPDefaultBuildResidual;
+<a name="line499">499: </a>  ksp-&gt;ops-&gt;setfromoptions       = KSPSetFromOptions_LSQR;
+<a name="line500">500: </a>  ksp-&gt;ops-&gt;view                 = KSPView_LSQR;
+<a name="line501">501: </a>  ksp-&gt;converged                 = <A href="../../../../../docs/manualpages/KSP/KSPLSQRDefaultConverged.html#KSPLSQRDefaultConverged">KSPLSQRDefaultConverged</A>;
+<a name="line502">502: </a>  <font color="#4169E1">return</font>(0);
+<a name="line503">503: </a>}
+<a name="line504">504: </a>EXTERN_C_END
 
-<a name="line502">502: </a><strong><font color="#4169E1"><a name="VecSquare"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  VecSquare(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v)</font></strong>
-<a name="line503">503: </a>{
-<a name="line505">505: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *x;
-<a name="line506">506: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i, n;
+<a name="line508">508: </a><strong><font color="#4169E1"><a name="VecSquare"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  VecSquare(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v)</font></strong>
+<a name="line509">509: </a>{
+<a name="line511">511: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *x;
+<a name="line512">512: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i, n;
 
-<a name="line509">509: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(v, &amp;n);
-<a name="line510">510: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(v, &amp;x);
-<a name="line511">511: </a>  <font color="#4169E1">for</font>(i = 0; i &lt; n; i++) {
-<a name="line512">512: </a>    x[i] *= x[i];
-<a name="line513">513: </a>  }
-<a name="line514">514: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(v, &amp;x);
-<a name="line515">515: </a>  <font color="#4169E1">return</font>(0);
-<a name="line516">516: </a>}
+<a name="line515">515: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(v, &amp;n);
+<a name="line516">516: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(v, &amp;x);
+<a name="line517">517: </a>  <font color="#4169E1">for</font>(i = 0; i &lt; n; i++) {
+<a name="line518">518: </a>    x[i] *= x[i];
+<a name="line519">519: </a>  }
+<a name="line520">520: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(v, &amp;x);
+<a name="line521">521: </a>  <font color="#4169E1">return</font>(0);
+<a name="line522">522: </a>}
 
 </pre>
 </body>

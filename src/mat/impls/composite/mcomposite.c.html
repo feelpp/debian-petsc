@@ -1,15 +1,16 @@
 <center><a href="mcomposite.c">Actual source code: mcomposite.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/composite/mcomposite.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:15+00:00">
+<meta name="date" content="2012-08-29T16:50:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;        </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;        </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line4">  4: </a><font color="#4169E1">typedef struct _Mat_CompositeLink *Mat_CompositeLink;</font>
 <a name="line5">  5: </a><font color="#4169E1"><a name="_Mat_CompositeLink"></a>struct _Mat_CompositeLink </font>{
@@ -343,6 +344,7 @@
 <a name="line362">362: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(), <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeMerge.html#MatCompositeMerge">MatCompositeMerge</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeSetType.html#MatCompositeSetType">MatCompositeSetType</A>(), MatCompositeType</font>
 <a name="line363">363: </a><font color="#B22222">M*/</font>
 
+<a name="line365">365: </a>EXTERN_C_BEGIN
 <a name="line368">368: </a><strong><font color="#4169E1"><a name="MatCreate_Composite"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreate_Composite(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
 <a name="line369">369: </a>{
 <a name="line370">370: </a>  Mat_Composite  *b;
@@ -351,197 +353,196 @@
 <a name="line375">375: </a>  A-&gt;data = (void*)b;
 <a name="line376">376: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(A-&gt;ops,&amp;MatOps_Values,<font color="#4169E1">sizeof</font>(<font color="#4169E1">struct _MatOps</font>));
 
-<a name="line378">378: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>(A-&gt;rmap,1);
-<a name="line379">379: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>(A-&gt;cmap,1);
-<a name="line380">380: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(A-&gt;rmap);
-<a name="line381">381: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(A-&gt;cmap);
+<a name="line378">378: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(A-&gt;rmap);
+<a name="line379">379: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(A-&gt;cmap);
 
-<a name="line383">383: </a>  A-&gt;assembled     = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line384">384: </a>  A-&gt;preallocated  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line385">385: </a>  b-&gt;type          = MAT_COMPOSITE_ADDITIVE;
-<a name="line386">386: </a>  b-&gt;scale         = 1.0;
-<a name="line387">387: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>);
-<a name="line388">388: </a>  <font color="#4169E1">return</font>(0);
-<a name="line389">389: </a>}
+<a name="line381">381: </a>  A-&gt;assembled     = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line382">382: </a>  A-&gt;preallocated  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line383">383: </a>  b-&gt;type          = MAT_COMPOSITE_ADDITIVE;
+<a name="line384">384: </a>  b-&gt;scale         = 1.0;
+<a name="line385">385: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>);
+<a name="line386">386: </a>  <font color="#4169E1">return</font>(0);
+<a name="line387">387: </a>}
+<a name="line388">388: </a>EXTERN_C_END
 
-<a name="line394">394: </a><font color="#B22222">/*@C</font>
-<a name="line395">395: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A> - Creates a matrix as the sum of zero or more matrices</font>
+<a name="line392">392: </a><font color="#B22222">/*@C</font>
+<a name="line393">393: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A> - Creates a matrix as the sum of zero or more matrices</font>
 
-<a name="line397">397: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+<a name="line395">395: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
 
-<a name="line399">399: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line400">400: </a><font color="#B22222">+  comm - MPI communicator</font>
-<a name="line401">401: </a><font color="#B22222">.  nmat - number of matrices to put in</font>
-<a name="line402">402: </a><font color="#B22222">-  mats - the matrices</font>
+<a name="line397">397: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line398">398: </a><font color="#B22222">+  comm - MPI communicator</font>
+<a name="line399">399: </a><font color="#B22222">.  nmat - number of matrices to put in</font>
+<a name="line400">400: </a><font color="#B22222">-  mats - the matrices</font>
 
-<a name="line404">404: </a><font color="#B22222">   Output Parameter:</font>
-<a name="line405">405: </a><font color="#B22222">.  A - the matrix</font>
+<a name="line402">402: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line403">403: </a><font color="#B22222">.  A - the matrix</font>
 
-<a name="line407">407: </a><font color="#B22222">   Level: advanced</font>
+<a name="line405">405: </a><font color="#B22222">   Level: advanced</font>
 
-<a name="line409">409: </a><font color="#B22222">   Notes:</font>
-<a name="line410">410: </a><font color="#B22222">     Alternative construction </font>
-<a name="line411">411: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,&amp;mat);</font>
-<a name="line412">412: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(mat,m,n,M,N);</font>
-<a name="line413">413: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(mat,<A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>);</font>
-<a name="line414">414: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(mat,mats[0]);</font>
-<a name="line415">415: </a><font color="#B22222">$       ....</font>
-<a name="line416">416: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(mat,mats[nmat-1]);</font>
-<a name="line417">417: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(mat,MAT_FINAL_ASSEMBLY);</font>
-<a name="line418">418: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(mat,MAT_FINAL_ASSEMBLY);</font>
+<a name="line407">407: </a><font color="#B22222">   Notes:</font>
+<a name="line408">408: </a><font color="#B22222">     Alternative construction </font>
+<a name="line409">409: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,&amp;mat);</font>
+<a name="line410">410: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(mat,m,n,M,N);</font>
+<a name="line411">411: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(mat,<A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>);</font>
+<a name="line412">412: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(mat,mats[0]);</font>
+<a name="line413">413: </a><font color="#B22222">$       ....</font>
+<a name="line414">414: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(mat,mats[nmat-1]);</font>
+<a name="line415">415: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(mat,MAT_FINAL_ASSEMBLY);</font>
+<a name="line416">416: </a><font color="#B22222">$       <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(mat,MAT_FINAL_ASSEMBLY);</font>
 
-<a name="line420">420: </a><font color="#B22222">     For the multiplicative form the product is mat[nmat-1]*mat[nmat-2]*....*mat[0]</font>
+<a name="line418">418: </a><font color="#B22222">     For the multiplicative form the product is mat[nmat-1]*mat[nmat-2]*....*mat[0]</font>
 
-<a name="line422">422: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(), <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeMerge.html#MatCompositeMerge">MatCompositeMerge</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeSetType.html#MatCompositeSetType">MatCompositeSetType</A>(), MatCompositeType</font>
+<a name="line420">420: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(), <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeMerge.html#MatCompositeMerge">MatCompositeMerge</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeSetType.html#MatCompositeSetType">MatCompositeSetType</A>(), MatCompositeType</font>
 
-<a name="line424">424: </a><font color="#B22222">@*/</font>
-<a name="line425">425: </a><strong><font color="#4169E1"><a name="MatCreateComposite"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nmat,const <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *mats,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *mat)</font></strong>
-<a name="line426">426: </a>{
-<a name="line428">428: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m,n,M,N,i;
-<a name="line429">429: </a>
-<a name="line431">431: </a>  <font color="#4169E1">if</font> (nmat &lt; 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Must pass in at least one matrix"</font>);
+<a name="line422">422: </a><font color="#B22222">@*/</font>
+<a name="line423">423: </a><strong><font color="#4169E1"><a name="MatCreateComposite"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nmat,const <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *mats,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *mat)</font></strong>
+<a name="line424">424: </a>{
+<a name="line426">426: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m,n,M,N,i;
+<a name="line427">427: </a>
+<a name="line429">429: </a>  <font color="#4169E1">if</font> (nmat &lt; 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Must pass in at least one matrix"</font>);
 
-<a name="line434">434: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(mats[0],&amp;m,&amp;n);
-<a name="line435">435: </a>  <A href="../../../../docs/manualpages/Mat/MatGetSize.html#MatGetSize">MatGetSize</A>(mats[0],&amp;M,&amp;N);
-<a name="line436">436: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,mat);
-<a name="line437">437: </a>  <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*mat,m,n,M,N);
-<a name="line438">438: </a>  <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*mat,<A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>);
-<a name="line439">439: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nmat; i++) {
-<a name="line440">440: </a>    <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(*mat,mats[i]);
-<a name="line441">441: </a>  }
-<a name="line442">442: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(*mat,MAT_FINAL_ASSEMBLY);
-<a name="line443">443: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(*mat,MAT_FINAL_ASSEMBLY);
-<a name="line444">444: </a>  <font color="#4169E1">return</font>(0);
-<a name="line445">445: </a>}
+<a name="line432">432: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(mats[0],&amp;m,&amp;n);
+<a name="line433">433: </a>  <A href="../../../../docs/manualpages/Mat/MatGetSize.html#MatGetSize">MatGetSize</A>(mats[0],&amp;M,&amp;N);
+<a name="line434">434: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,mat);
+<a name="line435">435: </a>  <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*mat,m,n,M,N);
+<a name="line436">436: </a>  <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*mat,<A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>);
+<a name="line437">437: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nmat; i++) {
+<a name="line438">438: </a>    <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(*mat,mats[i]);
+<a name="line439">439: </a>  }
+<a name="line440">440: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(*mat,MAT_FINAL_ASSEMBLY);
+<a name="line441">441: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(*mat,MAT_FINAL_ASSEMBLY);
+<a name="line442">442: </a>  <font color="#4169E1">return</font>(0);
+<a name="line443">443: </a>}
 
-<a name="line449">449: </a><font color="#B22222">/*@</font>
-<a name="line450">450: </a><font color="#B22222">    <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A> - add another matrix to a composite matrix</font>
+<a name="line447">447: </a><font color="#B22222">/*@</font>
+<a name="line448">448: </a><font color="#B22222">    <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A> - add another matrix to a composite matrix</font>
 
-<a name="line452">452: </a><font color="#B22222">   Collective on <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
+<a name="line450">450: </a><font color="#B22222">   Collective on <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
 
-<a name="line454">454: </a><font color="#B22222">    Input Parameters:</font>
-<a name="line455">455: </a><font color="#B22222">+   mat - the composite matrix</font>
-<a name="line456">456: </a><font color="#B22222">-   smat - the partial matrix</font>
+<a name="line452">452: </a><font color="#B22222">    Input Parameters:</font>
+<a name="line453">453: </a><font color="#B22222">+   mat - the composite matrix</font>
+<a name="line454">454: </a><font color="#B22222">-   smat - the partial matrix</font>
 
-<a name="line458">458: </a><font color="#B22222">   Level: advanced</font>
+<a name="line456">456: </a><font color="#B22222">   Level: advanced</font>
 
-<a name="line460">460: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>()</font>
-<a name="line461">461: </a><font color="#B22222">@*/</font>
-<a name="line462">462: </a><strong><font color="#4169E1"><a name="MatCompositeAddMat"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> smat)</font></strong>
-<a name="line463">463: </a>{
-<a name="line464">464: </a>  Mat_Composite     *shell;
-<a name="line465">465: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
-<a name="line466">466: </a>  Mat_CompositeLink ilink,next;
+<a name="line458">458: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>()</font>
+<a name="line459">459: </a><font color="#B22222">@*/</font>
+<a name="line460">460: </a><strong><font color="#4169E1"><a name="MatCompositeAddMat"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> smat)</font></strong>
+<a name="line461">461: </a>{
+<a name="line462">462: </a>  Mat_Composite     *shell;
+<a name="line463">463: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line464">464: </a>  Mat_CompositeLink ilink,next;
 
-<a name="line471">471: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(mat,<font color="#4169E1">struct _Mat_CompositeLink</font>,&amp;ilink);
-<a name="line472">472: </a>  ilink-&gt;next = 0;
-<a name="line473">473: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)smat);
-<a name="line474">474: </a>  ilink-&gt;mat  = smat;
+<a name="line469">469: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(mat,<font color="#4169E1">struct _Mat_CompositeLink</font>,&amp;ilink);
+<a name="line470">470: </a>  ilink-&gt;next = 0;
+<a name="line471">471: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)smat);
+<a name="line472">472: </a>  ilink-&gt;mat  = smat;
 
-<a name="line476">476: </a>  shell = (Mat_Composite*)mat-&gt;data;
-<a name="line477">477: </a>  next = shell-&gt;head;
-<a name="line478">478: </a>  <font color="#4169E1">if</font> (!next) {
-<a name="line479">479: </a>    shell-&gt;head  = ilink;
-<a name="line480">480: </a>  } <font color="#4169E1">else</font> {
-<a name="line481">481: </a>    <font color="#4169E1">while</font> (next-&gt;next) {
-<a name="line482">482: </a>      next = next-&gt;next;
-<a name="line483">483: </a>    }
-<a name="line484">484: </a>    next-&gt;next      = ilink;
-<a name="line485">485: </a>    ilink-&gt;prev     = next;
-<a name="line486">486: </a>  }
-<a name="line487">487: </a>  shell-&gt;tail = ilink;
-<a name="line488">488: </a>  <font color="#4169E1">return</font>(0);
-<a name="line489">489: </a>}
+<a name="line474">474: </a>  shell = (Mat_Composite*)mat-&gt;data;
+<a name="line475">475: </a>  next = shell-&gt;head;
+<a name="line476">476: </a>  <font color="#4169E1">if</font> (!next) {
+<a name="line477">477: </a>    shell-&gt;head  = ilink;
+<a name="line478">478: </a>  } <font color="#4169E1">else</font> {
+<a name="line479">479: </a>    <font color="#4169E1">while</font> (next-&gt;next) {
+<a name="line480">480: </a>      next = next-&gt;next;
+<a name="line481">481: </a>    }
+<a name="line482">482: </a>    next-&gt;next      = ilink;
+<a name="line483">483: </a>    ilink-&gt;prev     = next;
+<a name="line484">484: </a>  }
+<a name="line485">485: </a>  shell-&gt;tail = ilink;
+<a name="line486">486: </a>  <font color="#4169E1">return</font>(0);
+<a name="line487">487: </a>}
 
-<a name="line493">493: </a><font color="#B22222">/*@C</font>
-<a name="line494">494: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatCompositeSetType.html#MatCompositeSetType">MatCompositeSetType</A> - Indicates if the matrix is defined as the sum of a set of matrices or the product</font>
+<a name="line491">491: </a><font color="#B22222">/*@C</font>
+<a name="line492">492: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatCompositeSetType.html#MatCompositeSetType">MatCompositeSetType</A> - Indicates if the matrix is defined as the sum of a set of matrices or the product</font>
 
-<a name="line496">496: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+<a name="line494">494: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
 
-<a name="line498">498: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line499">499: </a><font color="#B22222">.  mat - the composite matrix</font>
-
-
-<a name="line502">502: </a><font color="#B22222">   Level: advanced</font>
-
-<a name="line504">504: </a><font color="#B22222">   Notes:</font>
-<a name="line505">505: </a><font color="#B22222">      The <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> of the resulting matrix will be the same as the <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> of the FIRST</font>
-<a name="line506">506: </a><font color="#B22222">    matrix in the composite matrix.</font>
-
-<a name="line508">508: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(), <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>(), <A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A></font>
-
-<a name="line510">510: </a><font color="#B22222">@*/</font>
-<a name="line511">511: </a><strong><font color="#4169E1"><a name="MatCompositeSetType"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCompositeSetType.html#MatCompositeSetType">MatCompositeSetType</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,MatCompositeType type)</font></strong>
-<a name="line512">512: </a>{
-<a name="line513">513: </a>  Mat_Composite  *b = (Mat_Composite*)mat-&gt;data;
-<a name="line514">514: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
-
-<a name="line518">518: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>,&amp;flg);
-<a name="line519">519: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Can only use with composite matrix"</font>);
-<a name="line520">520: </a>  <font color="#4169E1">if</font> (type == MAT_COMPOSITE_MULTIPLICATIVE) {
-<a name="line521">521: </a>    mat-&gt;ops-&gt;getdiagonal   = 0;
-<a name="line522">522: </a>    mat-&gt;ops-&gt;mult          = MatMult_Composite_Multiplicative;
-<a name="line523">523: </a>    mat-&gt;ops-&gt;multtranspose = MatMultTranspose_Composite_Multiplicative;
-<a name="line524">524: </a>    b-&gt;type                 = MAT_COMPOSITE_MULTIPLICATIVE;
-<a name="line525">525: </a>  } <font color="#4169E1">else</font> {
-<a name="line526">526: </a>    mat-&gt;ops-&gt;getdiagonal   = MatGetDiagonal_Composite;
-<a name="line527">527: </a>    mat-&gt;ops-&gt;mult          = MatMult_Composite;
-<a name="line528">528: </a>    mat-&gt;ops-&gt;multtranspose = MatMultTranspose_Composite;
-<a name="line529">529: </a>    b-&gt;type                 = MAT_COMPOSITE_ADDITIVE;
-<a name="line530">530: </a>  }
-<a name="line531">531: </a>  <font color="#4169E1">return</font>(0);
-<a name="line532">532: </a>}
+<a name="line496">496: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line497">497: </a><font color="#B22222">.  mat - the composite matrix</font>
 
 
-<a name="line537">537: </a><font color="#B22222">/*@C</font>
-<a name="line538">538: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatCompositeMerge.html#MatCompositeMerge">MatCompositeMerge</A> - Given a composite matrix, replaces it with a "regular" matrix</font>
-<a name="line539">539: </a><font color="#B22222">     by summing all the matrices inside the composite matrix.</font>
+<a name="line500">500: </a><font color="#B22222">   Level: advanced</font>
 
-<a name="line541">541: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+<a name="line502">502: </a><font color="#B22222">   Notes:</font>
+<a name="line503">503: </a><font color="#B22222">      The <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> of the resulting matrix will be the same as the <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> of the FIRST</font>
+<a name="line504">504: </a><font color="#B22222">    matrix in the composite matrix.</font>
 
-<a name="line543">543: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line544">544: </a><font color="#B22222">.  mat - the composite matrix</font>
+<a name="line506">506: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(), <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>(), <A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A></font>
+
+<a name="line508">508: </a><font color="#B22222">@*/</font>
+<a name="line509">509: </a><strong><font color="#4169E1"><a name="MatCompositeSetType"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCompositeSetType.html#MatCompositeSetType">MatCompositeSetType</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,MatCompositeType type)</font></strong>
+<a name="line510">510: </a>{
+<a name="line511">511: </a>  Mat_Composite  *b = (Mat_Composite*)mat-&gt;data;
+<a name="line512">512: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
+
+<a name="line516">516: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,<A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>,&amp;flg);
+<a name="line517">517: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Can only use with composite matrix"</font>);
+<a name="line518">518: </a>  <font color="#4169E1">if</font> (type == MAT_COMPOSITE_MULTIPLICATIVE) {
+<a name="line519">519: </a>    mat-&gt;ops-&gt;getdiagonal   = 0;
+<a name="line520">520: </a>    mat-&gt;ops-&gt;mult          = MatMult_Composite_Multiplicative;
+<a name="line521">521: </a>    mat-&gt;ops-&gt;multtranspose = MatMultTranspose_Composite_Multiplicative;
+<a name="line522">522: </a>    b-&gt;type                 = MAT_COMPOSITE_MULTIPLICATIVE;
+<a name="line523">523: </a>  } <font color="#4169E1">else</font> {
+<a name="line524">524: </a>    mat-&gt;ops-&gt;getdiagonal   = MatGetDiagonal_Composite;
+<a name="line525">525: </a>    mat-&gt;ops-&gt;mult          = MatMult_Composite;
+<a name="line526">526: </a>    mat-&gt;ops-&gt;multtranspose = MatMultTranspose_Composite;
+<a name="line527">527: </a>    b-&gt;type                 = MAT_COMPOSITE_ADDITIVE;
+<a name="line528">528: </a>  }
+<a name="line529">529: </a>  <font color="#4169E1">return</font>(0);
+<a name="line530">530: </a>}
 
 
-<a name="line547">547: </a><font color="#B22222">   Options Database:</font>
-<a name="line548">548: </a><font color="#B22222">.  -mat_composite_merge  (you must call <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>()/<A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>() to have this checked)</font>
+<a name="line535">535: </a><font color="#B22222">/*@C</font>
+<a name="line536">536: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatCompositeMerge.html#MatCompositeMerge">MatCompositeMerge</A> - Given a composite matrix, replaces it with a "regular" matrix</font>
+<a name="line537">537: </a><font color="#B22222">     by summing all the matrices inside the composite matrix.</font>
 
-<a name="line550">550: </a><font color="#B22222">   Level: advanced</font>
+<a name="line539">539: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
 
-<a name="line552">552: </a><font color="#B22222">   Notes:</font>
-<a name="line553">553: </a><font color="#B22222">      The <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> of the resulting matrix will be the same as the <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> of the FIRST</font>
-<a name="line554">554: </a><font color="#B22222">    matrix in the composite matrix.</font>
+<a name="line541">541: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line542">542: </a><font color="#B22222">.  mat - the composite matrix</font>
 
-<a name="line556">556: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(), <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>(), <A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A></font>
 
-<a name="line558">558: </a><font color="#B22222">@*/</font>
-<a name="line559">559: </a><strong><font color="#4169E1"><a name="MatCompositeMerge"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCompositeMerge.html#MatCompositeMerge">MatCompositeMerge</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat)</font></strong>
-<a name="line560">560: </a>{
-<a name="line561">561: </a>  Mat_Composite     *shell = (Mat_Composite*)mat-&gt;data;
-<a name="line562">562: </a>  Mat_CompositeLink next = shell-&gt;head, prev = shell-&gt;tail;
-<a name="line563">563: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
-<a name="line564">564: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               tmat,newmat;
+<a name="line545">545: </a><font color="#B22222">   Options Database:</font>
+<a name="line546">546: </a><font color="#B22222">.  -mat_composite_merge  (you must call <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>()/<A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>() to have this checked)</font>
 
-<a name="line567">567: </a>  <font color="#4169E1">if</font> (!next) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must provide at least one matrix with <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>()"</font>);
+<a name="line548">548: </a><font color="#B22222">   Level: advanced</font>
 
-<a name="line570">570: </a>  <font color="#4169E1">if</font> (shell-&gt;type == MAT_COMPOSITE_ADDITIVE) {
-<a name="line571">571: </a>    <A href="../../../../docs/manualpages/Mat/MatDuplicate.html#MatDuplicate">MatDuplicate</A>(next-&gt;mat,MAT_COPY_VALUES,&amp;tmat);
-<a name="line572">572: </a>    <font color="#4169E1">while</font> ((next = next-&gt;next)) {
-<a name="line573">573: </a>      <A href="../../../../docs/manualpages/Mat/MatAXPY.html#MatAXPY">MatAXPY</A>(tmat,1.0,next-&gt;mat,DIFFERENT_NONZERO_PATTERN);
-<a name="line574">574: </a>    }
-<a name="line575">575: </a>  } <font color="#4169E1">else</font> {
-<a name="line576">576: </a>    <A href="../../../../docs/manualpages/Mat/MatDuplicate.html#MatDuplicate">MatDuplicate</A>(next-&gt;mat,MAT_COPY_VALUES,&amp;tmat);
-<a name="line577">577: </a>    <font color="#4169E1">while</font> ((prev = prev-&gt;prev)) {
-<a name="line578">578: </a>      <A href="../../../../docs/manualpages/Mat/MatMatMult.html#MatMatMult">MatMatMult</A>(tmat,prev-&gt;mat,MAT_INITIAL_MATRIX,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,&amp;newmat);
-<a name="line579">579: </a>      <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;tmat);
-<a name="line580">580: </a>      tmat = newmat;
-<a name="line581">581: </a>    }
-<a name="line582">582: </a>  }
-<a name="line583">583: </a>  MatHeaderReplace(mat,tmat);
-<a name="line584">584: </a>  <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>(mat,shell-&gt;left,shell-&gt;right);
-<a name="line585">585: </a>  <A href="../../../../docs/manualpages/Mat/MatScale.html#MatScale">MatScale</A>(mat,shell-&gt;scale);
-<a name="line586">586: </a>  <font color="#4169E1">return</font>(0);
-<a name="line587">587: </a>}
+<a name="line550">550: </a><font color="#B22222">   Notes:</font>
+<a name="line551">551: </a><font color="#B22222">      The <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> of the resulting matrix will be the same as the <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> of the FIRST</font>
+<a name="line552">552: </a><font color="#B22222">    matrix in the composite matrix.</font>
+
+<a name="line554">554: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(), <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(), <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateComposite.html#MatCreateComposite">MatCreateComposite</A>(), <A href="../../../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A></font>
+
+<a name="line556">556: </a><font color="#B22222">@*/</font>
+<a name="line557">557: </a><strong><font color="#4169E1"><a name="MatCompositeMerge"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCompositeMerge.html#MatCompositeMerge">MatCompositeMerge</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat)</font></strong>
+<a name="line558">558: </a>{
+<a name="line559">559: </a>  Mat_Composite     *shell = (Mat_Composite*)mat-&gt;data;
+<a name="line560">560: </a>  Mat_CompositeLink next = shell-&gt;head, prev = shell-&gt;tail;
+<a name="line561">561: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line562">562: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               tmat,newmat;
+
+<a name="line565">565: </a>  <font color="#4169E1">if</font> (!next) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Must provide at least one matrix with <A href="../../../../docs/manualpages/Mat/MatCompositeAddMat.html#MatCompositeAddMat">MatCompositeAddMat</A>()"</font>);
+
+<a name="line568">568: </a>  <font color="#4169E1">if</font> (shell-&gt;type == MAT_COMPOSITE_ADDITIVE) {
+<a name="line569">569: </a>    <A href="../../../../docs/manualpages/Mat/MatDuplicate.html#MatDuplicate">MatDuplicate</A>(next-&gt;mat,MAT_COPY_VALUES,&amp;tmat);
+<a name="line570">570: </a>    <font color="#4169E1">while</font> ((next = next-&gt;next)) {
+<a name="line571">571: </a>      <A href="../../../../docs/manualpages/Mat/MatAXPY.html#MatAXPY">MatAXPY</A>(tmat,1.0,next-&gt;mat,DIFFERENT_NONZERO_PATTERN);
+<a name="line572">572: </a>    }
+<a name="line573">573: </a>  } <font color="#4169E1">else</font> {
+<a name="line574">574: </a>    <A href="../../../../docs/manualpages/Mat/MatDuplicate.html#MatDuplicate">MatDuplicate</A>(next-&gt;mat,MAT_COPY_VALUES,&amp;tmat);
+<a name="line575">575: </a>    <font color="#4169E1">while</font> ((prev = prev-&gt;prev)) {
+<a name="line576">576: </a>      <A href="../../../../docs/manualpages/Mat/MatMatMult.html#MatMatMult">MatMatMult</A>(tmat,prev-&gt;mat,MAT_INITIAL_MATRIX,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,&amp;newmat);
+<a name="line577">577: </a>      <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;tmat);
+<a name="line578">578: </a>      tmat = newmat;
+<a name="line579">579: </a>    }
+<a name="line580">580: </a>  }
+<a name="line581">581: </a>  MatHeaderReplace(mat,tmat);
+<a name="line582">582: </a>  <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>(mat,shell-&gt;left,shell-&gt;right);
+<a name="line583">583: </a>  <A href="../../../../docs/manualpages/Mat/MatScale.html#MatScale">MatScale</A>(mat,shell-&gt;scale);
+<a name="line584">584: </a>  <font color="#4169E1">return</font>(0);
+<a name="line585">585: </a>}
 </pre>
 </body>
 

@@ -3,8 +3,8 @@
     Defines parallel vector scatters.
 */
 
-#include <private/isimpl.h>
-#include <private/vecimpl.h>         /*I "petscvec.h" I*/
+#include <petsc-private/isimpl.h>
+#include <petsc-private/vecimpl.h>         /*I "petscvec.h" I*/
 #include <../src/vec/vec/impls/dvecimpl.h>
 #include <../src/vec/vec/impls/mpi/pvecimpl.h>
 
@@ -21,7 +21,7 @@ PetscErrorCode VecScatterView_MPI(VecScatter ctx,PetscViewer viewer)
   PetscBool              iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = MPI_Comm_rank(((PetscObject)ctx)->comm,&rank);CHKERRQ(ierr);
     ierr = PetscViewerGetFormat(viewer,&format);CHKERRQ(ierr);
@@ -1653,6 +1653,7 @@ PetscErrorCode VecScatterCreate_PtoS(PetscInt nx,const PetscInt *inidx,PetscInt 
         break;
       }
     }
+    if (j == size) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_PLIB,"ith %D block entry %D not owned by any process, upper bound %D",i,idx,owners[size]);
   }
 
   nprocslocal  = nprocs[rank]; 
@@ -2028,6 +2029,13 @@ PetscErrorCode VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatt
     ctx->copy      = VecScatterCopy_PtoP_X;
   }
   ierr = PetscInfo1(ctx,"Using blocksize %D scatter\n",bs);CHKERRQ(ierr);
+  
+#if defined(PETSC_USE_DEBUG)
+  ierr = MPI_Allreduce(&bs,&i,1,MPIU_INT,MPI_MIN,((PetscObject)ctx)->comm); CHKERRQ(ierr);
+  ierr = MPI_Allreduce(&bs,&n,1,MPIU_INT,MPI_MAX,((PetscObject)ctx)->comm); CHKERRQ(ierr);
+  if(bs!=i || bs!=n) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Blocks size %D != %D or %D",bs,i,n);
+#endif
+
   switch (bs) {
   case 12: 
     ctx->begin     = VecScatterBegin_12;

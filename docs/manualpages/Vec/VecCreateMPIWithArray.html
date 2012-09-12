@@ -1,22 +1,25 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecCreateMPIWithArray.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecCreateMPIWithArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecCreateMPIWithArray"><H1>VecCreateMPIWithArray</H1></A>
 Creates a parallel, array-style vector, where the user provides the array space to store the vector values. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h"   
-PetscErrorCode  VecCreateMPIWithArray(MPI_Comm comm,PetscInt n,PetscInt N,const PetscScalar array[],Vec *vv)
+PetscErrorCode  VecCreateMPIWithArray(MPI_Comm comm,PetscInt bs,PetscInt n,PetscInt N,const PetscScalar array[],Vec *vv)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm  </B></TD><TD>- the MPI communicator to use
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bs    </B></TD><TD>- block size, same meaning as <A HREF="../Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>()
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n     </B></TD><TD>- local vector length, cannot be <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>
 </TD></TR>
@@ -28,10 +31,6 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>vv </B> -the vector
 <br>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp VecCreateMPIWithArray(PetscInt n,PetscInt N,PetscScalar s[],Vec *x)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>VecCreateMPIWithArray(PETSC_COMM_WORLD,n,N,s,x)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Use <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() or <A HREF="../Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>() to form additional vectors of the
 same type as an existing vector.

@@ -1,15 +1,16 @@
 <center><a href="tfqmr.c">Actual source code: tfqmr.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/tfqmr/tfqmr.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:08+00:00">
+<meta name="date" content="2012-08-29T17:04:39+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;</font>
 
 <a name="line6">  6: </a><strong><font color="#4169E1"><a name="KSPSetUp_TFQMR"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPSetUp_TFQMR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line7">  7: </a>{
@@ -149,6 +150,7 @@
 
 <a name="line148">148: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A href="../../../../../docs/manualpages/KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, <A href="../../../../../docs/manualpages/KSP/KSPTCQMR.html#KSPTCQMR">KSPTCQMR</A></font>
 <a name="line149">149: </a><font color="#B22222">M*/</font>
+<a name="line150">150: </a>EXTERN_C_BEGIN
 <a name="line153">153: </a><strong><font color="#4169E1"><a name="KSPCreate_TFQMR"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_TFQMR(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line154">154: </a>{
 
@@ -164,6 +166,7 @@
 <a name="line167">167: </a>  ksp-&gt;ops-&gt;view                 = 0;
 <a name="line168">168: </a>  <font color="#4169E1">return</font>(0);
 <a name="line169">169: </a>}
+<a name="line170">170: </a>EXTERN_C_END
 </pre>
 </body>
 

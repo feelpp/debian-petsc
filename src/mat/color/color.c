@@ -3,7 +3,7 @@
      Routines that call the kernel minpack coloring subroutines
 */
 
-#include <private/matimpl.h>
+#include <petsc-private/matimpl.h>
 #include <../src/mat/color/color.h>
 
 /*
@@ -69,8 +69,8 @@ PetscErrorCode  MatGetColoring_SL_Minpack(Mat mat,MatColoringType name,ISColorin
 
   PetscFunctionBegin;
   /* this is ugly way to get blocksize but cannot call MatGetBlockSize() because AIJ can have bs > 1 */
-  ierr = PetscTypeCompare((PetscObject)mat,MATSEQBAIJ,&flg1);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)mat,MATMPIBAIJ,&flg2);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATSEQBAIJ,&flg1);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATMPIBAIJ,&flg2);CHKERRQ(ierr);
   if (flg1 || flg2) {
     ierr = MatGetBlockSize(mat,&bs);CHKERRQ(ierr);
   }
@@ -156,8 +156,8 @@ PetscErrorCode  MatGetColoring_LF_Minpack(Mat mat,MatColoringType name,ISColorin
 
   PetscFunctionBegin;
   /* this is ugly way to get blocksize but cannot call MatGetBlockSize() because AIJ can have bs > 1 */
-  ierr = PetscTypeCompare((PetscObject)mat,MATSEQBAIJ,&flg1);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)mat,MATMPIBAIJ,&flg2);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATSEQBAIJ,&flg1);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATMPIBAIJ,&flg2);CHKERRQ(ierr);
   if (flg1 || flg2) {
     ierr = MatGetBlockSize(mat,&bs);CHKERRQ(ierr);
   }
@@ -245,8 +245,8 @@ PetscErrorCode  MatGetColoring_ID_Minpack(Mat mat,MatColoringType name,ISColorin
 
   PetscFunctionBegin;
   /* this is ugly way to get blocksize but cannot call MatGetBlockSize() because AIJ can have bs > 1 */
-  ierr = PetscTypeCompare((PetscObject)mat,MATSEQBAIJ,&flg1);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)mat,MATMPIBAIJ,&flg2);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATSEQBAIJ,&flg1);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATMPIBAIJ,&flg2);CHKERRQ(ierr);
   if (flg1 || flg2) {
     ierr = MatGetBlockSize(mat,&bs);CHKERRQ(ierr);
   }
@@ -331,8 +331,8 @@ PetscErrorCode  MatGetColoring_Natural(Mat mat,MatColoringType color, ISColoring
 
   PetscFunctionBegin;
   /* this is ugly way to get blocksize but cannot call MatGetBlockSize() because AIJ can have bs > 1 */
-  ierr = PetscTypeCompare((PetscObject)mat,MATSEQBAIJ,&flg1);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)mat,MATMPIBAIJ,&flg2);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATSEQBAIJ,&flg1);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)mat,MATMPIBAIJ,&flg2);CHKERRQ(ierr);
   if (flg1 || flg2) {
     ierr = MatGetBlockSize(mat,&bs);CHKERRQ(ierr);
   }
@@ -451,9 +451,10 @@ $    -mat_coloring_view
    Level: intermediate
 
    Notes:
-     These compute the graph coloring of the graph of A^{T}A. The coloring used 
-   for efficient (parallel or thread based) triangular solves etc is NOT yet 
-   available. 
+$    A graph coloring C(A)  is a division of vertices  so that two vertices of the same color do not share any common edges.
+$    A suitable coloring for a  smoother  is simply C(A).
+$    A suitable coloring for efficient Jacobian computation is a division of the columns so that two columns of the same color do not share any common rows. 
+$         This corresponds to C(A^{T} A).  This is what MatGetColoring() computes.
 
    The user can define additional colorings; see MatColoringRegisterDynamic().
 

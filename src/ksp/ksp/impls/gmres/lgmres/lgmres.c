@@ -4,9 +4,9 @@
 #define LGMRES_DELTA_DIRECTIONS 10
 #define LGMRES_DEFAULT_MAXK     30
 #define LGMRES_DEFAULT_AUGDIM   2 /*default number of augmentation vectors */ 
-static PetscErrorCode    LGMRESGetNewVectors(KSP,PetscInt);
-static PetscErrorCode    LGMRESUpdateHessenberg(KSP,PetscInt,PetscBool ,PetscReal *);
-static PetscErrorCode    BuildLgmresSoln(PetscScalar*,Vec,Vec,KSP,PetscInt);
+static PetscErrorCode    KSPLGMRESGetNewVectors(KSP,PetscInt);
+static PetscErrorCode    KSPLGMRESUpdateHessenberg(KSP,PetscInt,PetscBool ,PetscReal *);
+static PetscErrorCode    KSPLGMRESBuildSoln(PetscScalar*,Vec,Vec,KSP,PetscInt);
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPLGMRESSetAugDim"
@@ -30,7 +30,6 @@ PetscErrorCode  KSPLGMRESSetConstant(KSP ksp)
   PetscFunctionReturn(0);
 }
 
-extern PetscErrorCode KSPSetUp_GMRES(KSP);
 /*
     KSPSetUp_LGMRES - Sets up the workspace needed by lgmres.
 
@@ -74,7 +73,7 @@ PetscErrorCode    KSPSetUp_LGMRES(KSP ksp)
 
 /*
 
-    LGMRESCycle - Run lgmres, possibly with restart.  Return residual 
+    KSPLGMRESCycle - Run lgmres, possibly with restart.  Return residual 
                   history if requested.
 
     input parameters:
@@ -96,8 +95,8 @@ PetscErrorCode    KSPSetUp_LGMRES(KSP ksp)
 
  */
 #undef __FUNCT__  
-#define __FUNCT__ "LGMREScycle"
-PetscErrorCode LGMREScycle(PetscInt *itcount,KSP ksp)
+#define __FUNCT__ "KSPLGMRESCycle"
+PetscErrorCode KSPLGMRESCycle(PetscInt *itcount,KSP ksp)
 {
   KSP_LGMRES     *lgmres = (KSP_LGMRES *)(ksp->data);
   PetscReal      res_norm, res;             
@@ -158,8 +157,8 @@ PetscErrorCode LGMREScycle(PetscInt *itcount,KSP ksp)
 
 
   /* note: (lgmres->it) is always set one less than (loc_it) It is used in 
-     KSPBUILDSolution_LGMRES, where it is passed to BuildLgmresSoln.  
-     Note that when BuildLgmresSoln is called from this function, 
+     KSPBUILDSolution_LGMRES, where it is passed to KSPLGMRESBuildSoln.  
+     Note that when KSPLGMRESBuildSoln is called from this function, 
      (loc_it -1) is passed, so the two are equivalent */
   lgmres->it = (loc_it - 1);
 
@@ -178,7 +177,7 @@ PetscErrorCode LGMREScycle(PetscInt *itcount,KSP ksp)
 
     /* see if more space is needed for work vectors */
     if (lgmres->vv_allocated <= loc_it + VEC_OFFSET + 1) {
-       ierr = LGMRESGetNewVectors(ksp,loc_it+1);CHKERRQ(ierr);
+       ierr = KSPLGMRESGetNewVectors(ksp,loc_it+1);CHKERRQ(ierr);
       /* (loc_it+1) is passed in as number of the first vector that should
          be allocated */
     }
@@ -223,7 +222,7 @@ PetscErrorCode LGMREScycle(PetscInt *itcount,KSP ksp)
 
     /* Now apply rotations to new col of hessenberg (and right side of system), 
        calculate new rotation, and get new residual norm at the same time*/
-    ierr = LGMRESUpdateHessenberg(ksp,loc_it,hapend,&res);CHKERRQ(ierr);
+    ierr = KSPLGMRESUpdateHessenberg(ksp,loc_it,hapend,&res);CHKERRQ(ierr);
     if (ksp->reason) break;
 
     loc_it++;
@@ -262,10 +261,10 @@ PetscErrorCode LGMREScycle(PetscInt *itcount,KSP ksp)
    */
  
   /* Form the solution (or the solution so far) */
-  /* Note: must pass in (loc_it-1) for iteration count so that BuildLgmresSoln
+  /* Note: must pass in (loc_it-1) for iteration count so that KSPLGMRESBuildSoln
      properly navigates */
 
-  ierr = BuildLgmresSoln(GRS(0),ksp->vec_sol,ksp->vec_sol,ksp,loc_it-1);CHKERRQ(ierr);
+  ierr = KSPLGMRESBuildSoln(GRS(0),ksp->vec_sol,ksp->vec_sol,ksp,loc_it-1);CHKERRQ(ierr);
 
 
   /* LGMRES_MOD collect aug vector and A*augvector for future restarts -
@@ -273,7 +272,7 @@ PetscErrorCode LGMREScycle(PetscInt *itcount,KSP ksp)
      iterations)  */
   if (!ksp->reason && ksp->its < max_it && aug_dim > 0) {
 
-     /*AUG_TEMP contains the new augmentation vector (assigned in  BuildLgmresSoln) */
+     /*AUG_TEMP contains the new augmentation vector (assigned in  KSPLGMRESBuildSoln) */
     if (!lgmres->aug_ct) {
         spot = 0;
         lgmres->aug_ct++;
@@ -343,7 +342,7 @@ PetscErrorCode LGMREScycle(PetscInt *itcount,KSP ksp)
 PetscErrorCode KSPSolve_LGMRES(KSP ksp)
 {
   PetscErrorCode ierr;
-  PetscInt       cycle_its; /* iterations done in a call to LGMREScycle */
+  PetscInt       cycle_its; /* iterations done in a call to KSPLGMRESCycle */
   PetscInt       itcount;   /* running total of iterations, incl. those in restarts */
   KSP_LGMRES     *lgmres = (KSP_LGMRES *)ksp->data;
   PetscBool      guess_zero = ksp->guess_zero;
@@ -369,7 +368,7 @@ PetscErrorCode KSPSolve_LGMRES(KSP ksp)
   while (!ksp->reason) {
      /* calc residual - puts in VEC_VV(0) */
     ierr     = KSPInitialResidual(ksp,ksp->vec_sol,VEC_TEMP,VEC_TEMP_MATOP,VEC_VV(0),ksp->vec_rhs);CHKERRQ(ierr);
-    ierr     = LGMREScycle(&cycle_its,ksp);CHKERRQ(ierr);
+    ierr     = KSPLGMRESCycle(&cycle_its,ksp);CHKERRQ(ierr);
     itcount += cycle_its;  
     if (itcount >= ksp->max_it) {
       if (!ksp->reason) ksp->reason = KSP_DIVERGED_ITS;
@@ -381,7 +380,6 @@ PetscErrorCode KSPSolve_LGMRES(KSP ksp)
   PetscFunctionReturn(0);
 }
 
-extern PetscErrorCode KSPDestroy_GMRES(KSP);
 /*
 
    KSPDestroy_LGMRES - Frees all memory space used by the Krylov method.
@@ -407,7 +405,7 @@ PetscErrorCode KSPDestroy_LGMRES(KSP ksp)
 }
 
 /*
-    BuildLgmresSoln - create the solution from the starting vector and the
+    KSPLGMRESBuildSoln - create the solution from the starting vector and the
                       current iterates.
 
     Input parameters:
@@ -420,8 +418,8 @@ PetscErrorCode KSPDestroy_LGMRES(KSP ksp)
      This is an internal routine that knows about the LGMRES internals.
  */
 #undef __FUNCT__  
-#define __FUNCT__ "BuildLgmresSoln"
-static PetscErrorCode BuildLgmresSoln(PetscScalar* nrs,Vec vguess,Vec vdest,KSP ksp,PetscInt it)
+#define __FUNCT__ "KSPLGMRESBuildSoln"
+static PetscErrorCode KSPLGMRESBuildSoln(PetscScalar* nrs,Vec vguess,Vec vdest,KSP ksp,PetscInt it)
 {
   PetscScalar    tt;
   PetscErrorCode ierr;
@@ -515,7 +513,7 @@ static PetscErrorCode BuildLgmresSoln(PetscScalar* nrs,Vec vguess,Vec vdest,KSP 
 
 /*
 
-    LGMRESUpdateHessenberg - Do the scalar work for the orthogonalization.  
+    KSPLGMRESUpdateHessenberg - Do the scalar work for the orthogonalization.  
                             Return new residual.
 
     input parameters:
@@ -530,8 +528,8 @@ static PetscErrorCode BuildLgmresSoln(PetscScalar* nrs,Vec vguess,Vec vdest,KSP 
 	
  */
 #undef __FUNCT__  
-#define __FUNCT__ "LGMRESUpdateHessenberg"
-static PetscErrorCode LGMRESUpdateHessenberg(KSP ksp,PetscInt it,PetscBool  hapend,PetscReal *res)
+#define __FUNCT__ "KSPLGMRESUpdateHessenberg"
+static PetscErrorCode KSPLGMRESUpdateHessenberg(KSP ksp,PetscInt it,PetscBool  hapend,PetscReal *res)
 {
   PetscScalar   *hh,*cc,*ss,tt;
   PetscInt      j;
@@ -611,13 +609,13 @@ static PetscErrorCode LGMRESUpdateHessenberg(KSP ksp,PetscInt it,PetscBool  hape
 
 /*
 
-   LGMRESGetNewVectors - This routine allocates more work vectors, starting from 
+   KSPLGMRESGetNewVectors - This routine allocates more work vectors, starting from 
                          VEC_VV(it) 
                          
 */
 #undef __FUNCT__  
-#define __FUNCT__ "LGMRESGetNewVectors" 
-static PetscErrorCode LGMRESGetNewVectors(KSP ksp,PetscInt it)
+#define __FUNCT__ "KSPLGMRESGetNewVectors" 
+static PetscErrorCode KSPLGMRESGetNewVectors(KSP ksp,PetscInt it)
 {
   KSP_LGMRES     *lgmres = (KSP_LGMRES *)ksp->data;
   PetscInt       nwork = lgmres->nwork_alloc; /* number of work vector chunks allocated */
@@ -668,7 +666,7 @@ static PetscErrorCode LGMRESGetNewVectors(KSP ksp,PetscInt it)
    Output Parameter:
 .     result - the solution
 
-   Note: this calls BuildLgmresSoln - the same function that LGMREScycle
+   Note: this calls KSPLGMRESBuildSoln - the same function that KSPLGMRESCycle
    calls directly.  
 
 */
@@ -693,13 +691,11 @@ PetscErrorCode KSPBuildSolution_LGMRES(KSP ksp,Vec ptr,Vec *result)
     ierr = PetscLogObjectMemory(ksp,lgmres->max_k*sizeof(PetscScalar));CHKERRQ(ierr);
   }
  
-  ierr = BuildLgmresSoln(lgmres->nrs,ksp->vec_sol,ptr,ksp,lgmres->it);CHKERRQ(ierr);
+  ierr = KSPLGMRESBuildSoln(lgmres->nrs,ksp->vec_sol,ptr,ksp,lgmres->it);CHKERRQ(ierr);
   if (result) *result = ptr; 
   
   PetscFunctionReturn(0);
 }
-
-extern PetscErrorCode KSPView_GMRES(KSP,PetscViewer);
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPView_LGMRES" 
@@ -711,7 +707,7 @@ PetscErrorCode KSPView_LGMRES(KSP ksp,PetscViewer viewer)
 
   PetscFunctionBegin;
   ierr = KSPView_GMRES(ksp,viewer);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     /*LGMRES_MOD */
     ierr = PetscViewerASCIIPrintf(viewer,"  LGMRES: aug. dimension=%D\n",lgmres->aug_dim);CHKERRQ(ierr);
@@ -724,8 +720,6 @@ PetscErrorCode KSPView_LGMRES(KSP ksp,PetscViewer viewer)
   }
   PetscFunctionReturn(0);
 }
-
-extern PetscErrorCode KSPSetFromOptions_GMRES(KSP);
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetFromOptions_LGMRES"
@@ -746,10 +740,6 @@ PetscErrorCode KSPSetFromOptions_LGMRES(KSP ksp)
   ierr = PetscOptionsTail();CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
-
-
-extern PetscErrorCode KSPComputeExtremeSingularValues_GMRES(KSP,PetscReal *,PetscReal *);
-extern PetscErrorCode KSPComputeEigenvalues_GMRES(KSP,PetscInt,PetscReal *,PetscReal *,PetscInt *);
 
 /*functions for extra lgmres options here*/
 EXTERN_C_BEGIN
@@ -781,19 +771,6 @@ EXTERN_C_END
 
 
 /* end new lgmres functions */
-
-
-/* use these options from gmres */
-EXTERN_C_BEGIN
-extern PetscErrorCode  KSPGMRESSetHapTol_GMRES(KSP,double);
-extern PetscErrorCode  KSPGMRESSetPreAllocateVectors_GMRES(KSP);
-extern PetscErrorCode  KSPGMRESSetRestart_GMRES(KSP,PetscInt);
-extern PetscErrorCode  KSPGMRESGetRestart_GMRES(KSP,PetscInt*);
-extern PetscErrorCode  KSPGMRESSetOrthogonalization_GMRES(KSP,PetscErrorCode (*)(KSP,PetscInt));
-extern PetscErrorCode  KSPGMRESGetOrthogonalization_GMRES(KSP,PetscErrorCode (**)(KSP,PetscInt));
-extern PetscErrorCode  KSPGMRESSetCGSRefinementType_GMRES(KSP,KSPGMRESCGSRefinementType);
-extern PetscErrorCode  KSPGMRESGetCGSRefinementType_GMRES(KSP,KSPGMRESCGSRefinementType*);
-EXTERN_C_END
 
 /*MC
     KSPLGMRES - Augments the standard GMRES approximation space with approximations to

@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = mffddeff.c mffdf.c wpf.c
-OBJSC    = mffddeff.o mffdf.o wpf.o
+SOURCEC  = mffddeff.c wpf.c mffdf.c
+OBJSC    = mffddeff.o wpf.o mffdf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -1,13 +1,14 @@
 <center><a href="ex4.c">Actual source code: ex4.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials/ex4.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:52+00:00">
+<meta name="date" content="2012-08-29T17:05:31+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Test <A href="../../../../../docs/manualpages/Mat/MatSetValuesBatch.html#MatSetValuesBatch">MatSetValuesBatch</A>: setting batches of elements using the GPU.\n\</font>
 <a name="line2">  2: </a><font color="#666666">This works with SeqAIJCUSP and MPIAIJCUSP matrices.\n\n"</font>;
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
@@ -129,8 +130,8 @@
 <a name="line126">126: </a>  <font color="#4169E1">if</font> (doGPU) {
 <a name="line127">127: </a>    <A href="../../../../../docs/manualpages/Profiling/PetscLogStageRegister.html#PetscLogStageRegister">PetscLogStageRegister</A>(<font color="#666666">"GPU Stage"</font>, &amp;gpuStage);
 <a name="line128">128: </a>    <A href="../../../../../docs/manualpages/Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(gpuStage);
-<a name="line129">129: </a>    <A href="../../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(dm, <A href="../../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>, &amp;A);
-<a name="line130">130: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A, MATAIJCUSP);
+<a name="line129">129: </a>    <A href="../../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(dm, <A href="../../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>, &amp;A);
+<a name="line130">130: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A, <A href="../../../../../docs/manualpages/Mat/MATAIJCUSP.html#MATAIJCUSP">MATAIJCUSP</A>);
 <a name="line131">131: </a>    <A href="../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(A, 0, <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line132">132: </a>    <A href="../../../../../docs/manualpages/Mat/MatMPIAIJSetPreallocation.html#MatMPIAIJSetPreallocation">MatMPIAIJSetPreallocation</A>(A, 0, <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, 0, <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line133">133: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetValuesBatch.html#MatSetValuesBatch">MatSetValuesBatch</A>(A, Ne, Nl, elemRows, elemMats);
@@ -150,7 +151,7 @@
 <a name="line147">147: </a>  <font color="#4169E1">if</font> (doCPU) {
 <a name="line148">148: </a>    <A href="../../../../../docs/manualpages/Profiling/PetscLogStageRegister.html#PetscLogStageRegister">PetscLogStageRegister</A>(<font color="#666666">"CPU Stage"</font>, &amp;cpuStage);
 <a name="line149">149: </a>    <A href="../../../../../docs/manualpages/Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(cpuStage);
-<a name="line150">150: </a>    <A href="../../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(dm, <A href="../../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>, &amp;A);
+<a name="line150">150: </a>    <A href="../../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(dm, <A href="../../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>, &amp;A);
 <a name="line151">151: </a>    <A href="../../../../../docs/manualpages/Mat/MatZeroEntries.html#MatZeroEntries">MatZeroEntries</A>(A);
 <a name="line152">152: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetValuesBatch.html#MatSetValuesBatch">MatSetValuesBatch</A>(A, Ne, Nl, elemRows, elemMats);
 <a name="line153">153: </a>    <A href="../../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A, MAT_FINAL_ASSEMBLY);

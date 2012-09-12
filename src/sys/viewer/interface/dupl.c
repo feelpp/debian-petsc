@@ -1,5 +1,5 @@
 
-#include <private/viewerimpl.h>  /*I "petscviewer.h" I*/
+#include <petsc-private/viewerimpl.h>  /*I "petscviewer.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscViewerGetSingleton" 
@@ -154,7 +154,7 @@ PetscErrorCode  PetscViewerRestoreSubcomm(PetscViewer viewer,MPI_Comm subcomm,Pe
   PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
 
   ierr = MPI_Comm_size(((PetscObject)viewer)->comm,&size);CHKERRQ(ierr);
-  if (size == 1) {
+  if (size == 1 || (outviewer && viewer == *outviewer)) {
     ierr = PetscObjectDereference((PetscObject)viewer);CHKERRQ(ierr);
     if (outviewer) *outviewer = 0;
   } else if (viewer->ops->restoresubcomm) {

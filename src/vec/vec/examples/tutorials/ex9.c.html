@@ -1,13 +1,14 @@
 <center><a href="ex9.c">Actual source code: ex9.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tutorials/ex9.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:56:26+00:00">
+<meta name="date" content="2012-08-29T16:40:20+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Demonstrates use of <A href="../../../../../docs/manualpages/Vec/VecCreateGhost.html#VecCreateGhost">VecCreateGhost</A>().\n\n"</font>;
 
@@ -35,7 +36,7 @@
 <a name="line27"> 27: </a>{
 <a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank,size;
 <a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nlocal = 6,nghost = 2,ifrom[2],i,rstart,rend;
-<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
+<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg,flg2;
 <a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    value,*array,*tarray=0;
 <a name="line33"> 33: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            lx,gx,gxs;
 
@@ -77,55 +78,61 @@
 <a name="line70"> 70: </a><font color="#B22222">     array for storing vector values.</font>
 <a name="line71"> 71: </a><font color="#B22222">  */</font>
 <a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-allocate"</font>,&amp;flg);
-<a name="line73"> 73: </a>  <font color="#4169E1">if</font> (flg) {
-<a name="line74"> 74: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((nlocal+nghost)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),&amp;tarray);
-<a name="line75"> 75: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreateGhostWithArray.html#VecCreateGhostWithArray">VecCreateGhostWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,nlocal,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,nghost,ifrom,tarray,&amp;gxs);
-<a name="line76"> 76: </a>  } <font color="#4169E1">else</font> {
-<a name="line77"> 77: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreateGhost.html#VecCreateGhost">VecCreateGhost</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,nlocal,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,nghost,ifrom,&amp;gxs);
-<a name="line78"> 78: </a>  }
-
-<a name="line80"> 80: </a>  <font color="#B22222">/*</font>
-<a name="line81"> 81: </a><font color="#B22222">      Test <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>()</font>
-<a name="line82"> 82: </a><font color="#B22222">  */</font>
-<a name="line83"> 83: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(gxs,&amp;gx);
-<a name="line84"> 84: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;gxs);
+<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecmpisetghost"</font>,&amp;flg2);
+<a name="line74"> 74: </a>  <font color="#4169E1">if</font> (flg) {
+<a name="line75"> 75: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((nlocal+nghost)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),&amp;tarray);
+<a name="line76"> 76: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreateGhostWithArray.html#VecCreateGhostWithArray">VecCreateGhostWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,nlocal,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,nghost,ifrom,tarray,&amp;gxs);
+<a name="line77"> 77: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (flg2) {
+<a name="line78"> 78: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;gxs);
+<a name="line79"> 79: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(gxs,<A href="../../../../../docs/manualpages/Vec/VECMPI.html#VECMPI">VECMPI</A>);
+<a name="line80"> 80: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(gxs,nlocal,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>);
+<a name="line81"> 81: </a>    <A href="../../../../../docs/manualpages/Vec/VecMPISetGhost.html#VecMPISetGhost">VecMPISetGhost</A>(gxs,nghost,ifrom);
+<a name="line82"> 82: </a>  } <font color="#4169E1">else</font> {
+<a name="line83"> 83: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreateGhost.html#VecCreateGhost">VecCreateGhost</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,nlocal,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,nghost,ifrom,&amp;gxs);
+<a name="line84"> 84: </a>  }
 
 <a name="line86"> 86: </a>  <font color="#B22222">/*</font>
-<a name="line87"> 87: </a><font color="#B22222">     Access the local representation</font>
+<a name="line87"> 87: </a><font color="#B22222">      Test <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>()</font>
 <a name="line88"> 88: </a><font color="#B22222">  */</font>
-<a name="line89"> 89: </a>  <A href="../../../../../docs/manualpages/Vec/VecGhostGetLocalForm.html#VecGhostGetLocalForm">VecGhostGetLocalForm</A>(gx,&amp;lx);
+<a name="line89"> 89: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(gxs,&amp;gx);
+<a name="line90"> 90: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;gxs);
 
-<a name="line91"> 91: </a>  <font color="#B22222">/*</font>
-<a name="line92"> 92: </a><font color="#B22222">     Set the values from 0 to 12 into the "global" vector </font>
-<a name="line93"> 93: </a><font color="#B22222">  */</font>
-<a name="line94"> 94: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetOwnershipRange.html#VecGetOwnershipRange">VecGetOwnershipRange</A>(gx,&amp;rstart,&amp;rend);
-<a name="line95"> 95: </a>  <font color="#4169E1">for</font> (i=rstart; i&lt;rend; i++) {
-<a name="line96"> 96: </a>    value = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>) i;
-<a name="line97"> 97: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(gx,1,&amp;i,&amp;value,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line98"> 98: </a>  }
-<a name="line99"> 99: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(gx);
-<a name="line100">100: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(gx);
+<a name="line92"> 92: </a>  <font color="#B22222">/*</font>
+<a name="line93"> 93: </a><font color="#B22222">     Access the local representation</font>
+<a name="line94"> 94: </a><font color="#B22222">  */</font>
+<a name="line95"> 95: </a>  <A href="../../../../../docs/manualpages/Vec/VecGhostGetLocalForm.html#VecGhostGetLocalForm">VecGhostGetLocalForm</A>(gx,&amp;lx);
 
-<a name="line102">102: </a>  <A href="../../../../../docs/manualpages/Vec/VecGhostUpdateBegin.html#VecGhostUpdateBegin">VecGhostUpdateBegin</A>(gx,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
-<a name="line103">103: </a>  <A href="../../../../../docs/manualpages/Vec/VecGhostUpdateEnd.html#VecGhostUpdateEnd">VecGhostUpdateEnd</A>(gx,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line97"> 97: </a>  <font color="#B22222">/*</font>
+<a name="line98"> 98: </a><font color="#B22222">     Set the values from 0 to 12 into the "global" vector </font>
+<a name="line99"> 99: </a><font color="#B22222">  */</font>
+<a name="line100">100: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetOwnershipRange.html#VecGetOwnershipRange">VecGetOwnershipRange</A>(gx,&amp;rstart,&amp;rend);
+<a name="line101">101: </a>  <font color="#4169E1">for</font> (i=rstart; i&lt;rend; i++) {
+<a name="line102">102: </a>    value = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>) i;
+<a name="line103">103: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(gx,1,&amp;i,&amp;value,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line104">104: </a>  }
+<a name="line105">105: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(gx);
+<a name="line106">106: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(gx);
 
-<a name="line105">105: </a>  <font color="#B22222">/*</font>
-<a name="line106">106: </a><font color="#B22222">     Print out each vector, including the ghost padding region. </font>
-<a name="line107">107: </a><font color="#B22222">  */</font>
-<a name="line108">108: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(lx,&amp;array);
-<a name="line109">109: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nlocal+nghost; i++) {
-<a name="line110">110: </a>    <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D %G\n"</font>,i,PetscRealPart(array[i]));
-<a name="line111">111: </a>  }
-<a name="line112">112: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(lx,&amp;array);
-<a name="line113">113: </a>  <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>);
+<a name="line108">108: </a>  <A href="../../../../../docs/manualpages/Vec/VecGhostUpdateBegin.html#VecGhostUpdateBegin">VecGhostUpdateBegin</A>(gx,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line109">109: </a>  <A href="../../../../../docs/manualpages/Vec/VecGhostUpdateEnd.html#VecGhostUpdateEnd">VecGhostUpdateEnd</A>(gx,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 
-<a name="line115">115: </a>  <A href="../../../../../docs/manualpages/Vec/VecGhostRestoreLocalForm.html#VecGhostRestoreLocalForm">VecGhostRestoreLocalForm</A>(gx,&amp;lx);
-<a name="line116">116: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;gx);
-<a name="line117">117: </a>  <font color="#4169E1">if</font> (flg) {<A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(tarray);}
-<a name="line118">118: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line119">119: </a>  <font color="#4169E1">return</font> 0;
-<a name="line120">120: </a>}
-<a name="line121">121: </a>
+<a name="line111">111: </a>  <font color="#B22222">/*</font>
+<a name="line112">112: </a><font color="#B22222">     Print out each vector, including the ghost padding region. </font>
+<a name="line113">113: </a><font color="#B22222">  */</font>
+<a name="line114">114: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(lx,&amp;array);
+<a name="line115">115: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nlocal+nghost; i++) {
+<a name="line116">116: </a>    <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedPrintf.html#PetscSynchronizedPrintf">PetscSynchronizedPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D %G\n"</font>,i,PetscRealPart(array[i]));
+<a name="line117">117: </a>  }
+<a name="line118">118: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(lx,&amp;array);
+<a name="line119">119: </a>  <A href="../../../../../docs/manualpages/Sys/PetscSynchronizedFlush.html#PetscSynchronizedFlush">PetscSynchronizedFlush</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>);
+
+<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Vec/VecGhostRestoreLocalForm.html#VecGhostRestoreLocalForm">VecGhostRestoreLocalForm</A>(gx,&amp;lx);
+<a name="line122">122: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;gx);
+<a name="line123">123: </a>  <font color="#4169E1">if</font> (flg) {<A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(tarray);}
+<a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line125">125: </a>  <font color="#4169E1">return</font> 0;
+<a name="line126">126: </a>}
+<a name="line127">127: </a>
 
 
 </pre>

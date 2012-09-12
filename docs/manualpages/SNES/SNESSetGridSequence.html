@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESSetGridSequence.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESSetGridSequence</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESSetGridSequence"><H1>SNESSetGridSequence</H1></A>
 sets the number of steps of grid sequencing that <A HREF="../SNES/SNES.html#SNES">SNES</A> does 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESSetGridSequence(SNES snes,PetscInt steps)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -25,6 +28,9 @@ Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <DT><B>-snes_grid_sequence &lt;steps&gt;</B> -
 
 <br>
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+Use <A HREF="../SNES/SNESGetSolution.html#SNESGetSolution">SNESGetSolution</A>() to extract the fine grid solution after grid sequencing.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../SNES/SNES.html#SNES">SNES</A>, nonlinear, set, convergence, tolerances

@@ -5,11 +5,11 @@ CFLAGS   =
 FFLAGS   =
 SOURCEC  =
 SOURCEF  =
-SOURCEH  = ../../include/private/matimpl.h ../../include/petscmat.h blockinvert.h blocktranspose.h
+SOURCEH  = ../../include/petsc-private/matimpl.h ../../include/petscmat.h blockinvert.h blocktranspose.h
 OBJSC    =
 OBJSF    =
 LIBBASE  = libpetscmat
-DIRS     = interface impls examples utils matfd partition order color f90-mod ftn-kernels
+DIRS     = interface impls examples utils matfd partition coarsen order color f90-mod ftn-kernels
 LOCDIR   = src/mat/
 MANSEC   = Mat
 

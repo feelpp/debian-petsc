@@ -4,8 +4,8 @@ ALL: lib
 CPPFLAGS  =
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = mprintf.c sysiof.c mpiuopenf.c
-OBJSC    = mprintf.o sysiof.o mpiuopenf.o
+SOURCEC  = sysiof.c mprintf.c mpiuopenf.c
+OBJSC    = sysiof.o mprintf.o mpiuopenf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

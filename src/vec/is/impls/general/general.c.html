@@ -1,13 +1,14 @@
 <center><a href="general.c">Actual source code: general.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/is/impls/general/general.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:56:46+00:00">
+<meta name="date" content="2012-08-29T16:40:40+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">     Provides the functions for index sets (<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>) defined by a list of integers.</font>
@@ -238,8 +239,8 @@
 <a name="line276">276: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n = sub-&gt;n,*idx = sub-&gt;idx;
 <a name="line277">277: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii,isbinary;
 
-<a name="line280">280: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
-<a name="line281">281: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERBINARY,&amp;isbinary);
+<a name="line280">280: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line281">281: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERBINARY,&amp;isbinary);
 <a name="line282">282: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line283">283: </a>    <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>    comm;
 <a name="line284">284: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank,size;
@@ -408,6 +409,7 @@
 <a name="line469">469: </a>  <font color="#4169E1">return</font>(0);
 <a name="line470">470: </a>}
 
+<a name="line472">472: </a>EXTERN_C_BEGIN
 <a name="line475">475: </a><strong><font color="#4169E1"><a name="ISGeneralSetIndices_General"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISGeneralSetIndices_General(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> idx[],<A href="../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A> mode)</font></strong>
 <a name="line476">476: </a>{
 <a name="line478">478: </a>  IS_General     *sub = (IS_General*)is-&gt;data;
@@ -431,10 +433,12 @@
 <a name="line498">498: </a>  ISCreateGeneral_Private(is);
 <a name="line499">499: </a>  <font color="#4169E1">return</font>(0);
 <a name="line500">500: </a>}
+<a name="line501">501: </a>EXTERN_C_END
 
 
 
 
+<a name="line506">506: </a>EXTERN_C_BEGIN
 <a name="line509">509: </a><strong><font color="#4169E1"><a name="ISCreate_General"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISCreate_General(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is)</font></strong>
 <a name="line510">510: </a>{
 <a name="line512">512: </a>  IS_General     *sub;
@@ -446,6 +450,7 @@
 <a name="line519">519: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is,<font color="#666666">"ISGeneralSetIndices_C"</font>,<font color="#666666">"ISGeneralSetIndices_General"</font>,ISGeneralSetIndices_General);
 <a name="line520">520: </a>  <font color="#4169E1">return</font>(0);
 <a name="line521">521: </a>}
+<a name="line522">522: </a>EXTERN_C_END
 
 
 

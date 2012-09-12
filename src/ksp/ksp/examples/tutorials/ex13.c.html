@@ -1,13 +1,14 @@
 <center><a href="ex13.c">Actual source code: ex13.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials/ex13.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:13:05+00:00">
+<meta name="date" content="2012-08-29T17:05:41+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Solves a variable Poisson problem with <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>.\n\n"</font>;
 
@@ -40,6 +41,9 @@
 <a name="line30"> 30: </a>   <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> hx2,hy2;  <font color="#B22222">/* 1/(m+1)*(m+1) and 1/(n+1)*(n+1) */</font>
 <a name="line31"> 31: </a>} UserCtx;
 
+<a name="line33"> 33: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> UserInitializeLinearSolver(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,UserCtx *)</font></strong>;
+<a name="line34"> 34: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> UserFinalizeLinearSolver(UserCtx *)</font></strong>;
+<a name="line35"> 35: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> UserDoLinearSolver(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *,UserCtx *userctx,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *b,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>;
 
 <a name="line39"> 39: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line40"> 40: </a>{
@@ -168,7 +172,7 @@
 <a name="line167">167: </a><font color="#B22222">     This way, we can use the data structures already in the program</font>
 <a name="line168">168: </a><font color="#B22222">     by using <A href="../../../../../docs/manualpages/Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>() subroutine at a later stage.</font>
 <a name="line169">169: </a><font color="#B22222">  */</font>
-<a name="line170">170: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,N,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;userctx-&gt;b);
+<a name="line170">170: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,N,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;userctx-&gt;b);
 <a name="line171">171: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(userctx-&gt;b,&amp;userctx-&gt;x);
 
 <a name="line173">173: </a>  <font color="#B22222">/* </font>

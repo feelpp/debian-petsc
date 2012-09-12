@@ -1,22 +1,25 @@
 <center><a href="matadic.c">Actual source code: matadic.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/adic/matadic.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:01+00:00">
+<meta name="date" content="2012-08-29T16:49:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    ADIC matrix-free matrix implementation</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
 
-<a name="line6">  6: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;</font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;</font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;          </font><font color="#B22222">/*I   "petscdmda.h"    I*/</font><font color="#A020F0"></font>
 <a name="line8">  8: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;        </font><font color="#B22222">/*I   "petscsnes.h"  I*/</font><font color="#A020F0"></font>
+<a name="line9">  9: </a>EXTERN_C_BEGIN
 <a name="line10"> 10: </a><font color="#A020F0">#include &lt;adic/ad_utils.h&gt;</font>
+<a name="line11"> 11: </a>EXTERN_C_END
 
 <a name="line13"> 13: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line14"> 14: </a>  DM         da;
@@ -328,6 +331,7 @@
 
 <a name="line341">341: </a><font color="#B22222">/* --------------------------------------------------------------------------------*/</font>
 
+<a name="line343">343: </a>EXTERN_C_BEGIN
 <a name="line346">346: </a><strong><font color="#4169E1"><a name="MatMFFDSetBase_AD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatMFFDSetBase_AD(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> J,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> U,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> F)</font></strong>
 <a name="line347">347: </a>{
 <a name="line349">349: </a>  Mat_DAAD       *a = (Mat_DAAD*)J-&gt;data;
@@ -337,7 +341,9 @@
 <a name="line354">354: </a>  <A href="../../../../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(a-&gt;da,U,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,a-&gt;localu);
 <a name="line355">355: </a>  <font color="#4169E1">return</font>(0);
 <a name="line356">356: </a>}
+<a name="line357">357: </a>EXTERN_C_END
 
+<a name="line359">359: </a>EXTERN_C_BEGIN
 <a name="line362">362: </a><strong><font color="#4169E1"><a name="MatDAADSetDA_AD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatDAADSetDA_AD(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,DM da)</font></strong>
 <a name="line363">363: </a>{
 <a name="line364">364: </a>  Mat_DAAD       *a = (Mat_DAAD*)A-&gt;data;
@@ -353,7 +359,9 @@
 <a name="line376">376: </a>  <A href="../../../../docs/manualpages/DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>(da,&amp;a-&gt;localu);
 <a name="line377">377: </a>  <font color="#4169E1">return</font>(0);
 <a name="line378">378: </a>}
+<a name="line379">379: </a>EXTERN_C_END
 
+<a name="line381">381: </a>EXTERN_C_BEGIN
 <a name="line384">384: </a><strong><font color="#4169E1"><a name="MatDAADSetSNES_AD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatDAADSetSNES_AD(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
 <a name="line385">385: </a>{
 <a name="line386">386: </a>  Mat_DAAD *a = (Mat_DAAD*)A-&gt;data;
@@ -361,7 +369,9 @@
 <a name="line389">389: </a>  a-&gt;snes = snes;
 <a name="line390">390: </a>  <font color="#4169E1">return</font>(0);
 <a name="line391">391: </a>}
+<a name="line392">392: </a>EXTERN_C_END
 
+<a name="line394">394: </a>EXTERN_C_BEGIN
 <a name="line397">397: </a><strong><font color="#4169E1"><a name="MatDAADSetCtx_AD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatDAADSetCtx_AD(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,void *ctx)</font></strong>
 <a name="line398">398: </a>{
 <a name="line399">399: </a>  Mat_DAAD *a = (Mat_DAAD*)A-&gt;data;
@@ -369,6 +379,7 @@
 <a name="line402">402: </a>  a-&gt;ctx = ctx;
 <a name="line403">403: </a>  <font color="#4169E1">return</font>(0);
 <a name="line404">404: </a>}
+<a name="line405">405: </a>EXTERN_C_END
 
 <a name="line407">407: </a><font color="#B22222">/*MC</font>
 <a name="line408">408: </a><font color="#B22222">  <A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A> - <A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A> = "daad" - A matrix type that can do matrix-vector products using a local function that</font>
@@ -379,6 +390,7 @@
 <a name="line413">413: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A></font>
 <a name="line414">414: </a><font color="#B22222">M*/</font>
 
+<a name="line416">416: </a>EXTERN_C_BEGIN
 <a name="line419">419: </a><strong><font color="#4169E1"><a name="MatCreate_DAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreate_DAAD(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B)</font></strong>
 <a name="line420">420: </a>{
 <a name="line421">421: </a>  Mat_DAAD       *b;
@@ -387,130 +399,129 @@
 <a name="line426">426: </a>  B-&gt;data = (void*)b;
 <a name="line427">427: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(B-&gt;ops,&amp;MatOps_Values,<font color="#4169E1">sizeof</font>(<font color="#4169E1">struct _MatOps</font>));
 <a name="line428">428: </a>
-<a name="line429">429: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>(B-&gt;rmap,1);
-<a name="line430">430: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>(B-&gt;cmap,1);
-<a name="line431">431: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(B-&gt;rmap);
-<a name="line432">432: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(B-&gt;cmap);
+<a name="line429">429: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(B-&gt;rmap);
+<a name="line430">430: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>(B-&gt;cmap);
 
-<a name="line434">434: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>);
-<a name="line435">435: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatMFFDSetBase_C"</font>,<font color="#666666">"MatMFFDSetBase_AD"</font>,MatMFFDSetBase_AD);
-<a name="line436">436: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatDAADSetDA_C"</font>,<font color="#666666">"MatDAADSetDA_AD"</font>,MatDAADSetDA_AD);
-<a name="line437">437: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatDAADSetSNES_C"</font>,<font color="#666666">"MatDAADSetSNES_AD"</font>,MatDAADSetSNES_AD);
-<a name="line438">438: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatDAADSetCtx_C"</font>,<font color="#666666">"MatDAADSetCtx_AD"</font>,MatDAADSetCtx_AD);
-<a name="line439">439: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>);
-<a name="line440">440: </a>  <font color="#4169E1">return</font>(0);
-<a name="line441">441: </a>}
-
-
-<a name="line447">447: </a><font color="#B22222">/*@C</font>
-<a name="line448">448: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A> - Tells the matrix what DMDA it is using for layout and Jacobian.</font>
-
-<a name="line450">450: </a><font color="#B22222">   Logically Collective on <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> and DMDA</font>
-
-<a name="line452">452: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line453">453: </a><font color="#B22222">+  mat - the matrix</font>
-<a name="line454">454: </a><font color="#B22222">-  da - the DMDA</font>
-
-<a name="line456">456: </a><font color="#B22222">   Level: intermediate</font>
-
-<a name="line458">458: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>()</font>
-
-<a name="line460">460: </a><font color="#B22222">@*/</font>
-<a name="line461">461: </a><strong><font color="#4169E1"><a name="MatDAADSetDA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,DM da)</font></strong>
-<a name="line462">462: </a>{
-
-<a name="line468">468: </a>  PetscTryMethod(A,<font color="#666666">"MatDAADSetDA_C"</font>,(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,void*),(A,da));
-<a name="line469">469: </a>  <font color="#4169E1">return</font>(0);
-<a name="line470">470: </a>}
-
-<a name="line474">474: </a><font color="#B22222">/*@C</font>
-<a name="line475">475: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatDAADSetSNES.html#MatDAADSetSNES">MatDAADSetSNES</A> - Tells the matrix what <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> it is using for the base U.</font>
-
-<a name="line477">477: </a><font color="#B22222">   Logically Collective on <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> and <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A></font>
-
-<a name="line479">479: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line480">480: </a><font color="#B22222">+  mat - the matrix</font>
-<a name="line481">481: </a><font color="#B22222">-  snes - the <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A></font>
-
-<a name="line483">483: </a><font color="#B22222">   Level: intermediate</font>
-
-<a name="line485">485: </a><font color="#B22222">   Notes: this is currently turned off for Fortran usage</font>
-
-<a name="line487">487: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>()</font>
-
-<a name="line489">489: </a><font color="#B22222">@*/</font>
-<a name="line490">490: </a><strong><font color="#4169E1"><a name="MatDAADSetSNES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatDAADSetSNES.html#MatDAADSetSNES">MatDAADSetSNES</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
-<a name="line491">491: </a>{
-
-<a name="line497">497: </a>  PetscTryMethod(A,<font color="#666666">"MatDAADSetSNES_C"</font>,(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,void*),(A,snes));
-<a name="line498">498: </a>  <font color="#4169E1">return</font>(0);
-<a name="line499">499: </a>}
-
-<a name="line503">503: </a><font color="#B22222">/*@C</font>
-<a name="line504">504: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatDAADSetCtx.html#MatDAADSetCtx">MatDAADSetCtx</A> - Sets the user context for a DMDAAD (ADIC matrix-free) matrix.</font>
-
-<a name="line506">506: </a><font color="#B22222">   Logically Collective on <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
-
-<a name="line508">508: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line509">509: </a><font color="#B22222">+  mat - the matrix</font>
-<a name="line510">510: </a><font color="#B22222">-  ctx - the context</font>
-
-<a name="line512">512: </a><font color="#B22222">   Level: intermediate</font>
-
-<a name="line514">514: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>()</font>
-
-<a name="line516">516: </a><font color="#B22222">@*/</font>
-<a name="line517">517: </a><strong><font color="#4169E1"><a name="MatDAADSetCtx"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatDAADSetCtx.html#MatDAADSetCtx">MatDAADSetCtx</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,void *ctx)</font></strong>
-<a name="line518">518: </a>{
-
-<a name="line523">523: </a>  PetscTryMethod(A,<font color="#666666">"MatDAADSetCtx_C"</font>,(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,void*),(A,ctx));
-<a name="line524">524: </a>  <font color="#4169E1">return</font>(0);
-<a name="line525">525: </a>}
-
-<a name="line529">529: </a><font color="#B22222">/*@C</font>
-<a name="line530">530: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A> - Creates a matrix that can do matrix-vector products using a local </font>
-<a name="line531">531: </a><font color="#B22222">   function that is differentiated with ADIFOR or ADIC.</font>
-
-<a name="line533">533: </a><font color="#B22222">   Collective on DMDA</font>
-
-<a name="line535">535: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line536">536: </a><font color="#B22222">.  da - the DMDA that defines the distribution of the vectors</font>
-
-<a name="line538">538: </a><font color="#B22222">   Output Parameter:</font>
-<a name="line539">539: </a><font color="#B22222">.  A - the matrix </font>
-
-<a name="line541">541: </a><font color="#B22222">   Level: intermediate</font>
-
-<a name="line543">543: </a><font color="#B22222">   Notes: this is currently turned off for Fortran</font>
-
-<a name="line545">545: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>()</font>
-
-<a name="line547">547: </a><font color="#B22222">@*/</font>
-<a name="line548">548: </a><strong><font color="#4169E1"><a name="MatCreateDAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(DM da,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *A)</font></strong>
-<a name="line549">549: </a>{
-<a name="line551">551: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm;
-
-<a name="line554">554: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da,&amp;comm);
-<a name="line555">555: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,A);
-<a name="line556">556: </a>  <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*A,<A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>);
-<a name="line557">557: </a>  <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>(*A,da);
-<a name="line558">558: </a>  <font color="#4169E1">return</font>(0);
-<a name="line559">559: </a>}
+<a name="line432">432: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>);
+<a name="line433">433: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatMFFDSetBase_C"</font>,<font color="#666666">"MatMFFDSetBase_AD"</font>,MatMFFDSetBase_AD);
+<a name="line434">434: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatDAADSetDA_C"</font>,<font color="#666666">"MatDAADSetDA_AD"</font>,MatDAADSetDA_AD);
+<a name="line435">435: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatDAADSetSNES_C"</font>,<font color="#666666">"MatDAADSetSNES_AD"</font>,MatDAADSetSNES_AD);
+<a name="line436">436: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatDAADSetCtx_C"</font>,<font color="#666666">"MatDAADSetCtx_AD"</font>,MatDAADSetCtx_AD);
+<a name="line437">437: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>);
+<a name="line438">438: </a>  <font color="#4169E1">return</font>(0);
+<a name="line439">439: </a>}
+<a name="line440">440: </a>EXTERN_C_END
 
 
-<a name="line564">564: </a><font color="#B22222">/*@</font>
-<a name="line565">565: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatRegisterDAAD.html#MatRegisterDAAD">MatRegisterDAAD</A> - Registers DMDAAD matrix type</font>
+<a name="line445">445: </a><font color="#B22222">/*@C</font>
+<a name="line446">446: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A> - Tells the matrix what DMDA it is using for layout and Jacobian.</font>
 
-<a name="line567">567: </a><font color="#B22222">   Level: advanced</font>
+<a name="line448">448: </a><font color="#B22222">   Logically Collective on <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> and DMDA</font>
 
-<a name="line569">569: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>()</font>
+<a name="line450">450: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line451">451: </a><font color="#B22222">+  mat - the matrix</font>
+<a name="line452">452: </a><font color="#B22222">-  da - the DMDA</font>
 
-<a name="line571">571: </a><font color="#B22222">@*/</font>
-<a name="line572">572: </a><strong><font color="#4169E1"><a name="MatRegisterDAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatRegisterDAAD.html#MatRegisterDAAD">MatRegisterDAAD</A>(void)</font></strong>
-<a name="line573">573: </a>{
-<a name="line576">576: </a>  <A href="../../../../docs/manualpages/Mat/MatRegisterDynamic.html#MatRegisterDynamic">MatRegisterDynamic</A>(<A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"MatCreate_DAAD"</font>,MatCreate_DAAD);
-<a name="line577">577: </a>  <font color="#4169E1">return</font>(0);
-<a name="line578">578: </a>}
+<a name="line454">454: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line456">456: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>()</font>
+
+<a name="line458">458: </a><font color="#B22222">@*/</font>
+<a name="line459">459: </a><strong><font color="#4169E1"><a name="MatDAADSetDA"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,DM da)</font></strong>
+<a name="line460">460: </a>{
+
+<a name="line466">466: </a>  PetscTryMethod(A,<font color="#666666">"MatDAADSetDA_C"</font>,(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,void*),(A,da));
+<a name="line467">467: </a>  <font color="#4169E1">return</font>(0);
+<a name="line468">468: </a>}
+
+<a name="line472">472: </a><font color="#B22222">/*@C</font>
+<a name="line473">473: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatDAADSetSNES.html#MatDAADSetSNES">MatDAADSetSNES</A> - Tells the matrix what <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> it is using for the base U.</font>
+
+<a name="line475">475: </a><font color="#B22222">   Logically Collective on <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> and <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A></font>
+
+<a name="line477">477: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line478">478: </a><font color="#B22222">+  mat - the matrix</font>
+<a name="line479">479: </a><font color="#B22222">-  snes - the <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A></font>
+
+<a name="line481">481: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line483">483: </a><font color="#B22222">   Notes: this is currently turned off for Fortran usage</font>
+
+<a name="line485">485: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>()</font>
+
+<a name="line487">487: </a><font color="#B22222">@*/</font>
+<a name="line488">488: </a><strong><font color="#4169E1"><a name="MatDAADSetSNES"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatDAADSetSNES.html#MatDAADSetSNES">MatDAADSetSNES</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes)</font></strong>
+<a name="line489">489: </a>{
+
+<a name="line495">495: </a>  PetscTryMethod(A,<font color="#666666">"MatDAADSetSNES_C"</font>,(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,void*),(A,snes));
+<a name="line496">496: </a>  <font color="#4169E1">return</font>(0);
+<a name="line497">497: </a>}
+
+<a name="line501">501: </a><font color="#B22222">/*@C</font>
+<a name="line502">502: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatDAADSetCtx.html#MatDAADSetCtx">MatDAADSetCtx</A> - Sets the user context for a DMDAAD (ADIC matrix-free) matrix.</font>
+
+<a name="line504">504: </a><font color="#B22222">   Logically Collective on <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
+
+<a name="line506">506: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line507">507: </a><font color="#B22222">+  mat - the matrix</font>
+<a name="line508">508: </a><font color="#B22222">-  ctx - the context</font>
+
+<a name="line510">510: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line512">512: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>(), <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>()</font>
+
+<a name="line514">514: </a><font color="#B22222">@*/</font>
+<a name="line515">515: </a><strong><font color="#4169E1"><a name="MatDAADSetCtx"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatDAADSetCtx.html#MatDAADSetCtx">MatDAADSetCtx</A>(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,void *ctx)</font></strong>
+<a name="line516">516: </a>{
+
+<a name="line521">521: </a>  PetscTryMethod(A,<font color="#666666">"MatDAADSetCtx_C"</font>,(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,void*),(A,ctx));
+<a name="line522">522: </a>  <font color="#4169E1">return</font>(0);
+<a name="line523">523: </a>}
+
+<a name="line527">527: </a><font color="#B22222">/*@C</font>
+<a name="line528">528: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A> - Creates a matrix that can do matrix-vector products using a local </font>
+<a name="line529">529: </a><font color="#B22222">   function that is differentiated with ADIFOR or ADIC.</font>
+
+<a name="line531">531: </a><font color="#B22222">   Collective on DMDA</font>
+
+<a name="line533">533: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line534">534: </a><font color="#B22222">.  da - the DMDA that defines the distribution of the vectors</font>
+
+<a name="line536">536: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line537">537: </a><font color="#B22222">.  A - the matrix </font>
+
+<a name="line539">539: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line541">541: </a><font color="#B22222">   Notes: this is currently turned off for Fortran</font>
+
+<a name="line543">543: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>()</font>
+
+<a name="line545">545: </a><font color="#B22222">@*/</font>
+<a name="line546">546: </a><strong><font color="#4169E1"><a name="MatCreateDAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(DM da,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *A)</font></strong>
+<a name="line547">547: </a>{
+<a name="line549">549: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm;
+
+<a name="line552">552: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da,&amp;comm);
+<a name="line553">553: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,A);
+<a name="line554">554: </a>  <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*A,<A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>);
+<a name="line555">555: </a>  <A href="../../../../docs/manualpages/Mat/MatDAADSetDA.html#MatDAADSetDA">MatDAADSetDA</A>(*A,da);
+<a name="line556">556: </a>  <font color="#4169E1">return</font>(0);
+<a name="line557">557: </a>}
+
+
+<a name="line562">562: </a><font color="#B22222">/*@</font>
+<a name="line563">563: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatRegisterDAAD.html#MatRegisterDAAD">MatRegisterDAAD</A> - Registers DMDAAD matrix type</font>
+
+<a name="line565">565: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line567">567: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/Mat/MatCreateDAAD.html#MatCreateDAAD">MatCreateDAAD</A>(), <A href="../../../../docs/manualpages/DM/DMDASetLocalAdicMFFunction.html#DMDASetLocalAdicMFFunction">DMDASetLocalAdicMFFunction</A>()</font>
+
+<a name="line569">569: </a><font color="#B22222">@*/</font>
+<a name="line570">570: </a><strong><font color="#4169E1"><a name="MatRegisterDAAD"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/Mat/MatRegisterDAAD.html#MatRegisterDAAD">MatRegisterDAAD</A>(void)</font></strong>
+<a name="line571">571: </a>{
+<a name="line574">574: </a>  <A href="../../../../docs/manualpages/Mat/MatRegisterDynamic.html#MatRegisterDynamic">MatRegisterDynamic</A>(<A href="../../../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"MatCreate_DAAD"</font>,MatCreate_DAAD);
+<a name="line575">575: </a>  <font color="#4169E1">return</font>(0);
+<a name="line576">576: </a>}
 </pre>
 </body>
 

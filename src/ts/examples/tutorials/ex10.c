@@ -1,4 +1,4 @@
-static const char help[] = "1D nonequilibrium radiation diffusion with Saha ionization model\n\n";
+static const char help[] = "1D nonequilibrium radiation diffusion with Saha ionization model.\n\n";
 
 /*
   This example implements the model described in
@@ -276,7 +276,7 @@ static PetscErrorCode RDGetLocalArrays(RD rd,TS ts,Vec X,Vec Xdot,PetscReal *The
     rule.  These methods have equivalent linear stability, but the nonlinear stability is somewhat different.  The
     radiation system is inconvenient to write in explicit form because the ionization model is "on the left".
    */
-  ierr = PetscTypeCompare((PetscObject)ts,TSTHETA,&istheta);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)ts,TSTHETA,&istheta);CHKERRQ(ierr);
   if (istheta && rd->endpoint) {
     ierr = TSThetaGetTheta(ts,Theta);CHKERRQ(ierr);
   } else {
@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[])
   ierr = PetscInitialize(&argc,&argv,0,help);CHKERRQ(ierr);
   ierr = RDCreate(PETSC_COMM_WORLD,&rd);CHKERRQ(ierr);
   ierr = DMCreateGlobalVector(rd->da,&X);CHKERRQ(ierr);
-  ierr = DMGetMatrix(rd->da,MATAIJ,&B);CHKERRQ(ierr);
+  ierr = DMCreateMatrix(rd->da,MATAIJ,&B);CHKERRQ(ierr);
   ierr = RDInitialState(rd,X);CHKERRQ(ierr);
 
   ierr = TSCreate(PETSC_COMM_WORLD,&ts);CHKERRQ(ierr);
@@ -1071,7 +1071,7 @@ int main(int argc, char *argv[])
     break;
   case JACOBIAN_FD_COLORING: {
     ISColoring     iscoloring;
-    ierr = DMGetColoring(rd->da,IS_COLORING_GLOBAL,MATAIJ,&iscoloring);CHKERRQ(ierr);
+    ierr = DMCreateColoring(rd->da,IS_COLORING_GLOBAL,MATAIJ,&iscoloring);CHKERRQ(ierr);
     ierr = MatFDColoringCreate(B,iscoloring,&matfdcoloring);CHKERRQ(ierr);
     ierr = ISColoringDestroy(&iscoloring);CHKERRQ(ierr);
     ierr = MatFDColoringSetFunction(matfdcoloring,(PetscErrorCode(*)(void))SNESTSFormFunction,ts);CHKERRQ(ierr);

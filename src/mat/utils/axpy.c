@@ -1,5 +1,5 @@
 
-#include <private/matimpl.h>  /*I   "petscmat.h"  I*/
+#include <petsc-private/matimpl.h>  /*I   "petscmat.h"  I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "MatAXPY"
@@ -41,6 +41,11 @@ PetscErrorCode  MatAXPY(Mat Y,PetscScalar a,Mat X,MatStructure str)
     ierr = MatAXPY_Basic(Y,a,X,str);CHKERRQ(ierr);
   }
   ierr = PetscLogEventEnd(MAT_AXPY,Y,0,0,0);CHKERRQ(ierr);
+#if defined(PETSC_HAVE_CUSP)
+  if (Y->valid_GPU_matrix != PETSC_CUSP_UNALLOCATED) {
+    Y->valid_GPU_matrix = PETSC_CUSP_CPU;
+  }
+#endif
   PetscFunctionReturn(0);
 }
 
@@ -150,7 +155,7 @@ PetscErrorCode  MatShift(Mat Y,PetscScalar a)
   PetscValidHeaderSpecific(Y,MAT_CLASSID,1);
   if (!Y->assembled) SETERRQ(((PetscObject)Y)->comm,PETSC_ERR_ARG_WRONGSTATE,"Not for unassembled matrix");
   if (Y->factortype) SETERRQ(((PetscObject)Y)->comm,PETSC_ERR_ARG_WRONGSTATE,"Not for factored matrix"); 
-  ierr = MatPreallocated(Y);CHKERRQ(ierr);
+  MatCheckPreallocated(Y,1);
 
   if (Y->ops->shift) {
     ierr = (*Y->ops->shift)(Y,a);CHKERRQ(ierr);
@@ -163,6 +168,11 @@ PetscErrorCode  MatShift(Mat Y,PetscScalar a)
     ierr = MatAssemblyBegin(Y,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
     ierr = MatAssemblyEnd(Y,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   }
+#if defined(PETSC_HAVE_CUSP)
+  if (Y->valid_GPU_matrix != PETSC_CUSP_UNALLOCATED) {
+    Y->valid_GPU_matrix = PETSC_CUSP_CPU;
+  }
+#endif
   PetscFunctionReturn(0);
 }
 
@@ -177,9 +187,7 @@ PetscErrorCode  MatDiagonalSet_Default(Mat Y,Vec D,InsertMode is)
   PetscFunctionBegin;
   ierr = VecGetOwnershipRange(D,&vstart,&vend);CHKERRQ(ierr);
   ierr = MatGetOwnershipRange(Y,&start,&end);CHKERRQ(ierr);
-  if (vstart != start || vend != end) {
-    SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Vector ownership range not compatible with matrix: %D %D vec %D %D mat",vstart,vend,start,end);
-  }
+  if (vstart != start || vend != end) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Vector ownership range not compatible with matrix: %D %D vec %D %D mat",vstart,vend,start,end);
   ierr = VecGetArray(D,&v);CHKERRQ(ierr);
   for (i=start; i<end; i++) {
     ierr = MatSetValues(Y,1,&i,1,&i,v+i-start,is);CHKERRQ(ierr);

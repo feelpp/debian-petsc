@@ -48,18 +48,19 @@ PetscErrorCode VecMTDot_MPI(Vec xin,PetscInt nv,const Vec y[],PetscScalar *z)
 #define __FUNCT__ "VecNorm_MPI"
 PetscErrorCode VecNorm_MPI(Vec xin,NormType type,PetscReal *z)
 {
-  PetscReal      sum,work = 0.0;
-  PetscScalar    *xx = *(PetscScalar**)xin->data;
-  PetscErrorCode ierr;
-  PetscInt       n = xin->map->n;
-  PetscBLASInt   one = 1,bn = PetscBLASIntCast(n);
+  PetscReal         sum,work = 0.0;
+  const PetscScalar *xx;
+  PetscErrorCode    ierr;
+  PetscInt          n = xin->map->n;
+  PetscBLASInt      one = 1,bn = PetscBLASIntCast(n);
 
   PetscFunctionBegin;
   if (type == NORM_2 || type == NORM_FROBENIUS) {
-    work  = BLASnrm2_(&bn,xx,&one);
-    work *= work;
+    ierr = VecGetArrayRead(xin,&xx);CHKERRQ(ierr);
+    work = PetscRealPart(BLASdot_(&bn,xx,&one,xx,&one));
+    ierr = VecRestoreArrayRead(xin,&xx);CHKERRQ(ierr);
     ierr = MPI_Allreduce(&work,&sum,1,MPIU_REAL,MPIU_SUM,((PetscObject)xin)->comm);CHKERRQ(ierr);
-    *z = sqrt(sum);
+    *z = PetscSqrtReal(sum);
     ierr = PetscLogFlops(2.0*xin->map->n);CHKERRQ(ierr);
   } else if (type == NORM_1) {
     /* Find the local part */
@@ -77,7 +78,7 @@ PetscErrorCode VecNorm_MPI(Vec xin,NormType type,PetscReal *z)
     ierr = VecNorm_Seq(xin,NORM_2,temp+1);CHKERRQ(ierr);
     temp[1] = temp[1]*temp[1];
     ierr = MPI_Allreduce(temp,z,2,MPIU_REAL,MPIU_SUM,((PetscObject)xin)->comm);CHKERRQ(ierr);
-    z[1] = sqrt(z[1]);
+    z[1] = PetscSqrtReal(z[1]);
   }
   PetscFunctionReturn(0);
 }
@@ -100,7 +101,7 @@ void  MPIAPI VecMax_Local(void *in,void *out,PetscMPIInt *cnt,MPI_Datatype *data
   PetscFunctionBegin;
   if (*datatype != MPIU_REAL) {
     (*PetscErrorPrintf)("Can only handle MPIU_REAL data types");
-    MPI_Abort(MPI_COMM_WORLD,1);
+    MPI_Abort(MPI_COMM_SELF,1);
   }
   if (xin[0] > xout[0]) {
     xout[0] = xin[0];
@@ -122,7 +123,7 @@ void  MPIAPI VecMin_Local(void *in,void *out,PetscMPIInt *cnt,MPI_Datatype *data
   PetscFunctionBegin;
   if (*datatype != MPIU_REAL) {
     (*PetscErrorPrintf)("Can only handle MPIU_REAL data types");
-    MPI_Abort(MPI_COMM_WORLD,1);
+    MPI_Abort(MPI_COMM_SELF,1);
   }
   if (xin[0] < xout[0]) {
     xout[0] = xin[0];

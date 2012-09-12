@@ -26,13 +26,3 @@
        PetscVoid sctx ! void
        integer ierr
        end subroutine
-        subroutine MatFDColoringApplyTS(J, coloring, t, x1, flag, sctx ,&
-     &ierr)
-       Mat J ! Mat
-       MatFDColoring coloring ! MatFDColoring
-       PetscReal t ! PetscReal
-       Vec x1 ! Vec
-       MatStructure flag ! MatStructure
-       PetscVoid sctx ! void
-       integer ierr
-       end subroutine

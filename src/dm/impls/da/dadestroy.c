@@ -3,7 +3,7 @@
   Code for manipulating distributed regular arrays in parallel.
 */
 
-#include <private/daimpl.h>    /*I   "petscdmda.h"   I*/
+#include <petsc-private/daimpl.h>    /*I   "petscdmda.h"   I*/
 
 /* Logging support */
 PetscClassId  ADDA_CLASSID;
@@ -113,5 +113,7 @@ PetscErrorCode  DMDestroy_DA(DM da)
   ierr = PetscFree(dd->dfill);CHKERRQ(ierr);
   ierr = PetscFree(dd->ofill);CHKERRQ(ierr);
   ierr = PetscFree(dd->e);CHKERRQ(ierr);
+
+  /* ierr = PetscSectionDestroy(&dd->defaultGlobalSection);CHKERRQ(ierr); */
   PetscFunctionReturn(0);
 }

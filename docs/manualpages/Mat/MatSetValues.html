@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatSetValues.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatSetValues</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatSetValues"><H1>MatSetValues</H1></A>
 Inserts or adds a block of values into a matrix. These values may be cached, so <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>() and <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>()  MUST be called after all calls to <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() have been completed. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -30,6 +31,9 @@ Not Collective
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+If you create the matrix yourself (that is not with a call to <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>()) then you MUST call MatXXXXSetPreallocation() or
+<A HREF="../Mat/MatSetUp.html#MatSetUp">MatSetUp</A>() before using this routine
+<P>
 By default the values, v, are row-oriented. See <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>() for other options.
 <P>
 Calls to <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() with the <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A> and <A HREF="../Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>
@@ -65,10 +69,10 @@ for users of block sparse formats (<A HREF="../Mat/MATSEQBAIJ.html#MATSEQBAIJ">M
 <A HREF="../../../src/mat/examples/tutorials/ex8.c.html">src/mat/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex12.c.html">src/mat/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex15.c.html">src/mat/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 </BODY></HTML>

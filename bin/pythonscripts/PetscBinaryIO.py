@@ -150,7 +150,7 @@ class IS(np.ndarray):
 class PetscBinaryIO(object):
     """Reader/Writer class for PETSc binary files.
 
-    Note that by default, precisions for both scalars and indices, as well as 
+    Note that by default, precisions for both scalars and indices, as well as
     complex scalars, are picked up from the PETSC_DIR/PETSC_ARCH configuration
     as set by environmental variables.
 
@@ -196,17 +196,21 @@ class PetscBinaryIO(object):
         else:
             self._inttype = np.dtype('>i4')
 
+        if self.precision == 'longlong':
+            nbyte = 16
+            print nbyte
+        elif self.precision == 'single':
+            nbyte = 4
+        else:
+            nbyte = 8
+
         if self.complexscalars:
             name = 'c'
+            nbyte = nbyte * 2 # complex scalar takes twice as many bytes
         else:
             name = 'f'
 
-        if self.precision == 'longlong':
-            self._scalartype = '>%s16'%name
-        if self.precision == 'single':
-            self._scalartype = '>%s4'%name
-        else:
-            self._scalartype = '>%s8'%name
+        self._scalartype = '>{0}{1}'.format(name, nbyte)
 
     @decorate_with_conf
     def readVec(self, fh):
@@ -308,18 +312,20 @@ class PetscBinaryIO(object):
     @decorate_with_conf
     def readMatSciPy(self, fh):
         from scipy.sparse import csr_matrix
-        (M, N), (I, J, V) = readMatSparse(fh)
+        (M, N), (I, J, V) = self.readMatSparse(fh)
         return csr_matrix((V, J, I), shape=(M, N))
 
     @decorate_with_conf
     def writeMatSciPy(self, fh, mat):
         from scipy.sparse import csr_matrix
+        if hasattr(mat, 'tocsr'):
+            mat = mat.tocsr()
         assert isinstance(mat, csr_matrix)
         V = mat.data
         M,N = mat.shape
         J = mat.indices
         I = mat.indptr
-        return writeMatSparse(fh, (mat.shape, (mat.indptr,mat.indices,mat.data)))
+        return self.writeMatSparse(fh, (mat.shape, (mat.indptr,mat.indices,mat.data)))
 
     @decorate_with_conf
     def readMat(self, fh, mattype='sparse'):
@@ -331,11 +337,11 @@ class PetscBinaryIO(object):
         """
 
         if mattype == 'sparse':
-            return readMatSparse(fh)
+            return self.readMatSparse(fh)
         elif mattype == 'dense':
-            return readMatDense(fh)
+            return self.readMatDense(fh)
         elif mattype == 'scipy.sparse':
-            return readMatSciPy(fh)
+            return self.readMatSciPy(fh)
         else:
             raise RuntimeError('Invalid matrix type requested: choose sparse/dense')
 

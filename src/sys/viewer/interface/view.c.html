@@ -1,15 +1,16 @@
 <center><a href="view.c">Actual source code: view.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/viewer/interface/view.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:50:29+00:00">
+<meta name="date" content="2012-08-29T16:33:28+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/viewerimpl.h&gt;  </font><font color="#B22222">/*I "petscsys.h" I*/</font><font color="#A020F0">  </font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/viewerimpl.h&gt;  </font><font color="#B22222">/*I "petscsys.h" I*/</font><font color="#A020F0">  </font>
 
 <a name="line4">  4: </a><A href="../../../../docs/manualpages/Sys/PetscClassId.html#PetscClassId">PetscClassId</A> PETSC_VIEWER_CLASSID;
 
@@ -282,7 +283,7 @@
 <a name="line312">312: </a>    <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetStdout.html#PetscViewerASCIIGetStdout">PetscViewerASCIIGetStdout</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)v)-&gt;comm,&amp;viewer);
 <a name="line313">313: </a>  }
 
-<a name="line317">317: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line317">317: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line318">318: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line319">319: </a>    PetscViewerGetFormat(viewer,&amp;format);
 <a name="line320">320: </a>    <font color="#4169E1">if</font> (format == PETSC_VIEWER_ASCII_INFO || format == PETSC_VIEWER_ASCII_INFO_DETAIL) {

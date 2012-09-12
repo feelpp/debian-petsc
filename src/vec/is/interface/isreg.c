@@ -1,5 +1,5 @@
 
-#include <private/isimpl.h>    /*I "petscis.h"  I*/
+#include <petsc-private/isimpl.h>    /*I "petscis.h"  I*/
 
 PetscFList ISList                       = PETSC_NULL;
 PetscBool  ISRegisterAllCalled          = PETSC_FALSE;
@@ -76,7 +76,7 @@ PetscErrorCode  ISSetType(IS is, const ISType method)
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(is, IS_CLASSID,1);
-  ierr = PetscTypeCompare((PetscObject) is, method, &match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) is, method, &match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
   if (!ISRegisterAllCalled) {ierr = ISRegisterAll(PETSC_NULL);CHKERRQ(ierr);}
@@ -84,6 +84,7 @@ PetscErrorCode  ISSetType(IS is, const ISType method)
   if (!r) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_UNKNOWN_TYPE, "Unknown IS type: %s", method);
   if (is->ops->destroy) {
     ierr = (*is->ops->destroy)(is);CHKERRQ(ierr);
+    is->ops->destroy = PETSC_NULL;
   }
   ierr = (*r)(is);CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)is,method);CHKERRQ(ierr);

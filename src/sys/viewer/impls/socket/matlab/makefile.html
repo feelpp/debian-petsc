@@ -1,12 +1,13 @@
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/viewer/impls/socket/matlab/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:50:03+00:00">
+<meta name="date" content="2012-08-29T16:32:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <font color="#A020F0">#</font>
 <font color="#A020F0">#requirespackage  'PETSC_HAVE_MATLAB'</font>
@@ -24,7 +25,7 @@ SPECIALFASTLIB = yes
         -@${OMAKE}  matlabcodes PETSC_ARCH=${PETSC_ARCH} PETSC_DIR=${PETSC_DIR}
 <strong><font color="#FF0000">specialfastlib:</font></strong> speciallib
 
-<strong><font color="#FF0000">matlabcodes:</font></strong> sread sopen sclose swrite
+<strong><font color="#FF0000">matlabcodes:</font></strong> sread sopen sclose swrite 
 
 CFLAGS    =
 FFLAGS    =
@@ -49,6 +50,12 @@ include ${PETSC_DIR}/conf/test
         -@${MATLAB_MEX}  -g CC='${PCC}' CFLAGS='${COPTFLAGS} ${CC_FLAGS} ${CCPPFLAGS}' sread.c bread.c -lc
         -@${RM} -f sread.o bread.o
         -@${MV} sread.mex* ${PETSC_DIR}/bin/matlab
+
+<font color="#A020F0">#  This is hardwired to one particular system</font>
+<strong><font color="#FF0000">longdoubleread:</font></strong>  
+        ${MATLAB_MEX}  -v -g CC='${PCC}'  CFLAGS='${COPTFLAGS} ${CC_FLAGS} ${CCPPFLAGS}' longdoubleread.c bread.c /usr/local/lib/libgcc_ext.10.4.dylib -lc
+        -@${RM} -f longdoubleread.o bread.o
+        -@${MV} longdoubleread.mex* ${PETSC_DIR}/bin/matlab
 
 <strong><font color="#FF0000">swrite:</font></strong>  
         -@${MATLAB_MEX} -g CC='${PCC}' CFLAGS='${COPTFLAGS} ${CC_FLAGS} ${CCPPFLAGS}' swrite.c bread.c -lc

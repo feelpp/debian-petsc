@@ -54,6 +54,7 @@
       KSP      ksp
       Vec      x,r
       Mat      J
+      SNESLineSearch linesearch
       PetscErrorCode  ierr
       PetscInt its,i2,i20
       PetscMPIInt size,rank
@@ -114,6 +115,7 @@
       call MatCreate(PETSC_COMM_SELF,J,ierr)
       call MatSetSizes(J,PETSC_DECIDE,PETSC_DECIDE,i2,i2,ierr)
       call MatSetFromOptions(J,ierr)
+      call MatSetUp(J,ierr)
 
 !  Set function evaluation routine and vector
 
@@ -151,8 +153,10 @@
       call PetscOptionsHasName(PETSC_NULL_CHARACTER,'-setls',setls,ierr)
 
       if (setls) then
-        call SNESLineSearchSet(snes,MyLineSearch,                       &
-     &                         PETSC_NULL_OBJECT,ierr)
+        call SNESGetSNESLineSearch(snes, linesearch, ierr)
+        call SNESLineSearchSetType(linesearch, "shell", ierr)
+        call SNESLineSearchShellSetUserFunc(linesearch, MyLineSearch,   &
+     &PETSC_NULL_OBJECT, ierr)
       endif
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,7 +175,7 @@
       if (rank .eq. 0) then
          write(6,100) its
       endif
-  100 format('Number of Newton iterations = ',i5)
+  100 format('Number of SNES iterations = ',i5)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Free work space.  All PETSc objects should be destroyed when they
@@ -310,8 +314,7 @@
       end
 
 
-      subroutine MyLineSearch(snes,lctx,x,f,g,y,w,fnorm,ynorm,gnorm,     &
-     &                        flag,ierr)
+      subroutine MyLineSearch(linesearch, lctx, ierr)
 #include <finclude/petscsys.h>
 #include <finclude/petscvec.h>
 #include <finclude/petscmat.h>
@@ -322,17 +325,23 @@
       SNES              snes
       integer           lctx
       Vec               x, f,g, y, w
-      double  precision fnorm,ynorm,gnorm
-      PetscBool            flag
-      PetscErrorCode ierr
+      PetscReal         ynorm,gnorm,xnorm
+      PetscBool         flag
+      PetscErrorCode    ierr
 
       PetscScalar       mone
 
       mone = -1.0d0
-      flag = .false.
+      call SNESLineSearchGetSNES(linesearch, snes, ierr)
+      call SNESLineSearchGetVecs(linesearch, x, f, y, w, g, ierr)
       call VecNorm(y,NORM_2,ynorm,ierr)
-      call VecAYPX(y,mone,x,ierr)
-      call SNESComputeFunction(snes,y,g,ierr)
-      call VecNorm(g,NORM_2,gnorm,ierr)
+      call VecAXPY(x,mone,y,ierr)
+      call SNESComputeFunction(snes,x,f,ierr)
+      call VecNorm(f,NORM_2,gnorm,ierr)
+      call VecNorm(x,NORM_2,xnorm,ierr)
+      call VecNorm(y,NORM_2,ynorm,ierr)
+      call SNESLineSearchSetNorms(linesearch, xnorm, gnorm, ynorm,      &
+     & ierr)
+      flag = PETSC_FALSE
       return 
       end

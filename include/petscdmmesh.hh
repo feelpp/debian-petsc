@@ -33,11 +33,8 @@ PetscErrorCode  DMMeshCreateMatrix(const Obj<Mesh>& mesh, const Obj<Section>& se
   ierr = PetscStrcmp(mtype, MATMPISBAIJ, &isSymMPIBlock);CHKERRQ(ierr);
   // Check for symmetric storage
   isSymmetric = (PetscBool) (isSymBlock || isSymSeqBlock || isSymMPIBlock);
-  if (isSymmetric) {
-    ierr = MatSetOption(*J, MAT_IGNORE_LOWER_TRIANGULAR, PETSC_TRUE);CHKERRQ(ierr);
-  }
   if (!isShell) {
-    PetscInt *dnz, *onz;
+    PetscInt *dnz, *onz, bsLocal;
 
     if (bs < 0) {
       if (isBlock || isSeqBlock || isMPIBlock || isSymBlock || isSymSeqBlock || isSymMPIBlock) {
@@ -52,6 +49,9 @@ PetscErrorCode  DMMeshCreateMatrix(const Obj<Mesh>& mesh, const Obj<Section>& se
       } else {
         bs = 1;
       }
+      // Must have same blocksize on all procs (some might have no points)
+      bsLocal = bs;
+      ierr = MPI_Allreduce(&bsLocal, &bs, 1, MPIU_INT, MPI_MAX, mesh->comm());CHKERRQ(ierr);
     }
     ierr = PetscMalloc2(localSize/bs, PetscInt, &dnz, localSize/bs, PetscInt, &onz);CHKERRQ(ierr);
 #ifdef USE_NEW_OVERLAP
@@ -60,6 +60,9 @@ PetscErrorCode  DMMeshCreateMatrix(const Obj<Mesh>& mesh, const Obj<Section>& se
     ierr = preallocateOperatorNew(mesh, bs, section->getAtlas(), order, dnz, onz, isSymmetric, *J, fillMatrix);CHKERRQ(ierr);
 #endif
     ierr = PetscFree2(dnz, onz);CHKERRQ(ierr);
+    if (isSymmetric) {
+      ierr = MatSetOption(*J, MAT_IGNORE_LOWER_TRIANGULAR, PETSC_TRUE);CHKERRQ(ierr);
+    }
   }
   PetscFunctionReturn(0);
 }
@@ -161,9 +164,9 @@ PetscErrorCode  DMMeshCreateGlobalScatter(const ALE::Obj<Mesh>& m, const ALE::Ob
   ierr = ISCreateGeneral(PETSC_COMM_SELF, globalIndx, globalIndices,PETSC_OWN_POINTER, &globalIS);CHKERRQ(ierr);
   // Can remove this when I test it with NULL
 #ifdef PETSC_USE_COMPLEX
-  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF, s->getStorageSize(), PETSC_NULL, &localVec);CHKERRQ(ierr);
+  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF, 1,s->getStorageSize(), PETSC_NULL, &localVec);CHKERRQ(ierr);
 #else
-  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF, s->getStorageSize(), s->restrictSpace(), &localVec);CHKERRQ(ierr);
+  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF, 1,s->getStorageSize(), s->restrictSpace(), &localVec);CHKERRQ(ierr);
 #endif
   ierr = VecScatterCreate(localVec, localIS, globalVec, globalIS, scatter);CHKERRQ(ierr);
   ierr = ISDestroy(&globalIS);CHKERRQ(ierr);
@@ -1326,6 +1329,7 @@ PetscErrorCode preallocateOperatorNewOverlap(const ALE::Obj<Mesh>& mesh, const i
     }
   }
   nbrSendOverlap->assemble();
+  nbrSendOverlap->assemblePoints();
   if (debug) nbrSendOverlap->view("Modified Send Overlap");
   //   Let maxPoint be the first point not contained in adjGraph
   point_type maxPoint = std::max(*std::max_element(adjGraph->cap()->begin(),  adjGraph->cap()->end()),
@@ -1378,6 +1382,7 @@ PetscErrorCode preallocateOperatorNewOverlap(const ALE::Obj<Mesh>& mesh, const i
     }
   }
   nbrRecvOverlap->assemble();
+  nbrRecvOverlap->assemblePoints();
   if (debug) nbrRecvOverlap->view("Modified Recv Overlap");
   if (debug) adjGraph->view("Modified Adjacency Graph");
   // Update global order
@@ -1392,6 +1397,7 @@ PetscErrorCode preallocateOperatorNewOverlap(const ALE::Obj<Mesh>& mesh, const i
   ierr = MatMPIBAIJSetPreallocation(A, bs, 0, dnz, 0, onz);CHKERRQ(ierr);
   ierr = MatSeqSBAIJSetPreallocation(A, bs, 0, dnz);CHKERRQ(ierr);
   ierr = MatMPISBAIJSetPreallocation(A, bs, 0, dnz, 0, onz);CHKERRQ(ierr);
+  ierr = MatSetUp(A);
   ierr = MatSetOption(A, MAT_NEW_NONZERO_ALLOCATION_ERR,PETSC_TRUE);CHKERRQ(ierr);
   // Fill matrix with zeros
   if (fillMatrix) {ierr = fillMatrixWithZero(A, bs, atlas, globalOrder, adjGraph, isSymmetric, dnz, onz);CHKERRQ(ierr);}

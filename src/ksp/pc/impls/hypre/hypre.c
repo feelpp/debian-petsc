@@ -5,7 +5,7 @@
 
 /* Must use hypre 2.0.0 or more recent. */
 
-#include <private/pcimpl.h>          /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>          /*I "petscpc.h" I*/
 #include <../src/dm/impls/da/hypre/mhyp.h>
 
 /* 
@@ -16,58 +16,58 @@ typedef struct {
   HYPRE_IJMatrix     ij;
   HYPRE_IJVector     b,x;
 
-  PetscErrorCode     (*destroy)(HYPRE_Solver);
-  PetscErrorCode     (*solve)(HYPRE_Solver,HYPRE_ParCSRMatrix,HYPRE_ParVector,HYPRE_ParVector);
-  PetscErrorCode     (*setup)(HYPRE_Solver,HYPRE_ParCSRMatrix,HYPRE_ParVector,HYPRE_ParVector);
+  HYPRE_Int          (*destroy)(HYPRE_Solver);
+  HYPRE_Int          (*solve)(HYPRE_Solver,HYPRE_ParCSRMatrix,HYPRE_ParVector,HYPRE_ParVector);
+  HYPRE_Int          (*setup)(HYPRE_Solver,HYPRE_ParCSRMatrix,HYPRE_ParVector,HYPRE_ParVector);
   
   MPI_Comm           comm_hypre;
   char              *hypre_type;
 
   /* options for Pilut and BoomerAMG*/
-  int                maxiter;
+  PetscInt           maxiter;
   double             tol;
 
   /* options for Pilut */
-  int                factorrowsize;
+  PetscInt           factorrowsize;
 
   /* options for ParaSails */
-  int                nlevels;
+  PetscInt           nlevels;
   double             threshhold;
   double             filter;
-  int                sym;
+  PetscInt           sym;
   double             loadbal;
-  int                logging;
-  int                ruse;
-  int                symt;
+  PetscInt           logging;
+  PetscInt           ruse;
+  PetscInt           symt;
 
   /* options for Euclid */
   PetscBool          bjilu;
-  int                levels;
+  PetscInt           levels;
 
   /* options for Euclid and BoomerAMG */
   PetscBool          printstatistics;
 
   /* options for BoomerAMG */
-  int                cycletype;
-  int                maxlevels;
+  PetscInt           cycletype;
+  PetscInt           maxlevels;
   double             strongthreshold;
   double             maxrowsum;
-  int                gridsweeps[3];
-  int                coarsentype;
-  int                measuretype;
-  int                relaxtype[3];
+  PetscInt           gridsweeps[3];
+  PetscInt           coarsentype;
+  PetscInt           measuretype;
+  PetscInt           relaxtype[3];
   double             relaxweight;
   double             outerrelaxweight;
-  int                relaxorder;
+  PetscInt           relaxorder;
   double             truncfactor;
   PetscBool          applyrichardson;
-  int                pmax;
-  int                interptype;
-  int                agg_nl;
-  int                agg_num_paths;
-  int                nodal_coarsen;
+  PetscInt           pmax;
+  PetscInt           interptype;
+  PetscInt           agg_nl;
+  PetscInt           agg_num_paths;
+  PetscInt           nodal_coarsen;
   PetscBool          nodal_relax;
-  int                nodal_relax_levels;
+  PetscInt           nodal_relax_levels;
 } PC_HYPRE;
 
 
@@ -144,7 +144,7 @@ static PetscErrorCode PCApply_HYPRE(PC pc,Vec b,Vec x)
   PetscScalar        *bv,*xv;
   HYPRE_ParVector    jbv,jxv;
   PetscScalar        *sbv,*sxv; 
-  int                hierr;
+  PetscInt           hierr;
 
   PetscFunctionBegin;
   if (!jac->applyrichardson) {ierr = VecSet(x,0.0);CHKERRQ(ierr);}
@@ -219,7 +219,7 @@ static PetscErrorCode PCView_HYPRE_Pilut(PC pc,PetscViewer viewer)
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE Pilut preconditioning\n");CHKERRQ(ierr);
     if (jac->maxiter != PETSC_DEFAULT) {
@@ -257,7 +257,7 @@ static PetscErrorCode PCSetFromOptions_HYPRE_Euclid(PC pc)
   ierr = PetscOptionsInt("-pc_hypre_euclid_levels","Number of levels of fill ILU(k)","None",jac->levels,&jac->levels,&flag);CHKERRQ(ierr);
   if (flag) {
     if (jac->levels < 0) SETERRQ1(((PetscObject)pc)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Number of levels %d must be nonegative",jac->levels);
-    sprintf(levels,"%d",jac->levels);
+    ierr = PetscSNPrintf(levels,sizeof levels,"%D",jac->levels);CHKERRQ(ierr);
     args[cnt++] = (char*)"-level"; args[cnt++] = levels;
   } 
   ierr = PetscOptionsBool("-pc_hypre_euclid_bj","Use block Jacobi ILU(k)","None",jac->bjilu,&jac->bjilu,PETSC_NULL);CHKERRQ(ierr);
@@ -284,7 +284,7 @@ static PetscErrorCode PCView_HYPRE_Euclid(PC pc,PetscViewer viewer)
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE Euclid preconditioning\n");CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE Euclid: number of levels %d\n",jac->levels);CHKERRQ(ierr);
@@ -307,7 +307,7 @@ static PetscErrorCode PCApplyTranspose_HYPRE_BoomerAMG(PC pc,Vec b,Vec x)
   PetscScalar        *bv,*xv;
   HYPRE_ParVector    jbv,jxv;
   PetscScalar        *sbv,*sxv; 
-  int                hierr;
+  PetscInt           hierr;
 
   PetscFunctionBegin;
   ierr = VecSet(x,0.0);CHKERRQ(ierr);
@@ -345,7 +345,7 @@ static PetscErrorCode PCSetFromOptions_HYPRE_BoomerAMG(PC pc)
 {
   PC_HYPRE       *jac = (PC_HYPRE*)pc->data;
   PetscErrorCode ierr;
-  int            n,indx,level;
+  PetscInt       n,indx,level;
   PetscBool      flg, tmp_truth;
   double         tmpdbl, twodbl[2];
 
@@ -571,7 +571,7 @@ static PetscErrorCode PCApplyRichardson_HYPRE_BoomerAMG(PC pc,Vec b,Vec y,Vec w,
 {
   PC_HYPRE       *jac = (PC_HYPRE*)pc->data;
   PetscErrorCode ierr;
-  int            oits;
+  PetscInt       oits;
 
   PetscFunctionBegin;
   PetscStackCallHypre(0,HYPRE_BoomerAMGSetMaxIter,(jac->hsolver,its*jac->maxiter));
@@ -598,7 +598,7 @@ static PetscErrorCode PCView_HYPRE_BoomerAMG(PC pc,PetscViewer viewer)
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE BoomerAMG preconditioning\n");CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE BoomerAMG: Cycle type %s\n",HYPREBoomerAMGCycleType[jac->cycletype]);CHKERRQ(ierr);
@@ -649,7 +649,7 @@ static PetscErrorCode PCSetFromOptions_HYPRE_ParaSails(PC pc)
 {
   PC_HYPRE       *jac = (PC_HYPRE*)pc->data;
   PetscErrorCode ierr;
-  int            indx;
+  PetscInt       indx;
   PetscBool      flag;
   const char     *symtlist[] = {"nonsymmetric","SPD","nonsymmetric,SPD"};
 
@@ -701,7 +701,7 @@ static PetscErrorCode PCView_HYPRE_ParaSails(PC pc,PetscViewer viewer)
   const char     *symt = 0;;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE ParaSails preconditioning\n");CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE ParaSails: nlevels %d\n",jac->nlevels);CHKERRQ(ierr);
@@ -882,7 +882,7 @@ EXTERN_C_END
 static PetscErrorCode PCSetFromOptions_HYPRE(PC pc)
 {
   PetscErrorCode ierr;
-  int            indx;
+  PetscInt       indx;
   const char     *type[] = {"pilut","parasails","boomeramg","euclid"};
   PetscBool      flg;
 
@@ -1025,19 +1025,19 @@ EXTERN_C_END
 /* ---------------------------------------------------------------------------------------------------------------------------------*/
 
 /* this include is needed ONLY to allow access to the private data inside the Mat object specific to hypre */
-#include <private/matimpl.h>
+#include <petsc-private/matimpl.h>
 
 typedef struct {
   MPI_Comm            hcomm;       /* does not share comm with HYPRE_StructMatrix because need to create solver before getting matrix */
   HYPRE_StructSolver  hsolver;
 
   /* keep copy of PFMG options used so may view them */
-  int                 its;   
+  PetscInt            its;   
   double              tol;
-  int                 relax_type;
-  int                 rap_type;
-  int                 num_pre_relax,num_post_relax;
-  int                 max_levels;
+  PetscInt            relax_type;
+  PetscInt            rap_type;
+  PetscInt            num_pre_relax,num_post_relax;
+  PetscInt            max_levels;
 } PC_PFMG;
 
 #undef __FUNCT__
@@ -1066,7 +1066,7 @@ PetscErrorCode PCView_PFMG(PC pc,PetscViewer viewer)
   PC_PFMG        *ex = (PC_PFMG*) pc->data;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE PFMG preconditioning\n");CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE PFMG: max iterations %d\n",ex->its);CHKERRQ(ierr);
@@ -1122,7 +1122,7 @@ PetscErrorCode PCApply_PFMG(PC pc,Vec x,Vec y)
   PetscErrorCode  ierr;
   PC_PFMG         *ex = (PC_PFMG*) pc->data;
   PetscScalar     *xx,*yy;
-  int             ilower[3],iupper[3];
+  PetscInt        ilower[3],iupper[3];
   Mat_HYPREStruct *mx = (Mat_HYPREStruct *)(pc->pmat->data);
 
   PetscFunctionBegin;
@@ -1152,7 +1152,7 @@ static PetscErrorCode PCApplyRichardson_PFMG(PC pc,Vec b,Vec y,Vec w,PetscReal r
 {
   PC_PFMG        *jac = (PC_PFMG*)pc->data;
   PetscErrorCode ierr;
-  int            oits;
+  PetscInt       oits;
 
   PetscFunctionBegin;
   PetscStackCallHypre(0,HYPRE_StructPFMGSetMaxIter,(jac->hsolver,its*jac->its));
@@ -1179,7 +1179,7 @@ PetscErrorCode PCSetUp_PFMG(PC pc)
   PetscBool       flg;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)pc->pmat,MATHYPRESTRUCT,&flg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)pc->pmat,MATHYPRESTRUCT,&flg);CHKERRQ(ierr);
   if (!flg) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_INCOMP,"Must use MATHYPRESTRUCT with this preconditioner");
 
   /* create the hypre solver object and set its information */
@@ -1255,10 +1255,10 @@ typedef struct {
   HYPRE_SStructSolver  ss_solver;
 
   /* keep copy of SYSPFMG options used so may view them */
-  int                 its;
+  PetscInt            its;
   double              tol;
-  int                 relax_type;
-  int                 num_pre_relax,num_post_relax;
+  PetscInt            relax_type;
+  PetscInt            num_pre_relax,num_post_relax;
 } PC_SysPFMG;
 
 #undef __FUNCT__
@@ -1286,7 +1286,7 @@ PetscErrorCode PCView_SysPFMG(PC pc,PetscViewer viewer)
   PC_SysPFMG    *ex = (PC_SysPFMG*) pc->data;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE SysPFMG preconditioning\n");CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  HYPRE SysPFMG: max iterations %d\n",ex->its);CHKERRQ(ierr);
@@ -1335,13 +1335,13 @@ PetscErrorCode PCApply_SysPFMG(PC pc,Vec x,Vec y)
   PetscErrorCode    ierr;
   PC_SysPFMG       *ex = (PC_SysPFMG*) pc->data;
   PetscScalar      *xx,*yy;
-  int               ilower[3],iupper[3];
+  PetscInt          ilower[3],iupper[3];
   Mat_HYPRESStruct *mx = (Mat_HYPRESStruct *)(pc->pmat->data);
-  int               ordering= mx->dofs_order;
-  int               nvars= mx->nvars;
-  int               part= 0;
-  int               size;
-  int               i;
+  PetscInt          ordering= mx->dofs_order;
+  PetscInt          nvars= mx->nvars;
+  PetscInt          part= 0;
+  PetscInt          size;
+  PetscInt          i;
 
   PetscFunctionBegin;
   ierr = DMDAGetCorners(mx->da,&ilower[0],&ilower[1],&ilower[2],&iupper[0],&iupper[1],&iupper[2]);CHKERRQ(ierr);
@@ -1373,7 +1373,7 @@ PetscErrorCode PCApply_SysPFMG(PC pc,Vec x,Vec y)
      ierr = VecRestoreArray(y,&yy);CHKERRQ(ierr);
   } else {      /* nodal ordering must be mapped to variable ordering for sys_pfmg */
      PetscScalar     *z;
-     int              j, k;
+     PetscInt         j, k;
 
      ierr = PetscMalloc(nvars*size*sizeof(PetscScalar),&z);CHKERRQ(ierr);
      PetscStackCallHypre(0,HYPRE_SStructVectorSetConstantValues,(mx->ss_b,0.0));
@@ -1417,7 +1417,7 @@ static PetscErrorCode PCApplyRichardson_SysPFMG(PC pc,Vec b,Vec y,Vec w,PetscRea
 {
   PC_SysPFMG    *jac = (PC_SysPFMG*)pc->data;
   PetscErrorCode ierr;
-  int            oits;
+  PetscInt       oits;
 
   PetscFunctionBegin;
   PetscStackCallHypre(0,HYPRE_SStructSysPFMGSetMaxIter,(jac->ss_solver,its*jac->its));
@@ -1443,7 +1443,7 @@ PetscErrorCode PCSetUp_SysPFMG(PC pc)
   PetscBool         flg;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)pc->pmat,MATHYPRESSTRUCT,&flg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)pc->pmat,MATHYPRESSTRUCT,&flg);CHKERRQ(ierr);
   if (!flg) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_INCOMP,"Must use MATHYPRESSTRUCT with this preconditioner");
 
   /* create the hypre sstruct solver object and set its information */

@@ -1,5 +1,6 @@
 <html>
 <title>KSP</title><body bgcolor="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <h2>KSP</h2>
 <menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
@@ -22,19 +23,34 @@ Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
-Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
+Solves 2D compressible Euler using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex34.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
 Solves 3D Laplacian using multigrid.<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex35.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex54f.F.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
-Subduction Zone Benchmark<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex37.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
+<BR>
+   Description: Solve Ax=b.  A comes from an anisotropic 2D thermal problem with Q1 FEM on domain (-1,1)^2.<BR>
+       Material conductivity given by tensor:<BR>
+           <BR>
+       D = | 1 0       |<BR>
+           | 0 epsilon |<BR>
+<BR>
+    rotated by angle 'theta' (-theta &lt;90&gt; in degrees) with anisotropic parameter 'epsilon' (-epsilon &lt;0.0&gt;).<BR>
+    Blob right hand side centered at C (-blob_center C(1),C(2) &lt;0,0&gt;)<BR>
+    Dirichlet BCs on y=-1 face.<BR>
+<BR>
+    -out_matlab will generate binary files for A,x,b and a ex54f.m file that reads them and plots them in matlab.<BR>
+<BR>
+    User can change anisotropic shape with function ex54_psi().  Negative theta will switch to a circular anisotropy.<BR>
+<BR>
+</menu>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex58.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
-Solves 2D inhomogeneous Laplacian using multigrid in an ion channel.<BR></menu>
+Solves a tridiagonal linear system with KSP.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html"><CONCEPT>basic parallel example;</CONCEPT></A>
 <menu>
 Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
@@ -83,18 +99,9 @@ Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex29.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
-<menu>
-Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex35.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
-<menu>
-Subduction Zone Benchmark<BR></menu>
-<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex37.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
-<menu>
-Solves 2D inhomogeneous Laplacian using multigrid in an ion channel.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex46.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves a linear system in parallel with KSP and DM.<BR>Compare this to ex2 which solves the same problem without a DM.<BR>
@@ -240,7 +247,7 @@ Solves a variable Poisson problem with KSP.<BR></menu>
 </menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html"><CONCEPT>semi-implicit</CONCEPT></A>
 <menu>
-Solves 2D inhomogeneous Laplacian using multigrid.<BR></menu>
+Solves 2D compressible Euler using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex34.c.html"><CONCEPT>Laplacian, 3d</CONCEPT></A>
 <menu>
 Solves 3D Laplacian using multigrid.<BR></menu>

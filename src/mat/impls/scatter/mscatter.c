@@ -3,8 +3,8 @@
    This provides a matrix that applies a VecScatter to a vector.
 */
 
-#include <private/matimpl.h>        /*I "petscmat.h" I*/
-#include <private/vecimpl.h>  
+#include <petsc-private/matimpl.h>        /*I "petscmat.h" I*/
+#include <petsc-private/vecimpl.h>  
 
 typedef struct {
   VecScatter scatter;
@@ -236,8 +236,6 @@ PetscErrorCode  MatCreate_Scatter(Mat A)
 
   A->data = (void*)b;
 
-  ierr = PetscLayoutSetBlockSize(A->rmap,1);CHKERRQ(ierr);
-  ierr = PetscLayoutSetBlockSize(A->cmap,1);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(A->rmap);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(A->cmap);CHKERRQ(ierr);
 
@@ -273,7 +271,6 @@ EXTERN_C_END
    corresponding result vector, y. Note that this is information is
    required for use of the matrix interface routines, even though
    the scatter matrix may not actually be physically partitioned.
-   For example,
 
 .keywords: matrix, scatter, create
 
@@ -288,6 +285,7 @@ PetscErrorCode  MatCreateScatter(MPI_Comm comm,VecScatter scatter,Mat *A)
   ierr = MatSetSizes(*A,scatter->to_n,scatter->from_n,PETSC_DETERMINE,PETSC_DETERMINE);CHKERRQ(ierr);
   ierr = MatSetType(*A,MATSCATTER);CHKERRQ(ierr);
   ierr = MatScatterSetVecScatter(*A,scatter);CHKERRQ(ierr);
+  ierr = MatSetUp(*A);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

@@ -39,8 +39,8 @@ PetscErrorCode MatDestroy_MPIAIJCRL(Mat A)
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "MPIAIJCRL_create_aijcrl"
-PetscErrorCode MPIAIJCRL_create_aijcrl(Mat A)
+#define __FUNCT__ "MatMPIAIJCRL_create_aijcrl"
+PetscErrorCode MatMPIAIJCRL_create_aijcrl(Mat A)
 {
   Mat_MPIAIJ     *a = (Mat_MPIAIJ *)(A)->data;
   Mat_SeqAIJ     *Aij = (Mat_SeqAIJ*)(a->A->data), *Bij = (Mat_SeqAIJ*)(a->B->data);
@@ -84,9 +84,9 @@ PetscErrorCode MPIAIJCRL_create_aijcrl(Mat A)
   ierr = PetscMalloc((a->B->cmap->n+nd)*sizeof(PetscScalar),&array);CHKERRQ(ierr);
   /* xwork array is actually B->n+nd long, but we define xwork this length so can copy into it */
   ierr = VecDestroy(&aijcrl->xwork);CHKERRQ(ierr);
-  ierr = VecCreateMPIWithArray(((PetscObject)A)->comm,nd,PETSC_DECIDE,array,&aijcrl->xwork);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(((PetscObject)A)->comm,1,nd,PETSC_DECIDE,array,&aijcrl->xwork);CHKERRQ(ierr);
   ierr = VecDestroy(&aijcrl->fwork);CHKERRQ(ierr);
-  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,a->B->cmap->n,array+nd,&aijcrl->fwork);CHKERRQ(ierr);
+  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,1,a->B->cmap->n,array+nd,&aijcrl->fwork);CHKERRQ(ierr);
   aijcrl->array = array;
   aijcrl->xscat = a->Mvctx;
   PetscFunctionReturn(0);
@@ -109,7 +109,7 @@ PetscErrorCode MatAssemblyEnd_MPIAIJCRL(Mat A, MatAssemblyType mode)
   if (mode == MAT_FLUSH_ASSEMBLY) PetscFunctionReturn(0);
 
   /* Now calculate the permutation and grouping information. */
-  ierr = MPIAIJCRL_create_aijcrl(A);CHKERRQ(ierr);
+  ierr = MatMPIAIJCRL_create_aijcrl(A);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -145,7 +145,7 @@ PetscErrorCode  MatConvert_MPIAIJ_MPIAIJCRL(Mat A,const MatType type,MatReuse re
 
   /* If A has already been assembled, compute the permutation. */
   if (A->assembled) {
-    ierr = MPIAIJCRL_create_aijcrl(B);CHKERRQ(ierr);
+    ierr = MatMPIAIJCRL_create_aijcrl(B);CHKERRQ(ierr);
   }
   ierr = PetscObjectChangeTypeName((PetscObject)B,MATMPIAIJCRL);CHKERRQ(ierr);
   *newmat = B;

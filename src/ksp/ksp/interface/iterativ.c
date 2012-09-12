@@ -5,7 +5,8 @@
    the registry system, we provide a way to load only the truely necessary
    files) 
  */
-#include <private/kspimpl.h>   /*I "petscksp.h" I*/
+#include <petsc-private/kspimpl.h>   /*I "petscksp.h" I*/
+#include <petscdmshell.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPGetResidualNorm"
@@ -224,8 +225,6 @@ PetscErrorCode  KSPMonitorTrueResidualNorm(KSP ksp,PetscInt n,PetscReal rnorm,vo
   PetscErrorCode  ierr;
   Vec             resid,work;
   PetscReal       scnorm,bnorm;
-  PC              pc;
-  Mat             A,B;
   PetscViewer     viewer = dummy ? (PetscViewer) dummy : PETSC_VIEWER_STDOUT_(((PetscObject)ksp)->comm);
   char            normtype[256];
 
@@ -242,11 +241,6 @@ PetscErrorCode  KSPMonitorTrueResidualNorm(KSP ksp,PetscInt n,PetscReal rnorm,vo
     they be scaled.
   */
   ierr = VecCopy(resid,work);CHKERRQ(ierr);
-  ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
-  ierr = PCGetOperators(pc,&A,&B,PETSC_NULL);CHKERRQ(ierr);
-  if (A == B) {
-    ierr = MatUnScaleSystem(A,work,PETSC_NULL);CHKERRQ(ierr);
-  }
   ierr = VecNorm(work,NORM_2,&scnorm);CHKERRQ(ierr);
   ierr = VecDestroy(&work);CHKERRQ(ierr);
   ierr = VecNorm(ksp->vec_rhs,NORM_2,&bnorm);CHKERRQ(ierr);
@@ -264,8 +258,6 @@ PetscErrorCode  KSPMonitorRange_Private(KSP ksp,PetscInt it,PetscReal *per)
   PetscErrorCode          ierr;
   Vec                     resid,work;
   PetscReal               rmax,pwork;
-  PC                      pc;
-  Mat                     A,B;
   PetscInt                i,n,N;
   PetscScalar             *r;
 
@@ -278,11 +270,6 @@ PetscErrorCode  KSPMonitorRange_Private(KSP ksp,PetscInt it,PetscReal *per)
     they be scaled.
   */
   ierr = VecCopy(resid,work);CHKERRQ(ierr);
-  ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
-  ierr = PCGetOperators(pc,&A,&B,PETSC_NULL);CHKERRQ(ierr);
-  if (A == B) {
-    ierr = MatUnScaleSystem(A,work,PETSC_NULL);CHKERRQ(ierr);
-  }
   ierr = VecNorm(work,NORM_INFINITY,&rmax);CHKERRQ(ierr);
   ierr = VecGetLocalSize(work,&n);CHKERRQ(ierr);
   ierr = VecGetSize(work,&N);CHKERRQ(ierr);
@@ -458,12 +445,17 @@ PetscErrorCode  KSPDefaultConvergedCreate(void **ctx)
    Options Database:
 .   -ksp_converged_use_initial_residual_norm
 
+   Notes:
    Use KSPSetTolerances() to alter the defaults for rtol, abstol, dtol.
 
    The precise values of reason are macros such as KSP_CONVERGED_RTOL, which
    are defined in petscksp.h.
 
    If the convergence test is not KSPDefaultConverged() then this is ignored.
+
+   If right preconditioning is being used then B does not appear in the above formula.
+
+ 
    Level: intermediate
 
 .keywords: KSP, default, convergence, residual
@@ -787,10 +779,10 @@ PetscErrorCode KSPGetVecs(KSP ksp,PetscInt rightn, Vec **right,PetscInt leftn,Ve
       if (ksp->dm) {
 	ierr = DMGetGlobalVector(ksp->dm,&vecr);CHKERRQ(ierr);
       } else {
-	Mat pmat;
+	Mat mat;
 	if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
-	ierr = PCGetOperators(ksp->pc,PETSC_NULL,&pmat,PETSC_NULL);CHKERRQ(ierr);
-	ierr = MatGetVecs(pmat,&vecr,PETSC_NULL);CHKERRQ(ierr);
+	ierr = PCGetOperators(ksp->pc,&mat,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
+	ierr = MatGetVecs(mat,&vecr,PETSC_NULL);CHKERRQ(ierr);
       }
     }
     ierr = VecDuplicateVecs(vecr,rightn,right);CHKERRQ(ierr);
@@ -809,10 +801,10 @@ PetscErrorCode KSPGetVecs(KSP ksp,PetscInt rightn, Vec **right,PetscInt leftn,Ve
       if (ksp->dm) {
 	ierr = DMGetGlobalVector(ksp->dm,&vecl);CHKERRQ(ierr);
       } else {
-	Mat pmat;
+	Mat mat;
 	if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
-	ierr = PCGetOperators(ksp->pc,PETSC_NULL,&pmat,PETSC_NULL);CHKERRQ(ierr);
-	ierr = MatGetVecs(pmat,PETSC_NULL,&vecl);CHKERRQ(ierr);
+	ierr = PCGetOperators(ksp->pc,&mat,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
+	ierr = MatGetVecs(mat,PETSC_NULL,&vecl);CHKERRQ(ierr);
       }
     }
     ierr = VecDuplicateVecs(vecl,leftn,left);CHKERRQ(ierr);
@@ -943,7 +935,20 @@ PetscErrorCode  KSPSetDM(KSP ksp,DM dm)
   PetscFunctionBegin;
   PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   if (dm) {ierr = PetscObjectReference((PetscObject)dm);CHKERRQ(ierr);}
-  ierr = DMDestroy(&ksp->dm);CHKERRQ(ierr);
+  if (ksp->dm) {                /* Move the SNESDM context over to the new DM unless the new DM already has one */
+    PetscContainer oldcontainer,container;
+    KSPDM          kdm;
+    ierr = PetscObjectQuery((PetscObject)ksp->dm,"KSPDM",(PetscObject*)&oldcontainer);CHKERRQ(ierr);
+    ierr = PetscObjectQuery((PetscObject)dm,"KSPDM",(PetscObject*)&container);CHKERRQ(ierr);
+    if (oldcontainer && !container) {
+      ierr = DMKSPCopyContext(ksp->dm,dm);CHKERRQ(ierr);
+      ierr = DMKSPGetContext(ksp->dm,&kdm);CHKERRQ(ierr);
+      if (kdm->originaldm == ksp->dm) { /* Grant write privileges to the replacement DM */
+        kdm->originaldm = dm;
+      }
+    }
+    ierr = DMDestroy(&ksp->dm);CHKERRQ(ierr);
+  }
   ksp->dm = dm;
   ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
   ierr = PCSetDM(pc,dm);CHKERRQ(ierr);
@@ -998,8 +1003,13 @@ PetscErrorCode  KSPSetDMActive(KSP ksp,PetscBool  flg)
 @*/
 PetscErrorCode  KSPGetDM(KSP ksp,DM *dm)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
   PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
+  if (!ksp->dm) {
+    ierr = DMShellCreate(((PetscObject)ksp)->comm,&ksp->dm);CHKERRQ(ierr);
+  }
   *dm = ksp->dm;
   PetscFunctionReturn(0);
 }

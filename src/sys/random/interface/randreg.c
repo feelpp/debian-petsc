@@ -36,7 +36,7 @@ PetscErrorCode  PetscRandomSetType(PetscRandom rnd, const PetscRandomType type)
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(rnd, PETSC_RANDOM_CLASSID,1);
-  ierr = PetscTypeCompare((PetscObject)rnd, type, &match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)rnd, type, &match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
   ierr = PetscFListFind(PetscRandomList,((PetscObject)rnd)->comm,  type,PETSC_TRUE,(void (**)(void)) &r);CHKERRQ(ierr); 
@@ -44,6 +44,7 @@ PetscErrorCode  PetscRandomSetType(PetscRandom rnd, const PetscRandomType type)
 
   if (rnd->ops->destroy) {
     ierr = (*rnd->ops->destroy)(rnd);CHKERRQ(ierr);
+    rnd->ops->destroy = PETSC_NULL;
   }
   ierr = (*r)(rnd);CHKERRQ(ierr); 
   ierr = PetscRandomSeed(rnd);CHKERRQ(ierr);

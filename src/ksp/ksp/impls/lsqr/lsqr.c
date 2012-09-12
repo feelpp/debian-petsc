@@ -4,7 +4,7 @@
 
 #define SWAP(a,b,c) { c = a; a = b; b = c; }
 
-#include <private/kspimpl.h>
+#include <petsc-private/kspimpl.h>
 #include <../src/ksp/ksp/impls/lsqr/lsqr.h>
 
 typedef struct {
@@ -29,7 +29,7 @@ static PetscErrorCode KSPSetUp_LSQR(KSP ksp)
   PetscBool      nopreconditioner;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)ksp->pc,PCNONE,&nopreconditioner);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)ksp->pc,PCNONE,&nopreconditioner);CHKERRQ(ierr);
   /*  nopreconditioner =PETSC_FALSE; */
 
   lsqr->nwork_m = 2;
@@ -74,7 +74,7 @@ static PetscErrorCode KSPSolve_LSQR(KSP ksp)
   if (diagonalscale) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Krylov method %s does not support diagonal scaling",((PetscObject)ksp)->type_name);
 
   ierr     = PCGetOperators(ksp->pc,&Amat,&Pmat,&pflag);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)ksp->pc,PCNONE,&nopreconditioner);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)ksp->pc,PCNONE,&nopreconditioner);CHKERRQ(ierr);
 
   /*  nopreconditioner =PETSC_FALSE; */
   /* Calculate norm of right hand side */
@@ -364,7 +364,7 @@ PetscErrorCode KSPSetFromOptions_LSQR(KSP ksp)
   PetscFunctionBegin;
   ierr = PetscOptionsHead("KSP LSQR Options");CHKERRQ(ierr);
   ierr = PetscOptionsName("-ksp_lsqr_set_standard_error","Set Standard Error Estimates of Solution","KSPLSQRSetStandardErrorVec",&lsqr->se_flg);CHKERRQ(ierr);
-  ierr = PetscOptionsString("-ksp_monitor_lsqr","Monitor residual norm and norm of residual of normal equations","KSPMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
+  ierr = PetscOptionsString("-ksp_lsqr_monitor","Monitor residual norm and norm of residual of normal equations","KSPMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flg);CHKERRQ(ierr);
   if (flg) {
     ierr = PetscViewerASCIIOpen(((PetscObject)ksp)->comm,monfilename,&monviewer);CHKERRQ(ierr);
     ierr = KSPMonitorSet(ksp,KSPLSQRMonitorDefault,monviewer,(PetscErrorCode (*)(void**))PetscViewerDestroy);CHKERRQ(ierr);
@@ -379,14 +379,18 @@ PetscErrorCode KSPView_LSQR(KSP ksp,PetscViewer viewer)
 {
   KSP_LSQR       *lsqr = (KSP_LSQR*)ksp->data;
   PetscErrorCode ierr;
+  PetscBool      iascii;
 
   PetscFunctionBegin;
-  if (lsqr->se) {
-    PetscReal rnorm;
-    ierr = KSPLSQRGetStandardErrorVec(ksp,&lsqr->se);CHKERRQ(ierr);
-    ierr = VecNorm(lsqr->se,NORM_2,&rnorm);CHKERRQ(ierr);
-    PetscPrintf(PETSC_COMM_WORLD,"  Norm of Standard Error %A, Iterations %D\n",rnorm,ksp->its);CHKERRQ(ierr);
-  }
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  if (iascii) {
+    if (lsqr->se) {
+      PetscReal rnorm;
+      ierr = KSPLSQRGetStandardErrorVec(ksp,&lsqr->se);CHKERRQ(ierr);
+      ierr = VecNorm(lsqr->se,NORM_2,&rnorm);CHKERRQ(ierr);
+      ierr = PetscViewerASCIIPrintf(viewer,"  Norm of Standard Error %G, Iterations %D\n",rnorm,ksp->its);CHKERRQ(ierr);
+    }
+  } else SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Viewer type %s not supported for KSP LSQR",((PetscObject)viewer)->type_name);
   PetscFunctionReturn(0);
 }
 
@@ -442,7 +446,9 @@ PetscErrorCode  KSPLSQRDefaultConverged(KSP ksp,PetscInt n,PetscReal rnorm,KSPCo
      KSPLSQR - This implements LSQR
 
    Options Database Keys:
-.   see KSPSolve()
++   -ksp_lsqr_set_standard_error  - Set Standard Error Estimates of Solution see KSPLSQRSetStandardErrorVec()
+.   -ksp_lsqr_monitor - Monitor residual norm and norm of residual of normal equations
+-   see KSPSolve()
 
    Level: beginner
 

@@ -1,16 +1,17 @@
 <center><a href="lgc.c">Actual source code: lgc.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/draw/utils/lgc.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:51:13+00:00">
+<meta name="date" content="2012-08-29T16:34:16+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/sys/draw/utils/lgimpl.h&gt;</font>
-<a name="line3">  3: </a><A href="../../../../docs/manualpages/Sys/PetscClassId.html#PetscClassId">PetscClassId</A> DRAWLG_CLASSID = 0;
+<a name="line3">  3: </a><A href="../../../../docs/manualpages/Sys/PetscClassId.html#PetscClassId">PetscClassId</A> PETSC_DRAWLG_CLASSID = 0;
 
 <a name="line7">  7: </a><font color="#B22222">/*@</font>
 <a name="line8">  8: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Draw/PetscDrawLGGetAxis.html#PetscDrawLGGetAxis">PetscDrawLGGetAxis</A> - Gets the axis context associated with a line graph.</font>
@@ -149,12 +150,12 @@
 <a name="line159">159: </a>  <A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>    obj = (<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)draw;
 <a name="line160">160: </a>  <A href="../../../../docs/manualpages/Draw/PetscDrawLG.html#PetscDrawLG">PetscDrawLG</A>    lg;
 
-<a name="line165">165: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>(obj,PETSC_DRAW_NULL,&amp;isnull);
+<a name="line165">165: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>(obj,PETSC_DRAW_NULL,&amp;isnull);
 <a name="line166">166: </a>  <font color="#4169E1">if</font> (isnull) {
 <a name="line167">167: </a>    PetscDrawOpenNull(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)obj)-&gt;comm,(<A href="../../../../docs/manualpages/Draw/PetscDraw.html#PetscDraw">PetscDraw</A>*)outctx);
 <a name="line168">168: </a>    <font color="#4169E1">return</font>(0);
 <a name="line169">169: </a>  }
-<a name="line170">170: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(lg,_p_PetscDrawLG,int,DRAWLG_CLASSID,0,<font color="#666666">"<A href="../../../../docs/manualpages/Draw/PetscDrawLG.html#PetscDrawLG">PetscDrawLG</A>"</font>,<font color="#666666">"Line graph"</font>,<font color="#666666">"Draw"</font>,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)obj)-&gt;comm,<A href="../../../../docs/manualpages/Draw/PetscDrawLGDestroy.html#PetscDrawLGDestroy">PetscDrawLGDestroy</A>,0);
+<a name="line170">170: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(lg,_p_PetscDrawLG,int,PETSC_DRAWLG_CLASSID,0,<font color="#666666">"<A href="../../../../docs/manualpages/Draw/PetscDrawLG.html#PetscDrawLG">PetscDrawLG</A>"</font>,<font color="#666666">"Line graph"</font>,<font color="#666666">"Draw"</font>,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)obj)-&gt;comm,<A href="../../../../docs/manualpages/Draw/PetscDrawLGDestroy.html#PetscDrawLGDestroy">PetscDrawLGDestroy</A>,0);
 <a name="line171">171: </a>  lg-&gt;view    = 0;
 <a name="line172">172: </a>  lg-&gt;destroy = 0;
 <a name="line173">173: </a>  lg-&gt;nopts   = 0;

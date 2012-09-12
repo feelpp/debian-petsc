@@ -1,23 +1,26 @@
 <center><a href="cufft.cu">Actual source code: cufft.cu</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/cufft/cufft.cu.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:18+00:00">
+<meta name="date" content="2012-08-29T16:50:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    Provides an interface to the CUFFT package.</font>
 <a name="line4">  4: </a><font color="#B22222">    Testing examples can be found in ~src/mat/examples/tests</font>
 <a name="line5">  5: </a><font color="#B22222">*/</font>
 
-<a name="line7">  7: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;          </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;          </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
+<a name="line8">  8: </a>EXTERN_C_BEGIN
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;cuda.h&gt;</font>
 <a name="line10"> 10: </a><font color="#A020F0">#include &lt;cuda_runtime.h&gt;</font>
 <a name="line11"> 11: </a><font color="#A020F0">#include &lt;cufft.h&gt;</font>
+<a name="line12"> 12: </a>EXTERN_C_END
 
 <a name="line14"> 14: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line15"> 15: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      ndim;
@@ -116,7 +119,7 @@
 <a name="line120">120: </a>}
 
 <a name="line124">124: </a><font color="#B22222">/*@</font>
-<a name="line125">125: </a><font color="#B22222">  MatCreateSeqCUFFT - Creates a matrix object that provides sequential FFT via the external package CUFFT</font>
+<a name="line125">125: </a><font color="#B22222">  <A href="../../../docs/manualpages/Mat/MatCreateSeqCUFFT.html#MatCreateSeqCUFFT">MatCreateSeqCUFFT</A> - Creates a matrix object that provides sequential FFT via the external package CUFFT</font>
 
 <a name="line127">127: </a><font color="#B22222">  Collective on <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
 
@@ -133,7 +136,7 @@
 
 <a name="line140">140: </a><font color="#B22222">  Level: intermediate</font>
 <a name="line141">141: </a><font color="#B22222">@*/</font>
-<a name="line142">142: </a><strong><font color="#4169E1"><a name="MatCreateSeqCUFFT"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreateSeqCUFFT(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ndim, const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dim[], <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>* A)</font></strong>
+<a name="line142">142: </a><strong><font color="#4169E1"><a name="MatCreateSeqCUFFT"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatCreateSeqCUFFT.html#MatCreateSeqCUFFT">MatCreateSeqCUFFT</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ndim, const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dim[], <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>* A)</font></strong>
 <a name="line143">143: </a>{
 <a name="line144">144: </a>  Mat_CUFFT     *cufft;
 <a name="line145">145: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m, d;

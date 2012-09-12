@@ -1,5 +1,5 @@
 
-#include <private/matimpl.h>          /*I "petscmat.h" I*/
+#include <petsc-private/matimpl.h>          /*I "petscmat.h" I*/
 #include <petscksp.h>                              /*I "petscksp.h" I*/
 
 typedef struct {
@@ -105,7 +105,7 @@ PetscErrorCode MatDestroy_SchurComplement(Mat N)
    Collective on Mat
 
    Input Parameter:
-.   A00,A01,A10,A11  - the four parts of the original matrix (D is optional)
+.   A00,A01,A10,A11  - the four parts of the original matrix (A00 is optional)
 
    Output Parameter:
 .   N - the matrix that the Schur complement A11 - A10 ksp(A00) A01
@@ -175,10 +175,8 @@ PetscErrorCode  MatCreateSchurComplement(Mat A00,Mat Ap00,Mat A01,Mat A10,Mat A1
   (*N)->ops->mult           = MatMult_SchurComplement;
   (*N)->ops->setfromoptions = MatSetFromOptions_SchurComplement;
   (*N)->assembled           = PETSC_TRUE;
+  (*N)->preallocated        = PETSC_TRUE;
 
-  /* treats the new matrix as having block size of 1 which is most likely the case */
-  ierr = PetscLayoutSetBlockSize((*N)->rmap,1);CHKERRQ(ierr);
-  ierr = PetscLayoutSetBlockSize((*N)->cmap,1);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp((*N)->rmap);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp((*N)->cmap);CHKERRQ(ierr);
 
@@ -270,24 +268,25 @@ PetscErrorCode  MatSchurComplementUpdate(Mat N,Mat A,Mat Ap,Mat B,Mat C,Mat D,Ma
     if (C->rmap->n != D->rmap->n) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Local rows of C %D do not equal local rows D %D",C->rmap->n,D->rmap->n);
   }
 
-  ierr      = MatDestroy(&Na->A);CHKERRQ(ierr);
-  ierr      = MatDestroy(&Na->Ap);CHKERRQ(ierr);
-  ierr      = MatDestroy(&Na->B);CHKERRQ(ierr);
-  ierr      = MatDestroy(&Na->C);CHKERRQ(ierr);
-  ierr      = MatDestroy(&Na->D);CHKERRQ(ierr);
-
-  ierr      = PetscObjectReference((PetscObject)A);CHKERRQ(ierr);
-  ierr      = PetscObjectReference((PetscObject)Ap);CHKERRQ(ierr);
-  ierr      = PetscObjectReference((PetscObject)B);CHKERRQ(ierr);
-  ierr      = PetscObjectReference((PetscObject)C);CHKERRQ(ierr);
-  Na->A     = A;
-  Na->Ap    = Ap;
-  Na->B     = B;
-  Na->C     = C;
-  Na->D     = D;
+  ierr   = PetscObjectReference((PetscObject)A);CHKERRQ(ierr);
+  ierr   = PetscObjectReference((PetscObject)Ap);CHKERRQ(ierr);
+  ierr   = PetscObjectReference((PetscObject)B);CHKERRQ(ierr);
+  ierr   = PetscObjectReference((PetscObject)C);CHKERRQ(ierr);
   if (D) {
     ierr = PetscObjectReference((PetscObject)D);CHKERRQ(ierr);
   }
+
+  ierr   = MatDestroy(&Na->A);CHKERRQ(ierr);
+  ierr   = MatDestroy(&Na->Ap);CHKERRQ(ierr);
+  ierr   = MatDestroy(&Na->B);CHKERRQ(ierr);
+  ierr   = MatDestroy(&Na->C);CHKERRQ(ierr);
+  ierr   = MatDestroy(&Na->D);CHKERRQ(ierr);
+
+  Na->A  = A;
+  Na->Ap = Ap;
+  Na->B  = B;
+  Na->C  = C;
+  Na->D  = D;
 
   ierr = KSPSetOperators(Na->ksp,A,Ap,str);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -320,7 +319,7 @@ PetscErrorCode  MatSchurComplementGetSubmatrices(Mat N,Mat *A,Mat *Ap,Mat *B,Mat
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(N,MAT_CLASSID,1);
-  ierr = PetscTypeCompare((PetscObject)N,MATSCHURCOMPLEMENT,&flg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)N,MATSCHURCOMPLEMENT,&flg);CHKERRQ(ierr);
   if (flg) {
     if (A)  *A  = Na->A;
     if (Ap) *Ap = Na->Ap;
@@ -416,7 +415,7 @@ PetscErrorCode MatGetSchurComplement_Basic(Mat mat,IS isrow0,IS iscol0,IS isrow1
     ierr = VecDestroy(&diag);CHKERRQ(ierr);
 
     ierr = MatMatMult(Ad,B,MAT_INITIAL_MATRIX,1,&AdB);CHKERRQ(ierr);
-    S = (preuse == MAT_REUSE_MATRIX) ? *newpmat : 0;
+    S = (preuse == MAT_REUSE_MATRIX) ? *newpmat : (Mat)0;
     ierr = MatMatMult(C,AdB,preuse,PETSC_DEFAULT,&S);CHKERRQ(ierr);
     ierr = MatAYPX(S,-1,D,DIFFERENT_NONZERO_PATTERN);CHKERRQ(ierr);
     *newpmat = S;

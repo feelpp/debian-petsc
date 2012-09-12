@@ -1,13 +1,14 @@
 <center><a href="umfpack.c">Actual source code: umfpack.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/umfpack/umfpack.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:59:45+00:00">
+<meta name="date" content="2012-08-29T16:44:23+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* </font>
 <a name="line3">  3: </a><font color="#B22222">   Provides an interface to the UMFPACKv5.1 sparse solver</font>
@@ -86,7 +87,9 @@
 <a name="line76"> 76: </a><strong><font color="#228B22">#define UF_long_max LONG_LONG_MAX</font></strong>
 <a name="line77"> 77: </a><strong><font color="#228B22">#define UF_long_id </font><font color="#666666">"%lld"</font><font color="#228B22"></font></strong>
 
+<a name="line79"> 79: </a>EXTERN_C_BEGIN
 <a name="line80"> 80: </a><font color="#A020F0">#include &lt;umfpack.h&gt;</font>
+<a name="line81"> 81: </a>EXTERN_C_END
 
 <a name="line83"> 83: </a>static const char *const UmfpackOrderingTypes[] = {<font color="#666666">"CHOLMOD"</font>,<font color="#666666">"AMD"</font>,<font color="#666666">"GIVEN"</font>,<font color="#666666">"METIS"</font>,<font color="#666666">"BEST"</font>,<font color="#666666">"NONE"</font>,<font color="#666666">"USER"</font>,<font color="#666666">"UmfpackOrderingTypes"</font>,<font color="#666666">"UMFPACK_ORDERING_"</font>,0};
 
@@ -303,7 +306,7 @@
 
 <a name="line327">327: </a>  MatView_SeqAIJ(A,viewer);
 
-<a name="line329">329: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line329">329: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line330">330: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line331">331: </a>    PetscViewerGetFormat(viewer,&amp;format);
 <a name="line332">332: </a>    <font color="#4169E1">if</font> (format == PETSC_VIEWER_ASCII_INFO) {
@@ -313,15 +316,17 @@
 <a name="line336">336: </a>  <font color="#4169E1">return</font>(0);
 <a name="line337">337: </a>}
 
+<a name="line339">339: </a>EXTERN_C_BEGIN
 <a name="line342">342: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqaij_umfpack"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqaij_umfpack(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
 <a name="line343">343: </a>{
 <a name="line345">345: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MATSOLVERUMFPACK.html#MATSOLVERUMFPACK">MATSOLVERUMFPACK</A>;
 <a name="line346">346: </a>  <font color="#4169E1">return</font>(0);
 <a name="line347">347: </a>}
+<a name="line348">348: </a>EXTERN_C_END
 <a name="line349">349: </a>
 
 <a name="line351">351: </a><font color="#B22222">/*MC</font>
-<a name="line352">352: </a><font color="#B22222">  <A href="../../../../../../docs/manualpages/Mat/MATSOLVERUMFPACK.html#MATSOLVERUMFPACK">MATSOLVERUMFPACK</A> = "umfpack" - A matrix type providing direct solvers (LU) for sequential matrices </font>
+<a name="line352">352: </a><font color="#B22222">  <A href="../../../../../../docs/manualpages/Mat/MATSOLVERUMFPACK.html#MATSOLVERUMFPACK">MATSOLVERUMFPACK</A> = "umfpack" - A matrix type providing direct solvers (LU) for sequential matrices</font>
 <a name="line353">353: </a><font color="#B22222">  via the external package UMFPACK.</font>
 
 <a name="line355">355: </a><font color="#B22222">  ./configure --download-umfpack to install PETSc to use UMFPACK</font>
@@ -330,26 +335,27 @@
 <a name="line358">358: </a><font color="#B22222">  which correspond to the options database keys below.</font>
 
 <a name="line360">360: </a><font color="#B22222">  Options Database Keys:</font>
-<a name="line361">361: </a><font color="#B22222">+ -mat_umfpack_prl - UMFPACK print level: Control[UMFPACK_PRL]</font>
-<a name="line362">362: </a><font color="#B22222">. -mat_umfpack_strategy &lt;AUTO&gt; (choose one of) AUTO UNSYMMETRIC SYMMETRIC 2BY2</font>
-<a name="line363">363: </a><font color="#B22222">. -mat_umfpack_dense_col &lt;alpha_c&gt; - UMFPACK dense column threshold: Control[UMFPACK_DENSE_COL]</font>
-<a name="line364">364: </a><font color="#B22222">. -mat_umfpack_dense_row &lt;0.2&gt;: Control[UMFPACK_DENSE_ROW] </font>
-<a name="line365">365: </a><font color="#B22222">. -mat_umfpack_amd_dense &lt;10&gt;: Control[UMFPACK_AMD_DENSE] </font>
-<a name="line366">366: </a><font color="#B22222">. -mat_umfpack_block_size &lt;bs&gt; - UMFPACK block size for BLAS-Level 3 calls: Control[UMFPACK_BLOCK_SIZE]</font>
-<a name="line367">367: </a><font color="#B22222">. -mat_umfpack_2by2_tolerance &lt;0.01&gt;: Control[UMFPACK_2BY2_TOLERANCE] </font>
-<a name="line368">368: </a><font color="#B22222">. -mat_umfpack_fixq &lt;0&gt;: Control[UMFPACK_FIXQ] </font>
-<a name="line369">369: </a><font color="#B22222">. -mat_umfpack_aggressive &lt;1&gt;: Control[UMFPACK_AGGRESSIVE] </font>
+<a name="line361">361: </a><font color="#B22222">+ -mat_umfpack_prl                     - UMFPACK print level: Control[UMFPACK_PRL]</font>
+<a name="line362">362: </a><font color="#B22222">. -mat_umfpack_strategy &lt;AUTO&gt;         - (choose one of) AUTO UNSYMMETRIC SYMMETRIC 2BY2</font>
+<a name="line363">363: </a><font color="#B22222">. -mat_umfpack_dense_col &lt;alpha_c&gt;     - UMFPACK dense column threshold: Control[UMFPACK_DENSE_COL]</font>
+<a name="line364">364: </a><font color="#B22222">. -mat_umfpack_dense_row &lt;0.2&gt;         - Control[UMFPACK_DENSE_ROW]</font>
+<a name="line365">365: </a><font color="#B22222">. -mat_umfpack_amd_dense &lt;10&gt;          - Control[UMFPACK_AMD_DENSE]</font>
+<a name="line366">366: </a><font color="#B22222">. -mat_umfpack_block_size &lt;bs&gt;         - UMFPACK block size for BLAS-Level 3 calls: Control[UMFPACK_BLOCK_SIZE]</font>
+<a name="line367">367: </a><font color="#B22222">. -mat_umfpack_2by2_tolerance &lt;0.01&gt;   - Control[UMFPACK_2BY2_TOLERANCE]</font>
+<a name="line368">368: </a><font color="#B22222">. -mat_umfpack_fixq &lt;0&gt;                - Control[UMFPACK_FIXQ]</font>
+<a name="line369">369: </a><font color="#B22222">. -mat_umfpack_aggressive &lt;1&gt;          - Control[UMFPACK_AGGRESSIVE]</font>
 <a name="line370">370: </a><font color="#B22222">. -mat_umfpack_pivot_tolerance &lt;delta&gt; - UMFPACK partial pivot tolerance: Control[UMFPACK_PIVOT_TOLERANCE]</font>
-<a name="line371">371: </a><font color="#B22222">.  -mat_umfpack_sym_pivot_tolerance &lt;0.001&gt;: Control[UMFPACK_SYM_PIVOT_TOLERANCE] </font>
-<a name="line372">372: </a><font color="#B22222">.  -mat_umfpack_scale &lt;NONE&gt; (choose one of) NONE SUM MAX</font>
-<a name="line373">373: </a><font color="#B22222">. -mat_umfpack_alloc_init &lt;delta&gt; - UMFPACK factorized matrix allocation modifier: Control[UMFPACK_ALLOC_INIT]</font>
-<a name="line374">374: </a><font color="#B22222">.  -mat_umfpack_droptol &lt;0&gt;: Control[UMFPACK_DROPTOL] </font>
-<a name="line375">375: </a><font color="#B22222">- -mat_umfpack_irstep &lt;maxit&gt; - UMFPACK maximum number of iterative refinement steps: Control[UMFPACK_IRSTEP]</font>
+<a name="line371">371: </a><font color="#B22222">.  -mat_umfpack_sym_pivot_tolerance &lt;0.001&gt; - Control[UMFPACK_SYM_PIVOT_TOLERANCE]</font>
+<a name="line372">372: </a><font color="#B22222">.  -mat_umfpack_scale &lt;NONE&gt;           - (choose one of) NONE SUM MAX</font>
+<a name="line373">373: </a><font color="#B22222">. -mat_umfpack_alloc_init &lt;delta&gt;      - UMFPACK factorized matrix allocation modifier: Control[UMFPACK_ALLOC_INIT]</font>
+<a name="line374">374: </a><font color="#B22222">.  -mat_umfpack_droptol &lt;0&gt;            - Control[UMFPACK_DROPTOL]</font>
+<a name="line375">375: </a><font color="#B22222">- -mat_umfpack_irstep &lt;maxit&gt;          - UMFPACK maximum number of iterative refinement steps: Control[UMFPACK_IRSTEP]</font>
 
 <a name="line377">377: </a><font color="#B22222">   Level: beginner</font>
 
 <a name="line379">379: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/PC/PCLU.html#PCLU">PCLU</A>, <A href="../../../../../../docs/manualpages/Mat/MATSOLVERSUPERLU.html#MATSOLVERSUPERLU">MATSOLVERSUPERLU</A>, <A href="../../../../../../docs/manualpages/Mat/MATSOLVERMUMPS.html#MATSOLVERMUMPS">MATSOLVERMUMPS</A>, <A href="../../../../../../docs/manualpages/Mat/MATSOLVERSPOOLES.html#MATSOLVERSPOOLES">MATSOLVERSPOOLES</A>, <A href="../../../../../../docs/manualpages/PC/PCFactorSetMatSolverPackage.html#PCFactorSetMatSolverPackage">PCFactorSetMatSolverPackage</A>(), <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A></font>
 <a name="line380">380: </a><font color="#B22222">M*/</font>
+<a name="line381">381: </a>EXTERN_C_BEGIN
 <a name="line384">384: </a><strong><font color="#4169E1"><a name="MatGetFactor_seqaij_umfpack"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetFactor_seqaij_umfpack(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatFactorType.html#MatFactorType">MatFactorType</A> ftype,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *F)</font></strong>
 <a name="line385">385: </a>{
 <a name="line386">386: </a>  <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B;
@@ -428,6 +434,7 @@
 <a name="line461">461: </a>  *F = B;
 <a name="line462">462: </a>  <font color="#4169E1">return</font>(0);
 <a name="line463">463: </a>}
+<a name="line464">464: </a>EXTERN_C_END
 
 </pre>
 </body>

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecPointwiseDivide.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecPointwiseDivide</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecPointwiseDivide"><H1>VecPointwiseDivide</H1></A>
 Computes the componentwise division w = x/y. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -27,10 +28,6 @@ Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 Notes: any subset of the x, y, and w may be the same vector.
 <P>
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp VecPointwiseDivide(Vec x,Vec y)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>VecPointwiseDivide(x,x,y)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(), <A HREF="../Vec/VecPointwiseMax.html#VecPointwiseMax">VecPointwiseMax</A>(), <A HREF="../Vec/VecPointwiseMin.html#VecPointwiseMin">VecPointwiseMin</A>(), <A HREF="../Vec/VecPointwiseMaxAbs.html#VecPointwiseMaxAbs">VecPointwiseMaxAbs</A>(), <A HREF="../Vec/VecMaxPointwiseDivide.html#VecMaxPointwiseDivide">VecMaxPointwiseDivide</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
@@ -40,7 +37,6 @@ Notes: any subset of the x, y, and w may be the same vector.
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1.c.html">src/vec/vec/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex1e.c.html">src/vec/vec/examples/tutorials/ex1e.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1f.F.html">src/vec/vec/examples/tutorials/ex1f.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1f90.F.html">src/vec/vec/examples/tutorials/ex1f90.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex20f90.F90.html">src/vec/vec/examples/tutorials/ex20f90.F90.html</A><BR>

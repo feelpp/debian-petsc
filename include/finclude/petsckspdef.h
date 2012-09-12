@@ -21,7 +21,7 @@
 !  Various Krylov subspace methods
 !
 #define KSPRICHARDSON 'richardson'
-#define KSPCHEBYCHEV 'chebychev'
+#define KSPCHEBYSHEV 'chebyshev'
 #define KSPCG 'cg'
 #define KSPCGNE 'cgne'
 #define KSPNASH 'nash'
@@ -31,9 +31,12 @@
 #define KSPFGMRES 'fgmres'
 #define KSPLGMRES 'lgmres'
 #define KSPDGMRES 'dgmres'
+#define KSPPGMRES 'pgmres'
 #define KSPTCQMR 'tcqmr'
 #define KSPBCGS 'bcgs'
 #define KSPIBCGS 'ibcgs'
+#define KSPFBCGS  'fbcgs'
+#define KSPIFBCGS 'ifbcgs'
 #define KSPBCGSL 'bcgsl'
 #define KSPCGS 'cgs'
 #define KSPTFQMR 'tfqmr'
@@ -46,6 +49,6 @@
 #define KSPSYMMLQ 'symmlq'
 #define KSPLCD 'lcd'
 #define KSPPYTHON 'python'
-#define KSPBROYDEN 'broyden'
 #define KSPGCR 'gcr'
+#define KSPSPECEST 'specest'
 #endif

@@ -1,13 +1,14 @@
 <center><a href="ex36.c">Actual source code: ex36.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tests/ex36.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:55+00:00">
+<meta name="date" content="2012-08-29T16:58:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Checks the functionality of DMDAGetInterpolation on deformed grids.\n\n"</font>;
 
@@ -343,7 +344,7 @@
 <a name="line353">353: </a>                      &amp;dac );
 <a name="line354">354: </a>  <A href="../../../../docs/manualpages/DM/DMSetFromOptions.html#DMSetFromOptions">DMSetFromOptions</A>(dac);
 <a name="line355">355: </a>
-<a name="line356">356: </a>  <A href="../../../../docs/manualpages/DM/DMRefine.html#DMRefine">DMRefine</A>(dac,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;daf);
+<a name="line356">356: </a>  <A href="../../../../docs/manualpages/DM/DMRefine.html#DMRefine">DMRefine</A>(dac,MPI_COMM_NULL,&amp;daf);
 <a name="line357">357: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(daf,0,&amp;Mx,0,0,0,0,0,0,0,0,0,0,0);
 <a name="line358">358: </a>  Mx--;
 <a name="line359">359: </a>
@@ -360,13 +361,13 @@
 <a name="line370">370: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetCoordinates.html#DMDAGetCoordinates">DMDAGetCoordinates</A>(dac,&amp;coordsc);
 <a name="line371">371: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetCoordinates.html#DMDAGetCoordinates">DMDAGetCoordinates</A>(daf,&amp;coordsf);
 <a name="line372">372: </a>
-<a name="line373">373: </a>    <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(cdac,cdaf,&amp;II,&amp;scale);
+<a name="line373">373: </a>    <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>(cdac,cdaf,&amp;II,&amp;scale);
 <a name="line374">374: </a>    <A href="../../../../docs/manualpages/Mat/MatInterpolate.html#MatInterpolate">MatInterpolate</A>(II,coordsc,coordsf);
 <a name="line375">375: </a>    <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;II);
 <a name="line376">376: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;scale);
 <a name="line377">377: </a>  }
 <a name="line378">378: </a>
-<a name="line379">379: </a>  <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(dac,daf,&amp;INTERP,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line379">379: </a>  <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>(dac,daf,&amp;INTERP,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line380">380: </a>
 <a name="line381">381: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(dac,&amp;ac);
 <a name="line382">382: </a>  <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(ac,66.99);
@@ -432,7 +433,7 @@
 <a name="line446">446: </a>                      &amp;dac );
 <a name="line447">447: </a>  <A href="../../../../docs/manualpages/DM/DMSetFromOptions.html#DMSetFromOptions">DMSetFromOptions</A>(dac);
 <a name="line448">448: </a>
-<a name="line449">449: </a>  <A href="../../../../docs/manualpages/DM/DMRefine.html#DMRefine">DMRefine</A>(dac,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;daf);
+<a name="line449">449: </a>  <A href="../../../../docs/manualpages/DM/DMRefine.html#DMRefine">DMRefine</A>(dac,MPI_COMM_NULL,&amp;daf);
 <a name="line450">450: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(daf,0,&amp;Mx,&amp;My,0,0,0,0,0,0,0,0,0,0);
 <a name="line451">451: </a>  Mx--; My--;
 <a name="line452">452: </a>
@@ -456,14 +457,14 @@
 <a name="line470">470: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetCoordinates.html#DMDAGetCoordinates">DMDAGetCoordinates</A>(dac,&amp;coordsc);
 <a name="line471">471: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetCoordinates.html#DMDAGetCoordinates">DMDAGetCoordinates</A>(daf,&amp;coordsf);
 <a name="line472">472: </a>
-<a name="line473">473: </a>    <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(cdac,cdaf,&amp;II,&amp;scale);
+<a name="line473">473: </a>    <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>(cdac,cdaf,&amp;II,&amp;scale);
 <a name="line474">474: </a>    <A href="../../../../docs/manualpages/Mat/MatInterpolate.html#MatInterpolate">MatInterpolate</A>(II,coordsc,coordsf);
 <a name="line475">475: </a>    <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;II);
 <a name="line476">476: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;scale);
 <a name="line477">477: </a>  }
 <a name="line478">478: </a>
 <a name="line479">479: </a>
-<a name="line480">480: </a>  <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(dac,daf,&amp;INTERP,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line480">480: </a>  <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>(dac,daf,&amp;INTERP,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line481">481: </a>
 <a name="line482">482: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(dac,&amp;ac);
 <a name="line483">483: </a>  DADefineXLinearField2D(dac,ac);
@@ -529,7 +530,7 @@
 <a name="line547">547: </a>                      &amp;dac );
 <a name="line548">548: </a>  <A href="../../../../docs/manualpages/DM/DMSetFromOptions.html#DMSetFromOptions">DMSetFromOptions</A>(dac);
 <a name="line549">549: </a>
-<a name="line550">550: </a>  <A href="../../../../docs/manualpages/DM/DMRefine.html#DMRefine">DMRefine</A>(dac,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;daf);
+<a name="line550">550: </a>  <A href="../../../../docs/manualpages/DM/DMRefine.html#DMRefine">DMRefine</A>(dac,MPI_COMM_NULL,&amp;daf);
 <a name="line551">551: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(daf,0,&amp;Mx,&amp;My,&amp;Mz,0,0,0,0,0,0,0,0,0);
 <a name="line552">552: </a>  Mx--; My--; Mz--;
 <a name="line553">553: </a>
@@ -555,13 +556,13 @@
 <a name="line573">573: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetCoordinates.html#DMDAGetCoordinates">DMDAGetCoordinates</A>(dac,&amp;coordsc);
 <a name="line574">574: </a>    <A href="../../../../docs/manualpages/DM/DMDAGetCoordinates.html#DMDAGetCoordinates">DMDAGetCoordinates</A>(daf,&amp;coordsf);
 <a name="line575">575: </a>
-<a name="line576">576: </a>    <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(cdac,cdaf,&amp;II,&amp;scale);
+<a name="line576">576: </a>    <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>(cdac,cdaf,&amp;II,&amp;scale);
 <a name="line577">577: </a>    <A href="../../../../docs/manualpages/Mat/MatInterpolate.html#MatInterpolate">MatInterpolate</A>(II,coordsc,coordsf);
 <a name="line578">578: </a>    <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;II);
 <a name="line579">579: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;scale);
 <a name="line580">580: </a>  }
 <a name="line581">581: </a>
-<a name="line582">582: </a>  <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(dac,daf,&amp;INTERP,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line582">582: </a>  <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>(dac,daf,&amp;INTERP,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line583">583: </a>
 <a name="line584">584: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(dac,&amp;ac);
 <a name="line585">585: </a>  <A href="../../../../docs/manualpages/Vec/VecZeroEntries.html#VecZeroEntries">VecZeroEntries</A>(ac);

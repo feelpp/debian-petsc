@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscOptionsGetIntArray.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscOptionsGetIntArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscOptionsGetIntArray"><H1>PetscOptionsGetIntArray</H1></A>
-Gets an array of integer values for a particular  option in the database.  The values must be separated with commas with  no intervening spaces.  
+Gets an array of integer values for a particular  option in the database. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
@@ -20,7 +21,7 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>name </B></TD><TD>- the option one is seeking
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nmax </B></TD><TD>- maximum number of values to retrieve, can include d-D to indicate d,d+1,..,D-1
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nmax </B></TD><TD>- maximum number of values to retrieve
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -34,11 +35,16 @@ Not Collective
 <P>
 
 <P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+The array can be passed as
+a comma seperated list:                                 0,1,2,3,4,5,6,7
+a range (start-end+1):                                  0-8
+a range with given increment (start-end+1:inc):         0-7:2
+a combination of values and ranges seperated by commas: 0,1-8,8-15:2
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp PetscOptionsGetIntArray(const char b[],PetscInt i[],PetscInt *ii,PetscBool  *f)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscOptionsGetIntArray(PETSC_NULL,b,i,ii,f)</TR></TD>
-
-</TABLE>
+There must be no intervening spaces between the values.
+<P>
+<P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(), 
 <BR><A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetRealArray.html#PetscOptionsGetRealArray">PetscOptionsGetRealArray</A>(), <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(),
