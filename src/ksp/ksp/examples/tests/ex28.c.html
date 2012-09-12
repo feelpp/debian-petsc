@@ -1,13 +1,14 @@
 <center><a href="ex28.c">Actual source code: ex28.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tests/ex28.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:39+00:00">
+<meta name="date" content="2012-08-29T17:05:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* Program usage:  mpiexec -n &lt;np&gt; ./ex28 [-help] [all PETSc options] */</font>
 
@@ -125,7 +126,7 @@
 <a name="line118">118: </a>  <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(x,neg_one,u);
 <a name="line119">119: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
 <a name="line120">120: </a>  <A href="../../../../../docs/manualpages/KSP/KSPGetIterationNumber.html#KSPGetIterationNumber">KSPGetIterationNumber</A>(ksp,&amp;its);
-<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %A, Iterations %D\n"</font>,norm,its);
+<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %G, Iterations %D\n"</font>,norm,its);
 <a name="line122">122: </a>
 <a name="line123">123: </a>  <font color="#B22222">/* Free work space. */</font>
 <a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x); <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;u);

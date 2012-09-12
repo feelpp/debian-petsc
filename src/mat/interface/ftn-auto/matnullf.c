@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* matnull.c */
 /* Fortran interface file */
 
@@ -29,6 +29,11 @@ extern void PetscRmPointer(void*);
 
 #include "petscmat.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matnullspacecreaterigidbody_ MATNULLSPACECREATERIGIDBODY
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matnullspacecreaterigidbody_ matnullspacecreaterigidbody
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matnullspacecreate_ MATNULLSPACECREATE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matnullspacecreate_ matnullspacecreate
@@ -49,6 +54,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  matnullspacecreaterigidbody_(Vec coords,MatNullSpace *sp, int *__ierr ){
+*__ierr = MatNullSpaceCreateRigidBody(
+	(Vec)PetscToPointer((coords) ),sp);
+}
 void PETSC_STDCALL  matnullspacecreate_(MPI_Fint * comm,PetscBool  *has_cnst,PetscInt *n, Vec vecs[],MatNullSpace *SP, int *__ierr ){
 *__ierr = MatNullSpaceCreate(
 	MPI_Comm_f2c( *(comm) ),*has_cnst,*n,vecs,SP);

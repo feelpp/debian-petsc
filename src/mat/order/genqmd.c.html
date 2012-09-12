@@ -1,13 +1,14 @@
 <center><a href="genqmd.c">Actual source code: genqmd.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/order/genqmd.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:35+00:00">
+<meta name="date" content="2012-08-29T16:53:32+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* genqmd.f -- translated by f2c (version 19931217).*/</font>
 
@@ -60,7 +61,9 @@
 
 <a name="line53"> 53: </a>    <font color="#B22222">/* Local variables */</font>
 <a name="line54"> 54: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ndeg, irch, node, nump1, j, inode;
+<a name="line55"> 55: </a>    extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SPARSEPACKqmdqt(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *);
 <a name="line56"> 56: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ip, np, mindeg, search;
+<a name="line57"> 57: </a>    extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SPARSEPACKqmdrch(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *,
 <a name="line58"> 58: </a>              <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *),
 <a name="line59"> 59: </a>           SPARSEPACKqmdupd(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *,
 <a name="line60"> 60: </a>              <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *, <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *);

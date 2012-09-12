@@ -14,7 +14,7 @@ int main(int argc,char **args)
   PetscScalar    v;
   IS             perm,iperm;
   Vec            x,u,b,y;
-  PetscReal      norm;
+  PetscReal      norm,tol=1.e-14;
   MatFactorInfo  info;
   PetscMPIInt    size;
 
@@ -24,6 +24,7 @@ int main(int argc,char **args)
   ierr = MatCreate(PETSC_COMM_WORLD,&C);CHKERRQ(ierr);
   ierr = MatSetSizes(C,PETSC_DECIDE,PETSC_DECIDE,m*n,m*n);CHKERRQ(ierr);
   ierr = MatSetFromOptions(C);CHKERRQ(ierr);
+  ierr = MatSetUp(C);CHKERRQ(ierr);
   ierr = PetscOptionsHasName(PETSC_NULL,"-symmetric",&flg);CHKERRQ(ierr);
   if (flg) {  /* Treat matrix as symmetric only if we set this flag */
     ierr = MatSetOption(C,MAT_SYMMETRIC,PETSC_TRUE);CHKERRQ(ierr);
@@ -76,15 +77,18 @@ int main(int argc,char **args)
   ierr = VecView(x,PETSC_VIEWER_STDOUT_SELF);CHKERRQ(ierr);
   ierr = VecAXPY(x,-1.0,u);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_SELF,"Norm of error %A\n",norm);CHKERRQ(ierr);
+  if (norm > tol){
+    ierr = PetscPrintf(PETSC_COMM_SELF,"MatSolve: Norm of error %G\n",norm);CHKERRQ(ierr);
+  }
 
   /* Test MatSolveAdd */
   ierr = MatSolveAdd(C,b,y,x);CHKERRQ(ierr); 
   ierr = VecAXPY(x,-1.0,y);CHKERRQ(ierr);
   ierr = VecAXPY(x,-1.0,u);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
-
-  ierr = PetscPrintf(PETSC_COMM_SELF,"Norm of error %A\n",norm);CHKERRQ(ierr);
+  if (norm > tol){
+    ierr = PetscPrintf(PETSC_COMM_SELF,"MatSolveAdd(): Norm of error %G\n",norm);CHKERRQ(ierr);
+  }
 
   ierr = ISDestroy(&perm);CHKERRQ(ierr);
   ierr = ISDestroy(&iperm);CHKERRQ(ierr);

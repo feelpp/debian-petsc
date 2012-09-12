@@ -1,13 +1,14 @@
 <center><a href="fftw.c">Actual source code: fftw.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/fft/fftw/fftw.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:38+00:00">
+<meta name="date" content="2012-08-29T16:50:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    Provides an interface to the FFTW package.</font>
@@ -15,7 +16,9 @@
 <a name="line5">  5: </a><font color="#B22222">*/</font>
 
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;../src/mat/impls/fft/fft.h&gt;   </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
+<a name="line8">  8: </a>EXTERN_C_BEGIN
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;fftw3-mpi.h&gt;</font>
+<a name="line10"> 10: </a>EXTERN_C_END
 
 <a name="line12"> 12: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line13"> 13: </a>  ptrdiff_t   ndim_fftw,*dim_fftw;
@@ -26,6 +29,12 @@
 <a name="line18"> 18: </a><font color="#B22222">                                                            executed for the arrays with which the plan was created */</font>
 <a name="line19"> 19: </a>} Mat_FFTW;
 
+<a name="line21"> 21: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMult_SeqFFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line22"> 22: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultTranspose_SeqFFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line23"> 23: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMult_MPIFFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line24"> 24: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultTranspose_MPIFFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line25"> 25: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_FFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
+<a name="line26"> 26: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecDestroy_MPIFFTW(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
 
 <a name="line28"> 28: </a><font color="#B22222">/* MatMult_SeqFFTW performs forward DFT in parallel</font>
 <a name="line29"> 29: </a><font color="#B22222">   Input parameter:</font>
@@ -180,7 +189,7 @@
 <a name="line190">190: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line191">191: </a>      fftw-&gt;p_forward = fftw_mpi_plan_dft_1d(dim[0],(fftw_complex*)x_array,(fftw_complex*)y_array,comm,FFTW_FORWARD,fftw-&gt;p_flag);
 <a name="line192">192: </a><font color="#A020F0">#else</font>
-<a name="line193">193: </a>      <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP,<font color="#666666">"not support for real numbers yet"</font>);
+<a name="line193">193: </a>      <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(comm,PETSC_ERR_SUP,<font color="#666666">"not support for real numbers yet"</font>);
 <a name="line194">194: </a><font color="#A020F0">#endif </font>
 <a name="line195">195: </a>      <font color="#4169E1">break</font>;
 <a name="line196">196: </a>    <font color="#4169E1">case</font> 2:
@@ -246,7 +255,7 @@
 <a name="line260">260: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line261">261: </a>      fftw-&gt;p_backward = fftw_mpi_plan_dft_1d(dim[0],(fftw_complex*)x_array,(fftw_complex*)y_array,comm,FFTW_BACKWARD,fftw-&gt;p_flag);
 <a name="line262">262: </a><font color="#A020F0">#else</font>
-<a name="line263">263: </a>      <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP,<font color="#666666">"not support for real numbers yet"</font>);
+<a name="line263">263: </a>      <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(comm,PETSC_ERR_SUP,<font color="#666666">"not support for real numbers yet"</font>);
 <a name="line264">264: </a><font color="#A020F0">#endif </font>
 <a name="line265">265: </a>      <font color="#4169E1">break</font>;
 <a name="line266">266: </a>    <font color="#4169E1">case</font> 2:
@@ -295,137 +304,138 @@
 <a name="line313">313: </a>  fftw_destroy_plan(fftw-&gt;p_backward);
 <a name="line314">314: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(fftw-&gt;dim_fftw);
 <a name="line315">315: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(fft-&gt;data);
-<a name="line316">316: </a>  <font color="#4169E1">return</font>(0);
-<a name="line317">317: </a>}
+<a name="line316">316: </a>  fftw_mpi_cleanup();
+<a name="line317">317: </a>  <font color="#4169E1">return</font>(0);
+<a name="line318">318: </a>}
 
-<a name="line319">319: </a><font color="#A020F0">#include &lt;../src/vec/vec/impls/mpi/pvecimpl.h&gt;   </font><font color="#B22222">/*I  "petscvec.h"   I*/</font><font color="#A020F0"></font>
-<a name="line322">322: </a><strong><font color="#4169E1"><a name="VecDestroy_MPIFFTW"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecDestroy_MPIFFTW(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v)</font></strong>
-<a name="line323">323: </a>{
-<a name="line324">324: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
-<a name="line325">325: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     *array;
+<a name="line320">320: </a><font color="#A020F0">#include &lt;../src/vec/vec/impls/mpi/pvecimpl.h&gt;   </font><font color="#B22222">/*I  "petscvec.h"   I*/</font><font color="#A020F0"></font>
+<a name="line323">323: </a><strong><font color="#4169E1"><a name="VecDestroy_MPIFFTW"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecDestroy_MPIFFTW(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v)</font></strong>
+<a name="line324">324: </a>{
+<a name="line325">325: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line326">326: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     *array;
 
-<a name="line328">328: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(v,&amp;array);
-<a name="line329">329: </a>  fftw_free((fftw_complex*)array);
-<a name="line330">330: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(v,&amp;array);
-<a name="line331">331: </a>  VecDestroy_MPI(v);
-<a name="line332">332: </a>  <font color="#4169E1">return</font>(0);
-<a name="line333">333: </a>}
+<a name="line329">329: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(v,&amp;array);
+<a name="line330">330: </a>  fftw_free((fftw_complex*)array);
+<a name="line331">331: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(v,&amp;array);
+<a name="line332">332: </a>  VecDestroy_MPI(v);
+<a name="line333">333: </a>  <font color="#4169E1">return</font>(0);
+<a name="line334">334: </a>}
 
-<a name="line337">337: </a><font color="#B22222">/*@</font>
-<a name="line338">338: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Mat/MatGetVecsFFTW.html#MatGetVecsFFTW">MatGetVecsFFTW</A> - Get vector(s) compatible with the matrix, i.e. with the</font>
-<a name="line339">339: </a><font color="#B22222">     parallel layout determined by FFTW</font>
+<a name="line338">338: </a><font color="#B22222">/*@</font>
+<a name="line339">339: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Mat/MatGetVecsFFTW.html#MatGetVecsFFTW">MatGetVecsFFTW</A> - Get vector(s) compatible with the matrix, i.e. with the</font>
+<a name="line340">340: </a><font color="#B22222">     parallel layout determined by FFTW</font>
 
-<a name="line341">341: </a><font color="#B22222">   Collective on <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
+<a name="line342">342: </a><font color="#B22222">   Collective on <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A></font>
 
-<a name="line343">343: </a><font color="#B22222">   Input Parameter:</font>
-<a name="line344">344: </a><font color="#B22222">.   A - the matrix</font>
+<a name="line344">344: </a><font color="#B22222">   Input Parameter:</font>
+<a name="line345">345: </a><font color="#B22222">.   A - the matrix</font>
 
-<a name="line346">346: </a><font color="#B22222">   Output Parameter:</font>
-<a name="line347">347: </a><font color="#B22222">+   fin - (optional) input vector of forward FFTW</font>
-<a name="line348">348: </a><font color="#B22222">-   fout - (optional) output vector of forward FFTW</font>
-<a name="line349">349: </a><font color="#B22222">-   bout - (optional) output vector of backward FFTW</font>
+<a name="line347">347: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line348">348: </a><font color="#B22222">+   x - (optional) input vector of forward FFTW</font>
+<a name="line349">349: </a><font color="#B22222">-   y - (optional) output vector of forward FFTW</font>
+<a name="line350">350: </a><font color="#B22222">-   z - (optional) output vector of backward FFTW</font>
 
-<a name="line351">351: </a><font color="#B22222">  Level: advanced</font>
+<a name="line352">352: </a><font color="#B22222">  Level: advanced</font>
 
-<a name="line353">353: </a><font color="#B22222">  Note: The parallel layout of output of forward FFTW is always same as the input</font>
-<a name="line354">354: </a><font color="#B22222">        of the backward FFTW. But parallel layout of the input vector of forward</font>
-<a name="line355">355: </a><font color="#B22222">        FFTW might not be same as the output of backward FFTW. </font>
-<a name="line356">356: </a><font color="#B22222">        Also note that we need to provide enough space while doing parallel real transform.</font>
-<a name="line357">357: </a><font color="#B22222">        We need to pad extra zeros at the end of last dimension. For this reason the one needs to </font>
-<a name="line358">358: </a><font color="#B22222">        invoke the routine fftw_mpi_local_size_transposed routines. Remember one has to change the </font>
-<a name="line359">359: </a><font color="#B22222">        last dimension from n to n/2+1 while invoking this routine. The number of zeros to be padded </font>
-<a name="line360">360: </a><font color="#B22222">        depends on if the last dimension is even or odd. If the last dimension is even need to pad two</font>
-<a name="line361">361: </a><font color="#B22222">        zeros if it is odd only one zero is needed.</font>
-<a name="line362">362: </a><font color="#B22222">        Lastly one needs some scratch space at the end of data set in each process. alloc_local</font>
-<a name="line363">363: </a><font color="#B22222">        figures out how much space is needed, i.e. it figures out the data+scratch space for</font>
-<a name="line364">364: </a><font color="#B22222">        each processor and returns that.</font>
+<a name="line354">354: </a><font color="#B22222">  Note: The parallel layout of output of forward FFTW is always same as the input</font>
+<a name="line355">355: </a><font color="#B22222">        of the backward FFTW. But parallel layout of the input vector of forward</font>
+<a name="line356">356: </a><font color="#B22222">        FFTW might not be same as the output of backward FFTW. </font>
+<a name="line357">357: </a><font color="#B22222">        Also note that we need to provide enough space while doing parallel real transform.</font>
+<a name="line358">358: </a><font color="#B22222">        We need to pad extra zeros at the end of last dimension. For this reason the one needs to </font>
+<a name="line359">359: </a><font color="#B22222">        invoke the routine fftw_mpi_local_size_transposed routines. Remember one has to change the </font>
+<a name="line360">360: </a><font color="#B22222">        last dimension from n to n/2+1 while invoking this routine. The number of zeros to be padded </font>
+<a name="line361">361: </a><font color="#B22222">        depends on if the last dimension is even or odd. If the last dimension is even need to pad two</font>
+<a name="line362">362: </a><font color="#B22222">        zeros if it is odd only one zero is needed.</font>
+<a name="line363">363: </a><font color="#B22222">        Lastly one needs some scratch space at the end of data set in each process. alloc_local</font>
+<a name="line364">364: </a><font color="#B22222">        figures out how much space is needed, i.e. it figures out the data+scratch space for</font>
+<a name="line365">365: </a><font color="#B22222">        each processor and returns that.</font>
 
-<a name="line366">366: </a><font color="#B22222">.seealso: MatCreateFFTW()</font>
-<a name="line367">367: </a><font color="#B22222">@*/</font>
-<a name="line368">368: </a><strong><font color="#4169E1"><a name="MatGetVecsFFTW"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../../docs/manualpages/Mat/MatGetVecsFFTW.html#MatGetVecsFFTW">MatGetVecsFFTW</A>(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *x,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *y,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *z)</font></strong>
-<a name="line369">369: </a>{
+<a name="line367">367: </a><font color="#B22222">.seealso: MatCreateFFTW()</font>
+<a name="line368">368: </a><font color="#B22222">@*/</font>
+<a name="line369">369: </a><strong><font color="#4169E1"><a name="MatGetVecsFFTW"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../../docs/manualpages/Mat/MatGetVecsFFTW.html#MatGetVecsFFTW">MatGetVecsFFTW</A>(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *x,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *y,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *z)</font></strong>
+<a name="line370">370: </a>{
 
-<a name="line373">373: </a>  PetscTryMethod(A,<font color="#666666">"MatGetVecsFFTW_C"</font>,(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>*,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>*,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>*),(A,x,y,z));
-<a name="line374">374: </a>  <font color="#4169E1">return</font>(0);
-<a name="line375">375: </a>}
+<a name="line374">374: </a>  PetscTryMethod(A,<font color="#666666">"MatGetVecsFFTW_C"</font>,(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>*,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>*,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>*),(A,x,y,z));
+<a name="line375">375: </a>  <font color="#4169E1">return</font>(0);
+<a name="line376">376: </a>}
 
-<a name="line380">380: </a><strong><font color="#4169E1"><a name="MatGetVecsFFTW_FFTW"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetVecsFFTW_FFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *fin,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *fout,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *bout)</font></strong>
-<a name="line381">381: </a>{
-<a name="line383">383: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank;
-<a name="line384">384: </a>  <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm=((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm;
-<a name="line385">385: </a>  Mat_FFT        *fft = (Mat_FFT*)A-&gt;data;
-<a name="line386">386: </a>  Mat_FFTW       *fftw = (Mat_FFTW*)fft-&gt;data;
-<a name="line387">387: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       N=fft-&gt;N;
-<a name="line388">388: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       ndim=fft-&gt;ndim,*dim=fft-&gt;dim,n=fft-&gt;n;
+<a name="line378">378: </a>EXTERN_C_BEGIN
+<a name="line381">381: </a><strong><font color="#4169E1"><a name="MatGetVecsFFTW_FFTW"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetVecsFFTW_FFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *fin,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *fout,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *bout)</font></strong>
+<a name="line382">382: </a>{
+<a name="line384">384: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank;
+<a name="line385">385: </a>  <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm=((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm;
+<a name="line386">386: </a>  Mat_FFT        *fft = (Mat_FFT*)A-&gt;data;
+<a name="line387">387: </a>  Mat_FFTW       *fftw = (Mat_FFTW*)fft-&gt;data;
+<a name="line388">388: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       N=fft-&gt;N;
+<a name="line389">389: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       ndim=fft-&gt;ndim,*dim=fft-&gt;dim,n=fft-&gt;n;
 
 
-<a name="line394">394: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, &amp;size);
-<a name="line395">395: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, &amp;rank);
-<a name="line396">396: </a>  <font color="#4169E1">if</font> (size == 1){ <font color="#B22222">/* sequential case */</font>
-<a name="line397">397: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line398">398: </a>    <font color="#4169E1">if</font> (fin) {<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,N,fin);}
-<a name="line399">399: </a>    <font color="#4169E1">if</font> (fout){<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,N,fout);}
-<a name="line400">400: </a>    <font color="#4169E1">if</font> (bout){<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,N,bout);}
-<a name="line401">401: </a><font color="#A020F0">#else</font>
-<a name="line402">402: </a>    <font color="#4169E1">if</font> (fin) {<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,fin);}
-<a name="line403">403: </a>    <font color="#4169E1">if</font> (fout){<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,fout);}
-<a name="line404">404: </a>    <font color="#4169E1">if</font> (bout){<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,bout);}
-<a name="line405">405: </a><font color="#A020F0">#endif</font>
-<a name="line406">406: </a>  } <font color="#4169E1">else</font> { <font color="#B22222">/* parallel cases */</font>
-<a name="line407">407: </a>    ptrdiff_t      alloc_local,local_n0,local_0_start;
-<a name="line408">408: </a>    ptrdiff_t      local_n1;
-<a name="line409">409: </a>    fftw_complex   *data_fout;
-<a name="line410">410: </a>    ptrdiff_t      local_1_start;
-<a name="line411">411: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
-<a name="line412">412: </a>    fftw_complex   *data_fin,*data_bout;
-<a name="line413">413: </a><font color="#A020F0">#else</font>
-<a name="line414">414: </a>    double         *data_finr,*data_boutr;
-<a name="line415">415: </a>    <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n1,N1,vsize;
-<a name="line416">416: </a>    ptrdiff_t      temp;
-<a name="line417">417: </a><font color="#A020F0">#endif</font>
+<a name="line395">395: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm, &amp;size);
+<a name="line396">396: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm, &amp;rank);
+<a name="line397">397: </a>  <font color="#4169E1">if</font> (size == 1){ <font color="#B22222">/* sequential case */</font>
+<a name="line398">398: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line399">399: </a>    <font color="#4169E1">if</font> (fin) {<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,N,fin);}
+<a name="line400">400: </a>    <font color="#4169E1">if</font> (fout){<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,N,fout);}
+<a name="line401">401: </a>    <font color="#4169E1">if</font> (bout){<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,N,bout);}
+<a name="line402">402: </a><font color="#A020F0">#else</font>
+<a name="line403">403: </a>    <font color="#4169E1">if</font> (fin) {<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,fin);}
+<a name="line404">404: </a>    <font color="#4169E1">if</font> (fout){<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,fout);}
+<a name="line405">405: </a>    <font color="#4169E1">if</font> (bout){<A href="../../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,bout);}
+<a name="line406">406: </a><font color="#A020F0">#endif</font>
+<a name="line407">407: </a>  } <font color="#4169E1">else</font> { <font color="#B22222">/* parallel cases */</font>
+<a name="line408">408: </a>    ptrdiff_t      alloc_local,local_n0,local_0_start;
+<a name="line409">409: </a>    ptrdiff_t      local_n1;
+<a name="line410">410: </a>    fftw_complex   *data_fout;
+<a name="line411">411: </a>    ptrdiff_t      local_1_start;
+<a name="line412">412: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line413">413: </a>    fftw_complex   *data_fin,*data_bout;
+<a name="line414">414: </a><font color="#A020F0">#else</font>
+<a name="line415">415: </a>    double         *data_finr,*data_boutr;
+<a name="line416">416: </a>    <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n1,N1;
+<a name="line417">417: </a>    ptrdiff_t      temp;
+<a name="line418">418: </a><font color="#A020F0">#endif</font>
 
-<a name="line419">419: </a>    <font color="#4169E1">switch</font> (ndim){
-<a name="line420">420: </a>    <font color="#4169E1">case</font> 1:
-<a name="line421">421: </a><font color="#A020F0">#if !defined(PETSC_USE_COMPLEX)</font>
-<a name="line422">422: </a>      <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP,<font color="#666666">"FFTW does not allow parallel real 1D transform"</font>);
-<a name="line423">423: </a><font color="#A020F0">#else</font>
-<a name="line424">424: </a>      alloc_local = fftw_mpi_local_size_1d(dim[0],comm,FFTW_FORWARD,FFTW_ESTIMATE,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
-<a name="line425">425: </a>      <font color="#4169E1">if</font> (fin) {
-<a name="line426">426: </a>        data_fin  = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line427">427: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,local_n0,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fin,fin);
-<a name="line428">428: </a>        (*fin)-&gt;ops-&gt;destroy = VecDestroy_MPIFFTW;
-<a name="line429">429: </a>      }
-<a name="line430">430: </a>      <font color="#4169E1">if</font> (fout) {
-<a name="line431">431: </a>        data_fout = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line432">432: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,local_n1,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
-<a name="line433">433: </a>        (*fout)-&gt;ops-&gt;destroy = VecDestroy_MPIFFTW;
-<a name="line434">434: </a>      }
-<a name="line435">435: </a>      alloc_local = fftw_mpi_local_size_1d(dim[0],comm,FFTW_BACKWARD,FFTW_ESTIMATE,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
-<a name="line436">436: </a>      <font color="#4169E1">if</font> (bout) {
-<a name="line437">437: </a>        data_bout = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line438">438: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,local_n1,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_bout,bout);
-<a name="line439">439: </a>        (*bout)-&gt;ops-&gt;destroy = VecDestroy_MPIFFTW;
-<a name="line440">440: </a>      }
-<a name="line441">441: </a>      <font color="#4169E1">break</font>;
-<a name="line442">442: </a><font color="#A020F0">#endif</font>
-<a name="line443">443: </a>    <font color="#4169E1">case</font> 2:
-<a name="line444">444: </a><font color="#A020F0">#if !defined(PETSC_USE_COMPLEX) </font><font color="#B22222">/* Note that N1 is no more the product of individual dimensions */</font><font color="#A020F0"></font>
-<a name="line445">445: </a>      alloc_local =  fftw_mpi_local_size_2d_transposed(dim[0],dim[1]/2+1,comm,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
-<a name="line446">446: </a>      N1 = 2*dim[0]*(dim[1]/2+1); n1 = 2*local_n0*(dim[1]/2+1);
-<a name="line447">447: </a>      <font color="#4169E1">if</font> (fin) {
-<a name="line448">448: </a>        data_finr=(double *)fftw_malloc(<font color="#4169E1">sizeof</font>(double)*alloc_local*2);
-<a name="line449">449: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_finr,fin);
-<a name="line450">450: </a>        (*fin)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
-<a name="line451">451: </a>      }
-<a name="line452">452: </a>      <font color="#4169E1">if</font> (bout) {
-<a name="line453">453: </a>        data_boutr=(double *)fftw_malloc(<font color="#4169E1">sizeof</font>(double)*alloc_local*2);
-<a name="line454">454: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_boutr,bout);
-<a name="line455">455: </a>        <A href="../../../../../docs/manualpages/Vec/VecGetSize.html#VecGetSize">VecGetSize</A>(*bout,&amp;vsize);
+<a name="line420">420: </a>    <font color="#4169E1">switch</font> (ndim){
+<a name="line421">421: </a>    <font color="#4169E1">case</font> 1:
+<a name="line422">422: </a><font color="#A020F0">#if !defined(PETSC_USE_COMPLEX)</font>
+<a name="line423">423: </a>      <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(comm,PETSC_ERR_SUP,<font color="#666666">"FFTW does not allow parallel real 1D transform"</font>);
+<a name="line424">424: </a><font color="#A020F0">#else</font>
+<a name="line425">425: </a>      alloc_local = fftw_mpi_local_size_1d(dim[0],comm,FFTW_FORWARD,FFTW_ESTIMATE,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
+<a name="line426">426: </a>      <font color="#4169E1">if</font> (fin) {
+<a name="line427">427: </a>        data_fin  = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
+<a name="line428">428: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,local_n0,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fin,fin);
+<a name="line429">429: </a>        (*fin)-&gt;ops-&gt;destroy = VecDestroy_MPIFFTW;
+<a name="line430">430: </a>      }
+<a name="line431">431: </a>      <font color="#4169E1">if</font> (fout) {
+<a name="line432">432: </a>        data_fout = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
+<a name="line433">433: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,local_n1,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
+<a name="line434">434: </a>        (*fout)-&gt;ops-&gt;destroy = VecDestroy_MPIFFTW;
+<a name="line435">435: </a>      }
+<a name="line436">436: </a>      alloc_local = fftw_mpi_local_size_1d(dim[0],comm,FFTW_BACKWARD,FFTW_ESTIMATE,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
+<a name="line437">437: </a>      <font color="#4169E1">if</font> (bout) {
+<a name="line438">438: </a>        data_bout = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
+<a name="line439">439: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,local_n1,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_bout,bout);
+<a name="line440">440: </a>        (*bout)-&gt;ops-&gt;destroy = VecDestroy_MPIFFTW;
+<a name="line441">441: </a>      }
+<a name="line442">442: </a>      <font color="#4169E1">break</font>;
+<a name="line443">443: </a><font color="#A020F0">#endif</font>
+<a name="line444">444: </a>    <font color="#4169E1">case</font> 2:
+<a name="line445">445: </a><font color="#A020F0">#if !defined(PETSC_USE_COMPLEX) </font><font color="#B22222">/* Note that N1 is no more the product of individual dimensions */</font><font color="#A020F0"></font>
+<a name="line446">446: </a>      alloc_local =  fftw_mpi_local_size_2d_transposed(dim[0],dim[1]/2+1,comm,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
+<a name="line447">447: </a>      N1 = 2*dim[0]*(dim[1]/2+1); n1 = 2*local_n0*(dim[1]/2+1);
+<a name="line448">448: </a>      <font color="#4169E1">if</font> (fin) {
+<a name="line449">449: </a>        data_finr=(double *)fftw_malloc(<font color="#4169E1">sizeof</font>(double)*alloc_local*2);
+<a name="line450">450: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_finr,fin);
+<a name="line451">451: </a>        (*fin)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
+<a name="line452">452: </a>      }
+<a name="line453">453: </a>      <font color="#4169E1">if</font> (bout) {
+<a name="line454">454: </a>        data_boutr=(double *)fftw_malloc(<font color="#4169E1">sizeof</font>(double)*alloc_local*2);
+<a name="line455">455: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_boutr,bout);
 <a name="line456">456: </a>        (*bout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line457">457: </a>      }
 <a name="line458">458: </a>      <font color="#4169E1">if</font> (fout) {
 <a name="line459">459: </a>        data_fout=(fftw_complex *)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line460">460: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
+<a name="line460">460: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
 <a name="line461">461: </a>        (*fout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line462">462: </a>      }
 <a name="line463">463: </a><font color="#A020F0">#else</font>
@@ -433,17 +443,17 @@
 <a name="line465">465: </a>      alloc_local = fftw_mpi_local_size_2d(dim[0],dim[1],comm,&amp;local_n0,&amp;local_0_start);
 <a name="line466">466: </a>      <font color="#4169E1">if</font> (fin) {
 <a name="line467">467: </a>        data_fin  = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line468">468: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fin,fin);
+<a name="line468">468: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fin,fin);
 <a name="line469">469: </a>        (*fin)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line470">470: </a>      }
 <a name="line471">471: </a>      <font color="#4169E1">if</font> (fout) {
 <a name="line472">472: </a>        data_fout = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line473">473: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
+<a name="line473">473: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
 <a name="line474">474: </a>        (*fout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line475">475: </a>      }
 <a name="line476">476: </a>      <font color="#4169E1">if</font> (bout) {
 <a name="line477">477: </a>        data_bout  = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line478">478: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_bout,bout);
+<a name="line478">478: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_bout,bout);
 <a name="line479">479: </a>        (*bout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line480">480: </a>      }
 <a name="line481">481: </a><font color="#A020F0">#endif</font>
@@ -454,35 +464,35 @@
 <a name="line486">486: </a>      N1 = 2*dim[0]*dim[1]*(dim[2]/2+1); n1 = 2*local_n0*dim[1]*(dim[2]/2+1);
 <a name="line487">487: </a>      <font color="#4169E1">if</font> (fin) {
 <a name="line488">488: </a>        data_finr=(double *)fftw_malloc(<font color="#4169E1">sizeof</font>(double)*alloc_local*2);
-<a name="line489">489: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_finr,fin);
+<a name="line489">489: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_finr,fin);
 <a name="line490">490: </a>        (*fin)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line491">491: </a>      }
 <a name="line492">492: </a>      <font color="#4169E1">if</font> (bout) {
 <a name="line493">493: </a>        data_boutr=(double *)fftw_malloc(<font color="#4169E1">sizeof</font>(double)*alloc_local*2);
-<a name="line494">494: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_boutr,bout);
+<a name="line494">494: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_boutr,bout);
 <a name="line495">495: </a>        (*bout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line496">496: </a>      }
 <a name="line497">497: </a>
 <a name="line498">498: </a>      <font color="#4169E1">if</font> (fout) {
 <a name="line499">499: </a>        data_fout=(fftw_complex *)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line500">500: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
+<a name="line500">500: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n1,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
 <a name="line501">501: </a>        (*fout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line502">502: </a>      }
 <a name="line503">503: </a><font color="#A020F0">#else</font>
 <a name="line504">504: </a>      alloc_local = fftw_mpi_local_size_3d(dim[0],dim[1],dim[2],comm,&amp;local_n0,&amp;local_0_start);
 <a name="line505">505: </a>      <font color="#4169E1">if</font> (fin) {
 <a name="line506">506: </a>        data_fin  = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line507">507: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fin,fin);
+<a name="line507">507: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fin,fin);
 <a name="line508">508: </a>        (*fin)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line509">509: </a>      }
 <a name="line510">510: </a>      <font color="#4169E1">if</font> (fout) {
 <a name="line511">511: </a>        data_fout = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line512">512: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
+<a name="line512">512: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
 <a name="line513">513: </a>        (*fout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line514">514: </a>      }
 <a name="line515">515: </a>      <font color="#4169E1">if</font> (bout) {
 <a name="line516">516: </a>        data_bout  = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line517">517: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_bout,bout);
+<a name="line517">517: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_bout,bout);
 <a name="line518">518: </a>        (*bout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line519">519: </a>      }
 <a name="line520">520: </a><font color="#A020F0">#endif</font>
@@ -497,35 +507,35 @@
 
 <a name="line530">530: </a>      <font color="#4169E1">if</font> (fin) {
 <a name="line531">531: </a>        data_finr=(double *)fftw_malloc(<font color="#4169E1">sizeof</font>(double)*alloc_local*2);
-<a name="line532">532: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_finr,fin);
+<a name="line532">532: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_finr,fin);
 <a name="line533">533: </a>        (*fin)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line534">534: </a>      }
 <a name="line535">535: </a>      <font color="#4169E1">if</font> (bout) {
 <a name="line536">536: </a>        data_boutr=(double *)fftw_malloc(<font color="#4169E1">sizeof</font>(double)*alloc_local*2);
-<a name="line537">537: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_boutr,bout);
+<a name="line537">537: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)n,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_boutr,bout);
 <a name="line538">538: </a>        (*bout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line539">539: </a>      }
 <a name="line540">540: </a>
 <a name="line541">541: </a>      <font color="#4169E1">if</font> (fout) {
 <a name="line542">542: </a>        data_fout=(fftw_complex *)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line543">543: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,n,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
+<a name="line543">543: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N1,(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
 <a name="line544">544: </a>        (*fout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line545">545: </a>      }
 <a name="line546">546: </a><font color="#A020F0">#else</font>
 <a name="line547">547: </a>      alloc_local = fftw_mpi_local_size(fftw-&gt;ndim_fftw,fftw-&gt;dim_fftw,comm,&amp;local_n0,&amp;local_0_start);
 <a name="line548">548: </a>      <font color="#4169E1">if</font> (fin) {
 <a name="line549">549: </a>        data_fin  = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line550">550: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fin,fin);
+<a name="line550">550: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fin,fin);
 <a name="line551">551: </a>        (*fin)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line552">552: </a>      }
 <a name="line553">553: </a>      <font color="#4169E1">if</font> (fout) {
 <a name="line554">554: </a>        data_fout = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line555">555: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
+<a name="line555">555: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_fout,fout);
 <a name="line556">556: </a>        (*fout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line557">557: </a>      }
 <a name="line558">558: </a>      <font color="#4169E1">if</font> (bout) {
 <a name="line559">559: </a>        data_bout  = (fftw_complex*)fftw_malloc(<font color="#4169E1">sizeof</font>(fftw_complex)*alloc_local);
-<a name="line560">560: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_bout,bout);
+<a name="line560">560: </a>        <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(comm,1,n,N,(const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)data_bout,bout);
 <a name="line561">561: </a>        (*bout)-&gt;ops-&gt;destroy   = VecDestroy_MPIFFTW;
 <a name="line562">562: </a>      }
 <a name="line563">563: </a><font color="#A020F0">#endif</font>
@@ -534,6 +544,7 @@
 <a name="line566">566: </a>  }
 <a name="line567">567: </a>  <font color="#4169E1">return</font>(0);
 <a name="line568">568: </a>}
+<a name="line569">569: </a>EXTERN_C_END
 
 <a name="line573">573: </a><font color="#B22222">/*@</font>
 <a name="line574">574: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Mat/VecScatterPetscToFFTW.html#VecScatterPetscToFFTW">VecScatterPetscToFFTW</A> - Copies the PETSc vector to the vector that goes into FFTW block.  </font>
@@ -565,6 +576,7 @@
 <a name="line602">602: </a>  <font color="#4169E1">return</font>(0);
 <a name="line603">603: </a>}
 
+<a name="line605">605: </a>EXTERN_C_BEGIN
 <a name="line608">608: </a><strong><font color="#4169E1"><a name="VecScatterPetscToFFTW_FFTW"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecScatterPetscToFFTW_FFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y)</font></strong>
 <a name="line609">609: </a>{
 <a name="line611">611: </a>  <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm=((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm;
@@ -603,8 +615,8 @@
 <a name="line645">645: </a>    <font color="#4169E1">case</font> 1:
 <a name="line646">646: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line647">647: </a>      alloc_local = fftw_mpi_local_size_1d(dim[0],comm,FFTW_FORWARD,FFTW_ESTIMATE,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
-<a name="line648">648: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0,local_0_start,1,&amp;list1);
-<a name="line649">649: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0,low,1,&amp;list2);
+<a name="line648">648: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0,local_0_start,1,&amp;list1);
+<a name="line649">649: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0,low,1,&amp;list2);
 <a name="line650">650: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,list1,y,list2,&amp;vecscat);
 <a name="line651">651: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line652">652: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
@@ -618,8 +630,8 @@
 <a name="line660">660: </a>    <font color="#4169E1">case</font> 2:
 <a name="line661">661: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line662">662: </a>      alloc_local = fftw_mpi_local_size_2d(dim[0],dim[1],comm,&amp;local_n0,&amp;local_0_start);
-<a name="line663">663: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*dim[1],local_0_start*dim[1],1,&amp;list1);
-<a name="line664">664: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*dim[1],low,1,&amp;list2);
+<a name="line663">663: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*dim[1],local_0_start*dim[1],1,&amp;list1);
+<a name="line664">664: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*dim[1],low,1,&amp;list2);
 <a name="line665">665: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,list1,y,list2,&amp;vecscat);
 <a name="line666">666: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line667">667: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
@@ -663,8 +675,8 @@
 <a name="line705">705: </a>    <font color="#4169E1">case</font> 3:
 <a name="line706">706: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line707">707: </a>      alloc_local = fftw_mpi_local_size_3d(dim[0],dim[1],dim[2],comm,&amp;local_n0,&amp;local_0_start);
-<a name="line708">708: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*dim[1]*dim[2],local_0_start*dim[1]*dim[2],1,&amp;list1);
-<a name="line709">709: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*dim[1]*dim[2],low,1,&amp;list2);
+<a name="line708">708: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*dim[1]*dim[2],local_0_start*dim[1]*dim[2],1,&amp;list1);
+<a name="line709">709: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*dim[1]*dim[2],low,1,&amp;list2);
 <a name="line710">710: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,list1,y,list2,&amp;vecscat);
 <a name="line711">711: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line712">712: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
@@ -710,8 +722,8 @@
 <a name="line752">752: </a><strong><font color="#FF0000">    default:</font></strong>
 <a name="line753">753: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line754">754: </a>      alloc_local = fftw_mpi_local_size(fftw-&gt;ndim_fftw,fftw-&gt;dim_fftw,comm,&amp;local_n0,&amp;local_0_start);
-<a name="line755">755: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*(fftw-&gt;partial_dim),local_0_start*(fftw-&gt;partial_dim),1,&amp;list1);
-<a name="line756">756: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*(fftw-&gt;partial_dim),low,1,&amp;list2);
+<a name="line755">755: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*(fftw-&gt;partial_dim),local_0_start*(fftw-&gt;partial_dim),1,&amp;list1);
+<a name="line756">756: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*(fftw-&gt;partial_dim),low,1,&amp;list2);
 <a name="line757">757: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,list1,y,list2,&amp;vecscat);
 <a name="line758">758: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line759">759: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
@@ -758,6 +770,7 @@
 <a name="line800">800: </a>  }
 <a name="line801">801: </a>  <font color="#4169E1">return</font>(0);
 <a name="line802">802: </a>}
+<a name="line803">803: </a>EXTERN_C_END
 
 <a name="line807">807: </a><font color="#B22222">/*@</font>
 <a name="line808">808: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Mat/VecScatterFFTWToPetsc.html#VecScatterFFTWToPetsc">VecScatterFFTWToPetsc</A> - Converts FFTW output to the PETSc vector.</font>
@@ -784,6 +797,7 @@
 <a name="line831">831: </a>  <font color="#4169E1">return</font>(0);
 <a name="line832">832: </a>}
 
+<a name="line834">834: </a>EXTERN_C_BEGIN
 <a name="line837">837: </a><strong><font color="#4169E1"><a name="VecScatterFFTWToPetsc_FFTW"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecScatterFFTWToPetsc_FFTW(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y)</font></strong>
 <a name="line838">838: </a>{
 <a name="line840">840: </a>  <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm=((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm;
@@ -821,8 +835,8 @@
 <a name="line873">873: </a>    <font color="#4169E1">case</font> 1:
 <a name="line874">874: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line875">875: </a>      alloc_local = fftw_mpi_local_size_1d(dim[0],comm,FFTW_BACKWARD,FFTW_ESTIMATE,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
-<a name="line876">876: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n1,local_1_start,1,&amp;list1);
-<a name="line877">877: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n1,low,1,&amp;list2);
+<a name="line876">876: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n1,local_1_start,1,&amp;list1);
+<a name="line877">877: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n1,low,1,&amp;list2);
 <a name="line878">878: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,list1,y,list2,&amp;vecscat);
 <a name="line879">879: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line880">880: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
@@ -836,8 +850,8 @@
 <a name="line888">888: </a>    <font color="#4169E1">case</font> 2:
 <a name="line889">889: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line890">890: </a>      alloc_local = fftw_mpi_local_size_2d(dim[0],dim[1],comm,&amp;local_n0,&amp;local_0_start);
-<a name="line891">891: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*dim[1],local_0_start*dim[1],1,&amp;list1);
-<a name="line892">892: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*dim[1],low,1,&amp;list2);
+<a name="line891">891: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*dim[1],local_0_start*dim[1],1,&amp;list1);
+<a name="line892">892: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*dim[1],low,1,&amp;list2);
 <a name="line893">893: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,list2,y,list1,&amp;vecscat);
 <a name="line894">894: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line895">895: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
@@ -881,8 +895,8 @@
 <a name="line933">933: </a>    <font color="#4169E1">case</font> 3:
 <a name="line934">934: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line935">935: </a>      alloc_local = fftw_mpi_local_size_3d(dim[0],dim[1],dim[2],comm,&amp;local_n0,&amp;local_0_start);
-<a name="line936">936: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*dim[1]*dim[2],local_0_start*dim[1]*dim[2],1,&amp;list1);
-<a name="line937">937: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*dim[1]*dim[2],low,1,&amp;list2);
+<a name="line936">936: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*dim[1]*dim[2],local_0_start*dim[1]*dim[2],1,&amp;list1);
+<a name="line937">937: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*dim[1]*dim[2],low,1,&amp;list2);
 <a name="line938">938: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,list1,y,list2,&amp;vecscat);
 <a name="line939">939: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line940">940: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
@@ -929,8 +943,8 @@
 <a name="line981">981: </a><strong><font color="#FF0000">    default:</font></strong>
 <a name="line982">982: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line983">983: </a>      alloc_local = fftw_mpi_local_size(fftw-&gt;ndim_fftw,fftw-&gt;dim_fftw,comm,&amp;local_n0,&amp;local_0_start);
-<a name="line984">984: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*(fftw-&gt;partial_dim),local_0_start*(fftw-&gt;partial_dim),1,&amp;list1);
-<a name="line985">985: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,local_n0*(fftw-&gt;partial_dim),low,1,&amp;list2);
+<a name="line984">984: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*(fftw-&gt;partial_dim),local_0_start*(fftw-&gt;partial_dim),1,&amp;list1);
+<a name="line985">985: </a>      <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(comm,local_n0*(fftw-&gt;partial_dim),low,1,&amp;list2);
 <a name="line986">986: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(x,list1,y,list2,&amp;vecscat);
 <a name="line987">987: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line988">988: </a>      <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(vecscat,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
@@ -978,7 +992,9 @@
 <a name="line1030">1030: </a>  }
 <a name="line1031">1031: </a>  <font color="#4169E1">return</font>(0);
 <a name="line1032">1032: </a>}
+<a name="line1033">1033: </a>EXTERN_C_END
 
+<a name="line1035">1035: </a>EXTERN_C_BEGIN
 <a name="line1038">1038: </a><font color="#B22222">/*</font>
 <a name="line1039">1039: </a><font color="#B22222">    MatCreate_FFTW - Creates a matrix object that provides FFT via the external package FFTW</font>
 
@@ -1059,7 +1075,7 @@
 <a name="line1117">1117: </a>      n = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)local_n0*dim[1];
 <a name="line1118">1118: </a>      <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A,n,n,N,N);
 <a name="line1119">1119: </a><font color="#A020F0">#else</font>
-<a name="line1120">1120: </a>      alloc_local = fftw_mpi_local_size_2d_transposed(dim[0],dim[1]/2+1,<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
+<a name="line1120">1120: </a>      alloc_local = fftw_mpi_local_size_2d_transposed(dim[0],dim[1]/2+1,comm,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
 <a name="line1121">1121: </a>      n = 2*(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)local_n0*(dim[1]/2+1);
 <a name="line1122">1122: </a>      <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A,n,n,2*dim[0]*(dim[1]/2+1),2*dim[0]*(dim[1]/2+1));
 <a name="line1123">1123: </a><font color="#A020F0">#endif </font>
@@ -1070,7 +1086,7 @@
 <a name="line1128">1128: </a>      n = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)local_n0*dim[1]*dim[2];
 <a name="line1129">1129: </a>      <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A,n,n,N,N);
 <a name="line1130">1130: </a><font color="#A020F0">#else</font>
-<a name="line1131">1131: </a>      alloc_local = fftw_mpi_local_size_3d_transposed(dim[0],dim[1],dim[2]/2+1,<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
+<a name="line1131">1131: </a>      alloc_local = fftw_mpi_local_size_3d_transposed(dim[0],dim[1],dim[2]/2+1,comm,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
 <a name="line1132">1132: </a>      n = 2*(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)local_n0*dim[1]*(dim[2]/2+1);
 <a name="line1133">1133: </a>      <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A,n,n,2*dim[0]*dim[1]*(dim[2]/2+1),2*dim[0]*dim[1]*(dim[2]/2+1));
 <a name="line1134">1134: </a><font color="#A020F0">#endif </font>
@@ -1083,7 +1099,7 @@
 <a name="line1141">1141: </a><font color="#A020F0">#else</font>
 <a name="line1142">1142: </a>      temp = pdim[ndim-1];
 <a name="line1143">1143: </a>      pdim[ndim-1] = temp/2 + 1;
-<a name="line1144">1144: </a>      alloc_local = fftw_mpi_local_size_transposed(ndim,pdim,<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
+<a name="line1144">1144: </a>      alloc_local = fftw_mpi_local_size_transposed(ndim,pdim,comm,&amp;local_n0,&amp;local_0_start,&amp;local_n1,&amp;local_1_start);
 <a name="line1145">1145: </a>      n = 2*(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)local_n0*partial_dim*pdim[ndim-1]/temp;
 <a name="line1146">1146: </a>      N1 = 2*N*(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)pdim[ndim-1]/((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) temp);
 <a name="line1147">1147: </a>      pdim[ndim-1] = temp;
@@ -1113,19 +1129,21 @@
 <a name="line1171">1171: </a>    A-&gt;ops-&gt;mult          = MatMult_MPIFFTW;
 <a name="line1172">1172: </a>    A-&gt;ops-&gt;multtranspose = MatMultTranspose_MPIFFTW;
 <a name="line1173">1173: </a>  }
-<a name="line1174">1174: </a>  fft-&gt;matdestroy          = MatDestroy_FFTW;
-<a name="line1175">1175: </a>  A-&gt;assembled          = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line1176">1176: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<font color="#666666">"MatGetVecsFFTW_C"</font>,<font color="#666666">"MatGetVecsFFTW_FFTW"</font>,MatGetVecsFFTW_FFTW);
-<a name="line1177">1177: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<font color="#666666">"VecScatterPetscToFFTW_C"</font>,<font color="#666666">"VecScatterPetscToFFTW_FFTW"</font>,VecScatterPetscToFFTW_FFTW);
-<a name="line1178">1178: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<font color="#666666">"VecScatterFFTWToPetsc_C"</font>,<font color="#666666">"VecScatterFFTWToPetsc_FFTW"</font>,VecScatterFFTWToPetsc_FFTW);
-<a name="line1179">1179: </a>
-<a name="line1180">1180: </a>  <font color="#B22222">/* get runtime options */</font>
-<a name="line1181">1181: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;prefix,<font color="#666666">"FFTW Options"</font>,<font color="#666666">"<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>"</font>);
-<a name="line1182">1182: </a>    <A href="../../../../../docs/manualpages/Sys/PetscOptionsEList.html#PetscOptionsEList">PetscOptionsEList</A>(<font color="#666666">"-mat_fftw_plannerflags"</font>,<font color="#666666">"Planner Flags"</font>,<font color="#666666">"None"</font>,p_flags,4,p_flags[0],&amp;p_flag,&amp;flg);
-<a name="line1183">1183: </a>    <font color="#4169E1">if</font> (flg) {fftw-&gt;p_flag = (unsigned)p_flag;}
-<a name="line1184">1184: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>();
-<a name="line1185">1185: </a>  <font color="#4169E1">return</font>(0);
-<a name="line1186">1186: </a>}
+<a name="line1174">1174: </a>  fft-&gt;matdestroy = MatDestroy_FFTW;
+<a name="line1175">1175: </a>  A-&gt;assembled    = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line1176">1176: </a>  A-&gt;preallocated = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line1177">1177: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<font color="#666666">"MatGetVecsFFTW_C"</font>,<font color="#666666">"MatGetVecsFFTW_FFTW"</font>,MatGetVecsFFTW_FFTW);
+<a name="line1178">1178: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<font color="#666666">"VecScatterPetscToFFTW_C"</font>,<font color="#666666">"VecScatterPetscToFFTW_FFTW"</font>,VecScatterPetscToFFTW_FFTW);
+<a name="line1179">1179: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<font color="#666666">"VecScatterFFTWToPetsc_C"</font>,<font color="#666666">"VecScatterFFTWToPetsc_FFTW"</font>,VecScatterFFTWToPetsc_FFTW);
+<a name="line1180">1180: </a>
+<a name="line1181">1181: </a>  <font color="#B22222">/* get runtime options */</font>
+<a name="line1182">1182: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;prefix,<font color="#666666">"FFTW Options"</font>,<font color="#666666">"<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>"</font>);
+<a name="line1183">1183: </a>    <A href="../../../../../docs/manualpages/Sys/PetscOptionsEList.html#PetscOptionsEList">PetscOptionsEList</A>(<font color="#666666">"-mat_fftw_plannerflags"</font>,<font color="#666666">"Planner Flags"</font>,<font color="#666666">"None"</font>,p_flags,4,p_flags[0],&amp;p_flag,&amp;flg);
+<a name="line1184">1184: </a>    <font color="#4169E1">if</font> (flg) {fftw-&gt;p_flag = (unsigned)p_flag;}
+<a name="line1185">1185: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>();
+<a name="line1186">1186: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1187">1187: </a>}
+<a name="line1188">1188: </a>EXTERN_C_END
 
 
 

@@ -93,11 +93,15 @@ int TSFunction_Sundials(realtype t,N_Vector y,N_Vector ydot,void *ctx)
   ydot_data  = (PetscScalar *) N_VGetArrayPointer(ydot);
   ierr = VecPlaceArray(yy,y_data);CHKERRABORT(comm,ierr);
   ierr = VecPlaceArray(yyd,ydot_data); CHKERRABORT(comm,ierr);
-  ierr = VecZeroEntries(yydot);CHKERRQ(ierr);
 
   /* now compute the right hand side function */
-  ierr = TSComputeIFunction(ts,t,yy,yydot,yyd,PETSC_FALSE); CHKERRABORT(comm,ierr);
-  ierr = VecScale(yyd,-1.);CHKERRQ(ierr);
+  if (!ts->userops->ifunction) {
+    ierr = TSComputeRHSFunction(ts,t,yy,yyd);CHKERRQ(ierr);
+  } else {                      /* If rhsfunction is also set, this computes both parts and shifts them to the right */
+    ierr = VecZeroEntries(yydot);CHKERRQ(ierr);
+    ierr = TSComputeIFunction(ts,t,yy,yydot,yyd,PETSC_FALSE); CHKERRABORT(comm,ierr);
+    ierr = VecScale(yyd,-1.);CHKERRQ(ierr);
+  }
   ierr = VecResetArray(yy); CHKERRABORT(comm,ierr);
   ierr = VecResetArray(yyd); CHKERRABORT(comm,ierr);
   PetscFunctionReturn(0);
@@ -111,15 +115,12 @@ int TSFunction_Sundials(realtype t,N_Vector y,N_Vector ydot,void *ctx)
 PetscErrorCode TSStep_Sundials(TS ts)
 {
   TS_Sundials    *cvode = (TS_Sundials*)ts->data;
-  Vec            sol = ts->vec_sol;
   PetscErrorCode ierr;
   PetscInt       flag;
   long int       its,nsteps;
   realtype       t,tout;
   PetscScalar    *y_data;
   void           *mem;
-  SNES           snes;
-  Vec            res; /* This, together with snes, will check if the SNES vec_func has been set */
 
   PetscFunctionBegin;
   mem  = cvode->mem;
@@ -128,16 +129,11 @@ PetscErrorCode TSStep_Sundials(TS ts)
   N_VSetArrayPointer((realtype *)y_data,cvode->y);
   ierr = VecRestoreArray(ts->vec_sol,PETSC_NULL);CHKERRQ(ierr);
 
-  /* Should think about moving this outside the loop */
-  ierr = TSGetSNES(ts, &snes);CHKERRQ(ierr);
-  ierr = SNESGetFunction(snes, &res, PETSC_NULL, PETSC_NULL);CHKERRQ(ierr);
-  if (!res) {
-    ierr = TSSetIFunction(ts, sol, PETSC_NULL, PETSC_NULL);CHKERRQ(ierr);
-  }
-
   ierr = TSPreStep(ts);CHKERRQ(ierr);
 
   if (cvode->monitorstep) {
+    /* We would like to call TSPreStep() when starting each step (including rejections) and TSPreStage() before each
+     * stage solve, but CVode does not appear to support this. */
     flag = CVode(mem,tout,cvode->y,&t,CV_ONE_STEP);
   } else {
     flag = CVode(mem,tout,cvode->y,&t,CV_NORMAL);
@@ -199,10 +195,10 @@ PetscErrorCode TSStep_Sundials(TS ts)
   ierr = VecPlaceArray(cvode->w1,y_data); CHKERRQ(ierr);
   ierr = VecCopy(cvode->w1,cvode->update);CHKERRQ(ierr);
   ierr = VecResetArray(cvode->w1); CHKERRQ(ierr);
-  ierr = VecCopy(cvode->update,sol);CHKERRQ(ierr);
+  ierr = VecCopy(cvode->update,ts->vec_sol);CHKERRQ(ierr);
   ierr = CVodeGetNumNonlinSolvIters(mem,&its);CHKERRQ(ierr);
   ierr = CVSpilsGetNumLinIters(mem, &its);
-  ts->nonlinear_its = its; ts->linear_its = its;
+  ts->snes_its = its; ts->ksp_its = its;
 
   ts->time_step = t - ts->ptime;
   ts->ptime     = t;
@@ -319,8 +315,8 @@ PetscErrorCode TSSetUp_Sundials(TS ts)
     allocated with zero space arrays because the actual array space is provided
     by Sundials and set using VecPlaceArray().
   */
-  ierr = VecCreateMPIWithArray(((PetscObject)ts)->comm,locsize,PETSC_DECIDE,0,&cvode->w1);CHKERRQ(ierr);
-  ierr = VecCreateMPIWithArray(((PetscObject)ts)->comm,locsize,PETSC_DECIDE,0,&cvode->w2);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(((PetscObject)ts)->comm,1,locsize,PETSC_DECIDE,0,&cvode->w1);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(((PetscObject)ts)->comm,1,locsize,PETSC_DECIDE,0,&cvode->w2);CHKERRQ(ierr);
   ierr = PetscLogObjectParent(ts,cvode->w1);CHKERRQ(ierr);
   ierr = PetscLogObjectParent(ts,cvode->w2);CHKERRQ(ierr);
 
@@ -374,7 +370,7 @@ PetscErrorCode TSSetUp_Sundials(TS ts)
   /* setup the ode integrator with the given preconditioner */
   ierr = TSSundialsGetPC(ts,&pc); CHKERRQ(ierr);
   ierr = PCGetType(pc,&pctype);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)pc,PCNONE,&pcnone);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)pc,PCNONE,&pcnone);CHKERRQ(ierr);
   if (pcnone){
     flag  = CVSpgmr(mem,PREC_NONE,0);
     if (flag) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"CVSpgmr() fails, flag %d",flag);
@@ -450,8 +446,8 @@ PetscErrorCode TSView_Sundials(TS ts,PetscViewer viewer)
   if (cvode->cvode_type == SUNDIALS_ADAMS) {type = atype;}
   else                                     {type = btype;}
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"Sundials integrater does not use SNES!\n");CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"Sundials integrater type %s\n",type);CHKERRQ(ierr);
@@ -620,8 +616,8 @@ EXTERN_C_BEGIN
 PetscErrorCode  TSSundialsGetIterations_Sundials(TS ts,int *nonlin,int *lin)
 {
   PetscFunctionBegin;
-  if (nonlin) *nonlin = ts->nonlinear_its;
-  if (lin)    *lin    = ts->linear_its;
+  if (nonlin) *nonlin = ts->snes_its;
+  if (lin)    *lin    = ts->ksp_its;
   PetscFunctionReturn(0);
 }
 EXTERN_C_END

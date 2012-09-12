@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Viewer/PetscViewerBinarySetSkipHeader.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscViewerBinarySetSkipHeader</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscViewerBinarySetSkipHeader"><H1>PetscViewerBinarySetSkipHeader</H1></A>
 do not write a header with size information on output, just raw data 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -27,6 +28,8 @@ Not Collective
 <br>
 <P>
 Notes: This must be called after <A HREF="../Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>()
+<P>
+Can ONLY be called on a binary viewer
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(), <A HREF="../Viewer/PetscViewerBinaryGetDescriptor.html#PetscViewerBinaryGetDescriptor">PetscViewerBinaryGetDescriptor</A>(), <A HREF="../Viewer/PetscViewerBinarySkipInfo.html#PetscViewerBinarySkipInfo">PetscViewerBinarySkipInfo</A>(),

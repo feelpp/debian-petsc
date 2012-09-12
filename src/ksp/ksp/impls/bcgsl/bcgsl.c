@@ -1,4 +1,3 @@
-
 /*
  * Implementation of BiCGstab(L) the paper by D.R. Fokkema,
  * "Enhanced implementation of BiCGStab(L) for solving linear systems
@@ -11,7 +10,7 @@
  * loops and the macros for block solvers converted from LINPACK; there is no way
  * calls to BLAS/LAPACK make sense for size 2, 3, 4, etc.
  */
-#include <private/kspimpl.h>              /*I   "petscksp.h" I*/
+#include <petsc-private/kspimpl.h>              /*I   "petscksp.h" I*/
 #include <../src/ksp/ksp/impls/bcgsl/bcgslimpl.h>
 #include <petscblaslapack.h>
 
@@ -160,7 +159,11 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
       PetscBLASInt ione = 1,bell = PetscBLASIntCast(bcgsl->ell);
 
       AY0c[0] = -1;
+#if defined(PETSC_MISSING_LAPACK_POTRF)
+  SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"POTRF - Lapack routine is unavailable.");
+#else
       LAPACKpotrf_("Lower", &bell, &MZa[1+ldMZ], &ldMZ, &bierr);
+#endif
       if (ierr!=0) {
         ksp->reason = KSP_DIVERGED_BREAKDOWN;
         PetscFunctionReturn(0);
@@ -172,7 +175,11 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
       PetscScalar aone = 1.0, azero = 0.0;
       PetscBLASInt neqs = PetscBLASIntCast(bcgsl->ell-1);
 
+#if defined(PETSC_MISSING_LAPACK_POTRF)
+  SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"POTRF - Lapack routine is unavailable.");
+#else
       LAPACKpotrf_("Lower", &neqs, &MZa[1+ldMZ], &ldMZ, &bierr);
+#endif
       if (ierr!=0) {
         ksp->reason = KSP_DIVERGED_BREAKDOWN;
         PetscFunctionReturn(0);
@@ -190,17 +197,17 @@ static PetscErrorCode  KSPSolve_BCGSL(KSP ksp)
 
       BLASgemv_("NoTr", &ldMZ, &ldMZ, &aone, MZb, &ldMZ, AY0c, &ione, &azero, AYtc, &ione);
 
-      kappa0 = BLASdot_(&ldMZ, AY0c, &ione, AYtc, &ione);
+      kappa0 = PetscRealPart(BLASdot_(&ldMZ, AY0c, &ione, AYtc, &ione));
 
       /* round-off can cause negative kappa's */
       if (kappa0<0) kappa0 = -kappa0;
-      kappa0 = sqrt(kappa0);
+      kappa0 = PetscSqrtReal(kappa0);
 
-      kappaA = BLASdot_(&ldMZ, AYlc, &ione, AYtc, &ione);
+      kappaA = PetscRealPart(BLASdot_(&ldMZ, AYlc, &ione, AYtc, &ione));
 
       BLASgemv_("noTr", &ldMZ, &ldMZ, &aone, MZb, &ldMZ, AYlc, &ione, &azero, AYtc, &ione);
 
-      kappa1 = BLASdot_(&ldMZ, AYlc, &ione, AYtc, &ione);
+      kappa1 = PetscRealPart(BLASdot_(&ldMZ, AYlc, &ione, AYtc, &ione));
 
       if (kappa1<0) kappa1 = -kappa1;
       kappa1 = PetscSqrtReal(kappa1);
@@ -404,8 +411,8 @@ PetscErrorCode KSPView_BCGSL(KSP ksp, PetscViewer viewer)
   PetscBool       isascii, isstring;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer, PETSCVIEWERASCII, &isascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer, PETSCVIEWERSTRING, &isstring);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer, PETSCVIEWERASCII, &isascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer, PETSCVIEWERSTRING, &isstring);CHKERRQ(ierr);
 
   if (isascii) {
     ierr = PetscViewerASCIIPrintf(viewer, "  BCGSL: Ell = %D\n", bcgsl->ell);CHKERRQ(ierr);
@@ -519,15 +526,16 @@ PetscErrorCode KSPDestroy_BCGSL(KSP ksp)
    Contributed by: Joel M. Malard, email jm.malard@pnl.gov
 
    Options Database Keys:
-+  -ksp_bcgsl_ell <ell> Number of Krylov search directions
--  -ksp_bcgsl_cxpol Use a convex function of the MR and OR polynomials after the BiCG step
--  -ksp_bcgsl_xres <res> Threshold used to decide when to refresh computed residuals
++  -ksp_bcgsl_ell <ell> Number of Krylov search directions, defaults to 2 -- KSPBCGSLSetEll()
+.  -ksp_bcgsl_cxpol - Use a convex function of the MinRes and OR polynomials after the BiCG step instead of default MinRes -- KSPBCGSLSetPol()
+.  -ksp_bcgsl_mrpoly - Use the default MinRes polynomial after the BiCG step  -- KSPBCGSLSetPol()
+-  -ksp_bcgsl_xres <res> Threshold used to decide when to refresh computed residuals -- KSPBCGSLSetXRes()
 
    Notes: Supports left preconditioning only
 
    Level: beginner
 
-.seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPFGMRES, KSPBCGS, KSPSetPCSide()
+.seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPFGMRES, KSPBCGS, KSPSetPCSide(), KSPBCGSLSetEll(), KSPBCGSLSetXRes()
 
 M*/
 EXTERN_C_BEGIN

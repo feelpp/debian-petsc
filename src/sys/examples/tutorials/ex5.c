@@ -35,6 +35,8 @@ typedef struct {
   PetscReal     rho;
   TwoVec        pos; 
   PetscInt      Ii;
+  PetscInt      iarray[3];
+  PetscReal     rarray[2];
   PetscBool     T;
   PetscDataType dt;
   char          filename[PETSC_MAX_PATH_LEN];
@@ -50,6 +52,8 @@ int main(int argc,char **argv)
   PetscBag       bag;
   Parameter      *params;
   PetscViewer    viewer;
+  PetscBool      flg;
+  char           filename[PETSC_MAX_PATH_LEN] = "binaryoutput";
 
   /*
     Every PETSc routine should begin with the PetscInitialize() routine.
@@ -65,7 +69,7 @@ int main(int argc,char **argv)
   /* Create an empty bag */
   ierr   = PetscBagCreate(PETSC_COMM_WORLD,sizeof(Parameter),&bag);CHKERRQ(ierr);
   ierr   = PetscBagGetData(bag,(void **)&params);CHKERRQ(ierr);
-
+  
   /* register variables, defaults, names, help strings */
   ierr = PetscBagSetName(bag,"ParameterBag","contains parameters for simulations of top-secret, dangerous physics");CHKERRQ(ierr);
   ierr = PetscBagSetOptionsPrefix(bag, "pbag_");CHKERRQ(ierr);
@@ -73,28 +77,43 @@ int main(int argc,char **argv)
   ierr = PetscBagRegisterReal  (bag,&params->rho,3.0,"rho","Density, kg/m^3");CHKERRQ(ierr);
   ierr = PetscBagRegisterScalar(bag,&params->W,  5.0,"W","Vertical velocity, m/sec");CHKERRQ(ierr);
   ierr = PetscBagRegisterInt   (bag,&params->Ii, 2,"modes_x","Number of modes in x-direction");CHKERRQ(ierr);
+  params->iarray[0] = 1;
+  params->iarray[1] = 2;
+  params->iarray[2] = 3;
+  ierr = PetscBagRegisterIntArray(bag,&params->iarray, 3,"int_array","Int array with 3 locations");CHKERRQ(ierr);
+  params->rarray[0] = -1.0;
+  params->rarray[1] = -2.0;
+  ierr = PetscBagRegisterRealArray(bag,&params->rarray, 2,"real_array","Real array with 2 locations");CHKERRQ(ierr);
   ierr = PetscBagRegisterBool (bag,&params->T,  PETSC_FALSE,"do_output","Write output file (yes/no)");CHKERRQ(ierr);
   ierr = PetscBagRegisterEnum  (bag,&params->dt, PetscDataTypes,(PetscEnum)PETSC_INT,"dt","meaningless datatype");CHKERRQ(ierr);
   ierr = PetscBagRegisterReal  (bag,&params->pos.x1,1.0,"x1","x position");CHKERRQ(ierr);
   ierr = PetscBagRegisterReal  (bag,&params->pos.x2,1.9,"x2","y position");CHKERRQ(ierr);
   ierr = PetscBagRegisterEnum  (bag,&params->which, EnumeratedChoices, (PetscEnum)THAT, "choose","Express yourself by choosing among enumerated things");CHKERRQ(ierr);
 
-  /* write bag to stdio & binary file */
-  ierr = PetscBagView(bag,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-  ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"binaryoutput",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
-  ierr = PetscBagView(bag,viewer);CHKERRQ(ierr);
-  ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
-  ierr = PetscBagDestroy(&bag);CHKERRQ(ierr);
+  
+  /* This option allows loading user-provided PetscBag */
+  ierr = PetscOptionsGetString(PETSC_NULL,"-f",filename,sizeof filename,&flg);CHKERRQ(ierr);
+  if (!flg) {
+
+    /* write bag to stdio & binary file */
+    ierr = PetscBagView(bag,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename,FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+    ierr = PetscBagView(bag,viewer);CHKERRQ(ierr);
+    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+  }
+  
+  ierr = PetscMemzero(params,sizeof(Parameter));CHKERRQ(ierr);
 
   /* load bag from file & write to stdio */
-  ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"binaryoutput",FILE_MODE_READ,&viewer);CHKERRQ(ierr);
-  ierr = PetscBagLoad(viewer,&bag);CHKERRQ(ierr);
+  ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename,FILE_MODE_READ,&viewer);CHKERRQ(ierr);
+  ierr = PetscBagLoad(viewer,bag);CHKERRQ(ierr);
   ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+  ierr = PetscBagSetFromOptions(bag);CHKERRQ(ierr);
   ierr = PetscBagView(bag,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
   /* reuse the parameter struct */
-  ierr   = PetscBagGetData(bag,(void**)&params);CHKERRQ(ierr);
-  PetscPrintf(PETSC_COMM_WORLD,"The value of rho after loading is: %f\n",(double)params->rho);
+  ierr = PetscBagGetData(bag,(void**)&params);CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"The value of rho after loading is: %f\n",(double)params->rho);CHKERRQ(ierr);
 
 #if defined(PETSC_USE_SOCKET_VIEWER)
   {

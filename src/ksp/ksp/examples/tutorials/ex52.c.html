@@ -1,13 +1,14 @@
 <center><a href="ex52.c">Actual source code: ex52.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials/ex52.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:14:07+00:00">
+<meta name="date" content="2012-08-29T17:06:38+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* Program usage:  mpiexec -n &lt;procs&gt; ex52 [-help] [all PETSc options] */</font>
 
@@ -172,7 +173,7 @@
 <a name="line165">165: </a>      <A href="../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(pc,<A href="../../../../../docs/manualpages/PC/PCCHOLESKY.html#PCCHOLESKY">PCCHOLESKY</A>);
 <a name="line166">166: </a>    }
 <a name="line167">167: </a>    <A href="../../../../../docs/manualpages/PC/PCFactorSetMatSolverPackage.html#PCFactorSetMatSolverPackage">PCFactorSetMatSolverPackage</A>(pc,<A href="../../../../../docs/manualpages/Mat/MATSOLVERMUMPS.html#MATSOLVERMUMPS">MATSOLVERMUMPS</A>);
-<a name="line168">168: </a>    <A href="../../../../../docs/manualpages/PC/PCFactorSetUpMatSolverPackage.html#PCFactorSetUpMatSolverPackage">PCFactorSetUpMatSolverPackage</A>(pc);
+<a name="line168">168: </a>    <A href="../../../../../docs/manualpages/PC/PCFactorSetUpMatSolverPackage.html#PCFactorSetUpMatSolverPackage">PCFactorSetUpMatSolverPackage</A>(pc); <font color="#B22222">/* call <A href="../../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>() to create F */</font>
 <a name="line169">169: </a>    <A href="../../../../../docs/manualpages/PC/PCFactorGetMatrix.html#PCFactorGetMatrix">PCFactorGetMatrix</A>(pc,&amp;F);
 <a name="line170">170: </a>    icntl=7; ival = 2;
 <a name="line171">171: </a>    <A href="../../../../../docs/manualpages/Mat/MatMumpsSetIcntl.html#MatMumpsSetIcntl">MatMumpsSetIcntl</A>(F,icntl,ival);
@@ -269,7 +270,7 @@
 <a name="line262">262: </a><font color="#B22222">     print statement from all processes that share a communicator.</font>
 <a name="line263">263: </a><font color="#B22222">     An alternative is <A href="../../../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(), which prints to a file.</font>
 <a name="line264">264: </a><font color="#B22222">  */</font>
-<a name="line265">265: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %A iterations %D\n"</font>,
+<a name="line265">265: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error %G iterations %D\n"</font>,
 <a name="line266">266: </a>                     norm,its);
 
 <a name="line268">268: </a>  <font color="#B22222">/*</font>

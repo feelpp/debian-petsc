@@ -1,5 +1,5 @@
 
-#include <private/characteristicimpl.h> /*I "petsccharacteristic.h" I*/
+#include <petsc-private/characteristicimpl.h> /*I "petsccharacteristic.h" I*/
 
 PetscClassId CHARACTERISTIC_CLASSID;
 PetscLogEvent  CHARACTERISTIC_SetUp, CHARACTERISTIC_Solve, CHARACTERISTIC_QueueSetup, CHARACTERISTIC_DAUpdate;
@@ -15,8 +15,8 @@ PetscErrorCode DMDAGetNeighborsRank(DM, PetscMPIInt []);
 PetscInt DMDAGetNeighborRelative(DM, PassiveReal, PassiveReal);
 PetscErrorCode DMDAMapToPeriodicDomain(DM, PetscScalar [] ); 
 
-PetscErrorCode HeapSort(Characteristic, Queue, PetscInt);
-PetscErrorCode SiftDown(Characteristic, Queue, PetscInt, PetscInt);
+PetscErrorCode CharacteristicHeapSort(Characteristic, Queue, PetscInt);
+PetscErrorCode CharacteristicSiftDown(Characteristic, Queue, PetscInt, PetscInt);
 
 #undef __FUNCT__  
 #define __FUNCT__ "CharacteristicView"
@@ -33,7 +33,7 @@ PetscErrorCode CharacteristicView(Characteristic c, PetscViewer viewer)
   PetscValidHeaderSpecific(viewer, PETSC_VIEWER_CLASSID, 2);
   PetscCheckSameComm(c, 1, viewer, 2);
 
-  ierr = PetscTypeCompare((PetscObject) viewer, PETSCVIEWERASCII, &iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) viewer, PETSCVIEWERASCII, &iascii);CHKERRQ(ierr);
   if (!iascii) {
     if (c->ops->view) {
       ierr = (*c->ops->view)(c, viewer);CHKERRQ(ierr);
@@ -173,12 +173,13 @@ PetscErrorCode CharacteristicSetType(Characteristic c, const CharacteristicType 
   PetscValidHeaderSpecific(c, CHARACTERISTIC_CLASSID, 1);
   PetscValidCharPointer(type, 2);
 
-  ierr = PetscTypeCompare((PetscObject) c, type, &match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) c, type, &match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
   if (c->data) {
     /* destroy the old private Characteristic context */
     ierr = (*c->ops->destroy)(c);CHKERRQ(ierr);
+    c->ops->destroy = PETSC_NULL;
     c->data = 0;
   }
 
@@ -601,7 +602,7 @@ int CharacteristicSendCoordinatesBegin(Characteristic c)
 
   PetscFunctionBegin;
   ierr = MPI_Comm_rank(((PetscObject)c)->comm, &rank);CHKERRQ(ierr);
-  ierr = HeapSort(c, c->queue, c->queueSize);CHKERRQ(ierr);
+  ierr = CharacteristicHeapSort(c, c->queue, c->queueSize);CHKERRQ(ierr);
   ierr = PetscMemzero(c->needCount, c->numNeighbors * sizeof(PetscInt));CHKERRQ(ierr);
   for(i = 0;  i < c->queueSize; i++) {
     c->needCount[c->queue[i].proc]++;
@@ -705,48 +706,51 @@ PetscErrorCode CharacteristicGetValuesEnd(Characteristic c)
 
 /*---------------------------------------------------------------------*/
 #undef __FUNCT__
-#define __FUNCT__ "HeapSort"
+#define __FUNCT__ "CharacteristicHeapSort"
 /*
   Based on code from http://linux.wku.edu/~lamonml/algor/sort/heap.html
 */
-int HeapSort(Characteristic c, Queue queue, PetscInt size)
+PetscErrorCode CharacteristicHeapSort(Characteristic c, Queue queue, PetscInt size)
 /*---------------------------------------------------------------------*/
 {
+  PetscErrorCode          ierr;
   CharacteristicPointDA2D temp;
-  int                     n;
+  PetscInt                n;
   
+  PetscFunctionBegin;
   if (0) { /* Check the order of the queue before sorting */
     PetscInfo(PETSC_NULL, "Before Heap sort\n");
     for (n=0;  n<size; n++) {
-      PetscInfo2(PETSC_NULL,"%d %d\n",n,queue[n].proc);
+      ierr = PetscInfo2(PETSC_NULL,"%d %d\n",n,queue[n].proc);CHKERRQ(ierr);
     }
   }
 
   /* SORTING PHASE */  
-  for (n = (size / 2)-1; n >= 0; n--)
-    SiftDown(c, queue, n, size-1); /* Rich had size-1 here, Matt had size*/
+  for (n = (size / 2)-1; n >= 0; n--) {
+    ierr = CharacteristicSiftDown(c, queue, n, size-1);CHKERRQ(ierr); /* Rich had size-1 here, Matt had size*/
+  }
   for (n = size-1; n >= 1; n--) {
     temp = queue[0];
     queue[0] = queue[n];
     queue[n] = temp;
-    SiftDown(c, queue, 0, n-1);
+    ierr = CharacteristicSiftDown(c, queue, 0, n-1);CHKERRQ(ierr);
   }   
   if (0) { /* Check the order of the queue after sorting */
-    PetscInfo(PETSC_NULL, "Avter  Heap sort\n"); 
+    ierr = PetscInfo(PETSC_NULL, "Avter  Heap sort\n");CHKERRQ(ierr); 
     for (n=0;  n<size; n++) {
-      PetscInfo2(PETSC_NULL,"%d %d\n",n,queue[n].proc);
+      ierr = PetscInfo2(PETSC_NULL,"%d %d\n",n,queue[n].proc);CHKERRQ(ierr);
     }
   }
-  return 0;
+  PetscFunctionReturn(0);
 }
 
 /*---------------------------------------------------------------------*/
 #undef __FUNCT__
-#define __FUNCT__ "SiftDown"
+#define __FUNCT__ "CharacteristicSiftDown"
 /*
   Based on code from http://linux.wku.edu/~lamonml/algor/sort/heap.html
 */
-PetscErrorCode SiftDown(Characteristic c, Queue queue, PetscInt root, PetscInt bottom)
+PetscErrorCode CharacteristicSiftDown(Characteristic c, Queue queue, PetscInt root, PetscInt bottom)
 /*---------------------------------------------------------------------*/
 {
   PetscBool                done = PETSC_FALSE;

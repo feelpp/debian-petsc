@@ -39,9 +39,9 @@ int main(int argc,char **args)
   ierr = PetscOptionsGetReal(PETSC_NULL,"-alpha",&soft_alpha,PETSC_NULL); CHKERRQ(ierr);
   M = (ne+1)*(ne+1); /* global number of nodes */
   /* create stiffness matrix */
-  ierr = MatCreateMPIAIJ(wcomm,PETSC_DECIDE,PETSC_DECIDE,M,M,
+  ierr = MatCreateAIJ(wcomm,PETSC_DECIDE,PETSC_DECIDE,M,M,
                          18,PETSC_NULL,6,PETSC_NULL,&Amat);CHKERRQ(ierr);
-  ierr = MatCreateMPIAIJ(wcomm,PETSC_DECIDE,PETSC_DECIDE,M,M,
+  ierr = MatCreateAIJ(wcomm,PETSC_DECIDE,PETSC_DECIDE,M,M,
                          18,PETSC_NULL,6,PETSC_NULL,&Pmat);CHKERRQ(ierr);
   ierr = MatGetOwnershipRange(Amat,&Istart,&Iend);CHKERRQ(ierr);
   m = Iend-Istart;
@@ -55,7 +55,7 @@ int main(int argc,char **args)
   /* generate element matrices */
   {
     FILE *file;
-    char fname[] = "elem_2d_therm.txt";
+    char fname[] = "data/elem_2d_therm.txt";
     file = fopen(fname, "r");
     if (file == 0) {
       DD1[0][0] =  0.66666666666666663;
@@ -131,12 +131,14 @@ int main(int argc,char **args)
 
     /* Setup solver */
     ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);                    CHKERRQ(ierr);
-    ierr = KSPSetOperators( ksp, Amat, Amat, SAME_NONZERO_PATTERN ); CHKERRQ(ierr);
     ierr = KSPSetType( ksp, KSPCG );                            CHKERRQ(ierr);
     ierr = KSPGetPC(ksp,&pc);                                   CHKERRQ(ierr);
     ierr = PCSetType(pc,PCGAMG);                                CHKERRQ(ierr);
-    ierr = PCSetCoordinates( pc, 2, coords );                   CHKERRQ(ierr);
     ierr = KSPSetFromOptions(ksp);                              CHKERRQ(ierr);
+    
+    /* finish KSP/PC setup */
+    ierr = KSPSetOperators( ksp, Amat, Amat, SAME_NONZERO_PATTERN ); CHKERRQ(ierr);
+    ierr = PCSetCoordinates( pc, 2, m, coords );                   CHKERRQ(ierr);
   }
 
   if( !PETSC_TRUE ) {

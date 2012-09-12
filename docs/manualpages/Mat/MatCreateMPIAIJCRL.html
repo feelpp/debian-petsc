@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatCreateMPIAIJCRL.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatCreateMPIAIJCRL</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatCreateMPIAIJCRL"><H1>MatCreateMPIAIJCRL</H1></A>
 Creates a sparse matrix of type MPIAIJCRL. This type inherits from AIJ, but stores some additional information that is used to allow better vectorization of  the matrix-vector product. At the cost of increased storage, the AIJ formatted  matrix can be copied to a format in which pieces of the matrix are  stored in ELLPACK format, allowing the vectorized matrix multiply  routine to use stride-1 memory accesses.  As with the AIJ type, it is  important to preallocate matrix storage in order to get good assembly  performance. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>

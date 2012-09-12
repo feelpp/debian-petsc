@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecMTDotBegin.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecMTDotBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecMTDotBegin"><H1>VecMTDotBegin</H1></A>
 Starts a split phase transpose multiple dot product computation. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -28,8 +29,9 @@ PetscErrorCode  VecMTDotBegin(Vec x,PetscInt nv,const Vec y[],PetscScalar result
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Each call to <A HREF="../Vec/VecMTDotBegin.html#VecMTDotBegin">VecMTDotBegin</A>() should be paired with a call to <A HREF="../Vec/VecMTDotEnd.html#VecMTDotEnd">VecMTDotEnd</A>().
 <P>
-seealso: <A HREF="../Vec/VecMTDotEnd.html#VecMTDotEnd">VecMTDotEnd</A>(), <A HREF="../Vec/VecNormBegin.html#VecNormBegin">VecNormBegin</A>(), <A HREF="../Vec/VecNormEnd.html#VecNormEnd">VecNormEnd</A>(), <A HREF="../Vec/VecNorm.html#VecNorm">VecNorm</A>(), <A HREF="../Vec/VecDot.html#VecDot">VecDot</A>(), <A HREF="../Vec/VecMDot.html#VecMDot">VecMDot</A>(),
-<A HREF="../Vec/VecDotBegin.html#VecDotBegin">VecDotBegin</A>(), <A HREF="../Vec/VecDotEnd.html#VecDotEnd">VecDotEnd</A>(), <A HREF="../Vec/VecMDotBegin.html#VecMDotBegin">VecMDotBegin</A>(), <A HREF="../Vec/VecMDotEnd.html#VecMDotEnd">VecMDotEnd</A>()
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../Vec/VecMTDotEnd.html#VecMTDotEnd">VecMTDotEnd</A>(), <A HREF="../Vec/VecNormBegin.html#VecNormBegin">VecNormBegin</A>(), <A HREF="../Vec/VecNormEnd.html#VecNormEnd">VecNormEnd</A>(), <A HREF="../Vec/VecNorm.html#VecNorm">VecNorm</A>(), <A HREF="../Vec/VecDot.html#VecDot">VecDot</A>(), <A HREF="../Vec/VecMDot.html#VecMDot">VecMDot</A>(), 
+<BR><A HREF="../Vec/VecDotBegin.html#VecDotBegin">VecDotBegin</A>(), <A HREF="../Vec/VecDotEnd.html#VecDotEnd">VecDotEnd</A>(), <A HREF="../Vec/VecMDotBegin.html#VecMDotBegin">VecMDotBegin</A>(), <A HREF="../Vec/VecMDotEnd.html#VecMDotEnd">VecMDotEnd</A>(), <A HREF="../Vec/PetscCommSplitReductionBegin.html#PetscCommSplitReductionBegin">PetscCommSplitReductionBegin</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/vec/utils/comb.c.html#VecMTDotBegin">src/vec/vec/utils/comb.c</A>

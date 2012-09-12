@@ -3,7 +3,7 @@
     ADIC matrix-free matrix implementation
 */
 
-#include <private/matimpl.h>
+#include <petsc-private/matimpl.h>
 #include <petscdmda.h>          /*I   "petscdmda.h"    I*/
 #include <petscsnes.h>        /*I   "petscsnes.h"  I*/
 EXTERN_C_BEGIN
@@ -426,8 +426,6 @@ PetscErrorCode  MatCreate_DAAD(Mat B)
   B->data = (void*)b;
   ierr = PetscMemcpy(B->ops,&MatOps_Values,sizeof(struct _MatOps));CHKERRQ(ierr);
   
-  ierr = PetscLayoutSetBlockSize(B->rmap,1);CHKERRQ(ierr);
-  ierr = PetscLayoutSetBlockSize(B->cmap,1);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(B->rmap);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(B->cmap);CHKERRQ(ierr);
 

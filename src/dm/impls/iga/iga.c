@@ -1,4 +1,4 @@
-#include <private/igaimpl.h>    /*I   "petscdmiga.h"   I*/
+#include <petsc-private/igaimpl.h>    /*I   "petscdmiga.h"   I*/
 
 #undef __FUNCT__
 #define __FUNCT__ "DMDestroy_IGA"
@@ -28,7 +28,7 @@ PetscErrorCode DMView_IGA(DM dm, PetscViewer viewer)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject) viewer, PETSCVIEWERASCII, &iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) viewer, PETSCVIEWERASCII, &iascii);CHKERRQ(ierr);
 
   if (iascii){
     ierr = PetscViewerASCIIPrintf(viewer, "IGA:\n");CHKERRQ(ierr);
@@ -71,14 +71,14 @@ PetscErrorCode DMCreateLocalVector_IGA(DM dm, Vec *lvec)
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "DMGetMatrix_IGA"
-PetscErrorCode DMGetMatrix_IGA(DM dm, const MatType mtype, Mat *J)
+#define __FUNCT__ "DMCreateMatrix_IGA"
+PetscErrorCode DMCreateMatrix_IGA(DM dm, const MatType mtype, Mat *J)
 {
   DM_IGA        *iga = (DM_IGA *) dm->data;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = DMGetMatrix(iga->da_dof, mtype, J);CHKERRQ(ierr);
+  ierr = DMCreateMatrix(iga->da_dof, mtype, J);CHKERRQ(ierr);
   ierr = PetscObjectCompose((PetscObject)*J,"DM",(PetscObject)dm);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
@@ -433,7 +433,7 @@ PetscErrorCode DMIGAInitializeUniform3d(DM dm,PetscBool IsRational,PetscInt NumD
   PetscFunctionBegin;
   /* Test C < p */
   if(px <= Cx || py <= Cy || pz <= Cz){
-    SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Discretization inconsistent: polynomial order must be greater than degree of continuity");
+    SETERRQ(((PetscObject) dm)->comm, PETSC_ERR_ARG_OUTOFRANGE, "Discretization inconsistent: polynomial order must be greater than degree of continuity");
   }
 
   /* Load constants */
@@ -491,7 +491,7 @@ PetscErrorCode DMIGAInitializeUniform3d(DM dm,PetscBool IsRational,PetscInt NumD
   if (IsPeriodicZ) zptype = DMDA_BOUNDARY_PERIODIC;
 
   sw = (iga->px>iga->py) ? iga->px : iga->py ; sw = (sw>iga->pz) ? sw : iga->pz ;
-  ierr = DMDACreate(PETSC_COMM_WORLD,&iga->da_dof); CHKERRQ(ierr);
+  ierr = DMDACreate(((PetscObject) dm)->comm,&iga->da_dof); CHKERRQ(ierr);
   ierr = DMDASetDim(iga->da_dof, 3); CHKERRQ(ierr);
   ierr = DMDASetSizes(iga->da_dof,iga->nbx,iga->nby,iga->nbz); CHKERRQ(ierr);
   ierr = DMDASetDof(iga->da_dof, ndof); CHKERRQ(ierr);
@@ -534,13 +534,13 @@ PetscErrorCode DMIGAInitializeGeometry3d(DM dm,PetscInt ndof,PetscInt NumDerivat
   PetscFunctionBegin;
   fp = fopen(FunctionSpaceFile, "r");
   if (fp == NULL ){
-    SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_FILE_OPEN, "Cannot find geometry file");
+    SETERRQ(((PetscObject) dm)->comm, PETSC_ERR_FILE_OPEN, "Cannot find geometry file");
   }
 
   if (fscanf(fp, "%d", &ival) != 1) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SYS,"Failed to read spatial dimension from %s",FunctionSpaceFile);
   spatial_dim = ival;
   if(spatial_dim != 3){
-    SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Geometry dimension != problem dimension");
+    SETERRQ(((PetscObject) dm)->comm, PETSC_ERR_ARG_OUTOFRANGE, "Geometry dimension != problem dimension");
   }
 
   /* Read in polynomial orders and number of basis functions */
@@ -625,7 +625,7 @@ PetscErrorCode DMIGAInitializeGeometry3d(DM dm,PetscInt ndof,PetscInt NumDerivat
   sw = (iga->px>iga->py) ? iga->px : iga->py ; sw = (sw>iga->pz) ? sw : iga->pz ;
 
   /* DOF DA */
-  ierr = DMDACreate(PETSC_COMM_WORLD,&iga->da_dof); CHKERRQ(ierr);
+  ierr = DMDACreate(((PetscObject) dm)->comm,&iga->da_dof); CHKERRQ(ierr);
   ierr = DMDASetDim(iga->da_dof, 3); CHKERRQ(ierr);
   ierr = DMDASetSizes(iga->da_dof,iga->nbx,iga->nby,iga->nbz); CHKERRQ(ierr);
   ierr = DMDASetDof(iga->da_dof, ndof); CHKERRQ(ierr);
@@ -642,7 +642,7 @@ PetscErrorCode DMIGAInitializeGeometry3d(DM dm,PetscInt ndof,PetscInt NumDerivat
   ierr = BDSetElementOwnership(iga->bdZ,iga->Nz,info_dof.zs,info_dof.zs+info_dof.zm-1,iga->pz);CHKERRQ(ierr);
 
   /* Geometry DA */
-  ierr = DMDACreate(PETSC_COMM_WORLD,&iga->da_geometry); CHKERRQ(ierr);
+  ierr = DMDACreate(((PetscObject) dm)->comm,&iga->da_geometry); CHKERRQ(ierr);
   ierr = DMDASetDim(iga->da_geometry, 3); CHKERRQ(ierr);
   ierr = DMDASetSizes(iga->da_geometry,iga->nbx,iga->nby,iga->nbz); CHKERRQ(ierr);
   ierr = DMDASetDof(iga->da_geometry, 4); CHKERRQ(ierr);
@@ -680,7 +680,7 @@ PetscErrorCode DMIGAInitializeSymmetricTaper2d(DM dm,PetscBool IsRational,PetscI
   PetscFunctionBegin;
   /* Test C < p */
   if(px <= Cx || py <= Cy){
-    SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Discretization inconsistent: polynomial order must be greater than degree of continuity");
+    SETERRQ(((PetscObject) dm)->comm, PETSC_ERR_ARG_OUTOFRANGE, "Discretization inconsistent: polynomial order must be greater than degree of continuity");
   }
 
   /* Load constants */
@@ -707,7 +707,7 @@ PetscErrorCode DMIGAInitializeSymmetricTaper2d(DM dm,PetscBool IsRational,PetscI
 
   if(IsPeriodicX){
 
-    SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Initialization routine for tapered meshes does not yet support periodicity");
+    SETERRQ(((PetscObject) dm)->comm, PETSC_ERR_ARG_OUTOFRANGE, "Initialization routine for tapered meshes does not yet support periodicity");
     ierr = CreatePeriodicKnotVector(iga->Nx,iga->px,iga->Cx,iga->mx,iga->Ux,Ux0,Uxf);CHKERRQ(ierr);
     iga->nbx -= iga->px;
 
@@ -751,11 +751,11 @@ PetscErrorCode DMIGAInitializeSymmetricTaper2d(DM dm,PetscBool IsRational,PetscI
     PetscFree(X2);
     PetscFree(X);
   }
-  if(IsPeriodicY){
-    SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Initialization routine for tapered meshes does not yet support periodicity");
+  if (IsPeriodicY) {
+    SETERRQ(((PetscObject) dm)->comm, PETSC_ERR_ARG_OUTOFRANGE, "Initialization routine for tapered meshes does not yet support periodicity");
     ierr = CreatePeriodicKnotVector(iga->Ny,iga->py,iga->Cy,iga->my,iga->Uy,Uy0,Uyf);CHKERRQ(ierr);
     iga->nby -= iga->py;
-  }else{
+  } else {
 
 
     PetscReal *X1;
@@ -806,7 +806,7 @@ PetscErrorCode DMIGAInitializeSymmetricTaper2d(DM dm,PetscBool IsRational,PetscI
   if (IsPeriodicY) yptype = DMDA_BOUNDARY_PERIODIC;
 
   sw = (iga->px>iga->py) ? iga->px : iga->py ;
-  ierr = DMDACreate(PETSC_COMM_WORLD,&iga->da_dof); CHKERRQ(ierr);
+  ierr = DMDACreate(((PetscObject) dm)->comm,&iga->da_dof); CHKERRQ(ierr);
   ierr = DMDASetDim(iga->da_dof, 2); CHKERRQ(ierr);
   ierr = DMDASetSizes(iga->da_dof,iga->nbx,iga->nby,1); CHKERRQ(ierr);
   ierr = DMDASetDof(iga->da_dof, ndof); CHKERRQ(ierr);
@@ -842,7 +842,7 @@ PetscErrorCode DMIGAInitializeUniform2d(DM dm,PetscBool IsRational,PetscInt NumD
   PetscFunctionBegin;
   /* Test C < p */
   if(px <= Cx || py <= Cy){
-    SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Discretization inconsistent: polynomial order must be greater than degree of continuity");
+    SETERRQ(((PetscObject) dm)->comm, PETSC_ERR_ARG_OUTOFRANGE, "Discretization inconsistent: polynomial order must be greater than degree of continuity");
   }
 
   /* Load constants */
@@ -888,7 +888,7 @@ PetscErrorCode DMIGAInitializeUniform2d(DM dm,PetscBool IsRational,PetscInt NumD
   if (IsPeriodicY) yptype = DMDA_BOUNDARY_PERIODIC;
 
   sw = (iga->px>iga->py) ? iga->px : iga->py ;
-  ierr = DMDACreate(PETSC_COMM_WORLD,&iga->da_dof); CHKERRQ(ierr);
+  ierr = DMDACreate(((PetscObject) dm)->comm,&iga->da_dof); CHKERRQ(ierr);
   ierr = DMDASetDim(iga->da_dof, 2); CHKERRQ(ierr);
   ierr = DMDASetSizes(iga->da_dof,iga->nbx,iga->nby,1); CHKERRQ(ierr);
   ierr = DMDASetDof(iga->da_dof, ndof); CHKERRQ(ierr);
@@ -921,7 +921,7 @@ PetscErrorCode DMIGAInitializeUniform1d(DM dm,PetscBool IsRational,PetscInt NumD
   PetscFunctionBegin;
   /* Test C < p */
   if(px <= Cx){
-    SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Discretization inconsistent: polynomial order must be greater than degree of continuity");
+    SETERRQ(((PetscObject) dm)->comm, PETSC_ERR_ARG_OUTOFRANGE, "Discretization inconsistent: polynomial order must be greater than degree of continuity");
   }
 
   /* Load constants */
@@ -955,7 +955,7 @@ PetscErrorCode DMIGAInitializeUniform1d(DM dm,PetscBool IsRational,PetscInt NumD
   if (IsPeriodicX) ptype = DMDA_BOUNDARY_PERIODIC;
 
   sw = iga->px;
-  ierr = DMDACreate(PETSC_COMM_WORLD,&iga->da_dof); CHKERRQ(ierr);
+  ierr = DMDACreate(((PetscObject) dm)->comm,&iga->da_dof); CHKERRQ(ierr);
   ierr = DMDASetDim(iga->da_dof, 1); CHKERRQ(ierr);
   ierr = DMDASetSizes(iga->da_dof,iga->nbx,1,1); CHKERRQ(ierr);
   ierr = DMDASetDof(iga->da_dof, ndof); CHKERRQ(ierr);
@@ -1546,7 +1546,7 @@ PetscErrorCode SetupGauss1D(PetscInt n,PetscReal *X,PetscReal *W)
     X[19] = 0.993128599185094924786 ; W[19] = 0.0176140071391521183118620 ;
     break ;
   default:
-    SETERRQ1(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Unimplemented number of gauss points %d!", n);
+    SETERRQ1(PETSC_COMM_SELF, PETSC_ERR_ARG_OUTOFRANGE, "Unimplemented number of gauss points %d!", n);
   }
   PetscFunctionReturn(0);
 }
@@ -1634,13 +1634,13 @@ PetscErrorCode CreateTaperSetOfPoints(PetscReal Xbegin,PetscReal Xend,PetscReal 
 
   PetscFunctionBegin;
   for(i=0;i<Ns;i++){
-    sum += pow(f,i);
+    sum += pow(f,(PetscReal)i);
   }
 
   dX = (Xend-Xbegin)/sum;
   X[0] = Xbegin;
   for(i=1;i<N;i++){
-    X[i] = X[i-1] + dX*pow(f,i-1.0);
+    X[i] = X[i-1] + dX*pow(f,(PetscReal)i-1.0);
   }
 
   PetscFunctionReturn(0);
@@ -1658,7 +1658,7 @@ PetscErrorCode CheckKnots(PetscInt m,PetscReal *U,PetscInt k,PetscReal *Uadd)
   PetscFunctionBegin;
   for(j=0;j<k;j++)
     if(Uadd[j] < U[0] || Uadd[j] > U[m-1])
-      SETERRQ(PETSC_COMM_WORLD, PETSC_ERR_ARG_OUTOFRANGE, "Inserted knots beyond original knot vector limits");
+      SETERRQ(PETSC_COMM_SELF, PETSC_ERR_ARG_OUTOFRANGE, "Inserted knots beyond original knot vector limits");
 
   /* 2) I am lazy so I am not thinking about more that could go wrong */
 

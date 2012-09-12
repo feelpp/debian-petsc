@@ -1,7 +1,7 @@
 
 #include <stdlib.h>
 
-static char help[] = "Tries to solve u`` + u^{2} = f for an easy case and an impossible case\n\n";
+static const char help[] = "Tries to solve u`` + u^{2} = f for an easy case and an impossible case.\n\n";
 
 /*
        This example was contributed by Peter Graf to show how SNES fails when given a nonlinear problem with no solution.
@@ -114,7 +114,7 @@ int main(int argc,char **argv)
   
   ierr = SNESSolve(snes,PETSC_NULL,x);CHKERRQ(ierr);
   ierr = SNESGetIterationNumber(snes,&it);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_SELF,"Newton iterations = %D\n\n",it);CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_SELF,"SNES iterations = %D\n\n",it);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Free work space.  All PETSc objects should be destroyed when they

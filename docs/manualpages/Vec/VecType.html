@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecType.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecType"><H1>VecType</H1></A>
 String with the name of a PETSc vector or the creation function with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:myveccreate() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -20,6 +21,7 @@ String with the name of a PETSc vector or the creation function with an optional
 #define VECCUSP        "cusp"       /* seqcusp on one process and mpicusp on several */
 #define VECNEST        "nest"
 #define VECSEQPTHREAD  "seqpthread"
+#define VECMPIPTHREAD  "mpipthread"
 #define VECPTHREAD     "pthread"    /* seqpthread on one process and mpipthread on several */
 
 </PRE>

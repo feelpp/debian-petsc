@@ -1,16 +1,19 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESGetJacobian.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESGetJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESGetJacobian"><H1>SNESGetJacobian</H1></A>
 Returns the Jacobian matrix and optionally the user  provided context for evaluating the Jacobian. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-PetscErrorCode  SNESGetJacobian(SNES snes,Mat *A,Mat *B,PetscErrorCode (**func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void **ctx)
+#include "petscdmshell.h" 
+#include "petscsys.h" 
+PetscErrorCode SNESGetJacobian(SNES snes,Mat *A,Mat *B,PetscErrorCode (**func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void **ctx)
 </PRE>
 Not Collective, but <A HREF="../Mat/Mat.html#Mat">Mat</A> object will be parallel if <A HREF="../SNES/SNES.html#SNES">SNES</A> object is
 <P>

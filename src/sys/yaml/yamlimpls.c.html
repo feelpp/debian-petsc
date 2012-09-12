@@ -1,13 +1,14 @@
 <center><a href="yamlimpls.c">Actual source code: yamlimpls.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/yaml/yamlimpls.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:54:29+00:00">
+<meta name="date" content="2012-08-29T16:37:41+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include </font><font color="#666666">"yamlimpls.h"</font><font color="#A020F0"></font>
 
 <a name="line3">  3: </a><strong><font color="#4169E1"><a name="options_list_delete"></a>void options_list_delete(options_list_t *options_list)</font></strong> {
@@ -731,54 +732,56 @@
 
 <a name="line729">729: </a>    <A href="../../../docs/manualpages/Sys/PetscFixFilename.html#PetscFixFilename">PetscFixFilename</A>(file,fname);
 <a name="line730">730: </a>    ierr_file = file_to_string(fname, &amp;ostring);
+<a name="line731">731: </a>    <font color="#4169E1">if</font> (ierr_file &amp;&amp; require) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_USER,<font color="#666666">"Unable to open YAML Options File %s"</font>,fname);
+<a name="line732">732: </a>    <font color="#4169E1">if</font> (ierr_file) <font color="#4169E1">return</font>(0);
 
-<a name="line732">732: </a>    <font color="#4169E1">if</font> (!ierr_file &amp;&amp; options_list_populate_yaml(ostring,&amp;options_list)) {
-<a name="line733">733: </a>      PetscInfo1(0,<font color="#666666">"Read YAML options file %s\n"</font>,file);
-<a name="line734">734: </a>      <font color="#4169E1">for</font> (i=0;i&lt;options_list.count;i++) {
-<a name="line735">735: </a>        <font color="#4169E1">if</font> (options_list.options[i].arguments.count == 1) {
-<a name="line736">736: </a>          <A href="../../../docs/manualpages/Sys/PetscStrcasecmp.html#PetscStrcasecmp">PetscStrcasecmp</A>(options_list.options[i].arguments.args[0], <font color="#666666">"false"</font>, &amp;match);
-<a name="line737">737: </a>          <font color="#4169E1">if</font> (!match) {
-<a name="line738">738: </a>            <font color="#B22222">/* The current option has one argument it is not false.  Something will have to be copied */</font>
-<a name="line739">739: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,<font color="#666666">"-"</font>);
-<a name="line740">740: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcasecmp.html#PetscStrcasecmp">PetscStrcasecmp</A>(options_list.options[i].group, <font color="#666666">"</font><font color="#4169E1">default</font>", &amp;match);
-<a name="line741">741: </a>            <font color="#4169E1">if</font> (!match) {
-<a name="line742">742: </a>              <font color="#B22222">/* The current option is not in the default group. The group name and option name needs to be copied. */</font>
-<a name="line743">743: </a>              <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,options_list.options[i].group);
-<a name="line744">744: </a>              <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,<font color="#666666">"_"</font>);
-<a name="line745">745: </a>            }
-<a name="line746">746: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,options_list.options[i].name);
-<a name="line747">747: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,<font color="#666666">" "</font>);
-<a name="line748">748: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcasecmp.html#PetscStrcasecmp">PetscStrcasecmp</A>(options_list.options[i].arguments.args[0], <font color="#666666">"true"</font>, &amp;match);
-<a name="line749">749: </a>            <font color="#4169E1">if</font> (!match) {
-<a name="line750">750: </a>              <font color="#B22222">/*The argument needs to be copied. */</font>
-<a name="line751">751: </a>              <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,options_list.options[i].arguments.args[0]);
-<a name="line752">752: </a>              <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,<font color="#666666">" "</font>);
-<a name="line753">753: </a>            }
-<a name="line754">754: </a>          }
-<a name="line755">755: </a>        } <font color="#4169E1">else</font> {
-<a name="line756">756: </a>          <A href="../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,<font color="#666666">"Invalid number of arguments (%s: %s)"</font>,options_list.options[i].group,options_list.options[i].name);
-<a name="line757">757: </a>        }
-<a name="line758">758: </a>      }
-<a name="line759">759: </a>      options_list_delete(&amp;options_list);
-<a name="line760">760: </a>      <A href="../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(vstring,&amp;len);
-<a name="line761">761: </a>      cnt  = PetscMPIIntCast(len);
-<a name="line762">762: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (require) {
-<a name="line763">763: </a>      <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_USER,<font color="#666666">"Unable to open YAML Options File %s"</font>,fname);
-<a name="line764">764: </a>    }
-<a name="line765">765: </a>  }
+<a name="line734">734: </a>    <font color="#4169E1">if</font> (options_list_populate_yaml(ostring,&amp;options_list)) {
+<a name="line735">735: </a>      PetscInfo1(0,<font color="#666666">"Read YAML options file %s\n"</font>,file);
+<a name="line736">736: </a>      <font color="#4169E1">for</font> (i=0;i&lt;options_list.count;i++) {
+<a name="line737">737: </a>        <font color="#4169E1">if</font> (options_list.options[i].arguments.count == 1) {
+<a name="line738">738: </a>          <A href="../../../docs/manualpages/Sys/PetscStrcasecmp.html#PetscStrcasecmp">PetscStrcasecmp</A>(options_list.options[i].arguments.args[0], <font color="#666666">"false"</font>, &amp;match);
+<a name="line739">739: </a>          <font color="#4169E1">if</font> (!match) {
+<a name="line740">740: </a>            <font color="#B22222">/* The current option has one argument it is not false.  Something will have to be copied */</font>
+<a name="line741">741: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,<font color="#666666">"-"</font>);
+<a name="line742">742: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcasecmp.html#PetscStrcasecmp">PetscStrcasecmp</A>(options_list.options[i].group, <font color="#666666">"</font><font color="#4169E1">default</font>", &amp;match);
+<a name="line743">743: </a>            <font color="#4169E1">if</font> (!match) {
+<a name="line744">744: </a>              <font color="#B22222">/* The current option is not in the default group. The group name and option name needs to be copied. */</font>
+<a name="line745">745: </a>              <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,options_list.options[i].group);
+<a name="line746">746: </a>              <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,<font color="#666666">"_"</font>);
+<a name="line747">747: </a>            }
+<a name="line748">748: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,options_list.options[i].name);
+<a name="line749">749: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,<font color="#666666">" "</font>);
+<a name="line750">750: </a>            <A href="../../../docs/manualpages/Sys/PetscStrcasecmp.html#PetscStrcasecmp">PetscStrcasecmp</A>(options_list.options[i].arguments.args[0], <font color="#666666">"true"</font>, &amp;match);
+<a name="line751">751: </a>            <font color="#4169E1">if</font> (!match) {
+<a name="line752">752: </a>              <font color="#B22222">/*The argument needs to be copied. */</font>
+<a name="line753">753: </a>              <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,options_list.options[i].arguments.args[0]);
+<a name="line754">754: </a>              <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(vstring,<font color="#666666">" "</font>);
+<a name="line755">755: </a>            }
+<a name="line756">756: </a>          }
+<a name="line757">757: </a>        } <font color="#4169E1">else</font> {
+<a name="line758">758: </a>          <A href="../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,<font color="#666666">"Invalid number of arguments (%s: %s)"</font>,options_list.options[i].group,options_list.options[i].name);
+<a name="line759">759: </a>        }
+<a name="line760">760: </a>      }
+<a name="line761">761: </a>      options_list_delete(&amp;options_list);
+<a name="line762">762: </a>      <A href="../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(vstring,&amp;len);
+<a name="line763">763: </a>      cnt  = PetscMPIIntCast(len);
+<a name="line764">764: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (require) {
+<a name="line765">765: </a>      <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_USER,<font color="#666666">"Unable to process YAML Options File %s"</font>,fname);
+<a name="line766">766: </a>    }
+<a name="line767">767: </a>  }
 
-<a name="line767">767: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Bcast.html#MPI_Bcast">MPI_Bcast</A>(&amp;cnt,1,MPI_INT,0,comm);
-<a name="line768">768: </a>  <font color="#4169E1">if</font> (cnt) {
-<a name="line769">769: </a>    <font color="#4169E1">if</font> (rank) {
-<a name="line770">770: </a>      <A href="../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((cnt+1)*<font color="#4169E1">sizeof</font>(char),&amp;vstring);
-<a name="line771">771: </a>    }
-<a name="line772">772: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Bcast.html#MPI_Bcast">MPI_Bcast</A>(vstring,cnt,MPI_CHAR,0,comm);
-<a name="line773">773: </a>    vstring[cnt] = 0;
-<a name="line774">774: </a>    <A href="../../../docs/manualpages/Sys/PetscOptionsInsertString.html#PetscOptionsInsertString">PetscOptionsInsertString</A>(vstring);
-<a name="line775">775: </a>  }
-<a name="line776">776: </a>  <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(vstring);
-<a name="line777">777: </a>  <font color="#4169E1">return</font>(0);
-<a name="line778">778: </a>}
+<a name="line769">769: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Bcast.html#MPI_Bcast">MPI_Bcast</A>(&amp;cnt,1,MPI_INT,0,comm);
+<a name="line770">770: </a>  <font color="#4169E1">if</font> (cnt) {
+<a name="line771">771: </a>    <font color="#4169E1">if</font> (rank) {
+<a name="line772">772: </a>      <A href="../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((cnt+1)*<font color="#4169E1">sizeof</font>(char),&amp;vstring);
+<a name="line773">773: </a>    }
+<a name="line774">774: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Bcast.html#MPI_Bcast">MPI_Bcast</A>(vstring,cnt,MPI_CHAR,0,comm);
+<a name="line775">775: </a>    vstring[cnt] = 0;
+<a name="line776">776: </a>    <A href="../../../docs/manualpages/Sys/PetscOptionsInsertString.html#PetscOptionsInsertString">PetscOptionsInsertString</A>(vstring);
+<a name="line777">777: </a>  }
+<a name="line778">778: </a>  <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(vstring);
+<a name="line779">779: </a>  <font color="#4169E1">return</font>(0);
+<a name="line780">780: </a>}
 </pre>
 </body>
 

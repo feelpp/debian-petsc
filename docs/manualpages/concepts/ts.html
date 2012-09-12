@@ -1,5 +1,6 @@
 <html>
 <title>TS</title><body bgcolor="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <h2>TS</h2>
 <menu>
 <LI><A HREF="../../../src/ts/examples/tutorials/ex1.c.html"><CONCEPT>pseudo-timestepping</CONCEPT></A>
@@ -152,6 +153,16 @@ Solves the van der Pol DAE.<BR>Input parameters include:<BR>
 <LI><A HREF="../../../src/ts/examples/tutorials/ex20.c.html"><CONCEPT>van der Pol equation DAE equivalent</CONCEPT></A>
 <menu>
 Solves the van der Pol equation.<BR>Input parameters include:<BR>
+</menu>
+<LI><A HREF="../../../src/ts/examples/tutorials/ex26.c.html"><CONCEPT>solving a system of nonlinear equations (parallel multicomponent example);</CONCEPT></A>
+<menu>
+Transient nonlinear driven cavity in 2d.<BR>  <BR>
+The 2D driven cavity problem is solved in a velocity-vorticity formulation.<BR>
+The flow can be driven with the lid or with bouyancy or both:<BR>
+  -lidvelocity &lt;lid&gt;, where &lt;lid&gt; = dimensionless velocity of lid<BR>
+  -grashof &lt;gr&gt;, where &lt;gr&gt; = dimensionless temperature gradent<BR>
+  -prandtl &lt;pr&gt;, where &lt;pr&gt; = dimensionless thermal/momentum diffusity ratio<BR>
+  -contours : draw contour plots of solution<BR>
 </menu>
 </menu>
 </body>

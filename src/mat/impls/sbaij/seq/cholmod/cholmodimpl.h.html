@@ -1,13 +1,14 @@
 <center><a href="cholmodimpl.h">Actual source code: cholmodimpl.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/sbaij/seq/cholmod/cholmodimpl.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:03:46+00:00">
+<meta name="date" content="2012-08-29T16:49:38+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef CHOLMODIMPL_H_</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define CHOLMODIMPL_H_</font></strong>
 
@@ -50,7 +51,9 @@
 <a name="line40"> 40: </a><strong><font color="#228B22">#define UF_long_id </font><font color="#666666">"%lld"</font><font color="#228B22"></font></strong>
 <a name="line41"> 41: </a><strong><font color="#228B22">#undef I  </font><font color="#B22222">/* complex.h defines I=_Complex_I, but cholmod_core.h uses I as a field member */</font><font color="#228B22"></font></strong>
 
+<a name="line43"> 43: </a>EXTERN_C_BEGIN
 <a name="line44"> 44: </a><font color="#A020F0">#include &lt;cholmod.h&gt;</font>
+<a name="line45"> 45: </a>EXTERN_C_END
 
 <a name="line47"> 47: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line48"> 48: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*Wrap)(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> ,cholmod_sparse*,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> *);
@@ -61,6 +64,10 @@
 <a name="line53"> 53: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      pack;
 <a name="line54"> 54: </a>} Mat_CHOLMOD;
 
+<a name="line56"> 56: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  CholmodStart(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
+<a name="line57"> 57: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatView_CHOLMOD(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>)</font></strong>;
+<a name="line58"> 58: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCholeskyFactorSymbolic_CHOLMOD(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>*)</font></strong>;
+<a name="line59"> 59: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatDestroy_CHOLMOD(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
 
 <a name="line61"> 61: </a><font color="#A020F0">#endif </font><font color="#B22222">/* CHOLMODIMPL_H_ */</font><font color="#A020F0"></font>
 </pre>

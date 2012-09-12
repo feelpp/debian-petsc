@@ -4,8 +4,8 @@ ALL: lib
 CPPFLAGS  = 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = signalf.c fpf.c adebugf.c errf.c
-OBJSC    = signalf.o fpf.o adebugf.o errf.o
+SOURCEC  = fpf.c errf.c signalf.c adebugf.c
+OBJSC    = fpf.o errf.o signalf.o adebugf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

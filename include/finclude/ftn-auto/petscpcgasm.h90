@@ -14,7 +14,7 @@
        integer ierr
        end subroutine
         subroutine PCGASMCreateSubdomains2D(pc, M, N, Mdomains, Ndomains&
-     &, dof, overlap, nsub, is, is_local ,ierr)
+     &, dof, overlap, nsub, iis, ois ,ierr)
        PC pc ! PC
        PetscInt M ! PetscInt
        PetscInt N ! PetscInt
@@ -23,7 +23,7 @@
        PetscInt dof ! PetscInt
        PetscInt overlap ! PetscInt
        PetscInt nsub ! PetscInt
-       IS is ! IS
-       IS is_local ! IS
+       IS iis ! IS
+       IS ois ! IS
        integer ierr
        end subroutine

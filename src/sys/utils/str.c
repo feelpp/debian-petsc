@@ -191,6 +191,78 @@ PetscErrorCode  PetscStrallocpy(const char s[],char *t[])
 }
 
 #undef __FUNCT__  
+#define __FUNCT__ "PetscStrArrayallocpy"
+/*@C
+   PetscStrArrayallocpy - Allocates space to hold a copy of an array of strings then copies the strings
+
+   Not Collective
+
+   Input Parameters:
+.  s - pointer to array of strings (final string is a null)
+
+   Output Parameter:
+.  t - the copied array string
+
+   Level: intermediate
+
+   Note:
+      Not for use in Fortran
+
+  Concepts: string copy
+
+.seealso: PetscStrallocpy() PetscStrArrayDestroy()
+ 
+@*/
+PetscErrorCode  PetscStrArrayallocpy(const char *const*list,char ***t)
+{
+  PetscErrorCode ierr;
+  PetscInt       i,n = 0;
+
+  PetscFunctionBegin;
+  while (list[n++]) ;
+  ierr = PetscMalloc((n+1)*sizeof(char**),t);CHKERRQ(ierr);
+  for (i=0; i<n; i++) {
+    ierr = PetscStrallocpy(list[i],(*t)+i);CHKERRQ(ierr);
+  }
+  (*t)[n] = PETSC_NULL;
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "PetscStrArrayDestroy"
+/*@C
+   PetscStrArrayDestroy - Frees array of strings created with PetscStrArrayallocpy().
+
+   Not Collective
+
+   Output Parameters:
+.   list - array of strings
+
+   Level: intermediate
+
+   Concepts: command line arguments
+   
+   Notes: Not for use in Fortran
+
+.seealso: PetscStrArrayallocpy()
+
+@*/
+PetscErrorCode PetscStrArrayDestroy(char ***list)
+{
+  PetscInt       n = 0;
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  if (!*list) PetscFunctionReturn(0);
+  while ((*list)[n]) {
+    ierr = PetscFree((*list)[n]);CHKERRQ(ierr);
+    n++;
+  }
+  ierr = PetscFree(*list);CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
 #define __FUNCT__ "PetscStrcpy"
 /*@C
    PetscStrcpy - Copies a string
@@ -326,7 +398,7 @@ PetscErrorCode  PetscStrncat(char s[],const char t[],size_t n)
 -  b - pointer to second string
 
    Output Parameter:
-.  flg - if the two strings are equal
+.  flg - PETSC_TRUE if the two strings are equal
 
    Level: intermediate
 
@@ -675,8 +747,8 @@ PetscErrorCode  PetscStrrstr(const char a[],const char b[],char *tmp[])
    Not Collective
 
    Input Parameters:
-+  a - pointer to string
--  b - string to find
++  haystack - string to search
+-  needle - string to find
 
    Output Parameter:
 .  tmp - location of occurance, is a PETSC_NULL if the string is not found
@@ -686,10 +758,10 @@ PetscErrorCode  PetscStrrstr(const char a[],const char b[],char *tmp[])
    Level: intermediate
 
 @*/
-PetscErrorCode  PetscStrstr(const char a[],const char b[],char *tmp[])
+PetscErrorCode  PetscStrstr(const char haystack[],const char needle[],char *tmp[])
 {
   PetscFunctionBegin;
-  *tmp = (char *)strstr(a,b);
+  *tmp = (char *)strstr(haystack,needle);
   PetscFunctionReturn(0);
 }
 
@@ -801,13 +873,14 @@ PetscErrorCode  PetscTokenCreate(const char a[],const char b,PetscToken *t)
 
 .seealso: PetscTokenCreate(), PetscTokenFind()
 @*/
-PetscErrorCode  PetscTokenDestroy(PetscToken a)
+PetscErrorCode  PetscTokenDestroy(PetscToken *a)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscFree(a->array);CHKERRQ(ierr);
-  ierr = PetscFree(a);CHKERRQ(ierr);
+  if (!*a) PetscFunctionReturn(0);
+  ierr = PetscFree((*a)->array);CHKERRQ(ierr);
+  ierr = PetscFree(*a);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

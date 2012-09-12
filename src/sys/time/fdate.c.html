@@ -1,13 +1,14 @@
 <center><a href="fdate.c">Actual source code: fdate.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/time/fdate.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:52:46+00:00">
+<meta name="date" content="2012-08-29T16:35:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 <a name="line3">  3: </a><font color="#A020F0">#if defined(PETSC_HAVE_SYS_TIME_H)</font>
@@ -16,6 +17,9 @@
 <a name="line6">  6: </a><font color="#A020F0">#endif</font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;time.h&gt;</font>
 <a name="line8">  8: </a><font color="#A020F0">#if defined(PETSC_NEEDS_GETTIMEOFDAY_PROTO)</font>
+<a name="line9">  9: </a><strong><font color="#4169E1">EXTERN_C_BEGIN</font></strong>
+<a name="line10"> 10: </a><strong><font color="#4169E1">extern int gettimeofday(struct timeval *,struct timezone *)</font></strong>;
+<a name="line11"> 11: </a>EXTERN_C_END
 <a name="line12"> 12: </a><font color="#A020F0">#endif</font>
 <a name="line13"> 13: </a>
 <a name="line14"> 14: </a><font color="#B22222">/*</font>

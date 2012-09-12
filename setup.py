@@ -127,12 +127,20 @@ def config(dry_run=False):
 
 def build(dry_run=False):
     log.info('PETSc: build')
-    # Run PETSc builder
+    # Run PETSc build
     if dry_run: return
-    import builder
-    builder.PETScMaker().run()
-    import logger
-    logger.Logger.defaultLog = None
+    use_builder_py = False
+    if use_builder_py:
+        import builder
+        builder.PETScMaker().run()
+        import logger
+        logger.Logger.defaultLog = None
+    else:
+        make = find_executable('make')
+        status = os.system(" ".join(
+                [make, 'all']
+                ))
+        if status != 0: raise RuntimeError(status)
 
 def install(dest_dir, prefix=None, dry_run=False):
     log.info('PETSc: install')
@@ -147,10 +155,18 @@ def install(dest_dir, prefix=None, dry_run=False):
         log.info(' '*4 + opt)
     # Run PETSc installer
     if dry_run: return
-    import install
-    install.Installer(options).run()
-    import logger
-    logger.Logger.defaultLog = None
+    use_install_py = True
+    if use_install_py:
+        import install
+        install.Installer(options).run()
+        import logger
+        logger.Logger.defaultLog = None
+    else:
+        make = find_executable('make')
+        status = os.system(" ".join(
+                [make, 'install', 'DESTDIR='+dest_dir]
+                ))
+        if status != 0: raise RuntimeError(status)
 
 class context:
     def __init__(self):
@@ -234,7 +250,7 @@ def version():
         if micro > 0:
             v += ".%d" % micro
         if patch > 0:
-            v += ".post%d" % patch
+            v += ".%d" % patch
     else:
         v = "%d.%d.dev%d" % (major, minor+1, 0)
     return v
@@ -243,11 +259,11 @@ def tarball():
     VERSION = version()
     if '.dev' in VERSION:
         return None
-    if '.post' not in VERSION:
-        VERSION = VERSION + '.post0'
-    VERSION = VERSION.replace('.post', '-p')
+    bits = VERSION.split('.')
+    if len(bits) == 2: bits.append('0')
+    PETSC_VERSION = '.'.join(bits[:-1]) + '-p' + bits[-1]
     return ('http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/'
-            'petsc-lite-%s.tar.gz' % VERSION)
+            'petsc-lite-%s.tar.gz#egg=petsc-%s' % (PETSC_VERSION, VERSION))
 
 description = __doc__.split('\n')[1:-1]; del description[1:3]
 classifiers = """

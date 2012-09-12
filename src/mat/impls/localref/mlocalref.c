@@ -1,5 +1,5 @@
 
-#include <private/matimpl.h>          /*I "petscmat.h" I*/
+#include <petsc-private/matimpl.h>          /*I "petscmat.h" I*/
 
 typedef struct {
   Mat Top;
@@ -212,13 +212,14 @@ PetscErrorCode  MatCreateLocalRef(Mat A,IS isrow,IS iscol,Mat *newmat)
   ierr = ISGetLocalSize(iscol,&n);CHKERRQ(ierr);
   ierr = MatSetSizes(B,m,n,m,n);CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)B,MATLOCALREF);CHKERRQ(ierr);
+  ierr = MatSetUp(B);CHKERRQ(ierr);
 
   B->ops->destroy = MatDestroy_LocalRef;
 
   ierr = PetscNewLog(B,Mat_LocalRef,&lr);CHKERRQ(ierr);
   B->data = (void*)lr;
 
-  ierr = PetscTypeCompare((PetscObject)A,MATLOCALREF,&islr);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)A,MATLOCALREF,&islr);CHKERRQ(ierr);
   if (islr) {
     Mat_LocalRef *alr = (Mat_LocalRef*)A->data;
     lr->Top = alr->Top;

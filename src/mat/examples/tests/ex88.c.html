@@ -1,13 +1,14 @@
 <center><a href="ex88.c">Actual source code: ex88.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex88.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:05:23+00:00">
+<meta name="date" content="2012-08-29T16:51:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Mat/MatShift.html#MatShift">MatShift</A>(), <A href="../../../../docs/manualpages/Mat/MatScale.html#MatScale">MatScale</A>(), and <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>() for SHELL and NEST matrices\n\n"</font>;
 
@@ -87,50 +88,53 @@
 
 <a name="line97"> 97: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
 <a name="line98"> 98: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateSeqAIJ.html#MatCreateSeqAIJ">MatCreateSeqAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,2,2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;A);
-<a name="line99"> 99: </a>  <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,2,inds,2,inds,avals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line100">100: </a>  <A href="../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,&amp;X);
-<a name="line101">101: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(X,&amp;Y);
-<a name="line102">102: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(X,&amp;Z);
-<a name="line103">103: </a>  <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(X,2,inds,xvals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line104">104: </a>  <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(Y,2,inds,yvals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line105">105: </a>  <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(Z,2,inds,zvals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line106">106: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A,MAT_FINAL_ASSEMBLY);
-<a name="line107">107: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A,MAT_FINAL_ASSEMBLY);
-<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(X);
-<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(Y);
-<a name="line110">110: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(Z);
-<a name="line111">111: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(X);
-<a name="line112">112: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(Y);
-<a name="line113">113: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(Z);
+<a name="line99"> 99: </a>  <A href="../../../../docs/manualpages/Mat/MatSetUp.html#MatSetUp">MatSetUp</A>(A);
+<a name="line100">100: </a>  <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,2,inds,2,inds,avals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line101">101: </a>  <A href="../../../../docs/manualpages/Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,&amp;X);
+<a name="line102">102: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(X,&amp;Y);
+<a name="line103">103: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(X,&amp;Z);
+<a name="line104">104: </a>  <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(X,2,inds,xvals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line105">105: </a>  <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(Y,2,inds,yvals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line106">106: </a>  <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(Z,2,inds,zvals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line107">107: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A,MAT_FINAL_ASSEMBLY);
+<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A,MAT_FINAL_ASSEMBLY);
+<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(X);
+<a name="line110">110: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(Y);
+<a name="line111">111: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(Z);
+<a name="line112">112: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(X);
+<a name="line113">113: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(Y);
+<a name="line114">114: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(Z);
 
-<a name="line115">115: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(<font color="#4169E1">struct _n_User</font>,&amp;user);
-<a name="line116">116: </a>  user-&gt;B = A;
+<a name="line116">116: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(<font color="#4169E1">struct _n_User</font>,&amp;user);
+<a name="line117">117: </a>  user-&gt;B = A;
 
-<a name="line118">118: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateShell.html#MatCreateShell">MatCreateShell</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,2,2,2,user,&amp;S);
-<a name="line119">119: </a>  <A href="../../../../docs/manualpages/Mat/MatShellSetOperation.html#MatShellSetOperation">MatShellSetOperation</A>(S,MATOP_MULT,(void(*)(void))MatMult_User);
-<a name="line120">120: </a>  <A href="../../../../docs/manualpages/Mat/MatShellSetOperation.html#MatShellSetOperation">MatShellSetOperation</A>(S,MATOP_MULT_TRANSPOSE,(void(*)(void))MatMultTranspose_User);
-<a name="line121">121: </a>  <A href="../../../../docs/manualpages/Mat/MatShellSetOperation.html#MatShellSetOperation">MatShellSetOperation</A>(S,MATOP_GET_DIAGONAL,(void(*)(void))MatGetDiagonal_User);
+<a name="line119">119: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateShell.html#MatCreateShell">MatCreateShell</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,2,2,2,user,&amp;S);
+<a name="line120">120: </a>  <A href="../../../../docs/manualpages/Mat/MatSetUp.html#MatSetUp">MatSetUp</A>(S);
+<a name="line121">121: </a>  <A href="../../../../docs/manualpages/Mat/MatShellSetOperation.html#MatShellSetOperation">MatShellSetOperation</A>(S,MATOP_MULT,(void(*)(void))MatMult_User);
+<a name="line122">122: </a>  <A href="../../../../docs/manualpages/Mat/MatShellSetOperation.html#MatShellSetOperation">MatShellSetOperation</A>(S,MATOP_MULT_TRANSPOSE,(void(*)(void))MatMultTranspose_User);
+<a name="line123">123: </a>  <A href="../../../../docs/manualpages/Mat/MatShellSetOperation.html#MatShellSetOperation">MatShellSetOperation</A>(S,MATOP_GET_DIAGONAL,(void(*)(void))MatGetDiagonal_User);
 
-<a name="line123">123: </a>  <font color="#4169E1">for</font> (i=0; i&lt;4; i++) {
-<a name="line124">124: </a>    <A href="../../../../docs/manualpages/Mat/MatCreateSeqDense.html#MatCreateSeqDense">MatCreateSeqDense</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,1,&amp;avals[i],&amp;D[i]);
-<a name="line125">125: </a>  }
-<a name="line126">126: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateNest.html#MatCreateNest">MatCreateNest</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,D,&amp;N);
+<a name="line125">125: </a>  <font color="#4169E1">for</font> (i=0; i&lt;4; i++) {
+<a name="line126">126: </a>    <A href="../../../../docs/manualpages/Mat/MatCreateSeqDense.html#MatCreateSeqDense">MatCreateSeqDense</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,1,&amp;avals[i],&amp;D[i]);
+<a name="line127">127: </a>  }
+<a name="line128">128: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateNest.html#MatCreateNest">MatCreateNest</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,D,&amp;N);
+<a name="line129">129: </a>  <A href="../../../../docs/manualpages/Mat/MatSetUp.html#MatSetUp">MatSetUp</A>(N);
 
-<a name="line128">128: </a>  TestMatrix(S,X,Y,Z);
-<a name="line129">129: </a>  TestMatrix(A,X,Y,Z);
-<a name="line130">130: </a>  TestMatrix(N,X,Y,Z);
+<a name="line131">131: </a>  TestMatrix(S,X,Y,Z);
+<a name="line132">132: </a>  TestMatrix(A,X,Y,Z);
+<a name="line133">133: </a>  TestMatrix(N,X,Y,Z);
 
-<a name="line132">132: </a>  <font color="#4169E1">for</font> (i=0; i&lt;4; i++) {<A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;D[i]);}
-<a name="line133">133: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
-<a name="line134">134: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;S);
-<a name="line135">135: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;N);
-<a name="line136">136: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;X);
-<a name="line137">137: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Y);
-<a name="line138">138: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Z);
-<a name="line139">139: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user);
-<a name="line140">140: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line141">141: </a>  <font color="#4169E1">return</font> 0;
-<a name="line142">142: </a>}
+<a name="line135">135: </a>  <font color="#4169E1">for</font> (i=0; i&lt;4; i++) {<A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;D[i]);}
+<a name="line136">136: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line137">137: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;S);
+<a name="line138">138: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;N);
+<a name="line139">139: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;X);
+<a name="line140">140: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Y);
+<a name="line141">141: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;Z);
+<a name="line142">142: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user);
+<a name="line143">143: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line144">144: </a>  <font color="#4169E1">return</font> 0;
+<a name="line145">145: </a>}
 </pre>
 </body>
 

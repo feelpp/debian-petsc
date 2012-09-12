@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatType.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatType"><H1>MatType</H1></A>
 String with the name of a PETSc matrix or the creation function with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:mymatcreate() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -64,6 +65,7 @@ String with the name of a PETSc matrix or the creation function with an optional
 #define MATSUBMATRIX       "submatrix"
 #define MATLOCALREF        "localref"
 #define MATNEST            "nest"
+#define MATIJ              "ij"
 
 </PRE>
 
@@ -77,4 +79,5 @@ String with the name of a PETSc matrix or the creation function with an optional
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex8.c.html">src/mat/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex22.c.html">src/snes/examples/tutorials/ex22.c.html</A><BR>
 </BODY></HTML>

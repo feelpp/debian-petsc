@@ -1,13 +1,14 @@
 <center><a href="ex1.c">Actual source code: ex1.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tests/ex1.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:15:30+00:00">
+<meta name="date" content="2012-08-29T17:08:43+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* Program usage:  ex4 [-help] [all PETSc options] */</font>
 
@@ -69,6 +70,9 @@
 <a name="line59"> 59: </a><font color="#B22222">/* </font>
 <a name="line60"> 60: </a><font color="#B22222">   User-defined routines</font>
 <a name="line61"> 61: </a><font color="#B22222">*/</font>
+<a name="line62"> 62: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*)</font></strong>;
+<a name="line63"> 63: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
+<a name="line64"> 64: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormInitialGuess(AppCtx*,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
 
 <a name="line68"> 68: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line69"> 69: </a>{
@@ -224,7 +228,7 @@
 <a name="line220">220: </a>  FormInitialGuess(&amp;user,x);
 <a name="line221">221: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,x);
 <a name="line222">222: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);
-<a name="line223">223: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Number of Newton iterations = %D\n"</font>,its);
+<a name="line223">223: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Number of <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = %D\n"</font>,its);
 
 
 <a name="line226">226: </a>  <font color="#B22222">/* </font>

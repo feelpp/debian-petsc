@@ -1,16 +1,17 @@
 <center><a href="pcis.h">Actual source code: pcis.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/is/pcis.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:09:43+00:00">
+<meta name="date" content="2012-08-29T16:59:44+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 
-<a name="line5">  5: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;</font>
 <a name="line6">  6: </a><font color="#A020F0">#include &lt;../src/mat/impls/is/matis.h&gt;</font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
@@ -54,31 +55,39 @@
 <a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A>      N_to_B     ;    <font color="#B22222">/* scattering context from all local nodes to local interface nodes */</font>
 <a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A>      global_to_B;    <font color="#B22222">/* scattering context from global to local interface nodes */</font>
 <a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       pure_neumann;
+<a name="line49"> 49: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     scaling_factor;
 
-<a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  ISLocalToGlobalMappingGetInfoWasCalled;
-<a name="line51"> 51: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   n_neigh;    <font color="#B22222">/* number of neighbours this subdomain has (by now, INCLUDING OR NOT the subdomain itself). */</font>
-<a name="line52"> 52: </a>                         <font color="#B22222">/* Once this is definitively decided, the code can be simplifies and some if's eliminated.  */</font>
-<a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *neigh;     <font color="#B22222">/* list of neighbouring subdomains                                                          */</font>
-<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *n_shared;  <font color="#B22222">/* n_shared[j] is the number of nodes shared with subdomain neigh[j]                        */</font>
-<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   **shared;   <font color="#B22222">/* shared[j][i] is the local index of the i-th node shared with subdomain neigh[j]          */</font>
-<a name="line56"> 56: </a>                  <font color="#B22222">/* It is necessary some consistency in the                                                  */</font>
-<a name="line57"> 57: </a>                  <font color="#B22222">/* numbering of the shared edges from each side.                                            */</font>
-<a name="line58"> 58: </a>                  <font color="#B22222">/* For instance:                                                                            */</font>
-<a name="line59"> 59: </a>                  <font color="#B22222">/*                                                                                          */</font>
-<a name="line60"> 60: </a>                  <font color="#B22222">/* +-------+-------+                                                                        */</font>
-<a name="line61"> 61: </a>                  <font color="#B22222">/* |   k   |   l   | subdomains k and l are neighbours                                      */</font>
-<a name="line62"> 62: </a>                  <font color="#B22222">/* +-------+-------+                                                                        */</font>
-<a name="line63"> 63: </a>                  <font color="#B22222">/*                                                                                          */</font>
-<a name="line64"> 64: </a>                  <font color="#B22222">/* Let i and j be s.t. proc[k].neigh[i]==l and                                              */</font>
-<a name="line65"> 65: </a>                  <font color="#B22222">/*                     proc[l].neigh[j]==k.                                                 */</font>
-<a name="line66"> 66: </a>                  <font color="#B22222">/*                                                                                          */</font>
-<a name="line67"> 67: </a>                  <font color="#B22222">/* We need:                                                                                 */</font>
-<a name="line68"> 68: </a>                  <font color="#B22222">/* proc[k].loc_to_glob(proc[k].shared[i][m]) == proc[l].loc_to_glob(proc[l].shared[j][m])   */</font>
-<a name="line69"> 69: </a>                  <font color="#B22222">/* for all 0 &lt;= m &lt; proc[k].n_shared[i], or equiv'ly, for all 0 &lt;= m &lt; proc[l].n_shared[j]  */</font>
-<a name="line70"> 70: </a>} PC_IS;
+<a name="line51"> 51: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  ISLocalToGlobalMappingGetInfoWasCalled;
+<a name="line52"> 52: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   n_neigh;    <font color="#B22222">/* number of neighbours this subdomain has (by now, INCLUDING OR NOT the subdomain itself). */</font>
+<a name="line53"> 53: </a>                         <font color="#B22222">/* Once this is definitively decided, the code can be simplifies and some if's eliminated.  */</font>
+<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *neigh;     <font color="#B22222">/* list of neighbouring subdomains                                                          */</font>
+<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   *n_shared;  <font color="#B22222">/* n_shared[j] is the number of nodes shared with subdomain neigh[j]                        */</font>
+<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   **shared;   <font color="#B22222">/* shared[j][i] is the local index of the i-th node shared with subdomain neigh[j]          */</font>
+<a name="line57"> 57: </a>                  <font color="#B22222">/* It is necessary some consistency in the                                                  */</font>
+<a name="line58"> 58: </a>                  <font color="#B22222">/* numbering of the shared edges from each side.                                            */</font>
+<a name="line59"> 59: </a>                  <font color="#B22222">/* For instance:                                                                            */</font>
+<a name="line60"> 60: </a>                  <font color="#B22222">/*                                                                                          */</font>
+<a name="line61"> 61: </a>                  <font color="#B22222">/* +-------+-------+                                                                        */</font>
+<a name="line62"> 62: </a>                  <font color="#B22222">/* |   k   |   l   | subdomains k and l are neighbours                                      */</font>
+<a name="line63"> 63: </a>                  <font color="#B22222">/* +-------+-------+                                                                        */</font>
+<a name="line64"> 64: </a>                  <font color="#B22222">/*                                                                                          */</font>
+<a name="line65"> 65: </a>                  <font color="#B22222">/* Let i and j be s.t. proc[k].neigh[i]==l and                                              */</font>
+<a name="line66"> 66: </a>                  <font color="#B22222">/*                     proc[l].neigh[j]==k.                                                 */</font>
+<a name="line67"> 67: </a>                  <font color="#B22222">/*                                                                                          */</font>
+<a name="line68"> 68: </a>                  <font color="#B22222">/* We need:                                                                                 */</font>
+<a name="line69"> 69: </a>                  <font color="#B22222">/* proc[k].loc_to_glob(proc[k].shared[i][m]) == proc[l].loc_to_glob(proc[l].shared[j][m])   */</font>
+<a name="line70"> 70: </a>                  <font color="#B22222">/* for all 0 &lt;= m &lt; proc[k].n_shared[i], or equiv'ly, for all 0 &lt;= m &lt; proc[l].n_shared[j]  */</font>
+<a name="line71"> 71: </a>} PC_IS;
 
+<a name="line73"> 73: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISSetUp(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>;
+<a name="line74"> 74: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISDestroy(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>;
+<a name="line75"> 75: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISCreate(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>;
+<a name="line76"> 76: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISApplySchur(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec1_B, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec2_B, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec1_D, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec2_D)</font></strong>;
+<a name="line77"> 77: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISScatterArrayNToVecB(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *array_N, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v_B, <A href="../../../../../docs/manualpages/Sys/InsertMode.html#InsertMode">InsertMode</A> imode, <A href="../../../../../docs/manualpages/Vec/ScatterMode.html#ScatterMode">ScatterMode</A> smode, <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>;
+<a name="line78"> 78: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCISApplyInvSchur(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec1_N, <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec2_N)</font></strong>;
+<a name="line79"> 79: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCISSetSubdomainScalingFactor.html#PCISSetSubdomainScalingFactor">PCISSetSubdomainScalingFactor</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> scal)</font></strong>;
 
-<a name="line79"> 79: </a><font color="#A020F0">#endif </font><font color="#B22222">/* __pcis_h */</font><font color="#A020F0"></font>
+<a name="line81"> 81: </a><font color="#A020F0">#endif </font><font color="#B22222">/* __pcis_h */</font><font color="#A020F0"></font>
 </pre>
 </body>
 

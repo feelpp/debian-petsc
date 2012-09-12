@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* fieldsplit.c */
 /* Fortran interface file */
 
@@ -55,9 +55,19 @@ extern void PetscRmPointer(void*);
 #define pcfieldsplitschurprecondition_ pcfieldsplitschurprecondition
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcfieldsplitsetschurfacttype_ PCFIELDSPLITSETSCHURFACTTYPE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcfieldsplitsetschurfacttype_ pcfieldsplitsetschurfacttype
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcfieldsplitsettype_ PCFIELDSPLITSETTYPE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcfieldsplitsettype_ pcfieldsplitsettype
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcfieldsplitgettype_ PCFIELDSPLITGETTYPE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcfieldsplitgettype_ pcfieldsplitgettype
 #endif
 
 
@@ -65,9 +75,9 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  pcfieldsplitsetfields_(PC pc, char splitname[],PetscInt *n, PetscInt *fields, int *__ierr ){
+void PETSC_STDCALL  pcfieldsplitsetfields_(PC pc, char splitname[],PetscInt *n, PetscInt *fields, PetscInt *fields_col, int *__ierr ){
 *__ierr = PCFieldSplitSetFields(
-	(PC)PetscToPointer((pc) ),splitname,*n,fields);
+	(PC)PetscToPointer((pc) ),splitname,*n,fields,fields_col);
 }
 void PETSC_STDCALL  pcfieldsplitsetis_(PC pc, char splitname[],IS is, int *__ierr ){
 *__ierr = PCFieldSplitSetIS(
@@ -87,9 +97,18 @@ void PETSC_STDCALL  pcfieldsplitschurprecondition_(PC pc,PCFieldSplitSchurPreTyp
 	(PC)PetscToPointer((pc) ),*ptype,
 	(Mat)PetscToPointer((pre) ));
 }
+void PETSC_STDCALL  pcfieldsplitsetschurfacttype_(PC pc,PCFieldSplitSchurFactType *ftype, int *__ierr ){
+*__ierr = PCFieldSplitSetSchurFactType(
+	(PC)PetscToPointer((pc) ),*ftype);
+}
 void PETSC_STDCALL  pcfieldsplitsettype_(PC pc,PCCompositeType *type, int *__ierr ){
 *__ierr = PCFieldSplitSetType(
 	(PC)PetscToPointer((pc) ),*type);
+}
+void PETSC_STDCALL  pcfieldsplitgettype_(PC pc,PCCompositeType *type, int *__ierr ){
+*__ierr = PCFieldSplitGetType(
+	(PC)PetscToPointer((pc) ),
+	(PCCompositeType* )PetscToPointer((type) ));
 }
 #if defined(__cplusplus)
 }

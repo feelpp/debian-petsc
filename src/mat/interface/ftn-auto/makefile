@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = matnullf.c mhasf.c matrixf.c
-OBJSC    = matnullf.o mhasf.o matrixf.o
+SOURCEC  = matnullf.c matrixf.c mhasf.c
+OBJSC    = matnullf.o matrixf.o mhasf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

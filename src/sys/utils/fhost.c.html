@@ -1,13 +1,14 @@
 <center><a href="fhost.c">Actual source code: fhost.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/utils/fhost.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:52:47+00:00">
+<meta name="date" content="2012-08-29T16:35:58+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">      Code for manipulating files.</font>
@@ -51,57 +52,63 @@
 <a name="line43"> 43: </a><font color="#B22222">    Concepts: machine name</font>
 <a name="line44"> 44: </a><font color="#B22222">    Concepts: host name</font>
 
-<a name="line46"> 46: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscGetUserName.html#PetscGetUserName">PetscGetUserName</A>()</font>
-<a name="line47"> 47: </a><font color="#B22222">@*/</font>
-<a name="line48"> 48: </a><strong><font color="#4169E1"><a name="PetscGetHostName"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscGetHostName.html#PetscGetHostName">PetscGetHostName</A>(char name[],size_t nlen)</font></strong>
-<a name="line49"> 49: </a>{
-<a name="line50"> 50: </a>  char           *domain;
-<a name="line52"> 52: </a><font color="#A020F0">#if defined(PETSC_HAVE_UNAME) &amp;&amp; !defined(PETSC_HAVE_GETCOMPUTERNAME)</font>
-<a name="line53"> 53: </a>  <font color="#4169E1">struct utsname</font> utname;
-<a name="line54"> 54: </a><font color="#A020F0">#endif</font>
+<a name="line46"> 46: </a><font color="#B22222">   Fortran Version:</font>
+<a name="line47"> 47: </a><font color="#B22222">   In Fortran this routine has the format</font>
 
-<a name="line57"> 57: </a><font color="#A020F0">#if defined(PETSC_HAVE_GETCOMPUTERNAME)</font>
-<a name="line58"> 58: </a> {
-<a name="line59"> 59: </a>    size_t nnlen = nlen;
-<a name="line60"> 60: </a>    GetComputerName((LPTSTR)name,(LPDWORD)(&amp;nnlen));
-<a name="line61"> 61: </a> }
-<a name="line62"> 62: </a><font color="#A020F0">#elif defined(PETSC_HAVE_UNAME)</font>
-<a name="line63"> 63: </a>  uname(&amp;utname);
-<a name="line64"> 64: </a>  <A href="../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(name,utname.nodename,nlen);
-<a name="line65"> 65: </a><font color="#A020F0">#elif defined(PETSC_HAVE_GETHOSTNAME)</font>
-<a name="line66"> 66: </a>  gethostname(name,nlen);
-<a name="line67"> 67: </a><font color="#A020F0">#elif defined(PETSC_HAVE_SYSINFO_3ARG)</font>
-<a name="line68"> 68: </a>  sysinfo(SI_HOSTNAME,name,nlen);
-<a name="line69"> 69: </a><font color="#A020F0">#endif</font>
-<a name="line70"> 70: </a>  <font color="#B22222">/* if there was not enough room then system call will not null terminate name */</font>
-<a name="line71"> 71: </a>  name[nlen-1] = 0;
+<a name="line49"> 49: </a><font color="#B22222">$       character*(64) name</font>
+<a name="line50"> 50: </a><font color="#B22222">$       call <A href="../../../docs/manualpages/Sys/PetscGetHostName.html#PetscGetHostName">PetscGetHostName</A>(name,ierr)</font>
 
-<a name="line73"> 73: </a>  <font color="#B22222">/* See if this name includes the domain */</font>
-<a name="line74"> 74: </a>  <A href="../../../docs/manualpages/Sys/PetscStrchr.html#PetscStrchr">PetscStrchr</A>(name,'.',&amp;domain);
-<a name="line75"> 75: </a>  <font color="#4169E1">if</font> (!domain) {
-<a name="line76"> 76: </a>    size_t  l,ll;
-<a name="line77"> 77: </a>    <A href="../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(name,&amp;l);
-<a name="line78"> 78: </a>    <font color="#4169E1">if</font> (l == nlen-1) <font color="#4169E1">return</font>(0);
-<a name="line79"> 79: </a>    name[l++] = '.';
-<a name="line80"> 80: </a><font color="#A020F0">#if defined(PETSC_HAVE_SYSINFO_3ARG)</font>
-<a name="line81"> 81: </a>    sysinfo(SI_SRPC_DOMAIN,name+l,nlen-l);
-<a name="line82"> 82: </a><font color="#A020F0">#elif defined(PETSC_HAVE_GETDOMAINNAME)</font>
-<a name="line83"> 83: </a>    <font color="#4169E1">if</font> (getdomainname(name+l,nlen - l)) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"getdomainname()"</font>);
-<a name="line84"> 84: </a><font color="#A020F0">#endif</font>
-<a name="line85"> 85: </a>    <font color="#B22222">/* check if domain name is not a dnsdomainname and nuke it */</font>
-<a name="line86"> 86: </a>    <A href="../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(name,&amp;ll);
-<a name="line87"> 87: </a>    <font color="#4169E1">if</font> (ll &gt; 4) {
-<a name="line88"> 88: </a>      const char *suffixes[] = {<font color="#666666">".edu"</font>,<font color="#666666">".com"</font>,<font color="#666666">".net"</font>,<font color="#666666">".org"</font>,<font color="#666666">".mil"</font>,0};
-<a name="line89"> 89: </a>      <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   index;
-<a name="line90"> 90: </a>      <A href="../../../docs/manualpages/Sys/PetscStrendswithwhich.html#PetscStrendswithwhich">PetscStrendswithwhich</A>(name,suffixes,&amp;index);
-<a name="line91"> 91: </a>      <font color="#4169E1">if</font> (!suffixes[index]) {
-<a name="line92"> 92: </a>        PetscInfo1(0,<font color="#666666">"Rejecting domainname, likely is NIS %s\n"</font>,name);
-<a name="line93"> 93: </a>        name[l-1] = 0;
-<a name="line94"> 94: </a>      }
-<a name="line95"> 95: </a>    }
-<a name="line96"> 96: </a>  }
-<a name="line97"> 97: </a>  <font color="#4169E1">return</font>(0);
-<a name="line98"> 98: </a>}
+<a name="line52"> 52: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscGetUserName.html#PetscGetUserName">PetscGetUserName</A>(),<A href="../../../docs/manualpages/Sys/PetscGetArchType.html#PetscGetArchType">PetscGetArchType</A>()</font>
+<a name="line53"> 53: </a><font color="#B22222">@*/</font>
+<a name="line54"> 54: </a><strong><font color="#4169E1"><a name="PetscGetHostName"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscGetHostName.html#PetscGetHostName">PetscGetHostName</A>(char name[],size_t nlen)</font></strong>
+<a name="line55"> 55: </a>{
+<a name="line56"> 56: </a>  char           *domain;
+<a name="line58"> 58: </a><font color="#A020F0">#if defined(PETSC_HAVE_UNAME) &amp;&amp; !defined(PETSC_HAVE_GETCOMPUTERNAME)</font>
+<a name="line59"> 59: </a>  <font color="#4169E1">struct utsname</font> utname;
+<a name="line60"> 60: </a><font color="#A020F0">#endif</font>
+
+<a name="line63"> 63: </a><font color="#A020F0">#if defined(PETSC_HAVE_GETCOMPUTERNAME)</font>
+<a name="line64"> 64: </a> {
+<a name="line65"> 65: </a>    size_t nnlen = nlen;
+<a name="line66"> 66: </a>    GetComputerName((LPTSTR)name,(LPDWORD)(&amp;nnlen));
+<a name="line67"> 67: </a> }
+<a name="line68"> 68: </a><font color="#A020F0">#elif defined(PETSC_HAVE_UNAME)</font>
+<a name="line69"> 69: </a>  uname(&amp;utname);
+<a name="line70"> 70: </a>  <A href="../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(name,utname.nodename,nlen);
+<a name="line71"> 71: </a><font color="#A020F0">#elif defined(PETSC_HAVE_GETHOSTNAME)</font>
+<a name="line72"> 72: </a>  gethostname(name,nlen);
+<a name="line73"> 73: </a><font color="#A020F0">#elif defined(PETSC_HAVE_SYSINFO_3ARG)</font>
+<a name="line74"> 74: </a>  sysinfo(SI_HOSTNAME,name,nlen);
+<a name="line75"> 75: </a><font color="#A020F0">#endif</font>
+<a name="line76"> 76: </a>  <font color="#B22222">/* if there was not enough room then system call will not null terminate name */</font>
+<a name="line77"> 77: </a>  name[nlen-1] = 0;
+
+<a name="line79"> 79: </a>  <font color="#B22222">/* See if this name includes the domain */</font>
+<a name="line80"> 80: </a>  <A href="../../../docs/manualpages/Sys/PetscStrchr.html#PetscStrchr">PetscStrchr</A>(name,'.',&amp;domain);
+<a name="line81"> 81: </a>  <font color="#4169E1">if</font> (!domain) {
+<a name="line82"> 82: </a>    size_t  l,ll;
+<a name="line83"> 83: </a>    <A href="../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(name,&amp;l);
+<a name="line84"> 84: </a>    <font color="#4169E1">if</font> (l == nlen-1) <font color="#4169E1">return</font>(0);
+<a name="line85"> 85: </a>    name[l++] = '.';
+<a name="line86"> 86: </a><font color="#A020F0">#if defined(PETSC_HAVE_SYSINFO_3ARG)</font>
+<a name="line87"> 87: </a>    sysinfo(SI_SRPC_DOMAIN,name+l,nlen-l);
+<a name="line88"> 88: </a><font color="#A020F0">#elif defined(PETSC_HAVE_GETDOMAINNAME)</font>
+<a name="line89"> 89: </a>    <font color="#4169E1">if</font> (getdomainname(name+l,nlen - l)) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"getdomainname()"</font>);
+<a name="line90"> 90: </a><font color="#A020F0">#endif</font>
+<a name="line91"> 91: </a>    <font color="#B22222">/* check if domain name is not a dnsdomainname and nuke it */</font>
+<a name="line92"> 92: </a>    <A href="../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(name,&amp;ll);
+<a name="line93"> 93: </a>    <font color="#4169E1">if</font> (ll &gt; 4) {
+<a name="line94"> 94: </a>      const char *suffixes[] = {<font color="#666666">".edu"</font>,<font color="#666666">".com"</font>,<font color="#666666">".net"</font>,<font color="#666666">".org"</font>,<font color="#666666">".mil"</font>,0};
+<a name="line95"> 95: </a>      <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   index;
+<a name="line96"> 96: </a>      <A href="../../../docs/manualpages/Sys/PetscStrendswithwhich.html#PetscStrendswithwhich">PetscStrendswithwhich</A>(name,suffixes,&amp;index);
+<a name="line97"> 97: </a>      <font color="#4169E1">if</font> (!suffixes[index]) {
+<a name="line98"> 98: </a>        PetscInfo1(0,<font color="#666666">"Rejecting domainname, likely is NIS %s\n"</font>,name);
+<a name="line99"> 99: </a>        name[l-1] = 0;
+<a name="line100">100: </a>      }
+<a name="line101">101: </a>    }
+<a name="line102">102: </a>  }
+<a name="line103">103: </a>  <font color="#4169E1">return</font>(0);
+<a name="line104">104: </a>}
 </pre>
 </body>
 

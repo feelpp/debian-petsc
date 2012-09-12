@@ -1,13 +1,14 @@
 <center><a href="ex5.c">Actual source code: ex5.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/examples/tutorials/ex5.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:20:31+00:00">
+<meta name="date" content="2012-08-29T17:14:40+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* Program usage:  ex3 [-help] [all PETSc options] */</font>
 
@@ -85,6 +86,10 @@
 <a name="line75"> 75: </a><font color="#B22222">/* </font>
 <a name="line76"> 76: </a><font color="#B22222">   User-defined routines</font>
 <a name="line77"> 77: </a><font color="#B22222">*/</font>
+<a name="line78"> 78: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> InitialConditions(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,AppCtx*)</font></strong>;
+<a name="line79"> 79: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> RHSMatrixHeat(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*)</font></strong>;
+<a name="line80"> 80: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Monitor(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
+<a name="line81"> 81: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ExactSolution(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,AppCtx*)</font></strong>;
 
 <a name="line85"> 85: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line86"> 86: </a>{
@@ -196,7 +201,7 @@
 <a name="line193">193: </a><font color="#B22222">       - Set timestepping duration info </font>
 <a name="line194">194: </a><font color="#B22222">     Then set runtime options, which can override these defaults.</font>
 <a name="line195">195: </a><font color="#B22222">     For example,</font>
-<a name="line196">196: </a><font color="#B22222">          -ts_max_steps &lt;maxsteps&gt; -ts_max_time &lt;maxtime&gt;</font>
+<a name="line196">196: </a><font color="#B22222">          -ts_max_steps &lt;maxsteps&gt; -ts_final_time &lt;maxtime&gt;</font>
 <a name="line197">197: </a><font color="#B22222">     to override the defaults set by <A href="../../../../docs/manualpages/TS/TSSetDuration.html#TSSetDuration">TSSetDuration</A>().</font>
 <a name="line198">198: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 
@@ -383,7 +388,7 @@
 <a name="line389">389: </a><font color="#B22222">  */</font>
 <a name="line390">390: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(appctx-&gt;solution,-1.0,u);
 <a name="line391">391: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(appctx-&gt;solution,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm_2);
-<a name="line392">392: </a>  norm_2 = sqrt(appctx-&gt;h)*norm_2;
+<a name="line392">392: </a>  norm_2 = PetscSqrtReal(appctx-&gt;h)*norm_2;
 <a name="line393">393: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(appctx-&gt;solution,<A href="../../../../docs/manualpages/Vec/NORM_MAX.html#NORM_MAX">NORM_MAX</A>,&amp;norm_max);
 
 <a name="line395">395: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Timestep %D: time = %G, 2-norm error = %G, max norm error = %G\n"</font>,

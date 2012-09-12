@@ -1,18 +1,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESGetFunction.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESGetFunction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESGetFunction"><H1>SNESGetFunction</H1></A>
 Returns the vector where the function is stored. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESGetFunction(SNES snes,Vec *r,PetscErrorCode (**func)(SNES,Vec,Vec,void*),void **ctx)
 </PRE>
-Not Collective, but <A HREF="../Vec/Vec.html#Vec">Vec</A> is parallel if <A HREF="../SNES/SNES.html#SNES">SNES</A> is parallel
+Not Collective, but <A HREF="../Vec/Vec.html#Vec">Vec</A> is parallel if <A HREF="../SNES/SNES.html#SNES">SNES</A> is parallel. Collective if <A HREF="../Vec/Vec.html#Vec">Vec</A> is requested, but has not been created yet.
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes </B></TD><TD>- the <A HREF="../SNES/SNES.html#SNES">SNES</A> context

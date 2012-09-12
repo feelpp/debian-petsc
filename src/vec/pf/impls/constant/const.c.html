@@ -1,13 +1,14 @@
 <center><a href="const.c">Actual source code: const.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/pf/impls/constant/const.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:57:16+00:00">
+<meta name="date" content="2012-08-29T16:41:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/vec/pf/pfimpl.h&gt;            </font><font color="#B22222">/*I "petscpf.h" I*/</font><font color="#A020F0"></font>
 
@@ -32,7 +33,7 @@
 <a name="line31"> 31: </a>{
 <a name="line33"> 33: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line37"> 37: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line38"> 38: </a><font color="#A020F0">#if !defined(PETSC_USE_COMPLEX)</font>
 <a name="line39"> 39: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"Constant = %g\n"</font>,*(double*)value);
@@ -58,6 +59,7 @@
 <a name="line67"> 67: </a>  <font color="#4169E1">return</font>(0);
 <a name="line68"> 68: </a>}
 
+<a name="line70"> 70: </a>EXTERN_C_BEGIN
 <a name="line73"> 73: </a><strong><font color="#4169E1"><a name="PFCreate_Constant"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_Constant(<A href="../../../../../docs/manualpages/PF/PF.html#PF">PF</A> pf,void *value)</font></strong>
 <a name="line74"> 74: </a>{
 <a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *loc;
@@ -70,14 +72,18 @@
 <a name="line84"> 84: </a>  pf-&gt;ops-&gt;setfromoptions = PFSetFromOptions_Constant;
 <a name="line85"> 85: </a>  <font color="#4169E1">return</font>(0);
 <a name="line86"> 86: </a>}
+<a name="line87"> 87: </a><strong><font color="#4169E1">EXTERN_C_END</font></strong>
 
 
+<a name="line90"> 90: </a><strong><font color="#4169E1">typedef <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*FCN)(void*,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)</font></strong>; <font color="#B22222">/* force argument to next function to not be extern C*/</font>
+<a name="line91"> 91: </a>EXTERN_C_BEGIN
 <a name="line94"> 94: </a><strong><font color="#4169E1"><a name="PFCreate_Quick"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_Quick(<A href="../../../../../docs/manualpages/PF/PF.html#PF">PF</A> pf,void *function)</font></strong>
 <a name="line95"> 95: </a>{
 
 <a name="line99"> 99: </a>  <A href="../../../../../docs/manualpages/PF/PFSet.html#PFSet">PFSet</A>(pf,(FCN)function,0,0,0,0);
 <a name="line100">100: </a>  <font color="#4169E1">return</font>(0);
 <a name="line101">101: </a>}
+<a name="line102">102: </a>EXTERN_C_END
 
 <a name="line104">104: </a><font color="#B22222">/* -------------------------------------------------------------------------------------------------------------------*/</font>
 <a name="line107">107: </a><strong><font color="#4169E1"><a name="PFApply_Identity"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PFApply_Identity(void *value,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *y)</font></strong>
@@ -100,7 +106,7 @@
 <a name="line131">131: </a>{
 <a name="line133">133: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line136">136: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line136">136: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line137">137: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line138">138: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"Identity function\n"</font>);
 <a name="line139">139: </a>  }
@@ -112,6 +118,7 @@
 <a name="line149">149: </a>  <font color="#4169E1">return</font>(0);
 <a name="line150">150: </a>}
 
+<a name="line152">152: </a>EXTERN_C_BEGIN
 <a name="line155">155: </a><strong><font color="#4169E1"><a name="PFCreate_Identity"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_Identity(<A href="../../../../../docs/manualpages/PF/PF.html#PF">PF</A> pf,void *value)</font></strong>
 <a name="line156">156: </a>{
 <a name="line158">158: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *loc;
@@ -124,6 +131,7 @@
 <a name="line166">166: </a>  <A href="../../../../../docs/manualpages/PF/PFSet.html#PFSet">PFSet</A>(pf,PFApply_Identity,PFApplyVec_Identity,PFView_Identity,PFDestroy_Identity,loc);
 <a name="line167">167: </a>  <font color="#4169E1">return</font>(0);
 <a name="line168">168: </a>}
+<a name="line169">169: </a>EXTERN_C_END
 </pre>
 </body>
 

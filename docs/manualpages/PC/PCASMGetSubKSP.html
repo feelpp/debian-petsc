@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCASMGetSubKSP.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCASMGetSubKSP</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCASMGetSubKSP"><H1>PCASMGetSubKSP</H1></A>
 Gets the local <A HREF="../KSP/KSP.html#KSP">KSP</A> contexts for all blocks on this processor. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -29,12 +30,15 @@ all processors must request or all must pass <A HREF="../Sys/PETSC_NULL.html#PET
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Note</FONT></H3>
-After <A HREF="../PC/PCASMGetSubKSP.html#PCASMGetSubKSP">PCASMGetSubKSP</A>() the array of KSPes is not to be freed
+After <A HREF="../PC/PCASMGetSubKSP.html#PCASMGetSubKSP">PCASMGetSubKSP</A>() the array of KSPes is not to be freed.
 <P>
 Currently for some matrix implementations only 1 block per processor
 is supported.
 <P>
 You must call <A HREF="../KSP/KSPSetUp.html#KSPSetUp">KSPSetUp</A>() before calling <A HREF="../PC/PCASMGetSubKSP.html#PCASMGetSubKSP">PCASMGetSubKSP</A>().
+<P>
+<H3><FONT COLOR="#CC3333">Fortran note</FONT></H3>
+The output argument 'ksp' must be an array of sufficient length or PETSC_NULL_OBJECT. The latter can be used to learn the necessary length.
 <P>
 
 <P>

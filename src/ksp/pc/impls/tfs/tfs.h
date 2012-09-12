@@ -27,11 +27,6 @@ File Description:
 #if defined(PETSC_HAVE_STDLIB_H)
 #include <stdlib.h>
 #endif
-#if defined(PETSC_HAVE_MALLOC_H)
-#include <malloc.h>
-#endif
-#include <limits.h>
-#include <float.h>
 
 #define X          0
 #define Y          1
@@ -61,11 +56,7 @@ File Description:
 #define BIT_5		0x20
 #define BIT_6		0x40
 #define BIT_7		0x80
-#define TOP_BIT         INT_MIN
-#define ALL_ONES        -1
-
-#define FALSE		0
-#define TRUE		1
+#define TOP_BIT         PETSC_MIN_INT
 
 #define C		0
 
@@ -77,9 +68,6 @@ File Description:
 #define   DELIM         " \n \t"
 #define LINE		12
 #define C_LINE		80
-
-#define REAL_MAX	DBL_MAX
-#define REAL_MIN	DBL_MIN
 
 #define   UT            5               /* dump upper 1/2 */
 #define   LT            6               /* dump lower 1/2 */
@@ -146,17 +134,17 @@ Providence, RI 02912
 Last Modification: 
 6.21.97
 ***********************************comm.h*************************************/
-extern PetscMPIInt my_id;
-extern PetscMPIInt num_nodes;
-extern PetscMPIInt floor_num_nodes;
-extern PetscMPIInt i_log2_num_nodes;
+extern PetscMPIInt PCTFS_my_id;
+extern PetscMPIInt PCTFS_num_nodes;
+extern PetscMPIInt PCTFS_floor_num_nodes;
+extern PetscMPIInt PCTFS_i_log2_num_nodes;
 
-extern PetscErrorCode giop(PetscInt *vals, PetscInt *work, PetscInt n, PetscInt *oprs);
-extern PetscErrorCode grop(PetscScalar *vals, PetscScalar *work, PetscInt n, PetscInt *oprs);
-extern PetscErrorCode comm_init(void);
-extern PetscErrorCode giop_hc(PetscInt *vals, PetscInt *work, PetscInt n, PetscInt *oprs, PetscInt dim);
-extern PetscErrorCode grop_hc(PetscScalar *vals, PetscScalar *work, PetscInt n, PetscInt *oprs, PetscInt dim);
-extern PetscErrorCode ssgl_radd(PetscScalar *vals, PetscScalar *work, PetscInt level, PetscInt *segs);
+extern PetscErrorCode PCTFS_giop(PetscInt *vals, PetscInt *work, PetscInt n, PetscInt *oprs);
+extern PetscErrorCode PCTFS_grop(PetscScalar *vals, PetscScalar *work, PetscInt n, PetscInt *oprs);
+extern PetscErrorCode PCTFS_comm_init(void);
+extern PetscErrorCode PCTFS_giop_hc(PetscInt *vals, PetscInt *work, PetscInt n, PetscInt *oprs, PetscInt dim);
+extern PetscErrorCode PCTFS_grop_hc(PetscScalar *vals, PetscScalar *work, PetscInt n, PetscInt *oprs, PetscInt dim);
+extern PetscErrorCode PCTFS_ssgl_radd(PetscScalar *vals, PetscScalar *work, PetscInt level, PetscInt *segs);
 
 #define MSGTAG0 101
 #define MSGTAG1 1001
@@ -181,55 +169,55 @@ extern PetscErrorCode ssgl_radd(PetscScalar *vals, PetscScalar *work, PetscInt l
 #define GL_MIN_ABS      12
 #define GL_EXISTS       13
 
-extern PetscInt *ivec_copy(PetscInt *arg1, PetscInt *arg2, PetscInt n);
+extern PetscInt *PCTFS_ivec_copy(PetscInt *arg1, PetscInt *arg2, PetscInt n);
 
-extern PetscErrorCode ivec_zero(PetscInt *arg1, PetscInt n);
-extern PetscErrorCode ivec_set(PetscInt *arg1, PetscInt arg2, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_zero(PetscInt *arg1, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_set(PetscInt *arg1, PetscInt arg2, PetscInt n);
 
-extern PetscInt ivec_lb(PetscInt *work, PetscInt n);
-extern PetscInt ivec_ub(PetscInt *work, PetscInt n);
-extern PetscInt ivec_sum(PetscInt *arg1, PetscInt n);
+extern PetscInt PCTFS_ivec_lb(PetscInt *work, PetscInt n);
+extern PetscInt PCTFS_ivec_ub(PetscInt *work, PetscInt n);
+extern PetscInt PCTFS_ivec_sum(PetscInt *arg1, PetscInt n);
 
-extern vfp ivec_fct_addr(PetscInt type);
+extern vfp PCTFS_ivec_fct_addr(PetscInt type);
 
-extern PetscErrorCode ivec_non_uniform(PetscInt *arg1, PetscInt *arg2, PetscInt n, PetscInt *arg3);
-extern PetscErrorCode ivec_max(PetscInt *arg1, PetscInt *arg2, PetscInt n);
-extern PetscErrorCode ivec_min(PetscInt *arg1, PetscInt *arg2, PetscInt n);
-extern PetscErrorCode ivec_mult(PetscInt *arg1, PetscInt *arg2, PetscInt n);
-extern PetscErrorCode ivec_add(PetscInt *arg1, PetscInt *arg2, PetscInt n);
-extern PetscErrorCode ivec_xor(PetscInt *arg1, PetscInt *arg2, PetscInt n);
-extern PetscErrorCode ivec_or(PetscInt *arg1, PetscInt *arg2, PetscInt len);
-extern PetscErrorCode ivec_and(PetscInt *arg1, PetscInt *arg2, PetscInt len);
-extern PetscErrorCode ivec_lxor(PetscInt *arg1, PetscInt *arg2, PetscInt n);
-extern PetscErrorCode ivec_lor(PetscInt *arg1, PetscInt *arg2, PetscInt len);
-extern PetscErrorCode ivec_land(PetscInt *arg1, PetscInt *arg2, PetscInt len);
-extern PetscErrorCode ivec_and3( PetscInt *arg1,  PetscInt *arg2,  PetscInt *arg3, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_non_uniform(PetscInt *arg1, PetscInt *arg2, PetscInt n, PetscInt *arg3);
+extern PetscErrorCode PCTFS_ivec_max(PetscInt *arg1, PetscInt *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_min(PetscInt *arg1, PetscInt *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_mult(PetscInt *arg1, PetscInt *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_add(PetscInt *arg1, PetscInt *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_xor(PetscInt *arg1, PetscInt *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_or(PetscInt *arg1, PetscInt *arg2, PetscInt len);
+extern PetscErrorCode PCTFS_ivec_and(PetscInt *arg1, PetscInt *arg2, PetscInt len);
+extern PetscErrorCode PCTFS_ivec_lxor(PetscInt *arg1, PetscInt *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_lor(PetscInt *arg1, PetscInt *arg2, PetscInt len);
+extern PetscErrorCode PCTFS_ivec_land(PetscInt *arg1, PetscInt *arg2, PetscInt len);
+extern PetscErrorCode PCTFS_ivec_and3( PetscInt *arg1,  PetscInt *arg2,  PetscInt *arg3, PetscInt n);
 
-extern PetscErrorCode ivec_sort_companion(PetscInt *ar, PetscInt *ar2, PetscInt size);
-extern PetscErrorCode ivec_sort(PetscInt *ar, PetscInt size);
-extern PetscErrorCode SMI_sort(void *ar1, void *ar2, PetscInt size, PetscInt type);
-extern PetscInt ivec_binary_search(PetscInt item, PetscInt *list, PetscInt n);
-extern PetscInt ivec_linear_search(PetscInt item, PetscInt *list, PetscInt n);
+extern PetscErrorCode PCTFS_ivec_sort_companion(PetscInt *ar, PetscInt *ar2, PetscInt size);
+extern PetscErrorCode PCTFS_ivec_sort(PetscInt *ar, PetscInt size);
+extern PetscErrorCode PCTFS_SMI_sort(void *ar1, void *ar2, PetscInt size, PetscInt type);
+extern PetscInt PCTFS_ivec_binary_search(PetscInt item, PetscInt *list, PetscInt n);
+extern PetscInt PCTFS_ivec_linear_search(PetscInt item, PetscInt *list, PetscInt n);
 
-extern PetscErrorCode ivec_sort_companion_hack(PetscInt *ar, PetscInt **ar2, PetscInt size);
+extern PetscErrorCode PCTFS_ivec_sort_companion_hack(PetscInt *ar, PetscInt **ar2, PetscInt size);
 
 #define SORT_INTEGER 1
 #define SORT_INT_PTR 2
 
-extern PetscErrorCode rvec_zero(PetscScalar *arg1, PetscInt n);
-extern PetscErrorCode rvec_one(PetscScalar *arg1, PetscInt n);
-extern PetscErrorCode rvec_set(PetscScalar *arg1, PetscScalar arg2, PetscInt n);
-extern PetscErrorCode rvec_copy(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
-extern PetscErrorCode rvec_scale(PetscScalar *arg1, PetscScalar arg2, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_zero(PetscScalar *arg1, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_one(PetscScalar *arg1, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_set(PetscScalar *arg1, PetscScalar arg2, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_copy(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_scale(PetscScalar *arg1, PetscScalar arg2, PetscInt n);
 
-extern vfp rvec_fct_addr(PetscInt type);
-extern PetscErrorCode rvec_add(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
-extern PetscErrorCode rvec_mult(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
-extern PetscErrorCode rvec_max(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
-extern PetscErrorCode rvec_max_abs(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
-extern PetscErrorCode rvec_min(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
-extern PetscErrorCode rvec_min_abs(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
-extern PetscErrorCode vec_exists(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
+extern vfp PCTFS_rvec_fct_addr(PetscInt type);
+extern PetscErrorCode PCTFS_rvec_add(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_mult(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_max(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_max_abs(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_min(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_rvec_min_abs(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
+extern PetscErrorCode PCTFS_vec_exists(PetscScalar *arg1, PetscScalar *arg2, PetscInt n);
 
 /***********************************gs.h***************************************
 
@@ -246,16 +234,16 @@ Last Modification:
 6.21.97
 ************************************gs.h**************************************/
 
-typedef struct gather_scatter_id *gs_ADT;
+typedef struct gather_scatter_id *PCTFS_gs_ADT;
 typedef PetscErrorCode (*Rbfp)(PetscScalar *, PetscScalar *, PetscInt len);
 
-extern gs_ADT gs_init(PetscInt *elms, PetscInt nel, PetscInt level);
-extern PetscErrorCode   gs_gop_vec(gs_ADT gs_handle, PetscScalar *vals, const char *op, PetscInt step);
-extern PetscErrorCode   gs_gop_binary(gs_ADT gs, PetscScalar *vals, Rbfp fct);
-extern PetscErrorCode   gs_gop_hc(gs_ADT gs_handle, PetscScalar *vals, const char *op, PetscInt dim);
-extern PetscErrorCode   gs_free(gs_ADT gs_handle);
-extern PetscErrorCode   gs_init_msg_buf_sz(PetscInt buf_size);
-extern PetscErrorCode   gs_init_vec_sz(PetscInt size);
+extern PCTFS_gs_ADT PCTFS_gs_init(PetscInt *elms, PetscInt nel, PetscInt level);
+extern PetscErrorCode   PCTFS_gs_gop_vec(PCTFS_gs_ADT PCTFS_gs_handle, PetscScalar *vals, const char *op, PetscInt step);
+extern PetscErrorCode   PCTFS_gs_gop_binary(PCTFS_gs_ADT gs, PetscScalar *vals, Rbfp fct);
+extern PetscErrorCode   PCTFS_gs_gop_hc(PCTFS_gs_ADT PCTFS_gs_handle, PetscScalar *vals, const char *op, PetscInt dim);
+extern PetscErrorCode   PCTFS_gs_free(PCTFS_gs_ADT PCTFS_gs_handle);
+extern PetscErrorCode   PCTFS_gs_init_msg_buf_sz(PetscInt buf_size);
+extern PetscErrorCode   PCTFS_gs_init_vec_sz(PetscInt size);
 
 /*************************************xxt.h************************************
 Module Name: xxt
@@ -486,12 +474,12 @@ Providence, RI 02912
 Last Modification: 
 11.21.97
 *********************************bit_mask.h***********************************/
-extern PetscInt div_ceil(PetscInt numin, PetscInt denom);
-extern PetscErrorCode set_bit_mask(PetscInt *bm, PetscInt len, PetscInt val);
-extern PetscInt len_bit_mask(PetscInt num_items);
-extern PetscInt ct_bits(char *ptr, PetscInt n);
-extern PetscErrorCode bm_to_proc(char *ptr, PetscInt p_mask, PetscInt *msg_list);
-extern PetscInt len_buf(PetscInt item_size, PetscInt num_items);
+extern PetscInt PCTFS_div_ceil(PetscInt numin, PetscInt denom);
+extern PetscErrorCode PCTFS_set_bit_mask(PetscInt *bm, PetscInt len, PetscInt val);
+extern PetscInt PCTFS_len_bit_mask(PetscInt num_items);
+extern PetscInt PCTFS_ct_bits(char *ptr, PetscInt n);
+extern PetscErrorCode PCTFS_bm_to_proc(char *ptr, PetscInt p_mask, PetscInt *msg_list);
+extern PetscInt PCTFS_len_buf(PetscInt item_size, PetscInt num_items);
 
 #endif
 

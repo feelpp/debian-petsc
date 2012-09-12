@@ -1,13 +1,14 @@
 <center><a href="dl.c">Actual source code: dl.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/dll/dl.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:51:35+00:00">
+<meta name="date" content="2012-08-29T16:34:39+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#B22222">/*</font>
 <a name="line2">  2: </a><font color="#B22222">      Routines for opening dynamic link libraries (DLLs), keeping a searchable</font>
 <a name="line3">  3: </a><font color="#B22222">   path of DLLs, obtaining remote DLLs via a URL and opening them locally.</font>
@@ -374,7 +375,7 @@
 <a name="line390">390: </a>    }
 <a name="line391">391: </a>    <A href="../../../docs/manualpages/Sys/PetscTokenFind.html#PetscTokenFind">PetscTokenFind</A>(token,&amp;libname);
 <a name="line392">392: </a>  }
-<a name="line393">393: </a>  <A href="../../../docs/manualpages/Sys/PetscTokenDestroy.html#PetscTokenDestroy">PetscTokenDestroy</A>(token);
+<a name="line393">393: </a>  <A href="../../../docs/manualpages/Sys/PetscTokenDestroy.html#PetscTokenDestroy">PetscTokenDestroy</A>(&amp;token);
 <a name="line394">394: </a>  <font color="#4169E1">return</font>(0);
 <a name="line395">395: </a>}
 
@@ -461,7 +462,7 @@
 <a name="line482">482: </a>    }
 <a name="line483">483: </a>    <A href="../../../docs/manualpages/Sys/PetscTokenFind.html#PetscTokenFind">PetscTokenFind</A>(token,&amp;libname);
 <a name="line484">484: </a>  }
-<a name="line485">485: </a>  <A href="../../../docs/manualpages/Sys/PetscTokenDestroy.html#PetscTokenDestroy">PetscTokenDestroy</A>(token);
+<a name="line485">485: </a>  <A href="../../../docs/manualpages/Sys/PetscTokenDestroy.html#PetscTokenDestroy">PetscTokenDestroy</A>(&amp;token);
 <a name="line486">486: </a>  <font color="#4169E1">return</font>(0);
 <a name="line487">487: </a>}
 
@@ -499,87 +500,6 @@
 <a name="line524">524: </a>  <font color="#4169E1">return</font>(0);
 <a name="line525">525: </a>}
 
-<a name="line527">527: </a><font color="#B22222">/* ------------------------------------------------------------------------------*/</font>
-
-<a name="line529">529: </a><font color="#B22222">/*</font>
-<a name="line530">530: </a><font color="#B22222">   Contains the list of registered CCA components</font>
-<a name="line531">531: </a><font color="#B22222">*/</font>
-<a name="line532">532: </a><A href="../../../docs/manualpages/Sys/PetscFList.html#PetscFList">PetscFList</A> CCAList = 0;
-
-<a name="line536">536: </a><font color="#B22222">/*@C</font>
-<a name="line537">537: </a><font color="#B22222">     <A href="../../../docs/manualpages/Sys/PetscDLLibraryCCAAppend.html#PetscDLLibraryCCAAppend">PetscDLLibraryCCAAppend</A> - Appends another CCA dynamic link library to the seach list, to the end</font>
-<a name="line538">538: </a><font color="#B22222">                of the search path.</font>
-
-<a name="line540">540: </a><font color="#B22222">     Collective on <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
-
-<a name="line542">542: </a><font color="#B22222">     Input Parameters:</font>
-<a name="line543">543: </a><font color="#B22222">+     comm - MPI communicator</font>
-<a name="line544">544: </a><font color="#B22222">-     dirname - name of directory to check</font>
-
-<a name="line546">546: </a><font color="#B22222">     Output Parameter:</font>
-<a name="line547">547: </a><font color="#B22222">.     outlist - list of libraries</font>
-
-<a name="line549">549: </a><font color="#B22222">     Level: developer</font>
-
-<a name="line551">551: </a><font color="#B22222">     Notes: if library is already in path will not add it.</font>
-<a name="line552">552: </a><font color="#B22222">@*/</font>
-<a name="line553">553: </a><strong><font color="#4169E1"><a name="PetscDLLibraryCCAAppend"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscDLLibraryCCAAppend.html#PetscDLLibraryCCAAppend">PetscDLLibraryCCAAppend</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../docs/manualpages/Sys/PetscDLLibrary.html#PetscDLLibrary">PetscDLLibrary</A> *outlist,const char dirname[])</font></strong>
-<a name="line554">554: </a>{
-<a name="line556">556: </a>  size_t         l;
-<a name="line557">557: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      dir;
-<a name="line558">558: </a>  char           program[PETSC_MAX_PATH_LEN],buf[8*PETSC_MAX_PATH_LEN],*libname1,fbuf[PETSC_MAX_PATH_LEN],*found,suffix[16],*f2;
-<a name="line559">559: </a>  char           *func,*funcname,libname[PETSC_MAX_PATH_LEN],*lib;
-<a name="line560">560: </a>  FILE           *fp;
-<a name="line561">561: </a>  <A href="../../../docs/manualpages/Sys/PetscToken.html#PetscToken">PetscToken</A>     token1, token2;
-<a name="line562">562: </a>  int            err;
-
-<a name="line565">565: </a>  <font color="#B22222">/* is dirname a directory? */</font>
-<a name="line566">566: </a>  PetscTestDirectory(dirname,'r',&amp;dir);
-<a name="line567">567: </a>  <font color="#4169E1">if</font> (!dir) <font color="#4169E1">return</font>(0);
-
-<a name="line569">569: </a>  PetscInfo1(0,<font color="#666666">"Checking directory %s for CCA components\n"</font>,dirname);
-<a name="line570">570: </a>  <A href="../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(program,dirname);
-<a name="line571">571: </a>  <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(program,<font color="#666666">"/*.cca"</font>);
-
-<a name="line573">573: </a>  PetscLs(comm,program,buf,8*PETSC_MAX_PATH_LEN,&amp;dir);
-<a name="line574">574: </a>  <font color="#4169E1">if</font> (!dir) <font color="#4169E1">return</font>(0);
-
-<a name="line576">576: </a>  <A href="../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(suffix,<font color="#666666">"."</font>);
-<a name="line577">577: </a>  <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(suffix,PETSC_SLSUFFIX);
-<a name="line578">578: </a>  <A href="../../../docs/manualpages/Sys/PetscTokenCreate.html#PetscTokenCreate">PetscTokenCreate</A>(buf,'\n',&amp;token1);
-<a name="line579">579: </a>  <A href="../../../docs/manualpages/Sys/PetscTokenFind.html#PetscTokenFind">PetscTokenFind</A>(token1,&amp;libname1);
-<a name="line580">580: </a>  <font color="#4169E1">while</font> (libname1) {
-<a name="line581">581: </a>    fp    = fopen(libname1,<font color="#666666">"r"</font>); <font color="#4169E1">if</font> (!fp) <font color="#4169E1">continue</font>;
-<a name="line582">582: </a>    <font color="#4169E1">while</font> ((found = fgets(fbuf,PETSC_MAX_PATH_LEN,fp))) {
-<a name="line583">583: </a>      <font color="#4169E1">if</font> (found[0] == '!') <font color="#4169E1">continue</font>;
-<a name="line584">584: </a>      <A href="../../../docs/manualpages/Sys/PetscStrstr.html#PetscStrstr">PetscStrstr</A>(found,suffix,&amp;f2);
-<a name="line585">585: </a>      <font color="#4169E1">if</font> (f2) { <font color="#B22222">/* found library name */</font>
-<a name="line586">586: </a>        <font color="#4169E1">if</font> (found[0] == '/') {
-<a name="line587">587: </a>          lib = found;
-<a name="line588">588: </a>        } <font color="#4169E1">else</font> {
-<a name="line589">589: </a>          <A href="../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(libname,dirname);
-<a name="line590">590: </a>          <A href="../../../docs/manualpages/Sys/PetscStrlen.html#PetscStrlen">PetscStrlen</A>(libname,&amp;l);
-<a name="line591">591: </a>          <font color="#4169E1">if</font> (libname[l-1] != '/') {<A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(libname,<font color="#666666">"/"</font>);}
-<a name="line592">592: </a>          <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(libname,found);
-<a name="line593">593: </a>          lib  = libname;
-<a name="line594">594: </a>        }
-<a name="line595">595: </a>        <A href="../../../docs/manualpages/Sys/PetscDLLibraryAppend.html#PetscDLLibraryAppend">PetscDLLibraryAppend</A>(comm,outlist,lib);
-<a name="line596">596: </a>      } <font color="#4169E1">else</font> {
-<a name="line597">597: </a>        PetscInfo2(0,<font color="#666666">"CCA Component function and name: %s from %s\n"</font>,found,libname1);
-<a name="line598">598: </a>        <A href="../../../docs/manualpages/Sys/PetscTokenCreate.html#PetscTokenCreate">PetscTokenCreate</A>(found,' ',&amp;token2);
-<a name="line599">599: </a>        <A href="../../../docs/manualpages/Sys/PetscTokenFind.html#PetscTokenFind">PetscTokenFind</A>(token2,&amp;func);
-<a name="line600">600: </a>        <A href="../../../docs/manualpages/Sys/PetscTokenFind.html#PetscTokenFind">PetscTokenFind</A>(token2,&amp;funcname);
-<a name="line601">601: </a>        PetscFListAdd(&amp;CCAList,funcname,func,<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line602">602: </a>        <A href="../../../docs/manualpages/Sys/PetscTokenDestroy.html#PetscTokenDestroy">PetscTokenDestroy</A>(token2);
-<a name="line603">603: </a>      }
-<a name="line604">604: </a>    }
-<a name="line605">605: </a>    err = fclose(fp);
-<a name="line606">606: </a>    <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fclose() failed on file"</font>);
-<a name="line607">607: </a>    <A href="../../../docs/manualpages/Sys/PetscTokenFind.html#PetscTokenFind">PetscTokenFind</A>(token1,&amp;libname1);
-<a name="line608">608: </a>  }
-<a name="line609">609: </a>  <A href="../../../docs/manualpages/Sys/PetscTokenDestroy.html#PetscTokenDestroy">PetscTokenDestroy</A>(token1);
-<a name="line610">610: </a>  <font color="#4169E1">return</font>(0);
-<a name="line611">611: </a>}
 </pre>
 </body>
 

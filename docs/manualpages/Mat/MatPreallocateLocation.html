@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatPreallocateLocation.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatPreallocateLocation</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatPreallocateLocation"><H1>MatPreallocateLocation</H1></A>
 An alternative to MatPreallocationSet() that puts the nonzero locations into the matrix if it exists 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -32,7 +33,7 @@ Not Collective
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-See the &lt;A href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.12">Chapter 12 Hints for Performance Tuning</A>"&gt;Hints for Performance Improvment&lt;/A&gt; chapter in the users manual for more details.
+See the &lt;A href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.11">Chapter 11 Hints for Performance Tuning</A>"&gt;Hints for Performance Improvment&lt;/A&gt; chapter in the users manual for more details.
 <P>
 Do not malloc or free dnz and onz that is handled internally by these routines
 <P>
@@ -41,7 +42,7 @@ This is a MACRO not a function because it uses a bunch of variables private to t
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Mat/MatPreallocateInitialize.html#MatPreallocateInitialize">MatPreallocateInitialize</A>(), <A HREF="../Mat/MatPreallocateSet.html#MatPreallocateSet">MatPreallocateSet</A>(), <A HREF="../Mat/MatPreallocateSymmetricSet.html#MatPreallocateSymmetricSet">MatPreallocateSymmetricSet</A>(), <A HREF="../Mat/MatPreallocateSetLocal.html#MatPreallocateSetLocal">MatPreallocateSetLocal</A>(),
-<BR><A HREF="../Mat/MatPreallocateSymmetricInitialize.html#MatPreallocateSymmetricInitialize">MatPreallocateSymmetricInitialize</A>(), <A HREF="../Mat/MatPreallocateSymmetricSetLocal.html#MatPreallocateSymmetricSetLocal">MatPreallocateSymmetricSetLocal</A>()
+<BR><A HREF="../Mat/MatPreallocateSymmetricSetLocal.html#MatPreallocateSymmetricSetLocal">MatPreallocateSymmetricSetLocal</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/../../include/petscmat.h.html#MatPreallocateLocation">src/mat/../../include/petscmat.h</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

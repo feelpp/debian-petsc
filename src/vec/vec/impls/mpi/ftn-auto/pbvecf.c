@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* pbvec.c */
 /* Fortran interface file */
 
@@ -34,6 +34,11 @@ extern void PetscRmPointer(void*);
 #define veccreateghost_ veccreateghost
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecmpisetghost_ VECMPISETGHOST
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecmpisetghost_ vecmpisetghost
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define veccreateghostblock_ VECCREATEGHOSTBLOCK
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define veccreateghostblock_ veccreateghostblock
@@ -47,6 +52,10 @@ extern "C" {
 void PETSC_STDCALL  veccreateghost_(MPI_Fint * comm,PetscInt *n,PetscInt *N,PetscInt *nghost, PetscInt ghosts[],Vec *vv, int *__ierr ){
 *__ierr = VecCreateGhost(
 	MPI_Comm_f2c( *(comm) ),*n,*N,*nghost,ghosts,vv);
+}
+void PETSC_STDCALL  vecmpisetghost_(Vec vv,PetscInt *nghost, PetscInt ghosts[], int *__ierr ){
+*__ierr = VecMPISetGhost(
+	(Vec)PetscToPointer((vv) ),*nghost,ghosts);
 }
 void PETSC_STDCALL  veccreateghostblock_(MPI_Fint * comm,PetscInt *bs,PetscInt *n,PetscInt *N,PetscInt *nghost, PetscInt ghosts[],Vec *vv, int *__ierr ){
 *__ierr = VecCreateGhostBlock(

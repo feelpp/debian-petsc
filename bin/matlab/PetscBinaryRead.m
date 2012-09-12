@@ -15,13 +15,16 @@ function [varargout] = PetscBinaryRead(inarg,varargin)
 %  Argument may be file name (string), socket number (integer)
 %  or any Matlab class that provides the read() and close() methods
 %  [We provide PetscOpenFile() and PetscOpenSocket() for binary files and sockets]
+%  For example: fd = PetscOpenFile('filename');
+%                a = PetscBinaryRead(fd);
+%                b = PetscBinaryRead(fd);
 %
 %  'complex', true indicates the numbers in the file are complex, that is PETSc was built with --with-scalar-type=complex
 %  'indices','int64' indicates the PETSc program was built with --with-64-bit-indices
 %  'cell',cnt  means return a Matlab cell array containing the first cnt objects in the file, use 10,000 to read in all objects
 %  'precision','float32' indicates the PETSc program was built with --with-precision=single
 %
-%  Examples:  A = PetscBinaryRead('myfile','cell',10,000);  read all objects in file
+%  Examples:  A = PetscBinaryRead('myfile','cell',10000);  read all objects in file
 %             A = PetscBinaryRead(1024,'cell',2);  read two objects from socket 
 %   
 if nargin == 0
@@ -61,15 +64,21 @@ for l=1:nargin-2
   end
 end
 
+if strcmp(precision,'float128')
+  precision = 'float64';
+  system(['./convert -f ' inarg]);
+  fd = PetscOpenFile([inarg '_double']);
+end
+  
 if arecell
   narg = arecell;
-  result = cell(1);
+  rsult = cell(1);
 else
   narg = nargout;
 end
 
 for l=1:narg
-  header = double(read(fd,1,indices));
+  header = double(read(fd,1,indices));  
   if isempty(header)
     if arecell
       varargout(1) = {result};
@@ -80,6 +89,7 @@ for l=1:narg
     return
   end
   if header == 1211216 % Petsc Mat Object 
+    
     header = double(read(fd,3,indices));
     m      = header(1);
     n      = header(2);
@@ -87,7 +97,7 @@ for l=1:narg
     if (nz == -1)
       if arecomplex
         s     = read(fd,2*m*n,precision);
-        iReal = linspace(1,n*m*2-1,n*m);
+        iReal = 1:2:n*m*2-1;
         iImag = iReal +1 ;
         A     = complex(reshape(s(iReal),n,m)',reshape(s(iImag),n,m)') ;
       else
@@ -126,7 +136,7 @@ for l=1:narg
       varargout(l) = {A};
     end
   elseif  header == 1211214 % Petsc Vec Object
-    m = double(read(fd,1,indices));
+    m = double(read(fd,1,indices)); 
     if arecomplex
       v = read(fd,2*m,precision);
       v = complex(v(1:2:2*m),v(2:2:2*m));

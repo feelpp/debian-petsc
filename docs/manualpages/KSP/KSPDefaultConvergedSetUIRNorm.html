@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/KSPDefaultConvergedSetUIRNorm.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>KSPDefaultConvergedSetUIRNorm</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="KSPDefaultConvergedSetUIRNorm"><H1>KSPDefaultConvergedSetUIRNorm</H1></A>
 makes the default convergence test use || B*(b - A*(initial guess))|| instead of || B*b ||. In the case of right preconditioner or if <A HREF="../KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(ksp,KSP_NORM_UNPRECONDIITONED) is used there is no B in the above formula. UIRNorm is short for Use Initial Residual Norm. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -20,6 +21,7 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
 <DT><B>-ksp_converged_use_initial_residual_norm</B> -
+Notes:
 Use <A HREF="../KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>() to alter the defaults for rtol, abstol, dtol.
 <br>
 <P>
@@ -27,6 +29,10 @@ The precise values of reason are macros such as <A HREF="../KSP/KSP_CONVERGED_RT
 are defined in petscksp.h.
 <P>
 If the convergence test is not <A HREF="../KSP/KSPDefaultConverged.html#KSPDefaultConverged">KSPDefaultConverged</A>() then this is ignored.
+<P>
+If right preconditioning is being used then B does not appear in the above formula.
+<P>
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>

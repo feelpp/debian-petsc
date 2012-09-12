@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSGetConvergedReason.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSGetConvergedReason</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSGetConvergedReason"><H1>TSGetConvergedReason</H1></A>
 Gets the reason the <A HREF="../TS/TS.html#TS">TS</A> iteration was stopped. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -19,7 +20,7 @@ Not Collective
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>reason </B> -negative value indicates diverged, positive value converged, see TSConvergedReason or the 
+<DT><B>reason </B> -negative value indicates diverged, positive value converged, see <A HREF="../TS/TSConvergedReason.html#TSConvergedReason">TSConvergedReason</A> or the 
 manual pages for the individual convergence tests for complete lists
 <br>
 <P>
@@ -33,10 +34,15 @@ Can only be called after the call to <A HREF="../TS/TSSolve.html#TSSolve">TSSolv
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- TSSetConvergenceTest(), TSConvergedReason
+ TSSetConvergenceTest(), <A HREF="../TS/TSConvergedReason.html#TSConvergedReason">TSConvergedReason</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/interface/ts.c.html#TSGetConvergedReason">src/ts/interface/ts.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ts/examples/tutorials/ex22.c.html">src/ts/examples/tutorials/ex22.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex25.c.html">src/ts/examples/tutorials/ex25.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex26.c.html">src/ts/examples/tutorials/ex26.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex1f.F.html">src/ts/examples/tutorials/ex1f.F.html</A><BR>
 </BODY></HTML>

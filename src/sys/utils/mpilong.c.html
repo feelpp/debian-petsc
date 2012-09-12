@@ -1,13 +1,14 @@
 <center><a href="mpilong.c">Actual source code: mpilong.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/utils/mpilong.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:53:04+00:00">
+<meta name="date" content="2012-08-29T16:36:17+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;         </font><font color="#B22222">/*I  "petscsys.h"  I*/</font><font color="#A020F0"></font>
 
@@ -15,7 +16,7 @@
 <a name="line5">  5: </a><font color="#B22222">    Allows sending/receiving larger messages then 2 gigabytes in a single call</font>
 <a name="line6">  6: </a><font color="#B22222">*/</font>
 
-<a name="line8">  8: </a><strong><font color="#4169E1"><a name="MPILong_Send"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MPILong_Send(void *mess,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cnt, MPI_Datatype type,<A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> to, <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> tag, <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm)</font></strong>
+<a name="line8">  8: </a><strong><font color="#4169E1"><a name="MPIULong_Send"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MPIULong_Send(void *mess,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cnt, MPI_Datatype type,<A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> to, <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> tag, <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm)</font></strong>
 <a name="line9">  9: </a>{
 <a name="line10"> 10: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
 <a name="line11"> 11: </a>  static <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> CHUNKSIZE = 250000000; <font color="#B22222">/* 250,000,000 */</font>
@@ -35,7 +36,7 @@
 <a name="line26"> 26: </a>  <font color="#4169E1">return</font>(0);
 <a name="line27"> 27: </a>}
 
-<a name="line29"> 29: </a><strong><font color="#4169E1"><a name="MPILong_Recv"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MPILong_Recv(void *mess,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cnt, MPI_Datatype type,<A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> from, <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> tag, <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm)</font></strong>
+<a name="line29"> 29: </a><strong><font color="#4169E1"><a name="MPIULong_Recv"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MPIULong_Recv(void *mess,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cnt, MPI_Datatype type,<A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> from, <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> tag, <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm)</font></strong>
 <a name="line30"> 30: </a>{
 <a name="line31"> 31: </a>  int             ierr;
 <a name="line32"> 32: </a>  static <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> CHUNKSIZE = 250000000; <font color="#B22222">/* 250,000,000 */</font>

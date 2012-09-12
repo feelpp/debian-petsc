@@ -1,5 +1,5 @@
 
-#include <private/snesimpl.h>
+#include <petsc-private/snesimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "SNESSolve_KSPONLY"
@@ -53,8 +53,10 @@ static PetscErrorCode SNESSolve_KSPONLY(SNES snes)
 #define __FUNCT__ "SNESSetUp_KSPONLY"
 static PetscErrorCode SNESSetUp_KSPONLY(SNES snes)
 {
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
+  ierr = SNESSetUpMatrices(snes);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -90,6 +92,9 @@ PetscErrorCode  SNESCreate_KSPONLY(SNES snes)
   snes->ops->setfromoptions  = 0;
   snes->ops->view            = 0;
   snes->ops->reset           = 0;
+
+  snes->usesksp         = PETSC_TRUE;
+  snes->usespc          = PETSC_FALSE;
 
   snes->data = 0;
   PetscFunctionReturn(0);

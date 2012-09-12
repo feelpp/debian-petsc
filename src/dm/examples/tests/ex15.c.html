@@ -1,13 +1,14 @@
 <center><a href="ex15.c">Actual source code: ex15.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tests/ex15.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:48+00:00">
+<meta name="date" content="2012-08-29T16:58:07+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests DM interpolation.\n\n"</font>;
 
@@ -59,7 +60,7 @@
 <a name="line52"> 52: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da_f,&amp;v_f);
 
 <a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(v_c,one);
-<a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(da_c,da_f,&amp;I,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>(da_c,da_f,&amp;I,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 <a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(I,v_c,v_f);
 <a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(v_f,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Mat/MatMultTranspose.html#MatMultTranspose">MatMultTranspose</A>(I,v_f,v_c);

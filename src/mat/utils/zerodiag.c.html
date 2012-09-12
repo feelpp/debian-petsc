@@ -1,20 +1,21 @@
 <center><a href="zerodiag.c">Actual source code: zerodiag.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/utils/zerodiag.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:13+00:00">
+<meta name="date" content="2012-08-29T16:52:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    This file contains routines to reorder a matrix so that the diagonal</font>
 <a name="line4">  4: </a><font color="#B22222">    elements are nonzero.</font>
 <a name="line5">  5: </a><font color="#B22222"> */</font>
 
-<a name="line7">  7: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;       </font><font color="#B22222">/*I  "petscmat.h"  I*/</font><font color="#A020F0"></font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;       </font><font color="#B22222">/*I  "petscmat.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line9">  9: </a><strong><font color="#228B22">#define SWAP(a,b) {<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> _t; _t = a; a = b; b = _t; }</font></strong>
 
@@ -65,9 +66,12 @@
 <a name="line59"> 59: </a>  <font color="#4169E1">return</font>(0);
 <a name="line60"> 60: </a>}
 
+<a name="line62"> 62: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetRow_SeqAIJ(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>**,<A href="../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>**)</font></strong>;
+<a name="line63"> 63: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatRestoreRow_SeqAIJ(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>**,<A href="../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>**)</font></strong>;
 
 <a name="line65"> 65: </a><font color="#A020F0">#include &lt;../src/vec/is/impls/general/general.h&gt;</font>
 
+<a name="line67"> 67: </a>EXTERN_C_BEGIN
 <a name="line70"> 70: </a><strong><font color="#4169E1"><a name="MatReorderForNonzeroDiagonal_SeqAIJ"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatReorderForNonzeroDiagonal_SeqAIJ(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> abstol,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A> ris,<A href="../../../docs/manualpages/IS/IS.html#IS">IS</A> cis)</font></strong>
 <a name="line71"> 71: </a>{
 <a name="line73"> 73: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       prow,k,nz,n,repl,*j,*col,*row,m,*icol,nnz,*jj,kk;
@@ -144,6 +148,7 @@
 <a name="line145">145: </a>  <A href="../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;icis);
 <a name="line146">146: </a>  <font color="#4169E1">return</font>(0);
 <a name="line147">147: </a>}
+<a name="line148">148: </a>EXTERN_C_END
 
 
 </pre>

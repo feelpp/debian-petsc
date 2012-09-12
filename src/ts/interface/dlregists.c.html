@@ -1,15 +1,16 @@
 <center><a href="dlregists.c">Actual source code: dlregists.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/interface/dlregists.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:19:30+00:00">
+<meta name="date" content="2012-08-29T17:13:19+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/tsimpl.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/tsimpl.h&gt;</font>
 
 <a name="line4">  4: </a>static <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  TSPackageInitialized = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line7">  7: </a><font color="#B22222">/*@C</font>
@@ -54,54 +55,58 @@
 <a name="line50"> 50: </a>  <font color="#B22222">/* Inialize subpackages */</font>
 <a name="line51"> 51: </a>  <A href="../../../docs/manualpages/TS/TSGLInitializePackage.html#TSGLInitializePackage">TSGLInitializePackage</A>(path);
 <a name="line52"> 52: </a>  <A href="../../../docs/manualpages/TS/TSARKIMEXInitializePackage.html#TSARKIMEXInitializePackage">TSARKIMEXInitializePackage</A>(path);
-<a name="line53"> 53: </a>  <A href="../../../docs/manualpages/TS/TSGLAdaptInitializePackage.html#TSGLAdaptInitializePackage">TSGLAdaptInitializePackage</A>(path);
-<a name="line54"> 54: </a>  <font color="#B22222">/* Register Classes */</font>
-<a name="line55"> 55: </a>  <A href="../../../docs/manualpages/Profiling/PetscClassIdRegister.html#PetscClassIdRegister">PetscClassIdRegister</A>(<font color="#666666">"<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>"</font>,&amp;TS_CLASSID);
-<a name="line56"> 56: </a>  <font color="#B22222">/* Register Constructors */</font>
-<a name="line57"> 57: </a>  <A href="../../../docs/manualpages/TS/TSRegisterAll.html#TSRegisterAll">TSRegisterAll</A>(path);
-<a name="line58"> 58: </a>  <font color="#B22222">/* Register Events */</font>
-<a name="line59"> 59: </a>  <A href="../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../docs/manualpages/TS/TSStep.html#TSStep">TSStep</A>"</font>,           TS_CLASSID,&amp;TS_Step);
-<a name="line60"> 60: </a>  <A href="../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"TSPseudoCmptTStp"</font>, TS_CLASSID,&amp;TS_PseudoComputeTimeStep);
-<a name="line61"> 61: </a>  <A href="../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"TSFunctionEval"</font>,   TS_CLASSID,&amp;TS_FunctionEval);
-<a name="line62"> 62: </a>  <A href="../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"TSJacobianEval"</font>,   TS_CLASSID,&amp;TS_JacobianEval);
-<a name="line63"> 63: </a>  <font color="#B22222">/* Process info exclusions */</font>
-<a name="line64"> 64: </a>  <A href="../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-info_exclude"</font>, logList, 256, &amp;opt);
-<a name="line65"> 65: </a>  <font color="#4169E1">if</font> (opt) {
-<a name="line66"> 66: </a>    <A href="../../../docs/manualpages/Sys/PetscStrstr.html#PetscStrstr">PetscStrstr</A>(logList, <font color="#666666">"ts"</font>, &amp;className);
-<a name="line67"> 67: </a>    <font color="#4169E1">if</font> (className) {
-<a name="line68"> 68: </a>      <A href="../../../docs/manualpages/Profiling/PetscInfoDeactivateClass.html#PetscInfoDeactivateClass">PetscInfoDeactivateClass</A>(TS_CLASSID);
-<a name="line69"> 69: </a>    }
-<a name="line70"> 70: </a>  }
-<a name="line71"> 71: </a>  <font color="#B22222">/* Process summary exclusions */</font>
-<a name="line72"> 72: </a>  <A href="../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-log_summary_exclude"</font>, logList, 256, &amp;opt);
-<a name="line73"> 73: </a>  <font color="#4169E1">if</font> (opt) {
-<a name="line74"> 74: </a>    <A href="../../../docs/manualpages/Sys/PetscStrstr.html#PetscStrstr">PetscStrstr</A>(logList, <font color="#666666">"ts"</font>, &amp;className);
-<a name="line75"> 75: </a>    <font color="#4169E1">if</font> (className) {
-<a name="line76"> 76: </a>      <A href="../../../docs/manualpages/Profiling/PetscLogEventDeactivateClass.html#PetscLogEventDeactivateClass">PetscLogEventDeactivateClass</A>(TS_CLASSID);
-<a name="line77"> 77: </a>    }
-<a name="line78"> 78: </a>  }
-<a name="line79"> 79: </a>  <A href="../../../docs/manualpages/Sys/PetscRegisterFinalize.html#PetscRegisterFinalize">PetscRegisterFinalize</A>(<A href="../../../docs/manualpages/TS/TSFinalizePackage.html#TSFinalizePackage">TSFinalizePackage</A>);
-<a name="line80"> 80: </a>  <font color="#4169E1">return</font>(0);
-<a name="line81"> 81: </a>}
+<a name="line53"> 53: </a>  <A href="../../../docs/manualpages/TS/TSRosWInitializePackage.html#TSRosWInitializePackage">TSRosWInitializePackage</A>(path);
+<a name="line54"> 54: </a>  <A href="../../../docs/manualpages/TS/TSAdaptInitializePackage.html#TSAdaptInitializePackage">TSAdaptInitializePackage</A>(path);
+<a name="line55"> 55: </a>  <A href="../../../docs/manualpages/TS/TSGLAdaptInitializePackage.html#TSGLAdaptInitializePackage">TSGLAdaptInitializePackage</A>(path);
+<a name="line56"> 56: </a>  <font color="#B22222">/* Register Classes */</font>
+<a name="line57"> 57: </a>  <A href="../../../docs/manualpages/Profiling/PetscClassIdRegister.html#PetscClassIdRegister">PetscClassIdRegister</A>(<font color="#666666">"<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>"</font>,&amp;TS_CLASSID);
+<a name="line58"> 58: </a>  <font color="#B22222">/* Register Constructors */</font>
+<a name="line59"> 59: </a>  <A href="../../../docs/manualpages/TS/TSRegisterAll.html#TSRegisterAll">TSRegisterAll</A>(path);
+<a name="line60"> 60: </a>  <font color="#B22222">/* Register Events */</font>
+<a name="line61"> 61: </a>  <A href="../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"<A href="../../../docs/manualpages/TS/TSStep.html#TSStep">TSStep</A>"</font>,           TS_CLASSID,&amp;TS_Step);
+<a name="line62"> 62: </a>  <A href="../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"TSPseudoCmptTStp"</font>, TS_CLASSID,&amp;TS_PseudoComputeTimeStep);
+<a name="line63"> 63: </a>  <A href="../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"TSFunctionEval"</font>,   TS_CLASSID,&amp;TS_FunctionEval);
+<a name="line64"> 64: </a>  <A href="../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(<font color="#666666">"TSJacobianEval"</font>,   TS_CLASSID,&amp;TS_JacobianEval);
+<a name="line65"> 65: </a>  <font color="#B22222">/* Process info exclusions */</font>
+<a name="line66"> 66: </a>  <A href="../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-info_exclude"</font>, logList, 256, &amp;opt);
+<a name="line67"> 67: </a>  <font color="#4169E1">if</font> (opt) {
+<a name="line68"> 68: </a>    <A href="../../../docs/manualpages/Sys/PetscStrstr.html#PetscStrstr">PetscStrstr</A>(logList, <font color="#666666">"ts"</font>, &amp;className);
+<a name="line69"> 69: </a>    <font color="#4169E1">if</font> (className) {
+<a name="line70"> 70: </a>      <A href="../../../docs/manualpages/Profiling/PetscInfoDeactivateClass.html#PetscInfoDeactivateClass">PetscInfoDeactivateClass</A>(TS_CLASSID);
+<a name="line71"> 71: </a>    }
+<a name="line72"> 72: </a>  }
+<a name="line73"> 73: </a>  <font color="#B22222">/* Process summary exclusions */</font>
+<a name="line74"> 74: </a>  <A href="../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-log_summary_exclude"</font>, logList, 256, &amp;opt);
+<a name="line75"> 75: </a>  <font color="#4169E1">if</font> (opt) {
+<a name="line76"> 76: </a>    <A href="../../../docs/manualpages/Sys/PetscStrstr.html#PetscStrstr">PetscStrstr</A>(logList, <font color="#666666">"ts"</font>, &amp;className);
+<a name="line77"> 77: </a>    <font color="#4169E1">if</font> (className) {
+<a name="line78"> 78: </a>      <A href="../../../docs/manualpages/Profiling/PetscLogEventDeactivateClass.html#PetscLogEventDeactivateClass">PetscLogEventDeactivateClass</A>(TS_CLASSID);
+<a name="line79"> 79: </a>    }
+<a name="line80"> 80: </a>  }
+<a name="line81"> 81: </a>  <A href="../../../docs/manualpages/Sys/PetscRegisterFinalize.html#PetscRegisterFinalize">PetscRegisterFinalize</A>(<A href="../../../docs/manualpages/TS/TSFinalizePackage.html#TSFinalizePackage">TSFinalizePackage</A>);
+<a name="line82"> 82: </a>  <font color="#4169E1">return</font>(0);
+<a name="line83"> 83: </a>}
 
-<a name="line83"> 83: </a><font color="#A020F0">#ifdef PETSC_USE_DYNAMIC_LIBRARIES</font>
-<a name="line87"> 87: </a><font color="#B22222">/*</font>
-<a name="line88"> 88: </a><font color="#B22222">  PetscDLLibraryRegister - This function is called when the dynamic library it is in is opened.</font>
+<a name="line85"> 85: </a><font color="#A020F0">#ifdef PETSC_USE_DYNAMIC_LIBRARIES</font>
+<a name="line86"> 86: </a>EXTERN_C_BEGIN
+<a name="line89"> 89: </a><font color="#B22222">/*</font>
+<a name="line90"> 90: </a><font color="#B22222">  PetscDLLibraryRegister - This function is called when the dynamic library it is in is opened.</font>
 
-<a name="line90"> 90: </a><font color="#B22222">  This one registers all the <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> methods that are in the basic PETSc libpetscts library.</font>
+<a name="line92"> 92: </a><font color="#B22222">  This one registers all the <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> methods that are in the basic PETSc libpetscts library.</font>
 
-<a name="line92"> 92: </a><font color="#B22222">  Input Parameter:</font>
-<a name="line93"> 93: </a><font color="#B22222">  path - library path</font>
-<a name="line94"> 94: </a><font color="#B22222"> */</font>
-<a name="line95"> 95: </a><strong><font color="#4169E1"><a name="PetscDLLibraryRegister_petscts"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscDLLibraryRegister_petscts(const char path[])</font></strong>
-<a name="line96"> 96: </a>{
+<a name="line94"> 94: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line95"> 95: </a><font color="#B22222">  path - library path</font>
+<a name="line96"> 96: </a><font color="#B22222"> */</font>
+<a name="line97"> 97: </a><strong><font color="#4169E1"><a name="PetscDLLibraryRegister_petscts"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscDLLibraryRegister_petscts(const char path[])</font></strong>
+<a name="line98"> 98: </a>{
 
-<a name="line100">100: </a>  <A href="../../../docs/manualpages/TS/TSInitializePackage.html#TSInitializePackage">TSInitializePackage</A>(path);
-<a name="line101">101: </a>  <font color="#4169E1">return</font>(0);
-<a name="line102">102: </a>}
+<a name="line102">102: </a>  <A href="../../../docs/manualpages/TS/TSInitializePackage.html#TSInitializePackage">TSInitializePackage</A>(path);
+<a name="line103">103: </a>  <font color="#4169E1">return</font>(0);
+<a name="line104">104: </a>}
+<a name="line105">105: </a>EXTERN_C_END
 
 
-<a name="line106">106: </a><font color="#A020F0">#endif </font><font color="#B22222">/* PETSC_USE_DYNAMIC_LIBRARIES */</font><font color="#A020F0"></font>
+<a name="line108">108: </a><font color="#A020F0">#endif </font><font color="#B22222">/* PETSC_USE_DYNAMIC_LIBRARIES */</font><font color="#A020F0"></font>
 </pre>
 </body>
 

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/MatMFFDComputeJacobian.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatMFFDComputeJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatMFFDComputeJacobian"><H1>MatMFFDComputeJacobian</H1></A>
 Tells the matrix-free Jacobian object the new location at which Jacobian matrix vector products will be computed at, i.e. J(x) * a. The x is obtained from the <A HREF="../SNES/SNES.html#SNES">SNES</A> object (using <A HREF="../SNES/SNESGetSolution.html#SNESGetSolution">SNESGetSolution</A>()). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -37,7 +38,8 @@ the x from the <A HREF="../SNES/SNES.html#SNES">SNES</A> object and <A HREF="../
 change the base vector x.
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-This can be passed into <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>() when using a completely matrix-free solver,
+This can be passed into <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>() as the Jacobian evaluation function argument
+when using a completely matrix-free solver,
 that is the B matrix is also the same matrix operator. This is used when you select
 -snes_mf but rarely used directly by users. (All this routine does is call <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>/End() on
 the <A HREF="../Mat/Mat.html#Mat">Mat</A> jac.

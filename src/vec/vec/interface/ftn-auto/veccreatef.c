@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* veccreate.c */
 /* Fortran interface file */
 

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* shell.c */
 /* Fortran interface file */
 
@@ -29,6 +29,11 @@ extern void PetscRmPointer(void*);
 
 #include "petscmat.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matshellgetcontext_ MATSHELLGETCONTEXT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matshellgetcontext_ matshellgetcontext
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matshellsetcontext_ MATSHELLSETCONTEXT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matshellsetcontext_ matshellsetcontext
@@ -39,6 +44,10 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  matshellgetcontext_(Mat mat,void*ctx, int *__ierr ){
+*__ierr = MatShellGetContext(
+	(Mat)PetscToPointer((mat) ),ctx);
+}
 void PETSC_STDCALL  matshellsetcontext_(Mat mat,void*ctx, int *__ierr ){
 *__ierr = MatShellSetContext(
 	(Mat)PetscToPointer((mat) ),ctx);

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscFormatConvert.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscFormatConvert</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscFormatConvert"><H1>PetscFormatConvert</H1></A>
 Takes a PETSc format string and converts it to a reqular C format string 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -20,7 +21,7 @@ PetscErrorCode  PetscFormatConvert(const char *format,char *newformat,size_t siz
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>size </B></TD><TD>- the length of newformat
 </TD></TR></TABLE>
 <P>
-Note: this exists so we can have the same code when <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> is either int or long long and <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A> is either double or float
+Note: this exists so we can have the same code when <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> is either int or long long and <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A> is either __float128, double, or float
 <P>
 
 <P>

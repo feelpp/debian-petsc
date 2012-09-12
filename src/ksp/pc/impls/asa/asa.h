@@ -3,7 +3,7 @@
 */
 #if !defined(__ASA_IMPL)
 #define __ASA_IMPL
-#include <private/pcimpl.h>
+#include <petsc-private/pcimpl.h>
 #include <petscpcasa.h>
 
 /*
@@ -120,9 +120,6 @@ typedef struct {
   Vec        b;                            /* Right hand side */ 
   Vec        x;                            /* Solution */
   Vec        r;                            /* Residual */
-
-  /* grid information, not sure how to treat unstructured grids yet */
-  DM         dm;                           /* Grid information about the layout */
 
   /* the actual levels */
   PetscInt   levels;                       /* number of active levels used */

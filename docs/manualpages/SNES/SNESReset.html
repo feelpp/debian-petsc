@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESReset.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESReset</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESReset"><H1>SNESReset</H1></A>
 Resets a <A HREF="../SNES/SNES.html#SNES">SNES</A> context to the snessetupcalled = 0 state and removes any allocated <A HREF="../Vec/Vecs.html#Vecs">Vecs</A> and Mats 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESReset(SNES snes)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>

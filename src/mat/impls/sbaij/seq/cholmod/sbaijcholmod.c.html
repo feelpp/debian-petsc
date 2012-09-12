@@ -1,13 +1,14 @@
 <center><a href="sbaijcholmod.c">Actual source code: sbaijcholmod.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/sbaij/seq/cholmod/sbaijcholmod.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:03:43+00:00">
+<meta name="date" content="2012-08-29T16:49:35+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">   Provides an interface to the CHOLMOD 1.7.1 sparse solver</font>
@@ -239,7 +240,7 @@
 <a name="line254">254: </a>  <A href="../../../../../../docs/manualpages/Viewer/PetscViewerFormat.html#PetscViewerFormat">PetscViewerFormat</A> format;
 
 <a name="line257">257: </a>  MatView_SeqSBAIJ(F,viewer);
-<a name="line258">258: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line258">258: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line259">259: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line260">260: </a>    PetscViewerGetFormat(viewer,&amp;format);
 <a name="line261">261: </a>    <font color="#4169E1">if</font> (format == PETSC_VIEWER_ASCII_INFO) {
@@ -316,11 +317,13 @@
 <a name="line344">344: </a>  <font color="#4169E1">return</font>(0);
 <a name="line345">345: </a>}
 
+<a name="line347">347: </a>EXTERN_C_BEGIN
 <a name="line350">350: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqsbaij_cholmod"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqsbaij_cholmod(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
 <a name="line351">351: </a>{
 <a name="line353">353: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MATSOLVERCHOLMOD.html#MATSOLVERCHOLMOD">MATSOLVERCHOLMOD</A>;
 <a name="line354">354: </a>  <font color="#4169E1">return</font>(0);
 <a name="line355">355: </a>}
+<a name="line356">356: </a>EXTERN_C_END
 
 <a name="line358">358: </a><font color="#B22222">/*MC</font>
 <a name="line359">359: </a><font color="#B22222">  <A href="../../../../../../docs/manualpages/Mat/MATSOLVERCHOLMOD.html#MATSOLVERCHOLMOD">MATSOLVERCHOLMOD</A> = "cholmod" - A matrix type providing direct solvers (Cholesky) for sequential matrices</font>
@@ -332,24 +335,25 @@
 <a name="line365">365: </a><font color="#B22222">  which correspond to the options database keys below.</font>
 
 <a name="line367">367: </a><font color="#B22222">  Options Database Keys:</font>
-<a name="line368">368: </a><font color="#B22222">  -mat_cholmod_dbound &lt;0&gt;: Minimum absolute value of diagonal entries of D (None)</font>
-<a name="line369">369: </a><font color="#B22222">  -mat_cholmod_grow0 &lt;1.2&gt;: Global growth ratio when factors are modified (None)</font>
-<a name="line370">370: </a><font color="#B22222">  -mat_cholmod_grow1 &lt;1.2&gt;: Column growth ratio when factors are modified (None)</font>
-<a name="line371">371: </a><font color="#B22222">  -mat_cholmod_grow2 &lt;5&gt;: Affine column growth constant when factors are modified (None)</font>
-<a name="line372">372: </a><font color="#B22222">  -mat_cholmod_maxrank &lt;8&gt;: Max rank of update, larger values are faster but use more memory [2,4,8] (None)</font>
-<a name="line373">373: </a><font color="#B22222">  -mat_cholmod_factor &lt;AUTO&gt; (choose one of) SIMPLICIAL AUTO SUPERNODAL</font>
-<a name="line374">374: </a><font color="#B22222">  -mat_cholmod_supernodal_switch &lt;40&gt;: flop/nnz_L threshold for switching to supernodal factorization (None)</font>
-<a name="line375">375: </a><font color="#B22222">  -mat_cholmod_final_asis: &lt;TRUE&gt; Leave factors "as is" (None)</font>
-<a name="line376">376: </a><font color="#B22222">  -mat_cholmod_final_pack: &lt;TRUE&gt; Pack the columns when finished (use FALSE if the factors will be updated later) (None)</font>
-<a name="line377">377: </a><font color="#B22222">  -mat_cholmod_zrelax &lt;0.8&gt;: 3 real supernodal relaxed amalgamation parameters (None)</font>
-<a name="line378">378: </a><font color="#B22222">  -mat_cholmod_nrelax &lt;4&gt;: 3 size_t supernodal relaxed amalgamation parameters (None)</font>
-<a name="line379">379: </a><font color="#B22222">  -mat_cholmod_prefer_upper: &lt;TRUE&gt; Work with upper triangular form (faster when using fill-reducing ordering, slower in natural ordering) (None)</font>
-<a name="line380">380: </a><font color="#B22222">  -mat_cholmod_print &lt;3&gt;: Verbosity level (None)</font>
+<a name="line368">368: </a><font color="#B22222">+ -mat_cholmod_dbound &lt;0&gt;          - Minimum absolute value of diagonal entries of D (None)</font>
+<a name="line369">369: </a><font color="#B22222">. -mat_cholmod_grow0 &lt;1.2&gt;         - Global growth ratio when factors are modified (None)</font>
+<a name="line370">370: </a><font color="#B22222">. -mat_cholmod_grow1 &lt;1.2&gt;         - Column growth ratio when factors are modified (None)</font>
+<a name="line371">371: </a><font color="#B22222">. -mat_cholmod_grow2 &lt;5&gt;           - Affine column growth constant when factors are modified (None)</font>
+<a name="line372">372: </a><font color="#B22222">. -mat_cholmod_maxrank &lt;8&gt;         - Max rank of update, larger values are faster but use more memory [2,4,8] (None)</font>
+<a name="line373">373: </a><font color="#B22222">. -mat_cholmod_factor &lt;AUTO&gt;       - (choose one of) SIMPLICIAL AUTO SUPERNODAL</font>
+<a name="line374">374: </a><font color="#B22222">. -mat_cholmod_supernodal_switch &lt;40&gt; - flop/nnz_L threshold for switching to supernodal factorization (None)</font>
+<a name="line375">375: </a><font color="#B22222">. -mat_cholmod_final_asis &lt;TRUE&gt;   - Leave factors "as is" (None)</font>
+<a name="line376">376: </a><font color="#B22222">. -mat_cholmod_final_pack &lt;TRUE&gt;   - Pack the columns when finished (use FALSE if the factors will be updated later) (None)</font>
+<a name="line377">377: </a><font color="#B22222">. -mat_cholmod_zrelax &lt;0.8&gt;        - 3 real supernodal relaxed amalgamation parameters (None)</font>
+<a name="line378">378: </a><font color="#B22222">. -mat_cholmod_nrelax &lt;4&gt;          - 3 size_t supernodal relaxed amalgamation parameters (None)</font>
+<a name="line379">379: </a><font color="#B22222">. -mat_cholmod_prefer_upper &lt;TRUE&gt; - Work with upper triangular form (faster when using fill-reducing ordering, slower in natural ordering) (None)</font>
+<a name="line380">380: </a><font color="#B22222">- -mat_cholmod_print &lt;3&gt;           - Verbosity level (None)</font>
 
 <a name="line382">382: </a><font color="#B22222">   Level: beginner</font>
 
 <a name="line384">384: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/PC/PCCHOLESKY.html#PCCHOLESKY">PCCHOLESKY</A>, <A href="../../../../../../docs/manualpages/PC/PCFactorSetMatSolverPackage.html#PCFactorSetMatSolverPackage">PCFactorSetMatSolverPackage</A>(), <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A></font>
 <a name="line385">385: </a><font color="#B22222">M*/</font>
+<a name="line386">386: </a>EXTERN_C_BEGIN
 <a name="line389">389: </a><strong><font color="#4169E1"><a name="MatGetFactor_seqsbaij_cholmod"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetFactor_seqsbaij_cholmod(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatFactorType.html#MatFactorType">MatFactorType</A> ftype,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *F)</font></strong>
 <a name="line390">390: </a>{
 <a name="line391">391: </a>  <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B;
@@ -382,6 +386,7 @@
 <a name="line420">420: </a>  *F = B;
 <a name="line421">421: </a>  <font color="#4169E1">return</font>(0);
 <a name="line422">422: </a>}
+<a name="line423">423: </a>EXTERN_C_END
 </pre>
 </body>
 

@@ -26,9 +26,9 @@ T*/
 #define __FUNCT__ "main"
 int main(int argc,char **args)
 {
-  KSP            ksp;             /* linear solver context */
+  KSP            ksp;              /* linear solver context */
   Mat            C;                /* matrix */
-  Vec            x,u,b;          /* approx solution, RHS, exact solution */
+  Vec            x,u,b;            /* approx solution, RHS, exact solution */
   PetscReal      norm;             /* norm of solution error */
   PetscScalar    v,none = -1.0;
   PetscInt       Ii,J,ldim,low,high,iglobal,Istart,Iend;
@@ -36,6 +36,7 @@ int main(int argc,char **args)
   PetscInt       i,j,m = 3,n = 2,its;
   PetscMPIInt    size,rank;
   PetscBool      mat_nonsymmetric = PETSC_FALSE;
+  PetscBool      testnewC = PETSC_FALSE;
 #if defined (PETSC_USE_LOG)
   PetscLogStage  stages[2];
 #endif
@@ -74,6 +75,7 @@ int main(int argc,char **args)
   ierr = MatCreate(PETSC_COMM_WORLD,&C);CHKERRQ(ierr);
   ierr = MatSetSizes(C,PETSC_DECIDE,PETSC_DECIDE,m*n,m*n);CHKERRQ(ierr);
   ierr = MatSetFromOptions(C);CHKERRQ(ierr);
+  ierr = MatSetUp(C);CHKERRQ(ierr);
 
   /* 
      Currently, all PETSc parallel matrix formats are partitioned by
@@ -176,12 +178,11 @@ int main(int argc,char **args)
      Set operators. Here the matrix that defines the linear system
      also serves as the preconditioning matrix.
   */
-  ierr = KSPSetOperators(ksp,C,C,DIFFERENT_NONZERO_PATTERN);CHKERRQ(ierr);
+  ierr = KSPSetOperators(ksp,C,C,SAME_NONZERO_PATTERN);CHKERRQ(ierr);
 
   /* 
      Set runtime options (e.g., -ksp_type <type> -pc_type <type>)
   */
-
   ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
 
   /* 
@@ -200,7 +201,9 @@ int main(int argc,char **args)
   ierr = VecAXPY(x,none,u);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %A, Iterations %D\n",norm,its);CHKERRQ(ierr);
+  if (norm > 1.e-13){
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %G, Iterations %D\n",norm,its);CHKERRQ(ierr);
+  }
 
   /* -------------- Stage 1: Solve Second System ---------------------- */
   /* 
@@ -245,6 +248,18 @@ int main(int argc,char **args)
   ierr = MatAssemblyBegin(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(C,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr); 
 
+  ierr = PetscOptionsGetBool(PETSC_NULL,"-test_newMat",&testnewC,PETSC_NULL);CHKERRQ(ierr);
+  if (testnewC) {
+    /* 
+     User may use a new matrix C with same nonzero pattern, e.g.
+      ./ex5 -ksp_monitor -mat_type sbaij -pc_type cholesky -pc_factor_mat_solver_package mumps -test_newMat
+    */
+    Mat Ctmp;
+    ierr = MatDuplicate(C,MAT_COPY_VALUES,&Ctmp);CHKERRQ(ierr);
+    ierr = MatDestroy(&C);CHKERRQ(ierr); 
+    ierr = MatDuplicate(Ctmp,MAT_COPY_VALUES,&C);CHKERRQ(ierr);
+    ierr = MatDestroy(&Ctmp);CHKERRQ(ierr);
+  }
   /* 
      Compute another right-hand-side vector
   */
@@ -285,7 +300,9 @@ int main(int argc,char **args)
   ierr = VecAXPY(x,none,u);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %A, Iterations %D\n",norm,its);CHKERRQ(ierr);
+  if (norm > 1.e-4){
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %G, Iterations %D\n",norm,its);CHKERRQ(ierr);
+  }
 
   /* 
      Free work space.  All PETSc objects should be destroyed when they

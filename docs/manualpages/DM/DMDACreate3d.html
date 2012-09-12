@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMDACreate3d.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMDACreate3d</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMDACreate3d"><H1>DMDACreate3d</H1></A>
 Creates an object that will manage the communication of three-dimensional  regular array data that is distributed across some processors. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -32,13 +33,13 @@ from the command line with -da_grid_x &lt;M&gt; -da_grid_y &lt;N&gt; -da_grid_z 
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dof </B></TD><TD>- number of degrees of freedom per node
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>s </B></TD><TD>- stencil width
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>lx, ly, lz </B></TD><TD>- arrays containing the number of nodes in each cell along
 the x, y, and z coordinates, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>. If non-null, these
 must be of length as m,n,p and the corresponding
 m,n, or p cannot be <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>. Sum of the lx[] entries must be M, sum of
 the ly[] must N, sum of the lz[] must be P
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>s </B></TD><TD>- stencil width
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -98,13 +99,13 @@ and <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVe
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/dm/examples/tutorials/ex3.c.html">src/dm/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex11f90.F.html">src/dm/examples/tutorials/ex11f90.F.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex22.c.html">src/ksp/ksp/examples/tutorials/ex22.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex34.c.html">src/ksp/ksp/examples/tutorials/ex34.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex45.c.html">src/ksp/ksp/examples/tutorials/ex45.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex47.c.html">src/ksp/ksp/examples/tutorials/ex47.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex22f.F.html">src/ksp/ksp/examples/tutorials/ex22f.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex20.c.html">src/snes/examples/tutorials/ex20.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex633D_DB.c.html">src/snes/examples/tutorials/ex633D_DB.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
 </BODY></HTML>

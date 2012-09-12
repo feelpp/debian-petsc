@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = igacreatef.c igaf.c
-OBJSC    = igacreatef.o igaf.o
+SOURCEC  = igaf.c igacreatef.c
+OBJSC    = igaf.o igacreatef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

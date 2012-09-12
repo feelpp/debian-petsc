@@ -7,7 +7,7 @@
  * http://asbjorn.aarrestad.com/
  *
  */
-#include <private/tsimpl.h>                /*I   "petscts.h"   I*/
+#include <petsc-private/tsimpl.h>                /*I   "petscts.h"   I*/
 #include <time.h>
 
 typedef struct {
@@ -451,7 +451,7 @@ static PetscErrorCode TSView_RK(TS ts,PetscViewer viewer)
    PetscErrorCode ierr;
 
    PetscFunctionBegin;
-   ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+   ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
    if (iascii) {
      ierr = PetscViewerASCIIPrintf(viewer,"number of ok steps: %D\n",rk->nok);CHKERRQ(ierr);
      ierr = PetscViewerASCIIPrintf(viewer,"number of rejected steps: %D\n",rk->nnok);CHKERRQ(ierr);

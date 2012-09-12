@@ -1,13 +1,14 @@
 <center><a href="ex4.c">Actual source code: ex4.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tests/ex4.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:15:32+00:00">
+<meta name="date" content="2012-08-29T17:08:46+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* NOTE:  THIS PROGRAM HAS NOT YET BEEN SET UP IN TUTORIAL STYLE. */</font>
 
@@ -51,8 +52,10 @@
 <a name="line41"> 41: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    my;           <font color="#B22222">/* Discretization in y-direction */</font>
 <a name="line42"> 42: </a>} AppCtx;
 
+<a name="line44"> 44: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian1(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*),</font></strong>
 <a name="line45"> 45: </a><strong><font color="#4169E1">                      FormFunction1(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),</font></strong>
 <a name="line46"> 46: </a><strong><font color="#4169E1">                      FormInitialGuess1(AppCtx*,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line47"> 47: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian2(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*),</font></strong>
 <a name="line48"> 48: </a><strong><font color="#4169E1">                      FormFunction2(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),</font></strong>
 <a name="line49"> 49: </a><strong><font color="#4169E1">                      FormInitialGuess2(AppCtx*,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
 <a name="line50"> 50: </a>
@@ -111,7 +114,7 @@
 <a name="line106">106: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);
 <a name="line107">107: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetNonlinearStepFailures.html#SNESGetNonlinearStepFailures">SNESGetNonlinearStepFailures</A>(snes,&amp;nfails);
 
-<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"number of Newton iterations = %D, "</font>,its);
+<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"number of <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = %D, "</font>,its);
 <a name="line110">110: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"number of unsuccessful steps = %D\n\n"</font>,nfails);
 <a name="line111">111: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(x,&amp;xvalues);
 <a name="line112">112: </a>  <A href="../../../../docs/manualpages/Draw/PetscDrawTensorContour.html#PetscDrawTensorContour">PetscDrawTensorContour</A>(draw,user.mx,user.my,0,0,xvalues);

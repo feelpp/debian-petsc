@@ -1,15 +1,16 @@
 <center><a href="transm.c">Actual source code: transm.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/transpose/transm.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:26+00:00">
+<meta name="date" content="2012-08-29T16:50:23+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;          </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;          </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line4">  4: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line5">  5: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A;
@@ -102,7 +103,7 @@
 <a name="line116">116: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>((*N)-&gt;cmap,A-&gt;rmap-&gt;bs);
 <a name="line117">117: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>((*N)-&gt;rmap);
 <a name="line118">118: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>((*N)-&gt;cmap);
-
+<a name="line119">119: </a>  <A href="../../../../docs/manualpages/Mat/MatSetUp.html#MatSetUp">MatSetUp</A>(*N);
 <a name="line120">120: </a>  <font color="#4169E1">return</font>(0);
 <a name="line121">121: </a>}
 

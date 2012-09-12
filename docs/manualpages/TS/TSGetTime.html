@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSGetTime.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSGetTime</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSGetTime"><H1>TSGetTime</H1></A>
-Gets the current time. 
+Gets the time of the most recently completed step. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
@@ -23,6 +24,10 @@ Not Collective
 <br>
 <P>
 
+<P>
+<H3><FONT COLOR="#CC3333">Note</FONT></H3>
+When called during time step evaluation (e.g. during residual evaluation or via hooks set using <A HREF="../TS/TSSetPreStep.html#TSSetPreStep">TSSetPreStep</A>(),
+<A HREF="../TS/TSSetPreStage.html#TSSetPreStage">TSSetPreStage</A>(), or <A HREF="../TS/TSSetPostStep.html#TSSetPostStep">TSSetPostStep</A>()), the time is the time at the start of the step being evaluated.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../TS/TSSetInitialTimeStep.html#TSSetInitialTimeStep">TSSetInitialTimeStep</A>(), <A HREF="../TS/TSGetTimeStep.html#TSGetTimeStep">TSGetTimeStep</A>()

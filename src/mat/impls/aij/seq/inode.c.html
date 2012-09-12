@@ -1,13 +1,14 @@
 <center><a href="inode.c">Actual source code: inode.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/inode.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:59:19+00:00">
+<meta name="date" content="2012-08-29T16:43:52+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">  This file provides high performance routines for the Inode format (compressed sparse row)</font>
@@ -1282,7 +1283,7 @@
 <a name="line1317">1317: </a>            pv = b-&gt;a + bdiag[row+1]+1;
 <a name="line1318">1318: </a>            nz = bdiag[row]-bdiag[row+1]-1; <font color="#B22222">/* num of entries in U(row,:) excluding diag */</font>
 <a name="line1319">1319: </a>            <font color="#4169E1">for</font> (j=0; j&lt;nz; j++) rtmp1[pj[j]] -= mul1 * pv[j];
-<a name="line1320">1320: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*nz);
+<a name="line1320">1320: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1+2*nz);
 <a name="line1321">1321: </a>          }
 <a name="line1322">1322: </a>          row = *bjtmp++;
 <a name="line1323">1323: </a>        }
@@ -1366,7 +1367,7 @@
 <a name="line1401">1401: </a>              rtmp1[col] -= mul1 * pv[j];
 <a name="line1402">1402: </a>              rtmp2[col] -= mul2 * pv[j];
 <a name="line1403">1403: </a>            }
-<a name="line1404">1404: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4*nz);
+<a name="line1404">1404: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2+4*nz);
 <a name="line1405">1405: </a>          }
 <a name="line1406">1406: </a>          row = *bjtmp++;
 <a name="line1407">1407: </a>        }
@@ -1407,7 +1408,7 @@
 <a name="line1442">1442: </a>          <font color="#4169E1">for</font> (j=0; j&lt;nz; j++) {
 <a name="line1443">1443: </a>            col = pj[j]; rtmp2[col] -= mul1 * rtmp1[col];
 <a name="line1444">1444: </a>          }
-<a name="line1445">1445: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2*nz);
+<a name="line1445">1445: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1+2*nz);
 <a name="line1446">1446: </a>        }
 
 <a name="line1448">1448: </a>        <font color="#B22222">/* finished row i+1; check zero pivot, then stick row i+1 into b-&gt;a */</font>
@@ -1489,7 +1490,7 @@
 <a name="line1524">1524: </a>              rtmp2[col] -= mul2 * pv[j];
 <a name="line1525">1525: </a>              rtmp3[col] -= mul3 * pv[j];
 <a name="line1526">1526: </a>            }
-<a name="line1527">1527: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(6*nz);
+<a name="line1527">1527: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(3+6*nz);
 <a name="line1528">1528: </a>          }
 <a name="line1529">1529: </a>          row = *bjtmp++;
 <a name="line1530">1530: </a>        }
@@ -1533,7 +1534,7 @@
 <a name="line1568">1568: </a>            rtmp2[col] -= mul2 * rtmp1[col];
 <a name="line1569">1569: </a>            rtmp3[col] -= mul3 * rtmp1[col];
 <a name="line1570">1570: </a>          }
-<a name="line1571">1571: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4*nz);
+<a name="line1571">1571: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2+4*nz);
 <a name="line1572">1572: </a>        }
 <a name="line1573">1573: </a>
 <a name="line1574">1574: </a>        <font color="#B22222">/* finished row i+1; check zero pivot, then stick row i+1 into b-&gt;a */</font>
@@ -1572,7 +1573,7 @@
 <a name="line1607">1607: </a>            col = pj[j];
 <a name="line1608">1608: </a>            rtmp3[col] -= mul3 * rtmp2[col];
 <a name="line1609">1609: </a>          }
-<a name="line1610">1610: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2*nz);
+<a name="line1610">1610: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1+2*nz);
 <a name="line1611">1611: </a>        }
 
 <a name="line1613">1613: </a>        <font color="#B22222">/* finished i+2; check zero pivot, then stick row i+2 into b-&gt;a */</font>
@@ -1655,7 +1656,7 @@
 <a name="line1690">1690: </a>              rtmp3[col] -= mul3 * pv[j];
 <a name="line1691">1691: </a>              rtmp4[col] -= mul4 * pv[j];
 <a name="line1692">1692: </a>            }
-<a name="line1693">1693: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(8*nz);
+<a name="line1693">1693: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4+8*nz);
 <a name="line1694">1694: </a>          }
 <a name="line1695">1695: </a>          row = *bjtmp++;
 <a name="line1696">1696: </a>        }
@@ -1702,7 +1703,7 @@
 <a name="line1737">1737: </a>            rtmp3[col] -= mul3 * rtmp1[col];
 <a name="line1738">1738: </a>            rtmp4[col] -= mul4 * rtmp1[col];
 <a name="line1739">1739: </a>          }
-<a name="line1740">1740: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(6*nz);
+<a name="line1740">1740: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(3+6*nz);
 <a name="line1741">1741: </a>        }
 <a name="line1742">1742: </a>
 <a name="line1743">1743: </a>        <font color="#B22222">/* finished row i+1; check zero pivot, then stick row i+1 into b-&gt;a */</font>
@@ -1783,7 +1784,7 @@
 <a name="line1818">1818: </a>            col = pj[j];
 <a name="line1819">1819: </a>            rtmp4[col] -= mul4 * rtmp3[col];
 <a name="line1820">1820: </a>          }
-<a name="line1821">1821: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2*nz);
+<a name="line1821">1821: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1+2*nz);
 <a name="line1822">1822: </a>        }
 
 <a name="line1824">1824: </a>        <font color="#B22222">/* finished i+3; check zero pivot, then stick row i+3 into b-&gt;a */</font>
@@ -1998,7 +1999,7 @@
 <a name="line2036">2036: </a>            mul1 = *pc1 * *pv++;
 <a name="line2037">2037: </a>            *pc1 = mul1;
 <a name="line2038">2038: </a>            nz_tmp = bi[prow+1] - bd[prow] - 1;
-<a name="line2039">2039: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2*nz_tmp);
+<a name="line2039">2039: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1+2*nz_tmp);
 <a name="line2040">2040: </a>            <font color="#4169E1">for</font> (j=0; j&lt;nz_tmp; j++) {
 <a name="line2041">2041: </a>              tmp = pv[j];
 <a name="line2042">2042: </a>              idx = pj[j];
@@ -2064,7 +2065,7 @@
 <a name="line2102">2102: </a>              rtmp11[idx] -= mul1 * tmp;
 <a name="line2103">2103: </a>              rtmp22[idx] -= mul2 * tmp;
 <a name="line2104">2104: </a>            }
-<a name="line2105">2105: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4*nz_tmp);
+<a name="line2105">2105: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2+4*nz_tmp);
 <a name="line2106">2106: </a>          }
 <a name="line2107">2107: </a>          prow = *bjtmp++ ;
 <a name="line2108">2108: </a>        }
@@ -2094,7 +2095,7 @@
 <a name="line2132">2132: </a>            tmp = rtmp11[idx];
 <a name="line2133">2133: </a>            rtmp22[idx] -= mul2 * tmp;
 <a name="line2134">2134: </a>          }
-<a name="line2135">2135: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2*nz_tmp);
+<a name="line2135">2135: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1+2*nz_tmp);
 <a name="line2136">2136: </a>        }
 <a name="line2137">2137: </a>
 <a name="line2138">2138: </a>        pj  = bj + bi[row];
@@ -2167,7 +2168,7 @@
 <a name="line2205">2205: </a>              rtmp22[idx] -= mul2 * tmp;
 <a name="line2206">2206: </a>              rtmp33[idx] -= mul3 * tmp;
 <a name="line2207">2207: </a>            }
-<a name="line2208">2208: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(6*nz_tmp);
+<a name="line2208">2208: </a>            <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(3+6*nz_tmp);
 <a name="line2209">2209: </a>          }
 <a name="line2210">2210: </a>          prow = *bjtmp++ ;
 <a name="line2211">2211: </a>        }
@@ -2202,7 +2203,7 @@
 <a name="line2240">2240: </a>            rtmp22[idx] -= mul2 * tmp;
 <a name="line2241">2241: </a>            rtmp33[idx] -= mul3 * tmp;
 <a name="line2242">2242: </a>          }
-<a name="line2243">2243: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4*nz_tmp);
+<a name="line2243">2243: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2+4*nz_tmp);
 <a name="line2244">2244: </a>        }
 <a name="line2245">2245: </a>        ++prow;
 
@@ -2229,7 +2230,7 @@
 <a name="line2267">2267: </a>            tmp = rtmp22[idx];
 <a name="line2268">2268: </a>            rtmp33[idx] -= mul3 * tmp;
 <a name="line2269">2269: </a>          }
-<a name="line2270">2270: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2*nz_tmp);
+<a name="line2270">2270: </a>          <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1+2*nz_tmp);
 <a name="line2271">2271: </a>        }
 
 <a name="line2273">2273: </a>        pj  = bj + bi[row];
@@ -2762,16 +2763,16 @@
 <a name="line2809">2809: </a>          ibdiag[cnt] = 1.0/ibdiag[cnt];
 <a name="line2810">2810: </a>          <font color="#4169E1">break</font>;
 <a name="line2811">2811: </a>        <font color="#4169E1">case</font> 2:
-<a name="line2812">2812: </a>          Kernel_A_gets_inverse_A_2(ibdiag+cnt,shift);
+<a name="line2812">2812: </a>          PetscKernel_A_gets_inverse_A_2(ibdiag+cnt,shift);
 <a name="line2813">2813: </a>          <font color="#4169E1">break</font>;
 <a name="line2814">2814: </a>        <font color="#4169E1">case</font> 3:
-<a name="line2815">2815: </a>          Kernel_A_gets_inverse_A_3(ibdiag+cnt,shift);
+<a name="line2815">2815: </a>          PetscKernel_A_gets_inverse_A_3(ibdiag+cnt,shift);
 <a name="line2816">2816: </a>          <font color="#4169E1">break</font>;
 <a name="line2817">2817: </a>        <font color="#4169E1">case</font> 4:
-<a name="line2818">2818: </a>          Kernel_A_gets_inverse_A_4(ibdiag+cnt,shift);
+<a name="line2818">2818: </a>          PetscKernel_A_gets_inverse_A_4(ibdiag+cnt,shift);
 <a name="line2819">2819: </a>          <font color="#4169E1">break</font>;
 <a name="line2820">2820: </a>        <font color="#4169E1">case</font> 5:
-<a name="line2821">2821: </a>          Kernel_A_gets_inverse_A_5(ibdiag+cnt,ipvt,work,shift);
+<a name="line2821">2821: </a>          PetscKernel_A_gets_inverse_A_5(ibdiag+cnt,ipvt,work,shift);
 <a name="line2822">2822: </a>          <font color="#4169E1">break</font>;
 <a name="line2823">2823: </a><strong><font color="#FF0000">       default:</font></strong>
 <a name="line2824">2824: </a>         <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Inode size %D not supported"</font>,sizes[i]);
@@ -3706,206 +3707,248 @@
 <a name="line3760">3760: </a>  <font color="#4169E1">return</font>(0);
 <a name="line3761">3761: </a>}
 
-<a name="line3765">3765: </a><strong><font color="#4169E1"><a name="MatGetRow_FactoredLU"></a>PETSC_STATIC_INLINE <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetRow_FactoredLU(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *cols,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nzl,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nzu,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nz,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *adiag,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> row)</font></strong>
+<a name="line3765">3765: </a><strong><font color="#4169E1"><a name="MatDuplicate_SeqAIJ_Inode"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDuplicate_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Mat/MatDuplicateOption.html#MatDuplicateOption">MatDuplicateOption</A> cpvalues,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *C)</font></strong>
 <a name="line3766">3766: </a>{
-<a name="line3767">3767: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> k, *vi;
-<a name="line3769">3769: </a>  vi = aj + ai[row];
-<a name="line3770">3770: </a>  <font color="#4169E1">for</font>(k=0;k&lt;nzl;k++) cols[k] = vi[k];
-<a name="line3771">3771: </a>  vi = aj + adiag[row];
-<a name="line3772">3772: </a>  cols[nzl] = vi[0];
-<a name="line3773">3773: </a>  vi = aj + adiag[row+1]+1;
-<a name="line3774">3774: </a>  <font color="#4169E1">for</font>(k=0;k&lt;nzu;k++) cols[nzl+1+k] = vi[k];
-<a name="line3775">3775: </a>  <font color="#4169E1">return</font>(0);
-<a name="line3776">3776: </a>}
-<a name="line3777">3777: </a><font color="#B22222">/*</font>
-<a name="line3778">3778: </a><font color="#B22222">   Mat_CheckInode_FactorLU - Check Inode for factored seqaij matrix.</font>
-<a name="line3779">3779: </a><font color="#B22222">   Modified from Mat_CheckInode().</font>
+<a name="line3767">3767: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B=*C;
+<a name="line3768">3768: </a>  Mat_SeqAIJ     *c=(Mat_SeqAIJ*)B-&gt;data,*a=(Mat_SeqAIJ*)A-&gt;data;
+<a name="line3770">3770: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m=A-&gt;rmap-&gt;n;
 
-<a name="line3781">3781: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line3782">3782: </a><font color="#B22222">+  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A - ILU or LU matrix factor</font>
-<a name="line3783">3783: </a><font color="#B22222">-  samestructure - TRUE indicates that the matrix has not changed its nonzero structure so we </font>
-<a name="line3784">3784: </a><font color="#B22222">    do not need to recompute the inodes </font>
-<a name="line3785">3785: </a><font color="#B22222">*/</font>
-<a name="line3788">3788: </a><strong><font color="#4169E1"><a name="Mat_CheckInode_FactorLU"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Mat_CheckInode_FactorLU(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  samestructure)</font></strong>
-<a name="line3789">3789: </a>{
-<a name="line3790">3790: </a>  Mat_SeqAIJ     *a = (Mat_SeqAIJ*)A-&gt;data;
-<a name="line3792">3792: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,m,nzl1,nzu1,nzl2,nzu2,nzx,nzy,node_count,blk_size;
-<a name="line3793">3793: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *cols1,*cols2,*ns,*ai = a-&gt;i,*aj = a-&gt;j, *adiag = a-&gt;diag;
-<a name="line3794">3794: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flag;
 
-<a name="line3797">3797: </a>  <font color="#4169E1">if</font> (!a-&gt;inode.use)                     <font color="#4169E1">return</font>(0);
-<a name="line3798">3798: </a>  <font color="#4169E1">if</font> (a-&gt;inode.checked &amp;&amp; samestructure) <font color="#4169E1">return</font>(0);
+<a name="line3774">3774: </a>  c-&gt;inode.use          = a-&gt;inode.use;
+<a name="line3775">3775: </a>  c-&gt;inode.limit        = a-&gt;inode.limit;
+<a name="line3776">3776: </a>  c-&gt;inode.max_limit    = a-&gt;inode.max_limit;
+<a name="line3777">3777: </a>  <font color="#4169E1">if</font> (a-&gt;inode.size){
+<a name="line3778">3778: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((m+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;c-&gt;inode.size);
+<a name="line3779">3779: </a>    c-&gt;inode.node_count = a-&gt;inode.node_count;
+<a name="line3780">3780: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(c-&gt;inode.size,a-&gt;inode.size,(m+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line3781">3781: </a>    <font color="#B22222">/* note the table of functions below should match that in Mat_CheckInode() */</font>
+<a name="line3782">3782: </a>    <font color="#4169E1">if</font> (!B-&gt;factortype) {
+<a name="line3783">3783: </a>      B-&gt;ops-&gt;mult              = MatMult_SeqAIJ_Inode;
+<a name="line3784">3784: </a>      B-&gt;ops-&gt;sor               = MatSOR_SeqAIJ_Inode;
+<a name="line3785">3785: </a>      B-&gt;ops-&gt;multadd           = MatMultAdd_SeqAIJ_Inode;
+<a name="line3786">3786: </a>      B-&gt;ops-&gt;getrowij          = MatGetRowIJ_SeqAIJ_Inode;
+<a name="line3787">3787: </a>      B-&gt;ops-&gt;restorerowij      = MatRestoreRowIJ_SeqAIJ_Inode;
+<a name="line3788">3788: </a>      B-&gt;ops-&gt;getcolumnij       = MatGetColumnIJ_SeqAIJ_Inode;
+<a name="line3789">3789: </a>      B-&gt;ops-&gt;restorecolumnij   = MatRestoreColumnIJ_SeqAIJ_Inode;
+<a name="line3790">3790: </a>      B-&gt;ops-&gt;coloringpatch     = MatColoringPatch_SeqAIJ_Inode;
+<a name="line3791">3791: </a>      B-&gt;ops-&gt;multdiagonalblock = MatMultDiagonalBlock_SeqAIJ_Inode;
+<a name="line3792">3792: </a>    } <font color="#4169E1">else</font> {
+<a name="line3793">3793: </a>      B-&gt;ops-&gt;solve             = MatSolve_SeqAIJ_Inode_inplace;
+<a name="line3794">3794: </a>    }
+<a name="line3795">3795: </a>  } <font color="#4169E1">else</font> {
+<a name="line3796">3796: </a>    c-&gt;inode.size       = 0;
+<a name="line3797">3797: </a>    c-&gt;inode.node_count = 0;
+<a name="line3798">3798: </a>  }
+<a name="line3799">3799: </a>  c-&gt;inode.ibdiagvalid = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line3800">3800: </a>  c-&gt;inode.ibdiag      = 0;
+<a name="line3801">3801: </a>  c-&gt;inode.bdiag       = 0;
+<a name="line3802">3802: </a>  <font color="#4169E1">return</font>(0);
+<a name="line3803">3803: </a>}
 
-<a name="line3800">3800: </a>  m = A-&gt;rmap-&gt;n;
-<a name="line3801">3801: </a>  <font color="#4169E1">if</font> (a-&gt;inode.size) {ns = a-&gt;inode.size;}
-<a name="line3802">3802: </a>  <font color="#4169E1">else</font> {<A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((m+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;ns);}
+<a name="line3807">3807: </a><strong><font color="#4169E1"><a name="MatGetRow_FactoredLU"></a>PETSC_STATIC_INLINE <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetRow_FactoredLU(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *cols,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nzl,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nzu,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nz,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *adiag,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> row)</font></strong>
+<a name="line3808">3808: </a>{
+<a name="line3809">3809: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> k, *vi;
+<a name="line3811">3811: </a>  vi = aj + ai[row];
+<a name="line3812">3812: </a>  <font color="#4169E1">for</font>(k=0;k&lt;nzl;k++) cols[k] = vi[k];
+<a name="line3813">3813: </a>  vi = aj + adiag[row];
+<a name="line3814">3814: </a>  cols[nzl] = vi[0];
+<a name="line3815">3815: </a>  vi = aj + adiag[row+1]+1;
+<a name="line3816">3816: </a>  <font color="#4169E1">for</font>(k=0;k&lt;nzu;k++) cols[nzl+1+k] = vi[k];
+<a name="line3817">3817: </a>  <font color="#4169E1">return</font>(0);
+<a name="line3818">3818: </a>}
+<a name="line3819">3819: </a><font color="#B22222">/*</font>
+<a name="line3820">3820: </a><font color="#B22222">   Mat_CheckInode_FactorLU - Check Inode for factored seqaij matrix.</font>
+<a name="line3821">3821: </a><font color="#B22222">   Modified from Mat_CheckInode().</font>
 
-<a name="line3804">3804: </a>  i          = 0;
-<a name="line3805">3805: </a>  node_count = 0;
-<a name="line3806">3806: </a>  <font color="#4169E1">while</font> (i &lt; m){                <font color="#B22222">/* For each row */</font>
-<a name="line3807">3807: </a>    nzl1 = ai[i+1] - ai[i];       <font color="#B22222">/* Number of nonzeros in L */</font>
-<a name="line3808">3808: </a>    nzu1 = adiag[i] - adiag[i+1] - 1; <font color="#B22222">/* Number of nonzeros in U excluding diagonal*/</font>
-<a name="line3809">3809: </a>    nzx  = nzl1 + nzu1 + 1;
-<a name="line3810">3810: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((nzx+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;cols1);
-<a name="line3811">3811: </a>    MatGetRow_FactoredLU(cols1,nzl1,nzu1,nzx,ai,aj,adiag,i);
-<a name="line3812">3812: </a>
-<a name="line3813">3813: </a>    <font color="#B22222">/* Limits the number of elements in a node to 'a-&gt;inode.limit' */</font>
-<a name="line3814">3814: </a>    <font color="#4169E1">for</font> (j=i+1,blk_size=1; j&lt;m &amp;&amp; blk_size &lt;a-&gt;inode.limit; ++j,++blk_size) {
-<a name="line3815">3815: </a>      nzl2    = ai[j+1] - ai[j];
-<a name="line3816">3816: </a>      nzu2    = adiag[j] - adiag[j+1] - 1;
-<a name="line3817">3817: </a>      nzy     = nzl2 + nzu2 + 1;
-<a name="line3818">3818: </a>      <font color="#4169E1">if</font>( nzy != nzx) <font color="#4169E1">break</font>;
-<a name="line3819">3819: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((nzy+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;cols2);
-<a name="line3820">3820: </a>      MatGetRow_FactoredLU(cols2,nzl2,nzu2,nzy,ai,aj,adiag,j);
-<a name="line3821">3821: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMemcmp.html#PetscMemcmp">PetscMemcmp</A>(cols1,cols2,nzx*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;flag);
-<a name="line3822">3822: </a>      <font color="#4169E1">if</font> (!flag) {<A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cols2);<font color="#4169E1">break</font>;}
-<a name="line3823">3823: </a>      <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cols2);
-<a name="line3824">3824: </a>    }
-<a name="line3825">3825: </a>    ns[node_count++] = blk_size;
-<a name="line3826">3826: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cols1);
-<a name="line3827">3827: </a>    i    = j;
-<a name="line3828">3828: </a>  }
-<a name="line3829">3829: </a>  <font color="#B22222">/* If not enough inodes found,, do not use inode version of the routines */</font>
-<a name="line3830">3830: </a>  <font color="#4169E1">if</font> (!m || node_count &gt; .8*m) {
-<a name="line3831">3831: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ns);
-<a name="line3832">3832: </a>    a-&gt;inode.node_count     = 0;
-<a name="line3833">3833: </a>    a-&gt;inode.size           = <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line3834">3834: </a>    a-&gt;inode.use            = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line3835">3835: </a>    PetscInfo2(A,<font color="#666666">"Found %D nodes out of %D rows. Not using Inode routines\n"</font>,node_count,m);
-<a name="line3836">3836: </a>  } <font color="#4169E1">else</font> {
-<a name="line3837">3837: </a>    A-&gt;ops-&gt;mult              = 0;
-<a name="line3838">3838: </a>    A-&gt;ops-&gt;sor               = 0;
-<a name="line3839">3839: </a>    A-&gt;ops-&gt;multadd           = 0;
-<a name="line3840">3840: </a>    A-&gt;ops-&gt;getrowij          = 0;
-<a name="line3841">3841: </a>    A-&gt;ops-&gt;restorerowij      = 0;
-<a name="line3842">3842: </a>    A-&gt;ops-&gt;getcolumnij       = 0;
-<a name="line3843">3843: </a>    A-&gt;ops-&gt;restorecolumnij   = 0;
-<a name="line3844">3844: </a>    A-&gt;ops-&gt;coloringpatch     = 0;
-<a name="line3845">3845: </a>    A-&gt;ops-&gt;multdiagonalblock = 0;
-<a name="line3846">3846: </a>    A-&gt;ops-&gt;solve             = MatSolve_SeqAIJ_Inode;
-<a name="line3847">3847: </a>    a-&gt;inode.node_count       = node_count;
-<a name="line3848">3848: </a>    a-&gt;inode.size             = ns;
-<a name="line3849">3849: </a>    PetscInfo3(A,<font color="#666666">"Found %D nodes of %D. Limit used: %D. Using Inode routines\n"</font>,node_count,m,a-&gt;inode.limit);
-<a name="line3850">3850: </a>  }
-<a name="line3851">3851: </a>  a-&gt;inode.checked = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line3852">3852: </a>  <font color="#4169E1">return</font>(0);
-<a name="line3853">3853: </a>}
+<a name="line3823">3823: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line3824">3824: </a><font color="#B22222">+  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A - ILU or LU matrix factor</font>
+<a name="line3825">3825: </a><font color="#B22222">-  samestructure - TRUE indicates that the matrix has not changed its nonzero structure so we </font>
+<a name="line3826">3826: </a><font color="#B22222">    do not need to recompute the inodes </font>
+<a name="line3827">3827: </a><font color="#B22222">*/</font>
+<a name="line3830">3830: </a><strong><font color="#4169E1"><a name="Mat_CheckInode_FactorLU"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Mat_CheckInode_FactorLU(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  samestructure)</font></strong>
+<a name="line3831">3831: </a>{
+<a name="line3832">3832: </a>  Mat_SeqAIJ     *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line3834">3834: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,m,nzl1,nzu1,nzl2,nzu2,nzx,nzy,node_count,blk_size;
+<a name="line3835">3835: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *cols1,*cols2,*ns,*ai = a-&gt;i,*aj = a-&gt;j, *adiag = a-&gt;diag;
+<a name="line3836">3836: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flag;
 
-<a name="line3855">3855: </a><font color="#B22222">/*</font>
-<a name="line3856">3856: </a><font color="#B22222">     This is really ugly. if inodes are used this replaces the </font>
-<a name="line3857">3857: </a><font color="#B22222">  permutations with ones that correspond to rows/cols of the matrix</font>
-<a name="line3858">3858: </a><font color="#B22222">  rather then inode blocks</font>
-<a name="line3859">3859: </a><font color="#B22222">*/</font>
-<a name="line3862">3862: </a><strong><font color="#4169E1"><a name="MatInodeAdjustForInodes"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatInodeAdjustForInodes(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *rperm,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *cperm)</font></strong>
-<a name="line3863">3863: </a>{
+<a name="line3839">3839: </a>  <font color="#4169E1">if</font> (!a-&gt;inode.use)                     <font color="#4169E1">return</font>(0);
+<a name="line3840">3840: </a>  <font color="#4169E1">if</font> (a-&gt;inode.checked &amp;&amp; samestructure) <font color="#4169E1">return</font>(0);
 
-<a name="line3867">3867: </a>  PetscTryMethod(A,<font color="#666666">"MatInodeAdjustForInodes_C"</font>,(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>*),(A,rperm,cperm));
-<a name="line3868">3868: </a>  <font color="#4169E1">return</font>(0);
-<a name="line3869">3869: </a>}
+<a name="line3842">3842: </a>  m = A-&gt;rmap-&gt;n;
+<a name="line3843">3843: </a>  <font color="#4169E1">if</font> (a-&gt;inode.size) {ns = a-&gt;inode.size;}
+<a name="line3844">3844: </a>  <font color="#4169E1">else</font> {<A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((m+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;ns);}
 
-<a name="line3874">3874: </a><strong><font color="#4169E1"><a name="MatInodeAdjustForInodes_SeqAIJ_Inode"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatInodeAdjustForInodes_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *rperm,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *cperm)</font></strong>
-<a name="line3875">3875: </a>{
-<a name="line3876">3876: </a>  Mat_SeqAIJ      *a=(Mat_SeqAIJ*)A-&gt;data;
-<a name="line3878">3878: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m = A-&gt;rmap-&gt;n,n = A-&gt;cmap-&gt;n,i,j,nslim_row = a-&gt;inode.node_count;
-<a name="line3879">3879: </a>  const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ridx,*cidx;
-<a name="line3880">3880: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       row,col,*permr,*permc,*ns_row =  a-&gt;inode.size,*tns,start_val,end_val,indx;
-<a name="line3881">3881: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nslim_col,*ns_col;
-<a name="line3882">3882: </a>  <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>             ris = *rperm,cis = *cperm;
+<a name="line3846">3846: </a>  i          = 0;
+<a name="line3847">3847: </a>  node_count = 0;
+<a name="line3848">3848: </a>  <font color="#4169E1">while</font> (i &lt; m){                <font color="#B22222">/* For each row */</font>
+<a name="line3849">3849: </a>    nzl1 = ai[i+1] - ai[i];       <font color="#B22222">/* Number of nonzeros in L */</font>
+<a name="line3850">3850: </a>    nzu1 = adiag[i] - adiag[i+1] - 1; <font color="#B22222">/* Number of nonzeros in U excluding diagonal*/</font>
+<a name="line3851">3851: </a>    nzx  = nzl1 + nzu1 + 1;
+<a name="line3852">3852: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((nzx+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;cols1);
+<a name="line3853">3853: </a>    MatGetRow_FactoredLU(cols1,nzl1,nzu1,nzx,ai,aj,adiag,i);
+<a name="line3854">3854: </a>
+<a name="line3855">3855: </a>    <font color="#B22222">/* Limits the number of elements in a node to 'a-&gt;inode.limit' */</font>
+<a name="line3856">3856: </a>    <font color="#4169E1">for</font> (j=i+1,blk_size=1; j&lt;m &amp;&amp; blk_size &lt;a-&gt;inode.limit; ++j,++blk_size) {
+<a name="line3857">3857: </a>      nzl2    = ai[j+1] - ai[j];
+<a name="line3858">3858: </a>      nzu2    = adiag[j] - adiag[j+1] - 1;
+<a name="line3859">3859: </a>      nzy     = nzl2 + nzu2 + 1;
+<a name="line3860">3860: </a>      <font color="#4169E1">if</font>( nzy != nzx) <font color="#4169E1">break</font>;
+<a name="line3861">3861: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((nzy+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;cols2);
+<a name="line3862">3862: </a>      MatGetRow_FactoredLU(cols2,nzl2,nzu2,nzy,ai,aj,adiag,j);
+<a name="line3863">3863: </a>      <A href="../../../../../docs/manualpages/Sys/PetscMemcmp.html#PetscMemcmp">PetscMemcmp</A>(cols1,cols2,nzx*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;flag);
+<a name="line3864">3864: </a>      <font color="#4169E1">if</font> (!flag) {<A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cols2);<font color="#4169E1">break</font>;}
+<a name="line3865">3865: </a>      <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cols2);
+<a name="line3866">3866: </a>    }
+<a name="line3867">3867: </a>    ns[node_count++] = blk_size;
+<a name="line3868">3868: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cols1);
+<a name="line3869">3869: </a>    i    = j;
+<a name="line3870">3870: </a>  }
+<a name="line3871">3871: </a>  <font color="#B22222">/* If not enough inodes found,, do not use inode version of the routines */</font>
+<a name="line3872">3872: </a>  <font color="#4169E1">if</font> (!m || node_count &gt; .8*m) {
+<a name="line3873">3873: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ns);
+<a name="line3874">3874: </a>    a-&gt;inode.node_count     = 0;
+<a name="line3875">3875: </a>    a-&gt;inode.size           = <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line3876">3876: </a>    a-&gt;inode.use            = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line3877">3877: </a>    PetscInfo2(A,<font color="#666666">"Found %D nodes out of %D rows. Not using Inode routines\n"</font>,node_count,m);
+<a name="line3878">3878: </a>  } <font color="#4169E1">else</font> {
+<a name="line3879">3879: </a>    A-&gt;ops-&gt;mult              = 0;
+<a name="line3880">3880: </a>    A-&gt;ops-&gt;sor               = 0;
+<a name="line3881">3881: </a>    A-&gt;ops-&gt;multadd           = 0;
+<a name="line3882">3882: </a>    A-&gt;ops-&gt;getrowij          = 0;
+<a name="line3883">3883: </a>    A-&gt;ops-&gt;restorerowij      = 0;
+<a name="line3884">3884: </a>    A-&gt;ops-&gt;getcolumnij       = 0;
+<a name="line3885">3885: </a>    A-&gt;ops-&gt;restorecolumnij   = 0;
+<a name="line3886">3886: </a>    A-&gt;ops-&gt;coloringpatch     = 0;
+<a name="line3887">3887: </a>    A-&gt;ops-&gt;multdiagonalblock = 0;
+<a name="line3888">3888: </a>    A-&gt;ops-&gt;solve             = MatSolve_SeqAIJ_Inode;
+<a name="line3889">3889: </a>    a-&gt;inode.node_count       = node_count;
+<a name="line3890">3890: </a>    a-&gt;inode.size             = ns;
+<a name="line3891">3891: </a>    PetscInfo3(A,<font color="#666666">"Found %D nodes of %D. Limit used: %D. Using Inode routines\n"</font>,node_count,m,a-&gt;inode.limit);
+<a name="line3892">3892: </a>  }
+<a name="line3893">3893: </a>  a-&gt;inode.checked = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line3894">3894: </a>  <font color="#4169E1">return</font>(0);
+<a name="line3895">3895: </a>}
 
-<a name="line3885">3885: </a>  <font color="#4169E1">if</font> (!a-&gt;inode.size) <font color="#4169E1">return</font>(0); <font color="#B22222">/* no inodes so return */</font>
-<a name="line3886">3886: </a>  <font color="#4169E1">if</font> (a-&gt;inode.node_count == m) <font color="#4169E1">return</font>(0); <font color="#B22222">/* all inodes are of size 1 */</font>
+<a name="line3897">3897: </a><font color="#B22222">/*</font>
+<a name="line3898">3898: </a><font color="#B22222">     This is really ugly. if inodes are used this replaces the </font>
+<a name="line3899">3899: </a><font color="#B22222">  permutations with ones that correspond to rows/cols of the matrix</font>
+<a name="line3900">3900: </a><font color="#B22222">  rather then inode blocks</font>
+<a name="line3901">3901: </a><font color="#B22222">*/</font>
+<a name="line3904">3904: </a><strong><font color="#4169E1"><a name="MatInodeAdjustForInodes"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatInodeAdjustForInodes(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *rperm,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *cperm)</font></strong>
+<a name="line3905">3905: </a>{
 
-<a name="line3888">3888: </a>  Mat_CreateColInode(A,&amp;nslim_col,&amp;ns_col);
-<a name="line3889">3889: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((((nslim_row&gt;nslim_col)?nslim_row:nslim_col)+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;tns);
-<a name="line3890">3890: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(m,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;permr,n,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;permc);
+<a name="line3909">3909: </a>  PetscTryMethod(A,<font color="#666666">"MatInodeAdjustForInodes_C"</font>,(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>*,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>*),(A,rperm,cperm));
+<a name="line3910">3910: </a>  <font color="#4169E1">return</font>(0);
+<a name="line3911">3911: </a>}
 
-<a name="line3892">3892: </a>  <A href="../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(ris,&amp;ridx);
-<a name="line3893">3893: </a>  <A href="../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(cis,&amp;cidx);
+<a name="line3913">3913: </a>EXTERN_C_BEGIN
+<a name="line3916">3916: </a><strong><font color="#4169E1"><a name="MatInodeAdjustForInodes_SeqAIJ_Inode"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatInodeAdjustForInodes_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *rperm,<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *cperm)</font></strong>
+<a name="line3917">3917: </a>{
+<a name="line3918">3918: </a>  Mat_SeqAIJ      *a=(Mat_SeqAIJ*)A-&gt;data;
+<a name="line3920">3920: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m = A-&gt;rmap-&gt;n,n = A-&gt;cmap-&gt;n,i,j,nslim_row = a-&gt;inode.node_count;
+<a name="line3921">3921: </a>  const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ridx,*cidx;
+<a name="line3922">3922: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       row,col,*permr,*permc,*ns_row =  a-&gt;inode.size,*tns,start_val,end_val,indx;
+<a name="line3923">3923: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nslim_col,*ns_col;
+<a name="line3924">3924: </a>  <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>             ris = *rperm,cis = *cperm;
 
-<a name="line3895">3895: </a>  <font color="#B22222">/* Form the inode structure for the rows of permuted matric using inv perm*/</font>
-<a name="line3896">3896: </a>  <font color="#4169E1">for</font> (i=0,tns[0]=0; i&lt;nslim_row; ++i) tns[i+1] = tns[i] + ns_row[i];
+<a name="line3927">3927: </a>  <font color="#4169E1">if</font> (!a-&gt;inode.size) <font color="#4169E1">return</font>(0); <font color="#B22222">/* no inodes so return */</font>
+<a name="line3928">3928: </a>  <font color="#4169E1">if</font> (a-&gt;inode.node_count == m) <font color="#4169E1">return</font>(0); <font color="#B22222">/* all inodes are of size 1 */</font>
 
-<a name="line3898">3898: </a>  <font color="#B22222">/* Construct the permutations for rows*/</font>
-<a name="line3899">3899: </a>  <font color="#4169E1">for</font> (i=0,row = 0; i&lt;nslim_row; ++i){
-<a name="line3900">3900: </a>    indx      = ridx[i];
-<a name="line3901">3901: </a>    start_val = tns[indx];
-<a name="line3902">3902: </a>    end_val   = tns[indx + 1];
-<a name="line3903">3903: </a>    <font color="#4169E1">for</font> (j=start_val; j&lt;end_val; ++j,++row) permr[row]= j;
-<a name="line3904">3904: </a>  }
+<a name="line3930">3930: </a>  Mat_CreateColInode(A,&amp;nslim_col,&amp;ns_col);
+<a name="line3931">3931: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((((nslim_row&gt;nslim_col)?nslim_row:nslim_col)+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;tns);
+<a name="line3932">3932: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(m,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;permr,n,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;permc);
 
-<a name="line3906">3906: </a>  <font color="#B22222">/* Form the inode structure for the columns of permuted matrix using inv perm*/</font>
-<a name="line3907">3907: </a>  <font color="#4169E1">for</font> (i=0,tns[0]=0; i&lt;nslim_col; ++i) tns[i+1] = tns[i] + ns_col[i];
+<a name="line3934">3934: </a>  <A href="../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(ris,&amp;ridx);
+<a name="line3935">3935: </a>  <A href="../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(cis,&amp;cidx);
 
-<a name="line3909">3909: </a> <font color="#B22222">/* Construct permutations for columns */</font>
-<a name="line3910">3910: </a>  <font color="#4169E1">for</font> (i=0,col=0; i&lt;nslim_col; ++i){
-<a name="line3911">3911: </a>    indx      = cidx[i];
-<a name="line3912">3912: </a>    start_val = tns[indx];
-<a name="line3913">3913: </a>    end_val   = tns[indx + 1];
-<a name="line3914">3914: </a>    <font color="#4169E1">for</font> (j = start_val; j&lt;end_val; ++j,++col) permc[col]= j;
-<a name="line3915">3915: </a>  }
+<a name="line3937">3937: </a>  <font color="#B22222">/* Form the inode structure for the rows of permuted matric using inv perm*/</font>
+<a name="line3938">3938: </a>  <font color="#4169E1">for</font> (i=0,tns[0]=0; i&lt;nslim_row; ++i) tns[i+1] = tns[i] + ns_row[i];
 
-<a name="line3917">3917: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,permr,PETSC_COPY_VALUES,rperm);
-<a name="line3918">3918: </a>  <A href="../../../../../docs/manualpages/IS/ISSetPermutation.html#ISSetPermutation">ISSetPermutation</A>(*rperm);
-<a name="line3919">3919: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,permc,PETSC_COPY_VALUES,cperm);
-<a name="line3920">3920: </a>  <A href="../../../../../docs/manualpages/IS/ISSetPermutation.html#ISSetPermutation">ISSetPermutation</A>(*cperm);
-<a name="line3921">3921: </a>
-<a name="line3922">3922: </a>  <A href="../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(ris,&amp;ridx);
-<a name="line3923">3923: </a>  <A href="../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(cis,&amp;cidx);
+<a name="line3940">3940: </a>  <font color="#B22222">/* Construct the permutations for rows*/</font>
+<a name="line3941">3941: </a>  <font color="#4169E1">for</font> (i=0,row = 0; i&lt;nslim_row; ++i){
+<a name="line3942">3942: </a>    indx      = ridx[i];
+<a name="line3943">3943: </a>    start_val = tns[indx];
+<a name="line3944">3944: </a>    end_val   = tns[indx + 1];
+<a name="line3945">3945: </a>    <font color="#4169E1">for</font> (j=start_val; j&lt;end_val; ++j,++row) permr[row]= j;
+<a name="line3946">3946: </a>  }
 
-<a name="line3925">3925: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ns_col);
-<a name="line3926">3926: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(permr,permc);
-<a name="line3927">3927: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;cis);
-<a name="line3928">3928: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;ris);
-<a name="line3929">3929: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(tns);
-<a name="line3930">3930: </a>  <font color="#4169E1">return</font>(0);
-<a name="line3931">3931: </a>}
+<a name="line3948">3948: </a>  <font color="#B22222">/* Form the inode structure for the columns of permuted matrix using inv perm*/</font>
+<a name="line3949">3949: </a>  <font color="#4169E1">for</font> (i=0,tns[0]=0; i&lt;nslim_col; ++i) tns[i+1] = tns[i] + ns_col[i];
 
-<a name="line3936">3936: </a><font color="#B22222">/*@C</font>
-<a name="line3937">3937: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Mat/MatInodeGetInodeSizes.html#MatInodeGetInodeSizes">MatInodeGetInodeSizes</A> - Returns the inode information of the Inode matrix.</font>
+<a name="line3951">3951: </a> <font color="#B22222">/* Construct permutations for columns */</font>
+<a name="line3952">3952: </a>  <font color="#4169E1">for</font> (i=0,col=0; i&lt;nslim_col; ++i){
+<a name="line3953">3953: </a>    indx      = cidx[i];
+<a name="line3954">3954: </a>    start_val = tns[indx];
+<a name="line3955">3955: </a>    end_val   = tns[indx + 1];
+<a name="line3956">3956: </a>    <font color="#4169E1">for</font> (j = start_val; j&lt;end_val; ++j,++col) permc[col]= j;
+<a name="line3957">3957: </a>  }
 
-<a name="line3939">3939: </a><font color="#B22222">   Not Collective</font>
+<a name="line3959">3959: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,permr,PETSC_COPY_VALUES,rperm);
+<a name="line3960">3960: </a>  <A href="../../../../../docs/manualpages/IS/ISSetPermutation.html#ISSetPermutation">ISSetPermutation</A>(*rperm);
+<a name="line3961">3961: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,permc,PETSC_COPY_VALUES,cperm);
+<a name="line3962">3962: </a>  <A href="../../../../../docs/manualpages/IS/ISSetPermutation.html#ISSetPermutation">ISSetPermutation</A>(*cperm);
+<a name="line3963">3963: </a>
+<a name="line3964">3964: </a>  <A href="../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(ris,&amp;ridx);
+<a name="line3965">3965: </a>  <A href="../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(cis,&amp;cidx);
 
-<a name="line3941">3941: </a><font color="#B22222">   Input Parameter:</font>
-<a name="line3942">3942: </a><font color="#B22222">.  A - the Inode matrix or matrix derived from the Inode class -- e.g., SeqAIJ</font>
+<a name="line3967">3967: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ns_col);
+<a name="line3968">3968: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(permr,permc);
+<a name="line3969">3969: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;cis);
+<a name="line3970">3970: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;ris);
+<a name="line3971">3971: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(tns);
+<a name="line3972">3972: </a>  <font color="#4169E1">return</font>(0);
+<a name="line3973">3973: </a>}
+<a name="line3974">3974: </a>EXTERN_C_END
 
-<a name="line3944">3944: </a><font color="#B22222">   Output Parameter:</font>
-<a name="line3945">3945: </a><font color="#B22222">+  node_count - no of inodes present in the matrix.</font>
-<a name="line3946">3946: </a><font color="#B22222">.  sizes      - an array of size node_count,with sizes of each inode.</font>
-<a name="line3947">3947: </a><font color="#B22222">-  limit      - the max size used to generate the inodes.</font>
+<a name="line3978">3978: </a><font color="#B22222">/*@C</font>
+<a name="line3979">3979: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Mat/MatInodeGetInodeSizes.html#MatInodeGetInodeSizes">MatInodeGetInodeSizes</A> - Returns the inode information of the Inode matrix.</font>
 
-<a name="line3949">3949: </a><font color="#B22222">   Level: advanced</font>
+<a name="line3981">3981: </a><font color="#B22222">   Not Collective</font>
 
-<a name="line3951">3951: </a><font color="#B22222">   Notes: This routine returns some internal storage information</font>
-<a name="line3952">3952: </a><font color="#B22222">   of the matrix, it is intended to be used by advanced users.</font>
-<a name="line3953">3953: </a><font color="#B22222">   It should be called after the matrix is assembled.</font>
-<a name="line3954">3954: </a><font color="#B22222">   The contents of the sizes[] array should not be changed.</font>
-<a name="line3955">3955: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> may be passed for information not requested.</font>
+<a name="line3983">3983: </a><font color="#B22222">   Input Parameter:</font>
+<a name="line3984">3984: </a><font color="#B22222">.  A - the Inode matrix or matrix derived from the Inode class -- e.g., SeqAIJ</font>
 
-<a name="line3957">3957: </a><font color="#B22222">.keywords: matrix, seqaij, get, inode</font>
+<a name="line3986">3986: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line3987">3987: </a><font color="#B22222">+  node_count - no of inodes present in the matrix.</font>
+<a name="line3988">3988: </a><font color="#B22222">.  sizes      - an array of size node_count,with sizes of each inode.</font>
+<a name="line3989">3989: </a><font color="#B22222">-  limit      - the max size used to generate the inodes.</font>
 
-<a name="line3959">3959: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/Mat/MatGetInfo.html#MatGetInfo">MatGetInfo</A>()</font>
-<a name="line3960">3960: </a><font color="#B22222">@*/</font>
-<a name="line3961">3961: </a><strong><font color="#4169E1"><a name="MatInodeGetInodeSizes"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/Mat/MatInodeGetInodeSizes.html#MatInodeGetInodeSizes">MatInodeGetInodeSizes</A>(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *node_count,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *sizes[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *limit)</font></strong>
-<a name="line3962">3962: </a>{
-<a name="line3963">3963: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr,(*f)(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*);
+<a name="line3991">3991: </a><font color="#B22222">   Level: advanced</font>
 
-<a name="line3966">3966: </a>  <font color="#4169E1">if</font> (!A-&gt;assembled) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Not for unassembled matrix"</font>);
-<a name="line3967">3967: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectQueryFunction.html#PetscObjectQueryFunction">PetscObjectQueryFunction</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<font color="#666666">"MatInodeGetInodeSizes_C"</font>,(void (**)(void))&amp;f);
-<a name="line3968">3968: </a>  <font color="#4169E1">if</font> (f) {
-<a name="line3969">3969: </a>    (*f)(A,node_count,sizes,limit);
-<a name="line3970">3970: </a>  }
-<a name="line3971">3971: </a>  <font color="#4169E1">return</font>(0);
-<a name="line3972">3972: </a>}
+<a name="line3993">3993: </a><font color="#B22222">   Notes: This routine returns some internal storage information</font>
+<a name="line3994">3994: </a><font color="#B22222">   of the matrix, it is intended to be used by advanced users.</font>
+<a name="line3995">3995: </a><font color="#B22222">   It should be called after the matrix is assembled.</font>
+<a name="line3996">3996: </a><font color="#B22222">   The contents of the sizes[] array should not be changed.</font>
+<a name="line3997">3997: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> may be passed for information not requested.</font>
 
-<a name="line3977">3977: </a><strong><font color="#4169E1"><a name="MatInodeGetInodeSizes_SeqAIJ_Inode"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatInodeGetInodeSizes_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *node_count,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *sizes[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *limit)</font></strong>
-<a name="line3978">3978: </a>{
-<a name="line3979">3979: </a>  Mat_SeqAIJ *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line3999">3999: </a><font color="#B22222">.keywords: matrix, seqaij, get, inode</font>
 
-<a name="line3982">3982: </a>  <font color="#4169E1">if</font> (node_count) *node_count = a-&gt;inode.node_count;
-<a name="line3983">3983: </a>  <font color="#4169E1">if</font> (sizes)      *sizes      = a-&gt;inode.size;
-<a name="line3984">3984: </a>  <font color="#4169E1">if</font> (limit)      *limit      = a-&gt;inode.limit;
-<a name="line3985">3985: </a>  <font color="#4169E1">return</font>(0);
-<a name="line3986">3986: </a>}
+<a name="line4001">4001: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/Mat/MatGetInfo.html#MatGetInfo">MatGetInfo</A>()</font>
+<a name="line4002">4002: </a><font color="#B22222">@*/</font>
+<a name="line4003">4003: </a><strong><font color="#4169E1"><a name="MatInodeGetInodeSizes"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/Mat/MatInodeGetInodeSizes.html#MatInodeGetInodeSizes">MatInodeGetInodeSizes</A>(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *node_count,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *sizes[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *limit)</font></strong>
+<a name="line4004">4004: </a>{
+<a name="line4005">4005: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr,(*f)(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*);
+
+<a name="line4008">4008: </a>  <font color="#4169E1">if</font> (!A-&gt;assembled) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONGSTATE,<font color="#666666">"Not for unassembled matrix"</font>);
+<a name="line4009">4009: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectQueryFunction.html#PetscObjectQueryFunction">PetscObjectQueryFunction</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A,<font color="#666666">"MatInodeGetInodeSizes_C"</font>,(void (**)(void))&amp;f);
+<a name="line4010">4010: </a>  <font color="#4169E1">if</font> (f) {
+<a name="line4011">4011: </a>    (*f)(A,node_count,sizes,limit);
+<a name="line4012">4012: </a>  }
+<a name="line4013">4013: </a>  <font color="#4169E1">return</font>(0);
+<a name="line4014">4014: </a>}
+
+<a name="line4016">4016: </a>EXTERN_C_BEGIN
+<a name="line4019">4019: </a><strong><font color="#4169E1"><a name="MatInodeGetInodeSizes_SeqAIJ_Inode"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatInodeGetInodeSizes_SeqAIJ_Inode(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *node_count,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *sizes[],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *limit)</font></strong>
+<a name="line4020">4020: </a>{
+<a name="line4021">4021: </a>  Mat_SeqAIJ *a = (Mat_SeqAIJ*)A-&gt;data;
+
+<a name="line4024">4024: </a>  <font color="#4169E1">if</font> (node_count) *node_count = a-&gt;inode.node_count;
+<a name="line4025">4025: </a>  <font color="#4169E1">if</font> (sizes)      *sizes      = a-&gt;inode.size;
+<a name="line4026">4026: </a>  <font color="#4169E1">if</font> (limit)      *limit      = a-&gt;inode.limit;
+<a name="line4027">4027: </a>  <font color="#4169E1">return</font>(0);
+<a name="line4028">4028: </a>}
+<a name="line4029">4029: </a>EXTERN_C_END
 </pre>
 </body>
 

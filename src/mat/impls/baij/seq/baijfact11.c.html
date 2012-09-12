@@ -1,13 +1,14 @@
 <center><a href="baijfact11.c">Actual source code: baijfact11.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/baij/seq/baijfact11.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:02:08+00:00">
+<meta name="date" content="2012-08-29T16:47:33+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    Factorization code for BAIJ format. </font>
@@ -147,9 +148,9 @@
 <a name="line141">141: </a>    <font color="#B22222">/* invert diagonal block */</font>
 <a name="line142">142: </a>    w    = ba + 16*diag_offset[i];
 <a name="line143">143: </a>    <font color="#4169E1">if</font> (pivotinblocks) {
-<a name="line144">144: </a>      Kernel_A_gets_inverse_A_4(w,shift);
+<a name="line144">144: </a>      PetscKernel_A_gets_inverse_A_4(w,shift);
 <a name="line145">145: </a>    } <font color="#4169E1">else</font> {
-<a name="line146">146: </a>      Kernel_A_gets_inverse_A_4_nopivot(w);
+<a name="line146">146: </a>      PetscKernel_A_gets_inverse_A_4_nopivot(w);
 <a name="line147">147: </a>    }
 <a name="line148">148: </a>  }
 
@@ -165,9 +166,9 @@
 
 <a name="line160">160: </a><font color="#B22222">/* MatLUFactorNumeric_SeqBAIJ_4 - </font>
 <a name="line161">161: </a><font color="#B22222">     copied from MatLUFactorNumeric_SeqBAIJ_N_inplace() and manually re-implemented </font>
-<a name="line162">162: </a><font color="#B22222">       Kernel_A_gets_A_times_B()</font>
-<a name="line163">163: </a><font color="#B22222">       Kernel_A_gets_A_minus_B_times_C()</font>
-<a name="line164">164: </a><font color="#B22222">       Kernel_A_gets_inverse_A()</font>
+<a name="line162">162: </a><font color="#B22222">       PetscKernel_A_gets_A_times_B()</font>
+<a name="line163">163: </a><font color="#B22222">       PetscKernel_A_gets_A_minus_B_times_C()</font>
+<a name="line164">164: </a><font color="#B22222">       PetscKernel_A_gets_inverse_A()</font>
 <a name="line165">165: </a><font color="#B22222">*/</font>
 
 <a name="line169">169: </a><strong><font color="#4169E1"><a name="MatLUFactorNumeric_SeqBAIJ_4"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatLUFactorNumeric_SeqBAIJ_4(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
@@ -229,17 +230,17 @@
 <a name="line227">227: </a>      <font color="#4169E1">for</font> (flg=0,j=0; j&lt;bs2; j++) { <font color="#4169E1">if</font> (pc[j]!=0.0) { flg = 1; <font color="#4169E1">break</font>; }}
 <a name="line228">228: </a>      <font color="#4169E1">if</font> (flg) {
 <a name="line229">229: </a>        pv = b-&gt;a + bs2*bdiag[row];
-<a name="line230">230: </a>        <font color="#B22222">/* Kernel_A_gets_A_times_B(bs,pc,pv,mwork); *pc = *pc * (*pv); */</font>
-<a name="line231">231: </a>        Kernel_A_gets_A_times_B_4(pc,pv,mwork);
+<a name="line230">230: </a>        <font color="#B22222">/* PetscKernel_A_gets_A_times_B(bs,pc,pv,mwork); *pc = *pc * (*pv); */</font>
+<a name="line231">231: </a>        PetscKernel_A_gets_A_times_B_4(pc,pv,mwork);
 <a name="line232">232: </a>
 <a name="line233">233: </a>        pj = b-&gt;j + bdiag[row+1]+1; <font color="#B22222">/* begining of U(row,:) */</font>
 <a name="line234">234: </a>        pv = b-&gt;a + bs2*(bdiag[row+1]+1);
 <a name="line235">235: </a>        nz = bdiag[row] - bdiag[row+1] - 1; <font color="#B22222">/* num of entries inU(row,:), excluding diag */</font>
 <a name="line236">236: </a>        <font color="#4169E1">for</font> (j=0; j&lt;nz; j++) {
-<a name="line237">237: </a>          <font color="#B22222">/* Kernel_A_gets_A_minus_B_times_C(bs,rtmp+bs2*pj[j],pc,pv+bs2*j); */</font>
+<a name="line237">237: </a>          <font color="#B22222">/* PetscKernel_A_gets_A_minus_B_times_C(bs,rtmp+bs2*pj[j],pc,pv+bs2*j); */</font>
 <a name="line238">238: </a>          <font color="#B22222">/* rtmp+bs2*pj[j] = rtmp+bs2*pj[j] - (*pc)*(pv+bs2*j) */</font>
 <a name="line239">239: </a>          v    = rtmp + bs2*pj[j];
-<a name="line240">240: </a>          Kernel_A_gets_A_minus_B_times_C_4(v,pc,pv);
+<a name="line240">240: </a>          PetscKernel_A_gets_A_minus_B_times_C_4(v,pc,pv);
 <a name="line241">241: </a>          pv  += bs2;
 <a name="line242">242: </a>        }
 <a name="line243">243: </a>        <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(128*nz+112); <font color="#B22222">/* flops = 2*bs^3*nz + 2*bs^3 - bs2) */</font>
@@ -259,7 +260,7 @@
 <a name="line257">257: </a>    pv   = b-&gt;a + bs2*bdiag[i];
 <a name="line258">258: </a>    pj   = b-&gt;j + bdiag[i];
 <a name="line259">259: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(pv,rtmp+bs2*pj[0],bs2*<font color="#4169E1">sizeof</font>(MatScalar));
-<a name="line260">260: </a>    Kernel_A_gets_inverse_A_4(pv,shift);
+<a name="line260">260: </a>    PetscKernel_A_gets_inverse_A_4(pv,shift);
 <a name="line261">261: </a>
 <a name="line262">262: </a>    <font color="#B22222">/* U part */</font>
 <a name="line263">263: </a>    pv = b-&gt;a + bs2*(bdiag[i+1]+1);
@@ -405,9 +406,9 @@
 <a name="line407">407: </a>    <font color="#B22222">/* invert diagonal block */</font>
 <a name="line408">408: </a>    w = ba + 16*diag_offset[i];
 <a name="line409">409: </a>    <font color="#4169E1">if</font> (pivotinblocks) {
-<a name="line410">410: </a>      Kernel_A_gets_inverse_A_4(w,shift);
+<a name="line410">410: </a>      PetscKernel_A_gets_inverse_A_4(w,shift);
 <a name="line411">411: </a>    } <font color="#4169E1">else</font> {
-<a name="line412">412: </a>      Kernel_A_gets_inverse_A_4_nopivot(w);
+<a name="line412">412: </a>      PetscKernel_A_gets_inverse_A_4_nopivot(w);
 <a name="line413">413: </a>    }
 <a name="line414">414: </a>  }
 
@@ -477,17 +478,17 @@
 <a name="line483">483: </a>      <font color="#4169E1">for</font> (flg=0,j=0; j&lt;bs2; j++) { <font color="#4169E1">if</font> (pc[j]!=0.0) { flg = 1; <font color="#4169E1">break</font>; }}
 <a name="line484">484: </a>      <font color="#4169E1">if</font> (flg) {
 <a name="line485">485: </a>        pv = b-&gt;a + bs2*bdiag[row];
-<a name="line486">486: </a>        <font color="#B22222">/* Kernel_A_gets_A_times_B(bs,pc,pv,mwork); *pc = *pc * (*pv); */</font>
-<a name="line487">487: </a>        Kernel_A_gets_A_times_B_4(pc,pv,mwork);
+<a name="line486">486: </a>        <font color="#B22222">/* PetscKernel_A_gets_A_times_B(bs,pc,pv,mwork); *pc = *pc * (*pv); */</font>
+<a name="line487">487: </a>        PetscKernel_A_gets_A_times_B_4(pc,pv,mwork);
 <a name="line488">488: </a>
 <a name="line489">489: </a>        pj = b-&gt;j + bdiag[row+1]+1; <font color="#B22222">/* begining of U(row,:) */</font>
 <a name="line490">490: </a>        pv = b-&gt;a + bs2*(bdiag[row+1]+1);
 <a name="line491">491: </a>        nz = bdiag[row] - bdiag[row+1] - 1; <font color="#B22222">/* num of entries inU(row,:), excluding diag */</font>
 <a name="line492">492: </a>        <font color="#4169E1">for</font> (j=0; j&lt;nz; j++) {
-<a name="line493">493: </a>          <font color="#B22222">/* Kernel_A_gets_A_minus_B_times_C(bs,rtmp+bs2*pj[j],pc,pv+bs2*j); */</font>
+<a name="line493">493: </a>          <font color="#B22222">/* PetscKernel_A_gets_A_minus_B_times_C(bs,rtmp+bs2*pj[j],pc,pv+bs2*j); */</font>
 <a name="line494">494: </a>          <font color="#B22222">/* rtmp+bs2*pj[j] = rtmp+bs2*pj[j] - (*pc)*(pv+bs2*j) */</font>
 <a name="line495">495: </a>          v    = rtmp + bs2*pj[j];
-<a name="line496">496: </a>          Kernel_A_gets_A_minus_B_times_C_4(v,pc,pv);
+<a name="line496">496: </a>          PetscKernel_A_gets_A_minus_B_times_C_4(v,pc,pv);
 <a name="line497">497: </a>          pv  += bs2;
 <a name="line498">498: </a>        }
 <a name="line499">499: </a>        <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(128*nz+112); <font color="#B22222">/* flops = 2*bs^3*nz + 2*bs^3 - bs2) */</font>
@@ -507,7 +508,7 @@
 <a name="line513">513: </a>    pv   = b-&gt;a + bs2*bdiag[i];
 <a name="line514">514: </a>    pj   = b-&gt;j + bdiag[i];
 <a name="line515">515: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(pv,rtmp+bs2*pj[0],bs2*<font color="#4169E1">sizeof</font>(MatScalar));
-<a name="line516">516: </a>    Kernel_A_gets_inverse_A_4(pv,shift);
+<a name="line516">516: </a>    PetscKernel_A_gets_inverse_A_4(pv,shift);
 <a name="line517">517: </a>
 <a name="line518">518: </a>    <font color="#B22222">/* U part */</font>
 <a name="line519">519: </a>    pv = b-&gt;a + bs2*(bdiag[i+1]+1);
@@ -947,11 +948,11 @@
 <a name="line957">957: </a>    <font color="#B22222">/* invert diagonal block */</font>
 <a name="line958">958: </a>    w = ba + 16*diag_offset[i];
 <a name="line959">959: </a>    <font color="#4169E1">if</font> (pivotinblocks) {
-<a name="line960">960: </a>      Kernel_A_gets_inverse_A_4(w,shift);
+<a name="line960">960: </a>      PetscKernel_A_gets_inverse_A_4(w,shift);
 <a name="line961">961: </a>    } <font color="#4169E1">else</font> {
-<a name="line962">962: </a>      Kernel_A_gets_inverse_A_4_nopivot(w);
+<a name="line962">962: </a>      PetscKernel_A_gets_inverse_A_4_nopivot(w);
 <a name="line963">963: </a>    }
-<a name="line964">964: </a><font color="#B22222">/*      Kernel_A_gets_inverse_A_4_SSE(w); */</font>
+<a name="line964">964: </a><font color="#B22222">/*      PetscKernel_A_gets_inverse_A_4_SSE(w); */</font>
 <a name="line965">965: </a>    <font color="#B22222">/* Note: Using Kramer's rule, flop count below might be infairly high or low? */</font>
 <a name="line966">966: </a>  }
 
@@ -1386,11 +1387,11 @@
 <a name="line1400">1400: </a>    <font color="#B22222">/* invert diagonal block */</font>
 <a name="line1401">1401: </a>    w = ba + 16*diag_offset[i];
 <a name="line1402">1402: </a>    <font color="#4169E1">if</font> (pivotinblocks) {
-<a name="line1403">1403: </a>      Kernel_A_gets_inverse_A_4(w,shift);
+<a name="line1403">1403: </a>      PetscKernel_A_gets_inverse_A_4(w,shift);
 <a name="line1404">1404: </a>    } <font color="#4169E1">else</font> {
-<a name="line1405">1405: </a>      Kernel_A_gets_inverse_A_4_nopivot(w);
+<a name="line1405">1405: </a>      PetscKernel_A_gets_inverse_A_4_nopivot(w);
 <a name="line1406">1406: </a>    }
-<a name="line1407">1407: </a><font color="#B22222">/*      Kernel_A_gets_inverse_A_4_SSE(w); */</font>
+<a name="line1407">1407: </a><font color="#B22222">/*      PetscKernel_A_gets_inverse_A_4_SSE(w); */</font>
 <a name="line1408">1408: </a>    <font color="#B22222">/* Note: Using Kramer's rule, flop count below might be infairly high or low? */</font>
 <a name="line1409">1409: </a>  }
 
@@ -1826,11 +1827,11 @@
 <a name="line1844">1844: </a>    <font color="#B22222">/* invert diagonal block */</font>
 <a name="line1845">1845: </a>    w = ba + 16*diag_offset[i];
 <a name="line1846">1846: </a>    <font color="#4169E1">if</font> (pivotinblocks) {
-<a name="line1847">1847: </a>      Kernel_A_gets_inverse_A_4(w,shift);
+<a name="line1847">1847: </a>      PetscKernel_A_gets_inverse_A_4(w,shift);
 <a name="line1848">1848: </a>    } <font color="#4169E1">else</font> {
-<a name="line1849">1849: </a>      Kernel_A_gets_inverse_A_4_nopivot(w);
+<a name="line1849">1849: </a>      PetscKernel_A_gets_inverse_A_4_nopivot(w);
 <a name="line1850">1850: </a>    }
-<a name="line1851">1851: </a><font color="#B22222">/*      Kernel_A_gets_inverse_A_4_SSE(w); */</font>
+<a name="line1851">1851: </a><font color="#B22222">/*      PetscKernel_A_gets_inverse_A_4_SSE(w); */</font>
 <a name="line1852">1852: </a>    <font color="#B22222">/* Note: Using Kramer's rule, flop count below might be infairly high or low? */</font>
 <a name="line1853">1853: </a>  }
 

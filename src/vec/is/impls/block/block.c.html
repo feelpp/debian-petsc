@@ -1,19 +1,20 @@
 <center><a href="block.c">Actual source code: block.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/is/impls/block/block.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:56:51+00:00">
+<meta name="date" content="2012-08-29T16:40:43+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">     Provides the functions for index sets (<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>) defined by a list of integers.</font>
 <a name="line4">  4: </a><font color="#B22222">   These are for blocks of data, each block is indicated with a single integer.</font>
 <a name="line5">  5: </a><font color="#B22222">*/</font>
-<a name="line6">  6: </a><font color="#A020F0">#include &lt;private/isimpl.h&gt;               </font><font color="#B22222">/*I  "petscis.h"     I*/</font><font color="#A020F0"></font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petsc-private/isimpl.h&gt;               </font><font color="#B22222">/*I  "petscis.h"     I*/</font><font color="#A020F0"></font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
 
 <a name="line9">  9: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -111,7 +112,7 @@
 <a name="line126">126: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n = sub-&gt;n,*idx = sub-&gt;idx;
 <a name="line127">127: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line130">130: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line130">130: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line131">131: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line132">132: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedAllow.html#PetscViewerASCIISynchronizedAllow">PetscViewerASCIISynchronizedAllow</A>(viewer,<A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
 <a name="line133">133: </a>    <font color="#4169E1">if</font> (is-&gt;isperm) {
@@ -253,6 +254,7 @@
 <a name="line298">298: </a>  <font color="#4169E1">return</font>(0);
 <a name="line299">299: </a>}
 
+<a name="line301">301: </a>EXTERN_C_BEGIN
 <a name="line304">304: </a><strong><font color="#4169E1"><a name="ISBlockSetIndices_Block"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISBlockSetIndices_Block(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> idx[],<A href="../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A> mode)</font></strong>
 <a name="line305">305: </a>{
 <a name="line307">307: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,min,max;
@@ -286,6 +288,7 @@
 <a name="line336">336: </a>  is-&gt;isperm  = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line337">337: </a>  <font color="#4169E1">return</font>(0);
 <a name="line338">338: </a>}
+<a name="line339">339: </a>EXTERN_C_END
 
 <a name="line343">343: </a><font color="#B22222">/*@</font>
 <a name="line344">344: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A> - Creates a data structure for an index set containing</font>
@@ -332,6 +335,7 @@
 <a name="line389">389: </a>  <font color="#4169E1">return</font>(0);
 <a name="line390">390: </a>}
 
+<a name="line392">392: </a>EXTERN_C_BEGIN
 <a name="line395">395: </a><strong><font color="#4169E1"><a name="ISBlockGetIndices_Block"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISBlockGetIndices_Block(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *idx[])</font></strong>
 <a name="line396">396: </a>{
 <a name="line397">397: </a>  IS_Block       *sub = (IS_Block*)is-&gt;data;
@@ -339,11 +343,14 @@
 <a name="line400">400: </a>  *idx = sub-&gt;idx;
 <a name="line401">401: </a>  <font color="#4169E1">return</font>(0);
 <a name="line402">402: </a>}
+<a name="line403">403: </a>EXTERN_C_END
 
+<a name="line405">405: </a>EXTERN_C_BEGIN
 <a name="line408">408: </a><strong><font color="#4169E1"><a name="ISBlockRestoreIndices_Block"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISBlockRestoreIndices_Block(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *idx[])</font></strong>
 <a name="line409">409: </a>{
 <a name="line411">411: </a>  <font color="#4169E1">return</font>(0);
 <a name="line412">412: </a>}
+<a name="line413">413: </a>EXTERN_C_END
 
 <a name="line417">417: </a><font color="#B22222">/*@C</font>
 <a name="line418">418: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/IS/ISBlockGetIndices.html#ISBlockGetIndices">ISBlockGetIndices</A> - Gets the indices associated with each block.</font>
@@ -419,6 +426,7 @@
 <a name="line498">498: </a>  <font color="#4169E1">return</font>(0);
 <a name="line499">499: </a>}
 
+<a name="line501">501: </a>EXTERN_C_BEGIN
 <a name="line504">504: </a><strong><font color="#4169E1"><a name="ISBlockGetLocalSize_Block"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISBlockGetLocalSize_Block(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *size)</font></strong>
 <a name="line505">505: </a>{
 <a name="line506">506: </a>  IS_Block *sub = (IS_Block *)is-&gt;data;
@@ -426,6 +434,7 @@
 <a name="line509">509: </a>  *size = sub-&gt;n;
 <a name="line510">510: </a>  <font color="#4169E1">return</font>(0);
 <a name="line511">511: </a>}
+<a name="line512">512: </a>EXTERN_C_END
 
 <a name="line516">516: </a><font color="#B22222">/*@</font>
 <a name="line517">517: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/IS/ISBlockGetSize.html#ISBlockGetSize">ISBlockGetSize</A> - Returns the global number of blocks in the index set.</font>
@@ -451,6 +460,7 @@
 <a name="line539">539: </a>  <font color="#4169E1">return</font>(0);
 <a name="line540">540: </a>}
 
+<a name="line542">542: </a>EXTERN_C_BEGIN
 <a name="line545">545: </a><strong><font color="#4169E1"><a name="ISBlockGetSize_Block"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISBlockGetSize_Block(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *size)</font></strong>
 <a name="line546">546: </a>{
 <a name="line547">547: </a>  IS_Block *sub = (IS_Block *)is-&gt;data;
@@ -458,6 +468,7 @@
 <a name="line550">550: </a>  *size = sub-&gt;N;
 <a name="line551">551: </a>  <font color="#4169E1">return</font>(0);
 <a name="line552">552: </a>}
+<a name="line553">553: </a>EXTERN_C_END
 
 <a name="line557">557: </a><strong><font color="#4169E1"><a name="ISToGeneral_Block"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISToGeneral_Block(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> inis)</font></strong>
 <a name="line558">558: </a>{
@@ -471,6 +482,7 @@
 <a name="line568">568: </a>  <font color="#4169E1">return</font>(0);
 <a name="line569">569: </a>}
 
+<a name="line571">571: </a>EXTERN_C_BEGIN
 <a name="line574">574: </a><strong><font color="#4169E1"><a name="ISCreate_Block"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISCreate_Block(<A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is)</font></strong>
 <a name="line575">575: </a>{
 <a name="line577">577: </a>  IS_Block       *sub;
@@ -489,6 +501,7 @@
 <a name="line591">591: </a>                                           ISBlockGetLocalSize_Block);
 <a name="line592">592: </a>  <font color="#4169E1">return</font>(0);
 <a name="line593">593: </a>}
+<a name="line594">594: </a>EXTERN_C_END
 </pre>
 </body>
 

@@ -1,13 +1,14 @@
 <center><a href="aijspooles.c">Actual source code: aijspooles.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/spooles/aijspooles.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:59:38+00:00">
+<meta name="date" content="2012-08-29T16:44:17+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* </font>
 <a name="line3">  3: </a><font color="#B22222">   Provides an interface to the Spooles serial sparse solver</font>
@@ -24,7 +25,7 @@
 
 <a name="line18"> 18: </a>  MatView_SeqAIJ(A,viewer);
 
-<a name="line20"> 20: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line20"> 20: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line21"> 21: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line22"> 22: </a>    PetscViewerGetFormat(viewer,&amp;format);
 <a name="line23"> 23: </a>    <font color="#4169E1">if</font> (format == PETSC_VIEWER_ASCII_INFO) {
@@ -56,12 +57,15 @@
 <a name="line55"> 55: </a>  <font color="#4169E1">return</font>(0);
 <a name="line56"> 56: </a>}
 
+<a name="line58"> 58: </a>EXTERN_C_BEGIN
 <a name="line61"> 61: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqaij_spooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqaij_spooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
 <a name="line62"> 62: </a>{
 <a name="line64"> 64: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MATSOLVERSPOOLES.html#MATSOLVERSPOOLES">MATSOLVERSPOOLES</A>;
 <a name="line65"> 65: </a>  <font color="#4169E1">return</font>(0);
 <a name="line66"> 66: </a>}
+<a name="line67"> 67: </a>EXTERN_C_END
 <a name="line68"> 68: </a>
+<a name="line69"> 69: </a>EXTERN_C_BEGIN
 <a name="line72"> 72: </a><strong><font color="#4169E1"><a name="MatGetFactor_seqaij_spooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetFactor_seqaij_spooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatFactorType.html#MatFactorType">MatFactorType</A> ftype,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *F)</font></strong>
 <a name="line73"> 73: </a>{
 <a name="line74"> 74: </a>  <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B;
@@ -98,6 +102,7 @@
 <a name="line107">107: </a>  <font color="#4169E1">return</font>(0);
 <a name="line108">108: </a>}
 <a name="line109">109: </a>
+<a name="line110">110: </a>EXTERN_C_END
 </pre>
 </body>
 

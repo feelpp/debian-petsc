@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecCreateGhostBlockWithArray.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecCreateGhostBlockWithArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecCreateGhostBlockWithArray"><H1>VecCreateGhostBlockWithArray</H1></A>
 Creates a parallel vector with ghost padding on each processor; the caller allocates the array space. Indices in the ghost region are based on blocks. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -48,7 +49,7 @@ portion is bs*nghost
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Vec/VecCreate.html#VecCreate">VecCreate</A>(), <A HREF="../Vec/VecGhostGetLocalForm.html#VecGhostGetLocalForm">VecGhostGetLocalForm</A>(), <A HREF="../Vec/VecGhostRestoreLocalForm.html#VecGhostRestoreLocalForm">VecGhostRestoreLocalForm</A>(), 
 <BR><A HREF="../Vec/VecCreateGhost.html#VecCreateGhost">VecCreateGhost</A>(), <A HREF="../Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(), <A HREF="../Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(),
-<A HREF="../Vec/VecCreateGhostWithArray.html#VecCreateGhostWithArray">VecCreateGhostWithArray</A>(), VecCreateGhostBlocked()
+<A HREF="../Vec/VecCreateGhostWithArray.html#VecCreateGhostWithArray">VecCreateGhostWithArray</A>(), <A HREF="../Vec/VecCreateGhostBlock.html#VecCreateGhostBlock">VecCreateGhostBlock</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/vec/impls/mpi/pbvec.c.html#VecCreateGhostBlockWithArray">src/vec/vec/impls/mpi/pbvec.c</A>

@@ -1,13 +1,14 @@
 <center><a href="petscpc.h">Actual source code: petscpc.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/finclude/petscpc.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:23:21+00:00">
+<meta name="date" content="2012-08-29T17:18:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Include file <font color="#4169E1">for</font> Fortran use of the <A href="../../docs/manualpages/PC/PC.html#PC">PC</A> (preconditioner) package in PETSc
@@ -87,7 +88,30 @@
 <a name="line77"> 77: </a>      parameter (PC_PARMS_LOCAL_ILUT=2)
 <a name="line78"> 78: </a>      parameter (PC_PARMS_LOCAL_ARMS=3)
 <a name="line79"> 79: </a>!
-<a name="line80"> 80: </a>!  End of Fortran include file <font color="#4169E1">for</font> the <A href="../../docs/manualpages/PC/PC.html#PC">PC</A> package in PETSc
+<a name="line80"> 80: </a>! <A href="../../docs/manualpages/PC/PCFieldSplitSchurFactType.html#PCFieldSplitSchurFactType">PCFieldSplitSchurFactType</A>
+<a name="line81"> 81: </a>!
+<a name="line82"> 82: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> PC_FIELDSPLIT_SCHUR_FACT_DIAG
+<a name="line83"> 83: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> PC_FIELDSPLIT_SCHUR_FACT_LOWER
+<a name="line84"> 84: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> PC_FIELDSPLIT_SCHUR_FACT_UPPER
+<a name="line85"> 85: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> PC_FIELDSPLIT_SCHUR_FACT_FULL
+<a name="line86"> 86: </a>      parameter (PC_FIELDSPLIT_SCHUR_FACT_DIAG=0)
+<a name="line87"> 87: </a>      parameter (PC_FIELDSPLIT_SCHUR_FACT_LOWER=1)
+<a name="line88"> 88: </a>      parameter (PC_FIELDSPLIT_SCHUR_FACT_UPPER=2)
+<a name="line89"> 89: </a>      parameter (PC_FIELDSPLIT_SCHUR_FACT_FULL=3)
+
+<a name="line91"> 91: </a>!
+<a name="line92"> 92: </a>! CoarseProblemType
+<a name="line93"> 93: </a>!
+<a name="line94"> 94: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SEQUENTIAL_BDDC
+<a name="line95"> 95: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> REPLICATED_BDDC
+<a name="line96"> 96: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> PARALLEL_BDDC
+<a name="line97"> 97: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> MULTILEVEL_BDDC
+<a name="line98"> 98: </a>      parameter (SEQUENTIAL_BDDC=0)
+<a name="line99"> 99: </a>      parameter (REPLICATED_BDDC=1)
+<a name="line100">100: </a>      parameter (PARALLEL_BDDC=2)
+<a name="line101">101: </a>      parameter (MULTILEVEL_BDDC=3)
+<a name="line102">102: </a>!
+<a name="line103">103: </a>!  End of Fortran include file <font color="#4169E1">for</font> the <A href="../../docs/manualpages/PC/PC.html#PC">PC</A> package in PETSc
 
 </pre>
 </body>

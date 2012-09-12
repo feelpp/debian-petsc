@@ -4,7 +4,7 @@
    File created by Peter Mell  7/14/95
  */
 
-#include <private/daimpl.h>     /*I   "petscdmda.h"    I*/
+#include <petsc-private/daimpl.h>     /*I   "petscdmda.h"    I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "DMView_DA_3d"
@@ -21,11 +21,11 @@ PetscErrorCode DMView_DA_3d(DM da,PetscViewer viewer)
   PetscFunctionBegin;
   ierr = MPI_Comm_rank(((PetscObject)da)->comm,&rank);CHKERRQ(ierr);
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERDRAW,&isdraw);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERBINARY,&isbinary);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERDRAW,&isdraw);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERBINARY,&isbinary);CHKERRQ(ierr);
 #if defined(PETSC_HAVE_MATLAB_ENGINE)
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERMATLAB,&ismatlab);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERMATLAB,&ismatlab);CHKERRQ(ierr);
 #endif
   if (iascii) {
     PetscViewerFormat format;
@@ -204,8 +204,11 @@ PetscErrorCode  DMSetUp_DA_3D(DM da)
   PetscFunctionBegin;
   if (dof < 1) SETERRQ1(((PetscObject)da)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Must have 1 or more degrees of freedom per node: %D",dof);
   if (s < 0) SETERRQ1(((PetscObject)da)->comm,PETSC_ERR_ARG_OUTOFRANGE,"Stencil width cannot be negative: %D",s);
-
   ierr = PetscObjectGetComm((PetscObject) da, &comm);CHKERRQ(ierr);
+#if !defined(PETSC_USE_64BIT_INDICES)
+  if (((Petsc64bitInt) M)*((Petsc64bitInt) N)*((Petsc64bitInt) P)*((Petsc64bitInt) dof) > (Petsc64bitInt) PETSC_MPI_INT_MAX) SETERRQ3(comm,PETSC_ERR_INT_OVERFLOW,"Mesh of %D by %D by %D (dof) is too large for 32 bit indices",M,N,dof);
+#endif
+
   ierr = MPI_Comm_size(comm,&size);CHKERRQ(ierr); 
   ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr); 
 
@@ -307,9 +310,7 @@ PetscErrorCode  DMSetUp_DA_3D(DM da)
   x  = lx[rank % m];
   xs = 0;
   for (i=0; i<(rank%m); i++) { xs += lx[i];}
-  if ((x < s) && ((m > 1) || (bx == DMDA_BOUNDARY_PERIODIC))) {
-    SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local x-width of domain x %D is smaller than stencil width s %D",x,s);
-  }
+  if ((x < s) && ((m > 1) || (bx == DMDA_BOUNDARY_PERIODIC))) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local x-width of domain x %D is smaller than stencil width s %D",x,s);
 
   if (!ly) {
     ierr = PetscMalloc(n*sizeof(PetscInt), &dd->ly);CHKERRQ(ierr);
@@ -319,9 +320,8 @@ PetscErrorCode  DMSetUp_DA_3D(DM da)
     }
   }
   y  = ly[(rank % (m*n))/m];
-  if ((y < s) && ((n > 1) || (by == DMDA_BOUNDARY_PERIODIC))) {
-    SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local y-width of domain y %D is smaller than stencil width s %D",y,s);
-  }
+  if ((y < s) && ((n > 1) || (by == DMDA_BOUNDARY_PERIODIC))) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local y-width of domain y %D is smaller than stencil width s %D",y,s);
+
   ys = 0;
   for (i=0; i<(rank % (m*n))/m; i++) { ys += ly[i];}
 
@@ -340,9 +340,7 @@ PetscErrorCode  DMSetUp_DA_3D(DM da)
   twod = PETSC_FALSE;
   if (P == 1) {
     twod = PETSC_TRUE;
-  } else if ((z < s) && ((p > 1) || (bz == DMDA_BOUNDARY_PERIODIC))) {
-    SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local z-width of domain z %D is smaller than stencil width s %D",z,s);
-  }
+  } else if ((z < s) && ((p > 1) || (bz == DMDA_BOUNDARY_PERIODIC))) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local z-width of domain z %D is smaller than stencil width s %D",z,s);
   zs = 0;
   for (i=0; i<(rank/(m*n)); i++) { zs += lz[i];}
   ye = ys + y;
@@ -386,11 +384,9 @@ PetscErrorCode  DMSetUp_DA_3D(DM da)
 
   /* allocate the base parallel and sequential vectors */
   dd->Nlocal = x*y*z*dof;
-  ierr = VecCreateMPIWithArray(comm,dd->Nlocal,PETSC_DECIDE,0,&global);CHKERRQ(ierr);
-  ierr = VecSetBlockSize(global,dof);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(comm,dof,dd->Nlocal,PETSC_DECIDE,0,&global);CHKERRQ(ierr);
   dd->nlocal = (Xe-Xs)*(Ye-Ys)*(Ze-Zs)*dof;
-  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,dd->nlocal,0,&local);CHKERRQ(ierr);
-  ierr = VecSetBlockSize(local,dof);CHKERRQ(ierr);
+  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,dof,dd->nlocal,0,&local);CHKERRQ(ierr);
 
   /* generate appropriate vector scatters */
   /* local to global inserts non-ghost point region into global */
@@ -1342,12 +1338,12 @@ PetscErrorCode  DMSetUp_DA_3D(DM da)
 .  m,n,p - corresponding number of processors in each dimension 
            (or PETSC_DECIDE to have calculated)
 .  dof - number of degrees of freedom per node
-.  lx, ly, lz - arrays containing the number of nodes in each cell along
+.  s - stencil width
+-  lx, ly, lz - arrays containing the number of nodes in each cell along
           the x, y, and z coordinates, or PETSC_NULL. If non-null, these
           must be of length as m,n,p and the corresponding
           m,n, or p cannot be PETSC_DECIDE. Sum of the lx[] entries must be M, sum of
           the ly[] must N, sum of the lz[] must be P
--  s - stencil width
 
    Output Parameter:
 .  da - the resulting distributed array object

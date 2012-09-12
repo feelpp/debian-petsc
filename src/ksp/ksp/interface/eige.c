@@ -1,5 +1,5 @@
 
-#include <private/kspimpl.h>   /*I "petscksp.h" I*/
+#include <petsc-private/kspimpl.h>   /*I "petscksp.h" I*/
 #include <petscblaslapack.h>
 
 #undef __FUNCT__  
@@ -63,7 +63,7 @@ PetscErrorCode  KSPComputeExplicitOperator(KSP ksp,Mat *mat)
     ierr = MatSetType(*mat,MATMPIAIJ);CHKERRQ(ierr);
     ierr = MatMPIAIJSetPreallocation(*mat,0,PETSC_NULL,0,PETSC_NULL);CHKERRQ(ierr);
   }
-  
+  ierr = MatSetOption(*mat,MAT_NEW_NONZERO_LOCATION_ERR,PETSC_FALSE);CHKERRQ(ierr);
   if (!ksp->pc) {ierr = KSPGetPC(ksp,&ksp->pc);CHKERRQ(ierr);}
   ierr = PCGetOperators(ksp->pc,&A,PETSC_NULL,PETSC_NULL);CHKERRQ(ierr);
 
@@ -176,7 +176,8 @@ PetscErrorCode  KSPComputeEigenvaluesExplicitly(KSP ksp,PetscInt nmax,PetscReal 
   if (!rank) {
     PetscScalar  sdummy,*cwork;
     PetscReal    *work,*realpart;
-    PetscBLASInt clen,idummy,lwork,*perm,zero = 0;
+    PetscBLASInt clen,idummy,lwork,bn,zero = 0;
+    PetscInt *perm;
 
 #if !defined(PETSC_USE_COMPLEX)
     clen = n;
@@ -184,11 +185,14 @@ PetscErrorCode  KSPComputeEigenvaluesExplicitly(KSP ksp,PetscInt nmax,PetscReal 
     clen = 2*n;
 #endif
     ierr   = PetscMalloc(clen*sizeof(PetscScalar),&cwork);CHKERRQ(ierr);
-    idummy = n;
+    idummy = -1;                /* unused */
+    bn = PetscBLASIntCast(n);
     lwork  = 5*n;
     ierr   = PetscMalloc(lwork*sizeof(PetscReal),&work);CHKERRQ(ierr);
     ierr   = PetscMalloc(n*sizeof(PetscReal),&realpart);CHKERRQ(ierr);
-    LAPACKgeev_(&zero,array,&n,cwork,&sdummy,&idummy,&idummy,&n,work,&lwork);
+    ierr = PetscFPTrapPush(PETSC_FP_TRAP_OFF);CHKERRQ(ierr);
+    LAPACKgeev_(&zero,array,&bn,cwork,&sdummy,&idummy,&idummy,&bn,work,&lwork);
+    ierr = PetscFPTrapPop();CHKERRQ(ierr);
     ierr = PetscFree(work);CHKERRQ(ierr);
 
     /* For now we stick with the convention of storing the real and imaginary
@@ -239,8 +243,10 @@ PetscErrorCode  KSPComputeEigenvaluesExplicitly(KSP ksp,PetscInt nmax,PetscReal 
       PetscBLASInt lierr;
       PetscScalar sdummy;
       PetscBLASInt bn = PetscBLASIntCast(n);
+      ierr = PetscFPTrapPush(PETSC_FP_TRAP_OFF);CHKERRQ(ierr);
       LAPACKgeev_("N","N",&bn,array,&bn,realpart,imagpart,&sdummy,&idummy,&sdummy,&idummy,work,&lwork,&lierr);
       if (lierr) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"Error in LAPACK routine %d",(int)lierr);
+      ierr = PetscFPTrapPop();CHKERRQ(ierr);
     }
 #endif
     ierr = PetscFree(work);CHKERRQ(ierr);
@@ -273,8 +279,10 @@ PetscErrorCode  KSPComputeEigenvaluesExplicitly(KSP ksp,PetscInt nmax,PetscReal 
       PetscBLASInt lierr;
       PetscScalar  sdummy;
       PetscBLASInt nb = PetscBLASIntCast(n);
+      ierr = PetscFPTrapPush(PETSC_FP_TRAP_OFF);CHKERRQ(ierr);
       LAPACKgeev_("N","N",&nb,array,&nb,eigs,&sdummy,&idummy,&sdummy,&idummy,work,&lwork,rwork,&lierr);
       if (lierr) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"Error in LAPACK routine %d",(int)lierr);
+      ierr = PetscFPTrapPop();CHKERRQ(ierr);
     }
 #endif
     ierr = PetscFree(work);CHKERRQ(ierr);

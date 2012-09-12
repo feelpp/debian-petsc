@@ -1,8 +1,9 @@
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Viewer/index.html" />
 <TITLE>Viewer Manual Pages</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 
 <H2> PetscViewer Manual Pages 
 </H2>
@@ -33,11 +34,11 @@ PETSc viewers export information and data from PETSc objects.
 <TR>
  <TD WIDTH=250><A HREF="./PetscViewer.html">PetscViewer</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerBinaryWrite.html">PetscViewerBinaryWrite</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerView.html">PetscViewerView</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerVTKOpen.html">PetscViewerVTKOpen</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscViewerASCIIGetStderr.html">PetscViewerASCIIGetStderr</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerDestroy.html">PetscViewerDestroy</A></TD>
- <TD WIDTH=250><A HREF="./"></A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerView.html">PetscViewerView</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscViewerASCIIGetStdout.html">PetscViewerASCIIGetStdout</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerDrawOpen.html">PetscViewerDrawOpen</A></TD>
@@ -176,35 +177,39 @@ PETSc viewers export information and data from PETSc objects.
 <TR><TD WIDTH=250 COLSPAN="3"><B>Developer - Interfaces intended primarily for library developers, not for typical applications programmers</B></TD></TR>
  <TD WIDTH=250><A HREF="./PETSC_VIEWER_AMS_.html">PETSC_VIEWER_AMS_</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerASCIISetTab.html">PetscViewerASCIISetTab</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerMathematicaInitializePackage.html">PetscViewerMathematicaInitializePackage</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerRegisterAll.html">PetscViewerRegisterAll</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscSysFinalizePackage.html">PetscSysFinalizePackage</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerASCIISubtractTab.html">PetscViewerASCIISubtractTab</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerRegisterAll.html">PetscViewerRegisterAll</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerRegisterDestroy.html">PetscViewerRegisterDestroy</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscSysInitializePackage.html">PetscSysInitializePackage</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerASCIIUseTabs.html">PetscViewerASCIIUseTabs</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerRegisterDestroy.html">PetscViewerRegisterDestroy</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerRegisterDynamic.html">PetscViewerRegisterDynamic</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscViewerAMSGetAMSComm.html">PetscViewerAMSGetAMSComm</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerDrawBaseAdd.html">PetscViewerDrawBaseAdd</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerRegisterDynamic.html">PetscViewerRegisterDynamic</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerStringSPrintf.html">PetscViewerStringSPrintf</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscViewerASCIIAddTab.html">PetscViewerASCIIAddTab</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerDrawBaseSet.html">PetscViewerDrawBaseSet</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerStringSPrintf.html">PetscViewerStringSPrintf</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerVTKAddField.html">PetscViewerVTKAddField</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./PetscViewerASCIIPopTab.html">PetscViewerASCIIPopTab</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerASCIIGetTab.html">PetscViewerASCIIGetTab</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerFinalizePackage.html">PetscViewerFinalizePackage</A></TD>
  <TD WIDTH=250><A HREF="./PetscWebServe.html">PetscWebServe</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./PetscViewerASCIIPrintf.html">PetscViewerASCIIPrintf</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerASCIIPopTab.html">PetscViewerASCIIPopTab</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerInitializePackage.html">PetscViewerInitializePackage</A></TD>
  <TD WIDTH=250><A HREF="./PetscWebServeRequest.html">PetscWebServeRequest</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./PetscViewerASCIIPushTab.html">PetscViewerASCIIPushTab</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerASCIIPrintf.html">PetscViewerASCIIPrintf</A></TD>
  <TD WIDTH=250><A HREF="./PetscViewerMathematicaFinalizePackage.html">PetscViewerMathematicaFinalizePackage</A></TD>
  <TD WIDTH=250><A HREF="./PetscWebServeWait.html">PetscWebServeWait</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./PetscViewerASCIIPushTab.html">PetscViewerASCIIPushTab</A></TD>
+ <TD WIDTH=250><A HREF="./PetscViewerMathematicaInitializePackage.html">PetscViewerMathematicaInitializePackage</A></TD>
+ <TD WIDTH=250><A HREF="./"></A></TD>
 <TR>
 <TR><TD WIDTH=250 COLSPAN="3"><B>No deprecated routines</B></TD></TR>
 </TABLE>

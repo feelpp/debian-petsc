@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/IS/ISColoring.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>ISColoring</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="ISColoring"><H1>ISColoring</H1></A>
 sets of <A HREF="../IS/IS.html#IS">IS</A>'s that define a coloring of the underlying indices 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -25,6 +26,8 @@ struct _n_ISColoring {
 One should not access the *is records below directly because they may not yet
 have been created. One should use <A HREF="../IS/ISColoringGetIS.html#ISColoringGetIS">ISColoringGetIS</A>() to make sure they are
 created when needed.
+<P>
+Developer Note: this is not a <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../IS/ISColoringCreate.html#ISColoringCreate">ISColoringCreate</A>(), <A HREF="../IS/ISColoringGetIS.html#ISColoringGetIS">ISColoringGetIS</A>(), <A HREF="../IS/ISColoringView.html#ISColoringView">ISColoringView</A>(), <A HREF="../IS/ISColoringGetIS.html#ISColoringGetIS">ISColoringGetIS</A>()

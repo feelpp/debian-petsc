@@ -1,13 +1,14 @@
 <center><a href="cg.c">Actual source code: cg.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/cg/cg.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:11:29+00:00">
+<meta name="date" content="2012-08-29T17:03:33+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    This file implements the conjugate gradient method in PETSc as part of</font>
@@ -52,6 +53,8 @@
 <a name="line42"> 42: </a><font color="#B22222">    data used during the optional Lanczo process used to compute eigenvalues</font>
 <a name="line43"> 43: </a><font color="#B22222">*/</font>
 <a name="line44"> 44: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/cg/cgimpl.h&gt;       </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
+<a name="line45"> 45: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPComputeExtremeSingularValues_CG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *)</font></strong>;
+<a name="line46"> 46: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPComputeEigenvalues_CG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *)</font></strong>;
 
 <a name="line48"> 48: </a><font color="#B22222">/*</font>
 <a name="line49"> 49: </a><font color="#B22222">     KSPSetUp_CG - Sets up the workspace needed by the CG method. </font>
@@ -313,7 +316,7 @@
 <a name="line319">319: </a>  KSP_CG         *cg = (KSP_CG *)ksp-&gt;data;
 <a name="line321">321: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line324">324: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line324">324: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line325">325: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line326">326: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  CG or CGNE: variant %s\n"</font>,KSPCGTypes[cg-&gt;type]);
 <a name="line327">327: </a>  } <font color="#4169E1">else</font> {
@@ -347,7 +350,9 @@
 <a name="line359">359: </a><font color="#B22222">                      This routine is registered below in KSPCreate_CG() and called from the </font>
 <a name="line360">360: </a><font color="#B22222">                      routine <A href="../../../../../docs/manualpages/KSP/KSPCGSetType.html#KSPCGSetType">KSPCGSetType</A>() (see the file cgtype.c).</font>
 
+<a name="line362">362: </a><font color="#B22222">        This must be wrapped in an EXTERN_C_BEGIN to be dynamically linkable in C++</font>
 <a name="line363">363: </a><font color="#B22222">*/</font>
+<a name="line364">364: </a>EXTERN_C_BEGIN
 <a name="line367">367: </a><strong><font color="#4169E1"><a name="KSPCGSetType_CG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCGSetType_CG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/KSP/KSPCGType.html#KSPCGType">KSPCGType</A> type)</font></strong>
 <a name="line368">368: </a>{
 <a name="line369">369: </a>  KSP_CG *cg = (KSP_CG *)ksp-&gt;data;
@@ -355,7 +360,9 @@
 <a name="line372">372: </a>  cg-&gt;type = type;
 <a name="line373">373: </a>  <font color="#4169E1">return</font>(0);
 <a name="line374">374: </a>}
+<a name="line375">375: </a>EXTERN_C_END
 
+<a name="line377">377: </a>EXTERN_C_BEGIN
 <a name="line380">380: </a><strong><font color="#4169E1"><a name="KSPCGUseSingleReduction_CG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCGUseSingleReduction_CG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flg)</font></strong>
 <a name="line381">381: </a>{
 <a name="line382">382: </a>  KSP_CG *cg  = (KSP_CG *)ksp-&gt;data;
@@ -363,11 +370,13 @@
 <a name="line385">385: </a>  cg-&gt;singlereduction = flg;
 <a name="line386">386: </a>  <font color="#4169E1">return</font>(0);
 <a name="line387">387: </a>}
+<a name="line388">388: </a>EXTERN_C_END
 
 <a name="line390">390: </a><font color="#B22222">/*</font>
 <a name="line391">391: </a><font color="#B22222">    KSPCreate_CG - Creates the data structure for the Krylov method CG and sets the </font>
 <a name="line392">392: </a><font color="#B22222">       function pointers for all the routines it needs to call (KSPSolve_CG() etc)</font>
 
+<a name="line394">394: </a><font color="#B22222">    It must be wrapped in EXTERN_C_BEGIN to be dynamically linkable in C++</font>
 <a name="line395">395: </a><font color="#B22222">*/</font>
 <a name="line396">396: </a><font color="#B22222">/*MC</font>
 <a name="line397">397: </a><font color="#B22222">     <A href="../../../../../docs/manualpages/KSP/KSPCG.html#KSPCG">KSPCG</A> - The preconditioned conjugate gradient (PCG) iterative method</font>
@@ -397,6 +406,7 @@
 <a name="line421">421: </a><font color="#B22222">           <A href="../../../../../docs/manualpages/KSP/KSPCGSetType.html#KSPCGSetType">KSPCGSetType</A>(), <A href="../../../../../docs/manualpages/KSP/KSPCGUseSingleReduction.html#KSPCGUseSingleReduction">KSPCGUseSingleReduction</A>()</font>
 
 <a name="line423">423: </a><font color="#B22222">M*/</font>
+<a name="line424">424: </a>EXTERN_C_BEGIN
 <a name="line427">427: </a><strong><font color="#4169E1"><a name="KSPCreate_CG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_CG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line428">428: </a>{
 <a name="line430">430: </a>  KSP_CG         *cg;
@@ -435,6 +445,7 @@
 <a name="line464">464: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp,<font color="#666666">"KSPCGUseSingleReduction_C"</font>,<font color="#666666">"KSPCGUseSingleReduction_CG"</font>, KSPCGUseSingleReduction_CG);
 <a name="line465">465: </a>  <font color="#4169E1">return</font>(0);
 <a name="line466">466: </a>}
+<a name="line467">467: </a>EXTERN_C_END
 
 
 

@@ -2,7 +2,7 @@
 /*
      The basic KSP routines, Create, View etc. are here.
 */
-#include <private/kspimpl.h>      /*I "petscksp.h" I*/
+#include <petsc-private/kspimpl.h>      /*I "petscksp.h" I*/
 
 /* Logging support */
 PetscClassId  KSP_CLASSID;
@@ -56,7 +56,7 @@ PetscErrorCode  KSPView(KSP ksp,PetscViewer viewer)
   PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,2);
   PetscCheckSameComm(ksp,1,viewer,2);
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscObjectPrintClassNamePrefixType((PetscObject)ksp,viewer,"KSP Object");CHKERRQ(ierr);
     if (ksp->ops->view) {
@@ -104,7 +104,7 @@ $                 Supported only by CG, Richardson, Bi-CG-stab, CR, and CGS meth
 $   KSP_NORM_PRECONDITIONED - the default for left preconditioned solves, uses the l2 norm
 $                 of the preconditioned residual
 $   KSP_NORM_UNPRECONDITIONED - uses the l2 norm of the true b - Ax residual, supported only by
-$                 CG, CHEBYCHEV, and RICHARDSON, automatically true for right (see KSPSetPCSide()) 
+$                 CG, CHEBYSHEV, and RICHARDSON, automatically true for right (see KSPSetPCSide()) 
 $                 preconditioning..
 $   KSP_NORM_NATURAL - supported  by KSPCG, KSPCR, KSPCGNE, KSPCGS
 
@@ -258,11 +258,11 @@ PetscErrorCode KSPNormSupportTableReset_Private(KSP ksp)
 
 #undef __FUNCT__  
 #define __FUNCT__ "KSPSetUpNorms_Private"
-PetscErrorCode KSPSetUpNorms_Private(KSP ksp)
+PetscErrorCode KSPSetUpNorms_Private(KSP ksp,KSPNormType *normtype,PCSide *pcside)
 {
   PetscInt i,j,best,ibest = 0,jbest = 0;
 
-  PetscFunctionBegin; 
+  PetscFunctionBegin;
   best = 0;
   for (i=0; i<KSP_NORM_MAX; i++) {
     for (j=0; j<PC_SIDE_MAX; j++) {
@@ -283,8 +283,8 @@ PetscErrorCode KSPSetUpNorms_Private(KSP ksp)
     if (ksp->pc_side == PC_SIDE_DEFAULT) SETERRQ2(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"KSP %s does not support %s",((PetscObject)ksp)->type_name,KSPNormTypes[ksp->normtype]);
     SETERRQ3(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"KSP %s does not support %s with %s",((PetscObject)ksp)->type_name,KSPNormTypes[ksp->normtype],PCSides[ksp->pc_side]);
   }
-  ksp->normtype = (KSPNormType)ibest;
-  ksp->pc_side = (PCSide)jbest;
+  *normtype = (KSPNormType)ibest;
+  *pcside = (PCSide)jbest;
   PetscFunctionReturn(0);
 }
 
@@ -314,7 +314,7 @@ PetscErrorCode  KSPGetNormType(KSP ksp, KSPNormType *normtype)
   PetscFunctionBegin;
   PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidPointer(normtype,2);
-  ierr = KSPSetUpNorms_Private(ksp);CHKERRQ(ierr);
+  ierr = KSPSetUpNorms_Private(ksp,&ksp->normtype,&ksp->pc_side);CHKERRQ(ierr);
   *normtype = ksp->normtype;
   PetscFunctionReturn(0);
 }
@@ -431,6 +431,7 @@ $           set size, type, etc of mat and pmat
 @*/
 PetscErrorCode  KSPSetOperators(KSP ksp,Mat Amat,Mat Pmat,MatStructure flag)
 {
+  MatNullSpace   nullsp;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
@@ -444,6 +445,12 @@ PetscErrorCode  KSPSetOperators(KSP ksp,Mat Amat,Mat Pmat,MatStructure flag)
   if (ksp->setupstage == KSP_SETUP_NEWRHS) ksp->setupstage = KSP_SETUP_NEWMATRIX;  /* so that next solve call will call PCSetUp() on new matrix */
   if (ksp->guess) {
     ierr = KSPFischerGuessReset(ksp->guess);CHKERRQ(ierr);
+  }
+  if (Amat) {
+    ierr = MatGetNullSpace(Amat, &nullsp);CHKERRQ(ierr);
+    if (nullsp) {
+      ierr = KSPSetNullSpace(ksp, nullsp);CHKERRQ(ierr);
+    }
   }
   PetscFunctionReturn(0);
 }
@@ -495,7 +502,7 @@ PetscErrorCode  KSPGetOperators(KSP ksp,Mat *Amat,Mat *Pmat,MatStructure *flag)
    Not collective, though the results on all processes should be the same
 
    Input Parameter:
-.  pc - the preconditioner context
+.  pc - the KSP context
 
    Output Parameters:
 +  mat - the matrix associated with the linear system was set
@@ -645,13 +652,16 @@ PetscErrorCode  KSPSetType(KSP ksp, const KSPType type)
   PetscValidHeaderSpecific(ksp,KSP_CLASSID,1);
   PetscValidCharPointer(type,2);
 
-  ierr = PetscTypeCompare((PetscObject)ksp,type,&match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)ksp,type,&match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
   ierr =  PetscFListFind(KSPList,((PetscObject)ksp)->comm,type,PETSC_TRUE,(void (**)(void)) &r);CHKERRQ(ierr);
   if (!r) SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_ARG_UNKNOWN_TYPE,"Unable to find requested KSP type %s",type);
   /* Destroy the previous private KSP context */
-  if (ksp->ops->destroy) { ierr = (*ksp->ops->destroy)(ksp);CHKERRQ(ierr); }
+  if (ksp->ops->destroy) {
+    ierr = (*ksp->ops->destroy)(ksp);CHKERRQ(ierr);
+    ksp->ops->destroy = PETSC_NULL;
+  }
   /* Reinitialize function pointers in KSPOps structure */
   ierr = PetscMemzero(ksp->ops,sizeof(struct _KSPOps));CHKERRQ(ierr);
   ksp->ops->buildsolution = KSPDefaultBuildSolution;
@@ -752,7 +762,7 @@ PetscErrorCode  KSPRegister(const char sname[],const char path[],const char name
 
   Level: advanced
 
-.seealso: KSPSetOperators(), MatNullSpaceCreate(), KSPGetNullSpace()
+.seealso: KSPSetOperators(), MatNullSpaceCreate(), KSPGetNullSpace(), MatSetNullSpace()
 @*/
 PetscErrorCode  KSPSetNullSpace(KSP ksp,MatNullSpace nullsp)
 {

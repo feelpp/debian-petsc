@@ -1,13 +1,14 @@
 <center><a href="csrperm.c">Actual source code: csrperm.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/csrperm/csrperm.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:59:52+00:00">
+<meta name="date" content="2012-08-29T16:44:30+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">  Defines basic operations for the MATSEQAIJPERM matrix class.</font>
@@ -57,7 +58,9 @@
 <a name="line47"> 47: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **iperm_list;
 <a name="line48"> 48: </a>} Mat_SeqAIJPERM;
 
+<a name="line50"> 50: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatAssemblyEnd_SeqAIJ(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/MatAssemblyType.html#MatAssemblyType">MatAssemblyType</A>)</font></strong>;
 
+<a name="line52"> 52: </a>EXTERN_C_BEGIN
 <a name="line55"> 55: </a><strong><font color="#4169E1"><a name="MatConvert_SeqAIJPERM_SeqAIJ"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatConvert_SeqAIJPERM_SeqAIJ(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> type,<A href="../../../../../../docs/manualpages/Mat/MatReuse.html#MatReuse">MatReuse</A> reuse,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *newmat)</font></strong>
 <a name="line56"> 56: </a>{
 <a name="line57"> 57: </a>  <font color="#B22222">/* This routine is only called to convert a <A href="../../../../../../docs/manualpages/Mat/MATAIJPERM.html#MATAIJPERM">MATAIJPERM</A> to its base PETSc type, */</font>
@@ -89,6 +92,7 @@
 <a name="line85"> 85: </a>  *newmat = B;
 <a name="line86"> 86: </a>  <font color="#4169E1">return</font>(0);
 <a name="line87"> 87: </a>}
+<a name="line88"> 88: </a>EXTERN_C_END
 
 <a name="line92"> 92: </a><strong><font color="#4169E1"><a name="MatDestroy_SeqAIJPERM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqAIJPERM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
 <a name="line93"> 93: </a>{
@@ -123,7 +127,7 @@
 <a name="line126">126: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>((*M)-&gt;spptr,aijperm,<font color="#4169E1">sizeof</font>(Mat_SeqAIJPERM));
 <a name="line127">127: </a>  <font color="#B22222">/* Allocate space for, and copy the grouping and permutation info. </font>
 <a name="line128">128: </a><font color="#B22222">   * I note that when the groups are initially determined in </font>
-<a name="line129">129: </a><font color="#B22222">   * SeqAIJPERM_create_perm, xgroup and nzgroup may be sized larger than </font>
+<a name="line129">129: </a><font color="#B22222">   * MatSeqAIJPERM_create_perm, xgroup and nzgroup may be sized larger than </font>
 <a name="line130">130: </a><font color="#B22222">   * necessary.  But at this point, we know how large they need to be, and </font>
 <a name="line131">131: </a><font color="#B22222">   * allocate only the necessary amount of memory.  So the duplicated matrix </font>
 <a name="line132">132: </a><font color="#B22222">   * may actually use slightly less storage than the original! */</font>
@@ -136,7 +140,7 @@
 <a name="line139">139: </a>  <font color="#4169E1">return</font>(0);
 <a name="line140">140: </a>}
 
-<a name="line144">144: </a><strong><font color="#4169E1"><a name="SeqAIJPERM_create_perm"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SeqAIJPERM_create_perm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line144">144: </a><strong><font color="#4169E1"><a name="MatSeqAIJPERM_create_perm"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJPERM_create_perm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
 <a name="line145">145: </a>{
 <a name="line146">146: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        m;  <font color="#B22222">/* Number of rows in the matrix. */</font>
 <a name="line147">147: </a>  Mat_SeqAIJ      *a = (Mat_SeqAIJ *)(A)-&gt;data;
@@ -259,7 +263,7 @@
 <a name="line270">270: </a>  MatAssemblyEnd_SeqAIJ(A, mode);
 
 <a name="line272">272: </a>  <font color="#B22222">/* Now calculate the permutation and grouping information. */</font>
-<a name="line273">273: </a>  SeqAIJPERM_create_perm(A);
+<a name="line273">273: </a>  MatSeqAIJPERM_create_perm(A);
 <a name="line274">274: </a>  <font color="#4169E1">return</font>(0);
 <a name="line275">275: </a>}
 
@@ -568,6 +572,7 @@
 <a name="line585">585: </a><font color="#B22222"> * SeqAIJPERM matrix.  This routine is called by the MatCreate_SeqAIJPERM() </font>
 <a name="line586">586: </a><font color="#B22222"> * routine, but can also be used to convert an assembled SeqAIJ matrix </font>
 <a name="line587">587: </a><font color="#B22222"> * into a SeqAIJPERM one. */</font>
+<a name="line588">588: </a>EXTERN_C_BEGIN
 <a name="line591">591: </a><strong><font color="#4169E1"><a name="MatConvert_SeqAIJ_SeqAIJPERM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatConvert_SeqAIJ_SeqAIJPERM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> type,<A href="../../../../../../docs/manualpages/Mat/MatReuse.html#MatReuse">MatReuse</A> reuse,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *newmat)</font></strong>
 <a name="line592">592: </a>{
 <a name="line594">594: </a>  <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B = *newmat;
@@ -589,68 +594,70 @@
 
 <a name="line612">612: </a>  <font color="#B22222">/* If A has already been assembled, compute the permutation. */</font>
 <a name="line613">613: </a>  <font color="#4169E1">if</font> (A-&gt;assembled) {
-<a name="line614">614: </a>    SeqAIJPERM_create_perm(B);
+<a name="line614">614: </a>    MatSeqAIJPERM_create_perm(B);
 <a name="line615">615: </a>  }
 <a name="line616">616: </a>
-<a name="line617">617: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatConvert_seqaijperm_seqaij_C"</font>,
-<a name="line618">618: </a>                                           <font color="#666666">"MatConvert_SeqAIJPERM_SeqAIJ"</font>,MatConvert_SeqAIJPERM_SeqAIJ);
+<a name="line617">617: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatConvert_seqaijperm_seqaij_C"</font>,<font color="#666666">"MatConvert_SeqAIJPERM_SeqAIJ"</font>,MatConvert_SeqAIJPERM_SeqAIJ);
 
-<a name="line620">620: </a>  PetscObjectChangeTypeName((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,MATSEQAIJPERM);
-<a name="line621">621: </a>  *newmat = B;
-<a name="line622">622: </a>  <font color="#4169E1">return</font>(0);
-<a name="line623">623: </a>}
+<a name="line619">619: </a>  PetscObjectChangeTypeName((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,MATSEQAIJPERM);
+<a name="line620">620: </a>  *newmat = B;
+<a name="line621">621: </a>  <font color="#4169E1">return</font>(0);
+<a name="line622">622: </a>}
+<a name="line623">623: </a>EXTERN_C_END
 
 
-<a name="line629">629: </a><font color="#B22222">/*@C</font>
-<a name="line630">630: </a><font color="#B22222">   <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJPERM.html#MatCreateSeqAIJPERM">MatCreateSeqAIJPERM</A> - Creates a sparse matrix of type SEQAIJPERM.</font>
-<a name="line631">631: </a><font color="#B22222">   This type inherits from AIJ, but calculates some additional permutation </font>
-<a name="line632">632: </a><font color="#B22222">   information that is used to allow better vectorization of some </font>
-<a name="line633">633: </a><font color="#B22222">   operations.  At the cost of increased storage, the AIJ formatted </font>
-<a name="line634">634: </a><font color="#B22222">   matrix can be copied to a format in which pieces of the matrix are </font>
-<a name="line635">635: </a><font color="#B22222">   stored in ELLPACK format, allowing the vectorized matrix multiply </font>
-<a name="line636">636: </a><font color="#B22222">   routine to use stride-1 memory accesses.  As with the AIJ type, it is </font>
-<a name="line637">637: </a><font color="#B22222">   important to preallocate matrix storage in order to get good assembly </font>
-<a name="line638">638: </a><font color="#B22222">   performance.</font>
-<a name="line639">639: </a><font color="#B22222">   </font>
-<a name="line640">640: </a><font color="#B22222">   Collective on <A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+<a name="line628">628: </a><font color="#B22222">/*@C</font>
+<a name="line629">629: </a><font color="#B22222">   <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJPERM.html#MatCreateSeqAIJPERM">MatCreateSeqAIJPERM</A> - Creates a sparse matrix of type SEQAIJPERM.</font>
+<a name="line630">630: </a><font color="#B22222">   This type inherits from AIJ, but calculates some additional permutation </font>
+<a name="line631">631: </a><font color="#B22222">   information that is used to allow better vectorization of some </font>
+<a name="line632">632: </a><font color="#B22222">   operations.  At the cost of increased storage, the AIJ formatted </font>
+<a name="line633">633: </a><font color="#B22222">   matrix can be copied to a format in which pieces of the matrix are </font>
+<a name="line634">634: </a><font color="#B22222">   stored in ELLPACK format, allowing the vectorized matrix multiply </font>
+<a name="line635">635: </a><font color="#B22222">   routine to use stride-1 memory accesses.  As with the AIJ type, it is </font>
+<a name="line636">636: </a><font color="#B22222">   important to preallocate matrix storage in order to get good assembly </font>
+<a name="line637">637: </a><font color="#B22222">   performance.</font>
+<a name="line638">638: </a><font color="#B22222">   </font>
+<a name="line639">639: </a><font color="#B22222">   Collective on <A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
 
-<a name="line642">642: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line643">643: </a><font color="#B22222">+  comm - MPI communicator, set to <A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A></font>
-<a name="line644">644: </a><font color="#B22222">.  m - number of rows</font>
-<a name="line645">645: </a><font color="#B22222">.  n - number of columns</font>
-<a name="line646">646: </a><font color="#B22222">.  nz - number of nonzeros per row (same for all rows)</font>
-<a name="line647">647: </a><font color="#B22222">-  nnz - array containing the number of nonzeros in the various rows </font>
-<a name="line648">648: </a><font color="#B22222">         (possibly different for each row) or <A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A></font>
+<a name="line641">641: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line642">642: </a><font color="#B22222">+  comm - MPI communicator, set to <A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A></font>
+<a name="line643">643: </a><font color="#B22222">.  m - number of rows</font>
+<a name="line644">644: </a><font color="#B22222">.  n - number of columns</font>
+<a name="line645">645: </a><font color="#B22222">.  nz - number of nonzeros per row (same for all rows)</font>
+<a name="line646">646: </a><font color="#B22222">-  nnz - array containing the number of nonzeros in the various rows </font>
+<a name="line647">647: </a><font color="#B22222">         (possibly different for each row) or <A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A></font>
 
-<a name="line650">650: </a><font color="#B22222">   Output Parameter:</font>
-<a name="line651">651: </a><font color="#B22222">.  A - the matrix </font>
+<a name="line649">649: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line650">650: </a><font color="#B22222">.  A - the matrix </font>
 
-<a name="line653">653: </a><font color="#B22222">   Notes:</font>
-<a name="line654">654: </a><font color="#B22222">   If nnz is given then nz is ignored</font>
+<a name="line652">652: </a><font color="#B22222">   Notes:</font>
+<a name="line653">653: </a><font color="#B22222">   If nnz is given then nz is ignored</font>
 
-<a name="line656">656: </a><font color="#B22222">   Level: intermediate</font>
+<a name="line655">655: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line658">658: </a><font color="#B22222">.keywords: matrix, cray, sparse, parallel</font>
+<a name="line657">657: </a><font color="#B22222">.keywords: matrix, cray, sparse, parallel</font>
 
-<a name="line660">660: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCreateMPIAIJPERM.html#MatCreateMPIAIJPERM">MatCreateMPIAIJPERM</A>(), <A href="../../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>()</font>
-<a name="line661">661: </a><font color="#B22222">@*/</font>
-<a name="line662">662: </a><strong><font color="#4169E1"><a name="MatCreateSeqAIJPERM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJPERM.html#MatCreateSeqAIJPERM">MatCreateSeqAIJPERM</A>(<A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nz,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nnz[],<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *A)</font></strong>
-<a name="line663">663: </a>{
+<a name="line659">659: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCreateMPIAIJPERM.html#MatCreateMPIAIJPERM">MatCreateMPIAIJPERM</A>(), <A href="../../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>()</font>
+<a name="line660">660: </a><font color="#B22222">@*/</font>
+<a name="line661">661: </a><strong><font color="#4169E1"><a name="MatCreateSeqAIJPERM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJPERM.html#MatCreateSeqAIJPERM">MatCreateSeqAIJPERM</A>(<A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nz,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nnz[],<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *A)</font></strong>
+<a name="line662">662: </a>{
 
-<a name="line667">667: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,A);
-<a name="line668">668: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*A,m,n,m,n);
-<a name="line669">669: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*A,MATSEQAIJPERM);
-<a name="line670">670: </a>  MatSeqAIJSetPreallocation_SeqAIJ(*A,nz,nnz);
-<a name="line671">671: </a>  <font color="#4169E1">return</font>(0);
-<a name="line672">672: </a>}
+<a name="line666">666: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,A);
+<a name="line667">667: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*A,m,n,m,n);
+<a name="line668">668: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*A,MATSEQAIJPERM);
+<a name="line669">669: </a>  MatSeqAIJSetPreallocation_SeqAIJ(*A,nz,nnz);
+<a name="line670">670: </a>  <font color="#4169E1">return</font>(0);
+<a name="line671">671: </a>}
 
-<a name="line677">677: </a><strong><font color="#4169E1"><a name="MatCreate_SeqAIJPERM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreate_SeqAIJPERM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
-<a name="line678">678: </a>{
+<a name="line673">673: </a>EXTERN_C_BEGIN
+<a name="line676">676: </a><strong><font color="#4169E1"><a name="MatCreate_SeqAIJPERM"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatCreate_SeqAIJPERM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line677">677: </a>{
 
-<a name="line682">682: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A,<A href="../../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>);
-<a name="line683">683: </a>  MatConvert_SeqAIJ_SeqAIJPERM(A,MATSEQAIJPERM,MAT_REUSE_MATRIX,&amp;A);
-<a name="line684">684: </a>  <font color="#4169E1">return</font>(0);
-<a name="line685">685: </a>}
+<a name="line681">681: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A,<A href="../../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>);
+<a name="line682">682: </a>  MatConvert_SeqAIJ_SeqAIJPERM(A,MATSEQAIJPERM,MAT_REUSE_MATRIX,&amp;A);
+<a name="line683">683: </a>  <font color="#4169E1">return</font>(0);
+<a name="line684">684: </a>}
+<a name="line685">685: </a>EXTERN_C_END
 
 </pre>
 </body>

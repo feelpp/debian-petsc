@@ -1,13 +1,14 @@
 <center><a href="sbaijspooles.c">Actual source code: sbaijspooles.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/sbaij/seq/spooles/sbaijspooles.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:03:43+00:00">
+<meta name="date" content="2012-08-29T16:49:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* </font>
 <a name="line3">  3: </a><font color="#B22222">   Provides an interface to the Spooles serial sparse solver</font>
@@ -15,6 +16,7 @@
 
 <a name="line6">  6: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/spooles/spooles.h&gt;</font>
 
+<a name="line8">  8: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqSBAIJ(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><a name="MatDestroy_SeqSBAIJSpooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqSBAIJSpooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
 <a name="line13"> 13: </a>{
@@ -67,12 +69,15 @@
 <a name="line68"> 68: </a>  <font color="#4169E1">return</font>(0);
 <a name="line69"> 69: </a>}
 
+<a name="line71"> 71: </a>EXTERN_C_BEGIN
 <a name="line74"> 74: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqsbaij_spooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqsbaij_spooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
 <a name="line75"> 75: </a>{
 <a name="line77"> 77: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MATSOLVERSPOOLES.html#MATSOLVERSPOOLES">MATSOLVERSPOOLES</A>;
 <a name="line78"> 78: </a>  <font color="#4169E1">return</font>(0);
 <a name="line79"> 79: </a>}
+<a name="line80"> 80: </a>EXTERN_C_END
 
+<a name="line82"> 82: </a>EXTERN_C_BEGIN
 <a name="line85"> 85: </a><strong><font color="#4169E1"><a name="MatGetFactor_seqsbaij_spooles"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetFactor_seqsbaij_spooles(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatFactorType.html#MatFactorType">MatFactorType</A> ftype,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *F)</font></strong>
 <a name="line86"> 86: </a>{
 <a name="line87"> 87: </a>  <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B;
@@ -97,6 +102,7 @@
 <a name="line108">108: </a>  *F = B;
 <a name="line109">109: </a>  <font color="#4169E1">return</font>(0);
 <a name="line110">110: </a>}
+<a name="line111">111: </a>EXTERN_C_END
 </pre>
 </body>
 

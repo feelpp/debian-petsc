@@ -3,7 +3,7 @@
      Provides the interface functions for vector operations that do NOT have PetscScalar/PetscReal in the signature
    These are the vector functions the user calls.
 */
-#include <private/vecimpl.h>    /*I "petscvec.h" I*/
+#include <petsc-private/vecimpl.h>    /*I "petscvec.h" I*/
 
 /* Logging support */
 PetscClassId  VEC_CLASSID;
@@ -11,7 +11,7 @@ PetscLogEvent  VEC_View, VEC_Max, VEC_Min, VEC_DotBarrier, VEC_Dot, VEC_MDotBarr
 PetscLogEvent  VEC_Norm, VEC_Normalize, VEC_Scale, VEC_Copy, VEC_Set, VEC_AXPY, VEC_AYPX, VEC_WAXPY;
 PetscLogEvent  VEC_MTDot, VEC_NormBarrier, VEC_MAXPY, VEC_Swap, VEC_AssemblyBegin, VEC_ScatterBegin, VEC_ScatterEnd;
 PetscLogEvent  VEC_AssemblyEnd, VEC_PointwiseMult, VEC_SetValues, VEC_Load, VEC_ScatterBarrier;
-PetscLogEvent  VEC_SetRandom, VEC_ReduceArithmetic, VEC_ReduceBarrier, VEC_ReduceCommunication,VEC_Ops;
+PetscLogEvent  VEC_SetRandom, VEC_ReduceArithmetic, VEC_ReduceBarrier, VEC_ReduceCommunication,VEC_ReduceBegin,VEC_ReduceEnd,VEC_Ops;
 PetscLogEvent  VEC_DotNormBarrier, VEC_DotNorm, VEC_AXPBYPCZ, VEC_CUSPCopyFromGPU, VEC_CUSPCopyToGPU;
 PetscLogEvent  VEC_CUSPCopyFromGPUSome, VEC_CUSPCopyToGPUSome;
 
@@ -239,6 +239,16 @@ PetscErrorCode  VecView_Private(Vec vec)
 
   PetscFunctionBegin;
   ierr = PetscObjectOptionsBegin((PetscObject)vec);CHKERRQ(ierr);
+    ierr = PetscOptionsBool("-vec_view_info","Information on vector size","VecView",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
+    if (flg) {
+      PetscViewer viewer;
+
+      ierr = PetscViewerASCIIGetStdout(((PetscObject)vec)->comm,&viewer);CHKERRQ(ierr);
+      ierr = PetscViewerPushFormat(viewer,PETSC_VIEWER_ASCII_INFO);CHKERRQ(ierr);
+      ierr = VecView(vec,viewer);CHKERRQ(ierr);
+      ierr = PetscViewerPopFormat(viewer);CHKERRQ(ierr);
+    }
+    flg  = PETSC_FALSE;
     ierr = PetscOptionsBool("-vec_view","Print vector to stdout","VecView",flg,&flg,PETSC_NULL);CHKERRQ(ierr);
     if (flg) {
       PetscViewer viewer;
@@ -520,7 +530,7 @@ PetscErrorCode  VecPointwiseDivide(Vec w,Vec x,Vec y)
 .  newv - location to put new vector
 
    Notes:
-   VecDuplicate() does not copy the vector, but rather allocates storage
+   VecDuplicate() DOES NOT COPY the vector entries, but rather allocates storage
    for the new vector.  Use VecCopy() to copy a vector.
 
    Use VecDestroy() to free the space. Use VecDuplicateVecs() to get several
@@ -731,6 +741,8 @@ PetscErrorCode  VecViewFromOptions(Vec vec, const char *title)
 PetscErrorCode  VecView(Vec vec,PetscViewer viewer)
 {
   PetscErrorCode    ierr;
+  PetscBool         iascii;
+  PetscViewerFormat format;
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(vec,VEC_CLASSID,1);
@@ -743,6 +755,24 @@ PetscErrorCode  VecView(Vec vec,PetscViewer viewer)
   if (vec->stash.n || vec->bstash.n) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONGSTATE,"Must call VecAssemblyBegin/End() before viewing this vector");
 
   ierr = PetscLogEventBegin(VEC_View,vec,viewer,0,0);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  if (iascii) {
+    PetscInt rows,bs;
+
+    ierr = PetscViewerGetFormat(viewer,&format);CHKERRQ(ierr);  
+    if (format == PETSC_VIEWER_ASCII_INFO || format == PETSC_VIEWER_ASCII_INFO_DETAIL) {
+      ierr = PetscObjectPrintClassNamePrefixType((PetscObject)vec,viewer,"Vector Object");CHKERRQ(ierr);
+      ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
+      ierr = VecGetSize(vec,&rows);CHKERRQ(ierr);
+      ierr = VecGetBlockSize(vec,&bs);CHKERRQ(ierr);
+      if (bs != 1) {
+        ierr = PetscViewerASCIIPrintf(viewer,"length=%D, bs=%D\n",rows,bs);CHKERRQ(ierr);
+      } else {
+        ierr = PetscViewerASCIIPrintf(viewer,"length=%D\n",rows);CHKERRQ(ierr);
+      }
+      ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
+    }
+  }
   ierr = (*vec->ops->view)(vec,viewer);CHKERRQ(ierr);
   ierr = PetscLogEventEnd(VEC_View,vec,viewer,0,0);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -932,7 +962,7 @@ PetscErrorCode  VecGetOwnershipRanges(Vec x,const PetscInt *ranges[])
           to eliminate the global reduction in the VecAssemblyXXXX() if you know
           that you have only used VecSetValues() to set local elements
 .     VEC_IGNORE_NEGATIVE_INDICES, which means you can pass negative indices
-          in ix in calls to VecSetValues or VecGetValues. These rows are simply
+          in ix in calls to VecSetValues() or VecGetValues(). These rows are simply
           ignored.
 
    Level: intermediate
@@ -1082,6 +1112,7 @@ PetscErrorCode  VecLoad(Vec newvec, PetscViewer viewer)
   ierr = PetscLogEventEnd(VEC_Load,viewer,0,0,0);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
+
 
 #undef __FUNCT__
 #define __FUNCT__ "VecReciprocal"
@@ -1487,16 +1518,12 @@ PetscErrorCode  VecSetSizes(Vec v, PetscInt n, PetscInt N)
 @*/
 PetscErrorCode  VecSetBlockSize(Vec v,PetscInt bs)
 {
+  PetscErrorCode ierr;
+
   PetscFunctionBegin;
   PetscValidHeaderSpecific(v,VEC_CLASSID,1);
-  if (bs <= 0) bs = 1;
   if (bs == v->map->bs) PetscFunctionReturn(0);
-  if (v->map->N != -1 && v->map->N % bs) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Vector length not divisible by blocksize %D %D",v->map->N,bs);
-  if (v->map->n != -1 && v->map->n % bs) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local vector length not divisible by blocksize %D %D\n\
-   Try setting blocksize before setting the vector type",v->map->n,bs);
-  PetscValidLogicalCollectiveInt(v,bs,2);  
-
-  v->map->bs   = bs;
+  ierr = PetscLayoutSetBlockSize(v->map,bs);CHKERRQ(ierr);
   v->bstash.bs = bs; /* use the same blocksize for the vec's block-stash */
   PetscFunctionReturn(0);
 }
@@ -1528,10 +1555,11 @@ PetscErrorCode  VecSetBlockSize(Vec v,PetscInt bs)
 @*/
 PetscErrorCode  VecGetBlockSize(Vec v,PetscInt *bs)
 {
+  PetscErrorCode ierr;
   PetscFunctionBegin;
   PetscValidHeaderSpecific(v,VEC_CLASSID,1);
   PetscValidIntPointer(bs,2);
-  *bs = v->map->bs;
+  ierr = PetscLayoutGetBlockSize(v->map,bs);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -1859,7 +1887,7 @@ PetscErrorCode  VecStashView(Vec v,PetscViewer viewer)
   PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,2);
   PetscCheckSameComm(v,1,viewer,2);
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&match);CHKERRQ(ierr);
   if (!match) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Stash viewer only works with ASCII viewer not %s\n",((PetscObject)v)->type_name);
   ierr = PetscViewerASCIIUseTabs(viewer,PETSC_FALSE);CHKERRQ(ierr);
   ierr = MPI_Comm_rank(((PetscObject)v)->comm,&rank);CHKERRQ(ierr);

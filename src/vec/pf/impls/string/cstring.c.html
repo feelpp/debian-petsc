@@ -1,13 +1,14 @@
 <center><a href="cstring.c">Actual source code: cstring.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/pf/impls/string/cstring.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:57:17+00:00">
+<meta name="date" content="2012-08-29T16:41:02+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/vec/pf/pfimpl.h&gt;            </font><font color="#B22222">/*I "petscpf.h" I*/</font><font color="#A020F0"></font>
 
@@ -20,7 +21,7 @@
 <a name="line12"> 12: </a>{
 <a name="line14"> 14: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  iascii;
 
-<a name="line17"> 17: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line17"> 17: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line18"> 18: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line19"> 19: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"String = %s\n"</font>,(char*)value);
 <a name="line20"> 20: </a>  }
@@ -115,6 +116,8 @@
 <a name="line121">121: </a>  <font color="#4169E1">return</font>(0);
 <a name="line122">122: </a>}
 
+<a name="line124">124: </a><strong><font color="#4169E1">typedef <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*FCN)(void*,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)</font></strong>; <font color="#B22222">/* force argument to next function to not be extern C*/</font>
+<a name="line125">125: </a>EXTERN_C_BEGIN
 <a name="line128">128: </a><strong><font color="#4169E1"><a name="PFCreate_String"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_String(<A href="../../../../../docs/manualpages/PF/PF.html#PF">PF</A> pf,void *value)</font></strong>
 <a name="line129">129: </a>{
 <a name="line131">131: </a>  FCN        f = 0;
@@ -126,6 +129,7 @@
 <a name="line138">138: </a>  pf-&gt;ops-&gt;setfromoptions = PFSetFromOptions_String;
 <a name="line139">139: </a>  <font color="#4169E1">return</font>(0);
 <a name="line140">140: </a>}
+<a name="line141">141: </a>EXTERN_C_END
 
 
 

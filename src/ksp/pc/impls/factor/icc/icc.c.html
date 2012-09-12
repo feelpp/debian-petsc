@@ -1,13 +1,14 @@
 <center><a href="icc.c">Actual source code: icc.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/factor/icc/icc.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:20+00:00">
+<meta name="date" content="2012-08-29T17:00:53+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/ksp/pc/impls/factor/icc/icc.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 
@@ -26,7 +27,7 @@
 <a name="line20"> 20: </a>    <A href="../../../../../../docs/manualpages/Mat/MatICCFactorSymbolic.html#MatICCFactorSymbolic">MatICCFactorSymbolic</A>(((PC_Factor*)icc)-&gt;fact,pc-&gt;pmat,perm,&amp;((PC_Factor*)icc)-&gt;info);
 <a name="line21"> 21: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (pc-&gt;flag != SAME_NONZERO_PATTERN) {
 <a name="line22"> 22: </a>    <A href="../../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;((PC_Factor*)icc)-&gt;fact);
-<a name="line23"> 23: </a>    <A href="../../../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(pc-&gt;pmat,MATSOLVERPETSC,MAT_FACTOR_ICC,&amp;((PC_Factor*)icc)-&gt;fact);
+<a name="line23"> 23: </a>    <A href="../../../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(pc-&gt;pmat,((PC_Factor*)icc)-&gt;solvertype,MAT_FACTOR_ICC,&amp;((PC_Factor*)icc)-&gt;fact);
 <a name="line24"> 24: </a>    <A href="../../../../../../docs/manualpages/Mat/MatICCFactorSymbolic.html#MatICCFactorSymbolic">MatICCFactorSymbolic</A>(((PC_Factor*)icc)-&gt;fact,pc-&gt;pmat,perm,&amp;((PC_Factor*)icc)-&gt;info);
 <a name="line25"> 25: </a>  }
 <a name="line26"> 26: </a>  <A href="../../../../../../docs/manualpages/Mat/MatGetInfo.html#MatGetInfo">MatGetInfo</A>(((PC_Factor*)icc)-&gt;fact,MAT_LOCAL,&amp;info);
@@ -111,6 +112,9 @@
 <a name="line133">133: </a>  <font color="#4169E1">return</font>(0);
 <a name="line134">134: </a>}
 
+<a name="line136">136: </a><strong><font color="#4169E1">EXTERN_C_BEGIN</font></strong>
+<a name="line137">137: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCFactorSetDropTolerance_ILU(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)</font></strong>;
+<a name="line138">138: </a>EXTERN_C_END
 
 <a name="line140">140: </a><font color="#B22222">/*MC</font>
 <a name="line141">141: </a><font color="#B22222">     <A href="../../../../../../docs/manualpages/PC/PCICC.html#PCICC">PCICC</A> - Incomplete Cholesky factorization preconditioners.</font>
@@ -149,6 +153,7 @@
 
 <a name="line175">175: </a><font color="#B22222">M*/</font>
 
+<a name="line177">177: </a>EXTERN_C_BEGIN
 <a name="line180">180: </a><strong><font color="#4169E1"><a name="PCCreate_ICC"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_ICC(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line181">181: </a>{
 <a name="line183">183: </a>  PC_ICC         *icc;
@@ -203,6 +208,7 @@
 <a name="line233">233: </a>                    PCFactorSetDropTolerance_ILU);
 <a name="line234">234: </a>  <font color="#4169E1">return</font>(0);
 <a name="line235">235: </a>}
+<a name="line236">236: </a>EXTERN_C_END
 
 
 </pre>

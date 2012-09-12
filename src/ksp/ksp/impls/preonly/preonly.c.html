@@ -1,15 +1,16 @@
 <center><a href="preonly.c">Actual source code: preonly.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/preonly/preonly.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:06+00:00">
+<meta name="date" content="2012-08-29T17:04:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;</font>
 
 <a name="line6">  6: </a><strong><font color="#4169E1"><a name="KSPSetUp_PREONLY"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPSetUp_PREONLY(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line7">  7: </a>{
@@ -47,20 +48,23 @@
 
 <a name="line45"> 45: </a><font color="#B22222">M*/</font>
 
+<a name="line47"> 47: </a>EXTERN_C_BEGIN
 <a name="line50"> 50: </a><strong><font color="#4169E1"><a name="KSPCreate_PREONLY"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_PREONLY(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line51"> 51: </a>{
 
-<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetSupportedNorm.html#KSPSetSupportedNorm">KSPSetSupportedNorm</A>(ksp,<A href="../../../../../docs/manualpages/KSP/KSP_NORM_NONE.html#KSP_NORM_NONE">KSP_NORM_NONE</A>,PC_LEFT,2); <font color="#B22222">/* LEFT is arbitrary */</font>
-<a name="line56"> 56: </a>  ksp-&gt;data                      = (void*)0;
-<a name="line57"> 57: </a>  ksp-&gt;ops-&gt;setup                = KSPSetUp_PREONLY;
-<a name="line58"> 58: </a>  ksp-&gt;ops-&gt;solve                = KSPSolve_PREONLY;
-<a name="line59"> 59: </a>  ksp-&gt;ops-&gt;destroy              = KSPDefaultDestroy;
-<a name="line60"> 60: </a>  ksp-&gt;ops-&gt;buildsolution        = KSPDefaultBuildSolution;
-<a name="line61"> 61: </a>  ksp-&gt;ops-&gt;buildresidual        = KSPDefaultBuildResidual;
-<a name="line62"> 62: </a>  ksp-&gt;ops-&gt;setfromoptions       = 0;
-<a name="line63"> 63: </a>  ksp-&gt;ops-&gt;view                 = 0;
-<a name="line64"> 64: </a>  <font color="#4169E1">return</font>(0);
-<a name="line65"> 65: </a>}
+<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetSupportedNorm.html#KSPSetSupportedNorm">KSPSetSupportedNorm</A>(ksp,<A href="../../../../../docs/manualpages/KSP/KSP_NORM_NONE.html#KSP_NORM_NONE">KSP_NORM_NONE</A>,PC_LEFT,2); <font color="#B22222">/* LEFT/RIGHT is arbitrary, so "support" both */</font>
+<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetSupportedNorm.html#KSPSetSupportedNorm">KSPSetSupportedNorm</A>(ksp,<A href="../../../../../docs/manualpages/KSP/KSP_NORM_NONE.html#KSP_NORM_NONE">KSP_NORM_NONE</A>,PC_RIGHT,1);
+<a name="line57"> 57: </a>  ksp-&gt;data                      = (void*)0;
+<a name="line58"> 58: </a>  ksp-&gt;ops-&gt;setup                = KSPSetUp_PREONLY;
+<a name="line59"> 59: </a>  ksp-&gt;ops-&gt;solve                = KSPSolve_PREONLY;
+<a name="line60"> 60: </a>  ksp-&gt;ops-&gt;destroy              = KSPDefaultDestroy;
+<a name="line61"> 61: </a>  ksp-&gt;ops-&gt;buildsolution        = KSPDefaultBuildSolution;
+<a name="line62"> 62: </a>  ksp-&gt;ops-&gt;buildresidual        = KSPDefaultBuildResidual;
+<a name="line63"> 63: </a>  ksp-&gt;ops-&gt;setfromoptions       = 0;
+<a name="line64"> 64: </a>  ksp-&gt;ops-&gt;view                 = 0;
+<a name="line65"> 65: </a>  <font color="#4169E1">return</font>(0);
+<a name="line66"> 66: </a>}
+<a name="line67"> 67: </a>EXTERN_C_END
 </pre>
 </body>
 

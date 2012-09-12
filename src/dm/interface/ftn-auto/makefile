@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = dmf.c
-OBJSC    = dmf.o
+SOURCEC  = dmgetf.c dmf.c
+OBJSC    = dmgetf.o dmf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

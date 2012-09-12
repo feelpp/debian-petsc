@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include <queue>
-#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>   /*I "petscpc.h" I*/
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/subgraph.hpp>
 
@@ -230,7 +230,7 @@ PetscErrorCode AugmentedLowStretchSpanningTree(Mat mat,Mat *prefact,PetscBool au
   EdgeKeep edge_keep_g = get(edge_keep_t(),g);
 
 #ifdef PETSC_USE_COMPLEX
-  SETERRQ(PETSC_ERR_SUP, "Complex numbers not supported for support graph PC");
+  SETERRQ(((PetscObject) mat)->comm, PETSC_ERR_SUP, "Complex numbers not supported for support graph PC");
 #else
   ierr = PetscMalloc3(n,PetscScalar,&diag,n,PetscInt,&dnz,n,PetscInt,&onz);CHKERRQ(ierr);
   ierr = PetscMemzero(dnz, n * sizeof(PetscInt));CHKERRQ(ierr);
@@ -428,7 +428,7 @@ PetscErrorCode StarDecomp(Graph g,const PetscInt root,const PetscScalar delta,co
   PetscInt n,m,edgesLeft;
   //PetscErrorCode ierr;
   ShortestPathPriorityQueue pq;
-  PetscScalar radius;
+  PetscScalar radius = 0;
   PetscInt centerSize;
   std::vector<PetscInt> centerIdx;
   PQNode node;
@@ -436,7 +436,7 @@ PetscErrorCode StarDecomp(Graph g,const PetscInt root,const PetscScalar delta,co
 
   PetscFunctionBegin;
 #ifdef PETSC_USE_COMPLEX
-  SETERRQ(PETSC_ERR_SUP, "Complex numbers not supported for support graph PC");
+  SETERRQ(PETSC_COMM_SELF, PETSC_ERR_SUP, "Complex numbers not supported for support graph PC");
 #else
   EdgeWeight edge_weight_g = get(edge_weight_t(),g);
   EdgeLength edge_length_g = get(edge_length_t(),g);
@@ -703,7 +703,7 @@ PetscErrorCode AugmentSpanningTree(Graph& g,const PetscInt root,PetscScalar& max
   //  maxCongestion;       /* maps each edge component to an upper bound on the
   //			    congestion through any of its edges */
 
-  const EdgeIndex edge_index_g = get(edge_index_t(),g);
+  //const EdgeIndex edge_index_g = get(edge_index_t(),g);
 
   PetscFunctionBegin;
 
@@ -795,7 +795,7 @@ PetscErrorCode DecomposeSubTree(Graph& g,const PetscInt root,
   const EdgeWeight edge_weight_g = get(edge_weight_t(),g);
   const EdgeIndex edge_index_g = get(edge_index_t(),g);
   const EdgeKeep edge_keep_g = get(edge_keep_t(),g);
-  const VertexParent vertex_parent_g = get(vertex_parent_t(),g);
+  //const VertexParent vertex_parent_g = get(vertex_parent_t(),g);
   const VertexChildren vertex_children_g = get(vertex_children_t(),g);
   const VertexDepth vertex_depth_g = get(vertex_depth_t(),g);
   const PetscScalar rootDepth = get(vertex_depth_g,root);
@@ -809,7 +809,7 @@ PetscErrorCode DecomposeSubTree(Graph& g,const PetscInt root,
 
   PetscFunctionBegin;
 #ifdef PETSC_USE_COMPLEX
-  SETERRQ(PETSC_ERR_SUP, "Complex numbers not supported for support graph PC");
+  SETERRQ(PETSC_COMM_SELF, PETSC_ERR_SUP, "Complex numbers not supported for support graph PC");
 #else
   currComponent = new Component();
   currComponent->vertices.push_back(root);
@@ -943,7 +943,7 @@ PetscErrorCode AddBridges(Graph& g,
   const EdgeIndex edge_index_g = get(edge_index_t(),g);
   const EdgeKeep edge_keep_g = get(edge_keep_t(),g);
   const VertexParent vertex_parent_g = get(vertex_parent_t(),g);
-  const VertexChildren vertex_children_g = get(vertex_children_t(),g);
+  // const VertexChildren vertex_children_g = get(vertex_children_t(),g);
   const VertexDepth vertex_depth_g = get(vertex_depth_t(),g);
   PetscInt edgeIndex, eeIndex;
   Component *comp1, *comp2;
@@ -955,7 +955,7 @@ PetscErrorCode AddBridges(Graph& g,
 
   PetscFunctionBegin;
 #ifdef PETSC_USE_COMPLEX
-  SETERRQ(PETSC_ERR_SUP, "Complex numbers not supported for support graph PC");
+  SETERRQ(PETSC_COMM_SELF, PETSC_ERR_SUP, "Complex numbers not supported for support graph PC");
 #else
   realMaxCong = 0;
 

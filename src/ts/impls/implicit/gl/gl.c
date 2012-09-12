@@ -252,15 +252,15 @@ static PetscErrorCode TSGLDestroy_Default(TS_GL *gl)
 }
 
 #undef __FUNCT__  
-#define __FUNCT__ "ViewTable_Private"
-static PetscErrorCode ViewTable_Private(PetscViewer viewer,PetscInt m,PetscInt n,const PetscScalar a[],const char name[])
+#define __FUNCT__ "TSGLViewTable_Private"
+static PetscErrorCode TSGLViewTable_Private(PetscViewer viewer,PetscInt m,PetscInt n,const PetscScalar a[],const char name[])
 {
   PetscErrorCode ierr;
   PetscBool      iascii;
   PetscInt       i,j;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"%30s = [",name);CHKERRQ(ierr);
     for (i=0; i<m; i++) {
@@ -287,31 +287,29 @@ static PetscErrorCode TSGLSchemeView(TSGLScheme sc,PetscBool  view_details,Petsc
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"GL scheme p,q,r,s = %d,%d,%d,%d\n",sc->p,sc->q,sc->r,sc->s);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"Stiffly accurate: %s,  FSAL: %s\n",sc->stiffly_accurate?"yes":"no",sc->fsal?"yes":"no");CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"Leading error constants: %10.3e  %10.3e  %10.3e\n",
                                   PetscRealPart(sc->alpha[0]),PetscRealPart(sc->beta[0]),PetscRealPart(sc->gamma[0]));CHKERRQ(ierr);
-    ierr = ViewTable_Private(viewer,1,sc->s,sc->c,"Abscissas c");CHKERRQ(ierr);
+    ierr = TSGLViewTable_Private(viewer,1,sc->s,sc->c,"Abscissas c");CHKERRQ(ierr);
     if (view_details) {
-      ierr = ViewTable_Private(viewer,sc->s,sc->s,sc->a,"A");CHKERRQ(ierr);
-      ierr = ViewTable_Private(viewer,sc->r,sc->s,sc->b,"B");CHKERRQ(ierr);
-      ierr = ViewTable_Private(viewer,sc->s,sc->r,sc->u,"U");CHKERRQ(ierr);
-      ierr = ViewTable_Private(viewer,sc->r,sc->r,sc->v,"V");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,sc->s,sc->s,sc->a,"A");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,sc->r,sc->s,sc->b,"B");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,sc->s,sc->r,sc->u,"U");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,sc->r,sc->r,sc->v,"V");CHKERRQ(ierr);
 
-      ierr = ViewTable_Private(viewer,3,sc->s,sc->phi,"Error estimate phi");CHKERRQ(ierr);
-      ierr = ViewTable_Private(viewer,3,sc->r,sc->psi,"Error estimate psi");CHKERRQ(ierr);
-      ierr = ViewTable_Private(viewer,1,sc->r,sc->alpha,"Modify alpha");CHKERRQ(ierr);
-      ierr = ViewTable_Private(viewer,1,sc->r,sc->beta,"Modify beta");CHKERRQ(ierr);
-      ierr = ViewTable_Private(viewer,1,sc->r,sc->gamma,"Modify gamma");CHKERRQ(ierr);
-      ierr = ViewTable_Private(viewer,1,sc->s,sc->stage_error,"Stage error xi");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,3,sc->s,sc->phi,"Error estimate phi");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,3,sc->r,sc->psi,"Error estimate psi");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,1,sc->r,sc->alpha,"Modify alpha");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,1,sc->r,sc->beta,"Modify beta");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,1,sc->r,sc->gamma,"Modify gamma");CHKERRQ(ierr);
+      ierr = TSGLViewTable_Private(viewer,1,sc->s,sc->stage_error,"Stage error xi");CHKERRQ(ierr);
     }
     ierr = PetscViewerASCIIPopTab(viewer);CHKERRQ(ierr);
-  } else {
-    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported",((PetscObject)viewer)->type_name);
-  }
+  } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported",((PetscObject)viewer)->type_name);
   PetscFunctionReturn(0);
 }
 
@@ -814,10 +812,11 @@ static PetscErrorCode TSGLGetMaxSizes(TS ts,PetscInt *max_r,PetscInt *max_s)
 #define __FUNCT__ "TSSolve_GL"
 static PetscErrorCode TSSolve_GL(TS ts)
 {
-  TS_GL          *gl = (TS_GL*)ts->data;
-  PetscInt       i,k,its,lits,max_r,max_s;
-  PetscBool      final_step,finish;
-  PetscErrorCode ierr;
+  TS_GL               *gl = (TS_GL*)ts->data;
+  PetscInt            i,k,its,lits,max_r,max_s;
+  PetscBool           final_step,finish;
+  SNESConvergedReason snesreason;
+  PetscErrorCode      ierr;
 
   PetscFunctionBegin;
   ierr = TSMonitor(ts,ts->steps,ts->ptime,ts->vec_sol);CHKERRQ(ierr);
@@ -839,7 +838,13 @@ static PetscErrorCode TSSolve_GL(TS ts)
     ierr = SNESSolve(ts->snes,PETSC_NULL,gl->Y);CHKERRQ(ierr);
     ierr = SNESGetIterationNumber(ts->snes,&its);CHKERRQ(ierr);
     ierr = SNESGetLinearSolveIterations(ts->snes,&lits);CHKERRQ(ierr);
-    ts->nonlinear_its += its; ts->linear_its += lits;
+    ierr = SNESGetConvergedReason(ts->snes,&snesreason);CHKERRQ(ierr);
+    ts->snes_its += its; ts->ksp_its += lits;
+    if (snesreason < 0 && ts->max_snes_failures > 0 && ++ts->num_snes_failures >= ts->max_snes_failures) {
+      ts->reason = TS_DIVERGED_NONLINEAR_SOLVE;
+      ierr = PetscInfo2(ts,"Step=%D, nonlinear solve solve failures %D greater than current TS allowed, stopping solve\n",ts->steps,ts->num_snes_failures);CHKERRQ(ierr);
+      PetscFunctionReturn(0);
+    }
   }
 
   if (gl->current_scheme < 0) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ORDER,"A starting scheme has not been provided");
@@ -905,7 +910,13 @@ static PetscErrorCode TSSolve_GL(TS ts)
         ierr = SNESSolve(ts->snes,PETSC_NULL,Y);CHKERRQ(ierr);
         ierr = SNESGetIterationNumber(ts->snes,&its);CHKERRQ(ierr);
         ierr = SNESGetLinearSolveIterations(ts->snes,&lits);CHKERRQ(ierr);
-        ts->nonlinear_its += its; ts->linear_its += lits;
+        ierr = SNESGetConvergedReason(ts->snes,&snesreason);CHKERRQ(ierr);
+        ts->snes_its += its; ts->ksp_its += lits;
+        if (snesreason < 0 && ts->max_snes_failures > 0 && ++ts->num_snes_failures >= ts->max_snes_failures) {
+          ts->reason = TS_DIVERGED_NONLINEAR_SOLVE;
+          ierr = PetscInfo2(ts,"Step=%D, nonlinear solve solve failures %D greater than current TS allowed, stopping solve\n",ts->steps,ts->num_snes_failures);CHKERRQ(ierr);
+          PetscFunctionReturn(0);
+        }
       }
 
       gl->stage_time = ts->ptime + ts->time_step;
@@ -1124,13 +1135,13 @@ static PetscErrorCode TSSetFromOptions_GL(TS ts)
       }
     }
     ierr = SNESSetFromOptions(ts->snes);CHKERRQ(ierr);
+    {
+      TSGLAdapt adapt;
+      ierr = TSGLGetAdapt(ts,&adapt);CHKERRQ(ierr);
+      ierr = TSGLAdaptSetFromOptions(adapt);CHKERRQ(ierr);
+    }
   }
   ierr = PetscOptionsTail();CHKERRQ(ierr);
-  {
-    TSGLAdapt adapt;
-    ierr = TSGLGetAdapt(ts,&adapt);CHKERRQ(ierr);
-    ierr = TSGLAdaptSetFromOptions(adapt);CHKERRQ(ierr);
-  }
   PetscFunctionReturn(0);
 }
 
@@ -1144,7 +1155,7 @@ static PetscErrorCode TSView_GL(TS ts,PetscViewer viewer)
   PetscErrorCode  ierr;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  min order %D, max order %D, current order %D\n",gl->min_order,gl->max_order,gl->schemes[gl->current_scheme]->p);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  Error estimation: %s\n",TSGLErrorDirections[gl->error_direction]);CHKERRQ(ierr);

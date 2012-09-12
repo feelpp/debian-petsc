@@ -1,13 +1,14 @@
 <center><a href="ex33.c">Actual source code: ex33.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tests/ex33.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:56:17+00:00">
+<meta name="date" content="2012-08-29T16:40:08+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#B22222">/*$Id: ex33.c,v 1.1 2001/09/24 21:04:45 balay Exp $*/</font>
 
 <a name="line3">  3: </a>static char help[] = <font color="#666666">"Tests the routines <A href="../../../../../docs/manualpages/Vec/VecScatterCreateToAll.html#VecScatterCreateToAll">VecScatterCreateToAll</A>(), <A href="../../../../../docs/manualpages/Vec/VecScatterCreateToZero.html#VecScatterCreateToZero">VecScatterCreateToZero</A>()\n\n"</font>;
@@ -49,7 +50,7 @@
 <a name="line42"> 42: </a><font color="#B22222">     and do a <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>() */</font>
 <a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(y,&amp;yy);
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(y,&amp;len);
-<a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,len,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,yy,&amp;y_t);
+<a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,len,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,yy,&amp;y_t);
 <a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(y_t,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y_t);
 <a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(y,&amp;yy);

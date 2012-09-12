@@ -1,13 +1,14 @@
 <center><a href="ivec.c">Actual source code: ivec.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/tfs/ivec.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:01+00:00">
+<meta name="date" content="2012-08-29T17:00:18+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/**********************************ivec.c**************************************</font>
 
@@ -36,105 +37,105 @@
 <a name="line26"> 26: </a>static <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   size_stack[SORT_STACK];
 
 <a name="line28"> 28: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line29"> 29: </a><strong><font color="#4169E1"><a name="ivec_copy"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ivec_copy( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line29"> 29: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_copy"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *PCTFS_ivec_copy( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line30"> 30: </a>{
 <a name="line31"> 31: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ = *arg2++;}
 <a name="line32"> 32: </a>  <font color="#4169E1">return</font>(arg1);
 <a name="line33"> 33: </a>}
 
 <a name="line35"> 35: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line36"> 36: </a><strong><font color="#4169E1"><a name="ivec_zero"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_zero( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line36"> 36: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_zero"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_zero( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line37"> 37: </a>{
 <a name="line39"> 39: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ = 0;}
 <a name="line40"> 40: </a>  <font color="#4169E1">return</font>(0);
 <a name="line41"> 41: </a>}
 
 <a name="line43"> 43: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line44"> 44: </a><strong><font color="#4169E1"><a name="ivec_set"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_set( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line44"> 44: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_set"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_set( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line45"> 45: </a>{
 <a name="line47"> 47: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ = arg2;}
 <a name="line48"> 48: </a>  <font color="#4169E1">return</font>(0);
 <a name="line49"> 49: </a>}
 
 <a name="line51"> 51: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line52"> 52: </a><strong><font color="#4169E1"><a name="ivec_max"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_max( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line52"> 52: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_max"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_max( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line53"> 53: </a>{
 <a name="line55"> 55: </a>  <font color="#4169E1">while</font> (n--)  {*arg1 = PetscMax(*arg1,*arg2); arg1++; arg2++;}
 <a name="line56"> 56: </a>  <font color="#4169E1">return</font>(0);
 <a name="line57"> 57: </a>}
 
 <a name="line59"> 59: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line60"> 60: </a><strong><font color="#4169E1"><a name="ivec_min"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_min( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line60"> 60: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_min"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_min( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line61"> 61: </a>{
 <a name="line63"> 63: </a>  <font color="#4169E1">while</font> (n--)  {*(arg1) = PetscMin(*arg1,*arg2); arg1++; arg2++;}
 <a name="line64"> 64: </a>  <font color="#4169E1">return</font>(0);
 <a name="line65"> 65: </a>}
 
 <a name="line67"> 67: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line68"> 68: </a><strong><font color="#4169E1"><a name="ivec_mult"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_mult( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line68"> 68: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_mult"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_mult( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line69"> 69: </a>{
 <a name="line71"> 71: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ *= *arg2++;}
 <a name="line72"> 72: </a>  <font color="#4169E1">return</font>(0);
 <a name="line73"> 73: </a>}
 
 <a name="line75"> 75: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line76"> 76: </a><strong><font color="#4169E1"><a name="ivec_add"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_add( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line76"> 76: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_add"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_add( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line77"> 77: </a>{
 <a name="line79"> 79: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ += *arg2++;}
 <a name="line80"> 80: </a>  <font color="#4169E1">return</font>(0);
 <a name="line81"> 81: </a>}
 
 <a name="line83"> 83: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line84"> 84: </a><strong><font color="#4169E1"><a name="ivec_lxor"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_lxor( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line84"> 84: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_lxor"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_lxor( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line85"> 85: </a>{
 <a name="line87"> 87: </a>  <font color="#4169E1">while</font> (n--) {*arg1=((*arg1 || *arg2) &amp;&amp; !(*arg1 &amp;&amp; *arg2)); arg1++; arg2++;}
 <a name="line88"> 88: </a>  <font color="#4169E1">return</font>(0);
 <a name="line89"> 89: </a>}
 
 <a name="line91"> 91: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line92"> 92: </a><strong><font color="#4169E1"><a name="ivec_xor"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_xor( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line92"> 92: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_xor"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_xor( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line93"> 93: </a>{
 <a name="line95"> 95: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ ^= *arg2++;}
 <a name="line96"> 96: </a>  <font color="#4169E1">return</font>(0);
 <a name="line97"> 97: </a>}
 
 <a name="line99"> 99: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line100">100: </a><strong><font color="#4169E1"><a name="ivec_or"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_or( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line100">100: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_or"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_or( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line101">101: </a>{
 <a name="line103">103: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ |= *arg2++;}
 <a name="line104">104: </a>  <font color="#4169E1">return</font>(0);
 <a name="line105">105: </a>}
 
 <a name="line107">107: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line108">108: </a><strong><font color="#4169E1"><a name="ivec_lor"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_lor( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line108">108: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_lor"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_lor( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line109">109: </a>{
 <a name="line111">111: </a>  <font color="#4169E1">while</font> (n--)  {*arg1 = (*arg1 || *arg2); arg1++; arg2++;}
 <a name="line112">112: </a>  <font color="#4169E1">return</font>(0);
 <a name="line113">113: </a>}
 
 <a name="line115">115: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line116">116: </a><strong><font color="#4169E1"><a name="ivec_and"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_and( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line116">116: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_and"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_and( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line117">117: </a>{
 <a name="line119">119: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ &amp;= *arg2++;}
 <a name="line120">120: </a>  <font color="#4169E1">return</font>(0);
 <a name="line121">121: </a>}
 
 <a name="line123">123: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line124">124: </a><strong><font color="#4169E1"><a name="ivec_land"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_land( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line124">124: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_land"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_land( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line125">125: </a>{
 <a name="line127">127: </a>  <font color="#4169E1">while</font> (n--) {*arg1 = (*arg1 &amp;&amp; *arg2); arg1++; arg2++;}
 <a name="line128">128: </a>  <font color="#4169E1">return</font>(0);
 <a name="line129">129: </a>}
 
 <a name="line131">131: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line132">132: </a><strong><font color="#4169E1"><a name="ivec_and3"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_and3( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg3, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line132">132: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_and3"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_and3( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg3, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line133">133: </a>{
 <a name="line135">135: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ = (*arg2++ &amp; *arg3++);}
 <a name="line136">136: </a>  <font color="#4169E1">return</font>(0);
 <a name="line137">137: </a>}
 
 <a name="line139">139: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line140">140: </a><strong><font color="#4169E1"><a name="ivec_sum"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ivec_sum( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line140">140: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_sum"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> PCTFS_ivec_sum( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line141">141: </a>{
 <a name="line142">142: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> tmp = 0;
 
@@ -144,7 +145,7 @@
 <a name="line147">147: </a>}
 
 <a name="line149">149: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line150">150: </a><strong><font color="#4169E1"><a name="ivec_non_uniform"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_non_uniform(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg3)</font></strong>
+<a name="line150">150: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_non_uniform"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_non_uniform(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg1, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg3)</font></strong>
 <a name="line151">151: </a>{
 <a name="line152">152: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, j, type;
 
@@ -163,27 +164,27 @@
 
 <a name="line168">168: </a>      <font color="#B22222">/* call appropriate ivec function */</font>
 <a name="line169">169: </a>      <font color="#4169E1">if</font> (type == GL_MAX)
-<a name="line170">170: </a>        {ivec_max(arg1,arg2,j);}
+<a name="line170">170: </a>        {PCTFS_ivec_max(arg1,arg2,j);}
 <a name="line171">171: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MIN)
-<a name="line172">172: </a>        {ivec_min(arg1,arg2,j);}
+<a name="line172">172: </a>        {PCTFS_ivec_min(arg1,arg2,j);}
 <a name="line173">173: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MULT)
-<a name="line174">174: </a>        {ivec_mult(arg1,arg2,j);}
+<a name="line174">174: </a>        {PCTFS_ivec_mult(arg1,arg2,j);}
 <a name="line175">175: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_ADD)
-<a name="line176">176: </a>        {ivec_add(arg1,arg2,j);}
+<a name="line176">176: </a>        {PCTFS_ivec_add(arg1,arg2,j);}
 <a name="line177">177: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_B_XOR)
-<a name="line178">178: </a>        {ivec_xor(arg1,arg2,j);}
+<a name="line178">178: </a>        {PCTFS_ivec_xor(arg1,arg2,j);}
 <a name="line179">179: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_B_OR)
-<a name="line180">180: </a>        {ivec_or(arg1,arg2,j);}
+<a name="line180">180: </a>        {PCTFS_ivec_or(arg1,arg2,j);}
 <a name="line181">181: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_B_AND)
-<a name="line182">182: </a>        {ivec_and(arg1,arg2,j);}
+<a name="line182">182: </a>        {PCTFS_ivec_and(arg1,arg2,j);}
 <a name="line183">183: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_L_XOR)
-<a name="line184">184: </a>        {ivec_lxor(arg1,arg2,j);}
+<a name="line184">184: </a>        {PCTFS_ivec_lxor(arg1,arg2,j);}
 <a name="line185">185: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_L_OR)
-<a name="line186">186: </a>        {ivec_lor(arg1,arg2,j);}
+<a name="line186">186: </a>        {PCTFS_ivec_lor(arg1,arg2,j);}
 <a name="line187">187: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_L_AND)
-<a name="line188">188: </a>        {ivec_land(arg1,arg2,j);}
+<a name="line188">188: </a>        {PCTFS_ivec_land(arg1,arg2,j);}
 <a name="line189">189: </a>      <font color="#4169E1">else</font>
-<a name="line190">190: </a>        <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"unrecognized type passed to ivec_non_uniform()!"</font>);
+<a name="line190">190: </a>        <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"unrecognized type passed to PCTFS_ivec_non_uniform()!"</font>);
 
 <a name="line192">192: </a>      arg1+=j; arg2+=j; i+=j;
 <a name="line193">193: </a>    }
@@ -191,37 +192,37 @@
 <a name="line195">195: </a>}
 
 <a name="line197">197: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line198">198: </a><strong><font color="#4169E1"><a name="ivec_fct_addr"></a>vfp ivec_fct_addr( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> type)</font></strong>
+<a name="line198">198: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_fct_addr"></a>vfp PCTFS_ivec_fct_addr( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> type)</font></strong>
 <a name="line199">199: </a>{
 <a name="line201">201: </a>  <font color="#4169E1">if</font> (type == NON_UNIFORM)
-<a name="line202">202: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_non_uniform);}
+<a name="line202">202: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_non_uniform);}
 <a name="line203">203: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MAX)
-<a name="line204">204: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_max);}
+<a name="line204">204: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_max);}
 <a name="line205">205: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MIN)
-<a name="line206">206: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_min);}
+<a name="line206">206: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_min);}
 <a name="line207">207: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MULT)
-<a name="line208">208: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_mult);}
+<a name="line208">208: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_mult);}
 <a name="line209">209: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_ADD)
-<a name="line210">210: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_add);}
+<a name="line210">210: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_add);}
 <a name="line211">211: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_B_XOR)
-<a name="line212">212: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_xor);}
+<a name="line212">212: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_xor);}
 <a name="line213">213: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_B_OR)
-<a name="line214">214: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_or);}
+<a name="line214">214: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_or);}
 <a name="line215">215: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_B_AND)
-<a name="line216">216: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_and);}
+<a name="line216">216: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_and);}
 <a name="line217">217: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_L_XOR)
-<a name="line218">218: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_lxor);}
+<a name="line218">218: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_lxor);}
 <a name="line219">219: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_L_OR)
-<a name="line220">220: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_lor);}
+<a name="line220">220: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_lor);}
 <a name="line221">221: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_L_AND)
-<a name="line222">222: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;ivec_land);}
+<a name="line222">222: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_ivec_land);}
 
 <a name="line224">224: </a>  <font color="#B22222">/* catch all ... not good if we get here */</font>
 <a name="line225">225: </a>  <font color="#4169E1">return</font>(NULL);
 <a name="line226">226: </a>}
 
 <a name="line228">228: </a><font color="#B22222">/******************************************************************************/</font>
-<a name="line229">229: </a><strong><font color="#4169E1"><a name="ivec_sort"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_sort( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ar,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> size)</font></strong>
+<a name="line229">229: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_sort"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_sort( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ar,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> size)</font></strong>
 <a name="line230">230: </a>{
 <a name="line231">231: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *pi, *pj, temp;
 <a name="line232">232: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **top_a = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **) offset_stack;
@@ -273,7 +274,7 @@
 <a name="line278">278: </a>          SWAP(*ar,*pj)
 
 <a name="line280">280: </a>          <font color="#B22222">/* test stack_size to see if we've exhausted our stack */</font>
-<a name="line281">281: </a>          <font color="#4169E1">if</font> (top_s-bottom_s &gt;= SORT_STACK) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"ivec_sort() :: STACK EXHAUSTED!!!"</font>);
+<a name="line281">281: </a>          <font color="#4169E1">if</font> (top_s-bottom_s &gt;= SORT_STACK) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"PCTFS_ivec_sort() :: STACK EXHAUSTED!!!"</font>);
 
 <a name="line283">283: </a>          <font color="#B22222">/* push right hand child iff length &gt; 1 */</font>
 <a name="line284">284: </a>          <font color="#4169E1">if</font> ((*top_s = size-((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) (pi-ar))))
@@ -320,7 +321,7 @@
 <a name="line325">325: </a>}
 
 <a name="line327">327: </a><font color="#B22222">/******************************************************************************/</font>
-<a name="line328">328: </a><strong><font color="#4169E1"><a name="ivec_sort_companion"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_sort_companion( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ar,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ar2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> size)</font></strong>
+<a name="line328">328: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_sort_companion"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_sort_companion( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ar,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ar2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> size)</font></strong>
 <a name="line329">329: </a>{
 <a name="line330">330: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *pi, *pj, temp, temp2;
 <a name="line331">331: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **top_a = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **)offset_stack;
@@ -381,7 +382,7 @@
 <a name="line387">387: </a>          SWAP(*ar2,*pj2)
 
 <a name="line389">389: </a>          <font color="#B22222">/* test stack_size to see if we've exhausted our stack */</font>
-<a name="line390">390: </a>          <font color="#4169E1">if</font> (top_s-bottom_s &gt;= SORT_STACK) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"ivec_sort_companion() :: STACK EXHAUSTED!!!"</font>);
+<a name="line390">390: </a>          <font color="#4169E1">if</font> (top_s-bottom_s &gt;= SORT_STACK) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"PCTFS_ivec_sort_companion() :: STACK EXHAUSTED!!!"</font>);
 
 <a name="line392">392: </a>          <font color="#B22222">/* push right hand child iff length &gt; 1 */</font>
 <a name="line393">393: </a>          <font color="#4169E1">if</font> ((*top_s = size-((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) (pi-ar))))
@@ -434,7 +435,7 @@
 <a name="line440">440: </a>}
 
 <a name="line442">442: </a><font color="#B22222">/******************************************************************************/</font>
-<a name="line443">443: </a><strong><font color="#4169E1"><a name="ivec_sort_companion_hack"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ivec_sort_companion_hack( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ar,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **ar2, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> size)</font></strong>
+<a name="line443">443: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_sort_companion_hack"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_ivec_sort_companion_hack( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ar,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **ar2, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> size)</font></strong>
 <a name="line444">444: </a>{
 <a name="line445">445: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *pi, *pj, temp, *ptr;
 <a name="line446">446: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **top_a = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **)offset_stack;
@@ -495,7 +496,7 @@
 <a name="line502">502: </a>          P_SWAP(*ar2,*pj2)
 
 <a name="line504">504: </a>          <font color="#B22222">/* test stack_size to see if we've exhausted our stack */</font>
-<a name="line505">505: </a>          <font color="#4169E1">if</font> (top_s-bottom_s &gt;= SORT_STACK) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"ivec_sort_companion_hack() :: STACK EXHAUSTED!!!"</font>);
+<a name="line505">505: </a>          <font color="#4169E1">if</font> (top_s-bottom_s &gt;= SORT_STACK) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"PCTFS_ivec_sort_companion_hack() :: STACK EXHAUSTED!!!"</font>);
 
 <a name="line507">507: </a>          <font color="#B22222">/* push right hand child iff length &gt; 1 */</font>
 <a name="line508">508: </a>          <font color="#4169E1">if</font> ((*top_s = size-((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) (pi-ar))))
@@ -548,20 +549,20 @@
 <a name="line555">555: </a>}
 
 <a name="line557">557: </a><font color="#B22222">/******************************************************************************/</font>
-<a name="line558">558: </a><strong><font color="#4169E1"><a name="SMI_sort"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SMI_sort(void *ar1, void *ar2, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> size, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> type)</font></strong>
+<a name="line558">558: </a><strong><font color="#4169E1"><a name="PCTFS_SMI_sort"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_SMI_sort(void *ar1, void *ar2, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> size, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> type)</font></strong>
 <a name="line559">559: </a>{
 <a name="line561">561: </a>  <font color="#4169E1">if</font> (type == SORT_INTEGER) {
-<a name="line562">562: </a>    <font color="#4169E1">if</font> (ar2) ivec_sort_companion((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar2,size);
-<a name="line563">563: </a>    <font color="#4169E1">else</font> ivec_sort((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar1,size);
+<a name="line562">562: </a>    <font color="#4169E1">if</font> (ar2) PCTFS_ivec_sort_companion((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar2,size);
+<a name="line563">563: </a>    <font color="#4169E1">else</font> PCTFS_ivec_sort((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar1,size);
 <a name="line564">564: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == SORT_INT_PTR) {
-<a name="line565">565: </a>    <font color="#4169E1">if</font> (ar2) ivec_sort_companion_hack((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **)ar2,size);
-<a name="line566">566: </a>    <font color="#4169E1">else</font> ivec_sort((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar1,size);
-<a name="line567">567: </a>  } <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"SMI_sort only does SORT_INTEGER!"</font>);
+<a name="line565">565: </a>    <font color="#4169E1">if</font> (ar2) PCTFS_ivec_sort_companion_hack((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar1,(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **)ar2,size);
+<a name="line566">566: </a>    <font color="#4169E1">else</font> PCTFS_ivec_sort((<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)ar1,size);
+<a name="line567">567: </a>  } <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"PCTFS_SMI_sort only does SORT_INTEGER!"</font>);
 <a name="line568">568: </a>  <font color="#4169E1">return</font>(0);
 <a name="line569">569: </a>}
 
 <a name="line571">571: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line572">572: </a><strong><font color="#4169E1"><a name="ivec_linear_search"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ivec_linear_search( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> item,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *list,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line572">572: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_linear_search"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> PCTFS_ivec_linear_search( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> item,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *list,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line573">573: </a>{
 <a name="line574">574: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> tmp = n-1;
 <a name="line576">576: </a>  <font color="#4169E1">while</font> (n--)  {<font color="#4169E1">if</font> (*list++ == item) {<font color="#4169E1">return</font>(tmp-n);}}
@@ -569,7 +570,7 @@
 <a name="line578">578: </a>}
 
 <a name="line580">580: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line581">581: </a><strong><font color="#4169E1"><a name="ivec_binary_search"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ivec_binary_search( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> item,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *list,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rh)</font></strong>
+<a name="line581">581: </a><strong><font color="#4169E1"><a name="PCTFS_ivec_binary_search"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> PCTFS_ivec_binary_search( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> item,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *list,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rh)</font></strong>
 <a name="line582">582: </a>{
 <a name="line583">583: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mid, lh=0;
 
@@ -588,91 +589,91 @@
 <a name="line597">597: </a>}
 
 <a name="line599">599: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line600">600: </a><strong><font color="#4169E1"><a name="rvec_copy"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_copy( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line600">600: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_copy"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_copy( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line601">601: </a>{
 <a name="line603">603: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ = *arg2++;}
 <a name="line604">604: </a>  <font color="#4169E1">return</font>(0);
 <a name="line605">605: </a>}
 
 <a name="line607">607: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line608">608: </a><strong><font color="#4169E1"><a name="rvec_zero"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_zero( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line608">608: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_zero"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_zero( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line609">609: </a>{
 <a name="line611">611: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ = 0.0;}
 <a name="line612">612: </a>  <font color="#4169E1">return</font>(0);
 <a name="line613">613: </a>}
 
 <a name="line615">615: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line616">616: </a><strong><font color="#4169E1"><a name="rvec_one"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_one( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line616">616: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_one"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_one( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line617">617: </a>{
 <a name="line619">619: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ = 1.0;}
 <a name="line620">620: </a>  <font color="#4169E1">return</font>(0);
 <a name="line621">621: </a>}
 
 <a name="line623">623: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line624">624: </a><strong><font color="#4169E1"><a name="rvec_set"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_set( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line624">624: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_set"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_set( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line625">625: </a>{
 <a name="line627">627: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ = arg2;}
 <a name="line628">628: </a>  <font color="#4169E1">return</font>(0);
 <a name="line629">629: </a>}
 
 <a name="line631">631: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line632">632: </a><strong><font color="#4169E1"><a name="rvec_scale"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_scale( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line632">632: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_scale"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_scale( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line633">633: </a>{
 <a name="line635">635: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ *= arg2;}
 <a name="line636">636: </a>  <font color="#4169E1">return</font>(0);
 <a name="line637">637: </a>}
 
 <a name="line639">639: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line640">640: </a><strong><font color="#4169E1"><a name="rvec_add"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_add( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line640">640: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_add"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_add( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line641">641: </a>{
 <a name="line643">643: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ += *arg2++;}
 <a name="line644">644: </a>  <font color="#4169E1">return</font>(0);
 <a name="line645">645: </a>}
 
 <a name="line647">647: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line648">648: </a><strong><font color="#4169E1"><a name="rvec_mult"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_mult( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line648">648: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_mult"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_mult( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line649">649: </a>{
 <a name="line651">651: </a>  <font color="#4169E1">while</font> (n--)  {*arg1++ *= *arg2++;}
 <a name="line652">652: </a>  <font color="#4169E1">return</font>(0);
 <a name="line653">653: </a>}
 
 <a name="line655">655: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line656">656: </a><strong><font color="#4169E1"><a name="rvec_max"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_max( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line656">656: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_max"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_max( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line657">657: </a>{
 <a name="line659">659: </a>  <font color="#4169E1">while</font> (n--)  {*arg1 = PetscMax(*arg1,*arg2); arg1++; arg2++;}
 <a name="line660">660: </a>  <font color="#4169E1">return</font>(0);
 <a name="line661">661: </a>}
 
 <a name="line663">663: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line664">664: </a><strong><font color="#4169E1"><a name="rvec_max_abs"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_max_abs( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line664">664: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_max_abs"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_max_abs( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line665">665: </a>{
 <a name="line667">667: </a>  <font color="#4169E1">while</font> (n--)  {*arg1 = MAX_FABS(*arg1,*arg2); arg1++; arg2++;}
 <a name="line668">668: </a>  <font color="#4169E1">return</font>(0);
 <a name="line669">669: </a>}
 
 <a name="line671">671: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line672">672: </a><strong><font color="#4169E1"><a name="rvec_min"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_min( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line672">672: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_min"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_min( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line673">673: </a>{
 <a name="line675">675: </a>  <font color="#4169E1">while</font> (n--)  {*arg1 = PetscMin(*arg1,*arg2); arg1++; arg2++;}
 <a name="line676">676: </a>  <font color="#4169E1">return</font>(0);
 <a name="line677">677: </a>}
 
 <a name="line679">679: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line680">680: </a><strong><font color="#4169E1"><a name="rvec_min_abs"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_min_abs( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line680">680: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_min_abs"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_min_abs( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line681">681: </a>{
 <a name="line683">683: </a>  <font color="#4169E1">while</font> (n--)  {*arg1 = MIN_FABS(*arg1,*arg2); arg1++; arg2++;}
 <a name="line684">684: </a>  <font color="#4169E1">return</font>(0);
 <a name="line685">685: </a>}
 
 <a name="line687">687: </a><font color="#B22222">/*********************************ivec.c*************************************/</font>
-<a name="line688">688: </a><strong><font color="#4169E1"><a name="rvec_exists"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_exists( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line688">688: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_exists"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_exists( <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1,  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line689">689: </a>{
 <a name="line691">691: </a>  <font color="#4169E1">while</font> (n--)  {*arg1 = EXISTS(*arg1,*arg2); arg1++; arg2++;}
 <a name="line692">692: </a>  <font color="#4169E1">return</font>(0);
 <a name="line693">693: </a>}
 
 <a name="line695">695: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line696">696: </a><strong><font color="#4169E1"><a name="rvec_non_uniform"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> rvec_non_uniform(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg3)</font></strong>
+<a name="line696">696: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_non_uniform"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_rvec_non_uniform(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg1, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *arg2,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *arg3)</font></strong>
 <a name="line697">697: </a>{
 <a name="line698">698: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, j, type;
 
@@ -690,20 +691,20 @@
 
 <a name="line713">713: </a>      <font color="#B22222">/* call appropriate ivec function */</font>
 <a name="line714">714: </a>      <font color="#4169E1">if</font> (type == GL_MAX)
-<a name="line715">715: </a>        {rvec_max(arg1,arg2,j);}
+<a name="line715">715: </a>        {PCTFS_rvec_max(arg1,arg2,j);}
 <a name="line716">716: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MIN)
-<a name="line717">717: </a>        {rvec_min(arg1,arg2,j);}
+<a name="line717">717: </a>        {PCTFS_rvec_min(arg1,arg2,j);}
 <a name="line718">718: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MULT)
-<a name="line719">719: </a>        {rvec_mult(arg1,arg2,j);}
+<a name="line719">719: </a>        {PCTFS_rvec_mult(arg1,arg2,j);}
 <a name="line720">720: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_ADD)
-<a name="line721">721: </a>        {rvec_add(arg1,arg2,j);}
+<a name="line721">721: </a>        {PCTFS_rvec_add(arg1,arg2,j);}
 <a name="line722">722: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MAX_ABS)
-<a name="line723">723: </a>        {rvec_max_abs(arg1,arg2,j);}
+<a name="line723">723: </a>        {PCTFS_rvec_max_abs(arg1,arg2,j);}
 <a name="line724">724: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MIN_ABS)
-<a name="line725">725: </a>        {rvec_min_abs(arg1,arg2,j);}
+<a name="line725">725: </a>        {PCTFS_rvec_min_abs(arg1,arg2,j);}
 <a name="line726">726: </a>      <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_EXISTS)
-<a name="line727">727: </a>        {rvec_exists(arg1,arg2,j);}
-<a name="line728">728: </a>      <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"unrecognized type passed to rvec_non_uniform()!"</font>);
+<a name="line727">727: </a>        {PCTFS_rvec_exists(arg1,arg2,j);}
+<a name="line728">728: </a>      <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"unrecognized type passed to PCTFS_rvec_non_uniform()!"</font>);
 
 <a name="line730">730: </a>      arg1+=j; arg2+=j; i+=j;
 <a name="line731">731: </a>    }
@@ -711,24 +712,24 @@
 <a name="line733">733: </a>}
 
 <a name="line735">735: </a><font color="#B22222">/***********************************ivec.c*************************************/</font>
-<a name="line736">736: </a><strong><font color="#4169E1"><a name="rvec_fct_addr"></a>vfp rvec_fct_addr( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> type)</font></strong>
+<a name="line736">736: </a><strong><font color="#4169E1"><a name="PCTFS_rvec_fct_addr"></a>vfp PCTFS_rvec_fct_addr( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> type)</font></strong>
 <a name="line737">737: </a>{
 <a name="line738">738: </a>  <font color="#4169E1">if</font> (type == NON_UNIFORM)
-<a name="line739">739: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;rvec_non_uniform);}
+<a name="line739">739: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_rvec_non_uniform);}
 <a name="line740">740: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MAX)
-<a name="line741">741: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;rvec_max);}
+<a name="line741">741: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_rvec_max);}
 <a name="line742">742: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MIN)
-<a name="line743">743: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;rvec_min);}
+<a name="line743">743: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_rvec_min);}
 <a name="line744">744: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MULT)
-<a name="line745">745: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;rvec_mult);}
+<a name="line745">745: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_rvec_mult);}
 <a name="line746">746: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_ADD)
-<a name="line747">747: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;rvec_add);}
+<a name="line747">747: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_rvec_add);}
 <a name="line748">748: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MAX_ABS)
-<a name="line749">749: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;rvec_max_abs);}
+<a name="line749">749: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_rvec_max_abs);}
 <a name="line750">750: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_MIN_ABS)
-<a name="line751">751: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;rvec_min_abs);}
+<a name="line751">751: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_rvec_min_abs);}
 <a name="line752">752: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == GL_EXISTS)
-<a name="line753">753: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;rvec_exists);}
+<a name="line753">753: </a>    {<font color="#4169E1">return</font>((<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(void*, void *, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>, ...))&amp;PCTFS_rvec_exists);}
 
 <a name="line755">755: </a>  <font color="#B22222">/* catch all ... not good if we get here */</font>
 <a name="line756">756: </a>  <font color="#4169E1">return</font>(NULL);

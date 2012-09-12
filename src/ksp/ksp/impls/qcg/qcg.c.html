@@ -1,18 +1,19 @@
 <center><a href="qcg.c">Actual source code: qcg.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/qcg/qcg.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:08+00:00">
+<meta name="date" content="2012-08-29T17:04:40+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;             </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;             </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/qcg/qcgimpl.h&gt;</font>
 
-<a name="line5">  5: </a><strong><font color="#4169E1">static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> QuadraticRoots_Private(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*)</font></strong>;
+<a name="line5">  5: </a><strong><font color="#4169E1">static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPQCGQuadraticRoots(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*)</font></strong>;
 
 <a name="line9">  9: </a><font color="#B22222">/*@</font>
 <a name="line10"> 10: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/KSP/KSPQCGSetTrustRegionRadius.html#KSPQCGSetTrustRegionRadius">KSPQCGSetTrustRegionRadius</A> - Sets the radius of the trust region.</font>
@@ -194,7 +195,7 @@
 <a name="line203">203: </a>         <A href="../../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(X,scal);
 <a name="line204">204: </a>       } <font color="#4169E1">else</font> {
 <a name="line205">205: </a>         <font color="#B22222">/* Compute roots of quadratic */</font>
-<a name="line206">206: </a>         QuadraticRoots_Private(W,P,&amp;pcgP-&gt;delta,&amp;step1,&amp;step2);
+<a name="line206">206: </a>         KSPQCGQuadraticRoots(W,P,&amp;pcgP-&gt;delta,&amp;step1,&amp;step2);
 <a name="line207">207: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line208">208: </a>         <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(W,ASP,&amp;cwtasp); wtasp = PetscRealPart(cwtasp);
 <a name="line209">209: </a>         <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(BS,P,&amp;cbstp);   bstp  = PetscRealPart(cbstp);
@@ -245,7 +246,7 @@
 <a name="line254">254: </a>           <A href="../../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(X,scal);
 <a name="line255">255: </a>         } <font color="#4169E1">else</font> {
 <a name="line256">256: </a>           <font color="#B22222">/* Compute roots of quadratic */</font>
-<a name="line257">257: </a>           QuadraticRoots_Private(W,P,&amp;pcgP-&gt;delta,&amp;step1,&amp;step2);
+<a name="line257">257: </a>           KSPQCGQuadraticRoots(W,P,&amp;pcgP-&gt;delta,&amp;step1,&amp;step2);
 <a name="line258">258: </a>           <A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(W,X);
 <a name="line259">259: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line260">260: </a>           cstep1 = step1; <A href="../../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(X,cstep1,P);
@@ -333,6 +334,7 @@
 <a name="line350">350: </a>  <font color="#4169E1">return</font>(0);
 <a name="line351">351: </a>}
 
+<a name="line353">353: </a>EXTERN_C_BEGIN
 <a name="line356">356: </a><strong><font color="#4169E1"><a name="KSPQCGSetTrustRegionRadius_QCG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPQCGSetTrustRegionRadius_QCG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> delta)</font></strong>
 <a name="line357">357: </a>{
 <a name="line358">358: </a>  KSP_QCG *cgP = (KSP_QCG*)ksp-&gt;data;
@@ -340,7 +342,9 @@
 <a name="line361">361: </a>  cgP-&gt;delta = delta;
 <a name="line362">362: </a>  <font color="#4169E1">return</font>(0);
 <a name="line363">363: </a>}
+<a name="line364">364: </a>EXTERN_C_END
 
+<a name="line366">366: </a>EXTERN_C_BEGIN
 <a name="line369">369: </a><strong><font color="#4169E1"><a name="KSPQCGGetTrialStepNorm_QCG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPQCGGetTrialStepNorm_QCG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *ltsnrm)</font></strong>
 <a name="line370">370: </a>{
 <a name="line371">371: </a>  KSP_QCG *cgP = (KSP_QCG*)ksp-&gt;data;
@@ -348,7 +352,9 @@
 <a name="line374">374: </a>  *ltsnrm = cgP-&gt;ltsnrm;
 <a name="line375">375: </a>  <font color="#4169E1">return</font>(0);
 <a name="line376">376: </a>}
+<a name="line377">377: </a>EXTERN_C_END
 
+<a name="line379">379: </a>EXTERN_C_BEGIN
 <a name="line382">382: </a><strong><font color="#4169E1"><a name="KSPQCGGetQuadratic_QCG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPQCGGetQuadratic_QCG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *quadratic)</font></strong>
 <a name="line383">383: </a>{
 <a name="line384">384: </a>  KSP_QCG *cgP = (KSP_QCG*)ksp-&gt;data;
@@ -356,6 +362,7 @@
 <a name="line387">387: </a>  *quadratic = cgP-&gt;quadratic;
 <a name="line388">388: </a>  <font color="#4169E1">return</font>(0);
 <a name="line389">389: </a>}
+<a name="line390">390: </a>EXTERN_C_END
 
 <a name="line394">394: </a><strong><font color="#4169E1"><a name="KSPSetFromOptions_QCG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPSetFromOptions_QCG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line395">395: </a>{
@@ -418,6 +425,7 @@
 <a name="line454">454: </a><font color="#B22222">           <A href="../../../../../docs/manualpages/KSP/KSPQCGGetTrialStepNorm.html#KSPQCGGetTrialStepNorm">KSPQCGGetTrialStepNorm</A>(), <A href="../../../../../docs/manualpages/KSP/KSPQCGGetQuadratic.html#KSPQCGGetQuadratic">KSPQCGGetQuadratic</A>()</font>
 <a name="line455">455: </a><font color="#B22222">M*/</font>
 
+<a name="line457">457: </a>EXTERN_C_BEGIN
 <a name="line460">460: </a><strong><font color="#4169E1"><a name="KSPCreate_QCG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPCreate_QCG(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line461">461: </a>{
 <a name="line463">463: </a>  KSP_QCG        *cgP;
@@ -446,10 +454,11 @@
 <a name="line487">487: </a>  cgP-&gt;delta = PETSC_MAX_REAL; <font color="#B22222">/* default trust region radius is infinite */</font>
 <a name="line488">488: </a>  <font color="#4169E1">return</font>(0);
 <a name="line489">489: </a>}
+<a name="line490">490: </a>EXTERN_C_END
 
 <a name="line492">492: </a><font color="#B22222">/* ---------------------------------------------------------- */</font>
 <a name="line495">495: </a><font color="#B22222">/* </font>
-<a name="line496">496: </a><font color="#B22222">  QuadraticRoots_Private - Computes the roots of the quadratic,</font>
+<a name="line496">496: </a><font color="#B22222">  KSPQCGQuadraticRoots - Computes the roots of the quadratic,</font>
 <a name="line497">497: </a><font color="#B22222">         ||s + step*p|| - delta = 0 </font>
 <a name="line498">498: </a><font color="#B22222">   such that step1 &gt;= 0 &gt;= step2.</font>
 <a name="line499">499: </a><font color="#B22222">   where</font>
@@ -465,7 +474,7 @@
 <a name="line509">509: </a><font color="#B22222">   C code is translated from the Fortran version of the MINPACK-2 Project,</font>
 <a name="line510">510: </a><font color="#B22222">   Argonne National Laboratory, Brett M. Averick and Richard G. Carter.</font>
 <a name="line511">511: </a><font color="#B22222">*/</font>
-<a name="line512">512: </a><strong><font color="#4169E1"><a name="QuadraticRoots_Private"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> QuadraticRoots_Private(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> s,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> p,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *delta,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *step1,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *step2)</font></strong>
+<a name="line512">512: </a><strong><font color="#4169E1"><a name="KSPQCGQuadraticRoots"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPQCGQuadraticRoots(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> s,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> p,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *delta,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *step1,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *step2)</font></strong>
 <a name="line513">513: </a>{
 <a name="line514">514: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      dsq,ptp,pts,rad,sts;
 <a name="line516">516: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>

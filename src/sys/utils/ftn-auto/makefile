@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = psleepf.c mpiuf.c sortdf.c memcf.c sortipf.c psplitf.c sortif.c
-OBJSC    = psleepf.o mpiuf.o sortdf.o memcf.o sortipf.o psplitf.o sortif.o
+SOURCEC  = sortipf.c psplitf.c memcf.c sortif.c psleepf.c sortdf.c mpiuf.c
+OBJSC    = sortipf.o psplitf.o memcf.o sortif.o psleepf.o sortdf.o mpiuf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

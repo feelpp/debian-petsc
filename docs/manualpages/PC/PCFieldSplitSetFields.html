@@ -1,17 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCFieldSplitSetFields.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCFieldSplitSetFields</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCFieldSplitSetFields"><H1>PCFieldSplitSetFields</H1></A>
 Sets the fields for one particular split in the field split preconditioner 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
 #include "petscdmcomposite.h" 
-PetscErrorCode  PCFieldSplitSetFields(PC pc,const char splitname[],PetscInt n,const PetscInt *fields)
+PetscErrorCode  PCFieldSplitSetFields(PC pc,const char splitname[],PetscInt n,const PetscInt *fields,const PetscInt *fields_col)
 </PRE>
 Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
@@ -37,6 +38,10 @@ where the numbered entries indicate what is in the field.
 <P>
 This function is called once per split (it creates a new split each time).  Solve options
 for this split will be available under the prefix -fieldsplit_SPLITNAME_.
+<P>
+Developer Note: This routine does not actually create the <A HREF="../IS/IS.html#IS">IS</A> representing the split, that is delayed
+until PCSetUp_FieldSplit(), because information about the vector/matrix layouts may not be
+available when this routine is called.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PC/PCFieldSplitGetSubKSP.html#PCFieldSplitGetSubKSP">PCFieldSplitGetSubKSP</A>(), <A HREF="../PC/PCFIELDSPLIT.html#PCFIELDSPLIT">PCFIELDSPLIT</A>, <A HREF="../PC/PCFieldSplitSetBlockSize.html#PCFieldSplitSetBlockSize">PCFieldSplitSetBlockSize</A>(), <A HREF="../PC/PCFieldSplitSetIS.html#PCFieldSplitSetIS">PCFieldSplitSetIS</A>()

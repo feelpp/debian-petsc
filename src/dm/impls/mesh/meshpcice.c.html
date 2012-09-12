@@ -1,13 +1,14 @@
 <center><a href="meshpcice.c">Actual source code: meshpcice.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/mesh/meshpcice.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:26+00:00">
+<meta name="date" content="2012-08-29T16:56:42+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petscdmmesh_formats.hh&gt;   </font><font color="#B22222">/*I      "petscmesh.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line5">  5: </a><strong><font color="#4169E1"><a name="WritePCICEVertices"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> WritePCICEVertices(DM dm, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
@@ -385,8 +386,8 @@
 <a name="line405">405: </a>      mesh-&gt;stratify();
 <a name="line406">406: </a><strong><font color="#FF0000">      ALE:</font></strong>:ISieveConverter::convertOrientation(*s, *sieve, renumbering, m-&gt;getArrowSection(<font color="#666666">"orientation"</font>).ptr());
 <a name="line407">407: </a><strong><font color="#FF0000">      ALE:</font></strong>:SieveBuilder&lt;PETSC_MESH_TYPE&gt;::buildCoordinates(mesh, dim, coordinates);
-<a name="line408">408: </a>      <font color="#4169E1">if</font> (cells) {<A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cells);}
-<a name="line409">409: </a>      <font color="#4169E1">if</font> (coordinates) {<A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(coordinates);}
+<a name="line408">408: </a>      <font color="#4169E1">if</font> (cells) {<A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cells);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);}
+<a name="line409">409: </a>      <font color="#4169E1">if</font> (coordinates) {<A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(coordinates);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);}
 <a name="line410">410: </a>      <font color="#4169E1">return</font> mesh;
 <a name="line411">411: </a>    };
 <a name="line412">412: </a>    void Builder::readBoundary(const Obj&lt;Mesh&gt;&amp; mesh, const std::string&amp; bcFilename) {
@@ -406,7 +407,7 @@
 <a name="line426">426: </a>      int            embedDim = coordSec-&gt;getFiberDimension(*vertices-&gt;begin());
 <a name="line427">427: </a>      <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>     *coords;
 
-<a name="line430">430: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(vertices-&gt;size()*embedDim * <font color="#4169E1">sizeof</font>(double), &amp;coords);
+<a name="line430">430: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(vertices-&gt;size()*embedDim * <font color="#4169E1">sizeof</font>(double), &amp;coords);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line431">431: </a>      <font color="#4169E1">for</font>(Mesh::label_sequence::iterator v_iter = vertices-&gt;begin(); v_iter != vertices-&gt;end(); ++v_iter) {
 <a name="line432">432: </a>        const Mesh::real_section_type::value_type *array = coordSec-&gt;restrictPoint(*v_iter);
 <a name="line433">433: </a>        const int                                  row   = vNumbering-&gt;getIndex(*v_iter);
@@ -441,7 +442,7 @@
 <a name="line462">462: </a>      int            corners      = sieve-&gt;getConeSize(*elements-&gt;begin());
 <a name="line463">463: </a>      int           *v;
 
-<a name="line466">466: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*corners * <font color="#4169E1">sizeof</font>(int), &amp;v);
+<a name="line466">466: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size*corners * <font color="#4169E1">sizeof</font>(int), &amp;v);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line467">467: </a>      <font color="#4169E1">for</font>(Mesh::label_sequence::iterator e_iter = elements-&gt;begin(); e_iter != elements-&gt;end(); ++e_iter) {
 <a name="line468">468: </a>        const Obj&lt;Mesh::sieve_type::coneSequence&gt;      cone  = sieve-&gt;cone(*e_iter);
 <a name="line469">469: </a><strong><font color="#FF0000">        Mesh:</font></strong>:sieve_type::coneSequence::const_iterator begin = cone-&gt;begin();
@@ -492,8 +493,8 @@
 <a name="line515">515: </a>      mesh-&gt;setSieve(sieve);
 <a name="line516">516: </a>      mesh-&gt;stratify();
 <a name="line517">517: </a><strong><font color="#FF0000">      ALE:</font></strong>:SieveBuilder&lt;PETSC_MESH_TYPE&gt;::buildCoordinates(mesh, dim, coordinates);
-<a name="line518">518: </a>      <font color="#4169E1">if</font> (cells) {<A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cells);}
-<a name="line519">519: </a>      <font color="#4169E1">if</font> (coordinates) {<A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(coordinates);}
+<a name="line518">518: </a>      <font color="#4169E1">if</font> (cells) {<A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(cells);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);}
+<a name="line519">519: </a>      <font color="#4169E1">if</font> (coordinates) {<A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(coordinates);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);}
 <a name="line520">520: </a>      <font color="#4169E1">return</font> mesh;
 <a name="line521">521: </a>    };
 <a name="line522">522: </a>    // Creates boundary sections:
@@ -521,11 +522,11 @@
 <a name="line545">545: </a><font color="#A020F0">#endif</font>
 <a name="line546">546: </a>        <font color="#4169E1">return</font>;
 <a name="line547">547: </a>      }
-<a name="line548">548: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, &amp;viewer);
-<a name="line549">549: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>(viewer, PETSCVIEWERASCII);
-<a name="line550">550: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetMode.html#PetscViewerFileSetMode">PetscViewerFileSetMode</A>(viewer, FILE_MODE_READ);
-<a name="line551">551: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetName.html#PetscViewerFileSetName">PetscViewerFileSetName</A>(viewer, bcFilename.c_str());
-<a name="line552">552: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetPointer.html#PetscViewerASCIIGetPointer">PetscViewerASCIIGetPointer</A>(viewer, &amp;f);
+<a name="line548">548: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerCreate.html#PetscViewerCreate">PetscViewerCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, &amp;viewer);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line549">549: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerSetType.html#PetscViewerSetType">PetscViewerSetType</A>(viewer, PETSCVIEWERASCII);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line550">550: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetMode.html#PetscViewerFileSetMode">PetscViewerFileSetMode</A>(viewer, FILE_MODE_READ);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line551">551: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerFileSetName.html#PetscViewerFileSetName">PetscViewerFileSetName</A>(viewer, bcFilename.c_str());<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
+<a name="line552">552: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIGetPointer.html#PetscViewerASCIIGetPointer">PetscViewerASCIIGetPointer</A>(viewer, &amp;f);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line553">553: </a>      // Create IBC section
 <a name="line554">554: </a>      int  numBdFaces = atoi(strtok(fgets(buf, 2048, f), <font color="#666666">" "</font>));
 <a name="line555">555: </a>      int *tmpIBC     = new int[numBdFaces*4];
@@ -645,7 +646,7 @@
 <a name="line669">669: </a>        values[4] = 0;
 <a name="line670">670: </a>        ibndfs-&gt;updatePoint(values[0]-1+numElements, values);
 <a name="line671">671: </a>      }
-<a name="line672">672: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer);
+<a name="line672">672: </a>      <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;viewer);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line673">673: </a>      // Create BNNV[NBN,2]
 <a name="line674">674: </a>      const int dim = mesh-&gt;getDimension();
 
@@ -669,7 +670,7 @@
 <a name="line693">693: </a>      int            embedDim = coordSec-&gt;getFiberDimension(*vertices-&gt;begin());
 <a name="line694">694: </a>      double        *coords;
 
-<a name="line697">697: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(vertices-&gt;size()*embedDim * <font color="#4169E1">sizeof</font>(double), &amp;coords);
+<a name="line697">697: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(vertices-&gt;size()*embedDim * <font color="#4169E1">sizeof</font>(double), &amp;coords);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line698">698: </a>      <font color="#4169E1">for</font>(Mesh::label_sequence::iterator v_iter = vertices-&gt;begin(); v_iter != vertices-&gt;end(); ++v_iter) {
 <a name="line699">699: </a>        const DMMesh::real_section_type::value_type *array = coordSec-&gt;restrictPoint(*v_iter);
 <a name="line700">700: </a>        const int                                  row   = vNumbering-&gt;getIndex(*v_iter);
@@ -704,7 +705,7 @@
 <a name="line729">729: </a>      int            corners      = sieve-&gt;getConeSize(*elements-&gt;begin());
 <a name="line730">730: </a>      int           *v;
 
-<a name="line733">733: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(elements-&gt;size()*corners * <font color="#4169E1">sizeof</font>(int), &amp;v);
+<a name="line733">733: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(elements-&gt;size()*corners * <font color="#4169E1">sizeof</font>(int), &amp;v);<A href="../../../../docs/manualpages/Sys/CHKERRXX.html#CHKERRXX">CHKERRXX</A>(ierr);
 <a name="line734">734: </a>      <font color="#4169E1">for</font>(Mesh::label_sequence::iterator e_iter = elements-&gt;begin(); e_iter != elements-&gt;end(); ++e_iter) {
 <a name="line735">735: </a>        const Obj&lt;Mesh::sieve_type::traits::coneSequence&gt; cone  = sieve-&gt;cone(*e_iter);
 <a name="line736">736: </a><strong><font color="#FF0000">        DMMesh:</font></strong>:sieve_type::traits::coneSequence::iterator  begin = cone-&gt;begin();

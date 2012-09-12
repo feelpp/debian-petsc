@@ -37,7 +37,7 @@
       PetscInt  n,dim,istart,iend
       PetscInt  i,j,jj,ii,one,zero
       PetscErrorCode ierr
-      double precision v
+      PetscScalar v
       external         MyResidual
       PetscScalar      pfive
       KSP              ksp
@@ -66,6 +66,7 @@
       call MatCreate(PETSC_COMM_WORLD,A,ierr)
       call MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,dim,dim,ierr)
       call MatSetFromOptions(A,ierr)
+      call MatSetUp(A,ierr)
 
 !  Currently, all PETSc parallel matrix formats are partitioned by
 !  contiguous chunks of rows across the processors.  Determine which

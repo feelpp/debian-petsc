@@ -1,24 +1,48 @@
 
-#include <private/kspimpl.h>
-
-typedef struct {
-  Vec guess;        /* if using right preconditioning with nonzero initial guess must keep that around to "fix" solution */
-} KSP_BCGS;
+#include <../src/ksp/ksp/impls/bcgs/bcgsimpl.h>       /*I  "petscksp.h"  I*/
 
 #undef __FUNCT__  
-#define __FUNCT__ "KSPSetUp_BCGS"
-static PetscErrorCode KSPSetUp_BCGS(KSP ksp)
+#define __FUNCT__ "KSPSetFromOptions_BCGS"
+PetscErrorCode KSPSetFromOptions_BCGS(KSP ksp)
 {
   PetscErrorCode ierr;
-
+  
   PetscFunctionBegin;
-  ierr = KSPDefaultGetWork(ksp,6);CHKERRQ(ierr);
+  ierr = PetscOptionsHead("KSP BCGS Options");CHKERRQ(ierr);
+  ierr = PetscOptionsTail();CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__  
+#define __FUNCT__ "KSPView_BCGS" 
+PetscErrorCode KSPView_BCGS(KSP ksp,PetscViewer viewer)
+{
+  PetscErrorCode ierr;
+  PetscBool      iascii;
+
+  PetscFunctionBegin;
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  if (!iascii){
+    SETERRQ1(((PetscObject)ksp)->comm,PETSC_ERR_SUP,"Viewer type %s not supported for KSP cg",((PetscObject)viewer)->type_name);
+  }
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__  
+#define __FUNCT__ "KSPSetUp_BCGS"
+PetscErrorCode KSPSetUp_BCGS(KSP ksp)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  ierr = KSPDefaultGetWork(ksp,6);CHKERRQ(ierr); 
+  PetscFunctionReturn(0);
+}
+
+
+#undef __FUNCT__  
 #define __FUNCT__ "KSPSolve_BCGS"
-static PetscErrorCode  KSPSolve_BCGS(KSP ksp)
+PetscErrorCode KSPSolve_BCGS(KSP ksp)
 {
   PetscErrorCode ierr;
   PetscInt       i;
@@ -47,7 +71,7 @@ static PetscErrorCode  KSPSolve_BCGS(KSP ksp)
     }
     ierr = VecCopy(X,bcgs->guess);CHKERRQ(ierr);
     ierr = VecSet(X,0.0);CHKERRQ(ierr);
-  }
+  } 
 
   /* Test for nothing to do */
   if (ksp->normtype != KSP_NORM_NONE) {
@@ -197,8 +221,7 @@ PetscErrorCode KSPDestroy_BCGS(KSP ksp)
 
    References: van der Vorst, SIAM J. Sci. Stat. Comput., 1992.
 
-
-.seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPBICG, KSPBCGSL, KSPSetPCSide()
+.seealso:  KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPBICG, KSPBCGSL, KSPFBICG, KSPSetPCSide()
 M*/
 EXTERN_C_BEGIN
 #undef __FUNCT__  
@@ -206,18 +229,20 @@ EXTERN_C_BEGIN
 PetscErrorCode  KSPCreate_BCGS(KSP ksp)
 {
   PetscErrorCode ierr;
+  KSP_BCGS       *bcgs;
 
   PetscFunctionBegin;
-  ierr = PetscNewLog(ksp,KSP_BCGS,&ksp->data);CHKERRQ(ierr);
+  ierr = PetscNewLog(ksp,KSP_BCGS,&bcgs);CHKERRQ(ierr);
+  ksp->data                 = bcgs;
   ksp->ops->setup           = KSPSetUp_BCGS;
   ksp->ops->solve           = KSPSolve_BCGS;
   ksp->ops->destroy         = KSPDestroy_BCGS;
   ksp->ops->reset           = KSPReset_BCGS;
   ksp->ops->buildsolution   = KSPBuildSolution_BCGS;
   ksp->ops->buildresidual   = KSPDefaultBuildResidual;
-  ksp->ops->setfromoptions  = 0;
-  ksp->ops->view            = 0;
-
+  ksp->ops->setfromoptions  = KSPSetFromOptions_BCGS;
+  ksp->ops->view            = KSPView_BCGS;
+  
   ierr = KSPSetSupportedNorm(ksp,KSP_NORM_PRECONDITIONED,PC_LEFT,2);CHKERRQ(ierr);
   ierr = KSPSetSupportedNorm(ksp,KSP_NORM_UNPRECONDITIONED,PC_RIGHT,1);CHKERRQ(ierr);
   PetscFunctionReturn(0);

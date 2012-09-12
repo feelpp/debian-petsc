@@ -1,5 +1,5 @@
 
-#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>   /*I "petscpc.h" I*/
 #include <petscksp.h>            /*I "petscksp.h" I*/
 
 typedef struct {
@@ -75,6 +75,16 @@ static PetscErrorCode PCSetUp_KSP(PC pc)
   ierr = KSPGetOperatorsSet(jac->ksp,&A,PETSC_NULL);CHKERRQ(ierr);
   if (!A) {
     ierr = KSPSetOperators(jac->ksp,mat,pc->pmat,pc->flag);CHKERRQ(ierr);
+  } else if (pc->flag != SAME_PRECONDITIONER) {
+    Mat Amat,Bmat;
+    ierr = KSPGetOperators(jac->ksp,&Amat,&Bmat,PETSC_NULL);CHKERRQ(ierr);
+    if (Amat == mat && Bmat == pc->pmat) {
+      /* The user has not replaced the matrices so we are expected to forward the update. This incorrectly diagnoses
+       * changed matrices at the top level as the user manually changing the inner matrices, but we have no way to
+       * identify that in this context. The longer term solution is to track matrix state internally.
+       */
+      ierr = KSPSetOperators(jac->ksp,mat,pc->pmat,pc->flag);CHKERRQ(ierr);
+    }
   }
   ierr = KSPSetUp(jac->ksp);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -117,7 +127,7 @@ static PetscErrorCode PCView_KSP(PC pc,PetscViewer viewer)
 
   PetscFunctionBegin;
   if (!jac->ksp) {ierr = PCKSPCreateKSP_KSP(pc);CHKERRQ(ierr);}
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     if (jac->use_true_matrix) {
       ierr = PetscViewerASCIIPrintf(viewer,"Using true matrix (not preconditioner matrix) on inner solve\n");CHKERRQ(ierr);

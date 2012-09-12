@@ -1,13 +1,14 @@
 <center><a href="modpcf.c">Actual source code: modpcf.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/gmres/fgmres/modpcf.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:11:55+00:00">
+<meta name="date" content="2012-08-29T17:04:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscksp.h&gt;  </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
 <a name="line5">  5: </a><font color="#B22222">/*@C</font>
@@ -115,7 +116,7 @@
 
 <a name="line118">118: </a>  <A href="../../../../../../docs/manualpages/KSP/KSPGetPC.html#KSPGetPC">KSPGetPC</A>(ksp,&amp;pc);
 
-<a name="line120">120: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<A href="../../../../../../docs/manualpages/PC/PCKSP.html#PCKSP">PCKSP</A>,&amp;isksp);
+<a name="line120">120: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<A href="../../../../../../docs/manualpages/PC/PCKSP.html#PCKSP">PCKSP</A>,&amp;isksp);
 <a name="line121">121: </a>  <font color="#4169E1">if</font> (isksp) {
 <a name="line122">122: </a>    <A href="../../../../../../docs/manualpages/PC/PCKSPGetKSP.html#PCKSPGetKSP">PCKSPGetKSP</A>(pc,&amp;sub_ksp);
 <a name="line123">123: </a>

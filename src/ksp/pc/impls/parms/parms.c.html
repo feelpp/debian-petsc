@@ -1,13 +1,14 @@
 <center><a href="parms.c">Actual source code: parms.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/parms/parms.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:57+00:00">
+<meta name="date" content="2012-08-29T17:02:14+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCKSP_DLL</font></strong>
 
 <a name="line3">  3: </a><font color="#B22222">/* </font>
@@ -15,7 +16,7 @@
 <a name="line5">  5: </a><font color="#B22222">   Requires pARMS 3.2 or later.</font>
 <a name="line6">  6: </a><font color="#B22222">*/</font>
 
-<a name="line8"> 8: </a> #include <A href="../../../../../include/private/pcimpl.h.html">private/pcimpl.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include </font><font color="#666666">"petsc-private/pcimpl.h"</font><font color="#A020F0">          </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line10"> 10: </a><font color="#A020F0">#ifdef PETSC_USE_COMPLEX</font>
 <a name="line11"> 11: </a><strong><font color="#228B22">#define DBL_CMPLX</font></strong>
@@ -202,7 +203,7 @@
 <a name="line197">197: </a>  char                 *str;
 <a name="line198">198: </a>  double               fill_fact;
 <a name="line199">199: </a>
-<a name="line201">201: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line201">201: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line202">202: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line203">203: </a>    parms_PCGetName(parms-&gt;pc,&amp;str);
 <a name="line204">204: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  global preconditioner: %s\n"</font>,str);
@@ -344,6 +345,7 @@
 <a name="line350">350: </a>  <font color="#4169E1">return</font>(0);
 <a name="line351">351: </a>}
 
+<a name="line353">353: </a>EXTERN_C_BEGIN
 <a name="line356">356: </a><strong><font color="#4169E1"><a name="PCPARMSSetGlobal_PARMS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCPARMSSetGlobal_PARMS(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/PC/PCPARMSGlobalType.html#PCPARMSGlobalType">PCPARMSGlobalType</A> type)</font></strong>
 <a name="line357">357: </a>{
 <a name="line358">358: </a>  PC_PARMS *parms = (PC_PARMS*)pc-&gt;data;
@@ -354,6 +356,7 @@
 <a name="line364">364: </a>  }
 <a name="line365">365: </a>  <font color="#4169E1">return</font>(0);
 <a name="line366">366: </a>}
+<a name="line367">367: </a>EXTERN_C_END
 
 <a name="line371">371: </a><font color="#B22222">/*@</font>
 <a name="line372">372: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCPARMSSetGlobal.html#PCPARMSSetGlobal">PCPARMSSetGlobal</A> - Sets the global preconditioner to be used in PARMS.</font>
@@ -386,6 +389,7 @@
 <a name="line403">403: </a>  <font color="#4169E1">return</font>(0);
 <a name="line404">404: </a>}
 
+<a name="line406">406: </a>EXTERN_C_BEGIN
 <a name="line409">409: </a><strong><font color="#4169E1"><a name="PCPARMSSetLocal_PARMS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCPARMSSetLocal_PARMS(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/PC/PCPARMSLocalType.html#PCPARMSLocalType">PCPARMSLocalType</A> type)</font></strong>
 <a name="line410">410: </a>{
 <a name="line411">411: </a>  PC_PARMS *parms = (PC_PARMS*)pc-&gt;data;
@@ -396,6 +400,7 @@
 <a name="line417">417: </a>  }
 <a name="line418">418: </a>  <font color="#4169E1">return</font>(0);
 <a name="line419">419: </a>}
+<a name="line420">420: </a>EXTERN_C_END
 
 <a name="line424">424: </a><font color="#B22222">/*@</font>
 <a name="line425">425: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCPARMSSetLocal.html#PCPARMSSetLocal">PCPARMSSetLocal</A> - Sets the local preconditioner to be used in PARMS.</font>
@@ -433,6 +438,7 @@
 <a name="line461">461: </a>  <font color="#4169E1">return</font>(0);
 <a name="line462">462: </a>}
 
+<a name="line464">464: </a>EXTERN_C_BEGIN
 <a name="line467">467: </a><strong><font color="#4169E1"><a name="PCPARMSSetSolveTolerances_PARMS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCPARMSSetSolveTolerances_PARMS(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> tol,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> maxits)</font></strong>
 <a name="line468">468: </a>{
 <a name="line469">469: </a>  PC_PARMS *parms = (PC_PARMS*)pc-&gt;data;
@@ -449,6 +455,7 @@
 <a name="line481">481: </a>
 <a name="line482">482: </a>  <font color="#4169E1">return</font>(0);
 <a name="line483">483: </a>}
+<a name="line484">484: </a>EXTERN_C_END
 
 <a name="line488">488: </a><font color="#B22222">/*@</font>
 <a name="line489">489: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCPARMSSetSolveTolerances.html#PCPARMSSetSolveTolerances">PCPARMSSetSolveTolerances</A> - Sets the convergence tolerance and the maximum iterations for the</font>
@@ -479,6 +486,7 @@
 <a name="line517">517: </a>  <font color="#4169E1">return</font>(0);
 <a name="line518">518: </a>}
 
+<a name="line520">520: </a>EXTERN_C_BEGIN
 <a name="line523">523: </a><strong><font color="#4169E1"><a name="PCPARMSSetSolveRestart_PARMS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCPARMSSetSolveRestart_PARMS(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> restart)</font></strong>
 <a name="line524">524: </a>{
 <a name="line525">525: </a>  PC_PARMS *parms = (PC_PARMS*)pc-&gt;data;
@@ -491,6 +499,7 @@
 <a name="line533">533: </a>
 <a name="line534">534: </a>  <font color="#4169E1">return</font>(0);
 <a name="line535">535: </a>}
+<a name="line536">536: </a>EXTERN_C_END
 
 <a name="line540">540: </a><font color="#B22222">/*@</font>
 <a name="line541">541: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCPARMSSetSolveRestart.html#PCPARMSSetSolveRestart">PCPARMSSetSolveRestart</A> - Sets the number of iterations at which the</font>
@@ -519,6 +528,7 @@
 <a name="line567">567: </a>  <font color="#4169E1">return</font>(0);
 <a name="line568">568: </a>}
 
+<a name="line570">570: </a>EXTERN_C_BEGIN
 <a name="line573">573: </a><strong><font color="#4169E1"><a name="PCPARMSSetNonsymPerm_PARMS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCPARMSSetNonsymPerm_PARMS(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> nonsym)</font></strong>
 <a name="line574">574: </a>{
 <a name="line575">575: </a>  PC_PARMS *parms = (PC_PARMS*)pc-&gt;data;
@@ -529,6 +539,7 @@
 <a name="line581">581: </a>  }
 <a name="line582">582: </a>  <font color="#4169E1">return</font>(0);
 <a name="line583">583: </a>}
+<a name="line584">584: </a>EXTERN_C_END
 
 <a name="line588">588: </a><font color="#B22222">/*@</font>
 <a name="line589">589: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCPARMSSetNonsymPerm.html#PCPARMSSetNonsymPerm">PCPARMSSetNonsymPerm</A> - Sets the type of permutation for the ARMS preconditioner: the standard</font>
@@ -558,6 +569,7 @@
 <a name="line616">616: </a>  <font color="#4169E1">return</font>(0);
 <a name="line617">617: </a>}
 
+<a name="line619">619: </a>EXTERN_C_BEGIN
 <a name="line622">622: </a><strong><font color="#4169E1"><a name="PCPARMSSetFill_PARMS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCPARMSSetFill_PARMS(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> lfil0,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> lfil1,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> lfil2)</font></strong>
 <a name="line623">623: </a>{
 <a name="line624">624: </a>  PC_PARMS *parms = (PC_PARMS*)pc-&gt;data;
@@ -576,6 +588,7 @@
 <a name="line638">638: </a>  }
 <a name="line639">639: </a>  <font color="#4169E1">return</font>(0);
 <a name="line640">640: </a>}
+<a name="line641">641: </a>EXTERN_C_END
 
 <a name="line645">645: </a><font color="#B22222">/*@</font>
 <a name="line646">646: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCPARMSSetFill.html#PCPARMSSetFill">PCPARMSSetFill</A> - Sets the fill-in parameters for ILUT, ILUK and ARMS preconditioners.</font>
@@ -648,6 +661,7 @@
 <a name="line716">716: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/PC/PCCreate.html#PCCreate">PCCreate</A>(), <A href="../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> (for list of available types), <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
 <a name="line717">717: </a><font color="#B22222">M*/</font>
 
+<a name="line719">719: </a>EXTERN_C_BEGIN
 <a name="line722">722: </a><strong><font color="#4169E1"><a name="PCCreate_PARMS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCCreate_PARMS(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line723">723: </a>{
 <a name="line724">724: </a>  PC_PARMS *parms;
@@ -694,6 +708,7 @@
 <a name="line766">766: </a>
 <a name="line767">767: </a>  <font color="#4169E1">return</font>(0);
 <a name="line768">768: </a>}
+<a name="line769">769: </a>EXTERN_C_END
 </pre>
 </body>
 

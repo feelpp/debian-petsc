@@ -1,5 +1,5 @@
 
-#include <private/matimpl.h>
+#include <petsc-private/matimpl.h>
 
 /*MC
    MATAIJ - MATAIJ = "aij" - A matrix type to be used for sparse matrices.
@@ -18,7 +18,7 @@
 
   Level: beginner
 
-.seealso: MatCreateMPIAIJ(), MatCreateSeqAIJ(), MATSEQAIJ,MATMPIAIJ
+.seealso: MatCreateAIJ(), MatCreateSeqAIJ(), MATSEQAIJ,MATMPIAIJ
 M*/
 
 /*MC

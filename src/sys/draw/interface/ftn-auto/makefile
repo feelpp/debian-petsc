@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = dgcoorf.c dpointf.c dellipsef.c dgpausef.c dpausef.c dtextgsf.c dlinegwf.c dflushf.c dviewpf.c dlinewf.c dclearf.c dlinef.c dtextsf.c dsflushf.c dsclearf.c drawf.c dsetpausef.c drectf.c dmousef.c dpointsf.c dcoorf.c dbufff.c dtrif.c
-OBJSC    = dgcoorf.o dpointf.o dellipsef.o dgpausef.o dpausef.o dtextgsf.o dlinegwf.o dflushf.o dviewpf.o dlinewf.o dclearf.o dlinef.o dtextsf.o dsflushf.o dsclearf.o drawf.o dsetpausef.o drectf.o dmousef.o dpointsf.o dcoorf.o dbufff.o dtrif.o
+SOURCEC  = dclearf.c dflushf.c dlinewf.c dtrif.c dsclearf.c dmousef.c dgpausef.c dellipsef.c dbufff.c dgcoorf.c drawf.c dlinegwf.c dlinef.c drectf.c dsetpausef.c dpausef.c dtextgsf.c dpointf.c dsflushf.c dviewpf.c dtextsf.c dcoorf.c dpointsf.c
+OBJSC    = dclearf.o dflushf.o dlinewf.o dtrif.o dsclearf.o dmousef.o dgpausef.o dellipsef.o dbufff.o dgcoorf.o drawf.o dlinegwf.o dlinef.o drectf.o dsetpausef.o dpausef.o dtextgsf.o dpointf.o dsflushf.o dviewpf.o dtextsf.o dcoorf.o dpointsf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

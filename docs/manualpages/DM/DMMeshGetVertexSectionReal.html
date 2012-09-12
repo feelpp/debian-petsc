@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMMeshGetVertexSectionReal.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMMeshGetVertexSectionReal</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMMeshGetVertexSectionReal"><H1>DMMeshGetVertexSectionReal</H1></A>
 Create a Section over the vertices with the specified fiber dimension 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -18,6 +19,8 @@ Collective on DMMesh
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mesh </B></TD><TD>- The DMMesh object
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>name </B></TD><TD>- The name of the section
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fiberDim </B></TD><TD>- The number of degrees of freedom per vertex
 </TD></TR></TABLE>
 <P>
@@ -30,10 +33,6 @@ Collective on DMMesh
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  mesh, section, vertex
 <BR>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp DMMeshGetVertexSectionReal(DM dm, PetscInt fiberDim, SectionReal *section)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>DMMeshGetVertexSectionReal(dm,"default",fiberDim,section)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMMeshCreate.html#DMMeshCreate">DMMeshCreate</A>(), <A HREF="../DM/SectionRealCreate.html#SectionRealCreate">SectionRealCreate</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate

@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESGetSolution.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESGetSolution</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESGetSolution"><H1>SNESGetSolution</H1></A>
-Returns the vector where the approximate solution is stored. 
+Returns the vector where the approximate solution is stored. This is the fine grid solution when using <A HREF="../SNES/SNESSetGridSequence.html#SNESSetGridSequence">SNESSetGridSequence</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESGetSolution(SNES snes,Vec *x)
 </PRE>
 Not Collective, but <A HREF="../Vec/Vec.html#Vec">Vec</A> is parallel if <A HREF="../SNES/SNES.html#SNES">SNES</A> is parallel
@@ -38,7 +41,10 @@ Not Collective, but <A HREF="../Vec/Vec.html#Vec">Vec</A> is parallel if <A HREF
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex2.c.html">src/snes/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex3.c.html">src/snes/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex21.c.html">src/snes/examples/tutorials/ex21.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex22.c.html">src/snes/examples/tutorials/ex22.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex29.c.html">src/snes/examples/tutorials/ex29.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 </BODY></HTML>

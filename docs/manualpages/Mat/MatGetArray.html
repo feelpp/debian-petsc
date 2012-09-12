@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatGetArray.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatGetArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatGetArray"><H1>MatGetArray</H1></A>
 Returns a pointer to the element values in the matrix. The result of this routine is dependent on the underlying matrix data structure, and may not even work for certain matrix types.  You MUST call <A HREF="../Mat/MatRestoreArray.html#MatRestoreArray">MatRestoreArray</A>() when you no longer need to access the array. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -28,7 +29,7 @@ This routine is used differently from Fortran, e.g.,
 <PRE>
         <A HREF="../Mat/Mat.html#Mat">Mat</A>         mat
         <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A> mat_array(1)
-        PetscOffset i_mat
+        <A HREF="../Sys/PetscOffset.html#PetscOffset">PetscOffset</A> i_mat
         <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
         call <A HREF="../Mat/MatGetArray.html#MatGetArray">MatGetArray</A>(mat,mat_array,i_mat,ierr)
 
@@ -41,16 +42,12 @@ This routine is used differently from Fortran, e.g.,
 </PRE>
 
 <P>
-See the &lt;a href="../../docs/manual.pdf#<A HREF="../../manual.pdf#chapter.10">Chapter 10 PETSc for Fortran Users</A>"&gt;Fortran chapter of the users manual&lt;/a&gt; and
+See the &lt;a href="../../docs/manual.pdf#<A HREF="../../manual.pdf#chapter.9">Chapter 9 PETSc for Fortran Users</A>"&gt;Fortran chapter of the users manual&lt;/a&gt; and
 src/mat/examples/tests for details.
 <P>
 
 <P>
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD> PetscScalar* MatGetArray(Mat mat)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>MatGetArray(mat,&a); return a;</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Mat/MatRestoreArray.html#MatRestoreArray">MatRestoreArray</A>(), <A HREF="../Mat/MatGetArrayF90.html#MatGetArrayF90">MatGetArrayF90</A>(), <A HREF="../Mat/MatGetRowIJ.html#MatGetRowIJ">MatGetRowIJ</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced

@@ -5,11 +5,11 @@
  method. But it requires actually solving the preconditioned problem 
  with both left and right preconditioning. 
 */
-#include <private/pcimpl.h>           /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>           /*I "petscpc.h" I*/
 
 typedef struct {
   Mat        shell,A;
-  Vec        b,diag;     /* temporary storage for true right hand side */
+  Vec        b[2],diag;     /* temporary storage for true right hand side */
   PetscReal  omega;
   PetscBool  usediag;    /* indicates preconditioner should include diagonal scaling*/
 } PC_Eisenstat;
@@ -59,30 +59,30 @@ static PetscErrorCode PCPreSolve_Eisenstat(PC pc,KSP ksp,Vec b,Vec x)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (pc->mat != pc->pmat) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Cannot have different mat and pmat"); 
- 
-  /* swap shell matrix and true matrix */
-  eis->A    = pc->mat;
-  pc->mat   = eis->shell;
-
-  if (!eis->b) {
-    ierr = VecDuplicate(b,&eis->b);CHKERRQ(ierr);
-    ierr = PetscLogObjectParent(pc,eis->b);CHKERRQ(ierr);
+  if (pc->presolvedone < 2) { 
+    if (pc->mat != pc->pmat) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Cannot have different mat and pmat"); 
+    /* swap shell matrix and true matrix */
+    eis->A    = pc->mat;
+    pc->mat   = eis->shell;
   }
-  
+
+  if (!eis->b[pc->presolvedone-1]) {
+    ierr = VecDuplicate(b,&eis->b[pc->presolvedone-1]);CHKERRQ(ierr);
+    ierr = PetscLogObjectParent(pc,eis->b[pc->presolvedone-1]);CHKERRQ(ierr);
+  }
 
   /* if nonzero initial guess, modify x */
   ierr = KSPGetInitialGuessNonzero(ksp,&nonzero);CHKERRQ(ierr);
   if (nonzero) {
-    ierr = VecCopy(x,eis->b);CHKERRQ(ierr);
-    ierr = MatSOR(eis->A,eis->b,eis->omega,SOR_APPLY_UPPER,0.0,1,1,x);CHKERRQ(ierr);
+    ierr = VecCopy(x,eis->b[pc->presolvedone-1]);CHKERRQ(ierr);
+    ierr = MatSOR(eis->A,eis->b[pc->presolvedone-1],eis->omega,SOR_APPLY_UPPER,0.0,1,1,x);CHKERRQ(ierr);
   }
 
   /* save true b, other option is to swap pointers */
-  ierr = VecCopy(b,eis->b);CHKERRQ(ierr);
+  ierr = VecCopy(b,eis->b[pc->presolvedone-1]);CHKERRQ(ierr);
 
   /* modify b by (L + D/omega)^{-1} */
-  ierr =   MatSOR(eis->A,eis->b,eis->omega,(MatSORType)(SOR_ZERO_INITIAL_GUESS | SOR_LOCAL_FORWARD_SWEEP),0.0,1,1,b);CHKERRQ(ierr);  
+  ierr =   MatSOR(eis->A,eis->b[pc->presolvedone-1],eis->omega,(MatSORType)(SOR_ZERO_INITIAL_GUESS | SOR_LOCAL_FORWARD_SWEEP),0.0,1,1,b);CHKERRQ(ierr);  
   PetscFunctionReturn(0);
 }
 
@@ -95,12 +95,14 @@ static PetscErrorCode PCPostSolve_Eisenstat(PC pc,KSP ksp,Vec b,Vec x)
 
   PetscFunctionBegin;
   /* get back true b */
-  ierr = VecCopy(eis->b,b);CHKERRQ(ierr);
+  ierr = VecCopy(eis->b[pc->presolvedone],b);CHKERRQ(ierr);
 
   /* modify x by (U + D/omega)^{-1} */
-  ierr = VecCopy(x,eis->b);CHKERRQ(ierr);
-  ierr = MatSOR(eis->A,eis->b,eis->omega,(MatSORType)(SOR_ZERO_INITIAL_GUESS | SOR_LOCAL_BACKWARD_SWEEP),0.0,1,1,x);CHKERRQ(ierr);
-  pc->mat = eis->A;
+  ierr = VecCopy(x,eis->b[pc->presolvedone]);CHKERRQ(ierr);
+  ierr = MatSOR(eis->A,eis->b[pc->presolvedone],eis->omega,(MatSORType)(SOR_ZERO_INITIAL_GUESS | SOR_LOCAL_BACKWARD_SWEEP),0.0,1,1,x);CHKERRQ(ierr);
+  if (!pc->presolvedone) { 
+    pc->mat = eis->A;
+  }
   PetscFunctionReturn(0);
 }
 
@@ -112,7 +114,8 @@ static PetscErrorCode PCReset_Eisenstat(PC pc)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = VecDestroy(&eis->b);CHKERRQ(ierr);
+  ierr = VecDestroy(&eis->b[0]);CHKERRQ(ierr);
+  ierr = VecDestroy(&eis->b[1]);CHKERRQ(ierr);
   ierr = MatDestroy(&eis->shell);CHKERRQ(ierr);
   ierr = VecDestroy(&eis->diag);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -158,7 +161,7 @@ static PetscErrorCode PCView_Eisenstat(PC pc,PetscViewer viewer)
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"Eisenstat: omega = %G\n",eis->omega);CHKERRQ(ierr);
     if (eis->usediag) {
@@ -187,6 +190,7 @@ static PetscErrorCode PCSetUp_Eisenstat(PC pc)
     ierr = MatCreate(((PetscObject)pc)->comm,&eis->shell);CHKERRQ(ierr);
     ierr = MatSetSizes(eis->shell,m,n,M,N);CHKERRQ(ierr);
     ierr = MatSetType(eis->shell,MATSHELL);CHKERRQ(ierr);
+    ierr = MatSetUp(eis->shell);CHKERRQ(ierr);
     ierr = MatShellSetContext(eis->shell,(void*)pc);CHKERRQ(ierr);
     ierr = PetscLogObjectParent(pc,eis->shell);CHKERRQ(ierr);
     ierr = MatShellSetOperation(eis->shell,MATOP_MULT,(void(*)(void))PCMult_Eisenstat);CHKERRQ(ierr);
@@ -353,7 +357,8 @@ PetscErrorCode  PCCreate_Eisenstat(PC pc)
 
   pc->data           = (void*)eis;
   eis->omega         = 1.0;
-  eis->b             = 0;
+  eis->b[0]          = 0;
+  eis->b[1]          = 0;
   eis->diag          = 0;
   eis->usediag       = PETSC_TRUE;
 

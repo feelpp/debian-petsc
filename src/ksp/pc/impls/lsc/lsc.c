@@ -1,5 +1,5 @@
 
-#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>   /*I "petscpc.h" I*/
 
 typedef struct {
   PetscBool  allocated;
@@ -46,8 +46,10 @@ static PetscErrorCode PCSetUp_LSC(PC pc)
 
   PetscFunctionBegin;
   ierr = PCLSCAllocate_Private(pc);CHKERRQ(ierr);
-  ierr = PetscObjectQuery((PetscObject)pc->pmat,"LSC_L",(PetscObject*)&L);CHKERRQ(ierr);
+  ierr = PetscObjectQuery((PetscObject)pc->mat,"LSC_L",(PetscObject*)&L);CHKERRQ(ierr);
+  if (!L) {ierr = PetscObjectQuery((PetscObject)pc->pmat,"LSC_L",(PetscObject*)&L);CHKERRQ(ierr);}
   ierr = PetscObjectQuery((PetscObject)pc->pmat,"LSC_Lp",(PetscObject*)&Lp);CHKERRQ(ierr);
+  if (!Lp) {ierr = PetscObjectQuery((PetscObject)pc->mat,"LSC_Lp",(PetscObject*)&Lp);CHKERRQ(ierr);}
   if (!L) {
     ierr = MatSchurComplementGetSubmatrices(pc->mat,PETSC_NULL,PETSC_NULL,&B,&C,PETSC_NULL);CHKERRQ(ierr);
     if (!lsc->L) {
@@ -145,7 +147,7 @@ static PetscErrorCode PCView_LSC(PC pc,PetscViewer viewer)
   PetscBool        iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPushTab(viewer);CHKERRQ(ierr);
     ierr = KSPView(jac->kspL,viewer);CHKERRQ(ierr);
@@ -206,6 +208,10 @@ static PetscErrorCode PCView_LSC(PC pc,PetscViewer viewer)
 .ve
 
    Since we do not use the values in Sp, you can still put an assembled matrix there to use normal preconditioners.
+
+   References:
++  Elman, Howle, Shadid, Shuttleworth, and Tuminaro, Block preconditioners based on approximate commutators, 2006.
+-  Silvester, Elman, Kay, Wathen, Efficient preconditioning of the linearized Navier-Stokes equations for incompressible flow, 2001.
 
    Concepts: physics based preconditioners, block preconditioners
 

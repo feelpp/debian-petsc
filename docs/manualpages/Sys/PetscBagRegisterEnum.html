@@ -1,16 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscBagRegisterEnum.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscBagRegisterEnum</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscBagRegisterEnum"><H1>PetscBagRegisterEnum</H1></A>
 add an enum value to the bag 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscbag.h"   
-PetscErrorCode PetscBagRegisterEnum(PetscBag bag,void *addr,const char **list,PetscEnum mdefault, const char *name, const char* help)
+PetscErrorCode PetscBagRegisterEnum(PetscBag bag,void *addr,const char *const*list,PetscEnum mdefault, const char *name, const char* help)
 </PRE>
 Logically Collective on <A HREF="../Sys/PetscBag.html#PetscBag">PetscBag</A>
 <P>
@@ -40,7 +41,5 @@ Logically Collective on <A HREF="../Sys/PetscBag.html#PetscBag">PetscBag</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/ts/characteristic/examples/tutorials/ex1.c.html">src/ts/characteristic/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/ts/characteristic/examples/tutorials/ex2.c.html">src/ts/characteristic/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ts/characteristic/examples/tutorials/ex4.c.html">src/ts/characteristic/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/sys/examples/tutorials/ex5f90.F90.html">src/sys/examples/tutorials/ex5f90.F90.html</A><BR>
 </BODY></HTML>

@@ -1,27 +1,30 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscBagLoad.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscBagLoad</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscBagLoad"><H1>PetscBagLoad</H1></A>
 Loads a bag of values from a binary file 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscbag.h"   
-PetscErrorCode  PetscBagLoad(PetscViewer view,PetscBag *bag)
+PetscErrorCode  PetscBagLoad(PetscViewer view,PetscBag bag)
 </PRE>
 Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>viewer </B> -file to load values from
-<br>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>viewer </B></TD><TD>- file to load values from
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bag </B></TD><TD>- the bag of values
+</TD></TR></TABLE>
 <P>
-<H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>bag </B> -the bag of values
-<br>
+Notes: You must have created and registered all the fields in the bag before loading into it.
 <P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

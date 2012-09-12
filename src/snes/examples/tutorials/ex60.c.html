@@ -1,13 +1,14 @@
 <center><a href="ex60.c">Actual source code: ex60.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex60.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:18:02+00:00">
+<meta name="date" content="2012-08-29T17:11:12+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"2D coupled Allen-Cahn and Cahn-Hilliard equation for constant mobility and triangular elements.\n\</font>
 <a name="line2">  2: </a><font color="#666666">Runtime options include:\n\</font>
 <a name="line3">  3: </a><font color="#666666">-xmin &lt;xmin&gt;\n\</font>
@@ -19,7 +20,7 @@
 <a name="line9">  9: </a><font color="#666666">-theta_c &lt;theta_c&gt;\n\n"</font>;
 
 <a name="line11"> 11: </a><font color="#B22222">/*</font>
-<a name="line12"> 12: </a><font color="#B22222"> ./ex60 -ksp_type fgmres -pc_type mg  -snes_vi_monitor   -snes_atol 1.e-11  -da_grid_x 72 -da_grid_y 72 -ksp_rtol 1.e-8  -T 0.1  -VG 100 -pc_type lu -ksp_monitor_true_residual -pc_factor_mat_solver_package superlu -snes_converged_reason -ksp_converged_reason -pc_type sor  -ksp_rtol 1.e-9  -snes_ls_monitor -VG 10 -draw_fields 1,3,4 -snes_monitor_solution</font>
+<a name="line12"> 12: </a><font color="#B22222"> ./ex60 -ksp_type fgmres -pc_type mg  -snes_vi_monitor   -snes_atol 1.e-11  -da_grid_x 72 -da_grid_y 72 -ksp_rtol 1.e-8  -T 0.1  -VG 100 -pc_type lu -ksp_monitor_true_residual -pc_factor_mat_solver_package superlu -snes_converged_reason -ksp_converged_reason -pc_type sor  -ksp_rtol 1.e-9  -snes_linesearch_monitor -VG 10 -draw_fields 1,3,4 -snes_monitor_solution</font>
 
 <a name="line14"> 14: </a><font color="#B22222"> */</font>
 
@@ -127,9 +128,9 @@
 <a name="line120">120: </a>
 
 <a name="line122">122: </a>  <font color="#B22222">/* Get Jacobian matrix structure from the da for the entire thing, da1 */</font>
-<a name="line123">123: </a>  <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(user.da1,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;user.M);
+<a name="line123">123: </a>  <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(user.da1,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;user.M);
 <a name="line124">124: </a>  <font color="#B22222">/* Get the (usual) mass matrix structure from da2 */</font>
-<a name="line125">125: </a>  <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(user.da2,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;user.M_0);
+<a name="line125">125: </a>  <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(user.da2,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;user.M_0);
 <a name="line126">126: </a>  SetInitialGuess(x,&amp;user);
 <a name="line127">127: </a>  <font color="#B22222">/* Form the jacobian matrix and M_0 */</font>
 <a name="line128">128: </a>  SetUpMatrices(&amp;user);
@@ -141,839 +142,836 @@
 <a name="line134">134: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(snes,r,FormFunction,(void*)&amp;user);
 <a name="line135">135: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,FormJacobian,(void*)&amp;user);
 <a name="line136">136: </a>
+<a name="line137">137: </a>  SetVariableBounds(user.da1,xl,xu);
+<a name="line138">138: </a>  <A href="../../../../docs/manualpages/SNES/SNESVISetVariableBounds.html#SNESVISetVariableBounds">SNESVISetVariableBounds</A>(snes,xl,xu);
+<a name="line139">139: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>(snes);
+<a name="line140">140: </a>
+<a name="line141">141: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_rand"</font>,FILE_MODE_WRITE,&amp;view_rand);
+<a name="line142">142: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_mat"</font>,FILE_MODE_WRITE,&amp;view_mat);
+<a name="line143">143: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_q"</font>,FILE_MODE_WRITE,&amp;view_q);
+<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_out"</font>,FILE_MODE_WRITE,&amp;view_out);
+<a name="line145">145: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_psi"</font>,FILE_MODE_WRITE,&amp;view_psi);
+<a name="line146">146: </a>
+<a name="line147">147: </a>  <font color="#4169E1">while</font> (t&lt;user.T) {
+<a name="line148">148: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(snes,r,FormFunction,(void*)&amp;user);
+<a name="line149">149: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,FormJacobian,(void*)&amp;user);
 
-<a name="line138">138: </a>   <A href="../../../../docs/manualpages/SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(snes,<A href="../../../../docs/manualpages/SNES/SNESVI.html#SNESVI">SNESVI</A>);
+<a name="line151">151: </a>    SetRandomVectors(&amp;user);
+<a name="line152">152: </a>    <font color="#B22222">/*    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.Pv,view_rand);</font>
+<a name="line153">153: </a><font color="#B22222">    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.Pi,view_rand);</font>
+<a name="line154">154: </a><font color="#B22222">     <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.Piv,view_rand);*/</font>
 
-<a name="line140">140: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>(snes);
-<a name="line141">141: </a>  SetVariableBounds(user.da1,xl,xu);
-<a name="line142">142: </a>  <A href="../../../../docs/manualpages/SNES/SNESVISetVariableBounds.html#SNESVISetVariableBounds">SNESVISetVariableBounds</A>(snes,xl,xu);
-<a name="line143">143: </a>
-<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_rand"</font>,FILE_MODE_WRITE,&amp;view_rand);
-<a name="line145">145: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_mat"</font>,FILE_MODE_WRITE,&amp;view_mat);
-<a name="line146">146: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_q"</font>,FILE_MODE_WRITE,&amp;view_q);
-<a name="line147">147: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_out"</font>,FILE_MODE_WRITE,&amp;view_out);
-<a name="line148">148: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_psi"</font>,FILE_MODE_WRITE,&amp;view_psi);
-<a name="line149">149: </a>
-<a name="line150">150: </a>  <font color="#4169E1">while</font> (t&lt;user.T) {
-<a name="line151">151: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(snes,r,FormFunction,(void*)&amp;user);
-<a name="line152">152: </a>    <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,FormJacobian,(void*)&amp;user);
+<a name="line156">156: </a>    DPsi(&amp;user);
+<a name="line157">157: </a>    <font color="#B22222">/*    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.DPsiv,view_psi);</font>
+<a name="line158">158: </a><font color="#B22222">    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.DPsii,view_psi);</font>
+<a name="line159">159: </a><font color="#B22222">     <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.DPsieta,view_psi);*/</font>
 
-<a name="line154">154: </a>    SetRandomVectors(&amp;user);
-<a name="line155">155: </a>    <font color="#B22222">/*    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.Pv,view_rand);</font>
-<a name="line156">156: </a><font color="#B22222">    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.Pi,view_rand);</font>
-<a name="line157">157: </a><font color="#B22222">     <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.Piv,view_rand);*/</font>
+<a name="line161">161: </a>    Update_q(&amp;user);
+<a name="line162">162: </a>    <font color="#B22222">/*    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.q,view_q);</font>
+<a name="line163">163: </a><font color="#B22222">     <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(user.M,view_mat);*/</font>
+<a name="line164">164: </a>    <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,x);
+<a name="line165">165: </a>    SNESVIGetInactiveSet(snes,&amp;inactiveconstraints);
+<a name="line166">166: </a>    <A href="../../../../docs/manualpages/IS/ISGetSize.html#ISGetSize">ISGetSize</A>(inactiveconstraints,&amp;ninactiveconstraints);
+<a name="line167">167: </a>    <font color="#B22222">/* if (ninactiveconstraints &lt; .90*N) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_SUP,"To many active constraints, model has become non-physical"); */</font>
 
-<a name="line159">159: </a>    DPsi(&amp;user);
-<a name="line160">160: </a>    <font color="#B22222">/*    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.DPsiv,view_psi);</font>
-<a name="line161">161: </a><font color="#B22222">    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.DPsii,view_psi);</font>
-<a name="line162">162: </a><font color="#B22222">     <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.DPsieta,view_psi);*/</font>
+<a name="line169">169: </a>    <font color="#B22222">/*    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,view_out);*/</font>
+<a name="line170">170: </a>    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_DRAW_.html#PETSC_VIEWER_DRAW_">PETSC_VIEWER_DRAW_</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>));
+<a name="line171">171: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its;
+<a name="line172">172: </a>    <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);
+<a name="line173">173: </a>    <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"SNESVI solver converged at t = %5.4f in %d iterations\n"</font>,t,its);
 
-<a name="line164">164: </a>    Update_q(&amp;user);
-<a name="line165">165: </a>    <font color="#B22222">/*    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.q,view_q);</font>
-<a name="line166">166: </a><font color="#B22222">     <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(user.M,view_mat);*/</font>
-<a name="line167">167: </a>    <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,x);
-<a name="line168">168: </a>    SNESVIGetInactiveSet(snes,&amp;inactiveconstraints);
-<a name="line169">169: </a>    <A href="../../../../docs/manualpages/IS/ISGetSize.html#ISGetSize">ISGetSize</A>(inactiveconstraints,&amp;ninactiveconstraints);
-<a name="line170">170: </a>    <font color="#B22222">/* if (ninactiveconstraints &lt; .90*N) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_SUP,"To many active constraints, model has become non-physical"); */</font>
+<a name="line175">175: </a>    Update_u(x,&amp;user);
+<a name="line176">176: </a>    UpdateMatrices(&amp;user);
+<a name="line177">177: </a>    t = t + user.dt;
+<a name="line178">178: </a>  }
+<a name="line179">179: </a>
+<a name="line180">180: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_rand);
+<a name="line181">181: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_mat);
+<a name="line182">182: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_q);
+<a name="line183">183: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_out);
+<a name="line184">184: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_psi);
 
-<a name="line172">172: </a>    <font color="#B22222">/*    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,view_out);*/</font>
-<a name="line173">173: </a>    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_DRAW_.html#PETSC_VIEWER_DRAW_">PETSC_VIEWER_DRAW_</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>));
-<a name="line174">174: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its;
-<a name="line175">175: </a>    <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);
-<a name="line176">176: </a>    <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"<A href="../../../../docs/manualpages/SNES/SNESVI.html#SNESVI">SNESVI</A> solver converged at t = %5.4f in %d iterations\n"</font>,t,its);
+<a name="line186">186: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line187">187: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;r);
+<a name="line188">188: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xl);
+<a name="line189">189: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xu);
+<a name="line190">190: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.q);
+<a name="line191">191: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.wv);
+<a name="line192">192: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.cv);
+<a name="line193">193: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.wi);
+<a name="line194">194: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.ci);
+<a name="line195">195: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.eta);
+<a name="line196">196: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.cvi);
+<a name="line197">197: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.DPsiv);
+<a name="line198">198: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.DPsii);
+<a name="line199">199: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.DPsieta);
+<a name="line200">200: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Pv);
+<a name="line201">201: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Pi);
+<a name="line202">202: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Piv);
+<a name="line203">203: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.logcv);
+<a name="line204">204: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.logci);
+<a name="line205">205: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.logcvi);
+<a name="line206">206: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.work1);
+<a name="line207">207: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.work2);
+<a name="line208">208: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Rr);
+<a name="line209">209: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Riv);
+<a name="line210">210: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;user.M);
+<a name="line211">211: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;user.M_0);
+<a name="line212">212: </a>  <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;user.da1);
+<a name="line213">213: </a>  <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;user.da2);
+<a name="line214">214: </a>
+<a name="line215">215: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line216">216: </a>  <font color="#4169E1">return</font> 0;
+<a name="line217">217: </a>}
 
-<a name="line178">178: </a>    Update_u(x,&amp;user);
-<a name="line179">179: </a>    UpdateMatrices(&amp;user);
-<a name="line180">180: </a>    t = t + user.dt;
-<a name="line181">181: </a>  }
-<a name="line182">182: </a>
-<a name="line183">183: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_rand);
-<a name="line184">184: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_mat);
-<a name="line185">185: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_q);
-<a name="line186">186: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_out);
-<a name="line187">187: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view_psi);
-
-<a name="line189">189: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
-<a name="line190">190: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;r);
-<a name="line191">191: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xl);
-<a name="line192">192: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;xu);
-<a name="line193">193: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.q);
-<a name="line194">194: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.wv);
-<a name="line195">195: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.cv);
-<a name="line196">196: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.wi);
-<a name="line197">197: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.ci);
-<a name="line198">198: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.eta);
-<a name="line199">199: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.cvi);
-<a name="line200">200: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.DPsiv);
-<a name="line201">201: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.DPsii);
-<a name="line202">202: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.DPsieta);
-<a name="line203">203: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Pv);
-<a name="line204">204: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Pi);
-<a name="line205">205: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Piv);
-<a name="line206">206: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.logcv);
-<a name="line207">207: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.logci);
-<a name="line208">208: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.logcvi);
-<a name="line209">209: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.work1);
-<a name="line210">210: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.work2);
-<a name="line211">211: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Rr);
-<a name="line212">212: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;user.Riv);
-<a name="line213">213: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;user.M);
-<a name="line214">214: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;user.M_0);
-<a name="line215">215: </a>  <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;user.da1);
-<a name="line216">216: </a>  <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;user.da2);
-<a name="line217">217: </a>
-<a name="line218">218: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line219">219: </a>  <font color="#4169E1">return</font> 0;
-<a name="line220">220: </a>}
-
-<a name="line224">224: </a><strong><font color="#4169E1"><a name="Update_u"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Update_u(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,AppCtx *user)</font></strong>
-<a name="line225">225: </a>{
-<a name="line227">227: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n;
-<a name="line228">228: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xx,*wv_p,*cv_p,*wi_p,*ci_p,*eta_p;
-<a name="line229">229: </a>
-<a name="line231">231: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;wv,&amp;n);
-<a name="line232">232: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(X,&amp;xx);
-<a name="line233">233: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;wv,&amp;wv_p);
-<a name="line234">234: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line235">235: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;wi,&amp;wi_p);
-<a name="line236">236: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line237">237: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;eta,&amp;eta_p);
+<a name="line221">221: </a><strong><font color="#4169E1"><a name="Update_u"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Update_u(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,AppCtx *user)</font></strong>
+<a name="line222">222: </a>{
+<a name="line224">224: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n;
+<a name="line225">225: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xx,*wv_p,*cv_p,*wi_p,*ci_p,*eta_p;
+<a name="line226">226: </a>
+<a name="line228">228: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;wv,&amp;n);
+<a name="line229">229: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(X,&amp;xx);
+<a name="line230">230: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;wv,&amp;wv_p);
+<a name="line231">231: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line232">232: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;wi,&amp;wi_p);
+<a name="line233">233: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line234">234: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;eta,&amp;eta_p);
 
 
-<a name="line240">240: </a>  <font color="#4169E1">for</font>(i=0;i&lt;n;i++) {
-<a name="line241">241: </a>    wv_p[i] = xx[5*i];
-<a name="line242">242: </a>    cv_p[i] = xx[5*i+1];
-<a name="line243">243: </a>    wi_p[i] = xx[5*i+2];
-<a name="line244">244: </a>    ci_p[i] = xx[5*i+3];
-<a name="line245">245: </a>    eta_p[i] = xx[5*i+4];
-<a name="line246">246: </a>  }
-<a name="line247">247: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(X,&amp;xx);
-<a name="line248">248: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;wv,&amp;wv_p);
-<a name="line249">249: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line250">250: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;wi,&amp;wi_p);
-<a name="line251">251: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line252">252: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;eta,&amp;eta_p);
-<a name="line253">253: </a>
-<a name="line254">254: </a>  <font color="#4169E1">return</font>(0);
-<a name="line255">255: </a>}
+<a name="line237">237: </a>  <font color="#4169E1">for</font>(i=0;i&lt;n;i++) {
+<a name="line238">238: </a>    wv_p[i] = xx[5*i];
+<a name="line239">239: </a>    cv_p[i] = xx[5*i+1];
+<a name="line240">240: </a>    wi_p[i] = xx[5*i+2];
+<a name="line241">241: </a>    ci_p[i] = xx[5*i+3];
+<a name="line242">242: </a>    eta_p[i] = xx[5*i+4];
+<a name="line243">243: </a>  }
+<a name="line244">244: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(X,&amp;xx);
+<a name="line245">245: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;wv,&amp;wv_p);
+<a name="line246">246: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line247">247: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;wi,&amp;wi_p);
+<a name="line248">248: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line249">249: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;eta,&amp;eta_p);
+<a name="line250">250: </a>
+<a name="line251">251: </a>  <font color="#4169E1">return</font>(0);
+<a name="line252">252: </a>}
 
-<a name="line259">259: </a><strong><font color="#4169E1"><a name="Update_q"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Update_q(AppCtx *user)</font></strong>
-<a name="line260">260: </a>{
-<a name="line262">262: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *q_p,*w1,*w2;
-<a name="line263">263: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n;
+<a name="line256">256: </a><strong><font color="#4169E1"><a name="Update_q"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Update_q(AppCtx *user)</font></strong>
+<a name="line257">257: </a>{
+<a name="line259">259: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *q_p,*w1,*w2;
+<a name="line260">260: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n;
 
-<a name="line266">266: </a>
-<a name="line267">267: </a>  <A href="../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(user-&gt;Rr,user-&gt;eta,user-&gt;eta);
-<a name="line268">268: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;Rr,user-&gt;Rsurf);
-<a name="line269">269: </a>  <A href="../../../../docs/manualpages/Vec/VecShift.html#VecShift">VecShift</A>(user-&gt;Rr,user-&gt;Rbulk);
-<a name="line270">270: </a>  <A href="../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(user-&gt;Riv,user-&gt;cv,user-&gt;ci);
-<a name="line271">271: </a>  <A href="../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(user-&gt;Riv,user-&gt;Rr,user-&gt;Riv);
+<a name="line263">263: </a>
+<a name="line264">264: </a>  <A href="../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(user-&gt;Rr,user-&gt;eta,user-&gt;eta);
+<a name="line265">265: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;Rr,user-&gt;Rsurf);
+<a name="line266">266: </a>  <A href="../../../../docs/manualpages/Vec/VecShift.html#VecShift">VecShift</A>(user-&gt;Rr,user-&gt;Rbulk);
+<a name="line267">267: </a>  <A href="../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(user-&gt;Riv,user-&gt;cv,user-&gt;ci);
+<a name="line268">268: </a>  <A href="../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(user-&gt;Riv,user-&gt;Rr,user-&gt;Riv);
 
-<a name="line273">273: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;q,&amp;q_p);
-<a name="line274">274: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;work1,&amp;w1);
-<a name="line275">275: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;work2,&amp;w2);
+<a name="line270">270: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;q,&amp;q_p);
+<a name="line271">271: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;work1,&amp;w1);
+<a name="line272">272: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;work2,&amp;w2);
 
-<a name="line277">277: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;cv,user-&gt;work1);
-<a name="line278">278: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;work1,1.0,user-&gt;Pv);
-<a name="line279">279: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;work1,-1.0);
-<a name="line280">280: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;work1,user-&gt;work2);
-<a name="line281">281: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;work1,&amp;n);
-<a name="line282">282: </a>
-<a name="line283">283: </a> <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
-<a name="line284">284: </a>       q_p[5*i]=w2[i];
-<a name="line285">285: </a>  }
-<a name="line286">286: </a>
-<a name="line287">287: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;DPsiv,user-&gt;work1);
-<a name="line288">288: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
-<a name="line289">289: </a>       q_p[5*i+1]=w1[i];
-<a name="line290">290: </a>  }
+<a name="line274">274: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;cv,user-&gt;work1);
+<a name="line275">275: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;work1,1.0,user-&gt;Pv);
+<a name="line276">276: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;work1,-1.0);
+<a name="line277">277: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;work1,user-&gt;work2);
+<a name="line278">278: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;work1,&amp;n);
+<a name="line279">279: </a>
+<a name="line280">280: </a> <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
+<a name="line281">281: </a>       q_p[5*i]=w2[i];
+<a name="line282">282: </a>  }
+<a name="line283">283: </a>
+<a name="line284">284: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;DPsiv,user-&gt;work1);
+<a name="line285">285: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
+<a name="line286">286: </a>       q_p[5*i+1]=w1[i];
+<a name="line287">287: </a>  }
 
-<a name="line292">292: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;ci,user-&gt;work1);
-<a name="line293">293: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;work1,1.0,user-&gt;Pi);
-<a name="line294">294: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;work1,-1.0);
-<a name="line295">295: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;work1,user-&gt;work2);
-<a name="line296">296: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
-<a name="line297">297: </a>       q_p[5*i+2]=w2[i];
-<a name="line298">298: </a>  }
+<a name="line289">289: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;ci,user-&gt;work1);
+<a name="line290">290: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;work1,1.0,user-&gt;Pi);
+<a name="line291">291: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;work1,-1.0);
+<a name="line292">292: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;work1,user-&gt;work2);
+<a name="line293">293: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
+<a name="line294">294: </a>       q_p[5*i+2]=w2[i];
+<a name="line295">295: </a>  }
 
-<a name="line300">300: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;DPsii,user-&gt;work1);
-<a name="line301">301: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
-<a name="line302">302: </a>       q_p[5*i+3]=w1[i];
-<a name="line303">303: </a>  }
+<a name="line297">297: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;DPsii,user-&gt;work1);
+<a name="line298">298: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
+<a name="line299">299: </a>       q_p[5*i+3]=w1[i];
+<a name="line300">300: </a>  }
 
-<a name="line305">305: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;eta,user-&gt;work1);
-<a name="line306">306: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;work1,-1.0/user-&gt;dt);
-<a name="line307">307: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;work1,user-&gt;L,user-&gt;DPsieta);
-<a name="line308">308: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;work1,-1.0,user-&gt;Piv);
-<a name="line309">309: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;work1,user-&gt;work2);
-<a name="line310">310: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
-<a name="line311">311: </a>       q_p[5*i+4]=w2[i];
-<a name="line312">312: </a>  }
-<a name="line313">313: </a>
-<a name="line314">314: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;q,&amp;q_p);
-<a name="line315">315: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;work1,&amp;w1);
-<a name="line316">316: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;work2,&amp;w2);
-<a name="line317">317: </a>
-<a name="line318">318: </a>  <font color="#4169E1">return</font>(0);
-<a name="line319">319: </a>}
+<a name="line302">302: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;eta,user-&gt;work1);
+<a name="line303">303: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;work1,-1.0/user-&gt;dt);
+<a name="line304">304: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;work1,user-&gt;L,user-&gt;DPsieta);
+<a name="line305">305: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;work1,-1.0,user-&gt;Piv);
+<a name="line306">306: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(user-&gt;M_0,user-&gt;work1,user-&gt;work2);
+<a name="line307">307: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
+<a name="line308">308: </a>       q_p[5*i+4]=w2[i];
+<a name="line309">309: </a>  }
+<a name="line310">310: </a>
+<a name="line311">311: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;q,&amp;q_p);
+<a name="line312">312: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;work1,&amp;w1);
+<a name="line313">313: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;work2,&amp;w2);
+<a name="line314">314: </a>
+<a name="line315">315: </a>  <font color="#4169E1">return</font>(0);
+<a name="line316">316: </a>}
 
-<a name="line323">323: </a><strong><font color="#4169E1"><a name="DPsi"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DPsi(AppCtx* user)</font></strong>
-<a name="line324">324: </a>{
-<a name="line325">325: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
-<a name="line326">326: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     Evf=user-&gt;Evf,Eif=user-&gt;Eif,kBT=user-&gt;kBT,A=user-&gt;A;
-<a name="line327">327: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     *cv_p,*ci_p,*eta_p,*logcv_p,*logci_p,*logcvi_p,*DPsiv_p,*DPsii_p,*DPsieta_p;
-<a name="line328">328: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        n,i;
+<a name="line320">320: </a><strong><font color="#4169E1"><a name="DPsi"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DPsi(AppCtx* user)</font></strong>
+<a name="line321">321: </a>{
+<a name="line322">322: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line323">323: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     Evf=user-&gt;Evf,Eif=user-&gt;Eif,kBT=user-&gt;kBT,A=user-&gt;A;
+<a name="line324">324: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     *cv_p,*ci_p,*eta_p,*logcv_p,*logci_p,*logcvi_p,*DPsiv_p,*DPsii_p,*DPsieta_p;
+<a name="line325">325: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        n,i;
 
 
-<a name="line332">332: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;cv,&amp;n);
-<a name="line333">333: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line334">334: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line335">335: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;eta,&amp;eta_p);
-<a name="line336">336: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;logcv,&amp;logcv_p);
-<a name="line337">337: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;logci,&amp;logci_p);
-<a name="line338">338: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;logcvi,&amp;logcvi_p);
-<a name="line339">339: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;DPsiv,&amp;DPsiv_p);
-<a name="line340">340: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;DPsii,&amp;DPsii_p);
-<a name="line341">341: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;DPsieta,&amp;DPsieta_p);
-<a name="line342">342: </a>
-<a name="line343">343: </a>  Llog(user-&gt;cv,user-&gt;logcv);
-<a name="line344">344: </a>
-<a name="line345">345: </a>  Llog(user-&gt;ci,user-&gt;logci);
-<a name="line346">346: </a>
+<a name="line329">329: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;cv,&amp;n);
+<a name="line330">330: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line331">331: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line332">332: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;eta,&amp;eta_p);
+<a name="line333">333: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;logcv,&amp;logcv_p);
+<a name="line334">334: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;logci,&amp;logci_p);
+<a name="line335">335: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;logcvi,&amp;logcvi_p);
+<a name="line336">336: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;DPsiv,&amp;DPsiv_p);
+<a name="line337">337: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;DPsii,&amp;DPsii_p);
+<a name="line338">338: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;DPsieta,&amp;DPsieta_p);
+<a name="line339">339: </a>
+<a name="line340">340: </a>  Llog(user-&gt;cv,user-&gt;logcv);
+<a name="line341">341: </a>
+<a name="line342">342: </a>  Llog(user-&gt;ci,user-&gt;logci);
+<a name="line343">343: </a>
 
-<a name="line348">348: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;cv,user-&gt;cvi);
-<a name="line349">349: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;cvi,1.0,user-&gt;ci);
-<a name="line350">350: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;cvi,-1.0);
-<a name="line351">351: </a>  <A href="../../../../docs/manualpages/Vec/VecShift.html#VecShift">VecShift</A>(user-&gt;cvi,1.0);
-<a name="line352">352: </a>  Llog(user-&gt;cvi,user-&gt;logcvi);
-<a name="line353">353: </a>
-<a name="line354">354: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++)
-<a name="line355">355: </a>  {
-<a name="line356">356: </a>    DPsiv_p[i] = (eta_p[i]-1.0)*(eta_p[i]-1.0)*( Evf + kBT*(logcv_p[i] - logcvi_p[i]) ) + eta_p[i]*eta_p[i]*2*A*(cv_p[i]-1);
+<a name="line345">345: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;cv,user-&gt;cvi);
+<a name="line346">346: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(user-&gt;cvi,1.0,user-&gt;ci);
+<a name="line347">347: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;cvi,-1.0);
+<a name="line348">348: </a>  <A href="../../../../docs/manualpages/Vec/VecShift.html#VecShift">VecShift</A>(user-&gt;cvi,1.0);
+<a name="line349">349: </a>  Llog(user-&gt;cvi,user-&gt;logcvi);
+<a name="line350">350: </a>
+<a name="line351">351: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++)
+<a name="line352">352: </a>  {
+<a name="line353">353: </a>    DPsiv_p[i] = (eta_p[i]-1.0)*(eta_p[i]-1.0)*( Evf + kBT*(logcv_p[i] - logcvi_p[i]) ) + eta_p[i]*eta_p[i]*2*A*(cv_p[i]-1);
 
-<a name="line358">358: </a>    DPsii_p[i] = (eta_p[i]-1.0)*(eta_p[i]-1.0)*( Eif + kBT*(logci_p[i] - logcvi_p[i]) ) + eta_p[i]*eta_p[i]*2*A*ci_p[i] ;
+<a name="line355">355: </a>    DPsii_p[i] = (eta_p[i]-1.0)*(eta_p[i]-1.0)*( Eif + kBT*(logci_p[i] - logcvi_p[i]) ) + eta_p[i]*eta_p[i]*2*A*ci_p[i] ;
+<a name="line356">356: </a>
+<a name="line357">357: </a>    DPsieta_p[i] = 2.0*(eta_p[i]-1.0)*( Evf*cv_p[i] + Eif*ci_p[i] + kBT*( cv_p[i]* logcv_p[i] + ci_p[i]* logci_p[i] + (1-cv_p[i]-ci_p[i])*logcvi_p[i] ) ) + 2.0*eta_p[i]*A*( (cv_p[i]-1.0)*(cv_p[i]-1.0) + ci_p[i]*ci_p[i]);
+<a name="line358">358: </a>
 <a name="line359">359: </a>
-<a name="line360">360: </a>    DPsieta_p[i] = 2.0*(eta_p[i]-1.0)*( Evf*cv_p[i] + Eif*ci_p[i] + kBT*( cv_p[i]* logcv_p[i] + ci_p[i]* logci_p[i] + (1-cv_p[i]-ci_p[i])*logcvi_p[i] ) ) + 2.0*eta_p[i]*A*( (cv_p[i]-1.0)*(cv_p[i]-1.0) + ci_p[i]*ci_p[i]);
-<a name="line361">361: </a>
-<a name="line362">362: </a>
-<a name="line363">363: </a>  }
+<a name="line360">360: </a>  }
 
-<a name="line365">365: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line366">366: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line367">367: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;eta,&amp;eta_p);
-<a name="line368">368: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;logcv,&amp;logcv_p);
-<a name="line369">369: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;logci,&amp;logci_p);
-<a name="line370">370: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;logcvi,&amp;logcvi_p);
-<a name="line371">371: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;DPsiv,&amp;DPsiv_p);
-<a name="line372">372: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;DPsii,&amp;DPsii_p);
-<a name="line373">373: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;DPsieta,&amp;DPsieta_p);
+<a name="line362">362: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line363">363: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line364">364: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;eta,&amp;eta_p);
+<a name="line365">365: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;logcv,&amp;logcv_p);
+<a name="line366">366: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;logci,&amp;logci_p);
+<a name="line367">367: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;logcvi,&amp;logcvi_p);
+<a name="line368">368: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;DPsiv,&amp;DPsiv_p);
+<a name="line369">369: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;DPsii,&amp;DPsii_p);
+<a name="line370">370: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;DPsieta,&amp;DPsieta_p);
 
 
-<a name="line376">376: </a>  <font color="#4169E1">return</font>(0);
+<a name="line373">373: </a>  <font color="#4169E1">return</font>(0);
 
-<a name="line378">378: </a>}
+<a name="line375">375: </a>}
 
 
-<a name="line383">383: </a><strong><font color="#4169E1"><a name="Llog"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Llog(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> Y)</font></strong>
-<a name="line384">384: </a>{
-<a name="line385">385: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
-<a name="line386">386: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       *x,*y;
-<a name="line387">387: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          n,i;
+<a name="line380">380: </a><strong><font color="#4169E1"><a name="Llog"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> Llog(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> Y)</font></strong>
+<a name="line381">381: </a>{
+<a name="line382">382: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line383">383: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       *x,*y;
+<a name="line384">384: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          n,i;
 
-<a name="line390">390: </a>
-<a name="line391">391: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(X,&amp;x);
-<a name="line392">392: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(Y,&amp;y);
-<a name="line393">393: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(X,&amp;n);
-<a name="line394">394: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
-<a name="line395">395: </a>    <font color="#4169E1">if</font> (x[i] &lt; 1.0e-12) {
-<a name="line396">396: </a>      y[i] = log(1.0e-12);
+<a name="line387">387: </a>
+<a name="line388">388: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(X,&amp;x);
+<a name="line389">389: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(Y,&amp;y);
+<a name="line390">390: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(X,&amp;n);
+<a name="line391">391: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
+<a name="line392">392: </a>    <font color="#4169E1">if</font> (x[i] &lt; 1.0e-12) {
+<a name="line393">393: </a>      y[i] = log(1.0e-12);
+<a name="line394">394: </a>    }
+<a name="line395">395: </a>    <font color="#4169E1">else</font> {
+<a name="line396">396: </a>      y[i] = log(x[i]);
 <a name="line397">397: </a>    }
-<a name="line398">398: </a>    <font color="#4169E1">else</font> {
-<a name="line399">399: </a>      y[i] = log(x[i]);
-<a name="line400">400: </a>    }
-<a name="line401">401: </a>  }
-<a name="line402">402: </a>
-<a name="line403">403: </a>  <font color="#4169E1">return</font>(0);
-<a name="line404">404: </a>}
+<a name="line398">398: </a>  }
+<a name="line399">399: </a>
+<a name="line400">400: </a>  <font color="#4169E1">return</font>(0);
+<a name="line401">401: </a>}
 
 
-<a name="line409">409: </a><strong><font color="#4169E1"><a name="SetInitialGuess"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SetInitialGuess(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,AppCtx* user)</font></strong>
-<a name="line410">410: </a>{
-<a name="line411">411: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
-<a name="line412">412: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          n,i;
-<a name="line413">413: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>           *xx,*cv_p,*ci_p,*wv_p,*wi_p;
-<a name="line414">414: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>       view;
-<a name="line415">415: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       initv = .00069;
+<a name="line406">406: </a><strong><font color="#4169E1"><a name="SetInitialGuess"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SetInitialGuess(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,AppCtx* user)</font></strong>
+<a name="line407">407: </a>{
+<a name="line408">408: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line409">409: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          n,i;
+<a name="line410">410: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>           *xx,*cv_p,*ci_p,*wv_p,*wi_p;
+<a name="line411">411: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>       view;
+<a name="line412">412: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       initv = .00069;
 
 
-<a name="line419">419: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_initial"</font>,FILE_MODE_WRITE,&amp;view);
-<a name="line420">420: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(X,&amp;n);
+<a name="line416">416: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"file_initial"</font>,FILE_MODE_WRITE,&amp;view);
+<a name="line417">417: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(X,&amp;n);
 
-<a name="line422">422: </a>  <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(user-&gt;cv,initv);
-<a name="line423">423: </a>  <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(user-&gt;ci,initv);
-<a name="line424">424: </a>  <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(user-&gt;eta,0.0);
+<a name="line419">419: </a>  <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(user-&gt;cv,initv);
+<a name="line420">420: </a>  <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(user-&gt;ci,initv);
+<a name="line421">421: </a>  <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(user-&gt;eta,0.0);
 
-<a name="line426">426: </a>  DPsi(user);
-<a name="line427">427: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;DPsiv,user-&gt;wv);
-<a name="line428">428: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;DPsii,user-&gt;wi);
+<a name="line423">423: </a>  DPsi(user);
+<a name="line424">424: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;DPsiv,user-&gt;wv);
+<a name="line425">425: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;DPsii,user-&gt;wi);
 
-<a name="line430">430: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(X,&amp;xx);
-<a name="line431">431: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line432">432: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line433">433: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;wv,&amp;wv_p);
-<a name="line434">434: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;wi,&amp;wi_p);
-<a name="line435">435: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n/5;i++)
-<a name="line436">436: </a>  {
-<a name="line437">437: </a>    xx[5*i]=wv_p[i];
-<a name="line438">438: </a>    xx[5*i+1]=cv_p[i];
-<a name="line439">439: </a>    xx[5*i+2]=wi_p[i];
-<a name="line440">440: </a>    xx[5*i+3]=ci_p[i];
-<a name="line441">441: </a>    xx[5*i+4]=0.0;
-<a name="line442">442: </a>  }
+<a name="line427">427: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(X,&amp;xx);
+<a name="line428">428: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line429">429: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line430">430: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;wv,&amp;wv_p);
+<a name="line431">431: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;wi,&amp;wi_p);
+<a name="line432">432: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n/5;i++)
+<a name="line433">433: </a>  {
+<a name="line434">434: </a>    xx[5*i]=wv_p[i];
+<a name="line435">435: </a>    xx[5*i+1]=cv_p[i];
+<a name="line436">436: </a>    xx[5*i+2]=wi_p[i];
+<a name="line437">437: </a>    xx[5*i+3]=ci_p[i];
+<a name="line438">438: </a>    xx[5*i+4]=0.0;
+<a name="line439">439: </a>  }
 
-<a name="line444">444: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user-&gt;wv,view);
-<a name="line445">445: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user-&gt;cv,view);
-<a name="line446">446: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user-&gt;wi,view);
-<a name="line447">447: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user-&gt;ci,view);
-<a name="line448">448: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view);
+<a name="line441">441: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user-&gt;wv,view);
+<a name="line442">442: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user-&gt;cv,view);
+<a name="line443">443: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user-&gt;wi,view);
+<a name="line444">444: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user-&gt;ci,view);
+<a name="line445">445: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;view);
 
-<a name="line450">450: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(X,&amp;xx);
-<a name="line451">451: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line452">452: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line453">453: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;wv,&amp;wv_p);
-<a name="line454">454: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;wi,&amp;wi_p);
-<a name="line455">455: </a>
-<a name="line456">456: </a>  <font color="#4169E1">return</font>(0);
-<a name="line457">457: </a>}
+<a name="line447">447: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(X,&amp;xx);
+<a name="line448">448: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line449">449: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line450">450: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;wv,&amp;wv_p);
+<a name="line451">451: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;wi,&amp;wi_p);
+<a name="line452">452: </a>
+<a name="line453">453: </a>  <font color="#4169E1">return</font>(0);
+<a name="line454">454: </a>}
 
-<a name="line461">461: </a><strong><font color="#4169E1"><a name="SetRandomVectors"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SetRandomVectors(AppCtx* user)</font></strong>
-<a name="line462">462: </a>{
-<a name="line464">464: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n,count=0;
-<a name="line465">465: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *w1,*w2,*Pv_p,*eta_p;
+<a name="line458">458: </a><strong><font color="#4169E1"><a name="SetRandomVectors"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SetRandomVectors(AppCtx* user)</font></strong>
+<a name="line459">459: </a>{
+<a name="line461">461: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n,count=0;
+<a name="line462">462: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *w1,*w2,*Pv_p,*eta_p;
+<a name="line463">463: </a>
+
 <a name="line466">466: </a>
-
-<a name="line469">469: </a>
-<a name="line470">470: </a>  <A href="../../../../docs/manualpages/Vec/VecSetRandom.html#VecSetRandom">VecSetRandom</A>(user-&gt;work1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line471">471: </a>  <A href="../../../../docs/manualpages/Vec/VecSetRandom.html#VecSetRandom">VecSetRandom</A>(user-&gt;work2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line472">472: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;work1,&amp;w1);
-<a name="line473">473: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;work2,&amp;w2);
-<a name="line474">474: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;Pv,&amp;Pv_p);
-<a name="line475">475: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;eta,&amp;eta_p);
-<a name="line476">476: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;work1,&amp;n);
-<a name="line477">477: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
+<a name="line467">467: </a>  <A href="../../../../docs/manualpages/Vec/VecSetRandom.html#VecSetRandom">VecSetRandom</A>(user-&gt;work1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line468">468: </a>  <A href="../../../../docs/manualpages/Vec/VecSetRandom.html#VecSetRandom">VecSetRandom</A>(user-&gt;work2,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line469">469: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;work1,&amp;w1);
+<a name="line470">470: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;work2,&amp;w2);
+<a name="line471">471: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;Pv,&amp;Pv_p);
+<a name="line472">472: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;eta,&amp;eta_p);
+<a name="line473">473: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;work1,&amp;n);
+<a name="line474">474: </a>  <font color="#4169E1">for</font> (i=0;i&lt;n;i++) {
+<a name="line475">475: </a>
+<a name="line476">476: </a>    <font color="#4169E1">if</font> (eta_p[i]&gt;=0.8 || w1[i]&gt;user-&gt;P_casc){
+<a name="line477">477: </a>      Pv_p[i]=0;
 <a name="line478">478: </a>
-<a name="line479">479: </a>    <font color="#4169E1">if</font> (eta_p[i]&gt;=0.8 || w1[i]&gt;user-&gt;P_casc){
-<a name="line480">480: </a>      Pv_p[i]=0;
-<a name="line481">481: </a>
-<a name="line482">482: </a>    }
-<a name="line483">483: </a>    <font color="#4169E1">else</font>
-<a name="line484">484: </a>    {
-<a name="line485">485: </a>      Pv_p[i]=w2[i]*user-&gt;VG;
-<a name="line486">486: </a>      count=count+1;
-<a name="line487">487: </a>    }
+<a name="line479">479: </a>    }
+<a name="line480">480: </a>    <font color="#4169E1">else</font>
+<a name="line481">481: </a>    {
+<a name="line482">482: </a>      Pv_p[i]=w2[i]*user-&gt;VG;
+<a name="line483">483: </a>      count=count+1;
+<a name="line484">484: </a>    }
 
-<a name="line489">489: </a>  }
-<a name="line490">490: </a>
-<a name="line491">491: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;Pv,user-&gt;Pi);
-<a name="line492">492: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;Pi,0.9);
-<a name="line493">493: </a>  <A href="../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(user-&gt;Piv,user-&gt;Pi,user-&gt;Pv);
-<a name="line494">494: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;work1,&amp;w1);
-<a name="line495">495: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;work2,&amp;w2);
-<a name="line496">496: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;Pv,&amp;Pv_p);
-<a name="line497">497: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;eta,&amp;eta_p);
+<a name="line486">486: </a>  }
+<a name="line487">487: </a>
+<a name="line488">488: </a>  <A href="../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(user-&gt;Pv,user-&gt;Pi);
+<a name="line489">489: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(user-&gt;Pi,0.9);
+<a name="line490">490: </a>  <A href="../../../../docs/manualpages/Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(user-&gt;Piv,user-&gt;Pi,user-&gt;Pv);
+<a name="line491">491: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;work1,&amp;w1);
+<a name="line492">492: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;work2,&amp;w2);
+<a name="line493">493: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;Pv,&amp;Pv_p);
+<a name="line494">494: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;eta,&amp;eta_p);
 
-<a name="line499">499: </a>  <font color="#4169E1">return</font>(0);
-<a name="line500">500: </a>
-<a name="line501">501: </a>}
+<a name="line496">496: </a>  <font color="#4169E1">return</font>(0);
+<a name="line497">497: </a>
+<a name="line498">498: </a>}
 
-<a name="line505">505: </a><strong><font color="#4169E1"><a name="FormFunction"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> F,void* ctx)</font></strong>
-<a name="line506">506: </a>{
-<a name="line508">508: </a>  AppCtx         *user=(AppCtx*)ctx;
-<a name="line509">509: </a>
-<a name="line511">511: </a>  <A href="../../../../docs/manualpages/Mat/MatMultAdd.html#MatMultAdd">MatMultAdd</A>(user-&gt;M,X,user-&gt;q,F);
-<a name="line512">512: </a>  <font color="#4169E1">return</font>(0);
-<a name="line513">513: </a>}
+<a name="line502">502: </a><strong><font color="#4169E1"><a name="FormFunction"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> F,void* ctx)</font></strong>
+<a name="line503">503: </a>{
+<a name="line505">505: </a>  AppCtx         *user=(AppCtx*)ctx;
+<a name="line506">506: </a>
+<a name="line508">508: </a>  <A href="../../../../docs/manualpages/Mat/MatMultAdd.html#MatMultAdd">MatMultAdd</A>(user-&gt;M,X,user-&gt;q,F);
+<a name="line509">509: </a>  <font color="#4169E1">return</font>(0);
+<a name="line510">510: </a>}
 
-<a name="line517">517: </a><strong><font color="#4169E1"><a name="FormJacobian"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *J,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *B,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A> *flg,void *ctx)</font></strong>
-<a name="line518">518: </a>{
-<a name="line520">520: </a>  AppCtx         *user=(AppCtx*)ctx;
-<a name="line521">521: </a>
-<a name="line523">523: </a>  *flg = SAME_NONZERO_PATTERN;
-<a name="line524">524: </a>  <A href="../../../../docs/manualpages/Mat/MatCopy.html#MatCopy">MatCopy</A>(user-&gt;M,*J,*flg);
-<a name="line525">525: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(*J,MAT_FINAL_ASSEMBLY);
-<a name="line526">526: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(*J,MAT_FINAL_ASSEMBLY);
-<a name="line527">527: </a>  <font color="#4169E1">return</font>(0);
-<a name="line528">528: </a>}
-<a name="line531">531: </a><strong><font color="#4169E1"><a name="SetVariableBounds"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SetVariableBounds(DM da,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xl,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xu)</font></strong>
-<a name="line532">532: </a>{
-<a name="line534">534: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    ***l,***u;
-<a name="line535">535: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       xs,xm,ys,ym;
-<a name="line536">536: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       j,i;
-<a name="line537">537: </a>
-<a name="line539">539: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArrayDOF.html#DMDAVecGetArrayDOF">DMDAVecGetArrayDOF</A>(da,xl,&amp;l);
-<a name="line540">540: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArrayDOF.html#DMDAVecGetArrayDOF">DMDAVecGetArrayDOF</A>(da,xu,&amp;u);
-<a name="line541">541: </a>
-<a name="line542">542: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,&amp;ym,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line543">543: </a>
-<a name="line544">544: </a>  <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++) {
-<a name="line545">545: </a>    <font color="#4169E1">for</font>(i=xs; i &lt; xs+xm;i++) {
-<a name="line546">546: </a>      l[j][i][0] = -SNES_VI_INF;
-<a name="line547">547: </a>      l[j][i][1] = 0.0;
-<a name="line548">548: </a>      l[j][i][2] = -SNES_VI_INF;
-<a name="line549">549: </a>      l[j][i][3] = 0.0;
-<a name="line550">550: </a>      l[j][i][4] = 0.0;
-<a name="line551">551: </a>      u[j][i][0] = SNES_VI_INF;
-<a name="line552">552: </a>      u[j][i][1] = 1.0;
-<a name="line553">553: </a>      u[j][i][2] = SNES_VI_INF;
-<a name="line554">554: </a>      u[j][i][3] = 1.0;
-<a name="line555">555: </a>      u[j][i][4] = 1.0;
-<a name="line556">556: </a>    }
-<a name="line557">557: </a>  }
-<a name="line558">558: </a>
-<a name="line559">559: </a>
-<a name="line560">560: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArrayDOF.html#DMDAVecRestoreArrayDOF">DMDAVecRestoreArrayDOF</A>(da,xl,&amp;l);
-<a name="line561">561: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArrayDOF.html#DMDAVecRestoreArrayDOF">DMDAVecRestoreArrayDOF</A>(da,xu,&amp;u);
-<a name="line562">562: </a>  <font color="#4169E1">return</font>(0);
-<a name="line563">563: </a>}
+<a name="line514">514: </a><strong><font color="#4169E1"><a name="FormJacobian"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *J,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *B,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A> *flg,void *ctx)</font></strong>
+<a name="line515">515: </a>{
+<a name="line517">517: </a>  AppCtx         *user=(AppCtx*)ctx;
+<a name="line518">518: </a>
+<a name="line520">520: </a>  *flg = SAME_NONZERO_PATTERN;
+<a name="line521">521: </a>  <A href="../../../../docs/manualpages/Mat/MatCopy.html#MatCopy">MatCopy</A>(user-&gt;M,*J,*flg);
+<a name="line522">522: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(*J,MAT_FINAL_ASSEMBLY);
+<a name="line523">523: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(*J,MAT_FINAL_ASSEMBLY);
+<a name="line524">524: </a>  <font color="#4169E1">return</font>(0);
+<a name="line525">525: </a>}
+<a name="line528">528: </a><strong><font color="#4169E1"><a name="SetVariableBounds"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SetVariableBounds(DM da,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xl,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xu)</font></strong>
+<a name="line529">529: </a>{
+<a name="line531">531: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    ***l,***u;
+<a name="line532">532: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       xs,xm,ys,ym;
+<a name="line533">533: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       j,i;
+<a name="line534">534: </a>
+<a name="line536">536: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArrayDOF.html#DMDAVecGetArrayDOF">DMDAVecGetArrayDOF</A>(da,xl,&amp;l);
+<a name="line537">537: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArrayDOF.html#DMDAVecGetArrayDOF">DMDAVecGetArrayDOF</A>(da,xu,&amp;u);
+<a name="line538">538: </a>
+<a name="line539">539: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,&amp;ym,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line540">540: </a>
+<a name="line541">541: </a>  <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++) {
+<a name="line542">542: </a>    <font color="#4169E1">for</font>(i=xs; i &lt; xs+xm;i++) {
+<a name="line543">543: </a>      l[j][i][0] = -SNES_VI_INF;
+<a name="line544">544: </a>      l[j][i][1] = 0.0;
+<a name="line545">545: </a>      l[j][i][2] = -SNES_VI_INF;
+<a name="line546">546: </a>      l[j][i][3] = 0.0;
+<a name="line547">547: </a>      l[j][i][4] = 0.0;
+<a name="line548">548: </a>      u[j][i][0] = SNES_VI_INF;
+<a name="line549">549: </a>      u[j][i][1] = 1.0;
+<a name="line550">550: </a>      u[j][i][2] = SNES_VI_INF;
+<a name="line551">551: </a>      u[j][i][3] = 1.0;
+<a name="line552">552: </a>      u[j][i][4] = 1.0;
+<a name="line553">553: </a>    }
+<a name="line554">554: </a>  }
+<a name="line555">555: </a>
+<a name="line556">556: </a>
+<a name="line557">557: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArrayDOF.html#DMDAVecRestoreArrayDOF">DMDAVecRestoreArrayDOF</A>(da,xl,&amp;l);
+<a name="line558">558: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArrayDOF.html#DMDAVecRestoreArrayDOF">DMDAVecRestoreArrayDOF</A>(da,xu,&amp;u);
+<a name="line559">559: </a>  <font color="#4169E1">return</font>(0);
+<a name="line560">560: </a>}
 
-<a name="line567">567: </a><strong><font color="#4169E1"><a name="GetParams"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> GetParams(AppCtx* user)</font></strong>
-<a name="line568">568: </a>{
-<a name="line570">570: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
-<a name="line571">571: </a>
-<a name="line573">573: </a>
-<a name="line574">574: </a>  <font color="#B22222">/* Set default parameters */</font>
-<a name="line575">575: </a>  user-&gt;xmin = 0.0; user-&gt;xmax = 1.0;
-<a name="line576">576: </a>  user-&gt;ymin = 0.0; user-&gt;ymax = 1.0;
-<a name="line577">577: </a>  user-&gt;Dv = 1.0; user-&gt;Di=4.0;
-<a name="line578">578: </a>  user-&gt;Evf = 0.8; user-&gt;Eif = 1.2;
-<a name="line579">579: </a>  user-&gt;A = 1.0;
-<a name="line580">580: </a>  user-&gt;kBT = 0.11;
-<a name="line581">581: </a>  user-&gt;kav = 1.0; user-&gt;kai = 1.0; user-&gt;kaeta = 1.0;
-<a name="line582">582: </a>  user-&gt;Rsurf = 10.0; user-&gt;Rbulk = 1.0;
-<a name="line583">583: </a>  user-&gt;L = 10.0; user-&gt;P_casc = 0.05;
-<a name="line584">584: </a>  user-&gt;T = 1.0e-2;    user-&gt;dt = 1.0e-4;
-<a name="line585">585: </a>  user-&gt;VG = 100.0;
+<a name="line564">564: </a><strong><font color="#4169E1"><a name="GetParams"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> GetParams(AppCtx* user)</font></strong>
+<a name="line565">565: </a>{
+<a name="line567">567: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
+<a name="line568">568: </a>
+<a name="line570">570: </a>
+<a name="line571">571: </a>  <font color="#B22222">/* Set default parameters */</font>
+<a name="line572">572: </a>  user-&gt;xmin = 0.0; user-&gt;xmax = 1.0;
+<a name="line573">573: </a>  user-&gt;ymin = 0.0; user-&gt;ymax = 1.0;
+<a name="line574">574: </a>  user-&gt;Dv = 1.0; user-&gt;Di=4.0;
+<a name="line575">575: </a>  user-&gt;Evf = 0.8; user-&gt;Eif = 1.2;
+<a name="line576">576: </a>  user-&gt;A = 1.0;
+<a name="line577">577: </a>  user-&gt;kBT = 0.11;
+<a name="line578">578: </a>  user-&gt;kav = 1.0; user-&gt;kai = 1.0; user-&gt;kaeta = 1.0;
+<a name="line579">579: </a>  user-&gt;Rsurf = 10.0; user-&gt;Rbulk = 1.0;
+<a name="line580">580: </a>  user-&gt;L = 10.0; user-&gt;P_casc = 0.05;
+<a name="line581">581: </a>  user-&gt;T = 1.0e-2;    user-&gt;dt = 1.0e-4;
+<a name="line582">582: </a>  user-&gt;VG = 100.0;
 
-<a name="line587">587: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-xmin"</font>,&amp;user-&gt;xmin,&amp;flg);
-<a name="line588">588: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-xmax"</font>,&amp;user-&gt;xmax,&amp;flg);
-<a name="line589">589: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-T"</font>,&amp;user-&gt;T,&amp;flg);
-<a name="line590">590: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-dt"</font>,&amp;user-&gt;dt,&amp;flg);
-<a name="line591">591: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-P_casc"</font>,&amp;user-&gt;P_casc,&amp;flg);
-<a name="line592">592: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-VG"</font>,&amp;user-&gt;VG,&amp;flg);
-<a name="line593">593: </a>
+<a name="line584">584: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-xmin"</font>,&amp;user-&gt;xmin,&amp;flg);
+<a name="line585">585: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-xmax"</font>,&amp;user-&gt;xmax,&amp;flg);
+<a name="line586">586: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-T"</font>,&amp;user-&gt;T,&amp;flg);
+<a name="line587">587: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-dt"</font>,&amp;user-&gt;dt,&amp;flg);
+<a name="line588">588: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-P_casc"</font>,&amp;user-&gt;P_casc,&amp;flg);
+<a name="line589">589: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-VG"</font>,&amp;user-&gt;VG,&amp;flg);
+<a name="line590">590: </a>
 
-<a name="line595">595: </a>  <font color="#4169E1">return</font>(0);
-<a name="line596">596: </a> }
+<a name="line592">592: </a>  <font color="#4169E1">return</font>(0);
+<a name="line593">593: </a> }
 
 
-<a name="line601">601: </a><strong><font color="#4169E1"><a name="SetUpMatrices"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SetUpMatrices(AppCtx* user)</font></strong>
-<a name="line602">602: </a>{
-<a name="line603">603: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
-<a name="line604">604: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          nele,nen,i,j,n;
-<a name="line605">605: </a>  const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *ele;
-<a name="line606">606: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       dt=user-&gt;dt,hx,hy;
-<a name="line607">607: </a>
-<a name="line608">608: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          idx[3],*nodes, *connect, k;
-<a name="line609">609: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       eM_0[3][3],eM_2_even[3][3],eM_2_odd[3][3];
-<a name="line610">610: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       cv_sum, ci_sum;
-<a name="line611">611: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               M=user-&gt;M;
-<a name="line612">612: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               M_0=user-&gt;M_0;
-<a name="line613">613: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          Mda=user-&gt;Mda, Nda=user-&gt;Nda, ld, rd, ru, lu;
-<a name="line614">614: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       *cv_p,*ci_p;
-<a name="line615">615: </a>
-<a name="line617">617: </a>
-<a name="line618">618: </a>  <font color="#B22222">/*  <A href="../../../../docs/manualpages/Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(M,MAT_NEW_NONZERO_ALLOCATION_ERR,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);</font>
-<a name="line619">619: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(M_0,MAT_NEW_NONZERO_ALLOCATION_ERR,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);*/</font>
+<a name="line598">598: </a><strong><font color="#4169E1"><a name="SetUpMatrices"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SetUpMatrices(AppCtx* user)</font></strong>
+<a name="line599">599: </a>{
+<a name="line600">600: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line601">601: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          nele,nen,i,j,n;
+<a name="line602">602: </a>  const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *ele;
+<a name="line603">603: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       dt=user-&gt;dt,hx,hy;
+<a name="line604">604: </a>
+<a name="line605">605: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          idx[3],*nodes, *connect, k;
+<a name="line606">606: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       eM_0[3][3],eM_2_even[3][3],eM_2_odd[3][3];
+<a name="line607">607: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       cv_sum, ci_sum;
+<a name="line608">608: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               M=user-&gt;M;
+<a name="line609">609: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               M_0=user-&gt;M_0;
+<a name="line610">610: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          Mda=user-&gt;Mda, Nda=user-&gt;Nda, ld, rd, ru, lu;
+<a name="line611">611: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       *cv_p,*ci_p;
+<a name="line612">612: </a>
+<a name="line614">614: </a>
+<a name="line615">615: </a>  <font color="#B22222">/*  <A href="../../../../docs/manualpages/Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(M,MAT_NEW_NONZERO_ALLOCATION_ERR,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);</font>
+<a name="line616">616: </a><font color="#B22222">   <A href="../../../../docs/manualpages/Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(M_0,MAT_NEW_NONZERO_ALLOCATION_ERR,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);*/</font>
 
-<a name="line621">621: </a>  <font color="#B22222">/* Create the mass matrix M_0 */</font>
-<a name="line622">622: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line623">623: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line624">624: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(M,&amp;n,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line625">625: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(user-&gt;da1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;Mda,&amp;Nda,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line618">618: </a>  <font color="#B22222">/* Create the mass matrix M_0 */</font>
+<a name="line619">619: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line620">620: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line621">621: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(M,&amp;n,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line622">622: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(user-&gt;da1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;Mda,&amp;Nda,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
-<a name="line627">627: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((Mda+1)*(Nda+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;nodes);
-<a name="line628">628: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(Mda*Nda*2*3*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;connect);
-<a name="line629">629: </a>  hx = (user-&gt;xmax-user-&gt;xmin)/Mda;
-<a name="line630">630: </a>  hy = (user-&gt;ymax-user-&gt;ymin)/Nda;
-<a name="line631">631: </a>  <font color="#4169E1">for</font> (j=0;j &lt; Nda;j++) {
-<a name="line632">632: </a>    <font color="#4169E1">for</font> (i=0;i &lt; Mda;i++) {
-<a name="line633">633: </a>      nodes[j*(Mda+1)+i] = j*Mda+i;
-<a name="line634">634: </a>    }
-<a name="line635">635: </a>    nodes[j*(Mda+1)+Mda] = j*Mda;
-<a name="line636">636: </a>  }
-<a name="line637">637: </a>
-<a name="line638">638: </a>  <font color="#4169E1">for</font> (i=0;i &lt; Mda;i++){
-<a name="line639">639: </a>    nodes[Nda*(Mda+1)+i] = i;
-<a name="line640">640: </a>  }
+<a name="line624">624: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((Mda+1)*(Nda+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;nodes);
+<a name="line625">625: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(Mda*Nda*2*3*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;connect);
+<a name="line626">626: </a>  hx = (user-&gt;xmax-user-&gt;xmin)/Mda;
+<a name="line627">627: </a>  hy = (user-&gt;ymax-user-&gt;ymin)/Nda;
+<a name="line628">628: </a>  <font color="#4169E1">for</font> (j=0;j &lt; Nda;j++) {
+<a name="line629">629: </a>    <font color="#4169E1">for</font> (i=0;i &lt; Mda;i++) {
+<a name="line630">630: </a>      nodes[j*(Mda+1)+i] = j*Mda+i;
+<a name="line631">631: </a>    }
+<a name="line632">632: </a>    nodes[j*(Mda+1)+Mda] = j*Mda;
+<a name="line633">633: </a>  }
+<a name="line634">634: </a>
+<a name="line635">635: </a>  <font color="#4169E1">for</font> (i=0;i &lt; Mda;i++){
+<a name="line636">636: </a>    nodes[Nda*(Mda+1)+i] = i;
+<a name="line637">637: </a>  }
 
-<a name="line642">642: </a>  nodes[Nda*(Mda+1)+Mda] = 0;
-<a name="line643">643: </a>
-<a name="line644">644: </a>
-<a name="line645">645: </a>  k = 0;
-<a name="line646">646: </a>  <font color="#4169E1">for</font> (j=0;j&lt;Nda;j++) {
-<a name="line647">647: </a>    <font color="#4169E1">for</font> (i=0;i&lt;Mda;i++) {
-<a name="line648">648: </a>
-<a name="line649">649: </a>      <font color="#B22222">/* ld = nodes[j][i]; */</font>
-<a name="line650">650: </a>      ld = nodes[j*(Mda+1)+i];
-<a name="line651">651: </a>      <font color="#B22222">/* rd = nodes[j+1][i]; */</font>
-<a name="line652">652: </a>      rd = nodes[(j+1)*(Mda+1)+i];
-<a name="line653">653: </a>      <font color="#B22222">/* ru = nodes[j+1][i+1]; */</font>
-<a name="line654">654: </a>      ru = nodes[(j+1)*(Mda+1)+i+1];
-<a name="line655">655: </a>      <font color="#B22222">/* lu = nodes[j][i+1]; */</font>
-<a name="line656">656: </a>      lu = nodes[j*(Mda+1)+i+1];
+<a name="line639">639: </a>  nodes[Nda*(Mda+1)+Mda] = 0;
+<a name="line640">640: </a>
+<a name="line641">641: </a>
+<a name="line642">642: </a>  k = 0;
+<a name="line643">643: </a>  <font color="#4169E1">for</font> (j=0;j&lt;Nda;j++) {
+<a name="line644">644: </a>    <font color="#4169E1">for</font> (i=0;i&lt;Mda;i++) {
+<a name="line645">645: </a>
+<a name="line646">646: </a>      <font color="#B22222">/* ld = nodes[j][i]; */</font>
+<a name="line647">647: </a>      ld = nodes[j*(Mda+1)+i];
+<a name="line648">648: </a>      <font color="#B22222">/* rd = nodes[j+1][i]; */</font>
+<a name="line649">649: </a>      rd = nodes[(j+1)*(Mda+1)+i];
+<a name="line650">650: </a>      <font color="#B22222">/* ru = nodes[j+1][i+1]; */</font>
+<a name="line651">651: </a>      ru = nodes[(j+1)*(Mda+1)+i+1];
+<a name="line652">652: </a>      <font color="#B22222">/* lu = nodes[j][i+1]; */</font>
+<a name="line653">653: </a>      lu = nodes[j*(Mda+1)+i+1];
 
-<a name="line658">658: </a>      <font color="#B22222">/* connect[k][0]=ld; */</font>
-<a name="line659">659: </a>      connect[k*6]=ld;
-<a name="line660">660: </a>      <font color="#B22222">/* connect[k][1]=lu; */</font>
-<a name="line661">661: </a>      connect[k*6+1]=lu;
-<a name="line662">662: </a>      <font color="#B22222">/* connect[k][2]=ru; */</font>
-<a name="line663">663: </a>      connect[k*6+2]=rd;
-<a name="line664">664: </a>      connect[k*6+3]=lu;
-<a name="line665">665: </a>      connect[k*6+4]=ru;
-<a name="line666">666: </a>      connect[k*6+5]=rd;
-<a name="line667">667: </a>
-<a name="line668">668: </a>      k = k+1;
-<a name="line669">669: </a>    }
-<a name="line670">670: </a>  }
-<a name="line671">671: </a>
+<a name="line655">655: </a>      <font color="#B22222">/* connect[k][0]=ld; */</font>
+<a name="line656">656: </a>      connect[k*6]=ld;
+<a name="line657">657: </a>      <font color="#B22222">/* connect[k][1]=lu; */</font>
+<a name="line658">658: </a>      connect[k*6+1]=lu;
+<a name="line659">659: </a>      <font color="#B22222">/* connect[k][2]=ru; */</font>
+<a name="line660">660: </a>      connect[k*6+2]=rd;
+<a name="line661">661: </a>      connect[k*6+3]=lu;
+<a name="line662">662: </a>      connect[k*6+4]=ru;
+<a name="line663">663: </a>      connect[k*6+5]=rd;
+<a name="line664">664: </a>
+<a name="line665">665: </a>      k = k+1;
+<a name="line666">666: </a>    }
+<a name="line667">667: </a>  }
+<a name="line668">668: </a>
+<a name="line669">669: </a>
+<a name="line670">670: </a>  eM_0[0][0]=eM_0[1][1]=eM_0[2][2]=hx*hy/12.0;
+<a name="line671">671: </a>  eM_0[0][1]=eM_0[0][2]=eM_0[1][0]=eM_0[1][2]=eM_0[2][0]=eM_0[2][1]=hx*hy/24.0;
 <a name="line672">672: </a>
-<a name="line673">673: </a>  eM_0[0][0]=eM_0[1][1]=eM_0[2][2]=hx*hy/12.0;
-<a name="line674">674: </a>  eM_0[0][1]=eM_0[0][2]=eM_0[1][0]=eM_0[1][2]=eM_0[2][0]=eM_0[2][1]=hx*hy/24.0;
-<a name="line675">675: </a>
-<a name="line676">676: </a>  eM_2_odd[0][0] = 1.0;
-<a name="line677">677: </a>  eM_2_odd[1][1] = eM_2_odd[2][2] = 0.5;
-<a name="line678">678: </a>  eM_2_odd[0][1] = eM_2_odd[0][2] = eM_2_odd[1][0]= eM_2_odd[2][0] = -0.5;
-<a name="line679">679: </a>  eM_2_odd[1][2] = eM_2_odd[2][1] = 0.0;
+<a name="line673">673: </a>  eM_2_odd[0][0] = 1.0;
+<a name="line674">674: </a>  eM_2_odd[1][1] = eM_2_odd[2][2] = 0.5;
+<a name="line675">675: </a>  eM_2_odd[0][1] = eM_2_odd[0][2] = eM_2_odd[1][0]= eM_2_odd[2][0] = -0.5;
+<a name="line676">676: </a>  eM_2_odd[1][2] = eM_2_odd[2][1] = 0.0;
 
-<a name="line681">681: </a>  eM_2_even[1][1] = 1.0;
-<a name="line682">682: </a>  eM_2_even[0][0] = eM_2_even[2][2] = 0.5;
-<a name="line683">683: </a>  eM_2_even[0][1] = eM_2_even[1][0] = eM_2_even[1][2] = eM_2_even[2][1] = -0.5;
-<a name="line684">684: </a>  eM_2_even[0][2] = eM_2_even[2][0] = 0.0;
+<a name="line678">678: </a>  eM_2_even[1][1] = 1.0;
+<a name="line679">679: </a>  eM_2_even[0][0] = eM_2_even[2][2] = 0.5;
+<a name="line680">680: </a>  eM_2_even[0][1] = eM_2_even[1][0] = eM_2_even[1][2] = eM_2_even[2][1] = -0.5;
+<a name="line681">681: </a>  eM_2_even[0][2] = eM_2_even[2][0] = 0.0;
 
 
-<a name="line687">687: </a>  <font color="#4169E1">for</font>(k=0;k &lt; Mda*Nda*2;k++) {
-<a name="line688">688: </a>    idx[0] = connect[k*3];
-<a name="line689">689: </a>    idx[1] = connect[k*3+1];
-<a name="line690">690: </a>    idx[2] = connect[k*3+2];
+<a name="line684">684: </a>  <font color="#4169E1">for</font>(k=0;k &lt; Mda*Nda*2;k++) {
+<a name="line685">685: </a>    idx[0] = connect[k*3];
+<a name="line686">686: </a>    idx[1] = connect[k*3+1];
+<a name="line687">687: </a>    idx[2] = connect[k*3+2];
+<a name="line688">688: </a>
+<a name="line689">689: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    row,cols[6],r,row_M_0,cols3[3];
+<a name="line690">690: </a>    <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> vals[6],vals_M_0[3],vals3[3];
 <a name="line691">691: </a>
-<a name="line692">692: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    row,cols[6],r,row_M_0,cols3[3];
-<a name="line693">693: </a>    <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> vals[6],vals_M_0[3],vals3[3];
+<a name="line692">692: </a>    <font color="#4169E1">for</font>(r=0;r&lt;3;r++) {
+<a name="line693">693: </a>      row_M_0 = connect[k*3+r];
 <a name="line694">694: </a>
-<a name="line695">695: </a>    <font color="#4169E1">for</font>(r=0;r&lt;3;r++) {
-<a name="line696">696: </a>      row_M_0 = connect[k*3+r];
-<a name="line697">697: </a>
-<a name="line698">698: </a>      vals_M_0[0]=eM_0[r][0];
-<a name="line699">699: </a>      vals_M_0[1]=eM_0[r][1];
-<a name="line700">700: </a>      vals_M_0[2]=eM_0[r][2];
+<a name="line695">695: </a>      vals_M_0[0]=eM_0[r][0];
+<a name="line696">696: </a>      vals_M_0[1]=eM_0[r][1];
+<a name="line697">697: </a>      vals_M_0[2]=eM_0[r][2];
+<a name="line698">698: </a>
+<a name="line699">699: </a>
+<a name="line700">700: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(M_0,1,&amp;row_M_0,3,idx,vals_M_0,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line701">701: </a>
-<a name="line702">702: </a>
-<a name="line703">703: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(M_0,1,&amp;row_M_0,3,idx,vals_M_0,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line704">704: </a>
-<a name="line705">705: </a>      //cv_sum = (cv_p[idx[0]] + cv_p[idx[1]] + cv_p[idx[2]])*user-&gt;Dv/(3.0*user-&gt;kBT);
-<a name="line706">706: </a>      //ci_sum = (ci_p[idx[0]] + ci_p[idx[1]] + ci_p[idx[2]])*user-&gt;Di/(3.0*user-&gt;kBT);
-<a name="line707">707: </a>      cv_sum = .0000069*user-&gt;Dv/user-&gt;kBT;
-<a name="line708">708: </a>      ci_sum = .0000069*user-&gt;Di/user-&gt;kBT;
-<a name="line709">709: </a>
-<a name="line710">710: </a>      <font color="#4169E1">if</font> (k%2 == 0)  {
-<a name="line711">711: </a>
-<a name="line712">712: </a>        row = 5*idx[r];
-<a name="line713">713: </a>        cols[0] = 5*idx[0];     vals[0] = dt*eM_2_odd[r][0]*cv_sum;
-<a name="line714">714: </a>        cols[1] = 5*idx[1];     vals[1] = dt*eM_2_odd[r][1]*cv_sum;
-<a name="line715">715: </a>        cols[2] = 5*idx[2];     vals[2] = dt*eM_2_odd[r][2]*cv_sum;
-<a name="line716">716: </a>        cols[3] = 5*idx[0]+1;   vals[3] = eM_0[r][0];
-<a name="line717">717: </a>        cols[4] = 5*idx[1]+1;   vals[4] = eM_0[r][1];
-<a name="line718">718: </a>        cols[5] = 5*idx[2]+1;   vals[5] = eM_0[r][2];
+<a name="line702">702: </a>      //cv_sum = (cv_p[idx[0]] + cv_p[idx[1]] + cv_p[idx[2]])*user-&gt;Dv/(3.0*user-&gt;kBT);
+<a name="line703">703: </a>      //ci_sum = (ci_p[idx[0]] + ci_p[idx[1]] + ci_p[idx[2]])*user-&gt;Di/(3.0*user-&gt;kBT);
+<a name="line704">704: </a>      cv_sum = .0000069*user-&gt;Dv/user-&gt;kBT;
+<a name="line705">705: </a>      ci_sum = .0000069*user-&gt;Di/user-&gt;kBT;
+<a name="line706">706: </a>
+<a name="line707">707: </a>      <font color="#4169E1">if</font> (k%2 == 0)  {
+<a name="line708">708: </a>
+<a name="line709">709: </a>        row = 5*idx[r];
+<a name="line710">710: </a>        cols[0] = 5*idx[0];     vals[0] = dt*eM_2_odd[r][0]*cv_sum;
+<a name="line711">711: </a>        cols[1] = 5*idx[1];     vals[1] = dt*eM_2_odd[r][1]*cv_sum;
+<a name="line712">712: </a>        cols[2] = 5*idx[2];     vals[2] = dt*eM_2_odd[r][2]*cv_sum;
+<a name="line713">713: </a>        cols[3] = 5*idx[0]+1;   vals[3] = eM_0[r][0];
+<a name="line714">714: </a>        cols[4] = 5*idx[1]+1;   vals[4] = eM_0[r][1];
+<a name="line715">715: </a>        cols[5] = 5*idx[2]+1;   vals[5] = eM_0[r][2];
 
+<a name="line717">717: </a>
+<a name="line718">718: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line719">719: </a>
 <a name="line720">720: </a>
-<a name="line721">721: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line722">722: </a>
-<a name="line723">723: </a>
-<a name="line724">724: </a>        row = 5*idx[r]+1;
-<a name="line725">725: </a>        cols[0] = 5*idx[0];     vals[0] = -1.0*eM_0[r][0];
-<a name="line726">726: </a>        cols[1] = 5*idx[1];     vals[1] = -1.0*eM_0[r][1];
-<a name="line727">727: </a>        cols[2] = 5*idx[2];     vals[2] = -1.0*eM_0[r][2];
-<a name="line728">728: </a>        cols[3] = 5*idx[0]+1;   vals[3] =  user-&gt;kav*eM_2_odd[r][0];
-<a name="line729">729: </a>        cols[4] = 5*idx[1]+1;   vals[4] =  user-&gt;kav*eM_2_odd[r][1];
-<a name="line730">730: </a>        cols[5] = 5*idx[2]+1;   vals[5] =  user-&gt;kav*eM_2_odd[r][2];
-<a name="line731">731: </a>
-<a name="line732">732: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line733">733: </a>
-<a name="line734">734: </a>        row = 5*idx[r]+2;
-<a name="line735">735: </a>        cols[0] = 5*idx[0]+2;   vals[0] =  dt*eM_2_odd[r][0]*ci_sum;
-<a name="line736">736: </a>        cols[1] = 5*idx[1]+2;   vals[1] =  dt*eM_2_odd[r][1]*ci_sum;
-<a name="line737">737: </a>        cols[2] = 5*idx[2]+2;   vals[2] =  dt*eM_2_odd[r][2]*ci_sum;
-<a name="line738">738: </a>        cols[3] = 5*idx[0]+3;   vals[3] =  eM_0[r][0];
-<a name="line739">739: </a>        cols[4] = 5*idx[1]+3;   vals[4] =  eM_0[r][1];
-<a name="line740">740: </a>        cols[5] = 5*idx[2]+3;   vals[5] =  eM_0[r][2];
+<a name="line721">721: </a>        row = 5*idx[r]+1;
+<a name="line722">722: </a>        cols[0] = 5*idx[0];     vals[0] = -1.0*eM_0[r][0];
+<a name="line723">723: </a>        cols[1] = 5*idx[1];     vals[1] = -1.0*eM_0[r][1];
+<a name="line724">724: </a>        cols[2] = 5*idx[2];     vals[2] = -1.0*eM_0[r][2];
+<a name="line725">725: </a>        cols[3] = 5*idx[0]+1;   vals[3] =  user-&gt;kav*eM_2_odd[r][0];
+<a name="line726">726: </a>        cols[4] = 5*idx[1]+1;   vals[4] =  user-&gt;kav*eM_2_odd[r][1];
+<a name="line727">727: </a>        cols[5] = 5*idx[2]+1;   vals[5] =  user-&gt;kav*eM_2_odd[r][2];
+<a name="line728">728: </a>
+<a name="line729">729: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line730">730: </a>
+<a name="line731">731: </a>        row = 5*idx[r]+2;
+<a name="line732">732: </a>        cols[0] = 5*idx[0]+2;   vals[0] =  dt*eM_2_odd[r][0]*ci_sum;
+<a name="line733">733: </a>        cols[1] = 5*idx[1]+2;   vals[1] =  dt*eM_2_odd[r][1]*ci_sum;
+<a name="line734">734: </a>        cols[2] = 5*idx[2]+2;   vals[2] =  dt*eM_2_odd[r][2]*ci_sum;
+<a name="line735">735: </a>        cols[3] = 5*idx[0]+3;   vals[3] =  eM_0[r][0];
+<a name="line736">736: </a>        cols[4] = 5*idx[1]+3;   vals[4] =  eM_0[r][1];
+<a name="line737">737: </a>        cols[5] = 5*idx[2]+3;   vals[5] =  eM_0[r][2];
+<a name="line738">738: </a>
+<a name="line739">739: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line740">740: </a>
 <a name="line741">741: </a>
-<a name="line742">742: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line743">743: </a>
-<a name="line744">744: </a>
-<a name="line745">745: </a>        row = 5*idx[r]+3;
-<a name="line746">746: </a>        cols[0] = 5*idx[0]+2;   vals[0] = -1.0*eM_0[r][0];
-<a name="line747">747: </a>        cols[1] = 5*idx[1]+2;   vals[1] = -1.0*eM_0[r][1];
-<a name="line748">748: </a>        cols[2] = 5*idx[2]+2;   vals[2] = -1.0*eM_0[r][2];
-<a name="line749">749: </a>        cols[3] = 5*idx[0]+3;   vals[3] =  user-&gt;kai*eM_2_odd[r][0];
-<a name="line750">750: </a>        cols[4] = 5*idx[1]+3;   vals[4] =  user-&gt;kai*eM_2_odd[r][1];
-<a name="line751">751: </a>        cols[5] = 5*idx[2]+3;   vals[5] =  user-&gt;kai*eM_2_odd[r][2];
+<a name="line742">742: </a>        row = 5*idx[r]+3;
+<a name="line743">743: </a>        cols[0] = 5*idx[0]+2;   vals[0] = -1.0*eM_0[r][0];
+<a name="line744">744: </a>        cols[1] = 5*idx[1]+2;   vals[1] = -1.0*eM_0[r][1];
+<a name="line745">745: </a>        cols[2] = 5*idx[2]+2;   vals[2] = -1.0*eM_0[r][2];
+<a name="line746">746: </a>        cols[3] = 5*idx[0]+3;   vals[3] =  user-&gt;kai*eM_2_odd[r][0];
+<a name="line747">747: </a>        cols[4] = 5*idx[1]+3;   vals[4] =  user-&gt;kai*eM_2_odd[r][1];
+<a name="line748">748: </a>        cols[5] = 5*idx[2]+3;   vals[5] =  user-&gt;kai*eM_2_odd[r][2];
+<a name="line749">749: </a>
+<a name="line750">750: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line751">751: </a>
 <a name="line752">752: </a>
-<a name="line753">753: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line754">754: </a>
-<a name="line755">755: </a>
-<a name="line756">756: </a>        row = 5*idx[r]+4;
-<a name="line757">757: </a>        <font color="#B22222">/*</font>
-<a name="line758">758: </a><font color="#B22222">        cols3[0] = 5*idx[0]+4;   vals3[0] = eM_0[r][0]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_odd[r][0];</font>
-<a name="line759">759: </a><font color="#B22222">        cols3[1] = 5*idx[1]+4;   vals3[1] = eM_0[r][1]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_odd[r][1];</font>
-<a name="line760">760: </a><font color="#B22222">        cols3[2] = 5*idx[2]+4;   vals3[2] = eM_0[r][2]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_odd[r][2];</font>
-<a name="line761">761: </a><font color="#B22222">         */</font>
-<a name="line762">762: </a>        cols3[0] = 5*idx[0]+4;   vals3[0] = eM_0[r][0]/dt + user-&gt;L*user-&gt;kaeta*eM_2_odd[r][0];
-<a name="line763">763: </a>        cols3[1] = 5*idx[1]+4;   vals3[1] = eM_0[r][1]/dt + user-&gt;L*user-&gt;kaeta*eM_2_odd[r][1];
-<a name="line764">764: </a>        cols3[2] = 5*idx[2]+4;   vals3[2] = eM_0[r][2]/dt + user-&gt;L*user-&gt;kaeta*eM_2_odd[r][2];
+<a name="line753">753: </a>        row = 5*idx[r]+4;
+<a name="line754">754: </a>        <font color="#B22222">/*</font>
+<a name="line755">755: </a><font color="#B22222">        cols3[0] = 5*idx[0]+4;   vals3[0] = eM_0[r][0]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_odd[r][0];</font>
+<a name="line756">756: </a><font color="#B22222">        cols3[1] = 5*idx[1]+4;   vals3[1] = eM_0[r][1]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_odd[r][1];</font>
+<a name="line757">757: </a><font color="#B22222">        cols3[2] = 5*idx[2]+4;   vals3[2] = eM_0[r][2]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_odd[r][2];</font>
+<a name="line758">758: </a><font color="#B22222">         */</font>
+<a name="line759">759: </a>        cols3[0] = 5*idx[0]+4;   vals3[0] = eM_0[r][0]/dt + user-&gt;L*user-&gt;kaeta*eM_2_odd[r][0];
+<a name="line760">760: </a>        cols3[1] = 5*idx[1]+4;   vals3[1] = eM_0[r][1]/dt + user-&gt;L*user-&gt;kaeta*eM_2_odd[r][1];
+<a name="line761">761: </a>        cols3[2] = 5*idx[2]+4;   vals3[2] = eM_0[r][2]/dt + user-&gt;L*user-&gt;kaeta*eM_2_odd[r][2];
+<a name="line762">762: </a>
+<a name="line763">763: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols3,vals3,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line764">764: </a>
 <a name="line765">765: </a>
-<a name="line766">766: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols3,vals3,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line766">766: </a>      }
 <a name="line767">767: </a>
-<a name="line768">768: </a>
-<a name="line769">769: </a>      }
+<a name="line768">768: </a>      <font color="#4169E1">else</font> {
+<a name="line769">769: </a>
 <a name="line770">770: </a>
-<a name="line771">771: </a>      <font color="#4169E1">else</font> {
-<a name="line772">772: </a>
-<a name="line773">773: </a>
-<a name="line774">774: </a>        row = 5*idx[r];
-<a name="line775">775: </a>        cols[0] = 5*idx[0];     vals[0] = dt*eM_2_even[r][0]*cv_sum;
-<a name="line776">776: </a>        cols[1] = 5*idx[1];     vals[1] = dt*eM_2_even[r][1]*cv_sum;
-<a name="line777">777: </a>        cols[2] = 5*idx[2];     vals[2] = dt*eM_2_even[r][2]*cv_sum;
-<a name="line778">778: </a>        cols[3] = 5*idx[0]+1;   vals[3] = eM_0[r][0];
-<a name="line779">779: </a>        cols[4] = 5*idx[1]+1;   vals[4] = eM_0[r][1];
-<a name="line780">780: </a>        cols[5] = 5*idx[2]+1;   vals[5] = eM_0[r][2];
+<a name="line771">771: </a>        row = 5*idx[r];
+<a name="line772">772: </a>        cols[0] = 5*idx[0];     vals[0] = dt*eM_2_even[r][0]*cv_sum;
+<a name="line773">773: </a>        cols[1] = 5*idx[1];     vals[1] = dt*eM_2_even[r][1]*cv_sum;
+<a name="line774">774: </a>        cols[2] = 5*idx[2];     vals[2] = dt*eM_2_even[r][2]*cv_sum;
+<a name="line775">775: </a>        cols[3] = 5*idx[0]+1;   vals[3] = eM_0[r][0];
+<a name="line776">776: </a>        cols[4] = 5*idx[1]+1;   vals[4] = eM_0[r][1];
+<a name="line777">777: </a>        cols[5] = 5*idx[2]+1;   vals[5] = eM_0[r][2];
 
 
+<a name="line780">780: </a>
+<a name="line781">781: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line782">782: </a>
 <a name="line783">783: </a>
-<a name="line784">784: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line785">785: </a>
-<a name="line786">786: </a>
-<a name="line787">787: </a>        row = 5*idx[r]+1;
-<a name="line788">788: </a>        cols[0] = 5*idx[0];     vals[0] = -1.0*eM_0[r][0];
-<a name="line789">789: </a>        cols[1] = 5*idx[1];     vals[1] = -1.0*eM_0[r][1];
-<a name="line790">790: </a>        cols[2] = 5*idx[2];     vals[2] = -1.0*eM_0[r][2];
-<a name="line791">791: </a>        cols[3] = 5*idx[0]+1;   vals[3] =  user-&gt;kav*eM_2_even[r][0];
-<a name="line792">792: </a>        cols[4] = 5*idx[1]+1;   vals[4] =  user-&gt;kav*eM_2_even[r][1];
-<a name="line793">793: </a>        cols[5] = 5*idx[2]+1;   vals[5] =  user-&gt;kav*eM_2_even[r][2];
-<a name="line794">794: </a>
-<a name="line795">795: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line796">796: </a>
-<a name="line797">797: </a>        row = 5*idx[r]+2;
-<a name="line798">798: </a>        cols[0] = 5*idx[0]+2;   vals[0] = dt*eM_2_even[r][0]*ci_sum;
-<a name="line799">799: </a>        cols[1] = 5*idx[1]+2;   vals[1] = dt*eM_2_even[r][1]*ci_sum;
-<a name="line800">800: </a>        cols[2] = 5*idx[2]+2;   vals[2] = dt*eM_2_even[r][2]*ci_sum;
-<a name="line801">801: </a>        cols[3] = 5*idx[0]+3;   vals[3] = eM_0[r][0];
-<a name="line802">802: </a>        cols[4] = 5*idx[1]+3;   vals[4] = eM_0[r][1];
-<a name="line803">803: </a>        cols[5] = 5*idx[2]+3;   vals[5] = eM_0[r][2];
-<a name="line804">804: </a>
-<a name="line805">805: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line806">806: </a>
-<a name="line807">807: </a>        row = 5*idx[r]+3;
-<a name="line808">808: </a>        cols[0] = 5*idx[0]+2;   vals[0] = -1.0*eM_0[r][0];
-<a name="line809">809: </a>        cols[1] = 5*idx[1]+2;   vals[1] = -1.0*eM_0[r][1];
-<a name="line810">810: </a>        cols[2] = 5*idx[2]+2;   vals[2] = -1.0*eM_0[r][2];
-<a name="line811">811: </a>        cols[3] = 5*idx[0]+3;   vals[3] =  user-&gt;kai*eM_2_even[r][0];
-<a name="line812">812: </a>        cols[4] = 5*idx[1]+3;   vals[4] =  user-&gt;kai*eM_2_even[r][1];
-<a name="line813">813: </a>        cols[5] = 5*idx[2]+3;   vals[5] =  user-&gt;kai*eM_2_even[r][2];
-<a name="line814">814: </a>
-<a name="line815">815: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line816">816: </a>
-<a name="line817">817: </a>        row = 5*idx[r]+4;
-<a name="line818">818: </a>        <font color="#B22222">/*</font>
-<a name="line819">819: </a><font color="#B22222">        cols3[0] = 5*idx[0]+4;   vals3[0] = eM_0[r][0]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_even[r][0];</font>
-<a name="line820">820: </a><font color="#B22222">        cols3[1] = 5*idx[1]+4;   vals3[1] = eM_0[r][1]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_even[r][1];</font>
-<a name="line821">821: </a><font color="#B22222">        cols3[2] = 5*idx[2]+4;   vals3[2] = eM_0[r][2]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_even[r][2];</font>
-<a name="line822">822: </a><font color="#B22222">         */</font>
-<a name="line823">823: </a>        cols3[0] = 5*idx[0]+4;   vals3[0] = eM_0[r][0]/dt + user-&gt;L*user-&gt;kaeta*eM_2_even[r][0];
-<a name="line824">824: </a>        cols3[1] = 5*idx[1]+4;   vals3[1] = eM_0[r][1]/dt + user-&gt;L*user-&gt;kaeta*eM_2_even[r][1];
-<a name="line825">825: </a>        cols3[2] = 5*idx[2]+4;   vals3[2] = eM_0[r][2]/dt + user-&gt;L*user-&gt;kaeta*eM_2_even[r][2];
-<a name="line826">826: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols3,vals3,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line827">827: </a>
-<a name="line828">828: </a>      }
-<a name="line829">829: </a>
-<a name="line830">830: </a>    }
-<a name="line831">831: </a>  }
+<a name="line784">784: </a>        row = 5*idx[r]+1;
+<a name="line785">785: </a>        cols[0] = 5*idx[0];     vals[0] = -1.0*eM_0[r][0];
+<a name="line786">786: </a>        cols[1] = 5*idx[1];     vals[1] = -1.0*eM_0[r][1];
+<a name="line787">787: </a>        cols[2] = 5*idx[2];     vals[2] = -1.0*eM_0[r][2];
+<a name="line788">788: </a>        cols[3] = 5*idx[0]+1;   vals[3] =  user-&gt;kav*eM_2_even[r][0];
+<a name="line789">789: </a>        cols[4] = 5*idx[1]+1;   vals[4] =  user-&gt;kav*eM_2_even[r][1];
+<a name="line790">790: </a>        cols[5] = 5*idx[2]+1;   vals[5] =  user-&gt;kav*eM_2_even[r][2];
+<a name="line791">791: </a>
+<a name="line792">792: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line793">793: </a>
+<a name="line794">794: </a>        row = 5*idx[r]+2;
+<a name="line795">795: </a>        cols[0] = 5*idx[0]+2;   vals[0] = dt*eM_2_even[r][0]*ci_sum;
+<a name="line796">796: </a>        cols[1] = 5*idx[1]+2;   vals[1] = dt*eM_2_even[r][1]*ci_sum;
+<a name="line797">797: </a>        cols[2] = 5*idx[2]+2;   vals[2] = dt*eM_2_even[r][2]*ci_sum;
+<a name="line798">798: </a>        cols[3] = 5*idx[0]+3;   vals[3] = eM_0[r][0];
+<a name="line799">799: </a>        cols[4] = 5*idx[1]+3;   vals[4] = eM_0[r][1];
+<a name="line800">800: </a>        cols[5] = 5*idx[2]+3;   vals[5] = eM_0[r][2];
+<a name="line801">801: </a>
+<a name="line802">802: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line803">803: </a>
+<a name="line804">804: </a>        row = 5*idx[r]+3;
+<a name="line805">805: </a>        cols[0] = 5*idx[0]+2;   vals[0] = -1.0*eM_0[r][0];
+<a name="line806">806: </a>        cols[1] = 5*idx[1]+2;   vals[1] = -1.0*eM_0[r][1];
+<a name="line807">807: </a>        cols[2] = 5*idx[2]+2;   vals[2] = -1.0*eM_0[r][2];
+<a name="line808">808: </a>        cols[3] = 5*idx[0]+3;   vals[3] =  user-&gt;kai*eM_2_even[r][0];
+<a name="line809">809: </a>        cols[4] = 5*idx[1]+3;   vals[4] =  user-&gt;kai*eM_2_even[r][1];
+<a name="line810">810: </a>        cols[5] = 5*idx[2]+3;   vals[5] =  user-&gt;kai*eM_2_even[r][2];
+<a name="line811">811: </a>
+<a name="line812">812: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,6,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line813">813: </a>
+<a name="line814">814: </a>        row = 5*idx[r]+4;
+<a name="line815">815: </a>        <font color="#B22222">/*</font>
+<a name="line816">816: </a><font color="#B22222">        cols3[0] = 5*idx[0]+4;   vals3[0] = eM_0[r][0]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_even[r][0];</font>
+<a name="line817">817: </a><font color="#B22222">        cols3[1] = 5*idx[1]+4;   vals3[1] = eM_0[r][1]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_even[r][1];</font>
+<a name="line818">818: </a><font color="#B22222">        cols3[2] = 5*idx[2]+4;   vals3[2] = eM_0[r][2]/dt + user-&gt;L*user-&gt;kaeta*dt*eM_2_even[r][2];</font>
+<a name="line819">819: </a><font color="#B22222">         */</font>
+<a name="line820">820: </a>        cols3[0] = 5*idx[0]+4;   vals3[0] = eM_0[r][0]/dt + user-&gt;L*user-&gt;kaeta*eM_2_even[r][0];
+<a name="line821">821: </a>        cols3[1] = 5*idx[1]+4;   vals3[1] = eM_0[r][1]/dt + user-&gt;L*user-&gt;kaeta*eM_2_even[r][1];
+<a name="line822">822: </a>        cols3[2] = 5*idx[2]+4;   vals3[2] = eM_0[r][2]/dt + user-&gt;L*user-&gt;kaeta*eM_2_even[r][2];
+<a name="line823">823: </a>        <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols3,vals3,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line824">824: </a>
+<a name="line825">825: </a>      }
+<a name="line826">826: </a>
+<a name="line827">827: </a>    }
+<a name="line828">828: </a>  }
 
-<a name="line833">833: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(nodes);
-<a name="line834">834: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(connect);
+<a name="line830">830: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(nodes);
+<a name="line831">831: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(connect);
 
-<a name="line836">836: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line837">837: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line838">838: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(M_0,MAT_FINAL_ASSEMBLY);
-<a name="line839">839: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(M_0,MAT_FINAL_ASSEMBLY);
+<a name="line833">833: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line834">834: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line835">835: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(M_0,MAT_FINAL_ASSEMBLY);
+<a name="line836">836: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(M_0,MAT_FINAL_ASSEMBLY);
+<a name="line837">837: </a>
+<a name="line838">838: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(M,MAT_FINAL_ASSEMBLY);
+<a name="line839">839: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(M,MAT_FINAL_ASSEMBLY);
 <a name="line840">840: </a>
-<a name="line841">841: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(M,MAT_FINAL_ASSEMBLY);
-<a name="line842">842: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(M,MAT_FINAL_ASSEMBLY);
-<a name="line843">843: </a>
-<a name="line844">844: </a>  <A href="../../../../docs/manualpages/DM/DMDARestoreElements.html#DMDARestoreElements">DMDARestoreElements</A>(user-&gt;da1,&amp;nele,&amp;nen,&amp;ele);
-<a name="line845">845: </a>
+<a name="line841">841: </a>  <A href="../../../../docs/manualpages/DM/DMDARestoreElements.html#DMDARestoreElements">DMDARestoreElements</A>(user-&gt;da1,&amp;nele,&amp;nen,&amp;ele);
+<a name="line842">842: </a>
 
-<a name="line847">847: </a>  <font color="#4169E1">return</font>(0);
-<a name="line848">848: </a>}
+<a name="line844">844: </a>  <font color="#4169E1">return</font>(0);
+<a name="line845">845: </a>}
 
 
-<a name="line853">853: </a><strong><font color="#4169E1"><a name="UpdateMatrices"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> UpdateMatrices(AppCtx* user)</font></strong>
-<a name="line854">854: </a>{
-<a name="line855">855: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
-<a name="line856">856: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          i,j,n,Mda,Nda;
-<a name="line857">857: </a>
-<a name="line858">858: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          idx[3],*nodes,*connect,k;
-<a name="line859">859: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          ld,rd,lu,ru;
-<a name="line860">860: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       eM_2_odd[3][3],eM_2_even[3][3],h,dt=user-&gt;dt;
-<a name="line861">861: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               M=user-&gt;M;
-<a name="line862">862: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       *cv_p,*ci_p,cv_sum,ci_sum;
-<a name="line864">864: </a>
-<a name="line865">865: </a>  <font color="#B22222">/* Create the mass matrix M_0 */</font>
-<a name="line866">866: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(M,&amp;n,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line867">867: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line868">868: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
-<a name="line869">869: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(user-&gt;da1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;Mda,&amp;Nda,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line850">850: </a><strong><font color="#4169E1"><a name="UpdateMatrices"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> UpdateMatrices(AppCtx* user)</font></strong>
+<a name="line851">851: </a>{
+<a name="line852">852: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line853">853: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          i,j,n,Mda,Nda;
+<a name="line854">854: </a>
+<a name="line855">855: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          idx[3],*nodes,*connect,k;
+<a name="line856">856: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          ld,rd,lu,ru;
+<a name="line857">857: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       eM_2_odd[3][3],eM_2_even[3][3],h,dt=user-&gt;dt;
+<a name="line858">858: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               M=user-&gt;M;
+<a name="line859">859: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>       *cv_p,*ci_p,cv_sum,ci_sum;
+<a name="line861">861: </a>
+<a name="line862">862: </a>  <font color="#B22222">/* Create the mass matrix M_0 */</font>
+<a name="line863">863: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(M,&amp;n,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line864">864: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line865">865: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line866">866: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(user-&gt;da1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;Mda,&amp;Nda,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
-<a name="line871">871: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((Mda+1)*(Nda+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;nodes);
-<a name="line872">872: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(Mda*Nda*2*3*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;connect);
-<a name="line873">873: </a>
-<a name="line874">874: </a>  h = 100.0/Mda;
+<a name="line868">868: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((Mda+1)*(Nda+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;nodes);
+<a name="line869">869: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(Mda*Nda*2*3*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;connect);
+<a name="line870">870: </a>
+<a name="line871">871: </a>  h = 100.0/Mda;
 
-<a name="line876">876: </a>  <font color="#4169E1">for</font> (j=0;j &lt; Nda;j++) {
-<a name="line877">877: </a>    <font color="#4169E1">for</font> (i=0;i &lt; Mda;i++) {
-<a name="line878">878: </a>      nodes[j*(Mda+1)+i] = j*Mda+i;
-<a name="line879">879: </a>    }
-<a name="line880">880: </a>    nodes[j*(Mda+1)+Mda] = j*Mda;
+<a name="line873">873: </a>  <font color="#4169E1">for</font> (j=0;j &lt; Nda;j++) {
+<a name="line874">874: </a>    <font color="#4169E1">for</font> (i=0;i &lt; Mda;i++) {
+<a name="line875">875: </a>      nodes[j*(Mda+1)+i] = j*Mda+i;
+<a name="line876">876: </a>    }
+<a name="line877">877: </a>    nodes[j*(Mda+1)+Mda] = j*Mda;
+<a name="line878">878: </a>  }
+<a name="line879">879: </a>  <font color="#4169E1">for</font> (i=0;i &lt; Mda;i++){
+<a name="line880">880: </a>    nodes[Nda*(Mda+1)+i]=i;
 <a name="line881">881: </a>  }
-<a name="line882">882: </a>  <font color="#4169E1">for</font> (i=0;i &lt; Mda;i++){
-<a name="line883">883: </a>    nodes[Nda*(Mda+1)+i]=i;
-<a name="line884">884: </a>  }
-<a name="line885">885: </a>  nodes[Nda*(Mda+1)+Mda]=0;
+<a name="line882">882: </a>  nodes[Nda*(Mda+1)+Mda]=0;
 
-<a name="line887">887: </a>
-<a name="line888">888: </a>  k = 0;
-<a name="line889">889: </a>  <font color="#4169E1">for</font> (j=0;j&lt;Nda;j++) {
-<a name="line890">890: </a>    <font color="#4169E1">for</font> (i=0;i&lt;Mda;i++) {
-<a name="line891">891: </a>      ld = nodes[j*(Mda+1)+i];
-<a name="line892">892: </a>      rd = nodes[(j+1)*(Mda+1)+i];
-<a name="line893">893: </a>      ru = nodes[(j+1)*(Mda+1)+i+1];
-<a name="line894">894: </a>      lu = nodes[j*(Mda+1)+i+1];
-<a name="line895">895: </a>      connect[k*6]=ld;
-<a name="line896">896: </a>      connect[k*6+1]=lu;
-<a name="line897">897: </a>      connect[k*6+2]=rd;
-<a name="line898">898: </a>      connect[k*6+3]=lu;
-<a name="line899">899: </a>      connect[k*6+4]=ru;
-<a name="line900">900: </a>      connect[k*6+5]=rd;
-<a name="line901">901: </a>      k = k+1;
-<a name="line902">902: </a>    }
-<a name="line903">903: </a>  }
-<a name="line904">904: </a>
-<a name="line905">905: </a>  <font color="#4169E1">for</font>(k=0;k &lt; Mda*Nda*2;k++) {
-<a name="line906">906: </a>    idx[0] = connect[k*3];
-<a name="line907">907: </a>    idx[1] = connect[k*3+1];
-<a name="line908">908: </a>    idx[2] = connect[k*3+2];
-<a name="line909">909: </a>
-<a name="line910">910: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> r,row,cols[3];
-<a name="line911">911: </a>    <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> vals[3];
-<a name="line912">912: </a>    <font color="#4169E1">for</font> (r=0;r&lt;3;r++) {
-<a name="line913">913: </a>      row = 5*idx[r];
-<a name="line914">914: </a>      cols[0] = 5*idx[0];     vals[0] = 0.0;
-<a name="line915">915: </a>      cols[1] = 5*idx[1];     vals[1] = 0.0;
-<a name="line916">916: </a>      cols[2] = 5*idx[2];     vals[2] = 0.0;
+<a name="line884">884: </a>
+<a name="line885">885: </a>  k = 0;
+<a name="line886">886: </a>  <font color="#4169E1">for</font> (j=0;j&lt;Nda;j++) {
+<a name="line887">887: </a>    <font color="#4169E1">for</font> (i=0;i&lt;Mda;i++) {
+<a name="line888">888: </a>      ld = nodes[j*(Mda+1)+i];
+<a name="line889">889: </a>      rd = nodes[(j+1)*(Mda+1)+i];
+<a name="line890">890: </a>      ru = nodes[(j+1)*(Mda+1)+i+1];
+<a name="line891">891: </a>      lu = nodes[j*(Mda+1)+i+1];
+<a name="line892">892: </a>      connect[k*6]=ld;
+<a name="line893">893: </a>      connect[k*6+1]=lu;
+<a name="line894">894: </a>      connect[k*6+2]=rd;
+<a name="line895">895: </a>      connect[k*6+3]=lu;
+<a name="line896">896: </a>      connect[k*6+4]=ru;
+<a name="line897">897: </a>      connect[k*6+5]=rd;
+<a name="line898">898: </a>      k = k+1;
+<a name="line899">899: </a>    }
+<a name="line900">900: </a>  }
+<a name="line901">901: </a>
+<a name="line902">902: </a>  <font color="#4169E1">for</font>(k=0;k &lt; Mda*Nda*2;k++) {
+<a name="line903">903: </a>    idx[0] = connect[k*3];
+<a name="line904">904: </a>    idx[1] = connect[k*3+1];
+<a name="line905">905: </a>    idx[2] = connect[k*3+2];
+<a name="line906">906: </a>
+<a name="line907">907: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> r,row,cols[3];
+<a name="line908">908: </a>    <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> vals[3];
+<a name="line909">909: </a>    <font color="#4169E1">for</font> (r=0;r&lt;3;r++) {
+<a name="line910">910: </a>      row = 5*idx[r];
+<a name="line911">911: </a>      cols[0] = 5*idx[0];     vals[0] = 0.0;
+<a name="line912">912: </a>      cols[1] = 5*idx[1];     vals[1] = 0.0;
+<a name="line913">913: </a>      cols[2] = 5*idx[2];     vals[2] = 0.0;
 
-<a name="line918">918: </a>      <font color="#B22222">/* Insert values in matrix M for 1st dof */</font>
-<a name="line919">919: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line920">920: </a>
-<a name="line921">921: </a>      row = 5*idx[r]+2;
-<a name="line922">922: </a>      cols[0] = 5*idx[0]+2;   vals[0] = 0.0;
-<a name="line923">923: </a>      cols[1] = 5*idx[1]+2;   vals[1] = 0.0;
-<a name="line924">924: </a>      cols[2] = 5*idx[2]+2;   vals[2] = 0.0;
+<a name="line915">915: </a>      <font color="#B22222">/* Insert values in matrix M for 1st dof */</font>
+<a name="line916">916: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line917">917: </a>
+<a name="line918">918: </a>      row = 5*idx[r]+2;
+<a name="line919">919: </a>      cols[0] = 5*idx[0]+2;   vals[0] = 0.0;
+<a name="line920">920: </a>      cols[1] = 5*idx[1]+2;   vals[1] = 0.0;
+<a name="line921">921: </a>      cols[2] = 5*idx[2]+2;   vals[2] = 0.0;
 
-<a name="line926">926: </a>      <font color="#B22222">/* Insert values in matrix M for 3nd dof */</font>
-<a name="line927">927: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line928">928: </a>    }
-<a name="line929">929: </a>  }
-<a name="line930">930: </a>
-<a name="line931">931: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(M,MAT_FINAL_ASSEMBLY);
-<a name="line932">932: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(M,MAT_FINAL_ASSEMBLY);
+<a name="line923">923: </a>      <font color="#B22222">/* Insert values in matrix M for 3nd dof */</font>
+<a name="line924">924: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
+<a name="line925">925: </a>    }
+<a name="line926">926: </a>  }
+<a name="line927">927: </a>
+<a name="line928">928: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(M,MAT_FINAL_ASSEMBLY);
+<a name="line929">929: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(M,MAT_FINAL_ASSEMBLY);
 
-<a name="line934">934: </a>  eM_2_odd[0][0] = 1.0;
-<a name="line935">935: </a>  eM_2_odd[1][1] = eM_2_odd[2][2] = 0.5;
-<a name="line936">936: </a>  eM_2_odd[0][1] = eM_2_odd[0][2] = eM_2_odd[1][0]= eM_2_odd[2][0] = -0.5;
-<a name="line937">937: </a>  eM_2_odd[1][2] = eM_2_odd[2][1] = 0.0;
+<a name="line931">931: </a>  eM_2_odd[0][0] = 1.0;
+<a name="line932">932: </a>  eM_2_odd[1][1] = eM_2_odd[2][2] = 0.5;
+<a name="line933">933: </a>  eM_2_odd[0][1] = eM_2_odd[0][2] = eM_2_odd[1][0]= eM_2_odd[2][0] = -0.5;
+<a name="line934">934: </a>  eM_2_odd[1][2] = eM_2_odd[2][1] = 0.0;
 
-<a name="line939">939: </a>  eM_2_even[1][1] = 1.0;
-<a name="line940">940: </a>  eM_2_even[0][0] = eM_2_even[2][2] = 0.5;
-<a name="line941">941: </a>  eM_2_even[0][1] = eM_2_even[1][0] = eM_2_even[1][2] = eM_2_even[2][1] = -0.5;
-<a name="line942">942: </a>  eM_2_even[0][2] = eM_2_even[2][0] = 0.0;
+<a name="line936">936: </a>  eM_2_even[1][1] = 1.0;
+<a name="line937">937: </a>  eM_2_even[0][0] = eM_2_even[2][2] = 0.5;
+<a name="line938">938: </a>  eM_2_even[0][1] = eM_2_even[1][0] = eM_2_even[1][2] = eM_2_even[2][1] = -0.5;
+<a name="line939">939: </a>  eM_2_even[0][2] = eM_2_even[2][0] = 0.0;
 
-<a name="line944">944: </a>
-<a name="line945">945: </a>  <font color="#B22222">/* Get local element info */</font>
-<a name="line946">946: </a>  <font color="#4169E1">for</font>(k=0;k &lt; Mda*Nda*2;k++) {
-<a name="line947">947: </a>    idx[0] = connect[k*3];
-<a name="line948">948: </a>      idx[1] = connect[k*3+1];
-<a name="line949">949: </a>      idx[2] = connect[k*3+2];
+<a name="line941">941: </a>
+<a name="line942">942: </a>  <font color="#B22222">/* Get local element info */</font>
+<a name="line943">943: </a>  <font color="#4169E1">for</font>(k=0;k &lt; Mda*Nda*2;k++) {
+<a name="line944">944: </a>    idx[0] = connect[k*3];
+<a name="line945">945: </a>      idx[1] = connect[k*3+1];
+<a name="line946">946: </a>      idx[2] = connect[k*3+2];
+<a name="line947">947: </a>
+<a name="line948">948: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    row,cols[3],r;
+<a name="line949">949: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> vals[3];
 <a name="line950">950: </a>
-<a name="line951">951: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    row,cols[3],r;
-<a name="line952">952: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> vals[3];
-<a name="line953">953: </a>
-<a name="line954">954: </a>      <font color="#4169E1">for</font>(r=0;r&lt;3;r++) {
-<a name="line955">955: </a>
-<a name="line956">956: </a>        // cv_sum = (1.0e-3+cv_p[idx[0]] + cv_p[idx[1]] + cv_p[idx[2]])*user-&gt;Dv/(3.0*user-&gt;kBT);
-<a name="line957">957: </a>        //ci_sum = (1.0e-3+ci_p[idx[0]] + ci_p[idx[1]] + ci_p[idx[2]])*user-&gt;Di/(3.0*user-&gt;kBT);
-<a name="line958">958: </a>        cv_sum = .0000069*user-&gt;Dv/(user-&gt;kBT);
-<a name="line959">959: </a>        ci_sum = .0000069*user-&gt;Di/user-&gt;kBT;
+<a name="line951">951: </a>      <font color="#4169E1">for</font>(r=0;r&lt;3;r++) {
+<a name="line952">952: </a>
+<a name="line953">953: </a>        // cv_sum = (1.0e-3+cv_p[idx[0]] + cv_p[idx[1]] + cv_p[idx[2]])*user-&gt;Dv/(3.0*user-&gt;kBT);
+<a name="line954">954: </a>        //ci_sum = (1.0e-3+ci_p[idx[0]] + ci_p[idx[1]] + ci_p[idx[2]])*user-&gt;Di/(3.0*user-&gt;kBT);
+<a name="line955">955: </a>        cv_sum = .0000069*user-&gt;Dv/(user-&gt;kBT);
+<a name="line956">956: </a>        ci_sum = .0000069*user-&gt;Di/user-&gt;kBT;
 
-<a name="line961">961: </a>            <font color="#4169E1">if</font> (k%2 == 0) <font color="#B22222">/* odd triangle */</font> {
-<a name="line962">962: </a>
-<a name="line963">963: </a>                row = 5*idx[r];
-<a name="line964">964: </a>                cols[0] = 5*idx[0];     vals[0] = dt*eM_2_odd[r][0]*cv_sum;
-<a name="line965">965: </a>                cols[1] = 5*idx[1];     vals[1] = dt*eM_2_odd[r][1]*cv_sum;
-<a name="line966">966: </a>                cols[2] = 5*idx[2];     vals[2] = dt*eM_2_odd[r][2]*cv_sum;
+<a name="line958">958: </a>            <font color="#4169E1">if</font> (k%2 == 0) <font color="#B22222">/* odd triangle */</font> {
+<a name="line959">959: </a>
+<a name="line960">960: </a>                row = 5*idx[r];
+<a name="line961">961: </a>                cols[0] = 5*idx[0];     vals[0] = dt*eM_2_odd[r][0]*cv_sum;
+<a name="line962">962: </a>                cols[1] = 5*idx[1];     vals[1] = dt*eM_2_odd[r][1]*cv_sum;
+<a name="line963">963: </a>                cols[2] = 5*idx[2];     vals[2] = dt*eM_2_odd[r][2]*cv_sum;
+<a name="line964">964: </a>
+<a name="line965">965: </a>                <font color="#B22222">/* Insert values in matrix M for 1st dof */</font>
+<a name="line966">966: </a>                <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line967">967: </a>
-<a name="line968">968: </a>                <font color="#B22222">/* Insert values in matrix M for 1st dof */</font>
-<a name="line969">969: </a>                <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line970">970: </a>
-<a name="line971">971: </a>
-<a name="line972">972: </a>                row = 5*idx[r]+2;
-<a name="line973">973: </a>                cols[0] = 5*idx[0]+2;   vals[0] = dt*eM_2_odd[r][0]*ci_sum;
-<a name="line974">974: </a>                cols[1] = 5*idx[1]+2;   vals[1] = dt*eM_2_odd[r][1]*ci_sum;
-<a name="line975">975: </a>                cols[2] = 5*idx[2]+2;   vals[2] = dt*eM_2_odd[r][2]*ci_sum;
-<a name="line976">976: </a>
-<a name="line977">977: </a>                <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line978">978: </a>
-<a name="line979">979: </a>            }
-<a name="line980">980: </a>
-<a name="line981">981: </a>            <font color="#4169E1">else</font> {
-<a name="line982">982: </a>                row = 5*idx[r];
-<a name="line983">983: </a>                cols[0] = 5*idx[0];     vals[0] = dt*eM_2_even[r][0]*cv_sum;
-<a name="line984">984: </a>                cols[1] = 5*idx[1];     vals[1] = dt*eM_2_even[r][1]*cv_sum;
-<a name="line985">985: </a>                cols[2] = 5*idx[2];     vals[2] = dt*eM_2_even[r][2]*cv_sum;
+<a name="line968">968: </a>
+<a name="line969">969: </a>                row = 5*idx[r]+2;
+<a name="line970">970: </a>                cols[0] = 5*idx[0]+2;   vals[0] = dt*eM_2_odd[r][0]*ci_sum;
+<a name="line971">971: </a>                cols[1] = 5*idx[1]+2;   vals[1] = dt*eM_2_odd[r][1]*ci_sum;
+<a name="line972">972: </a>                cols[2] = 5*idx[2]+2;   vals[2] = dt*eM_2_odd[r][2]*ci_sum;
+<a name="line973">973: </a>
+<a name="line974">974: </a>                <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line975">975: </a>
+<a name="line976">976: </a>            }
+<a name="line977">977: </a>
+<a name="line978">978: </a>            <font color="#4169E1">else</font> {
+<a name="line979">979: </a>                row = 5*idx[r];
+<a name="line980">980: </a>                cols[0] = 5*idx[0];     vals[0] = dt*eM_2_even[r][0]*cv_sum;
+<a name="line981">981: </a>                cols[1] = 5*idx[1];     vals[1] = dt*eM_2_even[r][1]*cv_sum;
+<a name="line982">982: </a>                cols[2] = 5*idx[2];     vals[2] = dt*eM_2_even[r][2]*cv_sum;
+<a name="line983">983: </a>
+<a name="line984">984: </a>                <font color="#B22222">/* Insert values in matrix M for 1st dof */</font>
+<a name="line985">985: </a>                <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
 <a name="line986">986: </a>
-<a name="line987">987: </a>                <font color="#B22222">/* Insert values in matrix M for 1st dof */</font>
-<a name="line988">988: </a>                <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
-<a name="line989">989: </a>
-<a name="line990">990: </a>
-<a name="line991">991: </a>                row = 5*idx[r]+2;
-<a name="line992">992: </a>                cols[0] = 5*idx[0]+2;   vals[0] = dt*eM_2_even[r][0]*ci_sum;
-<a name="line993">993: </a>                cols[1] = 5*idx[1]+2;   vals[1] = dt*eM_2_even[r][1]*ci_sum;
-<a name="line994">994: </a>                cols[2] = 5*idx[2]+2;   vals[2] = dt*eM_2_even[r][2]*ci_sum;
-<a name="line995">995: </a>                <font color="#B22222">/* Insert values in matrix M for 3nd dof */</font>
-<a name="line996">996: </a>                <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line987">987: </a>
+<a name="line988">988: </a>                row = 5*idx[r]+2;
+<a name="line989">989: </a>                cols[0] = 5*idx[0]+2;   vals[0] = dt*eM_2_even[r][0]*ci_sum;
+<a name="line990">990: </a>                cols[1] = 5*idx[1]+2;   vals[1] = dt*eM_2_even[r][1]*ci_sum;
+<a name="line991">991: </a>                cols[2] = 5*idx[2]+2;   vals[2] = dt*eM_2_even[r][2]*ci_sum;
+<a name="line992">992: </a>                <font color="#B22222">/* Insert values in matrix M for 3nd dof */</font>
+<a name="line993">993: </a>                <A href="../../../../docs/manualpages/Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(M,1,&amp;row,3,cols,vals,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>);
+<a name="line994">994: </a>
+<a name="line995">995: </a>            }
+<a name="line996">996: </a>        }
 <a name="line997">997: </a>
-<a name="line998">998: </a>            }
-<a name="line999">999: </a>        }
-<a name="line1000">1000: </a>
-<a name="line1001">1001: </a>    }
+<a name="line998">998: </a>    }
 
-<a name="line1003">1003: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(nodes);
-<a name="line1004">1004: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(connect);
-<a name="line1005">1005: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(M,MAT_FINAL_ASSEMBLY);
-<a name="line1006">1006: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(M,MAT_FINAL_ASSEMBLY);
-<a name="line1007">1007: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
-<a name="line1008">1008: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
+<a name="line1000">1000: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(nodes);
+<a name="line1001">1001: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(connect);
+<a name="line1002">1002: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(M,MAT_FINAL_ASSEMBLY);
+<a name="line1003">1003: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(M,MAT_FINAL_ASSEMBLY);
+<a name="line1004">1004: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;cv,&amp;cv_p);
+<a name="line1005">1005: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(user-&gt;ci,&amp;ci_p);
 
 
-<a name="line1011">1011: </a>  <font color="#4169E1">return</font>(0);
-<a name="line1012">1012: </a>}
+<a name="line1008">1008: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1009">1009: </a>}
 
 
 </pre>

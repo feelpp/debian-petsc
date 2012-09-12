@@ -4,8 +4,8 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = gcreatef.c multequalf.c getcolvf.c axpyf.c zerodiagf.c
-OBJSC    = gcreatef.o multequalf.o getcolvf.o axpyf.o zerodiagf.o
+SOURCEC  = zerodiagf.c multequalf.c axpyf.c gcreatef.c getcolvf.c
+OBJSC    = zerodiagf.o multequalf.o axpyf.o gcreatef.o getcolvf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

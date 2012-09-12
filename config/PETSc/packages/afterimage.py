@@ -9,11 +9,12 @@ class Configure(PETSc.package.NewPackage):
     self.includedir    = ''
     self.libdir        = '../../lib'
     self.double        = 0
+    self.complex       = 1
 
   def setupDependencies(self, framework):
     PETSc.package.NewPackage.setupDependencies(self, framework)
-    self.x11             = framework.require('PETSc.packages.X11', self)
-    self.deps = [self.x11]
+    self.x               = framework.require('PETSc.packages.X', self)
+    self.deps = [self.x]
     return
 
   def getSearchDirectories(self):

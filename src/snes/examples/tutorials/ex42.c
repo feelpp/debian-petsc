@@ -55,6 +55,7 @@ int main(int argc,char **argv)
   ierr = MatCreate(PETSC_COMM_WORLD,&J);CHKERRQ(ierr);
   ierr = MatSetSizes(J,PETSC_DECIDE,PETSC_DECIDE,2,2);CHKERRQ(ierr);
   ierr = MatSetFromOptions(J);CHKERRQ(ierr);
+  ierr = MatSetUp(J);CHKERRQ(ierr);
 
   /* 
      Set function evaluation routine and vector.
@@ -95,7 +96,7 @@ int main(int argc,char **argv)
      report the reason if the iteration did not converge so that the tests are
      reproducible.
   */
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"%s number of Newton iterations = %D\n\n",reason>0?"CONVERGED":SNESConvergedReasons[reason],its);CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"%s number of SNES iterations = %D\n\n",reason>0?"CONVERGED":SNESConvergedReasons[reason],its);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Free work space.  All PETSc objects should be destroyed when they

@@ -84,7 +84,7 @@ PetscErrorCode  MatSeqAIJFromMatlab(mxArray *mmat,Mat mat)
   if (mat->rmap->n < 0 && mat->cmap->n < 0) {
     /* matrix has not yet had its size set */
     ierr = MatSetSizes(mat,n,m,PETSC_DETERMINE,PETSC_DETERMINE);CHKERRQ(ierr);
-    ierr = MatPreallocated(mat);CHKERRQ(ierr);
+    ierr = MatSetUp(mat);CHKERRQ(ierr);
   } else {
     if (mat->rmap->n != n) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot change size of PETSc matrix %D to %D",mat->rmap->n,n);
     if (mat->cmap->n != m) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_SUP,"Cannot change size of PETSc matrix %D to %D",mat->cmap->n,m);
@@ -265,7 +265,7 @@ PetscErrorCode MatView_Matlab(Mat A,PetscViewer viewer)
 
   PetscFunctionBegin;
   ierr = MatView_SeqAIJ(A,viewer);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerGetFormat(viewer,&format);CHKERRQ(ierr);
     if (format == PETSC_VIEWER_ASCII_FACTOR_INFO) {

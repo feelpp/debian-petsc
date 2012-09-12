@@ -9,7 +9,7 @@ Runtime options include:\n\
 -theta_c <theta_c>\n\n";
 
 /*
- ./ex60 -ksp_type fgmres -pc_type mg  -snes_vi_monitor   -snes_atol 1.e-11  -da_grid_x 72 -da_grid_y 72 -ksp_rtol 1.e-8  -T 0.1  -VG 100 -pc_type lu -ksp_monitor_true_residual -pc_factor_mat_solver_package superlu -snes_converged_reason -ksp_converged_reason -pc_type sor  -ksp_rtol 1.e-9  -snes_ls_monitor -VG 10 -draw_fields 1,3,4 -snes_monitor_solution
+ ./ex60 -ksp_type fgmres -pc_type mg  -snes_vi_monitor   -snes_atol 1.e-11  -da_grid_x 72 -da_grid_y 72 -ksp_rtol 1.e-8  -T 0.1  -VG 100 -pc_type lu -ksp_monitor_true_residual -pc_factor_mat_solver_package superlu -snes_converged_reason -ksp_converged_reason -pc_type sor  -ksp_rtol 1.e-9  -snes_linesearch_monitor -VG 10 -draw_fields 1,3,4 -snes_monitor_solution
 
  */
 
@@ -120,9 +120,9 @@ int main(int argc, char **argv)
   
 
   /* Get Jacobian matrix structure from the da for the entire thing, da1 */
-  ierr = DMGetMatrix(user.da1,MATAIJ,&user.M);CHKERRQ(ierr);
+  ierr = DMCreateMatrix(user.da1,MATAIJ,&user.M);CHKERRQ(ierr);
   /* Get the (usual) mass matrix structure from da2 */
-  ierr = DMGetMatrix(user.da2,MATAIJ,&user.M_0);CHKERRQ(ierr);
+  ierr = DMCreateMatrix(user.da2,MATAIJ,&user.M_0);CHKERRQ(ierr);
   ierr = SetInitialGuess(x,&user);CHKERRQ(ierr);
   /* Form the jacobian matrix and M_0 */
   ierr = SetUpMatrices(&user);CHKERRQ(ierr);
@@ -134,12 +134,9 @@ int main(int argc, char **argv)
   ierr = SNESSetFunction(snes,r,FormFunction,(void*)&user);CHKERRQ(ierr);
   ierr = SNESSetJacobian(snes,J,J,FormJacobian,(void*)&user);CHKERRQ(ierr);
  
-
-   ierr = SNESSetType(snes,SNESVI);CHKERRQ(ierr);
-
-  ierr = SNESSetFromOptions(snes);CHKERRQ(ierr);
   ierr = SetVariableBounds(user.da1,xl,xu);CHKERRQ(ierr);
   ierr = SNESVISetVariableBounds(snes,xl,xu);CHKERRQ(ierr);
+  ierr = SNESSetFromOptions(snes);CHKERRQ(ierr);
   
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"file_rand",FILE_MODE_WRITE,&view_rand);CHKERRQ(ierr);
   ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"file_mat",FILE_MODE_WRITE,&view_mat);CHKERRQ(ierr);

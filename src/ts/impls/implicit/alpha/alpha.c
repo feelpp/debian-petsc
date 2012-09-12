@@ -2,7 +2,7 @@
   Code for timestepping with implicit generalized-\alpha method
   for first order systems.
 */
-#include <private/tsimpl.h>                /*I   "petscts.h"   I*/
+#include <petsc-private/tsimpl.h>                /*I   "petscts.h"   I*/
 
 typedef PetscErrorCode (*TSAlphaAdaptFunction)(TS,PetscReal,Vec,Vec,PetscReal*,PetscBool*,void*);
 
@@ -49,6 +49,8 @@ static PetscErrorCode TSStep_Alpha(TS ts)
     ts->time_step = next_time_step;
     th->stage_time = ts->ptime + th->Alpha_f*ts->time_step;
     th->shift = th->Alpha_m/(th->Alpha_f*th->Gamma*ts->time_step);
+    ierr = TSPreStep(ts);CHKERRQ(ierr);
+    ierr = TSPreStage(ts,th->stage_time);CHKERRQ(ierr);
     /* predictor */
     ierr = VecCopy(th->X0,th->X1);CHKERRQ(ierr);
     /* solve R(X,V) = 0 */
@@ -61,7 +63,7 @@ static PetscErrorCode TSStep_Alpha(TS ts)
     if (snesreason < 0 && !th->adapt) break;
     ierr = SNESGetIterationNumber(ts->snes,&its);CHKERRQ(ierr);
     ierr = SNESGetLinearSolveIterations(ts->snes,&lits);CHKERRQ(ierr);
-    ts->nonlinear_its += its; ts->linear_its += lits;
+    ts->snes_its += its; ts->ksp_its += lits;
     ierr = PetscInfo3(ts,"step=%D, nonlinear solve iterations=%D, linear solve iterations=%D\n",ts->steps,its,lits);CHKERRQ(ierr);
     /* time step adaptativity */
     if (!th->adapt) break;
@@ -73,7 +75,7 @@ static PetscErrorCode TSStep_Alpha(TS ts)
       if (stepok) break;
     }
   }
-  if (snesreason < 0 && ++ts->num_snes_failures >= ts->max_snes_failures) {
+  if (snesreason < 0 && ts->max_snes_failures > 0 && ++ts->num_snes_failures >= ts->max_snes_failures) {
     ts->reason = TS_DIVERGED_NONLINEAR_SOLVE;
     ierr = PetscInfo2(ts,"Step=%D, nonlinear solve solve failures %D greater than current TS allowed, stopping solve\n",ts->steps,ts->num_snes_failures);CHKERRQ(ierr);
     PetscFunctionReturn(0);
@@ -238,7 +240,7 @@ static PetscErrorCode TSView_Alpha(TS ts,PetscViewer viewer)
   PetscErrorCode  ierr;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  Alpha_m=%G, Alpha_f=%G, Gamma=%G\n",th->Alpha_m,th->Alpha_f,th->Gamma);CHKERRQ(ierr);
   }
@@ -413,7 +415,7 @@ PetscErrorCode  TSAlphaAdaptDefault(TS ts,PetscReal t,Vec X,Vec Xdot, PetscReal 
 #if PETSC_USE_DEBUG
   {
     PetscBool match;
-    ierr = PetscTypeCompare((PetscObject)ts,TSALPHA,&match);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)ts,TSALPHA,&match);CHKERRQ(ierr);
     if (!match) SETERRQ(((PetscObject)ts)->comm,1,"Only for TSALPHA");
   }
 #endif

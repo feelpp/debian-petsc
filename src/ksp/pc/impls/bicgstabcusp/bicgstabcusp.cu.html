@@ -1,13 +1,14 @@
 <center><a href="bicgstabcusp.cu">Actual source code: bicgstabcusp.cu</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/bicgstabcusp/bicgstabcusp.cu.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:40+00:00">
+<meta name="date" content="2012-08-29T17:01:31+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*  -------------------------------------------------------------------- */</font>
 
@@ -16,7 +17,7 @@
 <a name="line6">  6: </a><font color="#B22222">     pcimpl.h - private include file intended for use by all preconditioners</font>
 <a name="line7">  7: </a><font color="#B22222">*/</font>
 
-<a name="line9">  9: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 <a name="line10"> 10: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
 <a name="line11"> 11: </a><font color="#A020F0">#include &lt;cusp/monitor.h&gt;</font>
 <a name="line12"> 12: </a><strong><font color="#228B22">#undef <A href="../../../../../docs/manualpages/Vec/VecType.html#VecType">VecType</A></font></strong>
@@ -102,10 +103,10 @@
 <a name="line118">118: </a>  Mat_SeqAIJCUSP  *gpustruct;
 <a name="line119">119: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
 
-<a name="line122">122: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,MATSEQAIJCUSP,&amp;flg);
+<a name="line122">122: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,MATSEQAIJCUSP,&amp;flg);
 <a name="line123">123: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"Currently only handles CUSP matrices"</font>);
 <a name="line124">124: </a>  try{
-<a name="line125">125: </a>    MatCUSPCopyToGPU(pc-&gt;pmat);CHKERRCUSP(ierr);
+<a name="line125">125: </a>    MatCUSPCopyToGPU(pc-&gt;pmat);
 <a name="line126">126: </a>    gpustruct = (Mat_SeqAIJCUSP *)(pc-&gt;pmat-&gt;spptr);
 <a name="line127">127: </a>    bicg-&gt;mat = (CUSPMATRIX*)gpustruct-&gt;mat;
 <a name="line128">128: </a>  } catch(char* ex) {
@@ -134,8 +135,8 @@
 <a name="line153">153: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       flg1,flg2;
 <a name="line154">154: </a>  CUSPARRAY       *xarray,*yarray;
 
-<a name="line157">157: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)x,VECSEQCUSP,&amp;flg1);
-<a name="line158">158: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)y,VECSEQCUSP,&amp;flg2);
+<a name="line157">157: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)x,<A href="../../../../../docs/manualpages/Vec/VECSEQCUSP.html#VECSEQCUSP">VECSEQCUSP</A>,&amp;flg1);
+<a name="line158">158: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)y,<A href="../../../../../docs/manualpages/Vec/VECSEQCUSP.html#VECSEQCUSP">VECSEQCUSP</A>,&amp;flg2);
 <a name="line159">159: </a>  <font color="#4169E1">if</font> (!(flg1 &amp;&amp; flg2)) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_SUP, <font color="#666666">"Currently only handles CUSP vectors"</font>);
 <a name="line160">160: </a>  <font color="#4169E1">if</font> (!bicg-&gt;mat) {
 <a name="line161">161: </a>    PCSetUp_BiCGStabCUSP(pc);
@@ -196,6 +197,7 @@
 <a name="line222">222: </a><font color="#B22222">/* -------------------------------------------------------------------------- */</font>
 
 
+<a name="line225">225: </a>EXTERN_C_BEGIN
 <a name="line228">228: </a><strong><font color="#4169E1"><a name="PCCreate_BiCGStabCUSP"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_BiCGStabCUSP(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line229">229: </a>{
 <a name="line230">230: </a>  PC_BiCGStabCUSP *bicg;
@@ -234,6 +236,7 @@
 <a name="line264">264: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc, <font color="#666666">"PCBiCGStabCUSPSetUseVerboseMonitor_C"</font>, <font color="#666666">"PCBiCGStabCUSPSetUseVerboseMonitor_BiCGStabCUSP"</font>, PCBiCGStabCUSPSetUseVerboseMonitor_BiCGStabCUSP);
 <a name="line265">265: </a>  <font color="#4169E1">return</font>(0);
 <a name="line266">266: </a>}
+<a name="line267">267: </a>EXTERN_C_END
 
 </pre>
 </body>

@@ -2,7 +2,6 @@
 /* Routines to be used by MatIncreaseOverlap() for BAIJ and SBAIJ matrices */
 #include <petscis.h> 
 #include <petscbt.h>
-#include <petscctable.h>
 
 
 #undef __FUNCT__  
@@ -41,10 +40,10 @@ PetscErrorCode  ISCompressIndicesGeneral(PetscInt n,PetscInt nkeys,PetscInt bs,P
   Nbs =n/bs;
 #if defined (PETSC_USE_CTABLE)
   Nkbs = nkeys/bs;
-  ierr = PetscTableCreate(Nkbs,&gid1_lid1);CHKERRQ(ierr);
+  ierr = PetscTableCreate(Nkbs,Nbs,&gid1_lid1);CHKERRQ(ierr);
 #else
   ierr = PetscMalloc(Nbs*sizeof(PetscInt),&nidx);CHKERRQ(ierr); 
-  ierr = PetscBTCreate(Nbs,table);CHKERRQ(ierr);
+  ierr = PetscBTCreate(Nbs,&table);CHKERRQ(ierr);
 #endif
   for (i=0; i<imax; i++) {
     isz  = 0;
@@ -60,7 +59,7 @@ PetscErrorCode  ISCompressIndicesGeneral(PetscInt n,PetscInt nkeys,PetscInt bs,P
 #if defined (PETSC_USE_CTABLE)
       ierr = PetscTableFind(gid1_lid1,ival+1,&tt);CHKERRQ(ierr);
       if (!tt) {
-	ierr = PetscTableAdd(gid1_lid1,ival+1,isz+1);CHKERRQ(ierr);
+	ierr = PetscTableAdd(gid1_lid1,ival+1,isz+1,INSERT_VALUES);CHKERRQ(ierr);
         isz++;
       }
 #else
@@ -89,7 +88,7 @@ PetscErrorCode  ISCompressIndicesGeneral(PetscInt n,PetscInt nkeys,PetscInt bs,P
 #if defined (PETSC_USE_CTABLE)
   ierr = PetscTableDestroy(&gid1_lid1);CHKERRQ(ierr);
 #else
-  ierr = PetscBTDestroy(table);CHKERRQ(ierr);
+  ierr = PetscBTDestroy(&table);CHKERRQ(ierr);
   ierr = PetscFree(nidx);CHKERRQ(ierr);
 #endif
   PetscFunctionReturn(0);
@@ -132,7 +131,7 @@ PetscErrorCode  ISCompressIndicesSorted(PetscInt n,PetscInt bs,PetscInt imax,con
     ierr = ISGetLocalSize(is_in[i],&len);CHKERRQ(ierr);
 
     /* special case where IS is already block IS of the correct size */
-    ierr = PetscTypeCompare((PetscObject)is_in[i],ISBLOCK,&isblock);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)is_in[i],ISBLOCK,&isblock);CHKERRQ(ierr);
     if (isblock) {
       ierr = ISBlockGetLocalSize(is_in[i],&bbs);CHKERRQ(ierr);
       if (bs == bbs) {

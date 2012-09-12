@@ -48,31 +48,23 @@
 !  Variables:
 !     snes        - nonlinear solver
 !     x, r        - solution, residual vectors
-!     J           - Jacobian matrix
 !     its         - iterations for convergence
 !
 !  See additional variable declarations in the file ex5f.h
 !
-      SNES                   snes
-      Vec                    x,r
-      Mat                    J,A
-      PetscInt                its,i1,i4
+      SNES           snes
+      Vec            x,r
+      PetscInt       its,i1,i4
       PetscErrorCode ierr
-      PetscReal       lambda_max,lambda_min
-      PetscBool              flg
-#if defined(PETSC_HAVE_ADIFOR)
-      ISColoring             coloring
-      PetscBool              adifor_jacobian,adiformf_jacobian
-#endif
+      PetscReal      lambda_max,lambda_min
+      PetscBool      flg
+
 
 !  Note: Any user-defined Fortran routines (such as FormJacobianLocal)
 !  MUST be declared as external.
 
       external FormInitialGuess
       external FormFunctionLocal,FormJacobianLocal
-#if defined(PETSC_HAVE_ADIFOR)
-      external g_FormFunctionLocal,m_FormFunctionLocal
-#endif
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 !  Initialize program
@@ -151,59 +143,7 @@
 
       call DMDASetLocalFunction(da,FormFunctionLocal,ierr)
       call DMDASetLocalJacobian(da,FormJacobianLocal,ierr)
-#if defined(PETSC_HAVE_ADIFOR)
-      call DMDASetLocalAdiforFunction(da,                                             &
-     &         g_FormFunctionLocal,ierr)
-#endif
       call SNESSetDM(snes,da,ierr)
-      call SNESSetFunction(snes,r,SNESDAFormFunction,da,ierr)
-! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-!  Create matrix data structure; set Jacobian evaluation routine
-! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-!  Set Jacobian matrix data structure and default Jacobian evaluation
-!  routine. User can override with:
-!     -snes_mf : matrix-free Newton-Krylov method with no preconditioning
-!                (unless user explicitly sets preconditioner) 
-!     -snes_mf_operator : form preconditioning matrix as set by the user,
-!                         but use matrix-free approx for Jacobian-vector
-!                         products within Newton-Krylov method
-!
-
-      call DMGetMatrix(da,MATAIJ,J,ierr)
-#if defined(PETSC_HAVE_ADIFOR)
-      call PetscOptionsGetBool(PETSC_NULL_CHARACTER                            &
-     &     ,'-adiformf_jacobian',                                                 &
-     &     adiformf_jacobian,PETSC_NULL_INTEGER,ierr)
-      if (adiformf_jacobian .eq. 1) then
-        call DMDASetLocalAdiforMFFunction(da,                                       &
-     &         m_FormFunctionLocal,ierr)
-        call MatRegisterDAAD(ierr)
-        call MatCreateDAAD(da,A,ierr)
-        call MatDAADSetSNES(A,snes,ierr)
-      else 
-        A = J
-      endif
-#else 
-      A = J
-#endif
-
-      call SNESSetJacobian(snes,A,J,SNESDAComputeJacobian,                        &
-     &                       da,ierr)
-#if defined(PETSC_HAVE_ADIFOR)
-      call PetscOptionsGetBool(PETSC_NULL_CHARACTER                            &
-     &     ,'-adifor_jacobian',                                                   &
-     &     adifor_jacobian,PETSC_NULL_INTEGER,ierr)
-      if (adifor_jacobian .eq. 1) then
-        call DMGetColoring(da,IS_COLORING_GHOSTED,                                 &
-     &                     coloring,MATAIJ,ierr)
-        call MatSetColoring(J,coloring,ierr)
-        call SNESSetJacobian(snes,A,J,SNESDAComputeJacobianWithAdifor,            &
-     &                         da,ierr)
-        call ISColoringDestroy(coloring,ierr)
-      endif
-#endif
-
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Customize nonlinear solver; set runtime options
@@ -227,7 +167,7 @@
       if (rank .eq. 0) then
          write(6,100) its
       endif
-  100 format('Number of Newton iterations = ',i5)
+  100 format('Number of SNES iterations = ',i5)
 
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,8 +175,6 @@
 !  are no longer needed.
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-      if (A .ne. J) call MatDestroy(A,ierr)
-      call MatDestroy(J,ierr)
       call VecDestroy(x,ierr)
       call VecDestroy(r,ierr)
       call SNESDestroy(snes,ierr)
@@ -372,7 +310,6 @@
 !  Notes:
 !  This routine uses standard Fortran-style computations over a 2-dim array.
 !
-!     Process adifor: FormFunctionLocal
 !
       subroutine FormFunctionLocal(info,x,f,dummy,ierr)
 

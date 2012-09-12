@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatGetRowIJ.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatGetRowIJ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatGetRowIJ"><H1>MatGetRowIJ</H1></A>
 Returns the compressed row storage i and j indices for sequential matrices. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -52,7 +53,7 @@ In Fortran use
           <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> ia(1), ja(1)
 </pre>
 <pre>
-          PetscOffset iia, jja
+          <A HREF="../Sys/PetscOffset.html#PetscOffset">PetscOffset</A> iia, jja
 </pre>
 <pre>
      call <A HREF="../Mat/MatGetRowIJ.html#MatGetRowIJ">MatGetRowIJ</A>(mat,shift,symmetric,inodecompressed,n,ia,iia,ja,jja,done,ierr)

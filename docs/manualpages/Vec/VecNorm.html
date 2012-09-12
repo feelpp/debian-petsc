@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecNorm.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecNorm</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecNorm"><H1>VecNorm</H1></A>
 Computes the vector norm. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -27,14 +28,6 @@ in a two element array.
 <DT><B>val </B> -the norm 
 <br>
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD> PetscReal VecNorm(Vec x)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>VecNorm(x,NORM_2,&r); return r;</TR></TD>
-
-<TR><TD WIDTH=40></TD><TD> PetscReal VecNorm(Vec x,NormType t)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>VecNorm(x,t,&r); return r;</TR></TD>
-
-<TR><TD WIDTH=40></TD><TD>&nbsp VecNorm(Vec x,PetscReal *r)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>VecNorm(x,NORM_2,r)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 <pre>
     <A HREF="../Vec/NORM_1.html#NORM_1">NORM_1</A> denotes sum_i |x_i|
@@ -76,9 +69,7 @@ than the BLAS. This should probably only be used when one is using the FORTRAN B
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1.c.html">src/vec/vec/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex1e.c.html">src/vec/vec/examples/tutorials/ex1e.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex11.c.html">src/vec/vec/examples/tutorials/ex11.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex17.c.html">src/vec/vec/examples/tutorials/ex17.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1f.F.html">src/vec/vec/examples/tutorials/ex1f.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1f90.F.html">src/vec/vec/examples/tutorials/ex1f90.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex11f.F.html">src/vec/vec/examples/tutorials/ex11f.F.html</A><BR>
@@ -86,4 +77,6 @@ than the BLAS. This should probably only be used when one is using the FORTRAN B
 <A HREF="../../../src/mat/examples/tutorials/ex2.c.html">src/mat/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex9.c.html">src/mat/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex13.c.html">src/mat/examples/tutorials/ex13.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 </BODY></HTML>

@@ -1,13 +1,14 @@
 <center><a href="gladapt.c">Actual source code: gladapt.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/impls/implicit/gl/gladapt.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:19:54+00:00">
+<meta name="date" content="2012-08-29T17:13:48+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/ts/impls/implicit/gl/gl.h&gt; </font><font color="#B22222">/*I  "petscts.h" I*/</font><font color="#A020F0"></font>
 
@@ -28,9 +29,11 @@
 <a name="line18"> 18: </a>  void *data;
 <a name="line19"> 19: </a>};
 
+<a name="line21"> 21: </a><strong><font color="#4169E1">EXTERN_C_BEGIN</font></strong>
 <a name="line22"> 22: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  TSGLAdaptCreate_None(<A href="../../../../../docs/manualpages/TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A>)</font></strong>;
 <a name="line23"> 23: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  TSGLAdaptCreate_Size(<A href="../../../../../docs/manualpages/TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A>)</font></strong>;
 <a name="line24"> 24: </a><strong><font color="#4169E1"><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  TSGLAdaptCreate_Both(<A href="../../../../../docs/manualpages/TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A>)</font></strong>;
+<a name="line25"> 25: </a>EXTERN_C_END
 
 <a name="line29"> 29: </a><font color="#B22222">/*@C</font>
 <a name="line30"> 30: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/TS/TSGLAdaptRegister.html#TSGLAdaptRegister">TSGLAdaptRegister</A> - see <A href="../../../../../docs/manualpages/TS/TSGLAdaptRegisterDynamic.html#TSGLAdaptRegisterDynamic">TSGLAdaptRegisterDynamic</A>()</font>
@@ -42,7 +45,7 @@
 <a name="line37"> 37: </a>  char           fullname[PETSC_MAX_PATH_LEN];
 
 <a name="line40"> 40: </a>  PetscFListConcat(path,name,fullname);
-<a name="line41"> 41: </a>  PetscFListAdd(&amp;TSGLAdaptList,sname,fullname,(void(*)(void))function);
+<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFListAdd.html#PetscFListAdd">PetscFListAdd</A>(&amp;TSGLAdaptList,sname,fullname,(void(*)(void))function);
 <a name="line42"> 42: </a>  <font color="#4169E1">return</font>(0);
 <a name="line43"> 43: </a>}
 
@@ -149,7 +152,7 @@
 <a name="line169">169: </a>{
 <a name="line171">171: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line174">174: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line174">174: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line175">175: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line176">176: </a>    PetscObjectPrintClassNamePrefixType((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)adapt,viewer,<font color="#666666">"<A href="../../../../../docs/manualpages/TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A> Object"</font>);
 <a name="line177">177: </a>    <font color="#4169E1">if</font> (adapt-&gt;ops-&gt;view) {
@@ -241,6 +244,7 @@
 <a name="line294">294: </a>  <font color="#4169E1">return</font>(0);
 <a name="line295">295: </a>}
 
+<a name="line297">297: </a>EXTERN_C_BEGIN
 <a name="line300">300: </a><strong><font color="#4169E1"><a name="TSGLAdaptCreate_None"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  TSGLAdaptCreate_None(<A href="../../../../../docs/manualpages/TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A> adapt)</font></strong>
 <a name="line301">301: </a>{
 <a name="line303">303: </a>  TSGLAdapt_None *a;
@@ -251,6 +255,7 @@
 <a name="line309">309: </a>  adapt-&gt;ops-&gt;destroy = TSGLAdaptDestroy_JustFree;
 <a name="line310">310: </a>  <font color="#4169E1">return</font>(0);
 <a name="line311">311: </a>}
+<a name="line312">312: </a>EXTERN_C_END
 
 <a name="line314">314: </a><font color="#B22222">/* -------------------------------- Size ----------------------------------- */</font>
 <a name="line315">315: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -270,7 +275,7 @@
 <a name="line332">332: </a>  last_desired_h = sz-&gt;desired_h;
 <a name="line333">333: </a>  sz-&gt;desired_h = h*PetscMax(dec,PetscMin(inc,optimal)); <font color="#B22222">/* Trim to [dec,inc] */</font>
 <a name="line334">334: </a>  <font color="#4169E1">if</font> (last_desired_h &gt; 1e-14) {                          <font color="#B22222">/* Normally only happens on the first step */</font>
-<a name="line335">335: </a>    *next_h = sqrt(last_desired_h * sz-&gt;desired_h);
+<a name="line335">335: </a>    *next_h = PetscSqrtReal(last_desired_h * sz-&gt;desired_h);
 <a name="line336">336: </a>  } <font color="#4169E1">else</font> {
 <a name="line337">337: </a>    *next_h = sz-&gt;desired_h;
 <a name="line338">338: </a>  }
@@ -283,6 +288,7 @@
 <a name="line345">345: </a>  <font color="#4169E1">return</font>(0);
 <a name="line346">346: </a>}
 
+<a name="line348">348: </a>EXTERN_C_BEGIN
 <a name="line351">351: </a><strong><font color="#4169E1"><a name="TSGLAdaptCreate_Size"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  TSGLAdaptCreate_Size(<A href="../../../../../docs/manualpages/TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A> adapt)</font></strong>
 <a name="line352">352: </a>{
 <a name="line354">354: </a>  TSGLAdapt_Size *a;
@@ -293,6 +299,7 @@
 <a name="line360">360: </a>  adapt-&gt;ops-&gt;destroy = TSGLAdaptDestroy_JustFree;
 <a name="line361">361: </a>  <font color="#4169E1">return</font>(0);
 <a name="line362">362: </a>}
+<a name="line363">363: </a>EXTERN_C_END
 
 <a name="line365">365: </a><font color="#B22222">/* -------------------------------- Both ----------------------------------- */</font>
 <a name="line366">366: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -325,7 +332,7 @@
 <a name="line397">397: </a>    last_desired_h = both-&gt;desired_h;
 <a name="line398">398: </a>    both-&gt;desired_h = PetscMax(h*dec,PetscMin(h*inc,current.h));
 <a name="line399">399: </a>    *next_h = (both-&gt;count_at_order &gt; 0)
-<a name="line400">400: </a>      ? sqrt(last_desired_h * both-&gt;desired_h)
+<a name="line400">400: </a>      ? PetscSqrtReal(last_desired_h * both-&gt;desired_h)
 <a name="line401">401: </a>      : both-&gt;desired_h;
 <a name="line402">402: </a>    both-&gt;count_at_order++;
 <a name="line403">403: </a>  } <font color="#4169E1">else</font> {
@@ -345,6 +352,7 @@
 <a name="line417">417: </a>  <font color="#4169E1">return</font>(0);
 <a name="line418">418: </a>}
 
+<a name="line420">420: </a>EXTERN_C_BEGIN
 <a name="line423">423: </a><strong><font color="#4169E1"><a name="TSGLAdaptCreate_Both"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSGLAdaptCreate_Both(<A href="../../../../../docs/manualpages/TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A> adapt)</font></strong>
 <a name="line424">424: </a>{
 <a name="line426">426: </a>  TSGLAdapt_Both *a;
@@ -355,6 +363,7 @@
 <a name="line432">432: </a>  adapt-&gt;ops-&gt;destroy = TSGLAdaptDestroy_JustFree;
 <a name="line433">433: </a>  <font color="#4169E1">return</font>(0);
 <a name="line434">434: </a>}
+<a name="line435">435: </a>EXTERN_C_END
 </pre>
 </body>
 

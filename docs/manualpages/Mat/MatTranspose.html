@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatTranspose.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatTranspose</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatTranspose"><H1>MatTranspose</H1></A>
 Computes an in-place or out-of-place transpose of a matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -18,19 +19,17 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix to transpose
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>reuse </B></TD><TD>- store the transpose matrix in the provided B
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>reuse </B></TD><TD>- either MAT_INITIAL_MATRIX or MAT_REUSE_MATRIX
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <DT><B>B </B> -the transpose 
 <br>
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD> Mat MatTranspose(Mat A)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>MatTranspose(A,MAT_INITIAL_MATRIX,&t); return t;</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 If you  pass in &amp;mat for B the transpose will be done in place, for example <A HREF="../Mat/MatTranspose.html#MatTranspose">MatTranspose</A>(mat,MAT_REUSE_MATRIX,&amp;mat);
+<P>
+Consider using <A HREF="../Mat/MatCreateTranspose.html#MatCreateTranspose">MatCreateTranspose</A>() instead if you only need a matrix that behaves like the transpose, but don't need the storage to be changed.
 <P>
 
 <P>

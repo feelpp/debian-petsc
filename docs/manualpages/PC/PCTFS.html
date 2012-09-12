@@ -1,16 +1,19 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCTFS.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCTFS</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCTFS"><H1>PCTFS</H1></A>
 A parallel direct solver intended for problems with very few unknowns (like the  coarse grid in multigrid). Implemented by  Henry M. Tufo III and Paul Fischer
 <P>
 
 <P>
 Notes: Only implemented for the MPIAIJ matrices
+<P>
+Only works on a solver object that lives on all of <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>!
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>

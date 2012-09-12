@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESSetMaxLinearSolveFailures.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESSetMaxLinearSolveFailures</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESSetMaxLinearSolveFailures"><H1>SNESSetMaxLinearSolveFailures</H1></A>
 the number of failed linear solve attempts allowed before <A HREF="../SNES/SNES.html#SNES">SNES</A> returns with a diverged reason of SNES_DIVERGED_LINEAR_SOLVE 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESSetMaxLinearSolveFailures(SNES snes, PetscInt maxFails)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>

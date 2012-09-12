@@ -1,15 +1,16 @@
 <center><a href="ex9.c">Actual source code: ex9.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tests/ex9.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:46+00:00">
+<meta name="date" content="2012-08-29T16:58:04+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>
-<a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/DM/DMGetColoring.html#DMGetColoring">DMGetColoring</A>() in 3d.\n\n"</font>;
+<a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/DM/DMCreateColoring.html#DMCreateColoring">DMCreateColoring</A>() in 3d.\n\n"</font>;
 
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 <a name="line5">  5: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
@@ -63,8 +64,8 @@
 <a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ly);
 <a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(lz);
 
-<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/DM/DMGetColoring.html#DMGetColoring">DMGetColoring</A>(da,IS_COLORING_GLOBAL,<A href="../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>,&amp;coloring);
-<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>,&amp;mat);
+<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/DM/DMCreateColoring.html#DMCreateColoring">DMCreateColoring</A>(da,IS_COLORING_GLOBAL,<A href="../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>,&amp;coloring);
+<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>,&amp;mat);
 <a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/MatFD/MatFDColoringCreate.html#MatFDColoringCreate">MatFDColoringCreate</A>(mat,coloring,&amp;fdcoloring);
 
 <a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da,&amp;dvec);

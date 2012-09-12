@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscFinalize.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscFinalize</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscFinalize"><H1>PetscFinalize</H1></A>
 Checks for options to be called at the conclusion of the program. MPI_Finalize() is called only if the user had not called MPI_Init() before calling <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -32,7 +33,7 @@ Collective on <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys for Profiling</FONT></H3>
-See the &lt;a href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.11">Chapter 11 Profiling</A>"&gt;profiling chapter of the users manual&lt;/a&gt; for details.
+See the &lt;a href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.10">Chapter 10 Profiling</A>"&gt;profiling chapter of the users manual&lt;/a&gt; for details.
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_summary [filename] </B></TD><TD>- Prints summary of flop and timing
 information to screen. If the filename is specified the

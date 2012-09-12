@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCJACOBI.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCJACOBI</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCJACOBI"><H1>PCJACOBI</H1></A>
 Jacobi (i.e. diagonal scaling preconditioning) 
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
@@ -12,7 +13,7 @@ Jacobi (i.e. diagonal scaling preconditioning)
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_jacobi_rowmax </B></TD><TD>- use the maximum absolute value in each row as the scaling factor,
 rather than the diagonal
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_jacobi_rowsum </B></TD><TD>- use the maximum absolute value in each row as the scaling factor,
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_jacobi_rowsum </B></TD><TD>- use the row sums as the scaling factor,
 rather than the diagonal
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_jacobi_abs </B></TD><TD>- use the absolute value of the diagaonl entry
@@ -39,6 +40,7 @@ Zero entries along the diagonal are replaced with the value 1.0
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15.c.html">src/ksp/ksp/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex23.c.html">src/ksp/ksp/examples/tutorials/ex23.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex58.c.html">src/ksp/ksp/examples/tutorials/ex58.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1f.F.html">src/ksp/ksp/examples/tutorials/ex1f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2f.F.html">src/ksp/ksp/examples/tutorials/ex2f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex15f.F.html">src/ksp/ksp/examples/tutorials/ex15f.F.html</A><BR>

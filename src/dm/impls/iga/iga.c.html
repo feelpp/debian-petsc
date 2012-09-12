@@ -1,14 +1,15 @@
 <center><a href="iga.c">Actual source code: iga.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/iga/iga.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:31+00:00">
+<meta name="date" content="2012-08-29T16:56:50+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;private/igaimpl.h&gt;    </font><font color="#B22222">/*I   "petscdmiga.h"   I*/</font><font color="#A020F0"></font>
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petsc-private/igaimpl.h&gt;    </font><font color="#B22222">/*I   "petscdmiga.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line5">  5: </a><strong><font color="#4169E1"><a name="DMDestroy_IGA"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMDestroy_IGA(DM dm)</font></strong>
 <a name="line6">  6: </a>{
@@ -30,7 +31,7 @@
 <a name="line26"> 26: </a>  DM_IGA        *iga = (DM_IGA *) dm-&gt;data;
 <a name="line27"> 27: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line31"> 31: </a>  <A href="../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERASCII, &amp;iascii);
+<a name="line31"> 31: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERASCII, &amp;iascii);
 
 <a name="line33"> 33: </a>  <font color="#4169E1">if</font> (iascii){
 <a name="line34"> 34: </a>    <A href="../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"IGA:\n"</font>);
@@ -64,11 +65,11 @@
 <a name="line70"> 70: </a>  <font color="#4169E1">return</font>(0);
 <a name="line71"> 71: </a>}
 
-<a name="line75"> 75: </a><strong><font color="#4169E1"><a name="DMGetMatrix_IGA"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMGetMatrix_IGA(DM dm, const <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> mtype, <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *J)</font></strong>
+<a name="line75"> 75: </a><strong><font color="#4169E1"><a name="DMCreateMatrix_IGA"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateMatrix_IGA(DM dm, const <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> mtype, <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *J)</font></strong>
 <a name="line76"> 76: </a>{
 <a name="line77"> 77: </a>  DM_IGA        *iga = (DM_IGA *) dm-&gt;data;
 
-<a name="line81"> 81: </a>  <A href="../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(iga-&gt;da_dof, mtype, J);
+<a name="line81"> 81: </a>  <A href="../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(iga-&gt;da_dof, mtype, J);
 <a name="line82"> 82: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)*J,<font color="#666666">"DM"</font>,(<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm);
 <a name="line83"> 83: </a>  <font color="#4169E1">return</font>(0);
 <a name="line84"> 84: </a>}
@@ -351,7 +352,7 @@
 
 <a name="line434">434: </a>  <font color="#B22222">/* Test C &lt; p */</font>
 <a name="line435">435: </a>  <font color="#4169E1">if</font>(px &lt;= Cx || py &lt;= Cy || pz &lt;= Cz){
-<a name="line436">436: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Discretization inconsistent: polynomial order must be greater than degree of continuity"</font>);
+<a name="line436">436: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Discretization inconsistent: polynomial order must be greater than degree of continuity"</font>);
 <a name="line437">437: </a>  }
 
 <a name="line439">439: </a>  <font color="#B22222">/* Load constants */</font>
@@ -409,7 +410,7 @@
 <a name="line491">491: </a>  <font color="#4169E1">if</font> (IsPeriodicZ) zptype = DMDA_BOUNDARY_PERIODIC;
 
 <a name="line493">493: </a>  sw = (iga-&gt;px&gt;iga-&gt;py) ? iga-&gt;px : iga-&gt;py ; sw = (sw&gt;iga-&gt;pz) ? sw : iga-&gt;pz ;
-<a name="line494">494: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;iga-&gt;da_dof);
+<a name="line494">494: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm,&amp;iga-&gt;da_dof);
 <a name="line495">495: </a>  <A href="../../../docs/manualpages/DM/DMDASetDim.html#DMDASetDim">DMDASetDim</A>(iga-&gt;da_dof, 3);
 <a name="line496">496: </a>  <A href="../../../docs/manualpages/DM/DMDASetSizes.html#DMDASetSizes">DMDASetSizes</A>(iga-&gt;da_dof,iga-&gt;nbx,iga-&gt;nby,iga-&gt;nbz);
 <a name="line497">497: </a>  <A href="../../../docs/manualpages/DM/DMDASetDof.html#DMDASetDof">DMDASetDof</A>(iga-&gt;da_dof, ndof);
@@ -448,13 +449,13 @@
 
 <a name="line535">535: </a>  fp = fopen(FunctionSpaceFile, <font color="#666666">"r"</font>);
 <a name="line536">536: </a>  <font color="#4169E1">if</font> (fp == NULL ){
-<a name="line537">537: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_FILE_OPEN, <font color="#666666">"Cannot find geometry file"</font>);
+<a name="line537">537: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm, PETSC_ERR_FILE_OPEN, <font color="#666666">"Cannot find geometry file"</font>);
 <a name="line538">538: </a>  }
 
 <a name="line540">540: </a>  <font color="#4169E1">if</font> (fscanf(fp, <font color="#666666">"%d"</font>, &amp;ival) != 1) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"Failed to read spatial dimension from %s"</font>,FunctionSpaceFile);
 <a name="line541">541: </a>  spatial_dim = ival;
 <a name="line542">542: </a>  <font color="#4169E1">if</font>(spatial_dim != 3){
-<a name="line543">543: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Geometry dimension != problem dimension"</font>);
+<a name="line543">543: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Geometry dimension != problem dimension"</font>);
 <a name="line544">544: </a>  }
 
 <a name="line546">546: </a>  <font color="#B22222">/* Read in polynomial orders and number of basis functions */</font>
@@ -539,7 +540,7 @@
 <a name="line625">625: </a>  sw = (iga-&gt;px&gt;iga-&gt;py) ? iga-&gt;px : iga-&gt;py ; sw = (sw&gt;iga-&gt;pz) ? sw : iga-&gt;pz ;
 
 <a name="line627">627: </a>  <font color="#B22222">/* DOF DA */</font>
-<a name="line628">628: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;iga-&gt;da_dof);
+<a name="line628">628: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm,&amp;iga-&gt;da_dof);
 <a name="line629">629: </a>  <A href="../../../docs/manualpages/DM/DMDASetDim.html#DMDASetDim">DMDASetDim</A>(iga-&gt;da_dof, 3);
 <a name="line630">630: </a>  <A href="../../../docs/manualpages/DM/DMDASetSizes.html#DMDASetSizes">DMDASetSizes</A>(iga-&gt;da_dof,iga-&gt;nbx,iga-&gt;nby,iga-&gt;nbz);
 <a name="line631">631: </a>  <A href="../../../docs/manualpages/DM/DMDASetDof.html#DMDASetDof">DMDASetDof</A>(iga-&gt;da_dof, ndof);
@@ -556,7 +557,7 @@
 <a name="line642">642: </a>  BDSetElementOwnership(iga-&gt;bdZ,iga-&gt;Nz,info_dof.zs,info_dof.zs+info_dof.zm-1,iga-&gt;pz);
 
 <a name="line644">644: </a>  <font color="#B22222">/* Geometry DA */</font>
-<a name="line645">645: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;iga-&gt;da_geometry);
+<a name="line645">645: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm,&amp;iga-&gt;da_geometry);
 <a name="line646">646: </a>  <A href="../../../docs/manualpages/DM/DMDASetDim.html#DMDASetDim">DMDASetDim</A>(iga-&gt;da_geometry, 3);
 <a name="line647">647: </a>  <A href="../../../docs/manualpages/DM/DMDASetSizes.html#DMDASetSizes">DMDASetSizes</A>(iga-&gt;da_geometry,iga-&gt;nbx,iga-&gt;nby,iga-&gt;nbz);
 <a name="line648">648: </a>  <A href="../../../docs/manualpages/DM/DMDASetDof.html#DMDASetDof">DMDASetDof</A>(iga-&gt;da_geometry, 4);
@@ -590,7 +591,7 @@
 
 <a name="line681">681: </a>  <font color="#B22222">/* Test C &lt; p */</font>
 <a name="line682">682: </a>  <font color="#4169E1">if</font>(px &lt;= Cx || py &lt;= Cy){
-<a name="line683">683: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Discretization inconsistent: polynomial order must be greater than degree of continuity"</font>);
+<a name="line683">683: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Discretization inconsistent: polynomial order must be greater than degree of continuity"</font>);
 <a name="line684">684: </a>  }
 
 <a name="line686">686: </a>  <font color="#B22222">/* Load constants */</font>
@@ -617,7 +618,7 @@
 
 <a name="line708">708: </a>  <font color="#4169E1">if</font>(IsPeriodicX){
 
-<a name="line710">710: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Initialization routine for tapered meshes does not yet support periodicity"</font>);
+<a name="line710">710: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Initialization routine for tapered meshes does not yet support periodicity"</font>);
 <a name="line711">711: </a>    CreatePeriodicKnotVector(iga-&gt;Nx,iga-&gt;px,iga-&gt;Cx,iga-&gt;mx,iga-&gt;Ux,Ux0,Uxf);
 <a name="line712">712: </a>    iga-&gt;nbx -= iga-&gt;px;
 
@@ -661,11 +662,11 @@
 <a name="line751">751: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(X2);
 <a name="line752">752: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(X);
 <a name="line753">753: </a>  }
-<a name="line754">754: </a>  <font color="#4169E1">if</font>(IsPeriodicY){
-<a name="line755">755: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Initialization routine for tapered meshes does not yet support periodicity"</font>);
+<a name="line754">754: </a>  <font color="#4169E1">if</font> (IsPeriodicY) {
+<a name="line755">755: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Initialization routine for tapered meshes does not yet support periodicity"</font>);
 <a name="line756">756: </a>    CreatePeriodicKnotVector(iga-&gt;Ny,iga-&gt;py,iga-&gt;Cy,iga-&gt;my,iga-&gt;Uy,Uy0,Uyf);
 <a name="line757">757: </a>    iga-&gt;nby -= iga-&gt;py;
-<a name="line758">758: </a>  }<font color="#4169E1">else</font>{
+<a name="line758">758: </a>  } <font color="#4169E1">else</font> {
 
 
 <a name="line761">761: </a>    <A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *X1;
@@ -716,7 +717,7 @@
 <a name="line806">806: </a>  <font color="#4169E1">if</font> (IsPeriodicY) yptype = DMDA_BOUNDARY_PERIODIC;
 
 <a name="line808">808: </a>  sw = (iga-&gt;px&gt;iga-&gt;py) ? iga-&gt;px : iga-&gt;py ;
-<a name="line809">809: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;iga-&gt;da_dof);
+<a name="line809">809: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm,&amp;iga-&gt;da_dof);
 <a name="line810">810: </a>  <A href="../../../docs/manualpages/DM/DMDASetDim.html#DMDASetDim">DMDASetDim</A>(iga-&gt;da_dof, 2);
 <a name="line811">811: </a>  <A href="../../../docs/manualpages/DM/DMDASetSizes.html#DMDASetSizes">DMDASetSizes</A>(iga-&gt;da_dof,iga-&gt;nbx,iga-&gt;nby,1);
 <a name="line812">812: </a>  <A href="../../../docs/manualpages/DM/DMDASetDof.html#DMDASetDof">DMDASetDof</A>(iga-&gt;da_dof, ndof);
@@ -748,7 +749,7 @@
 
 <a name="line843">843: </a>  <font color="#B22222">/* Test C &lt; p */</font>
 <a name="line844">844: </a>  <font color="#4169E1">if</font>(px &lt;= Cx || py &lt;= Cy){
-<a name="line845">845: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Discretization inconsistent: polynomial order must be greater than degree of continuity"</font>);
+<a name="line845">845: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Discretization inconsistent: polynomial order must be greater than degree of continuity"</font>);
 <a name="line846">846: </a>  }
 
 <a name="line848">848: </a>  <font color="#B22222">/* Load constants */</font>
@@ -794,7 +795,7 @@
 <a name="line888">888: </a>  <font color="#4169E1">if</font> (IsPeriodicY) yptype = DMDA_BOUNDARY_PERIODIC;
 
 <a name="line890">890: </a>  sw = (iga-&gt;px&gt;iga-&gt;py) ? iga-&gt;px : iga-&gt;py ;
-<a name="line891">891: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;iga-&gt;da_dof);
+<a name="line891">891: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm,&amp;iga-&gt;da_dof);
 <a name="line892">892: </a>  <A href="../../../docs/manualpages/DM/DMDASetDim.html#DMDASetDim">DMDASetDim</A>(iga-&gt;da_dof, 2);
 <a name="line893">893: </a>  <A href="../../../docs/manualpages/DM/DMDASetSizes.html#DMDASetSizes">DMDASetSizes</A>(iga-&gt;da_dof,iga-&gt;nbx,iga-&gt;nby,1);
 <a name="line894">894: </a>  <A href="../../../docs/manualpages/DM/DMDASetDof.html#DMDASetDof">DMDASetDof</A>(iga-&gt;da_dof, ndof);
@@ -823,7 +824,7 @@
 
 <a name="line922">922: </a>  <font color="#B22222">/* Test C &lt; p */</font>
 <a name="line923">923: </a>  <font color="#4169E1">if</font>(px &lt;= Cx){
-<a name="line924">924: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Discretization inconsistent: polynomial order must be greater than degree of continuity"</font>);
+<a name="line924">924: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Discretization inconsistent: polynomial order must be greater than degree of continuity"</font>);
 <a name="line925">925: </a>  }
 
 <a name="line927">927: </a>  <font color="#B22222">/* Load constants */</font>
@@ -857,7 +858,7 @@
 <a name="line955">955: </a>  <font color="#4169E1">if</font> (IsPeriodicX) ptype = DMDA_BOUNDARY_PERIODIC;
 
 <a name="line957">957: </a>  sw = iga-&gt;px;
-<a name="line958">958: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;iga-&gt;da_dof);
+<a name="line958">958: </a>  <A href="../../../docs/manualpages/DM/DMDACreate.html#DMDACreate">DMDACreate</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;comm,&amp;iga-&gt;da_dof);
 <a name="line959">959: </a>  <A href="../../../docs/manualpages/DM/DMDASetDim.html#DMDASetDim">DMDASetDim</A>(iga-&gt;da_dof, 1);
 <a name="line960">960: </a>  <A href="../../../docs/manualpages/DM/DMDASetSizes.html#DMDASetSizes">DMDASetSizes</A>(iga-&gt;da_dof,iga-&gt;nbx,1,1);
 <a name="line961">961: </a>  <A href="../../../docs/manualpages/DM/DMDASetDof.html#DMDASetDof">DMDASetDof</A>(iga-&gt;da_dof, ndof);
@@ -1393,7 +1394,7 @@
 <a name="line1546">1546: </a>    X[19] = 0.993128599185094924786 ; W[19] = 0.0176140071391521183118620 ;
 <a name="line1547">1547: </a>    <font color="#4169E1">break</font> ;
 <a name="line1548">1548: </a><strong><font color="#FF0000">  default:</font></strong>
-<a name="line1549">1549: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Unimplemented number of gauss points %d!"</font>, n);
+<a name="line1549">1549: </a>    <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Unimplemented number of gauss points %d!"</font>, n);
 <a name="line1550">1550: </a>  }
 <a name="line1551">1551: </a>  <font color="#4169E1">return</font>(0);
 <a name="line1552">1552: </a>}
@@ -1469,13 +1470,13 @@
 <a name="line1633">1633: </a>  <A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dX;
 
 <a name="line1636">1636: </a>  <font color="#4169E1">for</font>(i=0;i&lt;Ns;i++){
-<a name="line1637">1637: </a>    sum += pow(f,i);
+<a name="line1637">1637: </a>    sum += pow(f,(<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)i);
 <a name="line1638">1638: </a>  }
 
 <a name="line1640">1640: </a>  dX = (Xend-Xbegin)/sum;
 <a name="line1641">1641: </a>  X[0] = Xbegin;
 <a name="line1642">1642: </a>  <font color="#4169E1">for</font>(i=1;i&lt;N;i++){
-<a name="line1643">1643: </a>    X[i] = X[i-1] + dX*pow(f,i-1.0);
+<a name="line1643">1643: </a>    X[i] = X[i-1] + dX*pow(f,(<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)i-1.0);
 <a name="line1644">1644: </a>  }
 
 <a name="line1646">1646: </a>  <font color="#4169E1">return</font>(0);
@@ -1490,7 +1491,7 @@
 
 <a name="line1659">1659: </a>  <font color="#4169E1">for</font>(j=0;j&lt;k;j++)
 <a name="line1660">1660: </a>    <font color="#4169E1">if</font>(Uadd[j] &lt; U[0] || Uadd[j] &gt; U[m-1])
-<a name="line1661">1661: </a>      <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Inserted knots beyond original knot vector limits"</font>);
+<a name="line1661">1661: </a>      <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Inserted knots beyond original knot vector limits"</font>);
 
 <a name="line1663">1663: </a>  <font color="#B22222">/* 2) I am lazy so I am not thinking about more that could go wrong */</font>
 

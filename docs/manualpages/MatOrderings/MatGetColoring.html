@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/MatOrderings/MatGetColoring.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatGetColoring</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatGetColoring"><H1>MatGetColoring</H1></A>
 Gets a coloring for a matrix, from its sparsity structure, to reduce the number of function evaluations needed to compute a sparse Jacobian via differencing. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -52,9 +53,18 @@ To see the coloring use
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-These compute the graph coloring of the graph of A^{T}A. The coloring used
-for efficient (parallel or thread based) triangular solves etc is NOT yet
-available.
+<pre>
+   A graph coloring C(A)  is a division of vertices  so that two vertices of the same color do not share any common edges.
+</pre>
+<pre>
+   A suitable coloring for a  smoother  is simply C(A).
+</pre>
+<pre>
+   A suitable coloring for efficient Jacobian computation is a division of the columns so that two columns of the same color do not share any common rows. 
+</pre>
+<pre>
+        This corresponds to C(A^{T} A).  This is what <A HREF="../MatOrderings/MatGetColoring.html#MatGetColoring">MatGetColoring</A>() computes.
+</pre>
 <P>
 The user can define additional colorings; see <A HREF="../Mat/MatColoringRegisterDynamic.html#MatColoringRegisterDynamic">MatColoringRegisterDynamic</A>().
 <P>
@@ -94,5 +104,6 @@ returned here.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex45.c.html">src/snes/examples/tutorials/ex45.c.html</A><BR>
 </BODY></HTML>

@@ -2,7 +2,7 @@
 /*  
    Defines the abstract operations on index sets, i.e. the public interface. 
 */
-#include <private/isimpl.h>      /*I "petscis.h" I*/
+#include <petsc-private/isimpl.h>      /*I "petscis.h" I*/
 
 /* Logging support */
 PetscClassId  IS_CLASSID;
@@ -994,13 +994,10 @@ PetscErrorCode  ISGetBlockSize(IS is,PetscInt *size)
   PetscFunctionReturn(0);
 }
 
-#if defined(PETSC_HAVE_MATLAB_ENGINE)
-#include <engine.h>   /* MATLAB include file */
-#include <mex.h>      /* MATLAB include file */
 EXTERN_C_BEGIN
 #undef __FUNCT__ 
-#define __FUNCT__ "ISGetIndicesMatlab"
-PetscErrorCode ISGetIndicesMatlab(IS is, PetscInt idx[])
+#define __FUNCT__ "ISGetIndicesCopy"
+PetscErrorCode ISGetIndicesCopy(IS is, PetscInt idx[])
 {
   PetscErrorCode ierr;
   PetscInt       len,i;
@@ -1014,7 +1011,6 @@ PetscErrorCode ISGetIndicesMatlab(IS is, PetscInt idx[])
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
-#endif
 
 /*MC
     ISGetIndicesF90 - Accesses the elements of an index set from Fortran90.

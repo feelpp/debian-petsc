@@ -24,6 +24,7 @@ int main(int argc,char **args)
 
   /* create the matrix for the five point stencil, YET AGAIN */
   ierr = MatCreateSeqAIJ(PETSC_COMM_SELF,m*n,m*n,5,PETSC_NULL,&C); 
+  ierr = MatSetUp(C);CHKERRQ(ierr);
   for (i=0; i<m; i++) {
     for (j=0; j<n; j++) {
       v = -1.0;  Ii = j + n*i;
@@ -85,7 +86,7 @@ int main(int argc,char **args)
   return 0;
 }
 
-#include <private/matimpl.h>
+#include <petsc-private/matimpl.h>
 /* This is modified from MatGetOrdering_Natural() */
 #undef __FUNCT__  
 #define __FUNCT__ "MatGetOrdering_myordering"

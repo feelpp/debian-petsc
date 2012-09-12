@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* fp.c */
 /* Fortran interface file */
 
@@ -29,6 +29,16 @@ extern void PetscRmPointer(void*);
 
 #include "petscsys.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscfptrappush_ PETSCFPTRAPPUSH
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscfptrappush_ petscfptrappush
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscfptrappop_ PETSCFPTRAPPOP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscfptrappop_ petscfptrappop
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscsetfptrap_ PETSCSETFPTRAP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscsetfptrap_ petscsetfptrap
@@ -39,6 +49,12 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  petscfptrappush_(PetscFPTrap *trap, int *__ierr ){
+*__ierr = PetscFPTrapPush(*trap);
+}
+void PETSC_STDCALL  petscfptrappop_(int *__ierr ){
+*__ierr = PetscFPTrapPop();
+}
 void PETSC_STDCALL  petscsetfptrap_(PetscFPTrap *flag, int *__ierr ){
 *__ierr = PetscSetFPTrap(*flag);
 }

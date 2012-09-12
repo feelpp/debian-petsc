@@ -1,18 +1,19 @@
 <center><a href="redistribute.c">Actual source code: redistribute.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/redistribute/redistribute.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:42+00:00">
+<meta name="date" content="2012-08-29T17:01:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">  This file defines a "solve the problem redistributely on each subgroup of processor" preconditioner.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
-<a name="line5">  5: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;     </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;     </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
 <a name="line6">  6: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
 <a name="line8">  8: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -32,8 +33,8 @@
 <a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       iascii,isstring;
 <a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        ncnt,N;
 
-<a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
-<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERSTRING,&amp;isstring);
+<a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERSTRING,&amp;isstring);
 <a name="line30"> 30: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line31"> 31: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(&amp;red-&gt;dcnt,&amp;ncnt,1,MPIU_INT,MPI_SUM,((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm);
 <a name="line32"> 32: </a>    <A href="../../../../../docs/manualpages/Mat/MatGetSize.html#MatGetSize">MatGetSize</A>(pc-&gt;pmat,&amp;N,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
@@ -319,35 +320,41 @@
 <a name="line329">329: </a><font color="#B22222">     If you have used <A href="../../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>() to eliminate (for example, Dirichlet) boundary conditions for a symmetric problem then you can use, for example, -ksp_type preonly </font>
 <a name="line330">330: </a><font color="#B22222">     -pc_type redistribute -redistribute_ksp_type cg -redistribute_pc_type bjacobi -redistribute_sub_pc_type icc to take advantage of the symmetry.</font>
 
-<a name="line332">332: </a><font color="#B22222">   Level: intermediate</font>
+<a name="line332">332: </a><font color="#B22222">     This does NOT call a partitioner to reorder rows to lower communication; the ordering of the rows in the original matrix and redistributed matrix is the same.</font>
 
-<a name="line334">334: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/PC/PCCreate.html#PCCreate">PCCreate</A>(), <A href="../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> (for list of available types), <A href="../../../../../docs/manualpages/PC/PCRedistributeGetKSP.html#PCRedistributeGetKSP">PCRedistributeGetKSP</A>()</font>
-<a name="line335">335: </a><font color="#B22222">M*/</font>
+<a name="line334">334: </a><font color="#B22222">     Developer Notes: Should add an option to this preconditioner to use a partitioner to redistribute the rows to lower communication.</font>
 
-<a name="line340">340: </a><strong><font color="#4169E1"><a name="PCCreate_Redistribute"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_Redistribute(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
-<a name="line341">341: </a>{
-<a name="line342">342: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
-<a name="line343">343: </a>  PC_Redistribute *red;
-<a name="line344">344: </a>  const char      *prefix;
-<a name="line345">345: </a>
-<a name="line347">347: </a>  <A href="../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(pc,PC_Redistribute,&amp;red);
-<a name="line348">348: </a>  pc-&gt;data            = (void*)red;
+<a name="line336">336: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line350">350: </a>  pc-&gt;ops-&gt;apply           = PCApply_Redistribute;
-<a name="line351">351: </a>  pc-&gt;ops-&gt;applytranspose  = 0;
-<a name="line352">352: </a>  pc-&gt;ops-&gt;setup           = PCSetUp_Redistribute;
-<a name="line353">353: </a>  pc-&gt;ops-&gt;destroy         = PCDestroy_Redistribute;
-<a name="line354">354: </a>  pc-&gt;ops-&gt;setfromoptions  = PCSetFromOptions_Redistribute;
-<a name="line355">355: </a>  pc-&gt;ops-&gt;view            = PCView_Redistribute;
+<a name="line338">338: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/PC/PCCreate.html#PCCreate">PCCreate</A>(), <A href="../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> (for list of available types), <A href="../../../../../docs/manualpages/PC/PCRedistributeGetKSP.html#PCRedistributeGetKSP">PCRedistributeGetKSP</A>()</font>
+<a name="line339">339: </a><font color="#B22222">M*/</font>
 
-<a name="line357">357: </a>  <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,&amp;red-&gt;ksp);
-<a name="line358">358: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectIncrementTabLevel.html#PetscObjectIncrementTabLevel">PetscObjectIncrementTabLevel</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)red-&gt;ksp,(<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,1);
-<a name="line359">359: </a>  PetscLogObjectParent(pc,red-&gt;ksp);
-<a name="line360">360: </a>  <A href="../../../../../docs/manualpages/PC/PCGetOptionsPrefix.html#PCGetOptionsPrefix">PCGetOptionsPrefix</A>(pc,&amp;prefix);
-<a name="line361">361: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetOptionsPrefix.html#KSPSetOptionsPrefix">KSPSetOptionsPrefix</A>(red-&gt;ksp,prefix);
-<a name="line362">362: </a>  <A href="../../../../../docs/manualpages/KSP/KSPAppendOptionsPrefix.html#KSPAppendOptionsPrefix">KSPAppendOptionsPrefix</A>(red-&gt;ksp,<font color="#666666">"redistribute_"</font>);
-<a name="line363">363: </a>  <font color="#4169E1">return</font>(0);
-<a name="line364">364: </a>}
+<a name="line341">341: </a>EXTERN_C_BEGIN
+<a name="line344">344: </a><strong><font color="#4169E1"><a name="PCCreate_Redistribute"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_Redistribute(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
+<a name="line345">345: </a>{
+<a name="line346">346: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line347">347: </a>  PC_Redistribute *red;
+<a name="line348">348: </a>  const char      *prefix;
+<a name="line349">349: </a>
+<a name="line351">351: </a>  <A href="../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(pc,PC_Redistribute,&amp;red);
+<a name="line352">352: </a>  pc-&gt;data            = (void*)red;
+
+<a name="line354">354: </a>  pc-&gt;ops-&gt;apply           = PCApply_Redistribute;
+<a name="line355">355: </a>  pc-&gt;ops-&gt;applytranspose  = 0;
+<a name="line356">356: </a>  pc-&gt;ops-&gt;setup           = PCSetUp_Redistribute;
+<a name="line357">357: </a>  pc-&gt;ops-&gt;destroy         = PCDestroy_Redistribute;
+<a name="line358">358: </a>  pc-&gt;ops-&gt;setfromoptions  = PCSetFromOptions_Redistribute;
+<a name="line359">359: </a>  pc-&gt;ops-&gt;view            = PCView_Redistribute;
+
+<a name="line361">361: </a>  <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,&amp;red-&gt;ksp);
+<a name="line362">362: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectIncrementTabLevel.html#PetscObjectIncrementTabLevel">PetscObjectIncrementTabLevel</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)red-&gt;ksp,(<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,1);
+<a name="line363">363: </a>  PetscLogObjectParent(pc,red-&gt;ksp);
+<a name="line364">364: </a>  <A href="../../../../../docs/manualpages/PC/PCGetOptionsPrefix.html#PCGetOptionsPrefix">PCGetOptionsPrefix</A>(pc,&amp;prefix);
+<a name="line365">365: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetOptionsPrefix.html#KSPSetOptionsPrefix">KSPSetOptionsPrefix</A>(red-&gt;ksp,prefix);
+<a name="line366">366: </a>  <A href="../../../../../docs/manualpages/KSP/KSPAppendOptionsPrefix.html#KSPAppendOptionsPrefix">KSPAppendOptionsPrefix</A>(red-&gt;ksp,<font color="#666666">"redistribute_"</font>);
+<a name="line367">367: </a>  <font color="#4169E1">return</font>(0);
+<a name="line368">368: </a>}
+<a name="line369">369: </a>EXTERN_C_END
 </pre>
 </body>
 

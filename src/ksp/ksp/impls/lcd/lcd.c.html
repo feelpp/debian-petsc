@@ -1,13 +1,14 @@
 <center><a href="lcd.c">Actual source code: lcd.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/lcd/lcd.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:12:14+00:00">
+<meta name="date" content="2012-08-29T17:04:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/lcd/lcdimpl.h&gt;</font>
 
@@ -158,7 +159,7 @@
 <a name="line166">166: </a>  KSP_LCD         *lcd = (KSP_LCD *)ksp-&gt;data;
 <a name="line168">168: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line171">171: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line171">171: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line172">172: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line173">173: </a>      <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  LCD: restart=%d\n"</font>,lcd-&gt;restart);
 <a name="line174">174: </a>      <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  LCD: happy breakdown tolerance %g\n"</font>,lcd-&gt;haptol);
@@ -221,6 +222,7 @@
 
 <a name="line236">236: </a><font color="#B22222">M*/</font>
 
+<a name="line238">238: </a>EXTERN_C_BEGIN
 <a name="line241">241: </a><strong><font color="#4169E1"><a name="KSPCreate_LCD"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> KSPCreate_LCD(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp)</font></strong>
 <a name="line242">242: </a>{
 <a name="line244">244: </a>  KSP_LCD         *lcd;
@@ -246,6 +248,7 @@
 
 <a name="line266">266: </a>  <font color="#4169E1">return</font>(0);
 <a name="line267">267: </a>}
+<a name="line268">268: </a>EXTERN_C_END
 
 
 

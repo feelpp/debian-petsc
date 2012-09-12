@@ -1,13 +1,14 @@
 <center><a href="hypre.c">Actual source code: hypre.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/hypre/hypre.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:09:50+00:00">
+<meta name="date" content="2012-08-29T16:59:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* </font>
 <a name="line3">  3: </a><font color="#B22222">   Provides an interface to the LLNL package hypre</font>
@@ -15,7 +16,7 @@
 
 <a name="line6">  6: </a><font color="#B22222">/* Must use hypre 2.0.0 or more recent. */</font>
 
-<a name="line8">  8: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;          </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;          </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;../src/dm/impls/da/hypre/mhyp.h&gt;</font>
 
 <a name="line11"> 11: </a><font color="#B22222">/* </font>
@@ -26,58 +27,58 @@
 <a name="line16"> 16: </a>  HYPRE_IJMatrix     ij;
 <a name="line17"> 17: </a>  HYPRE_IJVector     b,x;
 
-<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     (*destroy)(HYPRE_Solver);
-<a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     (*solve)(HYPRE_Solver,HYPRE_ParCSRMatrix,HYPRE_ParVector,HYPRE_ParVector);
-<a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     (*setup)(HYPRE_Solver,HYPRE_ParCSRMatrix,HYPRE_ParVector,HYPRE_ParVector);
+<a name="line19"> 19: </a>  HYPRE_Int          (*destroy)(HYPRE_Solver);
+<a name="line20"> 20: </a>  HYPRE_Int          (*solve)(HYPRE_Solver,HYPRE_ParCSRMatrix,HYPRE_ParVector,HYPRE_ParVector);
+<a name="line21"> 21: </a>  HYPRE_Int          (*setup)(HYPRE_Solver,HYPRE_ParCSRMatrix,HYPRE_ParVector,HYPRE_ParVector);
 <a name="line22"> 22: </a>
 <a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>           comm_hypre;
 <a name="line24"> 24: </a>  char              *hypre_type;
 
 <a name="line26"> 26: </a>  <font color="#B22222">/* options for Pilut and BoomerAMG*/</font>
-<a name="line27"> 27: </a>  int                maxiter;
+<a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           maxiter;
 <a name="line28"> 28: </a>  double             tol;
 
 <a name="line30"> 30: </a>  <font color="#B22222">/* options for Pilut */</font>
-<a name="line31"> 31: </a>  int                factorrowsize;
+<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           factorrowsize;
 
 <a name="line33"> 33: </a>  <font color="#B22222">/* options for ParaSails */</font>
-<a name="line34"> 34: </a>  int                nlevels;
+<a name="line34"> 34: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           nlevels;
 <a name="line35"> 35: </a>  double             threshhold;
 <a name="line36"> 36: </a>  double             filter;
-<a name="line37"> 37: </a>  int                sym;
+<a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           sym;
 <a name="line38"> 38: </a>  double             loadbal;
-<a name="line39"> 39: </a>  int                logging;
-<a name="line40"> 40: </a>  int                ruse;
-<a name="line41"> 41: </a>  int                symt;
+<a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           logging;
+<a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           ruse;
+<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           symt;
 
 <a name="line43"> 43: </a>  <font color="#B22222">/* options for Euclid */</font>
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          bjilu;
-<a name="line45"> 45: </a>  int                levels;
+<a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           levels;
 
 <a name="line47"> 47: </a>  <font color="#B22222">/* options for Euclid and BoomerAMG */</font>
 <a name="line48"> 48: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          printstatistics;
 
 <a name="line50"> 50: </a>  <font color="#B22222">/* options for BoomerAMG */</font>
-<a name="line51"> 51: </a>  int                cycletype;
-<a name="line52"> 52: </a>  int                maxlevels;
+<a name="line51"> 51: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           cycletype;
+<a name="line52"> 52: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           maxlevels;
 <a name="line53"> 53: </a>  double             strongthreshold;
 <a name="line54"> 54: </a>  double             maxrowsum;
-<a name="line55"> 55: </a>  int                gridsweeps[3];
-<a name="line56"> 56: </a>  int                coarsentype;
-<a name="line57"> 57: </a>  int                measuretype;
-<a name="line58"> 58: </a>  int                relaxtype[3];
+<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           gridsweeps[3];
+<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           coarsentype;
+<a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           measuretype;
+<a name="line58"> 58: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           relaxtype[3];
 <a name="line59"> 59: </a>  double             relaxweight;
 <a name="line60"> 60: </a>  double             outerrelaxweight;
-<a name="line61"> 61: </a>  int                relaxorder;
+<a name="line61"> 61: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           relaxorder;
 <a name="line62"> 62: </a>  double             truncfactor;
 <a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          applyrichardson;
-<a name="line64"> 64: </a>  int                pmax;
-<a name="line65"> 65: </a>  int                interptype;
-<a name="line66"> 66: </a>  int                agg_nl;
-<a name="line67"> 67: </a>  int                agg_num_paths;
-<a name="line68"> 68: </a>  int                nodal_coarsen;
+<a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           pmax;
+<a name="line65"> 65: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           interptype;
+<a name="line66"> 66: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           agg_nl;
+<a name="line67"> 67: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           agg_num_paths;
+<a name="line68"> 68: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           nodal_coarsen;
 <a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          nodal_relax;
-<a name="line70"> 70: </a>  int                nodal_relax_levels;
+<a name="line70"> 70: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           nodal_relax_levels;
 <a name="line71"> 71: </a>} PC_HYPRE;
 
 
@@ -149,7 +150,7 @@
 <a name="line144">144: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *bv,*xv;
 <a name="line145">145: </a>  HYPRE_ParVector    jbv,jxv;
 <a name="line146">146: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *sbv,*sxv;
-<a name="line147">147: </a>  int                hierr;
+<a name="line147">147: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           hierr;
 
 <a name="line150">150: </a>  <font color="#4169E1">if</font> (!jac-&gt;applyrichardson) {<A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(x,0.0);}
 <a name="line151">151: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(b,&amp;bv);
@@ -211,7 +212,7 @@
 <a name="line217">217: </a>  PC_HYPRE       *jac = (PC_HYPRE*)pc-&gt;data;
 <a name="line219">219: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line222">222: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line222">222: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line223">223: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line224">224: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE Pilut preconditioning\n"</font>);
 <a name="line225">225: </a>    <font color="#4169E1">if</font> (jac-&gt;maxiter != <A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>) {
@@ -245,7 +246,7 @@
 <a name="line257">257: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>(<font color="#666666">"-pc_hypre_euclid_levels"</font>,<font color="#666666">"Number of levels of fill ILU(k)"</font>,<font color="#666666">"None"</font>,jac-&gt;levels,&amp;jac-&gt;levels,&amp;flag);
 <a name="line258">258: </a>  <font color="#4169E1">if</font> (flag) {
 <a name="line259">259: </a>    <font color="#4169E1">if</font> (jac-&gt;levels &lt; 0) <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Number of levels %d must be nonegative"</font>,jac-&gt;levels);
-<a name="line260">260: </a>    sprintf(levels,<font color="#666666">"%d"</font>,jac-&gt;levels);
+<a name="line260">260: </a>    <A href="../../../../../docs/manualpages/Sys/PetscSNPrintf.html#PetscSNPrintf">PetscSNPrintf</A>(levels,<font color="#4169E1">sizeof</font> levels,<font color="#666666">"%D"</font>,jac-&gt;levels);
 <a name="line261">261: </a>    args[cnt++] = (char*)<font color="#666666">"-level"</font>; args[cnt++] = levels;
 <a name="line262">262: </a>  }
 <a name="line263">263: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(<font color="#666666">"-pc_hypre_euclid_bj"</font>,<font color="#666666">"Use block Jacobi ILU(k)"</font>,<font color="#666666">"None"</font>,jac-&gt;bjilu,&amp;jac-&gt;bjilu,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
@@ -268,7 +269,7 @@
 <a name="line282">282: </a>  PC_HYPRE       *jac = (PC_HYPRE*)pc-&gt;data;
 <a name="line284">284: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line287">287: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line287">287: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line288">288: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line289">289: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE Euclid preconditioning\n"</font>);
 <a name="line290">290: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE Euclid: number of levels %d\n"</font>,jac-&gt;levels);
@@ -289,7 +290,7 @@
 <a name="line307">307: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *bv,*xv;
 <a name="line308">308: </a>  HYPRE_ParVector    jbv,jxv;
 <a name="line309">309: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>        *sbv,*sxv;
-<a name="line310">310: </a>  int                hierr;
+<a name="line310">310: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           hierr;
 
 <a name="line313">313: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(x,0.0);
 <a name="line314">314: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(b,&amp;bv);
@@ -323,7 +324,7 @@
 <a name="line344">344: </a><strong><font color="#4169E1"><a name="PCSetFromOptions_HYPRE_BoomerAMG"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCSetFromOptions_HYPRE_BoomerAMG(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line345">345: </a>{
 <a name="line346">346: </a>  PC_HYPRE       *jac = (PC_HYPRE*)pc-&gt;data;
-<a name="line348">348: </a>  int            n,indx,level;
+<a name="line348">348: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n,indx,level;
 <a name="line349">349: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg, tmp_truth;
 <a name="line350">350: </a>  double         tmpdbl, twodbl[2];
 
@@ -545,7 +546,7 @@
 <a name="line570">570: </a><strong><font color="#4169E1"><a name="PCApplyRichardson_HYPRE_BoomerAMG"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCApplyRichardson_HYPRE_BoomerAMG(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> w,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rtol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> abstol, <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dtol,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  guesszero,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *outits,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A> *reason)</font></strong>
 <a name="line571">571: </a>{
 <a name="line572">572: </a>  PC_HYPRE       *jac = (PC_HYPRE*)pc-&gt;data;
-<a name="line574">574: </a>  int            oits;
+<a name="line574">574: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       oits;
 
 <a name="line577">577: </a>  PetscStackCallHypre(0,HYPRE_BoomerAMGSetMaxIter,(jac-&gt;hsolver,its*jac-&gt;maxiter));
 <a name="line578">578: </a>  PetscStackCallHypre(0,HYPRE_BoomerAMGSetTol,(jac-&gt;hsolver,rtol));
@@ -567,7 +568,7 @@
 <a name="line596">596: </a>  PC_HYPRE       *jac = (PC_HYPRE*)pc-&gt;data;
 <a name="line598">598: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line601">601: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line601">601: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line602">602: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line603">603: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE BoomerAMG preconditioning\n"</font>);
 <a name="line604">604: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE BoomerAMG: Cycle type %s\n"</font>,HYPREBoomerAMGCycleType[jac-&gt;cycletype]);
@@ -615,7 +616,7 @@
 <a name="line648">648: </a><strong><font color="#4169E1"><a name="PCSetFromOptions_HYPRE_ParaSails"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCSetFromOptions_HYPRE_ParaSails(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line649">649: </a>{
 <a name="line650">650: </a>  PC_HYPRE       *jac = (PC_HYPRE*)pc-&gt;data;
-<a name="line652">652: </a>  int            indx;
+<a name="line652">652: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       indx;
 <a name="line653">653: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flag;
 <a name="line654">654: </a>  const char     *symtlist[] = {<font color="#666666">"nonsymmetric"</font>,<font color="#666666">"SPD"</font>,<font color="#666666">"nonsymmetric,SPD"</font>};
 
@@ -662,7 +663,7 @@
 <a name="line700">700: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 <a name="line701">701: </a>  const char     *symt = 0;;
 
-<a name="line704">704: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line704">704: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line705">705: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line706">706: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE ParaSails preconditioning\n"</font>);
 <a name="line707">707: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE ParaSails: nlevels %d\n"</font>,jac-&gt;nlevels);
@@ -686,6 +687,7 @@
 <a name="line725">725: </a>}
 <a name="line726">726: </a><font color="#B22222">/* ---------------------------------------------------------------------------------*/</font>
 
+<a name="line728">728: </a>EXTERN_C_BEGIN
 <a name="line731">731: </a><strong><font color="#4169E1"><a name="PCHYPREGetType_HYPRE"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCHYPREGetType_HYPRE(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,const char *name[])</font></strong>
 <a name="line732">732: </a>{
 <a name="line733">733: </a>  PC_HYPRE       *jac = (PC_HYPRE*)pc-&gt;data;
@@ -693,7 +695,9 @@
 <a name="line736">736: </a>  *name = jac-&gt;hypre_type;
 <a name="line737">737: </a>  <font color="#4169E1">return</font>(0);
 <a name="line738">738: </a>}
+<a name="line739">739: </a>EXTERN_C_END
 
+<a name="line741">741: </a>EXTERN_C_BEGIN
 <a name="line744">744: </a><strong><font color="#4169E1"><a name="PCHYPRESetType_HYPRE"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCHYPRESetType_HYPRE(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,const char name[])</font></strong>
 <a name="line745">745: </a>{
 <a name="line746">746: </a>  PC_HYPRE       *jac = (PC_HYPRE*)pc-&gt;data;
@@ -822,6 +826,7 @@
 <a name="line871">871: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_UNKNOWN_TYPE,<font color="#666666">"Unknown HYPRE preconditioner %s; Choices are pilut, parasails, euclid, boomeramg"</font>,name);
 <a name="line872">872: </a>  <font color="#4169E1">return</font>(0);
 <a name="line873">873: </a>}
+<a name="line874">874: </a>EXTERN_C_END
 
 <a name="line876">876: </a><font color="#B22222">/*</font>
 <a name="line877">877: </a><font color="#B22222">    It only gets here if the HYPRE type has not been set before the call to </font>
@@ -829,7 +834,7 @@
 <a name="line879">879: </a><font color="#B22222">*/</font>
 <a name="line882">882: </a><strong><font color="#4169E1"><a name="PCSetFromOptions_HYPRE"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCSetFromOptions_HYPRE(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line883">883: </a>{
-<a name="line885">885: </a>  int            indx;
+<a name="line885">885: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       indx;
 <a name="line886">886: </a>  const char     *type[] = {<font color="#666666">"pilut"</font>,<font color="#666666">"parasails"</font>,<font color="#666666">"boomeramg"</font>,<font color="#666666">"euclid"</font>};
 <a name="line887">887: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
@@ -931,6 +936,7 @@
 
 <a name="line998">998: </a><font color="#B22222">M*/</font>
 
+<a name="line1000">1000: </a>EXTERN_C_BEGIN
 <a name="line1003">1003: </a><strong><font color="#4169E1"><a name="PCCreate_HYPRE"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_HYPRE(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line1004">1004: </a>{
 <a name="line1005">1005: </a>  PC_HYPRE       *jac;
@@ -949,23 +955,24 @@
 <a name="line1020">1020: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCHYPREGetType_C"</font>,<font color="#666666">"PCHYPREGetType_HYPRE"</font>,PCHYPREGetType_HYPRE);
 <a name="line1021">1021: </a>  <font color="#4169E1">return</font>(0);
 <a name="line1022">1022: </a>}
+<a name="line1023">1023: </a>EXTERN_C_END
 
 <a name="line1025">1025: </a><font color="#B22222">/* ---------------------------------------------------------------------------------------------------------------------------------*/</font>
 
 <a name="line1027">1027: </a><font color="#B22222">/* this include is needed ONLY to allow access to the private data inside the <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> object specific to hypre */</font>
-<a name="line1028">1028: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;</font>
+<a name="line1028">1028: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;</font>
 
 <a name="line1030">1030: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line1031">1031: </a>  <A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>            hcomm;       <font color="#B22222">/* does not share comm with HYPRE_StructMatrix because need to create solver before getting matrix */</font>
 <a name="line1032">1032: </a>  HYPRE_StructSolver  hsolver;
 
 <a name="line1034">1034: </a>  <font color="#B22222">/* keep copy of PFMG options used so may view them */</font>
-<a name="line1035">1035: </a>  int                 its;
+<a name="line1035">1035: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            its;
 <a name="line1036">1036: </a>  double              tol;
-<a name="line1037">1037: </a>  int                 relax_type;
-<a name="line1038">1038: </a>  int                 rap_type;
-<a name="line1039">1039: </a>  int                 num_pre_relax,num_post_relax;
-<a name="line1040">1040: </a>  int                 max_levels;
+<a name="line1037">1037: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            relax_type;
+<a name="line1038">1038: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            rap_type;
+<a name="line1039">1039: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            num_pre_relax,num_post_relax;
+<a name="line1040">1040: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            max_levels;
 <a name="line1041">1041: </a>} PC_PFMG;
 
 <a name="line1045">1045: </a><strong><font color="#4169E1"><a name="PCDestroy_PFMG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCDestroy_PFMG(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
@@ -986,7 +993,7 @@
 <a name="line1065">1065: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 <a name="line1066">1066: </a>  PC_PFMG        *ex = (PC_PFMG*) pc-&gt;data;
 
-<a name="line1069">1069: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line1069">1069: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line1070">1070: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line1071">1071: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE PFMG preconditioning\n"</font>);
 <a name="line1072">1072: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE PFMG: max iterations %d\n"</font>,ex-&gt;its);
@@ -1036,7 +1043,7 @@
 <a name="line1122">1122: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
 <a name="line1123">1123: </a>  PC_PFMG         *ex = (PC_PFMG*) pc-&gt;data;
 <a name="line1124">1124: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     *xx,*yy;
-<a name="line1125">1125: </a>  int             ilower[3],iupper[3];
+<a name="line1125">1125: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        ilower[3],iupper[3];
 <a name="line1126">1126: </a>  Mat_HYPREStruct *mx = (Mat_HYPREStruct *)(pc-&gt;pmat-&gt;data);
 
 <a name="line1129">1129: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(mx-&gt;da,&amp;ilower[0],&amp;ilower[1],&amp;ilower[2],&amp;iupper[0],&amp;iupper[1],&amp;iupper[2]);
@@ -1062,7 +1069,7 @@
 <a name="line1151">1151: </a><strong><font color="#4169E1"><a name="PCApplyRichardson_PFMG"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCApplyRichardson_PFMG(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> w,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rtol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> abstol, <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dtol,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  guesszero,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *outits,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A> *reason)</font></strong>
 <a name="line1152">1152: </a>{
 <a name="line1153">1153: </a>  PC_PFMG        *jac = (PC_PFMG*)pc-&gt;data;
-<a name="line1155">1155: </a>  int            oits;
+<a name="line1155">1155: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       oits;
 
 <a name="line1158">1158: </a>  PetscStackCallHypre(0,HYPRE_StructPFMGSetMaxIter,(jac-&gt;hsolver,its*jac-&gt;its));
 <a name="line1159">1159: </a>  PetscStackCallHypre(0,HYPRE_StructPFMGSetTol,(jac-&gt;hsolver,rtol));
@@ -1085,7 +1092,7 @@
 <a name="line1178">1178: </a>  Mat_HYPREStruct *mx = (Mat_HYPREStruct *)(pc-&gt;pmat-&gt;data);
 <a name="line1179">1179: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>       flg;
 
-<a name="line1182">1182: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,<A href="../../../../../docs/manualpages/DM/MATHYPRESTRUCT.html#MATHYPRESTRUCT">MATHYPRESTRUCT</A>,&amp;flg);
+<a name="line1182">1182: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,<A href="../../../../../docs/manualpages/DM/MATHYPRESTRUCT.html#MATHYPRESTRUCT">MATHYPRESTRUCT</A>,&amp;flg);
 <a name="line1183">1183: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Must use <A href="../../../../../docs/manualpages/DM/MATHYPRESTRUCT.html#MATHYPRESTRUCT">MATHYPRESTRUCT</A> with this preconditioner"</font>);
 
 <a name="line1185">1185: </a>  <font color="#B22222">/* create the hypre solver object and set its information */</font>
@@ -1121,6 +1128,7 @@
 <a name="line1215">1215: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/PC/PCMG.html#PCMG">PCMG</A>, <A href="../../../../../docs/manualpages/DM/MATHYPRESTRUCT.html#MATHYPRESTRUCT">MATHYPRESTRUCT</A></font>
 <a name="line1216">1216: </a><font color="#B22222">M*/</font>
 
+<a name="line1218">1218: </a>EXTERN_C_BEGIN
 <a name="line1221">1221: </a><strong><font color="#4169E1"><a name="PCCreate_PFMG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_PFMG(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line1222">1222: </a>{
 <a name="line1224">1224: </a>  PC_PFMG        *ex;
@@ -1146,6 +1154,7 @@
 <a name="line1245">1245: </a>  PetscStackCallHypre(0,HYPRE_StructPFMGCreate,(ex-&gt;hcomm,&amp;ex-&gt;hsolver));
 <a name="line1246">1246: </a>  <font color="#4169E1">return</font>(0);
 <a name="line1247">1247: </a>}
+<a name="line1248">1248: </a>EXTERN_C_END
 
 <a name="line1250">1250: </a><font color="#B22222">/* ---------------------------------------------------------------------------------------------------------------------------------------------------*/</font>
 
@@ -1155,10 +1164,10 @@
 <a name="line1255">1255: </a>  HYPRE_SStructSolver  ss_solver;
 
 <a name="line1257">1257: </a>  <font color="#B22222">/* keep copy of SYSPFMG options used so may view them */</font>
-<a name="line1258">1258: </a>  int                 its;
+<a name="line1258">1258: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            its;
 <a name="line1259">1259: </a>  double              tol;
-<a name="line1260">1260: </a>  int                 relax_type;
-<a name="line1261">1261: </a>  int                 num_pre_relax,num_post_relax;
+<a name="line1260">1260: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            relax_type;
+<a name="line1261">1261: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            num_pre_relax,num_post_relax;
 <a name="line1262">1262: </a>} PC_SysPFMG;
 
 <a name="line1266">1266: </a><strong><font color="#4169E1"><a name="PCDestroy_SysPFMG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCDestroy_SysPFMG(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
@@ -1178,7 +1187,7 @@
 <a name="line1285">1285: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 <a name="line1286">1286: </a>  PC_SysPFMG    *ex = (PC_SysPFMG*) pc-&gt;data;
 
-<a name="line1289">1289: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line1289">1289: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line1290">1290: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line1291">1291: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE SysPFMG preconditioning\n"</font>);
 <a name="line1292">1292: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  HYPRE SysPFMG: max iterations %d\n"</font>,ex-&gt;its);
@@ -1221,13 +1230,13 @@
 <a name="line1335">1335: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
 <a name="line1336">1336: </a>  PC_SysPFMG       *ex = (PC_SysPFMG*) pc-&gt;data;
 <a name="line1337">1337: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      *xx,*yy;
-<a name="line1338">1338: </a>  int               ilower[3],iupper[3];
+<a name="line1338">1338: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          ilower[3],iupper[3];
 <a name="line1339">1339: </a>  Mat_HYPRESStruct *mx = (Mat_HYPRESStruct *)(pc-&gt;pmat-&gt;data);
-<a name="line1340">1340: </a>  int               ordering= mx-&gt;dofs_order;
-<a name="line1341">1341: </a>  int               nvars= mx-&gt;nvars;
-<a name="line1342">1342: </a>  int               part= 0;
-<a name="line1343">1343: </a>  int               size;
-<a name="line1344">1344: </a>  int               i;
+<a name="line1340">1340: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          ordering= mx-&gt;dofs_order;
+<a name="line1341">1341: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          nvars= mx-&gt;nvars;
+<a name="line1342">1342: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          part= 0;
+<a name="line1343">1343: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          size;
+<a name="line1344">1344: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          i;
 
 <a name="line1347">1347: </a>  <A href="../../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(mx-&gt;da,&amp;ilower[0],&amp;ilower[1],&amp;ilower[2],&amp;iupper[0],&amp;iupper[1],&amp;iupper[2]);
 <a name="line1348">1348: </a>  iupper[0] += ilower[0] - 1;
@@ -1258,7 +1267,7 @@
 <a name="line1373">1373: </a>     <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(y,&amp;yy);
 <a name="line1374">1374: </a>  } <font color="#4169E1">else</font> {      <font color="#B22222">/* nodal ordering must be mapped to variable ordering for sys_pfmg */</font>
 <a name="line1375">1375: </a>     <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     *z;
-<a name="line1376">1376: </a>     int              j, k;
+<a name="line1376">1376: </a>     <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         j, k;
 
 <a name="line1378">1378: </a>     <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nvars*size*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),&amp;z);
 <a name="line1379">1379: </a>     PetscStackCallHypre(0,HYPRE_SStructVectorSetConstantValues,(mx-&gt;ss_b,0.0));
@@ -1299,7 +1308,7 @@
 <a name="line1416">1416: </a><strong><font color="#4169E1"><a name="PCApplyRichardson_SysPFMG"></a>static <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCApplyRichardson_SysPFMG(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> b,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> y,<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> w,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rtol,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> abstol, <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> dtol,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> its,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  guesszero,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *outits,<A href="../../../../../docs/manualpages/PC/PCRichardsonConvergedReason.html#PCRichardsonConvergedReason">PCRichardsonConvergedReason</A> *reason)</font></strong>
 <a name="line1417">1417: </a>{
 <a name="line1418">1418: </a>  PC_SysPFMG    *jac = (PC_SysPFMG*)pc-&gt;data;
-<a name="line1420">1420: </a>  int            oits;
+<a name="line1420">1420: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       oits;
 
 <a name="line1423">1423: </a>  PetscStackCallHypre(0,HYPRE_SStructSysPFMGSetMaxIter,(jac-&gt;ss_solver,its*jac-&gt;its));
 <a name="line1424">1424: </a>  PetscStackCallHypre(0,HYPRE_SStructSysPFMGSetTol,(jac-&gt;ss_solver,rtol));
@@ -1321,7 +1330,7 @@
 <a name="line1442">1442: </a>  Mat_HYPRESStruct  *mx = (Mat_HYPRESStruct *)(pc-&gt;pmat-&gt;data);
 <a name="line1443">1443: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>         flg;
 
-<a name="line1446">1446: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,<A href="../../../../../docs/manualpages/DM/MATHYPRESSTRUCT.html#MATHYPRESSTRUCT">MATHYPRESSTRUCT</A>,&amp;flg);
+<a name="line1446">1446: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc-&gt;pmat,<A href="../../../../../docs/manualpages/DM/MATHYPRESSTRUCT.html#MATHYPRESSTRUCT">MATHYPRESSTRUCT</A>,&amp;flg);
 <a name="line1447">1447: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Must use <A href="../../../../../docs/manualpages/DM/MATHYPRESSTRUCT.html#MATHYPRESSTRUCT">MATHYPRESSTRUCT</A> with this preconditioner"</font>);
 
 <a name="line1449">1449: </a>  <font color="#B22222">/* create the hypre sstruct solver object and set its information */</font>
@@ -1357,6 +1366,7 @@
 <a name="line1479">1479: </a><font color="#B22222">.seealso:  <A href="../../../../../docs/manualpages/PC/PCMG.html#PCMG">PCMG</A>, <A href="../../../../../docs/manualpages/DM/MATHYPRESSTRUCT.html#MATHYPRESSTRUCT">MATHYPRESSTRUCT</A></font>
 <a name="line1480">1480: </a><font color="#B22222">M*/</font>
 
+<a name="line1482">1482: </a>EXTERN_C_BEGIN
 <a name="line1485">1485: </a><strong><font color="#4169E1"><a name="PCCreate_SysPFMG"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_SysPFMG(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line1486">1486: </a>{
 <a name="line1487">1487: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
@@ -1381,6 +1391,7 @@
 <a name="line1507">1507: </a>  PetscStackCallHypre(0,HYPRE_SStructSysPFMGCreate,(ex-&gt;hcomm,&amp;ex-&gt;ss_solver));
 <a name="line1508">1508: </a>  <font color="#4169E1">return</font>(0);
 <a name="line1509">1509: </a>}
+<a name="line1510">1510: </a>EXTERN_C_END
 </pre>
 </body>
 

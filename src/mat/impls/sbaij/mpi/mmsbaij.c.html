@@ -1,19 +1,21 @@
 <center><a href="mmsbaij.c">Actual source code: mmsbaij.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/sbaij/mpi/mmsbaij.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:03:56+00:00">
+<meta name="date" content="2012-08-29T16:49:52+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">   Support for the parallel SBAIJ matrix vector multiply</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
 <a name="line5">  5: </a><font color="#A020F0">#include &lt;../src/mat/impls/sbaij/mpi/mpisbaij.h&gt;</font>
 
+<a name="line7">  7: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSetValues_SeqSBAIJ(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> [],<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> [],const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> [],<A href="../../../../../docs/manualpages/Sys/InsertMode.html#InsertMode">InsertMode</A>)</font></strong>;
 
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><a name="MatSetUpMultiply_MPISBAIJ"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSetUpMultiply_MPISBAIJ(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat)</font></strong>
@@ -79,7 +81,7 @@
 
 <a name="line75"> 75: </a>  <font color="#B22222">/* generate the scatter context </font>
 <a name="line76"> 76: </a><font color="#B22222">     -- Mvctx and lvec are not used by MatMult_MPISBAIJ(), but usefule for some applications */</font>
-<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,mat-&gt;cmap-&gt;n,mat-&gt;cmap-&gt;N,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;gvec);
+<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,1,mat-&gt;cmap-&gt;n,mat-&gt;cmap-&gt;N,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;gvec);
 <a name="line78"> 78: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(gvec,from,sbaij-&gt;lvec,to,&amp;sbaij-&gt;Mvctx);
 <a name="line79"> 79: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;gvec);
 
@@ -122,12 +124,12 @@
 <a name="line117">117: </a>
 <a name="line118">118: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(sbaij-&gt;slvec1,&amp;nt);
 <a name="line119">119: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(sbaij-&gt;slvec1,&amp;ptr);
-<a name="line120">120: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,bs*mbs,ptr,&amp;sbaij-&gt;slvec1a);
-<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,nt-bs*mbs,ptr+bs*mbs,&amp;sbaij-&gt;slvec1b);
+<a name="line120">120: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,bs*mbs,ptr,&amp;sbaij-&gt;slvec1a);
+<a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,nt-bs*mbs,ptr+bs*mbs,&amp;sbaij-&gt;slvec1b);
 <a name="line122">122: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(sbaij-&gt;slvec1,&amp;ptr);
 
 <a name="line124">124: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(sbaij-&gt;slvec0,&amp;ptr);
-<a name="line125">125: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,nt-bs*mbs,ptr+bs*mbs,&amp;sbaij-&gt;slvec0b);
+<a name="line125">125: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,nt-bs*mbs,ptr+bs*mbs,&amp;sbaij-&gt;slvec0b);
 <a name="line126">126: </a>  <A href="../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(sbaij-&gt;slvec0,&amp;ptr);
 
 <a name="line128">128: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(stmp);
@@ -168,14 +170,14 @@
 
 <a name="line167">167: </a><font color="#A020F0">#if defined (PETSC_USE_CTABLE)</font>
 <a name="line168">168: </a>  <font color="#B22222">/* use a table - Mark Adams */</font>
-<a name="line169">169: </a>  PetscTableCreate(B-&gt;mbs,&amp;gid1_lid1);
+<a name="line169">169: </a>  PetscTableCreate(B-&gt;mbs,baij-&gt;Nbs+1,&amp;gid1_lid1);
 <a name="line170">170: </a>  <font color="#4169E1">for</font> (i=0; i&lt;B-&gt;mbs; i++) {
 <a name="line171">171: </a>    <font color="#4169E1">for</font> (j=0; j&lt;B-&gt;ilen[i]; j++) {
 <a name="line172">172: </a>      <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> data,gid1 = aj[B-&gt;i[i]+j] + 1;
 <a name="line173">173: </a>      PetscTableFind(gid1_lid1,gid1,&amp;data);
 <a name="line174">174: </a>      <font color="#4169E1">if</font> (!data) {
 <a name="line175">175: </a>        <font color="#B22222">/* one based table */</font>
-<a name="line176">176: </a>        PetscTableAdd(gid1_lid1,gid1,++ec);
+<a name="line176">176: </a>        PetscTableAdd(gid1_lid1,gid1,++ec,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line177">177: </a>      }
 <a name="line178">178: </a>    }
 <a name="line179">179: </a>  }
@@ -190,7 +192,7 @@
 <a name="line188">188: </a>  <A href="../../../../../docs/manualpages/Sys/PetscSortInt.html#PetscSortInt">PetscSortInt</A>(ec,garray);
 <a name="line189">189: </a>  PetscTableRemoveAll(gid1_lid1);
 <a name="line190">190: </a>  <font color="#4169E1">for</font> (i=0; i&lt;ec; i++) {
-<a name="line191">191: </a>    PetscTableAdd(gid1_lid1,garray[i]+1,i+1);
+<a name="line191">191: </a>    PetscTableAdd(gid1_lid1,garray[i]+1,i+1,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line192">192: </a>  }
 <a name="line193">193: </a>  <font color="#B22222">/* compact out the extra columns in B */</font>
 <a name="line194">194: </a>  <font color="#4169E1">for</font> (i=0; i&lt;B-&gt;mbs; i++) {
@@ -253,7 +255,7 @@
 <a name="line251">251: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,bs,ec,stmp,PETSC_OWN_POINTER,&amp;to);
 
 <a name="line253">253: </a>  <font color="#B22222">/* create temporary global vector to generate scatter context */</font>
-<a name="line254">254: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,mat-&gt;cmap-&gt;n,mat-&gt;cmap-&gt;N,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;gvec);
+<a name="line254">254: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,1,mat-&gt;cmap-&gt;n,mat-&gt;cmap-&gt;N,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;gvec);
 <a name="line255">255: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(gvec,from,baij-&gt;lvec,to,&amp;baij-&gt;Mvctx);
 <a name="line256">256: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;gvec);
 
@@ -277,7 +279,7 @@
 <a name="line275">275: </a><font color="#B22222">   Kind of slow! But that's what application programmers get when </font>
 <a name="line276">276: </a><font color="#B22222">   they are sloppy.</font>
 <a name="line277">277: </a><font color="#B22222">*/</font>
-<a name="line280">280: </a><strong><font color="#4169E1"><a name="DisAssemble_MPISBAIJ"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DisAssemble_MPISBAIJ(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line280">280: </a><strong><font color="#4169E1"><a name="MatDisAssemble_MPISBAIJ"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDisAssemble_MPISBAIJ(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
 <a name="line281">281: </a>{
 <a name="line282">282: </a>  Mat_MPISBAIJ   *baij = (Mat_MPISBAIJ*)A-&gt;data;
 <a name="line283">283: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B = baij-&gt;B,Bnew;
@@ -326,38 +328,39 @@
 <a name="line328">328: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(Bnew,m,n,m,n);
 <a name="line329">329: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(Bnew,((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B)-&gt;type_name);
 <a name="line330">330: </a>  <A href="../../../../../docs/manualpages/Mat/MatSeqBAIJSetPreallocation.html#MatSeqBAIJSetPreallocation">MatSeqBAIJSetPreallocation</A>(Bnew,B-&gt;rmap-&gt;bs,0,nz);
-<a name="line331">331: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(nz);
-<a name="line332">332: </a>
-<a name="line333">333: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(bs*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;rvals);
-<a name="line334">334: </a>  <font color="#4169E1">for</font> (i=0; i&lt;mbs; i++) {
-<a name="line335">335: </a>    rvals[0] = bs*i;
-<a name="line336">336: </a>    <font color="#4169E1">for</font> (j=1; j&lt;bs; j++) { rvals[j] = rvals[j-1] + 1; }
-<a name="line337">337: </a>    <font color="#4169E1">for</font> (j=Bbaij-&gt;i[i]; j&lt;Bbaij-&gt;i[i+1]; j++) {
-<a name="line338">338: </a>      col = garray[Bbaij-&gt;j[j]]*bs;
-<a name="line339">339: </a>      <font color="#4169E1">for</font> (k=0; k&lt;bs; k++) {
-<a name="line340">340: </a><font color="#A020F0">#if defined(PETSC_USE_REAL_MAT_SINGLE)</font>
-<a name="line341">341: </a>        <font color="#4169E1">for</font> (l=0; l&lt;bs; l++) atmp[l] = a[j*bs2+l];
-<a name="line342">342: </a><font color="#A020F0">#else</font>
-<a name="line343">343: </a>        atmp = a+j*bs2 + k*bs;
-<a name="line344">344: </a><font color="#A020F0">#endif</font>
-<a name="line345">345: </a>        MatSetValues_SeqSBAIJ(Bnew,bs,rvals,1,&amp;col,atmp,B-&gt;insertmode);
-<a name="line346">346: </a>        col++;
-<a name="line347">347: </a>      }
-<a name="line348">348: </a>    }
-<a name="line349">349: </a>  }
-<a name="line350">350: </a><font color="#A020F0">#if defined(PETSC_USE_REAL_MAT_SINGLE)</font>
-<a name="line351">351: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(atmp);
-<a name="line352">352: </a><font color="#A020F0">#endif</font>
-<a name="line353">353: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(baij-&gt;garray);
-<a name="line354">354: </a>  baij-&gt;garray = 0;
-<a name="line355">355: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rvals);
-<a name="line356">356: </a>  PetscLogObjectMemory(A,-ec*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
-<a name="line357">357: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
-<a name="line358">358: </a>  PetscLogObjectParent(A,Bnew);
-<a name="line359">359: </a>  baij-&gt;B = Bnew;
-<a name="line360">360: </a>  A-&gt;was_assembled = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line361">361: </a>  <font color="#4169E1">return</font>(0);
-<a name="line362">362: </a>}
+<a name="line331">331: </a>  ((Mat_SeqSBAIJ*)Bnew-&gt;data)-&gt;nonew = Bbaij-&gt;nonew; <font color="#B22222">/* Inherit insertion error options. */</font>
+<a name="line332">332: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(nz);
+<a name="line333">333: </a>
+<a name="line334">334: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(bs*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;rvals);
+<a name="line335">335: </a>  <font color="#4169E1">for</font> (i=0; i&lt;mbs; i++) {
+<a name="line336">336: </a>    rvals[0] = bs*i;
+<a name="line337">337: </a>    <font color="#4169E1">for</font> (j=1; j&lt;bs; j++) { rvals[j] = rvals[j-1] + 1; }
+<a name="line338">338: </a>    <font color="#4169E1">for</font> (j=Bbaij-&gt;i[i]; j&lt;Bbaij-&gt;i[i+1]; j++) {
+<a name="line339">339: </a>      col = garray[Bbaij-&gt;j[j]]*bs;
+<a name="line340">340: </a>      <font color="#4169E1">for</font> (k=0; k&lt;bs; k++) {
+<a name="line341">341: </a><font color="#A020F0">#if defined(PETSC_USE_REAL_MAT_SINGLE)</font>
+<a name="line342">342: </a>        <font color="#4169E1">for</font> (l=0; l&lt;bs; l++) atmp[l] = a[j*bs2+l];
+<a name="line343">343: </a><font color="#A020F0">#else</font>
+<a name="line344">344: </a>        atmp = a+j*bs2 + k*bs;
+<a name="line345">345: </a><font color="#A020F0">#endif</font>
+<a name="line346">346: </a>        MatSetValues_SeqSBAIJ(Bnew,bs,rvals,1,&amp;col,atmp,B-&gt;insertmode);
+<a name="line347">347: </a>        col++;
+<a name="line348">348: </a>      }
+<a name="line349">349: </a>    }
+<a name="line350">350: </a>  }
+<a name="line351">351: </a><font color="#A020F0">#if defined(PETSC_USE_REAL_MAT_SINGLE)</font>
+<a name="line352">352: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(atmp);
+<a name="line353">353: </a><font color="#A020F0">#endif</font>
+<a name="line354">354: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(baij-&gt;garray);
+<a name="line355">355: </a>  baij-&gt;garray = 0;
+<a name="line356">356: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rvals);
+<a name="line357">357: </a>  PetscLogObjectMemory(A,-ec*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line358">358: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;B);
+<a name="line359">359: </a>  PetscLogObjectParent(A,Bnew);
+<a name="line360">360: </a>  baij-&gt;B = Bnew;
+<a name="line361">361: </a>  A-&gt;was_assembled = <A href="../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line362">362: </a>  <font color="#4169E1">return</font>(0);
+<a name="line363">363: </a>}
 
 
 

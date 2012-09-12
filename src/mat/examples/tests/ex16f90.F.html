@@ -1,13 +1,14 @@
 <center><a href="ex16f90.F">Actual source code: ex16f90.F</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex16f90.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:05:59+00:00">
+<meta name="date" content="2012-08-29T16:52:23+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Tests <A href="../../../../docs/manualpages/Mat/MatGetArray.html#MatGetArray">MatGetArray</A>() on a dense matrix
@@ -50,7 +51,7 @@
 <a name="line40"> 40: </a>!
 <a name="line41"> 41: </a>!      Create a parallel dense matrix shared by all processors
 <a name="line42"> 42: </a>!
-<a name="line43"> 43: </a>      call <A href="../../../../docs/manualpages/Mat/MatCreateMPIDense.html#MatCreateMPIDense">MatCreateMPIDense</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,                &amp;
+<a name="line43"> 43: </a>      call <A href="../../../../docs/manualpages/Mat/MatCreateDense.html#MatCreateDense">MatCreateDense</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,                   &amp;
 <a name="line44"> 44: </a>     &amp;                       <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,m,n,PETSC_NULL_SCALAR,A,ierr)
 
 <a name="line46"> 46: </a>!
@@ -80,20 +81,23 @@
 <a name="line70"> 70: </a>      call <A href="../../../../docs/manualpages/Mat/MatGetArrayF90.html#MatGetArrayF90">MatGetArrayF90</A>(A,array,ierr)
 <a name="line71"> 71: </a>      call <A href="../../../../docs/manualpages/Mat/MatGetOwnershipRange.html#MatGetOwnershipRange">MatGetOwnershipRange</A>(A,rstart,rend,ierr)
 <a name="line72"> 72: </a>      call <A href="../../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,ierr)
-<a name="line73"> 73: </a>      <font color="#4169E1">do</font> 30 i=1,rend-rstart
-<a name="line74"> 74: </a>         write(6,100) (PetscRealPart(array(i,j)),j=1,n)
-<a name="line75"> 75: </a> 30   <font color="#4169E1">continue</font>
-<a name="line76"> 76: </a> 100  format(2F6.2)
+<a name="line73"> 73: </a>!
+<a name="line74"> 74: </a>!   Fortran IO may not come out in the correct order since each process
+<a name="line75"> 75: </a>!   is individually doing IO
+<a name="line76"> 76: </a>!      <font color="#4169E1">do</font> 30 i=1,rend-rstart
+<a name="line77"> 77: </a>!         write(6,100) (PetscRealPart(array(i,j)),j=1,n)
+<a name="line78"> 78: </a>! 30   <font color="#4169E1">continue</font>
+<a name="line79"> 79: </a>! 100  format(2F6.2)
 
-<a name="line78"> 78: </a>      call <A href="../../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,ierr)
+<a name="line81"> 81: </a>      call <A href="../../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,ierr)
 
-<a name="line80"> 80: </a>      call <A href="../../../../docs/manualpages/Mat/MatRestoreArrayF90.html#MatRestoreArrayF90">MatRestoreArrayF90</A>(A,array,ierr)
-<a name="line81"> 81: </a>!
-<a name="line82"> 82: </a>!      Free the space used by the matrix
-<a name="line83"> 83: </a>!
-<a name="line84"> 84: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A,ierr)
-<a name="line85"> 85: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line86"> 86: </a>      end
+<a name="line83"> 83: </a>      call <A href="../../../../docs/manualpages/Mat/MatRestoreArrayF90.html#MatRestoreArrayF90">MatRestoreArrayF90</A>(A,array,ierr)
+<a name="line84"> 84: </a>!
+<a name="line85"> 85: </a>!      Free the space used by the matrix
+<a name="line86"> 86: </a>!
+<a name="line87"> 87: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A,ierr)
+<a name="line88"> 88: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line89"> 89: </a>      end
 
 </pre>
 </body>

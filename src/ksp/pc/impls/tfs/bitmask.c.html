@@ -1,13 +1,14 @@
 <center><a href="bitmask.c">Actual source code: bitmask.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/tfs/bitmask.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:09:54+00:00">
+<meta name="date" content="2012-08-29T17:00:06+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/********************************bit_mask.c************************************</font>
 
@@ -27,7 +28,7 @@
 
 
 <a name="line19"> 19: </a><font color="#B22222">/*********************************bit_mask.c***********************************/</font>
-<a name="line20"> 20: </a><strong><font color="#4169E1"><a name="bm_to_proc"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> bm_to_proc( char *ptr, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> p_mask,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *msg_list)</font></strong>
+<a name="line20"> 20: </a><strong><font color="#4169E1"><a name="PCTFS_bm_to_proc"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_bm_to_proc( char *ptr, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> p_mask,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *msg_list)</font></strong>
 <a name="line21"> 21: </a>{
 <a name="line22"> 22: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, tmp;
 
@@ -61,7 +62,7 @@
 <a name="line52"> 52: </a>}
 
 <a name="line54"> 54: </a><font color="#B22222">/*********************************bit_mask.c***********************************/</font>
-<a name="line55"> 55: </a><strong><font color="#4169E1"><a name="ct_bits"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ct_bits( char *ptr, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
+<a name="line55"> 55: </a><strong><font color="#4169E1"><a name="PCTFS_ct_bits"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> PCTFS_ct_bits( char *ptr, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n)</font></strong>
 <a name="line56"> 56: </a>{
 <a name="line57"> 57: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, tmp=0;
 
@@ -82,12 +83,12 @@
 <a name="line74"> 74: </a>}
 
 <a name="line76"> 76: </a><font color="#B22222">/*********************************bit_mask.c***********************************/</font>
-<a name="line77"> 77: </a><strong><font color="#4169E1"><a name="div_ceil"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A></font></strong>
-<a name="line78"> 78: </a><strong><font color="#4169E1">div_ceil( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numer,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> denom)</font></strong>
+<a name="line77"> 77: </a><strong><font color="#4169E1"><a name="PCTFS_div_ceil"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A></font></strong>
+<a name="line78"> 78: </a><strong><font color="#4169E1">PCTFS_div_ceil( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numer,  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> denom)</font></strong>
 <a name="line79"> 79: </a>{
 <a name="line80"> 80: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rt_val;
 
-<a name="line82"> 82: </a>  <font color="#4169E1">if</font> ((numer&lt;0)||(denom&lt;=0)) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"div_ceil() :: numer=%D ! &gt;=0, denom=%D ! &gt;0"</font>,numer,denom);
+<a name="line82"> 82: </a>  <font color="#4169E1">if</font> ((numer&lt;0)||(denom&lt;=0)) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"PCTFS_div_ceil() :: numer=%D ! &gt;=0, denom=%D ! &gt;0"</font>,numer,denom);
 
 <a name="line84"> 84: </a>  <font color="#B22222">/* if integer division remainder then increment */</font>
 <a name="line85"> 85: </a>  rt_val = numer/denom;
@@ -98,12 +99,12 @@
 <a name="line90"> 90: </a>}
 
 <a name="line92"> 92: </a><font color="#B22222">/*********************************bit_mask.c***********************************/</font>
-<a name="line93"> 93: </a><strong><font color="#4169E1"><a name="len_bit_mask"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A></font></strong>
-<a name="line94"> 94: </a><strong><font color="#4169E1">len_bit_mask( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> num_items)</font></strong>
+<a name="line93"> 93: </a><strong><font color="#4169E1"><a name="PCTFS_len_bit_mask"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A></font></strong>
+<a name="line94"> 94: </a><strong><font color="#4169E1">PCTFS_len_bit_mask( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> num_items)</font></strong>
 <a name="line95"> 95: </a>{
 <a name="line96"> 96: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rt_val, tmp;
 
-<a name="line98"> 98: </a>  <font color="#4169E1">if</font> (num_items&lt;0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Value Sent To len_bit_mask() Must be &gt;= 0!"</font>);
+<a name="line98"> 98: </a>  <font color="#4169E1">if</font> (num_items&lt;0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Value Sent To PCTFS_len_bit_mask() Must be &gt;= 0!"</font>);
 
 <a name="line100">100: </a>  <font color="#B22222">/* mod BYTE ceiling function */</font>
 <a name="line101">101: </a>  rt_val = num_items/BYTE;
@@ -118,13 +119,13 @@
 <a name="line110">110: </a>}
 
 <a name="line112">112: </a><font color="#B22222">/*********************************bit_mask.c***********************************/</font>
-<a name="line113">113: </a><strong><font color="#4169E1"><a name="set_bit_mask"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> set_bit_mask( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *bm, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> len, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> val)</font></strong>
+<a name="line113">113: </a><strong><font color="#4169E1"><a name="PCTFS_set_bit_mask"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCTFS_set_bit_mask( <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *bm, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> len, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> val)</font></strong>
 <a name="line114">114: </a>{
 <a name="line115">115: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i, offset;
 <a name="line116">116: </a>   char mask = 1;
 <a name="line117">117: </a>   char *cptr;
 
-<a name="line119">119: </a>  <font color="#4169E1">if</font> (len_bit_mask(val)&gt;len) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"The Bit Mask Isn't That Large!"</font>);
+<a name="line119">119: </a>  <font color="#4169E1">if</font> (PCTFS_len_bit_mask(val)&gt;len) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"The Bit Mask Isn't That Large!"</font>);
 
 <a name="line121">121: </a>  cptr = (char *) bm;
 
@@ -142,7 +143,7 @@
 <a name="line134">134: </a>}
 
 <a name="line136">136: </a><font color="#B22222">/*********************************bit_mask.c***********************************/</font>
-<a name="line137">137: </a><strong><font color="#4169E1"><a name="len_buf"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> len_buf(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> item_size, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> num_items)</font></strong>
+<a name="line137">137: </a><strong><font color="#4169E1"><a name="PCTFS_len_buf"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> PCTFS_len_buf(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> item_size, <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> num_items)</font></strong>
 <a name="line138">138: </a>{
 <a name="line139">139: </a>   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rt_val, tmp;
 

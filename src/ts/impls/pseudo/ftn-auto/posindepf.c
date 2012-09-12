@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* posindep.c */
 /* Fortran interface file */
 
@@ -44,6 +44,11 @@ extern void PetscRmPointer(void*);
 #define tspseudosettimestepincrement_ tspseudosettimestepincrement
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tspseudosetmaxtimestep_ TSPSEUDOSETMAXTIMESTEP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tspseudosetmaxtimestep_ tspseudosetmaxtimestep
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tspseudoincrementdtfrominitialdt_ TSPSEUDOINCREMENTDTFROMINITIALDT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tspseudoincrementdtfrominitialdt_ tspseudoincrementdtfrominitialdt
@@ -66,6 +71,10 @@ void PETSC_STDCALL  tspseudoverifytimestep_(TS ts,Vec update,PetscReal *dt,Petsc
 void PETSC_STDCALL  tspseudosettimestepincrement_(TS ts,PetscReal *inc, int *__ierr ){
 *__ierr = TSPseudoSetTimeStepIncrement(
 	(TS)PetscToPointer((ts) ),*inc);
+}
+void PETSC_STDCALL  tspseudosetmaxtimestep_(TS ts,PetscReal *maxdt, int *__ierr ){
+*__ierr = TSPseudoSetMaxTimeStep(
+	(TS)PetscToPointer((ts) ),*maxdt);
 }
 void PETSC_STDCALL  tspseudoincrementdtfrominitialdt_(TS ts, int *__ierr ){
 *__ierr = TSPseudoIncrementDtFromInitialDt(

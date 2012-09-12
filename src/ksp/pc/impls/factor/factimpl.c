@@ -128,11 +128,16 @@ EXTERN_C_BEGIN
 PetscErrorCode  PCFactorSetLevels_Factor(PC pc,PetscInt levels)
 {
   PC_Factor      *ilu = (PC_Factor*)pc->data;
+  PetscErrorCode ierr;
 
   PetscFunctionBegin;
   if (!pc->setupcalled) {
     ilu->info.levels = levels;
-  } else if (ilu->info.usedt || ilu->info.levels != levels) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Cannot change levels after use");
+  } else if (ilu->info.levels != levels) {
+    ierr = (*pc->ops->reset)(pc);CHKERRQ(ierr);  /* remove previous factored matrices */
+    pc->setupcalled = 0;  /* force a complete rebuild of preconditioner factored matrices */
+    ilu->info.levels = levels;
+  } else if (ilu->info.usedt) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_ARG_WRONGSTATE,"Cannot change levels after use with ILUdt");
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
@@ -300,8 +305,8 @@ PetscErrorCode PCView_Factor(PC pc,PetscViewer viewer)
   PetscBool       isstring,iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     if (factor->factortype == MAT_FACTOR_ILU || factor->factortype == MAT_FACTOR_ICC){
       if (factor->info.dt > 0) {

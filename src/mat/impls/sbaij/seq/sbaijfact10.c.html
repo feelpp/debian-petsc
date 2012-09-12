@@ -1,13 +1,14 @@
 <center><a href="sbaijfact10.c">Actual source code: sbaijfact10.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/sbaij/seq/sbaijfact10.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:03:33+00:00">
+<meta name="date" content="2012-08-29T16:49:18+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/sbaij/seq/sbaij.h&gt;</font>
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;../src/mat/blockinvert.h&gt;</font>
@@ -249,7 +250,7 @@
 <a name="line243">243: </a>    <font color="#B22222">/* invert diagonal block */</font>
 <a name="line244">244: </a>    d = ba+k*36;
 <a name="line245">245: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(d,dk,36*<font color="#4169E1">sizeof</font>(MatScalar));
-<a name="line246">246: </a>    Kernel_A_gets_inverse_A_6(d,shift);
+<a name="line246">246: </a>    PetscKernel_A_gets_inverse_A_6(d,shift);
 <a name="line247">247: </a>
 <a name="line248">248: </a>    jmin = bi[k]; jmax = bi[k+1];
 <a name="line249">249: </a>    <font color="#4169E1">if</font> (jmin &lt; jmax) {

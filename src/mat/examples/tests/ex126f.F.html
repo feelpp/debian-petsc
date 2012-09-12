@@ -1,13 +1,14 @@
 <center><a href="ex126f.F">Actual source code: ex126f.F</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex126f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:02+00:00">
+<meta name="date" content="2012-08-29T16:52:27+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>! This program is modified from a user's contribution.
 <a name="line3">  3: </a>! It illustrates how to call MUMPS's LU solver
@@ -46,7 +47,7 @@
 <a name="line36"> 36: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A, <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>, <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>, m*m, m*m, ierr)
 <a name="line37"> 37: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A, <A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>, ierr)
 <a name="line38"> 38: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(A, ierr)
-<a name="line39"> 39: </a>      call <A href="../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(A, 1, PETSC_NULL_INTEGER, ierr)
+<a name="line39"> 39: </a>      call <A href="../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(A,5, PETSC_NULL_INTEGER, ierr)
 <a name="line40"> 40: </a>      call <A href="../../../../docs/manualpages/Mat/MatMPIAIJSetPreallocation.html#MatMPIAIJSetPreallocation">MatMPIAIJSetPreallocation</A>(A,5,PETSC_NULL_INTEGER,5,                          &amp;
 <a name="line41"> 41: </a>     &amp;     PETSC_NULL_INTEGER,ierr)
 

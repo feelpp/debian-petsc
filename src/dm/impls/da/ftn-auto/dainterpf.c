@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* dainterp.c */
 /* Fortran interface file */
 
@@ -29,9 +29,9 @@ extern void PetscRmPointer(void*);
 
 #include "petscdmda.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmgetinterpolationscale_ DMGETINTERPOLATIONSCALE
+#define dmcreateinterpolationscale_ DMCREATEINTERPOLATIONSCALE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmgetinterpolationscale_ dmgetinterpolationscale
+#define dmcreateinterpolationscale_ dmcreateinterpolationscale
 #endif
 
 
@@ -39,8 +39,8 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  dmgetinterpolationscale_(DM dac,DM daf,Mat mat,Vec *scale, int *__ierr ){
-*__ierr = DMGetInterpolationScale(
+void PETSC_STDCALL  dmcreateinterpolationscale_(DM dac,DM daf,Mat mat,Vec *scale, int *__ierr ){
+*__ierr = DMCreateInterpolationScale(
 	(DM)PetscToPointer((dac) ),
 	(DM)PetscToPointer((daf) ),
 	(Mat)PetscToPointer((mat) ),scale);

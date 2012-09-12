@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMADDAMatSetValues.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMADDAMatSetValues</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMADDAMatSetValues"><H1>DMADDAMatSetValues</H1></A>
 Inserts or adds a block of values into a matrix. The values are indexed geometrically with the help of the ADDA data structure. These values may be cached, so <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>() and <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>()  MUST be called after all calls to ADDAMatSetValues() have been completed. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>

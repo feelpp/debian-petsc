@@ -1,20 +1,21 @@
 <center><a href="vpscat.c">Actual source code: vpscat.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/utils/vpscat.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:54:55+00:00">
+<meta name="date" content="2012-08-29T16:38:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    Defines parallel vector scatters.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
 
-<a name="line6">  6: </a><font color="#A020F0">#include &lt;private/isimpl.h&gt;</font>
-<a name="line7">  7: </a><font color="#A020F0">#include &lt;private/vecimpl.h&gt;         </font><font color="#B22222">/*I "petscvec.h" I*/</font><font color="#A020F0"></font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petsc-private/isimpl.h&gt;</font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petsc-private/vecimpl.h&gt;         </font><font color="#B22222">/*I "petscvec.h" I*/</font><font color="#A020F0"></font>
 <a name="line8">  8: </a><font color="#A020F0">#include &lt;../src/vec/vec/impls/dvecimpl.h&gt;</font>
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;../src/vec/vec/impls/mpi/pvecimpl.h&gt;</font>
 
@@ -28,7 +29,7 @@
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerFormat.html#PetscViewerFormat">PetscViewerFormat</A>      format;
 <a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>              iascii;
 
-<a name="line24"> 24: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line24"> 24: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line25"> 25: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line26"> 26: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx)-&gt;comm,&amp;rank);
 <a name="line27"> 27: </a>    PetscViewerGetFormat(viewer,&amp;format);
@@ -1638,626 +1639,634 @@
 <a name="line1653">1653: </a>        <font color="#4169E1">break</font>;
 <a name="line1654">1654: </a>      }
 <a name="line1655">1655: </a>    }
-<a name="line1656">1656: </a>  }
+<a name="line1656">1656: </a>    <font color="#4169E1">if</font> (j == size) <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"ith %D block entry %D not owned by any process, upper bound %D"</font>,i,idx,owners[size]);
+<a name="line1657">1657: </a>  }
 
-<a name="line1658">1658: </a>  nprocslocal  = nprocs[rank];
-<a name="line1659">1659: </a>  nprocs[rank] = 0;
-<a name="line1660">1660: </a>  <font color="#4169E1">if</font> (nprocslocal) nsends--;
-<a name="line1661">1661: </a>  <font color="#B22222">/* inform other processors of number of messages and max length*/</font>
-<a name="line1662">1662: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherNumberOfMessages.html#PetscGatherNumberOfMessages">PetscGatherNumberOfMessages</A>(comm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,nprocs,&amp;nrecvs);
-<a name="line1663">1663: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherMessageLengths.html#PetscGatherMessageLengths">PetscGatherMessageLengths</A>(comm,nsends,nrecvs,nprocs,&amp;onodes1,&amp;olengths1);
-<a name="line1664">1664: </a>  <A href="../../../../docs/manualpages/Sys/PetscSortMPIIntWithArray.html#PetscSortMPIIntWithArray">PetscSortMPIIntWithArray</A>(nrecvs,onodes1,olengths1);
-<a name="line1665">1665: </a>  recvtotal = 0; <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) recvtotal += olengths1[i];
+<a name="line1659">1659: </a>  nprocslocal  = nprocs[rank];
+<a name="line1660">1660: </a>  nprocs[rank] = 0;
+<a name="line1661">1661: </a>  <font color="#4169E1">if</font> (nprocslocal) nsends--;
+<a name="line1662">1662: </a>  <font color="#B22222">/* inform other processors of number of messages and max length*/</font>
+<a name="line1663">1663: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherNumberOfMessages.html#PetscGatherNumberOfMessages">PetscGatherNumberOfMessages</A>(comm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,nprocs,&amp;nrecvs);
+<a name="line1664">1664: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherMessageLengths.html#PetscGatherMessageLengths">PetscGatherMessageLengths</A>(comm,nsends,nrecvs,nprocs,&amp;onodes1,&amp;olengths1);
+<a name="line1665">1665: </a>  <A href="../../../../docs/manualpages/Sys/PetscSortMPIIntWithArray.html#PetscSortMPIIntWithArray">PetscSortMPIIntWithArray</A>(nrecvs,onodes1,olengths1);
+<a name="line1666">1666: </a>  recvtotal = 0; <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) recvtotal += olengths1[i];
 
-<a name="line1667">1667: </a>  <font color="#B22222">/* post receives:   */</font>
-<a name="line1668">1668: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(recvtotal,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;rvalues,nrecvs,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;source,nrecvs,MPI_Request,&amp;recv_waits);
-<a name="line1669">1669: </a>  count  = 0;
-<a name="line1670">1670: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) {
-<a name="line1671">1671: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Irecv.html#MPI_Irecv">MPI_Irecv</A>((rvalues+count),olengths1[i],MPIU_INT,onodes1[i],tag,comm,recv_waits+i);
-<a name="line1672">1672: </a>    count += olengths1[i];
-<a name="line1673">1673: </a>  }
+<a name="line1668">1668: </a>  <font color="#B22222">/* post receives:   */</font>
+<a name="line1669">1669: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(recvtotal,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;rvalues,nrecvs,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;source,nrecvs,MPI_Request,&amp;recv_waits);
+<a name="line1670">1670: </a>  count  = 0;
+<a name="line1671">1671: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) {
+<a name="line1672">1672: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Irecv.html#MPI_Irecv">MPI_Irecv</A>((rvalues+count),olengths1[i],MPIU_INT,onodes1[i],tag,comm,recv_waits+i);
+<a name="line1673">1673: </a>    count += olengths1[i];
+<a name="line1674">1674: </a>  }
 
-<a name="line1675">1675: </a>  <font color="#B22222">/* do sends:</font>
-<a name="line1676">1676: </a><font color="#B22222">     1) starts[i] gives the starting index in svalues for stuff going to </font>
-<a name="line1677">1677: </a><font color="#B22222">     the ith processor</font>
-<a name="line1678">1678: </a><font color="#B22222">  */</font>
-<a name="line1679">1679: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(nx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;svalues,nsends,MPI_Request,&amp;send_waits,size+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;starts);
+<a name="line1676">1676: </a>  <font color="#B22222">/* do sends:</font>
+<a name="line1677">1677: </a><font color="#B22222">     1) starts[i] gives the starting index in svalues for stuff going to </font>
+<a name="line1678">1678: </a><font color="#B22222">     the ith processor</font>
+<a name="line1679">1679: </a><font color="#B22222">  */</font>
+<a name="line1680">1680: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(nx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;svalues,nsends,MPI_Request,&amp;send_waits,size+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;starts);
 
-<a name="line1681">1681: </a>  starts[0]  = 0;
-<a name="line1682">1682: </a>  <font color="#4169E1">for</font> (i=1; i&lt;size; i++) { starts[i] = starts[i-1] + nprocs[i-1];}
-<a name="line1683">1683: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
-<a name="line1684">1684: </a>    <font color="#4169E1">if</font> (owner[i] != rank) {
-<a name="line1685">1685: </a>      svalues[starts[owner[i]]++] = bs*inidx[i];
-<a name="line1686">1686: </a>    }
-<a name="line1687">1687: </a>  }
-<a name="line1688">1688: </a>  starts[0] = 0;
-<a name="line1689">1689: </a>  <font color="#4169E1">for</font> (i=1; i&lt;size+1; i++) { starts[i] = starts[i-1] + nprocs[i-1];}
-<a name="line1690">1690: </a>  count = 0;
-<a name="line1691">1691: </a>  <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
-<a name="line1692">1692: </a>    <font color="#4169E1">if</font> (nprocs[i]) {
-<a name="line1693">1693: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Isend.html#MPI_Isend">MPI_Isend</A>(svalues+starts[i],nprocs[i],MPIU_INT,i,tag,comm,send_waits+count++);
-<a name="line1694">1694: </a>    }
-<a name="line1695">1695: </a>  }
+<a name="line1682">1682: </a>  starts[0]  = 0;
+<a name="line1683">1683: </a>  <font color="#4169E1">for</font> (i=1; i&lt;size; i++) { starts[i] = starts[i-1] + nprocs[i-1];}
+<a name="line1684">1684: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
+<a name="line1685">1685: </a>    <font color="#4169E1">if</font> (owner[i] != rank) {
+<a name="line1686">1686: </a>      svalues[starts[owner[i]]++] = bs*inidx[i];
+<a name="line1687">1687: </a>    }
+<a name="line1688">1688: </a>  }
+<a name="line1689">1689: </a>  starts[0] = 0;
+<a name="line1690">1690: </a>  <font color="#4169E1">for</font> (i=1; i&lt;size+1; i++) { starts[i] = starts[i-1] + nprocs[i-1];}
+<a name="line1691">1691: </a>  count = 0;
+<a name="line1692">1692: </a>  <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
+<a name="line1693">1693: </a>    <font color="#4169E1">if</font> (nprocs[i]) {
+<a name="line1694">1694: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Isend.html#MPI_Isend">MPI_Isend</A>(svalues+starts[i],nprocs[i],MPIU_INT,i,tag,comm,send_waits+count++);
+<a name="line1695">1695: </a>    }
+<a name="line1696">1696: </a>  }
 
-<a name="line1697">1697: </a>  <font color="#B22222">/*  wait on receives */</font>
-<a name="line1698">1698: </a>  count  = nrecvs;
-<a name="line1699">1699: </a>  slen   = 0;
-<a name="line1700">1700: </a>  <font color="#4169E1">while</font> (count) {
-<a name="line1701">1701: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitany.html#MPI_Waitany">MPI_Waitany</A>(nrecvs,recv_waits,&amp;imdex,&amp;recv_status);
-<a name="line1702">1702: </a>    <font color="#B22222">/* unpack receives into our local space */</font>
-<a name="line1703">1703: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Get_count.html#MPI_Get_count">MPI_Get_count</A>(&amp;recv_status,MPIU_INT,&amp;n);
-<a name="line1704">1704: </a>    slen += n;
-<a name="line1705">1705: </a>    count--;
-<a name="line1706">1706: </a>  }
+<a name="line1698">1698: </a>  <font color="#B22222">/*  wait on receives */</font>
+<a name="line1699">1699: </a>  count  = nrecvs;
+<a name="line1700">1700: </a>  slen   = 0;
+<a name="line1701">1701: </a>  <font color="#4169E1">while</font> (count) {
+<a name="line1702">1702: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitany.html#MPI_Waitany">MPI_Waitany</A>(nrecvs,recv_waits,&amp;imdex,&amp;recv_status);
+<a name="line1703">1703: </a>    <font color="#B22222">/* unpack receives into our local space */</font>
+<a name="line1704">1704: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Get_count.html#MPI_Get_count">MPI_Get_count</A>(&amp;recv_status,MPIU_INT,&amp;n);
+<a name="line1705">1705: </a>    slen += n;
+<a name="line1706">1706: </a>    count--;
+<a name="line1707">1707: </a>  }
 
-<a name="line1708">1708: </a>  <font color="#4169E1">if</font> (slen != recvtotal) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Total message lengths %D not expected %D"</font>,slen,recvtotal);
-<a name="line1709">1709: </a>
-<a name="line1710">1710: </a>  <font color="#B22222">/* allocate entire send scatter context */</font>
-<a name="line1711">1711: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(ctx,VecScatter_MPI_General,&amp;to);
-<a name="line1712">1712: </a>  to-&gt;n = nrecvs;
-<a name="line1713">1713: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrecvs*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;to-&gt;requests);
-<a name="line1714">1714: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>(bs*slen,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;to-&gt;values,slen,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;to-&gt;indices,nrecvs+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;to-&gt;starts,nrecvs,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;procs);
-<a name="line1715">1715: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(PetscMax(to-&gt;n,nsends),MPI_Status,&amp;to-&gt;sstatus,PetscMax(to-&gt;n,nsends),MPI_Status,&amp;to-&gt;rstatus);
-<a name="line1716">1716: </a>  ctx-&gt;todata   = (void*)to;
-<a name="line1717">1717: </a>  to-&gt;starts[0] = 0;
+<a name="line1709">1709: </a>  <font color="#4169E1">if</font> (slen != recvtotal) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Total message lengths %D not expected %D"</font>,slen,recvtotal);
+<a name="line1710">1710: </a>
+<a name="line1711">1711: </a>  <font color="#B22222">/* allocate entire send scatter context */</font>
+<a name="line1712">1712: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(ctx,VecScatter_MPI_General,&amp;to);
+<a name="line1713">1713: </a>  to-&gt;n = nrecvs;
+<a name="line1714">1714: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrecvs*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;to-&gt;requests);
+<a name="line1715">1715: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>(bs*slen,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;to-&gt;values,slen,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;to-&gt;indices,nrecvs+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;to-&gt;starts,nrecvs,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;procs);
+<a name="line1716">1716: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(PetscMax(to-&gt;n,nsends),MPI_Status,&amp;to-&gt;sstatus,PetscMax(to-&gt;n,nsends),MPI_Status,&amp;to-&gt;rstatus);
+<a name="line1717">1717: </a>  ctx-&gt;todata   = (void*)to;
+<a name="line1718">1718: </a>  to-&gt;starts[0] = 0;
 
-<a name="line1719">1719: </a>  <font color="#4169E1">if</font> (nrecvs) {
+<a name="line1720">1720: </a>  <font color="#4169E1">if</font> (nrecvs) {
 
-<a name="line1721">1721: </a>    <font color="#B22222">/* move the data into the send scatter */</font>
-<a name="line1722">1722: </a>    base     = owners[rank];
-<a name="line1723">1723: </a>    rsvalues = rvalues;
-<a name="line1724">1724: </a>    <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) {
-<a name="line1725">1725: </a>      to-&gt;starts[i+1] = to-&gt;starts[i] + olengths1[i];
-<a name="line1726">1726: </a>      to-&gt;procs[i]    = onodes1[i];
-<a name="line1727">1727: </a>      values = rsvalues;
-<a name="line1728">1728: </a>      rsvalues += olengths1[i];
-<a name="line1729">1729: </a>      <font color="#4169E1">for</font> (j=0; j&lt;olengths1[i]; j++) {
-<a name="line1730">1730: </a>        to-&gt;indices[to-&gt;starts[i] + j] = values[j] - base;
-<a name="line1731">1731: </a>      }
-<a name="line1732">1732: </a>    }
-<a name="line1733">1733: </a>  }
-<a name="line1734">1734: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(olengths1);
-<a name="line1735">1735: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(onodes1);
-<a name="line1736">1736: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(rvalues,source,recv_waits);
+<a name="line1722">1722: </a>    <font color="#B22222">/* move the data into the send scatter */</font>
+<a name="line1723">1723: </a>    base     = owners[rank];
+<a name="line1724">1724: </a>    rsvalues = rvalues;
+<a name="line1725">1725: </a>    <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) {
+<a name="line1726">1726: </a>      to-&gt;starts[i+1] = to-&gt;starts[i] + olengths1[i];
+<a name="line1727">1727: </a>      to-&gt;procs[i]    = onodes1[i];
+<a name="line1728">1728: </a>      values = rsvalues;
+<a name="line1729">1729: </a>      rsvalues += olengths1[i];
+<a name="line1730">1730: </a>      <font color="#4169E1">for</font> (j=0; j&lt;olengths1[i]; j++) {
+<a name="line1731">1731: </a>        to-&gt;indices[to-&gt;starts[i] + j] = values[j] - base;
+<a name="line1732">1732: </a>      }
+<a name="line1733">1733: </a>    }
+<a name="line1734">1734: </a>  }
+<a name="line1735">1735: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(olengths1);
+<a name="line1736">1736: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(onodes1);
+<a name="line1737">1737: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(rvalues,source,recv_waits);
 
-<a name="line1738">1738: </a>  <font color="#B22222">/* allocate entire receive scatter context */</font>
-<a name="line1739">1739: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(ctx,VecScatter_MPI_General,&amp;from);
-<a name="line1740">1740: </a>  from-&gt;n = nsends;
+<a name="line1739">1739: </a>  <font color="#B22222">/* allocate entire receive scatter context */</font>
+<a name="line1740">1740: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(ctx,VecScatter_MPI_General,&amp;from);
+<a name="line1741">1741: </a>  from-&gt;n = nsends;
 
-<a name="line1742">1742: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nsends*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;from-&gt;requests);
-<a name="line1743">1743: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>((ny-nprocslocal)*bs,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;from-&gt;values,ny-nprocslocal,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;from-&gt;indices,nsends+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;from-&gt;starts,from-&gt;n,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;procs);
-<a name="line1744">1744: </a>  ctx-&gt;fromdata  = (void*)from;
+<a name="line1743">1743: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nsends*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;from-&gt;requests);
+<a name="line1744">1744: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>((ny-nprocslocal)*bs,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;from-&gt;values,ny-nprocslocal,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;from-&gt;indices,nsends+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;from-&gt;starts,from-&gt;n,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;procs);
+<a name="line1745">1745: </a>  ctx-&gt;fromdata  = (void*)from;
 
-<a name="line1746">1746: </a>  <font color="#B22222">/* move data into receive scatter */</font>
-<a name="line1747">1747: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(size,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;lowner,nsends+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;start);
-<a name="line1748">1748: </a>  count = 0; from-&gt;starts[0] = start[0] = 0;
-<a name="line1749">1749: </a>  <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
-<a name="line1750">1750: </a>    <font color="#4169E1">if</font> (nprocs[i]) {
-<a name="line1751">1751: </a>      lowner[i]            = count;
-<a name="line1752">1752: </a>      from-&gt;procs[count++] = i;
-<a name="line1753">1753: </a>      from-&gt;starts[count]  = start[count] = start[count-1] + nprocs[i];
-<a name="line1754">1754: </a>    }
-<a name="line1755">1755: </a>  }
+<a name="line1747">1747: </a>  <font color="#B22222">/* move data into receive scatter */</font>
+<a name="line1748">1748: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(size,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;lowner,nsends+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;start);
+<a name="line1749">1749: </a>  count = 0; from-&gt;starts[0] = start[0] = 0;
+<a name="line1750">1750: </a>  <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
+<a name="line1751">1751: </a>    <font color="#4169E1">if</font> (nprocs[i]) {
+<a name="line1752">1752: </a>      lowner[i]            = count;
+<a name="line1753">1753: </a>      from-&gt;procs[count++] = i;
+<a name="line1754">1754: </a>      from-&gt;starts[count]  = start[count] = start[count-1] + nprocs[i];
+<a name="line1755">1755: </a>    }
+<a name="line1756">1756: </a>  }
 
-<a name="line1757">1757: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
-<a name="line1758">1758: </a>    <font color="#4169E1">if</font> (owner[i] != rank) {
-<a name="line1759">1759: </a>      from-&gt;indices[start[lowner[owner[i]]]++] = bs*inidy[i];
-<a name="line1760">1760: </a>      <font color="#4169E1">if</font> (bs*inidy[i] &gt;= lengthy) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Scattering past end of TO vector"</font>);
-<a name="line1761">1761: </a>    }
-<a name="line1762">1762: </a>  }
-<a name="line1763">1763: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(lowner,start);
-<a name="line1764">1764: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(nprocs,owner);
-<a name="line1765">1765: </a>
-<a name="line1766">1766: </a>  <font color="#B22222">/* wait on sends */</font>
-<a name="line1767">1767: </a>  <font color="#4169E1">if</font> (nsends) {
-<a name="line1768">1768: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nsends*<font color="#4169E1">sizeof</font>(MPI_Status),&amp;send_status);
-<a name="line1769">1769: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(nsends,send_waits,send_status);
-<a name="line1770">1770: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(send_status);
-<a name="line1771">1771: </a>  }
-<a name="line1772">1772: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(svalues,send_waits,starts);
+<a name="line1758">1758: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
+<a name="line1759">1759: </a>    <font color="#4169E1">if</font> (owner[i] != rank) {
+<a name="line1760">1760: </a>      from-&gt;indices[start[lowner[owner[i]]]++] = bs*inidy[i];
+<a name="line1761">1761: </a>      <font color="#4169E1">if</font> (bs*inidy[i] &gt;= lengthy) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Scattering past end of TO vector"</font>);
+<a name="line1762">1762: </a>    }
+<a name="line1763">1763: </a>  }
+<a name="line1764">1764: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(lowner,start);
+<a name="line1765">1765: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(nprocs,owner);
+<a name="line1766">1766: </a>
+<a name="line1767">1767: </a>  <font color="#B22222">/* wait on sends */</font>
+<a name="line1768">1768: </a>  <font color="#4169E1">if</font> (nsends) {
+<a name="line1769">1769: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nsends*<font color="#4169E1">sizeof</font>(MPI_Status),&amp;send_status);
+<a name="line1770">1770: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(nsends,send_waits,send_status);
+<a name="line1771">1771: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(send_status);
+<a name="line1772">1772: </a>  }
+<a name="line1773">1773: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(svalues,send_waits,starts);
 
-<a name="line1774">1774: </a>  <font color="#4169E1">if</font> (nprocslocal) {
-<a name="line1775">1775: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nt = from-&gt;local.n = to-&gt;local.n = nprocslocal;
-<a name="line1776">1776: </a>    <font color="#B22222">/* we have a scatter to ourselves */</font>
-<a name="line1777">1777: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nt*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;to-&gt;local.vslots);
-<a name="line1778">1778: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nt*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;from-&gt;local.vslots);
-<a name="line1779">1779: </a>    nt   = 0;
-<a name="line1780">1780: </a>    <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
-<a name="line1781">1781: </a>      idx = bs*inidx[i];
-<a name="line1782">1782: </a>      <font color="#4169E1">if</font> (idx &gt;= owners[rank] &amp;&amp; idx &lt; owners[rank+1]) {
-<a name="line1783">1783: </a>        to-&gt;local.vslots[nt]     = idx - owners[rank];
-<a name="line1784">1784: </a>        from-&gt;local.vslots[nt++] = bs*inidy[i];
-<a name="line1785">1785: </a>        <font color="#4169E1">if</font> (bs*inidy[i] &gt;= lengthy) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Scattering past end of TO vector"</font>);
-<a name="line1786">1786: </a>      }
-<a name="line1787">1787: </a>    }
-<a name="line1788">1788: </a>  } <font color="#4169E1">else</font> {
-<a name="line1789">1789: </a>    from-&gt;local.n      = 0;
-<a name="line1790">1790: </a>    from-&gt;local.vslots = 0;
-<a name="line1791">1791: </a>    to-&gt;local.n        = 0;
-<a name="line1792">1792: </a>    to-&gt;local.vslots   = 0;
-<a name="line1793">1793: </a>  }
+<a name="line1775">1775: </a>  <font color="#4169E1">if</font> (nprocslocal) {
+<a name="line1776">1776: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nt = from-&gt;local.n = to-&gt;local.n = nprocslocal;
+<a name="line1777">1777: </a>    <font color="#B22222">/* we have a scatter to ourselves */</font>
+<a name="line1778">1778: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nt*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;to-&gt;local.vslots);
+<a name="line1779">1779: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nt*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;from-&gt;local.vslots);
+<a name="line1780">1780: </a>    nt   = 0;
+<a name="line1781">1781: </a>    <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
+<a name="line1782">1782: </a>      idx = bs*inidx[i];
+<a name="line1783">1783: </a>      <font color="#4169E1">if</font> (idx &gt;= owners[rank] &amp;&amp; idx &lt; owners[rank+1]) {
+<a name="line1784">1784: </a>        to-&gt;local.vslots[nt]     = idx - owners[rank];
+<a name="line1785">1785: </a>        from-&gt;local.vslots[nt++] = bs*inidy[i];
+<a name="line1786">1786: </a>        <font color="#4169E1">if</font> (bs*inidy[i] &gt;= lengthy) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Scattering past end of TO vector"</font>);
+<a name="line1787">1787: </a>      }
+<a name="line1788">1788: </a>    }
+<a name="line1789">1789: </a>  } <font color="#4169E1">else</font> {
+<a name="line1790">1790: </a>    from-&gt;local.n      = 0;
+<a name="line1791">1791: </a>    from-&gt;local.vslots = 0;
+<a name="line1792">1792: </a>    to-&gt;local.n        = 0;
+<a name="line1793">1793: </a>    to-&gt;local.vslots   = 0;
+<a name="line1794">1794: </a>  }
 
-<a name="line1795">1795: </a>  from-&gt;local.nonmatching_computed = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1796">1796: </a>  from-&gt;local.n_nonmatching        = 0;
-<a name="line1797">1797: </a>  from-&gt;local.slots_nonmatching    = 0;
-<a name="line1798">1798: </a>  to-&gt;local.nonmatching_computed   = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1799">1799: </a>  to-&gt;local.n_nonmatching          = 0;
-<a name="line1800">1800: </a>  to-&gt;local.slots_nonmatching      = 0;
+<a name="line1796">1796: </a>  from-&gt;local.nonmatching_computed = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1797">1797: </a>  from-&gt;local.n_nonmatching        = 0;
+<a name="line1798">1798: </a>  from-&gt;local.slots_nonmatching    = 0;
+<a name="line1799">1799: </a>  to-&gt;local.nonmatching_computed   = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1800">1800: </a>  to-&gt;local.n_nonmatching          = 0;
+<a name="line1801">1801: </a>  to-&gt;local.slots_nonmatching      = 0;
 
-<a name="line1802">1802: </a>  from-&gt;type = VEC_SCATTER_MPI_GENERAL;
-<a name="line1803">1803: </a>  to-&gt;type   = VEC_SCATTER_MPI_GENERAL;
-<a name="line1804">1804: </a>  from-&gt;bs = bs;
-<a name="line1805">1805: </a>  to-&gt;bs   = bs;
-<a name="line1806">1806: </a>  VecScatterCreateCommon_PtoS(from,to,ctx);
-<a name="line1807">1807: </a>  <font color="#4169E1">return</font>(0);
-<a name="line1808">1808: </a>}
+<a name="line1803">1803: </a>  from-&gt;type = VEC_SCATTER_MPI_GENERAL;
+<a name="line1804">1804: </a>  to-&gt;type   = VEC_SCATTER_MPI_GENERAL;
+<a name="line1805">1805: </a>  from-&gt;bs = bs;
+<a name="line1806">1806: </a>  to-&gt;bs   = bs;
+<a name="line1807">1807: </a>  VecScatterCreateCommon_PtoS(from,to,ctx);
+<a name="line1808">1808: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1809">1809: </a>}
 
-<a name="line1810">1810: </a><font color="#B22222">/*</font>
-<a name="line1811">1811: </a><font color="#B22222">   bs indicates how many elements there are in each block. Normally this would be 1.</font>
-<a name="line1812">1812: </a><font color="#B22222">*/</font>
-<a name="line1815">1815: </a><strong><font color="#4169E1"><a name="VecScatterCreateCommon_PtoS"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatter_MPI_General *to,<A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> ctx)</font></strong>
-<a name="line1816">1816: </a>{
-<a name="line1817">1817: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm = ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx)-&gt;comm;
-<a name="line1818">1818: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    tag  = ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx)-&gt;tag, tagr;
-<a name="line1819">1819: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       bs   = to-&gt;bs;
-<a name="line1820">1820: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
-<a name="line1821">1821: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i, n;
-<a name="line1823">1823: </a>
-<a name="line1825">1825: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetNewTag.html#PetscObjectGetNewTag">PetscObjectGetNewTag</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx,&amp;tagr);
-<a name="line1826">1826: </a>  ctx-&gt;destroy = VecScatterDestroy_PtoP;
+<a name="line1811">1811: </a><font color="#B22222">/*</font>
+<a name="line1812">1812: </a><font color="#B22222">   bs indicates how many elements there are in each block. Normally this would be 1.</font>
+<a name="line1813">1813: </a><font color="#B22222">*/</font>
+<a name="line1816">1816: </a><strong><font color="#4169E1"><a name="VecScatterCreateCommon_PtoS"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecScatterCreateCommon_PtoS(VecScatter_MPI_General *from,VecScatter_MPI_General *to,<A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> ctx)</font></strong>
+<a name="line1817">1817: </a>{
+<a name="line1818">1818: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm = ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx)-&gt;comm;
+<a name="line1819">1819: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    tag  = ((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx)-&gt;tag, tagr;
+<a name="line1820">1820: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       bs   = to-&gt;bs;
+<a name="line1821">1821: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
+<a name="line1822">1822: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i, n;
+<a name="line1824">1824: </a>
+<a name="line1826">1826: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetNewTag.html#PetscObjectGetNewTag">PetscObjectGetNewTag</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx,&amp;tagr);
+<a name="line1827">1827: </a>  ctx-&gt;destroy = VecScatterDestroy_PtoP;
 
-<a name="line1828">1828: </a>  ctx-&gt;reproduce = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1829">1829: </a>  to-&gt;sendfirst  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1830">1830: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_reproduce"</font>,&amp;ctx-&gt;reproduce,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line1831">1831: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_sendfirst"</font>,&amp;to-&gt;sendfirst,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line1832">1832: </a>  from-&gt;sendfirst = to-&gt;sendfirst;
+<a name="line1829">1829: </a>  ctx-&gt;reproduce = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1830">1830: </a>  to-&gt;sendfirst  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1831">1831: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_reproduce"</font>,&amp;ctx-&gt;reproduce,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line1832">1832: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_sendfirst"</font>,&amp;to-&gt;sendfirst,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line1833">1833: </a>  from-&gt;sendfirst = to-&gt;sendfirst;
 
-<a name="line1834">1834: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
-<a name="line1835">1835: </a>  <font color="#B22222">/* check if the receives are ALL going into contiguous locations; if so can skip indexing */</font>
-<a name="line1836">1836: </a>  to-&gt;contiq = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1837">1837: </a>  n = from-&gt;starts[from-&gt;n];
-<a name="line1838">1838: </a>  from-&gt;contiq = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line1839">1839: </a>  <font color="#4169E1">for</font> (i=1; i&lt;n; i++) {
-<a name="line1840">1840: </a>    <font color="#4169E1">if</font> (from-&gt;indices[i] != from-&gt;indices[i-1] + bs) {
-<a name="line1841">1841: </a>      from-&gt;contiq = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1842">1842: </a>      <font color="#4169E1">break</font>;
-<a name="line1843">1843: </a>    }
-<a name="line1844">1844: </a>  }
+<a name="line1835">1835: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
+<a name="line1836">1836: </a>  <font color="#B22222">/* check if the receives are ALL going into contiguous locations; if so can skip indexing */</font>
+<a name="line1837">1837: </a>  to-&gt;contiq = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1838">1838: </a>  n = from-&gt;starts[from-&gt;n];
+<a name="line1839">1839: </a>  from-&gt;contiq = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line1840">1840: </a>  <font color="#4169E1">for</font> (i=1; i&lt;n; i++) {
+<a name="line1841">1841: </a>    <font color="#4169E1">if</font> (from-&gt;indices[i] != from-&gt;indices[i-1] + bs) {
+<a name="line1842">1842: </a>      from-&gt;contiq = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1843">1843: </a>      <font color="#4169E1">break</font>;
+<a name="line1844">1844: </a>    }
+<a name="line1845">1845: </a>  }
 
-<a name="line1846">1846: </a>  to-&gt;use_alltoallv = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1847">1847: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_alltoall"</font>,&amp;to-&gt;use_alltoallv,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line1848">1848: </a>  from-&gt;use_alltoallv = to-&gt;use_alltoallv;
-<a name="line1849">1849: </a>  <font color="#4169E1">if</font> (from-&gt;use_alltoallv) <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Using <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Alltoallv.html#MPI_Alltoallv">MPI_Alltoallv</A>() for scatter\n"</font>);
-<a name="line1850">1850: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_ALLTOALLW)  &amp;&amp; !defined(PETSC_USE_64BIT_INDICES)</font>
-<a name="line1851">1851: </a>  <font color="#4169E1">if</font> (to-&gt;use_alltoallv) {
-<a name="line1852">1852: </a>    to-&gt;use_alltoallw = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1853">1853: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_nopack"</font>,&amp;to-&gt;use_alltoallw,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line1854">1854: </a>  }
-<a name="line1855">1855: </a>  from-&gt;use_alltoallw = to-&gt;use_alltoallw;
-<a name="line1856">1856: </a>  <font color="#4169E1">if</font> (from-&gt;use_alltoallw) <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Using MPI_Alltoallw() for scatter\n"</font>);
-<a name="line1857">1857: </a><font color="#A020F0">#endif</font>
+<a name="line1847">1847: </a>  to-&gt;use_alltoallv = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1848">1848: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_alltoall"</font>,&amp;to-&gt;use_alltoallv,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line1849">1849: </a>  from-&gt;use_alltoallv = to-&gt;use_alltoallv;
+<a name="line1850">1850: </a>  <font color="#4169E1">if</font> (from-&gt;use_alltoallv) <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Using <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Alltoallv.html#MPI_Alltoallv">MPI_Alltoallv</A>() for scatter\n"</font>);
+<a name="line1851">1851: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_ALLTOALLW)  &amp;&amp; !defined(PETSC_USE_64BIT_INDICES)</font>
+<a name="line1852">1852: </a>  <font color="#4169E1">if</font> (to-&gt;use_alltoallv) {
+<a name="line1853">1853: </a>    to-&gt;use_alltoallw = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1854">1854: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_nopack"</font>,&amp;to-&gt;use_alltoallw,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line1855">1855: </a>  }
+<a name="line1856">1856: </a>  from-&gt;use_alltoallw = to-&gt;use_alltoallw;
+<a name="line1857">1857: </a>  <font color="#4169E1">if</font> (from-&gt;use_alltoallw) <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Using MPI_Alltoallw() for scatter\n"</font>);
+<a name="line1858">1858: </a><font color="#A020F0">#endif</font>
 
-<a name="line1859">1859: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_WIN_CREATE)</font>
-<a name="line1860">1860: </a>  to-&gt;use_window = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1861">1861: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_window"</font>,&amp;to-&gt;use_window,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line1862">1862: </a>  from-&gt;use_window = to-&gt;use_window;
-<a name="line1863">1863: </a><font color="#A020F0">#endif</font>
+<a name="line1860">1860: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_WIN_CREATE)</font>
+<a name="line1861">1861: </a>  to-&gt;use_window = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1862">1862: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_window"</font>,&amp;to-&gt;use_window,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line1863">1863: </a>  from-&gt;use_window = to-&gt;use_window;
+<a name="line1864">1864: </a><font color="#A020F0">#endif</font>
 
-<a name="line1865">1865: </a>  <font color="#4169E1">if</font> (to-&gt;use_alltoallv) {
+<a name="line1866">1866: </a>  <font color="#4169E1">if</font> (to-&gt;use_alltoallv) {
 
-<a name="line1867">1867: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;counts,size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;displs);
-<a name="line1868">1868: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(to-&gt;counts,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
-<a name="line1869">1869: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
-<a name="line1870">1870: </a>      to-&gt;counts[to-&gt;procs[i]] = bs*(to-&gt;starts[i+1] - to-&gt;starts[i]);
-<a name="line1871">1871: </a>    }
-<a name="line1872">1872: </a>    to-&gt;displs[0] = 0;
-<a name="line1873">1873: </a>    <font color="#4169E1">for</font> (i=1; i&lt;size; i++) {
-<a name="line1874">1874: </a>      to-&gt;displs[i] = to-&gt;displs[i-1] + to-&gt;counts[i-1];
-<a name="line1875">1875: </a>    }
+<a name="line1868">1868: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;counts,size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;displs);
+<a name="line1869">1869: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(to-&gt;counts,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
+<a name="line1870">1870: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
+<a name="line1871">1871: </a>      to-&gt;counts[to-&gt;procs[i]] = bs*(to-&gt;starts[i+1] - to-&gt;starts[i]);
+<a name="line1872">1872: </a>    }
+<a name="line1873">1873: </a>    to-&gt;displs[0] = 0;
+<a name="line1874">1874: </a>    <font color="#4169E1">for</font> (i=1; i&lt;size; i++) {
+<a name="line1875">1875: </a>      to-&gt;displs[i] = to-&gt;displs[i-1] + to-&gt;counts[i-1];
+<a name="line1876">1876: </a>    }
 
-<a name="line1877">1877: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;counts,size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;displs);
-<a name="line1878">1878: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(from-&gt;counts,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
-<a name="line1879">1879: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
-<a name="line1880">1880: </a>      from-&gt;counts[from-&gt;procs[i]] = bs*(from-&gt;starts[i+1] - from-&gt;starts[i]);
-<a name="line1881">1881: </a>    }
-<a name="line1882">1882: </a>    from-&gt;displs[0] = 0;
-<a name="line1883">1883: </a>    <font color="#4169E1">for</font> (i=1; i&lt;size; i++) {
-<a name="line1884">1884: </a>      from-&gt;displs[i] = from-&gt;displs[i-1] + from-&gt;counts[i-1];
-<a name="line1885">1885: </a>    }
-<a name="line1886">1886: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_ALLTOALLW) &amp;&amp; !defined(PETSC_USE_64BIT_INDICES)</font>
-<a name="line1887">1887: </a>    <font color="#4169E1">if</font> (to-&gt;use_alltoallw) {
-<a name="line1888">1888: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> mpibs = PetscMPIIntCast(bs), mpilen;
-<a name="line1889">1889: </a>      ctx-&gt;packtogether = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1890">1890: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;wcounts,size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;wdispls,size,MPI_Datatype,&amp;to-&gt;types);
-<a name="line1891">1891: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(to-&gt;wcounts,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
-<a name="line1892">1892: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(to-&gt;wdispls,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
-<a name="line1893">1893: </a>      <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
-<a name="line1894">1894: </a>        to-&gt;types[i] = <A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>;
-<a name="line1895">1895: </a>      }
+<a name="line1878">1878: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;counts,size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;displs);
+<a name="line1879">1879: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(from-&gt;counts,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
+<a name="line1880">1880: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
+<a name="line1881">1881: </a>      from-&gt;counts[from-&gt;procs[i]] = bs*(from-&gt;starts[i+1] - from-&gt;starts[i]);
+<a name="line1882">1882: </a>    }
+<a name="line1883">1883: </a>    from-&gt;displs[0] = 0;
+<a name="line1884">1884: </a>    <font color="#4169E1">for</font> (i=1; i&lt;size; i++) {
+<a name="line1885">1885: </a>      from-&gt;displs[i] = from-&gt;displs[i-1] + from-&gt;counts[i-1];
+<a name="line1886">1886: </a>    }
+<a name="line1887">1887: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_ALLTOALLW) &amp;&amp; !defined(PETSC_USE_64BIT_INDICES)</font>
+<a name="line1888">1888: </a>    <font color="#4169E1">if</font> (to-&gt;use_alltoallw) {
+<a name="line1889">1889: </a>      <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> mpibs = PetscMPIIntCast(bs), mpilen;
+<a name="line1890">1890: </a>      ctx-&gt;packtogether = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1891">1891: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;wcounts,size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;to-&gt;wdispls,size,MPI_Datatype,&amp;to-&gt;types);
+<a name="line1892">1892: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(to-&gt;wcounts,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
+<a name="line1893">1893: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(to-&gt;wdispls,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
+<a name="line1894">1894: </a>      <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
+<a name="line1895">1895: </a>        to-&gt;types[i] = <A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>;
+<a name="line1896">1896: </a>      }
 
-<a name="line1897">1897: </a>      <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
-<a name="line1898">1898: </a>        to-&gt;wcounts[to-&gt;procs[i]] = 1;
-<a name="line1899">1899: </a>        mpilen = PetscMPIIntCast(to-&gt;starts[i+1]-to-&gt;starts[i]);
-<a name="line1900">1900: </a>        MPI_Type_create_indexed_block(mpilen,mpibs,to-&gt;indices+to-&gt;starts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,to-&gt;types+to-&gt;procs[i]);
-<a name="line1901">1901: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Type_commit.html#MPI_Type_commit">MPI_Type_commit</A>(to-&gt;types+to-&gt;procs[i]);
-<a name="line1902">1902: </a>      }
-<a name="line1903">1903: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;wcounts,size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;wdispls,size,MPI_Datatype,&amp;from-&gt;types);
-<a name="line1904">1904: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(from-&gt;wcounts,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
-<a name="line1905">1905: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(from-&gt;wdispls,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
-<a name="line1906">1906: </a>      <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
-<a name="line1907">1907: </a>        from-&gt;types[i] = <A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>;
-<a name="line1908">1908: </a>      }
-<a name="line1909">1909: </a>      <font color="#4169E1">if</font> (from-&gt;contiq) {
-<a name="line1910">1910: </a>        <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Scattered vector entries are stored contiquously, taking advantage of this with -vecscatter_alltoall\n"</font>);
-<a name="line1911">1911: </a>        <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
-<a name="line1912">1912: </a>          from-&gt;wcounts[from-&gt;procs[i]] = bs*(from-&gt;starts[i+1] - from-&gt;starts[i]);
-<a name="line1913">1913: </a>        }
-<a name="line1914">1914: </a>        <font color="#4169E1">if</font> (from-&gt;n) from-&gt;wdispls[from-&gt;procs[0]] = <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*from-&gt;indices[0];
-<a name="line1915">1915: </a>        <font color="#4169E1">for</font> (i=1; i&lt;from-&gt;n; i++) {
-<a name="line1916">1916: </a>          from-&gt;wdispls[from-&gt;procs[i]] = from-&gt;wdispls[from-&gt;procs[i-1]] + <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*from-&gt;wcounts[from-&gt;procs[i-1]];
-<a name="line1917">1917: </a>        }
-<a name="line1918">1918: </a>      } <font color="#4169E1">else</font> {
-<a name="line1919">1919: </a>        <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
-<a name="line1920">1920: </a>          from-&gt;wcounts[from-&gt;procs[i]] = 1;
-<a name="line1921">1921: </a>          mpilen = PetscMPIIntCast(from-&gt;starts[i+1]-from-&gt;starts[i]);
-<a name="line1922">1922: </a>          MPI_Type_create_indexed_block(mpilen,mpibs,from-&gt;indices+from-&gt;starts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,from-&gt;types+from-&gt;procs[i]);
-<a name="line1923">1923: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Type_commit.html#MPI_Type_commit">MPI_Type_commit</A>(from-&gt;types+from-&gt;procs[i]);
-<a name="line1924">1924: </a>        }
-<a name="line1925">1925: </a>      }
-<a name="line1926">1926: </a>    } <font color="#4169E1">else</font> {
-<a name="line1927">1927: </a>      ctx-&gt;copy = VecScatterCopy_PtoP_AllToAll;
-<a name="line1928">1928: </a>    }
-<a name="line1929">1929: </a><font color="#A020F0">#else </font>
-<a name="line1930">1930: </a>    to-&gt;use_alltoallw   = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1931">1931: </a>    from-&gt;use_alltoallw = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1932">1932: </a>    ctx-&gt;copy           = VecScatterCopy_PtoP_AllToAll;
-<a name="line1933">1933: </a><font color="#A020F0">#endif</font>
-<a name="line1934">1934: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_WIN_CREATE)</font>
-<a name="line1935">1935: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (to-&gt;use_window) {
-<a name="line1936">1936: </a>    <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> temptag,winsize;
-<a name="line1937">1937: </a>    MPI_Request *request;
-<a name="line1938">1938: </a>    MPI_Status  *status;
-<a name="line1939">1939: </a>
-<a name="line1940">1940: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectGetNewTag.html#PetscObjectGetNewTag">PetscObjectGetNewTag</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx,&amp;temptag);
-<a name="line1941">1941: </a>    winsize = (to-&gt;n ? to-&gt;starts[to-&gt;n] : 0)*bs*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>);
-<a name="line1942">1942: </a>    MPI_Win_create(to-&gt;values ? to-&gt;values : MPI_BOTTOM,winsize,<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),MPI_INFO_NULL,comm,&amp;to-&gt;window);
-<a name="line1943">1943: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(to-&gt;n*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;to-&gt;winstarts);
-<a name="line1944">1944: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(to-&gt;n,MPI_Request,&amp;request,to-&gt;n,MPI_Status,&amp;status);
-<a name="line1945">1945: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
-<a name="line1946">1946: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Irecv.html#MPI_Irecv">MPI_Irecv</A>(to-&gt;winstarts+i,1,MPIU_INT,to-&gt;procs[i],temptag,comm,request+i);
-<a name="line1947">1947: </a>    }
-<a name="line1948">1948: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
-<a name="line1949">1949: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(from-&gt;starts+i,1,MPIU_INT,from-&gt;procs[i],temptag,comm);
-<a name="line1950">1950: </a>    }
-<a name="line1951">1951: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(to-&gt;n,request,status);
-<a name="line1952">1952: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(request,status);
+<a name="line1898">1898: </a>      <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
+<a name="line1899">1899: </a>        to-&gt;wcounts[to-&gt;procs[i]] = 1;
+<a name="line1900">1900: </a>        mpilen = PetscMPIIntCast(to-&gt;starts[i+1]-to-&gt;starts[i]);
+<a name="line1901">1901: </a>        MPI_Type_create_indexed_block(mpilen,mpibs,to-&gt;indices+to-&gt;starts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,to-&gt;types+to-&gt;procs[i]);
+<a name="line1902">1902: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Type_commit.html#MPI_Type_commit">MPI_Type_commit</A>(to-&gt;types+to-&gt;procs[i]);
+<a name="line1903">1903: </a>      }
+<a name="line1904">1904: </a>      <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;wcounts,size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;from-&gt;wdispls,size,MPI_Datatype,&amp;from-&gt;types);
+<a name="line1905">1905: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(from-&gt;wcounts,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
+<a name="line1906">1906: </a>      <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(from-&gt;wdispls,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
+<a name="line1907">1907: </a>      <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
+<a name="line1908">1908: </a>        from-&gt;types[i] = <A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>;
+<a name="line1909">1909: </a>      }
+<a name="line1910">1910: </a>      <font color="#4169E1">if</font> (from-&gt;contiq) {
+<a name="line1911">1911: </a>        <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Scattered vector entries are stored contiquously, taking advantage of this with -vecscatter_alltoall\n"</font>);
+<a name="line1912">1912: </a>        <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
+<a name="line1913">1913: </a>          from-&gt;wcounts[from-&gt;procs[i]] = bs*(from-&gt;starts[i+1] - from-&gt;starts[i]);
+<a name="line1914">1914: </a>        }
+<a name="line1915">1915: </a>        <font color="#4169E1">if</font> (from-&gt;n) from-&gt;wdispls[from-&gt;procs[0]] = <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*from-&gt;indices[0];
+<a name="line1916">1916: </a>        <font color="#4169E1">for</font> (i=1; i&lt;from-&gt;n; i++) {
+<a name="line1917">1917: </a>          from-&gt;wdispls[from-&gt;procs[i]] = from-&gt;wdispls[from-&gt;procs[i-1]] + <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*from-&gt;wcounts[from-&gt;procs[i-1]];
+<a name="line1918">1918: </a>        }
+<a name="line1919">1919: </a>      } <font color="#4169E1">else</font> {
+<a name="line1920">1920: </a>        <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
+<a name="line1921">1921: </a>          from-&gt;wcounts[from-&gt;procs[i]] = 1;
+<a name="line1922">1922: </a>          mpilen = PetscMPIIntCast(from-&gt;starts[i+1]-from-&gt;starts[i]);
+<a name="line1923">1923: </a>          MPI_Type_create_indexed_block(mpilen,mpibs,from-&gt;indices+from-&gt;starts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,from-&gt;types+from-&gt;procs[i]);
+<a name="line1924">1924: </a>          <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Type_commit.html#MPI_Type_commit">MPI_Type_commit</A>(from-&gt;types+from-&gt;procs[i]);
+<a name="line1925">1925: </a>        }
+<a name="line1926">1926: </a>      }
+<a name="line1927">1927: </a>    } <font color="#4169E1">else</font> {
+<a name="line1928">1928: </a>      ctx-&gt;copy = VecScatterCopy_PtoP_AllToAll;
+<a name="line1929">1929: </a>    }
+<a name="line1930">1930: </a><font color="#A020F0">#else </font>
+<a name="line1931">1931: </a>    to-&gt;use_alltoallw   = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1932">1932: </a>    from-&gt;use_alltoallw = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1933">1933: </a>    ctx-&gt;copy           = VecScatterCopy_PtoP_AllToAll;
+<a name="line1934">1934: </a><font color="#A020F0">#endif</font>
+<a name="line1935">1935: </a><font color="#A020F0">#if defined(PETSC_HAVE_MPI_WIN_CREATE)</font>
+<a name="line1936">1936: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (to-&gt;use_window) {
+<a name="line1937">1937: </a>    <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> temptag,winsize;
+<a name="line1938">1938: </a>    MPI_Request *request;
+<a name="line1939">1939: </a>    MPI_Status  *status;
+<a name="line1940">1940: </a>
+<a name="line1941">1941: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectGetNewTag.html#PetscObjectGetNewTag">PetscObjectGetNewTag</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx,&amp;temptag);
+<a name="line1942">1942: </a>    winsize = (to-&gt;n ? to-&gt;starts[to-&gt;n] : 0)*bs*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>);
+<a name="line1943">1943: </a>    MPI_Win_create(to-&gt;values ? to-&gt;values : MPI_BOTTOM,winsize,<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),MPI_INFO_NULL,comm,&amp;to-&gt;window);
+<a name="line1944">1944: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(to-&gt;n*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;to-&gt;winstarts);
+<a name="line1945">1945: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(to-&gt;n,MPI_Request,&amp;request,to-&gt;n,MPI_Status,&amp;status);
+<a name="line1946">1946: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
+<a name="line1947">1947: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Irecv.html#MPI_Irecv">MPI_Irecv</A>(to-&gt;winstarts+i,1,MPIU_INT,to-&gt;procs[i],temptag,comm,request+i);
+<a name="line1948">1948: </a>    }
+<a name="line1949">1949: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
+<a name="line1950">1950: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(from-&gt;starts+i,1,MPIU_INT,from-&gt;procs[i],temptag,comm);
+<a name="line1951">1951: </a>    }
+<a name="line1952">1952: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(to-&gt;n,request,status);
+<a name="line1953">1953: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(request,status);
 
-<a name="line1954">1954: </a>    winsize = (from-&gt;n ? from-&gt;starts[from-&gt;n] : 0)*bs*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>);
-<a name="line1955">1955: </a>    MPI_Win_create(from-&gt;values ? from-&gt;values : MPI_BOTTOM,winsize,<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),MPI_INFO_NULL,comm,&amp;from-&gt;window);
-<a name="line1956">1956: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(from-&gt;n*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;from-&gt;winstarts);
-<a name="line1957">1957: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(from-&gt;n,MPI_Request,&amp;request,from-&gt;n,MPI_Status,&amp;status);
-<a name="line1958">1958: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
-<a name="line1959">1959: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Irecv.html#MPI_Irecv">MPI_Irecv</A>(from-&gt;winstarts+i,1,MPIU_INT,from-&gt;procs[i],temptag,comm,request+i);
-<a name="line1960">1960: </a>    }
-<a name="line1961">1961: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
-<a name="line1962">1962: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(to-&gt;starts+i,1,MPIU_INT,to-&gt;procs[i],temptag,comm);
-<a name="line1963">1963: </a>    }
-<a name="line1964">1964: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(from-&gt;n,request,status);
-<a name="line1965">1965: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(request,status);
-<a name="line1966">1966: </a><font color="#A020F0">#endif</font>
-<a name="line1967">1967: </a>  } <font color="#4169E1">else</font> {
-<a name="line1968">1968: </a>    <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   use_rsend = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, use_ssend = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1969">1969: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *sstarts = to-&gt;starts,  *rstarts = from-&gt;starts;
-<a name="line1970">1970: </a>    <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> *sprocs  = to-&gt;procs,   *rprocs  = from-&gt;procs;
-<a name="line1971">1971: </a>    MPI_Request *swaits  = to-&gt;requests,*rwaits  = from-&gt;requests;
-<a name="line1972">1972: </a>    MPI_Request *rev_swaits,*rev_rwaits;
-<a name="line1973">1973: </a>    <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *Ssvalues = to-&gt;values, *Srvalues = from-&gt;values;
+<a name="line1955">1955: </a>    winsize = (from-&gt;n ? from-&gt;starts[from-&gt;n] : 0)*bs*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>);
+<a name="line1956">1956: </a>    MPI_Win_create(from-&gt;values ? from-&gt;values : MPI_BOTTOM,winsize,<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),MPI_INFO_NULL,comm,&amp;from-&gt;window);
+<a name="line1957">1957: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(from-&gt;n*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;from-&gt;winstarts);
+<a name="line1958">1958: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(from-&gt;n,MPI_Request,&amp;request,from-&gt;n,MPI_Status,&amp;status);
+<a name="line1959">1959: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
+<a name="line1960">1960: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Irecv.html#MPI_Irecv">MPI_Irecv</A>(from-&gt;winstarts+i,1,MPIU_INT,from-&gt;procs[i],temptag,comm,request+i);
+<a name="line1961">1961: </a>    }
+<a name="line1962">1962: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
+<a name="line1963">1963: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(to-&gt;starts+i,1,MPIU_INT,to-&gt;procs[i],temptag,comm);
+<a name="line1964">1964: </a>    }
+<a name="line1965">1965: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(from-&gt;n,request,status);
+<a name="line1966">1966: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(request,status);
+<a name="line1967">1967: </a><font color="#A020F0">#endif</font>
+<a name="line1968">1968: </a>  } <font color="#4169E1">else</font> {
+<a name="line1969">1969: </a>    <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   use_rsend = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, use_ssend = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1970">1970: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *sstarts = to-&gt;starts,  *rstarts = from-&gt;starts;
+<a name="line1971">1971: </a>    <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> *sprocs  = to-&gt;procs,   *rprocs  = from-&gt;procs;
+<a name="line1972">1972: </a>    MPI_Request *swaits  = to-&gt;requests,*rwaits  = from-&gt;requests;
+<a name="line1973">1973: </a>    MPI_Request *rev_swaits,*rev_rwaits;
+<a name="line1974">1974: </a>    <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *Ssvalues = to-&gt;values, *Srvalues = from-&gt;values;
 
-<a name="line1975">1975: </a>    <font color="#B22222">/* allocate additional wait variables for the "reverse" scatter */</font>
-<a name="line1976">1976: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(to-&gt;n*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;rev_rwaits);
-<a name="line1977">1977: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(from-&gt;n*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;rev_swaits);
-<a name="line1978">1978: </a>    to-&gt;rev_requests   = rev_rwaits;
-<a name="line1979">1979: </a>    from-&gt;rev_requests = rev_swaits;
+<a name="line1976">1976: </a>    <font color="#B22222">/* allocate additional wait variables for the "reverse" scatter */</font>
+<a name="line1977">1977: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(to-&gt;n*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;rev_rwaits);
+<a name="line1978">1978: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(from-&gt;n*<font color="#4169E1">sizeof</font>(MPI_Request),&amp;rev_swaits);
+<a name="line1979">1979: </a>    to-&gt;rev_requests   = rev_rwaits;
+<a name="line1980">1980: </a>    from-&gt;rev_requests = rev_swaits;
 
-<a name="line1981">1981: </a>    <font color="#B22222">/* Register the receives that you will use later (sends for scatter reverse) */</font>
-<a name="line1982">1982: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_rsend"</font>,&amp;use_rsend,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line1983">1983: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_ssend"</font>,&amp;use_ssend,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line1984">1984: </a>    <font color="#4169E1">if</font> (use_rsend) {
-<a name="line1985">1985: </a>      <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Using <A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> ready receiver mode\n"</font>);
-<a name="line1986">1986: </a>      to-&gt;use_readyreceiver    = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line1987">1987: </a>      from-&gt;use_readyreceiver  = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line1988">1988: </a>    } <font color="#4169E1">else</font> {
-<a name="line1989">1989: </a>      to-&gt;use_readyreceiver    = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1990">1990: </a>      from-&gt;use_readyreceiver  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line1991">1991: </a>    }
-<a name="line1992">1992: </a>    <font color="#4169E1">if</font> (use_ssend) {
-<a name="line1993">1993: </a>      <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Using <A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> Ssend mode\n"</font>);
-<a name="line1994">1994: </a>    }
+<a name="line1982">1982: </a>    <font color="#B22222">/* Register the receives that you will use later (sends for scatter reverse) */</font>
+<a name="line1983">1983: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_rsend"</font>,&amp;use_rsend,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line1984">1984: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-vecscatter_ssend"</font>,&amp;use_ssend,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line1985">1985: </a>    <font color="#4169E1">if</font> (use_rsend) {
+<a name="line1986">1986: </a>      <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Using <A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> ready receiver mode\n"</font>);
+<a name="line1987">1987: </a>      to-&gt;use_readyreceiver    = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line1988">1988: </a>      from-&gt;use_readyreceiver  = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line1989">1989: </a>    } <font color="#4169E1">else</font> {
+<a name="line1990">1990: </a>      to-&gt;use_readyreceiver    = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1991">1991: </a>      from-&gt;use_readyreceiver  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1992">1992: </a>    }
+<a name="line1993">1993: </a>    <font color="#4169E1">if</font> (use_ssend) {
+<a name="line1994">1994: </a>      <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Using <A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> Ssend mode\n"</font>);
+<a name="line1995">1995: </a>    }
 
-<a name="line1996">1996: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
-<a name="line1997">1997: </a>      <font color="#4169E1">if</font> (use_rsend) {
-<a name="line1998">1998: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Rsend_init.html#MPI_Rsend_init">MPI_Rsend_init</A>(Srvalues+bs*rstarts[i],bs*rstarts[i+1]-bs*rstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,rprocs[i],tagr,comm,rev_swaits+i);
-<a name="line1999">1999: </a>      } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (use_ssend) {
-<a name="line2000">2000: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Ssend_init.html#MPI_Ssend_init">MPI_Ssend_init</A>(Srvalues+bs*rstarts[i],bs*rstarts[i+1]-bs*rstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,rprocs[i],tagr,comm,rev_swaits+i);
-<a name="line2001">2001: </a>      } <font color="#4169E1">else</font> {
-<a name="line2002">2002: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send_init.html#MPI_Send_init">MPI_Send_init</A>(Srvalues+bs*rstarts[i],bs*rstarts[i+1]-bs*rstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,rprocs[i],tagr,comm,rev_swaits+i);
-<a name="line2003">2003: </a>      }
-<a name="line2004">2004: </a>    }
+<a name="line1997">1997: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
+<a name="line1998">1998: </a>      <font color="#4169E1">if</font> (use_rsend) {
+<a name="line1999">1999: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Rsend_init.html#MPI_Rsend_init">MPI_Rsend_init</A>(Srvalues+bs*rstarts[i],bs*rstarts[i+1]-bs*rstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,rprocs[i],tagr,comm,rev_swaits+i);
+<a name="line2000">2000: </a>      } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (use_ssend) {
+<a name="line2001">2001: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Ssend_init.html#MPI_Ssend_init">MPI_Ssend_init</A>(Srvalues+bs*rstarts[i],bs*rstarts[i+1]-bs*rstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,rprocs[i],tagr,comm,rev_swaits+i);
+<a name="line2002">2002: </a>      } <font color="#4169E1">else</font> {
+<a name="line2003">2003: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send_init.html#MPI_Send_init">MPI_Send_init</A>(Srvalues+bs*rstarts[i],bs*rstarts[i+1]-bs*rstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,rprocs[i],tagr,comm,rev_swaits+i);
+<a name="line2004">2004: </a>      }
+<a name="line2005">2005: </a>    }
 
-<a name="line2006">2006: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
-<a name="line2007">2007: </a>      <font color="#4169E1">if</font> (use_rsend) {
-<a name="line2008">2008: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Rsend_init.html#MPI_Rsend_init">MPI_Rsend_init</A>(Ssvalues+bs*sstarts[i],bs*sstarts[i+1]-bs*sstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,sprocs[i],tag,comm,swaits+i);
-<a name="line2009">2009: </a>      } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (use_ssend) {
-<a name="line2010">2010: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Ssend_init.html#MPI_Ssend_init">MPI_Ssend_init</A>(Ssvalues+bs*sstarts[i],bs*sstarts[i+1]-bs*sstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,sprocs[i],tag,comm,swaits+i);
-<a name="line2011">2011: </a>      } <font color="#4169E1">else</font> {
-<a name="line2012">2012: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send_init.html#MPI_Send_init">MPI_Send_init</A>(Ssvalues+bs*sstarts[i],bs*sstarts[i+1]-bs*sstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,sprocs[i],tag,comm,swaits+i);
-<a name="line2013">2013: </a>      }
-<a name="line2014">2014: </a>    }
-<a name="line2015">2015: </a>    <font color="#B22222">/* Register receives for scatter and reverse */</font>
-<a name="line2016">2016: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
-<a name="line2017">2017: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv_init.html#MPI_Recv_init">MPI_Recv_init</A>(Srvalues+bs*rstarts[i],bs*rstarts[i+1]-bs*rstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,rprocs[i],tag,comm,rwaits+i);
-<a name="line2018">2018: </a>    }
-<a name="line2019">2019: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
-<a name="line2020">2020: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv_init.html#MPI_Recv_init">MPI_Recv_init</A>(Ssvalues+bs*sstarts[i],bs*sstarts[i+1]-bs*sstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,sprocs[i],tagr,comm,rev_rwaits+i);
-<a name="line2021">2021: </a>    }
-<a name="line2022">2022: </a>    <font color="#4169E1">if</font> (use_rsend) {
-<a name="line2023">2023: </a>      <font color="#4169E1">if</font> (to-&gt;n)   {MPI_Startall_irecv(to-&gt;starts[to-&gt;n]*to-&gt;bs,to-&gt;n,to-&gt;rev_requests);}
-<a name="line2024">2024: </a>      <font color="#4169E1">if</font> (from-&gt;n) {MPI_Startall_irecv(from-&gt;starts[from-&gt;n]*from-&gt;bs,from-&gt;n,from-&gt;requests);}
-<a name="line2025">2025: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Barrier.html#MPI_Barrier">MPI_Barrier</A>(comm);
-<a name="line2026">2026: </a>    }
+<a name="line2007">2007: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
+<a name="line2008">2008: </a>      <font color="#4169E1">if</font> (use_rsend) {
+<a name="line2009">2009: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Rsend_init.html#MPI_Rsend_init">MPI_Rsend_init</A>(Ssvalues+bs*sstarts[i],bs*sstarts[i+1]-bs*sstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,sprocs[i],tag,comm,swaits+i);
+<a name="line2010">2010: </a>      } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (use_ssend) {
+<a name="line2011">2011: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Ssend_init.html#MPI_Ssend_init">MPI_Ssend_init</A>(Ssvalues+bs*sstarts[i],bs*sstarts[i+1]-bs*sstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,sprocs[i],tag,comm,swaits+i);
+<a name="line2012">2012: </a>      } <font color="#4169E1">else</font> {
+<a name="line2013">2013: </a>        <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send_init.html#MPI_Send_init">MPI_Send_init</A>(Ssvalues+bs*sstarts[i],bs*sstarts[i+1]-bs*sstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,sprocs[i],tag,comm,swaits+i);
+<a name="line2014">2014: </a>      }
+<a name="line2015">2015: </a>    }
+<a name="line2016">2016: </a>    <font color="#B22222">/* Register receives for scatter and reverse */</font>
+<a name="line2017">2017: </a>    <font color="#4169E1">for</font> (i=0; i&lt;from-&gt;n; i++) {
+<a name="line2018">2018: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv_init.html#MPI_Recv_init">MPI_Recv_init</A>(Srvalues+bs*rstarts[i],bs*rstarts[i+1]-bs*rstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,rprocs[i],tag,comm,rwaits+i);
+<a name="line2019">2019: </a>    }
+<a name="line2020">2020: </a>    <font color="#4169E1">for</font> (i=0; i&lt;to-&gt;n; i++) {
+<a name="line2021">2021: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv_init.html#MPI_Recv_init">MPI_Recv_init</A>(Ssvalues+bs*sstarts[i],bs*sstarts[i+1]-bs*sstarts[i],<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,sprocs[i],tagr,comm,rev_rwaits+i);
+<a name="line2022">2022: </a>    }
+<a name="line2023">2023: </a>    <font color="#4169E1">if</font> (use_rsend) {
+<a name="line2024">2024: </a>      <font color="#4169E1">if</font> (to-&gt;n)   {MPI_Startall_irecv(to-&gt;starts[to-&gt;n]*to-&gt;bs,to-&gt;n,to-&gt;rev_requests);}
+<a name="line2025">2025: </a>      <font color="#4169E1">if</font> (from-&gt;n) {MPI_Startall_irecv(from-&gt;starts[from-&gt;n]*from-&gt;bs,from-&gt;n,from-&gt;requests);}
+<a name="line2026">2026: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Barrier.html#MPI_Barrier">MPI_Barrier</A>(comm);
+<a name="line2027">2027: </a>    }
 
-<a name="line2028">2028: </a>    ctx-&gt;copy      = VecScatterCopy_PtoP_X;
-<a name="line2029">2029: </a>  }
-<a name="line2030">2030: </a>  PetscInfo1(ctx,<font color="#666666">"Using blocksize %D scatter\n"</font>,bs);
-<a name="line2031">2031: </a>  <font color="#4169E1">switch</font> (bs) {
-<a name="line2032">2032: </a>  <font color="#4169E1">case</font> 12:
-<a name="line2033">2033: </a>    ctx-&gt;begin     = VecScatterBegin_12;
-<a name="line2034">2034: </a>    ctx-&gt;end       = VecScatterEnd_12;
-<a name="line2035">2035: </a>    <font color="#4169E1">break</font>;
-<a name="line2036">2036: </a>  <font color="#4169E1">case</font> 8:
-<a name="line2037">2037: </a>    ctx-&gt;begin     = VecScatterBegin_8;
-<a name="line2038">2038: </a>    ctx-&gt;end       = VecScatterEnd_8;
-<a name="line2039">2039: </a>    <font color="#4169E1">break</font>;
-<a name="line2040">2040: </a>  <font color="#4169E1">case</font> 7:
-<a name="line2041">2041: </a>    ctx-&gt;begin     = VecScatterBegin_7;
-<a name="line2042">2042: </a>    ctx-&gt;end       = VecScatterEnd_7;
+<a name="line2029">2029: </a>    ctx-&gt;copy      = VecScatterCopy_PtoP_X;
+<a name="line2030">2030: </a>  }
+<a name="line2031">2031: </a>  PetscInfo1(ctx,<font color="#666666">"Using blocksize %D scatter\n"</font>,bs);
+<a name="line2032">2032: </a>
+<a name="line2033">2033: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line2034">2034: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(&amp;bs,&amp;i,1,MPIU_INT,MPI_MIN,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx)-&gt;comm);
+<a name="line2035">2035: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(&amp;bs,&amp;n,1,MPIU_INT,MPI_MAX,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx)-&gt;comm);
+<a name="line2036">2036: </a>  <font color="#4169E1">if</font>(bs!=i || bs!=n) <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Blocks size %D != %D or %D"</font>,bs,i,n);
+<a name="line2037">2037: </a><font color="#A020F0">#endif</font>
+
+<a name="line2039">2039: </a>  <font color="#4169E1">switch</font> (bs) {
+<a name="line2040">2040: </a>  <font color="#4169E1">case</font> 12:
+<a name="line2041">2041: </a>    ctx-&gt;begin     = VecScatterBegin_12;
+<a name="line2042">2042: </a>    ctx-&gt;end       = VecScatterEnd_12;
 <a name="line2043">2043: </a>    <font color="#4169E1">break</font>;
-<a name="line2044">2044: </a>  <font color="#4169E1">case</font> 6:
-<a name="line2045">2045: </a>    ctx-&gt;begin     = VecScatterBegin_6;
-<a name="line2046">2046: </a>    ctx-&gt;end       = VecScatterEnd_6;
+<a name="line2044">2044: </a>  <font color="#4169E1">case</font> 8:
+<a name="line2045">2045: </a>    ctx-&gt;begin     = VecScatterBegin_8;
+<a name="line2046">2046: </a>    ctx-&gt;end       = VecScatterEnd_8;
 <a name="line2047">2047: </a>    <font color="#4169E1">break</font>;
-<a name="line2048">2048: </a>  <font color="#4169E1">case</font> 5:
-<a name="line2049">2049: </a>    ctx-&gt;begin     = VecScatterBegin_5;
-<a name="line2050">2050: </a>    ctx-&gt;end       = VecScatterEnd_5;
+<a name="line2048">2048: </a>  <font color="#4169E1">case</font> 7:
+<a name="line2049">2049: </a>    ctx-&gt;begin     = VecScatterBegin_7;
+<a name="line2050">2050: </a>    ctx-&gt;end       = VecScatterEnd_7;
 <a name="line2051">2051: </a>    <font color="#4169E1">break</font>;
-<a name="line2052">2052: </a>  <font color="#4169E1">case</font> 4:
-<a name="line2053">2053: </a>    ctx-&gt;begin     = VecScatterBegin_4;
-<a name="line2054">2054: </a>    ctx-&gt;end       = VecScatterEnd_4;
+<a name="line2052">2052: </a>  <font color="#4169E1">case</font> 6:
+<a name="line2053">2053: </a>    ctx-&gt;begin     = VecScatterBegin_6;
+<a name="line2054">2054: </a>    ctx-&gt;end       = VecScatterEnd_6;
 <a name="line2055">2055: </a>    <font color="#4169E1">break</font>;
-<a name="line2056">2056: </a>  <font color="#4169E1">case</font> 3:
-<a name="line2057">2057: </a>    ctx-&gt;begin     = VecScatterBegin_3;
-<a name="line2058">2058: </a>    ctx-&gt;end       = VecScatterEnd_3;
+<a name="line2056">2056: </a>  <font color="#4169E1">case</font> 5:
+<a name="line2057">2057: </a>    ctx-&gt;begin     = VecScatterBegin_5;
+<a name="line2058">2058: </a>    ctx-&gt;end       = VecScatterEnd_5;
 <a name="line2059">2059: </a>    <font color="#4169E1">break</font>;
-<a name="line2060">2060: </a>  <font color="#4169E1">case</font> 2:
-<a name="line2061">2061: </a>    ctx-&gt;begin     = VecScatterBegin_2;
-<a name="line2062">2062: </a>    ctx-&gt;end       = VecScatterEnd_2;
+<a name="line2060">2060: </a>  <font color="#4169E1">case</font> 4:
+<a name="line2061">2061: </a>    ctx-&gt;begin     = VecScatterBegin_4;
+<a name="line2062">2062: </a>    ctx-&gt;end       = VecScatterEnd_4;
 <a name="line2063">2063: </a>    <font color="#4169E1">break</font>;
-<a name="line2064">2064: </a>  <font color="#4169E1">case</font> 1:
-<a name="line2065">2065: </a>    ctx-&gt;begin     = VecScatterBegin_1;
-<a name="line2066">2066: </a>    ctx-&gt;end       = VecScatterEnd_1;
+<a name="line2064">2064: </a>  <font color="#4169E1">case</font> 3:
+<a name="line2065">2065: </a>    ctx-&gt;begin     = VecScatterBegin_3;
+<a name="line2066">2066: </a>    ctx-&gt;end       = VecScatterEnd_3;
 <a name="line2067">2067: </a>    <font color="#4169E1">break</font>;
-<a name="line2068">2068: </a><strong><font color="#FF0000">  default:</font></strong>
-<a name="line2069">2069: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Blocksize not supported"</font>);
-<a name="line2070">2070: </a>  }
-<a name="line2071">2071: </a>  ctx-&gt;view      = VecScatterView_MPI;
-<a name="line2072">2072: </a>  <font color="#B22222">/* Check if the local scatter is actually a copy; important special case */</font>
-<a name="line2073">2073: </a>  <font color="#4169E1">if</font> (to-&gt;local.n) {
-<a name="line2074">2074: </a>    VecScatterLocalOptimizeCopy_Private(ctx,&amp;to-&gt;local,&amp;from-&gt;local,bs);
-<a name="line2075">2075: </a>  }
-<a name="line2076">2076: </a>  <font color="#4169E1">return</font>(0);
-<a name="line2077">2077: </a>}
+<a name="line2068">2068: </a>  <font color="#4169E1">case</font> 2:
+<a name="line2069">2069: </a>    ctx-&gt;begin     = VecScatterBegin_2;
+<a name="line2070">2070: </a>    ctx-&gt;end       = VecScatterEnd_2;
+<a name="line2071">2071: </a>    <font color="#4169E1">break</font>;
+<a name="line2072">2072: </a>  <font color="#4169E1">case</font> 1:
+<a name="line2073">2073: </a>    ctx-&gt;begin     = VecScatterBegin_1;
+<a name="line2074">2074: </a>    ctx-&gt;end       = VecScatterEnd_1;
+<a name="line2075">2075: </a>    <font color="#4169E1">break</font>;
+<a name="line2076">2076: </a><strong><font color="#FF0000">  default:</font></strong>
+<a name="line2077">2077: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Blocksize not supported"</font>);
+<a name="line2078">2078: </a>  }
+<a name="line2079">2079: </a>  ctx-&gt;view      = VecScatterView_MPI;
+<a name="line2080">2080: </a>  <font color="#B22222">/* Check if the local scatter is actually a copy; important special case */</font>
+<a name="line2081">2081: </a>  <font color="#4169E1">if</font> (to-&gt;local.n) {
+<a name="line2082">2082: </a>    VecScatterLocalOptimizeCopy_Private(ctx,&amp;to-&gt;local,&amp;from-&gt;local,bs);
+<a name="line2083">2083: </a>  }
+<a name="line2084">2084: </a>  <font color="#4169E1">return</font>(0);
+<a name="line2085">2085: </a>}
 
 
 
-<a name="line2081">2081: </a><font color="#B22222">/* ------------------------------------------------------------------------------------*/</font>
-<a name="line2082">2082: </a><font color="#B22222">/*</font>
-<a name="line2083">2083: </a><font color="#B22222">         Scatter from local Seq vectors to a parallel vector. </font>
-<a name="line2084">2084: </a><font color="#B22222">         Reverses the order of the arguments, calls VecScatterCreate_PtoS() then</font>
-<a name="line2085">2085: </a><font color="#B22222">         reverses the result.</font>
-<a name="line2086">2086: </a><font color="#B22222">*/</font>
-<a name="line2089">2089: </a><strong><font color="#4169E1"><a name="VecScatterCreate_StoP"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecScatterCreate_StoP(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nx,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *inidx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ny,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *inidy,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> yin,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs,<A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> ctx)</font></strong>
-<a name="line2090">2090: </a>{
-<a name="line2091">2091: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>         ierr;
-<a name="line2092">2092: </a>  MPI_Request            *waits;
-<a name="line2093">2093: </a>  VecScatter_MPI_General *to,*from;
+<a name="line2089">2089: </a><font color="#B22222">/* ------------------------------------------------------------------------------------*/</font>
+<a name="line2090">2090: </a><font color="#B22222">/*</font>
+<a name="line2091">2091: </a><font color="#B22222">         Scatter from local Seq vectors to a parallel vector. </font>
+<a name="line2092">2092: </a><font color="#B22222">         Reverses the order of the arguments, calls VecScatterCreate_PtoS() then</font>
+<a name="line2093">2093: </a><font color="#B22222">         reverses the result.</font>
+<a name="line2094">2094: </a><font color="#B22222">*/</font>
+<a name="line2097">2097: </a><strong><font color="#4169E1"><a name="VecScatterCreate_StoP"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecScatterCreate_StoP(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nx,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *inidx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ny,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *inidy,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> yin,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs,<A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> ctx)</font></strong>
+<a name="line2098">2098: </a>{
+<a name="line2099">2099: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>         ierr;
+<a name="line2100">2100: </a>  MPI_Request            *waits;
+<a name="line2101">2101: </a>  VecScatter_MPI_General *to,*from;
 
-<a name="line2096">2096: </a>  VecScatterCreate_PtoS(ny,inidy,nx,inidx,yin,xin,bs,ctx);
-<a name="line2097">2097: </a>  to            = (VecScatter_MPI_General*)ctx-&gt;fromdata;
-<a name="line2098">2098: </a>  from          = (VecScatter_MPI_General*)ctx-&gt;todata;
-<a name="line2099">2099: </a>  ctx-&gt;todata   = (void*)to;
-<a name="line2100">2100: </a>  ctx-&gt;fromdata = (void*)from;
-<a name="line2101">2101: </a>  <font color="#B22222">/* these two are special, they are ALWAYS stored in to struct */</font>
-<a name="line2102">2102: </a>  to-&gt;sstatus   = from-&gt;sstatus;
-<a name="line2103">2103: </a>  to-&gt;rstatus   = from-&gt;rstatus;
+<a name="line2104">2104: </a>  VecScatterCreate_PtoS(ny,inidy,nx,inidx,yin,xin,bs,ctx);
+<a name="line2105">2105: </a>  to            = (VecScatter_MPI_General*)ctx-&gt;fromdata;
+<a name="line2106">2106: </a>  from          = (VecScatter_MPI_General*)ctx-&gt;todata;
+<a name="line2107">2107: </a>  ctx-&gt;todata   = (void*)to;
+<a name="line2108">2108: </a>  ctx-&gt;fromdata = (void*)from;
+<a name="line2109">2109: </a>  <font color="#B22222">/* these two are special, they are ALWAYS stored in to struct */</font>
+<a name="line2110">2110: </a>  to-&gt;sstatus   = from-&gt;sstatus;
+<a name="line2111">2111: </a>  to-&gt;rstatus   = from-&gt;rstatus;
 
-<a name="line2105">2105: </a>  from-&gt;sstatus = 0;
-<a name="line2106">2106: </a>  from-&gt;rstatus = 0;
+<a name="line2113">2113: </a>  from-&gt;sstatus = 0;
+<a name="line2114">2114: </a>  from-&gt;rstatus = 0;
 
-<a name="line2108">2108: </a>  waits              = from-&gt;rev_requests;
-<a name="line2109">2109: </a>  from-&gt;rev_requests = from-&gt;requests;
-<a name="line2110">2110: </a>  from-&gt;requests     = waits;
-<a name="line2111">2111: </a>  waits              = to-&gt;rev_requests;
-<a name="line2112">2112: </a>  to-&gt;rev_requests   = to-&gt;requests;
-<a name="line2113">2113: </a>  to-&gt;requests       = waits;
-<a name="line2114">2114: </a>  <font color="#4169E1">return</font>(0);
-<a name="line2115">2115: </a>}
+<a name="line2116">2116: </a>  waits              = from-&gt;rev_requests;
+<a name="line2117">2117: </a>  from-&gt;rev_requests = from-&gt;requests;
+<a name="line2118">2118: </a>  from-&gt;requests     = waits;
+<a name="line2119">2119: </a>  waits              = to-&gt;rev_requests;
+<a name="line2120">2120: </a>  to-&gt;rev_requests   = to-&gt;requests;
+<a name="line2121">2121: </a>  to-&gt;requests       = waits;
+<a name="line2122">2122: </a>  <font color="#4169E1">return</font>(0);
+<a name="line2123">2123: </a>}
 
-<a name="line2117">2117: </a><font color="#B22222">/* ---------------------------------------------------------------------------------*/</font>
-<a name="line2120">2120: </a><strong><font color="#4169E1"><a name="VecScatterCreate_PtoP"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecScatterCreate_PtoP(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nx,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *inidx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ny,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *inidy,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> yin,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs,<A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> ctx)</font></strong>
-<a name="line2121">2121: </a>{
-<a name="line2123">2123: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank,tag,imdex,n;
-<a name="line2124">2124: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *owners = xin-&gt;map-&gt;range;
-<a name="line2125">2125: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    *nprocs = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line2126">2126: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,idx,nsends,*local_inidx = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*local_inidy = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line2127">2127: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *owner = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*starts = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,count,slen;
-<a name="line2128">2128: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *rvalues = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*svalues = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,base,*values = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*rsvalues,recvtotal,lastidx;
-<a name="line2129">2129: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    *onodes1,*olengths1,nrecvs;
-<a name="line2130">2130: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm;
-<a name="line2131">2131: </a>  MPI_Request    *send_waits = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*recv_waits = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line2132">2132: </a>  MPI_Status     recv_status,*send_status = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line2133">2133: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      duplicate = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line2134">2134: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
-<a name="line2135">2135: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      found = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line2136">2136: </a><font color="#A020F0">#endif</font>
+<a name="line2125">2125: </a><font color="#B22222">/* ---------------------------------------------------------------------------------*/</font>
+<a name="line2128">2128: </a><strong><font color="#4169E1"><a name="VecScatterCreate_PtoP"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecScatterCreate_PtoP(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nx,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *inidx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ny,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *inidy,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xin,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> yin,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs,<A href="../../../../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A> ctx)</font></strong>
+<a name="line2129">2129: </a>{
+<a name="line2131">2131: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank,tag,imdex,n;
+<a name="line2132">2132: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *owners = xin-&gt;map-&gt;range;
+<a name="line2133">2133: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    *nprocs = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line2134">2134: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,idx,nsends,*local_inidx = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*local_inidy = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line2135">2135: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *owner = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*starts = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,count,slen;
+<a name="line2136">2136: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *rvalues = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*svalues = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,base,*values = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*rsvalues,recvtotal,lastidx;
+<a name="line2137">2137: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    *onodes1,*olengths1,nrecvs;
+<a name="line2138">2138: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       comm;
+<a name="line2139">2139: </a>  MPI_Request    *send_waits = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,*recv_waits = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line2140">2140: </a>  MPI_Status     recv_status,*send_status = <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line2141">2141: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      duplicate = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line2142">2142: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line2143">2143: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      found = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line2144">2144: </a><font color="#A020F0">#endif</font>
 
-<a name="line2139">2139: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetNewTag.html#PetscObjectGetNewTag">PetscObjectGetNewTag</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx,&amp;tag);
-<a name="line2140">2140: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;comm);
-<a name="line2141">2141: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
-<a name="line2142">2142: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm,&amp;rank);
-<a name="line2143">2143: </a>  <font color="#4169E1">if</font> (size == 1) {
-<a name="line2144">2144: </a>    VecScatterCreate_StoP(nx,inidx,ny,inidy,xin,yin,bs,ctx);
-<a name="line2145">2145: </a>    <font color="#4169E1">return</font>(0);
-<a name="line2146">2146: </a>  }
+<a name="line2147">2147: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetNewTag.html#PetscObjectGetNewTag">PetscObjectGetNewTag</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ctx,&amp;tag);
+<a name="line2148">2148: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)xin,&amp;comm);
+<a name="line2149">2149: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
+<a name="line2150">2150: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm,&amp;rank);
+<a name="line2151">2151: </a>  <font color="#4169E1">if</font> (size == 1) {
+<a name="line2152">2152: </a>    VecScatterCreate_StoP(nx,inidx,ny,inidy,xin,yin,bs,ctx);
+<a name="line2153">2153: </a>    <font color="#4169E1">return</font>(0);
+<a name="line2154">2154: </a>  }
 
-<a name="line2148">2148: </a>  <font color="#B22222">/*</font>
-<a name="line2149">2149: </a><font color="#B22222">     Each processor ships off its inidx[j] and inidy[j] to the appropriate processor</font>
-<a name="line2150">2150: </a><font color="#B22222">     They then call the StoPScatterCreate()</font>
-<a name="line2151">2151: </a><font color="#B22222">  */</font>
-<a name="line2152">2152: </a>  <font color="#B22222">/*  first count number of contributors to each processor */</font>
-<a name="line2153">2153: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;nprocs,nx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;owner,(size+1),<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;starts);
-<a name="line2154">2154: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(nprocs,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
-<a name="line2155">2155: </a>  lastidx = -1;
-<a name="line2156">2156: </a>  j       = 0;
-<a name="line2157">2157: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
-<a name="line2158">2158: </a>    <font color="#B22222">/* if indices are NOT locally sorted, need to start search at the beginning */</font>
-<a name="line2159">2159: </a>    <font color="#4169E1">if</font> (lastidx &gt; (idx = bs*inidx[i])) j = 0;
-<a name="line2160">2160: </a>    lastidx = idx;
-<a name="line2161">2161: </a>    <font color="#4169E1">for</font> (; j&lt;size; j++) {
-<a name="line2162">2162: </a>      <font color="#4169E1">if</font> (idx &gt;= owners[j] &amp;&amp; idx &lt; owners[j+1]) {
-<a name="line2163">2163: </a>        nprocs[j]++;
-<a name="line2164">2164: </a>        owner[i] = j;
-<a name="line2165">2165: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
-<a name="line2166">2166: </a>        found = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line2167">2167: </a><font color="#A020F0">#endif</font>
-<a name="line2168">2168: </a>        <font color="#4169E1">break</font>;
-<a name="line2169">2169: </a>      }
-<a name="line2170">2170: </a>    }
-<a name="line2171">2171: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
-<a name="line2172">2172: </a>    <font color="#4169E1">if</font> (!found) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Index %D out of range"</font>,idx);
-<a name="line2173">2173: </a>    found = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line2174">2174: </a><font color="#A020F0">#endif</font>
-<a name="line2175">2175: </a>  }
-<a name="line2176">2176: </a>  nsends = 0;  <font color="#4169E1">for</font> (i=0; i&lt;size; i++) { nsends += (nprocs[i] &gt; 0);}
+<a name="line2156">2156: </a>  <font color="#B22222">/*</font>
+<a name="line2157">2157: </a><font color="#B22222">     Each processor ships off its inidx[j] and inidy[j] to the appropriate processor</font>
+<a name="line2158">2158: </a><font color="#B22222">     They then call the StoPScatterCreate()</font>
+<a name="line2159">2159: </a><font color="#B22222">  */</font>
+<a name="line2160">2160: </a>  <font color="#B22222">/*  first count number of contributors to each processor */</font>
+<a name="line2161">2161: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(size,<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>,&amp;nprocs,nx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;owner,(size+1),<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;starts);
+<a name="line2162">2162: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(nprocs,size*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>));
+<a name="line2163">2163: </a>  lastidx = -1;
+<a name="line2164">2164: </a>  j       = 0;
+<a name="line2165">2165: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
+<a name="line2166">2166: </a>    <font color="#B22222">/* if indices are NOT locally sorted, need to start search at the beginning */</font>
+<a name="line2167">2167: </a>    <font color="#4169E1">if</font> (lastidx &gt; (idx = bs*inidx[i])) j = 0;
+<a name="line2168">2168: </a>    lastidx = idx;
+<a name="line2169">2169: </a>    <font color="#4169E1">for</font> (; j&lt;size; j++) {
+<a name="line2170">2170: </a>      <font color="#4169E1">if</font> (idx &gt;= owners[j] &amp;&amp; idx &lt; owners[j+1]) {
+<a name="line2171">2171: </a>        nprocs[j]++;
+<a name="line2172">2172: </a>        owner[i] = j;
+<a name="line2173">2173: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line2174">2174: </a>        found = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line2175">2175: </a><font color="#A020F0">#endif</font>
+<a name="line2176">2176: </a>        <font color="#4169E1">break</font>;
+<a name="line2177">2177: </a>      }
+<a name="line2178">2178: </a>    }
+<a name="line2179">2179: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line2180">2180: </a>    <font color="#4169E1">if</font> (!found) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Index %D out of range"</font>,idx);
+<a name="line2181">2181: </a>    found = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line2182">2182: </a><font color="#A020F0">#endif</font>
+<a name="line2183">2183: </a>  }
+<a name="line2184">2184: </a>  nsends = 0;  <font color="#4169E1">for</font> (i=0; i&lt;size; i++) { nsends += (nprocs[i] &gt; 0);}
 
-<a name="line2178">2178: </a>  <font color="#B22222">/* inform other processors of number of messages and max length*/</font>
-<a name="line2179">2179: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherNumberOfMessages.html#PetscGatherNumberOfMessages">PetscGatherNumberOfMessages</A>(comm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,nprocs,&amp;nrecvs);
-<a name="line2180">2180: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherMessageLengths.html#PetscGatherMessageLengths">PetscGatherMessageLengths</A>(comm,nsends,nrecvs,nprocs,&amp;onodes1,&amp;olengths1);
-<a name="line2181">2181: </a>  <A href="../../../../docs/manualpages/Sys/PetscSortMPIIntWithArray.html#PetscSortMPIIntWithArray">PetscSortMPIIntWithArray</A>(nrecvs,onodes1,olengths1);
-<a name="line2182">2182: </a>  recvtotal = 0; <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) recvtotal += olengths1[i];
+<a name="line2186">2186: </a>  <font color="#B22222">/* inform other processors of number of messages and max length*/</font>
+<a name="line2187">2187: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherNumberOfMessages.html#PetscGatherNumberOfMessages">PetscGatherNumberOfMessages</A>(comm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,nprocs,&amp;nrecvs);
+<a name="line2188">2188: </a>  <A href="../../../../docs/manualpages/Sys/PetscGatherMessageLengths.html#PetscGatherMessageLengths">PetscGatherMessageLengths</A>(comm,nsends,nrecvs,nprocs,&amp;onodes1,&amp;olengths1);
+<a name="line2189">2189: </a>  <A href="../../../../docs/manualpages/Sys/PetscSortMPIIntWithArray.html#PetscSortMPIIntWithArray">PetscSortMPIIntWithArray</A>(nrecvs,onodes1,olengths1);
+<a name="line2190">2190: </a>  recvtotal = 0; <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) recvtotal += olengths1[i];
 
-<a name="line2184">2184: </a>  <font color="#B22222">/* post receives:   */</font>
-<a name="line2185">2185: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc5.html#PetscMalloc5">PetscMalloc5</A>(2*recvtotal,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;rvalues,2*nx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;svalues,nrecvs,MPI_Request,&amp;recv_waits,nsends,MPI_Request,&amp;send_waits,nsends,MPI_Status,&amp;send_status);
+<a name="line2192">2192: </a>  <font color="#B22222">/* post receives:   */</font>
+<a name="line2193">2193: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc5.html#PetscMalloc5">PetscMalloc5</A>(2*recvtotal,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;rvalues,2*nx,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;svalues,nrecvs,MPI_Request,&amp;recv_waits,nsends,MPI_Request,&amp;send_waits,nsends,MPI_Status,&amp;send_status);
 
-<a name="line2187">2187: </a>  count = 0;
-<a name="line2188">2188: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) {
-<a name="line2189">2189: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Irecv.html#MPI_Irecv">MPI_Irecv</A>((rvalues+2*count),2*olengths1[i],MPIU_INT,onodes1[i],tag,comm,recv_waits+i);
-<a name="line2190">2190: </a>    count += olengths1[i];
-<a name="line2191">2191: </a>  }
-<a name="line2192">2192: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(onodes1);
+<a name="line2195">2195: </a>  count = 0;
+<a name="line2196">2196: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) {
+<a name="line2197">2197: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Irecv.html#MPI_Irecv">MPI_Irecv</A>((rvalues+2*count),2*olengths1[i],MPIU_INT,onodes1[i],tag,comm,recv_waits+i);
+<a name="line2198">2198: </a>    count += olengths1[i];
+<a name="line2199">2199: </a>  }
+<a name="line2200">2200: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(onodes1);
 
-<a name="line2194">2194: </a>  <font color="#B22222">/* do sends:</font>
-<a name="line2195">2195: </a><font color="#B22222">      1) starts[i] gives the starting index in svalues for stuff going to </font>
-<a name="line2196">2196: </a><font color="#B22222">         the ith processor</font>
-<a name="line2197">2197: </a><font color="#B22222">  */</font>
-<a name="line2198">2198: </a>  starts[0]= 0;
-<a name="line2199">2199: </a>  <font color="#4169E1">for</font> (i=1; i&lt;size; i++) { starts[i] = starts[i-1] + nprocs[i-1];}
-<a name="line2200">2200: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
-<a name="line2201">2201: </a>    svalues[2*starts[owner[i]]]       = bs*inidx[i];
-<a name="line2202">2202: </a>    svalues[1 + 2*starts[owner[i]]++] = bs*inidy[i];
-<a name="line2203">2203: </a>  }
+<a name="line2202">2202: </a>  <font color="#B22222">/* do sends:</font>
+<a name="line2203">2203: </a><font color="#B22222">      1) starts[i] gives the starting index in svalues for stuff going to </font>
+<a name="line2204">2204: </a><font color="#B22222">         the ith processor</font>
+<a name="line2205">2205: </a><font color="#B22222">  */</font>
+<a name="line2206">2206: </a>  starts[0]= 0;
+<a name="line2207">2207: </a>  <font color="#4169E1">for</font> (i=1; i&lt;size; i++) { starts[i] = starts[i-1] + nprocs[i-1];}
+<a name="line2208">2208: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nx; i++) {
+<a name="line2209">2209: </a>    svalues[2*starts[owner[i]]]       = bs*inidx[i];
+<a name="line2210">2210: </a>    svalues[1 + 2*starts[owner[i]]++] = bs*inidy[i];
+<a name="line2211">2211: </a>  }
 
-<a name="line2205">2205: </a>  starts[0] = 0;
-<a name="line2206">2206: </a>  <font color="#4169E1">for</font> (i=1; i&lt;size+1; i++) { starts[i] = starts[i-1] + nprocs[i-1];}
-<a name="line2207">2207: </a>  count = 0;
-<a name="line2208">2208: </a>  <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
-<a name="line2209">2209: </a>    <font color="#4169E1">if</font> (nprocs[i]) {
-<a name="line2210">2210: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Isend.html#MPI_Isend">MPI_Isend</A>(svalues+2*starts[i],2*nprocs[i],MPIU_INT,i,tag,comm,send_waits+count);
-<a name="line2211">2211: </a>      count++;
-<a name="line2212">2212: </a>    }
-<a name="line2213">2213: </a>  }
-<a name="line2214">2214: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(nprocs,owner,starts);
+<a name="line2213">2213: </a>  starts[0] = 0;
+<a name="line2214">2214: </a>  <font color="#4169E1">for</font> (i=1; i&lt;size+1; i++) { starts[i] = starts[i-1] + nprocs[i-1];}
+<a name="line2215">2215: </a>  count = 0;
+<a name="line2216">2216: </a>  <font color="#4169E1">for</font> (i=0; i&lt;size; i++) {
+<a name="line2217">2217: </a>    <font color="#4169E1">if</font> (nprocs[i]) {
+<a name="line2218">2218: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Isend.html#MPI_Isend">MPI_Isend</A>(svalues+2*starts[i],2*nprocs[i],MPIU_INT,i,tag,comm,send_waits+count);
+<a name="line2219">2219: </a>      count++;
+<a name="line2220">2220: </a>    }
+<a name="line2221">2221: </a>  }
+<a name="line2222">2222: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(nprocs,owner,starts);
 
-<a name="line2216">2216: </a>  <font color="#B22222">/*  wait on receives */</font>
-<a name="line2217">2217: </a>  count = nrecvs;
-<a name="line2218">2218: </a>  slen  = 0;
-<a name="line2219">2219: </a>  <font color="#4169E1">while</font> (count) {
-<a name="line2220">2220: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitany.html#MPI_Waitany">MPI_Waitany</A>(nrecvs,recv_waits,&amp;imdex,&amp;recv_status);
-<a name="line2221">2221: </a>    <font color="#B22222">/* unpack receives into our local space */</font>
-<a name="line2222">2222: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Get_count.html#MPI_Get_count">MPI_Get_count</A>(&amp;recv_status,MPIU_INT,&amp;n);
-<a name="line2223">2223: </a>    slen += n/2;
-<a name="line2224">2224: </a>    count--;
-<a name="line2225">2225: </a>  }
-<a name="line2226">2226: </a>  <font color="#4169E1">if</font> (slen != recvtotal) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Total message lengths %D not as expected %D"</font>,slen,recvtotal);
-<a name="line2227">2227: </a>
-<a name="line2228">2228: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(slen,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;local_inidx,slen,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;local_inidy);
-<a name="line2229">2229: </a>  base  = owners[rank];
-<a name="line2230">2230: </a>  count = 0;
-<a name="line2231">2231: </a>  rsvalues = rvalues;
-<a name="line2232">2232: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) {
-<a name="line2233">2233: </a>    values = rsvalues;
-<a name="line2234">2234: </a>    rsvalues += 2*olengths1[i];
-<a name="line2235">2235: </a>    <font color="#4169E1">for</font> (j=0; j&lt;olengths1[i]; j++) {
-<a name="line2236">2236: </a>      local_inidx[count]   = values[2*j] - base;
-<a name="line2237">2237: </a>      local_inidy[count++] = values[2*j+1];
-<a name="line2238">2238: </a>    }
-<a name="line2239">2239: </a>  }
-<a name="line2240">2240: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(olengths1);
+<a name="line2224">2224: </a>  <font color="#B22222">/*  wait on receives */</font>
+<a name="line2225">2225: </a>  count = nrecvs;
+<a name="line2226">2226: </a>  slen  = 0;
+<a name="line2227">2227: </a>  <font color="#4169E1">while</font> (count) {
+<a name="line2228">2228: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitany.html#MPI_Waitany">MPI_Waitany</A>(nrecvs,recv_waits,&amp;imdex,&amp;recv_status);
+<a name="line2229">2229: </a>    <font color="#B22222">/* unpack receives into our local space */</font>
+<a name="line2230">2230: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Get_count.html#MPI_Get_count">MPI_Get_count</A>(&amp;recv_status,MPIU_INT,&amp;n);
+<a name="line2231">2231: </a>    slen += n/2;
+<a name="line2232">2232: </a>    count--;
+<a name="line2233">2233: </a>  }
+<a name="line2234">2234: </a>  <font color="#4169E1">if</font> (slen != recvtotal) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"Total message lengths %D not as expected %D"</font>,slen,recvtotal);
+<a name="line2235">2235: </a>
+<a name="line2236">2236: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(slen,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;local_inidx,slen,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;local_inidy);
+<a name="line2237">2237: </a>  base  = owners[rank];
+<a name="line2238">2238: </a>  count = 0;
+<a name="line2239">2239: </a>  rsvalues = rvalues;
+<a name="line2240">2240: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nrecvs; i++) {
+<a name="line2241">2241: </a>    values = rsvalues;
+<a name="line2242">2242: </a>    rsvalues += 2*olengths1[i];
+<a name="line2243">2243: </a>    <font color="#4169E1">for</font> (j=0; j&lt;olengths1[i]; j++) {
+<a name="line2244">2244: </a>      local_inidx[count]   = values[2*j] - base;
+<a name="line2245">2245: </a>      local_inidy[count++] = values[2*j+1];
+<a name="line2246">2246: </a>    }
+<a name="line2247">2247: </a>  }
+<a name="line2248">2248: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(olengths1);
 
-<a name="line2242">2242: </a>  <font color="#B22222">/* wait on sends */</font>
-<a name="line2243">2243: </a>  <font color="#4169E1">if</font> (nsends) {<A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(nsends,send_waits,send_status);}
-<a name="line2244">2244: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree5.html#PetscFree5">PetscFree5</A>(rvalues,svalues,recv_waits,send_waits,send_status);
+<a name="line2250">2250: </a>  <font color="#B22222">/* wait on sends */</font>
+<a name="line2251">2251: </a>  <font color="#4169E1">if</font> (nsends) {<A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Waitall.html#MPI_Waitall">MPI_Waitall</A>(nsends,send_waits,send_status);}
+<a name="line2252">2252: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree5.html#PetscFree5">PetscFree5</A>(rvalues,svalues,recv_waits,send_waits,send_status);
 
-<a name="line2246">2246: </a>  <font color="#B22222">/*</font>
-<a name="line2247">2247: </a><font color="#B22222">     should sort and remove duplicates from local_inidx,local_inidy </font>
-<a name="line2248">2248: </a><font color="#B22222">  */</font>
+<a name="line2254">2254: </a>  <font color="#B22222">/*</font>
+<a name="line2255">2255: </a><font color="#B22222">     should sort and remove duplicates from local_inidx,local_inidy </font>
+<a name="line2256">2256: </a><font color="#B22222">  */</font>
 
-<a name="line2250">2250: </a><font color="#A020F0">#if defined(do_it_slow)</font>
-<a name="line2251">2251: </a>  <font color="#B22222">/* sort on the from index */</font>
-<a name="line2252">2252: </a>  <A href="../../../../docs/manualpages/Sys/PetscSortIntWithArray.html#PetscSortIntWithArray">PetscSortIntWithArray</A>(slen,local_inidx,local_inidy);
-<a name="line2253">2253: </a>  start = 0;
-<a name="line2254">2254: </a>  <font color="#4169E1">while</font> (start &lt; slen) {
-<a name="line2255">2255: </a>    count = start+1;
-<a name="line2256">2256: </a>    last  = local_inidx[start];
-<a name="line2257">2257: </a>    <font color="#4169E1">while</font> (count &lt; slen &amp;&amp; last == local_inidx[count]) count++;
-<a name="line2258">2258: </a>    <font color="#4169E1">if</font> (count &gt; start + 1) { <font color="#B22222">/* found 2 or more same local_inidx[] in a row */</font>
-<a name="line2259">2259: </a>      <font color="#B22222">/* sort on to index */</font>
-<a name="line2260">2260: </a>      <A href="../../../../docs/manualpages/Sys/PetscSortInt.html#PetscSortInt">PetscSortInt</A>(count-start,local_inidy+start);
-<a name="line2261">2261: </a>    }
-<a name="line2262">2262: </a>    <font color="#B22222">/* remove duplicates; not most efficient way, but probably good enough */</font>
-<a name="line2263">2263: </a>    i = start;
-<a name="line2264">2264: </a>    <font color="#4169E1">while</font> (i &lt; count-1) {
-<a name="line2265">2265: </a>      <font color="#4169E1">if</font> (local_inidy[i] != local_inidy[i+1]) {
-<a name="line2266">2266: </a>        i++;
-<a name="line2267">2267: </a>      } <font color="#4169E1">else</font> { <font color="#B22222">/* found a duplicate */</font>
-<a name="line2268">2268: </a>        duplicate = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line2269">2269: </a>        <font color="#4169E1">for</font> (j=i; j&lt;slen-1; j++) {
-<a name="line2270">2270: </a>          local_inidx[j] = local_inidx[j+1];
-<a name="line2271">2271: </a>          local_inidy[j] = local_inidy[j+1];
-<a name="line2272">2272: </a>        }
-<a name="line2273">2273: </a>        slen--;
-<a name="line2274">2274: </a>        count--;
-<a name="line2275">2275: </a>      }
-<a name="line2276">2276: </a>    }
-<a name="line2277">2277: </a>    start = count;
-<a name="line2278">2278: </a>  }
-<a name="line2279">2279: </a><font color="#A020F0">#endif</font>
-<a name="line2280">2280: </a>  <font color="#4169E1">if</font> (duplicate) {
-<a name="line2281">2281: </a>    <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Duplicate from to indices passed in <A href="../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(), they are ignored\n"</font>);
-<a name="line2282">2282: </a>  }
-<a name="line2283">2283: </a>  VecScatterCreate_StoP(slen,local_inidx,slen,local_inidy,xin,yin,bs,ctx);
-<a name="line2284">2284: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(local_inidx,local_inidy);
-<a name="line2285">2285: </a>  <font color="#4169E1">return</font>(0);
-<a name="line2286">2286: </a>}
+<a name="line2258">2258: </a><font color="#A020F0">#if defined(do_it_slow)</font>
+<a name="line2259">2259: </a>  <font color="#B22222">/* sort on the from index */</font>
+<a name="line2260">2260: </a>  <A href="../../../../docs/manualpages/Sys/PetscSortIntWithArray.html#PetscSortIntWithArray">PetscSortIntWithArray</A>(slen,local_inidx,local_inidy);
+<a name="line2261">2261: </a>  start = 0;
+<a name="line2262">2262: </a>  <font color="#4169E1">while</font> (start &lt; slen) {
+<a name="line2263">2263: </a>    count = start+1;
+<a name="line2264">2264: </a>    last  = local_inidx[start];
+<a name="line2265">2265: </a>    <font color="#4169E1">while</font> (count &lt; slen &amp;&amp; last == local_inidx[count]) count++;
+<a name="line2266">2266: </a>    <font color="#4169E1">if</font> (count &gt; start + 1) { <font color="#B22222">/* found 2 or more same local_inidx[] in a row */</font>
+<a name="line2267">2267: </a>      <font color="#B22222">/* sort on to index */</font>
+<a name="line2268">2268: </a>      <A href="../../../../docs/manualpages/Sys/PetscSortInt.html#PetscSortInt">PetscSortInt</A>(count-start,local_inidy+start);
+<a name="line2269">2269: </a>    }
+<a name="line2270">2270: </a>    <font color="#B22222">/* remove duplicates; not most efficient way, but probably good enough */</font>
+<a name="line2271">2271: </a>    i = start;
+<a name="line2272">2272: </a>    <font color="#4169E1">while</font> (i &lt; count-1) {
+<a name="line2273">2273: </a>      <font color="#4169E1">if</font> (local_inidy[i] != local_inidy[i+1]) {
+<a name="line2274">2274: </a>        i++;
+<a name="line2275">2275: </a>      } <font color="#4169E1">else</font> { <font color="#B22222">/* found a duplicate */</font>
+<a name="line2276">2276: </a>        duplicate = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line2277">2277: </a>        <font color="#4169E1">for</font> (j=i; j&lt;slen-1; j++) {
+<a name="line2278">2278: </a>          local_inidx[j] = local_inidx[j+1];
+<a name="line2279">2279: </a>          local_inidy[j] = local_inidy[j+1];
+<a name="line2280">2280: </a>        }
+<a name="line2281">2281: </a>        slen--;
+<a name="line2282">2282: </a>        count--;
+<a name="line2283">2283: </a>      }
+<a name="line2284">2284: </a>    }
+<a name="line2285">2285: </a>    start = count;
+<a name="line2286">2286: </a>  }
+<a name="line2287">2287: </a><font color="#A020F0">#endif</font>
+<a name="line2288">2288: </a>  <font color="#4169E1">if</font> (duplicate) {
+<a name="line2289">2289: </a>    <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ctx,<font color="#666666">"Duplicate from to indices passed in <A href="../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(), they are ignored\n"</font>);
+<a name="line2290">2290: </a>  }
+<a name="line2291">2291: </a>  VecScatterCreate_StoP(slen,local_inidx,slen,local_inidy,xin,yin,bs,ctx);
+<a name="line2292">2292: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(local_inidx,local_inidy);
+<a name="line2293">2293: </a>  <font color="#4169E1">return</font>(0);
+<a name="line2294">2294: </a>}
 </pre>
 </body>
 

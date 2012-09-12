@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMDASetInterpolationType.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMDASetInterpolationType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMDASetInterpolationType"><H1>DMDASetInterpolationType</H1></A>
-Sets the type of interpolation that will be  returned by <A HREF="../DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>() 
+Sets the type of interpolation that will be  returned by <A HREF="../DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
@@ -23,7 +24,7 @@ Logically Collective on DMDA
 <P>
 
 <P>
-Notes: you should call this on the coarser of the two DMDAs you pass to <A HREF="../DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>()
+Notes: you should call this on the coarser of the two DMDAs you pass to <A HREF="../DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>()
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
   distributed array, interpolation

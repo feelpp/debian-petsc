@@ -1,5 +1,5 @@
 
-#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>   /*I "petscpc.h" I*/
 #include <petscblaslapack.h>
 
 /* 
@@ -10,6 +10,7 @@ typedef struct {
   Mat         A,U,V;
   PetscInt    nzero;
   PetscReal   zerosing;         /* measure of smallest singular value treated as nonzero */
+  PetscInt    essrank;          /* essential rank of operator */
   PetscViewer monitor;
 } PC_SVD;
 
@@ -38,7 +39,7 @@ static PetscErrorCode PCSetUp_SVD(PC pc)
   PC_SVD         *jac = (PC_SVD*)pc->data;
   PetscErrorCode ierr;
   PetscScalar    *a,*u,*v,*d,*work;
-  PetscBLASInt   nb,lwork,lierr;
+  PetscBLASInt   nb,lwork;
   PetscInt       i,n;
 
   PetscFunctionBegin;
@@ -61,11 +62,16 @@ static PetscErrorCode PCSetUp_SVD(PC pc)
   ierr  = MatGetArray(jac->V,&v);CHKERRQ(ierr); 
   ierr  = VecGetArray(jac->diag,&d);CHKERRQ(ierr); 
 #if !defined(PETSC_USE_COMPLEX)
-  LAPACKgesvd_("A","A",&nb,&nb,a,&nb,d,u,&nb,v,&nb,work,&lwork,&lierr);
+  {
+    PetscBLASInt lierr;
+    ierr = PetscFPTrapPush(PETSC_FP_TRAP_OFF);CHKERRQ(ierr);
+    LAPACKgesvd_("A","A",&nb,&nb,a,&nb,d,u,&nb,v,&nb,work,&lwork,&lierr);
+    if (lierr) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"gesv() error %d",lierr);
+    ierr = PetscFPTrapPop();CHKERRQ(ierr);
+  }
 #else
   SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP,"Not coded for complex");
 #endif
-  if (lierr) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_LIB,"gesv() error %d",lierr);
   ierr  = MatRestoreArray(jac->A,&a);CHKERRQ(ierr); 
   ierr  = MatRestoreArray(jac->U,&u);CHKERRQ(ierr); 
   ierr  = MatRestoreArray(jac->V,&v);CHKERRQ(ierr);
@@ -97,6 +103,7 @@ static PetscErrorCode PCSetUp_SVD(PC pc)
   ierr = PetscInfo2(pc,"Largest and smallest singular values %14.12e %14.12e\n",(double)PetscRealPart(d[0]),(double)PetscRealPart(d[n-1]));
   for (i=0; i<n-jac->nzero; i++) d[i] = 1.0/d[i];
   for (; i<n; i++) d[i] = 0.0;
+  if (jac->essrank > 0) for (i=0; i<n-jac->nzero-jac->essrank; i++) d[i] = 0.0; /* Skip all but essrank eigenvalues */
   ierr = PetscInfo1(pc,"Number of zero or nearly singular values %D\n",jac->nzero);
   ierr = VecRestoreArray(jac->diag,&d);CHKERRQ(ierr);
 #if defined(foo)
@@ -194,7 +201,8 @@ static PetscErrorCode PCSetFromOptions_SVD(PC pc)
   PetscFunctionBegin;
   ierr = PetscOptionsHead("SVD options");CHKERRQ(ierr);
   ierr = PetscOptionsReal("-pc_svd_zero_sing","Singular values smaller than this treated as zero","None",jac->zerosing,&jac->zerosing,PETSC_NULL);CHKERRQ(ierr);
-  ierr = PetscOptionsBool("-pc_svd_monitor","Monitor the conditioning, and extremeal singular values","None",jac->monitor?PETSC_TRUE:PETSC_FALSE,&flg,&set);CHKERRQ(ierr);
+  ierr = PetscOptionsInt("-pc_svd_ess_rank","Essential rank of operator (0 to use entire operator)","None",jac->essrank,&jac->essrank,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsBool("-pc_svd_monitor","Monitor the conditioning, and extremal singular values","None",jac->monitor?PETSC_TRUE:PETSC_FALSE,&flg,&set);CHKERRQ(ierr);
   if (set) {                    /* Should make PCSVDSetMonitor() */
     if (flg && !jac->monitor) {
       ierr = PetscViewerASCIIOpen(((PetscObject)pc)->comm,"stdout",&jac->monitor);CHKERRQ(ierr);
@@ -226,7 +234,8 @@ static PetscErrorCode PCSetFromOptions_SVD(PC pc)
   Concepts: SVD
 
   Options Database:
-.  -pc_svd_zero_sing <rtol> Singular values smaller than this are treated as zero
+-  -pc_svd_zero_sing <rtol> Singular values smaller than this are treated as zero
++  -pc_svd_monitor  Print information on the extreme singular values of the operator
 
 .seealso:  PCCreate(), PCSetType(), PCType (for list of available types), PC
 M*/

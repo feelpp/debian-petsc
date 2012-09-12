@@ -1,21 +1,24 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESSetFunctionDomainError.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESSetFunctionDomainError</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESSetFunctionDomainError"><H1>SNESSetFunctionDomainError</H1></A>
 tells <A HREF="../SNES/SNES.html#SNES">SNES</A> that the input vector to your FormFunction is not in the functions domain. For example, negative pressure. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESSetFunctionDomainError(SNES snes)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
-<DT><B><A HREF="../SNES/SNES.html#SNES">SNES</A> </B> -the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
+<DT><B>snes </B> -the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
 <br>
 <P>
 

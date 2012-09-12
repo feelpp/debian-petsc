@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatInterpolateAdd.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatInterpolateAdd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatInterpolateAdd"><H1>MatInterpolateAdd</H1></A>
 w = y + A*x or A'*x depending on the shape of  the matrix 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -25,10 +26,6 @@ Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp MatInterpolateAdd(Mat A,Vec x,Vec y)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>MatInterpolateAdd(A,x,y,y)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 w may be the same vector as y.
 <P>

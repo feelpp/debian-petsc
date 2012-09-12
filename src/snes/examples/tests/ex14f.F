@@ -137,7 +137,7 @@ c      call flush(6)
       call VecDuplicate(x,U,ierr)
       call PetscObjectSetName(U,'Exact Solution',ierr)
 
-      call MatCreateMPIAIJ(PETSC_COMM_WORLD,PETSC_DECIDE,PETSC_DECIDE,N, &
+      call MatCreateAIJ(PETSC_COMM_WORLD,PETSC_DECIDE,PETSC_DECIDE,N,           &
      &     N,i3,PETSC_NULL_INTEGER,i0,PETSC_NULL_INTEGER,J,ierr)
 
       call MatGetType(J,matrixname,ierr)
@@ -213,7 +213,7 @@ c      call flush(6)
       if (ctx(4) .eq. 0) then
         write(6,100) its
       endif
-  100 format('Number of Newton iterations = ',i5)
+  100 format('Number of SNES iterations = ',i5)
 
 !  Free work space.  All PETSc objects should be destroyed when they
 !  are no longer needed.

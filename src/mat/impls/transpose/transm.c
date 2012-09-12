@@ -1,5 +1,5 @@
 
-#include <private/matimpl.h>          /*I "petscmat.h" I*/
+#include <petsc-private/matimpl.h>          /*I "petscmat.h" I*/
 
 typedef struct {
   Mat A;
@@ -116,7 +116,7 @@ PetscErrorCode  MatCreateTranspose(Mat A,Mat *N)
   ierr = PetscLayoutSetBlockSize((*N)->cmap,A->rmap->bs);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp((*N)->rmap);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp((*N)->cmap);CHKERRQ(ierr);
-
+  ierr = MatSetUp(*N);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

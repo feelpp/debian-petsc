@@ -3,7 +3,7 @@
     Creates hypre ijmatrix from PETSc matrix
 */
 #include <petscsys.h>
-#include <private/matimpl.h>          /*I "petscmat.h" I*/
+#include <petsc-private/matimpl.h>          /*I "petscmat.h" I*/
 #include <petscdmda.h>                /*I "petscdmda.h" I*/
 #include <../src/dm/impls/da/hypre/mhyp.h>
 
@@ -57,13 +57,13 @@ PetscErrorCode MatHYPRE_IJMatrixPreallocate(Mat A_d, Mat A_o,HYPRE_IJMatrix ij)
 PetscErrorCode MatHYPRE_IJMatrixCreate(Mat A,HYPRE_IJMatrix *ij)
 {
   PetscErrorCode ierr;
-  int            rstart,rend,cstart,cend;
+  PetscInt       rstart,rend,cstart,cend;
   
   PetscFunctionBegin;
   PetscValidHeaderSpecific(A,MAT_CLASSID,1);
   PetscValidType(A,1);
   PetscValidPointer(ij,2);
-  ierr = MatPreallocated(A);CHKERRQ(ierr);
+  ierr = MatSetUp(A);CHKERRQ(ierr);
   rstart = A->rmap->rstart;
   rend   = A->rmap->rend;
   cstart = A->cmap->rstart;
@@ -74,24 +74,24 @@ PetscErrorCode MatHYPRE_IJMatrixCreate(Mat A,HYPRE_IJMatrix *ij)
     PetscBool   same;
     Mat         A_d,A_o;
     PetscInt    *colmap;
-    ierr = PetscTypeCompare((PetscObject)A,MATMPIAIJ,&same);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)A,MATMPIAIJ,&same);CHKERRQ(ierr);
     if (same) {
       ierr = MatMPIAIJGetSeqAIJ(A,&A_d,&A_o,&colmap);CHKERRQ(ierr);
       ierr = MatHYPRE_IJMatrixPreallocate(A_d,A_o,*ij);CHKERRQ(ierr);
       PetscFunctionReturn(0);
     }
-    ierr = PetscTypeCompare((PetscObject)A,MATMPIBAIJ,&same);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)A,MATMPIBAIJ,&same);CHKERRQ(ierr);
     if (same) {
       ierr = MatMPIBAIJGetSeqBAIJ(A,&A_d,&A_o,&colmap);CHKERRQ(ierr);
       ierr = MatHYPRE_IJMatrixPreallocate(A_d,A_o,*ij);CHKERRQ(ierr);
       PetscFunctionReturn(0);
     }
-    ierr = PetscTypeCompare((PetscObject)A,MATSEQAIJ,&same);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)A,MATSEQAIJ,&same);CHKERRQ(ierr);
     if (same) {
       ierr = MatHYPRE_IJMatrixPreallocate(A,PETSC_NULL,*ij);CHKERRQ(ierr);
       PetscFunctionReturn(0);
     }
-    ierr = PetscTypeCompare((PetscObject)A,MATSEQBAIJ,&same);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)A,MATSEQBAIJ,&same);CHKERRQ(ierr);
     if (same) {
       ierr = MatHYPRE_IJMatrixPreallocate(A,PETSC_NULL,*ij);CHKERRQ(ierr);
       PetscFunctionReturn(0);
@@ -117,12 +117,12 @@ PetscErrorCode MatHYPRE_IJMatrixCopy(Mat A,HYPRE_IJMatrix ij)
   PetscBool         flg;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)A,MATMPIAIJ,&flg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)A,MATMPIAIJ,&flg);CHKERRQ(ierr);
   if (flg) {
     ierr = MatHYPRE_IJMatrixFastCopy_MPIAIJ(A,ij);CHKERRQ(ierr);
     PetscFunctionReturn(0);
   }
-  ierr = PetscTypeCompare((PetscObject)A,MATSEQAIJ,&flg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)A,MATSEQAIJ,&flg);CHKERRQ(ierr);
   if (flg) {
     ierr = MatHYPRE_IJMatrixFastCopy_SeqAIJ(A,ij);CHKERRQ(ierr);
     PetscFunctionReturn(0);
@@ -255,7 +255,7 @@ PetscErrorCode MatHYPRE_IJMatrixFastCopy_MPIAIJ(Mat A,HYPRE_IJMatrix ij)
 PetscErrorCode MatHYPRE_IJMatrixLink(Mat A,HYPRE_IJMatrix *ij)
 {
   PetscErrorCode        ierr;
-  int                   rstart,rend,cstart,cend;
+  PetscInt              rstart,rend,cstart,cend;
   PetscBool             flg;
   hypre_AuxParCSRMatrix *aux_matrix;
 
@@ -263,9 +263,9 @@ PetscErrorCode MatHYPRE_IJMatrixLink(Mat A,HYPRE_IJMatrix *ij)
   PetscValidHeaderSpecific(A,MAT_CLASSID,1);
   PetscValidType(A,1);
   PetscValidPointer(ij,2);
-  ierr = PetscTypeCompare((PetscObject)A,MATMPIAIJ,&flg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)A,MATMPIAIJ,&flg);CHKERRQ(ierr);
   if (!flg) SETERRQ(((PetscObject)A)->comm,PETSC_ERR_SUP,"Can only use with PETSc MPIAIJ matrices");
-  ierr = MatPreallocated(A);CHKERRQ(ierr);
+  ierr = MatSetUp(A);CHKERRQ(ierr);
 
   ierr = PetscLogEventBegin(MAT_Convert,A,0,0,0);CHKERRQ(ierr);
   rstart = A->rmap->rstart;
@@ -298,9 +298,9 @@ PetscErrorCode MatHYPRE_IJMatrixLink(Mat A,HYPRE_IJMatrix *ij)
    Notes: Unlike the more general support for blocks in hypre this allows only one block per process and requires the block
           be defined by a DMDA.
 
-          The matrix needs a DMDA associated with it by either a call to MatSetDM() or if the matrix is obtained from DMGetMatrix()
+          The matrix needs a DMDA associated with it by either a call to MatSetDM() or if the matrix is obtained from DMCreateMatrix()
 
-.seealso: MatCreate(), PCPFMG, MatSetDM(), DMGetMatrix()
+.seealso: MatCreate(), PCPFMG, MatSetDM(), DMCreateMatrix()
 M*/
 
 
@@ -392,8 +392,7 @@ PetscErrorCode  MatSetDM_HYPREStruct(Mat mat,DM da)
 {
   PetscErrorCode  ierr;
   Mat_HYPREStruct *ex = (Mat_HYPREStruct*) mat->data;
-  PetscInt         dim,dof,sw[3],nx,ny,nz;
-  int              ilower[3],iupper[3],ssize,i;
+  PetscInt         dim,dof,sw[3],nx,ny,nz,ilower[3],iupper[3],ssize,i;
   DMDABoundaryType   px,py,pz;
   DMDAStencilType    st;
 
@@ -430,21 +429,21 @@ PetscErrorCode  MatSetDM_HYPREStruct(Mat mat,DM da)
   if (sw[0] > 1) SETERRQ(((PetscObject)da)->comm,PETSC_ERR_SUP,"Ask us to add support for wider stencils"); 
   if (st == DMDA_STENCIL_BOX) SETERRQ(((PetscObject)da)->comm,PETSC_ERR_SUP,"Ask us to add support for box stencils"); 
   if (dim == 1) {
-    int offsets[3][1] = {{-1},{0},{1}};
+    PetscInt offsets[3][1] = {{-1},{0},{1}};
     ssize = 3;
     PetscStackCallHypre(0,HYPRE_StructStencilCreate,(dim,ssize,&ex->hstencil));
     for (i=0; i<ssize; i++) {
       PetscStackCallHypre(0,HYPRE_StructStencilSetElement,(ex->hstencil,i,offsets[i]));
     }
   } else if (dim == 2) {
-    int offsets[5][2] = {{0,-1},{-1,0},{0,0},{1,0},{0,1}};
+    PetscInt offsets[5][2] = {{0,-1},{-1,0},{0,0},{1,0},{0,1}};
     ssize = 5;
     PetscStackCallHypre(0,HYPRE_StructStencilCreate,(dim,ssize,&ex->hstencil));
     for (i=0; i<ssize; i++) {
       PetscStackCallHypre(0,HYPRE_StructStencilSetElement,(ex->hstencil,i,offsets[i]));
     }
   } else if (dim == 3) {
-    int offsets[7][3] = {{0,0,-1},{0,-1,0},{-1,0,0},{0,0,0},{1,0,0},{0,1,0},{0,0,1}}; 
+    PetscInt offsets[7][3] = {{0,0,-1},{0,-1,0},{-1,0,0},{0,0,0},{1,0,0},{0,1,0},{0,0,1}}; 
     ssize = 7;
     PetscStackCallHypre(0,HYPRE_StructStencilCreate,(dim,ssize,&ex->hstencil));
     for (i=0; i<ssize; i++) {
@@ -500,7 +499,7 @@ PetscErrorCode MatMult_HYPREStruct(Mat A,Vec x,Vec y)
 {
   PetscErrorCode  ierr;
   PetscScalar     *xx,*yy;
-  int             ilower[3],iupper[3];
+  PetscInt        ilower[3],iupper[3];
   Mat_HYPREStruct *mx = (Mat_HYPREStruct *)(A->data);
 
   PetscFunctionBegin;
@@ -606,7 +605,7 @@ EXTERN_C_END
           Unlike the more general support for parts and blocks in hypre this allows only one part, and one block per process and requires the block
           be defined by a DMDA.
   
-          The matrix needs a DMDA associated with it by either a call to MatSetDM() or if the matrix is obtained from DMGetMatrix()
+          The matrix needs a DMDA associated with it by either a call to MatSetDM() or if the matrix is obtained from DMCreateMatrix()
   
 M*/
 
@@ -619,13 +618,13 @@ PetscErrorCode  MatSetValuesLocal_HYPRESStruct_3d(Mat mat,PetscInt nrow,const Pe
   const PetscScalar *values = y;
   Mat_HYPRESStruct  *ex = (Mat_HYPRESStruct*) mat->data;
 
-  int               part= 0; /* Petsc sstruct interface only allows 1 part */
-  int               ordering;
-  int               grid_rank, to_grid_rank;
-  int               var_type, to_var_type;
-  int               to_var_entry = 0;
+  PetscInt          part= 0; /* Petsc sstruct interface only allows 1 part */
+  PetscInt          ordering;
+  PetscInt          grid_rank, to_grid_rank;
+  PetscInt          var_type, to_var_type;
+  PetscInt          to_var_entry = 0;
 
-  int               nvars= ex->nvars;
+  PetscInt          nvars= ex->nvars;
   PetscInt          row,*entries;
 
   PetscFunctionBegin;
@@ -732,11 +731,11 @@ PetscErrorCode  MatZeroRowsLocal_HYPRESStruct_3d(Mat mat,PetscInt nrow,const Pet
   PetscScalar     **values;
   Mat_HYPRESStruct *ex = (Mat_HYPRESStruct*) mat->data;
 
-  int               part= 0; /* Petsc sstruct interface only allows 1 part */
-  int               ordering= ex->dofs_order;
-  int               grid_rank;
-  int               var_type; 
-  int               nvars= ex->nvars;
+  PetscInt          part= 0; /* Petsc sstruct interface only allows 1 part */
+  PetscInt          ordering= ex->dofs_order;
+  PetscInt          grid_rank;
+  PetscInt          var_type; 
+  PetscInt          nvars= ex->nvars;
   PetscInt          row,*entries;
 
   PetscFunctionBegin;
@@ -794,16 +793,16 @@ PetscErrorCode MatZeroEntries_HYPRESStruct_3d(Mat mat)
 {
   PetscErrorCode     ierr;
   Mat_HYPRESStruct  *ex = (Mat_HYPRESStruct*) mat->data;
-  int                nvars= ex->nvars;
-  int                size;
-  int                part= 0; /* only one part */
+  PetscInt           nvars= ex->nvars;
+  PetscInt           size;
+  PetscInt           part= 0; /* only one part */
 
   PetscFunctionBegin;
   size = ((ex->hbox.imax[0])-(ex->hbox.imin[0])+1)*((ex->hbox.imax[1])-(ex->hbox.imin[1])+1)*((ex->hbox.imax[2])-(ex->hbox.imin[2])+1);
   {
-     PetscInt          i,*entries;
+     PetscInt         i,*entries,iupper[3],ilower[3];
      PetscScalar      *values;
-     int               iupper[3], ilower[3];
+     
      
      for (i= 0; i< 3; i++) {
         ilower[i]= ex->hbox.imin[i];
@@ -833,11 +832,11 @@ PetscErrorCode  MatSetDM_HYPRESStruct(Mat mat,DM da)
   PetscErrorCode    ierr;
   Mat_HYPRESStruct *ex = (Mat_HYPRESStruct*) mat->data;
   PetscInt          dim,dof,sw[3],nx,ny,nz;
-  int               ilower[3],iupper[3],ssize,i;
+  PetscInt          ilower[3],iupper[3],ssize,i;
   DMDABoundaryType    px,py,pz;
   DMDAStencilType     st;
-  int               nparts= 1; /* assuming only one part */
-  int               part  = 0;
+  PetscInt          nparts= 1; /* assuming only one part */
+  PetscInt          part  = 0;
 
   PetscFunctionBegin;
   ex->da = da;
@@ -887,8 +886,8 @@ PetscErrorCode  MatSetDM_HYPRESStruct(Mat mat,DM da)
   if (st == DMDA_STENCIL_BOX) SETERRQ(((PetscObject)da)->comm,PETSC_ERR_SUP,"Ask us to add support for box stencils");
 
   if (dim == 1) {
-    int offsets[3][1] = {{-1},{0},{1}};
-    int j, cnt;
+    PetscInt offsets[3][1] = {{-1},{0},{1}};
+    PetscInt j, cnt;
 
     ssize = 3*(ex->nvars);
     PetscStackCallHypre(0,HYPRE_SStructStencilCreate,(dim,ssize,&ex->ss_stencil));
@@ -900,8 +899,8 @@ PetscErrorCode  MatSetDM_HYPRESStruct(Mat mat,DM da)
        }
     }
   } else if (dim == 2) {
-    int offsets[5][2] = {{0,-1},{-1,0},{0,0},{1,0},{0,1}};
-    int j, cnt;
+    PetscInt offsets[5][2] = {{0,-1},{-1,0},{0,0},{1,0},{0,1}};
+    PetscInt j, cnt;
 
     ssize = 5*(ex->nvars);
     PetscStackCallHypre(0,HYPRE_SStructStencilCreate,(dim,ssize,&ex->ss_stencil));
@@ -913,8 +912,8 @@ PetscErrorCode  MatSetDM_HYPRESStruct(Mat mat,DM da)
        }
     }
   } else if (dim == 3) {
-    int offsets[7][3] = {{0,0,-1},{0,-1,0},{-1,0,0},{0,0,0},{1,0,0},{0,1,0},{0,0,1}}; 
-    int j, cnt;
+    PetscInt offsets[7][3] = {{0,0,-1},{0,-1,0},{-1,0,0},{0,0,0},{1,0,0},{0,1,0},{0,0,1}}; 
+    PetscInt j, cnt;
 
     ssize = 7*(ex->nvars);
     PetscStackCallHypre(0,HYPRE_SStructStencilCreate,(dim,ssize,&ex->ss_stencil));
@@ -987,13 +986,13 @@ PetscErrorCode MatMult_HYPRESStruct(Mat A,Vec x,Vec y)
 {   
   PetscErrorCode    ierr;
   PetscScalar      *xx,*yy;
-  int               ilower[3],iupper[3];
+  PetscInt          ilower[3],iupper[3];
   Mat_HYPRESStruct *mx = (Mat_HYPRESStruct *)(A->data);
-  int               ordering= mx->dofs_order;
-  int               nvars= mx->nvars;
-  int               part= 0;
-  int               size;
-  int               i;
+  PetscInt          ordering= mx->dofs_order;
+  PetscInt          nvars= mx->nvars;
+  PetscInt          part= 0;
+  PetscInt          size;
+  PetscInt          i;
     
   PetscFunctionBegin;
   ierr = DMDAGetCorners(mx->da,&ilower[0],&ilower[1],&ilower[2],&iupper[0],&iupper[1],&iupper[2]);CHKERRQ(ierr);
@@ -1025,7 +1024,7 @@ PetscErrorCode MatMult_HYPRESStruct(Mat A,Vec x,Vec y)
      ierr = VecRestoreArray(y,&yy);CHKERRQ(ierr);
   } else {      /* nodal ordering must be mapped to variable ordering for sys_pfmg */
      PetscScalar     *z;
-     int              j, k;
+     PetscInt         j, k;
 
      ierr = PetscMalloc(nvars*size*sizeof(PetscScalar),&z);CHKERRQ(ierr);
      PetscStackCallHypre(0,HYPRE_SStructVectorSetConstantValues,(mx->ss_b,0.0));

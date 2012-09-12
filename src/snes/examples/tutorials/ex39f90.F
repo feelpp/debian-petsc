@@ -38,7 +38,6 @@
 #include <finclude/petscsysdef.h>
 #include <finclude/petscvecdef.h>
 #include <finclude/petscdmdef.h>
-        DM      da
         integer xs,xe,xm,gxs,gxe,gxm
         integer ys,ye,ym,gys,gye,gym
         integer mx,my,rank
@@ -86,6 +85,7 @@
       Vec            X,F
       integer        ierr
       type (userctx) user
+      DM             da
 
 !  Declarations for use with local arrays:
       PetscScalar,pointer :: lx_v(:),lf_v(:)
@@ -98,10 +98,11 @@
 !  By placing code between these two statements, computations can
 !  be done while messages are in transition.
 
-      call DMGetLocalVector(user%da,localX,ierr)
-      call DMGlobalToLocalBegin(user%da,X,INSERT_VALUES,                &
+      call SNESGetDM(snes,da,ierr)
+      call DMGetLocalVector(da,localX,ierr)
+      call DMGlobalToLocalBegin(da,X,INSERT_VALUES,                     &
      &     localX,ierr)
-      call DMGlobalToLocalEnd(user%da,X,INSERT_VALUES,localX,ierr)
+      call DMGlobalToLocalEnd(da,X,INSERT_VALUES,localX,ierr)
 
 !  Get a pointer to vector data.
 !    - For default PETSc vectors, VecGetArray90() returns a pointer to
@@ -125,7 +126,7 @@
 
 !  Insert values into global vector
 
-      call DMRestoreLocalVector(user%da,localX,ierr)
+      call DMRestoreLocalVector(da,localX,ierr)
       call PetscLogFlops(11.0d0*user%ym*user%xm,ierr)
 
 !      call VecView(X,PETSC_VIEWER_STDOUT_WORLD,ierr)
@@ -167,12 +168,14 @@
 !
 !
       SNES                snes
+      SNESLineSearch     linesearch
       Vec                 x,r
       Mat                 J
       integer             its,matrix_free,flg,ierr
       double precision    lambda_max,lambda_min
       type (userctx)      user
       PetscBool           test_linesearch,test_check
+      DM                  da
 
 !  Note: Any user-defined Fortran routines (such as FormJacobian)
 !  MUST be declared as external.
@@ -218,9 +221,10 @@
       call DMDACreate2d(PETSC_COMM_WORLD,DMDA_BOUNDARY_NONE,            &
      &     DMDA_BOUNDARY_NONE,DMDA_STENCIL_BOX,                            &
      &     -4,-4,PETSC_DECIDE,PETSC_DECIDE,1,1,                         &
-     &     PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,user%da,ierr)
-      call DMDAGetInfo(user%da,PETSC_NULL_INTEGER,user%mx,user%my,        &
+     &     PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,da,ierr)
+      call DMDAGetInfo(da,PETSC_NULL_INTEGER,user%mx,user%my,           &
      &               PETSC_NULL_INTEGER,                                &
+     &               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &
      &               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &
      &               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &
      &               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &
@@ -229,19 +233,19 @@
 !
 !   Visualize the distribution of the array across the processors
 !
-!     call DMView(user%da,PETSC_VIEWER_DRAW_WORLD,ierr)
+!     call DMView(da,PETSC_VIEWER_DRAW_WORLD,ierr)
 
 !  Extract global and local vectors from DMDA; then duplicate for remaining
 !  vectors that are the same types
-
-      call DMCreateGlobalVector(user%da,x,ierr)
+      call SNESSetDM(snes,da,ierr)
+      call DMCreateGlobalVector(da,x,ierr)
       call VecDuplicate(x,r,ierr)
 
 !  Get local grid boundaries (for 2-dimensional DMDA)
 
-      call DMDAGetCorners(user%da,user%xs,user%ys,PETSC_NULL_INTEGER,     &
+      call DMDAGetCorners(da,user%xs,user%ys,PETSC_NULL_INTEGER,        &
      &     user%xm,user%ym,PETSC_NULL_INTEGER,ierr)
-      call DMDAGetGhostCorners(user%da,user%gxs,user%gys,                 &
+      call DMDAGetGhostCorners(da,user%gxs,user%gys,                    &
      &     PETSC_NULL_INTEGER,user%gxm,user%gym,                        &
      &     PETSC_NULL_INTEGER,ierr)
 
@@ -289,7 +293,7 @@
       call PetscOptionsHasName(PETSC_NULL_CHARACTER,'-snes_mf',         &
      &     matrix_free,ierr)
       if (matrix_free .eq. 0) then
-        call DMGetMatrix(user%da,MATAIJ,J,ierr)
+        call DMCreateMatrix(da,MATAIJ,J,ierr)
         call SNESSetJacobian(snes,J,J,FormJacobian,user,ierr)
       endif
 
@@ -299,22 +303,28 @@
 
 !  Set runtime options (e.g., -snes_monitor -snes_rtol <rtol> -ksp_type <type>)
 
-      call SNESSetFromOptions(snes,ierr)
-      test_linesearch = 0
-      test_check      = 0
+      test_linesearch = PETSC_FALSE
+      test_check      = PETSC_FALSE
       call PetscOptionsGetBool(PETSC_NULL_CHARACTER,'-test_check',
      &                          test_check,PETSC_NULL_INTEGER,ierr)
-      if (test_check.eq.1) then
-        call SNESLineSearchSetPreCheck(snes,FormPreCheck,user,ierr)
-        call SNESLineSearchSetPostCheck(snes,FormPostCheck,user,ierr) 
+      call SNESGetSNESLineSearch(snes, linesearch, ierr)
+      if (test_check.eqv.PETSC_TRUE) then
+         call SNESLineSearchSetPreCheck(linesearch,FormPreCheck,user,   &
+     &    ierr)
+         call SNESLineSearchSetPostCheck(linesearch,FormPostCheck,user, &
+     &    ierr)
       else
-        call PetscOptionsGetBool(PETSC_NULL_CHARACTER,
+         call PetscOptionsGetBool(PETSC_NULL_CHARACTER,
      &       '-test_linesearch',test_linesearch,PETSC_NULL_INTEGER,ierr)
-        if (test_linesearch.eq.1) then
-          call SNESLineSearchSet(snes,FormLineSearch,user,ierr)
+         if (test_linesearch.eqv.PETSC_TRUE) then
+            call SNESLineSearchSetType(linesearch,"shell", ierr)
+            call SNESLineSearchShellSetUserFunc(linesearch,              &
+     &           FormLineSearch, user, ierr)
         end if
       end if
- 
+      call SNESSetFromOptions(snes,ierr)
+
+
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Evaluate initial guess; then solve nonlinear system.
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -324,7 +334,7 @@
 !  to employ an initial guess of zero, the user should explicitly set
 !  this vector to zero by calling VecSet().
 
-      call FormInitialGuess(user,x,ierr)
+      call FormInitialGuess(snes,x,ierr)
 	write(*,*)"Before SNESSolve"
 	write(*,*)"user%xm=",user%xm
       call SNESSolve(snes,PETSC_NULL_OBJECT,x,ierr) 
@@ -332,7 +342,7 @@
       if (user%rank .eq. 0) then
          write(6,100) its
       endif
-  100 format('Number of Newton iterations = ',i5)
+  100 format('Number of SNES iterations = ',i5)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Free work space.  All PETSc objects should be destroyed when they
@@ -343,7 +353,7 @@
       call VecDestroy(x,ierr)
       call VecDestroy(r,ierr)
       call SNESDestroy(snes,ierr)
-      call DMDestroy(user%da,ierr)
+      call DMDestroy(da,ierr)
       call PetscFinalize(ierr)
       end
 
@@ -351,8 +361,7 @@
 !
 !  FormLineSearch - Applies the line search to the step size
 !
-      subroutine FormLineSearch(snes,user,x,f,g,y,w,fnorm,ynorm,gnorm,
-     & flag,ierr)
+      subroutine FormLineSearch(linesearch, user, ierr)
 
       use f90module
 
@@ -368,7 +377,7 @@
       SNES              snes
       type (userctx)    user
       Vec               x,f,g,y,w
-      PetscReal fnorm,ynorm,gnorm
+      PetscReal fnorm,ynorm,gnorm,xnorm
       PetscBool            flag
       PetscErrorCode ierr
 
@@ -376,11 +385,14 @@
 
 	write(*,*)"Inside FormLineSearch, user%xm=",user%xm
       mone = -1.0d0
-      flag = 0
+      call SNESLineSearchGetSNES(linesearch, snes, ierr)
+      call SNESLineSearchGetVecs(linesearch, x, f, y, w, g, ierr)
       call VecNorm(y,NORM_2,ynorm,ierr)
-      call VecAYPX(y,mone,x,ierr)
-      call SNESComputeFunction(snes,y,g,ierr)
-      call VecNorm(g,NORM_2,gnorm,ierr)
+      call VecAXPY(x,mone,y,ierr)
+      call SNESComputeFunction(snes,x,f,ierr)
+      call VecNorm(f,NORM_2,gnorm,ierr)
+      call VecNorm(x,NORM_2,xnorm,ierr)
+      call SNESLineSearchSetNorms(linesearch,xnorm,gnorm,ynorm,ierr)
       return 
       end
 
@@ -402,7 +414,7 @@
 !  This routine merely handles ghost point scatters and accesses
 !  the local vector data via VecGetArrayF90() and VecRestoreArrayF90().
 !
-      subroutine FormInitialGuess(user,X,ierr)
+      subroutine FormInitialGuess(snes,X,ierr)
       use f90module
       implicit none
 
@@ -417,13 +429,15 @@
 #include <finclude/petscsnes.h>
 
 !  Input/output variables:
-      type (userctx)         user
+      SNES     snes
       Vec      X
       integer  ierr
-      
+      DM       da
+
 !  Declarations for use with local arrays:
       PetscScalar,pointer :: lx_v(:)
       Vec               localX
+      type (userctx)         user
 
       ierr = 0
 
@@ -435,7 +449,9 @@
 !    - Note that the interface to VecGetArrayF90() differs from VecGetArray(),
 !      and is useable from Fortran-90 Only.
 
-      call DMGetLocalVector(user%da,localX,ierr)
+      call SNESGetApplicationContext(snes,user,ierr)
+      call SNESGetDM(snes,da,ierr)
+      call DMGetLocalVector(da,localX,ierr)
       call VecGetArrayF90(localX,lx_v,ierr)
 
 !  Compute initial guess over the locally owned part of the grid
@@ -448,9 +464,9 @@
 
 !  Insert values into global vector
 
-      call DMLocalToGlobalBegin(user%da,localX,INSERT_VALUES,X,ierr)
-      call DMLocalToGlobalEnd(user%da,localX,INSERT_VALUES,X,ierr)
-      call DMRestoreLocalVector(user%da,localX,ierr)
+      call DMLocalToGlobalBegin(da,localX,INSERT_VALUES,X,ierr)
+      call DMLocalToGlobalEnd(da,localX,INSERT_VALUES,X,ierr)
+      call DMRestoreLocalVector(da,localX,ierr)
 
       return 
       end
@@ -484,7 +500,7 @@
 #include <finclude/petscsnes.h>
 
 !  Input/output variables:
-      type (userctx)         user
+      type (userctx) user
       PetscScalar  x(user%gxs:user%gxe,                                         &
      &              user%gys:user%gye)
       integer ierr
@@ -648,6 +664,7 @@
       MatStructure flag
       type(userctx) user
       integer      ierr
+      DM           da
 
 !  Declarations for use with local arrays:
       PetscScalar,pointer :: lx_v(:)
@@ -658,10 +675,11 @@
 !  Computations can be done while messages are in transition,
 !  by placing code between these two statements.
 
-      call DMGetLocalVector(user%da,localX,ierr)
-      call DMGlobalToLocalBegin(user%da,X,INSERT_VALUES,localX,            &
+      call SNESGetDM(snes,da,ierr)
+      call DMGetLocalVector(da,localX,ierr)
+      call DMGlobalToLocalBegin(da,X,INSERT_VALUES,localX,              &
      &     ierr)
-      call DMGlobalToLocalEnd(user%da,X,INSERT_VALUES,localX,ierr)
+      call DMGlobalToLocalEnd(da,X,INSERT_VALUES,localX,ierr)
 
 !  Get a pointer to vector data
 
@@ -678,7 +696,7 @@
 
       call MatAssemblyBegin(jac,MAT_FINAL_ASSEMBLY,ierr)
       call VecRestoreArrayF90(localX,lx_v,ierr)
-      call DMRestoreLocalVector(user%da,localX,ierr)
+      call DMRestoreLocalVector(da,localX,ierr)
       call MatAssemblyEnd(jac,MAT_FINAL_ASSEMBLY,ierr)
 
 !  Set flag to indicate that the Jacobian matrix retains an identical
@@ -782,7 +800,8 @@
       hxdhy  = hx/hy
       hydhx  = hy/hx
 
-!  Compute entries for the locally owned part of the Jacobian.
+
+!     Compute entries for the locally owned part of the Jacobian.
 !   - Currently, all PETSc parallel matrix formats are partitioned by
 !     contiguous chunks of rows across the processors. 
 !   - Each processor needs to insert only elements that it owns
@@ -827,7 +846,7 @@
       return
       end
 
-      subroutine FormPreCheck(snes,X,Y,user,changed_Y,ierr)
+      subroutine FormPreCheck(snes,X,Y,changed_Y,user,ierr)
       use f90module
 
       SNES           snes
@@ -839,7 +858,7 @@
      	write(*,*)"Inside formPreCheck, user%xm=",user%xm        
       end subroutine formPreCheck
 
-      subroutine FormPostCheck(snes,X,Y,W,user,changed_Y,changed_W,ierr)
+      subroutine FormPostCheck(snes,X,Y,W,changed_Y,changed_W,user,ierr)
       use f90module
 
       SNES           snes

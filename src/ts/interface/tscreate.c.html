@@ -1,15 +1,16 @@
 <center><a href="tscreate.c">Actual source code: tscreate.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/interface/tscreate.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:19:28+00:00">
+<meta name="date" content="2012-08-29T17:13:18+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/tsimpl.h&gt;      </font><font color="#B22222">/*I "petscts.h"  I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/tsimpl.h&gt;      </font><font color="#B22222">/*I "petscts.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line4">  4: </a>const char *const TSConvergedReasons_Shifted[] = {
 <a name="line5">  5: </a>  <font color="#666666">"DIVERGED_STEP_REJECTED"</font>,
@@ -17,7 +18,7 @@
 <a name="line7">  7: </a>  <font color="#666666">"CONVERGED_ITERATING"</font>,
 <a name="line8">  8: </a>  <font color="#666666">"CONVERGED_TIME"</font>,
 <a name="line9">  9: </a>  <font color="#666666">"CONVERGED_ITS"</font>,
-<a name="line10"> 10: </a>  <font color="#666666">"TSConvergedReason"</font>,<font color="#666666">"TS_"</font>,0};
+<a name="line10"> 10: </a>  <font color="#666666">"<A href="../../../docs/manualpages/TS/TSConvergedReason.html#TSConvergedReason">TSConvergedReason</A>"</font>,<font color="#666666">"TS_"</font>,0};
 <a name="line11"> 11: </a>const char *const*TSConvergedReasons = TSConvergedReasons_Shifted + 2;
 
 <a name="line13"> 13: </a><font color="#A020F0">#if 0</font>
@@ -78,8 +79,8 @@
 <a name="line75"> 75: </a>  t-&gt;max_time           = 5.0;
 <a name="line76"> 76: </a>  t-&gt;steps              = 0;
 <a name="line77"> 77: </a>  t-&gt;max_steps          = 5000;
-<a name="line78"> 78: </a>  t-&gt;linear_its         = 0;
-<a name="line79"> 79: </a>  t-&gt;nonlinear_its      = 0;
+<a name="line78"> 78: </a>  t-&gt;ksp_its            = 0;
+<a name="line79"> 79: </a>  t-&gt;snes_its           = 0;
 <a name="line80"> 80: </a>  t-&gt;work               = <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
 <a name="line81"> 81: </a>  t-&gt;nwork              = 0;
 <a name="line82"> 82: </a>  t-&gt;max_snes_failures  = 1;
@@ -88,11 +89,15 @@
 <a name="line85"> 85: </a>  t-&gt;rhsjacobian.time   = -1e20;
 <a name="line86"> 86: </a>  t-&gt;ijacobian.time     = -1e20;
 
-<a name="line88"> 88: </a>  t-&gt;exact_final_time = <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>;
+<a name="line88"> 88: </a>  t-&gt;atol             = 1e-4;
+<a name="line89"> 89: </a>  t-&gt;rtol             = 1e-4;
+<a name="line90"> 90: </a>  t-&gt;cfltime          = PETSC_MAX_REAL;
+<a name="line91"> 91: </a>  t-&gt;cfltime_local    = PETSC_MAX_REAL;
+<a name="line92"> 92: </a>  t-&gt;exact_final_time = <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>;
 
-<a name="line90"> 90: </a>  *ts = t;
-<a name="line91"> 91: </a>  <font color="#4169E1">return</font>(0);
-<a name="line92"> 92: </a>}
+<a name="line94"> 94: </a>  *ts = t;
+<a name="line95"> 95: </a>  <font color="#4169E1">return</font>(0);
+<a name="line96"> 96: </a>}
 </pre>
 </body>
 

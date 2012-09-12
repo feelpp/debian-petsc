@@ -19,6 +19,9 @@
 #define PCFieldSplitSchurPreType PetscEnum
 #define PCPARMSGlobalType PetscEnum
 #define PCPARMSLocalType PetscEnum
+#define PCFieldSplitSchurFactType PetscEnum
+#define CoarseProblemType PetscEnum
+#define PCGAMGType PetscEnum
 !
 !  Various preconditioners
 !
@@ -60,10 +63,12 @@
 #define PCPFMG 'pfmg'
 #define PCSYSPFMG 'syspfmg'
 #define PCREDISTRIBUTE 'redistribute'
+#define PCSVD 'svd'
+#define PCGAMG 'gamg'
 #define PCSACUSP 'sacusp'
 #define PCSACUSPPOLY 'sacusppoly'
 #define PCBICGSTABCUSP 'bicgstabcusp'
-#define PCSVD 'svd'
 #define PCAINVCUSP 'ainvcusp'
+#define PCBDDC 'bddc'
 
 #endif

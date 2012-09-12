@@ -157,6 +157,7 @@ int main(int argc,char **argv)
   ierr = MatCreate(PETSC_COMM_SELF,&A);CHKERRQ(ierr);
   ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,m,m);CHKERRQ(ierr);
   ierr = MatSetFromOptions(A);CHKERRQ(ierr);
+  ierr = MatSetUp(A);CHKERRQ(ierr);
 
   flg = PETSC_FALSE;
   ierr = PetscOptionsGetBool(PETSC_NULL,"-time_dependent_rhs",&flg,PETSC_NULL);CHKERRQ(ierr);
@@ -194,7 +195,7 @@ int main(int argc,char **argv)
        - Set timestepping duration info 
      Then set runtime options, which can override these defaults.
      For example,
-          -ts_max_steps <maxsteps> -ts_max_time <maxtime>
+          -ts_max_steps <maxsteps> -ts_final_time <maxtime>
      to override the defaults set by TSSetDuration().
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -392,7 +393,7 @@ PetscErrorCode Monitor(TS ts,PetscInt step,PetscReal time,Vec u,void *ctx)
   */
   ierr = VecAXPY(appctx->solution,-1.0,u);CHKERRQ(ierr);
   ierr = VecNorm(appctx->solution,NORM_2,&norm_2);CHKERRQ(ierr);
-  norm_2 = sqrt(appctx->h)*norm_2;
+  norm_2 = PetscSqrtReal(appctx->h)*norm_2;
   ierr = VecNorm(appctx->solution,NORM_MAX,&norm_max);CHKERRQ(ierr);
 
   ierr = TSGetTimeStep(ts,&dt);CHKERRQ(ierr);

@@ -1,13 +1,14 @@
 <center><a href="xxt.c">Actual source code: xxt.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/tfs/xxt.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:03+00:00">
+<meta name="date" content="2012-08-29T17:00:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*************************************xxt.c************************************</font>
 <a name="line3">  3: </a><font color="#B22222">Module Name: xxt</font>
@@ -45,7 +46,7 @@
 <a name="line35"> 35: </a><font color="#4169E1"><a name="matvec_info"></a>typedef struct matvec_info </font>{
 <a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n, m, n_global, m_global;
 <a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *local2global;
-<a name="line38"> 38: </a>  gs_ADT gs_handle;
+<a name="line38"> 38: </a>  PCTFS_gs_ADT PCTFS_gs_handle;
 <a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*matvec)(<font color="#4169E1">struct matvec_info</font>*,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*);
 <a name="line40"> 40: </a>  void *grid_data;
 <a name="line41"> 41: </a>} mv_info;
@@ -93,11 +94,11 @@
 <a name="line83"> 83: </a>           void *grid_data     <font color="#B22222">/* grid data for matvec        */</font>
 <a name="line84"> 84: </a>           )
 <a name="line85"> 85: </a>{
-<a name="line86"> 86: </a>  comm_init();
+<a name="line86"> 86: </a>  PCTFS_comm_init();
 <a name="line87"> 87: </a>  check_handle(xxt_handle);
 
 <a name="line89"> 89: </a>  <font color="#B22222">/* only 2^k for now and all nodes participating */</font>
-<a name="line90"> 90: </a>  <font color="#4169E1">if</font> ((1&lt;&lt;(xxt_handle-&gt;level=i_log2_num_nodes))!=num_nodes) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"only 2^k for now and MPI_COMM_WORLD!!! %D != %D\n"</font>,1&lt;&lt;i_log2_num_nodes,num_nodes);
+<a name="line90"> 90: </a>  <font color="#4169E1">if</font> ((1&lt;&lt;(xxt_handle-&gt;level=PCTFS_i_log2_num_nodes))!=PCTFS_num_nodes) <A href="../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"only 2^k for now and MPI_COMM_WORLD!!! %D != %D\n"</font>,1&lt;&lt;PCTFS_i_log2_num_nodes,PCTFS_num_nodes);
 
 <a name="line92"> 92: </a>  <font color="#B22222">/* space for X info */</font>
 <a name="line93"> 93: </a>  xxt_handle-&gt;info = (xxt_info*)malloc(<font color="#4169E1">sizeof</font>(xxt_info));
@@ -119,12 +120,12 @@
 <a name="line109">109: </a><strong><font color="#4169E1"><a name="XXT_solve"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> XXT_solve(xxt_ADT xxt_handle, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x, <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *b)</font></strong>
 <a name="line110">110: </a>{
 
-<a name="line112">112: </a>  comm_init();
+<a name="line112">112: </a>  PCTFS_comm_init();
 <a name="line113">113: </a>  check_handle(xxt_handle);
 
 <a name="line115">115: </a>  <font color="#B22222">/* need to copy b into x? */</font>
 <a name="line116">116: </a>  <font color="#4169E1">if</font> (b)
-<a name="line117">117: </a>    {rvec_copy(x,b,xxt_handle-&gt;mvi-&gt;n);}
+<a name="line117">117: </a>    {PCTFS_rvec_copy(x,b,xxt_handle-&gt;mvi-&gt;n);}
 <a name="line118">118: </a>  do_xxt_solve(xxt_handle,x);
 
 <a name="line120">120: </a>  <font color="#4169E1">return</font>(0);
@@ -134,7 +135,7 @@
 <a name="line124">124: </a><strong><font color="#4169E1"><a name="XXT_free"></a><A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> XXT_free(xxt_ADT xxt_handle)</font></strong>
 <a name="line125">125: </a>{
 
-<a name="line127">127: </a>  comm_init();
+<a name="line127">127: </a>  PCTFS_comm_init();
 <a name="line128">128: </a>  check_handle(xxt_handle);
 <a name="line129">129: </a>  n_xxt_handles--;
 
@@ -150,7 +151,7 @@
 <a name="line140">140: </a>  free(xxt_handle-&gt;info-&gt;col_indices);
 <a name="line141">141: </a>  free(xxt_handle-&gt;info);
 <a name="line142">142: </a>  free(xxt_handle-&gt;mvi-&gt;local2global);
-<a name="line143">143: </a>   gs_free(xxt_handle-&gt;mvi-&gt;gs_handle);
+<a name="line143">143: </a>   PCTFS_gs_free(xxt_handle-&gt;mvi-&gt;PCTFS_gs_handle);
 <a name="line144">144: </a>  free(xxt_handle-&gt;mvi);
 <a name="line145">145: </a>  free(xxt_handle);
 
@@ -168,43 +169,43 @@
 <a name="line158">158: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       vals[9],  work[9];
 <a name="line159">159: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    fvals[3], fwork[3];
 
-<a name="line162">162: </a>  comm_init();
+<a name="line162">162: </a>  PCTFS_comm_init();
 <a name="line163">163: </a>  check_handle(xxt_handle);
 
 <a name="line165">165: </a>  <font color="#B22222">/* if factorization not done there are no stats */</font>
 <a name="line166">166: </a>  <font color="#4169E1">if</font> (!xxt_handle-&gt;info||!xxt_handle-&gt;mvi)
 <a name="line167">167: </a>    {
-<a name="line168">168: </a>      <font color="#4169E1">if</font> (!my_id) {<A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"XXT_stats() :: no stats available!\n"</font>);}
+<a name="line168">168: </a>      <font color="#4169E1">if</font> (!PCTFS_my_id) {<A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"XXT_stats() :: no stats available!\n"</font>);}
 <a name="line169">169: </a>      <font color="#4169E1">return</font> 1;
 <a name="line170">170: </a>    }
 
 <a name="line172">172: </a>  vals[0]=vals[1]=vals[2]=xxt_handle-&gt;info-&gt;nnz;
 <a name="line173">173: </a>  vals[3]=vals[4]=vals[5]=xxt_handle-&gt;mvi-&gt;n;
 <a name="line174">174: </a>  vals[6]=vals[7]=vals[8]=xxt_handle-&gt;info-&gt;msg_buf_sz;
-<a name="line175">175: </a>  giop(vals,work,<font color="#4169E1">sizeof</font>(op)/<font color="#4169E1">sizeof</font>(op[0])-1,op);
+<a name="line175">175: </a>  PCTFS_giop(vals,work,<font color="#4169E1">sizeof</font>(op)/<font color="#4169E1">sizeof</font>(op[0])-1,op);
 
 <a name="line177">177: </a>  fvals[0]=fvals[1]=fvals[2]
 <a name="line178">178: </a>    =xxt_handle-&gt;info-&gt;tot_solve_time/xxt_handle-&gt;info-&gt;nsolves++;
-<a name="line179">179: </a>  grop(fvals,fwork,<font color="#4169E1">sizeof</font>(fop)/<font color="#4169E1">sizeof</font>(fop[0])-1,fop);
+<a name="line179">179: </a>  PCTFS_grop(fvals,fwork,<font color="#4169E1">sizeof</font>(fop)/<font color="#4169E1">sizeof</font>(fop[0])-1,fop);
 
-<a name="line181">181: </a>  <font color="#4169E1">if</font> (!my_id)
+<a name="line181">181: </a>  <font color="#4169E1">if</font> (!PCTFS_my_id)
 <a name="line182">182: </a>    {
-<a name="line183">183: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: min   xxt_nnz=%D\n"</font>,my_id,vals[0]);
-<a name="line184">184: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: max   xxt_nnz=%D\n"</font>,my_id,vals[1]);
-<a name="line185">185: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: avg   xxt_nnz=%g\n"</font>,my_id,1.0*vals[2]/num_nodes);
-<a name="line186">186: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: tot   xxt_nnz=%D\n"</font>,my_id,vals[2]);
-<a name="line187">187: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: xxt   C(2d)  =%g\n"</font>,my_id,vals[2]/(pow(1.0*vals[5],1.5)));
-<a name="line188">188: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: xxt   C(3d)  =%g\n"</font>,my_id,vals[2]/(pow(1.0*vals[5],1.6667)));
-<a name="line189">189: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: min   xxt_n  =%D\n"</font>,my_id,vals[3]);
-<a name="line190">190: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: max   xxt_n  =%D\n"</font>,my_id,vals[4]);
-<a name="line191">191: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: avg   xxt_n  =%g\n"</font>,my_id,1.0*vals[5]/num_nodes);
-<a name="line192">192: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: tot   xxt_n  =%D\n"</font>,my_id,vals[5]);
-<a name="line193">193: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: min   xxt_buf=%D\n"</font>,my_id,vals[6]);
-<a name="line194">194: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: max   xxt_buf=%D\n"</font>,my_id,vals[7]);
-<a name="line195">195: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: avg   xxt_buf=%g\n"</font>,my_id,1.0*vals[8]/num_nodes);
-<a name="line196">196: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: min   xxt_slv=%g\n"</font>,my_id,fvals[0]);
-<a name="line197">197: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: max   xxt_slv=%g\n"</font>,my_id,fvals[1]);
-<a name="line198">198: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: avg   xxt_slv=%g\n"</font>,my_id,fvals[2]/num_nodes);
+<a name="line183">183: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: min   xxt_nnz=%D\n"</font>,PCTFS_my_id,vals[0]);
+<a name="line184">184: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: max   xxt_nnz=%D\n"</font>,PCTFS_my_id,vals[1]);
+<a name="line185">185: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: avg   xxt_nnz=%g\n"</font>,PCTFS_my_id,1.0*vals[2]/PCTFS_num_nodes);
+<a name="line186">186: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: tot   xxt_nnz=%D\n"</font>,PCTFS_my_id,vals[2]);
+<a name="line187">187: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: xxt   C(2d)  =%g\n"</font>,PCTFS_my_id,vals[2]/(pow(1.0*vals[5],1.5)));
+<a name="line188">188: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: xxt   C(3d)  =%g\n"</font>,PCTFS_my_id,vals[2]/(pow(1.0*vals[5],1.6667)));
+<a name="line189">189: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: min   xxt_n  =%D\n"</font>,PCTFS_my_id,vals[3]);
+<a name="line190">190: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: max   xxt_n  =%D\n"</font>,PCTFS_my_id,vals[4]);
+<a name="line191">191: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: avg   xxt_n  =%g\n"</font>,PCTFS_my_id,1.0*vals[5]/PCTFS_num_nodes);
+<a name="line192">192: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: tot   xxt_n  =%D\n"</font>,PCTFS_my_id,vals[5]);
+<a name="line193">193: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: min   xxt_buf=%D\n"</font>,PCTFS_my_id,vals[6]);
+<a name="line194">194: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: max   xxt_buf=%D\n"</font>,PCTFS_my_id,vals[7]);
+<a name="line195">195: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: avg   xxt_buf=%g\n"</font>,PCTFS_my_id,1.0*vals[8]/PCTFS_num_nodes);
+<a name="line196">196: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: min   xxt_slv=%g\n"</font>,PCTFS_my_id,fvals[0]);
+<a name="line197">197: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: max   xxt_slv=%g\n"</font>,PCTFS_my_id,fvals[1]);
+<a name="line198">198: </a>      <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%D :: avg   xxt_slv=%g\n"</font>,PCTFS_my_id,fvals[2]/PCTFS_num_nodes);
 <a name="line199">199: </a>    }
 
 <a name="line201">201: </a>  <font color="#4169E1">return</font>(0);
@@ -218,7 +219,7 @@
 <a name="line209">209: </a><font color="#B22222">   o local2global holds global number of column i (i=0,...,m-1)</font>
 <a name="line210">210: </a><font color="#B22222">   o local2global holds global number of row    i (i=0,...,n-1)</font>
 <a name="line211">211: </a><font color="#B22222">   o mylocmatvec performs A_local . vec_local (note that gs is performed using </font>
-<a name="line212">212: </a><font color="#B22222">   gs_init/gop).</font>
+<a name="line212">212: </a><font color="#B22222">   PCTFS_gs_init/gop).</font>
 
 <a name="line214">214: </a><font color="#B22222">mylocmatvec = my_ml-&gt;Amat[grid_tag].matvec-&gt;external;</font>
 <a name="line215">215: </a><font color="#B22222">mylocmatvec (void :: void *data, double *in, double *out)</font>
@@ -241,7 +242,7 @@
 <a name="line232">232: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *iptr, flag;
 <a name="line233">233: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> start=0, end, work;
 <a name="line234">234: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> op2[] = {GL_MIN,0};
-<a name="line235">235: </a>  gs_ADT gs_handle;
+<a name="line235">235: </a>  PCTFS_gs_ADT PCTFS_gs_handle;
 <a name="line236">236: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *nsep, *lnsep, *fo;
 <a name="line237">237: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> a_n=xxt_handle-&gt;mvi-&gt;n;
 <a name="line238">238: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> a_m=xxt_handle-&gt;mvi-&gt;m;
@@ -263,7 +264,7 @@
 <a name="line255">255: </a>  fo=xxt_handle-&gt;info-&gt;fo;
 <a name="line256">256: </a>  end=lnsep[0];
 <a name="line257">257: </a>  level=xxt_handle-&gt;level;
-<a name="line258">258: </a>  gs_handle=xxt_handle-&gt;mvi-&gt;gs_handle;
+<a name="line258">258: </a>  PCTFS_gs_handle=xxt_handle-&gt;mvi-&gt;PCTFS_gs_handle;
 
 <a name="line260">260: </a>  <font color="#B22222">/* is there a null space? */</font>
 <a name="line261">261: </a>  <font color="#B22222">/* LATER add in ability to detect null space by checking alpha */</font>
@@ -290,8 +291,8 @@
 <a name="line282">282: </a>  <font color="#B22222">/* this looks like nsep[]=segments */</font>
 <a name="line283">283: </a>  stages = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*) malloc((level+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
 <a name="line284">284: </a>  segs   = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*) malloc((level+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
-<a name="line285">285: </a>  ivec_zero(stages,level+1);
-<a name="line286">286: </a>  ivec_copy(segs,nsep,level+1);
+<a name="line285">285: </a>  PCTFS_ivec_zero(stages,level+1);
+<a name="line286">286: </a>  PCTFS_ivec_copy(segs,nsep,level+1);
 <a name="line287">287: </a>  <font color="#4169E1">for</font> (i=0; i&lt;level; i++)
 <a name="line288">288: </a>    {segs[i+1] += segs[i];}
 <a name="line289">289: </a>  stages[0] = segs[0];
@@ -309,7 +310,7 @@
 
 <a name="line302">302: </a>  <font color="#B22222">/* storage for sparse x values */</font>
 <a name="line303">303: </a>  n_global = xxt_handle-&gt;info-&gt;n_global;
-<a name="line304">304: </a>  xxt_max_nnz = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)(2.5*pow(1.0*n_global,1.6667) + j*n/2)/num_nodes;
+<a name="line304">304: </a>  xxt_max_nnz = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)(2.5*pow(1.0*n_global,1.6667) + j*n/2)/PCTFS_num_nodes;
 <a name="line305">305: </a>  x = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *) malloc(xxt_max_nnz*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
 <a name="line306">306: </a>  xxt_nnz = 0;
 
@@ -329,7 +330,7 @@
 <a name="line321">321: </a>      <font color="#B22222">/* i.e. set v_l */</font>
 <a name="line322">322: </a>      <font color="#B22222">/* use new seps and do global min across hc to determine which one to fire */</font>
 <a name="line323">323: </a>      (start&lt;end) ? (col=fo[start]) : (col=INT_MAX);
-<a name="line324">324: </a>      giop_hc(&amp;col,&amp;work,1,op2,dim);
+<a name="line324">324: </a>      PCTFS_giop_hc(&amp;col,&amp;work,1,op2,dim);
 
 <a name="line326">326: </a>      <font color="#B22222">/* shouldn't need this */</font>
 <a name="line327">327: </a>      <font color="#4169E1">if</font> (col==INT_MAX)
@@ -339,30 +340,30 @@
 <a name="line331">331: </a>        }
 
 <a name="line333">333: </a>      <font color="#B22222">/* do I own it? I should */</font>
-<a name="line334">334: </a>      rvec_zero(v ,a_m);
+<a name="line334">334: </a>      PCTFS_rvec_zero(v ,a_m);
 <a name="line335">335: </a>      <font color="#4169E1">if</font> (col==fo[start])
 <a name="line336">336: </a>        {
 <a name="line337">337: </a>          start++;
-<a name="line338">338: </a>          idex=ivec_linear_search(col, a_local2global, a_n);
+<a name="line338">338: </a>          idex=PCTFS_ivec_linear_search(col, a_local2global, a_n);
 <a name="line339">339: </a>          <font color="#4169E1">if</font> (idex!=-1){
 <a name="line340">340: </a>            v[idex] = 1.0; j++;
 <a name="line341">341: </a>          } <font color="#4169E1">else</font> <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"NOT FOUND!\n"</font>);
 <a name="line342">342: </a>        }
 <a name="line343">343: </a>      <font color="#4169E1">else</font>
 <a name="line344">344: </a>        {
-<a name="line345">345: </a>          idex=ivec_linear_search(col, a_local2global, a_m);
+<a name="line345">345: </a>          idex=PCTFS_ivec_linear_search(col, a_local2global, a_m);
 <a name="line346">346: </a>          <font color="#4169E1">if</font> (idex!=-1)
 <a name="line347">347: </a>            {v[idex] = 1.0;}
 <a name="line348">348: </a>        }
 
 <a name="line350">350: </a>      <font color="#B22222">/* perform u = A.v_l */</font>
-<a name="line351">351: </a>      rvec_zero(u,n);
+<a name="line351">351: </a>      PCTFS_rvec_zero(u,n);
 <a name="line352">352: </a>      do_matvec(xxt_handle-&gt;mvi,v,u);
 
 <a name="line354">354: </a>      <font color="#B22222">/* uu =  X^T.u_l (local portion) */</font>
 <a name="line355">355: </a>      <font color="#B22222">/* technically only need to zero out first i entries */</font>
 <a name="line356">356: </a>      <font color="#B22222">/* later turn this into an XXT_solve call ? */</font>
-<a name="line357">357: </a>      rvec_zero(uu,m);
+<a name="line357">357: </a>      PCTFS_rvec_zero(uu,m);
 <a name="line358">358: </a>      x_ptr=x;
 <a name="line359">359: </a>      iptr = col_indices;
 <a name="line360">360: </a>      <font color="#4169E1">for</font> (k=0; k&lt;i; k++)
@@ -376,10 +377,10 @@
 
 
 <a name="line370">370: </a>      <font color="#B22222">/* uu = X^T.u_l (comm portion) */</font>
-<a name="line371">371: </a>      ssgl_radd  (uu, w, dim, stages);
+<a name="line371">371: </a>      PCTFS_ssgl_radd  (uu, w, dim, stages);
 
 <a name="line373">373: </a>      <font color="#B22222">/* z = X.uu */</font>
-<a name="line374">374: </a>      rvec_zero(z,n);
+<a name="line374">374: </a>      PCTFS_rvec_zero(z,n);
 <a name="line375">375: </a>      x_ptr=x;
 <a name="line376">376: </a>      iptr = col_indices;
 <a name="line377">377: </a>      <font color="#4169E1">for</font> (k=0; k&lt;i; k++)
@@ -392,21 +393,21 @@
 <a name="line384">384: </a>        }
 
 <a name="line386">386: </a>      <font color="#B22222">/* compute v_l = v_l - z */</font>
-<a name="line387">387: </a>      rvec_zero(v+a_n,a_m-a_n);
+<a name="line387">387: </a>      PCTFS_rvec_zero(v+a_n,a_m-a_n);
 <a name="line388">388: </a>      dlen = PetscBLASIntCast(n);
 <a name="line389">389: </a>      BLASaxpy_(&amp;dlen,&amp;dm1,z,&amp;i1,v,&amp;i1);
 
 <a name="line391">391: </a>      <font color="#B22222">/* compute u_l = A.v_l */</font>
 <a name="line392">392: </a>      <font color="#4169E1">if</font> (a_n!=a_m)
-<a name="line393">393: </a>        {gs_gop_hc(gs_handle,v,<font color="#666666">"+\0"</font>,dim);}
-<a name="line394">394: </a>      rvec_zero(u,n);
+<a name="line393">393: </a>        {PCTFS_gs_gop_hc(PCTFS_gs_handle,v,<font color="#666666">"+\0"</font>,dim);}
+<a name="line394">394: </a>      PCTFS_rvec_zero(u,n);
 <a name="line395">395: </a>      do_matvec(xxt_handle-&gt;mvi,v,u);
 
 <a name="line397">397: </a>      <font color="#B22222">/* compute sqrt(alpha) = sqrt(v_l^T.u_l) - local portion */</font>
 <a name="line398">398: </a>      dlen = PetscBLASIntCast(n);
 <a name="line399">399: </a>      alpha = BLASdot_(&amp;dlen,u,&amp;i1,v,&amp;i1);
 <a name="line400">400: </a>      <font color="#B22222">/* compute sqrt(alpha) = sqrt(v_l^T.u_l) - comm portion */</font>
-<a name="line401">401: </a>      grop_hc(&amp;alpha, &amp;alpha_w, 1, op, dim);
+<a name="line401">401: </a>      PCTFS_grop_hc(&amp;alpha, &amp;alpha_w, 1, op, dim);
 
 <a name="line403">403: </a>      alpha = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>) PetscSqrtReal((<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)alpha);
 
@@ -415,7 +416,7 @@
 <a name="line407">407: </a>      <font color="#4169E1">if</font> (fabs(alpha)&lt;1.0e-14) <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"bad alpha! %g\n"</font>,alpha);
 
 <a name="line409">409: </a>      <font color="#B22222">/* compute v_l = v_l/sqrt(alpha) */</font>
-<a name="line410">410: </a>      rvec_scale(v,1.0/alpha,n);
+<a name="line410">410: </a>      PCTFS_rvec_scale(v,1.0/alpha,n);
 
 <a name="line412">412: </a>      <font color="#B22222">/* add newly generated column, v_l, to X */</font>
 <a name="line413">413: </a>      flag = 1;
@@ -439,13 +440,13 @@
 <a name="line431">431: </a>              <A href="../../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(0,<font color="#666666">"increasing space for X by 2x!\n"</font>);
 <a name="line432">432: </a>              xxt_max_nnz *= 2;
 <a name="line433">433: </a>              x_ptr = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *) malloc(xxt_max_nnz*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
-<a name="line434">434: </a>              rvec_copy(x_ptr,x,xxt_nnz);
+<a name="line434">434: </a>              PCTFS_rvec_copy(x_ptr,x,xxt_nnz);
 <a name="line435">435: </a>              free(x);
 <a name="line436">436: </a>              x = x_ptr;
 <a name="line437">437: </a>              x_ptr+=xxt_nnz;
 <a name="line438">438: </a>            }
 <a name="line439">439: </a>          xxt_nnz += len;
-<a name="line440">440: </a>          rvec_copy(x_ptr,v+off,len);
+<a name="line440">440: </a>          PCTFS_rvec_copy(x_ptr,v+off,len);
 
 <a name="line442">442: </a>          <font color="#B22222">/* keep track of number of zeros */</font>
 <a name="line443">443: </a>          <font color="#4169E1">if</font> (dim)
@@ -525,7 +526,7 @@
 <a name="line517">517: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> i1 = 1,dlen;
 
 <a name="line520">520: </a>  uu_ptr=solve_uu;
-<a name="line521">521: </a>  rvec_zero(uu_ptr,m);
+<a name="line521">521: </a>  PCTFS_rvec_zero(uu_ptr,m);
 
 <a name="line523">523: </a>  <font color="#B22222">/* x  = X.Y^T.b */</font>
 <a name="line524">524: </a>  <font color="#B22222">/* uu = Y^T.b */</font>
@@ -538,9 +539,9 @@
 
 <a name="line532">532: </a>  <font color="#B22222">/* comunication of beta */</font>
 <a name="line533">533: </a>  uu_ptr=solve_uu;
-<a name="line534">534: </a>  <font color="#4169E1">if</font> (level) {ssgl_radd(uu_ptr, solve_w, level, stages);}
+<a name="line534">534: </a>  <font color="#4169E1">if</font> (level) {PCTFS_ssgl_radd(uu_ptr, solve_w, level, stages);}
 
-<a name="line536">536: </a>  rvec_zero(uc,n);
+<a name="line536">536: </a>  PCTFS_rvec_zero(uc,n);
 
 <a name="line538">538: </a>  <font color="#B22222">/* x = X.uu */</font>
 <a name="line539">539: </a>  <font color="#4169E1">for</font> (x_ptr=x,iptr=col_indices; *iptr!=-1; x_ptr+=len)
@@ -560,7 +561,7 @@
 <a name="line554">554: </a>  <font color="#4169E1">if</font> (!xxt_handle) <A href="../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"check_handle() :: bad handle :: NULL %D\n"</font>,xxt_handle);
 
 <a name="line556">556: </a>  vals[0]=vals[1]=xxt_handle-&gt;id;
-<a name="line557">557: </a>  giop(vals,work,<font color="#4169E1">sizeof</font>(op)/<font color="#4169E1">sizeof</font>(op[0])-1,op);
+<a name="line557">557: </a>  PCTFS_giop(vals,work,<font color="#4169E1">sizeof</font>(op)/<font color="#4169E1">sizeof</font>(op[0])-1,op);
 <a name="line558">558: </a>  <font color="#4169E1">if</font> ((vals[0]!=vals[1])||(xxt_handle-&gt;id&lt;=0)) <A href="../../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"check_handle() :: bad handle :: id mismatch min/max %D/%D %D\n"</font>,vals[0],vals[1], xxt_handle-&gt;id);
 <a name="line559">559: </a>  <font color="#4169E1">return</font>(0);
 <a name="line560">560: </a>}
@@ -576,12 +577,12 @@
 <a name="line570">570: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> op[] = {GL_ADD,0};
 <a name="line571">571: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *lhs, *rhs;
 <a name="line572">572: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *nsep, *lnsep, *fo, nfo=0;
-<a name="line573">573: </a>  gs_ADT gs_handle=xxt_handle-&gt;mvi-&gt;gs_handle;
+<a name="line573">573: </a>  PCTFS_gs_ADT PCTFS_gs_handle=xxt_handle-&gt;mvi-&gt;PCTFS_gs_handle;
 <a name="line574">574: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *local2global=xxt_handle-&gt;mvi-&gt;local2global;
 <a name="line575">575: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  n=xxt_handle-&gt;mvi-&gt;n;
 <a name="line576">576: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  m=xxt_handle-&gt;mvi-&gt;m;
 <a name="line577">577: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> level=xxt_handle-&gt;level;
-<a name="line578">578: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> shared=FALSE;
+<a name="line578">578: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> shared=0;
 
 <a name="line581">581: </a>  dir  = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)malloc(<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*(level+1));
 <a name="line582">582: </a>  nsep = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)malloc(<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*(level+1));
@@ -589,31 +590,31 @@
 <a name="line584">584: </a>  fo   = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)malloc(<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*(n+1));
 <a name="line585">585: </a>  used = (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)malloc(<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)*n);
 
-<a name="line587">587: </a>  ivec_zero(dir  ,level+1);
-<a name="line588">588: </a>  ivec_zero(nsep ,level+1);
-<a name="line589">589: </a>  ivec_zero(lnsep,level+1);
-<a name="line590">590: </a>  ivec_set (fo   ,-1,n+1);
-<a name="line591">591: </a>  ivec_zero(used,n);
+<a name="line587">587: </a>  PCTFS_ivec_zero(dir  ,level+1);
+<a name="line588">588: </a>  PCTFS_ivec_zero(nsep ,level+1);
+<a name="line589">589: </a>  PCTFS_ivec_zero(lnsep,level+1);
+<a name="line590">590: </a>  PCTFS_ivec_set (fo   ,-1,n+1);
+<a name="line591">591: </a>  PCTFS_ivec_zero(used,n);
 
 <a name="line593">593: </a>  lhs  = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)malloc(<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*m);
 <a name="line594">594: </a>  rhs  = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)malloc(<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)*m);
 
 <a name="line596">596: </a>  <font color="#B22222">/* determine the # of unique dof */</font>
-<a name="line597">597: </a>  rvec_zero(lhs,m);
-<a name="line598">598: </a>  rvec_set(lhs,1.0,n);
-<a name="line599">599: </a>  gs_gop_hc(gs_handle,lhs,<font color="#666666">"+\0"</font>,level);
-<a name="line600">600: </a>  rvec_zero(rsum,2);
+<a name="line597">597: </a>  PCTFS_rvec_zero(lhs,m);
+<a name="line598">598: </a>  PCTFS_rvec_set(lhs,1.0,n);
+<a name="line599">599: </a>  PCTFS_gs_gop_hc(PCTFS_gs_handle,lhs,<font color="#666666">"+\0"</font>,level);
+<a name="line600">600: </a>  PCTFS_rvec_zero(rsum,2);
 <a name="line601">601: </a>  <font color="#4169E1">for</font> (ct=i=0;i&lt;n;i++)
 <a name="line602">602: </a>    {
 <a name="line603">603: </a>      <font color="#4169E1">if</font> (lhs[i]!=0.0)
 <a name="line604">604: </a>        {rsum[0]+=1.0/lhs[i]; rsum[1]+=lhs[i];}
 <a name="line605">605: </a>    }
-<a name="line606">606: </a>  grop_hc(rsum,rw,2,op,level);
+<a name="line606">606: </a>  PCTFS_grop_hc(rsum,rw,2,op,level);
 <a name="line607">607: </a>  rsum[0]+=0.1;
 <a name="line608">608: </a>  rsum[1]+=0.1;
 
 <a name="line610">610: </a>  <font color="#4169E1">if</font> (fabs(rsum[0]-rsum[1])&gt;EPS)
-<a name="line611">611: </a>    {shared=TRUE;}
+<a name="line611">611: </a>    {shared=1;}
 
 <a name="line613">613: </a>  xxt_handle-&gt;info-&gt;n_global=xxt_handle-&gt;info-&gt;m_global=(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) rsum[0];
 <a name="line614">614: </a>  xxt_handle-&gt;mvi-&gt;n_global =xxt_handle-&gt;mvi-&gt;m_global =(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) rsum[0];
@@ -621,15 +622,15 @@
 <a name="line616">616: </a>  <font color="#B22222">/* determine separator sets top down */</font>
 <a name="line617">617: </a>  <font color="#4169E1">if</font> (shared)
 <a name="line618">618: </a>    {
-<a name="line619">619: </a>      <font color="#4169E1">for</font> (iptr=fo+n,id=my_id,mask=num_nodes&gt;&gt;1,edge=level;edge&gt;0;edge--,mask&gt;&gt;=1)
+<a name="line619">619: </a>      <font color="#4169E1">for</font> (iptr=fo+n,id=PCTFS_my_id,mask=PCTFS_num_nodes&gt;&gt;1,edge=level;edge&gt;0;edge--,mask&gt;&gt;=1)
 <a name="line620">620: </a>        {
 <a name="line621">621: </a>          <font color="#B22222">/* set rsh of hc, fire, and collect lhs responses */</font>
-<a name="line622">622: </a>          (id&lt;mask) ? rvec_zero(lhs,m) : rvec_set(lhs,1.0,m);
-<a name="line623">623: </a>          gs_gop_hc(gs_handle,lhs,<font color="#666666">"+\0"</font>,edge);
+<a name="line622">622: </a>          (id&lt;mask) ? PCTFS_rvec_zero(lhs,m) : PCTFS_rvec_set(lhs,1.0,m);
+<a name="line623">623: </a>          PCTFS_gs_gop_hc(PCTFS_gs_handle,lhs,<font color="#666666">"+\0"</font>,edge);
 <a name="line624">624: </a>
 <a name="line625">625: </a>          <font color="#B22222">/* set lsh of hc, fire, and collect rhs responses */</font>
-<a name="line626">626: </a>          (id&lt;mask) ? rvec_set(rhs,1.0,m) : rvec_zero(rhs,m);
-<a name="line627">627: </a>          gs_gop_hc(gs_handle,rhs,<font color="#666666">"+\0"</font>,edge);
+<a name="line626">626: </a>          (id&lt;mask) ? PCTFS_rvec_set(rhs,1.0,m) : PCTFS_rvec_zero(rhs,m);
+<a name="line627">627: </a>          PCTFS_gs_gop_hc(PCTFS_gs_handle,rhs,<font color="#666666">"+\0"</font>,edge);
 <a name="line628">628: </a>
 <a name="line629">629: </a>          <font color="#4169E1">for</font> (i=0;i&lt;n;i++)
 <a name="line630">630: </a>            {
@@ -646,13 +647,13 @@
 <a name="line641">641: </a>            }
 
 <a name="line643">643: </a>          <font color="#4169E1">if</font> (id&lt; mask)
-<a name="line644">644: </a>            {gs_gop_hc(gs_handle,lhs,<font color="#666666">"+\0"</font>,edge-1);}
+<a name="line644">644: </a>            {PCTFS_gs_gop_hc(PCTFS_gs_handle,lhs,<font color="#666666">"+\0"</font>,edge-1);}
 <a name="line645">645: </a>          <font color="#4169E1">else</font>
-<a name="line646">646: </a>            {gs_gop_hc(gs_handle,rhs,<font color="#666666">"+\0"</font>,edge-1);}
+<a name="line646">646: </a>            {PCTFS_gs_gop_hc(PCTFS_gs_handle,rhs,<font color="#666666">"+\0"</font>,edge-1);}
 
 <a name="line648">648: </a>          <font color="#B22222">/* count number of dofs I own that have signal and not in sep set */</font>
-<a name="line649">649: </a>          rvec_zero(rsum,4);
-<a name="line650">650: </a>          <font color="#4169E1">for</font> (ivec_zero(sum,4),ct=i=0;i&lt;n;i++)
+<a name="line649">649: </a>          PCTFS_rvec_zero(rsum,4);
+<a name="line650">650: </a>          <font color="#4169E1">for</font> (PCTFS_ivec_zero(sum,4),ct=i=0;i&lt;n;i++)
 <a name="line651">651: </a>            {
 <a name="line652">652: </a>              <font color="#4169E1">if</font> (!used[i])
 <a name="line653">653: </a>                {
@@ -676,8 +677,8 @@
 <a name="line671">671: </a>          <font color="#B22222">/* go for load balance - choose half with most unmarked dofs, bias LHS */</font>
 <a name="line672">672: </a>          (id&lt;mask) ? (sum[2]=ct) : (sum[3]=ct);
 <a name="line673">673: </a>          (id&lt;mask) ? (rsum[2]=ct) : (rsum[3]=ct);
-<a name="line674">674: </a>          giop_hc(sum,w,4,op,edge);
-<a name="line675">675: </a>          grop_hc(rsum,rw,4,op,edge);
+<a name="line674">674: </a>          PCTFS_giop_hc(sum,w,4,op,edge);
+<a name="line675">675: </a>          PCTFS_grop_hc(rsum,rw,4,op,edge);
 <a name="line676">676: </a>          rsum[0]+=0.1; rsum[1]+=0.1; rsum[2]+=0.1; rsum[3]+=0.1;
 
 <a name="line678">678: </a>          <font color="#4169E1">if</font> (id&lt;mask)
@@ -695,7 +696,7 @@
 <a name="line690">690: </a>                      used[i]=edge;
 <a name="line691">691: </a>                    }
 <a name="line692">692: </a>                }
-<a name="line693">693: </a>              <font color="#4169E1">if</font> (ct&gt;1) {ivec_sort(iptr,ct);}
+<a name="line693">693: </a>              <font color="#4169E1">if</font> (ct&gt;1) {PCTFS_ivec_sort(iptr,ct);}
 
 <a name="line695">695: </a>              lnsep[edge]=ct;
 <a name="line696">696: </a>              nsep[edge]=(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) rsum[0];
@@ -717,7 +718,7 @@
 <a name="line712">712: </a>                      used[i]=edge;
 <a name="line713">713: </a>                    }
 <a name="line714">714: </a>                }
-<a name="line715">715: </a>              <font color="#4169E1">if</font> (ct&gt;1) {ivec_sort(iptr,ct);}
+<a name="line715">715: </a>              <font color="#4169E1">if</font> (ct&gt;1) {PCTFS_ivec_sort(iptr,ct);}
 
 <a name="line717">717: </a>              lnsep[edge]=ct;
 <a name="line718">718: </a>              nsep[edge]= (<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) rsum[1];
@@ -734,18 +735,18 @@
 <a name="line729">729: </a>    }
 <a name="line730">730: </a>  <font color="#4169E1">else</font>
 <a name="line731">731: </a>    {
-<a name="line732">732: </a>      <font color="#4169E1">for</font> (iptr=fo+n,id=my_id,mask=num_nodes&gt;&gt;1,edge=level;edge&gt;0;edge--,mask&gt;&gt;=1)
+<a name="line732">732: </a>      <font color="#4169E1">for</font> (iptr=fo+n,id=PCTFS_my_id,mask=PCTFS_num_nodes&gt;&gt;1,edge=level;edge&gt;0;edge--,mask&gt;&gt;=1)
 <a name="line733">733: </a>        {
 <a name="line734">734: </a>          <font color="#B22222">/* set rsh of hc, fire, and collect lhs responses */</font>
-<a name="line735">735: </a>          (id&lt;mask) ? rvec_zero(lhs,m) : rvec_set(lhs,1.0,m);
-<a name="line736">736: </a>          gs_gop_hc(gs_handle,lhs,<font color="#666666">"+\0"</font>,edge);
+<a name="line735">735: </a>          (id&lt;mask) ? PCTFS_rvec_zero(lhs,m) : PCTFS_rvec_set(lhs,1.0,m);
+<a name="line736">736: </a>          PCTFS_gs_gop_hc(PCTFS_gs_handle,lhs,<font color="#666666">"+\0"</font>,edge);
 
 <a name="line738">738: </a>          <font color="#B22222">/* set lsh of hc, fire, and collect rhs responses */</font>
-<a name="line739">739: </a>          (id&lt;mask) ? rvec_set(rhs,1.0,m) : rvec_zero(rhs,m);
-<a name="line740">740: </a>          gs_gop_hc(gs_handle,rhs,<font color="#666666">"+\0"</font>,edge);
+<a name="line739">739: </a>          (id&lt;mask) ? PCTFS_rvec_set(rhs,1.0,m) : PCTFS_rvec_zero(rhs,m);
+<a name="line740">740: </a>          PCTFS_gs_gop_hc(PCTFS_gs_handle,rhs,<font color="#666666">"+\0"</font>,edge);
 
 <a name="line742">742: </a>          <font color="#B22222">/* count number of dofs I own that have signal and not in sep set */</font>
-<a name="line743">743: </a>          <font color="#4169E1">for</font> (ivec_zero(sum,4),ct=i=0;i&lt;n;i++)
+<a name="line743">743: </a>          <font color="#4169E1">for</font> (PCTFS_ivec_zero(sum,4),ct=i=0;i&lt;n;i++)
 <a name="line744">744: </a>            {
 <a name="line745">745: </a>              <font color="#4169E1">if</font> (!used[i])
 <a name="line746">746: </a>                {
@@ -760,7 +761,7 @@
 
 <a name="line756">756: </a>          <font color="#B22222">/* go for load balance - choose half with most unmarked dofs, bias LHS */</font>
 <a name="line757">757: </a>          (id&lt;mask) ? (sum[2]=ct) : (sum[3]=ct);
-<a name="line758">758: </a>          giop_hc(sum,w,4,op,edge);
+<a name="line758">758: </a>          PCTFS_giop_hc(sum,w,4,op,edge);
 
 <a name="line760">760: </a>          <font color="#B22222">/* lhs hc wins */</font>
 <a name="line761">761: </a>          <font color="#4169E1">if</font> (sum[2]&gt;=sum[3])
@@ -777,7 +778,7 @@
 <a name="line772">772: </a>                          used[i]=edge;
 <a name="line773">773: </a>                        }
 <a name="line774">774: </a>                    }
-<a name="line775">775: </a>                  <font color="#4169E1">if</font> (ct&gt;1) {ivec_sort(iptr,ct);}
+<a name="line775">775: </a>                  <font color="#4169E1">if</font> (ct&gt;1) {PCTFS_ivec_sort(iptr,ct);}
 <a name="line776">776: </a>                  lnsep[edge]=ct;
 <a name="line777">777: </a>                }
 <a name="line778">778: </a>              nsep[edge]=sum[0];
@@ -798,7 +799,7 @@
 <a name="line793">793: </a>                          used[i]=edge;
 <a name="line794">794: </a>                        }
 <a name="line795">795: </a>                    }
-<a name="line796">796: </a>                  <font color="#4169E1">if</font> (ct&gt;1) {ivec_sort(iptr,ct);}
+<a name="line796">796: </a>                  <font color="#4169E1">if</font> (ct&gt;1) {PCTFS_ivec_sort(iptr,ct);}
 <a name="line797">797: </a>                  lnsep[edge]=ct;
 <a name="line798">798: </a>                }
 <a name="line799">799: </a>              nsep[edge]=sum[1];
@@ -824,7 +825,7 @@
 <a name="line819">819: </a>          used[i]=edge;
 <a name="line820">820: </a>        }
 <a name="line821">821: </a>    }
-<a name="line822">822: </a>  <font color="#4169E1">if</font> (ct&gt;1) {ivec_sort(iptr,ct);}
+<a name="line822">822: </a>  <font color="#4169E1">if</font> (ct&gt;1) {PCTFS_ivec_sort(iptr,ct);}
 <a name="line823">823: </a>  lnsep[edge]=ct;
 <a name="line824">824: </a>  nsep [edge]=ct;
 <a name="line825">825: </a>  dir  [edge]=LEFT;
@@ -853,13 +854,13 @@
 <a name="line848">848: </a>  mvi-&gt;n_global=-1;
 <a name="line849">849: </a>  mvi-&gt;m_global=-1;
 <a name="line850">850: </a>  mvi-&gt;local2global=(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)malloc((m+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
-<a name="line851">851: </a>  ivec_copy(mvi-&gt;local2global,local2global,m);
+<a name="line851">851: </a>  PCTFS_ivec_copy(mvi-&gt;local2global,local2global,m);
 <a name="line852">852: </a>  mvi-&gt;local2global[m] = INT_MAX;
 <a name="line853">853: </a>  mvi-&gt;matvec=(<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(mv_info*,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*))matvec;
 <a name="line854">854: </a>  mvi-&gt;grid_data=grid_data;
 
 <a name="line856">856: </a>  <font color="#B22222">/* set xxt communication handle to perform restricted matvec */</font>
-<a name="line857">857: </a>  mvi-&gt;gs_handle = gs_init(local2global, m, num_nodes);
+<a name="line857">857: </a>  mvi-&gt;PCTFS_gs_handle = PCTFS_gs_init(local2global, m, PCTFS_num_nodes);
 
 <a name="line859">859: </a>  <font color="#4169E1">return</font>(mvi);
 <a name="line860">860: </a>}

@@ -446,7 +446,7 @@ static PetscErrorCode MatIncreaseOverlap_MPIAIJ_Receive(Mat C,PetscInt nrqr,Pets
   mem_estimate = 3*((total_sz > max1 ? total_sz : max1)+1);
   ierr         = PetscMalloc(mem_estimate*sizeof(PetscInt),&xdata[0]);CHKERRQ(ierr);
   ++no_malloc;
-  ierr         = PetscBTCreate(m,xtable);CHKERRQ(ierr);
+  ierr         = PetscBTCreate(m,&xtable);CHKERRQ(ierr);
   ierr         = PetscMemzero(isz1,nrqr*sizeof(PetscInt));CHKERRQ(ierr);
   
   ct3 = 0;
@@ -523,12 +523,12 @@ static PetscErrorCode MatIncreaseOverlap_MPIAIJ_Receive(Mat C,PetscInt nrqr,Pets
     xdata[i+1]  = xdata[i] + ct2;
     isz1[i]     = ct2; /* size of each message */
   }
-  ierr = PetscBTDestroy(xtable);CHKERRQ(ierr);
+  ierr = PetscBTDestroy(&xtable);CHKERRQ(ierr);
   ierr = PetscInfo3(C,"Allocated %D bytes, required %D bytes, no of mallocs = %D\n",mem_estimate,ct3,no_malloc);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }  
 /* -------------------------------------------------------------------------*/
-extern PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat,PetscInt,const IS[],const IS[],MatReuse,Mat*);
+extern PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat,PetscInt,const IS[],const IS[],MatReuse,PetscBool*,Mat*);
 extern PetscErrorCode MatAssemblyEnd_SeqAIJ(Mat,MatAssemblyType);
 /*
     Every processor gets the entire matrix
@@ -574,6 +574,7 @@ PetscErrorCode MatGetSubMatrix_MPIAIJ_All(Mat A,MatGetSubMatrixOption flag,MatRe
     */
     ierr  = MatCreate(PETSC_COMM_SELF,&B);CHKERRQ(ierr);
     ierr  = MatSetSizes(B,A->rmap->N,A->cmap->N,PETSC_DETERMINE,PETSC_DETERMINE);CHKERRQ(ierr);
+    ierr  = MatSetBlockSizes(B,A->rmap->bs,A->cmap->bs);CHKERRQ(ierr);
     ierr  = MatSetType(B,((PetscObject)a->A)->type_name);CHKERRQ(ierr);
     ierr  = MatSeqAIJSetPreallocation(B,0,lens);CHKERRQ(ierr);
     ierr  = PetscMalloc(sizeof(Mat),Bin);CHKERRQ(ierr);
@@ -725,11 +726,23 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ(Mat C,PetscInt ismax,const IS isrow[],co
 { 
   PetscErrorCode ierr;
   PetscInt       nmax,nstages_local,nstages,i,pos,max_no,nrow,ncol;
-  PetscBool      rowflag,colflag,wantallmatrix = PETSC_FALSE,twantallmatrix;
+  PetscBool      rowflag,colflag,wantallmatrix=PETSC_FALSE,twantallmatrix,*allcolumns;
 
   PetscFunctionBegin;
+
+  /* Currently, unsorted column indices will result in inverted column indices in the resulting submatrices. */
+  /* It would make sense to error out in MatGetSubMatrices_MPIAIJ_Local(), the most impl-specific level.
+     However, there are more careful users of MatGetSubMatrices_MPIAIJ_Local() -- MatPermute_MPIAIJ() -- that 
+     take care to order the result correctly by assembling it with MatSetValues() (after preallocating).
+   */
+  for(i = 0; i < ismax; ++i) {
+    PetscBool sorted;
+    ierr = ISSorted(iscol[i], &sorted); CHKERRQ(ierr);
+    if(!sorted) SETERRQ1(((PetscObject)iscol[i])->comm, PETSC_ERR_SUP, "Column index set %D not sorted", i);
+  }
+
   /*
-       Check for special case each processor gets entire matrix
+       Check for special case: each processor gets entire matrix
   */
   if (ismax == 1 && C->rmap->N == C->cmap->N) {
     ierr = ISIdentity(*isrow,&rowflag);CHKERRQ(ierr);
@@ -751,8 +764,22 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ(Mat C,PetscInt ismax,const IS isrow[],co
   if (scall != MAT_REUSE_MATRIX) {
     ierr = PetscMalloc((ismax+1)*sizeof(Mat),submat);CHKERRQ(ierr);
   }
+
+  /* Check for special case: each processor gets entire matrix columns */
+  ierr = PetscMalloc((ismax+1)*sizeof(PetscBool),&allcolumns);CHKERRQ(ierr);
+  for (i=0; i<ismax; i++) {
+    ierr = ISIdentity(iscol[i],&colflag);CHKERRQ(ierr);
+    ierr = ISGetLocalSize(iscol[i],&ncol);CHKERRQ(ierr);
+    if (colflag && ncol == C->cmap->N){
+      allcolumns[i] = PETSC_TRUE;
+    } else {
+      allcolumns[i] = PETSC_FALSE;
+    }
+  }
+
   /* Determine the number of stages through which submatrices are done */
   nmax          = 20*1000000 / (C->cmap->N * sizeof(PetscInt));
+
   /* 
      Each stage will extract nmax submatrices.  
      nmax is determined by the matrix column dimension.
@@ -768,16 +795,18 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ(Mat C,PetscInt ismax,const IS isrow[],co
     if (pos+nmax <= ismax) max_no = nmax;
     else if (pos == ismax) max_no = 0;
     else                   max_no = ismax-pos;
-    ierr = MatGetSubMatrices_MPIAIJ_Local(C,max_no,isrow+pos,iscol+pos,scall,*submat+pos);CHKERRQ(ierr);
+    ierr = MatGetSubMatrices_MPIAIJ_Local(C,max_no,isrow+pos,iscol+pos,scall,allcolumns+pos,*submat+pos);CHKERRQ(ierr);
     pos += max_no;
   }
+
+  ierr = PetscFree(allcolumns);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
 /* -------------------------------------------------------------------------*/
 #undef __FUNCT__  
 #define __FUNCT__ "MatGetSubMatrices_MPIAIJ_Local" 
-PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isrow[],const IS iscol[],MatReuse scall,Mat *submats)
+PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isrow[],const IS iscol[],MatReuse scall,PetscBool *allcolumns,Mat *submats)
 { 
   Mat_MPIAIJ     *c = (Mat_MPIAIJ*)C->data;
   Mat            A = c->A;
@@ -791,9 +820,9 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
   PetscInt       **rbuf3,*req_source,**sbuf_aj,**rbuf2,max1,max2;
   PetscInt       **lens,is_no,ncols,*cols,mat_i,*mat_j,tmp2,jmax;
 #if defined (PETSC_USE_CTABLE)
-  PetscTable     *cmap,cmap_i,*rmap,rmap_i;
+  PetscTable     *cmap,cmap_i=PETSC_NULL,*rmap,rmap_i;
 #else
-  PetscInt       **cmap,*cmap_i,**rmap,*rmap_i;
+  PetscInt       **cmap,*cmap_i=PETSC_NULL,**rmap,*rmap_i;
 #endif
   const PetscInt *irow_i;
   PetscInt       ctr_j,*sbuf1_j,*sbuf_aj_i,*rbuf1_i,kmax,*lens_i;
@@ -807,6 +836,7 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
   PetscMPIInt    idex,idex2,end;
 
   PetscFunctionBegin;
+
   comm   = ((PetscObject)C)->comm;
   tag0   = ((PetscObject)C)->tag;
   size   = c->size;
@@ -821,9 +851,14 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
 
   for (i=0; i<ismax; i++) { 
     ierr = ISGetIndices(isrow[i],&irow[i]);CHKERRQ(ierr);
-    ierr = ISGetIndices(iscol[i],&icol[i]);CHKERRQ(ierr);
     ierr = ISGetLocalSize(isrow[i],&nrow[i]);CHKERRQ(ierr);
-    ierr = ISGetLocalSize(iscol[i],&ncol[i]);CHKERRQ(ierr);
+    if (allcolumns[i]){
+      icol[i] = PETSC_NULL;
+      ncol[i] = C->cmap->N;
+    } else {
+      ierr = ISGetIndices(iscol[i],&icol[i]);CHKERRQ(ierr);
+      ierr = ISGetLocalSize(iscol[i],&ncol[i]);CHKERRQ(ierr);
+    }
   }
 
   /* evaluate communication - mesg to who, length of mesg, and buffer space
@@ -986,7 +1021,7 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
 
   /*  recv buffer sizes */
   /* Receive messages*/
-  
+
   ierr = PetscMalloc((nrqs+1)*sizeof(PetscInt*),&rbuf3);CHKERRQ(ierr);
   ierr = PetscMalloc((nrqs+1)*sizeof(PetscScalar*),&rbuf4);CHKERRQ(ierr);
   ierr = PetscMalloc((nrqs+1)*sizeof(MPI_Request),&r_waits3);CHKERRQ(ierr);
@@ -1120,41 +1155,50 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
 #if defined (PETSC_USE_CTABLE)
     ierr = PetscMalloc((1+ismax)*sizeof(PetscTable),&cmap);CHKERRQ(ierr);
     for (i=0; i<ismax; i++) {
-      ierr = PetscTableCreate(ncol[i]+1,&cmap[i]);CHKERRQ(ierr);
-      jmax   = ncol[i];
-      icol_i = icol[i];
-      cmap_i = cmap[i];
-      for (j=0; j<jmax; j++) { 
-        ierr = PetscTableAdd(cmap[i],icol_i[j]+1,j+1);CHKERRQ(ierr);
+      if (!allcolumns[i]){
+        ierr = PetscTableCreate(ncol[i]+1,C->cmap->N+1,&cmap[i]);CHKERRQ(ierr);
+        jmax   = ncol[i];
+        icol_i = icol[i];
+        cmap_i = cmap[i];
+        for (j=0; j<jmax; j++) { 
+          ierr = PetscTableAdd(cmap[i],icol_i[j]+1,j+1,INSERT_VALUES);CHKERRQ(ierr);
+        }
+      } else {
+        cmap[i] = PETSC_NULL;
       }
     }
 #else
     ierr = PetscMalloc(ismax*sizeof(PetscInt*),&cmap);CHKERRQ(ierr);
-    ierr = PetscMalloc(ismax*C->cmap->N*sizeof(PetscInt),&cmap[0]);CHKERRQ(ierr);
-    ierr = PetscMemzero(cmap[0],ismax*C->cmap->N*sizeof(PetscInt));CHKERRQ(ierr);
-    for (i=1; i<ismax; i++) { cmap[i] = cmap[i-1] + C->cmap->N; }
     for (i=0; i<ismax; i++) {
-      jmax   = ncol[i];
-      icol_i = icol[i];
-      cmap_i = cmap[i];
-      for (j=0; j<jmax; j++) { 
-        cmap_i[icol_i[j]] = j+1; 
+      if (!allcolumns[i]){
+        ierr = PetscMalloc(C->cmap->N*sizeof(PetscInt),&cmap[i]);CHKERRQ(ierr);
+        ierr = PetscMemzero(cmap[i],C->cmap->N*sizeof(PetscInt));CHKERRQ(ierr);
+        jmax   = ncol[i];
+        icol_i = icol[i];
+        cmap_i = cmap[i];
+        for (j=0; j<jmax; j++) { 
+          cmap_i[icol_i[j]] = j+1; 
+        }
+      } else {
+        cmap[i] = PETSC_NULL;
       }
     }
 #endif
-  }
+  } 
 
   /* Create lens which is required for MatCreate... */
   for (i=0,j=0; i<ismax; i++) { j += nrow[i]; }
   ierr    = PetscMalloc(ismax*sizeof(PetscInt*),&lens);CHKERRQ(ierr);
-  ierr    = PetscMalloc(j*sizeof(PetscInt),&lens[0]);CHKERRQ(ierr);
-  ierr    = PetscMemzero(lens[0],j*sizeof(PetscInt));CHKERRQ(ierr);
+  if (ismax) {
+    ierr    = PetscMalloc(j*sizeof(PetscInt),&lens[0]);CHKERRQ(ierr);
+    ierr    = PetscMemzero(lens[0],j*sizeof(PetscInt));CHKERRQ(ierr);
+  }
   for (i=1; i<ismax; i++) { lens[i] = lens[i-1] + nrow[i-1]; }
   
   /* Update lens from local data */
   for (i=0; i<ismax; i++) {
     jmax   = nrow[i];
-    cmap_i = cmap[i];
+    if (!allcolumns[i]) cmap_i = cmap[i];
     irow_i = irow[i];
     lens_i = lens[i];
     for (j=0; j<jmax; j++) {
@@ -1164,35 +1208,41 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
       proc = l; 
       if (proc == rank) {
         ierr = MatGetRow_MPIAIJ(C,row,&ncols,&cols,0);CHKERRQ(ierr);
-        for (k=0; k<ncols; k++) {
+        if (!allcolumns[i]){
+          for (k=0; k<ncols; k++) {
 #if defined (PETSC_USE_CTABLE)
-          ierr = PetscTableFind(cmap_i,cols[k]+1,&tcol);CHKERRQ(ierr);
+            ierr = PetscTableFind(cmap_i,cols[k]+1,&tcol);CHKERRQ(ierr);
 #else
-          tcol = cmap_i[cols[k]];
-#endif
-          if (tcol) { lens_i[j]++;}
+            tcol = cmap_i[cols[k]];
+#endif 
+            if (tcol) { lens_i[j]++;} 
+          }
+        } else { /* allcolumns */
+          lens_i[j] = ncols;
         }
         ierr = MatRestoreRow_MPIAIJ(C,row,&ncols,&cols,0);CHKERRQ(ierr);
       }
-    }
-  }
+    } 
+  } 
   
   /* Create row map: global row of C -> local row of submatrices */
 #if defined (PETSC_USE_CTABLE)
   ierr = PetscMalloc((1+ismax)*sizeof(PetscTable),&rmap);CHKERRQ(ierr);
     for (i=0; i<ismax; i++) {
-      ierr = PetscTableCreate(nrow[i]+1,&rmap[i]);CHKERRQ(ierr);
+      ierr = PetscTableCreate(nrow[i]+1,C->rmap->N+1,&rmap[i]);CHKERRQ(ierr);
       rmap_i = rmap[i];
       irow_i = irow[i];
       jmax   = nrow[i];
       for (j=0; j<jmax; j++) { 
-        ierr = PetscTableAdd(rmap[i],irow_i[j]+1,j+1);CHKERRQ(ierr); 
+        ierr = PetscTableAdd(rmap[i],irow_i[j]+1,j+1,INSERT_VALUES);CHKERRQ(ierr); 
       }
     }
 #else
   ierr    = PetscMalloc(ismax*sizeof(PetscInt*),&rmap);CHKERRQ(ierr);
-  ierr    = PetscMalloc(ismax*C->rmap->N*sizeof(PetscInt),&rmap[0]);CHKERRQ(ierr);
-  ierr    = PetscMemzero(rmap[0],ismax*C->rmap->N*sizeof(PetscInt));CHKERRQ(ierr);
+  if (ismax) {
+    ierr    = PetscMalloc(ismax*C->rmap->N*sizeof(PetscInt),&rmap[0]);CHKERRQ(ierr);
+    ierr    = PetscMemzero(rmap[0],ismax*C->rmap->N*sizeof(PetscInt));CHKERRQ(ierr);
+  }
   for (i=1; i<ismax; i++) { rmap[i] = rmap[i-1] + C->rmap->N;}
   for (i=0; i<ismax; i++) {
     rmap_i = rmap[i];
@@ -1221,7 +1271,7 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
         is_no   = sbuf1_i[2*j-1];
         max1    = sbuf1_i[2*j];
         lens_i  = lens[is_no];
-        cmap_i  = cmap[is_no];
+        if (!allcolumns[is_no]){cmap_i  = cmap[is_no];}
         rmap_i  = rmap[is_no];
         for (k=0; k<max1; k++,ct1++) {
 #if defined (PETSC_USE_CTABLE)
@@ -1233,15 +1283,19 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
 #endif
           max2 = rbuf2_i[ct1];
           for (l=0; l<max2; l++,ct2++) {
+            if (!allcolumns[is_no]){
 #if defined (PETSC_USE_CTABLE)
-            ierr = PetscTableFind(cmap_i,rbuf3_i[ct2]+1,&tcol);CHKERRQ(ierr);
+              ierr = PetscTableFind(cmap_i,rbuf3_i[ct2]+1,&tcol);CHKERRQ(ierr);
 #else
-            tcol = cmap_i[rbuf3_i[ct2]];
+              tcol = cmap_i[rbuf3_i[ct2]];
 #endif
-            if (tcol) { 
-              lens_i[row]++;
+              if (tcol) { 
+                lens_i[row]++;
+              }
+            } else { /* allcolumns */
+              lens_i[row]++; /* lens_i[row] += max2 ? */
             }
-          }
+          } 
         }
       }
     }
@@ -1268,10 +1322,16 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
       ierr = PetscMemzero(mat->ilen,submats[i]->rmap->n*sizeof(PetscInt));CHKERRQ(ierr);
       submats[i]->factortype = C->factortype;
     }
-  } else {
+  } else {    
     for (i=0; i<ismax; i++) {
+      PetscInt rbs,cbs;
+      ierr = ISGetBlockSize(isrow[i],&rbs); CHKERRQ(ierr);
+      ierr = ISGetBlockSize(iscol[i],&cbs); CHKERRQ(ierr);
+
       ierr = MatCreate(PETSC_COMM_SELF,submats+i);CHKERRQ(ierr);
       ierr = MatSetSizes(submats[i],nrow[i],ncol[i],PETSC_DETERMINE,PETSC_DETERMINE);CHKERRQ(ierr);
+
+      ierr = MatSetBlockSizes(submats[i],rbs,cbs); CHKERRQ(ierr);
       ierr = MatSetType(submats[i],((PetscObject)A)->type_name);CHKERRQ(ierr);
       ierr = MatSeqAIJSetPreallocation(submats[i],0,lens[i]);CHKERRQ(ierr);
     }
@@ -1289,7 +1349,7 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
       imat_j    = mat->j;
       imat_i    = mat->i;
       imat_a    = mat->a;
-      cmap_i    = cmap[i];
+      if (!allcolumns[i]) cmap_i = cmap[i];
       rmap_i    = rmap[i];
       irow_i    = irow[i];
       jmax      = nrow[i];
@@ -1311,14 +1371,22 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
           mat_i    = imat_i[row] ;
           mat_a    = imat_a + mat_i;
           mat_j    = imat_j + mat_i;
-          for (k=0; k<ncols; k++) {
+          if (!allcolumns[i]){
+            for (k=0; k<ncols; k++) {
 #if defined (PETSC_USE_CTABLE)
-            ierr = PetscTableFind(cmap_i,cols[k]+1,&tcol);CHKERRQ(ierr);
+              ierr = PetscTableFind(cmap_i,cols[k]+1,&tcol);CHKERRQ(ierr);
 #else
-            tcol = cmap_i[cols[k]];
+              tcol = cmap_i[cols[k]];
 #endif
-            if (tcol){
-              *mat_j++ = tcol - 1;
+              if (tcol){
+                *mat_j++ = tcol - 1;
+                *mat_a++ = vals[k];
+                ilen_row++;
+              }
+            }
+          } else { /* allcolumns */
+            for (k=0; k<ncols; k++) {
+              *mat_j++ = cols[k] ; /* global col index! */
               *mat_a++ = vals[k];
               ilen_row++;
             }
@@ -1349,7 +1417,7 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
       for (j=1; j<=jmax; j++) {
         is_no     = sbuf1_i[2*j-1];
         rmap_i    = rmap[is_no];
-        cmap_i    = cmap[is_no];
+        if (!allcolumns[is_no]){cmap_i = cmap[is_no];}
         mat       = (Mat_SeqAIJ*)submats[is_no]->data;
         imat_ilen = mat->ilen;
         imat_j    = mat->j;
@@ -1369,15 +1437,23 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
           mat_a = imat_a + mat_i;
           mat_j = imat_j + mat_i;
           max2 = rbuf2_i[ct1];
-          for (l=0; l<max2; l++,ct2++) {
+          if (!allcolumns[is_no]){
+            for (l=0; l<max2; l++,ct2++) {
            
 #if defined (PETSC_USE_CTABLE)
-            ierr = PetscTableFind(cmap_i,rbuf3_i[ct2]+1,&tcol);CHKERRQ(ierr);
+              ierr = PetscTableFind(cmap_i,rbuf3_i[ct2]+1,&tcol);CHKERRQ(ierr);
 #else
-            tcol = cmap_i[rbuf3_i[ct2]];
+              tcol = cmap_i[rbuf3_i[ct2]];
 #endif
-            if (tcol) { 
-              *mat_j++ = tcol - 1;
+              if (tcol) { 
+                *mat_j++ = tcol - 1; 
+                *mat_a++ = rbuf4_i[ct2];
+                ilen++;
+              }
+            }
+          } else { /* allcolumns */
+            for (l=0; l<max2; l++,ct2++) {
+              *mat_j++ = rbuf3_i[ct2]; /* same global column index of C */
               *mat_a++ = rbuf4_i[ct2];
               ilen++;
             }
@@ -1386,7 +1462,8 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
         }
       }
     }
-  }    
+  }
+
   ierr = PetscFree(r_status4);CHKERRQ(ierr);
   ierr = PetscFree(r_waits4);CHKERRQ(ierr);
   if (nrqr) {ierr = MPI_Waitall(nrqr,s_waits4,s_status4);CHKERRQ(ierr);}
@@ -1396,7 +1473,9 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
   /* Restore the indices */
   for (i=0; i<ismax; i++) {
     ierr = ISRestoreIndices(isrow[i],irow+i);CHKERRQ(ierr);
-    ierr = ISRestoreIndices(iscol[i],icol+i);CHKERRQ(ierr);
+    if (!allcolumns[i]){
+      ierr = ISRestoreIndices(iscol[i],icol+i);CHKERRQ(ierr);
+    }
   }
 
   /* Destroy allocated memory */
@@ -1421,18 +1500,25 @@ PetscErrorCode MatGetSubMatrices_MPIAIJ_Local(Mat C,PetscInt ismax,const IS isro
   ierr = PetscFree(sbuf_aj);CHKERRQ(ierr);
   ierr = PetscFree(sbuf_aa[0]);CHKERRQ(ierr);
   ierr = PetscFree(sbuf_aa);CHKERRQ(ierr);
+
 #if defined (PETSC_USE_CTABLE)
-  for (i=0; i<ismax; i++) {
-    ierr = PetscTableDestroy((PetscTable*)&cmap[i]);CHKERRQ(ierr);
-    ierr = PetscTableDestroy((PetscTable*)&rmap[i]);CHKERRQ(ierr);
-  }
+  for (i=0; i<ismax; i++) {ierr = PetscTableDestroy((PetscTable*)&rmap[i]);CHKERRQ(ierr);}
 #else
-  ierr = PetscFree(cmap[0]);CHKERRQ(ierr);
-  ierr = PetscFree(rmap[0]);CHKERRQ(ierr);
+  if (ismax) {ierr = PetscFree(rmap[0]);CHKERRQ(ierr);}
 #endif
-  ierr = PetscFree(cmap);CHKERRQ(ierr);
   ierr = PetscFree(rmap);CHKERRQ(ierr);
-  ierr = PetscFree(lens[0]);CHKERRQ(ierr);
+
+  for (i=0; i<ismax; i++) {
+    if (!allcolumns[i]){
+#if defined (PETSC_USE_CTABLE)
+      ierr = PetscTableDestroy((PetscTable*)&cmap[i]);CHKERRQ(ierr);
+#else
+      ierr = PetscFree(cmap[i]);CHKERRQ(ierr);
+#endif
+    }
+  }
+  ierr = PetscFree(cmap);CHKERRQ(ierr);
+  if (ismax) {ierr = PetscFree(lens[0]);CHKERRQ(ierr);}
   ierr = PetscFree(lens);CHKERRQ(ierr);
 
   for (i=0; i<ismax; i++) {
@@ -1452,31 +1538,23 @@ PetscErrorCode MatCreateMPIAIJFromSeqMatrices_Private(MPI_Comm comm, Mat A, Mat 
 { 
   /* If making this function public, change the error returned in this function away from _PLIB. */
   PetscErrorCode ierr;
-  Mat_MPIAIJ *aij;
-  PetscBool seqaij;
+  Mat_MPIAIJ     *aij;
+  PetscBool      seqaij;
 
   PetscFunctionBegin;
   /* Check to make sure the component matrices are compatible with C. */
-  ierr = PetscTypeCompare((PetscObject)A, MATSEQAIJ, &seqaij); CHKERRQ(ierr);
-  if(!seqaij) {
-    SETERRQ(PETSC_COMM_SELF, PETSC_ERR_PLIB, "Diagonal matrix is of wrong type");
-  }
-  ierr = PetscTypeCompare((PetscObject)B, MATSEQAIJ, &seqaij); CHKERRQ(ierr);
-  if(!seqaij) {
-    SETERRQ(PETSC_COMM_SELF, PETSC_ERR_PLIB, "Off-diagonal matrix is of wrong type");
-  }
-  if(A->rmap->n != B->rmap->n || A->rmap->bs != B->rmap->bs || A->cmap->bs != B->cmap->bs) {
-    SETERRQ(PETSC_COMM_SELF, PETSC_ERR_PLIB, "Incompatible component matrices of an MPIAIJ matrix");
-  }
+  ierr = PetscObjectTypeCompare((PetscObject)A, MATSEQAIJ, &seqaij); CHKERRQ(ierr);
+  if (!seqaij) SETERRQ(PETSC_COMM_SELF, PETSC_ERR_PLIB, "Diagonal matrix is of wrong type");
+  ierr = PetscObjectTypeCompare((PetscObject)B, MATSEQAIJ, &seqaij); CHKERRQ(ierr);
+  if (!seqaij) SETERRQ(PETSC_COMM_SELF, PETSC_ERR_PLIB, "Off-diagonal matrix is of wrong type");
+  if (A->rmap->n != B->rmap->n || A->rmap->bs != B->rmap->bs || A->cmap->bs != B->cmap->bs) SETERRQ(PETSC_COMM_SELF, PETSC_ERR_PLIB, "Incompatible component matrices of an MPIAIJ matrix");
+
   ierr = MatCreate(comm, C); CHKERRQ(ierr);
   ierr = MatSetSizes(*C,A->rmap->n, A->cmap->n, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
-  ierr = PetscLayoutSetBlockSize((*C)->rmap,A->rmap->bs);CHKERRQ(ierr);
-  ierr = PetscLayoutSetBlockSize((*C)->cmap,A->cmap->bs);CHKERRQ(ierr);
+  ierr = MatSetBlockSizes(*C,A->rmap->bs, A->cmap->bs); CHKERRQ(ierr);
   ierr = PetscLayoutSetUp((*C)->rmap);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp((*C)->cmap);CHKERRQ(ierr);
-  if((*C)->cmap->N != A->cmap->n + B->cmap->n) {
-    SETERRQ(PETSC_COMM_SELF, PETSC_ERR_PLIB, "Incompatible component matrices of an MPIAIJ matrix");
-  }
+  if((*C)->cmap->N != A->cmap->n + B->cmap->n) SETERRQ(PETSC_COMM_SELF, PETSC_ERR_PLIB, "Incompatible component matrices of an MPIAIJ matrix");
   ierr = MatSetType(*C, MATMPIAIJ); CHKERRQ(ierr);
   aij = (Mat_MPIAIJ*)((*C)->data);
   aij->A = A;
@@ -1502,7 +1580,6 @@ PetscErrorCode MatMPIAIJExtractSeqMatrices_Private(Mat C, Mat *A, Mat *B)
   PetscFunctionReturn(0);
 }
 
-
 #undef __FUNCT__  
 #define __FUNCT__ "MatGetSubMatricesParallel_MPIXAIJ" 
 PetscErrorCode MatGetSubMatricesParallel_MPIXAIJ(Mat C,PetscInt ismax,const IS isrow[],const IS iscol[],MatReuse scall,Mat *submat[],
@@ -1511,18 +1588,17 @@ PetscErrorCode MatGetSubMatricesParallel_MPIXAIJ(Mat C,PetscInt ismax,const IS i
 						 PetscErrorCode(*extractseq)(Mat, Mat*, Mat*))
 { 
   PetscErrorCode ierr;
-  PetscMPIInt size, flag;
-  PetscInt    i,ii;
-  PetscInt    ismax_c;
+  PetscMPIInt    size, flag;
+  PetscInt       i,ii;
+  PetscInt       ismax_c;
+
   PetscFunctionBegin; 
-  if(!ismax) {
+  if (!ismax) {
     PetscFunctionReturn(0);
   }
-  for(i = 0, ismax_c = 0; i < ismax; ++i) {
+  for (i = 0, ismax_c = 0; i < ismax; ++i) {
     ierr = MPI_Comm_compare(((PetscObject)isrow[i])->comm,((PetscObject)iscol[i])->comm, &flag); CHKERRQ(ierr);
-    if(flag != MPI_IDENT) {
-      SETERRQ(PETSC_COMM_SELF, PETSC_ERR_ARG_WRONG, "Row and column index sets must have the same communicator");
-    }
+    if(flag != MPI_IDENT) SETERRQ(PETSC_COMM_SELF, PETSC_ERR_ARG_WRONG, "Row and column index sets must have the same communicator");
     ierr = MPI_Comm_size(((PetscObject)isrow[i])->comm, &size); CHKERRQ(ierr);
     if(size > 1) {
       ++ismax_c;
@@ -1530,10 +1606,9 @@ PetscErrorCode MatGetSubMatricesParallel_MPIXAIJ(Mat C,PetscInt ismax,const IS i
   }
   if(!ismax_c) { /* Sequential ISs only, so can call the sequential matrix extraction subroutine. */
     ierr = (*getsubmats_seq)(C,ismax,isrow,iscol,scall,submat); CHKERRQ(ierr); 
-  }
-  else { /* if(ismax_c) */
-    Mat *A,*B;
-    IS  *isrow_c, *iscol_c;
+  } else { /* if(ismax_c) */
+    Mat         *A,*B;
+    IS          *isrow_c, *iscol_c;
     PetscMPIInt size;
     /* 
      Allocate the necessary arrays to hold the resulting parallel matrices as well as the intermediate 
@@ -1552,8 +1627,7 @@ PetscErrorCode MatGetSubMatricesParallel_MPIXAIJ(Mat C,PetscInt ismax,const IS i
     /* Parallel matrix array is allocated only if no reuse is taking place. */
     if (scall != MAT_REUSE_MATRIX) {
       ierr = PetscMalloc((ismax)*sizeof(Mat),submat);CHKERRQ(ierr);
-    }
-    else {
+    } else {
       ierr = PetscMalloc(ismax*sizeof(Mat), &A); CHKERRQ(ierr);
       ierr = PetscMalloc(ismax_c*sizeof(Mat), &B); CHKERRQ(ierr); 
       /* If parallel matrices are being reused, then simply reuse the underlying seq matrices as well. */
@@ -1562,8 +1636,7 @@ PetscErrorCode MatGetSubMatricesParallel_MPIXAIJ(Mat C,PetscInt ismax,const IS i
         if(size > 1) {
           ierr = (*extractseq)((*submat)[i],A+i,B+ii); CHKERRQ(ierr);
           ++ii;
-        }
-        else {
+        } else {
           A[i] = (*submat)[i];
         }
       }
@@ -1608,8 +1681,7 @@ PetscErrorCode MatGetSubMatricesParallel_MPIXAIJ(Mat C,PetscInt ismax,const IS i
           ierr = (*makefromseq)(((PetscObject)isrow[i])->comm, A[i], B[ii], (*submat)+i); CHKERRQ(ierr);
           
           ++ii;
-        }
-        else {
+        } else {
           (*submat)[i] = A[i];
         }
       }
@@ -1627,10 +1699,8 @@ PetscErrorCode MatGetSubMatricesParallel_MPIXAIJ(Mat C,PetscInt ismax,const IS i
 PetscErrorCode MatGetSubMatricesParallel_MPIAIJ(Mat C,PetscInt ismax,const IS isrow[],const IS iscol[],MatReuse scall,Mat *submat[])
 { 
   PetscErrorCode ierr;
+
   PetscFunctionBegin;
-  ierr = MatGetSubMatricesParallel_MPIXAIJ(C,ismax,isrow,iscol,scall,submat,MatGetSubMatrices_MPIAIJ,
-                                           MatCreateMPIAIJFromSeqMatrices_Private, 
-                                           MatMPIAIJExtractSeqMatrices_Private); 
-  CHKERRQ(ierr);
+  ierr = MatGetSubMatricesParallel_MPIXAIJ(C,ismax,isrow,iscol,scall,submat,MatGetSubMatrices_MPIAIJ,MatCreateMPIAIJFromSeqMatrices_Private,MatMPIAIJExtractSeqMatrices_Private);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

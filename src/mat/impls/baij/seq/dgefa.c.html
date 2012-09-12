@@ -1,13 +1,14 @@
 <center><a href="dgefa.c">Actual source code: dgefa.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/baij/seq/dgefa.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:01:53+00:00">
+<meta name="date" content="2012-08-29T16:47:19+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">       This routine was converted by f2c from Linpack source</font>
@@ -23,7 +24,7 @@
 <a name="line13"> 13: </a><font color="#B22222">*/</font>
 <a name="line14"> 14: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 
-<a name="line18"> 18: </a><strong><font color="#4169E1"><a name="LINPACKdgefa"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> LINPACKdgefa(MatScalar *a,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ipvt)</font></strong>
+<a name="line18"> 18: </a><strong><font color="#4169E1"><a name="PetscLINPACKgefa"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscLINPACKgefa(MatScalar *a,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ipvt)</font></strong>
 <a name="line19"> 19: </a>{
 <a name="line20"> 20: </a>    <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   i__2,i__3,kp1,nm1,j,k,l,ll,kn,knp1,jn1;
 <a name="line21"> 21: </a>    MatScalar  t,*ax,*ay,*aa;

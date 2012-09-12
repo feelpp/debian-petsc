@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCMG.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCMG</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCMG"><H1>PCMG</H1></A>
 Use multigrid preconditioning. This preconditioner requires you provide additional information about the coarser grid matrices and restriction/interpolation operators. 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
@@ -21,19 +22,26 @@ Use multigrid preconditioning. This preconditioner requires you provide addition
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_monitor </B></TD><TD>- print information on the multigrid convergence
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_galerkin </B></TD><TD>- use Galerkin process to compute coarser operators
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_galerkin </B></TD><TD>- use Galerkin process to compute coarser operators, i.e. Acoarse = R A R'
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_multiplicative_cycles </B></TD><TD>- number of cycles to use as the preconditioner (defaults to 1)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_dump_matlab </B></TD><TD>- dumps the matrices for each level and the restriction/interpolation matrices
 to the Socket viewer for reading from MATLAB.
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_dump_binary </B></TD><TD>- dumps the matrices for each level and the restriction/interpolation matrices
+to the binary output file called binaryoutput
 </TD></TR></TABLE>
 <P>
 Notes: By default this uses GMRES on the fine grid smoother so this should be used with <A HREF="../KSP/KSPFGMRES.html#KSPFGMRES">KSPFGMRES</A> or the smoother changed to not use GMRES
+<P>
+When run with a single level the smoother options are used on that level NOT the coarse grid solver options
 <P>
 
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>, <A HREF="../PC/PCMGType.html#PCMGType">PCMGType</A>, <A HREF="../PC/PCEXOTIC.html#PCEXOTIC">PCEXOTIC</A>
+  <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>, <A HREF="../PC/PCMGType.html#PCMGType">PCMGType</A>, <A HREF="../PC/PCEXOTIC.html#PCEXOTIC">PCEXOTIC</A>, <A HREF="../PC/PCGAMG.html#PCGAMG">PCGAMG</A>, <A HREF="../PC/PCML.html#PCML">PCML</A>, <A HREF="../PC/PCHYPRE.html#PCHYPRE">PCHYPRE</A>
 <BR><A HREF="../PC/PCMGSetLevels.html#PCMGSetLevels">PCMGSetLevels</A>(), <A HREF="../PC/PCMGGetLevels.html#PCMGGetLevels">PCMGGetLevels</A>(), <A HREF="../PC/PCMGSetType.html#PCMGSetType">PCMGSetType</A>(), <A HREF="../PC/PCMGSetCycleType.html#PCMGSetCycleType">PCMGSetCycleType</A>(), <A HREF="../PC/PCMGSetNumberSmoothDown.html#PCMGSetNumberSmoothDown">PCMGSetNumberSmoothDown</A>(),
 <A HREF="../PC/PCMGSetNumberSmoothUp.html#PCMGSetNumberSmoothUp">PCMGSetNumberSmoothUp</A>(), <A HREF="../PC/PCMGGetCoarseSolve.html#PCMGGetCoarseSolve">PCMGGetCoarseSolve</A>(), <A HREF="../PC/PCMGSetResidual.html#PCMGSetResidual">PCMGSetResidual</A>(), <A HREF="../PC/PCMGSetInterpolation.html#PCMGSetInterpolation">PCMGSetInterpolation</A>(),
 <A HREF="../PC/PCMGSetRestriction.html#PCMGSetRestriction">PCMGSetRestriction</A>(), <A HREF="../PC/PCMGGetSmoother.html#PCMGGetSmoother">PCMGGetSmoother</A>(), <A HREF="../PC/PCMGGetSmootherUp.html#PCMGGetSmootherUp">PCMGGetSmootherUp</A>(), <A HREF="../PC/PCMGGetSmootherDown.html#PCMGGetSmootherDown">PCMGGetSmootherDown</A>(),

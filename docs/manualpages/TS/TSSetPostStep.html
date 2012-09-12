@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSSetPostStep.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSSetPostStep</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSSetPostStep"><H1>TSSetPostStep</H1></A>
 Sets the general-purpose function called once at the end of each time step. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -22,12 +23,17 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of func</FONT></H3>
-<DT><B>func (<A HREF="../TS/TS.html#TS">TS</A> ts);</B> -
+<pre>
+func (<A HREF="../TS/TS.html#TS">TS</A> ts);
+</pre>
+<P>
 
-<br>
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../TS/TS.html#TS">TS</A>, timestep
+<BR>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../TS/TSSetPreStep.html#TSSetPreStep">TSSetPreStep</A>(), <A HREF="../TS/TSSetPreStage.html#TSSetPreStage">TSSetPreStage</A>(), <A HREF="../TS/TSGetTimeStep.html#TSGetTimeStep">TSGetTimeStep</A>(), <A HREF="../TS/TSGetTimeStepNumber.html#TSGetTimeStepNumber">TSGetTimeStepNumber</A>(), <A HREF="../TS/TSGetTime.html#TSGetTime">TSGetTime</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/interface/ts.c.html#TSSetPostStep">src/ts/interface/ts.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

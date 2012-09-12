@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscRandomCreate.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscRandomCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscRandomCreate"><H1>PetscRandomCreate</H1></A>
 Creates a context for generating random numbers, and initializes the random-number generator. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -45,7 +46,7 @@ Use <A HREF="../Vec/VecSetRandom.html#VecSetRandom">VecSetRandom</A>() to set th
       <A HREF="../Sys/PetscRandomSetType.html#PetscRandomSetType">PetscRandomSetType</A>(r,PETSCRAND48);
       <A HREF="../Sys/PetscRandomGetValue.html#PetscRandomGetValue">PetscRandomGetValue</A>(r,&amp;value1);
       <A HREF="../Sys/PetscRandomGetValueReal.html#PetscRandomGetValueReal">PetscRandomGetValueReal</A>(r,&amp;value2);
-      <A HREF="../Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(r);
+      <A HREF="../Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;r);
 </PRE>
 
 <P>

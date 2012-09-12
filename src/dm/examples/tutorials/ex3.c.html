@@ -1,15 +1,16 @@
 <center><a href="ex3.c">Actual source code: ex3.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tutorials/ex3.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:58+00:00">
+<meta name="date" content="2012-08-29T16:58:21+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A> for nonuniform DMDA coordinates.\n\n"</font>;
+<a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A> for nonuniform DMDA coordinates.\n\n"</font>;
 
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
 
@@ -138,7 +139,7 @@
 <a name="line143">143: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (dim == 3) {
 <a name="line144">144: </a>    SetCoordinates3d(daf);
 <a name="line145">145: </a>  }
-<a name="line146">146: </a>  <A href="../../../../docs/manualpages/DM/DMGetInterpolation.html#DMGetInterpolation">DMGetInterpolation</A>(dac,daf,&amp;A,0);
+<a name="line146">146: </a>  <A href="../../../../docs/manualpages/DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>(dac,daf,&amp;A,0);
 
 
 <a name="line149">149: </a>  <font color="#B22222">/* Free memory */</font>

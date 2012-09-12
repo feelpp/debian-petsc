@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* gcreate.c */
 /* Fortran interface file */
 
@@ -44,9 +44,9 @@ extern void PetscRmPointer(void*);
 #define matsetfromoptions_ matsetfromoptions
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matsetuppreallocation_ MATSETUPPREALLOCATION
+#define matxaijsetpreallocation_ MATXAIJSETPREALLOCATION
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matsetuppreallocation_ matsetuppreallocation
+#define matxaijsetpreallocation_ matxaijsetpreallocation
 #endif
 
 
@@ -66,9 +66,9 @@ void PETSC_STDCALL  matsetfromoptions_(Mat B, int *__ierr ){
 *__ierr = MatSetFromOptions(
 	(Mat)PetscToPointer((B) ));
 }
-void PETSC_STDCALL  matsetuppreallocation_(Mat B, int *__ierr ){
-*__ierr = MatSetUpPreallocation(
-	(Mat)PetscToPointer((B) ));
+void PETSC_STDCALL  matxaijsetpreallocation_(Mat A,PetscInt *bs, PetscInt *dnnz, PetscInt *onnz, PetscInt *dnnzu, PetscInt *onnzu, int *__ierr ){
+*__ierr = MatXAIJSetPreallocation(
+	(Mat)PetscToPointer((A) ),*bs,dnnz,onnz,dnnzu,onnzu);
 }
 #if defined(__cplusplus)
 }

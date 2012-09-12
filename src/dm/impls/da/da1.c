@@ -4,7 +4,7 @@
    This file was created by Peter Mell   6/30/95    
 */
 
-#include <private/daimpl.h>     /*I  "petscdmda.h"   I*/
+#include <petsc-private/daimpl.h>     /*I  "petscdmda.h"   I*/
 
 const char *DMDABoundaryTypes[] = {"BOUNDARY_NONE","BOUNDARY_GHOSTED","BOUNDARY_PERIODIC","DMDA_",0};
 
@@ -23,11 +23,11 @@ PetscErrorCode DMView_DA_1d(DM da,PetscViewer viewer)
   PetscFunctionBegin;
   ierr = MPI_Comm_rank(((PetscObject)da)->comm,&rank);CHKERRQ(ierr);
 
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERDRAW,&isdraw);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERBINARY,&isbinary);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERDRAW,&isdraw);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERBINARY,&isbinary);CHKERRQ(ierr);
 #if defined(PETSC_HAVE_MATLAB_ENGINE)
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERMATLAB,&ismatlab);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERMATLAB,&ismatlab);CHKERRQ(ierr);
 #endif
   if (iascii) {
     PetscViewerFormat format;
@@ -209,9 +209,7 @@ PetscErrorCode  DMSetUp_DA_1D(DM da)
    check if the scatter requires more than one process neighbor or wraps around
    the domain more than once
   */
-  if ((x < s) & ((M > 1) | (bx == DMDA_BOUNDARY_PERIODIC))) {
-    SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local x-width of domain x %D is smaller than stencil width s %D",x,s);
-  }
+  if ((x < s) & ((M > 1) | (bx == DMDA_BOUNDARY_PERIODIC))) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Local x-width of domain x %D is smaller than stencil width s %D",x,s);
 
   /* From now on x,xs,xe,Xs,Xe are the exact location in the array */
   x  *= dof;
@@ -237,11 +235,9 @@ PetscErrorCode  DMSetUp_DA_1D(DM da)
 
   /* allocate the base parallel and sequential vectors */
   dd->Nlocal = x;
-  ierr = VecCreateMPIWithArray(comm,dd->Nlocal,PETSC_DECIDE,0,&global);CHKERRQ(ierr);
-  ierr = VecSetBlockSize(global,dof);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(comm,dof,dd->Nlocal,PETSC_DECIDE,0,&global);CHKERRQ(ierr);
   dd->nlocal = (Xe-Xs);
-  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,dd->nlocal,0,&local);CHKERRQ(ierr);
-  ierr = VecSetBlockSize(local,dof);CHKERRQ(ierr);
+  ierr = VecCreateSeqWithArray(PETSC_COMM_SELF,dof,dd->nlocal,0,&local);CHKERRQ(ierr);
 
   /* Create Local to Global Vector Scatter Context */
   /* local to global inserts non-ghost point region into global */
@@ -354,7 +350,6 @@ PetscErrorCode  DMSetUp_DA_1D(DM da)
    The array data itself is NOT stored in the DMDA, it is stored in Vec objects;
    The appropriate vector objects can be obtained with calls to DMCreateGlobalVector()
    and DMCreateLocalVector() and calls to VecDuplicate() if more are needed.
-
 
 .keywords: distributed array, create, one-dimensional
 

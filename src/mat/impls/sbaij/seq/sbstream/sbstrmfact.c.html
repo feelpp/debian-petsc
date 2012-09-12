@@ -1,18 +1,20 @@
 <center><a href="sbstrmfact.c">Actual source code: sbstrmfact.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/sbaij/seq/sbstream/sbstrmfact.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:03:41+00:00">
+<meta name="date" content="2012-08-29T16:49:30+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCMAT_DLL</font></strong>
 
 <a name="line3"> 3: </a> #include <A href="../../../../../../include/../src/mat/impls/sbaij/seq/sbaij.h.html">../src/mat/impls/sbaij/seq/sbaij.h</A>
 <a name="line4"> 4: </a> #include <A href="../../../../../../include/../src/mat/impls/sbaij/seq/sbstream/sbstream.h.html">../src/mat/impls/sbaij/seq/sbstream/sbstream.h</A>
 
+<a name="line6">  6: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqSBSTRM(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>;
 
 
 <a name="line11"> 11: </a><strong><font color="#4169E1"><a name="MatSolve_SeqSBSTRM_4_inplace"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolve_SeqSBSTRM_4_inplace(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
@@ -112,7 +114,7 @@
 <a name="line107">107: </a>   <font color="#4169E1">return</font>(0);
 <a name="line108">108: </a>}
 
-<a name="line112">112: </a><strong><font color="#4169E1"><a name="ForwardSolve_SeqSBSTRM_4_NaturalOrdering_private"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ForwardSolve_SeqSBSTRM_4_NaturalOrdering_private(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,MatScalar *aa,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mbs,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>
+<a name="line112">112: </a><strong><font color="#4169E1"><a name="MatForwardSolve_SeqSBSTRM_4_NaturalOrdering"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatForwardSolve_SeqSBSTRM_4_NaturalOrdering(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,MatScalar *aa,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mbs,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>
 <a name="line113">113: </a>{
 <a name="line114">114: </a>  MatScalar      *diag;
 <a name="line115">115: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xp,x0,x1,x2,x3;
@@ -154,7 +156,7 @@
 <a name="line152">152: </a>  <font color="#4169E1">return</font>(0);
 <a name="line153">153: </a>}
 
-<a name="line157">157: </a><strong><font color="#4169E1"><a name="BackwardSolve_SeqSBSTRM_4_NaturalOrdering_private"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> BackwardSolve_SeqSBSTRM_4_NaturalOrdering_private(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,MatScalar *aa,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mbs,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>
+<a name="line157">157: </a><strong><font color="#4169E1"><a name="MatBackwardSolve_SeqSBSTRM_4_NaturalOrdering"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatBackwardSolve_SeqSBSTRM_4_NaturalOrdering(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,MatScalar *aa,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mbs,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>
 <a name="line158">158: </a>{
 <a name="line159">159: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xp,x0,x1,x2,x3;
 <a name="line160">160: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nz,*vj,k;
@@ -207,9 +209,9 @@
 <a name="line212">212: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xx,&amp;x);
 <a name="line213">213: </a>  <font color="#B22222">/* solve U^T * D * y = b by forward substitution */</font>
 <a name="line214">214: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(x,b,4*mbs*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)); <font color="#B22222">/* x &lt;- b */</font>
-<a name="line215">215: </a>  ForwardSolve_SeqSBSTRM_4_NaturalOrdering_private(ai,aj,as,mbs,x);
+<a name="line215">215: </a>  MatForwardSolve_SeqSBSTRM_4_NaturalOrdering(ai,aj,as,mbs,x);
 <a name="line216">216: </a>  <font color="#B22222">/* solve U*x = y by back substitution */</font>
-<a name="line217">217: </a>  BackwardSolve_SeqSBSTRM_4_NaturalOrdering_private(ai,aj,as,mbs,x);
+<a name="line217">217: </a>  MatBackwardSolve_SeqSBSTRM_4_NaturalOrdering(ai,aj,as,mbs,x);
 <a name="line218">218: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(bb,&amp;b);
 <a name="line219">219: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xx,&amp;x);
 <a name="line220">220: </a>  <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*bs2*a-&gt;nz - (bs+2.0*bs2)*mbs);
@@ -228,7 +230,7 @@
 <a name="line237">237: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(bb,&amp;b);
 <a name="line238">238: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xx,&amp;x);
 <a name="line239">239: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(x,b,4*mbs*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)); <font color="#B22222">/* x &lt;- b */</font>
-<a name="line240">240: </a>  ForwardSolve_SeqSBSTRM_4_NaturalOrdering_private(ai,aj,as,mbs,x);
+<a name="line240">240: </a>  MatForwardSolve_SeqSBSTRM_4_NaturalOrdering(ai,aj,as,mbs,x);
 <a name="line241">241: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(bb,&amp;b);
 <a name="line242">242: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xx,&amp;x);
 <a name="line243">243: </a>  <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*bs2*a-&gt;nz - bs*mbs);
@@ -247,7 +249,7 @@
 <a name="line260">260: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(bb,&amp;b);
 <a name="line261">261: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xx,&amp;x);
 <a name="line262">262: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(x,b,4*mbs*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
-<a name="line263">263: </a>  BackwardSolve_SeqSBSTRM_4_NaturalOrdering_private(ai,aj,as,mbs,x);
+<a name="line263">263: </a>  MatBackwardSolve_SeqSBSTRM_4_NaturalOrdering(ai,aj,as,mbs,x);
 <a name="line264">264: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(bb,&amp;b);
 <a name="line265">265: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xx,&amp;x);
 <a name="line266">266: </a>  <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*bs2*(a-&gt;nz-mbs));
@@ -357,7 +359,7 @@
 <a name="line374">374: </a>  <font color="#4169E1">return</font>(0);
 <a name="line375">375: </a>}
 
-<a name="line379">379: </a><strong><font color="#4169E1"><a name="ForwardSolve_SeqSBSTRM_5_NaturalOrdering_private"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ForwardSolve_SeqSBSTRM_5_NaturalOrdering_private(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,MatScalar *aa,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mbs,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>
+<a name="line379">379: </a><strong><font color="#4169E1"><a name="MatForwardSolve_SeqSBSTRM_5_NaturalOrdering"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatForwardSolve_SeqSBSTRM_5_NaturalOrdering(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,MatScalar *aa,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mbs,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>
 <a name="line380">380: </a>{
 <a name="line381">381: </a>  MatScalar      *diag;
 <a name="line382">382: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xp,x0,x1,x2,x3,x4;
@@ -404,7 +406,7 @@
 <a name="line424">424: </a>  <font color="#4169E1">return</font>(0);
 <a name="line425">425: </a>}
 
-<a name="line429">429: </a><strong><font color="#4169E1"><a name="BackwardSolve_SeqSBSTRM_5_NaturalOrdering_private"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> BackwardSolve_SeqSBSTRM_5_NaturalOrdering_private(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,MatScalar *aa,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mbs,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>
+<a name="line429">429: </a><strong><font color="#4169E1"><a name="MatBackwardSolve_SeqSBSTRM_5_NaturalOrdering"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatBackwardSolve_SeqSBSTRM_5_NaturalOrdering(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,MatScalar *aa,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mbs,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *x)</font></strong>
 <a name="line430">430: </a>{
 <a name="line431">431: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xp,x0,x1,x2,x3,x4;
 <a name="line432">432: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       nz,*vj,k;
@@ -464,10 +466,10 @@
 
 <a name="line492">492: </a>  <font color="#B22222">/* solve U^T * D * y = b by forward substitution */</font>
 <a name="line493">493: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(x,b,5*mbs*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)); <font color="#B22222">/* x &lt;- b */</font>
-<a name="line494">494: </a>  ForwardSolve_SeqSBSTRM_5_NaturalOrdering_private(ai,aj,as,mbs,x);
+<a name="line494">494: </a>  MatForwardSolve_SeqSBSTRM_5_NaturalOrdering(ai,aj,as,mbs,x);
 
 <a name="line496">496: </a>  <font color="#B22222">/* solve U*x = y by back substitution */</font>
-<a name="line497">497: </a>  BackwardSolve_SeqSBSTRM_5_NaturalOrdering_private(ai,aj,as,mbs,x);
+<a name="line497">497: </a>  MatBackwardSolve_SeqSBSTRM_5_NaturalOrdering(ai,aj,as,mbs,x);
 
 <a name="line499">499: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(bb,&amp;b);
 <a name="line500">500: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xx,&amp;x);
@@ -487,7 +489,7 @@
 <a name="line518">518: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(bb,&amp;b);
 <a name="line519">519: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xx,&amp;x);
 <a name="line520">520: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(x,b,5*mbs*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)); <font color="#B22222">/* x &lt;- b */</font>
-<a name="line521">521: </a>  ForwardSolve_SeqSBSTRM_5_NaturalOrdering_private(ai,aj,as,mbs,x);
+<a name="line521">521: </a>  MatForwardSolve_SeqSBSTRM_5_NaturalOrdering(ai,aj,as,mbs,x);
 <a name="line522">522: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(bb,&amp;b);
 <a name="line523">523: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xx,&amp;x);
 <a name="line524">524: </a>  <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*bs2*a-&gt;nz - bs*mbs);
@@ -505,7 +507,7 @@
 <a name="line540">540: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(bb,&amp;b);
 <a name="line541">541: </a>  <A href="../../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(xx,&amp;x);
 <a name="line542">542: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(x,b,5*mbs*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
-<a name="line543">543: </a>  BackwardSolve_SeqSBSTRM_5_NaturalOrdering_private(ai,aj,as,mbs,x);
+<a name="line543">543: </a>  MatBackwardSolve_SeqSBSTRM_5_NaturalOrdering(ai,aj,as,mbs,x);
 <a name="line544">544: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(bb,&amp;b);
 <a name="line545">545: </a>  <A href="../../../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(xx,&amp;x);
 <a name="line546">546: </a>  <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*bs2*(a-&gt;nz-mbs));
@@ -576,11 +578,13 @@
 
 <a name="line616">616: </a><font color="#B22222">/*=========================================================*/</font>
 
+<a name="line618">618: </a>EXTERN_C_BEGIN
 <a name="line621">621: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqsbaij_sbstrm"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqsbaij_sbstrm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
 <a name="line622">622: </a>{
 <a name="line624">624: </a>  *type = MATSOLVERSBSTRM;
 <a name="line625">625: </a>  <font color="#4169E1">return</font>(0);
 <a name="line626">626: </a>}
+<a name="line627">627: </a>EXTERN_C_END
 
 <a name="line631">631: </a><strong><font color="#4169E1"><a name="MatCholeskyFactorNumeric_sbstrm"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCholeskyFactorNumeric_sbstrm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> F,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
 <a name="line632">632: </a>{
@@ -619,37 +623,38 @@
 <a name="line673">673: </a>}
 <a name="line674">674: </a><font color="#B22222">/*=========================================================*/</font>
 
+<a name="line676">676: </a>EXTERN_C_BEGIN
 <a name="line679">679: </a><strong><font color="#4169E1"><a name="MatGetFactor_seqsbaij_sbstrm"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetFactor_seqsbaij_sbstrm(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatFactorType.html#MatFactorType">MatFactorType</A> ftype,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *F)</font></strong>
 <a name="line680">680: </a>{
 <a name="line681">681: </a>  <A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            B;
 <a name="line682">682: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       bs = A-&gt;rmap-&gt;bs;
 <a name="line683">683: </a>  Mat_SeqSBSTRM   *sbstrm;
 
-<a name="line687">687: </a>  <font color="#4169E1">if</font> (A-&gt;cmap-&gt;N != A-&gt;rmap-&gt;N)
-<a name="line688">688: </a>         <A href="../../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,<font color="#666666">"Must be square matrix, rows %D columns %D"</font>,A-&gt;rmap-&gt;n,A-&gt;cmap-&gt;n);
-<a name="line689">689: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,&amp;B);
-<a name="line690">690: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(B,A-&gt;rmap-&gt;n,A-&gt;cmap-&gt;n,<A href="../../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>,<A href="../../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
-<a name="line691">691: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(B,((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;type_name);
-<a name="line692">692: </a>  MatSeqSBAIJSetPreallocation_SeqSBAIJ(B,bs,MAT_SKIP_ALLOCATION,<A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line687">687: </a>  <font color="#4169E1">if</font> (A-&gt;cmap-&gt;N != A-&gt;rmap-&gt;N) <A href="../../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,<font color="#666666">"Must be square matrix, rows %D columns %D"</font>,A-&gt;rmap-&gt;n,A-&gt;cmap-&gt;n);
+<a name="line688">688: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,&amp;B);
+<a name="line689">689: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(B,A-&gt;rmap-&gt;n,A-&gt;cmap-&gt;n,<A href="../../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>,<A href="../../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line690">690: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(B,((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;type_name);
+<a name="line691">691: </a>  MatSeqSBAIJSetPreallocation_SeqSBAIJ(B,bs,MAT_SKIP_ALLOCATION,<A href="../../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
 
 
-<a name="line695">695: </a>  B-&gt;ops-&gt;iccfactorsymbolic       = MatICCFactorSymbolic_sbstrm;
-<a name="line696">696: </a>  B-&gt;ops-&gt;choleskyfactorsymbolic  = MatCholeskyFactorSymbolic_sbstrm;
-<a name="line697">697: </a>  B-&gt;ops-&gt;choleskyfactornumeric   = MatCholeskyFactorNumeric_sbstrm;
+<a name="line694">694: </a>  B-&gt;ops-&gt;iccfactorsymbolic       = MatICCFactorSymbolic_sbstrm;
+<a name="line695">695: </a>  B-&gt;ops-&gt;choleskyfactorsymbolic  = MatCholeskyFactorSymbolic_sbstrm;
+<a name="line696">696: </a>  B-&gt;ops-&gt;choleskyfactornumeric   = MatCholeskyFactorNumeric_sbstrm;
 
-<a name="line699">699: </a>  B-&gt;ops-&gt;destroy                 = MatDestroy_SeqSBSTRM;
-<a name="line700">700: </a>  B-&gt;factortype                   = ftype;
-<a name="line701">701: </a>  B-&gt;assembled                    = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;  <font color="#B22222">/* required by -ksp_view */</font>
-<a name="line702">702: </a>  B-&gt;preallocated                 = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line698">698: </a>  B-&gt;ops-&gt;destroy                 = MatDestroy_SeqSBSTRM;
+<a name="line699">699: </a>  B-&gt;factortype                   = ftype;
+<a name="line700">700: </a>  B-&gt;assembled                    = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;  <font color="#B22222">/* required by -ksp_view */</font>
+<a name="line701">701: </a>  B-&gt;preallocated                 = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 
-<a name="line704">704: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(B,Mat_SeqSBSTRM,&amp;sbstrm);
+<a name="line703">703: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(B,Mat_SeqSBSTRM,&amp;sbstrm);
 
-<a name="line706">706: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatFactorGetSolverPackage_C"</font>,<font color="#666666">"MatFactorGetSolverPackage_seqsbaij_sbstrm"</font>,MatFactorGetSolverPackage_seqsbaij_sbstrm);
+<a name="line705">705: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatFactorGetSolverPackage_C"</font>,<font color="#666666">"MatFactorGetSolverPackage_seqsbaij_sbstrm"</font>,MatFactorGetSolverPackage_seqsbaij_sbstrm);
 
-<a name="line708">708: </a>  B-&gt;spptr = sbstrm;
-<a name="line709">709: </a>  *F = B;
-<a name="line710">710: </a>  <font color="#4169E1">return</font>(0);
-<a name="line711">711: </a>}
+<a name="line707">707: </a>  B-&gt;spptr = sbstrm;
+<a name="line708">708: </a>  *F = B;
+<a name="line709">709: </a>  <font color="#4169E1">return</font>(0);
+<a name="line710">710: </a>}
+<a name="line711">711: </a>EXTERN_C_END
 
 
 </pre>

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/KSPDefaultConvergedSetUMIRNorm.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>KSPDefaultConvergedSetUMIRNorm</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="KSPDefaultConvergedSetUMIRNorm"><H1>KSPDefaultConvergedSetUMIRNorm</H1></A>
 makes the default convergence test use min(|| B*(b - A*(initial guess))||,|| B*b ||) In the case of right preconditioner or if <A HREF="../KSP/KSPSetNormType.html#KSPSetNormType">KSPSetNormType</A>(ksp,KSP_NORM_UNPRECONDIITONED) is used there is no B in the above formula. UMIRNorm is short for Use Minimum Initial Residual Norm. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>

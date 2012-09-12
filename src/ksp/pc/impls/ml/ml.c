@@ -4,7 +4,7 @@
    Note: Something non-obvious breaks -pc_mg_type ADDITIVE for parallel runs
                                     Jed Brown, see [PETSC #18321, #18449]. 
 */
-#include <private/pcimpl.h>   /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>   /*I "petscpc.h" I*/
 #include <../src/ksp/pc/impls/mg/mgimpl.h>                    /*I "petscpcmg.h" I*/
 #include <../src/mat/impls/aij/seq/aij.h>
 #include <../src/mat/impls/aij/mpi/mpiaij.h>
@@ -17,6 +17,9 @@ EXTERN_C_BEGIN
 #endif
 #include <ml_include.h>
 EXTERN_C_END
+
+typedef enum {PCML_NULLSPACE_AUTO,PCML_NULLSPACE_USER,PCML_NULLSPACE_BLOCK,PCML_NULLSPACE_SCALAR} PCMLNullSpaceType;
+static const char *const PCMLNullSpaceTypes[] = {"AUTO","USER","BLOCK","SCALAR","PCMLNullSpaceType","PCML_NULLSPACE_",0};
 
 /* The context (data structure) at each grid level */
 typedef struct {
@@ -43,15 +46,16 @@ typedef struct {
 
 /* Private context for the ML preconditioner */
 typedef struct {
-  ML             *ml_object;
-  ML_Aggregate   *agg_object;
-  GridCtx        *gridctx;
-  FineGridCtx    *PetscMLdata;
-  PetscInt       Nlevels,MaxNlevels,MaxCoarseSize,CoarsenScheme,EnergyMinimization;
-  PetscReal      Threshold,DampingFactor,EnergyMinimizationDropTol;
-  PetscBool      SpectralNormScheme_Anorm,BlockScaling,EnergyMinimizationCheap,Symmetrize,OldHierarchy,KeepAggInfo,Reusable;
-  PetscBool      reuse_interpolation;
-  PetscMPIInt    size; /* size of communicator for pc->pmat */
+  ML                *ml_object;
+  ML_Aggregate      *agg_object;
+  GridCtx           *gridctx;
+  FineGridCtx       *PetscMLdata;
+  PetscInt          Nlevels,MaxNlevels,MaxCoarseSize,CoarsenScheme,EnergyMinimization;
+  PetscReal         Threshold,DampingFactor,EnergyMinimizationDropTol;
+  PetscBool         SpectralNormScheme_Anorm,BlockScaling,EnergyMinimizationCheap,Symmetrize,OldHierarchy,KeepAggInfo,Reusable;
+  PetscBool         reuse_interpolation;
+  PCMLNullSpaceType nulltype;
+  PetscMPIInt       size; /* size of communicator for pc->pmat */
 } PC_ML;
 
 #undef __FUNCT__  
@@ -63,7 +67,6 @@ static int PetscML_getrow(ML_Operator *ML_data, int N_requested_rows, int reques
   PetscScalar    *aa;
   FineGridCtx    *ml=(FineGridCtx*)ML_Get_MyGetrowData(ML_data);
   Mat_SeqAIJ     *a = (Mat_SeqAIJ*)ml->Aloc->data;
-
 
   ierr = MatGetSize(ml->Aloc,&m,PETSC_NULL); if (ierr) return(0);
   for (i = 0; i<N_requested_rows; i++) {
@@ -197,7 +200,7 @@ static PetscErrorCode MatMultAdd_ML(Mat A,Vec x,Vec w,Vec y)
   PetscFunctionReturn(0);
 }
 
-/* newtype is ignored because "ml" is not listed under Petsc MatType */
+/* newtype is ignored since only handles one case */
 #undef __FUNCT__  
 #define __FUNCT__ "MatConvert_MPIAIJ_ML"
 static PetscErrorCode MatConvert_MPIAIJ_ML(Mat A,MatType newtype,MatReuse scall,Mat *Aloc) 
@@ -261,9 +264,7 @@ static PetscErrorCode MatConvert_MPIAIJ_ML(Mat A,MatType newtype,MatReuse scall,
       ncols = bi[i+1] - bi[i];
       for (j=0; j<ncols; j++) *ca++ = *ba++; 
     }
-  } else {
-    SETERRQ1(((PetscObject)A)->comm,PETSC_ERR_ARG_WRONG,"Invalid MatReuse %d",(int)scall);
-  }
+  } else SETERRQ1(((PetscObject)A)->comm,PETSC_ERR_ARG_WRONG,"Invalid MatReuse %d",(int)scall);
   PetscFunctionReturn(0);
 }
 
@@ -371,10 +372,6 @@ static PetscErrorCode MatWrapML_SHELL(ML_Operator *mlmat,MatReuse reuse,Mat *new
   PetscFunctionBegin;
   m = mlmat->outvec_leng; 
   n = mlmat->invec_leng;
-  if (!m || !n){
-    newmat = PETSC_NULL;
-    PetscFunctionReturn(0);
-  } 
 
   if (reuse){
     ierr = MatShellGetContext(*newmat,(void **)&shellctx);CHKERRQ(ierr);
@@ -390,7 +387,7 @@ static PetscErrorCode MatWrapML_SHELL(ML_Operator *mlmat,MatReuse reuse,Mat *new
   shellctx->A         = *newmat;
   shellctx->mlmat     = mlmat;
   shellctx->work      = PETSC_NULL;
-  ierr = VecCreate(PETSC_COMM_WORLD,&shellctx->y);CHKERRQ(ierr);
+  ierr = VecCreate(MLcomm->USR_comm,&shellctx->y);CHKERRQ(ierr);
   ierr = VecSetSizes(shellctx->y,m,PETSC_DECIDE);CHKERRQ(ierr);
   ierr = VecSetFromOptions(shellctx->y);CHKERRQ(ierr);
   (*newmat)->ops->destroy = MatDestroy_ML;
@@ -537,11 +534,7 @@ PetscErrorCode PCSetUp_ML(PC pc)
   PC              subpc;
   PetscInt        mesh_level, old_mesh_level;
 
-
   PetscFunctionBegin;
-  /* Since PCMG tries to use DM assocated with PC must delete it */
-  ierr = DMDestroy(&pc->dm);CHKERRQ(ierr);
-
   A = pc->pmat;
   ierr = MPI_Comm_size(((PetscObject)A)->comm,&size);CHKERRQ(ierr);
 
@@ -557,8 +550,8 @@ PetscErrorCode PCSetUp_ML(PC pc)
       fine_level = Nlevels - 1;
       gridctx[fine_level].A = A;
 
-      ierr = PetscTypeCompare((PetscObject) A, MATSEQAIJ, &isSeq);CHKERRQ(ierr);
-      ierr = PetscTypeCompare((PetscObject) A, MATMPIAIJ, &isMPI);CHKERRQ(ierr);
+      ierr = PetscObjectTypeCompare((PetscObject) A, MATSEQAIJ, &isSeq);CHKERRQ(ierr);
+      ierr = PetscObjectTypeCompare((PetscObject) A, MATMPIAIJ, &isMPI);CHKERRQ(ierr);
       if (isMPI){
         ierr = MatConvert_MPIAIJ_ML(A,PETSC_NULL,MAT_INITIAL_MATRIX,&Aloc);CHKERRQ(ierr);
       } else if (isSeq) {
@@ -623,8 +616,8 @@ PetscErrorCode PCSetUp_ML(PC pc)
   /*--------------------------------*/
   /* covert A to Aloc to be used by ML at fine grid */
   pc_ml->size = size;
-  ierr = PetscTypeCompare((PetscObject) A, MATSEQAIJ, &isSeq);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject) A, MATMPIAIJ, &isMPI);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) A, MATSEQAIJ, &isSeq);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) A, MATMPIAIJ, &isMPI);CHKERRQ(ierr);
   if (isMPI){ 
     ierr = MatConvert_MPIAIJ_ML(A,PETSC_NULL,MAT_INITIAL_MATRIX,&Aloc);CHKERRQ(ierr);
   } else if (isSeq) {
@@ -664,7 +657,43 @@ PetscErrorCode PCSetUp_ML(PC pc)
   ML_Aggregate_Create(&agg_object); 
   pc_ml->agg_object = agg_object;
 
-  ML_Aggregate_Set_NullSpace(agg_object,bs,bs,0,0);CHKERRQ(ierr);
+  {
+    MatNullSpace mnull;
+    ierr = MatGetNearNullSpace(A,&mnull);CHKERRQ(ierr);
+    if (pc_ml->nulltype == PCML_NULLSPACE_AUTO) {
+      if (mnull) pc_ml->nulltype = PCML_NULLSPACE_USER;
+      else if (bs > 1) pc_ml->nulltype = PCML_NULLSPACE_BLOCK;
+      else pc_ml->nulltype = PCML_NULLSPACE_SCALAR;
+    }
+    switch (pc_ml->nulltype) {
+    case PCML_NULLSPACE_USER: {
+      PetscScalar *nullvec;
+      const PetscScalar *v;
+      PetscBool has_const;
+      PetscInt i,j,mlocal,nvec,M;
+      const Vec *vecs;
+      if (!mnull) SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_USER,"Must provide explicit null space using MatSetNearNullSpace() to use user-specified null space");
+      ierr = MatGetSize(A,&M,PETSC_NULL);CHKERRQ(ierr);
+      ierr = MatGetLocalSize(Aloc,&mlocal,PETSC_NULL);CHKERRQ(ierr);
+      ierr = MatNullSpaceGetVecs(mnull,&has_const,&nvec,&vecs);CHKERRQ(ierr);
+      ierr = PetscMalloc((nvec+!!has_const)*mlocal*sizeof *nullvec,&nullvec);CHKERRQ(ierr);
+      if (has_const) for (i=0; i<mlocal; i++) nullvec[i] = 1.0/M;
+      for (i=0; i<nvec; i++) {
+        ierr = VecGetArrayRead(vecs[i],&v);CHKERRQ(ierr);
+        for (j=0; j<mlocal; j++) nullvec[(i+!!has_const)*mlocal + j] = v[j];
+        ierr = VecRestoreArrayRead(vecs[i],&v);CHKERRQ(ierr);
+      }
+      ierr = ML_Aggregate_Set_NullSpace(agg_object,bs,nvec+!!has_const,nullvec,mlocal);CHKERRQ(ierr);
+      ierr = PetscFree(nullvec);CHKERRQ(ierr);
+    } break;
+    case PCML_NULLSPACE_BLOCK:
+      ierr = ML_Aggregate_Set_NullSpace(agg_object,bs,bs,0,0);CHKERRQ(ierr);
+      break;
+    case PCML_NULLSPACE_SCALAR:
+      break;
+    default: SETERRQ(((PetscObject)pc)->comm,PETSC_ERR_SUP,"Unknown null space type");
+    }
+  }
   ML_Aggregate_Set_MaxCoarseSize(agg_object,pc_ml->MaxCoarseSize);
   /* set options */
   switch (pc_ml->CoarsenScheme) { 
@@ -711,15 +740,17 @@ PetscErrorCode PCSetUp_ML(PC pc)
       ierr = PCSetType(subpc,PCSOR);CHKERRQ(ierr);
     }
   }
+  ierr = PetscObjectOptionsBegin((PetscObject)pc);CHKERRQ(ierr);
   ierr = PCSetFromOptions_MG(pc);CHKERRQ(ierr); /* should be called in PCSetFromOptions_ML(), but cannot be called prior to PCMGSetLevels() */
-   
-  ierr = PetscMalloc(Nlevels*sizeof(GridCtx),&gridctx);CHKERRQ(ierr); 
+  ierr = PetscOptionsEnd();CHKERRQ(ierr);
+
+  ierr = PetscMalloc(Nlevels*sizeof(GridCtx),&gridctx);CHKERRQ(ierr);
   pc_ml->gridctx = gridctx;
 
-  /* wrap ML matrices by PETSc shell matrices at coarsened grids. 
+  /* wrap ML matrices by PETSc shell matrices at coarsened grids.
      Level 0 is the finest grid for ML, but coarsest for PETSc! */
   gridctx[fine_level].A = A;
-  
+
   level = fine_level - 1;
   if (size == 1){ /* convert ML P, R and A into seqaij format */
     for (mllevel=1; mllevel<Nlevels; mllevel++){ 
@@ -843,6 +874,7 @@ PetscErrorCode PCSetFromOptions_ML(PC pc)
   ierr = PetscOptionsBool("-pc_ml_SpectralNormScheme_Anorm","Method used for estimating spectral radius","ML_Set_SpectralNormScheme_Anorm",pc_ml->SpectralNormScheme_Anorm,&pc_ml->SpectralNormScheme_Anorm,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsBool("-pc_ml_Symmetrize","Symmetrize aggregation","ML_Set_Symmetrize",pc_ml->Symmetrize,&pc_ml->Symmetrize,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsBool("-pc_ml_BlockScaling","Scale all dofs at each node together","None",pc_ml->BlockScaling,&pc_ml->BlockScaling,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsEnum("-pc_ml_nullspace","Which type of null space information to use","None",PCMLNullSpaceTypes,(PetscEnum)pc_ml->nulltype,(PetscEnum*)&pc_ml->nulltype,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsInt("-pc_ml_EnergyMinimization","Energy minimization norm type (0=no minimization; see ML manual for 1,2,3; -1 and 4 undocumented)","None",pc_ml->EnergyMinimization,&pc_ml->EnergyMinimization,PETSC_NULL);CHKERRQ(ierr);
   ierr = PetscOptionsBool("-pc_ml_reuse_interpolation","Reuse the interpolation operators when possible (cheaper, weaker when matrix entries change a lot)","None",pc_ml->reuse_interpolation,&pc_ml->reuse_interpolation,PETSC_NULL);CHKERRQ(ierr);
   /*

@@ -1,9 +1,13 @@
 
 #include <petscsys.h>        /*I  "petscsys.h"   I*/
 
-#if defined(PETSC_USE_DEBUG)  && !defined(PETSC_USE_PTHREAD)
+#if defined(PETSC_USE_DEBUG)
 
-PetscStack  *petscstack = 0;
+#if defined(PETSC_PTHREAD_LOCAL)
+PETSC_PTHREAD_LOCAL PetscStack  *petscstack = 0;
+#else
+PetscStack *petscstack = 0;
+#endif
 
 #undef __FUNCT__  
 #define __FUNCT__ "PetscStackPublish"
@@ -33,7 +37,7 @@ PetscErrorCode  PetscStackCreate(void)
   ierr = PetscNew(PetscStack,&petscstack_in);CHKERRQ(ierr);
   petscstack_in->currentsize = 0;
   petscstack = petscstack_in;
-
+  PetscThreadLocalSetValue(petscstack,petscstack); /* Sets the value for the pthread_key_t if it is used */
   return 0;
 }
 
@@ -84,6 +88,7 @@ PetscErrorCode  PetscStackDestroy(void)
     PetscStack *petscstack_in = petscstack;
     petscstack = 0;
     ierr = PetscFree(petscstack_in);CHKERRQ(ierr);
+    PetscThreadLocalDestroy(petscstack); /* Deletes pthread_key if it was used */
   }
   return 0;
 }

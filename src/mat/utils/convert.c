@@ -1,5 +1,5 @@
 
-#include <private/matimpl.h>
+#include <petsc-private/matimpl.h>
 
 #undef __FUNCT__  
 #define __FUNCT__ "MatConvert_Basic"
@@ -26,9 +26,11 @@ PetscErrorCode MatConvert_Basic(Mat mat, const MatType newtype,MatReuse reuse,Ma
   
   ierr = MatCreate(((PetscObject)mat)->comm,&M);CHKERRQ(ierr);
   ierr = MatSetSizes(M,lm,ln,m,n);CHKERRQ(ierr);
+  ierr = MatSetBlockSize(M,mat->rmap->bs);CHKERRQ(ierr);
   ierr = MatSetType(M,newtype);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)M,MATSEQSBAIJ,&isseqsbaij);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)M,MATMPISBAIJ,&ismpisbaij);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)M,MATSEQSBAIJ,&isseqsbaij);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)M,MATMPISBAIJ,&ismpisbaij);CHKERRQ(ierr);
+  ierr = MatSetUp(M);CHKERRQ(ierr);
   if (isseqsbaij || ismpisbaij) {ierr = MatSetOption(M,MAT_IGNORE_LOWER_TRIANGULAR,PETSC_TRUE);CHKERRQ(ierr);}
 
   ierr = MatGetOwnershipRange(mat,&rstart,&rend);CHKERRQ(ierr);

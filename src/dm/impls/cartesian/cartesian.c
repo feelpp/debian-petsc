@@ -1,4 +1,4 @@
-#include <private/meshimpl.h>   /*I      "petscdmmesh.h"   I*/
+#include <petsc-private/meshimpl.h>   /*I      "petscdmmesh.h"   I*/
 #include <CartesianSieve.hh>
 
 #undef __FUNCT__
@@ -98,26 +98,22 @@ PetscErrorCode DMView_Cartesian(DM dm, PetscViewer viewer)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject) viewer, PETSCVIEWERASCII, &iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject) viewer, PETSCVIEWERBINARY, &isbinary);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject) viewer, PETSCVIEWERDRAW, &isdraw);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) viewer, PETSCVIEWERASCII, &iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) viewer, PETSCVIEWERBINARY, &isbinary);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject) viewer, PETSCVIEWERDRAW, &isdraw);CHKERRQ(ierr);
 
   ierr = DMCartesianGetMesh(dm, m);CHKERRQ(ierr);
   if (iascii){
     ierr = DMView_Cartesian_Ascii(m, viewer);CHKERRQ(ierr);
-  } else if (isbinary) {
-    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP, "Binary viewer not implemented for Cartesian Mesh");
-  } else if (isdraw){
-    SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP, "Draw viewer not implemented for Cartesian Mesh");
-  } else {
-    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported by this mesh object", ((PetscObject)viewer)->type_name);
-  }
+  } else if (isbinary) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP, "Binary viewer not implemented for Cartesian Mesh");
+  else if (isdraw) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SUP, "Draw viewer not implemented for Cartesian Mesh");
+  else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_SUP,"Viewer type %s not supported by this mesh object", ((PetscObject)viewer)->type_name);
   PetscFunctionReturn(0);
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "DMGetInterpolation_Cartesian"
-PetscErrorCode DMGetInterpolation_Cartesian(DM fineMesh, DM coarseMesh, Mat *interpolation, Vec *scaling)
+#define __FUNCT__ "DMCreateInterpolation_Cartesian"
+PetscErrorCode DMCreateInterpolation_Cartesian(DM fineMesh, DM coarseMesh, Mat *interpolation, Vec *scaling)
 {
   ALE::Obj<ALE::CartesianMesh> coarse;
   ALE::Obj<ALE::CartesianMesh> fine;
@@ -201,6 +197,7 @@ PetscErrorCode DMCoarsen_Cartesian(DM mesh, MPI_Comm comm, DM *coarseMesh)
   PetscErrorCode               ierr;
 
   PetscFunctionBegin;
+  if (comm == MPI_COMM_NULL) comm = ((PetscObject)mesh)->comm;
   ierr = DMCartesianGetMesh(mesh, oldMesh);CHKERRQ(ierr);
   ierr = DMCartesianCreate(comm, coarseMesh);CHKERRQ(ierr);
 #if 0
@@ -239,24 +236,14 @@ PetscErrorCode DMCartesianGetSectionReal(DM dm, const char name[], SectionReal *
 #define __FUNCT__ "DMSetFromOptions_Cartesian"
 PetscErrorCode  DMSetFromOptions_Cartesian(DM dm)
 {
-  /* DM_Mesh       *mesh = (DM_Mesh *) dm->data; */
-  char           typeName[256];
-  PetscBool      flg;
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   PetscValidHeaderSpecific(dm, DM_CLASSID, 1);
-  ierr = PetscOptionsBegin(((PetscObject) dm)->comm, ((PetscObject) dm)->prefix, "DMCartesian Options", "DMCartesian");CHKERRQ(ierr);
+  ierr = PetscOptionsHead("DMCartesian Options");CHKERRQ(ierr);
     /* Handle DMCartesian refinement */
     /* Handle associated vectors */
-    if (!VecRegisterAllCalled) {ierr = VecRegisterAll(PETSC_NULL);CHKERRQ(ierr);}
-    ierr = PetscOptionsList("-dm_vec_type", "Vector type used for created vectors", "DMSetVecType", VecList, dm->vectype, typeName, 256, &flg);CHKERRQ(ierr);
-    if (flg) {
-      ierr = DMSetVecType(dm, typeName);CHKERRQ(ierr);
-    }
-    /* process any options handlers added with PetscObjectAddOptionsHandler() */
-    ierr = PetscObjectProcessOptionsHandlers((PetscObject) dm);CHKERRQ(ierr);
-  ierr = PetscOptionsEnd();CHKERRQ(ierr);
+  ierr = PetscOptionsTail();CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -282,9 +269,9 @@ PetscErrorCode DMCreate_Cartesian(DM dm)
   dm->ops->localtoglobalend   = 0;
   dm->ops->createglobalvector = 0; /* DMCreateGlobalVector_Cartesian; */
   dm->ops->createlocalvector  = 0; /* DMCreateLocalVector_Cartesian; */
-  dm->ops->getinterpolation   = DMGetInterpolation_Cartesian;
+  dm->ops->createinterpolation   = DMCreateInterpolation_Cartesian;
   dm->ops->getcoloring        = 0;
-  dm->ops->getmatrix          = 0; /* DMGetMatrix_Cartesian; */
+  dm->ops->creatematrix          = 0; /* DMCreateMatrix_Cartesian; */
   dm->ops->refine             = DMRefine_Cartesian;
   dm->ops->coarsen            = DMCoarsen_Cartesian;
   dm->ops->refinehierarchy    = 0;

@@ -1,13 +1,14 @@
 <center><a href="nn.c">Actual source code: nn.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/is/nn/nn.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:09:44+00:00">
+<meta name="date" content="2012-08-29T16:59:45+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/ksp/pc/impls/is/nn/nn.h&gt;</font>
 
@@ -166,6 +167,7 @@
 
 <a name="line169">169: </a><font color="#B22222">.seealso:  <A href="../../../../../../docs/manualpages/PC/PCCreate.html#PCCreate">PCCreate</A>(), <A href="../../../../../../docs/manualpages/PC/PCSetType.html#PCSetType">PCSetType</A>(), <A href="../../../../../../docs/manualpages/PC/PCType.html#PCType">PCType</A> (for list of available types), <A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,  <A href="../../../../../../docs/manualpages/Mat/MATIS.html#MATIS">MATIS</A></font>
 <a name="line170">170: </a><font color="#B22222">M*/</font>
+<a name="line171">171: </a>EXTERN_C_BEGIN
 <a name="line174">174: </a><strong><font color="#4169E1"><a name="PCCreate_NN"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_NN(<A href="../../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line175">175: </a>{
 <a name="line177">177: </a>  PC_NN          *pcnn;
@@ -201,6 +203,7 @@
 <a name="line208">208: </a>  pc-&gt;ops-&gt;applysymmetricright = 0;
 <a name="line209">209: </a>  <font color="#4169E1">return</font>(0);
 <a name="line210">210: </a>}
+<a name="line211">211: </a>EXTERN_C_END
 
 
 <a name="line214">214: </a><font color="#B22222">/* -------------------------------------------------------------------------- */</font>

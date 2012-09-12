@@ -1,13 +1,14 @@
 <center><a href="ex39.c">Actual source code: ex39.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials/ex39.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:13:33+00:00">
+<meta name="date" content="2012-08-29T17:05:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Lattice Gauge 2D model.\n"</font>
 <a name="line3">  3: </a><font color="#666666">"Parameters:\n"</font>
@@ -67,9 +68,9 @@
 
 <a name="line60"> 60: </a>  <font color="#B22222">/* construct matrix */</font>
 <a name="line61"> 61: </a>  <font color="#4169E1">if</font>( comm_size == 1 ) {
-<a name="line62"> 62: </a>    <A href="../../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(da, <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>, &amp;H);
+<a name="line62"> 62: </a>    <A href="../../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da, <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>, &amp;H);
 <a name="line63"> 63: </a>  } <font color="#4169E1">else</font> {
-<a name="line64"> 64: </a>    <A href="../../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(da, <A href="../../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>, &amp;H);
+<a name="line64"> 64: </a>    <A href="../../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da, <A href="../../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>, &amp;H);
 <a name="line65"> 65: </a>  }
 
 <a name="line67"> 67: </a>  <font color="#B22222">/* get local corners for this processor */</font>
@@ -153,7 +154,7 @@
 
 <a name="line146">146: </a>  <font color="#B22222">/* permutation matrix to check whether H and HtH are identical to the ones in the paper */</font>
 <a name="line147">147: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> perm; */</font>
-<a name="line148">148: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(da, <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>, &amp;perm); */</font>
+<a name="line148">148: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da, <A href="../../../../../docs/manualpages/Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>, &amp;perm); */</font>
 <a name="line149">149: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> row, col; */</font>
 <a name="line150">150: </a><font color="#B22222">/*   <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> one = 1.0; */</font>
 <a name="line151">151: </a><font color="#B22222">/*   for(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i=0; i&lt;n; i++) { */</font>
@@ -200,7 +201,7 @@
 <a name="line192">192: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(kspmg, HtH, HtH, DIFFERENT_NONZERO_PATTERN);
 
 <a name="line194">194: </a>  <A href="../../../../../docs/manualpages/DM/DMDASetRefinementFactor.html#DMDASetRefinementFactor">DMDASetRefinementFactor</A>(da, 3, 3, 3);
-<a name="line195">195: </a>  <A href="../../../../../docs/manualpages/PC/PCASASetDM.html#PCASASetDM">PCASASetDM</A>(pcmg, (DM) da);
+<a name="line195">195: </a>  PCASASetDM(pcmg, (DM) da);
 
 <a name="line197">197: </a>  <A href="../../../../../docs/manualpages/PC/PCASASetTolerances.html#PCASASetTolerances">PCASASetTolerances</A>(pcmg, 1.e-6, 1.e-10,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>);
 

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscOptionsGetStringArray.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscOptionsGetStringArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscOptionsGetStringArray"><H1>PetscOptionsGetStringArray</H1></A>
 Gets an array of string values for a particular option in the database. The values must be separated with commas with  no intervening spaces.  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -32,10 +33,6 @@ Not Collective
 <P>
 
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp PetscOptionsGetStringArray(const char b[],char *i[],PetscInt *ii,PetscBool  *f)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscOptionsGetStringArray(PETSC_NULL,b,i,ii,f)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 The user should pass in an array of pointers to char, to hold all the
 strings returned by this function.

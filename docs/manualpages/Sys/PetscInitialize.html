@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscInitialize.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscInitialize</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscInitialize"><H1>PetscInitialize</H1></A>
 Initializes the PETSc database and MPI.  <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>() calls MPI_Init() if that has yet to be called, so this routine should always be called near the beginning of  your program -- usually the very first line!  
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -55,6 +56,8 @@ process and wait (-debugger_pause) seconds for attachment
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-malloc_debug </B></TD><TD>- check for memory corruption at EVERY malloc or free
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-malloc_test </B></TD><TD>- like -malloc_dump -malloc_debug, but only active for debugging builds
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-fp_trap </B></TD><TD>- Stops on floating point exceptions (Note that on the
 IBM RS6000 this slows code by at least a factor of 10.)
 </TD></TR>
@@ -74,7 +77,7 @@ IBM RS6000 this slows code by at least a factor of 10.)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys for Profiling</FONT></H3>
-See the &lt;a href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.11">Chapter 11 Profiling</A>"&gt;profiling chapter of the users manual&lt;/a&gt; for details.
+See the &lt;a href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.10">Chapter 10 Profiling</A>"&gt;profiling chapter of the users manual&lt;/a&gt; for details.
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_trace [filename] </B></TD><TD>- Print traces of all PETSc calls
 to the screen (useful to determine where a program
@@ -101,10 +104,6 @@ hangs without running in the debugger).  See <A HREF="../Profiling/PetscLogTrace
 <P>
 
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp PetscInitialize(int *argc,char ***args)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscInitialize(argc,args,PETSC_NULL,PETSC_NULL)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 If for some reason you must call MPI_Init() separately, call
 it before <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>().
@@ -126,12 +125,12 @@ In Fortran, you MUST use PETSC_NULL_CHARACTER to indicate a
 null character string; you CANNOT just use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> as
 in the C version. See the &lt;a href="../../docs/manual.pdf"&gt;users manual&lt;/a&gt; for details.
 <P>
-If your main program is C but you call Fortran code that also uses PETSc you need to call PetscInitializeFortran() soon after
+If your main program is C but you call Fortran code that also uses PETSc you need to call <A HREF="../Sys/PetscInitializeFortran.html#PetscInitializeFortran">PetscInitializeFortran</A>() soon after
 calling <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>().
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), PetscInitializeFortran(), <A HREF="../Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A HREF="../Sys/PetscInitializeNoArguments.html#PetscInitializeNoArguments">PetscInitializeNoArguments</A>()
+ <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), <A HREF="../Sys/PetscInitializeFortran.html#PetscInitializeFortran">PetscInitializeFortran</A>(), <A HREF="../Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A HREF="../Sys/PetscInitializeNoArguments.html#PetscInitializeNoArguments">PetscInitializeNoArguments</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSComputeIFunctionLinear.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSComputeIFunctionLinear</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSComputeIFunctionLinear"><H1>TSComputeIFunctionLinear</H1></A>
 Evaluate the left hand side via the user-provided Jacobian, for linear problems only 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -40,7 +41,7 @@ This function is intended to be passed to <A HREF="../TS/TSSetIFunction.html#TSS
 The matrix (and optionally the evaluation context) should be passed to <A HREF="../TS/TSSetIJacobian.html#TSSetIJacobian">TSSetIJacobian</A>().
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../TS/TSSetIFunction.html#TSSetIFunction">TSSetIFunction</A>(), <A HREF="../TS/TSSetIJacobian.html#TSSetIJacobian">TSSetIJacobian</A>(), TSComputeIJacobianConstant()
+ <A HREF="../TS/TSSetIFunction.html#TSSetIFunction">TSSetIFunction</A>(), <A HREF="../TS/TSSetIJacobian.html#TSSetIJacobian">TSSetIJacobian</A>(), <A HREF="../TS/TSComputeIJacobianConstant.html#TSComputeIJacobianConstant">TSComputeIJacobianConstant</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/interface/ts.c.html#TSComputeIFunctionLinear">src/ts/interface/ts.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

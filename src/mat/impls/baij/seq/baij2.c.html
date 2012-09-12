@@ -1,13 +1,14 @@
 <center><a href="baij2.c">Actual source code: baij2.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/baij/seq/baij2.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:01:22+00:00">
+<meta name="date" content="2012-08-29T16:46:35+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/baij/seq/baij.h&gt;</font>
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;../src/mat/blockinvert.h&gt;</font>
@@ -29,7 +30,7 @@
 
 <a name="line24"> 24: </a>  <font color="#4169E1">if</font> (ov &lt; 0)  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Negative overlap specified"</font>);
 
-<a name="line26"> 26: </a>  PetscBTCreate(m,table);
+<a name="line26"> 26: </a>  PetscBTCreate(m,&amp;table);
 <a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((m+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;nidx);
 <a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((A-&gt;rmap-&gt;N+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;nidx2);
 
@@ -71,7 +72,7 @@
 <a name="line65"> 65: </a>    }
 <a name="line66"> 66: </a>    <A href="../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,isz*bs,nidx2,PETSC_COPY_VALUES,is+i);
 <a name="line67"> 67: </a>  }
-<a name="line68"> 68: </a>  PetscBTDestroy(table);
+<a name="line68"> 68: </a>  PetscBTDestroy(&amp;table);
 <a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(nidx);
 <a name="line70"> 70: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(nidx2);
 <a name="line71"> 71: </a>  <font color="#4169E1">return</font>(0);
@@ -977,7 +978,7 @@
 <a name="line1020">1020: </a>      workt += bs;
 <a name="line1021">1021: </a>    }
 <a name="line1022">1022: </a>    <font color="#4169E1">if</font> (usecprow) z = zarray + bs*ridx[i];
-<a name="line1023">1023: </a>    Kernel_w_gets_Ar_times_v(bs,ncols,work,v,z);
+<a name="line1023">1023: </a>    PetscKernel_w_gets_Ar_times_v(bs,ncols,work,v,z);
 <a name="line1024">1024: </a>    <font color="#B22222">/* BLASgemv_("N",&amp;bs,&amp;ncols,&amp;_DOne,v,&amp;bs,work,&amp;_One,&amp;_DZero,z,&amp;_One); */</font>
 <a name="line1025">1025: </a>    v += n*bs2;
 <a name="line1026">1026: </a>    <font color="#4169E1">if</font> (!usecprow) z += bs;
@@ -1474,7 +1475,7 @@
 <a name="line1548">1548: </a>      workt += bs;
 <a name="line1549">1549: </a>    }
 <a name="line1550">1550: </a>    <font color="#4169E1">if</font> (usecprow) z = zarray + bs*ridx[i];
-<a name="line1551">1551: </a>    Kernel_w_gets_w_plus_Ar_times_v(bs,ncols,work,v,z);
+<a name="line1551">1551: </a>    PetscKernel_w_gets_w_plus_Ar_times_v(bs,ncols,work,v,z);
 <a name="line1552">1552: </a>    <font color="#B22222">/* BLASgemv_("N",&amp;bs,&amp;ncols,&amp;_DOne,v,&amp;bs,work,&amp;_One,&amp;_DOne,z,&amp;_One); */</font>
 <a name="line1553">1553: </a>    v += n*bs2;
 <a name="line1554">1554: </a>    <font color="#4169E1">if</font> (!usecprow){
@@ -1632,7 +1633,7 @@
 <a name="line1717">1717: </a>        <font color="#4169E1">if</font> (usecprow) {
 <a name="line1718">1718: </a>          xtmp = x + bs*ridx[i];
 <a name="line1719">1719: </a>        }
-<a name="line1720">1720: </a>        Kernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,xtmp,v,work);
+<a name="line1720">1720: </a>        PetscKernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,xtmp,v,work);
 <a name="line1721">1721: </a>        <font color="#B22222">/* BLASgemv_("T",&amp;bs,&amp;ncols,&amp;_DOne,v,&amp;bs,xtmp,&amp;_One,&amp;_DOne,work,&amp;_One); */</font>
 <a name="line1722">1722: </a>        v += n*bs2;
 <a name="line1723">1723: </a>        <font color="#4169E1">if</font> (!usecprow) xtmp += bs;
@@ -1776,7 +1777,7 @@
 <a name="line1864">1864: </a>        <font color="#4169E1">if</font> (usecprow) {
 <a name="line1865">1865: </a>          xtmp = x + bs*ridx[i];
 <a name="line1866">1866: </a>        }
-<a name="line1867">1867: </a>        Kernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,xtmp,v,work);
+<a name="line1867">1867: </a>        PetscKernel_w_gets_w_plus_trans_Ar_times_v(bs,ncols,xtmp,v,work);
 <a name="line1868">1868: </a>        <font color="#B22222">/* BLASgemv_("T",&amp;bs,&amp;ncols,&amp;_DOne,v,&amp;bs,xtmp,&amp;_One,&amp;_DOne,work,&amp;_One); */</font>
 <a name="line1869">1869: </a>        v += n*bs2;
 <a name="line1870">1870: </a>        <font color="#4169E1">if</font> (!usecprow) xtmp += bs;

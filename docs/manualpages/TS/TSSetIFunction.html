@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/TSSetIFunction.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>TSSetIFunction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="TSSetIFunction"><H1>TSSetIFunction</H1></A>
 Set the function to compute F(t,U,U_t) where F = 0 is the DAE to be solved. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -43,7 +44,7 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Important</FONT></H3>
-The user MUST call either this routine, <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>(), or TSSetMatrices().  This routine must be used when not solving an ODE.
+The user MUST call either this routine, <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>().  This routine must be used when not solving an ODE, for example a DAE.
 <P>
 
 <P>
@@ -52,7 +53,7 @@ The user MUST call either this routine, <A HREF="../TS/TSSetRHSFunction.html#TSS
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- TSSetMatrices(), <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>(), <A HREF="../TS/TSSetIJacobian.html#TSSetIJacobian">TSSetIJacobian</A>()
+ <A HREF="../TS/TSSetRHSJacobian.html#TSSetRHSJacobian">TSSetRHSJacobian</A>(), <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>(), <A HREF="../TS/TSSetIJacobian.html#TSSetIJacobian">TSSetIJacobian</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/interface/ts.c.html#TSSetIFunction">src/ts/interface/ts.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>
@@ -68,5 +69,6 @@ The user MUST call either this routine, <A HREF="../TS/TSSetRHSFunction.html#TSS
 <A HREF="../../../src/ts/examples/tutorials/ex18.c.html">src/ts/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex22.c.html">src/ts/examples/tutorials/ex22.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex23.c.html">src/ts/examples/tutorials/ex23.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex22f.F.html">src/ts/examples/tutorials/ex22f.F.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex24.c.html">src/ts/examples/tutorials/ex24.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex25.c.html">src/ts/examples/tutorials/ex25.c.html</A><BR>
 </BODY></HTML>

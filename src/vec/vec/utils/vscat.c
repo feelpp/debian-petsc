@@ -5,8 +5,8 @@
   some special cases for parallel scatters.
 */
 
-#include <private/isimpl.h>              /*I "petscis.h" I*/
-#include <private/vecimpl.h>             /*I "petscvec.h" I*/
+#include <petsc-private/isimpl.h>              /*I "petscis.h" I*/
+#include <petsc-private/vecimpl.h>             /*I "petscvec.h" I*/
 
 /* Logging support */
 PetscClassId  VEC_SCATTER_CLASSID;
@@ -786,7 +786,9 @@ PetscErrorCode  VecScatterCreateEmpty(MPI_Comm comm,VecScatter *newctx)
 .  -vecscatter_packtogether - Pack all messages before sending, receive all messages before unpacking
 .  -vecscatter_alltoall     - Uses MPI all to all communication for scatter
 .  -vecscatter_window       - Use MPI 2 window operations to move data
--  -vecscatter_nopack       - Avoid packing to work vector when possible (if used with -vecscatter_alltoall then will use MPI_Alltoallw()
+.  -vecscatter_nopack       - Avoid packing to work vector when possible (if used with -vecscatter_alltoall then will use MPI_Alltoallw()
+-  -vecscatter_reproduce    - insure that the order of the communications are done the same for each scatter, this under certain circumstances
+                              will make the results of scatters deterministic when otherwise they are not (it may be slower also).
 
 $
 $                                                                                    --When packing is used--
@@ -820,6 +822,8 @@ $
    (this unfortunately requires that the same in and out arrays be used for each use, this
     is why when not using MPI_alltoallw() we always need to pack the input into the work array before sending
     and unpack upon receeving instead of using MPI datatypes to avoid the packing/unpacking).
+
+   Both ix and iy cannot be PETSC_NULL at the same time.
 
    Concepts: scatter^between vectors
    Concepts: gather^between vectors
@@ -855,8 +859,6 @@ PetscErrorCode  VecScatterCreate(Vec xin,IS ix,Vec yin,IS iy,VecScatter *newctx)
   ierr = MPI_Comm_size(ycomm,&size);CHKERRQ(ierr);
   if (size > 1) {comm = ycomm; yin_type = VEC_MPI_ID;}
 
-
-  
   /* generate the Scatter context */
   ierr = PetscHeaderCreate(ctx,_p_VecScatter,int,VEC_SCATTER_CLASSID,0,"VecScatter","VecScatter","Vec",comm,VecScatterDestroy,VecScatterView);CHKERRQ(ierr);
   ctx->inuse               = PETSC_FALSE;
@@ -919,13 +921,13 @@ PetscErrorCode  VecScatterCreate(Vec xin,IS ix,Vec yin,IS iy,VecScatter *newctx)
   /*
      Determine types of index sets
   */
-  ierr = PetscTypeCompare((PetscObject)ix,ISBLOCK,&flag);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)ix,ISBLOCK,&flag);CHKERRQ(ierr);
   if (flag) ix_type = IS_BLOCK_ID;
-  ierr = PetscTypeCompare((PetscObject)iy,ISBLOCK,&flag);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)iy,ISBLOCK,&flag);CHKERRQ(ierr);
   if (flag) iy_type = IS_BLOCK_ID;
-  ierr = PetscTypeCompare((PetscObject)ix,ISSTRIDE,&flag);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)ix,ISSTRIDE,&flag);CHKERRQ(ierr);
   if (flag) ix_type = IS_STRIDE_ID;
-  ierr = PetscTypeCompare((PetscObject)iy,ISSTRIDE,&flag);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)iy,ISSTRIDE,&flag);CHKERRQ(ierr);
   if (flag) iy_type = IS_STRIDE_ID;
 
   /* ===========================================================================================================
@@ -1269,9 +1271,9 @@ PetscErrorCode  VecScatterCreate(Vec xin,IS ix,Vec yin,IS iy,VecScatter *newctx)
       ierr = MPI_Allreduce(&totalv,&cando,1,MPI_INT,MPI_LAND,((PetscObject)xin)->comm);CHKERRQ(ierr);
     }
 
-    ierr = PetscTypeCompare((PetscObject)ix,ISBLOCK,&ixblock);CHKERRQ(ierr);
-    ierr = PetscTypeCompare((PetscObject)iy,ISBLOCK,&iyblock);CHKERRQ(ierr);
-    ierr = PetscTypeCompare((PetscObject)iy,ISSTRIDE,&iystride);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)ix,ISBLOCK,&ixblock);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)iy,ISBLOCK,&iyblock);CHKERRQ(ierr);
+    ierr = PetscObjectTypeCompare((PetscObject)iy,ISSTRIDE,&iystride);CHKERRQ(ierr);
     if (ixblock) {
       /* special case block to block */
       if (iyblock) {
@@ -1325,7 +1327,7 @@ PetscErrorCode  VecScatterCreate(Vec xin,IS ix,Vec yin,IS iy,VecScatter *newctx)
       ierr = ISGetIndices(ix,&idx);CHKERRQ(ierr);
       ierr = ISGetLocalSize(iy,&ny);CHKERRQ(ierr);
       ierr = ISGetIndices(iy,&idy);CHKERRQ(ierr);
-      if (nx != ny) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Local scatter sizes don't match");
+      if (nx != ny) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_SIZ,"Local scatter sizes don't match (%d %d)",nx,ny);
       ierr = VecScatterCreate_PtoS(nx,idx,ny,idy,xin,yin,1,ctx);CHKERRQ(ierr);
       ierr = ISRestoreIndices(ix,&idx);CHKERRQ(ierr);
       ierr = ISRestoreIndices(iy,&idy);CHKERRQ(ierr);
@@ -1537,7 +1539,6 @@ PetscErrorCode  VecScatterBegin(VecScatter inctx,Vec x,Vec y,InsertMode addv,Sca
 #if defined(PETSC_USE_DEBUG)
   PetscInt      to_n,from_n;
 #endif
-
   PetscFunctionBegin;
   PetscValidHeaderSpecific(inctx,VEC_SCATTER_CLASSID,1);
   PetscValidHeaderSpecific(x,VEC_CLASSID,2);

@@ -1,13 +1,14 @@
 <center><a href="ex6.c">Actual source code: ex6.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tutorials/ex6.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:59+00:00">
+<meta name="date" content="2012-08-29T16:58:23+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Demonstrates using 3 DMDA's to manage a slightly non-trivial grid"</font>;
 
@@ -581,7 +582,7 @@
 <a name="line594">594: </a>  xmax = xmaxt + .2*(xmaxt - xmint);
 <a name="line595">595: </a>  ymin = ymint - .2*(ymaxt - ymint);
 <a name="line596">596: </a>  ymax = ymaxt + .2*(ymaxt - ymint);
-<a name="line597">597: </a><font color="#A020F0">#if defined(PETSC_HAVE_X11)</font>
+<a name="line597">597: </a><font color="#A020F0">#if defined(PETSC_HAVE_X)</font>
 <a name="line598">598: </a>  <A href="../../../../docs/manualpages/Draw/PetscDrawOpenX.html#PetscDrawOpenX">PetscDrawOpenX</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,0,<font color="#666666">"meshes"</font>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,700,700,&amp;draw);
 <a name="line599">599: </a>  <A href="../../../../docs/manualpages/Draw/PetscDrawSetCoordinates.html#PetscDrawSetCoordinates">PetscDrawSetCoordinates</A>(draw,xmin,ymin,xmax,ymax);
 <a name="line600">600: </a>  <A href="../../../../docs/manualpages/Draw/PetscDrawZoom.html#PetscDrawZoom">PetscDrawZoom</A>(draw,DrawPatch,&amp;zctx);

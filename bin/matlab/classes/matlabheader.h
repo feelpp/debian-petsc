@@ -7,10 +7,10 @@
 */
 typedef struct mxArray_tag mxArray;
 
-int PetscInitializeMatlab(int,char **,const char*,const char*);
-int PetscInitializedMatlab(void);
+int PetscInitializeNoPointers(int,char **,const char*,const char*);
+int PetscInitialized(int*);
 typedef int MPI_Comm;
-int PetscGetPETSC_COMM_SELFMatlab(MPI_Comm*);
+int PetscGetPETSC_COMM_SELF(MPI_Comm*);
 int PetscFinalize(void);
 
 typedef int PetscLogStage;
@@ -50,7 +50,7 @@ int ISCreate(MPI_Comm,IS *);
 int ISSetType(IS,const char*);
 int ISGeneralSetIndices(IS,int,const int[],CopyMode);
 int ISGetSize(IS,int*);
-int ISGetIndicesMatlab(IS,int*);
+int ISGetIndicesCopy(IS,int*);
 int ISView(IS,PetscViewer);
 int ISDestroy(IS*);
 
@@ -80,6 +80,7 @@ typedef struct {
 int MatCreate(MPI_Comm,Mat *);
 int MatSetType(Mat,const char*);
 int MatSetFromOptions(Mat);
+int MatSetUp(Mat);
 int MatSetSizes(Mat,int,int,int,int);
 int MatGetLocalSize(Mat,int*,int*);
 int MatSetValues(Mat,int,int*,int,int*,double*,InsertMode);
@@ -111,7 +112,7 @@ int DMSetUp(DM);
 int DMDASetStencilWidth(DM, int);
 int DMDASetStencilType(DM, DMDAStencilType);
 int DMCreateGlobalVector(DM,Vec*);
-int DMGetMatrix(DM,const char*,Mat*);
+int DMCreateMatrix(DM,const char*,Mat*);
 int DMDAGetInfo(DM,int*,int*,int*,int*,int*,int*,int*,int*,int*,DMDABoundaryType*,DMDAStencilType*);
 
 typedef PetscPointer PC;

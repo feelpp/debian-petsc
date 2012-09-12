@@ -1,13 +1,14 @@
 <center><a href="ex11.c">Actual source code: ex11.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tests/ex11.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:15:44+00:00">
+<meta name="date" content="2012-08-29T17:09:00+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] =
 <a name="line3">  3: </a><font color="#666666">"This program demonstrates use of the <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> package to solve systems of\n\</font>
@@ -77,6 +78,9 @@
 <a name="line67"> 67: </a><strong><font color="#228B22">#define COARSE_LEVEL 0</font></strong>
 <a name="line68"> 68: </a><strong><font color="#228B22">#define FINE_LEVEL   1</font></strong>
 
+<a name="line70"> 70: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*), FormInitialGuess1(AppCtx*,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line71"> 71: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*)</font></strong>;
+<a name="line72"> 72: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormInterpolation(AppCtx *)</font></strong>;
 
 <a name="line74"> 74: </a><font color="#B22222">/*</font>
 <a name="line75"> 75: </a><font color="#B22222">      Mm_ratio - ration of grid lines between fine and coarse grids.</font>
@@ -129,7 +133,7 @@
 <a name="line125">125: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user.fine.x,&amp;nlocal);
 <a name="line126">126: </a>  <A href="../../../../docs/manualpages/DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>(user.fine.da,&amp;user.fine.localX);
 <a name="line127">127: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(user.fine.localX,&amp;user.fine.localF);
-<a name="line128">128: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,nlocal,nlocal,n,n,5,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,3,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.fine.J);
+<a name="line128">128: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,nlocal,nlocal,n,n,5,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,3,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.fine.J);
 
 <a name="line130">130: </a>  <font color="#B22222">/* Set up distributed array for coarse grid */</font>
 <a name="line131">131: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,<A href="../../../../docs/manualpages/DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>,user.coarse.mx,
@@ -148,7 +152,7 @@
 <a name="line144">144: </a>    <A href="../../../../docs/manualpages/DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>(user.coarse.da,&amp;user.coarse.localX);
 <a name="line145">145: </a>    <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(user.coarse.localX,&amp;user.coarse.localF);
 <a name="line146">146: </a>    <font color="#B22222">/* We will compute the coarse Jacobian in parallel */</font>
-<a name="line147">147: </a>    <A href="../../../../docs/manualpages/Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,Nlocal,Nlocal,N,N,5,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,3,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.coarse.J);
+<a name="line147">147: </a>    <A href="../../../../docs/manualpages/Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,Nlocal,Nlocal,N,N,5,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,3,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.coarse.J);
 <a name="line148">148: </a>  }
 
 <a name="line150">150: </a>  <font color="#B22222">/* Create nonlinear solver */</font>
@@ -201,7 +205,7 @@
 <a name="line197">197: </a>  FormInitialGuess1(&amp;user,user.fine.x);
 <a name="line198">198: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,user.fine.x);
 <a name="line199">199: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);
-<a name="line200">200: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Number of Newton iterations = %D\n"</font>, its );
+<a name="line200">200: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Number of <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = %D\n"</font>, its );
 
 <a name="line202">202: </a>  <font color="#B22222">/* Free data structures */</font>
 <a name="line203">203: </a>  <font color="#4169E1">if</font> (user.redundant_build) {
@@ -435,7 +439,7 @@
 <a name="line446">446: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetKSP.html#SNESGetKSP">SNESGetKSP</A>(snes,&amp;ksp);
 <a name="line447">447: </a>  <A href="../../../../docs/manualpages/KSP/KSPGetPC.html#KSPGetPC">KSPGetPC</A>(ksp,&amp;pc);
 <a name="line448">448: </a>
-<a name="line449">449: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<A href="../../../../docs/manualpages/PC/PCMG.html#PCMG">PCMG</A>,&amp;ismg);
+<a name="line449">449: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<A href="../../../../docs/manualpages/PC/PCMG.html#PCMG">PCMG</A>,&amp;ismg);
 <a name="line450">450: </a>  <font color="#4169E1">if</font> (ismg) {
 
 <a name="line452">452: </a>    <A href="../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(user-&gt;ksp_fine,user-&gt;fine.J,user-&gt;fine.J,SAME_NONZERO_PATTERN);
@@ -490,7 +494,7 @@
 <a name="line504">504: </a>  <A href="../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(user-&gt;coarse.x,&amp;m_c_local);
 <a name="line505">505: </a>  <A href="../../../../docs/manualpages/Vec/VecGetSize.html#VecGetSize">VecGetSize</A>(user-&gt;fine.x,&amp;m_fine);
 <a name="line506">506: </a>  <A href="../../../../docs/manualpages/Vec/VecGetSize.html#VecGetSize">VecGetSize</A>(user-&gt;coarse.x,&amp;m_coarse);
-<a name="line507">507: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateMPIAIJ.html#MatCreateMPIAIJ">MatCreateMPIAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,m_fine_local,m_c_local,m_fine,m_coarse,
+<a name="line507">507: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,m_fine_local,m_c_local,m_fine,m_coarse,
 <a name="line508">508: </a>                         5,0,3,0,&amp;mat);
 
 <a name="line510">510: </a>  <font color="#B22222">/* loop over local fine grid nodes setting interpolation for those*/</font>

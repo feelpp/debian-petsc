@@ -1,18 +1,26 @@
 <center><a href="pfall.c">Actual source code: pfall.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/pf/interface/pfall.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:57:16+00:00">
+<meta name="date" content="2012-08-29T16:41:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscpf.h&gt;          </font><font color="#B22222">/*I   "petscpf.h"   I*/</font><font color="#A020F0"></font>
 
+<a name="line4">  4: </a><strong><font color="#4169E1">EXTERN_C_BEGIN</font></strong>
+<a name="line5">  5: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_Constant(<A href="../../../../docs/manualpages/PF/PF.html#PF">PF</A>,void*)</font></strong>;
+<a name="line6">  6: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_String(<A href="../../../../docs/manualpages/PF/PF.html#PF">PF</A>,void*)</font></strong>;
+<a name="line7">  7: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_Quick(<A href="../../../../docs/manualpages/PF/PF.html#PF">PF</A>,void*)</font></strong>;
+<a name="line8">  8: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_Identity(<A href="../../../../docs/manualpages/PF/PF.html#PF">PF</A>,void*)</font></strong>;
 <a name="line9">  9: </a><font color="#A020F0">#if defined(PETSC_HAVE_MATLAB_ENGINE)</font>
+<a name="line10"> 10: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PFCreate_Matlab(<A href="../../../../docs/manualpages/PF/PF.html#PF">PF</A>,void*)</font></strong>;
 <a name="line11"> 11: </a><font color="#A020F0">#endif</font>
+<a name="line12"> 12: </a>EXTERN_C_END
 
 <a name="line16"> 16: </a><font color="#B22222">/*@C</font>
 <a name="line17"> 17: </a><font color="#B22222">   <A href="../../../../docs/manualpages/PF/PFRegisterAll.html#PFRegisterAll">PFRegisterAll</A> - Registers all of the preconditioners in the <A href="../../../../docs/manualpages/PF/PF.html#PF">PF</A> package.</font>

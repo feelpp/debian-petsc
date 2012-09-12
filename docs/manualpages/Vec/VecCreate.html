@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecCreate.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecCreate"><H1>VecCreate</H1></A>
 Creates an empty vector object. The type can then be set with <A HREF="../Vec/VecSetType.html#VecSetType">VecSetType</A>(), or <A HREF="../Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -30,10 +31,6 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  vector, create
 <BR>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp VecCreate(Vec *x)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>VecCreate(PETSC_COMM_SELF,x)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Vec/VecSetType.html#VecSetType">VecSetType</A>(), <A HREF="../Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(), <A HREF="../Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(), <A HREF="../Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>(), <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(),
 <BR><A HREF="../Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>(), <A HREF="../Vec/VecCreateGhost.html#VecCreateGhost">VecCreateGhost</A>(), <A HREF="../Vec/VecCreateSeq.html#VecCreateSeq">VecCreateSeq</A>(), <A HREF="../Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>()
@@ -43,15 +40,15 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/sys/threadcomm/examples/tutorials/ex4.c.html">src/sys/threadcomm/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex1.c.html">src/vec/vec/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex1e.c.html">src/vec/vec/examples/tutorials/ex1e.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex2.c.html">src/vec/vec/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex3.c.html">src/vec/vec/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex5.c.html">src/vec/vec/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex6.c.html">src/vec/vec/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex7.c.html">src/vec/vec/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex8.c.html">src/vec/vec/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/vec/vec/examples/tutorials/ex9.c.html">src/vec/vec/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex10.c.html">src/vec/vec/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex11.c.html">src/vec/vec/examples/tutorials/ex11.c.html</A><BR>
-<A HREF="../../../src/vec/vec/examples/tutorials/ex12.c.html">src/vec/vec/examples/tutorials/ex12.c.html</A><BR>
 </BODY></HTML>

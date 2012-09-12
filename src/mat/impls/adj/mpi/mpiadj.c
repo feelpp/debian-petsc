@@ -2,7 +2,7 @@
 /*
     Defines the basic matrix operations for the ADJ adjacency list matrix data-structure. 
 */
-#include <../src/mat/impls/adj/mpi/mpiadj.h>
+#include <../src/mat/impls/adj/mpi/mpiadj.h>    /*I "petscmat.h" I*/
 
 #undef __FUNCT__  
 #define __FUNCT__ "MatView_MPIAdj_ASCII"
@@ -46,7 +46,7 @@ PetscErrorCode MatView_MPIAdj(Mat A,PetscViewer viewer)
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = MatView_MPIAdj_ASCII(A,viewer);CHKERRQ(ierr);
   } else {
@@ -80,6 +80,7 @@ PetscErrorCode MatDestroy_MPIAdj(Mat mat)
   ierr = PetscFree(mat->data);CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)mat,0);CHKERRQ(ierr);
   ierr = PetscObjectComposeFunction((PetscObject)mat,"MatMPIAdjSetPreallocation_C","",PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunction((PetscObject)mat,"MatMPIAdjCreateNonemptySubcommMat_C","",PETSC_NULL);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -402,22 +403,16 @@ PetscErrorCode  MatMPIAdjSetPreallocation_MPIAdj(Mat B,PetscInt *i,PetscInt *j,P
 #endif
 
   PetscFunctionBegin;
-  ierr = PetscLayoutSetBlockSize(B->rmap,1);CHKERRQ(ierr);
-  ierr = PetscLayoutSetBlockSize(B->cmap,1);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(B->rmap);CHKERRQ(ierr);
   ierr = PetscLayoutSetUp(B->cmap);CHKERRQ(ierr);
 
 #if defined(PETSC_USE_DEBUG)
   if (i[0] != 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"First i[] index must be zero, instead it is %D\n",i[0]);
   for (ii=1; ii<B->rmap->n; ii++) {
-    if (i[ii] < 0 || i[ii] < i[ii-1]) {
-      SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"i[%D]=%D index is out of range: i[%D]=%D",ii,i[ii],ii-1,i[ii-1]);
-    }
+    if (i[ii] < 0 || i[ii] < i[ii-1]) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"i[%D]=%D index is out of range: i[%D]=%D",ii,i[ii],ii-1,i[ii-1]);
   }
   for (ii=0; ii<i[B->rmap->n]; ii++) {
-    if (j[ii] < 0 || j[ii] >= B->cmap->N) {
-      SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Column index %D out of range %D\n",ii,j[ii]);
-    }
+    if (j[ii] < 0 || j[ii] >= B->cmap->N) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Column index %D out of range %D\n",ii,j[ii]);
   } 
 #endif
   B->preallocated = PETSC_TRUE;
@@ -436,6 +431,87 @@ PetscErrorCode  MatMPIAdjSetPreallocation_MPIAdj(Mat B,PetscInt *i,PetscInt *j,P
   PetscFunctionReturn(0);
 }
 EXTERN_C_END
+
+#undef __FUNCT__
+#define __FUNCT__ "MatMPIAdjCreateNonemptySubcommMat_MPIAdj"
+PETSC_EXTERN_C PetscErrorCode MatMPIAdjCreateNonemptySubcommMat_MPIAdj(Mat A,Mat *B)
+{
+  Mat_MPIAdj     *a = (Mat_MPIAdj*)A->data;
+  PetscErrorCode ierr;
+  const PetscInt *ranges;
+  MPI_Comm       acomm,bcomm;
+  MPI_Group      agroup,bgroup;
+  PetscMPIInt    i,rank,size,nranks,*ranks;
+
+  PetscFunctionBegin;
+  *B = PETSC_NULL;
+  acomm = ((PetscObject)A)->comm;
+  ierr = MPI_Comm_size(acomm,&size);CHKERRQ(ierr);
+  ierr = MPI_Comm_size(acomm,&rank);CHKERRQ(ierr);
+  ierr = MatGetOwnershipRanges(A,&ranges);CHKERRQ(ierr);
+  for (i=0,nranks=0; i<size; i++) {
+    if (ranges[i+1] - ranges[i] > 0) nranks++;
+  }
+  if (nranks == size) {         /* All ranks have a positive number of rows, so we do not need to create a subcomm; */
+    ierr = PetscObjectReference((PetscObject)A);CHKERRQ(ierr);
+    *B = A;
+    PetscFunctionReturn(0);
+  }
+
+  ierr = PetscMalloc(nranks*sizeof(PetscMPIInt),&ranks);CHKERRQ(ierr);
+  for (i=0,nranks=0; i<size; i++) {
+    if (ranges[i+1] - ranges[i] > 0) ranks[nranks++] = i;
+  }
+  ierr = MPI_Comm_group(acomm,&agroup);CHKERRQ(ierr);
+  ierr = MPI_Group_incl(agroup,nranks,ranks,&bgroup);CHKERRQ(ierr);
+  ierr = PetscFree(ranks);CHKERRQ(ierr);
+  ierr = MPI_Comm_create(acomm,bgroup,&bcomm);CHKERRQ(ierr);
+  ierr = MPI_Group_free(&agroup);CHKERRQ(ierr);
+  ierr = MPI_Group_free(&bgroup);CHKERRQ(ierr);
+  if (bcomm != MPI_COMM_NULL) {
+    PetscInt   m,N;
+    Mat_MPIAdj *b;
+    ierr = MatGetLocalSize(A,&m,PETSC_NULL);CHKERRQ(ierr);
+    ierr = MatGetSize(A,PETSC_NULL,&N);CHKERRQ(ierr);
+    ierr = MatCreateMPIAdj(bcomm,m,N,a->i,a->j,a->values,B);CHKERRQ(ierr);
+    b = (Mat_MPIAdj*)(*B)->data;
+    b->freeaij = PETSC_FALSE;
+    ierr = MPI_Comm_free(&bcomm);CHKERRQ(ierr);
+  }
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "MatMPIAdjCreateNonemptySubcommMat"
+/*@
+   MatMPIAdjCreateNonemptySubcommMat - create the same MPIAdj matrix on a subcommunicator containing only processes owning a positive number of rows
+
+   Collective
+
+   Input Arguments:
+.  A - original MPIAdj matrix
+
+   Output Arguments:
+.  B - matrix on subcommunicator, PETSC_NULL on ranks that owned zero rows of A
+
+   Level: developer
+
+   Note:
+   This function is mostly useful for internal use by mesh partitioning packages that require that every process owns at least one row.
+
+   The matrix B should be destroyed with MatDestroy(). The arrays are not copied, so B should be destroyed before A is destroyed.
+
+.seealso: MatCreateMPIAdj()
+@*/
+PetscErrorCode MatMPIAdjCreateNonemptySubcommMat(Mat A,Mat *B)
+{
+  PetscErrorCode ierr;
+
+  PetscFunctionBegin;
+  PetscValidHeaderSpecific(A,MAT_CLASSID,1);
+  ierr = PetscUseMethod(A,"MatMPIAdjCreateNonemptySubcommMat_C",(Mat,Mat*),(A,B));CHKERRQ(ierr);
+  PetscFunctionReturn(0);
+}
 
 /*MC
    MATMPIADJ - MATMPIADJ = "mpiadj" - A matrix type to be used for distributed adjacency matrices,
@@ -463,6 +539,9 @@ PetscErrorCode  MatCreate_MPIAdj(Mat B)
   ierr = PetscObjectComposeFunctionDynamic((PetscObject)B,"MatMPIAdjSetPreallocation_C",
                                     "MatMPIAdjSetPreallocation_MPIAdj",
                                      MatMPIAdjSetPreallocation_MPIAdj);CHKERRQ(ierr);
+  ierr = PetscObjectComposeFunctionDynamic((PetscObject)B,"MatMPIAdjCreateNonemptySubcommMat_C",
+                                    "MatMPIAdjCreateNonemptySubcommMat_MPIAdj",
+                                     MatMPIAdjCreateNonemptySubcommMat_MPIAdj);CHKERRQ(ierr);
   ierr = PetscObjectChangeTypeName((PetscObject)B,MATMPIADJ);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }

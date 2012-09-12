@@ -1,15 +1,16 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMGetGlobalVector.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>DMGetGlobalVector</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="DMGetGlobalVector"><H1>DMGetGlobalVector</H1></A>
 Gets a MPI PETSc vector that may be used with the DMXXX routines. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscdmda.h"   
+#include "petscdm.h" 
 PetscErrorCode  DMGetGlobalVector(DM dm,Vec* g)
 </PRE>
 Collective on DM
@@ -44,7 +45,7 @@ VecStride*() operations can be useful when using DM with dof &gt; 1
 <A HREF="../Vec/VecStrideMax.html#VecStrideMax">VecStrideMax</A>(), <A HREF="../Vec/VecStrideMin.html#VecStrideMin">VecStrideMin</A>(), <A HREF="../Vec/VecStrideNorm.html#VecStrideNorm">VecStrideNorm</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/da/dalocal.c.html#DMGetGlobalVector">src/dm/impls/da/dalocal.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/interface/dmget.c.html#DMGetGlobalVector">src/dm/interface/dmget.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
@@ -54,10 +55,10 @@ VecStride*() operations can be useful when using DM with dof &gt; 1
 <A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex11f90.F.html">src/dm/examples/tutorials/ex11f90.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html">src/ksp/ksp/examples/tutorials/ex31.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex47.c.html">src/ksp/ksp/examples/tutorials/ex47.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex22.c.html">src/snes/examples/tutorials/ex22.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex51.c.html">src/snes/examples/tutorials/ex51.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex52.c.html">src/snes/examples/tutorials/ex52.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex63.c.html">src/snes/examples/tutorials/ex63.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex64.c.html">src/snes/examples/tutorials/ex64.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex65.c.html">src/snes/examples/tutorials/ex65.c.html</A><BR>
 </BODY></HTML>

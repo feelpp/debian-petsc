@@ -1,24 +1,31 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESType.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESType"><H1>SNESType</H1></A>
 String with the name of a PETSc <A HREF="../SNES/SNES.html#SNES">SNES</A> method or the creation function with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:mysnescreate() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #define SNESType char*
-#define SNESLS      "ls"
-#define SNESTR      "tr"
-#define SNESPYTHON  "python"
-#define SNESTEST    "test"
-#define SNESPICARD  "picard"
-#define SNESKSPONLY "ksponly"
-#define SNESVI      "vi"
-#define SNESNGMRES  "ngmres"
-#define SNESSORQN   "sorqn"
+#define SNESLS           "ls"
+#define SNESTR           "tr"
+#define SNESPYTHON       "python"
+#define SNESTEST         "test"
+#define SNESNRICHARDSON  "nrichardson"
+#define SNESKSPONLY      "ksponly"
+#define SNESVIRS         "virs"
+#define SNESVISS         "viss"
+#define SNESNGMRES       "ngmres"
+#define SNESQN           "qn"
+#define SNESSHELL        "shell"
+#define SNESGS           "gs"
+#define SNESNCG          "ncg"
+#define SNESFAS          "fas"
+#define SNESMS           "ms"
 
 </PRE>
 

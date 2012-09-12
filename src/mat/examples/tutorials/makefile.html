@@ -1,19 +1,20 @@
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tutorials/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:06:08+00:00">
+<meta name="date" content="2012-08-29T16:52:41+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 CFLAGS                 = 
 FFLAGS                = 
 CPPFLAGS        = 
 FPPFLAGS        =
 LOCDIR          = src/mat/examples/tutorials/
-EXAMPLESC       = ex1.c ex2.c ex4.c ex5.c ex6.c ex8.c ex9.c ex10.c ex11.c ex12.c ex13.c ex14.c ex15.c
+EXAMPLESC       = ex1.c ex2.c ex4.c ex5.c ex8.c ex9.c ex10.c ex11.c ex12.c ex13.c ex14.c ex15.c ex16.c ex17.c
 EXAMPLESF       =
 MANSEC          = <A href="ROOT/docs/manualpages/Mat/Mat.html#Mat">Mat</A>
 
@@ -40,10 +41,6 @@ include ${PETSC_DIR}/conf/rules
         -${CLINKER}  -o ex5 ex5.o ${PETSC_MAT_LIB}
         ${RM} ex5.o
 
-<strong><font color="#FF0000">ex6:</font></strong> ex6.o  chkopts
-        -${CLINKER}  -o ex6 ex6.o ${PETSC_MAT_LIB}
-        ${RM} ex6.o
-
 <strong><font color="#FF0000">ex8:</font></strong> ex8.o  chkopts
         -${CLINKER}  -o ex8 ex8.o ${PETSC_MAT_LIB}
         ${RM} ex8.o
@@ -64,13 +61,22 @@ include ${PETSC_DIR}/conf/rules
         ${RM} ex13.o
 
 <strong><font color="#FF0000">ex14:</font></strong> ex14.o  chkopts
-        -${CLINKER}  -o ex14 ex14.o ${PETSC_MAT_LIB}
+        -${CLINKER}  -o ex14 ex14.o ${PETSC_DM_LIB}
         ${RM} ex14.o
 
 <strong><font color="#FF0000">ex15:</font></strong> ex15.o  chkopts
         -${CLINKER}  -o ex15 ex15.o ${PETSC_MAT_LIB}
         ${RM} ex15.o
-<font color="#A020F0"># See http://www.mcs.anl.gov/petsc/petsc-as/documentation/faq.html#datafiles for how to obtain the datafiles used below</font>
+
+<strong><font color="#FF0000">ex16:</font></strong> ex16.o  chkopts
+        -${CLINKER}  -o ex16 ex16.o ${PETSC_MAT_LIB}
+        ${RM} ex16.o
+
+<strong><font color="#FF0000">ex17:</font></strong> ex17.o  chkopts
+        -${CLINKER}  -o ex17 ex17.o ${PETSC_MAT_LIB}
+        ${RM} ex17.o
+
+<font color="#A020F0"># See http://www.mcs.anl.gov/petsc/documentation/faq.html#datafiles for how to obtain the datafiles used below</font>
 <strong><font color="#FF0000">runex1:</font></strong> 
         -@${MPIEXEC} -n 1 ./ex1 -f0 ${DATAFILESPATH}/matrices/medium -viewer_binary_skip_info
 
@@ -83,57 +89,62 @@ include ${PETSC_DIR}/conf/rules
 <strong><font color="#FF0000">runex10_seqaij:</font></strong> 
         -@${MPIEXEC} -n 1 ./ex10 -f ${DATAFILESPATH}/matrices/small -a_mat_type seqaij  &gt; ex10_seqaij.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/ex10_seqaij.out ex10_seqaij.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex10_seqaij, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex10_seqaij, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex10_seqaij.tmp
 
 <strong><font color="#FF0000">runex10_seqdense:</font></strong> 
         -@${MPIEXEC} -n 1 ./ex10 -f ${DATAFILESPATH}/matrices/small -a_mat_type seqdense &gt; ex10_seqdense.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/ex10_seqdense.out ex10_seqdense.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex10_seqdense, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex10_seqdense, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex10_seqdense.tmp
 
 <strong><font color="#FF0000">runex10_mpiaij:</font></strong> 
         -@${MPIEXEC} -n 2 ./ex10 -f ${DATAFILESPATH}/matrices/small -a_mat_type mpiaij &gt; ex10_mpiaij.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/ex10_mpiaij.out ex10_mpiaij.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex10_mpiaij, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex10_mpiaij, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex10_mpiaij.tmp
 
 <strong><font color="#FF0000">runex10_mpidense:</font></strong> 
         -@${MPIEXEC} -n 2 ./ex10 -f ${DATAFILESPATH}/matrices/small -a_mat_type mpidense &gt; ex10_mpidense.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/ex10_mpidense.out ex10_mpidense.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex10_mpidense, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex10_mpidense, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex10_mpidense.tmp
 
 <strong><font color="#FF0000">runex11:</font></strong> 
         -@${MPIEXEC} -n 2 ./ex11 &gt; ex11_1.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/ex11_1.out ex11_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex11, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex11, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex11_1.tmp
 
 <strong><font color="#FF0000">runex13:</font></strong> 
         -@${MPIEXEC}  ./ex13 
 
-N=1
+NP=1
 <strong><font color="#FF0000">runex14:</font></strong> 
-        -@${MPIEXEC}  -n $N ./ex14 ${ARGS}
+        -@${MPIEXEC}  -n ${NP} ./ex14 ${ARGS}
 
 <strong><font color="#FF0000">runex15:</font></strong> 
         -@${MPIEXEC} -n 3 ./ex15 -mat_partitioning_type parmetis &gt; ex15_1.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/ex15_1.out ex15_1.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex15, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex15, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex15_1.tmp
 
 <strong><font color="#FF0000">runex15_2:</font></strong> 
         -@${MPIEXEC} -n 3 ./ex15 -mat_partitioning_type ptscotch &gt; ex15_2.tmp 2&gt;&amp;1;   \
            <font color="#4169E1">if</font> (${DIFF} output/ex15_2.out ex15_2.tmp) then true; \
-           <font color="#4169E1">else</font> echo <font color="#666666">"Possible problem with ex15_2, diffs above"</font>; fi; \
+           <font color="#4169E1">else</font> echo ${PWD} ; echo <font color="#666666">"Possible problem with with ex15_2, diffs above \n========================================="</font>; fi; \
            ${RM} -f ex15_2.tmp
+
+<strong><font color="#FF0000">runex17:</font></strong>
+        -@${MPIEXEC} -n 8 ./ex17 -emptyranks 0,2,4 -bigranks 1,3,7 &gt; ex17_1.tmp 2&gt;&amp;1;   \
+           ${DIFF} output/ex17_1.out ex17_1.tmp || echo ${PWD} <font color="#666666">"\nPossible problem with with ex17_1, diffs above \n========================================="</font>; \
+           ${RM} -f ex17_1.tmp
 
 <font color="#A020F0">#-------------------------------------------------------------</font>
 TESTEXAMPLES_C                    = ex4.PETSc ex4.rm ex5.PETSc ex5.rm ex10.PETSc ex10.rm ex12.PETSc ex12.rm
-TESTEXAMPLES_C_X11            = ex2.PETSc ex2.rm 
+TESTEXAMPLES_C_X            = ex2.PETSc ex2.rm 
 TESTEXAMPLES_FORTRAN            = 
-TESTEXAMPLES_C_X11_MPIUNI   = 
+TESTEXAMPLES_C_X_MPIUNI   = 
 TESTEXAMPLES_DATAFILESPATH  = ex1.PETSc runex1 ex1.rm ex5.PETSc runex5 ex5.rm ex9.PETSc runex9 ex9.rm ex10.PETSc runex10_seqaij runex10_seqdense runex10_mpiaij runex10_mpidense ex10.rm  ex13.PETSc runex13 ex13.rm
 TESTEXAMPLES_FORTRAN_MPIUNI = 
 TESTEXAMPLES_13                    = ex1.PETSc ex1.rm

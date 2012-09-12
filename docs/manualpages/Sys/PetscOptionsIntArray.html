@@ -1,12 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscOptionsIntArray.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscOptionsIntArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscOptionsIntArray"><H1>PetscOptionsIntArray</H1></A>
-Gets an array of integers for a particular option in the database. The values must be separated with commas with  no intervening spaces.  
+Gets an array of integers for a particular option in the database. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
@@ -37,7 +38,13 @@ Logically Collective on the communicator passed in <A HREF="../Sys/PetscOptionsB
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-The user should pass in an array of integers
+The array can be passed as
+a comma seperated list:                                 0,1,2,3,4,5,6,7
+a range (start-end+1):                                  0-8
+a range with given increment (start-end+1:inc):         0-7:2
+a combination of values and ranges seperated by commas: 0,1-8,8-15:2
+<P>
+There must be no intervening spaces between the values.
 <P>
 Must be between a <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>() and a <A HREF="../Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>()
 <P>
@@ -54,4 +61,6 @@ Must be between a <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">Pets
 <BR><A HREF="./index.html">Index of all Sys routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
 </BODY></HTML>

@@ -1,13 +1,14 @@
 <center><a href="mprint.h">Actual source code: mprint.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/fileio/mprint.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:51:56+00:00">
+<meta name="date" content="2012-08-29T16:35:02+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 
 <a name="line5">  5: </a><font color="#A020F0">#include &lt;petscsys.h&gt;             </font><font color="#B22222">/*I    "petscsys.h"   I*/</font><font color="#A020F0"></font>
@@ -24,6 +25,9 @@
 <a name="line16"> 16: </a>  int         size;
 <a name="line17"> 17: </a>  PrintfQueue next;
 <a name="line18"> 18: </a>};
+<a name="line19"> 19: </a>extern PrintfQueue petsc_printfqueue,petsc_printfqueuebase;
+<a name="line20"> 20: </a>extern int         petsc_printfqueuelength;
+<a name="line21"> 21: </a>extern FILE        *petsc_printfqueuefile;
 
 <a name="line23"> 23: </a><font color="#A020F0">#endif</font>
 </pre>

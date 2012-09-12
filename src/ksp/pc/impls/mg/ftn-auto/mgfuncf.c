@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* mgfunc.c */
 /* Fortran interface file */
 
@@ -40,14 +40,29 @@ extern void PetscRmPointer(void*);
 #define pcmgsetinterpolation_ pcmgsetinterpolation
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcmggetinterpolation_ PCMGGETINTERPOLATION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcmggetinterpolation_ pcmggetinterpolation
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcmgsetrestriction_ PCMGSETRESTRICTION
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcmgsetrestriction_ pcmgsetrestriction
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcmggetrestriction_ PCMGGETRESTRICTION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcmggetrestriction_ pcmggetrestriction
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcmgsetrscale_ PCMGSETRSCALE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcmgsetrscale_ pcmgsetrscale
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcmggetrscale_ PCMGGETRSCALE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcmggetrscale_ pcmggetrscale
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcmggetsmoother_ PCMGGETSMOOTHER
@@ -99,15 +114,27 @@ void PETSC_STDCALL  pcmgsetinterpolation_(PC pc,PetscInt *l,Mat mat, int *__ierr
 	(PC)PetscToPointer((pc) ),*l,
 	(Mat)PetscToPointer((mat) ));
 }
+void PETSC_STDCALL  pcmggetinterpolation_(PC pc,PetscInt *l,Mat *mat, int *__ierr ){
+*__ierr = PCMGGetInterpolation(
+	(PC)PetscToPointer((pc) ),*l,mat);
+}
 void PETSC_STDCALL  pcmgsetrestriction_(PC pc,PetscInt *l,Mat mat, int *__ierr ){
 *__ierr = PCMGSetRestriction(
 	(PC)PetscToPointer((pc) ),*l,
 	(Mat)PetscToPointer((mat) ));
 }
+void PETSC_STDCALL  pcmggetrestriction_(PC pc,PetscInt *l,Mat *mat, int *__ierr ){
+*__ierr = PCMGGetRestriction(
+	(PC)PetscToPointer((pc) ),*l,mat);
+}
 void PETSC_STDCALL  pcmgsetrscale_(PC pc,PetscInt *l,Vec rscale, int *__ierr ){
 *__ierr = PCMGSetRScale(
 	(PC)PetscToPointer((pc) ),*l,
 	(Vec)PetscToPointer((rscale) ));
+}
+void PETSC_STDCALL  pcmggetrscale_(PC pc,PetscInt *l,Vec *rscale, int *__ierr ){
+*__ierr = PCMGGetRScale(
+	(PC)PetscToPointer((pc) ),*l,rscale);
 }
 void PETSC_STDCALL  pcmggetsmoother_(PC pc,PetscInt *l,KSP *ksp, int *__ierr ){
 *__ierr = PCMGGetSmoother(

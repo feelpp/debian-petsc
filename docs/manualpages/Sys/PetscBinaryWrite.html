@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscBinaryWrite.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscBinaryWrite</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscBinaryWrite"><H1>PetscBinaryWrite</H1></A>
 Writes to a binary file. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -44,7 +45,7 @@ This routine restores the original contents of the buffer, after
 it is written to the file. This is done by byte-swapping in-place
 the second time. If the flag istemp is set to <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>, the second
 byte-swapping operation is not done, thus saving some computation,
-but the buffer corrupted is corrupted.
+but the buffer is left corrupted.
 <P>
 Because byte-swapping may be done on the values in data it cannot be declared const
 <P>

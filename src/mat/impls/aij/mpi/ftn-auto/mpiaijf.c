@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* mpiaij.c */
 /* Fortran interface file */
 
@@ -39,9 +39,9 @@ extern void PetscRmPointer(void*);
 #define matcreatempiaijwitharrays_ matcreatempiaijwitharrays
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matmerge_ MATMERGE
+#define matcreatempiaijconcatenateseqaij_ MATCREATEMPIAIJCONCATENATESEQAIJ
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matmerge_ matmerge
+#define matcreatempiaijconcatenateseqaij_ matcreatempiaijconcatenateseqaij
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matmpiaijgetlocalmat_ MATMPIAIJGETLOCALMAT
@@ -67,8 +67,8 @@ void PETSC_STDCALL  matcreatempiaijwitharrays_(MPI_Fint * comm,PetscInt *m,Petsc
 *__ierr = MatCreateMPIAIJWithArrays(
 	MPI_Comm_f2c( *(comm) ),*m,*n,*M,*N,i,j,a,mat);
 }
-void PETSC_STDCALL  matmerge_(MPI_Fint * comm,Mat inmat,PetscInt *n,MatReuse *scall,Mat *outmat, int *__ierr ){
-*__ierr = MatMerge(
+void PETSC_STDCALL  matcreatempiaijconcatenateseqaij_(MPI_Fint * comm,Mat inmat,PetscInt *n,MatReuse *scall,Mat *outmat, int *__ierr ){
+*__ierr = MatCreateMPIAIJConcatenateSeqAIJ(
 	MPI_Comm_f2c( *(comm) ),
 	(Mat)PetscToPointer((inmat) ),*n,*scall,outmat);
 }

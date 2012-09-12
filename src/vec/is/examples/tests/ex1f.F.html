@@ -1,13 +1,14 @@
 <center><a href="ex1f.F">Actual source code: ex1f.F</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/is/examples/tests/ex1f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:56:56+00:00">
+<meta name="date" content="2012-08-29T16:40:46+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Formatted test <font color="#4169E1">for</font> <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A> general routines
@@ -21,7 +22,7 @@
 <a name="line11"> 11: </a>       <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
 <a name="line12"> 12: </a>       <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i,n,indices(1000),ii(1)
 <a name="line13"> 13: </a>       <A href="../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> size,rank
-<a name="line14"> 14: </a>       PetscOffset iis
+<a name="line14"> 14: </a>       <A href="../../../../../docs/manualpages/Sys/PetscOffset.html#PetscOffset">PetscOffset</A> iis
 <a name="line15"> 15: </a>       <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>          is,newis
 <a name="line16"> 16: </a>       <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   flag
 
@@ -118,13 +119,13 @@
 
 <a name="line109">109: </a>!     Thinks it is a different type?
 
-<a name="line111">111: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>(is,ISSTRIDE,flag,ierr)
+<a name="line111">111: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>(is,ISSTRIDE,flag,ierr)
 <a name="line112">112: </a>           <A href="../../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr)
 <a name="line113">113: </a>      <font color="#4169E1">if</font> (flag) then
 <a name="line114">114: </a>         print*, 'Error checking stride'
 <a name="line115">115: </a>         stop
 <a name="line116">116: </a>      endif
-<a name="line117">117: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>(is,ISBLOCK,flag,ierr)
+<a name="line117">117: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>(is,ISBLOCK,flag,ierr)
 <a name="line118">118: </a>           <A href="../../../../../docs/manualpages/Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr)
 <a name="line119">119: </a>      <font color="#4169E1">if</font> (flag) then
 <a name="line120">120: </a>         print*, 'Error checking block'

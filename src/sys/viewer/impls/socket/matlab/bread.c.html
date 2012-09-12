@@ -1,13 +1,14 @@
 <center><a href="bread.c">Actual source code: bread.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/viewer/impls/socket/matlab/bread.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:50:02+00:00">
+<meta name="date" content="2012-08-29T16:32:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;stdio.h&gt;</font>
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
@@ -110,86 +111,87 @@
 <a name="line108">108: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_CHAR)   n *= <font color="#4169E1">sizeof</font>(char);
 <a name="line109">109: </a>  <font color="#4169E1">else</font> PETSC_MEX_ERROR(<font color="#666666">"<A href="0/docs/manualpages/Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A>: Unknown type"</font>);
 <a name="line110">110: </a>
-<a name="line111">111: </a>  <font color="#4169E1">while</font> (n) {
-<a name="line112">112: </a>    wsize = (n &lt; maxblock) ? n : maxblock;
-<a name="line113">113: </a>    err = read(fd,pp,wsize);
-<a name="line114">114: </a><font color="#A020F0">#if !defined(PETSC_MISSING_ERRNO_EINTR)</font>
-<a name="line115">115: </a>    <font color="#4169E1">if</font> (err &lt; 0 &amp;&amp; errno == EINTR) <font color="#4169E1">continue</font>;
-<a name="line116">116: </a><font color="#A020F0">#endif</font>
-<a name="line117">117: </a>    <font color="#4169E1">if</font> (!err &amp;&amp; wsize &gt; 0) <font color="#4169E1">return</font> 1;
-<a name="line118">118: </a>    <font color="#4169E1">if</font> (err &lt; 0) {
-<a name="line119">119: </a>      PETSC_MEX_ERROR(<font color="#666666">"Error reading from socket\n"</font>);
-<a name="line120">120: </a>    }
-<a name="line121">121: </a>    n  -= err;
-<a name="line122">122: </a>    pp += err;
-<a name="line123">123: </a>  }
-<a name="line124">124: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
-<a name="line125">125: </a>  <font color="#4169E1">if</font> (type == PETSC_INT) SYByteSwapInt((int*)ptmp,ntmp);
-<a name="line126">126: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SCALAR) SYByteSwapScalar((<A href="0/docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)ptmp,ntmp);
-<a name="line127">127: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SHORT) SYByteSwapShort((short*)ptmp,ntmp);
-<a name="line128">128: </a><font color="#A020F0">#endif</font>
 
-<a name="line130">130: </a>  <font color="#4169E1">return</font> 0;
-<a name="line131">131: </a>}
+<a name="line112">112: </a>  <font color="#4169E1">while</font> (n) {
+<a name="line113">113: </a>    wsize = (n &lt; maxblock) ? n : maxblock;
+<a name="line114">114: </a>    err = read(fd,pp,wsize);
+<a name="line115">115: </a><font color="#A020F0">#if !defined(PETSC_MISSING_ERRNO_EINTR)</font>
+<a name="line116">116: </a>    <font color="#4169E1">if</font> (err &lt; 0 &amp;&amp; errno == EINTR) <font color="#4169E1">continue</font>;
+<a name="line117">117: </a><font color="#A020F0">#endif</font>
+<a name="line118">118: </a>    <font color="#4169E1">if</font> (!err &amp;&amp; wsize &gt; 0) <font color="#4169E1">return</font> 1;
+<a name="line119">119: </a>    <font color="#4169E1">if</font> (err &lt; 0) {
+<a name="line120">120: </a>      PETSC_MEX_ERROR(<font color="#666666">"Error reading from socket\n"</font>);
+<a name="line121">121: </a>    }
+<a name="line122">122: </a>    n  -= err;
+<a name="line123">123: </a>    pp += err;
+<a name="line124">124: </a>  }
 
-<a name="line135">135: </a><font color="#B22222">/*</font>
-<a name="line136">136: </a><font color="#B22222">    <A href="0/docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A> - Writes to a socket, called from MATLAB</font>
+<a name="line126">126: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
+<a name="line127">127: </a>  <font color="#4169E1">if</font> (type == PETSC_INT) SYByteSwapInt((int*)ptmp,ntmp);
+<a name="line128">128: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SCALAR) SYByteSwapScalar((<A href="0/docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)ptmp,ntmp);
+<a name="line129">129: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SHORT) SYByteSwapShort((short*)ptmp,ntmp);
+<a name="line130">130: </a><font color="#A020F0">#endif</font>
+<a name="line131">131: </a>  <font color="#4169E1">return</font> 0;
+<a name="line132">132: </a>}
 
-<a name="line138">138: </a><font color="#B22222">  Input Parameters:</font>
-<a name="line139">139: </a><font color="#B22222">.   fd - the file</font>
-<a name="line140">140: </a><font color="#B22222">.   n  - the number of items to read </font>
-<a name="line141">141: </a><font color="#B22222">.   p - the data</font>
-<a name="line142">142: </a><font color="#B22222">.   type - the type of items to read (PETSC_INT or PETSC_SCALAR)</font>
+<a name="line136">136: </a><font color="#B22222">/*</font>
+<a name="line137">137: </a><font color="#B22222">    <A href="0/docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A> - Writes to a socket, called from MATLAB</font>
+
+<a name="line139">139: </a><font color="#B22222">  Input Parameters:</font>
+<a name="line140">140: </a><font color="#B22222">.   fd - the file</font>
+<a name="line141">141: </a><font color="#B22222">.   n  - the number of items to read </font>
+<a name="line142">142: </a><font color="#B22222">.   p - the data</font>
+<a name="line143">143: </a><font color="#B22222">.   type - the type of items to read (PETSC_INT or PETSC_SCALAR)</font>
 
 
-<a name="line145">145: </a><font color="#B22222">  Notes: does byte swapping to work on all machines.</font>
-<a name="line146">146: </a><font color="#B22222">*/</font>
-<a name="line147">147: </a><strong><font color="#4169E1"><a name="PetscBinaryWrite"></a><A href="0/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="0/docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>(int fd,void *p,int n,<A href="0/docs/manualpages/Sys/PetscDataType.html#PetscDataType">PetscDataType</A> type,<A href="0/docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  dummy)</font></strong>
-<a name="line148">148: </a>{
+<a name="line146">146: </a><font color="#B22222">  Notes: does byte swapping to work on all machines.</font>
+<a name="line147">147: </a><font color="#B22222">*/</font>
+<a name="line148">148: </a><strong><font color="#4169E1"><a name="PetscBinaryWrite"></a><A href="0/docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="0/docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>(int fd,void *p,int n,<A href="0/docs/manualpages/Sys/PetscDataType.html#PetscDataType">PetscDataType</A> type,<A href="0/docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  dummy)</font></strong>
+<a name="line149">149: </a>{
 
-<a name="line150">150: </a>  int  maxblock,wsize,err;
-<a name="line151">151: </a>  char *pp = (char*)p;
-<a name="line152">152: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
-<a name="line153">153: </a>  int  ntmp = n;
-<a name="line154">154: </a>  void *ptmp = p;
-<a name="line155">155: </a><font color="#A020F0">#endif</font>
+<a name="line151">151: </a>  int  maxblock,wsize,err;
+<a name="line152">152: </a>  char *pp = (char*)p;
+<a name="line153">153: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
+<a name="line154">154: </a>  int  ntmp = n;
+<a name="line155">155: </a>  void *ptmp = p;
+<a name="line156">156: </a><font color="#A020F0">#endif</font>
 
-<a name="line157">157: </a>  maxblock = 65536;
-<a name="line158">158: </a>  <font color="#4169E1">if</font> (type == PETSC_INT)         n *= <font color="#4169E1">sizeof</font>(int);
-<a name="line159">159: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SCALAR) n *= <font color="#4169E1">sizeof</font>(<A href="0/docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>);
-<a name="line160">160: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SHORT)  n *= <font color="#4169E1">sizeof</font>(short);
-<a name="line161">161: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_CHAR)   n *= <font color="#4169E1">sizeof</font>(char);
-<a name="line162">162: </a>  <font color="#4169E1">else</font> PETSC_MEX_ERROR(<font color="#666666">"<A href="0/docs/manualpages/Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A>: Unknown type"</font>);
+<a name="line158">158: </a>  maxblock = 65536;
+<a name="line159">159: </a>  <font color="#4169E1">if</font> (type == PETSC_INT)         n *= <font color="#4169E1">sizeof</font>(int);
+<a name="line160">160: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SCALAR) n *= <font color="#4169E1">sizeof</font>(<A href="0/docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>);
+<a name="line161">161: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SHORT)  n *= <font color="#4169E1">sizeof</font>(short);
+<a name="line162">162: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_CHAR)   n *= <font color="#4169E1">sizeof</font>(char);
+<a name="line163">163: </a>  <font color="#4169E1">else</font> PETSC_MEX_ERROR(<font color="#666666">"<A href="0/docs/manualpages/Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A>: Unknown type"</font>);
 
-<a name="line164">164: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
-<a name="line165">165: </a>  <font color="#B22222">/* make sure data is in correct byte ordering before sending  */</font>
-<a name="line166">166: </a>  <font color="#4169E1">if</font> (type == PETSC_INT) SYByteSwapInt((int*)ptmp,ntmp);
-<a name="line167">167: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SCALAR) SYByteSwapScalar((<A href="0/docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)ptmp,ntmp);
-<a name="line168">168: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SHORT) SYByteSwapShort((short*)ptmp,ntmp);
-<a name="line169">169: </a><font color="#A020F0">#endif</font>
+<a name="line165">165: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
+<a name="line166">166: </a>  <font color="#B22222">/* make sure data is in correct byte ordering before sending  */</font>
+<a name="line167">167: </a>  <font color="#4169E1">if</font> (type == PETSC_INT) SYByteSwapInt((int*)ptmp,ntmp);
+<a name="line168">168: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SCALAR) SYByteSwapScalar((<A href="0/docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)ptmp,ntmp);
+<a name="line169">169: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SHORT) SYByteSwapShort((short*)ptmp,ntmp);
+<a name="line170">170: </a><font color="#A020F0">#endif</font>
 
-<a name="line171">171: </a>  <font color="#4169E1">while</font> (n) {
-<a name="line172">172: </a>    wsize = (n &lt; maxblock) ? n : maxblock;
-<a name="line173">173: </a>    err = write(fd,pp,wsize);
-<a name="line174">174: </a><font color="#A020F0">#if !defined(PETSC_MISSING_ERRNO_EINTR)</font>
-<a name="line175">175: </a>    <font color="#4169E1">if</font> (err &lt; 0 &amp;&amp; errno == EINTR) <font color="#4169E1">continue</font>;
-<a name="line176">176: </a><font color="#A020F0">#endif</font>
-<a name="line177">177: </a>    <font color="#4169E1">if</font> (!err &amp;&amp; wsize &gt; 0) <font color="#4169E1">return</font> 1;
-<a name="line178">178: </a>    <font color="#4169E1">if</font> (err &lt; 0) {
-<a name="line179">179: </a>      PETSC_MEX_ERROR(<font color="#666666">"Error reading from socket\n"</font>);
-<a name="line180">180: </a>    }
-<a name="line181">181: </a>    n  -= err;
-<a name="line182">182: </a>    pp += err;
-<a name="line183">183: </a>  }
-<a name="line184">184: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
-<a name="line185">185: </a>  <font color="#B22222">/* swap the data back if we swapped it before sending it */</font>
-<a name="line186">186: </a>  <font color="#4169E1">if</font> (type == PETSC_INT) SYByteSwapInt((int*)ptmp,ntmp);
-<a name="line187">187: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SCALAR) SYByteSwapScalar((<A href="0/docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)ptmp,ntmp);
-<a name="line188">188: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SHORT) SYByteSwapShort((short*)ptmp,ntmp);
-<a name="line189">189: </a><font color="#A020F0">#endif</font>
+<a name="line172">172: </a>  <font color="#4169E1">while</font> (n) {
+<a name="line173">173: </a>    wsize = (n &lt; maxblock) ? n : maxblock;
+<a name="line174">174: </a>    err = write(fd,pp,wsize);
+<a name="line175">175: </a><font color="#A020F0">#if !defined(PETSC_MISSING_ERRNO_EINTR)</font>
+<a name="line176">176: </a>    <font color="#4169E1">if</font> (err &lt; 0 &amp;&amp; errno == EINTR) <font color="#4169E1">continue</font>;
+<a name="line177">177: </a><font color="#A020F0">#endif</font>
+<a name="line178">178: </a>    <font color="#4169E1">if</font> (!err &amp;&amp; wsize &gt; 0) <font color="#4169E1">return</font> 1;
+<a name="line179">179: </a>    <font color="#4169E1">if</font> (err &lt; 0) {
+<a name="line180">180: </a>      PETSC_MEX_ERROR(<font color="#666666">"Error reading from socket\n"</font>);
+<a name="line181">181: </a>    }
+<a name="line182">182: </a>    n  -= err;
+<a name="line183">183: </a>    pp += err;
+<a name="line184">184: </a>  }
+<a name="line185">185: </a><font color="#A020F0">#if !defined(PETSC_WORDS_BIGENDIAN)</font>
+<a name="line186">186: </a>  <font color="#B22222">/* swap the data back if we swapped it before sending it */</font>
+<a name="line187">187: </a>  <font color="#4169E1">if</font> (type == PETSC_INT) SYByteSwapInt((int*)ptmp,ntmp);
+<a name="line188">188: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SCALAR) SYByteSwapScalar((<A href="0/docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)ptmp,ntmp);
+<a name="line189">189: </a>  <font color="#4169E1">else</font> <font color="#4169E1">if</font> (type == PETSC_SHORT) SYByteSwapShort((short*)ptmp,ntmp);
+<a name="line190">190: </a><font color="#A020F0">#endif</font>
 
-<a name="line191">191: </a>  <font color="#4169E1">return</font> 0;
-<a name="line192">192: </a>}
+<a name="line192">192: </a>  <font color="#4169E1">return</font> 0;
+<a name="line193">193: </a>}
 
 
 

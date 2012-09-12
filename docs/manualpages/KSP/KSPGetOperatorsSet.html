@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/KSPGetOperatorsSet.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>KSPGetOperatorsSet</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="KSPGetOperatorsSet"><H1>KSPGetOperatorsSet</H1></A>
 Determines if the matrix associated with the linear system and possibly a different one associated with the preconditioner have been set in the <A HREF="../KSP/KSP.html#KSP">KSP</A>. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -15,7 +16,7 @@ PetscErrorCode  KSPGetOperatorsSet(KSP ksp,PetscBool  *mat,PetscBool  *pmat)
 Not collective, though the results on all processes should be the same
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>pc </B> -the preconditioner context
+<DT><B>pc </B> -the <A HREF="../KSP/KSP.html#KSP">KSP</A> context
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>

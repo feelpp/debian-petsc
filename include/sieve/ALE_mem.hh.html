@@ -1,13 +1,14 @@
 <center><a href="ALE_mem.hh">Actual source code: ALE_mem.hh</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/ALE_mem.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:23:29+00:00">
+<meta name="date" content="2012-08-29T17:18:27+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_mem_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_mem_hh</font></strong>
 <a name="line3">  3: </a>// This should be included indirectly -- only by including ALE.hh
@@ -29,6 +30,7 @@
 <a name="line19"> 19: </a>namespace ALE {
 <a name="line20"> 20: </a>  class MemoryLogger;
 <a name="line21"> 21: </a>}
+<a name="line22"> 22: </a>extern ALE::MemoryLogger Petsc_MemoryLogger;
 
 <a name="line24"> 24: </a>namespace ALE {
 <a name="line25"> 25: </a>  class MemoryLogger {

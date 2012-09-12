@@ -125,7 +125,7 @@ int main( int argc, char **argv )
   ierr = VecGetLocalSize(user.fine.x,&nlocal);CHKERRQ(ierr);
   ierr = DMCreateLocalVector(user.fine.da,&user.fine.localX);CHKERRQ(ierr);
   ierr = VecDuplicate(user.fine.localX,&user.fine.localF);CHKERRQ(ierr);
-  ierr = MatCreateMPIAIJ(PETSC_COMM_WORLD,nlocal,nlocal,n,n,5,PETSC_NULL,3,PETSC_NULL,&user.fine.J);CHKERRQ(ierr);
+  ierr = MatCreateAIJ(PETSC_COMM_WORLD,nlocal,nlocal,n,n,5,PETSC_NULL,3,PETSC_NULL,&user.fine.J);CHKERRQ(ierr);
 
   /* Set up distributed array for coarse grid */
   ierr = DMDACreate2d(PETSC_COMM_WORLD, DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_NONE,DMDA_STENCIL_STAR,user.coarse.mx,
@@ -144,7 +144,7 @@ int main( int argc, char **argv )
     ierr = DMCreateLocalVector(user.coarse.da,&user.coarse.localX);CHKERRQ(ierr);
     ierr = VecDuplicate(user.coarse.localX,&user.coarse.localF);CHKERRQ(ierr);
     /* We will compute the coarse Jacobian in parallel */
-    ierr = MatCreateMPIAIJ(PETSC_COMM_WORLD,Nlocal,Nlocal,N,N,5,PETSC_NULL,3,PETSC_NULL,&user.coarse.J);CHKERRQ(ierr);
+    ierr = MatCreateAIJ(PETSC_COMM_WORLD,Nlocal,Nlocal,N,N,5,PETSC_NULL,3,PETSC_NULL,&user.coarse.J);CHKERRQ(ierr);
   }
 
   /* Create nonlinear solver */
@@ -197,7 +197,7 @@ int main( int argc, char **argv )
   ierr = FormInitialGuess1(&user,user.fine.x);CHKERRQ(ierr);
   ierr = SNESSolve(snes,PETSC_NULL,user.fine.x);CHKERRQ(ierr);
   ierr = SNESGetIterationNumber(snes,&its);CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"Number of Newton iterations = %D\n", its );CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"Number of SNES iterations = %D\n", its );CHKERRQ(ierr);
 
   /* Free data structures */
   if (user.redundant_build) {
@@ -446,7 +446,7 @@ PetscErrorCode FormJacobian(SNES snes,Vec X,Mat *J,Mat *B,MatStructure *flag,voi
   ierr = SNESGetKSP(snes,&ksp);CHKERRQ(ierr);
   ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
   
-  ierr = PetscTypeCompare((PetscObject)pc,PCMG,&ismg);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)pc,PCMG,&ismg);CHKERRQ(ierr);
   if (ismg) {
 
     ierr = KSPSetOperators(user->ksp_fine,user->fine.J,user->fine.J,SAME_NONZERO_PATTERN);CHKERRQ(ierr);
@@ -504,7 +504,7 @@ PetscErrorCode FormInterpolation(AppCtx *user)
   ierr = VecGetLocalSize(user->coarse.x,&m_c_local);CHKERRQ(ierr);
   ierr = VecGetSize(user->fine.x,&m_fine);CHKERRQ(ierr);
   ierr = VecGetSize(user->coarse.x,&m_coarse);CHKERRQ(ierr);
-  ierr = MatCreateMPIAIJ(PETSC_COMM_WORLD,m_fine_local,m_c_local,m_fine,m_coarse,
+  ierr = MatCreateAIJ(PETSC_COMM_WORLD,m_fine_local,m_c_local,m_fine,m_coarse,
                          5,0,3,0,&mat);CHKERRQ(ierr);
 
   /* loop over local fine grid nodes setting interpolation for those*/

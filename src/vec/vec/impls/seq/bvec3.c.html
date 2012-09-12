@@ -1,21 +1,22 @@
 <center><a href="bvec3.c">Actual source code: bvec3.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/impls/seq/bvec3.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:55:34+00:00">
+<meta name="date" content="2012-08-29T16:38:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">   Implements the sequential vectors.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
 
-<a name="line6">  6: </a><font color="#A020F0">#include &lt;private/vecimpl.h&gt;          </font><font color="#B22222">/*I "petscvec.h" I*/</font><font color="#A020F0"></font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petsc-private/vecimpl.h&gt;          </font><font color="#B22222">/*I "petscvec.h" I*/</font><font color="#A020F0"></font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;../src/vec/vec/impls/dvecimpl.h&gt;</font>
-
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petscthreadcomm.h&gt;</font>
 <a name="line9">  9: </a><font color="#B22222">/*MC</font>
 <a name="line10"> 10: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/Vec/VECSEQ.html#VECSEQ">VECSEQ</A> - <A href="../../../../../docs/manualpages/Vec/VECSEQ.html#VECSEQ">VECSEQ</A> = "seq" - The basic sequential vector</font>
 
@@ -28,8 +29,11 @@
 <a name="line18"> 18: </a><font color="#B22222">M*/</font>
 
 <a name="line20"> 20: </a><font color="#A020F0">#if defined(PETSC_USE_MIXED_PRECISION)</font>
+<a name="line21"> 21: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecCreate_Seq_Private(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,const float*)</font></strong>;
+<a name="line22"> 22: </a><strong><font color="#4169E1">extern <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> VecCreate_Seq_Private(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,const double*)</font></strong>;
 <a name="line23"> 23: </a><font color="#A020F0">#endif</font>
 
+<a name="line25"> 25: </a>EXTERN_C_BEGIN
 <a name="line28"> 28: </a><strong><font color="#4169E1"><a name="VecCreate_Seq"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  VecCreate_Seq(<A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> V)</font></strong>
 <a name="line29"> 29: </a>{
 <a name="line30"> 30: </a>  Vec_Seq        *s;
@@ -42,10 +46,10 @@
 <a name="line39"> 39: </a><font color="#A020F0">#if !defined(PETSC_USE_MIXED_PRECISION)</font>
 <a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(n*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>),&amp;array);
 <a name="line41"> 41: </a>  PetscLogObjectMemory(V, n*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
-<a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(array,n*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
-<a name="line43"> 43: </a>  VecCreate_Seq_Private(V,array);
-<a name="line44"> 44: </a>  s    = (Vec_Seq*)V-&gt;data;
-<a name="line45"> 45: </a>  s-&gt;array_allocated = array;
+<a name="line42"> 42: </a>  VecCreate_Seq_Private(V,array);
+<a name="line43"> 43: </a>  s    = (Vec_Seq*)V-&gt;data;
+<a name="line44"> 44: </a>  s-&gt;array_allocated = array;
+<a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(V,0.0);
 <a name="line46"> 46: </a><font color="#A020F0">#else</font>
 <a name="line47"> 47: </a>  <font color="#4169E1">if</font> (((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)V)-&gt;precision == PETSC_PRECISION_SINGLE) {
 <a name="line48"> 48: </a>    float *aarray;
@@ -67,6 +71,7 @@
 <a name="line64"> 64: </a><font color="#A020F0">#endif</font>
 <a name="line65"> 65: </a>  <font color="#4169E1">return</font>(0);
 <a name="line66"> 66: </a>}
+<a name="line67"> 67: </a>EXTERN_C_END
 </pre>
 </body>
 

@@ -1,13 +1,14 @@
 <center><a href="psplit.c">Actual source code: psplit.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/utils/psplit.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:53:01+00:00">
+<meta name="date" content="2012-08-29T16:36:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;           </font><font color="#B22222">/*I    "petscsys.h" I*/</font><font color="#A020F0"></font>
 
@@ -80,7 +81,7 @@
 <a name="line76"> 76: </a>{
 <a name="line78"> 78: </a>  <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,rank;
 
-<a name="line81"> 81: </a>  <font color="#4169E1">if</font> (*N == <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> &amp;&amp; *n == <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Both n and N cannot be <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>\n  likely a call to <A href="../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>() or <A href="../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>() is wrong.\nSee http://www.mcs.anl.gov/petsc/petsc-as/documentation/faq.html#split"</font>);
+<a name="line81"> 81: </a>  <font color="#4169E1">if</font> (*N == <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> &amp;&amp; *n == <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Both n and N cannot be <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>\n  likely a call to <A href="../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>() or <A href="../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>() is wrong.\nSee http://www.mcs.anl.gov/petsc/documentation/faq.html#split"</font>);
 
 <a name="line83"> 83: </a>  <font color="#4169E1">if</font> (*N == <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>) {
 <a name="line84"> 84: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(n,N,1,MPIU_INT,MPI_SUM,comm);
@@ -92,7 +93,7 @@
 <a name="line90"> 90: </a>  } <font color="#4169E1">else</font> {
 <a name="line91"> 91: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> tmp;
 <a name="line92"> 92: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(n,&amp;tmp,1,MPIU_INT,MPI_SUM,comm);
-<a name="line93"> 93: </a>    <font color="#4169E1">if</font> (tmp != *N) <A href="../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_SIZ,<font color="#666666">"Sum of local lengths %D does not equal global length %D, my local length %D\n  likely a call to <A href="../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>() or <A href="../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>() is wrong.\nSee http://www.mcs.anl.gov/petsc/petsc-as/documentation/faq.html#split"</font>,tmp,*N,*n);
+<a name="line93"> 93: </a>    <font color="#4169E1">if</font> (tmp != *N) <A href="../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_SIZ,<font color="#666666">"Sum of local lengths %D does not equal global length %D, my local length %D\n  likely a call to <A href="../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>() or <A href="../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>() is wrong.\nSee http://www.mcs.anl.gov/petsc/documentation/faq.html#split"</font>,tmp,*N,*n);
 <a name="line94"> 94: </a><font color="#A020F0">#endif</font>
 <a name="line95"> 95: </a>  }
 <a name="line96"> 96: </a>  <font color="#4169E1">return</font>(0);

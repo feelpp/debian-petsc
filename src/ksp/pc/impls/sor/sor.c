@@ -2,7 +2,7 @@
 /*
    Defines a  (S)SOR  preconditioner for any Mat implementation
 */
-#include <private/pcimpl.h>               /*I "petscpc.h" I*/
+#include <petsc-private/pcimpl.h>               /*I "petscpc.h" I*/
 
 typedef struct {
   PetscInt    its;        /* inner iterations, number of sweeps */
@@ -96,7 +96,7 @@ PetscErrorCode PCView_SOR(PC pc,PetscViewer viewer)
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     if (sym & SOR_ZERO_INITIAL_GUESS) {ierr = PetscViewerASCIIPrintf(viewer,"  SOR:  zero initial guess\n");CHKERRQ(ierr);}
     if (sym == SOR_APPLY_UPPER)              sortype = "apply_upper";

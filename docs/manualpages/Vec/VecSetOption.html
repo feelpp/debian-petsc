@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecSetOption.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>VecSetOption</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="VecSetOption"><H1>VecSetOption</H1></A>
 Sets an option for controling a vector's behavior. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -29,7 +30,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 to eliminate the global reduction in the VecAssemblyXXXX() if you know
 that you have only used <A HREF="../Vec/VecSetValues.html#VecSetValues">VecSetValues</A>() to set local elements
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>VEC_IGNORE_NEGATIVE_INDICES, which means you can pass negative indices</B></TD><TD>- in ix in calls to <A HREF="../Vec/VecSetValues.html#VecSetValues">VecSetValues</A> or <A HREF="../Vec/VecGetValues.html#VecGetValues">VecGetValues</A>. These rows are simply
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>VEC_IGNORE_NEGATIVE_INDICES, which means you can pass negative indices</B></TD><TD>- in ix in calls to <A HREF="../Vec/VecSetValues.html#VecSetValues">VecSetValues</A>() or <A HREF="../Vec/VecGetValues.html#VecGetValues">VecGetValues</A>(). These rows are simply
 ignored.
 </TD></TR>
 <P>

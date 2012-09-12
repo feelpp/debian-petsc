@@ -1,15 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESDefaultUpdate.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>SNESDefaultUpdate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="SNESDefaultUpdate"><H1>SNESDefaultUpdate</H1></A>
 The default update function which does nothing. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
+#include "petscdmshell.h" 
+#include "petscsys.h" 
 PetscErrorCode  SNESDefaultUpdate(SNES snes, PetscInt step)
 </PRE>
 Not collective

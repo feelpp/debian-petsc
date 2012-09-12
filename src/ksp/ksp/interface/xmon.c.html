@@ -1,15 +1,16 @@
 <center><a href="xmon.c">Actual source code: xmon.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/interface/xmon.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:11:22+00:00">
+<meta name="date" content="2012-08-29T17:03:16+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;private/kspimpl.h&gt;              </font><font color="#B22222">/*I  "petscksp.h"   I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;              </font><font color="#B22222">/*I  "petscksp.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line6">  6: </a><font color="#B22222">/*@C</font>
 <a name="line7">  7: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/KSPMonitorLGCreate.html#KSPMonitorLGCreate">KSPMonitorLGCreate</A> - Creates a line graph context for use with </font>
@@ -138,6 +139,7 @@
 <a name="line144">144: </a>  <font color="#4169E1">return</font>(0);
 <a name="line145">145: </a>}
 
+<a name="line147">147: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPMonitorRange_Private(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*)</font></strong>;
 <a name="line150">150: </a><strong><font color="#4169E1"><a name="KSPMonitorLGRange"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  KSPMonitorLGRange(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rnorm,void *monctx)</font></strong>
 <a name="line151">151: </a>{
 <a name="line152">152: </a>  <A href="../../../../docs/manualpages/Draw/PetscDrawLG.html#PetscDrawLG">PetscDrawLG</A>      lg;

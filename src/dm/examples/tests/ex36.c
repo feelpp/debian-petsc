@@ -353,7 +353,7 @@ PetscErrorCode da_test_RefineCoords1D(PetscInt mx)
                       &dac ); CHKERRQ(ierr);
   ierr = DMSetFromOptions(dac);CHKERRQ(ierr);
   
-  ierr = DMRefine(dac,PETSC_NULL,&daf);CHKERRQ(ierr);
+  ierr = DMRefine(dac,MPI_COMM_NULL,&daf);CHKERRQ(ierr);
   ierr = DMDAGetInfo(daf,0,&Mx,0,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   Mx--;
   
@@ -370,13 +370,13 @@ PetscErrorCode da_test_RefineCoords1D(PetscInt mx)
     ierr = DMDAGetCoordinates(dac,&coordsc);CHKERRQ(ierr);
     ierr = DMDAGetCoordinates(daf,&coordsf);CHKERRQ(ierr);
     
-    ierr = DMGetInterpolation(cdac,cdaf,&II,&scale);CHKERRQ(ierr);
+    ierr = DMCreateInterpolation(cdac,cdaf,&II,&scale);CHKERRQ(ierr);
     ierr = MatInterpolate(II,coordsc,coordsf);CHKERRQ(ierr);
     ierr = MatDestroy(&II);CHKERRQ(ierr);
     ierr = VecDestroy(&scale);CHKERRQ(ierr);
   }
   
-  ierr = DMGetInterpolation(dac,daf,&INTERP,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMCreateInterpolation(dac,daf,&INTERP,PETSC_NULL);CHKERRQ(ierr);
   
   ierr = DMCreateGlobalVector(dac,&ac); CHKERRQ(ierr);
   ierr = VecSet(ac,66.99);CHKERRQ(ierr);
@@ -446,7 +446,7 @@ PetscErrorCode da_test_RefineCoords2D(PetscInt mx,PetscInt my)
                       &dac ); CHKERRQ(ierr);
   ierr = DMSetFromOptions(dac);CHKERRQ(ierr);
   
-  ierr = DMRefine(dac,PETSC_NULL,&daf);CHKERRQ(ierr);
+  ierr = DMRefine(dac,MPI_COMM_NULL,&daf);CHKERRQ(ierr);
   ierr = DMDAGetInfo(daf,0,&Mx,&My,0,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   Mx--; My--;
   
@@ -470,14 +470,14 @@ PetscErrorCode da_test_RefineCoords2D(PetscInt mx,PetscInt my)
     ierr = DMDAGetCoordinates(dac,&coordsc);CHKERRQ(ierr);
     ierr = DMDAGetCoordinates(daf,&coordsf);CHKERRQ(ierr);
     
-    ierr = DMGetInterpolation(cdac,cdaf,&II,&scale);CHKERRQ(ierr);
+    ierr = DMCreateInterpolation(cdac,cdaf,&II,&scale);CHKERRQ(ierr);
     ierr = MatInterpolate(II,coordsc,coordsf);CHKERRQ(ierr);
     ierr = MatDestroy(&II);CHKERRQ(ierr);
     ierr = VecDestroy(&scale);CHKERRQ(ierr);
   }
   
   
-  ierr = DMGetInterpolation(dac,daf,&INTERP,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMCreateInterpolation(dac,daf,&INTERP,PETSC_NULL);CHKERRQ(ierr);
   
   ierr = DMCreateGlobalVector(dac,&ac); CHKERRQ(ierr);
   ierr = DADefineXLinearField2D(dac,ac);CHKERRQ(ierr);
@@ -547,7 +547,7 @@ PetscErrorCode da_test_RefineCoords3D(PetscInt mx,PetscInt my,PetscInt mz)
                       &dac ); CHKERRQ(ierr);
   ierr = DMSetFromOptions(dac);CHKERRQ(ierr);
   
-  ierr = DMRefine(dac,PETSC_NULL,&daf);CHKERRQ(ierr);
+  ierr = DMRefine(dac,MPI_COMM_NULL,&daf);CHKERRQ(ierr);
   ierr = DMDAGetInfo(daf,0,&Mx,&My,&Mz,0,0,0,0,0,0,0,0,0);CHKERRQ(ierr);
   Mx--; My--; Mz--;
   
@@ -573,13 +573,13 @@ PetscErrorCode da_test_RefineCoords3D(PetscInt mx,PetscInt my,PetscInt mz)
     ierr = DMDAGetCoordinates(dac,&coordsc);CHKERRQ(ierr);
     ierr = DMDAGetCoordinates(daf,&coordsf);CHKERRQ(ierr);
     
-    ierr = DMGetInterpolation(cdac,cdaf,&II,&scale);CHKERRQ(ierr);
+    ierr = DMCreateInterpolation(cdac,cdaf,&II,&scale);CHKERRQ(ierr);
     ierr = MatInterpolate(II,coordsc,coordsf);CHKERRQ(ierr);
     ierr = MatDestroy(&II);CHKERRQ(ierr);
     ierr = VecDestroy(&scale);CHKERRQ(ierr);
   }
   
-  ierr = DMGetInterpolation(dac,daf,&INTERP,PETSC_NULL);CHKERRQ(ierr);
+  ierr = DMCreateInterpolation(dac,daf,&INTERP,PETSC_NULL);CHKERRQ(ierr);
   
   ierr = DMCreateGlobalVector(dac,&ac); CHKERRQ(ierr);
   ierr = VecZeroEntries(ac);CHKERRQ(ierr);

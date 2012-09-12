@@ -1,13 +1,14 @@
 <center><a href="jacobi.c">Actual source code: jacobi.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/jacobi/jacobi.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:09:14+00:00">
+<meta name="date" content="2012-08-29T16:58:51+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*  -------------------------------------------------------------------- </font>
 
@@ -58,7 +59,7 @@
 <a name="line48"> 48: </a><font color="#B22222">     pcimpl.h - private include file intended for use by all preconditioners </font>
 <a name="line49"> 49: </a><font color="#B22222">*/</font>
 
-<a name="line51"> 51: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
+<a name="line51"> 51: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line53"> 53: </a><font color="#B22222">/* </font>
 <a name="line54"> 54: </a><font color="#B22222">   Private context (data structure) for the Jacobi preconditioner.  </font>
@@ -74,6 +75,7 @@
 <a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  useabs;             <font color="#B22222">/* use the absolute values of the diagonal entries */</font>
 <a name="line65"> 65: </a>} PC_Jacobi;
 
+<a name="line67"> 67: </a>EXTERN_C_BEGIN
 <a name="line70"> 70: </a><strong><font color="#4169E1"><a name="PCJacobiSetUseRowMax_Jacobi"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCJacobiSetUseRowMax_Jacobi(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line71"> 71: </a>{
 <a name="line72"> 72: </a>  PC_Jacobi *j;
@@ -82,7 +84,9 @@
 <a name="line76"> 76: </a>  j-&gt;userowmax = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line77"> 77: </a>  <font color="#4169E1">return</font>(0);
 <a name="line78"> 78: </a>}
+<a name="line79"> 79: </a>EXTERN_C_END
 
+<a name="line81"> 81: </a>EXTERN_C_BEGIN
 <a name="line84"> 84: </a><strong><font color="#4169E1"><a name="PCJacobiSetUseRowSum_Jacobi"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCJacobiSetUseRowSum_Jacobi(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line85"> 85: </a>{
 <a name="line86"> 86: </a>  PC_Jacobi *j;
@@ -91,7 +95,9 @@
 <a name="line90"> 90: </a>  j-&gt;userowsum = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line91"> 91: </a>  <font color="#4169E1">return</font>(0);
 <a name="line92"> 92: </a>}
+<a name="line93"> 93: </a>EXTERN_C_END
 
+<a name="line95"> 95: </a>EXTERN_C_BEGIN
 <a name="line98"> 98: </a><strong><font color="#4169E1"><a name="PCJacobiSetUseAbs_Jacobi"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCJacobiSetUseAbs_Jacobi(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line99"> 99: </a>{
 <a name="line100">100: </a>  PC_Jacobi *j;
@@ -100,6 +106,7 @@
 <a name="line104">104: </a>  j-&gt;useabs = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line105">105: </a>  <font color="#4169E1">return</font>(0);
 <a name="line106">106: </a>}
+<a name="line107">107: </a>EXTERN_C_END
 
 <a name="line109">109: </a><font color="#B22222">/* -------------------------------------------------------------------------- */</font>
 <a name="line110">110: </a><font color="#B22222">/*</font>
@@ -342,7 +349,7 @@
 <a name="line379">379: </a><font color="#B22222">   Options Database Key:</font>
 <a name="line380">380: </a><font color="#B22222">+    -pc_jacobi_rowmax - use the maximum absolute value in each row as the scaling factor,</font>
 <a name="line381">381: </a><font color="#B22222">                        rather than the diagonal</font>
-<a name="line382">382: </a><font color="#B22222">.    -pc_jacobi_rowsum - use the maximum absolute value in each row as the scaling factor,</font>
+<a name="line382">382: </a><font color="#B22222">.    -pc_jacobi_rowsum - use the row sums as the scaling factor,</font>
 <a name="line383">383: </a><font color="#B22222">                        rather than the diagonal</font>
 <a name="line384">384: </a><font color="#B22222">-    -pc_jacobi_abs - use the absolute value of the diagaonl entry</font>
 
@@ -359,6 +366,7 @@
 <a name="line396">396: </a><font color="#B22222">           <A href="../../../../../docs/manualpages/PC/PCJacobiSetUseRowMax.html#PCJacobiSetUseRowMax">PCJacobiSetUseRowMax</A>(), <A href="../../../../../docs/manualpages/PC/PCJacobiSetUseRowSum.html#PCJacobiSetUseRowSum">PCJacobiSetUseRowSum</A>(), <A href="../../../../../docs/manualpages/PC/PCJacobiSetUseAbs.html#PCJacobiSetUseAbs">PCJacobiSetUseAbs</A>()</font>
 <a name="line397">397: </a><font color="#B22222">M*/</font>
 
+<a name="line399">399: </a>EXTERN_C_BEGIN
 <a name="line402">402: </a><strong><font color="#4169E1"><a name="PCCreate_Jacobi"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_Jacobi(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
 <a name="line403">403: </a>{
 <a name="line404">404: </a>  PC_Jacobi      *jac;
@@ -402,6 +410,7 @@
 <a name="line444">444: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCJacobiSetUseAbs_C"</font>,<font color="#666666">"PCJacobiSetUseAbs_Jacobi"</font>,PCJacobiSetUseAbs_Jacobi);
 <a name="line445">445: </a>  <font color="#4169E1">return</font>(0);
 <a name="line446">446: </a>}
+<a name="line447">447: </a>EXTERN_C_END
 
 
 <a name="line452">452: </a><font color="#B22222">/*@</font>

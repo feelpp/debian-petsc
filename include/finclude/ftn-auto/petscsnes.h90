@@ -4,9 +4,231 @@
        Vec xu ! Vec
        integer ierr
        end subroutine
-        subroutine SNESDefaultGetWork(snes, nw ,ierr)
+        subroutine SNESMultiblockSetFields(snes, name, n, fields ,ierr)
        SNES snes ! SNES
-       PetscInt nw ! PetscInt
+       character name (*) ! char
+       PetscInt n ! PetscInt
+       PetscInt fields ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESMultiblockSetIS(snes, name, is ,ierr)
+       SNES snes ! SNES
+       character name (*) ! char
+       IS is ! IS
+       integer ierr
+       end subroutine
+        subroutine SNESMultiblockSetType(snes, type ,ierr)
+       SNES snes ! SNES
+       PCCompositeType type ! PCCompositeType
+       integer ierr
+       end subroutine
+        subroutine SNESMultiblockSetBlockSize(snes, bs ,ierr)
+       SNES snes ! SNES
+       PetscInt bs ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine MatCreateSNESMF(snes, J ,ierr)
+       SNES snes ! SNES
+       Mat J ! Mat
+       integer ierr
+       end subroutine
+        subroutine SNESShellGetContext(snes, ctx ,ierr)
+       SNES snes ! SNES
+       PetscVoid ctx ! void
+       integer ierr
+       end subroutine
+        subroutine SNESShellSetContext(snes, ctx ,ierr)
+       SNES snes ! SNES
+       PetscVoid ctx ! void
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchCreate(comm, outlinesearch ,ierr)
+       integer comm ! MPI_Comm
+       SNESLineSearch outlinesearch ! SNESLineSearch
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetUp(linesearch ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchReset(linesearch ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchPreCheck(linesearch, X, Y, changed ,   &
+     &ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       Vec X ! Vec
+       Vec Y ! Vec
+       PetscBool changed ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchPostCheck(linesearch, X, Y, W,         &
+     &changed_Y, changed_W ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       Vec X ! Vec
+       Vec Y ! Vec
+       Vec W ! Vec
+       PetscBool changed_Y ! PetscBool
+       PetscBool changed_W ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchApply(linesearch, X, F, fnorm, Y ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       Vec X ! Vec
+       Vec F ! Vec
+       PetscReal fnorm ! PetscReal
+       Vec Y ! Vec
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchDestroy(linesearch ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetMonitor(linesearch, flg ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetMonitor(linesearch, monitor ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscViewer monitor ! PetscViewer
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetFromOptions(linesearch ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchView(linesearch, viewer ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscViewer viewer ! PetscViewer
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetSNES(linesearch, snes ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       SNES snes ! SNES
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetSNES(linesearch, snes ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       SNES snes ! SNES
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetLambda(linesearch, lambda ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal lambda ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetLambda(linesearch, lambda ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal lambda ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetTolerances(linesearch, steptol,     &
+     &maxstep, rtol, atol, ltol, max_its ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal steptol ! PetscReal
+       PetscReal maxstep ! PetscReal
+       PetscReal rtol ! PetscReal
+       PetscReal atol ! PetscReal
+       PetscReal ltol ! PetscReal
+       PetscInt max_its ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetTolerances(linesearch, steptol,     &
+     &maxstep, rtol, atol, ltol, max_its ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal steptol ! PetscReal
+       PetscReal maxstep ! PetscReal
+       PetscReal rtol ! PetscReal
+       PetscReal atol ! PetscReal
+       PetscReal ltol ! PetscReal
+       PetscInt max_its ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetDamping(linesearch, damping ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal damping ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetDamping(linesearch, damping ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal damping ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetOrder(linesearch, order ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscInt order ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetOrder(linesearch, order ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscInt order ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetNorms(linesearch, xnorm, fnorm,     &
+     &ynorm ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal xnorm ! PetscReal
+       PetscReal fnorm ! PetscReal
+       PetscReal ynorm ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetNorms(linesearch, xnorm, fnorm,     &
+     &ynorm ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal xnorm ! PetscReal
+       PetscReal fnorm ! PetscReal
+       PetscReal ynorm ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchComputeNorms(linesearch ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetComputeNorms(linesearch, flg ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetVecs(linesearch, X, F, Y, W, G ,ierr&
+     &)
+       SNESLineSearch linesearch ! SNESLineSearch
+       Vec X ! Vec
+       Vec F ! Vec
+       Vec Y ! Vec
+       Vec W ! Vec
+       Vec G ! Vec
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetVecs(linesearch, X, F, Y, W, G ,ierr&
+     &)
+       SNESLineSearch linesearch ! SNESLineSearch
+       Vec X ! Vec
+       Vec F ! Vec
+       Vec Y ! Vec
+       Vec W ! Vec
+       Vec G ! Vec
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetWork(linesearch, nwork ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscInt nwork ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchGetSuccess(linesearch, success ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscBool success ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine SNESLineSearchSetSuccess(linesearch, success ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscBool success ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine SNESNCGSetType(snes, btype ,ierr)
+       SNES snes ! SNES
+       SNESNCGType btype ! SNESNCGType
        integer ierr
        end subroutine
         subroutine SNESSetErrorIfNotConverged(snes, flg ,ierr)
@@ -20,6 +242,15 @@
        integer ierr
        end subroutine
         subroutine SNESSetFunctionDomainError(snes ,ierr)
+       SNES snes ! SNES
+       integer ierr
+       end subroutine
+        subroutine SNESGetFunctionDomainError(snes, domainerror ,ierr)
+       SNES snes ! SNES
+       PetscBool domainerror ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine SNESSetUpMatrices(snes ,ierr)
        SNES snes ! SNES
        integer ierr
        end subroutine
@@ -49,7 +280,17 @@
        PetscInt iter ! PetscInt
        integer ierr
        end subroutine
+        subroutine SNESSetIterationNumber(snes, iter ,ierr)
+       SNES snes ! SNES
+       PetscInt iter ! PetscInt
+       integer ierr
+       end subroutine
         subroutine SNESGetFunctionNorm(snes, fnorm ,ierr)
+       SNES snes ! SNES
+       PetscReal fnorm ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine SNESSetFunctionNorm(snes, fnorm ,ierr)
        SNES snes ! SNES
        PetscReal fnorm ! PetscReal
        integer ierr
@@ -109,10 +350,36 @@
        SNES outsnes ! SNES
        integer ierr
        end subroutine
+        subroutine SNESSetNormType(snes, normtype ,ierr)
+       SNES snes ! SNES
+       SNESNormType normtype ! SNESNormType
+       integer ierr
+       end subroutine
+        subroutine SNESGetNormType(snes, normtype ,ierr)
+       SNES snes ! SNES
+       SNESNormType normtype ! SNESNormType
+       integer ierr
+       end subroutine
+        subroutine SNESSetGSSweeps(snes, sweeps ,ierr)
+       SNES snes ! SNES
+       PetscInt sweeps ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine SNESGetGSSweeps(snes, sweeps ,ierr)
+       SNES snes ! SNES
+       PetscInt sweeps ! PetscInt
+       integer ierr
+       end subroutine
         subroutine SNESComputeFunction(snes, x, y ,ierr)
        SNES snes ! SNES
        Vec x ! Vec
        Vec y ! Vec
+       integer ierr
+       end subroutine
+        subroutine SNESComputeGS(snes, b, x ,ierr)
+       SNES snes ! SNES
+       Vec b ! Vec
+       Vec x ! Vec
        integer ierr
        end subroutine
         subroutine SNESComputeJacobian(snes, X, A, B, flg ,ierr)
@@ -277,49 +544,48 @@
        SNES pc ! SNES
        integer ierr
        end subroutine
-        subroutine SNESMultiblockSetFields(snes, name, n, fields ,ierr)
+        subroutine SNESSetSNESLineSearch(snes, linesearch ,ierr)
        SNES snes ! SNES
-       character name (*) ! char
-       PetscInt n ! PetscInt
-       PetscInt fields ! PetscInt
+       SNESLineSearch linesearch ! SNESLineSearch
        integer ierr
        end subroutine
-        subroutine SNESMultiblockSetIS(snes, name, is ,ierr)
+        subroutine SNESDefaultGetWork(snes, nw ,ierr)
        SNES snes ! SNES
-       character name (*) ! char
-       IS is ! IS
+       PetscInt nw ! PetscInt
        integer ierr
        end subroutine
-        subroutine SNESMultiblockSetType(snes, type ,ierr)
-       SNES snes ! SNES
-       PCCompositeType type ! PCCompositeType
-       integer ierr
-       end subroutine
-        subroutine SNESMultiblockSetBlockSize(snes, bs ,ierr)
-       SNES snes ! SNES
-       PetscInt bs ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine SNESLineSearchSetParams(snes, alpha, maxstep,        &
-     &minlambda ,ierr)
-       SNES snes ! SNES
+        subroutine SNESLineSearchBTSetAlpha(linesearch, alpha ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
        PetscReal alpha ! PetscReal
-       PetscReal maxstep ! PetscReal
-       PetscReal minlambda ! PetscReal
        integer ierr
        end subroutine
-        subroutine MatCreateSNESMF(snes, J ,ierr)
-       SNES snes ! SNES
-       Mat J ! Mat
+        subroutine SNESLineSearchBTGetAlpha(linesearch, alpha ,ierr)
+       SNESLineSearch linesearch ! SNESLineSearch
+       PetscReal alpha ! PetscReal
        integer ierr
        end subroutine
-        subroutine SNESDAComputeJacobianWithAdic(snes, X, J, B, flag,   &
-     &ptr ,ierr)
+        subroutine SNESNGMRESSetRestartType(snes, rtype ,ierr)
        SNES snes ! SNES
-       Vec X ! Vec
-       Mat J ! Mat
-       Mat B ! Mat
-       MatStructure flag ! MatStructure
-       PetscVoid ptr ! void
+       SNESNGMRESRestartType rtype ! SNESNGMRESRestartType
+       integer ierr
+       end subroutine
+        subroutine SNESNGMRESSetSelectType(snes, stype ,ierr)
+       SNES snes ! SNES
+       SNESNGMRESSelectType stype ! SNESNGMRESSelectType
+       integer ierr
+       end subroutine
+        subroutine SNESQNSetRestartType(snes, rtype ,ierr)
+       SNES snes ! SNES
+       SNESQNRestartType rtype ! SNESQNRestartType
+       integer ierr
+       end subroutine
+        subroutine SNESQNSetScaleType(snes, stype ,ierr)
+       SNES snes ! SNES
+       SNESQNScaleType stype ! SNESQNScaleType
+       integer ierr
+       end subroutine
+        subroutine SNESQNSetCompositionType(snes, ctype ,ierr)
+       SNES snes ! SNES
+       SNESQNCompositionType ctype ! SNESQNCompositionType
        integer ierr
        end subroutine

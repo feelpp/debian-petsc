@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscObjectGetName.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscObjectGetName</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscObjectGetName"><H1>PetscObjectGetName</H1></A>
 Gets a string name associated with a PETSc object. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -12,7 +13,7 @@ Gets a string name associated with a PETSc object.
 #include "petscsys.h"   
 PetscErrorCode  PetscObjectGetName(PetscObject obj,const char *name[])
 </PRE>
-Not Collective
+Not Collective unless object has not been named yet
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatSetSizes.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatSetSizes</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatSetSizes"><H1>MatSetSizes</H1></A>
 Sets the local and global sizes, and checks to determine compatibility 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -39,6 +40,10 @@ local size used in the vector creation routine <A HREF="../Vec/VecCreateMPI.html
 Likewise, the 'n' used must match that used as the local size in
 <A HREF="../Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>() for 'x'.
 <P>
+You cannot change the sizes once they have been set.
+<P>
+The sizes must be set before <A HREF="../Mat/MatSetUp.html#MatSetUp">MatSetUp</A>() or MatXXXSetPreallocation() is called.
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
@@ -52,12 +57,12 @@ Likewise, the 'n' used must match that used as the local size in
 <A HREF="../../../src/mat/examples/tutorials/ex2.c.html">src/mat/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex5.c.html">src/mat/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex8.c.html">src/mat/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex14.c.html">src/mat/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex15.c.html">src/mat/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex8.c.html">src/ksp/ksp/examples/tutorials/ex8.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex8g.c.html">src/ksp/ksp/examples/tutorials/ex8g.c.html</A><BR>
 </BODY></HTML>

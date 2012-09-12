@@ -1,16 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatInvertBlockDiagonal.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>MatInvertBlockDiagonal</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="MatInvertBlockDiagonal"><H1>MatInvertBlockDiagonal</H1></A>
 Inverts the block diagonal entries. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatInvertBlockDiagonal(Mat mat,PetscScalar **values)
+PetscErrorCode MatInvertBlockDiagonal(Mat mat,const PetscScalar **values)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -21,6 +22,9 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <DT><B>values </B> -the block inverses in column major order (FORTRAN-like)
 <br>
+<P>
+<H3><FONT COLOR="#CC3333">Note</FONT></H3>
+This routine is not available from Fortran.
 <P>
 
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced

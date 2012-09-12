@@ -176,7 +176,7 @@ int main(int argc,char **argv)
     ierr = MatCreateSeqAIJ(comm,N,N,5,PETSC_NULL,&J);CHKERRQ(ierr);
   } else {
     ierr = VecGetLocalSize(X,&m);CHKERRQ(ierr);
-    ierr = MatCreateMPIAIJ(comm,m,m,N,N,5,PETSC_NULL,3,PETSC_NULL,&J);CHKERRQ(ierr);
+    ierr = MatCreateAIJ(comm,m,m,N,N,5,PETSC_NULL,3,PETSC_NULL,&J);CHKERRQ(ierr);
   }
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -275,7 +275,7 @@ int main(int argc,char **argv)
       break;
     }  
   }
-  ierr = PetscPrintf(comm,"Number of Newton iterations = %D\n",i+1);CHKERRQ(ierr);
+  ierr = PetscPrintf(comm,"Number of SNES iterations = %D\n",i+1);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Free work space.  All PETSc objects should be destroyed when they

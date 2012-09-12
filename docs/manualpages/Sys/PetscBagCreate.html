@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscBagCreate.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscBagCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscBagCreate"><H1>PetscBagCreate</H1></A>
 Create a bag of values 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -29,8 +30,8 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 The size of the A struct must be small enough to fit in a <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>; by default
-<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> is 4 bytes. The warning about casting to a shorter length can be ignored
-below unless your A struct is too large
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> is 4 bytes; this means a bag cannot be larger than 2 gigabytes in length.
+The warning about casting to a shorter length can be ignored below unless your A struct is too large
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscBag.html#PetscBag">PetscBag</A>, <A HREF="../Sys/PetscBagGetName.html#PetscBagGetName">PetscBagGetName</A>(), <A HREF="../Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(), <A HREF="../Sys/PetscBagLoad.html#PetscBagLoad">PetscBagLoad</A>(), <A HREF="../Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>()
@@ -48,7 +49,4 @@ below unless your A struct is too large
 <A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
-<A HREF="../../../src/ts/characteristic/examples/tutorials/ex1.c.html">src/ts/characteristic/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/ts/characteristic/examples/tutorials/ex2.c.html">src/ts/characteristic/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ts/characteristic/examples/tutorials/ex4.c.html">src/ts/characteristic/examples/tutorials/ex4.c.html</A><BR>
 </BODY></HTML>

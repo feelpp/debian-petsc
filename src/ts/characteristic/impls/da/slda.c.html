@@ -1,13 +1,14 @@
 <center><a href="slda.c">Actual source code: slda.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/characteristic/impls/da/slda.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:21:33+00:00">
+<meta name="date" content="2012-08-29T17:16:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;../src/ts/characteristic/impls/da/slda.h&gt;       </font><font color="#B22222">/*I  "petsccharacteristic.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line5">  5: </a><strong><font color="#4169E1"><a name="CharacteristicView_DA"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CharacteristicView_DA(<A href="../../../../../docs/manualpages/SemiLagrange/Characteristic.html#Characteristic">Characteristic</A> c, <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
@@ -17,8 +18,8 @@
 <a name="line9">  9: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
 
 <a name="line12"> 12: </a>  <font color="#B22222">/* Pull out field names from DM */</font>
-<a name="line13"> 13: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERASCII, &amp;iascii);
-<a name="line14"> 14: </a>  <A href="../../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERSTRING, &amp;isstring);
+<a name="line13"> 13: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERASCII, &amp;iascii);
+<a name="line14"> 14: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) viewer, PETSCVIEWERSTRING, &amp;isstring);
 <a name="line15"> 15: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line16"> 16: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"  DMDA: dummy=%D\n"</font>, da-&gt;dummy);
 <a name="line17"> 17: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (isstring) {
@@ -75,6 +76,7 @@
 <a name="line74"> 74: </a>  <font color="#4169E1">return</font>(0);
 <a name="line75"> 75: </a>}
 
+<a name="line77"> 77: </a>EXTERN_C_BEGIN
 <a name="line80"> 80: </a><strong><font color="#4169E1"><a name="CharacteristicCreate_DA"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> CharacteristicCreate_DA(<A href="../../../../../docs/manualpages/SemiLagrange/Characteristic.html#Characteristic">Characteristic</A> c)</font></strong>
 <a name="line81"> 81: </a>{
 <a name="line82"> 82: </a>  Characteristic_DA *da;
@@ -92,6 +94,7 @@
 <a name="line95"> 95: </a>  da-&gt;dummy = 0;
 <a name="line96"> 96: </a>  <font color="#4169E1">return</font>(0);
 <a name="line97"> 97: </a>}
+<a name="line98"> 98: </a>EXTERN_C_END
 
 <a name="line102">102: </a><font color="#B22222">/* -----------------------------------------------------------------------------</font>
 <a name="line103">103: </a><font color="#B22222">   Checks for periodicity of a DM and Maps points outside of a domain back onto the domain</font>

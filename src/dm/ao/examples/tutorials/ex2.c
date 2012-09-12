@@ -605,7 +605,7 @@ PetscErrorCode DataPartitionVertices(GridData *gdata)
   /*
       Allocated space to store bit-array indicting vertices marked
   */
-  ierr = PetscBTCreate(n_vert,mask);CHKERRQ(ierr);
+  ierr = PetscBTCreate(n_vert,&mask);CHKERRQ(ierr);
 
   /*
      All processors except last can have a maximum of n_vert/size vertices assigned
@@ -665,7 +665,7 @@ PetscErrorCode DataPartitionVertices(GridData *gdata)
   if (rank < size-1) {
     ierr = MPI_Send(mask,PetscBTLength(n_vert),MPI_CHAR,rank+1,0,PETSC_COMM_WORLD);CHKERRQ(ierr);
   }
-  ierr = PetscBTDestroy(mask);CHKERRQ(ierr);
+  ierr = PetscBTDestroy(&mask);CHKERRQ(ierr);
 
   gdata->localvert = localvert;
   gdata->nlocal    = nlocal;
@@ -728,8 +728,7 @@ PetscErrorCode DataMoveVertices(GridData *gdata)
   ierr = VecCreateSeq(PETSC_COMM_SELF,2*gdata->nlocal,&vert);CHKERRQ(ierr);
 
   /* create a vector to contain the old ordered vertex information */
-  ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD,2*gdata->mlocal_vert,PETSC_DECIDE,gdata->vert,
-                               &overt);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD,1,2*gdata->mlocal_vert,PETSC_DECIDE,gdata->vert,&overt);CHKERRQ(ierr);
 
   /* 
       There are two data items per vertex, the x and y coordinates (i.e. one can think 

@@ -164,6 +164,8 @@
       call MatCreate(comm,A,ierr)
       call MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,m,m,ierr)
       call MatSetFromOptions(A,ierr)
+      call MatSetUp(A,ierr)
+
       call PetscOptionsHasName(PETSC_NULL_CHARACTER,'-fdjac',flg,ierr)
       if (flg) then
          call SetCRoutineFromFortran(ts,A,A,ierr)
@@ -185,7 +187,7 @@
 !     - Set timestepping duration info 
 !  Then set runtime options, which can override these defaults.
 !  For example,
-!     -ts_max_steps <maxsteps> -ts_max_time <maxtime>
+!     -ts_max_steps <maxsteps> -ts_final_time <maxtime>
 !  to override the defaults set by TSSetDuration().
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -415,7 +417,7 @@
       call VecNorm(solution,NORM_2,en2,ierr)
 
 !  Scale the 2-norm by the grid spacing
-      en2s = dsqrt(h)*en2
+      en2s = sqrt(dble(h))*en2
       call VecNorm(solution,NORM_MAX,enmax,ierr)
 
 !  Print only from processor 0

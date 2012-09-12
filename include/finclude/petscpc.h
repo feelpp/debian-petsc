@@ -77,5 +77,28 @@
       parameter (PC_PARMS_LOCAL_ILUT=2)
       parameter (PC_PARMS_LOCAL_ARMS=3)
 !
+! PCFieldSplitSchurFactType
+!
+      PetscEnum PC_FIELDSPLIT_SCHUR_FACT_DIAG
+      PetscEnum PC_FIELDSPLIT_SCHUR_FACT_LOWER
+      PetscEnum PC_FIELDSPLIT_SCHUR_FACT_UPPER
+      PetscEnum PC_FIELDSPLIT_SCHUR_FACT_FULL
+      parameter (PC_FIELDSPLIT_SCHUR_FACT_DIAG=0)
+      parameter (PC_FIELDSPLIT_SCHUR_FACT_LOWER=1)
+      parameter (PC_FIELDSPLIT_SCHUR_FACT_UPPER=2)
+      parameter (PC_FIELDSPLIT_SCHUR_FACT_FULL=3)
+
+!
+! CoarseProblemType
+!
+      PetscEnum SEQUENTIAL_BDDC
+      PetscEnum REPLICATED_BDDC
+      PetscEnum PARALLEL_BDDC
+      PetscEnum MULTILEVEL_BDDC
+      parameter (SEQUENTIAL_BDDC=0)
+      parameter (REPLICATED_BDDC=1)
+      parameter (PARALLEL_BDDC=2)
+      parameter (MULTILEVEL_BDDC=3)
+!
 !  End of Fortran include file for the PC package in PETSc
 

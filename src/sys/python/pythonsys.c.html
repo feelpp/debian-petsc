@@ -1,13 +1,14 @@
 <center><a href="pythonsys.c">Actual source code: pythonsys.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/python/pythonsys.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T18:54:27+00:00">
+<meta name="date" content="2012-08-29T16:37:39+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petscsys.h&gt;       </font><font color="#B22222">/*I "petscsys.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line3">  3: </a><font color="#B22222">/* ---------------------------------------------------------------- */</font>
@@ -125,9 +126,9 @@
 
 
 <a name="line125">125: </a><strong><font color="#228B22">#define PetscDLPyLibOpen(libname) \</font></strong>
-<a name="line126">126: </a><strong><font color="#228B22">  <A href="../../../docs/manualpages/Sys/PetscDLLibraryAppend.html#PetscDLLibraryAppend">PetscDLLibraryAppend</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;DLLibrariesLoaded,libname)</font></strong>
+<a name="line126">126: </a><strong><font color="#228B22">  <A href="../../../docs/manualpages/Sys/PetscDLLibraryAppend.html#PetscDLLibraryAppend">PetscDLLibraryAppend</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;PetscDLLibrariesLoaded,libname)</font></strong>
 <a name="line127">127: </a><strong><font color="#228B22">#define PetscDLPyLibSym(symbol, value) \</font></strong>
-<a name="line128">128: </a><strong><font color="#228B22">  <A href="../../../docs/manualpages/Sys/PetscDLLibrarySym.html#PetscDLLibrarySym">PetscDLLibrarySym</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;DLLibrariesLoaded,<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,symbol,(void**)value)</font></strong>
+<a name="line128">128: </a><strong><font color="#228B22">  <A href="../../../docs/manualpages/Sys/PetscDLLibrarySym.html#PetscDLLibrarySym">PetscDLLibrarySym</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;PetscDLLibrariesLoaded,<A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,symbol,(void**)value)</font></strong>
 <a name="line129">129: </a><strong><font color="#228B22">#define PetscDLPyLibClose(comm) \</font></strong>
 <a name="line130">130: </a><strong><font color="#228B22">  do { } while(0)</font></strong>
 
@@ -286,7 +287,10 @@
 
 <a name="line298">298: </a><font color="#B22222">/* ---------------------------------------------------------------- */</font>
 
+<a name="line300">300: </a><strong><font color="#4169E1">EXTERN_C_BEGIN</font></strong>
+<a name="line301">301: </a><strong><font color="#4169E1">extern <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*PetscPythonMonitorSet_C)(<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>,const char[])</font></strong>;
 <a name="line302">302: </a><strong><font color="#4169E1"><a name="etscErrorCode"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*PetscPythonMonitorSet_C)(<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>,const char[])</font></strong> = <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line303">303: </a>EXTERN_C_END
 
 <a name="line307">307: </a><font color="#B22222">/*@C</font>
 <a name="line308">308: </a><font color="#B22222">  PetscPythonMonitorSet - Set Python monitor</font>

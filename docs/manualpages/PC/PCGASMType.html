@@ -1,42 +1,65 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCGASMType.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PCGASMType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PCGASMType"><H1>PCGASMType</H1></A>
-Type of generalized additive Schwarz method to use (differs from ASM in allowing multiple processors per domain) 
+Type of generalized additive Schwarz method to use (differs from ASM in allowing multiple processors per subdomain). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 typedef enum {PC_GASM_BASIC = 3,PC_GASM_RESTRICT = 1,PC_GASM_INTERPOLATE = 2,PC_GASM_NONE = 0} PCGASMType;
 </PRE>
+Each subdomain has nested inner and outer parts.  The inner subdomains are assumed to form a non-overlapping covering of the computational
+domain, while the outer subdomains contain the inner subdomains and overlap with each other.  This preconditioner will compute
+a subdomain correction over each *outer* subdomain from a residual computed there, but its different variants will differ in
+(a) how the outer subdomain residual is computed, and (b) how the outer subdomain correction is computed.
+<P>
 <pre>
- PC_GASM_BASIC - symmetric version where residuals from the ghost points are used
+ PC_GASM_BASIC       - Symmetric version where the full from the outer subdomain is used, and the resulting correction is applied
 </pre>
 <pre>
-                and computed values in ghost regions are added together. Classical
+                       over the outer subdomains.  As a result, points in the overlap will receive the sum of the corrections 
 </pre>
 <pre>
-                standard additive Schwarz
+                       from neighboring subdomains.
 </pre>
 <pre>
- PC_GASM_RESTRICT - residuals from ghost points are used but computed values in ghost
+                       Classical standard additive Schwarz.
 </pre>
 <pre>
-                   region are discarded. Default
+ PC_GASM_RESTRICT    - Residual from the outer subdomain is used but the correction is restricted to the inner subdomain only
 </pre>
 <pre>
- PC_GASM_INTERPOLATE - residuals from ghost points are not used, computed values in ghost
+                       (i.e., zeroed out over the overlap portion of the outer subdomain before being applied).  As a result, 
 </pre>
 <pre>
-                      region are added back in
+                       each point will receive a correction only from the unique inner subdomain containing it (nonoverlapping covering 
 </pre>
 <pre>
- PC_GASM_NONE - ghost point residuals are not used, computed ghost values are discarded
+                       assumption).
 </pre>
 <pre>
-               not very good.                
+                       Default.
+</pre>
+<pre>
+ PC_GASM_INTERPOLATE - Residual is zeroed out over the overlap portion of the outer subdomain, but the resulting correction is 
+</pre>
+<pre>
+                       applied over the outer subdomain. As a result, points in the overlap will receive the sum of the corrections 
+</pre>
+<pre>
+                       from neighboring subdomains.
+</pre>
+<pre>
+</pre>
+<pre>
+ PC_GASM_NONE        - Residuals and corrections are zeroed out outside the local subdomains.
+</pre>
+<pre>
+                       Not very good.
 </pre>
 <P>
 

@@ -2,7 +2,7 @@
 /*
      Some useful vector utility functions.
 */
-#include <private/vecimpl.h>          /*I "petscvec.h" I*/
+#include <petsc-private/vecimpl.h>          /*I "petscvec.h" I*/
 
 extern MPI_Op VecMax_Local_Op;
 extern MPI_Op VecMin_Local_Op;
@@ -175,7 +175,7 @@ PetscErrorCode  VecStrideNorm(Vec v,PetscInt start,NormType ntype,PetscReal *nrm
     }
     tnorm  = PetscRealPart(sum);
     ierr   = MPI_Allreduce(&tnorm,nrm,1,MPIU_REAL,MPIU_SUM,comm);CHKERRQ(ierr);
-    *nrm = sqrt(*nrm);
+    *nrm = PetscSqrtReal(*nrm);
   } else if (ntype == NORM_1) {
     tnorm = 0.0;
     for (i=0; i<n; i+=bs) {
@@ -494,7 +494,7 @@ PetscErrorCode  VecStrideNormAll(Vec v,NormType ntype,PetscReal nrm[])
     }
     ierr   = MPI_Allreduce(tnorm,nrm,bs,MPIU_REAL,MPIU_SUM,comm);CHKERRQ(ierr);
     for (j=0; j<bs; j++) {
-      nrm[j] = sqrt(nrm[j]);
+      nrm[j] = PetscSqrtReal(nrm[j]);
     }
   } else if (ntype == NORM_1) {
     for (j=0; j<bs; j++) {
@@ -934,8 +934,7 @@ PetscErrorCode  VecStrideGather(Vec v,PetscInt start,Vec s,InsertMode addv)
   PetscValidHeaderSpecific(v,VEC_CLASSID,1);
   PetscValidHeaderSpecific(s,VEC_CLASSID,3);
   if (start < 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Negative start %D",start);
-  if (start >= v->map->bs)  SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Start of stride subvector (%D) is too large for stride\n\
-            Have you set the vector blocksize (%D) correctly with VecSetBlockSize()?",start,v->map->bs);
+  if (start >= v->map->bs) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Start of stride subvector (%D) is too large for stride\n Have you set the vector blocksize (%D) correctly with VecSetBlockSize()?",start,v->map->bs);
   if (!v->ops->stridegather) SETERRQ(((PetscObject)s)->comm,PETSC_ERR_SUP,"Not implemented for this Vec class");
   ierr = (*v->ops->stridegather)(v,start,s,addv);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -980,8 +979,7 @@ PetscErrorCode  VecStrideScatter(Vec s,PetscInt start,Vec v,InsertMode addv)
   PetscValidHeaderSpecific(s,VEC_CLASSID,1);
   PetscValidHeaderSpecific(v,VEC_CLASSID,3);
   if (start < 0) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Negative start %D",start);
-  if (start >= v->map->bs)  SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Start of stride subvector (%D) is too large for stride\n\
-            Have you set the vector blocksize (%D) correctly with VecSetBlockSize()?",start,v->map->bs);
+  if (start >= v->map->bs) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Start of stride subvector (%D) is too large for stride\n Have you set the vector blocksize (%D) correctly with VecSetBlockSize()?",start,v->map->bs);
   if (!v->ops->stridescatter) SETERRQ(((PetscObject)s)->comm,PETSC_ERR_SUP,"Not implemented for this Vec class");
   ierr = (*v->ops->stridescatter)(s,start,v,addv);CHKERRQ(ierr);
   PetscFunctionReturn(0);
@@ -1200,7 +1198,7 @@ PetscErrorCode  VecSqrtAbs(Vec v)
     ierr = VecGetLocalSize(v, &n);CHKERRQ(ierr);
     ierr = VecGetArray(v, &x);CHKERRQ(ierr);
     for(i = 0; i < n; i++) {
-      x[i] = sqrt(PetscAbsScalar(x[i]));
+      x[i] = PetscSqrtReal(PetscAbsScalar(x[i]));
     }
     ierr = VecRestoreArray(v, &x);CHKERRQ(ierr);
   }

@@ -1,6 +1,6 @@
 #include "petscsys.h"
 #include "petscfix.h"
-#include "private/fortranimpl.h"
+#include "petsc-private/fortranimpl.h"
 /* sorti.c */
 /* Fortran interface file */
 
@@ -44,6 +44,11 @@ extern void PetscRmPointer(void*);
 #define petscsortintwitharray_ petscsortintwitharray
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscsortintwitharraypair_ PETSCSORTINTWITHARRAYPAIR
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscsortintwitharraypair_ petscsortintwitharraypair
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscsortmpiintwitharray_ PETSCSORTMPIINTWITHARRAY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscsortmpiintwitharray_ petscsortmpiintwitharray
@@ -52,6 +57,11 @@ extern void PetscRmPointer(void*);
 #define petscsortintwithscalararray_ PETSCSORTINTWITHSCALARARRAY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscsortintwithscalararray_ petscsortintwithscalararray
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscmergeintarraypair_ PETSCMERGEINTARRAYPAIR
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscmergeintarraypair_ petscmergeintarraypair
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscprocesstree_ PETSCPROCESSTREE
@@ -73,11 +83,17 @@ void PETSC_STDCALL  petscsortremovedupsint_(PetscInt *n,PetscInt ii[], int *__ie
 void PETSC_STDCALL  petscsortintwitharray_(PetscInt *n,PetscInt i[],PetscInt Ii[], int *__ierr ){
 *__ierr = PetscSortIntWithArray(*n,i,Ii);
 }
+void PETSC_STDCALL  petscsortintwitharraypair_(PetscInt *n,PetscInt *L,PetscInt *J,PetscInt *K, int *__ierr ){
+*__ierr = PetscSortIntWithArrayPair(*n,L,J,K);
+}
 void PETSC_STDCALL  petscsortmpiintwitharray_(PetscMPIInt *n,PetscMPIInt i[],PetscMPIInt Ii[], int *__ierr ){
 *__ierr = PetscSortMPIIntWithArray(*n,i,Ii);
 }
 void PETSC_STDCALL  petscsortintwithscalararray_(PetscInt *n,PetscInt i[],PetscScalar Ii[], int *__ierr ){
 *__ierr = PetscSortIntWithScalarArray(*n,i,Ii);
+}
+void PETSC_STDCALL  petscmergeintarraypair_(PetscInt *an, PetscInt *aI, PetscInt *aJ,PetscInt *bn, PetscInt *bI, PetscInt *bJ,PetscInt *n,PetscInt **L,PetscInt **J, int *__ierr ){
+*__ierr = PetscMergeIntArrayPair(*an,aI,aJ,*bn,bI,bJ,n,L,J);
 }
 void PETSC_STDCALL  petscprocesstree_(PetscInt *n, PetscBool  mask[], PetscInt parentid[],PetscInt *Nlevels,PetscInt **Level,PetscInt **Levelcnt,PetscInt **Idbylevel,PetscInt **Column, int *__ierr ){
 *__ierr = PetscProcessTree(*n,mask,parentid,Nlevels,Level,Levelcnt,Idbylevel,Column);

@@ -1,19 +1,20 @@
 <center><a href="ex58.c">Actual source code: ex58.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex58.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:17:58+00:00">
+<meta name="date" content="2012-08-29T17:11:08+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
 
-<a name="line4">  4: </a>static char  help[] = <font color="#666666">"Parallel version of the minimum surface area problem using DMs.\n\</font>
+<a name="line4">  4: </a>static const char help[] = <font color="#666666">"Parallel version of the minimum surface area problem in 2D using DMDA.\n\</font>
 <a name="line5">  5: </a><font color="#666666"> It solves a system of nonlinear equations in mixed\n\</font>
-<a name="line6">  6: </a><font color="#666666">complementarity form using semismooth newton algorithm.This example is based on a\n\</font>
+<a name="line6">  6: </a><font color="#666666">complementarity form.This example is based on a\n\</font>
 <a name="line7">  7: </a><font color="#666666">problem from the MINPACK-2 test suite.  Given a rectangular 2-D domain and\n\</font>
 <a name="line8">  8: </a><font color="#666666">boundary values along the edges of the domain, the objective is to find the\n\</font>
 <a name="line9">  9: </a><font color="#666666">surface with the minimal area that satisfies the boundary conditions.\n\</font>
@@ -58,6 +59,12 @@
 
 <a name="line49"> 49: </a><font color="#B22222">/* -------- User-defined Routines --------- */</font>
 
+<a name="line51"> 51: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormBoundaryConditions(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,AppCtx **)</font></strong>;
+<a name="line52"> 52: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DestroyBoundaryConditions(AppCtx **)</font></strong>;
+<a name="line53"> 53: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ComputeInitialGuess(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
+<a name="line54"> 54: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormGradient(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, void *)</font></strong>;
+<a name="line55"> 55: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*, <A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void *)</font></strong>;
+<a name="line56"> 56: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormBounds(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
 
 <a name="line60"> 60: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc, char **argv)</font></strong>
 <a name="line61"> 61: </a>{
@@ -76,7 +83,7 @@
 <a name="line74"> 74: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da,&amp;x);
 <a name="line75"> 75: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x, &amp;r);
 
-<a name="line77"> 77: </a>  <A href="../../../../docs/manualpages/DM/DMGetMatrix.html#DMGetMatrix">DMGetMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
+<a name="line77"> 77: </a>  <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
 
 <a name="line79"> 79: </a>  <font color="#B22222">/* Create nonlinear solver context */</font>
 <a name="line80"> 80: </a>  <A href="../../../../docs/manualpages/SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;snes);
@@ -397,8 +404,8 @@
 
 <a name="line406">406: </a>      hc = hydhx*(1.0+d7*d7)/(f1*f1*f1) + hxdhy*(1.0+d8*d8)/(f3*f3*f3) +
 <a name="line407">407: </a>        hydhx*(1.0+d5*d5)/(f5*f5*f5) + hxdhy*(1.0+d6*d6)/(f6*f6*f6) +
-<a name="line408">408: </a>        (hxdhy*(1.0+d1*d1)+hydhx*(1.0+d4*d4)-2*d1*d4)/(f2*f2*f2) +
-<a name="line409">409: </a>        (hxdhy*(1.0+d2*d2)+hydhx*(1.0+d3*d3)-2*d2*d3)/(f4*f4*f4);
+<a name="line408">408: </a>        (hxdhy*(1.0+d1*d1)+hydhx*(1.0+d4*d4)-2.0*d1*d4)/(f2*f2*f2) +
+<a name="line409">409: </a>        (hxdhy*(1.0+d2*d2)+hydhx*(1.0+d3*d3)-2.0*d2*d3)/(f4*f4*f4);
 
 <a name="line411">411: </a>      hl/=2.0; hr/=2.0; ht/=2.0; hb/=2.0; hbr/=2.0; htl/=2.0;  hc/=2.0;
 
@@ -475,136 +482,137 @@
 <a name="line485">485: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        i,j,k,limit=0,maxits=5;
 <a name="line486">486: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        mx,my;
 <a name="line487">487: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        bsize=0, lsize=0, tsize=0, rsize=0;
-<a name="line488">488: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     one=1.0, two=2.0, three=3.0, tol=1e-10;
-<a name="line489">489: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     fnorm,det,hx,hy,xt=0,yt=0;
-<a name="line490">490: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     u1,u2,nf1,nf2,njac11,njac12,njac21,njac22;
-<a name="line491">491: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     b=-0.5, t=0.5, l=-0.5, r=0.5;
-<a name="line492">492: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     *boundary;
-<a name="line493">493: </a>  AppCtx          *user;
-<a name="line494">494: </a>  DM              da;
+<a name="line488">488: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     one=1.0, two=2.0, three=3.0;
+<a name="line489">489: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     det,hx,hy,xt=0,yt=0;
+<a name="line490">490: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>       fnorm, tol=1e-10;
+<a name="line491">491: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     u1,u2,nf1,nf2,njac11,njac12,njac21,njac22;
+<a name="line492">492: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     b=-0.5, t=0.5, l=-0.5, r=0.5;
+<a name="line493">493: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     *boundary;
+<a name="line494">494: </a>  AppCtx          *user;
+<a name="line495">495: </a>  DM              da;
 
-<a name="line497">497: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetDM.html#SNESGetDM">SNESGetDM</A>(snes,&amp;da);
-<a name="line498">498: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(AppCtx,&amp;user);
-<a name="line499">499: </a>  *ouser   = user;
-<a name="line500">500: </a>  user-&gt;lb = .05;
-<a name="line501">501: </a>  user-&gt;ub = SNES_VI_INF;
-<a name="line502">502: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,&amp;mx,&amp;my,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>);
+<a name="line498">498: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetDM.html#SNESGetDM">SNESGetDM</A>(snes,&amp;da);
+<a name="line499">499: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(AppCtx,&amp;user);
+<a name="line500">500: </a>  *ouser   = user;
+<a name="line501">501: </a>  user-&gt;lb = .05;
+<a name="line502">502: </a>  user-&gt;ub = SNES_VI_INF;
+<a name="line503">503: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,&amp;mx,&amp;my,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>);
 
-<a name="line504">504: </a>  <font color="#B22222">/* Check if lower and upper bounds are set */</font>
-<a name="line505">505: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetScalar.html#PetscOptionsGetScalar">PetscOptionsGetScalar</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-lb"</font>, &amp;user-&gt;lb, 0);
-<a name="line506">506: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetScalar.html#PetscOptionsGetScalar">PetscOptionsGetScalar</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-ub"</font>, &amp;user-&gt;ub, 0);
-<a name="line507">507: </a>  bsize=mx+2; lsize=my+2; rsize=my+2; tsize=mx+2;
+<a name="line505">505: </a>  <font color="#B22222">/* Check if lower and upper bounds are set */</font>
+<a name="line506">506: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetScalar.html#PetscOptionsGetScalar">PetscOptionsGetScalar</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-lb"</font>, &amp;user-&gt;lb, 0);
+<a name="line507">507: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetScalar.html#PetscOptionsGetScalar">PetscOptionsGetScalar</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-ub"</font>, &amp;user-&gt;ub, 0);
+<a name="line508">508: </a>  bsize=mx+2; lsize=my+2; rsize=my+2; tsize=mx+2;
 
-<a name="line509">509: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(bsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;user-&gt;bottom);
-<a name="line510">510: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(tsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;user-&gt;top);
-<a name="line511">511: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(lsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;user-&gt;left);
-<a name="line512">512: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(rsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;user-&gt;right);
+<a name="line510">510: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(bsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;user-&gt;bottom);
+<a name="line511">511: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(tsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;user-&gt;top);
+<a name="line512">512: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(lsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;user-&gt;left);
+<a name="line513">513: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(rsize*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>), &amp;user-&gt;right);
 
-<a name="line514">514: </a>  hx= (r-l)/(mx+1); hy=(t-b)/(my+1);
+<a name="line515">515: </a>  hx= (r-l)/(mx+1.0); hy=(t-b)/(my+1.0);
 
-<a name="line516">516: </a>  <font color="#4169E1">for</font> (j=0; j&lt;4; j++){
-<a name="line517">517: </a>    <font color="#4169E1">if</font> (j==0){
-<a name="line518">518: </a>      yt=b;
-<a name="line519">519: </a>      xt=l;
-<a name="line520">520: </a>      limit=bsize;
-<a name="line521">521: </a>      boundary=user-&gt;bottom;
-<a name="line522">522: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (j==1){
-<a name="line523">523: </a>      yt=t;
-<a name="line524">524: </a>      xt=l;
-<a name="line525">525: </a>      limit=tsize;
-<a name="line526">526: </a>      boundary=user-&gt;top;
-<a name="line527">527: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (j==2){
-<a name="line528">528: </a>      yt=b;
-<a name="line529">529: </a>      xt=l;
-<a name="line530">530: </a>      limit=lsize;
-<a name="line531">531: </a>      boundary=user-&gt;left;
-<a name="line532">532: </a>    } <font color="#4169E1">else</font> { // <font color="#4169E1">if</font>  (j==3)
-<a name="line533">533: </a>      yt=b;
-<a name="line534">534: </a>      xt=r;
-<a name="line535">535: </a>      limit=rsize;
-<a name="line536">536: </a>      boundary=user-&gt;right;
-<a name="line537">537: </a>    }
+<a name="line517">517: </a>  <font color="#4169E1">for</font> (j=0; j&lt;4; j++){
+<a name="line518">518: </a>    <font color="#4169E1">if</font> (j==0){
+<a name="line519">519: </a>      yt=b;
+<a name="line520">520: </a>      xt=l;
+<a name="line521">521: </a>      limit=bsize;
+<a name="line522">522: </a>      boundary=user-&gt;bottom;
+<a name="line523">523: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (j==1){
+<a name="line524">524: </a>      yt=t;
+<a name="line525">525: </a>      xt=l;
+<a name="line526">526: </a>      limit=tsize;
+<a name="line527">527: </a>      boundary=user-&gt;top;
+<a name="line528">528: </a>    } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (j==2){
+<a name="line529">529: </a>      yt=b;
+<a name="line530">530: </a>      xt=l;
+<a name="line531">531: </a>      limit=lsize;
+<a name="line532">532: </a>      boundary=user-&gt;left;
+<a name="line533">533: </a>    } <font color="#4169E1">else</font> { // <font color="#4169E1">if</font>  (j==3)
+<a name="line534">534: </a>      yt=b;
+<a name="line535">535: </a>      xt=r;
+<a name="line536">536: </a>      limit=rsize;
+<a name="line537">537: </a>      boundary=user-&gt;right;
+<a name="line538">538: </a>    }
 
-<a name="line539">539: </a>    <font color="#4169E1">for</font> (i=0; i&lt;limit; i++){
-<a name="line540">540: </a>      u1=xt;
-<a name="line541">541: </a>      u2=-yt;
-<a name="line542">542: </a>      <font color="#4169E1">for</font> (k=0; k&lt;maxits; k++){
-<a name="line543">543: </a>        nf1=u1 + u1*u2*u2 - u1*u1*u1/three-xt;
-<a name="line544">544: </a>        nf2=-u2 - u1*u1*u2 + u2*u2*u2/three-yt;
-<a name="line545">545: </a>        fnorm=sqrt(nf1*nf1+nf2*nf2);
-<a name="line546">546: </a>        <font color="#4169E1">if</font> (fnorm &lt;= tol) <font color="#4169E1">break</font>;
-<a name="line547">547: </a>        njac11=one+u2*u2-u1*u1;
-<a name="line548">548: </a>        njac12=two*u1*u2;
-<a name="line549">549: </a>        njac21=-two*u1*u2;
-<a name="line550">550: </a>        njac22=-one - u1*u1 + u2*u2;
-<a name="line551">551: </a>        det = njac11*njac22-njac21*njac12;
-<a name="line552">552: </a>        u1 = u1-(njac22*nf1-njac12*nf2)/det;
-<a name="line553">553: </a>        u2 = u2-(njac11*nf2-njac21*nf1)/det;
-<a name="line554">554: </a>      }
+<a name="line540">540: </a>    <font color="#4169E1">for</font> (i=0; i&lt;limit; i++){
+<a name="line541">541: </a>      u1=xt;
+<a name="line542">542: </a>      u2=-yt;
+<a name="line543">543: </a>      <font color="#4169E1">for</font> (k=0; k&lt;maxits; k++){
+<a name="line544">544: </a>        nf1=u1 + u1*u2*u2 - u1*u1*u1/three-xt;
+<a name="line545">545: </a>        nf2=-u2 - u1*u1*u2 + u2*u2*u2/three-yt;
+<a name="line546">546: </a>        fnorm=PetscRealPart(sqrt(nf1*nf1+nf2*nf2));
+<a name="line547">547: </a>        <font color="#4169E1">if</font> (fnorm &lt;= tol) <font color="#4169E1">break</font>;
+<a name="line548">548: </a>        njac11=one+u2*u2-u1*u1;
+<a name="line549">549: </a>        njac12=two*u1*u2;
+<a name="line550">550: </a>        njac21=-two*u1*u2;
+<a name="line551">551: </a>        njac22=-one - u1*u1 + u2*u2;
+<a name="line552">552: </a>        det = njac11*njac22-njac21*njac12;
+<a name="line553">553: </a>        u1 = u1-(njac22*nf1-njac12*nf2)/det;
+<a name="line554">554: </a>        u2 = u2-(njac11*nf2-njac21*nf1)/det;
+<a name="line555">555: </a>      }
 
-<a name="line556">556: </a>      boundary[i]=u1*u1-u2*u2;
-<a name="line557">557: </a>      <font color="#4169E1">if</font> (j==0 || j==1) {
-<a name="line558">558: </a>        xt=xt+hx;
-<a name="line559">559: </a>      } <font color="#4169E1">else</font> { // <font color="#4169E1">if</font> (j==2 || j==3)
-<a name="line560">560: </a>        yt=yt+hy;
-<a name="line561">561: </a>      }
-<a name="line562">562: </a>    }
-<a name="line563">563: </a>  }
-<a name="line564">564: </a>  <font color="#4169E1">return</font>(0);
-<a name="line565">565: </a>}
+<a name="line557">557: </a>      boundary[i]=u1*u1-u2*u2;
+<a name="line558">558: </a>      <font color="#4169E1">if</font> (j==0 || j==1) {
+<a name="line559">559: </a>        xt=xt+hx;
+<a name="line560">560: </a>      } <font color="#4169E1">else</font> { // <font color="#4169E1">if</font> (j==2 || j==3)
+<a name="line561">561: </a>        yt=yt+hy;
+<a name="line562">562: </a>      }
+<a name="line563">563: </a>    }
+<a name="line564">564: </a>  }
+<a name="line565">565: </a>  <font color="#4169E1">return</font>(0);
+<a name="line566">566: </a>}
 
-<a name="line569">569: </a><strong><font color="#4169E1"><a name="DestroyBoundaryConditions"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DestroyBoundaryConditions(AppCtx **ouser)</font></strong>
-<a name="line570">570: </a>{
-<a name="line571">571: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
-<a name="line572">572: </a>  AppCtx          *user = *ouser;
+<a name="line570">570: </a><strong><font color="#4169E1"><a name="DestroyBoundaryConditions"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DestroyBoundaryConditions(AppCtx **ouser)</font></strong>
+<a name="line571">571: </a>{
+<a name="line572">572: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line573">573: </a>  AppCtx          *user = *ouser;
 
-<a name="line575">575: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user-&gt;bottom);
-<a name="line576">576: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user-&gt;top);
-<a name="line577">577: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user-&gt;left);
-<a name="line578">578: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user-&gt;right);
-<a name="line579">579: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(*ouser);
-<a name="line580">580: </a>  <font color="#4169E1">return</font>(0);
-<a name="line581">581: </a>}
+<a name="line576">576: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user-&gt;bottom);
+<a name="line577">577: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user-&gt;top);
+<a name="line578">578: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user-&gt;left);
+<a name="line579">579: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(user-&gt;right);
+<a name="line580">580: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(*ouser);
+<a name="line581">581: </a>  <font color="#4169E1">return</font>(0);
+<a name="line582">582: </a>}
 
 
-<a name="line584">584: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
-<a name="line587">587: </a><font color="#B22222">/*</font>
-<a name="line588">588: </a><font color="#B22222">   ComputeInitialGuess - Calculates the initial guess </font>
+<a name="line585">585: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
+<a name="line588">588: </a><font color="#B22222">/*</font>
+<a name="line589">589: </a><font color="#B22222">   ComputeInitialGuess - Calculates the initial guess </font>
 
-<a name="line590">590: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line591">591: </a><font color="#B22222">.  user - user-defined application context</font>
-<a name="line592">592: </a><font color="#B22222">.  X - vector for initial guess</font>
+<a name="line591">591: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line592">592: </a><font color="#B22222">.  user - user-defined application context</font>
+<a name="line593">593: </a><font color="#B22222">.  X - vector for initial guess</font>
 
-<a name="line594">594: </a><font color="#B22222">   Output Parameters:</font>
-<a name="line595">595: </a><font color="#B22222">.  X - newly computed initial guess</font>
-<a name="line596">596: </a><font color="#B22222">*/</font>
-<a name="line597">597: </a><strong><font color="#4169E1"><a name="ComputeInitialGuess"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ComputeInitialGuess(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,void *dummy)</font></strong>
-<a name="line598">598: </a>{
-<a name="line599">599: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
-<a name="line600">600: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        i,j,mx,my;
-<a name="line601">601: </a>  DM              da;
-<a name="line602">602: </a>  AppCtx          *user;
-<a name="line603">603: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     **x;
-<a name="line604">604: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        xs,xm,ys,ym;
+<a name="line595">595: </a><font color="#B22222">   Output Parameters:</font>
+<a name="line596">596: </a><font color="#B22222">.  X - newly computed initial guess</font>
+<a name="line597">597: </a><font color="#B22222">*/</font>
+<a name="line598">598: </a><strong><font color="#4169E1"><a name="ComputeInitialGuess"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ComputeInitialGuess(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> X,void *dummy)</font></strong>
+<a name="line599">599: </a>{
+<a name="line600">600: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line601">601: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        i,j,mx,my;
+<a name="line602">602: </a>  DM              da;
+<a name="line603">603: </a>  AppCtx          *user;
+<a name="line604">604: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     **x;
+<a name="line605">605: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        xs,xm,ys,ym;
 
-<a name="line607">607: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetDM.html#SNESGetDM">SNESGetDM</A>(snes,&amp;da);
-<a name="line608">608: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetApplicationContext.html#SNESGetApplicationContext">SNESGetApplicationContext</A>(snes,(void**)&amp;user);
+<a name="line608">608: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetDM.html#SNESGetDM">SNESGetDM</A>(snes,&amp;da);
+<a name="line609">609: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetApplicationContext.html#SNESGetApplicationContext">SNESGetApplicationContext</A>(snes,(void**)&amp;user);
 
-<a name="line610">610: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,&amp;ym,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line611">611: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,&amp;mx,&amp;my,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>);
+<a name="line611">611: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,&amp;ys,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,&amp;ym,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line612">612: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,&amp;mx,&amp;my,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>);
 
-<a name="line613">613: </a>  <font color="#B22222">/* Get pointers to vector data */</font>
-<a name="line614">614: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,X,&amp;x);
-<a name="line615">615: </a>  <font color="#B22222">/* Perform local computations */</font>
-<a name="line616">616: </a>  <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++){
-<a name="line617">617: </a>    <font color="#4169E1">for</font> (i=xs; i&lt; xs+xm; i++){
-<a name="line618">618: </a>      x[j][i] = ( ((j+1)*user-&gt;bottom[i+1]+(my-j+1)*user-&gt;top[i+1])/(my+2)+((i+1)*user-&gt;left[j+1]+(mx-i+1)*user-&gt;right[j+1])/(mx+2))/2.0;
-<a name="line619">619: </a>    }
-<a name="line620">620: </a>  }
-<a name="line621">621: </a>  <font color="#B22222">/* Restore vectors */</font>
-<a name="line622">622: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,X,&amp;x);
-<a name="line623">623: </a>  <font color="#4169E1">return</font>(0);
-<a name="line624">624: </a>}
+<a name="line614">614: </a>  <font color="#B22222">/* Get pointers to vector data */</font>
+<a name="line615">615: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,X,&amp;x);
+<a name="line616">616: </a>  <font color="#B22222">/* Perform local computations */</font>
+<a name="line617">617: </a>  <font color="#4169E1">for</font> (j=ys; j&lt;ys+ym; j++){
+<a name="line618">618: </a>    <font color="#4169E1">for</font> (i=xs; i&lt; xs+xm; i++){
+<a name="line619">619: </a>      x[j][i] = ( ((j+1.0)*user-&gt;bottom[i+1]+(my-j+1.0)*user-&gt;top[i+1])/(my+2.0)+((i+1.0)*user-&gt;left[j+1]+(mx-i+1.0)*user-&gt;right[j+1])/(mx+2.0))/2.0;
+<a name="line620">620: </a>    }
+<a name="line621">621: </a>  }
+<a name="line622">622: </a>  <font color="#B22222">/* Restore vectors */</font>
+<a name="line623">623: </a>  <A href="../../../../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,X,&amp;x);
+<a name="line624">624: </a>  <font color="#4169E1">return</font>(0);
+<a name="line625">625: </a>}
 </pre>
 </body>
 

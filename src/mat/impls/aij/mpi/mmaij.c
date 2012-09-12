@@ -26,15 +26,15 @@ PetscErrorCode MatSetUpMultiply_MPIAIJ(Mat mat)
   PetscFunctionBegin;
 
 #if defined (PETSC_USE_CTABLE)
-  /* use a table - Mark Adams */
-  ierr = PetscTableCreate(aij->B->rmap->n,&gid1_lid1);CHKERRQ(ierr);
+  /* use a table */
+  ierr = PetscTableCreate(aij->B->rmap->n,mat->cmap->N+1,&gid1_lid1);CHKERRQ(ierr);
   for (i=0; i<aij->B->rmap->n; i++) {
     for (j=0; j<B->ilen[i]; j++) {
       PetscInt data,gid1 = aj[B->i[i] + j] + 1;
       ierr = PetscTableFind(gid1_lid1,gid1,&data);CHKERRQ(ierr);
       if (!data) {
         /* one based table */ 
-        ierr = PetscTableAdd(gid1_lid1,gid1,++ec);CHKERRQ(ierr); 
+        ierr = PetscTableAdd(gid1_lid1,gid1,++ec,INSERT_VALUES);CHKERRQ(ierr); 
       }
     }
   }
@@ -50,7 +50,7 @@ PetscErrorCode MatSetUpMultiply_MPIAIJ(Mat mat)
   ierr = PetscSortInt(ec,garray);CHKERRQ(ierr); /* sort, and rebuild */
   ierr = PetscTableRemoveAll(gid1_lid1);CHKERRQ(ierr);
   for (i=0; i<ec; i++) {
-    ierr = PetscTableAdd(gid1_lid1,garray[i]+1,i+1);CHKERRQ(ierr); 
+    ierr = PetscTableAdd(gid1_lid1,garray[i]+1,i+1,INSERT_VALUES);CHKERRQ(ierr); 
   }
   /* compact out the extra columns in B */
   for (i=0; i<aij->B->rmap->n; i++) {
@@ -64,7 +64,6 @@ PetscErrorCode MatSetUpMultiply_MPIAIJ(Mat mat)
   aij->B->cmap->n = aij->B->cmap->N = ec;
   ierr = PetscLayoutSetUp((aij->B->cmap));CHKERRQ(ierr);
   ierr = PetscTableDestroy(&gid1_lid1);CHKERRQ(ierr);
-  /* Mark Adams */
 #else
   /* Make an array as long as the number of columns */
   /* mark those columns that are in aij->B */
@@ -104,10 +103,11 @@ PetscErrorCode MatSetUpMultiply_MPIAIJ(Mat mat)
 
   /* create two temporary Index sets for build scatter gather */
   /*  check for the special case where blocks are communicated for faster VecScatterXXX */
-  useblockis = PETSC_TRUE;
-  if (mat->rmap->bs > 1) {
-    PetscInt bs = mat->rmap->bs,ibs,ga;
+  useblockis = PETSC_FALSE;
+  if (mat->cmap->bs > 1) {
+    PetscInt bs = mat->cmap->bs,ibs,ga;
     if (!(ec % bs)) {
+      useblockis = PETSC_TRUE;
       for (i=0; i<ec/bs; i++) {
         if ((ga = garray[ibs = i*bs]) % bs) {
           useblockis = PETSC_FALSE;
@@ -123,20 +123,28 @@ PetscErrorCode MatSetUpMultiply_MPIAIJ(Mat mat)
       }
     }
   }
+#if defined(PETSC_USE_DEBUG)
+  i = (PetscInt)useblockis;
+  ierr = MPI_Allreduce(&i,&j,1,MPIU_INT,MPI_MIN,((PetscObject)mat)->comm); CHKERRQ(ierr);
+  if(j!=i) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_PLIB,"Use of blocked not consistant (I am usning blocked)");
+#endif
+
   if (useblockis) {
-    PetscInt *ga,bs = mat->rmap->bs,iec = ec/bs;
+    PetscInt *ga,bs = mat->cmap->bs,iec = ec/bs;
+    if(ec%bs)SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_PLIB,"ec=%D bs=%D",ec,bs);
     ierr = PetscInfo(mat,"Using block index set to define scatter\n");
-    ierr = PetscMalloc((ec/mat->rmap->bs)*sizeof(PetscInt),&ga);CHKERRQ(ierr);
+    ierr = PetscMalloc(iec*sizeof(PetscInt),&ga);CHKERRQ(ierr);
     for (i=0; i<iec; i++) ga[i] = garray[i*bs]/bs;
     ierr = ISCreateBlock(((PetscObject)mat)->comm,bs,iec,ga,PETSC_OWN_POINTER,&from);CHKERRQ(ierr);
   } else {
     ierr = ISCreateGeneral(((PetscObject)mat)->comm,ec,garray,PETSC_COPY_VALUES,&from);CHKERRQ(ierr);
   }
+
   ierr = ISCreateStride(PETSC_COMM_SELF,ec,0,1,&to);CHKERRQ(ierr);
 
   /* create temporary global vector to generate scatter context */
   /* This does not allocate the array's memory so is efficient */
-  ierr = VecCreateMPIWithArray(((PetscObject)mat)->comm,mat->cmap->n,mat->cmap->N,PETSC_NULL,&gvec);CHKERRQ(ierr);
+  ierr = VecCreateMPIWithArray(((PetscObject)mat)->comm,1,mat->cmap->n,mat->cmap->N,PETSC_NULL,&gvec);CHKERRQ(ierr);
 
   /* generate the scatter context */
   ierr = VecScatterCreate(gvec,from,aij->lvec,to,&aij->Mvctx);CHKERRQ(ierr);
@@ -154,7 +162,7 @@ PetscErrorCode MatSetUpMultiply_MPIAIJ(Mat mat)
 
 
 #undef __FUNCT__  
-#define __FUNCT__ "DisAssemble_MPIAIJ"
+#define __FUNCT__ "MatDisAssemble_MPIAIJ"
 /*
      Takes the local part of an already assembled MPIAIJ matrix
    and disassembles it. This is to allow new nonzeros into the matrix
@@ -164,7 +172,7 @@ PetscErrorCode MatSetUpMultiply_MPIAIJ(Mat mat)
    Kind of slow! But that's what application programmers get when 
    they are sloppy.
 */
-PetscErrorCode DisAssemble_MPIAIJ(Mat A)
+PetscErrorCode MatDisAssemble_MPIAIJ(Mat A)
 {
   Mat_MPIAIJ     *aij = (Mat_MPIAIJ*)A->data;
   Mat            B = aij->B,Bnew;
@@ -176,8 +184,8 @@ PetscErrorCode DisAssemble_MPIAIJ(Mat A)
   PetscFunctionBegin;
   /* free stuff related to matrix-vec multiply */
   ierr = VecGetSize(aij->lvec,&ec);CHKERRQ(ierr); /* needed for PetscLogObjectMemory below */
-  ierr = VecDestroy(&aij->lvec);CHKERRQ(ierr); aij->lvec = 0;
-  ierr = VecScatterDestroy(&aij->Mvctx);CHKERRQ(ierr); aij->Mvctx = 0;
+  ierr = VecDestroy(&aij->lvec);CHKERRQ(ierr); 
+  ierr = VecScatterDestroy(&aij->Mvctx);CHKERRQ(ierr); 
   if (aij->colmap) {
 #if defined (PETSC_USE_CTABLE)
     ierr = PetscTableDestroy(&aij->colmap);CHKERRQ(ierr);
@@ -198,8 +206,10 @@ PetscErrorCode DisAssemble_MPIAIJ(Mat A)
   }
   ierr = MatCreate(PETSC_COMM_SELF,&Bnew);CHKERRQ(ierr);
   ierr = MatSetSizes(Bnew,m,n,m,n);CHKERRQ(ierr);
+  ierr = MatSetBlockSizes(Bnew,A->rmap->bs,A->cmap->bs);CHKERRQ(ierr);
   ierr = MatSetType(Bnew,((PetscObject)B)->type_name);CHKERRQ(ierr);
   ierr = MatSeqAIJSetPreallocation(Bnew,0,nz);CHKERRQ(ierr);
+  ((Mat_SeqAIJ*)Bnew->data)->nonew = Baij->nonew; /* Inherit insertion error options. */
   ierr = PetscFree(nz);CHKERRQ(ierr);
   for (i=0; i<m; i++) {
     for (j=Baij->i[i]; j<Baij->i[i+1]; j++) {

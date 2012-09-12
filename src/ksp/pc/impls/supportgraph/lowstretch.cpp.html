@@ -1,18 +1,19 @@
 <center><a href="lowstretch.cpp">Actual source code: lowstretch.cpp</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/supportgraph/lowstretch.cpp.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:10:25+00:00">
+<meta name="date" content="2012-08-29T17:01:02+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCKSP_DLL</font></strong>
 
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;math.h&gt;</font>
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;queue&gt;</font>
-<a name="line5">  5: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 <a name="line6">  6: </a><font color="#A020F0">#include &lt;boost/graph/adjacency_list.hpp&gt;</font>
 <a name="line7">  7: </a><font color="#A020F0">#include &lt;boost/graph/subgraph.hpp&gt;</font>
 
@@ -234,7 +235,7 @@
 <a name="line230">230: </a>  EdgeKeep edge_keep_g = get(edge_keep_t(),g);
 
 <a name="line232">232: </a><font color="#A020F0">#ifdef PETSC_USE_COMPLEX</font>
-<a name="line233">233: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP, <font color="#666666">"Complex numbers not supported for support graph <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>"</font>);
+<a name="line233">233: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) mat)-&gt;comm, PETSC_ERR_SUP, <font color="#666666">"Complex numbers not supported for support graph <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>"</font>);
 <a name="line234">234: </a><font color="#A020F0">#else</font>
 <a name="line235">235: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(n,<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;diag,n,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;dnz,n,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;onz);
 <a name="line236">236: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(dnz, n * <font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
@@ -425,14 +426,14 @@
 <a name="line427">427: </a><font color="#A020F0">#ifndef PETSC_USE_COMPLEX</font>
 <a name="line428">428: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,m,edgesLeft;
 <a name="line430">430: </a>  ShortestPathPriorityQueue pq;
-<a name="line431">431: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> radius;
+<a name="line431">431: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> radius = 0;
 <a name="line432">432: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> centerSize;
 <a name="line433">433: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>&gt; centerIdx;
 <a name="line434">434: </a>  PQNode node;
 <a name="line435">435: </a><font color="#A020F0">#endif</font>
 
 <a name="line438">438: </a><font color="#A020F0">#ifdef PETSC_USE_COMPLEX</font>
-<a name="line439">439: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP, <font color="#666666">"Complex numbers not supported for support graph <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>"</font>);
+<a name="line439">439: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP, <font color="#666666">"Complex numbers not supported for support graph <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>"</font>);
 <a name="line440">440: </a><font color="#A020F0">#else</font>
 <a name="line441">441: </a>  EdgeWeight edge_weight_g = get(edge_weight_t(),g);
 <a name="line442">442: </a>  EdgeLength edge_length_g = get(edge_length_t(),g);
@@ -696,7 +697,7 @@
 <a name="line703">703: </a>  //  maxCongestion;       <font color="#B22222">/* maps each edge component to an upper bound on the</font>
 <a name="line704">704: </a><font color="#B22222">  //                            congestion through any of its edges */</font>
 
-<a name="line706">706: </a>  const EdgeIndex edge_index_g = get(edge_index_t(),g);
+<a name="line706">706: </a>  //const EdgeIndex edge_index_g = get(edge_index_t(),g);
 
 
 <a name="line710">710: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;Component*&gt; componentList;
@@ -781,7 +782,7 @@
 <a name="line795">795: </a>  const EdgeWeight edge_weight_g = get(edge_weight_t(),g);
 <a name="line796">796: </a>  const EdgeIndex edge_index_g = get(edge_index_t(),g);
 <a name="line797">797: </a>  const EdgeKeep edge_keep_g = get(edge_keep_t(),g);
-<a name="line798">798: </a>  const VertexParent vertex_parent_g = get(vertex_parent_t(),g);
+<a name="line798">798: </a>  //const VertexParent vertex_parent_g = get(vertex_parent_t(),g);
 <a name="line799">799: </a>  const VertexChildren vertex_children_g = get(vertex_children_t(),g);
 <a name="line800">800: </a>  const VertexDepth vertex_depth_g = get(vertex_depth_t(),g);
 <a name="line801">801: </a>  const <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> rootDepth = get(vertex_depth_g,root);
@@ -793,7 +794,7 @@
 <a name="line808">808: </a><font color="#A020F0">#endif</font>
 
 <a name="line811">811: </a><font color="#A020F0">#ifdef PETSC_USE_COMPLEX</font>
-<a name="line812">812: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP, <font color="#666666">"Complex numbers not supported for support graph <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>"</font>);
+<a name="line812">812: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP, <font color="#666666">"Complex numbers not supported for support graph <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>"</font>);
 <a name="line813">813: </a><font color="#A020F0">#else</font>
 <a name="line814">814: </a>  currComponent = new Component();
 <a name="line815">815: </a>  currComponent-&gt;vertices.push_back(root);
@@ -925,7 +926,7 @@
 <a name="line943">943: </a>  const EdgeIndex edge_index_g = get(edge_index_t(),g);
 <a name="line944">944: </a>  const EdgeKeep edge_keep_g = get(edge_keep_t(),g);
 <a name="line945">945: </a>  const VertexParent vertex_parent_g = get(vertex_parent_t(),g);
-<a name="line946">946: </a>  const VertexChildren vertex_children_g = get(vertex_children_t(),g);
+<a name="line946">946: </a>  // const VertexChildren vertex_children_g = get(vertex_children_t(),g);
 <a name="line947">947: </a>  const VertexDepth vertex_depth_g = get(vertex_depth_t(),g);
 <a name="line948">948: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edgeIndex, eeIndex;
 <a name="line949">949: </a>  Component *comp1, *comp2;
@@ -936,7 +937,7 @@
 <a name="line954">954: </a><font color="#A020F0">#endif</font>
 
 <a name="line957">957: </a><font color="#A020F0">#ifdef PETSC_USE_COMPLEX</font>
-<a name="line958">958: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(PETSC_ERR_SUP, <font color="#666666">"Complex numbers not supported for support graph <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>"</font>);
+<a name="line958">958: </a>  <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_SUP, <font color="#666666">"Complex numbers not supported for support graph <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>"</font>);
 <a name="line959">959: </a><font color="#A020F0">#else</font>
 <a name="line960">960: </a>  realMaxCong = 0;
 

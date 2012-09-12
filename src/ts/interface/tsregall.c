@@ -1,5 +1,5 @@
 
-#include <private/tsimpl.h>     /*I  "petscts.h"  I*/
+#include <petsc-private/tsimpl.h>     /*I  "petscts.h"  I*/
 EXTERN_C_BEGIN
 extern PetscErrorCode  TSCreate_Euler(TS);
 extern PetscErrorCode  TSCreate_BEuler(TS);
@@ -12,6 +12,7 @@ extern PetscErrorCode  TSCreate_GL(TS);
 extern PetscErrorCode  TSCreate_SSP(TS);
 extern PetscErrorCode  TSCreate_RK(TS);
 extern PetscErrorCode  TSCreate_ARKIMEX(TS);
+extern PetscErrorCode  TSCreate_RosW(TS);
 EXTERN_C_END
 
 #undef __FUNCT__  
@@ -49,6 +50,7 @@ PetscErrorCode  TSRegisterAll(const char path[])
 #endif
   ierr = TSRegisterDynamic(TSRK,              path, "TSCreate_RK",       TSCreate_RK);CHKERRQ(ierr);
   ierr = TSRegisterDynamic(TSARKIMEX,         path, "TSCreate_ARKIMEX",  TSCreate_ARKIMEX);CHKERRQ(ierr);
+  ierr = TSRegisterDynamic(TSROSW,            path, "TSCreate_RosW",     TSCreate_RosW);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

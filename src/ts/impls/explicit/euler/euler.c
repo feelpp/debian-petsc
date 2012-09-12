@@ -1,7 +1,7 @@
 /*
        Code for Timestepping with explicit Euler.
 */
-#include <private/tsimpl.h>                /*I   "petscts.h"   I*/
+#include <petsc-private/tsimpl.h>                /*I   "petscts.h"   I*/
 
 typedef struct {
   Vec update;     /* work vector where new solution is formed  */
@@ -16,6 +16,8 @@ static PetscErrorCode TSStep_Euler(TS ts)
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
+  ierr = TSPreStep(ts);CHKERRQ(ierr);
+  ierr = TSPreStage(ts,ts->ptime);CHKERRQ(ierr);
   ierr = TSComputeRHSFunction(ts,ts->ptime,sol,update);CHKERRQ(ierr);
   ierr = VecAXPY(sol,ts->time_step,update);CHKERRQ(ierr);
   ts->ptime += ts->time_step;

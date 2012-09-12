@@ -1,5 +1,5 @@
 
-#include <private/kspimpl.h>
+#include <petsc-private/kspimpl.h>
 
 typedef struct {
   KSP kspest;                   /* KSP capable of estimating eigenvalues */
@@ -73,7 +73,7 @@ static PetscErrorCode  KSPSolve_SpecEst(KSP ksp)
     ierr = PetscFree2(real,imag);CHKERRQ(ierr);
     spec->radius = rad;
 
-    ierr = KSPChebychevSetEigenvalues(spec->kspcheap,spec->max*spec->maxfactor,spec->min*spec->minfactor);CHKERRQ(ierr);
+    ierr = KSPChebyshevSetEigenvalues(spec->kspcheap,spec->max*spec->maxfactor,spec->min*spec->minfactor);CHKERRQ(ierr);
     ierr = KSPRichardsonSetScale(spec->kspcheap,spec->richfactor/spec->radius);
     ierr = PetscInfo3(ksp,"Estimated singular value min=%G max=%G, spectral radius=%G",spec->min,spec->max,spec->radius);CHKERRQ(ierr);
     spec->current = PETSC_TRUE;
@@ -90,7 +90,7 @@ static PetscErrorCode KSPView_SpecEst(KSP ksp,PetscViewer viewer)
   PetscBool      iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  SpecEst: last singular value estimate min=%G max=%G rad=%G\n",spec->min,spec->max,spec->radius);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  Using scaling factors min=%G max=%G rich=%G\n",spec->minfactor,spec->maxfactor,spec->richfactor);CHKERRQ(ierr);
@@ -136,7 +136,7 @@ static PetscErrorCode KSPSetFromOptions_SpecEst(KSP ksp)
     ierr = KSPSetType(spec->kspest,KSPGMRES);CHKERRQ(ierr);
   }
   if (!((PetscObject)spec->kspcheap)->type_name) {
-    ierr = KSPSetType(spec->kspcheap,KSPCHEBYCHEV);CHKERRQ(ierr);
+    ierr = KSPSetType(spec->kspcheap,KSPCHEBYSHEV);CHKERRQ(ierr);
   }
   ierr = KSPSetFromOptions(spec->kspest);CHKERRQ(ierr);
   ierr = KSPSetFromOptions(spec->kspcheap);CHKERRQ(ierr);
@@ -174,7 +174,7 @@ EXTERN_C_BEGIN
 .  -ksp_specest_maxfactor <1.1> - Multiplier on the maximum eigen/singular value
 .  -ksp_specest_richfactor <1>  - Multiplier on the richimum eigen/singular value
 .  -specest_ksp_type <type>     - KSP used to estimate the spectrum (usually CG or GMRES)
-.  -speccheap_ksp_type <type>   - KSP used as a cheap smoother once the spectrum has been estimated (usually Chebychev or Richardson)
+.  -speccheap_ksp_type <type>   - KSP used as a cheap smoother once the spectrum has been estimated (usually Chebyshev or Richardson)
 -   see KSPSolve() for more
 
    Notes:
@@ -187,7 +187,7 @@ EXTERN_C_BEGIN
 
    Level: intermediate
 
-.seealso: KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPGMRES, KSPCG, KSPCHEBYCHEV, KSPRICHARDSON
+.seealso: KSPCreate(), KSPSetType(), KSPType (for list of available types), KSP, KSPGMRES, KSPCG, KSPCHEBYSHEV, KSPRICHARDSON
 M*/
 PetscErrorCode  KSPCreate_SpecEst(KSP ksp)
 {

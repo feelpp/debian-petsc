@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
 <HTML>
-<HEAD>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscOptionsGetString.html" />
 <META NAME="GENERATOR" CONTENT="DOCTEXT">
 <TITLE>PetscOptionsGetString</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <A NAME="PetscOptionsGetString"><H1>PetscOptionsGetString</H1></A>
 Gets the string value for a particular option in the database. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -48,10 +49,6 @@ Notes: if the option is given but no string is provided then an empty string is 
 <H3><FONT COLOR="#CC3333">Note</FONT></H3>
 Even if the user provided no string (for example -optionname -someotheroption) the flag is set to <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> (and the string is fulled with nulls).
 <P>
-<H3><FONT COLOR="#CC3333">C++ variants</FONT></H3><TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD>&nbsp PetscOptionsGetString(const char b[],char i[],size_t s,PetscBool  *f)<TD WIDTH=20></TD><TD>-></TD><TD WIDTH=20></TD><TD>PetscOptionsGetString(PETSC_NULL,b,i,s,f)</TR></TD>
-
-</TABLE>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(),  
 <BR><A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(), <A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsGetRealArray.html#PetscOptionsGetRealArray">PetscOptionsGetRealArray</A>(), <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(),
@@ -65,6 +62,7 @@ Even if the user provided no string (for example -optionname -someotheroption) t
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/sys/examples/tutorials/ex5.c.html">src/sys/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex1.c.html">src/mat/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex4.c.html">src/mat/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex5.c.html">src/mat/examples/tutorials/ex5.c.html</A><BR>
@@ -72,8 +70,7 @@ Even if the user provided no string (for example -optionname -someotheroption) t
 <A HREF="../../../src/mat/examples/tutorials/ex10.c.html">src/mat/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex12.c.html">src/mat/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex13.c.html">src/mat/examples/tutorials/ex13.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex27.c.html">src/ksp/ksp/examples/tutorials/ex27.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex26.c.html">src/snes/examples/tutorials/ex26.c.html</A><BR>
 </BODY></HTML>

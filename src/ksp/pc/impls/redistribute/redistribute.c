@@ -2,7 +2,7 @@
 /*
   This file defines a "solve the problem redistributely on each subgroup of processor" preconditioner.
 */
-#include <private/pcimpl.h>     /*I "petscksp.h" I*/
+#include <petsc-private/pcimpl.h>     /*I "petscksp.h" I*/
 #include <petscksp.h>
 
 typedef struct {
@@ -25,8 +25,8 @@ static PetscErrorCode PCView_Redistribute(PC pc,PetscViewer viewer)
   PetscInt        ncnt,N;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERSTRING,&isstring);CHKERRQ(ierr);
   if (iascii) {
     ierr = MPI_Allreduce(&red->dcnt,&ncnt,1,MPIU_INT,MPI_SUM,((PetscObject)pc)->comm);CHKERRQ(ierr);
     ierr = MatGetSize(pc->pmat,&N,PETSC_NULL);CHKERRQ(ierr);
@@ -328,6 +328,10 @@ PetscErrorCode  PCRedistributeGetKSP(PC pc,KSP *innerksp)
 
      If you have used MatZeroRows() to eliminate (for example, Dirichlet) boundary conditions for a symmetric problem then you can use, for example, -ksp_type preonly 
      -pc_type redistribute -redistribute_ksp_type cg -redistribute_pc_type bjacobi -redistribute_sub_pc_type icc to take advantage of the symmetry.
+
+     This does NOT call a partitioner to reorder rows to lower communication; the ordering of the rows in the original matrix and redistributed matrix is the same.
+
+     Developer Notes: Should add an option to this preconditioner to use a partitioner to redistribute the rows to lower communication.
 
    Level: intermediate
 

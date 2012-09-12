@@ -1,13 +1,14 @@
 <center><a href="sundials.h">Actual source code: sundials.h</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/impls/implicit/sundials/sundials.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:19:42+00:00">
+<meta name="date" content="2012-08-29T17:13:32+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    Provides a PETSc interface to SUNDIALS. Alan Hindmarsh's parallel ODE</font>
@@ -15,18 +16,20 @@
 <a name="line5">  5: </a><font color="#B22222">*/</font>
 
 
-<a name="line10"> 10: </a><font color="#A020F0">#include &lt;private/tsimpl.h&gt;       </font><font color="#B22222">/*I   "petscts.h"   I*/</font><font color="#A020F0"></font>
-<a name="line11"> 11: </a><font color="#A020F0">#include &lt;private/pcimpl.h&gt;               </font><font color="#B22222">/*I   "petscpc.h"   I*/</font><font color="#A020F0"></font>
-<a name="line12"> 12: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;</font>
+<a name="line10"> 10: </a><font color="#A020F0">#include &lt;petsc-private/tsimpl.h&gt;       </font><font color="#B22222">/*I   "petscts.h"   I*/</font><font color="#A020F0"></font>
+<a name="line11"> 11: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;               </font><font color="#B22222">/*I   "petscpc.h"   I*/</font><font color="#A020F0"></font>
+<a name="line12"> 12: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;</font>
 
 <a name="line14"> 14: </a><font color="#B22222">/*</font>
 <a name="line15"> 15: </a><font color="#B22222">   Include files specific for SUNDIALS</font>
 <a name="line16"> 16: </a><font color="#B22222">*/</font>
 <a name="line17"> 17: </a><font color="#A020F0">#if defined(PETSC_HAVE_SUNDIALS)</font>
 
+<a name="line19"> 19: </a>EXTERN_C_BEGIN
 <a name="line20"> 20: </a><font color="#A020F0">#include &lt;cvode/cvode.h&gt;                  </font><font color="#B22222">/* prototypes for CVODE fcts. */</font><font color="#A020F0"></font>
 <a name="line21"> 21: </a><font color="#A020F0">#include &lt;cvode/cvode_spgmr.h&gt;            </font><font color="#B22222">/* prototypes and constants for CVSPGMR solver */</font><font color="#A020F0"></font>
 <a name="line22"> 22: </a><font color="#A020F0">#include &lt;nvector/nvector_parallel.h&gt;     </font><font color="#B22222">/* definition N_Vector and macro NV_DATA_P  */</font><font color="#A020F0"></font>
+<a name="line23"> 23: </a>EXTERN_C_END
 
 <a name="line25"> 25: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>        update;    <font color="#B22222">/* work vector where new solution is formed */</font>

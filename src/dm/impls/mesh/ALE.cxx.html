@@ -1,13 +1,14 @@
 <center><a href="ALE.cxx">Actual source code: ALE.cxx</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/mesh/ALE.cxx.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:08:10+00:00">
+<meta name="date" content="2012-08-29T16:55:50+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define ALE_ALE_cxx</font></strong>
 
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;ALE.hh&gt;</font>
@@ -138,44 +139,38 @@
 <a name="line134">134: </a>  static std::map&lt;std::string, LogEvent&gt; _log_event;  // a map from event names to event numbers
 
 <a name="line136">136: </a><strong><font color="#228B22">  #undef  __FUNCT__</font></strong>
-<a name="line138">138: </a>  LogEvent LogEventRegister(LogCookie cookie, const char *name){
-<a name="line139">139: </a>    LogEvent event = 0;
-<a name="line140">140: </a><font color="#A020F0">#if 0</font>
-<a name="line141">141: </a><strong><font color="#FF0000">    std:</font></strong>:string event_name(name);
-<a name="line142">142: </a>    <font color="#4169E1">if</font>(_log_event.find(event_name) == _log_event.end()) {
-<a name="line143">143: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(&amp;event, name, cookie);
-<a name="line144">144: </a>      CHKERROR(ierr, <font color="#666666">"<A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A> failed"</font>);
-<a name="line145">145: </a><font color="#A020F0">#ifdef ALE_LOGGING_VERBOSE</font>
-<a name="line146">146: </a>      //std::cout &lt;&lt; <font color="#666666">"Registered event "</font> &lt;&lt; name &lt;&lt; <font color="#666666">" to "</font> &lt;&lt; event &lt;&lt; std::endl;
-<a name="line147">147: </a><font color="#A020F0">#endif</font>
-<a name="line148">148: </a>      _log_event[event_name] = event;
-<a name="line149">149: </a>    }
-<a name="line150">150: </a>    <font color="#4169E1">else</font> {
-<a name="line151">151: </a>      // event by that name already registered, so we retrieve its registration number.
-<a name="line152">152: </a>      event = _log_event[event_name];
-<a name="line153">153: </a>    }
-<a name="line154">154: </a><font color="#A020F0">#endif                                                        </font>
-<a name="line155">155: </a>    <font color="#4169E1">return</font> event;
+<a name="line138">138: </a>  LogEvent LogEventRegister(LogCookie cookie, const char *name) {
+<a name="line139">139: </a><strong><font color="#FF0000">    std:</font></strong>:string event_name(name);
+<a name="line140">140: </a>    LogEvent event = 0;
+
+<a name="line142">142: </a>    <font color="#4169E1">if</font> (_log_event.find(event_name) == _log_event.end()) {
+<a name="line143">143: </a>      <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A>(name, cookie, &amp;event);CHKERROR(ierr, <font color="#666666">"<A href="../../../../docs/manualpages/Profiling/PetscLogEventRegister.html#PetscLogEventRegister">PetscLogEventRegister</A> failed"</font>);
+<a name="line144">144: </a>      _log_event[event_name] = event;
+<a name="line145">145: </a>    } <font color="#4169E1">else</font> {
+<a name="line146">146: </a>      // event by that name already registered, so we retrieve its registration number.
+<a name="line147">147: </a>      event = _log_event[event_name];
+<a name="line148">148: </a>    }
+<a name="line149">149: </a>    <font color="#4169E1">return</font> event;
+<a name="line150">150: </a>  }
+
+<a name="line152">152: </a><strong><font color="#228B22">  #undef  __FUNCT__</font></strong>
+<a name="line154">154: </a>  LogEvent LogEventRegister(const char *name){
+<a name="line155">155: </a>    <font color="#4169E1">return</font> LogEventRegister(PETSC_SMALLEST_CLASSID, name);
 <a name="line156">156: </a>  }
 
 <a name="line158">158: </a><strong><font color="#228B22">  #undef  __FUNCT__</font></strong>
-<a name="line160">160: </a>  LogEvent LogEventRegister(const char *name){
-<a name="line161">161: </a>    <font color="#4169E1">return</font> LogEventRegister(PETSC_SMALLEST_CLASSID, name);
-<a name="line162">162: </a>  }
+<a name="line160">160: </a>  void LogEventBegin(LogEvent e){
+<a name="line162">162: </a>    <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(e, 0, 0, 0, 0);CHKERROR(ierr, <font color="#666666">"<A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A> failed"</font>);
+<a name="line163">163: </a>  }//LogEventBegin()
 
-<a name="line164">164: </a><strong><font color="#228B22">  #undef  __FUNCT__</font></strong>
-<a name="line166">166: </a>  void LogEventBegin(LogEvent e){
-<a name="line168">168: </a>    <A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(e, 0, 0, 0, 0);CHKERROR(ierr, <font color="#666666">"<A href="../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A> failed"</font>);
-<a name="line169">169: </a>  }//LogEventBegin()
+<a name="line165">165: </a><strong><font color="#228B22">  #undef  __FUNCT__</font></strong>
+<a name="line167">167: </a>  void LogEventEnd(LogEvent e){
+<a name="line169">169: </a>    <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(e, 0, 0, 0, 0);CHKERROR(ierr, <font color="#666666">"<A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A> failed"</font>);
+<a name="line170">170: </a>  }//LogEventEnd()
 
-<a name="line171">171: </a><strong><font color="#228B22">  #undef  __FUNCT__</font></strong>
-<a name="line173">173: </a>  void LogEventEnd(LogEvent e){
-<a name="line175">175: </a>    <A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(e, 0, 0, 0, 0);CHKERROR(ierr, <font color="#666666">"<A href="../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A> failed"</font>);
-<a name="line176">176: </a>  }//LogEventEnd()
+<a name="line172">172: </a>}
 
-<a name="line178">178: </a>}
-
-<a name="line180">180: </a><strong><font color="#228B22">#undef ALE_ALE_cxx</font></strong>
+<a name="line174">174: </a><strong><font color="#228B22">#undef ALE_ALE_cxx</font></strong>
 </pre>
 </body>
 

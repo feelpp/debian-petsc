@@ -1,5 +1,5 @@
 
-#include <private/viewerimpl.h>  /*I "petscsys.h" I*/  
+#include <petsc-private/viewerimpl.h>  /*I "petscsys.h" I*/  
 
 PetscFList PetscViewerList              = 0;
 
@@ -73,12 +73,13 @@ PetscErrorCode  PetscViewerSetType(PetscViewer viewer,const PetscViewerType type
   PetscValidHeaderSpecific(viewer,PETSC_VIEWER_CLASSID,1);
   PetscValidCharPointer(type,2);
   CHKMEMQ;
-  ierr = PetscTypeCompare((PetscObject)viewer,type,&match);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,type,&match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
   /* cleanup any old type that may be there */
   if (viewer->data) {
     ierr         = (*viewer->ops->destroy)(viewer);CHKERRQ(ierr);
+    viewer->ops->destroy = PETSC_NULL;
     viewer->data = 0;
   }
   ierr = PetscMemzero(viewer->ops,sizeof(struct _PetscViewerOps));CHKERRQ(ierr);

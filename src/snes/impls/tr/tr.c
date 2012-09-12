@@ -95,6 +95,7 @@ static PetscErrorCode SNESSolve_TR(SNES snes)
   KSP                 ksp;
   SNESConvergedReason reason = SNES_CONVERGED_ITERATING;
   PetscBool           conv = PETSC_FALSE,breakout = PETSC_FALSE;
+  PetscBool          domainerror;
 
   PetscFunctionBegin;
   maxits	= snes->max_its;	/* maximum number of iterations */
@@ -108,8 +109,25 @@ static PetscErrorCode SNESSolve_TR(SNES snes)
   snes->iter = 0;
   ierr = PetscObjectGrantAccess(snes);CHKERRQ(ierr);
 
-  ierr = SNESComputeFunction(snes,X,F);CHKERRQ(ierr);          /* F(X) */
-  ierr = VecNorm(F,NORM_2,&fnorm);CHKERRQ(ierr);             /* fnorm <- || F || */
+  if (!snes->vec_func_init_set) {
+    ierr = SNESComputeFunction(snes,X,F);CHKERRQ(ierr);          /* F(X) */
+    ierr = SNESGetFunctionDomainError(snes, &domainerror);CHKERRQ(ierr);
+    if (domainerror) {
+      snes->reason = SNES_DIVERGED_FUNCTION_DOMAIN;
+      PetscFunctionReturn(0);
+    }
+  } else {
+    snes->vec_func_init_set = PETSC_FALSE;
+  }
+
+  if (!snes->norm_init_set) {
+    ierr = VecNorm(F,NORM_2,&fnorm);CHKERRQ(ierr);             /* fnorm <- || F || */
+    if (PetscIsInfOrNanReal(fnorm)) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_FP,"User provided compute function generated a Not-a-Number");
+  } else {
+    fnorm = snes->norm_init;
+    snes->norm_init_set = PETSC_FALSE;
+  }
+
   ierr = PetscObjectTakeAccess(snes);CHKERRQ(ierr);
   snes->norm = fnorm;
   ierr = PetscObjectGrantAccess(snes);CHKERRQ(ierr);
@@ -237,6 +255,7 @@ static PetscErrorCode SNESSetUp_TR(SNES snes)
 
   PetscFunctionBegin;
   ierr = SNESDefaultGetWork(snes,3);CHKERRQ(ierr);
+  ierr = SNESSetUpMatrices(snes);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
@@ -244,10 +263,8 @@ static PetscErrorCode SNESSetUp_TR(SNES snes)
 #define __FUNCT__ "SNESReset_TR"
 PetscErrorCode SNESReset_TR(SNES snes)
 {
-  PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  if (snes->work) {ierr = VecDestroyVecs(snes->nwork,&snes->work);CHKERRQ(ierr);}
   PetscFunctionReturn(0);
 }
 
@@ -294,7 +311,7 @@ static PetscErrorCode SNESView_TR(SNES snes,PetscViewer viewer)
   PetscBool  iascii;
 
   PetscFunctionBegin;
-  ierr = PetscTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
+  ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&iascii);CHKERRQ(ierr);
   if (iascii) {
     ierr = PetscViewerASCIIPrintf(viewer,"  mu=%G, eta=%G, sigma=%G\n",tr->mu,tr->eta,tr->sigma);CHKERRQ(ierr);
     ierr = PetscViewerASCIIPrintf(viewer,"  delta0=%G, delta1=%G, delta2=%G, delta3=%G\n",tr->delta0,tr->delta1,tr->delta2,tr->delta3);CHKERRQ(ierr);
@@ -343,6 +360,9 @@ PetscErrorCode  SNESCreate_TR(SNES snes)
   snes->ops->setfromoptions  = SNESSetFromOptions_TR;
   snes->ops->view            = SNESView_TR;
   snes->ops->reset           = SNESReset_TR;
+
+  snes->usesksp             = PETSC_TRUE;
+  snes->usespc              = PETSC_FALSE;
 
   ierr			= PetscNewLog(snes,SNES_TR,&neP);CHKERRQ(ierr);
   snes->data	        = (void*)neP;

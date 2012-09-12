@@ -1,13 +1,14 @@
 <center><a href="wp.c">Actual source code: wp.c</a></center><br>
 
 <html>
-<head>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/mffd/wp.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2011-10-29T19:04:24+00:00">
+<meta name="date" content="2012-08-29T16:50:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*MC</font>
 <a name="line3">  3: </a><font color="#B22222">     <A href="../../../../docs/manualpages/Mat/MATMFFD_WP.html#MATMFFD_WP">MATMFFD_WP</A> - Implements an alternative approach for computing the differencing parameter</font>
@@ -47,7 +48,7 @@
 
 <a name="line38"> 38: </a><font color="#B22222">   See snesmfjdef.c for  a full set of comments on the routines below.</font>
 <a name="line39"> 39: </a><font color="#B22222">*/</font>
-<a name="line40"> 40: </a><font color="#A020F0">#include &lt;private/matimpl.h&gt;</font>
+<a name="line40"> 40: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;</font>
 <a name="line41"> 41: </a><font color="#A020F0">#include &lt;../src/mat/impls/mffd/mffdimpl.h&gt;   </font><font color="#B22222">/*I  "petscmat.h"   I*/</font><font color="#A020F0"></font>
 
 <a name="line43"> 43: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
@@ -107,7 +108,7 @@
 <a name="line103">103: </a>  MatMFFD_WP     *hctx = (MatMFFD_WP *)ctx-&gt;hctx;
 <a name="line105">105: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii;
 
-<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Sys/PetscTypeCompare.html#PetscTypeCompare">PetscTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
 <a name="line109">109: </a>  <font color="#4169E1">if</font> (iascii) {
 <a name="line110">110: </a>    <font color="#4169E1">if</font> (hctx-&gt;computenormU){ <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"    Computes normU\n"</font>);}
 <a name="line111">111: </a>    <font color="#4169E1">else</font>                   { <A href="../../../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,<font color="#666666">"    Does not compute normU\n"</font>);}
@@ -149,6 +150,7 @@
 <a name="line155">155: </a>  <font color="#4169E1">return</font>(0);
 <a name="line156">156: </a>}
 
+<a name="line158">158: </a>EXTERN_C_BEGIN
 <a name="line161">161: </a><strong><font color="#4169E1"><a name="MatMFFDWPSetComputeNormU_P"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatMFFDWPSetComputeNormU_P(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flag)</font></strong>
 <a name="line162">162: </a>{
 <a name="line163">163: </a>  <A href="../../../../docs/manualpages/Mat/MatMFFD.html#MatMFFD">MatMFFD</A>     ctx = (<A href="../../../../docs/manualpages/Mat/MatMFFD.html#MatMFFD">MatMFFD</A>)mat-&gt;data;
@@ -157,6 +159,7 @@
 <a name="line167">167: </a>  hctx-&gt;computenormU = flag;
 <a name="line168">168: </a>  <font color="#4169E1">return</font>(0);
 <a name="line169">169: </a>}
+<a name="line170">170: </a>EXTERN_C_END
 
 <a name="line174">174: </a><font color="#B22222">/*@</font>
 <a name="line175">175: </a><font color="#B22222">    <A href="../../../../docs/manualpages/Mat/MatMFFDWPSetComputeNormU.html#MatMFFDWPSetComputeNormU">MatMFFDWPSetComputeNormU</A> - Sets whether it computes the ||U|| used by the WP</font>
@@ -187,6 +190,7 @@
 <a name="line203">203: </a>  <font color="#4169E1">return</font>(0);
 <a name="line204">204: </a>}
 
+<a name="line206">206: </a>EXTERN_C_BEGIN
 <a name="line209">209: </a><font color="#B22222">/*</font>
 <a name="line210">210: </a><font color="#B22222">     MatCreateMFFD_WP - Standard PETSc code for </font>
 <a name="line211">211: </a><font color="#B22222">   computing h with matrix-free finite differences.</font>
@@ -215,6 +219,7 @@
 
 <a name="line237">237: </a>  <font color="#4169E1">return</font>(0);
 <a name="line238">238: </a>}
+<a name="line239">239: </a>EXTERN_C_END
 
 
 
