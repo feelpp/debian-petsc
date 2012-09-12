@@ -3,10 +3,10 @@ replace Control[UMFPACK_ORDERING] with Info[UMFPACK_ORDERING_USED]
 
 It compiles, but runtime behavior is unpredictable at best.
 
-Index: petsc/src/mat/impls/aij/seq/umfpack/umfpack.c
+Index: petsc-3.3.dfsg/src/mat/impls/aij/seq/umfpack/umfpack.c
 ===================================================================
---- petsc.orig/src/mat/impls/aij/seq/umfpack/umfpack.c
-+++ petsc/src/mat/impls/aij/seq/umfpack/umfpack.c
+--- petsc-3.3.dfsg.orig/src/mat/impls/aij/seq/umfpack/umfpack.c	2012-09-12 08:26:27.000000000 +0200
++++ petsc-3.3.dfsg/src/mat/impls/aij/seq/umfpack/umfpack.c	2012-09-12 09:03:56.000000000 +0200
 @@ -309,7 +309,7 @@
  
    /* mat ordering */

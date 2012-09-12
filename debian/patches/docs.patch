@@ -1,85 +1,71 @@
 A few minor Debian customizations of the HTML PETSc documentation.
 Remove links to non-free PDF files.
 
-Index: petsc/docs/bugreporting.html
+Index: petsc-3.3.dfsg/docs/bugreporting.html
 ===================================================================
---- petsc.orig/docs/bugreporting.html
-+++ petsc/docs/bugreporting.html
-@@ -13,6 +13,11 @@
-         </tbody>
-       </table>
+--- petsc-3.3.dfsg.orig/docs/bugreporting.html	2012-09-12 08:37:23.000000000 +0200
++++ petsc-3.3.dfsg/docs/bugreporting.html	2012-09-12 08:58:05.000000000 +0200
+@@ -59,7 +59,7 @@
  
-+    <b>Debian users:</b> If you find a bug, please file a bug report in the
-+    usual Debian way at http://bugs.debian.org , and I'll forward it
-+    upstream, as discussed in the
-+    <a href="../README.Debian.gz">README.Debian</a> file.<p>
-+
-  The PETSc maintenance
- e-mail,&nbsp; <a href="mailto:petsc-maint@mcs.anl.gov">petsc-maint@mcs.anl.gov</a>,&nbsp;
- is
-@@ -65,7 +70,7 @@
-         <li>OS Version: (run <em>uname -a</em> to get the version
- number) </li>
-         <li>PETSc Version: (run PETSc program with -v, or look in <a
-- href="petscversion.h">include/petscversion.h</a>)
-+ href="/usr/lib/petscdir/3.2/include/petscversion.h">include/petscversion.h</a>)
+         <li>
+           PETSc Version: (run PETSc program with -v, or look in
+-          <a href="petscversion.h">include/petscversion.h</a>)
++          <a href="/usr/lib/petscdir/3.3/include/petscversion.h">include/petscversion.h</a>)
+         </li>
  
- 
- 
-Index: petsc/docs/index.html
+         <li>MPI implementation: (e.g., MPICH, LAM, IBM, SGI)</li>
+Index: petsc-3.3.dfsg/docs/index.html
 ===================================================================
---- petsc.orig/docs/index.html
-+++ petsc/docs/index.html
-@@ -10,12 +10,6 @@
- details according to their needs. Users should read the users
- manual before attempting to do any serious coding with <b>PETSc</b>!
+--- petsc-3.3.dfsg.orig/docs/index.html	2012-09-12 08:43:51.000000000 +0200
++++ petsc-3.3.dfsg/docs/index.html	2012-09-12 08:58:05.000000000 +0200
+@@ -23,7 +23,7 @@
+       </p>
+ 
        <ul>
--        <li><strong>PETSc users manual</strong> - <a
-- href="manual.pdf">pdf
--(fully
--searchable
--with
--hyperlinks)</a> </li>
-         <li> <a
-  href="manualpages/help.html">Index</a>
- of all help topics</li>
-@@ -170,5 +164,8 @@
-         <li><a href="faq.html">FAQ</a> - frequently asked questions
- about PETSc</li>
-         <li><a href="copyright.html">License</a> - statement of the
--PETSc copyright</body>
-+PETSc copyright</li>
-+        <li><a href="../README.Debian.gz">README.Debian</a> - a description of
-+this Debian package, see also the
-+<a href="http://lyre.mit.edu/~powell/petsc.html">package homepage</a></body>
- </html>
-Index: petsc/docs/faq.html
+-        <li><b>PETSc users manual</b> - <a href="manual.pdf">pdf (fully searchable with hyperlinks)</a></li>
++        <li><b>PETSc users manual</b> - <a href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manual.pdf">pdf (fully searchable with hyperlinks)</a></li>
+         <li><a href="manualpages/help.html">Index</a> of all help topics</li>
+         <li><a href="manualpages/singleindex.html">Index</a> of all manual pages</li>
+         <li><a href="manualpages/Sys/UsingFortran.html">Strategies</a> for using PETSc with Fortran</li>
+@@ -119,6 +119,7 @@
+         <li><a href="codemanagement.html">Code Management</a> - hints for efficient management of large-scale application codes</li>
+         <li><a href="faq.html">FAQ</a> - frequently asked questions about PETSc</li>
+         <li><a href="copyright.html">License</a> - statement of the PETSc copyright</li>
++        <li><a href="../README.Debian.gz">README.Debian</a> - a description of this Debian package, see also the<a href="http://lyre.mit.edu/~powell/petsc.html">package homepage</a></li>
+       </ul>
+ 
+     </div>
+Index: petsc-3.3.dfsg/docs/faq.html
 ===================================================================
---- petsc.orig/docs/faq.html
-+++ petsc/docs/faq.html
-@@ -562,23 +562,8 @@
-             <p><a name="reduce-disk-space"><font color="#ff0000">The
-                   PETSc distribution is SO large. How can I reduce my
-                   disk space usage?</font> </a></p>
--            <p>a) The directory ${PETSC_DIR}/docs contains a set of HTML
--              manual pages in for use with a browser. You can delete
--              these pages to save about .8 Mbyte of space. </p>
--            <p>b) The PETSc users manual is provided in PDF in
--              ${PETSC_DIR}/docs/manual.pdf. You can delete this.&nbsp; </p>
--            <p>c) The PETSc test suite contains sample output for many
--              of the examples. These are contained in the PETSc
--              directories ${PETSC_DIR}/src/*/examples/tutorials/output
--              and ${PETSC_DIR}/src/*/examples/tests/output. Once you
--              have run the test examples, you may remove all of these
--              directories to save about 300 Kbytes of disk space. </p>
--            <p>d) The debugging versions of the libraries are larger
--              than the optimized versions&nbsp;. In a pinch you can work
--              with the optimized version although we do not recommend it
--              generally because finding bugs is much easier with the
--              debug version. </p>
--            <p>e) <font color="#ff0000"><a name="petsc-uni">I want to
-+            <p>a) Don't install the -doc package.</p>
-+            <p>b) <font color="#ff0000"><a name="petsc-uni">I want to
-                   use PETSc only for uniprocessor programs. Must I still
-                   install and use a version of MPI</a>?</font> </p>
-             No, run ./configure with the option --with-mpi=0<br>
+--- petsc-3.3.dfsg.orig/docs/faq.html	2012-09-12 08:46:52.000000000 +0200
++++ petsc-3.3.dfsg/docs/faq.html	2012-09-12 08:58:35.000000000 +0200
+@@ -467,23 +467,22 @@
+ 
+       <ol>
+         <li>
+-          The directory ${PETSC_DIR}/docs contains a set of HTML manual pages in
+-          for use with a browser. You can delete these pages to save about .8
++          The directory /usr/share/doc/petsc3.3-doc contains a set of HTML manual pages in
++          for use with a browser. Don't install the -doc package to save about .8
+           Mbyte of space.
+         </li>
+ 
+         <li>
+           The PETSc users manual is provided in PDF in
+-          ${PETSC_DIR}/docs/manual.pdf. You can delete this.
++          <a href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manual.pdf">manual.pdf</a>.
+         </li>
+ 
+         <li>
+           The PETSc test suite contains sample output for many of the examples.
+           These are contained in the PETSc directories
+-          ${PETSC_DIR}/src/*/examples/tutorials/output and
+-          ${PETSC_DIR}/src/*/examples/tests/output. Once you have run the test
+-          examples, you may remove all of these directories to save about 300
+-          Kbytes of disk space.
++          /usr/share/doc/petsc3.3-doc/src/*/examples/tutorials/output and
++          /usr/share/doc/petsc3.3-doc/src/*/examples/tests/output. Don't install
++	  the -doc package to save disk space.
+         </li>
+ 
+         <li>

@@ -1,9 +1,9 @@
 Small adaptations to use Debian sprng.
 
-Index: petsc/config/PETSc/packages/sprng.py
+Index: petsc-3.3.dfsg/config/PETSc/packages/sprng.py
 ===================================================================
---- petsc.orig/config/PETSc/packages/sprng.py
-+++ petsc/config/PETSc/packages/sprng.py
+--- petsc-3.3.dfsg.orig/config/PETSc/packages/sprng.py	2012-09-12 08:26:27.000000000 +0200
++++ petsc-3.3.dfsg/config/PETSc/packages/sprng.py	2012-09-12 08:59:02.000000000 +0200
 @@ -6,7 +6,7 @@
      self.download  = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/sprng-1.0.tar.gz']
      self.functions = ['make_new_seed_mpi'] 
@@ -13,10 +13,10 @@ Index: petsc/config/PETSc/packages/sprng.py
      return
  
    def setupDependencies(self, framework):
-Index: petsc/src/sys/random/impls/sprng/sprng.c
+Index: petsc-3.3.dfsg/src/sys/random/impls/sprng/sprng.c
 ===================================================================
---- petsc.orig/src/sys/random/impls/sprng/sprng.c
-+++ petsc/src/sys/random/impls/sprng/sprng.c
+--- petsc-3.3.dfsg.orig/src/sys/random/impls/sprng/sprng.c	2012-09-12 08:26:27.000000000 +0200
++++ petsc-3.3.dfsg/src/sys/random/impls/sprng/sprng.c	2012-09-12 08:59:02.000000000 +0200
 @@ -15,7 +15,7 @@
  PetscErrorCode  PetscRandomSeed_Sprng(PetscRandom r)
  {

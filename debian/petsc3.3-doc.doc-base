@@ -1,5 +1,5 @@
-Document: petsc3.2-doc
-Title: PETSc 3.2 Documentation
+Document: petsc3.3-doc
+Title: PETSc 3.3 Documentation
 Author:	Satish Balay, William D. Gropp, Lois Curfman McInnes, Barry F. Smith
 Abstract: PETSc is a suite of data structures and routines for the scalable
  (parallel) solution of scientific applications modeled by partial differential
@@ -9,7 +9,7 @@ Abstract: PETSc is a suite of data structures and routines for the scalable
 Section: Programming
 
 Format: HTML
-Index: /usr/share/doc/petsc3.2-doc/docs/index.html
-Files: /usr/share/doc/petsc3.2-doc/docs/*.html
- /usr/share/doc/petsc3.2-doc/docs/*/*.html
- /usr/share/doc/petsc3.2-doc/docs/*/*/*.html
+Index: /usr/share/doc/petsc3.3-doc/docs/index.html
+Files: /usr/share/doc/petsc3.3-doc/docs/*.html
+ /usr/share/doc/petsc3.3-doc/docs/*/*.html
+ /usr/share/doc/petsc3.3-doc/docs/*/*/*.html

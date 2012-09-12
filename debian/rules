@@ -43,7 +43,7 @@ PETSC_HDF5_FLAGS=$(shell if [ -e /usr/lib/libhdf5.so ]; then echo "--with-hdf5=1
 
 # PETSC_VERSION is used for the package names, library sonames, and
 # /usr/lib/petscdir subdirectory names.
-PETSC_VERSION=3.2$(PETSC_EXT)
+PETSC_VERSION=3.3$(PETSC_EXT)
 
 # PETSC_NAME is the install dir under /usr/lib and the base for package names
 PETSC_NAME=petsc$(PETSC_VERSION)
@@ -212,11 +212,15 @@ install-arch: build-arch
 	cp -p include/adic/*.h \
 	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/adic
 	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/sieve
-	cp -a include/sieve/*.hh include/sieve/problem \
+	#
+	# No more  include/sieve/problem in petsc 3.3
+	cp -a include/sieve/*.hh \
 	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/sieve
-	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/private
-	cp -p include/private/*.h \
-	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/private
+	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/petsc-private
+	#
+	# Rename  include/private to include/petsc-private in petsc 3.3
+	cp -p include/petsc-private/*.h \
+	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/petsc-private
 	cd debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include && \
 	  ln -s ../$(PETSC_ARCH)-c-opt/include/*.h .
 	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/src/mat/impls/aij/mpi
@@ -232,8 +236,10 @@ install-arch: build-arch
 	cp -p src/mat/impls/dense/seq/dense.h \
 	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/src/mat/impls/dense/seq/dense.h
 	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/src/sys
-	cp -p src/sys/ctable.h \
-	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/src/sys/
+	#
+	# No more  src/sys/ctable.h in petsc 3.3
+	#cp -p src/sys/ctable.h \
+	#  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/src/sys/
 # Add m4 files, /usr/share/aclocal symlinks will be made by postinst
 	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/aclocal
 	cp -p debian/petsc.m4 debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/aclocal
@@ -256,23 +262,23 @@ install-arch: build-arch
 	install -d debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/lib
 	ln -s ../$(PETSC_ARCH)-c-debug/lib debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/lib/libg
 	ln -s ../$(PETSC_ARCH)-c-debug/lib debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/lib/libg_c++
-# Legacy symlink so packages for 3.0 can build against 3.2
+# Legacy symlink so packages for 3.0 can build against 3.3
 	ln -s variables debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/conf/base
 # Lintian overrides
 	install -d debian/lib$(PETSC_NAME)/usr/share/lintian/overrides
 	install -d debian/lib$(PETSC_NAME)-dev/usr/share/lintian/overrides
 	install -d debian/lib$(PETSC_NAME)-dbg/usr/share/lintian/overrides
-	sed "s/petsc3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME).overrides > \
+	sed "s/petsc3.3/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME).overrides > \
 	  debian/lib$(PETSC_NAME)/usr/share/lintian/overrides/lib$(PETSC_NAME)
-	sed "s/petsc3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dev.overrides > \
+	sed "s/petsc3.3/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dev.overrides > \
 	  debian/lib$(PETSC_NAME)-dev/usr/share/lintian/overrides/lib$(PETSC_NAME)-dev
-	sed "s/petsc3.2/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dbg.overrides > \
+	sed "s/petsc3.3/$(PETSC_NAME)/" < debian/lib$(PETSC_NAME)-dbg.overrides > \
 	  debian/lib$(PETSC_NAME)-dbg/usr/share/lintian/overrides/lib$(PETSC_NAME)-dbg
 	touch install-arch
 
 # Depends on install-arch because it creates PETSC_DIR
 install-indep: build-indep install-arch
-ifeq ($(PETSC_VERSION),3.2)
+ifeq ($(PETSC_VERSION),3.3)
 # Install header documentation in -doc/include
 	install -d debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/finclude
 	cp -p include/*.html \
@@ -285,9 +291,9 @@ ifeq ($(PETSC_VERSION),3.2)
 	install -d debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/sieve
 	cp -p include/sieve/*.html \
 	  debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/sieve
-	install -d debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/private
-	cp -p include/private/*.html \
-	  debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/private
+	install -d debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/petsc-private
+	cp -p include/petsc-private/*.html \
+	  debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/petsc-private
 	for HEADERDOC in `cd debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/ && find include -name \*.h.html -print | sed s/.h.html/.h/`; \
 	do \
 	  dh_link -p$(PETSC_NAME)-doc \
@@ -306,9 +312,9 @@ ifeq ($(PETSC_VERSION),3.2)
 	  done ; \
 	done
 # I don't know of a way to do this "recursively"
-	rmdir `find debian/petsc3.2-doc -empty -type d -print`
-	rmdir `find debian/petsc3.2-doc -empty -type d -print`
-	rmdir `find debian/petsc3.2-doc -empty -type d -print`
+	rmdir `find debian/petsc3.3-doc -empty -type d -print`
+	rmdir `find debian/petsc3.3-doc -empty -type d -print`
+	rmdir `find debian/petsc3.3-doc -empty -type d -print`
 # Install examples & makefiles into temporary directory debian/extemp
 	for TESTDIR in `find src -name tests -print | sed "s/src\///"` \
 	  `find src -name tutorials -print | sed "s/src\///"` benchmarks; \
@@ -350,7 +356,7 @@ ifeq ($(PETSC_VERSION),3.2)
 		  usr/lib/petscdir/$(PETSC_VERSION)/src
 # Lintian overrides
 	install -d debian/$(PETSC_NAME)-doc/usr/share/lintian/overrides
-	sed "s/petsc3.2/$(PETSC_NAME)/" < debian/petsc3.2-doc.overrides > \
+	sed "s/petsc3.3/$(PETSC_NAME)/" < debian/petsc3.3-doc.overrides > \
 	  debian/$(PETSC_NAME)-doc/usr/share/lintian/overrides/$(PETSC_NAME)-doc
 	install -d debian/petsc-dev/usr/share/lintian/overrides
 	install -m 644 debian/petsc-dev.overrides \
@@ -362,7 +368,7 @@ install: install-arch install-indep
 	touch install
 
 binary-indep: install-indep
-ifeq ($(PETSC_VERSION),3.2)
+ifeq ($(PETSC_VERSION),3.3)
 	dh_testdir -i
 	dh_testroot -i
 	dh_installdirs -i
@@ -385,10 +391,10 @@ binary-arch: install-arch
 	dh_testroot -a
 # Customize control etc. using package names (maybe with -lam or -dec)
 	mv -f debian/control debian/control.in
-	sed "s/3.2/$(PETSC_VERSION)/" < debian/control.in | \
-	  sed "s/$(PETSC_VERSION)-doc/3.2-doc/" | \
-	  sed "s/Provides: $(PETSC_NAME)-dev/Provides: petsc3.2-dev/" | \
-	  sed "s/Provides: $(PETSC_NAME)-dbg/Provides: petsc3.2-dbg/" \
+	sed "s/3.3/$(PETSC_VERSION)/" < debian/control.in | \
+	  sed "s/$(PETSC_VERSION)-doc/3.3-doc/" | \
+	  sed "s/Provides: $(PETSC_NAME)-dev/Provides: petsc3.3-dev/" | \
+	  sed "s/Provides: $(PETSC_NAME)-dbg/Provides: petsc3.3-dbg/" \
 	  > debian/control
 	if [ "$(DEBIAN_DIST)" = "contrib" ]; then \
 	  sed "s/Section: lib/Section: contrib\/lib/" < debian/control > \
@@ -398,7 +404,7 @@ binary-arch: install-arch
 	for ARCHGEN in $(ARCH_GENERATED_FILES); do \
 	  rm -f $$ARCHGEN ; \
 	  sed "s/petsc_arch/$(PETSC_ARCH)-c-opt/" < \
-	    `echo "$$ARCHGEN.in" | sed "s/$(PETSC_NAME)/petsc3.2/"` | \
+	    `echo "$$ARCHGEN.in" | sed "s/$(PETSC_NAME)/petsc3.3/"` | \
 	    sed "s/petsc_ver/$(PETSC_VERSION)/" > $$ARCHGEN; \
 	done
 # Generate substvars for MPI, linear algebra implementations and dist

@@ -1,9 +1,9 @@
 Remove relative path so -I$PETSC_DIR/include finds installed headers
 
-Index: petsc/src/mat/examples/tests/ex110.c
+Index: petsc-3.3.dfsg/src/mat/examples/tests/ex110.c
 ===================================================================
---- petsc.orig/src/mat/examples/tests/ex110.c
-+++ petsc/src/mat/examples/tests/ex110.c
+--- petsc-3.3.dfsg.orig/src/mat/examples/tests/ex110.c	2012-09-12 08:26:27.000000000 +0200
++++ petsc-3.3.dfsg/src/mat/examples/tests/ex110.c	2012-09-12 08:58:47.000000000 +0200
 @@ -1,7 +1,7 @@
  static char help[] = "Testing MatCreateMPIAIJWithSplitArrays().\n\n";
  
@@ -13,10 +13,10 @@ Index: petsc/src/mat/examples/tests/ex110.c
  
  #undef __FUNCT__
  #define __FUNCT__ "main"
-Index: petsc/src/mat/examples/tutorials/ex4.c
+Index: petsc-3.3.dfsg/src/mat/examples/tutorials/ex4.c
 ===================================================================
---- petsc.orig/src/mat/examples/tutorials/ex4.c
-+++ petsc/src/mat/examples/tutorials/ex4.c
+--- petsc-3.3.dfsg.orig/src/mat/examples/tutorials/ex4.c	2012-09-12 08:26:27.000000000 +0200
++++ petsc-3.3.dfsg/src/mat/examples/tutorials/ex4.c	2012-09-12 08:58:47.000000000 +0200
 @@ -89,7 +89,7 @@
    return 0;
  }
@@ -26,10 +26,10 @@ Index: petsc/src/mat/examples/tutorials/ex4.c
  
  #undef __FUNCT__  
  #define __FUNCT__ "LowRankUpdate"
-Index: petsc/src/mat/examples/tutorials/ex5.c
+Index: petsc-3.3.dfsg/src/mat/examples/tutorials/ex5.c
 ===================================================================
---- petsc.orig/src/mat/examples/tutorials/ex5.c
-+++ petsc/src/mat/examples/tutorials/ex5.c
+--- petsc-3.3.dfsg.orig/src/mat/examples/tutorials/ex5.c	2012-09-12 08:26:27.000000000 +0200
++++ petsc-3.3.dfsg/src/mat/examples/tutorials/ex5.c	2012-09-12 08:58:47.000000000 +0200
 @@ -5,7 +5,7 @@
  #include <petscviewer.h>
  

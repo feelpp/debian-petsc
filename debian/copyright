@@ -1,8 +1,8 @@
 This package was debianized by Adam Powell <hazelsct@mit.edu> on April 16 2001
 based on the petsc source package of 2.0.28 begun August 14 2000
 
-It was downloaded from http://www.mcs.anl.gov/petsc/ as 3.2 tarball,
-.orig.tar.gz contains the 3.2-p5 release minus non-free files mentioned in the
+It was downloaded from http://www.mcs.anl.gov/petsc/ as 3.3 tarball,
+.orig.tar.gz contains the 3.3-p3 release minus non-free files mentioned in the
 changelog.
 
 Upstream authors: Satish Balay, William D. Gropp, Lois Curfman McInnes,

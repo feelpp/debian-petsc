@@ -17,12 +17,12 @@ Vcs-Git: git://git.debian.org/git/debian-science/packages/petsc.git
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/petsc.git
 Homepage: http://www.mcs.anl.gov/petsc
 
-Package: libpetsc3.2-dev
+Package: libpetsc3.3-dev
 Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: libdevel
-Depends: libpetsc3.2 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libptscotch-dev, ${babel-dev}, ${misc:Depends}, ${hdf5-dev}, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
-Suggests: petsc-dev (= ${binary:Version}), libpetsc3.2-dbg (= ${binary:Version}), petsc3.2-doc (= ${binary:Version}), libluminate-dev
-Provides: petsc3.2-dev
+Depends: libpetsc3.3 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers}, ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev, libhypre-dev (>= 2.0.0.dfsg-7), libptscotch-dev, ${babel-dev}, ${misc:Depends}, ${hdf5-dev}, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev
+Suggests: petsc-dev (= ${binary:Version}), libpetsc3.3-dbg (= ${binary:Version}), petsc3.3-doc (= ${binary:Version}), libluminate-dev
+Provides: petsc3.3-dev
 Description: Static libraries, shared links, header files for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of
@@ -34,17 +34,17 @@ Description: Static libraries, shared links, header files for PETSc
 Package: petsc-dev
 Architecture: all
 Section: libdevel
-Depends: libpetsc3.2-dev, ${misc:Depends}
+Depends: libpetsc3.3-dev, ${misc:Depends}
 Suggests: petsc-dbg
 Description: Virtual package depending on latest PETSc development package
  This metapackage will always depend on the most recent version of petscX-dev
  (X=version), so if you install it then you will get upgrades automatically.
 
-Package: libpetsc3.2
+Package: libpetsc3.3
 Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: libs
 Depends: ${shlibs:Depends}, ${mpi}, ${misc:Depends}
-Description: Shared libraries for version 3.2 of PETSc
+Description: Shared libraries for version 3.3 of PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of
  scientific applications modeled by partial differential equations.  It employs
@@ -52,12 +52,12 @@ Description: Shared libraries for version 3.2 of PETSc
  scientific applications, as well as various papers and talks, demonstrate the
  features of the PETSc libraries.
 
-Package: libpetsc3.2-dbg
+Package: libpetsc3.3-dbg
 Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: debug
-Depends: libpetsc3.2-dev (= ${binary:Version}), ${misc:Depends}
+Depends: libpetsc3.3-dev (= ${binary:Version}), ${misc:Depends}
 Suggests: petsc-dbg (= ${binary:Version})
-Provides: petsc3.2-dbg
+Provides: petsc3.3-dbg
 Description: Static debugging libraries for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of
@@ -66,11 +66,11 @@ Description: Static debugging libraries for PETSc
  scientific applications, as well as various papers and talks, demonstrate the
  features of the PETSc libraries.
 
-Package: petsc3.2-doc
+Package: petsc3.3-doc
 Architecture: all
 Section: doc
 Depends: ${misc:Depends}
-Suggests: libpetsc3.2-dev (= ${binary:Version}), illuminator-doc
+Suggests: libpetsc3.3-dev (= ${binary:Version}), illuminator-doc
 Description: Documentation and examples for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of

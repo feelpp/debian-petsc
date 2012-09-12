@@ -1,15 +1,15 @@
 Fix build system to set hypre libraries properly.
 
-Index: petsc/config/PETSc/packages/hypre.py
+Index: petsc-3.3.dfsg/config/PETSc/packages/hypre.py
 ===================================================================
---- petsc.orig/config/PETSc/packages/hypre.py
-+++ petsc/config/PETSc/packages/hypre.py
+--- petsc-3.3.dfsg.orig/config/PETSc/packages/hypre.py	2012-09-12 08:26:27.000000000 +0200
++++ petsc-3.3.dfsg/config/PETSc/packages/hypre.py	2012-09-12 09:03:42.000000000 +0200
 @@ -6,7 +6,7 @@
-     self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.7.0b.tar.gz']
+     self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.8.0b.tar.gz']
      self.functions = ['HYPRE_IJMatrixCreate']
      self.includes  = ['HYPRE.h']
 -    self.liblist   = [['libHYPRE.a']]
 +    self.liblist   = [['libHYPRE_utilities.a', 'libHYPRE_struct_mv.a', 'libHYPRE_struct_ls.a', 'libHYPRE_sstruct_mv.a', 'libHYPRE_sstruct_ls.a', 'libHYPRE_IJ_mv.a', 'libHYPRE_parcsr_ls.a']]
      self.license   = 'https://computation.llnl.gov/casc/linear_solvers/sls_hypre.html'
-     return
- 
+     # Per hypre users guide section 7.5 - install manually on windows for MS compilers.
+     self.worksonWindows   = 1

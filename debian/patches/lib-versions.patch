@@ -1,12 +1,12 @@
 This changes the shared library name to a versioned one, with a symlink, and
 fixes the shared library out-of-date test accordingly.
 
-Index: petsc/conf/rules
+Index: petsc-3.3.dfsg/conf/rules
 ===================================================================
---- petsc.orig/conf/rules
-+++ petsc/conf/rules
-@@ -41,7 +41,7 @@
- chkopts: remote
+--- petsc-3.3.dfsg.orig/conf/rules	2012-09-12 08:26:27.000000000 +0200
++++ petsc-3.3.dfsg/conf/rules	2012-09-12 08:58:56.000000000 +0200
+@@ -44,7 +44,7 @@
+ chkopts: petscnagupgrade
  	@for LIBNAME in ${SHLIBS}; do \
  	  library=${INSTALL_LIB_DIR}/$$LIBNAME.a; \
 -	sharedlibrary=${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX}; \
@@ -14,7 +14,7 @@ Index: petsc/conf/rules
  	flag=""; \
  	if [ -f $$library ]; then \
  	  if [ -f $$sharedlibrary ]; then \
-@@ -526,8 +526,8 @@
+@@ -535,8 +535,8 @@
               echo ${RM} -rf ${INSTALL_LIB_DIR}/$${LIBNAME}.dylib.dSYM; \
  	     ${RM} -rf ${INSTALL_LIB_DIR}/$${LIBNAME}.dylib.dSYM; \
  	   fi; \
@@ -25,7 +25,7 @@ Index: petsc/conf/rules
  	done
  	@if [ -f ${INSTALL_LIB_DIR}/so_locations ]; then \
            echo ${RM} ${INSTALL_LIB_DIR}/so_locations; \
-@@ -928,7 +928,8 @@
+@@ -938,7 +938,8 @@
  
  shared_linux:
  	-@cd ${SHARED_LIBRARY_TMPDIR}; \
