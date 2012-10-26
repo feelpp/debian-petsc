@@ -7,6 +7,8 @@
 # paternity under the Copyright, Designs and Patents Act 1988.)
 # This file may have to be extensively modified
 
+DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
@@ -109,12 +111,15 @@ build-arch:
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-ptscotch=1 --with-ptscotch-include=/usr/include/scotch \
 	  --with-ptscotch-lib=[/usr/lib/libptesmumps.so,/usr/lib/libptscotch.so,/usr/lib/libptscotcherr.so] \
-	  $(PETSC_HDF5_FLAGS)
+	  --with-fftw=1 --with-fftw-include=/usr/include \
+	  --with-fftw-lib=[/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3.so,/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3_mpi.so] \
+	  --with-pastix=1 --with-pastix-include=/usr/include/pastix \
+	  --with-pastix-lib=[/usr/lib/libpastix.so] \
+	  $(PETSC_HDF5_FLAGS) --CXX_LINKER_FLAGS="-Wl,--no-as-needed" 
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
 #	  --with-sprng-lib=/usr/lib/libsprng.so
-#	  --with-fftw=1 --with-fftw-dir=/usr
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-debug PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) all-legacy
@@ -139,12 +144,15 @@ build-arch:
 	  --with-hypre=1 --with-hypre-dir=/usr \
 	  --with-ptscotch=1 --with-ptscotch-include=/usr/include/scotch \
 	  --with-ptscotch-lib=[/usr/lib/libptesmumps.so,/usr/lib/libptscotch.so,/usr/lib/libptscotcherr.so] \
-	  $(PETSC_HDF5_FLAGS)
+	  --with-fftw=1 --with-fftw-include=/usr/include \
+	  --with-fftw-lib=[/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3.so,/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3_mpi.so] \
+	  --with-pastix=1 --with-pastix-include=/usr/include/pastix \
+	  --with-pastix-lib=[/usr/lib/libpastix.so] \
+	  $(PETSC_HDF5_FLAGS) --CXX_LINKER_FLAGS="-Wl,--no-as-needed"
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
 #	  --with-sprng-lib=/usr/lib/libsprng.so
-#	  --with-fftw=1 --with-fftw-dir=/usr
 #	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-opt PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) \
