@@ -434,7 +434,7 @@ binary-arch: install-arch
 	  echo "petsc-compilers=ccc, cfal" >> debian/lib$(PETSC_NAME)-dev.substvars; \
 	else \
 	  echo "linear-algebra-dev=libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so" >> debian/lib$(PETSC_NAME)-dev.substvars; \
-	  echo "petsc-compilers=gfortran" >> debian/lib$(PETSC_NAME)-dev.substvars; \
+	  echo "petsc-compilers=gfortran, g++" >> debian/lib$(PETSC_NAME)-dev.substvars; \
 	fi
 	if [ "$(DEBIAN_DIST)" = "main" ]; then \
 	  echo "petsc-extra-dev=" >> debian/lib$(PETSC_NAME)-dev.substvars; \

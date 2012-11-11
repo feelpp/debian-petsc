@@ -39,7 +39,7 @@ AC_DEFUN([PETSC_CHECKS],[
 	dnl files; makefiles should include "$(PETSC_DIR)/conf/base"
 	dnl and use e.g. ${PETSC_DM_LIB} etc.
 	PETSC_LIBDIR="$PETSC_DIR/$PETSC_ARCH/lib"
-	PETSC_EXTERNAL_LIBS="$PETSC_MPI_LIBS $PETSC_X11_LIBS $BLASLAPACK_LIBS -lhdf5"
+	PETSC_EXTERNAL_LIBS="$PETSC_MPI_LIBS $PETSC_X11_LIBS $BLASLAPACK_LIBS -lhdf5 -lstdc++"
 
 	dnl Basic check
 	aLIBS="$LIBS"

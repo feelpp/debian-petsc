@@ -1,3 +1,13 @@
+petsc (3.2.dfsg-6) unstable; urgency=low
+
+  * Team upload.
+  * Fix PETSC_CHECKS m4 macro so that it also detects static petsc library
+    - petsc.m4: add -lhdf5 and -lstdc++ to PETSC_EXTERNAL_LIBS
+    - d/rules: add g++ to petsc-compilers
+    Thanks to Anton Gladky for a first version of the patch. (Closes: #691307)
+
+ -- Sébastien Villemot <sebastien@debian.org>  Sun, 11 Nov 2012 16:26:06 +0100
+
 petsc (3.2.dfsg-5) unstable; urgency=low
 
   * Rebuild with newest version of HDF5, and force >= 1.8.8.
