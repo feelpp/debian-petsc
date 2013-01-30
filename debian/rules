@@ -464,7 +464,7 @@ binary-arch: install-arch
 	dh_installchangelogs -a
 #	dh_strip -a -Xlibg$(PETSC_BOPT_EXTRA)
 	dh_strip -plibpetsc$(PETSC_VERSION)  --dbg-package=libpetsc$(PETSC_VERSION)
-	ln -s debian/lib$(PETSC_NAME)-dbg/usr/lib/debug/lib/$(DEB_HOST_GNU_TYPE)/libpetsc.so debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-c-debug/lib/
+	ln -s debian/lib$(PETSC_NAME)-dbg/usr/lib/debug/lib/$(DEB_HOST_GNU_TYPE)/libpetsc.so debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-c-debug/lib/
 	dh_makeshlibs -a -m$(PETSC_VERSION)
 	dh_compress -a
 	dh_fixperms -a
