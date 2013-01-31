@@ -2,7 +2,14 @@ petsc (3.3.dfsg-3.1) unstable; urgency=low
 
   * Non-maintainer upload.
   * New upstream release
-
+  * debian/control
+    - remove liblapack-3gf.so and libblas-3gf.so from Build-Depends
+  * debian/rules
+    - add shared libraries for PETSC_ARCH-c-debug
+    - remove liblapack-3gf.so and libblas-3gf.so
+  * debian/libpetsc3.3-dev.postinst.in
+    - change the version from 3100 to 3200
+    
  -- Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>  Wed, 12 Sep 2012 08:25:49 +0200
 
 petsc (3.2.dfsg-6) unstable; urgency=low

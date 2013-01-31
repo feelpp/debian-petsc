@@ -42,6 +42,7 @@ DEBIAN_DIST=main
 PETSC_EXT=$(shell chmod +x debian/petsc-ext && debian/petsc-ext $(PETSC_ARCH) $(PETSC_MPI) $(DEBIAN_DIST) && chmod -x debian/petsc-ext)
 
 PETSC_HDF5_FLAGS=$(shell if [ -e /usr/lib/libhdf5.so ]; then echo "--with-hdf5=1 --with-hdf5-dir=/usr"; fi)
+PETSC_BABEL_FLAGS=$(shell if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi)
 
 # PETSC_VERSION is used for the package names, library sonames, and
 # /usr/lib/petscdir subdirectory names.
@@ -91,7 +92,7 @@ build-arch:
 	cp -fp /usr/share/automake-1.11/config.* config/BuildSystem/config/packages/
 	if [ ! -f TAGS.backup ]; then cp -a TAGS TAGS.backup; fi
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-debug \
-	  ./config/configure.py --with-debugging=1 \
+	  ./config/configure.py --with-shared-libraries --with-debugging=1 \
 	  --useThreads 0 --with-clanguage=C++ --with-c-support \
 	  --with-fortran-interfaces=1 \
 	  --with-mpi-dir=$(PETSC_MPI_DIR) \
@@ -120,7 +121,7 @@ build-arch:
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
 #	  --with-sprng-lib=/usr/lib/libsprng.so
-#	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
+#	  $(PETSC_BABEL_FLAGS)
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-debug PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) all-legacy
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-opt \
@@ -153,7 +154,7 @@ build-arch:
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
 #	  --with-sprng=1 --with-sprng-include=/usr/include/sprng \
 #	  --with-sprng-lib=/usr/lib/libsprng.so
-#	  `if [ -e /usr/lib/libsidl.so ]; then echo "--with-babel=1 --with-babel-dir=/usr"; fi`
+#	  $(PETSC_BABEL_FLAGS)
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-opt PETSC_DIR=$(CURDIR) \
 	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) \
 	  SL_LINKER_SUFFIX_VERSIONED="so.$(PETSC_VERSION)" all-legacy
@@ -447,7 +448,7 @@ binary-arch: install-arch
 	  echo "linear-algebra-dev=cxml" >> debian/lib$(PETSC_NAME)-dev.substvars; \
 	  echo "petsc-compilers=ccc, cfal" >> debian/lib$(PETSC_NAME)-dev.substvars; \
 	else \
-	  echo "linear-algebra-dev=libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so" >> debian/lib$(PETSC_NAME)-dev.substvars; \
+	  echo "linear-algebra-dev=libblas-dev, liblapack-dev" >> debian/lib$(PETSC_NAME)-dev.substvars; \
 	  echo "petsc-compilers=gfortran, g++" >> debian/lib$(PETSC_NAME)-dev.substvars; \
 	fi
 	if [ "$(DEBIAN_DIST)" = "main" ]; then \
@@ -462,9 +463,7 @@ binary-arch: install-arch
 	dh_installdirs -a
 	dh_installdocs -a
 	dh_installchangelogs -a
-#	dh_strip -a -Xlibg$(PETSC_BOPT_EXTRA)
-	dh_strip -plibpetsc$(PETSC_VERSION)  --dbg-package=libpetsc$(PETSC_VERSION) -Xlibg$(PETSC_BOPT_EXTRA)
-	ln -s debian/lib$(PETSC_NAME)-dbg/usr/lib/debug/lib/$(DEB_HOST_GNU_TYPE)/libpetsc.so debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-c-debug/lib/
+	dh_strip -a -Xlibg$(PETSC_BOPT_EXTRA)
 	dh_makeshlibs -a -m$(PETSC_VERSION)
 	dh_compress -a
 	dh_fixperms -a
