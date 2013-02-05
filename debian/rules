@@ -123,7 +123,8 @@ build-arch:
 #	  --with-sprng-lib=/usr/lib/libsprng.so
 #	  $(PETSC_BABEL_FLAGS)
 	$(MAKE) PETSC_ARCH=$(PETSC_ARCH)-c-debug PETSC_DIR=$(CURDIR) \
-	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) all-legacy
+	  PETSC_INSTALL_DIR=/usr/lib/petscdir/$(PETSC_VERSION) \
+	  SL_LINKER_SUFFIX_VERSIONED="so.$(PETSC_VERSION)" all-legacy
 	PETSC_DIR=$(CURDIR) PETSC_ARCH=$(PETSC_ARCH)-c-opt \
 	  ./config/configure.py --with-shared-libraries --with-debugging=0 \
 	  --useThreads 0 --with-clanguage=C++ --with-c-support \
