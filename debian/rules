@@ -464,6 +464,9 @@ binary-arch: install-arch
 	dh_installdocs -a
 	dh_installchangelogs -a
 	dh_strip -a -Xlibg$(PETSC_BOPT_EXTRA)
+#
+# To avoid slepc complaining about shared libs being out of date	
+	touch debian/lib$(PETSC_NAME)-dbg/usr/lib/petscdir/$(PETSC_VERSION)/$(PETSC_ARCH)-c-debug/lib/*.so*
 	dh_makeshlibs -a -m$(PETSC_VERSION)
 	dh_compress -a
 	dh_fixperms -a
