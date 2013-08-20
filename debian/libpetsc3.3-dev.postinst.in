@@ -3,7 +3,7 @@
 # Make alternatives links
 if [ "$1" = "configure" ]; then
 install -d /usr/share/aclocal
-update-alternatives --install /usr/lib/petsc petsc /usr/lib/petscdir/petsc_ver 3200 \
+update-alternatives --install /usr/lib/petsc petsc /usr/lib/petscdir/petsc_ver 3300 \
   --slave /usr/bin/petscarch petscarch /usr/lib/petscdir/petsc_ver/bin/petscarch \
   --slave /usr/bin/mpirun_lam mpirun_lam /usr/lib/petscdir/petsc_ver/bin/mpirun_lam \
   --slave /usr/share/man/man1/petscarch.1.gz petscarch.1.gz /usr/lib/petscdir/petsc_ver/bin/petscarch.1.gz \
