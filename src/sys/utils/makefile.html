@@ -3,23 +3,22 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/utils/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:36:18+00:00">
+<meta name="date" content="2013-07-02T14:39:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
-<pre width="80"> 
-<strong><font color="#FF0000">ALL:</font></strong> lib 
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80">
+<strong><font color="#FF0000">ALL:</font></strong> lib
 
-CFLAGS    = 
+CFLAGS    =
 FFLAGS    =
 SOURCEC          = arch.c fhost.c fuser.c memc.c mpiu.c psleep.c sortd.c sorti.c \
             str.c sortip.c pbarrier.c pdisplay.c ctable.c psplit.c \
-            select.c mpimesg.c sseenabled.c mpitr.c  mpilong.c mathinf.c
+            select.c mpimesg.c sseenabled.c mpitr.c  mpilong.c mathinf.c \
+            mpits.c segbuffer.c
 SOURCEF          =
-SOURCEH          = 
-OBJSC          = ${SOURCEC:.c=.o}
-OBJSF          =
+SOURCEH          = ../../../include/petscctable.h
 MANSEC          = Sys
 LIBBASE          = libpetscsys
 DIRS          = ftn-kernels

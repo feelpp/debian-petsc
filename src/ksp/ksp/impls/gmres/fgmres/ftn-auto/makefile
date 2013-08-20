@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = modpcff.c
-OBJSC    = modpcff.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

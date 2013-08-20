@@ -5,13 +5,14 @@
 <TITLE>SNESFASSetRScale</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESFASSetRScale"><H1>SNESFASSetRScale</H1></A>
 Sets the scaling factor of the restriction operator from level l to l-1. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnesfas.h"  
-PetscErrorCode SNESFASSetRScale(SNES snes, PetscInt level, Vec rscale)</PRE>
+PetscErrorCode SNESFASSetRScale(SNES snes, PetscInt level, Vec rscale)
+</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes   </B></TD><TD>- the multigrid context

@@ -28,7 +28,6 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscpc.h"
-#include "petscdmcomposite.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcfieldsplitsetfields_ PCFIELDSPLITSETFIELDS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -68,6 +67,16 @@ extern void PetscRmPointer(void*);
 #define pcfieldsplitgettype_ PCFIELDSPLITGETTYPE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcfieldsplitgettype_ pcfieldsplitgettype
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcfieldsplitsetdmsplits_ PCFIELDSPLITSETDMSPLITS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcfieldsplitsetdmsplits_ pcfieldsplitsetdmsplits
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcfieldsplitgetdmsplits_ PCFIELDSPLITGETDMSPLITS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcfieldsplitgetdmsplits_ pcfieldsplitgetdmsplits
 #endif
 
 
@@ -109,6 +118,14 @@ void PETSC_STDCALL  pcfieldsplitgettype_(PC pc,PCCompositeType *type, int *__ier
 *__ierr = PCFieldSplitGetType(
 	(PC)PetscToPointer((pc) ),
 	(PCCompositeType* )PetscToPointer((type) ));
+}
+void PETSC_STDCALL  pcfieldsplitsetdmsplits_(PC pc,PetscBool *flg, int *__ierr ){
+*__ierr = PCFieldSplitSetDMSplits(
+	(PC)PetscToPointer((pc) ),*flg);
+}
+void PETSC_STDCALL  pcfieldsplitgetdmsplits_(PC pc,PetscBool* flg, int *__ierr ){
+*__ierr = PCFieldSplitGetDMSplits(
+	(PC)PetscToPointer((pc) ),flg);
 }
 #if defined(__cplusplus)
 }

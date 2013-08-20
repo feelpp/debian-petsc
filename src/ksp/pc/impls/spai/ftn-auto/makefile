@@ -5,7 +5,6 @@ CPPFLAGS = ${SPAI_INCLUDE}
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = ispaif.c
-OBJSC    = ispaif.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

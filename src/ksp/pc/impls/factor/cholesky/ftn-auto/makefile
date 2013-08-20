@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = choleskyf.c
-OBJSC    = choleskyf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -5,9 +5,9 @@
 <TITLE>PCGASMGetSubdomains</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCGASMGetSubdomains"><H1>PCGASMGetSubdomains</H1></A>
-Gets the subdomains supported on this processor for the additive Schwarz preconditioner.  
+Gets the subdomains supported on this processor for the additive Schwarz preconditioner. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
@@ -23,10 +23,11 @@ Not Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n   </B></TD><TD>- the number of subdomains for this processor (default value = 1)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>iis </B></TD><TD>- the index sets that define the inner subdomains (without overlap) supported on this processor (can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>iis </B></TD><TD>- the index sets that define the inner subdomains (without overlap) supported on this processor (can be NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ois </B></TD><TD>- the index sets that define the outer subdomains (with overlap) supported on this processor (can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ois </B></TD><TD>- the index sets that define the outer subdomains (with overlap) supported on this processor (can be NULL)
 </TD></TR></TABLE>
+<P>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 The user is responsible for destroying the ISs and freeing the returned arrays.

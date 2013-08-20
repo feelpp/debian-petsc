@@ -5,7 +5,7 @@
 <TITLE>DMDASNESSetFunctionLocal</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDASNESSetFunctionLocal"><H1>DMDASNESSetFunctionLocal</H1></A>
 set a local residual evaluation function 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -20,6 +20,8 @@ Logically Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dm </B></TD><TD>- DM to associate callback with
 </TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>imode </B></TD><TD>- <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A> if local function computes owned part, <A HREF="../Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A> if it contributes to ghosted part
+</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- local residual evaluation
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- optional context for local residual evaluation
@@ -28,8 +30,6 @@ Logically Collective
 <H3><FONT COLOR="#CC3333">Calling sequence for func</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>info </B></TD><TD>- <A HREF="../DM/DMDALocalInfo.html#DMDALocalInfo">DMDALocalInfo</A> defining the subdomain to evaluate the residual on
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>imode </B></TD><TD>- <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A> if local function computes owned part, <A HREF="../Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A> if it contributes to ghosted part
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- dimensional pointer to state at which to evaluate residual
 </TD></TR>
@@ -48,5 +48,15 @@ Logically Collective
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex15.c.html">src/snes/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex19.c.html">src/snes/examples/tutorials/ex19.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex25.c.html">src/snes/examples/tutorials/ex25.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex30.c.html">src/snes/examples/tutorials/ex30.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex33.c.html">src/snes/examples/tutorials/ex33.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex46.c.html">src/snes/examples/tutorials/ex46.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex5f.F.html">src/snes/examples/tutorials/ex5f.F.html</A><BR>
 </BODY></HTML>

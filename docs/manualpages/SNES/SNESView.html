@@ -5,14 +5,12 @@
 <TITLE>SNESView</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESView"><H1>SNESView</H1></A>
 Prints the <A HREF="../SNES/SNES.html#SNES">SNES</A> data structure. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESView(SNES snes,PetscViewer viewer)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -35,8 +33,8 @@ The available visualization contexts include
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A> </B></TD><TD>- synchronized standard
 output where only the first processor opens
-the file.  All other processors send their 
-data to the first processor to print. 
+the file.  All other processors send their
+data to the first processor to print.
 </TD></TR></TABLE>
 <P>
 The user can open an alternative visualization context with

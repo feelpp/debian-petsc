@@ -5,15 +5,15 @@
 <TITLE>DMDANaturalToGlobalBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDANaturalToGlobalBegin"><H1>DMDANaturalToGlobalBegin</H1></A>
-Maps values from a global vector in the "natural" ordering  to a global vector in the PETSc DMDA grid ordering. Must be followed by  <A HREF="../DM/DMDANaturalToGlobalEnd.html#DMDANaturalToGlobalEnd">DMDANaturalToGlobalEnd</A>() to complete the exchange. 
+Maps values from a global vector in the "natural" ordering to a global vector in the PETSc <A HREF="../DM/DMDA.html#DMDA">DMDA</A> grid ordering. Must be followed by <A HREF="../DM/DMDANaturalToGlobalEnd.html#DMDANaturalToGlobalEnd">DMDANaturalToGlobalEnd</A>() to complete the exchange. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
 PetscErrorCode  DMDANaturalToGlobalBegin(DM da,Vec g,InsertMode mode,Vec l)
 </PRE>
-Neighbor-wise Collective on DMDA
+Neighbor-wise Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -25,7 +25,7 @@ Neighbor-wise Collective on DMDA
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>l  </B> -the values in the DMDA ordering
+<DT><B>l  </B> -the values in the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> ordering
 <br>
 <P>
 
@@ -34,14 +34,14 @@ Neighbor-wise Collective on DMDA
 The global and natural vectors used here need not be the same as those
 obtained from <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>() and <A HREF="../DM/DMDACreateNaturalVector.html#DMDACreateNaturalVector">DMDACreateNaturalVector</A>(), BUT they
 must have the same parallel data layout; they could, for example, be
-obtained with <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() from the DMDA originating vectors.
+obtained with <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() from the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> originating vectors.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  distributed array, global to local, begin
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../DM/DMDAGlobalToNaturalEnd.html#DMDAGlobalToNaturalEnd">DMDAGlobalToNaturalEnd</A>(), <A HREF="../DM/DMDAGlobalToNaturalBegin.html#DMDAGlobalToNaturalBegin">DMDAGlobalToNaturalBegin</A>(), <A HREF="../DM/DMLocalToGlobalBegin.html#DMLocalToGlobalBegin">DMLocalToGlobalBegin</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(), 
+ <A HREF="../DM/DMDAGlobalToNaturalEnd.html#DMDAGlobalToNaturalEnd">DMDAGlobalToNaturalEnd</A>(), <A HREF="../DM/DMDAGlobalToNaturalBegin.html#DMDAGlobalToNaturalBegin">DMDAGlobalToNaturalBegin</A>(), <A HREF="../DM/DMLocalToGlobalBegin.html#DMLocalToGlobalBegin">DMLocalToGlobalBegin</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(),
 <BR><A HREF="../DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(), <A HREF="../DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(), <A HREF="../DM/DMDACreateNaturalVector.html#DMDACreateNaturalVector">DMDACreateNaturalVector</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced

@@ -5,15 +5,15 @@
 <TITLE>VecRestoreArray3d</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecRestoreArray3d"><H1>VecRestoreArray3d</H1></A>
 Restores a vector after <A HREF="../Vec/VecGetArray3d.html#VecGetArray3d">VecGetArray3d</A>() has been called. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecRestoreArray3d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscScalar ***a[])
 </PRE>
-Not Collective
+Logically Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

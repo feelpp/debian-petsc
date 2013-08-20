@@ -1,0 +1,666 @@
+<center><a href="dmmoab.cxx">Actual source code: dmmoab.cxx</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/moab/dmmoab.cxx.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:46:06+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petsc-private/dmimpl.h&gt; </font><font color="#B22222">/*I  "petscdm.h"   I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/vecimpl.h&gt; </font><font color="#B22222">/*I  "petscdm.h"   I*/</font><font color="#A020F0"></font>
+
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscdmmoab.h&gt;</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;MBTagConventions.hpp&gt;</font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;sstream&gt;</font>
+
+<a name="line8">  8: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line9">  9: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs; <font color="#B22222">/* Number of degrees of freedom on each entity, aka tag size in moab */</font>
+<a name="line10"> 10: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> icreatedinstance; <font color="#B22222">/* true if DM created moab instance internally, will destroy instance in <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A> */</font>
+<a name="line11"> 11: </a><strong><font color="#FF0000">  moab:</font></strong>:ParallelComm *pcomm;
+<a name="line12"> 12: </a><strong><font color="#FF0000">  moab:</font></strong>:Interface *mbiface;
+<a name="line13"> 13: </a><strong><font color="#FF0000">  moab:</font></strong>:Tag ltog_tag; <font color="#B22222">/* moab supports "global id" tags, which are usually local to global numbering */</font>
+<a name="line14"> 14: </a><strong><font color="#FF0000">  moab:</font></strong>:Range range;
+<a name="line15"> 15: </a>} DM_Moab;
+
+<a name="line17"> 17: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line18"> 18: </a><strong><font color="#FF0000">  moab:</font></strong>:Interface    *mbiface;
+<a name="line19"> 19: </a><strong><font color="#FF0000">  moab:</font></strong>:ParallelComm *pcomm;
+<a name="line20"> 20: </a><strong><font color="#FF0000">  moab:</font></strong>:Range         tag_range; <font color="#B22222">/* entities to which this tag applies */</font>
+<a name="line21"> 21: </a><strong><font color="#FF0000">  moab:</font></strong>:Tag           tag;
+<a name="line22"> 22: </a><strong><font color="#FF0000">  moab:</font></strong>:Tag           ltog_tag;
+<a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            tag_size;
+<a name="line24"> 24: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>           new_tag;
+<a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>           serial;
+
+<a name="line27"> 27: </a>} Vec_MOAB;
+
+<a name="line31"> 31: </a><strong><font color="#4169E1"><a name="DMCreateGlobalVector_Moab"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateGlobalVector_Moab(DM dm,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *gvec)</font></strong>
+<a name="line32"> 32: </a>{
+<a name="line33"> 33: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line34"> 34: </a>  DM_Moab         *dmmoab = (DM_Moab*)dm-&gt;data;
+
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> block_size = ((DM_Moab*)dm-&gt;data)-&gt;bs;
+<a name="line40"> 40: </a><strong><font color="#FF0000">  moab:</font></strong>:Tag tag = 0;
+<a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/DM/DMMoabCreateVector.html#DMMoabCreateVector">DMMoabCreateVector</A>(dm,tag,block_size,dmmoab-&gt;range,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,gvec);
+<a name="line42"> 42: </a>  <font color="#4169E1">return</font>(0);
+<a name="line43"> 43: </a>}
+
+
+<a name="line48"> 48: </a><strong><font color="#4169E1"><a name="DMCreateLocalVector_Moab"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateLocalVector_Moab(DM dm,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *gvec)</font></strong>
+<a name="line49"> 49: </a>{
+<a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line51"> 51: </a>  DM_Moab         *dmmoab = (DM_Moab*)dm-&gt;data;
+
+<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs = 1;
+<a name="line57"> 57: </a><strong><font color="#FF0000">  moab:</font></strong>:Tag tag = 0;
+<a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/DM/DMMoabCreateVector.html#DMMoabCreateVector">DMMoabCreateVector</A>(dm,tag,bs,dmmoab-&gt;range,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,gvec);
+<a name="line59"> 59: </a>  <font color="#4169E1">return</font>(0);
+<a name="line60"> 60: </a>}
+
+<a name="line64"> 64: </a><strong><font color="#4169E1"><a name="DMDestroy_Moab"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMDestroy_Moab(DM dm)</font></strong>
+<a name="line65"> 65: </a>{
+
+<a name="line70"> 70: </a>  <font color="#4169E1">if</font> (((DM_Moab*)dm-&gt;data)-&gt;icreatedinstance) {
+<a name="line71"> 71: </a>    delete ((DM_Moab*)dm-&gt;data)-&gt;mbiface;
+<a name="line72"> 72: </a>    ((DM_Moab*)dm-&gt;data)-&gt;mbiface = NULL;
+<a name="line73"> 73: </a>    ((DM_Moab*)dm-&gt;data)-&gt;pcomm = NULL;
+<a name="line74"> 74: </a>    ((DM_Moab*)dm-&gt;data)-&gt;range.~Range();
+<a name="line75"> 75: </a>  }
+<a name="line76"> 76: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(dm-&gt;data);
+<a name="line77"> 77: </a>  <font color="#4169E1">return</font>(0);
+<a name="line78"> 78: </a>}
+
+<a name="line82"> 82: </a><strong><font color="#4169E1"><a name="DMCreate_Moab"></a>PETSC_EXTERN <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreate_Moab(DM dm)</font></strong>
+<a name="line83"> 83: </a>{
+<a name="line84"> 84: </a>  DM_Moab        *moab;
+
+<a name="line89"> 89: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(dm,DM_Moab,&amp;moab);
+<a name="line90"> 90: </a>  dm-&gt;data = moab;
+<a name="line91"> 91: </a>  new (moab) DM_Moab();
+
+<a name="line93"> 93: </a>  dm-&gt;ops-&gt;createglobalvector              = DMCreateGlobalVector_Moab;
+<a name="line94"> 94: </a>  dm-&gt;ops-&gt;createlocalvector               = DMCreateLocalVector_Moab;
+<a name="line95"> 95: </a>  dm-&gt;ops-&gt;destroy                         = DMDestroy_Moab;
+<a name="line96"> 96: </a>  <font color="#4169E1">return</font>(0);
+<a name="line97"> 97: </a>}
+
+<a name="line101">101: </a><font color="#B22222">/*@</font>
+<a name="line102">102: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabCreate.html#DMMoabCreate">DMMoabCreate</A> - Creates a DMMoab object, which encapsulates a moab instance</font>
+
+<a name="line104">104: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line106">106: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line107">107: </a><font color="#B22222">. comm - The communicator for the DMMoab object</font>
+
+<a name="line109">109: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line110">110: </a><font color="#B22222">. moab  - The DMMoab object</font>
+
+<a name="line112">112: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line114">114: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line115">115: </a><font color="#B22222">@*/</font>
+<a name="line116">116: </a><strong><font color="#4169E1"><a name="DMMoabCreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabCreate.html#DMMoabCreate">DMMoabCreate</A>(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, DM *moab)</font></strong>
+<a name="line117">117: </a>{
+
+<a name="line122">122: </a>  <A href="../../../../docs/manualpages/DM/DMCreate.html#DMCreate">DMCreate</A>(comm, moab);
+<a name="line123">123: </a>  <A href="../../../../docs/manualpages/DM/DMSetType.html#DMSetType">DMSetType</A>(*moab, DMMOAB);
+<a name="line124">124: </a>  <font color="#4169E1">return</font>(0);
+<a name="line125">125: </a>}
+
+<a name="line129">129: </a><font color="#B22222">/*@</font>
+<a name="line130">130: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabCreate.html#DMMoabCreate">DMMoabCreate</A> - Creates a DMMoab object, optionally from an instance and other data</font>
+
+<a name="line132">132: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line134">134: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line135">135: </a><font color="#B22222">. comm - The communicator for the DMMoab object</font>
+<a name="line136">136: </a><font color="#B22222">. moab - (ptr to) the MOAB Instance; if passed in NULL, MOAB instance is created inside PETSc, and destroyed</font>
+<a name="line137">137: </a><font color="#B22222">         along with the DMMoab</font>
+<a name="line138">138: </a><font color="#B22222">. pcomm - (ptr to) a ParallelComm; if NULL, creates one internally for the whole communicator</font>
+<a name="line139">139: </a><font color="#B22222">. ltog_tag - A tag to use to retrieve global id for an entity; if 0, will use GLOBAL_ID_TAG_NAME/tag</font>
+<a name="line140">140: </a><font color="#B22222">. range - If non-NULL, contains range of entities to which DOFs will be assigned</font>
+
+<a name="line142">142: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line143">143: </a><font color="#B22222">. moab  - The DMMoab object</font>
+
+<a name="line145">145: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line147">147: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line148">148: </a><font color="#B22222">@*/</font>
+<a name="line149">149: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoabCreateMoab(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, moab::Interface *mbiface, moab::ParallelComm *pcomm, moab::Tag ltog_tag, moab::Range *range, DM *moab)
+<a name="line150">150: </a>{
+<a name="line152">152: </a>  DM_Moab        *dmmoab;
+
+<a name="line156">156: </a>  <A href="../../../../docs/manualpages/DM/DMMoabCreate.html#DMMoabCreate">DMMoabCreate</A>(comm, moab);
+<a name="line157">157: </a>  dmmoab = (DM_Moab*)(*moab)-&gt;data;
+
+<a name="line159">159: </a>  <font color="#4169E1">if</font> (!mbiface) {
+<a name="line160">160: </a>    mbiface = new moab::Core();
+<a name="line161">161: </a>    dmmoab-&gt;icreatedinstance = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line162">162: </a>  }
+<a name="line163">163: </a>  <font color="#4169E1">else</font>
+<a name="line164">164: </a>    dmmoab-&gt;icreatedinstance = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+
+<a name="line166">166: </a>  <font color="#4169E1">if</font> (!pcomm) {
+<a name="line167">167: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rank, nprocs;
+<a name="line168">168: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm, &amp;rank);
+<a name="line169">169: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm, &amp;nprocs);
+<a name="line170">170: </a>    pcomm = new moab::ParallelComm(mbiface, comm);
+<a name="line171">171: </a>  }
+
+<a name="line173">173: </a>    // <font color="#4169E1">do</font> the initialization of the DM
+<a name="line174">174: </a>  dmmoab-&gt;bs       = 0;
+<a name="line175">175: </a>  dmmoab-&gt;pcomm    = pcomm;
+<a name="line176">176: </a>  dmmoab-&gt;mbiface    = mbiface;
+<a name="line177">177: </a>  dmmoab-&gt;ltog_tag = ltog_tag;
+
+<a name="line179">179: </a>  <A href="../../../../docs/manualpages/DM/DMMoabSetInterface.html#DMMoabSetInterface">DMMoabSetInterface</A>(*moab, mbiface);
+<a name="line180">180: </a>  <font color="#4169E1">if</font> (!pcomm) pcomm = new moab::ParallelComm(mbiface, comm);
+<a name="line181">181: </a>  <A href="../../../../docs/manualpages/DM/DMMoabSetParallelComm.html#DMMoabSetParallelComm">DMMoabSetParallelComm</A>(*moab, pcomm);
+<a name="line182">182: </a>  <font color="#4169E1">if</font> (!ltog_tag) {
+<a name="line183">183: </a><strong><font color="#FF0000">    moab:</font></strong>:ErrorCode merr = mbiface-&gt;tag_get_handle(GLOBAL_ID_TAG_NAME, ltog_tag);MBERRNM(merr);
+<a name="line184">184: </a>  }
+<a name="line185">185: </a>  <font color="#4169E1">if</font> (ltog_tag) {
+<a name="line186">186: </a>    <A href="../../../../docs/manualpages/DM/DMMoabSetLocalToGlobalTag.html#DMMoabSetLocalToGlobalTag">DMMoabSetLocalToGlobalTag</A>(*moab, ltog_tag);
+<a name="line187">187: </a>  }
+<a name="line188">188: </a>  <font color="#4169E1">if</font> (range) {
+<a name="line189">189: </a>    <A href="../../../../docs/manualpages/DM/DMMoabSetRange.html#DMMoabSetRange">DMMoabSetRange</A>(*moab, *range);
+<a name="line190">190: </a>  }
+<a name="line191">191: </a>  <font color="#4169E1">return</font>(0);
+<a name="line192">192: </a>}
+
+<a name="line196">196: </a><font color="#B22222">/*@</font>
+<a name="line197">197: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabSetParallelComm.html#DMMoabSetParallelComm">DMMoabSetParallelComm</A> - Set the ParallelComm used with this DMMoab</font>
+
+<a name="line199">199: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line201">201: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line202">202: </a><font color="#B22222">. dm    - The DMMoab object being set</font>
+<a name="line203">203: </a><font color="#B22222">. pcomm - The ParallelComm being set on the DMMoab</font>
+
+<a name="line205">205: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line207">207: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line208">208: </a><font color="#B22222">@*/</font>
+<a name="line209">209: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabSetParallelComm.html#DMMoabSetParallelComm">DMMoabSetParallelComm</A>(DM dm,moab::ParallelComm *pcomm)
+<a name="line210">210: </a>{
+<a name="line213">213: </a>  ((DM_Moab*)dm-&gt;data)-&gt;pcomm = pcomm;
+<a name="line214">214: </a>  ((DM_Moab*)dm-&gt;data)-&gt;mbiface = pcomm-&gt;get_moab();
+<a name="line215">215: </a>  <font color="#4169E1">return</font>(0);
+<a name="line216">216: </a>}
+
+
+<a name="line221">221: </a><font color="#B22222">/*@</font>
+<a name="line222">222: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabGetParallelComm.html#DMMoabGetParallelComm">DMMoabGetParallelComm</A> - Get the ParallelComm used with this DMMoab</font>
+
+<a name="line224">224: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line226">226: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line227">227: </a><font color="#B22222">. dm    - The DMMoab object being set</font>
+
+<a name="line229">229: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line230">230: </a><font color="#B22222">. pcomm - The ParallelComm for the DMMoab</font>
+
+<a name="line232">232: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line234">234: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line235">235: </a><font color="#B22222">@*/</font>
+<a name="line236">236: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabGetParallelComm.html#DMMoabGetParallelComm">DMMoabGetParallelComm</A>(DM dm,moab::ParallelComm **pcomm)
+<a name="line237">237: </a>{
+<a name="line240">240: </a>  *pcomm = ((DM_Moab*)dm-&gt;data)-&gt;pcomm;
+<a name="line241">241: </a>  <font color="#4169E1">return</font>(0);
+<a name="line242">242: </a>}
+
+
+<a name="line247">247: </a><font color="#B22222">/*@</font>
+<a name="line248">248: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabSetInterface.html#DMMoabSetInterface">DMMoabSetInterface</A> - Set the MOAB instance used with this DMMoab</font>
+
+<a name="line250">250: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line252">252: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line253">253: </a><font color="#B22222">. dm      - The DMMoab object being set</font>
+<a name="line254">254: </a><font color="#B22222">. mbiface - The MOAB instance being set on this DMMoab</font>
+
+<a name="line256">256: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line258">258: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line259">259: </a><font color="#B22222">@*/</font>
+<a name="line260">260: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabSetInterface.html#DMMoabSetInterface">DMMoabSetInterface</A>(DM dm,moab::Interface *mbiface)
+<a name="line261">261: </a>{
+<a name="line264">264: </a>  ((DM_Moab*)dm-&gt;data)-&gt;pcomm = NULL;
+<a name="line265">265: </a>  ((DM_Moab*)dm-&gt;data)-&gt;mbiface = mbiface;
+<a name="line266">266: </a>  <font color="#4169E1">return</font>(0);
+<a name="line267">267: </a>}
+
+
+<a name="line272">272: </a><font color="#B22222">/*@</font>
+<a name="line273">273: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabGetInterface.html#DMMoabGetInterface">DMMoabGetInterface</A> - Get the MOAB instance used with this DMMoab</font>
+
+<a name="line275">275: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line277">277: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line278">278: </a><font color="#B22222">. dm      - The DMMoab object being set</font>
+
+<a name="line280">280: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line281">281: </a><font color="#B22222">. mbiface - The MOAB instance set on this DMMoab</font>
+
+<a name="line283">283: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line285">285: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line286">286: </a><font color="#B22222">@*/</font>
+<a name="line287">287: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabGetInterface.html#DMMoabGetInterface">DMMoabGetInterface</A>(DM dm,moab::Interface **mbiface)
+<a name="line288">288: </a>{
+<a name="line291">291: </a>  *mbiface = ((DM_Moab*)dm-&gt;data)-&gt;mbiface;
+<a name="line292">292: </a>  <font color="#4169E1">return</font>(0);
+<a name="line293">293: </a>}
+
+
+<a name="line298">298: </a><font color="#B22222">/*@</font>
+<a name="line299">299: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabSetRange.html#DMMoabSetRange">DMMoabSetRange</A> - Set the entities having DOFs on this DMMoab</font>
+
+<a name="line301">301: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line303">303: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line304">304: </a><font color="#B22222">. dm    - The DMMoab object being set</font>
+<a name="line305">305: </a><font color="#B22222">. range - The entities treated by this DMMoab</font>
+
+<a name="line307">307: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line309">309: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line310">310: </a><font color="#B22222">@*/</font>
+<a name="line311">311: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabSetRange.html#DMMoabSetRange">DMMoabSetRange</A>(DM dm,moab::Range range)
+<a name="line312">312: </a>{
+<a name="line315">315: </a>  ((DM_Moab*)dm-&gt;data)-&gt;range = range;
+<a name="line316">316: </a>  <font color="#4169E1">return</font>(0);
+<a name="line317">317: </a>}
+
+
+<a name="line322">322: </a><font color="#B22222">/*@</font>
+<a name="line323">323: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabGetRange.html#DMMoabGetRange">DMMoabGetRange</A> - Get the entities having DOFs on this DMMoab</font>
+
+<a name="line325">325: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line327">327: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line328">328: </a><font color="#B22222">. dm    - The DMMoab object being set</font>
+
+<a name="line330">330: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line331">331: </a><font color="#B22222">. range - The entities treated by this DMMoab</font>
+
+<a name="line333">333: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line335">335: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line336">336: </a><font color="#B22222">@*/</font>
+<a name="line337">337: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabGetRange.html#DMMoabGetRange">DMMoabGetRange</A>(DM dm,moab::Range *range)
+<a name="line338">338: </a>{
+<a name="line341">341: </a>  *range = ((DM_Moab*)dm-&gt;data)-&gt;range;
+<a name="line342">342: </a>  <font color="#4169E1">return</font>(0);
+<a name="line343">343: </a>}
+
+<a name="line347">347: </a><font color="#B22222">/*@</font>
+<a name="line348">348: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabSetLocalToGlobalTag.html#DMMoabSetLocalToGlobalTag">DMMoabSetLocalToGlobalTag</A> - Set the tag used for local to global numbering</font>
+
+<a name="line350">350: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line352">352: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line353">353: </a><font color="#B22222">. dm      - The DMMoab object being set</font>
+<a name="line354">354: </a><font color="#B22222">. ltogtag - The MOAB tag used for local to global ids</font>
+
+<a name="line356">356: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line358">358: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line359">359: </a><font color="#B22222">@*/</font>
+<a name="line360">360: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabSetLocalToGlobalTag.html#DMMoabSetLocalToGlobalTag">DMMoabSetLocalToGlobalTag</A>(DM dm,moab::Tag ltogtag)
+<a name="line361">361: </a>{
+<a name="line364">364: </a>  ((DM_Moab*)dm-&gt;data)-&gt;ltog_tag = ltogtag;
+<a name="line365">365: </a>  <font color="#4169E1">return</font>(0);
+<a name="line366">366: </a>}
+
+
+<a name="line371">371: </a><font color="#B22222">/*@</font>
+<a name="line372">372: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabGetLocalToGlobalTag.html#DMMoabGetLocalToGlobalTag">DMMoabGetLocalToGlobalTag</A> - Get the tag used for local to global numbering</font>
+
+<a name="line374">374: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line376">376: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line377">377: </a><font color="#B22222">. dm      - The DMMoab object being set</font>
+
+<a name="line379">379: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line380">380: </a><font color="#B22222">. ltogtag - The MOAB tag used for local to global ids</font>
+
+<a name="line382">382: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line384">384: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line385">385: </a><font color="#B22222">@*/</font>
+<a name="line386">386: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabGetLocalToGlobalTag.html#DMMoabGetLocalToGlobalTag">DMMoabGetLocalToGlobalTag</A>(DM dm,moab::Tag *ltog_tag)
+<a name="line387">387: </a>{
+<a name="line390">390: </a>  *ltog_tag = ((DM_Moab*)dm-&gt;data)-&gt;ltog_tag;
+<a name="line391">391: </a>  <font color="#4169E1">return</font>(0);
+<a name="line392">392: </a>}
+
+
+<a name="line397">397: </a><font color="#B22222">/*@</font>
+<a name="line398">398: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabSetBlockSize.html#DMMoabSetBlockSize">DMMoabSetBlockSize</A> - Set the block size used with this DMMoab</font>
+
+<a name="line400">400: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line402">402: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line403">403: </a><font color="#B22222">. dm - The DMMoab object being set</font>
+<a name="line404">404: </a><font color="#B22222">. bs - The block size used with this DMMoab</font>
+
+<a name="line406">406: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line408">408: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line409">409: </a><font color="#B22222">@*/</font>
+<a name="line410">410: </a><strong><font color="#4169E1"><a name="DMMoabSetBlockSize"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabSetBlockSize.html#DMMoabSetBlockSize">DMMoabSetBlockSize</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs)</font></strong>
+<a name="line411">411: </a>{
+<a name="line414">414: </a>  ((DM_Moab*)dm-&gt;data)-&gt;bs = bs;
+<a name="line415">415: </a>  <font color="#4169E1">return</font>(0);
+<a name="line416">416: </a>}
+
+
+<a name="line421">421: </a><font color="#B22222">/*@</font>
+<a name="line422">422: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabGetBlockSize.html#DMMoabGetBlockSize">DMMoabGetBlockSize</A> - Get the block size used with this DMMoab</font>
+
+<a name="line424">424: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line426">426: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line427">427: </a><font color="#B22222">. dm - The DMMoab object being set</font>
+
+<a name="line429">429: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line430">430: </a><font color="#B22222">. bs - The block size used with this DMMoab</font>
+
+<a name="line432">432: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line434">434: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line435">435: </a><font color="#B22222">@*/</font>
+<a name="line436">436: </a><strong><font color="#4169E1"><a name="DMMoabGetBlockSize"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabGetBlockSize.html#DMMoabGetBlockSize">DMMoabGetBlockSize</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *bs)</font></strong>
+<a name="line437">437: </a>{
+<a name="line440">440: </a>  *bs = ((DM_Moab*)dm-&gt;data)-&gt;bs;
+<a name="line441">441: </a>  <font color="#4169E1">return</font>(0);
+<a name="line442">442: </a>}
+
+
+<a name="line445">445: </a>// declare <font color="#4169E1">for</font> use later but before they're defined
+<a name="line446">446: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoab_VecUserDestroy(void *user)</font></strong>;
+<a name="line447">447: </a><strong><font color="#4169E1"><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoab_VecDuplicate(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *y)</font></strong>;
+<a name="line448">448: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoab_CreateTagName(const moab::ParallelComm *pcomm,std::string&amp; tag_name);
+<a name="line449">449: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoab_CreateVector(moab::Interface *iface,moab::ParallelComm *pcomm,moab::Tag tag,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> tag_size,moab::Tag ltog_tag,moab::Range range,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> serial, <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> destroy_tag,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *vec);
+
+<a name="line453">453: </a><font color="#B22222">/*@</font>
+<a name="line454">454: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabCreateVector.html#DMMoabCreateVector">DMMoabCreateVector</A> - Create a <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> from either an existing tag, or a specified tag size, and a range of entities</font>
+
+<a name="line456">456: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line458">458: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line459">459: </a><font color="#B22222">. dm          - The DMMoab object being set</font>
+<a name="line460">460: </a><font color="#B22222">. tag         - If non-zero, block size will be taken from the tag size</font>
+<a name="line461">461: </a><font color="#B22222">. tag_size    - If tag was zero, this parameter specifies the block size; unique tag name will be generated automatically</font>
+<a name="line462">462: </a><font color="#B22222">. range       - If non-empty, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> corresponds to these entities, otherwise to the entities set on the DMMoab</font>
+<a name="line463">463: </a><font color="#B22222">. serial      - If true, this is a serial <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, otherwise a parallel one</font>
+<a name="line464">464: </a><font color="#B22222">. destroy_tag - If true, MOAB tag is destroyed with <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, otherwise it is left on MOAB</font>
+
+<a name="line466">466: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line467">467: </a><font color="#B22222">. vec         - The created vector</font>
+
+<a name="line469">469: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line471">471: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line472">472: </a><font color="#B22222">@*/</font>
+<a name="line473">473: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabCreateVector.html#DMMoabCreateVector">DMMoabCreateVector</A>(DM dm,moab::Tag tag,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> tag_size,moab::Range range,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> serial, <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> destroy_tag,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *vec)
+<a name="line474">474: </a>{
+<a name="line475">475: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+
+
+<a name="line479">479: </a>  DM_Moab *dmmoab = (DM_Moab*)dm-&gt;data;
+<a name="line480">480: </a><strong><font color="#FF0000">  moab:</font></strong>:ParallelComm *pcomm = dmmoab-&gt;pcomm;
+<a name="line481">481: </a><strong><font color="#FF0000">  moab:</font></strong>:Interface *mbiface = dmmoab-&gt;mbiface;
+<a name="line482">482: </a><strong><font color="#FF0000">  moab:</font></strong>:Tag ltog_tag = dmmoab-&gt;ltog_tag;
+
+<a name="line484">484: </a>  <font color="#4169E1">if</font> (!tag &amp;&amp; !tag_size) {
+<a name="line485">485: </a>    <A href="../../../../docs/manualpages/Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(PETSC_ERR_ARG_WRONG);
+<a name="line486">486: </a>  }
+<a name="line487">487: </a>  <font color="#4169E1">else</font> {
+<a name="line488">488: </a>    DMMoab_CreateVector(mbiface,pcomm,tag,tag_size,ltog_tag,range,serial,destroy_tag,vec);
+<a name="line489">489: </a>  }
+<a name="line490">490: </a>  <font color="#4169E1">return</font>(0);
+<a name="line491">491: </a>}
+
+
+<a name="line496">496: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoab_CreateVector(moab::Interface *mbiface,moab::ParallelComm *pcomm,moab::Tag tag,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> tag_size,moab::Tag ltog_tag,moab::Range range,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> serial, <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> destroy_tag,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *vec)
+<a name="line497">497: </a>{
+<a name="line498">498: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+<a name="line499">499: </a><strong><font color="#FF0000">  moab:</font></strong>:ErrorCode    merr;
+
+
+<a name="line503">503: </a>  <font color="#4169E1">if</font> (!tag) {
+<a name="line504">504: </a><strong><font color="#FF0000">    std:</font></strong>:string tag_name;
+<a name="line505">505: </a>    DMMoab_CreateTagName(pcomm,tag_name);
+
+<a name="line507">507: </a>      // Create the <font color="#4169E1">default</font> value <font color="#4169E1">for</font> the tag (all zeros):
+<a name="line508">508: </a><strong><font color="#FF0000">    std:</font></strong>:vector&lt;<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>&gt; default_value(tag_size, 0.0);
+
+<a name="line510">510: </a>      // Create the tag:
+<a name="line511">511: </a>    merr = mbiface-&gt;tag_get_handle(tag_name.c_str(),tag_size,moab::MB_TYPE_DOUBLE,tag,
+<a name="line512">512: </a><strong><font color="#FF0000">                                   moab:</font></strong>:MB_TAG_DENSE | moab::MB_TAG_CREAT,default_value.data());MBERRNM(merr);
+<a name="line513">513: </a>  }
+<a name="line514">514: </a>  <font color="#4169E1">else</font> {
+
+<a name="line516">516: </a>      // Make sure the tag data is of type <font color="#666666">"double"</font>:
+<a name="line517">517: </a><strong><font color="#FF0000">    moab:</font></strong>:DataType tag_type;
+<a name="line518">518: </a>    merr = mbiface-&gt;tag_get_data_type(tag, tag_type);MBERRNM(merr);
+<a name="line519">519: </a>    <font color="#4169E1">if</font>(tag_type != moab::MB_TYPE_DOUBLE) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_WRONG, <font color="#666666">"Tag data type must be MB_TYPE_DOUBLE"</font>);
+<a name="line520">520: </a>  }
+
+<a name="line522">522: </a>    // Create the MOAB internal data object
+<a name="line523">523: </a>  Vec_MOAB *vmoab;
+<a name="line524">524: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(Vec_MOAB),&amp;vmoab);
+<a name="line525">525: </a>  new (vmoab) Vec_MOAB();
+<a name="line526">526: </a>  vmoab-&gt;tag = tag;
+<a name="line527">527: </a>  vmoab-&gt;ltog_tag = ltog_tag;
+<a name="line528">528: </a>  vmoab-&gt;mbiface = mbiface;
+<a name="line529">529: </a>  vmoab-&gt;pcomm = pcomm;
+<a name="line530">530: </a>  vmoab-&gt;tag_range = range;
+<a name="line531">531: </a>  vmoab-&gt;new_tag = destroy_tag;
+<a name="line532">532: </a>  vmoab-&gt;serial = serial;
+<a name="line533">533: </a>  merr = mbiface-&gt;tag_get_length(tag,vmoab-&gt;tag_size);MBERR(<font color="#666666">"tag_get_size"</font>, merr);
+
+<a name="line535">535: </a>    // Call tag_iterate. This will cause MOAB to allocate memory <font color="#4169E1">for</font> the
+<a name="line536">536: </a>    // tag data <font color="#4169E1">if</font> it hasn't already happened:
+<a name="line537">537: </a>  int  count;
+<a name="line538">538: </a>  void *void_ptr;
+<a name="line539">539: </a>  merr = mbiface-&gt;tag_iterate(tag,range.begin(),range.end(),count,void_ptr);MBERRNM(merr);
+
+<a name="line541">541: </a>    // Check to make sure the tag data is in a single sequence:
+<a name="line542">542: </a>  <font color="#4169E1">if</font> ((unsigned)count != range.size()) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Can only create MOAB Vector for single sequence"</font>);
+<a name="line543">543: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *data_ptr = (<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)void_ptr;
+
+<a name="line545">545: </a>    // Create the PETSc Vector:
+<a name="line546">546: </a>  <font color="#4169E1">if</font>(!serial) {
+<a name="line547">547: </a>      // This is an MPI Vector:
+<a name="line548">548: </a>    <A href="../../../../docs/manualpages/Vec/VecCreateMPIWithArray.html#VecCreateMPIWithArray">VecCreateMPIWithArray</A>(vmoab-&gt;pcomm-&gt;comm(),vmoab-&gt;tag_size,vmoab-&gt;tag_size*range.size(),
+<a name="line549">549: </a>                                 <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,data_ptr,vec);
+
+<a name="line551">551: </a>      // Vector created, manually set local to global mapping:
+<a name="line552">552: </a>    <A href="../../../../docs/manualpages/IS/ISLocalToGlobalMapping.html#ISLocalToGlobalMapping">ISLocalToGlobalMapping</A> ltog;
+<a name="line553">553: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               *gindices = new <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[range.size()];
+<a name="line554">554: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               count = 0;
+<a name="line555">555: </a><strong><font color="#FF0000">    moab:</font></strong>:Range::iterator  iter;
+<a name="line556">556: </a>    <font color="#4169E1">for</font>(iter = range.begin(); iter != range.end(); iter++) {
+<a name="line557">557: </a>      int dof;
+<a name="line558">558: </a>      merr = mbiface-&gt;tag_get_data(ltog_tag,&amp;(*iter),1,&amp;dof);MBERRNM(merr);
+<a name="line559">559: </a>      gindices[count] = dof;
+<a name="line560">560: </a>      count++;
+<a name="line561">561: </a>    }
+
+<a name="line563">563: </a>    <A href="../../../../docs/manualpages/IS/ISLocalToGlobalMappingCreate.html#ISLocalToGlobalMappingCreate">ISLocalToGlobalMappingCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,range.size(),gindices,
+<a name="line564">564: </a>                                        PETSC_COPY_VALUES,&amp;ltog);
+<a name="line565">565: </a>    <A href="../../../../docs/manualpages/Vec/VecSetLocalToGlobalMappingBlock.html#VecSetLocalToGlobalMappingBlock">VecSetLocalToGlobalMappingBlock</A>(*vec,ltog);
+
+<a name="line567">567: </a>      // Clean up:
+<a name="line568">568: </a>    <A href="../../../../docs/manualpages/IS/ISLocalToGlobalMappingDestroy.html#ISLocalToGlobalMappingDestroy">ISLocalToGlobalMappingDestroy</A>(&amp;ltog);
+<a name="line569">569: </a>    delete [] gindices;
+<a name="line570">570: </a>  } <font color="#4169E1">else</font> {
+<a name="line571">571: </a>      // This is a serial vector:
+<a name="line572">572: </a>    <A href="../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,vmoab-&gt;tag_size,vmoab-&gt;tag_size*range.size(),data_ptr,vec);
+<a name="line573">573: </a>  }
+
+
+<a name="line576">576: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainer.html#PetscContainer">PetscContainer</A> moabdata;
+<a name="line577">577: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainerCreate.html#PetscContainerCreate">PetscContainerCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;moabdata);
+<a name="line578">578: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainerSetPointer.html#PetscContainerSetPointer">PetscContainerSetPointer</A>(moabdata,vmoab);
+<a name="line579">579: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainerSetUserDestroy.html#PetscContainerSetUserDestroy">PetscContainerSetUserDestroy</A>(moabdata,DMMoab_VecUserDestroy);
+<a name="line580">580: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)*vec,<font color="#666666">"MOABData"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)moabdata);
+<a name="line581">581: </a>  (*vec)-&gt;ops-&gt;duplicate = DMMoab_VecDuplicate;
+
+<a name="line583">583: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainerDestroy.html#PetscContainerDestroy">PetscContainerDestroy</A>(&amp;moabdata);
+<a name="line584">584: </a>  <font color="#4169E1">return</font>(0);
+<a name="line585">585: </a>}
+
+<a name="line589">589: </a><font color="#B22222">/*@</font>
+<a name="line590">590: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabGetVecTag.html#DMMoabGetVecTag">DMMoabGetVecTag</A> - Get the MOAB tag associated with this <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
+
+<a name="line592">592: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line594">594: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line595">595: </a><font color="#B22222">. vec - <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> being queried</font>
+
+<a name="line597">597: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line598">598: </a><font color="#B22222">. tag - Tag associated with this <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
+
+<a name="line600">600: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line602">602: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line603">603: </a><font color="#B22222">@*/</font>
+<a name="line604">604: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabGetVecTag.html#DMMoabGetVecTag">DMMoabGetVecTag</A>(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec,moab::Tag *tag)
+<a name="line605">605: </a>{
+<a name="line606">606: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainer.html#PetscContainer">PetscContainer</A>  moabdata;
+<a name="line607">607: </a>  Vec_MOAB        *vmoab;
+<a name="line608">608: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+
+
+<a name="line612">612: </a>  // Get the MOAB private data:
+<a name="line613">613: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)vec,<font color="#666666">"MOABData"</font>, (<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*) &amp;moabdata);
+<a name="line614">614: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainerGetPointer.html#PetscContainerGetPointer">PetscContainerGetPointer</A>(moabdata, (void**) &amp;vmoab);
+
+<a name="line616">616: </a>  *tag = vmoab-&gt;tag;
+
+<a name="line618">618: </a>  <font color="#4169E1">return</font>(0);
+<a name="line619">619: </a>}
+
+
+<a name="line624">624: </a><font color="#B22222">/*@</font>
+<a name="line625">625: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMMoabGetVecRange.html#DMMoabGetVecRange">DMMoabGetVecRange</A> - Get the MOAB entities associated with this <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
+
+<a name="line627">627: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line629">629: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line630">630: </a><font color="#B22222">. vec   - <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> being queried</font>
+
+<a name="line632">632: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line633">633: </a><font color="#B22222">. range - Entities associated with this <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A></font>
+
+<a name="line635">635: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line637">637: </a><font color="#B22222">.keywords: DMMoab, create</font>
+<a name="line638">638: </a><font color="#B22222">@*/</font>
+<a name="line639">639: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMMoabGetVecRange.html#DMMoabGetVecRange">DMMoabGetVecRange</A>(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> vec,moab::Range *range)
+<a name="line640">640: </a>{
+<a name="line641">641: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainer.html#PetscContainer">PetscContainer</A>  moabdata;
+<a name="line642">642: </a>  Vec_MOAB        *vmoab;
+<a name="line643">643: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+
+
+<a name="line647">647: </a>  // Get the MOAB private data:
+<a name="line648">648: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)vec,<font color="#666666">"MOABData"</font>, (<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*) &amp;moabdata);
+<a name="line649">649: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainerGetPointer.html#PetscContainerGetPointer">PetscContainerGetPointer</A>(moabdata, (void**) &amp;vmoab);
+
+<a name="line651">651: </a>  *range = vmoab-&gt;tag_range;
+
+<a name="line653">653: </a>  <font color="#4169E1">return</font>(0);
+<a name="line654">654: </a>}
+
+
+<a name="line659">659: </a><strong><font color="#4169E1"><a name="DMMoab_VecDuplicate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoab_VecDuplicate(<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *y)</font></strong>
+<a name="line660">660: </a>{
+
+<a name="line666">666: </a>  // Get the Vec_MOAB <font color="#4169E1">struct for</font> the original vector:
+<a name="line667">667: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainer.html#PetscContainer">PetscContainer</A>  moabdata;
+<a name="line668">668: </a>  Vec_MOAB        *vmoab;
+<a name="line669">669: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)x,<font color="#666666">"MOABData"</font>, (<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*) &amp;moabdata);
+<a name="line670">670: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainerGetPointer.html#PetscContainerGetPointer">PetscContainerGetPointer</A>(moabdata, (void**)&amp;vmoab);
+
+<a name="line672">672: </a>  DMMoab_CreateVector(vmoab-&gt;mbiface,vmoab-&gt;pcomm,0,vmoab-&gt;tag_size,vmoab-&gt;ltog_tag,vmoab-&gt;tag_range,vmoab-&gt;serial,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,y);
+<a name="line673">673: </a>  <font color="#4169E1">return</font>(0);
+<a name="line674">674: </a>}
+
+
+<a name="line679">679: </a><font color="#B22222">/*  DMMoab_CreateTagName</font>
+<a name="line680">680: </a><font color="#B22222"> *</font>
+<a name="line681">681: </a><font color="#B22222"> *  Creates a unique tag name that will be shared across processes. If</font>
+<a name="line682">682: </a><font color="#B22222"> *  pcomm is NULL, then this is a serial vector. A unique tag name</font>
+<a name="line683">683: </a><font color="#B22222"> *  will be returned in tag_name in either case.</font>
+<a name="line684">684: </a><font color="#B22222"> *</font>
+<a name="line685">685: </a><font color="#B22222"> *  The tag names have the format _PETSC_VEC_N where N is some integer.</font>
+<a name="line686">686: </a><font color="#B22222"> */</font>
+<a name="line687">687: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoab_CreateTagName(const moab::ParallelComm *pcomm,std::string&amp; tag_name)
+<a name="line688">688: </a>{
+<a name="line689">689: </a><strong><font color="#FF0000">  moab:</font></strong>:ErrorCode mberr;
+<a name="line690">690: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+
+<a name="line693">693: </a>  const std::string PVEC_PREFIX      = <font color="#666666">"_PETSC_VEC_"</font>;
+<a name="line694">694: </a>  const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    PVEC_PREFIX_SIZE = PVEC_PREFIX.size();
+
+<a name="line696">696: </a>  // Check to see <font color="#4169E1">if</font> there are any PETSc vectors defined:
+<a name="line697">697: </a>  const moab::Interface  *mbiface = pcomm-&gt;get_moab();
+<a name="line698">698: </a><strong><font color="#FF0000">  std:</font></strong>:vector&lt;moab::Tag&gt; tags;
+<a name="line699">699: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               n = 0;
+<a name="line700">700: </a>  mberr = mbiface-&gt;tag_get_tags(tags);MBERRNM(mberr);
+<a name="line701">701: </a>  <font color="#4169E1">for</font>(unsigned i = 0; i &lt; tags.size(); i++) {
+<a name="line702">702: </a><strong><font color="#FF0000">    std:</font></strong>:string s;
+<a name="line703">703: </a>    mberr = mbiface-&gt;tag_get_name(tags[i],s);MBERRNM(mberr);
+<a name="line704">704: </a>    <font color="#4169E1">if</font>(s.find(PVEC_PREFIX) != std::string::npos){
+<a name="line705">705: </a>      // This tag represents a PETSc vector. Find the vector number:
+<a name="line706">706: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m;
+<a name="line707">707: </a><strong><font color="#FF0000">      std:</font></strong>:istringstream(s.substr(PVEC_PREFIX_SIZE)) &gt;&gt; m;
+<a name="line708">708: </a>      <font color="#4169E1">if</font>(m &gt;= n) n = m+1;
+<a name="line709">709: </a>    }
+<a name="line710">710: </a>  }
+
+<a name="line712">712: </a>  // Make sure that n is consistent across all processes:
+<a name="line713">713: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> global_n;
+<a name="line714">714: </a>  <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm = <A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>;
+<a name="line715">715: </a>  <font color="#4169E1">if</font>(pcomm) comm = pcomm-&gt;comm();
+<a name="line716">716: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(&amp;n,&amp;global_n,1,MPI_INT,MPI_MAX,comm);
+
+<a name="line718">718: </a>  // Set the answer and <font color="#4169E1">return</font>:
+<a name="line719">719: </a><strong><font color="#FF0000">  std:</font></strong>:ostringstream ss;
+<a name="line720">720: </a>  ss &lt;&lt; PVEC_PREFIX &lt;&lt; global_n;
+<a name="line721">721: </a>  tag_name = ss.str();
+<a name="line722">722: </a>  <font color="#4169E1">return</font>(0);
+<a name="line723">723: </a>}
+
+
+<a name="line728">728: </a><strong><font color="#4169E1"><a name="DMMoab_VecUserDestroy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMMoab_VecUserDestroy(void *user)</font></strong>
+<a name="line729">729: </a>{
+<a name="line730">730: </a>  Vec_MOAB        *vmoab;
+<a name="line731">731: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<a name="line732">732: </a><strong><font color="#FF0000">  moab:</font></strong>:ErrorCode merr;
+
+<a name="line735">735: </a>  vmoab = (Vec_MOAB*)user;
+<a name="line736">736: </a>  vmoab-&gt;tag_range.~Range();
+<a name="line737">737: </a>  <font color="#4169E1">if</font>(vmoab-&gt;new_tag) {
+<a name="line738">738: </a>    // Tag created via a call to <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>, delete the underlying tag in MOAB...
+<a name="line739">739: </a>    merr = vmoab-&gt;mbiface-&gt;tag_delete(vmoab-&gt;tag);MBERRNM(merr);
+<a name="line740">740: </a>  }
+
+<a name="line742">742: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(vmoab);
+<a name="line743">743: </a>  <font color="#4169E1">return</font>(0);
+<a name="line744">744: </a>}
+
+</pre>
+</body>
+
+</html>

@@ -28,6 +28,7 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscsnes.h"
+#include "petscdm.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matcreatesnesmf_ MATCREATESNESMF
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)

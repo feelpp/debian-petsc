@@ -5,13 +5,13 @@
 <TITLE>VecSetValuesBlockedLocal</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecSetValuesBlockedLocal"><H1>VecSetValuesBlockedLocal</H1></A>
-Inserts or adds values into certain locations of a vector, using a local ordering of the nodes.  
+Inserts or adds values into certain locations of a vector, using a local ordering of the nodes. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
-PetscErrorCode  VecSetValuesBlockedLocal(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora) 
+#include "petscvec.h"   
+PetscErrorCode  VecSetValuesBlockedLocal(Vec x,PetscInt ni,const PetscInt ix[],const PetscScalar y[],InsertMode iora)
 </PRE>
 Not Collective
 <P>
@@ -48,7 +48,7 @@ MUST be called after all calls to <A HREF="../Vec/VecSetValuesBlockedLocal.html#
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(), <A HREF="../Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(), <A HREF="../Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(), <A HREF="../Vec/VecSetValuesBlocked.html#VecSetValuesBlocked">VecSetValuesBlocked</A>(), 
+  <A HREF="../Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(), <A HREF="../Vec/VecAssemblyEnd.html#VecAssemblyEnd">VecAssemblyEnd</A>(), <A HREF="../Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(), <A HREF="../Vec/VecSetValuesBlocked.html#VecSetValuesBlocked">VecSetValuesBlocked</A>(),
 <BR><A HREF="../Vec/VecSetLocalToGlobalMappingBlock.html#VecSetLocalToGlobalMappingBlock">VecSetLocalToGlobalMappingBlock</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/vec/interface/rvector.c.html#VecSetValuesBlockedLocal">src/vec/vec/interface/rvector.c</A>

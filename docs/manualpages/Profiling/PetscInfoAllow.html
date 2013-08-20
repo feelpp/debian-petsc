@@ -5,13 +5,13 @@
 <TITLE>PetscInfoAllow</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscInfoAllow"><H1>PetscInfoAllow</H1></A>
 Causes <A HREF="../Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>() messages to be printed to standard output. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscInfoAllow(PetscBool  flag, const char filename[])
+PetscErrorCode  PetscInfoAllow(PetscBool flag, const char filename[])
 </PRE>
 Not Collective, each processor may call this separately, but printing is only
 turned on if the lowest processor number associated with the <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> associated
@@ -34,7 +34,7 @@ with the call to <A HREF="../Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>()
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/verbose/verboseinfo.c.html#PetscInfoAllow">src/sys/verbose/verboseinfo.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/info/verboseinfo.c.html#PetscInfoAllow">src/sys/info/verboseinfo.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

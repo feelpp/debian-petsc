@@ -5,12 +5,11 @@
 <TITLE>ISGlobalToLocalMappingApply</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="ISGlobalToLocalMappingApply"><H1>ISGlobalToLocalMappingApply</H1></A>
 Provides the local numbering for a list of integers specified with a global numbering. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
 #include "petscis.h"  
 PetscErrorCode  ISGlobalToLocalMappingApply(ISLocalToGlobalMapping mapping,ISGlobalToLocalMappingType type,
                                   PetscInt n,const PetscInt idx[],PetscInt *nout,PetscInt idxout[])
@@ -33,15 +32,15 @@ IS_GTOLM_DROP - drops the indices with no local value from the output list
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nout </B></TD><TD>- number of indices in output array (if type == IS_GTOLM_MASK then nout = n)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>idxout </B></TD><TD>- local index of each global index, one must pass in an array long enough 
-to hold all the indices. You can call <A HREF="../IS/ISGlobalToLocalMappingApply.html#ISGlobalToLocalMappingApply">ISGlobalToLocalMappingApply</A>() with 
-idxout == <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to determine the required length (returned in nout)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>idxout </B></TD><TD>- local index of each global index, one must pass in an array long enough
+to hold all the indices. You can call <A HREF="../IS/ISGlobalToLocalMappingApply.html#ISGlobalToLocalMappingApply">ISGlobalToLocalMappingApply</A>() with
+idxout == NULL to determine the required length (returned in nout)
 and then allocate the required space and call <A HREF="../IS/ISGlobalToLocalMappingApply.html#ISGlobalToLocalMappingApply">ISGlobalToLocalMappingApply</A>()
 a second time to set the values.
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-Either nout or idxout may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>. idx and idxout may be identical.
+Either nout or idxout may be NULL. idx and idxout may be identical.
 <P>
 This is not scalable in memory usage. Each processor requires O(Nglobal) size
 array to compute these.
@@ -61,5 +60,5 @@ sequence declares idx as const so it cannot be the same as idxout.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/vec/is/examples/tutorials/ex4.c.html">src/vec/is/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/vec/is/is/examples/tutorials/ex4.c.html">src/vec/is/is/examples/tutorials/ex4.c.html</A><BR>
 </BODY></HTML>

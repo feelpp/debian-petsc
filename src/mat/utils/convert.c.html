@@ -4,35 +4,35 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/utils/convert.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:52:41+00:00">
+<meta name="date" content="2013-07-02T14:44:30+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;</font>
 
-<a name="line6">  6: </a><font color="#B22222">/* </font>
+<a name="line6">  6: </a><font color="#B22222">/*</font>
 <a name="line7">  7: </a><font color="#B22222">  MatConvert_Basic - Converts from any input format to another format. For</font>
 <a name="line8">  8: </a><font color="#B22222">  parallel formats, the new matrix distribution is determined by PETSc.</font>
 
 <a name="line10"> 10: </a><font color="#B22222">  Does not do preallocation so in general will be slow</font>
 <a name="line11"> 11: </a><font color="#B22222"> */</font>
-<a name="line12"> 12: </a><strong><font color="#4169E1"><a name="MatConvert_Basic"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatConvert_Basic(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat, const <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> newtype,<A href="../../../docs/manualpages/Mat/MatReuse.html#MatReuse">MatReuse</A> reuse,<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *newmat)</font></strong>
+<a name="line12"> 12: </a><strong><font color="#4169E1"><a name="MatConvert_Basic"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatConvert_Basic(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat, <A href="../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> newtype,<A href="../../../docs/manualpages/Mat/MatReuse.html#MatReuse">MatReuse</A> reuse,<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *newmat)</font></strong>
 <a name="line13"> 13: </a>{
-<a name="line14"> 14: </a>  <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>                M;
-<a name="line15"> 15: </a>  const <A href="../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>  *vwork;
-<a name="line16"> 16: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
-<a name="line17"> 17: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           i,nz,m,n,rstart,rend,lm,ln;
-<a name="line18"> 18: </a>  const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>     *cwork;
-<a name="line19"> 19: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          isseqsbaij,ismpisbaij;
+<a name="line14"> 14: </a>  <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               M;
+<a name="line15"> 15: </a>  const <A href="../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *vwork;
+<a name="line16"> 16: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
+<a name="line17"> 17: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          i,nz,m,n,rstart,rend,lm,ln;
+<a name="line18"> 18: </a>  const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *cwork;
+<a name="line19"> 19: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>         isseqsbaij,ismpisbaij;
 
 <a name="line22"> 22: </a>  <A href="../../../docs/manualpages/Mat/MatGetSize.html#MatGetSize">MatGetSize</A>(mat,&amp;m,&amp;n);
 <a name="line23"> 23: </a>  <A href="../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(mat,&amp;lm,&amp;ln);
 
 <a name="line25"> 25: </a>  <font color="#4169E1">if</font> (ln == n) ln = <A href="../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>; <font color="#B22222">/* try to preserve column ownership */</font>
-<a name="line26"> 26: </a>
-<a name="line27"> 27: </a>  <A href="../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,&amp;M);
+
+<a name="line27"> 27: </a>  <A href="../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat),&amp;M);
 <a name="line28"> 28: </a>  <A href="../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(M,lm,ln,m,n);
 <a name="line29"> 29: </a>  <A href="../../../docs/manualpages/Mat/MatSetBlockSize.html#MatSetBlockSize">MatSetBlockSize</A>(M,mat-&gt;rmap-&gt;bs);
 <a name="line30"> 30: </a>  <A href="../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(M,newtype);

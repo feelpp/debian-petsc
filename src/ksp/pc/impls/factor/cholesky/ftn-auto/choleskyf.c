@@ -39,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  pcfactorsetreuseordering_(PC pc,PetscBool  *flag, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetreuseordering_(PC pc,PetscBool *flag, int *__ierr ){
 *__ierr = PCFactorSetReuseOrdering(
 	(PC)PetscToPointer((pc) ),*flag);
 }

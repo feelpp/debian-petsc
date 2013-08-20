@@ -5,14 +5,12 @@
 <TITLE>DMRedundantCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMRedundantCreate"><H1>DMRedundantCreate</H1></A>
 Creates a DM object, used to manage data for dense globally coupled variables 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscdm.h"          
 #include "petscdmredundant.h" 
-#include "petscmat.h"         
 PetscErrorCode DMRedundantCreate(MPI_Comm comm,PetscInt rank,PetscInt N,DM *dm)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
@@ -33,11 +31,11 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-<A HREF="../DM/DMDestroy.html#DMDestroy">DMDestroy</A>(), <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(), <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(), <A HREF="../DM/DMCompositeAddDM.html#DMCompositeAddDM">DMCompositeAddDM</A>()
+<A HREF="../DM/DMDestroy.html#DMDestroy">DMDestroy</A>(), <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(), <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(), <A HREF="../DM/DMCompositeAddDM.html#DMCompositeAddDM">DMCompositeAddDM</A>(), <A HREF="../DM/DMREDUNDANT.html#DMREDUNDANT">DMREDUNDANT</A>, <A HREF="../DM/DMSetType.html#DMSetType">DMSetType</A>(), <A HREF="../DM/DMRedundantSetSize.html#DMRedundantSetSize">DMRedundantSetSize</A>(), <A HREF="../DM/DMRedundantGetSize.html#DMRedundantGetSize">DMRedundantGetSize</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/redundantdmredundant.c.html#DMRedundantCreate">src/dm/impls/redundantdmredundant.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/redundant/dmredundant.c.html#DMRedundantCreate">src/dm/impls/redundant/dmredundant.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

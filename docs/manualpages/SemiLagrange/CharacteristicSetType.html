@@ -5,13 +5,13 @@
 <TITLE>CharacteristicSetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="CharacteristicSetType"><H1>CharacteristicSetType</H1></A>
-Builds <A HREF="../SemiLagrange/Characteristic.html#Characteristic">Characteristic</A> for a particular solver.  
+Builds <A HREF="../SemiLagrange/Characteristic.html#Characteristic">Characteristic</A> for a particular solver. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petsccharacteristic.h" 
-PetscErrorCode CharacteristicSetType(Characteristic c, const CharacteristicType type)
+PetscErrorCode CharacteristicSetType(Characteristic c, CharacteristicType type)
 </PRE>
 Logically Collective on <A HREF="../SemiLagrange/Characteristic.html#Characteristic">Characteristic</A>
 <P>
@@ -23,7 +23,7 @@ Logically Collective on <A HREF="../SemiLagrange/Characteristic.html#Characteris
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-<DT><B>-characteristic_type &lt;method&gt; </B> -Sets the method; use -help for a list 
+<DT><B>-characteristic_type &lt;method&gt; </B> -Sets the method; use -help for a list
 of available methods
 <br>
 <P>

@@ -27,7 +27,6 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscvec.h"
 #include "petscis.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define islocaltoglobalmappingcreateis_ ISLOCALTOGLOBALMAPPINGCREATEIS
@@ -58,6 +57,11 @@ extern void PetscRmPointer(void*);
 #define islocaltoglobalmappingapplyis_ ISLOCALTOGLOBALMAPPINGAPPLYIS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define islocaltoglobalmappingapplyis_ islocaltoglobalmappingapplyis
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define islocaltoglobalmappingapply_ ISLOCALTOGLOBALMAPPINGAPPLY
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define islocaltoglobalmappingapply_ islocaltoglobalmappingapply
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define isglobaltolocalmappingapply_ ISGLOBALTOLOCALMAPPINGAPPLY
@@ -93,6 +97,10 @@ void PETSC_STDCALL  islocaltoglobalmappingapplyis_(ISLocalToGlobalMapping mappin
 *__ierr = ISLocalToGlobalMappingApplyIS(
 	(ISLocalToGlobalMapping)PetscToPointer((mapping) ),
 	(IS)PetscToPointer((is) ),newis);
+}
+void PETSC_STDCALL  islocaltoglobalmappingapply_(ISLocalToGlobalMapping mapping,PetscInt *N, PetscInt in[],PetscInt out[], int *__ierr ){
+*__ierr = ISLocalToGlobalMappingApply(
+	(ISLocalToGlobalMapping)PetscToPointer((mapping) ),*N,in,out);
 }
 void PETSC_STDCALL  isglobaltolocalmappingapply_(ISLocalToGlobalMapping mapping,ISGlobalToLocalMappingType *type,
                                   PetscInt *n, PetscInt idx[],PetscInt *nout,PetscInt idxout[], int *__ierr ){

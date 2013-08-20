@@ -12,9 +12,11 @@
 #endif
 #define TSType character*(80)
 #define TSAdaptType character*(80)
+#define TSEquationType PetscEnum
 #define TSConvergedReason PetscEnum
+#define TSExactFinalTimeOption PetscEnum
 #define TSSundialsType PetscEnum
-#define TSProblemType PetscEnum 
+#define TSProblemType PetscEnum
 #define TSSundialsGramSchmidtType PetscEnum
 #define TSSundialsLmmType PetscEnum
 
@@ -31,6 +33,7 @@
 #define TSSSP             'ssp'
 #define TSARKIMEX         'arkimex'
 #define TSROSW            'rosw'
+#define TSEIMEX           'eimex'
 
 #define TSSSPType character*(80)
 #define TSSSPRKS2  'rks2'
@@ -48,6 +51,11 @@
 #define TSADAPTCFL   'cfl'
 
 #define TSARKIMEXType character*(80)
+#define TSARKIMEX1BEE   '1bee'
+#define TSARKIMEXA2     'a2'
+#define TSARKIMEXL2     'l2'
+#define TSARKIMEXARS122 'ars122'
+#define TSARKIMEX2C     '2c'
 #define TSARKIMEX2D     '2d'
 #define TSARKIMEX2E     '2e'
 #define TSARKIMEXPRSSP2 'prssp2'
@@ -70,5 +78,14 @@
 #define TSROSWARK3        'ark3'
 #define TSROSWTHETA1      'theta1'
 #define TSROSWTHETA2      'theta2'
+#define TSROSWGRK4T       'grk4t'
+#define TSROSWSHAMP4      'shamp4'
+#define TSROSWVELDD4      'veldd4'
+#define TSROSW4L          '4l'
+
+#define TSEIMEXType character*(80)
+#define TSEIMEXS2     's2'
+#define TSEIMEXS3     's3'
+#define TSEIMEXS4     's4'
 
 #endif

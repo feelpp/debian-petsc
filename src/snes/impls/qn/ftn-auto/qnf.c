@@ -38,11 +38,6 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define snesqnsetscaletype_ snesqnsetscaletype
 #endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define snesqnsetcompositiontype_ SNESQNSETCOMPOSITIONTYPE
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define snesqnsetcompositiontype_ snesqnsetcompositiontype
-#endif
 
 
 /* Definitions of Fortran Wrapper routines */
@@ -57,11 +52,6 @@ void PETSC_STDCALL  snesqnsetrestarttype_(SNES snes,SNESQNRestartType *rtype, in
 void PETSC_STDCALL  snesqnsetscaletype_(SNES snes,SNESQNScaleType *stype, int *__ierr ){
 *__ierr = SNESQNSetScaleType(
 	(SNES)PetscToPointer((snes) ),*stype);
-}
-
-void PETSC_STDCALL  snesqnsetcompositiontype_(SNES snes,SNESQNCompositionType *ctype, int *__ierr ){
-*__ierr = SNESQNSetCompositionType(
-	(SNES)PetscToPointer((snes) ),*ctype);
 }
 #if defined(__cplusplus)
 }

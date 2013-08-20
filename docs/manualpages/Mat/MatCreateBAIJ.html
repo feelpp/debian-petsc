@@ -5,9 +5,9 @@
 <TITLE>MatCreateBAIJ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateBAIJ"><H1>MatCreateBAIJ</H1></A>
-Creates a sparse parallel matrix in block AIJ format (block compressed row).  For good matrix assembly performance the user should preallocate the matrix storage by setting the parameters  d_nz (or d_nnz) and o_nz (or o_nnz).  By setting these parameters accurately, performance can be increased by more than a factor of 50. 
+Creates a sparse parallel matrix in block AIJ format (block compressed row).  For good matrix assembly performance the user should preallocate the matrix storage by setting the parameters d_nz (or d_nnz) and o_nz (or o_nnz).  By setting these parameters accurately, performance can be increased by more than a factor of 50. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"  
@@ -22,23 +22,23 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bs   </B></TD><TD>- size of blockk
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m </B></TD><TD>- number of local rows (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have calculated if M is given)
-This value should be the same as the local size used in creating the 
+This value should be the same as the local size used in creating the
 y vector for the matrix-vector product y = Ax.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- number of local columns (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have calculated if N is given)
-This value should be the same as the local size used in creating the 
+This value should be the same as the local size used in creating the
 x vector for the matrix-vector product y = Ax.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>M </B></TD><TD>- number of global rows (or <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> to have calculated if m is given)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N </B></TD><TD>- number of global columns (or <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> to have calculated if n is given)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nz  </B></TD><TD>- number of nonzero blocks per block row in diagonal portion of local 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nz  </B></TD><TD>- number of nonzero blocks per block row in diagonal portion of local
 submatrix  (same for all local rows)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nnz </B></TD><TD>- array containing the number of nonzero blocks in the various block rows 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nnz </B></TD><TD>- array containing the number of nonzero blocks in the various block rows
 of the in diagonal portion of the local (possibly different for each block
-row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>.  If you plan to factor the matrix you must leave room for the diagonal entry 
+row) or NULL.  If you plan to factor the matrix you must leave room for the diagonal entry
 and set it even if it is zero.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>o_nz  </B></TD><TD>- number of nonzero blocks per block row in the off-diagonal portion of local
@@ -46,11 +46,11 @@ submatrix (same for all local rows).
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>o_nnz </B></TD><TD>- array containing the number of nonzero blocks in the various block rows of the
 off-diagonal portion of the local submatrix (possibly different for
-each block row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>.
+each block row) or NULL.
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>A </B> -the matrix 
+<DT><B>A </B> -the matrix
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
@@ -59,7 +59,7 @@ each block row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_use_hash_table &lt;fact&gt;</B></TD><TD>- 
 It is recommended that one use the <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../Mat/MatSetType.html#MatSetType">MatSetType</A>() and/or <A HREF="../Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(),
-MatXXXXSetPreallocation() paradgm instead of this routine directly. 
+MatXXXXSetPreallocation() paradgm instead of this routine directly.
 [MatXXXXSetPreallocation() is, for example, <A HREF="../Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>]
 </TD></TR></TABLE>
 <P>
@@ -82,7 +82,7 @@ local matrix (a rectangular submatrix).
 <P>
 The user can specify preallocated storage for the diagonal part of
 the local submatrix with either d_nz or d_nnz (not both).  Set
-d_nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and d_nnz=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to control dynamic
+d_nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and d_nnz=NULL for PETSc to control dynamic
 memory allocation.  Likewise, specify preallocated storage for the
 off-diagonal part of the local submatrix with o_nz or o_nnz (not both).
 <P>
@@ -91,11 +91,11 @@ the figure below we depict these three local rows and all columns (0-11).
 <P>
 <PRE>
            0 1 2 3 4 5 6 7 8 9 10 11
-          -------------------
-   row 3  |  o o o d d d o o o o o o
-   row 4  |  o o o d d d o o o o o o
-   row 5  |  o o o d d d o o o o o o
-          -------------------
+          --------------------------
+   row 3  |o o o d d d o o o o  o  o
+   row 4  |o o o d d d o o o o  o  o
+   row 5  |o o o d d d o o o o  o  o
+          --------------------------
 </PRE>
 
 <P>
@@ -125,5 +125,5 @@ matrices.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex30.cxx.html">src/ts/examples/tutorials/ex30.cxx.html</A><BR>
 </BODY></HTML>

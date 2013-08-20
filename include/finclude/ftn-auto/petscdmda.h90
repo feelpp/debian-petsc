@@ -1,41 +1,3 @@
-        subroutine DMDAComputeFunction(da, lf, vu, vfu, w ,ierr)
-       DM da ! DM
-       external lf ! void function pointer
-       Vec vu ! Vec
-       Vec vfu ! Vec
-       PetscVoid w ! void
-       integer ierr
-       end subroutine
-        subroutine DMDAComputeFunction1(da, vu, vfu, w ,ierr)
-       DM da ! DM
-       Vec vu ! Vec
-       Vec vfu ! Vec
-       PetscVoid w ! void
-       integer ierr
-       end subroutine
-        subroutine DMDAComputeFunctioni1(da, i, vu, vfu, w ,ierr)
-       DM da ! DM
-       PetscInt i ! PetscInt
-       Vec vu ! Vec
-       PetscScalar vfu ! PetscScalar
-       PetscVoid w ! void
-       integer ierr
-       end subroutine
-        subroutine DMDAComputeFunctionib1(da, i, vu, vfu, w ,ierr)
-       DM da ! DM
-       PetscInt i ! PetscInt
-       Vec vu ! Vec
-       PetscScalar vfu ! PetscScalar
-       PetscVoid w ! void
-       integer ierr
-       end subroutine
-        subroutine DMDAComputeJacobian1(da, vu, J, w ,ierr)
-       DM da ! DM
-       Vec vu ! Vec
-       Mat J ! Mat
-       PetscVoid w ! void
-       integer ierr
-       end subroutine
         subroutine DMDALocalToLocalBegin(da, g, mode, l ,ierr)
        DM da ! DM
        Vec g ! Vec
@@ -88,6 +50,13 @@
        DM da ! DM
        integer ierr
        end subroutine
+        subroutine DMDACreatePatchIS(da, lower, upper, is ,ierr)
+       DM da ! DM
+       MatStencil lower ! MatStencil
+       MatStencil upper ! MatStencil
+       IS is ! IS
+       integer ierr
+       end subroutine
         subroutine DMDAGetAO(da, ao ,ierr)
        DM da ! DM
        AO ao ! AO
@@ -122,6 +91,72 @@
         subroutine DMDASetDof(da, dof ,ierr)
        DM da ! DM
        PetscInt dof ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMDAGetOverlap(da, x, y, z ,ierr)
+       DM da ! DM
+       PetscInt x ! PetscInt
+       PetscInt y ! PetscInt
+       PetscInt z ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMDASetOverlap(da, x, y, z ,ierr)
+       DM da ! DM
+       PetscInt x ! PetscInt
+       PetscInt y ! PetscInt
+       PetscInt z ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMDAGetNumLocalSubDomains(da, Nsub ,ierr)
+       DM da ! DM
+       PetscInt Nsub ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMDASetNumLocalSubDomains(da, Nsub ,ierr)
+       DM da ! DM
+       PetscInt Nsub ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMDASetOffset(da, xo, yo, zo, Mo, No, Po ,ierr)
+       DM da ! DM
+       PetscInt xo ! PetscInt
+       PetscInt yo ! PetscInt
+       PetscInt zo ! PetscInt
+       PetscInt Mo ! PetscInt
+       PetscInt No ! PetscInt
+       PetscInt Po ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMDAGetOffset(da, xo, yo, zo, Mo, No, Po ,ierr)
+       DM da ! DM
+       PetscInt xo ! PetscInt
+       PetscInt yo ! PetscInt
+       PetscInt zo ! PetscInt
+       PetscInt Mo ! PetscInt
+       PetscInt No ! PetscInt
+       PetscInt Po ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMDAGetNonOverlappingRegion(da, xs, ys, zs, xm, ym,  &
+     &zm ,ierr)
+       DM da ! DM
+       PetscInt xs ! PetscInt
+       PetscInt ys ! PetscInt
+       PetscInt zs ! PetscInt
+       PetscInt xm ! PetscInt
+       PetscInt ym ! PetscInt
+       PetscInt zm ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine DMDASetNonOverlappingRegion(da, xs, ys, zs, xm, ym,  &
+     &zm ,ierr)
+       DM da ! DM
+       PetscInt xs ! PetscInt
+       PetscInt ys ! PetscInt
+       PetscInt zs ! PetscInt
+       PetscInt xm ! PetscInt
+       PetscInt ym ! PetscInt
+       PetscInt zm ! PetscInt
        integer ierr
        end subroutine
         subroutine DMDASetStencilType(da, stype ,ierr)
@@ -159,6 +194,12 @@
        PetscInt refine_z ! PetscInt
        integer ierr
        end subroutine
+        subroutine DMDAConvertToCell(dm, s, cell ,ierr)
+       DM dm ! DM
+       MatStencil s ! MatStencil
+       PetscInt cell ! PetscInt
+       integer ierr
+       end subroutine
         subroutine DMCreateInterpolationScale(dac, daf, mat, scale ,ierr&
      &)
        DM dac ! DM
@@ -171,36 +212,6 @@
        DM da ! DM
        PetscInt dfill ! PetscInt
        PetscInt ofill ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine MatSetDM(mat, da ,ierr)
-       Mat mat ! Mat
-       DM da ! DM
-       integer ierr
-       end subroutine
-        subroutine DMDASetCoordinates(da, c ,ierr)
-       DM da ! DM
-       Vec c ! Vec
-       integer ierr
-       end subroutine
-        subroutine DMDASetGhostedCoordinates(da, c ,ierr)
-       DM da ! DM
-       Vec c ! Vec
-       integer ierr
-       end subroutine
-        subroutine DMDAGetCoordinates(da, c ,ierr)
-       DM da ! DM
-       Vec c ! Vec
-       integer ierr
-       end subroutine
-        subroutine DMDAGetCoordinateDA(da, cda ,ierr)
-       DM da ! DM
-       DM cda ! DM
-       integer ierr
-       end subroutine
-        subroutine DMDAGetGhostedCoordinates(da, c ,ierr)
-       DM da ! DM
-       Vec c ! Vec
        integer ierr
        end subroutine
         subroutine DMDAGetCorners(da, x, y, z, m, n, p ,ierr)
@@ -225,7 +236,7 @@
        PetscReal gmax (*) ! PetscReal
        integer ierr
        end subroutine
-        subroutine DMDAGetReducedDA(da, nfields, nda ,ierr)
+        subroutine DMDAGetReducedDMDA(da, nfields, nda ,ierr)
        DM da ! DM
        PetscInt nfields ! PetscInt
        DM nda ! DM

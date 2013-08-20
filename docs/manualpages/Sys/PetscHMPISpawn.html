@@ -5,9 +5,9 @@
 <TITLE>PetscHMPISpawn</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscHMPISpawn"><H1>PetscHMPISpawn</H1></A>
-Initialize additional processes to be used as "worker" processes. This is not generally  called by users. One should use -hmpi_spawn_size &lt;n&gt; to indicate that you wish to have n-1 new MPI  processes spawned for each current process. 
+Initialize additional processes to be used as "worker" processes. This is not generally called by users. One should use -hmpi_spawn_size &lt;n&gt; to indicate that you wish to have n-1 new MPI processes spawned for each current process. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
@@ -69,10 +69,10 @@ Notes: This is only supported on systems with an MPI 2 implementation that inclu
   computer (hardware) node (where the computer node has p cpus), the user's code will use threads to fully
 </pre>
 <pre>
-  utilize all the CPUs on the node. The PETSc code will have p processes to fully use the compute node for 
+  utilize all the CPUs on the node. The PETSc code will have p processes to fully use the compute node for
 </pre>
 <pre>
-  PETSc calculations. The user THREADS and PETSc PROCESSES will NEVER run at the same time so the p CPUs 
+  PETSc calculations. The user THREADS and PETSc PROCESSES will NEVER run at the same time so the p CPUs
 </pre>
 <pre>
   are always working on p task, never more than p.
@@ -94,7 +94,7 @@ In both cases the user's code is running ONLY on <A HREF="../Sys/PETSC_COMM_WORL
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), <A HREF="../Sys/PetscInitializeFortran.html#PetscInitializeFortran">PetscInitializeFortran</A>(), <A HREF="../Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A HREF="../Sys/PetscHMPIFinalize.html#PetscHMPIFinalize">PetscHMPIFinalize</A>(), <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(), <A HREF="../Sys/PetscHMPIMerge.html#PetscHMPIMerge">PetscHMPIMerge</A>(), <A HREF="../Sys/PetscHMPIRun.html#PetscHMPIRun">PetscHMPIRun</A>()
+ <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(), PetscInitializeFortran(), <A HREF="../Sys/PetscGetArgs.html#PetscGetArgs">PetscGetArgs</A>(), <A HREF="../Sys/PetscHMPIFinalize.html#PetscHMPIFinalize">PetscHMPIFinalize</A>(), <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(), <A HREF="../Sys/PetscHMPIMerge.html#PetscHMPIMerge">PetscHMPIMerge</A>(), <A HREF="../Sys/PetscHMPIRun.html#PetscHMPIRun">PetscHMPIRun</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer

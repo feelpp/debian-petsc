@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = tsadaptf.c
-OBJSC    = tsadaptf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -1,6 +1,6 @@
 <html>
 <title>KSP</title><body bgcolor="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <h2>KSP</h2>
 <menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
@@ -35,7 +35,7 @@ Solves 3D Laplacian using multigrid.<BR></menu>
 <BR>
    Description: Solve Ax=b.  A comes from an anisotropic 2D thermal problem with Q1 FEM on domain (-1,1)^2.<BR>
        Material conductivity given by tensor:<BR>
-           <BR>
+<BR>
        D = | 1 0       |<BR>
            | 0 epsilon |<BR>
 <BR>
@@ -51,6 +51,7 @@ Solves 3D Laplacian using multigrid.<BR></menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex58.c.html"><CONCEPT>solving a system of linear equations</CONCEPT></A>
 <menu>
 Solves a tridiagonal linear system with KSP.<BR></menu>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html"><CONCEPT>basic parallel example;</CONCEPT></A>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html"><CONCEPT>basic parallel example;</CONCEPT></A>
 <menu>
 Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
@@ -88,6 +89,7 @@ Solves a sequence of linear systems with different right-hand-side vectors.<BR>I
   -m &lt;mesh_x&gt;       : number of mesh points in x-direction<BR>
   -n &lt;mesh_n&gt;       : number of mesh points in y-direction<BR>
 </menu>
+<LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html"><CONCEPT>Laplacian, 2d</CONCEPT></A>
 <menu>
 Solves a linear system in parallel with KSP.<BR>Input parameters include:<BR>
@@ -120,7 +122,6 @@ Input parameters include:<BR>
    use of a user-provided preconditioner.  Input parameters include:<BR>
       -user_defined_pc : Activate a user-defined preconditioner<BR>
 <BR>
-  Program usage: mpiexec ex15f [-help] [all PETSc options]<BR>
 <BR>
 </menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex21f.F.html"><CONCEPT>basic parallel example</CONCEPT></A>
@@ -129,7 +130,6 @@ Input parameters include:<BR>
    Solves a linear system in parallel with KSP.  Also indicates<BR>
    use of a user-provided preconditioner.  Input parameters include:<BR>
 <BR>
-  Program usage: mpiexec ex21f [-help] [all PETSc options]<BR>
 <BR>
 </menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex2f.F.html"><CONCEPT>basic parallel example</CONCEPT></A>
@@ -138,13 +138,11 @@ Input parameters include:<BR>
   Description: Solves a linear system in parallel with KSP (Fortran code).<BR>
                Also shows how to set a user-defined monitoring routine.<BR>
 <BR>
-  Program usage: mpiexec -n &lt;procs&gt; ex2f [-help] [all PETSc options]<BR>
 <BR>
 </menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html"><CONCEPT>basic parallel example</CONCEPT></A>
 <menu>
-Solves a linear system in parallel with KSP.  The matrix<BR>uses simple bilinear elements on the unit square.  To test the parallel<BR>
-matrix assembly, the matrix is intentionally laid out across processors<BR>
+Bilinear elements on the unit square for Laplacian.  To test the parallel<BR>matrix assembly, the matrix is intentionally laid out across processors<BR>
 differently from the way it is assembled.  Input arguments are:<BR>
   -m &lt;size&gt; : problem size<BR>
 </menu>
@@ -257,7 +255,6 @@ Solves 3D Laplacian using multigrid.<BR></menu>
   Description: Solves a linear system in parallel with KSP (Fortran code).<BR>
                Also shows how to set a user-defined monitoring routine.<BR>
 <BR>
-  Program usage: mpiexec -n &lt;procs&gt; ex2f [-help] [all PETSc options]<BR>
 <BR>
 </menu>
 <LI><A HREF="../../../src/ksp/ksp/examples/tutorials/ex6f.F.html"><CONCEPT>different matrices for linear system and preconditioner;</CONCEPT></A>

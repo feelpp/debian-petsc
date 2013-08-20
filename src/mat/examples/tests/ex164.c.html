@@ -4,12 +4,12 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex164.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:52:23+00:00">
+<meta name="date" content="2013-07-02T14:44:24+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
-<pre width="80"><a name="line1">  1: </a>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Mat/MatConvert.html#MatConvert">MatConvert</A>() from SeqDense to SeqAIJ \n\n"</font>;
 
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
@@ -19,10 +19,10 @@
 <a name="line10"> 10: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            A,C;
 <a name="line12"> 12: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n = 10;
 
-<a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
-<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateSeqDense.html#MatCreateSeqDense">MatCreateSeqDense</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,n,n,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;A);
+<a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
+<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateSeqDense.html#MatCreateSeqDense">MatCreateSeqDense</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,n,n,NULL,&amp;A);
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Mat/MatConvert.html#MatConvert">MatConvert</A>(A,<A href="../../../../docs/manualpages/Mat/MATSEQDENSE.html#MATSEQDENSE">MATSEQDENSE</A>,MAT_INITIAL_MATRIX,&amp;C);
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(C,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(C,NULL);
 <a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
 <a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;C);
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();

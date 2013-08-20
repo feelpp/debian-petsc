@@ -4,13 +4,13 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tests/ex37.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:58:19+00:00">
+<meta name="date" content="2013-07-02T14:46:21+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
-<pre width="80"><a name="line1">  1: </a>
-<a name="line2">  2: </a>static char help[] = <font color="#666666">"<A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>() with a DA1d vector and draw viewer.\n\n"</font>;
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80">
+<a name="line2">  2: </a>static char help[] = <font color="#666666">"<A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>() with a DMDA1d vector and draw viewer.\n\n"</font>;
 
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
 <a name="line5">  5: </a><font color="#A020F0">#include &lt;petscao.h&gt;</font>
@@ -31,11 +31,11 @@
 
 <a name="line24"> 24: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
 
-<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,10,3,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;da);
+<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,10,3,1,NULL,&amp;da);
 <a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da,&amp;global);
 <a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/PF/PFCreate.html#PFCreate">PFCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,3,&amp;pf);
-<a name="line29"> 29: </a>  <A href="../../../../docs/manualpages/PF/PFSet.html#PFSet">PFSet</A>(pf,apply,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/PF/PFApplyVec.html#PFApplyVec">PFApplyVec</A>(pf,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,global);
+<a name="line29"> 29: </a>  <A href="../../../../docs/manualpages/PF/PFSet.html#PFSet">PFSet</A>(pf,apply,NULL,NULL,NULL,NULL);
+<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/PF/PFApplyVec.html#PFApplyVec">PFApplyVec</A>(pf,NULL,global);
 <a name="line31"> 31: </a>  <A href="../../../../docs/manualpages/PF/PFDestroy.html#PFDestroy">PFDestroy</A>(&amp;pf);
 <a name="line32"> 32: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(global,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_DRAW_WORLD.html#PETSC_VIEWER_DRAW_WORLD">PETSC_VIEWER_DRAW_WORLD</A>);
 <a name="line33"> 33: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;global);

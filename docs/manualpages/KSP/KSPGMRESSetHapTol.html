@@ -5,7 +5,7 @@
 <TITLE>KSPGMRESSetHapTol</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPGMRESSetHapTol"><H1>KSPGMRESSetHapTol</H1></A>
 Sets tolerance for determining happy breakdown in GMRES, FGMRES and LGMRES. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -25,7 +25,7 @@ Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
 <DT><B>-ksp_gmres_haptol &lt;positive real value&gt;</B> -
 Note: Happy breakdown is the rare case in GMRES where an 'exact' solution is obtained after
-a certain number of iterations. If you attempt more iterations after this point unstable 
+a certain number of iterations. If you attempt more iterations after this point unstable
 things can happen hence very occasionally you may need to set this value to detect this condition
 <br>
 <P>

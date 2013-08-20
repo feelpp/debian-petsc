@@ -5,13 +5,13 @@
 <TITLE>KSPSolve</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPSolve"><H1>KSPSolve</H1></A>
 Solves linear system. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPSolve(KSP ksp,Vec b,Vec x) 
+PetscErrorCode  KSPSolve(KSP ksp,Vec b,Vec x)
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -34,8 +34,18 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_plot_eigenvalues_explicitly </B></TD><TD>- plot the explicitly computing eigenvalues
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_view_binary </B></TD><TD>- save matrix and right hand side that define linear system to the default binary viewer (can be
-read later with src/ksp/examples/tutorials/ex10.c for testing solvers)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_view_mat binary </B></TD><TD>- save matrix to the default binary viewer
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_view_pmat binary </B></TD><TD>- save matrix used to build preconditioner to the default binary viewer
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_view_rhs binary </B></TD><TD>- save right hand side vector to the default binary viewer
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_view_solution binary </B></TD><TD>- save computed solution vector to the default binary viewer
+(can be read later with src/ksp/examples/tutorials/ex10.c for testing solvers)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_view_mat_explicit </B></TD><TD>- for matrix-free operators, computes the matrix entries and views them
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_view_preconditioned_operator_explicit </B></TD><TD>- computes the product of the preconditioner and matrix as an explicit matrix and views it
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_converged_reason </B></TD><TD>- print reason for converged or diverged, also prints number of iterations
 </TD></TR>

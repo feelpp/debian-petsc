@@ -5,7 +5,7 @@
 <TITLE>PetscOptionsMonitorSet</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscOptionsMonitorSet"><H1>PetscOptionsMonitorSet</H1></A>
 Sets an ADDITIONAL function to be called at every method that modified the PETSc options database. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -17,13 +17,13 @@ Not collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>monitor </B></TD><TD>- pointer to function (if this is <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, it turns off monitoring
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>monitor </B></TD><TD>- pointer to function (if this is NULL, it turns off monitoring
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mctx    </B></TD><TD>- [optional] context for private data for the
-monitor routine (use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if no context is desired)
+monitor routine (use NULL if no context is desired)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>monitordestroy </B></TD><TD>- [optional] routine that frees monitor context
-(may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+(may be NULL)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Calling Sequence of monitor</FONT></H3>
@@ -44,7 +44,7 @@ monitor routine (use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> 
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-options_monitor    </B></TD><TD>- sets <A HREF="../Sys/PetscOptionsMonitorDefault.html#PetscOptionsMonitorDefault">PetscOptionsMonitorDefault</A>()
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-options_monitor_cancel </B></TD><TD>- cancels all monitors that have
-been hardwired into a code by 
+been hardwired into a code by
 calls to <A HREF="../Sys/PetscOptionsMonitorSet.html#PetscOptionsMonitorSet">PetscOptionsMonitorSet</A>(), but
 does not cancel those set via
 the options database.

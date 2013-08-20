@@ -5,13 +5,13 @@
 <TITLE>MatGetLocalSize</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetLocalSize"><H1>MatGetLocalSize</H1></A>
 Returns the number of rows and columns in a matrix stored locally.  This information may be implementation dependent, so use with care. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatGetLocalSize(Mat mat,PetscInt *m,PetscInt* n)
+PetscErrorCode  MatGetLocalSize(Mat mat,PetscInt *m,PetscInt *n)
 </PRE>
 Not Collective
 <P>
@@ -26,7 +26,7 @@ Not Collective
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of local columns
 </TD></TR></TABLE>
 <P>
-Note: both output parameters can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> on input.
+Note: both output parameters can be NULL on input.
 <P>
 
 <P>
@@ -42,12 +42,12 @@ Note: both output parameters can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
 <A HREF="../../../src/mat/examples/tutorials/ex4.c.html">src/mat/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex27.c.html">src/ksp/ksp/examples/tutorials/ex27.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex54.c.html">src/snes/examples/tutorials/ex54.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex55.c.html">src/snes/examples/tutorials/ex55.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex60.c.html">src/snes/examples/tutorials/ex60.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex61.c.html">src/snes/examples/tutorials/ex61.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex63.c.html">src/snes/examples/tutorials/ex63.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex633D_DB.c.html">src/snes/examples/tutorials/ex633D_DB.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex64.c.html">src/snes/examples/tutorials/ex64.c.html</A><BR>
 </BODY></HTML>

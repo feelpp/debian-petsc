@@ -5,7 +5,7 @@
 <TITLE>TSGetKSP</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSGetKSP"><H1>TSGetKSP</H1></A>
 Returns the <A HREF="../KSP/KSP.html#KSP">KSP</A> (linear solver) associated with a <A HREF="../TS/TS.html#TS">TS</A> (timestepper) context. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -29,7 +29,7 @@ options, etc.  Likewise, the user can then extract and manipulate the
 <A HREF="../KSP/KSP.html#KSP">KSP</A> and <A HREF="../PC/PC.html#PC">PC</A> contexts as well.
 <P>
 <A HREF="../TS/TSGetKSP.html#TSGetKSP">TSGetKSP</A>() does not work for integrators that do not use <A HREF="../KSP/KSP.html#KSP">KSP</A>;
-in this case <A HREF="../TS/TSGetKSP.html#TSGetKSP">TSGetKSP</A>() returns <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> in ksp.
+in this case <A HREF="../TS/TSGetKSP.html#TSGetKSP">TSGetKSP</A>() returns NULL in ksp.
 <P>
 
 <P>

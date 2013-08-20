@@ -5,11 +5,12 @@
 <TITLE>MatPreallocateSymmetricSetLocal</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatPreallocateSymmetricSetLocal"><H1>MatPreallocateSymmetricSetLocal</H1></A>
 Indicates the locations (rows and columns) in the matrix where nonzeros will be inserted using a local number of the rows and columns 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscmat.h"
 PetscErrorCode MatPreallocateSymmetricSetLocal(ISLocalToGlobalMappping map,PetscInt nrows, PetscInt *rows,PetscInt ncols, PetscInt *cols,PetscInt *dnz, PetscInt *onz)
 </PRE>
 Not Collective
@@ -20,7 +21,7 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nrows </B></TD><TD>- the number of rows indicated
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rows </B></TD><TD>- the indices of the rows 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rows </B></TD><TD>- the indices of the rows
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ncols </B></TD><TD>- the number of columns in the matrix
 </TD></TR>

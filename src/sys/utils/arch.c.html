@@ -4,17 +4,17 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/utils/arch.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:35:58+00:00">
+<meta name="date" content="2013-07-02T14:39:06+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;         </font><font color="#B22222">/*I  "petscsys.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line6">  6: </a><font color="#B22222">/*@C</font>
 <a name="line7">  7: </a><font color="#B22222">     <A href="../../../docs/manualpages/Sys/PetscGetArchType.html#PetscGetArchType">PetscGetArchType</A> - Returns a standardized architecture type for the machine</font>
-<a name="line8">  8: </a><font color="#B22222">     that is executing this routine. </font>
+<a name="line8">  8: </a><font color="#B22222">     that is executing this routine.</font>
 
 <a name="line10"> 10: </a><font color="#B22222">     Not Collective</font>
 
@@ -22,7 +22,7 @@
 <a name="line13"> 13: </a><font color="#B22222">.    slen - length of string buffer</font>
 
 <a name="line15"> 15: </a><font color="#B22222">     Output Parameter:</font>
-<a name="line16"> 16: </a><font color="#B22222">.    str - string area to contain architecture name, should be at least </font>
+<a name="line16"> 16: </a><font color="#B22222">.    str - string area to contain architecture name, should be at least</font>
 <a name="line17"> 17: </a><font color="#B22222">           10 characters long. Name is truncated if string is not long enough.</font>
 
 <a name="line19"> 19: </a><font color="#B22222">     Level: developer</font>
@@ -43,12 +43,13 @@
 
 <a name="line37"> 37: </a><font color="#A020F0">#if defined(PETSC_ARCH)</font>
 <a name="line38"> 38: </a>  <A href="../../../docs/manualpages/Sys/PetscStrncpy.html#PetscStrncpy">PetscStrncpy</A>(str,PETSC_ARCH,slen-1);
-<a name="line39"> 39: </a>  str[slen-1] = 0;
-<a name="line40"> 40: </a><font color="#A020F0">#else</font>
-<a name="line41"> 41: </a><font color="#A020F0">#error </font><font color="#666666">"$PETSC_ARCH/include/petscconf.h is missing PETSC_ARCH"</font><font color="#A020F0"></font>
-<a name="line42"> 42: </a><font color="#A020F0">#endif</font>
-<a name="line43"> 43: </a>  <font color="#4169E1">return</font>(0);
-<a name="line44"> 44: </a>}
+
+<a name="line40"> 40: </a>  str[slen-1] = 0;
+<a name="line41"> 41: </a><font color="#A020F0">#else</font>
+<a name="line42"> 42: </a><font color="#A020F0">#error </font><font color="#666666">"$PETSC_ARCH/include/petscconf.h is missing PETSC_ARCH"</font><font color="#A020F0"></font>
+<a name="line43"> 43: </a><font color="#A020F0">#endif</font>
+<a name="line44"> 44: </a>  <font color="#4169E1">return</font>(0);
+<a name="line45"> 45: </a>}
 
 </pre>
 </body>

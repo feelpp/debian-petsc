@@ -5,7 +5,7 @@
 <TITLE>TSConvergedReason</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSConvergedReason"><H1>TSConvergedReason</H1></A>
 reason a <A HREF="../TS/TS.html#TS">TS</A> method has converged or not 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -14,6 +14,7 @@ typedef enum {
   TS_CONVERGED_ITERATING      = 0,
   TS_CONVERGED_TIME           = 1,
   TS_CONVERGED_ITS            = 2,
+  TS_CONVERGED_USER           = 3,
   TS_DIVERGED_NONLINEAR_SOLVE = -1,
   TS_DIVERGED_STEP_REJECTED   = -2
 } TSConvergedReason;

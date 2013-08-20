@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex11.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:50:59+00:00">
+<meta name="date" content="2013-07-02T14:43:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests the use of <A href="../../../../docs/manualpages/Mat/MatZeroRows.html#MatZeroRows">MatZeroRows</A>() for uniprocessor matrices.\n\n"</font>;
 
@@ -22,7 +22,7 @@
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>             isrow;
 <a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      keepnonzeropattern;
 
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 
 <a name="line19"> 19: </a>  <font color="#B22222">/* create the matrix for the five point stencil, YET AGAIN*/</font>
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;C);
@@ -44,7 +44,7 @@
 
 <a name="line37"> 37: </a>  <A href="../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,(m*n)/2,0,2,&amp;isrow);
 
-<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-keep_nonzero_pattern"</font>,&amp;keepnonzeropattern);
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL,<font color="#666666">"-keep_nonzero_pattern"</font>,&amp;keepnonzeropattern);
 <a name="line40"> 40: </a>  <font color="#4169E1">if</font> (keepnonzeropattern) {
 <a name="line41"> 41: </a>    <A href="../../../../docs/manualpages/Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(C,MAT_KEEP_NONZERO_PATTERN,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
 <a name="line42"> 42: </a>  }

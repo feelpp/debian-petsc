@@ -5,7 +5,7 @@
 <TITLE>DMDAGetNeighbors</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGetNeighbors"><H1>DMDAGetNeighbors</H1></A>
 Gets an array containing the MPI rank of all the current processes neighbors. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -16,7 +16,7 @@ PetscErrorCode  DMDAGetNeighbors(DM da,const PetscMPIInt *ranks[])
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the DMDA object
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> object
 </TD></TR>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
@@ -26,7 +26,7 @@ this process itself is in the list
 <P>
 Notes: In 2d the array is of length 9, in 3d of length 27
 Not supported in 1d
-Do not free the array, it is freed when the DMDA is destroyed.
+Do not free the array, it is freed when the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> is destroyed.
 <P>
 Fortran Notes: In fortran you must pass in an array of the appropriate length.
 <P>

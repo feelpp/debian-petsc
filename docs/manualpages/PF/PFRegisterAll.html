@@ -5,19 +5,15 @@
 <TITLE>PFRegisterAll</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PFRegisterAll"><H1>PFRegisterAll</H1></A>
 Registers all of the preconditioners in the <A HREF="../PF/PF.html#PF">PF</A> package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpf.h"   
-PetscErrorCode  PFRegisterAll(const char path[])
+PetscErrorCode  PFRegisterAll(void)
 </PRE>
 Not Collective
-<P>
-<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>path </B> -the library where the routines are to be found (optional)
-<br>
 <P>
 
 <P>
@@ -26,7 +22,7 @@ Not Collective
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../PF/PFRegisterDynamic.html#PFRegisterDynamic">PFRegisterDynamic</A>(), PFRegisterDestroy()
+ <A HREF="../PF/PFRegister.html#PFRegister">PFRegister</A>(), PFRegisterDestroy()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/pf/interface/pfall.c.html#PFRegisterAll">src/vec/pf/interface/pfall.c</A>
 <BR><A HREF="./index.html">Index of all PF routines</A>

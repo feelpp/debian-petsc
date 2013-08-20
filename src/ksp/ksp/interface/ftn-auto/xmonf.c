@@ -29,14 +29,9 @@ extern void PetscRmPointer(void*);
 
 #include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define kspmonitorlgdestroy_ KSPMONITORLGDESTROY
+#define kspmonitorlgresidualnormdestroy_ KSPMONITORLGRESIDUALNORMDESTROY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define kspmonitorlgdestroy_ kspmonitorlgdestroy
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define kspmonitorlgrangedestroy_ KSPMONITORLGRANGEDESTROY
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define kspmonitorlgrangedestroy_ kspmonitorlgrangedestroy
+#define kspmonitorlgresidualnormdestroy_ kspmonitorlgresidualnormdestroy
 #endif
 
 
@@ -44,11 +39,8 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  kspmonitorlgdestroy_(PetscDrawLG *drawlg, int *__ierr ){
-*__ierr = KSPMonitorLGDestroy(drawlg);
-}
-void PETSC_STDCALL  kspmonitorlgrangedestroy_(PetscDrawLG *drawlg, int *__ierr ){
-*__ierr = KSPMonitorLGRangeDestroy(drawlg);
+void PETSC_STDCALL  kspmonitorlgresidualnormdestroy_(PetscDrawLG *drawlg, int *__ierr ){
+*__ierr = KSPMonitorLGResidualNormDestroy(drawlg);
 }
 #if defined(__cplusplus)
 }

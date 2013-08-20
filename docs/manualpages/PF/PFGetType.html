@@ -5,13 +5,13 @@
 <TITLE>PFGetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PFGetType"><H1>PFGetType</H1></A>
 Gets the <A HREF="../PF/PF.html#PF">PF</A> method type and name (as a string) from the <A HREF="../PF/PF.html#PF">PF</A> context. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpf.h" 
-PetscErrorCode  PFGetType(PF pf,const PFType *type)
+PetscErrorCode  PFGetType(PF pf,PFType *type)
 </PRE>
 Not Collective
 <P>
@@ -20,7 +20,7 @@ Not Collective
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>type </B> -name of function 
+<DT><B>type </B> -name of function
 <br>
 <P>
 

@@ -29,11 +29,6 @@ extern void PetscRmPointer(void*);
 
 #include "petscts.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define tspseudocomputetimestep_ TSPSEUDOCOMPUTETIMESTEP
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define tspseudocomputetimestep_ tspseudocomputetimestep
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tspseudoverifytimestep_ TSPSEUDOVERIFYTIMESTEP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tspseudoverifytimestep_ tspseudoverifytimestep
@@ -59,10 +54,6 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  tspseudocomputetimestep_(TS ts,PetscReal *dt, int *__ierr ){
-*__ierr = TSPseudoComputeTimeStep(
-	(TS)PetscToPointer((ts) ),dt);
-}
 void PETSC_STDCALL  tspseudoverifytimestep_(TS ts,Vec update,PetscReal *dt,PetscBool  *flag, int *__ierr ){
 *__ierr = TSPseudoVerifyTimeStep(
 	(TS)PetscToPointer((ts) ),

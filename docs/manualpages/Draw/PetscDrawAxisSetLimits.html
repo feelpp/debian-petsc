@@ -5,11 +5,12 @@
 <TITLE>PetscDrawAxisSetLimits</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawAxisSetLimits"><H1>PetscDrawAxisSetLimits</H1></A>
 Sets the limits (in user coords) of the axis 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscdraw.h"  
 PetscErrorCode  PetscDrawAxisSetLimits(PetscDrawAxis axis,PetscReal xmin,PetscReal xmax,PetscReal ymin,PetscReal ymax)
 </PRE>
 Not Collective (ignored on all processors except processor 0 of <A HREF="../Draw/PetscDrawAxis.html#PetscDrawAxis">PetscDrawAxis</A>)
@@ -23,6 +24,10 @@ Not Collective (ignored on all processors except processor 0 of <A HREF="../Draw
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ymin,ymax </B></TD><TD>- limits in y
 </TD></TR></TABLE>
 <P>
+<H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
+<DT><B>-drawaxis_hold </B> -hold the initial set of axis limits for future plotting
+<br>
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
@@ -30,7 +35,7 @@ Not Collective (ignored on all processors except processor 0 of <A HREF="../Draw
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/axis.c.html#PetscDrawAxisSetLimits">src/sys/draw/utils/axis.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/utils/axis.c.html#PetscDrawAxisSetLimits">src/sys/classes/draw/utils/axis.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

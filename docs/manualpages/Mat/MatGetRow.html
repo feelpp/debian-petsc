@@ -5,7 +5,7 @@
 <TITLE>MatGetRow</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetRow"><H1>MatGetRow</H1></A>
 Gets a row of a matrix.  You MUST call <A HREF="../Mat/MatRestoreRow.html#MatRestoreRow">MatRestoreRow</A>() for each row that you get to ensure that your application does not bleed memory. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -39,7 +39,7 @@ high-level matrix routines that few users will need it.
 <A HREF="../Mat/MatGetRow.html#MatGetRow">MatGetRow</A>() always returns 0-based column indices, regardless of
 whether the internal representation is 0-based (default) or 1-based.
 <P>
-For better efficiency, set cols and/or vals to <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if you do
+For better efficiency, set cols and/or vals to NULL if you do
 not wish to extract these quantities.
 <P>
 The user can only examine the values extracted with <A HREF="../Mat/MatGetRow.html#MatGetRow">MatGetRow</A>();
@@ -84,5 +84,4 @@ In some cases, this may corrupt the matrix.
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
 </BODY></HTML>

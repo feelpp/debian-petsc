@@ -4,17 +4,17 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/ij.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:43:36+00:00">
+<meta name="date" content="2013-07-02T14:41:32+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/seq/aij.h&gt;</font>
 
 <a name="line6">  6: </a><font color="#B22222">/*</font>
 <a name="line7">  7: </a><font color="#B22222">  MatToSymmetricIJ_SeqAIJ - Convert a (generally nonsymmetric) sparse AIJ matrix</font>
-<a name="line8">  8: </a><font color="#B22222">           to IJ format (ignore the "A" part) Allocates the space needed. Uses only </font>
+<a name="line8">  8: </a><font color="#B22222">           to IJ format (ignore the "A" part) Allocates the space needed. Uses only</font>
 <a name="line9">  9: </a><font color="#B22222">           the lower triangular part of the matrix.</font>
 
 <a name="line11"> 11: </a><font color="#B22222">    Description:</font>
@@ -34,8 +34,8 @@
 
 <a name="line26"> 26: </a><font color="#B22222">    Notes:</font>
 <a name="line27"> 27: </a><font color="#B22222">    Both ia and ja may be freed with <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>();</font>
-<a name="line28"> 28: </a><font color="#B22222">    This routine is provided for ordering routines that require a </font>
-<a name="line29"> 29: </a><font color="#B22222">    symmetric structure.  It is required since those routines call </font>
+<a name="line28"> 28: </a><font color="#B22222">    This routine is provided for ordering routines that require a</font>
+<a name="line29"> 29: </a><font color="#B22222">    symmetric structure.  It is required since those routines call</font>
 <a name="line30"> 30: </a><font color="#B22222">    SparsePak routines that expect a symmetric  matrix.</font>
 <a name="line31"> 31: </a><font color="#B22222">*/</font>
 <a name="line32"> 32: </a><strong><font color="#4169E1"><a name="MatToSymmetricIJ_SeqAIJ"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatToSymmetricIJ_SeqAIJ(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *aj,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> shiftin,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> shiftout,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **iia,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> **jja)</font></strong>
@@ -54,17 +54,17 @@
 <a name="line47"> 47: </a>    nz = ai[row+1] - ai[row];
 <a name="line48"> 48: </a>    j  = aj + ai[row] + shiftin;
 <a name="line49"> 49: </a>    <font color="#4169E1">while</font> (nz--) {
-<a name="line50"> 50: </a>       col = *j++ + shiftin;
-<a name="line51"> 51: </a>       <font color="#4169E1">if</font> (col &gt; row) { <font color="#4169E1">break</font>;}
-<a name="line52"> 52: </a>       <font color="#4169E1">if</font> (col != row) ia[row+1]++;
-<a name="line53"> 53: </a>       ia[col+1]++;
+<a name="line50"> 50: </a>      col = *j++ + shiftin;
+<a name="line51"> 51: </a>      <font color="#4169E1">if</font> (col &gt; row) <font color="#4169E1">break</font>;
+<a name="line52"> 52: </a>      <font color="#4169E1">if</font> (col != row) ia[row+1]++;
+<a name="line53"> 53: </a>      ia[col+1]++;
 <a name="line54"> 54: </a>    }
 <a name="line55"> 55: </a>  }
 
 <a name="line57"> 57: </a>  <font color="#B22222">/* shiftin ia[i] to point to next row */</font>
 <a name="line58"> 58: </a>  <font color="#4169E1">for</font> (i=1; i&lt;m+1; i++) {
 <a name="line59"> 59: </a>    row       = ia[i-1];
-<a name="line60"> 60: </a>    ia[i]     += row;
+<a name="line60"> 60: </a>    ia[i]    += row;
 <a name="line61"> 61: </a>    work[i-1] = row - shiftout;
 <a name="line62"> 62: </a>  }
 
@@ -79,8 +79,8 @@
 <a name="line72"> 72: </a>    j  = aj + ai[row] + shiftin;
 <a name="line73"> 73: </a>    <font color="#4169E1">while</font> (nz--) {
 <a name="line74"> 74: </a>      col = *j++ + shiftin;
-<a name="line75"> 75: </a>      <font color="#4169E1">if</font> (col &gt; row) { <font color="#4169E1">break</font>;}
-<a name="line76"> 76: </a>      <font color="#4169E1">if</font> (col != row) {ja[work[col]++] = row + shiftout; }
+<a name="line75"> 75: </a>      <font color="#4169E1">if</font> (col &gt; row) <font color="#4169E1">break</font>;
+<a name="line76"> 76: </a>      <font color="#4169E1">if</font> (col != row) ja[work[col]++] = row + shiftout;
 <a name="line77"> 77: </a>      ja[work[row]++] = col + shiftout;
 <a name="line78"> 78: </a>    }
 <a name="line79"> 79: </a>  }

@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex1f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:11:59+00:00">
+<meta name="date" content="2013-07-02T14:50:35+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Description: Uses the Newton method to solve a two-variable system.
@@ -164,7 +164,7 @@
 <a name="line153">153: </a>      call <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(PETSC_NULL_CHARACTER,'-setls',setls,ierr)
 
 <a name="line155">155: </a>      <font color="#4169E1">if</font> (setls) then
-<a name="line156">156: </a>        call <A href="../../../../docs/manualpages/SNES/SNESGetSNESLineSearch.html#SNESGetSNESLineSearch">SNESGetSNESLineSearch</A>(snes, linesearch, ierr)
+<a name="line156">156: </a>        call <A href="../../../../docs/manualpages/SNES/SNESGetLineSearch.html#SNESGetLineSearch">SNESGetLineSearch</A>(snes, linesearch, ierr)
 <a name="line157">157: </a>        call <A href="../../../../docs/manualpages/SNES/SNESLineSearchSetType.html#SNESLineSearchSetType">SNESLineSearchSetType</A>(linesearch, <font color="#666666">"shell"</font>, ierr)
 <a name="line158">158: </a>        call <A href="../../../../docs/manualpages/SNES/SNESLineSearchShellSetUserFunc.html#SNESLineSearchShellSetUserFunc">SNESLineSearchShellSetUserFunc</A>(linesearch, MyLineSearch,   &amp;
 <a name="line159">159: </a>     &amp;PETSC_NULL_OBJECT, ierr)

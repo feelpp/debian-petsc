@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex139.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:52:11+00:00">
+<meta name="date" content="2013-07-02T14:44:19+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>const char help[] = <font color="#666666">"Test <A href="../../../../docs/manualpages/Mat/MatCreateLocalRef.html#MatCreateLocalRef">MatCreateLocalRef</A>()\n\n"</font>;
 
@@ -16,7 +16,7 @@
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="GetLocalRef"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> GetLocalRef(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A> isrow,<A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A> iscol,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *B)</font></strong>
 <a name="line9">  9: </a>{
-<a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A> istmp;
+<a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>             istmp;
 
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Extracting LocalRef with isrow:\n"</font>);
 <a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/IS/ISOnComm.html#ISOnComm">ISOnComm</A>(isrow,<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_COPY_VALUES,&amp;istmp);
@@ -45,7 +45,7 @@
 <a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,0,help);
 <a name="line41"> 41: </a>  comm = <A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>;
 
-<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(comm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"LocalRef Test Options"</font>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(comm,NULL,<font color="#666666">"LocalRef Test Options"</font>,NULL);
 <a name="line44"> 44: </a>  {
 <a name="line45"> 45: </a>    top_bs = 2; row_bs = 2; col_bs = 2; diag = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>; blocked = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 <a name="line46"> 46: </a>    <A href="../../../../docs/manualpages/Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>(<font color="#666666">"-top_bs"</font>,<font color="#666666">"Block size of top-level matrix"</font>,0,top_bs,&amp;top_bs,0);
@@ -94,7 +94,7 @@
 <a name="line89"> 89: </a>  <font color="#4169E1">if</font> (diag) {
 <a name="line90"> 90: </a>    <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is1);
 <a name="line91"> 91: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is0);
-<a name="line92"> 92: </a>    is1 = is0;
+<a name="line92"> 92: </a>    is1        = is0;
 <a name="line93"> 93: </a>    ncolblocks = nrowblocks;
 <a name="line94"> 94: </a>  }
 

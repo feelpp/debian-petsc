@@ -5,7 +5,7 @@
 <TITLE>PetscDrawSetTitle</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawSetTitle"><H1>PetscDrawSetTitle</H1></A>
 Sets the title of a <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A> context. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -24,14 +24,18 @@ Not collective (any processor or all may call this)
 <P>
 
 <P>
-<H3><FONT COLOR="#CC3333">Note</FONT></H3>
+Note: The title is positioned in the windowing system title bar for the window. Hence it will not be saved with -draw_save
+in the image.
+<P>
 A copy of the string is made, so you may destroy the
 title string after calling this routine.
+<P>
+You can use <A HREF="../Draw/PetscDrawAxisSetLabels.html#PetscDrawAxisSetLabels">PetscDrawAxisSetLabels</A>() to indicate a title within the window
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Draw/PetscDrawGetTitle.html#PetscDrawGetTitle">PetscDrawGetTitle</A>(), <A HREF="../Draw/PetscDrawAppendTitle.html#PetscDrawAppendTitle">PetscDrawAppendTitle</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/interface/draw.c.html#PetscDrawSetTitle">src/sys/draw/interface/draw.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/interface/draw.c.html#PetscDrawSetTitle">src/sys/classes/draw/interface/draw.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

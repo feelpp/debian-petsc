@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = vecnestf.c
-OBJSC    = vecnestf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -5,13 +5,13 @@
 <TITLE>KSPCGUseSingleReduction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPCGUseSingleReduction"><H1>KSPCGUseSingleReduction</H1></A>
 Merge the two inner products needed in CG into a single MPI_Allreduce() call. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPCGUseSingleReduction(KSP ksp,PetscBool  flg)
+PetscErrorCode  KSPCGUseSingleReduction(KSP ksp,PetscBool flg)
 </PRE>
 Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -23,7 +23,7 @@ Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
-<DT><B>-ksp_cg_single_reduction </B> -
+<DT><B>-ksp_cg_single_reduction</B> -
 
 <br>
 <P>
@@ -33,8 +33,10 @@ initially to Chronopoulos and Gear.
 <P>
 It requires two extra work vectors than the conventional implementation in PETSc.
 <P>
+See also <A HREF="../KSP/KSPPIPECG.html#KSPPIPECG">KSPPIPECG</A>, <A HREF="../KSP/KSPPIPECR.html#KSPPIPECR">KSPPIPECR</A>, and <A HREF="../KSP/KSPGROPPCG.html#KSPGROPPCG">KSPGROPPCG</A> that use non-blocking reductions.
+<P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
- CG, conjugate gradient, Hermitian, symmetric, set, type
+ CG, conjugate gradient, Hermitian, symmetric, set, type, <A HREF="../KSP/KSPPGMRES.html#KSPPGMRES">KSPPGMRES</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/impls/cg/cgtype.c.html#KSPCGUseSingleReduction">src/ksp/ksp/impls/cg/cgtype.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

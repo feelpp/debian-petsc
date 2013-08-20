@@ -5,11 +5,12 @@
 <TITLE>PetscFree2</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscFree2"><H1>PetscFree2</H1></A>
 Frees 2 chunks of memory obtained with <A HREF="../Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscsys.h"
 PetscErrorCode PetscFree2(void *memory1,void *memory2)
 </PRE>
 Not Collective
@@ -36,9 +37,8 @@ Notes: Memory must have been obtained with <A HREF="../Sys/PetscMalloc2.html#Pet
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/sf/examples/tutorials/ex1.c.html">src/sys/sf/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/vec/is/sf/examples/tutorials/ex1.c.html">src/vec/is/sf/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
 </BODY></HTML>

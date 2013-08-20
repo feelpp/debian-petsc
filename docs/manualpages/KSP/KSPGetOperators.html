@@ -5,9 +5,9 @@
 <TITLE>KSPGetOperators</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPGetOperators"><H1>KSPGetOperators</H1></A>
-Gets the matrix associated with the linear system and a (possibly) different one associated with the preconditioner.  
+Gets the matrix associated with the linear system and a (possibly) different one associated with the preconditioner. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
@@ -21,9 +21,9 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A> and <A HREF="../Mat/Mat.html
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- the matrix associated with the linear system
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- the matrix that defines the linear system
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- the matrix to be used in constructing the preconditioner, usually the same as Amat. 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- the matrix to be used in constructing the preconditioner, usually the same as Amat.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flag </B></TD><TD>- flag indicating information about the preconditioner matrix structure
 during successive linear solves.  This flag is ignored the first time a

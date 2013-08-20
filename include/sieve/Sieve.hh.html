@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/Sieve.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:19:50+00:00">
+<meta name="date" content="2013-07-02T14:53:06+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#ifndef included_ALE_Sieve_hh</font>
 <a name="line3">  3: </a><strong><font color="#228B22">#define included_ALE_Sieve_hh</font></strong>
@@ -112,7 +112,7 @@
 <a name="line101">101: </a><strong><font color="#FF0000">      protected:</font></strong>
 <a name="line102">102: </a>        const typename traits::index_type&amp; _index;
 <a name="line103">103: </a><strong><font color="#FF0000">      public:</font></strong>
-<a name="line104">104: </a>
+
 <a name="line105">105: </a>       // Need to extend the inherited iterator to be able to extract the degree
 <a name="line106">106: </a>       class iterator : public traits::iterator {
 <a name="line107">107: </a><strong><font color="#FF0000">       public:</font></strong>
@@ -123,13 +123,13 @@
 <a name="line112">112: </a>         virtual const int&amp; height() const {<font color="#4169E1">return</font> this-&gt;_itor-&gt;height;};
 <a name="line113">113: </a>         //void setDegree(const int degree) {this-&gt;_index.modify(this-&gt;_itor, typename traits::rec_type::degreeAdjuster(degree));};
 <a name="line114">114: </a>       };
-<a name="line115">115: </a>
+
 <a name="line116">116: </a>       PointSequence(const PointSequence&amp; seq)            : _index(seq._index) {};
 <a name="line117">117: </a>       PointSequence(typename traits::index_type&amp; index) : _index(index)     {};
 <a name="line118">118: </a>       virtual ~PointSequence(){};
-<a name="line119">119: </a>
+
 <a name="line120">120: </a>       virtual bool empty(){<font color="#4169E1">return</font> this-&gt;_index.empty();};
-<a name="line121">121: </a>
+
 <a name="line122">122: </a>       virtual typename traits::index_type::size_type size() {<font color="#4169E1">return</font> this-&gt;_index.size();};
 
 <a name="line124">124: </a>       virtual iterator begin() const {
@@ -167,13 +167,13 @@
 <a name="line156">156: </a>         virtual const int&amp; depth()   const {<font color="#4169E1">return</font> this-&gt;_itor-&gt;depth;};
 <a name="line157">157: </a>         virtual const int&amp; height()  const {<font color="#4169E1">return</font> this-&gt;_itor-&gt;height;};
 <a name="line158">158: </a>       };
-<a name="line159">159: </a>
+
 <a name="line160">160: </a>       ValueSequence(const ValueSequence&amp; seq) : _index(seq._index), _value(seq._value) {};
 <a name="line161">161: </a>       ValueSequence(typename traits::index_type&amp; index, const value_type&amp; value) : _index(index), _value(value) {};
 <a name="line162">162: </a>       virtual ~ValueSequence(){};
-<a name="line163">163: </a>
+
 <a name="line164">164: </a>       virtual bool empty(){<font color="#4169E1">return</font> this-&gt;_index.empty();};
-<a name="line165">165: </a>
+
 <a name="line166">166: </a>       virtual typename traits::index_type::size_type size() {<font color="#4169E1">return</font> this-&gt;_index.count(this-&gt;_value);};
 
 <a name="line168">168: </a>       virtual iterator begin() {
@@ -203,14 +203,14 @@
 <a name="line192">192: </a>         virtual const int&amp; degree()  const {<font color="#4169E1">return</font> this-&gt;_itor-&gt;degree;};
 <a name="line193">193: </a>         virtual const int&amp; marker()  const {<font color="#4169E1">return</font> this-&gt;_itor-&gt;marker;};
 <a name="line194">194: </a>       };
-<a name="line195">195: </a>
+
 <a name="line196">196: </a>       TwoValueSequence(const TwoValueSequence&amp; seq) : _index(seq._index), _valueA(seq._valueA), _valueB(seq._valueB), _useTwoValues(seq._useTwoValues) {};
 <a name="line197">197: </a>       TwoValueSequence(typename traits::index_type&amp; index, const value_type&amp; valueA) : _index(index), _valueA(valueA), _valueB(value_type()), _useTwoValues(false) {};
 <a name="line198">198: </a>       TwoValueSequence(typename traits::index_type&amp; index, const value_type&amp; valueA, const value_type&amp; valueB) : _index(index), _valueA(valueA), _valueB(valueB), _useTwoValues(true) {};
 <a name="line199">199: </a>       virtual ~TwoValueSequence(){};
-<a name="line200">200: </a>
+
 <a name="line201">201: </a>       virtual bool empty(){<font color="#4169E1">return</font> this-&gt;_index.empty();};
-<a name="line202">202: </a>
+
 <a name="line203">203: </a>       virtual typename traits::index_type::size_type size() {
 <a name="line204">204: </a>         <font color="#4169E1">if</font> (this-&gt;_useTwoValues) {
 <a name="line205">205: </a>           <font color="#4169E1">return</font> this-&gt;_index.count(::boost::make_tuple(this-&gt;_valueA,this-&gt;_valueB));
@@ -247,7 +247,7 @@
 <a name="line236">236: </a>      set_type set;
 
 <a name="line238">238: </a>      void removePoint(const typename traits::rec_type::point_type&amp; p) {
-<a name="line239">239: </a>        <font color="#B22222">/*typename ::boost::multi_index::index&lt;set_type, typename traits::pointTag&gt;::type&amp; index = </font>
+<a name="line239">239: </a>        <font color="#B22222">/*typename ::boost::multi_index::index&lt;set_type, typename traits::pointTag&gt;::type&amp; index =</font>
 <a name="line240">240: </a><font color="#B22222">          ::boost::multi_index::get&lt;typename traits::pointTag&gt;(this-&gt;set);</font>
 <a name="line241">241: </a><font color="#B22222">        typename ::boost::multi_index::index&lt;set_type, typename traits::pointTag&gt;::type::iterator i = index.find(p);</font>
 <a name="line242">242: </a><font color="#B22222">        if (i != index.end()) { // Point exists</font>
@@ -362,7 +362,7 @@
 <a name="line351">351: </a>        os &lt;&lt; *s;
 <a name="line352">352: </a>        <font color="#4169E1">return</font> os;
 <a name="line353">353: </a>      };
-<a name="line354">354: </a>
+
 <a name="line355">355: </a>      friend std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, Sieve&lt;Point_,Marker_,Color_&gt;&amp; s) {
 <a name="line356">356: </a>        Obj&lt;typename traits::baseSequence&gt; base = s.base();
 <a name="line357">357: </a>        <font color="#4169E1">for</font>(typename traits::baseSequence::iterator b_iter = base-&gt;begin(); b_iter != base-&gt;end(); ++b_iter) {
@@ -558,7 +558,7 @@
 <a name="line547">547: </a>      };
 
 <a name="line549">549: </a>      Obj&lt;typename traits::markerSequence&gt; markerStratum(marker_type m);
-<a name="line550">550: </a>
+
 <a name="line551">551: </a>      void setStratification(bool doStratify) {this-&gt;doStratify = doStratify;};
 
 <a name="line553">553: </a>      bool getStratification() {<font color="#4169E1">return</font> this-&gt;doStratify;};
@@ -597,7 +597,7 @@
 <a name="line586">586: </a><strong><font color="#FF0000">      private:</font></strong>
 <a name="line587">587: </a>        int newHeight;
 <a name="line588">588: </a>      };
-<a name="line589">589: </a>
+
 <a name="line590">590: </a>      template&lt;class InputSequence&gt; void __computeClosureHeights(const Obj&lt;InputSequence&gt;&amp; points);
 
 <a name="line592">592: </a>      <font color="#4169E1">struct changeDepth</font> {
@@ -670,11 +670,11 @@
 
 <a name="line660">660: </a>      <font color="#4169E1">for</font>(int i = 0; i &lt; n; ++i) {
 <a name="line661">661: </a>        Obj&lt;coneSet&gt; tmp = cone; cone = base; base = tmp;
-<a name="line662">662: </a>
+
 <a name="line663">663: </a>        cone-&gt;clear();
 <a name="line664">664: </a>        <font color="#4169E1">for</font>(typename coneSet::iterator b_itor = base-&gt;begin(); b_itor != base-&gt;end(); ++b_itor) {
 <a name="line665">665: </a>          Obj&lt;typename traits::coneSequence&gt; pCone;
-<a name="line666">666: </a>
+
 <a name="line667">667: </a>          <font color="#4169E1">if</font> (useColor) {
 <a name="line668">668: </a>            pCone = this-&gt;cone(*b_itor, color);
 <a name="line669">669: </a>          } <font color="#4169E1">else</font> {
@@ -733,15 +733,15 @@
 <a name="line722">722: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::nSupport(const Obj&lt;InputSequence&gt;&amp; points, int n, const Color_&amp; color, bool useColor ) {
 <a name="line723">723: </a>      Obj&lt;supportSet&gt; support = supportSet();
 <a name="line724">724: </a>      Obj&lt;supportSet&gt; cap = supportSet();
-<a name="line725">725: </a>
+
 <a name="line726">726: </a>      support-&gt;insert(points-&gt;begin(), points-&gt;end());
 <a name="line727">727: </a>      <font color="#4169E1">for</font>(int i = 0; i &lt; n; ++i) {
 <a name="line728">728: </a>        Obj&lt;supportSet&gt; tmp = support; support = cap; cap = tmp;
-<a name="line729">729: </a>
+
 <a name="line730">730: </a>        support-&gt;clear();
 <a name="line731">731: </a>        <font color="#4169E1">for</font>(typename supportSet::iterator c_itor = cap-&gt;begin(); c_itor != cap-&gt;end(); ++c_itor) {
 <a name="line732">732: </a>          Obj&lt;typename traits::supportSequence&gt; pSupport;
-<a name="line733">733: </a>
+
 <a name="line734">734: </a>          <font color="#4169E1">if</font> (useColor) {
 <a name="line735">735: </a>            pSupport = this-&gt;support(*c_itor, color);
 <a name="line736">736: </a>          } <font color="#4169E1">else</font> {
@@ -759,18 +759,18 @@
 <a name="line748">748: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::star(const Point_&amp; p) {
 <a name="line749">749: </a>      <font color="#4169E1">return</font> nStar(p, this-&gt;height());
 <a name="line750">750: </a>    };
-<a name="line751">751: </a>
+
 <a name="line752">752: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line753">753: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::star(const Point_&amp; p, const Color_&amp; color) {
 <a name="line754">754: </a>      <font color="#4169E1">return</font> nStar(p, this-&gt;depth(), color);
 <a name="line755">755: </a>    };
-<a name="line756">756: </a>
+
 <a name="line757">757: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line758">758: </a>    template&lt;class InputSequence&gt;
 <a name="line759">759: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::star(const Obj&lt;InputSequence&gt;&amp; points) {
 <a name="line760">760: </a>      <font color="#4169E1">return</font> nStar(points, this-&gt;height());
 <a name="line761">761: </a>    };
-<a name="line762">762: </a>
+
 <a name="line763">763: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line764">764: </a>    template&lt;class InputSequence&gt;
 <a name="line765">765: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::star(const Obj&lt;InputSequence&gt;&amp; points, const Color_&amp; color) {
@@ -781,7 +781,7 @@
 <a name="line770">770: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::nStar(const Point_&amp; p, int n) {
 <a name="line771">771: </a>      <font color="#4169E1">return</font> this-&gt;nStar(p, n, Color_(), false);
 <a name="line772">772: </a>    };
-<a name="line773">773: </a>
+
 <a name="line774">774: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line775">775: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::nStar(const Point_&amp; p, int n, const Color_&amp; color, bool useColor ) {
 <a name="line776">776: </a>      Obj&lt;supportSet&gt; support = supportSet();
@@ -802,7 +802,7 @@
 <a name="line791">791: </a>      support-&gt;insert(points-&gt;begin(), points-&gt;end());
 <a name="line792">792: </a>      <font color="#4169E1">return</font> this-&gt;__nStar(support, n, color, useColor);
 <a name="line793">793: </a>    };
-<a name="line794">794: </a>
+
 <a name="line795">795: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line796">796: </a>    template&lt;class InputSequence&gt;
 <a name="line797">797: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::__nStar(Obj&lt;InputSequence&gt;&amp; support, int n, const Color_&amp; color, bool useColor) {
@@ -834,7 +834,7 @@
 <a name="line823">823: </a>    const Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::coneSet&gt;&amp; Sieve&lt;Point_,Marker_,Color_&gt;::meet(const Point_&amp; p, const Point_&amp; q) {
 <a name="line824">824: </a>      <font color="#4169E1">return</font> nMeet(p, q, this-&gt;depth());
 <a name="line825">825: </a>    };
-<a name="line826">826: </a>
+
 <a name="line827">827: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line828">828: </a>    const Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::coneSet&gt;&amp; Sieve&lt;Point_,Marker_,Color_&gt;::meet(const Point_&amp; p, const Point_&amp; q, const Color_&amp; color) {
 <a name="line829">829: </a>      <font color="#4169E1">return</font> nMeet(p, q, this-&gt;depth(), color);
@@ -888,7 +888,7 @@
 <a name="line877">877: </a>    const Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::coneSet&gt;&amp; Sieve&lt;Point_,Marker_,Color_&gt;::nMeet(const Obj&lt;InputSequence&gt;&amp; chain0, const Obj&lt;InputSequence&gt;&amp; chain1, int n) {
 <a name="line878">878: </a>      <font color="#4169E1">return</font> this-&gt;nMeet(chain0, chain1, n, Color_(), false);
 <a name="line879">879: </a>    };
-<a name="line880">880: </a>
+
 <a name="line881">881: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line882">882: </a>    template&lt;class InputSequence&gt;
 <a name="line883">883: </a>    const Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::coneSet&gt;&amp; Sieve&lt;Point_,Marker_,Color_&gt;::nMeet(const Obj&lt;InputSequence&gt;&amp; chain0, const Obj&lt;InputSequence&gt;&amp; chain1,int n,const Color_&amp; color, bool useColor){
@@ -926,12 +926,12 @@
 <a name="line915">915: </a>      }
 <a name="line916">916: </a>      <font color="#4169E1">return</font> this-&gt;_meetSet;
 <a name="line917">917: </a>    };
-<a name="line918">918: </a>
+
 <a name="line919">919: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line920">920: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::join(const Point_&amp; p, const Point_&amp; q) {
 <a name="line921">921: </a>      <font color="#4169E1">return</font> this-&gt;nJoin(p, q, this-&gt;depth());
 <a name="line922">922: </a>    };
-<a name="line923">923: </a>
+
 <a name="line924">924: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line925">925: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::join(const Point_&amp; p, const Point_&amp; q, const Color_&amp; color) {
 <a name="line926">926: </a>      <font color="#4169E1">return</font> this-&gt;nJoin(p, q, this-&gt;depth(), color);
@@ -942,7 +942,7 @@
 <a name="line931">931: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::join(const Obj&lt;InputSequence&gt;&amp; chain0, const Obj&lt;InputSequence&gt;&amp; chain1) {
 <a name="line932">932: </a>      <font color="#4169E1">return</font> this-&gt;nJoin(chain0, chain1, this-&gt;depth());
 <a name="line933">933: </a>    };
-<a name="line934">934: </a>
+
 <a name="line935">935: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line936">936: </a>    template&lt;class InputSequence&gt;
 <a name="line937">937: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::join(const Obj&lt;InputSequence&gt;&amp; chain0, const Obj&lt;InputSequence&gt;&amp; chain1, const Color_&amp; color) {
@@ -1016,12 +1016,12 @@
 <a name="line1005">1005: </a>      join-&gt;insert(intersectA.begin(), intersectA.end());
 <a name="line1006">1006: </a>      <font color="#4169E1">return</font> join;
 <a name="line1007">1007: </a>    };
-<a name="line1008">1008: </a>
+
 <a name="line1009">1009: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line1010">1010: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::nJoin(const Point_&amp; p, const Point_&amp; q, int n) {
 <a name="line1011">1011: </a>      <font color="#4169E1">return</font> this-&gt;nJoin(p, q, n, Color_(), false);
 <a name="line1012">1012: </a>    };
-<a name="line1013">1013: </a>
+
 <a name="line1014">1014: </a>    template &lt;typename Point_, typename Marker_, typename Color_&gt;
 <a name="line1015">1015: </a>    Obj&lt;typename Sieve&lt;Point_,Marker_,Color_&gt;::supportSet&gt; Sieve&lt;Point_,Marker_,Color_&gt;::nJoin(const Point_&amp; p, const Point_&amp; q, int n, const Color_&amp; color, bool useColor) {
 <a name="line1016">1016: </a>      Obj&lt;supportSet&gt; chain0 = supportSet();
@@ -1279,7 +1279,7 @@
 <a name="line1268">1268: </a>    int Sieve&lt;Point_,Marker_,Color_&gt;::depth(const Obj&lt;InputSequence&gt;&amp; points) {
 <a name="line1269">1269: </a>      const typename ::boost::multi_index::index&lt;typename traits::base_container_type::set_type,typename traits::cap_container_type::traits::pointTag&gt;::type&amp; i = ::boost::multi_index::get&lt;typename traits::base_container_type::traits::pointTag&gt;(this-&gt;_base.set);
 <a name="line1270">1270: </a>      int maxDepth = 0;
-<a name="line1271">1271: </a>
+
 <a name="line1272">1272: </a>      <font color="#4169E1">for</font>(typename InputSequence::iterator iter = points-&gt;begin(); iter != points-&gt;end(); ++iter) {
 <a name="line1273">1273: </a>        <font color="#4169E1">if</font> (i.find(*iter) != i.end()) {
 <a name="line1274">1274: </a>          maxDepth = std::max(maxDepth, i.find(*iter)-&gt;depth);
@@ -1304,7 +1304,7 @@
 <a name="line1293">1293: </a>    int Sieve&lt;Point_,Marker_,Color_&gt;::height(const Obj&lt;InputSequence&gt;&amp; points) {
 <a name="line1294">1294: </a>      const typename ::boost::multi_index::index&lt;typename traits::cap_container_type::set_type,typename traits::cap_container_type::traits::pointTag&gt;::type&amp; i = ::boost::multi_index::get&lt;typename traits::cap_container_type::traits::pointTag&gt;(this-&gt;_cap.set);
 <a name="line1295">1295: </a>      int maxHeight = 0;
-<a name="line1296">1296: </a>
+
 <a name="line1297">1297: </a>      <font color="#4169E1">for</font>(typename InputSequence::iterator iter = points-&gt;begin(); iter != points-&gt;end(); ++iter) {
 <a name="line1298">1298: </a>        <font color="#4169E1">if</font> (i.find(*iter) != i.end()) {
 <a name="line1299">1299: </a>          maxHeight = std::max(maxHeight, i.find(*iter)-&gt;height);
@@ -1331,7 +1331,7 @@
 <a name="line1320">1320: </a>      typename ::boost::multi_index::index&lt;typename traits::cap_container_type::set_type,typename traits::cap_container_type::traits::pointTag&gt;::type&amp; index = ::boost::multi_index::get&lt;typename traits::cap_container_type::traits::pointTag&gt;(this-&gt;_cap.set);
 <a name="line1321">1321: </a>      typename ::boost::multi_index::index&lt;typename traits::base_container_type::set_type,typename traits::base_container_type::traits::pointTag&gt;::type&amp; bIndex = ::boost::multi_index::get&lt;typename traits::base_container_type::traits::pointTag&gt;(this-&gt;_base.set);
 <a name="line1322">1322: </a>      Obj&lt;coneSet&gt; modifiedPoints = coneSet();
-<a name="line1323">1323: </a>
+
 <a name="line1324">1324: </a>      <font color="#4169E1">for</font>(typename InputSequence::iterator p_itor = points-&gt;begin(); p_itor != points-&gt;end(); ++p_itor) {
 <a name="line1325">1325: </a>        // Compute the max height of the points in the support of p, and add 1
 <a name="line1326">1326: </a>        int h0 = this-&gt;height(*p_itor);
@@ -1384,7 +1384,7 @@
 <a name="line1375">1375: </a>      // FIX: We would like to avoid the copy here with cone() and support()
 <a name="line1376">1376: </a>      this-&gt;__computeClosureHeights(this-&gt;cone(this-&gt;leaves()));
 <a name="line1377">1377: </a>      this-&gt;__computeStarDepths(this-&gt;support(this-&gt;roots()));
-<a name="line1378">1378: </a>
+
 <a name="line1379">1379: </a>      Obj&lt;typename traits::capSequence&gt; base = this-&gt;base();
 
 <a name="line1381">1381: </a>      <font color="#4169E1">for</font>(typename traits::baseSequence::iterator b_iter = base-&gt;begin(); b_iter != base-&gt;end(); ++b_iter) {
@@ -1410,7 +1410,7 @@
 <a name="line1401">1401: </a>    //
 <a name="line1402">1402: </a>    // Structural manipulation
 <a name="line1403">1403: </a>    //
-<a name="line1404">1404: </a>
+
 <a name="line1405">1405: </a>} // namespace ALE
 
 <a name="line1407">1407: </a><font color="#A020F0">#endif</font>

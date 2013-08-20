@@ -14,14 +14,19 @@
 #define PCSide PetscEnum
 #define PCASMType PetscEnum
 #define PCCompositeType PetscEnum
-#define PCRichardsonConvergedReason PetscEnum 
+#define PCRichardsonConvergedReason PetscEnum
 #define PCType character*(80)
 #define PCFieldSplitSchurPreType PetscEnum
 #define PCPARMSGlobalType PetscEnum
 #define PCPARMSLocalType PetscEnum
 #define PCFieldSplitSchurFactType PetscEnum
 #define CoarseProblemType PetscEnum
-#define PCGAMGType PetscEnum
+#define PCGAMGType character*(80)
+!
+! GAMG types
+!
+#define PCGAMGAGG 'agg'
+#define PCGAMGGEO  'geo'
 !
 !  Various preconditioners
 !
@@ -50,7 +55,6 @@
 #define PCFIELDSPLIT 'fieldsplit'
 #define PCTFS 'tfs'
 #define PCML 'ml'
-#define PCPROMETHEUS 'prometheus'
 #define PCGALERKIN 'galerkin'
 #define PCEXOTIC 'exotic'
 #define PCHMPI 'hmpi'
@@ -70,5 +74,9 @@
 #define PCBICGSTABCUSP 'bicgstabcusp'
 #define PCAINVCUSP 'ainvcusp'
 #define PCBDDC 'bddc'
+
+#define PCMGType PetscEnum
+#define PCMGCycleType PetscEnum
+#define PCExoticType PetscEnum
 
 #endif

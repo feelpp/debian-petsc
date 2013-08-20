@@ -48,7 +48,7 @@ void PETSC_STDCALL  kspcgsettype_(KSP ksp,KSPCGType *type, int *__ierr ){
 *__ierr = KSPCGSetType(
 	(KSP)PetscToPointer((ksp) ),*type);
 }
-void PETSC_STDCALL  kspcgusesinglereduction_(KSP ksp,PetscBool  *flg, int *__ierr ){
+void PETSC_STDCALL  kspcgusesinglereduction_(KSP ksp,PetscBool *flg, int *__ierr ){
 *__ierr = KSPCGUseSingleReduction(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }

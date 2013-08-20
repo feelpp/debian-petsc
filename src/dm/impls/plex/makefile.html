@@ -1,0 +1,31 @@
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/plex/makefile.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:46:03+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><strong><font color="#FF0000">ALL:</font></strong> lib
+
+CPPFLAGS =
+CFLAGS   =
+FFLAGS   =
+SOURCEC  = plexcreate.c plex.c plexinterpolate.c plexpreallocate.c plexgeometry.c plexlabel.c plexsubmesh.c plexexodusii.c plexcgns.c plexvtk.c plexpoint.c plexvtu.c plexfem.c
+SOURCEF  =
+SOURCEH  =
+DIRS     = examples
+LIBBASE  = libpetscdm
+MANSEC   = DM
+SUBMANSEC= <A href="ROOT/docs/manualpages/DM/DMPLEX.html#DMPLEX">DMPLEX</A>
+LOCDIR   = src/dm/impls/plex/
+
+include ${PETSC_DIR}/conf/variables
+include ${PETSC_DIR}/conf/rules
+include ${PETSC_DIR}/conf/test
+</pre>
+</body>
+
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMPlexConstructGhostCells.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>DMPlexConstructGhostCells</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="DMPlexConstructGhostCells"><H1>DMPlexConstructGhostCells</H1></A>
+Construct ghost cells which connect to every boundary face 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscdmplex.h"   
+PetscErrorCode DMPlexConstructCohesiveCells(DM dm, DMLabel label, DM *dmSplit)
+</PRE>
+Collective on dm
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dm </B></TD><TD>- The original DM
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>labelName </B></TD><TD>- The label specifying the boundary faces, or "Face Sets" if this is NULL
+</TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>numGhostCells </B></TD><TD>- The number of ghost cells added to the DM
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dmGhosted </B></TD><TD>- The new DM
+</TD></TR></TABLE>
+<P>
+Note: If no label exists of that name, one will be created marking all boundary faces
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../DM/DMCreate.html#DMCreate">DMCreate</A>()
+<BR>*/
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A HREF="../DM/DMPlexConstructGhostCells.html#DMPlexConstructGhostCells">DMPlexConstructGhostCells</A>(DM dm, const char labelName[], <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> *numGhostCells, DM *dmGhosted)
+{
+DM             gdm;
+DMLabel        label;
+const char    *name = labelName ? labelName : "Face Sets";
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>       dim;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+PetscValidHeaderSpecific(dm, DM_CLASSID, 1);
+PetscValidPointer(numGhostCells, 3);
+PetscValidPointer(dmGhosted, 4);
+ierr = <A HREF="../DM/DMCreate.html#DMCreate">DMCreate</A>(<A HREF="../Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;gdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMSetType.html#DMSetType">DMSetType</A>(gdm, <A HREF="../DM/DMPLEX.html#DMPLEX">DMPLEX</A>);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetDimension.html#DMPlexGetDimension">DMPlexGetDimension</A>(dm, &amp;dim);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexSetDimension.html#DMPlexSetDimension">DMPlexSetDimension</A>(gdm, dim);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetLabel.html#DMPlexGetLabel">DMPlexGetLabel</A>(dm, name, &amp;label);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (!label) {
+/* Get label for boundary faces */
+ierr = <A HREF="../DM/DMPlexCreateLabel.html#DMPlexCreateLabel">DMPlexCreateLabel</A>(dm, name);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetLabel.html#DMPlexGetLabel">DMPlexGetLabel</A>(dm, name, &amp;label);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexMarkBoundaryFaces.html#DMPlexMarkBoundaryFaces">DMPlexMarkBoundaryFaces</A>(dm, label);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+ierr = DMPlexConstructGhostCells_Internal(dm, label, numGhostCells, gdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMSetFromOptions.html#DMSetFromOptions">DMSetFromOptions</A>(gdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+*dmGhosted = gdm;
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "DMPlexConstructCohesiveCells_Internal"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMPlexConstructCohesiveCells_Internal(DM dm, DMLabel label, DM sdm)
+{
+<A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>        comm;
+<A HREF="../IS/IS.html#IS">IS</A>              valueIS, *pointIS;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> *values, **splitPoints;
+<A HREF="../IS/PetscSection.html#PetscSection">PetscSection</A>    coordSection;
+<A HREF="../Vec/Vec.html#Vec">Vec</A>             coordinates;
+<A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *coords;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>       *depthShift, *depthOffset, *pMaxNew, *numSplitPoints, *coneNew, *supportNew;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>        shift = 100, depth = 0, dep, dim, d, numSP = 0, sp, maxConeSize, maxSupportSize, numLabels, p, v;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ierr = <A HREF="../Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)dm,&amp;comm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetDimension.html#DMPlexGetDimension">DMPlexGetDimension</A>(dm, &amp;dim);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Count split points and add cohesive cells */
+if (label) {
+ierr = DMLabelGetValueIS(label, &amp;valueIS);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(valueIS, &amp;numSP);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(valueIS, &amp;values);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+ierr = <A HREF="../DM/DMPlexGetDepth.html#DMPlexGetDepth">DMPlexGetDepth</A>(dm, &amp;depth);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetMaxSizes.html#DMPlexGetMaxSizes">DMPlexGetMaxSizes</A>(dm, &amp;maxConeSize, &amp;maxSupportSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscMalloc5.html#PetscMalloc5">PetscMalloc5</A>(depth+1,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;depthShift,depth+1,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;depthOffset,depth+1,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;pMaxNew,maxConeSize*3,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;coneNew,maxSupportSize,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;supportNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(depth+1,<A HREF="../IS/IS.html#IS">IS</A>,&amp;pointIS,depth+1,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;numSplitPoints,depth+1,const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>*,&amp;splitPoints);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(depthShift, (depth+1) * sizeof(<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>));<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+for (d = 0; d &lt;= depth; ++d) {
+ierr              = <A HREF="../DM/DMPlexGetDepthStratum.html#DMPlexGetDepthStratum">DMPlexGetDepthStratum</A>(dm, d, NULL, &amp;pMaxNew[d]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+numSplitPoints[d] = 0;
+splitPoints[d]    = NULL;
+pointIS[d]        = NULL;
+}
+for (sp = 0; sp &lt; numSP; ++sp) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> dep = values[sp];
+<P>
+if ((dep &lt; 0) || (dep &gt; depth)) continue;
+ierr = DMLabelGetStratumSize(label, dep, &amp;depthShift[dep]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = DMLabelGetStratumIS(label, dep, &amp;pointIS[dep]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (pointIS[dep]) {
+ierr = <A HREF="../IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(pointIS[dep], &amp;numSplitPoints[dep]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(pointIS[dep], &amp;splitPoints[dep]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+if (depth &gt;= 0) {
+/* Calculate number of additional points */
+depthShift[depth] = depthShift[depth-1]; /* There is a cohesive cell for every split face   */
+depthShift[1]    += depthShift[0];       /* There is a cohesive edge for every split vertex */
+/* Calculate hybrid bound for each dimension */
+pMaxNew[0] += depthShift[depth];
+if (depth &gt; 1) pMaxNew[dim-1] += depthShift[depth] + depthShift[0];
+if (depth &gt; 2) pMaxNew[1]     += depthShift[depth] + depthShift[0] + depthShift[dim-1];
+<P>
+/* Calculate point offset for each dimension */
+depthOffset[depth] = 0;
+depthOffset[0]     = depthOffset[depth] + depthShift[depth];
+if (depth &gt; 1) depthOffset[dim-1] = depthOffset[0]     + depthShift[0];
+if (depth &gt; 2) depthOffset[1]     = depthOffset[dim-1] + depthShift[dim-1];
+}
+ierr = DMPlexShiftSizes_Internal(dm, depthShift, sdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Step 3: Set cone/support sizes for new points */
+for (dep = 0; dep &lt;= depth; ++dep) {
+for (p = 0; p &lt; numSplitPoints[dep]; ++p) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  oldp   = splitPoints[dep][p];
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  newp   = depthOffset[dep] + oldp;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  splitp = pMaxNew[dep] + p;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> *support;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>        coneSize, supportSize, q, e;
+<P>
+ierr = <A HREF="../DM/DMPlexGetConeSize.html#DMPlexGetConeSize">DMPlexGetConeSize</A>(dm, oldp, &amp;coneSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(sdm, splitp, coneSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetSupportSize.html#DMPlexGetSupportSize">DMPlexGetSupportSize</A>(dm, oldp, &amp;supportSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexSetSupportSize.html#DMPlexSetSupportSize">DMPlexSetSupportSize</A>(sdm, splitp, supportSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (dep == depth-1) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> ccell = pMaxNew[depth] + p;
+/* Add cohesive cells, they are prisms */
+ierr = <A HREF="../DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(sdm, ccell, 2 + coneSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+} else if (dep == 0) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> cedge = pMaxNew[1] + (depthShift[1] - depthShift[0]) + p;
+<P>
+ierr = <A HREF="../DM/DMPlexGetSupport.html#DMPlexGetSupport">DMPlexGetSupport</A>(dm, oldp, &amp;support);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Split old vertex: Edges in old split faces and new cohesive edge */
+for (e = 0, q = 0; e &lt; supportSize; ++e) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val;
+<P>
+ierr = DMLabelGetValue(label, support[e], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if ((val == 1) || (val == (shift + 1))) ++q;
+}
+ierr = <A HREF="../DM/DMPlexSetSupportSize.html#DMPlexSetSupportSize">DMPlexSetSupportSize</A>(sdm, newp, q+1);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Split new vertex: Edges in new split faces and new cohesive edge */
+for (e = 0, q = 0; e &lt; supportSize; ++e) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val;
+<P>
+ierr = DMLabelGetValue(label, support[e], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if ((val == 1) || (val == -(shift + 1))) ++q;
+}
+ierr = <A HREF="../DM/DMPlexSetSupportSize.html#DMPlexSetSupportSize">DMPlexSetSupportSize</A>(sdm, splitp, q+1);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Add cohesive edges */
+ierr = <A HREF="../DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(sdm, cedge, 2);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Punt for now on support, you loop over closure, extract faces, check which ones are in the label */
+} else if (dep == dim-2) {
+ierr = <A HREF="../DM/DMPlexGetSupport.html#DMPlexGetSupport">DMPlexGetSupport</A>(dm, oldp, &amp;support);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Split old edge: Faces in positive side cells and old split faces */
+for (e = 0, q = 0; e &lt; supportSize; ++e) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val;
+<P>
+ierr = DMLabelGetValue(label, support[e], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if ((val == dim-1) || (val == (shift + dim-1))) ++q;
+}
+ierr = <A HREF="../DM/DMPlexSetSupportSize.html#DMPlexSetSupportSize">DMPlexSetSupportSize</A>(sdm, newp, q);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Split new edge: Faces in negative side cells and new split faces */
+for (e = 0, q = 0; e &lt; supportSize; ++e) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val;
+<P>
+ierr = DMLabelGetValue(label, support[e], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if ((val == dim-1) || (val == -(shift + dim-1))) ++q;
+}
+ierr = <A HREF="../DM/DMPlexSetSupportSize.html#DMPlexSetSupportSize">DMPlexSetSupportSize</A>(sdm, splitp, q);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+}
+/* Step 4: Setup split DM */
+ierr = <A HREF="../DM/DMSetUp.html#DMSetUp">DMSetUp</A>(sdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = DMPlexShiftPoints_Internal(dm, depthShift, sdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Step 6: Set cones and supports for new points */
+for (dep = 0; dep &lt;= depth; ++dep) {
+for (p = 0; p &lt; numSplitPoints[dep]; ++p) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  oldp   = splitPoints[dep][p];
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  newp   = depthOffset[dep] + oldp;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  splitp = pMaxNew[dep] + p;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> *cone, *support, *ornt;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>        coneSize, supportSize, q, v, e, s;
+<P>
+ierr = <A HREF="../DM/DMPlexGetConeSize.html#DMPlexGetConeSize">DMPlexGetConeSize</A>(dm, oldp, &amp;coneSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetCone.html#DMPlexGetCone">DMPlexGetCone</A>(dm, oldp, &amp;cone);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetConeOrientation.html#DMPlexGetConeOrientation">DMPlexGetConeOrientation</A>(dm, oldp, &amp;ornt);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetSupportSize.html#DMPlexGetSupportSize">DMPlexGetSupportSize</A>(dm, oldp, &amp;supportSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetSupport.html#DMPlexGetSupport">DMPlexGetSupport</A>(dm, oldp, &amp;support);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (dep == depth-1) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  ccell = pMaxNew[depth] + p;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> *supportF;
+<P>
+/* Split face:       copy in old face to new face to start */
+ierr = <A HREF="../DM/DMPlexGetSupport.html#DMPlexGetSupport">DMPlexGetSupport</A>(sdm, newp,  &amp;supportF);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexSetSupport.html#DMPlexSetSupport">DMPlexSetSupport</A>(sdm, splitp, supportF);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Split old face:   old vertices/edges in cone so no change */
+/* Split new face:   new vertices/edges in cone */
+for (q = 0; q &lt; coneSize; ++q) {
+ierr = <A HREF="../Sys/PetscFindInt.html#PetscFindInt">PetscFindInt</A>(cone[q], numSplitPoints[dim-2], splitPoints[dim-2], &amp;v);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+coneNew[2+q] = pMaxNew[dim-2] + v;
+}
+ierr = <A HREF="../DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(sdm, splitp, &amp;coneNew[2]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexSetConeOrientation.html#DMPlexSetConeOrientation">DMPlexSetConeOrientation</A>(sdm, splitp, ornt);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Cohesive cell:    Old and new split face, then new cohesive edges */
+coneNew[0] = newp;
+coneNew[1] = splitp;
+for (q = 0; q &lt; coneSize; ++q) {
+coneNew[2+q] = (pMaxNew[1] - pMaxNew[dim-2]) + (depthShift[1] - depthShift[0]) + coneNew[2+q];
+}
+ierr = <A HREF="../DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(sdm, ccell, coneNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+<P>
+for (s = 0; s &lt; supportSize; ++s) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val;
+<P>
+ierr = DMLabelGetValue(label, support[s], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (val &lt; 0) {
+/* Split old face:   Replace negative side cell with cohesive cell */
+ierr = DMPlexInsertSupport(sdm, newp, s, ccell);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+} else {
+/* Split new face:   Replace positive side cell with cohesive cell */
+ierr = DMPlexInsertSupport(sdm, splitp, s, ccell);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+} else if (dep == 0) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> cedge = pMaxNew[1] + (depthShift[1] - depthShift[0]) + p;
+<P>
+/* Split old vertex: Edges in old split faces and new cohesive edge */
+for (e = 0, q = 0; e &lt; supportSize; ++e) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val;
+<P>
+ierr = DMLabelGetValue(label, support[e], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if ((val == 1) || (val == (shift + 1))) {
+supportNew[q++] = depthOffset[1] + support[e];
+}
+}
+supportNew[q] = cedge;
+<P>
+ierr = <A HREF="../DM/DMPlexSetSupport.html#DMPlexSetSupport">DMPlexSetSupport</A>(sdm, newp, supportNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Split new vertex: Edges in new split faces and new cohesive edge */
+for (e = 0, q = 0; e &lt; supportSize; ++e) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val, edge;
+<P>
+ierr = DMLabelGetValue(label, support[e], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (val == 1) {
+ierr = <A HREF="../Sys/PetscFindInt.html#PetscFindInt">PetscFindInt</A>(support[e], numSplitPoints[1], splitPoints[1], &amp;edge);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (edge &lt; 0) <A HREF="../Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(comm, PETSC_ERR_ARG_WRONG, "Edge %d is not a split edge", support[e]);
+supportNew[q++] = pMaxNew[1] + edge;
+} else if (val == -(shift + 1)) {
+supportNew[q++] = depthOffset[1] + support[e];
+}
+}
+supportNew[q] = cedge;
+ierr          = <A HREF="../DM/DMPlexSetSupport.html#DMPlexSetSupport">DMPlexSetSupport</A>(sdm, splitp, supportNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Cohesive edge:    Old and new split vertex, punting on support */
+coneNew[0] = newp;
+coneNew[1] = splitp;
+ierr       = <A HREF="../DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(sdm, cedge, coneNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+} else if (dep == dim-2) {
+/* Split old edge:   old vertices in cone so no change */
+/* Split new edge:   new vertices in cone */
+for (q = 0; q &lt; coneSize; ++q) {
+ierr = <A HREF="../Sys/PetscFindInt.html#PetscFindInt">PetscFindInt</A>(cone[q], numSplitPoints[dim-3], splitPoints[dim-3], &amp;v);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+coneNew[q] = pMaxNew[dim-3] + v;
+}
+ierr = <A HREF="../DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(sdm, splitp, coneNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Split old edge: Faces in positive side cells and old split faces */
+for (e = 0, q = 0; e &lt; supportSize; ++e) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val;
+<P>
+ierr = DMLabelGetValue(label, support[e], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if ((val == dim-1) || (val == (shift + dim-1))) {
+supportNew[q++] = depthOffset[dim-1] + support[e];
+}
+}
+ierr = <A HREF="../DM/DMPlexSetSupport.html#DMPlexSetSupport">DMPlexSetSupport</A>(sdm, newp, supportNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Split new edge: Faces in negative side cells and new split faces */
+for (e = 0, q = 0; e &lt; supportSize; ++e) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> val, face;
+<P>
+ierr = DMLabelGetValue(label, support[e], &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (val == dim-1) {
+ierr = <A HREF="../Sys/PetscFindInt.html#PetscFindInt">PetscFindInt</A>(support[e], numSplitPoints[dim-1], splitPoints[dim-1], &amp;face);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (face &lt; 0) <A HREF="../Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(comm, PETSC_ERR_ARG_WRONG, "Face %d is not a split face", support[e]);
+supportNew[q++] = pMaxNew[dim-1] + face;
+} else if (val == -(shift + dim-1)) {
+supportNew[q++] = depthOffset[dim-1] + support[e];
+}
+}
+ierr = <A HREF="../DM/DMPlexSetSupport.html#DMPlexSetSupport">DMPlexSetSupport</A>(sdm, splitp, supportNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+}
+/* Step 6b: Replace split points in negative side cones */
+for (sp = 0; sp &lt; numSP; ++sp) {
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>        dep = values[sp];
+<A HREF="../IS/IS.html#IS">IS</A>              pIS;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>        numPoints;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> *points;
+<P>
+if (dep &gt;= 0) continue;
+ierr = DMLabelGetStratumIS(label, dep, &amp;pIS);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (!pIS) continue;
+dep  = -dep - shift;
+ierr = <A HREF="../IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(pIS, &amp;numPoints);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(pIS, &amp;points);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+for (p = 0; p &lt; numPoints; ++p) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  oldp = points[p];
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  newp = depthOffset[dep] + oldp;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> *cone;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>        coneSize, c;
+<A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A>       replaced = <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<P>
+/* Negative edge: replace split vertex */
+/* Negative cell: replace split face */
+ierr = <A HREF="../DM/DMPlexGetConeSize.html#DMPlexGetConeSize">DMPlexGetConeSize</A>(sdm, newp, &amp;coneSize);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetCone.html#DMPlexGetCone">DMPlexGetCone</A>(sdm, newp, &amp;cone);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+for (c = 0; c &lt; coneSize; ++c) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> coldp = cone[c] - depthOffset[dep-1];
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>       csplitp, cp, val;
+<P>
+ierr = DMLabelGetValue(label, coldp, &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (val == dep-1) {
+ierr = <A HREF="../Sys/PetscFindInt.html#PetscFindInt">PetscFindInt</A>(coldp, numSplitPoints[dep-1], splitPoints[dep-1], &amp;cp);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (cp &lt; 0) <A HREF="../Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(comm, PETSC_ERR_ARG_WRONG, "Point %d is not a split point of dimension %d", oldp, dep-1);
+csplitp  = pMaxNew[dep-1] + cp;
+ierr     = DMPlexInsertCone(sdm, newp, c, csplitp);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+replaced = <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+}
+}
+if (!replaced) <A HREF="../Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(comm, PETSC_ERR_ARG_WRONG, "The cone of point %d does not contain split points", oldp);
+}
+ierr = <A HREF="../IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(pIS, &amp;points);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;pIS);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+/* Step 7: Stratify */
+ierr = <A HREF="../DM/DMPlexStratify.html#DMPlexStratify">DMPlexStratify</A>(sdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Step 8: Coordinates */
+ierr = DMPlexShiftCoordinates_Internal(dm, depthShift, sdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetCoordinateSection.html#DMPlexGetCoordinateSection">DMPlexGetCoordinateSection</A>(sdm, &amp;coordSection);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMGetCoordinatesLocal.html#DMGetCoordinatesLocal">DMGetCoordinatesLocal</A>(sdm, &amp;coordinates);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(coordinates, &amp;coords);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+for (v = 0; v &lt; (numSplitPoints ? numSplitPoints[0] : 0); ++v) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> newp   = depthOffset[0] + splitPoints[0][v];
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> splitp = pMaxNew[0] + v;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>       dof, off, soff, d;
+<P>
+ierr = <A HREF="../IS/PetscSectionGetDof.html#PetscSectionGetDof">PetscSectionGetDof</A>(coordSection, newp, &amp;dof);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../IS/PetscSectionGetOffset.html#PetscSectionGetOffset">PetscSectionGetOffset</A>(coordSection, newp, &amp;off);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../IS/PetscSectionGetOffset.html#PetscSectionGetOffset">PetscSectionGetOffset</A>(coordSection, splitp, &amp;soff);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+for (d = 0; d &lt; dof; ++d) coords[soff+d] = coords[off+d];
+}
+ierr = <A HREF="../Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(coordinates, &amp;coords);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Step 9: SF, if I can figure this out we can split the mesh in parallel */
+ierr = DMPlexShiftSF_Internal(dm, depthShift, sdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* Step 10: Labels */
+ierr = DMPlexShiftLabels_Internal(dm, depthShift, sdm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetNumLabels.html#DMPlexGetNumLabels">DMPlexGetNumLabels</A>(sdm, &amp;numLabels);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+for (dep = 0; dep &lt;= depth; ++dep) {
+for (p = 0; p &lt; numSplitPoints[dep]; ++p) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> newp   = depthOffset[dep] + splitPoints[dep][p];
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> splitp = pMaxNew[dep] + p;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>       l;
+<P>
+for (l = 0; l &lt; numLabels; ++l) {
+DMLabel     mlabel;
+const char *lname;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>    val;
+<P>
+ierr = <A HREF="../DM/DMPlexGetLabelName.html#DMPlexGetLabelName">DMPlexGetLabelName</A>(sdm, l, &amp;lname);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../DM/DMPlexGetLabel.html#DMPlexGetLabel">DMPlexGetLabel</A>(sdm, lname, &amp;mlabel);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = DMLabelGetValue(mlabel, newp, &amp;val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (val &gt;= 0) {
+ierr = DMLabelSetValue(mlabel, splitp, val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (dep == 0) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> cedge = pMaxNew[1] + (depthShift[1] - depthShift[0]) + p;
+ierr = DMLabelSetValue(mlabel, cedge, val);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+}
+}
+}
+for (sp = 0; sp &lt; numSP; ++sp) {
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> dep = values[sp];
+<P>
+if ((dep &lt; 0) || (dep &gt; depth)) continue;
+if (pointIS[dep]) {ierr = <A HREF="../IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(pointIS[dep], &amp;splitPoints[dep]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);}
+ierr = <A HREF="../IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;pointIS[dep]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+if (label) {
+ierr = <A HREF="../IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(valueIS, &amp;values);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;valueIS);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+ierr = <A HREF="../Sys/PetscFree5.html#PetscFree5">PetscFree5</A>(depthShift, depthOffset, pMaxNew, coneNew, supportNew);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscFree3.html#PetscFree3">PetscFree3</A>(pointIS, numSplitPoints, splitPoints);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "DMPlexConstructCohesiveCells"
+/*@C
+DMPlexConstructCohesiveCells - Construct cohesive cells which split the face along an internal interface
+<P>
+Collective on dm
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dm </B></TD><TD>- The original DM
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>labelName </B></TD><TD>- The label specifying the boundary faces (this could be auto-generated)
+</TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
+<DT><B>dmSplit </B> -The new DM
+<br>
+</TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../DM/DMCreate.html#DMCreate">DMCreate</A>(), <A HREF="../DM/DMPlexLabelCohesiveComplete.html#DMPlexLabelCohesiveComplete">DMPlexLabelCohesiveComplete</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/plex/plexsubmesh.c.html#DMPlexConstructGhostCells">src/dm/impls/plex/plexsubmesh.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

@@ -5,13 +5,13 @@
 <TITLE>TSSetSolution</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSSetSolution"><H1>TSSetSolution</H1></A>
 Sets the initial solution vector for use by the <A HREF="../TS/TS.html#TS">TS</A> routines. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  TSSetSolution(TS ts,Vec x)
+PetscErrorCode  TSSetSolution(TS ts,Vec u)
 </PRE>
 Logically Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -19,7 +19,7 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Ve
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts </B></TD><TD>- the <A HREF="../TS/TS.html#TS">TS</A> context obtained from <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>()
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- the solution vector
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>u </B></TD><TD>- the solution vector
 </TD></TR></TABLE>
 <P>
 
@@ -42,5 +42,5 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Ve
 <A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex18.c.html">src/ts/examples/tutorials/ex18.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex22.c.html">src/ts/examples/tutorials/ex22.c.html</A><BR>
 </BODY></HTML>

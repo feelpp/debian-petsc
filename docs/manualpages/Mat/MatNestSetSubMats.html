@@ -5,7 +5,7 @@
 <TITLE>MatNestSetSubMats</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatNestSetSubMats"><H1>MatNestSetSubMats</H1></A>
 Sets the nested submatrices 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,13 +21,13 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nr </B></TD><TD>- number of nested row blocks
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_row </B></TD><TD>- index sets for each nested row block, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to make contiguous
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_row </B></TD><TD>- index sets for each nested row block, or NULL to make contiguous
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nc </B></TD><TD>- number of nested column blocks
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_col </B></TD><TD>- index sets for each nested column block, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to make contiguous
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_col </B></TD><TD>- index sets for each nested column block, or NULL to make contiguous
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>a </B></TD><TD>- row-aligned array of nr*nc submatrices, empty submatrices can be passed using <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>a </B></TD><TD>- row-aligned array of nr*nc submatrices, empty submatrices can be passed using NULL
 </TD></TR></TABLE>
 <P>
 

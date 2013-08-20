@@ -5,7 +5,7 @@
 <TITLE>PCMG</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCMG"><H1>PCMG</H1></A>
 Use multigrid preconditioning. This preconditioner requires you provide additional information about the coarser grid matrices and restriction/interpolation operators. 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
@@ -16,7 +16,7 @@ Use multigrid preconditioning. This preconditioner requires you provide addition
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_smoothdown &lt;n&gt; </B></TD><TD>- number of smoothing steps before applying restriction operator
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_type &lt;additive,multiplicative,full,cascade&gt; </B></TD><TD>- multiplicative is the default
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_type &lt;additive,multiplicative,full,kaskade&gt; </B></TD><TD>- multiplicative is the default
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_mg_log </B></TD><TD>- log information about time spent on each level of the solver
 </TD></TR>

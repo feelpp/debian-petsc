@@ -5,11 +5,28 @@
 <TITLE>TSTHETA</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSTHETA"><H1>TSTHETA</H1></A>
 DAE solver using the implicit Theta method 
 <P>
+<H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
+-ts_theta_theta &lt;Theta&gt; - Location of stage (0&lt;Theta&lt;=1)
+-ts_theta_extrapolate &lt;flg&gt; Extrapolate stage solution from previous solution (sometimes unstable)
+-ts_theta_endpoint &lt;flag&gt; - Use the endpoint (like Crank-Nicholson) instead of midpoint form of the Theta method
+<P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+<pre>
+ -ts_type theta -ts_theta_theta 1.0 corresponds to backward Euler (<A HREF="../TS/TSBEULER.html#TSBEULER">TSBEULER</A>)
+</pre>
+<pre>
+ -ts_type theta -ts_theta_theta 0.5 corresponds to the implicit midpoint rule
+</pre>
+<pre>
+ -ts_type theta -ts_theta_theta 0.5 -ts_theta_endpoint corresponds to Crank-Nicholson (<A HREF="../TS/TSCN.html#TSCN">TSCN</A>)
+</pre>
+<P>
+<P>
+<P>
 This method can be applied to DAE.
 <P>
 This method is cast as a 1-stage implicit Runge-Kutta method.
@@ -41,7 +58,7 @@ To apply a diagonally implicit RK method to DAE, the stage formula
  Y_i = X + h sum_j a_ij Y'_j
 </pre>
 <P>
-is interpreted as a formula for Y'_i in terms of Y_i and known stuff (Y'_j, j&lt;i)
+is interpreted as a formula for Y'_i in terms of Y_i and known values (Y'_j, j&lt;i)
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../TS/TSSetType.html#TSSetType">TSSetType</A>(), <A HREF="../TS/TSCN.html#TSCN">TSCN</A>, <A HREF="../TS/TSBEULER.html#TSBEULER">TSBEULER</A>, <A HREF="../TS/TSThetaSetTheta.html#TSThetaSetTheta">TSThetaSetTheta</A>(), <A HREF="../TS/TSThetaSetEndpoint.html#TSThetaSetEndpoint">TSThetaSetEndpoint</A>()

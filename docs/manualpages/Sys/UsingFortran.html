@@ -5,7 +5,7 @@
 <TITLE>UsingFortran</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="UsingFortran"><H1>UsingFortran</H1></A>
 Fortran can be used with PETSc in four distinct approaches 
 <pre>
@@ -27,7 +27,7 @@ Fortran can be used with PETSc in four distinct approaches
 <pre>
    2) classic Fortran 90 style
 </pre>
-.#include "finclude/petscXXX.h" 
+.#include "finclude/petscXXX.h"
 </pre>
 .#include "finclude/petscXXX.h90" to work with material from the XXX component of PETSc
 </pre>
@@ -39,7 +39,7 @@ Fortran can be used with PETSc in four distinct approaches
 <pre>
    3) Using Fortran modules
 </pre>
-.#include "finclude/petscXXXdef.h" 
+.#include "finclude/petscXXXdef.h"
 </pre>
 <pre>
         use petscXXXX
@@ -52,7 +52,7 @@ Fortran can be used with PETSc in four distinct approaches
 <pre>
    4) Use Fortran modules and Fortran data types for PETSc types
 </pre>
-.#include "finclude/petscXXXdef.h" 
+.#include "finclude/petscXXXdef.h"
 </pre>
 <pre>
         use petscXXXX
@@ -73,7 +73,7 @@ Finally if you absolutely do not want to use any #include you can use either
    3a) skip the #include BUT you cannot use any PETSc data type names like <A HREF="../Vec/Vec.html#Vec">Vec</A>, <A HREF="../Mat/Mat.html#Mat">Mat</A>, <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>, <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> etc
 </pre>
 <pre>
-       and you must declare the variables as integer, for example 
+       and you must declare the variables as integer, for example
 </pre>
 <pre>
        integer variablename

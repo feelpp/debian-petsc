@@ -39,6 +39,11 @@ extern void PetscRmPointer(void*);
 #define kspchebyshevsetestimateeigenvalues_ kspchebyshevsetestimateeigenvalues
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspchebyshevesteigsetrandom_ KSPCHEBYSHEVESTEIGSETRANDOM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspchebyshevesteigsetrandom_ kspchebyshevesteigsetrandom
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspchebyshevsetnewmatrix_ KSPCHEBYSHEVSETNEWMATRIX
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspchebyshevsetnewmatrix_ kspchebyshevsetnewmatrix
@@ -56,6 +61,11 @@ void PETSC_STDCALL  kspchebyshevseteigenvalues_(KSP ksp,PetscReal *emax,PetscRea
 void PETSC_STDCALL  kspchebyshevsetestimateeigenvalues_(KSP ksp,PetscReal *a,PetscReal *b,PetscReal *c,PetscReal *d, int *__ierr ){
 *__ierr = KSPChebyshevSetEstimateEigenvalues(
 	(KSP)PetscToPointer((ksp) ),*a,*b,*c,*d);
+}
+void PETSC_STDCALL  kspchebyshevesteigsetrandom_(KSP ksp,PetscRandom random, int *__ierr ){
+*__ierr = KSPChebyshevEstEigSetRandom(
+	(KSP)PetscToPointer((ksp) ),
+	(PetscRandom)PetscToPointer((random) ));
 }
 void PETSC_STDCALL  kspchebyshevsetnewmatrix_(KSP ksp, int *__ierr ){
 *__ierr = KSPChebyshevSetNewMatrix(

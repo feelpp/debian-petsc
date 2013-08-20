@@ -5,14 +5,12 @@
 <TITLE>SNESGetDM</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESGetDM"><H1>SNESGetDM</H1></A>
 Gets the DM that may be used by some preconditioners 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESGetDM(SNES snes,DM *dm)
 </PRE>
 Not Collective but DM obtained is parallel on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -27,7 +25,6 @@ Not Collective but DM obtained is parallel on <A HREF="../SNES/SNES.html#SNES">S
 <P>
 
 <P>
-<P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../SNES/SNESSetDM.html#SNESSetDM">SNESSetDM</A>(), <A HREF="../KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>(), <A HREF="../KSP/KSPGetDM.html#KSPGetDM">KSPGetDM</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
@@ -39,12 +36,12 @@ Not Collective but DM obtained is parallel on <A HREF="../SNES/SNES.html#SNES">S
 <A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex15.c.html">src/snes/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex18.c.html">src/snes/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex19.c.html">src/snes/examples/tutorials/ex19.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex20.c.html">src/snes/examples/tutorials/ex20.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex22.c.html">src/snes/examples/tutorials/ex22.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex30.c.html">src/snes/examples/tutorials/ex30.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex35.c.html">src/snes/examples/tutorials/ex35.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex58.c.html">src/snes/examples/tutorials/ex58.c.html</A><BR>
 </BODY></HTML>

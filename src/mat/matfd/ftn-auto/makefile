@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = fdmatrixf.c
-OBJSC    = fdmatrixf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

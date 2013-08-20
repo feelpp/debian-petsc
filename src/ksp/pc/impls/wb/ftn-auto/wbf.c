@@ -27,8 +27,8 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscpcmg.h"
 #include "petscdmda.h"
+#include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcexoticsettype_ PCEXOTICSETTYPE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)

@@ -5,13 +5,13 @@
 <TITLE>PetscTraceBackErrorHandler</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscTraceBackErrorHandler"><H1>PetscTraceBackErrorHandler</H1></A>
 Default error handler routine that generates a traceback on error detection. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-PetscErrorCode  PetscTraceBackErrorHandler(MPI_Comm comm,int line,const char *fun,const char* file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,void *ctx)
+PetscErrorCode  PetscTraceBackErrorHandler(MPI_Comm comm,int line,const char *fun,const char *file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,void *ctx)
 </PRE>
 Not Collective
 <P>
@@ -53,7 +53,7 @@ currently available PETSc error handlers include <A HREF="../Sys/PetscTraceBackE
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>(), <A HREF="../Sys/PetscAttachDebuggerErrorHandler.html#PetscAttachDebuggerErrorHandler">PetscAttachDebuggerErrorHandler</A>(), 
+  <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>(), <A HREF="../Sys/PetscAttachDebuggerErrorHandler.html#PetscAttachDebuggerErrorHandler">PetscAttachDebuggerErrorHandler</A>(),
 <BR><A HREF="../Sys/PetscAbortErrorHandler.html#PetscAbortErrorHandler">PetscAbortErrorHandler</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/error/errtrace.c.html#PetscTraceBackErrorHandler">src/sys/error/errtrace.c</A>

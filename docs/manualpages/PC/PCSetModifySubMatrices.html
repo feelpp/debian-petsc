@@ -5,7 +5,7 @@
 <TITLE>PCSetModifySubMatrices</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCSetModifySubMatrices"><H1>PCSetModifySubMatrices</H1></A>
 Sets a user-defined routine for modifying the submatrices that arise within certain subdomain-based preconditioners. The basic submatrices are extracted from the preconditioner matrix as usual; the user can then alter these (for example, to set different boundary conditions for each submatrix) before they are used for the local solves. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -37,7 +37,7 @@ that comprise each local submatrix
 <br>
 <DT><B>submat </B> -array of local submatrices
 <br>
-<DT><B>ctx </B> -optional user-defined context for private data for the 
+<DT><B>ctx </B> -optional user-defined context for private data for the
 user-defined func routine (may be null)
 <br>
 </TABLE>

@@ -5,13 +5,13 @@
 <TITLE>PetscLogEventBarrierBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscLogEventBarrierBegin"><H1>PetscLogEventBarrierBegin</H1></A>
 Logs the time in a barrier before an event. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PetscLogEventBarrierBegin(int e,PetscObject o1,PetscObject o2,PetscObject o3,
-PetscObject o4,MPI_Comm comm)
+#include "petsclog.h"
+PetscErrorCode PetscLogEventBarrierBegin(int e,PetscObject o1,PetscObject o2,PetscObject o3,PetscObject o4,MPI_Comm comm)
 </PRE>
 Not Collective
 <P>
@@ -49,7 +49,7 @@ VEC_NormComm = VEC_NormBarrier + 1
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  log, event, begin, barrier
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogEventBarrierBegin">src/sys/plog/plog.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/logging/plog.c.html#PetscLogEventBarrierBegin">src/sys/logging/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

@@ -5,23 +5,22 @@
 <TITLE>PCMGGetCoarseSolve</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCMGGetCoarseSolve"><H1>PCMGGetCoarseSolve</H1></A>
 Gets the solver context to be used on the coarse grid. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-#include "petscpcmg.h"   
-PetscErrorCode  PCMGGetCoarseSolve(PC pc,KSP *ksp)  
+PetscErrorCode  PCMGGetCoarseSolve(PC pc,KSP *ksp)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>pc </B> -the multigrid context 
+<DT><B>pc </B> -the multigrid context
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>ksp </B> -the coarse grid solver context 
+<DT><B>ksp </B> -the coarse grid solver context
 <br>
 <P>
 

@@ -39,6 +39,11 @@ extern void PetscRmPointer(void*);
 #define vecdot_ vecdot
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecdotrealpart_ VECDOTREALPART
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecdotrealpart_ vecdotrealpart
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecnorm_ VECNORM
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define vecnorm_ vecnorm
@@ -169,6 +174,11 @@ void PETSC_STDCALL  vecdot_(Vec x,Vec y,PetscScalar *val, int *__ierr ){
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),val);
 }
+void PETSC_STDCALL  vecdotrealpart_(Vec x,Vec y,PetscReal *val, int *__ierr ){
+*__ierr = VecDotRealPart(
+	(Vec)PetscToPointer((x) ),
+	(Vec)PetscToPointer((y) ),val);
+}
 void PETSC_STDCALL  vecnorm_(Vec x,NormType *type,PetscReal *val, int *__ierr ){
 *__ierr = VecNorm(
 	(Vec)PetscToPointer((x) ),*type,val);
@@ -190,7 +200,7 @@ void PETSC_STDCALL  vectdot_(Vec x,Vec y,PetscScalar *val, int *__ierr ){
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ),val);
 }
-void PETSC_STDCALL   vecscale_(Vec x,PetscScalar *alpha, int *__ierr ){
+void PETSC_STDCALL  vecscale_(Vec x,PetscScalar *alpha, int *__ierr ){
 *__ierr = VecScale(
 	(Vec)PetscToPointer((x) ),*alpha);
 }

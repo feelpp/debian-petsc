@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex36f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:52:23+00:00">
+<meta name="date" content="2013-07-02T14:44:24+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!   This program demonstrates use of PETSc dense matrices.
@@ -33,7 +33,7 @@
 <a name="line22"> 22: </a>! -----------------------------------------------------------------
 <a name="line23"> 23: </a>!
 <a name="line24"> 24: </a>!  Demo1 -  This subroutine demonstrates the use of PETSc-allocated dense
-<a name="line25"> 25: </a>!  matrix storage.  Here <A href="../../../../docs/manualpages/Mat/MatGetArray.html#MatGetArray">MatGetArray</A>() is used <font color="#4169E1">for</font> direct access to the
+<a name="line25"> 25: </a>!  matrix storage.  Here <A href="../../../../docs/manualpages/Mat/MatDenseGetArray.html#MatDenseGetArray">MatDenseGetArray</A>() is used <font color="#4169E1">for</font> direct access to the
 <a name="line26"> 26: </a>!  array that stores the dense matrix.  The user declares an array (aa(1))
 <a name="line27"> 27: </a>!  and index variable (ia), which are then used together to manipulate
 <a name="line28"> 28: </a>!  the array contents.
@@ -71,12 +71,12 @@
 <a name="line60"> 60: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetUp.html#MatSetUp">MatSetUp</A>(A,ierr)
 
 <a name="line62"> 62: </a>!  Access array storage
-<a name="line63"> 63: </a>      call <A href="../../../../docs/manualpages/Mat/MatGetArray.html#MatGetArray">MatGetArray</A>(A,aa,ia,ierr)
+<a name="line63"> 63: </a>      call <A href="../../../../docs/manualpages/Mat/MatDenseGetArray.html#MatDenseGetArray">MatDenseGetArray</A>(A,aa,ia,ierr)
 
 <a name="line65"> 65: </a>!  Set matrix values directly
 <a name="line66"> 66: </a>      call FillUpMatrix(m,n,aa(ia+1))
 
-<a name="line68"> 68: </a>      call <A href="../../../../docs/manualpages/Mat/MatRestoreArray.html#MatRestoreArray">MatRestoreArray</A>(A,aa,ia,ierr)
+<a name="line68"> 68: </a>      call <A href="../../../../docs/manualpages/Mat/MatDenseRestoreArray.html#MatDenseRestoreArray">MatDenseRestoreArray</A>(A,aa,ia,ierr)
 
 <a name="line70"> 70: </a>!  Finalize matrix assembly
 <a name="line71"> 71: </a>      call <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A,MAT_FINAL_ASSEMBLY,ierr)

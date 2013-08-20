@@ -5,7 +5,7 @@
 <TITLE>VecCreateMPIWithArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecCreateMPIWithArray"><H1>VecCreateMPIWithArray</H1></A>
 Creates a parallel, array-style vector, where the user provides the array space to store the vector values. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -31,11 +31,12 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>vv </B> -the vector
 <br>
+<P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Use <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() or <A HREF="../Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>() to form additional vectors of the
 same type as an existing vector.
 <P>
-If the user-provided array is <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, then <A HREF="../Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>() can be used
+If the user-provided array is NULL, then <A HREF="../Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>() can be used
 at a later stage to SET the array for storing the vector values.
 <P>
 PETSc does NOT free the array when the vector is destroyed via <A HREF="../Vec/VecDestroy.html#VecDestroy">VecDestroy</A>().
@@ -53,6 +54,4 @@ The user should not free the array until the vector is destroyed.
 <BR><A HREF="./index.html">Index of all Vec routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
 </BODY></HTML>

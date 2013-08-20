@@ -5,9 +5,9 @@
 <TITLE>PCBDDCSetDofsSplitting</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCBDDCSetDofsSplitting"><H1>PCBDDCSetDofsSplitting</H1></A>
-Set index set defining how dofs are splitted. 
+Set index sets defining fields of local mat. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
@@ -19,16 +19,15 @@ Not collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc </B></TD><TD>- the preconditioning context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- number of index sets defining dofs spltting
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- number of index sets defining the fields
 </TD></TR></TABLE>
-<DT><B><A HREF="../IS/IS.html#IS">IS</A>[] </B> -array of <A HREF="../IS/IS.html#IS">IS</A> describing dofs splitting
+<DT><B><A HREF="../IS/IS.html#IS">IS</A>[] </B> -array of <A HREF="../IS/IS.html#IS">IS</A> describing the fields
 <br>
 </TABLE>
 <P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-Sequential ISs are copied, the user must destroy the array of <A HREF="../IS/IS.html#IS">IS</A> passed in.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PC/PCBDDC.html#PCBDDC">PCBDDC</A>

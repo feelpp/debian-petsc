@@ -5,9 +5,9 @@
 <TITLE>DMDAGetGlobalIndicesF90</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGetGlobalIndicesF90"><H1>DMDAGetGlobalIndicesF90</H1></A>
-Returns a Fortran90 pointer to the list of  global indices (global node number of all local nodes, including ghost nodes). 
+Returns a Fortran90 pointer to the list of global indices (global node number of all local nodes, including ghost nodes). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 DMDAGetGlobalIndicesF90(DM da,integer n,{integer, pointer :: idx(:)},integer ierr)
@@ -20,7 +20,7 @@ Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of local elements, including ghost nodes (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of local elements, including ghost nodes (or NULL)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>idx </B></TD><TD>- the Fortran90 pointer to the global indices
 </TD></TR>
@@ -46,5 +46,4 @@ Not yet supported for all F90 compilers
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex5f90.F.html">src/snes/examples/tutorials/ex5f90.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5f90t.F.html">src/snes/examples/tutorials/ex5f90t.F.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex39f90.F.html">src/snes/examples/tutorials/ex39f90.F.html</A><BR>
 </BODY></HTML>

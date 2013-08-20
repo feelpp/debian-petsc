@@ -3,11 +3,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/shell/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:57:39+00:00">
+<meta name="date" content="2013-07-02T14:46:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
@@ -16,12 +16,10 @@ FFLAGS   =
 SOURCEC  = dmshell.c
 SOURCEF  =
 SOURCEH  = ../../../../include/petscdmshell.h
-OBJSC    = ${SOURCEC:.c=.o}
-OBJSF    =
 LIBBASE  = libpetscdm
 MANSEC   = DM
 SUBMANSEC= DMSHELL
-LOCDIR   = src/dm/impls/shell
+LOCDIR   = src/dm/impls/shell/
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

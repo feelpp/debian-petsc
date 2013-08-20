@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tutorials/ex6f90.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:58:29+00:00">
+<meta name="date" content="2013-07-02T14:46:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!-----------------------------------------------------------------------
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!     manages tokamak edge region.
@@ -83,7 +83,7 @@
 <a name="line72"> 72: </a>!-----------------------------------------------------------------------
 <a name="line73"> 73: </a>!     computations.
 <a name="line74"> 74: </a>!-----------------------------------------------------------------------
-<a name="line75"> 75: </a>      IF(fa%comm(j) /= 0)THEN
+<a name="line75"> 75: </a>      IF (fa%comm(j) /= 0) THEN
 <a name="line76"> 76: </a>         x=fa%xg(j)
 <a name="line77"> 77: </a>         y=fa%yg(j)
 <a name="line78"> 78: </a>         m=fa%mg(j)
@@ -229,7 +229,7 @@
 <a name="line218">218: </a>!-----------------------------------------------------------------------
 <a name="line219">219: </a>!     set up distributed arrays.
 <a name="line220">220: </a>!-----------------------------------------------------------------------
-<a name="line221">221: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line221">221: </a>      IF (fa%comm(1) /= 0) THEN
 <a name="line222">222: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(fa%comm(1),DMDA_BOUNDARY_PERIODIC,                   &amp;
 <a name="line223">223: </a>     &amp;        DMDA_BOUNDARY_NONE, <A href="../../../../docs/manualpages/DM/DMDA_STENCIL_BOX.html#DMDA_STENCIL_BOX">DMDA_STENCIL_BOX</A>,                          &amp;
 <a name="line224">224: </a>     &amp;        fa%p2,fa%r2g,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,fa%sw,                &amp;
@@ -237,7 +237,7 @@
 <a name="line226">226: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGetLocalVector.html#DMGetLocalVector">DMGetLocalVector</A>(da2,vl2,ierr)
 <a name="line227">227: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGetGlobalVector.html#DMGetGlobalVector">DMGetGlobalVector</A>(da2,vg2,ierr)
 <a name="line228">228: </a>      ENDIF
-<a name="line229">229: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line229">229: </a>      IF (fa%comm(2) /= 0) THEN
 <a name="line230">230: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(fa%comm(2),DMDA_BOUNDARY_NONE,                       &amp;
 <a name="line231">231: </a>     &amp;        DMDA_BOUNDARY_NONE, <A href="../../../../docs/manualpages/DM/DMDA_STENCIL_BOX.html#DMDA_STENCIL_BOX">DMDA_STENCIL_BOX</A>,                        &amp;
 <a name="line232">232: </a>     &amp;        fa%p1-fa%p2,fa%r2g,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,fa%sw,          &amp;
@@ -245,7 +245,7 @@
 <a name="line234">234: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGetLocalVector.html#DMGetLocalVector">DMGetLocalVector</A>(da3,vl3,ierr)
 <a name="line235">235: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGetGlobalVector.html#DMGetGlobalVector">DMGetGlobalVector</A>(da3,vg3,ierr)
 <a name="line236">236: </a>      ENDIF
-<a name="line237">237: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line237">237: </a>      IF (fa%comm(0) /= 0) THEN
 <a name="line238">238: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(fa%comm(0),DMDA_BOUNDARY_NONE,                       &amp;
 <a name="line239">239: </a>     &amp;        DMDA_BOUNDARY_NONE, <A href="../../../../docs/manualpages/DM/DMDA_STENCIL_BOX.html#DMDA_STENCIL_BOX">DMDA_STENCIL_BOX</A>,                        &amp;
 <a name="line240">240: </a>     &amp;        fa%p1,fa%r1g,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,fa%sw,                &amp;
@@ -259,15 +259,15 @@
 <a name="line248">248: </a>!     <font color="#4169E1">for</font> global vector with redundancy.
 <a name="line249">249: </a>!-----------------------------------------------------------------------
 <a name="line250">250: </a>      tonglobal = 0
-<a name="line251">251: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line251">251: </a>      IF (fa%comm(1) /= 0) THEN
 <a name="line252">252: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da2,x,y,0,nx,ny,0,ierr)
 <a name="line253">253: </a>         tonglobal=tonglobal+nx*ny
 <a name="line254">254: </a>      ENDIF
-<a name="line255">255: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line255">255: </a>      IF (fa%comm(2) /= 0) THEN
 <a name="line256">256: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da3,x,y,0,nx,ny,0,ierr)
 <a name="line257">257: </a>         tonglobal=tonglobal+nx*ny
 <a name="line258">258: </a>      ENDIF
-<a name="line259">259: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line259">259: </a>      IF (fa%comm(0) /= 0) THEN
 <a name="line260">260: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da1,x,y,0,nx,ny,0,ierr)
 <a name="line261">261: </a>         tonglobal=tonglobal+nx*ny
 <a name="line262">262: </a>      ENDIF
@@ -278,7 +278,7 @@
 <a name="line267">267: </a>!-----------------------------------------------------------------------
 <a name="line268">268: </a>      ALLOCATE(tonatural(0:tonglobal))
 <a name="line269">269: </a>      tonglobal=0
-<a name="line270">270: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line270">270: </a>      IF (fa%comm(1) /= 0) THEN
 <a name="line271">271: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da2,x,y,0,nx,ny,0,ierr)
 <a name="line272">272: </a>         DO j=0,ny-1
 <a name="line273">273: </a>            DO i=0,nx-1
@@ -287,11 +287,11 @@
 <a name="line276">276: </a>            ENDDO
 <a name="line277">277: </a>         ENDDO
 <a name="line278">278: </a>      ENDIF
-<a name="line279">279: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line279">279: </a>      IF (fa%comm(2) /= 0) THEN
 <a name="line280">280: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da3,x,y,0,nx,ny,0,ierr)
 <a name="line281">281: </a>         DO j=0,ny-1
 <a name="line282">282: </a>            DO i=0,nx-1
-<a name="line283">283: </a>               IF(x+i &lt; (fa%p1-fa%p2)/2)THEN
+<a name="line283">283: </a>               IF (x+i &lt; (fa%p1-fa%p2)/2) THEN
 <a name="line284">284: </a>                  tonatural(tonglobal)=x+i+fa%p1*(y+j)
 <a name="line285">285: </a>               ELSE
 <a name="line286">286: </a>                  tonatural(tonglobal)=fa%p2+x+i+fa%p1*(y+j)
@@ -300,7 +300,7 @@
 <a name="line289">289: </a>            ENDDO
 <a name="line290">290: </a>         ENDDO
 <a name="line291">291: </a>      ENDIF
-<a name="line292">292: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line292">292: </a>      IF (fa%comm(0) /= 0) THEN
 <a name="line293">293: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da1,x,y,0,nx,ny,0,ierr)
 <a name="line294">294: </a>         DO j=0,ny-1
 <a name="line295">295: </a>            DO i=0,nx-1
@@ -312,7 +312,7 @@
 <a name="line301">301: </a>!-----------------------------------------------------------------------
 <a name="line302">302: </a>!     diagnose tonatural.
 <a name="line303">303: </a>!-----------------------------------------------------------------------
-<a name="line304">304: </a>      IF(diagnose)THEN
+<a name="line304">304: </a>      IF (diagnose)THEN
 <a name="line305">305: </a>         WRITE(*,'(a,i3,a)')<font color="#666666">"tonglobal = "</font>,tonglobal,<font color="#666666">", tonatural = "</font>
 <a name="line306">306: </a>         WRITE(*,'(2i4)')(i,tonatural(i),i=0,tonglobal-1)
 <a name="line307">307: </a>      ENDIF
@@ -330,29 +330,29 @@
 <a name="line319">319: </a>      fromnglobal=0
 <a name="line320">320: </a>      fa%offg(1)=0
 <a name="line321">321: </a>      offt(1)=0
-<a name="line322">322: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line322">322: </a>      IF (fa%comm(1) /= 0)THEN
 <a name="line323">323: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da2,x,y,0,nx,ny,0,ierr)
 <a name="line324">324: </a>         offt(2)=nx*ny
-<a name="line325">325: </a>         IF(y+ny == fa%r2g)ny=ny-1
+<a name="line325">325: </a>         IF (y+ny == fa%r2g)ny=ny-1
 <a name="line326">326: </a>         fromnglobal=fromnglobal+nx*ny
 <a name="line327">327: </a>         fa%offg(2)=fromnglobal
 <a name="line328">328: </a>      ELSE
 <a name="line329">329: </a>         offt(2)=0
 <a name="line330">330: </a>         fa%offg(2)=0
 <a name="line331">331: </a>      ENDIF
-<a name="line332">332: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line332">332: </a>      IF (fa%comm(2) /= 0)THEN
 <a name="line333">333: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da3,x,y,0,nx,ny,0,ierr)
 <a name="line334">334: </a>         offt(0)=offt(2)+nx*ny
-<a name="line335">335: </a>         IF(y+ny == fa%r2g)ny=ny-1
+<a name="line335">335: </a>         IF (y+ny == fa%r2g)ny=ny-1
 <a name="line336">336: </a>         fromnglobal=fromnglobal+nx*ny
 <a name="line337">337: </a>         fa%offg(0)=fromnglobal
 <a name="line338">338: </a>      ELSE
 <a name="line339">339: </a>         offt(0)=offt(2)
 <a name="line340">340: </a>         fa%offg(0)=fromnglobal
 <a name="line341">341: </a>      ENDIF
-<a name="line342">342: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line342">342: </a>      IF (fa%comm(0) /= 0)THEN
 <a name="line343">343: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da1,x,y,0,nx,ny,0,ierr)
-<a name="line344">344: </a>         IF(y == 0)ny=ny-1
+<a name="line344">344: </a>         IF (y == 0)ny=ny-1
 <a name="line345">345: </a>         fromnglobal=fromnglobal+nx*ny
 <a name="line346">346: </a>      ENDIF
 <a name="line347">347: </a>      CALL <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Scan.html#MPI_Scan">MPI_Scan</A>(fromnglobal,globalrstart,1,MPI_INTEGER,                      &amp;
@@ -365,9 +365,9 @@
 <a name="line354">354: </a>!-----------------------------------------------------------------------
 <a name="line355">355: </a>      ALLOCATE(fromnatural(0:fromnglobal))
 <a name="line356">356: </a>      fromnglobal=0
-<a name="line357">357: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line357">357: </a>      IF (fa%comm(1) /= 0)THEN
 <a name="line358">358: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da2,x,y,0,nx,ny,0,ierr)
-<a name="line359">359: </a>         IF(y+ny == fa%r2g)ny=ny-1
+<a name="line359">359: </a>         IF (y+ny == fa%r2g)ny=ny-1
 <a name="line360">360: </a>         fa%xg(1)=x
 <a name="line361">361: </a>         fa%yg(1)=y
 <a name="line362">362: </a>         fa%mg(1)=nx
@@ -382,9 +382,9 @@
 <a name="line371">371: </a>            ENDDO
 <a name="line372">372: </a>         ENDDO
 <a name="line373">373: </a>      ENDIF
-<a name="line374">374: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line374">374: </a>      IF (fa%comm(2) /= 0)THEN
 <a name="line375">375: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da3,x,y,0,nx,ny,0,ierr)
-<a name="line376">376: </a>         IF(y+ny == fa%r2g)ny=ny-1
+<a name="line376">376: </a>         IF (y+ny == fa%r2g)ny=ny-1
 <a name="line377">377: </a>         fa%xg(2)=x
 <a name="line378">378: </a>         fa%yg(2)=y
 <a name="line379">379: </a>         fa%mg(2)=nx
@@ -393,7 +393,7 @@
 <a name="line382">382: </a>     &amp;        fa%nl(2),0,ierr)
 <a name="line383">383: </a>         DO j=0,ny-1
 <a name="line384">384: </a>            DO i=0,nx-1
-<a name="line385">385: </a>               IF(x+i &lt; (fa%p1-fa%p2)/2)THEN
+<a name="line385">385: </a>               IF (x+i &lt; (fa%p1-fa%p2)/2)THEN
 <a name="line386">386: </a>                  fromnatural(fromnglobal)=x+i+fa%p1*(y+j)
 <a name="line387">387: </a>               ELSE
 <a name="line388">388: </a>                  fromnatural(fromnglobal)=fa%p2+x+i+fa%p1*(y+j)
@@ -402,9 +402,9 @@
 <a name="line391">391: </a>            ENDDO
 <a name="line392">392: </a>         ENDDO
 <a name="line393">393: </a>      ENDIF
-<a name="line394">394: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line394">394: </a>      IF (fa%comm(0) /= 0)THEN
 <a name="line395">395: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da1,x,y,0,nx,ny,0,ierr)
-<a name="line396">396: </a>         IF(y == 0)THEN
+<a name="line396">396: </a>         IF (y == 0)THEN
 <a name="line397">397: </a>            ny=ny-1
 <a name="line398">398: </a>         ELSE
 <a name="line399">399: </a>            y=y-1
@@ -425,7 +425,7 @@
 <a name="line414">414: </a>!-----------------------------------------------------------------------
 <a name="line415">415: </a>!     diagnose fromnatural.
 <a name="line416">416: </a>!-----------------------------------------------------------------------
-<a name="line417">417: </a>      IF(diagnose)THEN
+<a name="line417">417: </a>      IF (diagnose)THEN
 <a name="line418">418: </a>         WRITE(*,'(a,i3,a)')<font color="#666666">"fromnglobal = "</font>,fromnglobal                        &amp;
 <a name="line419">419: </a>     &amp;        ,<font color="#666666">", fromnatural = "</font>
 <a name="line420">420: </a>         WRITE(*,'(2i4)')(i,fromnatural(i),i=0,fromnglobal-1)
@@ -441,7 +441,7 @@
 <a name="line430">430: </a>!-----------------------------------------------------------------------
 <a name="line431">431: </a>      ALLOCATE(to(0:tonglobal),from(0:tonglobal))
 <a name="line432">432: </a>      nscat=0
-<a name="line433">433: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line433">433: </a>      IF (fa%comm(1) /= 0)THEN
 <a name="line434">434: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da2,x,y,0,nx,ny,0,ierr)
 <a name="line435">435: </a>         DO j=0,ny-1
 <a name="line436">436: </a>            DO i=0,nx-1
@@ -451,11 +451,11 @@
 <a name="line440">440: </a>            ENDDO
 <a name="line441">441: </a>         ENDDO
 <a name="line442">442: </a>      ENDIF
-<a name="line443">443: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line443">443: </a>      IF (fa%comm(2) /= 0)THEN
 <a name="line444">444: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da3,x,y,0,nx,ny,0,ierr)
 <a name="line445">445: </a>         DO j=0,ny-1
 <a name="line446">446: </a>            DO i=0,nx-1
-<a name="line447">447: </a>               IF(x+i &lt; (fa%p1-fa%p2)/2)THEN
+<a name="line447">447: </a>               IF (x+i &lt; (fa%p1-fa%p2)/2)THEN
 <a name="line448">448: </a>                  to(nscat)=x+i+fa%p1*(y+j)
 <a name="line449">449: </a>               ELSE
 <a name="line450">450: </a>                  to(nscat)=fa%p2+x+i+fa%p1*(y+j)
@@ -465,7 +465,7 @@
 <a name="line454">454: </a>            ENDDO
 <a name="line455">455: </a>         ENDDO
 <a name="line456">456: </a>      ENDIF
-<a name="line457">457: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line457">457: </a>      IF (fa%comm(0) /= 0)THEN
 <a name="line458">458: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da1,x,y,0,nx,ny,0,ierr)
 <a name="line459">459: </a>         DO j=0,ny-1
 <a name="line460">460: </a>            DO i=0,nx-1
@@ -478,7 +478,7 @@
 <a name="line467">467: </a>!-----------------------------------------------------------------------
 <a name="line468">468: </a>!     diagnose to and from.
 <a name="line469">469: </a>!-----------------------------------------------------------------------
-<a name="line470">470: </a>      IF(diagnose)THEN
+<a name="line470">470: </a>      IF (diagnose)THEN
 <a name="line471">471: </a>         WRITE(*,'(a,i3,a)')<font color="#666666">"nscat = "</font>,nscat,<font color="#666666">", to, from = "</font>
 <a name="line472">472: </a>         WRITE(*,'(3i4)')(i,to(i),from(i),i=0,nscat-1)
 <a name="line473">473: </a>      ENDIF
@@ -510,12 +510,12 @@
 <a name="line499">499: </a>!-----------------------------------------------------------------------
 <a name="line500">500: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(globalvec,globalarray,ig,ierr)
 <a name="line501">501: </a>      k=ig
-<a name="line502">502: </a>      IF(diagnose)WRITE(*,'(a,i3,a)')                                                &amp;
+<a name="line502">502: </a>      IF (diagnose)WRITE(*,'(a,i3,a)')                                                &amp;
 <a name="line503">503: </a>     &amp;     <font color="#666666">"fromnglobal = "</font>,fromnglobal,<font color="#666666">", globalarray = "</font>
 <a name="line504">504: </a>      DO i=0,fromnglobal-1
 <a name="line505">505: </a>         k=k+1
 <a name="line506">506: </a>         globalarray(k)=globalrstart+i
-<a name="line507">507: </a>         IF(diagnose)WRITE(*,'(i4,f11.3)')i,globalarray(k)
+<a name="line507">507: </a>         IF (diagnose)WRITE(*,'(i4,f11.3)')i,globalarray(k)
 <a name="line508">508: </a>      ENDDO
 <a name="line509">509: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(globalvec,globalarray,ig,ierr)
 <a name="line510">510: </a>!-----------------------------------------------------------------------
@@ -532,15 +532,15 @@
 <a name="line521">521: </a>      cntl1=0
 <a name="line522">522: </a>      cntl2=0
 <a name="line523">523: </a>      cntl3=0
-<a name="line524">524: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line524">524: </a>      IF (fa%comm(1) /= 0)THEN
 <a name="line525">525: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecGetSize.html#VecGetSize">VecGetSize</A>(vl2,cntl2,ierr)
 <a name="line526">526: </a>         nlocal=nlocal+cntl2
 <a name="line527">527: </a>      ENDIF
-<a name="line528">528: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line528">528: </a>      IF (fa%comm(2) /= 0)THEN
 <a name="line529">529: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecGetSize.html#VecGetSize">VecGetSize</A>(vl3,cntl3,ierr)
 <a name="line530">530: </a>         nlocal=nlocal+cntl3
 <a name="line531">531: </a>      ENDIF
-<a name="line532">532: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line532">532: </a>      IF (fa%comm(0) /= 0)THEN
 <a name="line533">533: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecGetSize.html#VecGetSize">VecGetSize</A>(vl1,cntl1,ierr)
 <a name="line534">534: </a>         nlocal=nlocal+cntl1
 <a name="line535">535: </a>      ENDIF
@@ -553,21 +553,21 @@
 <a name="line542">542: </a>!-----------------------------------------------------------------------
 <a name="line543">543: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(localvec,localarray,il,ierr)
 <a name="line544">544: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(tovec,toarray,it,ierr)
-<a name="line545">545: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line545">545: </a>      IF (fa%comm(1) /= 0)THEN
 <a name="line546">546: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>(vl2,localarray(il+1+fa%offl(1)),ierr)
 <a name="line547">547: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>(vg2,toarray(it+1+offt(1)),ierr)
 <a name="line548">548: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(da2,vg2,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,vl2,ierr)
 <a name="line549">549: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(da2,vg2,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,vl2,ierr)
 <a name="line550">550: </a>         CALL <A href="../../../../docs/manualpages/DM/DMRestoreGlobalVector.html#DMRestoreGlobalVector">DMRestoreGlobalVector</A>(da2,vg2,ierr)
 <a name="line551">551: </a>      ENDIF
-<a name="line552">552: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line552">552: </a>      IF (fa%comm(2) /= 0)THEN
 <a name="line553">553: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>(vl3,localarray(il+1+fa%offl(2)),ierr)
 <a name="line554">554: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>(vg3,toarray(it+1+offt(2)),ierr)
 <a name="line555">555: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(da3,vg3,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,vl3,ierr)
 <a name="line556">556: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(da3,vg3,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,vl3,ierr)
 <a name="line557">557: </a>         CALL <A href="../../../../docs/manualpages/DM/DMRestoreGlobalVector.html#DMRestoreGlobalVector">DMRestoreGlobalVector</A>(da3,vg3,ierr)
 <a name="line558">558: </a>      ENDIF
-<a name="line559">559: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line559">559: </a>      IF (fa%comm(0) /= 0)THEN
 <a name="line560">560: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>(vl1,localarray(il+1+fa%offl(0)),ierr)
 <a name="line561">561: </a>         CALL <A href="../../../../docs/manualpages/Vec/VecPlaceArray.html#VecPlaceArray">VecPlaceArray</A>(vg1,toarray(it+1+offt(0)),ierr)
 <a name="line562">562: </a>         CALL <A href="../../../../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(da1,vg1,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,vl1,ierr)
@@ -587,12 +587,12 @@
 <a name="line576">576: </a>      ALLOCATE(indices(0:nlocal-1))
 <a name="line577">577: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(localvec,localarray,il,ierr)
 <a name="line578">578: </a>      k=il
-<a name="line579">579: </a>      IF(diagnose)WRITE(*,'(a,i3,a3,i4,a)')                                     &amp;
+<a name="line579">579: </a>      IF (diagnose)WRITE(*,'(a,i3,a3,i4,a)')                                     &amp;
 <a name="line580">580: </a>     &amp;     <font color="#666666">"nlocal = "</font>, nlocal,<font color="#666666">", offl = "</font>,fa%offl,<font color="#666666">", indices = "</font>
 <a name="line581">581: </a>      DO i=0,nlocal-1
 <a name="line582">582: </a>         k=k+1
 <a name="line583">583: </a>         indices(i)= int(localarray(k))
-<a name="line584">584: </a>         IF(diagnose)WRITE(*,'(2i4)')i,indices(i)
+<a name="line584">584: </a>         IF (diagnose)WRITE(*,'(2i4)')i,indices(i)
 <a name="line585">585: </a>      ENDDO
 <a name="line586">586: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(localvec,localarray,il,ierr)
 <a name="line587">587: </a>      CALL <A href="../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,2,nlocal,indices,                     &amp;
@@ -616,15 +616,15 @@
 <a name="line605">605: </a>      CALL <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is,ierr)
 <a name="line606">606: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(globalvec,ierr)
 <a name="line607">607: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(localvec,ierr)
-<a name="line608">608: </a>      IF(fa%comm(0) /= 0)THEN
+<a name="line608">608: </a>      IF (fa%comm(0) /= 0)THEN
 <a name="line609">609: </a>         CALL <A href="../../../../docs/manualpages/DM/DMRestoreLocalVector.html#DMRestoreLocalVector">DMRestoreLocalVector</A>(da1,vl1,ierr)
 <a name="line610">610: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(da1,ierr)
 <a name="line611">611: </a>      ENDIF
-<a name="line612">612: </a>      IF(fa%comm(1) /= 0)THEN
+<a name="line612">612: </a>      IF (fa%comm(1) /= 0)THEN
 <a name="line613">613: </a>         CALL <A href="../../../../docs/manualpages/DM/DMRestoreLocalVector.html#DMRestoreLocalVector">DMRestoreLocalVector</A>(da2,vl2,ierr)
 <a name="line614">614: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(da2,ierr)
 <a name="line615">615: </a>      ENDIF
-<a name="line616">616: </a>      IF(fa%comm(2) /= 0)THEN
+<a name="line616">616: </a>      IF (fa%comm(2) /= 0)THEN
 <a name="line617">617: </a>         CALL <A href="../../../../docs/manualpages/DM/DMRestoreLocalVector.html#DMRestoreLocalVector">DMRestoreLocalVector</A>(da3,vl3,ierr)
 <a name="line618">618: </a>         CALL <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(da3,ierr)
 <a name="line619">619: </a>      ENDIF
@@ -718,7 +718,7 @@
 <a name="line707">707: </a>!     fill arrays.
 <a name="line708">708: </a>!-----------------------------------------------------------------------
 <a name="line709">709: </a>      DO j=0,2
-<a name="line710">710: </a>         IF(vn == ln)THEN
+<a name="line710">710: </a>         IF (vn == ln)THEN
 <a name="line711">711: </a>            offset=iv+2*fa%offl(j)
 <a name="line712">712: </a>            patch(j)%mx=fa%ml(j)-1
 <a name="line713">713: </a>            patch(j)%my=fa%nl(j)-1
@@ -761,235 +761,236 @@
 <a name="line750">750: </a>!-----------------------------------------------------------------------
 <a name="line751">751: </a>!     draw it.
 <a name="line752">752: </a>!-----------------------------------------------------------------------
-<a name="line753">753: </a><font color="#A020F0">#if defined(PETSC_HAVE_X)</font>
-<a name="line754">754: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawOpenX.html#PetscDrawOpenX">PetscDrawOpenX</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,0,<font color="#666666">"meshes"</font>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,                  &amp;
+<a name="line753">753: </a><font color="#A020F0">#if defined(PETSC_HAVE_X) || defined(PETSC_HAVE_OPENGL)</font>
+<a name="line754">754: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawCreate.html#PetscDrawCreate">PetscDrawCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,0,<font color="#666666">"meshes"</font>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,                  &amp;
 <a name="line755">755: </a>     &amp;     <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,700,700,draw,ierr)
-<a name="line756">756: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawSetCoordinates.html#PetscDrawSetCoordinates">PetscDrawSetCoordinates</A>(draw,xmin,ymin,xmax,ymax,ierr)
-<a name="line757">757: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawZoom.html#PetscDrawZoom">PetscDrawZoom</A>(draw,barry_draw_patch,patch,ierr)
-<a name="line758">758: </a><font color="#A020F0">#endif</font>
-<a name="line759">759: </a>!-----------------------------------------------------------------------
-<a name="line760">760: </a>!     clean up.
-<a name="line761">761: </a>!-----------------------------------------------------------------------
-<a name="line762">762: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(v,va,iv,ierr)
-<a name="line763">763: </a><font color="#A020F0">#if defined(PETSC_HAVE_X)</font>
-<a name="line764">764: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(draw,ierr)
-<a name="line765">765: </a><font color="#A020F0">#endif</font>
-<a name="line766">766: </a>!-----------------------------------------------------------------------
-<a name="line767">767: </a>!     terminate.
-<a name="line768">768: </a>!-----------------------------------------------------------------------
-<a name="line769">769: </a>      RETURN
-<a name="line770">770: </a>      END SUBROUTINE barry_draw_fa
-<a name="line771">771: </a>!-----------------------------------------------------------------------
-<a name="line772">772: </a>!     subprogram 9. barry_map_region3.
-<a name="line773">773: </a>!     fills region 3 coordinates.
-<a name="line774">774: </a>!-----------------------------------------------------------------------
+<a name="line756">756: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawSetFromOptions.html#PetscDrawSetFromOptions">PetscDrawSetFromOptions</A>(draw,ierr)
+<a name="line757">757: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawSetCoordinates.html#PetscDrawSetCoordinates">PetscDrawSetCoordinates</A>(draw,xmin,ymin,xmax,ymax,ierr)
+<a name="line758">758: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawZoom.html#PetscDrawZoom">PetscDrawZoom</A>(draw,barry_draw_patch,patch,ierr)
+<a name="line759">759: </a><font color="#A020F0">#endif</font>
+<a name="line760">760: </a>!-----------------------------------------------------------------------
+<a name="line761">761: </a>!     clean up.
+<a name="line762">762: </a>!-----------------------------------------------------------------------
+<a name="line763">763: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(v,va,iv,ierr)
+<a name="line764">764: </a><font color="#A020F0">#if defined(PETSC_HAVE_X)</font>
+<a name="line765">765: </a>      CALL <A href="../../../../docs/manualpages/Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>(draw,ierr)
+<a name="line766">766: </a><font color="#A020F0">#endif</font>
+<a name="line767">767: </a>!-----------------------------------------------------------------------
+<a name="line768">768: </a>!     terminate.
+<a name="line769">769: </a>!-----------------------------------------------------------------------
+<a name="line770">770: </a>      RETURN
+<a name="line771">771: </a>      END SUBROUTINE barry_draw_fa
+<a name="line772">772: </a>!-----------------------------------------------------------------------
+<a name="line773">773: </a>!     subprogram 9. barry_map_region3.
+<a name="line774">774: </a>!     fills region 3 coordinates.
 <a name="line775">775: </a>!-----------------------------------------------------------------------
-<a name="line776">776: </a>!     declarations.
-<a name="line777">777: </a>!-----------------------------------------------------------------------
-<a name="line778">778: </a>      SUBROUTINE barry_map_region3(fa,g)
+<a name="line776">776: </a>!-----------------------------------------------------------------------
+<a name="line777">777: </a>!     declarations.
+<a name="line778">778: </a>!-----------------------------------------------------------------------
+<a name="line779">779: </a>      SUBROUTINE barry_map_region3(fa,g)
 
-<a name="line780">780: </a>      TYPE(fa_type), INTENT(INOUT) :: fa
-<a name="line781">781: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, INTENT(INOUT) :: g
+<a name="line781">781: </a>      TYPE(fa_type), INTENT(INOUT) :: fa
+<a name="line782">782: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, INTENT(INOUT) :: g
 
-<a name="line783">783: </a>      INTEGER :: i,j,k,x,y,m,n,ig
-<a name="line784">784: </a>      REAL(8) :: r0=1,theta0=pi/6,r,theta,dr,dt
-<a name="line785">785: </a>      REAL(8), DIMENSION(1) :: ga
-<a name="line786">786: </a>!-----------------------------------------------------------------------
-<a name="line787">787: </a>!     format statements.
-<a name="line788">788: </a>!-----------------------------------------------------------------------
-<a name="line789">789: </a> 10   FORMAT(/5x,<font color="#666666">"j"</font>,5x,<font color="#666666">"i"</font>,6x,<font color="#666666">"r"</font>,8x,<font color="#666666">"theta"</font>,8x,<font color="#666666">"x"</font>,10x,<font color="#666666">"y"</font>/)
-<a name="line790">790: </a> 20   FORMAT(2i6,4f11.3)
-<a name="line791">791: </a>!-----------------------------------------------------------------------
-<a name="line792">792: </a>!     preliminary computations.
-<a name="line793">793: </a>!-----------------------------------------------------------------------
-<a name="line794">794: </a>      dr=r0/(fa%r2-1)
-<a name="line795">795: </a>      dt=twopi/(3*(fa%p1-fa%p2-1))
-<a name="line796">796: </a>      CALL barry_get_global_corners(fa,2,x,y,m,n)
-<a name="line797">797: </a>!-----------------------------------------------------------------------
-<a name="line798">798: </a>!     fill array.
-<a name="line799">799: </a>!-----------------------------------------------------------------------
-<a name="line800">800: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(g,ga,ig,ierr)
-<a name="line801">801: </a>      k=ig+2*fa%offg(2)
-<a name="line802">802: </a>      IF(diagnose)THEN
-<a name="line803">803: </a>         WRITE(*,'(a)')<font color="#666666">"region 3"</font>
-<a name="line804">804: </a>         WRITE(*,10)
-<a name="line805">805: </a>      ENDIF
-<a name="line806">806: </a>      DO j=y,y+n-1
-<a name="line807">807: </a>         r=r0+j*dr
-<a name="line808">808: </a>         DO i=x,x+m-1
-<a name="line809">809: </a>            theta=theta0+i*dt
-<a name="line810">810: </a>            ga(k+1)=r*COS(theta)
-<a name="line811">811: </a>            ga(k+2)=r*SIN(theta)-4*r0
-<a name="line812">812: </a>            IF(diagnose)WRITE(*,20)j,i,r,theta,ga(k+1),ga(k+2)
-<a name="line813">813: </a>            k=k+2
-<a name="line814">814: </a>         ENDDO
-<a name="line815">815: </a>         IF(diagnose)WRITE(*,10)
-<a name="line816">816: </a>      ENDDO
-<a name="line817">817: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(g,ga,ig,ierr)
-<a name="line818">818: </a>!-----------------------------------------------------------------------
-<a name="line819">819: </a>!     terminate.
-<a name="line820">820: </a>!-----------------------------------------------------------------------
-<a name="line821">821: </a>      RETURN
-<a name="line822">822: </a>      END SUBROUTINE barry_map_region3
-<a name="line823">823: </a>!-----------------------------------------------------------------------
-<a name="line824">824: </a>!     subprogram 10. barry_map_region2.
-<a name="line825">825: </a>!     fills region 2 coordinates.
-<a name="line826">826: </a>!-----------------------------------------------------------------------
+<a name="line784">784: </a>      INTEGER :: i,j,k,x,y,m,n,ig
+<a name="line785">785: </a>      REAL(8) :: r0=1,theta0=pi/6,r,theta,dr,dt
+<a name="line786">786: </a>      REAL(8), DIMENSION(1) :: ga
+<a name="line787">787: </a>!-----------------------------------------------------------------------
+<a name="line788">788: </a>!     format statements.
+<a name="line789">789: </a>!-----------------------------------------------------------------------
+<a name="line790">790: </a> 10   FORMAT(/5x,<font color="#666666">"j"</font>,5x,<font color="#666666">"i"</font>,6x,<font color="#666666">"r"</font>,8x,<font color="#666666">"theta"</font>,8x,<font color="#666666">"x"</font>,10x,<font color="#666666">"y"</font>/)
+<a name="line791">791: </a> 20   FORMAT(2i6,4f11.3)
+<a name="line792">792: </a>!-----------------------------------------------------------------------
+<a name="line793">793: </a>!     preliminary computations.
+<a name="line794">794: </a>!-----------------------------------------------------------------------
+<a name="line795">795: </a>      dr=r0/(fa%r2-1)
+<a name="line796">796: </a>      dt=twopi/(3*(fa%p1-fa%p2-1))
+<a name="line797">797: </a>      CALL barry_get_global_corners(fa,2,x,y,m,n)
+<a name="line798">798: </a>!-----------------------------------------------------------------------
+<a name="line799">799: </a>!     fill array.
+<a name="line800">800: </a>!-----------------------------------------------------------------------
+<a name="line801">801: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(g,ga,ig,ierr)
+<a name="line802">802: </a>      k=ig+2*fa%offg(2)
+<a name="line803">803: </a>      IF (diagnose)THEN
+<a name="line804">804: </a>         WRITE(*,'(a)')<font color="#666666">"region 3"</font>
+<a name="line805">805: </a>         WRITE(*,10)
+<a name="line806">806: </a>      ENDIF
+<a name="line807">807: </a>      DO j=y,y+n-1
+<a name="line808">808: </a>         r=r0+j*dr
+<a name="line809">809: </a>         DO i=x,x+m-1
+<a name="line810">810: </a>            theta=theta0+i*dt
+<a name="line811">811: </a>            ga(k+1)=r*COS(theta)
+<a name="line812">812: </a>            ga(k+2)=r*SIN(theta)-4*r0
+<a name="line813">813: </a>            IF (diagnose)WRITE(*,20)j,i,r,theta,ga(k+1),ga(k+2)
+<a name="line814">814: </a>            k=k+2
+<a name="line815">815: </a>         ENDDO
+<a name="line816">816: </a>         IF (diagnose)WRITE(*,10)
+<a name="line817">817: </a>      ENDDO
+<a name="line818">818: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(g,ga,ig,ierr)
+<a name="line819">819: </a>!-----------------------------------------------------------------------
+<a name="line820">820: </a>!     terminate.
+<a name="line821">821: </a>!-----------------------------------------------------------------------
+<a name="line822">822: </a>      RETURN
+<a name="line823">823: </a>      END SUBROUTINE barry_map_region3
+<a name="line824">824: </a>!-----------------------------------------------------------------------
+<a name="line825">825: </a>!     subprogram 10. barry_map_region2.
+<a name="line826">826: </a>!     fills region 2 coordinates.
 <a name="line827">827: </a>!-----------------------------------------------------------------------
-<a name="line828">828: </a>!     declarations.
-<a name="line829">829: </a>!-----------------------------------------------------------------------
-<a name="line830">830: </a>      SUBROUTINE barry_map_region2(fa,g)
+<a name="line828">828: </a>!-----------------------------------------------------------------------
+<a name="line829">829: </a>!     declarations.
+<a name="line830">830: </a>!-----------------------------------------------------------------------
+<a name="line831">831: </a>      SUBROUTINE barry_map_region2(fa,g)
 
-<a name="line832">832: </a>      TYPE(fa_type), INTENT(INOUT) :: fa
-<a name="line833">833: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, INTENT(INOUT) :: g
+<a name="line833">833: </a>      TYPE(fa_type), INTENT(INOUT) :: fa
+<a name="line834">834: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, INTENT(INOUT) :: g
 
-<a name="line835">835: </a>      INTEGER :: i,j,k,x,y,m,n,ig
-<a name="line836">836: </a>      REAL(8) :: r0=1,theta0=-pi/2,r,theta,dr,dt
-<a name="line837">837: </a>      REAL(8), DIMENSION(1) :: ga
-<a name="line838">838: </a>!-----------------------------------------------------------------------
-<a name="line839">839: </a>!     format statements.
-<a name="line840">840: </a>!-----------------------------------------------------------------------
-<a name="line841">841: </a> 10   FORMAT(/5x,<font color="#666666">"j"</font>,5x,<font color="#666666">"i"</font>,6x,<font color="#666666">"r"</font>,8x,<font color="#666666">"theta"</font>,8x,<font color="#666666">"x"</font>,10x,<font color="#666666">"y"</font>/)
-<a name="line842">842: </a> 20   FORMAT(2i6,4f11.3)
-<a name="line843">843: </a>!-----------------------------------------------------------------------
-<a name="line844">844: </a>!     preliminary computations.
-<a name="line845">845: </a>!-----------------------------------------------------------------------
-<a name="line846">846: </a>      dr=r0/(fa%r2-1)
-<a name="line847">847: </a>      dt=twopi/fa%p2
-<a name="line848">848: </a>      CALL barry_get_global_corners(fa,1,x,y,m,n)
-<a name="line849">849: </a>!-----------------------------------------------------------------------
-<a name="line850">850: </a>!     fill array.
-<a name="line851">851: </a>!-----------------------------------------------------------------------
-<a name="line852">852: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(g,ga,ig,ierr)
-<a name="line853">853: </a>      k=ig+2*fa%offg(1)
-<a name="line854">854: </a>      IF(diagnose)THEN
-<a name="line855">855: </a>         WRITE(*,'(a)')<font color="#666666">"region 2"</font>
-<a name="line856">856: </a>         WRITE(*,10)
-<a name="line857">857: </a>      ENDIF
-<a name="line858">858: </a>      DO j=y,y+n-1
-<a name="line859">859: </a>         r=r0+j*dr
-<a name="line860">860: </a>         DO i=x,x+m-1
-<a name="line861">861: </a>            theta=theta0+i*dt
-<a name="line862">862: </a>            ga(k+1)=r*COS(theta)
-<a name="line863">863: </a>            ga(k+2)=r*SIN(theta)
-<a name="line864">864: </a>            IF(diagnose)WRITE(*,20)j,i,r,theta,ga(k+1),ga(k+2)
-<a name="line865">865: </a>            k=k+2
-<a name="line866">866: </a>         ENDDO
-<a name="line867">867: </a>         IF(diagnose)WRITE(*,10)
-<a name="line868">868: </a>      ENDDO
-<a name="line869">869: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(g,ga,ig,ierr)
-<a name="line870">870: </a>!-----------------------------------------------------------------------
-<a name="line871">871: </a>!     terminate.
-<a name="line872">872: </a>!-----------------------------------------------------------------------
-<a name="line873">873: </a>      RETURN
-<a name="line874">874: </a>      END SUBROUTINE barry_map_region2
-<a name="line875">875: </a>!-----------------------------------------------------------------------
-<a name="line876">876: </a>!     subprogram 11. barry_map_region1.
-<a name="line877">877: </a>!     fills region 1 coordinates.
-<a name="line878">878: </a>!-----------------------------------------------------------------------
+<a name="line836">836: </a>      INTEGER :: i,j,k,x,y,m,n,ig
+<a name="line837">837: </a>      REAL(8) :: r0=1,theta0=-pi/2,r,theta,dr,dt
+<a name="line838">838: </a>      REAL(8), DIMENSION(1) :: ga
+<a name="line839">839: </a>!-----------------------------------------------------------------------
+<a name="line840">840: </a>!     format statements.
+<a name="line841">841: </a>!-----------------------------------------------------------------------
+<a name="line842">842: </a> 10   FORMAT(/5x,<font color="#666666">"j"</font>,5x,<font color="#666666">"i"</font>,6x,<font color="#666666">"r"</font>,8x,<font color="#666666">"theta"</font>,8x,<font color="#666666">"x"</font>,10x,<font color="#666666">"y"</font>/)
+<a name="line843">843: </a> 20   FORMAT(2i6,4f11.3)
+<a name="line844">844: </a>!-----------------------------------------------------------------------
+<a name="line845">845: </a>!     preliminary computations.
+<a name="line846">846: </a>!-----------------------------------------------------------------------
+<a name="line847">847: </a>      dr=r0/(fa%r2-1)
+<a name="line848">848: </a>      dt=twopi/fa%p2
+<a name="line849">849: </a>      CALL barry_get_global_corners(fa,1,x,y,m,n)
+<a name="line850">850: </a>!-----------------------------------------------------------------------
+<a name="line851">851: </a>!     fill array.
+<a name="line852">852: </a>!-----------------------------------------------------------------------
+<a name="line853">853: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(g,ga,ig,ierr)
+<a name="line854">854: </a>      k=ig+2*fa%offg(1)
+<a name="line855">855: </a>      IF (diagnose)THEN
+<a name="line856">856: </a>         WRITE(*,'(a)')<font color="#666666">"region 2"</font>
+<a name="line857">857: </a>         WRITE(*,10)
+<a name="line858">858: </a>      ENDIF
+<a name="line859">859: </a>      DO j=y,y+n-1
+<a name="line860">860: </a>         r=r0+j*dr
+<a name="line861">861: </a>         DO i=x,x+m-1
+<a name="line862">862: </a>            theta=theta0+i*dt
+<a name="line863">863: </a>            ga(k+1)=r*COS(theta)
+<a name="line864">864: </a>            ga(k+2)=r*SIN(theta)
+<a name="line865">865: </a>            IF (diagnose)WRITE(*,20)j,i,r,theta,ga(k+1),ga(k+2)
+<a name="line866">866: </a>            k=k+2
+<a name="line867">867: </a>         ENDDO
+<a name="line868">868: </a>         IF (diagnose)WRITE(*,10)
+<a name="line869">869: </a>      ENDDO
+<a name="line870">870: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(g,ga,ig,ierr)
+<a name="line871">871: </a>!-----------------------------------------------------------------------
+<a name="line872">872: </a>!     terminate.
+<a name="line873">873: </a>!-----------------------------------------------------------------------
+<a name="line874">874: </a>      RETURN
+<a name="line875">875: </a>      END SUBROUTINE barry_map_region2
+<a name="line876">876: </a>!-----------------------------------------------------------------------
+<a name="line877">877: </a>!     subprogram 11. barry_map_region1.
+<a name="line878">878: </a>!     fills region 1 coordinates.
 <a name="line879">879: </a>!-----------------------------------------------------------------------
-<a name="line880">880: </a>!     declarations.
-<a name="line881">881: </a>!-----------------------------------------------------------------------
-<a name="line882">882: </a>      SUBROUTINE barry_map_region1(fa,g)
+<a name="line880">880: </a>!-----------------------------------------------------------------------
+<a name="line881">881: </a>!     declarations.
+<a name="line882">882: </a>!-----------------------------------------------------------------------
+<a name="line883">883: </a>      SUBROUTINE barry_map_region1(fa,g)
 
-<a name="line884">884: </a>      TYPE(fa_type), INTENT(INOUT) :: fa
-<a name="line885">885: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, INTENT(INOUT) :: g
+<a name="line885">885: </a>      TYPE(fa_type), INTENT(INOUT) :: fa
+<a name="line886">886: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, INTENT(INOUT) :: g
 
-<a name="line887">887: </a>      INTEGER :: i,j,k,x,y,m,n,ig
-<a name="line888">888: </a>      REAL(8) :: r0=1,r,theta,dr,dt1,dt3
-<a name="line889">889: </a>      REAL(8), DIMENSION(1) :: ga
-<a name="line890">890: </a>!-----------------------------------------------------------------------
-<a name="line891">891: </a>!     format statements.
-<a name="line892">892: </a>!-----------------------------------------------------------------------
-<a name="line893">893: </a> 10   FORMAT(/5x,<font color="#666666">"j"</font>,5x,<font color="#666666">"i"</font>,6x,<font color="#666666">"r"</font>,8x,<font color="#666666">"theta"</font>,8x,<font color="#666666">"x"</font>,10x,<font color="#666666">"y"</font>/)
-<a name="line894">894: </a> 20   FORMAT(2i6,4f11.3)
-<a name="line895">895: </a>!-----------------------------------------------------------------------
-<a name="line896">896: </a>!     preliminary computations.
-<a name="line897">897: </a>!-----------------------------------------------------------------------
-<a name="line898">898: </a>      dr=r0/(fa%r1-1)
-<a name="line899">899: </a>      dt1=twopi/fa%p2
-<a name="line900">900: </a>      dt3=twopi/(3*(fa%p1-fa%p2-1))
-<a name="line901">901: </a>      CALL barry_get_global_corners(fa,0,x,y,m,n)
-<a name="line902">902: </a>!-----------------------------------------------------------------------
-<a name="line903">903: </a>!     fill array.
-<a name="line904">904: </a>!-----------------------------------------------------------------------
-<a name="line905">905: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(g,ga,ig,ierr)
-<a name="line906">906: </a>      k=ig+2*fa%offg(0)
-<a name="line907">907: </a>      IF(diagnose)THEN
-<a name="line908">908: </a>         WRITE(*,'(a)')<font color="#666666">"region 1"</font>
-<a name="line909">909: </a>         WRITE(*,10)
-<a name="line910">910: </a>      ENDIF
-<a name="line911">911: </a>      DO j=y,y+n-1
-<a name="line912">912: </a>         r=2*r0+j*dr
-<a name="line913">913: </a>         DO i=x,x+m-1
-<a name="line914">914: </a>            IF(i &lt; (fa%p1-fa%p2)/2)THEN
-<a name="line915">915: </a>               theta=i*dt3
-<a name="line916">916: </a>               ga(k+1)=r*COS(theta)
-<a name="line917">917: </a>               ga(k+2)=r*SIN(theta)-4*r0
-<a name="line918">918: </a>            ELSEIF(i &gt; fa%p2 + (fa%p1-fa%p2)/2)then
-<a name="line919">919: </a>               theta=pi+i*dt3
-<a name="line920">920: </a>               ga(k+1)=r*COS(PETSC_PI+i*dt3)
-<a name="line921">921: </a>               ga(k+2)=r*SIN(PETSC_PI+i*dt3)-4*r0
-<a name="line922">922: </a>            ELSE
-<a name="line923">923: </a>               theta=(i-(fa%p1-fa%p2)/2)*dt1-pi/2
-<a name="line924">924: </a>               ga(k+1)=r*COS(theta)
-<a name="line925">925: </a>               ga(k+2)=r*SIN(theta)
-<a name="line926">926: </a>            ENDIF
-<a name="line927">927: </a>            IF(diagnose)WRITE(*,20)j,i,r,theta,ga(k+1),ga(k+2)
-<a name="line928">928: </a>            k=k+2
-<a name="line929">929: </a>         ENDDO
-<a name="line930">930: </a>         IF(diagnose)WRITE(*,10)
-<a name="line931">931: </a>      ENDDO
-<a name="line932">932: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(g,ga,ig,ierr)
-<a name="line933">933: </a>!-----------------------------------------------------------------------
-<a name="line934">934: </a>!     terminate.
-<a name="line935">935: </a>!-----------------------------------------------------------------------
-<a name="line936">936: </a>      RETURN
-<a name="line937">937: </a>      END SUBROUTINE barry_map_region1
-<a name="line938">938: </a>      END MODULE barry_mod
-<a name="line939">939: </a>!-----------------------------------------------------------------------
-<a name="line940">940: </a>!     subprogram 12. barry_main.
-<a name="line941">941: </a>!     main program.
-<a name="line942">942: </a>!-----------------------------------------------------------------------
+<a name="line888">888: </a>      INTEGER :: i,j,k,x,y,m,n,ig
+<a name="line889">889: </a>      REAL(8) :: r0=1,r,theta,dr,dt1,dt3
+<a name="line890">890: </a>      REAL(8), DIMENSION(1) :: ga
+<a name="line891">891: </a>!-----------------------------------------------------------------------
+<a name="line892">892: </a>!     format statements.
+<a name="line893">893: </a>!-----------------------------------------------------------------------
+<a name="line894">894: </a> 10   FORMAT(/5x,<font color="#666666">"j"</font>,5x,<font color="#666666">"i"</font>,6x,<font color="#666666">"r"</font>,8x,<font color="#666666">"theta"</font>,8x,<font color="#666666">"x"</font>,10x,<font color="#666666">"y"</font>/)
+<a name="line895">895: </a> 20   FORMAT(2i6,4f11.3)
+<a name="line896">896: </a>!-----------------------------------------------------------------------
+<a name="line897">897: </a>!     preliminary computations.
+<a name="line898">898: </a>!-----------------------------------------------------------------------
+<a name="line899">899: </a>      dr=r0/(fa%r1-1)
+<a name="line900">900: </a>      dt1=twopi/fa%p2
+<a name="line901">901: </a>      dt3=twopi/(3*(fa%p1-fa%p2-1))
+<a name="line902">902: </a>      CALL barry_get_global_corners(fa,0,x,y,m,n)
+<a name="line903">903: </a>!-----------------------------------------------------------------------
+<a name="line904">904: </a>!     fill array.
+<a name="line905">905: </a>!-----------------------------------------------------------------------
+<a name="line906">906: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(g,ga,ig,ierr)
+<a name="line907">907: </a>      k=ig+2*fa%offg(0)
+<a name="line908">908: </a>      IF (diagnose)THEN
+<a name="line909">909: </a>         WRITE(*,'(a)')<font color="#666666">"region 1"</font>
+<a name="line910">910: </a>         WRITE(*,10)
+<a name="line911">911: </a>      ENDIF
+<a name="line912">912: </a>      DO j=y,y+n-1
+<a name="line913">913: </a>         r=2*r0+j*dr
+<a name="line914">914: </a>         DO i=x,x+m-1
+<a name="line915">915: </a>            IF (i &lt; (fa%p1-fa%p2)/2)THEN
+<a name="line916">916: </a>               theta=i*dt3
+<a name="line917">917: </a>               ga(k+1)=r*COS(theta)
+<a name="line918">918: </a>               ga(k+2)=r*SIN(theta)-4*r0
+<a name="line919">919: </a>            ELSEIF (i &gt; fa%p2 + (fa%p1-fa%p2)/2)then
+<a name="line920">920: </a>               theta=pi+i*dt3
+<a name="line921">921: </a>               ga(k+1)=r*COS(PETSC_PI+i*dt3)
+<a name="line922">922: </a>               ga(k+2)=r*SIN(PETSC_PI+i*dt3)-4*r0
+<a name="line923">923: </a>            ELSE
+<a name="line924">924: </a>               theta=(i-(fa%p1-fa%p2)/2)*dt1-pi/2
+<a name="line925">925: </a>               ga(k+1)=r*COS(theta)
+<a name="line926">926: </a>               ga(k+2)=r*SIN(theta)
+<a name="line927">927: </a>            ENDIF
+<a name="line928">928: </a>            IF (diagnose)WRITE(*,20)j,i,r,theta,ga(k+1),ga(k+2)
+<a name="line929">929: </a>            k=k+2
+<a name="line930">930: </a>         ENDDO
+<a name="line931">931: </a>         IF (diagnose)WRITE(*,10)
+<a name="line932">932: </a>      ENDDO
+<a name="line933">933: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(g,ga,ig,ierr)
+<a name="line934">934: </a>!-----------------------------------------------------------------------
+<a name="line935">935: </a>!     terminate.
+<a name="line936">936: </a>!-----------------------------------------------------------------------
+<a name="line937">937: </a>      RETURN
+<a name="line938">938: </a>      END SUBROUTINE barry_map_region1
+<a name="line939">939: </a>      END MODULE barry_mod
+<a name="line940">940: </a>!-----------------------------------------------------------------------
+<a name="line941">941: </a>!     subprogram 12. barry_main.
+<a name="line942">942: </a>!     main program.
 <a name="line943">943: </a>!-----------------------------------------------------------------------
-<a name="line944">944: </a>!     declarations.
-<a name="line945">945: </a>!-----------------------------------------------------------------------
-<a name="line946">946: </a>      PROGRAM barry_main
-<a name="line947">947: </a>      USE barry_mod
-<a name="line948">948: </a>      IMPLICIT NONE
+<a name="line944">944: </a>!-----------------------------------------------------------------------
+<a name="line945">945: </a>!     declarations.
+<a name="line946">946: </a>!-----------------------------------------------------------------------
+<a name="line947">947: </a>      PROGRAM barry_main
+<a name="line948">948: </a>      USE barry_mod
+<a name="line949">949: </a>      IMPLICIT NONE
 
-<a name="line950">950: </a>      TYPE(fa_type) :: fa
-<a name="line951">951: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> :: g,l
-<a name="line952">952: </a>!-----------------------------------------------------------------------
-<a name="line953">953: </a>!     initialize and create structure, and get vectors.
-<a name="line954">954: </a>!-----------------------------------------------------------------------
-<a name="line955">955: </a>      CALL <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(PETSC_NULL_CHARACTER,ierr)
-<a name="line956">956: </a>      CALL barry_create_fa(fa)
-<a name="line957">957: </a>      CALL barry_get_global_vector(fa,g)
-<a name="line958">958: </a>      CALL barry_get_local_vector(fa,l)
-<a name="line959">959: </a>!-----------------------------------------------------------------------
-<a name="line960">960: </a>!     map regions.
-<a name="line961">961: </a>!-----------------------------------------------------------------------
-<a name="line962">962: </a>      CALL barry_map_region1(fa,g)
-<a name="line963">963: </a>      CALL barry_map_region2(fa,g)
-<a name="line964">964: </a>      CALL barry_map_region3(fa,g)
-<a name="line965">965: </a>!-----------------------------------------------------------------------
-<a name="line966">966: </a>!     graphic output.
-<a name="line967">967: </a>!-----------------------------------------------------------------------
-<a name="line968">968: </a>      CALL barry_global_to_local(fa,g,l)
-<a name="line969">969: </a>      CALL barry_draw_fa(fa,g)
-<a name="line970">970: </a>      CALL barry_draw_fa(fa,l)
-<a name="line971">971: </a>!-----------------------------------------------------------------------
-<a name="line972">972: </a>!     clean up and finalize.
-<a name="line973">973: </a>!-----------------------------------------------------------------------
-<a name="line974">974: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(g,ierr)
-<a name="line975">975: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(l,ierr)
-<a name="line976">976: </a>      CALL barry_destroy_fa(fa)
-<a name="line977">977: </a>      CALL <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line978">978: </a>!-----------------------------------------------------------------------
-<a name="line979">979: </a>!     terminate.
-<a name="line980">980: </a>!-----------------------------------------------------------------------
-<a name="line981">981: </a>      END PROGRAM barry_main
+<a name="line951">951: </a>      TYPE(fa_type) :: fa
+<a name="line952">952: </a>      <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> :: g,l
+<a name="line953">953: </a>!-----------------------------------------------------------------------
+<a name="line954">954: </a>!     initialize and create structure, and get vectors.
+<a name="line955">955: </a>!-----------------------------------------------------------------------
+<a name="line956">956: </a>      CALL <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(PETSC_NULL_CHARACTER,ierr)
+<a name="line957">957: </a>      CALL barry_create_fa(fa)
+<a name="line958">958: </a>      CALL barry_get_global_vector(fa,g)
+<a name="line959">959: </a>      CALL barry_get_local_vector(fa,l)
+<a name="line960">960: </a>!-----------------------------------------------------------------------
+<a name="line961">961: </a>!     map regions.
+<a name="line962">962: </a>!-----------------------------------------------------------------------
+<a name="line963">963: </a>      CALL barry_map_region1(fa,g)
+<a name="line964">964: </a>      CALL barry_map_region2(fa,g)
+<a name="line965">965: </a>      CALL barry_map_region3(fa,g)
+<a name="line966">966: </a>!-----------------------------------------------------------------------
+<a name="line967">967: </a>!     graphic output.
+<a name="line968">968: </a>!-----------------------------------------------------------------------
+<a name="line969">969: </a>      CALL barry_global_to_local(fa,g,l)
+<a name="line970">970: </a>      CALL barry_draw_fa(fa,g)
+<a name="line971">971: </a>      CALL barry_draw_fa(fa,l)
+<a name="line972">972: </a>!-----------------------------------------------------------------------
+<a name="line973">973: </a>!     clean up and finalize.
+<a name="line974">974: </a>!-----------------------------------------------------------------------
+<a name="line975">975: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(g,ierr)
+<a name="line976">976: </a>      CALL <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(l,ierr)
+<a name="line977">977: </a>      CALL barry_destroy_fa(fa)
+<a name="line978">978: </a>      CALL <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line979">979: </a>!-----------------------------------------------------------------------
+<a name="line980">980: </a>!     terminate.
+<a name="line981">981: </a>!-----------------------------------------------------------------------
+<a name="line982">982: </a>      END PROGRAM barry_main
 </pre>
 </body>
 

@@ -4,20 +4,20 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex53.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:11:01+00:00">
+<meta name="date" content="2013-07-02T14:50:18+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>static const char help[] = <font color="#666666">"Read linear variational inequality from file and solve it.\n\n"</font>;
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsnes.h&gt;</font>
 
 <a name="line4">  4: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
-<a name="line5">  5: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>         q,zz,lb,ub;
-<a name="line6">  6: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>         M,Jac;
+<a name="line5">  5: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> q,zz,lb,ub;
+<a name="line6">  6: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> M,Jac;
 <a name="line7">  7: </a>} AppCtx;
 
-<a name="line9">  9: </a><font color="#B22222">/* </font>
+<a name="line9">  9: </a><font color="#B22222">/*</font>
 <a name="line10"> 10: </a><font color="#B22222">   User-defined routines</font>
 <a name="line11"> 11: </a><font color="#B22222">*/</font>
 <a name="line12"> 12: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormJacobian1(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*)</font></strong>;
@@ -30,7 +30,7 @@
 <a name="line22"> 22: </a>  AppCtx         user;         <font color="#B22222">/* user-defined work context */</font>
 <a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    viewer;
 
-<a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
+<a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
 <a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"videfinition"</font>,FILE_MODE_READ,&amp;viewer);
 <a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;user.M); <A href="../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(user.M,viewer);
 <a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Mat/MatDuplicate.html#MatDuplicate">MatDuplicate</A>(user.M,MAT_COPY_VALUES,&amp;user.Jac);
@@ -54,7 +54,7 @@
 
 <a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/SNES/SNESVISetVariableBounds.html#SNESVISetVariableBounds">SNESVISetVariableBounds</A>(snes,user.lb,user.ub);
 <a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>(snes);
-<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,user.zz);
+<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,NULL,user.zz);
 <a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)user.zz,<font color="#666666">"x*"</font>);
 <a name="line51"> 51: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(user.zz,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
 <a name="line52"> 52: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)r,<font color="#666666">"f(x*)"</font>);
@@ -65,7 +65,7 @@
 <a name="line57"> 57: </a>}
 
 <a name="line59"> 59: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
-<a name="line62"> 62: </a><font color="#B22222">/* </font>
+<a name="line62"> 62: </a><font color="#B22222">/*</font>
 <a name="line63"> 63: </a><font color="#B22222">   FormFunction1 - Evaluates nonlinear function, F(x).</font>
 
 <a name="line65"> 65: </a><font color="#B22222">   Input Parameters:</font>

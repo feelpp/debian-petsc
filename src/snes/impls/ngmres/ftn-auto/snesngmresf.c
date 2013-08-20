@@ -48,7 +48,6 @@ void PETSC_STDCALL  snesngmressetrestarttype_(SNES snes,SNESNGMRESRestartType *r
 *__ierr = SNESNGMRESSetRestartType(
 	(SNES)PetscToPointer((snes) ),*rtype);
 }
-
 void PETSC_STDCALL  snesngmressetselecttype_(SNES snes,SNESNGMRESSelectType *stype, int *__ierr ){
 *__ierr = SNESNGMRESSetSelectType(
 	(SNES)PetscToPointer((snes) ),*stype);

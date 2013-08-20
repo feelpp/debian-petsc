@@ -164,11 +164,6 @@ extern void PetscRmPointer(void*);
 #define sneslinesearchsetvecs_ sneslinesearchsetvecs
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define sneslinesearchgetwork_ SNESLINESEARCHGETWORK
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define sneslinesearchgetwork_ sneslinesearchgetwork
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define sneslinesearchgetsuccess_ SNESLINESEARCHGETSUCCESS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define sneslinesearchgetsuccess_ sneslinesearchgetsuccess
@@ -310,10 +305,6 @@ void PETSC_STDCALL  sneslinesearchsetvecs_(SNESLineSearch linesearch,Vec X,Vec F
 	(Vec)PetscToPointer((Y) ),
 	(Vec)PetscToPointer((W) ),
 	(Vec)PetscToPointer((G) ));
-}
-void PETSC_STDCALL  sneslinesearchgetwork_(SNESLineSearch linesearch,PetscInt *nwork, int *__ierr ){
-*__ierr = SNESLineSearchGetWork(
-	(SNESLineSearch)PetscToPointer((linesearch) ),*nwork);
 }
 void PETSC_STDCALL  sneslinesearchgetsuccess_(SNESLineSearch linesearch,PetscBool *success, int *__ierr ){
 *__ierr = SNESLineSearchGetSuccess(

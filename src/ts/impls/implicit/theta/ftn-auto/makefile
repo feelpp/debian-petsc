@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = thetaf.c
-OBJSC    = thetaf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

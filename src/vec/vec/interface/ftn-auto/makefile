@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = rvectorf.c vectorf.c veccreatef.c
-OBJSC    = rvectorf.o vectorf.o veccreatef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

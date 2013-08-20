@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex133.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:52:09+00:00">
+<meta name="date" content="2013-07-02T14:44:19+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Test saving SeqSBAIJ matrix that is missing diagonal entries."</font>;
 
@@ -21,11 +21,11 @@
 <a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    x[6][9];
 
-<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 
 <a name="line18"> 18: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
 <a name="line19"> 19: </a>  <font color="#4169E1">if</font> (size &gt; 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP,<font color="#666666">"Test is only for seqeuntial"</font>);
-<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateSeqSBAIJ.html#MatCreateSeqSBAIJ">MatCreateSeqSBAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,bs,m*bs,m*bs,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;A);
+<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateSeqSBAIJ.html#MatCreateSeqSBAIJ">MatCreateSeqSBAIJ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,bs,m*bs,m*bs,1,NULL,&amp;A);
 <a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(A,MAT_IGNORE_LOWER_TRIANGULAR,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
 <a name="line22"> 22: </a>  rstart = 0;
 

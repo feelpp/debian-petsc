@@ -5,13 +5,13 @@
 <TITLE>PetscDrawSetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawSetType"><H1>PetscDrawSetType</H1></A>
-Builds graphics object for a particular implementation  
+Builds graphics object for a particular implementation 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdraw.h" 
-PetscErrorCode  PetscDrawSetType(PetscDraw draw,const PetscDrawType type)
+PetscErrorCode  PetscDrawSetType(PetscDraw draw,PetscDrawType type)
 </PRE>
 Collective on <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A>
 <P>
@@ -23,7 +23,7 @@ Collective on <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Command</FONT></H3>
-<DT><B>-draw_type  &lt;type&gt; </B> -Sets the type; use -help for a list 
+<DT><B>-draw_type  &lt;type&gt; </B> -Sets the type; use -help for a list
 of available methods (for instance, x)
 <br>
 <P>
@@ -37,7 +37,7 @@ PETSC_DRAW_X)
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Draw/PetscDrawSetFromOptions.html#PetscDrawSetFromOptions">PetscDrawSetFromOptions</A>(), <A HREF="../Draw/PetscDrawCreate.html#PetscDrawCreate">PetscDrawCreate</A>(), <A HREF="../Draw/PetscDrawDestroy.html#PetscDrawDestroy">PetscDrawDestroy</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/interface/drawreg.c.html#PetscDrawSetType">src/sys/draw/interface/drawreg.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/interface/drawreg.c.html#PetscDrawSetType">src/sys/classes/draw/interface/drawreg.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

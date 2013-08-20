@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex45.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:51:13+00:00">
+<meta name="date" content="2013-07-02T14:44:02+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include </font><font color="#666666">"petscconf.h"</font><font color="#A020F0"></font>
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;stdio.h&gt;</font>
@@ -20,17 +20,17 @@
 
 <a name="line10"> 10: </a><font color="#B22222">/*</font>
 <a name="line11"> 11: </a><font color="#B22222">  Demonstrates dumping matrix/vector from heritage code for PETSc.</font>
-<a name="line12"> 12: </a><font color="#B22222">   Note does not do bit swapping, so will not generate proper </font>
+<a name="line12"> 12: </a><font color="#B22222">   Note does not do bit swapping, so will not generate proper</font>
 <a name="line13"> 13: </a><font color="#B22222">PETSc files on Paragon/Dec Alpha.</font>
 <a name="line14"> 14: </a><font color="#B22222">*/</font>
 
-<a name="line16"> 16: </a><strong><font color="#4169E1">void Store2DArray(int,int,double*,const char*,int *)</font></strong>;
-<a name="line17"> 17: </a><strong><font color="#4169E1">void Store1DArray(int,double*,const char*,int *)</font></strong>;
+<a name="line16"> 16: </a><strong><font color="#4169E1">void Store2DArray(int,int,double*,const char*,int*)</font></strong>;
+<a name="line17"> 17: </a><strong><font color="#4169E1">void Store1DArray(int,double*,const char*,int*)</font></strong>;
 
 <a name="line21"> 21: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line22"> 22: </a>{
 <a name="line23"> 23: </a>  double a[100],v[10];
-<a name="line24"> 24: </a>  int       i,j,fd = 0;
+<a name="line24"> 24: </a>  int    i,j,fd = 0;
 
 <a name="line26"> 26: </a>  <font color="#4169E1">for</font> (i=0; i&lt;100; i++) {
 <a name="line27"> 27: </a>    a[i] = i + 1;
@@ -46,9 +46,9 @@
 
 <a name="line40"> 40: </a><strong><font color="#4169E1"><a name="Store2DArray"></a>void Store2DArray(int m,int n,double *a,const char *filename,int *fdd)</font></strong>
 <a name="line41"> 41: </a>{
-<a name="line42"> 42: </a>  int        fd = *fdd;
-<a name="line43"> 43: </a>  int        i,j;
-<a name="line44"> 44: </a>  int        nz = -1,classid = 1211216;
+<a name="line42"> 42: </a>  int    fd = *fdd;
+<a name="line43"> 43: </a>  int    i,j;
+<a name="line44"> 44: </a>  int    nz = -1,classid = 1211216;
 <a name="line45"> 45: </a>  double *vals;
 
 <a name="line47"> 47: </a>  <font color="#4169E1">if</font> (!fd) {
@@ -84,8 +84,8 @@
 
 <a name="line80"> 80: </a><strong><font color="#4169E1"><a name="Store1DArray"></a>void Store1DArray(int m,double *a,const char *filename,int *fdd)</font></strong>
 <a name="line81"> 81: </a>{
-<a name="line82"> 82: </a>  int  fd = *fdd;
-<a name="line83"> 83: </a>  int  classid = 1211214; <font color="#B22222">/* classid for vectors */</font>
+<a name="line82"> 82: </a>  int fd      = *fdd;
+<a name="line83"> 83: </a>  int classid = 1211214;  <font color="#B22222">/* classid for vectors */</font>
 
 <a name="line85"> 85: </a>  <font color="#4169E1">if</font> (fd == -1) {
 <a name="line86"> 86: </a>    fd = creat(filename,0666);

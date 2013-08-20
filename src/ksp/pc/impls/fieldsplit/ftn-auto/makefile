@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = fieldsplitf.c
-OBJSC    = fieldsplitf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

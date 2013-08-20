@@ -3,21 +3,21 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/order/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:53:40+00:00">
+<meta name="date" content="2013-07-02T14:44:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><font color="#A020F0">#</font>
-<font color="#A020F0">#  All the Sparspack routines have been converted to C with the F2C </font>
-<font color="#A020F0"># converter. We do not include in the distribution the original Fortran 77 </font>
-<font color="#A020F0"># code in the interest of saving disk space. </font>
+<font color="#A020F0">#  All the Sparspack routines have been converted to C with the F2C</font>
+<font color="#A020F0"># converter. We do not include in the distribution the original Fortran 77</font>
+<font color="#A020F0"># code in the interest of saving disk space.</font>
 <font color="#A020F0">#</font>
 <font color="#A020F0">#  All Sparsepack routines are prepended with SPARSEPACK to reduce</font>
 <font color="#A020F0"># name space pollution.</font>
 <font color="#A020F0">#</font>
-<font color="#A020F0">#  This code uses the original SPARSEPACK software that was released </font>
-<font color="#A020F0"># into the public domain. Thus it can be used for any purpose. </font>
+<font color="#A020F0">#  This code uses the original SPARSEPACK software that was released</font>
+<font color="#A020F0"># into the public domain. Thus it can be used for any purpose.</font>
 <font color="#A020F0"># IT <A href="ROOT/docs/manualpages/IS/IS.html#IS">IS</A> NOT THE VERSION OF SPARSEPACK THAT REQUIRES A LICENSE</font>
 
 <strong><font color="#FF0000">ALL:</font></strong> lib
@@ -27,10 +27,7 @@ FFLAGS   =
 SOURCEC  = sp1wd.c spnd.c spqmd.c sprcm.c sorder.c sregis.c\
            degree.c  fnroot.c genqmd.c qmdqt.c rcm.c fn1wd.c gen1wd.c \
            genrcm.c qmdrch.c rootls.c fndsep.c gennd.c qmdmrg.c qmdupd.c
-SOURCEH  = order.h 
-OBJSC    = sp1wd.o spnd.o spqmd.o sprcm.o sorder.o sregis.o\
-           degree.o  fnroot.o genqmd.o qmdqt.o rcm.o fn1wd.o gen1wd.o \
-           genrcm.o qmdrch.o rootls.o fndsep.o gennd.o qmdmrg.o qmdupd.o
+SOURCEH  = order.h
 LIBBASE  = libpetscmat
 DIRS     = amd
 LOCDIR   = src/mat/order/

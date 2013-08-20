@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = schurmf.c
-OBJSC    = schurmf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

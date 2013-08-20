@@ -5,12 +5,12 @@
 <TITLE>VecScatterCreateToAll</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecScatterCreateToAll"><H1>VecScatterCreateToAll</H1></A>
-Creates a vector and a scatter context that copies all  vector values to each processor 
+Creates a vector and a scatter context that copies all vector values to each processor 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"    
 PetscErrorCode  VecScatterCreateToAll(Vec vin,VecScatter *ctx,Vec *vout)
 </PRE>
 Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
@@ -28,7 +28,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 
 <P>
-Note: vout may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> [PETSC_NULL_OBJECT from fortran] if you do not
+Note: vout may be NULL [NULL_OBJECT from fortran] if you do not
 need to have it created
 <P>
 <H3><FONT COLOR="#CC3333">Usage</FONT></H3>
@@ -59,7 +59,7 @@ need to have it created
 </pre>
 <P>
 Do NOT create a vector and then pass it in as the final argument vout! vout is created by this routine
-automatically (unless you pass <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> in for that argument if you do not need it).
+automatically (unless you pass NULL in for that argument if you do not need it).
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
 <A HREF="../Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(), <A HREF="../Vec/VecScatterCreateToZero.html#VecScatterCreateToZero">VecScatterCreateToZero</A>(), <A HREF="../Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(), <A HREF="../Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>()

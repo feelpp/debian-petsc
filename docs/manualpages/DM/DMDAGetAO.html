@@ -5,7 +5,7 @@
 <TITLE>DMDAGetAO</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGetAO"><H1>DMDAGetAO</H1></A>
 Gets the application ordering context for a distributed array. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -13,7 +13,7 @@ Gets the application ordering context for a distributed array.
 #include "petscdmda.h"   
 PetscErrorCode  DMDAGetAO(DM da,AO *ao)
 </PRE>
-Collective on DMDA
+Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>da </B> -the distributed array
@@ -27,7 +27,7 @@ Collective on DMDA
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 In this case, the <A HREF="../AO/AO.html#AO">AO</A> maps to the natural grid ordering that would be used
-for the DMDA if only 1 processor were employed (ordering most rapidly in the
+for the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> if only 1 processor were employed (ordering most rapidly in the
 x-direction, then y, then z).  Multiple degrees of freedom are numbered
 for each node (rather than 1 component for the whole grid, then the next
 component, etc.)

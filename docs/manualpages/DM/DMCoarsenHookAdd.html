@@ -5,7 +5,7 @@
 <TITLE>DMCoarsenHookAdd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMCoarsenHookAdd"><H1>DMCoarsenHookAdd</H1></A>
 adds a callback to be run when restricting a nonlinear problem to the coarse grid 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -23,7 +23,7 @@ Logically Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>restricthook </B></TD><TD>- function to run to update data on coarser levels (once per <A HREF="../SNES/SNESSolve.html#SNESSolve">SNESSolve</A>())
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for provide data for the hooks (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for provide data for the hooks (may be NULL)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of coarsenhook</FONT></H3>
@@ -67,6 +67,8 @@ If this function is called multiple times, the hooks will be run in the order th
 <P>
 In order to compose with nonlinear preconditioning without duplicating storage, the hook should be implemented to
 extract the finest level information from its context (instead of from the <A HREF="../SNES/SNES.html#SNES">SNES</A>).
+<P>
+This function is currently not available from Fortran.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMRefineHookAdd.html#DMRefineHookAdd">DMRefineHookAdd</A>(), <A HREF="../SNES/SNESFASGetInterpolation.html#SNESFASGetInterpolation">SNESFASGetInterpolation</A>(), <A HREF="../SNES/SNESFASGetInjection.html#SNESFASGetInjection">SNESFASGetInjection</A>(), <A HREF="../Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>(), <A HREF="../Sys/PetscContainerCreate.html#PetscContainerCreate">PetscContainerCreate</A>()

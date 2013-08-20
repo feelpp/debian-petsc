@@ -5,7 +5,7 @@
 <TITLE>ISColoringType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="ISColoringType"><H1>ISColoringType</H1></A>
 determines if the coloring is for the entire parallel grid/graph/matrix or for just the local ghosted portion 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -15,7 +15,7 @@ typedef enum {IS_COLORING_GLOBAL,IS_COLORING_GHOSTED} ISColoringType;
 
 <P>
 <pre>
-  IS_COLORING_GLOBAL - does not include the colors for ghost points, this is used when the function 
+  IS_COLORING_GLOBAL - does not include the colors for ghost points, this is used when the function
 </pre>
 <pre>
                        is called synchronously in parallel. This requires generating a "parallel coloring".
@@ -30,7 +30,7 @@ typedef enum {IS_COLORING_GLOBAL,IS_COLORING_GHOSTED} ISColoringType;
                         require a "parallel coloring", rather each process colors its local + ghost part.
 </pre>
 <pre>
-                        Using this can result in much less parallel communication. In the paradigm of 
+                        Using this can result in much less parallel communication. In the paradigm of
 </pre>
 <pre>
                         <A HREF="../DM/DMGetLocalVector.html#DMGetLocalVector">DMGetLocalVector</A>() and <A HREF="../DM/DMGetGlobalVector.html#DMGetGlobalVector">DMGetGlobalVector</A>() this could be called IS_COLORING_LOCAL
@@ -39,7 +39,7 @@ typedef enum {IS_COLORING_GLOBAL,IS_COLORING_GHOSTED} ISColoringType;
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMCreateColoring.html#DMCreateColoring">DMCreateColoring</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/../../../include/petscis.h.html#ISColoringType">src/vec/is/../../../include/petscis.h</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/is/../../../../include/petscis.h.html#ISColoringType">src/vec/is/is/../../../../include/petscis.h</A>
 <BR><A HREF="./index.html">Index of all IS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

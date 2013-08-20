@@ -5,11 +5,12 @@
 <TITLE>MatCreateSeqDense</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateSeqDense"><H1>MatCreateSeqDense</H1></A>
-Creates a sequential dense matrix that  is stored in column major order (the usual Fortran 77 manner). Many  of the matrix operations use the BLAS and LAPACK routines. 
+Creates a sequential dense matrix that is stored in column major order (the usual Fortran 77 manner). Many of the matrix operations use the BLAS and LAPACK routines. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscmat.h" 
 PetscErrorCode  MatCreateSeqDense(MPI_Comm comm,PetscInt m,PetscInt n,PetscScalar *data,Mat *A)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
@@ -22,7 +23,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- number of columns
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>data </B></TD><TD>- optional location of matrix data in column major order.  Set data=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>data </B></TD><TD>- optional location of matrix data in column major order.  Set data=NULL for PETSc
 to control all matrix memory allocation.
 </TD></TR></TABLE>
 <P>
@@ -33,7 +34,7 @@ to control all matrix memory allocation.
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 The data input variable is intended primarily for Fortran programmers
 who wish to allocate their own matrix memory space.  Most users should
-set data=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>.
+set data=NULL.
 <P>
 
 <P>

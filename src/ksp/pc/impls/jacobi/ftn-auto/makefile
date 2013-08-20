@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = jacobif.c
-OBJSC    = jacobif.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

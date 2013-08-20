@@ -44,6 +44,11 @@ extern void PetscRmPointer(void*);
 #define pcgamgsetrepartitioning_ pcgamgsetrepartitioning
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcgamgsetreuseprol_ PCGAMGSETREUSEPROL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcgamgsetreuseprol_ pcgamgsetreuseprol
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcgamgsetuseasmaggs_ PCGAMGSETUSEASMAGGS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcgamgsetuseasmaggs_ pcgamgsetuseasmaggs
@@ -81,6 +86,10 @@ void PETSC_STDCALL  pcgamgsetrepartitioning_(PC pc,PetscBool *n, int *__ierr ){
 *__ierr = PCGAMGSetRepartitioning(
 	(PC)PetscToPointer((pc) ),*n);
 }
+void PETSC_STDCALL  pcgamgsetreuseprol_(PC pc,PetscBool *n, int *__ierr ){
+*__ierr = PCGAMGSetReuseProl(
+	(PC)PetscToPointer((pc) ),*n);
+}
 void PETSC_STDCALL  pcgamgsetuseasmaggs_(PC pc,PetscBool *n, int *__ierr ){
 *__ierr = PCGAMGSetUseASMAggs(
 	(PC)PetscToPointer((pc) ),*n);
@@ -93,7 +102,7 @@ void PETSC_STDCALL  pcgamgsetthreshold_(PC pc,PetscReal *n, int *__ierr ){
 *__ierr = PCGAMGSetThreshold(
 	(PC)PetscToPointer((pc) ),*n);
 }
-void PETSC_STDCALL  pcgamgsettype_(PC pc, PCGAMGType *type, int *__ierr ){
+void PETSC_STDCALL  pcgamgsettype_(PC pc,PCGAMGType *type, int *__ierr ){
 *__ierr = PCGAMGSetType(
 	(PC)PetscToPointer((pc) ),*type);
 }

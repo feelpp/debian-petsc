@@ -5,16 +5,13 @@
 <TITLE>SNESKSPSetParametersEW</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESKSPSetParametersEW"><H1>SNESKSPSetParametersEW</H1></A>
 Sets parameters for Eisenstat-Walker convergence criteria for the linear solvers within an inexact Newton method. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
-PetscErrorCode  SNESKSPSetParametersEW(SNES snes,PetscInt version,PetscReal rtol_0,PetscReal rtol_max,
-                                                      PetscReal gamma,PetscReal alpha,PetscReal alpha2,PetscReal threshold)
+PetscErrorCode  SNESKSPSetParametersEW(SNES snes,PetscInt version,PetscReal rtol_0,PetscReal rtol_max,PetscReal gamma,PetscReal alpha,PetscReal alpha2,PetscReal threshold)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>

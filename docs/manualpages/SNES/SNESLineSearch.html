@@ -5,7 +5,7 @@
 <TITLE>SNESLineSearch</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESLineSearch"><H1>SNESLineSearch</H1></A>
 Abstract PETSc object that manages line-search operations 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -18,14 +18,7 @@ Abstract PETSc object that manages line-search operations
 .seealso: SNESLineSearchSetType(), SNES
 J*/
 
-#define SNESLineSearchType char*
-#define SNESLINESEARCHBT                 "bt"
-#define SNESLINESEARCHBASIC              "basic"
-#define SNESLINESEARCHL2                 "l2"
-#define SNESLINESEARCHCP                 "cp"
-#define SNESLINESEARCHSHELL              "shell"
-
-PETSC_EXTERN PetscClassId SNESLINESEARCH_CLASSID;
+typedef const char* SNESLineSearchType;
 </PRE>
 
 <P>

@@ -5,7 +5,7 @@
 <TITLE>TSROSW</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSROSW"><H1>TSROSW</H1></A>
 ODE solver using Rosenbrock-W schemes These methods are intended for problems with well-separated time scales, especially when a slow scale is strongly
 nonlinear such that it is expensive to solve with a fully implicit method. The user should provide the stiff part
@@ -18,22 +18,22 @@ This method currently only works with autonomous ODE and DAE.
 Rosenbrock-W methods are typically specified for autonomous ODE
 <P>
 <pre>
- xdot = f(x)
+ udot = f(u)
 </pre>
 <P>
 by the stage equations
 <P>
 <pre>
- k_i = h f(x_0 + sum_j alpha_ij k_j) + h J sum_j gamma_ij k_j
+ k_i = h f(u_0 + sum_j alpha_ij k_j) + h J sum_j gamma_ij k_j
 </pre>
 <P>
 and step completion formula
 <P>
 <pre>
- x_1 = x_0 + sum_j b_j k_j
+ u_1 = u_0 + sum_j b_j k_j
 </pre>
 <P>
-with step size h and coefficients alpha_ij, gamma_ij, and b_i. Implementing the method in this form would require f(x)
+with step size h and coefficients alpha_ij, gamma_ij, and b_i. Implementing the method in this form would require f(u)
 and the Jacobian J to be available, in addition to the shifted matrix I - h gamma_ii J. Following Hairer and Wanner,
 we define new variables for the stage equations
 <P>
@@ -50,10 +50,10 @@ The k_j can be recovered because Gamma is invertible. Let C be the lower triangu
 to rewrite the method as
 <P>
 <pre>
- [M/(h gamma_ii) - J] y_i = f(x_0 + sum_j a_ij y_j) + M sum_j (c_ij/h) y_j
+ [M/(h gamma_ii) - J] y_i = f(u_0 + sum_j a_ij y_j) + M sum_j (c_ij/h) y_j
 </pre>
 <pre>
- x_1 = x_0 + sum_j bt_j y_j
+ u_1 = u_0 + sum_j bt_j y_j
 </pre>
 <P>
 where we have introduced the mass matrix M. Continue by defining
@@ -73,7 +73,7 @@ stage y_i, the stage equations reduce to performing one Newton step (typically w
 equation
 <P>
 <pre>
- g(x_0 + sum_j a_ij y_j + y_i, ydot_i) = 0
+ g(u_0 + sum_j a_ij y_j + y_i, ydot_i) = 0
 </pre>
 <P>
 with initial guess y_i = 0.
@@ -81,9 +81,8 @@ with initial guess y_i = 0.
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../TS/TSSetType.html#TSSetType">TSSetType</A>(), <A HREF="../TS/TSRosWSetType.html#TSRosWSetType">TSRosWSetType</A>(), <A HREF="../TS/TSRosWRegister.html#TSRosWRegister">TSRosWRegister</A>()
-<BR>
-<P>
+  <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../TS/TSSetType.html#TSSetType">TSSetType</A>(), <A HREF="../TS/TSRosWSetType.html#TSRosWSetType">TSRosWSetType</A>(), <A HREF="../TS/TSRosWRegister.html#TSRosWRegister">TSRosWRegister</A>(), <A HREF="../TS/TSROSW2M.html#TSROSW2M">TSROSW2M</A>, <A HREF="../TS/TSROSW2P.html#TSROSW2P">TSROSW2P</A>, <A HREF="../TS/TSROSWRA3PW.html#TSROSWRA3PW">TSROSWRA3PW</A>, <A HREF="../TS/TSROSWRA34PW2.html#TSROSWRA34PW2">TSROSWRA34PW2</A>, <A HREF="../TS/TSROSWRODAS3.html#TSROSWRODAS3">TSROSWRODAS3</A>,
+<BR><A HREF="../TS/TSROSWSANDU3.html#TSROSWSANDU3">TSROSWSANDU3</A>, <A HREF="../TS/TSROSWASSP3P3S1C.html#TSROSWASSP3P3S1C">TSROSWASSP3P3S1C</A>, <A HREF="../TS/TSROSWLASSP3P4S2C.html#TSROSWLASSP3P4S2C">TSROSWLASSP3P4S2C</A>, <A HREF="../TS/TSROSWLLSSP3P4S2C.html#TSROSWLLSSP3P4S2C">TSROSWLLSSP3P4S2C</A>, <A HREF="../TS/TSROSWGRK4T.html#TSROSWGRK4T">TSROSWGRK4T</A>, <A HREF="../TS/TSROSWSHAMP4.html#TSROSWSHAMP4">TSROSWSHAMP4</A>, <A HREF="../TS/TSROSWVELDD4.html#TSROSWVELDD4">TSROSWVELDD4</A>, <A HREF="../TS/TSROSW4L.html#TSROSW4L">TSROSW4L</A>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/impls/rosw/rosw.c.html#TSROSW">src/ts/impls/rosw/rosw.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

@@ -29,9 +29,19 @@ extern void PetscRmPointer(void*);
 
 #include "petscvec.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define veccreatenest_ VECCREATENEST
+#define vecnestgetsubvec_ VECNESTGETSUBVEC
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define veccreatenest_ veccreatenest
+#define vecnestgetsubvec_ vecnestgetsubvec
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecnestsetsubvec_ VECNESTSETSUBVEC
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecnestsetsubvec_ vecnestsetsubvec
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecnestgetsize_ VECNESTGETSIZE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecnestgetsize_ vecnestgetsize
 #endif
 
 
@@ -39,9 +49,18 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  veccreatenest_(MPI_Fint * comm,PetscInt *nb,IS is[],Vec x[],Vec *Y, int *__ierr ){
-*__ierr = VecCreateNest(
-	MPI_Comm_f2c( *(comm) ),*nb,is,x,Y);
+void PETSC_STDCALL  vecnestgetsubvec_(Vec X,PetscInt *idxm,Vec *sx, int *__ierr ){
+*__ierr = VecNestGetSubVec(
+	(Vec)PetscToPointer((X) ),*idxm,sx);
+}
+void PETSC_STDCALL  vecnestsetsubvec_(Vec X,PetscInt *idxm,Vec sx, int *__ierr ){
+*__ierr = VecNestSetSubVec(
+	(Vec)PetscToPointer((X) ),*idxm,
+	(Vec)PetscToPointer((sx) ));
+}
+void PETSC_STDCALL  vecnestgetsize_(Vec X,PetscInt *N, int *__ierr ){
+*__ierr = VecNestGetSize(
+	(Vec)PetscToPointer((X) ),N);
 }
 #if defined(__cplusplus)
 }

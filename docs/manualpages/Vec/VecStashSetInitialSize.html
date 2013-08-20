@@ -5,12 +5,12 @@
 <TITLE>VecStashSetInitialSize</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecStashSetInitialSize"><H1>VecStashSetInitialSize</H1></A>
 sets the sizes of the vec-stash, that is used during the assembly process to store values that belong to other processors. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecStashSetInitialSize(Vec vec,PetscInt size,PetscInt bsize)
 </PRE>
 Not Collective, different processes can have different size stashes

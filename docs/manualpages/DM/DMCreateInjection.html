@@ -5,9 +5,9 @@
 <TITLE>DMCreateInjection</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMCreateInjection"><H1>DMCreateInjection</H1></A>
-Gets injection matrix between two DMDA or DMComposite objects 
+Gets injection matrix between two <A HREF="../DM/DMDA.html#DMDA">DMDA</A> or DMComposite objects 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"     
@@ -28,8 +28,8 @@ Collective on DM
 <P>
 
 <P>
-Notes:  For DMDA objects this only works for "uniform refinement", that is the refined mesh was obtained <A HREF="../DM/DMRefine.html#DMRefine">DMRefine</A>() or the coarse mesh was obtained by
-<A HREF="../DM/DMCoarsen.html#DMCoarsen">DMCoarsen</A>(). The coordinates set into the DMDA are completely ignored in computing the injection.
+Notes:  For <A HREF="../DM/DMDA.html#DMDA">DMDA</A> objects this only works for "uniform refinement", that is the refined mesh was obtained <A HREF="../DM/DMRefine.html#DMRefine">DMRefine</A>() or the coarse mesh was obtained by
+<A HREF="../DM/DMCoarsen.html#DMCoarsen">DMCoarsen</A>(). The coordinates set into the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> are completely ignored in computing the injection.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
 <A HREF="../DM/DMDestroy.html#DMDestroy">DMDestroy</A>(), <A HREF="../DM/DMView.html#DMView">DMView</A>(), <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(), <A HREF="../DM/DMCreateColoring.html#DMCreateColoring">DMCreateColoring</A>(), <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(), <A HREF="../DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>()

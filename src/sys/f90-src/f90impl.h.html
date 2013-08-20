@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/f90-src/f90impl.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:37:36+00:00">
+<meta name="date" content="2013-07-02T14:39:28+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;petsc-private/fortranimpl.h&gt;</font>
 
@@ -23,7 +23,7 @@
 <a name="line14"> 14: </a><strong><font color="#228B22">#define PETSC_F90_2PTR_PARAM(ptr)</font></strong>
 <a name="line15"> 15: </a><font color="#A020F0">#endif</font>
 
-<a name="line17"> 17: </a><font color="#A020F0">#if defined (PETSC_USING_F90)</font>
+<a name="line17"> 17: </a><font color="#A020F0">#if defined(PETSC_USING_F90)</font>
 
 <a name="line19"> 19: </a><strong><font color="#228B22">#define F90Array1d void</font></strong>
 <a name="line20"> 20: </a><strong><font color="#228B22">#define F90Array2d void</font></strong>
@@ -50,7 +50,7 @@
 <a name="line41"> 41: </a><strong><font color="#4169E1">PETSC_EXTERN <A href="../..90-../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> F90Array4dDestroy(F90Array4d*,<A href="../..90-../docs/manualpages/Sys/PetscDataType.html#PetscDataType">PetscDataType</A> PETSC_F90_2PTR_PROTO_NOVAR)</font></strong>;
 <a name="line42"> 42: </a><strong><font color="#4169E1">PETSC_EXTERN <A href="../..90-../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> F90Array4dGetNextRecord(F90Array4d*,void** PETSC_F90_2PTR_PROTO_NOVAR)</font></strong>;
 
-<a name="line44"> 44: </a><font color="#B22222">/* </font>
+<a name="line44"> 44: </a><font color="#B22222">/*</font>
 <a name="line45"> 45: </a><font color="#B22222"><strong></font><font color="#4169E1">PETSC_EXTERN <A href="../..90-../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  F90Array1dGetInfo(F90Array1d*,<A href="../..90-../docs/manualpages/Sys/PetscDataType.html#PetscDataType">PetscDataType</A>*,int*,int*)</font></strong>;
 <a name="line46"> 46: </a><strong><font color="#4169E1">PETSC_EXTERN <A href="../..90-../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  F90Array2dGetInfo(F90Array2d*,<A href="../..90-../docs/manualpages/Sys/PetscDataType.html#PetscDataType">PetscDataType</A>*,int*,int*,int*,int*)</font></strong>;
 <a name="line47"> 47: </a>*/

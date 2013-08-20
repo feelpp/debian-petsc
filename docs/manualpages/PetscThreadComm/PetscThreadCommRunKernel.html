@@ -5,7 +5,7 @@
 <TITLE>PetscThreadCommRunKernel</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscThreadCommRunKernel"><H1>PetscThreadCommRunKernel</H1></A>
 Runs the kernel using the thread communicator associated with the MPI communicator 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -13,6 +13,8 @@ Runs the kernel using the thread communicator associated with the MPI communicat
 #include "petscthreadcomm.h" 
 PetscErrorCode PetscThreadCommRunKernel(MPI_Comm comm,PetscErrorCode (*func)(PetscInt,...),PetscInt nargs,...)
 </PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm  </B></TD><TD>- the MPI communicator
@@ -40,7 +42,7 @@ by PETSc.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  PetscThreadCommCreate(), PetscThreadCommGNThreads()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/threadcomm/threadcomm.c.html#PetscThreadCommRunKernel">src/sys/threadcomm/threadcomm.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/threadcomm/interface/threadcomm.c.html#PetscThreadCommRunKernel">src/sys/threadcomm/interface/threadcomm.c</A>
 <BR><A HREF="./index.html">Index of all PetscThreadComm routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

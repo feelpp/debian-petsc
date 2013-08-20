@@ -1,0 +1,419 @@
+<center><a href="ex52_integrateElement_coef.cu">Actual source code: ex52_integrateElement_coef.cu</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex52_integrateElement_coef.cu.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:50:33+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
+
+<a name="line3">  3: </a><font color="#A020F0">#include </font><font color="#666666">"ex52_gpu.h"</font><font color="#A020F0"></font>
+
+<a name="line5">  5: </a><font color="#A020F0">#if (SPATIAL_DIM_0 == 2)</font>
+
+<a name="line7">  7: </a><strong><font color="#4169E1"><a name="f1_laplacian_coef"></a>__device__ vecType f1_laplacian_coef(realType u[], vecType gradU[], realType kappa, int comp)</font></strong>
+<a name="line8">  8: </a>{
+<a name="line9">  9: </a>  vecType l = {kappa * gradU[comp].x, kappa * gradU[comp].y};
+<a name="line10"> 10: </a>  <font color="#4169E1">return</font> l;
+<a name="line11"> 11: </a>}
+
+<a name="line13"> 13: </a><strong><font color="#4169E1"><a name="f1_elasticity_coef"></a>__device__ vecType f1_elasticity_coef(realType u[], vecType gradU[], realType kappa, int comp)</font></strong>
+<a name="line14"> 14: </a>{
+<a name="line15"> 15: </a>  vecType f1;
+
+<a name="line17"> 17: </a>  <font color="#4169E1">switch</font> (comp) {
+<a name="line18"> 18: </a>  <font color="#4169E1">case</font> 0:
+<a name="line19"> 19: </a>    f1.x = 0.5*(gradU[0].x + gradU[0].x);
+<a name="line20"> 20: </a>    f1.y = 0.5*(gradU[0].y + gradU[1].x);
+<a name="line21"> 21: </a>    <font color="#4169E1">break</font>;
+<a name="line22"> 22: </a>  <font color="#4169E1">case</font> 1:
+<a name="line23"> 23: </a>    f1.x = 0.5*(gradU[1].x + gradU[0].y);
+<a name="line24"> 24: </a>    f1.y = 0.5*(gradU[1].y + gradU[1].y);
+<a name="line25"> 25: </a>  }
+<a name="line26"> 26: </a>  <font color="#4169E1">return</font> f1;
+<a name="line27"> 27: </a>}
+
+<a name="line29"> 29: </a><font color="#A020F0">#elif (SPATIAL_DIM_0 == 3)</font>
+
+<a name="line31"> 31: </a><strong><font color="#4169E1"><a name="f1_laplacian_coef"></a>__device__ vecType f1_laplacian_coef(realType u[], vecType gradU[], realType kappa, int comp)</font></strong>
+<a name="line32"> 32: </a>{
+<a name="line33"> 33: </a>  vecType l = {kappa*gradU[comp].x, kappa*gradU[comp].y, kappa*gradU[comp].z};
+<a name="line34"> 34: </a>  <font color="#4169E1">return</font> l;
+<a name="line35"> 35: </a>}
+
+<a name="line37"> 37: </a><strong><font color="#4169E1"><a name="f1_elasticity_coef"></a>__device__ vecType f1_elasticity_coef(realType u[], vecType gradU[], int comp)</font></strong>
+<a name="line38"> 38: </a>{
+<a name="line39"> 39: </a>  vecType f1;
+
+<a name="line41"> 41: </a>  <font color="#4169E1">switch</font> (comp) {
+<a name="line42"> 42: </a>  <font color="#4169E1">case</font> 0:
+<a name="line43"> 43: </a>    f1.x = 0.5*(gradU[0].x + gradU[0].x);
+<a name="line44"> 44: </a>    f1.y = 0.5*(gradU[0].y + gradU[1].x);
+<a name="line45"> 45: </a>    f1.z = 0.5*(gradU[0].z + gradU[2].x);
+<a name="line46"> 46: </a>    <font color="#4169E1">break</font>;
+<a name="line47"> 47: </a>  <font color="#4169E1">case</font> 1:
+<a name="line48"> 48: </a>    f1.x = 0.5*(gradU[1].x + gradU[0].y);
+<a name="line49"> 49: </a>    f1.y = 0.5*(gradU[1].y + gradU[1].y);
+<a name="line50"> 50: </a>    f1.z = 0.5*(gradU[1].z + gradU[2].y);
+<a name="line51"> 51: </a>    <font color="#4169E1">break</font>;
+<a name="line52"> 52: </a>  <font color="#4169E1">case</font> 2:
+<a name="line53"> 53: </a>    f1.x = 0.5*(gradU[2].x + gradU[0].z);
+<a name="line54"> 54: </a>    f1.y = 0.5*(gradU[2].y + gradU[1].z);
+<a name="line55"> 55: </a>    f1.z = 0.5*(gradU[2].z + gradU[2].z);
+<a name="line56"> 56: </a>  }
+<a name="line57"> 57: </a>  <font color="#4169E1">return</font> f1;
+<a name="line58"> 58: </a>}
+
+<a name="line60"> 60: </a><font color="#A020F0">#else</font>
+
+<a name="line62"> 62: </a><font color="#A020F0">#error </font><font color="#666666">"Invalid spatial dimension"</font><font color="#A020F0"></font>
+
+<a name="line64"> 64: </a><font color="#A020F0">#endif</font>
+
+<a name="line66"> 66: </a>// dim     Number of spatial dimensions:          2
+<a name="line67"> 67: </a>// N_b     Number of basis functions:             generated
+<a name="line68"> 68: </a>// N_{bt}  Number of total basis functions:       N_b * N_{comp}
+<a name="line69"> 69: </a>// N_q     Number of quadrature points:           generated
+<a name="line70"> 70: </a>// N_{bs}  Number of block cells                  LCM(N_b, N_q)
+<a name="line71"> 71: </a>// N_{bst} Number of block cell components        LCM(N_{bt}, N_q)
+<a name="line72"> 72: </a>// N_{bl}  Number of concurrent blocks            generated
+<a name="line73"> 73: </a>// N_t     Number of threads:                     N_{bl} * N_{bs}
+<a name="line74"> 74: </a>// N_{cbc} Number of concurrent basis      cells: N_{bl} * N_q
+<a name="line75"> 75: </a>// N_{cqc} Number of concurrent quadrature cells: N_{bl} * N_b
+<a name="line76"> 76: </a>// N_{sbc} Number of serial     basis      cells: N_{bs} / N_q
+<a name="line77"> 77: </a>// N_{sqc} Number of serial     quadrature cells: N_{bs} / N_b
+<a name="line78"> 78: </a>// N_{cb}  Number of serial cell batches:         input
+<a name="line79"> 79: </a>// N_c     Number of total cells:                 N_{cb}*N_{t}/N_{comp}
+
+<a name="line81"> 81: </a><strong><font color="#4169E1"><a name="integrateElementCoefQuadrature"></a>__global__ void integrateElementCoefQuadrature(int N_cb, realType *coefficients, realType *physCoefficients, realType *jacobianInverses, realType *jacobianDeterminants, realType *elemVec)</font></strong>
+<a name="line82"> 82: </a>{
+<a name="line83"> 83: </a><font color="#A020F0">  #include </font><font color="#666666">"ex52_gpu_inline.h"</font><font color="#A020F0"></font>
+<a name="line84"> 84: </a>  const int dim    = SPATIAL_DIM_0;
+<a name="line85"> 85: </a>  const int N_b    = numBasisFunctions_0;           // The number of basis functions
+<a name="line86"> 86: </a>  const int N_comp = numBasisComponents_0;          // The number of basis function components
+<a name="line87"> 87: </a>  const int N_bt   = N_b*N_comp;                    // The total number of scalar basis functions
+<a name="line88"> 88: </a>  const int N_q    = numQuadraturePoints_0;         // The number of quadrature points
+<a name="line89"> 89: </a>  const int N_bst  = N_bt*N_q;                      // The block size, LCM(N_b*N_comp, N_q), Notice that a block is not processed simultaneously
+<a name="line90"> 90: </a>  const int N_t    = N_bst*N_bl;                    // The number of threads, N_bst * N_bl
+<a name="line91"> 91: </a>  const int N_bc   = N_t/N_comp;                    // The number of cells per batch (N_b*N_q*N_bl)
+<a name="line92"> 92: </a>  const int N_c    = N_cb * N_bc;
+<a name="line93"> 93: </a>  const int N_sbc  = N_bst / (N_q * N_comp);
+<a name="line94"> 94: </a>  const int N_sqc  = N_bst / N_bt;
+<a name="line95"> 95: </a>  <font color="#B22222">/* Calculated indices */</font>
+<a name="line96"> 96: </a>  const int tidx    = threadIdx.x + blockDim.x*threadIdx.y;
+<a name="line97"> 97: </a>  const int blidx   = tidx / N_bst;                  // Block number <font color="#4169E1">for</font> this thread
+<a name="line98"> 98: </a>  const int bidx    = tidx % N_bt;                   // Basis function mapped to this thread
+<a name="line99"> 99: </a>  const int cidx    = tidx % N_comp;                 // Basis component mapped to this thread
+<a name="line100">100: </a>  const int qidx    = tidx % N_q;                    // Quadrature point mapped to this thread
+<a name="line101">101: </a>  const int blbidx  = tidx % N_q + blidx*N_q;        // Cell mapped to this thread in the basis phase
+<a name="line102">102: </a>  const int blqidx  = tidx % N_b + blidx*N_b;        // Cell mapped to this thread in the quadrature phase
+<a name="line103">103: </a>  const int gidx    = blockIdx.y*gridDim.x + blockIdx.x;
+<a name="line104">104: </a>  const int Goffset = gidx*N_c;
+<a name="line105">105: </a>  const int Coffset = gidx*N_c*N_bt;
+<a name="line106">106: </a>  const int Poffset = gidx*N_c*N_q;
+<a name="line107">107: </a>  const int Eoffset = gidx*N_c*N_bt;
+<a name="line108">108: </a>  <font color="#B22222">/* Quadrature data */</font>
+<a name="line109">109: </a>  realType             w;                   // $w_q$, Quadrature weight at $x_q$
+<a name="line110">110: </a>//__shared__ realType  phi_i[N_bt*N_q];     // $\phi_i(x_q)$, Value of the basis function $i$ at $x_q$
+<a name="line111">111: </a>  __shared__ vecType   phiDer_i[N_bt*N_q];  // $\frac{\partial\phi_i(x_q)}{\partial x_d}$, Value of the derivative of basis function $i$ in direction $x_d$ at $x_q$
+<a name="line112">112: </a>  <font color="#B22222">/* Geometric data */</font>
+<a name="line113">113: </a>  __shared__ realType  detJ[N_t];           // $|J(x_q)|$, Jacobian determinant at $x_q$
+<a name="line114">114: </a>  __shared__ realType  invJ[N_t*dim*dim];   // $J^{-1}(x_q)$, Jacobian inverse at $x_q$
+<a name="line115">115: </a>  <font color="#B22222">/* FEM data */</font>
+<a name="line116">116: </a>  __shared__ realType  u_i[N_t*N_bt];       // Coefficients $u_i$ of the field $u|_{\mathcal{T}} = \sum_i u_i \phi_i$
+<a name="line117">117: </a>  <font color="#B22222">/* Physical coefficient data */</font>
+<a name="line118">118: </a>  realType             kappa;               // Physical coefficient $\kappa$ in the equation
+<a name="line119">119: </a>  <font color="#B22222">/* Intermediate calculations */</font>
+<a name="line120">120: </a>//__shared__ realType  f_0[N_t*N_sqc];      // $f_0(u(x_q), \nabla u(x_q)) |J(x_q)| w_q$
+<a name="line121">121: </a>  __shared__ vecType   f_1[N_t*N_sqc];      // $f_1(u(x_q), \nabla u(x_q)) |J(x_q)| w_q$
+<a name="line122">122: </a>  <font color="#B22222">/* Output data */</font>
+<a name="line123">123: </a>  realType             e_i;                 // Coefficient $e_i$ of the residual
+
+<a name="line125">125: </a>  <font color="#B22222">/* These should be generated inline */</font>
+<a name="line126">126: </a>  <font color="#B22222">/* Load quadrature weights */</font>
+<a name="line127">127: </a>  w = weights_0[qidx];
+<a name="line128">128: </a>  <font color="#B22222">/* Load basis tabulation \phi_i for this cell */</font>
+<a name="line129">129: </a>  <font color="#4169E1">if</font> (tidx &lt; N_bt*N_q) {
+<a name="line130">130: </a> // phi_i[tidx]    = Basis_0[tidx];
+<a name="line131">131: </a>    phiDer_i[tidx] = BasisDerivatives_0[tidx];
+<a name="line132">132: </a>  }
+
+<a name="line134">134: </a>  <font color="#4169E1">for</font> (int batch = 0; batch &lt; N_cb; ++batch) {
+<a name="line135">135: </a>    <font color="#B22222">/* Load geometry */</font>
+<a name="line136">136: </a>    detJ[tidx] = jacobianDeterminants[Goffset+batch*N_bc+tidx];
+<a name="line137">137: </a>    <font color="#4169E1">for</font> (int n = 0; n &lt; dim*dim; ++n) {
+<a name="line138">138: </a>      const int offset = n*N_t;
+<a name="line139">139: </a>      invJ[offset+tidx] = jacobianInverses[(Goffset+batch*N_bc)*dim*dim+offset+tidx];
+<a name="line140">140: </a>    }
+<a name="line141">141: </a>    <font color="#B22222">/* Load coefficients u_i for this cell */</font>
+<a name="line142">142: </a>    <font color="#4169E1">for</font> (int n = 0; n &lt; N_bt; ++n) {
+<a name="line143">143: </a>      const int offset = n*N_t;
+<a name="line144">144: </a>      u_i[offset+tidx] = coefficients[Coffset+batch*N_t*N_b+offset+tidx];
+<a name="line145">145: </a>    }
+<a name="line146">146: </a>    <font color="#B22222">/* Load physical coefficient for this cell */</font>
+<a name="line147">147: </a>    kappa = physCoefficients[Poffset+batch*N_t*N_q+tidx];
+
+<a name="line149">149: </a>    <font color="#B22222">/* Map coefficients to values at quadrature points */</font>
+<a name="line150">150: </a>    <font color="#4169E1">for</font> (int c = 0; c &lt; N_sqc; ++c) {
+<a name="line151">151: </a>      realType u[N_comp];      // $u(x_q)$, Value of the field at $x_q$
+<a name="line152">152: </a>      vecType  gradU[N_comp];  // $\nabla u(x_q)$, Value of the field gradient at $x_q$
+<a name="line153">153: </a>      // vecType   x             = {0.0, 0.0};           // Quadrature point $x_q$
+<a name="line154">154: </a>      const int cell = c*N_bl*N_b + blqidx;
+<a name="line155">155: </a>      const int fidx = (cell*N_q + qidx)*N_comp + cidx;
+
+<a name="line157">157: </a>      <font color="#4169E1">for</font> (int comp = 0; comp &lt; N_comp; ++comp) {
+<a name="line158">158: </a>        //u[comp] = 0.0;
+<a name="line159">159: </a><font color="#A020F0">#if SPATIAL_DIM_0 == 2</font>
+<a name="line160">160: </a>        gradU[comp].x = 0.0; gradU[comp].y = 0.0;
+<a name="line161">161: </a><font color="#A020F0">#elif  SPATIAL_DIM_0 == 3</font>
+<a name="line162">162: </a>        gradU[comp].x = 0.0; gradU[comp].y = 0.0; gradU[comp].z = 0.0;
+<a name="line163">163: </a><font color="#A020F0">#endif</font>
+<a name="line164">164: </a>      }
+<a name="line165">165: </a>      <font color="#B22222">/* Get field and derivatives at this quadrature point */</font>
+<a name="line166">166: </a>      <font color="#4169E1">for</font> (int i = 0; i &lt; N_b; ++i) {
+<a name="line167">167: </a>        <font color="#4169E1">for</font> (int comp = 0; comp &lt; N_comp; ++comp) {
+<a name="line168">168: </a>          const int b    = i*N_comp+comp;
+<a name="line169">169: </a>          const int pidx = qidx*N_bt + b;
+<a name="line170">170: </a>          const int uidx = cell*N_bt + b;
+<a name="line171">171: </a>          vecType   realSpaceDer;
+
+<a name="line173">173: </a>          // u[comp] += u_i[uidx]*phi_i[qidx*N_bt+bbidx];
+<a name="line174">174: </a><font color="#A020F0">#if SPATIAL_DIM_0 == 2</font>
+<a name="line175">175: </a>          realSpaceDer.x = invJ[cell*dim*dim+0*dim+0]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+0]*phiDer_i[pidx].y;
+<a name="line176">176: </a>          gradU[comp].x += u_i[uidx]*realSpaceDer.x;
+<a name="line177">177: </a>          realSpaceDer.y = invJ[cell*dim*dim+0*dim+1]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+1]*phiDer_i[pidx].y;
+<a name="line178">178: </a>          gradU[comp].y += u_i[uidx]*realSpaceDer.y;
+<a name="line179">179: </a><font color="#A020F0">#elif  SPATIAL_DIM_0 == 3</font>
+<a name="line180">180: </a>          realSpaceDer.x = invJ[cell*dim*dim+0*dim+0]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+0]*phiDer_i[pidx].y + invJ[cell*dim*dim+2*dim+0]*phiDer_i[pidx].z;
+<a name="line181">181: </a>          gradU[comp].x += u_i[uidx]*realSpaceDer.x;
+<a name="line182">182: </a>          realSpaceDer.y = invJ[cell*dim*dim+0*dim+1]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+1]*phiDer_i[pidx].y + invJ[cell*dim*dim+2*dim+1]*phiDer_i[pidx].z;
+<a name="line183">183: </a>          gradU[comp].y += u_i[uidx]*realSpaceDer.y;
+<a name="line184">184: </a>          realSpaceDer.z = invJ[cell*dim*dim+0*dim+2]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+2]*phiDer_i[pidx].y + invJ[cell*dim*dim+2*dim+2]*phiDer_i[pidx].z;
+<a name="line185">185: </a>          gradU[comp].z += u_i[uidx]*realSpaceDer.z;
+<a name="line186">186: </a><font color="#A020F0">#endif</font>
+<a name="line187">187: </a>        }
+<a name="line188">188: </a>      }
+<a name="line189">189: </a>      <font color="#B22222">/* Process values at quadrature points */</font>
+<a name="line190">190: </a>      f_1[fidx] = f1_coef_func(u, gradU, kappa, cidx);
+<a name="line191">191: </a><font color="#A020F0">#if SPATIAL_DIM_0 == 2</font>
+<a name="line192">192: </a>      f_1[fidx].x *= detJ[cell]*w; f_1[fidx].y *= detJ[cell]*w;
+<a name="line193">193: </a><font color="#A020F0">#elif  SPATIAL_DIM_0 == 3</font>
+<a name="line194">194: </a>      f_1[fidx].x *= detJ[cell]*w; f_1[fidx].y *= detJ[cell]*w; f_1[fidx].z *= detJ[cell]*w;
+<a name="line195">195: </a><font color="#A020F0">#endif</font>
+<a name="line196">196: </a>    }
+
+<a name="line198">198: </a>    <font color="#B22222">/* ==== TRANSPOSE THREADS ==== */</font>
+<a name="line199">199: </a>    __syncthreads();
+
+<a name="line201">201: </a>    <font color="#B22222">/* Map values at quadrature points to coefficients */</font>
+<a name="line202">202: </a>    <font color="#4169E1">for</font> (int c = 0; c &lt; N_sbc; ++c) {
+<a name="line203">203: </a>      const int cell = c*N_bl*N_q + blbidx;
+
+<a name="line205">205: </a>      e_i = 0.0;
+<a name="line206">206: </a>      <font color="#4169E1">for</font> (int q = 0; q &lt; N_q; ++q) {
+<a name="line207">207: </a>        const int pidx = q*N_bt + bidx;
+<a name="line208">208: </a>        const int fidx = (cell*N_q + q)*N_comp + cidx;
+<a name="line209">209: </a>        vecType   realSpaceDer;
+
+<a name="line211">211: </a>        // e_i += phi_i[pidx]*f_0[fidx];
+<a name="line212">212: </a><font color="#A020F0">#if SPATIAL_DIM_0 == 2</font>
+<a name="line213">213: </a>        realSpaceDer.x = invJ[cell*dim*dim+0*dim+0]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+0]*phiDer_i[pidx].y;
+<a name="line214">214: </a>        e_i           += realSpaceDer.x*f_1[fidx].x;
+<a name="line215">215: </a>        realSpaceDer.y = invJ[cell*dim*dim+0*dim+1]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+1]*phiDer_i[pidx].y;
+<a name="line216">216: </a>        e_i           += realSpaceDer.y*f_1[fidx].y;
+<a name="line217">217: </a><font color="#A020F0">#elif  SPATIAL_DIM_0 == 3</font>
+<a name="line218">218: </a>        realSpaceDer.x = invJ[cell*dim*dim+0*dim+0]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+0]*phiDer_i[pidx].y + invJ[cell*dim*dim+2*dim+0]*phiDer_i[pidx].z;
+<a name="line219">219: </a>        e_i           += realSpaceDer.x*f_1[fidx].x;
+<a name="line220">220: </a>        realSpaceDer.y = invJ[cell*dim*dim+0*dim+1]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+1]*phiDer_i[pidx].y + invJ[cell*dim*dim+2*dim+1]*phiDer_i[pidx].z;
+<a name="line221">221: </a>        e_i           += realSpaceDer.y*f_1[fidx].y;
+<a name="line222">222: </a>        realSpaceDer.z = invJ[cell*dim*dim+0*dim+2]*phiDer_i[pidx].x + invJ[cell*dim*dim+1*dim+2]*phiDer_i[pidx].y + invJ[cell*dim*dim+2*dim+2]*phiDer_i[pidx].z;
+<a name="line223">223: </a>        e_i           += realSpaceDer.z*f_1[fidx].z;
+<a name="line224">224: </a><font color="#A020F0">#endif</font>
+<a name="line225">225: </a>      }
+<a name="line226">226: </a><font color="#A020F0">#if 0</font>
+<a name="line227">227: </a>      // Check f_1
+<a name="line228">228: </a>      {
+<a name="line229">229: </a>        const int q = 0;
+<a name="line230">230: </a>        const int i = bidx/N_comp;
+<a name="line231">231: </a>        // Prints f1[0].x, f1[1].x, f1[0].y, f1[1].y
+<a name="line232">232: </a>        <font color="#4169E1">switch</font> (i) {
+<a name="line233">233: </a>        <font color="#4169E1">case</font> 0:
+<a name="line234">234: </a>          e_i = f_1[(cell*N_q+q)*N_comp+cidx].x;<font color="#4169E1">break</font>;
+<a name="line235">235: </a>        <font color="#4169E1">case</font> 1:
+<a name="line236">236: </a>          e_i = f_1[(cell*N_q+q)*N_comp+cidx].y;<font color="#4169E1">break</font>;
+<a name="line237">237: </a>        //<font color="#4169E1">case</font> 2:
+<a name="line238">238: </a>        //e_i = f_1[(cell*N_q+q)*N_comp+cidx].z;<font color="#4169E1">break</font>;
+<a name="line239">239: </a><strong><font color="#FF0000">        default:</font></strong>
+<a name="line240">240: </a>          e_i = 0.0;
+<a name="line241">241: </a>        }
+<a name="line242">242: </a>      }
+<a name="line243">243: </a>      // Check that u_i is being used correctly
+<a name="line244">244: </a>      //e_i = u_i[cell*N_bt+bidx];
+<a name="line245">245: </a>      e_i = detJ[cell];
+<a name="line246">246: </a>      //e_i = coefficients[Coffset+(batch*N_sbc+c)*N_t+tidx];
+<a name="line247">247: </a>      //e_i = Coffset+(batch*N_sbc+c)*N_t+tidx;
+<a name="line248">248: </a>      //e_i = cell*N_bt+bidx;
+<a name="line249">249: </a><font color="#A020F0">#endif</font>
+<a name="line250">250: </a>      <font color="#B22222">/* Write element vector for N_{cbc} cells at a time */</font>
+<a name="line251">251: </a>      elemVec[Eoffset+(batch*N_sbc+c)*N_t+tidx] = e_i;
+<a name="line252">252: </a>    }
+<a name="line253">253: </a>    <font color="#B22222">/* ==== Could do one write per batch ==== */</font>
+<a name="line254">254: </a>  }
+<a name="line255">255: </a>  <font color="#4169E1">return</font>;
+<a name="line256">256: </a>}
+
+<a name="line258">258: </a>// Calculate a conforming thread grid <font color="#4169E1">for</font> N kernels
+<a name="line261">261: </a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> calculateGridCoef(const int N, const int blockSize, unsigned int&amp; x, unsigned int&amp; y, unsigned int&amp; z)
+<a name="line262">262: </a>{
+<a name="line264">264: </a>  z = 1;
+<a name="line265">265: </a>  <font color="#4169E1">if</font> (N % blockSize) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_SIZ, <font color="#666666">"Invalid block size %d for %d elements"</font>, blockSize, N);
+<a name="line266">266: </a>  const int Nblocks = N/blockSize;
+<a name="line267">267: </a>  <font color="#4169E1">for</font> (x = (int) (sqrt(Nblocks) + 0.5); x &gt; 0; --x) {
+<a name="line268">268: </a>    y = Nblocks/x;
+<a name="line269">269: </a>    <font color="#4169E1">if</font> (x*y == Nblocks) <font color="#4169E1">break</font>;
+<a name="line270">270: </a>  }
+<a name="line271">271: </a>  <font color="#4169E1">if</font> (x*y != Nblocks) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_SIZ, <font color="#666666">"Could not find partition for %d with block size %d"</font>, N, blockSize);
+<a name="line272">272: </a>  <font color="#4169E1">return</font>(0);
+<a name="line273">273: </a>}
+
+<a name="line277">277: </a><font color="#B22222">/*</font>
+<a name="line278">278: </a><font color="#B22222">  IntegrateElementCoefBatchGPU - Produces element vectors from input element solution and geometric information via quadrature</font>
+
+<a name="line280">280: </a><font color="#B22222">  Input Parameters:</font>
+<a name="line281">281: </a><font color="#B22222">+ Ne - The total number of cells, Nchunk * Ncb * Nbc</font>
+<a name="line282">282: </a><font color="#B22222">. Ncb - The number of serial cell batches</font>
+<a name="line283">283: </a><font color="#B22222">. Nbc - The number of cells per batch</font>
+<a name="line284">284: </a><font color="#B22222">. Nbl - The number of concurrent cells blocks per thread block</font>
+<a name="line285">285: </a><font color="#B22222">. coefficients - An array of the solution vector for each cell</font>
+<a name="line286">286: </a><font color="#B22222">. physCoefficients - An array of the physical coefficient values at quadrature points for each cell</font>
+<a name="line287">287: </a><font color="#B22222">. jacobianInverses - An array of the inverse Jacobian for each cell</font>
+<a name="line288">288: </a><font color="#B22222">. jacobianDeterminants - An array of the Jacobian determinant for each cell</font>
+<a name="line289">289: </a><font color="#B22222">. event - A PetscEvent, used to log flops</font>
+<a name="line290">290: </a><font color="#B22222">- debug - A flag for debugging information</font>
+
+<a name="line292">292: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line293">293: </a><font color="#B22222">. elemVec - An array of the element vectors for each cell</font>
+<a name="line294">294: </a><font color="#B22222">*/</font>
+<a name="line295">295: </a><strong><font color="#4169E1"><a name="IntegrateElementCoefBatchGPU"></a>PETSC_EXTERN <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> IntegrateElementCoefBatchGPU(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> Ne, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> Ncb, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> Nbc, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> Nbl, const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> coefficients[], const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> physCoefficients[],</font></strong>
+<a name="line296">296: </a><strong><font color="#4169E1">                                            const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> jacobianInverses[], const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> jacobianDeterminants[], <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> elemVec[],</font></strong>
+<a name="line297">297: </a><strong><font color="#4169E1">                                            <A href="../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A> event, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> debug)</font></strong>
+<a name="line298">298: </a>{
+<a name="line299">299: </a><font color="#A020F0">  #include </font><font color="#666666">"ex52_gpu_inline.h"</font><font color="#A020F0"></font>
+<a name="line300">300: </a>  const int dim    = SPATIAL_DIM_0;
+<a name="line301">301: </a>  const int N_b    = numBasisFunctions_0;   // The number of basis functions
+<a name="line302">302: </a>  const int N_comp = numBasisComponents_0;  // The number of basis function components
+<a name="line303">303: </a>  const int N_bt   = N_b*N_comp;            // The total number of scalar basis functions
+<a name="line304">304: </a>  const int N_q    = numQuadraturePoints_0; // The number of quadrature points
+<a name="line305">305: </a>  const int N_bst  = N_bt*N_q;              // The block size, LCM(N_bt, N_q), Notice that a block is not process simultaneously
+<a name="line306">306: </a>  const int N_t    = N_bst*N_bl;            // The number of threads, N_bst * N_bl
+
+<a name="line308">308: </a>  realType       *d_coefficients;
+<a name="line309">309: </a>  realType       *d_physCoefficients;
+<a name="line310">310: </a>  realType       *d_jacobianInverses;
+<a name="line311">311: </a>  realType       *d_jacobianDeterminants;
+<a name="line312">312: </a>  realType       *d_elemVec;
+
+<a name="line316">316: </a>  <font color="#4169E1">if</font> (Nbl != N_bl) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_PLIB, <font color="#666666">"Inconsisten block size %d should be %d"</font>, Nbl, N_bl);
+<a name="line317">317: </a>  <font color="#4169E1">if</font> (Nbc*N_comp != N_t) <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_PLIB, <font color="#666666">"Number of threads %d should be %d * %d"</font>, N_t, Nbc, N_comp);
+<a name="line318">318: </a>  <font color="#4169E1">if</font> (!Ne) {
+<a name="line319">319: </a>    PetscStageLog     stageLog;
+<a name="line320">320: </a>    PetscEventPerfLog eventLog = NULL;
+<a name="line321">321: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          stage;
+
+<a name="line323">323: </a>    <A href="../../../../docs/manualpages/Profiling/PetscLogGetStageLog.html#PetscLogGetStageLog">PetscLogGetStageLog</A>(&amp;stageLog);
+<a name="line324">324: </a>    <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetCurrent.html#PetscStageLogGetCurrent">PetscStageLogGetCurrent</A>(stageLog, &amp;stage);
+<a name="line325">325: </a>    <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetEventPerfLog.html#PetscStageLogGetEventPerfLog">PetscStageLogGetEventPerfLog</A>(stageLog, stage, &amp;eventLog);
+<a name="line326">326: </a>    <font color="#B22222">/* Log performance info */</font>
+<a name="line327">327: </a>    eventLog-&gt;eventInfo[event].count++;
+<a name="line328">328: </a>    eventLog-&gt;eventInfo[event].time  += 0.0;
+<a name="line329">329: </a>    eventLog-&gt;eventInfo[event].flops += 0;
+<a name="line330">330: </a>    <font color="#4169E1">return</font>(0);
+<a name="line331">331: </a>  }
+<a name="line332">332: </a>  // Marshalling
+<a name="line333">333: </a>  cudaMalloc((void**) &amp;d_coefficients,         Ne*N_bt * <font color="#4169E1">sizeof</font>(realType));
+<a name="line334">334: </a>  cudaMalloc((void**) &amp;d_physCoefficients,     Ne*N_bt * <font color="#4169E1">sizeof</font>(realType));
+<a name="line335">335: </a>  cudaMalloc((void**) &amp;d_jacobianInverses,     Ne*dim*dim * <font color="#4169E1">sizeof</font>(realType));
+<a name="line336">336: </a>  cudaMalloc((void**) &amp;d_jacobianDeterminants, Ne * <font color="#4169E1">sizeof</font>(realType));
+<a name="line337">337: </a>  cudaMalloc((void**) &amp;d_elemVec,              Ne*N_bt * <font color="#4169E1">sizeof</font>(realType));
+<a name="line338">338: </a>  <font color="#4169E1">if</font> (<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>) == <font color="#4169E1">sizeof</font>(realType)) {
+<a name="line339">339: </a>    cudaMemcpy(d_coefficients,         coefficients,         Ne*N_bt    * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyHostToDevice);
+<a name="line340">340: </a>    cudaMemcpy(d_physCoefficients,     physCoefficients,     Ne*N_q     * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyHostToDevice);
+<a name="line341">341: </a>    cudaMemcpy(d_jacobianInverses,     jacobianInverses,     Ne*dim*dim * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyHostToDevice);
+<a name="line342">342: </a>    cudaMemcpy(d_jacobianDeterminants, jacobianDeterminants, Ne         * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyHostToDevice);
+<a name="line343">343: </a>  } <font color="#4169E1">else</font> {
+<a name="line344">344: </a>    realType *c, *pc, *jI, *jD;
+<a name="line345">345: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i;
+
+<a name="line347">347: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>(Ne*N_bt,realType,&amp;c,Ne*N_q,realType,&amp;pc,Ne*dim*dim,realType,&amp;jI,Ne,realType,&amp;jD);
+<a name="line348">348: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; Ne*N_bt;    ++i) c[i]  = coefficients[i];
+<a name="line349">349: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; Ne*N_q;     ++i) pc[i] = physCoefficients[i];
+<a name="line350">350: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; Ne*dim*dim; ++i) jI[i] = jacobianInverses[i];
+<a name="line351">351: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; Ne;         ++i) jD[i] = jacobianDeterminants[i];
+<a name="line352">352: </a>    cudaMemcpy(d_coefficients,         c,  Ne*N_bt    * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyHostToDevice);
+<a name="line353">353: </a>    cudaMemcpy(d_physCoefficients,     pc, Ne*N_q     * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyHostToDevice);
+<a name="line354">354: </a>    cudaMemcpy(d_jacobianInverses,     jI, Ne*dim*dim * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyHostToDevice);
+<a name="line355">355: </a>    cudaMemcpy(d_jacobianDeterminants, jD, Ne         * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyHostToDevice);
+<a name="line356">356: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree4.html#PetscFree4">PetscFree4</A>(c,pc,jI,jD);
+<a name="line357">357: </a>  }
+<a name="line358">358: </a>  // Kernel launch
+<a name="line359">359: </a>  unsigned int x, y, z;
+<a name="line360">360: </a>  calculateGridCoef(Ne, Ncb*Nbc, x, y, z);
+<a name="line361">361: </a>  dim3 grid(x, y, z);
+<a name="line362">362: </a>  dim3 block(Nbc * N_comp, 1, 1);
+<a name="line363">363: </a>  cudaEvent_t start, stop;
+<a name="line364">364: </a>  float       msElapsedTime;
+
+<a name="line366">366: </a>  cudaEventCreate(&amp;start);
+<a name="line367">367: </a>  cudaEventCreate(&amp;stop);
+<a name="line368">368: </a>  // <font color="#4169E1">if</font> (debug) {
+<a name="line369">369: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, <font color="#666666">"GPU layout grid(%d,%d,%d) block(%d,%d,%d) with %d batches\n"</font>,
+<a name="line370">370: </a>                     grid.x, grid.y, grid.z, block.x, block.y, block.z, Ncb);
+<a name="line371">371: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, <font color="#666666">" N_t: %d, N_cb: %d\n"</font>, N_t, Ncb);
+<a name="line372">372: </a>  // }
+<a name="line373">373: </a>  cudaEventRecord(start, 0);
+<a name="line374">374: </a>  integrateElementCoefQuadrature&lt;&lt;&lt;grid, block&gt;&gt;&gt;(Ncb, d_coefficients, d_physCoefficients, d_jacobianInverses, d_jacobianDeterminants, d_elemVec);
+<a name="line375">375: </a>  cudaEventRecord(stop, 0);
+<a name="line376">376: </a>  cudaEventSynchronize(stop);
+<a name="line377">377: </a>  cudaEventElapsedTime(&amp;msElapsedTime, start, stop);
+<a name="line378">378: </a>  cudaEventDestroy(start);
+<a name="line379">379: </a>  cudaEventDestroy(stop);
+<a name="line380">380: </a>  // Marshalling
+<a name="line381">381: </a>  <font color="#4169E1">if</font> (<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>) == <font color="#4169E1">sizeof</font>(realType)) {
+<a name="line382">382: </a>    cudaMemcpy(elemVec, d_elemVec, Ne*N_bt * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyDeviceToHost);
+<a name="line383">383: </a>  } <font color="#4169E1">else</font> {
+<a name="line384">384: </a>    realType *eV;
+<a name="line385">385: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i;
+
+<a name="line387">387: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(Ne*N_bt * <font color="#4169E1">sizeof</font>(realType), &amp;eV);
+<a name="line388">388: </a>    cudaMemcpy(eV, d_elemVec, Ne*N_bt * <font color="#4169E1">sizeof</font>(realType), cudaMemcpyDeviceToHost);
+<a name="line389">389: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; Ne*N_bt; ++i) elemVec[i] = eV[i];
+<a name="line390">390: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(eV);
+<a name="line391">391: </a>  }
+<a name="line392">392: </a>  cudaFree(d_coefficients);
+<a name="line393">393: </a>  cudaFree(d_jacobianInverses);
+<a name="line394">394: </a>  cudaFree(d_jacobianDeterminants);
+<a name="line395">395: </a>  cudaFree(d_elemVec);
+<a name="line396">396: </a>  {
+<a name="line397">397: </a>    PetscStageLog     stageLog;
+<a name="line398">398: </a>    PetscEventPerfLog eventLog = NULL;
+<a name="line399">399: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          stage;
+
+<a name="line401">401: </a>    <A href="../../../../docs/manualpages/Profiling/PetscLogGetStageLog.html#PetscLogGetStageLog">PetscLogGetStageLog</A>(&amp;stageLog);
+<a name="line402">402: </a>    <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetCurrent.html#PetscStageLogGetCurrent">PetscStageLogGetCurrent</A>(stageLog, &amp;stage);
+<a name="line403">403: </a>    <A href="../../../../docs/manualpages/Profiling/PetscStageLogGetEventPerfLog.html#PetscStageLogGetEventPerfLog">PetscStageLogGetEventPerfLog</A>(stageLog, stage, &amp;eventLog);
+<a name="line404">404: </a>    <font color="#B22222">/* Log performance info */</font>
+<a name="line405">405: </a>    eventLog-&gt;eventInfo[event].count++;
+<a name="line406">406: </a>    eventLog-&gt;eventInfo[event].time  += msElapsedTime*1.0e-3;
+<a name="line407">407: </a>    eventLog-&gt;eventInfo[event].flops += (((2+(2+2*dim)*dim)*N_comp*N_b+(2+2)*dim*N_comp)*N_q + (2+2*dim)*dim*N_q*N_comp*N_b)*Ne;
+<a name="line408">408: </a>  }
+<a name="line409">409: </a>  <font color="#4169E1">return</font>(0);
+<a name="line410">410: </a>}
+
+</pre>
+</body>
+
+</html>

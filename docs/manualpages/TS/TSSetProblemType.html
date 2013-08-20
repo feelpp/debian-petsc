@@ -5,13 +5,13 @@
 <TITLE>TSSetProblemType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSSetProblemType"><H1>TSSetProblemType</H1></A>
 Sets the type of problem to be solved. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  TSSetProblemType(TS ts, TSProblemType type) 
+PetscErrorCode  TSSetProblemType(TS ts, TSProblemType type)
 </PRE>
 Not collective
 <P>
@@ -22,9 +22,9 @@ Not collective
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>type </B></TD><TD>- One of TS_LINEAR, TS_NONLINEAR where these types refer to problems of the forms
 </TD></TR></TABLE>
 <PRE>
-         U_t = A U    
-         U_t = A(t) U 
-         U_t = F(t,U) 
+         U_t - A U = 0      (linear)
+         U_t - A(t) U = 0   (linear)
+         F(t,U,U_t) = 0     (nonlinear)
 </PRE>
 
 <P>

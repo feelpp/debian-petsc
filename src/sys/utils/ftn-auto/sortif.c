@@ -39,6 +39,11 @@ extern void PetscRmPointer(void*);
 #define petscsortremovedupsint_ petscsortremovedupsint
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscfindint_ PETSCFINDINT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscfindint_ petscfindint
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscsortintwitharray_ PETSCSORTINTWITHARRAY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscsortintwitharray_ petscsortintwitharray
@@ -47,6 +52,16 @@ extern void PetscRmPointer(void*);
 #define petscsortintwitharraypair_ PETSCSORTINTWITHARRAYPAIR
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscsortintwitharraypair_ petscsortintwitharraypair
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscsortmpiint_ PETSCSORTMPIINT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscsortmpiint_ petscsortmpiint
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define petscsortremovedupsmpiint_ PETSCSORTREMOVEDUPSMPIINT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define petscsortremovedupsmpiint_ petscsortremovedupsmpiint
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscsortmpiintwitharray_ PETSCSORTMPIINTWITHARRAY
@@ -80,11 +95,20 @@ void PETSC_STDCALL  petscsortint_(PetscInt *n,PetscInt i[], int *__ierr ){
 void PETSC_STDCALL  petscsortremovedupsint_(PetscInt *n,PetscInt ii[], int *__ierr ){
 *__ierr = PetscSortRemoveDupsInt(n,ii);
 }
+void PETSC_STDCALL  petscfindint_(PetscInt *key,PetscInt *n, PetscInt ii[],PetscInt *loc, int *__ierr ){
+*__ierr = PetscFindInt(*key,*n,ii,loc);
+}
 void PETSC_STDCALL  petscsortintwitharray_(PetscInt *n,PetscInt i[],PetscInt Ii[], int *__ierr ){
 *__ierr = PetscSortIntWithArray(*n,i,Ii);
 }
 void PETSC_STDCALL  petscsortintwitharraypair_(PetscInt *n,PetscInt *L,PetscInt *J,PetscInt *K, int *__ierr ){
 *__ierr = PetscSortIntWithArrayPair(*n,L,J,K);
+}
+void PETSC_STDCALL  petscsortmpiint_(PetscInt *n,PetscMPIInt i[], int *__ierr ){
+*__ierr = PetscSortMPIInt(*n,i);
+}
+void PETSC_STDCALL  petscsortremovedupsmpiint_(PetscInt *n,PetscMPIInt ii[], int *__ierr ){
+*__ierr = PetscSortRemoveDupsMPIInt(n,ii);
 }
 void PETSC_STDCALL  petscsortmpiintwitharray_(PetscMPIInt *n,PetscMPIInt i[],PetscMPIInt Ii[], int *__ierr ){
 *__ierr = PetscSortMPIIntWithArray(*n,i,Ii);
@@ -95,7 +119,7 @@ void PETSC_STDCALL  petscsortintwithscalararray_(PetscInt *n,PetscInt i[],PetscS
 void PETSC_STDCALL  petscmergeintarraypair_(PetscInt *an, PetscInt *aI, PetscInt *aJ,PetscInt *bn, PetscInt *bI, PetscInt *bJ,PetscInt *n,PetscInt **L,PetscInt **J, int *__ierr ){
 *__ierr = PetscMergeIntArrayPair(*an,aI,aJ,*bn,bI,bJ,n,L,J);
 }
-void PETSC_STDCALL  petscprocesstree_(PetscInt *n, PetscBool  mask[], PetscInt parentid[],PetscInt *Nlevels,PetscInt **Level,PetscInt **Levelcnt,PetscInt **Idbylevel,PetscInt **Column, int *__ierr ){
+void PETSC_STDCALL  petscprocesstree_(PetscInt *n, PetscBool mask[], PetscInt parentid[],PetscInt *Nlevels,PetscInt **Level,PetscInt **Levelcnt,PetscInt **Idbylevel,PetscInt **Column, int *__ierr ){
 *__ierr = PetscProcessTree(*n,mask,parentid,Nlevels,Level,Levelcnt,Idbylevel,Column);
 }
 #if defined(__cplusplus)

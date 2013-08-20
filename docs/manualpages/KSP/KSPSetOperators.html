@@ -5,9 +5,9 @@
 <TITLE>KSPSetOperators</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPSetOperators"><H1>KSPSetOperators</H1></A>
-Sets the matrix associated with the linear system and a (possibly) different one associated with the preconditioner.  
+Sets the matrix associated with the linear system and a (possibly) different one associated with the preconditioner. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
@@ -19,10 +19,9 @@ Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A> and <A HREF="../Mat/Mat.html
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ksp </B></TD><TD>- the <A HREF="../KSP/KSP.html#KSP">KSP</A> context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- the matrix associated with the linear system
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- the matrix that defines the linear system
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- the matrix to be used in constructing the preconditioner, usually the
-same as Amat. 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- the matrix to be used in constructing the preconditioner, usually the same as Amat.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flag </B></TD><TD>- flag indicating information about the preconditioner matrix structure
 during successive linear solves.  This flag is ignored the first time a
@@ -62,7 +61,7 @@ available options are
      Pmat has the same nonzero structure during
 </pre>
 <pre>
-     successive linear solves. 
+     successive linear solves.
 </pre>
 <pre>
    DIFFERENT_NONZERO_PATTERN -
@@ -73,7 +72,7 @@ available options are
 <P>
 All future calls to <A HREF="../KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>() must use the same size matrices!
 <P>
-Passing a <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for Amat or Pmat removes the matrix that is currently used.
+Passing a NULL for Amat or Pmat removes the matrix that is currently used.
 <P>
 If you wish to replace either Amat or Pmat but leave the other one untouched then
 first call <A HREF="../KSP/KSPGetOperators.html#KSPGetOperators">KSPGetOperators</A>() to get the one you wish to keep, call <A HREF="../Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>()
@@ -100,7 +99,7 @@ The user must set the sizes of the returned matrices and their type etc just
 as if the user created them with <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(). For example,
 <P>
 <pre>
-        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp/pc,&amp;mat,<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>); is equivalent to
+        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp/pc,&amp;mat,NULL,NULL); is equivalent to
 </pre>
 <pre>
           set size, type, etc of mat
@@ -122,7 +121,7 @@ as if the user created them with <A HREF="../Mat/MatCreate.html#MatCreate">MatCr
 and
 <P>
 <pre>
-        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp/pc,&amp;mat,&amp;pmat,<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>); is equivalent to
+        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp/pc,&amp;mat,&amp;pmat,NULL); is equivalent to
 </pre>
 <pre>
           set size, type, etc of mat and pmat

@@ -5,13 +5,13 @@
 <TITLE>PetscOptionsEnum</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscOptionsEnum"><H1>PetscOptionsEnum</H1></A>
 Gets the enum value for a particular option in the database. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscOptionsEnum(const char opt[],const char text[],const char man[],const char *const*list,PetscEnum defaultv,PetscEnum *value,PetscBool  *set)
+PetscErrorCode  PetscOptionsEnum(const char opt[],const char text[],const char man[],const char *const *list,PetscEnum defaultv,PetscEnum *value,PetscBool  *set)
 </PRE>
 Logically Collective on the communicator passed in <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>()
 <P>
@@ -32,7 +32,7 @@ Logically Collective on the communicator passed in <A HREF="../Sys/PetscOptionsB
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>value </B></TD><TD>- the  value to return
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flg </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if found, else <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>set </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if found, else <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
 </TD></TR></TABLE>
 <P>
 
@@ -56,6 +56,7 @@ list is usually something like PCASMTypes or some other predefined list of enum 
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex15.c.html">src/snes/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>

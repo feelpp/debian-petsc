@@ -5,7 +5,7 @@
 <TITLE>DMDAGetOwnershipRanges</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGetOwnershipRanges"><H1>DMDAGetOwnershipRanges</H1></A>
 Gets the ranges of indices in the x, y and z direction that are owned by each process 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -16,7 +16,7 @@ PetscErrorCode  DMDAGetOwnershipRanges(DM da,const PetscInt *lx[],const PetscInt
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the DMDA object
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> object
 </TD></TR>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -36,7 +36,9 @@ In Fortran one must pass in arrays lx, ly, and lz that are long enough to hold t
 eighth arguments from <A HREF="../DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>()
 <P>
 In C you should not free these arrays, nor change the values in them. They will only have valid values while the
-DMDA they came from still exists (has not been destroyed).
+<A HREF="../DM/DMDA.html#DMDA">DMDA</A> they came from still exists (has not been destroyed).
+<P>
+These numbers are NOT multiplied by the number of dof per node.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(), <A HREF="../DM/DMDAGetGhostCorners.html#DMDAGetGhostCorners">DMDAGetGhostCorners</A>(), <A HREF="../DM/DMDACreate.html#DMDACreate">DMDACreate</A>(), <A HREF="../DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(), <A HREF="../DM/DMDACreate3d.html#DMDACreate3d">DMDACreate3d</A>(), <A HREF="../Vec/VecGetOwnershipRanges.html#VecGetOwnershipRanges">VecGetOwnershipRanges</A>()
@@ -46,9 +48,9 @@ DMDA they came from still exists (has not been destroyed).
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/dm/examples/tutorials/ex51.c.html">src/dm/examples/tutorials/ex51.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex51.c.html">src/snes/examples/tutorials/ex51.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
 </BODY></HTML>

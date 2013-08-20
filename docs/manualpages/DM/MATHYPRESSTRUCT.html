@@ -5,7 +5,7 @@
 <TITLE>MATHYPRESSTRUCT</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MATHYPRESSTRUCT"><H1>MATHYPRESSTRUCT</H1></A>
 <A HREF="../DM/MATHYPRESSTRUCT.html#MATHYPRESSTRUCT">MATHYPRESSTRUCT</A> = "hypresstruct" - A matrix type to be used for parallel sparse matrices based on the hypre HYPRE_SStructMatrix. 
 <P>
@@ -15,9 +15,9 @@ Notes: Unlike hypre's general semi-struct object consisting of a collection of s
 grid objects, we will restrict the semi-struct objects to consist of only structured-grid components.
 <P>
 Unlike the more general support for parts and blocks in hypre this allows only one part, and one block per process and requires the block
-be defined by a DMDA.
+be defined by a <A HREF="../DM/DMDA.html#DMDA">DMDA</A>.
 <P>
-The matrix needs a DMDA associated with it by either a call to <A HREF="../DM/MatSetDM.html#MatSetDM">MatSetDM</A>() or if the matrix is obtained from <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>()
+The matrix needs a <A HREF="../DM/DMDA.html#DMDA">DMDA</A> associated with it by either a call to <A HREF="../DM/MatSetupDM.html#MatSetupDM">MatSetupDM</A>() or if the matrix is obtained from <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/da/hypre/mhyp.c.html#MATHYPRESSTRUCT">src/dm/impls/da/hypre/mhyp.c</A>

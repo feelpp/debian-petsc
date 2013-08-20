@@ -5,13 +5,12 @@
 <TITLE>PCFieldSplitGetIS</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCFieldSplitGetIS"><H1>PCFieldSplitGetIS</H1></A>
 Retrieves the elements for a field as an <A HREF="../IS/IS.html#IS">IS</A> 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-#include "petscdmcomposite.h" 
 PetscErrorCode PCFieldSplitGetIS(PC pc,const char splitname[],IS *is)
 </PRE>
 Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
@@ -24,7 +23,7 @@ Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>is </B> -the index set that defines the vector elements in this field, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if the field is not found
+<DT><B>is </B> -the index set that defines the vector elements in this field, or NULL if the field is not found
 <br>
 </TABLE>
 <P>

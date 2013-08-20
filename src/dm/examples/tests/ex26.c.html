@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tests/ex26.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:58:12+00:00">
+<meta name="date" content="2013-07-02T14:46:19+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests error message in <A href="../../../../docs/manualpages/DM/DMCreateColoring.html#DMCreateColoring">DMCreateColoring</A>() with periodic boundary conditions. \n\n"</font>;
 
@@ -23,12 +23,12 @@
 <a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Mat/MatFDColoring.html#MatFDColoring">MatFDColoring</A>  matfdcoloring = 0;
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/IS/ISColoring.html#ISColoring">ISColoring</A>     iscoloring;
 
-<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
+<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
 <a name="line19"> 19: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
-<a name="line20"> 20: </a><font color="#B22222">     Create distributed array (DMDA) to manage parallel grid and vectors</font>
+<a name="line20"> 20: </a><font color="#B22222">     Create distributed array (<A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>) to manage parallel grid and vectors</font>
 <a name="line21"> 21: </a><font color="#B22222">  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
 <a name="line22"> 22: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_PERIODIC, DMDA_BOUNDARY_NONE,<A href="../../../../docs/manualpages/DM/DMDA_STENCIL_BOX.html#DMDA_STENCIL_BOX">DMDA_STENCIL_BOX</A>,-5,-5,
-<a name="line23"> 23: </a>                    <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,2,0,0,&amp;da);
+<a name="line23"> 23: </a>                      <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,2,0,0,&amp;da);
 <a name="line24"> 24: </a>  <A href="../../../../docs/manualpages/DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(da,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;J);
 <a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/DM/DMCreateColoring.html#DMCreateColoring">DMCreateColoring</A>(da,IS_COLORING_GHOSTED,<A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>,&amp;iscoloring);
 <a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/MatFD/MatFDColoringCreate.html#MatFDColoringCreate">MatFDColoringCreate</A>(J,iscoloring,&amp;matfdcoloring);

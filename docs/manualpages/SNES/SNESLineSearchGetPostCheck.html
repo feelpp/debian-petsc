@@ -5,24 +5,24 @@
 <TITLE>SNESLineSearchGetPostCheck</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESLineSearchGetPostCheck"><H1>SNESLineSearchGetPostCheck</H1></A>
 Gets the post-check function for the line search routine. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode  SNESLineSearchGetPostCheck(SNESLineSearch linesearch, SNESLineSearchPostCheckFunc *func,void **ctx)
+PetscErrorCode  SNESLineSearchGetPostCheck(SNESLineSearch linesearch, PetscErrorCode (**SNESLineSearchPostCheckFunction)(SNESLineSearch,Vec,Vec,Vec,PetscBool*,PetscBool*,void*),void **ctx)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>linesearch </B></TD><TD>- the <A HREF="../SNES/SNESLineSearch.html#SNESLineSearch">SNESLineSearch</A> context
-</TD></TR>
+<DT><B>linesearch </B> -the <A HREF="../SNES/SNESLineSearch.html#SNESLineSearch">SNESLineSearch</A> context
+<br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func       </B></TD><TD>- [optional] function evaluation routine
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>SNESLineSearchPostCheckFunction </B></TD><TD>- [optional] function evaluation routine
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx        </B></TD><TD>- [optional] user-defined context for private data for the
-function evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+function evaluation routine (may be NULL)
 </TD></TR></TABLE>
 <P>
 

@@ -5,7 +5,7 @@
 <TITLE>MatNullSpaceRemove</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatNullSpaceRemove"><H1>MatNullSpaceRemove</H1></A>
 Removes all the components of a null space from a vector. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -19,9 +19,9 @@ Collective on <A HREF="../Mat/MatNullSpace.html#MatNullSpace">MatNullSpace</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>sp </B></TD><TD>- the null space context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>vec </B></TD><TD>- the vector from which the null space is to be removed 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>vec </B></TD><TD>- the vector from which the null space is to be removed
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>out </B></TD><TD>- if this is requested (not <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) then this is a vector with the null space removed otherwise
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>out </B></TD><TD>- if this is requested (not NULL) then this is a vector with the null space removed otherwise
 the removal is done in-place (in vec)
 </TD></TR></TABLE>
 <P>

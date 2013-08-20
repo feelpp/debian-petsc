@@ -5,14 +5,12 @@
 <TITLE>SNESGetLagPreconditioner</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESGetLagPreconditioner"><H1>SNESGetLagPreconditioner</H1></A>
 Indicates how often the preconditioner is rebuilt 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESGetLagPreconditioner(SNES snes,PetscInt *lag)
 </PRE>
 Not Collective
@@ -20,6 +18,7 @@ Not Collective
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>snes </B> -the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
 <br>
+<P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>lag </B> --1 indicates NEVER rebuild, 1 means rebuild every time the Jacobian is computed within a single nonlinear solve, 2 means every second time
 the Jacobian is built etc. -2 indicates rebuild preconditioner at next chance but then never rebuild after that

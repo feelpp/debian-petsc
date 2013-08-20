@@ -4,23 +4,23 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/color/degr.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:53:41+00:00">
+<meta name="date" content="2013-07-02T14:44:47+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/* degr.f -- translated by f2c (version of 25 March 1992  12:58:56). */</font>
 
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;../src/mat/color/color.h&gt;</font>
 
-<a name="line8">  8: </a><strong><font color="#4169E1"><a name="MINPACKdegr"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MINPACKdegr(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *n,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * indrow,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * jpntr,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * indcol,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * ipntr,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * ndeg,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * iwa)</font></strong>
+<a name="line8">  8: </a><strong><font color="#4169E1"><a name="MINPACKdegr"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MINPACKdegr(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *n,const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * indrow,const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * jpntr,const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * indcol,const <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * ipntr,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * ndeg,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> * iwa)</font></strong>
 <a name="line9">  9: </a>{
-<a name="line10"> 10: </a>    <font color="#B22222">/* System generated locals */</font>
-<a name="line11"> 11: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i__1, i__2, i__3;
+<a name="line10"> 10: </a>  <font color="#B22222">/* System generated locals */</font>
+<a name="line11"> 11: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i__1, i__2, i__3;
 
-<a name="line13"> 13: </a>    <font color="#B22222">/* Local variables */</font>
-<a name="line14"> 14: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> jcol, ic, ip, jp, ir;
+<a name="line13"> 13: </a>  <font color="#B22222">/* Local variables */</font>
+<a name="line14"> 14: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> jcol, ic, ip, jp, ir;
 
 <a name="line16"> 16: </a><font color="#B22222">/*     subroutine degr */</font>
 <a name="line17"> 17: </a><font color="#B22222">/*     Given the sparsity pattern of an m by n matrix A, */</font>
@@ -61,56 +61,56 @@
 <a name="line52"> 52: </a><font color="#B22222">/*     Argonne National Laboratory. MINPACK Project. July 1983. */</font>
 <a name="line53"> 53: </a><font color="#B22222">/*     Thomas F. Coleman, Burton S. Garbow, Jorge J. More' */</font>
 
-<a name="line56"> 56: </a>    <font color="#B22222">/* Parameter adjustments */</font>
-<a name="line57"> 57: </a>    --iwa;
-<a name="line58"> 58: </a>    --ndeg;
-<a name="line59"> 59: </a>    --ipntr;
-<a name="line60"> 60: </a>    --indcol;
-<a name="line61"> 61: </a>    --jpntr;
-<a name="line62"> 62: </a>    --indrow;
+<a name="line56"> 56: </a>  <font color="#B22222">/* Parameter adjustments */</font>
+<a name="line57"> 57: </a>  --iwa;
+<a name="line58"> 58: </a>  --ndeg;
+<a name="line59"> 59: </a>  --ipntr;
+<a name="line60"> 60: </a>  --indcol;
+<a name="line61"> 61: </a>  --jpntr;
+<a name="line62"> 62: </a>  --indrow;
 
-<a name="line64"> 64: </a>    <font color="#B22222">/* Function Body */</font>
-<a name="line65"> 65: </a>    i__1 = *n;
-<a name="line66"> 66: </a>    <font color="#4169E1">for</font> (jp = 1; jp &lt;= i__1; ++jp) {
-<a name="line67"> 67: </a>        ndeg[jp] = 0;
-<a name="line68"> 68: </a>        iwa[jp] = 0;
-<a name="line69"> 69: </a>    }
+<a name="line64"> 64: </a>  <font color="#B22222">/* Function Body */</font>
+<a name="line65"> 65: </a>  i__1 = *n;
+<a name="line66"> 66: </a>  <font color="#4169E1">for</font> (jp = 1; jp &lt;= i__1; ++jp) {
+<a name="line67"> 67: </a>    ndeg[jp] = 0;
+<a name="line68"> 68: </a>    iwa[jp]  = 0;
+<a name="line69"> 69: </a>  }
 
 <a name="line71"> 71: </a><font color="#B22222">/*     Compute the degree sequence by determining the contributions */</font>
 <a name="line72"> 72: </a><font color="#B22222">/*     to the degrees from the current(jcol) column and further */</font>
 <a name="line73"> 73: </a><font color="#B22222">/*     columns which have not yet been considered. */</font>
 
-<a name="line75"> 75: </a>    i__1 = *n;
-<a name="line76"> 76: </a>    <font color="#4169E1">for</font> (jcol = 2; jcol &lt;= i__1; ++jcol) {
-<a name="line77"> 77: </a>        iwa[jcol] = *n;
+<a name="line75"> 75: </a>  i__1 = *n;
+<a name="line76"> 76: </a>  <font color="#4169E1">for</font> (jcol = 2; jcol &lt;= i__1; ++jcol) {
+<a name="line77"> 77: </a>    iwa[jcol] = *n;
 
 <a name="line79"> 79: </a><font color="#B22222">/*        Determine all positions (ir,jcol) which correspond */</font>
 <a name="line80"> 80: </a><font color="#B22222">/*        to non-zeroes in the matrix. */</font>
 
-<a name="line82"> 82: </a>        i__2 = jpntr[jcol + 1] - 1;
-<a name="line83"> 83: </a>        <font color="#4169E1">for</font> (jp = jpntr[jcol]; jp &lt;= i__2; ++jp) {
-<a name="line84"> 84: </a>            ir = indrow[jp];
+<a name="line82"> 82: </a>    i__2 = jpntr[jcol + 1] - 1;
+<a name="line83"> 83: </a>    <font color="#4169E1">for</font> (jp = jpntr[jcol]; jp &lt;= i__2; ++jp) {
+<a name="line84"> 84: </a>      ir = indrow[jp];
 
 <a name="line86"> 86: </a><font color="#B22222">/*           For each row ir, determine all positions (ir,ic) */</font>
 <a name="line87"> 87: </a><font color="#B22222">/*           which correspond to non-zeroes in the matrix. */</font>
 
-<a name="line89"> 89: </a>            i__3 = ipntr[ir + 1] - 1;
-<a name="line90"> 90: </a>            <font color="#4169E1">for</font> (ip = ipntr[ir]; ip &lt;= i__3; ++ip) {
-<a name="line91"> 91: </a>                ic = indcol[ip];
+<a name="line89"> 89: </a>      i__3 = ipntr[ir + 1] - 1;
+<a name="line90"> 90: </a>      <font color="#4169E1">for</font> (ip = ipntr[ir]; ip &lt;= i__3; ++ip) {
+<a name="line91"> 91: </a>        ic = indcol[ip];
 
 <a name="line93"> 93: </a><font color="#B22222">/*              Array iwa marks columns which have contributed to */</font>
 <a name="line94"> 94: </a><font color="#B22222">/*              the degree count of column jcol. Update the degree */</font>
 <a name="line95"> 95: </a><font color="#B22222">/*              counts of these columns as well as column jcol. */</font>
 
-<a name="line97"> 97: </a>                <font color="#4169E1">if</font> (iwa[ic] &lt; jcol) {
-<a name="line98"> 98: </a>                    iwa[ic] = jcol;
-<a name="line99"> 99: </a>                    ++ndeg[ic];
-<a name="line100">100: </a>                    ++ndeg[jcol];
-<a name="line101">101: </a>                }
-<a name="line102">102: </a>            }
-<a name="line103">103: </a>        }
-<a name="line104">104: </a>    }
-<a name="line105">105: </a>    <font color="#4169E1">return</font>(0);
+<a name="line97"> 97: </a>        <font color="#4169E1">if</font> (iwa[ic] &lt; jcol) {
+<a name="line98"> 98: </a>          iwa[ic] = jcol;
+<a name="line99"> 99: </a>          ++ndeg[ic];
+<a name="line100">100: </a>          ++ndeg[jcol];
+<a name="line101">101: </a>        }
+<a name="line102">102: </a>      }
+<a name="line103">103: </a>    }
+<a name="line104">104: </a>  }
+<a name="line105">105: </a>  <font color="#4169E1">return</font>(0);
 <a name="line106">106: </a>}
 
 </pre>

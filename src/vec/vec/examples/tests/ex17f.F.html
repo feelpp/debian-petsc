@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tests/ex17f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:40:12+00:00">
+<meta name="date" content="2013-07-02T14:40:16+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!   <font color="#666666">"Scatters from a parallel vector to a sequential vector.  In</font>
@@ -36,7 +36,7 @@
 <a name="line25"> 25: </a><font color="#666666">      call <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(MPI_COMM_WORLD,size,ierr)</font>
 <a name="line26"> 26: </a><font color="#666666">      call <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(MPI_COMM_WORLD,rank,ierr)</font>
 
-<a name="line28"> 28: </a><font color="#666666">!     create two vectors </font>
+<a name="line28"> 28: </a><font color="#666666">!     create two vectors</font>
 <a name="line29"> 29: </a><font color="#666666">!     one parallel and one sequential. The sequential one on each processor</font>
 <a name="line30"> 30: </a><font color="#666666">!     is as long as the entire parallel one.</font>
 
@@ -63,7 +63,7 @@
 
 <a name="line53"> 53: </a><font color="#666666">!     create two index sets and the scatter context to move the contents of</font>
 <a name="line54"> 54: </a><font color="#666666">!     of the parallel vector to each sequential vector. If you want the</font>
-<a name="line55"> 55: </a><font color="#666666">!     parallel vector delivered to only one processor then create a is2 </font>
+<a name="line55"> 55: </a><font color="#666666">!     parallel vector delivered to only one processor then create a is2</font>
 <a name="line56"> 56: </a><font color="#666666">!     of length zero on all processors except the one to receive the parallel vector</font>
 
 <a name="line58"> 58: </a><font color="#666666">      first = 0</font>
@@ -76,7 +76,7 @@
 <a name="line65"> 65: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(ctx,ierr)</font>
 <a name="line66"> 66: </a><font color="#666666">!</font>
 <a name="line67"> 67: </a><font color="#666666">!   View the sequential vector on the 0th processor</font>
-<a name="line68"> 68: </a><font color="#666666">!  </font>
+<a name="line68"> 68: </a><font color="#666666">!</font>
 <a name="line69"> 69: </a><font color="#666666">      if (rank .eq. 0) then</font>
 <a name="line70"> 70: </a><font color="#666666">        call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)</font>
 <a name="line71"> 71: </a><font color="#666666">      endif</font>
@@ -86,9 +86,9 @@
 <a name="line75"> 75: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is1,ierr)</font>
 <a name="line76"> 76: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(is2,ierr)</font>
 
-<a name="line78"> 78: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr) </font>
+<a name="line78"> 78: </a><font color="#666666">      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)</font>
 <a name="line79"> 79: </a><font color="#666666">      end</font>
-<a name="line80"> 80: </a><font color="#666666"> </font>
+
 </pre>
 </body>
 

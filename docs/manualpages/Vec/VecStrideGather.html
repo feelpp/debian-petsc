@@ -5,7 +5,7 @@
 <TITLE>VecStrideGather</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecStrideGather"><H1>VecStrideGather</H1></A>
 Gathers a single component from a multi-component vector into another vector. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -17,7 +17,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>v </B></TD><TD>- the vector 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>v </B></TD><TD>- the vector
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>start </B></TD><TD>- starting point of the subvector (defined by a stride)
 </TD></TR>
@@ -30,7 +30,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 One must call <A HREF="../Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>() before this routine to set the stride
-information, or use a vector created from a multicomponent DMDA.
+information, or use a vector created from a multicomponent <A HREF="../DM/DMDA.html#DMDA">DMDA</A>.
 <P>
 If x is the array representing the vector x then this gathers
 the array (x[start],x[start+stride],x[start+2*stride], ....)

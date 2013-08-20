@@ -3,7 +3,7 @@
 <TITLE>PetscThreadComm Manual Pages</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 
 <H2> DM <A HREF="../../../src/sys/threadcomm/examples/tutorials/index.html">Examples</A></H2>
 
@@ -20,25 +20,32 @@ The interface is independent of threading backend (e.g. direct Pthreads or OpenM
  <TD WIDTH=250><A HREF="./"></A></TD>
  <TD WIDTH=250><A HREF="./"></A></TD>
 <TR><TD WIDTH=250 COLSPAN="3"><B>Advanced - Setting more advanced options and customization</B></TD></TR>
- <TD WIDTH=250><A HREF="./PetscThreadCommRegister.html">PetscThreadCommRegister</A></TD>
  <TD WIDTH=250><A HREF="./PetscThreadCommRegisterAll.html">PetscThreadCommRegisterAll</A></TD>
  <TD WIDTH=250><A HREF="./"></A></TD>
-<TR>
+ <TD WIDTH=250><A HREF="./"></A></TD>
 <TR><TD WIDTH=250 COLSPAN="3"><B>Developer - Interfaces intended primarily for library developers, not for typical applications programmers</B></TD></TR>
  <TD WIDTH=250><A HREF="./PetscGetNCores.html">PetscGetNCores</A></TD>
- <TD WIDTH=250><A HREF="./PetscThreadCommGetScalars.html">PetscThreadCommGetScalars</A></TD>
- <TD WIDTH=250><A HREF="./PetscThreadReductionBegin.html">PetscThreadReductionBegin</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommInitializePackage.html">PetscThreadCommInitializePackage</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommRunKernel4.html">PetscThreadCommRunKernel4</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscThreadCommFinalizePackage.html">PetscThreadCommFinalizePackage</A></TD>
- <TD WIDTH=250><A HREF="./PetscThreadCommInitializePackage.html">PetscThreadCommInitializePackage</A></TD>
- <TD WIDTH=250><A HREF="./PetscThreadReductionEnd.html">PetscThreadReductionEnd</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommRunKernel.html">PetscThreadCommRunKernel</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommRunKernel6.html">PetscThreadCommRunKernel6</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscThreadCommGetAffinities.html">PetscThreadCommGetAffinities</A></TD>
- <TD WIDTH=250><A HREF="./PetscThreadCommRunKernel.html">PetscThreadCommRunKernel</A></TD>
- <TD WIDTH=250><A HREF="./"></A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommRunKernel0.html">PetscThreadCommRunKernel0</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommView.html">PetscThreadCommView</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./PetscThreadCommGetInts.html">PetscThreadCommGetInts</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommRunKernel1.html">PetscThreadCommRunKernel1</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadReductionBegin.html">PetscThreadReductionBegin</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./PetscThreadCommGetNThreads.html">PetscThreadCommGetNThreads</A></TD>
- <TD WIDTH=250><A HREF="./PetscThreadCommView.html">PetscThreadCommView</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommRunKernel2.html">PetscThreadCommRunKernel2</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadReductionEnd.html">PetscThreadReductionEnd</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./PetscThreadCommGetScalars.html">PetscThreadCommGetScalars</A></TD>
+ <TD WIDTH=250><A HREF="./PetscThreadCommRunKernel3.html">PetscThreadCommRunKernel3</A></TD>
  <TD WIDTH=250><A HREF="./"></A></TD>
 <TR>
 <TR><TD WIDTH=250 COLSPAN="3"><B>No deprecated routines</B></TD></TR>

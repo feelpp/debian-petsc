@@ -5,7 +5,7 @@
 <TITLE>KSPComputeExtremeSingularValues</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPComputeExtremeSingularValues"><H1>KSPComputeExtremeSingularValues</H1></A>
 Computes the extreme singular values for the preconditioned operator. Called after or during <A HREF="../KSP/KSPSolve.html#KSPSolve">KSPSolve</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -23,6 +23,10 @@ Not Collective
 <DT><B>emin, emax </B> -extreme singular values
 <br>
 <P>
+<H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
+<DT><B>-ksp_compute_singularvalues </B> -compute extreme singular values and print when <A HREF="../KSP/KSPSolve.html#KSPSolve">KSPSolve</A> completes.
+<br>
+<P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 One must call <A HREF="../KSP/KSPSetComputeSingularValues.html#KSPSetComputeSingularValues">KSPSetComputeSingularValues</A>() before calling <A HREF="../KSP/KSPSetUp.html#KSPSetUp">KSPSetUp</A>()
 (or use the option -ksp_compute_eigenvalues) in order for this routine to work correctly.
@@ -30,6 +34,13 @@ One must call <A HREF="../KSP/KSPSetComputeSingularValues.html#KSPSetComputeSing
 Many users may just want to use the monitoring routine
 <A HREF="../KSP/KSPMonitorSingularValue.html#KSPMonitorSingularValue">KSPMonitorSingularValue</A>() (which can be set with option -ksp_monitor_singular_value)
 to print the extreme singular values at each iteration of the linear solve.
+<P>
+Estimates of the smallest singular value may be very inaccurate, especially if the Krylov method has not converged.
+The largest singular value is usually accurate to within a few percent if the method has converged, but is still not
+intended for eigenanalysis.
+<P>
+Disable restarts if using <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, otherwise this estimate will only be using those iterations after the last
+restart. See <A HREF="../KSP/KSPGMRESSetRestart.html#KSPGMRESSetRestart">KSPGMRESSetRestart</A>() for more details.
 <P>
 
 <P>

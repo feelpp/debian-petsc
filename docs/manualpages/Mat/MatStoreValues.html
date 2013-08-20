@@ -5,9 +5,9 @@
 <TITLE>MatStoreValues</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatStoreValues"><H1>MatStoreValues</H1></A>
-Stashes a copy of the matrix values; this allows, for  example, reuse of the linear part of a Jacobian, while recomputing the  nonlinear portion. 
+Stashes a copy of the matrix values; this allows, for example, reuse of the linear part of a Jacobian, while recomputing the nonlinear portion. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
@@ -29,10 +29,10 @@ Collect on <A HREF="../Mat/Mat.html#Mat">Mat</A>
    Set linear terms into matrix
 </pre>
 <pre>
-   Apply boundary conditions to matrix, at this time matrix must have 
+   Apply boundary conditions to matrix, at this time matrix must have
 </pre>
 <pre>
-     final nonzero structure (i.e. setting the nonlinear terms and applying 
+     final nonzero structure (i.e. setting the nonlinear terms and applying
 </pre>
 <pre>
      boundary conditions again will not change the nonzero structure
@@ -82,7 +82,7 @@ Collect on <A HREF="../Mat/Mat.html#Mat">Mat</A>
       Solve linear system with Jacobian
 </pre>
 <pre>
-   endloop 
+   endloop
 </pre>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>

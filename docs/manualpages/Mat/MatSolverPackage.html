@@ -5,13 +5,12 @@
 <TITLE>MatSolverPackage</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSolverPackage"><H1>MatSolverPackage</H1></A>
-String with the name of a PETSc matrix solver type.  
+String with the name of a PETSc matrix solver type. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #define MatSolverPackage char*
-#define MATSOLVERSPOOLES      "spooles"
 #define MATSOLVERSUPERLU      "superlu"
 #define MATSOLVERSUPERLU_DIST "superlu_dist"
 #define MATSOLVERUMFPACK      "umfpack"
@@ -22,8 +21,12 @@ String with the name of a PETSc matrix solver type.
 #define MATSOLVERPASTIX       "pastix"
 #define MATSOLVERMATLAB       "matlab"
 #define MATSOLVERPETSC        "petsc"
-#define MATSOLVERPLAPACK      "plapack"
 #define MATSOLVERBAS          "bas"
+#define MATSOLVERCUSPARSE     "cusparse"
+#define MATSOLVERBSTRM        "bstrm"
+#define MATSOLVERSBSTRM       "sbstrm"
+#define MATSOLVERELEMENTAL    "elemental"
+#define MATSOLVERCLIQUE       "clique"
 
 </PRE>
 For example: "petsc" indicates what PETSc provides, "superlu" indicates either

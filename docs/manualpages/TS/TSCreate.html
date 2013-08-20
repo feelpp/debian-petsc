@@ -5,13 +5,14 @@
 <TITLE>TSCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSCreate"><H1>TSCreate</H1></A>
-This function creates an empty timestepper. The problem type can then be set with <A HREF="../TS/TSSetProblemType.html#TSSetProblemType">TSSetProblemType</A>() and the  type of solver can then be set with <A HREF="../TS/TSSetType.html#TSSetType">TSSetType</A>(). 
+This function creates an empty timestepper. The problem type can then be set with <A HREF="../TS/TSSetProblemType.html#TSSetProblemType">TSSetProblemType</A>() and the type of solver can then be set with <A HREF="../TS/TSSetType.html#TSSetType">TSSetType</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  TSCreate(MPI_Comm comm, TS *ts)</PRE>
+PetscErrorCode  TSCreate(MPI_Comm comm, TS *ts)
+</PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>

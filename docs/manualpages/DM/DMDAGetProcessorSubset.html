@@ -5,15 +5,15 @@
 <TITLE>DMDAGetProcessorSubset</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGetProcessorSubset"><H1>DMDAGetProcessorSubset</H1></A>
-Returns a communicator consisting only of the processors in a DMDA that own a particular global x, y, or z grid point (corresponding to a logical plane in a 3D grid or a line in a 2D grid). 
+Returns a communicator consisting only of the processors in a <A HREF="../DM/DMDA.html#DMDA">DMDA</A> that own a particular global x, y, or z grid point (corresponding to a logical plane in a 3D grid or a line in a 2D grid). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
 PetscErrorCode  DMDAGetProcessorSubset(DM da,DMDADirection dir,PetscInt gp,MPI_Comm *comm)
 </PRE>
-Collective on DMDA
+Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -31,7 +31,7 @@ Collective on DMDA
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-All processors that share the DMDA must call this with the same gp value
+All processors that share the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> must call this with the same gp value
 <P>
 This routine is particularly useful to compute boundary conditions
 or other application-specific calculations that require manipulating

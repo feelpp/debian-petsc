@@ -5,12 +5,12 @@
 <TITLE>MatOrderingType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatOrderingType"><H1>MatOrderingType</H1></A>
-String with the name of a PETSc matrix ordering or the creation function with an optional dynamic library name, for example  http://www.mcs.anl.gov/petsc/lib.a:orderingcreate() 
+String with the name of a PETSc matrix ordering 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define MatOrderingType char*
+typedef const char* MatOrderingType;
 #define MATORDERINGNATURAL     "natural"
 #define MATORDERINGND          "nd"
 #define MATORDERING1WD         "1wd"
@@ -21,8 +21,6 @@ String with the name of a PETSc matrix ordering or the creation function with an
 
 </PRE>
 
-<P>
-Cannot use const because the <A HREF="../PC/PC.html#PC">PC</A> objects manipulate the string
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>()

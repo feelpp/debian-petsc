@@ -5,9 +5,9 @@
 <TITLE>DMDAGetRefinementFactor</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGetRefinementFactor"><H1>DMDAGetRefinementFactor</H1></A>
-Gets the ratios that the DMDA grid is refined 
+Gets the ratios that the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> grid is refined 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
@@ -16,7 +16,7 @@ PetscErrorCode  DMDAGetRefinementFactor(DM da, PetscInt *refine_x, PetscInt *ref
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>da </B> -the DMDA object
+<DT><B>da </B> -the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> object
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
@@ -30,7 +30,7 @@ Not Collective
 <P>
 
 <P>
-Notes: Pass <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for values you do not need
+Notes: Pass NULL for values you do not need
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMRefine.html#DMRefine">DMRefine</A>(), <A HREF="../DM/DMDASetRefinementFactor.html#DMDASetRefinementFactor">DMDASetRefinementFactor</A>()

@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/finclude/petscsysdef.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:18:16+00:00">
+<meta name="date" content="2013-07-02T14:52:39+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Part of the base include file <font color="#4169E1">for</font> Fortran use of PETSc.
@@ -85,7 +85,7 @@
 <a name="line75"> 75: </a><strong><font color="#228B22">#define PetscVoid <A href="../../docs/manualpages/Sys/PetscFortranAddr.html#PetscFortranAddr">PetscFortranAddr</A></font></strong>
 <a name="line76"> 76: </a>!
 <a name="line77"> 77: </a><font color="#A020F0">#if defined(PETSC_FORTRAN_PETSCTRUTH_INT)</font>
-<a name="line78"> 78: </a><strong><font color="#228B22">#undef <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> </font></strong>
+<a name="line78"> 78: </a><strong><font color="#228B22">#undef <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A></font></strong>
 <a name="line79"> 79: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A></font></strong>
 <a name="line80"> 80: </a><font color="#A020F0">#endif</font>
 <a name="line81"> 81: </a>!
@@ -176,7 +176,7 @@
 <a name="line166">166: </a>!    Allows the matrix Fortran Kernels to work with single precision
 <a name="line167">167: </a>!    matrix data structures
 <a name="line168">168: </a>!
-<a name="line169">169: </a><strong><font color="#228B22">#define MatScalar <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> </font></strong>
+<a name="line169">169: </a><strong><font color="#228B22">#define MatScalar <A href="../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A></font></strong>
 <a name="line170">170: </a>!
 <a name="line171">171: </a>!     PetscLogDouble variables are used to contain double precision numbers
 <a name="line172">172: </a>!     that are not used in the numerical computations, but rather in logging,
@@ -213,9 +213,10 @@
 <a name="line203">203: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Sys/PetscRandomType.html#PetscRandomType">PetscRandomType</A> character*(80)</font></strong>
 <a name="line204">204: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Sys/PetscBinarySeekType.html#PetscBinarySeekType">PetscBinarySeekType</A> <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A></font></strong>
 
-<a name="line206">206: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/PetscSF/PetscSF.html#PetscSF">PetscSF</A> <A href="../../docs/manualpages/Sys/PetscFortranAddr.html#PetscFortranAddr">PetscFortranAddr</A></font></strong>
+<a name="line206">206: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Sys/PetscBuildTwoSidedType.html#PetscBuildTwoSidedType">PetscBuildTwoSidedType</A> <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A></font></strong>
 
-<a name="line208">208: </a><font color="#A020F0">#endif</font>
+
+<a name="line209">209: </a><font color="#A020F0">#endif</font>
 </pre>
 </body>
 

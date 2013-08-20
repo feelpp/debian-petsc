@@ -4,16 +4,16 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/factor/factor.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:00:43+00:00">
+<meta name="date" content="2013-07-02T14:47:06+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/ksp/pc/impls/factor/factor.h&gt;  </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line6">  6: </a><font color="#B22222">/*@</font>
-<a name="line7">  7: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/PC/PCFactorSetUpMatSolverPackage.html#PCFactorSetUpMatSolverPackage">PCFactorSetUpMatSolverPackage</A> - Can be called after <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>() or <A href="../../../../../docs/manualpages/PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>(), causes <A href="../../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>() to be called so then one may </font>
+<a name="line7">  7: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/PC/PCFactorSetUpMatSolverPackage.html#PCFactorSetUpMatSolverPackage">PCFactorSetUpMatSolverPackage</A> - Can be called after <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>() or <A href="../../../../../docs/manualpages/PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>(), causes <A href="../../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>() to be called so then one may</font>
 <a name="line8">  8: </a><font color="#B22222">       set the options for that particular factorization object.</font>
 
 <a name="line10"> 10: </a><font color="#B22222">  Input Parameter:</font>
@@ -37,7 +37,7 @@
 <a name="line33"> 33: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetZeroPivot.html#PCFactorSetZeroPivot">PCFactorSetZeroPivot</A> - Sets the size at which smaller pivots are declared to be zero</font>
 
 <a name="line35"> 35: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
-<a name="line36"> 36: </a><font color="#B22222">   </font>
+
 <a name="line37"> 37: </a><font color="#B22222">   Input Parameters:</font>
 <a name="line38"> 38: </a><font color="#B22222">+  pc - the preconditioner context</font>
 <a name="line39"> 39: </a><font color="#B22222">-  zero - all pivots smaller than this will be considered zero</font>
@@ -59,21 +59,21 @@
 <a name="line59"> 59: </a>}
 
 <a name="line63"> 63: </a><font color="#B22222">/*@</font>
-<a name="line64"> 64: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetShiftType.html#PCFactorSetShiftType">PCFactorSetShiftType</A> - adds a particular type of quantity to the diagonal of the matrix during </font>
+<a name="line64"> 64: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetShiftType.html#PCFactorSetShiftType">PCFactorSetShiftType</A> - adds a particular type of quantity to the diagonal of the matrix during</font>
 <a name="line65"> 65: </a><font color="#B22222">     numerical factorization, thus the matrix has nonzero pivots</font>
 
 <a name="line67"> 67: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
-<a name="line68"> 68: </a><font color="#B22222">   </font>
+
 <a name="line69"> 69: </a><font color="#B22222">   Input Parameters:</font>
 <a name="line70"> 70: </a><font color="#B22222">+  pc - the preconditioner context</font>
-<a name="line71"> 71: </a><font color="#B22222">-  shifttype - type of shift; one of MAT_SHIFT_NONE, MAT_SHIFT_NONZERO,  MAT_SHIFT_POSITIVE_DEFINITE, MAT_SHIFT_INBLOCKS </font>
+<a name="line71"> 71: </a><font color="#B22222">-  shifttype - type of shift; one of MAT_SHIFT_NONE, MAT_SHIFT_NONZERO,  MAT_SHIFT_POSITIVE_DEFINITE, MAT_SHIFT_INBLOCKS</font>
 
 <a name="line73"> 73: </a><font color="#B22222">   Options Database Key:</font>
 <a name="line74"> 74: </a><font color="#B22222">.  -pc_factor_shift_type &lt;shifttype&gt; - Sets shift type or <A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> for the default; use '-help' for a list of available types</font>
 
 <a name="line76"> 76: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line78"> 78: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>, set, factorization, </font>
+<a name="line78"> 78: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>, set, factorization,</font>
 
 <a name="line80"> 80: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCFactorSetZeroPivot.html#PCFactorSetZeroPivot">PCFactorSetZeroPivot</A>(), <A href="../../../../../docs/manualpages/PC/PCFactorSetShiftAmount.html#PCFactorSetShiftAmount">PCFactorSetShiftAmount</A>()</font>
 <a name="line81"> 81: </a><font color="#B22222">@*/</font>
@@ -85,21 +85,21 @@
 <a name="line91"> 91: </a>}
 
 <a name="line95"> 95: </a><font color="#B22222">/*@</font>
-<a name="line96"> 96: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetShiftAmount.html#PCFactorSetShiftAmount">PCFactorSetShiftAmount</A> - adds a quantity to the diagonal of the matrix during </font>
+<a name="line96"> 96: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetShiftAmount.html#PCFactorSetShiftAmount">PCFactorSetShiftAmount</A> - adds a quantity to the diagonal of the matrix during</font>
 <a name="line97"> 97: </a><font color="#B22222">     numerical factorization, thus the matrix has nonzero pivots</font>
 
 <a name="line99"> 99: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
-<a name="line100">100: </a><font color="#B22222">   </font>
+
 <a name="line101">101: </a><font color="#B22222">   Input Parameters:</font>
 <a name="line102">102: </a><font color="#B22222">+  pc - the preconditioner context</font>
-<a name="line103">103: </a><font color="#B22222">-  shiftamount - amount of shift </font>
+<a name="line103">103: </a><font color="#B22222">-  shiftamount - amount of shift</font>
 
 <a name="line105">105: </a><font color="#B22222">   Options Database Key:</font>
 <a name="line106">106: </a><font color="#B22222">.  -pc_factor_shift_amount &lt;shiftamount&gt; - Sets shift amount or <A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> for the default</font>
 
 <a name="line108">108: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line110">110: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>, set, factorization, </font>
+<a name="line110">110: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>, set, factorization,</font>
 
 <a name="line112">112: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCFactorSetZeroPivot.html#PCFactorSetZeroPivot">PCFactorSetZeroPivot</A>(), <A href="../../../../../docs/manualpages/PC/PCFactorSetShiftType.html#PCFactorSetShiftType">PCFactorSetShiftType</A>()</font>
 <a name="line113">113: </a><font color="#B22222">@*/</font>
@@ -111,7 +111,7 @@
 <a name="line123">123: </a>}
 
 <a name="line127">127: </a><font color="#B22222">/*</font>
-<a name="line128">128: </a><font color="#B22222">   PCFactorSetDropTolerance - The preconditioner will use an ILU </font>
+<a name="line128">128: </a><font color="#B22222">   PCFactorSetDropTolerance - The preconditioner will use an ILU</font>
 <a name="line129">129: </a><font color="#B22222">   based on a drop tolerance. (Under development)</font>
 
 <a name="line131">131: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
@@ -159,13 +159,13 @@
 <a name="line180">180: </a><strong><font color="#4169E1"><a name="PCFactorSetLevels"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCFactorSetLevels.html#PCFactorSetLevels">PCFactorSetLevels</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> levels)</font></strong>
 <a name="line181">181: </a>{
 
-<a name="line186">186: </a>  <font color="#4169E1">if</font> (levels &lt; 0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"negative levels"</font>);
+<a name="line186">186: </a>  <font color="#4169E1">if</font> (levels &lt; 0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc),PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"negative levels"</font>);
 <a name="line188">188: </a>  PetscTryMethod(pc,<font color="#666666">"PCFactorSetLevels_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),(pc,levels));
 <a name="line189">189: </a>  <font color="#4169E1">return</font>(0);
 <a name="line190">190: </a>}
 
 <a name="line194">194: </a><font color="#B22222">/*@</font>
-<a name="line195">195: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetAllowDiagonalFill.html#PCFactorSetAllowDiagonalFill">PCFactorSetAllowDiagonalFill</A> - Causes all diagonal matrix entries to be </font>
+<a name="line195">195: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetAllowDiagonalFill.html#PCFactorSetAllowDiagonalFill">PCFactorSetAllowDiagonalFill</A> - Causes all diagonal matrix entries to be</font>
 <a name="line196">196: </a><font color="#B22222">   treated as level 0 fill even if there is no non-zero location.</font>
 
 <a name="line198">198: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
@@ -194,7 +194,7 @@
 <a name="line226">226: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorReorderForNonzeroDiagonal.html#PCFactorReorderForNonzeroDiagonal">PCFactorReorderForNonzeroDiagonal</A> - reorders rows/columns of matrix to remove zeros from diagonal</font>
 
 <a name="line228">228: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
-<a name="line229">229: </a><font color="#B22222">   </font>
+
 <a name="line230">230: </a><font color="#B22222">   Input Parameters:</font>
 <a name="line231">231: </a><font color="#B22222">+  pc - the preconditioner context</font>
 <a name="line232">232: </a><font color="#B22222">-  tol - diagonal entries smaller than this in absolute value are considered zero</font>
@@ -219,19 +219,19 @@
 <a name="line257">257: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetMatSolverPackage.html#PCFactorSetMatSolverPackage">PCFactorSetMatSolverPackage</A> - sets the software that is used to perform the factorization</font>
 
 <a name="line259">259: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
-<a name="line260">260: </a><font color="#B22222">   </font>
+
 <a name="line261">261: </a><font color="#B22222">   Input Parameters:</font>
 <a name="line262">262: </a><font color="#B22222">+  pc - the preconditioner context</font>
-<a name="line263">263: </a><font color="#B22222">-  stype - for example, spooles, superlu, superlu_dist</font>
+<a name="line263">263: </a><font color="#B22222">-  stype - for example, superlu, superlu_dist</font>
 
 <a name="line265">265: </a><font color="#B22222">   Options Database Key:</font>
-<a name="line266">266: </a><font color="#B22222">.  -pc_factor_mat_solver_package &lt;stype&gt; - spooles, petsc, superlu, superlu_dist, mumps</font>
+<a name="line266">266: </a><font color="#B22222">.  -pc_factor_mat_solver_package &lt;stype&gt; - petsc, superlu, superlu_dist, mumps, cusparse</font>
 
 <a name="line268">268: </a><font color="#B22222">   Level: intermediate</font>
 
 <a name="line270">270: </a><font color="#B22222">   Note:</font>
 <a name="line271">271: </a><font color="#B22222">     By default this will use the PETSc factorization if it exists</font>
-<a name="line272">272: </a><font color="#B22222">     </font>
+
 
 <a name="line274">274: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>, set, factorization, direct, fill</font>
 
@@ -249,12 +249,12 @@
 <a name="line292">292: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorGetMatSolverPackage.html#PCFactorGetMatSolverPackage">PCFactorGetMatSolverPackage</A> - gets the software that is used to perform the factorization</font>
 
 <a name="line294">294: </a><font color="#B22222">   Not Collective</font>
-<a name="line295">295: </a><font color="#B22222">   </font>
+
 <a name="line296">296: </a><font color="#B22222">   Input Parameter:</font>
 <a name="line297">297: </a><font color="#B22222">.  pc - the preconditioner context</font>
 
 <a name="line299">299: </a><font color="#B22222">   Output Parameter:</font>
-<a name="line300">300: </a><font color="#B22222">.   stype - for example, spooles, superlu, superlu_dist (<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if the <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> does not have a solver package)</font>
+<a name="line300">300: </a><font color="#B22222">.   stype - for example, superlu, superlu_dist (NULL if the <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> does not have a solver package)</font>
 
 <a name="line302">302: </a><font color="#B22222">   Level: intermediate</font>
 
@@ -268,11 +268,11 @@
 <a name="line311">311: </a>{
 <a name="line312">312: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr,(*f)(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,const <A href="../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A>*);
 
-<a name="line316">316: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectQueryFunction.html#PetscObjectQueryFunction">PetscObjectQueryFunction</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorGetMatSolverPackage_C"</font>,(void(**)(void))&amp;f);
+<a name="line316">316: </a>  <A href="../../../../../docs/manualpages/Sys/PetscObjectQueryFunction.html#PetscObjectQueryFunction">PetscObjectQueryFunction</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc,<font color="#666666">"PCFactorGetMatSolverPackage_C"</font>,&amp;f);
 <a name="line317">317: </a>  <font color="#4169E1">if</font> (f) {
 <a name="line318">318: </a>    (*f)(pc,stype);
 <a name="line319">319: </a>  } <font color="#4169E1">else</font> {
-<a name="line320">320: </a>    *stype = <A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line320">320: </a>    *stype = NULL;
 <a name="line321">321: </a>  }
 <a name="line322">322: </a>  <font color="#4169E1">return</font>(0);
 <a name="line323">323: </a>}
@@ -282,7 +282,7 @@
 <a name="line329">329: </a><font color="#B22222">   fill = number nonzeros in factor/number nonzeros in original matrix.</font>
 
 <a name="line331">331: </a><font color="#B22222">   Not Collective, each process can expect a different amount of fill</font>
-<a name="line332">332: </a><font color="#B22222">   </font>
+
 <a name="line333">333: </a><font color="#B22222">   Input Parameters:</font>
 <a name="line334">334: </a><font color="#B22222">+  pc - the preconditioner context</font>
 <a name="line335">335: </a><font color="#B22222">-  fill - amount of expected fill</font>
@@ -293,13 +293,13 @@
 <a name="line340">340: </a><font color="#B22222">   Level: intermediate</font>
 
 <a name="line342">342: </a><font color="#B22222">   Note:</font>
-<a name="line343">343: </a><font color="#B22222">   For sparse matrix factorizations it is difficult to predict how much </font>
-<a name="line344">344: </a><font color="#B22222">   fill to expect. By running with the option -info PETSc will print the </font>
+<a name="line343">343: </a><font color="#B22222">   For sparse matrix factorizations it is difficult to predict how much</font>
+<a name="line344">344: </a><font color="#B22222">   fill to expect. By running with the option -info PETSc will print the</font>
 <a name="line345">345: </a><font color="#B22222">   actual amount of fill used; allowing you to set the value accurately for</font>
 <a name="line346">346: </a><font color="#B22222">   future runs. Default PETSc uses a value of 5.0</font>
 
 <a name="line348">348: </a><font color="#B22222">   This parameter has NOTHING to do with the levels-of-fill of ILU(). That is set with <A href="../../../../../docs/manualpages/PC/PCFactorSetLevels.html#PCFactorSetLevels">PCFactorSetLevels</A>() or -pc_factor_levels.</font>
-<a name="line349">349: </a><font color="#B22222">    </font>
+
 
 <a name="line351">351: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>, set, factorization, direct, fill</font>
 
@@ -307,15 +307,15 @@
 <a name="line354">354: </a><strong><font color="#4169E1"><a name="PCFactorSetFill"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCFactorSetFill.html#PCFactorSetFill">PCFactorSetFill</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> fill)</font></strong>
 <a name="line355">355: </a>{
 
-<a name="line360">360: </a>  <font color="#4169E1">if</font> (fill &lt; 1.0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Fill factor cannot be less then 1.0"</font>);
+<a name="line360">360: </a>  <font color="#4169E1">if</font> (fill &lt; 1.0) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)pc),PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Fill factor cannot be less then 1.0"</font>);
 <a name="line361">361: </a>  PetscTryMethod(pc,<font color="#666666">"PCFactorSetFill_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>),(pc,fill));
 <a name="line362">362: </a>  <font color="#4169E1">return</font>(0);
 <a name="line363">363: </a>}
 
 <a name="line367">367: </a><font color="#B22222">/*@</font>
 <a name="line368">368: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/PC/PCFactorSetUseInPlace.html#PCFactorSetUseInPlace">PCFactorSetUseInPlace</A> - Tells the system to do an in-place factorization.</font>
-<a name="line369">369: </a><font color="#B22222">   For dense matrices, this enables the solution of much larger problems. </font>
-<a name="line370">370: </a><font color="#B22222">   For sparse matrices the factorization cannot be done truly in-place </font>
+<a name="line369">369: </a><font color="#B22222">   For dense matrices, this enables the solution of much larger problems.</font>
+<a name="line370">370: </a><font color="#B22222">   For sparse matrices the factorization cannot be done truly in-place</font>
 <a name="line371">371: </a><font color="#B22222">   so this does not save memory during the factorization, but after the matrix</font>
 <a name="line372">372: </a><font color="#B22222">   is factored, the original unfactored matrix is freed, thus recovering that</font>
 <a name="line373">373: </a><font color="#B22222">   space.</font>
@@ -329,11 +329,11 @@
 <a name="line381">381: </a><font color="#B22222">.  -pc_factor_in_place - Activates in-place factorization</font>
 
 <a name="line383">383: </a><font color="#B22222">   Notes:</font>
-<a name="line384">384: </a><font color="#B22222">   PCFactorSetUseInplace() can only be used with the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> method <A href="../../../../../docs/manualpages/KSP/KSPPREONLY.html#KSPPREONLY">KSPPREONLY</A> or when </font>
-<a name="line385">385: </a><font color="#B22222">   a different matrix is provided for the multiply and the preconditioner in </font>
+<a name="line384">384: </a><font color="#B22222">   PCFactorSetUseInplace() can only be used with the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> method <A href="../../../../../docs/manualpages/KSP/KSPPREONLY.html#KSPPREONLY">KSPPREONLY</A> or when</font>
+<a name="line385">385: </a><font color="#B22222">   a different matrix is provided for the multiply and the preconditioner in</font>
 <a name="line386">386: </a><font color="#B22222">   a call to <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>().</font>
-<a name="line387">387: </a><font color="#B22222">   This is because the Krylov space methods require an application of the </font>
-<a name="line388">388: </a><font color="#B22222">   matrix multiplication, which is not possible here because the matrix has </font>
+<a name="line387">387: </a><font color="#B22222">   This is because the Krylov space methods require an application of the</font>
+<a name="line388">388: </a><font color="#B22222">   matrix multiplication, which is not possible here because the matrix has</font>
 <a name="line389">389: </a><font color="#B22222">   been factored in-place, replacing the original matrix.</font>
 
 <a name="line391">391: </a><font color="#B22222">   Level: intermediate</font>
@@ -350,7 +350,7 @@
 <a name="line405">405: </a>}
 
 <a name="line409">409: </a><font color="#B22222">/*@C</font>
-<a name="line410">410: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A> - Sets the ordering routine (to reduce fill) to </font>
+<a name="line410">410: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A> - Sets the ordering routine (to reduce fill) to</font>
 <a name="line411">411: </a><font color="#B22222">    be used in the LU factorization.</font>
 
 <a name="line413">413: </a><font color="#B22222">    Logically Collective on <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A></font>
@@ -371,15 +371,15 @@
 <a name="line428">428: </a><font color="#B22222">    SeqAIJ format in this case to get reorderings.</font>
 
 <a name="line430">430: </a><font color="#B22222">@*/</font>
-<a name="line431">431: </a><strong><font color="#4169E1"><a name="PCFactorSetMatOrderingType"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,const <A href="../../../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A> ordering)</font></strong>
+<a name="line431">431: </a><strong><font color="#4169E1"><a name="PCFactorSetMatOrderingType"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A> ordering)</font></strong>
 <a name="line432">432: </a>{
 
-<a name="line437">437: </a>  PetscTryMethod(pc,<font color="#666666">"PCFactorSetMatOrderingType_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,const <A href="../../../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>),(pc,ordering));
+<a name="line437">437: </a>  PetscTryMethod(pc,<font color="#666666">"PCFactorSetMatOrderingType_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Mat/MatOrderingType.html#MatOrderingType">MatOrderingType</A>),(pc,ordering));
 <a name="line438">438: </a>  <font color="#4169E1">return</font>(0);
 <a name="line439">439: </a>}
 
 <a name="line443">443: </a><font color="#B22222">/*@</font>
-<a name="line444">444: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/PC/PCFactorSetColumnPivot.html#PCFactorSetColumnPivot">PCFactorSetColumnPivot</A> - Determines when column pivoting is done during matrix factorization. </font>
+<a name="line444">444: </a><font color="#B22222">    <A href="../../../../../docs/manualpages/PC/PCFactorSetColumnPivot.html#PCFactorSetColumnPivot">PCFactorSetColumnPivot</A> - Determines when column pivoting is done during matrix factorization.</font>
 <a name="line445">445: </a><font color="#B22222">      For PETSc dense matrices column pivoting is always done, for PETSc sparse matrices</font>
 <a name="line446">446: </a><font color="#B22222">      it is never done. For the MATLAB and SuperLU factorization this is used.</font>
 
@@ -420,7 +420,7 @@
 
 <a name="line489">489: </a><font color="#B22222">.seealso: PCILUSetMatOrdering(), <A href="../../../../../docs/manualpages/PC/PCFactorSetColumnPivot.html#PCFactorSetColumnPivot">PCFactorSetColumnPivot</A>()</font>
 <a name="line490">490: </a><font color="#B22222">@*/</font>
-<a name="line491">491: </a><strong><font color="#4169E1"><a name="PCFactorSetPivotInBlocks"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCFactorSetPivotInBlocks.html#PCFactorSetPivotInBlocks">PCFactorSetPivotInBlocks</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  pivot)</font></strong>
+<a name="line491">491: </a><strong><font color="#4169E1"><a name="PCFactorSetPivotInBlocks"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCFactorSetPivotInBlocks.html#PCFactorSetPivotInBlocks">PCFactorSetPivotInBlocks</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> pivot)</font></strong>
 <a name="line492">492: </a>{
 
 <a name="line498">498: </a>  PetscTryMethod(pc,<font color="#666666">"PCFactorSetPivotInBlocks_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>),(pc,pivot));
@@ -446,7 +446,7 @@
 
 <a name="line521">521: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/PC/PCFactorSetReuseOrdering.html#PCFactorSetReuseOrdering">PCFactorSetReuseOrdering</A>()</font>
 <a name="line522">522: </a><font color="#B22222">@*/</font>
-<a name="line523">523: </a><strong><font color="#4169E1"><a name="PCFactorSetReuseFill"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCFactorSetReuseFill.html#PCFactorSetReuseFill">PCFactorSetReuseFill</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flag)</font></strong>
+<a name="line523">523: </a><strong><font color="#4169E1"><a name="PCFactorSetReuseFill"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/PC/PCFactorSetReuseFill.html#PCFactorSetReuseFill">PCFactorSetReuseFill</A>(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> flag)</font></strong>
 <a name="line524">524: </a>{
 
 <a name="line530">530: </a>  PetscTryMethod(pc,<font color="#666666">"PCFactorSetReuseFill_C"</font>,(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>),(pc,flag));

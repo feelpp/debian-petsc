@@ -5,13 +5,13 @@
 <TITLE>DMRegisterAll</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMRegisterAll"><H1>DMRegisterAll</H1></A>
 Registers all of the DM components in the DM package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"  
-PetscErrorCode  DMRegisterAll(const char path[])
+PetscErrorCode  DMRegisterAll()
 </PRE>
 Not Collective
 <P>
@@ -25,7 +25,7 @@ Not Collective
  DM, register, all
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../DM/DMRegister.html#DMRegister">DMRegister</A>(), <A HREF="../DM/DMRegisterDestroy.html#DMRegisterDestroy">DMRegisterDestroy</A>(), DMRegisterDynamic()
+  <A HREF="../DM/DMRegister.html#DMRegister">DMRegister</A>(), DMRegisterDestroy()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/interface/dmregall.c.html#DMRegisterAll">src/dm/interface/dmregall.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>

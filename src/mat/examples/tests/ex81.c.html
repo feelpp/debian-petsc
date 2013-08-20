@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex81.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:51:35+00:00">
+<meta name="date" content="2013-07-02T14:44:09+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Reads in a PETSc binary matrix and saves in Harwell-Boeing format.\n\</font>
 <a name="line3">  3: </a><font color="#666666">  -fout &lt;output_file&gt; : file to load.\n\</font>
@@ -35,7 +35,7 @@
 <a name="line27"> 27: </a>  FILE           *file;
 <a name="line28"> 28: </a>  char           head[81];
 
-<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 
 <a name="line32"> 32: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line33"> 33: </a>  <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"This example does not work with complex numbers"</font>);
@@ -43,8 +43,8 @@
 <a name="line35"> 35: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
 <a name="line36"> 36: </a>  <font color="#4169E1">if</font> (size &gt; 1) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"Only runs on one processor"</font>);
 
-<a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fin"</font>,bfile,PETSC_MAX_PATH_LEN,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-fout"</font>,hbfile,PETSC_MAX_PATH_LEN,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line38"> 38: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(NULL,<font color="#666666">"-fin"</font>,bfile,PETSC_MAX_PATH_LEN,NULL);
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(NULL,<font color="#666666">"-fout"</font>,hbfile,PETSC_MAX_PATH_LEN,NULL);
 
 <a name="line41"> 41: </a>  <font color="#B22222">/* Read matrix and RHS */</font>
 <a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,bfile,FILE_MODE_READ,&amp;fd);

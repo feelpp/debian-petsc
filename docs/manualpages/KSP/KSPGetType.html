@@ -5,22 +5,22 @@
 <TITLE>KSPGetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPGetType"><H1>KSPGetType</H1></A>
 Gets the <A HREF="../KSP/KSP.html#KSP">KSP</A> type as a string from the <A HREF="../KSP/KSP.html#KSP">KSP</A> object. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPGetType(KSP ksp,const KSPType *type)
+PetscErrorCode  KSPGetType(KSP ksp,KSPType *type)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>ksp </B> -Krylov context 
+<DT><B>ksp </B> -Krylov context
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>name </B> -name of <A HREF="../KSP/KSP.html#KSP">KSP</A> method 
+<DT><B>name </B> -name of <A HREF="../KSP/KSP.html#KSP">KSP</A> method
 <br>
 <P>
 

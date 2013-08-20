@@ -5,12 +5,13 @@
 <TITLE>PetscViewerHDF5GetTimestep</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerHDF5GetTimestep"><H1>PetscViewerHDF5GetTimestep</H1></A>
 Get the current timestep for the HDF5 output. Fields are stacked in time. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
+#include "petscviewerhdf5.h"   
 PetscErrorCode  PetscViewerHDF5GetTimestep(PetscViewer viewer, PetscInt *timestep)
 </PRE>
 Not collective
@@ -28,7 +29,7 @@ Not collective
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Viewer/PetscViewerHDF5Open.html#PetscViewerHDF5Open">PetscViewerHDF5Open</A>(), <A HREF="../Viewer/PetscViewerHDF5IncrementTimestep.html#PetscViewerHDF5IncrementTimestep">PetscViewerHDF5IncrementTimestep</A>(), <A HREF="../Viewer/PetscViewerHDF5SetTimestep.html#PetscViewerHDF5SetTimestep">PetscViewerHDF5SetTimestep</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/hdf5/hdf5v.c.html#PetscViewerHDF5GetTimestep">src/sys/viewer/impls/hdf5/hdf5v.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/impls/hdf5/hdf5v.c.html#PetscViewerHDF5GetTimestep">src/sys/classes/viewer/impls/hdf5/hdf5v.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

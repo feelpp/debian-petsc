@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/Partitioner.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:18:56+00:00">
+<meta name="date" content="2013-07-02T14:52:51+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_Partitioner_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_Partitioner_hh</font></strong>
 
@@ -137,7 +137,7 @@
 <a name="line126">126: </a>        long seed = 123636512;                  <font color="#B22222">/* for random graph mutations */</font>
 <a name="line127">127: </a>        int maxSize = 0;
 
-<a name="line129">129: </a>            <font color="#4169E1">if</font> (global_method == INERTIAL_METHOD) {manager.createCellCoordinates(nvtxs, &amp;x, &amp;y, &amp;z);}
+<a name="line129">129: </a>        <font color="#4169E1">if</font> (global_method == INERTIAL_METHOD) {manager.createCellCoordinates(nvtxs, &amp;x, &amp;y, &amp;z);}
 <a name="line130">130: </a>        mesh_dims[0] = partition-&gt;commSize(); mesh_dims[1] = 1; mesh_dims[2] = 1;
 <a name="line131">131: </a>        part_type *assignment = this-&gt;_allocator.allocate(nvtxs);
 <a name="line132">132: </a>        <font color="#4169E1">for</font>(int i = 0; i &lt; nvtxs; ++i) {this-&gt;_allocator.construct(assignment+i, 0);}
@@ -166,7 +166,7 @@
 <a name="line155">155: </a>        }
 <a name="line156">156: </a>        delete [] values;
 
-<a name="line158">158: </a>            <font color="#4169E1">if</font> (global_method == INERTIAL_METHOD) {manager.destroyCellCoordinates(nvtxs, &amp;x, &amp;y, &amp;z);}
+<a name="line158">158: </a>        <font color="#4169E1">if</font> (global_method == INERTIAL_METHOD) {manager.destroyCellCoordinates(nvtxs, &amp;x, &amp;y, &amp;z);}
 <a name="line159">159: </a>        <font color="#4169E1">for</font>(int i = 0; i &lt; nvtxs; ++i) {this-&gt;_allocator.destroy(assignment+i);}
 <a name="line160">160: </a>        this-&gt;_allocator.deallocate(assignment, nvtxs);
 <a name="line161">161: </a>      };
@@ -1103,7 +1103,7 @@
 <a name="line1092">1092: </a>        <font color="#4169E1">while</font>(current-&gt;size()) {
 <a name="line1093">1093: </a>          <font color="#4169E1">for</font>(typename Sieve::coneSet::const_iterator p_iter = current-&gt;begin(); p_iter != current-&gt;end(); ++p_iter) {
 <a name="line1094">1094: </a>            const Obj&lt;typename Sieve::traits::coneSequence&gt;&amp; cone = sieve-&gt;cone(*p_iter);
-<a name="line1095">1095: </a>
+
 <a name="line1096">1096: </a>            <font color="#4169E1">for</font>(typename Sieve::traits::coneSequence::iterator c_iter = cone-&gt;begin(); c_iter != cone-&gt;end(); ++c_iter) {
 <a name="line1097">1097: </a>              localSieve-&gt;addArrow(renumbering[*c_iter], renumbering[*p_iter], c_iter.color());
 <a name="line1098">1098: </a>              next-&gt;insert(*c_iter);
@@ -1117,7 +1117,7 @@
 <a name="line1106">1106: </a>          <font color="#4169E1">while</font>(current-&gt;size()) {
 <a name="line1107">1107: </a>            <font color="#4169E1">for</font>(typename Sieve::coneSet::const_iterator p_iter = current-&gt;begin(); p_iter != current-&gt;end(); ++p_iter) {
 <a name="line1108">1108: </a>              const Obj&lt;typename Sieve::traits::supportSequence&gt;&amp; support = sieve-&gt;support(*p_iter);
-<a name="line1109">1109: </a>
+
 <a name="line1110">1110: </a>              <font color="#4169E1">for</font>(typename Sieve::traits::supportSequence::iterator s_iter = support-&gt;begin(); s_iter != support-&gt;end(); ++s_iter) {
 <a name="line1111">1111: </a>                localSieve-&gt;addArrow(renumbering[*p_iter], renumbering[*s_iter], s_iter.color());
 <a name="line1112">1112: </a>                next-&gt;insert(*s_iter);
@@ -1308,7 +1308,7 @@
 <a name="line1297">1297: </a>          <font color="#4169E1">while</font>(current-&gt;size()) {
 <a name="line1298">1298: </a>            <font color="#4169E1">for</font>(typename Mesh::sieve_type::coneSet::const_iterator p_iter = current-&gt;begin(); p_iter != current-&gt;end(); ++p_iter) {
 <a name="line1299">1299: </a>              const Obj&lt;typename Mesh::sieve_type::traits::coneSequence&gt;&amp; cone = sieve-&gt;cone(*p_iter);
-<a name="line1300">1300: </a>
+
 <a name="line1301">1301: </a>              <font color="#4169E1">for</font>(typename Mesh::sieve_type::traits::coneSequence::iterator c_iter = cone-&gt;begin(); c_iter != cone-&gt;end(); ++c_iter) {
 <a name="line1302">1302: </a>                closure.insert(*c_iter);
 <a name="line1303">1303: </a>                next-&gt;insert(*c_iter);
@@ -1322,7 +1322,7 @@
 <a name="line1311">1311: </a>            <font color="#4169E1">while</font>(current-&gt;size()) {
 <a name="line1312">1312: </a>              <font color="#4169E1">for</font>(typename Mesh::sieve_type::coneSet::const_iterator p_iter = current-&gt;begin(); p_iter != current-&gt;end(); ++p_iter) {
 <a name="line1313">1313: </a>                const Obj&lt;typename Mesh::sieve_type::traits::supportSequence&gt;&amp; support = sieve-&gt;support(*p_iter);
-<a name="line1314">1314: </a>
+
 <a name="line1315">1315: </a>                <font color="#4169E1">for</font>(typename Mesh::sieve_type::traits::supportSequence::iterator s_iter = support-&gt;begin(); s_iter != support-&gt;end(); ++s_iter) {
 <a name="line1316">1316: </a>                  closure.insert(*s_iter);
 <a name="line1317">1317: </a>                  next-&gt;insert(*s_iter);
@@ -1355,7 +1355,7 @@
 <a name="line1344">1344: </a>          <font color="#4169E1">while</font>(current-&gt;size()) {
 <a name="line1345">1345: </a>            <font color="#4169E1">for</font>(typename Mesh::sieve_type::coneSet::const_iterator p_iter = current-&gt;begin(); p_iter != current-&gt;end(); ++p_iter) {
 <a name="line1346">1346: </a>              const Obj&lt;typename Mesh::sieve_type::traits::coneSequence&gt;&amp; cone = sieve-&gt;cone(*p_iter);
-<a name="line1347">1347: </a>
+
 <a name="line1348">1348: </a>              <font color="#4169E1">for</font>(typename Mesh::sieve_type::traits::coneSequence::iterator c_iter = cone-&gt;begin(); c_iter != cone-&gt;end(); ++c_iter) {
 <a name="line1349">1349: </a>                closure.insert(*c_iter);
 <a name="line1350">1350: </a>                next-&gt;insert(*c_iter);
@@ -1369,7 +1369,7 @@
 <a name="line1358">1358: </a>            <font color="#4169E1">while</font>(current-&gt;size()) {
 <a name="line1359">1359: </a>              <font color="#4169E1">for</font>(typename Mesh::sieve_type::coneSet::const_iterator p_iter = current-&gt;begin(); p_iter != current-&gt;end(); ++p_iter) {
 <a name="line1360">1360: </a>                const Obj&lt;typename Mesh::sieve_type::traits::supportSequence&gt;&amp; support = sieve-&gt;support(*p_iter);
-<a name="line1361">1361: </a>
+
 <a name="line1362">1362: </a>                <font color="#4169E1">for</font>(typename Mesh::sieve_type::traits::supportSequence::iterator s_iter = support-&gt;begin(); s_iter != support-&gt;end(); ++s_iter) {
 <a name="line1363">1363: </a>                  closure.insert(*s_iter);
 <a name="line1364">1364: </a>                  next-&gt;insert(*s_iter);
@@ -1440,7 +1440,7 @@
 <a name="line1429">1429: </a><strong><font color="#FF0000">      PETSc:</font></strong>:Log::Event(<font color="#666666">"PartitionClosure"</font>).end();
 <a name="line1430">1430: </a>    }
 <a name="line1433">1433: </a>    template&lt;typename Mesh&gt;
-<a name="line1434">1434: </a>    static <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> createPartitionClosureV(const Obj&lt;Mesh&gt;&amp; mesh, <A href="../../docs/manualpages/Vec/PetscSection.html#PetscSection">PetscSection</A> pointSection, <A href="../../docs/manualpages/IS/IS.html#IS">IS</A> pointPartition, <A href="../../docs/manualpages/Vec/PetscSection.html#PetscSection">PetscSection</A> *section, <A href="../../docs/manualpages/IS/IS.html#IS">IS</A> *partition, const int height = 0) {
+<a name="line1434">1434: </a>    static <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> createPartitionClosureV(const Obj&lt;Mesh&gt;&amp; mesh, <A href="../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A> pointSection, <A href="../../docs/manualpages/IS/IS.html#IS">IS</A> pointPartition, <A href="../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A> *section, <A href="../../docs/manualpages/IS/IS.html#IS">IS</A> *partition, const int height = 0) {
 <a name="line1435">1435: </a>      <font color="#4169E1">typedef</font> ISieveVisitor::TransitiveClosureVisitor&lt;typename Mesh::sieve_type&gt; visitor_type;
 <a name="line1436">1436: </a>      const Obj&lt;typename Mesh::sieve_type&gt;&amp; sieve = mesh-&gt;getSieve();
 <a name="line1437">1437: </a>      const <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                       *partArray;
@@ -1449,15 +1449,15 @@
 <a name="line1440">1440: </a>      <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>                        ierr;
 
 <a name="line1443">1443: </a><strong><font color="#FF0000">      PETSc:</font></strong>:Log::Event(<font color="#666666">"PartitionClosure"</font>).begin();
-<a name="line1444">1444: </a>      PetscSectionGetChart(pointSection, &amp;rStart, &amp;rEnd);
+<a name="line1444">1444: </a>      <A href="../../docs/manualpages/IS/PetscSectionGetChart.html#PetscSectionGetChart">PetscSectionGetChart</A>(pointSection, &amp;rStart, &amp;rEnd);
 <a name="line1445">1445: </a>      <A href="../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(pointPartition, &amp;partArray);
-<a name="line1446">1446: </a>      <A href="../../docs/manualpages/Vec/PetscSectionCreate.html#PetscSectionCreate">PetscSectionCreate</A>(mesh-&gt;comm(), section);
-<a name="line1447">1447: </a>      PetscSectionSetChart(*section, rStart, rEnd);
+<a name="line1446">1446: </a>      <A href="../../docs/manualpages/IS/PetscSectionCreate.html#PetscSectionCreate">PetscSectionCreate</A>(mesh-&gt;comm(), section);
+<a name="line1447">1447: </a>      <A href="../../docs/manualpages/IS/PetscSectionSetChart.html#PetscSectionSetChart">PetscSectionSetChart</A>(*section, rStart, rEnd);
 <a name="line1448">1448: </a>      <font color="#4169E1">for</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rank = rStart; rank &lt; rEnd; ++rank) {
 <a name="line1449">1449: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numPoints, offset;
 
-<a name="line1451">1451: </a>        PetscSectionGetDof(pointSection, rank, &amp;numPoints);
-<a name="line1452">1452: </a>        PetscSectionGetOffset(pointSection, rank, &amp;offset);
+<a name="line1451">1451: </a>        <A href="../../docs/manualpages/IS/PetscSectionGetDof.html#PetscSectionGetDof">PetscSectionGetDof</A>(pointSection, rank, &amp;numPoints);
+<a name="line1452">1452: </a>        <A href="../../docs/manualpages/IS/PetscSectionGetOffset.html#PetscSectionGetOffset">PetscSectionGetOffset</A>(pointSection, rank, &amp;offset);
 <a name="line1453">1453: </a>        {
 <a name="line1454">1454: </a>          const <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     *points = &amp;partArray[offset];
 <a name="line1455">1455: </a>          typename visitor_type::visitor_type nV;
@@ -1470,18 +1470,18 @@
 <a name="line1462">1462: </a>              sieve-&gt;support(points[p], cV);
 <a name="line1463">1463: </a>            }
 <a name="line1464">1464: </a>          }
-<a name="line1465">1465: </a>          PetscSectionSetDof(*section, rank, cV.getPoints().size());
+<a name="line1465">1465: </a>          <A href="../../docs/manualpages/IS/PetscSectionSetDof.html#PetscSectionSetDof">PetscSectionSetDof</A>(*section, rank, cV.getPoints().size());
 <a name="line1466">1466: </a>        }
 <a name="line1467">1467: </a>      }
-<a name="line1468">1468: </a>      PetscSectionSetUp(*section);
-<a name="line1469">1469: </a>      PetscSectionGetStorageSize(*section, &amp;size);
+<a name="line1468">1468: </a>      <A href="../../docs/manualpages/IS/PetscSectionSetUp.html#PetscSectionSetUp">PetscSectionSetUp</A>(*section);
+<a name="line1469">1469: </a>      <A href="../../docs/manualpages/IS/PetscSectionGetStorageSize.html#PetscSectionGetStorageSize">PetscSectionGetStorageSize</A>(*section, &amp;size);
 <a name="line1470">1470: </a>      <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(size * <font color="#4169E1">sizeof</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;allPoints);
 
 <a name="line1472">1472: </a>      <font color="#4169E1">for</font>(<A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> rank = rStart; rank &lt; rEnd; ++rank) {
 <a name="line1473">1473: </a>        <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numPoints, offset, newOffset;
 
-<a name="line1475">1475: </a>        PetscSectionGetDof(pointSection, rank, &amp;numPoints);
-<a name="line1476">1476: </a>        PetscSectionGetOffset(pointSection, rank, &amp;offset);
+<a name="line1475">1475: </a>        <A href="../../docs/manualpages/IS/PetscSectionGetDof.html#PetscSectionGetDof">PetscSectionGetDof</A>(pointSection, rank, &amp;numPoints);
+<a name="line1476">1476: </a>        <A href="../../docs/manualpages/IS/PetscSectionGetOffset.html#PetscSectionGetOffset">PetscSectionGetOffset</A>(pointSection, rank, &amp;offset);
 <a name="line1477">1477: </a>        {
 <a name="line1478">1478: </a>          const <A href="../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     *points = &amp;partArray[offset];
 <a name="line1479">1479: </a>          typename visitor_type::visitor_type nV;
@@ -1494,7 +1494,7 @@
 <a name="line1486">1486: </a>              sieve-&gt;support(points[p], cV);
 <a name="line1487">1487: </a>            }
 <a name="line1488">1488: </a>          }
-<a name="line1489">1489: </a>          PetscSectionGetOffset(*section, rank, &amp;newOffset);
+<a name="line1489">1489: </a>          <A href="../../docs/manualpages/IS/PetscSectionGetOffset.html#PetscSectionGetOffset">PetscSectionGetOffset</A>(*section, rank, &amp;newOffset);
 
 <a name="line1491">1491: </a>          <font color="#4169E1">for</font>(typename std::set&lt;typename Mesh::point_type&gt;::const_iterator p_iter = cV.getPoints().begin(); p_iter != cV.getPoints().end(); ++p_iter, ++newOffset) {
 <a name="line1492">1492: </a>            allPoints[newOffset] = *p_iter;
@@ -1719,7 +1719,7 @@
 <a name="line1715">1715: </a>        ALE_LOG_EVENT_END;
 <a name="line1716">1716: </a>      };
 <a name="line1717">1717: </a>      template&lt;typename PartitionType&gt;
-<a name="line1718">1718: </a>      static PartitionType *subordinatePartition(const Obj&lt;bundle_type&gt;&amp; bundle, int levels, const Obj&lt;bundle_type&gt;&amp; subBundle, const PartitionType assignment[]) {
+<a name="line1718">1718: </a>      static PartitionType *subordinatePartition(const Obj&lt;bundle_type&gt;&amp; bundle, int levels, const Obj&lt;bundle_type&gt;&amp; subBundle, PartitionType assignment[]) {
 <a name="line1719">1719: </a>        const Obj&lt;typename bundle_type::numbering_type&gt;&amp; cNumbering = bundle-&gt;getFactory()-&gt;getLocalNumbering(bundle, bundle-&gt;depth());
 <a name="line1720">1720: </a>        const Obj&lt;typename bundle_type::label_sequence&gt;&amp; cells      = subBundle-&gt;heightStratum(0);
 <a name="line1721">1721: </a>        const Obj&lt;typename bundle_type::numbering_type&gt;&amp; sNumbering = bundle-&gt;getFactory()-&gt;getLocalNumbering(subBundle, subBundle-&gt;depth());
@@ -1793,8 +1793,8 @@
 <a name="line1791">1791: </a>            long seed = 123636512;                  <font color="#B22222">/* for random graph mutations */</font>
 <a name="line1792">1792: </a>            float *vCoords[3];
 
-<a name="line1795">1795: </a>            <A href="../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-partitioner_chaco_global_method"</font>, &amp;global_method, <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>"</font>);
-<a name="line1796">1796: </a>            <A href="../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-partitioner_chaco_local_method"</font>,  &amp;local_method,  <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>"</font>);
+<a name="line1795">1795: </a>            <A href="../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL, <font color="#666666">"-partitioner_chaco_global_method"</font>, &amp;global_method, NULL);CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>"</font>);
+<a name="line1796">1796: </a>            <A href="../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL, <font color="#666666">"-partitioner_chaco_local_method"</font>,  &amp;local_method,  NULL);CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>"</font>);
 <a name="line1797">1797: </a>            <font color="#4169E1">if</font> (global_method == 3) {
 <a name="line1798">1798: </a>              // Inertial Partitioning
 <a name="line1799">1799: </a>              <A href="../../docs/manualpages/Sys/PetscMalloc3.html#PetscMalloc3">PetscMalloc3</A>(nvtxs,float,&amp;x,nvtxs,float,&amp;y,nvtxs,float,&amp;z);CHKERROR(ierr, <font color="#666666">"Error in <A href="../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>"</font>);

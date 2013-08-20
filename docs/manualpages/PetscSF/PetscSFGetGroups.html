@@ -5,11 +5,12 @@
 <TITLE>PetscSFGetGroups</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscSFGetGroups"><H1>PetscSFGetGroups</H1></A>
 gets incoming and outgoing process groups 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscsf.h" 
 PetscErrorCode PetscSFGetGroups(PetscSF sf,MPI_Group *incoming,MPI_Group *outgoing)
 </PRE>
 Collective
@@ -30,7 +31,7 @@ Collective
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PetscSF/PetscSFGetWindow.html#PetscSFGetWindow">PetscSFGetWindow</A>(), <A HREF="../PetscSF/PetscSFRestoreWindow.html#PetscSFRestoreWindow">PetscSFRestoreWindow</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/sf/sf.c.html#PetscSFGetGroups">src/sys/sf/sf.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/sf/interface/sf.c.html#PetscSFGetGroups">src/vec/is/sf/interface/sf.c</A>
 <BR><A HREF="./index.html">Index of all PetscSF routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

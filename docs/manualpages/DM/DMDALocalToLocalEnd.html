@@ -5,15 +5,15 @@
 <TITLE>DMDALocalToLocalEnd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDALocalToLocalEnd"><H1>DMDALocalToLocalEnd</H1></A>
-Maps from a local vector (including ghost points that contain irrelevant values) to another local vector where the ghost points in the second are set correctly.  Must be preceeded by  <A HREF="../DM/DMDALocalToLocalBegin.html#DMDALocalToLocalBegin">DMDALocalToLocalBegin</A>(). 
+Maps from a local vector (including ghost points that contain irrelevant values) to another local vector where the ghost points in the second are set correctly.  Must be preceeded by <A HREF="../DM/DMDALocalToLocalBegin.html#DMDALocalToLocalBegin">DMDALocalToLocalBegin</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
 PetscErrorCode  DMDALocalToLocalEnd(DM da,Vec g,InsertMode mode,Vec l)
 </PRE>
-Neighbor-wise Collective on DMDA and <A HREF="../Vec/Vec.html#Vec">Vec</A>
+Neighbor-wise Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -34,7 +34,7 @@ Neighbor-wise Collective on DMDA and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 The local vectors used here need not be the same as those
 obtained from <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>(), BUT they
 must have the same parallel data layout; they could, for example, be
-obtained with <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() from the DMDA originating vectors.
+obtained with <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() from the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> originating vectors.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  distributed array, local-to-local, end

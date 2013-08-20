@@ -39,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  dmdacreatenaturalvector_(DM da,Vec* g, int *__ierr ){
+void PETSC_STDCALL  dmdacreatenaturalvector_(DM da,Vec *g, int *__ierr ){
 *__ierr = DMDACreateNaturalVector(
 	(DM)PetscToPointer((da) ),g);
 }

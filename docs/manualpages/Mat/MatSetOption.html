@@ -5,19 +5,19 @@
 <TITLE>MatSetOption</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSetOption"><H1>MatSetOption</H1></A>
-Sets a parameter option for a matrix. Some options may be specific to certain storage formats.  Some options determine how values will be inserted (or added). Sorted,  row-oriented input will generally assemble the fastest. The default is row-oriented.  
+Sets a parameter option for a matrix. Some options may be specific to certain storage formats.  Some options determine how values will be inserted (or added). Sorted, row-oriented input will generally assemble the fastest. The default is row-oriented. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatSetOption(Mat mat,MatOption op,PetscBool  flg)
+PetscErrorCode  MatSetOption(Mat mat,MatOption op,PetscBool flg)
 </PRE>
-Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> for certain operations, such as MAT_SPD, not collective for MAT_ROW_ORIENTED, see <A HREF="../Mat/MatOption.html#MatOption">MatOption</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>option </B></TD><TD>- the option, one of those listed below (and possibly others),
 </TD></TR>
@@ -37,7 +37,7 @@ Logically Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <DT><B>MAT_SYMMETRY_ETERNAL </B> -if you would like the symmetry/Hermitian flag
 you set to be kept with all future use of the matrix
 including after <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>/End() which could
-potentially change the symmetry structure, i.e. you 
+potentially change the symmetry structure, i.e. you
 KNOW the matrix will ALWAYS have the property you set.
 <br>
 </TABLE>
@@ -132,6 +132,10 @@ Notes: Can only be called after <A HREF="../Mat/MatSetSizes.html#MatSetSizes">Ma
 
 <P>
 <P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+  <A HREF="../Mat/MatOption.html#MatOption">MatOption</A>, <A HREF="../Mat/Mat.html#Mat">Mat</A>
+<BR>
+<P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/interface/matrix.c.html#MatSetOption">src/mat/interface/matrix.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
@@ -139,14 +143,14 @@ Notes: Can only be called after <A HREF="../Mat/MatSetSizes.html#MatSetSizes">Ma
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex12.c.html">src/mat/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex5.c.html">src/ksp/ksp/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html">src/ksp/ksp/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
 </BODY></HTML>

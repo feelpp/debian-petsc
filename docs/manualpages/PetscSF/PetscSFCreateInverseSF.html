@@ -5,11 +5,12 @@
 <TITLE>PetscSFCreateInverseSF</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscSFCreateInverseSF"><H1>PetscSFCreateInverseSF</H1></A>
 given a <A HREF="../PetscSF/PetscSF.html#PetscSF">PetscSF</A> in which all vertices have degree 1, creates the inverse map 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscsf.h" 
 PetscErrorCode PetscSFCreateInverseSF(PetscSF sf,PetscSF *isf)
 </PRE>
 Collective
@@ -32,10 +33,10 @@ The local space may be a permutation, but cannot be sparse.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PetscSF/PetscSFSetGraph.html#PetscSFSetGraph">PetscSFSetGraph</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/sf/sf.c.html#PetscSFCreateInverseSF">src/sys/sf/sf.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/sf/interface/sf.c.html#PetscSFCreateInverseSF">src/vec/is/sf/interface/sf.c</A>
 <BR><A HREF="./index.html">Index of all PetscSF routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/sf/examples/tutorials/ex1.c.html">src/sys/sf/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/vec/is/sf/examples/tutorials/ex1.c.html">src/vec/is/sf/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

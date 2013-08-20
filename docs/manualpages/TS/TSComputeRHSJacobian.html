@@ -5,13 +5,13 @@
 <TITLE>TSComputeRHSJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSComputeRHSJacobian"><H1>TSComputeRHSJacobian</H1></A>
 Computes the Jacobian matrix that has been set with <A HREF="../TS/TSSetRHSJacobian.html#TSSetRHSJacobian">TSSetRHSJacobian</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  TSComputeRHSJacobian(TS ts,PetscReal t,Vec X,Mat *A,Mat *B,MatStructure *flg)
+PetscErrorCode  TSComputeRHSJacobian(TS ts,PetscReal t,Vec U,Mat *A,Mat *B,MatStructure *flg)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -21,7 +21,7 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>t </B></TD><TD>- current timestep
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- input vector
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>U </B></TD><TD>- input vector
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>

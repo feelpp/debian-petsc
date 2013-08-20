@@ -5,7 +5,7 @@
 <TITLE>MatCreateDense</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateDense"><H1>MatCreateDense</H1></A>
 Creates a parallel matrix in dense format. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -27,7 +27,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N </B></TD><TD>- number of global columns (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have calculated if n is given)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>data </B></TD><TD>- optional location of matrix data.  Set data=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> (PETSC_NULL_SCALAR for Fortran users) for PETSc
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>data </B></TD><TD>- optional location of matrix data.  Set data=NULL (NULL_SCALAR for Fortran users) for PETSc
 to control all matrix memory allocation.
 </TD></TR></TABLE>
 <P>
@@ -41,7 +41,7 @@ storage by columns.
 <P>
 The data input variable is intended primarily for Fortran programmers
 who wish to allocate their own matrix memory space.  Most users should
-set data=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> (PETSC_NULL_SCALAR for Fortran users).
+set data=NULL (NULL_SCALAR for Fortran users).
 <P>
 The user MUST specify either the local or global matrix dimensions
 (possibly both).

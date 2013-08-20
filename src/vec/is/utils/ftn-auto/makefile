@@ -4,8 +4,7 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = iscompf.c isltogf.c iscoloringf.c isdifff.c
-OBJSC    = iscompf.o isltogf.o iscoloringf.o isdifff.o
+SOURCEC  = vsectionisf.c isltogf.c
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

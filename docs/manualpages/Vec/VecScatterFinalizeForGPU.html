@@ -5,12 +5,11 @@
 <TITLE>VecScatterFinalizeForGPU</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecScatterFinalizeForGPU"><H1>VecScatterFinalizeForGPU</H1></A>
-Finalizes a generalized scatter from one vector to another for GPU based computation. Effectively, this function resets the temporary buffer flags. Currently, this only used in the context of the parallel SpMV call in MatMult_MPIAIJCUSP (in mpi/mpicusp/mpiaijcusp.cu). Once the <A HREF="../Mat/MatMultAdd.html#MatMultAdd">MatMultAdd</A> is finished, the GPU temporary buffers used for messaging are no longer valid. 
+Finalizes a generalized scatter from one vector to another for GPU based computation. Effectively, this function resets the temporary buffer flags. Currently, this only used in the context of the parallel SpMV call in in MatMult_MPIAIJCUSP (in mpi/mpicusp/mpiaijcusp.cu) or MatMult_MPIAIJCUSPARSE (in mpi/mpicusparse/mpiaijcusparse.cu). Once the <A HREF="../Mat/MatMultAdd.html#MatMultAdd">MatMultAdd</A> is finished, the GPU temporary buffers used for messaging are no longer valid. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscis.h" 
 #include "petscvec.h" 
 PetscErrorCode  VecScatterFinalizeForGPU(VecScatter inctx)
 </PRE>
@@ -22,7 +21,7 @@ PetscErrorCode  VecScatterFinalizeForGPU(VecScatter inctx)
 
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/vec/utils/veccuspvscatcusp.c.html#VecScatterFinalizeForGPU">src/vec/vec/utils/veccuspvscatcusp.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/vec/utils/veccusp/vscatcusp.c.html#VecScatterFinalizeForGPU">src/vec/vec/utils/veccusp/vscatcusp.c</A>
 <BR><A HREF="./index.html">Index of all Vec routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

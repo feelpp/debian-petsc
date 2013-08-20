@@ -5,15 +5,15 @@
 <TITLE>DMDACreatePF</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDACreatePF"><H1>DMDACreatePF</H1></A>
-Creates an appropriately dimensioned <A HREF="../PF/PF.html#PF">PF</A> mathematical function object from a DMDA. 
+Creates an appropriately dimensioned <A HREF="../PF/PF.html#PF">PF</A> mathematical function object from a <A HREF="../DM/DMDA.html#DMDA">DMDA</A>. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
 PetscErrorCode  DMDACreatePF(DM da,PF *pf)
 </PRE>
-Collective on DMDA
+Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>da </B> -initial distributed array

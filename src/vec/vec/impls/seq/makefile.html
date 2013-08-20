@@ -3,25 +3,23 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/impls/seq/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:39:06+00:00">
+<meta name="date" content="2013-07-02T14:40:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
 CFLAGS   =  ${PNETCDF_INCLUDE} ${MATLAB_INCLUDE}
 FFLAGS   =
-SOURCEC  = bvec2.c bvec1.c dvec2.c vseqcr.c bvec3.c vsection.c
+SOURCEC  = bvec2.c bvec1.c dvec2.c vseqcr.c bvec3.c
 SOURCEF  =
 SOURCEH  =
-OBJSC    = bvec2.o bvec1.o dvec2.o vseqcr.o bvec3.o vsection.o
-OBJSF    =
 LIBBASE  = libpetscvec
 MANSEC   = <A href="ROOT/docs/manualpages/Vec/Vec.html#Vec">Vec</A>
 LOCDIR   = src/vec/vec/impls/seq/
-DIRS     = ftn-kernels seqcusp seqpthread
+DIRS     = ftn-kernels seqcusp
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

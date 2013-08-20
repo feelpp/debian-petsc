@@ -42,7 +42,7 @@ def buildSingleExample(maker, ex):
   executable = os.path.join(objDir, exampleName)
   objects    = maker.buildFile(ex, objDir)
   if not len(objects):
-    print('EXAMPLE BUILD FAILED (check make.log for details)')
+    print('EXAMPLE BUILD FAILED (check example.log for details)')
     return 1
   maker.link(executable, objects, maker.configInfo.languages.clanguage)
   return 0
@@ -50,7 +50,7 @@ def buildSingleExample(maker, ex):
 def buildExample(args):
   '''Build and link an example'''
   ret   = 0
-  maker = builder.PETScMaker()
+  maker = builder.PETScMaker('example.log')
   maker.setup()
   examples = []
   for f in args.files:
@@ -64,9 +64,10 @@ def buildExample(args):
   maker.cleanup()
   return ret
 
-def checkSingleRun(maker, ex, extraArgs = ''):
+def checkSingleRun(maker, ex, replace, extraArgs = '', isRegression = False):
   import shutil
 
+  packageNames = set([p.name for p in maker.framework.packages])
   if isinstance(ex, list):
     exampleName = os.path.splitext(os.path.basename(ex[0]))[0]
     exampleDir  = os.path.dirname(ex[0])
@@ -78,39 +79,57 @@ def checkSingleRun(maker, ex, extraArgs = ''):
   os.mkdir(objDir)
   executable  = os.path.join(objDir, exampleName)
   paramKey    = os.path.join(os.path.relpath(exampleDir, maker.petscDir), os.path.basename(executable))
-  if paramKey in builder.regressionRequirements:
-    if not builder.regressionRequirements[paramKey].issubset(packageNames):
-      raise RuntimeError('This test requires packages: %s' % builder.regressionRequirements[paramKey])
   params = builder.regressionParameters.get(paramKey, {})
   if not params:
     params = builder.getRegressionParameters(maker, exampleDir).get(paramKey, {})
-    print 'Makefile params',params
+    if params: maker.logPrint('Retrieved test options from makefile: %s\n' % (str(params),))
+  if isRegression and not params:
+    return
   if not isinstance(params, list):
     params = [params]
-  # NOTE: testnum will be wrong for single tests, just push fixes to PETSc
+  # Process testnum
+  if args.testnum is not None:
+    if args.testnum[0] == '[':
+      validTestnum = args.testnum[1:-1].split(',')
+    else:
+      validTestnum = [args.testnum]
+    numtests = len(validTestnum)
+  else:
+    numtests = len(params)
   rebuildTest = True
+  maker.logPrint('Running %d tests\n' % (numtests,), debugSection='screen', forceScroll=True)
   for testnum, param in enumerate(params):
+    testnum = str(testnum)
+    if 'requires' in param:
+      if not set(param['requires']).issubset(packageNames):
+        maker.logPrint('Test %s requires packages %s\n' % (testnum, param['requires']), debugSection='screen', forceScroll=True)
+        continue
     if 'num' in param: testnum = param['num']
-    if not args.testnum is None and testnum != args.testnum: continue
+    if not args.testnum is None and not testnum in validTestnum: continue
     if 'setup' in param:
       print(param['setup'])
-      os.system('python '+param['setup'])
+      os.system(sys.executable+' '+param['setup'])
       rebuildTest = True
     if 'source' in param:
       if not isinstance(ex, list):
         ex = [ex]+param['source']
       else:
         ex = ex+param['source']
+    # TODO: Fix this hack
+    if ex[-1] == 'F':
+      linkLanguage = 'FC'
+    else:
+      linkLanguage = maker.configInfo.languages.clanguage
     if rebuildTest:
       objects = maker.buildFile(ex, objDir)
       if not len(objects):
-        print('TEST BUILD FAILED (check make.log for details)')
+        print('TEST BUILD FAILED (check example.log for details)')
         return 1
-      maker.link(executable, objects, maker.configInfo.languages.clanguage)
+      maker.link(executable, objects, linkLanguage)
     if not 'args' in param: param['args'] = ''
     param['args'] += extraArgs
-    if maker.runTest(exampleDir, executable, testnum, **param):
-      print('TEST RUN FAILED (check make.log for details)')
+    if maker.runTest(exampleDir, executable, testnum, replace, **param):
+      print('TEST RUN FAILED (check example.log for details)')
       return 1
     rebuildTest = False
   if not args.retain and os.path.isdir(objDir): shutil.rmtree(objDir)
@@ -120,7 +139,7 @@ def check(args):
   '''Check that build is functional'''
   ret       = 0
   extraArgs = ' '+' '.join(args.args)
-  maker     = builder.PETScMaker()
+  maker     = builder.PETScMaker('example.log')
   maker.setup()
   # C test
   if len(args.files):
@@ -142,7 +161,7 @@ def check(args):
       else:
         examples.append(os.path.join(maker.petscDir, 'src', 'snes', 'examples', 'tutorials', 'ex5f.F'))
   for ex in examples:
-    ret = checkSingleRun(maker, ex, extraArgs)
+    ret = checkSingleRun(maker, ex, args.replace, extraArgs)
     if ret: break
   if not ret:
     print('All tests pass')
@@ -152,15 +171,39 @@ def check(args):
 def regression(args):
   '''Run complete regression suite'''
   ret   = 0
-  maker = builder.PETScMaker()
+  gret  = 0
+  maker = builder.PETScMaker('regression.log')
   maker.setup()
-  for ex in examples:
-    ret = checkSingleRun(maker, ex)
-    if ret: break
-  if not ret:
-    print('All regression tests pass')
+  haltOnError = False
+
+  args.retain  = False
+  args.testnum = None
+  if len(args.dirs):
+    regdirs = args.dirs
+  else:
+    regdirs = map(lambda d: os.path.join('src', d), ['inline', 'sys', 'vec', 'mat', 'dm', 'ksp', 'snes', 'ts', 'docs', 'tops'])
+  walker  = builder.DirectoryTreeWalker(maker.argDB, maker.log, maker.configInfo, allowExamples = True)
+  dirs    = map(lambda d: os.path.join(maker.petscDir, d), regdirs)
+  for d in dirs:
+    for root, files in walker.walk(d):
+      baseDir = os.path.basename(root)
+      if not baseDir == 'tests' and not baseDir == 'tutorials': continue
+      maker.logPrint('Running regression tests in %s\n' % (baseDir,), debugSection='screen', forceScroll=True)
+      for f in files:
+        basename, ext = os.path.splitext(f)
+        if not basename.startswith('ex'): continue
+        if not ext in ['.c', '.F']: continue
+        ex  = os.path.join(root, f)
+        ret = checkSingleRun(maker, ex, False, isRegression = True)
+        if ret:
+          gret = ret
+          if haltOnError: break
+      if ret and haltOnError: break
+    if ret and haltOnError: break
+  if not gret:
+    maker.logPrint('All regression tests pass\n', debugSection='screen', forceScroll=True)
   maker.cleanup()
-  return ret
+  return gret
 
 def clean(args):
   '''Remove source database and all objects'''
@@ -193,6 +236,7 @@ def stubs(args):
   return 0
 
 def showSingleRun(maker, ex, extraArgs = ''):
+  packageNames = set([p.name for p in maker.framework.packages])
   if isinstance(ex, list):
     exampleName = os.path.splitext(os.path.basename(ex[0]))[0]
     exampleDir  = os.path.dirname(ex[0])
@@ -202,18 +246,30 @@ def showSingleRun(maker, ex, extraArgs = ''):
   objDir        = maker.getObjDir(exampleName)
   executable    = os.path.join(objDir, exampleName)
   paramKey      = os.path.join(os.path.relpath(exampleDir, maker.petscDir), os.path.basename(executable))
-  if paramKey in builder.regressionRequirements:
-    if not builder.regressionRequirements[paramKey].issubset(packageNames):
-      raise RuntimeError('This test requires packages: %s' % builder.regressionRequirements[paramKey])
   params = builder.regressionParameters.get(paramKey, {})
   if not params:
     params = builder.getRegressionParameters(maker, exampleDir).get(paramKey, {})
-    maker.logPrint('Makefile params '+strparams)
+    maker.logPrint('Makefile params '+str(params))
   if not isinstance(params, list):
     params = [params]
+  # Process testnum
+  if args.testnum is not None:
+    if args.testnum[0] == '[':
+      validTestnum = args.testnum[1:-1].split(',')
+    else:
+      validTestnum = [args.testnum]
+    numtests = len(validTestnum)
+  else:
+    numtests = len(params)
+  maker.logPrint('Running %d tests\n' % (numtests,), debugSection='screen', forceScroll=True)
   for testnum, param in enumerate(params):
+    testnum = str(testnum)
+    if 'requires' in param:
+      if not set(param['requires']).issubset(packageNames):
+        maker.logPrint('Test %s requires packages %s\n' % (testnum, param['requires']), debugSection='screen', forceScroll=True)
+        continue
     if 'num' in param: testnum = param['num']
-    if not args.testnum is None and testnum != args.testnum: continue
+    if not args.testnum is None and not testnum in validTestnum: continue
     if not 'args' in param: param['args'] = ''
     param['args'] += extraArgs
     print(str(testnum)+':  '+maker.getTestCommand(executable, **param))
@@ -260,9 +316,11 @@ if __name__ == '__main__':
   parser_check.add_argument('files', nargs='*', help='Extra examples to test')
   parser_check.add_argument('--args', action='append', default=[], help='Extra execution arguments for test')
   parser_check.add_argument('--retain', action='store_true', default=False, help='Retain the executable after testing')
-  parser_check.add_argument('--testnum', type=int, help='The test number to execute')
+  parser_check.add_argument('--testnum', help='The test to execute')
+  parser_check.add_argument('--replace', action='store_true', default=False, help='Replace stored output with test output')
   parser_check.set_defaults(func=check)
   parser_regression = subparsers.add_parser('regression', help='Execute regression tests')
+  parser_regression.add_argument('dirs', nargs='*', help='Directories for regression tests')
   parser_regression.set_defaults(func=regression)
   parser_clean = subparsers.add_parser('clean', help='Remove source database and all objects')
   parser_clean.set_defaults(func=clean)

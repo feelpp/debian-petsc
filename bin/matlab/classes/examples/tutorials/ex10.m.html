@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>ex10</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-08-29"><meta name="DC.source" content="ex10.m"><style type="text/css">
+      --><title>ex10</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-07-02"><meta name="DC.source" content="ex10.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -56,7 +56,7 @@ span.syscmd { color:#B28C00 }
 .footer p { margin:0px; }
 
   </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#4">Create a vector</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span>
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div> ex10(args)
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div> ex10(args)
 </pre><pre>Mimics src/ksp/ksp/examples/tutorials/ex10.c loads a matrix from a binary file
 and solves a linear system with it.</pre><pre class="language-matlab">Set <span class="string">the</span> <span class="string">Matlab</span> <span class="string">path</span> <span class="string">and</span> <span class="string">initialize</span> <span class="string">PETSc</span>
 </pre><pre class="codeinput">path(path,<span class="string">'../../'</span>)
@@ -81,6 +81,10 @@ ksp.SetType(<span class="string">'gmres'</span>);
 ksp.SetOperators(mat,mat,PetscMat.SAME_NONZERO_PATTERN);
 ksp.SetFromOptions();
 ksp.Solve(b,x);
+</pre><pre>Write x into a binary file</pre><pre class="codeinput"><span class="comment">%out_filename = %/path/out_filename. The default path might be ~MATLAB/</span>
+<span class="comment">%viewer = PetscViewer(out_filename,Petsc.FILE_MODE_WRITE);</span>
+<span class="comment">%x.View(viewer);</span>
+<span class="comment">%viewer.Destroy();</span>
 </pre><pre class="language-matlab">Free <span class="string">PETSc</span> <span class="string">objects</span> <span class="string">and</span> <span class="string">shutdown</span> <span class="string">PETSc</span>
 </pre><pre class="codeinput">x.Destroy();
 b.Destroy();
@@ -103,7 +107,7 @@ PetscInitialize([args {'-ksp_monitor_true_residual','-ksp_converged_reason','-ks
 %%
 %  Create a matrix and put some values in it
 filename = PetscOptionsGetString('-f0');
-filename
+filename 
 viewer = PetscViewer(filename,Petsc.FILE_MODE_READ);
 mat = PetscMat();
 mat.SetFromOptions()
@@ -125,6 +129,13 @@ ksp.SetType('gmres');
 ksp.SetOperators(mat,mat,PetscMat.SAME_NONZERO_PATTERN);
 ksp.SetFromOptions();
 ksp.Solve(b,x);
+
+%%
+%  Write x into a binary file
+%out_filename = %/path/out_filename. The default path might be ~MATLAB/
+%viewer = PetscViewer(out_filename,Petsc.FILE_MODE_WRITE);
+%x.View(viewer);
+%viewer.Destroy();
 %%
 %   Free PETSc objects and shutdown PETSc
 %

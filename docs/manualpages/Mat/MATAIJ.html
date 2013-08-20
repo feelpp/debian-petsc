@@ -5,7 +5,7 @@
 <TITLE>MATAIJ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MATAIJ"><H1>MATAIJ</H1></A>
 <A HREF="../Mat/MATAIJ.html#MATAIJ">MATAIJ</A> = "aij" - A matrix type to be used for sparse matrices. This matrix type is identical to <A HREF="../Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A> when constructed with a single process communicator,
 and <A HREF="../Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A> otherwise.  As a result, for single process communicators,
@@ -17,7 +17,7 @@ the above preallocation routines for simplicity.
 <DT><B>-mat_type aij </B> -sets the matrix type to "aij" during a call to <A HREF="../Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>()
 <br>
 <P>
-Developer Notes: Subclasses include <A HREF="../Mat/MATAIJCUSP.html#MATAIJCUSP">MATAIJCUSP</A>, <A HREF="../Mat/MATAIJPERM.html#MATAIJPERM">MATAIJPERM</A>, <A HREF="../Mat/MATAIJCRL.html#MATAIJCRL">MATAIJCRL</A>, and also automatically switches over to use inodes when
+Developer Notes: Subclasses include <A HREF="../Mat/MATAIJCUSP.html#MATAIJCUSP">MATAIJCUSP</A>, <A HREF="../Mat/MATAIJCUSPARSE.html#MATAIJCUSPARSE">MATAIJCUSPARSE</A>, <A HREF="../Mat/MATAIJPERM.html#MATAIJPERM">MATAIJPERM</A>, <A HREF="../Mat/MATAIJCRL.html#MATAIJCRL">MATAIJCRL</A>, and also automatically switches over to use inodes when
 enough exist.
 <P>
 

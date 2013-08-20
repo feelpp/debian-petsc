@@ -3,21 +3,19 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/pf/impls/string/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:41:03+00:00">
+<meta name="date" content="2013-07-02T14:40:52+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
-CFLAGS   = 
+CFLAGS   =
 FFLAGS   =
 SOURCEC  = cstring.c
 SOURCEF  =
-SOURCEH  = 
-OBJSC    = cstring.o
-OBJSF    =
+SOURCEH  =
 LIBBASE  = libpetscvec
 MANSEC   = <A href="ROOT/docs/manualpages/Vec/Vec.html#Vec">Vec</A>
 LOCDIR   = src/vec/pf/impls/string/
@@ -34,7 +32,7 @@ petscdlib.c:
 
 <strong><font color="#FF0000">petscdlib:</font></strong>  petscdlib.c
         -@${RM} libpetscdlib.a libpetscdlib.${SL_LINKER_SUFFIX}
-        -@${OMAKE} PETSC_ARCH=${PETSC_ARCH}  LIBNAME=libpetscdlib.a OBJSC=petscdlib.o libc
+        -@${OMAKE} PETSC_ARCH=${PETSC_ARCH}  LIBNAME=libpetscdlib.a SOURCEC=petscdlib.c libc
         -@${OMAKE} PETSC_ARCH=${PETSC_ARCH}  LIBNAME=libpetscdlib oshared
 <font color="#A020F0">#        -@${RM} petscdlib.c</font>
 

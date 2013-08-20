@@ -5,11 +5,12 @@
 <TITLE>PetscSFFetchAndOpEnd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscSFFetchAndOpEnd"><H1>PetscSFFetchAndOpEnd</H1></A>
 end operation started in matching call to <A HREF="../PetscSF/PetscSFFetchAndOpBegin.html#PetscSFFetchAndOpBegin">PetscSFFetchAndOpBegin</A>() to fetch values from roots and update atomically by applying operation using my leaf value 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscsf.h" 
 PetscErrorCode PetscSFFetchAndOpEnd(PetscSF sf,MPI_Datatype unit,void *rootdata,const void *leafdata,void *leafupdate,MPI_Op op)
 </PRE>
 Collective
@@ -37,10 +38,10 @@ Collective
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PetscSF/PetscSFComputeDegreeEnd.html#PetscSFComputeDegreeEnd">PetscSFComputeDegreeEnd</A>(), <A HREF="../PetscSF/PetscSFReduceEnd.html#PetscSFReduceEnd">PetscSFReduceEnd</A>(), <A HREF="../PetscSF/PetscSFSetGraph.html#PetscSFSetGraph">PetscSFSetGraph</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/sf/sf.c.html#PetscSFFetchAndOpEnd">src/sys/sf/sf.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/sf/interface/sf.c.html#PetscSFFetchAndOpEnd">src/vec/is/sf/interface/sf.c</A>
 <BR><A HREF="./index.html">Index of all PetscSF routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/sf/examples/tutorials/ex1.c.html">src/sys/sf/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/vec/is/sf/examples/tutorials/ex1.c.html">src/vec/is/sf/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

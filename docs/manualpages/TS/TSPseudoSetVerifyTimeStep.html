@@ -5,13 +5,13 @@
 <TITLE>TSPseudoSetVerifyTimeStep</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSPseudoSetVerifyTimeStep"><H1>TSPseudoSetVerifyTimeStep</H1></A>
 Sets a user-defined routine to verify the quality of the last timestep. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode  TSPseudoSetVerifyTimeStep(TS ts,PetscErrorCode (*dt)(TS,Vec,void*,PetscReal*,PetscBool *),void* ctx)
+PetscErrorCode  TSPseudoSetVerifyTimeStep(TS ts,PetscErrorCode (*dt)(TS,Vec,void*,PetscReal*,PetscBool*),void *ctx)
 </PRE>
 Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -22,7 +22,7 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dt </B></TD><TD>- user-defined function to verify timestep
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for private data
-for the timestep verification routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+for the timestep verification routine (may be NULL)
 </TD></TR></TABLE>
 <P>
 
@@ -48,7 +48,7 @@ during the timestepping process.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../TS/TSPseudoDefaultVerifyTimeStep.html#TSPseudoDefaultVerifyTimeStep">TSPseudoDefaultVerifyTimeStep</A>(), <A HREF="../TS/TSPseudoVerifyTimeStep.html#TSPseudoVerifyTimeStep">TSPseudoVerifyTimeStep</A>()
+ <A HREF="../TS/TSPseudoVerifyTimeStepDefault.html#TSPseudoVerifyTimeStepDefault">TSPseudoVerifyTimeStepDefault</A>(), <A HREF="../TS/TSPseudoVerifyTimeStep.html#TSPseudoVerifyTimeStep">TSPseudoVerifyTimeStep</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/impls/pseudo/posindep.c.html#TSPseudoSetVerifyTimeStep">src/ts/impls/pseudo/posindep.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

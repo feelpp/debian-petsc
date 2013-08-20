@@ -6,7 +6,7 @@ Framework hooks
 
   The Framework will first instantiate the object and call setupDependencies(). All require()
   calls should be made in that method.
-  
+
   The Framework will then call configure(). If it succeeds, the object will be marked as configured.
 
 Generic test execution
@@ -71,7 +71,7 @@ class Configure(script.Script):
     self.framework       = framework
     self.defines         = {}
     self.makeRules       = {}
-    self.makeMacros      = {}        
+    self.makeMacros      = {}
     self.typedefs        = {}
     self.prototypes      = {}
     self.subst           = {}
@@ -186,7 +186,7 @@ class Configure(script.Script):
   def checkExecutable(self, dir, name):
     prog  = os.path.join(dir, name)
     # also strip any \ before spaces, braces, so that we can specify paths the way we want them in makefiles.
-    prog  = prog.replace('\ ',' ').replace('\(','(').replace('\)',')') 
+    prog  = prog.replace('\ ',' ').replace('\(','(').replace('\)',')')
     found = 0
     self.framework.log.write('Checking for program '+prog+'...')
     if os.path.isfile(prog) and os.access(prog, os.X_OK):
@@ -210,10 +210,11 @@ class Configure(script.Script):
       useDefaultPath = 1
 
     def getNames(name, resultName):
-      index = name.find(' ')
-      if index >= 0:
-        options = name[index:]
-        name    = name[:index]
+      import re
+      prog = re.match(r'(.*?)(?<!\\)(\s.*)',name)
+      if prog:
+        name = prog.group(1)
+        options = prog.group(2)
       else:
         options = ''
       if not resultName:
@@ -515,7 +516,7 @@ class Configure(script.Script):
   def filterLinkOutput(self, output):
     return self.framework.filterLinkOutput(output)
 
-  def outputLink(self, includes, body, cleanup = 1, codeBegin = None, codeEnd = None, shared = 0):
+  def outputLink(self, includes, body, cleanup = 1, codeBegin = None, codeEnd = None, shared = 0, linkLanguage=None):
     import sys
 
     (out, err, ret) = self.outputCompile(includes, body, cleanup = 0, codeBegin = codeBegin, codeEnd = codeEnd)
@@ -526,12 +527,18 @@ class Configure(script.Script):
       return (out, ret)
 
     cleanup = cleanup and self.framework.doCleanup
+
+    if linkLanguage is not None and linkLanguage != self.language[-1]:
+      self.pushLanguage(linkLanguage)
     if shared == 'dynamic':
       cmd = self.getDynamicLinkerCmd()
     elif shared:
       cmd = self.getSharedLinkerCmd()
     else:
       cmd = self.getLinkerCmd()
+    if linkLanguage is not None and linkLanguage != self.language[-1]:
+      self.popLanguage()
+
     linkerObj = self.linkerObj
     def report(command, status, output, error):
       if error or status:
@@ -551,8 +558,8 @@ class Configure(script.Script):
       if os.path.isfile(pdbfile): os.remove(pdbfile)
     return (out+err, ret)
 
-  def checkLink(self, includes = '', body = '', cleanup = 1, codeBegin = None, codeEnd = None, shared = 0):
-    (output, returnCode) = self.outputLink(includes, body, cleanup, codeBegin, codeEnd, shared)
+  def checkLink(self, includes = '', body = '', cleanup = 1, codeBegin = None, codeEnd = None, shared = 0, linkLanguage=None):
+    (output, returnCode) = self.outputLink(includes, body, cleanup, codeBegin, codeEnd, shared, linkLanguage)
     output = self.filterLinkOutput(output)
     return not (returnCode or len(output))
 
@@ -594,12 +601,12 @@ class Configure(script.Script):
       (output, error, status) = Configure.executeShellCommand(command, log = self.framework.log)
     except RuntimeError, e:
       self.framework.log.write('ERROR while running executable: '+str(e)+'\n')
-    if os.path.isfile(self.compilerObj): 
+    if os.path.isfile(self.compilerObj):
       try:
         os.remove(self.compilerObj)
       except RuntimeError, e:
         self.framework.log.write('ERROR while removing object file: '+str(e)+'\n')
-    if cleanup and os.path.isfile(self.linkerObj): 
+    if cleanup and os.path.isfile(self.linkerObj):
       try:
         if os.path.exists('/usr/bin/cygcheck.exe'): time.sleep(1)
         os.remove(self.linkerObj)

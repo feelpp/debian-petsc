@@ -5,11 +5,12 @@
 <TITLE>PetscMalloc6</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscMalloc6"><H1>PetscMalloc6</H1></A>
 Allocates 6 chunks of  memory all aligned to PETSC_MEMALIGN 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscsys.h"
 PetscErrorCode PetscMalloc6(size_t m1,type, t1,void **r1,size_t m2,type t2,void **r2,size_t m3,type t3,void **r3,size_t m4,type t4,void **r4,size_t m5,type t5,void **r5,size_t m6,type t6,void **r6)
 </PRE>
 Not Collective
@@ -18,7 +19,7 @@ Not Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m1 </B></TD><TD>- number of elements to allocate in 1st chunk  (may be zero)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>t1 </B></TD><TD>- type of first memory elements 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>t1 </B></TD><TD>- type of first memory elements
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m2 </B></TD><TD>- number of elements to allocate in 2nd chunk  (may be zero)
 </TD></TR>

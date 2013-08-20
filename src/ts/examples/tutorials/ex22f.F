@@ -36,6 +36,8 @@
       external FormInitialSolution
 
       TS             ts
+      SNES           snes
+      SNESLineSearch linesearch
       Vec            X
       Mat            J
       PetscInt       steps,maxsteps,mx
@@ -98,6 +100,10 @@
       call DMCreateMatrix(da,MATAIJ,J,ierr)
       call TSSetIJacobian(ts,J,J,FormIJacobian,user,ierr)
 
+      call TSGetSNES(ts,snes,ierr)
+      call SNESGetLineSearch(snes,linesearch,ierr)
+      call SNESLineSearchSetType(linesearch,SNESLINESEARCHBASIC,ierr)
+
       ftime = 1.0
       maxsteps = 10000
       call TSSetDuration(ts,maxsteps,ftime,ierr)
@@ -120,8 +126,7 @@
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Solve nonlinear system
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-      call TSSolve(ts,X,ftime,ierr)
-      call TSGetTimeStepNumber(ts,steps,ierr)
+      call TSSolve(ts,X,ierr)
 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Free work space.
@@ -147,7 +152,7 @@
      &     PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,    &
      &     PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,                       &
      &     PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,    &
-     &     PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,ierr)
+     &     PETSC_NULL_INTEGER,ierr)
       call DMDAGetCorners(da,xs,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,  &
      &     xm,PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,ierr)
       call DMDAGetGhostCorners(da,                                      &

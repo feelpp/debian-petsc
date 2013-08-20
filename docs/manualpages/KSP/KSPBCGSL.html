@@ -5,7 +5,7 @@
 <TITLE>KSPBCGSL</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPBCGSL"><H1>KSPBCGSL</H1></A>
 Implements a slight variant of the Enhanced BiCGStab(L) algorithm in (3) and (2).  The variation concerns cases when either kappa0**2 or kappa1**2 is negative due to round-off. Kappa0 has also been pulled out of the denominator in the formula for ghat. 
 <H3><FONT COLOR="#CC3333">References</FONT></H3>
@@ -31,9 +31,9 @@ Contributed by: Joel M. Malard, email jm.malard@pnl.gov
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_bcgsl_mrpoly </B></TD><TD>- Use the default MinRes polynomial after the BiCG step  -- <A HREF="../KSP/KSPBCGSLSetPol.html#KSPBCGSLSetPol">KSPBCGSLSetPol</A>()
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_bcgsl_xres &lt;res&gt; Threshold used to decide when to refresh computed residuals </B></TD><TD>- - <A HREF="../KSP/KSPBCGSLSetXRes.html#KSPBCGSLSetXRes">KSPBCGSLSetXRes</A>()
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_bcgsl_pinv &lt;true/false&gt; </B></TD><TD>- (de)activate use of pseudoinverse -- <A HREF="../KSP/KSPBCGSLSetUsePseudoinverse.html#KSPBCGSLSetUsePseudoinverse">KSPBCGSLSetUsePseudoinverse</A>()
 </TD></TR></TABLE>
-<P>
-Notes: Supports left preconditioning only
 <P>
 
 <P>

@@ -4,21 +4,20 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/mpi/mpiaijpc.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:45:24+00:00">
+<meta name="date" content="2013-07-02T14:42:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/aij/mpi/mpiaij.h&gt;</font>
 
-<a name="line4">  4: </a>EXTERN_C_BEGIN
-<a name="line7">  7: </a><strong><font color="#4169E1"><a name="MatGetDiagonalBlock_MPIAIJ"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetDiagonalBlock_MPIAIJ(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *a)</font></strong>
-<a name="line8">  8: </a>{
-<a name="line10"> 10: </a>  *a = ((Mat_MPIAIJ *)A-&gt;data)-&gt;A;
-<a name="line11"> 11: </a>  <font color="#4169E1">return</font>(0);
-<a name="line12"> 12: </a>}
-<a name="line13"> 13: </a>EXTERN_C_END
+<a name="line6">  6: </a><strong><font color="#4169E1"><a name="MatGetDiagonalBlock_MPIAIJ"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  MatGetDiagonalBlock_MPIAIJ(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *a)</font></strong>
+<a name="line7">  7: </a>{
+<a name="line9">  9: </a>  *a = ((Mat_MPIAIJ*)A-&gt;data)-&gt;A;
+<a name="line10"> 10: </a>  <font color="#4169E1">return</font>(0);
+<a name="line11"> 11: </a>}
+
 </pre>
 </body>
 

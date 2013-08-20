@@ -5,14 +5,12 @@
 <TITLE>SNESSetUpdate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSetUpdate"><H1>SNESSetUpdate</H1></A>
 Sets the general-purpose update function called at the beginning of every iteration of the nonlinear solve. Specifically it is called just before the Jacobian is "evaluated". 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESSetUpdate(SNES snes, PetscErrorCode (*func)(SNES, PetscInt))
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -39,7 +37,7 @@ This is not used by most users.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-<A HREF="../SNES/SNESDefaultUpdate.html#SNESDefaultUpdate">SNESDefaultUpdate</A>(), <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(), <A HREF="../SNES/SNESSolve.html#SNESSolve">SNESSolve</A>()
+<A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(), <A HREF="../SNES/SNESSolve.html#SNESSolve">SNESSolve</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/interface/snes.c.html#SNESSetUpdate">src/snes/interface/snes.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>

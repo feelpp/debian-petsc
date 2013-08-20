@@ -5,9 +5,9 @@
 <TITLE>VecStrideMin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecStrideMin"><H1>VecStrideMin</H1></A>
-Computes the minimum of subvector of a vector defined  by a starting point and a stride and optionally its location. 
+Computes the minimum of subvector of a vector defined by a starting point and a stride and optionally its location. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
@@ -17,14 +17,14 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>v </B></TD><TD>- the vector 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>v </B></TD><TD>- the vector
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>start </B></TD><TD>- starting point of the subvector (defined by a stride)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>idex </B></TD><TD>- the location where the minimum occurred. (pass <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if not required)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>idex </B></TD><TD>- the location where the minimum occurred. (pass NULL if not required)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nrm </B></TD><TD>- the min
 </TD></TR></TABLE>
@@ -33,7 +33,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 One must call <A HREF="../Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>() before this routine to set the stride
-information, or use a vector created from a multicomponent DMDA.
+information, or use a vector created from a multicomponent <A HREF="../DM/DMDA.html#DMDA">DMDA</A>.
 <P>
 If xa is the array representing the vector x, then this computes the min
 of the array (xa[start],xa[start+stride],xa[start+2*stride], ....)

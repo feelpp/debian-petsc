@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex42.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:10:40+00:00">
+<meta name="date" content="2013-07-02T14:50:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Newton's method to solve a two-variable system that comes from the Rosenbrock function.\n\n"</font>;
 
@@ -16,7 +16,7 @@
 <a name="line5">  5: </a><font color="#B22222">   Concepts: <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>^basic example</font>
 <a name="line6">  6: </a><font color="#B22222">T*/</font>
 
-<a name="line8">  8: </a><font color="#B22222">/* </font>
+<a name="line8">  8: </a><font color="#B22222">/*</font>
 <a name="line9">  9: </a><font color="#B22222">   Include "petscsnes.h" so that we can use <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> solvers.  Note that this</font>
 <a name="line10"> 10: </a><font color="#B22222">   file automatically includes:</font>
 <a name="line11"> 11: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscvec.h - vectors</font>
@@ -32,15 +32,16 @@
 
 <a name="line24"> 24: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line25"> 25: </a>{
-<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>           snes;         <font color="#B22222">/* nonlinear solver context */</font>
-<a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x,r;          <font color="#B22222">/* solution, residual vectors */</font>
-<a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            J;            <font color="#B22222">/* Jacobian matrix */</font>
-<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       its;
-<a name="line31"> 31: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *xx;
+<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>                snes;    <font color="#B22222">/* nonlinear solver context */</font>
+<a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                 x,r;     <font color="#B22222">/* solution, residual vectors */</font>
+<a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>                 J;       <font color="#B22222">/* Jacobian matrix */</font>
+<a name="line29"> 29: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>      ierr;
+<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            its;
+<a name="line31"> 31: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>         *xx;
 <a name="line32"> 32: </a>  <A href="../../../../docs/manualpages/SNES/SNESConvergedReason.html#SNESConvergedReason">SNESConvergedReason</A> reason;
 
-<a name="line34"> 34: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
-<a name="line35"> 35: </a>
+<a name="line34"> 34: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
+
 <a name="line36"> 36: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
 <a name="line37"> 37: </a><font color="#B22222">     Create nonlinear solver context</font>
 <a name="line38"> 38: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
@@ -65,15 +66,15 @@
 <a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(J);
 <a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Mat/MatSetUp.html#MatSetUp">MatSetUp</A>(J);
 
-<a name="line60"> 60: </a>  <font color="#B22222">/* </font>
+<a name="line60"> 60: </a>  <font color="#B22222">/*</font>
 <a name="line61"> 61: </a><font color="#B22222">     Set function evaluation routine and vector.</font>
 <a name="line62"> 62: </a><font color="#B22222">  */</font>
-<a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(snes,r,FormFunction1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(snes,r,FormFunction1,NULL);
 
-<a name="line65"> 65: </a>  <font color="#B22222">/* </font>
+<a name="line65"> 65: </a>  <font color="#B22222">/*</font>
 <a name="line66"> 66: </a><font color="#B22222">     Set Jacobian matrix data structure and Jacobian evaluation routine</font>
 <a name="line67"> 67: </a><font color="#B22222">  */</font>
-<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,FormJacobian1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(snes,J,J,FormJacobian1,NULL);
 
 <a name="line70"> 70: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
 <a name="line71"> 71: </a><font color="#B22222">     Customize nonlinear solver; set runtime options</font>
@@ -94,7 +95,7 @@
 <a name="line86"> 86: </a><font color="#B22222">     this vector to zero by calling <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>().</font>
 <a name="line87"> 87: </a><font color="#B22222">  */</font>
 
-<a name="line89"> 89: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,x);
+<a name="line89"> 89: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,NULL,x);
 <a name="line90"> 90: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line91"> 91: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);
 <a name="line92"> 92: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetConvergedReason.html#SNESGetConvergedReason">SNESGetConvergedReason</A>(snes,&amp;reason);
@@ -104,7 +105,7 @@
 <a name="line96"> 96: </a><font color="#B22222">     report the reason if the iteration did not converge so that the tests are</font>
 <a name="line97"> 97: </a><font color="#B22222">     reproducible.</font>
 <a name="line98"> 98: </a><font color="#B22222">  */</font>
-<a name="line99"> 99: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%s number of <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = %D\n\n"</font>,reason&gt;0?<font color="#666666">"CONVERGED"</font>:SNESConvergedReasons[reason],its);
+<a name="line99"> 99: </a>  <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"%s number of <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> iterations = %D\n\n"</font>,reason&gt;0 ? <font color="#666666">"CONVERGED"</font> : SNESConvergedReasons[reason],its);
 
 <a name="line101">101: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
 <a name="line102">102: </a><font color="#B22222">     Free work space.  All PETSc objects should be destroyed when they</font>
@@ -117,7 +118,7 @@
 <a name="line109">109: </a>  <font color="#4169E1">return</font> 0;
 <a name="line110">110: </a>}
 <a name="line111">111: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
-<a name="line114">114: </a><font color="#B22222">/* </font>
+<a name="line114">114: </a><font color="#B22222">/*</font>
 <a name="line115">115: </a><font color="#B22222">   FormFunction1 - Evaluates nonlinear function, F(x).</font>
 
 <a name="line117">117: </a><font color="#B22222">   Input Parameters:</font>
@@ -180,10 +181,10 @@
 <a name="line178">178: </a><font color="#B22222">      - Since this is such a small problem, we set all entries for</font>
 <a name="line179">179: </a><font color="#B22222">        the matrix at once.</font>
 <a name="line180">180: </a><font color="#B22222">  */</font>
-<a name="line181">181: </a>  A[0] = 2.0 + 1200.0*xx[0]*xx[0] - 400.0*xx[1];
-<a name="line182">182: </a>  A[1] = -400.0*xx[0];
-<a name="line183">183: </a>  A[2] = -400.0*xx[0];
-<a name="line184">184: </a>  A[3] = 200;
+<a name="line181">181: </a>  A[0]  = 2.0 + 1200.0*xx[0]*xx[0] - 400.0*xx[1];
+<a name="line182">182: </a>  A[1]  = -400.0*xx[0];
+<a name="line183">183: </a>  A[2]  = -400.0*xx[0];
+<a name="line184">184: </a>  A[3]  = 200;
 <a name="line185">185: </a>  <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(*B,2,idx,2,idx,A,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line186">186: </a>  *flag = SAME_NONZERO_PATTERN;
 
@@ -192,12 +193,12 @@
 <a name="line190">190: </a><font color="#B22222">  */</font>
 <a name="line191">191: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(x,&amp;xx);
 
-<a name="line193">193: </a>  <font color="#B22222">/* </font>
+<a name="line193">193: </a>  <font color="#B22222">/*</font>
 <a name="line194">194: </a><font color="#B22222">     Assemble matrix</font>
 <a name="line195">195: </a><font color="#B22222">  */</font>
 <a name="line196">196: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(*B,MAT_FINAL_ASSEMBLY);
 <a name="line197">197: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(*B,MAT_FINAL_ASSEMBLY);
-<a name="line198">198: </a>  <font color="#4169E1">if</font> (*jac != *B){
+<a name="line198">198: </a>  <font color="#4169E1">if</font> (*jac != *B) {
 <a name="line199">199: </a>    <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(*jac,MAT_FINAL_ASSEMBLY);
 <a name="line200">200: </a>    <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(*jac,MAT_FINAL_ASSEMBLY);
 <a name="line201">201: </a>  }

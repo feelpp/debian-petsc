@@ -5,14 +5,13 @@
 <TITLE>MatCreateMPIAIJWithSplitArrays</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateMPIAIJWithSplitArrays"><H1>MatCreateMPIAIJWithSplitArrays</H1></A>
 creates a MPI AIJ matrix using arrays that contain the "diagonal" and "off-diagonal" part of the matrix in CSR format. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatCreateMPIAIJWithSplitArrays(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,PetscInt i[],PetscInt j[],PetscScalar a[],
-                                                         PetscInt oi[], PetscInt oj[],PetscScalar oa[],Mat *mat)
+PetscErrorCode  MatCreateMPIAIJWithSplitArrays(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,PetscInt i[],PetscInt j[],PetscScalar a[],PetscInt oi[], PetscInt oj[],PetscScalar oa[],Mat *mat)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -22,7 +21,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m </B></TD><TD>- number of local rows (Cannot be <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- This value should be the same as the local size used in creating the 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- This value should be the same as the local size used in creating the
 x vector for the matrix-vector product y = Ax. (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have
 calculated if N is given) For square matrices n is almost always m.
 </TD></TR>
@@ -59,7 +58,12 @@ See <A HREF="../Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>() for the d
 <P>
 This sets local rows and cannot be used to set off-processor values.
 <P>
-You cannot later use <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() to change values in this matrix.
+Use of this routine is discouraged because it is inflexible and cumbersome to use. It is extremely rare that a
+legacy application natively assembles into exactly this split format. The code to do so is nontrivial and does
+not easily support in-place reassembly. It is recommended to use <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() (or a variant thereof) because
+the resulting assembly is easier to implement, will work with any matrix format, and the user does not have to
+keep track of the underlying array. Use <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(A,MAT_IGNORE_OFF_PROC_ENTRIES,<A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>) to disable all
+communication if it is known that only local entries will be set.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  matrix, aij, compressed row, sparse, parallel

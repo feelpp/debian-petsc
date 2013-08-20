@@ -1,12 +1,12 @@
 #include <petsc-private/tsimpl.h>      /*I "petscts.h"  I*/
 
-PetscFList TSList                       = PETSC_NULL;
-PetscBool  TSRegisterAllCalled          = PETSC_FALSE;
+PetscFunctionList TSList              = NULL;
+PetscBool         TSRegisterAllCalled = PETSC_FALSE;
 
 #undef __FUNCT__
 #define __FUNCT__ "TSSetType"
 /*@C
-  TSSetType - Sets the method for the timestepping solver.
+  TSSetType - Sets the method to be used as the timestepping solver.
 
   Collective on TS
 
@@ -40,8 +40,10 @@ PetscBool  TSRegisterAllCalled          = PETSC_FALSE;
 
 .keywords: TS, set, type
 
+.seealso: TS, TSSolve(), TSCreate(), TSSetFromOptions(), TSDestroy(), TSType
+
 @*/
-PetscErrorCode  TSSetType(TS ts,const TSType type)
+PetscErrorCode  TSSetType(TS ts,TSType type)
 {
   PetscErrorCode (*r)(TS);
   PetscBool      match;
@@ -52,21 +54,19 @@ PetscErrorCode  TSSetType(TS ts,const TSType type)
   ierr = PetscObjectTypeCompare((PetscObject) ts, type, &match);CHKERRQ(ierr);
   if (match) PetscFunctionReturn(0);
 
-  ierr = PetscFListFind( TSList,((PetscObject)ts)->comm, type,PETSC_TRUE, (void (**)(void)) &r);CHKERRQ(ierr);
+  ierr = PetscFunctionListFind(TSList,type,&r);CHKERRQ(ierr);
   if (!r) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_UNKNOWN_TYPE, "Unknown TS type: %s", type);
   if (ts->ops->destroy) {
     ierr = (*(ts)->ops->destroy)(ts);CHKERRQ(ierr);
-    ts->ops->destroy = PETSC_NULL;
+
+    ts->ops->destroy = NULL;
   }
   ierr = PetscMemzero(ts->ops,sizeof(*ts->ops));CHKERRQ(ierr);
+
   ts->setupcalled = PETSC_FALSE;
+
   ierr = PetscObjectChangeTypeName((PetscObject)ts, type);CHKERRQ(ierr);
   ierr = (*r)(ts);CHKERRQ(ierr);
-#if defined(PETSC_HAVE_AMS)
-  if (PetscAMSPublishAll) {
-    ierr = PetscObjectAMSPublish((PetscObject)ts);CHKERRQ(ierr);
-  }
-#endif
   PetscFunctionReturn(0);
 }
 
@@ -88,7 +88,7 @@ PetscErrorCode  TSSetType(TS ts,const TSType type)
 .keywords: TS, timestepper, get, type, name
 .seealso TSSetType()
 @*/
-PetscErrorCode  TSGetType(TS ts, const TSType *type)
+PetscErrorCode  TSGetType(TS ts, TSType *type)
 {
   PetscFunctionBegin;
   PetscValidHeaderSpecific(ts,TS_CLASSID,1);
@@ -102,42 +102,45 @@ PetscErrorCode  TSGetType(TS ts, const TSType *type)
 #undef __FUNCT__
 #define __FUNCT__ "TSRegister"
 /*@C
-  TSRegister - See TSRegisterDynamic()
+  TSRegister - Adds a creation method to the TS package.
+
+  Not Collective
+
+  Input Parameters:
++ name        - The name of a new user-defined creation routine
+- create_func - The creation routine itself
+
+  Notes:
+  TSRegister() may be called multiple times to add several user-defined tses.
+
+  Sample usage:
+.vb
+  TSRegister("my_ts",  MyTSCreate);
+.ve
+
+  Then, your ts type can be chosen with the procedural interface via
+.vb
+    TS ts;
+    TSCreate(MPI_Comm, &ts);
+    TSSetType(ts, "my_ts")
+.ve
+  or at runtime via the option
+.vb
+    -ts_type my_ts
+.ve
 
   Level: advanced
+
+.keywords: TS, register
+
+.seealso: TSRegisterAll(), TSRegisterDestroy()
 @*/
-PetscErrorCode  TSRegister(const char sname[], const char path[], const char name[], PetscErrorCode (*function)(TS))
-{
-  char           fullname[PETSC_MAX_PATH_LEN];
-  PetscErrorCode ierr;
-
-  PetscFunctionBegin;
-  ierr = PetscStrcpy(fullname, path);CHKERRQ(ierr);
-  ierr = PetscStrcat(fullname, ":");CHKERRQ(ierr);
-  ierr = PetscStrcat(fullname, name);CHKERRQ(ierr);
-  ierr = PetscFListAdd(&TSList, sname, fullname, (void (*)(void)) function);CHKERRQ(ierr);
-  PetscFunctionReturn(0);
-}
-
-/*-------------------------------------------------------------------------------------------------------------------*/
-#undef __FUNCT__
-#define __FUNCT__ "TSRegisterDestroy"
-/*@C
-   TSRegisterDestroy - Frees the list of timestepping routines that were registered by TSRegister()/TSRegisterDynamic().
-
-   Not Collective
-
-   Level: advanced
-
-.keywords: TS, timestepper, register, destroy
-.seealso: TSRegister(), TSRegisterAll(), TSRegisterDynamic()
-@*/
-PetscErrorCode  TSRegisterDestroy(void)
+PetscErrorCode  TSRegister(const char sname[], PetscErrorCode (*function)(TS))
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
-  ierr = PetscFListDestroy(&TSList);CHKERRQ(ierr);
-  TSRegisterAllCalled = PETSC_FALSE;
+  ierr = PetscFunctionListAdd(&TSList,sname,function);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
+

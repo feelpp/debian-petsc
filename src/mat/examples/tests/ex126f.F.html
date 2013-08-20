@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex126f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:52:27+00:00">
+<meta name="date" content="2013-07-02T14:44:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>! This program is modified from a user's contribution.
 <a name="line3">  3: </a>! It illustrates how to call MUMPS's LU solver
@@ -25,7 +25,7 @@
 <a name="line14"> 14: </a>      <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            A, fact
 <a name="line15"> 15: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,II,JJ,m
 <a name="line16"> 16: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       Istart, Iend
-<a name="line17"> 17: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       ione
+<a name="line17"> 17: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       ione, ifive
 <a name="line18"> 18: </a>      <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      wmumps
 <a name="line19"> 19: </a>      <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg
 <a name="line20"> 20: </a>      <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    one, v
@@ -36,87 +36,88 @@
 <a name="line25"> 25: </a>      m    = 10
 <a name="line26"> 26: </a>      one  = 1.0
 <a name="line27"> 27: </a>      ione = 1
+<a name="line28"> 28: </a>      ifive = 5
 
-<a name="line29"> 29: </a>      wmumps = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
+<a name="line30"> 30: </a>      wmumps = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
 
-<a name="line31"> 31: </a>      call <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(PETSC_NULL_CHARACTER,'-m',m,flg, ierr)
-<a name="line32"> 32: </a>      call <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(PETSC_NULL_CHARACTER,'-use_mumps',                       &amp;
-<a name="line33"> 33: </a>     &amp;                         wmumps,flg,ierr)
+<a name="line32"> 32: </a>      call <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(PETSC_NULL_CHARACTER,'-m',m,flg, ierr)
+<a name="line33"> 33: </a>      call <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(PETSC_NULL_CHARACTER,'-use_mumps',                       &amp;
+<a name="line34"> 34: </a>     &amp;                         wmumps,flg,ierr)
 
-<a name="line35"> 35: </a>      call <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, A, ierr)
-<a name="line36"> 36: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A, <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>, <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>, m*m, m*m, ierr)
-<a name="line37"> 37: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A, <A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>, ierr)
-<a name="line38"> 38: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(A, ierr)
-<a name="line39"> 39: </a>      call <A href="../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(A,5, PETSC_NULL_INTEGER, ierr)
-<a name="line40"> 40: </a>      call <A href="../../../../docs/manualpages/Mat/MatMPIAIJSetPreallocation.html#MatMPIAIJSetPreallocation">MatMPIAIJSetPreallocation</A>(A,5,PETSC_NULL_INTEGER,5,                          &amp;
-<a name="line41"> 41: </a>     &amp;     PETSC_NULL_INTEGER,ierr)
+<a name="line36"> 36: </a>      call <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, A, ierr)
+<a name="line37"> 37: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A, <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>, <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>, m*m, m*m, ierr)
+<a name="line38"> 38: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A, <A href="../../../../docs/manualpages/Mat/MATAIJ.html#MATAIJ">MATAIJ</A>, ierr)
+<a name="line39"> 39: </a>      call <A href="../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(A, ierr)
+<a name="line40"> 40: </a>      call <A href="../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(A,ifive, PETSC_NULL_INTEGER, ierr)
+<a name="line41"> 41: </a>      call <A href="../../../../docs/manualpages/Mat/MatMPIAIJSetPreallocation.html#MatMPIAIJSetPreallocation">MatMPIAIJSetPreallocation</A>(A,ifive,PETSC_NULL_INTEGER,ifive,  &amp;
+<a name="line42"> 42: </a>     &amp;     PETSC_NULL_INTEGER,ierr)
 
-<a name="line43"> 43: </a>      call <A href="../../../../docs/manualpages/Mat/MatGetOwnershipRange.html#MatGetOwnershipRange">MatGetOwnershipRange</A>(A,Istart,Iend,ierr)
+<a name="line44"> 44: </a>      call <A href="../../../../docs/manualpages/Mat/MatGetOwnershipRange.html#MatGetOwnershipRange">MatGetOwnershipRange</A>(A,Istart,Iend,ierr)
 
-<a name="line45"> 45: </a>      <font color="#4169E1">do</font> 10, II=Istart,Iend - 1
-<a name="line46"> 46: </a>        v = -1.0
-<a name="line47"> 47: </a>        i = II/m
-<a name="line48"> 48: </a>        j = II - i*m
-<a name="line49"> 49: </a>        <font color="#4169E1">if</font> (i.gt.0) then
-<a name="line50"> 50: </a>          JJ = II - m
-<a name="line51"> 51: </a>          call <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,JJ,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
-<a name="line52"> 52: </a>        endif
-<a name="line53"> 53: </a>        <font color="#4169E1">if</font> (i.lt.m-1) then
-<a name="line54"> 54: </a>          JJ = II + m
-<a name="line55"> 55: </a>          call <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,JJ,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
-<a name="line56"> 56: </a>        endif
-<a name="line57"> 57: </a>        <font color="#4169E1">if</font> (j.gt.0) then
-<a name="line58"> 58: </a>          JJ = II - 1
-<a name="line59"> 59: </a>          call <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,JJ,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
-<a name="line60"> 60: </a>        endif
-<a name="line61"> 61: </a>        <font color="#4169E1">if</font> (j.lt.m-1) then
-<a name="line62"> 62: </a>          JJ = II + 1
-<a name="line63"> 63: </a>          call <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,JJ,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
-<a name="line64"> 64: </a>        endif
-<a name="line65"> 65: </a>        v = 4.0
-<a name="line66"> 66: </a>        call  <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,II,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
-<a name="line67"> 67: </a> 10   <font color="#4169E1">continue</font>
-<a name="line68"> 68: </a>
-<a name="line69"> 69: </a>      call <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A, MAT_FINAL_ASSEMBLY, ierr)
-<a name="line70"> 70: </a>      call <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A, MAT_FINAL_ASSEMBLY, ierr)
+<a name="line46"> 46: </a>      <font color="#4169E1">do</font> 10, II=Istart,Iend - 1
+<a name="line47"> 47: </a>        v = -1.0
+<a name="line48"> 48: </a>        i = II/m
+<a name="line49"> 49: </a>        j = II - i*m
+<a name="line50"> 50: </a>        <font color="#4169E1">if</font> (i.gt.0) then
+<a name="line51"> 51: </a>          JJ = II - m
+<a name="line52"> 52: </a>          call <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,JJ,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
+<a name="line53"> 53: </a>        endif
+<a name="line54"> 54: </a>        <font color="#4169E1">if</font> (i.lt.m-1) then
+<a name="line55"> 55: </a>          JJ = II + m
+<a name="line56"> 56: </a>          call <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,JJ,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
+<a name="line57"> 57: </a>        endif
+<a name="line58"> 58: </a>        <font color="#4169E1">if</font> (j.gt.0) then
+<a name="line59"> 59: </a>          JJ = II - 1
+<a name="line60"> 60: </a>          call <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,JJ,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
+<a name="line61"> 61: </a>        endif
+<a name="line62"> 62: </a>        <font color="#4169E1">if</font> (j.lt.m-1) then
+<a name="line63"> 63: </a>          JJ = II + 1
+<a name="line64"> 64: </a>          call <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,JJ,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
+<a name="line65"> 65: </a>        endif
+<a name="line66"> 66: </a>        v = 4.0
+<a name="line67"> 67: </a>        call  <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,ione,II,ione,II,v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,ierr)
+<a name="line68"> 68: </a> 10   <font color="#4169E1">continue</font>
 
-<a name="line72"> 72: </a>      call <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, u, ierr)
-<a name="line73"> 73: </a>      call <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(u, <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>, m*m, ierr)
-<a name="line74"> 74: </a>      call <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(u, ierr)
-<a name="line75"> 75: </a>      call <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(u,b,ierr)
-<a name="line76"> 76: </a>      call <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(b,x,ierr)
-<a name="line77"> 77: </a>      call <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(u, one, ierr)
-<a name="line78"> 78: </a>      call <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(A, u, b, ierr)
+<a name="line70"> 70: </a>      call <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A, MAT_FINAL_ASSEMBLY, ierr)
+<a name="line71"> 71: </a>      call <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A, MAT_FINAL_ASSEMBLY, ierr)
 
-<a name="line80"> 80: </a>      <font color="#4169E1">if</font> (wmumps) then
-<a name="line81"> 81: </a>          write(*,*) 'use MUMPS LU...'
-<a name="line82"> 82: </a>          call <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(A, <A href="../../../../docs/manualpages/Mat/MATSOLVERMUMPS.html#MATSOLVERMUMPS">MATSOLVERMUMPS</A>, MAT_FACTOR_LU,                             &amp;
-<a name="line83"> 83: </a>     &amp;                      fact, ierr)
-<a name="line84"> 84: </a>          call <A href="../../../../docs/manualpages/Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(fact, A, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,                       &amp;
-<a name="line85"> 85: </a>     &amp;         <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, ierr)
-<a name="line86"> 86: </a>      <font color="#4169E1">else</font>
-<a name="line87"> 87: </a>         write(*,*) 'use PETSc LU...'
-<a name="line88"> 88: </a>         call <A href="../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(A,MATORDERINGNATURAL,perm,iperm,ierr)
-<a name="line89"> 89: </a>         call <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(A, MATSOLVERPETSC, MAT_FACTOR_LU,                              &amp;
-<a name="line90"> 90: </a>     &amp;         fact, ierr)
-<a name="line91"> 91: </a>
-<a name="line92"> 92: </a>         call <A href="../../../../docs/manualpages/Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(fact, A, perm, iperm,                                   &amp;
-<a name="line93"> 93: </a>     &amp;         <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, ierr)
-<a name="line94"> 94: </a>         call <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(perm,ierr)
-<a name="line95"> 95: </a>         call <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(iperm,ierr)
-<a name="line96"> 96: </a>      endif
+<a name="line73"> 73: </a>      call <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, u, ierr)
+<a name="line74"> 74: </a>      call <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(u, <A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>, m*m, ierr)
+<a name="line75"> 75: </a>      call <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(u, ierr)
+<a name="line76"> 76: </a>      call <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(u,b,ierr)
+<a name="line77"> 77: </a>      call <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(b,x,ierr)
+<a name="line78"> 78: </a>      call <A href="../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(u, one, ierr)
+<a name="line79"> 79: </a>      call <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(A, u, b, ierr)
 
-<a name="line98"> 98: </a>      call <A href="../../../../docs/manualpages/Mat/MatLUFactorNumeric.html#MatLUFactorNumeric">MatLUFactorNumeric</A>(fact, A, <A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, ierr)
-<a name="line99"> 99: </a>      call <A href="../../../../docs/manualpages/Mat/MatSolve.html#MatSolve">MatSolve</A>(fact, b, x,ierr)
-<a name="line100">100: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(fact, ierr)
-<a name="line101">101: </a>
-<a name="line102">102: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A, ierr)
-<a name="line103">103: </a>      call <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u, ierr)
-<a name="line104">104: </a>      call <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x, ierr)
-<a name="line105">105: </a>      call <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b, ierr)
+<a name="line81"> 81: </a>      <font color="#4169E1">if</font> (wmumps) then
+<a name="line82"> 82: </a>          write(*,*) 'use MUMPS LU...'
+<a name="line83"> 83: </a>          call <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(A, <A href="../../../../docs/manualpages/Mat/MATSOLVERMUMPS.html#MATSOLVERMUMPS">MATSOLVERMUMPS</A>, MAT_FACTOR_LU,                             &amp;
+<a name="line84"> 84: </a>     &amp;                      fact, ierr)
+<a name="line85"> 85: </a>          call <A href="../../../../docs/manualpages/Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(fact, A, PETSC_NULL_OBJECT,                            &amp;
+<a name="line86"> 86: </a>     &amp;                    PETSC_NULL_OBJECT,PETSC_NULL_INTEGER, ierr)
+<a name="line87"> 87: </a>      <font color="#4169E1">else</font>
+<a name="line88"> 88: </a>         write(*,*) 'use PETSc LU...'
+<a name="line89"> 89: </a>         call <A href="../../../../docs/manualpages/MatOrderings/MatGetOrdering.html#MatGetOrdering">MatGetOrdering</A>(A,MATORDERINGNATURAL,perm,iperm,ierr)
+<a name="line90"> 90: </a>         call <A href="../../../../docs/manualpages/Mat/MatGetFactor.html#MatGetFactor">MatGetFactor</A>(A, MATSOLVERPETSC, MAT_FACTOR_LU,                              &amp;
+<a name="line91"> 91: </a>     &amp;         fact, ierr)
 
-<a name="line107">107: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line108">108: </a>      end
+<a name="line93"> 93: </a>         call <A href="../../../../docs/manualpages/Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(fact, A, perm, iperm,                                   &amp;
+<a name="line94"> 94: </a>     &amp;         PETSC_NULL_INTEGER, ierr)
+<a name="line95"> 95: </a>         call <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(perm,ierr)
+<a name="line96"> 96: </a>         call <A href="../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(iperm,ierr)
+<a name="line97"> 97: </a>      endif
+
+<a name="line99"> 99: </a>      call <A href="../../../../docs/manualpages/Mat/MatLUFactorNumeric.html#MatLUFactorNumeric">MatLUFactorNumeric</A>(fact, A, PETSC_NULL_INTEGER, ierr)
+<a name="line100">100: </a>      call <A href="../../../../docs/manualpages/Mat/MatSolve.html#MatSolve">MatSolve</A>(fact, b, x,ierr)
+<a name="line101">101: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(fact, ierr)
+
+<a name="line103">103: </a>      call <A href="../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(A, ierr)
+<a name="line104">104: </a>      call <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(u, ierr)
+<a name="line105">105: </a>      call <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(x, ierr)
+<a name="line106">106: </a>      call <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(b, ierr)
+
+<a name="line108">108: </a>      call <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
+<a name="line109">109: </a>      end
 
 </pre>
 </body>

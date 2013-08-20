@@ -5,13 +5,13 @@
 <TITLE>DMMeshCreatePCICE</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMMeshCreatePCICE"><H1>DMMeshCreatePCICE</H1></A>
 Create a DMMesh from PCICE files. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmesh.h"   
-PetscErrorCode DMMeshCreatePCICE(MPI_Comm comm, const int dim, const char coordFilename[], const char adjFilename[], PetscBool  interpolate, const char bcFilename[], DM *mesh)
+PetscErrorCode DMMeshCreatePCICE(MPI_Comm comm, const int dim, const char coordFilename[], const char adjFilename[], PetscBool interpolate, const char bcFilename[], DM *mesh)
 </PRE>
 Not Collective
 <P>

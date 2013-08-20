@@ -5,13 +5,12 @@
 <TITLE>PCFieldSplitGetSubKSP</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCFieldSplitGetSubKSP"><H1>PCFieldSplitGetSubKSP</H1></A>
 Gets the <A HREF="../KSP/KSP.html#KSP">KSP</A> contexts for all splits 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-#include "petscdmcomposite.h" 
 PetscErrorCode  PCFieldSplitGetSubKSP(PC pc,PetscInt *n,KSP *subksp[])
 </PRE>
 Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
@@ -33,6 +32,11 @@ After <A HREF="../PC/PCFieldSplitGetSubKSP.html#PCFieldSplitGetSubKSP">PCFieldSp
 <P>
 You must call <A HREF="../KSP/KSPSetUp.html#KSPSetUp">KSPSetUp</A>() before calling <A HREF="../PC/PCFieldSplitGetSubKSP.html#PCFieldSplitGetSubKSP">PCFieldSplitGetSubKSP</A>().
 <P>
+Fortran Usage: You must pass in a <A HREF="../KSP/KSP.html#KSP">KSP</A> array that is large enough to contain all the local KSPs.
+You can call <A HREF="../PC/PCFieldSplitGetSubKSP.html#PCFieldSplitGetSubKSP">PCFieldSplitGetSubKSP</A>(pc,n,NULL_OBJECT,ierr) to determine how large the
+<A HREF="../KSP/KSP.html#KSP">KSP</A> array must be.
+<P>
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
@@ -42,4 +46,6 @@ You must call <A HREF="../KSP/KSPSetUp.html#KSPSetUp">KSPSetUp</A>() before call
 <BR><A HREF="./index.html">Index of all PC routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex70.c.html">src/snes/examples/tutorials/ex70.c.html</A><BR>
 </BODY></HTML>

@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = mlocalreff.c
-OBJSC    = mlocalreff.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

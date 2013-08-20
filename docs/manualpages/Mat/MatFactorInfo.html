@@ -5,7 +5,7 @@
 <TITLE>MatFactorInfo</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatFactorInfo"><H1>MatFactorInfo</H1></A>
 Data passed into the matrix factorization routines 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -17,8 +17,8 @@ typedef struct {
   PetscReal     dtcol;          /* tolerance for pivoting */
   PetscReal     dtcount;        /* maximum nonzeros to be allowed per row */
   PetscReal     fill;           /* expected fill, nonzeros in factored matrix/nonzeros in original matrix */
-  PetscReal     levels;         /* ICC/ILU(levels) */ 
-  PetscReal     pivotinblocks;  /* for BAIJ and SBAIJ matrices pivot in factorization on blocks, default 1.0 
+  PetscReal     levels;         /* ICC/ILU(levels) */
+  PetscReal     pivotinblocks;  /* for BAIJ and SBAIJ matrices pivot in factorization on blocks, default 1.0
                                    factorization may be faster if do not pivot */
   PetscReal     zeropivot;      /* pivot is called zero if less than this */
   PetscReal     shifttype;      /* type of shift added to matrix factor to prevent zero pivots */
@@ -37,7 +37,7 @@ You can use <A HREF="../Mat/MatFactorInfoInitialize.html#MatFactorInfoInitialize
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(), <A HREF="../Mat/MatILUFactorSymbolic.html#MatILUFactorSymbolic">MatILUFactorSymbolic</A>(), <A HREF="../Mat/MatCholeskyFactorSymbolic.html#MatCholeskyFactorSymbolic">MatCholeskyFactorSymbolic</A>(), <A HREF="../Mat/MatICCFactorSymbolic.html#MatICCFactorSymbolic">MatICCFactorSymbolic</A>(), <A HREF="../Mat/MatICCFactor.html#MatICCFactor">MatICCFactor</A>(), 
+ <A HREF="../Mat/MatLUFactorSymbolic.html#MatLUFactorSymbolic">MatLUFactorSymbolic</A>(), <A HREF="../Mat/MatILUFactorSymbolic.html#MatILUFactorSymbolic">MatILUFactorSymbolic</A>(), <A HREF="../Mat/MatCholeskyFactorSymbolic.html#MatCholeskyFactorSymbolic">MatCholeskyFactorSymbolic</A>(), <A HREF="../Mat/MatICCFactorSymbolic.html#MatICCFactorSymbolic">MatICCFactorSymbolic</A>(), <A HREF="../Mat/MatICCFactor.html#MatICCFactor">MatICCFactor</A>(),
 <BR><A HREF="../Mat/MatFactorInfoInitialize.html#MatFactorInfoInitialize">MatFactorInfoInitialize</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer

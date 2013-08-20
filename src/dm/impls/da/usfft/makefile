@@ -5,15 +5,14 @@
 ALL: lib
 
 # Set CFLAGS="-DPETSC_DEBUG_USFFT" to turn on debugging output
-CFLAGS   = 
+CFLAGS   =
 FFLAGS   =
 SOURCEC  = matusfft.c
-OBJSC    = matusfft.o
 LIBBASE  = libpetscdm
 MANSEC   = DM
 SUBMANSEC= DMDA
 DIRS     =
-LOCDIR   = src/dm/da/src/usfft/
+LOCDIR   = src/dm/impls/da/usfft/
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

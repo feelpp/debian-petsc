@@ -5,13 +5,13 @@
 <TITLE>PetscViewerBinarySetSkipOptions</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerBinarySetSkipOptions"><H1>PetscViewerBinarySetSkipOptions</H1></A>
 do not use the PETSc options database when loading objects 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscsys.h"   
-PetscErrorCode  PetscViewerBinarySetSkipOptions(PetscViewer viewer,PetscBool  skip)
+#include "petscviewer.h"   
+PetscErrorCode  PetscViewerBinarySetSkipOptions(PetscViewer viewer,PetscBool skip)
 </PRE>
 Not Collective
 <P>
@@ -34,7 +34,7 @@ Notes: This must be called after <A HREF="../Viewer/PetscViewerSetType.html#Pets
  <A HREF="../Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(), <A HREF="../Viewer/PetscViewerBinaryGetDescriptor.html#PetscViewerBinaryGetDescriptor">PetscViewerBinaryGetDescriptor</A>(), <A HREF="../Viewer/PetscViewerBinarySkipInfo.html#PetscViewerBinarySkipInfo">PetscViewerBinarySkipInfo</A>(),
 <BR><A HREF="../Viewer/PetscViewerBinaryGetSkipOptions.html#PetscViewerBinaryGetSkipOptions">PetscViewerBinaryGetSkipOptions</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/binary/binv.c.html#PetscViewerBinarySetSkipOptions">src/sys/viewer/impls/binary/binv.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/impls/binary/binv.c.html#PetscViewerBinarySetSkipOptions">src/sys/classes/viewer/impls/binary/binv.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

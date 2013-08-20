@@ -5,11 +5,12 @@
 <TITLE>CHKERRQ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="CHKERRQ"><H1>CHKERRQ</H1></A>
 Checks error code, if non-zero it calls the error handler and then returns 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscsys.h"
 PetscErrorCode CHKERRQ(PetscErrorCode errorcode)
 </PRE>
 Not Collective
@@ -33,7 +34,7 @@ highly inappropriate to use it in this manner as it invokes return(<A HREF="../S
 it cannot be used in functions which return(void) or any other datatype.  In these types of functions,
 you can use CHKERRV() which returns without an error code (bad idea since the error is ignored or
 if (n) {<A HREF="../Sys/PetscError.html#PetscError">PetscError</A>(....); return(YourReturnType);}
-where you may pass back a <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to indicate an error. You can also call CHKERRABORT(comm,n) to have
+where you may pass back a NULL to indicate an error. You can also call CHKERRABORT(comm,n) to have
 MPI_Abort() returned immediately.
 <P>
 In Fortran MPI_Abort() is always called
@@ -47,15 +48,15 @@ In Fortran MPI_Abort() is always called
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/viewer/examples/tutorials/ex1.c.html">src/sys/viewer/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/sys/random/examples/tutorials/ex1.c.html">src/sys/random/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/sys/random/examples/tutorials/ex2.c.html">src/sys/random/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/sys/classes/viewer/examples/tutorials/ex1.c.html">src/sys/classes/viewer/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/sys/classes/viewer/examples/tutorials/ex2.c.html">src/sys/classes/viewer/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/sys/classes/random/examples/tutorials/ex1.c.html">src/sys/classes/random/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/sys/classes/random/examples/tutorials/ex2.c.html">src/sys/classes/random/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex1.c.html">src/sys/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex2.c.html">src/sys/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex3.c.html">src/sys/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex4.c.html">src/sys/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex5.c.html">src/sys/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex7.c.html">src/sys/examples/tutorials/ex7.c.html</A><BR>
-<A HREF="../../../src/sys/sf/examples/tutorials/ex1.c.html">src/sys/sf/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/sys/threadcomm/examples/tutorials/ex1.c.html">src/sys/threadcomm/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/sys/examples/tutorials/ex9.c.html">src/sys/examples/tutorials/ex9.c.html</A><BR>
 </BODY></HTML>

@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/transpose/transm.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:50:23+00:00">
+<meta name="date" content="2013-07-02T14:43:48+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;          </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
 
@@ -23,11 +23,11 @@
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Mat/MatMultTranspose.html#MatMultTranspose">MatMultTranspose</A>(Na-&gt;A,x,y);
 <a name="line17"> 17: </a>  <font color="#4169E1">return</font>(0);
 <a name="line18"> 18: </a>}
-<a name="line19"> 19: </a>
+
 <a name="line22"> 22: </a><strong><font color="#4169E1"><a name="MatMultAdd_Transpose"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultAdd_Transpose(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> N,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v1,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v2,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v3)</font></strong>
 <a name="line23"> 23: </a>{
 <a name="line24"> 24: </a>  Mat_Transpose  *Na = (Mat_Transpose*)N-&gt;data;
-<a name="line26"> 26: </a>
+
 <a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Mat/MatMultTransposeAdd.html#MatMultTransposeAdd">MatMultTransposeAdd</A>(Na-&gt;A,v1,v2,v3);
 <a name="line29"> 29: </a>  <font color="#4169E1">return</font>(0);
 <a name="line30"> 30: </a>}
@@ -39,11 +39,11 @@
 <a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(Na-&gt;A,x,y);
 <a name="line41"> 41: </a>  <font color="#4169E1">return</font>(0);
 <a name="line42"> 42: </a>}
-<a name="line43"> 43: </a>
+
 <a name="line46"> 46: </a><strong><font color="#4169E1"><a name="MatMultTransposeAdd_Transpose"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultTransposeAdd_Transpose(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> N,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v1,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v2,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v3)</font></strong>
 <a name="line47"> 47: </a>{
 <a name="line48"> 48: </a>  Mat_Transpose  *Na = (Mat_Transpose*)N-&gt;data;
-<a name="line50"> 50: </a>
+
 <a name="line52"> 52: </a>  <A href="../../../../docs/manualpages/Mat/MatMultAdd.html#MatMultAdd">MatMultAdd</A>(Na-&gt;A,v1,v2,v3);
 <a name="line53"> 53: </a>  <font color="#4169E1">return</font>(0);
 <a name="line54"> 54: </a>}
@@ -83,14 +83,14 @@
 <a name="line95"> 95: </a>  Mat_Transpose  *Na;
 
 <a name="line98"> 98: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(A,&amp;m,&amp;n);
-<a name="line99"> 99: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,N);
+<a name="line99"> 99: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A),N);
 <a name="line100">100: </a>  <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*N,n,m,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>);
 <a name="line101">101: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)*N,MATTRANSPOSEMAT);
-<a name="line102">102: </a>
+
 <a name="line103">103: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(*N,Mat_Transpose,&amp;Na);
 <a name="line104">104: </a>  (*N)-&gt;data = (void*) Na;
 <a name="line105">105: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A);
-<a name="line106">106: </a>  Na-&gt;A     = A;
+<a name="line106">106: </a>  Na-&gt;A      = A;
 
 <a name="line108">108: </a>  (*N)-&gt;ops-&gt;destroy          = MatDestroy_Transpose;
 <a name="line109">109: </a>  (*N)-&gt;ops-&gt;mult             = MatMult_Transpose;
@@ -99,10 +99,10 @@
 <a name="line112">112: </a>  (*N)-&gt;ops-&gt;multtransposeadd = MatMultTransposeAdd_Transpose;
 <a name="line113">113: </a>  (*N)-&gt;assembled             = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 
-<a name="line115">115: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>((*N)-&gt;rmap,A-&gt;cmap-&gt;bs);
-<a name="line116">116: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>((*N)-&gt;cmap,A-&gt;rmap-&gt;bs);
-<a name="line117">117: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>((*N)-&gt;rmap);
-<a name="line118">118: </a>  <A href="../../../../docs/manualpages/Vec/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>((*N)-&gt;cmap);
+<a name="line115">115: </a>  <A href="../../../../docs/manualpages/IS/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>((*N)-&gt;rmap,A-&gt;cmap-&gt;bs);
+<a name="line116">116: </a>  <A href="../../../../docs/manualpages/IS/PetscLayoutSetBlockSize.html#PetscLayoutSetBlockSize">PetscLayoutSetBlockSize</A>((*N)-&gt;cmap,A-&gt;rmap-&gt;bs);
+<a name="line117">117: </a>  <A href="../../../../docs/manualpages/IS/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>((*N)-&gt;rmap);
+<a name="line118">118: </a>  <A href="../../../../docs/manualpages/IS/PetscLayoutSetUp.html#PetscLayoutSetUp">PetscLayoutSetUp</A>((*N)-&gt;cmap);
 <a name="line119">119: </a>  <A href="../../../../docs/manualpages/Mat/MatSetUp.html#MatSetUp">MatSetUp</A>(*N);
 <a name="line120">120: </a>  <font color="#4169E1">return</font>(0);
 <a name="line121">121: </a>}

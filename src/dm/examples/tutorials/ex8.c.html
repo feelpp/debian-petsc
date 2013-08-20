@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tutorials/ex8.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:58:28+00:00">
+<meta name="date" content="2013-07-02T14:46:24+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests imbedding DMComposites inside DMComposites.\n\n"</font>;
 
@@ -24,8 +24,8 @@
 <a name="line13"> 13: </a>{
 
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(Load,&amp;load);
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,DMDA_BOUNDARY_NONE,n1,1,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;load-&gt;L1);
-<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,DMDA_BOUNDARY_NONE,n1,1,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;load-&gt;L2);
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,DMDA_BOUNDARY_NONE,n1,1,1,NULL,&amp;load-&gt;L1);
+<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,DMDA_BOUNDARY_NONE,n1,1,1,NULL,&amp;load-&gt;L2);
 <a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/DM/DMCompositeCreate.html#DMCompositeCreate">DMCompositeCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,&amp;load-&gt;load);
 <a name="line20"> 20: </a>  <font color="#4169E1">return</font>(0);
 <a name="line21"> 21: </a>}
@@ -68,7 +68,7 @@
 <a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line62"> 62: </a>  <font color="#4169E1">return</font> 0;
 <a name="line63"> 63: </a>}
-<a name="line64"> 64: </a>
+
 </pre>
 </body>
 

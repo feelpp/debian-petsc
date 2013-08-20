@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESJacobianFunction.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SNESJacobianFunction</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="SNESJacobianFunction"><H1>SNESJacobianFunction</H1></A>
+function used to convey the nonlinear Jacobian of the function to be solved by <A HREF="../SNES/SNES.html#SNES">SNES</A> 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsnes.h"
+$     SNESJacobianFunction(SNES snes,Vec x,Mat *Amat,Mat *Pmat,int *flag,void *ctx);
+</PRE>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- input vector
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- the matrix that defines the (approximate) Jacobian
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- the matrix to be used in constructing the preconditioner, usually the same as Amat.
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flag </B></TD><TD>- flag indicating information about the preconditioner matrix
+structure (same as flag in <A HREF="../KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>()), one of SAME_NONZERO_PATTERN,DIFFERENT_NONZERO_PATTERN,SAME_PRECONDITIONER
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined Jacobian context
+</TD></TR></TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+   <A HREF="../SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(), <A HREF="../SNES/SNESGetFunction.html#SNESGetFunction">SNESGetFunction</A>(), <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(), <A HREF="../SNES/SNESGetJacobian.html#SNESGetJacobian">SNESGetJacobian</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/interface/snes.c.html#SNESJacobianFunction">src/snes/interface/snes.c</A>
+<BR><A HREF="./index.html">Index of all SNES routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

@@ -60,7 +60,7 @@ void PETSC_STDCALL  pfapplyvec_(PF pf,Vec x,Vec y, int *__ierr ){
 	(Vec)PetscToPointer((x) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL  pfapply_(PF pf,PetscInt *n, PetscScalar* x,PetscScalar* y, int *__ierr ){
+void PETSC_STDCALL  pfapply_(PF pf,PetscInt *n, PetscScalar *x,PetscScalar *y, int *__ierr ){
 *__ierr = PFApply(
 	(PF)PetscToPointer((pf) ),*n,x,y);
 }

@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = linesearchbtf.c
-OBJSC    = linesearchbtf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

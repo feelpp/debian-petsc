@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = gmresf.c gmpref.c
-OBJSC    = gmresf.o gmpref.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -48,7 +48,7 @@ void PETSC_STDCALL  matseqbaijsetcolumnindices_(Mat mat,PetscInt *indices, int *
 *__ierr = MatSeqBAIJSetColumnIndices(
 	(Mat)PetscToPointer((mat) ),indices);
 }
-void PETSC_STDCALL  matcreateseqbaijwitharrays_(MPI_Fint * comm,PetscInt *bs,PetscInt *m,PetscInt *n,PetscInt* i,PetscInt*j,PetscScalar *a,Mat *mat, int *__ierr ){
+void PETSC_STDCALL  matcreateseqbaijwitharrays_(MPI_Fint * comm,PetscInt *bs,PetscInt *m,PetscInt *n,PetscInt *i,PetscInt *j,PetscScalar *a,Mat *mat, int *__ierr ){
 *__ierr = MatCreateSeqBAIJWithArrays(
 	MPI_Comm_f2c( *(comm) ),*bs,*m,*n,i,j,a,mat);
 }

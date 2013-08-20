@@ -5,7 +5,7 @@
 <TITLE>MatAssemblyBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatAssemblyBegin"><H1>MatAssemblyBegin</H1></A>
 Begins assembling the matrix.  This routine should be called after completing all calls to <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -17,16 +17,25 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>type </B></TD><TD>- type of assembly, either MAT_FLUSH_ASSEMBLY or MAT_FINAL_ASSEMBLY
 </TD></TR></TABLE>
+<P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() generally caches the values.  The matrix is ready to
 use only after <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>() and <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>() have been called.
 Use MAT_FLUSH_ASSEMBLY when switching between <A HREF="../Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A> and <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>
 in <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(); use MAT_FINAL_ASSEMBLY for the final assembly before
 using the matrix.
+<P>
+ALL processes that share a matrix MUST call <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>() and <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>() the SAME NUMBER of times, and each time with the
+same flag of MAT_FLUSH_ASSEMBLY or MAT_FINAL_ASSEMBLY for all processes. Thus you CANNOT locally change from <A HREF="../Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A> to <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, that is
+a global collective operation requring all processes that share the matrix.
+<P>
+Space for preallocated nonzeros that is not filled by a call to <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() or a related routine are compressed
+out by assembly. If you intend to use that extra space on a subsequent assembly, be sure to insert explicit zeros
+before MAT_FINAL_ASSEMBLY so the space is not compressed out.
 <P>
 
 <P>
@@ -43,11 +52,11 @@ using the matrix.
 <A HREF="../../../src/mat/examples/tutorials/ex5.c.html">src/mat/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex8.c.html">src/mat/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex12.c.html">src/mat/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/mat/examples/tutorials/ex14.c.html">src/mat/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex15.c.html">src/mat/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex1.c.html">src/ksp/pc/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex1.c.html">src/ksp/ksp/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 </BODY></HTML>

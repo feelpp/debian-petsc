@@ -5,11 +5,12 @@
 <TITLE>MatPreallocateFinalize</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatPreallocateFinalize"><H1>MatPreallocateFinalize</H1></A>
 Ends the block of code that will count the number of nonzeros per row in a matrix providing the data that one can use to correctly preallocate the matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscmat.h"
 PetscErrorCode MatPreallocateFinalize(PetscInt *dnz, PetscInt *onz)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>

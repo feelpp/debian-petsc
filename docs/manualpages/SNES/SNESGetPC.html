@@ -5,14 +5,12 @@
 <TITLE>SNESGetPC</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESGetPC"><H1>SNESGetPC</H1></A>
 Returns a pointer to the nonlinear preconditioning context set with <A HREF="../SNES/SNESSetPC.html#SNESSetPC">SNESSetPC</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode SNESGetPC(SNES snes, SNES *pc)
 </PRE>
 Not Collective

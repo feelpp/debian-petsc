@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = transmf.c
-OBJSC    = transmf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

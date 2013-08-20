@@ -4,22 +4,22 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/color/numsrt.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:53:45+00:00">
+<meta name="date" content="2013-07-02T14:44:48+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#B22222">/* numsrt.f -- translated by f2c (version of 25 March 1992  12:58:56). */</font>
 
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;../src/mat/color/color.h&gt;</font>
 
 <a name="line7">  7: </a><strong><font color="#4169E1"><a name="MINPACKnumsrt"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MINPACKnumsrt(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *n,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *nmax,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *num,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *mode,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *idex,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *last,<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *next)</font></strong>
 <a name="line8">  8: </a>{
-<a name="line9">  9: </a>    <font color="#B22222">/* System generated locals */</font>
-<a name="line10"> 10: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i__1, i__2;
+<a name="line9">  9: </a>  <font color="#B22222">/* System generated locals */</font>
+<a name="line10"> 10: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i__1, i__2;
 
-<a name="line12"> 12: </a>    <font color="#B22222">/* Local variables */</font>
-<a name="line13"> 13: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> jinc, i, j, k, l, jl, ju;
+<a name="line12"> 12: </a>  <font color="#B22222">/* Local variables */</font>
+<a name="line13"> 13: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> jinc, i, j, k, l, jl, ju;
 
 <a name="line15"> 15: </a><font color="#B22222">/*     Given a sequence of integers, this subroutine groups */</font>
 <a name="line16"> 16: </a><font color="#B22222">/*     together those indices with the same sequence value */</font>
@@ -64,54 +64,49 @@
 <a name="line55"> 55: </a><font color="#B22222">/*     Argonne National Laboratory. MINPACK Project. July 1983. */</font>
 <a name="line56"> 56: </a><font color="#B22222">/*     Thomas F. Coleman, Burton S. Garbow, Jorge J. More' */</font>
 
-<a name="line58"> 58: </a>    <font color="#B22222">/* Parameter adjustments */</font>
-<a name="line60"> 60: </a>    --next;
-<a name="line61"> 61: </a>    --idex;
-<a name="line62"> 62: </a>    --num;
+<a name="line58"> 58: </a>  <font color="#B22222">/* Parameter adjustments */</font>
+<a name="line60"> 60: </a>  --next;
+<a name="line61"> 61: </a>  --idex;
+<a name="line62"> 62: </a>  --num;
 
-<a name="line64"> 64: </a>    i__1 = *nmax;
-<a name="line65"> 65: </a>    <font color="#4169E1">for</font> (i = 0; i &lt;= i__1; ++i) {
-<a name="line66"> 66: </a>        last[i] = 0;
-<a name="line67"> 67: </a>    }
-<a name="line68"> 68: </a>    i__1 = *n;
-<a name="line69"> 69: </a>    <font color="#4169E1">for</font> (k = 1; k &lt;= i__1; ++k) {
-<a name="line70"> 70: </a>        l = num[k];
-<a name="line71"> 71: </a>        next[k] = last[l];
-<a name="line72"> 72: </a>        last[l] = k;
-<a name="line73"> 73: </a>    }
-<a name="line74"> 74: </a>    <font color="#4169E1">if</font> (!*mode) {
-<a name="line75"> 75: </a>        <font color="#4169E1">return</font>(0);
-<a name="line76"> 76: </a>    }
+<a name="line64"> 64: </a>  i__1 = *nmax;
+<a name="line65"> 65: </a>  <font color="#4169E1">for</font> (i = 0; i &lt;= i__1; ++i) last[i] = 0;
 
-<a name="line78"> 78: </a><font color="#B22222">/*     Store the pointers to the sorted array in index. */</font>
+<a name="line67"> 67: </a>  i__1 = *n;
+<a name="line68"> 68: </a>  <font color="#4169E1">for</font> (k = 1; k &lt;= i__1; ++k) {
+<a name="line69"> 69: </a>    l       = num[k];
+<a name="line70"> 70: </a>    next[k] = last[l];
+<a name="line71"> 71: </a>    last[l] = k;
+<a name="line72"> 72: </a>  }
+<a name="line73"> 73: </a>  <font color="#4169E1">if</font> (!*mode) <font color="#4169E1">return</font>(0);
 
-<a name="line80"> 80: </a>    i = 1;
-<a name="line81"> 81: </a>    <font color="#4169E1">if</font> (*mode &gt; 0) {
-<a name="line82"> 82: </a>        jl = 0;
-<a name="line83"> 83: </a>        ju = *nmax;
-<a name="line84"> 84: </a>        jinc = 1;
-<a name="line85"> 85: </a>    } <font color="#4169E1">else</font> {
-<a name="line86"> 86: </a>        jl = *nmax;
-<a name="line87"> 87: </a>        ju = 0;
-<a name="line88"> 88: </a>        jinc = -1;
-<a name="line89"> 89: </a>    }
-<a name="line90"> 90: </a>    i__1 = ju;
-<a name="line91"> 91: </a>    i__2 = jinc;
-<a name="line92"> 92: </a>    <font color="#4169E1">for</font> (j = jl; i__2 &lt; 0 ? j &gt;= i__1 : j &lt;= i__1; j += i__2) {
-<a name="line93"> 93: </a>        k = last[j];
-<a name="line94"> 94: </a><strong><font color="#FF0000">L30:</font></strong>
-<a name="line95"> 95: </a>        <font color="#4169E1">if</font> (!k) {
-<a name="line96"> 96: </a>            <font color="#4169E1">goto</font> L40;
-<a name="line97"> 97: </a>        }
-<a name="line98"> 98: </a>        idex[i] = k;
-<a name="line99"> 99: </a>        ++i;
-<a name="line100">100: </a>        k = next[k];
-<a name="line101">101: </a>        <font color="#4169E1">goto</font> L30;
-<a name="line102">102: </a><strong><font color="#FF0000">L40:</font></strong>
-<a name="line103">103: </a>        ;
-<a name="line104">104: </a>    }
-<a name="line105">105: </a>    <font color="#4169E1">return</font>(0);
-<a name="line106">106: </a>}
+<a name="line75"> 75: </a><font color="#B22222">/*     Store the pointers to the sorted array in index. */</font>
+
+<a name="line77"> 77: </a>  i = 1;
+<a name="line78"> 78: </a>  <font color="#4169E1">if</font> (*mode &gt; 0) {
+<a name="line79"> 79: </a>    jl   = 0;
+<a name="line80"> 80: </a>    ju   = *nmax;
+<a name="line81"> 81: </a>    jinc = 1;
+<a name="line82"> 82: </a>  } <font color="#4169E1">else</font> {
+<a name="line83"> 83: </a>    jl   = *nmax;
+<a name="line84"> 84: </a>    ju   = 0;
+<a name="line85"> 85: </a>    jinc = -1;
+<a name="line86"> 86: </a>  }
+<a name="line87"> 87: </a>  i__1 = ju;
+<a name="line88"> 88: </a>  i__2 = jinc;
+<a name="line89"> 89: </a>  <font color="#4169E1">for</font> (j = jl; i__2 &lt; 0 ? j &gt;= i__1 : j &lt;= i__1; j += i__2) {
+<a name="line90"> 90: </a>    k = last[j];
+<a name="line91"> 91: </a><strong><font color="#FF0000">L30:</font></strong>
+<a name="line92"> 92: </a>    <font color="#4169E1">if</font> (!k) <font color="#4169E1">goto</font> L40;
+<a name="line93"> 93: </a>    idex[i] = k;
+<a name="line94"> 94: </a>    ++i;
+<a name="line95"> 95: </a>    k = next[k];
+<a name="line96"> 96: </a>    <font color="#4169E1">goto</font> L30;
+<a name="line97"> 97: </a><strong><font color="#FF0000">L40:</font></strong>
+<a name="line98"> 98: </a>    ;
+<a name="line99"> 99: </a>  }
+<a name="line100">100: </a>  <font color="#4169E1">return</font>(0);
+<a name="line101">101: </a>}
 
 </pre>
 </body>

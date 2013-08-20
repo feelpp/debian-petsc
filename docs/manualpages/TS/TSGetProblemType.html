@@ -5,13 +5,13 @@
 <TITLE>TSGetProblemType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSGetProblemType"><H1>TSGetProblemType</H1></A>
 Gets the type of problem to be solved. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  TSGetProblemType(TS ts, TSProblemType *type) 
+PetscErrorCode  TSGetProblemType(TS ts, TSProblemType *type)
 </PRE>
 Not collective
 <P>
@@ -25,7 +25,7 @@ Not collective
 <PRE>
          M U_t = A U
          M(t) U_t = A(t) U
-         U_t = F(t,U)
+         F(t,U,U_t)
 </PRE>
 
 <P>

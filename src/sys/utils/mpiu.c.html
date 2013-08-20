@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/utils/mpiu.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:35:59+00:00">
+<meta name="date" content="2013-07-02T14:39:06+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petscsys.h&gt;        </font><font color="#B22222">/*I  "petscsys.h"  I*/</font><font color="#A020F0"></font>
 <a name="line3">  3: </a><font color="#B22222">/*</font>
@@ -61,12 +61,12 @@
 <a name="line58"> 58: </a>static int Petsc_Seq_keyval = MPI_KEYVAL_INVALID;
 
 <a name="line62"> 62: </a><font color="#B22222">/*@</font>
-<a name="line63"> 63: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A> - Begins a sequential section of code.  </font>
+<a name="line63"> 63: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A> - Begins a sequential section of code.</font>
 
 <a name="line65"> 65: </a><font color="#B22222">   Collective on <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
 
 <a name="line67"> 67: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line68"> 68: </a><font color="#B22222">+  comm - Communicator to sequentialize.  </font>
+<a name="line68"> 68: </a><font color="#B22222">+  comm - Communicator to sequentialize.</font>
 <a name="line69"> 69: </a><font color="#B22222">-  ng   - Number in processor group.  This many processes are allowed to execute</font>
 <a name="line70"> 70: </a><font color="#B22222">   at the same time (usually 1)</font>
 
@@ -85,7 +85,7 @@
 <a name="line84"> 84: </a><font color="#B22222">   Often, the sequential code contains output statements (e.g., printf) to</font>
 <a name="line85"> 85: </a><font color="#B22222">   be executed.  Note that you may need to flush the I/O buffers before</font>
 <a name="line86"> 86: </a><font color="#B22222">   calling <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A>().  Also, note that some systems do</font>
-<a name="line87"> 87: </a><font color="#B22222">   not propagate I/O in any order to the controling terminal (in other words, </font>
+<a name="line87"> 87: </a><font color="#B22222">   not propagate I/O in any order to the controling terminal (in other words,</font>
 <a name="line88"> 88: </a><font color="#B22222">   even if you flush the output, you may not get the data in the order</font>
 <a name="line89"> 89: </a><font color="#B22222">   that you want).</font>
 
@@ -109,51 +109,53 @@
 
 <a name="line111">111: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_dup.html#MPI_Comm_dup">MPI_Comm_dup</A>(comm,&amp;local_comm);
 <a name="line112">112: </a>  <A href="../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(<font color="#4169E1">sizeof</font>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>),&amp;addr_local_comm);
-<a name="line113">113: </a>  *addr_local_comm = local_comm;
-<a name="line114">114: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Attr_put.html#MPI_Attr_put">MPI_Attr_put</A>(comm,Petsc_Seq_keyval,(void*)addr_local_comm);
-<a name="line115">115: </a>  PetscSequentialPhaseBegin_Private(local_comm,ng);
-<a name="line116">116: </a>  <font color="#4169E1">return</font>(0);
-<a name="line117">117: </a>}
 
-<a name="line121">121: </a><font color="#B22222">/*@</font>
-<a name="line122">122: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A> - Ends a sequential section of code.</font>
+<a name="line114">114: </a>  *addr_local_comm = local_comm;
 
-<a name="line124">124: </a><font color="#B22222">   Collective on <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+<a name="line116">116: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Attr_put.html#MPI_Attr_put">MPI_Attr_put</A>(comm,Petsc_Seq_keyval,(void*)addr_local_comm);
+<a name="line117">117: </a>  PetscSequentialPhaseBegin_Private(local_comm,ng);
+<a name="line118">118: </a>  <font color="#4169E1">return</font>(0);
+<a name="line119">119: </a>}
 
-<a name="line126">126: </a><font color="#B22222">   Input Parameters:</font>
-<a name="line127">127: </a><font color="#B22222">+  comm - Communicator to sequentialize.  </font>
-<a name="line128">128: </a><font color="#B22222">-  ng   - Number in processor group.  This many processes are allowed to execute</font>
-<a name="line129">129: </a><font color="#B22222">   at the same time (usually 1)</font>
+<a name="line123">123: </a><font color="#B22222">/*@</font>
+<a name="line124">124: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A> - Ends a sequential section of code.</font>
 
-<a name="line131">131: </a><font color="#B22222">   Level: intermediate</font>
+<a name="line126">126: </a><font color="#B22222">   Collective on <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
 
-<a name="line133">133: </a><font color="#B22222">   Notes:</font>
-<a name="line134">134: </a><font color="#B22222">   See <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>() for more details.</font>
+<a name="line128">128: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line129">129: </a><font color="#B22222">+  comm - Communicator to sequentialize.</font>
+<a name="line130">130: </a><font color="#B22222">-  ng   - Number in processor group.  This many processes are allowed to execute</font>
+<a name="line131">131: </a><font color="#B22222">   at the same time (usually 1)</font>
 
-<a name="line136">136: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>()</font>
+<a name="line133">133: </a><font color="#B22222">   Level: intermediate</font>
 
-<a name="line138">138: </a><font color="#B22222">   Concepts: sequential stage</font>
+<a name="line135">135: </a><font color="#B22222">   Notes:</font>
+<a name="line136">136: </a><font color="#B22222">   See <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>() for more details.</font>
 
-<a name="line140">140: </a><font color="#B22222">@*/</font>
-<a name="line141">141: </a><strong><font color="#4169E1"><a name="PetscSequentialPhaseEnd"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,int ng)</font></strong>
-<a name="line142">142: </a>{
-<a name="line144">144: </a>  <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,flag;
-<a name="line145">145: </a>  <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       local_comm,*addr_local_comm;
+<a name="line138">138: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>()</font>
 
-<a name="line148">148: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
-<a name="line149">149: </a>  <font color="#4169E1">if</font> (size == 1) <font color="#4169E1">return</font>(0);
+<a name="line140">140: </a><font color="#B22222">   Concepts: sequential stage</font>
 
-<a name="line151">151: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Attr_get.html#MPI_Attr_get">MPI_Attr_get</A>(comm,Petsc_Seq_keyval,(void **)&amp;addr_local_comm,&amp;flag);
-<a name="line152">152: </a>  <font color="#4169E1">if</font> (!flag) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Wrong MPI communicator; must pass in one used with <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>()"</font>);
-<a name="line153">153: </a>  local_comm = *addr_local_comm;
+<a name="line142">142: </a><font color="#B22222">@*/</font>
+<a name="line143">143: </a><strong><font color="#4169E1"><a name="PetscSequentialPhaseEnd"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,int ng)</font></strong>
+<a name="line144">144: </a>{
+<a name="line146">146: </a>  <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size,flag;
+<a name="line147">147: </a>  <A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>       local_comm,*addr_local_comm;
 
-<a name="line155">155: </a>  PetscSequentialPhaseEnd_Private(local_comm,ng);
+<a name="line150">150: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
+<a name="line151">151: </a>  <font color="#4169E1">if</font> (size == 1) <font color="#4169E1">return</font>(0);
 
-<a name="line157">157: </a>  <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(addr_local_comm);
-<a name="line158">158: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_free.html#MPI_Comm_free">MPI_Comm_free</A>(&amp;local_comm);
-<a name="line159">159: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Attr_delete.html#MPI_Attr_delete">MPI_Attr_delete</A>(comm,Petsc_Seq_keyval);
-<a name="line160">160: </a>  <font color="#4169E1">return</font>(0);
-<a name="line161">161: </a>}
+<a name="line153">153: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Attr_get.html#MPI_Attr_get">MPI_Attr_get</A>(comm,Petsc_Seq_keyval,(void**)&amp;addr_local_comm,&amp;flag);
+<a name="line154">154: </a>  <font color="#4169E1">if</font> (!flag) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Wrong MPI communicator; must pass in one used with <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>()"</font>);
+<a name="line155">155: </a>  local_comm = *addr_local_comm;
+
+<a name="line157">157: </a>  PetscSequentialPhaseEnd_Private(local_comm,ng);
+
+<a name="line159">159: </a>  <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(addr_local_comm);
+<a name="line160">160: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_free.html#MPI_Comm_free">MPI_Comm_free</A>(&amp;local_comm);
+<a name="line161">161: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Attr_delete.html#MPI_Attr_delete">MPI_Attr_delete</A>(comm,Petsc_Seq_keyval);
+<a name="line162">162: </a>  <font color="#4169E1">return</font>(0);
+<a name="line163">163: </a>}
 </pre>
 </body>
 

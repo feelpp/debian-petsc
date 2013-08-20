@@ -4,14 +4,14 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex16f90.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:52:23+00:00">
+<meta name="date" content="2013-07-02T14:44:24+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
-<a name="line3">  3: </a>!  Tests <A href="../../../../docs/manualpages/Mat/MatGetArray.html#MatGetArray">MatGetArray</A>() on a dense matrix
+<a name="line3">  3: </a>!  Tests <A href="../../../../docs/manualpages/Mat/MatDenseGetArray.html#MatDenseGetArray">MatDenseGetArray</A>()
 <a name="line4">  4: </a>!
 
 <a name="line6">  6: </a>      program main
@@ -78,7 +78,7 @@
 <a name="line67"> 67: </a>!
 <a name="line68"> 68: </a>!      Print the local portion of the matrix to the screen
 <a name="line69"> 69: </a>!
-<a name="line70"> 70: </a>      call <A href="../../../../docs/manualpages/Mat/MatGetArrayF90.html#MatGetArrayF90">MatGetArrayF90</A>(A,array,ierr)
+<a name="line70"> 70: </a>      call <A href="../../../../docs/manualpages/Mat/MatDenseGetArrayF90.html#MatDenseGetArrayF90">MatDenseGetArrayF90</A>(A,array,ierr)
 <a name="line71"> 71: </a>      call <A href="../../../../docs/manualpages/Mat/MatGetOwnershipRange.html#MatGetOwnershipRange">MatGetOwnershipRange</A>(A,rstart,rend,ierr)
 <a name="line72"> 72: </a>      call <A href="../../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,ierr)
 <a name="line73"> 73: </a>!
@@ -91,7 +91,7 @@
 
 <a name="line81"> 81: </a>      call <A href="../../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,ierr)
 
-<a name="line83"> 83: </a>      call <A href="../../../../docs/manualpages/Mat/MatRestoreArrayF90.html#MatRestoreArrayF90">MatRestoreArrayF90</A>(A,array,ierr)
+<a name="line83"> 83: </a>      call <A href="../../../../docs/manualpages/Mat/MatDenseRestoreArrayF90.html#MatDenseRestoreArrayF90">MatDenseRestoreArrayF90</A>(A,array,ierr)
 <a name="line84"> 84: </a>!
 <a name="line85"> 85: </a>!      Free the space used by the matrix
 <a name="line86"> 86: </a>!

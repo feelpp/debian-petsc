@@ -5,11 +5,11 @@
 <TITLE>PCGALERKIN</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCGALERKIN"><H1>PCGALERKIN</H1></A>
 Build (part of) a preconditioner by P S R (where P is often R^T) 
 <pre>
-  Use <A HREF="../PC/PCGalerkinSetRestriction.html#PCGalerkinSetRestriction">PCGalerkinSetRestriction</A>(pc,R) and/or <A HREF="../PC/PCGalerkinSetInterpolation.html#PCGalerkinSetInterpolation">PCGalerkinSetInterpolation</A>(pc,P) followed by 
+  Use <A HREF="../PC/PCGalerkinSetRestriction.html#PCGalerkinSetRestriction">PCGalerkinSetRestriction</A>(pc,R) and/or <A HREF="../PC/PCGalerkinSetInterpolation.html#PCGalerkinSetInterpolation">PCGalerkinSetInterpolation</A>(pc,P) followed by
 </pre>
 <pre>
   <A HREF="../PC/PCGalerkinGetKSP.html#PCGalerkinGetKSP">PCGalerkinGetKSP</A>(pc,&amp;ksp); <A HREF="../KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(ksp,A,....)

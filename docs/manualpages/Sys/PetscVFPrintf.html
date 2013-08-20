@@ -5,9 +5,9 @@
 <TITLE>PetscVFPrintf</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscVFPrintf"><H1>PetscVFPrintf</H1></A>
-All PETSc standard out and error messages are sent through this function; so, in theory, this can can be replaced with something that does not simply write to a file.  
+All PETSc standard out and error messages are sent through this function; so, in theory, this can can be replaced with something that does not simply write to a file. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 PetscErrorCode  PetscVFPrintfDefault(FILE *fd,const char *format,va_list Argp)
@@ -23,10 +23,10 @@ To use, write your own function for example,
  <A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
 </pre>
 <pre>
-  if (fd != stdout &amp;&amp; fd != stderr) {  handle regular files 
+  if (fd != stdout &amp;&amp; fd != stderr) {  handle regular files
 </pre>
 <pre>
-     ierr = PetscVFPrintfDefault(fd,format,Argp); CHKERR(ierr);
+     ierr = PetscVFPrintfDefault(fd,format,Argp);CHKERR(ierr);
 </pre>
 <pre>
  } else {
@@ -41,7 +41,7 @@ To use, write your own function for example,
     ierr = <A HREF="../Sys/PetscVSNPrintf.html#PetscVSNPrintf">PetscVSNPrintf</A>(buff,BIG,format,&amp;length,Argp);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
 </pre>
 <pre>
-    now send buff to whatever stream or whatever you want 
+    now send buff to whatever stream or whatever you want
 </pre>
 <pre>
 }

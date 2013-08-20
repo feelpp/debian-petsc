@@ -5,7 +5,7 @@
 <TITLE>PetscFinalize</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscFinalize"><H1>PetscFinalize</H1></A>
 Checks for options to be called at the conclusion of the program. MPI_Finalize() is called only if the user had not called MPI_Init() before calling <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,7 +21,7 @@ Collective on <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-options_left </B></TD><TD>- Prints unused options that remain in the database
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-objects_left  </B></TD><TD>- Prints list of all objects that have not been freed
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-objects_dump [all] </B></TD><TD>- Prints list of objects allocated by the user that have not been freed, the option all cause all outstanding objects to be listed
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mpidump </B></TD><TD>- Calls <A HREF="../Sys/PetscMPIDump.html#PetscMPIDump">PetscMPIDump</A>()
 </TD></TR>
@@ -30,28 +30,6 @@ Collective on <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-malloc_info </B></TD><TD>- Prints total memory usage
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-malloc_log </B></TD><TD>- Prints summary of memory usage
-</TD></TR></TABLE>
-<P>
-<H3><FONT COLOR="#CC3333">Options Database Keys for Profiling</FONT></H3>
-See the &lt;a href="../../docs/manual.pdf#nameddest=<A HREF="../../manual.pdf#chapter.10">Chapter 10 Profiling</A>"&gt;profiling chapter of the users manual&lt;/a&gt; for details.
-<TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_summary [filename] </B></TD><TD>- Prints summary of flop and timing
-information to screen. If the filename is specified the
-summary is written to the file.  See PetscLogView().
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_summary_python [filename] </B></TD><TD>- Prints data on of flop and timing usage to a file or screen.
-See PetscLogPrintSViewPython().
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_all [filename] </B></TD><TD>- Logs extensive profiling information
-See <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(). 
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log [filename] </B></TD><TD>- Logs basic profiline information  See <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>().
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_sync </B></TD><TD>- Log the synchronization in scatters, inner products
-and norms
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_mpe [filename] </B></TD><TD>- Creates a logfile viewable by the 
-utility Upshot/Nupshot (in MPICH distribution)
 </TD></TR></TABLE>
 <P>
 
@@ -67,15 +45,15 @@ See <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>() 
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/viewer/examples/tutorials/ex1.c.html">src/sys/viewer/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/sys/viewer/examples/tutorials/ex1f90.F90.html">src/sys/viewer/examples/tutorials/ex1f90.F90.html</A><BR>
-<A HREF="../../../src/sys/random/examples/tutorials/ex1.c.html">src/sys/random/examples/tutorials/ex1.c.html</A><BR>
-<A HREF="../../../src/sys/random/examples/tutorials/ex2.c.html">src/sys/random/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/sys/classes/viewer/examples/tutorials/ex1.c.html">src/sys/classes/viewer/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/sys/classes/viewer/examples/tutorials/ex2.c.html">src/sys/classes/viewer/examples/tutorials/ex2.c.html</A><BR>
+<A HREF="../../../src/sys/classes/viewer/examples/tutorials/ex1f90.F90.html">src/sys/classes/viewer/examples/tutorials/ex1f90.F90.html</A><BR>
+<A HREF="../../../src/sys/classes/random/examples/tutorials/ex1.c.html">src/sys/classes/random/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/sys/classes/random/examples/tutorials/ex2.c.html">src/sys/classes/random/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex1.c.html">src/sys/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex2.c.html">src/sys/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex3.c.html">src/sys/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex4.c.html">src/sys/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex5.c.html">src/sys/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex6.c.html">src/sys/examples/tutorials/ex6.c.html</A><BR>
-<A HREF="../../../src/sys/examples/tutorials/ex7.c.html">src/sys/examples/tutorials/ex7.c.html</A><BR>
 </BODY></HTML>

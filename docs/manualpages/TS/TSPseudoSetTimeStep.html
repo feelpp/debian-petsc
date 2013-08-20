@@ -5,13 +5,13 @@
 <TITLE>TSPseudoSetTimeStep</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSPseudoSetTimeStep"><H1>TSPseudoSetTimeStep</H1></A>
 Sets the user-defined routine to be called at each pseudo-timestep to update the timestep. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode  TSPseudoSetTimeStep(TS ts,PetscErrorCode (*dt)(TS,PetscReal*,void*),void* ctx)
+PetscErrorCode  TSPseudoSetTimeStep(TS ts,PetscErrorCode (*dt)(TS,PetscReal*,void*),void *ctx)
 </PRE>
 Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -22,7 +22,7 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dt </B></TD><TD>- function to compute timestep
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for private data
-required by the function (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+required by the function (may be NULL)
 </TD></TR></TABLE>
 <P>
 
@@ -38,13 +38,14 @@ required by the function (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PET
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 The routine set here will be called by <A HREF="../TS/TSPseudoComputeTimeStep.html#TSPseudoComputeTimeStep">TSPseudoComputeTimeStep</A>()
 during the timestepping process.
+If not set then <A HREF="../TS/TSPseudoTimeStepDefault.html#TSPseudoTimeStepDefault">TSPseudoTimeStepDefault</A>() is automatically used
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  timestep, pseudo, set
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../TS/TSPseudoDefaultTimeStep.html#TSPseudoDefaultTimeStep">TSPseudoDefaultTimeStep</A>(), <A HREF="../TS/TSPseudoComputeTimeStep.html#TSPseudoComputeTimeStep">TSPseudoComputeTimeStep</A>()
+ <A HREF="../TS/TSPseudoTimeStepDefault.html#TSPseudoTimeStepDefault">TSPseudoTimeStepDefault</A>(), <A HREF="../TS/TSPseudoComputeTimeStep.html#TSPseudoComputeTimeStep">TSPseudoComputeTimeStep</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/impls/pseudo/posindep.c.html#TSPseudoSetTimeStep">src/ts/impls/pseudo/posindep.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

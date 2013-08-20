@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tutorials/ex5.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:40:18+00:00">
+<meta name="date" content="2013-07-02T14:40:18+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests binary I/O of vectors and illustrates the use of user-defined event logging.\n\n"</font>;
 
@@ -29,10 +29,10 @@
 <a name="line21"> 21: </a>  <A href="../../../../../docs/manualpages/Profiling/PetscLogEvent.html#PetscLogEvent">PetscLogEvent</A>  VECTOR_GENERATE,VECTOR_READ;
 <a name="line22"> 22: </a><font color="#A020F0">#endif</font>
 
-<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 <a name="line25"> 25: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rank);
 <a name="line26"> 26: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
-<a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-m"</font>,&amp;m,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL,<font color="#666666">"-m"</font>,&amp;m,NULL);
 
 <a name="line29"> 29: </a>  <font color="#B22222">/* PART 1:  Generate vector, then write it in binary format */</font>
 
@@ -46,7 +46,7 @@
 <a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetLocalSize.html#VecGetLocalSize">VecGetLocalSize</A>(u,&amp;ldim);
 <a name="line39"> 39: </a>  <font color="#4169E1">for</font> (i=0; i&lt;ldim; i++) {
 <a name="line40"> 40: </a>    iglobal = i + low;
-<a name="line41"> 41: </a>    v = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)(i + 100*rank);
+<a name="line41"> 41: </a>    v       = (<A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>)(i + 100*rank);
 <a name="line42"> 42: </a>    <A href="../../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(u,1,&amp;iglobal,&amp;v,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line43"> 43: </a>  }
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(u);

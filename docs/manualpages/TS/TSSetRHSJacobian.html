@@ -5,13 +5,13 @@
 <TITLE>TSSetRHSJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSSetRHSJacobian"><H1>TSSetRHSJacobian</H1></A>
-Sets the function to compute the Jacobian of F, where U_t = F(U,t), as well as the location to store the matrix. 
+Sets the function to compute the Jacobian of F, where U_t = G(U,t), as well as the location to store the matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  TSSetRHSJacobian(TS ts,Mat A,Mat B,TSRHSJacobian f,void *ctx)
+PetscErrorCode  TSSetRHSJacobian(TS ts,Mat Amat,Mat Pmat,TSRHSJacobian f,void *ctx)
 </PRE>
 Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -19,14 +19,14 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts  </B></TD><TD>- the <A HREF="../TS/TS.html#TS">TS</A> context obtained from <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>()
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>A   </B></TD><TD>- Jacobian matrix
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- (approximate) Jacobian matrix
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>B   </B></TD><TD>- preconditioner matrix (usually same as A)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- matrix from which preconditioner is to be constructed (usually the same as Amat)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>f   </B></TD><TD>- the Jacobian evaluation routine
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for private data for the 
-Jacobian evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for private data for the
+Jacobian evaluation routine (may be NULL)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of func</FONT></H3>
@@ -39,9 +39,9 @@ Jacobian evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>u </B></TD><TD>- input vector
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>A </B></TD><TD>- matrix A, where U_t = A(t)u
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- (approximate) Jacobian matrix
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>B </B></TD><TD>- preconditioner matrix, usually the same as A
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- matrix from which preconditioner is to be constructed (usually the same as Amat)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flag </B></TD><TD>- flag indicating information about the preconditioner matrix
 structure (same as flag in <A HREF="../KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>())
@@ -66,7 +66,7 @@ throughout the global iterations.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/SNESDefaultComputeJacobianColor.html#SNESDefaultComputeJacobianColor">SNESDefaultComputeJacobianColor</A>(), <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>()
+ <A HREF="../SNES/SNESComputeJacobianDefaultColor.html#SNESComputeJacobianDefaultColor">SNESComputeJacobianDefaultColor</A>(), <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
@@ -77,7 +77,6 @@ throughout the global iterations.
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ts/examples/tutorials/ex1.c.html">src/ts/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex2.c.html">src/ts/examples/tutorials/ex2.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/util2.c.html">src/ts/examples/tutorials/util2.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex3.c.html">src/ts/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex4.c.html">src/ts/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex5.c.html">src/ts/examples/tutorials/ex5.c.html</A><BR>

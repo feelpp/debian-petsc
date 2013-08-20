@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = matnestf.c
-OBJSC    = matnestf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

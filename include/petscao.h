@@ -1,12 +1,11 @@
-/* 
+/*
   An application ordering is mapping between an application-centric
-  ordering (the ordering that is "natural" for the application) and 
+  ordering (the ordering that is "natural" for the application) and
   the parallel ordering that PETSc uses.
 */
 #if !defined(__PETSCAO_H)
 #define __PETSCAO_H
-#include "petscis.h"
-#include "petscmat.h"
+#include <petscis.h>
 
 /*S
      AO - Abstract PETSc object that manages mapping between different global numbering
@@ -27,7 +26,7 @@ typedef struct _p_AO* AO;
 
 .seealso: AOSetType(), AO
 J*/
-#define AOType char*
+typedef const char* AOType;
 #define AOBASIC               "basic"
 #define AOADVANCED            "advanced"
 #define AOMAPPING             "mapping"
@@ -36,7 +35,7 @@ J*/
 /* Logging support */
 PETSC_EXTERN PetscClassId AO_CLASSID;
 
-PETSC_EXTERN PetscErrorCode AOInitializePackage(const char[]);
+PETSC_EXTERN PetscErrorCode AOInitializePackage(void);
 
 PETSC_EXTERN PetscErrorCode AOCreate(MPI_Comm,AO*);
 PETSC_EXTERN PetscErrorCode AOSetIS(AO,IS,IS);
@@ -53,20 +52,13 @@ PETSC_EXTERN PetscErrorCode AOView(AO,PetscViewer);
 PETSC_EXTERN PetscErrorCode AODestroy(AO*);
 
 /* Dynamic creation and loading functions */
-PETSC_EXTERN PetscFList AOList;
-PETSC_EXTERN PetscBool AORegisterAllCalled;
-PETSC_EXTERN PetscErrorCode AOSetType(AO, const AOType);
-PETSC_EXTERN PetscErrorCode AOGetType(AO, const AOType *);
+PETSC_EXTERN PetscFunctionList AOList;
+PETSC_EXTERN PetscBool         AORegisterAllCalled;
+PETSC_EXTERN PetscErrorCode AOSetType(AO, AOType);
+PETSC_EXTERN PetscErrorCode AOGetType(AO, AOType *);
 
-PETSC_EXTERN PetscErrorCode AORegister(const char [], const char [], const char [], PetscErrorCode (*)(AO));
-PETSC_EXTERN PetscErrorCode AORegisterAll(const char []);
-PETSC_EXTERN PetscErrorCode AORegisterDestroy(void);
-
-#if defined(PETSC_USE_DYNAMIC_LIBRARIES)
-#define AORegisterDynamic(a,b,c,d) AORegister(a,b,c,0)
-#else
-#define AORegisterDynamic(a,b,c,d) AORegister(a,b,c,d)
-#endif
+PETSC_EXTERN PetscErrorCode AORegister(const char [], PetscErrorCode (*)(AO));
+PETSC_EXTERN PetscErrorCode AORegisterAll(void);
 
 PETSC_EXTERN PetscErrorCode AOPetscToApplication(AO,PetscInt,PetscInt[]);
 PETSC_EXTERN PetscErrorCode AOApplicationToPetsc(AO,PetscInt,PetscInt[]);

@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/gmres/borthog.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:04:02+00:00">
+<meta name="date" content="2013-07-02T14:48:10+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    Routines used for the orthogonalization of the Hessenberg matrix.</font>
@@ -20,7 +20,7 @@
 <a name="line9">  9: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/gmres/gmresimpl.h&gt;</font>
 
 <a name="line11"> 11: </a><font color="#B22222">/*@C</font>
-<a name="line12"> 12: </a><font color="#B22222">     <A href="../../../../../docs/manualpages/KSP/KSPGMRESModifiedGramSchmidtOrthogonalization.html#KSPGMRESModifiedGramSchmidtOrthogonalization">KSPGMRESModifiedGramSchmidtOrthogonalization</A> -  This is the basic orthogonalization routine </font>
+<a name="line12"> 12: </a><font color="#B22222">     <A href="../../../../../docs/manualpages/KSP/KSPGMRESModifiedGramSchmidtOrthogonalization.html#KSPGMRESModifiedGramSchmidtOrthogonalization">KSPGMRESModifiedGramSchmidtOrthogonalization</A> -  This is the basic orthogonalization routine</font>
 <a name="line13"> 13: </a><font color="#B22222">                using modified Gram-Schmidt.</font>
 
 <a name="line15"> 15: </a><font color="#B22222">     Collective on <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
@@ -39,7 +39,7 @@
 <a name="line28"> 28: </a><font color="#B22222">@*/</font>
 <a name="line31"> 31: </a><strong><font color="#4169E1"><a name="KSPGMRESModifiedGramSchmidtOrthogonalization"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/KSP/KSPGMRESModifiedGramSchmidtOrthogonalization.html#KSPGMRESModifiedGramSchmidtOrthogonalization">KSPGMRESModifiedGramSchmidtOrthogonalization</A>(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> it)</font></strong>
 <a name="line32"> 32: </a>{
-<a name="line33"> 33: </a>  KSP_GMRES      *gmres = (KSP_GMRES *)(ksp-&gt;data);
+<a name="line33"> 33: </a>  KSP_GMRES      *gmres = (KSP_GMRES*)(ksp-&gt;data);
 <a name="line35"> 35: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       j;
 <a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *hh,*hes;
 

@@ -5,15 +5,15 @@
 <TITLE>VecGetArray2d</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecGetArray2d"><H1>VecGetArray2d</H1></A>
-Returns a pointer to a 2d contiguous array that contains this  processor's portion of the vector data.  You MUST call <A HREF="../Vec/VecRestoreArray2d.html#VecRestoreArray2d">VecRestoreArray2d</A>()  when you no longer need access to the array. 
+Returns a pointer to a 2d contiguous array that contains this processor's portion of the vector data.  You MUST call <A HREF="../Vec/VecRestoreArray2d.html#VecRestoreArray2d">VecRestoreArray2d</A>() when you no longer need access to the array. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecGetArray2d(Vec x,PetscInt m,PetscInt n,PetscInt mstart,PetscInt nstart,PetscScalar **a[])
 </PRE>
-Not Collective
+Logically Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

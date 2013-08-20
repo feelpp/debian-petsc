@@ -5,13 +5,13 @@
 <TITLE>MatGetRowIJ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetRowIJ"><H1>MatGetRowIJ</H1></A>
 Returns the compressed row storage i and j indices for sequential matrices. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatGetRowIJ(Mat mat,PetscInt shift,PetscBool  symmetric,PetscBool  inodecompressed,PetscInt *n,PetscInt *ia[],PetscInt* ja[],PetscBool  *done)
+PetscErrorCode MatGetRowIJ(Mat mat,PetscInt shift,PetscBool symmetric,PetscBool inodecompressed,PetscInt *n,const PetscInt *ia[],const PetscInt *ja[],PetscBool  *done)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -24,7 +24,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>symmetric </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> or <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> indicating the matrix data structure should be   symmetrized
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>inodecompressed </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> or <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>  indicating if the nonzero structure of the
-inodes or the nonzero elements is wanted. For BAIJ matrices the compressed version is 
+inodes or the nonzero elements is wanted. For BAIJ matrices the compressed version is
 always used.
 </TD></TR></TABLE>
 <P>
@@ -61,7 +61,7 @@ In Fortran use
 <pre>
 </pre>
 <pre>
-         or 
+         or
 </pre>
 <pre>
 </pre>
@@ -76,7 +76,7 @@ In Fortran use
 Acess the ith and jth entries via ia(iia + i) and ja(jja + j)
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatGetColumnIJ.html#MatGetColumnIJ">MatGetColumnIJ</A>(), <A HREF="../Mat/MatRestoreRowIJ.html#MatRestoreRowIJ">MatRestoreRowIJ</A>(), <A HREF="../Mat/MatGetArray.html#MatGetArray">MatGetArray</A>()
+ <A HREF="../Mat/MatGetColumnIJ.html#MatGetColumnIJ">MatGetColumnIJ</A>(), <A HREF="../Mat/MatRestoreRowIJ.html#MatRestoreRowIJ">MatRestoreRowIJ</A>(), <A HREF="../Mat/MatSeqAIJGetArray.html#MatSeqAIJGetArray">MatSeqAIJGetArray</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/interface/matrix.c.html#MatGetRowIJ">src/mat/interface/matrix.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>exSNES</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-08-29"><meta name="DC.source" content="exSNES.m"><style type="text/css">
+      --><title>exSNES</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-07-02"><meta name="DC.source" content="exSNES.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -56,7 +56,7 @@ span.syscmd { color:#B28C00 }
 .footer p { margin:0px; }
 
   </style></head><body><div class="content"><p>Solves a nonlinear system where the user manages the mesh--solver interactions</p><pre class="language-matlab">Set <span class="string">the</span> <span class="string">Matlab</span> <span class="string">path</span> <span class="string">and</span> <span class="string">initialize</span> <span class="string">PETSc</span>
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 </pre><pre class="codeinput">path(path,<span class="string">'../../'</span>)
 PetscInitialize({<span class="string">'-snes_monitor'</span>,<span class="string">'-ksp_monitor'</span>});
 </pre><pre class="language-matlab">Create <span class="string">work</span> <span class="string">vector</span> <span class="string">for</span> <span class="string">nonlinear</span> <span class="string">solver</span> <span class="string">and</span> <span class="string">location</span> <span class="string">for</span> <span class="string">solution</span>
@@ -67,8 +67,9 @@ x = b.Duplicate();
 </pre><pre>Create a matrix for the Jacobian for Newton method</pre><pre class="codeinput">mat = PetscMat();
 mat.SetType(<span class="string">'seqaij'</span>);
 mat.SetSizes(10,10);
+mat.SetUp();
 </pre><pre>Create the nonlinear solver</pre><pre class="codeinput">snes = PetscSNES();
-snes.SetType(<span class="string">'vi'</span>);
+snes.SetType(<span class="string">'newtonls'</span>);
 </pre><pre>Provide a function</pre><pre class="codeinput">snes.SetFunction(b,<span class="string">'nlfunction'</span>,0);
 type <span class="string">nlfunction.m</span>
 </pre><pre>Provide a function that evaluates the Jacobian</pre><pre class="codeinput">snes.SetJacobian(mat,mat,<span class="string">'nljacobian'</span>,0);
@@ -103,10 +104,11 @@ x = b.Duplicate();
 mat = PetscMat();
 mat.SetType('seqaij');
 mat.SetSizes(10,10);
+mat.SetUp();
 %%
 %  Create the nonlinear solver 
 snes = PetscSNES();
-snes.SetType('vi');
+snes.SetType('newtonls');
 %%
 %  Provide a function 
 snes.SetFunction(b,'nlfunction',0);

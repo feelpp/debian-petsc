@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>PetscInitialize</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-08-29"><meta name="DC.source" content="PetscInitialize.m"><style type="text/css">
+      --><title>PetscInitialize</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-07-02"><meta name="DC.source" content="PetscInitialize.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -56,13 +56,13 @@ span.syscmd { color:#B28C00 }
 .footer p { margin:0px; }
 
   </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span>
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div> err = PetscInitialize(args,argfile,arghelp)
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div> err = PetscInitialize(args,argfile,arghelp)
 <span class="comment">%</span>
 <span class="comment">%  PETSc must be configured with --with-shared-libraries --with-matlab-engine --with-matlab</span>
 <span class="comment">%</span>
 <span class="comment">%   Note some 64 bit MATLAB versions will crash on BLAS/LAPACK calls. Some ways of handling this are to</span>
 <span class="comment">%       1) use   -download-f2cblaslapack  or</span>
-<span class="comment">%       2) use --known-64-bit_blas_indices --with-blas-lapack-dir=/Applications/MATLAB_R2011b.app/</span>
+<span class="comment">%       2) use --known-64-bit-blas-indices --with-blas-lapack-dir=/Applications/MATLAB_R2011b.app/</span>
 <span class="comment">%          the path above should point to the directory above the bin directory where the MATLAB command is</span>
 <span class="comment">%</span>
 <span class="comment">%  You can build with or without MPI, but cannot run on more than one process</span>
@@ -129,7 +129,7 @@ function err = PetscInitialize(args,argfile,arghelp)
 %
 %   Note some 64 bit MATLAB versions will crash on BLAS/LAPACK calls. Some ways of handling this are to 
 %       1) use   -download-f2cblaslapack  or 
-%       2) use REPLACE_WITH_DASH_DASHknown-64-bit_blas_indices REPLACE_WITH_DASH_DASHwith-blas-lapack-dir=/Applications/MATLAB_R2011b.app/
+%       2) use REPLACE_WITH_DASH_DASHknown-64-bit-blas-indices REPLACE_WITH_DASH_DASHwith-blas-lapack-dir=/Applications/MATLAB_R2011b.app/
 %          the path above should point to the directory above the bin directory where the MATLAB command is
 %
 %  You can build with or without MPI, but cannot run on more than one process

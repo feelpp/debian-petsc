@@ -5,13 +5,13 @@
 <TITLE>VecDotNorm2</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecDotNorm2"><H1>VecDotNorm2</H1></A>
 computes the inner product of two vectors and the 2-norm squared of the second vector 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
-PetscErrorCode  VecDotNorm2(Vec s,Vec t,PetscScalar *dp, PetscScalar *nm)
+PetscErrorCode  VecDotNorm2(Vec s,Vec t,PetscScalar *dp, PetscReal *nm)
 </PRE>
 Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -24,14 +24,15 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dp </B></TD><TD>- s't
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dp </B></TD><TD>- s'conj(t)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nm </B></TD><TD>- t't
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nm </B></TD><TD>- t'conj(t)
 </TD></TR></TABLE>
 <P>
 
 <P>
-Developer Notes: Even though the second return argument is a norm and hence could be a <A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> value it is returned as <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A>
+Notes: conj(x) is the complex conjugate of x when x is complex
+<P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
    <A HREF="../Vec/VecDot.html#VecDot">VecDot</A>(), <A HREF="../Vec/VecNorm.html#VecNorm">VecNorm</A>(), <A HREF="../Vec/VecDotBegin.html#VecDotBegin">VecDotBegin</A>(), <A HREF="../Vec/VecNormBegin.html#VecNormBegin">VecNormBegin</A>(), <A HREF="../Vec/VecDotEnd.html#VecDotEnd">VecDotEnd</A>(), <A HREF="../Vec/VecNormEnd.html#VecNormEnd">VecNormEnd</A>()

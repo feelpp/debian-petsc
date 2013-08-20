@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = redundantf.c
-OBJSC    = redundantf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

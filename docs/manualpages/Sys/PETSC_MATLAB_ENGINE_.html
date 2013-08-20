@@ -5,11 +5,12 @@
 <TITLE>PETSC_MATLAB_ENGINE_</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PETSC_MATLAB_ENGINE_"><H1>PETSC_MATLAB_ENGINE_</H1></A>
-Creates a matlab engine shared by all processors  in a communicator. 
+Creates a matlab engine shared by all processors in a communicator. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscmatlab.h"  
 PetscMatlabEngine  PETSC_MATLAB_ENGINE_(MPI_Comm comm)
 </PRE>
 Not Collective
@@ -34,7 +35,7 @@ an error code. Usually used in the form
 <A HREF="../Sys/PETSC_MATLAB_ENGINE_WORLD.html#PETSC_MATLAB_ENGINE_WORLD">PETSC_MATLAB_ENGINE_WORLD</A>, <A HREF="../Sys/PETSC_MATLAB_ENGINE_SELF.html#PETSC_MATLAB_ENGINE_SELF">PETSC_MATLAB_ENGINE_SELF</A>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/matlabengine/matlab.c.html#PETSC_MATLAB_ENGINE_">src/sys/matlabengine/matlab.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/matlabengine/matlab.c.html#PETSC_MATLAB_ENGINE_">src/sys/classes/matlabengine/matlab.c</A>
 <BR><A HREF="./index.html">Index of all Sys routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

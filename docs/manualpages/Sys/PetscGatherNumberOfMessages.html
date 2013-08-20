@@ -5,7 +5,7 @@
 <TITLE>PetscGatherNumberOfMessages</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscGatherNumberOfMessages"><H1>PetscGatherNumberOfMessages</H1></A>
 Computes the number of messages a node expects to receive 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -19,11 +19,11 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm     </B></TD><TD>- Communicator
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>iflags   </B></TD><TD>- an array of integers of length sizeof(comm). A '1' in ilengths[i] represent a 
-message from current node to ith node. Optionally <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>iflags   </B></TD><TD>- an array of integers of length sizeof(comm). A '1' in ilengths[i] represent a
+message from current node to ith node. Optionally NULL
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ilengths </B></TD><TD>- Non zero ilengths[i] represent a message to i of length ilengths[i].
-Optionally <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>.
+Optionally NULL.
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
@@ -38,7 +38,7 @@ With this info, the correct message lengths can be determined using
 <A HREF="../Sys/PetscGatherMessageLengths.html#PetscGatherMessageLengths">PetscGatherMessageLengths</A>()
 <P>
 Either iflags or ilengths should be provided.  If iflags is not
-provided (<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) it can be computed from ilengths. If iflags is
+provided (NULL) it can be computed from ilengths. If iflags is
 provided, ilengths is not required.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

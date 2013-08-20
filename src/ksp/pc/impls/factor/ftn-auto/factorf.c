@@ -134,11 +134,11 @@ void PETSC_STDCALL  pcfactorsetcolumnpivot_(PC pc,PetscReal *dtcol, int *__ierr 
 *__ierr = PCFactorSetColumnPivot(
 	(PC)PetscToPointer((pc) ),*dtcol);
 }
-void PETSC_STDCALL  pcfactorsetpivotinblocks_(PC pc,PetscBool  *pivot, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetpivotinblocks_(PC pc,PetscBool *pivot, int *__ierr ){
 *__ierr = PCFactorSetPivotInBlocks(
 	(PC)PetscToPointer((pc) ),*pivot);
 }
-void PETSC_STDCALL  pcfactorsetreusefill_(PC pc,PetscBool  *flag, int *__ierr ){
+void PETSC_STDCALL  pcfactorsetreusefill_(PC pc,PetscBool *flag, int *__ierr ){
 *__ierr = PCFactorSetReuseFill(
 	(PC)PetscToPointer((pc) ),*flag);
 }

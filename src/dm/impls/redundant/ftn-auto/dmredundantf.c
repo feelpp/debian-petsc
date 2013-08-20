@@ -27,9 +27,7 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscdm.h"
 #include "petscdmredundant.h"
-#include "petscmat.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmredundantsetsize_ DMREDUNDANTSETSIZE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)

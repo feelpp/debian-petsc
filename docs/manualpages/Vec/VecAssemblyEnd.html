@@ -5,12 +5,12 @@
 <TITLE>VecAssemblyEnd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecAssemblyEnd"><H1>VecAssemblyEnd</H1></A>
 Completes assembling the vector.  This routine should be called after <A HREF="../Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecAssemblyEnd(Vec vec)
 </PRE>
 Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
@@ -23,17 +23,17 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view </B></TD><TD>- Prints vector in ASCII format
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view_matlab </B></TD><TD>- Prints vector in ASCII MATLAB format to stdout
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view ::ascii_matlab </B></TD><TD>- Prints vector in ASCII MATLAB format to stdout
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view_matlab_file </B></TD><TD>- Prints vector in MATLAB format to matlaboutput.mat
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view matlab:filename </B></TD><TD>- Prints vector in MATLAB format to matlaboutput.mat
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view_draw </B></TD><TD>- Activates vector viewing using drawing tools
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view draw </B></TD><TD>- Activates vector viewing using drawing tools
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-display &lt;name&gt; </B></TD><TD>- Sets display name (default is host)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-draw_pause &lt;sec&gt; </B></TD><TD>- Sets number of seconds to pause after display
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view_socket </B></TD><TD>- Activates vector viewing using a socket
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vec_view socket </B></TD><TD>- Activates vector viewing using a socket
 </TD></TR></TABLE>
 <P>
 

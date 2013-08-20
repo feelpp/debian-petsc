@@ -5,15 +5,13 @@
 <TITLE>DMShellSetCreateMatrix</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMShellSetCreateMatrix"><H1>DMShellSetCreateMatrix</H1></A>
 sets the routine to create a matrix associated with the shell DM 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmshell.h"  
-#include "petscmat.h"      
-#include "petscdm.h"       
-PetscErrorCode DMShellSetCreateMatrix(DM dm,PetscErrorCode (*func)(DM,const MatType,Mat*))
+PetscErrorCode DMShellSetCreateMatrix(DM dm,PetscErrorCode (*func)(DM,MatType,Mat*))
 </PRE>
 Logically Collective on DM
 <P>
@@ -29,7 +27,7 @@ Logically Collective on DM
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>(), <A HREF="../DM/DMShellSetMatrix.html#DMShellSetMatrix">DMShellSetMatrix</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/shelldmshell.c.html#DMShellSetCreateMatrix">src/dm/impls/shelldmshell.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/shell/dmshell.c.html#DMShellSetCreateMatrix">src/dm/impls/shell/dmshell.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

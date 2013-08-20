@@ -5,12 +5,12 @@
 <TITLE>PCMGSetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCMGSetType"><H1>PCMGSetType</H1></A>
 Determines the form of multigrid to use: multiplicative, additive, full, or the Kaskade algorithm. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscpcmg.h" 
+#include "petscksp.h" 
 PetscErrorCode  PCMGSetType(PC pc,PCMGType form)
 </PRE>
 Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
@@ -25,7 +25,7 @@ PC_MG_FULL, PC_MG_KASKADE
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
 <DT><B>-pc_mg_type &lt;form&gt; </B> -Sets &lt;form&gt;, one of multiplicative,
-additive, full, kaskade   
+additive, full, kaskade
 <br>
 <P>
 

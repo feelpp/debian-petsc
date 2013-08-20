@@ -5,7 +5,6 @@ CPPFLAGS = ${CHACO_INCLUDE}
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = chacof.c
-OBJSC    = chacof.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

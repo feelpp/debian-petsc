@@ -5,13 +5,13 @@
 <TITLE>SNESLineSearchRegister</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESLineSearchRegister"><H1>SNESLineSearchRegister</H1></A>
-See SNESLineSearchRegisterDynamic() 
+See <A HREF="../SNES/SNESLineSearchRegister.html#SNESLineSearchRegister">SNESLineSearchRegister</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode  SNESLineSearchRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(SNESLineSearch))
+PetscErrorCode  SNESLineSearchRegister(const char sname[],PetscErrorCode (*function)(SNESLineSearch))
 </PRE>
 
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced

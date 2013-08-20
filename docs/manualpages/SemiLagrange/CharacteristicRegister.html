@@ -5,14 +5,52 @@
 <TITLE>CharacteristicRegister</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="CharacteristicRegister"><H1>CharacteristicRegister</H1></A>
-See <A HREF="../SemiLagrange/CharacteristicRegisterDynamic.html#CharacteristicRegisterDynamic">CharacteristicRegisterDynamic</A>() 
+Adds a solver to the method of characteristics package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petsccharacteristic.h" 
-PetscErrorCode CharacteristicRegister(const char sname[],const char path[],const char name[],PetscErrorCode (*function)(Characteristic))
+PetscErrorCode CharacteristicRegister(const char sname[],PetscErrorCode (*function)(Characteristic))
 </PRE>
+Not Collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>name_solver </B></TD><TD>- name of a new user-defined solver
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>routine_create </B></TD><TD>- routine to create method context
+</TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Sample usage</FONT></H3>
+<PRE>
+    <A HREF="../SemiLagrange/CharacteristicRegister.html#CharacteristicRegister">CharacteristicRegister</A>("my_char", MyCharCreate);
+</PRE>
+
+<P>
+Then, your <A HREF="../SemiLagrange/Characteristic.html#Characteristic">Characteristic</A> type can be chosen with the procedural interface via
+<PRE>
+    CharacteristicCreate(<A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, <A HREF="../SemiLagrange/Characteristic.html#Characteristic">Characteristic</A>* &amp;char);
+    <A HREF="../SemiLagrange/CharacteristicSetType.html#CharacteristicSetType">CharacteristicSetType</A>(char,"my_char");
+</PRE>
+
+or at runtime via the option
+<PRE>
+    -characteristic_type my_char
+</PRE>
+
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+<A HREF="../SemiLagrange/CharacteristicRegister.html#CharacteristicRegister">CharacteristicRegister</A>() may be called multiple times to add several user-defined solvers.
+<P>
+<H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
+ <A HREF="../SemiLagrange/Characteristic.html#Characteristic">Characteristic</A>, register
+<BR>
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../SemiLagrange/CharacteristicRegisterAll.html#CharacteristicRegisterAll">CharacteristicRegisterAll</A>(), CharacteristicRegisterDestroy()
+<BR>
+<P>
 
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/characteristic/interface/characteristic.c.html#CharacteristicRegister">src/ts/characteristic/interface/characteristic.c</A>
