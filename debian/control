@@ -3,11 +3,10 @@ Section: devel
 Priority: extra
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: "Adam C. Powell, IV" <hazelsct@debian.org>
-DM-Upload-Allowed: yes
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 7.0.50), quilt, python (>= 2.2), gfortran, automake,
  libx11-dev, mpi-default-dev, mpi-default-bin,
- libblas-dev | libblas-3gf.so, liblapack-dev | liblapack-3gf.so,
+ libblas-dev, liblapack-dev,
  libsuitesparse-dev (>= 3.1.0-2),
  libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libptscotch-dev,
  libhdf5-mpi-dev (>= 1.8.8),
