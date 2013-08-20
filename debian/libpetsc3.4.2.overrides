@@ -1,2 +1,2 @@
 # False positive: the copyright notice is somewhat buried in the upstream text
-petsc3.3-doc: copyright-without-copyright-notice
+libpetsc3.4.2: copyright-without-copyright-notice
