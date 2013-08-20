@@ -5,15 +5,15 @@
 <TITLE>DMDACreateNaturalVector</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDACreateNaturalVector"><H1>DMDACreateNaturalVector</H1></A>
-Creates a parallel PETSc vector that will hold vector values in the natural numbering, rather than in  the PETSc parallel numbering associated with the DMDA. 
+Creates a parallel PETSc vector that will hold vector values in the natural numbering, rather than in the PETSc parallel numbering associated with the <A HREF="../DM/DMDA.html#DMDA">DMDA</A>. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
-PetscErrorCode  DMDACreateNaturalVector(DM da,Vec* g)
+PetscErrorCode  DMDACreateNaturalVector(DM da,Vec *g)
 </PRE>
-Collective on DMDA
+Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>da </B> -the distributed array

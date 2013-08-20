@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = superluf.c
-OBJSC    = superluf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

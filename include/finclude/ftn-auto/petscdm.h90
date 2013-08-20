@@ -1,3 +1,32 @@
+        subroutine PetscDTLegendreEval(npoints, points, ndegree, degrees&
+     &, B, D, D2 ,ierr)
+       PetscInt npoints ! PetscInt
+       PetscReal points ! PetscReal
+       PetscInt ndegree ! PetscInt
+       PetscInt degrees ! PetscInt
+       PetscReal B ! PetscReal
+       PetscReal D ! PetscReal
+       PetscReal D2 ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine PetscDTGaussQuadrature(npoints, a, b, x, w ,ierr)
+       PetscInt npoints ! PetscInt
+       PetscReal a ! PetscReal
+       PetscReal b ! PetscReal
+       PetscReal x ! PetscReal
+       PetscReal w ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine PetscDTReconstructPoly(degree, nsource, sourcex,     &
+     &ntarget, targetx, R ,ierr)
+       PetscInt degree ! PetscInt
+       PetscInt nsource ! PetscInt
+       PetscReal sourcex ! PetscReal
+       PetscInt ntarget ! PetscInt
+       PetscReal targetx ! PetscReal
+       PetscReal R ! PetscReal
+       integer ierr
+       end subroutine
         subroutine DMGetLocalVector(dm, g ,ierr)
        DM dm ! DM
        Vec g ! Vec
@@ -24,6 +53,26 @@
        end subroutine
         subroutine DMCreate(comm, dm ,ierr)
        integer comm ! MPI_Comm
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine VecGetDM(v, dm ,ierr)
+       Vec v ! Vec
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine VecSetDM(v, dm ,ierr)
+       Vec v ! Vec
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine MatGetDM(A, dm ,ierr)
+       Mat A ! Mat
+       DM dm ! DM
+       integer ierr
+       end subroutine
+        subroutine MatSetDM(A, dm ,ierr)
+       Mat A ! Mat
        DM dm ! DM
        integer ierr
        end subroutine
@@ -88,14 +137,6 @@
        DM dmf ! DM
        integer ierr
        end subroutine
-        subroutine DMRefineHookAdd(coarse, refinehook, interphook, ctx ,&
-     &ierr)
-       DM coarse ! DM
-       external refinehook ! void function pointer
-       external interphook ! void function pointer
-       PetscVoid ctx ! void
-       integer ierr
-       end subroutine
         subroutine DMInterpolate(coarse, interp, fine ,ierr)
        DM coarse ! DM
        Mat interp ! Mat
@@ -135,26 +176,10 @@
        Vec g ! Vec
        integer ierr
        end subroutine
-        subroutine DMComputeJacobianDefault(dm, x, A, B, stflag ,ierr)
-       DM dm ! DM
-       Vec x ! Vec
-       Mat A ! Mat
-       Mat B ! Mat
-       MatStructure stflag ! MatStructure
-       integer ierr
-       end subroutine
         subroutine DMCoarsen(dm, comm, dmc ,ierr)
        DM dm ! DM
        integer comm ! MPI_Comm
        DM dmc ! DM
-       integer ierr
-       end subroutine
-        subroutine DMCoarsenHookAdd(fine, coarsenhook, restricthook, ctx&
-     & ,ierr)
-       DM fine ! DM
-       external coarsenhook ! void function pointer
-       external restricthook ! void function pointer
-       PetscVoid ctx ! void
        integer ierr
        end subroutine
         subroutine DMRestrict(fine, restrct, rscale, inject, coarse ,   &
@@ -164,6 +189,14 @@
        Vec rscale ! Vec
        Mat inject ! Mat
        DM coarse ! DM
+       integer ierr
+       end subroutine
+        subroutine DMSubDomainRestrict(global, oscatter, gscatter, subdm&
+     & ,ierr)
+       DM global ! DM
+       VecScatter oscatter ! VecScatter
+       VecScatter gscatter ! VecScatter
+       DM subdm ! DM
        integer ierr
        end subroutine
         subroutine DMGetCoarsenLevel(dm, level ,ierr)
@@ -192,38 +225,9 @@
        PetscBool flg ! PetscBool
        integer ierr
        end subroutine
-        subroutine DMComputeInitialGuess(dm, x ,ierr)
-       DM dm ! DM
-       Vec x ! Vec
-       integer ierr
-       end subroutine
-        subroutine DMHasInitialGuess(dm, flg ,ierr)
+        subroutine DMHasColoring(dm, flg ,ierr)
        DM dm ! DM
        PetscBool flg ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine DMHasFunction(dm, flg ,ierr)
-       DM dm ! DM
-       PetscBool flg ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine DMHasJacobian(dm, flg ,ierr)
-       DM dm ! DM
-       PetscBool flg ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine DMComputeFunction(dm, x, b ,ierr)
-       DM dm ! DM
-       Vec x ! Vec
-       Vec b ! Vec
-       integer ierr
-       end subroutine
-        subroutine DMComputeJacobian(dm, x, A, B, stflag ,ierr)
-       DM dm ! DM
-       Vec x ! Vec
-       Mat A ! Mat
-       Mat B ! Mat
-       MatStructure stflag ! MatStructure
        integer ierr
        end subroutine
         subroutine DMGetDefaultSection(dm, section ,ierr)
@@ -241,6 +245,11 @@
        PetscSection section ! PetscSection
        integer ierr
        end subroutine
+        subroutine DMSetDefaultGlobalSection(dm, section ,ierr)
+       DM dm ! DM
+       PetscSection section ! PetscSection
+       integer ierr
+       end subroutine
         subroutine DMGetDefaultSF(dm, sf ,ierr)
        DM dm ! DM
        PetscSF sf ! PetscSF
@@ -249,5 +258,46 @@
         subroutine DMSetDefaultSF(dm, sf ,ierr)
        DM dm ! DM
        PetscSF sf ! PetscSF
+       integer ierr
+       end subroutine
+        subroutine DMGetPointSF(dm, sf ,ierr)
+       DM dm ! DM
+       PetscSF sf ! PetscSF
+       integer ierr
+       end subroutine
+        subroutine DMSetPointSF(dm, sf ,ierr)
+       DM dm ! DM
+       PetscSF sf ! PetscSF
+       integer ierr
+       end subroutine
+        subroutine DMSetCoordinates(dm, c ,ierr)
+       DM dm ! DM
+       Vec c ! Vec
+       integer ierr
+       end subroutine
+        subroutine DMSetCoordinatesLocal(dm, c ,ierr)
+       DM dm ! DM
+       Vec c ! Vec
+       integer ierr
+       end subroutine
+        subroutine DMGetCoordinates(dm, c ,ierr)
+       DM dm ! DM
+       Vec c ! Vec
+       integer ierr
+       end subroutine
+        subroutine DMGetCoordinatesLocal(dm, c ,ierr)
+       DM dm ! DM
+       Vec c ! Vec
+       integer ierr
+       end subroutine
+        subroutine DMGetCoordinateDM(dm, cdm ,ierr)
+       DM dm ! DM
+       DM cdm ! DM
+       integer ierr
+       end subroutine
+        subroutine DMLocatePoints(dm, v, cells ,ierr)
+       DM dm ! DM
+       Vec v ! Vec
+       IS cells ! IS
        integer ierr
        end subroutine

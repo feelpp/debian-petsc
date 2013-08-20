@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/MatSchurComplementSetKSP.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>MatSchurComplementSetKSP</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="MatSchurComplementSetKSP"><H1>MatSchurComplementSetKSP</H1></A>
+Sets the <A HREF="../KSP/KSP.html#KSP">KSP</A> object that is used to invert A in the Schur complement matrix S = C A^{-1} B 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscksp.h" 
+PetscErrorCode MatSchurComplementSetKSP(Mat A, KSP ksp)
+</PRE>
+Not Collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>A </B></TD><TD>- matrix created with <A HREF="../KSP/MatCreateSchurComplement.html#MatCreateSchurComplement">MatCreateSchurComplement</A>()
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ksp </B></TD><TD>- the linear solver object
+</TD></TR></TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">Developer Notes</FONT></H3>
+There is likely no use case for this function.
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../KSP/MatSchurComplementGetKSP.html#MatSchurComplementGetKSP">MatSchurComplementGetKSP</A>(), <A HREF="../KSP/MatCreateSchurComplement.html#MatCreateSchurComplement">MatCreateSchurComplement</A>(), <A HREF="../Mat/MatCreateNormal.html#MatCreateNormal">MatCreateNormal</A>(), <A HREF="../Mat/MatMult.html#MatMult">MatMult</A>(), <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), MATSCHURCOMPLEMENT
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/utils/schurm.c.html#MatSchurComplementSetKSP">src/ksp/ksp/utils/schurm.c</A>
+<BR><A HREF="./index.html">Index of all KSP routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

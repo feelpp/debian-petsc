@@ -3,24 +3,22 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/impls/mpi/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:39:48+00:00">
+<meta name="date" content="2013-07-02T14:40:08+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
 CFLAGS   = ${PNETCDF_INCLUDE}
 FFLAGS   =
-SOURCEC  = pbvec.c pdvec.c pvec2.c pmap.c vmpicr.c commonmpvec.c
+SOURCEC  = pbvec.c pdvec.c pvec2.c vmpicr.c commonmpvec.c
 SOURCEF  =
-SOURCEH  = pvecimpl.h 
-OBJSC    = pbvec.o pdvec.o pvec2.o pmap.o vmpicr.o commonmpvec.o
-OBJSF    =
+SOURCEH  = pvecimpl.h
 LIBBASE  = libpetscvec
 MANSEC   = <A href="ROOT/docs/manualpages/Vec/Vec.html#Vec">Vec</A>
-DIRS     = mpicusp mpipthread
+DIRS     = mpicusp
 LOCDIR   = src/vec/vec/impls/mpi/
 
 include ${PETSC_DIR}/conf/variables

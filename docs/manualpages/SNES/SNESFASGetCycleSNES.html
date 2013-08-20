@@ -5,13 +5,14 @@
 <TITLE>SNESFASGetCycleSNES</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESFASGetCycleSNES"><H1>SNESFASGetCycleSNES</H1></A>
 Gets the <A HREF="../SNES/SNES.html#SNES">SNES</A> corresponding to a particular level of the FAS hierarchy. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnesfas.h"  
-PetscErrorCode SNESFASGetCycleSNES(SNES snes,PetscInt level,SNES *lsnes)</PRE>
+PetscErrorCode SNESFASGetCycleSNES(SNES snes,PetscInt level,SNES *lsnes)
+</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes    </B></TD><TD>- the multigrid context

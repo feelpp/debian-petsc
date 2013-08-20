@@ -5,13 +5,13 @@
 <TITLE>MatTransposeMatMult</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatTransposeMatMult"><H1>MatTransposeMatMult</H1></A>
 Performs Matrix-Matrix Multiplication C=A^T*B. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatTransposeMatMult(Mat A,Mat B,MatReuse scall,PetscReal fill,Mat *C) 
+PetscErrorCode  MatTransposeMatMult(Mat A,Mat B,MatReuse scall,PetscReal fill,Mat *C)
 </PRE>
 Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -38,8 +38,8 @@ MAT_REUSE_MATRIX can only be used if the matrices A and B have the same nonzero 
 To determine the correct fill value, run with -info and search for the string "Fill ratio" to see the value
 actually needed.
 <P>
-This routine is currently only implemented for pairs of SeqAIJ matrices and pairs of SeqDense matrices and classes
-which inherit from SeqAIJ.  C will be of type <A HREF="../Mat/MATSEQAIJ.html#MATSEQAIJ">MATSEQAIJ</A>.
+This routine is currently implemented for pairs of AIJ matrices and pairs of SeqDense matrices and classes
+which inherit from SeqAIJ.  C will be of same type as the input matrices.
 <P>
 
 <P>

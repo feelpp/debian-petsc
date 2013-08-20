@@ -5,7 +5,7 @@
 <TITLE>MatMPIDenseSetPreallocation</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatMPIDenseSetPreallocation"><H1>MatMPIDenseSetPreallocation</H1></A>
 Sets the array used to store the matrix entries 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -18,7 +18,7 @@ Not collective
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>A </B> -the matrix
 <br>
-<DT><B>data </B> -optional location of matrix data.  Set data=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc
+<DT><B>data </B> -optional location of matrix data.  Set data=NULL for PETSc
 to control all matrix memory allocation.
 <br>
 </TABLE>
@@ -29,7 +29,7 @@ storage by columns.
 <P>
 The data input variable is intended primarily for Fortran programmers
 who wish to allocate their own matrix memory space.  Most users should
-set data=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>.
+set data=NULL.
 <P>
 
 <P>

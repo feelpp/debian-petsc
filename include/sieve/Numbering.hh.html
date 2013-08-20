@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/Numbering.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:20:59+00:00">
+<meta name="date" content="2013-07-02T14:53:29+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_Numbering_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_Numbering_hh</font></strong>
 
@@ -336,7 +336,7 @@
 <a name="line325">325: </a>    // Order all local points
 <a name="line326">326: </a>    //   points in the overlap are only ordered by the owner with the lowest rank
 <a name="line327">327: </a>    template&lt;typename Iterator_, typename Section_&gt;
-<a name="line328">328: </a>    void constructLocalOrder(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Iterator_&amp; pointsBegin, const Iterator_&amp; pointsEnd, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const bool withBC = false, const Obj&lt;label_type&gt;&amp; label = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line328">328: </a>    void constructLocalOrder(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Iterator_&amp; pointsBegin, const Iterator_&amp; pointsEnd, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const bool withBC = false, const Obj&lt;label_type&gt;&amp; label = NULL) {
 <a name="line329">329: </a>      const int debug = sendOverlap-&gt;debug();
 <a name="line330">330: </a>      int localSize = 0;
 
@@ -610,14 +610,14 @@
 <a name="line599">599: </a>    }
 <a name="line600">600: </a>    // Construct a full global order
 <a name="line601">601: </a>    template&lt;typename Iterator, typename Section&gt;
-<a name="line602">602: </a>    void constructOrder(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const Iterator&amp; pointsBegin, const Iterator&amp; pointsEnd, const Obj&lt;Section&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line602">602: </a>    void constructOrder(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const Iterator&amp; pointsBegin, const Iterator&amp; pointsEnd, const Obj&lt;Section&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = NULL) {
 <a name="line603">603: </a>      this-&gt;constructLocalOrder(order, sendOverlap, pointsBegin, pointsEnd, section, space, false, label);
 <a name="line604">604: </a>      this-&gt;calculateOffsets(order);
 <a name="line605">605: </a>      this-&gt;updateOrder(order, pointsBegin, pointsEnd);
 <a name="line606">606: </a>      this-&gt;completeOrder(order, sendOverlap, recvOverlap);
 <a name="line607">607: </a>    }
 <a name="line608">608: </a>    template&lt;typename Iterator, typename Section&gt;
-<a name="line609">609: </a>    void constructOrderBC(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const Iterator&amp; pointsBegin, const Iterator&amp; pointsEnd, const Obj&lt;Section&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line609">609: </a>    void constructOrderBC(const Obj&lt;order_type&gt;&amp; order, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const Iterator&amp; pointsBegin, const Iterator&amp; pointsEnd, const Obj&lt;Section&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = NULL) {
 <a name="line610">610: </a>      this-&gt;constructLocalOrder(order, sendOverlap, pointsBegin, pointsEnd, section, space, true, label);
 <a name="line611">611: </a>      this-&gt;calculateOffsets(order);
 <a name="line612">612: </a>      this-&gt;updateOrder(order, pointsBegin, pointsEnd);
@@ -691,7 +691,7 @@
 <a name="line680">680: </a>      <font color="#4169E1">return</font> this-&gt;_numberings[bundle.ptr()][labelname][value];
 <a name="line681">681: </a>    }
 <a name="line682">682: </a>    template&lt;typename ABundle_, typename Section_&gt;
-<a name="line683">683: </a>    const Obj&lt;order_type&gt;&amp; getLocalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line683">683: </a>    const Obj&lt;order_type&gt;&amp; getLocalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = NULL) {
 <a name="line684">684: </a>      <font color="#4169E1">if</font> ((this-&gt;_localOrders.find(bundle.ptr()) == this-&gt;_localOrders.end()) ||
 <a name="line685">685: </a>          (this-&gt;_localOrders[bundle.ptr()].find(name) == this-&gt;_localOrders[bundle.ptr()].end())) {
 <a name="line686">686: </a>        Obj&lt;order_type&gt;        order       = new order_type(bundle-&gt;comm(), bundle-&gt;debug());
@@ -707,7 +707,7 @@
 <a name="line696">696: </a>      <font color="#4169E1">return</font> this-&gt;_localOrders[bundle.ptr()][name];
 <a name="line697">697: </a>    }
 <a name="line698">698: </a>    template&lt;typename ABundle_, typename Section_&gt;
-<a name="line699">699: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line699">699: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = NULL) {
 <a name="line700">700: </a>      <font color="#4169E1">if</font> ((this-&gt;_orders.find(bundle.ptr()) == this-&gt;_orders.end()) ||
 <a name="line701">701: </a>          (this-&gt;_orders[bundle.ptr()].find(name) == this-&gt;_orders[bundle.ptr()].end())) {
 <a name="line702">702: </a>        bundle-&gt;constructOverlap();
@@ -724,7 +724,7 @@
 <a name="line713">713: </a>      <font color="#4169E1">return</font> this-&gt;_orders[bundle.ptr()][name];
 <a name="line714">714: </a>    }
 <a name="line715">715: </a>    template&lt;typename ABundle_, typename Iterator_, typename Section_&gt;
-<a name="line716">716: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Iterator_&amp; pointsBegin, const Iterator_&amp; pointsEnd, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line716">716: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrder(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Iterator_&amp; pointsBegin, const Iterator_&amp; pointsEnd, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = NULL) {
 <a name="line717">717: </a>      <font color="#4169E1">if</font> ((this-&gt;_orders.find(bundle.ptr()) == this-&gt;_orders.end()) ||
 <a name="line718">718: </a>          (this-&gt;_orders[bundle.ptr()].find(name) == this-&gt;_orders[bundle.ptr()].end())) {
 <a name="line719">719: </a>        bundle-&gt;constructOverlap();
@@ -741,7 +741,7 @@
 <a name="line730">730: </a>      <font color="#4169E1">return</font> this-&gt;_orders[bundle.ptr()][name];
 <a name="line731">731: </a>    }
 <a name="line732">732: </a>    template&lt;typename ABundle_, typename Section_&gt;
-<a name="line733">733: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrderWithBC(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line733">733: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrderWithBC(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = NULL) {
 <a name="line734">734: </a>      <font color="#4169E1">if</font> ((this-&gt;_orders.find(bundle.ptr()) == this-&gt;_orders.end()) ||
 <a name="line735">735: </a>          (this-&gt;_orders[bundle.ptr()].find(name) == this-&gt;_orders[bundle.ptr()].end())) {
 <a name="line736">736: </a>        bundle-&gt;constructOverlap();
@@ -758,7 +758,7 @@
 <a name="line747">747: </a>      <font color="#4169E1">return</font> this-&gt;_orders[bundle.ptr()][name];
 <a name="line748">748: </a>    }
 <a name="line749">749: </a>    template&lt;typename ABundle_, typename Iterator_, typename Section_&gt;
-<a name="line750">750: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrderWithBC(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Iterator_&amp; pointsBegin, const Iterator_&amp; pointsEnd, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line750">750: </a>    const Obj&lt;order_type&gt;&amp; getGlobalOrderWithBC(const Obj&lt;ABundle_&gt;&amp; bundle, const std::string&amp; name, const Iterator_&amp; pointsBegin, const Iterator_&amp; pointsEnd, const Obj&lt;Section_&gt;&amp; section, const int space = -1, const Obj&lt;label_type&gt;&amp; label = NULL) {
 <a name="line751">751: </a>      <font color="#4169E1">if</font> ((this-&gt;_ordersBC.find(bundle.ptr()) == this-&gt;_ordersBC.end()) ||
 <a name="line752">752: </a>          (this-&gt;_ordersBC[bundle.ptr()].find(name) == this-&gt;_ordersBC[bundle.ptr()].end())) {
 <a name="line753">753: </a>        bundle-&gt;constructOverlap();

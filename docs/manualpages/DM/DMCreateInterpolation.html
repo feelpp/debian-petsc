@@ -5,9 +5,9 @@
 <TITLE>DMCreateInterpolation</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMCreateInterpolation"><H1>DMCreateInterpolation</H1></A>
-Gets interpolation matrix between two DMDA or DMComposite objects 
+Gets interpolation matrix between two <A HREF="../DM/DMDA.html#DMDA">DMDA</A> or DMComposite objects 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"     
@@ -31,10 +31,10 @@ Collective on DM
 <P>
 
 <P>
-Notes:  For DMDA objects this only works for "uniform refinement", that is the refined mesh was obtained <A HREF="../DM/DMRefine.html#DMRefine">DMRefine</A>() or the coarse mesh was obtained by
-<A HREF="../DM/DMCoarsen.html#DMCoarsen">DMCoarsen</A>(). The coordinates set into the DMDA are completely ignored in computing the interpolation.
+Notes:  For <A HREF="../DM/DMDA.html#DMDA">DMDA</A> objects this only works for "uniform refinement", that is the refined mesh was obtained <A HREF="../DM/DMRefine.html#DMRefine">DMRefine</A>() or the coarse mesh was obtained by
+<A HREF="../DM/DMCoarsen.html#DMCoarsen">DMCoarsen</A>(). The coordinates set into the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> are completely ignored in computing the interpolation.
 <P>
-For DMDA objects you can use this interpolation (more precisely the interpolation from the <A HREF="../DM/DMDAGetCoordinateDA.html#DMDAGetCoordinateDA">DMDAGetCoordinateDA</A>()) to interpolate the mesh coordinate vectors
+For <A HREF="../DM/DMDA.html#DMDA">DMDA</A> objects you can use this interpolation (more precisely the interpolation from the <A HREF="../DM/DMGetCoordinateDM.html#DMGetCoordinateDM">DMGetCoordinateDM</A>()) to interpolate the mesh coordinate vectors
 EXCEPT in the periodic case where it does not make sense since the coordinate vectors are not periodic.
 <P>
 <P>
@@ -49,6 +49,7 @@ EXCEPT in the periodic case where it does not make sense since the coordinate ve
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/dm/examples/tutorials/ex3.c.html">src/dm/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex65dm.c.html">src/dm/examples/tutorials/ex65dm.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 </BODY></HTML>

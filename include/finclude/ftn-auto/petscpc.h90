@@ -1,168 +1,118 @@
-        subroutine PCRedistributeGetKSP(pc, innerksp ,ierr)
+        subroutine PCBJacobiSetTotalBlocks(pc, blocks, lens ,ierr)
        PC pc ! PC
-       KSP innerksp ! KSP
+       PetscInt blocks ! PetscInt
+       PetscInt lens (*) ! PetscInt
        integer ierr
        end subroutine
-        subroutine PCGalerkinSetRestriction(pc, R ,ierr)
+        subroutine PCBJacobiSetLocalBlocks(pc, blocks, lens ,ierr)
        PC pc ! PC
-       Mat R ! Mat
+       PetscInt blocks ! PetscInt
+       PetscInt lens (*) ! PetscInt
        integer ierr
        end subroutine
-        subroutine PCGalerkinSetInterpolation(pc, P ,ierr)
+        subroutine PCFactorSetReuseOrdering(pc, flag ,ierr)
        PC pc ! PC
-       Mat P ! Mat
+       PetscBool flag ! PetscBool
        integer ierr
        end subroutine
-        subroutine PCGalerkinGetKSP(pc, ksp ,ierr)
+        subroutine PCFactorSetUpMatSolverPackage(pc ,ierr)
        PC pc ! PC
-       KSP ksp ! KSP
        integer ierr
        end subroutine
-        subroutine PCCompositeSetType(pc, type ,ierr)
+        subroutine PCFactorSetZeroPivot(pc, zero ,ierr)
        PC pc ! PC
-       PCCompositeType type ! PCCompositeType
+       PetscReal zero ! PetscReal
        integer ierr
        end subroutine
-        subroutine PCCompositeSpecialSetAlpha(pc, alpha ,ierr)
+        subroutine PCFactorSetShiftType(pc, shifttype ,ierr)
        PC pc ! PC
-       PetscScalar alpha ! PetscScalar
+       MatFactorShiftType shifttype ! MatFactorShiftType
        integer ierr
        end subroutine
-        subroutine PCCompositeGetPC(pc, n, subpc ,ierr)
+        subroutine PCFactorSetShiftAmount(pc, shiftamount ,ierr)
        PC pc ! PC
+       PetscReal shiftamount ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine PCFactorSetLevels(pc, levels ,ierr)
+       PC pc ! PC
+       PetscInt levels ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCFactorSetAllowDiagonalFill(pc ,ierr)
+       PC pc ! PC
+       integer ierr
+       end subroutine
+        subroutine PCFactorReorderForNonzeroDiagonal(pc, rtol ,ierr)
+       PC pc ! PC
+       PetscReal rtol ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine PCFactorSetFill(pc, fill ,ierr)
+       PC pc ! PC
+       PetscReal fill ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine PCFactorSetUseInPlace(pc ,ierr)
+       PC pc ! PC
+       integer ierr
+       end subroutine
+        subroutine PCFactorSetColumnPivot(pc, dtcol ,ierr)
+       PC pc ! PC
+       PetscReal dtcol ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine PCFactorSetPivotInBlocks(pc, pivot ,ierr)
+       PC pc ! PC
+       PetscBool pivot ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCFactorSetReuseFill(pc, flag ,ierr)
+       PC pc ! PC
+       PetscBool flag ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCASMSetOverlap(pc, ovl ,ierr)
+       PC pc ! PC
+       PetscInt ovl ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCASMSetType(pc, type ,ierr)
+       PC pc ! PC
+       PCASMType type ! PCASMType
+       integer ierr
+       end subroutine
+        subroutine PCASMSetSortIndices(pc, doSort ,ierr)
+       PC pc ! PC
+       PetscBool doSort ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCASMCreateSubdomains2D(m, n, mupper, nupper, dof,   &
+     &overlap, Nsub, is, is_local ,ierr)
+       PetscInt m ! PetscInt
        PetscInt n ! PetscInt
-       PC subpc ! PC
+       PetscInt mupper ! PetscInt
+       PetscInt nupper ! PetscInt
+       PetscInt dof ! PetscInt
+       PetscInt overlap ! PetscInt
+       PetscInt Nsub ! PetscInt
+       IS is ! IS
+       IS is_local ! IS
        integer ierr
        end subroutine
-        subroutine PCCompositeSetUseTrue(pc ,ierr)
+        subroutine PCASMSetDMSubdomains(pc, flg ,ierr)
        PC pc ! PC
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
-        subroutine PCISSetSubdomainScalingFactor(pc, scal ,ierr)
+        subroutine PCASMGetDMSubdomains(pc, flg ,ierr)
        PC pc ! PC
-       PetscScalar scal ! PetscScalar
-       integer ierr
-       end subroutine
-        subroutine PCPARMSSetGlobal(pc, type ,ierr)
-       PC pc ! PC
-       PCPARMSGlobalType type ! PCPARMSGlobalType
-       integer ierr
-       end subroutine
-        subroutine PCPARMSSetLocal(pc, type ,ierr)
-       PC pc ! PC
-       PCPARMSLocalType type ! PCPARMSLocalType
-       integer ierr
-       end subroutine
-        subroutine PCPARMSSetSolveTolerances(pc, tol, maxits ,ierr)
-       PC pc ! PC
-       PetscReal tol ! PetscReal
-       PetscInt maxits ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCPARMSSetSolveRestart(pc, restart ,ierr)
-       PC pc ! PC
-       PetscInt restart ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCPARMSSetNonsymPerm(pc, nonsym ,ierr)
-       PC pc ! PC
-       PetscBool nonsym ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine PCPARMSSetFill(pc, lfil0, lfil1, lfil2 ,ierr)
-       PC pc ! PC
-       PetscInt lfil0 ! PetscInt
-       PetscInt lfil1 ! PetscInt
-       PetscInt lfil2 ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCKSPSetUseTrue(pc ,ierr)
-       PC pc ! PC
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine PCKSPGetKSP(pc, ksp ,ierr)
        PC pc ! PC
        KSP ksp ! KSP
-       integer ierr
-       end subroutine
-        subroutine PCFieldSplitSetFields(pc, splitname, n, fields,      &
-     &fields_col ,ierr)
-       PC pc ! PC
-       character splitname (*) ! char
-       PetscInt n ! PetscInt
-       PetscInt fields ! PetscInt
-       PetscInt fields_col ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCFieldSplitSetIS(pc, splitname, is ,ierr)
-       PC pc ! PC
-       character splitname (*) ! char
-       IS is ! IS
-       integer ierr
-       end subroutine
-        subroutine PCFieldSplitGetIS(pc, splitname, is ,ierr)
-       PC pc ! PC
-       character splitname (*) ! char
-       IS is ! IS
-       integer ierr
-       end subroutine
-        subroutine PCFieldSplitSetBlockSize(pc, bs ,ierr)
-       PC pc ! PC
-       PetscInt bs ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCFieldSplitSchurPrecondition(pc, ptype, pre ,ierr)
-       PC pc ! PC
-       PCFieldSplitSchurPreType ptype ! PCFieldSplitSchurPreType
-       Mat pre ! Mat
-       integer ierr
-       end subroutine
-        subroutine PCFieldSplitSetSchurFactType(pc, ftype ,ierr)
-       PC pc ! PC
-       PCFieldSplitSchurFactType ftype ! PCFieldSplitSchurFactType
-       integer ierr
-       end subroutine
-        subroutine PCFieldSplitSetType(pc, type ,ierr)
-       PC pc ! PC
-       PCCompositeType type ! PCCompositeType
-       integer ierr
-       end subroutine
-        subroutine PCFieldSplitGetType(pc, type ,ierr)
-       PC pc ! PC
-       PCCompositeType type ! PCCompositeType
-       integer ierr
-       end subroutine
-        subroutine PCRedundantSetNumber(pc, nredundant ,ierr)
-       PC pc ! PC
-       PetscInt nredundant ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCRedundantSetScatter(pc, in, out ,ierr)
-       PC pc ! PC
-       VecScatter in ! VecScatter
-       VecScatter out ! VecScatter
-       integer ierr
-       end subroutine
-        subroutine PCRedundantGetKSP(pc, innerksp ,ierr)
-       PC pc ! PC
-       KSP innerksp ! KSP
-       integer ierr
-       end subroutine
-        subroutine PCRedundantGetOperators(pc, mat, pmat ,ierr)
-       PC pc ! PC
-       Mat mat ! Mat
-       Mat pmat ! Mat
-       integer ierr
-       end subroutine
-        subroutine PCSASetVectors(pc, nvects, vects ,ierr)
-       PC pc ! PC
-       PetscInt nvects ! PetscInt
-       PetscReal vects ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PCShellSetContext(pc, ctx ,ierr)
-       PC pc ! PC
-       PetscVoid ctx ! void
        integer ierr
        end subroutine
         subroutine PCSPAISetEpsilon(pc, epsilon1 ,ierr)
@@ -205,25 +155,129 @@
        integer sp ! int
        integer ierr
        end subroutine
-        subroutine PCFactorSetReuseOrdering(pc, flag ,ierr)
-       PC pc ! PC
-       PetscBool flag ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine PCBJacobiSetUseTrueLocal(pc ,ierr)
+        subroutine PCJacobiSetUseAbs(pc ,ierr)
        PC pc ! PC
        integer ierr
        end subroutine
-        subroutine PCBJacobiSetTotalBlocks(pc, blocks, lens ,ierr)
+        subroutine PCJacobiSetUseRowMax(pc ,ierr)
        PC pc ! PC
-       PetscInt blocks ! PetscInt
-       PetscInt lens (*) ! PetscInt
        integer ierr
        end subroutine
-        subroutine PCBJacobiSetLocalBlocks(pc, blocks, lens ,ierr)
+        subroutine PCJacobiSetUseRowSum(pc ,ierr)
        PC pc ! PC
-       PetscInt blocks ! PetscInt
-       PetscInt lens (*) ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCRedistributeGetKSP(pc, innerksp ,ierr)
+       PC pc ! PC
+       KSP innerksp ! KSP
+       integer ierr
+       end subroutine
+        subroutine PCGalerkinSetRestriction(pc, R ,ierr)
+       PC pc ! PC
+       Mat R ! Mat
+       integer ierr
+       end subroutine
+        subroutine PCGalerkinSetInterpolation(pc, P ,ierr)
+       PC pc ! PC
+       Mat P ! Mat
+       integer ierr
+       end subroutine
+        subroutine PCGalerkinGetKSP(pc, ksp ,ierr)
+       PC pc ! PC
+       KSP ksp ! KSP
+       integer ierr
+       end subroutine
+        subroutine PCISSetUseStiffnessScaling(pc, use ,ierr)
+       PC pc ! PC
+       PetscBool use ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCISSetSubdomainDiagonalScaling(pc, scaling_factors ,&
+     &ierr)
+       PC pc ! PC
+       Vec scaling_factors ! Vec
+       integer ierr
+       end subroutine
+        subroutine PCISSetSubdomainScalingFactor(pc, scal ,ierr)
+       PC pc ! PC
+       PetscScalar scal ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine PCRedundantSetNumber(pc, nredundant ,ierr)
+       PC pc ! PC
+       PetscInt nredundant ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCRedundantSetScatter(pc, in, out ,ierr)
+       PC pc ! PC
+       VecScatter in ! VecScatter
+       VecScatter out ! VecScatter
+       integer ierr
+       end subroutine
+        subroutine PCRedundantGetKSP(pc, innerksp ,ierr)
+       PC pc ! PC
+       KSP innerksp ! KSP
+       integer ierr
+       end subroutine
+        subroutine PCRedundantGetOperators(pc, mat, pmat ,ierr)
+       PC pc ! PC
+       Mat mat ! Mat
+       Mat pmat ! Mat
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetProcEqLim(pc, n ,ierr)
+       PC pc ! PC
+       PetscInt n ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetCoarseEqLim(pc, n ,ierr)
+       PC pc ! PC
+       PetscInt n ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetRepartitioning(pc, n ,ierr)
+       PC pc ! PC
+       PetscBool n ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetReuseProl(pc, n ,ierr)
+       PC pc ! PC
+       PetscBool n ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetUseASMAggs(pc, n ,ierr)
+       PC pc ! PC
+       PetscBool n ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetNlevels(pc, n ,ierr)
+       PC pc ! PC
+       PetscInt n ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetThreshold(pc, n ,ierr)
+       PC pc ! PC
+       PetscReal n ! PetscReal
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetType(pc, type ,ierr)
+       PC pc ! PC
+       PCGAMGType type ! PCGAMGType
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetNSmooths(pc, n ,ierr)
+       PC pc ! PC
+       PetscInt n ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetSymGraph(pc, n ,ierr)
+       PC pc ! PC
+       PetscBool n ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCGAMGSetSquareGraph(pc, n ,ierr)
+       PC pc ! PC
+       PetscBool n ! PetscBool
        integer ierr
        end subroutine
         subroutine PCEisenstatSetOmega(pc, omega ,ierr)
@@ -233,41 +287,6 @@
        end subroutine
         subroutine PCEisenstatNoDiagonalScaling(pc ,ierr)
        PC pc ! PC
-       integer ierr
-       end subroutine
-        subroutine PCBDDCSetCoarseProblemType(pc, CPT ,ierr)
-       PC pc ! PC
-       CoarseProblemType CPT ! CoarseProblemType
-       integer ierr
-       end subroutine
-        subroutine PCBDDCSetDirichletBoundaries(pc, DirichletBoundaries &
-     &,ierr)
-       PC pc ! PC
-       IS DirichletBoundaries ! IS
-       integer ierr
-       end subroutine
-        subroutine PCBDDCSetNeumannBoundaries(pc, NeumannBoundaries ,   &
-     &ierr)
-       PC pc ! PC
-       IS NeumannBoundaries ! IS
-       integer ierr
-       end subroutine
-        subroutine PCBDDCGetNeumannBoundaries(pc, NeumannBoundaries ,   &
-     &ierr)
-       PC pc ! PC
-       IS NeumannBoundaries ! IS
-       integer ierr
-       end subroutine
-        subroutine PCBDDCGetDirichletBoundaries(pc, DirichletBoundaries &
-     &,ierr)
-       PC pc ! PC
-       IS DirichletBoundaries ! IS
-       integer ierr
-       end subroutine
-        subroutine PCBDDCSetDofsSplitting(pc, n_is, ISForDofs ,ierr)
-       PC pc ! PC
-       PetscInt n_is ! PetscInt
-       IS ISForDofs (*) ! IS
        integer ierr
        end subroutine
         subroutine PCSORSetSymmetric(pc, flag ,ierr)
@@ -284,21 +303,6 @@
        PC pc ! PC
        PetscInt its ! PetscInt
        PetscInt lits ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCJacobiSetUseAbs(pc ,ierr)
-       PC pc ! PC
-       integer ierr
-       end subroutine
-        subroutine PCJacobiSetUseRowMax(pc ,ierr)
-       PC pc ! PC
-       integer ierr
-       end subroutine
-        subroutine PCJacobiSetUseRowSum(pc ,ierr)
-       PC pc ! PC
-       integer ierr
-       end subroutine
-        subroutine PCRegisterDestroy(ierr)
        integer ierr
        end subroutine
         subroutine PCSetFromOptions(pc ,ierr)
@@ -348,6 +352,16 @@
        PC pc ! PC
        Vec in ! Vec
        Vec out ! Vec
+       integer ierr
+       end subroutine
+        subroutine PCSetUseAmat(pc, flg ,ierr)
+       PC pc ! PC
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCGetUseAmat(pc, flg ,ierr)
+       PC pc ! PC
+       PetscBool flg ! PetscBool
        integer ierr
        end subroutine
         subroutine PCCreate(comm, newpc ,ierr)
@@ -467,138 +481,194 @@
        PetscReal coords ! PetscReal
        integer ierr
        end subroutine
-        subroutine PCASMSetOverlap(pc, ovl ,ierr)
+        subroutine PCFieldSplitSetFields(pc, splitname, n, fields,      &
+     &fields_col ,ierr)
        PC pc ! PC
-       PetscInt ovl ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCASMSetType(pc, type ,ierr)
-       PC pc ! PC
-       PCASMType type ! PCASMType
-       integer ierr
-       end subroutine
-        subroutine PCASMSetSortIndices(pc, doSort ,ierr)
-       PC pc ! PC
-       PetscBool doSort ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine PCASMCreateSubdomains2D(m, n, mupper, nupper, dof,   &
-     &overlap, Nsub, is, is_local ,ierr)
-       PetscInt m ! PetscInt
+       character splitname (*) ! char
        PetscInt n ! PetscInt
-       PetscInt mupper ! PetscInt
-       PetscInt nupper ! PetscInt
-       PetscInt dof ! PetscInt
-       PetscInt overlap ! PetscInt
-       PetscInt Nsub ! PetscInt
+       PetscInt fields ! PetscInt
+       PetscInt fields_col ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCFieldSplitSetIS(pc, splitname, is ,ierr)
+       PC pc ! PC
+       character splitname (*) ! char
        IS is ! IS
-       IS is_local ! IS
        integer ierr
        end subroutine
-        subroutine PCGAMGSetProcEqLim(pc, n ,ierr)
+        subroutine PCFieldSplitGetIS(pc, splitname, is ,ierr)
+       PC pc ! PC
+       character splitname (*) ! char
+       IS is ! IS
+       integer ierr
+       end subroutine
+        subroutine PCFieldSplitSetBlockSize(pc, bs ,ierr)
+       PC pc ! PC
+       PetscInt bs ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCFieldSplitSchurPrecondition(pc, ptype, pre ,ierr)
+       PC pc ! PC
+       PCFieldSplitSchurPreType ptype ! PCFieldSplitSchurPreType
+       Mat pre ! Mat
+       integer ierr
+       end subroutine
+        subroutine PCFieldSplitSetSchurFactType(pc, ftype ,ierr)
+       PC pc ! PC
+       PCFieldSplitSchurFactType ftype ! PCFieldSplitSchurFactType
+       integer ierr
+       end subroutine
+        subroutine PCFieldSplitSetType(pc, type ,ierr)
+       PC pc ! PC
+       PCCompositeType type ! PCCompositeType
+       integer ierr
+       end subroutine
+        subroutine PCFieldSplitGetType(pc, type ,ierr)
+       PC pc ! PC
+       PCCompositeType type ! PCCompositeType
+       integer ierr
+       end subroutine
+        subroutine PCFieldSplitSetDMSplits(pc, flg ,ierr)
+       PC pc ! PC
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCFieldSplitGetDMSplits(pc, flg ,ierr)
+       PC pc ! PC
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCPARMSSetGlobal(pc, type ,ierr)
+       PC pc ! PC
+       PCPARMSGlobalType type ! PCPARMSGlobalType
+       integer ierr
+       end subroutine
+        subroutine PCPARMSSetLocal(pc, type ,ierr)
+       PC pc ! PC
+       PCPARMSLocalType type ! PCPARMSLocalType
+       integer ierr
+       end subroutine
+        subroutine PCPARMSSetSolveTolerances(pc, tol, maxits ,ierr)
+       PC pc ! PC
+       PetscReal tol ! PetscReal
+       PetscInt maxits ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCPARMSSetSolveRestart(pc, restart ,ierr)
+       PC pc ! PC
+       PetscInt restart ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCPARMSSetNonsymPerm(pc, nonsym ,ierr)
+       PC pc ! PC
+       PetscBool nonsym ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCPARMSSetFill(pc, lfil0, lfil1, lfil2 ,ierr)
+       PC pc ! PC
+       PetscInt lfil0 ! PetscInt
+       PetscInt lfil1 ! PetscInt
+       PetscInt lfil2 ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCBDDCSetCoarseProblemType(pc, CPT ,ierr)
+       PC pc ! PC
+       CoarseProblemType CPT ! CoarseProblemType
+       integer ierr
+       end subroutine
+        subroutine PCBDDCSetCoarseningRatio(pc, k ,ierr)
+       PC pc ! PC
+       PetscInt k ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCBDDCSetMaxLevels(pc, max_levels ,ierr)
+       PC pc ! PC
+       PetscInt max_levels ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PCBDDCSetNullSpace(pc, NullSpace ,ierr)
+       PC pc ! PC
+       MatNullSpace NullSpace ! MatNullSpace
+       integer ierr
+       end subroutine
+        subroutine PCBDDCSetDirichletBoundaries(pc, DirichletBoundaries &
+     &,ierr)
+       PC pc ! PC
+       IS DirichletBoundaries ! IS
+       integer ierr
+       end subroutine
+        subroutine PCBDDCSetNeumannBoundaries(pc, NeumannBoundaries ,   &
+     &ierr)
+       PC pc ! PC
+       IS NeumannBoundaries ! IS
+       integer ierr
+       end subroutine
+        subroutine PCBDDCGetDirichletBoundaries(pc, DirichletBoundaries &
+     &,ierr)
+       PC pc ! PC
+       IS DirichletBoundaries ! IS
+       integer ierr
+       end subroutine
+        subroutine PCBDDCGetNeumannBoundaries(pc, NeumannBoundaries ,   &
+     &ierr)
+       PC pc ! PC
+       IS NeumannBoundaries ! IS
+       integer ierr
+       end subroutine
+        subroutine PCBDDCSetLocalAdjacencyGraph(pc, nvtxs, xadj, adjncy &
+     &, copymode ,ierr)
+       PC pc ! PC
+       PetscInt nvtxs ! PetscInt
+       PetscInt xadj (*) ! PetscInt
+       PetscInt adjncy (*) ! PetscInt
+       PetscCopyMode copymode ! PetscCopyMode
+       integer ierr
+       end subroutine
+        subroutine PCBDDCSetDofsSplitting(pc, n_is, ISForDofs ,ierr)
+       PC pc ! PC
+       PetscInt n_is ! PetscInt
+       IS ISForDofs (*) ! IS
+       integer ierr
+       end subroutine
+        subroutine PCBDDCMatFETIDPGetRHS(fetidp_mat, standard_rhs,      &
+     &fetidp_flux_rhs ,ierr)
+       Mat fetidp_mat ! Mat
+       Vec standard_rhs ! Vec
+       Vec fetidp_flux_rhs ! Vec
+       integer ierr
+       end subroutine
+        subroutine PCBDDCMatFETIDPGetSolution(fetidp_mat,               &
+     &fetidp_flux_sol, standard_sol ,ierr)
+       Mat fetidp_mat ! Mat
+       Vec fetidp_flux_sol ! Vec
+       Vec standard_sol ! Vec
+       integer ierr
+       end subroutine
+        subroutine PCBDDCCreateFETIDPOperators(pc, fetidp_mat, fetidp_pc&
+     & ,ierr)
+       PC pc ! PC
+       Mat fetidp_mat ! Mat
+       PC fetidp_pc ! PC
+       integer ierr
+       end subroutine
+        subroutine PCCompositeSetType(pc, type ,ierr)
+       PC pc ! PC
+       PCCompositeType type ! PCCompositeType
+       integer ierr
+       end subroutine
+        subroutine PCCompositeSpecialSetAlpha(pc, alpha ,ierr)
+       PC pc ! PC
+       PetscScalar alpha ! PetscScalar
+       integer ierr
+       end subroutine
+        subroutine PCCompositeGetPC(pc, n, subpc ,ierr)
        PC pc ! PC
        PetscInt n ! PetscInt
+       PC subpc ! PC
        integer ierr
        end subroutine
-        subroutine PCGAMGSetCoarseEqLim(pc, n ,ierr)
+        subroutine PCShellSetContext(pc, ctx ,ierr)
        PC pc ! PC
-       PetscInt n ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCGAMGSetRepartitioning(pc, n ,ierr)
-       PC pc ! PC
-       PetscBool n ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine PCGAMGSetUseASMAggs(pc, n ,ierr)
-       PC pc ! PC
-       PetscBool n ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine PCGAMGSetNlevels(pc, n ,ierr)
-       PC pc ! PC
-       PetscInt n ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCGAMGSetThreshold(pc, n ,ierr)
-       PC pc ! PC
-       PetscReal n ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PCGAMGSetType(pc, type ,ierr)
-       PC pc ! PC
-       PCGAMGType type ! PCGAMGType
-       integer ierr
-       end subroutine
-        subroutine PCGAMGSetNSmooths(pc, n ,ierr)
-       PC pc ! PC
-       PetscInt n ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCGAMGSetSymGraph(pc, n ,ierr)
-       PC pc ! PC
-       PetscBool n ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine PCGAMGSetSquareGraph(pc, n ,ierr)
-       PC pc ! PC
-       PetscBool n ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetUpMatSolverPackage(pc ,ierr)
-       PC pc ! PC
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetZeroPivot(pc, zero ,ierr)
-       PC pc ! PC
-       PetscReal zero ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetShiftType(pc, shifttype ,ierr)
-       PC pc ! PC
-       MatFactorShiftType shifttype ! MatFactorShiftType
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetShiftAmount(pc, shiftamount ,ierr)
-       PC pc ! PC
-       PetscReal shiftamount ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetLevels(pc, levels ,ierr)
-       PC pc ! PC
-       PetscInt levels ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetAllowDiagonalFill(pc ,ierr)
-       PC pc ! PC
-       integer ierr
-       end subroutine
-        subroutine PCFactorReorderForNonzeroDiagonal(pc, rtol ,ierr)
-       PC pc ! PC
-       PetscReal rtol ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetFill(pc, fill ,ierr)
-       PC pc ! PC
-       PetscReal fill ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetUseInPlace(pc ,ierr)
-       PC pc ! PC
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetColumnPivot(pc, dtcol ,ierr)
-       PC pc ! PC
-       PetscReal dtcol ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetPivotInBlocks(pc, pivot ,ierr)
-       PC pc ! PC
-       PetscBool pivot ! PetscBool
-       integer ierr
-       end subroutine
-        subroutine PCFactorSetReuseFill(pc, flag ,ierr)
-       PC pc ! PC
-       PetscBool flag ! PetscBool
+       PetscVoid ctx ! void
        integer ierr
        end subroutine

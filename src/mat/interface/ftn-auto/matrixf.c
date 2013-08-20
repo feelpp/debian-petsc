@@ -29,6 +29,11 @@ extern void PetscRmPointer(void*);
 
 #include "petscmat.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matsetrandom_ MATSETRANDOM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matsetrandom_ matsetrandom
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matfindnonzerorows_ MATFINDNONZEROROWS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matfindnonzerorows_ matfindnonzerorows
@@ -444,16 +449,6 @@ extern void PetscRmPointer(void*);
 #define matgetnearnullspace_ matgetnearnullspace
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matsetvaluesadic_ MATSETVALUESADIC
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matsetvaluesadic_ matsetvaluesadic
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matsetcoloring_ MATSETCOLORING
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matsetcoloring_ matsetcoloring
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matsetvaluesadifor_ MATSETVALUESADIFOR
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matsetvaluesadifor_ matsetvaluesadifor
@@ -554,6 +549,11 @@ extern void PetscRmPointer(void*);
 #define mattransposematmult_ mattransposematmult
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matmatmatmult_ MATMATMATMULT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matmatmatmult_ matmatmatmult
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matgetlocalsubmatrix_ MATGETLOCALSUBMATRIX
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matgetlocalsubmatrix_ matgetlocalsubmatrix
@@ -574,6 +574,11 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  matsetrandom_(Mat x,PetscRandom rctx, int *__ierr ){
+*__ierr = MatSetRandom(
+	(Mat)PetscToPointer((x) ),
+	(PetscRandom)PetscToPointer((rctx) ));
+}
 void PETSC_STDCALL  matfindnonzerorows_(Mat mat,IS *keptrows, int *__ierr ){
 *__ierr = MatFindNonzeroRows(
 	(Mat)PetscToPointer((mat) ),keptrows);
@@ -594,7 +599,7 @@ void PETSC_STDCALL  matimaginarypart_(Mat mat, int *__ierr ){
 *__ierr = MatImaginaryPart(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL  matmissingdiagonal_(Mat mat,PetscBool  *missing,PetscInt *dd, int *__ierr ){
+void PETSC_STDCALL  matmissingdiagonal_(Mat mat,PetscBool *missing,PetscInt *dd, int *__ierr ){
 *__ierr = MatMissingDiagonal(
 	(Mat)PetscToPointer((mat) ),missing,dd);
 }
@@ -878,7 +883,7 @@ void PETSC_STDCALL  matassemblyend_(Mat mat,MatAssemblyType *type, int *__ierr )
 *__ierr = MatAssemblyEnd(
 	(Mat)PetscToPointer((mat) ),*type);
 }
-void PETSC_STDCALL  matsetoption_(Mat mat,MatOption *op,PetscBool  *flg, int *__ierr ){
+void PETSC_STDCALL  matsetoption_(Mat mat,MatOption *op,PetscBool *flg, int *__ierr ){
 *__ierr = MatSetOption(
 	(Mat)PetscToPointer((mat) ),*op,*flg);
 }
@@ -886,19 +891,19 @@ void PETSC_STDCALL  matzeroentries_(Mat mat, int *__ierr ){
 *__ierr = MatZeroEntries(
 	(Mat)PetscToPointer((mat) ));
 }
-void PETSC_STDCALL  matgetsize_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
+void PETSC_STDCALL  matgetsize_(Mat mat,PetscInt *m,PetscInt *n, int *__ierr ){
 *__ierr = MatGetSize(
 	(Mat)PetscToPointer((mat) ),m,n);
 }
-void PETSC_STDCALL  matgetlocalsize_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
+void PETSC_STDCALL  matgetlocalsize_(Mat mat,PetscInt *m,PetscInt *n, int *__ierr ){
 *__ierr = MatGetLocalSize(
 	(Mat)PetscToPointer((mat) ),m,n);
 }
-void PETSC_STDCALL  matgetownershiprangecolumn_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
+void PETSC_STDCALL  matgetownershiprangecolumn_(Mat mat,PetscInt *m,PetscInt *n, int *__ierr ){
 *__ierr = MatGetOwnershipRangeColumn(
 	(Mat)PetscToPointer((mat) ),m,n);
 }
-void PETSC_STDCALL  matgetownershiprange_(Mat mat,PetscInt *m,PetscInt* n, int *__ierr ){
+void PETSC_STDCALL  matgetownershiprange_(Mat mat,PetscInt *m,PetscInt *n, int *__ierr ){
 *__ierr = MatGetOwnershipRange(
 	(Mat)PetscToPointer((mat) ),m,n);
 }
@@ -972,15 +977,6 @@ void PETSC_STDCALL  matsetnearnullspace_(Mat mat,MatNullSpace nullsp, int *__ier
 void PETSC_STDCALL  matgetnearnullspace_(Mat mat,MatNullSpace *nullsp, int *__ierr ){
 *__ierr = MatGetNearNullSpace(
 	(Mat)PetscToPointer((mat) ),nullsp);
-}
-void PETSC_STDCALL  matsetvaluesadic_(Mat mat,void*v, int *__ierr ){
-*__ierr = MatSetValuesAdic(
-	(Mat)PetscToPointer((mat) ),v);
-}
-void PETSC_STDCALL  matsetcoloring_(Mat mat,ISColoring coloring, int *__ierr ){
-*__ierr = MatSetColoring(
-	(Mat)PetscToPointer((mat) ),
-	(ISColoring)PetscToPointer((coloring) ));
 }
 void PETSC_STDCALL  matsetvaluesadifor_(Mat mat,PetscInt *nl,void*v, int *__ierr ){
 *__ierr = MatSetValuesAdifor(
@@ -1076,6 +1072,12 @@ void PETSC_STDCALL  mattransposematmult_(Mat A,Mat B,MatReuse *scall,PetscReal *
 *__ierr = MatTransposeMatMult(
 	(Mat)PetscToPointer((A) ),
 	(Mat)PetscToPointer((B) ),*scall,*fill,C);
+}
+void PETSC_STDCALL  matmatmatmult_(Mat A,Mat B,Mat C,MatReuse *scall,PetscReal *fill,Mat *D, int *__ierr ){
+*__ierr = MatMatMatMult(
+	(Mat)PetscToPointer((A) ),
+	(Mat)PetscToPointer((B) ),
+	(Mat)PetscToPointer((C) ),*scall,*fill,D);
 }
 void PETSC_STDCALL  matgetlocalsubmatrix_(Mat mat,IS isrow,IS iscol,Mat *submat, int *__ierr ){
 *__ierr = MatGetLocalSubMatrix(

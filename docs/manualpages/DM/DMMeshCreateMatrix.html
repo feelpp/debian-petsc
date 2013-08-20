@@ -5,13 +5,13 @@
 <TITLE>DMMeshCreateMatrix</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMMeshCreateMatrix"><H1>DMMeshCreateMatrix</H1></A>
 Creates a matrix with the correct parallel layout required for computing the Jacobian on a function defined using the information in the Section. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmmesh.h"   
-PetscErrorCode DMMeshCreateMatrix(DM dm, SectionReal section, const MatType mtype, Mat *J)
+PetscErrorCode DMMeshCreateMatrix(DM dm, SectionReal section, MatType mtype, Mat *J)
 </PRE>
 Collective on DMMesh
 <P>

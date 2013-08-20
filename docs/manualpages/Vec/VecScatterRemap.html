@@ -5,13 +5,12 @@
 <TITLE>VecScatterRemap</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecScatterRemap"><H1>VecScatterRemap</H1></A>
-Remaps the "from" and "to" indices in a  vector scatter context. FOR EXPERTS ONLY! 
+Remaps the "from" and "to" indices in a vector scatter context. FOR EXPERTS ONLY! 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscis.h" 
-#include "petscvec.h" 
+#include "petscvec.h"    
 PetscErrorCode  VecScatterRemap(VecScatter scat,PetscInt *rto,PetscInt *rfrom)
 </PRE>
 Collective on <A HREF="../Vec/VecScatter.html#VecScatter">VecScatter</A>
@@ -20,9 +19,9 @@ Collective on <A HREF="../Vec/VecScatter.html#VecScatter">VecScatter</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>scat </B></TD><TD>- vector scatter context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>from </B></TD><TD>- remapping for "from" indices (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>from </B></TD><TD>- remapping for "from" indices (may be NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>to   </B></TD><TD>- remapping for "to" indices (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>to   </B></TD><TD>- remapping for "to" indices (may be NULL)
 </TD></TR></TABLE>
 <P>
 

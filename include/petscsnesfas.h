@@ -1,10 +1,10 @@
 #if !(defined __PETSCSNESFAS_H)
 #define __PETSCSNESFAS_H
-#include "petscsnes.h"
+#include <petscsnes.h>
 
 
 /*E
-    SNESFASType - Determines the type of multigrid method that is run.
+    SNESFASType - Determines the type of nonlinear multigrid method that is run.
 
    Level: beginner
 
@@ -16,7 +16,7 @@
 
 E*/
 typedef enum { SNES_FAS_MULTIPLICATIVE, SNES_FAS_ADDITIVE } SNESFASType;
-PETSC_EXTERN const char * SNESFASTypes[];
+PETSC_EXTERN const char *const  SNESFASTypes[];
 
 /* called on the finest level FAS instance*/
 PETSC_EXTERN PetscErrorCode SNESFASSetType(SNES, SNESFASType);
@@ -28,6 +28,7 @@ PETSC_EXTERN PetscErrorCode SNESFASSetNumberSmoothUp(SNES, PetscInt);
 PETSC_EXTERN PetscErrorCode SNESFASSetNumberSmoothDown(SNES, PetscInt);
 PETSC_EXTERN PetscErrorCode SNESFASSetCycles(SNES, PetscInt);
 PETSC_EXTERN PetscErrorCode SNESFASSetMonitor(SNES, PetscBool);
+PETSC_EXTERN PetscErrorCode SNESFASSetLog(SNES, PetscBool);
 
 
 PETSC_EXTERN PetscErrorCode SNESFASSetGalerkin(SNES, PetscBool);

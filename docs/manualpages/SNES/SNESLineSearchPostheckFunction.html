@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESLineSearchPostheckFunction.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SNESLineSearchPostheckFunction</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="SNESLineSearchPostheckFunction"><H1>SNESLineSearchPostheckFunction</H1></A>
+functional form that is called after line search is complete 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsnes.h"
+SNESLineSearchPostheckFunction(SNESLineSearch linesearch,Vec x,Vec y,  Vec w, *changed_y, PetscBool *changed_w);
+</PRE>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- old solution vector
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>y </B></TD><TD>- search direction vector
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>w </B></TD><TD>- new solution vector
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>changed_y </B></TD><TD>- indicates that the line search changed y
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>changed_w </B></TD><TD>- indicates that the line search changed w
+</TD></TR></TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+   <A HREF="../SNES/SNESLineSearchSetPreCheck.html#SNESLineSearchSetPreCheck">SNESLineSearchSetPreCheck</A>(), <A HREF="../SNES/SNESLineSearchSetPostCheck.html#SNESLineSearchSetPostCheck">SNESLineSearchSetPostCheck</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/linesearch/interface/linesearch.c.html#SNESLineSearchPostheckFunction">src/snes/linesearch/interface/linesearch.c</A>
+<BR><A HREF="./index.html">Index of all SNES routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

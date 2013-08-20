@@ -210,7 +210,7 @@ void PETSC_STDCALL  vecsqrtabs_(Vec v, int *__ierr ){
 *__ierr = VecSqrtAbs(
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL  vecdotnorm2_(Vec s,Vec t,PetscScalar *dp,PetscScalar *nm, int *__ierr ){
+void PETSC_STDCALL  vecdotnorm2_(Vec s,Vec t,PetscScalar *dp,PetscReal *nm, int *__ierr ){
 *__ierr = VecDotNorm2(
 	(Vec)PetscToPointer((s) ),
 	(Vec)PetscToPointer((t) ),dp,nm);
@@ -227,7 +227,7 @@ void PETSC_STDCALL  vecabs_(Vec v, int *__ierr ){
 *__ierr = VecAbs(
 	(Vec)PetscToPointer((v) ));
 }
-void PETSC_STDCALL  vecpermute_(Vec x,IS row,PetscBool  *inv, int *__ierr ){
+void PETSC_STDCALL  vecpermute_(Vec x,IS row,PetscBool *inv, int *__ierr ){
 *__ierr = VecPermute(
 	(Vec)PetscToPointer((x) ),
 	(IS)PetscToPointer((row) ),*inv);

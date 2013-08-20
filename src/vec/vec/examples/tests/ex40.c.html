@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tests/ex40.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:40:12+00:00">
+<meta name="date" content="2013-07-02T14:40:15+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests taking part of existing array to create a new vector.\n\n"</font>;
 
@@ -28,13 +28,14 @@
 <a name="line20"> 20: </a>  <font color="#B22222">/* create vector */</font>
 <a name="line21"> 21: </a>  <font color="#4169E1">for</font> (i=0; i&lt;n; i++) array[i] = i;
 <a name="line22"> 22: </a>  n = n-1;
-<a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,n,array+1,&amp;x);
-<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
-<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
-<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line27"> 27: </a>  <font color="#4169E1">return</font> 0;
-<a name="line28"> 28: </a>}
-<a name="line29"> 29: </a>
+
+<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateSeqWithArray.html#VecCreateSeqWithArray">VecCreateSeqWithArray</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,1,n,array+1,&amp;x);
+<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
+<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line28"> 28: </a>  <font color="#4169E1">return</font> 0;
+<a name="line29"> 29: </a>}
+
 </pre>
 </body>
 

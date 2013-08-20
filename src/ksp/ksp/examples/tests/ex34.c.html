@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tests/ex34.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:05:22+00:00">
+<meta name="date" content="2013-07-02T14:48:34+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 
 <a name="line3">  3: </a>static char help[] = <font color="#666666">"Demonstrates <A href="../../../../../docs/manualpages/Sys/PetscHMPIMerge.html#PetscHMPIMerge">PetscHMPIMerge</A>() usage\n\n"</font>;
@@ -25,7 +25,7 @@
 <a name="line14"> 14: </a>} MyMultCtx;
 
 <a name="line18"> 18: </a><font color="#B22222">/*</font>
-<a name="line19"> 19: </a><font color="#B22222">    This is called on ALL processess, master and worker </font>
+<a name="line19"> 19: </a><font color="#B22222">    This is called on ALL processess, master and worker</font>
 <a name="line20"> 20: </a><font color="#B22222">*/</font>
 <a name="line21"> 21: </a><strong><font color="#4169E1"><a name="MyMult"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MyMult(<A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,MyMultCtx *ctx,void *dummy)</font></strong>
 <a name="line22"> 22: </a>{
@@ -54,7 +54,7 @@
 <a name="line51"> 51: </a>  <font color="#B22222">/* allocates memory on each process, both masters and workers */</font>
 <a name="line52"> 52: </a>  <A href="../../../../../docs/manualpages/Sys/PetscHMPIMalloc.html#PetscHMPIMalloc">PetscHMPIMalloc</A>(PETSC_COMM_LOCAL_WORLD,<font color="#4169E1">sizeof</font>(int),&amp;subctx);
 <a name="line53"> 53: </a>  <font color="#B22222">/* runs MyMult() function on each process, both masters and workers */</font>
-<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Sys/PetscHMPIRunCtx.html#PetscHMPIRunCtx">PetscHMPIRunCtx</A>(PETSC_COMM_LOCAL_WORLD,(<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(<A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>,void*,void *))MyMult,subctx);
+<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Sys/PetscHMPIRunCtx.html#PetscHMPIRunCtx">PetscHMPIRunCtx</A>(PETSC_COMM_LOCAL_WORLD,(<A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*)(<A href="../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>,void*,void*))MyMult,subctx);
 <a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Sys/PetscHMPIFree.html#PetscHMPIFree">PetscHMPIFree</A>(PETSC_COMM_LOCAL_WORLD,subctx);
 <a name="line56"> 56: </a>  <font color="#4169E1">return</font>(0);
 <a name="line57"> 57: </a>}
@@ -69,15 +69,15 @@
 <a name="line69"> 69: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,rstart,n = 0;   <font color="#B22222">/* length of vector ctx.xr on this process */</font>
 <a name="line70"> 70: </a>  <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>             is;
 
-<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 <a name="line73"> 73: </a>  ctx.comm = <A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>;
 <a name="line74"> 74: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rank);
 <a name="line75"> 75: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
-<a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-nodesize"</font>,&amp;nodesize,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL,<font color="#666666">"-nodesize"</font>,&amp;nodesize,NULL);
 <a name="line77"> 77: </a>  <font color="#4169E1">if</font> (size % nodesize) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP,<font color="#666666">"MPI_COMM_WORLD size must be divisible by nodesize"</font>);
 
 <a name="line79"> 79: </a>  <font color="#B22222">/* Read matrix */</font>
-<a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-f"</font>,file,PETSC_MAX_PATH_LEN,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(NULL,<font color="#666666">"-f"</font>,file,PETSC_MAX_PATH_LEN,NULL);
 <a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,file,FILE_MODE_READ,&amp;fd);
 <a name="line82"> 82: </a>  <A href="../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;ctx.A);
 <a name="line83"> 83: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(ctx.A,<A href="../../../../../docs/manualpages/Mat/MATMPIAIJ.html#MATMPIAIJ">MATMPIAIJ</A>);
@@ -93,12 +93,12 @@
 <a name="line93"> 93: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>(MPI_COMM_WORLD,n,<A href="../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>,&amp;ctx.xr);
 <a name="line94"> 94: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(ctx.xr,&amp;ctx.yr);
 <a name="line95"> 95: </a>  <font color="#B22222">/* create scatter from ctx.xr to ctx.x vector */</font>
-<a name="line96"> 96: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetOwnershipRange.html#VecGetOwnershipRange">VecGetOwnershipRange</A>(ctx.x,&amp;rstart,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line96"> 96: </a>  <A href="../../../../../docs/manualpages/Vec/VecGetOwnershipRange.html#VecGetOwnershipRange">VecGetOwnershipRange</A>(ctx.x,&amp;rstart,NULL);
 <a name="line97"> 97: </a>  <A href="../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,ns[rank],rstart,1,&amp;is);
 <a name="line98"> 98: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(ctx.xr,is,ctx.x,is,&amp;ctx.sct);
 <a name="line99"> 99: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is);
 
-<a name="line101">101: </a>  <font color="#B22222">/* </font>
+<a name="line101">101: </a>  <font color="#B22222">/*</font>
 <a name="line102">102: </a><font color="#B22222">     The master nodes call the function MySubsolver() while the worker nodes wait for requests to call functions</font>
 <a name="line103">103: </a><font color="#B22222">     These requests are triggered by the calls from the masters on <A href="../../../../../docs/manualpages/Sys/PetscHMPIRunCtx.html#PetscHMPIRunCtx">PetscHMPIRunCtx</A>()</font>
 <a name="line104">104: </a><font color="#B22222">  */</font>

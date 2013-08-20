@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/Completion.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:19:58+00:00">
+<meta name="date" content="2013-07-02T14:53:09+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_Completion_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_Completion_hh</font></strong>
 
@@ -85,7 +85,7 @@
 <a name="line74"> 74: </a>      <font color="#4169E1">typedef</font> typename ALE::New::SectionCompletion&lt;bundle_type, value_type, alloc_type&gt;   completion;
 <a name="line75"> 75: </a><strong><font color="#FF0000">    public:</font></strong>
 <a name="line76"> 76: </a>      template&lt;typename PartitionType&gt;
-<a name="line77"> 77: </a>      static void scatterSieve(const Obj&lt;bundle_type&gt;&amp; bundle, const Obj&lt;sieve_type&gt;&amp; sieve, const int dim, const Obj&lt;sieve_type&gt;&amp; sieveNew, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const int height, const int numCells, const PartitionType assignment[]) {
+<a name="line77"> 77: </a>      static void scatterSieve(const Obj&lt;bundle_type&gt;&amp; bundle, const Obj&lt;sieve_type&gt;&amp; sieve, const int dim, const Obj&lt;sieve_type&gt;&amp; sieveNew, const Obj&lt;send_overlap_type&gt;&amp; sendOverlap, const Obj&lt;recv_overlap_type&gt;&amp; recvOverlap, const int height, const int numCells, PartitionType assignment[]) {
 <a name="line78"> 78: </a>        <font color="#4169E1">typedef</font> typename ALE::Field&lt;send_overlap_type, int, ALE::Section&lt;point_type, value_type, value_alloc_type&gt; &gt; send_section_type;
 <a name="line79"> 79: </a>        <font color="#4169E1">typedef</font> typename ALE::Field&lt;recv_overlap_type, int, ALE::Section&lt;point_type, value_type, value_alloc_type&gt; &gt; recv_section_type;
 <a name="line80"> 80: </a>        int rank  = sieve-&gt;commRank();
@@ -102,7 +102,7 @@
 <a name="line91"> 91: </a>          }
 <a name="line92"> 92: </a>        }
 <a name="line93"> 93: </a>        <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flg;
-<a name="line94"> 94: </a>        <A href="../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-output_partition"</font>, &amp;flg);
+<a name="line94"> 94: </a>        <A href="../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL, <font color="#666666">"-output_partition"</font>, &amp;flg);
 <a name="line95"> 95: </a>        <font color="#4169E1">if</font> (flg) {
 <a name="line96"> 96: </a>          ostringstream fname;
 <a name="line97"> 97: </a>          fname &lt;&lt; <font color="#666666">"part."</font> &lt;&lt; sieve-&gt;commSize() &lt;&lt; <font color="#666666">".dat"</font>;
@@ -123,7 +123,7 @@
 <a name="line112">112: </a>            <font color="#4169E1">while</font>(current-&gt;size()) {
 <a name="line113">113: </a>              <font color="#4169E1">for</font>(typename sieve_type::coneSet::const_iterator p_iter = current-&gt;begin(); p_iter != current-&gt;end(); ++p_iter) {
 <a name="line114">114: </a>                const Obj&lt;typename sieve_type::traits::coneSequence&gt;&amp; cone = sieve-&gt;cone(*p_iter);
-<a name="line115">115: </a>
+
 <a name="line116">116: </a>                <font color="#4169E1">for</font>(typename sieve_type::traits::coneSequence::iterator c_iter = cone-&gt;begin(); c_iter != cone-&gt;end(); ++c_iter) {
 <a name="line117">117: </a>                  sieveNew-&gt;addArrow(*c_iter, *p_iter, c_iter.color());
 <a name="line118">118: </a>                  next-&gt;insert(*c_iter);
@@ -137,7 +137,7 @@
 <a name="line126">126: </a>              <font color="#4169E1">while</font>(current-&gt;size()) {
 <a name="line127">127: </a>                <font color="#4169E1">for</font>(typename sieve_type::coneSet::const_iterator p_iter = current-&gt;begin(); p_iter != current-&gt;end(); ++p_iter) {
 <a name="line128">128: </a>                  const Obj&lt;typename sieve_type::traits::supportSequence&gt;&amp; support = sieve-&gt;support(*p_iter);
-<a name="line129">129: </a>
+
 <a name="line130">130: </a>                  <font color="#4169E1">for</font>(typename sieve_type::traits::supportSequence::iterator s_iter = support-&gt;begin(); s_iter != support-&gt;end(); ++s_iter) {
 <a name="line131">131: </a>                    sieveNew-&gt;addArrow(*p_iter, *s_iter, s_iter.color());
 <a name="line132">132: </a>                    next-&gt;insert(*s_iter);

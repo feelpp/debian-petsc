@@ -5,7 +5,7 @@
 <TITLE>TSMonitorSet</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSMonitorSet"><H1>TSMonitorSet</H1></A>
 Sets an ADDITIONAL function that is to be used at every timestep to display the iteration's  progress. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,26 +21,27 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>monitor </B></TD><TD>- monitoring routine
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mctx </B></TD><TD>- [optional] user-defined context for private data for the 
-monitor routine (use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if no context is desired)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mctx </B></TD><TD>- [optional] user-defined context for private data for the
+monitor routine (use NULL if no context is desired)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>monitordestroy </B></TD><TD>- [optional] routine that frees monitor context
-(may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+(may be NULL)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of monitor</FONT></H3>
 <pre>
-   int monitor(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> steps,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> time,<A HREF="../Vec/Vec.html#Vec">Vec</A> x,void *mctx)
+   int monitor(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> steps,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> time,<A HREF="../Vec/Vec.html#Vec">Vec</A> u,void *mctx)
 </pre>
 <P>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts </B></TD><TD>- the <A HREF="../TS/TS.html#TS">TS</A> context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>steps </B></TD><TD>- iteration number
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>steps </B></TD><TD>- iteration number (after the final time step the monitor routine is called with a step of -1, this is at the final time which may have
+been interpolated to)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>time </B></TD><TD>- current time
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- current iterate
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>u </B></TD><TD>- current iterate
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mctx </B></TD><TD>- [optional] monitoring context
 </TD></TR></TABLE>
@@ -73,7 +74,7 @@ Fortran notes: Only a single monitor function can be set for each <A HREF="../TS
 <A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex8.c.html">src/ts/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex13.c.html">src/ts/examples/tutorials/ex13.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex16.c.html">src/ts/examples/tutorials/ex16.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex21.c.html">src/ts/examples/tutorials/ex21.c.html</A><BR>
 </BODY></HTML>

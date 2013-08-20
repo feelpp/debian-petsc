@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tests/ex5f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:05:25+00:00">
+<meta name="date" content="2013-07-02T14:48:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>      program main
 <a name="line3">  3: </a>       implicit none
@@ -32,7 +32,7 @@
 <a name="line21"> 21: </a>      <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> one
 
 <a name="line23"> 23: </a>      m = 10
-<a name="line24"> 24: </a>
+
 <a name="line25"> 25: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(PETSC_NULL_CHARACTER,ierr)
 <a name="line26"> 26: </a>      one = 1.d0
 <a name="line27"> 27: </a>      call <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,ksp,ierr)
@@ -61,18 +61,18 @@
 
 <a name="line51"> 51: </a>!  This is a bogus multiply that copies the vector. This corresponds to
 <a name="line52"> 52: </a>!  an identity matrix A
-<a name="line53"> 53: </a>
+
 <a name="line54"> 54: </a>      subroutine mymatmult(A,x,y,ierr)
-<a name="line55"> 55: </a>
+
 <a name="line56"> 56: </a>      <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A
 <a name="line57"> 57: </a>      <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> x,y
 <a name="line58"> 58: </a>      <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr
-<a name="line59"> 59: </a>
+
 <a name="line60"> 60: </a>      call <A href="../../../../../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(x,y,ierr)
 
 <a name="line62"> 62: </a>      <font color="#4169E1">return</font>
 <a name="line63"> 63: </a>      end
-<a name="line64"> 64: </a>
+
 </pre>
 </body>
 

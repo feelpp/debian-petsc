@@ -5,9 +5,9 @@
 <TITLE>PetscLogMPEBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscLogMPEBegin"><H1>PetscLogMPEBegin</H1></A>
-Turns on MPE logging of events. This creates large log files  and slows the program down. 
+Turns on MPE logging of events. This creates large log files and slows the program down. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
@@ -16,12 +16,11 @@ PetscErrorCode  PetscLogMPEBegin(void)
 Collective over <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
-<DT><B>-log_mpe </B> -Prints extensive log information (for code compiled
-with PETSC_USE_LOG)
+<DT><B>-log_mpe </B> -Prints extensive log information (for code compiled with PETSC_USE_LOG)
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-A related routine is <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A> (with the options key -log), which is
+A related routine is <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A>() (with the options key -log_summary), which is
 intended for production runs since it logs only flop rates and object
 creation (and should not significantly slow the programs).
 <P>
@@ -32,7 +31,7 @@ creation (and should not significantly slow the programs).
  <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(), <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A>(), <A HREF="../Profiling/PetscLogAllBegin.html#PetscLogAllBegin">PetscLogAllBegin</A>(), <A HREF="../Profiling/PetscLogEventActivate.html#PetscLogEventActivate">PetscLogEventActivate</A>(),
 <BR><A HREF="../Profiling/PetscLogEventDeactivate.html#PetscLogEventDeactivate">PetscLogEventDeactivate</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plogmpe.c.html#PetscLogMPEBegin">src/sys/plog/plogmpe.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/logging/plog.c.html#PetscLogMPEBegin">src/sys/logging/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

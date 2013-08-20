@@ -5,12 +5,12 @@
 <TITLE>VecStashGetInfo</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecStashGetInfo"><H1>VecStashGetInfo</H1></A>
 Gets how many values are currently in the vector stash, i.e. need to be communicated to other processors during the <A HREF="../Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>/End() process 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecStashGetInfo(Vec vec,PetscInt *nstash,PetscInt *reallocs,PetscInt *bnstash,PetscInt *breallocs)
 </PRE>
 Not collective

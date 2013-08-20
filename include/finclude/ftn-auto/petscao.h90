@@ -1,3 +1,9 @@
+        subroutine AOMappingHasPetscIndex(ao, idex, hasIndex ,ierr)
+       AO ao ! AO
+       PetscInt idex ! PetscInt
+       PetscBool hasIndex ! PetscBool
+       integer ierr
+       end subroutine
         subroutine AOPetscToApplicationIS(ao, is ,ierr)
        AO ao ! AO
        IS is ! IS
@@ -46,11 +52,5 @@
        AO ao ! AO
        PetscInt block ! PetscInt
        PetscReal array (*) ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine AOMappingHasPetscIndex(ao, idex, hasIndex ,ierr)
-       AO ao ! AO
-       PetscInt idex ! PetscInt
-       PetscBool hasIndex ! PetscBool
        integer ierr
        end subroutine

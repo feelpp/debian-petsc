@@ -27,7 +27,6 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscis.h"
 #include "petscvec.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecscattergetmerged_ VECSCATTERGETMERGED

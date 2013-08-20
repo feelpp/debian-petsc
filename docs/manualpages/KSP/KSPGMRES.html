@@ -5,9 +5,9 @@
 <TITLE>KSPGMRES</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPGMRES"><H1>KSPGMRES</H1></A>
-Implements the Generalized Minimal Residual method.   (Saad and Schultz, 1986) with restart 
+Implements the Generalized Minimal Residual method. (Saad and Schultz, 1986) with restart 
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -15,14 +15,14 @@ Implements the Generalized Minimal Residual method.   (Saad and Schultz, 1986) w
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_gmres_haptol &lt;tol&gt; </B></TD><TD>- sets the tolerance for "happy ending" (exact convergence)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_gmres_preallocate </B></TD><TD>- preallocate all the Krylov search directions initially (otherwise groups of 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_gmres_preallocate </B></TD><TD>- preallocate all the Krylov search directions initially (otherwise groups of
 vectors are allocated as needed)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_gmres_classicalgramschmidt </B></TD><TD>- use classical (unmodified) Gram-Schmidt to orthogonalize against the Krylov space (fast) (the default)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_gmres_modifiedgramschmidt </B></TD><TD>- use modified Gram-Schmidt in the orthogonalization (more stable, but slower)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_gmres_cgs_refinement_type &lt;never,ifneeded,always&gt; </B></TD><TD>- determine if iterative refinement is used to increase the 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_gmres_cgs_refinement_type &lt;never,ifneeded,always&gt; </B></TD><TD>- determine if iterative refinement is used to increase the
 stability of the classical Gram-Schmidt  orthogonalization.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ksp_gmres_krylov_monitor </B></TD><TD>- plot the Krylov space generated

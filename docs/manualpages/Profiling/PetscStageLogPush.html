@@ -5,7 +5,7 @@
 <TITLE>PetscStageLogPush</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscStageLogPush"><H1>PetscStageLogPush</H1></A>
 This function pushes a stage on the stack. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -32,12 +32,12 @@ following code, then 2 sets of summary data will be printed during
 <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>().
 <PRE>
       <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(int *argc,char ***args,0,0);
-      [stage 0 of code]   
+      [stage 0 of code]
       <A HREF="../Profiling/PetscStageLogPush.html#PetscStageLogPush">PetscStageLogPush</A>(stageLog,1);
       [stage 1 of code]
       <A HREF="../Profiling/PetscStageLogPop.html#PetscStageLogPop">PetscStageLogPop</A>(stageLog);
       <A HREF="../Sys/PetscBarrier.html#PetscBarrier">PetscBarrier</A>(...);
-      [more stage 0 of code]   
+      [more stage 0 of code]
       <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 </PRE>
 
@@ -54,7 +54,7 @@ accumulating time and flops, but events will only be logged in this stage.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Profiling/PetscStageLogPop.html#PetscStageLogPop">PetscStageLogPop</A>(), <A HREF="../Profiling/PetscStageLogGetCurrent.html#PetscStageLogGetCurrent">PetscStageLogGetCurrent</A>(), <A HREF="../Profiling/PetscStageLogRegister.html#PetscStageLogRegister">PetscStageLogRegister</A>(), <A HREF="../Profiling/PetscLogGetStageLog.html#PetscLogGetStageLog">PetscLogGetStageLog</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/utils/stageLog.c.html#PetscStageLogPush">src/sys/plog/utils/stageLog.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/logging/utils/stagelog.c.html#PetscStageLogPush">src/sys/logging/utils/stagelog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

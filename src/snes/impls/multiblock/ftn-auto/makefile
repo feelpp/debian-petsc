@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = multiblockf.c
-OBJSC    = multiblockf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

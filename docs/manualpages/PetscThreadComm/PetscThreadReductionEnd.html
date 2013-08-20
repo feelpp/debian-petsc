@@ -5,13 +5,13 @@
 <TITLE>PetscThreadReductionEnd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscThreadReductionEnd"><H1>PetscThreadReductionEnd</H1></A>
 Completes the given reduction 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscthreadcomm.h" 
-PetscErrorCode PetscThreadReductionEnd(PetscThreadCommRedCtx red,void *outdata)
+PetscErrorCode PetscThreadReductionEnd(PetscThreadCommReduction red,void *outdata)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -25,7 +25,7 @@ PetscErrorCode PetscThreadReductionEnd(PetscThreadCommRedCtx red,void *outdata)
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 To be called by the main thread only
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/threadcomm/threadcommred.c.html#PetscThreadReductionEnd">src/sys/threadcomm/threadcommred.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/threadcomm/interface/threadcommred.c.html#PetscThreadReductionEnd">src/sys/threadcomm/interface/threadcommred.c</A>
 <BR><A HREF="./index.html">Index of all PetscThreadComm routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

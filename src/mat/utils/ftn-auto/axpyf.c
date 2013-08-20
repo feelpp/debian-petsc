@@ -53,6 +53,11 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matcomputeexplicitoperator_ matcomputeexplicitoperator
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matchop_ MATCHOP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matchop_ matchop
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
@@ -81,6 +86,10 @@ void PETSC_STDCALL  mataypx_(Mat Y,PetscScalar *a,Mat X,MatStructure *str, int *
 void PETSC_STDCALL  matcomputeexplicitoperator_(Mat inmat,Mat *mat, int *__ierr ){
 *__ierr = MatComputeExplicitOperator(
 	(Mat)PetscToPointer((inmat) ),mat);
+}
+void PETSC_STDCALL  matchop_(Mat A,PetscReal *tol, int *__ierr ){
+*__ierr = MatChop(
+	(Mat)PetscToPointer((A) ),*tol);
 }
 #if defined(__cplusplus)
 }

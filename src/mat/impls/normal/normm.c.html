@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/normal/normm.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:50:03+00:00">
+<meta name="date" content="2013-07-02T14:43:40+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;          </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
 
@@ -20,7 +20,7 @@
 
 <a name="line12"> 12: </a><strong><font color="#4169E1"><a name="MatScale_Normal"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatScale_Normal(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> inA,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> scale)</font></strong>
 <a name="line13"> 13: </a>{
-<a name="line14"> 14: </a>  Mat_Normal     *a = (Mat_Normal*)inA-&gt;data;
+<a name="line14"> 14: </a>  Mat_Normal *a = (Mat_Normal*)inA-&gt;data;
 
 <a name="line17"> 17: </a>  a-&gt;scale *= scale;
 <a name="line18"> 18: </a>  <font color="#4169E1">return</font>(0);
@@ -70,7 +70,7 @@
 <a name="line70"> 70: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(y,Na-&gt;scale);
 <a name="line71"> 71: </a>  <font color="#4169E1">return</font>(0);
 <a name="line72"> 72: </a>}
-<a name="line73"> 73: </a>
+
 <a name="line76"> 76: </a><strong><font color="#4169E1"><a name="MatMultAdd_Normal"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultAdd_Normal(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> N,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v1,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v2,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v3)</font></strong>
 <a name="line77"> 77: </a>{
 <a name="line78"> 78: </a>  Mat_Normal     *Na = (Mat_Normal*)N-&gt;data;
@@ -163,7 +163,7 @@
 <a name="line181">181: </a><strong><font color="#4169E1"><a name="MatGetDiagonal_Normal"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetDiagonal_Normal(<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> N,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v)</font></strong>
 <a name="line182">182: </a>{
 <a name="line183">183: </a>  Mat_Normal        *Na = (Mat_Normal*)N-&gt;data;
-<a name="line184">184: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               A = Na-&gt;A;
+<a name="line184">184: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>               A   = Na-&gt;A;
 <a name="line185">185: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>    ierr;
 <a name="line186">186: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>          i,j,rstart,rend,nnz;
 <a name="line187">187: </a>  const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    *cols;
@@ -180,7 +180,7 @@
 <a name="line199">199: </a>    }
 <a name="line200">200: </a>    <A href="../../../../docs/manualpages/Mat/MatRestoreRow.html#MatRestoreRow">MatRestoreRow</A>(A,i,&amp;nnz,&amp;cols,&amp;mvalues);
 <a name="line201">201: </a>  }
-<a name="line202">202: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(work,diag,A-&gt;cmap-&gt;N,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPIU_SUM,((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)N)-&gt;comm);
+<a name="line202">202: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(work,diag,A-&gt;cmap-&gt;N,<A href="../../../../docs/manualpages/Sys/MPIU_SCALAR.html#MPIU_SCALAR">MPIU_SCALAR</A>,MPIU_SUM,<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)N));
 <a name="line203">203: </a>  rstart = N-&gt;cmap-&gt;rstart;
 <a name="line204">204: </a>  rend   = N-&gt;cmap-&gt;rend;
 <a name="line205">205: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(v,&amp;values);
@@ -214,32 +214,33 @@
 <a name="line236">236: </a>  Mat_Normal     *Na;
 
 <a name="line239">239: </a>  <A href="../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(A,&amp;m,&amp;n);
-<a name="line240">240: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,N);
+<a name="line240">240: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A),N);
 <a name="line241">241: </a>  <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*N,n,n,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>);
 <a name="line242">242: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)*N,MATNORMAL);
-<a name="line243">243: </a>
+
 <a name="line244">244: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(*N,Mat_Normal,&amp;Na);
 <a name="line245">245: </a>  (*N)-&gt;data = (void*) Na;
 <a name="line246">246: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A);
-<a name="line247">247: </a>  Na-&gt;A     = A;
-<a name="line248">248: </a>  Na-&gt;scale = 1.0;
+<a name="line247">247: </a>  Na-&gt;A      = A;
+<a name="line248">248: </a>  Na-&gt;scale  = 1.0;
 
-<a name="line250">250: </a>  <A href="../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A)-&gt;comm,m,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,&amp;Na-&gt;w);
-<a name="line251">251: </a>  (*N)-&gt;ops-&gt;destroy          = MatDestroy_Normal;
-<a name="line252">252: </a>  (*N)-&gt;ops-&gt;mult             = MatMult_Normal;
-<a name="line253">253: </a>  (*N)-&gt;ops-&gt;multtranspose    = MatMultTranspose_Normal;
-<a name="line254">254: </a>  (*N)-&gt;ops-&gt;multtransposeadd = MatMultTransposeAdd_Normal;
-<a name="line255">255: </a>  (*N)-&gt;ops-&gt;multadd          = MatMultAdd_Normal;
-<a name="line256">256: </a>  (*N)-&gt;ops-&gt;getdiagonal      = MatGetDiagonal_Normal;
-<a name="line257">257: </a>  (*N)-&gt;ops-&gt;scale            = MatScale_Normal;
-<a name="line258">258: </a>  (*N)-&gt;ops-&gt;diagonalscale    = MatDiagonalScale_Normal;
-<a name="line259">259: </a>  (*N)-&gt;assembled             = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line260">260: </a>  (*N)-&gt;cmap-&gt;N               = A-&gt;cmap-&gt;N;
-<a name="line261">261: </a>  (*N)-&gt;rmap-&gt;N               = A-&gt;cmap-&gt;N;
-<a name="line262">262: </a>  (*N)-&gt;cmap-&gt;n               = A-&gt;cmap-&gt;n;
-<a name="line263">263: </a>  (*N)-&gt;rmap-&gt;n               = A-&gt;cmap-&gt;n;
-<a name="line264">264: </a>  <font color="#4169E1">return</font>(0);
-<a name="line265">265: </a>}
+<a name="line250">250: </a>  <A href="../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A),m,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,&amp;Na-&gt;w);
+
+<a name="line252">252: </a>  (*N)-&gt;ops-&gt;destroy          = MatDestroy_Normal;
+<a name="line253">253: </a>  (*N)-&gt;ops-&gt;mult             = MatMult_Normal;
+<a name="line254">254: </a>  (*N)-&gt;ops-&gt;multtranspose    = MatMultTranspose_Normal;
+<a name="line255">255: </a>  (*N)-&gt;ops-&gt;multtransposeadd = MatMultTransposeAdd_Normal;
+<a name="line256">256: </a>  (*N)-&gt;ops-&gt;multadd          = MatMultAdd_Normal;
+<a name="line257">257: </a>  (*N)-&gt;ops-&gt;getdiagonal      = MatGetDiagonal_Normal;
+<a name="line258">258: </a>  (*N)-&gt;ops-&gt;scale            = MatScale_Normal;
+<a name="line259">259: </a>  (*N)-&gt;ops-&gt;diagonalscale    = MatDiagonalScale_Normal;
+<a name="line260">260: </a>  (*N)-&gt;assembled             = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line261">261: </a>  (*N)-&gt;cmap-&gt;N               = A-&gt;cmap-&gt;N;
+<a name="line262">262: </a>  (*N)-&gt;rmap-&gt;N               = A-&gt;cmap-&gt;N;
+<a name="line263">263: </a>  (*N)-&gt;cmap-&gt;n               = A-&gt;cmap-&gt;n;
+<a name="line264">264: </a>  (*N)-&gt;rmap-&gt;n               = A-&gt;cmap-&gt;n;
+<a name="line265">265: </a>  <font color="#4169E1">return</font>(0);
+<a name="line266">266: </a>}
 
 </pre>
 </body>

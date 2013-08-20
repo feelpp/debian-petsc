@@ -5,7 +5,7 @@
 <TITLE>ISGetNonlocalIndices</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="ISGetNonlocalIndices"><H1>ISGetNonlocalIndices</H1></A>
 Retrieve an array of indices from remote processors in this communicator. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -20,7 +20,7 @@ Collective on <A HREF="../IS/IS.html#IS">IS</A>
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>indices </B> -indices with rank 0 indices first, and so on,  omitting 
+<DT><B>indices </B> -indices with rank 0 indices first, and so on,  omitting
 the current rank.  Total number of indices is the difference
 total and local, obtained with <A HREF="../IS/ISGetSize.html#ISGetSize">ISGetSize</A>() and <A HREF="../IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>(),
 respectively.
@@ -35,7 +35,7 @@ apply here.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../IS/ISGetTotalIndices.html#ISGetTotalIndices">ISGetTotalIndices</A>(), ISRestoreNonlocalIndices(), <A HREF="../IS/ISGetSize.html#ISGetSize">ISGetSize</A>(), <A HREF="../IS/ISGetLocalSize.html#ISGetLocalSize">ISGetLocalSize</A>().
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/interface/index.c.html#ISGetNonlocalIndices">src/vec/is/interface/index.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/is/interface/index.c.html#ISGetNonlocalIndices">src/vec/is/is/interface/index.c</A>
 <BR><A HREF="./index.html">Index of all IS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

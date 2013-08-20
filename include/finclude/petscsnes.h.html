@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/finclude/petscsnes.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:18:07+00:00">
+<meta name="date" content="2013-07-02T14:52:36+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!  Include file <font color="#4169E1">for</font> Fortran use of the <A href="../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> package in PETSc
 <a name="line3">  3: </a>!
@@ -32,7 +32,7 @@
 <a name="line21"> 21: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_DIVERGED_INNER
 <a name="line22"> 22: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> <A href="../../docs/manualpages/SNES/SNES_DIVERGED_LOCAL_MIN.html#SNES_DIVERGED_LOCAL_MIN">SNES_DIVERGED_LOCAL_MIN</A>
 <a name="line23"> 23: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_CONVERGED_ITERATING
-<a name="line24"> 24: </a>
+
 <a name="line25"> 25: </a>      parameter (<A href="../../docs/manualpages/SNES/SNES_CONVERGED_FNORM_ABS.html#SNES_CONVERGED_FNORM_ABS">SNES_CONVERGED_FNORM_ABS</A>         =  2)
 <a name="line26"> 26: </a>      parameter (<A href="../../docs/manualpages/SNES/SNES_CONVERGED_FNORM_RELATIVE.html#SNES_CONVERGED_FNORM_RELATIVE">SNES_CONVERGED_FNORM_RELATIVE</A>    =  3)
 <a name="line27"> 27: </a>      parameter (<A href="../../docs/manualpages/SNES/SNES_CONVERGED_SNORM_RELATIVE.html#SNES_CONVERGED_SNORM_RELATIVE">SNES_CONVERGED_SNORM_RELATIVE</A>    =  4)
@@ -68,15 +68,15 @@
 <a name="line57"> 57: </a>!
 <a name="line58"> 58: </a>!  Some PETSc fortran functions that the user might pass as arguments
 <a name="line59"> 59: </a>!
-<a name="line60"> 60: </a>      external SNESDEFAULTCOMPUTEJACOBIAN
+<a name="line60"> 60: </a>      external SNESCOMPUTEJACOBIANDEFAULT
 <a name="line61"> 61: </a>      external MATMFFDCOMPUTEJACOBIAN
-<a name="line62"> 62: </a>      external SNESDEFAULTCOMPUTEJACOBIANCOLOR
+<a name="line62"> 62: </a>      external SNESCOMPUTEJACOBIANDEFAULTCOLOR
 <a name="line63"> 63: </a>      external SNESMONITORDEFAULT
-<a name="line64"> 64: </a>      external SNESMONITORLG
+<a name="line64"> 64: </a>      external SNESMONITORLGRESIDUALNORM
 <a name="line65"> 65: </a>      external SNESMONITORSOLUTION
 <a name="line66"> 66: </a>      external SNESMONITORSOLUTIONUPDATE
 
-<a name="line68"> 68: </a>      external SNESDEFAULTCONVERGED
+<a name="line68"> 68: </a>      external SNESCONVERGEDDEFAULT
 <a name="line69"> 69: </a>      external SNESSKIPCONVERGED
 
 <a name="line71"> 71: </a>!
@@ -106,59 +106,49 @@
 
 
 <a name="line97"> 97: </a>!
-<a name="line98"> 98: </a>! SNESQNCompositionType
+<a name="line98"> 98: </a>! SNESQNScaleType
 <a name="line99"> 99: </a>!
 
-<a name="line101">101: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SEQUENTIAL
-<a name="line102">102: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_COMPOSED
+<a name="line101">101: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SCALE_NONE
+<a name="line102">102: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SCALE_SHANNO
+<a name="line103">103: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SCALE_LINESEARCH
+<a name="line104">104: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SCALE_JACOBIAN
 
-<a name="line104">104: </a>      parameter (SNES_QN_SEQUENTIAL = 0)
-<a name="line105">105: </a>      parameter (SNES_QN_COMPOSED   = 1)
+<a name="line106">106: </a>      parameter(SNES_QN_SCALE_NONE       = 0)
+<a name="line107">107: </a>      parameter(SNES_QN_SCALE_SHANNO     = 1)
+<a name="line108">108: </a>      parameter(SNES_QN_SCALE_LINESEARCH = 2)
+<a name="line109">109: </a>      parameter(SNES_QN_SCALE_JACOBIAN   = 3)
 
-<a name="line107">107: </a>!
-<a name="line108">108: </a>! SNESQNScaleType
-<a name="line109">109: </a>!
+<a name="line111">111: </a>!
+<a name="line112">112: </a>! SNESQNRestartType
+<a name="line113">113: </a>!
 
-<a name="line111">111: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SCALE_NONE
-<a name="line112">112: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SCALE_SHANNO
-<a name="line113">113: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SCALE_LINESEARCH
-<a name="line114">114: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_SCALE_JACOBIAN
+<a name="line115">115: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_RESTART_NONE
+<a name="line116">116: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_RESTART_POWELL
+<a name="line117">117: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_RESTART_PERIODIC
 
-<a name="line116">116: </a>      parameter(SNES_QN_SCALE_NONE       = 0)
-<a name="line117">117: </a>      parameter(SNES_QN_SCALE_SHANNO     = 1)
-<a name="line118">118: </a>      parameter(SNES_QN_SCALE_LINESEARCH = 2)
-<a name="line119">119: </a>      parameter(SNES_QN_SCALE_JACOBIAN   = 3)
+<a name="line119">119: </a>      parameter(SNES_QN_RESTART_NONE     = 0)
+<a name="line120">120: </a>      parameter(SNES_QN_RESTART_POWELL   = 1)
+<a name="line121">121: </a>      parameter(SNES_QN_RESTART_PERIODIC = 2)
 
-<a name="line121">121: </a>!
-<a name="line122">122: </a>! SNESQNRestartType
 <a name="line123">123: </a>!
+<a name="line124">124: </a>! SNESNCGType
+<a name="line125">125: </a>!
 
-<a name="line125">125: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_RESTART_NONE
-<a name="line126">126: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_RESTART_POWELL
-<a name="line127">127: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_QN_RESTART_PERIODIC
+<a name="line127">127: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_FR
+<a name="line128">128: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_PRP
+<a name="line129">129: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_HS
+<a name="line130">130: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_DY
+<a name="line131">131: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_CD
 
-<a name="line129">129: </a>      parameter(SNES_QN_RESTART_NONE     = 0)
-<a name="line130">130: </a>      parameter(SNES_QN_RESTART_POWELL   = 1)
-<a name="line131">131: </a>      parameter(SNES_QN_RESTART_PERIODIC = 2)
-
-<a name="line133">133: </a>!
-<a name="line134">134: </a>! SNESNCGType
-<a name="line135">135: </a>!
-
-<a name="line137">137: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_FR
-<a name="line138">138: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_PRP
-<a name="line139">139: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_HS
-<a name="line140">140: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_DY
-<a name="line141">141: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> SNES_NCG_CD
-
-<a name="line143">143: </a>      parameter(SNES_NCG_FR  = 0)
-<a name="line144">144: </a>      parameter(SNES_NCG_PRP = 1)
-<a name="line145">145: </a>      parameter(SNES_NCG_HS  = 2)
-<a name="line146">146: </a>      parameter(SNES_NCG_DY  = 3)
-<a name="line147">147: </a>      parameter(SNES_NCG_CD  = 4)
+<a name="line133">133: </a>      parameter(SNES_NCG_FR  = 0)
+<a name="line134">134: </a>      parameter(SNES_NCG_PRP = 1)
+<a name="line135">135: </a>      parameter(SNES_NCG_HS  = 2)
+<a name="line136">136: </a>      parameter(SNES_NCG_DY  = 3)
+<a name="line137">137: </a>      parameter(SNES_NCG_CD  = 4)
 
 
-<a name="line150">150: </a>!  End of Fortran include file <font color="#4169E1">for</font> the <A href="../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> package in PETSc
+<a name="line140">140: </a>!  End of Fortran include file <font color="#4169E1">for</font> the <A href="../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> package in PETSc
 
 </pre>
 </body>

@@ -69,11 +69,6 @@ extern void PetscRmPointer(void*);
 #define kspcreate_ kspcreate
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define kspregisterdestroy_ KSPREGISTERDESTROY
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define kspregisterdestroy_ kspregisterdestroy
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspsetnullspace_ KSPSETNULLSPACE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspsetnullspace_ kspsetnullspace
@@ -97,7 +92,7 @@ void PETSC_STDCALL  kspsetchecknormiteration_(KSP ksp,PetscInt *it, int *__ierr 
 *__ierr = KSPSetCheckNormIteration(
 	(KSP)PetscToPointer((ksp) ),*it);
 }
-void PETSC_STDCALL  kspsetlagnorm_(KSP ksp,PetscBool  *flg, int *__ierr ){
+void PETSC_STDCALL  kspsetlagnorm_(KSP ksp,PetscBool *flg, int *__ierr ){
 *__ierr = KSPSetLagNorm(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }
@@ -123,9 +118,6 @@ void PETSC_STDCALL  kspgetoperators_(KSP ksp,Mat *Amat,Mat *Pmat,MatStructure *f
 void PETSC_STDCALL  kspcreate_(MPI_Fint * comm,KSP *inksp, int *__ierr ){
 *__ierr = KSPCreate(
 	MPI_Comm_f2c( *(comm) ),inksp);
-}
-void PETSC_STDCALL  kspregisterdestroy_(int *__ierr ){
-*__ierr = KSPRegisterDestroy();
 }
 void PETSC_STDCALL  kspsetnullspace_(KSP ksp,MatNullSpace nullsp, int *__ierr ){
 *__ierr = KSPSetNullSpace(

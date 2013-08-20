@@ -5,13 +5,13 @@
 <TITLE>TSComputeIFunction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSComputeIFunction"><H1>TSComputeIFunction</H1></A>
-Evaluates the DAE residual written in implicit form F(t,X,Xdot)=0 
+Evaluates the DAE residual written in implicit form F(t,U,Udot)=0 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode TSComputeIFunction(TS ts,PetscReal t,Vec X,Vec Xdot,Vec Y,PetscBool imex)
+PetscErrorCode TSComputeIFunction(TS ts,PetscReal t,Vec U,Vec Udot,Vec Y,PetscBool imex)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -21,9 +21,9 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A> and <A HREF="../Vec/Vec.html#Vec
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>t </B></TD><TD>- current time
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X </B></TD><TD>- state vector
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>U </B></TD><TD>- state vector
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Xdot </B></TD><TD>- time derivative of state vector
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Udot </B></TD><TD>- time derivative of state vector
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>imex </B></TD><TD>- flag indicates if the method is IMEX so that the RHSFunction should be kept separate
 </TD></TR></TABLE>

@@ -5,12 +5,12 @@
 <TITLE>DMCompositeRestoreAccess</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMCompositeRestoreAccess"><H1>DMCompositeRestoreAccess</H1></A>
 Returns the vectors obtained with <A HREF="../DM/DMCompositeGetAccess.html#DMCompositeGetAccess">DMCompositeGetAccess</A>() representation. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscdmcomposite.h"   
+#include "petscdmcomposite.h"  
 PetscErrorCode  DMCompositeRestoreAccess(DM dm,Vec gvec,...)
 </PRE>
 Collective on DMComposite
@@ -21,8 +21,9 @@ Collective on DMComposite
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>gvec </B></TD><TD>- the global vector
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Vec/Vec.html#Vec">Vec</A>* ... </B></TD><TD>- the individual parallel vectors, <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for those that are not needed
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Vec/Vec.html#Vec">Vec</A>* ... </B></TD><TD>- the individual parallel vectors, NULL for those that are not needed
 </TD></TR></TABLE>
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

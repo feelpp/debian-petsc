@@ -5,7 +5,7 @@
 <TITLE>MatView</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatView"><H1>MatView</H1></A>
 Visualizes a matrix object. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -29,8 +29,8 @@ The available visualization contexts include
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A> </B></TD><TD>- synchronized standard
 output where only the first processor opens
-the file.  All other processors send their 
-data to the first processor to print. 
+the file.  All other processors send their
+data to the first processor to print.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Viewer/PETSC_VIEWER_DRAW_WORLD.html#PETSC_VIEWER_DRAW_WORLD">PETSC_VIEWER_DRAW_WORLD</A> </B></TD><TD>- graphical display of nonzero structure
 </TD></TR></TABLE>
@@ -42,7 +42,7 @@ The user can open alternative visualization contexts with
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>() </B></TD><TD>- Outputs matrix in binary to a
 specified file; corresponding input uses <A HREF="../Mat/MatLoad.html#MatLoad">MatLoad</A>()
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>() </B></TD><TD>- Outputs nonzero matrix structure to 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>() </B></TD><TD>- Outputs nonzero matrix structure to
 an X window display
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../Viewer/PetscViewerSocketOpen.html#PetscViewerSocketOpen">PetscViewerSocketOpen</A>() </B></TD><TD>- Outputs matrix to Socket viewer.
@@ -60,10 +60,10 @@ format of ASCII printed objects (when using <A HREF="../Viewer/PETSC_VIEWER_STDO
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_DENSE </B></TD><TD>- prints entire matrix including zeros
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_COMMON </B></TD><TD>- prints matrix contents, using a sparse 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_COMMON </B></TD><TD>- prints matrix contents, using a sparse
 format common among all matrix types
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_IMPL </B></TD><TD>- prints matrix contents, using an implementation-specific 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_IMPL </B></TD><TD>- prints matrix contents, using an implementation-specific
 format (which is in many cases the same as the default)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>PETSC_VIEWER_ASCII_INFO </B></TD><TD>- prints basic information about the matrix
@@ -75,25 +75,25 @@ the matrix structure
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view_info </B></TD><TD>- Prints info on matrix at conclusion of MatEndAssembly()
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view ::ascii_info </B></TD><TD>- Prints info on matrix at conclusion of MatEndAssembly()
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view_info_detailed </B></TD><TD>- Prints more detailed info
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view ::ascii_info_detail </B></TD><TD>- Prints more detailed info
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view </B></TD><TD>- Prints matrix in ASCII format
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view_matlab </B></TD><TD>- Prints matrix in Matlab format
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view ::ascii_matlab </B></TD><TD>- Prints matrix in Matlab format
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view_draw </B></TD><TD>- PetscDraws nonzero structure of matrix, using <A HREF="../Mat/MatView.html#MatView">MatView</A>() and <A HREF="../Draw/PetscDrawOpenX.html#PetscDrawOpenX">PetscDrawOpenX</A>().
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view draw </B></TD><TD>- PetscDraws nonzero structure of matrix, using <A HREF="../Mat/MatView.html#MatView">MatView</A>() and <A HREF="../Draw/PetscDrawOpenX.html#PetscDrawOpenX">PetscDrawOpenX</A>().
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-display &lt;name&gt; </B></TD><TD>- Sets display name (default is host)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-draw_pause &lt;sec&gt; </B></TD><TD>- Sets number of seconds to pause after display
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view_socket </B></TD><TD>- Sends matrix to socket, can be accessed from Matlab (see the &lt;a href="../../docs/manual.pdf"&gt;users manual&lt;/a&gt; for details).
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view socket </B></TD><TD>- Sends matrix to socket, can be accessed from Matlab (see the &lt;a href="../../docs/manual.pdf"&gt;users manual&lt;/a&gt; for details).
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-viewer_socket_machine &lt;machine&gt;</B></TD><TD>- .  -viewer_socket_port &lt;port&gt;
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view_binary </B></TD><TD>- save matrix to file in binary format
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-mat_view binary </B></TD><TD>- save matrix to file in binary format
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-viewer_binary_filename &lt;name&gt;</B></TD><TD>- 
 </TD></TR></TABLE>
@@ -104,9 +104,15 @@ viewer is used.
 See bin/matlab/<A HREF="../Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A>.m for a Matlab code that can read in the binary file when the binary
 viewer is used.
 <P>
+One can use '-mat_view draw -draw_pause -1' to pause the graphical display of matrix nonzero structure.
+<H3><FONT COLOR="#CC3333">And then use the following mouse functions</FONT></H3>
+left mouse: zoom in
+middle mouse: zoom out
+right mouse: continue with the simulation
+<P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(), <A HREF="../Viewer/PetscViewerASCIIOpen.html#PetscViewerASCIIOpen">PetscViewerASCIIOpen</A>(), <A HREF="../Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>(), 
+ <A HREF="../Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(), <A HREF="../Viewer/PetscViewerASCIIOpen.html#PetscViewerASCIIOpen">PetscViewerASCIIOpen</A>(), <A HREF="../Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>(),
 <BR><A HREF="../Viewer/PetscViewerSocketOpen.html#PetscViewerSocketOpen">PetscViewerSocketOpen</A>(), <A HREF="../Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(), <A HREF="../Mat/MatLoad.html#MatLoad">MatLoad</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/interface/matrix.c.html#MatView">src/mat/interface/matrix.c</A>
@@ -117,7 +123,6 @@ viewer is used.
 <A HREF="../../../src/mat/examples/tutorials/ex8.c.html">src/mat/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex11.c.html">src/mat/examples/tutorials/ex11.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex12.c.html">src/mat/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/mat/examples/tutorials/ex14.c.html">src/mat/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex16.c.html">src/mat/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
 <A HREF="../../../src/ksp/pc/examples/tutorials/ex2.c.html">src/ksp/pc/examples/tutorials/ex2.c.html</A><BR>
@@ -125,4 +130,5 @@ viewer is used.
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex28.c.html">src/ksp/ksp/examples/tutorials/ex28.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex39.c.html">src/ksp/ksp/examples/tutorials/ex39.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex40.c.html">src/ksp/ksp/examples/tutorials/ex40.c.html</A><BR>
 </BODY></HTML>

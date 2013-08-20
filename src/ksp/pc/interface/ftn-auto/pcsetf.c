@@ -29,11 +29,6 @@ extern void PetscRmPointer(void*);
 
 #include "petscpc.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define pcregisterdestroy_ PCREGISTERDESTROY
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define pcregisterdestroy_ pcregisterdestroy
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcsetfromoptions_ PCSETFROMOPTIONS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcsetfromoptions_ pcsetfromoptions
@@ -64,9 +59,6 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  pcregisterdestroy_(int *__ierr ){
-*__ierr = PCRegisterDestroy();
-}
 void PETSC_STDCALL  pcsetfromoptions_(PC pc, int *__ierr ){
 *__ierr = PCSetFromOptions(
 	(PC)PetscToPointer((pc) ));

@@ -5,7 +5,7 @@
 <TITLE>SNESQN</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESQN"><H1>SNESQN</H1></A>
 Limited-Memory Quasi-Newton methods for the solution of nonlinear systems. 
 <H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
@@ -17,16 +17,14 @@ Limited-Memory Quasi-Newton methods for the solution of nonlinear systems.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_qn_powell_descent </B></TD><TD>- Descent condition for restart.
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_qn_composition &lt;sequential, composed&gt;</B></TD><TD>- Type of composition.
-</TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_linesearch_type &lt;cp, l2, basic&gt; </B></TD><TD>- Type of line search.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-snes_qn_monitor </B></TD><TD>- Monitors the quasi-newton jacobian.
 </TD></TR></TABLE>
 <P>
-Notes: This implements the L-BFGS algorithm for the solution of F(x) = b using previous change in F(x) and x to
-form the approximate inverse Jacobian using a series of multiplicative rank-one updates.  This will eventually be
-generalized to implement several limited-memory Broyden methods.
+Notes: This implements the L-BFGS, Broyden, and "Bad" Broyden algorithms for the solution of F(x) = b using
+previous change in F(x) and x to form the approximate inverse Jacobian using a series of multiplicative rank-one
+updates.
 <P>
 When using a nonlinear preconditioner, one has two options as to how the preconditioner is applied.  The first of
 these options, sequential, uses the preconditioner to generate a new solution and function and uses those at this
@@ -38,15 +36,18 @@ perturbs the problem the jacobian represents to be P(x, b) - x = 0, where P(x, b
 L-Broyden Methods: a generalization of the L-BFGS method to the limited memory Broyden family, M. B. Reed,
 International Journal of Computer Mathematics, vol. 86, 2009.
 <P>
+Experiments with Quasi-Newton Methods in Solving Stiff ODE Systems, Peter N. Brown, Alan C. Hindmarsh, Homer F. Walker
+SIAM J. Sci. Stat. Comput. Vol 6(2), April 1985.
+<P>
 <P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A HREF="../SNES/SNES.html#SNES">SNES</A>, <A HREF="../SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(), <A HREF="../SNES/SNESLS.html#SNESLS">SNESLS</A>, <A HREF="../SNES/SNESTR.html#SNESTR">SNESTR</A>
+  <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A HREF="../SNES/SNES.html#SNES">SNES</A>, <A HREF="../SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(), <A HREF="../SNES/SNESNEWTONLS.html#SNESNEWTONLS">SNESNEWTONLS</A>, <A HREF="../SNES/SNESNEWTONTR.html#SNESNEWTONTR">SNESNEWTONTR</A>
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/impls/qnqn.c.html#SNESQN">src/snes/impls/qnqn.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/impls/qn/qn.c.html#SNESQN">src/snes/impls/qn/qn.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

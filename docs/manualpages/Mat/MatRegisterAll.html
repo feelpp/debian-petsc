@@ -5,13 +5,13 @@
 <TITLE>MatRegisterAll</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatRegisterAll"><H1>MatRegisterAll</H1></A>
 Registers all of the matrix types in PETSc 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatRegisterAll(const char path[])
+PetscErrorCode  MatRegisterAll(void)
 </PRE>
 Not Collective
 <P>
@@ -22,7 +22,7 @@ Not Collective
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../Mat/MatRegisterDestroy.html#MatRegisterDestroy">MatRegisterDestroy</A>()
+  MatRegisterDestroy()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/interface/matregis.c.html#MatRegisterAll">src/mat/interface/matregis.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

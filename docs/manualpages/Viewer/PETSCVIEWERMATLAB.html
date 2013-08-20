@@ -5,7 +5,7 @@
 <TITLE>PETSCVIEWERMATLAB</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PETSCVIEWERMATLAB"><H1>PETSCVIEWERMATLAB</H1></A>
 A viewer that saves the variables into a MATLAB .mat file that may be read into MATLAB with load('filename'). 
 <P>
@@ -13,12 +13,12 @@ Note: Currently can only save PETSc vectors to .mat files, not matrices (use the
 ${PETSC_DIR}/bin/matlab/<A HREF="../Sys/PetscBinaryRead.html#PetscBinaryRead">PetscBinaryRead</A>.m to read matrices into matlab).
 <P>
 For parallel vectors obtained with <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>() or <A HREF="../DM/DMGetGlobalVector.html#DMGetGlobalVector">DMGetGlobalVector</A>() the vectors are saved to
-the .mat file in natural ordering. You can use <A HREF="../DM/DMView.html#DMView">DMView</A>() to save the DMDA information to the .mat file
+the .mat file in natural ordering. You can use <A HREF="../DM/DMView.html#DMView">DMView</A>() to save the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> information to the .mat file
 the fields in the MATLAB loaded da variable give the array dimensions so you can reshape the MATLAB
 vector to the same multidimensional shape as it had in PETSc for plotting etc. For example,
 <P>
 <pre>
-            In your PETSc C/C++ code (assuming a two dimensional DMDA with one degree of freedom per node)
+            In your PETSc C/C++ code (assuming a two dimensional <A HREF="../DM/DMDA.html#DMDA">DMDA</A> with one degree of freedom per node)
 </pre>
 <pre>
                <A HREF="../Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)x,"x");
@@ -56,7 +56,7 @@ Use <A HREF="../Viewer/PetscViewerMatlabPutArray.html#PetscViewerMatlabPutArray"
 PETSC_ASCII_VIEWER, <A HREF="../Viewer/PetscViewerFileSetName.html#PetscViewerFileSetName">PetscViewerFileSetName</A>(), <A HREF="../Viewer/PetscViewerFileSetMode.html#PetscViewerFileSetMode">PetscViewerFileSetMode</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/matlab/vmatlab.c.html#PETSCVIEWERMATLAB">src/sys/viewer/impls/matlab/vmatlab.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/impls/matlab/vmatlab.c.html#PETSCVIEWERMATLAB">src/sys/classes/viewer/impls/matlab/vmatlab.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

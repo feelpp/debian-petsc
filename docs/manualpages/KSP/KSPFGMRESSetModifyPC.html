@@ -5,13 +5,13 @@
 <TITLE>KSPFGMRESSetModifyPC</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPFGMRESSetModifyPC"><H1>KSPFGMRESSetModifyPC</H1></A>
 Sets the routine used by FGMRES to modify the preconditioner. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPFGMRESSetModifyPC(KSP ksp,PetscErrorCode (*fcn)(KSP,PetscInt,PetscInt,PetscReal,void*),void* ctx,PetscErrorCode (*d)(void*))
+PetscErrorCode  KSPFGMRESSetModifyPC(KSP ksp,PetscErrorCode (*fcn)(KSP,PetscInt,PetscInt,PetscReal,void*),void *ctx,PetscErrorCode (*d)(void*))
 </PRE>
 Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>

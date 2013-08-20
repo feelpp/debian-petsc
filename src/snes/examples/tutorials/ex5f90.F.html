@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex5f90.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:12:04+00:00">
+<meta name="date" content="2013-07-02T14:50:36+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!  Description: Solves a nonlinear system in parallel with <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>.
 <a name="line3">  3: </a>!  We solve the  Bratu (SFI - solid fuel ignition) problem in a 2D rectangular
@@ -19,7 +19,7 @@
 <a name="line8">  8: </a>!
 <a name="line9">  9: </a>!<font color="#B22222">/*T</font>
 <a name="line10"> 10: </a><font color="#B22222">!  Concepts: <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>^parallel Bratu example</font>
-<a name="line11"> 11: </a><font color="#B22222">!  Concepts: DMDA^using distributed arrays;</font>
+<a name="line11"> 11: </a><font color="#B22222">!  Concepts: <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>^using distributed arrays;</font>
 <a name="line12"> 12: </a><font color="#B22222">!  Processors: n</font>
 <a name="line13"> 13: </a><font color="#B22222">!T*/</font>
 <a name="line14"> 14: </a>!
@@ -146,7 +146,7 @@
 
 <a name="line136">136: </a>      module f90moduleinterfaces
 <a name="line137">137: </a>        use f90module
-<a name="line138">138: </a>
+
 <a name="line139">139: </a>      Interface <A href="../../../../docs/manualpages/SNES/SNESSetApplicationContext.html#SNESSetApplicationContext">SNESSetApplicationContext</A>
 <a name="line140">140: </a>        Subroutine <A href="../../../../docs/manualpages/SNES/SNESSetApplicationContext.html#SNESSetApplicationContext">SNESSetApplicationContext</A>(snes,ctx,ierr)
 <a name="line141">141: </a>        use f90module
@@ -238,7 +238,7 @@
 <a name="line227">227: </a>!  Create vector data structures; set function evaluation routine
 <a name="line228">228: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-<a name="line230">230: </a>!  Create distributed array (DMDA) to manage parallel grid and vectors
+<a name="line230">230: </a>!  Create distributed array (<A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>) to manage parallel grid and vectors
 
 <a name="line232">232: </a>! This really needs only the star-type stencil, but we use the box
 <a name="line233">233: </a>! stencil temporarily.
@@ -253,18 +253,18 @@
 <a name="line242">242: </a>     &amp;               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &amp;
 <a name="line243">243: </a>     &amp;               PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,             &amp;
 <a name="line244">244: </a>     &amp;               PETSC_NULL_INTEGER,ierr)
-<a name="line245">245: </a>
+
 <a name="line246">246: </a>!
 <a name="line247">247: </a>!   Visualize the distribution of the array across the processors
 <a name="line248">248: </a>!
 <a name="line249">249: </a>!     call <A href="../../../../docs/manualpages/DM/DMView.html#DMView">DMView</A>(da,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_DRAW_WORLD.html#PETSC_VIEWER_DRAW_WORLD">PETSC_VIEWER_DRAW_WORLD</A>,ierr)
 
-<a name="line251">251: </a>!  Extract global and local vectors from DMDA; then duplicate <font color="#4169E1">for</font> remaining
+<a name="line251">251: </a>!  Extract global and local vectors from <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>; then duplicate <font color="#4169E1">for</font> remaining
 <a name="line252">252: </a>!  vectors that are the same types
 <a name="line253">253: </a>      call <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da,x,ierr)
 <a name="line254">254: </a>      call <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,r,ierr)
 
-<a name="line256">256: </a>!  Get local grid boundaries (<font color="#4169E1">for</font> 2-dimensional DMDA)
+<a name="line256">256: </a>!  Get local grid boundaries (<font color="#4169E1">for</font> 2-dimensional <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>)
 <a name="line257">257: </a>      call <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,user%xs,user%ys,PETSC_NULL_INTEGER,        &amp;
 <a name="line258">258: </a>     &amp;     user%xm,user%ym,PETSC_NULL_INTEGER,ierr)
 <a name="line259">259: </a>      call <A href="../../../../docs/manualpages/DM/DMDAGetGhostCorners.html#DMDAGetGhostCorners">DMDAGetGhostCorners</A>(da,user%gxs,user%gys,                    &amp;
@@ -311,7 +311,7 @@
 <a name="line300">300: </a>!     Note: Here we only approximately preallocate storage space <font color="#4169E1">for</font> the
 <a name="line301">301: </a>!     Jacobian.  See the users manual <font color="#4169E1">for</font> a discussion of better techniques
 <a name="line302">302: </a>!     <font color="#4169E1">for</font> preallocating matrix memory.
-<a name="line303">303: </a>
+
 <a name="line304">304: </a>      call <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(PETSC_NULL_CHARACTER,'-snes_mf',         &amp;
 <a name="line305">305: </a>     &amp;     matrix_free,ierr)
 <a name="line306">306: </a>      <font color="#4169E1">if</font> (.not. matrix_free) then
@@ -659,7 +659,7 @@
 <a name="line648">648: </a>      <font color="#4169E1">if</font> (jac .ne. jac_prec) then
 <a name="line649">649: </a>        call <A href="../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(jac_prec,MAT_FINAL_ASSEMBLY,ierr)
 <a name="line650">650: </a>      endif
-<a name="line651">651: </a>
+
 <a name="line652">652: </a>!  Set flag to indicate that the Jacobian matrix retains an identical
 <a name="line653">653: </a>!  nonzero structure throughout all nonlinear iterations (although the
 <a name="line654">654: </a>!  values of the entries change). Thus, we can save some work in setting

@@ -28,8 +28,6 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscsnes.h"
-#include "petscdmshell.h"
-#include "petscsys.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define snesseterrorifnotconverged_ SNESSETERRORIFNOTCONVERGED
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -59,11 +57,6 @@ extern void PetscRmPointer(void*);
 #define snessetfromoptions_ SNESSETFROMOPTIONS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define snessetfromoptions_ snessetfromoptions
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define snessetcomputeapplicationcontext_ SNESSETCOMPUTEAPPLICATIONCONTEXT
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define snessetcomputeapplicationcontext_ snessetcomputeapplicationcontext
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define snessetapplicationcontext_ SNESSETAPPLICATIONCONTEXT
@@ -136,11 +129,6 @@ extern void PetscRmPointer(void*);
 #define snesgetlinearsolveiterations_ snesgetlinearsolveiterations
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define snesgetksp_ SNESGETKSP
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define snesgetksp_ snesgetksp
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define snessetksp_ SNESSETKSP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define snessetksp_ snessetksp
@@ -159,16 +147,6 @@ extern void PetscRmPointer(void*);
 #define snesgetnormtype_ SNESGETNORMTYPE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define snesgetnormtype_ snesgetnormtype
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define snessetgssweeps_ SNESSETGSSWEEPS
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define snessetgssweeps_ snessetgssweeps
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define snesgetgssweeps_ SNESGETGSSWEEPS
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define snesgetgssweeps_ snesgetgssweeps
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define snescomputefunction_ SNESCOMPUTEFUNCTION
@@ -256,16 +234,6 @@ extern void PetscRmPointer(void*);
 #define snessetconvergencehistory_ snessetconvergencehistory
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define snesdefaultupdate_ SNESDEFAULTUPDATE
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define snesdefaultupdate_ snesdefaultupdate
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define snesregisterdestroy_ SNESREGISTERDESTROY
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define snesregisterdestroy_ snesregisterdestroy
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define snesgetsolution_ SNESGETSOLUTION
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define snesgetsolution_ snesgetsolution
@@ -296,6 +264,11 @@ extern void PetscRmPointer(void*);
 #define sneskspgetparametersew_ sneskspgetparametersew
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define snesgetksp_ SNESGETKSP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define snesgetksp_ snesgetksp
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define snessetdm_ SNESSETDM
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define snessetdm_ snessetdm
@@ -316,9 +289,24 @@ extern void PetscRmPointer(void*);
 #define snesgetpc_ snesgetpc
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define snessetsneslinesearch_ SNESSETSNESLINESEARCH
+#define snessetpcside_ SNESSETPCSIDE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define snessetsneslinesearch_ snessetsneslinesearch
+#define snessetpcside_ snessetpcside
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define snesgetpcside_ SNESGETPCSIDE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define snesgetpcside_ snesgetpcside
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define snessetlinesearch_ SNESSETLINESEARCH
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define snessetlinesearch_ snessetlinesearch
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define snesgetlinesearch_ SNESGETLINESEARCH
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define snesgetlinesearch_ snesgetlinesearch
 #endif
 
 
@@ -326,7 +314,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  snesseterrorifnotconverged_(SNES snes,PetscBool  *flg, int *__ierr ){
+void PETSC_STDCALL  snesseterrorifnotconverged_(SNES snes,PetscBool *flg, int *__ierr ){
 *__ierr = SNESSetErrorIfNotConverged(
 	(SNES)PetscToPointer((snes) ),*flg);
 }
@@ -350,10 +338,6 @@ void PETSC_STDCALL  snessetfromoptions_(SNES snes, int *__ierr ){
 *__ierr = SNESSetFromOptions(
 	(SNES)PetscToPointer((snes) ));
 }
-void PETSC_STDCALL  snessetcomputeapplicationcontext_(SNES snes,PetscErrorCode (*compute)(SNES,void**),PetscErrorCode (*destroy)(void**), int *__ierr ){
-*__ierr = SNESSetComputeApplicationContext(
-	(SNES)PetscToPointer((snes) ),compute,destroy);
-}
 void PETSC_STDCALL  snessetapplicationcontext_(SNES snes,void*usrP, int *__ierr ){
 *__ierr = SNESSetApplicationContext(
 	(SNES)PetscToPointer((snes) ),usrP);
@@ -362,7 +346,7 @@ void PETSC_STDCALL  snesgetapplicationcontext_(SNES snes,void*usrP, int *__ierr 
 *__ierr = SNESGetApplicationContext(
 	(SNES)PetscToPointer((snes) ),usrP);
 }
-void PETSC_STDCALL  snesgetiterationnumber_(SNES snes,PetscInt* iter, int *__ierr ){
+void PETSC_STDCALL  snesgetiterationnumber_(SNES snes,PetscInt *iter, int *__ierr ){
 *__ierr = SNESGetIterationNumber(
 	(SNES)PetscToPointer((snes) ),iter);
 }
@@ -378,7 +362,7 @@ void PETSC_STDCALL  snessetfunctionnorm_(SNES snes,PetscReal *fnorm, int *__ierr
 *__ierr = SNESSetFunctionNorm(
 	(SNES)PetscToPointer((snes) ),*fnorm);
 }
-void PETSC_STDCALL  snesgetnonlinearstepfailures_(SNES snes,PetscInt* nfails, int *__ierr ){
+void PETSC_STDCALL  snesgetnonlinearstepfailures_(SNES snes,PetscInt *nfails, int *__ierr ){
 *__ierr = SNESGetNonlinearStepFailures(
 	(SNES)PetscToPointer((snes) ),nfails);
 }
@@ -394,7 +378,7 @@ void PETSC_STDCALL  snesgetnumberfunctionevals_(SNES snes,PetscInt *nfuncs, int 
 *__ierr = SNESGetNumberFunctionEvals(
 	(SNES)PetscToPointer((snes) ),nfuncs);
 }
-void PETSC_STDCALL  snesgetlinearsolvefailures_(SNES snes,PetscInt* nfails, int *__ierr ){
+void PETSC_STDCALL  snesgetlinearsolvefailures_(SNES snes,PetscInt *nfails, int *__ierr ){
 *__ierr = SNESGetLinearSolveFailures(
 	(SNES)PetscToPointer((snes) ),nfails);
 }
@@ -406,13 +390,9 @@ void PETSC_STDCALL  snesgetmaxlinearsolvefailures_(SNES snes,PetscInt *maxFails,
 *__ierr = SNESGetMaxLinearSolveFailures(
 	(SNES)PetscToPointer((snes) ),maxFails);
 }
-void PETSC_STDCALL  snesgetlinearsolveiterations_(SNES snes,PetscInt* lits, int *__ierr ){
+void PETSC_STDCALL  snesgetlinearsolveiterations_(SNES snes,PetscInt *lits, int *__ierr ){
 *__ierr = SNESGetLinearSolveIterations(
 	(SNES)PetscToPointer((snes) ),lits);
-}
-void PETSC_STDCALL  snesgetksp_(SNES snes,KSP *ksp, int *__ierr ){
-*__ierr = SNESGetKSP(
-	(SNES)PetscToPointer((snes) ),ksp);
 }
 void PETSC_STDCALL  snessetksp_(SNES snes,KSP ksp, int *__ierr ){
 *__ierr = SNESSetKSP(
@@ -431,15 +411,6 @@ void PETSC_STDCALL  snesgetnormtype_(SNES snes,SNESNormType *normtype, int *__ie
 *__ierr = SNESGetNormType(
 	(SNES)PetscToPointer((snes) ),
 	(SNESNormType* )PetscToPointer((normtype) ));
-}
-
-void PETSC_STDCALL  snessetgssweeps_(SNES snes,PetscInt *sweeps, int *__ierr ){
-*__ierr = SNESSetGSSweeps(
-	(SNES)PetscToPointer((snes) ),*sweeps);
-}
-void PETSC_STDCALL  snesgetgssweeps_(SNES snes,PetscInt * sweeps, int *__ierr ){
-*__ierr = SNESGetGSSweeps(
-	(SNES)PetscToPointer((snes) ),sweeps);
 }
 void PETSC_STDCALL  snescomputefunction_(SNES snes,Vec x,Vec y, int *__ierr ){
 *__ierr = SNESComputeFunction(
@@ -509,16 +480,9 @@ void PETSC_STDCALL  snesgetconvergedreason_(SNES snes,SNESConvergedReason *reaso
 *__ierr = SNESGetConvergedReason(
 	(SNES)PetscToPointer((snes) ),reason);
 }
-void PETSC_STDCALL  snessetconvergencehistory_(SNES snes,PetscReal a[],PetscInt its[],PetscInt *na,PetscBool  *reset, int *__ierr ){
+void PETSC_STDCALL  snessetconvergencehistory_(SNES snes,PetscReal a[],PetscInt its[],PetscInt *na,PetscBool *reset, int *__ierr ){
 *__ierr = SNESSetConvergenceHistory(
 	(SNES)PetscToPointer((snes) ),a,its,*na,*reset);
-}
-void PETSC_STDCALL  snesdefaultupdate_(SNES snes,PetscInt *step, int *__ierr ){
-*__ierr = SNESDefaultUpdate(
-	(SNES)PetscToPointer((snes) ),*step);
-}
-void PETSC_STDCALL  snesregisterdestroy_(int *__ierr ){
-*__ierr = SNESRegisterDestroy();
 }
 void PETSC_STDCALL  snesgetsolution_(SNES snes,Vec *x, int *__ierr ){
 *__ierr = SNESGetSolution(
@@ -528,7 +492,7 @@ void PETSC_STDCALL  snesgetsolutionupdate_(SNES snes,Vec *x, int *__ierr ){
 *__ierr = SNESGetSolutionUpdate(
 	(SNES)PetscToPointer((snes) ),x);
 }
-void PETSC_STDCALL  sneskspsetuseew_(SNES snes,PetscBool  *flag, int *__ierr ){
+void PETSC_STDCALL  sneskspsetuseew_(SNES snes,PetscBool *flag, int *__ierr ){
 *__ierr = SNESKSPSetUseEW(
 	(SNES)PetscToPointer((snes) ),*flag);
 }
@@ -536,15 +500,17 @@ void PETSC_STDCALL  sneskspgetuseew_(SNES snes,PetscBool  *flag, int *__ierr ){
 *__ierr = SNESKSPGetUseEW(
 	(SNES)PetscToPointer((snes) ),flag);
 }
-void PETSC_STDCALL  sneskspsetparametersew_(SNES snes,PetscInt *version,PetscReal *rtol_0,PetscReal *rtol_max,
-           PetscReal *gamma,PetscReal *alpha,PetscReal *alpha2,PetscReal *threshold, int *__ierr ){
+void PETSC_STDCALL  sneskspsetparametersew_(SNES snes,PetscInt *version,PetscReal *rtol_0,PetscReal *rtol_max,PetscReal *gamma,PetscReal *alpha,PetscReal *alpha2,PetscReal *threshold, int *__ierr ){
 *__ierr = SNESKSPSetParametersEW(
 	(SNES)PetscToPointer((snes) ),*version,*rtol_0,*rtol_max,*gamma,*alpha,*alpha2,*threshold);
 }
-void PETSC_STDCALL  sneskspgetparametersew_(SNES snes,PetscInt *version,PetscReal *rtol_0,PetscReal *rtol_max,
-           PetscReal *gamma,PetscReal *alpha,PetscReal *alpha2,PetscReal *threshold, int *__ierr ){
+void PETSC_STDCALL  sneskspgetparametersew_(SNES snes,PetscInt *version,PetscReal *rtol_0,PetscReal *rtol_max,PetscReal *gamma,PetscReal *alpha,PetscReal *alpha2,PetscReal *threshold, int *__ierr ){
 *__ierr = SNESKSPGetParametersEW(
 	(SNES)PetscToPointer((snes) ),version,rtol_0,rtol_max,gamma,alpha,alpha2,threshold);
+}
+void PETSC_STDCALL  snesgetksp_(SNES snes,KSP *ksp, int *__ierr ){
+*__ierr = SNESGetKSP(
+	(SNES)PetscToPointer((snes) ),ksp);
 }
 void PETSC_STDCALL  snessetdm_(SNES snes,DM dm, int *__ierr ){
 *__ierr = SNESSetDM(
@@ -564,10 +530,23 @@ void PETSC_STDCALL  snesgetpc_(SNES snes,SNES *pc, int *__ierr ){
 *__ierr = SNESGetPC(
 	(SNES)PetscToPointer((snes) ),pc);
 }
-void PETSC_STDCALL  snessetsneslinesearch_(SNES snes,SNESLineSearch linesearch, int *__ierr ){
-*__ierr = SNESSetSNESLineSearch(
+void PETSC_STDCALL  snessetpcside_(SNES snes,PCSide *side, int *__ierr ){
+*__ierr = SNESSetPCSide(
+	(SNES)PetscToPointer((snes) ),*side);
+}
+void PETSC_STDCALL  snesgetpcside_(SNES snes,PCSide *side, int *__ierr ){
+*__ierr = SNESGetPCSide(
+	(SNES)PetscToPointer((snes) ),
+	(PCSide* )PetscToPointer((side) ));
+}
+void PETSC_STDCALL  snessetlinesearch_(SNES snes,SNESLineSearch linesearch, int *__ierr ){
+*__ierr = SNESSetLineSearch(
 	(SNES)PetscToPointer((snes) ),
 	(SNESLineSearch)PetscToPointer((linesearch) ));
+}
+void PETSC_STDCALL  snesgetlinesearch_(SNES snes,SNESLineSearch *linesearch, int *__ierr ){
+*__ierr = SNESGetLineSearch(
+	(SNES)PetscToPointer((snes) ),linesearch);
 }
 #if defined(__cplusplus)
 }

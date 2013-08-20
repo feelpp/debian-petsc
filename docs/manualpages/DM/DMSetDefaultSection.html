@@ -5,18 +5,19 @@
 <TITLE>DMSetDefaultSection</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMSetDefaultSection"><H1>DMSetDefaultSection</H1></A>
-Set the <A HREF="../Vec/PetscSection.html#PetscSection">PetscSection</A> encoding the local data layout for the DM. 
+Set the <A HREF="../IS/PetscSection.html#PetscSection">PetscSection</A> encoding the local data layout for the DM. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"     
-PetscErrorCode DMSetDefaultSection(DM dm, PetscSection section)</PRE>
+PetscErrorCode DMSetDefaultSection(DM dm, PetscSection section)
+</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dm </B></TD><TD>- The DM
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>section </B></TD><TD>- The <A HREF="../Vec/PetscSection.html#PetscSection">PetscSection</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>section </B></TD><TD>- The <A HREF="../IS/PetscSection.html#PetscSection">PetscSection</A>
 </TD></TR></TABLE>
 <P>
 
@@ -31,5 +32,8 @@ Note: Any existing Section will be destroyed
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex52.c.html">src/snes/examples/tutorials/ex52.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
 </BODY></HTML>

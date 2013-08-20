@@ -60,6 +60,11 @@
        PetscBool flg ! PetscBool
        integer ierr
        end subroutine
+        subroutine SNESFASSetLog(snes, flg ,ierr)
+       SNES snes ! SNES
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
         subroutine SNESFASCycleSetCycles(snes, cycles ,ierr)
        SNES snes ! SNES
        PetscInt cycles ! PetscInt

@@ -5,24 +5,24 @@
 <TITLE>SNESConvergedReason</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESConvergedReason"><H1>SNESConvergedReason</H1></A>
-reason a <A HREF="../SNES/SNES.html#SNES">SNES</A> method was said to  have converged or diverged 
+reason a <A HREF="../SNES/SNES.html#SNES">SNES</A> method was said to have converged or diverged 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 typedef enum {/* converged */
               SNES_CONVERGED_FNORM_ABS         =  2, /* ||F|| < atol */
               SNES_CONVERGED_FNORM_RELATIVE    =  3, /* ||F|| < rtol*||F_initial|| */
-              SNES_CONVERGED_SNORM_RELATIVE    =  4, /* Newton computed step size small; || delta x || < stol */
+              SNES_CONVERGED_SNORM_RELATIVE    =  4, /* Newton computed step size small; || delta x || < stol || x ||*/
               SNES_CONVERGED_ITS               =  5, /* maximum iterations reached */
               SNES_CONVERGED_TR_DELTA          =  7,
               /* diverged */
               SNES_DIVERGED_FUNCTION_DOMAIN     = -1, /* the new x location passed the function is not in the domain of F */
-              SNES_DIVERGED_FUNCTION_COUNT      = -2,  
+              SNES_DIVERGED_FUNCTION_COUNT      = -2,
               SNES_DIVERGED_LINEAR_SOLVE        = -3, /* the linear solve failed */
-              SNES_DIVERGED_FNORM_NAN           = -4, 
+              SNES_DIVERGED_FNORM_NAN           = -4,
               SNES_DIVERGED_MAX_IT              = -5,
-              SNES_DIVERGED_LINE_SEARCH         = -6, /* the line search failed */ 
+              SNES_DIVERGED_LINE_SEARCH         = -6, /* the line search failed */
               SNES_DIVERGED_INNER               = -7, /* inner solve failed */
               SNES_DIVERGED_LOCAL_MIN           = -8, /* || J^T b || is small, implies converged to local minimum of F() */
               SNES_CONVERGED_ITERATING          =  0} SNESConvergedReason;
@@ -31,7 +31,7 @@ typedef enum {/* converged */
 <P>
 The two most common reasons for divergence are
 <pre>
-  1) an incorrectly coded or computed Jacobian or 
+  1) an incorrectly coded or computed Jacobian or
 </pre>
 <pre>
   2) failure or lack of convergence in the linear system (in this case we recommend
@@ -84,4 +84,6 @@ Each reason has its own manual page.
 <BR><A HREF="./index.html">Index of all SNES routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex30.c.html">src/snes/examples/tutorials/ex30.c.html</A><BR>
 </BODY></HTML>

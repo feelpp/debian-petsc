@@ -5,13 +5,14 @@
 <TITLE>SNESFASGetLevels</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESFASGetLevels"><H1>SNESFASGetLevels</H1></A>
 Gets the number of levels in a FAS, including fine and coarse grids 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnesfas.h"  
-PetscErrorCode SNESFASGetLevels(SNES snes, PetscInt * levels)</PRE>
+PetscErrorCode SNESFASGetLevels(SNES snes, PetscInt *levels)
+</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>snes </B> -the nonlinear solver context
 <br>

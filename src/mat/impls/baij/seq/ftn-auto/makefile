@@ -5,7 +5,6 @@ CPPFLAGS =
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = baijf.c
-OBJSC    = baijf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

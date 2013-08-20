@@ -5,7 +5,6 @@ CPPFLAGS = ${PARTY_INCLUDE}
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = partyf.c
-OBJSC    = partyf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -5,7 +5,7 @@
 <TITLE>PCGASMType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCGASMType"><H1>PCGASMType</H1></A>
 Type of generalized additive Schwarz method to use (differs from ASM in allowing multiple processors per subdomain). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,7 +21,7 @@ a subdomain correction over each *outer* subdomain from a residual computed ther
  PC_GASM_BASIC       - Symmetric version where the full from the outer subdomain is used, and the resulting correction is applied
 </pre>
 <pre>
-                       over the outer subdomains.  As a result, points in the overlap will receive the sum of the corrections 
+                       over the outer subdomains.  As a result, points in the overlap will receive the sum of the corrections
 </pre>
 <pre>
                        from neighboring subdomains.
@@ -33,10 +33,10 @@ a subdomain correction over each *outer* subdomain from a residual computed ther
  PC_GASM_RESTRICT    - Residual from the outer subdomain is used but the correction is restricted to the inner subdomain only
 </pre>
 <pre>
-                       (i.e., zeroed out over the overlap portion of the outer subdomain before being applied).  As a result, 
+                       (i.e., zeroed out over the overlap portion of the outer subdomain before being applied).  As a result,
 </pre>
 <pre>
-                       each point will receive a correction only from the unique inner subdomain containing it (nonoverlapping covering 
+                       each point will receive a correction only from the unique inner subdomain containing it (nonoverlapping covering
 </pre>
 <pre>
                        assumption).
@@ -45,10 +45,10 @@ a subdomain correction over each *outer* subdomain from a residual computed ther
                        Default.
 </pre>
 <pre>
- PC_GASM_INTERPOLATE - Residual is zeroed out over the overlap portion of the outer subdomain, but the resulting correction is 
+ PC_GASM_INTERPOLATE - Residual is zeroed out over the overlap portion of the outer subdomain, but the resulting correction is
 </pre>
 <pre>
-                       applied over the outer subdomain. As a result, points in the overlap will receive the sum of the corrections 
+                       applied over the outer subdomain. As a result, points in the overlap will receive the sum of the corrections
 </pre>
 <pre>
                        from neighboring subdomains.

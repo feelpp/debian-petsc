@@ -5,13 +5,13 @@
 <TITLE>TSComputeIJacobianConstant</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSComputeIJacobianConstant"><H1>TSComputeIJacobianConstant</H1></A>
 Reuses a Jacobian that is time-independent. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode TSComputeIJacobianConstant(TS ts,PetscReal t,Vec X,Vec Xdot,PetscReal shift,Mat *A,Mat *B,MatStructure *flg,void *ctx)
+PetscErrorCode TSComputeIJacobianConstant(TS ts,PetscReal t,Vec U,Vec Udot,PetscReal shift,Mat *A,Mat *B,MatStructure *flg,void *ctx)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -21,9 +21,9 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>t </B></TD><TD>- time at which to evaluate
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X </B></TD><TD>- state at which to evaluate
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>U </B></TD><TD>- state at which to evaluate
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Xdot </B></TD><TD>- time derivative of state vector
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Udot </B></TD><TD>- time derivative of state vector
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>shift </B></TD><TD>- shift to apply
 </TD></TR>

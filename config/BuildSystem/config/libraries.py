@@ -31,7 +31,7 @@ class Configure(config.base.Configure):
       - If the path ends in ".lib" return it unchanged
       - If the path is absolute and the filename is "lib"<name>, return -L<dir> -l<name>
       - If the filename is "lib"<name>, return -l<name>
-      - If the path ends in ".so" return it unchanged       
+      - If the path ends in ".so" return it unchanged
       - If the path is absolute, return it unchanged
       - Otherwise return -l<library>'''
     if not library:
@@ -94,25 +94,37 @@ class Configure(config.base.Configure):
 
   def toString(self,libs):
     '''Converts a list of libraries to a string suitable for a linker'''
-    return ' '.join([self.getLibArgument(lib) for lib in libs])
+    newlibs = []
+    frame = 0
+    for lib in libs:
+      if frame:
+        newlibs += [lib]
+        frame   = 0
+      elif lib == '-framework':
+        newlibs += [lib]
+        frame = 1
+      else:
+        newlibs += self.getLibArgumentList(lib)
+    return ' '.join(newlibs)
 
   def toStringNoDupes(self,libs):
     '''Converts a list of libraries to a string suitable for a linker, removes duplicates'''
     newlibs = []
+    frame = 0
     for lib in libs:
-      newlibs += self.getLibArgumentList(lib)
+      if frame:
+        newlibs += [lib]
+        frame   = 0
+      elif lib == '-framework':
+        newlibs += [lib]
+        frame = 1
+      else:
+        newlibs += self.getLibArgumentList(lib)
     libs = newlibs
     newlibs = []
-    removedashl = 0
     for j in libs:
       # do not remove duplicate -l, because there is a tiny chance that order may matter
       if j in newlibs and not ( j.startswith('-l') or j == '-framework') : continue
-      # handle special case of -framework frameworkname
-      if j == '-framework': removedashl = 1
-      elif removedashl:
-        j = j[2:]
-        removedashl = 0
-        
       newlibs.append(j)
     return ' '.join(newlibs)
 
@@ -130,7 +142,7 @@ class Configure(config.base.Configure):
     # no match - assuming the given name is already in short notation
     return lib
 
-  def check(self, libName, funcs, libDir = None, otherLibs = [], prototype = '', call = '', fortranMangle = 0, cxxMangle = 0):
+  def check(self, libName, funcs, libDir = None, otherLibs = [], prototype = '', call = '', fortranMangle = 0, cxxMangle = 0, cxxLink = 0):
     '''Checks that the library "libName" contains "funcs", and if it does defines HAVE_LIB"libName"
        - libDir may be a list of directories
        - libName may be a list of library names'''
@@ -191,9 +203,13 @@ extern "C" {
         self.setCompilers.LIBS = ' '+self.toString(otherLibs) +' '+ self.setCompilers.LIBS
       elif libName:
         self.setCompilers.LIBS = ' '+self.toString(libName) +' '+ self.setCompilers.LIBS
-      self.pushLanguage(self.language[-1])
+      if cxxMangle: compileLang = 'Cxx'
+      else:         compileLang = self.language[-1]
+      if cxxLink: linklang = 'Cxx'
+      else: linklang = self.language[-1]
+      self.pushLanguage(compileLang)
       found = 0
-      if self.checkLink(includes, body):
+      if self.checkLink(includes, body, linkLanguage=linklang):
         found = 1
         # add to list of found libraries
         if libName:
@@ -228,6 +244,15 @@ extern "C" {
       self.addDefine('HAVE_ERF', 1)
     else:
       self.logPrint('Warning: erf() not found')
+    return
+
+  def checkMathTgamma(self):
+    '''Check for tgama() in libm, the math library'''
+    if not self.math is None and self.check(self.math, ['tgamma'], prototype = ['double tgamma(double);'], call = ['double x = 0,y; y = tgamma(x);\n']):
+      self.logPrint('tgamma() found')
+      self.addDefine('HAVE_TGAMMA', 1)
+    else:
+      self.logPrint('Warning: tgamma() not found')
     return
 
   def checkCompression(self):
@@ -414,6 +439,7 @@ int checkInit(void) {
     map(lambda args: self.executeTest(self.check, list(args)), self.libraries)
     self.executeTest(self.checkMath)
     self.executeTest(self.checkMathErf)
+    self.executeTest(self.checkMathTgamma)
     self.executeTest(self.checkCompression)
     self.executeTest(self.checkRealtime)
     self.executeTest(self.checkDynamic)

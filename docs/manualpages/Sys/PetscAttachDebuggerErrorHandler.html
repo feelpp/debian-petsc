@@ -5,13 +5,13 @@
 <TITLE>PetscAttachDebuggerErrorHandler</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscAttachDebuggerErrorHandler"><H1>PetscAttachDebuggerErrorHandler</H1></A>
-Error handler that attaches a debugger to a running process when an error is detected. This routine is useful for examining variables, etc.  
+Error handler that attaches a debugger to a running process when an error is detected. This routine is useful for examining variables, etc. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscAttachDebuggerErrorHandler(MPI_Comm comm,int line,const char* fun,const char *file,const char* dir,PetscErrorCode num,PetscErrorType p,const char* mess,void *ctx)
+PetscErrorCode  PetscAttachDebuggerErrorHandler(MPI_Comm comm,int line,const char *fun,const char *file,const char *dir,PetscErrorCode num,PetscErrorType p,const char *mess,void *ctx)
 </PRE>
 Not Collective
 <P>
@@ -44,7 +44,7 @@ debugger attachment
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-By default the GNU debugger, gdb, is used.  Alternatives are dbx and
+By default the GNU debugger, gdb, is used.  Alternatives are lldb, dbx and
 xxgdb,xldb (on IBM rs6000), xdb (on HP-UX).
 <P>
 Most users need not directly employ this routine and the other error
@@ -70,7 +70,7 @@ or you may write your own.
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>(), <A HREF="../Sys/PetscTraceBackErrorHandler.html#PetscTraceBackErrorHandler">PetscTraceBackErrorHandler</A>(), 
+  <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>(), <A HREF="../Sys/PetscTraceBackErrorHandler.html#PetscTraceBackErrorHandler">PetscTraceBackErrorHandler</A>(),
 <BR><A HREF="../Sys/PetscAbortErrorHandler.html#PetscAbortErrorHandler">PetscAbortErrorHandler</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/error/adebug.c.html#PetscAttachDebuggerErrorHandler">src/sys/error/adebug.c</A>

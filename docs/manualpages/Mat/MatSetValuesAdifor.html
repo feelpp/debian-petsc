@@ -5,7 +5,7 @@
 <TITLE>MatSetValuesAdifor</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSetValuesAdifor"><H1>MatSetValuesAdifor</H1></A>
 Sets values computed with automatic differentiation into a matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -27,12 +27,12 @@ Not Collective
 
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-Must call <A HREF="../Mat/MatSetColoring.html#MatSetColoring">MatSetColoring</A>() before using this routine. Also this matrix must already
+Must call MatSetColoring() before using this routine. Also this matrix must already
 have its nonzero pattern determined.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(), <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(), <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(), <A HREF="../Mat/MatSetValuesBlocked.html#MatSetValuesBlocked">MatSetValuesBlocked</A>(), <A HREF="../Mat/MatSetValuesLocal.html#MatSetValuesLocal">MatSetValuesLocal</A>(),
-<BR><A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(), <A HREF="../Mat/MatSetColoring.html#MatSetColoring">MatSetColoring</A>()
+<BR><A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(), MatSetColoring()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/interface/matrix.c.html#MatSetValuesAdifor">src/mat/interface/matrix.c</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

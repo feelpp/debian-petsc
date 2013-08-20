@@ -4,26 +4,26 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/objects/state.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:35:38+00:00">
+<meta name="date" content="2013-07-02T14:39:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">     Provides utility routines for manulating any type of PETSc object.</font>
 <a name="line4">  4: </a><font color="#B22222">*/</font>
-<a name="line5">  5: </a><font color="#A020F0">#include &lt;petscsys.h&gt;  </font><font color="#B22222">/*I   "petscsys.h"    I*/</font><font color="#A020F0"></font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;petsc-private/petscimpl.h&gt;  </font><font color="#B22222">/*I   "petscsys.h"    I*/</font><font color="#A020F0"></font>
 
 <a name="line9">  9: </a><font color="#B22222">/*@C</font>
-<a name="line10"> 10: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscObjectStateQuery.html#PetscObjectStateQuery">PetscObjectStateQuery</A> - Gets the state of any <A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>, </font>
+<a name="line10"> 10: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscObjectStateQuery.html#PetscObjectStateQuery">PetscObjectStateQuery</A> - Gets the state of any <A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>,</font>
 <a name="line11"> 11: </a><font color="#B22222">   regardless of the type.</font>
 
 <a name="line13"> 13: </a><font color="#B22222">   Not Collective</font>
 
 <a name="line15"> 15: </a><font color="#B22222">   Input Parameter:</font>
 <a name="line16"> 16: </a><font color="#B22222">.  obj - any PETSc object, for example a <A href="../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> or <A href="../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>. This must be</font>
-<a name="line17"> 17: </a><font color="#B22222">         cast with a (<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>), for example, </font>
+<a name="line17"> 17: </a><font color="#B22222">         cast with a (<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>), for example,</font>
 <a name="line18"> 18: </a><font color="#B22222">         <A href="../../../docs/manualpages/Sys/PetscObjectStateQuery.html#PetscObjectStateQuery">PetscObjectStateQuery</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,&amp;state);</font>
 
 <a name="line20"> 20: </a><font color="#B22222">   Output Parameter:</font>
@@ -48,20 +48,20 @@
 <a name="line42"> 42: </a>}
 
 <a name="line46"> 46: </a><font color="#B22222">/*@C</font>
-<a name="line47"> 47: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscObjectSetState.html#PetscObjectSetState">PetscObjectSetState</A> - Sets the state of any <A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>, </font>
+<a name="line47"> 47: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscObjectSetState.html#PetscObjectSetState">PetscObjectSetState</A> - Sets the state of any <A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>,</font>
 <a name="line48"> 48: </a><font color="#B22222">   regardless of the type.</font>
 
 <a name="line50"> 50: </a><font color="#B22222">   Not Collective</font>
 
 <a name="line52"> 52: </a><font color="#B22222">   Input Parameter:</font>
 <a name="line53"> 53: </a><font color="#B22222">+  obj - any PETSc object, for example a <A href="../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>, <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> or <A href="../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>. This must be</font>
-<a name="line54"> 54: </a><font color="#B22222">         cast with a (<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>), for example, </font>
+<a name="line54"> 54: </a><font color="#B22222">         cast with a (<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>), for example,</font>
 <a name="line55"> 55: </a><font color="#B22222">         <A href="../../../docs/manualpages/Sys/PetscObjectSetState.html#PetscObjectSetState">PetscObjectSetState</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,state);</font>
 <a name="line56"> 56: </a><font color="#B22222">-  state - the object state</font>
 
-<a name="line58"> 58: </a><font color="#B22222">   Notes: This function should be used with extreme caution. There is </font>
+<a name="line58"> 58: </a><font color="#B22222">   Notes: This function should be used with extreme caution. There is</font>
 <a name="line59"> 59: </a><font color="#B22222">   essentially only one use for it: if the user calls <A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>(<A href="../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)GetRow(Array),</font>
-<a name="line60"> 60: </a><font color="#B22222">   which increases the state, but does not alter the data, then this </font>
+<a name="line60"> 60: </a><font color="#B22222">   which increases the state, but does not alter the data, then this</font>
 <a name="line61"> 61: </a><font color="#B22222">   routine can be used to reset the state.</font>
 
 <a name="line63"> 63: </a><font color="#B22222">   Level: advanced</font>
@@ -77,10 +77,10 @@
 <a name="line75"> 75: </a>  <font color="#4169E1">return</font>(0);
 <a name="line76"> 76: </a>}
 
-<a name="line78"> 78: </a><A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  PetscObjectComposedDataMax = 10;
+<a name="line78"> 78: </a><A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> PetscObjectComposedDataMax = 10;
 
 <a name="line82"> 82: </a><font color="#B22222">/*@C</font>
-<a name="line83"> 83: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscObjectComposedDataRegister.html#PetscObjectComposedDataRegister">PetscObjectComposedDataRegister</A> - Get an available id for </font>
+<a name="line83"> 83: </a><font color="#B22222">   <A href="../../../docs/manualpages/Sys/PetscObjectComposedDataRegister.html#PetscObjectComposedDataRegister">PetscObjectComposedDataRegister</A> - Get an available id for</font>
 <a name="line84"> 84: </a><font color="#B22222">   composed data</font>
 
 <a name="line86"> 86: </a><font color="#B22222">   Not Collective</font>
@@ -119,7 +119,7 @@
 <a name="line124">124: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ar);
 <a name="line125">125: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ir);
 <a name="line126">126: </a>  }
-<a name="line127">127: </a>  obj-&gt;int_idmax = new_n;
+<a name="line127">127: </a>  obj-&gt;int_idmax       = new_n;
 <a name="line128">128: </a>  obj-&gt;intcomposeddata = new_ar; obj-&gt;intcomposedstate = new_ir;
 <a name="line129">129: </a>  <font color="#4169E1">return</font>(0);
 <a name="line130">130: </a>}
@@ -127,7 +127,7 @@
 <a name="line134">134: </a><strong><font color="#4169E1"><a name="PetscObjectComposedDataIncreaseIntstar"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscObjectComposedDataIncreaseIntstar(<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> obj)</font></strong>
 <a name="line135">135: </a>{
 <a name="line136">136: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       **ar = obj-&gt;intstarcomposeddata,**new_ar;
-<a name="line137">137: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *ir = obj-&gt;intstarcomposedstate,*new_ir,n = obj-&gt;intstar_idmax,new_n,i;
+<a name="line137">137: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *ir  = obj-&gt;intstarcomposedstate,*new_ir,n = obj-&gt;intstar_idmax,new_n,i;
 
 <a name="line141">141: </a>  new_n = PetscObjectComposedDataMax;
 <a name="line142">142: </a>  <A href="../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(new_n*<font color="#4169E1">sizeof</font>(<A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*),&amp;new_ar);
@@ -141,7 +141,7 @@
 <a name="line150">150: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ar);
 <a name="line151">151: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ir);
 <a name="line152">152: </a>  }
-<a name="line153">153: </a>  obj-&gt;intstar_idmax = new_n;
+<a name="line153">153: </a>  obj-&gt;intstar_idmax       = new_n;
 <a name="line154">154: </a>  obj-&gt;intstarcomposeddata = new_ar; obj-&gt;intstarcomposedstate = new_ir;
 <a name="line155">155: </a>  <font color="#4169E1">return</font>(0);
 <a name="line156">156: </a>}
@@ -163,7 +163,7 @@
 <a name="line176">176: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ar);
 <a name="line177">177: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ir);
 <a name="line178">178: </a>  }
-<a name="line179">179: </a>  obj-&gt;real_idmax = new_n;
+<a name="line179">179: </a>  obj-&gt;real_idmax       = new_n;
 <a name="line180">180: </a>  obj-&gt;realcomposeddata = new_ar; obj-&gt;realcomposedstate = new_ir;
 <a name="line181">181: </a>  <font color="#4169E1">return</font>(0);
 <a name="line182">182: </a>}
@@ -171,7 +171,7 @@
 <a name="line186">186: </a><strong><font color="#4169E1"><a name="PetscObjectComposedDataIncreaseRealstar"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscObjectComposedDataIncreaseRealstar(<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> obj)</font></strong>
 <a name="line187">187: </a>{
 <a name="line188">188: </a>  <A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      **ar = obj-&gt;realstarcomposeddata,**new_ar;
-<a name="line189">189: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *ir = obj-&gt;realstarcomposedstate,*new_ir,n = obj-&gt;realstar_idmax,new_n,i;
+<a name="line189">189: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *ir  = obj-&gt;realstarcomposedstate,*new_ir,n = obj-&gt;realstar_idmax,new_n,i;
 
 <a name="line193">193: </a>  new_n = PetscObjectComposedDataMax;
 <a name="line194">194: </a>  <A href="../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(new_n*<font color="#4169E1">sizeof</font>(<A href="../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>*),&amp;new_ar);
@@ -185,7 +185,7 @@
 <a name="line202">202: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ar);
 <a name="line203">203: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ir);
 <a name="line204">204: </a>  }
-<a name="line205">205: </a>  obj-&gt;realstar_idmax = new_n;
+<a name="line205">205: </a>  obj-&gt;realstar_idmax       = new_n;
 <a name="line206">206: </a>  obj-&gt;realstarcomposeddata = new_ar; obj-&gt;realstarcomposedstate = new_ir;
 <a name="line207">207: </a>  <font color="#4169E1">return</font>(0);
 <a name="line208">208: </a>}
@@ -207,7 +207,7 @@
 <a name="line228">228: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ar);
 <a name="line229">229: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ir);
 <a name="line230">230: </a>  }
-<a name="line231">231: </a>  obj-&gt;scalar_idmax = new_n;
+<a name="line231">231: </a>  obj-&gt;scalar_idmax       = new_n;
 <a name="line232">232: </a>  obj-&gt;scalarcomposeddata = new_ar; obj-&gt;scalarcomposedstate = new_ir;
 <a name="line233">233: </a>  <font color="#4169E1">return</font>(0);
 <a name="line234">234: </a>}
@@ -215,7 +215,7 @@
 <a name="line238">238: </a><strong><font color="#4169E1"><a name="PetscObjectComposedDataIncreaseScalarstar"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PetscObjectComposedDataIncreaseScalarstar(<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A> obj)</font></strong>
 <a name="line239">239: </a>{
 <a name="line240">240: </a>  <A href="../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    **ar = obj-&gt;scalarstarcomposeddata,**new_ar;
-<a name="line241">241: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *ir = obj-&gt;scalarstarcomposedstate,*new_ir,n = obj-&gt;scalarstar_idmax,new_n,i;
+<a name="line241">241: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       *ir  = obj-&gt;scalarstarcomposedstate,*new_ir,n = obj-&gt;scalarstar_idmax,new_n,i;
 
 <a name="line245">245: </a>  new_n = PetscObjectComposedDataMax;
 <a name="line246">246: </a>  <A href="../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(new_n*<font color="#4169E1">sizeof</font>(<A href="../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*),&amp;new_ar);
@@ -229,7 +229,7 @@
 <a name="line254">254: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ar);
 <a name="line255">255: </a>    <A href="../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ir);
 <a name="line256">256: </a>  }
-<a name="line257">257: </a>  obj-&gt;scalarstar_idmax = new_n;
+<a name="line257">257: </a>  obj-&gt;scalarstar_idmax       = new_n;
 <a name="line258">258: </a>  obj-&gt;scalarstarcomposeddata = new_ar; obj-&gt;scalarstarcomposedstate = new_ir;
 <a name="line259">259: </a>  <font color="#4169E1">return</font>(0);
 <a name="line260">260: </a>}

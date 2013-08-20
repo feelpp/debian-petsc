@@ -5,7 +5,7 @@
 <TITLE>PetscDrawSetFromOptions</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawSetFromOptions"><H1>PetscDrawSetFromOptions</H1></A>
 Sets the graphics type from the options database. Defaults to a PETSc X windows graphics. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -25,6 +25,14 @@ Collective on <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-nox_warning </B></TD><TD>- when X windows support is not installed this prevents the warning message
 from being printed
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-draw_pause &lt;pause amount&gt; </B></TD><TD>- - -1 indicates wait for mouse input, -2 indicates pause when window is to be destroyed
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-draw_save [optional filename] </B></TD><TD>- (X windows only) saves each image before it is cleared to a file
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-draw_save_movie </B></TD><TD>- converts image files to a movie  at the end of the run. See <A HREF="../Draw/PetscDrawSetSave.html#PetscDrawSetSave">PetscDrawSetSave</A>()
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-draw_save_on_flush </B></TD><TD>- saves an image on each flush in addition to each clear
 </TD></TR></TABLE>
 <P>
 
@@ -34,12 +42,15 @@ Must be called after <A HREF="../Draw/PetscDrawCreate.html#PetscDrawCreate">Pets
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Draw/PetscDrawCreate.html#PetscDrawCreate">PetscDrawCreate</A>(), <A HREF="../Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>()
+ <A HREF="../Draw/PetscDrawCreate.html#PetscDrawCreate">PetscDrawCreate</A>(), <A HREF="../Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(), <A HREF="../Draw/PetscDrawSetSave.html#PetscDrawSetSave">PetscDrawSetSave</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/interface/drawreg.c.html#PetscDrawSetFromOptions">src/sys/draw/interface/drawreg.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/interface/drawreg.c.html#PetscDrawSetFromOptions">src/sys/classes/draw/interface/drawreg.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
 </BODY></HTML>

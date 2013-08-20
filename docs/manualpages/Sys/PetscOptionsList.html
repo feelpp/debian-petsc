@@ -5,13 +5,13 @@
 <TITLE>PetscOptionsList</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscOptionsList"><H1>PetscOptionsList</H1></A>
 Puts a list of option values that a single one may be selected from 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscOptionsList(const char opt[],const char ltext[],const char man[],PetscFList list,const char defaultv[],char value[],size_t len,PetscBool  *set)
+PetscErrorCode  PetscOptionsList(const char opt[],const char ltext[],const char man[],PetscFunctionList list,const char defaultv[],char value[],size_t len,PetscBool  *set)
 </PRE>
 Logically Collective on the communicator passed in <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>()
 <P>
@@ -48,7 +48,7 @@ see <A HREF="../Sys/PetscOptionsView.html#PetscOptionsView">PetscOptionsView</A>
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(),  
+ <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(),
 <BR><A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(), <A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsGetRealArray.html#PetscOptionsGetRealArray">PetscOptionsGetRealArray</A>(), <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(),
 <A HREF="../Sys/PetscOptionsName.html#PetscOptionsName">PetscOptionsName</A>(), <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(), <A HREF="../Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>(), <A HREF="../Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(),
 <A HREF="../Sys/PetscOptionsStringArray.html#PetscOptionsStringArray">PetscOptionsStringArray</A>(),<A HREF="../Sys/PetscOptionsRealArray.html#PetscOptionsRealArray">PetscOptionsRealArray</A>(), <A HREF="../Sys/PetscOptionsScalar.html#PetscOptionsScalar">PetscOptionsScalar</A>(),
@@ -60,6 +60,7 @@ see <A HREF="../Sys/PetscOptionsView.html#PetscOptionsView">PetscOptionsView</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex8.c.html">src/ts/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>

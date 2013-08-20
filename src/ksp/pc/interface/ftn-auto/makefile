@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = pcsetf.c preconf.c
-OBJSC    = pcsetf.o preconf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

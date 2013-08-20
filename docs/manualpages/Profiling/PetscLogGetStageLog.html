@@ -5,12 +5,13 @@
 <TITLE>PetscLogGetStageLog</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscLogGetStageLog"><H1>PetscLogGetStageLog</H1></A>
 This function returns the default stage logging object. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PETSC_STATIC_INLINE PetscErrorCode  PetscLogGetStageLog(PetscStageLog *stageLog)
+#include "petscsys.h"   
+PetscErrorCode PetscLogGetStageLog(PetscStageLog *stageLog)
 </PRE>
 Not collective
 <P>
@@ -28,8 +29,11 @@ Developer Notes: Inline since called for EACH PetscEventLogBeginDefault() and Pe
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Profiling/PetscStageLogCreate.html#PetscStageLogCreate">PetscStageLogCreate</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/../../../include/petsclog.h.html#PetscLogGetStageLog">src/sys/plog/../../../include/petsclog.h</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/logging/utils/stagelog.c.html#PetscLogGetStageLog">src/sys/logging/utils/stagelog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex52_integrateElement_coef.cu.html">src/snes/examples/tutorials/ex52_integrateElement_coef.cu.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex52_integrateElement.cu.html">src/snes/examples/tutorials/ex52_integrateElement.cu.html</A><BR>
 </BODY></HTML>

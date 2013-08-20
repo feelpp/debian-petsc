@@ -5,13 +5,13 @@
 <TITLE>SNESTSFormFunction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESTSFormFunction"><H1>SNESTSFormFunction</H1></A>
 Function to evaluate nonlinear residual 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  SNESTSFormFunction(SNES snes,Vec X,Vec F,void *ctx)
+PetscErrorCode  SNESTSFormFunction(SNES snes,Vec U,Vec F,void *ctx)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -19,7 +19,7 @@ Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes </B></TD><TD>- nonlinear solver
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X </B></TD><TD>- the current state at which to evaluate the residual
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>U </B></TD><TD>- the current state at which to evaluate the residual
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- user context, must be a <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR></TABLE>
@@ -41,12 +41,4 @@ It is most frequently passed to <A HREF="../MatFD/MatFDColoringSetFunction.html#
 <BR><A HREF="./index.html">Index of all TS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex13.c.html">src/ts/examples/tutorials/ex13.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex26.c.html">src/ts/examples/tutorials/ex26.c.html</A><BR>
 </BODY></HTML>

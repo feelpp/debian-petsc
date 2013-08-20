@@ -5,14 +5,12 @@
 <TITLE>SNESComputeGS</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESComputeGS"><H1>SNESComputeGS</H1></A>
-Calls the Gauss-Seidel function that has been set with <A HREF="../SNES/SNESSetGS.html#SNESSetGS">SNESSetGS</A>(). 
+Calls the Gauss-Seidel function that has been set with  <A HREF="../SNES/SNESSetGS.html#SNESSetGS">SNESSetGS</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESComputeGS(SNES snes,Vec b,Vec x)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>

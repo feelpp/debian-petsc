@@ -28,16 +28,10 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscdmda.h"
-#include "petscmat.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmdasetblockfills_ DMDASETBLOCKFILLS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmdasetblockfills_ dmdasetblockfills
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define matsetdm_ MATSETDM
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define matsetdm_ matsetdm
 #endif
 
 
@@ -45,14 +39,9 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  dmdasetblockfills_(DM da,PetscInt *dfill,PetscInt *ofill, int *__ierr ){
+void PETSC_STDCALL  dmdasetblockfills_(DM da, PetscInt *dfill, PetscInt *ofill, int *__ierr ){
 *__ierr = DMDASetBlockFills(
 	(DM)PetscToPointer((da) ),dfill,ofill);
-}
-void PETSC_STDCALL  matsetdm_(Mat mat,DM da, int *__ierr ){
-*__ierr = MatSetDM(
-	(Mat)PetscToPointer((mat) ),
-	(DM)PetscToPointer((da) ));
 }
 #if defined(__cplusplus)
 }

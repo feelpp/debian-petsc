@@ -5,13 +5,13 @@
 <TITLE>SNESMSRegister</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESMSRegister"><H1>SNESMSRegister</H1></A>
 register a multistage scheme 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode SNESMSRegister(const SNESMSType name,PetscInt nstages,PetscInt nregisters,PetscReal stability,const PetscReal gamma[],const PetscReal delta[],const PetscReal betasub[])
+PetscErrorCode SNESMSRegister(SNESMSType name,PetscInt nstages,PetscInt nregisters,PetscReal stability,const PetscReal gamma[],const PetscReal delta[],const PetscReal betasub[])
 </PRE>
 Not Collective, but the same schemes should be registered on all processes on which they will be used
 <P>
@@ -42,7 +42,7 @@ The notation is described in Ketcheson (2010) Runge-Kutta methods with minimum s
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../SNES/SNESMS.html#SNESMS">SNESMS</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/impls/msms.c.html#SNESMSRegister">src/snes/impls/msms.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/impls/ms/ms.c.html#SNESMSRegister">src/snes/impls/ms/ms.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

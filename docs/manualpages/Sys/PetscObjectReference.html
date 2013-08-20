@@ -5,7 +5,7 @@
 <TITLE>PetscObjectReference</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscObjectReference"><H1>PetscObjectReference</H1></A>
 Indicates to any <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> that it is being referenced by another <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>. This increases the reference count for that object by one. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -16,7 +16,7 @@ PetscErrorCode  PetscObjectReference(PetscObject obj)
 Logically Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>obj </B> -the PETSc object. This must be cast with (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example, 
+<DT><B>obj </B> -the PETSc object. This must be cast with (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example,
 <A HREF="../Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat);
 <br>
 <P>
@@ -31,4 +31,7 @@ Logically Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObjec
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
 </BODY></HTML>

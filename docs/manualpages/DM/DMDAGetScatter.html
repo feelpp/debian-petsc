@@ -5,15 +5,15 @@
 <TITLE>DMDAGetScatter</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGetScatter"><H1>DMDAGetScatter</H1></A>
-Gets the local-to-global, local-to-global, and  local-to-local vector scatter contexts for a distributed array. 
+Gets the local-to-global, local-to-global, and local-to-local vector scatter contexts for a distributed array. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
 PetscErrorCode  DMDAGetScatter(DM da,VecScatter *ltog,VecScatter *gtol,VecScatter *ltol)
 </PRE>
-Collective on DMDA
+Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>da </B> -the distributed array
@@ -21,11 +21,11 @@ Collective on DMDA
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ltog </B></TD><TD>- local-to-global scatter context (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ltog </B></TD><TD>- local-to-global scatter context (may be NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>gtol </B></TD><TD>- global-to-local scatter context (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>gtol </B></TD><TD>- global-to-local scatter context (may be NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ltol </B></TD><TD>- local-to-local scatter context (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ltol </B></TD><TD>- local-to-local scatter context (may be NULL)
 </TD></TR></TABLE>
 <P>
 

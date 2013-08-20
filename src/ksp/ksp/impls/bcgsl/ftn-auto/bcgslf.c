@@ -34,6 +34,11 @@ extern void PetscRmPointer(void*);
 #define kspbcgslsetxres_ kspbcgslsetxres
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspbcgslsetusepseudoinverse_ KSPBCGSLSETUSEPSEUDOINVERSE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspbcgslsetusepseudoinverse_ kspbcgslsetusepseudoinverse
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspbcgslsetpol_ KSPBCGSLSETPOL
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspbcgslsetpol_ kspbcgslsetpol
@@ -53,7 +58,11 @@ void PETSC_STDCALL  kspbcgslsetxres_(KSP ksp,PetscReal *delta, int *__ierr ){
 *__ierr = KSPBCGSLSetXRes(
 	(KSP)PetscToPointer((ksp) ),*delta);
 }
-void PETSC_STDCALL  kspbcgslsetpol_(KSP ksp,PetscBool  *uMROR, int *__ierr ){
+void PETSC_STDCALL  kspbcgslsetusepseudoinverse_(KSP ksp,PetscBool *use_pinv, int *__ierr ){
+*__ierr = KSPBCGSLSetUsePseudoinverse(
+	(KSP)PetscToPointer((ksp) ),*use_pinv);
+}
+void PETSC_STDCALL  kspbcgslsetpol_(KSP ksp,PetscBool *uMROR, int *__ierr ){
 *__ierr = KSPBCGSLSetPol(
 	(KSP)PetscToPointer((ksp) ),*uMROR);
 }

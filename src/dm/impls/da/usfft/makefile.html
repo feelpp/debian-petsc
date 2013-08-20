@@ -3,11 +3,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/da/usfft/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:55:27+00:00">
+<meta name="date" content="2013-07-02T14:45:13+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <font color="#A020F0">#requirespackage   'PETSC_HAVE_FFTW'</font>
 <font color="#A020F0">#requiresprecision double</font>
@@ -15,15 +15,14 @@
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
 <font color="#A020F0"># Set CFLAGS=</font><font color="#666666">"-DPETSC_DEBUG_USFFT"</font><font color="#A020F0"> to turn on debugging output</font>
-CFLAGS   = 
+CFLAGS   =
 FFLAGS   =
 SOURCEC  = matusfft.c
-OBJSC    = matusfft.o
 LIBBASE  = libpetscdm
 MANSEC   = DM
-SUBMANSEC= DMDA
+SUBMANSEC= <A href="ROOT/docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>
 DIRS     =
-LOCDIR   = src/dm/da/src/usfft/
+LOCDIR   = src/dm/impls/da/usfft/
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

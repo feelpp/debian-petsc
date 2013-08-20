@@ -5,13 +5,13 @@
 <TITLE>MatGetCommunicationStructs</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetCommunicationStructs"><H1>MatGetCommunicationStructs</H1></A>
 Provides access to the communication structures used in matrix-vector multiplication. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-#if defined (PETSC_USE_CTABLE)
+#if defined(PETSC_USE_CTABLE)
 PetscErrorCode  MatGetCommunicationStructs(Mat A, Vec *lvec, PetscTable *colmap, VecScatter *multScatter)
 #else
 PetscErrorCode  MatGetCommunicationStructs(Mat A, Vec *lvec, PetscInt *colmap[], VecScatter *multScatter)

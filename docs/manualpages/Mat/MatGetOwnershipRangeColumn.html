@@ -5,13 +5,13 @@
 <TITLE>MatGetOwnershipRangeColumn</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetOwnershipRangeColumn"><H1>MatGetOwnershipRangeColumn</H1></A>
 Returns the range of matrix columns associated with rows of a vector one multiplies by that owned by this processor. (The columns of the "diagonal block") 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatGetOwnershipRangeColumn(Mat mat,PetscInt *m,PetscInt* n)
+PetscErrorCode  MatGetOwnershipRangeColumn(Mat mat,PetscInt *m,PetscInt *n)
 </PRE>
 Not Collective, unless matrix has not been allocated, then collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -26,7 +26,7 @@ Not Collective, unless matrix has not been allocated, then collective on <A HREF
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- one more than the global index of the last local column
 </TD></TR></TABLE>
 <P>
-Notes: both output parameters can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> on input.
+Notes: both output parameters can be NULL on input.
 <P>
 
 <P>

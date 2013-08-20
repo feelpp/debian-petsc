@@ -5,13 +5,13 @@
 <TITLE>TSGLSetAcceptType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSGLSetAcceptType"><H1>TSGLSetAcceptType</H1></A>
 sets the acceptance test 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode  TSGLSetAcceptType(TS ts,const TSGLAcceptType type)
+PetscErrorCode  TSGLSetAcceptType(TS ts,TSGLAcceptType type)
 </PRE>
 Time integrators that need to control error must have the option to reject a time step based on local error
 estimates.  This function allows different schemes to be set.
@@ -32,7 +32,7 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../TS/TSGL.html#TSGL">TSGL</A>, <A HREF="../TS/TSGLAcceptRegisterDynamic.html#TSGLAcceptRegisterDynamic">TSGLAcceptRegisterDynamic</A>(), <A HREF="../TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A>, set type
+ <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../TS/TSGL.html#TSGL">TSGL</A>, <A HREF="../TS/TSGLAcceptRegister.html#TSGLAcceptRegister">TSGLAcceptRegister</A>(), <A HREF="../TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A>, set type
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/impls/implicit/gl/gl.c.html#TSGLSetAcceptType">src/ts/impls/implicit/gl/gl.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

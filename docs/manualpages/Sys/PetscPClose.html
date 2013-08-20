@@ -5,12 +5,12 @@
 <TITLE>PetscPClose</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscPClose"><H1>PetscPClose</H1></A>
 Closes (ends) a program on processor zero run with <A HREF="../Sys/PetscPOpen.html#PetscPOpen">PetscPOpen</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode  PetscPClose(MPI_Comm comm,FILE *fd)
+PetscErrorCode PetscPClose(MPI_Comm comm,FILE *fd,PetscInt *rval)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, but only process 0 runs the command
 <P>
@@ -18,8 +18,12 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, but only pro
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- MPI communicator, only processor zero runs the program
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fp </B></TD><TD>- the file pointer where program input or output may be read or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if don't care
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fp </B></TD><TD>- the file pointer where program input or output may be read or NULL if don't care
 </TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
+<DT><B>rval </B> -return value from pclose() or NULL to raise an error on failure
+<br>
 <P>
 
 <P>

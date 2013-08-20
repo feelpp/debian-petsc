@@ -5,7 +5,6 @@ CPPFLAGS =
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = cartesianf.c
-OBJSC    = cartesianf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

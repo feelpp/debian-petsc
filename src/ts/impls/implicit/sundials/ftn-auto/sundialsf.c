@@ -111,7 +111,7 @@ void PETSC_STDCALL  tssundialssetmaxtimestep_(TS ts,PetscReal *maxdt, int *__ier
 *__ierr = TSSundialsSetMaxTimeStep(
 	(TS)PetscToPointer((ts) ),*maxdt);
 }
-void PETSC_STDCALL  tssundialsmonitorinternalsteps_(TS ts,PetscBool  *ft, int *__ierr ){
+void PETSC_STDCALL  tssundialsmonitorinternalsteps_(TS ts,PetscBool *ft, int *__ierr ){
 *__ierr = TSSundialsMonitorInternalSteps(
 	(TS)PetscToPointer((ts) ),*ft);
 }

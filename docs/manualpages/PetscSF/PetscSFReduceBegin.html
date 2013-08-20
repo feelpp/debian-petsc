@@ -5,11 +5,12 @@
 <TITLE>PetscSFReduceBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscSFReduceBegin"><H1>PetscSFReduceBegin</H1></A>
 begin reduction of leafdata into rootdata, to be completed with call to <A HREF="../PetscSF/PetscSFReduceEnd.html#PetscSFReduceEnd">PetscSFReduceEnd</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscsf.h" 
 PetscErrorCode PetscSFReduceBegin(PetscSF sf,MPI_Datatype unit,const void *leafdata,void *rootdata,MPI_Op op)
 </PRE>
 Collective
@@ -34,10 +35,10 @@ Collective
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PetscSF/PetscSFBcastBegin.html#PetscSFBcastBegin">PetscSFBcastBegin</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/sf/sf.c.html#PetscSFReduceBegin">src/sys/sf/sf.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/sf/interface/sf.c.html#PetscSFReduceBegin">src/vec/is/sf/interface/sf.c</A>
 <BR><A HREF="./index.html">Index of all PetscSF routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/sf/examples/tutorials/ex1.c.html">src/sys/sf/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/vec/is/sf/examples/tutorials/ex1.c.html">src/vec/is/sf/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

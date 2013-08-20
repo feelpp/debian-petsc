@@ -3,11 +3,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/baij/seq/ftn-kernels/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:47:54+00:00">
+<meta name="date" content="2013-07-02T14:42:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <font color="#A020F0"># This directory contains some computational kernels written in</font>
 <font color="#A020F0"># Fortran77.  These are mainly intended to provide high performance for</font>
@@ -20,15 +20,13 @@
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = 
+SOURCEC  =
 SOURCEF  = fsolvebaij.F
-SOURCEH  = 
-OBJSC    = 
-OBJSF    = fsolvebaij.o
+SOURCEH  =
 LIBBASE  = libpetscmat
 MANSEC   = Sys
 LOCDIR   = src/mat/impls/baij/seq/ftn-kernels/
-DIRS     = 
+DIRS     =
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

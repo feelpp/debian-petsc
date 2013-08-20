@@ -39,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  matmffdwpsetcomputenormu_(Mat A,PetscBool  *flag, int *__ierr ){
+void PETSC_STDCALL  matmffdwpsetcomputenormu_(Mat A,PetscBool *flag, int *__ierr ){
 *__ierr = MatMFFDWPSetComputeNormU(
 	(Mat)PetscToPointer((A) ),*flag);
 }

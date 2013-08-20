@@ -5,9 +5,9 @@
 <TITLE>PCASMSetLocalSubdomains</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCASMSetLocalSubdomains"><H1>PCASMSetLocalSubdomains</H1></A>
-Sets the local subdomains (for this processor only) for the additive Schwarz preconditioner.  
+Sets the local subdomains (for this processor only) for the additive Schwarz preconditioner. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
@@ -22,10 +22,10 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of subdomains for this processor (default value = 1)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is </B></TD><TD>- the index set that defines the subdomains for this processor
-(or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to determine subdomains)
+(or NULL for PETSc to determine subdomains)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_local </B></TD><TD>- the index sets that define the local part of the subdomains for this processor
-(or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to use the default of 1 subdomain per process)
+(or NULL to use the default of 1 subdomain per process)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>

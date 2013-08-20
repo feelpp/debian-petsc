@@ -5,7 +5,7 @@
 <TITLE>PCASMType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCASMType"><H1>PCASMType</H1></A>
 Type of additive Schwarz method to use 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -16,7 +16,7 @@ typedef enum {PC_ASM_BASIC = 3,PC_ASM_RESTRICT = 1,PC_ASM_INTERPOLATE = 2,PC_ASM
  PC_ASM_BASIC        - Symmetric version where residuals from the ghost points are used
 </pre>
 <pre>
-                       and computed values in ghost regions are added together. 
+                       and computed values in ghost regions are added together.
 </pre>
 <pre>
                        Classical standard additive Schwarz.
@@ -25,7 +25,7 @@ typedef enum {PC_ASM_BASIC = 3,PC_ASM_RESTRICT = 1,PC_ASM_INTERPOLATE = 2,PC_ASM
  PC_ASM_RESTRICT     - Residuals from ghost points are used but computed values in ghost
 </pre>
 <pre>
-                       region are discarded. 
+                       region are discarded.
 </pre>
 <pre>
                        Default.
@@ -37,7 +37,7 @@ typedef enum {PC_ASM_BASIC = 3,PC_ASM_RESTRICT = 1,PC_ASM_INTERPOLATE = 2,PC_ASM
                        region are added back in.
 </pre>
 <pre>
- PC_ASM_NONE         - Residuals from ghost points are not used, computed ghost values are 
+ PC_ASM_NONE         - Residuals from ghost points are not used, computed ghost values are
 </pre>
 <pre>
                        discarded.

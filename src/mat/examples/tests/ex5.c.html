@@ -4,12 +4,12 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex5.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:50:56+00:00">
+<meta name="date" content="2013-07-02T14:43:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
-<pre width="80"><a name="line1">  1: </a>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>(), <A href="../../../../docs/manualpages/Mat/MatMultAdd.html#MatMultAdd">MatMultAdd</A>(), <A href="../../../../docs/manualpages/Mat/MatMultTranspose.html#MatMultTranspose">MatMultTranspose</A>().\n\</font>
 <a name="line3">  3: </a><font color="#666666">Also <A href="../../../../docs/manualpages/Mat/MatMultTransposeAdd.html#MatMultTransposeAdd">MatMultTransposeAdd</A>(), <A href="../../../../docs/manualpages/Mat/MatScale.html#MatScale">MatScale</A>(), <A href="../../../../docs/manualpages/Mat/MatGetDiagonal.html#MatGetDiagonal">MatGetDiagonal</A>(), and <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>().\n\n"</font>;
 
@@ -24,13 +24,13 @@
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
-<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,PETSC_VIEWER_ASCII_COMMON);
-<a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-m"</font>,&amp;m,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line22"> 22: </a>  n = m;
-<a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-rectA"</font>,&amp;flg);
+<a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL,<font color="#666666">"-m"</font>,&amp;m,NULL);
+<a name="line22"> 22: </a>  n    = m;
+<a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL,<font color="#666666">"-rectA"</font>,&amp;flg);
 <a name="line24"> 24: </a>  <font color="#4169E1">if</font> (flg) n += 2;
-<a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-rectB"</font>,&amp;flg);
+<a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL,<font color="#666666">"-rectB"</font>,&amp;flg);
 <a name="line26"> 26: </a>  <font color="#4169E1">if</font> (flg) n -= 2;
 
 <a name="line28"> 28: </a>  <font color="#B22222">/* ---------- Assemble matrix and vectors ----------- */</font>
@@ -54,10 +54,10 @@
 
 <a name="line47"> 47: </a>  <font color="#B22222">/* Assembly */</font>
 <a name="line48"> 48: </a>  <font color="#4169E1">for</font> (i=rstart; i&lt;rend; i++) {
-<a name="line49"> 49: </a>    v = 100*(i+1);
+<a name="line49"> 49: </a>    v    = 100*(i+1);
 <a name="line50"> 50: </a>    <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(z,1,&amp;i,&amp;v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line51"> 51: </a>    <font color="#4169E1">for</font> (j=0; j&lt;n; j++) {
-<a name="line52"> 52: </a>      v=10*(i+1)+j+1;
+<a name="line52"> 52: </a>      v    = 10*(i+1)+j+1;
 <a name="line53"> 53: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(C,1,&amp;i,1,&amp;j,&amp;v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line54"> 54: </a>    }
 <a name="line55"> 55: </a>  }
@@ -65,9 +65,9 @@
 <a name="line57"> 57: </a>  <font color="#B22222">/* Flush off proc <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> values and do more assembly */</font>
 <a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(z);
 <a name="line59"> 59: </a>  <font color="#4169E1">for</font> (i=vstart; i&lt;vend; i++) {
-<a name="line60"> 60: </a>    v = one*((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)i);
+<a name="line60"> 60: </a>    v    = one*((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)i);
 <a name="line61"> 61: </a>    <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(y,1,&amp;i,&amp;v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line62"> 62: </a>    v = 100.0*i;
+<a name="line62"> 62: </a>    v    = 100.0*i;
 <a name="line63"> 63: </a>    <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(u,1,&amp;i,&amp;v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line64"> 64: </a>  }
 
@@ -75,7 +75,7 @@
 <a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(C,MAT_FLUSH_ASSEMBLY);
 <a name="line68"> 68: </a>  <font color="#4169E1">for</font> (i=rstart; i&lt;rend; i++) {
 <a name="line69"> 69: </a>    <font color="#4169E1">for</font> (j=0; j&lt;n; j++) {
-<a name="line70"> 70: </a>      v=10*(i+1)+j+1;
+<a name="line70"> 70: </a>      v    = 10*(i+1)+j+1;
 <a name="line71"> 71: </a>      <A href="../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(C,1,&amp;i,1,&amp;j,&amp;v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line72"> 72: </a>    }
 <a name="line73"> 73: </a>  }
@@ -104,14 +104,14 @@
 <a name="line96"> 96: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(x,one,z);
 <a name="line97"> 97: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(x,negone,w);
 <a name="line98"> 98: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line99"> 99: </a>  <font color="#4169E1">if</font> (norm &gt; 1.e-8){
+<a name="line99"> 99: </a>  <font color="#4169E1">if</font> (norm &gt; 1.e-8) {
 <a name="line100">100: </a>    <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error difference = %G\n"</font>,norm);
 <a name="line101">101: </a>  }
 
 <a name="line103">103: </a>  <font color="#B22222">/* ------- Test <A href="../../../../docs/manualpages/Mat/MatMultTranspose.html#MatMultTranspose">MatMultTranspose</A>(), <A href="../../../../docs/manualpages/Mat/MatMultTransposeAdd.html#MatMultTransposeAdd">MatMultTransposeAdd</A>() ------- */</font>
 
 <a name="line105">105: </a>  <font color="#4169E1">for</font> (i=rstart; i&lt;rend; i++) {
-<a name="line106">106: </a>    v = one*((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)i);
+<a name="line106">106: </a>    v    = one*((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)i);
 <a name="line107">107: </a>    <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(x,1,&amp;i,&amp;v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line108">108: </a>  }
 <a name="line109">109: </a>  <A href="../../../../docs/manualpages/Vec/VecAssemblyBegin.html#VecAssemblyBegin">VecAssemblyBegin</A>(x);
@@ -125,7 +125,7 @@
 <a name="line117">117: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(y,one,u);
 <a name="line118">118: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(y,negone,s);
 <a name="line119">119: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(y,<A href="../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;norm);
-<a name="line120">120: </a>  <font color="#4169E1">if</font> (norm &gt; 1.e-8){
+<a name="line120">120: </a>  <font color="#4169E1">if</font> (norm &gt; 1.e-8) {
 <a name="line121">121: </a>    <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Norm of error difference = %G\n"</font>,norm);
 <a name="line122">122: </a>  }
 
@@ -137,12 +137,12 @@
 <a name="line129">129: </a>  <A href="../../../../docs/manualpages/Mat/MatGetDiagonal.html#MatGetDiagonal">MatGetDiagonal</A>(C,x);
 <a name="line130">130: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line131">131: </a>  <font color="#4169E1">for</font> (i=vstart; i&lt;vend; i++) {
-<a name="line132">132: </a>    v = one*((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(i+1));
+<a name="line132">132: </a>    v    = one*((<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(i+1));
 <a name="line133">133: </a>    <A href="../../../../docs/manualpages/Vec/VecSetValues.html#VecSetValues">VecSetValues</A>(y,1,&amp;i,&amp;v,<A href="../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line134">134: </a>  }
 
 <a name="line136">136: </a>  <font color="#B22222">/* -------------------- Test () <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A> ------------------ */</font>
-<a name="line137">137: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-test_diagonalscale"</font>,&amp;flg);
+<a name="line137">137: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL,<font color="#666666">"-test_diagonalscale"</font>,&amp;flg);
 <a name="line138">138: </a>  <font color="#4169E1">if</font> (flg) {
 <a name="line139">139: </a>    <A href="../../../../docs/manualpages/Mat/MatDiagonalScale.html#MatDiagonalScale">MatDiagonalScale</A>(C,x,y);
 <a name="line140">140: </a>    <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(C,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);

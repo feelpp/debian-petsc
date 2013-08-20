@@ -69,6 +69,11 @@ extern void PetscRmPointer(void*);
 #define snesfassetmonitor_ snesfassetmonitor
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define snesfassetlog_ SNESFASSETLOG
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define snesfassetlog_ snesfassetlog
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define snesfascyclesetcycles_ SNESFASCYCLESETCYCLES
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define snesfascyclesetcycles_ snesfascyclesetcycles
@@ -188,7 +193,7 @@ void PETSC_STDCALL  snesfasgettype_(SNES snes,SNESFASType *fastype, int *__ierr 
 	(SNES)PetscToPointer((snes) ),
 	(SNESFASType* )PetscToPointer((fastype) ));
 }
-void PETSC_STDCALL  snesfasgetlevels_(SNES snes,PetscInt * levels, int *__ierr ){
+void PETSC_STDCALL  snesfasgetlevels_(SNES snes,PetscInt *levels, int *__ierr ){
 *__ierr = SNESFASGetLevels(
 	(SNES)PetscToPointer((snes) ),levels);
 }
@@ -210,6 +215,10 @@ void PETSC_STDCALL  snesfassetcycles_(SNES snes,PetscInt *cycles, int *__ierr ){
 }
 void PETSC_STDCALL  snesfassetmonitor_(SNES snes,PetscBool *flg, int *__ierr ){
 *__ierr = SNESFASSetMonitor(
+	(SNES)PetscToPointer((snes) ),*flg);
+}
+void PETSC_STDCALL  snesfassetlog_(SNES snes,PetscBool *flg, int *__ierr ){
+*__ierr = SNESFASSetLog(
 	(SNES)PetscToPointer((snes) ),*flg);
 }
 void PETSC_STDCALL  snesfascyclesetcycles_(SNES snes,PetscInt *cycles, int *__ierr ){

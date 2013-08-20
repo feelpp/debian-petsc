@@ -5,13 +5,13 @@
 <TITLE>VecSetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecSetType"><H1>VecSetType</H1></A>
 Builds a vector, for a particular vector implementation. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h"  
-PetscErrorCode  VecSetType(Vec vec, const VecType method)
+PetscErrorCode  VecSetType(Vec vec, VecType method)
 </PRE>
 Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
@@ -23,7 +23,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-<DT><B>-vec_type &lt;type&gt; </B> -Sets the vector type; use -help for a list 
+<DT><B>-vec_type &lt;type&gt; </B> -Sets the vector type; use -help for a list
 of available types
 <br>
 <P>
@@ -48,4 +48,5 @@ Use <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() or <A HRE
 <A HREF="../../../src/vec/vec/examples/tutorials/ex9.c.html">src/vec/vec/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex10.c.html">src/vec/vec/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html">src/ksp/ksp/examples/tutorials/ex31.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex70.c.html">src/snes/examples/tutorials/ex70.c.html</A><BR>
 </BODY></HTML>

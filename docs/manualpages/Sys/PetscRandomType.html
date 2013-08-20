@@ -5,15 +5,15 @@
 <TITLE>PetscRandomType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscRandomType"><H1>PetscRandomType</H1></A>
-String with the name of a PETSc randomizer with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:myrandcreate() 
+String with the name of a PETSc randomizer 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define PetscRandomType char*
+typedef const char* PetscRandomType;
 #define PETSCRAND       "rand"
 #define PETSCRAND48     "rand48"
-#define PETSCSPRNG      "sprng"          
+#define PETSCSPRNG      "sprng"
 
 </PRE>
 
@@ -22,7 +22,7 @@ Notes: to use the SPRNG you must have ./configure PETSc
 with the option --download-sprng
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscRandomSetType.html#PetscRandomSetType">PetscRandomSetType</A>(), <A HREF="../Sys/PetscRandom.html#PetscRandom">PetscRandom</A>
+ <A HREF="../Sys/PetscRandomSetType.html#PetscRandomSetType">PetscRandomSetType</A>(), <A HREF="../Sys/PetscRandom.html#PetscRandom">PetscRandom</A>, <A HREF="../Sys/PetscRandomCreate.html#PetscRandomCreate">PetscRandomCreate</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../include/petscsys.h.html#PetscRandomType">include/petscsys.h</A>
 <BR><A HREF="./index.html">Index of all Sys routines</A>

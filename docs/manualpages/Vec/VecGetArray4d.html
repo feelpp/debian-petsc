@@ -5,15 +5,15 @@
 <TITLE>VecGetArray4d</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecGetArray4d"><H1>VecGetArray4d</H1></A>
-Returns a pointer to a 4d contiguous array that contains this  processor's portion of the vector data.  You MUST call <A HREF="../Vec/VecRestoreArray4d.html#VecRestoreArray4d">VecRestoreArray4d</A>()  when you no longer need access to the array. 
+Returns a pointer to a 4d contiguous array that contains this processor's portion of the vector data.  You MUST call <A HREF="../Vec/VecRestoreArray4d.html#VecRestoreArray4d">VecRestoreArray4d</A>() when you no longer need access to the array. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecGetArray4d(Vec x,PetscInt m,PetscInt n,PetscInt p,PetscInt q,PetscInt mstart,PetscInt nstart,PetscInt pstart,PetscInt qstart,PetscScalar ****a[])
 </PRE>
-Not Collective
+Logically Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -46,7 +46,7 @@ Not Collective
 For a vector obtained from <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>() mstart, nstart, and pstart are likely
 obtained from the corner indices obtained from <A HREF="../DM/DMDAGetGhostCorners.html#DMDAGetGhostCorners">DMDAGetGhostCorners</A>() while for
 <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>() they are the corner indices from <A HREF="../DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(). In both cases
-the arguments from DMDAGet[Ghost}Corners() are reversed in the call to <A HREF="../Vec/VecGetArray3d.html#VecGetArray3d">VecGetArray3d</A>().
+the arguments from DMDAGet[Ghost]Corners() are reversed in the call to <A HREF="../Vec/VecGetArray3d.html#VecGetArray3d">VecGetArray3d</A>().
 <P>
 For standard PETSc vectors this is an inexpensive call; it does not copy the vector values.
 <P>

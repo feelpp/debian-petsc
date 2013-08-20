@@ -5,9 +5,9 @@
 <TITLE>ISExpandIndicesGeneral</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="ISExpandIndicesGeneral"><H1>ISExpandIndicesGeneral</H1></A>
-convert the indices into non-block indices Input Parameters: +  n - the length of the index set   (not being used) .  nkeys - expected number of keys when PETSC_USE_CTABLE (not being used) .  bs - the size of block  .  imax - the number of index sets -  is_in - the blocked array of index sets  
+convert the indices into non-block indices Input Parameters: +  n - the length of the index set   (not being used) .  nkeys - expected number of keys when PETSC_USE_CTABLE (not being used) .  bs - the size of block .  imax - the number of index sets -  is_in - the blocked array of index sets 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 PetscErrorCode  ISExpandIndicesGeneral(PetscInt n,PetscInt nkeys,PetscInt bs,PetscInt imax,const IS is_in[],IS is_out[])
@@ -21,7 +21,7 @@ PetscErrorCode  ISExpandIndicesGeneral(PetscInt n,PetscInt nkeys,PetscInt bs,Pet
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../IS/ISCompressIndicesGeneral.html#ISCompressIndicesGeneral">ISCompressIndicesGeneral</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/utils/isblock.c.html#ISExpandIndicesGeneral">src/vec/is/utils/isblock.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/is/utils/isblock.c.html#ISExpandIndicesGeneral">src/vec/is/is/utils/isblock.c</A>
 <BR><A HREF="./index.html">Index of all IS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

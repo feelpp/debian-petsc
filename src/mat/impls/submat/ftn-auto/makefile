@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = submatf.c
-OBJSC    = submatf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

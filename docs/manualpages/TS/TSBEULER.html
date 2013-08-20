@@ -5,9 +5,16 @@
 <TITLE>TSBEULER</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSBEULER"><H1>TSBEULER</H1></A>
 ODE solver using the implicit backward Euler method 
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+<A HREF="../TS/TSBEULER.html#TSBEULER">TSBEULER</A> is equivalent to <A HREF="../TS/TSTHETA.html#TSTHETA">TSTHETA</A> with Theta=1.0
+<P>
+<pre>
+ -ts_type theta -ts_theta_theta 1.
+</pre>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../TS/TSSetType.html#TSSetType">TSSetType</A>(), <A HREF="../TS/TSEULER.html#TSEULER">TSEULER</A>, <A HREF="../TS/TSCN.html#TSCN">TSCN</A>, <A HREF="../TS/TSTHETA.html#TSTHETA">TSTHETA</A>

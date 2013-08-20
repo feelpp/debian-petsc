@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = redistributef.c
-OBJSC    = redistributef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

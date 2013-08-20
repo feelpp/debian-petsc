@@ -5,14 +5,12 @@
 <TITLE>SNESSetTolerances</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSetTolerances"><H1>SNESSetTolerances</H1></A>
 Sets various parameters used in convergence tests. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESSetTolerances(SNES snes,PetscReal abstol,PetscReal rtol,PetscReal stol,PetscInt maxit,PetscInt maxf)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -25,8 +23,7 @@ Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rtol </B></TD><TD>- relative convergence tolerance
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>stol </B></TD><TD>- convergence tolerance in terms of the norm
-of the change in the solution between steps
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>stol </B></TD><TD>- convergence tolerance in terms of the norm of the change in the solution between steps,  || delta x || &lt; stol*|| x ||
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>maxit </B></TD><TD>- maximum number of iterations
 </TD></TR>

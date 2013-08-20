@@ -5,7 +5,6 @@ CPPFLAGS = ${PARMETIS_INCLUDE}
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = pmetisf.c
-OBJSC    = pmetisf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

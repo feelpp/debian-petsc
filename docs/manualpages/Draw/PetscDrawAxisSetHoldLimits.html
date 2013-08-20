@@ -5,12 +5,13 @@
 <TITLE>PetscDrawAxisSetHoldLimits</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawAxisSetHoldLimits"><H1>PetscDrawAxisSetHoldLimits</H1></A>
 Causes an axis to keep the same limits until this is called again 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode  PetscDrawAxisSetHoldLimits(PetscDrawAxis axis,PetscBool  hold)
+#include "petscdraw.h"  
+PetscErrorCode  PetscDrawAxisSetHoldLimits(PetscDrawAxis axis,PetscBool hold)
 </PRE>
 Not Collective (ignored on all processors except processor 0 of <A HREF="../Draw/PetscDrawAxis.html#PetscDrawAxis">PetscDrawAxis</A>)
 <P>
@@ -32,7 +33,7 @@ Once this has been called with <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/axisc.c.html#PetscDrawAxisSetHoldLimits">src/sys/draw/utils/axisc.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/utils/axisc.c.html#PetscDrawAxisSetHoldLimits">src/sys/classes/draw/utils/axisc.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

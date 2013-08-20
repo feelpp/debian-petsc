@@ -1,0 +1,96 @@
+<center><a href="ex43-aijcusparse.c">Actual source code: ex43-aijcusparse.c</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tests/ex43-aijcusparse.c.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:48:36+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Reads a PETSc matrix from a file and solves a linear system \n\</font>
+<a name="line2">  2: </a><font color="#666666">using the aijcusparse class. This example also demonstrates how to set the storage \n\</font>
+<a name="line3">  3: </a><font color="#666666">format on the GPU using the <A href="../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A> method. Input parameters are:\n\</font>
+<a name="line4">  4: </a><font color="#666666">  -f &lt;input_file&gt; : the file to load\n\n"</font>;
+
+<a name="line6">  6: </a><font color="#B22222">/*</font>
+<a name="line7">  7: </a><font color="#B22222">  This code can be used to test PETSc interface to other packages.\n\</font>
+<a name="line8">  8: </a><font color="#B22222">  Examples of command line options:       \n\</font>
+<a name="line9">  9: </a><font color="#B22222">   ./ex43-aijcusparse -f DATAFILESPATH/matrices/cfd.2.10 -mat_cusparse_mult_storage_format ell  \n\</font>
+<a name="line10"> 10: </a><font color="#B22222">  In a second example, one can read a symmetric matrix stored in upper triangular form.\n\</font>
+<a name="line11"> 11: </a><font color="#B22222">  Then one can invoke the ICC preconditioner, however one has to indicate explicitly \n\</font>
+<a name="line12"> 12: </a><font color="#B22222">  that the matrix is symmetric.</font>
+<a name="line13"> 13: </a><font color="#B22222">   ./ex43-aijcusparse -f DATAFILESPATH/matrices/shallow_water1 -ksp_type cgs -pc_type icc -mat_symmetric -mat_cusparse_mult_storage_format ell  \n\</font>
+<a name="line14"> 14: </a><font color="#B22222">   \n\n";</font>
+<a name="line15"> 15: </a><font color="#B22222">*/</font>
+
+<a name="line17"> 17: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
+
+<a name="line21"> 21: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
+<a name="line22"> 22: </a>{
+<a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>                ksp;
+<a name="line24"> 24: </a>  <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>                A;
+<a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                X,B;
+<a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           m, its;
+<a name="line27"> 27: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>          norm;
+<a name="line28"> 28: </a>  char               file[PETSC_MAX_PATH_LEN];
+<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          flg;
+<a name="line30"> 30: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>        fd;
+<a name="line31"> 31: </a>  <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+
+<a name="line33"> 33: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,0,help);
+
+<a name="line35"> 35: </a>  <font color="#B22222">/* Load the data from a file */</font>
+<a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(NULL,<font color="#666666">"-f"</font>,file,PETSC_MAX_PATH_LEN,&amp;flg);
+<a name="line37"> 37: </a>  <font color="#4169E1">if</font> (!flg) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"Must indicate binary file with the -f option"</font>);
+<a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerBinaryOpen.html#PetscViewerBinaryOpen">PetscViewerBinaryOpen</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,file,FILE_MODE_READ,&amp;fd);
+
+<a name="line40"> 40: </a>  <font color="#B22222">/* Build the matrix */</font>
+<a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;A);
+<a name="line42"> 42: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(A,<A href="../../../../../docs/manualpages/Mat/MATSEQAIJCUSPARSE.html#MATSEQAIJCUSPARSE">MATSEQAIJCUSPARSE</A>);
+<a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>(A,MAT_CUSPARSE_MULT,MAT_CUSPARSE_ELL);
+
+<a name="line45"> 45: </a>  <font color="#B22222">/* inform the matrix that it is symmetric */</font>
+<a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL, <font color="#666666">"-mat_symmetric"</font>, &amp;flg);
+<a name="line47"> 47: </a>  <font color="#4169E1">if</font> (flg) {
+<a name="line48"> 48: </a>    ierr=<A href="../../../../../docs/manualpages/Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(A,MAT_SYMMETRIC,<A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
+<a name="line49"> 49: </a>  }
+<a name="line50"> 50: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(A);
+<a name="line51"> 51: </a>  <A href="../../../../../docs/manualpages/Mat/MatLoad.html#MatLoad">MatLoad</A>(A,fd);
+
+<a name="line53"> 53: </a>  <font color="#B22222">/* Build the vectors */</font>
+<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Mat/MatGetLocalSize.html#MatGetLocalSize">MatGetLocalSize</A>(A,&amp;m,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line55"> 55: </a>  VecCreateSeqCUSP(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,m,&amp;B);
+<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Vec/VecSet.html#VecSet">VecSet</A>(B,1.0);
+<a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(B,&amp;X);
+
+<a name="line59"> 59: </a>  <font color="#B22222">/* Build the <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> */</font>
+<a name="line60"> 60: </a>  <A href="../../../../../docs/manualpages/KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;ksp);
+<a name="line61"> 61: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>(ksp,A,A,DIFFERENT_NONZERO_PATTERN);
+<a name="line62"> 62: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(ksp,<A href="../../../../../docs/manualpages/KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>);
+<a name="line63"> 63: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetTolerances.html#KSPSetTolerances">KSPSetTolerances</A>(ksp,1.0e-12,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,100);
+<a name="line64"> 64: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSetFromOptions.html#KSPSetFromOptions">KSPSetFromOptions</A>(ksp);
+
+<a name="line66"> 66: </a>  <font color="#B22222">/* Solve */</font>
+<a name="line67"> 67: </a>  <A href="../../../../../docs/manualpages/KSP/KSPSolve.html#KSPSolve">KSPSolve</A>(ksp,B,X);
+
+<a name="line69"> 69: </a>  <font color="#B22222">/* print out norm and the number of iterations */</font>
+<a name="line70"> 70: </a>  <A href="../../../../../docs/manualpages/KSP/KSPGetIterationNumber.html#KSPGetIterationNumber">KSPGetIterationNumber</A>(ksp,&amp;its);
+<a name="line71"> 71: </a>  <A href="../../../../../docs/manualpages/KSP/KSPGetResidualNorm.html#KSPGetResidualNorm">KSPGetResidualNorm</A>(ksp,&amp;norm);
+<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Number of iterations = %3D\n"</font>,its);
+<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Residual norm %G\n"</font>,norm);
+
+<a name="line75"> 75: </a>  <font color="#B22222">/* Cleanup */</font>
+<a name="line76"> 76: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;X);
+<a name="line77"> 77: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;B);
+<a name="line78"> 78: </a>  <A href="../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A>(&amp;A);
+<a name="line79"> 79: </a>  <A href="../../../../../docs/manualpages/KSP/KSPDestroy.html#KSPDestroy">KSPDestroy</A>(&amp;ksp);
+<a name="line80"> 80: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;fd);
+<a name="line81"> 81: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line82"> 82: </a>  <font color="#4169E1">return</font> 0;
+<a name="line83"> 83: </a>}
+</pre>
+</body>
+
+</html>

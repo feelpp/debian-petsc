@@ -1,0 +1,75 @@
+<center><a href="dmi.c">Actual source code: dmi.c</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/interface/dmi.c.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:46:14+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petsc-private/dmimpl.h&gt;     </font><font color="#B22222">/*I      "petscdm.h"     I*/</font><font color="#A020F0"></font>
+
+<a name="line5">  5: </a><strong><font color="#4169E1"><a name="DMCreateGlobalVector_Section_Private"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateGlobalVector_Section_Private(DM dm,<A href="../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *vec)</font></strong>
+<a name="line6">  6: </a>{
+<a name="line7">  7: </a>  <A href="../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A>   gSection;
+<a name="line8">  8: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       localSize, bs, blockSize = -1, pStart, pEnd, p;
+
+<a name="line12"> 12: </a>  <A href="../../../docs/manualpages/DM/DMGetDefaultGlobalSection.html#DMGetDefaultGlobalSection">DMGetDefaultGlobalSection</A>(dm, &amp;gSection);
+<a name="line13"> 13: </a>  <A href="../../../docs/manualpages/IS/PetscSectionGetChart.html#PetscSectionGetChart">PetscSectionGetChart</A>(gSection, &amp;pStart, &amp;pEnd);
+<a name="line14"> 14: </a>  <font color="#4169E1">for</font> (p = pStart; p &lt; pEnd; ++p) {
+<a name="line15"> 15: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dof, cdof;
+
+<a name="line17"> 17: </a>    <A href="../../../docs/manualpages/IS/PetscSectionGetDof.html#PetscSectionGetDof">PetscSectionGetDof</A>(gSection, p, &amp;dof);
+<a name="line18"> 18: </a>    <A href="../../../docs/manualpages/IS/PetscSectionGetConstraintDof.html#PetscSectionGetConstraintDof">PetscSectionGetConstraintDof</A>(gSection, p, &amp;cdof);
+<a name="line19"> 19: </a>    <font color="#4169E1">if</font> ((blockSize &lt; 0) &amp;&amp; (dof &gt; 0) &amp;&amp; (dof-cdof &gt; 0)) blockSize = dof-cdof;
+<a name="line20"> 20: </a>    <font color="#4169E1">if</font> ((dof &gt; 0) &amp;&amp; (dof-cdof != blockSize)) {
+<a name="line21"> 21: </a>      blockSize = 1;
+<a name="line22"> 22: </a>      <font color="#4169E1">break</font>;
+<a name="line23"> 23: </a>    }
+<a name="line24"> 24: </a>  }
+<a name="line25"> 25: </a>  <font color="#4169E1">if</font> (blockSize &lt; 0) blockSize = 1;
+<a name="line26"> 26: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(&amp;blockSize, &amp;bs, 1, MPIU_INT, MPI_MIN, <A href="../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm));
+<a name="line27"> 27: </a>  PetscSectionGetConstrainedStorageSize(gSection, &amp;localSize);
+<a name="line28"> 28: </a>  <font color="#4169E1">if</font> (localSize%blockSize) <A href="../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), PETSC_ERR_ARG_WRONG, <font color="#666666">"Mismatch between blocksize %d and local storage size %d"</font>, blockSize, localSize);
+<a name="line29"> 29: </a>  <A href="../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), vec);
+<a name="line30"> 30: </a>  <A href="../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(*vec, localSize, <A href="../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line31"> 31: </a>  <A href="../../../docs/manualpages/Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>(*vec, bs);
+<a name="line32"> 32: </a>  <font color="#B22222">/* <A href="../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(*vec, dm-&gt;vectype); */</font>
+<a name="line33"> 33: </a>  <A href="../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(*vec);
+<a name="line34"> 34: </a>  <A href="../../../docs/manualpages/DM/VecSetDM.html#VecSetDM">VecSetDM</A>(*vec, dm);
+<a name="line35"> 35: </a>  <font color="#B22222">/* <A href="../../../docs/manualpages/Vec/VecSetLocalToGlobalMapping.html#VecSetLocalToGlobalMapping">VecSetLocalToGlobalMapping</A>(*vec, dm-&gt;ltogmap); */</font>
+<a name="line36"> 36: </a>  <font color="#B22222">/* <A href="../../../docs/manualpages/Vec/VecSetLocalToGlobalMappingBlock.html#VecSetLocalToGlobalMappingBlock">VecSetLocalToGlobalMappingBlock</A>(*vec, dm-&gt;ltogmapb); */</font>
+<a name="line37"> 37: </a>  <font color="#4169E1">return</font>(0);
+<a name="line38"> 38: </a>}
+
+<a name="line42"> 42: </a><strong><font color="#4169E1"><a name="DMCreateLocalVector_Section_Private"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateLocalVector_Section_Private(DM dm,<A href="../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *vec)</font></strong>
+<a name="line43"> 43: </a>{
+<a name="line44"> 44: </a>  <A href="../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A>   section;
+<a name="line45"> 45: </a>  <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       localSize, blockSize = -1, pStart, pEnd, p;
+
+<a name="line49"> 49: </a>  <A href="../../../docs/manualpages/DM/DMGetDefaultSection.html#DMGetDefaultSection">DMGetDefaultSection</A>(dm, &amp;section);
+<a name="line50"> 50: </a>  <A href="../../../docs/manualpages/IS/PetscSectionGetChart.html#PetscSectionGetChart">PetscSectionGetChart</A>(section, &amp;pStart, &amp;pEnd);
+<a name="line51"> 51: </a>  <font color="#4169E1">for</font> (p = pStart; p &lt; pEnd; ++p) {
+<a name="line52"> 52: </a>    <A href="../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dof;
+
+<a name="line54"> 54: </a>    <A href="../../../docs/manualpages/IS/PetscSectionGetDof.html#PetscSectionGetDof">PetscSectionGetDof</A>(section, p, &amp;dof);
+<a name="line55"> 55: </a>    <font color="#4169E1">if</font> ((blockSize &lt; 0) &amp;&amp; (dof &gt; 0)) blockSize = dof;
+<a name="line56"> 56: </a>    <font color="#4169E1">if</font> ((dof &gt; 0) &amp;&amp; (dof != blockSize)) {
+<a name="line57"> 57: </a>      blockSize = 1;
+<a name="line58"> 58: </a>      <font color="#4169E1">break</font>;
+<a name="line59"> 59: </a>    }
+<a name="line60"> 60: </a>  }
+<a name="line61"> 61: </a>  <A href="../../../docs/manualpages/IS/PetscSectionGetStorageSize.html#PetscSectionGetStorageSize">PetscSectionGetStorageSize</A>(section, &amp;localSize);
+<a name="line62"> 62: </a>  <A href="../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, vec);
+<a name="line63"> 63: </a>  <A href="../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(*vec, localSize, localSize);
+<a name="line64"> 64: </a>  <A href="../../../docs/manualpages/Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>(*vec, blockSize);
+<a name="line65"> 65: </a>  <A href="../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(*vec);
+<a name="line66"> 66: </a>  <A href="../../../docs/manualpages/DM/VecSetDM.html#VecSetDM">VecSetDM</A>(*vec, dm);
+<a name="line67"> 67: </a>  <font color="#4169E1">return</font>(0);
+<a name="line68"> 68: </a>}
+</pre>
+</body>
+
+</html>

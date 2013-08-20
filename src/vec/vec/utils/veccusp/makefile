@@ -7,12 +7,10 @@ FFLAGS   =
 SOURCEC  = vscatcusp.c
 SOURCEF  =
 SOURCEH  =
-OBJSC    = vscatcusp.o
-OBJSF    =
 DIRS     =
 LIBBASE  = libpetscvec
 MANSEC   = Vec
-LOCDIR   = src/vec/vec/utils/veccusp
+LOCDIR   = src/vec/vec/utils/veccusp/
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

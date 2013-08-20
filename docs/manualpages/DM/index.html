@@ -3,7 +3,7 @@
 <TITLE>DM Manual Pages</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 
 <H2> DM <A HREF="../../../src/dm/examples/tutorials/index.html">Examples</A></H2>
 
@@ -15,542 +15,626 @@ in PDE-based (or other) simulations. See, for example, DMDACreate().
 <TABLE>
 <TR><TD WIDTH=250 COLSPAN="3"><B>Beginner - Basic usage</B></TD></TR>
  <TD WIDTH=250><A HREF="./DMADDAGetCorners.html">DMADDAGetCorners</A></TD>
- <TD WIDTH=250><A HREF="./DMDACreate2d.html">DMDACreate2d</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetConeSize.html">DMMeshGetConeSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetChart.html">DMMeshGetChart</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreate.html">DMPlexCreate</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMADDAGetGhostCorners.html">DMADDAGetGhostCorners</A></TD>
- <TD WIDTH=250><A HREF="./DMDACreate3d.html">DMDACreate3d</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetDimension.html">DMMeshGetDimension</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetCone.html">DMMeshGetCone</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateBoxMesh.html">DMPlexCreateBoxMesh</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMADDAGetMatrixNS.html">DMADDAGetMatrixNS</A></TD>
- <TD WIDTH=250><A HREF="./DMDAElementType.html">DMDAElementType</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetLabelIdIS.html">DMMeshGetLabelIdIS</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetConeSize.html">DMMeshGetConeSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateCGNS.html">DMPlexCreateCGNS</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMADDAMatSetValues.html">DMADDAMatSetValues</A></TD>
- <TD WIDTH=250><A HREF="./DMDAGetBoundingBox.html">DMDAGetBoundingBox</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetLabelSize.html">DMMeshGetLabelSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetDimension.html">DMMeshGetDimension</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateExodus.html">DMPlexCreateExodus</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCartesianCreate.html">DMCartesianCreate</A></TD>
- <TD WIDTH=250><A HREF="./DMDAGetCorners.html">DMDAGetCorners</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetLabelValue.html">DMMeshGetLabelValue</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexCreate.html">DMComplexCreate</A></TD>
- <TD WIDTH=250><A HREF="./DMDAGetGhostCorners.html">DMDAGetGhostCorners</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetMaxSizes.html">DMMeshGetMaxSizes</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexCreateExodus.html">DMComplexCreateExodus</A></TD>
- <TD WIDTH=250><A HREF="./DMDAGetInfo.html">DMDAGetInfo</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetMaximumDegree.html">DMMeshGetMaximumDegree</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetChart.html">DMComplexGetChart</A></TD>
- <TD WIDTH=250><A HREF="./DMDAGetLocalBoundingBox.html">DMDAGetLocalBoundingBox</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetStratumIS.html">DMMeshGetStratumIS</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetCone.html">DMComplexGetCone</A></TD>
- <TD WIDTH=250><A HREF="./DMDAGetLocalInfo.html">DMDAGetLocalInfo</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetStratumSize.html">DMMeshGetStratumSize</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetConeOrientation.html">DMComplexGetConeOrientation</A></TD>
- <TD WIDTH=250><A HREF="./DMDAInterpolationType.html">DMDAInterpolationType</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetSupport.html">DMMeshGetSupport</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetConeSize.html">DMComplexGetConeSize</A></TD>
- <TD WIDTH=250><A HREF="./DMDALocalInfo.html">DMDALocalInfo</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetSupportSize.html">DMMeshGetSupportSize</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetDimension.html">DMComplexGetDimension</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetUniformCoordinates.html">DMDASetUniformCoordinates</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetTransitiveClosure.html">DMMeshGetTransitiveClosure</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetLabelIdIS.html">DMComplexGetLabelIdIS</A></TD>
- <TD WIDTH=250><A HREF="./DMDAStencilType.html">DMDAStencilType</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshRestrictVector.html">DMMeshRestrictVector</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetLabelSize.html">DMComplexGetLabelSize</A></TD>
- <TD WIDTH=250><A HREF="./DMDA_STENCIL_BOX.html">DMDA_STENCIL_BOX</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetChart.html">DMMeshSetChart</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetLabelValue.html">DMComplexGetLabelValue</A></TD>
- <TD WIDTH=250><A HREF="./DMDA_STENCIL_STAR.html">DMDA_STENCIL_STAR</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetCone.html">DMMeshSetCone</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetMaxSizes.html">DMComplexGetMaxSizes</A></TD>
- <TD WIDTH=250><A HREF="./DMGetGlobalVector.html">DMGetGlobalVector</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetConeSize.html">DMMeshSetConeSize</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetStratumIS.html">DMComplexGetStratumIS</A></TD>
- <TD WIDTH=250><A HREF="./DMGetLocalVector.html">DMGetLocalVector</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetDimension.html">DMMeshSetDimension</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetStratumSize.html">DMComplexGetStratumSize</A></TD>
- <TD WIDTH=250><A HREF="./DMGlobalToLocalBegin.html">DMGlobalToLocalBegin</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetLabelValue.html">DMMeshSetLabelValue</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetSupport.html">DMComplexGetSupport</A></TD>
- <TD WIDTH=250><A HREF="./DMGlobalToLocalEnd.html">DMGlobalToLocalEnd</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetUp.html">DMMeshSetUp</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetSupportSize.html">DMComplexGetSupportSize</A></TD>
- <TD WIDTH=250><A HREF="./DMIGACreate.html">DMIGACreate</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshStratify.html">DMMeshStratify</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGetTransitiveClosure.html">DMComplexGetTransitiveClosure</A></TD>
- <TD WIDTH=250><A HREF="./DMIGAGetBasisData.html">DMIGAGetBasisData</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSymmetrize.html">DMMeshSymmetrize</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexSetChart.html">DMComplexSetChart</A></TD>
- <TD WIDTH=250><A HREF="./DMIGAGetLocalInfo.html">DMIGAGetLocalInfo</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshViewExodusSplit.html">DMMeshViewExodusSplit</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexSetCone.html">DMComplexSetCone</A></TD>
- <TD WIDTH=250><A HREF="./DMIGAGetNumQuadraturePoints.html">DMIGAGetNumQuadraturePoints</A></TD>
- <TD WIDTH=250><A HREF="./DMRestoreGlobalVector.html">DMRestoreGlobalVector</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexSetConeOrientation.html">DMComplexSetConeOrientation</A></TD>
- <TD WIDTH=250><A HREF="./DMIGAGetPolynomialOrder.html">DMIGAGetPolynomialOrder</A></TD>
- <TD WIDTH=250><A HREF="./DMRestoreLocalVector.html">DMRestoreLocalVector</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexSetConeSize.html">DMComplexSetConeSize</A></TD>
- <TD WIDTH=250><A HREF="./DMLocalToGlobalBegin.html">DMLocalToGlobalBegin</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerBinaryMatlabDestroy.html">PetscViewerBinaryMatlabDestroy</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexSetDimension.html">DMComplexSetDimension</A></TD>
- <TD WIDTH=250><A HREF="./DMLocalToGlobalEnd.html">DMLocalToGlobalEnd</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerBinaryMatlabOpen.html">PetscViewerBinaryMatlabOpen</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexSetLabelValue.html">DMComplexSetLabelValue</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshAssembleMatrix.html">DMMeshAssembleMatrix</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntView.html">SectionIntView</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexStratify.html">DMComplexStratify</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshAssembleVector.html">DMMeshAssembleVector</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealView.html">SectionRealView</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexSymmetrize.html">DMComplexSymmetrize</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshAssembleVectorComplete.html">DMMeshAssembleVectorComplete</A></TD>
- <TD WIDTH=250><A HREF="./VecLoadExodusCell.html">VecLoadExodusCell</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetLabelIdIS.html">DMMeshGetLabelIdIS</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateFromCellList.html">DMPlexCreateFromCellList</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGetNumberDM.html">DMCompositeGetNumberDM</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreate.html">DMMeshCreate</A></TD>
- <TD WIDTH=250><A HREF="./VecLoadExodusCellSet.html">VecLoadExodusCellSet</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetLabelSize.html">DMMeshGetLabelSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetChart.html">DMPlexGetChart</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreate.html">DMCreate</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateExodus.html">DMMeshCreateExodus</A></TD>
- <TD WIDTH=250><A HREF="./VecLoadExodusVertex.html">VecLoadExodusVertex</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetLabelValue.html">DMMeshGetLabelValue</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetCone.html">DMPlexGetCone</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateGlobalVector.html">DMCreateGlobalVector</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateExodusNG.html">DMMeshCreateExodusNG</A></TD>
- <TD WIDTH=250><A HREF="./VecLoadExodusVertexSet.html">VecLoadExodusVertexSet</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetMaxSizes.html">DMMeshGetMaxSizes</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetConeOrientation.html">DMPlexGetConeOrientation</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateLocalVector.html">DMCreateLocalVector</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateMeshFromAdjacency.html">DMMeshCreateMeshFromAdjacency</A></TD>
- <TD WIDTH=250><A HREF="./VecViewExodusCell.html">VecViewExodusCell</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetMaximumDegree.html">DMMeshGetMaximumDegree</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetConeSize.html">DMPlexGetConeSize</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateMatrix.html">DMCreateMatrix</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreatePCICE.html">DMMeshCreatePCICE</A></TD>
- <TD WIDTH=250><A HREF="./VecViewExodusCellSet.html">VecViewExodusCellSet</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetStratumIS.html">DMMeshGetStratumIS</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetDimension.html">DMPlexGetDimension</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDABoundaryType.html">DMDABoundaryType</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetChart.html">DMMeshGetChart</A></TD>
- <TD WIDTH=250><A HREF="./VecViewExodusVertex.html">VecViewExodusVertex</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetStratumSize.html">DMMeshGetStratumSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetLabelIdIS.html">DMPlexGetLabelIdIS</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDACreate1d.html">DMDACreate1d</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetCone.html">DMMeshGetCone</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetSupport.html">DMMeshGetSupport</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetLabelSize.html">DMPlexGetLabelSize</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDACreate2d.html">DMDACreate2d</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetSupportSize.html">DMMeshGetSupportSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetLabelValue.html">DMPlexGetLabelValue</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDACreate3d.html">DMDACreate3d</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetTransitiveClosure.html">DMMeshGetTransitiveClosure</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetMaxSizes.html">DMPlexGetMaxSizes</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAElementType.html">DMDAElementType</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshRestrictVector.html">DMMeshRestrictVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetStratumIS.html">DMPlexGetStratumIS</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetBoundingBox.html">DMDAGetBoundingBox</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetChart.html">DMMeshSetChart</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetStratumSize.html">DMPlexGetStratumSize</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetCorners.html">DMDAGetCorners</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetCone.html">DMMeshSetCone</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetSupport.html">DMPlexGetSupport</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetGhostCorners.html">DMDAGetGhostCorners</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetConeSize.html">DMMeshSetConeSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetSupportSize.html">DMPlexGetSupportSize</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetInfo.html">DMDAGetInfo</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetDimension.html">DMMeshSetDimension</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetTransitiveClosure.html">DMPlexGetTransitiveClosure</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetLocalBoundingBox.html">DMDAGetLocalBoundingBox</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetLabelValue.html">DMMeshSetLabelValue</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexRestoreTransitiveClosure.html">DMPlexRestoreTransitiveClosure</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetLocalInfo.html">DMDAGetLocalInfo</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetUp.html">DMMeshSetUp</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetChart.html">DMPlexSetChart</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAInterpolationType.html">DMDAInterpolationType</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshStratify.html">DMMeshStratify</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetCone.html">DMPlexSetCone</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDALocalInfo.html">DMDALocalInfo</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSymmetrize.html">DMMeshSymmetrize</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetConeOrientation.html">DMPlexSetConeOrientation</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetUniformCoordinates.html">DMDASetUniformCoordinates</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshViewExodusSplit.html">DMMeshViewExodusSplit</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetConeSize.html">DMPlexSetConeSize</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAStencilType.html">DMDAStencilType</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabCreate.html">DMMoabCreate</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetDimension.html">DMPlexSetDimension</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDA_STENCIL_BOX.html">DMDA_STENCIL_BOX</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabCreateVector.html">DMMoabCreateVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetLabelValue.html">DMPlexSetLabelValue</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDA_STENCIL_STAR.html">DMDA_STENCIL_STAR</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabGetBlockSize.html">DMMoabGetBlockSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetSupport.html">DMPlexSetSupport</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMGetGlobalVector.html">DMGetGlobalVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabGetInterface.html">DMMoabGetInterface</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetSupportSize.html">DMPlexSetSupportSize</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMGetLocalVector.html">DMGetLocalVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabGetLocalToGlobalTag.html">DMMoabGetLocalToGlobalTag</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexStratify.html">DMPlexStratify</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMGlobalToLocalBegin.html">DMGlobalToLocalBegin</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabGetParallelComm.html">DMMoabGetParallelComm</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSymmetrize.html">DMPlexSymmetrize</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMGlobalToLocalEnd.html">DMGlobalToLocalEnd</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabGetRange.html">DMMoabGetRange</A></TD>
+ <TD WIDTH=250><A HREF="./DMRestoreGlobalVector.html">DMRestoreGlobalVector</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMLocalToGlobalBegin.html">DMLocalToGlobalBegin</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabGetVecRange.html">DMMoabGetVecRange</A></TD>
+ <TD WIDTH=250><A HREF="./DMRestoreLocalVector.html">DMRestoreLocalVector</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMLocalToGlobalEnd.html">DMLocalToGlobalEnd</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabGetVecTag.html">DMMoabGetVecTag</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntView.html">SectionIntView</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshAssembleMatrixDM.html">DMMeshAssembleMatrixDM</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabSetBlockSize.html">DMMoabSetBlockSize</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealView.html">SectionRealView</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshAssembleVector.html">DMMeshAssembleVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabSetInterface.html">DMMoabSetInterface</A></TD>
+ <TD WIDTH=250><A HREF="./VecLoadExodusCell.html">VecLoadExodusCell</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshAssembleVectorComplete.html">DMMeshAssembleVectorComplete</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabSetLocalToGlobalTag.html">DMMoabSetLocalToGlobalTag</A></TD>
+ <TD WIDTH=250><A HREF="./VecLoadExodusCellSet.html">VecLoadExodusCellSet</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshClone.html">DMMeshClone</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabSetParallelComm.html">DMMoabSetParallelComm</A></TD>
+ <TD WIDTH=250><A HREF="./VecLoadExodusVertex.html">VecLoadExodusVertex</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshCreate.html">DMMeshCreate</A></TD>
+ <TD WIDTH=250><A HREF="./DMMoabSetRange.html">DMMoabSetRange</A></TD>
+ <TD WIDTH=250><A HREF="./VecLoadExodusVertexSet.html">VecLoadExodusVertexSet</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshCreateExodus.html">DMMeshCreateExodus</A></TD>
+ <TD WIDTH=250><A HREF="./DMPatchCreate.html">DMPatchCreate</A></TD>
+ <TD WIDTH=250><A HREF="./VecViewExodusCell.html">VecViewExodusCell</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshCreateExodusNG.html">DMMeshCreateExodusNG</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexClearLabelStratum.html">DMPlexClearLabelStratum</A></TD>
+ <TD WIDTH=250><A HREF="./VecViewExodusCellSet.html">VecViewExodusCellSet</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshCreateMeshFromAdjacency.html">DMMeshCreateMeshFromAdjacency</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexClearLabelValue.html">DMPlexClearLabelValue</A></TD>
+ <TD WIDTH=250><A HREF="./VecViewExodusVertex.html">VecViewExodusVertex</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMMeshCreatePCICE.html">DMMeshCreatePCICE</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexClone.html">DMPlexClone</A></TD>
  <TD WIDTH=250><A HREF="./VecViewExodusVertexSet.html">VecViewExodusVertexSet</A></TD>
 <TR>
 <TR><TD WIDTH=250 COLSPAN="3"><B>Intermediate - Setting options for algorithms and data structures</B></TD></TR>
  <TD WIDTH=250><A HREF="./BCSectionGetArray.html">BCSectionGetArray</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetDim.html">DMDASetDim</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetCoordinates.html">DMMeshGetCoordinates</A></TD>
+ <TD WIDTH=250><A HREF="./DMDASetStencilType.html">DMDASetStencilType</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexInterpolate.html">DMPlexInterpolate</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./BCSectionRealCreate.html">BCSectionRealCreate</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetDof.html">DMDASetDof</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetElements.html">DMMeshGetElements</A></TD>
+ <TD WIDTH=250><A HREF="./DMDASetStencilWidth.html">DMDASetStencilWidth</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexMatSetClosure.html">DMPlexMatSetClosure</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./BCSectionRealGetArray.html">BCSectionRealGetArray</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetElementType.html">DMDASetElementType</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetSectionInt.html">DMMeshGetSectionInt</A></TD>
+ <TD WIDTH=250><A HREF="./DMDAVecGetArray.html">DMDAVecGetArray</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexPointGlobalRead.html">DMPlexPointGlobalRead</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMADDACreate.html">DMADDACreate</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetFieldName.html">DMDASetFieldName</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetSectionReal.html">DMMeshGetSectionReal</A></TD>
+ <TD WIDTH=250><A HREF="./DMDAVecGetArrayDOF.html">DMDAVecGetArrayDOF</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexPointGlobalRef.html">DMPlexPointGlobalRef</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMComplexDistribute.html">DMComplexDistribute</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetGhostedCoordinates.html">DMDASetGhostedCoordinates</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetVertexSectionInt.html">DMMeshGetVertexSectionInt</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexGenerate.html">DMComplexGenerate</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetInterpolationType.html">DMDASetInterpolationType</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetVertexSectionReal.html">DMMeshGetVertexSectionReal</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexHasLabel.html">DMComplexHasLabel</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalAdicFunction.html">DMDASetLocalAdicFunction</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshHasSectionInt.html">DMMeshHasSectionInt</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexVecGetClosure.html">DMComplexVecGetClosure</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalAdicFunctioni.html">DMDASetLocalAdicFunctioni</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshHasSectionReal.html">DMMeshHasSectionReal</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexVecSetClosure.html">DMComplexVecSetClosure</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalAdicFunctionib.html">DMDASetLocalAdicFunctionib</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshRefine.html">DMMeshRefine</A></TD>
+ <TD WIDTH=250><A HREF="./DMCOMPOSITE.html">DMCOMPOSITE</A></TD>
+ <TD WIDTH=250><A HREF="./DMDAVecRestoreArray.html">DMDAVecRestoreArray</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexPointLocalRead.html">DMPlexPointLocalRead</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGetLocalISs.html">DMCompositeGetLocalISs</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalAdicMFFunction.html">DMDASetLocalAdicMFFunction</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetSectionInt.html">DMMeshSetSectionInt</A></TD>
+ <TD WIDTH=250><A HREF="./DMDAVecRestoreArrayDOF.html">DMDAVecRestoreArrayDOF</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexPointLocalRef.html">DMPlexPointLocalRef</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMComputeVariableBounds.html">DMComputeVariableBounds</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalAdicMFFunctioni.html">DMDASetLocalAdicMFFunctioni</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetSectionReal.html">DMMeshSetSectionReal</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetApplicationContext.html">DMGetApplicationContext</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexRestoreJoin.html">DMPlexRestoreJoin</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMConvert.html">DMConvert</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalAdicMFFunctionib.html">DMDASetLocalAdicMFFunctionib</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetupSection.html">DMMeshSetupSection</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetBlockSize.html">DMGetBlockSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexRestoreMeet.html">DMPlexRestoreMeet</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateAggregates.html">DMCreateAggregates</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalFunction.html">DMDASetLocalFunction</A></TD>
- <TD WIDTH=250><A HREF="./DMSetApplicationContext.html">DMSetApplicationContext</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetCoordinateDM.html">DMGetCoordinateDM</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexSetCoordinateSection.html">DMPlexSetCoordinateSection</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateDefaultSF.html">DMCreateDefaultSF</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalFunctioni.html">DMDASetLocalFunctioni</A></TD>
- <TD WIDTH=250><A HREF="./DMSetApplicationContextDestroy.html">DMSetApplicationContextDestroy</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetCoordinates.html">DMGetCoordinates</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexVecGetClosure.html">DMPlexVecGetClosure</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateDomainDecomposition.html">DMCreateDomainDecomposition</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalFunctionib.html">DMDASetLocalFunctionib</A></TD>
- <TD WIDTH=250><A HREF="./DMSetDefaultSF.html">DMSetDefaultSF</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetCoordinatesLocal.html">DMGetCoordinatesLocal</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexVecRestoreClosure.html">DMPlexVecRestoreClosure</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateFieldDecomposition.html">DMCreateFieldDecomposition</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetLocalJacobian.html">DMDASetLocalJacobian</A></TD>
- <TD WIDTH=250><A HREF="./DMSetDefaultSection.html">DMSetDefaultSection</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetDefaultGlobalSection.html">DMGetDefaultGlobalSection</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexVecSetClosure.html">DMPlexVecSetClosure</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateFieldIS.html">DMCreateFieldIS</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetNumProcs.html">DMDASetNumProcs</A></TD>
- <TD WIDTH=250><A HREF="./DMSetFunction.html">DMSetFunction</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetDefaultSF.html">DMGetDefaultSF</A></TD>
+ <TD WIDTH=250><A HREF="./DMREDUNDANT.html">DMREDUNDANT</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMDAComputeFunctionLocal.html">DMDAComputeFunctionLocal</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetOwnershipRanges.html">DMDASetOwnershipRanges</A></TD>
- <TD WIDTH=250><A HREF="./DMSetInitialGuess.html">DMSetInitialGuess</A></TD>
+ <TD WIDTH=250><A HREF="./DMCreateSubDM.html">DMCreateSubDM</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetDefaultSection.html">DMGetDefaultSection</A></TD>
+ <TD WIDTH=250><A HREF="./DMSLICED.html">DMSLICED</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMDAComputeFunctionLocalGhost.html">DMDAComputeFunctionLocalGhost</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetRefinementFactor.html">DMDASetRefinementFactor</A></TD>
- <TD WIDTH=250><A HREF="./DMSetJacobian.html">DMSetJacobian</A></TD>
+ <TD WIDTH=250><A HREF="./DMDA.html">DMDA</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetLocalToGlobalMapping.html">DMGetLocalToGlobalMapping</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetApplicationContext.html">DMSetApplicationContext</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDACoor2d.html">DMDACoor2d</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetSizes.html">DMDASetSizes</A></TD>
- <TD WIDTH=250><A HREF="./DMSetLocalFunction.html">DMSetLocalFunction</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetLocalToGlobalMappingBlock.html">DMGetLocalToGlobalMappingBlock</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetApplicationContextDestroy.html">DMSetApplicationContextDestroy</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDACoor3d.html">DMDACoor3d</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetStencilType.html">DMDASetStencilType</A></TD>
- <TD WIDTH=250><A HREF="./DMSetLocalJacobian.html">DMSetLocalJacobian</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAForEachPointBegin2d.html">DMDAForEachPointBegin2d</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetStencilWidth.html">DMDASetStencilWidth</A></TD>
- <TD WIDTH=250><A HREF="./DMSetMatType.html">DMSetMatType</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAForEachPointEnd2d.html">DMDAForEachPointEnd2d</A></TD>
- <TD WIDTH=250><A HREF="./DMDAVecGetArray.html">DMDAVecGetArray</A></TD>
- <TD WIDTH=250><A HREF="./DMSetType.html">DMSetType</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAFormjacobianLocal.html">DMDAFormjacobianLocal</A></TD>
- <TD WIDTH=250><A HREF="./DMDAVecGetArrayDOF.html">DMDAVecGetArrayDOF</A></TD>
- <TD WIDTH=250><A HREF="./DMSetVariableBounds.html">DMSetVariableBounds</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetPointSF.html">DMGetPointSF</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetCoordinates.html">DMSetCoordinates</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetAO.html">DMDAGetAO</A></TD>
- <TD WIDTH=250><A HREF="./DMDAVecRestoreArray.html">DMDAVecRestoreArray</A></TD>
- <TD WIDTH=250><A HREF="./DMSetVecType.html">DMSetVecType</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetType.html">DMGetType</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetCoordinatesLocal.html">DMSetCoordinatesLocal</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMDAGetCoordinateDA.html">DMDAGetCoordinateDA</A></TD>
- <TD WIDTH=250><A HREF="./DMDAVecRestoreArrayDOF.html">DMDAVecRestoreArrayDOF</A></TD>
- <TD WIDTH=250><A HREF="./MATHYPRESSTRUCT.html">MATHYPRESSTRUCT</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAGetCoordinates.html">DMDAGetCoordinates</A></TD>
- <TD WIDTH=250><A HREF="./DMGetApplicationContext.html">DMGetApplicationContext</A></TD>
- <TD WIDTH=250><A HREF="./MATHYPRESTRUCT.html">MATHYPRESTRUCT</A></TD>
+ <TD WIDTH=250><A HREF="./DMDAGetCoordinateName.html">DMDAGetCoordinateName</A></TD>
+ <TD WIDTH=250><A HREF="./DMLoad.html">DMLoad</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetDefaultGlobalSection.html">DMSetDefaultGlobalSection</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetElementType.html">DMDAGetElementType</A></TD>
- <TD WIDTH=250><A HREF="./DMGetBlockSize.html">DMGetBlockSize</A></TD>
- <TD WIDTH=250><A HREF="./MatCreateSeqUSFFT.html">MatCreateSeqUSFFT</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateSectionRealIS.html">DMMeshCreateSectionRealIS</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetDefaultSF.html">DMSetDefaultSF</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetElements.html">DMDAGetElements</A></TD>
- <TD WIDTH=250><A HREF="./DMGetDefaultGlobalSection.html">DMGetDefaultGlobalSection</A></TD>
- <TD WIDTH=250><A HREF="./MatSetDM.html">MatSetDM</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshDistribute.html">DMMeshDistribute</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetDefaultSection.html">DMSetDefaultSection</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetFieldName.html">DMDAGetFieldName</A></TD>
- <TD WIDTH=250><A HREF="./DMGetDefaultSF.html">DMGetDefaultSF</A></TD>
- <TD WIDTH=250><A HREF="./MatSetValuesTopology.html">MatSetValuesTopology</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAGetGhostedCoordinates.html">DMDAGetGhostedCoordinates</A></TD>
- <TD WIDTH=250><A HREF="./DMGetDefaultSection.html">DMGetDefaultSection</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerBinaryMatlabOutputBag.html">PetscViewerBinaryMatlabOutputBag</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGenerate.html">DMMeshGenerate</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetMatType.html">DMSetMatType</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetGlobalIndices.html">DMDAGetGlobalIndices</A></TD>
- <TD WIDTH=250><A HREF="./DMGetLocalFunction.html">DMGetLocalFunction</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerBinaryMatlabOutputVec.html">PetscViewerBinaryMatlabOutputVec</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetCellSectionInt.html">DMMeshGetCellSectionInt</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetPointSF.html">DMSetPointSF</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetGlobalIndicesF90.html">DMDAGetGlobalIndicesF90</A></TD>
- <TD WIDTH=250><A HREF="./DMGetLocalJacobian.html">DMGetLocalJacobian</A></TD>
- <TD WIDTH=250><A HREF="./PetscViewerBinaryMatlabOutputVecDA.html">PetscViewerBinaryMatlabOutputVecDA</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetCellSectionReal.html">DMMeshGetCellSectionReal</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetType.html">DMSetType</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetInterpolationType.html">DMDAGetInterpolationType</A></TD>
- <TD WIDTH=250><A HREF="./DMGetLocalToGlobalMapping.html">DMGetLocalToGlobalMapping</A></TD>
- <TD WIDTH=250><A HREF="./SectionGetArray.html">SectionGetArray</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAGetLocalFunction.html">DMDAGetLocalFunction</A></TD>
- <TD WIDTH=250><A HREF="./DMGetLocalToGlobalMappingBlock.html">DMGetLocalToGlobalMappingBlock</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntDistribute.html">SectionIntDistribute</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAGetLocalJacobian.html">DMDAGetLocalJacobian</A></TD>
- <TD WIDTH=250><A HREF="./DMGetType.html">DMGetType</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntRestrictClosure.html">SectionIntRestrictClosure</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetCoordinates.html">DMMeshGetCoordinates</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetVariableBounds.html">DMSetVariableBounds</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetNeighbors.html">DMDAGetNeighbors</A></TD>
- <TD WIDTH=250><A HREF="./DMIGAGetFieldName.html">DMIGAGetFieldName</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntSet.html">SectionIntSet</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetElements.html">DMMeshGetElements</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetVecType.html">DMSetVecType</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetNonOverlappingRegion.html">DMDAGetNonOverlappingRegion</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetSectionInt.html">DMMeshGetSectionInt</A></TD>
+ <TD WIDTH=250><A HREF="./MATHYPRESSTRUCT.html">MATHYPRESSTRUCT</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetNumLocalSubDomains.html">DMDAGetNumLocalSubDomains</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetSectionReal.html">DMMeshGetSectionReal</A></TD>
+ <TD WIDTH=250><A HREF="./MATHYPRESTRUCT.html">MATHYPRESTRUCT</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetOffset.html">DMDAGetOffset</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetVertexSectionInt.html">DMMeshGetVertexSectionInt</A></TD>
+ <TD WIDTH=250><A HREF="./MatCreateSeqUSFFT.html">MatCreateSeqUSFFT</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetOverlap.html">DMDAGetOverlap</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetVertexSectionReal.html">DMMeshGetVertexSectionReal</A></TD>
+ <TD WIDTH=250><A HREF="./MatGetDM.html">MatGetDM</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetOwnershipRanges.html">DMDAGetOwnershipRanges</A></TD>
- <TD WIDTH=250><A HREF="./DMIGASetFieldName.html">DMIGASetFieldName</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntUpdateClosure.html">SectionIntUpdateClosure</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshHasSectionInt.html">DMMeshHasSectionInt</A></TD>
+ <TD WIDTH=250><A HREF="./MatSetDM.html">MatSetDM</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMDAGetReducedDA.html">DMDAGetReducedDA</A></TD>
- <TD WIDTH=250><A HREF="./DMIGAVecGetArray.html">DMIGAVecGetArray</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealAXPY.html">SectionRealAXPY</A></TD>
+ <TD WIDTH=250><A HREF="./DMDAGetReducedDMDA.html">DMDAGetReducedDMDA</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshHasSectionReal.html">DMMeshHasSectionReal</A></TD>
+ <TD WIDTH=250><A HREF="./MatSetValuesTopology.html">MatSetValuesTopology</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetRefinementFactor.html">DMDAGetRefinementFactor</A></TD>
- <TD WIDTH=250><A HREF="./DMIGAVecRestoreArray.html">DMIGAVecRestoreArray</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealDistribute.html">SectionRealDistribute</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshRefine.html">DMMeshRefine</A></TD>
+ <TD WIDTH=250><A HREF="./MatSetupDM.html">MatSetupDM</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDALocalToLocalBegin.html">DMDALocalToLocalBegin</A></TD>
- <TD WIDTH=250><A HREF="./DMLoad.html">DMLoad</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealNorm.html">SectionRealNorm</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetSectionInt.html">DMMeshSetSectionInt</A></TD>
+ <TD WIDTH=250><A HREF="./PetscDTGaussJacobiQuadrature.html">PetscDTGaussJacobiQuadrature</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDALocalToLocalEnd.html">DMDALocalToLocalEnd</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateSectionRealIS.html">DMMeshCreateSectionRealIS</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealRestrictClosure.html">SectionRealRestrictClosure</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetSectionReal.html">DMMeshSetSectionReal</A></TD>
+ <TD WIDTH=250><A HREF="./PetscDTGaussQuadrature.html">PetscDTGaussQuadrature</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDANaturalToGlobalEnd.html">DMDANaturalToGlobalEnd</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshDistribute.html">DMMeshDistribute</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealSet.html">SectionRealSet</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetupSection.html">DMMeshSetupSection</A></TD>
+ <TD WIDTH=250><A HREF="./PetscDTLegendreEval.html">PetscDTLegendreEval</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDARestoreElements.html">DMDARestoreElements</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGenerate.html">DMMeshGenerate</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealUpdateClosure.html">SectionRealUpdateClosure</A></TD>
+ <TD WIDTH=250><A HREF="./DMPLEX.html">DMPLEX</A></TD>
+ <TD WIDTH=250><A HREF="./SectionGetArray.html">SectionGetArray</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDASetBoundaryType.html">DMDASetBoundaryType</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetCellSectionInt.html">DMMeshGetCellSectionInt</A></TD>
- <TD WIDTH=250><A HREF="./"></A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCopyCoordinates.html">DMPlexCopyCoordinates</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntDistribute.html">SectionIntDistribute</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMDASetCoordinates.html">DMDASetCoordinates</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetCellSectionReal.html">DMMeshGetCellSectionReal</A></TD>
+ <TD WIDTH=250><A HREF="./DMDASetCoordinateName.html">DMDASetCoordinateName</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateLabel.html">DMPlexCreateLabel</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntRestrictClosureWithArray.html">SectionIntRestrictClosureWithArray</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetDim.html">DMDASetDim</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexDistribute.html">DMPlexDistribute</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntSet.html">SectionIntSet</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetDof.html">DMDASetDof</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGenerate.html">DMPlexGenerate</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntUpdateClosure.html">SectionIntUpdateClosure</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetElementType.html">DMDASetElementType</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetCoordinateSection.html">DMPlexGetCoordinateSection</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealAXPY.html">SectionRealAXPY</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetFieldName.html">DMDASetFieldName</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetFullJoin.html">DMPlexGetFullJoin</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealDistribute.html">SectionRealDistribute</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetInterpolationType.html">DMDASetInterpolationType</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetFullMeet.html">DMPlexGetFullMeet</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealNorm.html">SectionRealNorm</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetNonOverlappingRegion.html">DMDASetNonOverlappingRegion</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetJoin.html">DMPlexGetJoin</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealRestrictClosure.html">SectionRealRestrictClosure</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetNumLocalSubDomains.html">DMDASetNumLocalSubDomains</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetLabel.html">DMPlexGetLabel</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealRestrictClosureWithArray.html">SectionRealRestrictClosureWithArray</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetNumProcs.html">DMDASetNumProcs</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetLabelName.html">DMPlexGetLabelName</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealSet.html">SectionRealSet</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetOffset.html">DMDASetOffset</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetMeet.html">DMPlexGetMeet</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealToVecDM.html">SectionRealToVecDM</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetOverlap.html">DMDASetOverlap</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetNumLabels.html">DMPlexGetNumLabels</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealUpdateClosure.html">SectionRealUpdateClosure</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetOwnershipRanges.html">DMDASetOwnershipRanges</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetPointGlobal.html">DMPlexGetPointGlobal</A></TD>
+ <TD WIDTH=250><A HREF="./VecGetDM.html">VecGetDM</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetRefinementFactor.html">DMDASetRefinementFactor</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetPointLocal.html">DMPlexGetPointLocal</A></TD>
+ <TD WIDTH=250><A HREF="./VecSetDM.html">VecSetDM</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetSizes.html">DMDASetSizes</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexHasLabel.html">DMPlexHasLabel</A></TD>
  <TD WIDTH=250><A HREF="./"></A></TD>
 <TR>
 <TR><TD WIDTH=250 COLSPAN="3"><B>Advanced - Setting more advanced options and customization</B></TD></TR>
  <TD WIDTH=250><A HREF="./DMCartesianGetMesh.html">DMCartesianGetMesh</A></TD>
- <TD WIDTH=250><A HREF="./DMDAMultiplyByJacobian1WithAdifor.html">DMDAMultiplyByJacobian1WithAdifor</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntClear.html">SectionIntClear</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateGlobalScatter.html">DMMeshCreateGlobalScatter</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntAddSpace.html">SectionIntAddSpace</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCartesianSetMesh.html">DMCartesianSetMesh</A></TD>
- <TD WIDTH=250><A HREF="./DMDANaturalAllToGlobalCreate.html">DMDANaturalAllToGlobalCreate</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntComplete.html">SectionIntComplete</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateMatrix.html">DMMeshCreateMatrix</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntAllocate.html">SectionIntAllocate</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCoarsenHookAdd.html">DMCoarsenHookAdd</A></TD>
- <TD WIDTH=250><A HREF="./DMDANaturalToGlobalBegin.html">DMDANaturalToGlobalBegin</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntCreate.html">SectionIntCreate</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexCreateRigidBody.html">DMComplexCreateRigidBody</A></TD>
- <TD WIDTH=250><A HREF="./DMDARestoreAdicArray.html">DMDARestoreAdicArray</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntDestroy.html">SectionIntDestroy</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateScatterToZeroCell.html">DMMeshCreateScatterToZeroCell</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntClear.html">SectionIntClear</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeAddDM.html">DMCompositeAddDM</A></TD>
- <TD WIDTH=250><A HREF="./DMDARestoreAdicMFArray.html">DMDARestoreAdicMFArray</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntGetBundle.html">SectionIntGetBundle</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateScatterToZeroCellSet.html">DMMeshCreateScatterToZeroCellSet</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntComplete.html">SectionIntComplete</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeCreate.html">DMCompositeCreate</A></TD>
- <TD WIDTH=250><A HREF="./DMDARestoreArray.html">DMDARestoreArray</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntGetFiberDimension.html">SectionIntGetFiberDimension</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateScatterToZeroVertex.html">DMMeshCreateScatterToZeroVertex</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntCreate.html">SectionIntCreate</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGather.html">DMCompositeGather</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateGlobalRealVector.html">DMMeshCreateGlobalRealVector</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntGetFibration.html">SectionIntGetFibration</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateScatterToZeroVertexSet.html">DMMeshCreateScatterToZeroVertexSet</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntDestroy.html">SectionIntDestroy</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMCompositeGatherArray.html">DMCompositeGatherArray</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateVector.html">DMMeshCreateVector</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntGetBundle.html">SectionIntGetBundle</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGetAccess.html">DMCompositeGetAccess</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateGlobalScatter.html">DMMeshCreateGlobalScatter</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntGetSection.html">SectionIntGetSection</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetGlobalScatter.html">DMMeshGetGlobalScatter</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntGetFiberDimension.html">SectionIntGetFiberDimension</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMCompositeGetAccessArray.html">DMCompositeGetAccessArray</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshGetMesh.html">DMMeshGetMesh</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntGetFibration.html">SectionIntGetFibration</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGetEntries.html">DMCompositeGetEntries</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateMatrix.html">DMMeshCreateMatrix</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntGetSize.html">SectionIntGetSize</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshLoad.html">DMMeshLoad</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntGetSection.html">SectionIntGetSection</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGetEntriesArray.html">DMCompositeGetEntriesArray</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateScatterToZeroCell.html">DMMeshCreateScatterToZeroCell</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntRestrict.html">SectionIntRestrict</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetMesh.html">DMMeshSetMesh</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntGetSize.html">SectionIntGetSize</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGetGlobalISs.html">DMCompositeGetGlobalISs</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateScatterToZeroCellSet.html">DMMeshCreateScatterToZeroCellSet</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntSetBundle.html">SectionIntSetBundle</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexComputeCellGeometry.html">DMPlexComputeCellGeometry</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntRestrict.html">SectionIntRestrict</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGetISLocalToGlobalMappings.html">DMCompositeGetISLocalToGlobalMappings</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateScatterToZeroVertex.html">DMMeshCreateScatterToZeroVertex</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntSetFiberDimension.html">SectionIntSetFiberDimension</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexComputeCellGeometryFVM.html">DMPlexComputeCellGeometryFVM</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntSetBundle.html">SectionIntSetBundle</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeGetLocalVectors.html">DMCompositeGetLocalVectors</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateScatterToZeroVertexSet.html">DMMeshCreateScatterToZeroVertexSet</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntSetFiberDimensionField.html">SectionIntSetFiberDimensionField</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateRigidBody.html">DMPlexCreateRigidBody</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntSetFiberDimension.html">SectionIntSetFiberDimension</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeRestoreAccess.html">DMCompositeRestoreAccess</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshCreateVector.html">DMMeshCreateVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMRedundantCreate.html">DMRedundantCreate</A></TD>
+ <TD WIDTH=250><A HREF="./SectionIntSetFiberDimensionField.html">SectionIntSetFiberDimensionField</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMCompositeRestoreAccessArray.html">DMCompositeRestoreAccessArray</A></TD>
+ <TD WIDTH=250><A HREF="./DMRedundantGetSize.html">DMRedundantGetSize</A></TD>
  <TD WIDTH=250><A HREF="./SectionIntSetSection.html">SectionIntSetSection</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeRestoreLocalVectors.html">DMCompositeRestoreLocalVectors</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetGlobalScatter.html">DMMeshGetGlobalScatter</A></TD>
+ <TD WIDTH=250><A HREF="./DMRedundantSetSize.html">DMRedundantSetSize</A></TD>
  <TD WIDTH=250><A HREF="./SectionIntUpdate.html">SectionIntUpdate</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCompositeScatter.html">DMCompositeScatter</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshGetMesh.html">DMMeshGetMesh</A></TD>
+ <TD WIDTH=250><A HREF="./DMRefineHookAdd.html">DMRefineHookAdd</A></TD>
  <TD WIDTH=250><A HREF="./SectionIntZero.html">SectionIntZero</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMCompositeSetCoupling.html">DMCompositeSetCoupling</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshLoad.html">DMMeshLoad</A></TD>
+ <TD WIDTH=250><A HREF="./DMCompositeScatterArray.html">DMCompositeScatterArray</A></TD>
+ <TD WIDTH=250><A HREF="./DMRegister.html">DMRegister</A></TD>
  <TD WIDTH=250><A HREF="./SectionRealAddSpace.html">SectionRealAddSpace</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMCreateDomainDecompositionDM.html">DMCreateDomainDecompositionDM</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetMesh.html">DMMeshSetMesh</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealAllocate.html">SectionRealAllocate</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMCreateFieldDecompositionDM.html">DMCreateFieldDecompositionDM</A></TD>
- <TD WIDTH=250><A HREF="./DMRedundantCreate.html">DMRedundantCreate</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealClear.html">SectionRealClear</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAComputeFunction.html">DMDAComputeFunction</A></TD>
- <TD WIDTH=250><A HREF="./DMRedundantGetSize.html">DMRedundantGetSize</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealComplete.html">SectionRealComplete</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAComputeFunction1.html">DMDAComputeFunction1</A></TD>
- <TD WIDTH=250><A HREF="./DMRedundantSetSize.html">DMRedundantSetSize</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealCreate.html">SectionRealCreate</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAComputeFunctioni1.html">DMDAComputeFunctioni1</A></TD>
- <TD WIDTH=250><A HREF="./DMRefineHookAdd.html">DMRefineHookAdd</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealCreateLocalVector.html">SectionRealCreateLocalVector</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAComputeFunctionib1.html">DMDAComputeFunctionib1</A></TD>
- <TD WIDTH=250><A HREF="./DMRegister.html">DMRegister</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealDestroy.html">SectionRealDestroy</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAComputeJacobian1.html">DMDAComputeJacobian1</A></TD>
+ <TD WIDTH=250><A HREF="./DMCompositeSetCoupling.html">DMCompositeSetCoupling</A></TD>
  <TD WIDTH=250><A HREF="./DMRegisterAll.html">DMRegisterAll</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealDuplicate.html">SectionRealDuplicate</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAComputeJacobian1WithAdic.html">DMDAComputeJacobian1WithAdic</A></TD>
- <TD WIDTH=250><A HREF="./DMRegisterDestroy.html">DMRegisterDestroy</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealGetBundle.html">SectionRealGetBundle</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealAllocate.html">SectionRealAllocate</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDACreate.html">DMDACreate</A></TD>
  <TD WIDTH=250><A HREF="./DMSetOptionsPrefix.html">DMSetOptionsPrefix</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealGetFiberDimension.html">SectionRealGetFiberDimension</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealClear.html">SectionRealClear</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDACreatePF.html">DMDACreatePF</A></TD>
  <TD WIDTH=250><A HREF="./DMShellCreate.html">DMShellCreate</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealGetFibration.html">SectionRealGetFibration</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAGetAdicArray.html">DMDAGetAdicArray</A></TD>
- <TD WIDTH=250><A HREF="./DMShellSetCreateGlobalVector.html">DMShellSetCreateGlobalVector</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealGetSection.html">SectionRealGetSection</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAGetAdicMFArray.html">DMDAGetAdicMFArray</A></TD>
- <TD WIDTH=250><A HREF="./DMShellSetCreateMatrix.html">DMShellSetCreateMatrix</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealGetSize.html">SectionRealGetSize</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAGetAdicMFArrayb.html">DMDAGetAdicMFArrayb</A></TD>
- <TD WIDTH=250><A HREF="./DMShellSetGlobalVector.html">DMShellSetGlobalVector</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealRestrict.html">SectionRealRestrict</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealComplete.html">SectionRealComplete</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetArray.html">DMDAGetArray</A></TD>
- <TD WIDTH=250><A HREF="./DMShellSetMatrix.html">DMShellSetMatrix</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealSetBundle.html">SectionRealSetBundle</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetCreateGlobalVector.html">DMShellSetCreateGlobalVector</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealCreate.html">SectionRealCreate</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetLogicalCoordinate.html">DMDAGetLogicalCoordinate</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetCreateLocalVector.html">DMShellSetCreateLocalVector</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealCreateLocalVector.html">SectionRealCreateLocalVector</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetProcessorSubset.html">DMDAGetProcessorSubset</A></TD>
- <TD WIDTH=250><A HREF="./DMSlicedCreate.html">DMSlicedCreate</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealSetFiberDimension.html">SectionRealSetFiberDimension</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetCreateMatrix.html">DMShellSetCreateMatrix</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealDestroy.html">SectionRealDestroy</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGetProcessorSubsets.html">DMDAGetProcessorSubsets</A></TD>
- <TD WIDTH=250><A HREF="./DMSlicedSetBlockFills.html">DMSlicedSetBlockFills</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealSetFiberDimensionField.html">SectionRealSetFiberDimensionField</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetGlobalToLocal.html">DMShellSetGlobalToLocal</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealDuplicate.html">SectionRealDuplicate</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetRay.html">DMDAGetRay</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetGlobalToLocalVecScatter.html">DMShellSetGlobalToLocalVecScatter</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealGetBundle.html">SectionRealGetBundle</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGlobalToNaturalAllCreate.html">DMDAGlobalToNaturalAllCreate</A></TD>
- <TD WIDTH=250><A HREF="./DMSlicedSetGhosts.html">DMSlicedSetGhosts</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealSetSection.html">SectionRealSetSection</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetGlobalVector.html">DMShellSetGlobalVector</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealGetFiberDimension.html">SectionRealGetFiberDimension</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGlobalToNaturalBegin.html">DMDAGlobalToNaturalBegin</A></TD>
- <TD WIDTH=250><A HREF="./DMSlicedSetPreallocation.html">DMSlicedSetPreallocation</A></TD>
- <TD WIDTH=250><A HREF="./SectionRealToVec.html">SectionRealToVec</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetLocalToGlobal.html">DMShellSetLocalToGlobal</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealGetFibration.html">SectionRealGetFibration</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMDAGlobalToNaturalEnd.html">DMDAGlobalToNaturalEnd</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetLocalToGlobalVecScatter.html">DMShellSetLocalToGlobalVecScatter</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealGetSection.html">SectionRealGetSection</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDANaturalAllToGlobalCreate.html">DMDANaturalAllToGlobalCreate</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetLocalVector.html">DMShellSetLocalVector</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealGetSize.html">SectionRealGetSize</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDANaturalToGlobalBegin.html">DMDANaturalToGlobalBegin</A></TD>
+ <TD WIDTH=250><A HREF="./DMShellSetMatrix.html">DMShellSetMatrix</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealRestrict.html">SectionRealRestrict</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDARestoreArray.html">DMDARestoreArray</A></TD>
+ <TD WIDTH=250><A HREF="./DMSlicedCreate.html">DMSlicedCreate</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealSetBundle.html">SectionRealSetBundle</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMGlobalToLocalBeginDefaultShell.html">DMGlobalToLocalBeginDefaultShell</A></TD>
+ <TD WIDTH=250><A HREF="./DMSlicedSetBlockFills.html">DMSlicedSetBlockFills</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealSetFiberDimension.html">SectionRealSetFiberDimension</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMGlobalToLocalEndDefaultShell.html">DMGlobalToLocalEndDefaultShell</A></TD>
+ <TD WIDTH=250><A HREF="./DMSlicedSetGhosts.html">DMSlicedSetGhosts</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealSetFiberDimensionField.html">SectionRealSetFiberDimensionField</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMGlobalToLocalHookAdd.html">DMGlobalToLocalHookAdd</A></TD>
+ <TD WIDTH=250><A HREF="./DMSlicedSetPreallocation.html">DMSlicedSetPreallocation</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealSetSection.html">SectionRealSetSection</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMLocalToGlobalBeginDefaultShell.html">DMLocalToGlobalBeginDefaultShell</A></TD>
+ <TD WIDTH=250><A HREF="./DMSubDomainHookAdd.html">DMSubDomainHookAdd</A></TD>
+ <TD WIDTH=250><A HREF="./SectionRealToVec.html">SectionRealToVec</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMLocalToGlobalEndDefaultShell.html">DMLocalToGlobalEndDefaultShell</A></TD>
  <TD WIDTH=250><A HREF="./PCICERenumberBoundary.html">PCICERenumberBoundary</A></TD>
  <TD WIDTH=250><A HREF="./SectionRealUpdate.html">SectionRealUpdate</A></TD>
 <TR>
- <TD WIDTH=250><A HREF="./DMDAMultiplyByJacobian1WithAD.html">DMDAMultiplyByJacobian1WithAD</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntAddSpace.html">SectionIntAddSpace</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshCreateGlobalRealVector.html">DMMeshCreateGlobalRealVector</A></TD>
+ <TD WIDTH=250><A HREF="./PetscDTReconstructPoly.html">PetscDTReconstructPoly</A></TD>
  <TD WIDTH=250><A HREF="./SectionRealZero.html">SectionRealZero</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMDAMultiplyByJacobian1WithAdic.html">DMDAMultiplyByJacobian1WithAdic</A></TD>
- <TD WIDTH=250><A HREF="./SectionIntAllocate.html">SectionIntAllocate</A></TD>
- <TD WIDTH=250><A HREF="./"></A></TD>
 <TR>
 <TR><TD WIDTH=250 COLSPAN="3"><B>Developer - Interfaces intended primarily for library developers, not for typical applications programmers</B></TD></TR>
  <TD WIDTH=250><A HREF="./ADDAHCiter.html">ADDAHCiter</A></TD>
- <TD WIDTH=250><A HREF="./DMCreateInterpolationScale.html">DMCreateInterpolationScale</A></TD>
- <TD WIDTH=250><A HREF="./DMHasJacobian.html">DMHasJacobian</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetNamedGlobalVector.html">DMGetNamedGlobalVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetHeightStratum.html">DMPlexGetHeightStratum</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./ADDAHCiterStartup.html">ADDAHCiterStartup</A></TD>
- <TD WIDTH=250><A HREF="./DMDACreateNaturalVector.html">DMDACreateNaturalVector</A></TD>
- <TD WIDTH=250><A HREF="./DMHasVariableBounds.html">DMHasVariableBounds</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetNamedLocalVector.html">DMGetNamedLocalVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetSubpointMap.html">DMPlexGetSubpointMap</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMADDASetRefinement.html">DMADDASetRefinement</A></TD>
- <TD WIDTH=250><A HREF="./DMDACreateSection.html">DMDACreateSection</A></TD>
- <TD WIDTH=250><A HREF="./DMInterpolate.html">DMInterpolate</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetRefineLevel.html">DMGetRefineLevel</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexLabelCohesiveComplete.html">DMPlexLabelCohesiveComplete</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMClearGlobalVectors.html">DMClearGlobalVectors</A></TD>
- <TD WIDTH=250><A HREF="./DMDAGetScatter.html">DMDAGetScatter</A></TD>
- <TD WIDTH=250><A HREF="./DMMeshSetMaxDof.html">DMMeshSetMaxDof</A></TD>
+ <TD WIDTH=250><A HREF="./DMGetWorkArray.html">DMGetWorkArray</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexLabelComplete.html">DMPlexLabelComplete</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCoarsen.html">DMCoarsen</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetBlockFills.html">DMDASetBlockFills</A></TD>
- <TD WIDTH=250><A HREF="./DMRefine.html">DMRefine</A></TD>
+ <TD WIDTH=250><A HREF="./DMHasColoring.html">DMHasColoring</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexMarkBoundaryFaces.html">DMPlexMarkBoundaryFaces</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCoarsenHierarchy.html">DMCoarsenHierarchy</A></TD>
- <TD WIDTH=250><A HREF="./DMDASetGetMatrix.html">DMDASetGetMatrix</A></TD>
- <TD WIDTH=250><A HREF="./DMRefineHierarchy.html">DMRefineHierarchy</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComplexVTKWriteAll.html">DMComplexVTKWriteAll</A></TD>
- <TD WIDTH=250><A HREF="./DMDAVTKWriteAll.html">DMDAVTKWriteAll</A></TD>
- <TD WIDTH=250><A HREF="./DMRestoreNamedGlobalVector.html">DMRestoreNamedGlobalVector</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComputeFunction.html">DMComputeFunction</A></TD>
- <TD WIDTH=250><A HREF="./DMDestroy.html">DMDestroy</A></TD>
- <TD WIDTH=250><A HREF="./DMRestrict.html">DMRestrict</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComputeInitialGuess.html">DMComputeInitialGuess</A></TD>
- <TD WIDTH=250><A HREF="./DMGetCoarsenLevel.html">DMGetCoarsenLevel</A></TD>
- <TD WIDTH=250><A HREF="./DMSetFromOptions.html">DMSetFromOptions</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComputeJacobian.html">DMComputeJacobian</A></TD>
- <TD WIDTH=250><A HREF="./DMGetNamedGlobalVector.html">DMGetNamedGlobalVector</A></TD>
- <TD WIDTH=250><A HREF="./DMSetMatrixPreallocateOnly.html">DMSetMatrixPreallocateOnly</A></TD>
-<TR>
- <TD WIDTH=250><A HREF="./DMComputeJacobianDefault.html">DMComputeJacobianDefault</A></TD>
- <TD WIDTH=250><A HREF="./DMGetRefineLevel.html">DMGetRefineLevel</A></TD>
- <TD WIDTH=250><A HREF="./DMSetUp.html">DMSetUp</A></TD>
+ <TD WIDTH=250><A HREF="./DMHasVariableBounds.html">DMHasVariableBounds</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexProjectFunction.html">DMPlexProjectFunction</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateColoring.html">DMCreateColoring</A></TD>
- <TD WIDTH=250><A HREF="./DMGetWorkArray.html">DMGetWorkArray</A></TD>
- <TD WIDTH=250><A HREF="./DMSetVec.html">DMSetVec</A></TD>
+ <TD WIDTH=250><A HREF="./DMInitializePackage.html">DMInitializePackage</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexRemoveLabel.html">DMPlexRemoveLabel</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMCreateDomainDecompositionScatters.html">DMCreateDomainDecompositionScatters</A></TD>
+ <TD WIDTH=250><A HREF="./DMInterpolate.html">DMInterpolate</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexVTKWriteAll.html">DMPlexVTKWriteAll</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateInjection.html">DMCreateInjection</A></TD>
- <TD WIDTH=250><A HREF="./DMHasFunction.html">DMHasFunction</A></TD>
- <TD WIDTH=250><A HREF="./DMView.html">DMView</A></TD>
+ <TD WIDTH=250><A HREF="./DMLabelHasPoint.html">DMLabelHasPoint</A></TD>
+ <TD WIDTH=250><A HREF="./DMRefine.html">DMRefine</A></TD>
 <TR>
  <TD WIDTH=250><A HREF="./DMCreateInterpolation.html">DMCreateInterpolation</A></TD>
- <TD WIDTH=250><A HREF="./DMHasInitialGuess.html">DMHasInitialGuess</A></TD>
+ <TD WIDTH=250><A HREF="./DMLocatePoints.html">DMLocatePoints</A></TD>
+ <TD WIDTH=250><A HREF="./DMRefineHierarchy.html">DMRefineHierarchy</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMCreateInterpolationScale.html">DMCreateInterpolationScale</A></TD>
+ <TD WIDTH=250><A HREF="./DMMeshSetMaxDof.html">DMMeshSetMaxDof</A></TD>
+ <TD WIDTH=250><A HREF="./DMRestoreNamedGlobalVector.html">DMRestoreNamedGlobalVector</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAConvertToCell.html">DMDAConvertToCell</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexAddLabel.html">DMPlexAddLabel</A></TD>
+ <TD WIDTH=250><A HREF="./DMRestoreNamedLocalVector.html">DMRestoreNamedLocalVector</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDACreateNaturalVector.html">DMDACreateNaturalVector</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexComputeJacobianActionFEM.html">DMPlexComputeJacobianActionFEM</A></TD>
+ <TD WIDTH=250><A HREF="./DMRestoreWorkArray.html">DMRestoreWorkArray</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDACreatePatchIS.html">DMDACreatePatchIS</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexComputeJacobianFEM.html">DMPlexComputeJacobianFEM</A></TD>
+ <TD WIDTH=250><A HREF="./DMRestrict.html">DMRestrict</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDACreateSection.html">DMDACreateSection</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexComputeL2Diff.html">DMPlexComputeL2Diff</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetFromOptions.html">DMSetFromOptions</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAGetScatter.html">DMDAGetScatter</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexComputeResidualFEM.html">DMPlexComputeResidualFEM</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetMatrixPreallocateOnly.html">DMSetMatrixPreallocateOnly</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetBlockFills.html">DMDASetBlockFills</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexConstructGhostCells.html">DMPlexConstructGhostCells</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetUp.html">DMSetUp</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDASetGetMatrix.html">DMDASetGetMatrix</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateSection.html">DMPlexCreateSection</A></TD>
+ <TD WIDTH=250><A HREF="./DMSetVec.html">DMSetVec</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDAVTKWriteAll.html">DMDAVTKWriteAll</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateSubmesh.html">DMPlexCreateSubmesh</A></TD>
+ <TD WIDTH=250><A HREF="./DMSubDomainRestrict.html">DMSubDomainRestrict</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMDestroy.html">DMDestroy</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexCreateSubpointIS.html">DMPlexCreateSubpointIS</A></TD>
+ <TD WIDTH=250><A HREF="./DMView.html">DMView</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMFinalizePackage.html">DMFinalizePackage</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetDepth.html">DMPlexGetDepth</A></TD>
+ <TD WIDTH=250><A HREF="./PetscSectionCreateGlobalSectionLabel.html">PetscSectionCreateGlobalSectionLabel</A></TD>
+<TR>
+ <TD WIDTH=250><A HREF="./DMGetCoarsenLevel.html">DMGetCoarsenLevel</A></TD>
+ <TD WIDTH=250><A HREF="./DMPlexGetDepthStratum.html">DMPlexGetDepthStratum</A></TD>
  <TD WIDTH=250><A HREF="./"></A></TD>
 <TR>
 <TR><TD WIDTH=250 COLSPAN="3"><B>No deprecated routines</B></TD></TR>

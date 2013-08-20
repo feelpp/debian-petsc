@@ -5,13 +5,13 @@
 <TITLE>PCSetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCSetType"><H1>PCSetType</H1></A>
-Builds <A HREF="../PC/PC.html#PC">PC</A> for a particular preconditioner. 
+Builds <A HREF="../PC/PC.html#PC">PC</A> for a particular preconditioner type 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode  PCSetType(PC pc,const PCType type)
+PetscErrorCode  PCSetType(PC pc,PCType type)
 </PRE>
 Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
@@ -47,12 +47,15 @@ routine is not for beginners.
 <P>
 
 <P>
+Developer Note: <A HREF="../PC/PCRegister.html#PCRegister">PCRegister</A>() is used to add preconditioner types to PCList from which they
+are accessed by <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>().
+<P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../PC/PC.html#PC">PC</A>, set, method, type
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A>
+ <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A>, <A HREF="../PC/PCRegister.html#PCRegister">PCRegister</A>(), <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../KSP/KSPGetPC.html#KSPGetPC">KSPGetPC</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate

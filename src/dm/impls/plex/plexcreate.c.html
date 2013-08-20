@@ -1,0 +1,841 @@
+<center><a href="plexcreate.c">Actual source code: plexcreate.c</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/plex/plexcreate.c.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:45:38+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a><strong><font color="#228B22">#define PETSCDM_DLL</font></strong>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/dmpleximpl.h&gt;    </font><font color="#B22222">/*I   "petscdmplex.h"   I*/</font><font color="#A020F0"></font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscsf.h&gt;</font>
+
+<a name="line8">  8: </a><strong><font color="#4169E1"><a name="DMSetFromOptions_Plex"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  DMSetFromOptions_Plex(DM dm)</font></strong>
+<a name="line9">  9: </a>{
+<a name="line10"> 10: </a>  DM_Plex        *mesh = (DM_Plex*) dm-&gt;data;
+
+<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(<font color="#666666">"DMPlex Options"</font>);
+<a name="line16"> 16: </a>  <font color="#B22222">/* Handle DMPlex refinement */</font>
+<a name="line17"> 17: </a>  <font color="#B22222">/* Handle associated vectors */</font>
+<a name="line18"> 18: </a>  <font color="#B22222">/* Handle viewing */</font>
+<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(<font color="#666666">"-dm_plex_print_set_values"</font>, <font color="#666666">"Output all set values info"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/DM/DMView.html#DMView">DMView</A>"</font>, <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, &amp;mesh-&gt;printSetValues, NULL);
+<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>(<font color="#666666">"-dm_plex_print_fem"</font>, <font color="#666666">"Debug output level all fem computations"</font>, <font color="#666666">"<A href="../../../../docs/manualpages/DM/DMView.html#DMView">DMView</A>"</font>, 0, &amp;mesh-&gt;printFEM, NULL);
+<a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsTail.html#PetscOptionsTail">PetscOptionsTail</A>();
+<a name="line22"> 22: </a>  <font color="#4169E1">return</font>(0);
+<a name="line23"> 23: </a>}
+
+<a name="line27"> 27: </a><font color="#B22222">/*</font>
+<a name="line28"> 28: </a><font color="#B22222"> Simple square boundary:</font>
+
+<a name="line30"> 30: </a><font color="#B22222"> 18--5-17--4--16</font>
+<a name="line31"> 31: </a><font color="#B22222">  |     |     |</font>
+<a name="line32"> 32: </a><font color="#B22222">  6    10     3</font>
+<a name="line33"> 33: </a><font color="#B22222">  |     |     |</font>
+<a name="line34"> 34: </a><font color="#B22222"> 19-11-20--9--15</font>
+<a name="line35"> 35: </a><font color="#B22222">  |     |     |</font>
+<a name="line36"> 36: </a><font color="#B22222">  7     8     2</font>
+<a name="line37"> 37: </a><font color="#B22222">  |     |     |</font>
+<a name="line38"> 38: </a><font color="#B22222"> 12--0-13--1--14</font>
+<a name="line39"> 39: </a><font color="#B22222">*/</font>
+<a name="line40"> 40: </a><strong><font color="#4169E1"><a name="DMPlexCreateSquareBoundary"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMPlexCreateSquareBoundary(DM dm, const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> lower[], const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> upper[], const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edges[])</font></strong>
+<a name="line41"> 41: </a>{
+<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       numVertices    = (edges[0]+1)*(edges[1]+1);
+<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       numEdges       = edges[0]*(edges[1]+1) + (edges[0]+1)*edges[1];
+<a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       markerTop      = 1;
+<a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       markerBottom   = 1;
+<a name="line46"> 46: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       markerRight    = 1;
+<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       markerLeft     = 1;
+<a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      markerSeparate = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            coordinates;
+<a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A>   coordSection;
+<a name="line51"> 51: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *coords;
+<a name="line52"> 52: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       coordSize;
+<a name="line53"> 53: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank;
+<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       v, vx, vy;
+
+<a name="line58"> 58: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;prefix, <font color="#666666">"-dm_plex_separate_marker"</font>, &amp;markerSeparate, NULL);
+<a name="line59"> 59: </a>  <font color="#4169E1">if</font> (markerSeparate) {
+<a name="line60"> 60: </a>    markerTop    = 1;
+<a name="line61"> 61: </a>    markerBottom = 0;
+<a name="line62"> 62: </a>    markerRight  = 0;
+<a name="line63"> 63: </a>    markerLeft   = 0;
+<a name="line64"> 64: </a>  }
+<a name="line65"> 65: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;rank);
+<a name="line66"> 66: </a>  <font color="#4169E1">if</font> (!rank) {
+<a name="line67"> 67: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> e, ex, ey;
+
+<a name="line69"> 69: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSetChart.html#DMPlexSetChart">DMPlexSetChart</A>(dm, 0, numEdges+numVertices);
+<a name="line70"> 70: </a>    <font color="#4169E1">for</font> (e = 0; e &lt; numEdges; ++e) {
+<a name="line71"> 71: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(dm, e, 2);
+<a name="line72"> 72: </a>    }
+<a name="line73"> 73: </a>    <A href="../../../../docs/manualpages/DM/DMSetUp.html#DMSetUp">DMSetUp</A>(dm); <font color="#B22222">/* Allocate space for cones */</font>
+<a name="line74"> 74: </a>    <font color="#4169E1">for</font> (vx = 0; vx &lt;= edges[0]; vx++) {
+<a name="line75"> 75: </a>      <font color="#4169E1">for</font> (ey = 0; ey &lt; edges[1]; ey++) {
+<a name="line76"> 76: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edge   = vx*edges[1] + ey + edges[0]*(edges[1]+1);
+<a name="line77"> 77: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> vertex = ey*(edges[0]+1) + vx + numEdges;
+<a name="line78"> 78: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cone[2];
+
+<a name="line80"> 80: </a>        cone[0] = vertex; cone[1] = vertex+edges[0]+1;
+<a name="line81"> 81: </a>        <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, edge, cone);
+<a name="line82"> 82: </a>        <font color="#4169E1">if</font> (vx == edges[0]) {
+<a name="line83"> 83: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, edge,    markerRight);
+<a name="line84"> 84: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[0], markerRight);
+<a name="line85"> 85: </a>          <font color="#4169E1">if</font> (ey == edges[1]-1) {
+<a name="line86"> 86: </a>            <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[1], markerRight);
+<a name="line87"> 87: </a>          }
+<a name="line88"> 88: </a>        } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (vx == 0) {
+<a name="line89"> 89: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, edge,    markerLeft);
+<a name="line90"> 90: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[0], markerLeft);
+<a name="line91"> 91: </a>          <font color="#4169E1">if</font> (ey == edges[1]-1) {
+<a name="line92"> 92: </a>            <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[1], markerLeft);
+<a name="line93"> 93: </a>          }
+<a name="line94"> 94: </a>        }
+<a name="line95"> 95: </a>      }
+<a name="line96"> 96: </a>    }
+<a name="line97"> 97: </a>    <font color="#4169E1">for</font> (vy = 0; vy &lt;= edges[1]; vy++) {
+<a name="line98"> 98: </a>      <font color="#4169E1">for</font> (ex = 0; ex &lt; edges[0]; ex++) {
+<a name="line99"> 99: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edge   = vy*edges[0]     + ex;
+<a name="line100">100: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> vertex = vy*(edges[0]+1) + ex + numEdges;
+<a name="line101">101: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cone[2];
+
+<a name="line103">103: </a>        cone[0] = vertex; cone[1] = vertex+1;
+<a name="line104">104: </a>        <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, edge, cone);
+<a name="line105">105: </a>        <font color="#4169E1">if</font> (vy == edges[1]) {
+<a name="line106">106: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, edge,    markerTop);
+<a name="line107">107: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[0], markerTop);
+<a name="line108">108: </a>          <font color="#4169E1">if</font> (ex == edges[0]-1) {
+<a name="line109">109: </a>            <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[1], markerTop);
+<a name="line110">110: </a>          }
+<a name="line111">111: </a>        } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (vy == 0) {
+<a name="line112">112: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, edge,    markerBottom);
+<a name="line113">113: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[0], markerBottom);
+<a name="line114">114: </a>          <font color="#4169E1">if</font> (ex == edges[0]-1) {
+<a name="line115">115: </a>            <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[1], markerBottom);
+<a name="line116">116: </a>          }
+<a name="line117">117: </a>        }
+<a name="line118">118: </a>      }
+<a name="line119">119: </a>    }
+<a name="line120">120: </a>  }
+<a name="line121">121: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSymmetrize.html#DMPlexSymmetrize">DMPlexSymmetrize</A>(dm);
+<a name="line122">122: </a>  <A href="../../../../docs/manualpages/DM/DMPlexStratify.html#DMPlexStratify">DMPlexStratify</A>(dm);
+<a name="line123">123: </a>  <font color="#B22222">/* Build coordinates */</font>
+<a name="line124">124: </a>  <A href="../../../../docs/manualpages/DM/DMPlexGetCoordinateSection.html#DMPlexGetCoordinateSection">DMPlexGetCoordinateSection</A>(dm, &amp;coordSection);
+<a name="line125">125: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetChart.html#PetscSectionSetChart">PetscSectionSetChart</A>(coordSection, numEdges, numEdges + numVertices);
+<a name="line126">126: </a>  <font color="#4169E1">for</font> (v = numEdges; v &lt; numEdges+numVertices; ++v) {
+<a name="line127">127: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionSetDof.html#PetscSectionSetDof">PetscSectionSetDof</A>(coordSection, v, 2);
+<a name="line128">128: </a>  }
+<a name="line129">129: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetUp.html#PetscSectionSetUp">PetscSectionSetUp</A>(coordSection);
+<a name="line130">130: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionGetStorageSize.html#PetscSectionGetStorageSize">PetscSectionGetStorageSize</A>(coordSection, &amp;coordSize);
+<a name="line131">131: </a>  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;coordinates);
+<a name="line132">132: </a>  <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(coordinates, coordSize, <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line133">133: </a>  <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(coordinates);
+<a name="line134">134: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(coordinates, &amp;coords);
+<a name="line135">135: </a>  <font color="#4169E1">for</font> (vy = 0; vy &lt;= edges[1]; ++vy) {
+<a name="line136">136: </a>    <font color="#4169E1">for</font> (vx = 0; vx &lt;= edges[0]; ++vx) {
+<a name="line137">137: </a>      coords[(vy*(edges[0]+1)+vx)*2+0] = lower[0] + ((upper[0] - lower[0])/edges[0])*vx;
+<a name="line138">138: </a>      coords[(vy*(edges[0]+1)+vx)*2+1] = lower[1] + ((upper[1] - lower[1])/edges[1])*vy;
+<a name="line139">139: </a>    }
+<a name="line140">140: </a>  }
+<a name="line141">141: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(coordinates, &amp;coords);
+<a name="line142">142: </a>  <A href="../../../../docs/manualpages/DM/DMSetCoordinatesLocal.html#DMSetCoordinatesLocal">DMSetCoordinatesLocal</A>(dm, coordinates);
+<a name="line143">143: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;coordinates);
+<a name="line144">144: </a>  <font color="#4169E1">return</font>(0);
+<a name="line145">145: </a>}
+
+<a name="line149">149: </a><font color="#B22222">/*</font>
+<a name="line150">150: </a><font color="#B22222"> Simple cubic boundary:</font>
+
+<a name="line152">152: </a><font color="#B22222">     2-------3</font>
+<a name="line153">153: </a><font color="#B22222">    /|      /|</font>
+<a name="line154">154: </a><font color="#B22222">   6-------7 |</font>
+<a name="line155">155: </a><font color="#B22222">   | |     | |</font>
+<a name="line156">156: </a><font color="#B22222">   | 0-----|-1</font>
+<a name="line157">157: </a><font color="#B22222">   |/      |/</font>
+<a name="line158">158: </a><font color="#B22222">   4-------5</font>
+<a name="line159">159: </a><font color="#B22222">*/</font>
+<a name="line160">160: </a><strong><font color="#4169E1"><a name="DMPlexCreateCubeBoundary"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMPlexCreateCubeBoundary(DM dm, const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> lower[], const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> upper[], const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> faces[])</font></strong>
+<a name="line161">161: </a>{
+<a name="line162">162: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       numVertices = (faces[0]+1)*(faces[1]+1)*(faces[2]+1);
+<a name="line163">163: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       numFaces    = 6;
+<a name="line164">164: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            coordinates;
+<a name="line165">165: </a>  <A href="../../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A>   coordSection;
+<a name="line166">166: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *coords;
+<a name="line167">167: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       coordSize;
+<a name="line168">168: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank;
+<a name="line169">169: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       v, vx, vy, vz;
+
+<a name="line173">173: </a>  <font color="#4169E1">if</font> ((faces[0] &lt; 1) || (faces[1] &lt; 1) || (faces[2] &lt; 1)) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), PETSC_ERR_SUP, <font color="#666666">"Must have at least 1 face per side"</font>);
+<a name="line174">174: </a>  <font color="#4169E1">if</font> ((faces[0] &gt; 1) || (faces[1] &gt; 1) || (faces[2] &gt; 1)) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), PETSC_ERR_SUP, <font color="#666666">"Currently can't handle more than 1 face per side"</font>);
+<a name="line175">175: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(numVertices*2 * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;coords);
+<a name="line176">176: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;rank);
+<a name="line177">177: </a>  <font color="#4169E1">if</font> (!rank) {
+<a name="line178">178: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> f;
+
+<a name="line180">180: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSetChart.html#DMPlexSetChart">DMPlexSetChart</A>(dm, 0, numFaces+numVertices);
+<a name="line181">181: </a>    <font color="#4169E1">for</font> (f = 0; f &lt; numFaces; ++f) {
+<a name="line182">182: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(dm, f, 4);
+<a name="line183">183: </a>    }
+<a name="line184">184: </a>    <A href="../../../../docs/manualpages/DM/DMSetUp.html#DMSetUp">DMSetUp</A>(dm); <font color="#B22222">/* Allocate space for cones */</font>
+<a name="line185">185: </a>    <font color="#4169E1">for</font> (v = 0; v &lt; numFaces+numVertices; ++v) {
+<a name="line186">186: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, v, 1);
+<a name="line187">187: </a>    }
+<a name="line188">188: </a>    { <font color="#B22222">/* Side 0 (Front) */</font>
+<a name="line189">189: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cone[4];
+<a name="line190">190: </a>      cone[0] = numFaces+4; cone[1] = numFaces+5; cone[2] = numFaces+7; cone[3] = numFaces+6;
+<a name="line191">191: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, 0, cone);
+<a name="line192">192: </a>    }
+<a name="line193">193: </a>    { <font color="#B22222">/* Side 1 (Back) */</font>
+<a name="line194">194: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cone[4];
+<a name="line195">195: </a>      cone[0] = numFaces+1; cone[1] = numFaces+0; cone[2] = numFaces+2; cone[3] = numFaces+3;
+<a name="line196">196: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, 1, cone);
+<a name="line197">197: </a>    }
+<a name="line198">198: </a>    { <font color="#B22222">/* Side 2 (Bottom) */</font>
+<a name="line199">199: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cone[4];
+<a name="line200">200: </a>      cone[0] = numFaces+0; cone[1] = numFaces+1; cone[2] = numFaces+5; cone[3] = numFaces+4;
+<a name="line201">201: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, 2, cone);
+<a name="line202">202: </a>    }
+<a name="line203">203: </a>    { <font color="#B22222">/* Side 3 (Top) */</font>
+<a name="line204">204: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cone[4];
+<a name="line205">205: </a>      cone[0] = numFaces+6; cone[1] = numFaces+7; cone[2] = numFaces+3; cone[3] = numFaces+2;
+<a name="line206">206: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, 3, cone);
+<a name="line207">207: </a>    }
+<a name="line208">208: </a>    { <font color="#B22222">/* Side 4 (Left) */</font>
+<a name="line209">209: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cone[4];
+<a name="line210">210: </a>      cone[0] = numFaces+0; cone[1] = numFaces+4; cone[2] = numFaces+6; cone[3] = numFaces+2;
+<a name="line211">211: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, 4, cone);
+<a name="line212">212: </a>    }
+<a name="line213">213: </a>    { <font color="#B22222">/* Side 5 (Right) */</font>
+<a name="line214">214: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cone[4];
+<a name="line215">215: </a>      cone[0] = numFaces+5; cone[1] = numFaces+1; cone[2] = numFaces+3; cone[3] = numFaces+7;
+<a name="line216">216: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, 5, cone);
+<a name="line217">217: </a>    }
+<a name="line218">218: </a>  }
+<a name="line219">219: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSymmetrize.html#DMPlexSymmetrize">DMPlexSymmetrize</A>(dm);
+<a name="line220">220: </a>  <A href="../../../../docs/manualpages/DM/DMPlexStratify.html#DMPlexStratify">DMPlexStratify</A>(dm);
+<a name="line221">221: </a>  <font color="#B22222">/* Build coordinates */</font>
+<a name="line222">222: </a>  <A href="../../../../docs/manualpages/DM/DMPlexGetCoordinateSection.html#DMPlexGetCoordinateSection">DMPlexGetCoordinateSection</A>(dm, &amp;coordSection);
+<a name="line223">223: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetChart.html#PetscSectionSetChart">PetscSectionSetChart</A>(coordSection, numFaces, numFaces + numVertices);
+<a name="line224">224: </a>  <font color="#4169E1">for</font> (v = numFaces; v &lt; numFaces+numVertices; ++v) {
+<a name="line225">225: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionSetDof.html#PetscSectionSetDof">PetscSectionSetDof</A>(coordSection, v, 3);
+<a name="line226">226: </a>  }
+<a name="line227">227: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetUp.html#PetscSectionSetUp">PetscSectionSetUp</A>(coordSection);
+<a name="line228">228: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionGetStorageSize.html#PetscSectionGetStorageSize">PetscSectionGetStorageSize</A>(coordSection, &amp;coordSize);
+<a name="line229">229: </a>  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;coordinates);
+<a name="line230">230: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) coordinates, <font color="#666666">"coordinates"</font>);
+<a name="line231">231: </a>  <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(coordinates, coordSize, <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line232">232: </a>  <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(coordinates);
+<a name="line233">233: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(coordinates, &amp;coords);
+<a name="line234">234: </a>  <font color="#4169E1">for</font> (vz = 0; vz &lt;= faces[2]; ++vz) {
+<a name="line235">235: </a>    <font color="#4169E1">for</font> (vy = 0; vy &lt;= faces[1]; ++vy) {
+<a name="line236">236: </a>      <font color="#4169E1">for</font> (vx = 0; vx &lt;= faces[0]; ++vx) {
+<a name="line237">237: </a>        coords[((vz*(faces[1]+1)+vy)*(faces[0]+1)+vx)*3+0] = lower[0] + ((upper[0] - lower[0])/faces[0])*vx;
+<a name="line238">238: </a>        coords[((vz*(faces[1]+1)+vy)*(faces[0]+1)+vx)*3+1] = lower[1] + ((upper[1] - lower[1])/faces[1])*vy;
+<a name="line239">239: </a>        coords[((vz*(faces[1]+1)+vy)*(faces[0]+1)+vx)*3+2] = lower[2] + ((upper[2] - lower[2])/faces[2])*vz;
+<a name="line240">240: </a>      }
+<a name="line241">241: </a>    }
+<a name="line242">242: </a>  }
+<a name="line243">243: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(coordinates, &amp;coords);
+<a name="line244">244: </a>  <A href="../../../../docs/manualpages/DM/DMSetCoordinatesLocal.html#DMSetCoordinatesLocal">DMSetCoordinatesLocal</A>(dm, coordinates);
+<a name="line245">245: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;coordinates);
+<a name="line246">246: </a>  <font color="#4169E1">return</font>(0);
+<a name="line247">247: </a>}
+
+<a name="line251">251: </a><font color="#B22222">/*</font>
+<a name="line252">252: </a><font color="#B22222"> Simple square mesh:</font>
+
+<a name="line254">254: </a><font color="#B22222"> 22--8-23--9--24</font>
+<a name="line255">255: </a><font color="#B22222">  |     |     |</font>
+<a name="line256">256: </a><font color="#B22222"> 13  2 14  3  15</font>
+<a name="line257">257: </a><font color="#B22222">  |     |     |</font>
+<a name="line258">258: </a><font color="#B22222"> 19--6-20--7--21</font>
+<a name="line259">259: </a><font color="#B22222">  |     |     |</font>
+<a name="line260">260: </a><font color="#B22222"> 10  0 11  1 12</font>
+<a name="line261">261: </a><font color="#B22222">  |     |     |</font>
+<a name="line262">262: </a><font color="#B22222"> 16--4-17--5--18</font>
+<a name="line263">263: </a><font color="#B22222">*/</font>
+<a name="line264">264: </a><strong><font color="#4169E1"><a name="DMPlexCreateSquareMesh"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMPlexCreateSquareMesh(DM dm, const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> lower[], const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> upper[], const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edges[])</font></strong>
+<a name="line265">265: </a>{
+<a name="line266">266: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       markerTop      = 1;
+<a name="line267">267: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       markerBottom   = 1;
+<a name="line268">268: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       markerRight    = 1;
+<a name="line269">269: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       markerLeft     = 1;
+<a name="line270">270: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      markerSeparate = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line271">271: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank;
+
+<a name="line275">275: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;rank);
+<a name="line276">276: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm)-&gt;prefix, <font color="#666666">"-dm_plex_separate_marker"</font>, &amp;markerSeparate, NULL);
+<a name="line277">277: </a>  <font color="#4169E1">if</font> (markerSeparate) {
+<a name="line278">278: </a>    markerTop    = 3;
+<a name="line279">279: </a>    markerBottom = 1;
+<a name="line280">280: </a>    markerRight  = 2;
+<a name="line281">281: </a>    markerLeft   = 4;
+<a name="line282">282: </a>  }
+<a name="line283">283: </a>  {
+<a name="line284">284: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numXEdges    = !rank ? edges[0]   : 0;
+<a name="line285">285: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numYEdges    = !rank ? edges[1]   : 0;
+<a name="line286">286: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numXVertices = !rank ? edges[0]+1 : 0;
+<a name="line287">287: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numYVertices = !rank ? edges[1]+1 : 0;
+<a name="line288">288: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numTotXEdges = numXEdges*numYVertices;
+<a name="line289">289: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numTotYEdges = numYEdges*numXVertices;
+<a name="line290">290: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numVertices  = numXVertices*numYVertices;
+<a name="line291">291: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numEdges     = numTotXEdges + numTotYEdges;
+<a name="line292">292: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numFaces     = numXEdges*numYEdges;
+<a name="line293">293: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> firstVertex  = numFaces;
+<a name="line294">294: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> firstXEdge   = numFaces + numVertices;
+<a name="line295">295: </a>    const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> firstYEdge   = numFaces + numVertices + numTotXEdges;
+<a name="line296">296: </a>    <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            coordinates;
+<a name="line297">297: </a>    <A href="../../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A>   coordSection;
+<a name="line298">298: </a>    <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *coords;
+<a name="line299">299: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       coordSize;
+<a name="line300">300: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       v, vx, vy;
+<a name="line301">301: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       f, fx, fy, e, ex, ey;
+
+<a name="line303">303: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSetChart.html#DMPlexSetChart">DMPlexSetChart</A>(dm, 0, numFaces+numEdges+numVertices);
+<a name="line304">304: </a>    <font color="#4169E1">for</font> (f = 0; f &lt; numFaces; ++f) {
+<a name="line305">305: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(dm, f, 4);
+<a name="line306">306: </a>    }
+<a name="line307">307: </a>    <font color="#4169E1">for</font> (e = firstXEdge; e &lt; firstXEdge+numEdges; ++e) {
+<a name="line308">308: </a>      <A href="../../../../docs/manualpages/DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(dm, e, 2);
+<a name="line309">309: </a>    }
+<a name="line310">310: </a>    <A href="../../../../docs/manualpages/DM/DMSetUp.html#DMSetUp">DMSetUp</A>(dm); <font color="#B22222">/* Allocate space for cones */</font>
+<a name="line311">311: </a>    <font color="#B22222">/* Build faces */</font>
+<a name="line312">312: </a>    <font color="#4169E1">for</font> (fy = 0; fy &lt; numYEdges; fy++) {
+<a name="line313">313: </a>      <font color="#4169E1">for</font> (fx = 0; fx &lt; numXEdges; fx++) {
+<a name="line314">314: </a>        const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> face    = fy*numXEdges + fx;
+<a name="line315">315: </a>        const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edgeL   = firstYEdge + fx*numYEdges + fy;
+<a name="line316">316: </a>        const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edgeB   = firstXEdge + fy*numXEdges + fx;
+<a name="line317">317: </a>        const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ornt[4] = {0,     0,               -2,              -2};
+<a name="line318">318: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       cone[4];
+
+<a name="line320">320: </a>        cone[0] = edgeB; cone[1] = edgeL+numYEdges; cone[2] = edgeB+numXEdges; cone[3] = edgeL;
+<a name="line321">321: </a>        <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, face, cone);
+<a name="line322">322: </a>        <A href="../../../../docs/manualpages/DM/DMPlexSetConeOrientation.html#DMPlexSetConeOrientation">DMPlexSetConeOrientation</A>(dm, face, ornt);
+<a name="line323">323: </a>      }
+<a name="line324">324: </a>    }
+<a name="line325">325: </a>    <font color="#B22222">/* Build Y edges*/</font>
+<a name="line326">326: </a>    <font color="#4169E1">for</font> (vx = 0; vx &lt; numXVertices; vx++) {
+<a name="line327">327: </a>      <font color="#4169E1">for</font> (ey = 0; ey &lt; numYEdges; ey++) {
+<a name="line328">328: </a>        const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edge   = firstYEdge  + vx*numYEdges + ey;
+<a name="line329">329: </a>        const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> vertex = firstVertex + ey*numXVertices + vx;
+<a name="line330">330: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       cone[2];
+
+<a name="line332">332: </a>        cone[0] = vertex; cone[1] = vertex+numXVertices;
+<a name="line333">333: </a>        <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, edge, cone);
+<a name="line334">334: </a>        <font color="#4169E1">if</font> (vx == numXVertices-1) {
+<a name="line335">335: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, edge,    markerRight);
+<a name="line336">336: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[0], markerRight);
+<a name="line337">337: </a>          <font color="#4169E1">if</font> (ey == numYEdges-1) {
+<a name="line338">338: </a>            <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[1], markerRight);
+<a name="line339">339: </a>          }
+<a name="line340">340: </a>        } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (vx == 0) {
+<a name="line341">341: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, edge,    markerLeft);
+<a name="line342">342: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[0], markerLeft);
+<a name="line343">343: </a>          <font color="#4169E1">if</font> (ey == numYEdges-1) {
+<a name="line344">344: </a>            <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[1], markerLeft);
+<a name="line345">345: </a>          }
+<a name="line346">346: </a>        }
+<a name="line347">347: </a>      }
+<a name="line348">348: </a>    }
+<a name="line349">349: </a>    <font color="#B22222">/* Build X edges*/</font>
+<a name="line350">350: </a>    <font color="#4169E1">for</font> (vy = 0; vy &lt; numYVertices; vy++) {
+<a name="line351">351: </a>      <font color="#4169E1">for</font> (ex = 0; ex &lt; numXEdges; ex++) {
+<a name="line352">352: </a>        const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> edge   = firstXEdge  + vy*numXEdges + ex;
+<a name="line353">353: </a>        const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> vertex = firstVertex + vy*numXVertices + ex;
+<a name="line354">354: </a>        <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       cone[2];
+
+<a name="line356">356: </a>        cone[0] = vertex; cone[1] = vertex+1;
+<a name="line357">357: </a>        <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, edge, cone);
+<a name="line358">358: </a>        <font color="#4169E1">if</font> (vy == numYVertices-1) {
+<a name="line359">359: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, edge,    markerTop);
+<a name="line360">360: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[0], markerTop);
+<a name="line361">361: </a>          <font color="#4169E1">if</font> (ex == numXEdges-1) {
+<a name="line362">362: </a>            <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[1], markerTop);
+<a name="line363">363: </a>          }
+<a name="line364">364: </a>        } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (vy == 0) {
+<a name="line365">365: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, edge,    markerBottom);
+<a name="line366">366: </a>          <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[0], markerBottom);
+<a name="line367">367: </a>          <font color="#4169E1">if</font> (ex == numXEdges-1) {
+<a name="line368">368: </a>            <A href="../../../../docs/manualpages/DM/DMPlexSetLabelValue.html#DMPlexSetLabelValue">DMPlexSetLabelValue</A>(dm, <font color="#666666">"marker"</font>, cone[1], markerBottom);
+<a name="line369">369: </a>          }
+<a name="line370">370: </a>        }
+<a name="line371">371: </a>      }
+<a name="line372">372: </a>    }
+<a name="line373">373: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSymmetrize.html#DMPlexSymmetrize">DMPlexSymmetrize</A>(dm);
+<a name="line374">374: </a>    <A href="../../../../docs/manualpages/DM/DMPlexStratify.html#DMPlexStratify">DMPlexStratify</A>(dm);
+<a name="line375">375: </a>    <font color="#B22222">/* Build coordinates */</font>
+<a name="line376">376: </a>    <A href="../../../../docs/manualpages/DM/DMPlexGetCoordinateSection.html#DMPlexGetCoordinateSection">DMPlexGetCoordinateSection</A>(dm, &amp;coordSection);
+<a name="line377">377: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionSetChart.html#PetscSectionSetChart">PetscSectionSetChart</A>(coordSection, firstVertex, firstVertex+numVertices);
+<a name="line378">378: </a>    <font color="#4169E1">for</font> (v = firstVertex; v &lt; firstVertex+numVertices; ++v) {
+<a name="line379">379: </a>      <A href="../../../../docs/manualpages/IS/PetscSectionSetDof.html#PetscSectionSetDof">PetscSectionSetDof</A>(coordSection, v, 2);
+<a name="line380">380: </a>    }
+<a name="line381">381: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionSetUp.html#PetscSectionSetUp">PetscSectionSetUp</A>(coordSection);
+<a name="line382">382: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionGetStorageSize.html#PetscSectionGetStorageSize">PetscSectionGetStorageSize</A>(coordSection, &amp;coordSize);
+<a name="line383">383: </a>    <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;coordinates);
+<a name="line384">384: </a>    <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(coordinates, coordSize, <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line385">385: </a>    <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(coordinates);
+<a name="line386">386: </a>    <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(coordinates, &amp;coords);
+<a name="line387">387: </a>    <font color="#4169E1">for</font> (vy = 0; vy &lt; numYVertices; ++vy) {
+<a name="line388">388: </a>      <font color="#4169E1">for</font> (vx = 0; vx &lt; numXVertices; ++vx) {
+<a name="line389">389: </a>        coords[(vy*numXVertices+vx)*2+0] = lower[0] + ((upper[0] - lower[0])/numXEdges)*vx;
+<a name="line390">390: </a>        coords[(vy*numXVertices+vx)*2+1] = lower[1] + ((upper[1] - lower[1])/numYEdges)*vy;
+<a name="line391">391: </a>      }
+<a name="line392">392: </a>    }
+<a name="line393">393: </a>    <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(coordinates, &amp;coords);
+<a name="line394">394: </a>    <A href="../../../../docs/manualpages/DM/DMSetCoordinatesLocal.html#DMSetCoordinatesLocal">DMSetCoordinatesLocal</A>(dm, coordinates);
+<a name="line395">395: </a>    <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;coordinates);
+<a name="line396">396: </a>  }
+<a name="line397">397: </a>  <font color="#4169E1">return</font>(0);
+<a name="line398">398: </a>}
+
+<a name="line402">402: </a><font color="#B22222">/*@</font>
+<a name="line403">403: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMPlexCreateBoxMesh.html#DMPlexCreateBoxMesh">DMPlexCreateBoxMesh</A> - Creates a mesh on the tensor product of unit intervals (box).</font>
+
+<a name="line405">405: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line407">407: </a><font color="#B22222">  Input Parameters:</font>
+<a name="line408">408: </a><font color="#B22222">+ comm - The communicator for the DM object</font>
+<a name="line409">409: </a><font color="#B22222">. dim - The spatial dimension</font>
+<a name="line410">410: </a><font color="#B22222">- interpolate - Flag to create intermediate mesh pieces (edges, faces)</font>
+
+<a name="line412">412: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line413">413: </a><font color="#B22222">. dm  - The DM object</font>
+
+<a name="line415">415: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line417">417: </a><font color="#B22222">.keywords: DM, create</font>
+<a name="line418">418: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/DM/DMSetType.html#DMSetType">DMSetType</A>(), <A href="../../../../docs/manualpages/DM/DMCreate.html#DMCreate">DMCreate</A>()</font>
+<a name="line419">419: </a><font color="#B22222">@*/</font>
+<a name="line420">420: </a><strong><font color="#4169E1"><a name="DMPlexCreateBoxMesh"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMPlexCreateBoxMesh.html#DMPlexCreateBoxMesh">DMPlexCreateBoxMesh</A>(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dim, <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> interpolate, DM *dm)</font></strong>
+<a name="line421">421: </a>{
+<a name="line422">422: </a>  DM             boundary;
+
+<a name="line427">427: </a>  <A href="../../../../docs/manualpages/DM/DMCreate.html#DMCreate">DMCreate</A>(comm, &amp;boundary);
+<a name="line429">429: </a>  <A href="../../../../docs/manualpages/DM/DMSetType.html#DMSetType">DMSetType</A>(boundary, <A href="../../../../docs/manualpages/DM/DMPLEX.html#DMPLEX">DMPLEX</A>);
+<a name="line430">430: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSetDimension.html#DMPlexSetDimension">DMPlexSetDimension</A>(boundary, dim-1);
+<a name="line431">431: </a>  <font color="#4169E1">switch</font> (dim) {
+<a name="line432">432: </a>  <font color="#4169E1">case</font> 2:
+<a name="line433">433: </a>  {
+<a name="line434">434: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> lower[2] = {0.0, 0.0};
+<a name="line435">435: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> upper[2] = {1.0, 1.0};
+<a name="line436">436: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  edges[2] = {2, 2};
+
+<a name="line438">438: </a>    DMPlexCreateSquareBoundary(boundary, lower, upper, edges);
+<a name="line439">439: </a>    <font color="#4169E1">break</font>;
+<a name="line440">440: </a>  }
+<a name="line441">441: </a>  <font color="#4169E1">case</font> 3:
+<a name="line442">442: </a>  {
+<a name="line443">443: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> lower[3] = {0.0, 0.0, 0.0};
+<a name="line444">444: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> upper[3] = {1.0, 1.0, 1.0};
+<a name="line445">445: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  faces[3] = {1, 1, 1};
+
+<a name="line447">447: </a>    DMPlexCreateCubeBoundary(boundary, lower, upper, faces);
+<a name="line448">448: </a>    <font color="#4169E1">break</font>;
+<a name="line449">449: </a>  }
+<a name="line450">450: </a><strong><font color="#FF0000">  default:</font></strong>
+<a name="line451">451: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(comm, PETSC_ERR_SUP, <font color="#666666">"Dimension not supported: %d"</font>, dim);
+<a name="line452">452: </a>  }
+<a name="line453">453: </a>  <A href="../../../../docs/manualpages/DM/DMPlexGenerate.html#DMPlexGenerate">DMPlexGenerate</A>(boundary, NULL, interpolate, dm);
+<a name="line454">454: </a>  <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;boundary);
+<a name="line455">455: </a>  <font color="#4169E1">return</font>(0);
+<a name="line456">456: </a>}
+
+<a name="line460">460: </a><strong><font color="#4169E1"><a name="DMPlexCreateHexBoxMesh"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMPlexCreateHexBoxMesh(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dim, const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cells[], DM *dm)</font></strong>
+<a name="line461">461: </a>{
+
+<a name="line466">466: </a>  <A href="../../../../docs/manualpages/DM/DMCreate.html#DMCreate">DMCreate</A>(comm, dm);
+<a name="line468">468: </a>  <A href="../../../../docs/manualpages/DM/DMSetType.html#DMSetType">DMSetType</A>(*dm, <A href="../../../../docs/manualpages/DM/DMPLEX.html#DMPLEX">DMPLEX</A>);
+<a name="line469">469: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSetDimension.html#DMPlexSetDimension">DMPlexSetDimension</A>(*dm, dim);
+<a name="line470">470: </a>  <font color="#4169E1">switch</font> (dim) {
+<a name="line471">471: </a>  <font color="#4169E1">case</font> 2:
+<a name="line472">472: </a>  {
+<a name="line473">473: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> lower[2] = {0.0, 0.0};
+<a name="line474">474: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> upper[2] = {1.0, 1.0};
+
+<a name="line476">476: </a>    DMPlexCreateSquareMesh(*dm, lower, upper, cells);
+<a name="line477">477: </a>    <font color="#4169E1">break</font>;
+<a name="line478">478: </a>  }
+<a name="line479">479: </a><font color="#A020F0">#if 0</font>
+<a name="line480">480: </a>  <font color="#4169E1">case</font> 3:
+<a name="line481">481: </a>  {
+<a name="line482">482: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> lower[3] = {0.0, 0.0, 0.0};
+<a name="line483">483: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> upper[3] = {1.0, 1.0, 1.0};
+
+<a name="line485">485: </a>    DMPlexCreateCubeMesh(boundary, lower, upper, cells);
+<a name="line486">486: </a>    <font color="#4169E1">break</font>;
+<a name="line487">487: </a>  }
+<a name="line488">488: </a><font color="#A020F0">#endif</font>
+<a name="line489">489: </a><strong><font color="#FF0000">  default:</font></strong>
+<a name="line490">490: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(comm, PETSC_ERR_SUP, <font color="#666666">"Dimension not supported: %d"</font>, dim);
+<a name="line491">491: </a>  }
+<a name="line492">492: </a>  <font color="#4169E1">return</font>(0);
+<a name="line493">493: </a>}
+
+<a name="line495">495: </a><font color="#B22222">/* External function declarations here */</font>
+<a name="line496">496: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateInterpolation_Plex(DM dmCoarse, DM dmFine, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *interpolation, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *scaling)</font></strong>;
+<a name="line497">497: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateMatrix_Plex(DM dm, <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A> mtype, <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *J)</font></strong>;
+<a name="line498">498: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateCoordinateDM_Plex(DM dm, DM *cdm)</font></strong>;
+<a name="line499">499: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMRefine_Plex(DM dm, <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, DM *dmRefined)</font></strong>;
+<a name="line500">500: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMSetUp_Plex(DM dm)</font></strong>;
+<a name="line501">501: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMDestroy_Plex(DM dm)</font></strong>;
+<a name="line502">502: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMView_Plex(DM dm, <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>;
+<a name="line503">503: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateSubDM_Plex(DM dm, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numFields, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> fields[], <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A> *is, DM *subdm)</font></strong>;
+<a name="line504">504: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMLocatePoints_Plex(DM dm, <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> v, <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A> *cellIS)</font></strong>;
+
+<a name="line508">508: </a><strong><font color="#4169E1"><a name="DMCreateGlobalVector_Plex"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateGlobalVector_Plex(DM dm,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *vec)</font></strong>
+<a name="line509">509: </a>{
+
+<a name="line513">513: </a>  DMCreateGlobalVector_Section_Private(dm,vec);
+<a name="line514">514: </a>  <font color="#B22222">/* VecSetOperation(*vec, VECOP_DUPLICATE, (void(*)(void)) VecDuplicate_MPI_DM); */</font>
+<a name="line515">515: </a>  VecSetOperation(*vec, VECOP_VIEW, (void (*)(void))VecView_Plex);
+<a name="line516">516: </a>  <font color="#4169E1">return</font>(0);
+<a name="line517">517: </a>}
+
+<a name="line521">521: </a><strong><font color="#4169E1"><a name="DMCreateLocalVector_Plex"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateLocalVector_Plex(DM dm,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *vec)</font></strong>
+<a name="line522">522: </a>{
+
+<a name="line526">526: </a>  DMCreateLocalVector_Section_Private(dm,vec);
+<a name="line527">527: </a>  VecSetOperation(*vec, VECOP_VIEW, (void(*)(void)) VecView_Plex_Local);
+<a name="line528">528: </a>  <font color="#4169E1">return</font>(0);
+<a name="line529">529: </a>}
+
+
+<a name="line534">534: </a><strong><font color="#4169E1"><a name="DMInitialize_Plex"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMInitialize_Plex(DM dm)</font></strong>
+<a name="line535">535: </a>{
+
+<a name="line539">539: </a>  <A href="../../../../docs/manualpages/Sys/PetscStrallocpy.html#PetscStrallocpy">PetscStrallocpy</A>(<A href="../../../../docs/manualpages/Vec/VECSTANDARD.html#VECSTANDARD">VECSTANDARD</A>, (char**)&amp;dm-&gt;vectype);
+
+<a name="line541">541: </a>  dm-&gt;ops-&gt;view                            = DMView_Plex;
+<a name="line542">542: </a>  dm-&gt;ops-&gt;setfromoptions                  = DMSetFromOptions_Plex;
+<a name="line543">543: </a>  dm-&gt;ops-&gt;setup                           = DMSetUp_Plex;
+<a name="line544">544: </a>  dm-&gt;ops-&gt;createglobalvector              = DMCreateGlobalVector_Plex;
+<a name="line545">545: </a>  dm-&gt;ops-&gt;createlocalvector               = DMCreateLocalVector_Plex;
+<a name="line546">546: </a>  dm-&gt;ops-&gt;getlocaltoglobalmapping         = NULL;
+<a name="line547">547: </a>  dm-&gt;ops-&gt;getlocaltoglobalmappingblock    = NULL;
+<a name="line548">548: </a>  dm-&gt;ops-&gt;createfieldis                   = NULL;
+<a name="line549">549: </a>  dm-&gt;ops-&gt;createcoordinatedm              = DMCreateCoordinateDM_Plex;
+<a name="line550">550: </a>  dm-&gt;ops-&gt;getcoloring                     = 0;
+<a name="line551">551: </a>  dm-&gt;ops-&gt;creatematrix                    = DMCreateMatrix_Plex;
+<a name="line552">552: </a>  dm-&gt;ops-&gt;createinterpolation             = 0;
+<a name="line553">553: </a>  dm-&gt;ops-&gt;getaggregates                   = 0;
+<a name="line554">554: </a>  dm-&gt;ops-&gt;getinjection                    = 0;
+<a name="line555">555: </a>  dm-&gt;ops-&gt;refine                          = DMRefine_Plex;
+<a name="line556">556: </a>  dm-&gt;ops-&gt;coarsen                         = 0;
+<a name="line557">557: </a>  dm-&gt;ops-&gt;refinehierarchy                 = 0;
+<a name="line558">558: </a>  dm-&gt;ops-&gt;coarsenhierarchy                = 0;
+<a name="line559">559: </a>  dm-&gt;ops-&gt;globaltolocalbegin              = NULL;
+<a name="line560">560: </a>  dm-&gt;ops-&gt;globaltolocalend                = NULL;
+<a name="line561">561: </a>  dm-&gt;ops-&gt;localtoglobalbegin              = NULL;
+<a name="line562">562: </a>  dm-&gt;ops-&gt;localtoglobalend                = NULL;
+<a name="line563">563: </a>  dm-&gt;ops-&gt;destroy                         = DMDestroy_Plex;
+<a name="line564">564: </a>  dm-&gt;ops-&gt;createsubdm                     = DMCreateSubDM_Plex;
+<a name="line565">565: </a>  dm-&gt;ops-&gt;locatepoints                    = DMLocatePoints_Plex;
+<a name="line566">566: </a>  <font color="#4169E1">return</font>(0);
+<a name="line567">567: </a>}
+
+<a name="line569">569: </a><font color="#B22222">/*MC</font>
+<a name="line570">570: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMPLEX.html#DMPLEX">DMPLEX</A> = "plex" - A DM object that encapsulates an unstructured mesh, or CW Complex, which can be expressed using a Hasse Diagram.</font>
+<a name="line571">571: </a><font color="#B22222">                    In the local representation, <A href="../../../../docs/manualpages/Vec/Vecs.html#Vecs">Vecs</A> contain all unknowns in the interior and shared boundary. This is</font>
+<a name="line572">572: </a><font color="#B22222">                    specified by a <A href="../../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A> object. Ownership in the global representation is determined by</font>
+<a name="line573">573: </a><font color="#B22222">                    ownership of the underlying DMPlex points. This is specified by another <A href="../../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A> object.</font>
+
+<a name="line575">575: </a><font color="#B22222">  Level: intermediate</font>
+
+<a name="line577">577: </a><font color="#B22222">.seealso: DMType, <A href="../../../../docs/manualpages/DM/DMPlexCreate.html#DMPlexCreate">DMPlexCreate</A>(), <A href="../../../../docs/manualpages/DM/DMCreate.html#DMCreate">DMCreate</A>(), <A href="../../../../docs/manualpages/DM/DMSetType.html#DMSetType">DMSetType</A>()</font>
+<a name="line578">578: </a><font color="#B22222">M*/</font>
+
+<a name="line582">582: </a><strong><font color="#4169E1"><a name="DMCreate_Plex"></a>PETSC_EXTERN <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreate_Plex(DM dm)</font></strong>
+<a name="line583">583: </a>{
+<a name="line584">584: </a>  DM_Plex        *mesh;
+<a name="line585">585: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       unit, d;
+
+<a name="line590">590: </a>  <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(dm, DM_Plex, &amp;mesh);
+<a name="line591">591: </a>  dm-&gt;data = mesh;
+
+<a name="line593">593: </a>  mesh-&gt;refct             = 1;
+<a name="line594">594: </a>  mesh-&gt;dim               = 0;
+<a name="line595">595: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionCreate.html#PetscSectionCreate">PetscSectionCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;mesh-&gt;coneSection);
+<a name="line596">596: </a>  mesh-&gt;maxConeSize       = 0;
+<a name="line597">597: </a>  mesh-&gt;cones             = NULL;
+<a name="line598">598: </a>  mesh-&gt;coneOrientations  = NULL;
+<a name="line599">599: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionCreate.html#PetscSectionCreate">PetscSectionCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;mesh-&gt;supportSection);
+<a name="line600">600: </a>  mesh-&gt;maxSupportSize    = 0;
+<a name="line601">601: </a>  mesh-&gt;supports          = NULL;
+<a name="line602">602: </a>  mesh-&gt;refinementUniform = <A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line603">603: </a>  mesh-&gt;refinementLimit   = -1.0;
+
+<a name="line605">605: </a>  mesh-&gt;facesTmp = NULL;
+
+<a name="line607">607: </a>  mesh-&gt;subpointMap = NULL;
+
+<a name="line609">609: </a>  <font color="#4169E1">for</font> (unit = 0; unit &lt; NUM_PETSC_UNITS; ++unit) mesh-&gt;scale[unit] = 1.0;
+
+<a name="line611">611: </a>  mesh-&gt;labels              = NULL;
+<a name="line612">612: </a>  mesh-&gt;globalVertexNumbers = NULL;
+<a name="line613">613: </a>  mesh-&gt;globalCellNumbers   = NULL;
+<a name="line614">614: </a>  <font color="#4169E1">for</font> (d = 0; d &lt; 8; ++d) mesh-&gt;hybridPointMax[d] = <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>;
+<a name="line615">615: </a>  mesh-&gt;vtkCellHeight     = 0;
+<a name="line616">616: </a>  mesh-&gt;preallocCenterDim = -1;
+
+<a name="line618">618: </a>  mesh-&gt;integrateResidualFEM       = NULL;
+<a name="line619">619: </a>  mesh-&gt;integrateJacobianActionFEM = NULL;
+<a name="line620">620: </a>  mesh-&gt;integrateJacobianFEM       = NULL;
+
+<a name="line622">622: </a>  mesh-&gt;printSetValues = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line623">623: </a>  mesh-&gt;printFEM       = 0;
+
+<a name="line625">625: </a>  DMInitialize_Plex(dm);
+<a name="line626">626: </a>  <font color="#4169E1">return</font>(0);
+<a name="line627">627: </a>}
+
+<a name="line631">631: </a><font color="#B22222">/*@</font>
+<a name="line632">632: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMPlexCreate.html#DMPlexCreate">DMPlexCreate</A> - Creates a DMPlex object, which encapsulates an unstructured mesh, or CW complex, which can be expressed using a Hasse Diagram.</font>
+
+<a name="line634">634: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line636">636: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line637">637: </a><font color="#B22222">. comm - The communicator for the DMPlex object</font>
+
+<a name="line639">639: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line640">640: </a><font color="#B22222">. mesh  - The DMPlex object</font>
+
+<a name="line642">642: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line644">644: </a><font color="#B22222">.keywords: DMPlex, create</font>
+<a name="line645">645: </a><font color="#B22222">@*/</font>
+<a name="line646">646: </a><strong><font color="#4169E1"><a name="DMPlexCreate"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMPlexCreate.html#DMPlexCreate">DMPlexCreate</A>(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, DM *mesh)</font></strong>
+<a name="line647">647: </a>{
+
+<a name="line652">652: </a>  <A href="../../../../docs/manualpages/DM/DMCreate.html#DMCreate">DMCreate</A>(comm, mesh);
+<a name="line653">653: </a>  <A href="../../../../docs/manualpages/DM/DMSetType.html#DMSetType">DMSetType</A>(*mesh, <A href="../../../../docs/manualpages/DM/DMPLEX.html#DMPLEX">DMPLEX</A>);
+<a name="line654">654: </a>  <font color="#4169E1">return</font>(0);
+<a name="line655">655: </a>}
+
+<a name="line659">659: </a><font color="#B22222">/*@</font>
+<a name="line660">660: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMPlexClone.html#DMPlexClone">DMPlexClone</A> - Creates a DMPlex object with the same mesh as the original.</font>
+
+<a name="line662">662: </a><font color="#B22222">  Collective on <A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line664">664: </a><font color="#B22222">  Input Parameter:</font>
+<a name="line665">665: </a><font color="#B22222">. dm - The original DMPlex object</font>
+
+<a name="line667">667: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line668">668: </a><font color="#B22222">. newdm  - The new DMPlex object</font>
+
+<a name="line670">670: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line672">672: </a><font color="#B22222">.keywords: DMPlex, create</font>
+<a name="line673">673: </a><font color="#B22222">@*/</font>
+<a name="line674">674: </a><strong><font color="#4169E1"><a name="DMPlexClone"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMPlexClone.html#DMPlexClone">DMPlexClone</A>(DM dm, DM *newdm)</font></strong>
+<a name="line675">675: </a>{
+<a name="line676">676: </a>  DM_Plex        *mesh;
+<a name="line677">677: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>             coords;
+<a name="line678">678: </a>  void           *ctx;
+
+<a name="line684">684: </a>  <A href="../../../../docs/manualpages/DM/DMCreate.html#DMCreate">DMCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), newdm);
+<a name="line685">685: </a>  <A href="../../../../docs/manualpages/PetscSF/PetscSFDestroy.html#PetscSFDestroy">PetscSFDestroy</A>(&amp;(*newdm)-&gt;sf);
+<a name="line686">686: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) dm-&gt;sf);
+<a name="line687">687: </a>  (*newdm)-&gt;sf = dm-&gt;sf;
+<a name="line688">688: </a>  mesh         = (DM_Plex*) dm-&gt;data;
+<a name="line689">689: </a>  mesh-&gt;refct++;
+<a name="line690">690: </a>  (*newdm)-&gt;data = mesh;
+<a name="line691">691: </a>  PetscObjectChangeTypeName((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) *newdm, <A href="../../../../docs/manualpages/DM/DMPLEX.html#DMPLEX">DMPLEX</A>);
+<a name="line692">692: </a>  DMInitialize_Plex(*newdm);
+<a name="line693">693: </a>  <A href="../../../../docs/manualpages/DM/DMGetApplicationContext.html#DMGetApplicationContext">DMGetApplicationContext</A>(dm, &amp;ctx);
+<a name="line694">694: </a>  <A href="../../../../docs/manualpages/DM/DMSetApplicationContext.html#DMSetApplicationContext">DMSetApplicationContext</A>(*newdm, ctx);
+<a name="line695">695: </a>  <A href="../../../../docs/manualpages/DM/DMGetCoordinatesLocal.html#DMGetCoordinatesLocal">DMGetCoordinatesLocal</A>(dm, &amp;coords);
+<a name="line696">696: </a>  <font color="#4169E1">if</font> (coords) {
+<a name="line697">697: </a>    <A href="../../../../docs/manualpages/DM/DMSetCoordinatesLocal.html#DMSetCoordinatesLocal">DMSetCoordinatesLocal</A>(*newdm, coords);
+<a name="line698">698: </a>  } <font color="#4169E1">else</font> {
+<a name="line699">699: </a>    <A href="../../../../docs/manualpages/DM/DMGetCoordinates.html#DMGetCoordinates">DMGetCoordinates</A>(dm, &amp;coords);
+<a name="line700">700: </a>    <font color="#4169E1">if</font> (coords) {<A href="../../../../docs/manualpages/DM/DMSetCoordinates.html#DMSetCoordinates">DMSetCoordinates</A>(*newdm, coords);}
+<a name="line701">701: </a>  }
+<a name="line702">702: </a>  <font color="#4169E1">return</font>(0);
+<a name="line703">703: </a>}
+
+<a name="line707">707: </a><font color="#B22222">/*</font>
+<a name="line708">708: </a><font color="#B22222">  This takes as input the common mesh generator output, a list of the vertices for each cell</font>
+<a name="line709">709: </a><font color="#B22222">*/</font>
+<a name="line710">710: </a><strong><font color="#4169E1"><a name="DMPlexBuildFromCellList_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMPlexBuildFromCellList_Private(DM dm, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numCells, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numVertices, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numCorners, const int cells[])</font></strong>
+<a name="line711">711: </a>{
+<a name="line712">712: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>      *cone, c, p;
+
+<a name="line716">716: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSetChart.html#DMPlexSetChart">DMPlexSetChart</A>(dm, 0, numCells+numVertices);
+<a name="line717">717: </a>  <font color="#4169E1">for</font> (c = 0; c &lt; numCells; ++c) {
+<a name="line718">718: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(dm, c, numCorners);
+<a name="line719">719: </a>  }
+<a name="line720">720: </a>  <A href="../../../../docs/manualpages/DM/DMSetUp.html#DMSetUp">DMSetUp</A>(dm);
+<a name="line721">721: </a>  <A href="../../../../docs/manualpages/DM/DMGetWorkArray.html#DMGetWorkArray">DMGetWorkArray</A>(dm, numCorners, PETSC_INT, &amp;cone);
+<a name="line722">722: </a>  <font color="#4169E1">for</font> (c = 0; c &lt; numCells; ++c) {
+<a name="line723">723: </a>    <font color="#4169E1">for</font> (p = 0; p &lt; numCorners; ++p) {
+<a name="line724">724: </a>      cone[p] = cells[c*numCorners+p]+numCells;
+<a name="line725">725: </a>    }
+<a name="line726">726: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, c, cone);
+<a name="line727">727: </a>  }
+<a name="line728">728: </a>  <A href="../../../../docs/manualpages/DM/DMRestoreWorkArray.html#DMRestoreWorkArray">DMRestoreWorkArray</A>(dm, numCorners, PETSC_INT, &amp;cone);
+<a name="line729">729: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSymmetrize.html#DMPlexSymmetrize">DMPlexSymmetrize</A>(dm);
+<a name="line730">730: </a>  <A href="../../../../docs/manualpages/DM/DMPlexStratify.html#DMPlexStratify">DMPlexStratify</A>(dm);
+<a name="line731">731: </a>  <font color="#4169E1">return</font>(0);
+<a name="line732">732: </a>}
+
+<a name="line736">736: </a><font color="#B22222">/*</font>
+<a name="line737">737: </a><font color="#B22222">  This takes as input the coordinates for each vertex</font>
+<a name="line738">738: </a><font color="#B22222">*/</font>
+<a name="line739">739: </a><strong><font color="#4169E1"><a name="DMPlexBuildCoordinates_Private"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMPlexBuildCoordinates_Private(DM dm, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> spaceDim, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numCells, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numVertices, const double vertexCoords[])</font></strong>
+<a name="line740">740: </a>{
+<a name="line741">741: </a>  <A href="../../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A>   coordSection;
+<a name="line742">742: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            coordinates;
+<a name="line743">743: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>   *coords;
+<a name="line744">744: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       coordSize, v, d;
+
+<a name="line748">748: </a>  <A href="../../../../docs/manualpages/DM/DMPlexGetCoordinateSection.html#DMPlexGetCoordinateSection">DMPlexGetCoordinateSection</A>(dm, &amp;coordSection);
+<a name="line749">749: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetNumFields.html#PetscSectionSetNumFields">PetscSectionSetNumFields</A>(coordSection, 1);
+<a name="line750">750: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetFieldComponents.html#PetscSectionSetFieldComponents">PetscSectionSetFieldComponents</A>(coordSection, 0, spaceDim);
+<a name="line751">751: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetChart.html#PetscSectionSetChart">PetscSectionSetChart</A>(coordSection, numCells, numCells + numVertices);
+<a name="line752">752: </a>  <font color="#4169E1">for</font> (v = numCells; v &lt; numCells+numVertices; ++v) {
+<a name="line753">753: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionSetDof.html#PetscSectionSetDof">PetscSectionSetDof</A>(coordSection, v, spaceDim);
+<a name="line754">754: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionSetFieldDof.html#PetscSectionSetFieldDof">PetscSectionSetFieldDof</A>(coordSection, v, 0, spaceDim);
+<a name="line755">755: </a>  }
+<a name="line756">756: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetUp.html#PetscSectionSetUp">PetscSectionSetUp</A>(coordSection);
+<a name="line757">757: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionGetStorageSize.html#PetscSectionGetStorageSize">PetscSectionGetStorageSize</A>(coordSection, &amp;coordSize);
+<a name="line758">758: </a>  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;coordinates);
+<a name="line759">759: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) coordinates, <font color="#666666">"coordinates"</font>);
+<a name="line760">760: </a>  <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(coordinates, coordSize, <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line761">761: </a>  <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(coordinates);
+<a name="line762">762: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(coordinates, &amp;coords);
+<a name="line763">763: </a>  <font color="#4169E1">for</font> (v = 0; v &lt; numVertices; ++v) {
+<a name="line764">764: </a>    <font color="#4169E1">for</font> (d = 0; d &lt; spaceDim; ++d) {
+<a name="line765">765: </a>      coords[v*spaceDim+d] = vertexCoords[v*spaceDim+d];
+<a name="line766">766: </a>    }
+<a name="line767">767: </a>  }
+<a name="line768">768: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(coordinates, &amp;coords);
+<a name="line769">769: </a>  <A href="../../../../docs/manualpages/DM/DMSetCoordinatesLocal.html#DMSetCoordinatesLocal">DMSetCoordinatesLocal</A>(dm, coordinates);
+<a name="line770">770: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;coordinates);
+<a name="line771">771: </a>  <font color="#4169E1">return</font>(0);
+<a name="line772">772: </a>}
+
+<a name="line776">776: </a><font color="#B22222">/*@C</font>
+<a name="line777">777: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/DMPlexCreateFromCellList.html#DMPlexCreateFromCellList">DMPlexCreateFromCellList</A> - This takes as input common mesh generator output, a list of the vertices for each cell, and produces a DM</font>
+
+<a name="line779">779: </a><font color="#B22222">  Input Parameters:</font>
+<a name="line780">780: </a><font color="#B22222">+ comm - The communicator</font>
+<a name="line781">781: </a><font color="#B22222">. dim - The topological dimension of the mesh</font>
+<a name="line782">782: </a><font color="#B22222">. numCells - The number of cells</font>
+<a name="line783">783: </a><font color="#B22222">. numVertices - The number of vertices</font>
+<a name="line784">784: </a><font color="#B22222">. numCorners - The number of vertices for each cell</font>
+<a name="line785">785: </a><font color="#B22222">. interpolate - Flag indicating that intermediate mesh entities (faces, edges) should be created automatically</font>
+<a name="line786">786: </a><font color="#B22222">. cells - An array of numCells*numCorners numbers, the vertices for each cell</font>
+<a name="line787">787: </a><font color="#B22222">. spaceDim - The spatial dimension used for coordinates</font>
+<a name="line788">788: </a><font color="#B22222">- vertexCoords - An array of numVertices*spaceDim numbers, the coordinates of each vertex</font>
+
+<a name="line790">790: </a><font color="#B22222">  Output Parameter:</font>
+<a name="line791">791: </a><font color="#B22222">. dm - The DM</font>
+
+<a name="line793">793: </a><font color="#B22222">  Note: Two triangles sharing a face</font>
+<a name="line794">794: </a><font color="#B22222">$</font>
+<a name="line795">795: </a><font color="#B22222">$        2</font>
+<a name="line796">796: </a><font color="#B22222">$      / | \</font>
+<a name="line797">797: </a><font color="#B22222">$     /  |  \</font>
+<a name="line798">798: </a><font color="#B22222">$    /   |   \</font>
+<a name="line799">799: </a><font color="#B22222">$   0  0 | 1  3</font>
+<a name="line800">800: </a><font color="#B22222">$    \   |   /</font>
+<a name="line801">801: </a><font color="#B22222">$     \  |  /</font>
+<a name="line802">802: </a><font color="#B22222">$      \ | /</font>
+<a name="line803">803: </a><font color="#B22222">$        1</font>
+<a name="line804">804: </a><font color="#B22222">would have input</font>
+<a name="line805">805: </a><font color="#B22222">$  numCells = 2, numVertices = 4</font>
+<a name="line806">806: </a><font color="#B22222">$  cells = [0 1 2  1 3 2]</font>
+<a name="line807">807: </a><font color="#B22222">$</font>
+<a name="line808">808: </a><font color="#B22222">which would result in the DMPlex</font>
+<a name="line809">809: </a><font color="#B22222">$</font>
+<a name="line810">810: </a><font color="#B22222">$        4</font>
+<a name="line811">811: </a><font color="#B22222">$      / | \</font>
+<a name="line812">812: </a><font color="#B22222">$     /  |  \</font>
+<a name="line813">813: </a><font color="#B22222">$    /   |   \</font>
+<a name="line814">814: </a><font color="#B22222">$   2  0 | 1  5</font>
+<a name="line815">815: </a><font color="#B22222">$    \   |   /</font>
+<a name="line816">816: </a><font color="#B22222">$     \  |  /</font>
+<a name="line817">817: </a><font color="#B22222">$      \ | /</font>
+<a name="line818">818: </a><font color="#B22222">$        3</font>
+
+<a name="line820">820: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line822">822: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/DM/DMPlexCreate.html#DMPlexCreate">DMPlexCreate</A>()</font>
+<a name="line823">823: </a><font color="#B22222">@*/</font>
+<a name="line824">824: </a><strong><font color="#4169E1"><a name="DMPlexCreateFromCellList"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/DMPlexCreateFromCellList.html#DMPlexCreateFromCellList">DMPlexCreateFromCellList</A>(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dim, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numCells, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numVertices, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numCorners, <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> interpolate, const int cells[], <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> spaceDim, const double vertexCoords[], DM *dm)</font></strong>
+<a name="line825">825: </a>{
+
+<a name="line829">829: </a>  <A href="../../../../docs/manualpages/DM/DMCreate.html#DMCreate">DMCreate</A>(comm, dm);
+<a name="line830">830: </a>  <A href="../../../../docs/manualpages/DM/DMSetType.html#DMSetType">DMSetType</A>(*dm, <A href="../../../../docs/manualpages/DM/DMPLEX.html#DMPLEX">DMPLEX</A>);
+<a name="line831">831: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSetDimension.html#DMPlexSetDimension">DMPlexSetDimension</A>(*dm, dim);
+<a name="line832">832: </a>  DMPlexBuildFromCellList_Private(*dm, numCells, numVertices, numCorners, cells);
+<a name="line833">833: </a>  <font color="#4169E1">if</font> (interpolate) {
+<a name="line834">834: </a>    DM idm;
+
+<a name="line836">836: </a>    <A href="../../../../docs/manualpages/DM/DMPlexInterpolate.html#DMPlexInterpolate">DMPlexInterpolate</A>(*dm, &amp;idm);
+<a name="line837">837: </a>    <A href="../../../../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(dm);
+<a name="line838">838: </a>    *dm  = idm;
+<a name="line839">839: </a>  }
+<a name="line840">840: </a>  DMPlexBuildCoordinates_Private(*dm, spaceDim, numCells, numVertices, vertexCoords);
+<a name="line841">841: </a>  <font color="#4169E1">return</font>(0);
+<a name="line842">842: </a>}
+
+<a name="line846">846: </a><font color="#B22222">/*</font>
+<a name="line847">847: </a><font color="#B22222">  This takes as input the raw Hasse Diagram data</font>
+<a name="line848">848: </a><font color="#B22222">*/</font>
+<a name="line849">849: </a><strong><font color="#4169E1"><a name="DMPlexCreateFromDAG"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMPlexCreateFromDAG(DM dm, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> depth, const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> numPoints[], const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> coneSize[], const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> cones[], const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> coneOrientations[], const <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> vertexCoords[])</font></strong>
+<a name="line850">850: </a>{
+<a name="line851">851: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            coordinates;
+<a name="line852">852: </a>  <A href="../../../../docs/manualpages/IS/PetscSection.html#PetscSection">PetscSection</A>   coordSection;
+<a name="line853">853: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *coords;
+<a name="line854">854: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       coordSize, firstVertex = numPoints[depth], pStart = 0, pEnd = 0, p, v, dim, d, off;
+
+<a name="line858">858: </a>  <A href="../../../../docs/manualpages/DM/DMPlexGetDimension.html#DMPlexGetDimension">DMPlexGetDimension</A>(dm, &amp;dim);
+<a name="line859">859: </a>  <font color="#4169E1">for</font> (d = 0; d &lt;= depth; ++d) pEnd += numPoints[d];
+<a name="line860">860: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSetChart.html#DMPlexSetChart">DMPlexSetChart</A>(dm, pStart, pEnd);
+<a name="line861">861: </a>  <font color="#4169E1">for</font> (p = pStart; p &lt; pEnd; ++p) {
+<a name="line862">862: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSetConeSize.html#DMPlexSetConeSize">DMPlexSetConeSize</A>(dm, p, coneSize[p-pStart]);
+<a name="line863">863: </a>  }
+<a name="line864">864: </a>  <A href="../../../../docs/manualpages/DM/DMSetUp.html#DMSetUp">DMSetUp</A>(dm); <font color="#B22222">/* Allocate space for cones */</font>
+<a name="line865">865: </a>  <font color="#4169E1">for</font> (p = pStart, off = 0; p &lt; pEnd; off += coneSize[p-pStart], ++p) {
+<a name="line866">866: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSetCone.html#DMPlexSetCone">DMPlexSetCone</A>(dm, p, &amp;cones[off]);
+<a name="line867">867: </a>    <A href="../../../../docs/manualpages/DM/DMPlexSetConeOrientation.html#DMPlexSetConeOrientation">DMPlexSetConeOrientation</A>(dm, p, &amp;coneOrientations[off]);
+<a name="line868">868: </a>  }
+<a name="line869">869: </a>  <A href="../../../../docs/manualpages/DM/DMPlexSymmetrize.html#DMPlexSymmetrize">DMPlexSymmetrize</A>(dm);
+<a name="line870">870: </a>  <A href="../../../../docs/manualpages/DM/DMPlexStratify.html#DMPlexStratify">DMPlexStratify</A>(dm);
+<a name="line871">871: </a>  <font color="#B22222">/* Build coordinates */</font>
+<a name="line872">872: </a>  <A href="../../../../docs/manualpages/DM/DMPlexGetCoordinateSection.html#DMPlexGetCoordinateSection">DMPlexGetCoordinateSection</A>(dm, &amp;coordSection);
+<a name="line873">873: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetNumFields.html#PetscSectionSetNumFields">PetscSectionSetNumFields</A>(coordSection, 1);
+<a name="line874">874: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetFieldComponents.html#PetscSectionSetFieldComponents">PetscSectionSetFieldComponents</A>(coordSection, 0, dim);
+<a name="line875">875: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetChart.html#PetscSectionSetChart">PetscSectionSetChart</A>(coordSection, firstVertex, firstVertex+numPoints[0]);
+<a name="line876">876: </a>  <font color="#4169E1">for</font> (v = firstVertex; v &lt; firstVertex+numPoints[0]; ++v) {
+<a name="line877">877: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionSetDof.html#PetscSectionSetDof">PetscSectionSetDof</A>(coordSection, v, dim);
+<a name="line878">878: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionSetFieldDof.html#PetscSectionSetFieldDof">PetscSectionSetFieldDof</A>(coordSection, v, 0, dim);
+<a name="line879">879: </a>  }
+<a name="line880">880: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionSetUp.html#PetscSectionSetUp">PetscSectionSetUp</A>(coordSection);
+<a name="line881">881: </a>  <A href="../../../../docs/manualpages/IS/PetscSectionGetStorageSize.html#PetscSectionGetStorageSize">PetscSectionGetStorageSize</A>(coordSection, &amp;coordSize);
+<a name="line882">882: </a>  <A href="../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm), &amp;coordinates);
+<a name="line883">883: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) coordinates, <font color="#666666">"coordinates"</font>);
+<a name="line884">884: </a>  <A href="../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(coordinates, coordSize, <A href="../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line885">885: </a>  <A href="../../../../docs/manualpages/Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(coordinates);
+<a name="line886">886: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(coordinates, &amp;coords);
+<a name="line887">887: </a>  <font color="#4169E1">for</font> (v = 0; v &lt; numPoints[0]; ++v) {
+<a name="line888">888: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> off;
+
+<a name="line890">890: </a>    <A href="../../../../docs/manualpages/IS/PetscSectionGetOffset.html#PetscSectionGetOffset">PetscSectionGetOffset</A>(coordSection, v+firstVertex, &amp;off);
+<a name="line891">891: </a>    <font color="#4169E1">for</font> (d = 0; d &lt; dim; ++d) {
+<a name="line892">892: </a>      coords[off+d] = vertexCoords[v*dim+d];
+<a name="line893">893: </a>    }
+<a name="line894">894: </a>  }
+<a name="line895">895: </a>  <A href="../../../../docs/manualpages/Vec/VecRestoreArray.html#VecRestoreArray">VecRestoreArray</A>(coordinates, &amp;coords);
+<a name="line896">896: </a>  <A href="../../../../docs/manualpages/DM/DMSetCoordinatesLocal.html#DMSetCoordinatesLocal">DMSetCoordinatesLocal</A>(dm, coordinates);
+<a name="line897">897: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;coordinates);
+<a name="line898">898: </a>  <font color="#4169E1">return</font>(0);
+<a name="line899">899: </a>}
+</pre>
+</body>
+
+</html>

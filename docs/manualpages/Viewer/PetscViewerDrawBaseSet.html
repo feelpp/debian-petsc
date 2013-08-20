@@ -5,13 +5,14 @@
 <TITLE>PetscViewerDrawBaseSet</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerDrawBaseSet"><H1>PetscViewerDrawBaseSet</H1></A>
 sets the base integer that is added to the windownumber passed to <A HREF="../Viewer/PetscViewerDrawGetDraw.html#PetscViewerDrawGetDraw">PetscViewerDrawGetDraw</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdraw.h" 
-PetscErrorCode  PetscViewerDrawBaseSet(PetscViewer viewer,PetscInt  windownumber)
+#include "petscviewer.h" 
+PetscErrorCode  PetscViewerDrawBaseSet(PetscViewer viewer,PetscInt windownumber)
 </PRE>
 Not collective (but <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A> returned will be parallel object if <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> is)
 <P>
@@ -28,7 +29,7 @@ Not collective (but <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A> ret
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  PetscViewerDrawGetLG(), PetscViewerDrawGetAxis(), <A HREF="../Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>(), <A HREF="../Viewer/PetscViewerDrawGetDraw.html#PetscViewerDrawGetDraw">PetscViewerDrawGetDraw</A>(), <A HREF="../Viewer/PetscViewerDrawBaseAdd.html#PetscViewerDrawBaseAdd">PetscViewerDrawBaseAdd</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/draw/drawv.c.html#PetscViewerDrawBaseSet">src/sys/viewer/impls/draw/drawv.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/impls/draw/drawv.c.html#PetscViewerDrawBaseSet">src/sys/classes/viewer/impls/draw/drawv.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

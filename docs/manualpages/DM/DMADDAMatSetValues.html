@@ -5,14 +5,13 @@
 <TITLE>DMADDAMatSetValues</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMADDAMatSetValues"><H1>DMADDAMatSetValues</H1></A>
-Inserts or adds a block of values into a matrix. The values are indexed geometrically with the help of the ADDA data structure. These values may be cached, so <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>() and <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>()  MUST be called after all calls to ADDAMatSetValues() have been completed. 
+Inserts or adds a block of values into a matrix. The values are indexed geometrically with the help of the ADDA data structure. These values may be cached, so <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>() and <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>() MUST be called after all calls to ADDAMatSetValues() have been completed. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmadda.h" 
-PetscErrorCode  DMADDAMatSetValues(Mat mat, DM dmm, PetscInt m, const ADDAIdx idxm[],DM dmn, PetscInt n, const ADDAIdx idxn[],
-                                             const PetscScalar v[], InsertMode addv) 
+PetscErrorCode  DMADDAMatSetValues(Mat mat, DM dmm, PetscInt m, const ADDAIdx idxm[],DM dmn, PetscInt n, const ADDAIdx idxn[],const PetscScalar v[], InsertMode addv)
 </PRE>
 Not Collective
 <P>
@@ -57,7 +56,7 @@ for users of block sparse formats (<A HREF="../Mat/MATSEQBAIJ.html#MATSEQBAIJ">M
  <A HREF="../Mat/MatSetOption.html#MatSetOption">MatSetOption</A>(), <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(), <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(), <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(), ADDAMatSetValuesBlocked(),
 <BR><A HREF="../Sys/InsertMode.html#InsertMode">InsertMode</A>, <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, <A HREF="../Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/adda/adda.c.html#DMADDAMatSetValues">src/dm/adda/adda.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/adda/adda.c.html#DMADDAMatSetValues">src/dm/impls/adda/adda.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

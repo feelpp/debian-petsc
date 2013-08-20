@@ -5,14 +5,12 @@
 <TITLE>DMShellSetCreateGlobalVector</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMShellSetCreateGlobalVector"><H1>DMShellSetCreateGlobalVector</H1></A>
 sets the routine to create a global vector associated with the shell DM 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmshell.h"  
-#include "petscmat.h"      
-#include "petscdm.h"       
 PetscErrorCode DMShellSetCreateGlobalVector(DM dm,PetscErrorCode (*func)(DM,Vec*))
 </PRE>
 Logically Collective
@@ -29,7 +27,7 @@ Logically Collective
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMShellSetGlobalVector.html#DMShellSetGlobalVector">DMShellSetGlobalVector</A>(), <A HREF="../DM/DMShellSetCreateMatrix.html#DMShellSetCreateMatrix">DMShellSetCreateMatrix</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/shelldmshell.c.html#DMShellSetCreateGlobalVector">src/dm/impls/shelldmshell.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/shell/dmshell.c.html#DMShellSetCreateGlobalVector">src/dm/impls/shell/dmshell.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

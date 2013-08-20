@@ -3,22 +3,20 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/error/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:34:37+00:00">
+<meta name="date" content="2013-07-02T14:38:42+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
-<strong><font color="#FF0000">ALL:</font></strong> lib 
+<strong><font color="#FF0000">ALL:</font></strong> lib
 
 CFLAGS    =
 FFLAGS    =
-CPPFLAGS  = 
-SOURCEC          = adebug.c err.c errtrace.c errabort.c errstop.c fp.c signal.c pstack.c
+CPPFLAGS  =
+SOURCEC          = adebug.c err.c errtrace.c errabort.c errstop.c fp.c signal.c pstack.c checkptr.c
 SOURCEF          =
-SOURCEH          = ../../../include/petscerror.h 
-OBJSC          = ${SOURCEC:.c=.o}
-OBJSF          =
+SOURCEH          = ../../../include/petscerror.h
 MANSEC          = Sys
 LIBBASE          = libpetscsys
 DIRS          = examples

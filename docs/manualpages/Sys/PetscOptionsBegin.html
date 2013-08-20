@@ -5,10 +5,14 @@
 <TITLE>PetscOptionsBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscOptionsBegin"><H1>PetscOptionsBegin</H1></A>
-Begins a set of queries on the options database that are related and should be displayed on the same window of a GUI that allows the user to set the options interactively. Synopsis: <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(<A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,const char prefix[],const char title[],const char mansec[])
-<P>
+Begins a set of queries on the options database that are related and should be displayed on the same window of a GUI that allows the user to set the options interactively. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscoptions.h"
+PetscErrorCode PetscOptionsBegin(MPI_Comm comm,const char prefix[],const char title[],const char mansec[])
+</PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
@@ -44,7 +48,7 @@ Developer notes: PetscOptionsPublish is set in PetscOptionsCheckInitial_Private(
                    database updated updated with user changes; <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>() etc are also called
 </pre>
 <pre>
-            = 1 : The <A HREF="../Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>() etc again call the <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>() etc (possibly getting new values), in addition the help message and 
+            = 1 : The <A HREF="../Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>() etc again call the <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>() etc (possibly getting new values), in addition the help message and
 </pre>
 <pre>
                   default values are printed if -help was given.
@@ -53,13 +57,13 @@ Developer notes: PetscOptionsPublish is set in PetscOptionsCheckInitial_Private(
           When PetscOptionsObject.changedmethod is set this causes PetscOptionsPublishCount to be reset to -2 (so in the next loop iteration it is -1)
 </pre>
 <pre>
-          and the whole process is repeated. This is to handle when, for example, the <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> is changed thus changing the list of 
+          and the whole process is repeated. This is to handle when, for example, the <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> is changed thus changing the list of
 </pre>
 <pre>
-          options available so they need to be redisplayed so the user can change the. Chaning PetscOptionsObjects.changedmethod is never 
+          options available so they need to be redisplayed so the user can change the. Chaning PetscOptionsObjects.changedmethod is never
 </pre>
 <pre>
-          currently set.       
+          currently set.
 </pre>
 <P>
 <P>
@@ -78,15 +82,15 @@ Developer notes: PetscOptionsPublish is set in PetscOptionsCheckInitial_Private(
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/sf/examples/tutorials/ex1.c.html">src/sys/sf/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/vec/is/sf/examples/tutorials/ex1.c.html">src/vec/is/sf/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex29.c.html">src/ksp/ksp/examples/tutorials/ex29.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html">src/ksp/ksp/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html">src/ksp/ksp/examples/tutorials/ex32.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex34.c.html">src/ksp/ksp/examples/tutorials/ex34.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex51.c.html">src/ksp/ksp/examples/tutorials/ex51.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex15.c.html">src/snes/examples/tutorials/ex15.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 </BODY></HTML>

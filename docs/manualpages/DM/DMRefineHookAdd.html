@@ -5,7 +5,7 @@
 <TITLE>DMRefineHookAdd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMRefineHookAdd"><H1>DMRefineHookAdd</H1></A>
 adds a callback to be run when interpolating a nonlinear problem to a finer grid 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -23,7 +23,7 @@ Logically Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>interphook </B></TD><TD>- function to run to update data on finer levels (once per <A HREF="../SNES/SNESSolve.html#SNESSolve">SNESSolve</A>())
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for provide data for the hooks (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- [optional] user-defined context for provide data for the hooks (may be NULL)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of refinehook</FONT></H3>
@@ -60,6 +60,8 @@ Logically Collective
 This function is only needed if auxiliary data needs to be passed to fine grids while grid sequencing
 <P>
 If this function is called multiple times, the hooks will be run in the order they are added.
+<P>
+This function is currently not available from Fortran.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMCoarsenHookAdd.html#DMCoarsenHookAdd">DMCoarsenHookAdd</A>(), <A HREF="../SNES/SNESFASGetInterpolation.html#SNESFASGetInterpolation">SNESFASGetInterpolation</A>(), <A HREF="../SNES/SNESFASGetInjection.html#SNESFASGetInjection">SNESFASGetInjection</A>(), <A HREF="../Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>(), <A HREF="../Sys/PetscContainerCreate.html#PetscContainerCreate">PetscContainerCreate</A>()

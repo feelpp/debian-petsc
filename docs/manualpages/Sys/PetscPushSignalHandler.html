@@ -5,13 +5,13 @@
 <TITLE>PetscPushSignalHandler</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscPushSignalHandler"><H1>PetscPushSignalHandler</H1></A>
-Catches the usual fatal errors and  calls a user-provided routine. 
+Catches the usual fatal errors and calls a user-provided routine. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscPushSignalHandler(PetscErrorCode (*routine)(int,void*),void* ctx)
+PetscErrorCode  PetscPushSignalHandler(PetscErrorCode (*routine)(int,void*),void *ctx)
 </PRE>
 Not Collective
 <P>
@@ -26,7 +26,7 @@ Not Collective
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscPopSignalHandler.html#PetscPopSignalHandler">PetscPopSignalHandler</A>(), <A HREF="../Sys/PetscDefaultSignalHandler.html#PetscDefaultSignalHandler">PetscDefaultSignalHandler</A>()
+ <A HREF="../Sys/PetscPopSignalHandler.html#PetscPopSignalHandler">PetscPopSignalHandler</A>(), <A HREF="../Sys/PetscSignalHandlerDefault.html#PetscSignalHandlerDefault">PetscSignalHandlerDefault</A>(), <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer

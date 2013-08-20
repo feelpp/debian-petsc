@@ -5,13 +5,14 @@
 <TITLE>DMMeshCreateMeshFromAdjacency</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMMeshCreateMeshFromAdjacency"><H1>DMMeshCreateMeshFromAdjacency</H1></A>
 Create an unstrctured mesh from a list of the vertices for each cell, and the coordinates for each vertex. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmmesh.h"   
-PetscErrorCode DMMeshCreateMeshFromAdjacency(MPI_Comm comm, PetscInt dim, PetscInt numCells, PetscInt numCorners, PetscInt cellVertices[], PetscInt spatialDim, PetscInt numVertices, const PetscReal coordinates[], PetscBool interpolate, DM *dm)</PRE>
+PetscErrorCode DMMeshCreateMeshFromAdjacency(MPI_Comm comm, PetscInt dim, PetscInt numCells, PetscInt numCorners, PetscInt cellVertices[], PetscInt spatialDim, PetscInt numVertices, const PetscReal coordinates[], PetscBool interpolate, DM *dm)
+</PRE>
 Collective on comm
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>

@@ -5,12 +5,11 @@
 <TITLE>MatSchurComplementGetSubmatrices</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSchurComplementGetSubmatrices"><H1>MatSchurComplementGetSubmatrices</H1></A>
 Get the individual submatrices in the Schur complement 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscmat.h" 
 #include "petscksp.h" 
 PetscErrorCode  MatSchurComplementGetSubmatrices(Mat N,Mat *A,Mat *Ap,Mat *B,Mat *C,Mat *D)
 </PRE>
@@ -24,7 +23,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Note</FONT></H3>
-D is optional, and thus can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+D is optional, and thus can be NULL
 <P>
 
 <P>

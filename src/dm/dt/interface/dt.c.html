@@ -1,0 +1,472 @@
+<center><a href="dt.c">Actual source code: dt.c</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/dt/interface/dt.c.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:46:27+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a><font color="#B22222">/* Discretization tools */</font>
+
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscconf.h&gt;</font>
+<a name="line4">  4: </a><font color="#A020F0">#if defined(PETSC_HAVE_MATHIMF_H)</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;mathimf.h&gt;           </font><font color="#B22222">/* this needs to be included before math.h */</font><font color="#A020F0"></font>
+<a name="line6">  6: </a><font color="#A020F0">#endif</font>
+
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;petscdt.h&gt;            </font><font color="#B22222">/*I "petscdt.h" I*/</font><font color="#A020F0"></font>
+<a name="line9">  9: </a><font color="#A020F0">#include &lt;petscblaslapack.h&gt;</font>
+<a name="line10"> 10: </a><font color="#A020F0">#include &lt;petsc-private/petscimpl.h&gt;</font>
+<a name="line11"> 11: </a><font color="#A020F0">#include &lt;petscviewer.h&gt;</font>
+
+<a name="line15"> 15: </a><font color="#B22222">/*@</font>
+<a name="line16"> 16: </a><font color="#B22222">   <A href="../../../../docs/manualpages/DM/PetscDTLegendreEval.html#PetscDTLegendreEval">PetscDTLegendreEval</A> - evaluate Legendre polynomial at points</font>
+
+<a name="line18"> 18: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line20"> 20: </a><font color="#B22222">   Input Arguments:</font>
+<a name="line21"> 21: </a><font color="#B22222">+  npoints - number of spatial points to evaluate at</font>
+<a name="line22"> 22: </a><font color="#B22222">.  points - array of locations to evaluate at</font>
+<a name="line23"> 23: </a><font color="#B22222">.  ndegree - number of basis degrees to evaluate</font>
+<a name="line24"> 24: </a><font color="#B22222">-  degrees - sorted array of degrees to evaluate</font>
+
+<a name="line26"> 26: </a><font color="#B22222">   Output Arguments:</font>
+<a name="line27"> 27: </a><font color="#B22222">+  B - row-oriented basis evaluation matrix B[point*ndegree + degree] (dimension npoints*ndegrees, allocated by caller) (or NULL)</font>
+<a name="line28"> 28: </a><font color="#B22222">.  D - row-oriented derivative evaluation matrix (or NULL)</font>
+<a name="line29"> 29: </a><font color="#B22222">-  D2 - row-oriented second derivative evaluation matrix (or NULL)</font>
+
+<a name="line31"> 31: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line33"> 33: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/DM/PetscDTGaussQuadrature.html#PetscDTGaussQuadrature">PetscDTGaussQuadrature</A>()</font>
+<a name="line34"> 34: </a><font color="#B22222">@*/</font>
+<a name="line35"> 35: </a><strong><font color="#4169E1"><a name="PetscDTLegendreEval"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/PetscDTLegendreEval.html#PetscDTLegendreEval">PetscDTLegendreEval</A>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> npoints,const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *points,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ndegree,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *degrees,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *B,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *D,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *D2)</font></strong>
+<a name="line36"> 36: </a>{
+<a name="line37"> 37: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i,maxdegree;
+
+<a name="line40"> 40: </a>  <font color="#4169E1">if</font> (!npoints || !ndegree) <font color="#4169E1">return</font>(0);
+<a name="line41"> 41: </a>  maxdegree = degrees[ndegree-1];
+<a name="line42"> 42: </a>  <font color="#4169E1">for</font> (i=0; i&lt;npoints; i++) {
+<a name="line43"> 43: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> pm1,pm2,pd1,pd2,pdd1,pdd2,x;
+<a name="line44"> 44: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  j,k;
+<a name="line45"> 45: </a>    x    = points[i];
+<a name="line46"> 46: </a>    pm2  = 0;
+<a name="line47"> 47: </a>    pm1  = 1;
+<a name="line48"> 48: </a>    pd2  = 0;
+<a name="line49"> 49: </a>    pd1  = 0;
+<a name="line50"> 50: </a>    pdd2 = 0;
+<a name="line51"> 51: </a>    pdd1 = 0;
+<a name="line52"> 52: </a>    k    = 0;
+<a name="line53"> 53: </a>    <font color="#4169E1">if</font> (degrees[k] == 0) {
+<a name="line54"> 54: </a>      <font color="#4169E1">if</font> (B) B[i*ndegree+k] = pm1;
+<a name="line55"> 55: </a>      <font color="#4169E1">if</font> (D) D[i*ndegree+k] = pd1;
+<a name="line56"> 56: </a>      <font color="#4169E1">if</font> (D2) D2[i*ndegree+k] = pdd1;
+<a name="line57"> 57: </a>      k++;
+<a name="line58"> 58: </a>    }
+<a name="line59"> 59: </a>    <font color="#4169E1">for</font> (j=1; j&lt;=maxdegree; j++,k++) {
+<a name="line60"> 60: </a>      <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> p,d,dd;
+<a name="line61"> 61: </a>      p    = ((2*j-1)*x*pm1 - (j-1)*pm2)/j;
+<a name="line62"> 62: </a>      d    = pd2 + (2*j-1)*pm1;
+<a name="line63"> 63: </a>      dd   = pdd2 + (2*j-1)*pd1;
+<a name="line64"> 64: </a>      pm2  = pm1;
+<a name="line65"> 65: </a>      pm1  = p;
+<a name="line66"> 66: </a>      pd2  = pd1;
+<a name="line67"> 67: </a>      pd1  = d;
+<a name="line68"> 68: </a>      pdd2 = pdd1;
+<a name="line69"> 69: </a>      pdd1 = dd;
+<a name="line70"> 70: </a>      <font color="#4169E1">if</font> (degrees[k] == j) {
+<a name="line71"> 71: </a>        <font color="#4169E1">if</font> (B) B[i*ndegree+k] = p;
+<a name="line72"> 72: </a>        <font color="#4169E1">if</font> (D) D[i*ndegree+k] = d;
+<a name="line73"> 73: </a>        <font color="#4169E1">if</font> (D2) D2[i*ndegree+k] = dd;
+<a name="line74"> 74: </a>      }
+<a name="line75"> 75: </a>    }
+<a name="line76"> 76: </a>  }
+<a name="line77"> 77: </a>  <font color="#4169E1">return</font>(0);
+<a name="line78"> 78: </a>}
+
+<a name="line82"> 82: </a><font color="#B22222">/*@</font>
+<a name="line83"> 83: </a><font color="#B22222">   <A href="../../../../docs/manualpages/DM/PetscDTGaussQuadrature.html#PetscDTGaussQuadrature">PetscDTGaussQuadrature</A> - create Gauss quadrature</font>
+
+<a name="line85"> 85: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line87"> 87: </a><font color="#B22222">   Input Arguments:</font>
+<a name="line88"> 88: </a><font color="#B22222">+  npoints - number of points</font>
+<a name="line89"> 89: </a><font color="#B22222">.  a - left end of interval (often-1)</font>
+<a name="line90"> 90: </a><font color="#B22222">-  b - right end of interval (often +1)</font>
+
+<a name="line92"> 92: </a><font color="#B22222">   Output Arguments:</font>
+<a name="line93"> 93: </a><font color="#B22222">+  x - quadrature points</font>
+<a name="line94"> 94: </a><font color="#B22222">-  w - quadrature weights</font>
+
+<a name="line96"> 96: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line98"> 98: </a><font color="#B22222">   References:</font>
+<a name="line99"> 99: </a><font color="#B22222">   Golub and Welsch, Calculation of Quadrature Rules, Math. Comp. 23(106), 221--230, 1969.</font>
+
+<a name="line101">101: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/DM/PetscDTLegendreEval.html#PetscDTLegendreEval">PetscDTLegendreEval</A>()</font>
+<a name="line102">102: </a><font color="#B22222">@*/</font>
+<a name="line103">103: </a><strong><font color="#4169E1"><a name="PetscDTGaussQuadrature"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/PetscDTGaussQuadrature.html#PetscDTGaussQuadrature">PetscDTGaussQuadrature</A>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> b,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *x,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *w)</font></strong>
+<a name="line104">104: </a>{
+<a name="line106">106: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i;
+<a name="line107">107: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      *work;
+<a name="line108">108: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *Z;
+<a name="line109">109: </a>  <A href="../../../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>   N,LDZ,info;
+
+<a name="line112">112: </a>  <font color="#B22222">/* Set up the Golub-Welsch system */</font>
+<a name="line113">113: </a>  <font color="#4169E1">for</font> (i=0; i&lt;npoints; i++) {
+<a name="line114">114: </a>    x[i] = 0;                   <font color="#B22222">/* diagonal is 0 */</font>
+<a name="line115">115: </a>    <font color="#4169E1">if</font> (i) w[i-1] = 0.5 / PetscSqrtReal(1 - 1./PetscSqr(2*i));
+<a name="line116">116: </a>  }
+<a name="line117">117: </a>  <A href="../../../../docs/manualpages/Sys/PetscRealView.html#PetscRealView">PetscRealView</A>(npoints-1,w,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
+<a name="line118">118: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(npoints*npoints,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;Z,PetscMax(1,2*npoints-2),<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;work);
+<a name="line119">119: </a>  PetscBLASIntCast(npoints,&amp;N);
+<a name="line120">120: </a>  LDZ  = N;
+<a name="line121">121: </a>  <A href="../../../../docs/manualpages/Sys/PetscFPTrapPush.html#PetscFPTrapPush">PetscFPTrapPush</A>(PETSC_FP_TRAP_OFF);
+<a name="line122">122: </a>  PetscStackCallBLAS(<font color="#666666">"LAPACKsteqr"</font>,LAPACKsteqr_(<font color="#666666">"I"</font>,&amp;N,x,w,Z,&amp;LDZ,work,&amp;info));
+<a name="line123">123: </a>  <A href="../../../../docs/manualpages/Sys/PetscFPTrapPop.html#PetscFPTrapPop">PetscFPTrapPop</A>();
+<a name="line124">124: </a>  <font color="#4169E1">if</font> (info) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_PLIB,<font color="#666666">"xSTEQR error"</font>);
+
+<a name="line126">126: </a>  <font color="#4169E1">for</font> (i=0; i&lt;(npoints+1)/2; i++) {
+<a name="line127">127: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> y = 0.5 * (-x[i] + x[npoints-i-1]); <font color="#B22222">/* enforces symmetry */</font>
+<a name="line128">128: </a>    x[i]           = (a+b)/2 - y*(b-a)/2;
+<a name="line129">129: </a>    x[npoints-i-1] = (a+b)/2 + y*(b-a)/2;
+
+<a name="line131">131: </a>    w[i] = w[npoints-1-i] = (b-a)*PetscSqr(0.5*PetscAbsScalar(Z[i*npoints] + Z[(npoints-i-1)*npoints]));
+<a name="line132">132: </a>  }
+<a name="line133">133: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(Z,work);
+<a name="line134">134: </a>  <font color="#4169E1">return</font>(0);
+<a name="line135">135: </a>}
+
+<a name="line139">139: </a><font color="#B22222">/* Evaluates the nth jacobi polynomial with weight parameters a,b at a point x.</font>
+<a name="line140">140: </a><font color="#B22222">   Recurrence relations implemented from the pseudocode given in Karniadakis and Sherwin, Appendix B */</font>
+<a name="line141">141: </a><strong><font color="#4169E1"><a name="PetscDTFactorial_Internal"></a>PETSC_STATIC_INLINE <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscDTFactorial_Internal(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *factorial)</font></strong>
+<a name="line142">142: </a>{
+<a name="line143">143: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> f = 1.0;
+<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  i;
+
+<a name="line147">147: </a>  <font color="#4169E1">for</font> (i = 1; i &lt; n+1; ++i) f *= i;
+<a name="line148">148: </a>  *factorial = f;
+<a name="line149">149: </a>  <font color="#4169E1">return</font>(0);
+<a name="line150">150: </a>}
+
+<a name="line154">154: </a><font color="#B22222">/* Evaluates the nth jacobi polynomial with weight parameters a,b at a point x.</font>
+<a name="line155">155: </a><font color="#B22222">   Recurrence relations implemented from the pseudocode given in Karniadakis and Sherwin, Appendix B */</font>
+<a name="line156">156: </a><strong><font color="#4169E1"><a name="PetscDTComputeJacobi"></a>PETSC_STATIC_INLINE <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscDTComputeJacobi(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> b, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> x, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *P)</font></strong>
+<a name="line157">157: </a>{
+<a name="line158">158: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> apb, pn1, pn2;
+<a name="line159">159: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  k;
+
+<a name="line162">162: </a>  <font color="#4169E1">if</font> (!n) {*P = 1.0; <font color="#4169E1">return</font>(0);}
+<a name="line163">163: </a>  <font color="#4169E1">if</font> (n == 1) {*P = 0.5 * (a - b + (a + b + 2.0) * x); <font color="#4169E1">return</font>(0);}
+<a name="line164">164: </a>  apb = a + b;
+<a name="line165">165: </a>  pn2 = 1.0;
+<a name="line166">166: </a>  pn1 = 0.5 * (a - b + (apb + 2.0) * x);
+<a name="line167">167: </a>  *P  = 0.0;
+<a name="line168">168: </a>  <font color="#4169E1">for</font> (k = 2; k &lt; n+1; ++k) {
+<a name="line169">169: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a1 = 2.0 * k * (k + apb) * (2.0*k + apb - 2.0);
+<a name="line170">170: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a2 = (2.0 * k + apb - 1.0) * (a*a - b*b);
+<a name="line171">171: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a3 = (2.0 * k + apb - 2.0) * (2.0 * k + apb - 1.0) * (2.0 * k + apb);
+<a name="line172">172: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a4 = 2.0 * (k + a - 1.0) * (k + b - 1.0) * (2.0 * k + apb);
+
+<a name="line174">174: </a>    a2  = a2 / a1;
+<a name="line175">175: </a>    a3  = a3 / a1;
+<a name="line176">176: </a>    a4  = a4 / a1;
+<a name="line177">177: </a>    *P  = (a2 + a3 * x) * pn1 - a4 * pn2;
+<a name="line178">178: </a>    pn2 = pn1;
+<a name="line179">179: </a>    pn1 = *P;
+<a name="line180">180: </a>  }
+<a name="line181">181: </a>  <font color="#4169E1">return</font>(0);
+<a name="line182">182: </a>}
+
+<a name="line186">186: </a><font color="#B22222">/* Evaluates the first derivative of P_{n}^{a,b} at a point x. */</font>
+<a name="line187">187: </a><strong><font color="#4169E1"><a name="PetscDTComputeJacobiDerivative"></a>PETSC_STATIC_INLINE <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscDTComputeJacobiDerivative(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> b, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> x, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *P)</font></strong>
+<a name="line188">188: </a>{
+<a name="line189">189: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      nP;
+
+<a name="line193">193: </a>  <font color="#4169E1">if</font> (!n) {*P = 0.0; <font color="#4169E1">return</font>(0);}
+<a name="line194">194: </a>  PetscDTComputeJacobi(a+1, b+1, n-1, x, &amp;nP);
+<a name="line195">195: </a>  *P   = 0.5 * (a + b + n + 1) * nP;
+<a name="line196">196: </a>  <font color="#4169E1">return</font>(0);
+<a name="line197">197: </a>}
+
+<a name="line201">201: </a><font color="#B22222">/* Maps from [-1,1]^2 to the (-1,1) reference triangle */</font>
+<a name="line202">202: </a><strong><font color="#4169E1"><a name="PetscDTMapSquareToTriangle_Internal"></a>PETSC_STATIC_INLINE <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscDTMapSquareToTriangle_Internal(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> x, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> y, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *xi, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *eta)</font></strong>
+<a name="line203">203: </a>{
+<a name="line205">205: </a>  *xi  = 0.5 * (1.0 + x) * (1.0 - y) - 1.0;
+<a name="line206">206: </a>  *eta = y;
+<a name="line207">207: </a>  <font color="#4169E1">return</font>(0);
+<a name="line208">208: </a>}
+
+<a name="line212">212: </a><font color="#B22222">/* Maps from [-1,1]^2 to the (-1,1) reference triangle */</font>
+<a name="line213">213: </a><strong><font color="#4169E1"><a name="PetscDTMapCubeToTetrahedron_Internal"></a>PETSC_STATIC_INLINE <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscDTMapCubeToTetrahedron_Internal(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> x, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> y, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> z, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *xi, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *eta, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *zeta)</font></strong>
+<a name="line214">214: </a>{
+<a name="line216">216: </a>  *xi   = 0.25 * (1.0 + x) * (1.0 - y) * (1.0 - z) - 1.0;
+<a name="line217">217: </a>  *eta  = 0.5  * (1.0 + y) * (1.0 - z) - 1.0;
+<a name="line218">218: </a>  *zeta = z;
+<a name="line219">219: </a>  <font color="#4169E1">return</font>(0);
+<a name="line220">220: </a>}
+
+<a name="line224">224: </a><strong><font color="#4169E1"><a name="PetscDTGaussJacobiQuadrature1D_Internal"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscDTGaussJacobiQuadrature1D_Internal(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> npoints, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> b, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *x, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *w)</font></strong>
+<a name="line225">225: </a>{
+<a name="line226">226: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       maxIter = 100;
+<a name="line227">227: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      eps     = 1.0e-8;
+<a name="line228">228: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      a1, a2, a3, a4, a5, a6;
+<a name="line229">229: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       k;
+
+
+<a name="line234">234: </a>  a1      = pow(2, a+b+1);
+<a name="line235">235: </a><font color="#A020F0">#if defined(PETSC_HAVE_TGAMMA)</font>
+<a name="line236">236: </a>  a2      = tgamma(a + npoints + 1);
+<a name="line237">237: </a>  a3      = tgamma(b + npoints + 1);
+<a name="line238">238: </a>  a4      = tgamma(a + b + npoints + 1);
+<a name="line239">239: </a><font color="#A020F0">#else</font>
+<a name="line240">240: </a>  <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"tgamma() - math routine is unavailable."</font>);
+<a name="line241">241: </a><font color="#A020F0">#endif</font>
+
+<a name="line243">243: </a>  PetscDTFactorial_Internal(npoints, &amp;a5);
+<a name="line244">244: </a>  a6   = a1 * a2 * a3 / a4 / a5;
+<a name="line245">245: </a>  <font color="#B22222">/* Computes the m roots of P_{m}^{a,b} on [-1,1] by Newton's method with Chebyshev points as initial guesses.</font>
+<a name="line246">246: </a><font color="#B22222">   Algorithm implemented from the pseudocode given by Karniadakis and Sherwin and Python in FIAT */</font>
+<a name="line247">247: </a>  <font color="#4169E1">for</font> (k = 0; k &lt; npoints; ++k) {
+<a name="line248">248: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> r = -cos((2.0*k + 1.0) * PETSC_PI / (2.0 * npoints)), dP;
+<a name="line249">249: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  j;
+
+<a name="line251">251: </a>    <font color="#4169E1">if</font> (k &gt; 0) r = 0.5 * (r + x[k-1]);
+<a name="line252">252: </a>    <font color="#4169E1">for</font> (j = 0; j &lt; maxIter; ++j) {
+<a name="line253">253: </a>      <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> s = 0.0, delta, f, fp;
+<a name="line254">254: </a>      <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>  i;
+
+<a name="line256">256: </a>      <font color="#4169E1">for</font> (i = 0; i &lt; k; ++i) s = s + 1.0 / (r - x[i]);
+<a name="line257">257: </a>      PetscDTComputeJacobi(a, b, npoints, r, &amp;f);
+<a name="line258">258: </a>      PetscDTComputeJacobiDerivative(a, b, npoints, r, &amp;fp);
+<a name="line259">259: </a>      delta = f / (fp - f * s);
+<a name="line260">260: </a>      r     = r - delta;
+<a name="line261">261: </a>      <font color="#4169E1">if</font> (fabs(delta) &lt; eps) <font color="#4169E1">break</font>;
+<a name="line262">262: </a>    }
+<a name="line263">263: </a>    x[k] = r;
+<a name="line264">264: </a>    PetscDTComputeJacobiDerivative(a, b, npoints, x[k], &amp;dP);
+<a name="line265">265: </a>    w[k] = a6 / (1.0 - PetscSqr(x[k])) / PetscSqr(dP);
+<a name="line266">266: </a>  }
+<a name="line267">267: </a>  <font color="#4169E1">return</font>(0);
+<a name="line268">268: </a>}
+
+<a name="line272">272: </a><font color="#B22222">/*@C</font>
+<a name="line273">273: </a><font color="#B22222">  <A href="../../../../docs/manualpages/DM/PetscDTGaussJacobiQuadrature.html#PetscDTGaussJacobiQuadrature">PetscDTGaussJacobiQuadrature</A> - create Gauss-Jacobi quadrature for a simplex</font>
+
+<a name="line275">275: </a><font color="#B22222">  Not Collective</font>
+
+<a name="line277">277: </a><font color="#B22222">  Input Arguments:</font>
+<a name="line278">278: </a><font color="#B22222">+ dim - The simplex dimension</font>
+<a name="line279">279: </a><font color="#B22222">. npoints - number of points</font>
+<a name="line280">280: </a><font color="#B22222">. a - left end of interval (often-1)</font>
+<a name="line281">281: </a><font color="#B22222">- b - right end of interval (often +1)</font>
+
+<a name="line283">283: </a><font color="#B22222">  Output Arguments:</font>
+<a name="line284">284: </a><font color="#B22222">+ points - quadrature points</font>
+<a name="line285">285: </a><font color="#B22222">- weights - quadrature weights</font>
+
+<a name="line287">287: </a><font color="#B22222">  Level: intermediate</font>
+
+<a name="line289">289: </a><font color="#B22222">  References:</font>
+<a name="line290">290: </a><font color="#B22222">  Karniadakis and Sherwin.</font>
+<a name="line291">291: </a><font color="#B22222">  FIAT</font>
+
+<a name="line293">293: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/DM/PetscDTGaussQuadrature.html#PetscDTGaussQuadrature">PetscDTGaussQuadrature</A>()</font>
+<a name="line294">294: </a><font color="#B22222">@*/</font>
+<a name="line295">295: </a><strong><font color="#4169E1"><a name="PetscDTGaussJacobiQuadrature"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/PetscDTGaussJacobiQuadrature.html#PetscDTGaussJacobiQuadrature">PetscDTGaussJacobiQuadrature</A>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> dim, <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> npoints, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> a, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> b, <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *points[], <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *weights[])</font></strong>
+<a name="line296">296: </a>{
+<a name="line297">297: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>     *px, *wx, *py, *wy, *pz, *wz, *x, *w;
+<a name="line298">298: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i, j, k;
+
+<a name="line302">302: </a>  <font color="#4169E1">if</font> ((a != -1.0) || (b != 1.0)) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Must use default internal right now"</font>);
+<a name="line303">303: </a>  <font color="#4169E1">switch</font> (dim) {
+<a name="line304">304: </a>  <font color="#4169E1">case</font> 1:
+<a name="line305">305: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(npoints * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;x);
+<a name="line306">306: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(npoints * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;w);
+<a name="line307">307: </a>    PetscDTGaussJacobiQuadrature1D_Internal(npoints, 0.0, 0.0, x, w);
+<a name="line308">308: </a>    <font color="#4169E1">break</font>;
+<a name="line309">309: </a>  <font color="#4169E1">case</font> 2:
+<a name="line310">310: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(npoints*npoints*2 * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;x);
+<a name="line311">311: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(npoints*npoints   * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;w);
+<a name="line312">312: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>(npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;px,npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;wx,npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;py,npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;wy);
+<a name="line313">313: </a>    PetscDTGaussJacobiQuadrature1D_Internal(npoints, 0.0, 0.0, px, wx);
+<a name="line314">314: </a>    PetscDTGaussJacobiQuadrature1D_Internal(npoints, 1.0, 0.0, py, wy);
+<a name="line315">315: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; npoints; ++i) {
+<a name="line316">316: </a>      <font color="#4169E1">for</font> (j = 0; j &lt; npoints; ++j) {
+<a name="line317">317: </a>        PetscDTMapSquareToTriangle_Internal(px[i], py[j], &amp;x[(i*npoints+j)*2+0], &amp;x[(i*npoints+j)*2+1]);
+<a name="line318">318: </a>        w[i*npoints+j] = 0.5 * wx[i] * wy[j];
+<a name="line319">319: </a>      }
+<a name="line320">320: </a>    }
+<a name="line321">321: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree4.html#PetscFree4">PetscFree4</A>(px,wx,py,wy);
+<a name="line322">322: </a>    <font color="#4169E1">break</font>;
+<a name="line323">323: </a>  <font color="#4169E1">case</font> 3:
+<a name="line324">324: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(npoints*npoints*3 * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;x);
+<a name="line325">325: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(npoints*npoints   * <font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>), &amp;w);
+<a name="line326">326: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc6.html#PetscMalloc6">PetscMalloc6</A>(npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;px,npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;wx,npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;py,npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;wy,npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;pz,npoints,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;wz);
+<a name="line327">327: </a>    PetscDTGaussJacobiQuadrature1D_Internal(npoints, 0.0, 0.0, px, wx);
+<a name="line328">328: </a>    PetscDTGaussJacobiQuadrature1D_Internal(npoints, 1.0, 0.0, py, wy);
+<a name="line329">329: </a>    PetscDTGaussJacobiQuadrature1D_Internal(npoints, 2.0, 0.0, pz, wz);
+<a name="line330">330: </a>    <font color="#4169E1">for</font> (i = 0; i &lt; npoints; ++i) {
+<a name="line331">331: </a>      <font color="#4169E1">for</font> (j = 0; j &lt; npoints; ++j) {
+<a name="line332">332: </a>        <font color="#4169E1">for</font> (k = 0; k &lt; npoints; ++k) {
+<a name="line333">333: </a>          PetscDTMapCubeToTetrahedron_Internal(px[i], py[j], pz[k], &amp;x[((i*npoints+j)*npoints+k)*3+0], &amp;x[((i*npoints+j)*npoints+k)*3+1], &amp;x[((i*npoints+j)*npoints+k)*3+2]);
+<a name="line334">334: </a>          w[(i*npoints+j)*npoints+k] = 0.125 * wx[i] * wy[j] * wz[k];
+<a name="line335">335: </a>        }
+<a name="line336">336: </a>      }
+<a name="line337">337: </a>    }
+<a name="line338">338: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree6.html#PetscFree6">PetscFree6</A>(px,wx,py,wy,pz,wz);
+<a name="line339">339: </a>    <font color="#4169E1">break</font>;
+<a name="line340">340: </a><strong><font color="#FF0000">  default:</font></strong>
+<a name="line341">341: </a>    <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>, PETSC_ERR_ARG_OUTOFRANGE, <font color="#666666">"Cannot construct quadrature rule for dimension %d"</font>, dim);
+<a name="line342">342: </a>  }
+<a name="line343">343: </a>  <font color="#4169E1">if</font> (points)  *points  = x;
+<a name="line344">344: </a>  <font color="#4169E1">if</font> (weights) *weights = w;
+<a name="line345">345: </a>  <font color="#4169E1">return</font>(0);
+<a name="line346">346: </a>}
+
+<a name="line350">350: </a><font color="#B22222">/* Overwrites A. Can only handle full-rank problems with m&gt;=n</font>
+<a name="line351">351: </a><font color="#B22222"> * A in column-major format</font>
+<a name="line352">352: </a><font color="#B22222"> * Ainv in row-major format</font>
+<a name="line353">353: </a><font color="#B22222"> * tau has length m</font>
+<a name="line354">354: </a><font color="#B22222"> * worksize must be &gt;= max(1,n)</font>
+<a name="line355">355: </a><font color="#B22222"> */</font>
+<a name="line356">356: </a><strong><font color="#4169E1"><a name="PetscDTPseudoInverseQR"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscDTPseudoInverseQR(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> mstride,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *A_in,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *Ainv_out,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *tau,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> worksize,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *work)</font></strong>
+<a name="line357">357: </a>{
+<a name="line359">359: </a>  <A href="../../../../docs/manualpages/Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> M,N,K,lda,ldb,ldwork,info;
+<a name="line360">360: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *A,*Ainv,*R,*Q,Alpha;
+
+<a name="line363">363: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line364">364: </a>  {
+<a name="line365">365: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i,j;
+<a name="line366">366: </a>    <A href="../../../../docs/manualpages/Sys/PetscMalloc2.html#PetscMalloc2">PetscMalloc2</A>(m*n,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;A,m*n,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;Ainv);
+<a name="line367">367: </a>    <font color="#4169E1">for</font> (j=0; j&lt;n; j++) {
+<a name="line368">368: </a>      <font color="#4169E1">for</font> (i=0; i&lt;m; i++) A[i+m*j] = A_in[i+mstride*j];
+<a name="line369">369: </a>    }
+<a name="line370">370: </a>    mstride = m;
+<a name="line371">371: </a>  }
+<a name="line372">372: </a><font color="#A020F0">#else</font>
+<a name="line373">373: </a>  A = A_in;
+<a name="line374">374: </a>  Ainv = Ainv_out;
+<a name="line375">375: </a><font color="#A020F0">#endif</font>
+
+<a name="line377">377: </a>  PetscBLASIntCast(m,&amp;M);
+<a name="line378">378: </a>  PetscBLASIntCast(n,&amp;N);
+<a name="line379">379: </a>  PetscBLASIntCast(mstride,&amp;lda);
+<a name="line380">380: </a>  PetscBLASIntCast(worksize,&amp;ldwork);
+<a name="line381">381: </a>  <A href="../../../../docs/manualpages/Sys/PetscFPTrapPush.html#PetscFPTrapPush">PetscFPTrapPush</A>(PETSC_FP_TRAP_OFF);
+<a name="line382">382: </a>  LAPACKgeqrf_(&amp;M,&amp;N,A,&amp;lda,tau,work,&amp;ldwork,&amp;info);
+<a name="line383">383: </a>  <A href="../../../../docs/manualpages/Sys/PetscFPTrapPop.html#PetscFPTrapPop">PetscFPTrapPop</A>();
+<a name="line384">384: </a>  <font color="#4169E1">if</font> (info) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"xGEQRF error"</font>);
+<a name="line385">385: </a>  R = A; <font color="#B22222">/* Upper triangular part of A now contains R, the rest contains the elementary reflectors */</font>
+
+<a name="line387">387: </a>  <font color="#B22222">/* Extract an explicit representation of Q */</font>
+<a name="line388">388: </a>  Q = Ainv;
+<a name="line389">389: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(Q,A,mstride*n*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+<a name="line390">390: </a>  K = N;                        <font color="#B22222">/* full rank */</font>
+<a name="line391">391: </a>  LAPACKungqr_(&amp;M,&amp;N,&amp;K,Q,&amp;lda,tau,work,&amp;ldwork,&amp;info);
+<a name="line392">392: </a>  <font color="#4169E1">if</font> (info) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"xORGQR/xUNGQR error"</font>);
+
+<a name="line394">394: </a>  <font color="#B22222">/* Compute A^{-T} = (R^{-1} Q^T)^T = Q R^{-T} */</font>
+<a name="line395">395: </a>  Alpha = 1.0;
+<a name="line396">396: </a>  ldb = lda;
+<a name="line397">397: </a>  BLAStrsm_(<font color="#666666">"Right"</font>,<font color="#666666">"Upper"</font>,<font color="#666666">"ConjugateTranspose"</font>,<font color="#666666">"NotUnitTriangular"</font>,&amp;M,&amp;N,&amp;Alpha,R,&amp;lda,Q,&amp;ldb);
+<a name="line398">398: </a>  <font color="#B22222">/* Ainv is Q, overwritten with inverse */</font>
+
+<a name="line400">400: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
+<a name="line401">401: </a>  {
+<a name="line402">402: </a>    <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i;
+<a name="line403">403: </a>    <font color="#4169E1">for</font> (i=0; i&lt;m*n; i++) Ainv_out[i] = PetscRealPart(Ainv[i]);
+<a name="line404">404: </a>    <A href="../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(A,Ainv);
+<a name="line405">405: </a>  }
+<a name="line406">406: </a><font color="#A020F0">#endif</font>
+<a name="line407">407: </a>  <font color="#4169E1">return</font>(0);
+<a name="line408">408: </a>}
+
+<a name="line412">412: </a><font color="#B22222">/* Computes integral of L_p' over intervals {(x0,x1),(x1,x2),...} */</font>
+<a name="line413">413: </a><strong><font color="#4169E1"><a name="PetscDTLegendreIntegrate"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscDTLegendreIntegrate(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ninterval,const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *x,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ndegree,const <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *degrees,<A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> Transpose,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *B)</font></strong>
+<a name="line414">414: </a>{
+<a name="line416">416: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *Bv;
+<a name="line417">417: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i,j;
+
+<a name="line420">420: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((ninterval+1)*ndegree*<font color="#4169E1">sizeof</font>(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>),&amp;Bv);
+<a name="line421">421: </a>  <font color="#B22222">/* Point evaluation of L_p on all the source vertices */</font>
+<a name="line422">422: </a>  <A href="../../../../docs/manualpages/DM/PetscDTLegendreEval.html#PetscDTLegendreEval">PetscDTLegendreEval</A>(ninterval+1,x,ndegree,degrees,Bv,NULL,NULL);
+<a name="line423">423: </a>  <font color="#B22222">/* Integral over each interval: \int_a^b L_p' = L_p(b)-L_p(a) */</font>
+<a name="line424">424: </a>  <font color="#4169E1">for</font> (i=0; i&lt;ninterval; i++) {
+<a name="line425">425: </a>    <font color="#4169E1">for</font> (j=0; j&lt;ndegree; j++) {
+<a name="line426">426: </a>      <font color="#4169E1">if</font> (Transpose) B[i+ninterval*j] = Bv[(i+1)*ndegree+j] - Bv[i*ndegree+j];
+<a name="line427">427: </a>      <font color="#4169E1">else</font>           B[i*ndegree+j]   = Bv[(i+1)*ndegree+j] - Bv[i*ndegree+j];
+<a name="line428">428: </a>    }
+<a name="line429">429: </a>  }
+<a name="line430">430: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(Bv);
+<a name="line431">431: </a>  <font color="#4169E1">return</font>(0);
+<a name="line432">432: </a>}
+
+<a name="line436">436: </a><font color="#B22222">/*@</font>
+<a name="line437">437: </a><font color="#B22222">   <A href="../../../../docs/manualpages/DM/PetscDTReconstructPoly.html#PetscDTReconstructPoly">PetscDTReconstructPoly</A> - create matrix representing polynomial reconstruction using cell intervals and evaluation at target intervals</font>
+
+<a name="line439">439: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line441">441: </a><font color="#B22222">   Input Arguments:</font>
+<a name="line442">442: </a><font color="#B22222">+  degree - degree of reconstruction polynomial</font>
+<a name="line443">443: </a><font color="#B22222">.  nsource - number of source intervals</font>
+<a name="line444">444: </a><font color="#B22222">.  sourcex - sorted coordinates of source cell boundaries (length nsource+1)</font>
+<a name="line445">445: </a><font color="#B22222">.  ntarget - number of target intervals</font>
+<a name="line446">446: </a><font color="#B22222">-  targetx - sorted coordinates of target cell boundaries (length ntarget+1)</font>
+
+<a name="line448">448: </a><font color="#B22222">   Output Arguments:</font>
+<a name="line449">449: </a><font color="#B22222">.  R - reconstruction matrix, utarget = sum_s R[t*nsource+s] * usource[s]</font>
+
+<a name="line451">451: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line453">453: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/DM/PetscDTLegendreEval.html#PetscDTLegendreEval">PetscDTLegendreEval</A>()</font>
+<a name="line454">454: </a><font color="#B22222">@*/</font>
+<a name="line455">455: </a><strong><font color="#4169E1"><a name="PetscDTReconstructPoly"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/DM/PetscDTReconstructPoly.html#PetscDTReconstructPoly">PetscDTReconstructPoly</A>(<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> degree,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nsource,const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *sourcex,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> ntarget,const <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *targetx,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> *R)</font></strong>
+<a name="line456">456: </a>{
+<a name="line458">458: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i,j,k,*bdegrees,worksize;
+<a name="line459">459: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> xmin,xmax,center,hscale,*sourcey,*targety,*Bsource,*Bsinv,*Btarget;
+<a name="line460">460: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> *tau,*work;
+
+<a name="line466">466: </a>  <font color="#4169E1">if</font> (degree &gt;= nsource) <A href="../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Reconstruction degree %D must be less than number of source intervals %D"</font>,degree,nsource);
+<a name="line467">467: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line468">468: </a>  <font color="#4169E1">for</font> (i=0; i&lt;nsource; i++) {
+<a name="line469">469: </a>    <font color="#4169E1">if</font> (sourcex[i] &gt;= sourcex[i+1]) <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_CORRUPT,<font color="#666666">"Source interval %D has negative orientation (%G,%G)"</font>,i,sourcex[i],sourcex[i+1]);
+<a name="line470">470: </a>  }
+<a name="line471">471: </a>  <font color="#4169E1">for</font> (i=0; i&lt;ntarget; i++) {
+<a name="line472">472: </a>    <font color="#4169E1">if</font> (targetx[i] &gt;= targetx[i+1]) <A href="../../../../docs/manualpages/Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_CORRUPT,<font color="#666666">"Target interval %D has negative orientation (%G,%G)"</font>,i,targetx[i],targetx[i+1]);
+<a name="line473">473: </a>  }
+<a name="line474">474: </a><font color="#A020F0">#endif</font>
+<a name="line475">475: </a>  xmin = PetscMin(sourcex[0],targetx[0]);
+<a name="line476">476: </a>  xmax = PetscMax(sourcex[nsource],targetx[ntarget]);
+<a name="line477">477: </a>  center = (xmin + xmax)/2;
+<a name="line478">478: </a>  hscale = (xmax - xmin)/2;
+<a name="line479">479: </a>  worksize = nsource;
+<a name="line480">480: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>(degree+1,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,&amp;bdegrees,nsource+1,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;sourcey,nsource*(degree+1),<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;Bsource,worksize,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;work);
+<a name="line481">481: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc4.html#PetscMalloc4">PetscMalloc4</A>(nsource,<A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,&amp;tau,nsource*(degree+1),<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;Bsinv,ntarget+1,<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;targety,ntarget*(degree+1),<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,&amp;Btarget);
+<a name="line482">482: </a>  <font color="#4169E1">for</font> (i=0; i&lt;=nsource; i++) sourcey[i] = (sourcex[i]-center)/hscale;
+<a name="line483">483: </a>  <font color="#4169E1">for</font> (i=0; i&lt;=degree; i++) bdegrees[i] = i+1;
+<a name="line484">484: </a>  PetscDTLegendreIntegrate(nsource,sourcey,degree+1,bdegrees,<A href="../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>,Bsource);
+<a name="line485">485: </a>  PetscDTPseudoInverseQR(nsource,nsource,degree+1,Bsource,Bsinv,tau,nsource,work);
+<a name="line486">486: </a>  <font color="#4169E1">for</font> (i=0; i&lt;=ntarget; i++) targety[i] = (targetx[i]-center)/hscale;
+<a name="line487">487: </a>  PetscDTLegendreIntegrate(ntarget,targety,degree+1,bdegrees,<A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>,Btarget);
+<a name="line488">488: </a>  <font color="#4169E1">for</font> (i=0; i&lt;ntarget; i++) {
+<a name="line489">489: </a>    <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rowsum = 0;
+<a name="line490">490: </a>    <font color="#4169E1">for</font> (j=0; j&lt;nsource; j++) {
+<a name="line491">491: </a>      <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> sum = 0;
+<a name="line492">492: </a>      <font color="#4169E1">for</font> (k=0; k&lt;degree+1; k++) {
+<a name="line493">493: </a>        sum += Btarget[i*(degree+1)+k] * Bsinv[k*nsource+j];
+<a name="line494">494: </a>      }
+<a name="line495">495: </a>      R[i*nsource+j] = sum;
+<a name="line496">496: </a>      rowsum += sum;
+<a name="line497">497: </a>    }
+<a name="line498">498: </a>    <font color="#4169E1">for</font> (j=0; j&lt;nsource; j++) R[i*nsource+j] /= rowsum; <font color="#B22222">/* normalize each row */</font>
+<a name="line499">499: </a>  }
+<a name="line500">500: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree4.html#PetscFree4">PetscFree4</A>(bdegrees,sourcey,Bsource,work);
+<a name="line501">501: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree4.html#PetscFree4">PetscFree4</A>(tau,Bsinv,targety,Btarget);
+<a name="line502">502: </a>  <font color="#4169E1">return</font>(0);
+<a name="line503">503: </a>}
+</pre>
+</body>
+
+</html>

@@ -5,12 +5,12 @@
 <TITLE>VecCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecCreate"><H1>VecCreate</H1></A>
 Creates an empty vector object. The type can then be set with <A HREF="../Vec/VecSetType.html#VecSetType">VecSetType</A>(), or <A HREF="../Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecCreate(MPI_Comm comm, Vec *vec)
 </PRE>
 If you never  call <A HREF="../Vec/VecSetType.html#VecSetType">VecSetType</A>() or <A HREF="../Vec/VecSetFromOptions.html#VecSetFromOptions">VecSetFromOptions</A>() it will generate an

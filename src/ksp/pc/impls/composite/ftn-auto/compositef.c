@@ -27,7 +27,6 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscpc.h"
 #include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pccompositesettype_ PCCOMPOSITESETTYPE
@@ -43,11 +42,6 @@ extern void PetscRmPointer(void*);
 #define pccompositegetpc_ PCCOMPOSITEGETPC
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pccompositegetpc_ pccompositegetpc
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define pccompositesetusetrue_ PCCOMPOSITESETUSETRUE
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define pccompositesetusetrue_ pccompositesetusetrue
 #endif
 
 
@@ -66,10 +60,6 @@ void PETSC_STDCALL  pccompositespecialsetalpha_(PC pc,PetscScalar *alpha, int *_
 void PETSC_STDCALL  pccompositegetpc_(PC pc,PetscInt *n,PC *subpc, int *__ierr ){
 *__ierr = PCCompositeGetPC(
 	(PC)PetscToPointer((pc) ),*n,subpc);
-}
-void PETSC_STDCALL  pccompositesetusetrue_(PC pc, int *__ierr ){
-*__ierr = PCCompositeSetUseTrue(
-	(PC)PetscToPointer((pc) ));
 }
 #if defined(__cplusplus)
 }

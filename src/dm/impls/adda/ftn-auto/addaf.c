@@ -54,7 +54,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  dmaddagetmatrixns_(DM dm,DM dmc, MatType *mtype,Mat *mat, int *__ierr ){
+void PETSC_STDCALL  dmaddagetmatrixns_(DM dm,DM dmc,MatType *mtype,Mat *mat, int *__ierr ){
 *__ierr = DMADDAGetMatrixNS(
 	(DM)PetscToPointer((dm) ),
 	(DM)PetscToPointer((dmc) ),*mtype,mat);

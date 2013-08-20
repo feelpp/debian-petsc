@@ -5,7 +5,6 @@ CPPFLAGS  =
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = sysiof.c mprintf.c mpiuopenf.c
-OBJSC    = sysiof.o mprintf.o mpiuopenf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

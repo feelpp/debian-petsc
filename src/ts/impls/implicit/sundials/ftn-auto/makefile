@@ -5,7 +5,6 @@ CPPFLAGS =
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = sundialsf.c
-OBJSC    = sundialsf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -5,13 +5,15 @@
 <TITLE>PetscDrawHGIntegerBins</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawHGIntegerBins"><H1>PetscDrawHGIntegerBins</H1></A>
 Turns on integer width bins 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscdraw.h" 
 #include "petscsys.h" 
-PetscErrorCode  PetscDrawHGIntegerBins(PetscDrawHG hist, PetscBool  ints)
+#include "petscviewer.h" 
+PetscErrorCode  PetscDrawHGIntegerBins(PetscDrawHG hist, PetscBool ints)
 </PRE>
 Not collective
 <P>
@@ -27,7 +29,7 @@ Not collective
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
   draw, histogram, statistics
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/hists.c.html#PetscDrawHGIntegerBins">src/sys/draw/utils/hists.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/utils/hists.c.html#PetscDrawHGIntegerBins">src/sys/classes/draw/utils/hists.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

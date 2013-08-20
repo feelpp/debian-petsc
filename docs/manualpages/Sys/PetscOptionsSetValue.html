@@ -5,9 +5,9 @@
 <TITLE>PetscOptionsSetValue</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscOptionsSetValue"><H1>PetscOptionsSetValue</H1></A>
-Sets an option name-value pair in the options  database, overriding whatever is already present. 
+Sets an option name-value pair in the options database, overriding whatever is already present. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
@@ -28,6 +28,8 @@ for parallel objects looking for options.
 <H3><FONT COLOR="#CC3333">Note</FONT></H3>
 Only some options have values associated with them, such as
 -ksp_rtol tol.  Other options stand alone, such as -ksp_monitor.
+<P>
+Developers Note: Uses malloc() directly because PETSc may not yet have been fully initialized
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

@@ -5,7 +5,7 @@
 <TITLE>KSPRICHARDSON</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPRICHARDSON"><H1>KSPRICHARDSON</H1></A>
 The preconditioned Richardson iterative method 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
@@ -18,9 +18,7 @@ Notes: x^{n+1} = x^{n} + scale*B(b - A x^{n})
 <P>
 Here B is the application of the preconditioner
 <P>
-This method often (usually) will not converge unless scale is very small. It
-is described in
-<P>
+This method often (usually) will not converge unless scale is very small.
 <P>
 Notes: For some preconditioners, currently SOR, the convergence test is skipped to improve speed,
 thus it always iterates the maximum number of iterations you've selected. When -ksp_monitor

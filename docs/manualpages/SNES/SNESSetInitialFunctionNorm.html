@@ -5,14 +5,12 @@
 <TITLE>SNESSetInitialFunctionNorm</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSetInitialFunctionNorm"><H1>SNESSetInitialFunctionNorm</H1></A>
 Sets the function norm to be used as the function norm at the initialization of the  method.  In some instances, the user has precomputed the function and its norm before calling <A HREF="../SNES/SNESSolve.html#SNESSolve">SNESSolve</A>.  This function allows one to avoid a redundant call to <A HREF="../SNES/SNESComputeFunction.html#SNESComputeFunction">SNESComputeFunction</A>() and <A HREF="../Vec/VecNorm.html#VecNorm">VecNorm</A>() in that case. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESSetInitialFunctionNorm(SNES snes, PetscReal fnorm)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>

@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/composite/packimpl.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:55:50+00:00">
+<meta name="date" content="2013-07-02T14:45:19+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#if !defined(_packimpl_h)</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define _packimpl_h</font></strong>
 
@@ -28,13 +28,13 @@
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               nlocal;
 
 <a name="line19"> 19: </a>  <font color="#B22222">/* only used for DMCOMPOSITE_DM */</font>
-<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               *grstarts;     <font color="#B22222">/* global row for first unknown of this DM on each process */</font>
-<a name="line21"> 21: </a>  DM                     dm;
+<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *grstarts;                   <font color="#B22222">/* global row for first unknown of this DM on each process */</font>
+<a name="line21"> 21: </a>  DM       dm;
 <a name="line22"> 22: </a>};
 
 <a name="line24"> 24: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
 <a name="line25"> 25: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               n,N,rstart;           <font color="#B22222">/* rstart is relative to all processors, n unknowns owned by this process, N is total unknowns */</font>
-<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               nghost;               <font color="#B22222">/* number of all local entries (includes DMDA ghost points) */</font>
+<a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               nghost;               <font color="#B22222">/* number of all local entries (includes <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A> ghost points) */</font>
 <a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               nDM,nmine;            <font color="#B22222">/* how many DM's and seperate redundant arrays used to build DM(nmine is ones on this process) */</font>
 <a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>              setup;                <font color="#B22222">/* after this is set, cannot add new links to the DM*/</font>
 <a name="line29"> 29: </a>  <font color="#4169E1">struct DMCompositeLink</font> *next;
@@ -42,7 +42,7 @@
 <a name="line31"> 31: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*FormCoupleLocations)(DM,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>);
 <a name="line32"> 32: </a>} DM_Composite;
 
-<a name="line34"> 34: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateMatrix_Composite(DM,const <A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*)</font></strong>;
+<a name="line34"> 34: </a><strong><font color="#4169E1">PETSC_INTERN <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCreateMatrix_Composite(DM,<A href="../../../../docs/manualpages/Mat/MatType.html#MatType">MatType</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>*)</font></strong>;
 
 <a name="line36"> 36: </a><font color="#A020F0">#endif</font>
 </pre>

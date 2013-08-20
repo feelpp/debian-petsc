@@ -29,6 +29,16 @@ extern void PetscRmPointer(void*);
 
 #include "petscpc.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcissetusestiffnessscaling_ PCISSETUSESTIFFNESSSCALING
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcissetusestiffnessscaling_ pcissetusestiffnessscaling
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcissetsubdomaindiagonalscaling_ PCISSETSUBDOMAINDIAGONALSCALING
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcissetsubdomaindiagonalscaling_ pcissetsubdomaindiagonalscaling
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcissetsubdomainscalingfactor_ PCISSETSUBDOMAINSCALINGFACTOR
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcissetsubdomainscalingfactor_ pcissetsubdomainscalingfactor
@@ -39,6 +49,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  pcissetusestiffnessscaling_(PC pc,PetscBool *use, int *__ierr ){
+*__ierr = PCISSetUseStiffnessScaling(
+	(PC)PetscToPointer((pc) ),*use);
+}
+void PETSC_STDCALL  pcissetsubdomaindiagonalscaling_(PC pc,Vec scaling_factors, int *__ierr ){
+*__ierr = PCISSetSubdomainDiagonalScaling(
+	(PC)PetscToPointer((pc) ),
+	(Vec)PetscToPointer((scaling_factors) ));
+}
 void PETSC_STDCALL  pcissetsubdomainscalingfactor_(PC pc,PetscScalar *scal, int *__ierr ){
 *__ierr = PCISSetSubdomainScalingFactor(
 	(PC)PetscToPointer((pc) ),*scal);

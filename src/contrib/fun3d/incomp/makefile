@@ -3,30 +3,27 @@
 
 ALL: flow
 
-USERCPPFLAGS     =   -DINTERLACING -DBLOCKING 
+USERCPPFLAGS     =   -DINTERLACING -DBLOCKING
 
 # To run the benchmark case on the mesh called BigSample, uncomment
 # the following line and run configure to use matsingle
-#USERCPPFLAGS     =  -DCFL3D_AXIS -DINTERLACING -DBLOCKING 
+#USERCPPFLAGS     =  -DCFL3D_AXIS -DINTERLACING -DBLOCKING
 CFLAGS	         =
-FFLAGS	         =	 
+FFLAGS	         =	
 #/real_size:64 /integer_size:32
 CPPFLAGS         = $(USERCPPFLAGS) $(FCONF)
 FPPFLAGS         = $(USERCPPFLAGS)
-SOURCEC	         = 
+SOURCEC	         =
 SOURCEF	         =
 SOURCEH	         =
-OBJSC	         = 
-OBJSF            =
 CLEANFILES       = flow.exe flow.o flow history.out
 LOCDIR           = src/contrib/fun3d/incomp/
 EXAMPLESC        = flow.c user.h
 EXAMPLESF        = user.F userJac.F
-FLOW_OBJSF       = user.o userJac.o
+FLOW_OBJSF       = $(EXAMPLESF:.F=.o)
 #
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules
-include $(PETSC_DIR)/conf/test
 
 flow: flow.o $(FLOW_OBJSF) chkopts
 	-$(CLINKER) -o flow flow.o $(FLOW_OBJSF) $(PETSC_SNES_LIB)
@@ -46,11 +43,7 @@ runflow4:
 	   else echo ${PWD} ; echo "Possible problem with with runflow4, diffs above \n========================================="; fi; \
 	   ${RM} -f runflow4.tmp
 runflow64:
-	-@${MPIEXEC} -n 64 ./flow -options_file 1Grid/petsc.opt -mesh 1Grid/uns3d.msh -partition 1Grid/Pmetis/part_vec.part.64 
-
-TESTEXAMPLES_DATAFILESPATH = flow.PETSc runflow1 runflow4 flow.rm
-
-DATAFILESPATH    = /homes/kaushik/FUN3DGrids/BigSample
+	-@${MPIEXEC} -n 64 ./flow -options_file 1Grid/petsc.opt -mesh 1Grid/uns3d.msh -partition 1Grid/Pmetis/part_vec.part.64
 
 runbm1:
 	-@echo "Using datafiles from" ${DATAFILESPATH}
@@ -62,3 +55,10 @@ runbm2:
 
 runbm4:
 	-@${MPIEXEC} -n 4 ./flow -options_file ${DATAFILESPATH}/petsc.opt -mesh ${DATAFILESPATH}/uns3d.msh -partition ${DATAFILESPATH}/part_vec.part.4 > out.4.${HOST}
+
+
+TESTEXAMPLES_DATAFILESPATH = flow.PETSc runflow1 runflow4 flow.rm
+
+include $(PETSC_DIR)/conf/test
+
+

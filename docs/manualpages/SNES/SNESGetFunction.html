@@ -5,15 +5,13 @@
 <TITLE>SNESGetFunction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESGetFunction"><H1>SNESGetFunction</H1></A>
 Returns the vector where the function is stored. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
-PetscErrorCode  SNESGetFunction(SNES snes,Vec *r,PetscErrorCode (**func)(SNES,Vec,Vec,void*),void **ctx)
+PetscErrorCode  SNESGetFunction(SNES snes,Vec *r,PetscErrorCode (**SNESFunction)(SNES,Vec,Vec,void*),void **ctx)
 </PRE>
 Not Collective, but <A HREF="../Vec/Vec.html#Vec">Vec</A> is parallel if <A HREF="../SNES/SNES.html#SNES">SNES</A> is parallel. Collective if <A HREF="../Vec/Vec.html#Vec">Vec</A> is requested, but has not been created yet.
 <P>
@@ -23,11 +21,11 @@ Not Collective, but <A HREF="../Vec/Vec.html#Vec">Vec</A> is parallel if <A HREF
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>r </B></TD><TD>- the function (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>r </B></TD><TD>- the vector that is used to store residuals (or NULL if you don't want it)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- the function (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../SNES/SNESFunction.html#SNESFunction">SNESFunction</A></B></TD><TD>- the function (or NULL if you don't want it)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- the function context (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- the function context (or NULL if you don't want it)
 </TD></TR></TABLE>
 <P>
 
@@ -37,7 +35,7 @@ Not Collective, but <A HREF="../Vec/Vec.html#Vec">Vec</A> is parallel if <A HREF
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(), <A HREF="../SNES/SNESGetSolution.html#SNESGetSolution">SNESGetSolution</A>()
+ <A HREF="../SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(), <A HREF="../SNES/SNESGetSolution.html#SNESGetSolution">SNESGetSolution</A>(), <A HREF="../SNES/SNESFunction.html#SNESFunction">SNESFunction</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/interface/snes.c.html#SNESGetFunction">src/snes/interface/snes.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>

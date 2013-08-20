@@ -405,13 +405,18 @@
        PetscInt maxDof ! PetscInt
        integer ierr
        end subroutine
-        subroutine DMMeshAssembleMatrix(A, dm, section, e, v, mode ,ierr&
-     &)
+        subroutine DMMeshAssembleMatrixDM(A, dm, section, e, v, mode ,  &
+     &ierr)
        Mat A ! Mat
        DM dm ! DM
        SectionReal section ! SectionReal
        PetscInt e ! PetscInt
        PetscScalar v (*) ! PetscScalar
        InsertMode mode ! InsertMode
+       integer ierr
+       end subroutine
+        subroutine DMMeshClone(dm, newdm ,ierr)
+       DM dm ! DM
+       DM newdm ! DM
        integer ierr
        end subroutine

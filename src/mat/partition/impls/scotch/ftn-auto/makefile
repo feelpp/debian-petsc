@@ -5,7 +5,6 @@ CPPFLAGS = ${SCOTCH_INCLUDE}
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = scotchf.c
-OBJSC    = scotchf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/SectionRealToVecDM.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SectionRealToVecDM</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="SectionRealToVecDM"><H1>SectionRealToVecDM</H1></A>
+Maps the given section to a <A HREF="../Vec/Vec.html#Vec">Vec</A> 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscdmmesh.h"   
+PetscErrorCode  SectionRealToVecDM(SectionReal section, DM dm, ScatterMode mode, Vec vec)
+</PRE>
+Collective on Section
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>section </B></TD><TD>- the real Section
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mesh </B></TD><TD>- The DMMesh
+</TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
+<DT><B>vec </B> -the <A HREF="../Vec/Vec.html#Vec">Vec</A>
+<br>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+<A HREF="../Vec/VecCreate.html#VecCreate">VecCreate</A>(), <A HREF="../DM/SectionRealCreate.html#SectionRealCreate">SectionRealCreate</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/mesh/section.c.html#SectionRealToVecDM">src/dm/impls/mesh/section.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

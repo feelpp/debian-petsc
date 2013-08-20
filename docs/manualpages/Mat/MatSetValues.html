@@ -5,9 +5,9 @@
 <TITLE>MatSetValues</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSetValues"><H1>MatSetValues</H1></A>
-Inserts or adds a block of values into a matrix. These values may be cached, so <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>() and <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>()  MUST be called after all calls to <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() have been completed. 
+Inserts or adds a block of values into a matrix. These values may be cached, so <A HREF="../Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>() and <A HREF="../Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>() MUST be called after all calls to <A HREF="../Mat/MatSetValues.html#MatSetValues">MatSetValues</A>() have been completed. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
@@ -21,7 +21,7 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>v </B></TD><TD>- a logically two-dimensional array of values
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m, idxm </B></TD><TD>- the number of rows and their global indices 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m, idxm </B></TD><TD>- the number of rows and their global indices
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n, idxn </B></TD><TD>- the number of columns and their global indices
 </TD></TR>

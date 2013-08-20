@@ -5,13 +5,14 @@
 <TITLE>SNESFASSetInjection</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESFASSetInjection"><H1>SNESFASSetInjection</H1></A>
 Sets the function to be used to inject the solution from level l to l-1. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnesfas.h"  
-PetscErrorCode SNESFASSetInjection(SNES snes, PetscInt level, Mat mat)</PRE>
+PetscErrorCode SNESFASSetInjection(SNES snes, PetscInt level, Mat mat)
+</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 +  snes  - the multigrid context
 <DT><B>mat   </B> -the restriction matrix

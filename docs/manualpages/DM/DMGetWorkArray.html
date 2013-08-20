@@ -5,13 +5,13 @@
 <TITLE>DMGetWorkArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMGetWorkArray"><H1>DMGetWorkArray</H1></A>
-Gets a work array guaranteed to be at least the input size 
+Gets a work array guaranteed to be at least the input size, restore with <A HREF="../DM/DMRestoreWorkArray.html#DMRestoreWorkArray">DMRestoreWorkArray</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"     
-PetscErrorCode DMGetWorkArray(DM dm,PetscInt size,PetscScalar **array)
+PetscErrorCode DMGetWorkArray(DM dm,PetscInt count,PetscDataType dtype,void *mem)
 </PRE>
 Not Collective
 <P>
@@ -19,7 +19,9 @@ Not Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dm </B></TD><TD>- the DM object
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>size </B></TD><TD>- The minium size
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>count </B></TD><TD>- The minium size
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dtype </B></TD><TD>- data type (PETSC_REAL, PETSC_SCALAR, PETSC_INT)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>

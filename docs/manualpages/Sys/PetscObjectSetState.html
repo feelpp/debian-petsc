@@ -5,9 +5,9 @@
 <TITLE>PetscObjectSetState</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscObjectSetState"><H1>PetscObjectSetState</H1></A>
-Sets the state of any <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>,  regardless of the type. 
+Sets the state of any <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>, regardless of the type. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"    
@@ -18,7 +18,7 @@ Not Collective
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>obj </B></TD><TD>- any PETSc object, for example a <A HREF="../Vec/Vec.html#Vec">Vec</A>, <A HREF="../Mat/Mat.html#Mat">Mat</A> or <A HREF="../KSP/KSP.html#KSP">KSP</A>. This must be
-cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example, 
+cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example,
 <A HREF="../Sys/PetscObjectSetState.html#PetscObjectSetState">PetscObjectSetState</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,state);
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>state </B></TD><TD>- the object state

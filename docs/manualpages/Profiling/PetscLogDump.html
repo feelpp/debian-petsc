@@ -5,9 +5,9 @@
 <TITLE>PetscLogDump</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscLogDump"><H1>PetscLogDump</H1></A>
-Dumps logs of objects to a file. This file is intended to  be read by bin/petscview. This program no longer exists. 
+Dumps logs of objects to a file. This file is intended to be read by bin/petscview. This program no longer exists. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
@@ -25,10 +25,11 @@ Collective on <A HREF="../Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-log_all </B></TD><TD>- Prints extensive log information (for code compiled with PETSC_USE_LOG)
 </TD></TR></TABLE>
+<P>
 <H3><FONT COLOR="#CC3333">Usage</FONT></H3>
 <PRE>
      <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(...);
-     <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A>(); or <A HREF="../Profiling/PetscLogAllBegin.html#PetscLogAllBegin">PetscLogAllBegin</A>(); 
+     <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A>(); or <A HREF="../Profiling/PetscLogAllBegin.html#PetscLogAllBegin">PetscLogAllBegin</A>();
      ... code ...
      <A HREF="../Profiling/PetscLogDump.html#PetscLogDump">PetscLogDump</A>(filename);
      <A HREF="../Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
@@ -51,7 +52,7 @@ this file will be used.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Profiling/PetscLogBegin.html#PetscLogBegin">PetscLogBegin</A>(), <A HREF="../Profiling/PetscLogAllBegin.html#PetscLogAllBegin">PetscLogAllBegin</A>(), PetscLogView()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogDump">src/sys/plog/plog.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/logging/plog.c.html#PetscLogDump">src/sys/logging/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

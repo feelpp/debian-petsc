@@ -5,13 +5,13 @@
 <TITLE>MatRestoreRowIJ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatRestoreRowIJ"><H1>MatRestoreRowIJ</H1></A>
 Call after you are completed with the ia,ja indices obtained with <A HREF="../Mat/MatGetRowIJ.html#MatGetRowIJ">MatGetRowIJ</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatRestoreRowIJ(Mat mat,PetscInt shift,PetscBool  symmetric,PetscBool  inodecompressed,PetscInt *n,PetscInt *ia[],PetscInt* ja[],PetscBool  *done)
+PetscErrorCode MatRestoreRowIJ(Mat mat,PetscInt shift,PetscBool symmetric,PetscBool inodecompressed,PetscInt *n,const PetscInt *ia[],const PetscInt *ja[],PetscBool  *done)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -25,7 +25,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 symmetrized
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>inodecompressed </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> or <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> indicating if the nonzero structure of the
-inodes or the nonzero elements is wanted. For BAIJ matrices the compressed version is 
+inodes or the nonzero elements is wanted. For BAIJ matrices the compressed version is
 always used.
 </TD></TR></TABLE>
 <P>

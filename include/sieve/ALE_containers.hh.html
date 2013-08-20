@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/ALE_containers.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:19:16+00:00">
+<meta name="date" content="2013-07-02T14:52:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_containers_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_containers_hh</font></strong>
 <a name="line3">  3: </a>// This should be included indirectly -- only by including ALE.hh
@@ -126,7 +126,7 @@
 <a name="line116">116: </a>  //
 <a name="line117">117: </a>  // This is a set of classes and class templates describing an interface to point containers.
 <a name="line118">118: </a>  //
-<a name="line119">119: </a>
+
 <a name="line120">120: </a>  // Basic object
 <a name="line121">121: </a>  class Point {
 <a name="line122">122: </a><strong><font color="#FF0000">  public:</font></strong>
@@ -148,7 +148,7 @@
 <a name="line138">138: </a>      };
 <a name="line139">139: </a>    };
 <a name="line140">140: </a>    <font color="#4169E1">typedef</font> less_than Cmp;
-<a name="line141">141: </a>
+
 <a name="line142">142: </a>    bool operator==(const Point&amp; q) const {
 <a name="line143">143: </a>      <font color="#4169E1">return</font> ( (this-&gt;prefix == q.prefix) &amp;&amp; (this-&gt;index == q.index) );
 <a name="line144">144: </a>    };
@@ -202,7 +202,7 @@
 <a name="line192">192: </a>      };
 <a name="line193">193: </a>    };
 <a name="line194">194: </a>    <font color="#4169E1">typedef</font> less_than Cmp;
-<a name="line195">195: </a>
+
 <a name="line196">196: </a>    bool operator==(const Pair&amp; q) const {
 <a name="line197">197: </a>      <font color="#4169E1">return</font>((this-&gt;first == q.first) &amp;&amp; (this-&gt;second == q.second));
 <a name="line198">198: </a>    };
@@ -242,7 +242,7 @@
 <a name="line232">232: </a>        os &lt;&lt; e;
 <a name="line233">233: </a>      }
 <a name="line234">234: </a>      os &lt;&lt; <font color="#666666">" ]"</font> &lt;&lt; std::endl;
-<a name="line235">235: </a>
+
 <a name="line236">236: </a>    }
 <a name="line237">237: </a>  };
 
@@ -379,7 +379,7 @@
 <a name="line369">369: </a><strong><font color="#FF0000">    private:</font></strong>
 <a name="line370">370: </a>      source_type _newSource;
 <a name="line371">371: </a>    };
-<a name="line372">372: </a>
+
 <a name="line373">373: </a>    <font color="#4169E1">struct targetChanger</font> {
 <a name="line374">374: </a>      targetChanger(const target_type&amp; newTarget) : _newTarget(newTarget) {};
 <a name="line375">375: </a>      void operator()(arrow_type&amp; a) { a.target = this-&gt;_newTarget;}

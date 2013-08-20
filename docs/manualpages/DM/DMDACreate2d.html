@@ -5,9 +5,9 @@
 <TITLE>DMDACreate2d</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDACreate2d"><H1>DMDACreate2d</H1></A>
-Creates an object that will manage the communication of  two-dimensional  regular array data that is distributed across some processors. 
+Creates an object that will manage the communication of  two-dimensional regular array data that is distributed across some processors. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
@@ -20,15 +20,15 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- MPI communicator
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bx,by </B></TD><TD>- type of ghost nodes the array have. 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bx,by </B></TD><TD>- type of ghost nodes the array have.
 Use one of DMDA_BOUNDARY_NONE, DMDA_BOUNDARY_GHOSTED, DMDA_BOUNDARY_PERIODIC.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>stencil_type </B></TD><TD>- stencil type.  Use either <A HREF="../DM/DMDA_STENCIL_BOX.html#DMDA_STENCIL_BOX">DMDA_STENCIL_BOX</A> or <A HREF="../DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>.
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>M,N </B></TD><TD>- global dimension in each direction of the array (use -M and or -N to indicate that it may be set to a different value 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>M,N </B></TD><TD>- global dimension in each direction of the array (use -M and or -N to indicate that it may be set to a different value
 from the command line with -da_grid_x &lt;M&gt; -da_grid_y &lt;N&gt;)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m,n </B></TD><TD>- corresponding number of processors in each dimension 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m,n </B></TD><TD>- corresponding number of processors in each dimension
 (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have calculated)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dof </B></TD><TD>- number of degrees of freedom per node
@@ -36,7 +36,7 @@ from the command line with -da_grid_x &lt;M&gt; -da_grid_y &lt;N&gt;)
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>s </B></TD><TD>- stencil width
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>lx, ly </B></TD><TD>- arrays containing the number of nodes in each cell along
-the x and y coordinates, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>. If non-null, these
+the x and y coordinates, or NULL. If non-null, these
 must be of length as m and n, and the corresponding
 m and n cannot be <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>. The sum of the lx[] entries
 must be M, and the sum of the ly[] entries must be N.
@@ -48,7 +48,7 @@ must be M, and the sum of the ly[] entries must be N.
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-da_view </B></TD><TD>- Calls <A HREF="../DM/DMView.html#DMView">DMView</A>() at the conclusion of <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>()
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-dm_view </B></TD><TD>- Calls <A HREF="../DM/DMView.html#DMView">DMView</A>() at the conclusion of <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>()
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-da_grid_x &lt;nx&gt; </B></TD><TD>- number of grid points in x direction, if M &lt; 0
 </TD></TR>
@@ -62,7 +62,7 @@ must be M, and the sum of the ly[] entries must be N.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-da_refine_y &lt;ry&gt; </B></TD><TD>- refinement ratio in y direction
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-da_refine &lt;n&gt; </B></TD><TD>- refine the DMDA n times before creating, if M or N &lt; 0
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-da_refine &lt;n&gt; </B></TD><TD>- refine the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> n times before creating, if M or N &lt; 0
 </TD></TR></TABLE>
 <P>
 <P>
@@ -73,7 +73,7 @@ The stencil type <A HREF="../DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_S
 standard 5-pt stencil, while <A HREF="../DM/DMDA_STENCIL_BOX.html#DMDA_STENCIL_BOX">DMDA_STENCIL_BOX</A> with width 1 denotes
 the standard 9-pt stencil.
 <P>
-The array data itself is NOT stored in the DMDA, it is stored in <A HREF="../Vec/Vec.html#Vec">Vec</A> objects;
+The array data itself is NOT stored in the <A HREF="../DM/DMDA.html#DMDA">DMDA</A>, it is stored in <A HREF="../Vec/Vec.html#Vec">Vec</A> objects;
 The appropriate vector objects can be obtained with calls to <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>()
 and <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>() and calls to <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() if more are needed.
 <P>
@@ -92,7 +92,6 @@ and <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVe
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/mat/examples/tutorials/ex14.c.html">src/mat/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex1.c.html">src/dm/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex2.c.html">src/dm/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex3.c.html">src/dm/examples/tutorials/ex3.c.html</A><BR>
@@ -103,4 +102,5 @@ and <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVe
 <A HREF="../../../src/dm/examples/tutorials/ex9.c.html">src/dm/examples/tutorials/ex9.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex10.c.html">src/dm/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex12.c.html">src/dm/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/dm/examples/tutorials/ex51.c.html">src/dm/examples/tutorials/ex51.c.html</A><BR>
 </BODY></HTML>

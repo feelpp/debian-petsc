@@ -5,23 +5,26 @@
 <TITLE>PetscDrawType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawType"><H1>PetscDrawType</H1></A>
-String with the name of a <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A>  
+String with the name of a <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A> 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define PetscDrawType  char*
-#define PETSC_DRAW_X     "x"
-#define PETSC_DRAW_NULL  "null"
-#define PETSC_DRAW_WIN32 "win32"
- 
+typedef const char* PetscDrawType;
+#define PETSC_DRAW_X          "x"
+#define PETSC_DRAW_GLUT       "glut"
+#define PETSC_DRAW_OPENGLES   "opengles"
+#define PETSC_DRAW_NULL       "null"
+#define PETSC_DRAW_WIN32      "win32"
+#define PETSC_DRAW_TIKZ       "tikz"
+
 </PRE>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(), <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A>, <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
+ <A HREF="../Draw/PetscDrawSetType.html#PetscDrawSetType">PetscDrawSetType</A>(), <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A>, <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>, <A HREF="../Draw/PetscDrawCreate.html#PetscDrawCreate">PetscDrawCreate</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/../../../include/petscdraw.h.html#PetscDrawType">src/sys/draw/../../../include/petscdraw.h</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/../../../../include/petscdraw.h.html#PetscDrawType">src/sys/classes/draw/../../../../include/petscdraw.h</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

@@ -4,14 +4,14 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/interface/mhas.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:42:17+00:00">
+<meta name="date" content="2013-07-02T14:41:11+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/matimpl.h&gt;        </font><font color="#B22222">/*I "petscmat.h" I*/</font><font color="#A020F0"></font>
-<a name="line3">  3: </a>
+
 <a name="line6">  6: </a><font color="#B22222">/*@</font>
 <a name="line7">  7: </a><font color="#B22222">    <A href="../../../docs/manualpages/Mat/MatHasOperation.html#MatHasOperation">MatHasOperation</A> - Determines whether the given matrix supports the particular</font>
 <a name="line8">  8: </a><font color="#B22222">    operation.</font>
@@ -39,12 +39,12 @@
 <a name="line30"> 30: </a><font color="#B22222">@*/</font>
 <a name="line31"> 31: </a><strong><font color="#4169E1"><a name="MatHasOperation"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/Mat/MatHasOperation.html#MatHasOperation">MatHasOperation</A>(<A href="../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat,MatOperation op,<A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *has)</font></strong>
 <a name="line32"> 32: </a>{
-<a name="line37"> 37: </a>  <font color="#4169E1">if</font> (((void **)mat-&gt;ops)[op]) {*has =  <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;}
+<a name="line37"> 37: </a>  <font color="#4169E1">if</font> (((void**)mat-&gt;ops)[op]) *has =  <A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
 <a name="line38"> 38: </a>  <font color="#4169E1">else</font> {
 <a name="line39"> 39: </a>    <font color="#4169E1">if</font> (op == MATOP_GET_SUBMATRIX) {
 <a name="line41"> 41: </a>      <A href="../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
 
-<a name="line43"> 43: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat)-&gt;comm,&amp;size);
+<a name="line43"> 43: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat),&amp;size);
 <a name="line44"> 44: </a>      <font color="#4169E1">if</font> (size == 1) {
 <a name="line45"> 45: </a>        <A href="../../../docs/manualpages/Mat/MatHasOperation.html#MatHasOperation">MatHasOperation</A>(mat,MATOP_GET_SUBMATRICES,has);
 <a name="line46"> 46: </a>      } <font color="#4169E1">else</font> {

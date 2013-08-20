@@ -4,8 +4,7 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = snesf.c snesutf.c
-OBJSC    = snesf.o snesutf.o
+SOURCEC  = snesf.c
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

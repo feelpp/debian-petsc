@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials/ex14f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:06:55+00:00">
+<meta name="date" content="2013-07-02T14:49:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Solves a nonlinear system in parallel with a user-defined
@@ -34,7 +34,7 @@
 <a name="line23"> 23: </a>!
 <a name="line24"> 24: </a>!<font color="#B22222">/*T</font>
 <a name="line25"> 25: </a><font color="#B22222">!   Concepts: <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>^writing a user-defined nonlinear solver</font>
-<a name="line26"> 26: </a><font color="#B22222">!   Concepts: DMDA^using distributed arrays</font>
+<a name="line26"> 26: </a><font color="#B22222">!   Concepts: <A href="../../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>^using distributed arrays</font>
 <a name="line27"> 27: </a><font color="#B22222">!   Processors: n</font>
 <a name="line28"> 28: </a><font color="#B22222">!T*/</font>
 <a name="line29"> 29: </a>!  ------------------------------------------------------------------------
@@ -134,7 +134,7 @@
 <a name="line123">123: </a>!  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 <a name="line125">125: </a>!
-<a name="line126">126: </a>!  Create distributed array (DMDA) to manage parallel grid and vectors
+<a name="line126">126: </a>!  Create distributed array (<A href="../../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>) to manage parallel grid and vectors
 <a name="line127">127: </a>!
 <a name="line128">128: </a>      Nx = <A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>
 <a name="line129">129: </a>      Ny = <A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>
@@ -145,7 +145,7 @@
 <a name="line134">134: </a>     &amp;     PETSC_NULL_INTEGER,PETSC_NULL_INTEGER,da,ierr)
 
 <a name="line136">136: </a>!
-<a name="line137">137: </a>!  Extract global and local vectors from DMDA then duplicate <font color="#4169E1">for</font> remaining
+<a name="line137">137: </a>!  Extract global and local vectors from <A href="../../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A> then duplicate <font color="#4169E1">for</font> remaining
 <a name="line138">138: </a>!  vectors that are the same types
 <a name="line139">139: </a>!
 <a name="line140">140: </a>       call <A href="../../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da,X,ierr)
@@ -331,7 +331,7 @@
 <a name="line320">320: </a>      DM               da
 <a name="line321">321: </a>      <A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>              B
 <a name="line322">322: </a>      common   /mycommon/ mx,my,B,localX,localF,da
-<a name="line323">323: </a>
+
 <a name="line324">324: </a>      one    = 1.d0
 <a name="line325">325: </a>      lambda = 6.d0
 <a name="line326">326: </a>      hx     = one/(mx-1)
@@ -344,7 +344,7 @@
 <a name="line333">333: </a>!      the array.
 <a name="line334">334: </a>       call <A href="../../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(localX,xx,idx,ierr)
 
-<a name="line336">336: </a>!  Get local grid boundaries (<font color="#4169E1">for</font> 2-dimensional DMDA):
+<a name="line336">336: </a>!  Get local grid boundaries (<font color="#4169E1">for</font> 2-dimensional <A href="../../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>):
 <a name="line337">337: </a>!    xs, ys   - starting grid indices (no ghost points)
 <a name="line338">338: </a>!    xm, ym   - widths of local grid (no ghost points)
 <a name="line339">339: </a>!    gxs, gys - starting grid indices (including ghost points)

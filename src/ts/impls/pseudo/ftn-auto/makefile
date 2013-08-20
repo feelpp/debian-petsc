@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = posindepf.c
-OBJSC    = posindepf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

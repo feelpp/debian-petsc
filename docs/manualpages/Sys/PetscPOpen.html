@@ -5,9 +5,9 @@
 <TITLE>PetscPOpen</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscPOpen"><H1>PetscPOpen</H1></A>
-Runs a program on processor zero and sends either its input or output to  a file. 
+Runs a program on processor zero and sends either its input or output to a file. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 PetscErrorCode  PetscPOpen(MPI_Comm comm,const char machine[],const char program[],const char mode[],FILE **fp)
@@ -18,7 +18,7 @@ Logically Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, bu
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- MPI communicator, only processor zero runs the program
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>machine </B></TD><TD>- machine to run command on or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, or string with 0 in first location
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>machine </B></TD><TD>- machine to run command on or NULL, or string with 0 in first location
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>program </B></TD><TD>- name of program to run
 </TD></TR>
@@ -26,7 +26,7 @@ Logically Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, bu
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>fp </B> -the file pointer where program input or output may be read or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if don't care
+<DT><B>fp </B> -the file pointer where program input or output may be read or NULL if don't care
 <br>
 <P>
 

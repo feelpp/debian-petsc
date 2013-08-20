@@ -5,13 +5,13 @@
 <TITLE>SNESLineSearchSetPreCheck</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESLineSearchSetPreCheck"><H1>SNESLineSearchSetPreCheck</H1></A>
 Gets the pre-check function for the line search routine. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode  SNESLineSearchGetPreCheck(SNESLineSearch linesearch, SNESLineSearchPreCheckFunc *func,void **ctx)
+PetscErrorCode  SNESLineSearchGetPreCheck(SNESLineSearch linesearch, PetscErrorCode (**SNESLineSearchPreCheckFunction)(SNESLineSearch,Vec,Vec,PetscBool*,void*),void **ctx)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>linesearch </B> -the <A HREF="../SNES/SNESLineSearch.html#SNESLineSearch">SNESLineSearch</A> context
@@ -22,7 +22,7 @@ PetscErrorCode  SNESLineSearchGetPreCheck(SNESLineSearch linesearch, SNESLineSea
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func       </B></TD><TD>- [optional] function evaluation routine
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx        </B></TD><TD>- [optional] user-defined context for private data for the
-function evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+function evaluation routine (may be NULL)
 </TD></TR></TABLE>
 <P>
 
@@ -41,5 +41,4 @@ function evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex3.c.html">src/snes/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex15.c.html">src/snes/examples/tutorials/ex15.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex39f90.F.html">src/snes/examples/tutorials/ex39f90.F.html</A><BR>
 </BODY></HTML>

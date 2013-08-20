@@ -5,12 +5,11 @@
 <TITLE>ISLocalToGlobalMappingGetInfo</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="ISLocalToGlobalMappingGetInfo"><H1>ISLocalToGlobalMappingGetInfo</H1></A>
-Gets the neighbor information for each processor and  each index shared by more than one processor  
+Gets the neighbor information for each processor and each index shared by more than one processor 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
 #include "petscis.h"  
 PetscErrorCode  ISLocalToGlobalMappingGetInfo(ISLocalToGlobalMapping mapping,PetscInt *nproc,PetscInt *procs[],PetscInt *numprocs[],PetscInt **indices[])
 </PRE>
@@ -36,7 +35,7 @@ Collective on <A HREF="../IS/ISLocalToGlobalMapping.html#ISLocalToGlobalMapping"
 <P>
 <H3><FONT COLOR="#CC3333">Fortran Usage</FONT></H3>
 <pre>
-       ISLocalToGlobalMpngGetInfoSize(<A HREF="../IS/ISLocalToGlobalMapping.html#ISLocalToGlobalMapping">ISLocalToGlobalMapping</A>,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> nproc,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> numprocmax,ierr) followed by 
+       ISLocalToGlobalMpngGetInfoSize(<A HREF="../IS/ISLocalToGlobalMapping.html#ISLocalToGlobalMapping">ISLocalToGlobalMapping</A>,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> nproc,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> numprocmax,ierr) followed by
 </pre>
 <pre>
        <A HREF="../IS/ISLocalToGlobalMappingGetInfo.html#ISLocalToGlobalMappingGetInfo">ISLocalToGlobalMappingGetInfo</A>(<A HREF="../IS/ISLocalToGlobalMapping.html#ISLocalToGlobalMapping">ISLocalToGlobalMapping</A>,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> nproc, <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> procs[nproc],<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> numprocs[nproc],

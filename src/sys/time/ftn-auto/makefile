@@ -4,8 +4,7 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = cputimef.c ptimef.c
-OBJSC    = cputimef.o ptimef.o
+SOURCEC  = cputimef.c
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

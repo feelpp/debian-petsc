@@ -5,13 +5,12 @@
 <TITLE>DMKSPSetComputeRHS</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMKSPSetComputeRHS"><H1>DMKSPSetComputeRHS</H1></A>
-set <A HREF="../KSP/KSP.html#KSP">KSP</A> matrix evaluation function 
+set <A HREF="../KSP/KSP.html#KSP">KSP</A> right hand side evaluation function 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-#include "petscdm.h"  
 PetscErrorCode DMKSPSetComputeRHS(DM dm,PetscErrorCode (*func)(KSP,Vec,void*),void *ctx)
 </PRE>
 Not Collective

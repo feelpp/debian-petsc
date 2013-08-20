@@ -5,9 +5,9 @@
 <TITLE>MatCreateSBAIJ</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateSBAIJ"><H1>MatCreateSBAIJ</H1></A>
-Creates a sparse parallel matrix in symmetric block AIJ format (block compressed row).  For good matrix assembly performance the user should preallocate the matrix storage by setting the parameters  d_nz (or d_nnz) and o_nz (or o_nnz).  By setting these parameters accurately, performance can be increased by more than a factor of 50. 
+Creates a sparse parallel matrix in symmetric block AIJ format (block compressed row).  For good matrix assembly performance the user should preallocate the matrix storage by setting the parameters d_nz (or d_nnz) and o_nz (or o_nnz).  By setting these parameters accurately, performance can be increased by more than a factor of 50. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
@@ -22,24 +22,24 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bs   </B></TD><TD>- size of blockk
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m </B></TD><TD>- number of local rows (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have calculated if M is given)
-This value should be the same as the local size used in creating the 
+This value should be the same as the local size used in creating the
 y vector for the matrix-vector product y = Ax.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- number of local columns (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have calculated if N is given)
-This value should be the same as the local size used in creating the 
+This value should be the same as the local size used in creating the
 x vector for the matrix-vector product y = Ax.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>M </B></TD><TD>- number of global rows (or <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> to have calculated if m is given)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N </B></TD><TD>- number of global columns (or <A HREF="../Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A> to have calculated if n is given)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nz  </B></TD><TD>- number of block nonzeros per block row in diagonal portion of local 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nz  </B></TD><TD>- number of block nonzeros per block row in diagonal portion of local
 submatrix  (same for all local rows)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nnz </B></TD><TD>- array containing the number of block nonzeros in the various block rows 
-in the upper triangular portion of the in diagonal portion of the local 
-(possibly different for each block block row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>.  
-If you plan to factor the matrix you must leave room for the diagonal entry and 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nnz </B></TD><TD>- array containing the number of block nonzeros in the various block rows
+in the upper triangular portion of the in diagonal portion of the local
+(possibly different for each block block row) or NULL.
+If you plan to factor the matrix you must leave room for the diagonal entry and
 set its value even if it is zero.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>o_nz  </B></TD><TD>- number of block nonzeros per block row in the off-diagonal portion of local
@@ -47,20 +47,20 @@ submatrix (same for all local rows).
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>o_nnz </B></TD><TD>- array containing the number of nonzeros in the various block rows of the
 off-diagonal portion of the local submatrix (possibly different for
-each block row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>.
+each block row) or NULL.
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>A </B> -the matrix 
+<DT><B>A </B> -the matrix
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
-<DT><B>-mat_no_unroll </B> -uses code that does not unroll the loops in the 
+<DT><B>-mat_no_unroll </B> -uses code that does not unroll the loops in the
 block calculations (much slower)
 <br>
 <DT><B>-mat_block_size </B> -size of the blocks to use
 <br>
-<DT><B>-mat_mpi </B> -use the parallel matrix data structures even on one processor 
+<DT><B>-mat_mpi </B> -use the parallel matrix data structures even on one processor
 (defaults to using SeqBAIJ format on one processor)
 <br>
 <P>
@@ -88,7 +88,7 @@ local matrix (a rectangular submatrix).
 <P>
 The user can specify preallocated storage for the diagonal part of
 the local submatrix with either d_nz or d_nnz (not both).  Set
-d_nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and d_nnz=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to control dynamic
+d_nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and d_nnz=NULL for PETSc to control dynamic
 memory allocation.  Likewise, specify preallocated storage for the
 off-diagonal part of the local submatrix with o_nz or o_nnz (not both).
 <P>
@@ -97,11 +97,11 @@ the figure below we depict these three local rows and all columns (0-11).
 <P>
 <PRE>
            0 1 2 3 4 5 6 7 8 9 10 11
-          -------------------
-   row 3  |  . . . d d d o o o o o o
-   row 4  |  . . . d d d o o o o o o
-   row 5  |  . . . d d d o o o o o o
-          -------------------
+          --------------------------
+   row 3  |. . . d d d o o o o  o  o
+   row 4  |. . . d d d o o o o  o  o
+   row 5  |. . . d d d o o o o  o  o
+          --------------------------
 </PRE>
 
 <P>

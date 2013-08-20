@@ -1,11 +1,10 @@
 
 #requiresdefine   'PETSC_HAVE_FORTRAN'
 ALL: lib
-CPPFLAGS = 
+CPPFLAGS =
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = partitionf.c
-OBJSC    = partitionf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

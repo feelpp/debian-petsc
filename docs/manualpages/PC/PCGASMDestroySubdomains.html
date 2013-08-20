@@ -5,9 +5,9 @@
 <TITLE>PCGASMDestroySubdomains</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCGASMDestroySubdomains"><H1>PCGASMDestroySubdomains</H1></A>
-Destroys the index sets created with <A HREF="../PC/PCGASMCreateLocalSubdomains.html#PCGASMCreateLocalSubdomains">PCGASMCreateLocalSubdomains</A>() or <A HREF="../PC/PCGASMCreateSubdomains2D.html#PCGASMCreateSubdomains2D">PCGASMCreateSubdomains2D</A>. Should be  called after setting subdomains with <A HREF="../PC/PCGASMSetSubdomains.html#PCGASMSetSubdomains">PCGASMSetSubdomains</A>(). 
+Destroys the index sets created with <A HREF="../PC/PCGASMCreateLocalSubdomains.html#PCGASMCreateLocalSubdomains">PCGASMCreateLocalSubdomains</A>() or <A HREF="../PC/PCGASMCreateSubdomains2D.html#PCGASMCreateSubdomains2D">PCGASMCreateSubdomains2D</A>. Should be called after setting subdomains with <A HREF="../PC/PCGASMSetSubdomains.html#PCGASMSetSubdomains">PCGASMSetSubdomains</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
@@ -21,7 +21,7 @@ Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>iis </B></TD><TD>- the array of inner subdomains,
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ois </B></TD><TD>- the array of outer subdomains, can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ois </B></TD><TD>- the array of outer subdomains, can be NULL
 </TD></TR></TABLE>
 <P>
 

@@ -5,24 +5,27 @@
 <TITLE>DMGetDefaultGlobalSection</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMGetDefaultGlobalSection"><H1>DMGetDefaultGlobalSection</H1></A>
-Get the <A HREF="../Vec/PetscSection.html#PetscSection">PetscSection</A> encoding the global data layout for the DM. 
+Get the <A HREF="../IS/PetscSection.html#PetscSection">PetscSection</A> encoding the global data layout for the DM. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"     
-PetscErrorCode DMGetDefaultGlobalSection(DM dm, PetscSection *section)</PRE>
+PetscErrorCode DMGetDefaultGlobalSection(DM dm, PetscSection *section)
+</PRE>
+Collective on DM
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>dm </B> -The DM
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>section </B> -The <A HREF="../Vec/PetscSection.html#PetscSection">PetscSection</A>
+<DT><B>section </B> -The <A HREF="../IS/PetscSection.html#PetscSection">PetscSection</A>
 <br>
 <P>
 
 <P>
-Note: This gets a borrowed reference, so the user should not destroy this <A HREF="../Vec/PetscSection.html#PetscSection">PetscSection</A>.
+Note: This gets a borrowed reference, so the user should not destroy this <A HREF="../IS/PetscSection.html#PetscSection">PetscSection</A>.
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMSetDefaultSection.html#DMSetDefaultSection">DMSetDefaultSection</A>(), <A HREF="../DM/DMGetDefaultSection.html#DMGetDefaultSection">DMGetDefaultSection</A>()
@@ -31,4 +34,6 @@ Note: This gets a borrowed reference, so the user should not destroy this <A HRE
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
 </BODY></HTML>

@@ -10,22 +10,27 @@
 #include <finclude/petscdmda.h>
 
        PetscInt is,js,iw,jw
+       PetscInt one,three
        PetscErrorCode ierr
        KSP ksp
        DM dm
        external ComputeRHS,ComputeMatrix,ComputeInitialGuess
 
+       one = 1
+       three = 3
+
        call PetscInitialize(PETSC_NULL_CHARACTER,ierr)
        call KSPCreate(MPI_COMM_WORLD,ksp,ierr)
-       call DMDACreate2D(MPI_COMM_WORLD, DMDA_BOUNDARY_NONE,              &
-     &    DMDA_BOUNDARY_NONE, DMDA_STENCIL_STAR, -3,-3, PETSC_DECIDE,       &
-     &    PETSC_DECIDE,1,1, PETSC_NULL_INTEGER, PETSC_NULL_INTEGER,       &
-     &    dm, ierr)
-       call DMSetInitialGuess(dm,ComputeInitialGuess,ierr)
+       call DMDACreate2D(MPI_COMM_WORLD, DMDA_BOUNDARY_NONE,            &
+     &    DMDA_BOUNDARY_NONE, DMDA_STENCIL_STAR,-three,-three,          &
+     &    PETSC_DECIDE,PETSC_DECIDE,one,one, PETSC_NULL_INTEGER,        &
+     &    PETSC_NULL_INTEGER, dm, ierr)
+       call KSPSetDM(ksp,dm,ierr)
+       call KSPSetComputeInitialGuess(ksp,ComputeInitialGuess,             &
+     &                                PETSC_NULL_OBJECT,ierr)
        call KSPSetComputeRHS(ksp,ComputeRHS,PETSC_NULL_OBJECT,ierr)
        call KSPSetComputeOperators(ksp,ComputeMatrix,                   &
      &      PETSC_NULL_OBJECT,ierr)
-       call KSPSetDM(ksp,dm,ierr)
        call DMDAGetCorners(dm,is,js,PETSC_NULL_INTEGER,iw,jw,             &
      &                     PETSC_NULL_INTEGER,ierr)
        call KSPSetFromOptions(ksp,ierr)
@@ -37,15 +42,16 @@
        end
 
 
-       subroutine ComputeInitialGuess(dm,b,ierr)
+       subroutine ComputeInitialGuess(ksp,b,ctx,ierr)
        implicit none
        PetscErrorCode  ierr
-       DM dm
+       KSP ksp
+       PetscInt ctx(*)
        Vec b
        PetscScalar  h
        h=0.0
        call VecSet(b,h,ierr)
-       end subroutine 
+       end subroutine
 
        subroutine ComputeRHS(ksp,b,dummy,ierr)
        implicit none
@@ -56,7 +62,7 @@
        PetscScalar  h
        h=1.0
        call VecSet(b,h,ierr)
-       end subroutine 
+       end subroutine
 
        subroutine ComputeMatrix(ksp,A,B,str,dummy,ierr)
        implicit none
@@ -127,4 +133,4 @@
          call MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY,ierr)
          call MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY,ierr)
        endif
-       end subroutine 
+       end subroutine

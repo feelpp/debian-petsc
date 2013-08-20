@@ -6,26 +6,21 @@
    These routines simplify the use of command line, file options, etc., and are used to manipulate the options database.
    This provides the low-level interface, the high level interface is in aoptions.c
 
-   Some routines use regular malloc and free because it cannot know  what malloc is requested with the 
+   Some routines use regular malloc and free because it cannot know  what malloc is requested with the
    options database until it has already processed the input.
 */
 
-#include <petscsys.h>        /*I  "petscsys.h"   I*/
+#include <petsc-private/petscimpl.h>        /*I  "petscsys.h"   I*/
+#include <petscviewer.h>
 #include <ctype.h>
-#if defined(PETSC_HAVE_STDLIB_H)
-#include <stdlib.h>
-#endif
 #if defined(PETSC_HAVE_MALLOC_H)
 #include <malloc.h>
-#endif
-#if defined(PETSC_HAVE_SYS_PARAM_H)
-#include <sys/param.h>
 #endif
 #if defined(PETSC_HAVE_YAML)
 #include <yaml.h>
 #endif
 
-/* 
+/*
     This table holds all the options set by the user. For simplicity, we use a static size database
 */
 #define MAXOPTIONS 512
@@ -49,7 +44,7 @@ typedef struct {
 
   /* Prefixes */
   PetscInt prefixind,prefixstack[MAXPREFIXES];
-  char prefix[2048];
+  char     prefix[2048];
 } PetscOptionsTable;
 
 
@@ -59,14 +54,14 @@ extern PetscOptionsObjectType PetscOptionsObject;
 /*
     Options events monitor
 */
-#define PetscOptionsMonitor(name,value)                                     \
-        { PetscErrorCode _ierr; PetscInt _i,_im = options->numbermonitors; \
-          for (_i=0; _i<_im; _i++) {\
-            _ierr = (*options->monitor[_i])(name, value, options->monitorcontext[_i]);CHKERRQ(_ierr); \
-	  } \
-	}
+#define PetscOptionsMonitor(name,value)                              \
+  { PetscErrorCode _ierr; PetscInt _i,_im = options->numbermonitors; \
+    for (_i=0; _i<_im; _i++) { \
+      _ierr = (*options->monitor[_i])(name, value, options->monitorcontext[_i]);CHKERRQ(_ierr); \
+    } \
+  }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsStringToInt"
 /*
    PetscOptionsStringToInt - Converts a string to an integer value. Handles special cases such as "default" and "decide"
@@ -91,20 +86,14 @@ PetscErrorCode  PetscOptionsStringToInt(const char name[],PetscInt *a)
   }
   ierr = PetscStrcasecmp(name,"mouse",&mouse);CHKERRQ(ierr);
 
-  if (tdefault) {
-    *a = PETSC_DEFAULT;
-  } else if (decide) {
-    *a = PETSC_DECIDE;
-  } else if (mouse) {
-    *a = -1;
-  } else {
-    if (name[0] != '+' && name[0] != '-' && name[0] < '0' && name[0] > '9') {
-      SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Input string %s has no integer value (do not include . in it)",name);
-    }
+  if (tdefault)    *a = PETSC_DEFAULT;
+  else if (decide) *a = PETSC_DECIDE;
+  else if (mouse)  *a = -1;
+  else {
+    if (name[0] != '+' && name[0] != '-' && name[0] < '0' && name[0] > '9') SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Input string %s has no integer value (do not include . in it)",name);
+
     for (i=1; i<len; i++) {
-      if (name[i] < '0' || name[i] > '9') {
-        SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Input string %s has no integer value (do not include . in it)",name);
-      }
+      if (name[i] < '0' || name[i] > '9') SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Input string %s has no integer value (do not include . in it)",name);
     }
 
 #if defined(PETSC_USE_64BIT_INDICES) && defined(PETSC_HAVE_ATOLL)
@@ -118,7 +107,7 @@ PetscErrorCode  PetscOptionsStringToInt(const char name[],PetscInt *a)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsStringToReal"
 /*
    Converts a string to PetscReal value. Handles special cases like "default" and "decide"
@@ -142,20 +131,16 @@ PetscErrorCode  PetscOptionsStringToReal(const char name[],PetscReal *a)
     ierr = PetscStrcasecmp(name,"DECIDE",&decide);CHKERRQ(ierr);
   }
 
-  if (tdefault) {
-    *a = PETSC_DEFAULT;
-  } else if (decide) {
-    *a = PETSC_DECIDE;
-  } else {
-    if (name[0] != '+' && name[0] != '-' && name[0] != '.' && name[0] < '0' && name[0] > '9') {
-      SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Input string %s has no numeric value ",name);
-    }
-    *a  = atof(name);
+  if (tdefault)    *a = PETSC_DEFAULT;
+  else if (decide) *a = PETSC_DECIDE;
+  else {
+    if (name[0] != '+' && name[0] != '-' && name[0] != '.' && name[0] < '0' && name[0] > '9') SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Input string %s has no numeric value ",name);
+    *a = atof(name);
   }
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsStringToBool"
 /*
    PetscOptionsStringToBool - Converts string to PetscBool , handles cases like "yes", "no", "true", "false", "0", "1"
@@ -189,10 +174,10 @@ PetscErrorCode  PetscOptionsStringToBool(const char value[], PetscBool  *a)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscGetProgramName"
 /*@C
-    PetscGetProgramName - Gets the name of the running program. 
+    PetscGetProgramName - Gets the name of the running program.
 
     Not Collective
 
@@ -206,7 +191,7 @@ PetscErrorCode  PetscOptionsStringToBool(const char value[], PetscBool  *a)
 
     Notes:
     The name of the program is copied into the user-provided character
-    array of length len.  On some machines the program name includes 
+    array of length len.  On some machines the program name includes
     its entire path, so one should generally set len >= PETSC_MAX_PATH_LEN.
 @*/
 PetscErrorCode  PetscGetProgramName(char name[],size_t len)
@@ -220,19 +205,20 @@ PetscErrorCode  PetscGetProgramName(char name[],size_t len)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscSetProgramName"
 PetscErrorCode  PetscSetProgramName(const char name[])
-{ 
+{
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   options->namegiven = PETSC_TRUE;
+
   ierr  = PetscStrncpy(options->programname,name,PETSC_MAX_PATH_LEN);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsValidKey"
 /*@
     PetscOptionsValidKey - PETSc Options database keys must begin with one or two dashes (-) followed by a letter.
@@ -259,7 +245,7 @@ PetscErrorCode  PetscOptionsValidKey(const char in_str[],PetscBool  *key)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsInsertString"
 /*@C
      PetscOptionsInsertString - Inserts options into the database from a string
@@ -309,13 +295,13 @@ PetscErrorCode  PetscOptionsInsertString(const char in_str[])
       ierr = PetscOptionsValidKey(second,&key);CHKERRQ(ierr);
       if (!key) {
         ierr = PetscOptionsSetValue(first,second);CHKERRQ(ierr);
-        ierr = PetscTokenFind(token,&first);CHKERRQ(ierr);        
+        ierr = PetscTokenFind(token,&first);CHKERRQ(ierr);
       } else {
-        ierr  = PetscOptionsSetValue(first,PETSC_NULL);CHKERRQ(ierr);
+        ierr  = PetscOptionsSetValue(first,NULL);CHKERRQ(ierr);
         first = second;
       }
     } else {
-      ierr = PetscTokenFind(token,&first);CHKERRQ(ierr);        
+      ierr = PetscTokenFind(token,&first);CHKERRQ(ierr);
     }
   }
   ierr = PetscTokenDestroy(&token);CHKERRQ(ierr);
@@ -327,15 +313,15 @@ PetscErrorCode  PetscOptionsInsertString(const char in_str[])
 */
 static char *Petscgetline(FILE * f)
 {
-  size_t size = 0;
-  size_t len  = 0;
-  size_t last = 0;
-  char * buf  = PETSC_NULL;
+  size_t size  = 0;
+  size_t len   = 0;
+  size_t last  = 0;
+  char   *buf  = NULL;
 
   if (feof(f)) return 0;
   do {
     size += 1024; /* BUFSIZ is defined as "the optimal read size for this platform" */
-    buf = (char*)realloc((void *)buf,size); /* realloc(NULL,n) is the same as malloc(n) */            
+    buf   = (char*)realloc((void*)buf,size); /* realloc(NULL,n) is the same as malloc(n) */
     /* Actually do the read. Note that fgets puts a terminal '\0' on the
     end of the string, so we make sure we overwrite this */
     if (!fgets(buf+len,size,f)) buf[len]=0;
@@ -343,12 +329,12 @@ static char *Petscgetline(FILE * f)
     last = len - 1;
   } while (!feof(f) && buf[last] != '\n' && buf[last] != '\r');
   if (len) return buf;
-  free(buf); 
+  free(buf);
   return 0;
 }
 
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsInsertFile"
 /*@C
      PetscOptionsInsertFile - Inserts options into the database from a file.
@@ -360,6 +346,8 @@ static char *Petscgetline(FILE * f)
 .   file - name of file
 -   require - if PETSC_TRUE will generate an error if the file does not exist
 
+
+  Notes: Use  # for lines that are comments and which should be ignored.
 
   Level: developer
 
@@ -375,33 +363,32 @@ PetscErrorCode  PetscOptionsInsertFile(MPI_Comm comm,const char file[],PetscBool
 {
   char           *string,fname[PETSC_MAX_PATH_LEN],*first,*second,*third,*vstring = 0,*astring = 0;
   PetscErrorCode ierr;
-  size_t         i,len;
+  size_t         i,len,bytes;
   FILE           *fd;
   PetscToken     token;
   int            err;
-  char           cmt[3]={'#','!','%'},*cmatch;
+  char           cmt[1]={'#'},*cmatch;
   PetscMPIInt    rank,cnt=0,acnt=0;
+  PetscSegBuffer vseg,aseg;
 
   PetscFunctionBegin;
   ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr);
   if (!rank) {
-    /* Warning: assume a maximum size for all options in a string */
-    ierr = PetscMalloc(128000*sizeof(char),&vstring);CHKERRQ(ierr);
-    vstring[0] = 0;
-    ierr = PetscMalloc(64000*sizeof(char),&astring);CHKERRQ(ierr);
-    astring[0] = 0;
-    cnt     = 0;
-    acnt    = 0;
+    ierr = PetscSegBufferCreate(1,4000,&vseg);CHKERRQ(ierr);
+    ierr = PetscSegBufferCreate(1,2000,&aseg);CHKERRQ(ierr);
+    cnt        = 0;
+    acnt       = 0;
 
     ierr = PetscFixFilename(file,fname);CHKERRQ(ierr);
-    fd   = fopen(fname,"r"); 
+    fd   = fopen(fname,"r");
     if (fd) {
       /* the following line will not work when opening initial files (like .petscrc) since info is not yet set */
       ierr = PetscInfo1(0,"Opened options file %s\n",file);CHKERRQ(ierr);
+
       while ((string = Petscgetline(fd))) {
         /* eliminate comments from each line */
-        for (i=0; i<3; i++){
-          ierr = PetscStrchr(string,cmt[i],&cmatch);
+        for (i=0; i<1; i++) {
+          ierr = PetscStrchr(string,cmt[i],&cmatch);CHKERRQ(ierr);
           if (cmatch) *cmatch = 0;
         }
         ierr = PetscStrlen(string,&len);CHKERRQ(ierr);
@@ -423,43 +410,52 @@ PetscErrorCode  PetscOptionsInsertFile(MPI_Comm comm,const char file[],PetscBool
         if (!first) {
           goto destroy;
         } else if (first[0] == '-') {
-          /* warning: should be making sure we do not overfill vstring */
-          ierr = PetscStrcat(vstring,first);CHKERRQ(ierr);
-          ierr = PetscStrcat(vstring," ");CHKERRQ(ierr);
+          ierr = PetscStrlen(first,&len);CHKERRQ(ierr);
+          ierr = PetscSegBufferGet(vseg,len+1,&vstring);CHKERRQ(ierr);
+          ierr = PetscMemcpy(vstring,first,len);CHKERRQ(ierr);
+          vstring[len] = ' ';
           if (second) {
-            /* protect second with quotes in case it contains strings */
-            ierr = PetscStrcat(vstring,"\"");CHKERRQ(ierr);
-            ierr = PetscStrcat(vstring,second);CHKERRQ(ierr);
-            ierr = PetscStrcat(vstring,"\"");CHKERRQ(ierr);
+            ierr = PetscStrlen(second,&len);CHKERRQ(ierr);
+            ierr = PetscSegBufferGet(vseg,len+3,&vstring);CHKERRQ(ierr);
+            vstring[0] = '"';
+            ierr = PetscMemcpy(vstring+1,second,len);CHKERRQ(ierr);
+            vstring[len+1] = '"';
+            vstring[len+2] = ' ';
           }
-          ierr = PetscStrcat(vstring," ");CHKERRQ(ierr);
         } else {
-          PetscBool  match;
+          PetscBool match;
 
           ierr = PetscStrcasecmp(first,"alias",&match);CHKERRQ(ierr);
           if (match) {
             ierr = PetscTokenFind(token,&third);CHKERRQ(ierr);
             if (!third) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Error in options file:alias missing (%s)",second);
-            ierr = PetscStrcat(astring,second);CHKERRQ(ierr);
-            ierr = PetscStrcat(astring," ");CHKERRQ(ierr);
-            ierr = PetscStrcat(astring,third);CHKERRQ(ierr);
-            ierr = PetscStrcat(astring," ");CHKERRQ(ierr);
-          } else {
-            SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Unknown statement in options file: (%s)",string);
-          }
+            ierr = PetscStrlen(second,&len);CHKERRQ(ierr);
+            ierr = PetscSegBufferGet(aseg,len+1,&astring);CHKERRQ(ierr);
+            ierr = PetscMemcpy(astring,second,len);CHKERRQ(ierr);
+            astring[len] = ' ';
+
+            ierr = PetscStrlen(third,&len);CHKERRQ(ierr);
+            ierr = PetscSegBufferGet(aseg,len+1,&astring);CHKERRQ(ierr);
+            ierr = PetscMemcpy(astring,third,len);CHKERRQ(ierr);
+            astring[len] = ' ';
+          } else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Unknown statement in options file: (%s)",string);
         }
-        destroy:
+destroy:
         ierr = PetscTokenDestroy(&token);CHKERRQ(ierr);
       }
       err = fclose(fd);
       if (err) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_SYS,"fclose() failed on file");
-      ierr = PetscStrlen(astring,&len);CHKERRQ(ierr);
-      acnt = PetscMPIIntCast(len);CHKERRQ(ierr);
-      ierr = PetscStrlen(vstring,&len);CHKERRQ(ierr);
-      cnt  = PetscMPIIntCast(len);CHKERRQ(ierr);
-    } else if (require) {
-      SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_USER,"Unable to open Options File %s",fname);
-    }
+      ierr = PetscSegBufferGetSize(aseg,&bytes);CHKERRQ(ierr); /* size without null termination */
+      ierr = PetscMPIIntCast(bytes,&acnt);CHKERRQ(ierr);
+      ierr = PetscSegBufferGet(aseg,1,&astring);CHKERRQ(ierr);
+      astring[0] = 0;
+      ierr = PetscSegBufferExtractInPlace(aseg,&astring);CHKERRQ(ierr);
+      ierr = PetscSegBufferGetSize(vseg,&bytes);CHKERRQ(ierr); /* size without null termination */
+      ierr = PetscMPIIntCast(bytes,&cnt);CHKERRQ(ierr);
+      ierr = PetscSegBufferGet(vseg,1,&vstring);CHKERRQ(ierr);
+      vstring[0] = 0;
+      ierr = PetscSegBufferExtractInPlace(vseg,&vstring);CHKERRQ(ierr);
+    } else if (require) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_USER,"Unable to open Options File %s",fname);
   }
 
   ierr = MPI_Bcast(&acnt,1,MPI_INT,0,comm);CHKERRQ(ierr);
@@ -470,8 +466,7 @@ PetscErrorCode  PetscOptionsInsertFile(MPI_Comm comm,const char file[],PetscBool
     if (rank) {
       ierr = PetscMalloc((acnt+1)*sizeof(char),&astring);CHKERRQ(ierr);
     }
-    ierr = MPI_Bcast(astring,acnt,MPI_CHAR,0,comm);CHKERRQ(ierr);
-    astring[acnt] = 0;
+    ierr = MPI_Bcast(astring,acnt+1,MPI_CHAR,0,comm);CHKERRQ(ierr);
     ierr = PetscTokenCreate(astring,' ',&token);CHKERRQ(ierr);
     ierr = PetscTokenFind(token,&first);CHKERRQ(ierr);
     while (first) {
@@ -487,16 +482,20 @@ PetscErrorCode  PetscOptionsInsertFile(MPI_Comm comm,const char file[],PetscBool
     if (rank) {
       ierr = PetscMalloc((cnt+1)*sizeof(char),&vstring);CHKERRQ(ierr);
     }
-    ierr = MPI_Bcast(vstring,cnt,MPI_CHAR,0,comm);CHKERRQ(ierr);
-    vstring[cnt] = 0;
+    ierr = MPI_Bcast(vstring,cnt+1,MPI_CHAR,0,comm);CHKERRQ(ierr);
     ierr = PetscOptionsInsertString(vstring);CHKERRQ(ierr);
   }
-  ierr = PetscFree(astring);CHKERRQ(ierr);
-  ierr = PetscFree(vstring);CHKERRQ(ierr);
+  if (!rank) {
+    ierr = PetscSegBufferDestroy(&aseg);CHKERRQ(ierr);
+    ierr = PetscSegBufferDestroy(&vseg);CHKERRQ(ierr);
+  } else {
+    ierr = PetscFree(astring);CHKERRQ(ierr);
+    ierr = PetscFree(vstring);CHKERRQ(ierr);
+  }
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsInsertArgs_Private"
 static PetscErrorCode PetscOptionsInsertArgs_Private(int argc,char *args[])
 {
@@ -506,7 +505,7 @@ static PetscErrorCode PetscOptionsInsertArgs_Private(int argc,char *args[])
 
   PetscFunctionBegin;
   while (left) {
-    PetscBool  isoptions_file,isprefixpush,isprefixpop,isp4,tisp4,isp4yourname,isp4rmrank,key;
+    PetscBool isoptions_file,isprefixpush,isprefixpop,isp4,tisp4,isp4yourname,isp4rmrank,key;
     ierr = PetscStrcasecmp(eargs[0],"-options_file",&isoptions_file);CHKERRQ(ierr);
     ierr = PetscStrcasecmp(eargs[0],"-prefix_push",&isprefixpush);CHKERRQ(ierr);
     ierr = PetscStrcasecmp(eargs[0],"-prefix_pop",&isprefixpop);CHKERRQ(ierr);
@@ -548,7 +547,7 @@ static PetscErrorCode PetscOptionsInsertArgs_Private(int argc,char *args[])
       PetscBool nextiskey = PETSC_FALSE;
       if (left >= 2) {ierr = PetscOptionsValidKey(eargs[1],&nextiskey);CHKERRQ(ierr);}
       if (left < 2 || nextiskey) {
-        ierr = PetscOptionsSetValue(eargs[0],PETSC_NULL);CHKERRQ(ierr);
+        ierr = PetscOptionsSetValue(eargs[0],NULL);CHKERRQ(ierr);
         eargs++; left--;
       } else {
         ierr = PetscOptionsSetValue(eargs[0],eargs[1]);CHKERRQ(ierr);
@@ -560,7 +559,7 @@ static PetscErrorCode PetscOptionsInsertArgs_Private(int argc,char *args[])
 }
 
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsInsert"
 /*@C
    PetscOptionsInsert - Inserts into the options database from the command line,
@@ -601,18 +600,21 @@ PetscErrorCode  PetscOptionsInsert(int *argc,char ***args,const char file[])
   }
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank);CHKERRQ(ierr);
 
-  options->argc     = (argc) ? *argc : 0;
-  options->args     = (args) ? *args : PETSC_NULL;
+  options->argc = (argc) ? *argc : 0;
+  options->args = (args) ? *args : NULL;
 
   if (file && file[0]) {
-    ierr = PetscOptionsInsertFile(PETSC_COMM_WORLD,file,PETSC_TRUE);CHKERRQ(ierr);
+    char fullpath[PETSC_MAX_PATH_LEN];
+
+    ierr = PetscStrreplace(PETSC_COMM_WORLD,file,fullpath,PETSC_MAX_PATH_LEN);CHKERRQ(ierr);
+    ierr = PetscOptionsInsertFile(PETSC_COMM_WORLD,fullpath,PETSC_TRUE);CHKERRQ(ierr);
   }
   /*
      We want to be able to give -skip_petscrc on the command line, but need to parse it first.  Since the command line
      should take precedence, we insert it twice.  It would be sufficient to just scan for -skip_petscrc.
   */
   if (argc && args && *argc) {ierr = PetscOptionsInsertArgs_Private(*argc,*args);CHKERRQ(ierr);}
-  ierr = PetscOptionsGetBool(PETSC_NULL,"-skip_petscrc",&flag,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetBool(NULL,"-skip_petscrc",&flag,NULL);CHKERRQ(ierr);
   if (!flag) {
     ierr = PetscGetHomeDirectory(pfile,PETSC_MAX_PATH_LEN-16);CHKERRQ(ierr);
     /* warning: assumes all processes have a home directory or none, but nothing in between */
@@ -627,7 +629,7 @@ PetscErrorCode  PetscOptionsInsert(int *argc,char ***args,const char file[])
   /* insert environmental options */
   {
     char   *eoptions = 0;
-    size_t len = 0;
+    size_t len       = 0;
     if (!rank) {
       eoptions = (char*)getenv("PETSC_OPTIONS");
       ierr     = PetscStrlen(eoptions,&len);CHKERRQ(ierr);
@@ -647,19 +649,18 @@ PetscErrorCode  PetscOptionsInsert(int *argc,char ***args,const char file[])
   }
 
 #if defined(PETSC_HAVE_YAML)
-  char yaml_file[PETSC_MAX_PATH_LEN];
+  char      yaml_file[PETSC_MAX_PATH_LEN];
   PetscBool yaml_flg = PETSC_FALSE;
-  ierr = PetscOptionsGetString(PETSC_NULL,"-options_file_yaml",yaml_file,PETSC_MAX_PATH_LEN,&yaml_flg);CHKERRQ(ierr);
-  if (yaml_flg) ierr = PetscOptionsInsertFile_YAML(PETSC_COMM_WORLD,yaml_file,PETSC_TRUE);CHKERRQ(ierr);
+  ierr = PetscOptionsGetString(NULL,"-options_file_yaml",yaml_file,PETSC_MAX_PATH_LEN,&yaml_flg);CHKERRQ(ierr);
+  if (yaml_flg) ierr = PetscOptionsInsertFileYAML(PETSC_COMM_WORLD,yaml_file,PETSC_TRUE);CHKERRQ(ierr);
 #endif
 
   /* insert command line options again because they take precedence over arguments in petscrc/environment */
   if (argc && args && *argc) {ierr = PetscOptionsInsertArgs_Private(*argc,*args);CHKERRQ(ierr);}
-
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsView"
 /*@C
    PetscOptionsView - Prints the options that have been loaded. This is
@@ -679,7 +680,7 @@ PetscErrorCode  PetscOptionsInsert(int *argc,char ***args,const char file[])
 
 .seealso: PetscOptionsAllUsed()
 @*/
-PetscErrorCode  PetscOptionsView(PetscViewer viewer) 
+PetscErrorCode  PetscOptionsView(PetscViewer viewer)
 {
   PetscErrorCode ierr;
   PetscInt       i;
@@ -688,7 +689,7 @@ PetscErrorCode  PetscOptionsView(PetscViewer viewer)
   PetscFunctionBegin;
   if (!viewer) viewer = PETSC_VIEWER_STDOUT_WORLD;
   ierr = PetscObjectTypeCompare((PetscObject)viewer,PETSCVIEWERASCII,&isascii);CHKERRQ(ierr);
-  if (!isascii) SETERRQ(((PetscObject)viewer)->comm,PETSC_ERR_SUP,"Only supports ASCII viewer");
+  if (!isascii) SETERRQ(PetscObjectComm((PetscObject)viewer),PETSC_ERR_SUP,"Only supports ASCII viewer");
 
   if (!options) {ierr = PetscOptionsInsert(0,0,0);CHKERRQ(ierr);}
   if (options->N) {
@@ -709,7 +710,7 @@ PetscErrorCode  PetscOptionsView(PetscViewer viewer)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetAll"
 /*@C
    PetscOptionsGetAll - Lists all the options the program was run with in a single string.
@@ -731,8 +732,8 @@ PetscErrorCode  PetscOptionsGetAll(char *copts[])
 {
   PetscErrorCode ierr;
   PetscInt       i;
-  size_t         len = 1,lent = 0;
-  char           *coptions = PETSC_NULL;
+  size_t         len       = 1,lent = 0;
+  char           *coptions = NULL;
 
   PetscFunctionBegin;
   if (!options) {ierr = PetscOptionsInsert(0,0,0);CHKERRQ(ierr);}
@@ -744,7 +745,7 @@ PetscErrorCode  PetscOptionsGetAll(char *copts[])
     if (options->values[i]) {
       ierr = PetscStrlen(options->values[i],&lent);CHKERRQ(ierr);
       len += 1 + lent;
-    } 
+    }
   }
   ierr = PetscMalloc(len*sizeof(char),&coptions);CHKERRQ(ierr);
   coptions[0] = 0;
@@ -789,17 +790,17 @@ Level: advanced
 PetscErrorCode  PetscOptionsPrefixPush(const char prefix[])
 {
   PetscErrorCode ierr;
-  size_t n;
-  PetscInt start;
-  char buf[2048];
-  PetscBool  key;
+  size_t         n;
+  PetscInt       start;
+  char           buf[2048];
+  PetscBool      key;
 
   PetscFunctionBegin;
   PetscValidCharPointer(prefix,1);
   /* Want to check validity of the key using PetscOptionsValidKey(), which requires that the first character is a '-' */
   buf[0] = '-';
-  ierr = PetscStrncpy(buf+1,prefix,sizeof buf - 1);
-  buf[sizeof buf - 1] = 0;
+  ierr = PetscStrncpy(buf+1,prefix,sizeof(buf) - 1);CHKERRQ(ierr);
+  buf[sizeof(buf) - 1] = 0;
   ierr = PetscOptionsValidKey(buf,&key);CHKERRQ(ierr);
   if (!key) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_USER,"Given prefix \"%s\" not valid (the first character must be a letter, do not include leading '-')",prefix);
 
@@ -836,7 +837,7 @@ PetscErrorCode  PetscOptionsPrefixPop(void)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsClear"
 /*@C
     PetscOptionsClear - Removes all options form the database leaving it empty.
@@ -861,18 +862,18 @@ PetscErrorCode  PetscOptionsClear(void)
   }
   options->prefix[0] = 0;
   options->prefixind = 0;
-  options->N        = 0;
-  options->Naliases = 0;
+  options->N         = 0;
+  options->Naliases  = 0;
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsDestroy"
 /*@C
-    PetscOptionsDestroy - Destroys the option database. 
+    PetscOptionsDestroy - Destroys the option database.
 
     Note:
-    Since PetscOptionsDestroy() is called by PetscFinalize(), the user 
+    Since PetscOptionsDestroy() is called by PetscFinalize(), the user
     typically does not need to call this routine.
 
    Level: developer
@@ -891,10 +892,10 @@ PetscErrorCode  PetscOptionsDestroy(void)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsSetValue"
 /*@C
-   PetscOptionsSetValue - Sets an option name-value pair in the options 
+   PetscOptionsSetValue - Sets an option name-value pair in the options
    database, overriding whatever is already present.
 
    Not collective, but setting values on certain processors could cause problems
@@ -909,6 +910,8 @@ PetscErrorCode  PetscOptionsDestroy(void)
    Note:
    Only some options have values associated with them, such as
    -ksp_rtol tol.  Other options stand alone, such as -ksp_monitor.
+
+  Developers Note: Uses malloc() directly because PETSc may not yet have been fully initialized
 
   Concepts: options database^adding option
 
@@ -933,13 +936,13 @@ PetscErrorCode  PetscOptionsSetValue(const char iname[],const char value[])
 
   name++; /* skip starting hyphen */
   if (options->prefixind > 0) {
-    ierr = PetscStrncpy(fullname,options->prefix,sizeof fullname);CHKERRQ(ierr);
-    ierr = PetscStrncat(fullname,name,sizeof fullname);CHKERRQ(ierr);
+    ierr = PetscStrncpy(fullname,options->prefix,sizeof(fullname));CHKERRQ(ierr);
+    ierr = PetscStrncat(fullname,name,sizeof(fullname));CHKERRQ(ierr);
     name = fullname;
   }
 
   /* check against aliases */
-  N = options->Naliases; 
+  N = options->Naliases;
   for (i=0; i<N; i++) {
     ierr = PetscStrcasecmp(options->aliases1[i],name,&match);CHKERRQ(ierr);
     if (match) {
@@ -950,18 +953,18 @@ PetscErrorCode  PetscOptionsSetValue(const char iname[],const char value[])
 
   N     = options->N;
   n     = N;
-  names = options->names; 
- 
+  names = options->names;
+
   for (i=0; i<N; i++) {
     ierr = PetscStrcasecmp(names[i],name,&match);CHKERRQ(ierr);
-    ierr  = PetscStrgrt(names[i],name,&gt);CHKERRQ(ierr);
+    ierr = PetscStrgrt(names[i],name,&gt);CHKERRQ(ierr);
     if (match) {
       if (options->values[i]) free(options->values[i]);
       ierr = PetscStrlen(value,&len);CHKERRQ(ierr);
       if (len) {
         options->values[i] = (char*)malloc((len+1)*sizeof(char));
         ierr = PetscStrcpy(options->values[i],value);CHKERRQ(ierr);
-      } else { options->values[i] = 0;}
+      } else options->values[i] = 0;
       PetscOptionsMonitor(name,value);
       PetscFunctionReturn(0);
     } else if (gt) {
@@ -969,9 +972,8 @@ PetscErrorCode  PetscOptionsSetValue(const char iname[],const char value[])
       break;
     }
   }
-  if (N >= MAXOPTIONS) {
-    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_PLIB,"No more room in option table, limit %d recompile \n src/sys/objects/options.c with larger value for MAXOPTIONS\n",MAXOPTIONS);
-  }
+  if (N >= MAXOPTIONS) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_PLIB,"No more room in option table, limit %d recompile \n src/sys/objects/options.c with larger value for MAXOPTIONS\n",MAXOPTIONS);
+
   /* shift remaining values down 1 */
   for (i=N; i>n; i--) {
     options->names[i]  = options->names[i-1];
@@ -986,17 +988,17 @@ PetscErrorCode  PetscOptionsSetValue(const char iname[],const char value[])
   if (len) {
     options->values[n] = (char*)malloc((len+1)*sizeof(char));
     ierr = PetscStrcpy(options->values[n],value);CHKERRQ(ierr);
-  } else {options->values[n] = 0;}
+  } else options->values[n] = 0;
   options->used[n] = PETSC_FALSE;
   options->N++;
   PetscOptionsMonitor(name,value);
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsClearValue"
 /*@C
-   PetscOptionsClearValue - Clears an option name-value pair in the options 
+   PetscOptionsClearValue - Clears an option name-value pair in the options
    database, overriding whatever is already present.
 
    Not Collective, but setting values on certain processors could cause problems
@@ -1024,8 +1026,8 @@ PetscErrorCode  PetscOptionsClearValue(const char iname[])
   name++;
 
   N     = options->N; n = 0;
-  names = options->names; 
- 
+  names = options->names;
+
   for (i=0; i<N; i++) {
     ierr  = PetscStrcasecmp(names[i],name,&match);CHKERRQ(ierr);
     ierr  = PetscStrgrt(names[i],name,&gt);CHKERRQ(ierr);
@@ -1034,9 +1036,8 @@ PetscErrorCode  PetscOptionsClearValue(const char iname[])
       if (options->values[i]) free(options->values[i]);
       PetscOptionsMonitor(name,"");
       break;
-    } else if (gt) {
-      PetscFunctionReturn(0); /* it was not listed */
-    }
+    } else if (gt) PetscFunctionReturn(0); /* it was not listed */
+
     n++;
   }
   if (n == N) PetscFunctionReturn(0); /* it was not listed */
@@ -1051,7 +1052,7 @@ PetscErrorCode  PetscOptionsClearValue(const char iname[])
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsSetAlias"
 /*@C
    PetscOptionsSetAlias - Makes a key and alias for another key
@@ -1061,7 +1062,7 @@ PetscErrorCode  PetscOptionsClearValue(const char iname[])
 
    Input Parameters:
 +  inewname - the alias
--  ioldname - the name that alias will refer to 
+-  ioldname - the name that alias will refer to
 
    Level: advanced
 
@@ -1077,14 +1078,12 @@ PetscErrorCode  PetscOptionsSetAlias(const char inewname[],const char ioldname[]
   PetscErrorCode ierr;
   PetscInt       n = options->Naliases;
   size_t         len;
-  char           *newname = (char *)inewname,*oldname = (char*)ioldname;
+  char           *newname = (char*)inewname,*oldname = (char*)ioldname;
 
   PetscFunctionBegin;
   if (newname[0] != '-') SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"aliased must have -: Instead %s",newname);
   if (oldname[0] != '-') SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"aliasee must have -: Instead %s",oldname);
-  if (n >= MAXALIASES) {
-    SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MEM,"You have defined to many PETSc options aliases, limit %d recompile \n  src/sys/objects/options.c with larger value for MAXALIASES",MAXALIASES);
-  }
+  if (n >= MAXALIASES) SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_MEM,"You have defined to many PETSc options aliases, limit %d recompile \n  src/sys/objects/options.c with larger value for MAXALIASES",MAXALIASES);
 
   newname++; oldname++;
   ierr = PetscStrlen(newname,&len);CHKERRQ(ierr);
@@ -1097,9 +1096,9 @@ PetscErrorCode  PetscOptionsSetAlias(const char inewname[],const char ioldname[]
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsFindPair_Private"
-static PetscErrorCode PetscOptionsFindPair_Private(const char pre[],const char name[],char *value[],PetscBool  *flg)
+PetscErrorCode PetscOptionsFindPair_Private(const char pre[],const char name[],char *value[],PetscBool  *flg)
 {
   PetscErrorCode ierr;
   PetscInt       i,N;
@@ -1109,33 +1108,34 @@ static PetscErrorCode PetscOptionsFindPair_Private(const char pre[],const char n
 
   PetscFunctionBegin;
   if (!options) {ierr = PetscOptionsInsert(0,0,0);CHKERRQ(ierr);}
-  N = options->N;
+  N     = options->N;
   names = options->names;
 
   if (name[0] != '-') SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Name must begin with -: Instead %s",name);
 
   /* append prefix to name, if prefix="foo_" and option='--bar", prefixed option is --foo_bar */
   if (pre) {
-    char *ptr = tmp;
+    char       *ptr   = tmp;
     const char *namep = name;
     if (pre[0] == '-') SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Prefix should not begin with a -");
     if (name[1] == '-') {
       *ptr++ = '-';
       namep++;
     }
-    ierr = PetscStrncpy(ptr,pre,tmp+sizeof tmp-ptr);CHKERRQ(ierr);
-    tmp[sizeof tmp-1] = 0;
+    ierr = PetscStrncpy(ptr,pre,tmp+sizeof(tmp)-ptr);CHKERRQ(ierr);
+    tmp[sizeof(tmp)-1] = 0;
     ierr = PetscStrlen(tmp,&len);CHKERRQ(ierr);
-    ierr = PetscStrncat(tmp,namep+1,sizeof tmp-len-1);CHKERRQ(ierr);
+    ierr = PetscStrncat(tmp,namep+1,sizeof(tmp)-len-1);CHKERRQ(ierr);
   } else {
-    ierr = PetscStrncpy(tmp,name+1,sizeof tmp);CHKERRQ(ierr);
-    tmp[sizeof tmp-1] = 0;
+    ierr = PetscStrncpy(tmp,name+1,sizeof(tmp));CHKERRQ(ierr);
+    tmp[sizeof(tmp)-1] = 0;
   }
 #if defined(PETSC_USE_DEBUG)
   {
     PetscBool valid;
-    char key[sizeof tmp+1] = "-";
-    ierr = PetscMemcpy(key+1,tmp,sizeof tmp);CHKERRQ(ierr);
+    char      key[sizeof(tmp)+1] = "-";
+
+    ierr = PetscMemcpy(key+1,tmp,sizeof(tmp));CHKERRQ(ierr);
     ierr = PetscOptionsValidKey(key,&valid);CHKERRQ(ierr);
     if (!valid) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Invalid option '%s' obtained from pre='%s' and name='%s'",key,pre?pre:"",name);
   }
@@ -1146,11 +1146,11 @@ static PetscErrorCode PetscOptionsFindPair_Private(const char pre[],const char n
   for (i=0; i<N; i++) {
     ierr = PetscStrcasecmp(names[i],tmp,&match);CHKERRQ(ierr);
     if (match) {
-       *value           = options->values[i];
-       options->used[i] = PETSC_TRUE;
-       *flg             = PETSC_TRUE;
-       break;
-     }
+      *value           = options->values[i];
+      options->used[i] = PETSC_TRUE;
+      *flg             = PETSC_TRUE;
+      break;
+    }
   }
   if (!*flg) {
     PetscInt j,cnt = 0,locs[16],loce[16];
@@ -1175,16 +1175,76 @@ static PetscErrorCode PetscOptionsFindPair_Private(const char pre[],const char n
         ierr = PetscStrcpy(tmp2,"-");CHKERRQ(ierr);
         ierr = PetscStrncat(tmp2,tmp,locs[i]);CHKERRQ(ierr);
         ierr = PetscStrcat(tmp2,tmp+loce[i]);CHKERRQ(ierr);
-        ierr = PetscOptionsFindPair_Private(PETSC_NULL,tmp2,value,flg);CHKERRQ(ierr);
+        ierr = PetscOptionsFindPair_Private(NULL,tmp2,value,flg);CHKERRQ(ierr);
         if (*flg) break;
       }
-    }        
+    }
   }
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
-#define __FUNCT__ "PetscOptionsReject" 
+#undef __FUNCT__
+#define __FUNCT__ "PetscOptionsFindPairPrefix_Private"
+PETSC_EXTERN PetscErrorCode PetscOptionsFindPairPrefix_Private(const char pre[], const char name[], char *value[], PetscBool *flg)
+{
+  PetscErrorCode ierr;
+  PetscInt       i,N;
+  size_t         len;
+  char           **names,tmp[256];
+  PetscBool      match;
+
+  PetscFunctionBegin;
+  if (!options) {ierr = PetscOptionsInsert(0,0,0);CHKERRQ(ierr);}
+  N     = options->N;
+  names = options->names;
+
+  if (name[0] != '-') SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Name must begin with -: Instead %s",name);
+
+  /* append prefix to name, if prefix="foo_" and option='--bar", prefixed option is --foo_bar */
+  if (pre) {
+    char       *ptr   = tmp;
+    const char *namep = name;
+    if (pre[0] == '-') SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Prefix should not begin with a -");
+    if (name[1] == '-') {
+      *ptr++ = '-';
+      namep++;
+    }
+    ierr = PetscStrncpy(ptr,pre,tmp+sizeof(tmp)-ptr);CHKERRQ(ierr);
+    tmp[sizeof(tmp)-1] = 0;
+    ierr = PetscStrlen(tmp,&len);CHKERRQ(ierr);
+    ierr = PetscStrncat(tmp,namep+1,sizeof(tmp)-len-1);CHKERRQ(ierr);
+  } else {
+    ierr = PetscStrncpy(tmp,name+1,sizeof(tmp));CHKERRQ(ierr);
+    tmp[sizeof(tmp)-1] = 0;
+  }
+#if defined(PETSC_USE_DEBUG)
+  {
+    PetscBool valid;
+    char      key[sizeof(tmp)+1] = "-";
+
+    ierr = PetscMemcpy(key+1,tmp,sizeof(tmp));CHKERRQ(ierr);
+    ierr = PetscOptionsValidKey(key,&valid);CHKERRQ(ierr);
+    if (!valid) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"Invalid option '%s' obtained from pre='%s' and name='%s'",key,pre?pre:"",name);
+  }
+#endif
+
+  /* slow search */
+  *flg = PETSC_FALSE;
+  ierr = PetscStrlen(tmp,&len);CHKERRQ(ierr);
+  for (i = 0; i < N; ++i) {
+    ierr = PetscStrncmp(names[i], tmp, len, &match);CHKERRQ(ierr);
+    if (match) {
+      if (value) *value = options->values[i];
+      options->used[i]  = PETSC_TRUE;
+      if (flg)   *flg   = PETSC_TRUE;
+      break;
+    }
+  }
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "PetscOptionsReject"
 /*@C
    PetscOptionsReject - Generates an error if a certain option is given.
 
@@ -1192,8 +1252,8 @@ static PetscErrorCode PetscOptionsFindPair_Private(const char pre[],const char n
    for parallel objects looking for options.
 
    Input Parameters:
-+  name - the option one is seeking 
--  mess - error message (may be PETSC_NULL)
++  name - the option one is seeking
+-  mess - error message (may be NULL)
 
    Level: advanced
 
@@ -1212,28 +1272,25 @@ PetscErrorCode  PetscOptionsReject(const char name[],const char mess[])
   PetscBool      flag = PETSC_FALSE;
 
   PetscFunctionBegin;
-  ierr = PetscOptionsHasName(PETSC_NULL,name,&flag);CHKERRQ(ierr);
+  ierr = PetscOptionsHasName(NULL,name,&flag);CHKERRQ(ierr);
   if (flag) {
-    if (mess) {
-      SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Program has disabled option: %s with %s",name,mess);
-    } else {
-      SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Program has disabled option: %s",name);
-    }
+    if (mess) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Program has disabled option: %s with %s",name,mess);
+    else SETERRQ1(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Program has disabled option: %s",name);
   }
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsHasName"
 /*@C
-   PetscOptionsHasName - Determines whether a certain option is given in the database. This returns true whether the option is a number, string or boolean, even 
+   PetscOptionsHasName - Determines whether a certain option is given in the database. This returns true whether the option is a number, string or boolean, even
                       its value is set to false.
 
    Not Collective
 
    Input Parameters:
-+  name - the option one is seeking 
--  pre - string to prepend to the name or PETSC_NULL
++  name - the option one is seeking
+-  pre - string to prepend to the name or NULL
 
    Output Parameters:
 .  set - PETSC_TRUE if found else PETSC_FALSE.
@@ -1265,7 +1322,7 @@ PetscErrorCode  PetscOptionsHasName(const char pre[],const char name[],PetscBool
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetInt"
 /*@C
    PetscOptionsGetInt - Gets the integer value for a particular option in the database.
@@ -1273,7 +1330,7 @@ PetscErrorCode  PetscOptionsHasName(const char pre[],const char name[],PetscBool
    Not Collective
 
    Input Parameters:
-+  pre - the string to prepend to the name or PETSC_NULL
++  pre - the string to prepend to the name or NULL
 -  name - the option one is seeking
 
    Output Parameter:
@@ -1303,18 +1360,19 @@ PetscErrorCode  PetscOptionsGetInt(const char pre[],const char name[],PetscInt *
   PetscValidIntPointer(ivalue,3);
   ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr);
   if (flag) {
-    if (!value) {if (set) *set = PETSC_FALSE;}
-    else {
-      if (set) *set = PETSC_TRUE; 
+    if (!value) {
+      if (set) *set = PETSC_FALSE;
+    } else {
+      if (set) *set = PETSC_TRUE;
       ierr = PetscOptionsStringToInt(value,ivalue);CHKERRQ(ierr);
     }
   } else {
     if (set) *set = PETSC_FALSE;
   }
-  PetscFunctionReturn(0); 
-} 
+  PetscFunctionReturn(0);
+}
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetEList"
 /*@C
      PetscOptionsGetEList - Puts a list of option values that a single one may be selected from
@@ -1322,7 +1380,7 @@ PetscErrorCode  PetscOptionsGetInt(const char pre[],const char name[],PetscInt *
    Not Collective
 
    Input Parameters:
-+  pre - the string to prepend to the name or PETSC_NULL
++  pre - the string to prepend to the name or NULL
 .  opt - option name
 .  list - the possible choices
 .  ntext - number of choices
@@ -1330,21 +1388,21 @@ PetscErrorCode  PetscOptionsGetInt(const char pre[],const char name[],PetscInt *
    Output Parameter:
 +  value - the index of the value to return (defaults to zero if the option name is given but choice is listed)
 -  set - PETSC_TRUE if found, else PETSC_FALSE
-   
+
    Level: intermediate
 
-   See PetscOptionsList() for when the choices are given in a PetscFList()
+   See PetscOptionsList() for when the choices are given in a PetscFunctionList()
 
    Concepts: options database^list
 
-.seealso: PetscOptionsGetInt(), PetscOptionsGetReal(),  
+.seealso: PetscOptionsGetInt(), PetscOptionsGetReal(),
            PetscOptionsHasName(), PetscOptionsGetIntArray(), PetscOptionsGetRealArray(), PetscOptionsBool(),
           PetscOptionsName(), PetscOptionsBegin(), PetscOptionsEnd(), PetscOptionsHead(),
           PetscOptionsStringArray(),PetscOptionsRealArray(), PetscOptionsScalar(),
           PetscOptionsBoolGroupBegin(), PetscOptionsBoolGroup(), PetscOptionsBoolGroupEnd(),
           PetscOptionsList(), PetscOptionsEList()
 @*/
-PetscErrorCode  PetscOptionsGetEList(const char pre[],const char opt[],const char *const*list,PetscInt ntext,PetscInt *value,PetscBool  *set)
+PetscErrorCode  PetscOptionsGetEList(const char pre[],const char opt[],const char * const *list,PetscInt ntext,PetscInt *value,PetscBool  *set)
 {
   PetscErrorCode ierr;
   size_t         alen,len = 0;
@@ -1353,7 +1411,7 @@ PetscErrorCode  PetscOptionsGetEList(const char pre[],const char opt[],const cha
   PetscInt       i;
 
   PetscFunctionBegin;
-  for ( i=0; i<ntext; i++) {
+  for (i=0; i<ntext; i++) {
     ierr = PetscStrlen(list[i],&alen);CHKERRQ(ierr);
     if (alen > len) len = alen;
   }
@@ -1361,24 +1419,15 @@ PetscErrorCode  PetscOptionsGetEList(const char pre[],const char opt[],const cha
   ierr = PetscMalloc(len*sizeof(char),&svalue);CHKERRQ(ierr);
   ierr = PetscOptionsGetString(pre,opt,svalue,len,&aset);CHKERRQ(ierr);
   if (aset) {
+    ierr = PetscEListFind(ntext,list,svalue,value,&flg);CHKERRQ(ierr);
+    if (!flg) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_USER,"Unknown option %s for -%s%s",svalue,pre ? pre : "",opt+1);
     if (set) *set = PETSC_TRUE;
-    for (i=0; i<ntext; i++) {
-      ierr = PetscStrcasecmp(svalue,list[i],&flg);CHKERRQ(ierr);
-      if (flg || !svalue[0]) {
-        flg    = PETSC_TRUE;
-        *value = i;
-        break;
-      }
-    }
-    if (!flg) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_USER,"Unknown option %s for -%s%s",svalue,pre?pre:"",opt+1);
-  } else if (set) {
-    *set = PETSC_FALSE;
-  }
+  } else if (set) *set = PETSC_FALSE;
   ierr = PetscFree(svalue);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetEnum"
 /*@C
    PetscOptionsGetEnum - Gets the enum value for a particular option in the database.
@@ -1386,7 +1435,7 @@ PetscErrorCode  PetscOptionsGetEList(const char pre[],const char opt[],const cha
    Not Collective
 
    Input Parameters:
-+  pre - option prefix or PETSC_NULL
++  pre - option prefix or NULL
 .  opt - option name
 .  list - array containing the list of choices, followed by the enum name, followed by the enum prefix, followed by a null
 -  defaultv - the default (current) value
@@ -1411,7 +1460,7 @@ PetscErrorCode  PetscOptionsGetEList(const char pre[],const char opt[],const cha
           PetscOptionsBoolGroupBegin(), PetscOptionsBoolGroup(), PetscOptionsBoolGroupEnd(),
           PetscOptionsList(), PetscOptionsEList(), PetscOptionsGetEList(), PetscOptionsEnum()
 @*/
-PetscErrorCode  PetscOptionsGetEnum(const char pre[],const char opt[],const char *const*list,PetscEnum *value,PetscBool  *set)
+PetscErrorCode  PetscOptionsGetEnum(const char pre[],const char opt[],const char * const *list,PetscEnum *value,PetscBool  *set)
 {
   PetscErrorCode ierr;
   PetscInt       ntext = 0,tval;
@@ -1430,16 +1479,16 @@ PetscErrorCode  PetscOptionsGetEnum(const char pre[],const char opt[],const char
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetBool"
 /*@C
-   PetscOptionsGetBool - Gets the Logical (true or false) value for a particular 
+   PetscOptionsGetBool - Gets the Logical (true or false) value for a particular
             option in the database.
 
    Not Collective
 
    Input Parameters:
-+  pre - the string to prepend to the name or PETSC_NULL
++  pre - the string to prepend to the name or NULL
 -  name - the option one is seeking
 
    Output Parameter:
@@ -1476,28 +1525,27 @@ PetscErrorCode  PetscOptionsGetBool(const char pre[],const char name[],PetscBool
   ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr);
   if (flag) {
     if (set) *set = PETSC_TRUE;
-    if (!value) {
-      *ivalue = PETSC_TRUE;
-    } else {
+    if (!value) *ivalue = PETSC_TRUE;
+    else {
       ierr = PetscOptionsStringToBool(value, ivalue);CHKERRQ(ierr);
     }
   } else {
     if (set) *set = PETSC_FALSE;
   }
-  PetscFunctionReturn(0); 
-} 
+  PetscFunctionReturn(0);
+}
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetBoolArray"
 /*@C
-   PetscOptionsGetBoolArray - Gets an array of Logical (true or false) values for a particular 
-   option in the database.  The values must be separated with commas with 
-   no intervening spaces. 
+   PetscOptionsGetBoolArray - Gets an array of Logical (true or false) values for a particular
+   option in the database.  The values must be separated with commas with
+   no intervening spaces.
 
    Not Collective
 
    Input Parameters:
-+  pre - string to prepend to each name or PETSC_NULL
++  pre - string to prepend to each name or NULL
 .  name - the option one is seeking
 -  nmax - maximum number of values to retrieve
 
@@ -1514,14 +1562,14 @@ PetscErrorCode  PetscOptionsGetBool(const char pre[],const char name[],PetscBool
        TRUE, true, YES, yes, nostring, and 1 all translate to PETSC_TRUE
        FALSE, false, NO, no, and 0 all translate to PETSC_FALSE
 
-.seealso: PetscOptionsGetInt(), PetscOptionsHasName(), 
+.seealso: PetscOptionsGetInt(), PetscOptionsHasName(),
            PetscOptionsGetString(), PetscOptionsGetRealArray(), PetscOptionsBool(),
           PetscOptionsName(), PetscOptionsBegin(), PetscOptionsEnd(), PetscOptionsHead(),
           PetscOptionsStringArray(),PetscOptionsRealArray(), PetscOptionsScalar(),
           PetscOptionsBoolGroupBegin(), PetscOptionsBoolGroup(), PetscOptionsBoolGroupEnd(),
           PetscOptionsList(), PetscOptionsEList()
 @*/
-PetscErrorCode  PetscOptionsGetBoolArray(const char pre[],const char name[],PetscBool  dvalue[],PetscInt *nmax,PetscBool  *set)
+PetscErrorCode  PetscOptionsGetBoolArray(const char pre[],const char name[],PetscBool dvalue[],PetscInt *nmax,PetscBool  *set)
 {
   char           *value;
   PetscErrorCode ierr;
@@ -1534,7 +1582,7 @@ PetscErrorCode  PetscOptionsGetBoolArray(const char pre[],const char name[],Pets
   PetscValidIntPointer(dvalue,3);
   ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr);
   if (!flag)  {if (set) *set = PETSC_FALSE; *nmax = 0; PetscFunctionReturn(0);}
-  if (!value) {if (set) *set = PETSC_TRUE; *nmax = 0; PetscFunctionReturn(0);}
+  if (!value) {if (set) *set = PETSC_TRUE;  *nmax = 0; PetscFunctionReturn(0);}
 
   if (set) *set = PETSC_TRUE;
 
@@ -1549,19 +1597,19 @@ PetscErrorCode  PetscOptionsGetBoolArray(const char pre[],const char name[],Pets
   }
   ierr  = PetscTokenDestroy(&token);CHKERRQ(ierr);
   *nmax = n;
-  PetscFunctionReturn(0); 
+  PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetReal"
 /*@C
-   PetscOptionsGetReal - Gets the double precision value for a particular 
+   PetscOptionsGetReal - Gets the double precision value for a particular
    option in the database.
 
    Not Collective
 
    Input Parameters:
-+  pre - string to prepend to each name or PETSC_NULL
++  pre - string to prepend to each name or NULL
 -  name - the option one is seeking
 
    Output Parameter:
@@ -1574,7 +1622,7 @@ PetscErrorCode  PetscOptionsGetBoolArray(const char pre[],const char name[],Pets
 
    Concepts: options database^has double
 
-.seealso: PetscOptionsGetInt(), PetscOptionsHasName(), 
+.seealso: PetscOptionsGetInt(), PetscOptionsHasName(),
            PetscOptionsGetString(), PetscOptionsGetIntArray(), PetscOptionsGetRealArray(),PetscOptionsBool(),
           PetscOptionsName(), PetscOptionsBegin(), PetscOptionsEnd(), PetscOptionsHead(),
           PetscOptionsStringArray(),PetscOptionsRealArray(), PetscOptionsScalar(),
@@ -1589,27 +1637,31 @@ PetscErrorCode  PetscOptionsGetReal(const char pre[],const char name[],PetscReal
 
   PetscFunctionBegin;
   PetscValidCharPointer(name,2);
-  PetscValidDoublePointer(dvalue,3);
+  PetscValidRealPointer(dvalue,3);
   ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr);
   if (flag) {
-    if (!value) {if (set) *set = PETSC_FALSE;}
-    else        {if (set) *set = PETSC_TRUE; ierr = PetscOptionsStringToReal(value,dvalue);CHKERRQ(ierr);}
+    if (!value) {
+      if (set) *set = PETSC_FALSE;
+    } else {
+      if (set) *set = PETSC_TRUE;
+      ierr = PetscOptionsStringToReal(value,dvalue);CHKERRQ(ierr);
+    }
   } else {
     if (set) *set = PETSC_FALSE;
   }
-  PetscFunctionReturn(0); 
-} 
+  PetscFunctionReturn(0);
+}
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetScalar"
 /*@C
-   PetscOptionsGetScalar - Gets the scalar value for a particular 
+   PetscOptionsGetScalar - Gets the scalar value for a particular
    option in the database.
 
    Not Collective
 
    Input Parameters:
-+  pre - string to prepend to each name or PETSC_NULL
++  pre - string to prepend to each name or NULL
 -  name - the option one is seeking
 
    Output Parameter:
@@ -1626,7 +1678,7 @@ PetscErrorCode  PetscOptionsGetReal(const char pre[],const char name[],PetscReal
 
    Concepts: options database^has scalar
 
-.seealso: PetscOptionsGetInt(), PetscOptionsHasName(), 
+.seealso: PetscOptionsGetInt(), PetscOptionsHasName(),
            PetscOptionsGetString(), PetscOptionsGetIntArray(), PetscOptionsGetRealArray(), PetscOptionsBool(),
           PetscOptionsName(), PetscOptionsBegin(), PetscOptionsEnd(), PetscOptionsHead(),
           PetscOptionsStringArray(),PetscOptionsRealArray(), PetscOptionsScalar(),
@@ -1646,7 +1698,7 @@ PetscErrorCode  PetscOptionsGetScalar(const char pre[],const char name[],PetscSc
   if (flag) {
     if (!value) {
       if (set) *set = PETSC_FALSE;
-    } else { 
+    } else {
 #if !defined(PETSC_USE_COMPLEX)
       ierr = PetscOptionsStringToReal(value,dvalue);CHKERRQ(ierr);
 #else
@@ -1656,36 +1708,35 @@ PetscErrorCode  PetscOptionsGetScalar(const char pre[],const char name[],PetscSc
 
       ierr = PetscTokenCreate(value,',',&token);CHKERRQ(ierr);
       ierr = PetscTokenFind(token,&tvalue);CHKERRQ(ierr);
-      if (!tvalue) { SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"unknown string specified\n"); }
-      ierr    = PetscOptionsStringToReal(tvalue,&re);CHKERRQ(ierr);
-      ierr    = PetscTokenFind(token,&tvalue);CHKERRQ(ierr);
-      if (!tvalue) { /* Unknown separator used. using only real value */
-        *dvalue = re;
-      } else {
+      if (!tvalue) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_WRONG,"unknown string specified\n");
+      ierr = PetscOptionsStringToReal(tvalue,&re);CHKERRQ(ierr);
+      ierr = PetscTokenFind(token,&tvalue);CHKERRQ(ierr);
+      if (!tvalue) *dvalue = re; /* Unknown separator used. using only real value */
+      else {
         ierr    = PetscOptionsStringToReal(tvalue,&im);CHKERRQ(ierr);
         *dvalue = re + PETSC_i*im;
-      } 
-      ierr    = PetscTokenDestroy(&token);CHKERRQ(ierr);
+      }
+      ierr = PetscTokenDestroy(&token);CHKERRQ(ierr);
 #endif
-      if (set) *set    = PETSC_TRUE;
-    } 
+      if (set) *set = PETSC_TRUE;
+    }
   } else { /* flag */
     if (set) *set = PETSC_FALSE;
   }
-  PetscFunctionReturn(0); 
-} 
+  PetscFunctionReturn(0);
+}
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetRealArray"
 /*@C
-   PetscOptionsGetRealArray - Gets an array of double precision values for a 
-   particular option in the database.  The values must be separated with 
+   PetscOptionsGetRealArray - Gets an array of double precision values for a
+   particular option in the database.  The values must be separated with
    commas with no intervening spaces.
 
    Not Collective
 
    Input Parameters:
-+  pre - string to prepend to each name or PETSC_NULL
++  pre - string to prepend to each name or NULL
 .  name - the option one is seeking
 -  nmax - maximum number of values to retrieve
 
@@ -1698,7 +1749,7 @@ PetscErrorCode  PetscOptionsGetScalar(const char pre[],const char name[],PetscSc
 
    Concepts: options database^array of doubles
 
-.seealso: PetscOptionsGetInt(), PetscOptionsHasName(), 
+.seealso: PetscOptionsGetInt(), PetscOptionsHasName(),
            PetscOptionsGetString(), PetscOptionsGetIntArray(), PetscOptionsBool(),
           PetscOptionsName(), PetscOptionsBegin(), PetscOptionsEnd(), PetscOptionsHead(),
           PetscOptionsStringArray(),PetscOptionsRealArray(), PetscOptionsScalar(),
@@ -1715,10 +1766,18 @@ PetscErrorCode  PetscOptionsGetRealArray(const char pre[],const char name[],Pets
 
   PetscFunctionBegin;
   PetscValidCharPointer(name,2);
-  PetscValidDoublePointer(dvalue,3);
+  PetscValidRealPointer(dvalue,3);
   ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr);
-  if (!flag)  {if (set) *set = PETSC_FALSE; *nmax = 0; PetscFunctionReturn(0);}
-  if (!value) {if (set) *set = PETSC_TRUE; *nmax = 0; PetscFunctionReturn(0);}
+  if (!flag) {
+    if (set) *set = PETSC_FALSE;
+    *nmax = 0;
+    PetscFunctionReturn(0);
+  }
+  if (!value) {
+    if (set) *set = PETSC_TRUE;
+    *nmax = 0;
+    PetscFunctionReturn(0);
+  }
 
   if (set) *set = PETSC_TRUE;
 
@@ -1730,21 +1789,21 @@ PetscErrorCode  PetscOptionsGetRealArray(const char pre[],const char name[],Pets
     ierr = PetscTokenFind(token,&value);CHKERRQ(ierr);
     n++;
   }
-  ierr = PetscTokenDestroy(&token);CHKERRQ(ierr);
+  ierr  = PetscTokenDestroy(&token);CHKERRQ(ierr);
   *nmax = n;
-  PetscFunctionReturn(0); 
-} 
+  PetscFunctionReturn(0);
+}
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetIntArray"
 /*@C
-   PetscOptionsGetIntArray - Gets an array of integer values for a particular 
+   PetscOptionsGetIntArray - Gets an array of integer values for a particular
    option in the database.
 
    Not Collective
 
    Input Parameters:
-+  pre - string to prepend to each name or PETSC_NULL
++  pre - string to prepend to each name or NULL
 .  name - the option one is seeking
 -  nmax - maximum number of values to retrieve
 
@@ -1766,7 +1825,7 @@ PetscErrorCode  PetscOptionsGetRealArray(const char pre[],const char name[],Pets
 
    Concepts: options database^array of ints
 
-.seealso: PetscOptionsGetInt(), PetscOptionsHasName(), 
+.seealso: PetscOptionsGetInt(), PetscOptionsHasName(),
            PetscOptionsGetString(), PetscOptionsGetRealArray(), PetscOptionsBool(),
           PetscOptionsName(), PetscOptionsBegin(), PetscOptionsEnd(), PetscOptionsHead(),
           PetscOptionsStringArray(),PetscOptionsRealArray(), PetscOptionsScalar(),
@@ -1786,8 +1845,16 @@ PetscErrorCode  PetscOptionsGetIntArray(const char pre[],const char name[],Petsc
   PetscValidCharPointer(name,2);
   PetscValidIntPointer(dvalue,3);
   ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr);
-  if (!flag)  {if (set) *set = PETSC_FALSE; *nmax = 0; PetscFunctionReturn(0);}
-  if (!value) {if (set) *set = PETSC_TRUE; *nmax = 0; PetscFunctionReturn(0);}
+  if (!flag) {
+    if (set) *set = PETSC_FALSE;
+    *nmax = 0;
+    PetscFunctionReturn(0);
+  }
+  if (!value) {
+    if (set) *set = PETSC_TRUE;
+    *nmax = 0;
+    PetscFunctionReturn(0);
+  }
 
   if (set) *set = PETSC_TRUE;
 
@@ -1795,30 +1862,32 @@ PetscErrorCode  PetscOptionsGetIntArray(const char pre[],const char name[],Petsc
   ierr = PetscTokenFind(token,&value);CHKERRQ(ierr);
   while (n < *nmax) {
     if (!value) break;
-    
+
     /* look for form  d-D where d and D are integers */
     foundrange = PETSC_FALSE;
-    ierr      = PetscStrlen(value,&len);CHKERRQ(ierr); 
+    ierr       = PetscStrlen(value,&len);CHKERRQ(ierr);
     if (value[0] == '-') i=2;
     else i=1;
     for (;i<(int)len; i++) {
       if (value[i] == '-') {
         if (i == (int)len-1) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_USER,"Error in %D-th array entry %s\n",n,value);
         value[i] = 0;
-        ierr     = PetscOptionsStringToInt(value,&start);CHKERRQ(ierr);
-	inc = 1;
-	j = i+1;
-	for(;j<(int)len; j++) {
-	  if (value[j] == ':') {
-	    value[j] = 0;
-	    ierr = PetscOptionsStringToInt(value+j+1,&inc);CHKERRQ(ierr);
-	    if (inc <= 0) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_USER,"Error in %D-th array entry,%s cannot have negative increment",n,value+j+1);CHKERRQ(ierr);
-	    break;
-	  }
-	}
-        ierr     = PetscOptionsStringToInt(value+i+1,&end);CHKERRQ(ierr);        
+
+        ierr = PetscOptionsStringToInt(value,&start);CHKERRQ(ierr);
+        inc  = 1;
+        j    = i+1;
+        for (;j<(int)len; j++) {
+          if (value[j] == ':') {
+            value[j] = 0;
+
+            ierr = PetscOptionsStringToInt(value+j+1,&inc);CHKERRQ(ierr);
+            if (inc <= 0) SETERRQ2(PETSC_COMM_SELF,PETSC_ERR_USER,"Error in %D-th array entry,%s cannot have negative increment",n,value+j+1);CHKERRQ(ierr);
+            break;
+          }
+        }
+        ierr = PetscOptionsStringToInt(value+i+1,&end);CHKERRQ(ierr);
         if (end <= start) SETERRQ3(PETSC_COMM_SELF,PETSC_ERR_USER,"Error in %D-th array entry, %s-%s cannot have decreasing list",n,value,value+i+1);
-	nvalues = (end-start)/inc + (end-start)%inc;
+        nvalues = (end-start)/inc + (end-start)%inc;
         if (n + nvalues  > *nmax) SETERRQ4(PETSC_COMM_SELF,PETSC_ERR_USER,"Error in %D-th array entry, not enough space left in array (%D) to contain entire range from %D to %D",n,*nmax-n,start,end);
         for (;start<end; start+=inc) {
           *dvalue = start; dvalue++;n++;
@@ -1828,18 +1897,18 @@ PetscErrorCode  PetscOptionsGetIntArray(const char pre[],const char name[],Petsc
       }
     }
     if (!foundrange) {
-      ierr      = PetscOptionsStringToInt(value,dvalue);CHKERRQ(ierr);
+      ierr = PetscOptionsStringToInt(value,dvalue);CHKERRQ(ierr);
       dvalue++;
       n++;
     }
-    ierr      = PetscTokenFind(token,&value);CHKERRQ(ierr);
+    ierr = PetscTokenFind(token,&value);CHKERRQ(ierr);
   }
-  ierr      = PetscTokenDestroy(&token);CHKERRQ(ierr);
+  ierr  = PetscTokenDestroy(&token);CHKERRQ(ierr);
   *nmax = n;
-  PetscFunctionReturn(0); 
-} 
+  PetscFunctionReturn(0);
+}
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetString"
 /*@C
    PetscOptionsGetString - Gets the string value for a particular option in
@@ -1848,7 +1917,7 @@ PetscErrorCode  PetscOptionsGetIntArray(const char pre[],const char name[],Petsc
    Not Collective
 
    Input Parameters:
-+  pre - string to prepend to name or PETSC_NULL
++  pre - string to prepend to name or NULL
 .  name - the option one is seeking
 -  len - maximum length of the string including null termination
 
@@ -1864,7 +1933,7 @@ PetscErrorCode  PetscOptionsGetIntArray(const char pre[],const char name[],Petsc
 .vb
       character *20 string
       integer   flg, ierr
-      call PetscOptionsGetString(PETSC_NULL_CHARACTER,'-s',string,flg,ierr)
+      call PetscOptionsGetString(NULL_CHARACTER,'-s',string,flg,ierr)
 .ve
 
    Notes: if the option is given but no string is provided then an empty string is returned and set is given the value of PETSC_TRUE
@@ -1874,7 +1943,7 @@ PetscErrorCode  PetscOptionsGetIntArray(const char pre[],const char name[],Petsc
     Note:
       Even if the user provided no string (for example -optionname -someotheroption) the flag is set to PETSC_TRUE (and the string is fulled with nulls).
 
-.seealso: PetscOptionsGetInt(), PetscOptionsGetReal(),  
+.seealso: PetscOptionsGetInt(), PetscOptionsGetReal(),
            PetscOptionsHasName(), PetscOptionsGetIntArray(), PetscOptionsGetRealArray(), PetscOptionsBool(),
           PetscOptionsName(), PetscOptionsBegin(), PetscOptionsEnd(), PetscOptionsHead(),
           PetscOptionsStringArray(),PetscOptionsRealArray(), PetscOptionsScalar(),
@@ -1890,7 +1959,7 @@ PetscErrorCode  PetscOptionsGetString(const char pre[],const char name[],char st
   PetscFunctionBegin;
   PetscValidCharPointer(name,2);
   PetscValidCharPointer(string,3);
-  ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr); 
+  ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr);
   if (!flag) {
     if (set) *set = PETSC_FALSE;
   } else {
@@ -1902,12 +1971,12 @@ PetscErrorCode  PetscOptionsGetString(const char pre[],const char name[],char st
       ierr = PetscMemzero(string,len);CHKERRQ(ierr);
     }
   }
-  PetscFunctionReturn(0); 
+  PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetStringMatlab"
-char* PetscOptionsGetStringMatlab(const char pre[],const char name[])
+char *PetscOptionsGetStringMatlab(const char pre[],const char name[])
 {
   char           *value;
   PetscErrorCode ierr;
@@ -1920,17 +1989,17 @@ char* PetscOptionsGetStringMatlab(const char pre[],const char name[])
 }
 
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsGetStringArray"
 /*@C
    PetscOptionsGetStringArray - Gets an array of string values for a particular
-   option in the database. The values must be separated with commas with 
-   no intervening spaces. 
+   option in the database. The values must be separated with commas with
+   no intervening spaces.
 
    Not Collective
 
    Input Parameters:
-+  pre - string to prepend to name or PETSC_NULL
++  pre - string to prepend to name or NULL
 .  name - the option one is seeking
 -  nmax - maximum number of strings
 
@@ -1940,7 +2009,7 @@ char* PetscOptionsGetStringMatlab(const char pre[],const char name[])
 
    Level: beginner
 
-   Notes: 
+   Notes:
    The user should pass in an array of pointers to char, to hold all the
    strings returned by this function.
 
@@ -1951,7 +2020,7 @@ char* PetscOptionsGetStringMatlab(const char pre[],const char name[])
 
    Concepts: options database^array of strings
 
-.seealso: PetscOptionsGetInt(), PetscOptionsGetReal(),  
+.seealso: PetscOptionsGetInt(), PetscOptionsGetReal(),
            PetscOptionsHasName(), PetscOptionsGetIntArray(), PetscOptionsGetRealArray(), PetscOptionsBool(),
           PetscOptionsName(), PetscOptionsBegin(), PetscOptionsEnd(), PetscOptionsHead(),
           PetscOptionsStringArray(),PetscOptionsRealArray(), PetscOptionsScalar(),
@@ -1965,31 +2034,42 @@ PetscErrorCode  PetscOptionsGetStringArray(const char pre[],const char name[],ch
   PetscInt       n;
   PetscBool      flag;
   PetscToken     token;
- 
+
   PetscFunctionBegin;
   PetscValidCharPointer(name,2);
   PetscValidPointer(strings,3);
-  ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr); 
-  if (!flag)  {*nmax = 0; if (set) *set = PETSC_FALSE; PetscFunctionReturn(0);}
-  if (!value) {*nmax = 0; if (set) *set = PETSC_FALSE;PetscFunctionReturn(0);}
-  if (!*nmax) {if (set) *set = PETSC_FALSE;PetscFunctionReturn(0);}
+  ierr = PetscOptionsFindPair_Private(pre,name,&value,&flag);CHKERRQ(ierr);
+  if (!flag) {
+    *nmax = 0;
+    if (set) *set = PETSC_FALSE;
+    PetscFunctionReturn(0);
+  }
+  if (!value) {
+    *nmax = 0;
+    if (set) *set = PETSC_FALSE;
+    PetscFunctionReturn(0);
+  }
+  if (!*nmax) {
+    if (set) *set = PETSC_FALSE;
+    PetscFunctionReturn(0);
+  }
   if (set) *set = PETSC_TRUE;
 
   ierr = PetscTokenCreate(value,',',&token);CHKERRQ(ierr);
   ierr = PetscTokenFind(token,&value);CHKERRQ(ierr);
-  n = 0;
+  n    = 0;
   while (n < *nmax) {
     if (!value) break;
     ierr = PetscStrallocpy(value,&strings[n]);CHKERRQ(ierr);
     ierr = PetscTokenFind(token,&value);CHKERRQ(ierr);
     n++;
   }
-  ierr = PetscTokenDestroy(&token);CHKERRQ(ierr);
+  ierr  = PetscTokenDestroy(&token);CHKERRQ(ierr);
   *nmax = n;
-  PetscFunctionReturn(0); 
+  PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsUsed"
 /*@C
    PetscOptionsUsed - Indicates if PETSc has used a particular option set in the database
@@ -2023,10 +2103,10 @@ PetscErrorCode  PetscOptionsUsed(const char *option,PetscBool *used)
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsAllUsed"
 /*@C
-   PetscOptionsAllUsed - Returns a count of the number of options in the 
+   PetscOptionsAllUsed - Returns a count of the number of options in the
    database that have never been selected.
 
    Not Collective
@@ -2044,13 +2124,13 @@ PetscErrorCode  PetscOptionsAllUsed(PetscInt *N)
 
   PetscFunctionBegin;
   for (i=0; i<options->N; i++) {
-    if (!options->used[i]) { n++; }
+    if (!options->used[i]) n++;
   }
   *N = n;
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsLeft"
 /*@
     PetscOptionsLeft - Prints to screen any options that were set and never used.
@@ -2075,7 +2155,7 @@ PetscErrorCode  PetscOptionsLeft(void)
       if (options->values[i]) {
         ierr = PetscPrintf(PETSC_COMM_WORLD,"Option left: name:-%s value: %s\n",options->names[i],options->values[i]);CHKERRQ(ierr);
       } else {
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"Option left: name:-%s no value \n",options->names[i]);CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"Option left: name:-%s (no value)\n",options->names[i]);CHKERRQ(ierr);
       }
     }
   }
@@ -2083,7 +2163,7 @@ PetscErrorCode  PetscOptionsLeft(void)
 }
 
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsCreate"
 /*
     PetscOptionsCreate - Creates the empty options database.
@@ -2096,14 +2176,14 @@ PetscErrorCode  PetscOptionsCreate(void)
   PetscFunctionBegin;
   options = (PetscOptionsTable*)malloc(sizeof(PetscOptionsTable));
   ierr    = PetscMemzero(options,sizeof(PetscOptionsTable));CHKERRQ(ierr);
-  options->namegiven 		= PETSC_FALSE;
-  options->N         		= 0;
-  options->Naliases  		= 0;
-  options->numbermonitors 	= 0;
 
-  PetscOptionsObject.prefix = PETSC_NULL;
-  PetscOptionsObject.title  = PETSC_NULL;
-  
+  options->namegiven      = PETSC_FALSE;
+  options->N              = 0;
+  options->Naliases       = 0;
+  options->numbermonitors = 0;
+
+  PetscOptionsObject.prefix = NULL;
+  PetscOptionsObject.title  = NULL;
   PetscFunctionReturn(0);
 }
 
@@ -2115,15 +2195,15 @@ PetscErrorCode  PetscOptionsCreate(void)
    Collective on PETSC_COMM_WORLD
 
    Options Database Keys:
-+  -options_monitor <optional filename> - prints the names and values of all runtime options as they are set. The monitor functionality is not 
-                available for options set through a file, environment variable, or on 
-                the command line. Only options set after PetscInitialize completes will 
++  -options_monitor <optional filename> - prints the names and values of all runtime options as they are set. The monitor functionality is not
+                available for options set through a file, environment variable, or on
+                the command line. Only options set after PetscInitialize completes will
                 be monitored.
-.  -options_monitor_cancel - cancel all options database monitors    
+.  -options_monitor_cancel - cancel all options database monitors
 
    Notes:
    To see all options, run your program with the -help option or consult
-   the <A href="../../docs/manual.pdf">users manual</A>.. 
+   the <A href="../../docs/manual.pdf">users manual</A>..
 
    Level: intermediate
 
@@ -2131,15 +2211,15 @@ PetscErrorCode  PetscOptionsCreate(void)
 @*/
 PetscErrorCode  PetscOptionsSetFromOptions(void)
 {
-  PetscBool           flgc,flgm;
-  PetscErrorCode      ierr;
-  char                monfilename[PETSC_MAX_PATH_LEN];
-  PetscViewer         monviewer; 
+  PetscBool      flgc,flgm;
+  PetscErrorCode ierr;
+  char           monfilename[PETSC_MAX_PATH_LEN];
+  PetscViewer    monviewer;
 
   PetscFunctionBegin;
   ierr = PetscOptionsBegin(PETSC_COMM_WORLD,"","Options database options","PetscOptions");CHKERRQ(ierr);
-    ierr = PetscOptionsString("-options_monitor","Monitor options database","PetscOptionsMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flgm);CHKERRQ(ierr);
-    ierr = PetscOptionsBool("-options_monitor_cancel","Cancel all options database monitors","PetscOptionsMonitorCancel",PETSC_FALSE,&flgc,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsString("-options_monitor","Monitor options database","PetscOptionsMonitorSet","stdout",monfilename,PETSC_MAX_PATH_LEN,&flgm);CHKERRQ(ierr);
+  ierr = PetscOptionsBool("-options_monitor_cancel","Cancel all options database monitors","PetscOptionsMonitorCancel",PETSC_FALSE,&flgc,NULL);CHKERRQ(ierr);
   ierr = PetscOptionsEnd();CHKERRQ(ierr);
   if (flgm) {
     ierr = PetscViewerASCIIOpen(PETSC_COMM_WORLD,monfilename,&monviewer);CHKERRQ(ierr);
@@ -2150,7 +2230,7 @@ PetscErrorCode  PetscOptionsSetFromOptions(void)
 }
 
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsMonitorDefault"
 /*@C
    PetscOptionsMonitorDefault - Print all options set value events.
@@ -2160,7 +2240,7 @@ PetscErrorCode  PetscOptionsSetFromOptions(void)
    Input Parameters:
 +  name  - option name string
 .  value - option value string
--  dummy - unused monitor context 
+-  dummy - unused monitor context
 
    Level: intermediate
 
@@ -2181,20 +2261,20 @@ PetscErrorCode  PetscOptionsMonitorDefault(const char name[], const char value[]
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsMonitorSet"
 /*@C
    PetscOptionsMonitorSet - Sets an ADDITIONAL function to be called at every method that
    modified the PETSc options database.
-      
+
    Not collective
 
    Input Parameters:
-+  monitor - pointer to function (if this is PETSC_NULL, it turns off monitoring
++  monitor - pointer to function (if this is NULL, it turns off monitoring
 .  mctx    - [optional] context for private data for the
-             monitor routine (use PETSC_NULL if no context is desired)
+             monitor routine (use NULL if no context is desired)
 -  monitordestroy - [optional] routine that frees monitor context
-          (may be PETSC_NULL)
+          (may be NULL)
 
    Calling Sequence of monitor:
 $     monitor (const char name[], const char value[], void *mctx)
@@ -2206,18 +2286,18 @@ $     monitor (const char name[], const char value[], void *mctx)
    Options Database Keys:
 +    -options_monitor    - sets PetscOptionsMonitorDefault()
 -    -options_monitor_cancel - cancels all monitors that have
-                          been hardwired into a code by 
+                          been hardwired into a code by
                           calls to PetscOptionsMonitorSet(), but
                           does not cancel those set via
                           the options database.
 
-   Notes:  
-   The default is to do nothing.  To print the name and value of options 
-   being inserted into the database, use PetscOptionsMonitorDefault() as the monitoring routine, 
-   with a null monitoring context. 
+   Notes:
+   The default is to do nothing.  To print the name and value of options
+   being inserted into the database, use PetscOptionsMonitorDefault() as the monitoring routine,
+   with a null monitoring context.
 
    Several different monitoring routines may be set by calling
-   PetscOptionsMonitorSet() multiple times; all will be called in the 
+   PetscOptionsMonitorSet() multiple times; all will be called in the
    order in which they were set.
 
    Level: beginner
@@ -2230,22 +2310,22 @@ PetscErrorCode  PetscOptionsMonitorSet(PetscErrorCode (*monitor)(const char name
 {
   PetscFunctionBegin;
   if (options->numbermonitors >= MAXOPTIONSMONITORS) SETERRQ(PETSC_COMM_SELF,PETSC_ERR_ARG_OUTOFRANGE,"Too many PetscOptions monitors set");
-  options->monitor[options->numbermonitors]           = monitor;
-  options->monitordestroy[options->numbermonitors]    = monitordestroy;
-  options->monitorcontext[options->numbermonitors++]  = (void*)mctx;
+  options->monitor[options->numbermonitors]          = monitor;
+  options->monitordestroy[options->numbermonitors]   = monitordestroy;
+  options->monitorcontext[options->numbermonitors++] = (void*)mctx;
   PetscFunctionReturn(0);
 }
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "PetscOptionsMonitorCancel"
 /*@
    PetscOptionsMonitorCancel - Clears all monitors for a PetscOptions object.
 
-   Not collective 
+   Not collective
 
    Options Database Key:
 .  -options_monitor_cancel - Cancels all monitors that have
-    been hardwired into a code by calls to PetscOptionsMonitorSet(), 
+    been hardwired into a code by calls to PetscOptionsMonitorSet(),
     but does not cancel those set via the options database.
 
    Level: intermediate

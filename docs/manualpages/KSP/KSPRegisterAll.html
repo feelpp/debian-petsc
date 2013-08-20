@@ -5,13 +5,13 @@
 <TITLE>KSPRegisterAll</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPRegisterAll"><H1>KSPRegisterAll</H1></A>
 Registers all of the Krylov subspace methods in the <A HREF="../KSP/KSP.html#KSP">KSP</A> package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPRegisterAll(const char path[])
+PetscErrorCode  KSPRegisterAll(void)
 </PRE>
 Not Collective
 <P>
@@ -22,7 +22,7 @@ Not Collective
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../KSP/KSPRegisterDestroy.html#KSPRegisterDestroy">KSPRegisterDestroy</A>()
+  KSPRegisterDestroy()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/interface/itregis.c.html#KSPRegisterAll">src/ksp/ksp/interface/itregis.c</A>
 <BR><A HREF="./index.html">Index of all KSP routines</A>

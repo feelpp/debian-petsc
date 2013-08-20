@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = snesshellf.c
-OBJSC    = snesshellf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

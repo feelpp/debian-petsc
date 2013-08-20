@@ -5,13 +5,13 @@
 <TITLE>DMCreateMatrix</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMCreateMatrix"><H1>DMCreateMatrix</H1></A>
-Gets empty Jacobian for a DMDA or DMComposite 
+Gets empty Jacobian for a <A HREF="../DM/DMDA.html#DMDA">DMDA</A> or DMComposite 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"     
-PetscErrorCode  DMCreateMatrix(DM dm,const MatType mtype,Mat *mat)
+PetscErrorCode  DMCreateMatrix(DM dm,MatType mtype,Mat *mat)
 </PRE>
 Collective on DM
 <P>
@@ -24,7 +24,7 @@ any type which inherits from one of these (such as <A HREF="../Mat/MATAIJ.html#M
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>mat </B> -the empty Jacobian 
+<DT><B>mat </B> -the empty Jacobian
 <br>
 <P>
 

@@ -1,15 +1,13 @@
 
 ALL: lib
 
-CFLAGS   = 
+CFLAGS   =
 FFLAGS   =
 SOURCEC  = adda.c
 SOURCEF  =
-OBJSC    = adda.o
-OBJSF    =
 LIBBASE  = libpetscdm
 DIRS     = examples
-LOCDIR   = src/dm/adda/
+LOCDIR   = src/dm/impls/adda/
 MANSEC   = DM
 SUBMANSEC= DMADDA
 

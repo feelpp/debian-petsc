@@ -3,6 +3,8 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
+    self.gitcommit = 'a7394f847c8953e1d3bdf35ba8569134b769b4a6'
+    self.giturls   = ['https://bitbucket.org/petsc/pkg-ml.git']
     self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/ml-6.2-win.tar.gz']
     self.functions = ['ML_Set_PrintLevel']
     self.includes  = ['ml_include.h']
@@ -17,7 +19,7 @@ class Configure(PETSc.package.NewPackage):
     PETSc.package.NewPackage.setupDependencies(self, framework)
     self.mpi        = framework.require('config.packages.MPI',self)
     self.blasLapack = framework.require('config.packages.BlasLapack',self)
-    self.deps       = [self.mpi,self.blasLapack]  
+    self.deps       = [self.mpi,self.blasLapack]
     return
 
   def generateLibList(self,dir):
@@ -33,7 +35,7 @@ class Configure(PETSc.package.NewPackage):
     if self.languages.clanguage == 'C':
       alllibs.extend(self.compilers.cxxlibs)
     return [alllibs]
-        
+
   def Install(self):
     import os
 
@@ -43,7 +45,7 @@ class Configure(PETSc.package.NewPackage):
     args.append('--disable-ml-aztecoo')
     args.append('--disable-ml-examples')
     args.append('--disable-tests')
-    
+
     self.framework.pushLanguage('C')
     args.append('CC="'+self.framework.getCompiler()+'"')
     args.append('--with-cflags="'+self.framework.getCompilerFlags()+' -DMPICH_SKIP_MPICXX -DOMPI_SKIP_MPICXX '+ self.headers.toStringNoDupes(self.mpi.include)+'"')
@@ -67,7 +69,7 @@ class Configure(PETSc.package.NewPackage):
       raise RuntimeError('Error: ML requires C++ compiler. None specified')
 
     # ML does not have --with-mpi-include - so specify includes with cflags,fflags,cxxflags,CPPFLAGS
-    args.append('--enable-mpi') 
+    args.append('--enable-mpi')
     args.append('--with-mpi-libs="'+self.libraries.toString(self.mpi.lib)+'"')
     args.append('--with-blas="'+self.libraries.toString(self.blasLapack.dlib)+'"')
     args = ' '.join(args)

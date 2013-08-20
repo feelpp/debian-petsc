@@ -5,19 +5,22 @@
 <TITLE>PetscStrToArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscStrToArray"><H1>PetscStrToArray</H1></A>
-Seperates a string by its spaces and creates an array of strings 
+Seperates a string by a charactor (for example ' ' or '\n') and creates an array of strings 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscStrToArray(const char s[],int *argc,char ***args)
+PetscErrorCode  PetscStrToArray(const char s[],char sp,int *argc,char ***args)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
-<DT><B>s </B> -pointer to string
-<br>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>s </B></TD><TD>- pointer to string
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>sp </B></TD><TD>- separator charactor
+</TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

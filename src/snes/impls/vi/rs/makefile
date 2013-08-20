@@ -6,11 +6,9 @@ FFLAGS   =
 SOURCEC  = virs.c
 SOURCEF  =
 SOURCEH  = virsimpl.h
-OBJSC    = virs.o
-OBJSF    =
 LIBBASE  = libpetscsnes
 MANSEC   = SNES
-LOCDIR   = src/snes/impls/vi/rs
+LOCDIR   = src/snes/impls/vi/rs/
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

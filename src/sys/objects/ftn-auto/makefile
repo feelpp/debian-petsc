@@ -1,11 +1,10 @@
 
 #requiresdefine   'PETSC_HAVE_FORTRAN'
 ALL: lib
-CPPFLAGS  = 
+CPPFLAGS  =
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = pinitf.c ptypef.c tagmf.c gcommf.c optionsf.c inheritf.c destroyf.c
-OBJSC    = pinitf.o ptypef.o tagmf.o gcommf.o optionsf.o inheritf.o destroyf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

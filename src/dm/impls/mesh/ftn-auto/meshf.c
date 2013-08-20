@@ -129,9 +129,14 @@ extern void PetscRmPointer(void*);
 #define dmmeshsetmaxdof_ dmmeshsetmaxdof
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmmeshassemblematrix_ DMMESHASSEMBLEMATRIX
+#define dmmeshassemblematrixdm_ DMMESHASSEMBLEMATRIXDM
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmmeshassemblematrix_ dmmeshassemblematrix
+#define dmmeshassemblematrixdm_ dmmeshassemblematrixdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmmeshclone_ DMMESHCLONE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmmeshclone_ dmmeshclone
 #endif
 
 
@@ -224,11 +229,15 @@ void PETSC_STDCALL  dmmeshsetmaxdof_(DM dm,PetscInt *maxDof, int *__ierr ){
 *__ierr = DMMeshSetMaxDof(
 	(DM)PetscToPointer((dm) ),*maxDof);
 }
-void PETSC_STDCALL  dmmeshassemblematrix_(Mat A,DM dm,SectionReal section,PetscInt *e,PetscScalar v[],InsertMode *mode, int *__ierr ){
-*__ierr = DMMeshAssembleMatrix(
+void PETSC_STDCALL  dmmeshassemblematrixdm_(Mat A,DM dm,SectionReal section,PetscInt *e,PetscScalar v[],InsertMode *mode, int *__ierr ){
+*__ierr = DMMeshAssembleMatrixDM(
 	(Mat)PetscToPointer((A) ),
 	(DM)PetscToPointer((dm) ),
 	(SectionReal)PetscToPointer((section) ),*e,v,*mode);
+}
+void PETSC_STDCALL  dmmeshclone_(DM dm,DM *newdm, int *__ierr ){
+*__ierr = DMMeshClone(
+	(DM)PetscToPointer((dm) ),newdm);
 }
 #if defined(__cplusplus)
 }

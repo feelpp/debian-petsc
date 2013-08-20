@@ -5,13 +5,13 @@
 <TITLE>DMCreateColoring</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMCreateColoring"><H1>DMCreateColoring</H1></A>
-Gets coloring for a DMDA or DMComposite 
+Gets coloring for a <A HREF="../DM/DMDA.html#DMDA">DMDA</A> or DMComposite 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdm.h"     
-PetscErrorCode  DMCreateColoring(DM dm,ISColoringType ctype,const MatType mtype,ISColoring *coloring)
+PetscErrorCode  DMCreateColoring(DM dm,ISColoringType ctype,MatType mtype,ISColoring *coloring)
 </PRE>
 Collective on DM
 <P>
@@ -41,11 +41,4 @@ Collective on DM
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex13.c.html">src/ts/examples/tutorials/ex13.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex26.c.html">src/ts/examples/tutorials/ex26.c.html</A><BR>
 </BODY></HTML>

@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = vmpicrf.c pbvecf.c commonmpvecf.c
-OBJSC    = vmpicrf.o pbvecf.o commonmpvecf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

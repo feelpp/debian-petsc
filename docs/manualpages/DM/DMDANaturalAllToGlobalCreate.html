@@ -5,7 +5,7 @@
 <TITLE>DMDANaturalAllToGlobalCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDANaturalAllToGlobalCreate"><H1>DMDANaturalAllToGlobalCreate</H1></A>
 Creates a scatter context that maps from a copy of the entire vector on each processor to its local part in the global vector. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -13,7 +13,7 @@ Creates a scatter context that maps from a copy of the entire vector on each pro
 #include "petscdmda.h"   
 PetscErrorCode  DMDANaturalAllToGlobalCreate(DM da,VecScatter *scatter)
 </PRE>
-Collective on DMDA
+Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <DT><B>da </B> -the distributed array context
@@ -30,7 +30,7 @@ Collective on DMDA
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../DM/DMDAGlobalToNaturalEnd.html#DMDAGlobalToNaturalEnd">DMDAGlobalToNaturalEnd</A>(), <A HREF="../DM/DMLocalToGlobalBegin.html#DMLocalToGlobalBegin">DMLocalToGlobalBegin</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(), 
+ <A HREF="../DM/DMDAGlobalToNaturalEnd.html#DMDAGlobalToNaturalEnd">DMDAGlobalToNaturalEnd</A>(), <A HREF="../DM/DMLocalToGlobalBegin.html#DMLocalToGlobalBegin">DMLocalToGlobalBegin</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(),
 <BR><A HREF="../DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(), <A HREF="../DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(), <A HREF="../DM/DMDACreateNaturalVector.html#DMDACreateNaturalVector">DMDACreateNaturalVector</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/da/dagtona.c.html#DMDANaturalAllToGlobalCreate">src/dm/impls/da/dagtona.c</A>

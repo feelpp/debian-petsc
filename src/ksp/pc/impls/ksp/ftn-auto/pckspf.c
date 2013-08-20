@@ -27,13 +27,7 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscpc.h"
 #include "petscksp.h"
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define pckspsetusetrue_ PCKSPSETUSETRUE
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define pckspsetusetrue_ pckspsetusetrue
-#endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pckspgetksp_ PCKSPGETKSP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
@@ -45,10 +39,6 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  pckspsetusetrue_(PC pc, int *__ierr ){
-*__ierr = PCKSPSetUseTrue(
-	(PC)PetscToPointer((pc) ));
-}
 void PETSC_STDCALL  pckspgetksp_(PC pc,KSP *ksp, int *__ierr ){
 *__ierr = PCKSPGetKSP(
 	(PC)PetscToPointer((pc) ),ksp);

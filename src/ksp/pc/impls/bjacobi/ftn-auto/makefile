@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = bjacobif.c
-OBJSC    = bjacobif.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

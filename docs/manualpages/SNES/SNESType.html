@@ -5,20 +5,20 @@
 <TITLE>SNESType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESType"><H1>SNESType</H1></A>
-String with the name of a PETSc <A HREF="../SNES/SNES.html#SNES">SNES</A> method or the creation function with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:mysnescreate() 
+String with the name of a PETSc <A HREF="../SNES/SNES.html#SNES">SNES</A> method. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define SNESType char*
-#define SNESLS           "ls"
-#define SNESTR           "tr"
+typedef const char* SNESType;
+#define SNESNEWTONLS     "newtonls"
+#define SNESNEWTONTR     "newtontr"
 #define SNESPYTHON       "python"
 #define SNESTEST         "test"
 #define SNESNRICHARDSON  "nrichardson"
 #define SNESKSPONLY      "ksponly"
-#define SNESVIRS         "virs"
-#define SNESVISS         "viss"
+#define SNESVINEWTONRSLS "vinewtonrsls"
+#define SNESVINEWTONSSLS "vinewtonssls"
 #define SNESNGMRES       "ngmres"
 #define SNESQN           "qn"
 #define SNESSHELL        "shell"
@@ -26,12 +26,15 @@ String with the name of a PETSc <A HREF="../SNES/SNES.html#SNES">SNES</A> method
 #define SNESNCG          "ncg"
 #define SNESFAS          "fas"
 #define SNESMS           "ms"
+#define SNESNASM         "nasm"
+#define SNESANDERSON     "anderson"
+#define SNESASPIN        "aspin"
 
 </PRE>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(), <A HREF="../SNES/SNES.html#SNES">SNES</A>
+ <A HREF="../SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(), <A HREF="../SNES/SNES.html#SNES">SNES</A>, <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A HREF="../SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(), <A HREF="../SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/../../include/petscsnes.h.html#SNESType">src/snes/../../include/petscsnes.h</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>

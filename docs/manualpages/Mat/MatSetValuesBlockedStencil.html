@@ -5,7 +5,7 @@
 <TITLE>MatSetValuesBlockedStencil</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSetValuesBlockedStencil"><H1>MatSetValuesBlockedStencil</H1></A>
 Inserts or adds a block of values into a matrix. Using structured grid indexing 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -25,7 +25,7 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- number of columns being entered
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>idxn </B></TD><TD>- grid coordinates for matrix columns being entered 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>idxn </B></TD><TD>- grid coordinates for matrix columns being entered
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>v </B></TD><TD>- a logically two-dimensional array of values
 </TD></TR>
@@ -54,7 +54,7 @@ or call <A HREF="../Mat/MatSetBlockSize.html#MatSetBlockSize">MatSetBlockSize</A
 <P>
 The columns and rows in the stencil passed in MUST be contained within the
 ghost region of the given process as set with DMDACreateXXX() or <A HREF="../Mat/MatSetStencil.html#MatSetStencil">MatSetStencil</A>(). For example,
-if you create a DMDA with an overlap of one grid level and on a particular process its first
+if you create a <A HREF="../DM/DMDA.html#DMDA">DMDA</A> with an overlap of one grid level and on a particular process its first
 local nonghost x logical coordinate is 6 (so its first ghost x logical coordinate is 5) the
 first i index you can use in your column and row indices in <A HREF="../Mat/MatSetStencil.html#MatSetStencil">MatSetStencil</A>() is 5.
 <P>

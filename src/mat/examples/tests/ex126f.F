@@ -14,7 +14,7 @@
       Mat            A, fact
       PetscInt       i,j,II,JJ,m
       PetscInt       Istart, Iend
-      PetscInt       ione
+      PetscInt       ione, ifive
       PetscBool      wmumps
       PetscBool      flg
       PetscScalar    one, v
@@ -22,9 +22,10 @@
       PetscErrorCode ierr
 
       call PetscInitialize(PETSC_NULL_CHARACTER, ierr)
-      m    = 10   
+      m    = 10
       one  = 1.0
       ione = 1
+      ifive = 5
 
       wmumps = PETSC_FALSE
 
@@ -36,8 +37,8 @@
       call MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, m*m, m*m, ierr)
       call MatSetType(A, MATAIJ, ierr)
       call MatSetFromOptions(A, ierr)
-      call MatSeqAIJSetPreallocation(A,5, PETSC_NULL_INTEGER, ierr)
-      call MatMPIAIJSetPreallocation(A,5,PETSC_NULL_INTEGER,5,                          &
+      call MatSeqAIJSetPreallocation(A,ifive, PETSC_NULL_INTEGER, ierr)
+      call MatMPIAIJSetPreallocation(A,ifive,PETSC_NULL_INTEGER,ifive,  &
      &     PETSC_NULL_INTEGER,ierr)
 
       call MatGetOwnershipRange(A,Istart,Iend,ierr)
@@ -45,7 +46,7 @@
       do 10, II=Istart,Iend - 1
         v = -1.0
         i = II/m
-        j = II - i*m  
+        j = II - i*m
         if (i.gt.0) then
           JJ = II - m
           call MatSetValues(A,ione,II,ione,JJ,v,INSERT_VALUES,ierr)
@@ -65,7 +66,7 @@
         v = 4.0
         call  MatSetValues(A,ione,II,ione,II,v,INSERT_VALUES,ierr)
  10   continue
-      
+
       call MatAssemblyBegin(A, MAT_FINAL_ASSEMBLY, ierr)
       call MatAssemblyEnd(A, MAT_FINAL_ASSEMBLY, ierr)
 
@@ -81,24 +82,24 @@
           write(*,*) 'use MUMPS LU...'
           call MatGetFactor(A, MATSOLVERMUMPS, MAT_FACTOR_LU,                             &
      &                      fact, ierr)
-          call MatLUFactorSymbolic(fact, A, PETSC_NULL, PETSC_NULL,                       &
-     &         PETSC_NULL, ierr)
+          call MatLUFactorSymbolic(fact, A, PETSC_NULL_OBJECT,                            &
+     &                    PETSC_NULL_OBJECT,PETSC_NULL_INTEGER, ierr)
       else
          write(*,*) 'use PETSc LU...'
          call MatGetOrdering(A,MATORDERINGNATURAL,perm,iperm,ierr)
          call MatGetFactor(A, MATSOLVERPETSC, MAT_FACTOR_LU,                              &
      &         fact, ierr)
-     
+
          call MatLUFactorSymbolic(fact, A, perm, iperm,                                   &
-     &         PETSC_NULL, ierr)
+     &         PETSC_NULL_INTEGER, ierr)
          call ISDestroy(perm,ierr)
          call ISDestroy(iperm,ierr)
       endif
 
-      call MatLUFactorNumeric(fact, A, PETSC_NULL, ierr)
+      call MatLUFactorNumeric(fact, A, PETSC_NULL_INTEGER, ierr)
       call MatSolve(fact, b, x,ierr)
       call MatDestroy(fact, ierr)
-      
+
       call MatDestroy(A, ierr)
       call VecDestroy(u, ierr)
       call VecDestroy(x, ierr)

@@ -5,13 +5,13 @@
 <TITLE>MatGetOrdering</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetOrdering"><H1>MatGetOrdering</H1></A>
 Gets a reordering for a matrix to reduce fill or to improve numerical stability of LU factorization. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatGetOrdering(Mat mat,const MatOrderingType type,IS *rperm,IS *cperm)
+PetscErrorCode  MatGetOrdering(Mat mat,MatOrderingType type,IS *rperm,IS *cperm)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -46,7 +46,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-<DT><B>-mat_view_ordering_draw </B> -plots matrix nonzero structure in new ordering
+<DT><B>-mat_view_ordering draw </B> -plots matrix nonzero structure in new ordering
 <br>
 <P>
 
@@ -56,7 +56,7 @@ This DOES NOT actually reorder the matrix; it merely returns two index sets
 that define a reordering. This is usually not used directly, rather use the
 options <A HREF="../PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A>()
 <P>
-The user can define additional orderings; see <A HREF="../Mat/MatOrderingRegisterDynamic.html#MatOrderingRegisterDynamic">MatOrderingRegisterDynamic</A>().
+The user can define additional orderings; see <A HREF="../MatOrderings/MatOrderingRegister.html#MatOrderingRegister">MatOrderingRegister</A>().
 <P>
 These are generally only implemented for sequential sparse matrices.
 <P>
@@ -71,7 +71,7 @@ One-way Dissection, Cholesky, Reverse Cuthill-McKee,
 Quotient Minimum Degree
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-   <A HREF="../Mat/MatOrderingRegisterDynamic.html#MatOrderingRegisterDynamic">MatOrderingRegisterDynamic</A>(), <A HREF="../PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A>()
+   <A HREF="../MatOrderings/MatOrderingRegister.html#MatOrderingRegister">MatOrderingRegister</A>(), <A HREF="../PC/PCFactorSetMatOrderingType.html#PCFactorSetMatOrderingType">PCFactorSetMatOrderingType</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/order/sorder.c.html#MatGetOrdering">src/mat/order/sorder.c</A>
 <BR><A HREF="./index.html">Index of all MatOrderings routines</A>
@@ -79,4 +79,5 @@ Quotient Minimum Degree
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/mat/examples/tutorials/ex1.c.html">src/mat/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 </BODY></HTML>

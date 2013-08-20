@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/UFC.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:21:13+00:00">
+<meta name="date" content="2013-07-02T14:53:38+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#B22222">/*</font>
 
 <a name="line3">  3: </a><font color="#B22222">Routines for linking UFC to Sieve and PETSc</font>
@@ -50,7 +50,7 @@
 <a name="line39"> 39: </a>
 <a name="line40"> 40: </a>      }
 <a name="line41"> 41: </a>    }
-<a name="line42"> 42: </a>
+
 <a name="line43"> 43: </a>  };
 
 <a name="line45"> 45: </a>  class sieve_cell_wrapper : ufc::cell {
@@ -94,7 +94,7 @@
 <a name="line83"> 83: </a>        element_entities[1] = new int[6]; //edges
 <a name="line84"> 84: </a>        element_entities[2] = new int[4]; //faces
 <a name="line85"> 85: </a>        element_entities[3] = new int[1]; //tetrahedron
-<a name="line86"> 86: </a>         double * tmpcoords = new double[coorddim*4];
+<a name="line86"> 86: </a>        double * tmpcoords = new double[coorddim*4];
 <a name="line87"> 87: </a>        coordinates = new double *[4];
 <a name="line88"> 88: </a>        <font color="#4169E1">for</font> (int i = 0; i &lt; 4; i++) {
 <a name="line89"> 89: </a>          coordinates[i] = &amp;tmpcoords[coorddim*i];
@@ -124,7 +124,7 @@
 <a name="line113">113: </a>    void reorientSieveCell(PETSC_MESH_TYPE::point_type p) {
 <a name="line114">114: </a>      //changing the orientation will be hard; keep it the same <font color="#4169E1">for</font> now as it should orient normals right
 <a name="line115">115: </a>      //this will not be so bad in the long run
-<a name="line116">116: </a>
+
 <a name="line117">117: </a>    }
 <a name="line118">118: </a>    Obj&lt;PETSC_MESH_TYPE::sieve_type::oConeArray&gt; reorderSieveClosure(PETSC_MESH_TYPE::point_type p) {
 <a name="line119">119: </a>      //<font color="#4169E1">return</font> m-&gt;getSieve()-&gt;closure(p); //null reorder <font color="#4169E1">for</font> now. NEI! the oriented closure!
@@ -133,7 +133,7 @@
 <a name="line122">122: </a>    void reorderSieveRestrictClosure(const double * coefficients) {
 <a name="line123">123: </a>      //order the restricted closure given in coefficients based upon the cell mapping here
 <a name="line124">124: </a>    }
-<a name="line125">125: </a>
+
 <a name="line126">126: </a>  };
 
 <a name="line128">128: </a>  class sieve_function_wrapper : ufc::function {
@@ -178,7 +178,7 @@
 <a name="line167">167: </a>      _finite_element = finite_element;
 <a name="line168">168: </a>      _cell_integral = cell_integral;
 <a name="line169">169: </a>    }
-<a name="line170">170: </a>
+
 <a name="line171">171: </a>    void evaluate(double * values, const double * coordinates, ufc::cell &amp;cell)
 <a name="line172">172: </a>    {
 <a name="line173">173: </a>      //evaluate the degrees of freedom on the interior of the given cell; note that this requires that coordinates be within the cell to really make sense.
@@ -207,12 +207,12 @@
 
 <a name="line197">197: </a>    boundary_condition(){};
 <a name="line198">198: </a>    boundary_condition (<A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  (*func)(PETSC_MESH_TYPE::point_type, const double *), int mark = 1, int cellmark = 2) {
-<a name="line199">199: </a>
+
 <a name="line200">200: </a>    }
 <a name="line201">201: </a>    void applyBC(Obj&lt;PETSC_MESH_TYPE&gt; m) {
 <a name="line202">202: </a>    }
 <a name="line203">203: </a>  };
-<a name="line204">204: </a>
+
 <a name="line205">205: </a>  <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  Scalar_Dirichlet_Pred(PETSC_MESH_TYPE::point_type p, const double * coords) {
 <a name="line206">206: </a>    //set up the marker
 <a name="line207">207: </a>    //<font color="#4169E1">if</font> anything in the star of the thing has support size 1 but not height 0 then the thing's on the boundary! mark it!
@@ -223,7 +223,7 @@
 <a name="line212">212: </a><strong><font color="#FF0000">  public:</font></strong>
 <a name="line213">213: </a>    //sieve parts
 <a name="line214">214: </a>    Obj&lt;PETSC_MESH_TYPE&gt; _mesh;
-<a name="line215">215: </a>
+
 <a name="line216">216: </a>    //UFC parts
 <a name="line217">217: </a>    //Forms:
 <a name="line218">218: </a><strong><font color="#FF0000">    ufc:</font></strong>:form * _bform;
@@ -275,7 +275,7 @@
 <a name="line264">264: </a>    void setMesh(Obj&lt;PETSC_MESH_TYPE&gt; m){mesh = m;}
 <a name="line265">265: </a>    Obj&lt;PETSC_MESH_TYPE&gt; getMesh() {<font color="#4169E1">return</font> mesh;}
 <a name="line266">266: </a>    Mesh getPetscMesh() {
-<a name="line267">267: </a>      <font color="#4169E1">return</font> <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line267">267: </a>      <font color="#4169E1">return</font> NULL;
 <a name="line268">268: </a>    }
 <a name="line269">269: </a>    void setForm(ufc::form * f) {form = f;}
 <a name="line270">270: </a><strong><font color="#FF0000">    ufc:</font></strong>:form * getForm() {}
@@ -285,7 +285,7 @@
 <a name="line274">274: </a><strong><font color="#FF0000">    ufc:</font></strong>:function * getExactSolution() {
 <a name="line275">275: </a>      <font color="#4169E1">return</font> exact_solution;
 <a name="line276">276: </a>    }
-<a name="line277">277: </a>
+
 
 <a name="line279">279: </a>    //Misc
 <a name="line280">280: </a>    void setupUFC(){
@@ -293,27 +293,27 @@
 <a name="line282">282: </a>      finite_element = form-&gt;create_finite_element(0);
 <a name="line283">283: </a>      dof_map = form-&gt;create_dof_map(0);
 <a name="line284">284: </a>      cell_integrals = form-&gt;create_cell_integral(0);
-<a name="line285">285: </a>
+
 <a name="line286">286: </a>      cell = new ();
-<a name="line287">287: </a>
+
 <a name="line288">288: </a>    };
 <a name="line289">289: </a>    void setCell(PETSC_MESH_TYPE::point_type c) {
-<a name="line290">290: </a>
+
 <a name="line291">291: </a>    }
 <a name="line292">292: </a>    void setupFields(Obj&lt;PETSC_MESH_TYPE&gt; m, Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; s, ufc::form form, ufc::function function){
 <a name="line293">293: </a>      setCell
 <a name="line294">294: </a>    };
 <a name="line295">295: </a>    void assembleMatrix() {
 <a name="line296">296: </a>      //use the bform to create the matrix
-<a name="line297">297: </a>
+
 <a name="line298">298: </a>      //partial assembly?
 <a name="line299">299: </a>    }
 <a name="line300">300: </a>    void assembleRHS() {
 <a name="line301">301: </a>      //use the lform on the interior and the bform on the boundaries to assemble the RHS
-<a name="line302">302: </a>
+
 <a name="line303">303: </a>    }
 <a name="line304">304: </a>    void setFieldfromFunction(Obj&lt;PETSC_MESH_TYPE&gt; m, Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; s, ufc::form form, ufc::function function) {
-<a name="line305">305: </a>
+
 <a name="line306">306: </a>    }
 <a name="line307">307: </a>  };
 <a name="line308">308: </a>}
@@ -343,9 +343,9 @@
 <a name="line332">332: </a><font color="#B22222">*/</font>
 
 
-<a name="line337">337: </a>void Map_SieveCell_UFCCell(ALE::Obj&lt;PETSC_MESH_TYPE&gt; m, PETSC_MESH_TYPE::point_type c, ufc::form * form, ufc::cell * cell, const PETSC_MESH_TYPE::point_type * _oPoints = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, const int _num_oPoints= -1) {
+<a name="line337">337: </a>void Map_SieveCell_UFCCell(ALE::Obj&lt;PETSC_MESH_TYPE&gt; m, PETSC_MESH_TYPE::point_type c, ufc::form * form, ufc::cell * cell, const PETSC_MESH_TYPE::point_type * _oPoints = NULL, const int _num_oPoints= -1) {
 <a name="line338">338: </a>  //set up the ufc cell to be equivalent to the sieve cell given by c;  Assume that the # of dofs is constant
-<a name="line340">340: </a>
+
 <a name="line341">341: </a>  const ALE::Obj&lt;PETSC_MESH_TYPE::sieve_type&gt; s = m-&gt;getSieve();
 <a name="line342">342: </a><strong><font color="#FF0000">  ALE:</font></strong>:Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; coordinates = m-&gt;getRealSection(<font color="#666666">"coordinates"</font>);
 <a name="line343">343: </a>  int dim = m-&gt;getDimension();
@@ -354,18 +354,18 @@
 <a name="line346">346: </a>  //  ALE::Obj&lt;PETSC_MESH_TYPE::oConeArray&gt; cell_closure = PETSC_MESH_TYPE::sieve_alg_type::orientedClosure(m, m-&gt;getArrowSection(<font color="#666666">"orientation"</font>), c);
 <a name="line347">347: </a>  const PETSC_MESH_TYPE::point_type * oPoints = _oPoints;
 <a name="line348">348: </a>  int num_oPoints = _num_oPoints;
-<a name="line349">349: </a>  <font color="#4169E1">if</font> (oPoints == <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line349">349: </a>  <font color="#4169E1">if</font> (oPoints == NULL) {
 <a name="line350">350: </a><strong><font color="#FF0000">    ALE:</font></strong>:ISieveVisitor::PointRetriever&lt;PETSC_MESH_TYPE::sieve_type&gt; oC((int) pow(m-&gt;getSieve()-&gt;getMaxConeSize(), m-&gt;depth())+1, true);
 <a name="line351">351: </a><strong><font color="#FF0000">    ALE:</font></strong>:ISieveTraversal&lt;PETSC_MESH_TYPE::sieve_type&gt;::orientedClosure(*s, c, oC);
 <a name="line352">352: </a>    <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(m-&gt;comm(), <font color="#666666">"Got the orientedClosure\n"</font>);
 <a name="line353">353: </a>    oPoints = oC.getPoints();
 <a name="line354">354: </a>    num_oPoints = oC.getSize();
 <a name="line355">355: </a>  }
-<a name="line356">356: </a>
+
 <a name="line357">357: </a>  //PETSC_MESH_TYPE::oConeArray::iterator cc_iter = cell_closure-&gt;begin();
 <a name="line358">358: </a>  //PETSC_MESH_TYPE::oConeArray::iterator cc_iter_end = cell_closure-&gt;end();
 <a name="line359">359: </a>  int vertex_index = 0;
-<a name="line360">360: </a>
+
 <a name="line361">361: </a>  <font color="#4169E1">for</font> (int t = 0; t &lt; num_oPoints; t++) {
 <a name="line362">362: </a>    //<A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, <font color="#666666">"%d is in the closure\n"</font>, oPoints[t]);
 <a name="line363">363: </a>  //<font color="#4169E1">while</font> (cc_iter != cc_iter_end) {
@@ -407,7 +407,7 @@
 
 <a name="line404">404: </a><strong><font color="#FF0000">  ufc:</font></strong>:cell cell;
 <a name="line405">405: </a><strong><font color="#FF0000">  ufc:</font></strong>:finite_element * finite_element = form-&gt;create_finite_element(0);
-<a name="line406">406: </a>
+
 <a name="line407">407: </a>  //initialize the ufc infrastructure
 <a name="line408">408: </a>  cell.geometric_dimension = dim; //might be different; check the fiberdimension of the coordinates
 <a name="line409">409: </a>  cell.topological_dimension = dim;
@@ -422,7 +422,7 @@
 <a name="line418">418: </a>  //  localTensor[i] = &amp;localTensor_pointer[space_dimension*i];
 <a name="line419">419: </a>  //}
 <a name="line420">420: </a>  cell.coordinates = new double *[dim+1];
-<a name="line421">421: </a>
+
 <a name="line422">422: </a>  <font color="#4169E1">for</font> (int i = 0; i &lt; dim+1; i++) {
 <a name="line423">423: </a>    cell.coordinates[i] = &amp;tmpcellcoords[i*dim];
 <a name="line424">424: </a>  }
@@ -439,7 +439,7 @@
 <a name="line435">435: </a>    Map_SieveCell_UFCCell(m, *c_iter, form, &amp;cell);
 <a name="line436">436: </a>    //<font color="#4169E1">for</font> now just <font color="#4169E1">do</font> the first cell integral.  Fix when you talk to someone about what exactly having more than one means.
 <a name="line437">437: </a>    //todo: coefficients.... ask <font color="#4169E1">if</font> they're global and <font color="#4169E1">if</font> yes ask why.
-<a name="line438">438: </a>    cell_integrals[0]-&gt;tabulate_tensor(localTensor, (double * const *)<A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, cell);
+<a name="line438">438: </a>    cell_integrals[0]-&gt;tabulate_tensor(localTensor, (double * const *)NULL, cell);
 <a name="line439">439: </a>    //see what the local tensor coming out looks like:
 <a name="line440">440: </a>    <font color="#4169E1">if</font> (1) {
 <a name="line441">441: </a>      //maybe print the local tensor?
@@ -559,7 +559,7 @@
 <a name="line557">557: </a>  <font color="#4169E1">if</font> (m-&gt;hasRealSection(<font color="#666666">"constant"</font>)) {
 <a name="line558">558: </a>    const Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;&amp; constant = m-&gt;getRealSection(<font color="#666666">"constant"</font>);
 <a name="line559">559: </a>    Obj&lt;PETSC_MESH_TYPE::real_section_type&gt;        s;
-<a name="line560">560: </a>
+
 <a name="line561">561: </a>    <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line562">562: </a>    s-&gt;axpy(-1.0, constant);
 <a name="line563">563: </a>  }
@@ -643,7 +643,7 @@
 <a name="line643">643: </a>      //<A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(m-&gt;comm(), <font color="#666666">"x[f]: %f\n"</font>, x[f]);
 <a name="line644">644: </a>      //<A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(m-&gt;comm(), <font color="#666666">"elemVec[f]: %f\n"</font>, elemVec[f]);
 <a name="line645">645: </a>    }
-<a name="line646">646: </a>
+
 <a name="line647">647: </a>    SectionRealUpdateAdd(section, *c_iter, elemVec);
 <a name="line648">648: </a>  }
 <a name="line649">649: </a>  <A href="../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(elemVec,elemMat);
@@ -668,7 +668,7 @@
 
 
 <a name="line672">672: </a><A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> IntegrateDualBasis_UFC(ALE::Obj&lt;PETSC_MESH_TYPE&gt; m, PETSC_MESH_TYPE::point_type c, ufc::form &amp; f) {
-<a name="line673">673: </a>
+
 <a name="line674">674: </a>}
 
 <a name="line676">676: </a>//you still have to wrap this one as the fields are set up on the basis of the discretizations; you have to set up the discretization as it would be from the form, so we have to at least fill in the fiberdimension parts of the discretization type such that setupFields can <font color="#4169E1">do</font> its work.  This will be equivalent to the CreateProblem_gen_0 stuff that FIAT + Generator spits out.
@@ -708,7 +708,7 @@
 <a name="line711">711: </a>      const ALE::Obj&lt;ALE::BoundaryCondition&gt;&amp; e = new ALE::BoundaryCondition(m-&gt;comm(), m-&gt;debug());
 <a name="line712">712: </a>      e-&gt;setLabelName(<font color="#666666">"marker"</font>);
 <a name="line713">713: </a>      e-&gt;setFunction(exactFunc);
-<a name="line714">714: </a>      e-&gt;setDualIntegrator(<A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>); //TODO
+<a name="line714">714: </a>      e-&gt;setDualIntegrator(NULL); //TODO
 <a name="line715">715: </a>      d-&gt;setExactSolution(e);
 <a name="line716">716: </a>    }
 <a name="line717">717: </a>  }
@@ -723,7 +723,7 @@
 <a name="line728">728: </a>  //watch out <font color="#4169E1">if</font> this screws up stuff involving the eventual output of a solution; we may have to reprocess or something silly like that.
 <a name="line729">729: </a>  //also, where there are multiple forms what should we <font color="#4169E1">do</font>?
 <a name="line730">730: </a><strong><font color="#FF0000">  ALE:</font></strong>:Obj&lt;ALE::Discretization&gt; d = m-&gt;getDiscretization(<font color="#666666">"ufc_u"</font>);
-<a name="line731">731: </a>
+
 <a name="line732">732: </a>}
 
 <a name="line734">734: </a>//Comment: we shouldn't need to <font color="#4169E1">do</font> this!  Tie this in properly with the discretization object and then setupfield with noupdate; write a separate routine <font color="#4169E1">for</font> setting the boundary values given a wrapped function.
@@ -753,12 +753,12 @@
 <a name="line760">760: </a>   cell.entity_indices = new unsigned int *[dim+1];
 <a name="line761">761: </a>   cell.entity_indices[0] = new unsigned int[dim];
 <a name="line762">762: </a>   cell.coordinates = new double *[dim+1];
-<a name="line763">763: </a>
+
 <a name="line764">764: </a>   double * coordpointer = new double[(dim+1)*dim];
 <a name="line765">765: </a>   <font color="#4169E1">for</font> (int i = 0; i &lt; dim+1; i++) {
 <a name="line766">766: </a>     cell.coordinates[i] = &amp;coordpointer[dim*i];
 <a name="line767">767: </a>   }
-<a name="line768">768: </a>
+
 <a name="line769">769: </a>   s-&gt;setChart(m-&gt;getSieve()-&gt;getChart());
 <a name="line770">770: </a>   <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(m-&gt;comm(), <font color="#666666">"Set the chart\n"</font>);
 <a name="line771">771: </a>   maxDof = m-&gt;setFiberDimensions(s, discs, bcLabels);
@@ -791,17 +791,17 @@
 <a name="line798">798: </a><strong><font color="#FF0000">     ALE:</font></strong>:ISieveVisitor::PointRetriever&lt;PETSC_MESH_TYPE::sieve_type&gt; oC((int) pow(m-&gt;getSieve()-&gt;getMaxConeSize(), m-&gt;depth())+1, true);
 
 <a name="line800">800: </a>     <font color="#4169E1">for</font>(PETSC_MESH_TYPE::label_sequence::iterator c_iter = boundaryCells-&gt;begin(); c_iter != boundaryCells-&gt;end(); ++c_iter) {
-<a name="line801">801: </a>
+
 <a name="line802">802: </a>       //const Obj&lt;PETSC_MESH_TYPE::coneArray&gt;      closure = PETSC_MESH_TYPE::sieve_alg_type::closure(m, m-&gt;getArrowSection(<font color="#666666">"orientation"</font>), *c_iter);
 <a name="line803">803: </a>       //const PETSC_MESH_TYPE::coneArray::iterator end     = closure-&gt;end();
-<a name="line804">804: </a>
+
 <a name="line805">805: </a>       <font color="#4169E1">if</font> (debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"  Boundary cell "</font> &lt;&lt; *c_iter &lt;&lt; std::endl;}
 <a name="line806">806: </a><strong><font color="#FF0000">       ALE:</font></strong>:ISieveTraversal&lt;PETSC_MESH_TYPE::sieve_type&gt;::orientedClosure(sieve, *c_iter, oC);
 <a name="line807">807: </a>       const PETSC_MESH_TYPE::point_type * oPoints = oC.getPoints();
 <a name="line808">808: </a>       const int num_oPoints = oC.getSize();
 <a name="line809">809: </a>       Map_SieveCell_UFCCell(m, *c_iter, form, &amp;cell, oPoints, num_oPoints);
 <a name="line810">810: </a>       <A href="../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(m-&gt;comm(), <font color="#666666">"successfully quit the cell map\n"</font>);
-<a name="line811">811: </a>       //m-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, detJ);
+<a name="line811">811: </a>       //m-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, NULL, detJ);
 <a name="line812">812: </a>       <font color="#4169E1">for</font>(int f = 0; f &lt; numFields; ++f) v[f] = 0;
 <a name="line813">813: </a>       <font color="#4169E1">for</font>(int t = 0; t &lt; num_oPoints; t++) {
 <a name="line814">814: </a>         const int cDim = s-&gt;getConstraintDimension(oPoints[t]);
@@ -918,7 +918,7 @@
 <a name="line925">925: </a>  const ALE::Obj&lt;PETSC_MESH_TYPE::names_type&gt;&amp; discs  = m-&gt;getDiscretizations();
 <a name="line926">926: </a>  const int              debug  = s-&gt;debug();
 <a name="line927">927: </a><strong><font color="#FF0000">  PETSC_MESH_TYPE:</font></strong>:names_type             bcLabels;
-<a name="line928">928: </a>
+
 <a name="line929">929: </a>  s-&gt;setChart(m-&gt;getSieve()-&gt;getChart());
 <a name="line930">930: </a>  int maxdof = m-&gt;setFiberDimensions(s, discs, bcLabels);
 <a name="line931">931: </a>  m-&gt;calculateIndices();
@@ -937,7 +937,7 @@
 <a name="line944">944: </a>   cell.entity_indices = new unsigned int *[dim+1];
 <a name="line945">945: </a>   cell.entity_indices[0] = new unsigned int[dim];
 <a name="line946">946: </a>   cell.coordinates = new double *[dim+1];
-<a name="line947">947: </a>
+
 <a name="line948">948: </a>   double * coordpointer = new double[(dim+1)*dim];
 <a name="line949">949: </a>   <font color="#4169E1">for</font> (int i = 0; i &lt; dim+1; i++) {
 <a name="line950">950: </a>     cell.coordinates[i] = &amp;coordpointer[dim*i];
@@ -959,14 +959,14 @@
 <a name="line966">966: </a>    double                        *J             = new double[m-&gt;getDimension()*m-&gt;getDimension()];
 <a name="line967">967: </a>    double                         detJ;
 <a name="line968">968: </a>    Visitor pV((int) pow(m-&gt;getSieve()-&gt;getMaxConeSize(), m-&gt;depth())+1, true);
-<a name="line969">969: </a>
+
 <a name="line970">970: </a>    <font color="#4169E1">for</font>(PETSC_MESH_TYPE::label_sequence::iterator c_iter = boundaryCells-&gt;begin(); c_iter != boundaryCells-&gt;end(); ++c_iter) {
 <a name="line971">971: </a><strong><font color="#FF0000">      ALE:</font></strong>:ISieveTraversal&lt;PETSC_MESH_TYPE::sieve_type&gt;::orientedClosure(*m-&gt;getSieve(), *c_iter, pV);
 <a name="line972">972: </a>      const Visitor::point_type *oPoints = pV.getPoints();
 <a name="line973">973: </a>      const int                  oSize   = pV.getSize();
-<a name="line974">974: </a>
+
 <a name="line975">975: </a>      <font color="#4169E1">if</font> (debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"  Boundary cell "</font> &lt;&lt; *c_iter &lt;&lt; std::endl;}
-<a name="line976">976: </a>      m-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, detJ);
+<a name="line976">976: </a>      m-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, NULL, detJ);
 <a name="line977">977: </a>      <font color="#4169E1">for</font>(int f = 0; f &lt; numFields; ++f) v[f] = 0;
 <a name="line978">978: </a>      <font color="#4169E1">for</font>(int cl = 0; cl &lt; oSize; ++cl) {
 <a name="line979">979: </a>        const int cDim = s-&gt;getConstraintDimension(oPoints[cl]);
@@ -1075,7 +1075,7 @@
 <a name="line1084">1084: </a> {
 <a name="line1085">1085: </a>   const int      dim = m-&gt;getDimension();
 <a name="line1086">1086: </a>   //<A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flag;
-<a name="line1088">1088: </a>
+
 <a name="line1090">1090: </a>   SetupField_UFC(m, s, form);
 <a name="line1091">1091: </a><strong><font color="#FF0000">   ufc:</font></strong>:finite_element * finite_element = form-&gt;create_finite_element(0);
 <a name="line1092">1092: </a><strong><font color="#FF0000">   ufc:</font></strong>:cell cell;
@@ -1098,8 +1098,8 @@
 <a name="line1109">1109: </a>     const Obj&lt;PETSC_MESH_TYPE::coneArray&gt;      closure = ALE::SieveAlg&lt;ALE::Mesh&gt;::closure(m, *c_iter);
 <a name="line1110">1110: </a>     const PETSC_MESH_TYPE::coneArray::iterator end     = closure-&gt;end();
 <a name="line1111">1111: </a>     int                                  v       = 0;
-<a name="line1112">1112: </a>
-<a name="line1113">1113: </a>     //m-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, detJ);
+
+<a name="line1113">1113: </a>     //m-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, NULL, detJ);
 <a name="line1114">1114: </a>     Map_SieveCell_UFCCell(m, *c_iter, form, &amp;cell);
 <a name="line1115">1115: </a>     <font color="#4169E1">for</font>(PETSC_MESH_TYPE::coneArray::iterator cl_iter = closure-&gt;begin(); cl_iter != end; ++cl_iter) {
 <a name="line1116">1116: </a>       const int pointDim = s-&gt;getFiberDimension(*cl_iter);

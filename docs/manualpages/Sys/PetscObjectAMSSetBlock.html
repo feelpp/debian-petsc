@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Sys/PetscObjectAMSSetBlock.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>PetscObjectAMSSetBlock</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="PetscObjectAMSSetBlock"><H1>PetscObjectAMSSetBlock</H1></A>
+Sets whether an object will block at <A HREF="../Sys/PetscObjectAMSBlock.html#PetscObjectAMSBlock">PetscObjectAMSBlock</A>() 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsys.h"   
+PetscErrorCode  PetscObjectAMSSetBlock(PetscObject obj,PetscBool flg)
+</PRE>
+Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>obj </B></TD><TD>- the Petsc variable
+Thus must be cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example,
+<A HREF="../Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,name);
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flg </B></TD><TD>- whether it should block
+</TD></TR></TABLE>
+<P>
+
+<P>
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>(), PetscObjectAMSViewOff(), <A HREF="../Sys/PetscObjectAMSBlock.html#PetscObjectAMSBlock">PetscObjectAMSBlock</A>()
+<BR>
+<P>
+<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/ams/pams.c.html#PetscObjectAMSSetBlock">src/sys/ams/pams.c</A>
+<BR><A HREF="./index.html">Index of all Sys routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

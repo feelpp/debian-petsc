@@ -1,3 +1,54 @@
+        subroutine PetscViewerASCIISetTab(viewer, tabs ,ierr)
+       PetscViewer viewer ! PetscViewer
+       PetscInt tabs ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscViewerASCIIGetTab(viewer, tabs ,ierr)
+       PetscViewer viewer ! PetscViewer
+       PetscInt tabs ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscViewerASCIIAddTab(viewer, tabs ,ierr)
+       PetscViewer viewer ! PetscViewer
+       PetscInt tabs ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscViewerASCIISubtractTab(viewer, tabs ,ierr)
+       PetscViewer viewer ! PetscViewer
+       PetscInt tabs ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscViewerASCIIPushTab(viewer ,ierr)
+       PetscViewer viewer ! PetscViewer
+       integer ierr
+       end subroutine
+        subroutine PetscViewerASCIIPopTab(viewer ,ierr)
+       PetscViewer viewer ! PetscViewer
+       integer ierr
+       end subroutine
+        subroutine PetscViewerASCIIUseTabs(viewer, flg ,ierr)
+       PetscViewer viewer ! PetscViewer
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PetscViewerHDF5PopGroup(viewer ,ierr)
+       PetscViewer viewer ! PetscViewer
+       integer ierr
+       end subroutine
+        subroutine PetscViewerHDF5IncrementTimestep(viewer ,ierr)
+       PetscViewer viewer ! PetscViewer
+       integer ierr
+       end subroutine
+        subroutine PetscViewerHDF5SetTimestep(viewer, timestep ,ierr)
+       PetscViewer viewer ! PetscViewer
+       PetscInt timestep ! PetscInt
+       integer ierr
+       end subroutine
+        subroutine PetscViewerHDF5GetTimestep(viewer, timestep ,ierr)
+       PetscViewer viewer ! PetscViewer
+       PetscInt timestep ! PetscInt
+       integer ierr
+       end subroutine
         subroutine PetscViewerFlush(viewer ,ierr)
        PetscViewer viewer ! PetscViewer
        integer ierr
@@ -96,38 +147,5 @@
        PetscViewer viewer ! PetscViewer
        PetscInt nbounds ! PetscInt
        PetscReal bounds ! PetscReal
-       integer ierr
-       end subroutine
-        subroutine PetscViewerASCIISetTab(viewer, tabs ,ierr)
-       PetscViewer viewer ! PetscViewer
-       PetscInt tabs ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PetscViewerASCIIGetTab(viewer, tabs ,ierr)
-       PetscViewer viewer ! PetscViewer
-       PetscInt tabs ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PetscViewerASCIIAddTab(viewer, tabs ,ierr)
-       PetscViewer viewer ! PetscViewer
-       PetscInt tabs ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PetscViewerASCIISubtractTab(viewer, tabs ,ierr)
-       PetscViewer viewer ! PetscViewer
-       PetscInt tabs ! PetscInt
-       integer ierr
-       end subroutine
-        subroutine PetscViewerASCIIPushTab(viewer ,ierr)
-       PetscViewer viewer ! PetscViewer
-       integer ierr
-       end subroutine
-        subroutine PetscViewerASCIIPopTab(viewer ,ierr)
-       PetscViewer viewer ! PetscViewer
-       integer ierr
-       end subroutine
-        subroutine PetscViewerASCIIUseTabs(viewer, flg ,ierr)
-       PetscViewer viewer ! PetscViewer
-       PetscBool flg ! PetscBool
        integer ierr
        end subroutine

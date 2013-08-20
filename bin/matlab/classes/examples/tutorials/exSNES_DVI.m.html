@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>exSNES_DVI</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-08-29"><meta name="DC.source" content="exSNES_DVI.m"><style type="text/css">
+      --><title>exSNES_DVI</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-07-02"><meta name="DC.source" content="exSNES_DVI.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -56,13 +56,13 @@ span.syscmd { color:#B28C00 }
 .footer p { margin:0px; }
 
   </style></head><body><div class="content"><p>Solves a nonlinear variational inequality where the user manages the mesh--solver interactions</p><p>This is a translation of snes/examples/tests/ex8.c</p><pre class="language-matlab">Set <span class="string">the</span> <span class="string">Matlab</span> <span class="string">path</span> <span class="string">and</span> <span class="string">initialize</span> <span class="string">PETSc</span>
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 </pre><pre class="codeinput">more <span class="string">on</span>
 figure(1),clf;figure(2),clf;
 path(path,<span class="string">'../../'</span>)
 PetscInitialize({<span class="string">'-snes_vi_monitor'</span>,<span class="string">'-ksp_monitor'</span>,<span class="string">'-snes_vi_type'</span>,<span class="string">'ss'</span>});
 </pre><pre>Create DM to manage the grid and get work vectors</pre><pre class="codeinput">user.mx = 10;user.my = 10;
-user.dm = PetscDMDACreate2d(PetscDM.NONPERIODIC,PetscDM.STENCIL_BOX,user.mx,user.my,Petsc.DECIDE,Petsc.DECIDE,1,1);
+user.dm = PetscDMDACreate2d(PetscDM.BOUNDARY_GHOSTED,PetscDM.BOUNDARY_GHOSTED,PetscDM.STENCIL_BOX,user.mx,user.my,Petsc.DECIDE,Petsc.DECIDE,1,1);
 x  = user.dm.CreateGlobalVector();
 r  = x.Duplicate();
 J  = user.dm.CreateMatrix(<span class="string">'aij'</span>);
@@ -116,7 +116,7 @@ PetscInitialize({'-snes_vi_monitor','-ksp_monitor','-snes_vi_type','ss'});
 %%
 %  Create DM to manage the grid and get work vectors
 user.mx = 10;user.my = 10;
-user.dm = PetscDMDACreate2d(PetscDM.NONPERIODIC,PetscDM.STENCIL_BOX,user.mx,user.my,Petsc.DECIDE,Petsc.DECIDE,1,1);
+user.dm = PetscDMDACreate2d(PetscDM.BOUNDARY_GHOSTED,PetscDM.BOUNDARY_GHOSTED,PetscDM.STENCIL_BOX,user.mx,user.my,Petsc.DECIDE,Petsc.DECIDE,1,1);
 x  = user.dm.CreateGlobalVector();
 r  = x.Duplicate();
 J  = user.dm.CreateMatrix('aij');

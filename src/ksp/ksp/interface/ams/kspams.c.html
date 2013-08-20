@@ -1,0 +1,136 @@
+<center><a href="kspams.c">Actual source code: kspams.c</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/interface/ams/kspams.c.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:47:57+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt;  </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petscviewerams.h&gt;</font>
+
+<a name="line4">  4: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line5">  5: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer;
+<a name="line6">  6: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>    neigs;
+<a name="line7">  7: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>   *eigi;
+<a name="line8">  8: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>   *eigr;
+<a name="line9">  9: </a>  AMS_Memory amem;
+<a name="line10"> 10: </a>} KSPMonitor_AMS;
+
+<a name="line14"> 14: </a><font color="#B22222">/*@C</font>
+<a name="line15"> 15: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMSCreate.html#KSPMonitorAMSCreate">KSPMonitorAMSCreate</A> - create an AMS monitor context</font>
+
+<a name="line17"> 17: </a><font color="#B22222">   Collective</font>
+
+<a name="line19"> 19: </a><font color="#B22222">   Input Arguments:</font>
+<a name="line20"> 20: </a><font color="#B22222">+  ksp - <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> to monitor</font>
+<a name="line21"> 21: </a><font color="#B22222">-  amscommname - name of AMS communicator to use, if NULL uses default "PETSc" communicator</font>
+
+<a name="line23"> 23: </a><font color="#B22222">   Output Arguments:</font>
+<a name="line24"> 24: </a><font color="#B22222">.  ctx - context for monitor</font>
+
+<a name="line26"> 26: </a><font color="#B22222">   Level: developer</font>
+
+<a name="line28"> 28: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMS.html#KSPMonitorAMS">KSPMonitorAMS</A>(), <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMSDestroy.html#KSPMonitorAMSDestroy">KSPMonitorAMSDestroy</A>()</font>
+<a name="line29"> 29: </a><font color="#B22222">@*/</font>
+<a name="line30"> 30: </a><strong><font color="#4169E1"><a name="KSPMonitorAMSCreate"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMSCreate.html#KSPMonitorAMSCreate">KSPMonitorAMSCreate</A>(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,const char *amscommname,void **ctx)</font></strong>
+<a name="line31"> 31: </a>{
+<a name="line33"> 33: </a>  KSPMonitor_AMS *mon;
+
+<a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(ksp,KSPMonitor_AMS,&amp;mon);
+<a name="line37"> 37: </a>  <font color="#4169E1">if</font> (!amscommname) {
+<a name="line38"> 38: </a>    mon-&gt;viewer = <A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_AMS_.html#PETSC_VIEWER_AMS_">PETSC_VIEWER_AMS_</A>(<A href="../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp));
+<a name="line39"> 39: </a>    <font color="#4169E1">if</font> (!mon-&gt;viewer) <A href="../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp),PETSC_ERR_PLIB,<font color="#666666">"Cannot create AMS default communicator"</font>);
+<a name="line40"> 40: </a>  } <font color="#4169E1">else</font> {
+<a name="line41"> 41: </a>    <A href="../../../../../docs/manualpages/Viewer/PetscViewerAMSOpen.html#PetscViewerAMSOpen">PetscViewerAMSOpen</A>(<A href="../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ksp),amscommname,&amp;mon-&gt;viewer);
+<a name="line42"> 42: </a>  }
+<a name="line43"> 43: </a>  mon-&gt;amem = -1;
+<a name="line44"> 44: </a>  *ctx = (void*)mon;
+<a name="line45"> 45: </a>  <font color="#4169E1">return</font>(0);
+<a name="line46"> 46: </a>}
+
+<a name="line50"> 50: </a><font color="#B22222">/*@C</font>
+<a name="line51"> 51: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMSDestroy.html#KSPMonitorAMSDestroy">KSPMonitorAMSDestroy</A> - destroy a monitor context created with <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMSCreate.html#KSPMonitorAMSCreate">KSPMonitorAMSCreate</A>()</font>
+
+<a name="line53"> 53: </a><font color="#B22222">   Collective</font>
+
+<a name="line55"> 55: </a><font color="#B22222">   Input Arguments:</font>
+<a name="line56"> 56: </a><font color="#B22222">.  ctx - monitor context</font>
+
+<a name="line58"> 58: </a><font color="#B22222">   Level: developer</font>
+
+<a name="line60"> 60: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMSCreate.html#KSPMonitorAMSCreate">KSPMonitorAMSCreate</A>()</font>
+<a name="line61"> 61: </a><font color="#B22222">@*/</font>
+<a name="line62"> 62: </a><strong><font color="#4169E1"><a name="KSPMonitorAMSDestroy"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMSDestroy.html#KSPMonitorAMSDestroy">KSPMonitorAMSDestroy</A>(void **ctx)</font></strong>
+<a name="line63"> 63: </a>{
+<a name="line64"> 64: </a>  KSPMonitor_AMS *mon = (KSPMonitor_AMS*)*ctx;
+
+<a name="line68"> 68: </a>  <font color="#4169E1">if</font> (mon-&gt;amem != -1) {
+<a name="line69"> 69: </a>    PetscStackCallAMS(AMS_Memory_destroy,(mon-&gt;amem));
+<a name="line70"> 70: </a>    mon-&gt;amem = -1;
+<a name="line71"> 71: </a>  }
+<a name="line72"> 72: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;mon-&gt;viewer);
+<a name="line73"> 73: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(mon-&gt;eigr);
+<a name="line74"> 74: </a>  mon-&gt;eigi = NULL;
+<a name="line75"> 75: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(*ctx);
+<a name="line76"> 76: </a>  <font color="#4169E1">return</font>(0);
+<a name="line77"> 77: </a>}
+
+<a name="line81"> 81: </a><font color="#B22222">/*@C</font>
+<a name="line82"> 82: </a><font color="#B22222">   <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMS.html#KSPMonitorAMS">KSPMonitorAMS</A> - monitor solution using AMS</font>
+
+<a name="line84"> 84: </a><font color="#B22222">   Logically Collective on <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+
+<a name="line86"> 86: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line87"> 87: </a><font color="#B22222">+  ksp   - iterative context</font>
+<a name="line88"> 88: </a><font color="#B22222">.  n     - iteration number</font>
+<a name="line89"> 89: </a><font color="#B22222">.  rnorm - 2-norm (preconditioned) residual value (may be estimated).</font>
+<a name="line90"> 90: </a><font color="#B22222">-  ctx -  <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> of type AMS</font>
+
+<a name="line92"> 92: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line94"> 94: </a><font color="#B22222">.keywords: <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>, CG, monitor, AMS, singular values</font>
+
+<a name="line96"> 96: </a><font color="#B22222">.seealso: <A href="../../../../../docs/manualpages/KSP/KSPMonitorSingularValue.html#KSPMonitorSingularValue">KSPMonitorSingularValue</A>(), <A href="../../../../../docs/manualpages/KSP/KSPComputeExtremeSingularValues.html#KSPComputeExtremeSingularValues">KSPComputeExtremeSingularValues</A>(), <A href="../../../../../docs/manualpages/Viewer/PetscViewerAMSOpen.html#PetscViewerAMSOpen">PetscViewerAMSOpen</A>()</font>
+<a name="line97"> 97: </a><font color="#B22222">@*/</font>
+<a name="line98"> 98: </a><strong><font color="#4169E1"><a name="KSPMonitorAMS"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../../docs/manualpages/KSP/KSPMonitorAMS.html#KSPMonitorAMS">KSPMonitorAMS</A>(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> rnorm,void *ctx)</font></strong>
+<a name="line99"> 99: </a>{
+<a name="line101">101: </a>  KSPMonitor_AMS *mon   = (KSPMonitor_AMS*)ctx;
+<a name="line102">102: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    viewer = mon-&gt;viewer;
+<a name="line103">103: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      emax,emin;;
+<a name="line104">104: </a>  AMS_Comm       acomm;
+
+<a name="line109">109: </a>  <A href="../../../../../docs/manualpages/KSP/KSPComputeExtremeSingularValues.html#KSPComputeExtremeSingularValues">KSPComputeExtremeSingularValues</A>(ksp,&amp;emax,&amp;emin);
+
+<a name="line111">111: </a>  <font color="#B22222">/* UnPublish  */</font>
+<a name="line112">112: </a>  <font color="#4169E1">if</font> (mon-&gt;amem != -1) PetscStackCallAMS(AMS_Memory_destroy,(mon-&gt;amem));
+<a name="line113">113: </a>  mon-&gt;amem = -1;
+
+<a name="line115">115: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(mon-&gt;eigr);
+<a name="line116">116: </a>  <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(2*n*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>),&amp;mon-&gt;eigr);
+<a name="line117">117: </a>  mon-&gt;eigi = mon-&gt;eigr + n;
+<a name="line118">118: </a>  <font color="#4169E1">if</font> (n) {<A href="../../../../../docs/manualpages/KSP/KSPComputeEigenvalues.html#KSPComputeEigenvalues">KSPComputeEigenvalues</A>(ksp,n,mon-&gt;eigr,mon-&gt;eigi,&amp;mon-&gt;neigs);}
+
+<a name="line120">120: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerAMSGetAMSComm.html#PetscViewerAMSGetAMSComm">PetscViewerAMSGetAMSComm</A>(viewer,&amp;acomm);
+<a name="line121">121: </a>  PetscStackCallAMS(AMS_Memory_create,(acomm,<font color="#666666">"ksp_monitor_ams"</font>,&amp;mon-&gt;amem));
+<a name="line122">122: </a>  PetscStackCallAMS(AMS_Memory_take_access,(mon-&gt;amem));
+
+<a name="line124">124: </a>  PetscStackCallAMS(AMS_Memory_add_field,(mon-&gt;amem,<font color="#666666">"rnorm"</font>,&amp;ksp-&gt;rnorm,1,AMS_DOUBLE,AMS_READ,AMS_COMMON,AMS_REDUCT_UNDEF));
+<a name="line125">125: </a>  PetscStackCallAMS(AMS_Memory_add_field,(mon-&gt;amem,<font color="#666666">"neigs"</font>,&amp;mon-&gt;neigs,1,AMS_INT,AMS_READ,AMS_COMMON,AMS_REDUCT_UNDEF));
+<a name="line126">126: </a>  <font color="#4169E1">if</font> (mon-&gt;neigs &gt; 0) {
+<a name="line127">127: </a>    PetscStackCallAMS(AMS_Memory_add_field,(mon-&gt;amem,<font color="#666666">"eigr"</font>,&amp;mon-&gt;eigr,mon-&gt;neigs,AMS_DOUBLE,AMS_READ,AMS_COMMON,AMS_REDUCT_UNDEF));
+<a name="line128">128: </a>    PetscStackCallAMS(AMS_Memory_add_field,(mon-&gt;amem,<font color="#666666">"eigi"</font>,&amp;mon-&gt;eigr,mon-&gt;neigs,AMS_DOUBLE,AMS_READ,AMS_COMMON,AMS_REDUCT_UNDEF));
+<a name="line129">129: </a>  }
+<a name="line130">130: </a>  PetscStackCallAMS(AMS_Memory_publish,(mon-&gt;amem));
+<a name="line131">131: </a>  PetscStackCallAMS(AMS_Memory_grant_access,(mon-&gt;amem));
+
+<a name="line133">133: </a>  PetscInfo2(ksp,<font color="#666666">"<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> extreme singular values min=%G max=%G\n"</font>,emin,emax);
+<a name="line134">134: </a>  <font color="#4169E1">return</font>(0);
+<a name="line135">135: </a>}
+</pre>
+</body>
+
+</html>

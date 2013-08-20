@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = compositef.c
-OBJSC    = compositef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

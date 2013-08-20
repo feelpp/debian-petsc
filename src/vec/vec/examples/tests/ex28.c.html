@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tests/ex28.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:40:06+00:00">
+<meta name="date" content="2013-07-02T14:40:14+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests repeated <A href="../../../../../docs/manualpages/Vec/VecDotBegin.html#VecDotBegin">VecDotBegin</A>()/<A href="../../../../../docs/manualpages/Vec/VecDotEnd.html#VecDotEnd">VecDotEnd</A>().\n\n"</font>;
 
@@ -16,7 +16,7 @@
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line9">  9: </a>{
-<a name="line11"> 11: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n = 25,i,row0 = 0;
+<a name="line11"> 11: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n   = 25,i,row0 = 0;
 <a name="line12"> 12: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    one = 1.0,two = 2.0,result1,result2,results[40],value,ten = 10.0;
 <a name="line13"> 13: </a>  <A href="../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    result1a,result2a;
 <a name="line14"> 14: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      result3,result4,result[2],result3a,result4a,resulta[2];
@@ -42,17 +42,17 @@
 <a name="line34"> 34: </a>  <A href="../../../../../docs/manualpages/Vec/VecDotBegin.html#VecDotBegin">VecDotBegin</A>(y,x,&amp;result2);
 <a name="line35"> 35: </a>  <A href="../../../../../docs/manualpages/Vec/VecNormBegin.html#VecNormBegin">VecNormBegin</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;result3);
 <a name="line36"> 36: </a>  <A href="../../../../../docs/manualpages/Vec/VecNormBegin.html#VecNormBegin">VecNormBegin</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_1.html#NORM_1">NORM_1</A>,&amp;result4);
-<a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Vec/PetscCommSplitReductionBegin.html#PetscCommSplitReductionBegin">PetscCommSplitReductionBegin</A>(((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)x)-&gt;comm);
+<a name="line37"> 37: </a>  <A href="../../../../../docs/manualpages/Vec/PetscCommSplitReductionBegin.html#PetscCommSplitReductionBegin">PetscCommSplitReductionBegin</A>(<A href="../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)x));
 <a name="line38"> 38: </a>  <A href="../../../../../docs/manualpages/Vec/VecDotEnd.html#VecDotEnd">VecDotEnd</A>(x,y,&amp;result1);
 <a name="line39"> 39: </a>  <A href="../../../../../docs/manualpages/Vec/VecDotEnd.html#VecDotEnd">VecDotEnd</A>(y,x,&amp;result2);
 <a name="line40"> 40: </a>  <A href="../../../../../docs/manualpages/Vec/VecNormEnd.html#VecNormEnd">VecNormEnd</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;result3);
 <a name="line41"> 41: </a>  <A href="../../../../../docs/manualpages/Vec/VecNormEnd.html#VecNormEnd">VecNormEnd</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_1.html#NORM_1">NORM_1</A>,&amp;result4);
-<a name="line42"> 42: </a>
+
 <a name="line43"> 43: </a>  <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(x,y,&amp;result1a);
 <a name="line44"> 44: </a>  <A href="../../../../../docs/manualpages/Vec/VecDot.html#VecDot">VecDot</A>(y,x,&amp;result2a);
 <a name="line45"> 45: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(y,<A href="../../../../../docs/manualpages/Vec/NORM_2.html#NORM_2">NORM_2</A>,&amp;result3a);
 <a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_1.html#NORM_1">NORM_1</A>,&amp;result4a);
-<a name="line47"> 47: </a>
+
 <a name="line48"> 48: </a>  <font color="#4169E1">if</font> (result1 != result1a || result2 != result2a) {
 <a name="line49"> 49: </a>    <A href="../../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"Error dot: result1 %G result2 %G\n"</font>,PetscRealPart(result1),PetscRealPart(result2));
 <a name="line50"> 50: </a>  }
@@ -106,7 +106,7 @@
 <a name="line98"> 98: </a>  }
 
 <a name="line100">100: </a>  <font color="#B22222">/*</font>
-<a name="line101">101: </a><font color="#B22222">       tests 1_and_2 norm </font>
+<a name="line101">101: </a><font color="#B22222">       tests 1_and_2 norm</font>
 <a name="line102">102: </a><font color="#B22222">  */</font>
 <a name="line103">103: </a>  <A href="../../../../../docs/manualpages/Vec/VecNormBegin.html#VecNormBegin">VecNormBegin</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_MAX.html#NORM_MAX">NORM_MAX</A>,&amp;result3);
 <a name="line104">104: </a>  <A href="../../../../../docs/manualpages/Vec/VecNormBegin.html#VecNormBegin">VecNormBegin</A>(x,<A href="../../../../../docs/manualpages/Vec/NORM_1_AND_2.html#NORM_1_AND_2">NORM_1_AND_2</A>,result);
@@ -129,7 +129,7 @@
 <a name="line121">121: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y);
 
 <a name="line123">123: </a>  <font color="#B22222">/*</font>
-<a name="line124">124: </a><font color="#B22222">       Tests computing a large number of operations that require </font>
+<a name="line124">124: </a><font color="#B22222">       Tests computing a large number of operations that require</font>
 <a name="line125">125: </a><font color="#B22222">    allocating a larger data structure internally</font>
 <a name="line126">126: </a><font color="#B22222">  */</font>
 <a name="line127">127: </a>  <font color="#4169E1">for</font> (i=0; i&lt;40; i++) {
@@ -155,7 +155,7 @@
 <a name="line147">147: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line148">148: </a>  <font color="#4169E1">return</font> 0;
 <a name="line149">149: </a>}
-<a name="line150">150: </a>
+
 
 
 

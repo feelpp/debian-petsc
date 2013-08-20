@@ -5,13 +5,13 @@
 <TITLE>KSPSetInitialGuessKnoll</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPSetInitialGuessKnoll"><H1>KSPSetInitialGuessKnoll</H1></A>
 Tells the iterative solver to use <A HREF="../PC/PCApply.html#PCApply">PCApply</A>(pc,b,..) to compute the initial guess (The Knoll trick) 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPSetInitialGuessKnoll(KSP ksp,PetscBool  flg)
+PetscErrorCode  KSPSetInitialGuessKnoll(KSP ksp,PetscBool flg)
 </PRE>
 Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>

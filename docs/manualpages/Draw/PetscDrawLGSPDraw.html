@@ -5,11 +5,12 @@
 <TITLE>PetscDrawLGSPDraw</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawLGSPDraw"><H1>PetscDrawLGSPDraw</H1></A>
 Redraws a line graph. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscdraw.h"  
 PetscErrorCode  PetscDrawLGSPDraw(PetscDrawLG lg,PetscDrawSP spin)
 </PRE>
 Not Collective,but ignored by all processors except processor 0 in <A HREF="../Draw/PetscDrawLG.html#PetscDrawLG">PetscDrawLG</A>
@@ -27,7 +28,7 @@ Not Collective,but ignored by all processors except processor 0 in <A HREF="../D
 Developer Notes: This code cheats and uses the fact that the LG and SP structs are the same
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/lgc.c.html#PetscDrawLGSPDraw">src/sys/draw/utils/lgc.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/utils/lgc.c.html#PetscDrawLGSPDraw">src/sys/classes/draw/utils/lgc.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

@@ -5,7 +5,7 @@
 #include <sieve/ALE.hh>
 #endif
 
-#include <petscdmcomplex.h>
+#include <petscdmplex.h>
 
 #include <fstream>
 
@@ -186,6 +186,12 @@ namespace ALE {
         this->oPoints = NULL;
         this->setSize(size);
       };
+      void operator=(const PointRetriever& pr) {
+        this->i = 0; this->o = 0; this->skip = 0; this->limit = 0; this->visitor = pr.visitor;
+        this->points  = NULL;
+        this->oPoints = NULL;
+        this->setSize(pr.size);
+      };
       virtual ~PointRetriever() {
         delete [] this->points;
         delete [] this->oPoints;
@@ -269,6 +275,12 @@ namespace ALE {
     public:
       NConeRetriever(const Sieve& s, const size_t size) : PointRetriever<Sieve,Visitor>(size, true), sieve(s) {};
       NConeRetriever(const Sieve& s, const size_t size, Visitor& v) : PointRetriever<Sieve,Visitor>(size, v, true), sieve(s) {};
+      void operator=(const NConeRetriever& ncr) {
+        this->i = 0; this->o = 0; this->skip = 0; this->limit = 0; this->visitor = ncr.visitor;
+        this->points  = NULL;
+        this->oPoints = NULL;
+        this->setSize(ncr.size);
+      };
       virtual ~NConeRetriever() {};
     };
     template<typename Mesh, typename Visitor = NullVisitor<typename Mesh::sieve_type> >
@@ -510,7 +522,7 @@ namespace ALE {
       PetscInt    *fieldSize;
       PetscInt     numFields;
     public:
-      SizeWithBCVisitor(PetscSection s) : section(s), size(0), fieldSize(PETSC_NULL), numFields(0) {};
+      SizeWithBCVisitor(PetscSection s) : section(s), size(0), fieldSize(NULL), numFields(0) {};
       SizeWithBCVisitor(PetscSection s, PetscInt *fieldSize) : section(s), size(0), fieldSize(fieldSize) {
         PetscErrorCode ierr = PetscSectionGetNumFields(section, &numFields);CHKERRXX(ierr);
         for(PetscInt f = 0; f < numFields; ++f) {this->fieldSize[f] = 0;}
@@ -812,12 +824,12 @@ namespace ALE {
       inline static void insert(value_type& x, value_type y) {x  = y;}
       template<typename Point>
       void updatePoint(const Point& point, void (*fuse)(value_type&, value_type), const bool setBC, const int orientation = 1) {
-        PetscInt       dim;  // The number of dof on this point
-        PetscInt       cDim; // The nubmer of constraints on this point
-        PetscInt      *cDof; // The indices of the constrained dofs on this point
-        value_type    *a;    // The values on this point
-        PetscInt       offset, cInd = 0;
-        PetscErrorCode ierr;
+        PetscInt        dim;  // The number of dof on this point
+        PetscInt        cDim; // The nubmer of constraints on this point
+        const PetscInt *cDof; // The indices of the constrained dofs on this point
+        value_type     *a;    // The values on this point
+        PetscInt        offset, cInd = 0;
+        PetscErrorCode  ierr;
 
         ierr = PetscSectionGetDof(section, point, &dim);CHKERRXX(ierr);
         ierr = PetscSectionGetConstraintDof(section, point, &cDim);CHKERRXX(ierr);
@@ -862,7 +874,7 @@ namespace ALE {
           PetscInt    dim;  // The number of dof for field f on this point
           PetscInt    comp; // The number of components for field f on this point
           PetscInt    cDim; // The nubmer of constraints for field f on this point
-          PetscInt   *cDof; // The indices of the constrained dofs for field f on this point
+          const PetscInt *cDof; // The indices of the constrained dofs for field f on this point
           PetscInt    cInd = 0;
 
           ierr = PetscSectionGetFieldComponents(section, f, &comp);CHKERRXX(ierr);
@@ -1144,12 +1156,12 @@ namespace ALE {
       PetscInt           *j;
     protected:
       void updatePoint(const point_type& point, const bool setBC, const int orientation = 1) {
-        PetscInt       dim;  // The number of dof on this point
-        PetscInt       cDim; // The nubmer of constraints on this point
-        PetscInt      *cDof; // The indices of the constrained dofs on this point
-        PetscInt       offset = this->order.getIndex(point);
-        PetscInt       cInd   = 0;
-        PetscErrorCode ierr;
+        PetscInt        dim;  // The number of dof on this point
+        PetscInt        cDim; // The nubmer of constraints on this point
+        const PetscInt *cDof; // The indices of the constrained dofs on this point
+        PetscInt        offset = this->order.getIndex(point);
+        PetscInt        cInd   = 0;
+        PetscErrorCode  ierr;
 
         ierr = PetscSectionGetDof(section, point, &dim);CHKERRXX(ierr);
         ierr = PetscSectionGetConstraintDof(section, point, &cDim);CHKERRXX(ierr);
@@ -1198,7 +1210,7 @@ namespace ALE {
           PetscInt  dim;  // The number of dof for field f on this point
           PetscInt  comp; // The number of components for field f on this point
           PetscInt  cDim; // The nubmer of constraints for field f on this point
-          PetscInt *cDof; // The indices of the constrained dofs for field f on this point
+          const PetscInt *cDof; // The indices of the constrained dofs for field f on this point
           PetscInt  cInd = 0;
 
           ierr = PetscSectionGetFieldComponents(section, f, &comp);CHKERRXX(ierr);
@@ -1247,17 +1259,17 @@ namespace ALE {
         }
       }
     public:
-      IndicesVisitor(const PetscSection& s, Order& o, const int size, const bool unique = false, const PetscInt fieldSize[] = PETSC_NULL) : section(s), order(o), size(size), i(0), p(0), setBC(false) {
+      IndicesVisitor(const PetscSection& s, Order& o, const int size, const bool unique = false, const PetscInt fieldSize[] = NULL) : section(s), order(o), size(size), i(0), p(0), setBC(false) {
         PetscErrorCode ierr;
 
         ierr = PetscMalloc(this->size * sizeof(value_type), &this->values);CHKERRXX(ierr);
         this->allocated = true;
-        this->points    = PETSC_NULL;
+        this->points    = NULL;
         if (unique) {
           ierr = PetscMalloc(this->size * sizeof(point_type), &this->points);CHKERRXX(ierr);
         }
         nF = 0;
-        this->fieldSize = this->j = PETSC_NULL;
+        this->fieldSize = this->j = NULL;
         if (fieldSize) {
           ierr = PetscSectionGetNumFields(section, &nF);CHKERRXX(ierr);
           ierr = PetscMalloc2(nF,PetscInt,&this->fieldSize,nF,PetscInt,&j);CHKERRXX(ierr);
@@ -1267,17 +1279,17 @@ namespace ALE {
         }
         this->clear();
       };
-      IndicesVisitor(const PetscSection& s, Order& o, const int size, value_type *values, const bool unique = false, const PetscInt fieldSize[] = PETSC_NULL) : section(s), order(o), size(size), i(0), p(0), setBC(false) {
+      IndicesVisitor(const PetscSection& s, Order& o, const int size, value_type *values, const bool unique = false, const PetscInt fieldSize[] = NULL) : section(s), order(o), size(size), i(0), p(0), setBC(false) {
         PetscErrorCode ierr;
 
         this->values    = values;
         this->allocated = false;
-        this->points    = PETSC_NULL;
+        this->points    = NULL;
         if (unique) {
           ierr = PetscMalloc(this->size * sizeof(point_type), &this->points);CHKERRXX(ierr);
         }
         nF = 0;
-        this->fieldSize = this->j = PETSC_NULL;
+        this->fieldSize = this->j = NULL;
         if (fieldSize) {
           ierr = PetscSectionGetNumFields(section, &nF);CHKERRXX(ierr);
           ierr = PetscMalloc2(nF,PetscInt,&fieldSize,nF,PetscInt,&j);CHKERRXX(ierr);
@@ -2123,7 +2135,7 @@ namespace ALE {
       for(index_type i = this->chart.min(); i <= this->chart.max(); ++i) {indexAlloc.destroy(offsets+i);}
       indexAlloc.deallocate(offsets, this->chart.size()+1);
       index_type  size = std::max(this->coneOffsets[this->chart.max()] - this->coneOffsets[this->chart.min()],
-				   this->supportOffsets[this->chart.max()] - this->supportOffsets[this->chart.min()]);
+                                  this->supportOffsets[this->chart.max()] - this->supportOffsets[this->chart.min()]);
       index_type *orientations = offsets = indexAlloc.allocate(size);
       for(index_type i = 0; i < size; ++i) {indexAlloc.construct(orientations+i, index_type(0));}
       // Recalculate coneOrientations
@@ -2657,6 +2669,7 @@ namespace ALE {
             renumbering[*c_iter] = max++;
           }
         }
+#if 0
         for(typename Sieve::baseSequence::iterator b_iter = base->begin(); b_iter != base->end(); ++b_iter) {
           if (sieve.support(*b_iter)->size() == 0) {
             const typename Sieve::coneSequence::iterator coneBegin = sieve.coneBegin(*b_iter);
@@ -2669,6 +2682,27 @@ namespace ALE {
             }
           }
         }
+#else
+        std::vector<typename Sieve::point_type> faces;
+        for(typename Sieve::baseSequence::iterator b_iter = base->begin(); b_iter != base->end(); ++b_iter) {
+          if (sieve.support(*b_iter)->size() == 0) {
+            const typename Sieve::coneSequence::iterator coneBegin = sieve.coneBegin(*b_iter);
+            const typename Sieve::coneSequence::iterator coneEnd   = sieve.coneEnd(*b_iter);
+
+            for(typename Sieve::coneSequence::iterator c_iter = coneBegin; c_iter != coneEnd; ++c_iter) {
+              if (renumbering.find(*c_iter) == renumbering.end()) {
+                faces.push_back(*c_iter);
+              }
+            }
+          }
+        }
+        std::sort(faces.begin(), faces.end());
+        typename std::vector<typename Sieve::point_type>::const_iterator fEnd = std::unique(faces.begin(), faces.end());
+        for(typename std::vector<typename Sieve::point_type>::const_iterator c_iter = faces.begin(); c_iter != fEnd; ++c_iter) {
+          renumbering[*c_iter] = max++;
+        }
+        faces.clear();
+#endif
         for(typename Sieve::baseSequence::iterator b_iter = base->begin(); b_iter != base->end(); ++b_iter) {
           if (renumbering.find(*b_iter) == renumbering.end()) {
             renumbering[*b_iter] = max++;
@@ -2703,23 +2737,23 @@ namespace ALE {
         }
       }
       // Create the ISieve
-      ierr = DMComplexSetChart(dm, min, max);CHKERRXX(ierr);
+      ierr = DMPlexSetChart(dm, min, max);CHKERRXX(ierr);
       // Set cone and support sizes
       size_t maxSize = 0;
 
       for(typename Sieve::baseSequence::iterator b_iter = base->begin(); b_iter != base->end(); ++b_iter) {
         const Obj<typename Sieve::coneSequence>& cone = sieve.cone(*b_iter);
 
-        ierr = DMComplexSetConeSize(dm, renumbering[*b_iter], cone->size());CHKERRXX(ierr);
+        ierr = DMPlexSetConeSize(dm, renumbering[*b_iter], cone->size());CHKERRXX(ierr);
         maxSize = std::max(maxSize, cone->size());
       }
       for(typename Sieve::capSequence::iterator c_iter = cap->begin(); c_iter != cap->end(); ++c_iter) {
         const Obj<typename Sieve::supportSequence>& support = sieve.support(*c_iter);
 
-        ierr = DMComplexSetSupportSize(dm, renumbering[*c_iter], support->size());CHKERRXX(ierr);
+        ierr = DMPlexSetSupportSize(dm, renumbering[*c_iter], support->size());CHKERRXX(ierr);
         maxSize = std::max(maxSize, support->size());
       }
-      ierr = DMComplexSetUp(dm);CHKERRXX(ierr);
+      ierr = DMSetUp(dm);CHKERRXX(ierr);
       // Fill up cones and supports
       typename Sieve::point_type *points = new typename Sieve::point_type[maxSize];
 
@@ -2730,7 +2764,7 @@ namespace ALE {
         for(typename Sieve::coneSequence::iterator c_iter = cone->begin(); c_iter != cone->end(); ++c_iter, ++i) {
           points[i] = renumbering[*c_iter];
         }
-        ierr = DMComplexSetCone(dm, renumbering[*b_iter], points);CHKERRXX(ierr);
+        ierr = DMPlexSetCone(dm, renumbering[*b_iter], points);CHKERRXX(ierr);
       }
       for(typename Sieve::capSequence::iterator c_iter = cap->begin(); c_iter != cap->end(); ++c_iter) {
         const Obj<typename Sieve::supportSequence>& support = sieve.support(*c_iter);
@@ -2739,7 +2773,7 @@ namespace ALE {
         for(typename Sieve::supportSequence::iterator s_iter = support->begin(); s_iter != support->end(); ++s_iter, ++i) {
           points[i] = renumbering[*s_iter];
         }
-        ierr = DMComplexSetSupport(dm, renumbering[*c_iter], points);CHKERRXX(ierr);
+        ierr = DMPlexSetSupport(dm, renumbering[*c_iter], points);CHKERRXX(ierr);
       }
       delete [] points;
     }
@@ -2767,7 +2801,7 @@ namespace ALE {
       PetscInt       maxConeSize;
       PetscErrorCode ierr;
 
-      ierr = DMComplexGetMaxSizes(dm, &maxConeSize, PETSC_NULL);CHKERRXX(ierr);
+      ierr = DMPlexGetMaxSizes(dm, &maxConeSize, NULL);CHKERRXX(ierr);
       if (maxConeSize < 0) return;
       const Obj<typename Sieve::baseSequence>& base = sieve.base();
       int *orientations = new int[maxConeSize];
@@ -2778,10 +2812,11 @@ namespace ALE {
 
         for(typename Sieve::coneSequence::iterator c_iter = cone->begin(); c_iter != cone->end(); ++c_iter, ++i) {
           typename ArrowSection::point_type arrow(*c_iter, *b_iter);
+          const int o = orientation->restrictPoint(arrow)[0];
 
-          orientations[i] = orientation->restrictPoint(arrow)[0];
+          orientations[i] = o == 1 ? 0 : o;
         }
-        ierr = DMComplexSetConeOrientation(dm, renumbering[*b_iter], orientations);
+        ierr = DMPlexSetConeOrientation(dm, renumbering[*b_iter], orientations);
       }
       delete [] orientations;
     }
@@ -2813,13 +2848,20 @@ namespace ALE {
       PetscInt                            n;
       PetscErrorCode                      ierr;
 
+      ierr = PetscSectionSetNumFields(coordSection, 1);CHKERRXX(ierr);
+      if (!chart.size()) {
+        ierr = PetscSectionSetFieldComponents(coordSection, 0, 1);CHKERRXX(ierr);
+        return;
+      }
       for(typename Section::chart_type::const_iterator p_iter = chart.begin(); p_iter != chart.end(); ++p_iter) {
         min = std::min(min, renumbering[*p_iter]);
         max = std::max(max, renumbering[*p_iter]);
       }
+      ierr = PetscSectionSetFieldComponents(coordSection, 0, coordinates.getFiberDimension(*chart.begin()));CHKERRXX(ierr);
       ierr = PetscSectionSetChart(coordSection, min, max+1);CHKERRXX(ierr);
       for(typename Section::chart_type::const_iterator p_iter = chart.begin(); p_iter != chart.end(); ++p_iter) {
         ierr = PetscSectionSetDof(coordSection, renumbering[*p_iter], coordinates.getFiberDimension(*p_iter));CHKERRXX(ierr);
+        ierr = PetscSectionSetFieldDof(coordSection, renumbering[*p_iter], 0, coordinates.getFiberDimension(*p_iter));CHKERRXX(ierr);
       }
       ierr = PetscSectionSetUp(coordSection);CHKERRXX(ierr);
       ierr = PetscSectionGetStorageSize(coordSection, &n);CHKERRXX(ierr);
@@ -2831,7 +2873,7 @@ namespace ALE {
         PetscInt dof, off;
 
         ierr = PetscSectionGetDof(coordSection, renumbering[*p_iter], &dof);CHKERRXX(ierr);
-        ierr = PetscSectionGetOff(coordSection, renumbering[*p_iter], &off);CHKERRXX(ierr);
+        ierr = PetscSectionGetOffset(coordSection, renumbering[*p_iter], &off);CHKERRXX(ierr);
         for(int d = 0; d < dof; ++d) {
           a[off+d] = values[d];
         }
@@ -2852,7 +2894,7 @@ namespace ALE {
 
       for(typename Renumbering::const_iterator p = renumbering.begin(); p != renumbering.end(); ++p) {
         if (label->getConeSize(p->first)) {
-          ierr = DMComplexSetLabelValue(dm, name, p->second, *label->cone(p->first)->begin());CHKERRXX(ierr);
+          ierr = DMPlexSetLabelValue(dm, name, p->second, *label->cone(p->first)->begin());CHKERRXX(ierr);
         }
       }
     }
@@ -2889,19 +2931,21 @@ namespace ALE {
       Vec            coordinates;
       PetscErrorCode ierr;
 
-      ierr = DMCreate(mesh.comm(), dm);CHKERRQ(ierr);
-      ierr = DMSetType(*dm, DMCOMPLEX);CHKERRQ(ierr);
-      ierr = DMComplexSetDimension(dm, mesh.getDimension());CHKERRXX(ierr);
+      ierr = DMCreate(mesh.comm(), dm);CHKERRXX(ierr);
+      ierr = DMSetType(*dm, DMPLEX);CHKERRXX(ierr);
+      ierr = DMPlexSetDimension(*dm, mesh.getDimension());CHKERRXX(ierr);
       convertSieve(*mesh.getSieve(), *dm, renumbering, renumber);
-      ierr = DMComplexStratify(*dm);CHKERRXX(ierr);
+      ierr = DMPlexStratify(*dm);CHKERRXX(ierr);
       convertOrientation(*mesh.getSieve(), *dm, renumbering, mesh.getArrowSection("orientation").ptr());
-      ierr = DMComplexGetCoordinateSection(*dm, &coordSection);CHKERRXX(ierr);
-      ierr = DMComplexGetCoordinateVec(*dm, &coordinates);CHKERRXX(ierr);
+      ierr = DMPlexGetCoordinateSection(*dm, &coordSection);CHKERRXX(ierr);
+      ierr = VecCreate(mesh.comm(), &coordinates);CHKERRXX(ierr);
       convertCoordinates(*mesh.getRealSection("coordinates"), coordSection, coordinates, renumbering);
+      ierr = DMSetCoordinatesLocal(*dm, coordinates);CHKERRXX(ierr);
+      ierr = VecDestroy(&coordinates);CHKERRXX(ierr);
       const typename Mesh::labels_type& labels = mesh.getLabels();
 
       for(typename Mesh::labels_type::const_iterator l_iter = labels.begin(); l_iter != labels.end(); ++l_iter) {
-        convertLabel(dm, l_iter->first, l_iter->second, renumbering);
+        convertLabel(*dm, l_iter->first.c_str(), l_iter->second, renumbering);
       }
     }
   };

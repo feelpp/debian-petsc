@@ -5,26 +5,27 @@
 <TITLE>SNESLineSearchSetVecs</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESLineSearchSetVecs"><H1>SNESLineSearchSetVecs</H1></A>
 Sets the vectors on the <A HREF="../SNES/SNESLineSearch.html#SNESLineSearch">SNESLineSearch</A> context 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode SNESLineSearchSetVecs(SNESLineSearch linesearch,Vec X,Vec F,Vec Y,Vec W, Vec G)</PRE>
+PetscErrorCode SNESLineSearchSetVecs(SNESLineSearch linesearch,Vec X,Vec F,Vec Y,Vec W, Vec G)
+</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>linesearch </B></TD><TD>- linesearch context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X </B></TD><TD>- The old solution
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X </B></TD><TD>- Solution vector
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>F </B></TD><TD>- The old function
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>F </B></TD><TD>- Function vector
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Y </B></TD><TD>- The search direction
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Y </B></TD><TD>- Search direction vector
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>W </B></TD><TD>- The new solution
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>W </B></TD><TD>- Solution work vector
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>G </B></TD><TD>- The new function
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>G </B></TD><TD>- Function work vector
 </TD></TR></TABLE>
 <P>
 

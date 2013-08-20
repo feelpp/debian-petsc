@@ -5,17 +5,14 @@
 <TITLE>PetscViewerInitializePackage</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerInitializePackage"><H1>PetscViewerInitializePackage</H1></A>
 This function initializes everything in the main <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscsys.h" 
-PetscErrorCode  PetscViewerInitializePackage(const char path[])
+#include "petscviewer.h" 
+PetscErrorCode  PetscViewerInitializePackage(void)
 </PRE>
-<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-path - The dynamic library path, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
-<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
@@ -24,7 +21,7 @@ path - The dynamic library path, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/interface/view.c.html#PetscViewerInitializePackage">src/sys/viewer/interface/view.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/interface/view.c.html#PetscViewerInitializePackage">src/sys/classes/viewer/interface/view.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

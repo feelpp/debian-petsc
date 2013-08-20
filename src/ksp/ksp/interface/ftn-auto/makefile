@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = xmonf.c iterativf.c itresf.c eigef.c itcreatef.c itfuncf.c itclf.c
-OBJSC    = xmonf.o iterativf.o itresf.o eigef.o itcreatef.o itfuncf.o itclf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

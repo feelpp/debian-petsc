@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex80.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:51:35+00:00">
+<meta name="date" content="2013-07-02T14:44:09+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Partition tiny grid.\n\n"</font>;
 
@@ -17,15 +17,15 @@
 <a name="line6">  6: </a><font color="#B22222">   Processors: 4</font>
 <a name="line7">  7: </a><font color="#B22222">T*/</font>
 
-<a name="line9">  9: </a><font color="#B22222">/* </font>
+<a name="line9">  9: </a><font color="#B22222">/*</font>
 <a name="line10"> 10: </a><font color="#B22222">  Include "petscmat.h" so that we can use matrices.  Note that this file</font>
 <a name="line11"> 11: </a><font color="#B22222">  automatically includes:</font>
 <a name="line12"> 12: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscvec.h - vectors</font>
 <a name="line13"> 13: </a><font color="#B22222">     petscmat.h - matrices</font>
-<a name="line14"> 14: </a><font color="#B22222">     petscis.h     - index sets            </font>
-<a name="line15"> 15: </a><font color="#B22222">     petscviewer.h - viewers               </font>
+<a name="line14"> 14: </a><font color="#B22222">     petscis.h     - index sets</font>
+<a name="line15"> 15: </a><font color="#B22222">     petscviewer.h - viewers</font>
 <a name="line16"> 16: </a><font color="#B22222">*/</font>
-<a name="line17"> 17: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
+<a name="line17"> 17: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
 
 <a name="line21"> 21: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line22"> 22: </a>{
@@ -36,7 +36,7 @@
 <a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> part;
 <a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>              is,isn;
 
-<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 <a name="line31"> 31: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
 <a name="line32"> 32: </a>  <font color="#4169E1">if</font> (size != 4) <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1,<font color="#666666">"Must run with 4 processors"</font>);
 <a name="line33"> 33: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rank);
@@ -61,11 +61,11 @@
 <a name="line52"> 52: </a>    ia[0] = 0; ia[1] = 2; ia[2] = 5; ia[3] = 8; ia[4] = 10;
 <a name="line53"> 53: </a>  }
 
-<a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateMPIAdj.html#MatCreateMPIAdj">MatCreateMPIAdj</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,4,16,ia,ja,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;A);
+<a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateMPIAdj.html#MatCreateMPIAdj">MatCreateMPIAdj</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,4,16,ia,ja,NULL,&amp;A);
 <a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Mat/MatView.html#MatView">MatView</A>(A,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 
 <a name="line58"> 58: </a>  <font color="#B22222">/*</font>
-<a name="line59"> 59: </a><font color="#B22222">       Partition the graph of the matrix </font>
+<a name="line59"> 59: </a><font color="#B22222">       Partition the graph of the matrix</font>
 <a name="line60"> 60: </a><font color="#B22222">  */</font>
 <a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/MatOrderings/MatPartitioningCreate.html#MatPartitioningCreate">MatPartitioningCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;part);
 <a name="line62"> 62: </a>  <A href="../../../../docs/manualpages/MatOrderings/MatPartitioningSetAdjacency.html#MatPartitioningSetAdjacency">MatPartitioningSetAdjacency</A>(part,A);

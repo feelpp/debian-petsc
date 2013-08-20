@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials/ex41.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:06:02+00:00">
+<meta name="date" content="2013-07-02T14:48:50+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Reads a PETSc matrix and vector from a socket connection,  solves a linear system and sends the result back.\n"</font>;
 
@@ -17,7 +17,7 @@
 <a name="line6">  6: </a><font color="#B22222">   Processors: n</font>
 <a name="line7">  7: </a><font color="#B22222">T*/</font>
 
-<a name="line9">  9: </a><font color="#B22222">/* </font>
+<a name="line9">  9: </a><font color="#B22222">/*</font>
 <a name="line10"> 10: </a><font color="#B22222">  Include "petscksp.h" so that we can use <A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> solvers.  Note that this file</font>
 <a name="line11"> 11: </a><font color="#B22222">  automatically includes:</font>
 <a name="line12"> 12: </a><font color="#B22222">     petscsys.h       - base PETSc routines   petscvec.h - vectors</font>
@@ -34,7 +34,7 @@
 <a name="line25"> 25: </a>  <A href="../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x,b;          <font color="#B22222">/* approx solution, RHS, exact solution */</font>
 <a name="line26"> 26: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    fd;               <font color="#B22222">/* viewer */</font>
 
-<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line29"> 29: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 <a name="line30"> 30: </a>  fd = <A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_SOCKET_WORLD.html#PETSC_VIEWER_SOCKET_WORLD">PETSC_VIEWER_SOCKET_WORLD</A>;
 
 <a name="line32"> 32: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;b);

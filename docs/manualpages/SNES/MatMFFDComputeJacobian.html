@@ -5,12 +5,13 @@
 <TITLE>MatMFFDComputeJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatMFFDComputeJacobian"><H1>MatMFFDComputeJacobian</H1></A>
 Tells the matrix-free Jacobian object the new location at which Jacobian matrix vector products will be computed at, i.e. J(x) * a. The x is obtained from the <A HREF="../SNES/SNES.html#SNES">SNES</A> object (using <A HREF="../SNES/SNESGetSolution.html#SNESGetSolution">SNESGetSolution</A>()). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
+#include "petscdm.h"   
 PetscErrorCode  MatMFFDComputeJacobian(SNES snes,Vec x,Mat *jac,Mat *B,MatStructure *flag,void *dummy)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>

@@ -5,7 +5,7 @@
 <TITLE>MatGetSubMatrix</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetSubMatrix"><H1>MatGetSubMatrix</H1></A>
 Gets a single submatrix on the same number of processors as the original matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -46,7 +46,7 @@ you are finished using it.
 The communicator of the newly obtained matrix is ALWAYS the same as the communicator of
 the input matrix.
 <P>
-If iscol is <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> then all columns are obtained (not supported in Fortran).
+If iscol is NULL then all columns are obtained (not supported in Fortran).
 <P>
 <H3><FONT COLOR="#CC3333">Example usage</FONT></H3>
 Consider the following 8x8 matrix with 34 non-zero values, that is

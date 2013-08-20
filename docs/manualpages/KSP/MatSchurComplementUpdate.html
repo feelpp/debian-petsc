@@ -5,12 +5,11 @@
 <TITLE>MatSchurComplementUpdate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSchurComplementUpdate"><H1>MatSchurComplementUpdate</H1></A>
 Updates the Schur complement matrix object with new submatrices 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscmat.h" 
 #include "petscksp.h" 
 PetscErrorCode  MatSchurComplementUpdate(Mat N,Mat A,Mat Ap,Mat B,Mat C,Mat D,MatStructure str)
 </PRE>
@@ -32,7 +31,7 @@ Notes: All four matrices must have the same MPI communicator
 <P>
 A and  D must be square matrices
 <P>
-All of the matrices provided must have the same sizes as was used with <A HREF="../KSP/MatCreateSchurComplement.html#MatCreateSchurComplement">MatCreateSchurComplement</A>()
+All of the matrices provided must have the same sizes as was used with <A HREF="../KSP/MatCreateSchurComplement.html#MatCreateSchurComplement">MatCreateSchurComplement</A>() or <A HREF="../KSP/MatSchurComplementSet.html#MatSchurComplementSet">MatSchurComplementSet</A>()
 though they need not be the same matrices
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

@@ -3,29 +3,25 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/objects/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:35:52+00:00">
+<meta name="date" content="2013-07-02T14:39:05+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
-<strong><font color="#FF0000">ALL:</font></strong> lib 
+<strong><font color="#FF0000">ALL:</font></strong> lib
 
-CFLAGS    = ${VALGRIND_INCLUDE}
+CFLAGS    =
 FFLAGS    =
-CPPFLAGS  = 
-SOURCEC          = gcomm.c   gtype.c   olist.c    pname.c  tagm.c \
+CPPFLAGS  =
+SOURCEC          = version.c gcomm.c   gtype.c   olist.c    pname.c  tagm.c \
             destroy.c gcookie.c inherit.c options.c pgname.c prefix.c init.c \
-            pinit.c ptype.c state.c aoptions.c mpinit.c subcomm.c
+            pinit.c ptype.c state.c aoptions.c mpinit.c subcomm.c fcallback.c
 SOURCEF          =
 SOURCEH          = ../../../include/petscoptions.h
-OBJSC          = gcomm.o   gtype.o   olist.o    pname.o  tagm.o \
-            destroy.o gcookie.o inherit.o options.o pgname.o prefix.o init.o \
-            pinit.o ptype.o state.o aoptions.o mpinit.o subcomm.o
-OBJSF          =
 MANSEC          = Sys
 LIBBASE          = libpetscsys
-DIRS          = pthread f2003-src
+DIRS          = f2003-src
 LOCDIR          = src/sys/objects/
 
 include ${PETSC_DIR}/conf/variables

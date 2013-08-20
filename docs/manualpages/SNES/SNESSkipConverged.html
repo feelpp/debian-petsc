@@ -5,12 +5,12 @@
 <TITLE>SNESSkipConverged</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSkipConverged"><H1>SNESSkipConverged</H1></A>
 Convergence test for <A HREF="../SNES/SNES.html#SNES">SNES</A> that NEVER returns as converged, UNLESS the maximum number of iteration have been reached. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscsnes.h"   
+#include "petsc-private/snesimpl.h"   
 PetscErrorCode  SNESSkipConverged(SNES snes,PetscInt it,PetscReal xnorm,PetscReal snorm,PetscReal fnorm,SNESConvergedReason *reason,void *dummy)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -23,7 +23,7 @@ Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>xnorm </B></TD><TD>- 2-norm of current iterate
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snorm </B></TD><TD>- 2-norm of current step 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snorm </B></TD><TD>- 2-norm of current step
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fnorm </B></TD><TD>- 2-norm of function at current iterate
 </TD></TR>

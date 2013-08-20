@@ -59,15 +59,15 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  dmgetlocalvector_(DM dm,Vec* g, int *__ierr ){
+void PETSC_STDCALL  dmgetlocalvector_(DM dm,Vec *g, int *__ierr ){
 *__ierr = DMGetLocalVector(
 	(DM)PetscToPointer((dm) ),g);
 }
-void PETSC_STDCALL  dmrestorelocalvector_(DM dm,Vec* g, int *__ierr ){
+void PETSC_STDCALL  dmrestorelocalvector_(DM dm,Vec *g, int *__ierr ){
 *__ierr = DMRestoreLocalVector(
 	(DM)PetscToPointer((dm) ),g);
 }
-void PETSC_STDCALL  dmgetglobalvector_(DM dm,Vec* g, int *__ierr ){
+void PETSC_STDCALL  dmgetglobalvector_(DM dm,Vec *g, int *__ierr ){
 *__ierr = DMGetGlobalVector(
 	(DM)PetscToPointer((dm) ),g);
 }
@@ -75,7 +75,7 @@ void PETSC_STDCALL  dmclearglobalvectors_(DM dm, int *__ierr ){
 *__ierr = DMClearGlobalVectors(
 	(DM)PetscToPointer((dm) ));
 }
-void PETSC_STDCALL  dmrestoreglobalvector_(DM dm,Vec* g, int *__ierr ){
+void PETSC_STDCALL  dmrestoreglobalvector_(DM dm,Vec *g, int *__ierr ){
 *__ierr = DMRestoreGlobalVector(
 	(DM)PetscToPointer((dm) ),g);
 }

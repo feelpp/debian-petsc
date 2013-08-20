@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/DMTSCopy.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>DMTSCopy</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="DMTSCopy"><H1>DMTSCopy</H1></A>
+copies the information in a DMTS to another DMTS 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscts.h" 
+PetscErrorCode DMTSCopy(DMTS kdm,DMTS nkdm)
+</PRE>
+Not Collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Argument</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>kdm </B></TD><TD>- Original DMTS
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nkdm </B></TD><TD>- DMTS to receive the data, should have been created with DMTSCreate()
+</TD></TR></TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ DMTSCreate(), DMTSDestroy()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/utils/dmts.c.html#DMTSCopy">src/ts/utils/dmts.c</A>
+<BR><A HREF="./index.html">Index of all TS routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

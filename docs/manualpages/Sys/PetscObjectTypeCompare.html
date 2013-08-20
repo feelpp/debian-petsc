@@ -5,7 +5,7 @@
 <TITLE>PetscObjectTypeCompare</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscObjectTypeCompare"><H1>PetscObjectTypeCompare</H1></A>
 Determines whether a PETSc object is of a particular type. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -18,7 +18,7 @@ Not Collective
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>obj </B></TD><TD>- any PETSc object, for example a <A HREF="../Vec/Vec.html#Vec">Vec</A>, <A HREF="../Mat/Mat.html#Mat">Mat</A> or <A HREF="../KSP/KSP.html#KSP">KSP</A>.
-This must be cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example, 
+This must be cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example,
 <A HREF="../Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat);
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>type_name </B></TD><TD>- string containing a type name
@@ -27,6 +27,7 @@ This must be cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObj
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>same </B> -<A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if they are the same, else <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
 <br>
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
@@ -40,8 +41,8 @@ This must be cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObj
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/vec/is/examples/tutorials/ex3.c.html">src/vec/is/examples/tutorials/ex3.c.html</A><BR>
-<A HREF="../../../src/vec/is/examples/tutorials/ex3f90.F.html">src/vec/is/examples/tutorials/ex3f90.F.html</A><BR>
+<A HREF="../../../src/vec/is/is/examples/tutorials/ex3.c.html">src/vec/is/is/examples/tutorials/ex3.c.html</A><BR>
+<A HREF="../../../src/vec/is/is/examples/tutorials/ex3f90.F.html">src/vec/is/is/examples/tutorials/ex3f90.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex8.c.html">src/ksp/ksp/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex8g.c.html">src/ksp/ksp/examples/tutorials/ex8g.c.html</A><BR>

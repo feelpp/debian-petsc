@@ -2,9 +2,8 @@
 #requirespackage 'PETSC_HAVE_YAML'
 
 ALL: lib
-SOURCEH   = yamlimpls.h
+SOURCEH   =
 SOURCEC   = yamlimpls.c
-OBJSC     = yamlimpls.o
 DIRS      =
 LOCDIR    = src/sys/yaml/
 MANSEC    = Sys

@@ -30,10 +30,12 @@ class Package(config.base.Configure):
                                  # this flag being one so hope user never requires it. Needs to be fixed in an overhaul of
                                  # args database so it keeps track of what the user set vs what the program set
     self.useddirectly     = 1    # 1 indicates used by PETSc directly, 0 indicates used by a package used by PETSc
-    self.download         = []   # urls where repository or tarballs may be found
+    self.gitcommit        = None # Git commit to use for downloads (used in preference to tarball downloads)
+    self.giturls          = []   # list of Git repository URLs to be used for downloads
+    self.download         = []   # list of URLs where repository or tarballs may be found
     self.deps             = []   # other packages whose dlib or include we depend on, usually we also use self.framework.require()
     self.defaultLanguage  = 'C'  # The language in which to run tests
-    self.liblist          = [[]] # list of libraries we wish to check for (override with your own generateLibraryList())
+    self.liblist          = [[]] # list of libraries we wish to check for (override with your own generateLibList())
     self.extraLib         = []   # additional libraries needed to link
     self.includes         = []   # headers to check for
     self.functions        = []   # functions we wish to check for in the libraries
@@ -84,8 +86,7 @@ class Package(config.base.Configure):
     import nargs
     help.addArgument(self.PACKAGE,'-with-'+self.package+'=<bool>',nargs.ArgBool(None,self.required+self.lookforbydefault,'Indicate if you wish to test for '+self.name))
     help.addArgument(self.PACKAGE,'-with-'+self.package+'-dir=<dir>',nargs.ArgDir(None,None,'Indicate the root directory of the '+self.name+' installation'))
-    if hasattr(self, 'usePkgConfig'):
-      help.addArgument(self.PACKAGE, '-with-'+self.package+'-pkg-config=<dir>', nargs.ArgDir(None, None, 'Indicate the root directory of the '+self.name+' installation'))
+    help.addArgument(self.PACKAGE, '-with-'+self.package+'-pkg-config=<dir>', nargs.Arg(None, None, 'Look for '+self.name+' using pkg-config utility optional directory to look in'))
     help.addArgument(self.PACKAGE,'-with-'+self.package+'-include=<dirs>',nargs.ArgDirList(None,None,'Indicate the directory of the '+self.name+' include files'))
     help.addArgument(self.PACKAGE,'-with-'+self.package+'-lib=<libraries: e.g. [/Users/..../lib'+self.package+'.a,...]>',nargs.ArgLibrary(None,None,'Indicate the '+self.name+' libraries'))
     if self.download and not self.download[0] == 'redefine':
@@ -108,6 +109,7 @@ class Package(config.base.Configure):
     self.PACKAGE          = self.name.upper()
     self.package          = self.name.lower()
     self.downloadname     = self.name
+    self.pkgname          = self.name
     self.downloadfilename = self.downloadname;
     return
 
@@ -172,6 +174,7 @@ class Package(config.base.Configure):
     return []
 
   def getInstallDir(self):
+    if not self.arch:  raise RuntimeError('Why the hell is self.arch not defined for this package -- '+self.package+'\n')
     self.installDir = os.path.join(self.defaultInstallDir, self.arch)
     self.confDir    = os.path.join(self.installDir, 'conf')
     self.includeDir = os.path.join(self.installDir, 'include')
@@ -234,6 +237,24 @@ class Package(config.base.Configure):
         yield('Download '+self.PACKAGE, d, l, self.getIncludeDirs(d, self.includedir))
       raise RuntimeError('Downloaded '+self.package+' could not be used. Please check install in '+d+'\n')
 
+    if 'with-'+self.package+'-pkg-config' in self.framework.argDB:
+      if self.framework.argDB['with-'+self.package+'-pkg-config']:
+        #  user provided path to look for pkg info
+        if 'PKG_CONFIG_PATH' in os.environ: path = os.environ['PKG_CONFIG_PATH']
+        else: path = None
+        os.environ['PKG_CONFIG_PATH'] = self.framework.argDB['with-'+self.package+'-pkg-config']
+
+      l,err,ret  = config.base.Configure.executeShellCommand('pkg-config '+self.pkgname+' --libs', timeout=5, log = self.framework.log)
+      l = l.strip()
+      i,err,ret  = config.base.Configure.executeShellCommand('pkg-config '+self.pkgname+' --variable=includedir', timeout=5, log = self.framework.log)
+      i = i.strip()
+      if self.framework.argDB['with-'+self.package+'-pkg-config']:
+        if path: os.environ['PKG_CONFIG_PATH'] = path
+        else: os.environ['PKG_CONFIG_PATH'] = ''
+      yield('pkg-config located libraries and includes '+self.PACKAGE, None, l, i)
+      raise RuntimeError('pkg-config could not locate correct includes and libraries for '+self.package)
+
+
     if 'with-'+self.package+'-dir' in self.framework.argDB:
       d = self.framework.argDB['with-'+self.package+'-dir']
       # error if package-dir is in externalpackages
@@ -266,7 +287,6 @@ class Package(config.base.Configure):
       if not isinstance(inc, list): inc = inc.split(' ')
       if not isinstance(libs, list): libs = libs.split(' ')
       inc = [os.path.abspath(i) for i in inc]
-      print inc
       # hope that package root is one level above first include directory specified
       d = os.path.dirname(inc[0])
       yield('User specified '+self.PACKAGE+' libraries', d, libs, inc)
@@ -385,6 +405,17 @@ class Package(config.base.Configure):
         download_urls.append(url.replace('http://','ftp://'))
     # now attempt to download each url until any one succeeds.
     err =''
+    if hasattr(self.sourceControl, 'git') and self.gitcommit:
+      for giturl in self.giturls: # First try to fetch using Git
+        try:
+          gitrepo = os.path.join(self.externalPackagesDir, self.downloadname)
+          self.executeShellCommand([self.sourceControl.git, 'clone', giturl, gitrepo])
+          self.executeShellCommand([self.sourceControl.git, 'checkout', '-f', self.gitcommit], cwd=gitrepo)
+          self.framework.actions.addArgument(self.PACKAGE, 'Download', 'Git cloned '+self.name+' into '+self.getDir(0))
+          return
+        except RuntimeError, e:
+          self.logPrint('ERROR: '+str(e))
+          err += str(e)
     for url in download_urls:
       try:
         retriever.genericRetrieve(url, self.externalPackagesDir, self.downloadname)
@@ -468,7 +499,7 @@ class Package(config.base.Configure):
         if directory: self.framework.logPrint('Contents: '+str(os.listdir(directory)))
       else:
         self.framework.logPrint('Not checking for library in '+location+': '+str(lib)+' because no functions given to check for')
-      if self.executeTest(self.libraries.check,[lib, self.functions],{'otherLibs' : libs, 'fortranMangle' : self.functionsFortran, 'cxxMangle' : self.functionsCxx[0], 'prototype' : self.functionsCxx[1], 'call' : self.functionsCxx[2]}):
+      if self.executeTest(self.libraries.check,[lib, self.functions],{'otherLibs' : libs, 'fortranMangle' : self.functionsFortran, 'cxxMangle' : self.functionsCxx[0], 'prototype' : self.functionsCxx[1], 'call' : self.functionsCxx[2], 'cxxLink': self.cxx}):
         self.lib = lib
         self.framework.logPrint('Checking for headers '+location+': '+str(incl))
         if (not self.includes) or self.checkInclude(incl, self.includes, incls, timeout = 1800.0):
@@ -504,7 +535,7 @@ class Package(config.base.Configure):
         raise RuntimeError('Cannot use '+self.name+' with MPIUNI, you need a real MPI')
       if not self.worksonWindows and self.setCompilers.isCygwin():
         raise RuntimeError('External package '+self.name+' does not work on Microsoft Windows')
-      if self.download and self.framework.argDB.has_key('download-'+self.downloadname.lower()) and self.framework.argDB['download-'+self.downloadname.lower()] and not self.downloadonWindows and self.setCompilers.isCygwin():
+      if self.download and self.framework.argDB.get('download-'+self.downloadname.lower()) and not self.downloadonWindows and self.setCompilers.isCygwin():
         raise RuntimeError('External package '+self.name+' does not support --download-'+self.downloadname.lower()+' on Microsoft Windows')
     if not self.download and self.framework.argDB.has_key('download-'+self.downloadname.lower()) and self.framework.argDB['download-'+self.downloadname.lower()]:
       raise RuntimeError('External package '+self.name+' does not support --download-'+self.downloadname.lower())
@@ -515,9 +546,8 @@ class Package(config.base.Configure):
       self.framework.argDB['with-'+self.package] = 1
     if 'with-'+self.package+'-dir' in self.framework.argDB or 'with-'+self.package+'-include' in self.framework.argDB or 'with-'+self.package+'-lib' in self.framework.argDB:
       self.framework.argDB['with-'+self.package] = 1
-    if hasattr(self, 'usePkgConfig') and 'with-'+self.package+'-pkg-config' in self.framework.argDB:
+    if 'with-'+self.package+'-pkg-config' in self.framework.argDB:
       self.framework.argDB['with-'+self.package] = 1
-      self.usePkgConfig()
 
     self.consistencyChecks()
     if self.framework.argDB['with-'+self.package]:
@@ -583,7 +613,7 @@ Brief overview of how BuildSystem\'s configuration of packages works.
     self.includes         - names of header files to locate               [list of strings]
     self.liblist          - names of library files to locate              [list of lists of strings]
     self.functions        - names of functions to locate in libraries     [list of strings]
-    self.cxx              - whether C++ is required for this package      [bool]
+    self.cxx              - whether C++ compiler, (this does not require that PETSc be built with C++, should it?) is required for this package      [bool]
     self.functionsFortran - whether to mangle self.functions symbols      [bool]
   Most of these instance variables determine the behavior of the location/installation and the testing stages.
   Ideally, a package subclass would extend only the __init__ method and parameterize the remainder of
@@ -888,6 +918,11 @@ class GNUPackage(Package):
     self.setupDownload()
     return Package.checkDownload(self,requireDownload)
 
+  def formGNUConfigureExtraArgs(self):
+    '''Intended to be overridden by subclasses'''
+    args = []
+    return args
+
   def formGNUConfigureDepArgs(self):
     '''Add args corresponding to --with-<deppackage>=<deppackage-dir>.'''
     args = []
@@ -896,7 +931,12 @@ class GNUPackage(Package):
         args.append('--with-'+d.package+'='+d.directory)
     for d in self.odeps:
       if hasattr(d,'found') and d.found:
-        args.append('--with-'+d.package+'='+d.directory)
+        if d.directory:
+          args.append('--with-'+d.package+'='+d.directory)
+        else:
+          args.append('--with-'+d.package)
+      else:
+        args.append('--without-'+d.package)
     return args
 
   def formGNUConfigureArgs(self):
@@ -937,23 +977,20 @@ class GNUPackage(Package):
         args.append('--disable-f90')
       args.append('F77="'+fc+'"')
       args.append('FFLAGS="'+self.getCompilerFlags().replace('-Mfree','')+'"')
+      args.append('FC="'+fc+'"')
+      args.append('FCLAGS="'+self.getCompilerFlags().replace('-Mfree','')+'"')
       self.popLanguage()
     else:
+      args.append('--disable-fortran')
+      args.append('--disable-fc')
       args.append('--disable-f77')
       args.append('--disable-f90')
     if self.framework.argDB['with-shared-libraries'] or self.framework.argDB['download-'+self.package+'-shared']:
-      if self.compilers.isGCC or config.setCompilers.Configure.isIntel(compiler):
-        if config.setCompilers.Configure.isDarwin():
-          args.append('--enable-sharedlibs=gcc-osx')
-        else:
-          args.append('--enable-sharedlibs=gcc')
-      elif config.setCompilers.Configure.isSun(compiler):
-        args.append('--enable-sharedlibs=solaris-cc')
-      else:
-        args.append('--enable-sharedlibs=libtool')
+      args.append('--enable-shared')
     else:
-        args.append('--disable-shared')
+      args.append('--disable-shared')
     args.extend(self.formGNUConfigureDepArgs())
+    args.extend(self.formGNUConfigureExtraArgs())
     return args
 
   def Install(self):
@@ -1037,7 +1074,7 @@ class GNUPackage(Package):
         if directory: self.framework.logPrint('Contents: '+str(os.listdir(directory)))
       else:
         self.framework.logPrint('Not checking for library in '+location+': '+str(lib)+' because no functions given to check for')
-      if self.executeTest(self.libraries.check,[lib, self.functions],{'otherLibs' : libs, 'fortranMangle' : self.functionsFortran, 'cxxMangle' : self.functionsCxx[0], 'prototype' : self.functionsCxx[1], 'call' : self.functionsCxx[2]}):
+      if self.executeTest(self.libraries.check,[lib, self.functions],{'otherLibs' : libs, 'fortranMangle' : self.functionsFortran, 'cxxMangle' : self.functionsCxx[0], 'prototype' : self.functionsCxx[1], 'call' : self.functionsCxx[2], 'cxxLink': self.cxx}):
         self.lib = lib
         self.framework.logPrint('Checking for headers '+location+': '+str(incl))
         if (not self.includes) or self.checkInclude(incl, self.includes, incls, timeout = 1800.0):

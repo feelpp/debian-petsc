@@ -5,15 +5,15 @@
 <TITLE>DMDASetInterpolationType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDASetInterpolationType"><H1>DMDASetInterpolationType</H1></A>
-Sets the type of interpolation that will be  returned by <A HREF="../DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>() 
+Sets the type of interpolation that will be returned by <A HREF="../DM/DMCreateInterpolation.html#DMCreateInterpolation">DMCreateInterpolation</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
 PetscErrorCode  DMDASetInterpolationType(DM da,DMDAInterpolationType ctype)
 </PRE>
-Logically Collective on DMDA
+Logically Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -31,7 +31,7 @@ Notes: you should call this on the coarser of the two DMDAs you pass to <A HREF=
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(), <A HREF="../DM/DMDACreate3d.html#DMDACreate3d">DMDACreate3d</A>(), <A HREF="../DM/DMDestroy.html#DMDestroy">DMDestroy</A>(), DMDA, <A HREF="../DM/DMDAInterpolationType.html#DMDAInterpolationType">DMDAInterpolationType</A>
+ <A HREF="../DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(), <A HREF="../DM/DMDACreate3d.html#DMDACreate3d">DMDACreate3d</A>(), <A HREF="../DM/DMDestroy.html#DMDestroy">DMDestroy</A>(), <A HREF="../DM/DMDA.html#DMDA">DMDA</A>, <A HREF="../DM/DMDAInterpolationType.html#DMDAInterpolationType">DMDAInterpolationType</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/da/da.c.html#DMDASetInterpolationType">src/dm/impls/da/da.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>

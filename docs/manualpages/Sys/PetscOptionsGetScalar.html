@@ -5,9 +5,9 @@
 <TITLE>PetscOptionsGetScalar</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscOptionsGetScalar"><H1>PetscOptionsGetScalar</H1></A>
-Gets the scalar value for a particular  option in the database. 
+Gets the scalar value for a particular option in the database. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
@@ -17,7 +17,7 @@ Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pre </B></TD><TD>- string to prepend to each name or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pre </B></TD><TD>- string to prepend to each name or NULL
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>name </B></TD><TD>- the option one is seeking
 </TD></TR></TABLE>
@@ -39,7 +39,7 @@ Note: if the option is given but no value is provided then set is given the valu
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(), 
+ <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(), <A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(),
 <BR><A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsGetRealArray.html#PetscOptionsGetRealArray">PetscOptionsGetRealArray</A>(), <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(),
 <A HREF="../Sys/PetscOptionsName.html#PetscOptionsName">PetscOptionsName</A>(), <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(), <A HREF="../Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>(), <A HREF="../Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(),
 <A HREF="../Sys/PetscOptionsStringArray.html#PetscOptionsStringArray">PetscOptionsStringArray</A>(),<A HREF="../Sys/PetscOptionsRealArray.html#PetscOptionsRealArray">PetscOptionsRealArray</A>(), <A HREF="../Sys/PetscOptionsScalar.html#PetscOptionsScalar">PetscOptionsScalar</A>(),

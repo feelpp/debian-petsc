@@ -4,22 +4,22 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/examples/tutorials/ex1.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:58:20+00:00">
+<meta name="date" content="2013-07-02T14:46:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>() contour plotting for 2d DMDAs.\n\n"</font>;
 
-<a name="line4">  4: </a><font color="#B22222">/* </font>
+<a name="line4">  4: </a><font color="#B22222">/*</font>
 <a name="line5">  5: </a><font color="#B22222">  MATLAB must be installed to configure PETSc to have MATLAB engine.</font>
 <a name="line6">  6: </a><font color="#B22222">Unless you have specific important reasons for using the MATLAB engine, we do not</font>
 <a name="line7">  7: </a><font color="#B22222">recommend it. If you want to use MATLAB for visualization and maybe a little post processing</font>
 <a name="line8">  8: </a><font color="#B22222">then you can use the socket viewer and send the data to MATLAB via that.</font>
 
-<a name="line10"> 10: </a><font color="#B22222">  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>() on DMDA vectors first puts the <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> elements into global natural ordering before printing (or plotting)</font>
-<a name="line11"> 11: </a><font color="#B22222">them. In 2d 5 by 2 DMDA this means the numbering is</font>
+<a name="line10"> 10: </a><font color="#B22222">  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>() on <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A> vectors first puts the <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> elements into global natural ordering before printing (or plotting)</font>
+<a name="line11"> 11: </a><font color="#B22222">them. In 2d 5 by 2 <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A> this means the numbering is</font>
 
 <a name="line13"> 13: </a><font color="#B22222">     5  6   7   8   9</font>
 <a name="line14"> 14: </a><font color="#B22222">     0  1   2   3   4</font>
@@ -45,17 +45,18 @@
 
 <a name="line37"> 37: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line38"> 38: </a>{
-<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank;
-<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       M = -10,N = -8;
-<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line43"> 43: </a>  DM             da;
-<a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    viewer;
-<a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            local,global;
-<a name="line46"> 46: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    value;
-<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/DM/DMDABoundaryType.html#DMDABoundaryType">DMDABoundaryType</A> bx = DMDA_BOUNDARY_NONE,by = DMDA_BOUNDARY_NONE;
+<a name="line39"> 39: </a>  <A href="../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>      rank;
+<a name="line40"> 40: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>         M = -10,N = -8;
+<a name="line41"> 41: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>   ierr;
+<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>        flg = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line43"> 43: </a>  DM               da;
+<a name="line44"> 44: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>      viewer;
+<a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>              local,global;
+<a name="line46"> 46: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>      value;
+<a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/DM/DMDABoundaryType.html#DMDABoundaryType">DMDABoundaryType</A> bx    = DMDA_BOUNDARY_NONE,by = DMDA_BOUNDARY_NONE;
 <a name="line48"> 48: </a>  <A href="../../../../docs/manualpages/DM/DMDAStencilType.html#DMDAStencilType">DMDAStencilType</A>  stype = <A href="../../../../docs/manualpages/DM/DMDA_STENCIL_BOX.html#DMDA_STENCIL_BOX">DMDA_STENCIL_BOX</A>;
 <a name="line49"> 49: </a><font color="#A020F0">#if defined(PETSC_HAVE_MATLAB_ENGINE)</font>
-<a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    mviewer;
+<a name="line50"> 50: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> mviewer;
 <a name="line51"> 51: </a><font color="#A020F0">#endif</font>
 
 <a name="line53"> 53: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
@@ -64,11 +65,11 @@
 <a name="line56"> 56: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerMatlabOpen.html#PetscViewerMatlabOpen">PetscViewerMatlabOpen</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"tmp.mat"</font>,FILE_MODE_WRITE,&amp;mviewer);
 <a name="line57"> 57: </a><font color="#A020F0">#endif</font>
 
-<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-star_stencil"</font>,&amp;flg,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(NULL,<font color="#666666">"-star_stencil"</font>,&amp;flg,NULL);
 <a name="line60"> 60: </a>  <font color="#4169E1">if</font> (flg) stype = <A href="../../../../docs/manualpages/DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>;
-<a name="line61"> 61: </a>
+
 <a name="line62"> 62: </a>  <font color="#B22222">/* Create distributed array and get vectors */</font>
-<a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,bx,by,stype,M,N,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;da);
+<a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,bx,by,stype,M,N,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,1,1,NULL,NULL,&amp;da);
 <a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da,&amp;global);
 <a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>(da,&amp;local);
 
@@ -82,9 +83,9 @@
 <a name="line74"> 74: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(local,value);
 <a name="line75"> 75: </a>  <A href="../../../../docs/manualpages/DM/DMLocalToGlobalBegin.html#DMLocalToGlobalBegin">DMLocalToGlobalBegin</A>(da,local,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,global);
 <a name="line76"> 76: </a>  <A href="../../../../docs/manualpages/DM/DMLocalToGlobalEnd.html#DMLocalToGlobalEnd">DMLocalToGlobalEnd</A>(da,local,<A href="../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,global);
-<a name="line77"> 77: </a>
+
 <a name="line78"> 78: </a>  flg  = <A href="../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line79"> 79: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-view_global"</font>, &amp;flg,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line79"> 79: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(NULL, <font color="#666666">"-view_global"</font>, &amp;flg,NULL);
 <a name="line80"> 80: </a>  <font color="#4169E1">if</font> (flg) { <font color="#B22222">/* view global vector in natural ordering */</font>
 <a name="line81"> 81: </a>    <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(global,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>);
 <a name="line82"> 82: </a>  }
@@ -106,7 +107,7 @@
 <a name="line98"> 98: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line99"> 99: </a>  <font color="#4169E1">return</font> 0;
 <a name="line100">100: </a>}
-<a name="line101">101: </a>
+
 </pre>
 </body>
 

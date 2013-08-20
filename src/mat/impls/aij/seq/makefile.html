@@ -3,26 +3,23 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:44:17+00:00">
+<meta name="date" content="2013-07-02T14:41:44+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = aij.c aijfact.c ij.c fdaij.c \
-           matmatmult.c symtranspose.c matptap.c matrart.c inode.c inode2.c
-SOURCEF  = 
+           matmatmult.c symtranspose.c matptap.c matrart.c inode.c inode2.c matmatmatmult.c
+SOURCEF  =
 SOURCEH  = aij.h
-OBJSC    = aij.o aijfact.o ij.o fdaij.o \
-           matmatmult.o symtranspose.o matptap.o matrart.o inode.o inode2.o
-OBJSF    = 
 LIBBASE  = libpetscmat
-DIRS     = spooles superlu umfpack essl lusol matlab csrperm crl bas ftn-kernels seqcusp \
-           cholmod seqpthread
+DIRS     = superlu umfpack essl lusol matlab csrperm crl bas ftn-kernels seqcusp \
+           cholmod seqcusparse
 MANSEC   = <A href="ROOT/docs/manualpages/Mat/Mat.html#Mat">Mat</A>
 LOCDIR   = src/mat/impls/aij/seq/
 

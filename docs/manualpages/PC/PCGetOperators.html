@@ -5,13 +5,13 @@
 <TITLE>PCGetOperators</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCGetOperators"><H1>PCGetOperators</H1></A>
 Gets the matrix associated with the linear system and possibly a different one associated with the preconditioner. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  PCGetOperators(PC pc,Mat *mat,Mat *pmat,MatStructure *flag)
+PetscErrorCode  PCGetOperators(PC pc,Mat *Amat,Mat *Pmat,MatStructure *flag)
 </PRE>
 Not collective, though parallel Mats are returned if the <A HREF="../PC/PC.html#PC">PC</A> is parallel
 <P>
@@ -21,10 +21,9 @@ Not collective, though parallel Mats are returned if the <A HREF="../PC/PC.html#
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix associated with the linear system
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- the matrix defining the linear system
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pmat </B></TD><TD>- matrix associated with the preconditioner, usually the same
-as mat. 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- the matrix from which the preconditioner is constructed, usually the same as Amat.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flag </B></TD><TD>- flag indicating information about the preconditioner
 matrix structure.  See <A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>() for details.
@@ -43,51 +42,51 @@ The user must set the sizes of the returned matrices and their type etc just
 as if the user created them with <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(). For example,
 <P>
 <pre>
-        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp/pc,&amp;mat,<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>); is equivalent to
+        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp/pc,&amp;Amat,NULL,NULL); is equivalent to
 </pre>
 <pre>
-          set size, type, etc of mat
+          set size, type, etc of Amat
 </pre>
 <P>
 <pre>
         <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,&amp;mat);
 </pre>
 <pre>
-        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>(ksp/pc,mat,mat,SAME_NONZERO_PATTERN);
+        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>(ksp/pc,Amat,Amat,SAME_NONZERO_PATTERN);
 </pre>
 <pre>
         <A HREF="../Sys/PetscObjectDereference.html#PetscObjectDereference">PetscObjectDereference</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat);
 </pre>
 <pre>
-          set size, type, etc of mat
+          set size, type, etc of Amat
 </pre>
 <P>
 and
 <P>
 <pre>
-        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp/pc,&amp;mat,&amp;pmat,<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>); is equivalent to
+        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCGetOperators.html#PCGetOperators">PCGetOperators</A>(ksp/pc,&amp;Amat,&amp;Pmat,NULL); is equivalent to
 </pre>
 <pre>
-          set size, type, etc of mat and pmat
+          set size, type, etc of Amat and Pmat
 </pre>
 <P>
 <pre>
-        <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,&amp;mat);
+        <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,&amp;Amat);
 </pre>
 <pre>
-        <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,&amp;pmat);
+        <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,&amp;Pmat);
 </pre>
 <pre>
-        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>(ksp/pc,mat,pmat,SAME_NONZERO_PATTERN);
+        <A HREF="../KSP/KSP.html#KSP">KSP</A>/<A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>(ksp/pc,Amat,Pmat,SAME_NONZERO_PATTERN);
 </pre>
 <pre>
-        <A HREF="../Sys/PetscObjectDereference.html#PetscObjectDereference">PetscObjectDereference</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat);
+        <A HREF="../Sys/PetscObjectDereference.html#PetscObjectDereference">PetscObjectDereference</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)Amat);
 </pre>
 <pre>
-        <A HREF="../Sys/PetscObjectDereference.html#PetscObjectDereference">PetscObjectDereference</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)pmat);
+        <A HREF="../Sys/PetscObjectDereference.html#PetscObjectDereference">PetscObjectDereference</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)Pmat);
 </pre>
 <pre>
-          set size, type, etc of mat and pmat
+          set size, type, etc of Amat and Pmat
 </pre>
 <P>
 The rational for this support is so that when creating a <A HREF="../TS/TS.html#TS">TS</A>, <A HREF="../SNES/SNES.html#SNES">SNES</A>, or <A HREF="../KSP/KSP.html#KSP">KSP</A> the hierarchy

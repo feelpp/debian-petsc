@@ -5,12 +5,12 @@
 <TITLE>VecRestoreSubVector</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecRestoreSubVector"><H1>VecRestoreSubVector</H1></A>
 Restores a subvector extracted using <A HREF="../Vec/VecGetSubVector.html#VecGetSubVector">VecGetSubVector</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecRestoreSubVector(Vec X,IS is,Vec *Y)
 </PRE>
 Collective on <A HREF="../IS/IS.html#IS">IS</A> (and <A HREF="../Vec/Vec.html#Vec">Vec</A> if nonlocal entries need to be written)
@@ -33,4 +33,6 @@ Collective on <A HREF="../IS/IS.html#IS">IS</A> (and <A HREF="../Vec/Vec.html#Ve
 <BR><A HREF="./index.html">Index of all Vec routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex70.c.html">src/snes/examples/tutorials/ex70.c.html</A><BR>
 </BODY></HTML>

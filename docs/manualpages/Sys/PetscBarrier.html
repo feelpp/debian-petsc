@@ -5,7 +5,7 @@
 <TITLE>PetscBarrier</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscBarrier"><H1>PetscBarrier</H1></A>
 Blocks until this routine is executed by all processors owning the object A. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -15,7 +15,7 @@ PetscErrorCode  PetscBarrier(PetscObject obj)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>A </B> -PETSc object  (<A HREF="../Mat/Mat.html#Mat">Mat</A>, <A HREF="../Vec/Vec.html#Vec">Vec</A>, <A HREF="../IS/IS.html#IS">IS</A>, <A HREF="../SNES/SNES.html#SNES">SNES</A> etc...)
-Must be caste with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), can use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> (for MPI_COMM_WORLD)
+Must be caste with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), can use NULL (for MPI_COMM_WORLD)
 <br>
 <P>
 
@@ -23,7 +23,7 @@ Must be caste with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject<
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 This routine calls MPI_Barrier with the communicator of the PETSc Object "A".
 <P>
-With fortran Use PETSC_NULL_OBJECT (instead of <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+With fortran Use NULL_OBJECT (instead of NULL)
 <P>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
@@ -34,6 +34,7 @@ With fortran Use PETSC_NULL_OBJECT (instead of <A HREF="../Sys/PETSC_NULL.html#P
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex52.c.html">src/snes/examples/tutorials/ex52.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
 </BODY></HTML>

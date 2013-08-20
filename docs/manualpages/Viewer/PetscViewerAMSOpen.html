@@ -5,12 +5,12 @@
 <TITLE>PetscViewerAMSOpen</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerAMSOpen"><H1>PetscViewerAMSOpen</H1></A>
-Opens an AMS memory snooper <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>.  
+Opens an AMS memory snooper <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petsc.h"  */
+#include "petscsys.h"  */
 PetscErrorCode PetscViewerAMSOpen(MPI_Comm comm,const char name[],PetscViewer *lab)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
@@ -19,7 +19,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- the MPI communicator
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>name </B></TD><TD>- name of AMS communicator being created
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>name </B></TD><TD>- name of AMS communicator being created if NULL is passed defaults to PETSc
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -30,8 +30,10 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ams_port &lt;port number&gt; </B></TD><TD>- port number where you are running AMS client
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ams_publish_objects </B></TD><TD>- publish all PETSc objects to be visible to the AMS memory snooper,
-use <A HREF="../Sys/PetscObjectAMSPublish.html#PetscObjectAMSPublish">PetscObjectAMSPublish</A>() to publish individual objects
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-xxx_view ams </B></TD><TD>- publish the object xxx
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-xxx_ams_block </B></TD><TD>- blocks the program at the end of a critical point (for <A HREF="../KSP/KSP.html#KSP">KSP</A> and <A HREF="../SNES/SNES.html#SNES">SNES</A> it is the end of a solve) until
+the user unblocks the the problem with an external tool that access the object with the AMS
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ams_java </B></TD><TD>- open JAVA AMS client
 </TD></TR></TABLE>
@@ -45,17 +47,19 @@ See the matlab/petsc directory in the AMS installation for one example of extern
 tools that can monitor PETSc objects that have been published.
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-This <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> can be destroyed with <A HREF="../Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>().
+Unlike other viewers that only access the object being viewed on the call to XXXView(object,viewer) the AMS viewer allows
+one to view the object asynchronously as the program continues to run. One can remove AMS access to the object with a call to
+PetscObjectAMSViewOff().
 <P>
 Information about the AMS is available via http://www.mcs.anl.gov/ams.
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscObjectAMSPublish.html#PetscObjectAMSPublish">PetscObjectAMSPublish</A>(), <A HREF="../Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(), <A HREF="../Viewer/PetscViewerStringSPrintf.html#PetscViewerStringSPrintf">PetscViewerStringSPrintf</A>()
-<BR>
+ <A HREF="../Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(), <A HREF="../Viewer/PetscViewerStringSPrintf.html#PetscViewerStringSPrintf">PetscViewerStringSPrintf</A>(), <A HREF="../Viewer/PETSC_VIEWER_AMS_.html#PETSC_VIEWER_AMS_">PETSC_VIEWER_AMS_</A>(), <A HREF="../Sys/PetscObjectAMSBlock.html#PetscObjectAMSBlock">PetscObjectAMSBlock</A>(),
+<BR>PetscObjectAMSViewOff(), <A HREF="../Sys/PetscObjectAMSTakeAccess.html#PetscObjectAMSTakeAccess">PetscObjectAMSTakeAccess</A>(), <A HREF="../Sys/PetscObjectAMSGrantAccess.html#PetscObjectAMSGrantAccess">PetscObjectAMSGrantAccess</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/ams/amsopen.c.html#PetscViewerAMSOpen">src/sys/viewer/impls/ams/amsopen.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/impls/ams/amsopen.c.html#PetscViewerAMSOpen">src/sys/classes/viewer/impls/ams/amsopen.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/Field.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:19:25+00:00">
+<meta name="date" content="2013-07-02T14:52:59+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_Field_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_Field_hh</font></strong>
 
@@ -3400,7 +3400,7 @@
 <a name="line3389">3389: </a>        const patch_type         rank    = p_iter-&gt;first;
 <a name="line3390">3390: </a>        const Obj&lt;section_type&gt;&amp; section = this-&gt;getSection(rank);
 <a name="line3391">3391: </a>        const chart_type&amp;        chart   = section-&gt;getChart();
-<a name="line3392">3392: </a>
+
 <a name="line3393">3393: </a>        <font color="#4169E1">for</font>(typename chart_type::const_iterator c_iter = chart.begin(); c_iter != chart.end(); ++c_iter) {
 <a name="line3394">3394: </a>          section-&gt;setFiberDimension(*c_iter, *(sizer-&gt;getSection(rank)-&gt;restrictPoint(*c_iter)));
 <a name="line3395">3395: </a>        }

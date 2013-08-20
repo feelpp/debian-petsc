@@ -5,13 +5,13 @@
 <TITLE>MatCreateSeqCUFFT</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateSeqCUFFT"><H1>MatCreateSeqCUFFT</H1></A>
 Creates a matrix object that provides sequential FFT via the external package CUFFT 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatCreateSeqCUFFT(MPI_Comm comm, PetscInt ndim, const PetscInt dim[], Mat* A)
+PetscErrorCode  MatCreateSeqCUFFT(MPI_Comm comm, PetscInt ndim, const PetscInt dim[], Mat *A)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -34,7 +34,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/cufftcufft.cu#MatCreateSeqCUFFT">src/mat/impls/cufftcufft.cu</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/impls/cufft/cufft.cu#MatCreateSeqCUFFT">src/mat/impls/cufft/cufft.cu</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

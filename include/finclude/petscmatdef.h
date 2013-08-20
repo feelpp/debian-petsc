@@ -78,6 +78,9 @@
 #define MATAIJCUSP         'aijcusp'
 #define MATSEQAIJCUSP      'seqaijcusp'
 #define MATMPIAIJCUSP      'mpiaijcusp'
+#define MATAIJCUSPARSE     'aijcusparse'
+#define MATSEQAIJCUSPARSE  'seqaijcusparse'
+#define MATMPIAIJCUSPARSE  'mpiaijcusparse'
 #define MATAIJPERM         'aijperm'
 #define MATSEQAIJPERM      'seqaijperm'
 #define MATMPIAIJPERM      'mpiaijperm'
@@ -85,6 +88,7 @@
 #define MATDENSE           'dense'
 #define MATSEQDENSE        'seqdense'
 #define MATMPIDENSE        'mpidense'
+#define MATELEMENTAL       'elemental'
 #define MATBAIJ            'baij'
 #define MATSEQBAIJ         'seqbaij'
 #define MATMPIBAIJ         'mpibaij'
@@ -121,7 +125,6 @@
 !
 ! MatSolverPackages
 !
-#define MATSOLVERSPOOLES      'spooles'
 #define MATSOLVERSUPERLU      'superlu'
 #define MATSOLVERSUPERLU_DIST 'superlu_dist'
 #define MATSOLVERUMFPACK      'umfpack'
@@ -132,9 +135,18 @@
 #define MATSOLVERPASTIX       'pastix'
 #define MATSOLVERMATLAB       'matlab'
 #define MATSOLVERPETSC        'petsc'
-#define MATSOLVERPLAPACK      'plapack'
 #define MATSOLVERBAS          'bas'
-
+#define MATSOLVERCUSPARSE     'cusparse'
 #define MATSOLVERBSTRM        'bstrm'
 #define MATSOLVERSBSTRM       'sbstrm'
+
+!
+! GPU Storage Formats for CUSP and CUSPARSE
+!
+#define MatCUSPARSEStorageFormat PetscEnum
+#define MatCUSPARSEFormatOperation PetscEnum
+
+#define MatCUSPStorageFormat PetscEnum
+#define MatCUSPFormatOperation PetscEnum
+
 #endif

@@ -5,12 +5,12 @@
 <TITLE>VecMax</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecMax"><H1>VecMax</H1></A>
 Determines the maximum vector component and its location. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecMax(Vec x,PetscInt *p,PetscReal *val)
 </PRE>
 Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
@@ -23,7 +23,7 @@ Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>val </B></TD><TD>- the maximum component
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- the location of val (pass <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if you don't want this)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>p </B></TD><TD>- the location of val (pass NULL if you don't want this)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
@@ -45,6 +45,5 @@ Returns the smallest index with the maximum value
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex10.c.html">src/ksp/ksp/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex63.c.html">src/snes/examples/tutorials/ex63.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
 </BODY></HTML>

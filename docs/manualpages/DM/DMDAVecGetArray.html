@@ -5,23 +5,24 @@
 <TITLE>DMDAVecGetArray</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAVecGetArray"><H1>DMDAVecGetArray</H1></A>
-Returns a multiple dimension array that shares data with  the underlying vector and is indexed using the global dimensions. 
+Returns a multiple dimension array that shares data with the underlying vector and is indexed using the global dimensions. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
 PetscErrorCode  DMDAVecGetArray(DM da,Vec vec,void *array)
 </PRE>
-Not Collective
+Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the distributed array
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>vec </B></TD><TD>- the vector, either a vector the same size as one obtained with 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>vec </B></TD><TD>- the vector, either a vector the same size as one obtained with
 <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>() or <A HREF="../DM/DMCreateLocalVector.html#DMCreateLocalVector">DMCreateLocalVector</A>()
 </TD></TR></TABLE>
+<P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>array </B> -the array
 <br>
@@ -37,12 +38,12 @@ a global vector then the ghost points are not accessable. Of course with the loc
 appropriate <A HREF="../DM/DMLocalToGlobalBegin.html#DMLocalToGlobalBegin">DMLocalToGlobalBegin</A>() and <A HREF="../DM/DMLocalToGlobalEnd.html#DMLocalToGlobalEnd">DMLocalToGlobalEnd</A>() to have correct values in the ghost locations.
 <P>
 Fortran Notes: From Fortran use DMDAVecGetArrayF90() and pass for the array type <A HREF="../Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,pointer :: array(:,...,:) of the appropriate
-dimension. For a DMDA created with a dof of 1 use the dimension of the DMDA, for a DMDA created with a dof greater than 1 use one more than the
-dimension of the DMDA. The order of the indices is array(xs:xs+xm-1,ys:ys+ym-1,zs:zs+zm-1) (when dof is 1) otherwise
-array(1:dof,xs:xs+xm-1,ys:ys+ym-1,zs:zs+zm-1) where the values are obtained from
+dimension. For a <A HREF="../DM/DMDA.html#DMDA">DMDA</A> created with a dof of 1 use the dimension of the <A HREF="../DM/DMDA.html#DMDA">DMDA</A>, for a <A HREF="../DM/DMDA.html#DMDA">DMDA</A> created with a dof greater than 1 use one more than the
+dimension of the <A HREF="../DM/DMDA.html#DMDA">DMDA</A>. The order of the indices is array(xs:xs+xm-1,ys:ys+ym-1,zs:zs+zm-1) (when dof is 1) otherwise
+array(0:dof-1,xs:xs+xm-1,ys:ys+ym-1,zs:zs+zm-1) where the values are obtained from
 <A HREF="../DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>() for a global array or <A HREF="../DM/DMDAGetGhostCorners.html#DMDAGetGhostCorners">DMDAGetGhostCorners</A>() for a local array. Include finclude/petscdmda.h90 to access this routine.
 <P>
-Due to bugs in the compiler DMDAVecGetArrayF90() does not work with gfortran versions before 2.5
+Due to bugs in the compiler DMDAVecGetArrayF90() does not work with gfortran versions before 4.5
 <P>
 
 <P>

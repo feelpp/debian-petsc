@@ -5,7 +5,7 @@
 <TITLE>PetscCommGetThreadComm</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscCommGetThreadComm"><H1>PetscCommGetThreadComm</H1></A>
 Gets the thread communicator associated with the MPI communicator 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -13,6 +13,8 @@ Gets the thread communicator associated with the MPI communicator
 #include "petscthreadcomm.h" 
 PetscErrorCode PetscCommGetThreadComm(MPI_Comm comm,PetscThreadComm *tcommp)
 </PRE>
+Not Collective
+<P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>comm </B> -the MPI communicator
 <br>
@@ -21,12 +23,14 @@ PetscErrorCode PetscCommGetThreadComm(MPI_Comm comm,PetscThreadComm *tcommp)
 <DT><B>tcommp </B> -pointer to the thread communicator
 <br>
 <P>
+Notes: If no thread communicator is on the <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> then the global thread communicator
+is returned.
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  PetscThreadCommCreate(), PetscThreadCommDestroy()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>Intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/threadcomm/threadcomm.c.html#PetscCommGetThreadComm">src/sys/threadcomm/threadcomm.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/threadcomm/interface/threadcomm.c.html#PetscCommGetThreadComm">src/sys/threadcomm/interface/threadcomm.c</A>
 <BR><A HREF="./index.html">Index of all PetscThreadComm routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

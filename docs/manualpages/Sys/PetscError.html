@@ -5,13 +5,13 @@
 <TITLE>PetscError</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscError"><H1>PetscError</H1></A>
-Routine that is called when an error has been detected,  usually called through the macro <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A HREF="../Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,). 
+Routine that is called when an error has been detected, usually called through the macro <A HREF="../Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A HREF="../Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-PetscErrorCode  PetscError(MPI_Comm comm,int line,const char *func,const char* file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,...)
+PetscErrorCode  PetscError(MPI_Comm comm,int line,const char *func,const char *file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,...)
 </PRE>
 Not Collective
 <P>
@@ -47,6 +47,10 @@ sequence
 </pre>
 <P>
 Experienced users can set the error handler with <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>().
+<P>
+Developer Note: Since this is called after an error condition it should not be calling any error handlers (currently it ignores any error codes)
+BUT this routine does call regular PETSc functions that may call error handlers, this is problematic and could be fixed by never calling other PETSc routines
+but this annoying.
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>

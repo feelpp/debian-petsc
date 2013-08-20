@@ -5,12 +5,11 @@
 <TITLE>MatGetSchurComplement</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetSchurComplement"><H1>MatGetSchurComplement</H1></A>
 Obtain the Schur complement from eliminating part of the matrix in another part. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscmat.h" 
 #include "petscksp.h" 
 PetscErrorCode  MatGetSchurComplement(Mat mat,IS isrow0,IS iscol0,IS isrow1,IS iscol1,MatReuse mreuse,Mat *newmat,MatReuse preuse,Mat *newpmat)
 </PRE>
@@ -46,7 +45,7 @@ application-specific information.  The default for assembled matrices is to use 
 which will rarely produce a scalable algorithm.
 <P>
 Sometimes users would like to provide problem-specific data in the Schur complement, usually only for special row
-and column index sets.  In that case, the user should call <A HREF="../Sys/PetscObjectComposeFunctionDynamic.html#PetscObjectComposeFunctionDynamic">PetscObjectComposeFunctionDynamic</A>() to set
+and column index sets.  In that case, the user should call <A HREF="../Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>() to set
 "MatNestGetSubMat_C" to their function.  If their function needs to fall back to the default implementation, it
 should call MatGetSchurComplement_Basic().
 <P>

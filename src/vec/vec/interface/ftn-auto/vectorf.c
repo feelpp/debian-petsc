@@ -94,11 +94,6 @@ extern void PetscRmPointer(void*);
 #define vecdestroy_ vecdestroy
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define vecviewfromoptions_ VECVIEWFROMOPTIONS
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define vecviewfromoptions_ vecviewfromoptions
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecgetsize_ VECGETSIZE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define vecgetsize_ vecgetsize
@@ -188,6 +183,16 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define vecstashview_ vecstashview
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecgetlayout_ VECGETLAYOUT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecgetlayout_ vecgetlayout
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecsetlayout_ VECSETLAYOUT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecsetlayout_ vecsetlayout
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
@@ -255,10 +260,6 @@ void PETSC_STDCALL  vecduplicate_(Vec v,Vec *newv, int *__ierr ){
 void PETSC_STDCALL  vecdestroy_(Vec *v, int *__ierr ){
 *__ierr = VecDestroy(v);
 }
-void PETSC_STDCALL  vecviewfromoptions_(Vec vec, char *title, int *__ierr ){
-*__ierr = VecViewFromOptions(
-	(Vec)PetscToPointer((vec) ),title);
-}
 void PETSC_STDCALL  vecgetsize_(Vec x,PetscInt *size, int *__ierr ){
 *__ierr = VecGetSize(
 	(Vec)PetscToPointer((x) ),size);
@@ -267,7 +268,7 @@ void PETSC_STDCALL  vecgetlocalsize_(Vec x,PetscInt *size, int *__ierr ){
 *__ierr = VecGetLocalSize(
 	(Vec)PetscToPointer((x) ),size);
 }
-void PETSC_STDCALL  vecsetoption_(Vec x,VecOption *op,PetscBool  *flag, int *__ierr ){
+void PETSC_STDCALL  vecsetoption_(Vec x,VecOption *op,PetscBool *flag, int *__ierr ){
 *__ierr = VecSetOption(
 	(Vec)PetscToPointer((x) ),*op,*flag);
 }
@@ -336,6 +337,15 @@ void PETSC_STDCALL  vecstashview_(Vec v,PetscViewer viewer, int *__ierr ){
 *__ierr = VecStashView(
 	(Vec)PetscToPointer((v) ),
 	(PetscViewer)PetscToPointer((viewer) ));
+}
+void PETSC_STDCALL  vecgetlayout_(Vec x,PetscLayout *map, int *__ierr ){
+*__ierr = VecGetLayout(
+	(Vec)PetscToPointer((x) ),
+	(PetscLayout* )PetscToPointer((map) ));
+}
+void PETSC_STDCALL  vecsetlayout_(Vec x,PetscLayout *map, int *__ierr ){
+*__ierr = VecSetLayout(
+	(Vec)PetscToPointer((x) ),*map);
 }
 #if defined(__cplusplus)
 }

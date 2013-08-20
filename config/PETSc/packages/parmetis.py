@@ -4,7 +4,7 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
-    self.download          = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/parmetis-4.0.2-p3.tar.gz']
+    self.download          = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/parmetis-4.0.2-p4.tar.gz']
     self.functions         = ['ParMETIS_V3_PartKway']
     self.includes          = ['parmetis.h']
     self.liblist           = [['libparmetis.a']]
@@ -27,6 +27,7 @@ class Configure(PETSc.package.NewPackage):
 
   def Install(self):
     import os
+    import shlex
 
     if not self.cmake.found:
       raise RuntimeError('CMake > 2.5 is needed to build METIS')
@@ -37,6 +38,9 @@ class Configure(PETSc.package.NewPackage):
 
     self.framework.pushLanguage('C')
     args.append('-DCMAKE_C_COMPILER="'+self.framework.getCompiler()+'"')
+    args.append('-DCMAKE_AR='+self.setCompilers.AR)
+    ranlib = shlex.split(self.setCompilers.RANLIB)[0]
+    args.append('-DCMAKE_RANLIB='+ranlib)
 
     cflags = self.setCompilers.getCompilerFlags()
     args.append('-DCMAKE_C_FLAGS:STRING="'+cflags+'"')
