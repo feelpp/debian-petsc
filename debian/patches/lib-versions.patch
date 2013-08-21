@@ -1,12 +1,12 @@
 This changes the shared library name to a versioned one, with a symlink, and
 fixes the shared library out-of-date test accordingly.
 
-Index: petsc-3.3.dfsg/conf/rules
+Index: petsc-3.4.2/conf/rules
 ===================================================================
---- petsc-3.3.dfsg.orig/conf/rules	2012-09-12 08:26:27.000000000 +0200
-+++ petsc-3.3.dfsg/conf/rules	2012-09-12 08:58:56.000000000 +0200
-@@ -44,7 +44,7 @@
- chkopts: petscnagupgrade
+--- petsc-3.4.2.orig/conf/rules	2013-08-20 15:29:40.000000000 +0200
++++ petsc-3.4.2/conf/rules	2013-08-20 15:29:40.000000000 +0200
+@@ -65,7 +65,7 @@
+ chkopts: chk_upgrade
  	@for LIBNAME in ${SHLIBS}; do \
  	  library=${INSTALL_LIB_DIR}/$$LIBNAME.a; \
 -	sharedlibrary=${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX}; \
@@ -14,7 +14,7 @@ Index: petsc-3.3.dfsg/conf/rules
  	flag=""; \
  	if [ -f $$library ]; then \
  	  if [ -f $$sharedlibrary ]; then \
-@@ -535,8 +535,8 @@
+@@ -518,8 +518,8 @@
               echo ${RM} -rf ${INSTALL_LIB_DIR}/$${LIBNAME}.dylib.dSYM; \
  	     ${RM} -rf ${INSTALL_LIB_DIR}/$${LIBNAME}.dylib.dSYM; \
  	   fi; \
@@ -25,13 +25,13 @@ Index: petsc-3.3.dfsg/conf/rules
  	done
  	@if [ -f ${INSTALL_LIB_DIR}/so_locations ]; then \
            echo ${RM} ${INSTALL_LIB_DIR}/so_locations; \
-@@ -938,7 +938,8 @@
+@@ -878,7 +878,8 @@
  
  shared_linux:
  	-@cd ${SHARED_LIBRARY_TMPDIR}; \
 -	${CLINKER} -shared -Wl,-soname,${LIBNAME}.${SL_LINKER_SUFFIX} -o ${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX} *.o ${PETSC_EXTERNAL_LIB_BASIC} ${OTHERSHAREDLIBS}; \
 +	${CLINKER} -shared -Wl,-soname,${LIBNAME}.${SL_LINKER_SUFFIX_VERSIONED} -o ${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX_VERSIONED} *.o ${PETSC_EXTERNAL_LIB_BASIC} ${OTHERSHAREDLIBS}; \
 +	ln -s $$LIBNAME.${SL_LINKER_SUFFIX_VERSIONED} ${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX}
- 	${DSYMUTIL} ${INSTALL_LIB_DIR}/$$LIBNAME.${SL_LINKER_SUFFIX}
  
  shared_darwin:
+ 	-@cd ${SHARED_LIBRARY_TMPDIR}; \

@@ -1,11 +1,11 @@
 Fix build system to set hypre libraries properly.
 
-Index: petsc-3.3.dfsg/config/PETSc/packages/hypre.py
+Index: petsc-3.4.2/config/PETSc/packages/hypre.py
 ===================================================================
---- petsc-3.3.dfsg.orig/config/PETSc/packages/hypre.py	2012-09-12 08:26:27.000000000 +0200
-+++ petsc-3.3.dfsg/config/PETSc/packages/hypre.py	2012-09-12 09:03:42.000000000 +0200
-@@ -6,7 +6,7 @@
-     self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.8.0b.tar.gz']
+--- petsc-3.4.2.orig/config/PETSc/packages/hypre.py	2013-08-20 15:33:12.000000000 +0200
++++ petsc-3.4.2/config/PETSc/packages/hypre.py	2013-08-20 15:33:12.000000000 +0200
+@@ -7,7 +7,7 @@
+                          'http://ftp.mcs.anl.gov/pub/petsc/externalpackages/hypre-2.9.1a.tar.gz']
      self.functions = ['HYPRE_IJMatrixCreate']
      self.includes  = ['HYPRE.h']
 -    self.liblist   = [['libHYPRE.a']]
