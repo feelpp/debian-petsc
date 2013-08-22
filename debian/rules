@@ -218,9 +218,6 @@ install-arch: build-arch
 	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/finclude
 	cp -a include/finclude/ftn-auto include/finclude/ftn-custom \
 	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/finclude
-	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/adic
-	cp -p include/adic/*.h \
-	  debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/adic
 	install -d debian/lib$(PETSC_NAME)-dev/usr/lib/petscdir/$(PETSC_VERSION)/include/sieve
 	#
 	# No more  include/sieve/problem in petsc 3.4.2
@@ -295,9 +292,6 @@ ifeq ($(PETSC_VERSION),3.4.2)
 	  debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include
 	cp -p include/finclude/*.html \
 	  debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/finclude
-	install -d debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/adic
-	cp -p include/adic/*.html \
-	  debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/adic
 	install -d debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/sieve
 	cp -p include/sieve/*.html \
 	  debian/$(PETSC_NAME)-doc/usr/share/doc/$(PETSC_NAME)-doc/include/sieve
@@ -387,7 +381,7 @@ ifeq ($(PETSC_VERSION),3.4.2)
 	rm -f `find debian/$(PETSC_NAME)-doc -name ?akefile -print`
 	rm -f `find debian/$(PETSC_NAME)-doc -name *.cit* -print`
 	rm -f `find debian/$(PETSC_NAME)-doc -empty -type f -print`
-	dh_installchangelogs -i
+	dh_installchangelogs -i docs/changes/34.html
 	dh_compress -i -X.xbm -X.pdf
 	dh_fixperms -i
 	dh_installdeb -i
@@ -463,7 +457,7 @@ binary-arch: install-arch
 # The rest is pretty much debhelper boilerplate
 	dh_installdirs -a
 	dh_installdocs -a
-	dh_installchangelogs -a
+	dh_installchangelogs -a docs/changes/34.html
 	dh_strip -a -Xlibg$(PETSC_BOPT_EXTRA) --dbg-package=libpetsc$(PETSC_VERSION)-dbg
 #
 # To avoid slepc complaining about shared libs being out of date	
