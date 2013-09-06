@@ -13,7 +13,7 @@ Index: petsc-3.4.2/config/BuildSystem/config/setCompilers.py
 -       - Linux, OSF: -Wl,-rpath,
 -       - Solaris: -R
 -       - FreeBSD: -Wl,-R,'''
-++    '''Linker rpath setting turned off for Debian PETSc package.'''
++    '''Linker rpath setting turned off for Debian PETSc package.'''
      languages = ['C']
      if hasattr(self, 'CXX'):
        languages.append('Cxx')

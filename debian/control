@@ -5,13 +5,14 @@ Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.
 Uploaders: "Adam C. Powell, IV" <hazelsct@debian.org>
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 7.0.50), quilt, python (>= 2.2), gfortran, automake,
- libx11-dev, mpi-default-dev, mpi-default-bin,
+ libx11-dev, mpi-default-dev,
  libblas-dev, liblapack-dev,
  libsuitesparse-dev (>= 3.1.0-2),
  libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libptscotch-dev,
  libhdf5-mpi-dev (>= 1.8.8),
  libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev,
- libpastix-dev, libfftw3-dev, libfftw3-mpi-dev
+ libfftw3-dev, libfftw3-mpi-dev
+# libpastix-dev
 Build-Conflicts: libatlas3gf-base, libatlas-base-dev, cmake, lam4-dev
 Vcs-Git: git://git.debian.org/git/debian-science/packages/petsc.git
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/petsc.git
