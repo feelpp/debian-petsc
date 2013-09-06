@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCBDDCMatFETIDPGetSolution.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>PCBDDCMatFETIDPGetSolution</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="PCBDDCMatFETIDPGetSolution"><H1>PCBDDCMatFETIDPGetSolution</H1></A>
+Get Solution for FETIDP linear system. 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscpc.h" 
+PetscErrorCode PCBDDCMatFETIDPGetSolution(Mat fetidp_mat, Vec fetidp_flux_sol, Vec standard_sol)
+</PRE>
+Collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fetidp_mat        </B></TD><TD>- the FETIDP mat obtained by a call to <A HREF="../PC/PCBDDCCreateFETIDPOperators.html#PCBDDCCreateFETIDPOperators">PCBDDCCreateFETIDPOperators</A>
++  fetidp_flux_sol - the solution of the FETIDP linear system
+</TD></TR>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>standard_sol      </B></TD><TD>- the solution on the global domain
+</TD></TR>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../PC/PCBDDC.html#PCBDDC">PCBDDC</A>
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/impls/bddc/bddc.c.html#PCBDDCMatFETIDPGetSolution">src/ksp/pc/impls/bddc/bddc.c</A>
+<BR><A HREF="./index.html">Index of all PC routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

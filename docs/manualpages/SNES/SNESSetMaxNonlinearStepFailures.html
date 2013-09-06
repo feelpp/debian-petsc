@@ -5,14 +5,12 @@
 <TITLE>SNESSetMaxNonlinearStepFailures</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSetMaxNonlinearStepFailures"><H1>SNESSetMaxNonlinearStepFailures</H1></A>
 Sets the maximum number of unsuccessful steps attempted by the nonlinear solver before it gives up. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESSetMaxNonlinearStepFailures(SNES snes, PetscInt maxFails)
 </PRE>
 Not Collective

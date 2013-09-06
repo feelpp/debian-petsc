@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/ALE_log.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:21:05+00:00">
+<meta name="date" content="2013-07-02T14:53:33+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_ALE_log_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_ALE_log_hh</font></strong>
 
@@ -32,7 +32,7 @@
 <a name="line21"> 21: </a>  LogEvent  LogEventRegister(const char* event_name);
 <a name="line22"> 22: </a>  void      LogEventBegin(LogEvent e);
 <a name="line23"> 23: </a>  void      LogEventEnd(LogEvent e);
-<a name="line24"> 24: </a>
+
 
 
 <a name="line27"> 27: </a>} // namespace ALE
@@ -55,16 +55,16 @@
 <a name="line44"> 44: </a><strong><font color="#228B22">  {                                                         \</font></strong>
 <a name="line45"> 45: </a><strong><font color="#228B22">    ALE::LogStage stage = ALE::LogStageRegister(__FUNCT__); \</font></strong>
 <a name="line46"> 46: </a><strong><font color="#228B22">    ALE::LogStagePush(stage);                               \</font></strong>
-<a name="line47"> 47: </a><strong><font color="#228B22">  }                                                     </font></strong>
+<a name="line47"> 47: </a><strong><font color="#228B22">  }</font></strong>
 
 <a name="line49"> 49: </a><strong><font color="#228B22">#define ALE_LOG_STAGE_FINISH                                \</font></strong>
 <a name="line50"> 50: </a><strong><font color="#228B22">  {                                                         \</font></strong>
 <a name="line51"> 51: </a><strong><font color="#228B22">    ALE::LogStage stage = ALE::LogStageRegister(__FUNCT__); \</font></strong>
 <a name="line52"> 52: </a><strong><font color="#228B22">    ALE::LogStagePop(stage);                                \</font></strong>
-<a name="line53"> 53: </a><strong><font color="#228B22">  }                                                     </font></strong>
+<a name="line53"> 53: </a><strong><font color="#228B22">  }</font></strong>
 
 <a name="line55"> 55: </a><strong><font color="#228B22">#define ALE_LOG_STAGE_BEGIN    ALE_LOG_STAGE_START  {</font></strong>
-<a name="line56"> 56: </a><strong><font color="#228B22">#define ALE_LOG_STAGE_END      } ALE_LOG_STAGE_FINISH </font></strong>
+<a name="line56"> 56: </a><strong><font color="#228B22">#define ALE_LOG_STAGE_END      } ALE_LOG_STAGE_FINISH</font></strong>
 
 <a name="line58"> 58: </a><font color="#A020F0">#else</font>
 
@@ -81,13 +81,13 @@
 <a name="line70"> 70: </a><strong><font color="#228B22">  {                                                         \</font></strong>
 <a name="line71"> 71: </a><strong><font color="#228B22">    ALE::LogEvent event = ALE::LogEventRegister(__FUNCT__); \</font></strong>
 <a name="line72"> 72: </a><strong><font color="#228B22">    ALE::LogEventBegin(event);                              \</font></strong>
-<a name="line73"> 73: </a><strong><font color="#228B22">  }                                                                        </font></strong>
+<a name="line73"> 73: </a><strong><font color="#228B22">  }</font></strong>
 
 <a name="line75"> 75: </a><strong><font color="#228B22">#define ALE_LOG_EVENT_END                                   \</font></strong>
 <a name="line76"> 76: </a><strong><font color="#228B22">  {                                                         \</font></strong>
 <a name="line77"> 77: </a><strong><font color="#228B22">    ALE::LogEvent event = ALE::LogEventRegister(__FUNCT__); \</font></strong>
 <a name="line78"> 78: </a><strong><font color="#228B22">    ALE::LogEventEnd(event);                                \</font></strong>
-<a name="line79"> 79: </a><strong><font color="#228B22">  }                                                         </font></strong>
+<a name="line79"> 79: </a><strong><font color="#228B22">  }</font></strong>
 
 <a name="line81"> 81: </a><font color="#A020F0">#else</font>
 

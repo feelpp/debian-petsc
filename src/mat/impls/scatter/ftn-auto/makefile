@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = mscatterf.c
-OBJSC    = mscatterf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

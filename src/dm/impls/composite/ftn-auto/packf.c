@@ -29,9 +29,19 @@ extern void PetscRmPointer(void*);
 
 #include "petscdmcomposite.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmcompositegetentriesarray_ DMCOMPOSITEGETENTRIESARRAY
+#define dmcompositegetnumberdm_ DMCOMPOSITEGETNUMBERDM
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmcompositegetentriesarray_ dmcompositegetentriesarray
+#define dmcompositegetnumberdm_ dmcompositegetnumberdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmcompositescatterarray_ DMCOMPOSITESCATTERARRAY
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmcompositescatterarray_ dmcompositescatterarray
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmcompositegatherarray_ DMCOMPOSITEGATHERARRAY
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmcompositegatherarray_ dmcompositegatherarray
 #endif
 
 
@@ -39,9 +49,19 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  dmcompositegetentriesarray_(DM dm,DM dms[], int *__ierr ){
-*__ierr = DMCompositeGetEntriesArray(
-	(DM)PetscToPointer((dm) ),dms);
+void PETSC_STDCALL  dmcompositegetnumberdm_(DM dm,PetscInt *nDM, int *__ierr ){
+*__ierr = DMCompositeGetNumberDM(
+	(DM)PetscToPointer((dm) ),nDM);
+}
+void PETSC_STDCALL  dmcompositescatterarray_(DM dm,Vec gvec,Vec *lvecs, int *__ierr ){
+*__ierr = DMCompositeScatterArray(
+	(DM)PetscToPointer((dm) ),
+	(Vec)PetscToPointer((gvec) ),lvecs);
+}
+void PETSC_STDCALL  dmcompositegatherarray_(DM dm,Vec gvec,InsertMode *imode,Vec *lvecs, int *__ierr ){
+*__ierr = DMCompositeGatherArray(
+	(DM)PetscToPointer((dm) ),
+	(Vec)PetscToPointer((gvec) ),*imode,lvecs);
 }
 #if defined(__cplusplus)
 }

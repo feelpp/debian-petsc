@@ -5,12 +5,13 @@
 <TITLE>VecSetValueLocal</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecSetValueLocal"><H1>VecSetValueLocal</H1></A>
 Set a single entry into a vector using the local numbering 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode VecSetValueLocal(Vec v,int row,PetscScalar value, InsertMode mode);
+#include "petscvec.h"
+PetscErrorCode VecSetValueLocal(Vec v,PetscInt row,PetscScalar value, InsertMode mode);
 </PRE>
 Not Collective
 <P>

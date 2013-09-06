@@ -1,0 +1,53 @@
+<center><a href="cusparsematimpl.h">Actual source code: cusparsematimpl.h</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/seqcusparse/cusparsematimpl.h.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:41:54+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;../src/vec/vec/impls/seq/seqcusp/cuspvecimpl.h&gt;</font>
+
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;cusparse_v2.h&gt;</font>
+
+<a name="line8">  8: </a><font color="#B22222">/* New Way */</font>
+<a name="line9">  9: </a><font color="#A020F0">#include </font><font color="#666666">"tx_sparse_interface.h"</font><font color="#A020F0"></font>
+
+<a name="line11"> 11: </a><font color="#A020F0">#include &lt;algorithm&gt;</font>
+<a name="line12"> 12: </a><font color="#A020F0">#include &lt;vector&gt;</font>
+<a name="line13"> 13: </a><font color="#A020F0">#include &lt;thrust/sort.h&gt;</font>
+<a name="line14"> 14: </a><font color="#A020F0">#include &lt;thrust/fill.h&gt;</font>
+
+<a name="line16"> 16: </a><font color="#B22222">/* Single instance of the cusparse handle for the class. */</font>
+<a name="line17"> 17: </a>cusparseHandle_t MAT_cusparseHandle=0;
+
+<a name="line19"> 19: </a><A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A> cusparseMatSolveStorageFormat=MAT_CUSPARSE_CSR;
+
+<a name="line21"> 21: </a><font color="#4169E1"><a name="Mat_SeqAIJCUSPARSETriFactors"></a>struct Mat_SeqAIJCUSPARSETriFactors </font>{
+<a name="line22"> 22: </a>  GPU_Matrix_Ifc           *loTriFactorPtr; <font color="#B22222">/* pointer for lower triangular (factored matrix) on GPU */</font>
+<a name="line23"> 23: </a>  GPU_Matrix_Ifc           *upTriFactorPtr; <font color="#B22222">/* pointer for upper triangular (factored matrix) on GPU */</font>
+<a name="line24"> 24: </a>  CUSPARRAY                *tempvec;
+<a name="line25"> 25: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A> format;   <font color="#B22222">/* the storage format for the matrix on the device */</font>
+<a name="line26"> 26: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> hasTranspose; <font color="#B22222">/* boolean describing whether a transpose has been built or not */</font>
+<a name="line27"> 27: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> isSymmOrHerm;  <font color="#B22222">/* boolean describing whether the matrix is symmetric (hermitian) or not. This is used mostly for performance logging purposes. */</font>
+<a name="line28"> 28: </a>};
+
+<a name="line30"> 30: </a><font color="#4169E1"><a name="Mat_SeqAIJCUSPARSE"></a>struct Mat_SeqAIJCUSPARSE </font>{
+<a name="line31"> 31: </a>  GPU_Matrix_Ifc           *mat; <font color="#B22222">/* pointer to the matrix on the GPU */</font>
+<a name="line32"> 32: </a>  CUSPARRAY                *tempvec; <font color="#B22222">/*pointer to a workvector to which we can copy the relevant indices of a vector we want to multiply */</font>
+<a name="line33"> 33: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                 nonzerorow; <font color="#B22222">/* number of nonzero rows ... used in the flop calculations */</font>
+<a name="line34"> 34: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A> format;   <font color="#B22222">/* the storage format for the matrix on the device */</font>
+<a name="line35"> 35: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> hasTranspose; <font color="#B22222">/* boolean describing whether a transpose has been built or not */</font>
+<a name="line36"> 36: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> isSymmOrHerm;  <font color="#B22222">/* boolean describing whether the matrix is symmetric (hermitian) or not. This is used mostly for performance logging purposes. */</font>
+<a name="line37"> 37: </a>};
+
+<a name="line39"> 39: </a><strong><font color="#4169E1">PETSC_INTERN <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCUSPARSECopyToGPU(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
+<a name="line40"> 40: </a><font color="#A020F0">#endif</font>
+</pre>
+</body>
+
+</html>

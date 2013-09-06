@@ -4,18 +4,18 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/interface/tsreg.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:13:18+00:00">
+<meta name="date" content="2013-07-02T14:51:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petsc-private/tsimpl.h&gt;      </font><font color="#B22222">/*I "petscts.h"  I*/</font><font color="#A020F0"></font>
 
-<a name="line3">  3: </a><A href="../../../docs/manualpages/Sys/PetscFList.html#PetscFList">PetscFList</A> TSList                       = <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line4">  4: </a><A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  TSRegisterAllCalled          = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line3">  3: </a><A href="../../../docs/manualpages/Sys/PetscFunctionList.html#PetscFunctionList">PetscFunctionList</A> TSList              = NULL;
+<a name="line4">  4: </a><A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>         TSRegisterAllCalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
 
 <a name="line8">  8: </a><font color="#B22222">/*@C</font>
-<a name="line9">  9: </a><font color="#B22222">  <A href="../../../docs/manualpages/TS/TSSetType.html#TSSetType">TSSetType</A> - Sets the method for the timestepping solver.</font>
+<a name="line9">  9: </a><font color="#B22222">  <A href="../../../docs/manualpages/TS/TSSetType.html#TSSetType">TSSetType</A> - Sets the method to be used as the timestepping solver.</font>
 
 <a name="line11"> 11: </a><font color="#B22222">  Collective on <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A></font>
 
@@ -49,30 +49,30 @@
 
 <a name="line41"> 41: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>, set, type</font>
 
-<a name="line43"> 43: </a><font color="#B22222">@*/</font>
-<a name="line44"> 44: </a><strong><font color="#4169E1"><a name="TSSetType"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/TS/TSSetType.html#TSSetType">TSSetType</A>(<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> ts,const <A href="../../../docs/manualpages/TS/TSType.html#TSType">TSType</A> type)</font></strong>
-<a name="line45"> 45: </a>{
-<a name="line46"> 46: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*r)(<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>);
-<a name="line47"> 47: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      match;
+<a name="line43"> 43: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>, <A href="../../../docs/manualpages/TS/TSSolve.html#TSSolve">TSSolve</A>(), <A href="../../../docs/manualpages/TS/TSCreate.html#TSCreate">TSCreate</A>(), <A href="../../../docs/manualpages/TS/TSSetFromOptions.html#TSSetFromOptions">TSSetFromOptions</A>(), <A href="../../../docs/manualpages/TS/TSDestroy.html#TSDestroy">TSDestroy</A>(), <A href="../../../docs/manualpages/TS/TSType.html#TSType">TSType</A></font>
 
-<a name="line52"> 52: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) ts, type, &amp;match);
-<a name="line53"> 53: </a>  <font color="#4169E1">if</font> (match) <font color="#4169E1">return</font>(0);
+<a name="line45"> 45: </a><font color="#B22222">@*/</font>
+<a name="line46"> 46: </a><strong><font color="#4169E1"><a name="TSSetType"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/TS/TSSetType.html#TSSetType">TSSetType</A>(<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> ts,<A href="../../../docs/manualpages/TS/TSType.html#TSType">TSType</A> type)</font></strong>
+<a name="line47"> 47: </a>{
+<a name="line48"> 48: </a>  <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*r)(<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>);
+<a name="line49"> 49: </a>  <A href="../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      match;
 
-<a name="line55"> 55: </a>  <A href="../../../docs/manualpages/Sys/PetscFListFind.html#PetscFListFind">PetscFListFind</A>( TSList,((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ts)-&gt;comm, type,<A href="../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>, (void (**)(void)) &amp;r);
-<a name="line56"> 56: </a>  <font color="#4169E1">if</font> (!r) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_UNKNOWN_TYPE, <font color="#666666">"Unknown <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> type: %s"</font>, type);
-<a name="line57"> 57: </a>  <font color="#4169E1">if</font> (ts-&gt;ops-&gt;destroy) {
-<a name="line58"> 58: </a>    (*(ts)-&gt;ops-&gt;destroy)(ts);
-<a name="line59"> 59: </a>    ts-&gt;ops-&gt;destroy = <A href="../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line60"> 60: </a>  }
-<a name="line61"> 61: </a>  <A href="../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ts-&gt;ops,<font color="#4169E1">sizeof</font>(*ts-&gt;ops));
-<a name="line62"> 62: </a>  ts-&gt;setupcalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line63"> 63: </a>  PetscObjectChangeTypeName((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ts, type);
-<a name="line64"> 64: </a>  (*r)(ts);
-<a name="line65"> 65: </a><font color="#A020F0">#if defined(PETSC_HAVE_AMS)</font>
-<a name="line66"> 66: </a>  <font color="#4169E1">if</font> (PetscAMSPublishAll) {
-<a name="line67"> 67: </a>    <A href="../../../docs/manualpages/Sys/PetscObjectAMSPublish.html#PetscObjectAMSPublish">PetscObjectAMSPublish</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ts);
-<a name="line68"> 68: </a>  }
-<a name="line69"> 69: </a><font color="#A020F0">#endif</font>
+<a name="line54"> 54: </a>  <A href="../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) ts, type, &amp;match);
+<a name="line55"> 55: </a>  <font color="#4169E1">if</font> (match) <font color="#4169E1">return</font>(0);
+
+<a name="line57"> 57: </a>  <A href="../../../docs/manualpages/Sys/PetscFunctionListFind.html#PetscFunctionListFind">PetscFunctionListFind</A>(TSList,type,&amp;r);
+<a name="line58"> 58: </a>  <font color="#4169E1">if</font> (!r) <A href="../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_UNKNOWN_TYPE, <font color="#666666">"Unknown <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> type: %s"</font>, type);
+<a name="line59"> 59: </a>  <font color="#4169E1">if</font> (ts-&gt;ops-&gt;destroy) {
+<a name="line60"> 60: </a>    (*(ts)-&gt;ops-&gt;destroy)(ts);
+
+<a name="line62"> 62: </a>    ts-&gt;ops-&gt;destroy = NULL;
+<a name="line63"> 63: </a>  }
+<a name="line64"> 64: </a>  <A href="../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ts-&gt;ops,<font color="#4169E1">sizeof</font>(*ts-&gt;ops));
+
+<a name="line66"> 66: </a>  ts-&gt;setupcalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+
+<a name="line68"> 68: </a>  PetscObjectChangeTypeName((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ts, type);
+<a name="line69"> 69: </a>  (*r)(ts);
 <a name="line70"> 70: </a>  <font color="#4169E1">return</font>(0);
 <a name="line71"> 71: </a>}
 
@@ -92,7 +92,7 @@
 <a name="line88"> 88: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>, timestepper, get, type, name</font>
 <a name="line89"> 89: </a><font color="#B22222">.seealso <A href="../../../docs/manualpages/TS/TSSetType.html#TSSetType">TSSetType</A>()</font>
 <a name="line90"> 90: </a><font color="#B22222">@*/</font>
-<a name="line91"> 91: </a><strong><font color="#4169E1"><a name="TSGetType"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/TS/TSGetType.html#TSGetType">TSGetType</A>(<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> ts, const <A href="../../../docs/manualpages/TS/TSType.html#TSType">TSType</A> *type)</font></strong>
+<a name="line91"> 91: </a><strong><font color="#4169E1"><a name="TSGetType"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/TS/TSGetType.html#TSGetType">TSGetType</A>(<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> ts, <A href="../../../docs/manualpages/TS/TSType.html#TSType">TSType</A> *type)</font></strong>
 <a name="line92"> 92: </a>{
 <a name="line96"> 96: </a>  *type = ((<A href="../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ts)-&gt;type_name;
 <a name="line97"> 97: </a>  <font color="#4169E1">return</font>(0);
@@ -101,39 +101,46 @@
 <a name="line100">100: </a><font color="#B22222">/*--------------------------------------------------------------------------------------------------------------------*/</font>
 
 <a name="line104">104: </a><font color="#B22222">/*@C</font>
-<a name="line105">105: </a><font color="#B22222">  <A href="../../../docs/manualpages/TS/TSRegister.html#TSRegister">TSRegister</A> - See <A href="../../../docs/manualpages/TS/TSRegisterDynamic.html#TSRegisterDynamic">TSRegisterDynamic</A>()</font>
+<a name="line105">105: </a><font color="#B22222">  <A href="../../../docs/manualpages/TS/TSRegister.html#TSRegister">TSRegister</A> - Adds a creation method to the <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> package.</font>
 
-<a name="line107">107: </a><font color="#B22222">  Level: advanced</font>
-<a name="line108">108: </a><font color="#B22222">@*/</font>
-<a name="line109">109: </a><strong><font color="#4169E1"><a name="TSRegister"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/TS/TSRegister.html#TSRegister">TSRegister</A>(const char sname[], const char path[], const char name[], <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*function)(<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>))</font></strong>
-<a name="line110">110: </a>{
-<a name="line111">111: </a>  char           fullname[PETSC_MAX_PATH_LEN];
+<a name="line107">107: </a><font color="#B22222">  Not Collective</font>
 
-<a name="line115">115: </a>  <A href="../../../docs/manualpages/Sys/PetscStrcpy.html#PetscStrcpy">PetscStrcpy</A>(fullname, path);
-<a name="line116">116: </a>  <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(fullname, <font color="#666666">":"</font>);
-<a name="line117">117: </a>  <A href="../../../docs/manualpages/Sys/PetscStrcat.html#PetscStrcat">PetscStrcat</A>(fullname, name);
-<a name="line118">118: </a>  <A href="../../../docs/manualpages/Sys/PetscFListAdd.html#PetscFListAdd">PetscFListAdd</A>(&amp;TSList, sname, fullname, (void (*)(void)) function);
-<a name="line119">119: </a>  <font color="#4169E1">return</font>(0);
-<a name="line120">120: </a>}
+<a name="line109">109: </a><font color="#B22222">  Input Parameters:</font>
+<a name="line110">110: </a><font color="#B22222">+ name        - The name of a new user-defined creation routine</font>
+<a name="line111">111: </a><font color="#B22222">- create_func - The creation routine itself</font>
 
-<a name="line122">122: </a><font color="#B22222">/*-------------------------------------------------------------------------------------------------------------------*/</font>
-<a name="line125">125: </a><font color="#B22222">/*@C</font>
-<a name="line126">126: </a><font color="#B22222">   <A href="../../../docs/manualpages/TS/TSRegisterDestroy.html#TSRegisterDestroy">TSRegisterDestroy</A> - Frees the list of timestepping routines that were registered by <A href="../../../docs/manualpages/TS/TSRegister.html#TSRegister">TSRegister</A>()/<A href="../../../docs/manualpages/TS/TSRegisterDynamic.html#TSRegisterDynamic">TSRegisterDynamic</A>().</font>
+<a name="line113">113: </a><font color="#B22222">  Notes:</font>
+<a name="line114">114: </a><font color="#B22222">  <A href="../../../docs/manualpages/TS/TSRegister.html#TSRegister">TSRegister</A>() may be called multiple times to add several user-defined tses.</font>
 
-<a name="line128">128: </a><font color="#B22222">   Not Collective</font>
+<a name="line116">116: </a><font color="#B22222">  Sample usage:</font>
+<a name="line117">117: </a><font color="#B22222">.vb</font>
+<a name="line118">118: </a><font color="#B22222">  <A href="../../../docs/manualpages/TS/TSRegister.html#TSRegister">TSRegister</A>("my_ts",  MyTSCreate);</font>
+<a name="line119">119: </a><font color="#B22222">.ve</font>
 
-<a name="line130">130: </a><font color="#B22222">   Level: advanced</font>
+<a name="line121">121: </a><font color="#B22222">  Then, your ts type can be chosen with the procedural interface via</font>
+<a name="line122">122: </a><font color="#B22222">.vb</font>
+<a name="line123">123: </a><font color="#B22222">    <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A> ts;</font>
+<a name="line124">124: </a><font color="#B22222">    <A href="../../../docs/manualpages/TS/TSCreate.html#TSCreate">TSCreate</A>(<A href="../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>, &amp;ts);</font>
+<a name="line125">125: </a><font color="#B22222">    <A href="../../../docs/manualpages/TS/TSSetType.html#TSSetType">TSSetType</A>(ts, "my_ts")</font>
+<a name="line126">126: </a><font color="#B22222">.ve</font>
+<a name="line127">127: </a><font color="#B22222">  or at runtime via the option</font>
+<a name="line128">128: </a><font color="#B22222">.vb</font>
+<a name="line129">129: </a><font color="#B22222">    -ts_type my_ts</font>
+<a name="line130">130: </a><font color="#B22222">.ve</font>
 
-<a name="line132">132: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>, timestepper, register, destroy</font>
-<a name="line133">133: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/TS/TSRegister.html#TSRegister">TSRegister</A>(), <A href="../../../docs/manualpages/TS/TSRegisterAll.html#TSRegisterAll">TSRegisterAll</A>(), <A href="../../../docs/manualpages/TS/TSRegisterDynamic.html#TSRegisterDynamic">TSRegisterDynamic</A>()</font>
-<a name="line134">134: </a><font color="#B22222">@*/</font>
-<a name="line135">135: </a><strong><font color="#4169E1"><a name="TSRegisterDestroy"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/TS/TSRegisterDestroy.html#TSRegisterDestroy">TSRegisterDestroy</A>(void)</font></strong>
-<a name="line136">136: </a>{
+<a name="line132">132: </a><font color="#B22222">  Level: advanced</font>
 
-<a name="line140">140: </a>  <A href="../../../docs/manualpages/Sys/PetscFListDestroy.html#PetscFListDestroy">PetscFListDestroy</A>(&amp;TSList);
-<a name="line141">141: </a>  TSRegisterAllCalled = <A href="../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
-<a name="line142">142: </a>  <font color="#4169E1">return</font>(0);
-<a name="line143">143: </a>}
+<a name="line134">134: </a><font color="#B22222">.keywords: <A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>, register</font>
+
+<a name="line136">136: </a><font color="#B22222">.seealso: <A href="../../../docs/manualpages/TS/TSRegisterAll.html#TSRegisterAll">TSRegisterAll</A>(), TSRegisterDestroy()</font>
+<a name="line137">137: </a><font color="#B22222">@*/</font>
+<a name="line138">138: </a><strong><font color="#4169E1"><a name="TSRegister"></a><A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../docs/manualpages/TS/TSRegister.html#TSRegister">TSRegister</A>(const char sname[], <A href="../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*function)(<A href="../../../docs/manualpages/TS/TS.html#TS">TS</A>))</font></strong>
+<a name="line139">139: </a>{
+
+<a name="line143">143: </a>  <A href="../../../docs/manualpages/Sys/PetscFunctionListAdd.html#PetscFunctionListAdd">PetscFunctionListAdd</A>(&amp;TSList,sname,function);
+<a name="line144">144: </a>  <font color="#4169E1">return</font>(0);
+<a name="line145">145: </a>}
+
 </pre>
 </body>
 

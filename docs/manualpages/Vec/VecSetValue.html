@@ -5,12 +5,13 @@
 <TITLE>VecSetValue</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecSetValue"><H1>VecSetValue</H1></A>
 Set a single entry into a vector. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode VecSetValue(Vec v,int row,PetscScalar value, InsertMode mode);
+#include "petscvec.h"
+PetscErrorCode VecSetValue(Vec v,PetscInt row,PetscScalar value, InsertMode mode);
 </PRE>
 Not Collective
 <P>
@@ -46,7 +47,9 @@ MUST be called after all calls to <A HREF="../Vec/VecSetValues.html#VecSetValues
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex30.c.html">src/snes/examples/tutorials/ex30.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex70.c.html">src/snes/examples/tutorials/ex70.c.html</A><BR>
 </BODY></HTML>

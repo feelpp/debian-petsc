@@ -141,7 +141,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
             rest = apply(os.path.join, nextDirs[1:])
           else:
             rest = None
-          dirs.extend(self.listDirs(os.path.join(base, dir),rest ))            
+          dirs.extend(self.listDirs(os.path.join(base, dir),rest ))
     return dirs
 
   def getTmpDir(self):
@@ -214,7 +214,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
     '''Change titles and setup all children'''
     argDB = script.Script.setupArguments(self, argDB)
 
-    self.help.title = 'Configure Help\n   Comma seperated lists should be given between [] (use \[ \] in tcsh/csh)\n      For example: --with-mpi-lib=\[/usr/local/lib/libmpich.a,/usr/local/lib/libpmpich.a\]\n   Options beginning with --known- are to provide values you already know\n      For example:--known-endian=big\n   Options beginning with --with- indicate that you are requesting something\n      For example: --with-c-support=1\n   <prog> means a program name or a full path to a program\n      For example:--with-cmake=/Users/bsmith/bin/cmake\n   <bool> means a boolean, use either 0 or 1\n   <dir> means a directory\n      For example: --with-external-packages-dir=/Users/bsmith/external\n   For packages use --with-PACKAGE-dir=<dir> OR\n      --with-PACKAGE-include=<dir> --with-PACKAGE-lib=<lib> OR --download-PACKAGE'
+    self.help.title = 'Configure Help\n   Comma seperated lists should be given between [] (use \[ \] in tcsh/csh)\n      For example: --with-mpi-lib=\[/usr/local/lib/libmpich.a,/usr/local/lib/libpmpich.a\]\n   Options beginning with --known- are to provide values you already know\n      For example:--known-endian=big\n   Options beginning with --with- indicate that you are requesting something\n      For example: --with-clanguage=c++\n   <prog> means a program name or a full path to a program\n      For example:--with-cmake=/Users/bsmith/bin/cmake\n   <bool> means a boolean, use either 0 or 1\n   <dir> means a directory\n      For example: --with-external-packages-dir=/Users/bsmith/external\n   For packages use --with-PACKAGE-dir=<dir> OR\n      --with-PACKAGE-include=<dir> --with-PACKAGE-lib=<lib> OR --download-PACKAGE'
     self.actions.title = 'Configure Actions\n   These are the actions performed by configure on the filesystem'
 
     for child in self.childGraph.vertices:
@@ -397,18 +397,18 @@ class Framework(config.base.Configure, script.LanguageProcessor):
     if output.find('your evaluation license will expire') > -1 and output.lower().find('error') == -1:
       output = ''
     lines = output.splitlines()
-    # IBM: 
+    # IBM:
     lines = filter(lambda s: not s.startswith('cc_r:'), lines)
     # PGI: Ignore warning about temporary license
     lines = filter(lambda s: s.find('license.dat') < 0, lines)
     # Cray XT3
     lines = filter(lambda s: s.find('INFO: catamount target') < 0, lines)
-    lines = filter(lambda s: s.find('INFO: linux target') < 0, lines)    
+    lines = filter(lambda s: s.find('INFO: linux target') < 0, lines)
     # Lahey/Fujitsu
     lines = filter(lambda s: s.find('Encountered 0 errors') < 0, lines)
     output = reduce(lambda s, t: s+t, lines, '')
     return output
-  
+
   def filterCompileOutput(self, output):
     if self.argDB['ignoreCompileOutput']:
       output = ''
@@ -457,7 +457,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       lines = filter(lambda s: s.find('Encountered 0 errors') < 0, lines)
       output = reduce(lambda s, t: s+t, lines, '')
     return output
-        
+
   ###############################################
   # Output Mechanisms
   def addSubstitutionFile(self, inName, outName = ''):
@@ -575,7 +575,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
         else:
           print pair[0]+'  --->  '+str(self.argDB[pair[1]])
     return
-  
+
 
   def storeSubstitutions(self, argDB):
     '''Store all the substitutions in the argument database'''
@@ -616,7 +616,7 @@ class Framework(config.base.Configure, script.LanguageProcessor):
       f.write(name+': '+dependencies+'\n')
       for r in rule:
         f.write('\t'+r+'\n')
-      f.write('\n')            
+      f.write('\n')
     else:
       f.write(name+': '+dependencies+'\n\n')
     return

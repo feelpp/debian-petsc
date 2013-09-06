@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/SNES/SNESGSFunction.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>SNESGSFunction</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="SNESGSFunction"><H1>SNESGSFunction</H1></A>
+function used to convey a Gauss-Seidel sweep on the nonlinear function 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscsnes.h"
+$    SNESGSFunction(SNES snes,Vec x,Vec b,void *ctx);
+</PRE>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X   </B></TD><TD>- solution vector
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>B   </B></TD><TD>- RHS vector
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- optional user-defined Gauss-Seidel context
+</TD></TR></TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+   <A HREF="../SNES/SNESSetGS.html#SNESSetGS">SNESSetGS</A>(), <A HREF="../SNES/SNESGetGS.html#SNESGetGS">SNESGetGS</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/interface/snes.c.html#SNESGSFunction">src/snes/interface/snes.c</A>
+<BR><A HREF="./index.html">Index of all SNES routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

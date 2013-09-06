@@ -5,13 +5,13 @@
 <TITLE>SNESTSFormJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESTSFormJacobian"><H1>SNESTSFormJacobian</H1></A>
 Function to evaluate the Jacobian 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  SNESTSFormJacobian(SNES snes,Vec X,Mat *A,Mat *B,MatStructure *flag,void *ctx)
+PetscErrorCode  SNESTSFormJacobian(SNES snes,Vec U,Mat *A,Mat *B,MatStructure *flag,void *ctx)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -19,7 +19,7 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes </B></TD><TD>- nonlinear solver
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X </B></TD><TD>- the current state at which to evaluate the residual
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>U </B></TD><TD>- the current state at which to evaluate the residual
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- user context, must be a <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR></TABLE>

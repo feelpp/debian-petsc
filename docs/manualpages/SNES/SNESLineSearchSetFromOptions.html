@@ -5,13 +5,14 @@
 <TITLE>SNESLineSearchSetFromOptions</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESLineSearchSetFromOptions"><H1>SNESLineSearchSetFromOptions</H1></A>
 Sets options for the line search 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode SNESLineSearchSetFromOptions(SNESLineSearch linesearch)</PRE>
+PetscErrorCode SNESLineSearchSetFromOptions(SNESLineSearch linesearch)
+</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <DT><B>linesearch </B> -linesearch context
 <br>
@@ -50,7 +51,6 @@ PetscErrorCode SNESLineSearchSetFromOptions(SNESLineSearch linesearch)</PRE>
 Logically Collective on <A HREF="../SNES/SNESLineSearch.html#SNESLineSearch">SNESLineSearch</A>
 <P>
 
-<P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../SNES/SNESLineSearchCreate.html#SNESLineSearchCreate">SNESLineSearchCreate</A>(), <A HREF="../SNES/SNESLineSearchSetOrder.html#SNESLineSearchSetOrder">SNESLineSearchSetOrder</A>(), <A HREF="../SNES/SNESLineSearchSetType.html#SNESLineSearchSetType">SNESLineSearchSetType</A>(), <A HREF="../SNES/SNESLineSearchSetTolerances.html#SNESLineSearchSetTolerances">SNESLineSearchSetTolerances</A>(), <A HREF="../SNES/SNESLineSearchSetDamping.html#SNESLineSearchSetDamping">SNESLineSearchSetDamping</A>(), <A HREF="../SNES/SNESLineSearchPreCheckPicard.html#SNESLineSearchPreCheckPicard">SNESLineSearchPreCheckPicard</A>()

@@ -5,12 +5,12 @@
 <TITLE>MatPartitioningType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatPartitioningType"><H1>MatPartitioningType</H1></A>
-String with the name of a PETSc matrix partitioning or the creation function with an optional dynamic library name, for example  http://www.mcs.anl.gov/petsc/lib.a:partitioningcreate() 
+String with the name of a PETSc matrix partitioning 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define MatPartitioningType char*
+typedef const char* MatPartitioningType;
 #define MATPARTITIONINGCURRENT  "current"
 #define MATPARTITIONINGSQUARE   "square"
 #define MATPARTITIONINGPARMETIS "parmetis"

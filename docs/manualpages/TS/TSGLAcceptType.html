@@ -5,12 +5,12 @@
 <TITLE>TSGLAcceptType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSGLAcceptType"><H1>TSGLAcceptType</H1></A>
-String with the name of TSGLAccept scheme or the function with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:mytsglaccept() 
+String with the name of TSGLAccept scheme 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define TSGLAcceptType  char*
+typedef const char *TSGLAcceptType;
 #define TSGLACCEPT_ALWAYS "always"
 
 </PRE>

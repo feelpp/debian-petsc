@@ -5,15 +5,14 @@
 <TITLE>TSRosWRegister</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSRosWRegister"><H1>TSRosWRegister</H1></A>
 register a Rosenbrock W scheme by providing the entries in the Butcher tableau and optionally embedded approximations and interpolation 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"   
-PetscErrorCode TSRosWRegister(const TSRosWType name,PetscInt order,PetscInt s,
-                              const PetscReal A[],const PetscReal Gamma[],const PetscReal b[],const PetscReal bembed[],
-                                 PetscInt pinterp,const PetscReal binterpt[])
+PetscErrorCode TSRosWRegister(TSRosWType name,PetscInt order,PetscInt s,const PetscReal A[],const PetscReal Gamma[],const PetscReal b[],const PetscReal bembed[],
+                              PetscInt pinterp,const PetscReal binterpt[])
 </PRE>
 Not Collective, but the same schemes should be registered on all processes on which they will be used
 <P>
@@ -31,12 +30,12 @@ Not Collective, but the same schemes should be registered on all processes on wh
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>b </B></TD><TD>- Step completion table (dimension s)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bembed </B></TD><TD>- Step completion table for a scheme of order one less (dimension s, <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if no embedded scheme is available)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bembed </B></TD><TD>- Step completion table for a scheme of order one less (dimension s, NULL if no embedded scheme is available)
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pinterp </B></TD><TD>- Order of the interpolation scheme, equal to the number of columns of binterpt
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>binterpt </B></TD><TD>- Coefficients of the interpolation formula (dimension s*pinterp)
 </TD></TR></TABLE>
-<DT><B>pinterp </B> -Order of the interpolation scheme, equal to the number of columns of binterpt 
-<br>
-<DT><B>binterpt </B> -Coefficients of the interpolation formula (dimension s*pinterp)
-<br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Several Rosenbrock W methods are provided, this function is only needed to create new methods.

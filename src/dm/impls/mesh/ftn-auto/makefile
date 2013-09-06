@@ -5,7 +5,6 @@ CPPFLAGS =
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = sectionf.c meshexodusf.c meshf.c meshcreatef.c
-OBJSC    = sectionf.o meshexodusf.o meshf.o meshcreatef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

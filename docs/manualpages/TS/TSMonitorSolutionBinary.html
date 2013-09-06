@@ -5,13 +5,13 @@
 <TITLE>TSMonitorSolutionBinary</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSMonitorSolutionBinary"><H1>TSMonitorSolutionBinary</H1></A>
 Monitors progress of the <A HREF="../TS/TS.html#TS">TS</A> solvers by <A HREF="../Vec/VecView.html#VecView">VecView</A>() for the solution at each timestep. Normally the viewer is a binary file 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  TSMonitorSolutionBinary(TS ts,PetscInt step,PetscReal ptime,Vec x,void *viewer)
+PetscErrorCode  TSMonitorSolutionBinary(TS ts,PetscInt step,PetscReal ptime,Vec u,void *viewer)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -23,7 +23,7 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ptime </B></TD><TD>- current time
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- current state
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>u </B></TD><TD>- current state
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>viewer </B></TD><TD>- binary viewer
 </TD></TR></TABLE>

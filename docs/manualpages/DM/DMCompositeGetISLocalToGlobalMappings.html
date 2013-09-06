@@ -5,12 +5,12 @@
 <TITLE>DMCompositeGetISLocalToGlobalMappings</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMCompositeGetISLocalToGlobalMappings"><H1>DMCompositeGetISLocalToGlobalMappings</H1></A>
 gets an <A HREF="../IS/ISLocalToGlobalMapping.html#ISLocalToGlobalMapping">ISLocalToGlobalMapping</A> for each DM in the DMComposite, maps to the composite global space 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscdmcomposite.h"   
+#include "petscdmcomposite.h"  
 PetscErrorCode  DMCompositeGetISLocalToGlobalMappings(DM dm,ISLocalToGlobalMapping **ltogs)
 </PRE>
 Collective on DM
@@ -21,7 +21,7 @@ Collective on DM
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <DT><B>ltogs </B> -the individual mappings for each packed vector. Note that this includes
-all the ghost points that individual ghosted DMDA's may have.
+all the ghost points that individual ghosted <A HREF="../DM/DMDA.html#DMDA">DMDA</A>'s may have.
 <br>
 <P>
 

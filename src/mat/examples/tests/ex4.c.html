@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex4.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:50:56+00:00">
+<meta name="date" content="2013-07-02T14:43:56+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Creates a matrix, inserts some values, and tests <A href="../../../../docs/manualpages/Mat/MatGetSubMatrices.html#MatGetSubMatrices">MatGetSubMatrices</A>() and <A href="../../../../docs/manualpages/Mat/MatZeroEntries.html#MatZeroEntries">MatZeroEntries</A>().\n\n"</font>;
 
@@ -16,14 +16,13 @@
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
 <a name="line9">  9: </a>{
-<a name="line10"> 10: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>             mat,submat,*submatrices;
-<a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        m = 10,n = 10,i = 4,tmp;
-<a name="line12"> 12: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
-<a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>              irkeep,ickeep;
-<a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>     value = 1.0;
-<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>     sviewer;
+<a name="line10"> 10: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            mat,submat,*submatrices;
+<a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m = 10,n = 10,i = 4,tmp;
+<a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/IS/IS.html#IS">IS</A>             irkeep,ickeep;
+<a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    value = 1.0;
+<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    sviewer;
 
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char *)0,help);
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
 <a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,PETSC_VIEWER_ASCII_COMMON);
 <a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,PETSC_VIEWER_ASCII_COMMON);
 
@@ -66,7 +65,7 @@
 <a name="line57"> 57: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line58"> 58: </a>  <font color="#4169E1">return</font> 0;
 <a name="line59"> 59: </a>}
-<a name="line60"> 60: </a>
+
 </pre>
 </body>
 

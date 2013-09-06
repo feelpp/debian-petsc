@@ -5,12 +5,15 @@
 <TITLE>PetscOptionsEnd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscOptionsEnd"><H1>PetscOptionsEnd</H1></A>
 Ends a set of queries on the options database that are related and should be displayed on the same window of a GUI that allows the user to set the options interactively. Collective on the <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> used in <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>()
 <P>
-Synopsis: <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A HREF="../Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>(void)
-<P>
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscoptions.h"
+PetscErrorCode PetscOptionsEnd(void)
+</PRE>
 
 <P>
 Notes: Needs to be preceded by a call to <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>()
@@ -30,15 +33,15 @@ Notes: Needs to be preceded by a call to <A HREF="../Sys/PetscOptionsBegin.html#
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/sf/examples/tutorials/ex1.c.html">src/sys/sf/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/vec/is/sf/examples/tutorials/ex1.c.html">src/vec/is/sf/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/mat/examples/tutorials/ex17.c.html">src/mat/examples/tutorials/ex17.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex29.c.html">src/ksp/ksp/examples/tutorials/ex29.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex31.c.html">src/ksp/ksp/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex32.c.html">src/ksp/ksp/examples/tutorials/ex32.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex34.c.html">src/ksp/ksp/examples/tutorials/ex34.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex51.c.html">src/ksp/ksp/examples/tutorials/ex51.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex15.c.html">src/snes/examples/tutorials/ex15.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 </BODY></HTML>

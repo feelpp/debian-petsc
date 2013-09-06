@@ -5,13 +5,13 @@
 <TITLE>PetscLogEventBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscLogEventBegin"><H1>PetscLogEventBegin</H1></A>
-Logs the beginning of a user event.  
+Logs the beginning of a user event. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PetscLogEventBegin(int e,PetscObject o1,PetscObject o2,PetscObject o3,
-PetscObject o4)
+#include "petsclog.h"
+PetscErrorCode PetscLogEventBegin(int e,PetscObject o1,PetscObject o2,PetscObject o3,PetscObject o4)
 </PRE>
 Not Collective
 <P>
@@ -57,20 +57,20 @@ to supplement this PETSc information.
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  log, event, begin
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogEventBegin">src/sys/plog/plog.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/logging/plog.c.html#PetscLogEventBegin">src/sys/logging/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/random/examples/tutorials/ex1.c.html">src/sys/random/examples/tutorials/ex1.c.html</A><BR>
+<A HREF="../../../src/sys/classes/random/examples/tutorials/ex1.c.html">src/sys/classes/random/examples/tutorials/ex1.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex3.c.html">src/sys/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex3f.F.html">src/sys/examples/tutorials/ex3f.F.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex5.c.html">src/vec/vec/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex10.c.html">src/vec/vec/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex15.c.html">src/vec/vec/examples/tutorials/ex15.c.html</A><BR>
-<A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex9.c.html">src/ksp/ksp/examples/tutorials/ex9.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex52.c.html">src/snes/examples/tutorials/ex52.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex54.c.html">src/snes/examples/tutorials/ex54.c.html</A><BR>
 </BODY></HTML>

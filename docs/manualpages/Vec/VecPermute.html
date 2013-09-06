@@ -5,13 +5,13 @@
 <TITLE>VecPermute</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecPermute"><H1>VecPermute</H1></A>
 Permutes a vector in place using the given ordering. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscvec.h" 
-PetscErrorCode  VecPermute(Vec x, IS row, PetscBool  inv)
+PetscErrorCode  VecPermute(Vec x, IS row, PetscBool inv)
 </PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -24,7 +24,7 @@ PetscErrorCode  VecPermute(Vec x, IS row, PetscBool  inv)
 <P>
 
 <P>
-Note: This function does not yet support parallel Index Sets
+Note: This function does not yet support parallel Index Sets with non-local permutations
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Mat/MatPermute.html#MatPermute">MatPermute</A>()
@@ -36,4 +36,6 @@ Note: This function does not yet support parallel Index Sets
 <BR><A HREF="./index.html">Index of all Vec routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 </BODY></HTML>

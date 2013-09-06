@@ -5,7 +5,7 @@
 <TITLE>KSPPGMRES</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPPGMRES"><H1>KSPPGMRES</H1></A>
 Implements the Pipelined Generalized Minimal Residual method. 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
@@ -29,13 +29,17 @@ stability of the classical Gram-Schmidt  orthogonalization.
 <P>
 
 <P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+MPI configuration may be necessary for reductions to make asynchronous progress, which is important for performance of pipelined methods.
+See the FAQ on the PETSc website for details.
+<P>
 <H3><FONT COLOR="#CC3333">Reference</FONT></H3>
 Ghysels, Ashby, Meerbergen, Vanroose, Hiding global communication latencies in the GMRES algorithm on massively parallel machines, 2012.
 <P>
 Developer Notes: This object is subclassed off of <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A HREF="../KSP/KSP.html#KSP">KSP</A>, <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, <A HREF="../KSP/KSPLGMRES.html#KSPLGMRES">KSPLGMRES</A>,
+  <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>(), <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A> (for list of available types), <A HREF="../KSP/KSP.html#KSP">KSP</A>, <A HREF="../KSP/KSPGMRES.html#KSPGMRES">KSPGMRES</A>, <A HREF="../KSP/KSPLGMRES.html#KSPLGMRES">KSPLGMRES</A>, <A HREF="../KSP/KSPPIPECG.html#KSPPIPECG">KSPPIPECG</A>, <A HREF="../KSP/KSPPIPECR.html#KSPPIPECR">KSPPIPECR</A>,
 <BR><A HREF="../KSP/KSPGMRESSetRestart.html#KSPGMRESSetRestart">KSPGMRESSetRestart</A>(), <A HREF="../KSP/KSPGMRESSetHapTol.html#KSPGMRESSetHapTol">KSPGMRESSetHapTol</A>(), <A HREF="../KSP/KSPGMRESSetPreAllocateVectors.html#KSPGMRESSetPreAllocateVectors">KSPGMRESSetPreAllocateVectors</A>(), <A HREF="../KSP/KSPGMRESSetOrthogonalization.html#KSPGMRESSetOrthogonalization">KSPGMRESSetOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESGetOrthogonalization.html#KSPGMRESGetOrthogonalization">KSPGMRESGetOrthogonalization</A>(),
 <A HREF="../KSP/KSPGMRESClassicalGramSchmidtOrthogonalization.html#KSPGMRESClassicalGramSchmidtOrthogonalization">KSPGMRESClassicalGramSchmidtOrthogonalization</A>(), <A HREF="../KSP/KSPGMRESModifiedGramSchmidtOrthogonalization.html#KSPGMRESModifiedGramSchmidtOrthogonalization">KSPGMRESModifiedGramSchmidtOrthogonalization</A>(),
 <A HREF="../KSP/KSPGMRESCGSRefinementType.html#KSPGMRESCGSRefinementType">KSPGMRESCGSRefinementType</A>, <A HREF="../KSP/KSPGMRESSetCGSRefinementType.html#KSPGMRESSetCGSRefinementType">KSPGMRESSetCGSRefinementType</A>(),  <A HREF="../KSP/KSPGMRESGetCGSRefinementType.html#KSPGMRESGetCGSRefinementType">KSPGMRESGetCGSRefinementType</A>(), <A HREF="../KSP/KSPGMRESMonitorKrylov.html#KSPGMRESMonitorKrylov">KSPGMRESMonitorKrylov</A>()

@@ -28,6 +28,7 @@ extern void PetscRmPointer(void*);
 #endif
 
 #include "petscsys.h"
+#include "petsctime.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscgetcputime_ PETSCGETCPUTIME
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)

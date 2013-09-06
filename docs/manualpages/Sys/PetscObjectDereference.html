@@ -5,7 +5,7 @@
 <TITLE>PetscObjectDereference</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscObjectDereference"><H1>PetscObjectDereference</H1></A>
 Indicates to any <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> that it is being referenced by one less <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>. This decreases the reference count for that object by one. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -16,7 +16,7 @@ PetscErrorCode  PetscObjectDereference(PetscObject obj)
 Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A> if reference reaches 0 otherwise Logically Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>obj </B> -the PETSc object; this must be cast with (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example, 
+<DT><B>obj </B> -the PETSc object; this must be cast with (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example,
 <A HREF="../Sys/PetscObjectDereference.html#PetscObjectDereference">PetscObjectDereference</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat);
 <br>
 <P>

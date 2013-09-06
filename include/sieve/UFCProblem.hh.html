@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/UFCProblem.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:19:12+00:00">
+<meta name="date" content="2013-07-02T14:52:56+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef __UFCProblem</font>
 
 <a name="line4">  4: </a><font color="#B22222">/*</font>
@@ -40,7 +40,7 @@
 
 <a name="line31"> 31: </a><strong><font color="#FF0000">      std:</font></strong>:map&lt;int, ufc::finite_element *&gt; _b_sub_finite_elements;
 <a name="line32"> 32: </a><strong><font color="#FF0000">      std:</font></strong>:map&lt;int, ufc::finite_element *&gt; _l_sub_finite_elements;
-<a name="line33"> 33: </a>
+
 <a name="line34"> 34: </a><strong><font color="#FF0000">      ufc:</font></strong>:shape _cell_shape;
 
 <a name="line36"> 36: </a><strong><font color="#FF0000">      ufc:</font></strong>:cell * _cell; //assume, <font color="#4169E1">for</font> now, that the mesh has one cell type
@@ -61,7 +61,7 @@
 <a name="line51"> 51: </a><strong><font color="#FF0000">      std:</font></strong>:map&lt;int, ufc::exterior_facet_integral *&gt; _l_exterior_facet_integrals;
 
 <a name="line53"> 53: </a><strong><font color="#FF0000">    public:</font></strong>
-<a name="line54"> 54: </a>
+
 <a name="line55"> 55: </a>      UFCHook(ufc::form * bform, ufc::form * lform) {
 
 <a name="line57"> 57: </a>        _bform = bform;
@@ -77,7 +77,7 @@
 <a name="line67"> 67: </a>        }
 
 <a name="line69"> 69: </a>        <font color="#4169E1">if</font> (_l_cell_integrals.size() == 0) throw Exception(<font color="#666666">"No linear integrals in the form"</font>);
-<a name="line70"> 70: </a>
+
 <a name="line71"> 71: </a>        //_num_b_cell_integrals = bform-&gt;num_cell_integrals();
 <a name="line72"> 72: </a>        //_b_cell_integrals = new ufc::cell_integral *[_num_l_cell_integrals];
 <a name="line73"> 73: </a>        <font color="#4169E1">for</font> (unsigned int i = 0; i &lt; bform-&gt;num_cell_integrals(); i++) {
@@ -90,7 +90,7 @@
 <a name="line80"> 80: </a>
 <a name="line81"> 81: </a>        //create the finite elements <font color="#4169E1">for</font> the bform and lform; they should be the same I <font color="#4169E1">do</font> believe
 
-<a name="line83"> 83: </a>        _b_finite_element = _bform-&gt;create_finite_element(0);        //the other appears to be <font color="#4169E1">for</font> quadrature
+<a name="line83"> 83: </a>        _b_finite_element = _bform-&gt;create_finite_element(0);      //the other appears to be <font color="#4169E1">for</font> quadrature
 
 <a name="line85"> 85: </a>        //_num_finite_elements = _bform-&gt;num_coefficients() + _bform-&gt;rank();//_bform-&gt;num_finite_elements();
 <a name="line86"> 86: </a>        //_finite_elements = new ufc::finite_element *[_num_finite_elements];
@@ -98,7 +98,7 @@
 <a name="line88"> 88: </a>        <font color="#4169E1">if</font> (_b_finite_element-&gt;num_sub_elements() &gt; 1) <font color="#4169E1">for</font> (unsigned int i = 0; i &lt; _b_finite_element-&gt;num_sub_elements(); i++) {
 <a name="line89"> 89: </a>          _b_sub_finite_elements[i] = _b_finite_element-&gt;create_sub_element(i);
 <a name="line90"> 90: </a>        }
-<a name="line91"> 91: </a>
+
 <a name="line92"> 92: </a>        <font color="#B22222">/*</font>
 <a name="line93"> 93: </a><font color="#B22222">        if (_b_sub_finite_elements.size() == 0) {</font>
 <a name="line94"> 94: </a><font color="#B22222">          throw Exception("No finite elements in the form");</font>
@@ -118,12 +118,12 @@
 <a name="line108">108: </a><font color="#B22222">          throw Exception("No coefficient elements in the form");</font>
 <a name="line109">109: </a><font color="#B22222">        }</font>
 <a name="line110">110: </a><font color="#B22222">        */</font>
-<a name="line111">111: </a>
+
 <a name="line112">112: </a>        int dim, embedDim;
 <a name="line113">113: </a>        //derive these from the mesh and/or the finite element;
 <a name="line114">114: </a>        _cell = new ufc::cell;
-<a name="line115">115: </a>
-<a name="line116">116: </a>
+
+
 <a name="line117">117: </a>        _cell_shape = _l_finite_element-&gt;cell_shape();
 
 
@@ -161,7 +161,7 @@
 <a name="line151">151: </a>        }
 <a name="line152">152: </a>
 <a name="line153">153: </a>      }
-<a name="line154">154: </a>
+
 <a name="line155">155: </a>      ~UFCHook() {
 <a name="line156">156: </a>        //remove all this stuff
 <a name="line157">157: </a>        delete _lform;
@@ -189,11 +189,11 @@
 <a name="line179">179: </a>      }
 
 <a name="line181">181: </a>      //accessors
-<a name="line182">182: </a>
+
 
 <a name="line184">184: </a>      void setCell(Obj&lt;PETSC_MESH_TYPE&gt; m, PETSC_MESH_TYPE::point_type c) {
 <a name="line185">185: </a>        //setup the cell object such that it contains the mesh cell given
-<a name="line186">186: </a>
+
 <a name="line187">187: </a>        const Obj&lt;PETSC_MESH_TYPE::sieve_type&gt; s = m-&gt;getSieve();
 <a name="line188">188: </a>        Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; coordinates = m-&gt;getRealSection(<font color="#666666">"coordinates"</font>);
 <a name="line189">189: </a>        int dim = m-&gt;getDimension();
@@ -248,7 +248,7 @@
 <a name="line238">238: </a>        } <font color="#4169E1">else</font> throw Exception(<font color="#666666">"UFCCell: Unsupported Shape"</font>);
 <a name="line239">239: </a>      }
 <a name="line240">240: </a>    };
-<a name="line241">241: </a>
+
 <a name="line242">242: </a><font color="#A020F0">#endif</font>
 
 <a name="line244">244: </a>    class UFCBoundaryCondition : public GeneralBoundaryCondition {
@@ -264,8 +264,8 @@
 
 <a name="line255">255: </a><strong><font color="#FF0000">    public:</font></strong>
 <a name="line256">256: </a>      UFCBoundaryCondition(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, int debug = 0) : GeneralBoundaryCondition(comm, debug) {
-<a name="line257">257: </a>        _function = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line258">258: </a>        _exactSol = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line257">257: </a>        _function = NULL;
+<a name="line258">258: </a>        _exactSol = NULL;
 <a name="line259">259: </a>      }
 
 <a name="line261">261: </a>      UFCBoundaryCondition(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, ufc::function * function, ufc::function * exactsol, ufc::finite_element * element, ufc::cell * cell, const std::string&amp; name, const int marker, int debug = 0) : GeneralBoundaryCondition(comm, debug){
@@ -280,11 +280,11 @@
 <a name="line270">270: </a>      void setFiniteElement(ufc::finite_element * finite_element) {
 <a name="line271">271: </a>        _finite_element = finite_element;
 <a name="line272">272: </a>      }
-<a name="line273">273: </a>
+
 <a name="line274">274: </a><strong><font color="#FF0000">      ufc:</font></strong>:finite_element * getFiniteElement() {
 <a name="line275">275: </a>        <font color="#4169E1">return</font> _finite_element;
 <a name="line276">276: </a>      }
-<a name="line277">277: </a>
+
 <a name="line278">278: </a>      void setCell(ufc::cell * cell) {
 <a name="line279">279: </a>        _cell = cell;
 <a name="line280">280: </a>      }
@@ -320,7 +320,7 @@
 <a name="line310">310: </a>        <font color="#4169E1">return</font> this-&gt;_finite_element-&gt;evaluate_dof(ufc_dof, *_function, *_cell);
 <a name="line311">311: </a>      }
 <a name="line312">312: </a>    };
-<a name="line313">313: </a>
+
 <a name="line314">314: </a>    class UFCDiscretization : public GeneralDiscretization {
 <a name="line315">315: </a>      //implementation of the discretization class that provides UFC hooks.
 <a name="line316">316: </a><strong><font color="#FF0000">    private:</font></strong>
@@ -332,7 +332,7 @@
 <a name="line322">322: </a><strong><font color="#FF0000">      ufc:</font></strong>:cell           * _cell;
 <a name="line323">323: </a><strong><font color="#FF0000">      ufc:</font></strong>:finite_element * _finite_element;  //this will typically be a subelement.
 <a name="line324">324: </a><strong><font color="#FF0000">      ufc:</font></strong>:function * _rhs_function;          //TODO: generalize this further
-<a name="line325">325: </a>
+
 <a name="line326">326: </a><strong><font color="#FF0000">    public:</font></strong>
 <a name="line327">327: </a>      UFCDiscretization(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, int debug = 1) : GeneralDiscretization(comm, debug) {
 <a name="line328">328: </a>      }
@@ -346,10 +346,10 @@
 <a name="line336">336: </a>      }
 
 <a name="line338">338: </a>      virtual void createReorder() {
-<a name="line339">339: </a>
+
 <a name="line340">340: </a>        //create the forward and backward maps to and from UFC data layout to closure data layout.
 <a name="line341">341: </a>        //<font color="#4169E1">do</font> this <font color="#4169E1">case</font>-by-<font color="#4169E1">case</font> with info from the discretization
-<a name="line342">342: </a>
+
 <a name="line343">343: </a>        int * reorder = new int[this-&gt;size()];
 <a name="line344">344: </a><strong><font color="#FF0000">        std:</font></strong>:map&lt;int, int&gt; closure_offsets;
 <a name="line345">345: </a>        int offset = 0;
@@ -390,7 +390,7 @@
 <a name="line380">380: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[2] + i] = offset;
 <a name="line381">381: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[3] + i] = offset;
 <a name="line382">382: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[1] + i] = offset;
-<a name="line383">383: </a>           <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[0] + i] = offset;
+<a name="line383">383: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[0] + i] = offset;
 <a name="line384">384: </a>          //TET!
 <a name="line385">385: </a>        } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (this-&gt;getFiniteElement()-&gt;cell_shape() == ufc::tetrahedron) {
 <a name="line386">386: </a>          closure_offsets[0] = 0;
@@ -430,16 +430,16 @@
 <a name="line420">420: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(0); i++, offset++) reorder[closure_offsets[13] + i] = offset;
 <a name="line421">421: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(0); i++, offset++) reorder[closure_offsets[14] + i] = offset;
 <a name="line422">422: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[10] + i] = offset;
-<a name="line423">423: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[9] + i] = offset;
-<a name="line424">424: </a>           <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[6] + i] = offset;
-<a name="line425">425: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[8] + i] = offset;
-<a name="line426">426: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[7] + i] = offset;
-<a name="line427">427: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[5] + i] = offset;
-<a name="line428">428: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[4] + i] = offset;
-<a name="line429">429: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[3] + i] = offset;
-<a name="line430">430: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[2] + i] = offset;
-<a name="line431">431: </a>           <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[1] + i] = offset;
-<a name="line432">432: </a>           <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(3); i++, offset++) reorder[closure_offsets[0] + i] = offset;
+<a name="line423">423: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[9]  + i] = offset;
+<a name="line424">424: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[6]  + i] = offset;
+<a name="line425">425: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[8]  + i] = offset;
+<a name="line426">426: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[7]  + i] = offset;
+<a name="line427">427: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(1); i++, offset++) reorder[closure_offsets[5]  + i] = offset;
+<a name="line428">428: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[4]  + i] = offset;
+<a name="line429">429: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[3]  + i] = offset;
+<a name="line430">430: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[2]  + i] = offset;
+<a name="line431">431: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(2); i++, offset++) reorder[closure_offsets[1]  + i] = offset;
+<a name="line432">432: </a>          <font color="#4169E1">for</font> (int i = 0; i &lt; this-&gt;getNumDof(3); i++, offset++) reorder[closure_offsets[0]  + i] = offset;
 <a name="line433">433: </a>        } <font color="#4169E1">else</font> {
 <a name="line434">434: </a>          throw Exception(<font color="#666666">"UFCDiscretization-&gt;createReordering(): unsupported cell geometry"</font>);
 <a name="line435">435: </a>        }
@@ -454,7 +454,7 @@
 <a name="line444">444: </a>          bc_iter++;
 <a name="line445">445: </a>        }
 <a name="line446">446: </a>      }
-<a name="line447">447: </a>
+
 <a name="line448">448: </a>      virtual void setReorder(const int * _reordering) {
 <a name="line449">449: </a>        _closure2data = _reordering;
 <a name="line450">450: </a>      }
@@ -462,7 +462,7 @@
 <a name="line452">452: </a>      virtual const int * getReorder() {
 <a name="line453">453: </a>        <font color="#4169E1">return</font> _closure2data;
 <a name="line454">454: </a>      }
-<a name="line455">455: </a>
+
 <a name="line456">456: </a>      void setRHSFunction(ufc::function * function) {
 <a name="line457">457: </a>        _rhs_function = function;
 <a name="line458">458: </a>      }
@@ -477,7 +477,7 @@
 <a name="line467">467: </a>        //one DOF with multiple coefficients; <font color="#4169E1">for</font> the sake of being able to loop independent of the vector space here we split it up.
 
 <a name="line469">469: </a>        int ufc_dof;
-<a name="line470">470: </a>        <font color="#4169E1">if</font> (_cell == <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) throw Exception(<font color="#666666">"UFCBoundaryCondition-&gt;integrateDual: cell is not initialized"</font>);
+<a name="line470">470: </a>        <font color="#4169E1">if</font> (_cell == NULL) throw Exception(<font color="#666666">"UFCBoundaryCondition-&gt;integrateDual: cell is not initialized"</font>);
 <a name="line471">471: </a>        //TODO reordering
 <a name="line472">472: </a>        ufc_dof = this-&gt;getReorder()[dof];
 <a name="line473">473: </a>        //<font color="#4169E1">switch</font> the order
@@ -510,11 +510,11 @@
 <a name="line500">500: </a>      double * _tmp_coefficients;
 <a name="line501">501: </a><strong><font color="#FF0000">    public:</font></strong>
 <a name="line502">502: </a>      UFCCellIntegral(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, int debug = 1) : GeneralIntegral(comm, debug) {
-<a name="line503">503: </a>        this-&gt;_tmp_tensor = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line504">504: </a>        this-&gt;_tmp_coefficients = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line505">505: </a>        this-&gt;_integral = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line506">506: </a>        this-&gt;_cell = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line507">507: </a>        this-&gt;_coefficients = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line503">503: </a>        this-&gt;_tmp_tensor = NULL;
+<a name="line504">504: </a>        this-&gt;_tmp_coefficients = NULL;
+<a name="line505">505: </a>        this-&gt;_integral = NULL;
+<a name="line506">506: </a>        this-&gt;_cell = NULL;
+<a name="line507">507: </a>        this-&gt;_coefficients = NULL;
 <a name="line508">508: </a>      }
 
 <a name="line510">510: </a>      UFCCellIntegral(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, ufc::cell_integral * integral, ufc::cell * cell, name_type name, int label, int rank, int dimension, int ncoefficients = 0, int debug = 0) : GeneralIntegral(comm, name, label, ncoefficients, debug){
@@ -533,7 +533,7 @@
 <a name="line523">523: </a>        <font color="#4169E1">if</font> (ncoefficients) {
 <a name="line524">524: </a>          this-&gt;_tmp_coefficients = new double[dimension*ncoefficients];
 <a name="line525">525: </a>          this-&gt;_coefficients = new const double*[ncoefficients];
-<a name="line526">526: </a>        } <font color="#4169E1">else</font> this-&gt;_coefficients = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line526">526: </a>        } <font color="#4169E1">else</font> this-&gt;_coefficients = NULL;
 <a name="line527">527: </a>      }
 
 <a name="line529">529: </a>      virtual ~UFCCellIntegral() {
@@ -553,14 +553,14 @@
 <a name="line543">543: </a>      virtual void setIntegral(ufc::cell_integral * integral) {
 <a name="line544">544: </a>        _integral = integral;
 <a name="line545">545: </a>      }
-<a name="line546">546: </a>
+
 <a name="line547">547: </a>      virtual ufc::cell_integral * getIntegral () {
 <a name="line548">548: </a>        <font color="#4169E1">return</font> _integral;
 <a name="line549">549: </a>      }
 
 
 <a name="line552">552: </a>      //there will eventually be some reordering occuring here, but <font color="#4169E1">for</font> now just assume we've done the right thing.
-<a name="line553">553: </a>      virtual void tabulateTensor(double * tensor, const double * coefficients = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line553">553: </a>      virtual void tabulateTensor(double * tensor, const double * coefficients = NULL) {
 <a name="line554">554: </a>        //just run the frickin' tabulate_tensor routine from the form on what gets spit out by restrictClosure right now; rebuild or reorder later.
 <a name="line555">555: </a>        //the coefficients have come in in
 <a name="line556">556: </a>        <font color="#4169E1">if</font> (this-&gt;getNumCoefficients()) {
@@ -593,7 +593,7 @@
 <a name="line583">583: </a>    //TODO: interior; exterior integral forms; these will have their own reordering notion.
 
 <a name="line585">585: </a>    class UFCFormSubProblem : public GenericFormSubProblem {
-<a name="line586">586: </a>
+
 <a name="line587">587: </a>      //Data and helper functions:
 
 <a name="line589">589: </a><strong><font color="#FF0000">    private:</font></strong>
@@ -605,15 +605,15 @@
 
 <a name="line596">596: </a>      UFCFormSubProblem(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, int debug = 0) : GenericFormSubProblem(comm, debug) {
 <a name="line597">597: </a>        //yeah
-<a name="line598">598: </a>        _cell = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
-<a name="line599">599: </a>        _full_finite_element = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line598">598: </a>        _cell = NULL;
+<a name="line599">599: </a>        _full_finite_element = NULL;
 <a name="line600">600: </a>      }
 
 <a name="line602">602: </a>      UFCFormSubProblem(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, ufc::cell * cell, ufc::finite_element * finite_element, int debug = 0) : GenericFormSubProblem(comm, debug) {
 <a name="line603">603: </a>        _cell = cell;  //yeargh!
 <a name="line604">604: </a>        _full_finite_element = finite_element;
 <a name="line605">605: </a>      }
-<a name="line606">606: </a>
+
 <a name="line607">607: </a>      UFCFormSubProblem(<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, ufc::form * b_form, ufc::form * l_form, int debug = 0) : GenericFormSubProblem(comm, debug){
 <a name="line608">608: </a>        //set up the discretizations, integrals, and other things; discretization-level things like boundary conditions must be set separately of course.
 <a name="line609">609: </a>        //set the main finite element, the sub-elements, and
@@ -634,14 +634,14 @@
 <a name="line624">624: </a>      virtual void createReorder () {
 <a name="line625">625: </a>        <font color="#B22222">/*</font>
 <a name="line626">626: </a><font color="#B22222">          GOAL: keep all interface-level things (in the other file) in *closure* order.</font>
-<a name="line627">627: </a><font color="#B22222">          </font>
+<a name="line627">627: </a><font color="#B22222">        </font>
 
-<a name="line629">629: </a><font color="#B22222">          The UFC ordering is assumed to go: </font>
+<a name="line629">629: </a><font color="#B22222">          The UFC ordering is assumed to go:</font>
 <a name="line630">630: </a><font color="#B22222">          1. discretization 1 entry 0 reordered per-cell like UFC</font>
 <a name="line631">631: </a><font color="#B22222">             discretization 1 entry 1 ...</font>
 <a name="line632">632: </a><font color="#B22222">          2. discretization 2 reordered per-cell like UFC</font>
 <a name="line633">633: </a><font color="#B22222">          ... etc</font>
-<a name="line634">634: </a><font color="#B22222">          </font>
+<a name="line634">634: </a><font color="#B22222">        </font>
 <a name="line635">635: </a><font color="#B22222">          So, we first pull apart each discretization and reorder (based upon the indices of that discretization and the rank of the form, then based upon the discretization</font>
 
 <a name="line637">637: </a><font color="#B22222">          Then pass the overall reorder to each integral to make all of this go smoothly.</font>
@@ -680,7 +680,7 @@
 <a name="line670">670: </a>      }
 
 <a name="line672">672: </a>      virtual void setCell(Obj&lt;PETSC_MESH_TYPE&gt; mesh, PETSC_MESH_TYPE::point_type c) const {
-<a name="line673">673: </a>        <font color="#4169E1">if</font> (_cell == <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) throw Exception(<font color="#666666">"UFCFormSubProblem: Uninitialized cell"</font>);
+<a name="line673">673: </a>        <font color="#4169E1">if</font> (_cell == NULL) throw Exception(<font color="#666666">"UFCFormSubProblem: Uninitialized cell"</font>);
 <a name="line674">674: </a>        Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; coords = mesh-&gt;getRealSection(<font color="#666666">"coordinates"</font>);
 <a name="line675">675: </a>        const double * cellcoords = mesh-&gt;restrictClosure(coords, c);
 <a name="line676">676: </a>        int index = 0;
@@ -693,7 +693,7 @@
 <a name="line683">683: </a>      }
 
 <a name="line685">685: </a>      ~UFCFormSubProblem(){};
-<a name="line686">686: </a>
+
 <a name="line687">687: </a>    };
 <a name="line688">688: </a>  }
 <a name="line689">689: </a>}

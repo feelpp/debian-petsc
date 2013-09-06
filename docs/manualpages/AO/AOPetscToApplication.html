@@ -5,9 +5,9 @@
 <TITLE>AOPetscToApplication</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="AOPetscToApplication"><H1>AOPetscToApplication</H1></A>
-Maps a set of integers in the PETSc ordering to  the application-defined ordering. 
+Maps a set of integers in the PETSc ordering to the application-defined ordering. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscao.h" 
@@ -21,8 +21,12 @@ Collective on <A HREF="../AO/AO.html#AO">AO</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of integers
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ia </B></TD><TD>- the integers
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ia </B></TD><TD>- the integers; these are replaced with their mapped value
 </TD></TR></TABLE>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
+<DT><B>ia </B> -the mapped integers
+<br>
 <P>
 
 <P>
@@ -30,6 +34,8 @@ Collective on <A HREF="../AO/AO.html#AO">AO</A>
 Any integers in ia[] that are negative are left unchanged. This
 allows one to convert, for example, neighbor lists that use negative
 entries to indicate nonexistent neighbors due to boundary conditions, etc.
+<P>
+Integers that are out of range are mapped to -1
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  application ordering, mapping
@@ -39,7 +45,7 @@ entries to indicate nonexistent neighbors due to boundary conditions, etc.
  <A HREF="../AO/AOCreateBasic.html#AOCreateBasic">AOCreateBasic</A>(), <A HREF="../AO/AOView.html#AOView">AOView</A>(),<A HREF="../AO/AOApplicationToPetsc.html#AOApplicationToPetsc">AOApplicationToPetsc</A>(),
 <BR><A HREF="../AO/AOPetscToApplicationIS.html#AOPetscToApplicationIS">AOPetscToApplicationIS</A>(), <A HREF="../AO/AOApplicationToPetsc.html#AOApplicationToPetsc">AOApplicationToPetsc</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/ao/interface/ao.c.html#AOPetscToApplication">src/dm/ao/interface/ao.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/ao/interface/ao.c.html#AOPetscToApplication">src/vec/is/ao/interface/ao.c</A>
 <BR><A HREF="./index.html">Index of all AO routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

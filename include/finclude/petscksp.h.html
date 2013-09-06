@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/finclude/petscksp.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:18:12+00:00">
+<meta name="date" content="2013-07-02T14:52:38+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Include file <font color="#4169E1">for</font> Fortran use of the <A href="../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> package in PETSc
@@ -38,7 +38,7 @@
 <a name="line27"> 27: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> <A href="../../docs/manualpages/KSP/KSP_DIVERGED_BREAKDOWN_BICG.html#KSP_DIVERGED_BREAKDOWN_BICG">KSP_DIVERGED_BREAKDOWN_BICG</A>
 <a name="line28"> 28: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> <A href="../../docs/manualpages/KSP/KSP_DIVERGED_NONSYMMETRIC.html#KSP_DIVERGED_NONSYMMETRIC">KSP_DIVERGED_NONSYMMETRIC</A>
 <a name="line29"> 29: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> <A href="../../docs/manualpages/KSP/KSP_DIVERGED_INDEFINITE_PC.html#KSP_DIVERGED_INDEFINITE_PC">KSP_DIVERGED_INDEFINITE_PC</A>
-<a name="line30"> 30: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> KSP_DIVERGED_NAN
+<a name="line30"> 30: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> KSP_DIVERGED_NANORINF
 <a name="line31"> 31: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> KSP_DIVERGED_INDEFINITE_MAT
 
 <a name="line33"> 33: </a>      parameter (<A href="../../docs/manualpages/KSP/KSP_CONVERGED_RTOL.html#KSP_CONVERGED_RTOL">KSP_CONVERGED_RTOL</A>            = 2)
@@ -56,7 +56,7 @@
 <a name="line45"> 45: </a>      parameter (<A href="../../docs/manualpages/KSP/KSP_DIVERGED_BREAKDOWN_BICG.html#KSP_DIVERGED_BREAKDOWN_BICG">KSP_DIVERGED_BREAKDOWN_BICG</A> = -6)
 <a name="line46"> 46: </a>      parameter (<A href="../../docs/manualpages/KSP/KSP_DIVERGED_NONSYMMETRIC.html#KSP_DIVERGED_NONSYMMETRIC">KSP_DIVERGED_NONSYMMETRIC</A>   = -7)
 <a name="line47"> 47: </a>      parameter (<A href="../../docs/manualpages/KSP/KSP_DIVERGED_INDEFINITE_PC.html#KSP_DIVERGED_INDEFINITE_PC">KSP_DIVERGED_INDEFINITE_PC</A>  = -8)
-<a name="line48"> 48: </a>      parameter (KSP_DIVERGED_NAN            = -9)
+<a name="line48"> 48: </a>      parameter (KSP_DIVERGED_NANORINF       = -9)
 <a name="line49"> 49: </a>      parameter (KSP_DIVERGED_INDEFINITE_MAT = -10)
 
 <a name="line51"> 51: </a>      parameter (<A href="../../docs/manualpages/KSP/KSP_CONVERGED_ITERATING.html#KSP_CONVERGED_ITERATING">KSP_CONVERGED_ITERATING</A> = 0)
@@ -67,7 +67,7 @@
 <a name="line56"> 56: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> <A href="../../docs/manualpages/KSP/KSP_NORM_PRECONDITIONED.html#KSP_NORM_PRECONDITIONED">KSP_NORM_PRECONDITIONED</A>
 <a name="line57"> 57: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> <A href="../../docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED.html#KSP_NORM_UNPRECONDITIONED">KSP_NORM_UNPRECONDITIONED</A>
 <a name="line58"> 58: </a>      <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A> <A href="../../docs/manualpages/KSP/KSP_NORM_NATURAL.html#KSP_NORM_NATURAL">KSP_NORM_NATURAL</A>
-<a name="line59"> 59: </a>
+
 <a name="line60"> 60: </a>      parameter (<A href="../../docs/manualpages/KSP/KSP_NORM_NONE.html#KSP_NORM_NONE">KSP_NORM_NONE</A>=0)
 <a name="line61"> 61: </a>      parameter (<A href="../../docs/manualpages/KSP/KSP_NORM_PRECONDITIONED.html#KSP_NORM_PRECONDITIONED">KSP_NORM_PRECONDITIONED</A>=1)
 <a name="line62"> 62: </a>      parameter (<A href="../../docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED.html#KSP_NORM_UNPRECONDITIONED">KSP_NORM_UNPRECONDITIONED</A>=2)
@@ -78,7 +78,7 @@
 <a name="line67"> 67: </a>      external KSPDEFAULTCONVERGED
 <a name="line68"> 68: </a>      external KSPMONITORDEFAULT
 <a name="line69"> 69: </a>      external KSPMONITORTRUERESIDUALNORM
-<a name="line70"> 70: </a>      external KSPMONITORLG
+<a name="line70"> 70: </a>      external KSPMONITORLGRESIDUALNORM
 <a name="line71"> 71: </a>      external KSPMONITORLGTRUERESIDUALNORM
 <a name="line72"> 72: </a>      external KSPMONITORSOLUTION
 <a name="line73"> 73: </a>      external KSPMONITORSINGULARVALUE

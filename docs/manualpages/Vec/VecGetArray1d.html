@@ -5,15 +5,15 @@
 <TITLE>VecGetArray1d</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecGetArray1d"><H1>VecGetArray1d</H1></A>
-Returns a pointer to a 1d contiguous array that contains this  processor's portion of the vector data.  You MUST call <A HREF="../Vec/VecRestoreArray1d.html#VecRestoreArray1d">VecRestoreArray1d</A>()  when you no longer need access to the array. 
+Returns a pointer to a 1d contiguous array that contains this processor's portion of the vector data.  You MUST call <A HREF="../Vec/VecRestoreArray1d.html#VecRestoreArray1d">VecRestoreArray1d</A>() when you no longer need access to the array. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecGetArray1d(Vec x,PetscInt m,PetscInt mstart,PetscScalar *a[])
 </PRE>
-Not Collective
+Logically Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">

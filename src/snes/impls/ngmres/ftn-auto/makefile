@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = snesngmresf.c
-OBJSC    = snesngmresf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

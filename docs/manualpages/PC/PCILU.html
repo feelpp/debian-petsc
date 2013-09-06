@@ -5,7 +5,7 @@
 <TITLE>PCILU</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCILU"><H1>PCILU</H1></A>
 Incomplete factorization preconditioners. 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
@@ -27,7 +27,7 @@ this decreases the chance of getting a zero pivot
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_factor_mat_ordering_type &lt;natural,nd,1wd,rcm,qmd&gt; </B></TD><TD>- set the row/column ordering of the factored matrix
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_factor_pivot_in_blocks </B></TD><TD>- for block ILU(k) factorization, i.e. with BAIJ matrices with block size larger
-than 1 the diagonal blocks are factored with partial pivoting (this increases the 
+than 1 the diagonal blocks are factored with partial pivoting (this increases the
 stability of the ILU factorization
 </TD></TR>
 <P>
@@ -41,7 +41,7 @@ For BAIJ matrices this implements a point block ILU
 The "symmetric" application of this preconditioner is not actually symmetric since L is not transpose(U)
 even when the matrix is not symmetric since the U stores the diagonals of the factorization.
 <P>
-If you are using MATSEQAIJCUSP matrices (or MATMPIAIJCUSP matrices with block Jacobi) you must have ./configured
+If you are using <A HREF="../Mat/MATSEQAIJCUSP.html#MATSEQAIJCUSP">MATSEQAIJCUSP</A> matrices (or MATMPIAIJCUSP matrices with block Jacobi) you must have ./configured
 PETSc with also --download-txpetscgpu to have the triangular solves performed on the GPU (factorization is never
 done on the GPU).
 <P>

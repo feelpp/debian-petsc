@@ -5,30 +5,30 @@
 <TITLE>MatSeqSBAIJSetPreallocation</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSeqSBAIJSetPreallocation"><H1>MatSeqSBAIJSetPreallocation</H1></A>
 Creates a sparse symmetric matrix in block AIJ (block compressed row) format.  For good matrix assembly performance the user should preallocate the matrix storage by setting the parameter nz (or the array nnz).  By setting these parameters accurately, performance during matrix assembly can be increased by more than a factor of 50. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatSeqSBAIJSetPreallocation(Mat B,PetscInt bs,PetscInt nz,const PetscInt nnz[]) 
+PetscErrorCode  MatSeqSBAIJSetPreallocation(Mat B,PetscInt bs,PetscInt nz,const PetscInt nnz[])
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>A </B></TD><TD>- the symmetric matrix 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>A </B></TD><TD>- the symmetric matrix
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bs </B></TD><TD>- size of block
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nz </B></TD><TD>- number of block nonzeros per block row (same for all rows)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nnz </B></TD><TD>- array containing the number of block nonzeros in the upper triangular plus
-diagonal portion of each block (possibly different for each block row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+diagonal portion of each block (possibly different for each block row) or NULL
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
-<DT><B>-mat_no_unroll </B> -uses code that does not unroll the loops in the 
+<DT><B>-mat_no_unroll </B> -uses code that does not unroll the loops in the
 block calculations (much slower)
 <br>
 <DT><B>-mat_block_size </B> -size of the blocks to use (only works if a negative bs is passed in
@@ -38,7 +38,7 @@ block calculations (much slower)
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Specify the preallocated storage with either nz or nnz (not both).
-Set nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and nnz=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to control dynamic memory
+Set nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and nnz=NULL for PETSc to control dynamic memory
 allocation.  See the &lt;a href="../../docs/manual.pdf#nameddest=ch_mat"&gt;<A HREF="../Mat/Mat.html#Mat">Mat</A> chapter of the users manual&lt;/a&gt; for details.
 <P>
 You can call <A HREF="../Mat/MatGetInfo.html#MatGetInfo">MatGetInfo</A>() to get information on how effective the preallocation was;

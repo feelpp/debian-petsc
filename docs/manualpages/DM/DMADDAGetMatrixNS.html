@@ -5,13 +5,13 @@
 <TITLE>DMADDAGetMatrixNS</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMADDAGetMatrixNS"><H1>DMADDAGetMatrixNS</H1></A>
 Creates matrix compatiable with two distributed arrays 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmadda.h" 
-PetscErrorCode  DMADDAGetMatrixNS(DM dm, DM dmc, const MatType mtype, Mat *mat) 
+PetscErrorCode  DMADDAGetMatrixNS(DM dm, DM dmc, MatType mtype, Mat *mat)
 </PRE>
 Collective on ADDA
 <P>
@@ -26,7 +26,7 @@ any type which inherits from one of these (such as <A HREF="../Mat/MATAIJ.html#M
 </TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>mat </B> -the empty Jacobian 
+<DT><B>mat </B> -the empty Jacobian
 <br>
 <P>
 
@@ -38,7 +38,7 @@ any type which inherits from one of these (such as <A HREF="../Mat/MATAIJ.html#M
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../DM/DMCreateMatrix.html#DMCreateMatrix">DMCreateMatrix</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/adda/adda.c.html#DMADDAGetMatrixNS">src/dm/adda/adda.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/adda/adda.c.html#DMADDAGetMatrixNS">src/dm/impls/adda/adda.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

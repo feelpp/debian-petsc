@@ -5,7 +5,7 @@
 <TITLE>PCCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCCreate"><H1>PCCreate</H1></A>
 Creates a preconditioner context. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -16,12 +16,12 @@ PetscErrorCode  PCCreate(MPI_Comm comm,PC *newpc)
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- MPI communicator 
-</TD></TR>
+<DT><B>comm </B> -MPI communicator
+<br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc </B></TD><TD>- location to put the preconditioner context
-</TD></TR>
+<DT><B>pc </B> -location to put the preconditioner context
+<br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 The default preconditioner for sparse matrices is <A HREF="../PC/PCILU.html#PCILU">PCILU</A> or <A HREF="../PC/PCICC.html#PCICC">PCICC</A> with 0 fill on one process and block Jacobi with <A HREF="../PC/PCILU.html#PCILU">PCILU</A> or ICC

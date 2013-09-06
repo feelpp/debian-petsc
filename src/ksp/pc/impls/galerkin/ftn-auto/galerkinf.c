@@ -27,7 +27,6 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscpc.h"
 #include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcgalerkinsetrestriction_ PCGALERKINSETRESTRICTION

@@ -48,7 +48,7 @@ void PETSC_STDCALL  ksprichardsonsetscale_(KSP ksp,PetscReal *scale, int *__ierr
 *__ierr = KSPRichardsonSetScale(
 	(KSP)PetscToPointer((ksp) ),*scale);
 }
-void PETSC_STDCALL  ksprichardsonsetselfscale_(KSP ksp,PetscBool  *scale, int *__ierr ){
+void PETSC_STDCALL  ksprichardsonsetselfscale_(KSP ksp,PetscBool *scale, int *__ierr ){
 *__ierr = KSPRichardsonSetSelfScale(
 	(KSP)PetscToPointer((ksp) ),*scale);
 }

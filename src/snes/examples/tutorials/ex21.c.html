@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex21.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:10:22+00:00">
+<meta name="date" content="2013-07-02T14:50:06+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static const char help[] = <font color="#666666">"Solves PDE optimization problem using full-space method, treats state and adjoint variables separately.\n\n"</font>;
 
@@ -30,11 +30,11 @@
 
 <a name="line20"> 20: </a><font color="#B22222">            FU = (fw fu flambda)</font>
 
-<a name="line22"> 22: </a><font color="#B22222">       In this example the PDE is </font>
-<a name="line23"> 23: </a><font color="#B22222">                             Uxx = 2, </font>
+<a name="line22"> 22: </a><font color="#B22222">       In this example the PDE is</font>
+<a name="line23"> 23: </a><font color="#B22222">                             Uxx = 2,</font>
 <a name="line24"> 24: </a><font color="#B22222">                            u(0) = w(0), thus this is the free parameter</font>
 <a name="line25"> 25: </a><font color="#B22222">                            u(1) = 0</font>
-<a name="line26"> 26: </a><font color="#B22222">       the function we wish to minimize is </font>
+<a name="line26"> 26: </a><font color="#B22222">       the function we wish to minimize is</font>
 <a name="line27"> 27: </a><font color="#B22222">                            \integral u^{2}</font>
 
 <a name="line29"> 29: </a><font color="#B22222">       The exact solution for u is given by u(x) = x*x - 1.25*x + .25</font>
@@ -48,10 +48,10 @@
 <a name="line37"> 37: </a><font color="#B22222">*/</font>
 
 <a name="line39"> 39: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
-<a name="line40"> 40: </a>  DM           red1,da1,da2;
-<a name="line41"> 41: </a>  DM           packer;
-<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>  u_viewer,lambda_viewer;
-<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>  fu_viewer,flambda_viewer;
+<a name="line40"> 40: </a>  DM          red1,da1,da2;
+<a name="line41"> 41: </a>  DM          packer;
+<a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> u_viewer,lambda_viewer;
+<a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> fu_viewer,flambda_viewer;
 <a name="line44"> 44: </a>} UserCtx;
 
 <a name="line46"> 46: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
@@ -71,9 +71,9 @@
 <a name="line63"> 63: </a>  <A href="../../../../docs/manualpages/DM/DMCompositeCreate.html#DMCompositeCreate">DMCompositeCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;user.packer);
 <a name="line64"> 64: </a>  <A href="../../../../docs/manualpages/DM/DMRedundantCreate.html#DMRedundantCreate">DMRedundantCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,0,1,&amp;user.red1);
 <a name="line65"> 65: </a>  <A href="../../../../docs/manualpages/DM/DMCompositeAddDM.html#DMCompositeAddDM">DMCompositeAddDM</A>(user.packer,user.red1);
-<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,-5,1,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.da1);
+<a name="line66"> 66: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,-5,1,1,NULL,&amp;user.da1);
 <a name="line67"> 67: </a>  <A href="../../../../docs/manualpages/DM/DMCompositeAddDM.html#DMCompositeAddDM">DMCompositeAddDM</A>(user.packer,user.da1);
-<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,-5,1,1,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;user.da2);
+<a name="line68"> 68: </a>  <A href="../../../../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DMDA_BOUNDARY_NONE,-5,1,1,NULL,&amp;user.da2);
 <a name="line69"> 69: </a>  <A href="../../../../docs/manualpages/DM/DMCompositeAddDM.html#DMCompositeAddDM">DMCompositeAddDM</A>(user.packer,user.da2);
 <a name="line70"> 70: </a>  <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(user.packer,&amp;U);
 <a name="line71"> 71: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(U,&amp;FU);
@@ -90,7 +90,7 @@
 <a name="line82"> 82: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFunction.html#SNESSetFunction">SNESSetFunction</A>(snes,FU,FormFunction,&amp;user);
 <a name="line83"> 83: </a>  <A href="../../../../docs/manualpages/SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>(snes);
 <a name="line84"> 84: </a>  <A href="../../../../docs/manualpages/SNES/SNESMonitorSet.html#SNESMonitorSet">SNESMonitorSet</A>(snes,Monitor,&amp;user,0);
-<a name="line85"> 85: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,U);
+<a name="line85"> 85: </a>  <A href="../../../../docs/manualpages/SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,NULL,U);
 <a name="line86"> 86: </a>  <A href="../../../../docs/manualpages/SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);
 <a name="line87"> 87: </a>  <A href="../../../../docs/manualpages/SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(&amp;snes);
 
@@ -107,12 +107,12 @@
 <a name="line99"> 99: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line100">100: </a>  <font color="#4169E1">return</font> 0;
 <a name="line101">101: </a>}
-<a name="line102">102: </a>
+
 <a name="line105">105: </a><font color="#B22222">/*</font>
 <a name="line106">106: </a><font color="#B22222">      Evaluates FU = Gradiant(L(w,u,lambda))</font>
 
 <a name="line108">108: </a><font color="#B22222">*/</font>
-<a name="line109">109: </a><strong><font color="#4169E1"><a name="FormFunction"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> U,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> FU,void* dummy)</font></strong>
+<a name="line109">109: </a><strong><font color="#4169E1"><a name="FormFunction"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> FormFunction(<A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A> snes,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> U,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> FU,void *dummy)</font></strong>
 <a name="line110">110: </a>{
 <a name="line111">111: </a>  UserCtx        *user = (UserCtx*)dummy;
 <a name="line113">113: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       xs,xm,i,N;
@@ -123,7 +123,7 @@
 <a name="line119">119: </a>  <A href="../../../../docs/manualpages/DM/DMCompositeGetLocalVectors.html#DMCompositeGetLocalVectors">DMCompositeGetLocalVectors</A>(user-&gt;packer,&amp;vfw,&amp;vfu,&amp;vflambda);
 <a name="line120">120: </a>  <A href="../../../../docs/manualpages/DM/DMCompositeScatter.html#DMCompositeScatter">DMCompositeScatter</A>(user-&gt;packer,U,vw,vu,vlambda);
 
-<a name="line122">122: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(user-&gt;da1,&amp;xs,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,&amp;xm,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line122">122: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(user-&gt;da1,&amp;xs,NULL,NULL,&amp;xm,NULL,NULL);
 <a name="line123">123: </a>  <A href="../../../../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(user-&gt;da1,0,&amp;N,0,0,0,0,0,0,0,0,0,0,0);
 <a name="line124">124: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(vw,&amp;w);
 <a name="line125">125: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(vfw,&amp;fw);

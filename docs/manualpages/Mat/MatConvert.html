@@ -5,13 +5,13 @@
 <TITLE>MatConvert</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatConvert"><H1>MatConvert</H1></A>
 Converts a matrix to another matrix, either of the same or different type. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatConvert(Mat mat, const MatType newtype,MatReuse reuse,Mat *M)
+PetscErrorCode  MatConvert(Mat mat, MatType newtype,MatReuse reuse,Mat *M)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>

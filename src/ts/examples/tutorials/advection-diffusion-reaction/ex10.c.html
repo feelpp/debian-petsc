@@ -1,0 +1,807 @@
+<center><a href="ex10.c">Actual source code: ex10.c</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/examples/tutorials/advection-diffusion-reaction/ex10.c.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:51:55+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Solves C_t =  -D*C_xx + F(C) + R(C) + D(C) from Brian Wirth's SciDAC project.\n"</font>;
+
+<a name="line3">  3: </a><font color="#B22222">/*</font>
+<a name="line4">  4: </a><font color="#B22222">        C_t =  -D*C_xx + F(C) + R(C) + D(C) from Brian Wirth's SciDAC project.</font>
+
+<a name="line6">  6: </a><font color="#B22222">        D*C_xx  - diffusion of He[1-5] and V[1] and I[1]</font>
+<a name="line7">  7: </a><font color="#B22222">        F(C)  -   forcing function; He being created.</font>
+<a name="line8">  8: </a><font color="#B22222">        R(C)  -   reaction terms   (clusters combining)</font>
+<a name="line9">  9: </a><font color="#B22222">        D(C)  -   dissociation terms (cluster breaking up)</font>
+
+<a name="line11"> 11: </a><font color="#B22222">        Sample Options:</font>
+<a name="line12"> 12: </a><font color="#B22222">          -ts_monitor_draw_solution               -- plot the solution for each concentration as a function of x each in a separate 1d graph</font>
+<a name="line13"> 13: </a><font color="#B22222">              -draw_fields_by_name 1-He-2-V,1-He  -- only plot the solution for these two concentrations</font>
+<a name="line14"> 14: </a><font color="#B22222">          -mymonitor                              -- plot the concentrations of He and V as a function of x and cluster size (2d contour plot)</font>
+<a name="line15"> 15: </a><font color="#B22222">          -da_refine &lt;n=1,2,...&gt;                  -- run on a finer grid</font>
+<a name="line16"> 16: </a><font color="#B22222">          -ts_max_steps maxsteps                  -- maximum number of time-steps to take</font>
+<a name="line17"> 17: </a><font color="#B22222">          -ts_final_time time                     -- maximum time to compute to</font>
+
+<a name="line19"> 19: </a><font color="#B22222">    Rules for maximum number of He allowed for V in cluster</font>
+
+
+<a name="line22"> 22: </a><font color="#B22222">*/</font>
+
+<a name="line24"> 24: </a><font color="#A020F0">#include &lt;petscdmda.h&gt;</font>
+<a name="line25"> 25: </a><font color="#A020F0">#include &lt;petscts.h&gt;</font>
+
+<a name="line27"> 27: </a><font color="#B22222">/*    Hard wire the number of cluster sizes for He, V, and I */</font>
+<a name="line28"> 28: </a><strong><font color="#228B22">#define N 15</font></strong>
+
+<a name="line30"> 30: </a><font color="#B22222">/*</font>
+<a name="line31"> 31: </a><font color="#B22222">     Define all the concentrations (there is one of these unions at each grid point)</font>
+
+<a name="line33"> 33: </a><font color="#B22222">      He[He] represents the clusters of pure Helium of size He</font>
+<a name="line34"> 34: </a><font color="#B22222">      V[V] the Vacencies of size V,</font>
+<a name="line35"> 35: </a><font color="#B22222">      I[I] represents the clusters of Interstials of size I,  and</font>
+<a name="line36"> 36: </a><font color="#B22222">      HeV[He][V]  the mixed Helium-Vacancy clusters of size He and V</font>
+
+<a name="line38"> 38: </a><font color="#B22222">      The variables He, V, I are always used to index into the concentrations of He, V, and I respectively</font>
+<a name="line39"> 39: </a><font color="#B22222">      Note that unlike in traditional C code the indices for He[], V[] and I[] run from 1 to N, NOT 0 to N-1</font>
+<a name="line40"> 40: </a><font color="#B22222">      (the use of the union below "tricks" the C compiler to allow the indices to start at 1.)</font>
+
+<a name="line42"> 42: </a><font color="#B22222">*/</font>
+<a name="line43"> 43: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line44"> 44: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> He[N];
+<a name="line45"> 45: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> V[N];
+<a name="line46"> 46: </a>  <font color="#4169E1">union</font> {
+<a name="line47"> 47: </a>    <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> I[N];
+<a name="line48"> 48: </a>    <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> HeV[N+1][N]; <font color="#B22222">/* actual size is N by N, the N+1 is there only to "trick" the compiler to have indices start at 1.*/</font>
+<a name="line49"> 49: </a>  };
+<a name="line50"> 50: </a>} Concentrations;
+
+<a name="line52"> 52: </a><font color="#B22222">/*</font>
+<a name="line53"> 53: </a><font color="#B22222">     Holds problem specific options and data</font>
+<a name="line54"> 54: </a><font color="#B22222">*/</font>
+<a name="line55"> 55: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line56"> 56: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   noreactions;           <font color="#B22222">/* run without the reaction terms */</font>
+<a name="line57"> 57: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>   nodissociations;       <font color="#B22222">/* run without the dissociation terms */</font>
+<a name="line58"> 58: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> HeDiffusion[6];
+<a name="line59"> 59: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> VDiffusion[2];
+<a name="line60"> 60: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> IDiffusion[2];
+<a name="line61"> 61: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> forcingScale;
+<a name="line62"> 62: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> reactionScale;
+<a name="line63"> 63: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A> dissociationScale;
+<a name="line64"> 64: </a>} AppCtx;
+
+<a name="line66"> 66: </a><strong><font color="#4169E1">extern <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> IFunction(<A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TS.html#TS">TS</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*)</font></strong>;
+<a name="line67"> 67: </a><strong><font color="#4169E1">extern <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> InitialConditions(DM,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line68"> 68: </a><strong><font color="#4169E1">extern <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MyMonitorSetUp(<A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TS.html#TS">TS</A>)</font></strong>;
+<a name="line69"> 69: </a><strong><font color="#4169E1">extern <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> GetDfill(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*,void*)</font></strong>;
+
+<a name="line73"> 73: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **argv)</font></strong>
+<a name="line74"> 74: </a>{
+<a name="line75"> 75: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TS.html#TS">TS</A>             ts;                  <font color="#B22222">/* nonlinear solver */</font>
+<a name="line76"> 76: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            C;                   <font color="#B22222">/* solution */</font>
+<a name="line78"> 78: </a>  DM             da;                  <font color="#B22222">/* manages the grid data */</font>
+<a name="line79"> 79: </a>  AppCtx         ctx;                 <font color="#B22222">/* holds problem specific paramters */</font>
+<a name="line80"> 80: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       He,dof = 3*N+N*N,*ofill,*dfill;
+<a name="line81"> 81: </a>
+
+<a name="line83"> 83: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line84"> 84: </a><font color="#B22222">     Initialize program</font>
+<a name="line85"> 85: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line86"> 86: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv,(char*)0,help);
+
+<a name="line89"> 89: </a>  ctx.noreactions     = <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line90"> 90: </a>  ctx.nodissociations = <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+
+<a name="line92"> 92: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL,<font color="#666666">"-noreactions"</font>,&amp;ctx.noreactions);
+<a name="line93"> 93: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL,<font color="#666666">"-nodissociations"</font>,&amp;ctx.nodissociations);
+
+<a name="line95"> 95: </a>  ctx.HeDiffusion[1]    = 1000*2.95e-4; <font color="#B22222">/* From Tibo's notes times 1,000 */</font>
+<a name="line96"> 96: </a>  ctx.HeDiffusion[2]    = 1000*3.24e-4;
+<a name="line97"> 97: </a>  ctx.HeDiffusion[3]    = 1000*2.26e-4;
+<a name="line98"> 98: </a>  ctx.HeDiffusion[4]    = 1000*1.68e-4;
+<a name="line99"> 99: </a>  ctx.HeDiffusion[5]    = 1000*5.20e-5;
+<a name="line100">100: </a>  ctx.VDiffusion[1]     = 1000*2.71e-3;
+<a name="line101">101: </a>  ctx.IDiffusion[1]     = 1000*2.13e-4;
+<a name="line102">102: </a>  ctx.forcingScale      = 100.;         <font color="#B22222">/* made up numbers */</font>
+<a name="line103">103: </a>  ctx.reactionScale     = .001;
+<a name="line104">104: </a>  ctx.dissociationScale = .0001;
+<a name="line105">105: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line106">106: </a><font color="#B22222">     Create distributed array (<A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>) to manage parallel grid and vectors</font>
+<a name="line107">107: </a><font color="#B22222">  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line108">108: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>, DMDA_BOUNDARY_MIRROR,-8,dof,1,NULL,&amp;da);
+
+<a name="line110">110: </a>  <font color="#B22222">/* The only spatial coupling in the Jacobian (diffusion) is for the first 5 He, the first V, and the first I.</font>
+<a name="line111">111: </a><font color="#B22222">     The ofill (thought of as a dof by dof 2d (row-oriented) array represents the nonzero coupling between degrees</font>
+<a name="line112">112: </a><font color="#B22222">     of freedom at one point with degrees of freedom on the adjacent point to the left or right. A 1 at i,j in the</font>
+<a name="line113">113: </a><font color="#B22222">     ofill array indicates that the degree of freedom i at a point is coupled to degree of freedom j at the</font>
+<a name="line114">114: </a><font color="#B22222">     adjacent point. In this case ofill has only a few diagonal entries since the only spatial coupling is regular diffusion. */</font>
+<a name="line115">115: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(dof*dof*<font color="#4169E1">sizeof</font>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;ofill);
+<a name="line116">116: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(dof*dof*<font color="#4169E1">sizeof</font>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;dfill);
+<a name="line117">117: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(ofill,dof*dof*<font color="#4169E1">sizeof</font>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line118">118: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(dfill,dof*dof*<font color="#4169E1">sizeof</font>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+
+<a name="line120">120: </a>  <font color="#4169E1">for</font> (He=0; He&lt;PetscMin(N,5); He++) ofill[He*dof + He] = 1;
+<a name="line121">121: </a>  ofill[N*dof + N] = ofill[2*N*dof + 2*N] = 1;
+
+<a name="line123">123: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetBlockFills.html#DMDASetBlockFills">DMDASetBlockFills</A>(da,NULL,ofill);
+<a name="line124">124: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ofill);
+<a name="line125">125: </a>  GetDfill(dfill,&amp;ctx);
+<a name="line126">126: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(dfill);
+
+<a name="line128">128: </a>
+
+<a name="line130">130: </a>  <font color="#B22222">/*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line131">131: </a><font color="#B22222">   Extract global vector from <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A> to hold solution</font>
+<a name="line132">132: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line133">133: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(da,&amp;C);
+
+<a name="line135">135: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line136">136: </a><font color="#B22222">     Create timestepping solver context</font>
+<a name="line137">137: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line138">138: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSCreate.html#TSCreate">TSCreate</A>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;ts);
+<a name="line139">139: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSetType.html#TSSetType">TSSetType</A>(ts,<A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSARKIMEX.html#TSARKIMEX">TSARKIMEX</A>);
+<a name="line140">140: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSetDM.html#TSSetDM">TSSetDM</A>(ts,da);
+<a name="line141">141: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSetProblemType.html#TSSetProblemType">TSSetProblemType</A>(ts,TS_NONLINEAR);
+<a name="line142">142: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSetIFunction.html#TSSetIFunction">TSSetIFunction</A>(ts,NULL,IFunction,&amp;ctx);
+<a name="line143">143: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSetSolution.html#TSSetSolution">TSSetSolution</A>(ts,C);
+
+<a name="line145">145: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line146">146: </a><font color="#B22222">     Set solver options</font>
+<a name="line147">147: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line148">148: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSetInitialTimeStep.html#TSSetInitialTimeStep">TSSetInitialTimeStep</A>(ts,0.0,.001);
+<a name="line149">149: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSetDuration.html#TSSetDuration">TSSetDuration</A>(ts,100,50.0);
+<a name="line150">150: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSetFromOptions.html#TSSetFromOptions">TSSetFromOptions</A>(ts);
+<a name="line151">151: </a>  MyMonitorSetUp(ts);
+
+<a name="line153">153: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line154">154: </a><font color="#B22222">     Set initial conditions</font>
+<a name="line155">155: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line156">156: </a>  InitialConditions(da,C);
+
+<a name="line158">158: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line159">159: </a><font color="#B22222">     Solve the ODE system</font>
+<a name="line160">160: </a><font color="#B22222">     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line161">161: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSSolve.html#TSSolve">TSSolve</A>(ts,C);
+
+<a name="line163">163: </a>  <font color="#B22222">/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font>
+<a name="line164">164: </a><font color="#B22222">     Free work space.</font>
+<a name="line165">165: </a><font color="#B22222">   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */</font>
+<a name="line166">166: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;C);
+<a name="line167">167: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSDestroy.html#TSDestroy">TSDestroy</A>(&amp;ts);
+<a name="line168">168: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;da);
+<a name="line169">169: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line170">170: </a>  <font color="#4169E1">return</font>(0);
+<a name="line171">171: </a>}
+
+<a name="line173">173: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
+<a name="line176">176: </a><strong><font color="#4169E1"><a name="InitialConditions"></a><A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> InitialConditions(DM da,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A> C)</font></strong>
+<a name="line177">177: </a>{
+<a name="line179">179: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,I,He,V,xs,xm,Mx,cnt = 0;
+<a name="line180">180: </a>  Concentrations *c;
+<a name="line181">181: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      hx,x;
+<a name="line182">182: </a>  char           string[16];
+
+<a name="line185">185: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,&amp;Mx,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>);
+<a name="line186">186: </a>  hx   = 1.0/(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(Mx-1);
+
+<a name="line188">188: </a>  <font color="#B22222">/* Name each of the concentrations */</font>
+<a name="line189">189: </a>  <font color="#4169E1">for</font> (He=1; He&lt;N+1; He++) {
+<a name="line190">190: </a>    <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscSNPrintf.html#PetscSNPrintf">PetscSNPrintf</A>(string,16,<font color="#666666">"%d-He"</font>,He);
+<a name="line191">191: </a>    <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(da,cnt++,string);
+<a name="line192">192: </a>  }
+<a name="line193">193: </a>  <font color="#4169E1">for</font> (V=1; V&lt;N+1; V++) {
+<a name="line194">194: </a>    <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscSNPrintf.html#PetscSNPrintf">PetscSNPrintf</A>(string,16,<font color="#666666">"%d-V"</font>,V);
+<a name="line195">195: </a>    <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(da,cnt++,string);
+<a name="line196">196: </a>  }
+<a name="line197">197: </a>  <font color="#4169E1">for</font> (I=1; I&lt;N+1; I++) {
+<a name="line198">198: </a>    <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscSNPrintf.html#PetscSNPrintf">PetscSNPrintf</A>(string,16,<font color="#666666">"%d-I"</font>,I);
+<a name="line199">199: </a>    <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(da,cnt++,string);
+<a name="line200">200: </a>  }
+<a name="line201">201: </a>  <font color="#4169E1">for</font> (He=1; He&lt;N+1; He++) {
+<a name="line202">202: </a>    <font color="#4169E1">for</font> (V=1; V&lt;N+1; V++) {
+<a name="line203">203: </a>      <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscSNPrintf.html#PetscSNPrintf">PetscSNPrintf</A>(string,16,<font color="#666666">"%d-He-%d-V"</font>,He,V);
+<a name="line204">204: </a>      <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(da,cnt++,string);
+<a name="line205">205: </a>    }
+<a name="line206">206: </a>  }
+
+<a name="line208">208: </a>  <font color="#B22222">/*</font>
+<a name="line209">209: </a><font color="#B22222">     Get pointer to vector data</font>
+<a name="line210">210: </a><font color="#B22222">  */</font>
+<a name="line211">211: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,C,&amp;c);
+<a name="line212">212: </a>  <font color="#B22222">/* Shift the c pointer to allow accessing with index of 1, instead of 0 */</font>
+<a name="line213">213: </a>  c = (Concentrations*)(((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)c)-1);
+
+<a name="line215">215: </a>  <font color="#B22222">/*</font>
+<a name="line216">216: </a><font color="#B22222">     Get local grid boundaries</font>
+<a name="line217">217: </a><font color="#B22222">  */</font>
+<a name="line218">218: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,NULL,NULL,&amp;xm,NULL,NULL);
+
+<a name="line220">220: </a>  <font color="#B22222">/*</font>
+<a name="line221">221: </a><font color="#B22222">     Compute function over the locally owned part of the grid</font>
+<a name="line222">222: </a><font color="#B22222">  */</font>
+<a name="line223">223: </a>  <font color="#4169E1">for</font> (i=xs; i&lt;xs+xm; i++) {
+<a name="line224">224: </a>    x = i*hx;
+<a name="line225">225: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N+1; He++) c[i].He[He] = 0.0;
+<a name="line226">226: </a>    <font color="#4169E1">for</font> (V=1; V&lt;N+1; V++)    c[i].V[V]   = 1.0;
+<a name="line227">227: </a>    <font color="#4169E1">for</font> (I=1; I&lt;N+1; I++)    c[i].I[I]   = 1.0;
+<a name="line228">228: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N+1; He++) {
+<a name="line229">229: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N+1; V++)  c[i].HeV[He][V] = 0.0;
+<a name="line230">230: </a>    }
+<a name="line231">231: </a>  }
+
+<a name="line233">233: </a>  <font color="#B22222">/*</font>
+<a name="line234">234: </a><font color="#B22222">     Restore vectors</font>
+<a name="line235">235: </a><font color="#B22222">  */</font>
+<a name="line236">236: </a>  c    = (Concentrations*)(((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)c)+1);
+<a name="line237">237: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,C,&amp;c);
+<a name="line238">238: </a>  <font color="#4169E1">return</font>(0);
+<a name="line239">239: </a>}
+
+<a name="line241">241: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
+<a name="line244">244: </a><font color="#B22222">/*</font>
+<a name="line245">245: </a><font color="#B22222">   IFunction - Evaluates nonlinear function that defines the ODE</font>
+
+<a name="line247">247: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line248">248: </a><font color="#B22222">.  ts - the <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TS.html#TS">TS</A> context</font>
+<a name="line249">249: </a><font color="#B22222">.  U - input vector</font>
+<a name="line250">250: </a><font color="#B22222">.  ptr - optional user-defined context</font>
+
+<a name="line252">252: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line253">253: </a><font color="#B22222">.  F - function values</font>
+<a name="line254">254: </a><font color="#B22222"> */</font>
+<a name="line255">255: </a><strong><font color="#4169E1"><a name="IFunction"></a><A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> IFunction(<A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TS.html#TS">TS</A> ts,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> ftime,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A> C,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A> Cdot,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A> F,void *ptr)</font></strong>
+<a name="line256">256: </a>{
+<a name="line257">257: </a>  AppCtx         *ctx = (AppCtx*) ptr;
+<a name="line258">258: </a>  DM             da;
+<a name="line260">260: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       xi,Mx,xs,xm,He,he,V,v,I,i;
+<a name="line261">261: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      hx,sx,x;
+<a name="line262">262: </a>  Concentrations *c,*f;
+<a name="line263">263: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            localC;
+
+<a name="line266">266: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSGetDM.html#TSGetDM">TSGetDM</A>(ts,&amp;da);
+<a name="line267">267: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMGetLocalVector.html#DMGetLocalVector">DMGetLocalVector</A>(da,&amp;localC);
+<a name="line268">268: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,&amp;Mx,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>);
+<a name="line269">269: </a>  hx   = 8.0/(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)(Mx-1); sx = 1.0/(hx*hx);
+
+<a name="line271">271: </a>  <font color="#B22222">/*</font>
+<a name="line272">272: </a><font color="#B22222">       F  = Cdot +  all the diffusion and reaction terms added below</font>
+<a name="line273">273: </a><font color="#B22222">  */</font>
+<a name="line274">274: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecCopy.html#VecCopy">VecCopy</A>(Cdot,F);
+
+<a name="line276">276: </a>  <font color="#B22222">/*</font>
+<a name="line277">277: </a><font color="#B22222">     Scatter ghost points to local vector,using the 2-step process</font>
+<a name="line278">278: </a><font color="#B22222">        <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(),<A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>().</font>
+<a name="line279">279: </a><font color="#B22222">     By placing code between these two statements, computations can be</font>
+<a name="line280">280: </a><font color="#B22222">     done while messages are in transition.</font>
+<a name="line281">281: </a><font color="#B22222">  */</font>
+<a name="line282">282: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMGlobalToLocalBegin.html#DMGlobalToLocalBegin">DMGlobalToLocalBegin</A>(da,C,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,localC);
+<a name="line283">283: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMGlobalToLocalEnd.html#DMGlobalToLocalEnd">DMGlobalToLocalEnd</A>(da,C,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,localC);
+
+<a name="line285">285: </a>  <font color="#B22222">/*</font>
+<a name="line286">286: </a><font color="#B22222">    Get pointers to vector data</font>
+<a name="line287">287: </a><font color="#B22222">  */</font>
+<a name="line288">288: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,localC,&amp;c);
+<a name="line289">289: </a>  <font color="#B22222">/* Shift the c pointer to allow accessing with index of 1, instead of 0 */</font>
+<a name="line290">290: </a>  c    = (Concentrations*)(((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)c)-1);
+<a name="line291">291: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAVecGetArray.html#DMDAVecGetArray">DMDAVecGetArray</A>(da,F,&amp;f);
+<a name="line292">292: </a>  f    = (Concentrations*)(((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)f)-1);
+
+<a name="line294">294: </a>  <font color="#B22222">/*</font>
+<a name="line295">295: </a><font color="#B22222">     Get local grid boundaries</font>
+<a name="line296">296: </a><font color="#B22222">  */</font>
+<a name="line297">297: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,NULL,NULL,&amp;xm,NULL,NULL);
+
+<a name="line299">299: </a>  <font color="#B22222">/*</font>
+<a name="line300">300: </a><font color="#B22222">     Loop over grid points computing ODE terms for each grid point</font>
+<a name="line301">301: </a><font color="#B22222">  */</font>
+<a name="line302">302: </a>  <font color="#4169E1">for</font> (xi=xs; xi&lt;xs+xm; xi++) {
+<a name="line303">303: </a>    x = xi*hx;
+
+<a name="line305">305: </a>    <font color="#B22222">/* -------------------------------------------------------------</font>
+<a name="line306">306: </a><font color="#B22222">     ---- Compute diffusion over the locally owned part of the grid</font>
+<a name="line307">307: </a><font color="#B22222">    */</font>
+<a name="line308">308: </a>    <font color="#B22222">/* He clusters larger than 5 do not diffuse -- are immobile */</font>
+<a name="line309">309: </a>    <font color="#4169E1">for</font> (He=1; He&lt;PetscMin(N+1,6); He++) {
+<a name="line310">310: </a>      f[xi].He[He] -=  ctx-&gt;HeDiffusion[He]*(-2.0*c[xi].He[He] + c[xi-1].He[He] + c[xi+1].He[He])*sx;
+<a name="line311">311: </a>    }
+
+<a name="line313">313: </a>    <font color="#B22222">/* V and I clusters ONLY of size 1 diffuse */</font>
+<a name="line314">314: </a>    f[xi].V[1] -=  ctx-&gt;VDiffusion[1]*(-2.0*c[xi].V[1] + c[xi-1].V[1] + c[xi+1].V[1])*sx;
+<a name="line315">315: </a>    f[xi].I[1] -=  ctx-&gt;IDiffusion[1]*(-2.0*c[xi].I[1] + c[xi-1].I[1] + c[xi+1].I[1])*sx;
+
+<a name="line317">317: </a>    <font color="#B22222">/* Mixed He - V clusters are immobile  */</font>
+
+<a name="line319">319: </a>    <font color="#B22222">/* ----------------------------------------------------------------</font>
+<a name="line320">320: </a><font color="#B22222">     ---- Compute forcing that produces He of cluster size 1</font>
+<a name="line321">321: </a><font color="#B22222">          Crude cubic approximation of graph from Tibo's notes</font>
+<a name="line322">322: </a><font color="#B22222">    */</font>
+<a name="line323">323: </a>    f[xi].He[1] -=  ctx-&gt;forcingScale*PetscMax(0.0,0.0006*x*x*x  - 0.0087*x*x + 0.0300*x);
+<a name="line324">324: </a>    <font color="#B22222">/* Are V or I produced? */</font>
+
+<a name="line326">326: </a>    <font color="#4169E1">if</font> (ctx-&gt;noreactions) <font color="#4169E1">continue</font>;
+<a name="line327">327: </a>    <font color="#B22222">/* ----------------------------------------------------------------</font>
+<a name="line328">328: </a><font color="#B22222">     ---- Compute reaction terms that can create a cluster of given size</font>
+<a name="line329">329: </a><font color="#B22222">    */</font>
+<a name="line330">330: </a>    <font color="#B22222">/*   He[He] + He[he] -&gt; He[He+he]  */</font>
+<a name="line331">331: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line332">332: </a>      <font color="#B22222">/* compute all pairs of clusters of smaller size that can combine to create a cluster of size He,</font>
+<a name="line333">333: </a><font color="#B22222">         remove the upper half since they are symmetric to the lower half of the pairs. For example</font>
+<a name="line334">334: </a><font color="#B22222">              when He = 5 (cluster size 5) the pairs are</font>
+<a name="line335">335: </a><font color="#B22222">                 1   4</font>
+<a name="line336">336: </a><font color="#B22222">                 2   2</font>
+<a name="line337">337: </a><font color="#B22222">                 3   2  these last two are not needed in the sum since they repeat from above</font>
+<a name="line338">338: </a><font color="#B22222">                 4   1  this is why he &lt; (He/2) + 1            */</font>
+<a name="line339">339: </a>      <font color="#4169E1">for</font> (he=1; he&lt;(He/2)+1; he++) {
+<a name="line340">340: </a>        f[xi].He[He] -= ctx-&gt;reactionScale*c[xi].He[he]*c[xi].He[He-he];
+
+<a name="line342">342: </a>        <font color="#B22222">/* remove the two clusters that merged to form the larger cluster */</font>
+<a name="line343">343: </a>        f[xi].He[he]    += ctx-&gt;reactionScale*c[xi].He[he]*c[xi].He[He-he];
+<a name="line344">344: </a>        f[xi].He[He-he] += ctx-&gt;reactionScale*c[xi].He[he]*c[xi].He[He-he];
+<a name="line345">345: </a>      }
+<a name="line346">346: </a>    }
+<a name="line347">347: </a>    <font color="#B22222">/*   V[V]  +  V[v] -&gt;  V[V+v]  */</font>
+<a name="line348">348: </a>    <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line349">349: </a>      <font color="#4169E1">for</font> (v=1; v&lt;(V/2)+1; v++) {
+<a name="line350">350: </a>        f[xi].V[V] -= ctx-&gt;reactionScale*c[xi].V[v]*c[xi].V[V-v];
+<a name="line351">351: </a>        <font color="#B22222">/* remove the clusters that merged to form the larger cluster */</font>
+<a name="line352">352: </a>        f[xi].V[v]   += ctx-&gt;reactionScale*c[xi].V[v]*c[xi].V[V-v];
+<a name="line353">353: </a>        f[xi].V[V-v] += ctx-&gt;reactionScale*c[xi].V[v]*c[xi].V[V-v];
+<a name="line354">354: </a>      }
+<a name="line355">355: </a>    }
+<a name="line356">356: </a>    <font color="#B22222">/*   I[I] +  I[i] -&gt; I[I+i] */</font>
+<a name="line357">357: </a>    <font color="#4169E1">for</font> (I=2; I&lt;N+1; I++) {
+<a name="line358">358: </a>      <font color="#4169E1">for</font> (i=1; i&lt;(I/2)+1; i++) {
+<a name="line359">359: </a>        f[xi].I[I] -= ctx-&gt;reactionScale*c[xi].I[i]*c[xi].I[I-i];
+<a name="line360">360: </a>        <font color="#B22222">/* remove the clusters that merged to form the larger cluster */</font>
+<a name="line361">361: </a>        f[xi].I[i]   += ctx-&gt;reactionScale*c[xi].I[i]*c[xi].I[I-i];
+<a name="line362">362: </a>        f[xi].I[I-i] += ctx-&gt;reactionScale*c[xi].I[i]*c[xi].I[I-i];
+<a name="line363">363: </a>      }
+<a name="line364">364: </a>    }
+<a name="line365">365: </a>    <font color="#B22222">/* He[1] +  V[1]  -&gt;  He[1]-V[1] */</font>
+<a name="line366">366: </a>    f[xi].HeV[1][1] -= 1000*ctx-&gt;reactionScale*c[xi].He[1]*c[xi].V[1];
+<a name="line367">367: </a>    <font color="#B22222">/* remove the He and V  that merged to form the He-V cluster */</font>
+<a name="line368">368: </a>    f[xi].He[1] += 1000*ctx-&gt;reactionScale*c[xi].He[1]*c[xi].V[1];
+<a name="line369">369: </a>    f[xi].V[1]  += 1000*ctx-&gt;reactionScale*c[xi].He[1]*c[xi].V[1];
+<a name="line370">370: </a>    <font color="#B22222">/*  He[He]-V[V] + He[he] -&gt; He[He+he]-V[V]  */</font>
+<a name="line371">371: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N; He++) {
+<a name="line372">372: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N+1; V++) {
+<a name="line373">373: </a>        <font color="#4169E1">for</font> (he=1; he&lt;N-He+1; he++) {
+<a name="line374">374: </a>          f[xi].HeV[He+he][V] -= ctx-&gt;reactionScale*c[xi].HeV[He][V]*c[xi].He[he];
+<a name="line375">375: </a>          <font color="#B22222">/* remove the two clusters that merged to form the larger cluster */</font>
+<a name="line376">376: </a>          f[xi].He[he]     += ctx-&gt;reactionScale*c[xi].HeV[He][V]*c[xi].He[he];
+<a name="line377">377: </a>          f[xi].HeV[He][V] += ctx-&gt;reactionScale*c[xi].HeV[He][V]*c[xi].He[he];
+<a name="line378">378: </a>        }
+<a name="line379">379: </a>      }
+<a name="line380">380: </a>    }
+<a name="line381">381: </a>    <font color="#B22222">/*  He[He]-V[V] + V[v] -&gt; He[He][V+v] */</font>
+<a name="line382">382: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N+1; He++) {
+<a name="line383">383: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N; V++) {
+<a name="line384">384: </a>        <font color="#4169E1">for</font> (v=1; v&lt;N-V+1; v++) {
+<a name="line385">385: </a>          f[xi].HeV[He][V+v] -= ctx-&gt;reactionScale*c[xi].HeV[He][V]*c[xi].V[v];
+<a name="line386">386: </a>          <font color="#B22222">/* remove the two clusters that merged to form the larger cluster */</font>
+<a name="line387">387: </a>          f[xi].V[v]       += ctx-&gt;reactionScale*c[xi].HeV[He][V]*c[xi].V[v];
+<a name="line388">388: </a>          f[xi].HeV[He][V] += ctx-&gt;reactionScale*c[xi].HeV[He][V]*c[xi].V[v];
+<a name="line389">389: </a>        }
+<a name="line390">390: </a>      }
+<a name="line391">391: </a>    }
+<a name="line392">392: </a>    <font color="#B22222">/*  He[He]-V[V]  + He[he]-V[v] -&gt; He[He+he][V+v]  */</font>
+<a name="line393">393: </a>    <font color="#B22222">/*  Currently the reaction rates for this are zero */</font>
+<a name="line394">394: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N; He++) {
+<a name="line395">395: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N; V++) {
+<a name="line396">396: </a>        <font color="#4169E1">for</font> (he=1; he&lt;N-He+1; he++) {
+<a name="line397">397: </a>          <font color="#4169E1">for</font> (v=1; v&lt;N-V+1; v++) {
+<a name="line398">398: </a>            f[xi].HeV[He+he][V+v] -= 0.0*c[xi].HeV[He][V]*c[xi].HeV[he][v];
+<a name="line399">399: </a>            <font color="#B22222">/* remove the two clusters that merged to form the larger cluster */</font>
+<a name="line400">400: </a>            f[xi].HeV[he][V] += 0.0*c[xi].HeV[He][V]*c[xi].HeV[he][v];
+<a name="line401">401: </a>            f[xi].HeV[He][V] += 0.0*c[xi].HeV[He][V]*c[xi].HeV[he][v];
+<a name="line402">402: </a>          }
+<a name="line403">403: </a>        }
+<a name="line404">404: </a>      }
+<a name="line405">405: </a>    }
+<a name="line406">406: </a>    <font color="#B22222">/*  V[V] + I[I]  -&gt;   V[V-I] if V &gt; I else I[I-V] */</font>
+<a name="line407">407: </a>    <font color="#B22222">/*  What should the correct reaction rate should be? */</font>
+<a name="line408">408: </a>    <font color="#4169E1">for</font> (V=1; V&lt;N+1; V++) {
+<a name="line409">409: </a>      <font color="#4169E1">for</font> (I=1; I&lt;V; I++) {
+<a name="line410">410: </a>        f[xi].V[V-I] -= ctx-&gt;reactionScale*c[xi].V[V]*c[xi].I[I];
+<a name="line411">411: </a>        f[xi].V[V] += ctx-&gt;reactionScale*c[xi].V[V]*c[xi].I[I];
+<a name="line412">412: </a>        f[xi].I[I] += ctx-&gt;reactionScale*c[xi].V[V]*c[xi].I[I];
+<a name="line413">413: </a>      }
+<a name="line414">414: </a>      <font color="#4169E1">for</font> (I=V+1; I&lt;N+1; I++) {
+<a name="line415">415: </a>          f[xi].I[I-V] -= ctx-&gt;reactionScale*c[xi].V[V]*c[xi].I[I];
+<a name="line416">416: </a>          f[xi].V[V] += ctx-&gt;reactionScale*c[xi].V[V]*c[xi].I[I];
+<a name="line417">417: </a>          f[xi].I[I] += ctx-&gt;reactionScale*c[xi].V[V]*c[xi].I[I];
+<a name="line418">418: </a>      }
+<a name="line419">419: </a>    }
+
+
+
+<a name="line423">423: </a>    <font color="#4169E1">if</font> (ctx-&gt;nodissociations) <font color="#4169E1">continue</font>;
+<a name="line424">424: </a>    <font color="#B22222">/* -------------------------------------------------------------------------</font>
+<a name="line425">425: </a><font color="#B22222">     ---- Compute dissociation terms that removes an item from a cluster</font>
+<a name="line426">426: </a><font color="#B22222">          I assume dissociation means losing only a single item from a cluster</font>
+<a name="line427">427: </a><font color="#B22222">          I cannot tell from the notes if clusters can break up into any sub-size.</font>
+<a name="line428">428: </a><font color="#B22222">    */</font>
+<a name="line429">429: </a>    <font color="#B22222">/*   He[He] -&gt;  He[He-1] + He[1] */</font>
+<a name="line430">430: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line431">431: </a>      f[xi].He[He-1] -= ctx-&gt;dissociationScale*c[xi].He[He];
+<a name="line432">432: </a>      f[xi].He[1]    -= ctx-&gt;dissociationScale*c[xi].He[He];
+<a name="line433">433: </a>      f[xi].He[He]   += ctx-&gt;dissociationScale*c[xi].He[He];
+<a name="line434">434: </a>    }
+<a name="line435">435: </a>    <font color="#B22222">/*   V[V] -&gt;  V[V-1] + V[1] */</font>
+<a name="line436">436: </a>    <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line437">437: </a>      f[xi].V[V-1] -= ctx-&gt;dissociationScale*c[xi].V[V];
+<a name="line438">438: </a>      f[xi].V[1]   -= ctx-&gt;dissociationScale*c[xi].V[V];
+<a name="line439">439: </a>      f[xi].V[V]   += ctx-&gt;dissociationScale*c[xi].V[V];
+<a name="line440">440: </a>    }
+<a name="line441">441: </a>    <font color="#B22222">/*   I[I] -&gt;  I[I-1] + I[1] */</font>
+<a name="line442">442: </a>    <font color="#4169E1">for</font> (I=2; I&lt;N+1; I++) {
+<a name="line443">443: </a>      f[xi].I[I-1] -= ctx-&gt;dissociationScale*c[xi].I[I];
+<a name="line444">444: </a>      f[xi].I[1]   -= ctx-&gt;dissociationScale*c[xi].I[I];
+<a name="line445">445: </a>      f[xi].I[I]   += ctx-&gt;dissociationScale*c[xi].I[I];
+<a name="line446">446: </a>    }
+<a name="line447">447: </a>    <font color="#B22222">/* He[1]-V[1]  -&gt;  He[1] + V[1] */</font>
+<a name="line448">448: </a>    f[xi].He[1]     -= 1000*ctx-&gt;reactionScale*c[xi].HeV[1][1];
+<a name="line449">449: </a>    f[xi].V[1]      -= 1000*ctx-&gt;reactionScale*c[xi].HeV[1][1];
+<a name="line450">450: </a>    f[xi].HeV[1][1] += 1000*ctx-&gt;reactionScale*c[xi].HeV[1][1];
+<a name="line451">451: </a>    <font color="#B22222">/*   He[He]-V[1] -&gt;  He[He] + V[1]  */</font>
+<a name="line452">452: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line453">453: </a>      f[xi].He[He]     -= 1000*ctx-&gt;reactionScale*c[xi].HeV[He][1];
+<a name="line454">454: </a>      f[xi].V[1]       -= 1000*ctx-&gt;reactionScale*c[xi].HeV[He][1];
+<a name="line455">455: </a>      f[xi].HeV[He][1] += 1000*ctx-&gt;reactionScale*c[xi].HeV[He][1];
+<a name="line456">456: </a>    }
+<a name="line457">457: </a>    <font color="#B22222">/*   He[1]-V[V] -&gt;  He[1] + V[V]  */</font>
+<a name="line458">458: </a>    <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line459">459: </a>      f[xi].He[1]     -= 1000*ctx-&gt;reactionScale*c[xi].HeV[1][V];
+<a name="line460">460: </a>      f[xi].V[V]      -= 1000*ctx-&gt;reactionScale*c[xi].HeV[1][V];
+<a name="line461">461: </a>      f[xi].HeV[1][V] += 1000*ctx-&gt;reactionScale*c[xi].HeV[1][V];
+<a name="line462">462: </a>    }
+<a name="line463">463: </a>    <font color="#B22222">/*   He[He]-V[V] -&gt;  He[He-1]-V[V] + He[1]  */</font>
+<a name="line464">464: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line465">465: </a>      <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line466">466: </a>        f[xi].He[1]        -= 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line467">467: </a>        f[xi].HeV[He-1][V] -= 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line468">468: </a>        f[xi].HeV[He][V]   += 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line469">469: </a>      }
+<a name="line470">470: </a>    }
+<a name="line471">471: </a>    <font color="#B22222">/*   He[He]-V[V] -&gt;  He[He]-V[V-1] + V[1]  */</font>
+<a name="line472">472: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line473">473: </a>      <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line474">474: </a>        f[xi].V[1]         -= 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line475">475: </a>        f[xi].HeV[He][V-1] -= 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line476">476: </a>        f[xi].HeV[He][V]   += 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line477">477: </a>      }
+<a name="line478">478: </a>    }
+<a name="line479">479: </a>    <font color="#B22222">/*   He[He]-V[V] -&gt;  He[He]-V[V+1] + I[1]  */</font>
+<a name="line480">480: </a>    <font color="#B22222">/* Again, what is the reasonable dissociation rate? */</font>
+<a name="line481">481: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N+1; He++) {
+<a name="line482">482: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N; V++) {
+<a name="line483">483: </a>        f[xi].HeV[He][V+1] -= 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line484">484: </a>        f[xi].I[1]         -= 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line485">485: </a>        f[xi].HeV[He][V]   += 1000*ctx-&gt;reactionScale*c[xi].HeV[He][V];
+<a name="line486">486: </a>      }
+<a name="line487">487: </a>    }
+
+<a name="line489">489: </a>  }
+
+<a name="line491">491: </a>  <font color="#B22222">/*</font>
+<a name="line492">492: </a><font color="#B22222">     Restore vectors</font>
+<a name="line493">493: </a><font color="#B22222">  */</font>
+<a name="line494">494: </a>  c    = (Concentrations*)(((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)c)+1);
+<a name="line495">495: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,localC,&amp;c);
+<a name="line496">496: </a>  f    = (Concentrations*)(((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>*)f)+1);
+<a name="line497">497: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAVecRestoreArray.html#DMDAVecRestoreArray">DMDAVecRestoreArray</A>(da,F,&amp;f);
+<a name="line498">498: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMRestoreLocalVector.html#DMRestoreLocalVector">DMRestoreLocalVector</A>(da,&amp;localC);
+<a name="line499">499: </a>  <font color="#4169E1">return</font>(0);
+<a name="line500">500: </a>}
+
+
+<a name="line505">505: </a><strong><font color="#4169E1"><a name="GetDfill"></a><A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> GetDfill(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *dfill, void *ptr)</font></strong>
+<a name="line506">506: </a>{
+<a name="line507">507: </a>  AppCtx         *ctx = (AppCtx*) ptr;
+<a name="line508">508: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       He,he,V,v,I,i,dof = 3*N+N*N,reactants[3],row,col1,col2,j;
+
+<a name="line510">510: </a>  <font color="#4169E1">if</font> (!ctx-&gt;noreactions) {
+<a name="line511">511: </a>
+<a name="line512">512: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line513">513: </a>      <font color="#B22222">/* compute all pairs of clusters of smaller size that can combine to create a cluster of size He,</font>
+<a name="line514">514: </a><font color="#B22222">       remove the upper half since they are symmetric to the lower half of the pairs. For example</font>
+<a name="line515">515: </a><font color="#B22222">       when He = 5 (cluster size 5) the pairs are</font>
+<a name="line516">516: </a><font color="#B22222">       1   4</font>
+<a name="line517">517: </a><font color="#B22222">       2   2</font>
+<a name="line518">518: </a><font color="#B22222">       3   2  these last two are not needed in the sum since they repeat from above</font>
+<a name="line519">519: </a><font color="#B22222">       4   1  this is why he &lt; (He/2) + 1            */</font>
+<a name="line520">520: </a>      <font color="#4169E1">for</font> (he=1; he&lt;(He/2)+1; he++) {
+<a name="line521">521: </a>        reactants[0] = he, reactants[1] = He-he, reactants[2] = He;
+<a name="line522">522: </a>        <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line523">523: </a>          row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line524">524: </a>          dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line525">525: </a>        }
+<a name="line526">526: </a>      }
+<a name="line527">527: </a>    }
+<a name="line528">528: </a>    <font color="#B22222">/*   V[V]  +  V[v] -&gt;  V[V+v]  */</font>
+<a name="line529">529: </a>    <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line530">530: </a>      <font color="#4169E1">for</font> (v=1; v&lt;(V/2)+1; v++) {
+<a name="line531">531: </a>        reactants[0] = N+v, reactants[1] = N+V-v, reactants[2] = N+V;
+<a name="line532">532: </a>        <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line533">533: </a>          row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line534">534: </a>          dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line535">535: </a>        }
+<a name="line536">536: </a>      }
+<a name="line537">537: </a>    }
+
+<a name="line539">539: </a>    <font color="#B22222">/*   I[I] +  I[i] -&gt; I[I+i] */</font>
+<a name="line540">540: </a>    <font color="#4169E1">for</font> (I=2; I&lt;N+1; I++) {
+<a name="line541">541: </a>      <font color="#4169E1">for</font> (i=1; i&lt;(I/2)+1; i++) {
+<a name="line542">542: </a>        reactants[0] = 2*N+i, reactants[1] = 2*N+I-i, reactants[2] = 2*N+I;
+<a name="line543">543: </a>        <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line544">544: </a>          row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line545">545: </a>          dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line546">546: </a>        }
+<a name="line547">547: </a>      }
+<a name="line548">548: </a>    }
+<a name="line549">549: </a>
+<a name="line550">550: </a>    <font color="#B22222">/* He[1] +  V[1]  -&gt;  He[1]-V[1] */</font>
+<a name="line551">551: </a>    reactants[0] = 1, reactants[1] = N+1, reactants[2] = 3*N+1;
+<a name="line552">552: </a>    <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line553">553: </a>      row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line554">554: </a>      dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line555">555: </a>    }
+
+<a name="line557">557: </a>    <font color="#B22222">/*  He[He]-V[V] + He[he] -&gt; He[He+he]-V[V]  */</font>
+<a name="line558">558: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N; He++) {
+<a name="line559">559: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N+1; V++) {
+<a name="line560">560: </a>        <font color="#4169E1">for</font> (he=1; he&lt;N-He+1; he++) {
+<a name="line561">561: </a>          reactants[0] = 3*N + (He-1)*N + V, reactants[1] = he, reactants[2] = 3*N+(He+he-1)*N+V;
+<a name="line562">562: </a>          <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line563">563: </a>            row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line564">564: </a>            dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line565">565: </a>          }
+<a name="line566">566: </a>        }
+<a name="line567">567: </a>      }
+<a name="line568">568: </a>    }
+<a name="line569">569: </a>    <font color="#B22222">/*  He[He]-V[V] + V[v] -&gt; He[He][V+v] */</font>
+<a name="line570">570: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N+1; He++) {
+<a name="line571">571: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N; V++) {
+<a name="line572">572: </a>        <font color="#4169E1">for</font> (v=1; v&lt;N-V+1; v++) {
+<a name="line573">573: </a>          reactants[0] = 3*N+(He-1)*N+V, reactants[1] = N+v, reactants[2] = 3*N+(He-1)*N+V+v;
+<a name="line574">574: </a>          <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line575">575: </a>            row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line576">576: </a>            dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line577">577: </a>          }
+<a name="line578">578: </a>        }
+<a name="line579">579: </a>      }
+<a name="line580">580: </a>    }
+
+<a name="line582">582: </a>    <font color="#B22222">/*  He[He]-V[V]  + He[he]-V[v] -&gt; He[He+he][V+v]  */</font>
+<a name="line583">583: </a>    <font color="#B22222">/*  Currently the reaction rates for this are zero */</font>
+<a name="line584">584: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N; He++) {
+<a name="line585">585: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N; V++) {
+<a name="line586">586: </a>        <font color="#4169E1">for</font> (he=1; he&lt;N-He+1; he++) {
+<a name="line587">587: </a>          <font color="#4169E1">for</font> (v=1; v&lt;N-V+1; v++) {
+<a name="line588">588: </a>            reactants[0] = 3*N+(He-1)*N+V, reactants[1] = 3*N+(he-1)*N+V, reactants[2] = 3*N + (He+he-1)*N + V+v;
+<a name="line589">589: </a>            <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line590">590: </a>              row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line591">591: </a>              dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line592">592: </a>            }
+<a name="line593">593: </a>          }
+<a name="line594">594: </a>        }
+<a name="line595">595: </a>      }
+<a name="line596">596: </a>    }
+<a name="line597">597: </a>    <font color="#B22222">/*  V[V] + I[I]  -&gt;   V[V-I] if V &gt; I else I[I-V] */</font>
+<a name="line598">598: </a>    <font color="#B22222">/*  What should the correct reaction rate should be? */</font>
+<a name="line599">599: </a>    <font color="#4169E1">for</font> (V=1; V&lt;N+1; V++) {
+<a name="line600">600: </a>      <font color="#4169E1">for</font> (I=1; I&lt;V; I++) {
+<a name="line601">601: </a>        reactants[0] = N+V, reactants[1] = 2*N+I, reactants[2] = N+V-I;
+<a name="line602">602: </a>        <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line603">603: </a>          row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line604">604: </a>          dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line605">605: </a>        }
+<a name="line606">606: </a>      }
+<a name="line607">607: </a>      <font color="#4169E1">for</font> (I=V+1; I&lt;N+1; I++) {
+<a name="line608">608: </a>        reactants[0] = N+V, reactants[1] = 2*N+I, reactants[2] = 2*N+I-V;
+<a name="line609">609: </a>        <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line610">610: </a>          row = reactants[j], col1 = reactants[0], col2 = reactants[1];
+<a name="line611">611: </a>          dfill[(row-1)*dof + col1 - 1] = 1, dfill[(row-1)*dof + col2 - 1] = 1;
+<a name="line612">612: </a>        }
+<a name="line613">613: </a>      }
+<a name="line614">614: </a>    }
+<a name="line615">615: </a>  }
+<a name="line616">616: </a>    <font color="#B22222">/* -------------------------------------------------------------------------</font>
+<a name="line617">617: </a><font color="#B22222">     ---- Compute dissociation terms that removes an item from a cluster</font>
+<a name="line618">618: </a><font color="#B22222">          I assume dissociation means losing only a single item from a cluster</font>
+<a name="line619">619: </a><font color="#B22222">          I cannot tell from the notes if clusters can break up into any sub-size.</font>
+<a name="line620">620: </a><font color="#B22222">    */</font>
+<a name="line621">621: </a>  <font color="#4169E1">if</font> (!ctx-&gt;nodissociations) {
+<a name="line622">622: </a>    <font color="#B22222">/*   He[He] -&gt;  He[He-1] + He[1] */</font>
+<a name="line623">623: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line624">624: </a>      reactants[0] = He, reactants[1] = He-1, reactants[2] = 1;
+
+<a name="line626">626: </a>      <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line627">627: </a>        row = reactants[j], col1 = reactants[0];
+<a name="line628">628: </a>        dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line629">629: </a>      }
+<a name="line630">630: </a>    }
+<a name="line631">631: </a>    <font color="#B22222">/*   V[V] -&gt;  V[V-1] + V[1] */</font>
+<a name="line632">632: </a>    <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line633">633: </a>      reactants[0] = N+V, reactants[1] = N+V-1, reactants[2] = N+1;
+
+<a name="line635">635: </a>      <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line636">636: </a>        row = reactants[j], col1 = reactants[0];
+<a name="line637">637: </a>        dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line638">638: </a>      }
+<a name="line639">639: </a>    }
+
+<a name="line641">641: </a>    <font color="#B22222">/*   I[I] -&gt;  I[I-1] + I[1] */</font>
+<a name="line642">642: </a>    <font color="#4169E1">for</font> (I=2; I&lt;N+1; I++) {
+<a name="line643">643: </a>      reactants[0] = 2*N+I, reactants[1] = 2*N+I-1, reactants[2] = 2*N+1;
+
+<a name="line645">645: </a>      <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line646">646: </a>        row = reactants[j], col1 = reactants[0];
+<a name="line647">647: </a>        dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line648">648: </a>      }
+<a name="line649">649: </a>    }
+
+<a name="line651">651: </a>    <font color="#B22222">/* He[1]-V[1]  -&gt;  He[1] + V[1] */</font>
+<a name="line652">652: </a>    reactants[0] = 3*N+1, reactants[1] = 1, reactants[2] = N+1;
+
+<a name="line654">654: </a>    <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line655">655: </a>      row = reactants[j], col1 = reactants[0];
+<a name="line656">656: </a>      dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line657">657: </a>    }
+<a name="line658">658: </a>
+<a name="line659">659: </a>    <font color="#B22222">/*   He[He]-V[1] -&gt;  He[He] + V[1]  */</font>
+<a name="line660">660: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line661">661: </a>      reactants[0] = 3*N+(He-1)*N+1, reactants[1] = He, reactants[2] = N+1;
+
+<a name="line663">663: </a>      <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line664">664: </a>        row = reactants[j], col1 = reactants[0];
+<a name="line665">665: </a>        dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line666">666: </a>      }
+<a name="line667">667: </a>    }
+
+<a name="line669">669: </a>    <font color="#B22222">/*   He[1]-V[V] -&gt;  He[1] + V[V]  */</font>
+<a name="line670">670: </a>    <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line671">671: </a>      reactants[0] = 3*N+V, reactants[1] = 1, reactants[2] = N+V;
+
+<a name="line673">673: </a>      <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line674">674: </a>        row = reactants[j], col1 = reactants[0];
+<a name="line675">675: </a>        dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line676">676: </a>      }
+<a name="line677">677: </a>    }
+
+<a name="line679">679: </a>    <font color="#B22222">/*   He[He]-V[V] -&gt;  He[He-1]-V[V] + He[1]  */</font>
+<a name="line680">680: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line681">681: </a>      <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line682">682: </a>        reactants[0] = 3*N+(He-1)*N+V, reactants[1] = 3*N+(He-2)*N+V, reactants[2] = 1;
+
+<a name="line684">684: </a>        <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line685">685: </a>          row = reactants[j], col1 = reactants[0];
+<a name="line686">686: </a>          dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line687">687: </a>        }
+<a name="line688">688: </a>      }
+<a name="line689">689: </a>    }
+<a name="line690">690: </a>
+<a name="line691">691: </a>    <font color="#B22222">/*   He[He]-V[V] -&gt;  He[He]-V[V-1] + V[1]  */</font>
+<a name="line692">692: </a>    <font color="#4169E1">for</font> (He=2; He&lt;N+1; He++) {
+<a name="line693">693: </a>      <font color="#4169E1">for</font> (V=2; V&lt;N+1; V++) {
+<a name="line694">694: </a>        reactants[0] = 3*N+(He-1)*N+V, reactants[1] = 3*N+(He-1)*N+V-1, reactants[2] = N+1;
+
+<a name="line696">696: </a>        <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line697">697: </a>          row = reactants[j], col1 = reactants[0];
+<a name="line698">698: </a>          dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line699">699: </a>        }
+<a name="line700">700: </a>      }
+<a name="line701">701: </a>    }
+
+<a name="line703">703: </a>    <font color="#B22222">/*   He[He]-V[V] -&gt;  He[He]-V[V+1] + I[1]  */</font>
+<a name="line704">704: </a>    <font color="#B22222">/* Again, what is the reasonable dissociation rate? */</font>
+<a name="line705">705: </a>    <font color="#4169E1">for</font> (He=1; He&lt;N+1; He++) {
+<a name="line706">706: </a>      <font color="#4169E1">for</font> (V=1; V&lt;N; V++) {
+<a name="line707">707: </a>        reactants[0] = 3*N+(He-1)*N+V, reactants[1] = 3*N+(He-1)*N+V+1, reactants[2] = 2*N+1;
+
+<a name="line709">709: </a>        <font color="#4169E1">for</font> (j=0; j&lt;3; j++) {
+<a name="line710">710: </a>          row = reactants[j], col1 = reactants[0];
+<a name="line711">711: </a>          dfill[(row-1)*dof + col1 - 1] = 1;
+<a name="line712">712: </a>        }
+<a name="line713">713: </a>      }
+<a name="line714">714: </a>    }
+<a name="line715">715: </a>  }
+<a name="line716">716: </a>}
+<a name="line717">717: </a><font color="#B22222">/* ------------------------------------------------------------------- */</font>
+
+<a name="line719">719: </a><font color="#4169E1">typedef</font> <font color="#4169E1">struct</font> {
+<a name="line720">720: </a>  DM          da;       <font color="#B22222">/* defines the 2d layout of the He subvector */</font>
+<a name="line721">721: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A>         He;
+<a name="line722">722: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecScatter.html#VecScatter">VecScatter</A>  scatter;
+<a name="line723">723: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer;
+<a name="line724">724: </a>} MyMonitorCtx;
+
+<a name="line728">728: </a><font color="#B22222">/*</font>
+<a name="line729">729: </a><font color="#B22222">   Display He and V as a function of space and cluster size for each time step</font>
+<a name="line730">730: </a><font color="#B22222">*/</font>
+<a name="line731">731: </a><strong><font color="#4169E1"><a name="MyMonitorMonitor"></a><A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MyMonitorMonitor(<A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TS.html#TS">TS</A> ts,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> timestep,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A> time,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A> solution, void *ictx)</font></strong>
+<a name="line732">732: </a>{
+<a name="line733">733: </a>  MyMonitorCtx   *ctx = (MyMonitorCtx*)ictx;
+
+<a name="line737">737: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(ctx-&gt;scatter,solution,ctx-&gt;He,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line738">738: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(ctx-&gt;scatter,solution,ctx-&gt;He,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
+<a name="line739">739: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(ctx-&gt;He,ctx-&gt;viewer);
+<a name="line740">740: </a>  <font color="#4169E1">return</font>(0);
+<a name="line741">741: </a>}
+
+<a name="line745">745: </a><font color="#B22222">/*</font>
+<a name="line746">746: </a><font color="#B22222">   Frees all data structures associated with the monitor</font>
+<a name="line747">747: </a><font color="#B22222">*/</font>
+<a name="line748">748: </a><strong><font color="#4169E1"><a name="MyMonitorDestroy"></a><A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MyMonitorDestroy(void **ictx)</font></strong>
+<a name="line749">749: </a>{
+<a name="line750">750: </a>  MyMonitorCtx   **ctx = (MyMonitorCtx**)ictx;
+
+<a name="line754">754: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(&amp;(*ctx)-&gt;scatter);
+<a name="line755">755: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;(*ctx)-&gt;He);
+<a name="line756">756: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDestroy.html#DMDestroy">DMDestroy</A>(&amp;(*ctx)-&gt;da);
+<a name="line757">757: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Viewer/PetscViewerDestroy.html#PetscViewerDestroy">PetscViewerDestroy</A>(&amp;(*ctx)-&gt;viewer);
+<a name="line758">758: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(*ctx);
+<a name="line759">759: </a>  <font color="#4169E1">return</font>(0);
+<a name="line760">760: </a>}
+
+<a name="line764">764: </a><font color="#B22222">/*</font>
+<a name="line765">765: </a><font color="#B22222">   Sets up a monitor that will display He as a function of space and cluster size for each time step</font>
+<a name="line766">766: </a><font color="#B22222">*/</font>
+<a name="line767">767: </a><strong><font color="#4169E1"><a name="MyMonitorSetUp"></a><A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MyMonitorSetUp(<A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TS.html#TS">TS</A> ts)</font></strong>
+<a name="line768">768: </a>{
+<a name="line769">769: </a>  DM             da;
+<a name="line771">771: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       xi,xs,xm,*idx,M,xj,cnt = 0,dof = 3*N + N*N;
+<a name="line772">772: </a>  const <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *lx;
+<a name="line773">773: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            C;
+<a name="line774">774: </a>  MyMonitorCtx   *ctx;
+<a name="line775">775: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
+<a name="line776">776: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/IS/IS.html#IS">IS</A>             is;
+<a name="line777">777: </a>  char           ycoor[32];
+<a name="line778">778: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      valuebounds[4] = {0, 1.2, 0, 1.2};
+
+<a name="line781">781: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL,<font color="#666666">"-mymonitor"</font>,&amp;flg);
+<a name="line782">782: </a>  <font color="#4169E1">if</font> (!flg) <font color="#4169E1">return</font>(0);
+
+<a name="line784">784: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSGetDM.html#TSGetDM">TSGetDM</A>(ts,&amp;da);
+<a name="line785">785: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A>(MyMonitorCtx,&amp;ctx);
+<a name="line786">786: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da),NULL,<font color="#666666">""</font>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,600,400,&amp;ctx-&gt;viewer);
+
+<a name="line788">788: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(da,&amp;xs,NULL,NULL,&amp;xm,NULL,NULL);
+<a name="line789">789: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAGetInfo.html#DMDAGetInfo">DMDAGetInfo</A>(da,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,&amp;M,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_IGNORE.html#PETSC_IGNORE">PETSC_IGNORE</A>);
+<a name="line790">790: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDAGetOwnershipRanges.html#DMDAGetOwnershipRanges">DMDAGetOwnershipRanges</A>(da,&amp;lx,NULL,NULL);
+<a name="line791">791: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da),DMDA_BOUNDARY_NONE,DMDA_BOUNDARY_NONE,<A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDA_STENCIL_STAR.html#DMDA_STENCIL_STAR">DMDA_STENCIL_STAR</A>,M,N,<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>,1,2,1,lx,NULL,&amp;ctx-&gt;da);
+<a name="line792">792: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(ctx-&gt;da,0,<font color="#666666">"He"</font>);
+<a name="line793">793: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetFieldName.html#DMDASetFieldName">DMDASetFieldName</A>(ctx-&gt;da,1,<font color="#666666">"V"</font>);
+<a name="line794">794: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetCoordinateName.html#DMDASetCoordinateName">DMDASetCoordinateName</A>(ctx-&gt;da,0,<font color="#666666">"X coordinate direction"</font>);
+<a name="line795">795: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscSNPrintf.html#PetscSNPrintf">PetscSNPrintf</A>(ycoor,32,<font color="#666666">"%D ... Cluster size ... 1"</font>,N);
+<a name="line796">796: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMDASetCoordinateName.html#DMDASetCoordinateName">DMDASetCoordinateName</A>(ctx-&gt;da,1,ycoor);
+
+<a name="line798">798: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(ctx-&gt;da,&amp;ctx-&gt;He);
+<a name="line799">799: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(2*N*xm*<font color="#4169E1">sizeof</font>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;idx);
+<a name="line800">800: </a>  cnt  = 0;
+<a name="line801">801: </a>  <font color="#4169E1">for</font> (xj=0; xj&lt;N; xj++) {
+<a name="line802">802: </a>    <font color="#4169E1">for</font> (xi=xs; xi&lt;xs+xm; xi++) {
+<a name="line803">803: </a>      idx[cnt++] = dof*xi + xj;
+<a name="line804">804: </a>      idx[cnt++] = dof*xi + xj + N;
+<a name="line805">805: </a>    }
+<a name="line806">806: </a>  }
+<a name="line807">807: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../..-diffusion-reaction/../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)ts),2*N*xm,idx,PETSC_OWN_POINTER,&amp;is);
+<a name="line808">808: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSGetSolution.html#TSGetSolution">TSGetSolution</A>(ts,&amp;C);
+<a name="line809">809: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(C,is,ctx-&gt;He,NULL,&amp;ctx-&gt;scatter);
+<a name="line810">810: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is);
+
+<a name="line812">812: </a>  <font color="#B22222">/* sets the bounds on the contour plot values so the colors mean the same thing for different timesteps */</font>
+<a name="line813">813: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/Viewer/PetscViewerDrawSetBounds.html#PetscViewerDrawSetBounds">PetscViewerDrawSetBounds</A>(ctx-&gt;viewer,2,valuebounds);
+
+<a name="line815">815: </a>  <A href="../../../..-diffusion-reaction/../docs/manualpages/TS/TSMonitorSet.html#TSMonitorSet">TSMonitorSet</A>(ts,MyMonitorMonitor,ctx,MyMonitorDestroy);
+<a name="line816">816: </a>  <font color="#4169E1">return</font>(0);
+<a name="line817">817: </a>}
+
+</pre>
+</body>
+
+</html>

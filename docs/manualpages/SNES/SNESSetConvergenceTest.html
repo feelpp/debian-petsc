@@ -5,15 +5,13 @@
 <TITLE>SNESSetConvergenceTest</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSetConvergenceTest"><H1>SNESSetConvergenceTest</H1></A>
-Sets the function that is to be used  to test for convergence of the nonlinear iterative solution.    
+Sets the function that is to be used to test for convergence of the nonlinear iterative solution. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
-PetscErrorCode  SNESSetConvergenceTest(SNES snes,PetscErrorCode (*func)(SNES,PetscInt,PetscReal,PetscReal,PetscReal,SNESConvergedReason*,void*),void *cctx,PetscErrorCode (*destroy)(void*))
+PetscErrorCode  SNESSetConvergenceTest(SNES snes,PetscErrorCode (*SNESConvergenceTestFunction)(SNES,PetscInt,PetscReal,PetscReal,PetscReal,SNESConvergedReason*,void*),void *cctx,PetscErrorCode (*destroy)(void*))
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -21,32 +19,11 @@ Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes </B></TD><TD>- the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- routine to test for convergence
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../SNES/SNESConvergenceTestFunction.html#SNESConvergenceTestFunction">SNESConvergenceTestFunction</A> </B></TD><TD>- routine to test for convergence
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cctx </B></TD><TD>- [optional] context for private data for the convergence routine  (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cctx </B></TD><TD>- [optional] context for private data for the convergence routine  (may be NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>destroy </B></TD><TD>- [optional] destructor for the context (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>; PETSC_NULL_FUNCTION in Fortran)
-</TD></TR></TABLE>
-<P>
-<H3><FONT COLOR="#CC3333">Calling sequence of func</FONT></H3>
-<pre>
-    <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> func (<A HREF="../SNES/SNES.html#SNES">SNES</A> snes,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> it,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> xnorm,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> gnorm,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> f,<A HREF="../SNES/SNESConvergedReason.html#SNESConvergedReason">SNESConvergedReason</A> *reason,void *cctx)
-</pre>
-<P>
-<TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes </B></TD><TD>- the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>it </B></TD><TD>- current iteration (0 is the first and is before any Newton step)
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>cctx </B></TD><TD>- [optional] convergence context
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>reason </B></TD><TD>- reason for convergence/divergence
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>xnorm </B></TD><TD>- 2-norm of current iterate
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>gnorm </B></TD><TD>- 2-norm of current step
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>f </B></TD><TD>- 2-norm of function
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>destroy </B></TD><TD>- [optional] destructor for the context (may be NULL; NULL_FUNCTION in Fortran)
 </TD></TR></TABLE>
 <P>
 
@@ -56,7 +33,7 @@ Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/SNESDefaultConverged.html#SNESDefaultConverged">SNESDefaultConverged</A>(), <A HREF="../SNES/SNESSkipConverged.html#SNESSkipConverged">SNESSkipConverged</A>()
+ <A HREF="../SNES/SNESConvergedDefault.html#SNESConvergedDefault">SNESConvergedDefault</A>(), <A HREF="../SNES/SNESSkipConverged.html#SNESSkipConverged">SNESSkipConverged</A>(), <A HREF="../SNES/SNESConvergenceTestFunction.html#SNESConvergenceTestFunction">SNESConvergenceTestFunction</A>
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/interface/snes.c.html#SNESSetConvergenceTest">src/snes/interface/snes.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>

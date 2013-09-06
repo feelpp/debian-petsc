@@ -3,7 +3,7 @@
 <TITLE>Krylov Methods - KSP</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 
 <H2> Krylov Methods - KSP: : <A HREF="../../../../../src/ksp/ksp/examples/tutorials/index.html">Examples</A></H2> 
 
@@ -34,7 +34,7 @@ is intended for library developers.
 <p>
 <a href="ex1.c.html">ex1.c: Solves a tridiagonal linear system with KSP</a><br>
 <a href="ex2.c.html">ex2.c: Solves a linear system in parallel with KSP</a><br>
-<a href="ex3.c.html">ex3.c: Solves a linear system in parallel with KSP</a><br>
+<a href="ex3.c.html">ex3.c: Bilinear elements on the unit square for Laplacian</a><br>
 <a href="ex4.c.html">ex4.c: Test MatSetValuesBatch: setting batches of elements using the GPU</a><br>
 <a href="ex5.c.html">ex5.c: Solves two linear systems in parallel with KSP</a><br>
 <a href="ex7.c.html">ex7.c: Block Jacobi preconditioner for solving a linear system in parallel with KSP</a><br>
@@ -47,12 +47,13 @@ is intended for library developers.
 <a href="ex13.c.html">ex13.c: Solves a variable Poisson problem with KSP</a><br>
 <a href="ex15.c.html">ex15.c: Solves a linear system in parallel with KSP</a><br>
 <a href="ex16.c.html">ex16.c: Solves a sequence of linear systems with different right-hand-side vectors</a><br>
+<a href="ex18.c.html">ex18.c: Solves a (permuted) linear system in parallel with KSP</a><br>
 <a href="ex23.c.html">ex23.c: Solves a tridiagonal linear system</a><br>
 <a href="ex25.c.html">ex25.c: Solves 1D variable coefficient Laplacian using multigrid</a><br>
 <a href="ex27.c.html">ex27.c: Reads a PETSc matrix and vector from a file and solves the normal equations</a><br>
 <a href="ex28.c.html">ex28.c: Solves 1D wave equation using multigrid</a><br>
 <a href="ex29.c.html">ex29.c: Solves 2D inhomogeneous Laplacian using multigrid</a><br>
-<a href="ex30.c.html">ex30.c: </a><br>
+<a href="ex30.c.html">ex30.c:  * Example code testing SeqDense matrices with an LDA (leading dimension of the user-allocated arrray) larger than M</a><br>
 <a href="ex31.c.html">ex31.c: Solves 2D compressible Euler using multigrid</a><br>
 <a href="ex32.c.html">ex32.c: Solves 2D inhomogeneous Laplacian using multigrid</a><br>
 <a href="ex34.c.html">ex34.c: Solves 3D Laplacian using multigrid</a><br>
@@ -60,18 +61,18 @@ is intended for library developers.
 <a href="ex39.c.html">ex39.c: Lattice Gauge 2D model</a><br>
 <a href="ex40.c.html">ex40.c: Lattice Gauge 2D model</a><br>
 <a href="ex41.c.html">ex41.c: Reads a PETSc matrix and vector from a socket connection,  solves a linear system and sends the result back</a><br>
-<a href="ex42.c.html">ex42.c: static char help[] =</a><br>
-<a href="ex43.c.html">ex43.c: static char help[] =</a><br>
+<a href="ex42.c.html">ex42.c: Solves the incompressible, variable viscosity stokes equation in 3d using Q1Q1 elements, \n\</a><br>
+<a href="ex43.c.html">ex43.c: Solves the incompressible, variable viscosity stokes equation in 2d on the unit domain \n\</a><br>
 <a href="ex45.c.html">ex45.c: Solves 3D Laplacian using multigrid</a><br>
 <a href="ex46.c.html">ex46.c: Solves a linear system in parallel with KSP and DM</a><br>
-<a href="ex49.c.html">ex49.c: static char help[] =</a><br>
+<a href="ex49.c.html">ex49.c:    Solves the compressible plane strain elasticity equations in 2d on the unit domain using Q1 finite elements</a><br>
 <a href="ex50.c.html">ex50.c: Solves 2D Poisson equation using multigrid</a><br>
 <a href="ex51.c.html">ex51.c: This example solves a linear system in parallel with KSP</a><br>
 <a href="ex52.c.html">ex52.c: Solves a linear system in parallel with KSP</a><br>
 <a href="ex53.c.html">ex53.c: Solves a tridiagonal linear system with KSP</a><br>
-<a href="ex54.c.html">ex54.c: Creates a matrix using simple quadirlateral finite elements, and uses it to test GAMG\n\</a><br>
-<a href="ex55.c.html">ex55.c: static char help[] = </a><br>
-<a href="ex56.c.html">ex56.c: static char help[] = </a><br>
+<a href="ex54.c.html">ex54.c: Creates a matrix from quadrilateral finite elements in 2D, Laplacian \n\</a><br>
+<a href="ex55.c.html">ex55.c: 2D, bi-linear quadrilateral (Q1), displacement finite element formulation\n\</a><br>
+<a href="ex56.c.html">ex56.c: 3D, bi-linear quadrilateral (Q1), displacement finite element formulation\n\</a><br>
 <a href="ex58.c.html">ex58.c: Solves a tridiagonal linear system with KSP</a><br>
  
 <a href="makefile.html">makefile</a><br>

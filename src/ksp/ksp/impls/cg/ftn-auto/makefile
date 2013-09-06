@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = cgtypef.c
-OBJSC    = cgtypef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

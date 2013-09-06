@@ -4,19 +4,19 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/sbaij/seq/sbaijfact7.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:49:13+00:00">
+<meta name="date" content="2013-07-02T14:43:27+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/mat/impls/sbaij/seq/sbaij.h&gt;</font>
-<a name="line3">  3: </a><font color="#A020F0">#include &lt;../src/mat/blockinvert.h&gt;</font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petsc-private/kernels/blockinvert.h&gt;</font>
 
 <a name="line5">  5: </a><font color="#B22222">/* Version for when blocks are 5 by 5  */</font>
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="MatCholeskyFactorNumeric_SeqSBAIJ_5"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCholeskyFactorNumeric_SeqSBAIJ_5(<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> C,<A href="../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
 <a name="line9">  9: </a>{
-<a name="line10"> 10: </a>  Mat_SeqSBAIJ   *a = (Mat_SeqSBAIJ*)A-&gt;data,*b = (Mat_SeqSBAIJ *)C-&gt;data;
+<a name="line10"> 10: </a>  Mat_SeqSBAIJ   *a   = (Mat_SeqSBAIJ*)A-&gt;data,*b = (Mat_SeqSBAIJ*)C-&gt;data;
 <a name="line11"> 11: </a>  <A href="../../../../../docs/manualpages/IS/IS.html#IS">IS</A>             perm = b-&gt;row;
 <a name="line13"> 13: </a>  const <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *ai,*aj,*perm_ptr,mbs=a-&gt;mbs,*bi=b-&gt;i,*bj=b-&gt;j;
 <a name="line14"> 14: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,j,*a2anew,k,k1,jmin,jmax,*jl,*il,vj,nexti,ili,ipvt[5];
@@ -35,32 +35,32 @@
 <a name="line28"> 28: </a>  <A href="../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(perm,&amp;perm_ptr);
 
 <a name="line30"> 30: </a>  <font color="#B22222">/* check permutation */</font>
-<a name="line31"> 31: </a>  <font color="#4169E1">if</font> (!a-&gt;permute){
+<a name="line31"> 31: </a>  <font color="#4169E1">if</font> (!a-&gt;permute) {
 <a name="line32"> 32: </a>    ai = a-&gt;i; aj = a-&gt;j; aa = a-&gt;a;
 <a name="line33"> 33: </a>  } <font color="#4169E1">else</font> {
-<a name="line34"> 34: </a>    ai = a-&gt;inew; aj = a-&gt;jnew;
+<a name="line34"> 34: </a>    ai   = a-&gt;inew; aj = a-&gt;jnew;
 <a name="line35"> 35: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(25*ai[mbs]*<font color="#4169E1">sizeof</font>(MatScalar),&amp;aa);
 <a name="line36"> 36: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(aa,a-&gt;a,25*ai[mbs]*<font color="#4169E1">sizeof</font>(MatScalar));
 <a name="line37"> 37: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(ai[mbs]*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;a2anew);
 <a name="line38"> 38: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(a2anew,a-&gt;a2anew,(ai[mbs])*<font color="#4169E1">sizeof</font>(<A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
 
-<a name="line40"> 40: </a>    <font color="#4169E1">for</font> (i=0; i&lt;mbs; i++){
+<a name="line40"> 40: </a>    <font color="#4169E1">for</font> (i=0; i&lt;mbs; i++) {
 <a name="line41"> 41: </a>      jmin = ai[i]; jmax = ai[i+1];
-<a name="line42"> 42: </a>      <font color="#4169E1">for</font> (j=jmin; j&lt;jmax; j++){
-<a name="line43"> 43: </a>        <font color="#4169E1">while</font> (a2anew[j] != j){
+<a name="line42"> 42: </a>      <font color="#4169E1">for</font> (j=jmin; j&lt;jmax; j++) {
+<a name="line43"> 43: </a>        <font color="#4169E1">while</font> (a2anew[j] != j) {
 <a name="line44"> 44: </a>          k = a2anew[j]; a2anew[j] = a2anew[k]; a2anew[k] = k;
-<a name="line45"> 45: </a>          <font color="#4169E1">for</font> (k1=0; k1&lt;25; k1++){
-<a name="line46"> 46: </a>            dk[k1]       = aa[k*25+k1];
+<a name="line45"> 45: </a>          <font color="#4169E1">for</font> (k1=0; k1&lt;25; k1++) {
+<a name="line46"> 46: </a>            dk[k1]      = aa[k*25+k1];
 <a name="line47"> 47: </a>            aa[k*25+k1] = aa[j*25+k1];
 <a name="line48"> 48: </a>            aa[j*25+k1] = dk[k1];
 <a name="line49"> 49: </a>          }
 <a name="line50"> 50: </a>        }
 <a name="line51"> 51: </a>        <font color="#B22222">/* transform columnoriented blocks that lie in the lower triangle to roworiented blocks */</font>
-<a name="line52"> 52: </a>        <font color="#4169E1">if</font> (i &gt; aj[j]){
+<a name="line52"> 52: </a>        <font color="#4169E1">if</font> (i &gt; aj[j]) {
 <a name="line53"> 53: </a>          <font color="#B22222">/* printf("change orientation, row: %d, col: %d\n",i,aj[j]); */</font>
 <a name="line54"> 54: </a>          ap = aa + j*25;                     <font color="#B22222">/* ptr to the beginning of j-th block of aa */</font>
 <a name="line55"> 55: </a>          <font color="#4169E1">for</font> (k=0; k&lt;25; k++) dk[k] = ap[k]; <font color="#B22222">/* dk &lt;- j-th block of aa */</font>
-<a name="line56"> 56: </a>          <font color="#4169E1">for</font> (k=0; k&lt;5; k++){               <font color="#B22222">/* j-th block of aa &lt;- dk^T */</font>
+<a name="line56"> 56: </a>          <font color="#4169E1">for</font> (k=0; k&lt;5; k++) {               <font color="#B22222">/* j-th block of aa &lt;- dk^T */</font>
 <a name="line57"> 57: </a>            <font color="#4169E1">for</font> (k1=0; k1&lt;5; k1++) *ap++ = dk[k + 5*k1];
 <a name="line58"> 58: </a>          }
 <a name="line59"> 59: </a>        }
@@ -68,16 +68,16 @@
 <a name="line61"> 61: </a>    }
 <a name="line62"> 62: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(a2anew);
 <a name="line63"> 63: </a>  }
-<a name="line64"> 64: </a>
+
 <a name="line65"> 65: </a>  <font color="#B22222">/* for each row k */</font>
-<a name="line66"> 66: </a>  <font color="#4169E1">for</font> (k = 0; k&lt;mbs; k++){
+<a name="line66"> 66: </a>  <font color="#4169E1">for</font> (k = 0; k&lt;mbs; k++) {
 
 <a name="line68"> 68: </a>    <font color="#B22222">/*initialize k-th row with elements nonzero in row perm(k) of A */</font>
 <a name="line69"> 69: </a>    jmin = ai[perm_ptr[k]]; jmax = ai[perm_ptr[k]+1];
 <a name="line70"> 70: </a>    <font color="#4169E1">if</font> (jmin &lt; jmax) {
 <a name="line71"> 71: </a>      ap = aa + jmin*25;
-<a name="line72"> 72: </a>      <font color="#4169E1">for</font> (j = jmin; j &lt; jmax; j++){
-<a name="line73"> 73: </a>        vj = perm_ptr[aj[j]];         <font color="#B22222">/* block col. index */</font>
+<a name="line72"> 72: </a>      <font color="#4169E1">for</font> (j = jmin; j &lt; jmax; j++) {
+<a name="line73"> 73: </a>        vj       = perm_ptr[aj[j]];   <font color="#B22222">/* block col. index */</font>
 <a name="line74"> 74: </a>        rtmp_ptr = rtmp + vj*25;
 <a name="line75"> 75: </a>        <font color="#4169E1">for</font> (i=0; i&lt;25; i++) *rtmp_ptr++ = *ap++;
 <a name="line76"> 76: </a>      }
@@ -85,9 +85,9 @@
 
 <a name="line79"> 79: </a>    <font color="#B22222">/* modify k-th row by adding in those rows i with U(i,k) != 0 */</font>
 <a name="line80"> 80: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(dk,rtmp+k*25,25*<font color="#4169E1">sizeof</font>(MatScalar));
-<a name="line81"> 81: </a>    i = jl[k]; <font color="#B22222">/* first row to be added to k_th row  */</font>
+<a name="line81"> 81: </a>    i    = jl[k]; <font color="#B22222">/* first row to be added to k_th row  */</font>
 
-<a name="line83"> 83: </a>    <font color="#4169E1">while</font> (i &lt; mbs){
+<a name="line83"> 83: </a>    <font color="#4169E1">while</font> (i &lt; mbs) {
 <a name="line84"> 84: </a>      nexti = jl[i]; <font color="#B22222">/* next row to be added to k_th row */</font>
 
 <a name="line86"> 86: </a>      <font color="#B22222">/* compute multiplier */</font>
@@ -95,7 +95,7 @@
 
 <a name="line89"> 89: </a>      <font color="#B22222">/* uik = -inv(Di)*U_bar(i,k) */</font>
 <a name="line90"> 90: </a>      d = ba + i*25;
-<a name="line91"> 91: </a>      u    = ba + ili*25;
+<a name="line91"> 91: </a>      u = ba + ili*25;
 
 <a name="line93"> 93: </a>      uik[0] = -(d[0]*u[0] + d[5]*u[1] + d[10]*u[2] + d[15]*u[3] + d[20]*u[4]);
 <a name="line94"> 94: </a>      uik[1] = -(d[1]*u[0] + d[6]*u[1] + d[11]*u[2] + d[16]*u[3] + d[21]*u[4]);
@@ -166,11 +166,11 @@
 
 <a name="line160">160: </a>      <font color="#B22222">/* add multiple of row i to k-th row ... */</font>
 <a name="line161">161: </a>      jmin = ili + 1; jmax = bi[i+1];
-<a name="line162">162: </a>      <font color="#4169E1">if</font> (jmin &lt; jmax){
+<a name="line162">162: </a>      <font color="#4169E1">if</font> (jmin &lt; jmax) {
 <a name="line163">163: </a>        <font color="#4169E1">for</font> (j=jmin; j&lt;jmax; j++) {
 <a name="line164">164: </a>          <font color="#B22222">/* rtmp += -U(i,k)^T * U_bar(i,j) */</font>
-<a name="line165">165: </a>          rtmp_ptr = rtmp + bj[j]*25;
-<a name="line166">166: </a>          u = ba + j*25;
+<a name="line165">165: </a>          rtmp_ptr     = rtmp + bj[j]*25;
+<a name="line166">166: </a>          u            = ba + j*25;
 <a name="line167">167: </a>          rtmp_ptr[0] +=  uik[0]*u[0] + uik[1]*u[1] + uik[2]*u[2] + uik[3]*u[3] + uik[4]*u[4];
 <a name="line168">168: </a>          rtmp_ptr[1] +=  uik[5]*u[0] + uik[6]*u[1] + uik[7]*u[2] + uik[8]*u[3] + uik[9]*u[4];
 <a name="line169">169: </a>          rtmp_ptr[2] += uik[10]*u[0]+ uik[11]*u[1]+ uik[12]*u[2]+ uik[13]*u[3]+ uik[14]*u[4];
@@ -202,7 +202,7 @@
 <a name="line195">195: </a>          rtmp_ptr[24] += uik[20]*u[20]+ uik[21]*u[21]+ uik[22]*u[22]+ uik[23]*u[23]+ uik[24]*u[24];
 <a name="line196">196: </a>        }
 <a name="line197">197: </a>        <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*125.0*(jmax-jmin));
-<a name="line198">198: </a>
+
 <a name="line199">199: </a>        <font color="#B22222">/* ... add i to row list for next nonzero entry */</font>
 <a name="line200">200: </a>        il[i] = jmin;             <font color="#B22222">/* update il(i) in column k+1, ... mbs-1 */</font>
 <a name="line201">201: </a>        j     = bj[jmin];
@@ -214,22 +214,22 @@
 <a name="line207">207: </a>    <font color="#B22222">/* save nonzero entries in k-th row of U ... */</font>
 
 <a name="line209">209: </a>    <font color="#B22222">/* invert diagonal block */</font>
-<a name="line210">210: </a>    d = ba+k*25;
+<a name="line210">210: </a>    d    = ba+k*25;
 <a name="line211">211: </a>    <A href="../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(d,dk,25*<font color="#4169E1">sizeof</font>(MatScalar));
 <a name="line212">212: </a>    PetscKernel_A_gets_inverse_A_5(d,ipvt,work,shift);
-<a name="line213">213: </a>
+
 <a name="line214">214: </a>    jmin = bi[k]; jmax = bi[k+1];
 <a name="line215">215: </a>    <font color="#4169E1">if</font> (jmin &lt; jmax) {
-<a name="line216">216: </a>      <font color="#4169E1">for</font> (j=jmin; j&lt;jmax; j++){
-<a name="line217">217: </a>         vj = bj[j];           <font color="#B22222">/* block col. index of U */</font>
-<a name="line218">218: </a>         u   = ba + j*25;
-<a name="line219">219: </a>         rtmp_ptr = rtmp + vj*25;
-<a name="line220">220: </a>         <font color="#4169E1">for</font> (k1=0; k1&lt;25; k1++){
-<a name="line221">221: </a>           *u++        = *rtmp_ptr;
-<a name="line222">222: </a>           *rtmp_ptr++ = 0.0;
-<a name="line223">223: </a>         }
+<a name="line216">216: </a>      <font color="#4169E1">for</font> (j=jmin; j&lt;jmax; j++) {
+<a name="line217">217: </a>        vj       = bj[j];      <font color="#B22222">/* block col. index of U */</font>
+<a name="line218">218: </a>        u        = ba + j*25;
+<a name="line219">219: </a>        rtmp_ptr = rtmp + vj*25;
+<a name="line220">220: </a>        <font color="#4169E1">for</font> (k1=0; k1&lt;25; k1++) {
+<a name="line221">221: </a>          *u++        = *rtmp_ptr;
+<a name="line222">222: </a>          *rtmp_ptr++ = 0.0;
+<a name="line223">223: </a>        }
 <a name="line224">224: </a>      }
-<a name="line225">225: </a>
+
 <a name="line226">226: </a>      <font color="#B22222">/* ... add k to row list for first nonzero entry in k-th row */</font>
 <a name="line227">227: </a>      il[k] = jmin;
 <a name="line228">228: </a>      i     = bj[jmin];
@@ -240,18 +240,20 @@
 <a name="line233">233: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(rtmp);
 <a name="line234">234: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(il,jl);
 <a name="line235">235: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFree2.html#PetscFree2">PetscFree2</A>(dk,uik);
-<a name="line236">236: </a>  <font color="#4169E1">if</font> (a-&gt;permute){
+<a name="line236">236: </a>  <font color="#4169E1">if</font> (a-&gt;permute) {
 <a name="line237">237: </a>    <A href="../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(aa);
 <a name="line238">238: </a>  }
 
 <a name="line240">240: </a>  <A href="../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(perm,&amp;perm_ptr);
-<a name="line241">241: </a>  C-&gt;ops-&gt;solve          = MatSolve_SeqSBAIJ_5_inplace;
-<a name="line242">242: </a>  C-&gt;ops-&gt;solvetranspose = MatSolve_SeqSBAIJ_5_inplace;
-<a name="line243">243: </a>  C-&gt;assembled = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line244">244: </a>  C-&gt;preallocated = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
-<a name="line245">245: </a>  <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1.3333*125*b-&gt;mbs); <font color="#B22222">/* from inverting diagonal blocks */</font>
-<a name="line246">246: </a>  <font color="#4169E1">return</font>(0);
-<a name="line247">247: </a>}
+
+<a name="line242">242: </a>  C-&gt;ops-&gt;solve          = MatSolve_SeqSBAIJ_5_inplace;
+<a name="line243">243: </a>  C-&gt;ops-&gt;solvetranspose = MatSolve_SeqSBAIJ_5_inplace;
+<a name="line244">244: </a>  C-&gt;assembled           = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line245">245: </a>  C-&gt;preallocated        = <A href="../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+
+<a name="line247">247: </a>  <A href="../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(1.3333*125*b-&gt;mbs); <font color="#B22222">/* from inverting diagonal blocks */</font>
+<a name="line248">248: </a>  <font color="#4169E1">return</font>(0);
+<a name="line249">249: </a>}
 </pre>
 </body>
 

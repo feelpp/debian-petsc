@@ -5,11 +5,12 @@
 <TITLE>PetscDrawSPSetLimits</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawSPSetLimits"><H1>PetscDrawSPSetLimits</H1></A>
-Sets the axis limits for a line graph. If more points are added after this call, the limits will be adjusted to include those additional points. 
+Sets the axis limits for a scatter plot If more points are added after this call, the limits will be adjusted to include those additional points. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscdraw.h" 
 #include "petscsys.h" 
 PetscErrorCode  PetscDrawSPSetLimits(PetscDrawSP sp,PetscReal x_min,PetscReal x_max,PetscReal y_min,PetscReal y_max)
 </PRE>
@@ -26,7 +27,7 @@ Not Collective (ignored on all processors except processor 0 of <A HREF="../Draw
 <P>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/dscatter.c.html#PetscDrawSPSetLimits">src/sys/draw/utils/dscatter.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/utils/dscatter.c.html#PetscDrawSPSetLimits">src/sys/classes/draw/utils/dscatter.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

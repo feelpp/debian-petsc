@@ -5,9 +5,9 @@
 <TITLE>MatCreateSeqAIJPERM</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateSeqAIJPERM"><H1>MatCreateSeqAIJPERM</H1></A>
-Creates a sparse matrix of type SEQAIJPERM. This type inherits from AIJ, but calculates some additional permutation  information that is used to allow better vectorization of some  operations.  At the cost of increased storage, the AIJ formatted  matrix can be copied to a format in which pieces of the matrix are  stored in ELLPACK format, allowing the vectorized matrix multiply  routine to use stride-1 memory accesses.  As with the AIJ type, it is  important to preallocate matrix storage in order to get good assembly  performance. 
+Creates a sparse matrix of type SEQAIJPERM. This type inherits from AIJ, but calculates some additional permutation information that is used to allow better vectorization of some operations.  At the cost of increased storage, the AIJ formatted matrix can be copied to a format in which pieces of the matrix are stored in ELLPACK format, allowing the vectorized matrix multiply routine to use stride-1 memory accesses.  As with the AIJ type, it is important to preallocate matrix storage in order to get good assembly performance. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 PetscErrorCode  MatCreateSeqAIJPERM(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt nz,const PetscInt nnz[],Mat *A)
@@ -24,12 +24,12 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nz </B></TD><TD>- number of nonzeros per row (same for all rows)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nnz </B></TD><TD>- array containing the number of nonzeros in the various rows 
-(possibly different for each row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nnz </B></TD><TD>- array containing the number of nonzeros in the various rows
+(possibly different for each row) or NULL
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>A </B> -the matrix 
+<DT><B>A </B> -the matrix
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>

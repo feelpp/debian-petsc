@@ -5,12 +5,12 @@
 <TITLE>PCMGSetLevels</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCMGSetLevels"><H1>PCMGSetLevels</H1></A>
 Sets the number of levels to use with MG. Must be called before any other MG routine. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscpcmg.h" 
+#include "petscksp.h" 
 PetscErrorCode  PCMGSetLevels(PC pc,PetscInt levels,MPI_Comm *comms)
 </PRE>
 Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
@@ -22,7 +22,7 @@ Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>levels </B></TD><TD>- the number of levels
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comms </B></TD><TD>- optional communicators for each level; this is to allow solving the coarser problems
-on smaller sets of processors. Use PETSC_NULL_OBJECT for default in Fortran
+on smaller sets of processors. Use NULL_OBJECT for default in Fortran
 </TD></TR></TABLE>
 <P>
 

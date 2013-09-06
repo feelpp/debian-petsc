@@ -5,13 +5,13 @@
 <TITLE>TSGetRHSJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSGetRHSJacobian"><H1>TSGetRHSJacobian</H1></A>
 Returns the Jacobian J at the present timestep. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode  TSGetRHSJacobian(TS ts,Mat *J,Mat *M,TSRHSJacobian *func,void **ctx)
+PetscErrorCode  TSGetRHSJacobian(TS ts,Mat *Amat,Mat *Pmat,TSRHSJacobian *func,void **ctx)
 </PRE>
 Not Collective, but parallel objects are returned if <A HREF="../TS/TS.html#TS">TS</A> is parallel
 <P>
@@ -21,16 +21,16 @@ Not Collective, but parallel objects are returned if <A HREF="../TS/TS.html#TS">
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>J   </B></TD><TD>- The Jacobian J of F, where U_t = F(U,t)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- The (approximate) Jacobian J of G, where U_t = G(U,t)  (or NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>M   </B></TD><TD>- The preconditioner matrix, usually the same as J
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- The matrix from which the preconditioner is constructed, usually the same as Amat  (or NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- Function to compute the Jacobian of the RHS
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- Function to compute the Jacobian of the RHS  (or NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- User-defined context for Jacobian evaluation routine
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- User-defined context for Jacobian evaluation routine  (or NULL)
 </TD></TR></TABLE>
 <P>
-Notes: You can pass in <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for any return argument you do not need.
+Notes: You can pass in NULL for any return argument you do not need.
 <P>
 
 <P>

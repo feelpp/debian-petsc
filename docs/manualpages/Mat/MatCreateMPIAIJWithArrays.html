@@ -5,7 +5,7 @@
 <TITLE>MatCreateMPIAIJWithArrays</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateMPIAIJWithArrays"><H1>MatCreateMPIAIJWithArrays</H1></A>
 creates a MPI AIJ matrix using arrays that contain in standard CSR format the local rows. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,7 +21,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m </B></TD><TD>- number of local rows (Cannot be <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- This value should be the same as the local size used in creating the 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- This value should be the same as the local size used in creating the
 x vector for the matrix-vector product y = Ax. (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have
 calculated if N is given) For square matrices n is almost always m.
 </TD></TR>

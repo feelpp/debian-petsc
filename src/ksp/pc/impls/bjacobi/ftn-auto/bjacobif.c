@@ -29,11 +29,6 @@ extern void PetscRmPointer(void*);
 
 #include "petscpc.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define pcbjacobisetusetruelocal_ PCBJACOBISETUSETRUELOCAL
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define pcbjacobisetusetruelocal_ pcbjacobisetusetruelocal
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcbjacobisettotalblocks_ PCBJACOBISETTOTALBLOCKS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcbjacobisettotalblocks_ pcbjacobisettotalblocks
@@ -49,10 +44,6 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  pcbjacobisetusetruelocal_(PC pc, int *__ierr ){
-*__ierr = PCBJacobiSetUseTrueLocal(
-	(PC)PetscToPointer((pc) ));
-}
 void PETSC_STDCALL  pcbjacobisettotalblocks_(PC pc,PetscInt *blocks, PetscInt lens[], int *__ierr ){
 *__ierr = PCBJacobiSetTotalBlocks(
 	(PC)PetscToPointer((pc) ),*blocks,lens);

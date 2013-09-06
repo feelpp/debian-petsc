@@ -1,10 +1,10 @@
 Remove double-colon from clean target which causes breakage in reverse-depends.
 
-Index: petsc-3.3.dfsg/conf/rules
+Index: petsc-3.4.2/conf/rules
 ===================================================================
---- petsc-3.3.dfsg.orig/conf/rules	2012-09-12 08:58:56.000000000 +0200
-+++ petsc-3.3.dfsg/conf/rules	2012-09-12 08:59:09.000000000 +0200
-@@ -140,7 +140,7 @@
+--- petsc-3.4.2.orig/conf/rules	2013-08-20 15:33:06.000000000 +0200
++++ petsc-3.4.2/conf/rules	2013-08-20 15:33:06.000000000 +0200
+@@ -168,7 +168,7 @@
  	@${CP} -f *.mod ${PETSC_DIR}/${PETSC_ARCH}/include
  
  # Removes garbage files

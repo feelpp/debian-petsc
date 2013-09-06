@@ -5,13 +5,13 @@
 <TITLE>TSComputeRHSFunctionLinear</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSComputeRHSFunctionLinear"><H1>TSComputeRHSFunctionLinear</H1></A>
 Evaluate the right hand side via the user-provided Jacobian, for linear problems only 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode TSComputeRHSFunctionLinear(TS ts,PetscReal t,Vec X,Vec F,void *ctx)
+PetscErrorCode TSComputeRHSFunctionLinear(TS ts,PetscReal t,Vec U,Vec F,void *ctx)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -21,7 +21,7 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>t </B></TD><TD>- time at which to evaluate
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>X </B></TD><TD>- state at which to evaluate
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>U </B></TD><TD>- state at which to evaluate
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- context
 </TD></TR></TABLE>

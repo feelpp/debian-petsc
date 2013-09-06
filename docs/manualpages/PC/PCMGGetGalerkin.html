@@ -5,18 +5,18 @@
 <TITLE>PCMGGetGalerkin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCMGGetGalerkin"><H1>PCMGGetGalerkin</H1></A>
 Checks if Galerkin multigrid is being used, i.e. A_i-1 = r_i * A_i * r_i^t 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscpcmg.h" 
+#include "petscksp.h" 
 PetscErrorCode  PCMGGetGalerkin(PC pc,PetscBool  *galerkin)
 </PRE>
 Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>pc </B> -the multigrid context 
+<DT><B>pc </B> -the multigrid context
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>

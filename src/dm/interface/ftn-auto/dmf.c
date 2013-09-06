@@ -34,6 +34,26 @@ extern void PetscRmPointer(void*);
 #define dmcreate_ dmcreate
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecgetdm_ VECGETDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecgetdm_ vecgetdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecsetdm_ VECSETDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecsetdm_ vecsetdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matgetdm_ MATGETDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matgetdm_ matgetdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matsetdm_ MATSETDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matsetdm_ matsetdm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmdestroy_ DMDESTROY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmdestroy_ dmdestroy
@@ -94,11 +114,6 @@ extern void PetscRmPointer(void*);
 #define dmrefine_ dmrefine
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmrefinehookadd_ DMREFINEHOOKADD
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmrefinehookadd_ dmrefinehookadd
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dminterpolate_ DMINTERPOLATE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dminterpolate_ dminterpolate
@@ -129,24 +144,19 @@ extern void PetscRmPointer(void*);
 #define dmlocaltoglobalend_ dmlocaltoglobalend
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmcomputejacobiandefault_ DMCOMPUTEJACOBIANDEFAULT
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmcomputejacobiandefault_ dmcomputejacobiandefault
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmcoarsen_ DMCOARSEN
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmcoarsen_ dmcoarsen
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmcoarsenhookadd_ DMCOARSENHOOKADD
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmcoarsenhookadd_ dmcoarsenhookadd
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmrestrict_ DMRESTRICT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmrestrict_ dmrestrict
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmsubdomainrestrict_ DMSUBDOMAINRESTRICT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmsubdomainrestrict_ dmsubdomainrestrict
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmgetcoarsenlevel_ DMGETCOARSENLEVEL
@@ -174,34 +184,9 @@ extern void PetscRmPointer(void*);
 #define dmhasvariablebounds_ dmhasvariablebounds
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmcomputeinitialguess_ DMCOMPUTEINITIALGUESS
+#define dmhascoloring_ DMHASCOLORING
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmcomputeinitialguess_ dmcomputeinitialguess
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmhasinitialguess_ DMHASINITIALGUESS
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmhasinitialguess_ dmhasinitialguess
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmhasfunction_ DMHASFUNCTION
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmhasfunction_ dmhasfunction
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmhasjacobian_ DMHASJACOBIAN
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmhasjacobian_ dmhasjacobian
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmcomputefunction_ DMCOMPUTEFUNCTION
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmcomputefunction_ dmcomputefunction
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmcomputejacobian_ DMCOMPUTEJACOBIAN
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmcomputejacobian_ dmcomputejacobian
+#define dmhascoloring_ dmhascoloring
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmgetdefaultsection_ DMGETDEFAULTSECTION
@@ -219,6 +204,11 @@ extern void PetscRmPointer(void*);
 #define dmgetdefaultglobalsection_ dmgetdefaultglobalsection
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmsetdefaultglobalsection_ DMSETDEFAULTGLOBALSECTION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmsetdefaultglobalsection_ dmsetdefaultglobalsection
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmgetdefaultsf_ DMGETDEFAULTSF
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmgetdefaultsf_ dmgetdefaultsf
@@ -227,6 +217,46 @@ extern void PetscRmPointer(void*);
 #define dmsetdefaultsf_ DMSETDEFAULTSF
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmsetdefaultsf_ dmsetdefaultsf
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmgetpointsf_ DMGETPOINTSF
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmgetpointsf_ dmgetpointsf
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmsetpointsf_ DMSETPOINTSF
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmsetpointsf_ dmsetpointsf
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmsetcoordinates_ DMSETCOORDINATES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmsetcoordinates_ dmsetcoordinates
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmsetcoordinateslocal_ DMSETCOORDINATESLOCAL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmsetcoordinateslocal_ dmsetcoordinateslocal
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmgetcoordinates_ DMGETCOORDINATES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmgetcoordinates_ dmgetcoordinates
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmgetcoordinateslocal_ DMGETCOORDINATESLOCAL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmgetcoordinateslocal_ dmgetcoordinateslocal
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmgetcoordinatedm_ DMGETCOORDINATEDM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmgetcoordinatedm_ dmgetcoordinatedm
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmlocatepoints_ DMLOCATEPOINTS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmlocatepoints_ dmlocatepoints
 #endif
 
 
@@ -237,6 +267,24 @@ extern "C" {
 void PETSC_STDCALL  dmcreate_(MPI_Fint * comm,DM *dm, int *__ierr ){
 *__ierr = DMCreate(
 	MPI_Comm_f2c( *(comm) ),dm);
+}
+void PETSC_STDCALL  vecgetdm_(Vec v,DM *dm, int *__ierr ){
+*__ierr = VecGetDM(
+	(Vec)PetscToPointer((v) ),dm);
+}
+void PETSC_STDCALL  vecsetdm_(Vec v,DM dm, int *__ierr ){
+*__ierr = VecSetDM(
+	(Vec)PetscToPointer((v) ),
+	(DM)PetscToPointer((dm) ));
+}
+void PETSC_STDCALL  matgetdm_(Mat A,DM *dm, int *__ierr ){
+*__ierr = MatGetDM(
+	(Mat)PetscToPointer((A) ),dm);
+}
+void PETSC_STDCALL  matsetdm_(Mat A,DM dm, int *__ierr ){
+*__ierr = MatSetDM(
+	(Mat)PetscToPointer((A) ),
+	(DM)PetscToPointer((dm) ));
 }
 void PETSC_STDCALL  dmdestroy_(DM *dm, int *__ierr ){
 *__ierr = DMDestroy(dm);
@@ -288,10 +336,6 @@ void PETSC_STDCALL  dmrefine_(DM dm,MPI_Fint * comm,DM *dmf, int *__ierr ){
 	(DM)PetscToPointer((dm) ),
 	MPI_Comm_f2c( *(comm) ),dmf);
 }
-void PETSC_STDCALL  dmrefinehookadd_(DM coarse,PetscErrorCode (*refinehook)(DM,DM,void*),PetscErrorCode (*interphook)(DM,Mat,DM,void*),void*ctx, int *__ierr ){
-*__ierr = DMRefineHookAdd(
-	(DM)PetscToPointer((coarse) ),refinehook,interphook,ctx);
-}
 void PETSC_STDCALL  dminterpolate_(DM coarse,Mat interp,DM fine, int *__ierr ){
 *__ierr = DMInterpolate(
 	(DM)PetscToPointer((coarse) ),
@@ -326,21 +370,10 @@ void PETSC_STDCALL  dmlocaltoglobalend_(DM dm,Vec l,InsertMode *mode,Vec g, int 
 	(Vec)PetscToPointer((l) ),*mode,
 	(Vec)PetscToPointer((g) ));
 }
-void PETSC_STDCALL  dmcomputejacobiandefault_(DM dm,Vec x,Mat A,Mat B,MatStructure *stflag, int *__ierr ){
-*__ierr = DMComputeJacobianDefault(
-	(DM)PetscToPointer((dm) ),
-	(Vec)PetscToPointer((x) ),
-	(Mat)PetscToPointer((A) ),
-	(Mat)PetscToPointer((B) ),stflag);
-}
 void PETSC_STDCALL  dmcoarsen_(DM dm,MPI_Fint * comm,DM *dmc, int *__ierr ){
 *__ierr = DMCoarsen(
 	(DM)PetscToPointer((dm) ),
 	MPI_Comm_f2c( *(comm) ),dmc);
-}
-void PETSC_STDCALL  dmcoarsenhookadd_(DM fine,PetscErrorCode (*coarsenhook)(DM,DM,void*),PetscErrorCode (*restricthook)(DM,Mat,Vec,Mat,DM,void*),void*ctx, int *__ierr ){
-*__ierr = DMCoarsenHookAdd(
-	(DM)PetscToPointer((fine) ),coarsenhook,restricthook,ctx);
 }
 void PETSC_STDCALL  dmrestrict_(DM fine,Mat restrct,Vec rscale,Mat inject,DM coarse, int *__ierr ){
 *__ierr = DMRestrict(
@@ -349,6 +382,13 @@ void PETSC_STDCALL  dmrestrict_(DM fine,Mat restrct,Vec rscale,Mat inject,DM coa
 	(Vec)PetscToPointer((rscale) ),
 	(Mat)PetscToPointer((inject) ),
 	(DM)PetscToPointer((coarse) ));
+}
+void PETSC_STDCALL  dmsubdomainrestrict_(DM global,VecScatter oscatter,VecScatter gscatter,DM subdm, int *__ierr ){
+*__ierr = DMSubDomainRestrict(
+	(DM)PetscToPointer((global) ),
+	(VecScatter)PetscToPointer((oscatter) ),
+	(VecScatter)PetscToPointer((gscatter) ),
+	(DM)PetscToPointer((subdm) ));
 }
 void PETSC_STDCALL  dmgetcoarsenlevel_(DM dm,PetscInt *level, int *__ierr ){
 *__ierr = DMGetCoarsenLevel(
@@ -371,35 +411,9 @@ void PETSC_STDCALL  dmhasvariablebounds_(DM dm,PetscBool  *flg, int *__ierr ){
 *__ierr = DMHasVariableBounds(
 	(DM)PetscToPointer((dm) ),flg);
 }
-void PETSC_STDCALL  dmcomputeinitialguess_(DM dm,Vec x, int *__ierr ){
-*__ierr = DMComputeInitialGuess(
-	(DM)PetscToPointer((dm) ),
-	(Vec)PetscToPointer((x) ));
-}
-void PETSC_STDCALL  dmhasinitialguess_(DM dm,PetscBool  *flg, int *__ierr ){
-*__ierr = DMHasInitialGuess(
+void PETSC_STDCALL  dmhascoloring_(DM dm,PetscBool  *flg, int *__ierr ){
+*__ierr = DMHasColoring(
 	(DM)PetscToPointer((dm) ),flg);
-}
-void PETSC_STDCALL  dmhasfunction_(DM dm,PetscBool  *flg, int *__ierr ){
-*__ierr = DMHasFunction(
-	(DM)PetscToPointer((dm) ),flg);
-}
-void PETSC_STDCALL  dmhasjacobian_(DM dm,PetscBool  *flg, int *__ierr ){
-*__ierr = DMHasJacobian(
-	(DM)PetscToPointer((dm) ),flg);
-}
-void PETSC_STDCALL  dmcomputefunction_(DM dm,Vec x,Vec b, int *__ierr ){
-*__ierr = DMComputeFunction(
-	(DM)PetscToPointer((dm) ),
-	(Vec)PetscToPointer((x) ),
-	(Vec)PetscToPointer((b) ));
-}
-void PETSC_STDCALL  dmcomputejacobian_(DM dm,Vec x,Mat A,Mat B,MatStructure *stflag, int *__ierr ){
-*__ierr = DMComputeJacobian(
-	(DM)PetscToPointer((dm) ),
-	(Vec)PetscToPointer((x) ),
-	(Mat)PetscToPointer((A) ),
-	(Mat)PetscToPointer((B) ),stflag);
 }
 void PETSC_STDCALL  dmgetdefaultsection_(DM dm,PetscSection *section, int *__ierr ){
 *__ierr = DMGetDefaultSection(
@@ -414,6 +428,11 @@ void PETSC_STDCALL  dmgetdefaultglobalsection_(DM dm,PetscSection *section, int 
 *__ierr = DMGetDefaultGlobalSection(
 	(DM)PetscToPointer((dm) ),section);
 }
+void PETSC_STDCALL  dmsetdefaultglobalsection_(DM dm,PetscSection section, int *__ierr ){
+*__ierr = DMSetDefaultGlobalSection(
+	(DM)PetscToPointer((dm) ),
+	(PetscSection)PetscToPointer((section) ));
+}
 void PETSC_STDCALL  dmgetdefaultsf_(DM dm,PetscSF *sf, int *__ierr ){
 *__ierr = DMGetDefaultSF(
 	(DM)PetscToPointer((dm) ),
@@ -422,6 +441,42 @@ void PETSC_STDCALL  dmgetdefaultsf_(DM dm,PetscSF *sf, int *__ierr ){
 void PETSC_STDCALL  dmsetdefaultsf_(DM dm,PetscSF *sf, int *__ierr ){
 *__ierr = DMSetDefaultSF(
 	(DM)PetscToPointer((dm) ),*sf);
+}
+void PETSC_STDCALL  dmgetpointsf_(DM dm,PetscSF *sf, int *__ierr ){
+*__ierr = DMGetPointSF(
+	(DM)PetscToPointer((dm) ),
+	(PetscSF* )PetscToPointer((sf) ));
+}
+void PETSC_STDCALL  dmsetpointsf_(DM dm,PetscSF *sf, int *__ierr ){
+*__ierr = DMSetPointSF(
+	(DM)PetscToPointer((dm) ),*sf);
+}
+void PETSC_STDCALL  dmsetcoordinates_(DM dm,Vec c, int *__ierr ){
+*__ierr = DMSetCoordinates(
+	(DM)PetscToPointer((dm) ),
+	(Vec)PetscToPointer((c) ));
+}
+void PETSC_STDCALL  dmsetcoordinateslocal_(DM dm,Vec c, int *__ierr ){
+*__ierr = DMSetCoordinatesLocal(
+	(DM)PetscToPointer((dm) ),
+	(Vec)PetscToPointer((c) ));
+}
+void PETSC_STDCALL  dmgetcoordinates_(DM dm,Vec *c, int *__ierr ){
+*__ierr = DMGetCoordinates(
+	(DM)PetscToPointer((dm) ),c);
+}
+void PETSC_STDCALL  dmgetcoordinateslocal_(DM dm,Vec *c, int *__ierr ){
+*__ierr = DMGetCoordinatesLocal(
+	(DM)PetscToPointer((dm) ),c);
+}
+void PETSC_STDCALL  dmgetcoordinatedm_(DM dm,DM *cdm, int *__ierr ){
+*__ierr = DMGetCoordinateDM(
+	(DM)PetscToPointer((dm) ),cdm);
+}
+void PETSC_STDCALL  dmlocatepoints_(DM dm,Vec v,IS *cells, int *__ierr ){
+*__ierr = DMLocatePoints(
+	(DM)PetscToPointer((dm) ),
+	(Vec)PetscToPointer((v) ),cells);
 }
 #if defined(__cplusplus)
 }

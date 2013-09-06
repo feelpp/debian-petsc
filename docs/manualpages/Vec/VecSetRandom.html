@@ -5,12 +5,12 @@
 <TITLE>VecSetRandom</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecSetRandom"><H1>VecSetRandom</H1></A>
 Sets all components of a vector to random numbers. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecSetRandom(Vec x,PetscRandom rctx)
 </PRE>
 Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
@@ -19,7 +19,7 @@ Logically Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x  </B></TD><TD>- the vector
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rctx </B></TD><TD>- the random number context, formed by <A HREF="../Sys/PetscRandomCreate.html#PetscRandomCreate">PetscRandomCreate</A>(), or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> and
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rctx </B></TD><TD>- the random number context, formed by <A HREF="../Sys/PetscRandomCreate.html#PetscRandomCreate">PetscRandomCreate</A>(), or NULL and
 it will create one internally.
 </TD></TR></TABLE>
 <P>
@@ -49,6 +49,7 @@ it will create one internally.
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2.c.html">src/ksp/ksp/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex11.c.html">src/ksp/ksp/examples/tutorials/ex11.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex39.c.html">src/ksp/ksp/examples/tutorials/ex39.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex40.c.html">src/ksp/ksp/examples/tutorials/ex40.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex46.c.html">src/ksp/ksp/examples/tutorials/ex46.c.html</A><BR>
@@ -56,5 +57,4 @@ it will create one internally.
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex2f.F.html">src/ksp/ksp/examples/tutorials/ex2f.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex11f.F.html">src/ksp/ksp/examples/tutorials/ex11f.F.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex35.c.html">src/snes/examples/tutorials/ex35.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex54.c.html">src/snes/examples/tutorials/ex54.c.html</A><BR>
 </BODY></HTML>

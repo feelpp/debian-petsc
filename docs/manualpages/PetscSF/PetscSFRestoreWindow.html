@@ -5,12 +5,13 @@
 <TITLE>PetscSFRestoreWindow</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscSFRestoreWindow"><H1>PetscSFRestoreWindow</H1></A>
 Restores a window obtained with <A HREF="../PetscSF/PetscSFGetWindow.html#PetscSFGetWindow">PetscSFGetWindow</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PetscErrorCode PetscSFRestoreWindow(PetscSF sf,MPI_Datatype unit,const void *array,PetscBool epoch,PetscMPIInt fenceassert,MPI_Win *win)
+#include "petscsf.h" 
+static PetscErrorCode PetscSFRestoreWindow(PetscSF sf,MPI_Datatype unit,const void *array,PetscBool epoch,PetscMPIInt fenceassert,MPI_Win *win)
 </PRE>
 Collective
 <P>
@@ -32,7 +33,7 @@ Collective
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../PetscSF/PetscSFFindWindow.html#PetscSFFindWindow">PetscSFFindWindow</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/sf/sf.c.html#PetscSFRestoreWindow">src/sys/sf/sf.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/sf/impls/window/sfwindow.c.html#PetscSFRestoreWindow">src/vec/is/sf/impls/window/sfwindow.c</A>
 <BR><A HREF="./index.html">Index of all PetscSF routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

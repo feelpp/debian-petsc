@@ -5,12 +5,12 @@
 <TITLE>VecGetOwnershipRanges</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecGetOwnershipRanges"><H1>VecGetOwnershipRanges</H1></A>
 Returns the range of indices owned by EACH processor, assuming that the vectors are laid out with the first n1 elements on the first processor, next n2 elements on the second, etc.  For certain parallel layouts this range may not be well defined. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
+#include "petscvec.h"   
 PetscErrorCode  VecGetOwnershipRanges(Vec x,const PetscInt *ranges[])
 </PRE>
 Not Collective

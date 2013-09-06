@@ -5,15 +5,13 @@
 <TITLE>SNESGetLinearSolveFailures</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESGetLinearSolveFailures"><H1>SNESGetLinearSolveFailures</H1></A>
 Gets the number of failed (non-converged) linear solvers. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
-PetscErrorCode  SNESGetLinearSolveFailures(SNES snes,PetscInt* nfails)
+PetscErrorCode  SNESGetLinearSolveFailures(SNES snes,PetscInt *nfails)
 </PRE>
 Not Collective
 <P>

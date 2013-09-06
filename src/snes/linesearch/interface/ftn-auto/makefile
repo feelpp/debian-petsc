@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = linesearchf.c
-OBJSC    = linesearchf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

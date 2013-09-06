@@ -5,13 +5,13 @@
 <TITLE>PetscAbortErrorHandler</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscAbortErrorHandler"><H1>PetscAbortErrorHandler</H1></A>
-Error handler that calls abort on error.  This routine is very useful when running in the debugger, because the  user can look directly at the stack frames and the variables. 
+Error handler that calls abort on error. This routine is very useful when running in the debugger, because the user can look directly at the stack frames and the variables. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-PetscErrorCode  PetscAbortErrorHandler(MPI_Comm comm,int line,const char *fun,const char *file,const char* dir,PetscErrorCode n,PetscErrorType p,const char *mess,void *ctx)
+PetscErrorCode  PetscAbortErrorHandler(MPI_Comm comm,int line,const char *fun,const char *file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,void *ctx)
 </PRE>
 Not Collective
 <P>
@@ -41,7 +41,7 @@ Not Collective
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-on_error_abort </B></TD><TD>- Activates aborting when an error is encountered
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-start_in_debugger [noxterm,dbx,xxgdb]  [</B></TD><TD>- display name] - Starts all
-processes in the debugger and uses <A HREF="../Sys/PetscAbortErrorHandler.html#PetscAbortErrorHandler">PetscAbortErrorHandler</A>().  By default the 
+processes in the debugger and uses <A HREF="../Sys/PetscAbortErrorHandler.html#PetscAbortErrorHandler">PetscAbortErrorHandler</A>().  By default the
 debugger is gdb; alternatives are dbx and xxgdb.
 </TD></TR></TABLE>
 <P>
@@ -64,7 +64,7 @@ currently available PETSc error handlers include <A HREF="../Sys/PetscTraceBackE
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>(), <A HREF="../Sys/PetscTraceBackErrorHandler.html#PetscTraceBackErrorHandler">PetscTraceBackErrorHandler</A>(), 
+ <A HREF="../Sys/PetscPushErrorHandler.html#PetscPushErrorHandler">PetscPushErrorHandler</A>(), <A HREF="../Sys/PetscTraceBackErrorHandler.html#PetscTraceBackErrorHandler">PetscTraceBackErrorHandler</A>(),
 <BR><A HREF="../Sys/PetscAttachDebuggerErrorHandler.html#PetscAttachDebuggerErrorHandler">PetscAttachDebuggerErrorHandler</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/error/errabort.c.html#PetscAbortErrorHandler">src/sys/error/errabort.c</A>

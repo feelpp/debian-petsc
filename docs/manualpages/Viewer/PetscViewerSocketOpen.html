@@ -5,7 +5,7 @@
 <TITLE>PetscViewerSocketOpen</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerSocketOpen"><H1>PetscViewerSocketOpen</H1></A>
 Opens a connection to a MATLAB or other socket based server. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -18,7 +18,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- the MPI communicator
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>machine </B></TD><TD>- the machine the server is running on,, use <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for the local machine, use "server" to passively wait for
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>machine </B></TD><TD>- the machine the server is running on,, use NULL for the local machine, use "server" to passively wait for
 a connection from elsewhere
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>port </B></TD><TD>- the port to connect to, use <A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> for the default
@@ -58,7 +58,7 @@ MATLAB <A HREF="../Viewer/PetscViewers.html#PetscViewers">PetscViewers</A>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 For use with  <A HREF="../Viewer/PETSC_VIEWER_SOCKET_WORLD.html#PETSC_VIEWER_SOCKET_WORLD">PETSC_VIEWER_SOCKET_WORLD</A>, <A HREF="../Viewer/PETSC_VIEWER_SOCKET_SELF.html#PETSC_VIEWER_SOCKET_SELF">PETSC_VIEWER_SOCKET_SELF</A>,
 <A HREF="../Viewer/PETSC_VIEWER_SOCKET_.html#PETSC_VIEWER_SOCKET_">PETSC_VIEWER_SOCKET_</A>() or if
-<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> is passed for machine or <A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> is passed for port
+NULL is passed for machine or <A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> is passed for port
 <pre>
    -viewer_socket_machine &lt;machine&gt;
 </pre>
@@ -84,7 +84,7 @@ use <A HREF="../Viewer/PetscViewerBinaryRead.html#PetscViewerBinaryRead">PetscVi
 <A HREF="../Viewer/PETSC_VIEWER_SOCKET_SELF.html#PETSC_VIEWER_SOCKET_SELF">PETSC_VIEWER_SOCKET_SELF</A>, <A HREF="../Viewer/PetscViewerBinaryWrite.html#PetscViewerBinaryWrite">PetscViewerBinaryWrite</A>(), <A HREF="../Viewer/PetscViewerBinaryRead.html#PetscViewerBinaryRead">PetscViewerBinaryRead</A>(), <A HREF="../Viewer/PetscViewerBinaryWriteStringArray.html#PetscViewerBinaryWriteStringArray">PetscViewerBinaryWriteStringArray</A>(),
 PetscBinaryViewerGetDescriptor()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/socket/send.c.html#PetscViewerSocketOpen">src/sys/viewer/impls/socket/send.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/impls/socket/send.c.html#PetscViewerSocketOpen">src/sys/classes/viewer/impls/socket/send.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

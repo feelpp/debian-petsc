@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ts/impls/python/pythonts.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:13:55+00:00">
+<meta name="date" content="2013-07-02T14:51:12+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petsc-private/tsimpl.h&gt;          </font><font color="#B22222">/*I "petscts.h" I*/</font><font color="#A020F0"></font>
 
 <a name="line5">  5: </a><font color="#B22222">/*@C</font>
@@ -31,9 +31,10 @@
 <a name="line22"> 22: </a><font color="#B22222">@*/</font>
 <a name="line23"> 23: </a><strong><font color="#4169E1"><a name="TSPythonSetType"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../docs/manualpages/TS/TSPythonSetType.html#TSPythonSetType">TSPythonSetType</A>(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A> ts,const char pyname[])</font></strong>
 <a name="line24"> 24: </a>{
-<a name="line29"> 29: </a>  PetscTryMethod(ts,<font color="#666666">"TSPythonSetType_C"</font>,(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>, const char[]),(ts,pyname));
-<a name="line30"> 30: </a>  <font color="#4169E1">return</font>(0);
-<a name="line31"> 31: </a>}
+
+<a name="line30"> 30: </a>  PetscTryMethod(ts,<font color="#666666">"TSPythonSetType_C"</font>,(<A href="../../../../docs/manualpages/TS/TS.html#TS">TS</A>, const char[]),(ts,pyname));
+<a name="line31"> 31: </a>  <font color="#4169E1">return</font>(0);
+<a name="line32"> 32: </a>}
 </pre>
 </body>
 

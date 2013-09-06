@@ -5,7 +5,7 @@
 <TITLE>DMDAGlobalToNaturalEnd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGlobalToNaturalEnd"><H1>DMDAGlobalToNaturalEnd</H1></A>
 Maps values from the global vector to a global vector in the natural ordering. Must be preceeded by <A HREF="../DM/DMDAGlobalToNaturalBegin.html#DMDAGlobalToNaturalBegin">DMDAGlobalToNaturalBegin</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -13,7 +13,7 @@ Maps values from the global vector to a global vector in the natural ordering. M
 #include "petscdmda.h"   
 PetscErrorCode  DMDAGlobalToNaturalEnd(DM da,Vec g,InsertMode mode,Vec l)
 </PRE>
-Neighbor-wise Collective on DMDA
+Neighbor-wise Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -34,7 +34,7 @@ Neighbor-wise Collective on DMDA
 The global and local vectors used here need not be the same as those
 obtained from <A HREF="../DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>() and <A HREF="../DM/DMDACreateNaturalVector.html#DMDACreateNaturalVector">DMDACreateNaturalVector</A>(), BUT they
 must have the same parallel data layout; they could, for example, be
-obtained with <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() from the DMDA originating vectors.
+obtained with <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>() from the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> originating vectors.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  distributed array, global to local, end

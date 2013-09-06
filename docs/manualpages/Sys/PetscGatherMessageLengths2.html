@@ -5,9 +5,9 @@
 <TITLE>PetscGatherMessageLengths2</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscGatherMessageLengths2"><H1>PetscGatherMessageLengths2</H1></A>
-Computes info about messages that a MPI-node will receive,  including (from-id,length) pairs for each message. Same functionality as <A HREF="../Sys/PetscGatherMessageLengths.html#PetscGatherMessageLengths">PetscGatherMessageLengths</A>() except it takes TWO ilenths and output TWO olengths. 
+Computes info about messages that a MPI-node will receive, including (from-id,length) pairs for each message. Same functionality as <A HREF="../Sys/PetscGatherMessageLengths.html#PetscGatherMessageLengths">PetscGatherMessageLengths</A>() except it takes TWO ilenths and output TWO olengths. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"  
@@ -24,7 +24,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nrecvs    </B></TD><TD>- number of messages being received
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ilengths1, ilengths2 </B></TD><TD>- array of integers of length sizeof(comm)
-a non zero ilengths[i] represent a message to i of length ilengths[i] 
+a non zero ilengths[i] represent a message to i of length ilengths[i]
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>

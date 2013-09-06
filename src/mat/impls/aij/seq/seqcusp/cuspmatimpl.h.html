@@ -4,12 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/seqcusp/cuspmatimpl.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:44:45+00:00">
+<meta name="date" content="2013-07-02T14:41:52+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
-<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef __CUSPMATIMPL </font>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;../src/vec/vec/impls/seq/seqcusp/cuspvecimpl.h&gt;</font>
 
@@ -26,21 +25,30 @@
 <a name="line16"> 16: </a><strong><font color="#228B22">#define CUSPMATRIX cusp::csr_matrix&lt;<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>,cusp::device_memory&gt;</font></strong>
 
 <a name="line18"> 18: </a><font color="#B22222">/* New Way */</font>
-<a name="line19"> 19: </a><font color="#A020F0">#ifdef PETSC_HAVE_TXPETSCGPU</font>
-<a name="line20"> 20: </a><font color="#A020F0">#include </font><font color="#666666">"tx_spmv_interface.h"</font><font color="#A020F0"></font>
-<a name="line21"> 21: </a><font color="#A020F0">#endif </font><font color="#B22222">/* PETSC_HAVE_TXPETSCGPU */</font><font color="#A020F0"></font>
+<a name="line19"> 19: </a><font color="#A020F0">#if defined(PETSC_HAVE_TXPETSCGPU)</font>
+<a name="line20"> 20: </a><font color="#A020F0">#include </font><font color="#666666">"tx_sparse_interface.h"</font><font color="#A020F0"></font>
 
-<a name="line23"> 23: </a><font color="#4169E1"><a name="Mat_SeqAIJCUSP"></a>struct Mat_SeqAIJCUSP </font>{
-<a name="line24"> 24: </a>  CUSPMATRIX*       mat; <font color="#B22222">/* pointer to the matrix on the GPU */</font>
-<a name="line25"> 25: </a>  CUSPINTARRAYGPU*  indices; <font color="#B22222">/*pointer to an array containing the nonzero row indices, should usecprow be true*/</font>
-<a name="line26"> 26: </a>  CUSPARRAY*        tempvec; <font color="#B22222">/*pointer to a workvector to which we can copy the relevant indices of a vector we want to multiply */</font>
-<a name="line27"> 27: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            nonzerorow; <font color="#B22222">/* number of nonzero rows ... used in the flop calculations */</font>
-<a name="line28"> 28: </a>};
+<a name="line22"> 22: </a><font color="#4169E1"><a name="Mat_SeqAIJCUSP"></a>struct Mat_SeqAIJCUSP </font>{
+<a name="line23"> 23: </a>  GPU_Matrix_Ifc       *mat; <font color="#B22222">/* pointer to the matrix on the GPU */</font>
+<a name="line24"> 24: </a>  CUSPARRAY            *tempvec; <font color="#B22222">/*pointer to a workvector to which we can copy the relevant indices of a vector we want to multiply */</font>
+<a name="line25"> 25: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>             nonzerorow; <font color="#B22222">/* number of nonzero rows ... used in the flop calculations */</font>
+<a name="line26"> 26: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCUSPStorageFormat.html#MatCUSPStorageFormat">MatCUSPStorageFormat</A> format;       <font color="#B22222">/* the storage format for the matrix on the device */</font>
+<a name="line27"> 27: </a>};
+
+<a name="line29"> 29: </a><font color="#A020F0">#else </font><font color="#B22222">/* PETSC_HAVE_TXPETSCGPU not defined! */</font><font color="#A020F0"></font>
+
+<a name="line31"> 31: </a><font color="#4169E1"><a name="Mat_SeqAIJCUSP"></a>struct Mat_SeqAIJCUSP </font>{
+<a name="line32"> 32: </a>  CUSPMATRIX      *mat; <font color="#B22222">/* pointer to the matrix on the GPU */</font>
+<a name="line33"> 33: </a>  CUSPINTARRAYGPU *indices; <font color="#B22222">/*pointer to an array containing the nonzero row indices, should usecprow be true*/</font>
+<a name="line34"> 34: </a>  CUSPARRAY       *tempvec; <font color="#B22222">/*pointer to a workvector to which we can copy the relevant indices of a vector we want to multiply */</font>
+<a name="line35"> 35: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>        nonzerorow;   <font color="#B22222">/* number of nonzero rows ... used in the flop calculations */</font>
+<a name="line36"> 36: </a>};
+<a name="line37"> 37: </a><font color="#A020F0">#endif</font>
 
 
-<a name="line31"> 31: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCUSPCopyToGPU(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
-<a name="line32"> 32: </a><strong><font color="#4169E1">extern <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCUSPCopyFromGPU(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, CUSPMATRIX *)</font></strong>;
-<a name="line33"> 33: </a><font color="#A020F0">#endif</font>
+<a name="line40"> 40: </a><strong><font color="#4169E1">PETSC_INTERN <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCUSPCopyToGPU(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
+<a name="line41"> 41: </a><strong><font color="#4169E1">PETSC_INTERN <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCUSPCopyFromGPU(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>, CUSPMATRIX*)</font></strong>;
+<a name="line42"> 42: </a><font color="#A020F0">#endif</font>
 </pre>
 </body>
 

@@ -5,9 +5,9 @@
 <TITLE>MatMeshToCellGraph</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatMeshToCellGraph"><H1>MatMeshToCellGraph</H1></A>
-Uses the ParMETIS package to convert a <A HREF="../Mat/Mat.html#Mat">Mat</A> that represents a mesh to a <A HREF="../Mat/Mat.html#Mat">Mat</A> the represents the graph of the coupling  between cells (the "dual" graph) and is suitable for partitioning with the <A HREF="../Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> object. Use this to partition cells of a mesh. 
+Uses the ParMETIS package to convert a <A HREF="../Mat/Mat.html#Mat">Mat</A> that represents a mesh to a <A HREF="../Mat/Mat.html#Mat">Mat</A> the represents the graph of the coupling between cells (the "dual" graph) and is suitable for partitioning with the <A HREF="../Mat/MatPartitioning.html#MatPartitioning">MatPartitioning</A> object. Use this to partition cells of a mesh. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
@@ -19,7 +19,7 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mesh </B></TD><TD>- the graph that represents the mesh
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ncommonnodes </B></TD><TD>- mesh elements that share this number of common nodes are considered neighbors, use 2 for triangules and 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ncommonnodes </B></TD><TD>- mesh elements that share this number of common nodes are considered neighbors, use 2 for triangules and
 quadralaterials, 3 for tetrahedrals and 4 for hexahedrals
 </TD></TR></TABLE>
 <P>

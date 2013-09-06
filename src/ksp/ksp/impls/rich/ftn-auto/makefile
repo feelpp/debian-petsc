@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = richscalef.c
-OBJSC    = richscalef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

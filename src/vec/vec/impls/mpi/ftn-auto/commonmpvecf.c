@@ -34,6 +34,11 @@ extern void PetscRmPointer(void*);
 #define vecghostgetlocalform_ vecghostgetlocalform
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define vecghostislocalform_ VECGHOSTISLOCALFORM
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define vecghostislocalform_ vecghostislocalform
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define vecghostrestorelocalform_ VECGHOSTRESTORELOCALFORM
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define vecghostrestorelocalform_ vecghostrestorelocalform
@@ -57,6 +62,11 @@ extern "C" {
 void PETSC_STDCALL  vecghostgetlocalform_(Vec g,Vec *l, int *__ierr ){
 *__ierr = VecGhostGetLocalForm(
 	(Vec)PetscToPointer((g) ),l);
+}
+void PETSC_STDCALL  vecghostislocalform_(Vec g,Vec l,PetscBool *flg, int *__ierr ){
+*__ierr = VecGhostIsLocalForm(
+	(Vec)PetscToPointer((g) ),
+	(Vec)PetscToPointer((l) ),flg);
 }
 void PETSC_STDCALL  vecghostrestorelocalform_(Vec g,Vec *l, int *__ierr ){
 *__ierr = VecGhostRestoreLocalForm(

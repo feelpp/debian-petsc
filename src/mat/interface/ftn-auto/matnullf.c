@@ -58,7 +58,7 @@ void PETSC_STDCALL  matnullspacecreaterigidbody_(Vec coords,MatNullSpace *sp, in
 *__ierr = MatNullSpaceCreateRigidBody(
 	(Vec)PetscToPointer((coords) ),sp);
 }
-void PETSC_STDCALL  matnullspacecreate_(MPI_Fint * comm,PetscBool  *has_cnst,PetscInt *n, Vec vecs[],MatNullSpace *SP, int *__ierr ){
+void PETSC_STDCALL  matnullspacecreate_(MPI_Fint * comm,PetscBool *has_cnst,PetscInt *n, Vec vecs[],MatNullSpace *SP, int *__ierr ){
 *__ierr = MatNullSpaceCreate(
 	MPI_Comm_f2c( *(comm) ),*has_cnst,*n,vecs,SP);
 }

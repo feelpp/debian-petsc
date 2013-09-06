@@ -5,20 +5,19 @@
 <TITLE>PCMGGetInterpolation</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCMGGetInterpolation"><H1>PCMGGetInterpolation</H1></A>
-Gets the function to be used to calculate the  interpolation from l-1 to the lth level 
+Gets the function to be used to calculate the interpolation from l-1 to the lth level 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-#include "petscpcmg.h"   
 PetscErrorCode  PCMGGetInterpolation(PC pc,PetscInt l,Mat *mat)
 </PRE>
 Logically Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc </B></TD><TD>- the multigrid context 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>pc </B></TD><TD>- the multigrid context
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>l </B></TD><TD>- the level (0 is coarsest) to supply [Do not supply 0]
 </TD></TR></TABLE>

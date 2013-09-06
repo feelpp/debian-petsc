@@ -1,7 +1,9 @@
 This gets rid of silly warnings about compiling without debugging symbols.
 
---- petsc-3.1.orig/config/PETSc/utilities/debugging.py	2006-03-20 16:51:11.000000000 -0500
-+++ petsc-3.1/config/PETSc/utilities/debugging.py	2006-04-04 19:27:25.000000000 -0400
+Index: petsc-3.4.2/config/PETSc/utilities/debugging.py
+===================================================================
+--- petsc-3.4.2.orig/config/PETSc/utilities/debugging.py	2013-08-20 15:21:46.000000000 +0200
++++ petsc-3.4.2/config/PETSc/utilities/debugging.py	2013-08-20 15:21:46.000000000 +0200
 @@ -26,17 +26,7 @@
      # should do error checking
      if self.framework.argDB['with-errorchecking']:
@@ -10,7 +12,7 @@ This gets rid of silly warnings about compiling without debugging symbols.
 -      self.logPrintBox('     WARNING! Compiling PETSc with NO error checking/exception handling, \n \
 -                    this should only be done for timing and production runs where you DO NOT \n \
 -                    use PETSc exceptions. All development should be done when configured using \n \
--                    --with-errorchecking=1')          
+-                    --with-errorchecking=1')
 -
      self.debugging = self.compilerFlags.debugging
 -    if not self.debugging:

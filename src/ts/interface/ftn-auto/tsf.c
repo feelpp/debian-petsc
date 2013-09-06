@@ -44,6 +44,16 @@ extern void PetscRmPointer(void*);
 #define tscomputerhsfunction_ tscomputerhsfunction
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tscomputesolutionfunction_ TSCOMPUTESOLUTIONFUNCTION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tscomputesolutionfunction_ tscomputesolutionfunction
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tscomputeforcingfunction_ TSCOMPUTEFORCINGFUNCTION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tscomputeforcingfunction_ tscomputeforcingfunction
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tscomputeifunction_ TSCOMPUTEIFUNCTION
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tscomputeifunction_ tscomputeifunction
@@ -117,6 +127,11 @@ extern void PetscRmPointer(void*);
 #define tsgetsnes_ TSGETSNES
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tsgetsnes_ tsgetsnes
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tssetsnes_ TSSETSNES
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tssetsnes_ tssetsnes
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tsgetksp_ TSGETKSP
@@ -219,9 +234,29 @@ extern void PetscRmPointer(void*);
 #define snestsformjacobian_ snestsformjacobian
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgetequationtype_ TSGETEQUATIONTYPE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgetequationtype_ tsgetequationtype
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tssetequationtype_ TSSETEQUATIONTYPE
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tssetequationtype_ tssetequationtype
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tsgetconvergedreason_ TSGETCONVERGEDREASON
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tsgetconvergedreason_ tsgetconvergedreason
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tssetconvergedreason_ TSSETCONVERGEDREASON
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tssetconvergedreason_ tssetconvergedreason
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tsgetsolvetime_ TSGETSOLVETIME
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tsgetsolvetime_ tsgetsolvetime
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define tsgetsnesiterations_ TSGETSNESITERATIONS
@@ -293,6 +328,11 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define tsvisetvariablebounds_ tsvisetvariablebounds
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define tscomputelinearstability_ TSCOMPUTELINEARSTABILITY
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define tscomputelinearstability_ tscomputelinearstability
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
@@ -303,29 +343,39 @@ void PETSC_STDCALL  tssetfromoptions_(TS ts, int *__ierr ){
 *__ierr = TSSetFromOptions(
 	(TS)PetscToPointer((ts) ));
 }
-void PETSC_STDCALL  tscomputerhsjacobian_(TS ts,PetscReal *t,Vec X,Mat *A,Mat *B,MatStructure *flg, int *__ierr ){
+void PETSC_STDCALL  tscomputerhsjacobian_(TS ts,PetscReal *t,Vec U,Mat *A,Mat *B,MatStructure *flg, int *__ierr ){
 *__ierr = TSComputeRHSJacobian(
 	(TS)PetscToPointer((ts) ),*t,
-	(Vec)PetscToPointer((X) ),A,B,flg);
+	(Vec)PetscToPointer((U) ),A,B,flg);
 }
-void PETSC_STDCALL  tscomputerhsfunction_(TS ts,PetscReal *t,Vec x,Vec y, int *__ierr ){
+void PETSC_STDCALL  tscomputerhsfunction_(TS ts,PetscReal *t,Vec U,Vec y, int *__ierr ){
 *__ierr = TSComputeRHSFunction(
 	(TS)PetscToPointer((ts) ),*t,
-	(Vec)PetscToPointer((x) ),
+	(Vec)PetscToPointer((U) ),
 	(Vec)PetscToPointer((y) ));
 }
-void PETSC_STDCALL  tscomputeifunction_(TS ts,PetscReal *t,Vec X,Vec Xdot,Vec Y,PetscBool *imex, int *__ierr ){
+void PETSC_STDCALL  tscomputesolutionfunction_(TS ts,PetscReal *t,Vec U, int *__ierr ){
+*__ierr = TSComputeSolutionFunction(
+	(TS)PetscToPointer((ts) ),*t,
+	(Vec)PetscToPointer((U) ));
+}
+void PETSC_STDCALL  tscomputeforcingfunction_(TS ts,PetscReal *t,Vec U, int *__ierr ){
+*__ierr = TSComputeForcingFunction(
+	(TS)PetscToPointer((ts) ),*t,
+	(Vec)PetscToPointer((U) ));
+}
+void PETSC_STDCALL  tscomputeifunction_(TS ts,PetscReal *t,Vec U,Vec Udot,Vec Y,PetscBool *imex, int *__ierr ){
 *__ierr = TSComputeIFunction(
 	(TS)PetscToPointer((ts) ),*t,
-	(Vec)PetscToPointer((X) ),
-	(Vec)PetscToPointer((Xdot) ),
+	(Vec)PetscToPointer((U) ),
+	(Vec)PetscToPointer((Udot) ),
 	(Vec)PetscToPointer((Y) ),*imex);
 }
-void PETSC_STDCALL  tscomputeijacobian_(TS ts,PetscReal *t,Vec X,Vec Xdot,PetscReal *shift,Mat *A,Mat *B,MatStructure *flg,PetscBool *imex, int *__ierr ){
+void PETSC_STDCALL  tscomputeijacobian_(TS ts,PetscReal *t,Vec U,Vec Udot,PetscReal *shift,Mat *A,Mat *B,MatStructure *flg,PetscBool *imex, int *__ierr ){
 *__ierr = TSComputeIJacobian(
 	(TS)PetscToPointer((ts) ),*t,
-	(Vec)PetscToPointer((X) ),
-	(Vec)PetscToPointer((Xdot) ),*shift,A,B,flg,*imex);
+	(Vec)PetscToPointer((U) ),
+	(Vec)PetscToPointer((Udot) ),*shift,A,B,flg,*imex);
 }
 void PETSC_STDCALL  tssetapplicationcontext_(TS ts,void*usrP, int *__ierr ){
 *__ierr = TSSetApplicationContext(
@@ -335,7 +385,7 @@ void PETSC_STDCALL  tsgetapplicationcontext_(TS ts,void*usrP, int *__ierr ){
 *__ierr = TSGetApplicationContext(
 	(TS)PetscToPointer((ts) ),usrP);
 }
-void PETSC_STDCALL  tsgettimestepnumber_(TS ts,PetscInt* iter, int *__ierr ){
+void PETSC_STDCALL  tsgettimestepnumber_(TS ts,PetscInt *iter, int *__ierr ){
 *__ierr = TSGetTimeStepNumber(
 	(TS)PetscToPointer((ts) ),iter);
 }
@@ -347,11 +397,11 @@ void PETSC_STDCALL  tssettimestep_(TS ts,PetscReal *time_step, int *__ierr ){
 *__ierr = TSSetTimeStep(
 	(TS)PetscToPointer((ts) ),*time_step);
 }
-void PETSC_STDCALL  tssetexactfinaltime_(TS ts,PetscBool *flg, int *__ierr ){
+void PETSC_STDCALL  tssetexactfinaltime_(TS ts,TSExactFinalTimeOption *eftopt, int *__ierr ){
 *__ierr = TSSetExactFinalTime(
-	(TS)PetscToPointer((ts) ),*flg);
+	(TS)PetscToPointer((ts) ),*eftopt);
 }
-void PETSC_STDCALL  tsgettimestep_(TS ts,PetscReal* dt, int *__ierr ){
+void PETSC_STDCALL  tsgettimestep_(TS ts,PetscReal *dt, int *__ierr ){
 *__ierr = TSGetTimeStep(
 	(TS)PetscToPointer((ts) ),dt);
 }
@@ -378,6 +428,11 @@ void PETSC_STDCALL  tsgetsnes_(TS ts,SNES *snes, int *__ierr ){
 *__ierr = TSGetSNES(
 	(TS)PetscToPointer((ts) ),snes);
 }
+void PETSC_STDCALL  tssetsnes_(TS ts,SNES snes, int *__ierr ){
+*__ierr = TSSetSNES(
+	(TS)PetscToPointer((ts) ),
+	(SNES)PetscToPointer((snes) ));
+}
 void PETSC_STDCALL  tsgetksp_(TS ts,KSP *ksp, int *__ierr ){
 *__ierr = TSGetKSP(
 	(TS)PetscToPointer((ts) ),ksp);
@@ -390,10 +445,10 @@ void PETSC_STDCALL  tssetduration_(TS ts,PetscInt *maxsteps,PetscReal *maxtime, 
 *__ierr = TSSetDuration(
 	(TS)PetscToPointer((ts) ),*maxsteps,*maxtime);
 }
-void PETSC_STDCALL  tssetsolution_(TS ts,Vec x, int *__ierr ){
+void PETSC_STDCALL  tssetsolution_(TS ts,Vec u, int *__ierr ){
 *__ierr = TSSetSolution(
 	(TS)PetscToPointer((ts) ),
-	(Vec)PetscToPointer((x) ));
+	(Vec)PetscToPointer((u) ));
 }
 void PETSC_STDCALL  tsprestep_(TS ts, int *__ierr ){
 *__ierr = TSPreStep(
@@ -416,31 +471,31 @@ void PETSC_STDCALL  tssetretainstages_(TS ts,PetscBool *flg, int *__ierr ){
 *__ierr = TSSetRetainStages(
 	(TS)PetscToPointer((ts) ),*flg);
 }
-void PETSC_STDCALL  tsinterpolate_(TS ts,PetscReal *t,Vec X, int *__ierr ){
+void PETSC_STDCALL  tsinterpolate_(TS ts,PetscReal *t,Vec U, int *__ierr ){
 *__ierr = TSInterpolate(
 	(TS)PetscToPointer((ts) ),*t,
-	(Vec)PetscToPointer((X) ));
+	(Vec)PetscToPointer((U) ));
 }
 void PETSC_STDCALL  tsstep_(TS ts, int *__ierr ){
 *__ierr = TSStep(
 	(TS)PetscToPointer((ts) ));
 }
-void PETSC_STDCALL  tsevaluatestep_(TS ts,PetscInt *order,Vec X,PetscBool *done, int *__ierr ){
+void PETSC_STDCALL  tsevaluatestep_(TS ts,PetscInt *order,Vec U,PetscBool *done, int *__ierr ){
 *__ierr = TSEvaluateStep(
 	(TS)PetscToPointer((ts) ),*order,
-	(Vec)PetscToPointer((X) ),done);
+	(Vec)PetscToPointer((U) ),done);
 }
-void PETSC_STDCALL  tssolve_(TS ts,Vec x,PetscReal *ftime, int *__ierr ){
+void PETSC_STDCALL  tssolve_(TS ts,Vec u, int *__ierr ){
 *__ierr = TSSolve(
 	(TS)PetscToPointer((ts) ),
-	(Vec)PetscToPointer((x) ),ftime);
+	(Vec)PetscToPointer((u) ));
 }
-void PETSC_STDCALL  tsmonitor_(TS ts,PetscInt *step,PetscReal *ptime,Vec x, int *__ierr ){
+void PETSC_STDCALL  tsmonitor_(TS ts,PetscInt *step,PetscReal *ptime,Vec u, int *__ierr ){
 *__ierr = TSMonitor(
 	(TS)PetscToPointer((ts) ),*step,*ptime,
-	(Vec)PetscToPointer((x) ));
+	(Vec)PetscToPointer((u) ));
 }
-void PETSC_STDCALL  tsgettime_(TS ts,PetscReal* t, int *__ierr ){
+void PETSC_STDCALL  tsgettime_(TS ts,PetscReal *t, int *__ierr ){
 *__ierr = TSGetTime(
 	(TS)PetscToPointer((ts) ),t);
 }
@@ -457,20 +512,37 @@ void PETSC_STDCALL  tsgetdm_(TS ts,DM *dm, int *__ierr ){
 *__ierr = TSGetDM(
 	(TS)PetscToPointer((ts) ),dm);
 }
-void PETSC_STDCALL  snestsformfunction_(SNES snes,Vec X,Vec F,void*ctx, int *__ierr ){
+void PETSC_STDCALL  snestsformfunction_(SNES snes,Vec U,Vec F,void*ctx, int *__ierr ){
 *__ierr = SNESTSFormFunction(
 	(SNES)PetscToPointer((snes) ),
-	(Vec)PetscToPointer((X) ),
+	(Vec)PetscToPointer((U) ),
 	(Vec)PetscToPointer((F) ),ctx);
 }
-void PETSC_STDCALL  snestsformjacobian_(SNES snes,Vec X,Mat *A,Mat *B,MatStructure *flag,void*ctx, int *__ierr ){
+void PETSC_STDCALL  snestsformjacobian_(SNES snes,Vec U,Mat *A,Mat *B,MatStructure *flag,void*ctx, int *__ierr ){
 *__ierr = SNESTSFormJacobian(
 	(SNES)PetscToPointer((snes) ),
-	(Vec)PetscToPointer((X) ),A,B,flag,ctx);
+	(Vec)PetscToPointer((U) ),A,B,flag,ctx);
+}
+void PETSC_STDCALL  tsgetequationtype_(TS ts,TSEquationType *equation_type, int *__ierr ){
+*__ierr = TSGetEquationType(
+	(TS)PetscToPointer((ts) ),
+	(TSEquationType* )PetscToPointer((equation_type) ));
+}
+void PETSC_STDCALL  tssetequationtype_(TS ts,TSEquationType *equation_type, int *__ierr ){
+*__ierr = TSSetEquationType(
+	(TS)PetscToPointer((ts) ),*equation_type);
 }
 void PETSC_STDCALL  tsgetconvergedreason_(TS ts,TSConvergedReason *reason, int *__ierr ){
 *__ierr = TSGetConvergedReason(
 	(TS)PetscToPointer((ts) ),reason);
+}
+void PETSC_STDCALL  tssetconvergedreason_(TS ts,TSConvergedReason *reason, int *__ierr ){
+*__ierr = TSSetConvergedReason(
+	(TS)PetscToPointer((ts) ),*reason);
+}
+void PETSC_STDCALL  tsgetsolvetime_(TS ts,PetscReal *ftime, int *__ierr ){
+*__ierr = TSGetSolveTime(
+	(TS)PetscToPointer((ts) ),ftime);
 }
 void PETSC_STDCALL  tsgetsnesiterations_(TS ts,PetscInt *nits, int *__ierr ){
 *__ierr = TSGetSNESIterations(
@@ -532,6 +604,10 @@ void PETSC_STDCALL  tsvisetvariablebounds_(TS ts,Vec xl,Vec xu, int *__ierr ){
 	(TS)PetscToPointer((ts) ),
 	(Vec)PetscToPointer((xl) ),
 	(Vec)PetscToPointer((xu) ));
+}
+void PETSC_STDCALL  tscomputelinearstability_(TS ts,PetscReal *xr,PetscReal *xi,PetscReal *yr,PetscReal *yi, int *__ierr ){
+*__ierr = TSComputeLinearStability(
+	(TS)PetscToPointer((ts) ),*xr,*xi,yr,yi);
 }
 #if defined(__cplusplus)
 }

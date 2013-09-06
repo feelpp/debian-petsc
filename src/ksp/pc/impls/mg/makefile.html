@@ -3,26 +3,24 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/mg/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:59:19+00:00">
+<meta name="date" content="2013-07-02T14:46:41+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = mg.c fmg.c smg.c mgfunc.c 
+SOURCEC  = mg.c fmg.c smg.c mgfunc.c
 SOURCEF  =
-SOURCEH  = mgimpl.h ../../../../../include/petscpcmg.h
-OBJSC    = mg.o fmg.o smg.o mgfunc.o
-OBJSF    =
+SOURCEH  = mgimpl.h
 LIBBASE  = libpetscksp
 MANSEC   = <A href="ROOT/docs/manualpages/PC/PC.html#PC">PC</A>
 SUBMANSEC= <A href="ROOT/docs/manualpages/PC/PCMG.html#PCMG">PCMG</A>
 LOCDIR   = src/ksp/pc/impls/mg/
-DIRS     = 
+DIRS     =
 
 include ${PETSC_DIR}/conf/variables
 include ${PETSC_DIR}/conf/rules

@@ -4,13 +4,13 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/petscbag.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:37:15+00:00">
+<meta name="date" content="2013-07-02T14:38:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
-<a name="line4"> 4: </a> #include <A href="petscsys.h.html">petscsys.h</A>
+<a name="line4">  4: </a><font color="#A020F0">#include &lt;petscsys.h&gt;</font>
 
 <a name="line6">  6: </a><font color="#B22222">/*S</font>
 <a name="line7">  7: </a><font color="#B22222">     <A href="../docs/manualpages/Sys/PetscBag.html#PetscBag">PetscBag</A> - PETSc object that manages a collection of user data including parameters.</font>
@@ -27,12 +27,12 @@
 <a name="line18"> 18: </a><font color="#B22222">$</font>
 <a name="line19"> 19: </a><font color="#B22222">$      <A href="../docs/manualpages/Sys/PetscBag.html#PetscBag">PetscBag</A>     bag;</font>
 <a name="line20"> 20: </a><font color="#B22222">$      MyParameters *params;</font>
-<a name="line21"> 21: </a><font color="#B22222">$      </font>
+<a name="line21"> 21: </a><font color="#B22222">$</font>
 <a name="line22"> 22: </a><font color="#B22222">$      <A href="../docs/manualpages/Sys/PetscBagCreate.html#PetscBagCreate">PetscBagCreate</A>(<A href="../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,sizeof(MyParameters),&amp;bag);</font>
 <a name="line23"> 23: </a><font color="#B22222">$      <A href="../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>(bag,(void **)&amp;params);</font>
 <a name="line24"> 24: </a><font color="#B22222">$      <A href="../docs/manualpages/Sys/PetscBagSetName.html#PetscBagSetName">PetscBagSetName</A>(bag,"MyParameters");</font>
 <a name="line25"> 25: </a><font color="#B22222">$      <A href="../docs/manualpages/Sys/PetscBagRegisterInt.html#PetscBagRegisterInt">PetscBagRegisterInt</A>(bag,&amp;params.height,22,"height","Height of the water tower");</font>
-<a name="line26"> 26: </a><font color="#B22222">$       </font>
+<a name="line26"> 26: </a><font color="#B22222">$</font>
 
 <a name="line28"> 28: </a><font color="#B22222">.seealso:  <A href="../docs/manualpages/Sys/PetscBagSetName.html#PetscBagSetName">PetscBagSetName</A>(), <A href="../docs/manualpages/Sys/PetscBagGetName.html#PetscBagGetName">PetscBagGetName</A>(), <A href="../docs/manualpages/Sys/PetscBagView.html#PetscBagView">PetscBagView</A>(), <A href="../docs/manualpages/Sys/PetscBagLoad.html#PetscBagLoad">PetscBagLoad</A>(), <A href="../docs/manualpages/Sys/PetscBagGetData.html#PetscBagGetData">PetscBagGetData</A>()</font>
 <a name="line29"> 29: </a><font color="#B22222">           <A href="../docs/manualpages/Sys/PetscBagRegisterReal.html#PetscBagRegisterReal">PetscBagRegisterReal</A>(), <A href="../docs/manualpages/Sys/PetscBagRegisterInt.html#PetscBagRegisterInt">PetscBagRegisterInt</A>(), <A href="../docs/manualpages/Sys/PetscBagRegisterBool.html#PetscBagRegisterBool">PetscBagRegisterBool</A>(), <A href="../docs/manualpages/Sys/PetscBagRegisterScalar.html#PetscBagRegisterScalar">PetscBagRegisterScalar</A>()</font>

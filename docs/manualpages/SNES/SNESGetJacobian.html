@@ -5,15 +5,13 @@
 <TITLE>SNESGetJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESGetJacobian"><H1>SNESGetJacobian</H1></A>
-Returns the Jacobian matrix and optionally the user  provided context for evaluating the Jacobian. 
+Returns the Jacobian matrix and optionally the user provided context for evaluating the Jacobian. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
-PetscErrorCode SNESGetJacobian(SNES snes,Mat *A,Mat *B,PetscErrorCode (**func)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void **ctx)
+PetscErrorCode SNESGetJacobian(SNES snes,Mat *Amat,Mat *Pmat,PetscErrorCode (**SNESJacobianFunction)(SNES,Vec,Mat*,Mat*,MatStructure*,void*),void **ctx)
 </PRE>
 Not Collective, but <A HREF="../Mat/Mat.html#Mat">Mat</A> object will be parallel if <A HREF="../SNES/SNES.html#SNES">SNES</A> object is
 <P>
@@ -23,13 +21,13 @@ Not Collective, but <A HREF="../Mat/Mat.html#Mat">Mat</A> object will be paralle
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>A </B></TD><TD>- location to stash Jacobian matrix (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Amat </B></TD><TD>- location to stash (approximate) Jacobian matrix (or NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>B </B></TD><TD>- location to stash preconditioner matrix (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>Pmat </B></TD><TD>- location to stash matrix used to compute the preconditioner (or NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>func </B></TD><TD>- location to put Jacobian function (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../SNES/SNESJacobianFunction.html#SNESJacobianFunction">SNESJacobianFunction</A> </B></TD><TD>- location to put Jacobian function (or NULL)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- location to stash Jacobian ctx (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- location to stash Jacobian ctx (or NULL)
 </TD></TR></TABLE>
 <P>
 

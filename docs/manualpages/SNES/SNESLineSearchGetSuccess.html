@@ -5,7 +5,7 @@
 <TITLE>SNESLineSearchGetSuccess</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESLineSearchGetSuccess"><H1>SNESLineSearchGetSuccess</H1></A>
 Gets the success/failure status of the last line search application 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -22,7 +22,7 @@ PetscErrorCode  SNESLineSearchGetSuccess(SNESLineSearch linesearch, PetscBool *s
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-This is typically called after <A HREF="../SNES/SNESLineSearchApply.html#SNESLineSearchApply">SNESLineSearchApply</A> in order to determine if the line-search failed
+This is typically called after <A HREF="../SNES/SNESLineSearchApply.html#SNESLineSearchApply">SNESLineSearchApply</A>() in order to determine if the line-search failed
 (and set the <A HREF="../SNES/SNES.html#SNES">SNES</A> convergence accordingly).
 <P>
 

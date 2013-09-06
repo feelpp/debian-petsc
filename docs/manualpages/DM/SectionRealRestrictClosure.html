@@ -5,13 +5,13 @@
 <TITLE>SectionRealRestrictClosure</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SectionRealRestrictClosure"><H1>SectionRealRestrictClosure</H1></A>
 Returns an array with the values in a given closure 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmmesh.h"   
-PetscErrorCode SectionRealRestrictClosure(SectionReal section, DM dm, PetscInt point, PetscInt n, PetscScalar values[])
+PetscErrorCode SectionRealRestrictClosure(SectionReal section, DM dm, PetscInt point, const PetscScalar *values[])
 </PRE>
 Not Collective
 <P>
@@ -22,10 +22,6 @@ Not Collective
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mesh    </B></TD><TD>- The DMMesh object
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>point   </B></TD><TD>- The sieve point
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n       </B></TD><TD>- The array size
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>array   </B></TD><TD>- The array to fill up
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>

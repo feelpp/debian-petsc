@@ -3,15 +3,15 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/color/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:53:49+00:00">
+<meta name="date" content="2013-07-02T14:44:50+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><font color="#A020F0">#</font>
-<font color="#A020F0">#  All the Minpack coloring routines have been converted to C with the F2C </font>
-<font color="#A020F0"># converter. We do not include in the distribution the original Fortran 77 </font>
-<font color="#A020F0"># code in the interest of saving disk space. </font>
+<font color="#A020F0">#  All the Minpack coloring routines have been converted to C with the F2C</font>
+<font color="#A020F0"># converter. We do not include in the distribution the original Fortran 77</font>
+<font color="#A020F0"># code in the interest of saving disk space.</font>
 <font color="#A020F0">#</font>
 <font color="#A020F0">#  All of the MINPACK routine names have been prefixed with MINPACK</font>
 <font color="#A020F0"># to prevent name-space pollution.</font>
@@ -26,8 +26,6 @@ FFLAGS   =
 SOURCEC  = degr.c setr.c dsm.c ido.c numsrt.c seq.c slo.c color.c \
            scolor.c
 SOURCEH  = color.h
-OBJSC    = degr.o setr.o dsm.o ido.o numsrt.o seq.o slo.o color.o \
-           scolor.o
 LIBBASE  = libpetscmat
 LOCDIR   = src/mat/color/
 MANSEC   = MatOrderings

@@ -5,7 +5,7 @@
 <TITLE>TSStep</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSStep"><H1>TSStep</H1></A>
 Steps one time step 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -25,12 +25,15 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 The hook set using <A HREF="../TS/TSSetPreStep.html#TSSetPreStep">TSSetPreStep</A>() is called before each attempt to take the step. In general, the time step size may
 be changed due to adaptive error controller or solve failures. Note that steps may contain multiple stages.
 <P>
+This may over-step the final time provided in <A HREF="../TS/TSSetDuration.html#TSSetDuration">TSSetDuration</A>() depending on the time-step used. <A HREF="../TS/TSSolve.html#TSSolve">TSSolve</A>() interpolates to exactly the
+time provided in <A HREF="../TS/TSSetDuration.html#TSSetDuration">TSSetDuration</A>(). One can use <A HREF="../TS/TSInterpolate.html#TSInterpolate">TSInterpolate</A>() to determine an interpolated solution within the final timestep.
+<P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../TS/TS.html#TS">TS</A>, timestep, solve
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TSSetUp.html#TSSetUp">TSSetUp</A>(), <A HREF="../TS/TSDestroy.html#TSDestroy">TSDestroy</A>(), <A HREF="../TS/TSSolve.html#TSSolve">TSSolve</A>(), <A HREF="../TS/TSSetPreStep.html#TSSetPreStep">TSSetPreStep</A>(), <A HREF="../TS/TSSetPreStage.html#TSSetPreStage">TSSetPreStage</A>()
+ <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TSSetUp.html#TSSetUp">TSSetUp</A>(), <A HREF="../TS/TSDestroy.html#TSDestroy">TSDestroy</A>(), <A HREF="../TS/TSSolve.html#TSSolve">TSSolve</A>(), <A HREF="../TS/TSSetPreStep.html#TSSetPreStep">TSSetPreStep</A>(), <A HREF="../TS/TSSetPreStage.html#TSSetPreStage">TSSetPreStage</A>(), <A HREF="../TS/TSInterpolate.html#TSInterpolate">TSInterpolate</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/interface/ts.c.html#TSStep">src/ts/interface/ts.c</A>
 <BR><A HREF="./index.html">Index of all TS routines</A>

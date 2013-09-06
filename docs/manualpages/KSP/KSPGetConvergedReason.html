@@ -5,7 +5,7 @@
 <TITLE>KSPGetConvergedReason</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPGetConvergedReason"><H1>KSPGetConvergedReason</H1></A>
 Gets the reason the <A HREF="../KSP/KSP.html#KSP">KSP</A> iteration was stopped. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -29,17 +29,19 @@ Not Collective
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../KSP/KSP_CONVERGED_ATOL.html#KSP_CONVERGED_ATOL">KSP_CONVERGED_ATOL</A> (residual 2</B></TD><TD>- norm less than abstol)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../KSP/KSP_CONVERGED_ITS.html#KSP_CONVERGED_ITS">KSP_CONVERGED_ITS</A> (used by the preonly preconditioner that always uses ONE iteration, or when the <A HREF="../KSP/KSPSkipConverged.html#KSPSkipConverged">KSPSkipConverged</A>() convergence </B></TD><TD>- test routine is set.
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../KSP/KSP_CONVERGED_ITS.html#KSP_CONVERGED_ITS">KSP_CONVERGED_ITS</A> (used by the preonly preconditioner that always uses ONE iteration, or when the <A HREF="../KSP/KSPSkipConverged.html#KSPSkipConverged">KSPSkipConverged</A>() convergence</B></TD><TD>- test routine is set.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>KSP_CONVERGED_CG_NEG_CURVE</B></TD><TD>- .  KSP_CONVERGED_CG_CONSTRAINED
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>KSP_CONVERGED_STEP_LENGTH</B></TD><TD>- .  <A HREF="../KSP/KSP_DIVERGED_ITS.html#KSP_DIVERGED_ITS">KSP_DIVERGED_ITS</A>  (required more than its to reach convergence)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../KSP/KSP_DIVERGED_DTOL.html#KSP_DIVERGED_DTOL">KSP_DIVERGED_DTOL</A> (residual norm increased by a factor of divtol)</B></TD><TD>- .  KSP_DIVERGED_NAN (residual norm became Not-a-number likely due to 0/0)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../KSP/KSP_DIVERGED_DTOL.html#KSP_DIVERGED_DTOL">KSP_DIVERGED_DTOL</A> (residual norm increased by a factor of divtol)</B></TD><TD>- .  KSP_DIVERGED_NANORINF (residual norm became Not-a-number or Inf likely due to 0/0)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../KSP/KSP_DIVERGED_BREAKDOWN.html#KSP_DIVERGED_BREAKDOWN">KSP_DIVERGED_BREAKDOWN</A> (generic breakdown in method)</B></TD><TD>- -  <A HREF="../KSP/KSP_DIVERGED_BREAKDOWN_BICG.html#KSP_DIVERGED_BREAKDOWN_BICG">KSP_DIVERGED_BREAKDOWN_BICG</A> (Initial residual is orthogonal to preconditioned initial
 residual. Try a different preconditioner, or a different initial Level.)
-</TD></TR>See also manual page for each reason.
+</TD></TR>
+<P>
+See also manual page for each reason.
 <P>
 guess: beginner
 <P>

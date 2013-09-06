@@ -5,13 +5,13 @@
 <TITLE>TSEvaluateStep</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSEvaluateStep"><H1>TSEvaluateStep</H1></A>
 Evaluate the solution at the end of a time step with a given order of accuracy. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode TSEvaluateStep(TS ts,PetscInt order,Vec X,PetscBool *done)
+PetscErrorCode TSEvaluateStep(TS ts,PetscInt order,Vec U,PetscBool *done)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -21,11 +21,11 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>order </B></TD><TD>- desired order of accuracy
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>done </B></TD><TD>- whether the step was evaluated at this order (pass <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to generate an error if not available)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>done </B></TD><TD>- whether the step was evaluated at this order (pass NULL to generate an error if not available)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Arguments</FONT></H3>
-<DT><B>X </B> -state at the end of the current step
+<DT><B>U </B> -state at the end of the current step
 <br>
 <P>
 

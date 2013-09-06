@@ -5,7 +5,7 @@
 <TITLE>DMADDACreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMADDACreate"><H1>DMADDACreate</H1></A>
 Creates and ADDA object that translate between coordinates in a geometric grid of arbitrary dimension and data in a PETSc vector distributed on several processors. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -24,7 +24,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nodes </B></TD><TD>- array with d entries that give the number of nodes in each dimension
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>procs </B></TD><TD>- array with d entries that give the number of processors in each dimension
-(or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if to be determined automatically)
+(or NULL if to be determined automatically)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dof </B></TD><TD>- number of degrees of freedom per node
 </TD></TR>
@@ -38,7 +38,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/adda/adda.c.html#DMADDACreate">src/dm/adda/adda.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/adda/adda.c.html#DMADDACreate">src/dm/impls/adda/adda.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

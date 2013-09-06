@@ -5,13 +5,13 @@
 <TITLE>KSPSetResidualHistory</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPSetResidualHistory"><H1>KSPSetResidualHistory</H1></A>
 Sets the array used to hold the residual history. If set, this array will contain the residual norms computed at each iteration of the solver. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPSetResidualHistory(KSP ksp,PetscReal a[],PetscInt na,PetscBool  reset)
+PetscErrorCode  KSPSetResidualHistory(KSP ksp,PetscReal a[],PetscInt na,PetscBool reset)
 </PRE>
 Not Collective
 <P>
@@ -32,7 +32,7 @@ for each new linear solve
 Notes: The array is NOT freed by PETSc so the user needs to keep track of
 it and destroy once the <A HREF="../KSP/KSP.html#KSP">KSP</A> object is destroyed.
 <P>
-If 'a' is <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> then space is allocated for the history. If 'na' <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> or <A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> then a
+If 'a' is NULL then space is allocated for the history. If 'na' <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> or <A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> then a
 default array of length 10000 is allocated.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
@@ -48,7 +48,4 @@ default array of length 10000 is allocated.
 <BR><A HREF="./index.html">Index of all KSP routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
-<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex6.c.html">src/snes/examples/tutorials/ex6.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex38.c.html">src/snes/examples/tutorials/ex38.c.html</A><BR>
 </BODY></HTML>

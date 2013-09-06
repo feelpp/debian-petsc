@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = matisf.c
-OBJSC    = matisf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

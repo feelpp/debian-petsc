@@ -39,7 +39,7 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  matcreatefft_(MPI_Fint * comm,PetscInt *ndim, PetscInt dim[], MatType *mattype,Mat* A, int *__ierr ){
+void PETSC_STDCALL  matcreatefft_(MPI_Fint * comm,PetscInt *ndim, PetscInt dim[],MatType *mattype,Mat *A, int *__ierr ){
 *__ierr = MatCreateFFT(
 	MPI_Comm_f2c( *(comm) ),*ndim,dim,*mattype,A);
 }

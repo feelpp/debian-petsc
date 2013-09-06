@@ -5,13 +5,12 @@
 <TITLE>VecScatterEnd</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecScatterEnd"><H1>VecScatterEnd</H1></A>
 Ends a generalized scatter from one vector to another.  Call after first calling <A HREF="../Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscis.h" 
-#include "petscvec.h" 
+#include "petscvec.h"    
 PetscErrorCode  VecScatterEnd(VecScatter ctx,Vec x,Vec y,InsertMode addv,ScatterMode mode)
 </PRE>
 Neighbor-wise Collective on <A HREF="../Vec/VecScatter.html#VecScatter">VecScatter</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
@@ -45,11 +44,9 @@ y[iy[i]] = x[ix[i]], for i=0,...,ni-1
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex2.c.html">src/dm/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex1.c.html">src/snes/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

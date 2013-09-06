@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex71.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:51:25+00:00">
+<meta name="date" content="2013-07-02T14:44:06+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Passes a sparse matrix to MATLAB.\n\n"</font>;
 
@@ -16,14 +16,14 @@
 
 <a name="line8">  8: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc,char **args)</font></strong>
 <a name="line9">  9: </a>{
-<a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m = 4,n = 5,i,j,II,J;
+<a name="line11"> 11: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       m   = 4,n = 5,i,j,II,J;
 <a name="line12"> 12: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    one = 1.0,v;
 <a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x;
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>            A;
 
-<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-m"</font>,&amp;m,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-n"</font>,&amp;n,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL,<font color="#666666">"-m"</font>,&amp;m,NULL);
+<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL,<font color="#666666">"-n"</font>,&amp;n,NULL);
 
 <a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;A);
 <a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(A,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,<A href="../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,m*n,m*n);
@@ -49,7 +49,7 @@
 <a name="line41"> 41: </a><font color="#A020F0">#if defined(PETSC_USE_SOCKET_VIEWER)</font>
 <a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(x,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_SOCKET_WORLD.html#PETSC_VIEWER_SOCKET_WORLD">PETSC_VIEWER_SOCKET_WORLD</A>);
 <a name="line43"> 43: </a><font color="#A020F0">#endif</font>
-<a name="line44"> 44: </a>
+
 <a name="line45"> 45: </a>  <A href="../../../../docs/manualpages/Sys/PetscSleep.html#PetscSleep">PetscSleep</A>(30);
 
 <a name="line47"> 47: </a>  <A href="../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
@@ -57,7 +57,7 @@
 <a name="line49"> 49: </a>  <A href="../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
 <a name="line50"> 50: </a>  <font color="#4169E1">return</font> 0;
 <a name="line51"> 51: </a>}
-<a name="line52"> 52: </a>
+
 
 
 </pre>

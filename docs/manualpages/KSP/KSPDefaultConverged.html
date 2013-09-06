@@ -5,7 +5,7 @@
 <TITLE>KSPDefaultConverged</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPDefaultConverged"><H1>KSPDefaultConverged</H1></A>
 Determines convergence of the iterative solvers (default code). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -49,7 +49,7 @@ where
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>rtol = relative tolerance,</B></TD><TD>- .     abstol = absolute tolerance.
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dtol = divergence tolerance,</B></TD><TD>- -     rnorm_0 is the two norm of the right hand side. When initial guess is non-zero you 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>dtol = divergence tolerance,</B></TD><TD>- -     rnorm_0 is the two norm of the right hand side. When initial guess is non-zero you
 can call <A HREF="../KSP/KSPDefaultConvergedSetUIRNorm.html#KSPDefaultConvergedSetUIRNorm">KSPDefaultConvergedSetUIRNorm</A>() to use the norm of (b - A*(initial guess))
 as the starting point for relative norm convergence testing.
 </TD></TR>

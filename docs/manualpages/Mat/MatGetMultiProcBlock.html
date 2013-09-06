@@ -5,13 +5,13 @@
 <TITLE>MatGetMultiProcBlock</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetMultiProcBlock"><H1>MatGetMultiProcBlock</H1></A>
 Create multiple [bjacobi] 'parallel submatrices' from a given 'mat' object. Each submatrix can span multiple procs. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode   MatGetMultiProcBlock(Mat mat, MPI_Comm subComm, MatReuse scall,Mat* subMat)
+PetscErrorCode   MatGetMultiProcBlock(Mat mat, MPI_Comm subComm, MatReuse scall,Mat *subMat)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -29,9 +29,9 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-The submatrix partition across processors is dicated by 'subComm' a
+The submatrix partition across processors is dictated by 'subComm' a
 communicator obtained by com_split(comm). The comm_split
-is not restriced to be grouped with consequitive original ranks.
+is not restriced to be grouped with consecutive original ranks.
 <P>
 Due the comm_split() usage, the parallel layout of the submatrices
 map directly to the layout of the original matrix [wrt the local

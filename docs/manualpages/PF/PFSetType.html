@@ -5,13 +5,13 @@
 <TITLE>PFSetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PFSetType"><H1>PFSetType</H1></A>
 Builds <A HREF="../PF/PF.html#PF">PF</A> for a particular function 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpf.h" 
-PetscErrorCode  PFSetType(PF pf,const PFType type,void *ctx)
+PetscErrorCode  PFSetType(PF pf,PFType type,void *ctx)
 </PRE>
 Collective on <A HREF="../PF/PF.html#PF">PF</A>
 <P>
@@ -40,7 +40,7 @@ PFCONSTANT)
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../PF/PFSet.html#PFSet">PFSet</A>(), <A HREF="../PF/PFRegisterDynamic.html#PFRegisterDynamic">PFRegisterDynamic</A>(), <A HREF="../PF/PFCreate.html#PFCreate">PFCreate</A>(), <A HREF="../DM/DMDACreatePF.html#DMDACreatePF">DMDACreatePF</A>()
+ <A HREF="../PF/PFSet.html#PFSet">PFSet</A>(), <A HREF="../PF/PFRegister.html#PFRegister">PFRegister</A>(), <A HREF="../PF/PFCreate.html#PFCreate">PFCreate</A>(), <A HREF="../DM/DMDACreatePF.html#DMDACreatePF">DMDACreatePF</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate

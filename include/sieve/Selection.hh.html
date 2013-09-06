@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/Selection.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:21:00+00:00">
+<meta name="date" content="2013-07-02T14:53:30+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_Selection_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_Selection_hh</font></strong>
 
@@ -45,7 +45,7 @@
 <a name="line34"> 34: </a>      <font color="#4169E1">typedef</font> typename Sieve::point_type point_type;
 <a name="line35"> 35: </a>      <font color="#4169E1">typedef</font> typename Sieve::arrow_type arrow_type;
 <a name="line36"> 36: </a><strong><font color="#FF0000">    protected:</font></strong>
-<a name="line37"> 37: </a>      const FaceType&amp; face;
+<a name="line37"> 37: </a>      FaceType&amp; face;
 <a name="line38"> 38: </a>      PointArray&amp;     origVertices;
 <a name="line39"> 39: </a>      PointArray&amp;     faceVertices;
 <a name="line40"> 40: </a>      int            *indices;
@@ -53,7 +53,7 @@
 <a name="line42"> 42: </a>      int             oppositeVertex;
 <a name="line43"> 43: </a>      int             v;
 <a name="line44"> 44: </a><strong><font color="#FF0000">    public:</font></strong>
-<a name="line45"> 45: </a>      FaceVisitor(const FaceType&amp; f, PointArray&amp; oV, PointArray&amp; fV, int *i, const int debug) : face(f), origVertices(oV), faceVertices(fV), indices(i), debug(debug), oppositeVertex(-1), v(0) {};
+<a name="line45"> 45: </a>      FaceVisitor(FaceType&amp; f, PointArray&amp; oV, PointArray&amp; fV, int *i, const int debug) : face(f), origVertices(oV), faceVertices(fV), indices(i), debug(debug), oppositeVertex(-1), v(0) {};
 <a name="line46"> 46: </a>      void visitPoint(const point_type&amp; point) {
 <a name="line47"> 47: </a>        <font color="#4169E1">if</font> (face-&gt;find(point) != face-&gt;end()) {
 <a name="line48"> 48: </a>          <font color="#4169E1">if</font> (debug) std::cout &lt;&lt; <font color="#666666">"    vertex "</font> &lt;&lt; point &lt;&lt; std::endl;
@@ -123,7 +123,7 @@
 <a name="line112">112: </a>        }
 <a name="line113">113: </a>        <font color="#4169E1">break</font>;
 <a name="line114">114: </a>      <font color="#4169E1">case</font> 3:
-<a name="line115">115: </a>        <font color="#4169E1">switch</font> (numCorners)        {
+<a name="line115">115: </a>        <font color="#4169E1">switch</font> (numCorners) {
 <a name="line116">116: </a>        <font color="#4169E1">case</font> 4 : // tetradehdron
 <a name="line117">117: </a>          _numFaceVertices = 3; // Face has 3 vertices
 <a name="line118">118: </a>          <font color="#4169E1">break</font>;
@@ -636,7 +636,7 @@
 <a name="line625">625: </a>        <font color="#4169E1">if</font> (debug) std::cout &lt;&lt; <font color="#666666">"Checking submesh vertex "</font> &lt;&lt; *sv_iter &lt;&lt; std::endl;
 <a name="line626">626: </a>        <font color="#4169E1">for</font>(typename sieveAlg::supportArray::iterator c_iter = cBegin; c_iter != cEnd; ++c_iter) {
 <a name="line627">627: </a>          <font color="#4169E1">if</font> (debug) std::cout &lt;&lt; <font color="#666666">"  Checking cell "</font> &lt;&lt; *c_iter &lt;&lt; std::endl;
-<a name="line628">628: </a>          <font color="#4169E1">if</font> (submeshCells.find(*c_iter) != submeshCells.end())        <font color="#4169E1">continue</font>;
+<a name="line628">628: </a>          <font color="#4169E1">if</font> (submeshCells.find(*c_iter) != submeshCells.end()) <font color="#4169E1">continue</font>;
 <a name="line629">629: </a>          <font color="#4169E1">if</font> (censor &amp;&amp; (!mesh-&gt;getValue(depthLabel, *c_iter))) <font color="#4169E1">continue</font>;
 <a name="line630">630: </a>          const Obj&lt;typename sieveAlg::coneArray&gt;&amp; cone = sieveAlg::nCone(mesh, *c_iter, height);
 <a name="line631">631: </a>          const typename sieveAlg::coneArray::iterator vBegin = cone-&gt;begin();
@@ -725,11 +725,11 @@
 <a name="line714">714: </a>        const Obj&lt;typename sieveAlg::supportArray&gt;&amp; faces = sieveAlg::nSupport(mesh, *sv_iter, depth-1);
 <a name="line715">715: </a>        const typename sieveAlg::supportArray::iterator fBegin = faces-&gt;begin();
 <a name="line716">716: </a>        const typename sieveAlg::supportArray::iterator fEnd   = faces-&gt;end();
-<a name="line717">717: </a>
+
 <a name="line718">718: </a>        <font color="#4169E1">if</font> (debug) std::cout &lt;&lt; <font color="#666666">"Checking submesh vertex "</font> &lt;&lt; *sv_iter &lt;&lt; std::endl;
 <a name="line719">719: </a>        <font color="#4169E1">for</font>(typename sieveAlg::supportArray::iterator f_iter = fBegin; f_iter != fEnd; ++f_iter) {
 <a name="line720">720: </a>          <font color="#4169E1">if</font> (debug) std::cout &lt;&lt; <font color="#666666">"  Checking face "</font> &lt;&lt; *f_iter &lt;&lt; std::endl;
-<a name="line721">721: </a>          <font color="#4169E1">if</font> (submeshFaces-&gt;find(*f_iter) != submeshFaces-&gt;end())        <font color="#4169E1">continue</font>;
+<a name="line721">721: </a>          <font color="#4169E1">if</font> (submeshFaces-&gt;find(*f_iter) != submeshFaces-&gt;end()) <font color="#4169E1">continue</font>;
 <a name="line722">722: </a>          const Obj&lt;typename sieveAlg::coneArray&gt;&amp; cone = sieveAlg::nCone(mesh, *f_iter, height-1);
 <a name="line723">723: </a>          const typename sieveAlg::coneArray::iterator vBegin = cone-&gt;begin();
 <a name="line724">724: </a>          const typename sieveAlg::coneArray::iterator vEnd   = cone-&gt;end();
@@ -784,7 +784,7 @@
 <a name="line773">773: </a>        sieve-&gt;support(*sv_iter, sV);
 <a name="line774">774: </a>        const int         numCells = sV.getSize();
 <a name="line775">775: </a>        const point_type *cells    = sV.getPoints();
-<a name="line776">776: </a>
+
 <a name="line777">777: </a>        <font color="#4169E1">if</font> (debug) std::cout &lt;&lt; <font color="#666666">"Checking submesh vertex "</font> &lt;&lt; *sv_iter &lt;&lt; std::endl;
 <a name="line778">778: </a>        <font color="#4169E1">for</font>(int c = 0; c &lt; numCells; ++c) {
 <a name="line779">779: </a>          <font color="#4169E1">if</font> (debug) std::cout &lt;&lt; <font color="#666666">"  Checking cell "</font> &lt;&lt; cells[c] &lt;&lt; std::endl;
@@ -984,7 +984,7 @@
 <a name="line973">973: </a>        }
 <a name="line974">974: </a>        // For each face
 <a name="line975">975: </a>        // - determine <font color="#4169E1">if</font> its legal
-<a name="line976">976: </a>
+
 <a name="line977">977: </a>        // - determine <font color="#4169E1">if</font> its part of a neighboring cell
 <a name="line978">978: </a>        // - <font color="#4169E1">if</font> not, its a boundary face
 <a name="line979">979: </a>        //subsets(cell, faceSize, inserter);
@@ -1014,7 +1014,7 @@
 <a name="line1003">1003: </a>        const Obj&lt;typename sieve_type::traits::supportSequence&gt;&amp;     support = sieveA-&gt;support(p);
 <a name="line1004">1004: </a>        const typename sieve_type::traits::supportSequence::iterator begin   = support-&gt;begin();
 <a name="line1005">1005: </a>        const typename sieve_type::traits::supportSequence::iterator end     = support-&gt;end();
-<a name="line1006">1006: </a>
+
 <a name="line1007">1007: </a>        <font color="#4169E1">for</font>(typename sieve_type::traits::supportSequence::iterator s_iter = begin; s_iter != end; ++s_iter) {
 <a name="line1008">1008: </a>          sieveB-&gt;addArrow(p, *s_iter, s_iter.color());
 <a name="line1009">1009: </a>          next-&gt;insert(*s_iter);
@@ -1069,7 +1069,7 @@
 
 <a name="line1059">1059: </a>        sieveA-&gt;support(p, sV);
 <a name="line1060">1060: </a>        const typename SieveTypeA::point_type *support = sV.getPoints();
-<a name="line1061">1061: </a>
+
 <a name="line1062">1062: </a>        <font color="#4169E1">for</font>(int s = 0; s &lt; (int) sV.getSize(); ++s) {
 <a name="line1063">1063: </a>          sieveB-&gt;addArrow(p, support[s]);
 <a name="line1064">1064: </a>        }
@@ -1345,7 +1345,7 @@
 
 <a name="line1335">1335: </a>      //int f = sieve-&gt;base()-&gt;size() + sieve-&gt;cap()-&gt;size();
 <a name="line1336">1336: </a>      //ALE::Obj&lt;PointSet&gt; face = new PointSet();
-<a name="line1337">1337: </a>
+
 <a name="line1338">1338: </a>      // Create a sieve which captures the fault
 <a name="line1339">1339: </a>      <A href="../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(CreateFaultMesh_Event,0,0,0,0);
 <a name="line1340">1340: </a>      fault = ALE::Selection&lt;ALE::Mesh&gt;::submesh(mesh, groupField);
@@ -1371,7 +1371,7 @@
 <a name="line1360">1360: </a>      const ALE::Obj&lt;std::set&lt;std::string&gt; &gt;&amp; groupNames = mesh-&gt;getIntSections();
 <a name="line1361">1361: </a><strong><font color="#FF0000">      Mesh:</font></strong>:point_type newPoint = sieve-&gt;base()-&gt;size() + sieve-&gt;cap()-&gt;size();
 <a name="line1362">1362: </a><strong><font color="#FF0000">      std:</font></strong>:map&lt;int,int&gt; vertexRenumber;
-<a name="line1363">1363: </a>
+
 <a name="line1364">1364: </a>      <font color="#4169E1">for</font>(Mesh::label_sequence::iterator v_iter = fVertices-&gt;begin(); v_iter != fVertices-&gt;end(); ++v_iter, ++newPoint) {
 <a name="line1365">1365: </a>        vertexRenumber[*v_iter] = newPoint;
 <a name="line1366">1366: </a>        <font color="#4169E1">if</font> (debug) {std::cout &lt;&lt; <font color="#666666">"Duplicating "</font> &lt;&lt; *v_iter &lt;&lt; <font color="#666666">" to "</font> &lt;&lt; vertexRenumber[*v_iter] &lt;&lt; std::endl;}

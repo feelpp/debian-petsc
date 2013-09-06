@@ -1,9 +1,9 @@
 Turn off cleanup.
 
-Index: petsc-3.3.dfsg/config/BuildSystem/config/framework.py
+Index: petsc-3.4.2/config/BuildSystem/config/framework.py
 ===================================================================
---- petsc-3.3.dfsg.orig/config/BuildSystem/config/framework.py	2012-09-12 08:26:27.000000000 +0200
-+++ petsc-3.3.dfsg/config/BuildSystem/config/framework.py	2012-09-12 09:03:49.000000000 +0200
+--- petsc-3.4.2.orig/config/BuildSystem/config/framework.py	2013-08-20 15:33:19.000000000 +0200
++++ petsc-3.4.2/config/BuildSystem/config/framework.py	2013-08-20 15:33:19.000000000 +0200
 @@ -192,7 +192,7 @@
      help.addArgument('Framework', '-ignoreCompileOutput=<bool>', nargs.ArgBool(None, 1, 'Ignore compiler output'))
      help.addArgument('Framework', '-ignoreLinkOutput=<bool>',    nargs.ArgBool(None, 1, 'Ignore linker output'))

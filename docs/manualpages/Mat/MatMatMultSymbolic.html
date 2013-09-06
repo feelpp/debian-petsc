@@ -5,13 +5,13 @@
 <TITLE>MatMatMultSymbolic</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatMatMultSymbolic"><H1>MatMatMultSymbolic</H1></A>
 Performs construction, preallocation, and computes the ij structure of the matrix-matrix product C=A*B.  Call this routine before calling <A HREF="../Mat/MatMatMultNumeric.html#MatMatMultNumeric">MatMatMultNumeric</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatMatMultSymbolic(Mat A,Mat B,PetscReal fill,Mat *C) 
+PetscErrorCode  MatMatMultSymbolic(Mat A,Mat B,PetscReal fill,Mat *C)
 </PRE>
 Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -24,6 +24,7 @@ Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>fill </B></TD><TD>- expected fill as ratio of nnz(C)/(nnz(A) + nnz(B)), use <A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> if you do not have a good estimate,
 if C is a dense matrix this is irrelevent
 </TD></TR></TABLE>
+<P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <DT><B>C </B> -the product matrix
 <br>

@@ -5,9 +5,9 @@
 <TITLE>DMDASetFieldName</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDASetFieldName"><H1>DMDASetFieldName</H1></A>
-Sets the names of individual field components in multicomponent vectors associated with a DMDA. 
+Sets the names of individual field components in multicomponent vectors associated with a <A HREF="../DM/DMDA.html#DMDA">DMDA</A>. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
@@ -19,8 +19,8 @@ Not Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the distributed array
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nf </B></TD><TD>- field number for the DMDA (0, 1, ... dof-1), where dof indicates the 
-number of degrees of freedom per node within the DMDA
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nf </B></TD><TD>- field number for the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> (0, 1, ... dof-1), where dof indicates the
+number of degrees of freedom per node within the <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>names </B></TD><TD>- the name of the field (component)
 </TD></TR></TABLE>
@@ -32,7 +32,7 @@ number of degrees of freedom per node within the DMDA
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../DM/DMDAGetFieldName.html#DMDAGetFieldName">DMDAGetFieldName</A>()
+ <A HREF="../DM/DMDAGetFieldName.html#DMDAGetFieldName">DMDAGetFieldName</A>(), <A HREF="../DM/DMDASetCoordinateName.html#DMDASetCoordinateName">DMDASetCoordinateName</A>(), <A HREF="../DM/DMDAGetCoordinateName.html#DMDAGetCoordinateName">DMDAGetCoordinateName</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/da/dacorn.c.html#DMDASetFieldName">src/dm/impls/da/dacorn.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
@@ -40,12 +40,12 @@ number of degrees of freedom per node within the DMDA
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/dm/examples/tutorials/ex7.c.html">src/dm/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex29.c.html">src/ksp/ksp/examples/tutorials/ex29.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex19.c.html">src/snes/examples/tutorials/ex19.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex30.c.html">src/snes/examples/tutorials/ex30.c.html</A><BR>

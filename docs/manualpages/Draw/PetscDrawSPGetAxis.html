@@ -5,11 +5,12 @@
 <TITLE>PetscDrawSPGetAxis</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawSPGetAxis"><H1>PetscDrawSPGetAxis</H1></A>
 Gets the axis context associated with a line graph. This is useful if one wants to change some axis property, such as labels, color, etc. The axis context should not be destroyed by the application code. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscdraw.h" 
 #include "petscsys.h" 
 PetscErrorCode  PetscDrawSPGetAxis(PetscDrawSP sp,PetscDrawAxis *axis)
 </PRE>
@@ -26,7 +27,7 @@ Not Collective (except <A HREF="../Draw/PetscDrawAxis.html#PetscDrawAxis">PetscD
 
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/dscatter.c.html#PetscDrawSPGetAxis">src/sys/draw/utils/dscatter.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/utils/dscatter.c.html#PetscDrawSPGetAxis">src/sys/classes/draw/utils/dscatter.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

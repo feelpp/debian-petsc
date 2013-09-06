@@ -1,0 +1,32 @@
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/classes/draw/interface/makefile.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:38:20+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80">
+<strong><font color="#FF0000">ALL:</font></strong> lib
+
+CFLAGS   =
+FFLAGS   =
+SOURCEC  = draw.c dline.c dlinew.c dlinegw.c dtext.c dtextv.c dtexts.c \
+           dtextgs.c dpoint.c dpoints.c dviewp.c dcoor.c dpause.c dgpause.c \
+           dgcoor.c dbuff.c dsetpause.c dflush.c dsflush.c dclear.c \
+           dsclear.c drect.c dtri.c dmouse.c drawreg.c drawregall.c dellipse.c
+SOURCEF  =
+SOURCEH  =
+LIBBASE  = libpetscsys
+MANSEC   = Draw
+LOCDIR   = src/sys/classes/draw/interface/
+
+include ${PETSC_DIR}/conf/variables
+include ${PETSC_DIR}/conf/rules
+include ${PETSC_DIR}/conf/test
+</pre>
+</body>
+
+</html>

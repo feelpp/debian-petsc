@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/pc/impls/mat/pcmat.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:59:57+00:00">
+<meta name="date" content="2013-07-02T14:46:53+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/pcimpl.h&gt;   </font><font color="#B22222">/*I "petscpc.h" I*/</font><font color="#A020F0"></font>
 
@@ -45,21 +45,19 @@
 
 <a name="line46"> 46: </a><font color="#B22222">M*/</font>
 
-<a name="line48"> 48: </a>EXTERN_C_BEGIN
-<a name="line51"> 51: </a><strong><font color="#4169E1"><a name="PCCreate_Mat"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  PCCreate_Mat(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
-<a name="line52"> 52: </a>{
-<a name="line54"> 54: </a>  pc-&gt;ops-&gt;apply               = PCApply_Mat;
-<a name="line55"> 55: </a>  pc-&gt;ops-&gt;applytranspose      = PCApplyTranspose_Mat;
-<a name="line56"> 56: </a>  pc-&gt;ops-&gt;setup               = 0;
-<a name="line57"> 57: </a>  pc-&gt;ops-&gt;destroy             = PCDestroy_Mat;
-<a name="line58"> 58: </a>  pc-&gt;ops-&gt;setfromoptions      = 0;
-<a name="line59"> 59: </a>  pc-&gt;ops-&gt;view                = 0;
-<a name="line60"> 60: </a>  pc-&gt;ops-&gt;applyrichardson     = 0;
-<a name="line61"> 61: </a>  pc-&gt;ops-&gt;applysymmetricleft  = 0;
-<a name="line62"> 62: </a>  pc-&gt;ops-&gt;applysymmetricright = 0;
-<a name="line63"> 63: </a>  <font color="#4169E1">return</font>(0);
-<a name="line64"> 64: </a>}
-<a name="line65"> 65: </a>EXTERN_C_END
+<a name="line50"> 50: </a><strong><font color="#4169E1"><a name="PCCreate_Mat"></a>PETSC_EXTERN <A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PCCreate_Mat(<A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A> pc)</font></strong>
+<a name="line51"> 51: </a>{
+<a name="line53"> 53: </a>  pc-&gt;ops-&gt;apply               = PCApply_Mat;
+<a name="line54"> 54: </a>  pc-&gt;ops-&gt;applytranspose      = PCApplyTranspose_Mat;
+<a name="line55"> 55: </a>  pc-&gt;ops-&gt;setup               = 0;
+<a name="line56"> 56: </a>  pc-&gt;ops-&gt;destroy             = PCDestroy_Mat;
+<a name="line57"> 57: </a>  pc-&gt;ops-&gt;setfromoptions      = 0;
+<a name="line58"> 58: </a>  pc-&gt;ops-&gt;view                = 0;
+<a name="line59"> 59: </a>  pc-&gt;ops-&gt;applyrichardson     = 0;
+<a name="line60"> 60: </a>  pc-&gt;ops-&gt;applysymmetricleft  = 0;
+<a name="line61"> 61: </a>  pc-&gt;ops-&gt;applysymmetricright = 0;
+<a name="line62"> 62: </a>  <font color="#4169E1">return</font>(0);
+<a name="line63"> 63: </a>}
 
 </pre>
 </body>

@@ -5,7 +5,7 @@
 <TITLE>PetscBLASInt</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscBLASInt"><H1>PetscBLASInt</H1></A>
 datatype used to represent 'int' parameters to BLAS/LAPACK functions. 
 <P>
@@ -13,10 +13,7 @@ Notes: usually this is the same as <A HREF="../Sys/PetscInt.html#PetscInt">Petsc
 standard C/Fortran integers are 32 bit then this is NOT the same as <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> it remains 32 bit
 (except on very rare BLAS/LAPACK implementations that support 64 bit integers see the note below).
 <P>
-PetscBLASIntCheck(a) checks if the given <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> a will fit in a <A HREF="../Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>, if not it generates a
-PETSC_ERR_ARG_OUTOFRANGE error.
-<P>
-<A HREF="../Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A> b = PetscBLASIntCast(a) checks if the given <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> a will fit in a <A HREF="../Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>, if not it
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscBLASIntCast(a,&amp;b) checks if the given <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> a will fit in a <A HREF="../Sys/PetscBLASInt.html#PetscBLASInt">PetscBLASInt</A>, if not it
 generates a PETSC_ERR_ARG_OUTOFRANGE error
 <P>
 Installation Notes: The 64bit versions of MATLAB ship with BLAS and LAPACK that use 64 bit integers for sizes etc,

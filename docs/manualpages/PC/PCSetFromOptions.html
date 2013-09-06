@@ -5,9 +5,9 @@
 <TITLE>PCSetFromOptions</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCSetFromOptions"><H1>PCSetFromOptions</H1></A>
-Sets <A HREF="../PC/PC.html#PC">PC</A> options from the options database. This routine must be called before <A HREF="../PC/PCSetUp.html#PCSetUp">PCSetUp</A>() if the user is to be allowed to set the preconditioner method.  
+Sets <A HREF="../PC/PC.html#PC">PC</A> options from the options database. This routine must be called before <A HREF="../PC/PCSetUp.html#PCSetUp">PCSetUp</A>() if the user is to be allowed to set the preconditioner method. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
@@ -19,14 +19,17 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A>
 <DT><B>pc </B> -the preconditioner context
 <br>
 <P>
+<H3><FONT COLOR="#CC3333">Options Database</FONT></H3>
+<DT><B>-pc_use_amat true,false see <A HREF="../PC/PCSetUseAmat.html#PCSetUseAmat">PCSetUseAmat</A>()</B> -
 
+<br>
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../PC/PC.html#PC">PC</A>, set, from, options, database
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- 
+ <A HREF="../PC/PCSetUseAmat.html#PCSetUseAmat">PCSetUseAmat</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer

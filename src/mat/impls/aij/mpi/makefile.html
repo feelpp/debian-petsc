@@ -3,23 +3,21 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/mpi/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:45:43+00:00">
+<meta name="date" content="2013-07-02T14:42:12+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <strong><font color="#FF0000">ALL:</font></strong> lib
 
-CFLAGS   = 
+CFLAGS   =
 FFLAGS   =
-SOURCEC         = mpiaij.c mmaij.c mpiaijpc.c mpiov.c fdmpiaij.c mpiptap.c mpimatmatmult.c mpb_aij.c
+SOURCEC         = mpiaij.c mmaij.c mpiaijpc.c mpiov.c fdmpiaij.c mpiptap.c mpimatmatmult.c mpb_aij.c mpimatmatmatmult.c
 SOURCEF         =
 SOURCEH         = mpiaij.h
-OBJSC         = mpiaij.o mmaij.o mpiaijpc.o mpiov.o fdmpiaij.o mpiptap.o mpimatmatmult.o mpb_aij.o
-OBJSF         =
 LIBBASE         = libpetscmat
-DIRS         = spooles superlu_dist mumps csrperm crl pastix mpicusp
+DIRS         = superlu_dist mumps csrperm crl pastix mpicusp mpicusparse clique
 MANSEC         = <A href="ROOT/docs/manualpages/Mat/Mat.html#Mat">Mat</A>
 LOCDIR         = src/mat/impls/aij/mpi/
 

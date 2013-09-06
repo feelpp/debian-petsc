@@ -5,9 +5,9 @@
 <TITLE>TSGetSNES</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSGetSNES"><H1>TSGetSNES</H1></A>
-Returns the <A HREF="../SNES/SNES.html#SNES">SNES</A> (nonlinear solver) associated with  a <A HREF="../TS/TS.html#TS">TS</A> (timestepper) context. Valid only for nonlinear problems. 
+Returns the <A HREF="../SNES/SNES.html#SNES">SNES</A> (nonlinear solver) associated with a <A HREF="../TS/TS.html#TS">TS</A> (timestepper) context. Valid only for nonlinear problems. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
@@ -29,7 +29,7 @@ options, etc.  Likewise, the user can then extract and manipulate the
 <A HREF="../KSP/KSP.html#KSP">KSP</A>, <A HREF="../KSP/KSP.html#KSP">KSP</A>, and <A HREF="../PC/PC.html#PC">PC</A> contexts as well.
 <P>
 <A HREF="../TS/TSGetSNES.html#TSGetSNES">TSGetSNES</A>() does not work for integrators that do not use <A HREF="../SNES/SNES.html#SNES">SNES</A>; in
-this case <A HREF="../TS/TSGetSNES.html#TSGetSNES">TSGetSNES</A>() returns <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> in snes.
+this case <A HREF="../TS/TSGetSNES.html#TSGetSNES">TSGetSNES</A>() returns NULL in snes.
 <P>
 
 <P>
@@ -45,10 +45,10 @@ this case <A HREF="../TS/TSGetSNES.html#TSGetSNES">TSGetSNES</A>() returns <A HR
 <A HREF="../../../src/ts/examples/tutorials/ex7.c.html">src/ts/examples/tutorials/ex7.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex10.c.html">src/ts/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex12.c.html">src/ts/examples/tutorials/ex12.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex13.c.html">src/ts/examples/tutorials/ex13.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex14.c.html">src/ts/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex22.c.html">src/ts/examples/tutorials/ex22.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex24.c.html">src/ts/examples/tutorials/ex24.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex26.c.html">src/ts/examples/tutorials/ex26.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex22f.F.html">src/ts/examples/tutorials/ex22f.F.html</A><BR>
 </BODY></HTML>

@@ -5,12 +5,12 @@
 <TITLE>PetscViewerBinaryOpen</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerBinaryOpen"><H1>PetscViewerBinaryOpen</H1></A>
 Opens a file for binary input/output. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscsys.h"   
+#include "petscviewer.h"   
 PetscErrorCode  PetscViewerBinaryOpen(MPI_Comm comm,const char name[],PetscFileMode type,PetscViewer *binv)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
@@ -65,12 +65,12 @@ do have the file.
 <BR><A HREF="../Vec/VecView.html#VecView">VecView</A>(), <A HREF="../Mat/MatView.html#MatView">MatView</A>(), <A HREF="../Vec/VecLoad.html#VecLoad">VecLoad</A>(), <A HREF="../Mat/MatLoad.html#MatLoad">MatLoad</A>(), <A HREF="../Viewer/PetscViewerBinaryGetDescriptor.html#PetscViewerBinaryGetDescriptor">PetscViewerBinaryGetDescriptor</A>(),
 <A HREF="../Viewer/PetscViewerBinaryGetInfoPointer.html#PetscViewerBinaryGetInfoPointer">PetscViewerBinaryGetInfoPointer</A>(), <A HREF="../Sys/PetscFileMode.html#PetscFileMode">PetscFileMode</A>, <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>, <A HREF="../Viewer/PetscViewerBinaryRead.html#PetscViewerBinaryRead">PetscViewerBinaryRead</A>()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/binary/binv.c.html#PetscViewerBinaryOpen">src/sys/viewer/impls/binary/binv.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/impls/binary/binv.c.html#PetscViewerBinaryOpen">src/sys/classes/viewer/impls/binary/binv.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/sys/viewer/examples/tutorials/ex1f90.F90.html">src/sys/viewer/examples/tutorials/ex1f90.F90.html</A><BR>
+<A HREF="../../../src/sys/classes/viewer/examples/tutorials/ex1f90.F90.html">src/sys/classes/viewer/examples/tutorials/ex1f90.F90.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex5.c.html">src/sys/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/sys/examples/tutorials/ex5f90.F90.html">src/sys/examples/tutorials/ex5f90.F90.html</A><BR>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex5.c.html">src/vec/vec/examples/tutorials/ex5.c.html</A><BR>

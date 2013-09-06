@@ -5,7 +5,7 @@
 <TITLE>MatCreateNest</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateNest"><H1>MatCreateNest</H1></A>
 Creates a new matrix containing several nested submatrices, each stored separately 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,13 +21,13 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nr </B></TD><TD>- number of nested row blocks
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_row </B></TD><TD>- index sets for each nested row block, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to make contiguous
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_row </B></TD><TD>- index sets for each nested row block, or NULL to make contiguous
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nc </B></TD><TD>- number of nested column blocks
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_col </B></TD><TD>- index sets for each nested column block, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to make contiguous
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>is_col </B></TD><TD>- index sets for each nested column block, or NULL to make contiguous
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>a </B></TD><TD>- row-aligned array of nr*nc submatrices, empty submatrices can be passed using <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>a </B></TD><TD>- row-aligned array of nr*nc submatrices, empty submatrices can be passed using NULL
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -43,4 +43,6 @@ Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
+<P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/snes/examples/tutorials/ex70.c.html">src/snes/examples/tutorials/ex70.c.html</A><BR>
 </BODY></HTML>

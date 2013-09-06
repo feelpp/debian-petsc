@@ -29,31 +29,6 @@ extern void PetscRmPointer(void*);
 
 #include "petscdmda.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmdasetcoordinates_ DMDASETCOORDINATES
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmdasetcoordinates_ dmdasetcoordinates
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmdasetghostedcoordinates_ DMDASETGHOSTEDCOORDINATES
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmdasetghostedcoordinates_ dmdasetghostedcoordinates
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmdagetcoordinates_ DMDAGETCOORDINATES
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmdagetcoordinates_ dmdagetcoordinates
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmdagetcoordinateda_ DMDAGETCOORDINATEDA
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmdagetcoordinateda_ dmdagetcoordinateda
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmdagetghostedcoordinates_ DMDAGETGHOSTEDCOORDINATES
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmdagetghostedcoordinates_ dmdagetghostedcoordinates
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmdagetcorners_ DMDAGETCORNERS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmdagetcorners_ dmdagetcorners
@@ -69,9 +44,9 @@ extern void PetscRmPointer(void*);
 #define dmdagetboundingbox_ dmdagetboundingbox
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define dmdagetreducedda_ DMDAGETREDUCEDDA
+#define dmdagetreduceddmda_ DMDAGETREDUCEDDMDA
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define dmdagetreducedda_ dmdagetreducedda
+#define dmdagetreduceddmda_ dmdagetreduceddmda
 #endif
 
 
@@ -79,28 +54,6 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  dmdasetcoordinates_(DM da,Vec c, int *__ierr ){
-*__ierr = DMDASetCoordinates(
-	(DM)PetscToPointer((da) ),
-	(Vec)PetscToPointer((c) ));
-}
-void PETSC_STDCALL  dmdasetghostedcoordinates_(DM da,Vec c, int *__ierr ){
-*__ierr = DMDASetGhostedCoordinates(
-	(DM)PetscToPointer((da) ),
-	(Vec)PetscToPointer((c) ));
-}
-void PETSC_STDCALL  dmdagetcoordinates_(DM da,Vec *c, int *__ierr ){
-*__ierr = DMDAGetCoordinates(
-	(DM)PetscToPointer((da) ),c);
-}
-void PETSC_STDCALL  dmdagetcoordinateda_(DM da,DM *cda, int *__ierr ){
-*__ierr = DMDAGetCoordinateDA(
-	(DM)PetscToPointer((da) ),cda);
-}
-void PETSC_STDCALL  dmdagetghostedcoordinates_(DM da,Vec *c, int *__ierr ){
-*__ierr = DMDAGetGhostedCoordinates(
-	(DM)PetscToPointer((da) ),c);
-}
 void PETSC_STDCALL  dmdagetcorners_(DM da,PetscInt *x,PetscInt *y,PetscInt *z,PetscInt *m,PetscInt *n,PetscInt *p, int *__ierr ){
 *__ierr = DMDAGetCorners(
 	(DM)PetscToPointer((da) ),x,y,z,m,n,p);
@@ -113,8 +66,8 @@ void PETSC_STDCALL  dmdagetboundingbox_(DM da,PetscReal gmin[],PetscReal gmax[],
 *__ierr = DMDAGetBoundingBox(
 	(DM)PetscToPointer((da) ),gmin,gmax);
 }
-void PETSC_STDCALL  dmdagetreducedda_(DM da,PetscInt *nfields,DM *nda, int *__ierr ){
-*__ierr = DMDAGetReducedDA(
+void PETSC_STDCALL  dmdagetreduceddmda_(DM da,PetscInt *nfields,DM *nda, int *__ierr ){
+*__ierr = DMDAGetReducedDMDA(
 	(DM)PetscToPointer((da) ),*nfields,nda);
 }
 #if defined(__cplusplus)

@@ -5,12 +5,12 @@
 <TITLE>MatType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatType"><H1>MatType</H1></A>
-String with the name of a PETSc matrix or the creation function with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:mymatcreate() 
+String with the name of a PETSc matrix type 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define MatType char*
+typedef const char* MatType;
 #define MATSAME            "same"
 #define MATMAIJ            "maij"
 #define MATSEQMAIJ         "seqmaij"
@@ -27,6 +27,9 @@ String with the name of a PETSc matrix or the creation function with an optional
 #define MATAIJCUSP         "aijcusp"
 #define MATSEQAIJCUSP      "seqaijcusp"
 #define MATMPIAIJCUSP      "mpiaijcusp"
+#define MATAIJCUSPARSE     "aijcusparse"
+#define MATSEQAIJCUSPARSE  "seqaijcusparse"
+#define MATMPIAIJCUSPARSE  "mpiaijcusparse"
 #define MATAIJPERM         "aijperm"
 #define MATSEQAIJPERM      "seqaijperm"
 #define MATMPIAIJPERM      "mpiaijperm"
@@ -34,6 +37,7 @@ String with the name of a PETSc matrix or the creation function with an optional
 #define MATDENSE           "dense"
 #define MATSEQDENSE        "seqdense"
 #define MATMPIDENSE        "mpidense"
+#define MATELEMENTAL       "elemental"
 #define MATBAIJ            "baij"
 #define MATSEQBAIJ         "seqbaij"
 #define MATMPIBAIJ         "mpibaij"
@@ -65,13 +69,12 @@ String with the name of a PETSc matrix or the creation function with an optional
 #define MATSUBMATRIX       "submatrix"
 #define MATLOCALREF        "localref"
 #define MATNEST            "nest"
-#define MATIJ              "ij"
 
 </PRE>
 
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatSetType.html#MatSetType">MatSetType</A>(), <A HREF="../Mat/Mat.html#Mat">Mat</A>, <A HREF="../Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A>
+ <A HREF="../Mat/MatSetType.html#MatSetType">MatSetType</A>(), <A HREF="../Mat/Mat.html#Mat">Mat</A>, <A HREF="../Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A>, <A HREF="../Mat/MatRegister.html#MatRegister">MatRegister</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/../../include/petscmat.h.html#MatType">src/mat/../../include/petscmat.h</A>
 <BR><A HREF="./index.html">Index of all Mat routines</A>

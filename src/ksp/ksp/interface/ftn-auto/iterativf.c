@@ -109,7 +109,7 @@ void PETSC_STDCALL  kspsetdm_(KSP ksp,DM dm, int *__ierr ){
 	(KSP)PetscToPointer((ksp) ),
 	(DM)PetscToPointer((dm) ));
 }
-void PETSC_STDCALL  kspsetdmactive_(KSP ksp,PetscBool  *flg, int *__ierr ){
+void PETSC_STDCALL  kspsetdmactive_(KSP ksp,PetscBool *flg, int *__ierr ){
 *__ierr = KSPSetDMActive(
 	(KSP)PetscToPointer((ksp) ),*flg);
 }

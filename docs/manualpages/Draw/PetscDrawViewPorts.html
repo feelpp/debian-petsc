@@ -5,7 +5,7 @@
 <TITLE>PetscDrawViewPorts</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawViewPorts"><H1>PetscDrawViewPorts</H1></A>
 Subwindows in a <A HREF="../Draw/PetscDraw.html#PetscDraw">PetscDraw</A> object 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -17,6 +17,8 @@ typedef struct {
   PetscReal *yl;
   PetscReal *yr;
   PetscDraw draw;
+  PetscReal port_xl,port_yl,port_xr,port_yr;   /* original port of parent PetscDraw */
+
 } PetscDrawViewPorts;
 </PRE>
 
@@ -25,7 +27,7 @@ typedef struct {
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../Draw/PetscDrawViewPortsCreate.html#PetscDrawViewPortsCreate">PetscDrawViewPortsCreate</A>(), <A HREF="../Draw/PetscDrawViewPortsSet.html#PetscDrawViewPortsSet">PetscDrawViewPortsSet</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/../../../include/petscdraw.h.html#PetscDrawViewPorts">src/sys/draw/../../../include/petscdraw.h</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/../../../../include/petscdraw.h.html#PetscDrawViewPorts">src/sys/classes/draw/../../../../include/petscdraw.h</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

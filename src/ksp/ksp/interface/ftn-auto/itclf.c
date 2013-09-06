@@ -29,6 +29,16 @@ extern void PetscRmPointer(void*);
 
 #include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspgettablevel_ KSPGETTABLEVEL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspgettablevel_ kspgettablevel
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define kspsettablevel_ KSPSETTABLEVEL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define kspsettablevel_ kspsettablevel
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define kspsetfromoptions_ KSPSETFROMOPTIONS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define kspsetfromoptions_ kspsetfromoptions
@@ -39,6 +49,14 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
+void PETSC_STDCALL  kspgettablevel_(KSP ksp,PetscInt *tab, int *__ierr ){
+*__ierr = KSPGetTabLevel(
+	(KSP)PetscToPointer((ksp) ),tab);
+}
+void PETSC_STDCALL  kspsettablevel_(KSP ksp,PetscInt *tab, int *__ierr ){
+*__ierr = KSPSetTabLevel(
+	(KSP)PetscToPointer((ksp) ),*tab);
+}
 void PETSC_STDCALL  kspsetfromoptions_(KSP ksp, int *__ierr ){
 *__ierr = KSPSetFromOptions(
 	(KSP)PetscToPointer((ksp) ));

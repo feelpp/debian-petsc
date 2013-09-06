@@ -33,6 +33,11 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matmumpsseticntl_ matmumpsseticntl
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matmumpssetcntl_ MATMUMPSSETCNTL
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matmumpssetcntl_ matmumpssetcntl
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
@@ -42,6 +47,10 @@ extern "C" {
 void PETSC_STDCALL  matmumpsseticntl_(Mat F,PetscInt *icntl,PetscInt *ival, int *__ierr ){
 *__ierr = MatMumpsSetIcntl(
 	(Mat)PetscToPointer((F) ),*icntl,*ival);
+}
+void PETSC_STDCALL  matmumpssetcntl_(Mat F,PetscInt *icntl,PetscReal *val, int *__ierr ){
+*__ierr = MatMumpsSetCntl(
+	(Mat)PetscToPointer((F) ),*icntl,*val);
 }
 #if defined(__cplusplus)
 }

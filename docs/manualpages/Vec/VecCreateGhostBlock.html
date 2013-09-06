@@ -5,7 +5,7 @@
 <TITLE>VecCreateGhostBlock</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecCreateGhostBlock"><H1>VecCreateGhostBlock</H1></A>
 Creates a parallel vector with ghost padding on each processor. The indicing of the ghost points is done with blocks. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,18 +21,19 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>bs </B></TD><TD>- the block size
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- local vector length 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- local vector length
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N </B></TD><TD>- global vector length (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have calculated if n is given)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nghost </B></TD><TD>- number of local ghost blocks
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ghosts </B></TD><TD>- global indices of ghost blocks, counts are by block, not by individual index
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ghosts </B></TD><TD>- global indices of ghost blocks, counts are by block, not by individual index, these do not need to be in increasing order (sorted)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <DT><B>vv </B> -the global vector representation (without ghost points as part of vector)
 <br>
+<P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Use <A HREF="../Vec/VecGhostGetLocalForm.html#VecGhostGetLocalForm">VecGhostGetLocalForm</A>() to access the local, ghosted representation
 of the vector.

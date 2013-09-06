@@ -29,11 +29,6 @@ extern void PetscRmPointer(void*);
 
 #include "petscsys.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscsetdefaultdebugger_ PETSCSETDEFAULTDEBUGGER
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscsetdefaultdebugger_ petscsetdefaultdebugger
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscattachdebugger_ PETSCATTACHDEBUGGER
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define petscattachdebugger_ petscattachdebugger
@@ -44,9 +39,6 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  petscsetdefaultdebugger_(int *__ierr ){
-*__ierr = PetscSetDefaultDebugger();
-}
 void PETSC_STDCALL  petscattachdebugger_(int *__ierr ){
 *__ierr = PetscAttachDebugger();
 }

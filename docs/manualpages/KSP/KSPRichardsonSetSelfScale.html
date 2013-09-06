@@ -5,13 +5,13 @@
 <TITLE>KSPRichardsonSetSelfScale</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPRichardsonSetSelfScale"><H1>KSPRichardsonSetSelfScale</H1></A>
-Sets Richardson to automatically determine optimal scaling at each iteration to minimize the 2-norm of the  preconditioned residual 
+Sets Richardson to automatically determine optimal scaling at each iteration to minimize the 2-norm of the preconditioned residual 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPRichardsonSetSelfScale(KSP ksp,PetscBool  scale)
+PetscErrorCode  KSPRichardsonSetSelfScale(KSP ksp,PetscBool scale)
 </PRE>
 Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -24,7 +24,7 @@ Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
 
 <P>
-Notes: Requires two extra work vectors. Uses an extra axpy() and <A HREF="../Vec/VecDotNorm2.html#VecDotNorm2">VecDotNorm2</A>() per iteration.
+Notes: Requires two extra work vectors. Uses an extra <A HREF="../Vec/VecAXPY.html#VecAXPY">VecAXPY</A>() and <A HREF="../Vec/VecDotNorm2.html#VecDotNorm2">VecDotNorm2</A>() per iteration.
 <P>
 Developer Notes: Could also minimize the 2-norm of the true residual with one less work vector
 <P>

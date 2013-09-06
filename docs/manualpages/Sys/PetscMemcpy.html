@@ -5,12 +5,12 @@
 <TITLE>PetscMemcpy</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscMemcpy"><H1>PetscMemcpy</H1></A>
 Copies n bytes, beginning at location b, to the space beginning at location a. The two memory regions CANNOT overlap, use <A HREF="../Sys/PetscMemmove.html#PetscMemmove">PetscMemmove</A>() in that case. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-PETSC_STATIC_INLINE PetscErrorCode  PetscMemcpy(void *a,const void *b,size_t n)
+PETSC_STATIC_INLINE PetscErrorCode PetscMemcpy(void *a,const void *b,size_t n)
 </PRE>
 Not Collective
 <P>
@@ -51,7 +51,6 @@ Developer Note: this is inlined for fastest performance
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex9.c.html">src/ts/examples/tutorials/ex9.c.html</A><BR>

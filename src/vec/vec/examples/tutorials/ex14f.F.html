@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tutorials/ex14f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:40:32+00:00">
+<meta name="date" content="2013-07-02T14:40:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>! Description: Illustrates the use of <A href="../../../../../docs/manualpages/Vec/VecCreateGhost.html#VecCreateGhost">VecCreateGhost</A>()
@@ -20,8 +20,8 @@
 <a name="line9">  9: </a><font color="#B22222">!</font>
 <a name="line10"> 10: </a><font color="#B22222">!   Description: Ghost padding is one way to handle local calculations that</font>
 <a name="line11"> 11: </a><font color="#B22222">!      involve values from other processors. <A href="../../../../../docs/manualpages/Vec/VecCreateGhostBlock.html#VecCreateGhostBlock">VecCreateGhostBlock</A>() provides</font>
-<a name="line12"> 12: </a><font color="#B22222">!      a way to create vectors with extra room at the end of the vector </font>
-<a name="line13"> 13: </a><font color="#B22222">!      array to contain the needed ghost values from other processors, </font>
+<a name="line12"> 12: </a><font color="#B22222">!      a way to create vectors with extra room at the end of the vector</font>
+<a name="line13"> 13: </a><font color="#B22222">!      array to contain the needed ghost values from other processors,</font>
 <a name="line14"> 14: </a><font color="#B22222">!      vector computations are otherwise unaffected.</font>
 <a name="line15"> 15: </a><font color="#B22222">!T*/</font>
 
@@ -136,7 +136,7 @@
 <a name="line125">125: </a>       call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(gx,ierr)
 <a name="line126">126: </a>       call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
 <a name="line127">127: </a>       end
-<a name="line128">128: </a>
+
 
 
 </pre>

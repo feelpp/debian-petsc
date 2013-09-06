@@ -5,9 +5,9 @@
 <TITLE>PetscObjectGetNewTag</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscObjectGetNewTag"><H1>PetscObjectGetNewTag</H1></A>
-Gets a unique new tag from a PETSc object. All  processors that share the object MUST call this routine EXACTLY the same number of times.  This tag should only be used with the current objects communicator; do NOT use it with any other MPI communicator. 
+Gets a unique new tag from a PETSc object. All processors that share the object MUST call this routine EXACTLY the same number of times.  This tag should only be used with the current objects communicator; do NOT use it with any other MPI communicator. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
@@ -16,7 +16,7 @@ PetscErrorCode  PetscObjectGetNewTag(PetscObject obj,PetscMPIInt *tag)
 Collective on <A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>obj </B> -the PETSc object; this must be cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example, 
+<DT><B>obj </B> -the PETSc object; this must be cast with a (<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>), for example,
 <A HREF="../Sys/PetscObjectGetNewTag.html#PetscObjectGetNewTag">PetscObjectGetNewTag</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)mat,&amp;tag);
 <br>
 <P>

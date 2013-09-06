@@ -76,8 +76,7 @@ void PETSC_STDCALL  matmpiaijgetlocalmat_(Mat A,MatReuse *scall,Mat *A_loc, int 
 *__ierr = MatMPIAIJGetLocalMat(
 	(Mat)PetscToPointer((A) ),*scall,A_loc);
 }
-void PETSC_STDCALL  matcreatempiaijwithsplitarrays_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,PetscInt i[],PetscInt j[],PetscScalar a[],
-        PetscInt oi[],PetscInt oj[],PetscScalar oa[],Mat *mat, int *__ierr ){
+void PETSC_STDCALL  matcreatempiaijwithsplitarrays_(MPI_Fint * comm,PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,PetscInt i[],PetscInt j[],PetscScalar a[],PetscInt oi[],PetscInt oj[],PetscScalar oa[],Mat *mat, int *__ierr ){
 *__ierr = MatCreateMPIAIJWithSplitArrays(
 	MPI_Comm_f2c( *(comm) ),*m,*n,*M,*N,i,j,a,oi,oj,oa,mat);
 }

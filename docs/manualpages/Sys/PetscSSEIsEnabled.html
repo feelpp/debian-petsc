@@ -5,17 +5,18 @@
 <TITLE>PetscSSEIsEnabled</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscSSEIsEnabled"><H1>PetscSSEIsEnabled</H1></A>
-Determines if Intel Streaming SIMD Extensions (SSE) to the x86 instruction  set can be used.  Some operating systems do not allow the use of these instructions despite hardware availability. 
+Determines if Intel Streaming SIMD Extensions (SSE) to the x86 instruction set can be used.  Some operating systems do not allow the use of these instructions despite hardware availability. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-static PetscBool  petsc_sse_local_is_untested  = PETSC_TRUE;
-static PetscBool  petsc_sse_enabled_local      = PETSC_FALSE;
-static PetscBool  petsc_sse_global_is_untested = PETSC_TRUE;
-static PetscBool  petsc_sse_enabled_global     = PETSC_FALSE;
-PetscErrorCode  PetscSSEIsEnabled(MPI_Comm comm,PetscBool  *lflag,PetscBool  *gflag)</PRE>
+static PetscBool petsc_sse_local_is_untested  = PETSC_TRUE;
+static PetscBool petsc_sse_enabled_local      = PETSC_FALSE;
+static PetscBool petsc_sse_global_is_untested = PETSC_TRUE;
+static PetscBool petsc_sse_enabled_global     = PETSC_FALSE;
+PetscErrorCode  PetscSSEIsEnabled(MPI_Comm comm,PetscBool  *lflag,PetscBool  *gflag)
+</PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
@@ -29,7 +30,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> can be specified for lflag or gflag if either of these values are not desired.
+NULL can be specified for lflag or gflag if either of these values are not desired.
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
 <DT><B>-disable_sse </B> -Disable use of hand tuned Intel SSE implementations

@@ -6,7 +6,7 @@
     <title>Documentation: FAQ</title>
   </head>
   <body bgcolor="#ffffff">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 
     <h1>Documentation: FAQ</h1>
 
@@ -36,9 +36,8 @@
         <li><a href="#logging-overhead">Does all the PETSc error checking and logging reduce PETSc's efficiency?</a></li>
         <li><a href="#work-efficiently">How do such a small group of people manage to write and maintain such a large and marvelous package as PETSc?</a></li>
         <li><a href="#complex">For complex numbers will I get better performance using C or C++?</a></li>
-        <li><a href="#different">How come when I run the same program on the same number of processes I get "different" answers"?</a></li>
+        <li><a href="#different">How come when I run the same program on the same number of processes I get "different" answers?</a></li>
         <li><a href="#differentiterations">How come when I run the same linear solver with different number of processes it takes a different number of iterations?</a></li>
-        <li><a href="#newremotebranches">How come I get an hg error indicating "new remote branches" might be created when I try to push?</a></li>
         <li><a href="#gpus">Can PETSc use GPUs to speed up the computation time?</a></li>
         <li><a href="#precision">Can I run PETSc with extended precision?</a></li>
         <li><a href="#qd">Why doesn't PETSc use QD to implement support for extended precision?</a></li>
@@ -73,6 +72,7 @@
         <li><a href="#makefiles">Can I use my own makefiles or rules for compiling code, rather than PETSc's?</a></li>
         <li><a href="#cmake">Can I use CMake to build my own project that depends on PETSc?</a></li>
         <li><a href="#carriagereturns">How can I put carriage returns in PetscPrintf() statements from Fortran?</a></li>
+        <li><a href="#cxxmethod">How can I implement callbacks using C++ class methods?</a></li>
         <li><a href="#functionjacobian">Everyone knows that when you code Newton's method you should compute the function and its Jacobian at the same time. How can one do this in PETSc?</a></li>
         <li><a href="#conditionnumber">How can I determine the condition number of a matrix?</a></li>
         <li><a href="#invertmatrix">How can I compute the inverse of a PETSc matrix?</a></li>
@@ -96,10 +96,11 @@
         <li><a href="#mg-log">How do I know the amount of time spent on each level of the solver in multigrid (PCType of PCMG) -pc_type mg.</a></li>
         <li><a href="#datafiles">Where do I get the input matrices for the examples?</a></li>
         <li><a href="#info">When I dump some matrices and vectors to binary, I seem to be generating some empty files with .info extensions. What's the deal with these?</a></li>
-        <li><a href="#slowerparallel">Why is my parallel <b>solver slower</b> than the sequential solver?</a></li>
+        <li><a href="#slowerparallel">Why is my parallel <b>solver slower</b> than the sequential solver, or I have poor speed-up?</a></li>
+        <li><a href="#pipelined">What steps are necessary to make the pipelined solvers execute efficiently?</a></li>
         <li><a href="#singleprecision">When using PETSc in single precision mode (--with-precision=single when running ./configure) are the operations done in single or double precision?</a></li>
-        <li><a href="#newton">Why is Newton's method (SNES) not converging?</a></li>
-        <li><a href="#kspdiverged">Why is the linear solver (KSP) not converging?</a></li>
+        <li><a href="#newton">Why is Newton's method (SNES) not converging, or converges slowly?</a></li>
+        <li><a href="#kspdiverged">Why is the linear solver (KSP) not converging, or converges slowly?</a></li>
       </ul>
 
       <h4><a href="#debugging">Debugging</a></h4>
@@ -109,12 +110,13 @@
         <li><a href="#start_in_debugger-doesnotwork">How do I debug if -start_in_debugger does not work on my machine?</a></li>
         <li><a href="#debug-hang">How can I see where my code is hanging?</a></li>
         <li><a href="#debug-inspect">How can I inspect Vec and Mat values when in the debugger?</a></li>
+        <li><a href="#debug-fp">How can I find the cause of floating point exceptions like not-a-number (NaN) or infinity?</a></li>
         <li><a href="#libimf">Error while loading shared libraries: libimf.so: cannot open shared object file: No such file or directory.</a></li>
         <li><a href="#objecttypenotset">What does Object Type not set: Argument # n mean?</a></li>
         <li><a href="#split">What does Error detected in PetscSplitOwnership() about "sum of local lengths ...": mean?</a></li>
         <li><a href="#valgrind">What does Corrupt argument or Caught signal or SEQV or segmentation violation or bus error mean? Can I use valgrind to debug memory corruption issues?</a></li>
         <li><a href="#zeropivot">What does Detected zero pivot in LU factorization mean?</a></li>
-        <li><a href="#xwindows">You create Draw windows or ViewerDraw windows or use options -ksp_monitor or_draw -snes_monitor_draw and the program seems to run OK but windows never open.</a></li>
+        <li><a href="#xwindows">You create Draw windows or ViewerDraw windows or use options -ksp_monitor or_draw -snes_monitor_lg_residualnorm and the program seems to run OK but windows never open.</a></li>
         <li><a href="#memory">The program seems to use more and more memory as it runs, even though you don't think you are allocating more memory.</a></li>
         <li><a href="#key">When calling MatPartitioningApply() you get a message <code>Error! Key 16615 not found</code></a></li>
         <li><a href="#gmres">With GMRES At restart the second residual norm printed does not match the first </a></li>
@@ -336,7 +338,7 @@
         command. In different runs the order at which values arrive at a given
         process (via MPI) can be in a different order, thus the order in which some
         floating point arithmetic operations are performed will be different. Since
-        floating point arithmetic arithmetic is not commutative the computed
+        floating point arithmetic arithmetic is not associative, the computed
         quantity may be (slightly) different. Over a run the many slight
         differences in the inner products and norms will effect all the computed
         results. It is important to realize that none of the computed answers are
@@ -363,36 +365,6 @@
       This is the nature of iterative solvers, the more parallelism means the
       more "older" information is used in the solution process hence slower
       convergence.
-
-      <h3><a name="newremotebranches">How come I get an hg error indicating "new remote branches" might be created when I try to push?</a></h3>
-
-      <p>Here is an example:</p>
-      <code>
-        [linux]% hg push<br>
-        pushing to https://petsc.cs.iit.edu/petsc/petsc-dev<br>
-        searching for changes<br>
-        abort: push creates new remote branches!<br>
-      </code>
-
-      <p>
-        This is almost always an indication that you have done serious harm to
-        your local repo. If you run hg heads and there are more than 1 (which
-        causes this), then you know its true.
-      </p>
-
-      <p>
-        Here is how it happens. You make some local changes, but do not commit.
-        You pull down and it aborts part way because you have "uncommitted local
-        changes". However, you do not hg rollback. Instead you just hg commit,
-        which creates another head. This is supposed to be a feature. I think it
-        should have a user disable.
-      </p>
-
-      <p>
-        Fixing this is complicated. Basically, you clone the repo before you made
-        head #2, then create the diff for the bad changeset that made head #2.
-        Apply it to the clone and checkin, then pull the master.
-      </p>
 
       <h3><a name="gpus">Can PETSc use GPUs to speedup computations?</a></h3>
 
@@ -619,7 +591,7 @@ int main(int ac, char *av[]) {
     strcat(buf," ");
   }
 
-  PetscInitialize(&amp;ac, &amp;av, PETSC_NULL, help);
+  PetscInitialize(&amp;ac, &amp;av, NULL, help);
 
   return WinMain(inst,NULL,buf,SW_SHOWNORMAL);
 }
@@ -869,6 +841,12 @@ PetscErrorCode mypetscvfprintf(FILE *fd, const char format[], va_list Argp) {
       <p>
         Or you can use the Fortran concatination // and char(10); for example
         'some string'//char(10)//'another string on the next line'
+      </p>
+
+      <h3><a name="cxxmethod">How can I implement callbacks using C++ class methods?</a></h3>
+
+      <p>
+        Declare the class method <tt>static</tt>. Static methods do not have a <tt>this</tt> pointer, but the <tt>void*</tt> context parameter will usually be cast to a pointer to the class where it can serve the same function. Note that all PETSc callbacks return <tt>PetscErrorCode</tt>.
       </p>
 
       <h3><a name="functionjacobian">Everyone knows that when you code Newton's method you should compute the function and its Jacobian at the same time. How can one do this in PETSc?</a></h3>
@@ -1155,11 +1133,11 @@ PETSC_COMM_WORLD = NewComm;
       <ol>
         <li>
           Preallocate enough space for the sparse matrix. For example, rather
-          than calling MatCreateSeqAIJ(comm,n,n,0,PETSC_NULL,&amp;mat); call
-          MatCreateSeqAIJ(comm,n,n,rowmax,PETSC_NULL,&amp;mat); where rowmax is
+          than calling MatCreateSeqAIJ(comm,n,n,0,NULL,&amp;mat); call
+          MatCreateSeqAIJ(comm,n,n,rowmax,NULL,&amp;mat); where rowmax is
           the maximum number of nonzeros expected per row. Or if you know the
           number of nonzeros per row, you can pass this information in instead of
-          the PETSC_NULL argument. See the manual pages for each of the
+          the NULL argument. See the manual pages for each of the
           MatCreateXXX() routines.
         </li>
 
@@ -1225,7 +1203,7 @@ PETSC_COMM_WORLD = NewComm;
       to call PetscViewerBinarySkipInfo() before PetscViewerFileSetName(). In
       other words you cannot use PetscViewerBinaryOpen() directly.
 
-      <h3><a name="slowerparallel">Why is my parallel solver slower than my sequential solver?</a></h3>
+      <h3><a name="slowerparallel">Why is my parallel solver slower than my sequential solver, or I have poor speed-up?</a></h3>
 
       This can happen for many reasons:
 
@@ -1260,6 +1238,29 @@ PETSC_COMM_WORLD = NewComm;
         </li>
       </ul>
 
+      <h3><a name="pipelined">What steps are necessary to make the pipelined solvers execute efficiently?</a></h3>
+
+      Pipelined solvers like
+      <a href="manualpages/KSP/KSPPGMRES.html">KSPPGMRES</a>,
+      <a href="manualpages/KSP/KSPPIPECG.html">KSPPIPECG</a>,
+      <a href="manualpages/KSP/KSPPIPECR.html">KSPPIPECR</a>, and
+      <a href="manualpages/KSP/KSPGROPPCG.html">KSPGROPPCG</a>
+      may require special MPI configuration to effectively overlap reductions with computation.
+      In general, this requires an MPI-3 implementation, an implementation that supports multiple threads, and use of a "progress thread".
+      Consult the documentation from your vendor or computing facility for more.
+
+      <dl>
+        <dt>MPICH</dt>
+        <dd>
+          MPICH version 3.0 and later implements the MPI-3 standard and the default configuration supports use of threads.
+          Use of a progress thread is configured by setting the environment variable <tt>MPICH_ASYNC_PROGRESS=1</tt>.
+        </dd>
+        <dt>Cray MPI</dt>
+        <dd>
+          Cray MPT-5.6 supports MPI-3, but requires the environment variable <tt>MPICH_MAX_THREAD_SAFETY=multiple</tt> for threads, plus either <tt>MPICH_ASYNC_PROGRESS=1</tt> or <tt>MPICH_NEMESIS_ASYNC_PROGRESS=1</tt>.
+        </dd>
+      </dl>
+
       <h3><a name="singleprecision">When using PETSc in single precision mode (--with-precision=single when running ./configure) are the operations done in single or double precision?</a></h3>
 
       PETSc does NOT do any explicit conversion of single precision to double
@@ -1271,7 +1272,7 @@ PETSC_COMM_WORLD = NewComm;
       a bit of a mystery what decisions get made sometimes. There may be compiler
       flags in some circumstances that can affect this.
 
-      <h3><a name="newton">Why is Newton's method (SNES) not converging?</a></h3>
+      <h3><a name="newton">Why is Newton's method (SNES) not converging, or converges slowly?</a></h3>
 
       Newton's method may not converge for many reasons, here are some of the most common.
 
@@ -1316,7 +1317,7 @@ PETSC_COMM_WORLD = NewComm;
         </li>
 
         <li>
-          Run with <code>-mat_view</code> or <code>-mat_view_draw</code> to see
+          Run with <code>-mat_view</code> or <code>-mat_view draw</code> to see
           if the Jacobian looks reasonable
         </li>
 
@@ -1339,9 +1340,10 @@ PETSC_COMM_WORLD = NewComm;
         <li>Run on one processor to see if the problem is only in parallel.</li>
 
         <li>
-          Run with <code>-snes_ls_monitor</code> to see if the line search is failing
-          (this is usually a sign of a bad Jacobian) use -info in PETSc 3.1 and
-          older versions and <code>-snes_linesearch_monitor</code> in PETSc-dev.
+          Run with <code>-snes_linesearch_monitor</code> to see if the line search
+          is failing (this is usually a sign of a bad Jacobian). Use -info in PETSc 3.1
+          and older versions, <code>-snes_ls_monitor</code> in PETSc 3.2
+          and <code>-snes_linesearch_monitor</code> in PETSc 3.3 and later.
         </li>
 
         <li>
@@ -1367,14 +1369,14 @@ PETSC_COMM_WORLD = NewComm;
 
         <li>
           Change the units (nondimensionalization), boundary condition scaling,
-          or formulation so that the Jacobian is better conditioned.
+          or formulation so that the Jacobian is better conditioned. See <a href="http://en.wikipedia.org/wiki/Buckingham_π_theorem">http://en.wikipedia.org/wiki/Buckingham_π_theorem</a>
         </li>
 
         <li>
           Mollify features in the function that do not have continuous first
           derivatives (often occurs when there are "if" statements in the
           residual evaluation, e.g.  phase change or TVD limiters). Use
-          a variational inequality solver (SNESVIRS) if the discontinuities are
+          a variational inequality solver (SNESVINEWTONRSLS) if the discontinuities are
           of fundamental importance.
         </li>
 
@@ -1395,7 +1397,7 @@ PETSC_COMM_WORLD = NewComm;
         </li>
       </ul>
 
-      <h3><a name="kspdiverged">Why is the linear solver (KSP) not converging?</a></h3>
+      <h3><a name="kspdiverged">Why is the linear solver (KSP) not converging, or converges slowly?</a></h3>
 
       <p>
         Always run with <code>-ksp_converged_reason -ksp_monitor_true_residual</code>
@@ -1565,6 +1567,15 @@ PETSC_COMM_WORLD = NewComm;
         to add more.
       </p>
 
+      <h3><a name="debug-fp">How can I find the cause of floating point exceptions like not-a-number (NaN) or infinity?</a></h3>
+      <p>
+        The best way to locate floating point exceptions is to use a debugger.
+        On supported architectures (including Linux and glibc-based systems), just run in a debugger and pass -fp_trap to the PETSc application.
+        This will activate signaling exceptions and the debugger will break on the line that first divides by zero or otherwise generates an exceptions.
+        Without a debugger, running with -fp_trap in debug mode will only identify the function in which the error occurred, but not the line or the type of exception.
+        If -fp_trap is not supported on your architecture, consult the documentation for your debugger since there is likely a way to have it catch exceptions.
+      </p>
+
       <h3><a name="libimf">Error while loading shared libraries: libimf.so: cannot open shared object file: No such file or directory.</a></h3>
 
       <p>
@@ -1673,7 +1684,7 @@ source /opt/intel/idb/10.1.012/bin/idbvars.sh
         an error in the code that generates the matrix.
       </p>
 
-      <h3><a name="xwindows">You create <code>Draw</code> windows or <code>ViewerDraw</code> windows or use options <code>-ksp_monitor_draw</code> or <code>-snes_monitor_draw</code> and the program seems to run OK but windows never open.</a></h3>
+      <h3><a name="xwindows">You create <code>Draw</code> windows or <code>ViewerDraw</code> windows or use options <code>-ksp_monitor_lg_residualnorm</code> or <code>-snes_monitor_lg_residualnorm</code> and the program seems to run OK but windows never open.</a></h3>
 
       The libraries were compiled without support for X windows. Make sure that
       ./configure was run with the option <code>--with-x</code>
@@ -1744,7 +1755,7 @@ source /opt/intel/idb/10.1.012/bin/idbvars.sh
 28 KSP Residual norm 2.588642948270e-04
 29 KSP Residual norm 2.268190747349e-04
 30 KSP Residual norm 1.977245964368e-04
-30 KSP Residual norm 1.994426291979e-04 &lt;----- At restart the residual norm is printed a second time  
+30 KSP Residual norm 1.994426291979e-04 &lt;----- At restart the residual norm is printed a second time
     </pre>
 
       <p>
@@ -1800,81 +1811,55 @@ source /opt/intel/idb/10.1.012/bin/idbvars.sh
       that might have caused this behavior. This is achieved by:
 
       <ul>
-        <li>using <a href="http://mercurial.selenic.com/">Mercurial</a> DVCS to access petsc-dev sources [and BuildSystem sources]</li>
+        <li>using <a href="http://git-scm.com/">Git</a> to access PETSc sources</li>
 
-        <li>knowing the changeset number [in mercurial] for the <b>known working</b> version of petsc</li>
+        <li>knowing the Git commit for the <b>known working</b> version of PETSc</li>
 
-        <li>knowing the changeset number [in mercurial] for the <b>known broken</b> version of petsc</li>
+        <li>knowing the Git commit for the <b>known broken</b> version of PETSc</li>
 
-        <li>using <a href="http://mercurial.selenic.com/wiki/BisectExtension">bisect</a> functionality of mercurial</li>
+        <li>using the <a href="https://www.kernel.org/pub/software/scm/git/docs/git-bisect.html">bisect</a> functionality of Git</li>
       </ul>
 
       This process can be as follows:
 
       <ul>
-        <li>get petsc-dev and BuildSystem sources:
+        <li>get petsc-dev sources:
           <ul>
-            <li><code>hg clone http://petsc.cs.iit.edu/petsc/petsc-dev</code></li>
-            <li><code>hg clone http://petsc.cs.iit.edu/petsc/BuildSystem petsc-dev/config/BuildSystem</code></li>
+            <li><code>git clone https://bitbucket.org/petsc/petsc</code></li>
           </ul>
         </li>
 
         <li>
           Find the <b>good</b> and <b>bad</b> markers to
           start the bisection process. This can be done either by checking
-          <code>hg log</code> or <code>hg view</code> or <a href="http://petsc.cs.iit.edu/petsc/petsc-dev">http://petsc.cs.iit.edu/petsc/petsc-dev</a>
-          or <a href="http://petsc.cs.iit.edu/petsc/BuildSystem">http://petsc.cs.iit.edu/petsc/BuildSystem</a>
+          <code>git log</code> or <code>gitk</code> or <a href="https://bitbucket.org/petsc/petsc">https://bitbucket.org/petsc/petsc</a>
           or the web history of petsc-release clones. Lets say the known bad
-          changeset is 21af4baa815c and known good changeset is 5ae5ab319844
+          commit is 21af4baa815c and known good commit is 5ae5ab319844
         </li>
 
         <li>
           Now start the bisection process with these known revisions. [build PETSc, and test your code to confirm known good/bad behavior]
           <ul>
-            <li><code>hg update -C 21af4baa815c</code></li>
-            <li><code>hg update -C --date "&lt;`hg parent --template '{date|date}'`" -R config/BuildSystem</code></li>
+            <li><code>git bisect start 21af4baa815c 5ae5ab319844</code></li>
             <li>&lt;build/test/confirm-bad&gt;</li>
-            <li><code>hg bisect --bad</code></li>
-            <li><code>hg update -C 5ae5ab319844</code></li>
-            <li><code>hg update -C --date "&lt;`hg parent --template '{date|date}'`" -R config/BuildSystem</code></li>
+            <li><code>git bisect bad</code></li>
             <li>&lt;build/test/confirm-good&gt;</li>
-            <li><code>hg bisect --good</code></li>
-            <li><code>hg update -C --date "&lt;`hg parent --template '{date|date}'`" -R config/BuildSystem</code></li>
+            <li><code>git bisect good</code></li>
           </ul>
         </li>
 
         <li>
-          Now until done - keep bisecting, building PETSc, and testing your code with it and determine if the code is working or not. i.e:
-          <ul>
-            <li>
-              if &lt;build&gt; broken:
-              <ul>
-                <li><code>hg bisect --skip</code></li>
-                <li><code>hg update -C --date "&lt;`hg parent --template '{date|date}'`" -R config/BuildSystem</code></li>
-              </ul>
-            </li>
-
-            <li>
-              if &lt;test&gt; good:
-              <ul>
-                <li><code>hg bisect --bad</code></li>
-                <li><code>hg update -C --date "&lt;`hg parent --template '{date|date}'`" -R config/BuildSystem</code></li>
-              </ul>
-            </li>
-          </ul>
-
-          Notice the <code>hg update -C --date "&lt;`hg parent --template '{date|date}'`" -R config/BuildSystem</code>
-          after each <code>hg update</code> or <code>hg bisect</code>. This is to update
-          BuildSystem to be in sync to petsc-dev. If this is not done - and
-          BuildSystem is out of sync with petsc-dev - configure will keep
-          failing.
-        </li>
-
-        <li>
-          After something like 5-15 iterations - <code>hg bisect</code> will
+          Now until done - keep bisecting, building PETSc, and testing your code with it and determine if the code is working or not.
+          After something like 5-15 iterations, <code>git bisect</code> will
           pin-point the exact code change that resulted in the difference in
-          application behavior
+          application behavior.
         </li>
+
+        <li>
+          See <a href="https://www.kernel.org/pub/software/scm/git/docs/git-bisect.html">git-bisect(1)</a>
+          and the <a href="http://git-scm.com/book/en/Git-Tools-Debugging-with-Git">debugging
+          section of the Git Book</a> for more debugging tips.
+        <li>
       </ul>
 
       <hr>

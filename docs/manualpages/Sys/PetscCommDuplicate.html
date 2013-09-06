@@ -5,13 +5,13 @@
 <TITLE>PetscCommDuplicate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscCommDuplicate"><H1>PetscCommDuplicate</H1></A>
 Duplicates the communicator only if it is not already a PETSc communicator. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscCommDuplicate(MPI_Comm comm_in,MPI_Comm *comm_out,PetscMPIInt* first_tag)
+PetscErrorCode  PetscCommDuplicate(MPI_Comm comm_in,MPI_Comm *comm_out,PetscMPIInt *first_tag)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
@@ -24,7 +24,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm_out </B></TD><TD>- Output communicator.  May be comm_in.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>first_tag </B></TD><TD>- Tag available that has not already been used with this communicator (you may
-pass in <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if you do not need a tag)
+pass in NULL if you do not need a tag)
 </TD></TR></TABLE>
 <P>
 PETSc communicators are just regular MPI communicators that keep track of which

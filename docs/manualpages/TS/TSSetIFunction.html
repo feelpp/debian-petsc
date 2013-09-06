@@ -5,9 +5,9 @@
 <TITLE>TSSetIFunction</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSSetIFunction"><H1>TSSetIFunction</H1></A>
-Set the function to compute F(t,U,U_t) where F = 0 is the DAE to be solved. 
+Set the function to compute F(t,U,U_t) where F() = 0 is the DAE to be solved. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
@@ -19,11 +19,11 @@ Logically Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts  </B></TD><TD>- the <A HREF="../TS/TS.html#TS">TS</A> context obtained from <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>()
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>r   </B></TD><TD>- vector to hold the residual (or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to have it created internally)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>r   </B></TD><TD>- vector to hold the residual (or NULL to have it created internally)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>f   </B></TD><TD>- the function evaluation routine
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- user-defined context for private data for the function evaluation routine (may be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ctx </B></TD><TD>- user-defined context for private data for the function evaluation routine (may be NULL)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Calling sequence of f</FONT></H3>
@@ -66,9 +66,9 @@ The user MUST call either this routine, <A HREF="../TS/TSSetRHSFunction.html#TSS
 <A HREF="../../../src/ts/examples/tutorials/ex15.c.html">src/ts/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex16.c.html">src/ts/examples/tutorials/ex16.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex17.c.html">src/ts/examples/tutorials/ex17.c.html</A><BR>
-<A HREF="../../../src/ts/examples/tutorials/ex18.c.html">src/ts/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex22.c.html">src/ts/examples/tutorials/ex22.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex23.c.html">src/ts/examples/tutorials/ex23.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex24.c.html">src/ts/examples/tutorials/ex24.c.html</A><BR>
 <A HREF="../../../src/ts/examples/tutorials/ex25.c.html">src/ts/examples/tutorials/ex25.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex30.cxx.html">src/ts/examples/tutorials/ex30.cxx.html</A><BR>
 </BODY></HTML>

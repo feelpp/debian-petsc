@@ -5,13 +5,13 @@
 <TITLE>PCGASMCreateLocalSubdomains</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCGASMCreateLocalSubdomains"><H1>PCGASMCreateLocalSubdomains</H1></A>
-Creates n local index sets for the overlapping  Schwarz preconditioner for a any problem based on its matrix. 
+Creates n local index sets for the overlapping Schwarz preconditioner for a any problem based on its matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscpc.h" 
-PetscErrorCode  PCGASMCreateLocalSubdomains(Mat A, PetscInt overlap, PetscInt n, IS* iis[], IS* ois[])
+PetscErrorCode  PCGASMCreateLocalSubdomains(Mat A, PetscInt overlap, PetscInt n, IS *iis[], IS *ois[])
 </PRE>
 Collective
 <P>

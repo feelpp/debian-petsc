@@ -5,7 +5,7 @@
 <TITLE>PetscViewerFormat</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerFormat"><H1>PetscViewerFormat</H1></A>
 Way a viewer presents the object 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -34,6 +34,8 @@ typedef enum {
   PETSC_VIEWER_DRAW_CONTOUR,
   PETSC_VIEWER_DRAW_PORTS,
   PETSC_VIEWER_VTK_VTS,
+  PETSC_VIEWER_VTK_VTU,
+  PETSC_VIEWER_BINARY_MATLAB,
   PETSC_VIEWER_NATIVE,
   PETSC_VIEWER_NOFORMAT
   } PetscViewerFormat;
@@ -46,7 +48,7 @@ must also be added there.
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Viewer/PetscViewerSetFormat.html#PetscViewerSetFormat">PetscViewerSetFormat</A>(), <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>, <A HREF="../Viewer/PetscViewerType.html#PetscViewerType">PetscViewerType</A>, <A HREF="../Viewer/PetscViewerPushFormat.html#PetscViewerPushFormat">PetscViewerPushFormat</A>(), <A HREF="../Viewer/PetscViewerPopFormat.html#PetscViewerPopFormat">PetscViewerPopFormat</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/../../../include/petscviewer.h.html#PetscViewerFormat">src/sys/viewer/../../../include/petscviewer.h</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/../../../../include/petscviewer.h.html#PetscViewerFormat">src/sys/classes/viewer/../../../../include/petscviewer.h</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

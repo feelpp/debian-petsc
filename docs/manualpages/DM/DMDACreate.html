@@ -5,9 +5,9 @@
 <TITLE>DMDACreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDACreate"><H1>DMDACreate</H1></A>
-Creates a DMDA object.  
+Creates a <A HREF="../DM/DMDA.html#DMDA">DMDA</A> object. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
@@ -16,11 +16,11 @@ PetscErrorCode  DMDACreate(MPI_Comm comm, DM *da)
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
-<DT><B>comm </B> -The communicator for the DMDA object
+<DT><B>comm </B> -The communicator for the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> object
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>da  </B> -The DMDA object
+<DT><B>da  </B> -The <A HREF="../DM/DMDA.html#DMDA">DMDA</A> object
 <br>
 <P>
 
@@ -28,7 +28,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 Developers Note: Since there exists DMDACreate1/2/3d() should this routine even exist?
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
- DMDA, create
+ <A HREF="../DM/DMDA.html#DMDA">DMDA</A>, create
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../DM/DMDASetSizes.html#DMDASetSizes">DMDASetSizes</A>(), DMDADuplicate(),  <A HREF="../DM/DMDACreate1d.html#DMDACreate1d">DMDACreate1d</A>(), <A HREF="../DM/DMDACreate2d.html#DMDACreate2d">DMDACreate2d</A>(), <A HREF="../DM/DMDACreate3d.html#DMDACreate3d">DMDACreate3d</A>()

@@ -5,12 +5,14 @@
 <TITLE>PetscDrawHGSetColor</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDrawHGSetColor"><H1>PetscDrawHGSetColor</H1></A>
 Sets the color the bars will be drawn with. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscdraw.h" 
 #include "petscsys.h" 
+#include "petscviewer.h" 
 PetscErrorCode  PetscDrawHGSetColor(PetscDrawHG hist, int color)
 </PRE>
 Not Collective (ignored except on processor 0 of <A HREF="../Draw/PetscDrawHG.html#PetscDrawHG">PetscDrawHG</A>)
@@ -19,14 +21,14 @@ Not Collective (ignored except on processor 0 of <A HREF="../Draw/PetscDrawHG.ht
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>hist </B></TD><TD>- The histogram context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>color </B></TD><TD>- one of the colors defined in petscdraw.h or PETSC_DRAW_ROTATE to make each bar a 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>color </B></TD><TD>- one of the colors defined in petscdraw.h or PETSC_DRAW_ROTATE to make each bar a
 different color
 </TD></TR></TABLE>
 <P>
 
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/draw/utils/hists.c.html#PetscDrawHGSetColor">src/sys/draw/utils/hists.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/draw/utils/hists.c.html#PetscDrawHGSetColor">src/sys/classes/draw/utils/hists.c</A>
 <BR><A HREF="./index.html">Index of all Draw routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

@@ -5,7 +5,7 @@
 <TITLE>MatGetFactorAvailable</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatGetFactorAvailable"><H1>MatGetFactorAvailable</H1></A>
 Returns a a flag if matrix supports particular package and factor type 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -19,9 +19,9 @@ Not Collective
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mat </B></TD><TD>- the matrix
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>type </B></TD><TD>- name of solver type, for example, spooles, superlu, plapack, petsc (to use PETSc's default)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>type </B></TD><TD>- name of solver type, for example, superlu, petsc (to use PETSc's default)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ftype </B></TD><TD>- factor type, MAT_FACTOR_LU, MAT_FACTOR_CHOLESKY, MAT_FACTOR_ICC, MAT_FACTOR_ILU, 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ftype </B></TD><TD>- factor type, MAT_FACTOR_LU, MAT_FACTOR_CHOLESKY, MAT_FACTOR_ICC, MAT_FACTOR_ILU,
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -30,7 +30,7 @@ Not Collective
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 Some PETSc matrix formats have alternative solvers available that are contained in alternative packages
-such as pastix, superlu, mumps, spooles etc.
+such as pastix, superlu, mumps etc.
 <P>
 PETSc must have been ./configure to use the external solver, using the option --download-package
 <P>

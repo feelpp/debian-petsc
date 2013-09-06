@@ -5,12 +5,13 @@
 <TITLE>TSARKIMEXType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSARKIMEXType"><H1>TSARKIMEXType</H1></A>
 String with the name of an Additive Runge-Kutta IMEX method. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define TSARKIMEXType char*
+typedef const char* TSARKIMEXType;
+#define TSARKIMEX1BEE   "1bee"
 #define TSARKIMEXA2     "a2"
 #define TSARKIMEXL2     "l2"
 #define TSARKIMEXARS122 "ars122"
@@ -23,12 +24,12 @@ String with the name of an Additive Runge-Kutta IMEX method.
 #define TSARKIMEXARS443 "ars443"
 #define TSARKIMEX4      "4"
 #define TSARKIMEX5      "5"
-PETSC_EXTERN PetscErrorCode TSARKIMEXGetType(TS ts,const TSARKIMEXType*);
-PETSC_EXTERN PetscErrorCode TSARKIMEXSetType(TS ts,const TSARKIMEXType);
+PETSC_EXTERN PetscErrorCode TSARKIMEXGetType(TS ts,TSARKIMEXType*);
+PETSC_EXTERN PetscErrorCode TSARKIMEXSetType(TS ts,TSARKIMEXType);
 PETSC_EXTERN PetscErrorCode TSARKIMEXSetFullyImplicit(TS,PetscBool);
-PETSC_EXTERN PetscErrorCode TSARKIMEXRegister(const TSARKIMEXType,PetscInt,PetscInt,const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],PetscInt,const PetscReal[],const PetscReal[]);
+PETSC_EXTERN PetscErrorCode TSARKIMEXRegister(TSARKIMEXType,PetscInt,PetscInt,const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],const PetscReal[],PetscInt,const PetscReal[],const PetscReal[]);
 PETSC_EXTERN PetscErrorCode TSARKIMEXFinalizePackage(void);
-PETSC_EXTERN PetscErrorCode TSARKIMEXInitializePackage(const char path[]);
+PETSC_EXTERN PetscErrorCode TSARKIMEXInitializePackage(void);
 PETSC_EXTERN PetscErrorCode TSARKIMEXRegisterDestroy(void);
 PETSC_EXTERN PetscErrorCode TSARKIMEXRegisterAll(void);
 

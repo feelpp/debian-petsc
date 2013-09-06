@@ -54,6 +54,46 @@ extern void PetscRmPointer(void*);
 #define dmdasetdof_ dmdasetdof
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmdagetoverlap_ DMDAGETOVERLAP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmdagetoverlap_ dmdagetoverlap
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmdasetoverlap_ DMDASETOVERLAP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmdasetoverlap_ dmdasetoverlap
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmdagetnumlocalsubdomains_ DMDAGETNUMLOCALSUBDOMAINS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmdagetnumlocalsubdomains_ dmdagetnumlocalsubdomains
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmdasetnumlocalsubdomains_ DMDASETNUMLOCALSUBDOMAINS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmdasetnumlocalsubdomains_ dmdasetnumlocalsubdomains
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmdasetoffset_ DMDASETOFFSET
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmdasetoffset_ dmdasetoffset
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmdagetoffset_ DMDAGETOFFSET
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmdagetoffset_ dmdagetoffset
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmdagetnonoverlappingregion_ DMDAGETNONOVERLAPPINGREGION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmdagetnonoverlappingregion_ dmdagetnonoverlappingregion
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define dmdasetnonoverlappingregion_ DMDASETNONOVERLAPPINGREGION
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define dmdasetnonoverlappingregion_ dmdasetnonoverlappingregion
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define dmdasetstenciltype_ DMDASETSTENCILTYPE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define dmdasetstenciltype_ dmdasetstenciltype
@@ -108,6 +148,38 @@ void PETSC_STDCALL  dmdasetboundarytype_(DM da,DMDABoundaryType *bx,DMDABoundary
 void PETSC_STDCALL  dmdasetdof_(DM da,PetscInt *dof, int *__ierr ){
 *__ierr = DMDASetDof(
 	(DM)PetscToPointer((da) ),*dof);
+}
+void PETSC_STDCALL  dmdagetoverlap_(DM da,PetscInt *x,PetscInt *y,PetscInt *z, int *__ierr ){
+*__ierr = DMDAGetOverlap(
+	(DM)PetscToPointer((da) ),x,y,z);
+}
+void PETSC_STDCALL  dmdasetoverlap_(DM da,PetscInt *x,PetscInt *y,PetscInt *z, int *__ierr ){
+*__ierr = DMDASetOverlap(
+	(DM)PetscToPointer((da) ),*x,*y,*z);
+}
+void PETSC_STDCALL  dmdagetnumlocalsubdomains_(DM da,PetscInt *Nsub, int *__ierr ){
+*__ierr = DMDAGetNumLocalSubDomains(
+	(DM)PetscToPointer((da) ),Nsub);
+}
+void PETSC_STDCALL  dmdasetnumlocalsubdomains_(DM da,PetscInt *Nsub, int *__ierr ){
+*__ierr = DMDASetNumLocalSubDomains(
+	(DM)PetscToPointer((da) ),*Nsub);
+}
+void PETSC_STDCALL  dmdasetoffset_(DM da,PetscInt *xo,PetscInt *yo,PetscInt *zo,PetscInt *Mo,PetscInt *No,PetscInt *Po, int *__ierr ){
+*__ierr = DMDASetOffset(
+	(DM)PetscToPointer((da) ),*xo,*yo,*zo,*Mo,*No,*Po);
+}
+void PETSC_STDCALL  dmdagetoffset_(DM da,PetscInt *xo,PetscInt *yo,PetscInt *zo,PetscInt *Mo,PetscInt *No,PetscInt *Po, int *__ierr ){
+*__ierr = DMDAGetOffset(
+	(DM)PetscToPointer((da) ),xo,yo,zo,Mo,No,Po);
+}
+void PETSC_STDCALL  dmdagetnonoverlappingregion_(DM da,PetscInt *xs,PetscInt *ys,PetscInt *zs,PetscInt *xm,PetscInt *ym,PetscInt *zm, int *__ierr ){
+*__ierr = DMDAGetNonOverlappingRegion(
+	(DM)PetscToPointer((da) ),xs,ys,zs,xm,ym,zm);
+}
+void PETSC_STDCALL  dmdasetnonoverlappingregion_(DM da,PetscInt *xs,PetscInt *ys,PetscInt *zs,PetscInt *xm,PetscInt *ym,PetscInt *zm, int *__ierr ){
+*__ierr = DMDASetNonOverlappingRegion(
+	(DM)PetscToPointer((da) ),*xs,*ys,*zs,*xm,*ym,*zm);
 }
 void PETSC_STDCALL  dmdasetstenciltype_(DM da,DMDAStencilType *stype, int *__ierr ){
 *__ierr = DMDASetStencilType(

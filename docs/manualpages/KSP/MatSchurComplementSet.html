@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/KSP/MatSchurComplementSet.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>MatSchurComplementSet</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="MatSchurComplementSet"><H1>MatSchurComplementSet</H1></A>
+Sets the matrices that define the Schur complement 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscksp.h" 
+PetscErrorCode  MatSchurComplementSet(Mat N,Mat A00,Mat Ap00,Mat A01,Mat A10,Mat A11)
+</PRE>
+Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N </B></TD><TD>- matrix obtained with <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>() and <A HREF="../Mat/MatSetType.html#MatSetType">MatSetType</A>(MATSCHURCOMPLEMENT);
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>A00,A01,A10,A11  </B></TD><TD>- the four parts of the original matrix (A00 is optional)
+</TD></TR></TABLE>
+<P>
+
+<P>
+Notes: The Schur complement is NOT actually formed! Rather this
+object performs the matrix-vector product by using the the formula for
+the Schur complement and a <A HREF="../KSP/KSP.html#KSP">KSP</A> solver to approximate the action of inv(A)
+<P>
+All four matrices must have the same MPI communicator
+<P>
+A00 and  A11 must be square matrices
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../Mat/MatCreateNormal.html#MatCreateNormal">MatCreateNormal</A>(), <A HREF="../Mat/MatMult.html#MatMult">MatMult</A>(), <A HREF="../Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A HREF="../KSP/MatSchurComplementGetKSP.html#MatSchurComplementGetKSP">MatSchurComplementGetKSP</A>(), <A HREF="../KSP/MatSchurComplementUpdate.html#MatSchurComplementUpdate">MatSchurComplementUpdate</A>(), <A HREF="../Mat/MatCreateTranspose.html#MatCreateTranspose">MatCreateTranspose</A>(), <A HREF="../KSP/MatGetSchurComplement.html#MatGetSchurComplement">MatGetSchurComplement</A>()
+<BR>
+<P>
+<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/ksp/utils/schurm.c.html#MatSchurComplementSet">src/ksp/ksp/utils/schurm.c</A>
+<BR><A HREF="./index.html">Index of all KSP routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

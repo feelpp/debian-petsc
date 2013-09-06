@@ -27,3 +27,13 @@
        IS ois ! IS
        integer ierr
        end subroutine
+        subroutine PCGASMSetDMSubdomains(pc, flg ,ierr)
+       PC pc ! PC
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine
+        subroutine PCGASMGetDMSubdomains(pc, flg ,ierr)
+       PC pc ! PC
+       PetscBool flg ! PetscBool
+       integer ierr
+       end subroutine

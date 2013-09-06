@@ -1,10 +1,10 @@
 This gets rid of rpath in the build system.
 
-Index: petsc-3.3.dfsg/config/BuildSystem/config/setCompilers.py
+Index: petsc-3.4.2/config/BuildSystem/config/setCompilers.py
 ===================================================================
---- petsc-3.3.dfsg.orig/config/BuildSystem/config/setCompilers.py	2012-09-12 08:32:31.000000000 +0200
-+++ petsc-3.3.dfsg/config/BuildSystem/config/setCompilers.py	2012-09-12 08:36:38.000000000 +0200
-@@ -1265,11 +1265,7 @@
+--- petsc-3.4.2.orig/config/BuildSystem/config/setCompilers.py	2013-08-20 15:24:48.000000000 +0200
++++ petsc-3.4.2/config/BuildSystem/config/setCompilers.py	2013-08-20 15:24:48.000000000 +0200
+@@ -1288,11 +1288,7 @@
      return
  
    def checkSharedLinkerPaths(self):
@@ -17,13 +17,13 @@ Index: petsc-3.3.dfsg/config/BuildSystem/config/setCompilers.py
      languages = ['C']
      if hasattr(self, 'CXX'):
        languages.append('Cxx')
-@@ -1279,23 +1275,6 @@
+@@ -1302,23 +1298,6 @@
        languages.append('CUDA')
      for language in languages:
        flag = '-L'
 -      self.pushLanguage(language)
 -      # test '-R' before '-rpath' as sun compilers [c,fortran] don't give proper errors with wrong options.
--      if not Configure.isDarwin():      
+-      if not Configure.isDarwin():
 -        testFlags = ['-Wl,-rpath,', '-R','-rpath ' , '-Wl,-R,']
 -      else:
 -        testFlags = []

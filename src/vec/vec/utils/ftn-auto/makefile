@@ -4,8 +4,7 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = vecmpitoseqf.c vpscatf.c vscatf.c vinvf.c combf.c cmeshf.c
-OBJSC    = vecmpitoseqf.o vpscatf.o vscatf.o vinvf.o combf.o cmeshf.o
+SOURCEC  = veciof.c vecmpitoseqf.c vpscatf.c vscatf.c vinvf.c combf.c cmeshf.c
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

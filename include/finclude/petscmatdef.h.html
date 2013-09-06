@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/finclude/petscmatdef.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:18:19+00:00">
+<meta name="date" content="2013-07-02T14:52:40+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Include file <font color="#4169E1">for</font> Fortran use of the <A href="../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> package in PETSc
@@ -86,68 +86,80 @@
 <a name="line76"> 76: </a><strong><font color="#228B22">#define MATSEQAIJCRL       'seqaijcrl'</font></strong>
 <a name="line77"> 77: </a><strong><font color="#228B22">#define MATMPIAIJCRL       'mpiaijcrl'</font></strong>
 <a name="line78"> 78: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATAIJCUSP.html#MATAIJCUSP">MATAIJCUSP</A>         'aijcusp'</font></strong>
-<a name="line79"> 79: </a><strong><font color="#228B22">#define MATSEQAIJCUSP      'seqaijcusp'</font></strong>
+<a name="line79"> 79: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSEQAIJCUSP.html#MATSEQAIJCUSP">MATSEQAIJCUSP</A>      'seqaijcusp'</font></strong>
 <a name="line80"> 80: </a><strong><font color="#228B22">#define MATMPIAIJCUSP      'mpiaijcusp'</font></strong>
-<a name="line81"> 81: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATAIJPERM.html#MATAIJPERM">MATAIJPERM</A>         'aijperm'</font></strong>
-<a name="line82"> 82: </a><strong><font color="#228B22">#define MATSEQAIJPERM      'seqaijperm'</font></strong>
-<a name="line83"> 83: </a><strong><font color="#228B22">#define MATMPIAIJPERM      'mpiaijperm'</font></strong>
-<a name="line84"> 84: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSHELL.html#MATSHELL">MATSHELL</A>           'shell'</font></strong>
-<a name="line85"> 85: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATDENSE.html#MATDENSE">MATDENSE</A>           'dense'</font></strong>
-<a name="line86"> 86: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSEQDENSE.html#MATSEQDENSE">MATSEQDENSE</A>        'seqdense'</font></strong>
-<a name="line87"> 87: </a><strong><font color="#228B22">#define MATMPIDENSE        'mpidense'</font></strong>
-<a name="line88"> 88: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATBAIJ.html#MATBAIJ">MATBAIJ</A>            'baij'</font></strong>
-<a name="line89"> 89: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSEQBAIJ.html#MATSEQBAIJ">MATSEQBAIJ</A>         'seqbaij'</font></strong>
-<a name="line90"> 90: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATMPIBAIJ.html#MATMPIBAIJ">MATMPIBAIJ</A>         'mpibaij'</font></strong>
-<a name="line91"> 91: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATMPIADJ.html#MATMPIADJ">MATMPIADJ</A>          'mpiadj'</font></strong>
-<a name="line92"> 92: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSBAIJ.html#MATSBAIJ">MATSBAIJ</A>           'sbaij'</font></strong>
-<a name="line93"> 93: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSEQSBAIJ.html#MATSEQSBAIJ">MATSEQSBAIJ</A>        'seqsbaij'</font></strong>
-<a name="line94"> 94: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATMPISBAIJ.html#MATMPISBAIJ">MATMPISBAIJ</A>        'mpisbaij'</font></strong>
+<a name="line81"> 81: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATAIJCUSPARSE.html#MATAIJCUSPARSE">MATAIJCUSPARSE</A>     'aijcusparse'</font></strong>
+<a name="line82"> 82: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSEQAIJCUSPARSE.html#MATSEQAIJCUSPARSE">MATSEQAIJCUSPARSE</A>  'seqaijcusparse'</font></strong>
+<a name="line83"> 83: </a><strong><font color="#228B22">#define MATMPIAIJCUSPARSE  'mpiaijcusparse'</font></strong>
+<a name="line84"> 84: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATAIJPERM.html#MATAIJPERM">MATAIJPERM</A>         'aijperm'</font></strong>
+<a name="line85"> 85: </a><strong><font color="#228B22">#define MATSEQAIJPERM      'seqaijperm'</font></strong>
+<a name="line86"> 86: </a><strong><font color="#228B22">#define MATMPIAIJPERM      'mpiaijperm'</font></strong>
+<a name="line87"> 87: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSHELL.html#MATSHELL">MATSHELL</A>           'shell'</font></strong>
+<a name="line88"> 88: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATDENSE.html#MATDENSE">MATDENSE</A>           'dense'</font></strong>
+<a name="line89"> 89: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSEQDENSE.html#MATSEQDENSE">MATSEQDENSE</A>        'seqdense'</font></strong>
+<a name="line90"> 90: </a><strong><font color="#228B22">#define MATMPIDENSE        'mpidense'</font></strong>
+<a name="line91"> 91: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATELEMENTAL.html#MATELEMENTAL">MATELEMENTAL</A>       'elemental'</font></strong>
+<a name="line92"> 92: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATBAIJ.html#MATBAIJ">MATBAIJ</A>            'baij'</font></strong>
+<a name="line93"> 93: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSEQBAIJ.html#MATSEQBAIJ">MATSEQBAIJ</A>         'seqbaij'</font></strong>
+<a name="line94"> 94: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATMPIBAIJ.html#MATMPIBAIJ">MATMPIBAIJ</A>         'mpibaij'</font></strong>
+<a name="line95"> 95: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATMPIADJ.html#MATMPIADJ">MATMPIADJ</A>          'mpiadj'</font></strong>
+<a name="line96"> 96: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSBAIJ.html#MATSBAIJ">MATSBAIJ</A>           'sbaij'</font></strong>
+<a name="line97"> 97: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSEQSBAIJ.html#MATSEQSBAIJ">MATSEQSBAIJ</A>        'seqsbaij'</font></strong>
+<a name="line98"> 98: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATMPISBAIJ.html#MATMPISBAIJ">MATMPISBAIJ</A>        'mpisbaij'</font></strong>
 
-<a name="line96"> 96: </a><strong><font color="#228B22">#define MATSEQBSTRM        'seqbstrm'</font></strong>
-<a name="line97"> 97: </a><strong><font color="#228B22">#define MATMPIBSTRM        'mpibstrm'</font></strong>
-<a name="line98"> 98: </a><strong><font color="#228B22">#define MATBSTRM           'bstrm'</font></strong>
-<a name="line99"> 99: </a><strong><font color="#228B22">#define MATSEQSBSTRM       'seqsbstrm'</font></strong>
-<a name="line100">100: </a><strong><font color="#228B22">#define MATMPISBSTRM       'mpisbstrm'</font></strong>
-<a name="line101">101: </a><strong><font color="#228B22">#define MATSBSTRM          'sbstrm'</font></strong>
+<a name="line100">100: </a><strong><font color="#228B22">#define MATSEQBSTRM        'seqbstrm'</font></strong>
+<a name="line101">101: </a><strong><font color="#228B22">#define MATMPIBSTRM        'mpibstrm'</font></strong>
+<a name="line102">102: </a><strong><font color="#228B22">#define MATBSTRM           'bstrm'</font></strong>
+<a name="line103">103: </a><strong><font color="#228B22">#define MATSEQSBSTRM       'seqsbstrm'</font></strong>
+<a name="line104">104: </a><strong><font color="#228B22">#define MATMPISBSTRM       'mpisbstrm'</font></strong>
+<a name="line105">105: </a><strong><font color="#228B22">#define MATSBSTRM          'sbstrm'</font></strong>
 
-<a name="line103">103: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATDAAD.html#MATDAAD">MATDAAD</A>            'daad'</font></strong>
-<a name="line104">104: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATMFFD.html#MATMFFD">MATMFFD</A>            'mffd'</font></strong>
-<a name="line105">105: </a><strong><font color="#228B22">#define MATNORMAL          'normal'</font></strong>
-<a name="line106">106: </a><strong><font color="#228B22">#define MATLRC             'lrc'</font></strong>
-<a name="line107">107: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSCATTER.html#MATSCATTER">MATSCATTER</A>         'scatter'</font></strong>
-<a name="line108">108: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATBLOCKMAT.html#MATBLOCKMAT">MATBLOCKMAT</A>        'blockmat'</font></strong>
-<a name="line109">109: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>       'composite'</font></strong>
-<a name="line110">110: </a><strong><font color="#228B22">#define MATFFT             'fft'</font></strong>
-<a name="line111">111: </a><strong><font color="#228B22">#define MATFFTW            'fftw'</font></strong>
-<a name="line112">112: </a><strong><font color="#228B22">#define MATSEQCUFFT        'seqcufft'</font></strong>
-<a name="line113">113: </a><strong><font color="#228B22">#define MATTRANSPOSEMAT    'transpose'</font></strong>
-<a name="line114">114: </a><strong><font color="#228B22">#define MATSCHURCOMPLEMENT 'schurcomplement'</font></strong>
-<a name="line115">115: </a><strong><font color="#228B22">#define MATPYTHON          'python'</font></strong>
-<a name="line116">116: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/DM/MATHYPRESTRUCT.html#MATHYPRESTRUCT">MATHYPRESTRUCT</A>     'hyprestruct'</font></strong>
-<a name="line117">117: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/DM/MATHYPRESSTRUCT.html#MATHYPRESSTRUCT">MATHYPRESSTRUCT</A>    'hypresstruct'</font></strong>
-<a name="line118">118: </a><strong><font color="#228B22">#define MATSUBMATRIX       'submatrix'</font></strong>
-<a name="line119">119: </a><strong><font color="#228B22">#define MATLOCALREF        'localref'</font></strong>
-<a name="line120">120: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATNEST.html#MATNEST">MATNEST</A>            'nest'</font></strong>
-<a name="line121">121: </a>!
-<a name="line122">122: </a>! MatSolverPackages
-<a name="line123">123: </a>!
-<a name="line124">124: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERSPOOLES.html#MATSOLVERSPOOLES">MATSOLVERSPOOLES</A>      'spooles'</font></strong>
-<a name="line125">125: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERSUPERLU.html#MATSOLVERSUPERLU">MATSOLVERSUPERLU</A>      'superlu'</font></strong>
-<a name="line126">126: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERSUPERLU_DIST.html#MATSOLVERSUPERLU_DIST">MATSOLVERSUPERLU_DIST</A> 'superlu_dist'</font></strong>
-<a name="line127">127: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERUMFPACK.html#MATSOLVERUMFPACK">MATSOLVERUMFPACK</A>      'umfpack'</font></strong>
-<a name="line128">128: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERCHOLMOD.html#MATSOLVERCHOLMOD">MATSOLVERCHOLMOD</A>      'cholmod'</font></strong>
-<a name="line129">129: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERESSL.html#MATSOLVERESSL">MATSOLVERESSL</A>         'essl'</font></strong>
-<a name="line130">130: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERLUSOL.html#MATSOLVERLUSOL">MATSOLVERLUSOL</A>        'lusol'</font></strong>
-<a name="line131">131: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERMUMPS.html#MATSOLVERMUMPS">MATSOLVERMUMPS</A>        'mumps'</font></strong>
-<a name="line132">132: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERPASTIX.html#MATSOLVERPASTIX">MATSOLVERPASTIX</A>       'pastix'</font></strong>
-<a name="line133">133: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERMATLAB.html#MATSOLVERMATLAB">MATSOLVERMATLAB</A>       'matlab'</font></strong>
-<a name="line134">134: </a><strong><font color="#228B22">#define MATSOLVERPETSC        'petsc'</font></strong>
-<a name="line135">135: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERPLAPACK.html#MATSOLVERPLAPACK">MATSOLVERPLAPACK</A>      'plapack'</font></strong>
-<a name="line136">136: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERBAS.html#MATSOLVERBAS">MATSOLVERBAS</A>          'bas'</font></strong>
+<a name="line107">107: </a><strong><font color="#228B22">#define MATDAAD            'daad'</font></strong>
+<a name="line108">108: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATMFFD.html#MATMFFD">MATMFFD</A>            'mffd'</font></strong>
+<a name="line109">109: </a><strong><font color="#228B22">#define MATNORMAL          'normal'</font></strong>
+<a name="line110">110: </a><strong><font color="#228B22">#define MATLRC             'lrc'</font></strong>
+<a name="line111">111: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSCATTER.html#MATSCATTER">MATSCATTER</A>         'scatter'</font></strong>
+<a name="line112">112: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATBLOCKMAT.html#MATBLOCKMAT">MATBLOCKMAT</A>        'blockmat'</font></strong>
+<a name="line113">113: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATCOMPOSITE.html#MATCOMPOSITE">MATCOMPOSITE</A>       'composite'</font></strong>
+<a name="line114">114: </a><strong><font color="#228B22">#define MATFFT             'fft'</font></strong>
+<a name="line115">115: </a><strong><font color="#228B22">#define MATFFTW            'fftw'</font></strong>
+<a name="line116">116: </a><strong><font color="#228B22">#define MATSEQCUFFT        'seqcufft'</font></strong>
+<a name="line117">117: </a><strong><font color="#228B22">#define MATTRANSPOSEMAT    'transpose'</font></strong>
+<a name="line118">118: </a><strong><font color="#228B22">#define MATSCHURCOMPLEMENT 'schurcomplement'</font></strong>
+<a name="line119">119: </a><strong><font color="#228B22">#define MATPYTHON          'python'</font></strong>
+<a name="line120">120: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/DM/MATHYPRESTRUCT.html#MATHYPRESTRUCT">MATHYPRESTRUCT</A>     'hyprestruct'</font></strong>
+<a name="line121">121: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/DM/MATHYPRESSTRUCT.html#MATHYPRESSTRUCT">MATHYPRESSTRUCT</A>    'hypresstruct'</font></strong>
+<a name="line122">122: </a><strong><font color="#228B22">#define MATSUBMATRIX       'submatrix'</font></strong>
+<a name="line123">123: </a><strong><font color="#228B22">#define MATLOCALREF        'localref'</font></strong>
+<a name="line124">124: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATNEST.html#MATNEST">MATNEST</A>            'nest'</font></strong>
+<a name="line125">125: </a>!
+<a name="line126">126: </a>! MatSolverPackages
+<a name="line127">127: </a>!
+<a name="line128">128: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERSUPERLU.html#MATSOLVERSUPERLU">MATSOLVERSUPERLU</A>      'superlu'</font></strong>
+<a name="line129">129: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERSUPERLU_DIST.html#MATSOLVERSUPERLU_DIST">MATSOLVERSUPERLU_DIST</A> 'superlu_dist'</font></strong>
+<a name="line130">130: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERUMFPACK.html#MATSOLVERUMFPACK">MATSOLVERUMFPACK</A>      'umfpack'</font></strong>
+<a name="line131">131: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERCHOLMOD.html#MATSOLVERCHOLMOD">MATSOLVERCHOLMOD</A>      'cholmod'</font></strong>
+<a name="line132">132: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERESSL.html#MATSOLVERESSL">MATSOLVERESSL</A>         'essl'</font></strong>
+<a name="line133">133: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERLUSOL.html#MATSOLVERLUSOL">MATSOLVERLUSOL</A>        'lusol'</font></strong>
+<a name="line134">134: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERMUMPS.html#MATSOLVERMUMPS">MATSOLVERMUMPS</A>        'mumps'</font></strong>
+<a name="line135">135: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERPASTIX.html#MATSOLVERPASTIX">MATSOLVERPASTIX</A>       'pastix'</font></strong>
+<a name="line136">136: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERMATLAB.html#MATSOLVERMATLAB">MATSOLVERMATLAB</A>       'matlab'</font></strong>
+<a name="line137">137: </a><strong><font color="#228B22">#define MATSOLVERPETSC        'petsc'</font></strong>
+<a name="line138">138: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERBAS.html#MATSOLVERBAS">MATSOLVERBAS</A>          'bas'</font></strong>
+<a name="line139">139: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MATSOLVERCUSPARSE.html#MATSOLVERCUSPARSE">MATSOLVERCUSPARSE</A>     'cusparse'</font></strong>
+<a name="line140">140: </a><strong><font color="#228B22">#define MATSOLVERBSTRM        'bstrm'</font></strong>
+<a name="line141">141: </a><strong><font color="#228B22">#define MATSOLVERSBSTRM       'sbstrm'</font></strong>
 
-<a name="line138">138: </a><strong><font color="#228B22">#define MATSOLVERBSTRM        'bstrm'</font></strong>
-<a name="line139">139: </a><strong><font color="#228B22">#define MATSOLVERSBSTRM       'sbstrm'</font></strong>
-<a name="line140">140: </a><font color="#A020F0">#endif</font>
+<a name="line143">143: </a>!
+<a name="line144">144: </a>! GPU Storage Formats <font color="#4169E1">for</font> CUSP and CUSPARSE
+<a name="line145">145: </a>!
+<a name="line146">146: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A> <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A></font></strong>
+<a name="line147">147: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A> <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A></font></strong>
+
+<a name="line149">149: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MatCUSPStorageFormat.html#MatCUSPStorageFormat">MatCUSPStorageFormat</A> <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A></font></strong>
+<a name="line150">150: </a><strong><font color="#228B22">#define <A href="../../docs/manualpages/Mat/MatCUSPFormatOperation.html#MatCUSPFormatOperation">MatCUSPFormatOperation</A> <A href="../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A></font></strong>
+
+<a name="line152">152: </a><font color="#A020F0">#endif</font>
 </pre>
 </body>
 

@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = matnullf.c matrixf.c mhasf.c
-OBJSC    = matnullf.o matrixf.o mhasf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

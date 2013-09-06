@@ -5,7 +5,7 @@
 <TITLE>DMDAGetGhostCorners</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDAGetGhostCorners"><H1>DMDAGetGhostCorners</H1></A>
 Returns the global (x,y,z) indices of the lower left corner of the local region, including ghost points. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -35,7 +35,7 @@ The corner information is independent of the number of degrees of
 freedom per node set with the DMDACreateXX() routine. Thus the x, y, z, and
 m, n, p can be thought of as coordinates on a logical grid, where each
 grid point has (potentially) several degrees of freedom.
-Any of y, z, n, and p can be passed in as <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> if not needed.
+Any of y, z, n, and p can be passed in as NULL if not needed.
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  distributed array, get, ghost, corners, nodes, local indices
@@ -51,7 +51,6 @@ Any of y, z, n, and p can be passed in as <A HREF="../Sys/PETSC_NULL.html#PETSC_
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/mat/examples/tutorials/ex14.c.html">src/mat/examples/tutorials/ex14.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex42.c.html">src/ksp/ksp/examples/tutorials/ex42.c.html</A><BR>
@@ -62,4 +61,5 @@ Any of y, z, n, and p can be passed in as <A HREF="../Sys/PETSC_NULL.html#PETSC_
 <A HREF="../../../src/snes/examples/tutorials/ex61.c.html">src/snes/examples/tutorials/ex61.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex65.c.html">src/snes/examples/tutorials/ex65.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5f.F.html">src/snes/examples/tutorials/ex5f.F.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex5f90.F.html">src/snes/examples/tutorials/ex5f90.F.html</A><BR>
 </BODY></HTML>

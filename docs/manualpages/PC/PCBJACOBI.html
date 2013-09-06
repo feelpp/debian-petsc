@@ -5,11 +5,11 @@
 <TITLE>PCBJACOBI</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCBJACOBI"><H1>PCBJACOBI</H1></A>
-Use block Jacobi preconditioning, each block is (approximately) solved with  its own <A HREF="../KSP/KSP.html#KSP">KSP</A> object. 
+Use block Jacobi preconditioning, each block is (approximately) solved with its own <A HREF="../KSP/KSP.html#KSP">KSP</A> object. 
 <H3><FONT COLOR="#CC3333">Options Database Keys</FONT></H3>
-<DT><B>-pc_bjacobi_truelocal </B> -Activates <A HREF="../PC/PCBJacobiSetUseTrueLocal.html#PCBJacobiSetUseTrueLocal">PCBJacobiSetUseTrueLocal</A>()
+<DT><B>-pc_use_amat </B> -use Amat to apply block of operator in inner Krylov method
 <br>
 <P>
 Notes: Each processor can have one or more blocks, but a block cannot be shared by more
@@ -35,7 +35,7 @@ vectors sharing the same pointer and handling the CUSP side as well instead of <
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>,
-<BR><A HREF="../PC/PCASM.html#PCASM">PCASM</A>, <A HREF="../PC/PCBJacobiSetUseTrueLocal.html#PCBJacobiSetUseTrueLocal">PCBJacobiSetUseTrueLocal</A>(), <A HREF="../PC/PCBJacobiGetSubKSP.html#PCBJacobiGetSubKSP">PCBJacobiGetSubKSP</A>(), <A HREF="../PC/PCBJacobiSetTotalBlocks.html#PCBJacobiSetTotalBlocks">PCBJacobiSetTotalBlocks</A>(),
+<BR><A HREF="../PC/PCASM.html#PCASM">PCASM</A>, <A HREF="../PC/PCSetUseAmat.html#PCSetUseAmat">PCSetUseAmat</A>(), <A HREF="../PC/PCGetUseAmat.html#PCGetUseAmat">PCGetUseAmat</A>(), <A HREF="../PC/PCBJacobiGetSubKSP.html#PCBJacobiGetSubKSP">PCBJacobiGetSubKSP</A>(), <A HREF="../PC/PCBJacobiSetTotalBlocks.html#PCBJacobiSetTotalBlocks">PCBJacobiSetTotalBlocks</A>(),
 <A HREF="../PC/PCBJacobiSetLocalBlocks.html#PCBJacobiSetLocalBlocks">PCBJacobiSetLocalBlocks</A>(), PCSetModifySubmatrices()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/impls/bjacobi/bjacobi.c.html#PCBJACOBI">src/ksp/pc/impls/bjacobi/bjacobi.c</A>

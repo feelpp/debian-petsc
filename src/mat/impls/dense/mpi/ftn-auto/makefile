@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = mpidensef.c
-OBJSC    = mpidensef.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

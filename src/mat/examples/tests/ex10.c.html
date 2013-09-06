@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex10.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:50:58+00:00">
+<meta name="date" content="2013-07-02T14:43:57+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Tests repeated use of assembly for matrices.\n\n"</font>;
 
@@ -22,10 +22,10 @@
 <a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    v;
 
 
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 <a name="line18"> 18: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rank);
 <a name="line19"> 19: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;size);
-<a name="line20"> 20: </a>  n = 2*size;
+<a name="line20"> 20: </a>  n    = 2*size;
 
 <a name="line22"> 22: </a>  <font color="#B22222">/* create the matrix for the five point stencil, YET AGAIN*/</font>
 <a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;C);

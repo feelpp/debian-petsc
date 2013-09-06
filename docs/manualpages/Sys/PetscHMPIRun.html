@@ -5,13 +5,13 @@
 <TITLE>PetscHMPIRun</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscHMPIRun"><H1>PetscHMPIRun</H1></A>
 runs a function on all the processes of a node 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscHMPIRun(MPI_Comm comm,PetscErrorCode (*f)(MPI_Comm,void *),void *ptr)
+PetscErrorCode  PetscHMPIRun(MPI_Comm comm,PetscErrorCode (*f)(MPI_Comm,void*),void *ptr)
 </PRE>
 Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <P>

@@ -5,12 +5,12 @@
 <TITLE>SNESMonitorSetRatio</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESMonitorSetRatio"><H1>SNESMonitorSetRatio</H1></A>
-Sets <A HREF="../SNES/SNES.html#SNES">SNES</A> to use a monitor that prints the  ratio of the function norm at each iteration. 
+Sets <A HREF="../SNES/SNES.html#SNES">SNES</A> to use a monitor that prints the ratio of the function norm at each iteration. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscsnes.h"   
+#include "petsc-private/snesimpl.h"   
 PetscErrorCode  SNESMonitorSetRatio(SNES snes,PetscViewer viewer)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>

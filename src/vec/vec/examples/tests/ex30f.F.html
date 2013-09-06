@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tests/ex30f.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:40:14+00:00">
+<meta name="date" content="2013-07-02T14:40:16+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 <a name="line3">  3: </a>!  Tests parallel to parallel scatter where a to from index are
@@ -39,7 +39,7 @@
 <a name="line28"> 28: </a>         print *, 'Four processor test'
 <a name="line29"> 29: </a>         stop
 <a name="line30"> 30: </a>      end <font color="#4169E1">if</font>
-<a name="line31"> 31: </a>
+
 <a name="line32"> 32: </a>      nlocal2 = 2*nlocal
 <a name="line33"> 33: </a>      n2      = 2*n
 <a name="line34"> 34: </a>      call <A href="../../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,nlocal2,n2,v1,ierr)
@@ -98,19 +98,19 @@
 <a name="line87"> 87: </a>      call <A href="../../../../../docs/manualpages/Vec/VecScatterCreate.html#VecScatterCreate">VecScatterCreate</A>(v1,fromis,v3,tois,scat2,ierr)
 <a name="line88"> 88: </a>      call <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(fromis,ierr)
 <a name="line89"> 89: </a>      call <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(tois,ierr)
-<a name="line90"> 90: </a>
+
 <a name="line91"> 91: </a>      call <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(scat1,v1,v2,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)
 <a name="line92"> 92: </a>      call <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(scat1,v1,v2,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)
-<a name="line93"> 93: </a>
+
 <a name="line94"> 94: </a>      call <A href="../../../../../docs/manualpages/Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>(scat2,v1,v3,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)
 <a name="line95"> 95: </a>      call <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(scat2,v1,v3,<A href="../../../../../docs/manualpages/Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>,ierr)
-<a name="line96"> 96: </a>
+
 <a name="line97"> 97: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>(v1, <font color="#666666">"V1"</font>,ierr)
 <a name="line98"> 98: </a>      call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(v1,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,ierr)
 
 <a name="line100">100: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>(v2, <font color="#666666">"V2"</font>,ierr)
 <a name="line101">101: </a>      call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(v2,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_WORLD.html#PETSC_VIEWER_STDOUT_WORLD">PETSC_VIEWER_STDOUT_WORLD</A>,ierr)
-<a name="line102">102: </a>
+
 <a name="line103">103: </a>      <font color="#4169E1">if</font> (rank.eq.0) then
 <a name="line104">104: </a>         call <A href="../../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>(v3, <font color="#666666">"V3"</font>,ierr)
 <a name="line105">105: </a>         call <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(v3,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>,ierr)
@@ -123,9 +123,9 @@
 <a name="line112">112: </a>      call <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(v3,ierr)
 
 <a name="line114">114: </a>      call <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>(ierr)
-<a name="line115">115: </a>
+
 <a name="line116">116: </a>      end
-<a name="line117">117: </a>
+
 
 
 </pre>

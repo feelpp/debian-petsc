@@ -5,7 +5,7 @@
 <TITLE>PCFIELDSPLIT</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCFIELDSPLIT"><H1>PCFIELDSPLIT</H1></A>
 Preconditioner created by combining separate preconditioners for individual fields or groups of fields. See the users manual section "Solving Block Matrices" for more details. To set options on the solvers for each block append -fieldsplit_ to all the <A HREF="../PC/PC.html#PC">PC</A>
 options database keys. For example, -fieldsplit_pc_type ilu -fieldsplit_pc_factor_levels 1
@@ -26,7 +26,7 @@ been supplied explicitly by -pc_fieldsplit_%d_fields
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_fieldsplit_type &lt;additive,multiplicative,symmetric_multiplicative,schur&gt; </B></TD><TD>- type of relaxation or factorization splitting
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_fieldsplit_schur_precondition &lt;self,user,diag&gt; </B></TD><TD>- default is diag
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_fieldsplit_schur_precondition &lt;self,user,a11&gt; </B></TD><TD>- default is a11
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-pc_fieldsplit_detect_saddle_point </B></TD><TD>- automatically finds rows with zero or negative diagonal and uses Schur complement with no preconditioner as the solver
 </TD></TR>
@@ -110,4 +110,5 @@ inside a smoother resulting in "Distributive Smoothers".
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex55.c.html">src/snes/examples/tutorials/ex55.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex70.c.html">src/snes/examples/tutorials/ex70.c.html</A><BR>
 </BODY></HTML>

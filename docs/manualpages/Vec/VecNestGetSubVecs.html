@@ -5,7 +5,7 @@
 <TITLE>VecNestGetSubVecs</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecNestGetSubVecs"><H1>VecNestGetSubVecs</H1></A>
 Returns the entire array of vectors defining a nest vector. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -16,15 +16,21 @@ PetscErrorCode  VecNestGetSubVecs(Vec X,PetscInt *N,Vec **sx)
 Not collective
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
-.  X  - nest vector
+<DT><B>X  </B> -nest vector
+<br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-.  N - number of nested vecs
-.  sx - array of vectors
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>N </B></TD><TD>- number of nested vecs
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>sx </B></TD><TD>- array of vectors
+</TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
-<P>
 The user should not free the array sx.
+<P>
+<H3><FONT COLOR="#CC3333">Fortran Notes</FONT></H3>
+The caller must allocate the array to hold the subvectors.
 <P>
 
 <P>

@@ -1,0 +1,456 @@
+<center><a href="general.c">Actual source code: general.c</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/is/is/impls/general/general.c.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:40:26+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80">
+<a name="line2">  2: </a><font color="#B22222">/*</font>
+<a name="line3">  3: </a><font color="#B22222">     Provides the functions for index sets (<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>) defined by a list of integers.</font>
+<a name="line4">  4: </a><font color="#B22222">*/</font>
+<a name="line5">  5: </a><font color="#A020F0">#include &lt;../src/vec/is/is/impls/general/general.h&gt; </font><font color="#B22222">/*I  "petscis.h"  I*/</font><font color="#A020F0"></font>
+<a name="line6">  6: </a><font color="#A020F0">#include &lt;petscvec.h&gt;</font>
+<a name="line7">  7: </a><font color="#A020F0">#include &lt;petscviewer.h&gt;</font>
+
+<a name="line11"> 11: </a><strong><font color="#4169E1"><a name="ISDuplicate_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISDuplicate_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *newIS)</font></strong>
+<a name="line12"> 12: </a>{
+<a name="line14"> 14: </a>  IS_General     *sub = (IS_General*)is-&gt;data;
+
+<a name="line17"> 17: </a>  <A href="../../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),sub-&gt;n,sub-&gt;idx,PETSC_COPY_VALUES,newIS);
+<a name="line18"> 18: </a>  <font color="#4169E1">return</font>(0);
+<a name="line19"> 19: </a>}
+
+<a name="line23"> 23: </a><strong><font color="#4169E1"><a name="ISDestroy_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISDestroy_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is)</font></strong>
+<a name="line24"> 24: </a>{
+<a name="line25"> 25: </a>  IS_General     *is_general = (IS_General*)is-&gt;data;
+
+<a name="line29"> 29: </a>  <font color="#4169E1">if</font> (is_general-&gt;allocated) {
+<a name="line30"> 30: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(is_general-&gt;idx);
+<a name="line31"> 31: </a>  }
+<a name="line32"> 32: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is,<font color="#666666">"ISGeneralSetIndices_C"</font>,0);
+<a name="line33"> 33: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(is-&gt;data);
+<a name="line34"> 34: </a>  <font color="#4169E1">return</font>(0);
+<a name="line35"> 35: </a>}
+
+<a name="line39"> 39: </a><strong><font color="#4169E1"><a name="ISIdentity_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISIdentity_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *ident)</font></strong>
+<a name="line40"> 40: </a>{
+<a name="line41"> 41: </a>  IS_General *is_general = (IS_General*)is-&gt;data;
+<a name="line42"> 42: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   i,n = is_general-&gt;n,*idx = is_general-&gt;idx;
+
+<a name="line45"> 45: </a>  is-&gt;isidentity = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line46"> 46: </a>  *ident         = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line47"> 47: </a>  <font color="#4169E1">for</font> (i=0; i&lt;n; i++) {
+<a name="line48"> 48: </a>    <font color="#4169E1">if</font> (idx[i] != i) {
+<a name="line49"> 49: </a>      is-&gt;isidentity = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line50"> 50: </a>      *ident         = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line51"> 51: </a>      <font color="#4169E1">break</font>;
+<a name="line52"> 52: </a>    }
+<a name="line53"> 53: </a>  }
+<a name="line54"> 54: </a>  <font color="#4169E1">return</font>(0);
+<a name="line55"> 55: </a>}
+
+<a name="line59"> 59: </a><strong><font color="#4169E1"><a name="ISCopy_General"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISCopy_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> isy)</font></strong>
+<a name="line60"> 60: </a>{
+<a name="line61"> 61: </a>  IS_General     *is_general = (IS_General*)is-&gt;data,*isy_general = (IS_General*)isy-&gt;data;
+
+<a name="line65"> 65: </a>  <font color="#4169E1">if</font> (is_general-&gt;n != isy_general-&gt;n || is_general-&gt;N != isy_general-&gt;N) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Index sets incompatible"</font>);
+<a name="line66"> 66: </a>  isy_general-&gt;sorted = is_general-&gt;sorted;
+<a name="line67"> 67: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(isy_general-&gt;idx,is_general-&gt;idx,is_general-&gt;n*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line68"> 68: </a>  <font color="#4169E1">return</font>(0);
+<a name="line69"> 69: </a>}
+
+<a name="line73"> 73: </a><strong><font color="#4169E1"><a name="ISOnComm_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISOnComm_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A> mode,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *newis)</font></strong>
+<a name="line74"> 74: </a>{
+<a name="line76"> 76: </a>  IS_General     *sub = (IS_General*)is-&gt;data;
+
+<a name="line79"> 79: </a>  <font color="#4169E1">if</font> (mode == PETSC_OWN_POINTER) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(comm,PETSC_ERR_ARG_WRONG,<font color="#666666">"Cannot use PETSC_OWN_POINTER"</font>);
+<a name="line80"> 80: </a>  <A href="../../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(comm,sub-&gt;n,sub-&gt;idx,mode,newis);
+<a name="line81"> 81: </a>  <font color="#4169E1">return</font>(0);
+<a name="line82"> 82: </a>}
+
+<a name="line86"> 86: </a><strong><font color="#4169E1"><a name="ISSetBlockSize_General"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISSetBlockSize_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> bs)</font></strong>
+<a name="line87"> 87: </a>{
+<a name="line88"> 88: </a>  IS_General *sub = (IS_General*)is-&gt;data;
+
+<a name="line91"> 91: </a>  <font color="#4169E1">if</font> (sub-&gt;N % bs) <A href="../../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),PETSC_ERR_ARG_SIZ,<font color="#666666">"Block size %D does not divide global size %D"</font>,bs,sub-&gt;N);
+<a name="line92"> 92: </a>  <font color="#4169E1">if</font> (sub-&gt;n % bs) <A href="../../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_SIZ,<font color="#666666">"Block size %D does not divide local size %D"</font>,bs,sub-&gt;n);
+<a name="line93"> 93: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line94"> 94: </a>  {
+<a name="line95"> 95: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> i,j;
+<a name="line96"> 96: </a>    <font color="#4169E1">for</font> (i=0; i&lt;sub-&gt;n; i+=bs) {
+<a name="line97"> 97: </a>      <font color="#4169E1">for</font> (j=0; j&lt;bs; j++) {
+<a name="line98"> 98: </a>        <font color="#4169E1">if</font> (sub-&gt;idx[i+j] != sub-&gt;idx[i]+j) <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_SIZ,<font color="#666666">"Index set does not have block structure, cannot set block size to %D"</font>,bs);
+<a name="line99"> 99: </a>      }
+<a name="line100">100: </a>    }
+<a name="line101">101: </a>  }
+<a name="line102">102: </a><font color="#A020F0">#endif</font>
+<a name="line103">103: </a>  is-&gt;bs = bs;
+<a name="line104">104: </a>  <font color="#4169E1">return</font>(0);
+<a name="line105">105: </a>}
+
+<a name="line109">109: </a><strong><font color="#4169E1"><a name="ISContiguousLocal_General"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISContiguousLocal_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> gstart,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> gend,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *start,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> *contig)</font></strong>
+<a name="line110">110: </a>{
+<a name="line111">111: </a>  IS_General *sub = (IS_General*)is-&gt;data;
+<a name="line112">112: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>   i,p;
+
+<a name="line115">115: </a>  *start  = 0;
+<a name="line116">116: </a>  *contig = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line117">117: </a>  <font color="#4169E1">if</font> (!sub-&gt;n) <font color="#4169E1">return</font>(0);
+<a name="line118">118: </a>  p = sub-&gt;idx[0];
+<a name="line119">119: </a>  <font color="#4169E1">if</font> (p &lt; gstart) <font color="#4169E1">goto</font> nomatch;
+<a name="line120">120: </a>  *start = p - gstart;
+<a name="line121">121: </a>  <font color="#4169E1">if</font> (sub-&gt;n &gt; gend-p) <font color="#4169E1">goto</font> nomatch;
+<a name="line122">122: </a>  <font color="#4169E1">for</font> (i=1; i&lt;sub-&gt;n; i++,p++) {
+<a name="line123">123: </a>    <font color="#4169E1">if</font> (sub-&gt;idx[i] != p+1) <font color="#4169E1">goto</font> nomatch;
+<a name="line124">124: </a>  }
+<a name="line125">125: </a>  <font color="#4169E1">return</font>(0);
+<a name="line126">126: </a><strong><font color="#FF0000">nomatch:</font></strong>
+<a name="line127">127: </a>  *start  = -1;
+<a name="line128">128: </a>  *contig = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line129">129: </a>  <font color="#4169E1">return</font>(0);
+<a name="line130">130: </a>}
+
+<a name="line134">134: </a><strong><font color="#4169E1"><a name="ISGetIndices_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISGetIndices_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> in,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *idx[])</font></strong>
+<a name="line135">135: </a>{
+<a name="line136">136: </a>  IS_General *sub = (IS_General*)in-&gt;data;
+
+<a name="line139">139: </a>  *idx = sub-&gt;idx;
+<a name="line140">140: </a>  <font color="#4169E1">return</font>(0);
+<a name="line141">141: </a>}
+
+<a name="line145">145: </a><strong><font color="#4169E1"><a name="ISRestoreIndices_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISRestoreIndices_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> in,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *idx[])</font></strong>
+<a name="line146">146: </a>{
+<a name="line147">147: </a>  IS_General *sub = (IS_General*)in-&gt;data;
+
+<a name="line150">150: </a>  <font color="#4169E1">if</font> (*idx != sub-&gt;idx) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_WRONG,<font color="#666666">"Must restore with value from <A href="../../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>()"</font>);
+<a name="line151">151: </a>  <font color="#4169E1">return</font>(0);
+<a name="line152">152: </a>}
+
+<a name="line156">156: </a><strong><font color="#4169E1"><a name="ISGetSize_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISGetSize_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *size)</font></strong>
+<a name="line157">157: </a>{
+<a name="line158">158: </a>  IS_General *sub = (IS_General*)is-&gt;data;
+
+<a name="line161">161: </a>  *size = sub-&gt;N;
+<a name="line162">162: </a>  <font color="#4169E1">return</font>(0);
+<a name="line163">163: </a>}
+
+<a name="line167">167: </a><strong><font color="#4169E1"><a name="ISGetLocalSize_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISGetLocalSize_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *size)</font></strong>
+<a name="line168">168: </a>{
+<a name="line169">169: </a>  IS_General *sub = (IS_General*)is-&gt;data;
+
+<a name="line172">172: </a>  *size = sub-&gt;n;
+<a name="line173">173: </a>  <font color="#4169E1">return</font>(0);
+<a name="line174">174: </a>}
+
+<a name="line178">178: </a><strong><font color="#4169E1"><a name="ISInvertPermutation_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISInvertPermutation_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nlocal,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *isout)</font></strong>
+<a name="line179">179: </a>{
+<a name="line180">180: </a>  IS_General     *sub = (IS_General*)is-&gt;data;
+<a name="line181">181: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,*ii,n = sub-&gt;n,nstart;
+<a name="line182">182: </a>  const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *idx = sub-&gt;idx;
+<a name="line183">183: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    size;
+<a name="line184">184: </a>  <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>             istmp,nistmp;
+
+<a name="line188">188: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),&amp;size);
+<a name="line189">189: </a>  <font color="#4169E1">if</font> (size == 1) {
+<a name="line190">190: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(n*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;ii);
+<a name="line191">191: </a>    <font color="#4169E1">for</font> (i=0; i&lt;n; i++) ii[idx[i]] = i;
+<a name="line192">192: </a>    <A href="../../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,n,ii,PETSC_OWN_POINTER,isout);
+<a name="line193">193: </a>    <A href="../../../../../../docs/manualpages/IS/ISSetPermutation.html#ISSetPermutation">ISSetPermutation</A>(*isout);
+<a name="line194">194: </a>  } <font color="#4169E1">else</font> {
+<a name="line195">195: </a>    <font color="#B22222">/* crude, nonscalable get entire <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> on each processor */</font>
+<a name="line196">196: </a>    <font color="#4169E1">if</font> (nlocal == <A href="../../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Do not yet support nlocal of <A href="../../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>"</font>);
+<a name="line197">197: </a>    <A href="../../../../../../docs/manualpages/IS/ISAllGather.html#ISAllGather">ISAllGather</A>(is,&amp;istmp);
+<a name="line198">198: </a>    <A href="../../../../../../docs/manualpages/IS/ISSetPermutation.html#ISSetPermutation">ISSetPermutation</A>(istmp);
+<a name="line199">199: </a>    <A href="../../../../../../docs/manualpages/IS/ISInvertPermutation.html#ISInvertPermutation">ISInvertPermutation</A>(istmp,<A href="../../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,&amp;nistmp);
+<a name="line200">200: </a>    <A href="../../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;istmp);
+<a name="line201">201: </a>    <font color="#B22222">/* get the part we need */</font>
+<a name="line202">202: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Scan.html#MPI_Scan">MPI_Scan</A>(&amp;nlocal,&amp;nstart,1,MPIU_INT,MPI_SUM,<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is));
+<a name="line203">203: </a><font color="#A020F0">#if defined(PETSC_USE_DEBUG)</font>
+<a name="line204">204: </a>    {
+<a name="line205">205: </a>      <A href="../../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank;
+<a name="line206">206: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),&amp;rank);
+<a name="line207">207: </a>      <font color="#4169E1">if</font> (rank == size-1) {
+<a name="line208">208: </a>        <font color="#4169E1">if</font> (nstart != sub-&gt;N) <A href="../../../../../../docs/manualpages/Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_INCOMP,<font color="#666666">"Sum of nlocal lengths %d != total <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> length %d"</font>,nstart,sub-&gt;N);
+<a name="line209">209: </a>      }
+<a name="line210">210: </a>    }
+<a name="line211">211: </a><font color="#A020F0">#endif</font>
+<a name="line212">212: </a>    nstart -= nlocal;
+<a name="line213">213: </a>    <A href="../../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(nistmp,&amp;idx);
+<a name="line214">214: </a>    <A href="../../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),nlocal,idx+nstart,PETSC_COPY_VALUES,isout);
+<a name="line215">215: </a>    <A href="../../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(nistmp,&amp;idx);
+<a name="line216">216: </a>    <A href="../../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;nistmp);
+<a name="line217">217: </a>  }
+<a name="line218">218: </a>  <font color="#4169E1">return</font>(0);
+<a name="line219">219: </a>}
+
+<a name="line223">223: </a><strong><font color="#4169E1"><a name="ISView_General_Binary"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISView_General_Binary(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
+<a name="line224">224: </a>{
+<a name="line226">226: </a>  IS_General     *isa = (IS_General*) is-&gt;data;
+<a name="line227">227: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A>    rank,size,mesgsize,tag = ((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer)-&gt;tag, mesglen;
+<a name="line228">228: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       len,j,tr[2];
+<a name="line229">229: </a>  int            fdes;
+<a name="line230">230: </a>  MPI_Status     status;
+<a name="line231">231: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       message_count,flowcontrolcount,*values;
+
+<a name="line234">234: </a>  <A href="../../../../../../docs/manualpages/Viewer/PetscViewerBinaryGetDescriptor.html#PetscViewerBinaryGetDescriptor">PetscViewerBinaryGetDescriptor</A>(viewer,&amp;fdes);
+
+<a name="line236">236: </a>  <font color="#B22222">/* determine maximum message to arrive */</font>
+<a name="line237">237: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),&amp;rank);
+<a name="line238">238: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),&amp;size);
+
+<a name="line240">240: </a>  tr[0] = IS_FILE_CLASSID;
+<a name="line241">241: </a>  tr[1] = isa-&gt;N;
+<a name="line242">242: </a>  <A href="../../../../../../docs/manualpages/Viewer/PetscViewerBinaryWrite.html#PetscViewerBinaryWrite">PetscViewerBinaryWrite</A>(viewer,tr,2,PETSC_INT,<A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
+<a name="line243">243: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Reduce.html#MPI_Reduce">MPI_Reduce</A>(&amp;isa-&gt;n,&amp;len,1,MPIU_INT,MPI_SUM,0,<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is));
+
+<a name="line245">245: </a>  PetscViewerFlowControlStart(viewer,&amp;message_count,&amp;flowcontrolcount);
+<a name="line246">246: </a>  <font color="#4169E1">if</font> (!rank) {
+<a name="line247">247: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>(fdes,isa-&gt;idx,isa-&gt;n,PETSC_INT,<A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
+
+<a name="line249">249: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(len*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;values);
+<a name="line250">250: </a>    PetscMPIIntCast(len,&amp;mesgsize);
+<a name="line251">251: </a>    <font color="#B22222">/* receive and save messages */</font>
+<a name="line252">252: </a>    <font color="#4169E1">for</font> (j=1; j&lt;size; j++) {
+<a name="line253">253: </a>      PetscViewerFlowControlStepMaster(viewer,j,&amp;message_count,flowcontrolcount);
+<a name="line254">254: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Recv.html#MPI_Recv">MPI_Recv</A>(values,mesgsize,MPIU_INT,j,tag,<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),&amp;status);
+<a name="line255">255: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Get_count.html#MPI_Get_count">MPI_Get_count</A>(&amp;status,MPIU_INT,&amp;mesglen);
+<a name="line256">256: </a>      <A href="../../../../../../docs/manualpages/Sys/PetscBinaryWrite.html#PetscBinaryWrite">PetscBinaryWrite</A>(fdes,values,(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>)mesglen,PETSC_INT,<A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
+<a name="line257">257: </a>    }
+<a name="line258">258: </a>    PetscViewerFlowControlEndMaster(viewer,&amp;message_count);
+<a name="line259">259: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(values);
+<a name="line260">260: </a>  } <font color="#4169E1">else</font> {
+<a name="line261">261: </a>    PetscViewerFlowControlStepWorker(viewer,rank,&amp;message_count);
+<a name="line262">262: </a>    PetscMPIIntCast(isa-&gt;n,&amp;mesgsize);
+<a name="line263">263: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Send.html#MPI_Send">MPI_Send</A>(isa-&gt;idx,mesgsize,MPIU_INT,0,tag,<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is));
+<a name="line264">264: </a>    PetscViewerFlowControlEndWorker(viewer,&amp;message_count);
+<a name="line265">265: </a>  }
+<a name="line266">266: </a>  <font color="#4169E1">return</font>(0);
+<a name="line267">267: </a>}
+
+<a name="line271">271: </a><strong><font color="#4169E1"><a name="ISView_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISView_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)</font></strong>
+<a name="line272">272: </a>{
+<a name="line273">273: </a>  IS_General     *sub = (IS_General*)is-&gt;data;
+<a name="line275">275: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i,n = sub-&gt;n,*idx = sub-&gt;idx;
+<a name="line276">276: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      iascii,isbinary;
+
+<a name="line279">279: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);
+<a name="line280">280: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERBINARY,&amp;isbinary);
+<a name="line281">281: </a>  <font color="#4169E1">if</font> (iascii) {
+<a name="line282">282: </a>    <A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>    comm;
+<a name="line283">283: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> rank,size;
+
+<a name="line285">285: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscObjectGetComm.html#PetscObjectGetComm">PetscObjectGetComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,&amp;comm);
+<a name="line286">286: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(comm,&amp;rank);
+<a name="line287">287: </a>    <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(comm,&amp;size);
+
+<a name="line289">289: </a>    <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedAllow.html#PetscViewerASCIISynchronizedAllow">PetscViewerASCIISynchronizedAllow</A>(viewer,<A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);
+<a name="line290">290: </a>    <font color="#4169E1">if</font> (size &gt; 1) {
+<a name="line291">291: </a>      <font color="#4169E1">if</font> (is-&gt;isperm) {
+<a name="line292">292: </a>        <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedPrintf.html#PetscViewerASCIISynchronizedPrintf">PetscViewerASCIISynchronizedPrintf</A>(viewer,<font color="#666666">"[%d] Index set is permutation\n"</font>,rank);
+<a name="line293">293: </a>      }
+<a name="line294">294: </a>      <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedPrintf.html#PetscViewerASCIISynchronizedPrintf">PetscViewerASCIISynchronizedPrintf</A>(viewer,<font color="#666666">"[%d] Number of indices in set %D\n"</font>,rank,n);
+<a name="line295">295: </a>      <font color="#4169E1">for</font> (i=0; i&lt;n; i++) {
+<a name="line296">296: </a>        <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedPrintf.html#PetscViewerASCIISynchronizedPrintf">PetscViewerASCIISynchronizedPrintf</A>(viewer,<font color="#666666">"[%d] %D %D\n"</font>,rank,i,idx[i]);
+<a name="line297">297: </a>      }
+<a name="line298">298: </a>    } <font color="#4169E1">else</font> {
+<a name="line299">299: </a>      <font color="#4169E1">if</font> (is-&gt;isperm) {
+<a name="line300">300: </a>        <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedPrintf.html#PetscViewerASCIISynchronizedPrintf">PetscViewerASCIISynchronizedPrintf</A>(viewer,<font color="#666666">"Index set is permutation\n"</font>);
+<a name="line301">301: </a>      }
+<a name="line302">302: </a>      <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedPrintf.html#PetscViewerASCIISynchronizedPrintf">PetscViewerASCIISynchronizedPrintf</A>(viewer,<font color="#666666">"Number of indices in set %D\n"</font>,n);
+<a name="line303">303: </a>      <font color="#4169E1">for</font> (i=0; i&lt;n; i++) {
+<a name="line304">304: </a>        <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedPrintf.html#PetscViewerASCIISynchronizedPrintf">PetscViewerASCIISynchronizedPrintf</A>(viewer,<font color="#666666">"%D %D\n"</font>,i,idx[i]);
+<a name="line305">305: </a>      }
+<a name="line306">306: </a>    }
+<a name="line307">307: </a>    <A href="../../../../../../docs/manualpages/Viewer/PetscViewerFlush.html#PetscViewerFlush">PetscViewerFlush</A>(viewer);
+<a name="line308">308: </a>    <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIISynchronizedAllow.html#PetscViewerASCIISynchronizedAllow">PetscViewerASCIISynchronizedAllow</A>(viewer,<A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);
+<a name="line309">309: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (isbinary) {
+<a name="line310">310: </a>    ISView_General_Binary(is,viewer);
+<a name="line311">311: </a>  }
+<a name="line312">312: </a>  <font color="#4169E1">return</font>(0);
+<a name="line313">313: </a>}
+
+<a name="line317">317: </a><strong><font color="#4169E1"><a name="ISSort_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISSort_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is)</font></strong>
+<a name="line318">318: </a>{
+<a name="line319">319: </a>  IS_General     *sub = (IS_General*)is-&gt;data;
+
+<a name="line323">323: </a>  <font color="#4169E1">if</font> (sub-&gt;sorted) <font color="#4169E1">return</font>(0);
+<a name="line324">324: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscSortInt.html#PetscSortInt">PetscSortInt</A>(sub-&gt;n,sub-&gt;idx);
+<a name="line325">325: </a>  sub-&gt;sorted = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line326">326: </a>  <font color="#4169E1">return</font>(0);
+<a name="line327">327: </a>}
+
+<a name="line331">331: </a><strong><font color="#4169E1"><a name="ISSorted_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISSorted_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  *flg)</font></strong>
+<a name="line332">332: </a>{
+<a name="line333">333: </a>  IS_General *sub = (IS_General*)is-&gt;data;
+
+<a name="line336">336: </a>  *flg = sub-&gt;sorted;
+<a name="line337">337: </a>  <font color="#4169E1">return</font>(0);
+<a name="line338">338: </a>}
+
+<a name="line342">342: </a><strong><font color="#4169E1"><a name="ISToGeneral_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISToGeneral_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is)</font></strong>
+<a name="line343">343: </a>{
+<a name="line345">345: </a>  <font color="#4169E1">return</font>(0);
+<a name="line346">346: </a>}
+
+<a name="line348">348: </a>static <font color="#4169E1">struct _ISOps</font> myops = { ISGetSize_General,
+<a name="line349">349: </a>                               ISGetLocalSize_General,
+<a name="line350">350: </a>                               ISGetIndices_General,
+<a name="line351">351: </a>                               ISRestoreIndices_General,
+<a name="line352">352: </a>                               ISInvertPermutation_General,
+<a name="line353">353: </a>                               ISSort_General,
+<a name="line354">354: </a>                               ISSorted_General,
+<a name="line355">355: </a>                               ISDuplicate_General,
+<a name="line356">356: </a>                               ISDestroy_General,
+<a name="line357">357: </a>                               ISView_General,
+<a name="line358">358: </a>                               ISIdentity_General,
+<a name="line359">359: </a>                               ISCopy_General,
+<a name="line360">360: </a>                               ISToGeneral_General,
+<a name="line361">361: </a>                               ISOnComm_General,
+<a name="line362">362: </a>                               ISSetBlockSize_General,
+<a name="line363">363: </a>                               ISContiguousLocal_General};
+
+<a name="line367">367: </a><strong><font color="#4169E1"><a name="ISCreateGeneral_Private"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISCreateGeneral_Private(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is)</font></strong>
+<a name="line368">368: </a>{
+<a name="line370">370: </a>  IS_General     *sub   = (IS_General*)is-&gt;data;
+<a name="line371">371: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n      = sub-&gt;n,i,min,max;
+<a name="line372">372: </a>  const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> *idx   = sub-&gt;idx;
+<a name="line373">373: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      sorted = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line374">374: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg    = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+
+<a name="line377">377: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Allreduce.html#MPI_Allreduce">MPI_Allreduce</A>(&amp;n,&amp;sub-&gt;N,1,MPIU_INT,MPI_SUM,<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is));
+<a name="line378">378: </a>  <font color="#4169E1">for</font> (i=1; i&lt;n; i++) {
+<a name="line379">379: </a>    <font color="#4169E1">if</font> (idx[i] &lt; idx[i-1]) {sorted = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>; <font color="#4169E1">break</font>;}
+<a name="line380">380: </a>  }
+<a name="line381">381: </a>  <font color="#4169E1">if</font> (n) min = max = idx[0];
+<a name="line382">382: </a>  <font color="#4169E1">else</font>   min = max = 0;
+<a name="line383">383: </a>  <font color="#4169E1">for</font> (i=1; i&lt;n; i++) {
+<a name="line384">384: </a>    <font color="#4169E1">if</font> (idx[i] &lt; min) min = idx[i];
+<a name="line385">385: </a>    <font color="#4169E1">if</font> (idx[i] &gt; max) max = idx[i];
+<a name="line386">386: </a>  }
+<a name="line387">387: </a>  sub-&gt;sorted    = sorted;
+<a name="line388">388: </a>  is-&gt;min        = min;
+<a name="line389">389: </a>  is-&gt;max        = max;
+<a name="line390">390: </a>  is-&gt;isperm     = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line391">391: </a>  is-&gt;isidentity = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line392">392: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscOptionsGetBool.html#PetscOptionsGetBool">PetscOptionsGetBool</A>(NULL,<font color="#666666">"-is_view"</font>,&amp;flg,NULL);
+<a name="line393">393: </a>  <font color="#4169E1">if</font> (flg) {
+<a name="line394">394: </a>    <A href="../../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer;
+<a name="line395">395: </a>    <A href="../../../../../../docs/manualpages/Viewer/PetscViewerASCIIGetStdout.html#PetscViewerASCIIGetStdout">PetscViewerASCIIGetStdout</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is),&amp;viewer);
+<a name="line396">396: </a>    <A href="../../../../../../docs/manualpages/IS/ISView.html#ISView">ISView</A>(is,viewer);
+<a name="line397">397: </a>  }
+<a name="line398">398: </a>  <font color="#4169E1">return</font>(0);
+<a name="line399">399: </a>}
+
+<a name="line403">403: </a><font color="#B22222">/*@</font>
+<a name="line404">404: </a><font color="#B22222">   <A href="../../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A> - Creates a data structure for an index set</font>
+<a name="line405">405: </a><font color="#B22222">   containing a list of integers.</font>
+
+<a name="line407">407: </a><font color="#B22222">   Collective on <A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line409">409: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line410">410: </a><font color="#B22222">+  comm - the MPI communicator</font>
+<a name="line411">411: </a><font color="#B22222">.  n - the length of the index set</font>
+<a name="line412">412: </a><font color="#B22222">.  idx - the list of integers</font>
+<a name="line413">413: </a><font color="#B22222">-  mode - see <A href="../../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A> for meaning of this flag.</font>
+
+<a name="line415">415: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line416">416: </a><font color="#B22222">.  is - the new index set</font>
+
+<a name="line418">418: </a><font color="#B22222">   Notes:</font>
+<a name="line419">419: </a><font color="#B22222">   When the communicator is not MPI_COMM_SELF, the operations on <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> are NOT</font>
+<a name="line420">420: </a><font color="#B22222">   conceptually the same as MPI_Group operations. The <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> are then</font>
+<a name="line421">421: </a><font color="#B22222">   distributed sets of indices and thus certain operations on them are</font>
+<a name="line422">422: </a><font color="#B22222">   collective.</font>
+
+
+<a name="line425">425: </a><font color="#B22222">   Level: beginner</font>
+
+<a name="line427">427: </a><font color="#B22222">  Concepts: index sets^creating</font>
+<a name="line428">428: </a><font color="#B22222">  Concepts: <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>^creating</font>
+
+<a name="line430">430: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(), <A href="../../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(), <A href="../../../../../../docs/manualpages/IS/ISAllGather.html#ISAllGather">ISAllGather</A>()</font>
+<a name="line431">431: </a><font color="#B22222">@*/</font>
+<a name="line432">432: </a><strong><font color="#4169E1"><a name="ISCreateGeneral"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(<A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> idx[],<A href="../../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A> mode,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> *is)</font></strong>
+<a name="line433">433: </a>{
+
+<a name="line437">437: </a>  <A href="../../../../../../docs/manualpages/IS/ISCreate.html#ISCreate">ISCreate</A>(comm,is);
+<a name="line438">438: </a>  <A href="../../../../../../docs/manualpages/IS/ISSetType.html#ISSetType">ISSetType</A>(*is,ISGENERAL);
+<a name="line439">439: </a>  <A href="../../../../../../docs/manualpages/IS/ISGeneralSetIndices.html#ISGeneralSetIndices">ISGeneralSetIndices</A>(*is,n,idx,mode);
+<a name="line440">440: </a>  <font color="#4169E1">return</font>(0);
+<a name="line441">441: </a>}
+
+<a name="line445">445: </a><font color="#B22222">/*@</font>
+<a name="line446">446: </a><font color="#B22222">   <A href="../../../../../../docs/manualpages/IS/ISGeneralSetIndices.html#ISGeneralSetIndices">ISGeneralSetIndices</A> - Sets the indices for an ISGENERAL index set</font>
+
+<a name="line448">448: </a><font color="#B22222">   Collective on <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A></font>
+
+<a name="line450">450: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line451">451: </a><font color="#B22222">+  is - the index set</font>
+<a name="line452">452: </a><font color="#B22222">.  n - the length of the index set</font>
+<a name="line453">453: </a><font color="#B22222">.  idx - the list of integers</font>
+<a name="line454">454: </a><font color="#B22222">-  mode - see <A href="../../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A> for meaning of this flag.</font>
+
+<a name="line456">456: </a><font color="#B22222">   Level: beginner</font>
+
+<a name="line458">458: </a><font color="#B22222">  Concepts: index sets^creating</font>
+<a name="line459">459: </a><font color="#B22222">  Concepts: <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>^creating</font>
+
+<a name="line461">461: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/IS/ISCreateGeneral.html#ISCreateGeneral">ISCreateGeneral</A>(), <A href="../../../../../../docs/manualpages/IS/ISCreateStride.html#ISCreateStride">ISCreateStride</A>(), <A href="../../../../../../docs/manualpages/IS/ISCreateBlock.html#ISCreateBlock">ISCreateBlock</A>(), <A href="../../../../../../docs/manualpages/IS/ISAllGather.html#ISAllGather">ISAllGather</A>()</font>
+<a name="line462">462: </a><font color="#B22222">@*/</font>
+<a name="line463">463: </a><strong><font color="#4169E1"><a name="ISGeneralSetIndices"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../../docs/manualpages/IS/ISGeneralSetIndices.html#ISGeneralSetIndices">ISGeneralSetIndices</A>(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> idx[],<A href="../../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A> mode)</font></strong>
+<a name="line464">464: </a>{
+
+<a name="line468">468: </a>  PetscUseMethod(is,<font color="#666666">"ISGeneralSetIndices_C"</font>,(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>[],<A href="../../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A>),(is,n,idx,mode));
+<a name="line469">469: </a>  <font color="#4169E1">return</font>(0);
+<a name="line470">470: </a>}
+
+<a name="line474">474: </a><strong><font color="#4169E1"><a name="ISGeneralSetIndices_General"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ISGeneralSetIndices_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> idx[],<A href="../../../../../../docs/manualpages/Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A> mode)</font></strong>
+<a name="line475">475: </a>{
+<a name="line477">477: </a>  IS_General     *sub = (IS_General*)is-&gt;data;
+
+<a name="line480">480: </a>  <font color="#4169E1">if</font> (n &lt; 0) <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"length &lt; 0"</font>);
+
+<a name="line483">483: </a>  <font color="#4169E1">if</font> (sub-&gt;allocated) {<A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(sub-&gt;idx);}
+<a name="line484">484: </a>  sub-&gt;n = n;
+<a name="line485">485: </a>  <font color="#4169E1">if</font> (mode == PETSC_COPY_VALUES) {
+<a name="line486">486: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(n*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;sub-&gt;idx);
+<a name="line487">487: </a>    PetscLogObjectMemory(is,n*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line488">488: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(sub-&gt;idx,idx,n*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line489">489: </a>    sub-&gt;allocated = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line490">490: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (mode == PETSC_OWN_POINTER) {
+<a name="line491">491: </a>    sub-&gt;idx       = (<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)idx;
+<a name="line492">492: </a>    sub-&gt;allocated = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line493">493: </a>  } <font color="#4169E1">else</font> {
+<a name="line494">494: </a>    sub-&gt;idx       = (<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)idx;
+<a name="line495">495: </a>    sub-&gt;allocated = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line496">496: </a>  }
+<a name="line497">497: </a>  ISCreateGeneral_Private(is);
+<a name="line498">498: </a>  <font color="#4169E1">return</font>(0);
+<a name="line499">499: </a>}
+
+<a name="line503">503: </a><strong><font color="#4169E1"><a name="ISCreate_General"></a>PETSC_EXTERN <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ISCreate_General(<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> is)</font></strong>
+<a name="line504">504: </a>{
+<a name="line506">506: </a>  IS_General     *sub;
+
+<a name="line509">509: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(is-&gt;ops,&amp;myops,<font color="#4169E1">sizeof</font>(myops));
+<a name="line510">510: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(is,IS_General,&amp;sub);
+<a name="line511">511: </a>  is-&gt;data = (void*)sub;
+<a name="line512">512: </a>  is-&gt;bs   = 1;
+<a name="line513">513: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)is,<font color="#666666">"ISGeneralSetIndices_C"</font>,ISGeneralSetIndices_General);
+<a name="line514">514: </a>  <font color="#4169E1">return</font>(0);
+<a name="line515">515: </a>}
+
+
+
+
+
+
+</pre>
+</body>
+
+</html>

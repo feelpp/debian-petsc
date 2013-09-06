@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = galerkinf.c
-OBJSC    = galerkinf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

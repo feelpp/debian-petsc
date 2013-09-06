@@ -5,12 +5,13 @@
 <TITLE>PetscViewerDrawGetBounds</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscViewerDrawGetBounds"><H1>PetscViewerDrawGetBounds</H1></A>
 gets the upper and lower bounds to be used in plotting set with <A HREF="../Viewer/PetscViewerDrawSetBounds.html#PetscViewerDrawSetBounds">PetscViewerDrawSetBounds</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdraw.h" 
+#include "petscviewer.h" 
 PetscErrorCode  PetscViewerDrawGetBounds(PetscViewer viewer,PetscInt *nbounds,const PetscReal **bounds)
 </PRE>
 Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
@@ -30,9 +31,9 @@ Collective on <A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- PetscViewerDrawGetLG(), PetscViewerDrawGetAxis(), <A HREF="../Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>()
+ PetscViewerDrawGetLG(), PetscViewerDrawGetAxis(), <A HREF="../Viewer/PetscViewerDrawOpen.html#PetscViewerDrawOpen">PetscViewerDrawOpen</A>(), <A HREF="../Viewer/PetscViewerDrawSetBounds.html#PetscViewerDrawSetBounds">PetscViewerDrawSetBounds</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/viewer/impls/draw/drawv.c.html#PetscViewerDrawGetBounds">src/sys/viewer/impls/draw/drawv.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/classes/viewer/impls/draw/drawv.c.html#PetscViewerDrawGetBounds">src/sys/classes/viewer/impls/draw/drawv.c</A>
 <BR><A HREF="./index.html">Index of all Viewer routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

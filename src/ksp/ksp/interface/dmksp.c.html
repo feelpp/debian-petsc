@@ -4,247 +4,348 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/interface/dmksp.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:03:22+00:00">
+<meta name="date" content="2013-07-02T14:47:56+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
-<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt; </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;petscdm.h&gt;         </font><font color="#B22222">/*I "petscdm.h"  I*/</font><font color="#A020F0"></font>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a><font color="#A020F0">#include &lt;petsc-private/dmimpl.h&gt;</font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/kspimpl.h&gt; </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
+<a name="line3">  3: </a><font color="#A020F0">#include &lt;petscdm.h&gt;</font>
 
-<a name="line6">  6: </a><strong><font color="#4169E1"><a name="PetscContainerDestroy_KSPDM"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> PetscContainerDestroy_KSPDM(void *ctx)</font></strong>
-<a name="line7">  7: </a>{
-<a name="line9">  9: </a>  KSPDM kdm = (KSPDM)ctx;
+<a name="line7">  7: </a><strong><font color="#4169E1"><a name="DMKSPDestroy"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMKSPDestroy(DMKSP *kdm)</font></strong>
+<a name="line8">  8: </a>{
 
-<a name="line12"> 12: </a>  <font color="#4169E1">if</font> (kdm-&gt;destroy) {(*kdm-&gt;destroy)(kdm);}
-<a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(kdm);
-<a name="line14"> 14: </a>  <font color="#4169E1">return</font>(0);
-<a name="line15"> 15: </a>}
+<a name="line12"> 12: </a>  <font color="#4169E1">if</font> (!*kdm) <font color="#4169E1">return</font>(0);
+<a name="line14"> 14: </a>  <font color="#4169E1">if</font> (--((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)(*kdm))-&gt;refct &gt; 0) {*kdm = 0; <font color="#4169E1">return</font>(0);}
+<a name="line15"> 15: </a>  <font color="#4169E1">if</font> ((*kdm)-&gt;ops-&gt;destroy) {((*kdm)-&gt;ops-&gt;destroy)(kdm);}
+<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderDestroy.html#PetscHeaderDestroy">PetscHeaderDestroy</A>(kdm);
+<a name="line17"> 17: </a>  <font color="#4169E1">return</font>(0);
+<a name="line18"> 18: </a>}
 
-<a name="line19"> 19: </a><font color="#B22222">/* Attaches the KSPDM to the coarse level.</font>
-<a name="line20"> 20: </a><font color="#B22222"> * Under what conditions should we copy versus duplicate?</font>
-<a name="line21"> 21: </a><font color="#B22222"> */</font>
-<a name="line22"> 22: </a><strong><font color="#4169E1"><a name="DMCoarsenHook_KSPDM"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCoarsenHook_KSPDM(DM dm,DM dmc,void *ctx)</font></strong>
+<a name="line22"> 22: </a><strong><font color="#4169E1"><a name="DMKSPCreate"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMKSPCreate(<A href="../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,DMKSP *kdm)</font></strong>
 <a name="line23"> 23: </a>{
 
-<a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/KSP/DMKSPCopyContext.html#DMKSPCopyContext">DMKSPCopyContext</A>(dm,dmc);
-<a name="line28"> 28: </a>  <font color="#4169E1">return</font>(0);
-<a name="line29"> 29: </a>}
+<a name="line27"> 27: </a><font color="#A020F0">#if !defined(PETSC_USE_DYNAMIC_LIBRARIES)</font>
+<a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/KSP/KSPInitializePackage.html#KSPInitializePackage">KSPInitializePackage</A>();
+<a name="line29"> 29: </a><font color="#A020F0">#endif</font>
+<a name="line30"> 30: </a>  <A href="../../../../docs/manualpages/Sys/PetscHeaderCreate.html#PetscHeaderCreate">PetscHeaderCreate</A>(*kdm, _p_DMKSP, <font color="#4169E1">struct _DMKSPOps</font>, DMKSP_CLASSID, <font color="#666666">"DMKSP"</font>, <font color="#666666">"DMKSP"</font>, <font color="#666666">"DMKSP"</font>, comm, DMKSPDestroy, NULL);
+<a name="line31"> 31: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>((*kdm)-&gt;ops, <font color="#4169E1">sizeof</font>(<font color="#4169E1">struct _DMKSPOps</font>));
+<a name="line32"> 32: </a>  <font color="#4169E1">return</font>(0);
+<a name="line33"> 33: </a>}
 
-<a name="line33"> 33: </a><font color="#B22222">/*@C</font>
-<a name="line34"> 34: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPGetContext.html#DMKSPGetContext">DMKSPGetContext</A> - get read-only private KSPDM context from a DM</font>
 
-<a name="line36"> 36: </a><font color="#B22222">   Not Collective</font>
+<a name="line38"> 38: </a><font color="#B22222">/* Attaches the DMKSP to the coarse level.</font>
+<a name="line39"> 39: </a><font color="#B22222"> * Under what conditions should we copy versus duplicate?</font>
+<a name="line40"> 40: </a><font color="#B22222"> */</font>
+<a name="line41"> 41: </a><strong><font color="#4169E1"><a name="DMCoarsenHook_DMKSP"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCoarsenHook_DMKSP(DM dm,DM dmc,void *ctx)</font></strong>
+<a name="line42"> 42: </a>{
 
-<a name="line38"> 38: </a><font color="#B22222">   Input Argument:</font>
-<a name="line39"> 39: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+<a name="line46"> 46: </a>  <A href="../../../../docs/manualpages/KSP/DMCopyDMKSP.html#DMCopyDMKSP">DMCopyDMKSP</A>(dm,dmc);
+<a name="line47"> 47: </a>  <font color="#4169E1">return</font>(0);
+<a name="line48"> 48: </a>}
 
-<a name="line41"> 41: </a><font color="#B22222">   Output Argument:</font>
-<a name="line42"> 42: </a><font color="#B22222">.  snesdm - private KSPDM context</font>
+<a name="line52"> 52: </a><font color="#B22222">/* Attaches the DMKSP to the coarse level.</font>
+<a name="line53"> 53: </a><font color="#B22222"> * Under what conditions should we copy versus duplicate?</font>
+<a name="line54"> 54: </a><font color="#B22222"> */</font>
+<a name="line55"> 55: </a><strong><font color="#4169E1"><a name="DMRefineHook_DMKSP"></a>static <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMRefineHook_DMKSP(DM dm,DM dmc,void *ctx)</font></strong>
+<a name="line56"> 56: </a>{
 
-<a name="line44"> 44: </a><font color="#B22222">   Level: developer</font>
+<a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/KSP/DMCopyDMKSP.html#DMCopyDMKSP">DMCopyDMKSP</A>(dm,dmc);
+<a name="line61"> 61: </a>  <font color="#4169E1">return</font>(0);
+<a name="line62"> 62: </a>}
 
-<a name="line46"> 46: </a><font color="#B22222">   Notes:</font>
-<a name="line47"> 47: </a><font color="#B22222">   Use <A href="../../../../docs/manualpages/KSP/DMKSPGetContextWrite.html#DMKSPGetContextWrite">DMKSPGetContextWrite</A>() if write access is needed. The DMKSPSetXXX API should be used wherever possible.</font>
+<a name="line66"> 66: </a><font color="#B22222">/*@C</font>
+<a name="line67"> 67: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPCopy.html#DMKSPCopy">DMKSPCopy</A> - copies the information in a DMKSP to another DMKSP</font>
 
-<a name="line49"> 49: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/KSP/DMKSPGetContextWrite.html#DMKSPGetContextWrite">DMKSPGetContextWrite</A>()</font>
-<a name="line50"> 50: </a><font color="#B22222">@*/</font>
-<a name="line51"> 51: </a><strong><font color="#4169E1"><a name="DMKSPGetContext"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPGetContext.html#DMKSPGetContext">DMKSPGetContext</A>(DM dm,KSPDM *snesdm)</font></strong>
-<a name="line52"> 52: </a>{
-<a name="line54"> 54: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainer.html#PetscContainer">PetscContainer</A> container;
-<a name="line55"> 55: </a>  KSPDM         kdm;
+<a name="line69"> 69: </a><font color="#B22222">   Not Collective</font>
 
-<a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm,<font color="#666666">"KSPDM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;container);
-<a name="line60"> 60: </a>  <font color="#4169E1">if</font> (container) {
-<a name="line61"> 61: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerGetPointer.html#PetscContainerGetPointer">PetscContainerGetPointer</A>(container,(void**)snesdm);
-<a name="line62"> 62: </a>  } <font color="#4169E1">else</font> {
-<a name="line63"> 63: </a>    <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(dm,<font color="#666666">"Creating new KSPDM\n"</font>);
-<a name="line64"> 64: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerCreate.html#PetscContainerCreate">PetscContainerCreate</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm)-&gt;comm,&amp;container);
-<a name="line65"> 65: </a>    <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(dm,<font color="#4169E1">struct _n_KSPDM</font>,&amp;kdm);
-<a name="line66"> 66: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerSetPointer.html#PetscContainerSetPointer">PetscContainerSetPointer</A>(container,kdm);
-<a name="line67"> 67: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerSetUserDestroy.html#PetscContainerSetUserDestroy">PetscContainerSetUserDestroy</A>(container,PetscContainerDestroy_KSPDM);
-<a name="line68"> 68: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm,<font color="#666666">"KSPDM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)container);
-<a name="line69"> 69: </a>    <A href="../../../../docs/manualpages/DM/DMCoarsenHookAdd.html#DMCoarsenHookAdd">DMCoarsenHookAdd</A>(dm,DMCoarsenHook_KSPDM,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line70"> 70: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerGetPointer.html#PetscContainerGetPointer">PetscContainerGetPointer</A>(container,(void**)snesdm);
-<a name="line71"> 71: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerDestroy.html#PetscContainerDestroy">PetscContainerDestroy</A>(&amp;container);
-<a name="line72"> 72: </a>  }
-<a name="line73"> 73: </a>  <font color="#4169E1">return</font>(0);
-<a name="line74"> 74: </a>}
+<a name="line71"> 71: </a><font color="#B22222">   Input Argument:</font>
+<a name="line72"> 72: </a><font color="#B22222">+  kdm - Original DMKSP</font>
+<a name="line73"> 73: </a><font color="#B22222">-  nkdm - DMKSP to receive the data, should have been created with DMKSPCreate()</font>
 
-<a name="line78"> 78: </a><font color="#B22222">/*@C</font>
-<a name="line79"> 79: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPGetContextWrite.html#DMKSPGetContextWrite">DMKSPGetContextWrite</A> - get write access to private KSPDM context from a DM</font>
+<a name="line75"> 75: </a><font color="#B22222">   Level: developer</font>
 
-<a name="line81"> 81: </a><font color="#B22222">   Not Collective</font>
+<a name="line77"> 77: </a><font color="#B22222">.seealso: DMKSPCreate(), DMKSPDestroy()</font>
+<a name="line78"> 78: </a><font color="#B22222">@*/</font>
+<a name="line79"> 79: </a><strong><font color="#4169E1"><a name="DMKSPCopy"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPCopy.html#DMKSPCopy">DMKSPCopy</A>(DMKSP kdm,DMKSP nkdm)</font></strong>
+<a name="line80"> 80: </a>{
 
-<a name="line83"> 83: </a><font color="#B22222">   Input Argument:</font>
-<a name="line84"> 84: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+<a name="line86"> 86: </a>  nkdm-&gt;ops-&gt;computeoperators    = kdm-&gt;ops-&gt;computeoperators;
+<a name="line87"> 87: </a>  nkdm-&gt;ops-&gt;computerhs          = kdm-&gt;ops-&gt;computerhs;
+<a name="line88"> 88: </a>  nkdm-&gt;ops-&gt;computeinitialguess = kdm-&gt;ops-&gt;computeinitialguess;
+<a name="line89"> 89: </a>  nkdm-&gt;ops-&gt;destroy             = kdm-&gt;ops-&gt;destroy;
+<a name="line90"> 90: </a>  nkdm-&gt;ops-&gt;duplicate           = kdm-&gt;ops-&gt;duplicate;
 
-<a name="line86"> 86: </a><font color="#B22222">   Output Argument:</font>
-<a name="line87"> 87: </a><font color="#B22222">.  snesdm - private KSPDM context</font>
+<a name="line92"> 92: </a>  nkdm-&gt;operatorsctx    = kdm-&gt;operatorsctx;
+<a name="line93"> 93: </a>  nkdm-&gt;rhsctx          = kdm-&gt;rhsctx;
+<a name="line94"> 94: </a>  nkdm-&gt;initialguessctx = kdm-&gt;initialguessctx;
+<a name="line95"> 95: </a>  nkdm-&gt;data            = kdm-&gt;data;
 
-<a name="line89"> 89: </a><font color="#B22222">   Level: developer</font>
+<a name="line97"> 97: </a>  nkdm-&gt;fortran_func_pointers[0] = kdm-&gt;fortran_func_pointers[0];
+<a name="line98"> 98: </a>  nkdm-&gt;fortran_func_pointers[1] = kdm-&gt;fortran_func_pointers[1];
+<a name="line99"> 99: </a>  nkdm-&gt;fortran_func_pointers[2] = kdm-&gt;fortran_func_pointers[2];
 
-<a name="line91"> 91: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/KSP/DMKSPGetContext.html#DMKSPGetContext">DMKSPGetContext</A>()</font>
-<a name="line92"> 92: </a><font color="#B22222">@*/</font>
-<a name="line93"> 93: </a><strong><font color="#4169E1"><a name="DMKSPGetContextWrite"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPGetContextWrite.html#DMKSPGetContextWrite">DMKSPGetContextWrite</A>(DM dm,KSPDM *snesdm)</font></strong>
-<a name="line94"> 94: </a>{
-<a name="line96"> 96: </a>  KSPDM         kdm;
+<a name="line101">101: </a>  <font color="#B22222">/* implementation specific copy hooks */</font>
+<a name="line102">102: </a>  <font color="#4169E1">if</font> (kdm-&gt;ops-&gt;duplicate) {(*kdm-&gt;ops-&gt;duplicate)(kdm,nkdm);}
+<a name="line103">103: </a>  <font color="#4169E1">return</font>(0);
+<a name="line104">104: </a>}
 
-<a name="line100">100: </a>  <A href="../../../../docs/manualpages/KSP/DMKSPGetContext.html#DMKSPGetContext">DMKSPGetContext</A>(dm,&amp;kdm);
-<a name="line101">101: </a>  <font color="#4169E1">if</font> (!kdm-&gt;originaldm) kdm-&gt;originaldm = dm;
-<a name="line102">102: </a>  <font color="#4169E1">if</font> (kdm-&gt;originaldm != dm) {  <font color="#B22222">/* Copy on write */</font>
-<a name="line103">103: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainer.html#PetscContainer">PetscContainer</A> container;
-<a name="line104">104: </a>    KSPDM         oldsdm = kdm;
-<a name="line105">105: </a>    <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(dm,<font color="#666666">"Copying KSPDM due to write\n"</font>);
-<a name="line106">106: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerCreate.html#PetscContainerCreate">PetscContainerCreate</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm)-&gt;comm,&amp;container);
-<a name="line107">107: </a>    <A href="../../../../docs/manualpages/Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(dm,<font color="#4169E1">struct _n_KSPDM</font>,&amp;kdm);
-<a name="line108">108: </a>    <A href="../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(kdm,oldsdm,<font color="#4169E1">sizeof</font> *kdm);
-<a name="line109">109: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerSetPointer.html#PetscContainerSetPointer">PetscContainerSetPointer</A>(container,kdm);
-<a name="line110">110: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerSetUserDestroy.html#PetscContainerSetUserDestroy">PetscContainerSetUserDestroy</A>(container,PetscContainerDestroy_KSPDM);
-<a name="line111">111: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm,<font color="#666666">"KSPDM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)container);
-<a name="line112">112: </a>    <A href="../../../../docs/manualpages/Sys/PetscContainerDestroy.html#PetscContainerDestroy">PetscContainerDestroy</A>(&amp;container);
-<a name="line113">113: </a>  }
-<a name="line114">114: </a>  *snesdm = kdm;
-<a name="line115">115: </a>  <font color="#4169E1">return</font>(0);
-<a name="line116">116: </a>}
+<a name="line108">108: </a><font color="#B22222">/*@C</font>
+<a name="line109">109: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMGetDMKSP.html#DMGetDMKSP">DMGetDMKSP</A> - get read-only private DMKSP context from a DM</font>
 
-<a name="line120">120: </a><font color="#B22222">/*@C</font>
-<a name="line121">121: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPCopyContext.html#DMKSPCopyContext">DMKSPCopyContext</A> - copies a DM context to a new DM</font>
+<a name="line111">111: </a><font color="#B22222">   Not Collective</font>
 
-<a name="line123">123: </a><font color="#B22222">   Logically Collective</font>
+<a name="line113">113: </a><font color="#B22222">   Input Argument:</font>
+<a name="line114">114: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
 
-<a name="line125">125: </a><font color="#B22222">   Input Arguments:</font>
-<a name="line126">126: </a><font color="#B22222">+  dmsrc - DM to obtain context from</font>
-<a name="line127">127: </a><font color="#B22222">-  dmdest - DM to add context to</font>
+<a name="line116">116: </a><font color="#B22222">   Output Argument:</font>
+<a name="line117">117: </a><font color="#B22222">.  snesdm - private DMKSP context</font>
 
-<a name="line129">129: </a><font color="#B22222">   Level: developer</font>
+<a name="line119">119: </a><font color="#B22222">   Level: developer</font>
 
-<a name="line131">131: </a><font color="#B22222">   Note:</font>
-<a name="line132">132: </a><font color="#B22222">   The context is copied by reference. This function does not ensure that a context exists.</font>
+<a name="line121">121: </a><font color="#B22222">   Notes:</font>
+<a name="line122">122: </a><font color="#B22222">   Use <A href="../../../../docs/manualpages/KSP/DMGetDMKSPWrite.html#DMGetDMKSPWrite">DMGetDMKSPWrite</A>() if write access is needed. The DMKSPSetXXX API should be used wherever possible.</font>
 
-<a name="line134">134: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/KSP/DMKSPGetContext.html#DMKSPGetContext">DMKSPGetContext</A>(), <A href="../../../../docs/manualpages/KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>()</font>
-<a name="line135">135: </a><font color="#B22222">@*/</font>
-<a name="line136">136: </a><strong><font color="#4169E1"><a name="DMKSPCopyContext"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPCopyContext.html#DMKSPCopyContext">DMKSPCopyContext</A>(DM dmsrc,DM dmdest)</font></strong>
-<a name="line137">137: </a>{
-<a name="line139">139: </a>  <A href="../../../../docs/manualpages/Sys/PetscContainer.html#PetscContainer">PetscContainer</A> container;
+<a name="line124">124: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/KSP/DMGetDMKSPWrite.html#DMGetDMKSPWrite">DMGetDMKSPWrite</A>()</font>
+<a name="line125">125: </a><font color="#B22222">@*/</font>
+<a name="line126">126: </a><strong><font color="#4169E1"><a name="DMGetDMKSP"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMGetDMKSP.html#DMGetDMKSP">DMGetDMKSP</A>(DM dm,DMKSP *kspdm)</font></strong>
+<a name="line127">127: </a>{
 
-<a name="line144">144: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectQuery.html#PetscObjectQuery">PetscObjectQuery</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dmsrc,<font color="#666666">"KSPDM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>*)&amp;container);
-<a name="line145">145: </a>  <font color="#4169E1">if</font> (container) {
-<a name="line146">146: </a>    <A href="../../../../docs/manualpages/Sys/PetscObjectCompose.html#PetscObjectCompose">PetscObjectCompose</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dmdest,<font color="#666666">"KSPDM"</font>,(<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)container);
-<a name="line147">147: </a>    <A href="../../../../docs/manualpages/DM/DMCoarsenHookAdd.html#DMCoarsenHookAdd">DMCoarsenHookAdd</A>(dmdest,DMCoarsenHook_KSPDM,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
-<a name="line148">148: </a>  }
-<a name="line149">149: </a>  <font color="#4169E1">return</font>(0);
-<a name="line150">150: </a>}
+<a name="line132">132: </a>  *kspdm = (DMKSP) dm-&gt;dmksp;
+<a name="line133">133: </a>  <font color="#4169E1">if</font> (!*kspdm) {
+<a name="line134">134: </a>    <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(dm,<font color="#666666">"Creating new DMKSP\n"</font>);
+<a name="line135">135: </a>    DMKSPCreate(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm),kspdm);
+<a name="line136">136: </a>    dm-&gt;dmksp = (<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>) *kspdm;
+<a name="line137">137: </a>    <A href="../../../../docs/manualpages/DM/DMCoarsenHookAdd.html#DMCoarsenHookAdd">DMCoarsenHookAdd</A>(dm,DMCoarsenHook_DMKSP,NULL,NULL);
+<a name="line138">138: </a>    <A href="../../../../docs/manualpages/DM/DMRefineHookAdd.html#DMRefineHookAdd">DMRefineHookAdd</A>(dm,DMRefineHook_DMKSP,NULL,NULL);
+<a name="line139">139: </a>  }
+<a name="line140">140: </a>  <font color="#4169E1">return</font>(0);
+<a name="line141">141: </a>}
 
-<a name="line154">154: </a><font color="#B22222">/*@C</font>
-<a name="line155">155: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeOperators.html#DMKSPSetComputeOperators">DMKSPSetComputeOperators</A> - set <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> matrix evaluation function</font>
+<a name="line145">145: </a><font color="#B22222">/*@C</font>
+<a name="line146">146: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMGetDMKSPWrite.html#DMGetDMKSPWrite">DMGetDMKSPWrite</A> - get write access to private DMKSP context from a DM</font>
 
-<a name="line157">157: </a><font color="#B22222">   Not Collective</font>
+<a name="line148">148: </a><font color="#B22222">   Not Collective</font>
 
-<a name="line159">159: </a><font color="#B22222">   Input Argument:</font>
-<a name="line160">160: </a><font color="#B22222">+  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
-<a name="line161">161: </a><font color="#B22222">.  func - matrix evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeOperators.html#KSPSetComputeOperators">KSPSetComputeOperators</A>() for calling sequence</font>
-<a name="line162">162: </a><font color="#B22222">-  ctx - context for matrix evaluation</font>
+<a name="line150">150: </a><font color="#B22222">   Input Argument:</font>
+<a name="line151">151: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
 
-<a name="line164">164: </a><font color="#B22222">   Level: advanced</font>
+<a name="line153">153: </a><font color="#B22222">   Output Argument:</font>
+<a name="line154">154: </a><font color="#B22222">.  kspdm - private DMKSP context</font>
 
-<a name="line166">166: </a><font color="#B22222">   Note:</font>
-<a name="line167">167: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/KSPSetComputeOperators.html#KSPSetComputeOperators">KSPSetComputeOperators</A>() is normally used, but it calls this function internally because the user context is actually</font>
-<a name="line168">168: </a><font color="#B22222">   associated with the DM.  This makes the interface consistent regardless of whether the user interacts with a DM or</font>
-<a name="line169">169: </a><font color="#B22222">   not. If DM took a more central role at some later date, this could become the primary method of setting the matrix.</font>
+<a name="line156">156: </a><font color="#B22222">   Level: developer</font>
 
-<a name="line171">171: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeOperators.html#DMKSPGetComputeOperators">DMKSPGetComputeOperators</A>(), <A href="../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>()</font>
-<a name="line172">172: </a><font color="#B22222">@*/</font>
-<a name="line173">173: </a><strong><font color="#4169E1"><a name="DMKSPSetComputeOperators"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeOperators.html#DMKSPSetComputeOperators">DMKSPSetComputeOperators</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*),void *ctx)</font></strong>
-<a name="line174">174: </a>{
-<a name="line176">176: </a>  KSPDM kdm;
+<a name="line158">158: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/KSP/DMGetDMKSP.html#DMGetDMKSP">DMGetDMKSP</A>()</font>
+<a name="line159">159: </a><font color="#B22222">@*/</font>
+<a name="line160">160: </a><strong><font color="#4169E1"><a name="DMGetDMKSPWrite"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMGetDMKSPWrite.html#DMGetDMKSPWrite">DMGetDMKSPWrite</A>(DM dm,DMKSP *kspdm)</font></strong>
+<a name="line161">161: </a>{
+<a name="line163">163: </a>  DMKSP          kdm;
 
-<a name="line180">180: </a>  <A href="../../../../docs/manualpages/KSP/DMKSPGetContextWrite.html#DMKSPGetContextWrite">DMKSPGetContextWrite</A>(dm,&amp;kdm);
-<a name="line181">181: </a>  <font color="#4169E1">if</font> (func) kdm-&gt;computeoperators = func;
-<a name="line182">182: </a>  <font color="#4169E1">if</font> (ctx)  kdm-&gt;operatorsctx = ctx;
-<a name="line183">183: </a>  <font color="#4169E1">return</font>(0);
-<a name="line184">184: </a>}
+<a name="line167">167: </a>  <A href="../../../../docs/manualpages/KSP/DMGetDMKSP.html#DMGetDMKSP">DMGetDMKSP</A>(dm,&amp;kdm);
+<a name="line168">168: </a>  <font color="#4169E1">if</font> (!kdm-&gt;originaldm) kdm-&gt;originaldm = dm;
+<a name="line169">169: </a>  <font color="#4169E1">if</font> (kdm-&gt;originaldm != dm) {  <font color="#B22222">/* Copy on write */</font>
+<a name="line170">170: </a>    DMKSP oldkdm = kdm;
+<a name="line171">171: </a>    <A href="../../../../docs/manualpages/Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(dm,<font color="#666666">"Copying DMKSP due to write\n"</font>);
+<a name="line172">172: </a>    DMKSPCreate(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)dm),&amp;kdm);
+<a name="line173">173: </a>    <A href="../../../../docs/manualpages/KSP/DMKSPCopy.html#DMKSPCopy">DMKSPCopy</A>(oldkdm,kdm);
+<a name="line174">174: </a>    DMKSPDestroy((DMKSP*)&amp;dm-&gt;dmksp);
+<a name="line175">175: </a>    dm-&gt;dmksp = (<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)kdm;
+<a name="line176">176: </a>  }
+<a name="line177">177: </a>  *kspdm = kdm;
+<a name="line178">178: </a>  <font color="#4169E1">return</font>(0);
+<a name="line179">179: </a>}
 
-<a name="line188">188: </a><font color="#B22222">/*@C</font>
-<a name="line189">189: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeOperators.html#DMKSPGetComputeOperators">DMKSPGetComputeOperators</A> - get <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> matrix evaluation function</font>
+<a name="line183">183: </a><font color="#B22222">/*@C</font>
+<a name="line184">184: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMCopyDMKSP.html#DMCopyDMKSP">DMCopyDMKSP</A> - copies a DM context to a new DM</font>
 
-<a name="line191">191: </a><font color="#B22222">   Not Collective</font>
+<a name="line186">186: </a><font color="#B22222">   Logically Collective</font>
 
-<a name="line193">193: </a><font color="#B22222">   Input Argument:</font>
-<a name="line194">194: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+<a name="line188">188: </a><font color="#B22222">   Input Arguments:</font>
+<a name="line189">189: </a><font color="#B22222">+  dmsrc - DM to obtain context from</font>
+<a name="line190">190: </a><font color="#B22222">-  dmdest - DM to add context to</font>
 
-<a name="line196">196: </a><font color="#B22222">   Output Arguments:</font>
-<a name="line197">197: </a><font color="#B22222">+  func - matrix evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeOperators.html#KSPSetComputeOperators">KSPSetComputeOperators</A>() for calling sequence</font>
-<a name="line198">198: </a><font color="#B22222">-  ctx - context for matrix evaluation</font>
+<a name="line192">192: </a><font color="#B22222">   Level: developer</font>
 
-<a name="line200">200: </a><font color="#B22222">   Level: advanced</font>
+<a name="line194">194: </a><font color="#B22222">   Note:</font>
+<a name="line195">195: </a><font color="#B22222">   The context is copied by reference. This function does not ensure that a context exists.</font>
 
-<a name="line202">202: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/KSPSetComputeOperators.html#KSPSetComputeOperators">KSPSetComputeOperators</A>(), <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeOperators.html#DMKSPSetComputeOperators">DMKSPSetComputeOperators</A>()</font>
-<a name="line203">203: </a><font color="#B22222">@*/</font>
-<a name="line204">204: </a><strong><font color="#4169E1"><a name="DMKSPGetComputeOperators"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeOperators.html#DMKSPGetComputeOperators">DMKSPGetComputeOperators</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (**func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*),void *ctx)</font></strong>
-<a name="line205">205: </a>{
-<a name="line207">207: </a>  KSPDM kdm;
+<a name="line197">197: </a><font color="#B22222">.seealso: <A href="../../../../docs/manualpages/KSP/DMGetDMKSP.html#DMGetDMKSP">DMGetDMKSP</A>(), <A href="../../../../docs/manualpages/KSP/KSPSetDM.html#KSPSetDM">KSPSetDM</A>()</font>
+<a name="line198">198: </a><font color="#B22222">@*/</font>
+<a name="line199">199: </a><strong><font color="#4169E1"><a name="DMCopyDMKSP"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMCopyDMKSP.html#DMCopyDMKSP">DMCopyDMKSP</A>(DM dmsrc,DM dmdest)</font></strong>
+<a name="line200">200: </a>{
 
-<a name="line211">211: </a>  <A href="../../../../docs/manualpages/KSP/DMKSPGetContext.html#DMKSPGetContext">DMKSPGetContext</A>(dm,&amp;kdm);
-<a name="line212">212: </a>  <font color="#4169E1">if</font> (func) *func = kdm-&gt;computeoperators;
-<a name="line213">213: </a>  <font color="#4169E1">if</font> (ctx)  *(void**)ctx = kdm-&gt;operatorsctx;
-<a name="line214">214: </a>  <font color="#4169E1">return</font>(0);
-<a name="line215">215: </a>}
+<a name="line206">206: </a>  DMKSPDestroy((DMKSP*)&amp;dmdest-&gt;dmksp);
+<a name="line207">207: </a>  dmdest-&gt;dmksp = dmsrc-&gt;dmksp;
+<a name="line208">208: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectReference.html#PetscObjectReference">PetscObjectReference</A>(dmdest-&gt;dmksp);
+<a name="line209">209: </a>  <A href="../../../../docs/manualpages/DM/DMCoarsenHookAdd.html#DMCoarsenHookAdd">DMCoarsenHookAdd</A>(dmdest,DMCoarsenHook_DMKSP,NULL,NULL);
+<a name="line210">210: </a>  <A href="../../../../docs/manualpages/DM/DMRefineHookAdd.html#DMRefineHookAdd">DMRefineHookAdd</A>(dmdest,DMRefineHook_DMKSP,NULL,NULL);
+<a name="line211">211: </a>  <font color="#4169E1">return</font>(0);
+<a name="line212">212: </a>}
 
-<a name="line219">219: </a><font color="#B22222">/*@C</font>
-<a name="line220">220: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeRHS.html#DMKSPSetComputeRHS">DMKSPSetComputeRHS</A> - set <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> matrix evaluation function</font>
+<a name="line216">216: </a><font color="#B22222">/*@C</font>
+<a name="line217">217: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeOperators.html#DMKSPSetComputeOperators">DMKSPSetComputeOperators</A> - set <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> matrix evaluation function</font>
 
-<a name="line222">222: </a><font color="#B22222">   Not Collective</font>
+<a name="line219">219: </a><font color="#B22222">   Not Collective</font>
 
-<a name="line224">224: </a><font color="#B22222">   Input Argument:</font>
-<a name="line225">225: </a><font color="#B22222">+  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
-<a name="line226">226: </a><font color="#B22222">.  func - right hand side evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>() for calling sequence</font>
-<a name="line227">227: </a><font color="#B22222">-  ctx - context for right hand side evaluation</font>
+<a name="line221">221: </a><font color="#B22222">   Input Argument:</font>
+<a name="line222">222: </a><font color="#B22222">+  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+<a name="line223">223: </a><font color="#B22222">.  func - matrix evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeOperators.html#KSPSetComputeOperators">KSPSetComputeOperators</A>() for calling sequence</font>
+<a name="line224">224: </a><font color="#B22222">-  ctx - context for matrix evaluation</font>
 
-<a name="line229">229: </a><font color="#B22222">   Level: advanced</font>
+<a name="line226">226: </a><font color="#B22222">   Level: advanced</font>
 
-<a name="line231">231: </a><font color="#B22222">   Note:</font>
-<a name="line232">232: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>() is normally used, but it calls this function internally because the user context is actually</font>
-<a name="line233">233: </a><font color="#B22222">   associated with the DM.  This makes the interface consistent regardless of whether the user interacts with a DM or</font>
-<a name="line234">234: </a><font color="#B22222">   not. If DM took a more central role at some later date, this could become the primary method of setting the matrix.</font>
+<a name="line228">228: </a><font color="#B22222">   Note:</font>
+<a name="line229">229: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/KSPSetComputeOperators.html#KSPSetComputeOperators">KSPSetComputeOperators</A>() is normally used, but it calls this function internally because the user context is actually</font>
+<a name="line230">230: </a><font color="#B22222">   associated with the DM.  This makes the interface consistent regardless of whether the user interacts with a DM or</font>
+<a name="line231">231: </a><font color="#B22222">   not. If DM took a more central role at some later date, this could become the primary method of setting the matrix.</font>
 
-<a name="line236">236: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeRHS.html#DMKSPGetComputeRHS">DMKSPGetComputeRHS</A>(), KSPSetRHS()</font>
-<a name="line237">237: </a><font color="#B22222">@*/</font>
-<a name="line238">238: </a><strong><font color="#4169E1"><a name="DMKSPSetComputeRHS"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeRHS.html#DMKSPSetComputeRHS">DMKSPSetComputeRHS</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),void *ctx)</font></strong>
-<a name="line239">239: </a>{
-<a name="line241">241: </a>  KSPDM kdm;
+<a name="line233">233: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeOperators.html#DMKSPGetComputeOperators">DMKSPGetComputeOperators</A>(), <A href="../../../../docs/manualpages/KSP/KSPSetOperators.html#KSPSetOperators">KSPSetOperators</A>()</font>
+<a name="line234">234: </a><font color="#B22222">@*/</font>
+<a name="line235">235: </a><strong><font color="#4169E1"><a name="DMKSPSetComputeOperators"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeOperators.html#DMKSPSetComputeOperators">DMKSPSetComputeOperators</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*),void *ctx)</font></strong>
+<a name="line236">236: </a>{
+<a name="line238">238: </a>  DMKSP          kdm;
 
-<a name="line245">245: </a>  <A href="../../../../docs/manualpages/KSP/DMKSPGetContextWrite.html#DMKSPGetContextWrite">DMKSPGetContextWrite</A>(dm,&amp;kdm);
-<a name="line246">246: </a>  <font color="#4169E1">if</font> (func) kdm-&gt;computerhs = func;
-<a name="line247">247: </a>  <font color="#4169E1">if</font> (ctx)  kdm-&gt;rhsctx = ctx;
-<a name="line248">248: </a>  <font color="#4169E1">return</font>(0);
-<a name="line249">249: </a>}
+<a name="line242">242: </a>  <A href="../../../../docs/manualpages/KSP/DMGetDMKSPWrite.html#DMGetDMKSPWrite">DMGetDMKSPWrite</A>(dm,&amp;kdm);
+<a name="line243">243: </a>  <font color="#4169E1">if</font> (func) kdm-&gt;ops-&gt;computeoperators = func;
+<a name="line244">244: </a>  <font color="#4169E1">if</font> (ctx) kdm-&gt;operatorsctx = ctx;
+<a name="line245">245: </a>  <font color="#4169E1">return</font>(0);
+<a name="line246">246: </a>}
 
-<a name="line253">253: </a><font color="#B22222">/*@C</font>
-<a name="line254">254: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeRHS.html#DMKSPGetComputeRHS">DMKSPGetComputeRHS</A> - get <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> matrix evaluation function</font>
+<a name="line250">250: </a><font color="#B22222">/*@C</font>
+<a name="line251">251: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeOperators.html#DMKSPGetComputeOperators">DMKSPGetComputeOperators</A> - get <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> matrix evaluation function</font>
 
-<a name="line256">256: </a><font color="#B22222">   Not Collective</font>
+<a name="line253">253: </a><font color="#B22222">   Not Collective</font>
 
-<a name="line258">258: </a><font color="#B22222">   Input Argument:</font>
-<a name="line259">259: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+<a name="line255">255: </a><font color="#B22222">   Input Argument:</font>
+<a name="line256">256: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
 
-<a name="line261">261: </a><font color="#B22222">   Output Arguments:</font>
-<a name="line262">262: </a><font color="#B22222">+  func - right hand side evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>() for calling sequence</font>
-<a name="line263">263: </a><font color="#B22222">-  ctx - context for right hand side evaluation</font>
+<a name="line258">258: </a><font color="#B22222">   Output Arguments:</font>
+<a name="line259">259: </a><font color="#B22222">+  func - matrix evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeOperators.html#KSPSetComputeOperators">KSPSetComputeOperators</A>() for calling sequence</font>
+<a name="line260">260: </a><font color="#B22222">-  ctx - context for matrix evaluation</font>
 
-<a name="line265">265: </a><font color="#B22222">   Level: advanced</font>
+<a name="line262">262: </a><font color="#B22222">   Level: advanced</font>
 
-<a name="line267">267: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>(), <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeRHS.html#DMKSPSetComputeRHS">DMKSPSetComputeRHS</A>()</font>
-<a name="line268">268: </a><font color="#B22222">@*/</font>
-<a name="line269">269: </a><strong><font color="#4169E1"><a name="DMKSPGetComputeRHS"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeRHS.html#DMKSPGetComputeRHS">DMKSPGetComputeRHS</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (**func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),void *ctx)</font></strong>
-<a name="line270">270: </a>{
-<a name="line272">272: </a>  KSPDM kdm;
+<a name="line264">264: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/KSPSetComputeOperators.html#KSPSetComputeOperators">KSPSetComputeOperators</A>(), <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeOperators.html#DMKSPSetComputeOperators">DMKSPSetComputeOperators</A>()</font>
+<a name="line265">265: </a><font color="#B22222">@*/</font>
+<a name="line266">266: </a><strong><font color="#4169E1"><a name="DMKSPGetComputeOperators"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeOperators.html#DMKSPGetComputeOperators">DMKSPGetComputeOperators</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (**func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../docs/manualpages/Mat/MatStructure.html#MatStructure">MatStructure</A>*,void*),void *ctx)</font></strong>
+<a name="line267">267: </a>{
+<a name="line269">269: </a>  DMKSP          kdm;
 
-<a name="line276">276: </a>  <A href="../../../../docs/manualpages/KSP/DMKSPGetContext.html#DMKSPGetContext">DMKSPGetContext</A>(dm,&amp;kdm);
-<a name="line277">277: </a>  <font color="#4169E1">if</font> (func) *func = kdm-&gt;computerhs;
-<a name="line278">278: </a>  <font color="#4169E1">if</font> (ctx)  *(void**)ctx = kdm-&gt;rhsctx;
-<a name="line279">279: </a>  <font color="#4169E1">return</font>(0);
-<a name="line280">280: </a>}
+<a name="line273">273: </a>  <A href="../../../../docs/manualpages/KSP/DMGetDMKSP.html#DMGetDMKSP">DMGetDMKSP</A>(dm,&amp;kdm);
+<a name="line274">274: </a>  <font color="#4169E1">if</font> (func) *func = kdm-&gt;ops-&gt;computeoperators;
+<a name="line275">275: </a>  <font color="#4169E1">if</font> (ctx) *(void**)ctx = kdm-&gt;operatorsctx;
+<a name="line276">276: </a>  <font color="#4169E1">return</font>(0);
+<a name="line277">277: </a>}
+
+<a name="line281">281: </a><font color="#B22222">/*@C</font>
+<a name="line282">282: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeRHS.html#DMKSPSetComputeRHS">DMKSPSetComputeRHS</A> - set <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> right hand side evaluation function</font>
+
+<a name="line284">284: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line286">286: </a><font color="#B22222">   Input Argument:</font>
+<a name="line287">287: </a><font color="#B22222">+  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+<a name="line288">288: </a><font color="#B22222">.  func - right hand side evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>() for calling sequence</font>
+<a name="line289">289: </a><font color="#B22222">-  ctx - context for right hand side evaluation</font>
+
+<a name="line291">291: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line293">293: </a><font color="#B22222">   Note:</font>
+<a name="line294">294: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>() is normally used, but it calls this function internally because the user context is actually</font>
+<a name="line295">295: </a><font color="#B22222">   associated with the DM.  This makes the interface consistent regardless of whether the user interacts with a DM or</font>
+<a name="line296">296: </a><font color="#B22222">   not. If DM took a more central role at some later date, this could become the primary method of setting the matrix.</font>
+
+<a name="line298">298: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeRHS.html#DMKSPGetComputeRHS">DMKSPGetComputeRHS</A>(), KSPSetRHS()</font>
+<a name="line299">299: </a><font color="#B22222">@*/</font>
+<a name="line300">300: </a><strong><font color="#4169E1"><a name="DMKSPSetComputeRHS"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeRHS.html#DMKSPSetComputeRHS">DMKSPSetComputeRHS</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),void *ctx)</font></strong>
+<a name="line301">301: </a>{
+<a name="line303">303: </a>  DMKSP          kdm;
+
+<a name="line307">307: </a>  <A href="../../../../docs/manualpages/KSP/DMGetDMKSPWrite.html#DMGetDMKSPWrite">DMGetDMKSPWrite</A>(dm,&amp;kdm);
+<a name="line308">308: </a>  <font color="#4169E1">if</font> (func) kdm-&gt;ops-&gt;computerhs = func;
+<a name="line309">309: </a>  <font color="#4169E1">if</font> (ctx) kdm-&gt;rhsctx = ctx;
+<a name="line310">310: </a>  <font color="#4169E1">return</font>(0);
+<a name="line311">311: </a>}
+
+<a name="line315">315: </a><font color="#B22222">/*@C</font>
+<a name="line316">316: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeInitialGuess.html#DMKSPSetComputeInitialGuess">DMKSPSetComputeInitialGuess</A> - set <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> initial guess evaluation function</font>
+
+<a name="line318">318: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line320">320: </a><font color="#B22222">   Input Argument:</font>
+<a name="line321">321: </a><font color="#B22222">+  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+<a name="line322">322: </a><font color="#B22222">.  func - initial guess evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeInitialGuess.html#KSPSetComputeInitialGuess">KSPSetComputeInitialGuess</A>() for calling sequence</font>
+<a name="line323">323: </a><font color="#B22222">-  ctx - context for right hand side evaluation</font>
+
+<a name="line325">325: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line327">327: </a><font color="#B22222">   Note:</font>
+<a name="line328">328: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/KSPSetComputeInitialGuess.html#KSPSetComputeInitialGuess">KSPSetComputeInitialGuess</A>() is normally used, but it calls this function internally because the user context is actually</font>
+<a name="line329">329: </a><font color="#B22222">   associated with the DM.</font>
+
+<a name="line331">331: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeRHS.html#DMKSPGetComputeRHS">DMKSPGetComputeRHS</A>(), KSPSetRHS()</font>
+<a name="line332">332: </a><font color="#B22222">@*/</font>
+<a name="line333">333: </a><strong><font color="#4169E1"><a name="DMKSPSetComputeInitialGuess"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeInitialGuess.html#DMKSPSetComputeInitialGuess">DMKSPSetComputeInitialGuess</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (*func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),void *ctx)</font></strong>
+<a name="line334">334: </a>{
+<a name="line336">336: </a>  DMKSP          kdm;
+
+<a name="line340">340: </a>  <A href="../../../../docs/manualpages/KSP/DMGetDMKSPWrite.html#DMGetDMKSPWrite">DMGetDMKSPWrite</A>(dm,&amp;kdm);
+<a name="line341">341: </a>  <font color="#4169E1">if</font> (func) kdm-&gt;ops-&gt;computeinitialguess = func;
+<a name="line342">342: </a>  <font color="#4169E1">if</font> (ctx) kdm-&gt;initialguessctx = ctx;
+<a name="line343">343: </a>  <font color="#4169E1">return</font>(0);
+<a name="line344">344: </a>}
+
+<a name="line348">348: </a><font color="#B22222">/*@C</font>
+<a name="line349">349: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeRHS.html#DMKSPGetComputeRHS">DMKSPGetComputeRHS</A> - get <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> right hand side evaluation function</font>
+
+<a name="line351">351: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line353">353: </a><font color="#B22222">   Input Argument:</font>
+<a name="line354">354: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+
+<a name="line356">356: </a><font color="#B22222">   Output Arguments:</font>
+<a name="line357">357: </a><font color="#B22222">+  func - right hand side evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>() for calling sequence</font>
+<a name="line358">358: </a><font color="#B22222">-  ctx - context for right hand side evaluation</font>
+
+<a name="line360">360: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line362">362: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>(), <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeRHS.html#DMKSPSetComputeRHS">DMKSPSetComputeRHS</A>()</font>
+<a name="line363">363: </a><font color="#B22222">@*/</font>
+<a name="line364">364: </a><strong><font color="#4169E1"><a name="DMKSPGetComputeRHS"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeRHS.html#DMKSPGetComputeRHS">DMKSPGetComputeRHS</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (**func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),void *ctx)</font></strong>
+<a name="line365">365: </a>{
+<a name="line367">367: </a>  DMKSP          kdm;
+
+<a name="line371">371: </a>  <A href="../../../../docs/manualpages/KSP/DMGetDMKSP.html#DMGetDMKSP">DMGetDMKSP</A>(dm,&amp;kdm);
+<a name="line372">372: </a>  <font color="#4169E1">if</font> (func) *func = kdm-&gt;ops-&gt;computerhs;
+<a name="line373">373: </a>  <font color="#4169E1">if</font> (ctx) *(void**)ctx = kdm-&gt;rhsctx;
+<a name="line374">374: </a>  <font color="#4169E1">return</font>(0);
+<a name="line375">375: </a>}
+
+<a name="line379">379: </a><font color="#B22222">/*@C</font>
+<a name="line380">380: </a><font color="#B22222">   <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeInitialGuess.html#DMKSPGetComputeInitialGuess">DMKSPGetComputeInitialGuess</A> - get <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> initial guess evaluation function</font>
+
+<a name="line382">382: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line384">384: </a><font color="#B22222">   Input Argument:</font>
+<a name="line385">385: </a><font color="#B22222">.  dm - DM to be used with <A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A></font>
+
+<a name="line387">387: </a><font color="#B22222">   Output Arguments:</font>
+<a name="line388">388: </a><font color="#B22222">+  func - initial guess evaluation function, see <A href="../../../../docs/manualpages/KSP/KSPSetComputeInitialGuess.html#KSPSetComputeInitialGuess">KSPSetComputeInitialGuess</A>() for calling sequence</font>
+<a name="line389">389: </a><font color="#B22222">-  ctx - context for right hand side evaluation</font>
+
+<a name="line391">391: </a><font color="#B22222">   Level: advanced</font>
+
+<a name="line393">393: </a><font color="#B22222">.seealso: DMKSPSetContext(), <A href="../../../../docs/manualpages/KSP/KSPSetComputeRHS.html#KSPSetComputeRHS">KSPSetComputeRHS</A>(), <A href="../../../../docs/manualpages/KSP/DMKSPSetComputeRHS.html#DMKSPSetComputeRHS">DMKSPSetComputeRHS</A>()</font>
+<a name="line394">394: </a><font color="#B22222">@*/</font>
+<a name="line395">395: </a><strong><font color="#4169E1"><a name="DMKSPGetComputeInitialGuess"></a><A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../docs/manualpages/KSP/DMKSPGetComputeInitialGuess.html#DMKSPGetComputeInitialGuess">DMKSPGetComputeInitialGuess</A>(DM dm,<A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> (**func)(<A href="../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,void*),void *ctx)</font></strong>
+<a name="line396">396: </a>{
+<a name="line398">398: </a>  DMKSP          kdm;
+
+<a name="line402">402: </a>  <A href="../../../../docs/manualpages/KSP/DMGetDMKSP.html#DMGetDMKSP">DMGetDMKSP</A>(dm,&amp;kdm);
+<a name="line403">403: </a>  <font color="#4169E1">if</font> (func) *func = kdm-&gt;ops-&gt;computeinitialguess;
+<a name="line404">404: </a>  <font color="#4169E1">if</font> (ctx) *(void**)ctx = kdm-&gt;initialguessctx;
+<a name="line405">405: </a>  <font color="#4169E1">return</font>(0);
+<a name="line406">406: </a>}
 </pre>
 </body>
 

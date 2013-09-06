@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tutorials/ex42a.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:40:25+00:00">
+<meta name="date" content="2013-07-02T14:40:20+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Sends a PETSc vector to a socket connection, receives it back, within a loop. Works with ex42.c.\n"</font>;
 
@@ -20,12 +20,12 @@
 <a name="line11"> 11: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    fd;
 <a name="line13"> 13: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       i;
 
-<a name="line15"> 15: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line15"> 15: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 <a name="line16"> 16: </a>  <font color="#B22222">/* server indicates we WAIT for someone to connect to our socket */</font>
 <a name="line17"> 17: </a>  <A href="../../../../../docs/manualpages/Viewer/PetscViewerSocketOpen.html#PetscViewerSocketOpen">PetscViewerSocketOpen</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,<font color="#666666">"server"</font>,<A href="../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A>,&amp;fd);
 
 <a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreateMPI.html#VecCreateMPI">VecCreateMPI</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,10000,<A href="../../../../../docs/manualpages/Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A>,&amp;b);
-<a name="line20"> 20: </a>  <font color="#4169E1">for</font> (i=0;i&lt;1000;i++){
+<a name="line20"> 20: </a>  <font color="#4169E1">for</font> (i=0; i&lt;1000; i++) {
 <a name="line21"> 21: </a>    <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(b,fd);
 <a name="line22"> 22: </a>    <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;b);
 <a name="line23"> 23: </a>    <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;b);

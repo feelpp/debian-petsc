@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/vec/vec/examples/tests/ex11.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:40:04+00:00">
+<meta name="date" content="2013-07-02T14:40:12+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a>static char help[] = <font color="#666666">"Scatters from a parallel vector to a sequential vector.\n\n"</font>;
 
@@ -54,18 +54,20 @@
 <a name="line46"> 46: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(ctx,x,y,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>,<A href="../../../../../docs/manualpages/Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>);
 <a name="line47"> 47: </a>  <A href="../../../../../docs/manualpages/Vec/VecScatterDestroy.html#VecScatterDestroy">VecScatterDestroy</A>(&amp;ctx);
 
-<a name="line49"> 49: </a>  <font color="#4169E1">if</font> (!rank)
-<a name="line50"> 50: </a>    {printf(<font color="#666666">"----\n"</font>); <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(y,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);}
+<a name="line49"> 49: </a>  <font color="#4169E1">if</font> (!rank) {
+<a name="line50"> 50: </a>    printf(<font color="#666666">"----\n"</font>);
+<a name="line51"> 51: </a>    <A href="../../../../../docs/manualpages/Vec/VecView.html#VecView">VecView</A>(y,<A href="../../../../../docs/manualpages/Viewer/PETSC_VIEWER_STDOUT_SELF.html#PETSC_VIEWER_STDOUT_SELF">PETSC_VIEWER_STDOUT_SELF</A>);
+<a name="line52"> 52: </a>  }
 
-<a name="line52"> 52: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is1);
-<a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is2);
-<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
-<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y);
+<a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is1);
+<a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/IS/ISDestroy.html#ISDestroy">ISDestroy</A>(&amp;is2);
+<a name="line56"> 56: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;x);
+<a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;y);
 
-<a name="line57"> 57: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
-<a name="line58"> 58: </a>  <font color="#4169E1">return</font> 0;
-<a name="line59"> 59: </a>}
-<a name="line60"> 60: </a>
+<a name="line59"> 59: </a>  <A href="../../../../../docs/manualpages/Sys/PetscFinalize.html#PetscFinalize">PetscFinalize</A>();
+<a name="line60"> 60: </a>  <font color="#4169E1">return</font> 0;
+<a name="line61"> 61: </a>}
+
 </pre>
 </body>
 

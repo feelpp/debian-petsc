@@ -5,7 +5,7 @@
 <TITLE>PCASMGetSubKSP</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCASMGetSubKSP"><H1>PCASMGetSubKSP</H1></A>
 Gets the local <A HREF="../KSP/KSP.html#KSP">KSP</A> contexts for all blocks on this processor. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,10 +21,10 @@ Collective on <A HREF="../PC/PC.html#PC">PC</A> iff first_local is requested
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n_local </B></TD><TD>- the number of blocks on this processor or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n_local </B></TD><TD>- the number of blocks on this processor or NULL
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>first_local </B></TD><TD>- the global number of the first block on this processor or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,
-all processors must request or all must pass <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>first_local </B></TD><TD>- the global number of the first block on this processor or NULL,
+all processors must request or all must pass NULL
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ksp </B></TD><TD>- the array of <A HREF="../KSP/KSP.html#KSP">KSP</A> contexts
 </TD></TR></TABLE>
@@ -38,7 +38,7 @@ is supported.
 You must call <A HREF="../KSP/KSPSetUp.html#KSPSetUp">KSPSetUp</A>() before calling <A HREF="../PC/PCASMGetSubKSP.html#PCASMGetSubKSP">PCASMGetSubKSP</A>().
 <P>
 <H3><FONT COLOR="#CC3333">Fortran note</FONT></H3>
-The output argument 'ksp' must be an array of sufficient length or PETSC_NULL_OBJECT. The latter can be used to learn the necessary length.
+The output argument 'ksp' must be an array of sufficient length or NULL_OBJECT. The latter can be used to learn the necessary length.
 <P>
 
 <P>

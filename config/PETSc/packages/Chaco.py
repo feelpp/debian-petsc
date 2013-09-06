@@ -3,7 +3,7 @@ import PETSc.package
 class Configure(PETSc.package.NewPackage):
   def __init__(self, framework):
     PETSc.package.NewPackage.__init__(self, framework)
-    self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/Chaco-2.2.tar.gz']
+    self.download     = ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/Chaco-2.2-p1.tar.gz']
     self.functions    = ['interface']
     self.includes     = [] #Chaco does not have an include file
     self.needsMath    = 1
@@ -27,7 +27,7 @@ class Configure(PETSc.package.NewPackage):
     g.write('OFLAGS = '+self.setCompilers.getCompilerFlags()+'\n')
     self.setCompilers.popLanguage()
     g.close()
-    
+
     if self.installNeeded(mkfile):
       try:
         self.logPrintBox('Compiling chaco; this may take several minutes')

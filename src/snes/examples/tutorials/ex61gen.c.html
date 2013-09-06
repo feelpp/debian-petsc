@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex61gen.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:11:26+00:00">
+<meta name="date" content="2013-07-02T14:50:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>static char help[] = <font color="#666666">"Generates random numbers for radioactive events for ex61.c.\n ./ex61gen [-random_seed &lt;int&gt;] \n"</font>;
 
 
@@ -19,14 +19,13 @@
 
 <a name="line11"> 11: </a><strong><font color="#4169E1"><a name="main"></a>int main(int argc, char **argv)</font></strong>
 <a name="line12"> 12: </a>{
-<a name="line13"> 13: </a>  <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>      ierr;
-<a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>                 x;
-<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A>         rand;
-<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>         *values;
-<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>            n = 10000,seed;
-<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>         viewer;
-<a name="line19"> 19: </a>  char                filename[PETSC_MAX_PATH_LEN];
-<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>           flg;
+<a name="line14"> 14: </a>  <A href="../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>            x;
+<a name="line15"> 15: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandom.html#PetscRandom">PetscRandom</A>    rand;
+<a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>    *values;
+<a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n = 10000,seed;
+<a name="line18"> 18: </a>  <A href="../../../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A>    viewer;
+<a name="line19"> 19: </a>  char           filename[PETSC_MAX_PATH_LEN];
+<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      flg;
 
 <a name="line22"> 22: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;argv, (char*)0, help);
 <a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomCreate.html#PetscRandomCreate">PetscRandomCreate</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rand);
@@ -35,7 +34,7 @@
 <a name="line26"> 26: </a>  <A href="../../../../docs/manualpages/Vec/VecSetRandom.html#VecSetRandom">VecSetRandom</A>(x,rand);
 <a name="line27"> 27: </a>  <A href="../../../../docs/manualpages/Sys/PetscRandomDestroy.html#PetscRandomDestroy">PetscRandomDestroy</A>(&amp;rand);
 <a name="line28"> 28: </a>  <A href="../../../../docs/manualpages/Vec/VecGetArray.html#VecGetArray">VecGetArray</A>(x,&amp;values);
-<a name="line29"> 29: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-random_seed"</font>,&amp;seed,&amp;flg);
+<a name="line29"> 29: </a>  <A href="../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL,<font color="#666666">"-random_seed"</font>,&amp;seed,&amp;flg);
 <a name="line30"> 30: </a>  <font color="#4169E1">if</font> (flg) {
 <a name="line31"> 31: </a>    sprintf(filename,<font color="#666666">"ex61.random.%d"</font>,(int)seed);
 <a name="line32"> 32: </a>  } <font color="#4169E1">else</font> {

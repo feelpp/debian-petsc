@@ -5,11 +5,12 @@
 <TITLE>MatPreallocateSet</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatPreallocateSet"><H1>MatPreallocateSet</H1></A>
 Indicates the locations (rows and columns) in the matrix where nonzeros will be inserted using a local number of the rows and columns 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
+#include "petscmat.h"
 PetscErrorCode MatPreallocateSet(PetscInt nrows, PetscInt *rows,PetscInt ncols, PetscInt *cols,PetscInt *dnz, PetscInt *onz)
 </PRE>
 Not Collective

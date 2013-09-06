@@ -5,15 +5,13 @@
 <TITLE>SNESSetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSetType"><H1>SNESSetType</H1></A>
-Sets the method for the nonlinear solver.   
+Sets the method for the nonlinear solver. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
-PetscErrorCode  SNESSetType(SNES snes,const SNESType type)
+PetscErrorCode  SNESSetType(SNES snes,SNESType type)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
@@ -26,16 +24,16 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
 <DT><B>-snes_type &lt;type&gt; </B> -Sets the method; use -help for a list
-of available methods (for instance, ls or tr)
+of available methods (for instance, newtonls or newtontr)
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 See "petsc/include/petscsnes.h" for available methods (for instance)
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../SNES/SNESLS.html#SNESLS">SNESLS</A> </B></TD><TD>- Newton's method with line search
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../SNES/SNESNEWTONLS.html#SNESNEWTONLS">SNESNEWTONLS</A> </B></TD><TD>- Newton's method with line search
 (systems of nonlinear equations)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../SNES/SNESTR.html#SNESTR">SNESTR</A> </B></TD><TD>- Newton's method with trust region
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B><A HREF="../SNES/SNESNEWTONTR.html#SNESNEWTONTR">SNESNEWTONTR</A> </B></TD><TD>- Newton's method with trust region
 (systems of nonlinear equations)
 </TD></TR>
 <P>
@@ -50,6 +48,9 @@ the choice of solver changes during the execution of the program,
 and the user's application is taking responsibility for choosing the
 appropriate method.
 <P>
+Developer Notes: <A HREF="../SNES/SNESRegister.html#SNESRegister">SNESRegister</A>() adds a constructor for a new <A HREF="../SNES/SNESType.html#SNESType">SNESType</A> to SNESList, <A HREF="../SNES/SNESSetType.html#SNESSetType">SNESSetType</A>() locates
+the constructor in that list and calls it to create the spexific object.
+<P>
 
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
@@ -57,7 +58,7 @@ appropriate method.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/SNESType.html#SNESType">SNESType</A>, <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>()
+ <A HREF="../SNES/SNESType.html#SNESType">SNESType</A>, <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>(), <A HREF="../SNES/SNESDestroy.html#SNESDestroy">SNESDestroy</A>(), <A HREF="../SNES/SNESGetType.html#SNESGetType">SNESGetType</A>(), <A HREF="../SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
@@ -67,4 +68,5 @@ appropriate method.
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/snes/examples/tutorials/ex35.c.html">src/snes/examples/tutorials/ex35.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex22.c.html">src/ts/examples/tutorials/ex22.c.html</A><BR>
 </BODY></HTML>

@@ -54,6 +54,16 @@ extern void PetscRmPointer(void*);
 #define pcdiagonalscaleright_ pcdiagonalscaleright
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcsetuseamat_ PCSETUSEAMAT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcsetuseamat_ pcsetuseamat
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcgetuseamat_ PCGETUSEAMAT
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcgetuseamat_ pcgetuseamat
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pccreate_ PCCREATE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pccreate_ pccreate
@@ -178,6 +188,14 @@ void PETSC_STDCALL  pcdiagonalscaleright_(PC pc,Vec in,Vec out, int *__ierr ){
 	(Vec)PetscToPointer((in) ),
 	(Vec)PetscToPointer((out) ));
 }
+void PETSC_STDCALL  pcsetuseamat_(PC pc,PetscBool *flg, int *__ierr ){
+*__ierr = PCSetUseAmat(
+	(PC)PetscToPointer((pc) ),*flg);
+}
+void PETSC_STDCALL  pcgetuseamat_(PC pc,PetscBool *flg, int *__ierr ){
+*__ierr = PCGetUseAmat(
+	(PC)PetscToPointer((pc) ),flg);
+}
 void PETSC_STDCALL  pccreate_(MPI_Fint * comm,PC *newpc, int *__ierr ){
 *__ierr = PCCreate(
 	MPI_Comm_f2c( *(comm) ),newpc);
@@ -228,7 +246,7 @@ void PETSC_STDCALL  pcapplyrichardsonexists_(PC pc,PetscBool  *exists, int *__ie
 *__ierr = PCApplyRichardsonExists(
 	(PC)PetscToPointer((pc) ),exists);
 }
-void PETSC_STDCALL  pcapplyrichardson_(PC pc,Vec b,Vec y,Vec w,PetscReal *rtol,PetscReal *abstol,PetscReal *dtol,PetscInt *its,PetscBool  *guesszero,PetscInt *outits,PCRichardsonConvergedReason *reason, int *__ierr ){
+void PETSC_STDCALL  pcapplyrichardson_(PC pc,Vec b,Vec y,Vec w,PetscReal *rtol,PetscReal *abstol,PetscReal *dtol,PetscInt *its,PetscBool *guesszero,PetscInt *outits,PCRichardsonConvergedReason *reason, int *__ierr ){
 *__ierr = PCApplyRichardson(
 	(PC)PetscToPointer((pc) ),
 	(Vec)PetscToPointer((b) ),
@@ -264,7 +282,7 @@ void PETSC_STDCALL  pcpostsolve_(PC pc,KSP ksp, int *__ierr ){
 	(PC)PetscToPointer((pc) ),
 	(KSP)PetscToPointer((ksp) ));
 }
-void PETSC_STDCALL  pcsetinitialguessnonzero_(PC pc,PetscBool  *flg, int *__ierr ){
+void PETSC_STDCALL  pcsetinitialguessnonzero_(PC pc,PetscBool *flg, int *__ierr ){
 *__ierr = PCSetInitialGuessNonzero(
 	(PC)PetscToPointer((pc) ),*flg);
 }

@@ -4,18 +4,18 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/FEMProblem.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:18:32+00:00">
+<meta name="date" content="2013-07-02T14:52:44+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef __FEMProblem</font>
 
 <a name="line4">  4: </a><font color="#B22222">/*</font>
-<a name="line5">  5: </a><font color="#B22222">  </font>
+
 <a name="line6">  6: </a><font color="#B22222">  Framework for solving a FEM problem using sieve.</font>
-<a name="line7">  7: </a><font color="#B22222">  </font>
-<a name="line8">  8: </a><font color="#B22222">  The Discretization objects are WAY too embedded into the way things are done; we will have to create ways of </font>
+
+<a name="line8">  8: </a><font color="#B22222">  The Discretization objects are WAY too embedded into the way things are done; we will have to create ways of</font>
 
 <a name="line10"> 10: </a><font color="#B22222">This includes derived types doing what indicesExcluded does for all things marked with a boundary marker.</font>
 
@@ -76,7 +76,7 @@
 
 <a name="line67"> 67: </a>      GeneralCell() {
 <a name="line68"> 68: </a>        _num_vertices = 0;
-<a name="line69"> 69: </a>        _coordinates = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line69"> 69: </a>        _coordinates = NULL;
 <a name="line70"> 70: </a>      }
 
 <a name="line72"> 72: </a>      GeneralCell(int embedded_dimension, int num_vertices) {
@@ -118,7 +118,7 @@
 <a name="line108">108: </a>      virtual void setLabelName(const std::string&amp; name) {this-&gt;_labelName = name;};
 <a name="line109">109: </a>      virtual int getMarker() const {<font color="#4169E1">return</font> this-&gt;_marker;};
 <a name="line110">110: </a>      virtual void setMarker(const int marker) {this-&gt;_marker = marker;};
-<a name="line111">111: </a>
+
 <a name="line112">112: </a><strong><font color="#FF0000">    public:</font></strong>
 
 <a name="line114">114: </a>      virtual double integrateDual(unsigned int dof) {
@@ -127,18 +127,18 @@
 <a name="line117">117: </a>        throw Exception(<font color="#666666">"GeneralBoundaryCondition-&gt;integrateDual: Nonimplemented base-class version called."</font>);
 <a name="line118">118: </a>        <font color="#4169E1">return</font> 3.;
 <a name="line119">119: </a>      };
-<a name="line120">120: </a>
+
 <a name="line121">121: </a>      virtual void setReorder(int * reorder) {
 <a name="line122">122: </a>        throw Exception(<font color="#666666">"GeneralBoundaryCondition-&gt;setReorder(): Unimplemented base class version called."</font>);
 <a name="line123">123: </a>      }
 
 <a name="line125">125: </a>      virtual const int * getReorder() {
 <a name="line126">126: </a>        throw Exception(<font color="#666666">"GeneralBoundaryCondition-&gt;getReorder(): Unimplemented base class version called."</font>);
-<a name="line127">127: </a>        <font color="#4169E1">return</font> <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>;
+<a name="line127">127: </a>        <font color="#4169E1">return</font> NULL;
 <a name="line128">128: </a>      }
 
 <a name="line130">130: </a>    };
-<a name="line131">131: </a>
+
 <a name="line132">132: </a>    <font color="#B22222">/*</font>
 <a name="line133">133: </a><font color="#B22222">      Include at least counts of all the part of the triple, as well as all the information for the cell.</font>
 <a name="line134">134: </a><font color="#B22222">     */</font>
@@ -186,7 +186,7 @@
 <a name="line176">176: </a>      int * _closure2data;  //<font color="#4169E1">if</font> there is some API-level data storage, this maps the unknowns <font color="#4169E1">for</font> the WHOLE CLOSURE onto the unknowns <font color="#4169E1">for</font> the API
 
 <a name="line178">178: </a><strong><font color="#FF0000">    public:</font></strong>
-<a name="line179">179: </a>
+
 <a name="line180">180: </a>      GeneralIntegral (<A href="../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm, int debug = 0) : ParallelObject(comm, debug) {
 <a name="line181">181: </a>        _tensor_rank = 0;
 <a name="line182">182: </a>        _space_dimension = 0;
@@ -227,12 +227,12 @@
 <a name="line217">217: </a>      void setLabelMarker(int newMarker) {
 <a name="line218">218: </a>        _label_marker = newMarker;
 <a name="line219">219: </a>      }
-<a name="line220">220: </a>
+
 
 <a name="line222">222: </a>      virtual void setSpaceDimension(int dim) {
 <a name="line223">223: </a>        _space_dimension = dim;
 <a name="line224">224: </a>      }
-<a name="line225">225: </a>
+
 <a name="line226">226: </a>      virtual int getSpaceDimension() {
 <a name="line227">227: </a>        <font color="#4169E1">return</font> _space_dimension;
 <a name="line228">228: </a>      }
@@ -240,13 +240,13 @@
 <a name="line230">230: </a>      virtual void setTensorRank(int rank) {
 <a name="line231">231: </a>        _tensor_rank = rank;
 <a name="line232">232: </a>      }
-<a name="line233">233: </a>
+
 <a name="line234">234: </a>      virtual int getTensorRank() {
 <a name="line235">235: </a>        <font color="#4169E1">return</font> _tensor_rank;
 <a name="line236">236: </a>      }
 
-<a name="line238">238: </a>
-<a name="line239">239: </a>
+
+
 <a name="line240">240: </a>      virtual const int * getReorder() {
 <a name="line241">241: </a>        <font color="#4169E1">return</font> _closure2data;
 <a name="line242">242: </a>      }
@@ -257,7 +257,7 @@
 
 <a name="line248">248: </a>      //use the UFC lingo here
 <a name="line249">249: </a>      //have some notion of the cell initialized and in-state in the eventual implementation.
-<a name="line250">250: </a>      virtual void tabulateTensor(double * tensor, const double * coefficients = <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>) {
+<a name="line250">250: </a>      virtual void tabulateTensor(double * tensor, const double * coefficients = NULL) {
 <a name="line251">251: </a>        throw Exception(<font color="#666666">"GeneralIntegral-&gt;tabulateTensor: Nonimplemented Base class version called."</font>);
 <a name="line252">252: </a>        <font color="#4169E1">return</font>;
 <a name="line253">253: </a>      }
@@ -323,7 +323,7 @@
 <a name="line313">313: </a>      <font color="#B22222">/*</font>
 <a name="line314">314: </a><font color="#B22222">        </font>
 <a name="line315">315: </a><font color="#B22222">      Functions for interacting with external libraries for handling finite element assembly that might have different cell layout.</font>
-<a name="line316">316: </a><font color="#B22222">      </font>
+
 <a name="line317">317: </a><font color="#B22222">       */</font>
 
 <a name="line319">319: </a>      virtual void createReorder() {
@@ -377,7 +377,7 @@
 <a name="line367">367: </a>      ~GenericFormSubProblem(){};
 
 <a name="line369">369: </a><strong><font color="#FF0000">    private:</font></strong>
-<a name="line370">370: </a>
+
 <a name="line371">371: </a>      name_type _solutionSectionName;
 <a name="line372">372: </a>      name_type _forcingSectionName;
 <a name="line373">373: </a>      discretizations_type _discretizations;
@@ -389,10 +389,10 @@
 <a name="line379">379: </a>      //helper functions, stolen directly from Mesh.hh with slight modifications to remove FIAT dependence and instead use stuff from GeneralDiscretization
 
 <a name="line381">381: </a><strong><font color="#FF0000">    public:</font></strong>
-<a name="line382">382: </a>
+
 <a name="line383">383: </a>      const Obj&lt;GeneralDiscretization&gt;&amp; getDiscretization() {<font color="#4169E1">return</font> this-&gt;getDiscretization(<font color="#666666">"</font><font color="#4169E1">default</font>");};
 <a name="line384">384: </a>      const Obj&lt;GeneralDiscretization&gt;&amp; getDiscretization(const std::string&amp; name) {<font color="#4169E1">return</font> this-&gt;_discretizations[name];};
-<a name="line385">385: </a>
+
 <a name="line386">386: </a>      void setDiscretization(const Obj&lt;GeneralDiscretization&gt;&amp; disc) {this-&gt;setDiscretization(<font color="#666666">"</font><font color="#4169E1">default</font>", disc);};
 <a name="line387">387: </a>      void setDiscretization(const std::string&amp; name, const Obj&lt;GeneralDiscretization&gt;&amp; disc) {this-&gt;_discretizations[name] = disc;};
 
@@ -437,7 +437,7 @@
 <a name="line427">427: </a>        throw Exception(<font color="#666666">"GeneralDiscretization-&gt;localSpaceDimension(): using the unimplemented base class version."</font>);
 <a name="line428">428: </a>        <font color="#4169E1">return</font> 0;
 <a name="line429">429: </a>      }
-<a name="line430">430: </a>
+
 <a name="line431">431: </a>      <font color="#B22222">/*</font>
 <a name="line432">432: </a><font color="#B22222">        Functions handling the creation and application of reordering from element libraries and sieve.</font>
 <a name="line433">433: </a><font color="#B22222">       */</font>
@@ -737,7 +737,7 @@
 <a name="line727">727: </a>            const int                  oSize   = pV.getSize();
 <a name="line728">728: </a>
 <a name="line729">729: </a>            <font color="#4169E1">if</font> (debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"  Boundary cell "</font> &lt;&lt; *c_iter &lt;&lt; std::endl;}
-<a name="line730">730: </a>            //mesh-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, <A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, detJ);
+<a name="line730">730: </a>            //mesh-&gt;computeElementGeometry(coordinates, *c_iter, v0, J, NULL, detJ);
 <a name="line731">731: </a>            this-&gt;setCell(mesh, *c_iter);
 <a name="line732">732: </a>            <font color="#4169E1">for</font>(int f = 0; f &lt; numFields; ++f) v[f] = 0;
 <a name="line733">733: </a>            <font color="#4169E1">for</font>(int cl = 0; cl &lt; oSize; ++cl) {
@@ -759,7 +759,7 @@
 <a name="line749">749: </a>
 <a name="line750">750: </a>                  <font color="#4169E1">for</font>(names_type::const_iterator bc_iter = bcs-&gt;begin(); bc_iter != bcs-&gt;end(); ++bc_iter, ++b) {
 <a name="line751">751: </a>                    const Obj&lt;GeneralBoundaryCondition&gt;&amp; bc    = disc-&gt;getBoundaryCondition(*bc_iter);
-<a name="line752">752: </a>                    const int                          value = mesh-&gt;getValue(mesh-&gt;getLabel(bc-&gt;getLabelName()), oPoints[cl]);
+<a name="line752">752: </a>                    const int                            value = mesh-&gt;getValue(mesh-&gt;getLabel(bc-&gt;getLabelName()), oPoints[cl]);
 <a name="line753">753: </a>                    <font color="#4169E1">if</font> (b &gt; 0) v[f] -= fDim;
 <a name="line754">754: </a>                    <font color="#4169E1">if</font> (value == bc-&gt;getMarker()) {
 <a name="line755">755: </a>                      <font color="#4169E1">if</font> (debug &gt; 1) {std::cout &lt;&lt; <font color="#666666">"      field "</font> &lt;&lt; *f_iter &lt;&lt; <font color="#666666">" marker "</font> &lt;&lt; value &lt;&lt; std::endl;}
@@ -841,7 +841,7 @@
 <a name="line831">831: </a>    };
 <a name="line832">832: </a>    <font color="#B22222">/*</font>
 
-<a name="line834">834: </a><font color="#B22222">    </font>
+
 
 <a name="line836">836: </a><font color="#B22222">    */</font>
 
@@ -849,14 +849,14 @@
 <a name="line841">841: </a>    <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> RHS_FEMProblem(::Mesh mesh, SectionReal X, SectionReal section,  void * ctx) {
 <a name="line842">842: </a>      GenericFormSubProblem * subproblem = (GenericFormSubProblem *)ctx;
 <a name="line843">843: </a>      Obj&lt;PETSC_MESH_TYPE&gt; m;
-<a name="line845">845: </a>
+
 <a name="line847">847: </a>      MeshGetMesh(mesh, m);
 <a name="line848">848: </a>      <A href="../../docs/manualpages/DM/SectionRealZero.html#SectionRealZero">SectionRealZero</A>(section);
 <a name="line849">849: </a>      Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; s;
 <a name="line850">850: </a>      <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line851">851: </a>      // Loop over cells
 <a name="line852">852: </a>      //loop over integrals;
-<a name="line853">853: </a>
+
 <a name="line854">854: </a><strong><font color="#FF0000">      GenericFormSubProblem:</font></strong>:names_type integral_names = subproblem-&gt;getIntegrals();
 <a name="line855">855: </a><strong><font color="#FF0000">      GenericFormSubProblem:</font></strong>:names_type::const_iterator n_iter = integral_names.begin();
 <a name="line856">856: </a><strong><font color="#FF0000">      GenericFormSubProblem:</font></strong>:names_type::const_iterator n_iter_end = integral_names.end();
@@ -936,7 +936,7 @@
 <a name="line930">930: </a>        s-&gt;axpy(-1.0, constant);
 <a name="line931">931: </a>      }
 <a name="line932">932: </a>      <A href="../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flag;
-<a name="line933">933: </a>      <A href="../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(<A href="../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, <font color="#666666">"-vec_view"</font>, &amp;flag);
+<a name="line933">933: </a>      <A href="../../docs/manualpages/Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(NULL, <font color="#666666">"-vec_view"</font>, &amp;flag);
 <a name="line934">934: </a>      <font color="#4169E1">if</font> (flag) {
 <a name="line935">935: </a>        <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, s);
 <a name="line936">936: </a>        s-&gt;view(<font color="#666666">"RHS"</font>);
@@ -992,14 +992,14 @@
 
 <a name="line993">993: </a>    <A href="../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SubProblemView(SectionReal section, std::string name, <A href="../../docs/manualpages/Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer, int firstField = 0, int lastField = 0) {
 <a name="line994">994: </a>      //<font color="#666666">"vectorize"</font> takes the first n discretizations and writes them out as a vector
-<a name="line996">996: </a>
+
 <a name="line998">998: </a>      Obj&lt;PETSC_MESH_TYPE&gt; m;
 <a name="line999">999: </a>      Obj&lt;PETSC_MESH_TYPE::real_section_type&gt; field;
 <a name="line1000">1000: </a>      <A href="../../docs/manualpages/DM/SectionRealGetBundle.html#SectionRealGetBundle">SectionRealGetBundle</A>(section, m);
 <a name="line1001">1001: </a>      <A href="../../docs/manualpages/DM/SectionRealGetSection.html#SectionRealGetSection">SectionRealGetSection</A>(section, field);
 <a name="line1002">1002: </a>      const ALE::Obj&lt;PETSC_MESH_TYPE::numbering_type&gt;&amp; numbering = m-&gt;getFactory()-&gt;getNumbering(m, 0);
 <a name="line1003">1003: </a>      <A href="../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"POINT_DATA %d\n"</font>, numbering-&gt;getGlobalSize());
-<a name="line1004">1004: </a>
+
 <a name="line1005">1005: </a>      <font color="#4169E1">if</font> (lastField - firstField &gt; 0) {
 <a name="line1006">1006: </a>        <A href="../../docs/manualpages/Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer, <font color="#666666">"VECTORS %s double\n"</font>, name.c_str());
 <a name="line1007">1007: </a>

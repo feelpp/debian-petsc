@@ -5,7 +5,7 @@
 <TITLE>MatSeqAIJSetPreallocation</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSeqAIJSetPreallocation"><H1>MatSeqAIJSetPreallocation</H1></A>
 For good matrix assembly performance the user should preallocate the matrix storage by setting the parameter nz (or the array nnz).  By setting these parameters accurately, performance during matrix assembly can be increased by more than a factor of 50. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,8 +21,8 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nz </B></TD><TD>- number of nonzeros per row (same for all rows)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nnz </B></TD><TD>- array containing the number of nonzeros in the various rows 
-(possibly different for each row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nnz </B></TD><TD>- array containing the number of nonzeros in the various rows
+(possibly different for each row) or NULL
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
@@ -34,7 +34,7 @@ storage.  That is, the stored row and column indices can begin at
 either one (as in Fortran) or zero.  See the users' manual for details.
 <P>
 Specify the preallocated storage with either nz or nnz (not both).
-Set nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and nnz=<A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for PETSc to control dynamic memory
+Set nz=<A HREF="../Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and nnz=NULL for PETSc to control dynamic memory
 allocation.  For large problems you MUST preallocate memory or you
 will get TERRIBLE performance, see the users' manual chapter on matrices.
 <P>
@@ -81,8 +81,8 @@ the user still MUST index entries starting at 0!
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex3.c.html">src/ksp/ksp/examples/tutorials/ex3.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex4.c.html">src/ksp/ksp/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex7.c.html">src/ksp/ksp/examples/tutorials/ex7.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex52.c.html">src/ksp/ksp/examples/tutorials/ex52.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex55.c.html">src/ksp/ksp/examples/tutorials/ex55.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
-<A HREF="../../../src/ksp/ksp/examples/tutorials/ex15f.F.html">src/ksp/ksp/examples/tutorials/ex15f.F.html</A><BR>
 </BODY></HTML>

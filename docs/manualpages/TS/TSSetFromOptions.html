@@ -5,7 +5,7 @@
 <TITLE>TSSetFromOptions</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSSetFromOptions"><H1>TSSetFromOptions</H1></A>
 Sets various <A HREF="../TS/TS.html#TS">TS</A> parameters from user options. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -31,8 +31,30 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor </B></TD><TD>- print information at each timestep
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_draw </B></TD><TD>- plot information at each timestep
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_lg_timestep </B></TD><TD>- Monitor timestep size graphically
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_lg_solution </B></TD><TD>- Monitor solution graphically
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_lg_error </B></TD><TD>- Monitor error graphically
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_lg_snes_iterations </B></TD><TD>- Monitor number nonlinear iterations for each timestep graphically
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_lg_ksp_iterations </B></TD><TD>- Monitor number nonlinear iterations for each timestep graphically
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_sp_eig </B></TD><TD>- Monitor eigenvalues of linearized operator graphically
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_draw_solution </B></TD><TD>- Monitor solution graphically
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_draw_solution_phase </B></TD><TD>- Monitor solution graphically with phase diagram
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_draw_error </B></TD><TD>- Monitor error graphically
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_solution_binary &lt;filename&gt; </B></TD><TD>- Save each solution to a binary file
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-ts_monitor_solution_vtk &lt;filename.vts&gt; </B></TD><TD>- Save each time step to a binary file, use filename-%%03D.vts
 </TD></TR></TABLE>
+<P>
+Developer Note: We should unify all the -ts_monitor options in the way that -xxx_view has been unified
 <P>
 
 <P>

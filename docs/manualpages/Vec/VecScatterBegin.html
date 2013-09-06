@@ -5,13 +5,12 @@
 <TITLE>VecScatterBegin</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecScatterBegin"><H1>VecScatterBegin</H1></A>
 Begins a generalized scatter from one vector to another. Complete the scattering phase with <A HREF="../Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscis.h" 
-#include "petscvec.h" 
+#include "petscvec.h"    
 PetscErrorCode  VecScatterBegin(VecScatter inctx,Vec x,Vec y,InsertMode addv,ScatterMode mode)
 </PRE>
 Neighbor-wise Collective on <A HREF="../Vec/VecScatter.html#VecScatter">VecScatter</A> and <A HREF="../Vec/Vec.html#Vec">Vec</A>
@@ -24,7 +23,7 @@ Neighbor-wise Collective on <A HREF="../Vec/VecScatter.html#VecScatter">VecScatt
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>y </B></TD><TD>- the vector to which we scatter
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>addv </B></TD><TD>- either <A HREF="../Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A> or <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, with <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A> mode any location 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>addv </B></TD><TD>- either <A HREF="../Sys/ADD_VALUES.html#ADD_VALUES">ADD_VALUES</A> or <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>, with <A HREF="../Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A> mode any location
 not scattered to retains its old value; i.e. the vector is NOT first zeroed.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mode </B></TD><TD>- the scattering mode, usually <A HREF="../Vec/SCATTER_FORWARD.html#SCATTER_FORWARD">SCATTER_FORWARD</A>.  The available modes are:
@@ -66,11 +65,9 @@ routine can scatter from one processor to many processors.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex2.c.html">src/dm/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex43.c.html">src/ksp/ksp/examples/tutorials/ex43.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex1.c.html">src/snes/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

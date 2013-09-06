@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/impls/cg/cgtype.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:03:36+00:00">
+<meta name="date" content="2013-07-02T14:48:01+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#A020F0">#include &lt;../src/ksp/ksp/impls/cg/cgimpl.h&gt;       </font><font color="#B22222">/*I "petscksp.h" I*/</font><font color="#A020F0"></font>
 
@@ -28,7 +28,7 @@
 <a name="line19"> 19: </a><font color="#B22222">.ve</font>
 
 <a name="line21"> 21: </a><font color="#B22222">    Level: intermediate</font>
-<a name="line22"> 22: </a><font color="#B22222">    </font>
+
 <a name="line23"> 23: </a><font color="#B22222">    Options Database Keys:</font>
 <a name="line24"> 24: </a><font color="#B22222">+   -ksp_cg_Hermitian - Indicates Hermitian matrix</font>
 <a name="line25"> 25: </a><font color="#B22222">-   -ksp_cg_symmetric - Indicates symmetric matrix</font>
@@ -55,24 +55,26 @@
 <a name="line51"> 51: </a><font color="#B22222">-   flg - turn on or off the single reduction</font>
 
 <a name="line53"> 53: </a><font color="#B22222">    Options Database:</font>
-<a name="line54"> 54: </a><font color="#B22222">.   -ksp_cg_single_reduction </font>
+<a name="line54"> 54: </a><font color="#B22222">.   -ksp_cg_single_reduction</font>
 
 <a name="line56"> 56: </a><font color="#B22222">    Level: intermediate</font>
 
-<a name="line58"> 58: </a><font color="#B22222">     The algorithm used in this case is described as Method 1 in Lapack Working Note 56, "Conjugate Gradient Algorithms with Reduced Synchronization Overhead </font>
-<a name="line59"> 59: </a><font color="#B22222">     Distributed Memory Multiprocessors", by E. F. D'Azevedo, V. L. Eijkhout, and C. H. Romine, December 3, 1999. V. Eijkhout creates the algorithm </font>
+<a name="line58"> 58: </a><font color="#B22222">     The algorithm used in this case is described as Method 1 in Lapack Working Note 56, "Conjugate Gradient Algorithms with Reduced Synchronization Overhead</font>
+<a name="line59"> 59: </a><font color="#B22222">     Distributed Memory Multiprocessors", by E. F. D'Azevedo, V. L. Eijkhout, and C. H. Romine, December 3, 1999. V. Eijkhout creates the algorithm</font>
 <a name="line60"> 60: </a><font color="#B22222">     initially to Chronopoulos and Gear.</font>
 
-<a name="line62"> 62: </a><font color="#B22222">     It requires two extra work vectors than the conventional implementation in PETSc. </font>
-<a name="line63"> 63: </a><font color="#B22222">    </font>
-<a name="line64"> 64: </a><font color="#B22222">.keywords: CG, conjugate gradient, Hermitian, symmetric, set, type</font>
-<a name="line65"> 65: </a><font color="#B22222">@*/</font>
-<a name="line66"> 66: </a><strong><font color="#4169E1"><a name="KSPCGUseSingleReduction"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/KSP/KSPCGUseSingleReduction.html#KSPCGUseSingleReduction">KSPCGUseSingleReduction</A>(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>  flg)</font></strong>
-<a name="line67"> 67: </a>{
+<a name="line62"> 62: </a><font color="#B22222">     It requires two extra work vectors than the conventional implementation in PETSc.</font>
 
-<a name="line73"> 73: </a>  PetscTryMethod(ksp,<font color="#666666">"KSPCGUseSingleReduction_C"</font>,(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>),(ksp,flg));
-<a name="line74"> 74: </a>  <font color="#4169E1">return</font>(0);
-<a name="line75"> 75: </a>}
+<a name="line64"> 64: </a><font color="#B22222">     See also <A href="../../../../../docs/manualpages/KSP/KSPPIPECG.html#KSPPIPECG">KSPPIPECG</A>, <A href="../../../../../docs/manualpages/KSP/KSPPIPECR.html#KSPPIPECR">KSPPIPECR</A>, and <A href="../../../../../docs/manualpages/KSP/KSPGROPPCG.html#KSPGROPPCG">KSPGROPPCG</A> that use non-blocking reductions.</font>
+
+<a name="line66"> 66: </a><font color="#B22222">.keywords: CG, conjugate gradient, Hermitian, symmetric, set, type, <A href="../../../../../docs/manualpages/KSP/KSPPGMRES.html#KSPPGMRES">KSPPGMRES</A></font>
+<a name="line67"> 67: </a><font color="#B22222">@*/</font>
+<a name="line68"> 68: </a><strong><font color="#4169E1"><a name="KSPCGUseSingleReduction"></a><A href="../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../docs/manualpages/KSP/KSPCGUseSingleReduction.html#KSPCGUseSingleReduction">KSPCGUseSingleReduction</A>(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> ksp,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A> flg)</font></strong>
+<a name="line69"> 69: </a>{
+
+<a name="line75"> 75: </a>  PetscTryMethod(ksp,<font color="#666666">"KSPCGUseSingleReduction_C"</font>,(<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A>,<A href="../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>),(ksp,flg));
+<a name="line76"> 76: </a>  <font color="#4169E1">return</font>(0);
+<a name="line77"> 77: </a>}
 
 
 

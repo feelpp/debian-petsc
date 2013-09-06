@@ -5,13 +5,13 @@
 <TITLE>PCKSP</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCKSP"><H1>PCKSP</H1></A>
 Defines a preconditioner that can consist of any <A HREF="../KSP/KSP.html#KSP">KSP</A> solver. This allows, for example, embedding a Krylov method inside a preconditioner. 
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-<DT><B>-pc_ksp_true </B> -use the matrix that defines the linear system as the matrix for the
+<DT><B>-pc_use_amat </B> -use the matrix that defines the linear system, Amat as the matrix for the
 inner solver, otherwise by default it uses the matrix used to construct
-the preconditioner (see <A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>())
+the preconditioner, Pmat (see <A HREF="../PC/PCSetOperators.html#PCSetOperators">PCSetOperators</A>())
 <br>
 <P>
 
@@ -26,7 +26,7 @@ the inner <A HREF="../KSP/KSP.html#KSP">KSP</A> just like the outer <A HREF="../
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
   <A HREF="../PC/PCCreate.html#PCCreate">PCCreate</A>(), <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../PC/PCType.html#PCType">PCType</A> (for list of available types), <A HREF="../PC/PC.html#PC">PC</A>,
-<BR><A HREF="../PC/PCSHELL.html#PCSHELL">PCSHELL</A>, <A HREF="../PC/PCCOMPOSITE.html#PCCOMPOSITE">PCCOMPOSITE</A>, PCKSPUseTrue(), <A HREF="../PC/PCKSPGetKSP.html#PCKSPGetKSP">PCKSPGetKSP</A>()
+<BR><A HREF="../PC/PCSHELL.html#PCSHELL">PCSHELL</A>, <A HREF="../PC/PCCOMPOSITE.html#PCCOMPOSITE">PCCOMPOSITE</A>, <A HREF="../PC/PCSetUseAmat.html#PCSetUseAmat">PCSetUseAmat</A>(), <A HREF="../PC/PCKSPGetKSP.html#PCKSPGetKSP">PCKSPGetKSP</A>()
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ksp/pc/impls/ksp/pcksp.c.html#PCKSP">src/ksp/pc/impls/ksp/pcksp.c</A>

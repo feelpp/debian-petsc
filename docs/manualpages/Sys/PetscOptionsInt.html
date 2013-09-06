@@ -5,13 +5,13 @@
 <TITLE>PetscOptionsInt</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscOptionsInt"><H1>PetscOptionsInt</H1></A>
-Gets the integer value for a particular option in the database. 
+Gets a viewer appropriate for the type indicated by the user 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscOptionsInt(const char opt[],const char text[],const char man[],PetscInt defaultv,PetscInt *value,PetscBool  *set)
+PetscErrorCode  PetscOptionsViewer(const char opt[],const char text[],const char man[],PetscViewer *viewer,PetscViewerFormat *format,PetscBool  *set)
 </PRE>
 Logically Collective on the communicator passed in <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>()
 <P>
@@ -22,24 +22,40 @@ Logically Collective on the communicator passed in <A HREF="../Sys/PetscOptionsB
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>text </B></TD><TD>- short string that describes the option
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>man </B></TD><TD>- manual page with additional information on option
-</TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>defaultv </B></TD><TD>- the default (current) value
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>value </B></TD><TD>- the integer value to return
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>viewer </B></TD><TD>- the viewer
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>flg </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if found, else <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>set </B></TD><TD>- <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if found, else <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>
 </TD></TR></TABLE>
 <P>
 
 <P>
 <P>
 Notes: Must be between a <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>() and a <A HREF="../Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>()
+If no value is provided ascii:stdout is used
+<pre>
+      ascii[:[filename][:format]]   defaults to stdout - format can be one of info, info_detailed, or matlab, for example ascii::info prints just the info
+</pre>
+<pre>
+                                    about the object to standard out
+</pre>
+<pre>
+      binary[:filename]   defaults to binaryoutput
+</pre>
+<pre>
+      draw
+</pre>
+<pre>
+      socket[:port]    defaults to the standard output port
+</pre>
+<P>
+Use PetscRestoreViewerDestroy() after using the viewer, otherwise a memory leak will occur
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Sys/PetscOptionsGetReal.html#PetscOptionsGetReal">PetscOptionsGetReal</A>(), <A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(), <A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(),
+ <A HREF="../Viewer/PetscOptionsGetViewer.html#PetscOptionsGetViewer">PetscOptionsGetViewer</A>(), <A HREF="../Sys/PetscOptionsHasName.html#PetscOptionsHasName">PetscOptionsHasName</A>(), <A HREF="../Sys/PetscOptionsGetString.html#PetscOptionsGetString">PetscOptionsGetString</A>(), <A HREF="../Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(),
 <BR><A HREF="../Sys/PetscOptionsGetIntArray.html#PetscOptionsGetIntArray">PetscOptionsGetIntArray</A>(), <A HREF="../Sys/PetscOptionsGetRealArray.html#PetscOptionsGetRealArray">PetscOptionsGetRealArray</A>(), <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>()
 <A HREF="../Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>(), <A HREF="../Sys/PetscOptionsString.html#PetscOptionsString">PetscOptionsString</A>(), <A HREF="../Sys/PetscOptionsReal.html#PetscOptionsReal">PetscOptionsReal</A>(), <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>(),
 <A HREF="../Sys/PetscOptionsName.html#PetscOptionsName">PetscOptionsName</A>(), <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegin">PetscOptionsBegin</A>(), <A HREF="../Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>(), <A HREF="../Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(),
@@ -52,15 +68,15 @@ Notes: Must be between a <A HREF="../Sys/PetscOptionsBegin.html#PetscOptionsBegi
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex18.c.html">src/ksp/ksp/examples/tutorials/ex18.c.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex51.c.html">src/ksp/ksp/examples/tutorials/ex51.c.html</A><BR>
+<A HREF="../../../src/ksp/ksp/examples/tutorials/ex56.c.html">src/ksp/ksp/examples/tutorials/ex56.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex15.c.html">src/snes/examples/tutorials/ex15.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex28.c.html">src/snes/examples/tutorials/ex28.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex46.c.html">src/snes/examples/tutorials/ex46.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex48.c.html">src/snes/examples/tutorials/ex48.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex52.c.html">src/snes/examples/tutorials/ex52.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex61.c.html">src/snes/examples/tutorials/ex61.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex65.c.html">src/snes/examples/tutorials/ex65.c.html</A><BR>
 </BODY></HTML>

@@ -1,12 +1,10 @@
 
 #include <../src/mat/impls/mffd/mffdimpl.h>   /*I  "petscmat.h"   I*/
 
-EXTERN_C_BEGIN
-extern PetscErrorCode  MatCreateMFFD_DS(MatMFFD);
-extern PetscErrorCode  MatCreateMFFD_WP(MatMFFD);
-EXTERN_C_END
+PETSC_EXTERN PetscErrorCode MatCreateMFFD_DS(MatMFFD);
+PETSC_EXTERN PetscErrorCode MatCreateMFFD_WP(MatMFFD);
 
-#undef __FUNCT__  
+#undef __FUNCT__
 #define __FUNCT__ "MatMFFDRegisterAll"
 /*@C
   MatMFFDRegisterAll - Registers all of the compute-h in the MatMFFD package.
@@ -17,18 +15,18 @@ EXTERN_C_END
 
 .keywords: MatMFFD, register, all
 
-.seealso:  MatMFFDRegisterDestroy(), MatMFFDRegisterDynamic), MatCreateMFFD(), 
+.seealso:  MatMFFDRegisterDestroy(), MatMFFDRegister(), MatCreateMFFD(),
            MatMFFDSetType()
 @*/
-PetscErrorCode  MatMFFDRegisterAll(const char *path)
+PetscErrorCode  MatMFFDRegisterAll(void)
 {
   PetscErrorCode ierr;
 
   PetscFunctionBegin;
   MatMFFDRegisterAllCalled = PETSC_TRUE;
 
-  ierr = MatMFFDRegisterDynamic(MATMFFD_DS,path,"MatCreateMFFD_DS",MatCreateMFFD_DS);CHKERRQ(ierr);
-  ierr = MatMFFDRegisterDynamic(MATMFFD_WP,path,"MatCreateMFFD_WP",MatCreateMFFD_WP);CHKERRQ(ierr);
+  ierr = MatMFFDRegister(MATMFFD_DS,MatCreateMFFD_DS);CHKERRQ(ierr);
+  ierr = MatMFFDRegister(MATMFFD_WP,MatCreateMFFD_WP);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
 

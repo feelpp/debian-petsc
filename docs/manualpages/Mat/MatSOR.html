@@ -5,7 +5,7 @@
 <TITLE>MatSOR</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatSOR"><H1>MatSOR</H1></A>
 Computes relaxation (SOR, Gauss-Seidel) sweeps. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -29,7 +29,7 @@ Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF=".
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>its </B></TD><TD>- the number of iterations
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>lits </B></TD><TD>- the number of local iterations 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>lits </B></TD><TD>- the number of local iterations
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
@@ -43,13 +43,13 @@ Neighbor-wise Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A> and <A HREF=".
 <br>
 <DT><B>SOR_SYMMETRIC_SWEEP </B> -SSOR (symmetric SOR)
 <br>
-<DT><B>SOR_LOCAL_FORWARD_SWEEP </B> -local forward SOR 
+<DT><B>SOR_LOCAL_FORWARD_SWEEP </B> -local forward SOR
 <br>
-<DT><B>SOR_LOCAL_BACKWARD_SWEEP </B> -local forward SOR 
+<DT><B>SOR_LOCAL_BACKWARD_SWEEP </B> -local forward SOR
 <br>
 <DT><B>SOR_LOCAL_SYMMETRIC_SWEEP </B> -local SSOR
 <br>
-<DT><B>SOR_APPLY_UPPER, SOR_APPLY_LOWER </B> -applies 
+<DT><B>SOR_APPLY_UPPER, SOR_APPLY_LOWER </B> -applies
 upper/lower triangular part of matrix to
 vector (with omega)
 <br>

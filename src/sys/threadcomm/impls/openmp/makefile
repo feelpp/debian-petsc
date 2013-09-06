@@ -4,11 +4,9 @@ ALL: lib
 
 CFLAGS   =
 FFLAGS   =
-SOURCEC  = openmp.c
+SOURCEC  = tcopenmp.c
 SOURCEF  =
-SOURCEH  = 
-OBJSC    = openmp.o
-OBJSF    =
+SOURCEH  =
 LIBBASE  = libpetscsys
 MANSEC   = PetscThreadComm
 LOCDIR   = src/sys/threadcomm/impls/openmp/

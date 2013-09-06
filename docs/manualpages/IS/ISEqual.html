@@ -5,7 +5,7 @@
 <TITLE>ISEqual</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="ISEqual"><H1>ISEqual</H1></A>
 Compares if two index sets have the same set of indices. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -21,7 +21,7 @@ Collective on <A HREF="../IS/IS.html#IS">IS</A>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
 <DT><B>flg </B> -output flag, either <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> (if both index sets have the
-same indices), or <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> if the index sets differ by size 
+same indices), or <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> if the index sets differ by size
 or by the set of indices)
 <br>
 <P>
@@ -33,7 +33,7 @@ the comparision is made, so the order of the indices on a processor is immateria
 <P>
 Each processor has to have the same indices in the two sets, for example,
 <pre>
-          Processor 
+          Processor
 </pre>
 <pre>
             0      1
@@ -48,7 +48,7 @@ will return false.
 <P>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/utils/iscomp.c.html#ISEqual">src/vec/is/utils/iscomp.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/is/utils/iscomp.c.html#ISEqual">src/vec/is/is/utils/iscomp.c</A>
 <BR><A HREF="./index.html">Index of all IS routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

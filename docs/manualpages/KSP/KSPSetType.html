@@ -5,13 +5,13 @@
 <TITLE>KSPSetType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="KSPSetType"><H1>KSPSetType</H1></A>
-Builds <A HREF="../KSP/KSP.html#KSP">KSP</A> for a particular solver.  
+Builds <A HREF="../KSP/KSP.html#KSP">KSP</A> for a particular solver. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-PetscErrorCode  KSPSetType(KSP ksp, const KSPType type)
+PetscErrorCode  KSPSetType(KSP ksp, KSPType type)
 </PRE>
 Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 <P>
@@ -23,7 +23,7 @@ Logically Collective on <A HREF="../KSP/KSP.html#KSP">KSP</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Options Database Key</FONT></H3>
-<DT><B>-ksp_type  &lt;method&gt; </B> -Sets the method; use -help for a list 
+<DT><B>-ksp_type  &lt;method&gt; </B> -Sets the method; use -help for a list
 of available methods (for instance, cg or gmres)
 <br>
 <P>
@@ -45,12 +45,15 @@ not for beginners.
 <P>
 
 <P>
+Developer Note: <A HREF="../KSP/KSPRegister.html#KSPRegister">KSPRegister</A>() is used to add Krylov types to KSPList from which they
+are accessed by <A HREF="../KSP/KSPSetType.html#KSPSetType">KSPSetType</A>().
+<P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../KSP/KSP.html#KSP">KSP</A>, set, method
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A>
+ <A HREF="../PC/PCSetType.html#PCSetType">PCSetType</A>(), <A HREF="../KSP/KSPType.html#KSPType">KSPType</A>, <A HREF="../KSP/KSPRegister.html#KSPRegister">KSPRegister</A>(), <A HREF="../KSP/KSPCreate.html#KSPCreate">KSPCreate</A>()
 <BR>
 <P>
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate

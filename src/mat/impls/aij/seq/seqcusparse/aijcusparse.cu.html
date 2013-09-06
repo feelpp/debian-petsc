@@ -1,0 +1,1152 @@
+<center><a href="aijcusparse.cu">Actual source code: aijcusparse.cu</a></center><br>
+
+<html>
+<head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/impls/aij/seq/seqcusparse/aijcusparse.cu.html" />
+<title></title>
+<meta name="generator" content="c2html 0.9.5">
+<meta name="date" content="2013-07-02T14:41:54+00:00">
+</head>
+
+<body bgcolor="#FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<pre width="80"><a name="line1">  1: </a><font color="#B22222">/*</font>
+<a name="line2">  2: </a><font color="#B22222">  Defines the basic matrix operations for the AIJ (compressed row)</font>
+<a name="line3">  3: </a><font color="#B22222">  matrix storage format using the CUSPARSE library,</font>
+<a name="line4">  4: </a><font color="#B22222">*/</font>
+
+<a name="line6">  6: </a><font color="#A020F0">#include </font><font color="#666666">"petscconf.h"</font><font color="#A020F0"></font>
+<a name="line7"> 7: </a> #include <A href="../../../../../../include/../src/mat/impls/aij/seq/aij.h.html">../src/mat/impls/aij/seq/aij.h</A>
+<a name="line8">  8: </a><font color="#A020F0">#include &lt;../src/mat/impls/sbaij/seq/sbaij.h&gt;</font>
+<a name="line9"> 9: </a> #include <A href="../../../../../../include/../src/vec/vec/impls/dvecimpl.h.html">../src/vec/vec/impls/dvecimpl.h</A>
+<a name="line10"> 10: </a><font color="#A020F0">#include </font><font color="#666666">"petsc-private/vecimpl.h"</font><font color="#A020F0"></font>
+<a name="line11"> 11: </a><strong><font color="#228B22">#undef <A href="../../../../../../docs/manualpages/Vec/VecType.html#VecType">VecType</A></font></strong>
+<a name="line12"> 12: </a> #include <A href="cusparsematimpl.h.html">cusparsematimpl.h</A>
+
+<a name="line14"> 14: </a>const char *const MatCUSPARSEStorageFormats[] = {<font color="#666666">"CSR"</font>,<font color="#666666">"ELL"</font>,<font color="#666666">"HYB"</font>,<font color="#666666">"<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A>"</font>,<font color="#666666">"MAT_CUSPARSE_"</font>,0};
+
+<a name="line16"> 16: </a><font color="#B22222">/* this is such a hack ... but I don't know of another way to pass this variable</font>
+<a name="line17"> 17: </a><font color="#B22222">   from one GPU_Matrix_Ifc class to another. This is necessary for the parallel</font>
+<a name="line18"> 18: </a><font color="#B22222">   SpMV. Essentially, I need to use the same stream variable in two different</font>
+<a name="line19"> 19: </a><font color="#B22222">   data structures. I do this by creating a single instance of that stream</font>
+<a name="line20"> 20: </a><font color="#B22222">   and reuse it. */</font>
+<a name="line21"> 21: </a>cudaStream_t theBodyStream=0;
+
+<a name="line23"> 23: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatICCFactorSymbolic_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>*)</font></strong>;
+<a name="line24"> 24: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCholeskyFactorSymbolic_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>*)</font></strong>;
+<a name="line25"> 25: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCholeskyFactorNumeric_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>*)</font></strong>;
+
+<a name="line27"> 27: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatILUFactorSymbolic_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>*)</font></strong>;
+<a name="line28"> 28: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatLUFactorSymbolic_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>*)</font></strong>;
+<a name="line29"> 29: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatLUFactorNumeric_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A>*)</font></strong>;
+
+<a name="line31"> 31: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolve_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line32"> 32: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolve_SeqAIJCUSPARSE_NaturalOrdering(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line33"> 33: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolveTranspose_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line34"> 34: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolveTranspose_SeqAIJCUSPARSE_NaturalOrdering(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line35"> 35: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSetFromOptions_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>)</font></strong>;
+<a name="line36"> 36: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMult_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line37"> 37: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultAdd_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line38"> 38: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultTranspose_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+<a name="line39"> 39: </a><strong><font color="#4169E1">static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultTransposeAdd_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A>)</font></strong>;
+
+<a name="line43"> 43: </a><strong><font color="#4169E1"><a name="MatFactorGetSolverPackage_seqaij_cusparse"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatFactorGetSolverPackage_seqaij_cusparse(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A> *type)</font></strong>
+<a name="line44"> 44: </a>{
+<a name="line46"> 46: </a>  *type = <A href="../../../../../../docs/manualpages/Mat/MATSOLVERCUSPARSE.html#MATSOLVERCUSPARSE">MATSOLVERCUSPARSE</A>;
+<a name="line47"> 47: </a>  <font color="#4169E1">return</font>(0);
+<a name="line48"> 48: </a>}
+
+<a name="line50"> 50: </a><font color="#B22222">/*MC</font>
+<a name="line51"> 51: </a><font color="#B22222">  <A href="../../../../../../docs/manualpages/Mat/MATSOLVERCUSPARSE.html#MATSOLVERCUSPARSE">MATSOLVERCUSPARSE</A> = "cusparse" - A matrix type providing triangular solvers for seq matrices</font>
+<a name="line52"> 52: </a><font color="#B22222">  on a single GPU of type, seqaijcusparse, aijcusparse, or seqaijcusp, aijcusp. Currently supported</font>
+<a name="line53"> 53: </a><font color="#B22222">  algorithms are ILU(k) and ICC(k). Typically, deeper factorizations (larger k) results in poorer</font>
+<a name="line54"> 54: </a><font color="#B22222">  performance in the triangular solves. Full LU, and Cholesky decompositions can be solved through the</font>
+<a name="line55"> 55: </a><font color="#B22222">  CUSPARSE triangular solve algorithm. However, the performance can be quite poor and thus these</font>
+<a name="line56"> 56: </a><font color="#B22222">  algorithms are not recommended. This class does NOT support direct solver operations.</font>
+
+<a name="line58"> 58: </a><font color="#B22222">  ./configure --download-txpetscgpu to install PETSc to use CUSPARSE</font>
+
+<a name="line60"> 60: </a><font color="#B22222">  Consult CUSPARSE documentation for more information about the matrix storage formats</font>
+<a name="line61"> 61: </a><font color="#B22222">  which correspond to the options database keys below.</font>
+
+<a name="line63"> 63: </a><font color="#B22222">   Options Database Keys:</font>
+<a name="line64"> 64: </a><font color="#B22222">.  -mat_cusparse_solve_storage_format csr - sets the storage format matrices (for factors in <A href="../../../../../../docs/manualpages/Mat/MatSolve.html#MatSolve">MatSolve</A>) during a call to <A href="../../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(). Other options include ell (ellpack) or hyb (hybrid). Only available with 'txpetscgpu' package.</font>
+
+<a name="line66"> 66: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line68"> 68: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/PC/PCFactorSetMatSolverPackage.html#PCFactorSetMatSolverPackage">PCFactorSetMatSolverPackage</A>(), <A href="../../../../../../docs/manualpages/Mat/MatSolverPackage.html#MatSolverPackage">MatSolverPackage</A>, <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJCUSPARSE.html#MatCreateSeqAIJCUSPARSE">MatCreateSeqAIJCUSPARSE</A>(), <A href="../../../../../../docs/manualpages/Mat/MATAIJCUSPARSE.html#MATAIJCUSPARSE">MATAIJCUSPARSE</A>, <A href="../../../../../../docs/manualpages/Mat/MatCreateAIJCUSPARSE.html#MatCreateAIJCUSPARSE">MatCreateAIJCUSPARSE</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A>, <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A></font>
+<a name="line69"> 69: </a><font color="#B22222">M*/</font>
+
+<a name="line73"> 73: </a><strong><font color="#4169E1"><a name="MatGetFactor_seqaij_cusparse"></a>PETSC_EXTERN <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetFactor_seqaij_cusparse(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatFactorType.html#MatFactorType">MatFactorType</A> ftype,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *B)</font></strong>
+<a name="line74"> 74: </a>{
+<a name="line76"> 76: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       n = A-&gt;rmap-&gt;n;
+
+<a name="line79"> 79: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A),B);
+<a name="line80"> 80: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*B,n,n,n,n);
+<a name="line81"> 81: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*B,<A href="../../../../../../docs/manualpages/Mat/MATSEQAIJCUSPARSE.html#MATSEQAIJCUSPARSE">MATSEQAIJCUSPARSE</A>);
+
+<a name="line83"> 83: </a>  <font color="#4169E1">if</font> (ftype == MAT_FACTOR_LU || ftype == MAT_FACTOR_ILU || ftype == MAT_FACTOR_ILUDT) {
+<a name="line84"> 84: </a>    <A href="../../../../../../docs/manualpages/Mat/MatSetBlockSizes.html#MatSetBlockSizes">MatSetBlockSizes</A>(*B,A-&gt;rmap-&gt;bs,A-&gt;cmap-&gt;bs);
+<a name="line85"> 85: </a>    (*B)-&gt;ops-&gt;ilufactorsymbolic = MatILUFactorSymbolic_SeqAIJCUSPARSE;
+<a name="line86"> 86: </a>    (*B)-&gt;ops-&gt;lufactorsymbolic  = MatLUFactorSymbolic_SeqAIJCUSPARSE;
+<a name="line87"> 87: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (ftype == MAT_FACTOR_CHOLESKY || ftype == MAT_FACTOR_ICC) {
+<a name="line88"> 88: </a>    (*B)-&gt;ops-&gt;iccfactorsymbolic      = MatICCFactorSymbolic_SeqAIJCUSPARSE;
+<a name="line89"> 89: </a>    (*B)-&gt;ops-&gt;choleskyfactorsymbolic = MatCholeskyFactorSymbolic_SeqAIJCUSPARSE;
+<a name="line90"> 90: </a>  } <font color="#4169E1">else</font> <A href="../../../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"Factor type not supported for CUSPARSE Matrix Types"</font>);
+
+<a name="line92"> 92: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>(*B,MAT_SKIP_ALLOCATION,NULL);
+<a name="line93"> 93: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)(*B),<font color="#666666">"MatFactorGetSolverPackage_C"</font>,MatFactorGetSolverPackage_seqaij_cusparse);
+<a name="line94"> 94: </a>  (*B)-&gt;factortype = ftype;
+<a name="line95"> 95: </a>  <font color="#4169E1">return</font>(0);
+<a name="line96"> 96: </a>}
+
+<a name="line100">100: </a><strong><font color="#4169E1"><a name="MatCUSPARSESetFormat_SeqAIJCUSPARSE"></a>PETSC_INTERN <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCUSPARSESetFormat_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A> op,<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A> format)</font></strong>
+<a name="line101">101: </a>{
+<a name="line102">102: </a>  Mat_SeqAIJCUSPARSE *cusparseMat = (Mat_SeqAIJCUSPARSE*)A-&gt;spptr;
+
+<a name="line105">105: </a>  <font color="#4169E1">switch</font> (op) {
+<a name="line106">106: </a>  <font color="#4169E1">case</font> MAT_CUSPARSE_MULT:
+<a name="line107">107: </a>    cusparseMat-&gt;format = format;
+<a name="line108">108: </a>    <font color="#4169E1">break</font>;
+<a name="line109">109: </a>  <font color="#4169E1">case</font> MAT_CUSPARSE_SOLVE:
+<a name="line110">110: </a>    cusparseMatSolveStorageFormat = format;
+<a name="line111">111: </a>    <font color="#4169E1">break</font>;
+<a name="line112">112: </a>  <font color="#4169E1">case</font> MAT_CUSPARSE_ALL:
+<a name="line113">113: </a>    cusparseMat-&gt;format           = format;
+<a name="line114">114: </a>    cusparseMatSolveStorageFormat = format;
+<a name="line115">115: </a>    <font color="#4169E1">break</font>;
+<a name="line116">116: </a><strong><font color="#FF0000">  default:</font></strong>
+<a name="line117">117: </a>    <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SUP,<font color="#666666">"unsupported operation %d for <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A>. MAT_CUSPARSE_MULT, MAT_CUSPARSE_SOLVE, and MAT_CUSPARSE_ALL are currently supported."</font>,op);
+<a name="line118">118: </a>  }
+<a name="line119">119: </a>  <font color="#4169E1">return</font>(0);
+<a name="line120">120: </a>}
+
+<a name="line122">122: </a><font color="#B22222">/*@</font>
+<a name="line123">123: </a><font color="#B22222">   <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A> - Sets the storage format of CUSPARSE matrices for a particular</font>
+<a name="line124">124: </a><font color="#B22222">   operation. Only the <A href="../../../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A> operation can use different GPU storage formats</font>
+<a name="line125">125: </a><font color="#B22222">   for MPIAIJCUSPARSE matrices. This requires the txpetscgpu package. Use --download-txpetscgpu</font>
+<a name="line126">126: </a><font color="#B22222">   to build/install PETSc to use this package.</font>
+
+<a name="line128">128: </a><font color="#B22222">   Not Collective</font>
+
+<a name="line130">130: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line131">131: </a><font color="#B22222">+  A - Matrix of type SEQAIJCUSPARSE</font>
+<a name="line132">132: </a><font color="#B22222">.  op - <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A>. SEQAIJCUSPARSE matrices support MAT_CUSPARSE_MULT, MAT_CUSPARSE_SOLVE, and MAT_CUSPARSE_ALL. MPIAIJCUSPARSE matrices support MAT_CUSPARSE_MULT_DIAG, MAT_CUSPARSE_MULT_OFFDIAG, and MAT_CUSPARSE_ALL.</font>
+<a name="line133">133: </a><font color="#B22222">-  format - <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A> (one of MAT_CUSPARSE_CSR, MAT_CUSPARSE_ELL, MAT_CUSPARSE_HYB)</font>
+
+<a name="line135">135: </a><font color="#B22222">   Output Parameter:</font>
+
+<a name="line137">137: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line139">139: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A>, <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A></font>
+<a name="line140">140: </a><font color="#B22222">@*/</font>
+<a name="line143">143: </a><strong><font color="#4169E1"><a name="MatCUSPARSESetFormat"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A> op,<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A> format)</font></strong>
+<a name="line144">144: </a>{
+
+<a name="line149">149: </a>  PetscTryMethod(A, <font color="#666666">"MatCUSPARSESetFormat_C"</font>,(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A>,<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A>,<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A>),(A,op,format));
+<a name="line150">150: </a>  <font color="#4169E1">return</font>(0);
+<a name="line151">151: </a>}
+
+<a name="line155">155: </a><strong><font color="#4169E1"><a name="MatSetFromOptions_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSetFromOptions_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line156">156: </a>{
+<a name="line157">157: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>           ierr;
+<a name="line158">158: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A> format;
+<a name="line159">159: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>                flg;
+
+<a name="line162">162: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>(<font color="#666666">"SeqAIJCUSPARSE options"</font>);
+<a name="line163">163: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectOptionsBegin.html#PetscObjectOptionsBegin">PetscObjectOptionsBegin</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A);
+<a name="line164">164: </a>  <font color="#4169E1">if</font> (A-&gt;factortype==MAT_FACTOR_NONE) {
+<a name="line165">165: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscOptionsEnum.html#PetscOptionsEnum">PetscOptionsEnum</A>(<font color="#666666">"-mat_cusparse_mult_storage_format"</font>,<font color="#666666">"sets storage format of (seq)aijcusparse gpu matrices for SpMV"</font>,
+<a name="line166">166: </a>                            <font color="#666666">"<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>"</font>,MatCUSPARSEStorageFormats,(<A href="../../../../../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A>)MAT_CUSPARSE_CSR,(<A href="../../../../../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A>*)&amp;format,&amp;flg);
+<a name="line167">167: </a>    <font color="#4169E1">if</font> (flg) {
+<a name="line168">168: </a>      <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>(A,MAT_CUSPARSE_MULT,format);
+<a name="line169">169: </a>    }
+<a name="line170">170: </a>  } <font color="#4169E1">else</font> {
+<a name="line171">171: </a>    <A href="../../../../../../docs/manualpages/Sys/PetscOptionsEnum.html#PetscOptionsEnum">PetscOptionsEnum</A>(<font color="#666666">"-mat_cusparse_solve_storage_format"</font>,<font color="#666666">"sets storage format of (seq)aijcusparse gpu matrices for TriSolve"</font>,
+<a name="line172">172: </a>                            <font color="#666666">"<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>"</font>,MatCUSPARSEStorageFormats,(<A href="../../../../../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A>)MAT_CUSPARSE_CSR,(<A href="../../../../../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A>*)&amp;format,&amp;flg);
+<a name="line173">173: </a>    <font color="#4169E1">if</font> (flg) {
+<a name="line174">174: </a>      <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>(A,MAT_CUSPARSE_SOLVE,format);
+<a name="line175">175: </a>    }
+<a name="line176">176: </a>  }
+<a name="line177">177: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscOptionsEnum.html#PetscOptionsEnum">PetscOptionsEnum</A>(<font color="#666666">"-mat_cusparse_storage_format"</font>,<font color="#666666">"sets storage format of (seq)aijcusparse gpu matrices for SpMV and TriSolve"</font>,
+<a name="line178">178: </a>                          <font color="#666666">"<A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>"</font>,MatCUSPARSEStorageFormats,(<A href="../../../../../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A>)MAT_CUSPARSE_CSR,(<A href="../../../../../../docs/manualpages/Sys/PetscEnum.html#PetscEnum">PetscEnum</A>*)&amp;format,&amp;flg);
+<a name="line179">179: </a>  <font color="#4169E1">if</font> (flg) {
+<a name="line180">180: </a>    <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>(A,MAT_CUSPARSE_ALL,format);
+<a name="line181">181: </a>  }
+<a name="line182">182: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscOptionsEnd.html#PetscOptionsEnd">PetscOptionsEnd</A>();
+<a name="line183">183: </a>  <font color="#4169E1">return</font>(0);
+
+<a name="line185">185: </a>}
+
+<a name="line189">189: </a><strong><font color="#4169E1"><a name="MatILUFactorSymbolic_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatILUFactorSymbolic_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> isrow,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> iscol,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
+<a name="line190">190: </a>{
+
+<a name="line194">194: </a>  MatILUFactorSymbolic_SeqAIJ(B,A,isrow,iscol,info);
+<a name="line195">195: </a>  B-&gt;ops-&gt;lufactornumeric = MatLUFactorNumeric_SeqAIJCUSPARSE;
+<a name="line196">196: </a>  <font color="#4169E1">return</font>(0);
+<a name="line197">197: </a>}
+
+<a name="line201">201: </a><strong><font color="#4169E1"><a name="MatLUFactorSymbolic_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatLUFactorSymbolic_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> isrow,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> iscol,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
+<a name="line202">202: </a>{
+
+<a name="line206">206: </a>  MatLUFactorSymbolic_SeqAIJ(B,A,isrow,iscol,info);
+<a name="line207">207: </a>  B-&gt;ops-&gt;lufactornumeric = MatLUFactorNumeric_SeqAIJCUSPARSE;
+<a name="line208">208: </a>  <font color="#4169E1">return</font>(0);
+<a name="line209">209: </a>}
+
+<a name="line213">213: </a><strong><font color="#4169E1"><a name="MatICCFactorSymbolic_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatICCFactorSymbolic_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> perm,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
+<a name="line214">214: </a>{
+
+<a name="line218">218: </a>  MatICCFactorSymbolic_SeqAIJ(B,A,perm,info);
+<a name="line219">219: </a>  B-&gt;ops-&gt;choleskyfactornumeric = MatCholeskyFactorNumeric_SeqAIJCUSPARSE;
+<a name="line220">220: </a>  <font color="#4169E1">return</font>(0);
+<a name="line221">221: </a>}
+
+<a name="line225">225: </a><strong><font color="#4169E1"><a name="MatCholeskyFactorSymbolic_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCholeskyFactorSymbolic_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A> perm,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
+<a name="line226">226: </a>{
+
+<a name="line230">230: </a>  MatCholeskyFactorSymbolic_SeqAIJ(B,A,perm,info);
+<a name="line231">231: </a>  B-&gt;ops-&gt;choleskyfactornumeric = MatCholeskyFactorNumeric_SeqAIJCUSPARSE;
+<a name="line232">232: </a>  <font color="#4169E1">return</font>(0);
+<a name="line233">233: </a>}
+
+<a name="line237">237: </a><strong><font color="#4169E1"><a name="MatSeqAIJCUSPARSEBuildILULowerTriMatrix"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJCUSPARSEBuildILULowerTriMatrix(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line238">238: </a>{
+<a name="line239">239: </a>  Mat_SeqAIJ                   *a                  = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line240">240: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     n                   = A-&gt;rmap-&gt;n;
+<a name="line241">241: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line242">242: </a>  GPU_Matrix_Ifc               *cusparseMat        = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;loTriFactorPtr;
+<a name="line243">243: </a>  cusparseStatus_t             stat;
+<a name="line244">244: </a>  const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               *ai = a-&gt;i,*aj = a-&gt;j,*vi;
+<a name="line245">245: </a>  const MatScalar              *aa = a-&gt;a,*v;
+<a name="line246">246: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     *AiLo, *AjLo;
+<a name="line247">247: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>                  *AALo;
+<a name="line248">248: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     i,nz, nzLower, offset, rowOffset;
+<a name="line249">249: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+
+<a name="line252">252: </a>  <font color="#4169E1">if</font> (A-&gt;valid_GPU_matrix == PETSC_CUSP_UNALLOCATED || A-&gt;valid_GPU_matrix == PETSC_CUSP_CPU) {
+<a name="line253">253: </a>    try {
+<a name="line254">254: </a>      <font color="#B22222">/* first figure out the number of nonzeros in the lower triangular matrix including 1's on the diagonal. */</font>
+<a name="line255">255: </a>      nzLower=n+ai[n]-ai[1];
+
+<a name="line257">257: </a>      <font color="#B22222">/* Allocate Space for the lower triangular matrix */</font>
+<a name="line258">258: </a>      cudaMallocHost((void**) &amp;AiLo, (n+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));CHKERRCUSP(ierr);
+<a name="line259">259: </a>      cudaMallocHost((void**) &amp;AjLo, nzLower*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));CHKERRCUSP(ierr);
+<a name="line260">260: </a>      cudaMallocHost((void**) &amp;AALo, nzLower*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));CHKERRCUSP(ierr);
+
+<a name="line262">262: </a>      <font color="#B22222">/* Fill the lower triangular matrix */</font>
+<a name="line263">263: </a>      AiLo[0]  = (<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) 0;
+<a name="line264">264: </a>      AiLo[n]  = nzLower;
+<a name="line265">265: </a>      AjLo[0]  = (<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) 0;
+<a name="line266">266: </a>      AALo[0]  = (MatScalar) 1.0;
+<a name="line267">267: </a>      v        = aa;
+<a name="line268">268: </a>      vi       = aj;
+<a name="line269">269: </a>      offset   = 1;
+<a name="line270">270: </a>      rowOffset= 1;
+<a name="line271">271: </a>      <font color="#4169E1">for</font> (i=1; i&lt;n; i++) {
+<a name="line272">272: </a>        nz = ai[i+1] - ai[i];
+<a name="line273">273: </a>        <font color="#B22222">/* additional 1 for the term on the diagonal */</font>
+<a name="line274">274: </a>        AiLo[i]    = rowOffset;
+<a name="line275">275: </a>        rowOffset += nz+1;
+
+<a name="line277">277: </a>        <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(&amp;(AjLo[offset]), vi, nz*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line278">278: </a>        <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(&amp;(AALo[offset]), v, nz*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+
+<a name="line280">280: </a>        offset      += nz;
+<a name="line281">281: </a>        AjLo[offset] = (<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) i;
+<a name="line282">282: </a>        AALo[offset] = (MatScalar) 1.0;
+<a name="line283">283: </a>        offset      += 1;
+
+<a name="line285">285: </a>        v  += nz;
+<a name="line286">286: </a>        vi += nz;
+<a name="line287">287: </a>      }
+<a name="line288">288: </a>      cusparseMat = GPU_Matrix_Factory::getNew(MatCUSPARSEStorageFormats[cusparseTriFactors-&gt;format]);
+
+<a name="line290">290: </a>      stat = cusparseMat-&gt;initializeCusparseMat(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_TRIANGULAR, CUSPARSE_FILL_MODE_LOWER, CUSPARSE_DIAG_TYPE_UNIT);CHKERRCUSP(stat);
+<a name="line291">291: </a>      cusparseMat-&gt;setMatrix(n, n, nzLower, AiLo, AjLo, AALo);CHKERRCUSP(ierr);
+<a name="line292">292: </a>      stat = cusparseMat-&gt;solveAnalysis();CHKERRCUSP(stat);
+
+<a name="line294">294: </a>      ((Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr)-&gt;loTriFactorPtr = cusparseMat;
+
+<a name="line296">296: </a>      cudaFreeHost(AiLo);CHKERRCUSP(ierr);
+<a name="line297">297: </a>      cudaFreeHost(AjLo);CHKERRCUSP(ierr);
+<a name="line298">298: </a>      cudaFreeHost(AALo);CHKERRCUSP(ierr);
+<a name="line299">299: </a>    } catch(char *ex) {
+<a name="line300">300: </a>      <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line301">301: </a>    }
+<a name="line302">302: </a>  }
+<a name="line303">303: </a>  <font color="#4169E1">return</font>(0);
+<a name="line304">304: </a>}
+
+<a name="line308">308: </a><strong><font color="#4169E1"><a name="MatSeqAIJCUSPARSEBuildILUUpperTriMatrix"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJCUSPARSEBuildILUUpperTriMatrix(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line309">309: </a>{
+<a name="line310">310: </a>  Mat_SeqAIJ                   *a                  = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line311">311: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     n                   = A-&gt;rmap-&gt;n;
+<a name="line312">312: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line313">313: </a>  GPU_Matrix_Ifc               *cusparseMat        = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;upTriFactorPtr;
+<a name="line314">314: </a>  cusparseStatus_t             stat;
+<a name="line315">315: </a>  const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               *aj = a-&gt;j,*adiag = a-&gt;diag,*vi;
+<a name="line316">316: </a>  const MatScalar              *aa = a-&gt;a,*v;
+<a name="line317">317: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     *AiUp, *AjUp;
+<a name="line318">318: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>                  *AAUp;
+<a name="line319">319: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     i,nz, nzUpper, offset;
+<a name="line320">320: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+
+<a name="line323">323: </a>  <font color="#4169E1">if</font> (A-&gt;valid_GPU_matrix == PETSC_CUSP_UNALLOCATED || A-&gt;valid_GPU_matrix == PETSC_CUSP_CPU) {
+<a name="line324">324: </a>    try {
+<a name="line325">325: </a>      <font color="#B22222">/* next, figure out the number of nonzeros in the upper triangular matrix. */</font>
+<a name="line326">326: </a>      nzUpper = adiag[0]-adiag[n];
+
+<a name="line328">328: </a>      <font color="#B22222">/* Allocate Space for the upper triangular matrix */</font>
+<a name="line329">329: </a>      cudaMallocHost((void**) &amp;AiUp, (n+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));CHKERRCUSP(ierr);
+<a name="line330">330: </a>      cudaMallocHost((void**) &amp;AjUp, nzUpper*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));CHKERRCUSP(ierr);
+<a name="line331">331: </a>      cudaMallocHost((void**) &amp;AAUp, nzUpper*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));CHKERRCUSP(ierr);
+
+<a name="line333">333: </a>      <font color="#B22222">/* Fill the upper triangular matrix */</font>
+<a name="line334">334: </a>      AiUp[0]=(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) 0;
+<a name="line335">335: </a>      AiUp[n]=nzUpper;
+<a name="line336">336: </a>      offset = nzUpper;
+<a name="line337">337: </a>      <font color="#4169E1">for</font> (i=n-1; i&gt;=0; i--) {
+<a name="line338">338: </a>        v  = aa + adiag[i+1] + 1;
+<a name="line339">339: </a>        vi = aj + adiag[i+1] + 1;
+
+<a name="line341">341: </a>        <font color="#B22222">/* number of elements NOT on the diagonal */</font>
+<a name="line342">342: </a>        nz = adiag[i] - adiag[i+1]-1;
+
+<a name="line344">344: </a>        <font color="#B22222">/* decrement the offset */</font>
+<a name="line345">345: </a>        offset -= (nz+1);
+
+<a name="line347">347: </a>        <font color="#B22222">/* first, set the diagonal elements */</font>
+<a name="line348">348: </a>        AjUp[offset] = (<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) i;
+<a name="line349">349: </a>        AAUp[offset] = 1./v[nz];
+<a name="line350">350: </a>        AiUp[i]      = AiUp[i+1] - (nz+1);
+
+<a name="line352">352: </a>        <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(&amp;(AjUp[offset+1]), vi, nz*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line353">353: </a>        <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(&amp;(AAUp[offset+1]), v, nz*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+<a name="line354">354: </a>      }
+<a name="line355">355: </a>      cusparseMat = GPU_Matrix_Factory::getNew(MatCUSPARSEStorageFormats[cusparseTriFactors-&gt;format]);
+
+<a name="line357">357: </a>      stat = cusparseMat-&gt;initializeCusparseMat(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_TRIANGULAR, CUSPARSE_FILL_MODE_UPPER, CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line358">358: </a>      cusparseMat-&gt;setMatrix(n, n, nzUpper, AiUp, AjUp, AAUp);CHKERRCUSP(ierr);
+<a name="line359">359: </a>      stat = cusparseMat-&gt;solveAnalysis();CHKERRCUSP(stat);
+
+<a name="line361">361: </a>      ((Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr)-&gt;upTriFactorPtr = cusparseMat;
+
+<a name="line363">363: </a>      cudaFreeHost(AiUp);CHKERRCUSP(ierr);
+<a name="line364">364: </a>      cudaFreeHost(AjUp);CHKERRCUSP(ierr);
+<a name="line365">365: </a>      cudaFreeHost(AAUp);CHKERRCUSP(ierr);
+<a name="line366">366: </a>    } catch(char *ex) {
+<a name="line367">367: </a>      <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line368">368: </a>    }
+<a name="line369">369: </a>  }
+<a name="line370">370: </a>  <font color="#4169E1">return</font>(0);
+<a name="line371">371: </a>}
+
+<a name="line375">375: </a><strong><font color="#4169E1"><a name="MatSeqAIJCUSPARSEILUAnalysisAndCopyToGPU"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJCUSPARSEILUAnalysisAndCopyToGPU(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line376">376: </a>{
+<a name="line377">377: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+<a name="line378">378: </a>  Mat_SeqAIJ                   *a                  = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line379">379: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line380">380: </a>  <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>                           isrow = a-&gt;row,iscol = a-&gt;icol;
+<a name="line381">381: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>                    row_identity,col_identity;
+<a name="line382">382: </a>  const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               *r,*c;
+<a name="line383">383: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     n = A-&gt;rmap-&gt;n;
+
+<a name="line386">386: </a>  MatSeqAIJCUSPARSEBuildILULowerTriMatrix(A);
+<a name="line387">387: </a>  MatSeqAIJCUSPARSEBuildILUUpperTriMatrix(A);
+
+<a name="line389">389: </a>  cusparseTriFactors-&gt;tempvec = new CUSPARRAY;
+<a name="line390">390: </a>  cusparseTriFactors-&gt;tempvec-&gt;resize(n);
+
+<a name="line392">392: </a>  A-&gt;valid_GPU_matrix = PETSC_CUSP_BOTH;
+<a name="line393">393: </a>  <font color="#B22222">/*lower triangular indices */</font>
+<a name="line394">394: </a>  <A href="../../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(isrow,&amp;r);
+<a name="line395">395: </a>  <A href="../../../../../../docs/manualpages/IS/ISIdentity.html#ISIdentity">ISIdentity</A>(isrow,&amp;row_identity);
+<a name="line396">396: </a>  <font color="#4169E1">if</font> (!row_identity) {
+<a name="line397">397: </a>    cusparseTriFactors-&gt;loTriFactorPtr-&gt;setOrdIndices(r, n);CHKERRCUSP(ierr);
+<a name="line398">398: </a>  }
+<a name="line399">399: </a>  <A href="../../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(isrow,&amp;r);
+
+<a name="line401">401: </a>  <font color="#B22222">/*upper triangular indices */</font>
+<a name="line402">402: </a>  <A href="../../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(iscol,&amp;c);
+<a name="line403">403: </a>  <A href="../../../../../../docs/manualpages/IS/ISIdentity.html#ISIdentity">ISIdentity</A>(iscol,&amp;col_identity);
+<a name="line404">404: </a>  <font color="#4169E1">if</font> (!col_identity) {
+<a name="line405">405: </a>    cusparseTriFactors-&gt;upTriFactorPtr-&gt;setOrdIndices(c, n);CHKERRCUSP(ierr);
+<a name="line406">406: </a>  }
+<a name="line407">407: </a>  <A href="../../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(iscol,&amp;c);
+<a name="line408">408: </a>  <font color="#4169E1">return</font>(0);
+<a name="line409">409: </a>}
+
+<a name="line413">413: </a><strong><font color="#4169E1"><a name="MatSeqAIJCUSPARSEBuildICCTriMatrices"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJCUSPARSEBuildICCTriMatrices(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line414">414: </a>{
+<a name="line415">415: </a>  Mat_SeqAIJ                   *a                  = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line416">416: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line417">417: </a>  GPU_Matrix_Ifc               *cusparseMatLo      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;loTriFactorPtr;
+<a name="line418">418: </a>  GPU_Matrix_Ifc               *cusparseMatUp      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;upTriFactorPtr;
+<a name="line419">419: </a>  cusparseStatus_t             stat;
+<a name="line420">420: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+<a name="line421">421: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     *AiUp, *AjUp;
+<a name="line422">422: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>                  *AAUp;
+<a name="line423">423: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>                  *AALo;
+<a name="line424">424: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     nzUpper = a-&gt;nz,n = A-&gt;rmap-&gt;n,i,offset,nz,j;
+<a name="line425">425: </a>  Mat_SeqSBAIJ                 *b = (Mat_SeqSBAIJ*)A-&gt;data;
+<a name="line426">426: </a>  const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               *ai = b-&gt;i,*aj = b-&gt;j,*vj;
+<a name="line427">427: </a>  const MatScalar              *aa = b-&gt;a,*v;
+
+<a name="line430">430: </a>  <font color="#4169E1">if</font> (A-&gt;valid_GPU_matrix == PETSC_CUSP_UNALLOCATED || A-&gt;valid_GPU_matrix == PETSC_CUSP_CPU) {
+<a name="line431">431: </a>    try {
+<a name="line432">432: </a>      <font color="#B22222">/* Allocate Space for the upper triangular matrix */</font>
+<a name="line433">433: </a>      cudaMallocHost((void**) &amp;AiUp, (n+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));CHKERRCUSP(ierr);
+<a name="line434">434: </a>      cudaMallocHost((void**) &amp;AjUp, nzUpper*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));CHKERRCUSP(ierr);
+<a name="line435">435: </a>      cudaMallocHost((void**) &amp;AAUp, nzUpper*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));CHKERRCUSP(ierr);
+<a name="line436">436: </a>      cudaMallocHost((void**) &amp;AALo, nzUpper*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));CHKERRCUSP(ierr);
+
+<a name="line438">438: </a>      <font color="#B22222">/* Fill the upper triangular matrix */</font>
+<a name="line439">439: </a>      AiUp[0]=(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) 0;
+<a name="line440">440: </a>      AiUp[n]=nzUpper;
+<a name="line441">441: </a>      offset = 0;
+<a name="line442">442: </a>      <font color="#4169E1">for</font> (i=0; i&lt;n; i++) {
+<a name="line443">443: </a>        <font color="#B22222">/* set the pointers */</font>
+<a name="line444">444: </a>        v  = aa + ai[i];
+<a name="line445">445: </a>        vj = aj + ai[i];
+<a name="line446">446: </a>        nz = ai[i+1] - ai[i] - 1; <font color="#B22222">/* exclude diag[i] */</font>
+
+<a name="line448">448: </a>        <font color="#B22222">/* first, set the diagonal elements */</font>
+<a name="line449">449: </a>        AjUp[offset] = (<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>) i;
+<a name="line450">450: </a>        AAUp[offset] = 1.0/v[nz];
+<a name="line451">451: </a>        AiUp[i]      = offset;
+<a name="line452">452: </a>        AALo[offset] = 1.0/v[nz];
+
+<a name="line454">454: </a>        offset+=1;
+<a name="line455">455: </a>        <font color="#4169E1">if</font> (nz&gt;0) {
+<a name="line456">456: </a>          <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(&amp;(AjUp[offset]), vj, nz*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>));
+<a name="line457">457: </a>          <A href="../../../../../../docs/manualpages/Sys/PetscMemcpy.html#PetscMemcpy">PetscMemcpy</A>(&amp;(AAUp[offset]), v, nz*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscScalar.html#PetscScalar">PetscScalar</A>));
+<a name="line458">458: </a>          <font color="#4169E1">for</font> (j=offset; j&lt;offset+nz; j++) {
+<a name="line459">459: </a>            AAUp[j] = -AAUp[j];
+<a name="line460">460: </a>            AALo[j] = AAUp[j]/v[nz];
+<a name="line461">461: </a>          }
+<a name="line462">462: </a>          offset+=nz;
+<a name="line463">463: </a>        }
+<a name="line464">464: </a>      }
+
+<a name="line466">466: </a>      <font color="#B22222">/* Build the upper triangular piece */</font>
+<a name="line467">467: </a>      cusparseMatUp = GPU_Matrix_Factory::getNew(MatCUSPARSEStorageFormats[cusparseTriFactors-&gt;format]);
+<a name="line468">468: </a>      stat = cusparseMatUp-&gt;initializeCusparseMat(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_TRIANGULAR, CUSPARSE_FILL_MODE_UPPER, CUSPARSE_DIAG_TYPE_UNIT);CHKERRCUSP(stat);
+<a name="line469">469: </a>      cusparseMatUp-&gt;setMatrix(A-&gt;rmap-&gt;n, A-&gt;cmap-&gt;n, a-&gt;nz, AiUp, AjUp, AAUp);CHKERRCUSP(ierr);
+<a name="line470">470: </a>      stat = cusparseMatUp-&gt;solveAnalysis();CHKERRCUSP(stat);
+<a name="line471">471: </a>      ((Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr)-&gt;upTriFactorPtr = cusparseMatUp;
+
+<a name="line473">473: </a>      <font color="#B22222">/* Build the lower triangular piece */</font>
+<a name="line474">474: </a>      cusparseMatLo = GPU_Matrix_Factory::getNew(MatCUSPARSEStorageFormats[cusparseTriFactors-&gt;format]);
+<a name="line475">475: </a>      stat = cusparseMatLo-&gt;initializeCusparseMat(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_TRIANGULAR, CUSPARSE_FILL_MODE_UPPER, CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line476">476: </a>      cusparseMatLo-&gt;setMatrix(A-&gt;rmap-&gt;n, A-&gt;cmap-&gt;n, a-&gt;nz, AiUp, AjUp, AALo);CHKERRCUSP(ierr);
+<a name="line477">477: </a>      stat = cusparseMatLo-&gt;solveAnalysis(CUSPARSE_OPERATION_TRANSPOSE);CHKERRCUSP(stat);
+<a name="line478">478: </a>      ((Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr)-&gt;loTriFactorPtr = cusparseMatLo;
+
+<a name="line480">480: </a>      <font color="#B22222">/* set this flag ... for performance logging */</font>
+<a name="line481">481: </a>      ((Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr)-&gt;isSymmOrHerm = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+
+<a name="line483">483: </a>      A-&gt;valid_GPU_matrix = PETSC_CUSP_BOTH;
+<a name="line484">484: </a>      cudaFreeHost(AiUp);CHKERRCUSP(ierr);
+<a name="line485">485: </a>      cudaFreeHost(AjUp);CHKERRCUSP(ierr);
+<a name="line486">486: </a>      cudaFreeHost(AAUp);CHKERRCUSP(ierr);
+<a name="line487">487: </a>      cudaFreeHost(AALo);CHKERRCUSP(ierr);
+<a name="line488">488: </a>    } catch(char *ex) {
+<a name="line489">489: </a>      <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line490">490: </a>    }
+<a name="line491">491: </a>  }
+<a name="line492">492: </a>  <font color="#4169E1">return</font>(0);
+<a name="line493">493: </a>}
+
+<a name="line497">497: </a><strong><font color="#4169E1"><a name="MatSeqAIJCUSPARSEICCAnalysisAndCopyToGPU"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJCUSPARSEICCAnalysisAndCopyToGPU(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line498">498: </a>{
+<a name="line499">499: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+<a name="line500">500: </a>  Mat_SeqAIJ                   *a                  = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line501">501: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line502">502: </a>  <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>                           ip = a-&gt;row;
+<a name="line503">503: </a>  const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>               *rip;
+<a name="line504">504: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>                    perm_identity;
+<a name="line505">505: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>                     n = A-&gt;rmap-&gt;n;
+
+<a name="line508">508: </a>  MatSeqAIJCUSPARSEBuildICCTriMatrices(A);
+<a name="line509">509: </a>  cusparseTriFactors-&gt;tempvec = new CUSPARRAY;
+<a name="line510">510: </a>  cusparseTriFactors-&gt;tempvec-&gt;resize(n);
+<a name="line511">511: </a>  <font color="#B22222">/*lower triangular indices */</font>
+<a name="line512">512: </a>  <A href="../../../../../../docs/manualpages/IS/ISGetIndices.html#ISGetIndices">ISGetIndices</A>(ip,&amp;rip);
+<a name="line513">513: </a>  <A href="../../../../../../docs/manualpages/IS/ISIdentity.html#ISIdentity">ISIdentity</A>(ip,&amp;perm_identity);
+<a name="line514">514: </a>  <font color="#4169E1">if</font> (!perm_identity) {
+<a name="line515">515: </a>    cusparseTriFactors-&gt;loTriFactorPtr-&gt;setOrdIndices(rip, n);CHKERRCUSP(ierr);
+<a name="line516">516: </a>    cusparseTriFactors-&gt;upTriFactorPtr-&gt;setOrdIndices(rip, n);CHKERRCUSP(ierr);
+<a name="line517">517: </a>  }
+<a name="line518">518: </a>  <A href="../../../../../../docs/manualpages/IS/ISRestoreIndices.html#ISRestoreIndices">ISRestoreIndices</A>(ip,&amp;rip);
+<a name="line519">519: </a>  <font color="#4169E1">return</font>(0);
+<a name="line520">520: </a>}
+
+<a name="line524">524: </a><strong><font color="#4169E1"><a name="MatLUFactorNumeric_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatLUFactorNumeric_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
+<a name="line525">525: </a>{
+<a name="line526">526: </a>  Mat_SeqAIJ     *b = (Mat_SeqAIJ*)B-&gt;data;
+<a name="line527">527: </a>  <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>             isrow = b-&gt;row,iscol = b-&gt;col;
+<a name="line528">528: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      row_identity,col_identity;
+
+<a name="line532">532: </a>  MatLUFactorNumeric_SeqAIJ(B,A,info);
+<a name="line533">533: </a>  <font color="#B22222">/* determine which version of <A href="../../../../../../docs/manualpages/Mat/MatSolve.html#MatSolve">MatSolve</A> needs to be used. */</font>
+<a name="line534">534: </a>  <A href="../../../../../../docs/manualpages/IS/ISIdentity.html#ISIdentity">ISIdentity</A>(isrow,&amp;row_identity);
+<a name="line535">535: </a>  <A href="../../../../../../docs/manualpages/IS/ISIdentity.html#ISIdentity">ISIdentity</A>(iscol,&amp;col_identity);
+<a name="line536">536: </a>  <font color="#4169E1">if</font> (row_identity &amp;&amp; col_identity) {
+<a name="line537">537: </a>    B-&gt;ops-&gt;solve = MatSolve_SeqAIJCUSPARSE_NaturalOrdering;
+<a name="line538">538: </a>    B-&gt;ops-&gt;solvetranspose = MatSolveTranspose_SeqAIJCUSPARSE_NaturalOrdering;
+<a name="line539">539: </a>  } <font color="#4169E1">else</font> {
+<a name="line540">540: </a>    B-&gt;ops-&gt;solve = MatSolve_SeqAIJCUSPARSE;
+<a name="line541">541: </a>    B-&gt;ops-&gt;solvetranspose = MatSolveTranspose_SeqAIJCUSPARSE;
+<a name="line542">542: </a>  }
+
+<a name="line544">544: </a>  <font color="#B22222">/* get the triangular factors */</font>
+<a name="line545">545: </a>  MatSeqAIJCUSPARSEILUAnalysisAndCopyToGPU(B);
+<a name="line546">546: </a>  <font color="#4169E1">return</font>(0);
+<a name="line547">547: </a>}
+
+<a name="line551">551: </a><strong><font color="#4169E1"><a name="MatCholeskyFactorNumeric_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCholeskyFactorNumeric_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B,<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,const <A href="../../../../../../docs/manualpages/Mat/MatFactorInfo.html#MatFactorInfo">MatFactorInfo</A> *info)</font></strong>
+<a name="line552">552: </a>{
+<a name="line553">553: </a>  Mat_SeqAIJ     *b = (Mat_SeqAIJ*)B-&gt;data;
+<a name="line554">554: </a>  <A href="../../../../../../docs/manualpages/IS/IS.html#IS">IS</A>             ip = b-&gt;row;
+<a name="line555">555: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>      perm_identity;
+
+<a name="line559">559: </a>  MatCholeskyFactorNumeric_SeqAIJ(B,A,info);
+
+<a name="line561">561: </a>  <font color="#B22222">/* determine which version of <A href="../../../../../../docs/manualpages/Mat/MatSolve.html#MatSolve">MatSolve</A> needs to be used. */</font>
+<a name="line562">562: </a>  <A href="../../../../../../docs/manualpages/IS/ISIdentity.html#ISIdentity">ISIdentity</A>(ip,&amp;perm_identity);
+<a name="line563">563: </a>  <font color="#4169E1">if</font> (perm_identity) {
+<a name="line564">564: </a>    B-&gt;ops-&gt;solve = MatSolve_SeqAIJCUSPARSE_NaturalOrdering;
+<a name="line565">565: </a>    B-&gt;ops-&gt;solvetranspose = MatSolveTranspose_SeqAIJCUSPARSE_NaturalOrdering;
+<a name="line566">566: </a>  } <font color="#4169E1">else</font> {
+<a name="line567">567: </a>    B-&gt;ops-&gt;solve = MatSolve_SeqAIJCUSPARSE;
+<a name="line568">568: </a>    B-&gt;ops-&gt;solvetranspose = MatSolveTranspose_SeqAIJCUSPARSE;
+<a name="line569">569: </a>  }
+
+<a name="line571">571: </a>  <font color="#B22222">/* get the triangular factors */</font>
+<a name="line572">572: </a>  MatSeqAIJCUSPARSEICCAnalysisAndCopyToGPU(B);
+<a name="line573">573: </a>  <font color="#4169E1">return</font>(0);
+<a name="line574">574: </a>}
+
+<a name="line578">578: </a><strong><font color="#4169E1"><a name="MatSeqAIJCUSPARSEAnalyzeTransposeForSolve"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJCUSPARSEAnalyzeTransposeForSolve(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line579">579: </a>{
+<a name="line580">580: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line581">581: </a>  GPU_Matrix_Ifc               *cusparseMatLo      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;loTriFactorPtr;
+<a name="line582">582: </a>  GPU_Matrix_Ifc               *cusparseMatUp      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;upTriFactorPtr;
+<a name="line583">583: </a>  cusparseStatus_t             stat;
+
+<a name="line586">586: </a>  stat = cusparseMatLo-&gt;initializeCusparseMatTranspose(MAT_cusparseHandle,
+<a name="line587">587: </a>                                                       CUSPARSE_MATRIX_TYPE_TRIANGULAR,
+<a name="line588">588: </a>                                                       CUSPARSE_FILL_MODE_UPPER,
+<a name="line589">589: </a>                                                       CUSPARSE_DIAG_TYPE_UNIT);CHKERRCUSP(stat);
+<a name="line590">590: </a>  stat = cusparseMatLo-&gt;solveAnalysisTranspose();CHKERRCUSP(stat);
+
+<a name="line592">592: </a>  stat = cusparseMatUp-&gt;initializeCusparseMatTranspose(MAT_cusparseHandle,
+<a name="line593">593: </a>                                                       CUSPARSE_MATRIX_TYPE_TRIANGULAR,
+<a name="line594">594: </a>                                                       CUSPARSE_FILL_MODE_LOWER,
+<a name="line595">595: </a>                                                       CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line596">596: </a>  stat = cusparseMatUp-&gt;solveAnalysisTranspose();CHKERRCUSP(stat);
+<a name="line597">597: </a>  <font color="#4169E1">return</font>(0);
+<a name="line598">598: </a>}
+
+<a name="line602">602: </a><strong><font color="#4169E1"><a name="MatSeqAIJCUSPARSEGenerateTransposeForMult"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJCUSPARSEGenerateTransposeForMult(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line603">603: </a>{
+<a name="line604">604: </a>  Mat_SeqAIJCUSPARSE *cusparseMat = (Mat_SeqAIJCUSPARSE*)A-&gt;spptr;
+<a name="line605">605: </a>  Mat_SeqAIJ         *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line606">606: </a>  cusparseStatus_t   stat;
+<a name="line607">607: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+
+<a name="line610">610: </a>  <font color="#4169E1">if</font> (cusparseMat-&gt;isSymmOrHerm) {
+<a name="line611">611: </a>    stat = cusparseMat-&gt;mat-&gt;initializeCusparseMatTranspose(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_SYMMETRIC, CUSPARSE_FILL_MODE_UPPER, CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line612">612: </a>  } <font color="#4169E1">else</font> {
+<a name="line613">613: </a>    stat = cusparseMat-&gt;mat-&gt;initializeCusparseMatTranspose(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_GENERAL, CUSPARSE_FILL_MODE_LOWER, CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line614">614: </a>  }
+<a name="line615">615: </a>  cusparseMat-&gt;mat-&gt;setMatrixTranspose(A-&gt;rmap-&gt;n, A-&gt;cmap-&gt;n, a-&gt;nz, a-&gt;i, a-&gt;j, a-&gt;a);CHKERRCUSP(ierr);
+<a name="line616">616: </a>  <font color="#4169E1">return</font>(0);
+<a name="line617">617: </a>}
+
+<a name="line621">621: </a><strong><font color="#4169E1"><a name="MatSolveTranspose_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolveTranspose_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
+<a name="line622">622: </a>{
+<a name="line623">623: </a>  Mat_SeqAIJ                   *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line624">624: </a>  CUSPARRAY                    *xGPU, *bGPU;
+<a name="line625">625: </a>  cusparseStatus_t             stat;
+<a name="line626">626: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line627">627: </a>  GPU_Matrix_Ifc               *cusparseMatLo      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;loTriFactorPtr;
+<a name="line628">628: </a>  GPU_Matrix_Ifc               *cusparseMatUp      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;upTriFactorPtr;
+<a name="line629">629: </a>  CUSPARRAY                    *tempGPU            = (CUSPARRAY*) cusparseTriFactors-&gt;tempvec;
+<a name="line630">630: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+
+<a name="line633">633: </a>  <font color="#B22222">/* Analyze the matrix ... on the fly */</font>
+<a name="line634">634: </a>  <font color="#4169E1">if</font> (!cusparseTriFactors-&gt;hasTranspose) {
+<a name="line635">635: </a>    MatSeqAIJCUSPARSEAnalyzeTransposeForSolve(A);
+<a name="line636">636: </a>    cusparseTriFactors-&gt;hasTranspose=<A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line637">637: </a>  }
+
+<a name="line639">639: </a>  <font color="#B22222">/* Get the GPU pointers */</font>
+<a name="line640">640: </a>  VecCUSPGetArrayWrite(xx,&amp;xGPU);
+<a name="line641">641: </a>  VecCUSPGetArrayRead(bb,&amp;bGPU);
+
+<a name="line643">643: </a>  <font color="#B22222">/* solve with reordering */</font>
+<a name="line644">644: </a>  cusparseMatUp-&gt;reorderIn(xGPU, bGPU);CHKERRCUSP(ierr);
+<a name="line645">645: </a>  stat = cusparseMatUp-&gt;solveTranspose(xGPU, tempGPU);CHKERRCUSP(stat);
+<a name="line646">646: </a>  stat = cusparseMatLo-&gt;solveTranspose(tempGPU, xGPU);CHKERRCUSP(stat);
+<a name="line647">647: </a>  cusparseMatLo-&gt;reorderOut(xGPU);CHKERRCUSP(ierr);
+
+<a name="line649">649: </a>  <font color="#B22222">/* restore */</font>
+<a name="line650">650: </a>  VecCUSPRestoreArrayRead(bb,&amp;bGPU);
+<a name="line651">651: </a>  VecCUSPRestoreArrayWrite(xx,&amp;xGPU);
+<a name="line652">652: </a>  WaitForGPU();CHKERRCUSP(ierr);
+
+<a name="line654">654: </a>  <font color="#4169E1">if</font> (cusparseTriFactors-&gt;isSymmOrHerm) {
+<a name="line655">655: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*a-&gt;nz - 3.0*A-&gt;cmap-&gt;n);
+<a name="line656">656: </a>  } <font color="#4169E1">else</font> {
+<a name="line657">657: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*a-&gt;nz - A-&gt;cmap-&gt;n);
+<a name="line658">658: </a>  }
+<a name="line659">659: </a>  <font color="#4169E1">return</font>(0);
+<a name="line660">660: </a>}
+
+<a name="line664">664: </a><strong><font color="#4169E1"><a name="MatSolveTranspose_SeqAIJCUSPARSE_NaturalOrdering"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolveTranspose_SeqAIJCUSPARSE_NaturalOrdering(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
+<a name="line665">665: </a>{
+<a name="line666">666: </a>  Mat_SeqAIJ                   *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line667">667: </a>  CUSPARRAY                    *xGPU,*bGPU;
+<a name="line668">668: </a>  cusparseStatus_t             stat;
+<a name="line669">669: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line670">670: </a>  GPU_Matrix_Ifc               *cusparseMatLo      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;loTriFactorPtr;
+<a name="line671">671: </a>  GPU_Matrix_Ifc               *cusparseMatUp      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;upTriFactorPtr;
+<a name="line672">672: </a>  CUSPARRAY                    *tempGPU            = (CUSPARRAY*) cusparseTriFactors-&gt;tempvec;
+<a name="line673">673: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+
+<a name="line676">676: </a>  <font color="#B22222">/* Analyze the matrix ... on the fly */</font>
+<a name="line677">677: </a>  <font color="#4169E1">if</font> (!cusparseTriFactors-&gt;hasTranspose) {
+<a name="line678">678: </a>    MatSeqAIJCUSPARSEAnalyzeTransposeForSolve(A);
+<a name="line679">679: </a>    cusparseTriFactors-&gt;hasTranspose=<A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line680">680: </a>  }
+
+<a name="line682">682: </a>  <font color="#B22222">/* Get the GPU pointers */</font>
+<a name="line683">683: </a>  VecCUSPGetArrayWrite(xx,&amp;xGPU);
+<a name="line684">684: </a>  VecCUSPGetArrayRead(bb,&amp;bGPU);
+
+<a name="line686">686: </a>  <font color="#B22222">/* solve */</font>
+<a name="line687">687: </a>  stat = cusparseMatUp-&gt;solveTranspose(bGPU, tempGPU);CHKERRCUSP(stat);
+<a name="line688">688: </a>  stat = cusparseMatLo-&gt;solveTranspose(tempGPU, xGPU);CHKERRCUSP(stat);
+
+<a name="line690">690: </a>  <font color="#B22222">/* restore */</font>
+<a name="line691">691: </a>  VecCUSPRestoreArrayRead(bb,&amp;bGPU);
+<a name="line692">692: </a>  VecCUSPRestoreArrayWrite(xx,&amp;xGPU);
+<a name="line693">693: </a>  WaitForGPU();CHKERRCUSP(ierr);
+<a name="line694">694: </a>  <font color="#4169E1">if</font> (cusparseTriFactors-&gt;isSymmOrHerm) {
+<a name="line695">695: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*a-&gt;nz - 3.0*A-&gt;cmap-&gt;n);
+<a name="line696">696: </a>  } <font color="#4169E1">else</font> {
+<a name="line697">697: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*a-&gt;nz - A-&gt;cmap-&gt;n);
+<a name="line698">698: </a>  }
+<a name="line699">699: </a>  <font color="#4169E1">return</font>(0);
+<a name="line700">700: </a>}
+
+<a name="line704">704: </a><strong><font color="#4169E1"><a name="MatSolve_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolve_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
+<a name="line705">705: </a>{
+<a name="line706">706: </a>  Mat_SeqAIJ                   *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line707">707: </a>  CUSPARRAY                    *xGPU,*bGPU;
+<a name="line708">708: </a>  cusparseStatus_t             stat;
+<a name="line709">709: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line710">710: </a>  GPU_Matrix_Ifc               *cusparseMatLo      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;loTriFactorPtr;
+<a name="line711">711: </a>  GPU_Matrix_Ifc               *cusparseMatUp      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;upTriFactorPtr;
+<a name="line712">712: </a>  CUSPARRAY                    *tempGPU            = (CUSPARRAY*)cusparseTriFactors-&gt;tempvec;
+<a name="line713">713: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+
+<a name="line716">716: </a>  <font color="#B22222">/* Get the GPU pointers */</font>
+<a name="line717">717: </a>  VecCUSPGetArrayWrite(xx,&amp;xGPU);
+<a name="line718">718: </a>  VecCUSPGetArrayRead(bb,&amp;bGPU);
+
+<a name="line720">720: </a>  <font color="#B22222">/* solve with reordering */</font>
+<a name="line721">721: </a>  cusparseMatLo-&gt;reorderIn(xGPU, bGPU);CHKERRCUSP(ierr);
+<a name="line722">722: </a>  stat = cusparseMatLo-&gt;solve(xGPU, tempGPU);CHKERRCUSP(stat);
+<a name="line723">723: </a>  stat = cusparseMatUp-&gt;solve(tempGPU, xGPU);CHKERRCUSP(stat);
+<a name="line724">724: </a>  cusparseMatUp-&gt;reorderOut(xGPU);CHKERRCUSP(ierr);
+
+<a name="line726">726: </a>  VecCUSPRestoreArrayRead(bb,&amp;bGPU);
+<a name="line727">727: </a>  VecCUSPRestoreArrayWrite(xx,&amp;xGPU);
+<a name="line728">728: </a>  WaitForGPU();CHKERRCUSP(ierr);
+<a name="line729">729: </a>  <font color="#4169E1">if</font> (cusparseTriFactors-&gt;isSymmOrHerm) {
+<a name="line730">730: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*a-&gt;nz - 3.0*A-&gt;cmap-&gt;n);
+<a name="line731">731: </a>  } <font color="#4169E1">else</font> {
+<a name="line732">732: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*a-&gt;nz - A-&gt;cmap-&gt;n);
+<a name="line733">733: </a>  }
+<a name="line734">734: </a>  <font color="#4169E1">return</font>(0);
+<a name="line735">735: </a>}
+
+<a name="line739">739: </a><strong><font color="#4169E1"><a name="MatSolve_SeqAIJCUSPARSE_NaturalOrdering"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSolve_SeqAIJCUSPARSE_NaturalOrdering(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> bb,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx)</font></strong>
+<a name="line740">740: </a>{
+<a name="line741">741: </a>  Mat_SeqAIJ                   *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line742">742: </a>  CUSPARRAY                    *xGPU,*bGPU;
+<a name="line743">743: </a>  cusparseStatus_t             stat;
+<a name="line744">744: </a>  Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line745">745: </a>  GPU_Matrix_Ifc               *cusparseMatLo      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;loTriFactorPtr;
+<a name="line746">746: </a>  GPU_Matrix_Ifc               *cusparseMatUp      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;upTriFactorPtr;
+<a name="line747">747: </a>  CUSPARRAY                    *tempGPU            = (CUSPARRAY*)cusparseTriFactors-&gt;tempvec;
+<a name="line748">748: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>               ierr;
+
+<a name="line751">751: </a>  <font color="#B22222">/* Get the GPU pointers */</font>
+<a name="line752">752: </a>  VecCUSPGetArrayWrite(xx,&amp;xGPU);
+<a name="line753">753: </a>  VecCUSPGetArrayRead(bb,&amp;bGPU);
+
+<a name="line755">755: </a>  <font color="#B22222">/* solve */</font>
+<a name="line756">756: </a>  stat = cusparseMatLo-&gt;solve(bGPU, tempGPU);CHKERRCUSP(stat);
+<a name="line757">757: </a>  stat = cusparseMatUp-&gt;solve(tempGPU, xGPU);CHKERRCUSP(stat);
+
+<a name="line759">759: </a>  VecCUSPRestoreArrayRead(bb,&amp;bGPU);
+<a name="line760">760: </a>  VecCUSPRestoreArrayWrite(xx,&amp;xGPU);
+<a name="line761">761: </a>  WaitForGPU();CHKERRCUSP(ierr);
+<a name="line762">762: </a>  <font color="#4169E1">if</font> (cusparseTriFactors-&gt;isSymmOrHerm) {
+<a name="line763">763: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*a-&gt;nz - 3.0*A-&gt;cmap-&gt;n);
+<a name="line764">764: </a>  } <font color="#4169E1">else</font> {
+<a name="line765">765: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*a-&gt;nz - A-&gt;cmap-&gt;n);
+<a name="line766">766: </a>  }
+<a name="line767">767: </a>  <font color="#4169E1">return</font>(0);
+<a name="line768">768: </a>}
+
+<a name="line772">772: </a><strong><font color="#4169E1"><a name="MatSeqAIJCUSPARSECopyToGPU"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatSeqAIJCUSPARSECopyToGPU(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line773">773: </a>{
+
+<a name="line775">775: </a>  Mat_SeqAIJCUSPARSE *cusparseMat = (Mat_SeqAIJCUSPARSE*)A-&gt;spptr;
+<a name="line776">776: </a>  Mat_SeqAIJ         *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line777">777: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>           m = A-&gt;rmap-&gt;n,*ii,*ridx;
+<a name="line778">778: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          symmetryTest=<A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, hermitianTest=<A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line779">779: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscBool.html#PetscBool">PetscBool</A>          symmetryOptionIsSet=<A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>, symmetryOptionTest=<A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line780">780: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+
+<a name="line783">783: </a>  <font color="#4169E1">if</font> (A-&gt;valid_GPU_matrix == PETSC_CUSP_UNALLOCATED || A-&gt;valid_GPU_matrix == PETSC_CUSP_CPU) {
+<a name="line784">784: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(MAT_CUSPARSECopyToGPU,A,0,0,0);
+<a name="line785">785: </a>    <font color="#B22222">/*</font>
+<a name="line786">786: </a><font color="#B22222">      It may be possible to reuse nonzero structure with new matrix values but</font>
+<a name="line787">787: </a><font color="#B22222">      for simplicity and insured correctness we delete and build a new matrix on</font>
+<a name="line788">788: </a><font color="#B22222">      the GPU. Likely a very small performance hit.</font>
+<a name="line789">789: </a><font color="#B22222">    */</font>
+<a name="line790">790: </a>    <font color="#4169E1">if</font> (cusparseMat-&gt;mat) {
+<a name="line791">791: </a>      try {
+<a name="line792">792: </a>        delete cusparseMat-&gt;mat;
+<a name="line793">793: </a>        <font color="#4169E1">if</font> (cusparseMat-&gt;tempvec) delete cusparseMat-&gt;tempvec;
+
+<a name="line795">795: </a>      } catch(char *ex) {
+<a name="line796">796: </a>        <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line797">797: </a>      }
+<a name="line798">798: </a>    }
+<a name="line799">799: </a>    try {
+<a name="line800">800: </a>      cusparseMat-&gt;nonzerorow=0;
+<a name="line801">801: </a>      <font color="#4169E1">for</font> (int j = 0; j&lt;m; j++) cusparseMat-&gt;nonzerorow += ((a-&gt;i[j+1]-a-&gt;i[j])&gt;0);
+
+<a name="line803">803: </a>      <font color="#4169E1">if</font> (a-&gt;compressedrow.use) {
+<a name="line804">804: </a>        m    = a-&gt;compressedrow.nrows;
+<a name="line805">805: </a>        ii   = a-&gt;compressedrow.i;
+<a name="line806">806: </a>        ridx = a-&gt;compressedrow.rindex;
+<a name="line807">807: </a>      } <font color="#4169E1">else</font> {
+<a name="line808">808: </a>        <font color="#B22222">/* Forcing compressed row on the GPU ... only relevant for CSR storage */</font>
+<a name="line809">809: </a>        int k=0;
+<a name="line810">810: </a>        <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((cusparseMat-&gt;nonzerorow+1)*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;ii);
+<a name="line811">811: </a>        <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>((cusparseMat-&gt;nonzerorow)*<font color="#4169E1">sizeof</font>(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>), &amp;ridx);
+<a name="line812">812: </a>        ii[0]=0;
+<a name="line813">813: </a>        <font color="#4169E1">for</font> (int j = 0; j&lt;m; j++) {
+<a name="line814">814: </a>          <font color="#4169E1">if</font> ((a-&gt;i[j+1]-a-&gt;i[j])&gt;0) {
+<a name="line815">815: </a>            ii[k]  = a-&gt;i[j];
+<a name="line816">816: </a>            ridx[k]= j;
+<a name="line817">817: </a>            k++;
+<a name="line818">818: </a>          }
+<a name="line819">819: </a>        }
+<a name="line820">820: </a>        ii[cusparseMat-&gt;nonzerorow] = a-&gt;nz;
+
+<a name="line822">822: </a>        m = cusparseMat-&gt;nonzerorow;
+<a name="line823">823: </a>      }
+
+<a name="line825">825: </a>      <font color="#B22222">/* Build our matrix ... first determine the GPU storage type */</font>
+<a name="line826">826: </a>      cusparseMat-&gt;mat = GPU_Matrix_Factory::getNew(MatCUSPARSEStorageFormats[cusparseMat-&gt;format]);
+
+<a name="line828">828: </a>      <font color="#B22222">/* Create the streams and events (if desired).  */</font>
+<a name="line829">829: </a>      <A href="../../../../../../docs/manualpages/Sys/PetscMPIInt.html#PetscMPIInt">PetscMPIInt</A> size;
+<a name="line830">830: </a>      <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_size.html#MPI_Comm_size">MPI_Comm_size</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)A),&amp;size);
+<a name="line831">831: </a>      cusparseMat-&gt;mat-&gt;buildStreamsAndEvents(size, &amp;theBodyStream);CHKERRCUSP(ierr);
+
+<a name="line833">833: </a>      <A href="../../../../../../docs/manualpages/Mat/MatIsSymmetricKnown.html#MatIsSymmetricKnown">MatIsSymmetricKnown</A>(A,&amp;symmetryOptionIsSet,&amp;symmetryOptionTest);
+<a name="line834">834: </a>      <font color="#4169E1">if</font> ((symmetryOptionIsSet &amp;&amp; !symmetryOptionTest) || !symmetryOptionIsSet) {
+<a name="line835">835: </a>        <font color="#B22222">/* CUSPARSE_FILL_MODE_UPPER and CUSPARSE_DIAG_TYPE_NON_UNIT are irrelevant here */</font>
+<a name="line836">836: </a>        cusparseStatus_t stat = cusparseMat-&gt;mat-&gt;initializeCusparseMat(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_GENERAL, CUSPARSE_FILL_MODE_UPPER, CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line837">837: </a>        cusparseMat-&gt;isSymmOrHerm = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line838">838: </a>      } <font color="#4169E1">else</font> {
+<a name="line839">839: </a>        <A href="../../../../../../docs/manualpages/Mat/MatIsSymmetric.html#MatIsSymmetric">MatIsSymmetric</A>(A,0.0,&amp;symmetryTest);
+<a name="line840">840: </a>        <font color="#4169E1">if</font> (symmetryTest) {
+<a name="line841">841: </a>          cusparseStatus_t stat = cusparseMat-&gt;mat-&gt;initializeCusparseMat(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_SYMMETRIC, CUSPARSE_FILL_MODE_UPPER, CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line842">842: </a>          cusparseMat-&gt;isSymmOrHerm = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line843">843: </a>        } <font color="#4169E1">else</font> {
+<a name="line844">844: </a>          <A href="../../../../../../docs/manualpages/Mat/MatIsHermitian.html#MatIsHermitian">MatIsHermitian</A>(A,0.0,&amp;hermitianTest);
+<a name="line845">845: </a>          <font color="#4169E1">if</font> (hermitianTest) {
+<a name="line846">846: </a>            cusparseStatus_t stat = cusparseMat-&gt;mat-&gt;initializeCusparseMat(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_HERMITIAN, CUSPARSE_FILL_MODE_UPPER, CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line847">847: </a>            cusparseMat-&gt;isSymmOrHerm = <A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line848">848: </a>          } <font color="#4169E1">else</font> {
+<a name="line849">849: </a>            <font color="#B22222">/* CUSPARSE_FILL_MODE_UPPER and CUSPARSE_DIAG_TYPE_NON_UNIT are irrelevant here */</font>
+<a name="line850">850: </a>            cusparseStatus_t stat = cusparseMat-&gt;mat-&gt;initializeCusparseMat(MAT_cusparseHandle, CUSPARSE_MATRIX_TYPE_GENERAL, CUSPARSE_FILL_MODE_UPPER, CUSPARSE_DIAG_TYPE_NON_UNIT);CHKERRCUSP(stat);
+<a name="line851">851: </a>            cusparseMat-&gt;isSymmOrHerm = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line852">852: </a>          }
+<a name="line853">853: </a>        }
+<a name="line854">854: </a>      }
+
+<a name="line856">856: </a>      <font color="#B22222">/* lastly, build the matrix */</font>
+<a name="line857">857: </a>      cusparseMat-&gt;mat-&gt;setMatrix(m, A-&gt;cmap-&gt;n, a-&gt;nz, ii, a-&gt;j, a-&gt;a);CHKERRCUSP(ierr);
+<a name="line858">858: </a>      cusparseMat-&gt;mat-&gt;setCPRowIndices(ridx, m);
+<a name="line859">859: </a>      <font color="#4169E1">if</font> (!a-&gt;compressedrow.use) {
+<a name="line860">860: </a>        <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ii);
+<a name="line861">861: </a>        <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A>(ridx);
+<a name="line862">862: </a>      }
+<a name="line863">863: </a>      cusparseMat-&gt;tempvec = new CUSPARRAY;
+<a name="line864">864: </a>      cusparseMat-&gt;tempvec-&gt;resize(m);
+<a name="line865">865: </a>    } catch(char *ex) {
+<a name="line866">866: </a>      <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line867">867: </a>    }
+<a name="line868">868: </a>    WaitForGPU();CHKERRCUSP(ierr);
+
+<a name="line870">870: </a>    A-&gt;valid_GPU_matrix = PETSC_CUSP_BOTH;
+
+<a name="line872">872: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(MAT_CUSPARSECopyToGPU,A,0,0,0);
+<a name="line873">873: </a>  }
+<a name="line874">874: </a>  <font color="#4169E1">return</font>(0);
+<a name="line875">875: </a>}
+
+<a name="line879">879: </a><strong><font color="#4169E1"><a name="MatGetVecs_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatGetVecs_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> mat, <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *right, <A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> *left)</font></strong>
+<a name="line880">880: </a>{
+
+<a name="line884">884: </a>  <font color="#4169E1">if</font> (right) {
+<a name="line885">885: </a>    <A href="../../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat),right);
+<a name="line886">886: </a>    <A href="../../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(*right,mat-&gt;cmap-&gt;n,<A href="../../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line887">887: </a>    <A href="../../../../../../docs/manualpages/Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>(*right,mat-&gt;rmap-&gt;bs);
+<a name="line888">888: </a>    <A href="../../../../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(*right,<A href="../../../../../../docs/manualpages/Vec/VECSEQCUSP.html#VECSEQCUSP">VECSEQCUSP</A>);
+<a name="line889">889: </a>    <A href="../../../../../../docs/manualpages/IS/PetscLayoutReference.html#PetscLayoutReference">PetscLayoutReference</A>(mat-&gt;cmap,&amp;(*right)-&gt;map);
+<a name="line890">890: </a>  }
+<a name="line891">891: </a>  <font color="#4169E1">if</font> (left) {
+<a name="line892">892: </a>    <A href="../../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)mat),left);
+<a name="line893">893: </a>    <A href="../../../../../../docs/manualpages/Vec/VecSetSizes.html#VecSetSizes">VecSetSizes</A>(*left,mat-&gt;rmap-&gt;n,<A href="../../../../../../docs/manualpages/Sys/PETSC_DETERMINE.html#PETSC_DETERMINE">PETSC_DETERMINE</A>);
+<a name="line894">894: </a>    <A href="../../../../../../docs/manualpages/Vec/VecSetBlockSize.html#VecSetBlockSize">VecSetBlockSize</A>(*left,mat-&gt;rmap-&gt;bs);
+<a name="line895">895: </a>    <A href="../../../../../../docs/manualpages/Vec/VecSetType.html#VecSetType">VecSetType</A>(*left,<A href="../../../../../../docs/manualpages/Vec/VECSEQCUSP.html#VECSEQCUSP">VECSEQCUSP</A>);
+<a name="line896">896: </a>    <A href="../../../../../../docs/manualpages/IS/PetscLayoutReference.html#PetscLayoutReference">PetscLayoutReference</A>(mat-&gt;rmap,&amp;(*left)-&gt;map);
+<a name="line897">897: </a>  }
+<a name="line898">898: </a>  <font color="#4169E1">return</font>(0);
+<a name="line899">899: </a>}
+
+<a name="line903">903: </a><strong><font color="#4169E1"><a name="MatMult_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMult_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> yy)</font></strong>
+<a name="line904">904: </a>{
+<a name="line905">905: </a>  Mat_SeqAIJ         *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line906">906: </a>  Mat_SeqAIJCUSPARSE *cusparseMat = (Mat_SeqAIJCUSPARSE*)A-&gt;spptr;
+<a name="line907">907: </a>  CUSPARRAY          *xarray,*yarray;
+<a name="line908">908: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+
+<a name="line911">911: </a>  <font color="#B22222">/* The line below should not be necessary as it has been moved to MatAssemblyEnd_SeqAIJCUSPARSE</font>
+<a name="line912">912: </a><font color="#B22222">     MatSeqAIJCUSPARSECopyToGPU(A); */</font>
+<a name="line913">913: </a>  VecCUSPGetArrayRead(xx,&amp;xarray);
+<a name="line914">914: </a>  VecCUSPGetArrayWrite(yy,&amp;yarray);
+<a name="line915">915: </a>  try {
+<a name="line916">916: </a>    cusparseMat-&gt;mat-&gt;multiply(xarray, yarray);CHKERRCUSP(ierr);
+<a name="line917">917: </a>  } catch (char *ex) {
+<a name="line918">918: </a>    <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line919">919: </a>  }
+<a name="line920">920: </a>  VecCUSPRestoreArrayRead(xx,&amp;xarray);
+<a name="line921">921: </a>  VecCUSPRestoreArrayWrite(yy,&amp;yarray);
+<a name="line922">922: </a>  <font color="#4169E1">if</font> (!cusparseMat-&gt;mat-&gt;hasNonZeroStream()) {
+<a name="line923">923: </a>    WaitForGPU();CHKERRCUSP(ierr);
+<a name="line924">924: </a>  }
+<a name="line925">925: </a>  <font color="#4169E1">if</font> (cusparseMat-&gt;isSymmOrHerm) {
+<a name="line926">926: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*a-&gt;nz - 3.0*cusparseMat-&gt;nonzerorow);
+<a name="line927">927: </a>  } <font color="#4169E1">else</font> {
+<a name="line928">928: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*a-&gt;nz - cusparseMat-&gt;nonzerorow);
+<a name="line929">929: </a>  }
+<a name="line930">930: </a>  <font color="#4169E1">return</font>(0);
+<a name="line931">931: </a>}
+
+<a name="line935">935: </a><strong><font color="#4169E1"><a name="MatMultTranspose_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultTranspose_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> yy)</font></strong>
+<a name="line936">936: </a>{
+<a name="line937">937: </a>  Mat_SeqAIJ         *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line938">938: </a>  Mat_SeqAIJCUSPARSE *cusparseMat = (Mat_SeqAIJCUSPARSE*)A-&gt;spptr;
+<a name="line939">939: </a>  CUSPARRAY          *xarray,*yarray;
+<a name="line940">940: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+
+<a name="line943">943: </a>  <font color="#B22222">/* The line below should not be necessary as it has been moved to MatAssemblyEnd_SeqAIJCUSPARSE</font>
+<a name="line944">944: </a><font color="#B22222">     MatSeqAIJCUSPARSECopyToGPU(A); */</font>
+<a name="line945">945: </a>  <font color="#4169E1">if</font> (!cusparseMat-&gt;hasTranspose) {
+<a name="line946">946: </a>    MatSeqAIJCUSPARSEGenerateTransposeForMult(A);
+<a name="line947">947: </a>    cusparseMat-&gt;hasTranspose=<A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line948">948: </a>  }
+<a name="line949">949: </a>  VecCUSPGetArrayRead(xx,&amp;xarray);
+<a name="line950">950: </a>  VecCUSPGetArrayWrite(yy,&amp;yarray);
+<a name="line951">951: </a>  try {
+<a name="line952">952: </a>    cusparseMat-&gt;mat-&gt;multiplyTranspose(xarray, yarray);CHKERRCUSP(ierr);
+<a name="line953">953: </a>  } catch (char *ex) {
+<a name="line954">954: </a>    <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line955">955: </a>  }
+<a name="line956">956: </a>  VecCUSPRestoreArrayRead(xx,&amp;xarray);
+<a name="line957">957: </a>  VecCUSPRestoreArrayWrite(yy,&amp;yarray);
+<a name="line958">958: </a>  <font color="#4169E1">if</font> (!cusparseMat-&gt;mat-&gt;hasNonZeroStream()) {
+<a name="line959">959: </a>    WaitForGPU();CHKERRCUSP(ierr);
+<a name="line960">960: </a>  }
+<a name="line961">961: </a>  <font color="#4169E1">if</font> (cusparseMat-&gt;isSymmOrHerm) {
+<a name="line962">962: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*a-&gt;nz - 3.0*cusparseMat-&gt;nonzerorow);
+<a name="line963">963: </a>  } <font color="#4169E1">else</font> {
+<a name="line964">964: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*a-&gt;nz - cusparseMat-&gt;nonzerorow);
+<a name="line965">965: </a>  }
+<a name="line966">966: </a>  <font color="#4169E1">return</font>(0);
+<a name="line967">967: </a>}
+
+<a name="line971">971: </a><strong><font color="#4169E1"><a name="MatMultAdd_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultAdd_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> yy,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> zz)</font></strong>
+<a name="line972">972: </a>{
+<a name="line973">973: </a>  Mat_SeqAIJ         *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line974">974: </a>  Mat_SeqAIJCUSPARSE *cusparseMat = (Mat_SeqAIJCUSPARSE*)A-&gt;spptr;
+<a name="line975">975: </a>  CUSPARRAY          *xarray,*yarray,*zarray;
+<a name="line976">976: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+
+<a name="line979">979: </a>  <font color="#B22222">/* The line below should not be necessary as it has been moved to MatAssemblyEnd_SeqAIJCUSPARSE</font>
+<a name="line980">980: </a><font color="#B22222">     MatSeqAIJCUSPARSECopyToGPU(A); */</font>
+<a name="line981">981: </a>  try {
+<a name="line982">982: </a>    VecCopy_SeqCUSP(yy,zz);
+<a name="line983">983: </a>    VecCUSPGetArrayRead(xx,&amp;xarray);
+<a name="line984">984: </a>    VecCUSPGetArrayRead(yy,&amp;yarray);
+<a name="line985">985: </a>    VecCUSPGetArrayWrite(zz,&amp;zarray);
+
+<a name="line987">987: </a>    <font color="#B22222">/* multiply add */</font>
+<a name="line988">988: </a>    cusparseMat-&gt;mat-&gt;multiplyAdd(xarray, zarray);CHKERRCUSP(ierr);
+
+<a name="line990">990: </a>    VecCUSPRestoreArrayRead(xx,&amp;xarray);
+<a name="line991">991: </a>    VecCUSPRestoreArrayRead(yy,&amp;yarray);
+<a name="line992">992: </a>    VecCUSPRestoreArrayWrite(zz,&amp;zarray);
+
+<a name="line994">994: </a>  } catch(char *ex) {
+<a name="line995">995: </a>    <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line996">996: </a>  }
+<a name="line997">997: </a>  WaitForGPU();CHKERRCUSP(ierr);
+<a name="line998">998: </a>  <font color="#4169E1">if</font> (cusparseMat-&gt;isSymmOrHerm) {
+<a name="line999">999: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*a-&gt;nz - 2.0*cusparseMat-&gt;nonzerorow);
+<a name="line1000">1000: </a>  } <font color="#4169E1">else</font> {
+<a name="line1001">1001: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*a-&gt;nz);
+<a name="line1002">1002: </a>  }
+<a name="line1003">1003: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1004">1004: </a>}
+
+<a name="line1008">1008: </a><strong><font color="#4169E1"><a name="MatMultTransposeAdd_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatMultTransposeAdd_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> xx,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> yy,<A href="../../../../../../docs/manualpages/Vec/Vec.html#Vec">Vec</A> zz)</font></strong>
+<a name="line1009">1009: </a>{
+<a name="line1010">1010: </a>  Mat_SeqAIJ         *a = (Mat_SeqAIJ*)A-&gt;data;
+<a name="line1011">1011: </a>  Mat_SeqAIJCUSPARSE *cusparseMat = (Mat_SeqAIJCUSPARSE*)A-&gt;spptr;
+<a name="line1012">1012: </a>  CUSPARRAY          *xarray,*yarray,*zarray;
+<a name="line1013">1013: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+
+<a name="line1016">1016: </a>  <font color="#B22222">/* The line below should not be necessary as it has been moved to MatAssemblyEnd_SeqAIJCUSPARSE</font>
+<a name="line1017">1017: </a><font color="#B22222">     MatSeqAIJCUSPARSECopyToGPU(A); */</font>
+<a name="line1018">1018: </a>  <font color="#4169E1">if</font> (!cusparseMat-&gt;hasTranspose) {
+<a name="line1019">1019: </a>    MatSeqAIJCUSPARSEGenerateTransposeForMult(A);
+<a name="line1020">1020: </a>    cusparseMat-&gt;hasTranspose=<A href="../../../../../../docs/manualpages/Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>;
+<a name="line1021">1021: </a>  }
+<a name="line1022">1022: </a>  try {
+<a name="line1023">1023: </a>    VecCopy_SeqCUSP(yy,zz);
+<a name="line1024">1024: </a>    VecCUSPGetArrayRead(xx,&amp;xarray);
+<a name="line1025">1025: </a>    VecCUSPGetArrayRead(yy,&amp;yarray);
+<a name="line1026">1026: </a>    VecCUSPGetArrayWrite(zz,&amp;zarray);
+
+<a name="line1028">1028: </a>    <font color="#B22222">/* multiply add with matrix transpose */</font>
+<a name="line1029">1029: </a>    cusparseMat-&gt;mat-&gt;multiplyAddTranspose(xarray, yarray);CHKERRCUSP(ierr);
+
+<a name="line1031">1031: </a>    VecCUSPRestoreArrayRead(xx,&amp;xarray);
+<a name="line1032">1032: </a>    VecCUSPRestoreArrayRead(yy,&amp;yarray);
+<a name="line1033">1033: </a>    VecCUSPRestoreArrayWrite(zz,&amp;zarray);
+
+<a name="line1035">1035: </a>  } catch(char *ex) {
+<a name="line1036">1036: </a>    <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line1037">1037: </a>  }
+<a name="line1038">1038: </a>  WaitForGPU();CHKERRCUSP(ierr);
+<a name="line1039">1039: </a>  <font color="#4169E1">if</font> (cusparseMat-&gt;isSymmOrHerm) {
+<a name="line1040">1040: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(4.0*a-&gt;nz - 2.0*cusparseMat-&gt;nonzerorow);
+<a name="line1041">1041: </a>  } <font color="#4169E1">else</font> {
+<a name="line1042">1042: </a>    <A href="../../../../../../docs/manualpages/Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(2.0*a-&gt;nz);
+<a name="line1043">1043: </a>  }
+<a name="line1044">1044: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1045">1045: </a>}
+
+<a name="line1049">1049: </a><strong><font color="#4169E1"><a name="MatAssemblyEnd_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatAssemblyEnd_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A,<A href="../../../../../../docs/manualpages/Mat/MatAssemblyType.html#MatAssemblyType">MatAssemblyType</A> mode)</font></strong>
+<a name="line1050">1050: </a>{
+
+<a name="line1054">1054: </a>  MatAssemblyEnd_SeqAIJ(A,mode);
+<a name="line1055">1055: </a>  <font color="#4169E1">if</font> (A-&gt;factortype==MAT_FACTOR_NONE) {
+<a name="line1056">1056: </a>    MatSeqAIJCUSPARSECopyToGPU(A);
+<a name="line1057">1057: </a>  }
+<a name="line1058">1058: </a>  <font color="#4169E1">if</font> (mode == MAT_FLUSH_ASSEMBLY) <font color="#4169E1">return</font>(0);
+<a name="line1059">1059: </a>  A-&gt;ops-&gt;mult             = MatMult_SeqAIJCUSPARSE;
+<a name="line1060">1060: </a>  A-&gt;ops-&gt;multadd          = MatMultAdd_SeqAIJCUSPARSE;
+<a name="line1061">1061: </a>  A-&gt;ops-&gt;multtranspose    = MatMultTranspose_SeqAIJCUSPARSE;
+<a name="line1062">1062: </a>  A-&gt;ops-&gt;multtransposeadd = MatMultTransposeAdd_SeqAIJCUSPARSE;
+<a name="line1063">1063: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1064">1064: </a>}
+
+<a name="line1066">1066: </a><font color="#B22222">/* --------------------------------------------------------------------------------*/</font>
+<a name="line1069">1069: </a><font color="#B22222">/*@</font>
+<a name="line1070">1070: </a><font color="#B22222">   <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJCUSPARSE.html#MatCreateSeqAIJCUSPARSE">MatCreateSeqAIJCUSPARSE</A> - Creates a sparse matrix in AIJ (compressed row) format</font>
+<a name="line1071">1071: </a><font color="#B22222">   (the default parallel PETSc format). This matrix will ultimately pushed down</font>
+<a name="line1072">1072: </a><font color="#B22222">   to NVidia GPUs and use the CUSPARSE library for calculations. For good matrix</font>
+<a name="line1073">1073: </a><font color="#B22222">   assembly performance the user should preallocate the matrix storage by setting</font>
+<a name="line1074">1074: </a><font color="#B22222">   the parameter nz (or the array nnz).  By setting these parameters accurately,</font>
+<a name="line1075">1075: </a><font color="#B22222">   performance during matrix assembly can be increased by more than a factor of 50.</font>
+
+<a name="line1077">1077: </a><font color="#B22222">   Collective on <A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A></font>
+
+<a name="line1079">1079: </a><font color="#B22222">   Input Parameters:</font>
+<a name="line1080">1080: </a><font color="#B22222">+  comm - MPI communicator, set to <A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A></font>
+<a name="line1081">1081: </a><font color="#B22222">.  m - number of rows</font>
+<a name="line1082">1082: </a><font color="#B22222">.  n - number of columns</font>
+<a name="line1083">1083: </a><font color="#B22222">.  nz - number of nonzeros per row (same for all rows)</font>
+<a name="line1084">1084: </a><font color="#B22222">-  nnz - array containing the number of nonzeros in the various rows</font>
+<a name="line1085">1085: </a><font color="#B22222">         (possibly different for each row) or NULL</font>
+
+<a name="line1087">1087: </a><font color="#B22222">   Output Parameter:</font>
+<a name="line1088">1088: </a><font color="#B22222">.  A - the matrix</font>
+
+<a name="line1090">1090: </a><font color="#B22222">   It is recommended that one use the <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>() and/or <A href="../../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(),</font>
+<a name="line1091">1091: </a><font color="#B22222">   MatXXXXSetPreallocation() paradgm instead of this routine directly.</font>
+<a name="line1092">1092: </a><font color="#B22222">   [MatXXXXSetPreallocation() is, for example, <A href="../../../../../../docs/manualpages/Mat/MatSeqAIJSetPreallocation.html#MatSeqAIJSetPreallocation">MatSeqAIJSetPreallocation</A>]</font>
+
+<a name="line1094">1094: </a><font color="#B22222">   Notes:</font>
+<a name="line1095">1095: </a><font color="#B22222">   If nnz is given then nz is ignored</font>
+
+<a name="line1097">1097: </a><font color="#B22222">   The AIJ format (also called the Yale sparse matrix format or</font>
+<a name="line1098">1098: </a><font color="#B22222">   compressed row storage), is fully compatible with standard Fortran 77</font>
+<a name="line1099">1099: </a><font color="#B22222">   storage.  That is, the stored row and column indices can begin at</font>
+<a name="line1100">1100: </a><font color="#B22222">   either one (as in Fortran) or zero.  See the users' manual for details.</font>
+
+<a name="line1102">1102: </a><font color="#B22222">   Specify the preallocated storage with either nz or nnz (not both).</font>
+<a name="line1103">1103: </a><font color="#B22222">   Set nz=<A href="../../../../../../docs/manualpages/Sys/PETSC_DEFAULT.html#PETSC_DEFAULT">PETSC_DEFAULT</A> and nnz=NULL for PETSc to control dynamic memory</font>
+<a name="line1104">1104: </a><font color="#B22222">   allocation.  For large problems you MUST preallocate memory or you</font>
+<a name="line1105">1105: </a><font color="#B22222">   will get TERRIBLE performance, see the users' manual chapter on matrices.</font>
+
+<a name="line1107">1107: </a><font color="#B22222">   By default, this format uses inodes (identical nodes) when possible, to</font>
+<a name="line1108">1108: </a><font color="#B22222">   improve numerical efficiency of matrix-vector products and solves. We</font>
+<a name="line1109">1109: </a><font color="#B22222">   search for consecutive rows with the same nonzero structure, thereby</font>
+<a name="line1110">1110: </a><font color="#B22222">   reusing matrix information to achieve increased efficiency.</font>
+
+<a name="line1112">1112: </a><font color="#B22222">   Level: intermediate</font>
+
+<a name="line1114">1114: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>(), <A href="../../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(), <A href="../../../../../../docs/manualpages/Mat/MatSeqAIJSetColumnIndices.html#MatSeqAIJSetColumnIndices">MatSeqAIJSetColumnIndices</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJWithArrays.html#MatCreateSeqAIJWithArrays">MatCreateSeqAIJWithArrays</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCreateAIJ.html#MatCreateAIJ">MatCreateAIJ</A>(), <A href="../../../../../../docs/manualpages/Mat/MATSEQAIJCUSPARSE.html#MATSEQAIJCUSPARSE">MATSEQAIJCUSPARSE</A>, <A href="../../../../../../docs/manualpages/Mat/MATAIJCUSPARSE.html#MATAIJCUSPARSE">MATAIJCUSPARSE</A></font>
+<a name="line1115">1115: </a><font color="#B22222">@*/</font>
+<a name="line1116">1116: </a><strong><font color="#4169E1"><a name="MatCreateSeqAIJCUSPARSE"></a><A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJCUSPARSE.html#MatCreateSeqAIJCUSPARSE">MatCreateSeqAIJCUSPARSE</A>(<A href="../../../../../../docs/manualpages/Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A> comm,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> m,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> n,<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nz,const <A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A> nnz[],<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> *A)</font></strong>
+<a name="line1117">1117: </a>{
+
+<a name="line1121">1121: </a>  <A href="../../../../../../docs/manualpages/Mat/MatCreate.html#MatCreate">MatCreate</A>(comm,A);
+<a name="line1122">1122: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetSizes.html#MatSetSizes">MatSetSizes</A>(*A,m,n,m,n);
+<a name="line1123">1123: </a>  <A href="../../../../../../docs/manualpages/Mat/MatSetType.html#MatSetType">MatSetType</A>(*A,<A href="../../../../../../docs/manualpages/Mat/MATSEQAIJCUSPARSE.html#MATSEQAIJCUSPARSE">MATSEQAIJCUSPARSE</A>);
+<a name="line1124">1124: </a>  MatSeqAIJSetPreallocation_SeqAIJ(*A,nz,(<A href="../../../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>*)nnz);
+<a name="line1125">1125: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1126">1126: </a>}
+
+<a name="line1130">1130: </a><strong><font color="#4169E1"><a name="MatDestroy_SeqAIJCUSPARSE"></a>static <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatDestroy_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> A)</font></strong>
+<a name="line1131">1131: </a>{
+<a name="line1132">1132: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>     ierr;
+<a name="line1133">1133: </a>  Mat_SeqAIJCUSPARSE *cusparseMat = (Mat_SeqAIJCUSPARSE*)A-&gt;spptr;
+
+<a name="line1136">1136: </a>  <font color="#4169E1">if</font> (A-&gt;factortype==MAT_FACTOR_NONE) {
+<a name="line1137">1137: </a>    try {
+<a name="line1138">1138: </a>      <font color="#4169E1">if</font> (A-&gt;valid_GPU_matrix != PETSC_CUSP_UNALLOCATED) {
+<a name="line1139">1139: </a>        delete (GPU_Matrix_Ifc*)(cusparseMat-&gt;mat);
+<a name="line1140">1140: </a>      }
+<a name="line1141">1141: </a>      <font color="#4169E1">if</font> (cusparseMat-&gt;tempvec!=0) delete cusparseMat-&gt;tempvec;
+<a name="line1142">1142: </a>      delete cusparseMat;
+<a name="line1143">1143: </a>      A-&gt;valid_GPU_matrix = PETSC_CUSP_UNALLOCATED;
+<a name="line1144">1144: </a>    } catch(char *ex) {
+<a name="line1145">1145: </a>      <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line1146">1146: </a>    }
+<a name="line1147">1147: </a>  } <font color="#4169E1">else</font> {
+<a name="line1148">1148: </a>    <font color="#B22222">/* The triangular factors */</font>
+<a name="line1149">1149: </a>    try {
+<a name="line1150">1150: </a>      Mat_SeqAIJCUSPARSETriFactors *cusparseTriFactors = (Mat_SeqAIJCUSPARSETriFactors*)A-&gt;spptr;
+<a name="line1151">1151: </a>      GPU_Matrix_Ifc               *cusparseMatLo      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;loTriFactorPtr;
+<a name="line1152">1152: </a>      GPU_Matrix_Ifc               *cusparseMatUp      = (GPU_Matrix_Ifc*)cusparseTriFactors-&gt;upTriFactorPtr;
+<a name="line1153">1153: </a>      delete (GPU_Matrix_Ifc*) cusparseMatLo;
+<a name="line1154">1154: </a>      delete (GPU_Matrix_Ifc*) cusparseMatUp;
+<a name="line1155">1155: </a>      delete (CUSPARRAY*) cusparseTriFactors-&gt;tempvec;
+<a name="line1156">1156: </a>      delete cusparseTriFactors;
+<a name="line1157">1157: </a>    } catch(char *ex) {
+<a name="line1158">1158: </a>      <A href="../../../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_LIB,<font color="#666666">"CUSPARSE error: %s"</font>, ex);
+<a name="line1159">1159: </a>    }
+<a name="line1160">1160: </a>  }
+<a name="line1161">1161: </a>  <font color="#4169E1">if</font> (MAT_cusparseHandle) {
+<a name="line1162">1162: </a>    cusparseStatus_t stat;
+<a name="line1163">1163: </a>    stat = cusparseDestroy(MAT_cusparseHandle);CHKERRCUSP(stat);
+
+<a name="line1165">1165: </a>    MAT_cusparseHandle=0;
+<a name="line1166">1166: </a>  }
+<a name="line1167">1167: </a>  <font color="#B22222">/*this next line is because <A href="../../../../../../docs/manualpages/Mat/MatDestroy.html#MatDestroy">MatDestroy</A> tries to <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A> spptr if it is not zero, and <A href="../../../../../../docs/manualpages/Sys/PetscFree.html#PetscFree">PetscFree</A> only works if the memory was allocated with <A href="../../../../../../docs/manualpages/Sys/PetscNew.html#PetscNew">PetscNew</A> or <A href="../../../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>, which don't call the constructor */</font>
+<a name="line1168">1168: </a>  A-&gt;spptr = 0;
+
+<a name="line1170">1170: </a>  MatDestroy_SeqAIJ(A);
+<a name="line1171">1171: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1172">1172: </a>}
+
+<a name="line1176">1176: </a><strong><font color="#4169E1"><a name="MatCreate_SeqAIJCUSPARSE"></a>PETSC_EXTERN <A href="../../../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> MatCreate_SeqAIJCUSPARSE(<A href="../../../../../../docs/manualpages/Mat/Mat.html#Mat">Mat</A> B)</font></strong>
+<a name="line1177">1177: </a>{
+
+<a name="line1181">1181: </a>  MatCreate_SeqAIJ(B);
+<a name="line1182">1182: </a>  <font color="#4169E1">if</font> (B-&gt;factortype==MAT_FACTOR_NONE) {
+<a name="line1183">1183: </a>    <font color="#B22222">/* you cannot check the inode.use flag here since the matrix was just created.</font>
+<a name="line1184">1184: </a><font color="#B22222">       now build a GPU matrix data structure */</font>
+<a name="line1185">1185: </a>    B-&gt;spptr = new Mat_SeqAIJCUSPARSE;
+<a name="line1186">1186: </a>    ((Mat_SeqAIJCUSPARSE*)B-&gt;spptr)-&gt;mat          = 0;
+<a name="line1187">1187: </a>    ((Mat_SeqAIJCUSPARSE*)B-&gt;spptr)-&gt;tempvec      = 0;
+<a name="line1188">1188: </a>    ((Mat_SeqAIJCUSPARSE*)B-&gt;spptr)-&gt;format       = MAT_CUSPARSE_CSR;
+<a name="line1189">1189: </a>    ((Mat_SeqAIJCUSPARSE*)B-&gt;spptr)-&gt;hasTranspose = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1190">1190: </a>    ((Mat_SeqAIJCUSPARSE*)B-&gt;spptr)-&gt;isSymmOrHerm = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1191">1191: </a>  } <font color="#4169E1">else</font> {
+<a name="line1192">1192: </a>    <font color="#B22222">/* NEXT, set the pointers to the triangular factors */</font>
+<a name="line1193">1193: </a>    B-&gt;spptr = new Mat_SeqAIJCUSPARSETriFactors;
+<a name="line1194">1194: </a>    ((Mat_SeqAIJCUSPARSETriFactors*)B-&gt;spptr)-&gt;loTriFactorPtr = 0;
+<a name="line1195">1195: </a>    ((Mat_SeqAIJCUSPARSETriFactors*)B-&gt;spptr)-&gt;upTriFactorPtr = 0;
+<a name="line1196">1196: </a>    ((Mat_SeqAIJCUSPARSETriFactors*)B-&gt;spptr)-&gt;tempvec        = 0;
+<a name="line1197">1197: </a>    ((Mat_SeqAIJCUSPARSETriFactors*)B-&gt;spptr)-&gt;format         = cusparseMatSolveStorageFormat;
+<a name="line1198">1198: </a>    ((Mat_SeqAIJCUSPARSETriFactors*)B-&gt;spptr)-&gt;hasTranspose   = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1199">1199: </a>    ((Mat_SeqAIJCUSPARSETriFactors*)B-&gt;spptr)-&gt;isSymmOrHerm   = <A href="../../../../../../docs/manualpages/Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<a name="line1200">1200: </a>  }
+<a name="line1201">1201: </a>  <font color="#B22222">/* Create a single instance of the MAT_cusparseHandle for any matrix (matMult, TriSolve, ...) */</font>
+<a name="line1202">1202: </a>  <font color="#4169E1">if</font> (!MAT_cusparseHandle) {
+<a name="line1203">1203: </a>    cusparseStatus_t stat;
+<a name="line1204">1204: </a>    stat = cusparseCreate(&amp;MAT_cusparseHandle);CHKERRCUSP(stat);
+<a name="line1205">1205: </a>  }
+<a name="line1206">1206: </a>  <font color="#B22222">/* Here we overload MatGetFactor_petsc_C which enables -mat_type aijcusparse to use the</font>
+<a name="line1207">1207: </a><font color="#B22222">     default cusparse tri solve. Note the difference with the implementation in</font>
+<a name="line1208">1208: </a><font color="#B22222">     MatCreate_SeqAIJCUSP in ../seqcusp/aijcusp.cu */</font>
+<a name="line1209">1209: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<font color="#666666">"MatGetFactor_petsc_C"</font>,MatGetFactor_seqaij_cusparse);
+
+<a name="line1211">1211: </a>  B-&gt;ops-&gt;assemblyend      = MatAssemblyEnd_SeqAIJCUSPARSE;
+<a name="line1212">1212: </a>  B-&gt;ops-&gt;destroy          = MatDestroy_SeqAIJCUSPARSE;
+<a name="line1213">1213: </a>  B-&gt;ops-&gt;getvecs          = MatGetVecs_SeqAIJCUSPARSE;
+<a name="line1214">1214: </a>  B-&gt;ops-&gt;setfromoptions   = MatSetFromOptions_SeqAIJCUSPARSE;
+<a name="line1215">1215: </a>  B-&gt;ops-&gt;mult             = MatMult_SeqAIJCUSPARSE;
+<a name="line1216">1216: </a>  B-&gt;ops-&gt;multadd          = MatMultAdd_SeqAIJCUSPARSE;
+<a name="line1217">1217: </a>  B-&gt;ops-&gt;multtranspose    = MatMultTranspose_SeqAIJCUSPARSE;
+<a name="line1218">1218: </a>  B-&gt;ops-&gt;multtransposeadd = MatMultTransposeAdd_SeqAIJCUSPARSE;
+
+<a name="line1220">1220: </a>  PetscObjectChangeTypeName((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B,<A href="../../../../../../docs/manualpages/Mat/MATSEQAIJCUSPARSE.html#MATSEQAIJCUSPARSE">MATSEQAIJCUSPARSE</A>);
+
+<a name="line1222">1222: </a>  B-&gt;valid_GPU_matrix = PETSC_CUSP_UNALLOCATED;
+
+<a name="line1224">1224: </a>  <A href="../../../../../../docs/manualpages/Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A href="../../../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)B, <font color="#666666">"MatCUSPARSESetFormat_C"</font>, MatCUSPARSESetFormat_SeqAIJCUSPARSE);
+<a name="line1225">1225: </a>  <font color="#4169E1">return</font>(0);
+<a name="line1226">1226: </a>}
+
+<a name="line1228">1228: </a><font color="#B22222">/*M</font>
+<a name="line1229">1229: </a><font color="#B22222">   <A href="../../../../../../docs/manualpages/Mat/MATSEQAIJCUSPARSE.html#MATSEQAIJCUSPARSE">MATSEQAIJCUSPARSE</A> - <A href="../../../../../../docs/manualpages/Mat/MATAIJCUSPARSE.html#MATAIJCUSPARSE">MATAIJCUSPARSE</A> = "(seq)aijcusparse" - A matrix type to be used for sparse matrices.</font>
+
+<a name="line1231">1231: </a><font color="#B22222">   A matrix type type whose data resides on Nvidia GPUs. These matrices can be in either</font>
+<a name="line1232">1232: </a><font color="#B22222">   CSR, ELL, or Hybrid format. All matrix calculations are performed on Nvidia GPUs using</font>
+<a name="line1233">1233: </a><font color="#B22222">   the CUSPARSE library. This type is only available when using the 'txpetscgpu' package.</font>
+<a name="line1234">1234: </a><font color="#B22222">   Use --download-txpetscgpu to build/install PETSc to use different CUSPARSE library and</font>
+<a name="line1235">1235: </a><font color="#B22222">   the different GPU storage formats.</font>
+
+<a name="line1237">1237: </a><font color="#B22222">   Options Database Keys:</font>
+<a name="line1238">1238: </a><font color="#B22222">+  -mat_type aijcusparse - sets the matrix type to "seqaijcusparse" during a call to <A href="../../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>()</font>
+<a name="line1239">1239: </a><font color="#B22222">.  -mat_cusparse_storage_format csr - sets the storage format of matrices (for <A href="../../../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A> and factors in <A href="../../../../../../docs/manualpages/Mat/MatSolve.html#MatSolve">MatSolve</A>) during a call to <A href="../../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(). Other options include ell (ellpack) or hyb (hybrid). Only available with 'txpetscgpu' package.</font>
+<a name="line1240">1240: </a><font color="#B22222">.  -mat_cusparse_mult_storage_format csr - sets the storage format of matrices (for <A href="../../../../../../docs/manualpages/Mat/MatMult.html#MatMult">MatMult</A>) during a call to <A href="../../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(). Other options include ell (ellpack) or hyb (hybrid). Only available with 'txpetscgpu' package.</font>
+<a name="line1241">1241: </a><font color="#B22222">-  -mat_cusparse_solve_storage_format csr - sets the storage format matrices (for factors in <A href="../../../../../../docs/manualpages/Mat/MatSolve.html#MatSolve">MatSolve</A>) during a call to <A href="../../../../../../docs/manualpages/Mat/MatSetFromOptions.html#MatSetFromOptions">MatSetFromOptions</A>(). Other options include ell (ellpack) or hyb (hybrid). Only available with 'txpetscgpu' package.</font>
+
+<a name="line1243">1243: </a><font color="#B22222">  Level: beginner</font>
+
+<a name="line1245">1245: </a><font color="#B22222">.seealso: <A href="../../../../../../docs/manualpages/Mat/MatCreateSeqAIJCUSPARSE.html#MatCreateSeqAIJCUSPARSE">MatCreateSeqAIJCUSPARSE</A>(), <A href="../../../../../../docs/manualpages/Mat/MATAIJCUSPARSE.html#MATAIJCUSPARSE">MATAIJCUSPARSE</A>, <A href="../../../../../../docs/manualpages/Mat/MatCreateAIJCUSPARSE.html#MatCreateAIJCUSPARSE">MatCreateAIJCUSPARSE</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSESetFormat.html#MatCUSPARSESetFormat">MatCUSPARSESetFormat</A>(), <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEStorageFormat.html#MatCUSPARSEStorageFormat">MatCUSPARSEStorageFormat</A>, <A href="../../../../../../docs/manualpages/Mat/MatCUSPARSEFormatOperation.html#MatCUSPARSEFormatOperation">MatCUSPARSEFormatOperation</A></font>
+<a name="line1246">1246: </a><font color="#B22222">M*/</font>
+</pre>
+</body>
+
+</html>

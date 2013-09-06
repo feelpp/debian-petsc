@@ -5,14 +5,12 @@
 <TITLE>SNESGetFunctionDomainError</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESGetFunctionDomainError"><H1>SNESGetFunctionDomainError</H1></A>
 Gets the status of the domain error after a call to <A HREF="../SNES/SNESComputeFunction.html#SNESComputeFunction">SNESComputeFunction</A>; 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESGetFunctionDomainError(SNES snes, PetscBool *domainerror)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -22,16 +20,17 @@ Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
-<DT><B>domainerror Set to <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if there's a domain error; <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> otherwise.</B> -
-
+<DT><B>domainerror </B> -Set to <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> if there's a domain error; <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> otherwise.
 <br>
+<P>
+
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  <A HREF="../SNES/SNES.html#SNES">SNES</A>, view
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../SNES/SNESSetFunctionDomainError.html#SNESSetFunctionDomainError">SNESSetFunctionDomainError</A>, <A HREF="../SNES/SNESComputeFunction.html#SNESComputeFunction">SNESComputeFunction</A>()
+ <A HREF="../SNES/SNESSetFunctionDomainError.html#SNESSetFunctionDomainError">SNESSetFunctionDomainError</A>(), <A HREF="../SNES/SNESComputeFunction.html#SNESComputeFunction">SNESComputeFunction</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/snes/interface/snes.c.html#SNESGetFunctionDomainError">src/snes/interface/snes.c</A>
 <BR><A HREF="./index.html">Index of all SNES routines</A>

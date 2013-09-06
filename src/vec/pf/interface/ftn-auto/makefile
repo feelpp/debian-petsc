@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = pff.c
-OBJSC    = pff.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

@@ -5,12 +5,11 @@
 <TITLE>ISLocalToGlobalMappingCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="ISLocalToGlobalMappingCreate"><H1>ISLocalToGlobalMappingCreate</H1></A>
 Creates a mapping between a local (0 to n) ordering and a global parallel ordering. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscvec.h" 
 #include "petscis.h"  
 PetscErrorCode  ISLocalToGlobalMappingCreate(MPI_Comm cm,PetscInt n,const PetscInt indices[],PetscCopyMode mode,ISLocalToGlobalMapping *mapping)
 </PRE>
@@ -22,7 +21,7 @@ Not Collective, but communicator may have more than one process
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- the number of local elements
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>indices </B></TD><TD>- the global index for each local element
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>indices </B></TD><TD>- the global index for each local element, these do not need to be in increasing order (sorted)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>mode </B></TD><TD>- see <A HREF="../Sys/PetscCopyMode.html#PetscCopyMode">PetscCopyMode</A>
 </TD></TR></TABLE>
@@ -43,5 +42,6 @@ Not Collective, but communicator may have more than one process
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
 <A HREF="../../../src/vec/vec/examples/tutorials/ex8.c.html">src/vec/vec/examples/tutorials/ex8.c.html</A><BR>
-<A HREF="../../../src/vec/is/examples/tutorials/ex4.c.html">src/vec/is/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/vec/is/is/examples/tutorials/ex4.c.html">src/vec/is/is/examples/tutorials/ex4.c.html</A><BR>
+<A HREF="../../../src/ts/examples/tutorials/ex30.cxx.html">src/ts/examples/tutorials/ex30.cxx.html</A><BR>
 </BODY></HTML>

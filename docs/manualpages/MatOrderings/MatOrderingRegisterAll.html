@@ -5,13 +5,13 @@
 <TITLE>MatOrderingRegisterAll</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatOrderingRegisterAll"><H1>MatOrderingRegisterAll</H1></A>
-Registers all of the matrix  reordering routines in PETSc. 
+Registers all of the matrix reordering routines in PETSc. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h"   
-PetscErrorCode  MatOrderingRegisterAll(const char path[])
+PetscErrorCode  MatOrderingRegisterAll(void)
 </PRE>
 Not Collective
 <P>
@@ -32,7 +32,7 @@ replacement routine is linked before libpetscmat.a.
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
- <A HREF="../Mat/MatOrderingRegisterDynamic.html#MatOrderingRegisterDynamic">MatOrderingRegisterDynamic</A>(), <A HREF="../MatOrderings/MatOrderingRegisterDestroy.html#MatOrderingRegisterDestroy">MatOrderingRegisterDestroy</A>()
+ <A HREF="../MatOrderings/MatOrderingRegister.html#MatOrderingRegister">MatOrderingRegister</A>(), MatOrderingRegisterDestroy()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/mat/order/sregis.c.html#MatOrderingRegisterAll">src/mat/order/sregis.c</A>
 <BR><A HREF="./index.html">Index of all MatOrderings routines</A>

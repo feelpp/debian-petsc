@@ -5,13 +5,13 @@
 <TITLE>EventRegLogRegister</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="EventRegLogRegister"><H1>EventRegLogRegister</H1></A>
 Registers an event for logging operations in an application code. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode EventRegLogRegister(PetscEventRegLog eventLog, const char ename[], PetscClassId classid, PetscLogEvent *event) 
+PetscErrorCode EventRegLogRegister(PetscEventRegLog eventLog, const char ename[], PetscClassId classid, PetscLogEvent *event)
 </PRE>
 Not Collective
 <P>
@@ -47,12 +47,12 @@ compiled with -DPETSC_USE_LOG (which is the default) and -log,
 intended for logging user events to supplement this PETSc
 information.
 <P>
-PETSc can gather data for use with the utilities Upshot/Nupshot
+PETSc can gather data for use with the utilities Jumpshot
 (part of the MPICH distribution).  If PETSc has been compiled
 with flag -DPETSC_HAVE_MPE (MPE is an additional utility within
 MPICH), the user can employ another command line option, -log_mpe,
 to create a logfile, "mpe.log", which can be visualized
-Upshot/Nupshot.
+Jumpshot.
 <P>
 
 <P>
@@ -63,7 +63,7 @@ Upshot/Nupshot.
  <A HREF="../Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(), <A HREF="../Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(), <A HREF="../Profiling/PetscLogFlops.html#PetscLogFlops">PetscLogFlops</A>(), PetscLogEventMPEActivate(), PetscLogEventMPEDeactivate(),
 <BR>EventLogActivate(), EventLogDeactivate()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/utils/eventLog.c.html#EventRegLogRegister">src/sys/plog/utils/eventLog.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/logging/utils/eventlog.c.html#EventRegLogRegister">src/sys/logging/utils/eventlog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

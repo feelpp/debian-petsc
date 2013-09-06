@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/mpiuni/mpif.h.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:36:48+00:00">
+<meta name="date" content="2013-07-02T14:39:23+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!
 
@@ -16,9 +16,9 @@
 
 <a name="line6">  6: </a>!     External objects outside of MPI calls
 <a name="line7">  7: </a>       integer MPI_COMM_WORLD
-<a name="line8">  8: </a>       parameter (MPI_COMM_WORLD = 1)
+<a name="line8">  8: </a>       parameter (MPI_COMM_WORLD = 2)
 <a name="line9">  9: </a>       integer MPI_COMM_SELF
-<a name="line10"> 10: </a>       parameter (MPI_COMM_SELF = 2)
+<a name="line10"> 10: </a>       parameter (MPI_COMM_SELF = 1)
 <a name="line11"> 11: </a>       integer  MPI_COMM_NULL
 <a name="line12"> 12: </a>       parameter (MPI_COMM_NULL = 0)
 <a name="line13"> 13: </a>       integer MPI_SUCCESS
@@ -56,40 +56,39 @@
 
 <a name="line46"> 46: </a>       integer MPI_REQUEST_NULL
 <a name="line47"> 47: </a>       parameter (MPI_REQUEST_NULL=0)
-<a name="line48"> 48: </a>       integer MPI_MINLOC
-<a name="line49"> 49: </a>       parameter (MPI_MINLOC=0)
 
-<a name="line51"> 51: </a>       INTEGER MPI_SOURCE,MPI_TAG,MPI_ERROR
-<a name="line52"> 52: </a>       PARAMETER(MPI_SOURCE=2,MPI_TAG=3,MPI_ERROR=4)
+<a name="line49"> 49: </a>       INTEGER MPI_SOURCE,MPI_TAG,MPI_ERROR
+<a name="line50"> 50: </a>       PARAMETER(MPI_SOURCE=2,MPI_TAG=3,MPI_ERROR=4)
 
-<a name="line54"> 54: </a>
-<a name="line55"> 55: </a>!     Data Types. Same Values used in mpi.c
-<a name="line56"> 56: </a>       integer MPI_INTEGER,MPI_LOGICAL
-<a name="line57"> 57: </a>       integer MPI_REAL,MPI_DOUBLE_PRECISION
-<a name="line58"> 58: </a>       integer MPI_COMPLEX, MPI_CHARACTER
-<a name="line59"> 59: </a>       integer MPI_2INTEGER
-<a name="line60"> 60: </a>       integer MPI_DOUBLE_COMPLEX
-<a name="line61"> 61: </a>       integer MPI_INTEGER4
-<a name="line62"> 62: </a>       integer MPI_INTEGER8
-<a name="line63"> 63: </a>       integer MPI_2DOUBLE_PRECISION
 
-<a name="line65"> 65: </a>       parameter (MPI_INTEGER=0)
-<a name="line66"> 66: </a>       parameter (MPI_LOGICAL=0)
-<a name="line67"> 67: </a>       parameter (MPI_REAL=1)
-<a name="line68"> 68: </a>       parameter (MPI_DOUBLE_PRECISION=2)
-<a name="line69"> 69: </a>       parameter (MPI_COMPLEX=3)
-<a name="line70"> 70: </a>       parameter (MPI_CHARACTER=4)
-<a name="line71"> 71: </a>       parameter (MPI_2INTEGER=5)
-<a name="line72"> 72: </a>       parameter (MPI_DOUBLE_COMPLEX=6)
-<a name="line73"> 73: </a>       parameter (MPI_INTEGER4=7)
-<a name="line74"> 74: </a>       parameter (MPI_INTEGER8=8)
-<a name="line75"> 75: </a>       parameter (MPI_2DOUBLE_PRECISION=9)
+<a name="line53"> 53: </a>!     Data Types. Same Values used in mpi.c
+<a name="line54"> 54: </a>       integer MPI_INTEGER,MPI_LOGICAL
+<a name="line55"> 55: </a>       integer MPI_REAL,MPI_DOUBLE_PRECISION
+<a name="line56"> 56: </a>       integer MPI_COMPLEX, MPI_CHARACTER
+<a name="line57"> 57: </a>       integer MPI_2INTEGER
+<a name="line58"> 58: </a>       integer MPI_DOUBLE_COMPLEX
+<a name="line59"> 59: </a>       integer MPI_INTEGER4
+<a name="line60"> 60: </a>       integer MPI_INTEGER8
+<a name="line61"> 61: </a>       integer MPI_2DOUBLE_PRECISION
 
-<a name="line77"> 77: </a>       integer MPI_MAXLOC
-<a name="line78"> 78: </a>       parameter (MPI_MAXLOC=5)
+<a name="line63"> 63: </a>       parameter (MPI_INTEGER=0)
+<a name="line64"> 64: </a>       parameter (MPI_LOGICAL=0)
+<a name="line65"> 65: </a>       parameter (MPI_REAL=1)
+<a name="line66"> 66: </a>       parameter (MPI_DOUBLE_PRECISION=2)
+<a name="line67"> 67: </a>       parameter (MPI_COMPLEX=3)
+<a name="line68"> 68: </a>       parameter (MPI_CHARACTER=4)
+<a name="line69"> 69: </a>       parameter (MPI_2INTEGER=5)
+<a name="line70"> 70: </a>       parameter (MPI_DOUBLE_COMPLEX=6)
+<a name="line71"> 71: </a>       parameter (MPI_INTEGER4=7)
+<a name="line72"> 72: </a>       parameter (MPI_INTEGER8=8)
+<a name="line73"> 73: </a>       parameter (MPI_2DOUBLE_PRECISION=9)
 
-<a name="line80"> 80: </a>       integer MPI_MAX_PROCESSOR_NAME
-<a name="line81"> 81: </a>       parameter (MPI_MAX_PROCESSOR_NAME=128-1)
+<a name="line75"> 75: </a>       integer MPI_MAXLOC,MPI_MINLOC
+<a name="line76"> 76: </a>       parameter (MPI_MAXLOC=5)
+<a name="line77"> 77: </a>       parameter (MPI_MINLOC=6)
+
+<a name="line79"> 79: </a>       integer MPI_MAX_PROCESSOR_NAME
+<a name="line80"> 80: </a>       parameter (MPI_MAX_PROCESSOR_NAME=128-1)
 
 </pre>
 </body>

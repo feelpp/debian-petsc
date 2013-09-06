@@ -3,11 +3,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/ams/java/makefile.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:37:40+00:00">
+<meta name="date" content="2013-07-02T14:39:30+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <font color="#A020F0">#requiresdefine 'PETSC_HAVE_JAVA'</font>
 SPECIALLIB     = yes
@@ -18,12 +18,11 @@ SPECIALFASTLIB = yes
         -@${MV} -f *.class ${PETSC_DIR}/${PETSC_ARCH}/bin
 <strong><font color="#FF0000">specialfastlib:</font></strong> speciallib
 
-<strong><font color="#FF0000">ALL:</font></strong> lib 
-SOURCEH   = 
-SOURCEC   = 
-OBJSC     = 
-DIRS      = 
-LOCDIR    = src/sys/ams/java
+<strong><font color="#FF0000">ALL:</font></strong> lib
+SOURCEH   =
+SOURCEC   =
+DIRS      =
+LOCDIR    = src/sys/ams/java/
 MANSEC    = Sys
 
 include ${PETSC_DIR}/conf/variables

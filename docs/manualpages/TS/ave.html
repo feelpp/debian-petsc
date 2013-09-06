@@ -1,0 +1,591 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/TS/ave.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>ave</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="ave"><H1>ave</H1></A>
+he solution of the previous substep*/ ierr = <A HREF="../SNES/SNESSolve.html#SNESSolve">SNESSolve</A>(snes,NULL,Y);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr); ierr = <A HREF="../SNES/SNESGetIterationNumber.html#SNESGetIterationNumber">SNESGetIterationNumber</A>(snes,&amp;its);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr); ierr = <A HREF="../SNES/SNESGetLinearSolveIterations.html#SNESGetLinearSolveIterations">SNESGetLinearSolveIterations</A>(snes,&amp;lits);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr); ts-&gt;snes_its += its; ts-&gt;ksp_its += lits; ierr = <A HREF="../TS/TSGetAdapt.html#TSGetAdapt">TSGetAdapt</A>(ts,&amp;adapt);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr); ierr = <A HREF="../TS/TSAdaptCheckStage.html#TSAdaptCheckStage">TSAdaptCheckStage</A>(adapt,ts,&amp;accept);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr); } 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscts.h"   
+
+</PRE>
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSStep_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSStep_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts)
+{
+TS_EIMEX        *ext = (TS_EIMEX*)ts-&gt;data;
+const <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>  ns = ext-&gt;nstages;
+<A HREF="../Vec/Vec.html#Vec">Vec</A>             *T=ext-&gt;T, Y=ext-&gt;Y;
+<P>
+<A HREF="../SNES/SNES.html#SNES">SNES</A>            snes;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>        i,j;
+<A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A>       accept = <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A>       alpha,local_error;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+<P>
+ierr = <A HREF="../TS/TSGetSNES.html#TSGetSNES">TSGetSNES</A>(ts,&amp;snes);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../SNES/SNESSetType.html#SNESSetType">SNESSetType</A>(snes,"ksponly"); <A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ext-&gt;status = TS_STEP_INCOMPLETE;
+<P>
+ierr = <A HREF="../Vec/VecCopy.html#VecCopy">VecCopy</A>(ts-&gt;vec_sol,ext-&gt;VecSolPrev);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+/* Apply n_j steps of the base method to obtain solutions of T(j,1),1&lt;=j&lt;=s*/
+for(j=0; j&lt;ns; j++){
+ierr = TSStage_EIMEX(ts,j);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecCopy.html#VecCopy">VecCopy</A>(Y,T[j]); <A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+<P>
+for(i=1;i&lt;ns;i++){
+for(j=i;j&lt;ns;j++){
+alpha = -(<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A>)ext-&gt;N[j]/ext-&gt;N[j-i];
+ierr  = <A HREF="../Vec/VecAXPBYPCZ.html#VecAXPBYPCZ">VecAXPBYPCZ</A>(T[Map(j,i,ns)],alpha,1.0,0,T[Map(j,i-1,ns)],T[Map(j-1,i-1,ns)]);/*T[j][i]=alpha*T[j][i-1]+T[j-1][i-1]*/
+alpha = 1.0/(1.0 + alpha);
+ierr  = <A HREF="../Vec/VecScale.html#VecScale">VecScale</A>(T[Map(j,i,ns)],alpha);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+<P>
+ierr = <A HREF="../TS/TSEvaluateStep.html#TSEvaluateStep">TSEvaluateStep</A>(ts,ns,ts-&gt;vec_sol,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);/*update ts solution */
+<P>
+if(ext-&gt;ord_adapt &amp;&amp; ext-&gt;nstages &lt; ext-&gt;max_rows){
+accept = <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+while(!accept &amp;&amp; ext-&gt;nstages &lt; ext-&gt;max_rows){
+ierr = <A HREF="../TS/TSErrorNormWRMS.html#TSErrorNormWRMS">TSErrorNormWRMS</A>(ts,T[Map(ext-&gt;nstages-1,ext-&gt;nstages-2,ext-&gt;nstages)],&amp;local_error);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+accept = (local_error &lt; 1.0)? <A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A> : <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+<P>
+if(!accept){/* add one more stage*/
+ierr = TSStage_EIMEX(ts,ext-&gt;nstages);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ext-&gt;nstages++; ext-&gt;row_ind++; ext-&gt;col_ind++;
+/*T table need to be recycled*/
+ierr = <A HREF="../Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>(ts-&gt;vec_sol,(1+ext-&gt;nstages)*ext-&gt;nstages/2,&amp;ext-&gt;T);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+for(i=0; i&lt;ext-&gt;nstages-1; i++){
+for(j=0; j&lt;=i; j++){
+ierr = <A HREF="../Vec/VecCopy.html#VecCopy">VecCopy</A>(T[Map(i,j,ext-&gt;nstages-1)],ext-&gt;T[Map(i,j,ext-&gt;nstages)]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+ierr = <A HREF="../Vec/VecDestroyVecs.html#VecDestroyVecs">VecDestroyVecs</A>(ext-&gt;nstages*(ext-&gt;nstages-1)/2,&amp;T);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+T = ext-&gt;T; /*reset the pointer*/
+/*recycling finished, store the new solution*/
+ierr = <A HREF="../Vec/VecCopy.html#VecCopy">VecCopy</A>(Y,T[ext-&gt;nstages-1]); <A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/*extrapolation for the newly added stage*/
+for(i=1;i&lt;ext-&gt;nstages;i++){
+alpha = -(<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A>)ext-&gt;N[ext-&gt;nstages-1]/ext-&gt;N[ext-&gt;nstages-1-i];
+ierr  = <A HREF="../Vec/VecAXPBYPCZ.html#VecAXPBYPCZ">VecAXPBYPCZ</A>(T[Map(ext-&gt;nstages-1,i,ext-&gt;nstages)],alpha,1.0,0,T[Map(ext-&gt;nstages-1,i-1,ext-&gt;nstages)],T[Map(ext-&gt;nstages-1-1,i-1,ext-&gt;nstages)]);/*T[ext-&gt;nstages-1][i]=alpha*T[ext-&gt;nstages-1][i-1]+T[ext-&gt;nstages-1-1][i-1]*/
+alpha = 1.0/(1.0 + alpha);
+ierr  = <A HREF="../Vec/VecScale.html#VecScale">VecScale</A>(T[Map(ext-&gt;nstages-1,i,ext-&gt;nstages)],alpha);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+/*update ts solution */
+ierr = <A HREF="../TS/TSEvaluateStep.html#TSEvaluateStep">TSEvaluateStep</A>(ts,ext-&gt;nstages,ts-&gt;vec_sol,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}/*end if !accept*/
+}/*end while*/
+<P>
+if(ext-&gt;nstages == ext-&gt;max_rows){
+ierr = <A HREF="../Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ts,"Max number of rows has been used\n");<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}/*end if ext-&gt;ord_adapt*/
+<P>
+ts-&gt;ptime += ts-&gt;time_step;
+ts-&gt;steps++;
+ext-&gt;status = TS_STEP_COMPLETE;
+<P>
+if (ext-&gt;status != TS_STEP_COMPLETE &amp;&amp; !ts-&gt;reason) ts-&gt;reason = <A HREF="../TS/TS_DIVERGED_STEP_REJECTED.html#TS_DIVERGED_STEP_REJECTED">TS_DIVERGED_STEP_REJECTED</A>;
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+/*cubic Hermit spline*/
+#undef __FUNCT__
+#define __FUNCT__ "TSInterpolate_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSInterpolate_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> itime,<A HREF="../Vec/Vec.html#Vec">Vec</A> X)
+{
+TS_EIMEX       *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A>      t,a,b;
+<A HREF="../Vec/Vec.html#Vec">Vec</A>            Y0=ext-&gt;VecSolPrev,Y1=ext-&gt;Y,
+Ydot=ext-&gt;Ydot,YdotI=ext-&gt;YdotI;
+const <A HREF="../Sys/PetscReal.html#PetscReal">PetscReal</A> h = ts-&gt;time_step_prev;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+t = (itime -ts-&gt;ptime + h)/h;
+/* YdotI = -f(x)-g(x) */
+<P>
+ierr = <A HREF="../Vec/VecZeroEntries.html#VecZeroEntries">VecZeroEntries</A>(Ydot);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../TS/TSComputeIFunction.html#TSComputeIFunction">TSComputeIFunction</A>(ts,ts-&gt;ptime-h,Y0,Ydot,YdotI,<A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+a    = 2.0*t*t*t - 3.0*t*t + 1.0;
+b    = -(t*t*t - 2.0*t*t + t)*h;
+ierr = <A HREF="../Vec/VecAXPBYPCZ.html#VecAXPBYPCZ">VecAXPBYPCZ</A>(X,a,b,0.0,Y0,YdotI);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+ierr = <A HREF="../TS/TSComputeIFunction.html#TSComputeIFunction">TSComputeIFunction</A>(ts,ts-&gt;ptime,Y1,Ydot,YdotI,<A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+a    = -2.0*t*t*t+3.0*t*t;
+b    = -(t*t*t - t*t)*h;
+ierr = <A HREF="../Vec/VecAXPBYPCZ.html#VecAXPBYPCZ">VecAXPBYPCZ</A>(X,a,b,1.0,Y1,YdotI);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSReset_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSReset_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts)
+{
+TS_EIMEX        *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>        ns;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ns = ext-&gt;nstages;
+ierr = <A HREF="../Vec/VecDestroyVecs.html#VecDestroyVecs">VecDestroyVecs</A>((1+ns)*ns/2,&amp;ext-&gt;T);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;ext-&gt;Y);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;ext-&gt;Z);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;ext-&gt;YdotRHS);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;ext-&gt;YdotI);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;ext-&gt;Ydot);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDestroy.html#VecDestroy">VecDestroy</A>(&amp;ext-&gt;VecSolPrev);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscFree.html#PetscFree">PetscFree</A>(ext-&gt;N);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSDestroy_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSDestroy_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts)
+{
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ierr = TSReset_EIMEX(ts);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscFree.html#PetscFree">PetscFree</A>(ts-&gt;data);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts,"TSEIMEXSetMaxRows_C",NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts,"TSEIMEXSetRowCol_C",NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts,"TSEIMEXSetOrdAdapt_C",NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSEIMEXGetVecs"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSEIMEXGetVecs(<A HREF="../TS/TS.html#TS">TS</A> ts,DM dm,<A HREF="../Vec/Vec.html#Vec">Vec</A> *Z,<A HREF="../Vec/Vec.html#Vec">Vec</A> *Ydot,<A HREF="../Vec/Vec.html#Vec">Vec</A> *YdotI, <A HREF="../Vec/Vec.html#Vec">Vec</A> *YdotRHS)
+{
+TS_EIMEX       *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+if (Z) {
+if (dm &amp;&amp; dm != ts-&gt;dm) {
+ierr = <A HREF="../DM/DMGetNamedGlobalVector.html#DMGetNamedGlobalVector">DMGetNamedGlobalVector</A>(dm,"TSEIMEX_Z",Z);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+} else *Z = ext-&gt;Z;
+}
+if (Ydot) {
+if (dm &amp;&amp; dm != ts-&gt;dm) {
+ierr = <A HREF="../DM/DMGetNamedGlobalVector.html#DMGetNamedGlobalVector">DMGetNamedGlobalVector</A>(dm,"TSEIMEX_Ydot",Ydot);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+} else *Ydot = ext-&gt;Ydot;
+}
+if (YdotI) {
+if (dm &amp;&amp; dm != ts-&gt;dm) {
+ierr = <A HREF="../DM/DMGetNamedGlobalVector.html#DMGetNamedGlobalVector">DMGetNamedGlobalVector</A>(dm,"TSEIMEX_YdotI",YdotI);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+} else *YdotI = ext-&gt;YdotI;
+}
+if (YdotRHS) {
+if (dm &amp;&amp; dm != ts-&gt;dm) {
+ierr = <A HREF="../DM/DMGetNamedGlobalVector.html#DMGetNamedGlobalVector">DMGetNamedGlobalVector</A>(dm,"TSEIMEX_YdotRHS",YdotRHS);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+} else *YdotRHS = ext-&gt;YdotRHS;
+}
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSEIMEXRestoreVecs"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSEIMEXRestoreVecs(<A HREF="../TS/TS.html#TS">TS</A> ts,DM dm,<A HREF="../Vec/Vec.html#Vec">Vec</A> *Z,<A HREF="../Vec/Vec.html#Vec">Vec</A> *Ydot,<A HREF="../Vec/Vec.html#Vec">Vec</A> *YdotI,<A HREF="../Vec/Vec.html#Vec">Vec</A> *YdotRHS)
+{
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+if (Z) {
+if (dm &amp;&amp; dm != ts-&gt;dm) {
+ierr = <A HREF="../DM/DMRestoreNamedGlobalVector.html#DMRestoreNamedGlobalVector">DMRestoreNamedGlobalVector</A>(dm,"TSEIMEX_Z",Z);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+if (Ydot) {
+if (dm &amp;&amp; dm != ts-&gt;dm) {
+ierr = <A HREF="../DM/DMRestoreNamedGlobalVector.html#DMRestoreNamedGlobalVector">DMRestoreNamedGlobalVector</A>(dm,"TSEIMEX_Ydot",Ydot);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+if (YdotI) {
+if (dm &amp;&amp; dm != ts-&gt;dm) {
+ierr = <A HREF="../DM/DMRestoreNamedGlobalVector.html#DMRestoreNamedGlobalVector">DMRestoreNamedGlobalVector</A>(dm,"TSEIMEX_YdotI",YdotI);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+if (YdotRHS) {
+if (dm &amp;&amp; dm != ts-&gt;dm) {
+ierr = <A HREF="../DM/DMRestoreNamedGlobalVector.html#DMRestoreNamedGlobalVector">DMRestoreNamedGlobalVector</A>(dm,"TSEIMEX_YdotRHS",YdotRHS);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+/*
+This defines the nonlinear equation that is to be solved with <A HREF="../SNES/SNES.html#SNES">SNES</A>
+Fn[t0+Theta*dt, U, (U-U0)*shift] = 0
+In the case of Backward Euler, Fn = (U-U0)/h-g(t1,U))
+Since FormIFunction calculates G = ydot - g(t,y), ydot will be set to (U-U0)/h
+*/
+#undef __FUNCT__
+#define __FUNCT__ "SNESTSFormFunction_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESTSFormFunction_EIMEX(<A HREF="../SNES/SNES.html#SNES">SNES</A> snes,<A HREF="../Vec/Vec.html#Vec">Vec</A> X,<A HREF="../Vec/Vec.html#Vec">Vec</A> G,<A HREF="../TS/TS.html#TS">TS</A> ts)
+{
+TS_EIMEX        *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+<A HREF="../Vec/Vec.html#Vec">Vec</A>             Ydot,Z;
+DM              dm,dmsave;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ierr = <A HREF="../Vec/VecZeroEntries.html#VecZeroEntries">VecZeroEntries</A>(G);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+ierr = <A HREF="../SNES/SNESGetDM.html#SNESGetDM">SNESGetDM</A>(snes,&amp;dm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = TSEIMEXGetVecs(ts,dm,&amp;Z,&amp;Ydot,NULL,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecZeroEntries.html#VecZeroEntries">VecZeroEntries</A>(Ydot);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+dmsave = ts-&gt;dm;
+ts-&gt;dm = dm;
+ierr = <A HREF="../TS/TSComputeIFunction.html#TSComputeIFunction">TSComputeIFunction</A>(ts,ext-&gt;ctime,X,Ydot,G,<A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/* <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A> indicates non-imex, adding explicit RHS to the implicit I function.  */
+ierr = <A HREF="../Vec/VecCopy.html#VecCopy">VecCopy</A>(G,Ydot);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ts-&gt;dm = dmsave;
+ierr = TSEIMEXRestoreVecs(ts,dm,&amp;Z,&amp;Ydot,NULL,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<P>
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+/*
+This defined the Jacobian matrix for <A HREF="../SNES/SNES.html#SNES">SNES</A>. Jn = (I/h-g'(t,y))
+*/
+#undef __FUNCT__
+#define __FUNCT__ "SNESTSFormJacobian_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> SNESTSFormJacobian_EIMEX(<A HREF="../SNES/SNES.html#SNES">SNES</A> snes,<A HREF="../Vec/Vec.html#Vec">Vec</A> X,<A HREF="../Mat/Mat.html#Mat">Mat</A> *A,<A HREF="../Mat/Mat.html#Mat">Mat</A> *B,<A HREF="../Mat/MatStructure.html#MatStructure">MatStructure</A> *str,<A HREF="../TS/TS.html#TS">TS</A> ts)
+{
+TS_EIMEX        *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Vec/Vec.html#Vec">Vec</A>             Ydot;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  ierr;
+DM              dm,dmsave;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ierr = <A HREF="../SNES/SNESGetDM.html#SNESGetDM">SNESGetDM</A>(snes,&amp;dm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = TSEIMEXGetVecs(ts,dm,NULL,&amp;Ydot,NULL,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+/*  ierr = <A HREF="../Vec/VecZeroEntries.html#VecZeroEntries">VecZeroEntries</A>(Ydot);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);*/
+/* ext-&gt;Ydot have already been computed in SNESTSFormFunction_EIMEX (<A HREF="../SNES/SNES.html#SNES">SNES</A> guarantees this) */
+dmsave = ts-&gt;dm;
+ts-&gt;dm = dm;
+ierr = <A HREF="../TS/TSComputeIJacobian.html#TSComputeIJacobian">TSComputeIJacobian</A>(ts,ts-&gt;ptime,X,Ydot,ext-&gt;shift,A,B,str,<A HREF="../Sys/PETSC_TRUE.html#PETSC_TRUE">PETSC_TRUE</A>);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ts-&gt;dm = dmsave;
+ierr = TSEIMEXRestoreVecs(ts,dm,NULL,&amp;Ydot,NULL,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "DMCoarsenHook_TSEIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMCoarsenHook_TSEIMEX(DM fine,DM coarse,void *ctx)
+{
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "DMRestrictHook_TSEIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> DMRestrictHook_TSEIMEX(DM fine,<A HREF="../Mat/Mat.html#Mat">Mat</A> restrct,<A HREF="../Vec/Vec.html#Vec">Vec</A> rscale,<A HREF="../Mat/Mat.html#Mat">Mat</A> inject,DM coarse,void *ctx)
+{
+<A HREF="../TS/TS.html#TS">TS</A> ts = (<A HREF="../TS/TS.html#TS">TS</A>)ctx;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<A HREF="../Vec/Vec.html#Vec">Vec</A> Z,Z_c;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ierr = TSEIMEXGetVecs(ts,fine,&amp;Z,NULL,NULL,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = TSEIMEXGetVecs(ts,coarse,&amp;Z_c,NULL,NULL,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Mat/MatRestrict.html#MatRestrict">MatRestrict</A>(restrct,Z,Z_c);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecPointwiseMult.html#VecPointwiseMult">VecPointwiseMult</A>(Z_c,rscale,Z_c);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = TSEIMEXRestoreVecs(ts,fine,&amp;Z,NULL,NULL,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = TSEIMEXRestoreVecs(ts,coarse,&amp;Z_c,NULL,NULL,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSSetUp_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSSetUp_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts)
+{
+TS_EIMEX       *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+DM             dm;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+<P>
+if (!ext-&gt;N){ /*ext-&gt;max_rows not set*/
+ierr = TSEIMEXSetMaxRows(ts,TSEIMEXDefault);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+if(-1 == ext-&gt;row_ind &amp;&amp; -1 == ext-&gt;col_ind){
+ierr = TSEIMEXSetRowCol(ts,ext-&gt;max_rows,ext-&gt;max_rows);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}else{/*ext-&gt;row_ind and col_ind already set*/
+if(ext-&gt;ord_adapt){
+ierr = <A HREF="../Profiling/PetscInfo.html#PetscInfo">PetscInfo</A>(ts,"Order adaptivity is enabled and TSEIMEXSetRowCol or -ts_eimex_row_col option will take no effect\n");<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+}
+<P>
+if(ext-&gt;ord_adapt){
+ext-&gt;nstages = 2; /*Start with the 2-stage scheme*/
+ierr = TSEIMEXSetRowCol(ts,ext-&gt;nstages,ext-&gt;nstages);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}else{
+ext-&gt;nstages = ext-&gt;max_rows; /*by default nstages is the same as max_rows, this can be changed by setting order adaptivity */
+}
+<P>
+ierr = <A HREF="../Vec/VecDuplicateVecs.html#VecDuplicateVecs">VecDuplicateVecs</A>(ts-&gt;vec_sol,(1+ext-&gt;nstages)*ext-&gt;nstages/2,&amp;ext-&gt;T);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);/*full T table*/
+ierr = <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(ts-&gt;vec_sol,&amp;ext-&gt;YdotI);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(ts-&gt;vec_sol,&amp;ext-&gt;YdotRHS);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(ts-&gt;vec_sol,&amp;ext-&gt;Ydot);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(ts-&gt;vec_sol,&amp;ext-&gt;VecSolPrev);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(ts-&gt;vec_sol,&amp;ext-&gt;Y);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(ts-&gt;vec_sol,&amp;ext-&gt;Z);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../TS/TSGetDM.html#TSGetDM">TSGetDM</A>(ts,&amp;dm);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (dm) {
+ierr = <A HREF="../DM/DMCoarsenHookAdd.html#DMCoarsenHookAdd">DMCoarsenHookAdd</A>(dm,DMCoarsenHook_TSEIMEX,DMRestrictHook_TSEIMEX,ts);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSSetFromOptions_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSSetFromOptions_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts)
+{
+TS_EIMEX       *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>       tindex[2]={TSEIMEXDefault,TSEIMEXDefault};
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>       np = 2, nrows=TSEIMEXDefault;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ierr = <A HREF="../Sys/PetscOptionsHead.html#PetscOptionsHead">PetscOptionsHead</A>("<A HREF="../TS/EIMEX.html#EIMEX">EIMEX</A> ODE solver options");<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+{
+<A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A> flg;
+flg  = <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>;
+ierr = <A HREF="../Sys/PetscOptionsInt.html#PetscOptionsInt">PetscOptionsInt</A>("-ts_eimex_max_rows","Define the maximum number of rows used","TSEIMEXSetMaxRows",nrows,&amp;nrows,&amp;flg);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr); /*default value 3*/
+if(flg){
+ierr = TSEIMEXSetMaxRows(ts,nrows);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+ierr = <A HREF="../Sys/PetscOptionsIntArray.html#PetscOptionsIntArray">PetscOptionsIntArray</A>("-ts_eimex_row_col","Return the specific term in the T table","TSEIMEXSetRowCol",tindex,&amp;np,&amp;flg);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if(flg){
+ierr = TSEIMEXSetRowCol(ts,tindex[0],tindex[1]);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+ierr = <A HREF="../Sys/PetscOptionsBool.html#PetscOptionsBool">PetscOptionsBool</A>("-ts_eimex_order_adapt","Solve the problem with adaptive order","TSEIMEXSetOrdAdapt",ext-&gt;ord_adapt,&amp;ext-&gt;ord_adapt,NULL);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../SNES/SNESSetFromOptions.html#SNESSetFromOptions">SNESSetFromOptions</A>(ts-&gt;snes);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+ierr = <A HREF="../Sys/PetscOptionsTail.html#PetscOptionsTail">PetscOptionsTail</A>();<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSView_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSView_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Viewer/PetscViewer.html#PetscViewer">PetscViewer</A> viewer)
+{
+/*  TS_EIMEX         *ext = (TS_EIMEX*)ts-&gt;data;*/
+<A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A>        iascii;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>   ierr;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ierr = <A HREF="../Sys/PetscObjectTypeCompare.html#PetscObjectTypeCompare">PetscObjectTypeCompare</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)viewer,PETSCVIEWERASCII,&amp;iascii);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+if (iascii) {
+ierr = <A HREF="../Viewer/PetscViewerASCIIPrintf.html#PetscViewerASCIIPrintf">PetscViewerASCIIPrintf</A>(viewer,"  <A HREF="../TS/EIMEX.html#EIMEX">EIMEX</A>\n");<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+}
+ierr = <A HREF="../SNES/SNESView.html#SNESView">SNESView</A>(ts-&gt;snes,viewer);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSEIMEXSetMaxRows"
+/*@C
+TSEIMEXSetMaxRows - Set the maximum number of rows for <A HREF="../TS/EIMEX.html#EIMEX">EIMEX</A> schemes
+<P>
+Logically collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts </B></TD><TD>- timestepping context
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>nrows </B></TD><TD>- maximum number of rows
+</TD></TR></TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ TSEIMEXSetRowCol(), TSEIMEXSetOrdAdapt(), TSEIMEX
+<BR>@*/
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSEIMEXSetMaxRows(<A HREF="../TS/TS.html#TS">TS</A> ts, <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> nrows)
+{
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+PetscValidHeaderSpecific(ts,TS_CLASSID,1);
+ierr = PetscTryMethod(ts,"TSEIMEXSetMaxRows_C",(<A HREF="../TS/TS.html#TS">TS</A>,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>),(ts,nrows));<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSEIMEXSetRowCol"
+/*@C
+TSEIMEXSetRowCol - Set the type index in the T table for the return value
+<P>
+Logically collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts </B></TD><TD>- timestepping context
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>tindex </B></TD><TD>- index in the T table
+</TD></TR></TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ TSEIMEXSetMaxRows(), TSEIMEXSetOrdAdapt(), TSEIMEX
+<BR>@*/
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSEIMEXSetRowCol(<A HREF="../TS/TS.html#TS">TS</A> ts, <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> row, <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> col)
+{
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+PetscValidHeaderSpecific(ts,TS_CLASSID,1);
+ierr = PetscTryMethod(ts,"TSEIMEXSetRowCol_C",(<A HREF="../TS/TS.html#TS">TS</A>,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>, <A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>),(ts,row,col));<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSEIMEXSetOrdAdapt"
+/*@C
+TSEIMEXSetOrdAdapt - Set the order adaptativity
+<P>
+Logically collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameter</FONT></H3>
+<TABLE border="0" cellpadding="0" cellspacing="0">
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ts </B></TD><TD>- timestepping context
+</TD></TR>
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>tindex </B></TD><TD>- index in the T table
+</TD></TR></TABLE>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ TSEIMEXSetRowCol(), TSEIMEXSetOrdAdapt(), TSEIMEX
+<BR>@*/
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSEIMEXSetOrdAdapt(<A HREF="../TS/TS.html#TS">TS</A> ts, <A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A> flg)
+{
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+PetscValidHeaderSpecific(ts,TS_CLASSID,1);
+ierr = PetscTryMethod(ts,"TSEIMEXSetOrdAdapt_C",(<A HREF="../TS/TS.html#TS">TS</A>,<A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A>),(ts,flg));<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSEIMEXSetMaxRows_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSEIMEXSetMaxRows_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> nrows)
+{
+TS_EIMEX *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>       i;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+if (nrows &lt; 0 || nrows &gt; 100) <A HREF="../Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,"Max number of rows (current value %D) should be an integer number between 1 and 100\n",nrows);
+ierr = <A HREF="../Sys/PetscFree.html#PetscFree">PetscFree</A>(ext-&gt;N);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ext-&gt;max_rows = nrows;
+ierr = <A HREF="../Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(nrows*sizeof(<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A>),&amp;ext-&gt;N);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+for(i=0;i&lt;nrows;i++) ext-&gt;N[i]=i+1;
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSEIMEXSetRowCol_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSEIMEXSetRowCol_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> row,<A HREF="../Sys/PetscInt.html#PetscInt">PetscInt</A> col)
+{
+TS_EIMEX *ext = (TS_EIMEX*)ts-&gt;data;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+if (row &lt; 1 || col &lt; 1) <A HREF="../Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,"The row or column index (current value %d,%d) should not be less than 1 \n",row,col);
+if (row &gt; ext-&gt;max_rows || col &gt; ext-&gt;max_rows) <A HREF="../Sys/SETERRQ3.html#SETERRQ3">SETERRQ3</A>(((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,"The row or column index (current value %d,%d) exceeds the maximum number of rows %d\n",row,col,ext-&gt;max_rows);
+if (col &gt; row) <A HREF="../Sys/SETERRQ2.html#SETERRQ2">SETERRQ2</A>(((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts)-&gt;comm,PETSC_ERR_ARG_OUTOFRANGE,"The column index (%d) exceeds the row index (%d)\n",col,row);
+<P>
+ext-&gt;row_ind = row - 1;
+ext-&gt;col_ind = col - 1; /*Array index in C starts from 0*/
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+#undef __FUNCT__
+#define __FUNCT__ "TSEIMEXSetOrdAdapt_EIMEX"
+static <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSEIMEXSetOrdAdapt_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts,<A HREF="../Sys/PetscBool.html#PetscBool">PetscBool</A> flg)
+{
+TS_EIMEX *ext = (TS_EIMEX*)ts-&gt;data;
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+ext-&gt;ord_adapt = flg;
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P>
+/* ------------------------------------------------------------ */
+/*MC
+TSEIMEX - ODE solver using extrapolated IMEX schemes
+These methods are intended for problems with well-separated time scales, especially when a slow scale is strongly nonlinear such that it is expensive to solve with a fully implicit method. The user should provide the stiff part of the equation using <A HREF="../TS/TSSetIFunction.html#TSSetIFunction">TSSetIFunction</A>() and the non-stiff part with <A HREF="../TS/TSSetRHSFunction.html#TSSetRHSFunction">TSSetRHSFunction</A>().
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+The default is a 3-stage scheme, it can be changed with TSEIMEXSetMaxRows() or -ts_eimex_max_rows
+<P>
+This method currently only works with ODE, for which the stiff part G(t,X,Xdot) has the form Xdot + Ghat(t,X).
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+  <A HREF="../TS/TSCreate.html#TSCreate">TSCreate</A>(), <A HREF="../TS/TS.html#TS">TS</A>
+<BR>M*/
+#undef __FUNCT__
+#define __FUNCT__ "TSCreate_EIMEX"
+PETSC_EXTERN <A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> TSCreate_EIMEX(<A HREF="../TS/TS.html#TS">TS</A> ts)
+{
+TS_EIMEX       *ext;
+<A HREF="../Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A> ierr;
+<P>
+<A HREF="../Sys/PetscFunctionBegin.html#PetscFunctionBegin">PetscFunctionBegin</A>;
+<P>
+ts-&gt;ops-&gt;reset          = TSReset_EIMEX;
+ts-&gt;ops-&gt;destroy        = TSDestroy_EIMEX;
+ts-&gt;ops-&gt;view           = TSView_EIMEX;
+ts-&gt;ops-&gt;setup          = TSSetUp_EIMEX;
+ts-&gt;ops-&gt;step           = TSStep_EIMEX;
+ts-&gt;ops-&gt;interpolate    = TSInterpolate_EIMEX;
+ts-&gt;ops-&gt;evaluatestep   = TSEvaluateStep_EIMEX;
+ts-&gt;ops-&gt;setfromoptions = TSSetFromOptions_EIMEX;
+ts-&gt;ops-&gt;snesfunction   = SNESTSFormFunction_EIMEX;
+ts-&gt;ops-&gt;snesjacobian   = SNESTSFormJacobian_EIMEX;
+<P>
+ierr = <A HREF="../Sys/PetscNewLog.html#PetscNewLog">PetscNewLog</A>(ts,TS_EIMEX,&amp;ext);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ts-&gt;data = (void*)ext;
+<P>
+ext-&gt;ord_adapt = <A HREF="../Sys/PETSC_FALSE.html#PETSC_FALSE">PETSC_FALSE</A>; /* By default, no order adapativity */
+ext-&gt;row_ind   = -1;
+ext-&gt;col_ind   = -1;
+ext-&gt;max_rows  = TSEIMEXDefault;
+ext-&gt;nstages   = TSEIMEXDefault;
+<P>
+ierr = <A HREF="../Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts,"TSEIMEXSetMaxRows_C", TSEIMEXSetMaxRows_EIMEX);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts,"TSEIMEXSetRowCol_C",  TSEIMEXSetRowCol_EIMEX);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+ierr = <A HREF="../Sys/PetscObjectComposeFunction.html#PetscObjectComposeFunction">PetscObjectComposeFunction</A>((<A HREF="../Sys/PetscObject.html#PetscObject">PetscObject</A>)ts,"TSEIMEXSetOrdAdapt_C",TSEIMEXSetOrdAdapt_EIMEX);<A HREF="../Sys/CHKERRQ.html#CHKERRQ">CHKERRQ</A>(ierr);
+<A HREF="../Sys/PetscFunctionReturn.html#PetscFunctionReturn">PetscFunctionReturn</A>(0);
+}
+<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/ts/impls/eimex/eimex.c.html#ave">src/ts/impls/eimex/eimex.c</A>
+<BR><A HREF="./index.html">Index of all TS routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

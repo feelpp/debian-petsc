@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/Distribution.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:20:53+00:00">
+<meta name="date" content="2013-07-02T14:53:25+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_Distribution_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_Distribution_hh</font></strong>
 
@@ -371,7 +371,7 @@
 <a name="line362">362: </a>        <font color="#4169E1">for</font>(std::set&lt;std::string&gt;::const_iterator n_iter = names-&gt;begin(); n_iter != names-&gt;end(); ++n_iter) {
 <a name="line363">363: </a>          const Obj&lt;typename Mesh::int_section_type&gt;&amp; section    = mesh-&gt;getIntSection(*n_iter);
 <a name="line364">364: </a>          const Obj&lt;typename Mesh::int_section_type&gt;&amp; newSection = newMesh-&gt;getIntSection(*n_iter);
-<a name="line365">365: </a>
+
 <a name="line366">366: </a>          // We assume all integer sections are complete sections
 <a name="line367">367: </a>          newSection-&gt;setChart(newMesh-&gt;getSieve()-&gt;getChart());
 <a name="line368">368: </a>          distributeSection(section, partition, renumbering, sendMeshOverlap, recvMeshOverlap, newSection);

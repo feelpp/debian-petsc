@@ -5,21 +5,21 @@
 <TITLE>DMDASetGetMatrix</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMDASetGetMatrix"><H1>DMDASetGetMatrix</H1></A>
-Sets the routine used by the DMDA to allocate a matrix. 
+Sets the routine used by the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> to allocate a matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscdmda.h"   
-PetscErrorCode  DMDASetGetMatrix(DM da,PetscErrorCode (*f)(DM, const MatType,Mat*))
+PetscErrorCode  DMDASetGetMatrix(DM da,PetscErrorCode (*f)(DM, MatType,Mat*))
 </PRE>
-Logically Collective on DMDA
+Logically Collective on <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 <P>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the DMDA object
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>da </B></TD><TD>- the <A HREF="../DM/DMDA.html#DMDA">DMDA</A> object
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>f </B></TD><TD>- the function that allocates the matrix for that specific DMDA
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>f </B></TD><TD>- the function that allocates the matrix for that specific <A HREF="../DM/DMDA.html#DMDA">DMDA</A>
 </TD></TR></TABLE>
 <P>
 

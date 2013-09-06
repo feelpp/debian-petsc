@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML3.2 EN">
+<HTML>
+<HEAD> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/DM/DMPlexGetDepth.html" />
+<META NAME="GENERATOR" CONTENT="DOCTEXT">
+<TITLE>DMPlexGetDepth</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
+<A NAME="DMPlexGetDepth"><H1>DMPlexGetDepth</H1></A>
+get the number of strata 
+<H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
+<PRE>
+#include "petscdmplex.h"   
+PetscErrorCode DMPlexGetDepth(DM dm, PetscInt *depth)
+</PRE>
+Not Collective
+<P>
+<H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
+<DT><B>dm           </B> -The DMPlex object
+<br>
+<P>
+<H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
+<DT><B>depth </B> -number of strata
+<br>
+<P>
+
+<P>
+<H3><FONT COLOR="#CC3333">Notes</FONT></H3>
+<A HREF="../DM/DMPlexGetHeightStratum.html#DMPlexGetHeightStratum">DMPlexGetHeightStratum</A>(dm,0,..) should return the same points as <A HREF="../DM/DMPlexGetDepthStratum.html#DMPlexGetDepthStratum">DMPlexGetDepthStratum</A>(dm,depth,..).
+<P>
+<H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
+ mesh, points
+<BR>
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../DM/DMPlexGetHeightStratum.html#DMPlexGetHeightStratum">DMPlexGetHeightStratum</A>(), <A HREF="../DM/DMPlexGetDepthStratum.html#DMPlexGetDepthStratum">DMPlexGetDepthStratum</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>developer
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/plex/plex.c.html#DMPlexGetDepth">src/dm/impls/plex/plex.c</A>
+<BR><A HREF="./index.html">Index of all DM routines</A>
+<BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
+<BR><A HREF="../singleindex.html">Index of all manual pages</A>
+</BODY></HTML>

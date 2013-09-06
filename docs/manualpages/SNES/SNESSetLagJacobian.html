@@ -5,14 +5,12 @@
 <TITLE>SNESSetLagJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSetLagJacobian"><H1>SNESSetLagJacobian</H1></A>
 Determines when the Jacobian is rebuilt in the nonlinear solve. See <A HREF="../SNES/SNESSetLagPreconditioner.html#SNESSetLagPreconditioner">SNESSetLagPreconditioner</A>() for determining how often the preconditioner is rebuilt. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESSetLagJacobian(SNES snes,PetscInt lag)
 </PRE>
 Logically Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>

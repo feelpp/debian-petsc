@@ -29,9 +29,9 @@ extern void PetscRmPointer(void*);
 
 #include "petscsys.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscdefaultsignalhandler_ PETSCDEFAULTSIGNALHANDLER
+#define petscsignalhandlerdefault_ PETSCSIGNALHANDLERDEFAULT
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscdefaultsignalhandler_ petscdefaultsignalhandler
+#define petscsignalhandlerdefault_ petscsignalhandlerdefault
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define petscpopsignalhandler_ PETSCPOPSIGNALHANDLER
@@ -44,8 +44,8 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  petscdefaultsignalhandler_(int *sig,void*ptr, int *__ierr ){
-*__ierr = PetscDefaultSignalHandler(*sig,ptr);
+void PETSC_STDCALL  petscsignalhandlerdefault_(int *sig,void*ptr, int *__ierr ){
+*__ierr = PetscSignalHandlerDefault(*sig,ptr);
 }
 void PETSC_STDCALL  petscpopsignalhandler_(int *__ierr ){
 *__ierr = PetscPopSignalHandler();

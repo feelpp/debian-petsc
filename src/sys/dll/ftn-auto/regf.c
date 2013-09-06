@@ -29,24 +29,19 @@ extern void PetscRmPointer(void*);
 
 #include "petscsys.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscflistdestroy_ PETSCFLISTDESTROY
+#define petscfunctionlistdestroy_ PETSCFUNCTIONLISTDESTROY
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscflistdestroy_ petscflistdestroy
+#define petscfunctionlistdestroy_ petscfunctionlistdestroy
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscflistview_ PETSCFLISTVIEW
+#define petscfunctionlistview_ PETSCFUNCTIONLISTVIEW
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscflistview_ petscflistview
+#define petscfunctionlistview_ petscfunctionlistview
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscflistget_ PETSCFLISTGET
+#define petscfunctionlistduplicate_ PETSCFUNCTIONLISTDUPLICATE
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscflistget_ petscflistget
-#endif
-#ifdef PETSC_HAVE_FORTRAN_CAPS
-#define petscflistduplicate_ PETSCFLISTDUPLICATE
-#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
-#define petscflistduplicate_ petscflistduplicate
+#define petscfunctionlistduplicate_ petscfunctionlistduplicate
 #endif
 
 
@@ -54,21 +49,17 @@ extern void PetscRmPointer(void*);
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void PETSC_STDCALL  petscflistdestroy_(PetscFList *fl, int *__ierr ){
-*__ierr = PetscFListDestroy(fl);
+void PETSC_STDCALL  petscfunctionlistdestroy_(PetscFunctionList *fl, int *__ierr ){
+*__ierr = PetscFunctionListDestroy(
+	(PetscFunctionList* )PetscToPointer((fl) ));
 }
-void PETSC_STDCALL  petscflistview_(PetscFList list,PetscViewer viewer, int *__ierr ){
-*__ierr = PetscFListView(
-	(PetscFList)PetscToPointer((list) ),
+void PETSC_STDCALL  petscfunctionlistview_(PetscFunctionList *list,PetscViewer viewer, int *__ierr ){
+*__ierr = PetscFunctionListView(*list,
 	(PetscViewer)PetscToPointer((viewer) ));
 }
-void PETSC_STDCALL  petscflistget_(PetscFList list,char ***array,int *n, int *__ierr ){
-*__ierr = PetscFListGet(
-	(PetscFList)PetscToPointer((list) ),array,n);
-}
-void PETSC_STDCALL  petscflistduplicate_(PetscFList fl,PetscFList *nl, int *__ierr ){
-*__ierr = PetscFListDuplicate(
-	(PetscFList)PetscToPointer((fl) ),nl);
+void PETSC_STDCALL  petscfunctionlistduplicate_(PetscFunctionList *fl,PetscFunctionList *nl, int *__ierr ){
+*__ierr = PetscFunctionListDuplicate(*fl,
+	(PetscFunctionList* )PetscToPointer((nl) ));
 }
 #if defined(__cplusplus)
 }

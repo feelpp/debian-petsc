@@ -4,13 +4,13 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/dm/impls/da/dareg.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:55:11+00:00">
+<meta name="date" content="2013-07-02T14:45:07+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
-<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/daimpl.h&gt;    </font><font color="#B22222">/*I "petscdmda.h"  I*/</font><font color="#A020F0"></font>
+<a name="line2">  2: </a><font color="#A020F0">#include &lt;petsc-private/dmdaimpl.h&gt;    </font><font color="#B22222">/*I "petscdmda.h"  I*/</font><font color="#A020F0"></font>
 
 <a name="line4">  4: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  DMSetUp_DA_1D(DM)</font></strong>;
 <a name="line5">  5: </a><strong><font color="#4169E1">extern <A href="../../../../docs/manualpages/Sys/PetscErrorCode.html#PetscErrorCode">PetscErrorCode</A>  DMSetUp_DA_2D(DM)</font></strong>;
@@ -20,15 +20,22 @@
 <a name="line11"> 11: </a>{
 <a name="line13"> 13: </a>  DM_DA          *dd = (DM_DA*)da-&gt;data;
 
-<a name="line17"> 17: </a>  <font color="#4169E1">if</font> (dd-&gt;dim == 1) {
-<a name="line18"> 18: </a>    DMSetUp_DA_1D(da);
-<a name="line19"> 19: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (dd-&gt;dim == 2) {
-<a name="line20"> 20: </a>    DMSetUp_DA_2D(da);
-<a name="line21"> 21: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (dd-&gt;dim == 3) {
-<a name="line22"> 22: </a>    DMSetUp_DA_3D(da);
-<a name="line23"> 23: </a>  } <font color="#4169E1">else</font> <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da)-&gt;comm,PETSC_ERR_SUP,<font color="#666666">"DMs only supported for 1, 2, and 3d"</font>);
-<a name="line24"> 24: </a>  <font color="#4169E1">return</font>(0);
-<a name="line25"> 25: </a>}
+<a name="line17"> 17: </a>  <font color="#4169E1">if</font> (dd-&gt;w &lt; 1) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da),PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Must have 1 or more degrees of freedom per node: %D"</font>,dd-&gt;w);
+<a name="line18"> 18: </a>  <font color="#4169E1">if</font> (dd-&gt;s &lt; 0) <A href="../../../../docs/manualpages/Sys/SETERRQ1.html#SETERRQ1">SETERRQ1</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da),PETSC_ERR_ARG_OUTOFRANGE,<font color="#666666">"Stencil width cannot be negative: %D"</font>,dd-&gt;s);
+
+<a name="line20"> 20: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(dd-&gt;w*<font color="#4169E1">sizeof</font>(char*),&amp;dd-&gt;fieldname);
+<a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(dd-&gt;fieldname,dd-&gt;w*<font color="#4169E1">sizeof</font>(char*));
+<a name="line22"> 22: </a>  <A href="../../../../docs/manualpages/Sys/PetscMalloc.html#PetscMalloc">PetscMalloc</A>(dd-&gt;dim*<font color="#4169E1">sizeof</font>(char*),&amp;dd-&gt;coordinatename);
+<a name="line23"> 23: </a>  <A href="../../../../docs/manualpages/Sys/PetscMemzero.html#PetscMemzero">PetscMemzero</A>(dd-&gt;coordinatename,dd-&gt;dim*<font color="#4169E1">sizeof</font>(char*));
+<a name="line24"> 24: </a>  <font color="#4169E1">if</font> (dd-&gt;dim == 1) {
+<a name="line25"> 25: </a>    DMSetUp_DA_1D(da);
+<a name="line26"> 26: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (dd-&gt;dim == 2) {
+<a name="line27"> 27: </a>    DMSetUp_DA_2D(da);
+<a name="line28"> 28: </a>  } <font color="#4169E1">else</font> <font color="#4169E1">if</font> (dd-&gt;dim == 3) {
+<a name="line29"> 29: </a>    DMSetUp_DA_3D(da);
+<a name="line30"> 30: </a>  } <font color="#4169E1">else</font> <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PetscObjectComm.html#PetscObjectComm">PetscObjectComm</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)da),PETSC_ERR_SUP,<font color="#666666">"DMs only supported for 1, 2, and 3d"</font>);
+<a name="line31"> 31: </a>  <font color="#4169E1">return</font>(0);
+<a name="line32"> 32: </a>}
 
 </pre>
 </body>

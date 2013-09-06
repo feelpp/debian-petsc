@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/ex5f90t.F.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:12:08+00:00">
+<meta name="date" content="2013-07-02T14:50:37+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>!
 <a name="line2">  2: </a>!  Description: Solves a nonlinear system in parallel with <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>.
 <a name="line3">  3: </a>!  We solve the  Bratu (SFI - solid fuel ignition) problem in a 2D rectangular
@@ -19,7 +19,7 @@
 <a name="line8">  8: </a>!
 <a name="line9">  9: </a>!<font color="#B22222">/*T</font>
 <a name="line10"> 10: </a><font color="#B22222">!  Concepts: <A href="../../../../docs/manualpages/SNES/SNES.html#SNES">SNES</A>^parallel Bratu example</font>
-<a name="line11"> 11: </a><font color="#B22222">!  Concepts: DMDA^using distributed arrays;</font>
+<a name="line11"> 11: </a><font color="#B22222">!  Concepts: <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>^using distributed arrays;</font>
 <a name="line12"> 12: </a><font color="#B22222">!  Processors: n</font>
 <a name="line13"> 13: </a><font color="#B22222">!T*/</font>
 <a name="line14"> 14: </a>!
@@ -221,7 +221,7 @@
 <a name="line210">210: </a>!  Create vector data structures; set function evaluation routine
 <a name="line211">211: </a>! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-<a name="line213">213: </a>!  Create distributed array (DMDA) to manage parallel grid and vectors
+<a name="line213">213: </a>!  Create distributed array (<A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>) to manage parallel grid and vectors
 
 <a name="line215">215: </a>! This really needs only the star-type stencil, but we use the box
 <a name="line216">216: </a>! stencil temporarily.
@@ -242,12 +242,12 @@
 <a name="line231">231: </a>!
 <a name="line232">232: </a>!     call <A href="../../../../docs/manualpages/DM/DMView.html#DMView">DMView</A>(user%da,<A href="../../../../docs/manualpages/Viewer/PETSC_VIEWER_DRAW_WORLD.html#PETSC_VIEWER_DRAW_WORLD">PETSC_VIEWER_DRAW_WORLD</A>,ierr)
 
-<a name="line234">234: </a>!  Extract global and local vectors from DMDA; then duplicate <font color="#4169E1">for</font> remaining
+<a name="line234">234: </a>!  Extract global and local vectors from <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>; then duplicate <font color="#4169E1">for</font> remaining
 <a name="line235">235: </a>!  vectors that are the same types
 <a name="line236">236: </a>      call <A href="../../../../docs/manualpages/DM/DMCreateGlobalVector.html#DMCreateGlobalVector">DMCreateGlobalVector</A>(user%da,x,ierr)
 <a name="line237">237: </a>      call <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(x,r,ierr)
 
-<a name="line239">239: </a>!  Get local grid boundaries (<font color="#4169E1">for</font> 2-dimensional DMDA)
+<a name="line239">239: </a>!  Get local grid boundaries (<font color="#4169E1">for</font> 2-dimensional <A href="../../../../docs/manualpages/DM/DMDA.html#DMDA">DMDA</A>)
 <a name="line240">240: </a>      call <A href="../../../../docs/manualpages/DM/DMDAGetCorners.html#DMDAGetCorners">DMDAGetCorners</A>(user%da,user%xs,user%ys,PETSC_NULL_INTEGER,     &amp;
 <a name="line241">241: </a>     &amp;     user%xm,user%ym,PETSC_NULL_INTEGER,ierr)
 <a name="line242">242: </a>      call <A href="../../../../docs/manualpages/DM/DMDAGetGhostCorners.html#DMDAGetGhostCorners">DMDAGetGhostCorners</A>(user%da,user%gxs,user%gys,                 &amp;

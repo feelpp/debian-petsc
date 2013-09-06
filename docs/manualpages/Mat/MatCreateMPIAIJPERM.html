@@ -5,9 +5,9 @@
 <TITLE>MatCreateMPIAIJPERM</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCreateMPIAIJPERM"><H1>MatCreateMPIAIJPERM</H1></A>
-Creates a sparse parallel matrix whose local  portions are stored as SEQAIJPERM matrices (a matrix class that inherits  from SEQAIJ but includes some optimizations to allow more effective  vectorization).  The same guidelines that apply to MPIAIJ matrices for  preallocating the matrix storage apply here as well. 
+Creates a sparse parallel matrix whose local portions are stored as SEQAIJPERM matrices (a matrix class that inherits from SEQAIJ but includes some optimizations to allow more effective vectorization).  The same guidelines that apply to MPIAIJ matrices for preallocating the matrix storage apply here as well. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 PetscErrorCode  MatCreateMPIAIJPERM(MPI_Comm comm,PetscInt m,PetscInt n,PetscInt M,PetscInt N,PetscInt d_nz,const PetscInt d_nnz[],PetscInt o_nz,const PetscInt o_nnz[],Mat *A)
@@ -19,10 +19,10 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- MPI communicator
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>m </B></TD><TD>- number of local rows (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have calculated if M is given)
-This value should be the same as the local size used in creating the 
+This value should be the same as the local size used in creating the
 y vector for the matrix-vector product y = Ax.
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- This value should be the same as the local size used in creating the 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>n </B></TD><TD>- This value should be the same as the local size used in creating the
 x vector for the matrix-vector product y = Ax. (or <A HREF="../Sys/PETSC_DECIDE.html#PETSC_DECIDE">PETSC_DECIDE</A> to have
 calculated if N is given) For square matrices n is almost always m.
 </TD></TR>
@@ -33,11 +33,11 @@ calculated if N is given) For square matrices n is almost always m.
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nz  </B></TD><TD>- number of nonzeros per row in DIAGONAL portion of local submatrix
 (same value is used for all local rows)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nnz </B></TD><TD>- array containing the number of nonzeros in the various rows of the 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>d_nnz </B></TD><TD>- array containing the number of nonzeros in the various rows of the
 DIAGONAL portion of the local submatrix (possibly different for each row)
-or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, if d_nz is used to specify the nonzero structure. 
-The size of this array is equal to the number of local rows, i.e 'm'. 
-For matrices you plan to factor you must leave room for the diagonal entry and 
+or NULL, if d_nz is used to specify the nonzero structure.
+The size of this array is equal to the number of local rows, i.e 'm'.
+For matrices you plan to factor you must leave room for the diagonal entry and
 put in the entry even if it is zero.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>o_nz  </B></TD><TD>- number of nonzeros per row in the OFF-DIAGONAL portion of local
@@ -45,13 +45,13 @@ submatrix (same value is used for all local rows).
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>o_nnz </B></TD><TD>- array containing the number of nonzeros in the various rows of the
 OFF-DIAGONAL portion of the local submatrix (possibly different for
-each row) or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>, if o_nz is used to specify the nonzero 
-structure. The size of this array is equal to the number 
-of local rows, i.e 'm'. 
+each row) or NULL, if o_nz is used to specify the nonzero
+structure. The size of this array is equal to the number
+of local rows, i.e 'm'.
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>A </B> -the matrix 
+<DT><B>A </B> -the matrix
 <br>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>

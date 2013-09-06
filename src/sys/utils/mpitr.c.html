@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/sys/utils/mpitr.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:36:16+00:00">
+<meta name="date" content="2013-07-02T14:39:12+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
 <a name="line2">  2: </a><font color="#B22222">/*</font>
 <a name="line3">  3: </a><font color="#B22222">    Code for tracing mistakes in MPI usage. For example, sends that are never received,</font>
@@ -43,13 +43,13 @@
 
 <a name="line37"> 37: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Comm_rank.html#MPI_Comm_rank">MPI_Comm_rank</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;rank);
 <a name="line38"> 38: </a>  <font color="#4169E1">if</font> (!fd) fd = PETSC_STDOUT;
-<a name="line39"> 39: </a>
+
 <a name="line40"> 40: </a>  <font color="#B22222">/* Did we wait on all the non-blocking sends and receives? */</font>
 <a name="line41"> 41: </a>  <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseBegin.html#PetscSequentialPhaseBegin">PetscSequentialPhaseBegin</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1);
 <a name="line42"> 42: </a>  <font color="#4169E1">if</font> (petsc_irecv_ct + petsc_isend_ct != petsc_sum_of_waits_ct) {
 <a name="line43"> 43: </a>    <A href="../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,fd,<font color="#666666">"[%d]You have not waited on all non-blocking sends and receives"</font>,rank);
 <a name="line44"> 44: </a>    <A href="../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,fd,<font color="#666666">"[%d]Number non-blocking sends %g receives %g number of waits %g\n"</font>,rank,petsc_isend_ct,petsc_irecv_ct,petsc_sum_of_waits_ct);
-<a name="line45"> 45: </a>    err = fflush(fd);
+<a name="line45"> 45: </a>    err  = fflush(fd);
 <a name="line46"> 46: </a>    <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line47"> 47: </a>  }
 <a name="line48"> 48: </a>  <A href="../../../docs/manualpages/Sys/PetscSequentialPhaseEnd.html#PetscSequentialPhaseEnd">PetscSequentialPhaseEnd</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,1);
@@ -60,7 +60,7 @@
 <a name="line53"> 53: </a>  <A href="http://www.mcs.anl.gov/mpi/www/www3/MPI_Reduce.html#MPI_Reduce">MPI_Reduce</A>(&amp;work,&amp;tsends,1,MPI_DOUBLE,MPI_SUM,0,<A href="../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>);
 <a name="line54"> 54: </a>  <font color="#4169E1">if</font> (!rank &amp;&amp; tsends != trecvs) {
 <a name="line55"> 55: </a>    <A href="../../../docs/manualpages/Sys/PetscFPrintf.html#PetscFPrintf">PetscFPrintf</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,fd,<font color="#666666">"Total number sends %g not equal receives %g\n"</font>,tsends,trecvs);
-<a name="line56"> 56: </a>    err = fflush(fd);
+<a name="line56"> 56: </a>    err  = fflush(fd);
 <a name="line57"> 57: </a>    <font color="#4169E1">if</font> (err) <A href="../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,PETSC_ERR_SYS,<font color="#666666">"fflush() failed on file"</font>);
 <a name="line58"> 58: </a>  }
 <a name="line59"> 59: </a>  <font color="#4169E1">return</font>(0);

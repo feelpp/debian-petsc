@@ -5,13 +5,13 @@
 <TITLE>PetscReturnErrorHandler</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscReturnErrorHandler"><H1>PetscReturnErrorHandler</H1></A>
 Error handler that causes a return to the current level. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h" 
-PetscErrorCode  PetscReturnErrorHandler(MPI_Comm comm,int line,const char *fun,const char* file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,void *ctx)
+PetscErrorCode  PetscReturnErrorHandler(MPI_Comm comm,int line,const char *fun,const char *file,const char *dir,PetscErrorCode n,PetscErrorType p,const char *mess,void *ctx)
 </PRE>
 Not Collective
 <P>

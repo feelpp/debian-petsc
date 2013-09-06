@@ -1,10 +1,10 @@
 A few minor Debian customizations of the HTML PETSc documentation.
 Remove links to non-free PDF files.
 
-Index: petsc-3.3.dfsg/docs/bugreporting.html
+Index: petsc-3.4.2/docs/bugreporting.html
 ===================================================================
---- petsc-3.3.dfsg.orig/docs/bugreporting.html	2012-09-12 08:37:23.000000000 +0200
-+++ petsc-3.3.dfsg/docs/bugreporting.html	2012-09-12 08:58:05.000000000 +0200
+--- petsc-3.4.2.orig/docs/bugreporting.html	2013-08-20 15:24:54.000000000 +0200
++++ petsc-3.4.2/docs/bugreporting.html	2013-08-20 15:24:54.000000000 +0200
 @@ -59,7 +59,7 @@
  
          <li>
@@ -14,10 +14,10 @@ Index: petsc-3.3.dfsg/docs/bugreporting.html
          </li>
  
          <li>MPI implementation: (e.g., MPICH, LAM, IBM, SGI)</li>
-Index: petsc-3.3.dfsg/docs/index.html
+Index: petsc-3.4.2/docs/index.html
 ===================================================================
---- petsc-3.3.dfsg.orig/docs/index.html	2012-09-12 08:43:51.000000000 +0200
-+++ petsc-3.3.dfsg/docs/index.html	2012-09-12 08:58:05.000000000 +0200
+--- petsc-3.4.2.orig/docs/index.html	2013-08-20 15:24:54.000000000 +0200
++++ petsc-3.4.2/docs/index.html	2013-08-20 15:24:54.000000000 +0200
 @@ -23,7 +23,7 @@
        </p>
  
@@ -35,11 +35,11 @@ Index: petsc-3.3.dfsg/docs/index.html
        </ul>
  
      </div>
-Index: petsc-3.3.dfsg/docs/faq.html
+Index: petsc-3.4.2/docs/faq.html
 ===================================================================
---- petsc-3.3.dfsg.orig/docs/faq.html	2012-09-12 08:46:52.000000000 +0200
-+++ petsc-3.3.dfsg/docs/faq.html	2012-09-12 08:58:35.000000000 +0200
-@@ -467,23 +467,22 @@
+--- petsc-3.4.2.orig/docs/faq.html	2013-08-20 15:24:54.000000000 +0200
++++ petsc-3.4.2/docs/faq.html	2013-08-20 15:24:54.000000000 +0200
+@@ -439,23 +439,22 @@
  
        <ol>
          <li>

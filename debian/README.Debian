@@ -7,25 +7,25 @@ please see: http://lyre.mit.edu/~powell/petsc.html .  You can also look there
 for old versions of the package, in case you need to build something against a
 2.0.28 or 2.1.0 release (I keep the last package for each upstream version).
 
-This is upstream version 3.3.  I'm no longer including the upstream patch
+This is upstream version 3.4.2.  I'm no longer including the upstream patch
 level in the Debian version number to minimize wasteful redistribution of
 99.99% identical .orig.tar.gz files for each release.
 
 INTRODUCTION
 
 This source package is distributed in five binary packages: the shared
-libraries are in libpetsc3.3; header files, static libraries, the petscarch
+libraries are in libpetsc3.4.2; header files, static libraries, the petscarch
 and mpirun_lam scripts and important files for building examples are in
-libpetsc3.3-dev, this also sets up various alternatives links; debugging
-static libraries are in libpetsc3.3-dbg; extensive documentation and source
-code from "tests" and "tutorials" directories are in petsc3.3-doc.
+libpetsc3.4.2-dev, this also sets up various alternatives links; debugging
+static libraries are in libpetsc3.4.2-dbg; extensive documentation and source
+code from "tests" and "tutorials" directories are in petsc3.4.2-doc.
 
-With libpetsc3.3-dev installed, you can build programs against it two ways:
+With libpetsc3.4.2-dev installed, you can build programs against it two ways:
 
      1. Standard build convention: use -I/usr/include/petsc for headers and
 	link to optimized libraries in /usr/lib, so your resulting binaries
-	will only depend on libpetsc3.3.  To link against the static
-	debugging libs in libpetsc3.3-dbg, just set LD_LIBRARY_PATH to
+	will only depend on libpetsc3.4.2.  To link against the static
+	debugging libs in libpetsc3.4.2-dbg, just set LD_LIBRARY_PATH to
 	/usr/lib/petsc/lib/libg/`petscarch`.
      2. PETSc build convention: adapt a makefile from one of their tests or
 	tutorial directories and build with make PETSC_DIR=/usr/lib/petsc
@@ -37,10 +37,10 @@ dependencies.
 
 EXAMPLES
 
-For your testing convenience, petsc3.3-doc comes with the source code of
+For your testing convenience, petsc3.4.2-doc comes with the source code of
 the full PETSc test and tutorial suite.  Just do:
 
-	tar xzf /usr/share/doc/petsc3.3-doc/src.tar.gz
+	tar xzf /usr/share/doc/petsc3.4.2-doc/src.tar.gz
 
 then cd src, and use the PETSc build convention make command above with target
 testexamples or testfortran (add _uni to the target name for single-processor
@@ -79,7 +79,7 @@ There are several ways to customize this package:
    Compaq compilers on an Alpha), do:
 
 	apt-get source petsc
-	cd petsc-3.3
+	cd petsc-3.4.2
 	fakeroot debian/rules PETSC_ARCH=linux_alpha_dec binary
 
    Note that this will only build architecture-dependent packages, and with
@@ -119,6 +119,6 @@ hand-edit the symbolic links yourself.
 Note that individual users can build against non-default installed versions of
 PETSc simply by setting the PETSC_DIR environment variable to the target
 directory instead of /usr/lib/petsc, for example to build against the lam
-version a user might set PETSC_DIR=/usr/lib/petscdir/3.3-lam .
+version a user might set PETSC_DIR=/usr/lib/petscdir/3.4.2-lam .
 
  -- "Adam C. Powell, IV" <hazelsct@debian.org>, Thu, 29 Dec 2011 10:06:45 -0500

@@ -5,14 +5,12 @@
 <TITLE>SNESSolve</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESSolve"><H1>SNESSolve</H1></A>
 Solves a nonlinear system F(x) = b. Call <A HREF="../SNES/SNESSolve.html#SNESSolve">SNESSolve</A>() after calling <A HREF="../SNES/SNESCreate.html#SNESCreate">SNESCreate</A>() and optional routines of the form SNESSetXXX(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESSolve(SNES snes,Vec b,Vec x)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
@@ -21,7 +19,7 @@ Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>snes </B></TD><TD>- the <A HREF="../SNES/SNES.html#SNES">SNES</A> context
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>b </B></TD><TD>- the constant part of the equation F(x) = b, or <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> to use zero.
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>b </B></TD><TD>- the constant part of the equation F(x) = b, or NULL to use zero.
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- the solution vector.
 </TD></TR></TABLE>
@@ -52,9 +50,9 @@ this vector to zero by calling <A HREF="../Vec/VecSet.html#VecSet">VecSet</A>().
 <A HREF="../../../src/snes/examples/tutorials/ex4.c.html">src/snes/examples/tutorials/ex4.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5.c.html">src/snes/examples/tutorials/ex5.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex5s.c.html">src/snes/examples/tutorials/ex5s.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex6.c.html">src/snes/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex7.c.html">src/snes/examples/tutorials/ex7.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex8.c.html">src/snes/examples/tutorials/ex8.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex10.c.html">src/snes/examples/tutorials/ex10.c.html</A><BR>
 <A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex14.c.html">src/snes/examples/tutorials/ex14.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex15.c.html">src/snes/examples/tutorials/ex15.c.html</A><BR>
 </BODY></HTML>

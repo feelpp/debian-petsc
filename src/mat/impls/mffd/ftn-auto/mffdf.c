@@ -114,7 +114,7 @@ void PETSC_STDCALL  matmffdsetbase_(Mat J,Vec U,Vec F, int *__ierr ){
 	(Vec)PetscToPointer((U) ),
 	(Vec)PetscToPointer((F) ));
 }
-void PETSC_STDCALL  matmffdcheckpositivity_(void* dummy,Vec U,Vec a,PetscScalar *h, int *__ierr ){
+void PETSC_STDCALL  matmffdcheckpositivity_(void*dummy,Vec U,Vec a,PetscScalar *h, int *__ierr ){
 *__ierr = MatMFFDCheckPositivity(dummy,
 	(Vec)PetscToPointer((U) ),
 	(Vec)PetscToPointer((a) ),h);

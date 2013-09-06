@@ -5,13 +5,12 @@
 <TITLE>VecScatterCreate</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="VecScatterCreate"><H1>VecScatterCreate</H1></A>
 Creates a vector scatter context. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscis.h" 
-#include "petscvec.h" 
+#include "petscvec.h"    
 PetscErrorCode  VecScatterCreate(Vec xin,IS ix,Vec yin,IS iy,VecScatter *newctx)
 </PRE>
 Collective on <A HREF="../Vec/Vec.html#Vec">Vec</A>
@@ -24,9 +23,9 @@ of vectors from which we scatter
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>yin </B></TD><TD>- a vector that defines the shape (parallel data layout of the vector)
 of vectors to which we scatter
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ix </B></TD><TD>- the indices of xin to scatter (if <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> scatters all values)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ix </B></TD><TD>- the indices of xin to scatter (if NULL scatters all values)
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>iy </B></TD><TD>- the indices of yin to hold results (if <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> fills entire vector yin)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>iy </B></TD><TD>- the indices of yin to hold results (if NULL fills entire vector yin)
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
@@ -37,16 +36,16 @@ Options Database Keys: (uses regular MPI_Sends by default)
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_view         </B></TD><TD>- Prints detail of communications
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_view_info    </B></TD><TD>- Print less details about communication
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_view ::ascii_info    </B></TD><TD>- Print less details about communication
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_ssend        </B></TD><TD>- Uses MPI_Ssend_init() instead of MPI_Send_init() 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_ssend        </B></TD><TD>- Uses MPI_Ssend_init() instead of MPI_Send_init()
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_rsend           </B></TD><TD>- use ready receiver mode for MPI sends 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_rsend           </B></TD><TD>- use ready receiver mode for MPI sends
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_merge        </B></TD><TD>- <A HREF="../Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>() handles all of the communication, <A HREF="../Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>() is a nop 
-eliminates the chance for overlap of computation and communication 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_merge        </B></TD><TD>- <A HREF="../Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>() handles all of the communication, <A HREF="../Vec/VecScatterEnd.html#VecScatterEnd">VecScatterEnd</A>() is a nop
+eliminates the chance for overlap of computation and communication
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_sendfirst    </B></TD><TD>- Posts sends before receives 
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_sendfirst    </B></TD><TD>- Posts sends before receives
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>-vecscatter_packtogether </B></TD><TD>- Pack all messages before sending, receive all messages before unpacking
 </TD></TR>
@@ -66,7 +65,7 @@ will make the results of scatters deterministic when otherwise they are not (it 
                                                                                    --When packing is used--
 </pre>
 <pre>
-                              MPI Datatypes (no packing)  sendfirst   merge        packtogether  persistent*    
+                              MPI Datatypes (no packing)  sendfirst   merge        packtogether  persistent*
 </pre>
 <pre>
                                _nopack                   _sendfirst    _merge      _packtogether                -vecscatter_
@@ -90,7 +89,9 @@ will make the results of scatters deterministic when otherwise they are not (it 
    MPI_Win                       p                        nonsense        p           p         nonsense        _window
 </pre>
 <pre>
-                              $   Since persistent sends and receives require a constant memory address they can only be used when data is packed into the work vector
+</pre>
+<pre>
+  Since persistent sends and receives require a constant memory address they can only be used when data is packed into the work vector
 </pre>
 <pre>
   because the in and out array may be different for each call to <A HREF="../Vec/VecScatterBegin.html#VecScatterBegin">VecScatterBegin</A>/End().
@@ -119,7 +120,7 @@ Currently the MPI_Send(), MPI_Ssend() and MPI_Rsend() all use PERSISTENT version
 is why when not using MPI_alltoallw() we always need to pack the input into the work array before sending
 and unpack upon receeving instead of using MPI datatypes to avoid the packing/unpacking).
 <P>
-Both ix and iy cannot be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> at the same time.
+Both ix and iy cannot be NULL at the same time.
 <P>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
@@ -130,9 +131,7 @@ Both ix and iy cannot be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL<
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/dm/ao/examples/tutorials/ex2.c.html">src/dm/ao/examples/tutorials/ex2.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex6.c.html">src/dm/examples/tutorials/ex6.c.html</A><BR>
 <A HREF="../../../src/dm/examples/tutorials/ex6f90.F.html">src/dm/examples/tutorials/ex6f90.F.html</A><BR>
 <A HREF="../../../src/ksp/ksp/examples/tutorials/ex49.c.html">src/ksp/ksp/examples/tutorials/ex49.c.html</A><BR>
-<A HREF="../../../src/snes/examples/tutorials/ex1.c.html">src/snes/examples/tutorials/ex1.c.html</A><BR>
 </BODY></HTML>

@@ -5,7 +5,7 @@
 <TITLE>PetscDLLibrarySym</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscDLLibrarySym"><H1>PetscDLLibrarySym</H1></A>
 Load a symbol from the dynamic link libraries. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -18,7 +18,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>comm </B></TD><TD>- communicator that will open the library
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>outlist </B></TD><TD>- list of already open libraries that may contain symbol (can be <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> and only the executable is searched for the function)
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>outlist </B></TD><TD>- list of already open libraries that may contain symbol (can be NULL and only the executable is searched for the function)
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>path     </B></TD><TD>- optional complete library name (if provided checks here before checking outlist)
 </TD></TR>
@@ -26,7 +26,7 @@ Collective on <A HREF="../Sys/MPI_Comm.html#MPI_Comm">MPI_Comm</A>
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameter</FONT></H3>
-<DT><B>value </B> -if symbol not found then this value is set to <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>
+<DT><B>value </B> -if symbol not found then this value is set to NULL
 <br>
 <P>
 

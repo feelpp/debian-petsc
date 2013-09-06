@@ -5,13 +5,13 @@
 <TITLE>MatCoarsenApply</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="MatCoarsenApply"><H1>MatCoarsenApply</H1></A>
 Gets a coarsen for a matrix. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscmat.h" 
-PetscErrorCode  MatCoarsenApply( MatCoarsen coarser )
+PetscErrorCode  MatCoarsenApply(MatCoarsen coarser)
 </PRE>
 Collective on <A HREF="../Mat/Mat.html#Mat">Mat</A>
 <P>
@@ -37,14 +37,14 @@ To see the coarsen result
 <P>
 
 <P>
-The user can define additional coarsens; see <A HREF="../Mat/MatCoarsenRegisterDynamic.html#MatCoarsenRegisterDynamic">MatCoarsenRegisterDynamic</A>().
+The user can define additional coarsens; see <A HREF="../MatOrderings/MatCoarsenRegister.html#MatCoarsenRegister">MatCoarsenRegister</A>().
 <P>
 <H3><FONT COLOR="#CC3333">Keywords</FONT></H3>
  matrix, get, coarsen
 <BR>
 <P>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../Mat/MatCoarsenRegisterDynamic.html#MatCoarsenRegisterDynamic">MatCoarsenRegisterDynamic</A>(), <A HREF="../MatOrderings/MatCoarsenCreate.html#MatCoarsenCreate">MatCoarsenCreate</A>(),
+  <A HREF="../MatOrderings/MatCoarsenRegister.html#MatCoarsenRegister">MatCoarsenRegister</A>(), <A HREF="../MatOrderings/MatCoarsenCreate.html#MatCoarsenCreate">MatCoarsenCreate</A>(),
 <BR><A HREF="../MatOrderings/MatCoarsenDestroy.html#MatCoarsenDestroy">MatCoarsenDestroy</A>(), <A HREF="../MatOrderings/MatCoarsenSetAdjacency.html#MatCoarsenSetAdjacency">MatCoarsenSetAdjacency</A>(), ISCoarsenToNumbering(),
 ISCoarsenCount()
 <P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>beginner

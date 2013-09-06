@@ -5,13 +5,13 @@
 <TITLE>TSMonitor</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSMonitor"><H1>TSMonitor</H1></A>
 Runs all user-provided monitor routines set using <A HREF="../TS/TSMonitorSet.html#TSMonitorSet">TSMonitorSet</A>() 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscts.h"  
-PetscErrorCode TSMonitor(TS ts,PetscInt step,PetscReal ptime,Vec x)
+PetscErrorCode TSMonitor(TS ts,PetscInt step,PetscReal ptime,Vec u)
 </PRE>
 Collective on <A HREF="../TS/TS.html#TS">TS</A>
 <P>
@@ -23,7 +23,7 @@ Collective on <A HREF="../TS/TS.html#TS">TS</A>
 </TD></TR>
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>ptime </B></TD><TD>- model time of the state
 </TD></TR>
-<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>x </B></TD><TD>- state at the current model time
+<TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>u </B></TD><TD>- state at the current model time
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>

@@ -4,13 +4,13 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tests/ex15.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:05:06+00:00">
+<meta name="date" content="2013-07-02T14:48:29+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80">
-<a name="line2">  2: </a>static char help[] = <font color="#666666">"<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> on an operator with a null space.\n\n"</font>;
+<a name="line2">  2: </a>static char help[] = <font color="#666666">"<A href="../../../../../docs/manualpages/KSP/KSP.html#KSP">KSP</A> linear solver on an operator with a null space.\n\n"</font>;
 
 <a name="line4">  4: </a><font color="#A020F0">#include &lt;petscksp.h&gt;</font>
 
@@ -24,8 +24,8 @@
 <a name="line16"> 16: </a>  <A href="../../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      norm;
 <a name="line17"> 17: </a>  <A href="../../../../../docs/manualpages/PC/PC.html#PC">PC</A>             pc;
 
-<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
-<a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>,<font color="#666666">"-n"</font>,&amp;n,<A href="../../../../../docs/manualpages/Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A>);
+<a name="line19"> 19: </a>  <A href="../../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
+<a name="line20"> 20: </a>  <A href="../../../../../docs/manualpages/Sys/PetscOptionsGetInt.html#PetscOptionsGetInt">PetscOptionsGetInt</A>(NULL,<font color="#666666">"-n"</font>,&amp;n,NULL);
 
 <a name="line22"> 22: </a>  <font color="#B22222">/* Create vectors */</font>
 <a name="line23"> 23: </a>  <A href="../../../../../docs/manualpages/Vec/VecCreate.html#VecCreate">VecCreate</A>(<A href="../../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,&amp;x);
@@ -55,9 +55,9 @@
 <a name="line47"> 47: </a>    col[0] = i-1; col[1] = i; col[2] = i+1;
 <a name="line48"> 48: </a>    <A href="../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,1,&amp;i,3,col,value,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line49"> 49: </a>  }
-<a name="line50"> 50: </a>  i = n - 1; col[0] = n - 2; col[1] = n - 1; value[1] = 1.0;
+<a name="line50"> 50: </a>  i    = n - 1; col[0] = n - 2; col[1] = n - 1; value[1] = 1.0;
 <a name="line51"> 51: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,1,&amp;i,2,col,value,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
-<a name="line52"> 52: </a>  i = 0; col[0] = 0; col[1] = 1; value[0] = 1.0; value[1] = -1.0;
+<a name="line52"> 52: </a>  i    = 0; col[0] = 0; col[1] = 1; value[0] = 1.0; value[1] = -1.0;
 <a name="line53"> 53: </a>  <A href="../../../../../docs/manualpages/Mat/MatSetValues.html#MatSetValues">MatSetValues</A>(A,1,&amp;i,2,col,value,<A href="../../../../../docs/manualpages/Sys/INSERT_VALUES.html#INSERT_VALUES">INSERT_VALUES</A>);
 <a name="line54"> 54: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyBegin.html#MatAssemblyBegin">MatAssemblyBegin</A>(A,MAT_FINAL_ASSEMBLY);
 <a name="line55"> 55: </a>  <A href="../../../../../docs/manualpages/Mat/MatAssemblyEnd.html#MatAssemblyEnd">MatAssemblyEnd</A>(A,MAT_FINAL_ASSEMBLY);

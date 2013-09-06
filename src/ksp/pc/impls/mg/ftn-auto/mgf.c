@@ -27,7 +27,7 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscpcmg.h"
+#include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define pcmggetlevels_ PCMGGETLEVELS
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)

@@ -5,7 +5,7 @@
 <TITLE>PCCompositeType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCCompositeType"><H1>PCCompositeType</H1></A>
 Determines how two or more preconditioner are composed 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
@@ -22,7 +22,7 @@ typedef enum {PC_COMPOSITE_ADDITIVE,PC_COMPOSITE_MULTIPLICATIVE,PC_COMPOSITE_SYM
                                computed after the previous preconditioner application
 </pre>
 <pre>
- PC_COMPOSITE_SYMMETRIC_MULTIPLICATIVE - preconditioners are applied sequentially to the residual freshly 
+ PC_COMPOSITE_SYMMETRIC_MULTIPLICATIVE - preconditioners are applied sequentially to the residual freshly
 </pre>
 <pre>
                                computed from first preconditioner to last and then back (Use only for symmetric matrices and preconditions)

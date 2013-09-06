@@ -27,7 +27,6 @@ extern void PetscRmPointer(void*);
 #define PetscRmPointer(a)
 #endif
 
-#include "petscmat.h"
 #include "petscksp.h"
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matcreateschurcomplement_ MATCREATESCHURCOMPLEMENT
@@ -35,9 +34,19 @@ extern void PetscRmPointer(void*);
 #define matcreateschurcomplement_ matcreateschurcomplement
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matschurcomplementset_ MATSCHURCOMPLEMENTSET
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matschurcomplementset_ matschurcomplementset
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matschurcomplementgetksp_ MATSCHURCOMPLEMENTGETKSP
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define matschurcomplementgetksp_ matschurcomplementgetksp
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define matschurcomplementsetksp_ MATSCHURCOMPLEMENTSETKSP
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define matschurcomplementsetksp_ matschurcomplementsetksp
 #endif
 #ifdef PETSC_HAVE_FORTRAN_CAPS
 #define matschurcomplementupdate_ MATSCHURCOMPLEMENTUPDATE
@@ -63,9 +72,23 @@ void PETSC_STDCALL  matcreateschurcomplement_(Mat A00,Mat Ap00,Mat A01,Mat A10,M
 	(Mat)PetscToPointer((A10) ),
 	(Mat)PetscToPointer((A11) ),N);
 }
+void PETSC_STDCALL  matschurcomplementset_(Mat N,Mat A00,Mat Ap00,Mat A01,Mat A10,Mat A11, int *__ierr ){
+*__ierr = MatSchurComplementSet(
+	(Mat)PetscToPointer((N) ),
+	(Mat)PetscToPointer((A00) ),
+	(Mat)PetscToPointer((Ap00) ),
+	(Mat)PetscToPointer((A01) ),
+	(Mat)PetscToPointer((A10) ),
+	(Mat)PetscToPointer((A11) ));
+}
 void PETSC_STDCALL  matschurcomplementgetksp_(Mat A,KSP *ksp, int *__ierr ){
 *__ierr = MatSchurComplementGetKSP(
 	(Mat)PetscToPointer((A) ),ksp);
+}
+void PETSC_STDCALL  matschurcomplementsetksp_(Mat A,KSP ksp, int *__ierr ){
+*__ierr = MatSchurComplementSetKSP(
+	(Mat)PetscToPointer((A) ),
+	(KSP)PetscToPointer((ksp) ));
 }
 void PETSC_STDCALL  matschurcomplementupdate_(Mat N,Mat A,Mat Ap,Mat B,Mat C,Mat D,MatStructure *str, int *__ierr ){
 *__ierr = MatSchurComplementUpdate(

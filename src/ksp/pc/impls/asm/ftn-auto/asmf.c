@@ -48,6 +48,16 @@ extern void PetscRmPointer(void*);
 #elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
 #define pcasmcreatesubdomains2d_ pcasmcreatesubdomains2d
 #endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcasmsetdmsubdomains_ PCASMSETDMSUBDOMAINS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcasmsetdmsubdomains_ pcasmsetdmsubdomains
+#endif
+#ifdef PETSC_HAVE_FORTRAN_CAPS
+#define pcasmgetdmsubdomains_ PCASMGETDMSUBDOMAINS
+#elif !defined(PETSC_HAVE_FORTRAN_UNDERSCORE) && !defined(FORTRANDOUBLEUNDERSCORE)
+#define pcasmgetdmsubdomains_ pcasmgetdmsubdomains
+#endif
 
 
 /* Definitions of Fortran Wrapper routines */
@@ -62,12 +72,20 @@ void PETSC_STDCALL  pcasmsettype_(PC pc,PCASMType *type, int *__ierr ){
 *__ierr = PCASMSetType(
 	(PC)PetscToPointer((pc) ),*type);
 }
-void PETSC_STDCALL  pcasmsetsortindices_(PC pc,PetscBool  *doSort, int *__ierr ){
+void PETSC_STDCALL  pcasmsetsortindices_(PC pc,PetscBool *doSort, int *__ierr ){
 *__ierr = PCASMSetSortIndices(
 	(PC)PetscToPointer((pc) ),*doSort);
 }
 void PETSC_STDCALL  pcasmcreatesubdomains2d_(PetscInt *m,PetscInt *n,PetscInt *M,PetscInt *N,PetscInt *dof,PetscInt *overlap,PetscInt *Nsub,IS **is,IS **is_local, int *__ierr ){
 *__ierr = PCASMCreateSubdomains2D(*m,*n,*M,*N,*dof,*overlap,Nsub,is,is_local);
+}
+void PETSC_STDCALL  pcasmsetdmsubdomains_(PC pc,PetscBool *flg, int *__ierr ){
+*__ierr = PCASMSetDMSubdomains(
+	(PC)PetscToPointer((pc) ),*flg);
+}
+void PETSC_STDCALL  pcasmgetdmsubdomains_(PC pc,PetscBool* flg, int *__ierr ){
+*__ierr = PCASMGetDMSubdomains(
+	(PC)PetscToPointer((pc) ),flg);
 }
 #if defined(__cplusplus)
 }

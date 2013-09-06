@@ -5,13 +5,13 @@
 <TITLE>PetscLogStageSetActive</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PetscLogStageSetActive"><H1>PetscLogStageSetActive</H1></A>
 Determines stage activity for <A HREF="../Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>() and <A HREF="../Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsys.h"   
-PetscErrorCode  PetscLogStageSetActive(PetscLogStage stage, PetscBool  isActive)
+PetscErrorCode  PetscLogStageSetActive(PetscLogStage stage, PetscBool isActive)
 </PRE>
 Not Collective
 <P>
@@ -27,7 +27,7 @@ Not Collective
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
  <A HREF="../Profiling/PetscLogStagePush.html#PetscLogStagePush">PetscLogStagePush</A>(), <A HREF="../Profiling/PetscLogStagePop.html#PetscLogStagePop">PetscLogStagePop</A>(), <A HREF="../Profiling/PetscLogEventBegin.html#PetscLogEventBegin">PetscLogEventBegin</A>(), <A HREF="../Profiling/PetscLogEventEnd.html#PetscLogEventEnd">PetscLogEventEnd</A>(), <A HREF="../Profiling/PetscPreLoadBegin.html#PetscPreLoadBegin">PetscPreLoadBegin</A>(), <A HREF="../Profiling/PetscPreLoadEnd.html#PetscPreLoadEnd">PetscPreLoadEnd</A>(), <A HREF="../Profiling/PetscPreLoadStage.html#PetscPreLoadStage">PetscPreLoadStage</A>()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>intermediate
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/plog/plog.c.html#PetscLogStageSetActive">src/sys/plog/plog.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/sys/logging/plog.c.html#PetscLogStageSetActive">src/sys/logging/plog.c</A>
 <BR><A HREF="./index.html">Index of all Profiling routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

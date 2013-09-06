@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/include/sieve/ALE_mem.hh.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T17:18:27+00:00">
+<meta name="date" content="2013-07-02T14:52:43+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a><font color="#A020F0">#ifndef included_ALE_mem_hh</font>
 <a name="line2">  2: </a><strong><font color="#228B22">#define included_ALE_mem_hh</font></strong>
 <a name="line3">  3: </a>// This should be included indirectly -- only by including ALE.hh
@@ -351,7 +351,7 @@
 <a name="line340">340: </a>    // conversion <font color="#4169E1">typedef</font>
 <a name="line341">341: </a>    template &lt;class TT&gt;
 <a name="line342">342: </a>    <font color="#4169E1">struct rebind</font> { <font color="#4169E1">typedef</font> polymorphic_allocator&lt;TT&gt; other;};
-<a name="line343">343: </a>
+
 <a name="line344">344: </a>    T*  create(const T&amp; _val = T());
 <a name="line345">345: </a>    void del(T* _p);
 <a name="line346">346: </a>    template&lt;class TT&gt; void del(TT* _p, size_type _sz);
@@ -454,7 +454,7 @@
 <a name="line443">443: </a>  int logged_allocator&lt;T, O&gt;::_create_event(0);
 <a name="line444">444: </a>  template &lt;class T, bool O&gt;
 <a name="line445">445: </a>  int logged_allocator&lt;T, O&gt;::_del_event(0);
-<a name="line446">446: </a>
+
 <a name="line447">447: </a>  template &lt;class T, bool O&gt;
 <a name="line448">448: </a>  void logged_allocator&lt;T, O&gt;::__log_initialize() {
 <a name="line449">449: </a>    <font color="#4169E1">if</font>(!logged_allocator::_log_initialized) {
@@ -526,7 +526,7 @@
 <a name="line515">515: </a><font color="#A020F0">#endif</font>
 <a name="line516">516: </a>    <font color="#4169E1">return</font> _p;
 <a name="line517">517: </a>  }
-<a name="line518">518: </a>
+
 <a name="line519">519: </a>  template &lt;class T, bool O&gt;
 <a name="line520">520: </a>  void logged_allocator&lt;T, O&gt;::deallocate(T* _p, size_type _n) {
 <a name="line521">521: </a><font color="#A020F0">#if defined ALE_USE_LOGGING &amp;&amp; defined ALE_LOGGING_LOG_MEM</font>
@@ -537,7 +537,7 @@
 <a name="line526">526: </a>    LogEventEnd(logged_allocator::_deallocate_event);
 <a name="line527">527: </a><font color="#A020F0">#endif</font>
 <a name="line528">528: </a>  }
-<a name="line529">529: </a>
+
 <a name="line530">530: </a>  template &lt;class T, bool O&gt;
 <a name="line531">531: </a>  void logged_allocator&lt;T, O&gt;::construct(T* _p, const T&amp; _val) {
 <a name="line532">532: </a><font color="#A020F0">#if defined ALE_USE_LOGGING &amp;&amp; defined ALE_LOGGING_LOG_MEM</font>
@@ -548,7 +548,7 @@
 <a name="line537">537: </a>    LogEventEnd(logged_allocator::_construct_event);
 <a name="line538">538: </a><font color="#A020F0">#endif</font>
 <a name="line539">539: </a>  }
-<a name="line540">540: </a>
+
 <a name="line541">541: </a>  template &lt;class T, bool O&gt;
 <a name="line542">542: </a>  void logged_allocator&lt;T, O&gt;::destroy(T* _p) {
 <a name="line543">543: </a><font color="#A020F0">#if defined ALE_USE_LOGGING &amp;&amp; defined ALE_LOGGING_LOG_MEM</font>
@@ -559,7 +559,7 @@
 <a name="line548">548: </a>    LogEventEnd(logged_allocator::_destroy_event);
 <a name="line549">549: </a><font color="#A020F0">#endif</font>
 <a name="line550">550: </a>  }
-<a name="line551">551: </a>
+
 <a name="line552">552: </a>  template &lt;class T, bool O&gt;
 <a name="line553">553: </a>  T* logged_allocator&lt;T, O&gt;::create(const T&amp; _val) {
 <a name="line554">554: </a><font color="#A020F0">#if defined ALE_USE_LOGGING &amp;&amp; defined ALE_LOGGING_LOG_MEM</font>
@@ -676,7 +676,7 @@
 <a name="line665">665: </a>    // comparison operators
 <a name="line666">666: </a>    bool operator==(const Obj&amp; obj) { <font color="#4169E1">return</font> (this-&gt;objPtr == obj.objPtr);};
 <a name="line667">667: </a>    bool operator!=(const Obj&amp; obj) { <font color="#4169E1">return</font> (this-&gt;objPtr != obj.objPtr);};
-<a name="line668">668: </a>
+
 <a name="line669">669: </a>    // assignment/conversion operators
 <a name="line670">670: </a>    Obj&amp; operator=(const Obj&amp; obj);
 <a name="line671">671: </a>    template &lt;class Y&gt; operator Obj&lt;Y&gt; const();
@@ -684,13 +684,13 @@
 
 <a name="line674">674: </a>    // dereference operators
 <a name="line675">675: </a>    X*   operator-&gt;() const {<font color="#4169E1">return</font> objPtr;};
-<a name="line676">676: </a>
+
 <a name="line677">677: </a>    // <font color="#666666">"exposure"</font> methods: expose the underlying object or object pointer
 <a name="line678">678: </a>    operator X*() {<font color="#4169E1">return</font> objPtr;};
 <a name="line679">679: </a>    X&amp; operator*() const {assertNull(false); <font color="#4169E1">return</font> *objPtr;};
 <a name="line680">680: </a>    operator X()  {assertNull(false); <font color="#4169E1">return</font> *objPtr;};
 <a name="line681">681: </a>    template&lt;class Y&gt; Obj&amp; copy(const Obj&lt;Y&gt;&amp; obj); // this operator will copy the underlying objects: USE WITH CAUTION
-<a name="line682">682: </a>
+
 
 <a name="line684">684: </a>    // depricated methods/operators
 <a name="line685">685: </a>    X* ptr() const     {<font color="#4169E1">return</font> objPtr;};
@@ -708,7 +708,7 @@
 <a name="line697">697: </a>    this-&gt;refCnt = NULL;
 <a name="line698">698: </a>    this-&gt;create(x);
 <a name="line699">699: </a>  }
-<a name="line700">700: </a>
+
 <a name="line701">701: </a>  // Stolen reference
 <a name="line702">702: </a>  template &lt;class X, typename A&gt;
 <a name="line703">703: </a>  Obj&lt;X,A&gt;::Obj(X *xx){// such an object will be destroyed by calling 'delete' on its pointer
@@ -738,7 +738,7 @@
 <a name="line727">727: </a>      this-&gt;sz = 0;
 <a name="line728">728: </a>    }
 <a name="line729">729: </a>  }
-<a name="line730">730: </a>
+
 <a name="line731">731: </a>  template &lt;class X, typename A&gt;
 <a name="line732">732: </a>  Obj&lt;X,A&gt;::Obj(X *_xx, int *_refCnt, size_type _sz) {  // This is intended to be private.
 <a name="line733">733: </a>    <font color="#4169E1">if</font> (!_xx) {
@@ -752,7 +752,7 @@
 <a name="line741">741: </a>    //  throw ALE::Exception(<font color="#666666">"Making an Obj with zero size"</font>);
 <a name="line742">742: </a>    //}
 <a name="line743">743: </a>  }
-<a name="line744">744: </a>
+
 <a name="line745">745: </a>  template &lt;class X, typename A&gt;
 <a name="line746">746: </a>  Obj&lt;X,A&gt;::Obj(const Obj&amp; obj) {
 <a name="line747">747: </a>    this-&gt;objPtr = obj.objPtr;
@@ -907,7 +907,7 @@
 <a name="line896">896: </a>    this-&gt;sz = obj.sz;
 <a name="line897">897: </a>    <font color="#4169E1">return</font> *this;
 <a name="line898">898: </a>  }
-<a name="line899">899: </a>
+
 <a name="line900">900: </a>  // copy operator (USE WITH CAUTION)
 <a name="line901">901: </a>  template&lt;class X, typename A&gt; template&lt;class Y&gt;
 <a name="line902">902: </a>  Obj&lt;X,A&gt;&amp; Obj&lt;X,A&gt;::copy(const Obj&lt;Y&gt;&amp; obj) {

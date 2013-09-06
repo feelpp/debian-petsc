@@ -5,13 +5,12 @@
 <TITLE>PCMGSetInterpolation</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="PCMGSetInterpolation"><H1>PCMGSetInterpolation</H1></A>
-Sets the function to be used to calculate the  interpolation from l-1 to the lth level 
+Sets the function to be used to calculate the interpolation from l-1 to the lth level 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscksp.h" 
-#include "petscpcmg.h"   
 PetscErrorCode  PCMGSetInterpolation(PC pc,PetscInt l,Mat mat)
 </PRE>
 Logically Collective on <A HREF="../PC/PC.html#PC">PC</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>

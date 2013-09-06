@@ -5,19 +5,15 @@
 <TITLE>AORegisterAll</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="AORegisterAll"><H1>AORegisterAll</H1></A>
 Registers all of the application ordering components in the <A HREF="../AO/AO.html#AO">AO</A> package. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscao.h" 
-PetscErrorCode  AORegisterAll(const char path[])
+PetscErrorCode  AORegisterAll(void)
 </PRE>
 Not Collective
-<P>
-<H3><FONT COLOR="#CC3333">Input parameter</FONT></H3>
-<DT><B>path </B> -The dynamic library path
-<br>
 <P>
 
 <P>
@@ -25,9 +21,9 @@ Not Collective
  <A HREF="../AO/AO.html#AO">AO</A>, register, all
 <BR>
 <H3><FONT COLOR="#CC3333">See Also</FONT></H3>
-  <A HREF="../AO/AORegister.html#AORegister">AORegister</A>(), <A HREF="../AO/AORegisterDestroy.html#AORegisterDestroy">AORegisterDestroy</A>(), AORegisterDynamic()
+  <A HREF="../AO/AORegister.html#AORegister">AORegister</A>(), AORegisterDestroy()
 <BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
-<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/ao/interface/aoregall.c.html#AORegisterAll">src/dm/ao/interface/aoregall.c</A>
+<BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/vec/is/ao/interface/aoregall.c.html#AORegisterAll">src/vec/is/ao/interface/aoregall.c</A>
 <BR><A HREF="./index.html">Index of all AO routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>

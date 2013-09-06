@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = mpiadjf.c
-OBJSC    = mpiadjf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

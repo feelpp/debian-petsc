@@ -5,12 +5,12 @@
 <TITLE>TSGLAdaptType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSGLAdaptType"><H1>TSGLAdaptType</H1></A>
-String with the name of <A HREF="../TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A> scheme or the creation function with an optional dynamic library name, for example http://www.mcs.anl.gov/petsc/lib.a:mytsgladaptcreate() 
+String with the name of <A HREF="../TS/TSGLAdapt.html#TSGLAdapt">TSGLAdapt</A> scheme 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define TSGLAdaptType  char*
+typedef const char *TSGLAdaptType;
 #define TSGLADAPT_NONE "none"
 #define TSGLADAPT_SIZE "size"
 #define TSGLADAPT_BOTH "both"

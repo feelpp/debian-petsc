@@ -5,7 +5,6 @@ ALL: lib
 CFLAGS   =
 FFLAGS   =
 SOURCEC  = mumpsf.c
-OBJSC    = mumpsf.o
 SOURCEF  =
 SOURCEH  = 
 DIRS     =

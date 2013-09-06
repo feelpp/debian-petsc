@@ -5,13 +5,14 @@
 <TITLE>SNESLineSearchSetSNES</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESLineSearchSetSNES"><H1>SNESLineSearchSetSNES</H1></A>
 Sets the <A HREF="../SNES/SNES.html#SNES">SNES</A> for the linesearch for function evaluation. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h" 
-PetscErrorCode  SNESLineSearchSetSNES(SNESLineSearch linesearch, SNES snes)</PRE>
+PetscErrorCode  SNESLineSearchSetSNES(SNESLineSearch linesearch, SNES snes)
+</PRE>
 <H3><FONT COLOR="#CC3333">Input Parameters</FONT></H3>
 <TABLE border="0" cellpadding="0" cellspacing="0">
 <TR><TD WIDTH=40></TD><TD ALIGN=LEFT VALIGN=TOP><B>linesearch </B></TD><TD>- linesearch context
@@ -23,7 +24,7 @@ PetscErrorCode  SNESLineSearchSetSNES(SNESLineSearch linesearch, SNES snes)</PRE
 <P>
 <H3><FONT COLOR="#CC3333">Notes</FONT></H3>
 This happens automatically when the line search is gotten/created with
-<A HREF="../SNES/SNESGetSNESLineSearch.html#SNESGetSNESLineSearch">SNESGetSNESLineSearch</A>().  This routine is therefore mainly called within <A HREF="../SNES/SNES.html#SNES">SNES</A>
+<A HREF="../SNES/SNESGetLineSearch.html#SNESGetLineSearch">SNESGetLineSearch</A>().  This routine is therefore mainly called within <A HREF="../SNES/SNES.html#SNES">SNES</A>
 implementations.
 <P>
 

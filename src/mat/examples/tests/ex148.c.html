@@ -4,11 +4,11 @@
 <head> <link rel="canonical" href="http://www.mcs.anl.gov/petsc/petsc-current/src/mat/examples/tests/ex148.c.html" />
 <title></title>
 <meta name="generator" content="c2html 0.9.5">
-<meta name="date" content="2012-08-29T16:52:17+00:00">
+<meta name="date" content="2013-07-02T14:44:22+00:00">
 </head>
 
 <body bgcolor="#FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <pre width="80"><a name="line1">  1: </a>static char help[]=<font color="#666666">"This program illustrates the use of PETSc-fftw interface for real 2D DFT.\n\</font>
 <a name="line2">  2: </a><font color="#666666">                    See ~petsc/src/mat/examples/tests/ex158.c for general cases. \n\n"</font>;
 <a name="line3">  3: </a><font color="#A020F0">#include &lt;petscmat.h&gt;</font>
@@ -24,7 +24,7 @@
 <a name="line16"> 16: </a>  <A href="../../../../docs/manualpages/Sys/PetscInt.html#PetscInt">PetscInt</A>       DIM,dim[2];
 <a name="line17"> 17: </a>  <A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>      fac;
 
-<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char *)0,help);
+<a name="line19"> 19: </a>  <A href="../../../../docs/manualpages/Sys/PetscInitialize.html#PetscInitialize">PetscInitialize</A>(&amp;argc,&amp;args,(char*)0,help);
 <a name="line20"> 20: </a><font color="#A020F0">#if defined(PETSC_USE_COMPLEX)</font>
 <a name="line21"> 21: </a>  <A href="../../../../docs/manualpages/Sys/SETERRQ.html#SETERRQ">SETERRQ</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,PETSC_ERR_SUP, <font color="#666666">"This example requires real numbers"</font>);
 <a name="line22"> 22: </a><font color="#A020F0">#endif</font>
@@ -43,9 +43,9 @@
 <a name="line35"> 35: </a>  <A href="../../../../docs/manualpages/Vec/VecDuplicate.html#VecDuplicate">VecDuplicate</A>(input,&amp;output);
 <a name="line36"> 36: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)input, <font color="#666666">"Real space vector"</font>);
 <a name="line37"> 37: </a>  <A href="../../../../docs/manualpages/Sys/PetscObjectSetName.html#PetscObjectSetName">PetscObjectSetName</A>((<A href="../../../../docs/manualpages/Sys/PetscObject.html#PetscObject">PetscObject</A>)output, <font color="#666666">"Reconstructed vector"</font>);
-<a name="line38"> 38: </a>
+
 <a name="line39"> 39: </a>  <font color="#B22222">/* Get FFTW vectors 'x', 'y' and 'z' */</font>
-<a name="line40"> 40: </a>  DIM = 2;
+<a name="line40"> 40: </a>  DIM    = 2;
 <a name="line41"> 41: </a>  dim[0] = N0; dim[1] = N1;
 <a name="line42"> 42: </a>  <A href="../../../../docs/manualpages/Mat/MatCreateFFT.html#MatCreateFFT">MatCreateFFT</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_WORLD.html#PETSC_COMM_WORLD">PETSC_COMM_WORLD</A>,DIM,dim,MATFFTW,&amp;A);
 <a name="line43"> 43: </a>  <A href="../../../../docs/manualpages/Mat/MatGetVecsFFTW.html#MatGetVecsFFTW">MatGetVecsFFTW</A>(A,&amp;x,&amp;y,&amp;z);
@@ -63,11 +63,11 @@
 <a name="line55"> 55: </a>  <A href="../../../../docs/manualpages/Mat/VecScatterFFTWToPetsc.html#VecScatterFFTWToPetsc">VecScatterFFTWToPetsc</A>(A,z,output);
 
 <a name="line57"> 57: </a>  <font color="#B22222">/* Check accuracy */</font>
-<a name="line58"> 58: </a>  fac = 1.0/(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)N;
+<a name="line58"> 58: </a>  fac  = 1.0/(<A href="../../../../docs/manualpages/Sys/PetscReal.html#PetscReal">PetscReal</A>)N;
 <a name="line59"> 59: </a>  <A href="../../../../docs/manualpages/Vec/VecScale.html#VecScale">VecScale</A>(output,fac);
 <a name="line60"> 60: </a>  <A href="../../../../docs/manualpages/Vec/VecAXPY.html#VecAXPY">VecAXPY</A>(output,-1.0,input);
 <a name="line61"> 61: </a>  <A href="../../../../docs/manualpages/Vec/VecNorm.html#VecNorm">VecNorm</A>(output,<A href="../../../../docs/manualpages/Vec/NORM_1.html#NORM_1">NORM_1</A>,&amp;enorm);
-<a name="line62"> 62: </a>  <font color="#4169E1">if</font> (enorm &gt; 1.e-11 &amp;&amp; !rank){
+<a name="line62"> 62: </a>  <font color="#4169E1">if</font> (enorm &gt; 1.e-11 &amp;&amp; !rank) {
 <a name="line63"> 63: </a>    <A href="../../../../docs/manualpages/Sys/PetscPrintf.html#PetscPrintf">PetscPrintf</A>(<A href="../../../../docs/manualpages/Sys/PETSC_COMM_SELF.html#PETSC_COMM_SELF">PETSC_COMM_SELF</A>,<font color="#666666">"  Error norm of |x - z| %e\n"</font>,enorm);
 <a name="line64"> 64: </a>  }
 

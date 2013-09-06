@@ -5,12 +5,12 @@
 <TITLE>TSRosWType</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="TSRosWType"><H1>TSRosWType</H1></A>
 String with the name of a Rosenbrock-W method. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#define TSRosWType char*
+typedef const char* TSRosWType;
 #define TSROSW2M          "2m"
 #define TSROSW2P          "2p"
 #define TSROSWRA3PW       "ra3pw"
@@ -23,6 +23,10 @@ String with the name of a Rosenbrock-W method.
 #define TSROSWARK3        "ark3"
 #define TSROSWTHETA1      "theta1"
 #define TSROSWTHETA2      "theta2"
+#define TSROSWGRK4T       "grk4t"
+#define TSROSWSHAMP4      "shamp4"
+#define TSROSWVELDD4      "veldd4"
+#define TSROSW4L          "4l"
 
 </PRE>
 

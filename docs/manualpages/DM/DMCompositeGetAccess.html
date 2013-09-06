@@ -5,12 +5,12 @@
 <TITLE>DMCompositeGetAccess</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="DMCompositeGetAccess"><H1>DMCompositeGetAccess</H1></A>
 Allows one to access the individual packed vectors in their global representation. 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
-#include "petscdmcomposite.h"   
+#include "petscdmcomposite.h"  
 PetscErrorCode  DMCompositeGetAccess(DM dm,Vec gvec,...)
 </PRE>
 Collective on DMComposite
@@ -23,14 +23,21 @@ Collective on DMComposite
 </TD></TR></TABLE>
 <P>
 <H3><FONT COLOR="#CC3333">Output Parameters</FONT></H3>
-<DT><B><A HREF="../Vec/Vec.html#Vec">Vec</A>* ... </B> -the packed parallel vectors, <A HREF="../Sys/PETSC_NULL.html#PETSC_NULL">PETSC_NULL</A> for those that are not needed
+<DT><B><A HREF="../Vec/Vec.html#Vec">Vec</A>* ... </B> -the packed parallel vectors, NULL for those that are not needed
 <br>
 <P>
 Notes: Use <A HREF="../DM/DMCompositeRestoreAccess.html#DMCompositeRestoreAccess">DMCompositeRestoreAccess</A>() to return the vectors when you no longer need them
 <P>
+<H3><FONT COLOR="#CC3333">Fortran Notes</FONT></H3>
+<P>
+Fortran callers must use numbered versions of this routine, e.g., DMCompositeGetAccess4(dm,gvec,vec1,vec2,vec3,vec4)
+or use the alternative interface <A HREF="../DM/DMCompositeGetAccessArray.html#DMCompositeGetAccessArray">DMCompositeGetAccessArray</A>().
+<P>
 
 <P>
-<P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
+<H3><FONT COLOR="#CC3333">See Also</FONT></H3>
+ <A HREF="../DM/DMCompositeGetEntries.html#DMCompositeGetEntries">DMCompositeGetEntries</A>(), <A HREF="../DM/DMCompositeScatter.html#DMCompositeScatter">DMCompositeScatter</A>()
+<BR><P><B><P><B><FONT COLOR="#CC3333">Level:</FONT></B>advanced
 <BR><FONT COLOR="#CC3333">Location:</FONT></B><A HREF="../../../src/dm/impls/composite/pack.c.html#DMCompositeGetAccess">src/dm/impls/composite/pack.c</A>
 <BR><A HREF="./index.html">Index of all DM routines</A>
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>

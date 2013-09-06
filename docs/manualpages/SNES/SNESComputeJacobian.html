@@ -5,14 +5,12 @@
 <TITLE>SNESComputeJacobian</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
-   <div id="version" align=right><b>petsc-3.3-p3 2012-08-29</b></div>
+   <div id="version" align=right><b>petsc-3.4.2 2013-07-02</b></div>
 <A NAME="SNESComputeJacobian"><H1>SNESComputeJacobian</H1></A>
 Computes the Jacobian matrix that has been set with <A HREF="../SNES/SNESSetJacobian.html#SNESSetJacobian">SNESSetJacobian</A>(). 
 <H3><FONT COLOR="#CC3333">Synopsis</FONT></H3>
 <PRE>
 #include "petscsnes.h"  
-#include "petscdmshell.h" 
-#include "petscsys.h" 
 PetscErrorCode  SNESComputeJacobian(SNES snes,Vec X,Mat *A,Mat *B,MatStructure *flg)
 </PRE>
 Collective on <A HREF="../SNES/SNES.html#SNES">SNES</A> and <A HREF="../Mat/Mat.html#Mat">Mat</A>
@@ -82,5 +80,8 @@ flag parameter.
 <BR><A HREF="../../index.html">Table of Contents for all manual pages</A>
 <BR><A HREF="../singleindex.html">Index of all manual pages</A>
 <P><H3><FONT COLOR="#CC3333">Examples</FONT></H3>
-<A HREF="../../../src/snes/examples/tutorials/ex45.c.html">src/snes/examples/tutorials/ex45.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex12.c.html">src/snes/examples/tutorials/ex12.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex31.c.html">src/snes/examples/tutorials/ex31.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex52.c.html">src/snes/examples/tutorials/ex52.c.html</A><BR>
+<A HREF="../../../src/snes/examples/tutorials/ex62.c.html">src/snes/examples/tutorials/ex62.c.html</A><BR>
 </BODY></HTML>

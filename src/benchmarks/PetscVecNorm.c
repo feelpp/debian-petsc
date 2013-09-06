@@ -1,5 +1,6 @@
 
 #include <petscvec.h>
+#include <petsctime.h>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -11,14 +12,14 @@ int main(int argc,char **argv)
   int            ierr,n = 10000;
 
   PetscInitialize(&argc,&argv,0,0);
-  ierr = PetscOptionsGetInt(PETSC_NULL,"-n",&n,PETSC_NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(NULL,"-n",&n,NULL);CHKERRQ(ierr);
 
   ierr = VecCreate(PETSC_COMM_SELF,&x);CHKERRQ(ierr);
   ierr = VecSetSizes(x,n,n);CHKERRQ(ierr);
   ierr = VecSetFromOptions(x);CHKERRQ(ierr);
 
   PetscPreLoadBegin(PETSC_TRUE,"VecNorm");
-  ierr = PetscGetTime(&t1);CHKERRQ(ierr);
+  ierr = PetscTime(&t1);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
@@ -30,7 +31,7 @@ int main(int argc,char **argv)
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
   PetscPreLoadEnd();
-  ierr = PetscGetTime(&t2);CHKERRQ(ierr);
+  ierr = PetscTime(&t2);CHKERRQ(ierr);
 
 
   fprintf(stdout,"%s : \n","VecNorm");
