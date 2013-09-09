@@ -475,8 +475,25 @@ binary-arch: install-arch
 
 binary:		binary-indep binary-arch
 
+DEB_SOURCE_PACKAGE = petsc
+DEB_UPSTREAM_VERSION = $(shell dpkg-parsechangelog | sed -ne 's/^Version: \(.*\)-.*/\1/p')
+DEB_STRIPPED_UPSTREAM_VERSION = $(shell echo $(DEB_UPSTREAM_VERSION) | sed -n -e 's/\.dfsg.*$$//p')
+USCAN_DESTDIR := $(CURDIR)
+
 .PHONY: binary binary-arch binary-indep clean checkroot
 
 
 get-orig-source:
-	uscan --force-download  --verbose
+	uscan --force-download --verbose --check-dirname-level 0 --destdir $(USCAN_DESTDIR) --download-version $(DEB_STRIPPED_UPSTREAM_VERSION) --upstream-version $(DEB_STRIPPED_UPSTREAM_VERSION) ; \
+	set -ex ;
+	test -d $(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION).orig && rm -rf $(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION).orig ; \
+	TMPDIR=$(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION).orig; \
+	mkdir $$TMPDIR; \
+	cp $(USCAN_DESTDIR)/$(DEB_SOURCE_PACKAGE)_$(DEB_STRIPPED_UPSTREAM_VERSION).orig.tar.gz "$$TMPDIR" ; \
+	tar -C "$$TMPDIR" --strip-components 1 -xzf "$$TMPDIR"/$(DEB_SOURCE_PACKAGE)_$(DEB_STRIPPED_UPSTREAM_VERSION).orig.tar.gz ; \
+	rm -f "$$TMPDIR"/$(DEB_SOURCE_PACKAGE)*.tar.gz ; \
+	find "$$TMPDIR"/docs -name \*.pdf | xargs rm ; \
+	GZIP=-9 tar -czf \
+	    $(CURDIR)/$(DEB_SOURCE_PACKAGE)_$(DEB_UPSTREAM_VERSION).orig.tar.gz \
+	    $(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION).orig ; \
+	rm -rf "$$TMPDIR"
