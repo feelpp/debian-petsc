@@ -1,4 +1,4 @@
-petsc (3.4.2-1) unstable; urgency=low
+petsc (3.4.2dfsg-1) unstable; urgency=low
 
   * Non-maintainer upload.
   * New upstream release
@@ -6,15 +6,6 @@ petsc (3.4.2-1) unstable; urgency=low
     - remove obsolete DM-Upload-Allowed
     - remove libblas-3gf.so from Build-Depends
     - remove liblapack-3gf.so from Build-Depends
-
- -- Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>  Tue, 20 Aug 2013 14:08:13 +0200
-
-petsc (3.3.dfsg-3.1) unstable; urgency=low
-
-  * Non-maintainer upload.
-  * New upstream release
-  * debian/control
-    - remove liblapack-3gf.so and libblas-3gf.so from Build-Depends
     - add libpastix-dev to Depends for libpetsc3.2-dev
     - add libfftw3-dev to  Depends for libpetsc3.2-dev
     - add libfftw3-mpi-dev to  Depends for libpetsc3.2-dev
@@ -23,10 +14,10 @@ petsc (3.3.dfsg-3.1) unstable; urgency=low
     - add support for fftw
     - add shared libraries for PETSC_ARCH-c-debug
     - remove liblapack-3gf.so and libblas-3gf.so
-  * debian/libpetsc3.3-dev.postinst.in
-    - change the version from 3100 to 3200
+  * update postinst script
+    - change the version from 3100 to 3420
     
- -- Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>  Wed, 12 Sep 2012 08:25:49 +0200
+ -- Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>  Tue, 20 Aug 2013 14:08:13 +0200
 
 petsc (3.2.dfsg-6) unstable; urgency=low
 
