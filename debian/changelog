@@ -1,5 +1,6 @@
 petsc (3.4.2.dfsg-1) unstable; urgency=low
 
+  [ Christophe Trophime ]
   * Non-maintainer upload.
   * New upstream release
   * debian/control
@@ -17,6 +18,10 @@ petsc (3.4.2.dfsg-1) unstable; urgency=low
   * update postinst script
     - change the version from 3100 to 3420
     
+  [ Thomas Weber ]
+  * Make copying config.guess and config.sub independent of
+    automake version. (Closes: #713208)
+
  -- Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>  Tue, 20 Aug 2013 14:08:13 +0200
 
 petsc (3.2.dfsg-6) unstable; urgency=low
