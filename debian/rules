@@ -114,8 +114,6 @@ build-arch:
 	  --with-ptscotch-lib=[/usr/lib/libptesmumps.so,/usr/lib/libptscotch.so,/usr/lib/libptscotcherr.so] \
 	  --with-fftw=1 --with-fftw-include=/usr/include \
 	  --with-fftw-lib=[/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3.so,/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3_mpi.so] \
-	  --with-pastix=1 --with-pastix-include=/usr/include/pastix \
-	  --with-pastix-lib=[/usr/lib/libpastix.so] \
 	  $(PETSC_HDF5_FLAGS) --CXX_LINKER_FLAGS="-Wl,--no-as-needed" 
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
@@ -148,8 +146,6 @@ build-arch:
 	  --with-ptscotch-lib=[/usr/lib/libptesmumps.so,/usr/lib/libptscotch.so,/usr/lib/libptscotcherr.so] \
 	  --with-fftw=1 --with-fftw-include=/usr/include \
 	  --with-fftw-lib=[/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3.so,/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3_mpi.so] \
-	  --with-pastix=1 --with-pastix-include=/usr/include/pastix \
-	  --with-pastix-lib=[/usr/lib/libpastix.so] \
 	  $(PETSC_HDF5_FLAGS) --CXX_LINKER_FLAGS="-Wl,--no-as-needed"
 #	  --with-superlu=1 --with-superlu-include=/usr/include/superlu \
 #	  --with-superlu-lib=/usr/lib/libsuperlu.so \
