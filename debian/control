@@ -39,7 +39,7 @@ Package: petsc-dev
 Architecture: all
 Section: libdevel
 Depends: libpetsc3.4.2-dev, ${misc:Depends}
-Suggests: petsc-dbg
+Suggests: libpetsc3.4.2-dbg
 Description: Virtual package depending on latest PETSc development package
  This metapackage will always depend on the most recent version of petscX-dev
  (X=version), so if you install it then you will get upgrades automatically.
@@ -60,8 +60,7 @@ Package: libpetsc3.4.2-dbg
 Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: debug
 Depends: libpetsc3.4.2-dev (= ${binary:Version}), ${misc:Depends}
-Suggests: petsc-dbg (= ${binary:Version})
-Provides: petsc3.4.2-dbg
+Provides: petsc3.4.2-dbg (= ${binary:Version})
 Description: Static debugging libraries for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of
