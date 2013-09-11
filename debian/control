@@ -60,7 +60,7 @@ Package: libpetsc3.4.2-dbg
 Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: debug
 Depends: libpetsc3.4.2-dev (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-Provides: petsc3.4.2-dbg (= ${binary:Version})
+Provides: petsc3.4.2-dbg
 Description: Static debugging libraries for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
  of data structures and routines for the scalable (parallel) solution of
