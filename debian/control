@@ -12,7 +12,6 @@ Build-Depends: debhelper (>= 7.0.50), quilt, python (>= 2.2), gfortran, autotool
  libhdf5-mpi-dev (>= 1.8.8),
  libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev,
  libfftw3-dev, libfftw3-mpi-dev
-# libpastix-dev
 Build-Conflicts: libatlas3gf-base, libatlas-base-dev, lam4-dev
 Vcs-Git: git://git.debian.org/git/debian-science/packages/petsc.git
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/petsc.git

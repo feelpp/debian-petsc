@@ -1,5 +1,6 @@
-petsc (3.4.2.dfsg-1) unstable; urgency=low
+petsc (3.4.2.dfsg-2) unstable; urgency=low
 
+  * Team upload.
   [ Christophe Trophime ]
   * Non-maintainer upload.
   * New upstream release
@@ -11,7 +12,6 @@ petsc (3.4.2.dfsg-1) unstable; urgency=low
     - add libfftw3-dev to  Depends for libpetsc3.2-dev
     - add libfftw3-mpi-dev to  Depends for libpetsc3.2-dev
   * debian/rules
-    - add support for pastix
     - add support for fftw
     - add shared libraries for PETSC_ARCH-c-debug
     - remove liblapack-3gf.so and libblas-3gf.so
@@ -22,10 +22,7 @@ petsc (3.4.2.dfsg-1) unstable; urgency=low
   * Make copying config.guess and config.sub independent of
     automake version. (Closes: #713208)
 
-  [ Anton Gladky ]
-  * Disable pastix
-
- -- Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>  Tue, 20 Aug 2013 14:08:13 +0200
+ -- Anton Gladky <gladk@debian.org>  Wed, 11 Sep 2013 19:19:33 +0200
 
 petsc (3.2.dfsg-6) unstable; urgency=low
 
