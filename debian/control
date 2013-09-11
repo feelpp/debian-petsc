@@ -59,7 +59,7 @@ Description: Shared libraries for version 3.4.2 of PETSc
 Package: libpetsc3.4.2-dbg
 Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: debug
-Depends: libpetsc3.4.2-dev (= ${binary:Version}), ${misc:Depends}
+Depends: libpetsc3.4.2-dev (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Provides: petsc3.4.2-dbg (= ${binary:Version})
 Description: Static debugging libraries for PETSc
  PETSc is the "Portable Extensible Toolkit for Scientific Computation", a suite
