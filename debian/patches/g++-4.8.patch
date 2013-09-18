@@ -1,0 +1,16 @@
+Fix missing declaration
+
+Index: petsc-3.4.2/src/mat/impls/aij/seq/umfpack/umfpack.c
+===================================================================
+--- petsc-3.4.2.orig/include/petscsys.h
++++ petsc-3.4.2/include/petscsys.h
+@@ -14,6 +14,9 @@
+ #include <petscconf.h>
+ #include <petscfix.h>
+ 
++/* Fix missing memcpy declaration */
++#include <string.h>
++
+ #if defined(PETSC_DESIRE_FEATURE_TEST_MACROS)
+ /*
+    Feature test macros must be included before headers defined by IEEE Std 1003.1-2001

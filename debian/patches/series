@@ -11,3 +11,4 @@ clean-no-double-colon.patch
 hypre.patch
 nocleanup.patch
 umfpack.patch
+g++-4.8.patch
