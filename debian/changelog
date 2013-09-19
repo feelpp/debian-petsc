@@ -1,35 +1,3 @@
-<<<<<<< HEAD
-=======
-petsc (3.4.2.dfsg-3) unstable; urgency=low
-
-  * Add g++-4.8.patch (fix missing declarations) 
-
- -- Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>  Wed, 18 Sep 2013 11:07:00 +0200
-
-petsc (3.4.2.dfsg-2) unstable; urgency=low
-
-  * debian/rules:
-    - add pastix support
-    - add superlu support
-    - add superlu-dist support
-    - add elemental support
-    - add hypre 2.9.1a support
-  * debian/control:
-    - change libphypre-dev min version
-    - add libpastix-dev to Build-Depends
-    - add libsuperlu4-dev to Build-Depends
-    - add libsuperlu-dist-dev to Build-Depends
-    - add libelemental-dev to Build-Depends
-    
-    [Roland Stigge]
-    - add powerpcspe to build arches to (Closes: #706344)
-    
-  * debian/copyright:
-    - rewritte (Closes: #722979)
-
- -- Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>  Mon, 16 Sep 2013 08:10:39 +0200
-
->>>>>>> 9e348e2... Fix missing declaration (found when compiling gmsh with g++-4.8)
 petsc (3.4.2.dfsg-1) unstable; urgency=low
 
   * Team upload.
