@@ -21,10 +21,10 @@ Package: libpetsc3.4.2-dev
 Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
 Section: libdevel
 Depends: libpetsc3.4.2 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers},
- ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu4-dev, libspooles-dev,
+ ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev,
  libhypre-dev (>= 2.0.0.dfsg-7), libptscotch-dev, ${babel-dev}, ${misc:Depends},
  ${hdf5-dev}, libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev,
- libpastix-dev, libfftw3-dev, libfftw3-mpi-dev
+ libfftw3-dev, libfftw3-mpi-dev
 Suggests: petsc-dev (= ${binary:Version}), libpetsc3.4.2-dbg (= ${binary:Version}), petsc3.4.2-doc (= ${binary:Version}), libluminate-dev
 Provides: petsc3.4.2-dev
 Description: Static libraries, shared links, header files for PETSc
