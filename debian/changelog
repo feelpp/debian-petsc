@@ -1,3 +1,11 @@
+petsc (3.4.2.dfsg1-3) unstable; urgency=low
+
+  [ Christophe Trophime ]
+  * Team upload.
+  * [bbd895b] Fix missing declaration (found when compiling gmsh with g++-4.8)
+
+ -- Anton Gladky <gladk@debian.org>  Sat, 28 Sep 2013 09:49:56 +0200
+
 petsc (3.4.2.dfsg1-2) unstable; urgency=low
 
   * [35ff06e] Add copyright-info of some files. (Closes: #722979)
