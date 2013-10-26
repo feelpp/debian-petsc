@@ -18,7 +18,7 @@ Vcs-Browser: http://git.debian.org/?p=debian-science/packages/petsc.git
 Homepage: http://www.mcs.anl.gov/petsc
 
 Package: libpetsc3.4.2-dev
-Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
+Architecture: linux-any hurd-any
 Section: libdevel
 Depends: libpetsc3.4.2 (= ${binary:Version}), ${mpi-dev}, ${linear-algebra-dev}, ${petsc-compilers},
  ${petsc-extra-dev}, libx11-dev, libsuitesparse-dev, libsuperlu3-dev, libspooles-dev,
@@ -45,7 +45,7 @@ Description: Virtual package depending on latest PETSc development package
  (X=version), so if you install it then you will get upgrades automatically.
 
 Package: libpetsc3.4.2
-Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
+Architecture: linux-any hurd-any
 Section: libs
 Depends: ${shlibs:Depends}, ${mpi}, ${misc:Depends}
 Description: Shared libraries for version 3.4.2 of PETSc
@@ -57,7 +57,7 @@ Description: Shared libraries for version 3.4.2 of PETSc
  features of the PETSc libraries.
 
 Package: libpetsc3.4.2-dbg
-Architecture: alpha amd64 armhf hurd-i386 i386 ia64 lpia mips mipsel powerpc s390 s390x sparc
+Architecture: linux-any hurd-any
 Section: debug
 Depends: libpetsc3.4.2-dev (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Provides: petsc3.4.2-dbg

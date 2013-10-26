@@ -1,3 +1,13 @@
+petsc (3.4.2.dfsg1-4) unstable; urgency=low
+
+  * Team upload (git is out-of-date)
+  * Change architectures to "hurd-any linux-any" as these architectures do
+    work with this package, in good faith. Net-change is addition of
+    armel, which is known to work in Ubuntu, and future proof adding of
+    upcoming ports which are also known to work - arm64/powerpc.
+
+ -- Dmitrijs Ledkovs <xnox@ubuntu.com>  Fri, 25 Oct 2013 01:30:25 +0100
+
 petsc (3.4.2.dfsg1-3) unstable; urgency=low
 
   [ Christophe Trophime ]
