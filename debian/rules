@@ -416,16 +416,10 @@ binary-arch: install-arch
 	if [ "$(PETSC_MPI)" = "openmpi" ]; then \
 	  echo "mpi=openmpi-bin" > debian/lib$(PETSC_NAME).substvars; \
 	  echo "mpi-dev=libopenmpi-dev" > debian/lib$(PETSC_NAME)-dev.substvars; \
-	elif [ "$(PETSC_MPI)" = "mpich" -o "$(PETSC_MPI)" = "mpich-mpd" -o "$(PETSC_MPI)" = "mpich-shmem" ]; then \
-	  echo "mpi=$(PETSC_MPI)-bin (>= 1.2.7)" > debian/lib$(PETSC_NAME).substvars; \
-	  echo "mpi-dev=lib$(PETSC_MPI)1.0-dev (>= 1.2.7)" > debian/lib$(PETSC_NAME)-dev.substvars; \
-	elif [ "$(PETSC_MPI)" = "mpich2" ]; then \
-	  echo "mpi=mpich2" > debian/lib$(PETSC_NAME).substvars; \
-	  echo "mpi-dev=libmpich2-dev" > debian/lib$(PETSC_NAME)-dev.substvars; \
-	elif [ "$(PETSC_MPI)" = "lam" ]; then \
-	  echo "mpi=lam-runtime" > debian/lib$(PETSC_NAME).substvars; \
-	  echo "mpi-dev=lam4-dev" > debian/lib$(PETSC_NAME)-dev.substvars; \
-	else \
+	elif [ "$(PETSC_MPI)" = "mpich" ]; then \
+	  echo "mpi=mpich" > debian/lib$(PETSC_NAME).substvars; \
+	  echo "mpi-dev=libmpich-dev" > debian/lib$(PETSC_NAME)-dev.substvars; \
+        else \
 	  echo "Unknown MPI implementation, stopping"; \
 	  exit 1; \
 	fi
