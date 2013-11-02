@@ -5,7 +5,7 @@ Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.
 Uploaders: "Adam C. Powell, IV" <hazelsct@debian.org>
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 7.0.50), quilt, python (>= 2.2), gfortran, autotools-dev,
- libx11-dev, mpi-default-dev,
+ libx11-dev, mpi-default-dev (>= 1.0.2),
  libblas-dev, liblapack-dev,
  libsuitesparse-dev (>= 3.1.0-2),
  libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libptscotch-dev,
