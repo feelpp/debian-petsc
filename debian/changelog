@@ -1,3 +1,17 @@
+petsc (3.4.2.dfsg1-5) unstable; urgency=low
+
+  * Team upload.
+  * Adapt the package for the MPICH transition. (Closes: #728074)
+    - Tighten B-D on mpi-default-dev to be >= 1.0.2.
+      That version is required to handle correctly the mpich2->mpich renaming.
+    - debian/rules: adapt for the mpich2->mpich renaming
+      (and remove lam support).
+    - debian/rules: add a workaround for blacs-mpi and scalapack.
+      Their shared libraries still have the mpich2 suffix
+  * Update Build-Conflicts to libatlas3-base (instead of libatlas3gf-base)
+
+ -- Sébastien Villemot <sebastien@debian.org>  Sat, 02 Nov 2013 22:10:37 +0100
+
 petsc (3.4.2.dfsg1-4) unstable; urgency=low
 
   * Team upload (git is out-of-date)
