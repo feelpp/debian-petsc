@@ -3,7 +3,7 @@ Section: devel
 Priority: extra
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: "Adam C. Powell, IV" <hazelsct@debian.org>
-Standards-Version: 3.9.2
+Standards-Version: 3.9.5
 Build-Depends: debhelper (>= 7.0.50), quilt, python (>= 2.2), gfortran, autotools-dev,
  libx11-dev, mpi-default-dev (>= 1.0.2),
  libblas-dev, liblapack-dev,
