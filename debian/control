@@ -7,7 +7,7 @@ Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 7.0.50), quilt, python (>= 2.2), gfortran, autotools-dev,
  libx11-dev, mpi-default-dev (>= 1.0.2),
  libblas-dev, liblapack-dev,
- libsuitesparse-dev (>= 3.1.0-2),
+ libsuitesparse-dev (>= 1:4.2.1),
  libspooles-dev (>= 2.2-6), libhypre-dev (>= 2.4.0), libptscotch-dev,
  libhdf5-mpi-dev (>= 1.8.8),
  libblacs-mpi-dev, libscalapack-mpi-dev, libmumps-dev,
