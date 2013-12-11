@@ -1,3 +1,14 @@
+petsc (3.4.2.dfsg1-6) unstable; urgency=medium
+
+  * Team upload.
+  * Fix mangling of dfsg suffix in debian/watch (Closes: #730151)
+  * Transition to suitesparse 4.2.1 (Closes: #708398)
+    + umfpack.patch: remove patch, no longer needed
+    + bump build-dependency version
+  * Bump Standards-Version to 3.9.5, no changes needed.
+
+ -- Sébastien Villemot <sebastien@debian.org>  Wed, 11 Dec 2013 10:30:05 +0100
+
 petsc (3.4.2.dfsg1-5) unstable; urgency=low
 
   * Team upload.
