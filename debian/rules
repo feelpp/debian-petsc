@@ -32,7 +32,7 @@ PETSC_ARCH=$(DEB_BUILD_GNU_SYSTEM)
 include /usr/share/mpi-default-dev/debian_defaults
 PETSC_MPI=$(ARCH_DEFAULT_MPI_IMPL)
 PETSC_MPI_DIR=/usr/lib/$(PETSC_MPI)
-# The following is a workaround for blacs-mpi and scalapack, whose libraries
+# The following is a workaround for scalapack, whose libraries
 # still have the mpich2 suffix
 ifeq ($(PETSC_MPI),mpich)
 PETSC_MPI_ALT=mpich2
@@ -105,7 +105,7 @@ build-arch:
 	  --with-mpi-dir=$(PETSC_MPI_DIR) \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-blacs=1 --with-blacs-include=/usr/include \
-	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI_ALT).so,/usr/lib/libblacs-$(PETSC_MPI_ALT).so] \
+	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI).so,/usr/lib/libblacs-$(PETSC_MPI).so] \
 	  --with-scalapack=1 --with-scalapack-include=/usr/include \
 	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI_ALT).so \
 	  --with-mumps=1 --with-mumps-include=/usr/include \
