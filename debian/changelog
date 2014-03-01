@@ -1,3 +1,12 @@
+petsc (3.4.2.dfsg1-7) unstable; urgency=medium
+
+  * Team upload.
+  * Depend on libsuperlu-dev (instead of libsuperlu3-dev).
+  * Use canonical URLs in Vcs-* fields.
+  * Remove mpich workaround for blacs-mpi, since the latter has been fixed.
+
+ -- Sébastien Villemot <sebastien@debian.org>  Sat, 01 Mar 2014 13:38:39 +0100
+
 petsc (3.4.2.dfsg1-6) unstable; urgency=medium
 
   * Team upload.
