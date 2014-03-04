@@ -32,13 +32,6 @@ PETSC_ARCH=$(DEB_BUILD_GNU_SYSTEM)
 include /usr/share/mpi-default-dev/debian_defaults
 PETSC_MPI=$(ARCH_DEFAULT_MPI_IMPL)
 PETSC_MPI_DIR=/usr/lib/$(PETSC_MPI)
-# The following is a workaround for scalapack, whose libraries
-# still have the mpich2 suffix
-ifeq ($(PETSC_MPI),mpich)
-PETSC_MPI_ALT=mpich2
-else
-PETSC_MPI_ALT=$(PETSC_MPI)
-endif
 
 # Overriding this with "contrib" attempts to link with parmetis (unimplemented).
 DEBIAN_DIST=main
@@ -107,7 +100,7 @@ build-arch:
 	  --with-blacs=1 --with-blacs-include=/usr/include \
 	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI).so,/usr/lib/libblacs-$(PETSC_MPI).so] \
 	  --with-scalapack=1 --with-scalapack-include=/usr/include \
-	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI_ALT).so \
+	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
 	  --with-mumps=1 --with-mumps-include=/usr/include \
 	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
@@ -139,9 +132,9 @@ build-arch:
 	  --with-mpi-dir=$(PETSC_MPI_DIR) --with-mpi-shared=1 \
 	  --with-blas-lib=-lblas --with-lapack-lib=-llapack \
 	  --with-blacs=1 --with-blacs-include=/usr/include \
-	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI_ALT).so,/usr/lib/libblacs-$(PETSC_MPI_ALT).so] \
+	  --with-blacs-lib=[/usr/lib/libblacsCinit-$(PETSC_MPI).so,/usr/lib/libblacs-$(PETSC_MPI).so] \
 	  --with-scalapack=1 --with-scalapack-include=/usr/include \
-	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI_ALT).so \
+	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
 	  --with-mumps=1 --with-mumps-include=/usr/include \
 	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
 	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
