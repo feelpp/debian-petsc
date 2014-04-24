@@ -1,3 +1,10 @@
+petsc (3.4.2.dfsg1-8) unstable; urgency=medium
+
+  * Team upload.
+  * Remove mpich workaround for scalapack. (Closes: #740765)
+
+ -- Sébastien Villemot <sebastien@debian.org>  Thu, 24 Apr 2014 19:28:14 +0200
+
 petsc (3.4.2.dfsg1-7) unstable; urgency=medium
 
   * Team upload.
