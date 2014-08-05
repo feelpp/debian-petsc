@@ -103,17 +103,14 @@ build-arch:
 	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
 	  --with-mumps=1 --with-mumps-include=/usr/include \
 	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
-	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
-	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
+	  --with-umfpack=0 \
 	  --with-cholmod=1 --with-cholmod-include=/usr/include/suitesparse \
 	  --with-cholmod-lib=/usr/lib/libcholmod.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
-	  --with-hypre=1 --with-hypre-dir=/usr \
+	  --with-hypre=0 \
 	  --with-ptscotch=1 --with-ptscotch-include=/usr/include/scotch \
 	  --with-ptscotch-lib=[/usr/lib/libptesmumps.so,/usr/lib/libptscotch.so,/usr/lib/libptscotcherr.so] \
-	  --with-fftw=1 --with-fftw-include=/usr/include \
-	  --with-fftw-lib=[/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3.so,/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3_mpi.so] \
 	  $(PETSC_HDF5_FLAGS) --CXX_LINKER_FLAGS="-Wl,--no-as-needed" 
 #	  --with-pastix=1 --with-pastix-include=/usr/include/pastix \
 #	  --with-pastix-lib=[/usr/lib/libpastix.so] \
@@ -137,17 +134,14 @@ build-arch:
 	  --with-scalapack-lib=/usr/lib/libscalapack-$(PETSC_MPI).so \
 	  --with-mumps=1 --with-mumps-include=/usr/include \
 	  --with-mumps-lib=[/usr/lib/libdmumps.so,/usr/lib/libzmumps.so,/usr/lib/libsmumps.so,/usr/lib/libcmumps.so,/usr/lib/libmumps_common.so,/usr/lib/libpord.so] \
-	  --with-umfpack=1 --with-umfpack-include=/usr/include/suitesparse \
-	  --with-umfpack-lib=[/usr/lib/libumfpack.so,/usr/lib/libamd.so] \
+	  --with-umfpack=0 \
 	  --with-cholmod=1 --with-cholmod-include=/usr/include/suitesparse \
 	  --with-cholmod-lib=/usr/lib/libcholmod.so \
 	  --with-spooles=1 --with-spooles-include=/usr/include/spooles \
 	  --with-spooles-lib=/usr/lib/libspooles.so \
-	  --with-hypre=1 --with-hypre-dir=/usr \
+	  --with-hypre=0 \
 	  --with-ptscotch=1 --with-ptscotch-include=/usr/include/scotch \
 	  --with-ptscotch-lib=[/usr/lib/libptesmumps.so,/usr/lib/libptscotch.so,/usr/lib/libptscotcherr.so] \
-	  --with-fftw=1 --with-fftw-include=/usr/include \
-	  --with-fftw-lib=[/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3.so,/usr/lib/$(DEB_HOST_GNU_TYPE)/libfftw3_mpi.so] \
 	  $(PETSC_HDF5_FLAGS) --CXX_LINKER_FLAGS="-Wl,--no-as-needed"
 #	  --with-pastix=1 --with-pastix-include=/usr/include/pastix \
 #	  --with-pastix-lib=[/usr/lib/libpastix.so] \	  

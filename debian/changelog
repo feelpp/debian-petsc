@@ -1,3 +1,34 @@
+petsc (3.4.2.dfsg1-9~ppa5~precise1) precise; urgency=low
+
+  * fix -dev depends
+
+ -- Christophe Prud'homme <prudhomm@debian.org>  Sun, 22 Jun 2014 16:53:01 +0200
+
+petsc (3.4.2.dfsg1-9~ppa4~precise1) precise; urgency=low
+
+  * try harder to not use umfpack and hypre
+
+ -- Christophe Prud'homme <prudhomm@debian.org>  Sun, 22 Jun 2014 16:14:34 +0200
+
+petsc (3.4.2.dfsg1-9~ppa3~precise1) precise; urgency=low
+
+  * do not use umfpack and hypre for now
+
+ -- Christophe Prud'homme <prudhomm@debian.org>  Sun, 22 Jun 2014 15:55:29 +0200
+
+petsc (3.4.2.dfsg1-9~ppa2~precise1) precise; urgency=low
+
+  * fix control file on precise
+
+ -- Christophe Prud'homme <prudhomm@debian.org>  Sun, 22 Jun 2014 15:29:55 +0200
+
+petsc (3.4.2.dfsg1-9~ppa1~precise1) precise; urgency=low
+
+  [Christophe Prud'homme]
+  * upload to feelpp/petsc ppa
+
+ -- Christophe Prud'homme <prudhomm@debian.org>  Sun, 22 Jun 2014 15:01:13 +0200
+
 petsc (3.4.2.dfsg1-8) unstable; urgency=medium
 
   * Team upload.
